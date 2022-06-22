@@ -94,7 +94,6 @@ build_get_contracts:
 build:static-x86_64-linux-binaries:
   extends:
     - .build_static_binaries_template
-    - .rules_template__not_on_latest_release
   variables:
     ARCH: "x86_64"
 

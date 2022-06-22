@@ -1,0 +1,15 @@
+docker:promote_to_latest:
+  extends:
+    - .image_template__docker
+    - .docker_registry_auth # Sets up a before_script
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "latest-release"'
+      variables:
+        CI_DOCKER_HUB: "true"
+    - when: on_success
+  stage: publish_release
+  script:
+    # Environment variables from before_script
+    - . ./scripts/ci/docker.env
+    - ./scripts/ci/docker_promote_to_latest.sh
+

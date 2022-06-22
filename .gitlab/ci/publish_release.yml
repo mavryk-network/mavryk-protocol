@@ -33,14 +33,3 @@ docker:merge_manifests:
     # Environment variables from before_script
     - . ./scripts/ci/docker.env
     - ./scripts/ci/docker_merge_manifests.sh
-
-docker:promote_to_latest:
-  extends:
-    - .rules_template__latest_release
-    - .image_template__docker
-    - .docker_registry_auth # Sets up a before_script
-  stage: publish_release
-  script:
-    # Environment variables from before_script
-    - . ./scripts/ci/docker.env
-    - ./scripts/ci/docker_promote_to_latest.sh

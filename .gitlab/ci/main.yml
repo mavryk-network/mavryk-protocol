@@ -55,4 +55,17 @@ stages:
 include:
   # Actual jobs are defined in these included files
   - .gitlab/ci/templates.yml
-  - .gitlab/ci/pl-others.yml
+
+  - local: .gitlab/ci/pl-others.yml
+    rules:
+    - if: '($CI_COMMIT_REF_NAME == "test-latest-release" && $CI_PROJECT_NAMESPACE == "nomadic-labs") || ($CI_COMMIT_REF_NAME == "latest-release" && $CI_PROJECT_NAMESPACE == "tezos")'
+      when: never
+    - when: always
+
+  - local: .gitlab/ci/pl-latest-release.yml
+    rules:
+    - if: '($CI_COMMIT_REF_NAME == "test-latest-release" && $CI_PROJECT_NAMESPACE == "nomadic-labs") || ($CI_COMMIT_REF_NAME == "latest-release" && $CI_PROJECT_NAMESPACE == "tezos")'
+      when: always
+    - when: never
+
+
