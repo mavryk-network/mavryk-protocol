@@ -1,0 +1,21 @@
+build:static-x86_64-linux-binaries:
+  extends: .build:static-x86_64-linux-binaries
+
+build:static-arm64-linux-binaries:
+  extends: .build:static-arm64-linux-binaries
+
+docker:build_amd64:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends: .docker:build_amd64
+
+docker:build_arm64:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends: .docker:build_arm64
+
+docker:merge_manifests:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends:
+    - .docker:merge_manifests

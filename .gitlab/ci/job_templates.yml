@@ -1,0 +1,93 @@
+---
+
+# similar to the build template above, this template
+# compiles all binaries using the static profile.
+.build_static_binaries_template:
+  extends:
+    - .default_settings_template
+    - .image_template__runtime_build_dependencies_template
+  stage: build
+  needs: []
+  variables:
+    ARCH: ""
+  script:
+    # FIXME: https://gitlab.com/tezos/tezos/-/issues/2865
+    - sudo chown -R $(id -u):$(id -g) $CI_PROJECT_DIR
+    # Create destination directory
+    - mkdir -pv tezos-binaries
+    # Build and install static binaries
+    - ./scripts/build_and_install_static_binaries.sh "tezos-binaries/$ARCH"
+    # Strip debug symbols and compress binaries (parallelized)
+    - find "tezos-binaries/$ARCH" -maxdepth 1 -type f ! -name "*.*" | xargs -n1 -P$(nproc) -i sh -c 'strip --strip-debug {}; upx -6q {};'
+
+  artifacts:
+    paths:
+      - "tezos-binaries/$ARCH/*"
+
+.build:static-x86_64-linux-binaries:
+  extends:
+    - .build_static_binaries_template
+  variables:
+    ARCH: "x86_64"
+
+.build:static-arm64-linux-binaries:
+  extends:
+    - .build_static_binaries_template
+  variables:
+    ARCH: "arm64"
+  tags:
+    - arm64
+    
+.build_docker_release_template:
+  extends:
+    - .default_settings_template
+    - .image_template__docker
+    - .docker_registry_auth # Sets up a before_script
+  variables:
+    IMAGE_ARCH_PREFIX: ""
+  script:
+    # Environment variables from before_script
+    - . ./scripts/ci/docker.env
+    # Build minimal, bare and debug images
+    - ./scripts/create_docker_image.sh
+        "${DOCKER_IMAGE_NAME}"
+        "${DOCKER_IMAGE_TAG}"
+        "${build_deps_image_name}"
+        "${build_deps_image_version}"
+        "${CI_COMMIT_SHORT_SHA}"
+    # auth gitlab or dockerhub registry
+    # notice the different namespace for gitlab and that we remove the `-`
+    # Test bare image
+    - ./scripts/ci/docker_smoke_test.sh "${DOCKER_IMAGE_NAME}bare:${DOCKER_IMAGE_TAG}" "${CI_COMMIT_SHORT_SHA}" version
+    # Push minimal, bare and debug images
+    - ./scripts/ci/docker_push_all.sh
+
+.docker:build_amd64:
+  extends:
+    - .build_docker_release_template
+  variables:
+    IMAGE_ARCH_PREFIX: "amd64_"
+  stage: build
+
+.docker:build_arm64:
+  extends:
+    - .build_docker_release_template
+  variables:
+    IMAGE_ARCH_PREFIX: "arm64_"
+  stage: build
+  tags:
+    - arm64
+
+# Note: here we rely on $IMAGE_ARCH_PREFIX to be empty.
+# Otherwise, $DOCKER_IMAGE_TAG would contain $IMAGE_ARCH_PREFIX too.
+# $IMAGE_ARCH_PREFIX is only used when building Docker images,
+# here we handle all architectures so there is no such variable.
+.docker:merge_manifests:
+  extends:
+    - .image_template__docker
+    - .docker_registry_auth # Sets up a before_script
+  stage: publish_release
+  script:
+    # Environment variables from before_script
+    - . ./scripts/ci/docker.env
+    - ./scripts/ci/docker_merge_manifests.sh
