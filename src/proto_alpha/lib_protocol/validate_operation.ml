@@ -577,6 +577,7 @@ module Manager = struct
           let* () = assert_dal_feature_enabled vi in
           return remaining_gas
       | Dal_publish_slot_header {slot} ->
+          let* () = assert_dal_feature_enabled vi in
           let* () = Dal_apply.validate_publish_slot_header vi.ctxt slot in
           return remaining_gas
     in
