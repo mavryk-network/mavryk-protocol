@@ -770,6 +770,9 @@ let assert_tx_rollup_feature_enabled ctxt =
 let assert_sc_rollup_feature_enabled ctxt =
   error_unless (Constants.sc_rollup_enable ctxt) Sc_rollup_feature_disabled
 
+let assert_dal_feature_enabled ctxt =
+  error_unless (Constants.dal_enable ctxt) Dal_errors.Dal_feature_disabled
+
 let update_script_storage_and_ticket_balances ctxt ~self storage
     lazy_storage_diff ticket_diffs operations =
   Contract.update_script_storage ctxt self storage lazy_storage_diff
@@ -1779,11 +1782,13 @@ let apply_external_manager_operation_content :
       in
       return (ctxt, result, [])
   | Dal_publish_slot_header {slot} ->
+      assert_dal_feature_enabled ctxt >>?= fun () ->
       Dal_apply.apply_publish_slot_header ctxt slot >>?= fun ctxt ->
       let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
       let result = Dal_publish_slot_header_result {consumed_gas} in
       return (ctxt, result, [])
   | Sc_rollup_originate {kind; boot_sector; parameters_ty} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup_operations.originate ctxt ~kind ~boot_sector ~parameters_ty
       >>=? fun ({address; size}, ctxt) ->
       let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
@@ -1793,18 +1798,21 @@ let apply_external_manager_operation_content :
       in
       return (ctxt, result, [])
   | Sc_rollup_add_messages {rollup; messages} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Inbox.add_external_messages ctxt rollup messages
       >>=? fun (inbox_after, _size, ctxt) ->
       let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
       let result = Sc_rollup_add_messages_result {consumed_gas; inbox_after} in
       return (ctxt, result, [])
   | Sc_rollup_cement {rollup; commitment} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Stake_storage.cement_commitment ctxt rollup commitment
       >>=? fun ctxt ->
       let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
       let result = Sc_rollup_cement_result {consumed_gas} in
       return (ctxt, result, [])
   | Sc_rollup_publish {rollup; commitment} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Stake_storage.publish_commitment ctxt rollup source commitment
       >>=? fun (staked_hash, published_at_level, ctxt, balance_updates) ->
       let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
@@ -1814,6 +1822,7 @@ let apply_external_manager_operation_content :
       in
       return (ctxt, result, [])
   | Sc_rollup_refute {rollup; opponent; refutation; is_opening_move} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Refutation_storage.game_move
         ctxt
         rollup
@@ -1834,6 +1843,7 @@ let apply_external_manager_operation_content :
       in
       return (ctxt, result, [])
   | Sc_rollup_timeout {rollup; stakers} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Refutation_storage.timeout ctxt rollup stakers
       >>=? fun (outcome, ctxt) ->
       Sc_rollup.Refutation_storage.apply_outcome ctxt rollup stakers outcome
@@ -1845,6 +1855,7 @@ let apply_external_manager_operation_content :
       return (ctxt, result, [])
   | Sc_rollup_execute_outbox_message {rollup; cemented_commitment; output_proof}
     ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup_operations.execute_outbox_message
         ctxt
         rollup
@@ -1860,6 +1871,7 @@ let apply_external_manager_operation_content :
       in
       (ctxt, result, operations)
   | Sc_rollup_recover_bond {sc_rollup} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
       Sc_rollup.Stake_storage.withdraw_stake ctxt sc_rollup source
       >>=? fun (ctxt, balance_updates) ->
       let result =
@@ -1871,6 +1883,8 @@ let apply_external_manager_operation_content :
       in
       return (ctxt, result, [])
   | Sc_rollup_dal_slot_subscribe {rollup; slot_index} ->
+      assert_sc_rollup_feature_enabled ctxt >>?= fun () ->
+      assert_dal_feature_enabled ctxt >>?= fun () ->
       let open Lwt_tzresult_syntax in
       let+ slot_index, level, ctxt =
         Sc_rollup.Dal_slot.subscribe ctxt rollup ~slot_index
