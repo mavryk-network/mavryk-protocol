@@ -331,7 +331,7 @@ module Raw = struct
     | Some gas -> (
         match ks0 with
         | KLog (ks, sty, logger) ->
-            (klog [@ocaml.tailcall]) logger g gas sty ks0 ks accu stack
+            (logger.klog [@ocaml.tailcall]) logger g gas sty ks0 ks accu stack
         | KNil -> Lwt.return (Ok (accu, stack, ctxt, gas))
         | KCons (k, ks) -> (step [@ocaml.tailcall]) g gas k ks accu stack
         | KLoop_in (ki, ks') ->
@@ -1848,8 +1848,12 @@ module Raw = struct
           stack
     | _ -> (step [@ocaml.tailcall]) g gas k ks accu stack
    [@@inline]
+end
 
-  and klog :
+open Raw
+
+module For_logging = struct
+  let klog :
       type a s r f.
       logger ->
       outdated_context * step_constants ->
@@ -1968,8 +1972,6 @@ module Raw = struct
     | KNil as k -> (next [@ocaml.tailcall]) g gas k accu stack
    [@@inline]
 end
-
-open Raw
 
 (*
 
@@ -2227,4 +2229,6 @@ module Internals = struct
 
   let step_descr logger ctxt step_constants descr stack =
     step_descr ~log_now:false logger (ctxt, step_constants) descr stack
+
+  module For_logging = For_logging
 end
