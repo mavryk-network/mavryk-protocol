@@ -3555,6 +3555,7 @@ end = struct
               octez_micheline |> open_;
               benchmark |> if_some |> open_;
               benchmark_type_inference |> if_some |> open_;
+              plugin |> if_some |> open_;
               parameters |> if_some |> if_ N.(number >= 013);
             ]
       in
@@ -4964,6 +4965,7 @@ module Protocol = Protocol
             test_helpers |> open_;
             octez_sapling;
             client |> if_some |> open_;
+            plugin |> if_some |> open_;
             octez_protocol_environment;
           ]
         ~linkall:true
