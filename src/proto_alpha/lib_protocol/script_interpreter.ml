@@ -2184,4 +2184,5 @@ module Internals = struct
     step_descr ~log_now:false logger (ctxt, step_constants) descr stack
 
   module For_logging = For_logging
+  module Raw = Raw
 end
