@@ -1244,7 +1244,8 @@ and ('a, 's, 'r, 'f) klog =
   Lwt.t
 
 and ('a, 's, 'b, 't, 'r, 'f) ilog =
-  logger * logging_event ->
+  logger ->
+  logging_event ->
   ('a, 's) stack_ty ->
   ('a, 's, 'b, 't, 'r, 'f) step_type
 
