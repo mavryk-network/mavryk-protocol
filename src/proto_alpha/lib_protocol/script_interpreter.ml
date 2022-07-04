@@ -331,7 +331,7 @@ module Raw = struct
     | Some gas -> (
         match ks0 with
         | KLog (ks, sty, logger) ->
-            (logger.klog [@ocaml.tailcall]) logger g gas sty ks0 ks accu stack
+            (logger.klog [@ocaml.tailcall]) g gas sty ks0 ks accu stack
         | KNil -> Lwt.return (Ok (accu, stack, ctxt, gas))
         | KCons (k, ks) -> (step [@ocaml.tailcall]) g gas k ks accu stack
         | KLoop_in (ki, ks') ->
@@ -506,7 +506,7 @@ module Raw = struct
       let body =
         match logger with
         | None -> b.kinstr
-        | Some logger -> logger.log_kinstr logger b.kbef b.kinstr
+        | Some logger -> logger.log_kinstr b.kbef b.kinstr
       in
       let ks = instrument @@ KReturn (stack, cont_sty, KCons (k, ks)) in
       (body, ks)
@@ -627,16 +627,7 @@ module Raw = struct
     | Some gas -> (
         match i with
         | ILog (_, sty, event, logger, k) ->
-            (logger.ilog [@ocaml.tailcall])
-              logger
-              event
-              sty
-              g
-              gas
-              k
-              ks
-              accu
-              stack
+            (logger.ilog [@ocaml.tailcall]) event sty g gas k ks accu stack
         | IHalt _ -> (next [@ocaml.tailcall]) g gas ks accu stack
         (* stack ops *)
         | IDrop (_, k) ->

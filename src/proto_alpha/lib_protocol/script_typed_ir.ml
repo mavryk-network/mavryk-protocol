@@ -1228,7 +1228,6 @@ and logger = {
 }
 
 and ('a, 's, 'r, 'f) klog =
-  logger ->
   Local_gas_counter.outdated_context * step_constants ->
   Local_gas_counter.local_gas_counter ->
   ('a, 's) stack_ty ->
@@ -1244,10 +1243,7 @@ and ('a, 's, 'r, 'f) klog =
   Lwt.t
 
 and ('a, 's, 'b, 't, 'r, 'f) ilog =
-  logger ->
-  logging_event ->
-  ('a, 's) stack_ty ->
-  ('a, 's, 'b, 't, 'r, 'f) step_type
+  logging_event -> ('a, 's) stack_ty -> ('a, 's, 'b, 't, 'r, 'f) step_type
 
 and ('a, 's, 'b, 't, 'r, 'f) step_type =
   Local_gas_counter.outdated_context * step_constants ->
@@ -1264,10 +1260,7 @@ and ('a, 's, 'b, 't, 'r, 'f) step_type =
   Lwt.t
 
 and ('a, 'b, 'c, 'd) log_kinstr =
-  logger ->
-  ('a, 'b) stack_ty ->
-  ('a, 'b, 'c, 'd) kinstr ->
-  ('a, 'b, 'c, 'd) kinstr
+  ('a, 'b) stack_ty -> ('a, 'b, 'c, 'd) kinstr -> ('a, 'b, 'c, 'd) kinstr
 
 (* ---- Auxiliary types -----------------------------------------------------*)
 and ('ty, 'comparable) ty =

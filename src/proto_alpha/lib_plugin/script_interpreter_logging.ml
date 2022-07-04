@@ -2225,6 +2225,13 @@ end
 
 let make (module Base : Logger_base) =
   let module Logger = Logger (Base) in
-  let open Logger in
   let open Base in
-  {log_interp; get_log; log_kinstr; klog; ilog}
+  let rec logger = {log_interp; get_log; log_kinstr; klog; ilog}
+  and log_kinstr : 'a 'b 'c 'd. ('a, 'b, 'c, 'd) log_kinstr =
+   fun a b -> Logger.log_kinstr logger a b
+  and klog : 'a 's 'r 'f. ('a, 's, 'r, 'f) klog =
+   fun a b c d e f g -> Logger.klog logger a b c d e f g
+  and ilog : 'a 's 'b 't 'r 'f. ('a, 's, 'b, 't, 'r, 'f) ilog =
+   fun a b c d e f g h -> Logger.ilog logger a b c d e f g h
+  in
+  logger
