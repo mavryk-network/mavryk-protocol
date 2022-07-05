@@ -1793,125 +1793,133 @@ module type Logger_base = sig
   val get_log : unit -> execution_trace option tzresult Lwt.t
 end
 
-module Logger (Base : Logger_base) = struct
-  open Stack_utils
-  open Local_gas_counter
-  open Script_interpreter_defs
-  open Script_interpreter.Internals.Raw
-
-  (** [log_entry ctxt gas instr sty accu stack] simply calls
-      [Base.log_entry] function with the appropriate arguments. *)
+let make (module Base : Logger_base) =
+  let open Stack_utils in
+  let open Local_gas_counter in
+  let open Script_interpreter_defs in
+  let open Script_interpreter.Internals.Raw in
+  (* [log_entry ctxt gas instr sty accu stack] simply calls
+     [Base.log_entry] function with the appropriate arguments. *)
   let log_entry ctxt gas k sty accu stack =
     let ctxt = Local_gas_counter.update_context gas ctxt in
     Base.log_entry k ctxt (kinstr_location k) sty (accu, stack)
-
-  (** [log_exit ctxt gas loc instr sty accu stack] simply calls
-      [Base.log_exit] function with the appropriate arguments. *)
+  in
+  (* [log_exit ctxt gas loc instr sty accu stack] simply calls
+     [Base.log_exit] function with the appropriate arguments. *)
   let log_exit ctxt gas loc_prev k sty accu stack =
     let ctxt = Local_gas_counter.update_context gas ctxt in
     Base.log_exit k ctxt loc_prev sty (accu, stack)
+  in
+  (* [log_control continuation] simply calls [Base.log_control]
+     function with the appropriate arguments. *)
+  let log_control ks = Base.log_control ks in
+  object (self : logger)
+    method log_interp = Base.log_interp
 
-  (** [log_control continuation] simply calls [Base.log_control]
-      function with the appropriate arguments. *)
-  let log_control ks = Base.log_control ks
+    method get_log = Base.get_log
 
-  (** [log_kinstr logger sty instr] returns [instr] prefixed by an
+    (** [log_kinstr logger sty instr] returns [instr] prefixed by an
       [ILog] instruction to log the first instruction in [instr]. *)
-  let log_kinstr logger sty i =
-    ILog (kinstr_location i, sty, LogEntry, logger, i)
+    method log_kinstr sty i = ILog (kinstr_location i, sty, LogEntry, self, i)
 
-  (* [log_next_kinstr logger i] instruments the next instruction of [i]
-     with [ILog] instructions to make sure it will be logged.
-     This instrumentation has a performance cost, but importantly, it is
-     only ever paid when logging is enabled. Otherwise, the possibility
-     to instrument the script is costless.
+    (* [log_next_kinstr logger i] instruments the next instruction of [i]
+       with [ILog] instructions to make sure it will be logged.
+       This instrumentation has a performance cost, but importantly, it is
+       only ever paid when logging is enabled. Otherwise, the possibility
+       to instrument the script is costless.
 
-     Notice that the instrumentation breaks the sharing of continuations
-     that is normally enforced between branches of conditionals. This
-     has a performance cost. Anyway, the instrumentation allocates many
-     new [ILog] instructions and [KLog] continuations which makes
-     the execution of instrumented code significantly slower than
-     non-instrumented code. "Zero-cost logging" means that the normal
-     non-instrumented execution is not impacted by the ability to
-     instrument it, not that the logging itself has no cost.
-  *)
-  let log_next_kinstr logger sty i =
-    let apply sty k =
-      ILog
-        ( kinstr_location k,
-          sty,
-          LogExit (kinstr_location i),
-          logger,
-          log_kinstr logger sty k )
-    in
-    kinstr_rewritek sty i {apply}
+       Notice that the instrumentation breaks the sharing of continuations
+       that is normally enforced between branches of conditionals. This
+       has a performance cost. Anyway, the instrumentation allocates many
+       new [ILog] instructions and [KLog] continuations which makes
+       the execution of instrumented code significantly slower than
+       non-instrumented code. "Zero-cost logging" means that the normal
+       non-instrumented execution is not impacted by the ability to
+       instrument it, not that the logging itself has no cost.
+    *)
+    method private log_next_kinstr : type a b c d.
+        (a, b) stack_ty -> (a, b, c, d) kinstr -> (a, b, c, d) kinstr tzresult =
+      fun sty i ->
+        let apply sty k =
+          ILog
+            ( kinstr_location k,
+              sty,
+              LogExit (kinstr_location i),
+              self,
+              self#log_kinstr sty k )
+        in
+        kinstr_rewritek sty i {apply}
 
-  (** [log_next_continuation logger sty cont] instruments the next
+    (** [log_next_continuation sty cont] instruments the next
     continuation in [cont] with [KLog] continuations to ensure
     logging.
 
     This instrumentation has a performance cost, but importantly, it
     is only ever paid when logging is enabled. Otherwise, the
     possibility to instrument the script is costless. *)
-  let log_next_continuation :
-      type a b c d.
-      logger ->
-      (a, b) stack_ty ->
-      (a, b, c, d) continuation ->
-      (a, b, c, d) continuation tzresult =
-   fun logger stack_ty cont ->
-    let enable_log sty ki = log_kinstr logger sty ki in
-    match cont with
-    | KCons (ki, k) -> (
-        let ki' = enable_log stack_ty ki in
-        kinstr_final_stack_type stack_ty ki >|? function
-        | None -> KCons (ki', k)
-        | Some sty -> KCons (ki', instrument_cont logger sty k))
-    | KLoop_in (ki, k) ->
-        let (Item_t (Bool_t, sty)) = stack_ty in
-        ok @@ KLoop_in (enable_log sty ki, instrument_cont logger sty k)
-    | KReturn (stack, sty, k) ->
-        let k' = instrument_cont logger (assert_some sty) k in
-        ok @@ KReturn (stack, sty, k')
-    | KLoop_in_left (ki, k) ->
-        let (Item_t (Union_t (a_ty, b_ty, _, _), rest)) = stack_ty in
-        let ki' = enable_log (Item_t (a_ty, rest)) ki in
-        let k' = instrument_cont logger (Item_t (b_ty, rest)) k in
-        ok @@ KLoop_in_left (ki', k')
-    | KUndip (x, ty, k) ->
-        let k' = instrument_cont logger (Item_t (assert_some ty, stack_ty)) k in
-        ok @@ KUndip (x, ty, k')
-    | KIter (body, xty, xs, k) ->
-        let body' = enable_log (Item_t (assert_some xty, stack_ty)) body in
-        let k' = instrument_cont logger stack_ty k in
-        ok @@ KIter (body', xty, xs, k')
-    | KList_enter_body (body, xs, ys, ty, len, k) ->
-        let k' = instrument_cont logger (Item_t (assert_some ty, stack_ty)) k in
-        ok @@ KList_enter_body (body, xs, ys, ty, len, k')
-    | KList_exit_body (body, xs, ys, ty, len, k) ->
-        let (Item_t (_, sty)) = stack_ty in
-        let k' = instrument_cont logger (Item_t (assert_some ty, sty)) k in
-        ok @@ KList_exit_body (body, xs, ys, ty, len, k')
-    | KMap_enter_body (body, xs, ys, ty, k) ->
-        let k' = instrument_cont logger (Item_t (assert_some ty, stack_ty)) k in
-        ok @@ KMap_enter_body (body, xs, ys, ty, k')
-    | KMap_exit_body (body, xs, ys, yk, ty, k) ->
-        let (Item_t (_, sty)) = stack_ty in
-        let k' = instrument_cont logger (Item_t (assert_some ty, sty)) k in
-        ok @@ KMap_exit_body (body, xs, ys, yk, ty, k')
-    | KMap_head (_, _)
-    | KView_exit (_, _)
-    | KLog _ (* This case should never happen. *) | KNil ->
-        ok cont
+    method private log_next_continuation : type a b c d.
+        (a, b) stack_ty ->
+        (a, b, c, d) continuation ->
+        (a, b, c, d) continuation tzresult =
+      fun stack_ty cont ->
+        let enable_log sty ki = self#log_kinstr sty ki in
+        match cont with
+        | KCons (ki, k) -> (
+            let ki' = enable_log stack_ty ki in
+            kinstr_final_stack_type stack_ty ki >|? function
+            | None -> KCons (ki', k)
+            | Some sty -> KCons (ki', instrument_cont self sty k))
+        | KLoop_in (ki, k) ->
+            let (Item_t (Bool_t, sty)) = stack_ty in
+            ok @@ KLoop_in (enable_log sty ki, instrument_cont self sty k)
+        | KReturn (stack, sty, k) ->
+            let k' = instrument_cont self (assert_some sty) k in
+            ok @@ KReturn (stack, sty, k')
+        | KLoop_in_left (ki, k) ->
+            let (Item_t (Union_t (a_ty, b_ty, _, _), rest)) = stack_ty in
+            let ki' = enable_log (Item_t (a_ty, rest)) ki in
+            let k' = instrument_cont self (Item_t (b_ty, rest)) k in
+            ok @@ KLoop_in_left (ki', k')
+        | KUndip (x, ty, k) ->
+            let k' =
+              instrument_cont self (Item_t (assert_some ty, stack_ty)) k
+            in
+            ok @@ KUndip (x, ty, k')
+        | KIter (body, xty, xs, k) ->
+            let body' = enable_log (Item_t (assert_some xty, stack_ty)) body in
+            let k' = instrument_cont self stack_ty k in
+            ok @@ KIter (body', xty, xs, k')
+        | KList_enter_body (body, xs, ys, ty, len, k) ->
+            let k' =
+              instrument_cont self (Item_t (assert_some ty, stack_ty)) k
+            in
+            ok @@ KList_enter_body (body, xs, ys, ty, len, k')
+        | KList_exit_body (body, xs, ys, ty, len, k) ->
+            let (Item_t (_, sty)) = stack_ty in
+            let k' = instrument_cont self (Item_t (assert_some ty, sty)) k in
+            ok @@ KList_exit_body (body, xs, ys, ty, len, k')
+        | KMap_enter_body (body, xs, ys, ty, k) ->
+            let k' =
+              instrument_cont self (Item_t (assert_some ty, stack_ty)) k
+            in
+            ok @@ KMap_enter_body (body, xs, ys, ty, k')
+        | KMap_exit_body (body, xs, ys, yk, ty, k) ->
+            let (Item_t (_, sty)) = stack_ty in
+            let k' = instrument_cont self (Item_t (assert_some ty, sty)) k in
+            ok @@ KMap_exit_body (body, xs, ys, yk, ty, k')
+        | KMap_head (_, _)
+        | KView_exit (_, _)
+        | KLog _ (* This case should never happen. *) | KNil ->
+            ok cont
 
-  (*
+    (*
 
   Zero-cost logging
   =================
 
 *)
 
-  (*
+    (*
 
    The following functions insert a logging instruction to continue
    the logging process in the next execution steps.
@@ -1929,310 +1937,360 @@ module Logger (Base : Logger_base) = struct
    that starts the evaluation.
 
 *)
-  let ilog :
-      type a s b t r f.
-      logger -> logging_event -> (a, s) stack_ty -> (a, s, b, t, r, f) step_type
-      =
-   fun logger event sty ((ctxt, _) as g) gas k ks accu stack ->
-    (match (k, event) with
-    | ILog _, LogEntry -> ()
-    | _, LogEntry -> log_entry ctxt gas k sty accu stack
-    | _, LogExit prev_loc -> log_exit ctxt gas prev_loc k sty accu stack) ;
-    log_next_kinstr logger sty k >>?= fun k ->
-    (* We need to match on instructions that create continuations so
-       that we can instrument those continuations with [KLog] (see
-       comment above).  For functions that don't do this, we simply call
-       [step], as they don't require any special treatment. *)
-    match k with
-    | IIf_none {branch_if_none; branch_if_some; k; _} -> (
-        let (Item_t (Option_t (ty, _, _), rest)) = sty in
-        branched_final_stack_type
-          [
-            Ex_init_stack_ty (rest, branch_if_none);
-            Ex_init_stack_ty (Item_t (ty, rest), branch_if_some);
-          ]
-        >>?= fun sty_opt ->
-        let ks' =
-          match sty_opt with
-          | None -> KCons (k, ks)
-          | Some sty' -> instrument_cont logger sty' @@ KCons (k, ks)
-        in
-        match accu with
-        | None ->
-            let accu, stack = stack in
-            (step [@ocaml.tailcall]) g gas branch_if_none ks' accu stack
-        | Some v -> (step [@ocaml.tailcall]) g gas branch_if_some ks' v stack)
-    | IOpt_map {body; k; loc = _} -> (
-        match accu with
-        | None -> (step [@ocaml.tailcall]) g gas k ks None stack
-        | Some v ->
+    method ilog : type a s b t r f.
+        logging_event -> (a, s) stack_ty -> (a, s, b, t, r, f) step_type =
+      fun event sty ((ctxt, _) as g) gas k ks accu stack ->
+        (match (k, event) with
+        | ILog _, LogEntry -> ()
+        | _, LogEntry -> log_entry ctxt gas k sty accu stack
+        | _, LogExit prev_loc -> log_exit ctxt gas prev_loc k sty accu stack) ;
+        self#log_next_kinstr sty k >>?= fun k ->
+        (* We need to match on instructions that create continuations so
+           that we can instrument those continuations with [KLog] (see
+           comment above).  For functions that don't do this, we simply call
+           [step], as they don't require any special treatment. *)
+        match k with
+        | IIf_none {branch_if_none; branch_if_some; k; _} -> (
             let (Item_t (Option_t (ty, _, _), rest)) = sty in
-            let bsty = Item_t (ty, rest) in
-            let kmap_head = KMap_head (Option.some, KCons (k, ks)) in
-            kinstr_final_stack_type bsty body >>?= fun sty_opt ->
+            branched_final_stack_type
+              [
+                Ex_init_stack_ty (rest, branch_if_none);
+                Ex_init_stack_ty (Item_t (ty, rest), branch_if_some);
+              ]
+            >>?= fun sty_opt ->
             let ks' =
               match sty_opt with
-              | None -> kmap_head
-              | Some sty' -> instrument_cont logger sty' kmap_head
+              | None -> KCons (k, ks)
+              | Some sty' -> instrument_cont self sty' @@ KCons (k, ks)
             in
-            (step [@ocaml.tailcall]) g gas body ks' v stack)
-    | IIf_left {branch_if_left; branch_if_right; k; _} -> (
-        let (Item_t (Union_t (lty, rty, _, _), rest)) = sty in
-        branched_final_stack_type
-          [
-            Ex_init_stack_ty (Item_t (lty, rest), branch_if_left);
-            Ex_init_stack_ty (Item_t (rty, rest), branch_if_right);
-          ]
-        >>?= fun sty_opt ->
-        let k' =
-          match sty_opt with
-          | None -> KCons (k, ks)
-          | Some sty' -> instrument_cont logger sty' @@ KCons (k, ks)
-        in
-        match accu with
-        | L v -> (step [@ocaml.tailcall]) g gas branch_if_left k' v stack
-        | R v -> (step [@ocaml.tailcall]) g gas branch_if_right k' v stack)
-    | IIf_cons {branch_if_cons; branch_if_nil; k; _} -> (
-        let (Item_t ((List_t (elty, _) as lty), rest)) = sty in
-        branched_final_stack_type
-          [
-            Ex_init_stack_ty (rest, branch_if_nil);
-            Ex_init_stack_ty (Item_t (elty, Item_t (lty, rest)), branch_if_cons);
-          ]
-        >>?= fun sty' ->
-        let k' =
-          match sty' with
-          | None -> KCons (k, ks)
-          | Some sty' -> instrument_cont logger sty' @@ KCons (k, ks)
-        in
-        match accu.elements with
-        | [] ->
+            match accu with
+            | None ->
+                let accu, stack = stack in
+                (step [@ocaml.tailcall]) g gas branch_if_none ks' accu stack
+            | Some v ->
+                (step [@ocaml.tailcall]) g gas branch_if_some ks' v stack)
+        | IOpt_map {body; k; loc = _} -> (
+            match accu with
+            | None -> (step [@ocaml.tailcall]) g gas k ks None stack
+            | Some v ->
+                let (Item_t (Option_t (ty, _, _), rest)) = sty in
+                let bsty = Item_t (ty, rest) in
+                let kmap_head = KMap_head (Option.some, KCons (k, ks)) in
+                kinstr_final_stack_type bsty body >>?= fun sty_opt ->
+                let ks' =
+                  match sty_opt with
+                  | None -> kmap_head
+                  | Some sty' -> instrument_cont self sty' kmap_head
+                in
+                (step [@ocaml.tailcall]) g gas body ks' v stack)
+        | IIf_left {branch_if_left; branch_if_right; k; _} -> (
+            let (Item_t (Union_t (lty, rty, _, _), rest)) = sty in
+            branched_final_stack_type
+              [
+                Ex_init_stack_ty (Item_t (lty, rest), branch_if_left);
+                Ex_init_stack_ty (Item_t (rty, rest), branch_if_right);
+              ]
+            >>?= fun sty_opt ->
+            let k' =
+              match sty_opt with
+              | None -> KCons (k, ks)
+              | Some sty' -> instrument_cont self sty' @@ KCons (k, ks)
+            in
+            match accu with
+            | L v -> (step [@ocaml.tailcall]) g gas branch_if_left k' v stack
+            | R v -> (step [@ocaml.tailcall]) g gas branch_if_right k' v stack)
+        | IIf_cons {branch_if_cons; branch_if_nil; k; _} -> (
+            let (Item_t ((List_t (elty, _) as lty), rest)) = sty in
+            branched_final_stack_type
+              [
+                Ex_init_stack_ty (rest, branch_if_nil);
+                Ex_init_stack_ty
+                  (Item_t (elty, Item_t (lty, rest)), branch_if_cons);
+              ]
+            >>?= fun sty' ->
+            let k' =
+              match sty' with
+              | None -> KCons (k, ks)
+              | Some sty' -> instrument_cont self sty' @@ KCons (k, ks)
+            in
+            match accu.elements with
+            | [] ->
+                let accu, stack = stack in
+                (step [@ocaml.tailcall]) g gas branch_if_nil k' accu stack
+            | hd :: tl ->
+                let tl = {elements = tl; length = accu.length - 1} in
+                (step [@ocaml.tailcall]) g gas branch_if_cons k' hd (tl, stack))
+        | IList_map (_, body, ty, k) ->
+            let (Item_t (_, sty')) = sty in
+            let instrument = instrument_cont self sty' in
+            (ilist_map [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              k
+              ks
+              ty
+              accu
+              stack
+        | IList_iter (_, ty, body, k) ->
+            let (Item_t (_, sty')) = sty in
+            let instrument = instrument_cont self sty' in
+            (ilist_iter [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              ty
+              k
+              ks
+              accu
+              stack
+        | ISet_iter (_, ty, body, k) ->
+            let (Item_t (_, rest)) = sty in
+            let instrument = instrument_cont self rest in
+            (iset_iter [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              ty
+              k
+              ks
+              accu
+              stack
+        | IMap_map (_, ty, body, k) ->
+            let (Item_t (_, rest)) = sty in
+            let instrument = instrument_cont self rest in
+            (imap_map [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              k
+              ks
+              ty
+              accu
+              stack
+        | IMap_iter (_, kvty, body, k) ->
+            let (Item_t (_, rest)) = sty in
+            let instrument = instrument_cont self rest in
+            (imap_iter [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              kvty
+              k
+              ks
+              accu
+              stack
+        | IMul_teznat (loc, k) ->
+            (imul_teznat [@ocaml.tailcall])
+              (Some self)
+              g
+              gas
+              loc
+              k
+              ks
+              accu
+              stack
+        | IMul_nattez (loc, k) ->
+            (imul_nattez [@ocaml.tailcall])
+              (Some self)
+              g
+              gas
+              loc
+              k
+              ks
+              accu
+              stack
+        | ILsl_nat (loc, k) ->
+            (ilsl_nat [@ocaml.tailcall]) (Some self) g gas loc k ks accu stack
+        | ILsr_nat (loc, k) ->
+            (ilsr_nat [@ocaml.tailcall]) (Some self) g gas loc k ks accu stack
+        | IIf {branch_if_true; branch_if_false; k; _} ->
+            let (Item_t (Bool_t, rest)) = sty in
+            branched_final_stack_type
+              [
+                Ex_init_stack_ty (rest, branch_if_true);
+                Ex_init_stack_ty (rest, branch_if_false);
+              ]
+            >>?= fun sty' ->
+            let k' =
+              match sty' with
+              | None -> KCons (k, ks)
+              | Some sty' -> instrument_cont self sty' @@ KCons (k, ks)
+            in
+            let res, stack = stack in
+            if accu then
+              (step [@ocaml.tailcall]) g gas branch_if_true k' res stack
+            else (step [@ocaml.tailcall]) g gas branch_if_false k' res stack
+        | ILoop (_, body, k) ->
+            let ks =
+              instrument_cont self sty @@ KLoop_in (body, KCons (k, ks))
+            in
+            (next [@ocaml.tailcall]) g gas ks accu stack
+        | ILoop_left (_, bl, br) ->
+            let ks =
+              instrument_cont self sty @@ KLoop_in_left (bl, KCons (br, ks))
+            in
+            (next [@ocaml.tailcall]) g gas ks accu stack
+        | IDip (_, b, ty, k) ->
+            let (Item_t (_, rest)) = sty in
+            kinstr_final_stack_type rest b >>?= fun rest' ->
+            let ign = accu in
+            let ks =
+              match rest' with
+              | None -> KUndip (ign, ty, KCons (k, ks))
+              | Some rest' ->
+                  instrument_cont self rest' (KUndip (ign, ty, KCons (k, ks)))
+            in
             let accu, stack = stack in
-            (step [@ocaml.tailcall]) g gas branch_if_nil k' accu stack
-        | hd :: tl ->
-            let tl = {elements = tl; length = accu.length - 1} in
-            (step [@ocaml.tailcall]) g gas branch_if_cons k' hd (tl, stack))
-    | IList_map (_, body, ty, k) ->
-        let (Item_t (_, sty')) = sty in
-        let instrument = instrument_cont logger sty' in
-        (ilist_map [@ocaml.tailcall]) instrument g gas body k ks ty accu stack
-    | IList_iter (_, ty, body, k) ->
-        let (Item_t (_, sty')) = sty in
-        let instrument = instrument_cont logger sty' in
-        (ilist_iter [@ocaml.tailcall]) instrument g gas body ty k ks accu stack
-    | ISet_iter (_, ty, body, k) ->
-        let (Item_t (_, rest)) = sty in
-        let instrument = instrument_cont logger rest in
-        (iset_iter [@ocaml.tailcall]) instrument g gas body ty k ks accu stack
-    | IMap_map (_, ty, body, k) ->
-        let (Item_t (_, rest)) = sty in
-        let instrument = instrument_cont logger rest in
-        (imap_map [@ocaml.tailcall]) instrument g gas body k ks ty accu stack
-    | IMap_iter (_, kvty, body, k) ->
-        let (Item_t (_, rest)) = sty in
-        let instrument = instrument_cont logger rest in
-        (imap_iter [@ocaml.tailcall]) instrument g gas body kvty k ks accu stack
-    | IMul_teznat (loc, k) ->
-        (imul_teznat [@ocaml.tailcall]) (Some logger) g gas loc k ks accu stack
-    | IMul_nattez (loc, k) ->
-        (imul_nattez [@ocaml.tailcall]) (Some logger) g gas loc k ks accu stack
-    | ILsl_nat (loc, k) ->
-        (ilsl_nat [@ocaml.tailcall]) (Some logger) g gas loc k ks accu stack
-    | ILsr_nat (loc, k) ->
-        (ilsr_nat [@ocaml.tailcall]) (Some logger) g gas loc k ks accu stack
-    | IIf {branch_if_true; branch_if_false; k; _} ->
-        let (Item_t (Bool_t, rest)) = sty in
-        branched_final_stack_type
-          [
-            Ex_init_stack_ty (rest, branch_if_true);
-            Ex_init_stack_ty (rest, branch_if_false);
-          ]
-        >>?= fun sty' ->
-        let k' =
-          match sty' with
-          | None -> KCons (k, ks)
-          | Some sty' -> instrument_cont logger sty' @@ KCons (k, ks)
-        in
-        let res, stack = stack in
-        if accu then (step [@ocaml.tailcall]) g gas branch_if_true k' res stack
-        else (step [@ocaml.tailcall]) g gas branch_if_false k' res stack
-    | ILoop (_, body, k) ->
-        let ks = instrument_cont logger sty @@ KLoop_in (body, KCons (k, ks)) in
-        (next [@ocaml.tailcall]) g gas ks accu stack
-    | ILoop_left (_, bl, br) ->
-        let ks =
-          instrument_cont logger sty @@ KLoop_in_left (bl, KCons (br, ks))
-        in
-        (next [@ocaml.tailcall]) g gas ks accu stack
-    | IDip (_, b, ty, k) ->
-        let (Item_t (_, rest)) = sty in
-        kinstr_final_stack_type rest b >>?= fun rest' ->
-        let ign = accu in
-        let ks =
-          match rest' with
-          | None -> KUndip (ign, ty, KCons (k, ks))
-          | Some rest' ->
-              instrument_cont logger rest' (KUndip (ign, ty, KCons (k, ks)))
-        in
-        let accu, stack = stack in
-        (step [@ocaml.tailcall]) g gas b ks accu stack
-    | IExec (_, stack_ty, k) ->
-        let (Item_t (_, Item_t (Lambda_t (_, ret, _), _))) = sty in
-        let sty' = Item_t (ret, Bot_t) in
-        let instrument = instrument_cont logger sty' in
-        iexec instrument (Some logger) g gas stack_ty k ks accu stack
-    | IFailwith (kloc, tv) ->
-        let {ifailwith} = ifailwith in
-        (ifailwith [@ocaml.tailcall]) (Some logger) g gas kloc tv accu
-    | IDipn (_, _n, n', b, k) ->
-        let accu, stack, restore_prefix = kundip n' accu stack k in
-        let dipped_sty = dipn_stack_ty n' sty in
-        kinstr_final_stack_type dipped_sty b >>?= fun sty' ->
-        let ks =
-          match sty' with
-          | None -> KCons (restore_prefix, ks)
-          | Some sty' ->
-              instrument_cont logger sty' @@ KCons (restore_prefix, ks)
-        in
-        (step [@ocaml.tailcall]) g gas b ks accu stack
-    | IView (_, (View_signature {output_ty; _} as view_signature), stack_ty, k)
-      ->
-        let sty' = Item_t (output_ty, Bot_t) in
-        let instrument = instrument_cont logger sty' in
-        (iview [@ocaml.tailcall])
-          instrument
-          g
-          gas
-          view_signature
-          stack_ty
-          k
-          ks
-          accu
-          stack
-    | _ -> (step [@ocaml.tailcall]) g gas k ks accu stack
-   [@@inline]
+            (step [@ocaml.tailcall]) g gas b ks accu stack
+        | IExec (_, stack_ty, k) ->
+            let (Item_t (_, Item_t (Lambda_t (_, ret, _), _))) = sty in
+            let sty' = Item_t (ret, Bot_t) in
+            let instrument = instrument_cont self sty' in
+            iexec instrument (Some self) g gas stack_ty k ks accu stack
+        | IFailwith (kloc, tv) ->
+            let {ifailwith} = ifailwith in
+            (ifailwith [@ocaml.tailcall]) (Some self) g gas kloc tv accu
+        | IDipn (_, _n, n', b, k) ->
+            let accu, stack, restore_prefix = kundip n' accu stack k in
+            let dipped_sty = dipn_stack_ty n' sty in
+            kinstr_final_stack_type dipped_sty b >>?= fun sty' ->
+            let ks =
+              match sty' with
+              | None -> KCons (restore_prefix, ks)
+              | Some sty' ->
+                  instrument_cont self sty' @@ KCons (restore_prefix, ks)
+            in
+            (step [@ocaml.tailcall]) g gas b ks accu stack
+        | IView
+            (_, (View_signature {output_ty; _} as view_signature), stack_ty, k)
+          ->
+            let sty' = Item_t (output_ty, Bot_t) in
+            let instrument = instrument_cont self sty' in
+            (iview [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              view_signature
+              stack_ty
+              k
+              ks
+              accu
+              stack
+        | _ -> (step [@ocaml.tailcall]) g gas k ks accu stack
+    [@@inline]
 
-  let klog :
-      type a s r f.
-      logger ->
-      outdated_context * step_constants ->
-      local_gas_counter ->
-      (a, s) stack_ty ->
-      (a, s, r, f) continuation ->
-      (a, s, r, f) continuation ->
-      a ->
-      s ->
-      (r * f * outdated_context * local_gas_counter) tzresult Lwt.t =
-   fun logger g gas stack_ty k0 ks accu stack ->
-    let ty_for_logging_unsafe = function
-      (* This function is only called when logging is enabled.  If
-         that's the case, the elaborator must have been called with
-         [logging_enabled] option, which ensures that this will not be
-         [None]. Realistically, it can happen that the [logging_enabled]
-         option was omitted, resulting in a crash here. But this is
-         acceptable, because logging is never enabled during block
-         validation, so the layer 1 is safe. *)
-      | None -> assert false
-      | Some ty -> ty
-    in
-    (match ks with KLog _ -> () | _ -> log_control ks) ;
-    log_next_continuation logger stack_ty ks >>?= function
-    | KCons (ki, k) -> (step [@ocaml.tailcall]) g gas ki k accu stack
-    | KLoop_in (ki, k) -> (kloop_in [@ocaml.tailcall]) g gas k0 ki k accu stack
-    | KReturn (_, _, _) as k -> (next [@ocaml.tailcall]) g gas k accu stack
-    | KLoop_in_left (ki, k) ->
-        (kloop_in_left [@ocaml.tailcall]) g gas k0 ki k accu stack
-    | KUndip (_, _, _) as k -> (next [@ocaml.tailcall]) g gas k accu stack
-    | KIter (body, xty, xs, k) ->
-        let instrument = instrument_cont logger stack_ty in
-        (kiter [@ocaml.tailcall]) instrument g gas body xty xs k accu stack
-    | KList_enter_body (body, xs, ys, ty_opt, len, k) ->
-        let instrument =
-          let ty = ty_for_logging_unsafe ty_opt in
-          let (List_t (vty, _)) = ty in
-          let sty = Item_t (vty, stack_ty) in
-          instrument_cont logger sty
+    method klog : type a s r f.
+        outdated_context * step_constants ->
+        local_gas_counter ->
+        (a, s) stack_ty ->
+        (a, s, r, f) continuation ->
+        (a, s, r, f) continuation ->
+        a ->
+        s ->
+        (r * f * outdated_context * local_gas_counter) tzresult Lwt.t =
+      fun g gas stack_ty k0 ks accu stack ->
+        let ty_for_logging_unsafe = function
+          (* This function is only called when logging is enabled.  If
+             that's the case, the elaborator must have been called with
+             [logging_enabled] option, which ensures that this will not be
+             [None]. Realistically, it can happen that the [logging_enabled]
+             option was omitted, resulting in a crash here. But this is
+             acceptable, because logging is never enabled during block
+             validation, so the layer 1 is safe. *)
+          | None -> assert false
+          | Some ty -> ty
         in
-        (klist_enter [@ocaml.tailcall])
-          instrument
-          g
-          gas
-          body
-          xs
-          ys
-          ty_opt
-          len
-          k
-          accu
-          stack
-    | KList_exit_body (body, xs, ys, ty_opt, len, k) ->
-        let (Item_t (_, rest)) = stack_ty in
-        let instrument = instrument_cont logger rest in
-        (klist_exit [@ocaml.tailcall])
-          instrument
-          g
-          gas
-          body
-          xs
-          ys
-          ty_opt
-          len
-          k
-          accu
-          stack
-    | KMap_enter_body (body, xs, ys, ty_opt, k) ->
-        let instrument =
-          let ty = ty_for_logging_unsafe ty_opt in
-          let (Map_t (_, vty, _)) = ty in
-          let sty = Item_t (vty, stack_ty) in
-          instrument_cont logger sty
-        in
-        (kmap_enter [@ocaml.tailcall])
-          instrument
-          g
-          gas
-          body
-          xs
-          ty_opt
-          ys
-          k
-          accu
-          stack
-    | KMap_exit_body (body, xs, ys, yk, ty_opt, k) ->
-        let (Item_t (_, rest)) = stack_ty in
-        let instrument = instrument_cont logger rest in
-        (kmap_exit [@ocaml.tailcall])
-          instrument
-          g
-          gas
-          body
-          xs
-          ty_opt
-          ys
-          yk
-          k
-          accu
-          stack
-    | KMap_head (f, k) -> (next [@ocaml.taillcall]) g gas k (f accu) stack
-    | KView_exit (scs, k) ->
-        (next [@ocaml.tailcall]) (fst g, scs) gas k accu stack
-    | KLog _ as k ->
-        (* This case should never happen. *)
-        (next [@ocaml.tailcall]) g gas k accu stack
-    | KNil as k -> (next [@ocaml.tailcall]) g gas k accu stack
-   [@@inline]
-end
-
-let make (module Base : Logger_base) =
-  let module Logger = Logger (Base) in
-  object (self : logger)
-    method log_interp = Base.log_interp
-
-    method get_log = Base.get_log
-
-    method log_kinstr = Logger.log_kinstr self
-
-    method klog = Logger.klog self
-
-    method ilog = Logger.ilog self
+        (match ks with KLog _ -> () | _ -> log_control ks) ;
+        self#log_next_continuation stack_ty ks >>?= function
+        | KCons (ki, k) -> (step [@ocaml.tailcall]) g gas ki k accu stack
+        | KLoop_in (ki, k) ->
+            (kloop_in [@ocaml.tailcall]) g gas k0 ki k accu stack
+        | KReturn (_, _, _) as k -> (next [@ocaml.tailcall]) g gas k accu stack
+        | KLoop_in_left (ki, k) ->
+            (kloop_in_left [@ocaml.tailcall]) g gas k0 ki k accu stack
+        | KUndip (_, _, _) as k -> (next [@ocaml.tailcall]) g gas k accu stack
+        | KIter (body, xty, xs, k) ->
+            let instrument = instrument_cont self stack_ty in
+            (kiter [@ocaml.tailcall]) instrument g gas body xty xs k accu stack
+        | KList_enter_body (body, xs, ys, ty_opt, len, k) ->
+            let instrument =
+              let ty = ty_for_logging_unsafe ty_opt in
+              let (List_t (vty, _)) = ty in
+              let sty = Item_t (vty, stack_ty) in
+              instrument_cont self sty
+            in
+            (klist_enter [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              xs
+              ys
+              ty_opt
+              len
+              k
+              accu
+              stack
+        | KList_exit_body (body, xs, ys, ty_opt, len, k) ->
+            let (Item_t (_, rest)) = stack_ty in
+            let instrument = instrument_cont self rest in
+            (klist_exit [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              xs
+              ys
+              ty_opt
+              len
+              k
+              accu
+              stack
+        | KMap_enter_body (body, xs, ys, ty_opt, k) ->
+            let instrument =
+              let ty = ty_for_logging_unsafe ty_opt in
+              let (Map_t (_, vty, _)) = ty in
+              let sty = Item_t (vty, stack_ty) in
+              instrument_cont self sty
+            in
+            (kmap_enter [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              xs
+              ty_opt
+              ys
+              k
+              accu
+              stack
+        | KMap_exit_body (body, xs, ys, yk, ty_opt, k) ->
+            let (Item_t (_, rest)) = stack_ty in
+            let instrument = instrument_cont self rest in
+            (kmap_exit [@ocaml.tailcall])
+              instrument
+              g
+              gas
+              body
+              xs
+              ty_opt
+              ys
+              yk
+              k
+              accu
+              stack
+        | KMap_head (f, k) -> (next [@ocaml.taillcall]) g gas k (f accu) stack
+        | KView_exit (scs, k) ->
+            (next [@ocaml.tailcall]) (fst g, scs) gas k accu stack
+        | KLog _ as k ->
+            (* This case should never happen. *)
+            (next [@ocaml.tailcall]) g gas k accu stack
+        | KNil as k -> (next [@ocaml.tailcall]) g gas k accu stack
+    [@@inline]
   end
