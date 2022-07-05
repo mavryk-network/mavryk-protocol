@@ -1798,21 +1798,6 @@ let make (module Base : Logger_base) =
   let open Local_gas_counter in
   let open Script_interpreter_defs in
   let open Script_interpreter.Internals.Raw in
-  (* [log_entry ctxt gas instr sty accu stack] simply calls
-     [Base.log_entry] function with the appropriate arguments. *)
-  let log_entry ctxt gas k sty accu stack =
-    let ctxt = Local_gas_counter.update_context gas ctxt in
-    Base.log_entry k ctxt (kinstr_location k) sty (accu, stack)
-  in
-  (* [log_exit ctxt gas loc instr sty accu stack] simply calls
-     [Base.log_exit] function with the appropriate arguments. *)
-  let log_exit ctxt gas loc_prev k sty accu stack =
-    let ctxt = Local_gas_counter.update_context gas ctxt in
-    Base.log_exit k ctxt loc_prev sty (accu, stack)
-  in
-  (* [log_control continuation] simply calls [Base.log_control]
-     function with the appropriate arguments. *)
-  let log_control ks = Base.log_control ks in
   object (self : logger)
     method log_interp = Base.log_interp
 
@@ -1942,8 +1927,12 @@ let make (module Base : Logger_base) =
       fun event sty ((ctxt, _) as g) gas k ks accu stack ->
         (match (k, event) with
         | ILog _, LogEntry -> ()
-        | _, LogEntry -> log_entry ctxt gas k sty accu stack
-        | _, LogExit prev_loc -> log_exit ctxt gas prev_loc k sty accu stack) ;
+        | _, LogEntry ->
+            let ctxt = Local_gas_counter.update_context gas ctxt in
+            Base.log_entry k ctxt (kinstr_location k) sty (accu, stack)
+        | _, LogExit prev_loc ->
+            let ctxt = Local_gas_counter.update_context gas ctxt in
+            Base.log_exit k ctxt prev_loc sty (accu, stack)) ;
         self#log_next_kinstr sty k >>?= fun k ->
         (* We need to match on instructions that create continuations so
            that we can instrument those continuations with [KLog] (see
@@ -2206,7 +2195,7 @@ let make (module Base : Logger_base) =
           | None -> assert false
           | Some ty -> ty
         in
-        (match ks with KLog _ -> () | _ -> log_control ks) ;
+        (match ks with KLog _ -> () | _ -> Base.log_control ks) ;
         self#log_next_continuation stack_ty ks >>?= function
         | KCons (ki, k) -> (step [@ocaml.tailcall]) g gas ki k accu stack
         | KLoop_in (ki, k) ->
