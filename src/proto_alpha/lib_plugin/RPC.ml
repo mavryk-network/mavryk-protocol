@@ -539,7 +539,7 @@ module Scripts = struct
         ~parameter
         ~internal:true
       >>=? fun res ->
-      logger.get_log () >|=? fun trace ->
+      logger#get_log () >|=? fun trace ->
       let trace = Option.value ~default:[] trace in
       (res, trace)
   end

@@ -1305,18 +1305,17 @@ and ('a, 's, 'b, 'f, 'c, 'u) logging_function =
 
 and execution_trace = (Script.location * Gas.Arith.fp * Script.expr list) list
 
-and logger = {
-  log_interp : 'a 's 'b 'f 'c 'u. ('a, 's, 'b, 'f, 'c, 'u) logging_function;
-      (** [log_interp] is called at each call of the internal function
+and logger =
+  < log_interp : 'a 's 'b 'f 'c 'u. ('a, 's, 'b, 'f, 'c, 'u) logging_function
+        (** [log_interp] is called at each call of the internal function
           [interp]. [interp] is called when starting the interpretation of
           a script and subsequently at each [Exec] instruction. *)
-  get_log : unit -> execution_trace option tzresult Lwt.t;
-      (** [get_log] allows to obtain an execution trace, if any was
+  ; get_log : unit -> execution_trace option tzresult Lwt.t
+        (** [get_log] allows to obtain an execution trace, if any was
           produced. *)
-  klog : 'a 's 'r 'f. ('a, 's, 'r, 'f) klog;
-  ilog : 'a 's 'b 't 'r 'f. ('a, 's, 'b, 't, 'r, 'f) ilog;
-  log_kinstr : 'a 'b 'c 'd. ('a, 'b, 'c, 'd) log_kinstr;
-}
+  ; klog : 'a 's 'r 'f. ('a, 's, 'r, 'f) klog
+  ; ilog : 'a 's 'b 't 'r 'f. ('a, 's, 'b, 't, 'r, 'f) ilog
+  ; log_kinstr : 'a 'b 'c 'd. ('a, 'b, 'c, 'd) log_kinstr >
 
 and ('a, 's, 'r, 'f) klog =
   Local_gas_counter.outdated_context * step_constants ->

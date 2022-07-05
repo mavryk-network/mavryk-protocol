@@ -331,7 +331,7 @@ module Raw = struct
     | Some gas -> (
         match ks0 with
         | KLog (ks, sty, logger) ->
-            (logger.klog [@ocaml.tailcall]) g gas sty ks0 ks accu stack
+            (logger#klog [@ocaml.tailcall]) g gas sty ks0 ks accu stack
         | KNil -> Lwt.return (Ok (accu, stack, ctxt, gas))
         | KCons (k, ks) -> (step [@ocaml.tailcall]) g gas k ks accu stack
         | KLoop_in (ki, ks') ->
@@ -506,7 +506,7 @@ module Raw = struct
       let body =
         match logger with
         | None -> b.kinstr
-        | Some logger -> logger.log_kinstr b.kbef b.kinstr
+        | Some logger -> logger#log_kinstr b.kbef b.kinstr
       in
       let ks = instrument @@ KReturn (stack, cont_sty, KCons (k, ks)) in
       (body, ks)
@@ -627,7 +627,7 @@ module Raw = struct
     | Some gas -> (
         match i with
         | ILog (_, sty, event, logger, k) ->
-            (logger.ilog [@ocaml.tailcall]) event sty g gas k ks accu stack
+            (logger#ilog [@ocaml.tailcall]) event sty g gas k ks accu stack
         | IHalt _ -> (next [@ocaml.tailcall]) g gas ks accu stack
         (* stack ops *)
         | IDrop (_, k) ->
@@ -1603,14 +1603,14 @@ open Raw
 
 *)
 
-let step_descr ~log_now logger (ctxt, sc) descr accu stack =
+let step_descr ~log_now (logger : logger option) (ctxt, sc) descr accu stack =
   let gas, outdated_ctxt = local_gas_counter_and_outdated_context ctxt in
   (match logger with
   | None -> step (outdated_ctxt, sc) gas descr.kinstr KNil accu stack
   | Some logger ->
       (if log_now then
        let loc = kinstr_location descr.kinstr in
-       logger.log_interp descr.kinstr ctxt loc descr.kbef (accu, stack)) ;
+       logger#log_interp descr.kinstr ctxt loc descr.kbef (accu, stack)) ;
       let log =
         ILog
           ( kinstr_location descr.kinstr,

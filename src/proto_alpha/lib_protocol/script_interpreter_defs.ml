@@ -403,7 +403,7 @@ let consume_control local_gas_counter ks =
 
 let get_log = function
   | None -> Lwt.return (Ok None)
-  | Some logger -> logger.get_log ()
+  | Some logger -> logger#get_log ()
   [@@ocaml.inline always]
 
 (*

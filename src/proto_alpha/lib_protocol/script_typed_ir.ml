@@ -1219,13 +1219,12 @@ and ('a, 's, 'b, 'f, 'c, 'u) logging_function =
 
 and execution_trace = (Script.location * Gas.Arith.fp * Script.expr list) list
 
-and logger = {
-  log_interp : 'a 's 'b 'f 'c 'u. ('a, 's, 'b, 'f, 'c, 'u) logging_function;
-  get_log : unit -> execution_trace option tzresult Lwt.t;
-  klog : 'a 's 'r 'f. ('a, 's, 'r, 'f) klog;
-  ilog : 'a 's 'b 't 'r 'f. ('a, 's, 'b, 't, 'r, 'f) ilog;
-  log_kinstr : 'a 'b 'c 'd. ('a, 'b, 'c, 'd) log_kinstr;
-}
+and logger =
+  < log_interp : 'a 's 'b 'f 'c 'u. ('a, 's, 'b, 'f, 'c, 'u) logging_function
+  ; get_log : unit -> execution_trace option tzresult Lwt.t
+  ; klog : 'a 's 'r 'f. ('a, 's, 'r, 'f) klog
+  ; ilog : 'a 's 'b 't 'r 'f. ('a, 's, 'b, 't, 'r, 'f) ilog
+  ; log_kinstr : 'a 'b 'c 'd. ('a, 'b, 'c, 'd) log_kinstr >
 
 and ('a, 's, 'r, 'f) klog =
   Local_gas_counter.outdated_context * step_constants ->
