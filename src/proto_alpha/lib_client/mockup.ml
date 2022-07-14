@@ -1236,22 +1236,11 @@ module Simple_protocol_constants_overrides = struct
       (c : Constants.Simple.t) : Constants.Simple.t tzresult Lwt.t =
     let open Format in
     let fields : field list =
-      [
-        O
-          {
-            name = "preserved_cycles";
-            override_value = o.simple_protocol_constants.preserved_cycles;
-            pp = pp_print_int;
-          };
-        O
-          {
-            name = "hard_gas_limit_per_operation";
-            override_value =
-              o.simple_protocol_constants.hard_gas_limit_per_operation;
-            pp = Gas.Arith.pp_integral;
-          };
-        O {name = "chain_id"; override_value = o.chain_id; pp = Chain_id.pp};
-      ]
+      List.map
+        (fun (Constants.Simple.Optional.O {name; value; pp}) ->
+          O {name; override_value = value; pp = (fun fmt x -> pp fmt (Some x))})
+        (Constants.Simple.Optional.fields o.simple_protocol_constants)
+      @ [O {name = "chain_id"; override_value = o.chain_id; pp = Chain_id.pp}]
     in
     let fields_with_override =
       fields

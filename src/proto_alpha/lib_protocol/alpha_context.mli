@@ -869,6 +869,17 @@ module Constants : sig
       }
 
       val encoding : t Data_encoding.t
+
+      (** Existential wrapper to support heterogeneous lists/maps. *)
+      type field =
+        | O : {
+            name : string;
+            value : 'a w;
+            pp : Format.formatter -> 'a w -> unit;
+          }
+            -> field
+
+      val fields : t -> field list
     end
 
     module Optional : S with type 'a w = 'a option

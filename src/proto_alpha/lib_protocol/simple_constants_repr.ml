@@ -6,6 +6,9 @@ functor
      type 'a w
 
      val w : 'a Data_encoding.t -> 'a w Data_encoding.t
+
+     val pp_w :
+       (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a w -> unit
    end)
   ->
   struct
@@ -30,18 +33,48 @@ functor
            (req
               "hard_gas_limit_per_operation"
               (w Gas_limit_repr.Arith.z_integral_encoding)))
+
+    type field =
+      | O : {
+          name : string;
+          value : 'a w;
+          pp : Format.formatter -> 'a w -> unit;
+        }
+          -> field
+
+    let fields
+        (* pattern-matched so that no fields are forgotten *)
+          {preserved_cycles; hard_gas_limit_per_operation} : field list =
+      [
+        O
+          {
+            name = "preserved_cycles";
+            value = preserved_cycles;
+            pp = W.pp_w Format.pp_print_int;
+          };
+        O
+          {
+            name = "hard_gas_limit_per_operation";
+            value = hard_gas_limit_per_operation;
+            pp = W.pp_w Gas_limit_repr.Arith.pp_integral;
+          };
+      ]
   end
 
 module Optional = MAKE (struct
   type 'a w = 'a option
 
   let w e = Data_encoding.option e
+
+  let pp_w pp = Format.pp_print_option pp
 end)
 
 module Required = MAKE (struct
   type 'a w = 'a
 
   let w e = e
+
+  let pp_w pp = pp
 end)
 
 module Mapper
