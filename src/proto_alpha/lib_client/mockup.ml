@@ -1182,6 +1182,93 @@ module Protocol_constants_overrides = struct
         : Constants.Parametric.t)
 end
 
+module Simple_protocol_constants_overrides = struct
+  type t = {
+    preserved_cycles : int option;
+    hard_gas_limit_per_operation : Gas.Arith.integral option;
+  }
+
+  let encoding : t Data_encoding.t =
+    let open Data_encoding in
+    conv
+      (fun {preserved_cycles; hard_gas_limit_per_operation} ->
+        (preserved_cycles, hard_gas_limit_per_operation))
+      (fun (preserved_cycles, hard_gas_limit_per_operation) ->
+        {preserved_cycles; hard_gas_limit_per_operation})
+      (obj2
+         (opt "preserved_cycles" uint8)
+         (opt "hard_gas_limit_per_operation" Gas.Arith.z_integral_encoding))
+
+  let default_value (cctxt : Tezos_client_base.Client_context.full) :
+      t tzresult Lwt.t =
+    ignore cctxt ;
+    let (simple : Constants.Simple.t) = assert false in
+    return
+      {
+        preserved_cycles = Some simple.preserved_cycles;
+        hard_gas_limit_per_operation = Some simple.hard_gas_limit_per_operation;
+      }
+
+  let no_overrides : t =
+    {preserved_cycles = None; hard_gas_limit_per_operation = None}
+
+  (** Existential wrapper to support heterogeneous lists/maps. *)
+  type field =
+    | O : {
+        name : string;
+        override_value : 'a option;
+        pp : Format.formatter -> 'a -> unit;
+      }
+        -> field
+
+  let field_pp ppf (O {name; override_value; pp; _}) =
+    match override_value with
+    | None -> ()
+    | Some value -> Format.fprintf ppf "@[<h>%s: %a@]" name pp value
+
+  let apply_overrides (cctxt : Tezos_client_base.Client_context.printer) (o : t)
+      (c : Constants.Simple.t) : Constants.Simple.t tzresult Lwt.t =
+    let open Format in
+    let fields : field list =
+      [
+        O
+          {
+            name = "preserved_cycles";
+            override_value = o.preserved_cycles;
+            pp = pp_print_int;
+          };
+        O
+          {
+            name = "hard_gas_limit_per_operation";
+            override_value = o.hard_gas_limit_per_operation;
+            pp = Gas.Arith.pp_integral;
+          };
+      ]
+    in
+    let fields_with_override =
+      fields
+      |> List.filter (fun (O {override_value; _}) ->
+             Option.is_some override_value)
+    in
+    (if fields_with_override <> [] then
+     cctxt#message
+       "@[<v>mockup client uses protocol overrides:@,%a@]@?"
+       (pp_print_list field_pp)
+       fields_with_override
+    else Lwt.return_unit)
+    >>= fun () ->
+    return
+      ({
+         preserved_cycles =
+           Option.value ~default:c.preserved_cycles o.preserved_cycles;
+         hard_gas_limit_per_operation =
+           Option.value
+             ~default:c.hard_gas_limit_per_operation
+             o.hard_gas_limit_per_operation;
+       }
+        : Constants.Simple.t)
+end
+
 module Parsed_account = struct
   type t = {name : string; sk_uri : Client_keys.sk_uri; amount : Tez.t}
 

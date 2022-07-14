@@ -859,6 +859,15 @@ module Constants : sig
     val encoding : t Data_encoding.t
   end
 
+  module Simple : sig
+    type t = {
+      preserved_cycles : int;
+      hard_gas_limit_per_operation : Gas.Arith.integral;
+    }
+
+    val encoding : t Data_encoding.t
+  end
+
   module Generated : sig
     type t = {
       consensus_threshold : int;

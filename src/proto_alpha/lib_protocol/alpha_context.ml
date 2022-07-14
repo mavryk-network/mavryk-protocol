@@ -154,6 +154,7 @@ module Constants = struct
   include Constants_repr
   include Constants_storage
   module Parametric = Constants_parametric_repr
+  module Simple = Simple_constants_repr
 
   let round_durations ctxt = Raw_context.round_durations ctxt
 
