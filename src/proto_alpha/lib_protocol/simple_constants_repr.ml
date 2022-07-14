@@ -28,16 +28,16 @@ functor
               (w Gas_limit_repr.Arith.z_integral_encoding)))
   end
 
-module Unwrapped = MAKE (struct
-  type 'a w = 'a
+(* module Unwrapped = *)
 
-  let w e = e
-end)
-
-module Wrapped = MAKE (struct
+module Optional = MAKE (struct
   type 'a w = 'a option
 
   let w e = Data_encoding.option e
 end)
 
-include Unwrapped
+include MAKE (struct
+  type 'a w = 'a
+
+  let w e = e
+end)
