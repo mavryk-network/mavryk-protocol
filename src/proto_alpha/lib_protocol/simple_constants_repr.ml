@@ -9,6 +9,8 @@ functor
   struct
     open W
 
+    type 'a w = 'a W.w
+
     type t = {
       preserved_cycles : int w;
       hard_gas_limit_per_operation : Gas_limit_repr.Arith.integral w;
@@ -27,8 +29,6 @@ functor
               "hard_gas_limit_per_operation"
               (w Gas_limit_repr.Arith.z_integral_encoding)))
   end
-
-(* module Unwrapped = *)
 
 module Optional = MAKE (struct
   type 'a w = 'a option
