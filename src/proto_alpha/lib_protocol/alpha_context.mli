@@ -860,6 +860,16 @@ module Constants : sig
   end
 
   module Simple : sig
+    (* TODO: hide the reptition of Optional *)
+    module Optional : sig
+      type t = {
+        preserved_cycles : int option;
+        hard_gas_limit_per_operation : Gas.Arith.integral option;
+      }
+
+      val encoding : t Data_encoding.t
+    end
+
     type t = {
       preserved_cycles : int;
       hard_gas_limit_per_operation : Gas.Arith.integral;
