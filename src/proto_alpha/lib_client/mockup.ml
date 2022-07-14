@@ -1208,19 +1208,13 @@ module Simple_protocol_constants_overrides = struct
     let to_chain_id_opt = function `Hash c -> Some c | _ -> None in
     return
       {
-        simple_protocol_constants =
-          {
-            preserved_cycles = Some simple.preserved_cycles;
-            hard_gas_limit_per_operation =
-              Some simple.hard_gas_limit_per_operation;
-          };
+        simple_protocol_constants = Constants.Simple.to_optional simple;
         chain_id = to_chain_id_opt cpctxt#chain;
       }
 
   let no_overrides : t =
     {
-      simple_protocol_constants =
-        {preserved_cycles = None; hard_gas_limit_per_operation = None};
+      simple_protocol_constants = Constants.Simple.optional_empty;
       chain_id = None;
     }
 
@@ -1272,16 +1266,7 @@ module Simple_protocol_constants_overrides = struct
     else Lwt.return_unit)
     >>= fun () ->
     return
-      ({
-         preserved_cycles =
-           Option.value
-             ~default:c.preserved_cycles
-             o.simple_protocol_constants.preserved_cycles;
-         hard_gas_limit_per_operation =
-           Option.value
-             ~default:c.hard_gas_limit_per_operation
-             o.simple_protocol_constants.hard_gas_limit_per_operation;
-       }
+      (Constants.Simple.override c o.simple_protocol_constants
         : Constants.Simple.t)
 end
 

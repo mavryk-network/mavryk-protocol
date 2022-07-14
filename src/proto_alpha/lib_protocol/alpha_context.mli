@@ -874,6 +874,12 @@ module Constants : sig
     module Optional : S with type 'a w = 'a option
 
     include S with type 'a w = 'a
+
+    val to_optional : t -> Optional.t
+
+    val optional_empty : Optional.t
+
+    val override : t -> Optional.t -> t
   end
 
   module Generated : sig
