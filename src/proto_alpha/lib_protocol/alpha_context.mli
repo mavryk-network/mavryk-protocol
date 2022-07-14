@@ -860,22 +860,20 @@ module Constants : sig
   end
 
   module Simple : sig
-    (* TODO: hide the reptition of Optional *)
-    module Optional : sig
+    module type S = sig
+      type 'a w
+
       type t = {
-        preserved_cycles : int option;
-        hard_gas_limit_per_operation : Gas.Arith.integral option;
+        preserved_cycles : int w;
+        hard_gas_limit_per_operation : Gas.Arith.integral w;
       }
 
       val encoding : t Data_encoding.t
     end
 
-    type t = {
-      preserved_cycles : int;
-      hard_gas_limit_per_operation : Gas.Arith.integral;
-    }
+    module Optional : S with type 'a w = 'a option
 
-    val encoding : t Data_encoding.t
+    include S with type 'a w = 'a
   end
 
   module Generated : sig

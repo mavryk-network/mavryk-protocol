@@ -1,3 +1,5 @@
+module type S = Simple_constants_repr_intf.S
+
 module MAKE =
 functor
   (W : sig

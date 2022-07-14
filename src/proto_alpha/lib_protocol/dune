@@ -61,7 +61,7 @@
   Constants_parametric_previous_repr
   Constants_repr
   Simple_constants_repr
-  Simple_constants_intf
+  Simple_constants_repr_intf
   Raw_level_repr
   Fitness_repr
   Cycle_repr

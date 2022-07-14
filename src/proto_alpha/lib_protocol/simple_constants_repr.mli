@@ -1,3 +1,5 @@
-module Optional : Simple_constants_intf.S with type 'a w = 'a option
+module type S = Simple_constants_repr_intf.S
 
-include Simple_constants_intf.S with type 'a w = 'a
+module Optional : S with type 'a w = 'a option
+
+include S with type 'a w = 'a
