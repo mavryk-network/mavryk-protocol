@@ -1186,31 +1186,41 @@ module Simple_protocol_constants_overrides = struct
   type t = {
     preserved_cycles : int option;
     hard_gas_limit_per_operation : Gas.Arith.integral option;
+    (* Additional, "bastard" parameters (they are not protocol constants but partially treated the same way). *)
+    chain_id : Chain_id.t option;
   }
 
   let encoding : t Data_encoding.t =
     let open Data_encoding in
     conv
-      (fun {preserved_cycles; hard_gas_limit_per_operation} ->
-        (preserved_cycles, hard_gas_limit_per_operation))
-      (fun (preserved_cycles, hard_gas_limit_per_operation) ->
-        {preserved_cycles; hard_gas_limit_per_operation})
-      (obj2
+      (fun {preserved_cycles; hard_gas_limit_per_operation; chain_id} ->
+        (preserved_cycles, hard_gas_limit_per_operation, chain_id))
+      (fun (preserved_cycles, hard_gas_limit_per_operation, chain_id) ->
+        {preserved_cycles; hard_gas_limit_per_operation; chain_id})
+      (obj3
          (opt "preserved_cycles" uint8)
-         (opt "hard_gas_limit_per_operation" Gas.Arith.z_integral_encoding))
+         (opt "hard_gas_limit_per_operation" Gas.Arith.z_integral_encoding)
+         (opt "chain_id" Chain_id.encoding))
 
   let default_value (cctxt : Tezos_client_base.Client_context.full) :
       t tzresult Lwt.t =
     ignore cctxt ;
     let (simple : Constants.Simple.t) = assert false in
+    let cpctxt = new Protocol_client_context.wrap_full cctxt in
+    let to_chain_id_opt = function `Hash c -> Some c | _ -> None in
     return
       {
         preserved_cycles = Some simple.preserved_cycles;
         hard_gas_limit_per_operation = Some simple.hard_gas_limit_per_operation;
+        chain_id = to_chain_id_opt cpctxt#chain;
       }
 
   let no_overrides : t =
-    {preserved_cycles = None; hard_gas_limit_per_operation = None}
+    {
+      preserved_cycles = None;
+      hard_gas_limit_per_operation = None;
+      chain_id = None;
+    }
 
   (** Existential wrapper to support heterogeneous lists/maps. *)
   type field =
@@ -1243,6 +1253,7 @@ module Simple_protocol_constants_overrides = struct
             override_value = o.hard_gas_limit_per_operation;
             pp = Gas.Arith.pp_integral;
           };
+        O {name = "chain_id"; override_value = o.chain_id; pp = Chain_id.pp};
       ]
     in
     let fields_with_override =
