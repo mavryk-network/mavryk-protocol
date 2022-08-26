@@ -22,8 +22,3 @@ include:
   - local: .gitlab/ci/test_coverage.yml
     rules:
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_LABELS !~ /(?:^|[,])ci--no-coverage(?:$|[,])/'
-  # Only run on default branch
-  - local: .gitlab/ci/test_coverage_default.yml
-    rules:
-      # Cannot use TEZOS_DEFAULT_NAMESPACE here, see limitations above
-      - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

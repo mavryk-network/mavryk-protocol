@@ -65,19 +65,35 @@ include:
       when: never
     - when: always
 
+  # 'latest-release' and 'test-latest-release' branches
   - local: .gitlab/ci/pl-latest-release.yml
     rules:
     - if: '($CI_COMMIT_REF_NAME == "test-latest-release" && $CI_PROJECT_NAMESPACE == "nomadic-labs") || ($CI_COMMIT_REF_NAME == "latest-release" && $CI_PROJECT_NAMESPACE == "tezos")'
       when: always
     - if: '($CI_COMMIT_BRANCH =~ /v[0-9]{1,3}-release$/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /v[0-9]{1,3}-release$/) && $CI_PROJECT_NAMESPACE == "tezos"'
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_PROJECT_NAMESPACE == "tezos" && ($CI_COMMIT_BRANCH = "master" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME = "master")'
+      when: never
     - when: never
 
-  # release branches
+  # 'vX.Y-release' branches
   - local: .gitlab/ci/pl-release-branch.yml
     rules:
     - if: '($CI_COMMIT_REF_NAME == "test-latest-release" && $CI_PROJECT_NAMESPACE == "nomadic-labs") || ($CI_COMMIT_REF_NAME == "latest-release" && $CI_PROJECT_NAMESPACE == "tezos")'
       when: never
     - if: '($CI_COMMIT_BRANCH =~ /v[0-9]{1,3}-release$/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /v[0-9]{1,3}-release$/) && $CI_PROJECT_NAMESPACE == "tezos"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_PROJECT_NAMESPACE == "tezos" && ($CI_COMMIT_BRANCH = "master" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME = "master")'
+      when: never
+    - when: never
+
+  # master branch pipeline
+  - local: .gitlab/ci/pl-master.yml
+    rules:
+    - if: '($CI_COMMIT_REF_NAME == "test-latest-release" && $CI_PROJECT_NAMESPACE == "nomadic-labs") || ($CI_COMMIT_REF_NAME == "latest-release" && $CI_PROJECT_NAMESPACE == "tezos")'
+      when: never
+    - if: '($CI_COMMIT_BRANCH =~ /v[0-9]{1,3}-release$/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /v[0-9]{1,3}-release$/) && $CI_PROJECT_NAMESPACE == "tezos"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_PROJECT_NAMESPACE == "tezos" && ($CI_COMMIT_BRANCH = "master" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME = "master")'
       when: always
     - when: never

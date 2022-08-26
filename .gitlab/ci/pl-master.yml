@@ -1,0 +1,99 @@
+# [CI Pipeline]
+# ├──[sanity]
+# ├──[build]
+# │  ├── [manual] build_arm64
+# │  ├── [on_success] build:static-x86_64-linux-binaries
+# │  ├── [on_success] build:static-arm64-linux-binaries {"CI_DOCKER_HUB": "true"}
+# │  ├── [on_success] docker:build_amd64 {"CI_DOCKER_HUB": "true"}
+# │  └── [on_success] docker:build_arm64 {"CI_DOCKER_HUB": "true"}
+# ├──[test]
+# │  └── [on_success] ometrics-code-quality-default
+# ├──[test_coverage]
+# │  └── [on_success] unified_coverage
+# ├──[packaging]
+# ├──[doc]
+# │  └── [on_success] publish:documentation
+# ├──[build_release]
+# ├──[publish_release]
+# │  └── [on_success] docker:merge_manifests {"CI_DOCKER_HUB": "true"}
+# └──[manual]
+#    ├── [manual] docker:manual_build_amd64
+#    └── [manual] docker:manual_build_arm64
+
+
+build:static-x86_64-linux-binaries:
+  extends: .build:static-x86_64-linux-binaries
+
+build:static-arm64-linux-binaries:
+  extends: .build:static-arm64-linux-binaries
+
+docker:build_amd64:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends: .docker:build_amd64
+
+docker:build_arm64:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends: .docker:build_arm64
+
+docker:merge_manifests:
+  variables:
+    CI_DOCKER_HUB: "true"
+  extends:
+    - .docker:merge_manifests
+
+# This job fetches coverage files from the most recently merged MR on the default branch.
+# It creates the html, summary and cobertura reports. It also provide a coverage % for the
+# merge request.
+
+unified_coverage:
+  extends:
+    - .default_settings_template
+    - .image_template__runtime_build_test_dependencies_template
+    - .template__coverage_report
+  dependencies: []
+  script:
+    # On the project default branch, we fetch coverage from the last merged MR
+    - COVERAGE_START_COMMIT=$CI_COMMIT_SHA poetry run python3 scripts/ci/coverage.py
+
+# here we use this hack to publish the tezos documentation on
+# gitlab.io because we want to publish the doc for the project
+# tezos under https://tezos.gitlab.io and not  https://tezos.gitlab.io/tezos
+# The latter follows the gitlab url convention of
+# https://<projectname_space>.gitlab.io/<project_name>/
+# Notice that we push only if CI_COMMIT_REF_NAME is really master .
+# This allows to test the release workflow
+publish:documentation:
+  extends:
+    - .default_settings_template
+    - .image_template__runtime_build_test_dependencies_template
+    - .rules_template__master
+  stage: doc
+  before_script:
+    - echo "${CI_PK_GITLAB_DOC}" > ~/.ssh/id_ed25519
+    - echo "${CI_KH}" > ~/.ssh/known_hosts
+    - chmod 400 ~/.ssh/id_ed25519
+    # Load the environment poetry previously created in the docker image.
+    # Give access to the Python dependencies/executables
+    - . $HOME/.venv/bin/activate
+  script:
+    - if [ "${CI_COMMIT_REF_NAME}" == "master" ] ; then
+        make -C docs -j full ;
+        git clone --depth 5 git@gitlab.com:${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAMESPACE}.gitlab.io gitlab.io ;
+        rsync --recursive --links --perms --delete
+          --exclude=.doctrees --exclude={{main,alpha,zero}net,master}/index.html
+          docs/_build/ gitlab.io/public/ ;
+        cd gitlab.io ;
+      else
+          echo "Skip pushing documentation. Only pushing for real master" ;
+      fi
+    - if [ -z "$(git status -s)" ] ; then
+        echo "Nothing to commit!" ;
+      else
+        git add public ;
+        git commit -m "Import doc of ${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:${CI_COMMIT_SHA}" ;
+        git push origin master ;
+      fi
+  # Publish jobs are uninterruptible to avoid publishing partial results.
+  interruptible: false
