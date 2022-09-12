@@ -58,6 +58,8 @@ end
 open Parameters
 include Daemon.Make (Parameters)
 
+let name baker = baker.name
+
 let trigger_ready baker value =
   let pending = baker.persistent_state.pending_ready in
   baker.persistent_state.pending_ready <- [] ;
