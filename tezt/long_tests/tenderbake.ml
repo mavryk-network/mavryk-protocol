@@ -47,32 +47,45 @@ let time_to_reach_measurement = sf "time-to-reach-%d" levels
 let test_rounds_title =
   sf "check that we reach level %d on all %d nodes" levels nodes_num
 
-let dynamic_bake_max_level = 30
+let test_long_dynamic_bake_title = "long dynamic bake"
+
+let dynamic_bake_test_cycles =
+  Sys.getenv_opt "TEZT_LONG_TEST_LONG_DYNAMIC_TEST_CYCLES"
+  |> Option.map int_of_string |> Option.value ~default:60
+
+let dynamic_bake_test_blocks_per_cycles =
+  Sys.getenv_opt "TEZT_LONG_TEST_LONG_DYNAMIC_BLOCKS_PER_CYCLES"
+  |> Option.map int_of_string |> Option.value ~default:2
+
+(* add one for genesis block *)
+let dynamic_bake_max_level =
+  1 + (dynamic_bake_test_cycles * dynamic_bake_test_blocks_per_cycles)
 
 let dynamic_bake_time_to_reach_max_level_measurement =
   sf "dynamic-bake-time-to-reach-%d" dynamic_bake_max_level
 
+(* that is, decision expected in at most 3 rounds. only used for display *)
+let dynamic_bake_expected_max_rounds = 3
+
+let dynamic_bake_minimal_block_delay = 1
+
+let dynamic_bake_delay_increment_per_round = 1
+
+(* c.f. https://tezos.gitlab.io/active/consensus.html *)
+let dynamic_bake_round_duration r =
+  dynamic_bake_minimal_block_delay + (r * dynamic_bake_delay_increment_per_round)
+
 let grafana_panels : Grafana.panel list =
+  let open Grafana in
   [
-    Row "Test: baker";
-    Grafana.simple_graph
+    Row ("Test: " ^ test_rounds_title);
+    simple_graph
       ~title:(sf "The time it takes the cluster to reach level %d" levels)
       ~measurement:time_to_reach_measurement
       ~test:test_rounds_title
       ~field:"duration"
       ();
-    Grafana.simple_graph
-      ~title:
-        (sf
-           "The time it takes all nodes to reach level %d: should look like an \
-            even rainbow."
-           dynamic_bake_max_level)
-      ~yaxis_format:" s"
-      ~measurement:dynamic_bake_time_to_reach_max_level_measurement
-      ~field:"duration"
-      ~test:"long dynamic bake"
-      ();
-    Grafana.graphs_per_tags
+    graphs_per_tags
       ~title:"The time it takes node 0 to reach level N."
       ~yaxis_format:" s"
       ~measurement:"node-0-reaches-level"
@@ -82,7 +95,7 @@ let grafana_panels : Grafana.panel list =
         (List.map (fun level -> ("level", string_of_int level))
         @@ range 2 levels)
       ();
-    Grafana.graphs_per_tags
+    graphs_per_tags
       ~title:
         "Round in which consensus was reached on level N (should be 0 all the \
          way through)."
@@ -94,13 +107,44 @@ let grafana_panels : Grafana.panel list =
         (List.map (fun level -> ("level", string_of_int level))
         @@ range 2 levels)
       ();
-    Grafana.simple_graph
-      ~title:(sf "The time it takes the cluster to reach level %d" levels)
-      ~measurement:time_to_reach_measurement
-      ~test:test_rounds_title
-      ~field:"duration"
-      ();
   ]
+  @ [
+      Row ("Test: " ^ test_long_dynamic_bake_title);
+      simple_graph
+        ~title:
+          (sf
+             "The time it takes the cluster to reach level %d"
+             dynamic_bake_max_level)
+        ~yaxis_format:" s"
+        ~measurement:dynamic_bake_time_to_reach_max_level_measurement
+        ~field:"duration"
+        ~test:test_long_dynamic_bake_title
+        ();
+      graphs_per_tags
+        ~title:"The time it takes node 0 to reach level N."
+        ~yaxis_format:" s"
+        ~measurement:"node-0-reaches-level"
+        ~field:"duration"
+        ~test:test_long_dynamic_bake_title
+        ~tags:
+          (List.map (fun level -> ("level", string_of_int level))
+          @@ range 2 dynamic_bake_max_level)
+        ();
+      graphs_per_tags
+        ~title:
+          (sf
+             "Round in which consensus was reached on level N (should be less \
+              than %d all the way through)."
+             dynamic_bake_expected_max_rounds)
+        ~yaxis_format:" rounds"
+        ~measurement:"node-0-reaches-level"
+        ~field:"round"
+        ~test:test_long_dynamic_bake_title
+        ~tags:
+          (List.map (fun level -> ("level", string_of_int level))
+          @@ range 2 dynamic_bake_max_level)
+        ();
+    ]
 
 (* Check that in a simple ring topology with as many nodes/bakers/clients as
    bootstrap accounts, each with a single delegate, all blocks occurs within
@@ -261,7 +305,7 @@ let test_rounds ~executors =
     levels
     timeout ;
   let* (_ : unit list) = Lwt.all node_level_promises in
-  let stop = Unix.gettimeofday () in
+  let time = Unix.gettimeofday () -. !start in
 
   let* () =
     Lwt_list.iter_p
@@ -271,18 +315,7 @@ let test_rounds ~executors =
       !daemons
   in
 
-  Lwt.return (stop -. !start)
-
-(* let seq_shuffle : 'a array -> 'a Seq.t = *)
-(*  fun arr -> *)
-(*   let len = Array.length arr in *)
-(*   let rec next prev () : 'a Seq.node = *)
-(*     let nxt = (prev + Random.int (len - 1)) mod len in *)
-(*     Cons (arr.(nxt), next nxt) *)
-(*   in *)
-(*   fun () -> *)
-(*     let fst = Random.int len in *)
-(*     Cons (arr.(fst), next fst) *)
+  Lwt.return time
 
 module Inf = struct
   type 'a t = Inf of (unit -> 'a * 'a t)
@@ -313,34 +346,29 @@ module Inf = struct
   let next : 'a t -> 'a * 'a t = function Inf f -> f ()
 end
 
-(* This test runs NUM_NODES, and (NUM_NODES - 2) bakers. It runs a number of test
-   cycles (not to be confused for protocol cycle) where each cycle
-   lasts TIME_BETWEEN_CYCLE seconds, for TEST_DURATION seconds.  At
-   each cycle, a random transaction is injected. Every CHECK_PROGRESS
-   cycles, a client checks that the chain is progressing.  It does so
-   by polling the chain (and checking that the level is increasing) at
-   most MAX_RETRY times, with a timeout of TIMEOUT seconds At the end
-   of the test, checks that the chain has at least EXPECTED_LEVEL
-   blocks *)
+(* This test runs [num_nodes_with_bakers + num_nodes_without_bakers]
+   bakers, and [num_nodes_with_bakers] bakers. It runs
+   [dynamic_bake_test_cycles] test cycles (not to be confused with
+   protocol cycles) where each cycle lasts
+   [dynamic_bake_test_blocks_per_cycles] blocks.  At each cycle, a
+   random transaction is injected. We measure and check for
+   regressions in the time it takes the cluster to reach the final
+   level [dynamic_bake_max_level]. *)
 let test_long_dynamic_bake ~executors =
   let num_nodes_with_bakers = 3 in
   let num_nodes_without_bakers = 2 in
   let _time_between_cycle = 2 in
   let _check_progress = 10 in
   let kill_baker = 4 in
-  let timeout = 300 (* TODO *) in
-  let _max_retry = 6 in
-  let test_duration = 120 (* duration of the main loop *) in
-  let minimal_block_delay = 1 in
-  let delay_increment_per_round = 1 in
-  let max_level_duration =
-    6 (* that is, decision expected in at most 3 rounds *)
+  let timeout =
+    dynamic_bake_max_level
+    * dynamic_bake_round_duration dynamic_bake_expected_max_rounds
   in
-  let _expected_level = test_duration / max_level_duration in
+  let _max_retry = 6 in
 
   Long_test.register
     ~__FILE__
-    ~title:"long dynamic bake"
+    ~title:test_long_dynamic_bake_title
     ~tags:["tenderbake"; "basic"]
     ~executors
     ~timeout:(Long_test.Seconds (8 * timeout))
@@ -369,12 +397,17 @@ let test_long_dynamic_bake ~executors =
     Protocol.write_parameter_file
       ~base
       [
-        (["minimal_block_delay"], stringify_int minimal_block_delay);
-        (["delay_increment_per_round"], stringify_int delay_increment_per_round);
+        (["minimal_block_delay"], stringify_int dynamic_bake_minimal_block_delay);
+        ( ["delay_increment_per_round"],
+          stringify_int dynamic_bake_delay_increment_per_round );
         (["consensus_threshold"], Some (string_of_int consensus_threshold));
       ]
   in
 
+  Long_test.measure_and_check_regression_lwt
+    ~repeat
+    dynamic_bake_time_to_reach_max_level_measurement
+  @@ fun () ->
   Log.info "Setup daemons" ;
   let node_daemons = ref [] in
   let baker_daemons = ref [] in
@@ -428,6 +461,64 @@ let test_long_dynamic_bake ~executors =
   Log.info "Starting nodes" ;
   let* () = Cluster.start ~wait_connections:true nodes in
 
+  let rpc_get_timestamp node block_level =
+    let* header =
+      RPC.call node
+      @@ RPC.get_chain_block_header ~block:(string_of_int block_level) ()
+    in
+    let timestamp_s = JSON.(header |-> "timestamp" |> as_string) in
+    return (timestamp_s |> Time.of_notation_exn |> Ptime.to_float_s)
+  in
+
+  let start = ref 0.0 in
+  let start_block_timestamp = ref 0.0 in
+
+  let node_level_promises =
+    List.concat_map
+      (fun level ->
+        List.mapi
+          (fun i node ->
+            let* (_ : int) = Node.wait_for_level node level in
+            let event_reached = Unix.gettimeofday () -. !start in
+            if i = 0 then (
+              let* block_delay =
+                let* block_timestamp = rpc_get_timestamp node level in
+                return (block_timestamp -. !start_block_timestamp)
+              in
+              let* round =
+                RPC.call node
+                @@ RPC.get_chain_block_helper_round
+                     ~block:(string_of_int level)
+                     ()
+              in
+              Log.info
+                "Node %s reached level %d in %f seconds (round: %d, block \
+                 delay: %f)"
+                (Node.name node)
+                level
+                event_reached
+                round
+                block_delay ;
+              let data_point =
+                InfluxDB.data_point
+                  ~other_fields:[("round", Float (float_of_int round))]
+                  ~tags:[("level", string_of_int level)]
+                  "node-0-reaches-level"
+                  ("duration", Float event_reached)
+              in
+              Long_test.add_data_point data_point ;
+              unit)
+            else (
+              Log.info
+                "Node %s reached level %d in %f seconds"
+                (Node.name node)
+                level
+                event_reached ;
+              unit))
+          nodes)
+      (range 2 dynamic_bake_max_level)
+  in
+
   Log.info "Activating protocol" ;
   let* () =
     Client.activate_protocol_and_wait
@@ -447,12 +538,9 @@ let test_long_dynamic_bake ~executors =
   in
   let bakers = Inf.cycle !baker_daemons in
 
-  let max_levels = 30 in
-  let blocks_between_cycles = 2 in
-
   let rec loop cycle keys bakers clients () =
     let level = Node.get_level node_hd in
-    if level < max_levels then (
+    if level < dynamic_bake_max_level then (
       let client, clients = Inf.next clients in
 
       Log.info
@@ -475,23 +563,34 @@ let test_long_dynamic_bake ~executors =
         else return bakers
       in
 
-      let next_cycle_level = level + blocks_between_cycles in
-      Log.info "Waiting for cycle %d at level %d" (cycle + 1) next_cycle_level ;
+      let next_cycle_level = level + dynamic_bake_test_blocks_per_cycles in
+      Log.info
+        "Waiting for cycle %d/%d at level %d/%d"
+        (cycle + 1)
+        dynamic_bake_test_cycles
+        next_cycle_level
+        dynamic_bake_max_level ;
       let* (_ : int) = Node.wait_for_level node_hd next_cycle_level in
       loop (cycle + 1) keys bakers clients ())
     else unit
   in
 
-  Long_test.time_lwt ~repeat dynamic_bake_time_to_reach_max_level_measurement
-  @@ fun () ->
+  start := Unix.gettimeofday () ;
+  let* () =
+    let* ts = rpc_get_timestamp node_hd 1 in
+    start_block_timestamp := ts ;
+    unit
+  in
   let* () = loop 0 keys bakers clients () in
+  let* (_ : unit list) = Lwt.all node_level_promises in
+  let time = Unix.gettimeofday () -. !start in
+  Log.info "Test terminated in %f seconds, expected max time: %d" time timeout ;
 
-  (*   ignore time_between_cycle ; *)
-  (*   ignore check_progress ; *)
-  (*   ignore kill_baker ; *)
-  (*   ignore max_retry ; *)
-  (*   ignore expected_level ; *)
-  unit
+  (* Clean up for repeat *)
+  let* () = Lwt_list.iter_p Baker.terminate !baker_daemons in
+  let* () = Lwt_list.iter_p Node.terminate !node_daemons in
+
+  Lwt.return time
 
 let register ~executors () =
   test_rounds ~executors ;
