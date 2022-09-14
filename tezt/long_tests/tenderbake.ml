@@ -47,7 +47,16 @@ let time_to_reach_measurement = sf "time-to-reach-%d" levels
 let test_rounds_title =
   sf "check that we reach level %d on all %d nodes" levels nodes_num
 
-let test_long_dynamic_bake_title = "long dynamic bake"
+type topology = Clique | Ring
+
+let cluster_of_topology = function
+  | Clique -> Cluster.clique
+  | Ring -> Cluster.ring
+
+let string_of_topology = function Clique -> "clique" | Ring -> "ring"
+
+let test_long_dynamic_bake_title topology =
+  "long dynamic bake: " ^ string_of_topology topology
 
 let dynamic_bake_test_cycles =
   Sys.getenv_opt "TEZT_LONG_TEST_LONG_DYNAMIC_TEST_CYCLES"
@@ -74,6 +83,47 @@ let dynamic_bake_delay_increment_per_round = 1
 (* c.f. https://tezos.gitlab.io/active/consensus.html *)
 let dynamic_bake_round_duration r =
   dynamic_bake_minimal_block_delay + (r * dynamic_bake_delay_increment_per_round)
+
+let dynamic_bake_grafana_panels topology =
+  let test = test_long_dynamic_bake_title topology in
+  let open Grafana in
+  [
+    Row ("Test: " ^ test_long_dynamic_bake_title topology);
+    simple_graph
+      ~title:
+        (sf
+           "The time it takes the cluster to reach level %d"
+           dynamic_bake_max_level)
+      ~yaxis_format:" s"
+      ~measurement:dynamic_bake_time_to_reach_max_level_measurement
+      ~field:"duration"
+      ~test
+      ();
+    graphs_per_tags
+      ~title:"The time it takes node 0 to reach level N."
+      ~yaxis_format:" s"
+      ~measurement:"node-0-reaches-level"
+      ~field:"duration"
+      ~test
+      ~tags:
+        (List.map (fun level -> ("level", string_of_int level))
+        @@ range 2 dynamic_bake_max_level)
+      ();
+    graphs_per_tags
+      ~title:
+        (sf
+           "Round in which consensus was reached on level N (should be less \
+            than %d all the way through)."
+           dynamic_bake_expected_max_rounds)
+      ~yaxis_format:" rounds"
+      ~measurement:"node-0-reaches-level"
+      ~field:"round"
+      ~test
+      ~tags:
+        (List.map (fun level -> ("level", string_of_int level))
+        @@ range 2 dynamic_bake_max_level)
+      ();
+  ]
 
 let grafana_panels : Grafana.panel list =
   let open Grafana in
@@ -108,43 +158,8 @@ let grafana_panels : Grafana.panel list =
         @@ range 2 levels)
       ();
   ]
-  @ [
-      Row ("Test: " ^ test_long_dynamic_bake_title);
-      simple_graph
-        ~title:
-          (sf
-             "The time it takes the cluster to reach level %d"
-             dynamic_bake_max_level)
-        ~yaxis_format:" s"
-        ~measurement:dynamic_bake_time_to_reach_max_level_measurement
-        ~field:"duration"
-        ~test:test_long_dynamic_bake_title
-        ();
-      graphs_per_tags
-        ~title:"The time it takes node 0 to reach level N."
-        ~yaxis_format:" s"
-        ~measurement:"node-0-reaches-level"
-        ~field:"duration"
-        ~test:test_long_dynamic_bake_title
-        ~tags:
-          (List.map (fun level -> ("level", string_of_int level))
-          @@ range 2 dynamic_bake_max_level)
-        ();
-      graphs_per_tags
-        ~title:
-          (sf
-             "Round in which consensus was reached on level N (should be less \
-              than %d all the way through)."
-             dynamic_bake_expected_max_rounds)
-        ~yaxis_format:" rounds"
-        ~measurement:"node-0-reaches-level"
-        ~field:"round"
-        ~test:test_long_dynamic_bake_title
-        ~tags:
-          (List.map (fun level -> ("level", string_of_int level))
-          @@ range 2 dynamic_bake_max_level)
-        ();
-    ]
+  @ dynamic_bake_grafana_panels Clique
+  @ dynamic_bake_grafana_panels Ring
 
 (* Check that in a simple ring topology with as many nodes/bakers/clients as
    bootstrap accounts, each with a single delegate, all blocks occurs within
@@ -354,7 +369,7 @@ end
    random transaction is injected. We measure and check for
    regressions in the time it takes the cluster to reach the final
    level [dynamic_bake_max_level]. *)
-let test_long_dynamic_bake ~executors =
+let test_long_dynamic_bake topology ~executors =
   let num_nodes_with_bakers = 3 in
   let num_nodes_without_bakers = 2 in
   let _time_between_cycle = 2 in
@@ -368,8 +383,8 @@ let test_long_dynamic_bake ~executors =
 
   Long_test.register
     ~__FILE__
-    ~title:test_long_dynamic_bake_title
-    ~tags:["tenderbake"; "basic"]
+    ~title:(test_long_dynamic_bake_title topology)
+    ~tags:["tenderbake"; "dynamic"; string_of_topology topology]
     ~executors
     ~timeout:(Long_test.Seconds (8 * timeout))
   @@ fun () ->
@@ -454,9 +469,10 @@ let test_long_dynamic_bake ~executors =
   let nodes = node_hd :: nodes_tl in
 
   Log.info
-    "Setting up node clique topology: %s"
+    "Setting up node %s topology: %s"
+    (string_of_topology topology)
     (String.concat ", " @@ List.map Node.name nodes) ;
-  Cluster.clique nodes ;
+  (cluster_of_topology topology) nodes ;
 
   Log.info "Starting nodes" ;
   let* () = Cluster.start ~wait_connections:true nodes in
@@ -594,4 +610,5 @@ let test_long_dynamic_bake ~executors =
 
 let register ~executors () =
   test_rounds ~executors ;
-  test_long_dynamic_bake ~executors
+  test_long_dynamic_bake Clique ~executors ;
+  test_long_dynamic_bake Ring ~executors
