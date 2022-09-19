@@ -1058,29 +1058,24 @@ module Make (Context : P) :
 
   let identifies_target_contract x =
     let open Option_syntax in
-    match Contract_hash.of_b58check_opt x with
-    | None ->
+    match String.split_on_char '%' x with
+    | destination :: entrypoint ->
+        let* destination = Contract_hash.of_b58check_opt destination in
+        let* entrypoint =
+          match entrypoint with
+          | [] -> return Entrypoint_repr.default
+          | _ ->
+              let* entrypoint =
+                Non_empty_string.of_string (String.concat "" entrypoint)
+              in
+              let* entrypoint = Entrypoint_repr.of_annot_lax_opt entrypoint in
+              return entrypoint
+        in
+        return (destination, entrypoint)
+    | [] ->
         if Compare.String.(x = "out") then
           return (Contract_hash.zero, Entrypoint_repr.default)
         else fail
-    | Some _ -> (
-        match String.split_on_char '%' x with
-        | destination :: entrypoint ->
-            let* destination = Contract_hash.of_b58check_opt destination in
-            let* entrypoint =
-              match entrypoint with
-              | [] -> return Entrypoint_repr.default
-              | _ ->
-                  let* entrypoint =
-                    Non_empty_string.of_string (String.concat "" entrypoint)
-                  in
-                  let* entrypoint =
-                    Entrypoint_repr.of_annot_lax_opt entrypoint
-                  in
-                  return entrypoint
-            in
-            return (destination, entrypoint)
-        | [] -> fail)
 
   let evaluate =
     let open Monad.Syntax in
