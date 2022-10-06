@@ -68,7 +68,7 @@ let bootstrapped_event =
 
    b) Otherwise, we check that both nodes synchronize. In full mode, we also check
    that the savepoint is higher than when Node 2 was killed. *)
-let check_bootstrap_with_history_modes hmode1 hmode2 =
+let check_bootstrap_with_history_modes (protocol, (hmode1, hmode2)) =
   (* Number of calls to [octez-client bake for] once the protocol is activated,
      before we kill [node_2]. *)
   let bakes_before_kill = 9 in
@@ -166,22 +166,8 @@ let check_bootstrap_with_history_modes hmode1 hmode2 =
     Node.wait_for node "end_merging_stores.v0" @@ fun _json ->
     if !last_cycle_being_merged then Some () else None
   in
-  let hmode1s = Node.show_history_mode hmode1 in
-  let hmode2s = Node.show_history_mode hmode2 in
-  Protocol.register_test
-    ~__FILE__
-    ~title:(Format.sprintf "node synchronization (%s / %s)" hmode1s hmode2s)
-    ~tags:
-      [
-        "bootstrap";
-        "node";
-        "sync";
-        "activate";
-        "bake";
-        "primary_" ^ hmode1s;
-        "secondary_" ^ hmode2s;
-      ]
-  @@ fun protocol ->
+  (*   let hmode1s = Node.show_history_mode hmode1 in *)
+  (*   let hmode2s = Node.show_history_mode hmode2 in *)
   (* Initialize nodes and client. *)
   let* node_1 =
     Node.init [Synchronisation_threshold 0; Connections 1; History_mode hmode1]
@@ -302,14 +288,42 @@ let register ~protocols =
      blocks. Putting the number `0` in parameters allows to
      save 16 blocks. *)
   let rolling_0 = Node.Rolling (Some 0) in
-  check_bootstrap_with_history_modes archive archive protocols ;
-  check_bootstrap_with_history_modes archive full protocols ;
-  check_bootstrap_with_history_modes archive rolling protocols ;
-  check_bootstrap_with_history_modes full archive protocols ;
-  check_bootstrap_with_history_modes full full protocols ;
-  check_bootstrap_with_history_modes full rolling protocols ;
-  check_bootstrap_with_history_modes rolling_0 Archive protocols ;
-  check_bootstrap_with_history_modes rolling_0 rolling_0 protocols ;
-  check_bootstrap_with_history_modes rolling_0 full protocols
+
+  let param_hmodes =
+    let to_string (hmode1, hmode2) =
+      sf "%s,%s" (Node.show_history_mode hmode1) (Node.show_history_mode hmode2)
+    in
+    let tags (hmode1, hmode2) =
+      [
+        "primary_" ^ Node.show_history_mode hmode1;
+        "secondary_" ^ Node.show_history_mode hmode2;
+      ]
+    in
+    Parametric.
+      {
+        name = Some "hmodes";
+        to_string;
+        tags;
+        values =
+          [
+            (archive, archive);
+            (archive, full);
+            (archive, rolling);
+            (full, archive);
+            (full, full);
+            (full, rolling);
+            (rolling_0, Archive);
+            (rolling_0, rolling_0);
+            (rolling_0, full);
+          ];
+      }
+  in
+  Parametric.parameterize param_hmodes
+  @@ Protocol.register_parametric
+       ~__FILE__
+       ~title:"node synchronization"
+       ~tags:["bootstrap"; "node"; "sync"; "activate"; "bake"]
+       check_bootstrap_with_history_modes
+       protocols
 
 let register_protocol_independent () = check_rpc_force_bootstrapped ()

@@ -98,13 +98,7 @@ let init chain_id ~from_protocol ~to_protocol =
 
 let may_apply opt f = match opt with None -> Lwt.return_unit | Some v -> f v
 
-let register_migration_test chain_id =
-  Protocol.register_test
-    ~__FILE__
-    ~title:(sf "testnet dictator (%s, migration)" (string_of_chain_id chain_id))
-    ~tags:["amendment"; string_of_chain_id chain_id; "migration"]
-    ~supports:(From_protocol 014)
-  @@ fun to_protocol ->
+let register_migration_test (to_protocol, chain_id) =
   may_apply (Protocol.previous_protocol to_protocol) @@ fun from_protocol ->
   let* node, client = init chain_id ~from_protocol ~to_protocol in
   let* () = repeat 10 (fun () -> bake node client) in
@@ -150,10 +144,23 @@ let register_migration_test chain_id =
   return ()
 
 let register ~protocols =
-  (* Testing migration with the chain_id of Ghostnet.
-     From J to K it should set the constant `testnet_dictator`.
-     On any other migrations, it should leave it unset *)
-  register_migration_test Chain_id_ghostnet protocols ;
-  (* Testing migration with the chain_id of Mainnet.
-     It should leave `testnet_dictator` unset. *)
-  register_migration_test Chain_id_mainnet protocols
+  Parametric.(
+    parameterize
+    @@ list
+         ~to_string:string_of_chain_id
+         [
+           (* Testing migration with the chain_id of Ghostnet.
+              From J to K it should set the constant `testnet_dictator`.
+              On any other migrations, it should leave it unset *)
+           Chain_id_ghostnet;
+           (* Testing migration with the chain_id of Mainnet.
+              It should leave `testnet_dictator` unset. *)
+           Chain_id_mainnet;
+         ])
+  @@ Protocol.register_parametric
+       ~__FILE__
+       ~title:(sf "testnet dictator migration")
+       ~tags:["amendment"; "migration"]
+       ~supports:(From_protocol 014)
+       register_migration_test
+       protocols
