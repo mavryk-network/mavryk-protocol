@@ -185,10 +185,38 @@ let iter_on_supported_protocols ~title ~protocols ?(supports = Any_protocol) f =
 let add_to_test_parameters protocol title tags =
   (name protocol ^ ": " ^ title, tag protocol :: tags)
 
+let protocols_param ?(supports = Any_protocol) ~title protocols =
+  let protocols =
+    match List.filter (is_supported supports) protocols with
+    | [] ->
+        failwith
+          (sf
+             "test %s was registered with ~protocols:[%s] %s, which results in \
+              an empty list of protocols"
+             title
+             (String.concat ", " (List.map name protocols))
+             (show_supported_protocols supports))
+    | supported_protocols -> supported_protocols
+  in
+  Tezt_core.Parametric.
+    {
+      to_string = name;
+      name = Some "protocol";
+      values = protocols;
+      tags = (fun protocol -> [tag protocol]);
+    }
+
 let register_test ~__FILE__ ~title ~tags ?supports body protocols =
-  iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
-  let title, tags = add_to_test_parameters protocol title tags in
-  Test.register ~__FILE__ ~title ~tags (fun () -> body protocol)
+  let open Parametric in
+  parameterize
+    (protocols_param ~title ?supports protocols)
+    (register ~__FILE__ ~title ~tags body)
+
+let register_parametric ~__FILE__ ~title ~tags ?supports body protocols param =
+  let open Parametric in
+  parameterize
+    (pair (protocols_param ~title ?supports protocols) param)
+    (register ~__FILE__ ~title ~tags body)
 
 let register_long_test ~__FILE__ ~title ~tags ?supports ?team ~executors
     ~timeout body protocols =

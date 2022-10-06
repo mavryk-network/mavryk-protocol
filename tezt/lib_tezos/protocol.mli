@@ -218,3 +218,13 @@ val register_regression_test :
   (t -> unit Lwt.t) ->
   t list ->
   unit
+
+val register_parametric :
+  __FILE__:string ->
+  title:string ->
+  tags:string list ->
+  ?supports:supported_protocols ->
+  (t * 'a -> unit Lwt.t) ->
+  t list ->
+  'a Tezt_core.Parametric.param ->
+  unit

@@ -165,3 +165,6 @@ module Test = struct
       It is available in [tezt] and [tezt.js]. *)
   let run = Main.run
 end
+
+(** Parametric tests. *)
+module Parametric = Parametric
