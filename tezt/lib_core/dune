@@ -8,5 +8,6 @@
   re
   lwt
   unix
-  ezjsonm)
+  ezjsonm
+  qcheck-core)
  (js_of_ocaml))
