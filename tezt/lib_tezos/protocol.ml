@@ -198,7 +198,7 @@ let protocols_param ?(supports = Any_protocol) ~title protocols =
              (show_supported_protocols supports))
     | supported_protocols -> supported_protocols
   in
-  Tezt_core.Parametric.
+  Parametric.
     {
       to_string = name;
       name = Some "protocol";
@@ -207,17 +207,21 @@ let protocols_param ?(supports = Any_protocol) ~title protocols =
     }
 
 let register_test ~__FILE__ ~title ~tags ?supports body protocols =
-  let open Parametric in
-  parameterize
+  Parametric.parameterize
     (protocols_param ~title ?supports protocols)
-    (register ~__FILE__ ~title ~tags body)
+    (Test.register_parametric ~__FILE__ ~title ~tags body)
 
 let register_parametric ~__FILE__ ~title ~tags ?supports body protocols param =
-  let open Parametric in
-  parameterize
-    (pair (protocols_param ~title ?supports protocols) param)
-    (register ~__FILE__ ~title ~tags body)
+  Parametric.parameterize
+    (Parametric.pair (protocols_param ~title ?supports protocols) param)
+    (Test.register_parametric ~__FILE__ ~title ~tags body)
 
+(* TODO: there should be parametric versions of these functions. They
+   could call new functions
+   e.g. [Long_test.register_parametric]. However, this new
+   proliferatino of new registration functions is unfortunate. Some
+   bright person could come up with a more composable way of creating
+   registration functions. *)
 let register_long_test ~__FILE__ ~title ~tags ?supports ?team ~executors
     ~timeout body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->

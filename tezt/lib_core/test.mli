@@ -78,6 +78,22 @@ val register :
   (unit -> unit Lwt.t) ->
   unit
 
+val register_parametric_internal :
+  __FILE__:string ->
+  title:string ->
+  tags:string list ->
+  ('a -> unit Lwt.t) ->
+  'a Parametric.param ->
+  unit
+
+val register_parametric :
+  __FILE__:string ->
+  title:string ->
+  tags:string list ->
+  ('a -> unit Lwt.t) ->
+  'a Parametric.param ->
+  unit
+
 (** Get the current worker id.
 
     In single-process mode (with [-j 1]), this always returns [None].

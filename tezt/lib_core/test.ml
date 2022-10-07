@@ -770,7 +770,7 @@ let output_junit filename =
 
 let next_id = ref 0
 
-let register ~__FILE__ ~title ~tags body =
+let register_aux ~__FILE__ ~title ~tags body =
   let file = Filename.basename __FILE__ in
   (match String_map.find_opt title !registered with
   | None -> ()
@@ -808,6 +808,57 @@ let register ~__FILE__ ~title ~tags body =
       }
     in
     registered := String_map.add title test !registered
+
+let register_parametric :
+    __FILE__:string ->
+    title:string ->
+    tags:string list ->
+    ('a -> unit Lwt.t) ->
+    'a Parametric.param ->
+    unit =
+ fun ~__FILE__ ~title ~tags f param ->
+  match param.values with
+  | [] ->
+      failwith
+        (sf
+           "test %s in %s was registered with an empty parameterization"
+           title
+           __FILE__)
+  | values ->
+      (Fun.flip List.iter) values @@ fun value ->
+      let tags = tags @ param.tags value in
+      let title =
+        (* A hack to preserve original titles *)
+        match param.to_string value with
+        | "()" -> title
+        | value_s -> title ^ " [" ^ value_s ^ "]"
+      in
+      register_aux ~__FILE__ ~title ~tags (fun () -> f value)
+
+let register_parametric_internal :
+    __FILE__:string ->
+    title:string ->
+    tags:string list ->
+    ('a -> unit Lwt.t) ->
+    'a Parametric.param ->
+    unit =
+ fun ~__FILE__ ~title ~tags f param ->
+  register_aux ~__FILE__ ~title ~tags (fun () ->
+      (Fun.flip Lwt_list.iter_s) param.values @@ fun value ->
+      Log.info
+        "Running test %s with parameters [%s]"
+        title
+        (param.to_string value) ;
+      f value)
+
+let register :
+    __FILE__:string ->
+    title:string ->
+    tags:string list ->
+    (unit -> unit Lwt.t) ->
+    unit =
+ fun ~__FILE__ ~title ~tags f ->
+  register_parametric ~__FILE__ ~title ~tags f Parametric.unit
 
 module type SCHEDULER = sig
   type request = Run_test of {test_title : string}
