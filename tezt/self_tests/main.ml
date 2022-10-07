@@ -30,4 +30,5 @@ let () =
   Test_daemon.register () ;
   Test_retry.register () ;
   Test_diff.register () ;
+  Test_parametric.register () ;
   Test.run ()
