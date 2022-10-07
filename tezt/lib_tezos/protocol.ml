@@ -204,6 +204,8 @@ let protocols_param ?(supports = Any_protocol) ~title protocols =
       name = Some "protocol";
       values = protocols;
       tags = (fun protocol -> [tag protocol]);
+      title_prefix = (fun proto -> Some (name proto));
+      title_tag = (fun _ -> None);
     }
 
 let register_test ~__FILE__ ~title ~tags ?supports body protocols =

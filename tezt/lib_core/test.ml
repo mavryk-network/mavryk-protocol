@@ -829,9 +829,17 @@ let register_parametric :
       let tags = tags @ param.tags value in
       let title =
         (* A hack to preserve original titles *)
-        match param.to_string value with
-        | "()" -> title
-        | value_s -> title ^ " [" ^ value_s ^ "]"
+        let title =
+          match param.title_prefix value with
+          | Some prefix -> sf "%s: %s" prefix title
+          | None -> title
+        in
+        let title =
+          match param.title_tag value with
+          | Some title_tag -> sf "%s [%s]" title title_tag
+          | None -> title
+        in
+        title
       in
       register_aux ~__FILE__ ~title ~tags (fun () -> f value)
 
