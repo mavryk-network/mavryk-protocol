@@ -293,7 +293,8 @@ module Dry_run = struct
     let amount = Tez.zero in
     let burn_cap = Tez.of_int 10 in
     let prg =
-      "file:./tezt/tests/contracts/proto_alpha/large_flat_contract.tz"
+      Michelson_script.(
+        find ["mini_scenarios"; "large_flat_contract"] protocol |> path)
     in
 
     Log.info

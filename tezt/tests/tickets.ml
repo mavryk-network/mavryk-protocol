@@ -32,16 +32,6 @@
 
 let hooks = Tezos_regression.hooks
 
-let protocol_dependent_path protocol contract =
-  let directory_name =
-    match protocol with
-    (* We use separate contracts because we introduced a backward incompatible change
-       for tickets in Lima: https://gitlab.com/tezos/tezos/-/merge_requests/5963/ *)
-    | Protocol.Alpha | Lima -> "proto_alpha"
-    | Kathmandu -> "proto_current_mainnet"
-  in
-  sf "file:./tezt/tests/contracts/%s/%s" directory_name contract
-
 let test_create_and_remove_tickets =
   Protocol.register_regression_test
     ~__FILE__
@@ -49,16 +39,16 @@ let test_create_and_remove_tickets =
     ~tags:["client"; "michelson"]
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let* contract_id =
-    Client.originate_contract
-      ~alias:"add_clear_tickets.tz"
+  let* _alias, contract_id =
+    Client.originate_contract_at
       ~amount:(Tez.of_int 200)
       ~src:"bootstrap1"
-      ~prg:(protocol_dependent_path protocol "add_clear_tickets.tz")
       ~init:"{}"
       ~burn_cap:Tez.one
       ~hooks
       client
+      ["mini_scenarios"; "add_clear_tickets"]
+      protocol
   in
   let* () =
     (* Add ticket with payload (Pair 1 "A") *)
@@ -122,28 +112,27 @@ let test_send_tickets_in_big_map =
     ~tags:["client"; "michelson"]
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let* receive_contract_hash =
-    Client.originate_contract
-      ~alias:"receive_tickets_in_big_map.tz"
+  let* _receive_contract_alias, receive_contract_hash =
+    Client.originate_contract_at
       ~amount:(Tez.of_int 200)
       ~src:"bootstrap1"
-      ~prg:
-        "file:./tezt/tests/contracts/proto_alpha/receive_tickets_in_big_map.tz"
       ~init:"{}"
       ~burn_cap:Tez.one
       ~hooks
       client
+      ["mini_scenarios"; "receive_tickets_in_big_map"]
+      protocol
   in
-  let* send_contract_hash =
-    Client.originate_contract
-      ~alias:"send_tickets_in_big_map.tz"
+  let* _alias_contract_hash, send_contract_hash =
+    Client.originate_contract_at
       ~amount:(Tez.of_int 200)
       ~src:"bootstrap1"
-      ~prg:(protocol_dependent_path protocol "send_tickets_in_big_map.tz")
       ~init:"Unit"
       ~burn_cap:Tez.one
       ~hooks
       client
+      ["mini_scenarios"; "send_tickets_in_big_map"]
+      protocol
   in
   let* () =
     Client.transfer

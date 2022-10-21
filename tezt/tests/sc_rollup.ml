@@ -863,7 +863,7 @@ let test_rollup_node_boots_into_initial_state ~kind =
 
 let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     ~internal ~kind =
-  let go ~internal client sc_rollup sc_rollup_node =
+  let go ~protocol ~internal client sc_rollup sc_rollup_node =
     let* genesis_info =
       RPC.Client.call ~hooks client
       @@ RPC.get_chain_block_context_sc_rollup_genesis_info sc_rollup
@@ -883,15 +883,15 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
       if not internal then return (level, None)
       else
         (* Originate forwarder contract to send internal messages to rollup *)
-        let* contract_id =
-          Client.originate_contract
-            ~alias:"rollup_deposit"
+        let* _alias, contract_id =
+          Client.originate_contract_at
             ~amount:Tez.zero
             ~src:Constant.bootstrap1.alias
-            ~prg:"file:./tezt/tests/contracts/proto_alpha/sc_rollup_forward.tz"
             ~init:"Unit"
             ~burn_cap:Tez.(of_int 1)
             client
+            ["mini_scenarios"; "sc_rollup_forward"]
+            protocol
         in
         let* () = Client.bake_for_and_wait client in
         Log.info
@@ -993,7 +993,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
           ~kind
           ?boot_sector
           (fun sc_rollup_address sc_rollup_node _filename ->
-            go ~internal:false client sc_rollup_address sc_rollup_node)
+            go ~protocol ~internal:false client sc_rollup_address sc_rollup_node)
           node
           client)
       protocols
@@ -1008,7 +1008,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
           ~kind
           ?boot_sector
           (fun sc_rollup_address sc_rollup_node _filename ->
-            go ~internal:true client sc_rollup_address sc_rollup_node)
+            go ~protocol ~internal:true client sc_rollup_address sc_rollup_node)
           node
           client)
       protocols
