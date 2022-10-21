@@ -2396,7 +2396,8 @@ let test_round_trip ~title ?before_init ~originator ~operator ~batch_signer
           ~alias:"withdraw_contract"
           ~amount:Tez.zero
           ~src:originator
-          ~prg:"file:./tezt/tests/contracts/proto_alpha/tx_rollup_withdraw.tz"
+          ~prg:
+            "file:./tezt/tests/contracts/proto_alpha/tickets_receive_and_store.tz"
           ~init:"None"
           ~burn_cap:Tez.one
           client
