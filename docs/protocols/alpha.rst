@@ -59,3 +59,5 @@ Internal
 - Clean up validation code. (MR :gl:`!6526`)
 
 - Remove ``Script_typed_ir.comparable_option_t``. (MR :gl:`!6513`)
+
+- Move interpreter logging to the plugin. (MR :gl:`5778`)
