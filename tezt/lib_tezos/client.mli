@@ -945,6 +945,47 @@ val spawn_originate_contract :
   t ->
   Process.t
 
+(** Originates the contract with name [n] for a given protocol [p].
+
+    This function passes [n] and [p] to [Contract.path]. See the documentation
+    there for more info.
+
+    Returns a pair [(alias, res)] where [alias] is a value which can be used to
+    identify the originated contract, and [res] is the originated contract hash.
+*)
+val originate_contract_at :
+  ?hooks:Process.hooks ->
+  ?log_output:bool ->
+  ?endpoint:endpoint ->
+  ?wait:string ->
+  ?init:string ->
+  ?burn_cap:Tez.t ->
+  ?gas_limit:int ->
+  ?dry_run:bool ->
+  amount:Tez.t ->
+  src:string ->
+  t ->
+  string list ->
+  Protocol.t ->
+  (string * string) Lwt.t
+
+(** Same as [originate_contract_at], but do not wait for the process to exit. *)
+val spawn_originate_contract_at :
+  ?hooks:Process.hooks ->
+  ?log_output:bool ->
+  ?endpoint:endpoint ->
+  ?wait:string ->
+  ?init:string ->
+  ?burn_cap:Tez.t ->
+  ?gas_limit:int ->
+  ?dry_run:bool ->
+  amount:Tez.t ->
+  src:string ->
+  t ->
+  string list ->
+  Protocol.t ->
+  string * Process.t
+
 (** Convert the given smart contract from Michelson to JSON string. *)
 val convert_script_to_json :
   ?endpoint:endpoint -> script:string -> t -> Ezjsonm.value Lwt.t
