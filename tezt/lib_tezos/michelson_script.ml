@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let default_prefix = "michelson_scripts"
+let default_prefix = "michelson_test_scripts"
 
 type version_range = {range_start : int; range_end : int option}
 
