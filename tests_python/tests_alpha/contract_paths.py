@@ -7,10 +7,7 @@ from client.client import Client
 
 from . import protocol
 
-
-MICHELSON_TEST_SCRIPTS = path.join(
-    paths.TEZOS_HOME, 'tests_python', 'contracts'
-)
+MICHELSON_TEST_SCRIPTS = path.join(paths.TEZOS_HOME, 'michelson_test_scripts')
 
 michelson_script_locator = MichelsonScriptLocator(
     MICHELSON_TEST_SCRIPTS, protocol.NUMBER

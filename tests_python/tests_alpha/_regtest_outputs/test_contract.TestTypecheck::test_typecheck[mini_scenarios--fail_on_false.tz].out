@@ -1,0 +1,13 @@
+tests_alpha/test_contract.py::TestTypecheck::test_typecheck[mini_scenarios/fail_on_false.tz]
+
+Well typed
+Gas remaining: 1039995.659 units remaining
+{ parameter bool ;
+  storage unit ;
+  code { UNPAIR
+         /* [ bool : unit ] */ ;
+         IF { NIL operation
+              /* [ list operation : unit ] */ ;
+              PAIR
+              /* [ pair (list operation) unit ] */ }
+            { DROP /* [] */ ; PUSH string "bang" /* [ string ] */ ; FAILWITH /* [] */ } } }

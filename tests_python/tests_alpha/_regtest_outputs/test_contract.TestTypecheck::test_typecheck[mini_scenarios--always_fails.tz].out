@@ -1,0 +1,5 @@
+tests_alpha/test_contract.py::TestTypecheck::test_typecheck[mini_scenarios/always_fails.tz]
+
+Well typed
+Gas remaining: 1039999.431 units remaining
+{ parameter string ; storage unit ; code FAILWITH /* [] */ }
