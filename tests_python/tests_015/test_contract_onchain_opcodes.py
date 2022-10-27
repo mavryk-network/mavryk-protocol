@@ -42,7 +42,7 @@ class TestContractOnchainOpcodes:
         # Create a contract and transfer 100 ꜩ to it
         init_with_transfer(
             client,
-            ['opcodes', 'store_input'],
+            ['opcodes', 'id'],
             '""',
             100,
             'bootstrap1',

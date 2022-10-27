@@ -1273,20 +1273,12 @@ class TestMiniScenarios:
         assert client.get_balance('create_contract') == 900
 
     # Originates a contract that when called, creates a contract with a
-    # rootname annotation. Such annotations comes in two flavors, thus the
-    # parameterization. Then calls the first contract and verifies the
+    # rootname annotation. Then calls the first contract and verifies the
     # existence and type of the root entrypoint of the create contract.
-    @pytest.mark.parametrize(
-        "contract",
-        [
-            'create_contract_rootname',
-            'create_contract_rootname_alt',
-        ],
-    )
     def test_create_contract_rootname_originate(
-        self, client: Client, session: dict, contract
+        self, client: Client, session: dict
     ):
-        path = find_script(['opcodes', contract])
+        path = find_script(['opcodes', 'create_contract_rootname'])
         origination_res = originate(client, session, path, 'None', 1000)
 
         transfer_result = client.transfer(
@@ -1884,7 +1876,7 @@ class TestScriptHashMultiple:
         ]
 
     def test_contract_hashes_mixed(self, client: Client):
-        contract_path = find_script(['attic', 'empty'])
+        contract_path = find_script(['opcodes', 'noop'])
         script_empty_hash = '''
 expruat2BS4KCwn9kbopeX1ZwxtrtJbyFhpnpnG6A5KdCBCwHNsdod
         '''.strip()
