@@ -1,4 +1,4 @@
-tests_014/test_contract.py::TestTypecheck::test_typecheck[non_regression/bug_262.tz]
+tests_alpha/test_contract.py::TestTypecheck::test_typecheck[non_regression/262_bug.tz]
 
 Well typed
 Gas remaining: 1039995.909 units remaining
