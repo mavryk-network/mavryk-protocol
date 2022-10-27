@@ -1,0 +1,3 @@
+(executable (name michelson_script_path)
+ (libraries tezt-tezos)
+)
