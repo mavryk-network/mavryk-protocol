@@ -9,7 +9,7 @@ from . import protocol
 
 
 MICHELSON_TEST_SCRIPTS = path.join(
-    paths.TEZOS_HOME, 'tests_python', 'contracts_alpha'
+    paths.TEZOS_HOME, 'tests_python', 'contracts'
 )
 
 michelson_script_locator = MichelsonScriptLocator(
