@@ -34,18 +34,15 @@ let random_iterations = 10
 
 let hooks = Tezos_regression.hooks
 
-let contract_path protocol contract =
-  sf
-    "file:./tests_python/contracts_%s/%s"
-    (match protocol with
-    | Protocol.Alpha -> "alpha"
-    | _ -> sf "%03d" @@ Protocol.number protocol)
-    contract
-
 let check_contract protocol client ~contract ~input ~expected_storage =
-  let prg = contract_path protocol contract in
   let* actual_storage =
-    Client.run_script ~hooks ~prg ~storage:"None" ~input client
+    Client.run_script_at
+      ~hooks
+      ~storage:"None"
+      ~input
+      client
+      ["opcodes"; contract]
+      protocol
   in
   Check.(
     (actual_storage = Format.asprintf "(Some %s)" expected_storage)
@@ -131,7 +128,7 @@ end) : CLASS with type t = M.t = struct
     check_contract
       protocol
       client
-      ~contract:("opcodes/store_" ^ bls name ^ ".tz")
+      ~contract:("store_" ^ bls name)
       ~input
       ~expected_storage:input
 
@@ -142,7 +139,7 @@ end) : CLASS with type t = M.t = struct
     check_binop
       protocol
       client
-      ~contract:("opcodes/add_" ^ bls name ^ ".tz")
+      ~contract:("add_" ^ bls name)
       ~expected_storage
       ~arg0
       ~arg1
@@ -155,7 +152,7 @@ end) : CLASS with type t = M.t = struct
     check_binop
       protocol
       client
-      ~contract:("opcodes/mul_" ^ bls name ^ ".tz")
+      ~contract:("mul_" ^ bls name)
       ~expected_storage
       ~arg0
       ~arg1
@@ -166,7 +163,7 @@ end) : CLASS with type t = M.t = struct
     check_contract
       protocol
       client
-      ~contract:("opcodes/neg_" ^ bls name ^ ".tz")
+      ~contract:("neg_" ^ bls name)
       ~input
       ~expected_storage
 end
