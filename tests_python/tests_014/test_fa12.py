@@ -2,12 +2,11 @@
 FA1.2 standard. Several implementations of the standard are tested."""
 
 import json
-import os
 import pytest
 from tools import utils
 from tools.constants import IDENTITIES
 from client.client import Client
-from .contract_paths import CONTRACT_PATH
+from .contract_paths import find_script
 
 BAKE_ARGS = ['--minimal-timestamp']
 BURN_CAP_ARGS = ['--burn-cap', '1.0']
@@ -38,12 +37,12 @@ def check_expected_allowance(client, token_contract, src, dst, expected):
     params=[
         (
             'fa12_reference',
-            'fa12_reference.tz',
+            'fa12_reference',
             lambda key: f'Pair {{}} (Pair "{key}" (Pair False 0))',
         ),
         (
             'lqt_fa12',
-            'lqt_fa12.mligo.tz',
+            'lqt_fa12.mligo',
             lambda key: f'Pair {{}} {{}} "{key}" 0',
         ),
     ],
@@ -51,7 +50,7 @@ def check_expected_allowance(client, token_contract, src, dst, expected):
 def token_contract(client: Client, session: dict, request):
     (contract_alias, contract_path, init_fun) = request.param
 
-    path = os.path.join(CONTRACT_PATH, 'mini_scenarios', contract_path)
+    path = find_script(['mini_scenarios', contract_path])
     identity = IDENTITIES['bootstrap2']['identity']
     init = init_fun(identity)
 
@@ -109,7 +108,7 @@ class TestFA12Basic:
     # NOTE: this test does not depend on the token_contract
     # fixture (nor should it)
     def test_check_contract_fail(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'entrypoints', 'manager.tz')
+        path = find_script(['entrypoints', 'manager'])
         identity = IDENTITIES['bootstrap2']['identity']
         init = f'"{identity}"'
         token_contract = 'manager-fail'
