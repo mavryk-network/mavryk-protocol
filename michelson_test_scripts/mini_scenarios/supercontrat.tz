@@ -1,0 +1,15 @@
+parameter (or (unit %renew) (unit %keep));
+storage (big_map (nat :a) string);
+code {
+       UNPAIR;
+       IF_LEFT
+         {
+           DROP 2;
+           EMPTY_BIG_MAP nat string;
+         }
+         {
+           DROP;
+         };
+       NIL operation;
+       PAIR
+     }
