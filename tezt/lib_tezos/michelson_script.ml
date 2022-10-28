@@ -107,9 +107,8 @@ let parse_basename : string -> (string * version_range) option =
                 Some (name, version_range)
             | None -> None))
 
-let find_all =
+let find_all ?(prefix = default_prefix) () =
   let maxdepth = Int.max_int in
-  let prefix = default_prefix in
   let dirname = [] in
   lazy
     (let rec walk depth dirname =
@@ -138,11 +137,12 @@ let find ?(prefix = default_prefix) name protocol =
   let expected_dirname_s = String.concat Filename.dir_sep expected_dirname in
   let expected_version = Protocol.number protocol in
   match
-    Lazy.force find_all
+    Lazy.force (find_all ~prefix ())
     |> List.filter (fun t ->
            t.dirname = expected_dirname
            && t.name = expected_name
            && protocol |> in_range t.version_range)
+    |> List.rev
   with
   | t :: _ -> t
   | [] ->
@@ -166,7 +166,7 @@ let name_s t = name t |> String.concat "/"
 let all ?(prefix = default_prefix) ?(dirs = [[]]) ?(maxdepth = Int.max_int)
     protocol =
   let dirs = match dirs with [] -> [[]] | _ -> dirs in
-  Lazy.force find_all
+  Lazy.force (find_all ~prefix ())
   |> List.filter (fun t ->
          prefix = t.prefix
          && List.exists (fun dir -> List.equal String.equal dir t.dirname) dirs
