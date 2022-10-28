@@ -1,4 +1,3 @@
-import os
 import re
 import itertools
 from typing import List, Union, Any
@@ -9,10 +8,11 @@ from tools import utils
 from tools.constants import IDENTITIES
 from tools.utils import originate
 from .contract_paths import (
-    CONTRACT_PATH,
-    ILLTYPED_CONTRACT_PATH,
+    find_script,
+    find_script_by_name,
     all_contracts,
     all_legacy_contracts,
+    MICHELSON_TEST_SCRIPTS,
 )
 
 
@@ -28,7 +28,7 @@ exprtpyospPfMqcARmu5FGukprC7kbbe4jb4zxFd4Gxrp2vcCPjRNa
 @pytest.mark.incremental
 class TestManager:
     def test_manager_origination(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'entrypoints', 'manager.tz')
+        path = find_script(['entrypoints', 'manager'])
         pubkey = IDENTITIES['bootstrap2']['identity']
         originate(client, session, path, f'"{pubkey}"', 1000)
         originate(
@@ -36,18 +36,14 @@ class TestManager:
         )
 
     def test_delegatable_origination(self, client: Client, session: dict):
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'delegatable_target.tz'
-        )
+        path = find_script(['entrypoints', 'delegatable_target'])
         pubkey = IDENTITIES['bootstrap2']['identity']
         originate(
             client, session, path, f'Pair "{pubkey}" (Pair "hello" 45)', 1000
         )
 
     def test_target_with_entrypoints_origination(self, client: Client, session):
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'big_map_entrypoints.tz'
-        )
+        path = find_script(['entrypoints', 'big_map_entrypoints'])
         originate(
             client, session, path, 'Pair {} {}', 1000, contract_name='target'
         )
@@ -55,9 +51,7 @@ class TestManager:
     def test_target_without_entrypoints_origination(
         self, client: Client, session
     ):
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'no_entrypoint_target.tz'
-        )
+        path = find_script(['entrypoints', 'no_entrypoint_target'])
         originate(
             client,
             session,
@@ -68,9 +62,7 @@ class TestManager:
         )
 
     def test_target_without_default_origination(self, client: Client, session):
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'no_default_target.tz'
-        )
+        path = find_script(['entrypoints', 'no_default_target'])
         originate(
             client,
             session,
@@ -81,7 +73,7 @@ class TestManager:
         )
 
     def test_target_with_root_origination(self, client: Client, session):
-        path = os.path.join(CONTRACT_PATH, 'entrypoints', 'rooted_target.tz')
+        path = find_script(['entrypoints', 'rooted_target'])
         originate(
             client,
             session,
@@ -292,13 +284,18 @@ class TestManager:
 @pytest.mark.contract
 @pytest.mark.incremental
 class TestExecutionOrdering:
-    STORER = f'{CONTRACT_PATH}/mini_scenarios/execution_order_storer.tz'
-    CALLER = f'{CONTRACT_PATH}/mini_scenarios/execution_order_caller.tz'
-    APPENDER = f'{CONTRACT_PATH}/mini_scenarios/execution_order_appender.tz'
+    STORER = ['mini_scenarios', 'execution_order_storer']
+    CALLER = ['mini_scenarios', 'execution_order_caller']
+    APPENDER = ['mini_scenarios', 'execution_order_appender']
 
     def originate_storer(self, client: Client, session: dict):
         origination = originate(
-            client, session, self.STORER, '""', 0, arguments=['--force']
+            client,
+            session,
+            find_script(self.STORER),
+            '""',
+            0,
+            arguments=['--force'],
         )
         session['storer'] = origination.contract
         utils.bake(client, bake_for='bootstrap3')
@@ -310,7 +307,7 @@ class TestExecutionOrdering:
         origination = originate(
             client,
             session,
-            self.APPENDER,
+            find_script(self.APPENDER),
             f'Pair "{storer}" "{argument}"',
             0,
             contract_name=f'appender-{argument}',
@@ -327,7 +324,7 @@ class TestExecutionOrdering:
         origination = originate(
             client,
             session,
-            self.CALLER,
+            find_script(self.CALLER),
             storage,
             0,
             contract_name=f'caller-{hash(storage)}',
@@ -386,10 +383,7 @@ class TestTypecheck:
     @pytest.mark.parametrize("contract", all_contracts())
     def test_typecheck(self, client_regtest: Client, contract):
         client = client_regtest
-        assert contract.endswith(
-            '.tz'
-        ), "test contract should have .tz extension"
-        client.typecheck(os.path.join(CONTRACT_PATH, contract), details=True)
+        client.typecheck(find_script_by_name(contract), details=True)
 
 
 @pytest.mark.slow
@@ -397,35 +391,29 @@ class TestTypecheck:
 class TestContracts:
     """Test type checking errors"""
 
-    @pytest.mark.parametrize("contract", all_legacy_contracts())
-    def test_deprecated_typecheck_breaks(self, client, contract):
-        if contract in [
-            "legacy/create_contract.tz",
-            "legacy/create_contract_flags.tz",
-            "legacy/create_contract_rootname.tz",
-        ]:
-            with utils.assert_run_failure(r'ill-typed script'):
-                client.typecheck(os.path.join(CONTRACT_PATH, contract))
-        else:
-            with utils.assert_run_failure(r'Use of deprecated instruction'):
-                client.typecheck(os.path.join(CONTRACT_PATH, contract))
+    ill_typed_legacy_scripts = [
+        'legacy/create_contract.tz',
+        'legacy/create_contract_flags.tz',
+        'legacy/create_contract_rootname.tz',
+    ]
 
     @pytest.mark.parametrize("contract", all_legacy_contracts())
-    def test_deprecated_typecheck_in_legacy(self, client, contract):
-        if contract in [
-            "legacy/create_contract.tz",
-            "legacy/create_contract_flags.tz",
-            "legacy/create_contract_rootname.tz",
-        ]:
+    def test_deprecated_typecheck_breaks(self, client, contract: str):
+        if contract in self.ill_typed_legacy_scripts:
             with utils.assert_run_failure(r'ill-typed script'):
-                client.typecheck(
-                    os.path.join(CONTRACT_PATH, contract), legacy=True
-                )
+                client.typecheck(find_script_by_name(contract))
         else:
             with utils.assert_run_failure(r'Use of deprecated instruction'):
-                client.typecheck(
-                    os.path.join(CONTRACT_PATH, contract), legacy=True
-                )
+                client.typecheck(find_script_by_name(contract))
+
+    @pytest.mark.parametrize("contract", all_legacy_contracts())
+    def test_deprecated_typecheck_in_legacy(self, client, contract: str):
+        if contract in self.ill_typed_legacy_scripts:
+            with utils.assert_run_failure(r'ill-typed script'):
+                client.typecheck(find_script_by_name(contract), legacy=True)
+        else:
+            with utils.assert_run_failure(r'Use of deprecated instruction'):
+                client.typecheck(find_script_by_name(contract), legacy=True)
 
     @pytest.mark.parametrize(
         "contract,error_pattern",
@@ -604,7 +592,9 @@ class TestContracts:
     )
     def test_ill_typecheck(self, client: Client, contract, error_pattern):
         with utils.assert_run_failure(error_pattern):
-            client.typecheck(os.path.join(ILLTYPED_CONTRACT_PATH, contract))
+            client.typecheck(
+                find_script(['ill_typed', contract.removesuffix('.tz')])
+            )
 
     def test_zero_transfer_to_implicit_contract(self, client):
         pubkey = IDENTITIES['bootstrap3']['identity']
@@ -673,7 +663,7 @@ SECOND_EXPLOSION = '''
 @pytest.mark.contract
 class TestView:
     def test_deploy_view_lib(self, client, session):
-        path = f'{CONTRACT_PATH}/opcodes/view_toplevel_lib.tz'
+        path = find_script(['opcodes', 'view_toplevel_lib'])
         originate(client, session, path, '3', 999)
         session['lib'] = session['contract']
         client.bake('bootstrap3', ["--minimal-timestamp"])
@@ -692,7 +682,7 @@ class TestView:
         ],
     )
     def test_runtime(self, client, session, contract, init_storage, expected):
-        path = f'{CONTRACT_PATH}/opcodes/' + contract + '.tz'
+        path = find_script(['opcodes', contract])
         originate(client, session, path, init_storage, 0)
         client.transfer(
             0,
@@ -716,7 +706,7 @@ class TestView:
         session,
     ):
         contract = 'create_contract_with_view'
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         originate(client, session, path, 'None', 0)
         client.transfer(
             0,
@@ -733,7 +723,7 @@ class TestView:
 
         addr = client.get_storage(contract).split()[1]
         contract = 'view_op_constant'
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         originate(client, session, path, '2', 0)
         expected = "10"
 
@@ -754,7 +744,7 @@ class TestView:
 
     def test_step_constants(self, client, session):
         contract = 'view_op_test_step_contants'
-        path = f'{CONTRACT_PATH}/opcodes/' + contract + '.tz'
+        path = find_script(['opcodes', contract])
         originate(client, session, path, 'None', 0)
         client.transfer(
             0,
@@ -797,7 +787,7 @@ class TestView:
         ],
     )
     def test_self(self, client, session, contract):
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         lib_address = session['lib']
         originate(client, session, path, f'"{lib_address}"', 1000)
         client.bake('bootstrap2', ["--minimal-timestamp"])
@@ -825,7 +815,7 @@ class TestView:
         ],
     )
     def test_self_address(self, client, session, contract):
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         lib_address = session['lib']
         originate(client, session, path, f'"{lib_address}"', 1000)
         client.bake('bootstrap2', ["--minimal-timestamp"])
@@ -853,7 +843,7 @@ class TestView:
         ],
     )
     def test_sender(self, client, session, contract):
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         lib_address = session['lib']
         originate(client, session, path, f'"{lib_address}"', 1000)
         client.bake('bootstrap2', ["--minimal-timestamp"])
@@ -881,7 +871,7 @@ class TestView:
         ],
     )
     def test_balance_after_view(self, client, session, contract):
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         lib_address = session['lib']
         initial_balance = 1000
         originate(client, session, path, '0', initial_balance)
@@ -914,7 +904,7 @@ class TestView:
         ],
     )
     def test_amount_after_view(self, client, session, contract):
-        path = f'{CONTRACT_PATH}/opcodes/{contract}.tz'
+        path = find_script(['opcodes', contract])
         lib_address = session['lib']
         originate(client, session, path, '0', 1000)
         client.bake('bootstrap2', ["--minimal-timestamp"])
@@ -935,7 +925,7 @@ class TestView:
 
     def test_recursion(self, client, session):
         contract = 'view_rec'
-        path = f'{CONTRACT_PATH}/opcodes/' + contract + '.tz'
+        path = find_script(['opcodes', contract])
         originate(client, session, path, 'Unit', 0)
         with utils.assert_run_failure(
             "Gas limit exceeded during typechecking or execution."
@@ -1042,7 +1032,7 @@ class TestView:
     def test_typechecking_error(
         self, client, session, contract, expected_error
     ):
-        path = f'{CONTRACT_PATH}/ill_typed/' + contract + '.tz'
+        path = find_script(['ill_typed', contract])
         with utils.assert_run_failure(expected_error):
             originate(client, session, path, '4', 0)
 
@@ -1146,15 +1136,13 @@ class TestGasBound:
 @pytest.mark.contract
 class TestChainId:
     def test_chain_id_opcode(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'opcodes', 'chain_id.tz')
+        path = find_script(['opcodes', 'chain_id'])
         originate(client, session, path, 'Unit', 0)
         client.call('bootstrap2', "chain_id", [])
         utils.bake(client, bake_for='bootstrap5')
 
     def test_chain_id_authentication_origination(self, client: Client, session):
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'authentication.tz'
-        )
+        path = find_script(['mini_scenarios', 'authentication'])
         pubkey = IDENTITIES['bootstrap1']['public']
         originate(client, session, path, f'Pair 0 "{pubkey}"', 1000)
         utils.bake(client, bake_for='bootstrap5')
@@ -1190,7 +1178,7 @@ class TestChainId:
 @pytest.mark.contract
 class TestBigMapToSelf:
     def test_big_map_to_self_origination(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'opcodes', 'big_map_to_self.tz')
+        path = find_script(['opcodes', 'big_map_to_self'])
         originate(client, session, path, '{}', 0)
         utils.bake(client, bake_for='bootstrap5')
 
@@ -1208,11 +1196,11 @@ class TestNonRegression:
     """Test contract-related non-regressions"""
 
     def test_issue_242_originate(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'non_regression', 'bug_262.tz')
+        path = find_script(['non_regression', '262_bug'])
         originate(client, session, path, 'Unit', 1)
 
     def test_issue_242_assert_balance(self, client: Client):
-        assert client.get_balance('bug_262') == 1
+        assert client.get_balance('262_bug') == 1
 
     def test_issue_843(self, client: Client, session: dict):
         """Regression test for the following bug:
@@ -1225,7 +1213,7 @@ class TestNonRegression:
         and storage are used directly and when they are first
         normalized to optimized format before origination.
         """
-        path = os.path.join(CONTRACT_PATH, 'non_regression', 'bug_843.tz')
+        path = find_script(['non_regression', '843_bug'])
         addr1 = '"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"'
         op1 = originate(
             client,
@@ -1253,7 +1241,7 @@ class TestMiniScenarios:
 
     # replay.tz related tests
     def test_replay_originate(self, client: Client, session: dict):
-        path = os.path.join(CONTRACT_PATH, 'mini_scenarios', 'replay.tz')
+        path = find_script(['mini_scenarios', 'replay'])
         originate(client, session, path, 'Unit', 0)
 
     def test_replay_transfer_fail(self, client: Client):
@@ -1262,9 +1250,7 @@ class TestMiniScenarios:
 
     # create_contract.tz related tests
     def test_create_contract_originate(self, client: Client, session: dict):
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'create_contract.tz'
-        )
+        path = find_script(['mini_scenarios', 'create_contract'])
         originate(client, session, path, 'Unit', 1000)
 
     def test_create_contract_balance(self, client: Client):
@@ -1293,14 +1279,14 @@ class TestMiniScenarios:
     @pytest.mark.parametrize(
         "contract",
         [
-            'create_contract_rootname.tz',
-            'create_contract_rootname_alt.tz',
+            'create_contract_rootname',
+            'create_contract_rootname_alt',
         ],
     )
     def test_create_contract_rootname_originate(
         self, client: Client, session: dict, contract
     ):
-        path = os.path.join(CONTRACT_PATH, 'opcodes', contract)
+        path = find_script(['opcodes', contract])
         origination_res = originate(client, session, path, 'None', 1000)
 
         transfer_result = client.transfer(
@@ -1327,9 +1313,7 @@ class TestMiniScenarios:
 
     # default_account.tz related tests
     def test_default_account_originate(self, client: Client, session: dict):
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'default_account.tz'
-        )
+        path = find_script(['mini_scenarios', 'default_account'])
         originate(client, session, path, 'Unit', 1000)
 
     def test_default_account_transfer_then_bake(self, client: Client):
@@ -1355,9 +1339,7 @@ class TestMiniScenarios:
     def test_reveal_signed_preimage_originate(
         self, client: Client, session: dict
     ):
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'reveal_signed_preimage.tz'
-        )
+        path = find_script(['mini_scenarios', 'reveal_signed_preimage'])
         byt = (
             '0x9995c2ef7bcc7ae3bd15bdd9b02'
             + 'dc6e877c27b26732340d641a4cbc6524813bb'
@@ -1428,9 +1410,7 @@ class TestMiniScenarios:
     def test_vote_for_delegate_originate(self, client: Client, session: dict):
         b_3 = IDENTITIES['bootstrap3']['identity']
         b_4 = IDENTITIES['bootstrap4']['identity']
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'vote_for_delegate.tz'
-        )
+        path = find_script(['mini_scenarios', 'vote_for_delegate'])
         storage = f'''(Pair (Pair "{b_3}" None) (Pair "{b_4}" None))'''
         originate(client, session, path, storage, 1000)
         assert client.get_delegate('vote_for_delegate').delegate is None
@@ -1503,9 +1483,7 @@ class TestMiniScenarios:
         assert result.delegate == b_5
 
     def test_multiple_entrypoints_counter(self, session: dict, client: Client):
-        path = os.path.join(
-            CONTRACT_PATH, 'mini_scenarios', 'multiple_entrypoints_counter.tz'
-        )
+        path = find_script(['mini_scenarios', 'multiple_entrypoints_counter'])
 
         storage = 'None'
 
@@ -1533,9 +1511,7 @@ class TestMiniScenarios:
          with entrypoint %A of type unit used in
         test_simple_entrypoints"""
 
-        contract_target = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'simple_entrypoints.tz'
-        )
+        contract_target = find_script(['entrypoints', 'simple_entrypoints'])
         originate(client, session, contract_target, 'Unit', 0)
         utils.bake(client, bake_for='bootstrap5')
 
@@ -1854,20 +1830,15 @@ class TestOrderInTopLevelDoesNotMatter:
 class TestScriptHashRegression:
     @pytest.mark.parametrize(
         "client_regtest_custom_scrubber",
-        [[(re.escape(CONTRACT_PATH), '[CONTRACT_PATH]')]],
+        [[(re.escape(MICHELSON_TEST_SCRIPTS), '[CONTRACT_PATH]')]],
         indirect=True,
     )
     def test_contract_hash(self, client_regtest_custom_scrubber: Client):
         client = client_regtest_custom_scrubber
         contracts = all_contracts()
         contracts.sort()
-        for contract in contracts:
-            assert contract.endswith(
-                '.tz'
-            ), "test contract should have .tz extension"
-
         client.hash_script(
-            [os.path.join(CONTRACT_PATH, contract) for contract in contracts],
+            [find_script_by_name(name) for name in contracts],
             display_names=True,
         )
 
@@ -1913,7 +1884,7 @@ class TestScriptHashMultiple:
         ]
 
     def test_contract_hashes_mixed(self, client: Client):
-        contract_path = os.path.join(CONTRACT_PATH, 'attic', 'empty.tz')
+        contract_path = find_script(['attic', 'empty'])
         script_empty_hash = '''
 expruat2BS4KCwn9kbopeX1ZwxtrtJbyFhpnpnG6A5KdCBCwHNsdod
         '''.strip()
@@ -1995,7 +1966,7 @@ class TestNormalize:
     @pytest.mark.parametrize('mode', modes)
     def test_normalize_script(self, client_regtest_scrubbed, mode):
         client = client_regtest_scrubbed
-        path = os.path.join(CONTRACT_PATH, 'opcodes', 'comb-literals.tz')
+        path = find_script(['opcodes', 'comb-literals'])
         client.normalize_script(path, mode=mode)
 
     types = [
@@ -2159,9 +2130,7 @@ code {{
           - the entrypoint is non-empty, one of the declared entrypoints, and
             <ty> is the type associated to that entrypoint."""
 
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'simple_entrypoints.tz'
-        )
+        path = find_script(['entrypoints', 'simple_entrypoints'])
         origination = originate(client, session, path, 'Unit', 0)
         kt1 = origination.contract
         root_type = 'or (unit %A) (or (string %B) (nat %C))'
@@ -2186,9 +2155,7 @@ code {{
           - the entrypoint is non-empty, one of the declared entrypoints, and
             <ty> is the type associated to that entrypoint."""
 
-        path = os.path.join(
-            CONTRACT_PATH, 'entrypoints', 'delegatable_target.tz'
-        )
+        path = find_script(['entrypoints', 'delegatable_target'])
         initial_storage = 'Pair "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" "" 0'
         origination = originate(client, session, path, initial_storage, 0)
         kt1 = origination.contract
