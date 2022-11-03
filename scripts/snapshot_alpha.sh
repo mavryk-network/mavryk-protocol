@@ -68,8 +68,7 @@ rm -rf /tmp/tezos_proto_doc_snapshot
 
 echo "Copying tests_python/{contracts,tests}_alpha to tests_python/{contracts,tests}_${version}"
 mkdir /tmp/tezos_proto_tests_python_snapshot
-git archive HEAD tests_python/{contracts,tests}_alpha | tar -x -C /tmp/tezos_proto_tests_python_snapshot
-mv /tmp/tezos_proto_tests_python_snapshot/tests_python/contracts_alpha tests_python/contracts_${version}
+git archive HEAD tests_python/tests_alpha | tar -x -C /tmp/tezos_proto_tests_python_snapshot
 mv /tmp/tezos_proto_tests_python_snapshot/tests_python/tests_alpha tests_python/tests_${version}
 rm -rf /tmp/tezos_proto_tests_python_snapshot
 
