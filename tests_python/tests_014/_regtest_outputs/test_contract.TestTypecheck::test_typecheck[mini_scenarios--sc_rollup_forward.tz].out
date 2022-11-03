@@ -1,0 +1,25 @@
+tests_014/test_contract.py::TestTypecheck::test_typecheck[mini_scenarios/sc_rollup_forward.tz]
+
+Well typed
+Gas remaining: 1039991.133 units remaining
+{ parameter (pair address string) ;
+  storage unit ;
+  code { UNPAIR
+         /* [ pair address string : unit ] */ ;
+         DIP { NIL operation /* [ list operation : unit ] */ }
+         /* [ pair address string : list operation : unit ] */ ;
+         UNPAIR
+         /* [ address : string : list operation : unit ] */ ;
+         CONTRACT string
+         /* [ option (contract string) : string : list operation : unit ] */ ;
+         ASSERT_SOME ;
+         SWAP
+         /* [ string : contract string : list operation : unit ] */ ;
+         DIP { PUSH mutez 0 /* [ mutez : contract string : list operation : unit ] */ }
+         /* [ string : mutez : contract string : list operation : unit ] */ ;
+         TRANSFER_TOKENS
+         /* [ operation : list operation : unit ] */ ;
+         CONS
+         /* [ list operation : unit ] */ ;
+         PAIR
+         /* [ pair (list operation) unit ] */ } }

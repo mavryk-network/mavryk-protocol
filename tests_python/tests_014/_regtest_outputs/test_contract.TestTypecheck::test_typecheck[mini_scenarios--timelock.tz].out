@@ -1,0 +1,33 @@
+tests_014/test_contract.py::TestTypecheck::test_typecheck[mini_scenarios/timelock.tz]
+
+Well typed
+Gas remaining: 1039989.341 units remaining
+{ storage bytes ;
+  parameter (pair chest_key chest) ;
+  code { UNPAIR
+         /* [ pair chest_key chest : bytes ] */ ;
+         DIP { DROP /* [] */ }
+         /* [ pair chest_key chest ] */ ;
+         UNPAIR
+         /* [ chest_key : chest ] */ ;
+         DIIP { PUSH nat 1000 /* [ nat ] */ }
+         /* [ chest_key : chest : nat ] */ ;
+         OPEN_CHEST
+         /* [ or bytes bool ] */ ;
+         IF_LEFT
+           { NIL operation
+             /* [ list operation : bytes ] */ ;
+             PAIR
+             /* [ pair (list operation) bytes ] */ }
+           { IF { PUSH bytes 0x01
+                  /* [ bytes ] */ ;
+                  NIL operation
+                  /* [ list operation : bytes ] */ ;
+                  PAIR
+                  /* [ pair (list operation) bytes ] */ }
+                { PUSH bytes 0x00
+                  /* [ bytes ] */ ;
+                  NIL operation
+                  /* [ list operation : bytes ] */ ;
+                  PAIR
+                  /* [ pair (list operation) bytes ] */ } } } }
