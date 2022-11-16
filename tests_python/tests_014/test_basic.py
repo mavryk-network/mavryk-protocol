@@ -1,6 +1,7 @@
 from os import path
 from typing import List
 import pytest
+import sys
 from client.client import Client
 from tools import constants, utils
 from tools.paths import ACCOUNT_PATH
@@ -10,6 +11,7 @@ from .contract_paths import CONTRACT_PATH
 
 BAKE_ARGS: List[str] = []
 TRANSFER_ARGS = ['--burn-cap', '0.257']
+sys.set_int_max_str_digits(215040)
 
 
 @pytest.mark.incremental
