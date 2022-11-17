@@ -1,7 +1,7 @@
 from os import path
 from typing import List
-import pytest
 import sys
+import pytest
 from client.client import Client
 from tools import constants, utils
 from tools.paths import ACCOUNT_PATH
