@@ -30,14 +30,7 @@
    Subject:      Tests handling oversized contract call arguments
 *)
 
-let contract_path protocol kind contract =
-  sf
-    "tests_python/contracts_%s/%s/%s"
-    (match protocol with
-    | Protocol.Alpha -> "alpha"
-    | _ -> sf "%03d" @@ Protocol.number protocol)
-    kind
-    contract
+let prefix = "tests_python/contracts"
 
 (* Test that a large operation under 32KB can be injected in the node
    (variant using a big nat). *)
@@ -54,16 +47,15 @@ let test_operation_size_with_nat_ok =
     Z.(pow (of_int 2) exp |> to_string)
   in
   let* _node, client = Client.init_with_protocol ~protocol `Client () in
-  let prg = contract_path protocol "opcodes" "munch.tz" in
-  let munch = "munch" in
-  let* _contract_address =
-    Client.originate_contract
+  let* munch, _contract_address =
+    Client.originate_contract_at
       ~burn_cap:Tez.one
       ~amount:Tez.zero
       ~src:"bootstrap1"
-      ~alias:munch
-      ~prg
+      ~prefix
       client
+      ["opcodes"; "munch"]
+      protocol
   in
   let* () = Client.bake_for_and_wait client in
   Client.transfer
@@ -91,16 +83,15 @@ let test_operation_size_with_nat_fail =
     Z.(pow (of_int 2) exp |> to_string)
   in
   let* _node, client = Client.init_with_protocol ~protocol `Client () in
-  let prg = contract_path protocol "opcodes" "munch.tz" in
-  let munch = "munch" in
-  let* _contract_address =
-    Client.originate_contract
+  let* munch, _contract_address =
+    Client.originate_contract_at
       ~burn_cap:Tez.one
       ~amount:Tez.zero
       ~src:"bootstrap1"
-      ~alias:munch
-      ~prg
+      ~prefix
       client
+      ["opcodes"; "munch"]
+      protocol
   in
   let* () = Client.bake_for_and_wait client in
   Client.spawn_transfer

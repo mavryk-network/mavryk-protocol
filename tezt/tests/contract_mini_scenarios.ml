@@ -31,27 +31,20 @@
    Subject:      Test mini scenarios
 *)
 
-let contract_path protocol kind contract =
-  sf
-    "tests_python/contracts_%s/%s/%s"
-    (match protocol with
-    | Protocol.Alpha -> "alpha"
-    | _ -> sf "%03d" @@ Protocol.number protocol)
-    kind
-    contract
+let prefix = "tests_python/contracts"
 
 let test_replay client ~protocol =
   Log.info "Replay 'originate'" ;
-  let* contract =
-    let prg = contract_path protocol "mini_scenarios" "replay.tz" in
-    Client.originate_contract
-      ~alias:"replay"
+  let* _alias, contract =
+    Client.originate_contract_at
       ~amount:Tez.zero
       ~src:Constant.bootstrap1.alias
-      ~prg
       ~init:"Unit"
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "replay"]
+      protocol
   in
   Log.info "Replay transfer fail" ;
   let* () =
@@ -95,16 +88,16 @@ let extract_new_contract client_output =
 
 let test_create_contract client ~protocol =
   Log.info "Create contract 'originate'" ;
-  let* create_contract =
-    let prg = contract_path protocol "mini_scenarios" "create_contract.tz" in
-    Client.originate_contract
-      ~alias:"create_contract"
+  let* _alias, create_contract =
+    Client.originate_contract_at
       ~amount:(Tez.of_int 1000)
       ~src:Constant.bootstrap1.alias
-      ~prg
       ~init:"Unit"
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "create_contract"]
+      protocol
   in
   let* () = test_create_contract_balance client ~contract:create_contract in
   Log.info "Test create contract perform creation" ;
@@ -133,16 +126,16 @@ let test_create_contract client ~protocol =
 
 let test_default_account client ~protocol =
   Log.info "Default account 'originate'" ;
-  let* default_account =
-    let prg = contract_path protocol "mini_scenarios" "default_account.tz" in
-    Client.originate_contract
-      ~alias:"default_contract"
+  let* _alias, default_account =
+    Client.originate_contract_at
       ~amount:(Tez.of_int 1000)
       ~src:"bootstrap1"
-      ~prg
       ~init:"Unit"
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "default_account"]
+      protocol
   in
   Log.info "Test default account transfer" ;
   let* () =
@@ -174,23 +167,21 @@ let test_default_account client ~protocol =
 
 let test_preimage_and_signature client ~protocol =
   Log.info "Reveal signed preimage 'originate'" ;
-  let* reveal_signed_preimage =
-    let prg =
-      contract_path protocol "mini_scenarios" "reveal_signed_preimage.tz"
-    in
+  let* _alias, reveal_signed_preimage =
     let byt =
       "0x9995c2ef7bcc7ae3bd15bdd9b02dc6e877c27b26732340d641a4cbc6524813bb"
     in
     let sign = "p2pk66uq221795tFxT7jfNmXtBMdjMf6RAaxRTwv1dbuSHbH6yfqGwz" in
     let init = sf "Pair %s \"%s\"" byt sign in
-    Client.originate_contract
-      ~alias:"default_contract"
+    Client.originate_contract_at
       ~amount:(Tez.of_int 1000)
       ~src:"bootstrap1"
-      ~prg
       ~init
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "reveal_signed_preimage"]
+      protocol
   in
   Log.info "Test wrong preimage" ;
   let* () =
@@ -253,19 +244,19 @@ let test_preimage_and_signature client ~protocol =
 (* Test vote_for_delegate *)
 let test_vote_for_delegate client ~protocol =
   Log.info "vote for delegate 'originate" ;
-  let* vote_for_delegate =
-    let prg = contract_path protocol "mini_scenarios" "vote_for_delegate.tz" in
+  let* _alias, vote_for_delegate =
     let b_3 = Constant.bootstrap3.Account.public_key_hash in
     let b_4 = Constant.bootstrap4.Account.public_key_hash in
     let init = sf {|(Pair (Pair "%s" None) (Pair "%s" None))|} b_3 b_4 in
-    Client.originate_contract
-      ~alias:"vote_for_delegate"
+    Client.originate_contract_at
       ~amount:(Tez.of_int 1000)
       ~src:"bootstrap1"
-      ~prg
       ~init
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "vote_for_delegate"]
+      protocol
   in
   let* delegate_opt = Client.get_delegate ~src:vote_for_delegate client in
   let () =
@@ -415,18 +406,16 @@ let test_vote_for_delegate client ~protocol =
   unit
 
 let test_multiple_entrypoints_counter client ~protocol =
-  let prg =
-    contract_path protocol "mini_scenarios" "multiple_entrypoints_counter.tz"
-  in
-  let* contract =
-    Client.originate_contract
-      ~alias:"multiple_entrypoints_counter"
+  let* _alias, contract =
+    Client.originate_contract_at
       ~amount:Tez.zero
       ~src:"bootstrap5"
-      ~prg
       ~init:"None"
       ~burn_cap:Tez.one
+      ~prefix
       client
+      ["mini_scenarios"; "multiple_entrypoints_counter"]
+      protocol
   in
   (* call contract: creates the internal contract and calls it. *)
   let* () =
