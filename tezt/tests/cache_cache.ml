@@ -46,7 +46,7 @@ let register =
       ~src:"bootstrap1"
       ~burn_cap:Tez.one
       client
-      ["mini_scenarios"; "supercontrat"]
+      ["mini_scenarios"; "cache_consistency"]
       protocol
   in
   let* () = wait_injection in
