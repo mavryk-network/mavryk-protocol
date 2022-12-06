@@ -37,6 +37,7 @@ let test_contract_not_originable ~protocol () =
       ~amount:Tez.zero
       ~src:Constant.bootstrap1.alias
       ~burn_cap:(Tez.of_int 1)
+      ~init:"0xaa"
       client
       ["mini_scenarios"; "timelock"]
       protocol
