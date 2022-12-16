@@ -33,13 +33,7 @@
 let test_manager_contracts =
   Protocol.register_test ~__FILE__ ~title:"Manager" ~tags:["manager"]
   @@ fun protocol ->
-  let prefix =
-    sf
-      "tests_python/contracts_%s"
-      (match protocol with
-      | Protocol.Alpha -> "alpha"
-      | _ -> sf "%03d" @@ Protocol.number protocol)
-  in
+  let prefix = "tests_python/contracts" in
   let* client = Client.init_mockup ~protocol () in
   let check_delegate ~__LOC__ src expected_delegate =
     let* delegate = Client.get_delegate ~src client in
