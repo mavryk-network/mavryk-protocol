@@ -28,6 +28,7 @@ COVERAGE_REPORT := _coverage_report
 COBERTURA_REPORT := _coverage_report/cobertura.xml
 CODE_QUALITY_REPORT := _reports/gl-code-quality-report.json
 PROFILE?=dev
+DUNE_DISPLAY?=progress
 VALID_PROFILES=dev release static
 
 # See the documentation of [~release_status] in [manifest/manifest.mli].
@@ -170,7 +171,7 @@ endif
 ifeq (${OCTEZ_EXECUTABLES},)
 	$(error The build target requires OCTEZ_EXECUTABLES to be specified. Please use another target (e.g. 'make' or 'make release') and make sure that environment variable OCTEZ_EXECUTABLES is unset)
 endif
-	@dune build --profile=$(PROFILE) $(COVERAGE_OPTIONS) \
+	@dune build --display=$(DUNE_DISPLAY) --profile=$(PROFILE) $(COVERAGE_OPTIONS) \
 		$(foreach b, $(OCTEZ_EXECUTABLES), _build/install/default/bin/${b}) \
 		@copy-parameters
 	@mkdir -p $(OCTEZ_BIN_DIR)/

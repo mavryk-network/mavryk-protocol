@@ -7,5 +7,6 @@ build:static-arm64-linux-binaries:
   variables:
     ARCH: "arm64"
     EXECUTABLE_FILES: "script-inputs/released-executables script-inputs/experimental-executables"
+    DUNE_DISPLAY: short
   tags:
     - arm64
