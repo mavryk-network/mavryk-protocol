@@ -4,6 +4,7 @@ include: .gitlab/ci/jobs/build/common.yml
 build:static-arm64-linux-binaries:
   extends:
     - .build_static_binaries_template
+  parallel: 5
   variables:
     ARCH: "arm64"
     EXECUTABLE_FILES: "script-inputs/released-executables script-inputs/experimental-executables"

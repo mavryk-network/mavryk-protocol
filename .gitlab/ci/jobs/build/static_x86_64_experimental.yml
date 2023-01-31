@@ -17,6 +17,8 @@ build:static-x86_64-linux-binaries:
     # are limiting factors in the total duration of pipelines.
     # So we start this job as early as possible, without waiting for sanity_ci.
   needs: [trigger]
+  parallel: 5
   variables:
     ARCH: "x86_64"
     EXECUTABLE_FILES: "script-inputs/released-executables script-inputs/experimental-executables"
+    DUNE_DISPLAY: short
