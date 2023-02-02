@@ -1388,13 +1388,13 @@ let _octez_print_version_exe =
     ~bisect_ppx:false
 
 let _octez_version_tests =
-  test
-    "test_parser"
+  tezt
+    ["test_parser"]
     ~path:"src/lib_version/test"
     ~opam:"tezos-version"
     ~js_compatible:true
     ~modes:[Native; JS]
-    ~deps:[octez_version |> open_; octez_version_parser; alcotest]
+    ~deps:[octez_version |> open_; octez_version_parser; alcotezt]
 
 let octez_p2p_services =
   public_lib
