@@ -3,7 +3,11 @@
 # General setup
 default:
   interruptible: true
-
+  cache:
+    key: "$CI_COMMIT_REF_SLUG__$CI_JOB_NAME"
+    paths:
+      - _build
+  
 # Basic configuration to guard against double-pipelines
 workflow:
   rules:
