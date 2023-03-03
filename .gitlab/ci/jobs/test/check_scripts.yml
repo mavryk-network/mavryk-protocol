@@ -12,7 +12,7 @@ script:prepare_migration_test:
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-prepare-migration-test
   cache:
-    key: "$CI_COMMIT_REF_SLUG"
+    key: "$CI_COMMIT_REF_SLUG-scripts"
     paths:
       - _build
 
@@ -22,7 +22,7 @@ script:snapshot_alpha_and_link:
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-snapshot-alpha-and-link
   cache:
-    key: "$CI_COMMIT_REF_SLUG"
+    key: "$CI_COMMIT_REF_SLUG-scripts"
     paths:
       - _build
 
