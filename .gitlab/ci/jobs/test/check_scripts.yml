@@ -11,12 +11,20 @@ script:prepare_migration_test:
     - make
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-prepare-migration-test
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - _build
 
 script:snapshot_alpha_and_link:
   extends: .test_template
   needs: ["build_x86_64"]
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-snapshot-alpha-and-link
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - _build
 
 script:test-gen-genesis:
   extends:
