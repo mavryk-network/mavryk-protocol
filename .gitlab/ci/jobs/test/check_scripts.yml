@@ -11,12 +11,33 @@ script:prepare_migration_test:
     - make
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-prepare-migration-test
+  rules:
+    # We only need to run this if protocol Alpha or if the script changed.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - src/proto_alpha/**/*
+        - scripts/prepare_migration_test.sh
+      when: on_success
+    # For safety, we also run it when margebot triggers the pipeline.
+    - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'
+      when: on_success
 
 script:snapshot_alpha_and_link:
   extends: .test_template
   needs: ["build_x86_64"]
   script:
     - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-snapshot-alpha-and-link
+  rules:
+    # We only need to run this if protocol Alpha or if the scripts changed.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - src/proto_alpha/**/*
+        - scripts/snapshot_alpha_and_link.sh
+        - scripts/snapshot_alpha.sh
+      when: on_success
+    # For safety, we also run it when margebot triggers the pipeline.
+    - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'
+      when: on_success
 
 script:test-gen-genesis:
   extends:
