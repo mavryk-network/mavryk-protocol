@@ -168,12 +168,30 @@ let parse_file ~from_text ~read_file ~path =
 
 let file_or_text ~from_text ~read_file =
   let open Lwt_result_syntax in
+  let decode_hex input =
+    match Hex.(`Hex input |> to_string) with
+    | Some text -> return text
+    | None -> failwith "Invalid hex: %s" input
+  in
   Client_aliases.parse_alternatives
     [
+      ( "hexfile",
+        fun path ->
+          let from_text contents =
+            let* contents = decode_hex contents in
+            from_text contents
+          in
+          let* content = parse_file ~from_text ~read_file ~path in
+          return (File {path; content}) );
       ( "file",
         fun path ->
           let* content = parse_file ~from_text ~read_file ~path in
           return (File {path; content}) );
+      ( "hex",
+        fun text ->
+          let* text = decode_hex text in
+          let* content = from_text text in
+          return (Text content) );
       ( "text",
         fun text ->
           let* content = from_text text in

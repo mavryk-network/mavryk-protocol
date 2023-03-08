@@ -198,7 +198,7 @@ module V2_0_0 = struct
 
     let proof_stop_state proof = Context.proof_after proof
 
-    let parse_boot_sector s = Hex.to_string @@ `Hex s
+    let parse_boot_sector s = Some s
 
     let pp_boot_sector fmt s = Format.fprintf fmt "%s" s
 
