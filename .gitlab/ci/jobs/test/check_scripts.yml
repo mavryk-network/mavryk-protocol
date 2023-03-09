@@ -4,19 +4,21 @@
 
 # Note: this job actually probably doesn't need the build_x86_64 job
 # to have finished, but we don't want to start before build_x86_64 has finished either.
-script:snapshot_alpha_and_link:
+script:user_activated_upgrade:
   extends: .test_template
   needs: ["build_x86_64"]
   script:
-    - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-snapshot-alpha-and-link
+    - make -C ${CI_PROJECT_DIR}/.gitlab/ci integration-test-user-activated-upgrade
   rules:
-    # We only need to run this if protocol Alpha or if the scripts changed.
+    # We only need to run this if the script
+    # scripts/user_activated_upgrade changed, or the files it patches:
+    # src/lib_node_config/config_file.ml and
+    # src/bin_client/octez-init-sandboxed-client.sh.
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - src/proto_alpha/**/*
-        - scripts/snapshot_alpha_and_link.sh
-        - scripts/snapshot_alpha.sh
         - scripts/user_activated_upgrade.sh
+        - src/lib_node_config/config_file.ml
+        - src/bin_client/octez-init-sandboxed-client.sh
       when: on_success
     # For safety, we also run it when margebot triggers the pipeline.
     - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'

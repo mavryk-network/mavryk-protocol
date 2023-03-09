@@ -47,15 +47,11 @@ integration-test-compiler-rejections:
 	cd ${CI_PROJECT_DIR} && \
 		dune build @runtest_rejections
 
-.PHONY: integration-test-snapshot-alpha-and-link
-integration-test-snapshot-alpha-and-link: gitlab-take-ownership
+.PHONY: integration-test-user-activated-upgrade
+integration-test-user-activated-upgrade: gitlab-take-ownership
 	cd ${CI_PROJECT_DIR} && \
-		$(MAKE) octez-protocol-compiler && \
-		./scripts/snapshot_alpha_and_link.sh "${new_proto_version}" next && \
-		$(MAKE) && \
-		dune build src/proto_"${new_proto_version}"_*/ && \
-		./scripts/user_activated_upgrade.sh src/proto_"${new_proto_version}"_*/ 1 && \
-		dune build src/proto_"${new_proto_version}"_*/
+		./scripts/user_activated_upgrade.sh src/${last_proto_name} 1 && \
+		dune build src/lib_node_config/
 
 .PHONY: integration-test-liquidity-baking-scripts
 integration-test-liquidity-baking-scripts:
