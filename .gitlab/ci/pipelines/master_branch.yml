@@ -1,3 +1,10 @@
+# General setup
+default:
+  # master pipelines are not interruptible by default. This ensures
+  # that documentation and docker images have enough time to publish
+  # between merges.
+  interruptible: false
+
 include:
   # Stage: build
   - .gitlab/ci/jobs/build/static_x86_64_experimental.yml
