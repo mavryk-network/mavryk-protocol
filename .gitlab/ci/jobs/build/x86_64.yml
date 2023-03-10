@@ -8,3 +8,19 @@ build_x86_64:
   needs: [trigger]
   variables:
     ARCH: "x86_64"
+  rules:
+  # Snapshot proto_alpha before building if it has been modified, or
+  # if this is a marge-bot pipeline.
+  - changes:
+      - src/proto_alpha/**/*
+    variables:
+      SNAPSHOT_ALPHA: "true"
+    when: on_success
+  - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'
+    variables:
+      SNAPSHOT_ALPHA: "true"
+    when: on_success
+  - variables:
+      SNAPSHOT_ALPHA: "false"
+    when: on_success
+
