@@ -1687,6 +1687,12 @@ module Internal_for_tests = struct
 
   let reset_initialisation_parameters () = initialisation_parameters := None
 
+  let dummy_commitment () = Bls12_381.G1.random ()
+
+  let dummy_page_proof () = Bls12_381.G1.random ()
+
+  let number_of_pages t = t.pages_per_slot
+
   let ensure_validity
       {redundancy_factor; slot_size; page_size; number_of_shards} =
     let max_polynomial_length =
