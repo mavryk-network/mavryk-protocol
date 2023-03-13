@@ -110,7 +110,7 @@ val set_frozen_deposits_limit :
   Raw_context.t ->
   Signature.Public_key_hash.t ->
   Tez_repr.t option ->
-  Raw_context.t Lwt.t
+  (Raw_context.t * Receipt_repr.balance_updates) tzresult Lwt.t
 
 (** Returns a delegate's frozen deposits, both the current amount and
    the initial freezed amount.

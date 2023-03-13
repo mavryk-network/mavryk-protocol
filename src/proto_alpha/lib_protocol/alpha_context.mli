@@ -2636,7 +2636,10 @@ module Delegate : sig
     context -> public_key_hash -> Tez.t option tzresult Lwt.t
 
   val set_frozen_deposits_limit :
-    context -> public_key_hash -> Tez.t option -> context Lwt.t
+    context ->
+    public_key_hash ->
+    Tez.t option ->
+    (context * Receipt.balance_updates) tzresult Lwt.t
 
   val fold :
     context ->

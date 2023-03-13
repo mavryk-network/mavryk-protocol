@@ -228,10 +228,15 @@ let frozen_deposits_limit ctxt delegate =
     (Contract_repr.Implicit delegate)
 
 let set_frozen_deposits_limit ctxt delegate limit =
-  Storage.Contract.Frozen_deposits_limit.add_or_remove
-    ctxt
-    (Contract_repr.Implicit delegate)
-    limit
+  let open Lwt_result_syntax in
+  let delegate_contract = Contract_repr.Implicit delegate in
+  let*! ctxt =
+    Storage.Contract.Frozen_deposits_limit.add_or_remove
+      ctxt
+      delegate_contract
+      limit
+  in
+  return (ctxt, [])
 
 let frozen_deposits ctxt delegate =
   Frozen_deposits_storage.get ctxt (Contract_repr.Implicit delegate)

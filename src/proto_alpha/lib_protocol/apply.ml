@@ -1055,12 +1055,13 @@ let apply_manager_operation :
         is_registered
         (Set_deposits_limit_on_unregistered_delegate source)
       >>?= fun () ->
-      Delegate.set_frozen_deposits_limit ctxt source limit >>= fun ctxt ->
+      Delegate.set_frozen_deposits_limit ctxt source limit
+      >>=? fun (ctxt, balance_updates) ->
       return
         ( ctxt,
           Set_deposits_limit_result
             {
-              balance_updates = [];
+              balance_updates;
               consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt;
             },
           [] )
