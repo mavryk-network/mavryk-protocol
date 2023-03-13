@@ -26,7 +26,7 @@
 (* Testing
    -------
    Component:    lib_p2p
-   Invocation:   dune build @src/lib_p2p/test/runtest_p2p_maintenance
+   Invocation:   dune exec src/lib_p2p/test/main.exe -- --file test_p2p_maintenance.ml
    Subject:      Check maintenance mechanism.
 *)
 
@@ -532,6 +532,7 @@ let main () =
   let addr = Node.default_ipv6_addr in
   Lwt_main.run
   @@ Alcotest_lwt.run
+       ~__FILE__
        "tezos-p2p"
        [
          ( "p2p-maintenance",

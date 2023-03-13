@@ -27,7 +27,7 @@
 (** Testing
     -------
     Component:    P2P
-    Invocation:   dune build @src/lib_p2p/test/runtest_p2p_socket
+    Invocation:   dune exec src/lib_p2p/test/main.exe -- --file test_p2p_socket.ml
     Dependencies: src/lib_p2p/test/process.ml
     Subject:      Sockets and client-server communications.
 *)
@@ -534,6 +534,7 @@ let wrap n f =
 let main () =
   Lwt_main.run
   @@ Alcotest_lwt.run
+       ~__FILE__
        "tezos-p2p"
        [
          ( "p2p-socket.",

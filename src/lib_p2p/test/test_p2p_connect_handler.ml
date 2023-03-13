@@ -26,7 +26,7 @@
 (** Testing
     -------
     Component:    P2P
-    Invocation:   dune build @src/lib_p2p/test/runtest_p2p_connect_handler
+    Invocation:   dune exec src/lib_p2p/test/main.exe -- --file test_p2p_connect_handler.ml
     Subject:      Test that P2p_connect_handler is well-behaved
 *)
 
@@ -142,5 +142,8 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run "P2p_connect_handler" [("P2p_connect_handler", tests)]
+  Alcotest_lwt.run
+    ~__FILE__
+    "P2p_connect_handler"
+    [("P2p_connect_handler", tests)]
   |> Lwt_main.run
