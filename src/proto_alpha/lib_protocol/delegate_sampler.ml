@@ -145,6 +145,9 @@ let baking_rights_owner c (level : Level_repr.t) ~round =
   slot_owner c level slot >>=? fun (ctxt, pk) -> return (ctxt, slot, pk)
 
 let get_stakes_for_selected_index ctxt index =
+  let frozen_deposits_percentage =
+    Int64.of_int @@ Constants_storage.frozen_deposits_percentage ctxt
+  in
   Stake_storage.fold_snapshot
     ctxt
     ~index
@@ -165,9 +168,6 @@ let get_stakes_for_selected_index ctxt index =
         balance_and_frozen_bonds +? frozen_deposits.current_amount
       in
       let* stake_for_cycle =
-        let frozen_deposits_percentage =
-          Int64.of_int @@ Constants_storage.frozen_deposits_percentage ctxt
-        in
         let frozen_deposits_limit =
           match frozen_deposits_limit with Some fdp -> fdp | None -> max_mutez
         in
