@@ -58,6 +58,7 @@ type _ successful_manager_operation_result =
     }
       -> Kind.register_global_constant successful_manager_operation_result
   | Set_deposits_limit_result : {
+      balance_updates : Receipt.balance_updates;
       consumed_gas : Gas.Arith.fp;
     }
       -> Kind.set_deposits_limit successful_manager_operation_result
@@ -498,15 +499,19 @@ module Manager_result = struct
       ~op_case:Operation.Encoding.Manager_operations.set_deposits_limit_case
       ~encoding:
         Data_encoding.(
-          obj1 (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
+          obj2
+            (dft "balance_updates" Receipt.balance_updates_encoding [])
+            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
       ~select:(function
         | Successful_manager_result (Set_deposits_limit_result _ as op) ->
             Some op
         | _ -> None)
       ~kind:Kind.Set_deposits_limit_manager_kind
       ~proj:(function
-        | Set_deposits_limit_result {consumed_gas} -> consumed_gas)
-      ~inj:(fun consumed_gas -> Set_deposits_limit_result {consumed_gas})
+        | Set_deposits_limit_result {balance_updates; consumed_gas} ->
+            (balance_updates, consumed_gas))
+      ~inj:(fun (balance_updates, consumed_gas) ->
+        Set_deposits_limit_result {balance_updates; consumed_gas})
 
   let increase_paid_storage_case =
     make

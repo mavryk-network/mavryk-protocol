@@ -161,6 +161,7 @@ and _ successful_manager_operation_result =
     }
       -> Kind.register_global_constant successful_manager_operation_result
   | Set_deposits_limit_result : {
+      balance_updates : Receipt.balance_updates;
       consumed_gas : Gas.Arith.fp;
     }
       -> Kind.set_deposits_limit successful_manager_operation_result

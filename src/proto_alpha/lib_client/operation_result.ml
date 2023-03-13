@@ -600,6 +600,11 @@ let pp_manager_operation_contents_result ppf op_result =
     pp_storage_size ppf size_of_constant ;
     Format.fprintf ppf "@,Global address: %a" Script_expr_hash.pp global_address
   in
+  let pp_set_deposits_limit_result
+      (Set_deposits_limit_result {consumed_gas; balance_updates}) =
+    pp_balance_updates ppf balance_updates ;
+    pp_consumed_gas ppf consumed_gas
+  in
   let pp_increase_paid_storage_result
       (Increase_paid_storage_result {consumed_gas; balance_updates}) =
     pp_balance_updates ppf balance_updates ;
@@ -747,8 +752,7 @@ let pp_manager_operation_contents_result ppf op_result =
     match result with
     | Reveal_result {consumed_gas} -> pp_consumed_gas ppf consumed_gas
     | Delegation_result {consumed_gas} -> pp_consumed_gas ppf consumed_gas
-    | Set_deposits_limit_result {consumed_gas} ->
-        pp_consumed_gas ppf consumed_gas
+    | Set_deposits_limit_result _ as op -> pp_set_deposits_limit_result op
     | Update_consensus_key_result {consumed_gas} ->
         pp_consumed_gas ppf consumed_gas
     | Transaction_result tx -> pp_transaction_result ppf tx

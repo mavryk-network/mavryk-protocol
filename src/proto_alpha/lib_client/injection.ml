@@ -323,7 +323,7 @@ let estimated_gas_single (type kind)
         | Reveal_result {consumed_gas}
         | Delegation_result {consumed_gas}
         | Register_global_constant_result {consumed_gas; _}
-        | Set_deposits_limit_result {consumed_gas}
+        | Set_deposits_limit_result {consumed_gas; _}
         | Update_consensus_key_result {consumed_gas; _}
         | Increase_paid_storage_result {consumed_gas; _}
         | Transfer_ticket_result {consumed_gas; _}

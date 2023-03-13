@@ -1059,7 +1059,10 @@ let apply_manager_operation :
       return
         ( ctxt,
           Set_deposits_limit_result
-            {consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt},
+            {
+              balance_updates = [];
+              consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt;
+            },
           [] )
   | Increase_paid_storage {amount_in_bytes; destination} ->
       Contract.increase_paid_storage ctxt destination ~amount_in_bytes
