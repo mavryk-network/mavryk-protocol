@@ -236,7 +236,29 @@ let set_frozen_deposits_limit ctxt delegate limit =
       delegate_contract
       limit
   in
-  return (ctxt, [])
+  match limit with
+  | None -> return (ctxt, [])
+  | Some limit -> (
+      let* frozen_deposits =
+        Frozen_deposits_storage.get ctxt delegate_contract
+      in
+      match Tez_repr.(limit -? frozen_deposits.current_amount) with
+      | Ok frozen_deposits_to_add when Tez_repr.(frozen_deposits_to_add > zero)
+        ->
+          let* balance =
+            Storage.Contract.Spendable_balance.get ctxt delegate_contract
+          in
+          let balance_to_freeze = Tez_repr.min frozen_deposits_to_add balance in
+          if Tez_repr.(balance_to_freeze > zero) then
+            Token.transfer
+              ctxt
+              (`Contract delegate_contract)
+              (`Frozen_deposits delegate)
+              balance_to_freeze
+          else
+            (* Spendable balance is zero. Frozen deposits will be transferred later, hopefully. *)
+            return (ctxt, [])
+      | _frozen_deposits_already_above_the_given_limit -> return (ctxt, []))
 
 let frozen_deposits ctxt delegate =
   Frozen_deposits_storage.get ctxt (Contract_repr.Implicit delegate)
