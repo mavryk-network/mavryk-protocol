@@ -70,7 +70,8 @@ let max_frozen_deposits_and_delegates_to_remove ctxt ~from_cycle ~to_cycle =
       Stake_storage.get_selected_distribution ctxt cycle
       >|=? fun active_stakes ->
       List.fold_left
-        (fun (maxima, delegates_to_remove) (delegate, stake) ->
+        (fun (maxima, delegates_to_remove) (delegate, Stake_repr.{total = stake})
+             ->
           let maxima =
             Signature.Public_key_hash.Map.update
               delegate
@@ -204,7 +205,7 @@ let distribute_endorsing_rewards ctxt last_cycle unrevealed_nonces =
   in
   Stake_storage.get_total_active_stake ctxt last_cycle
   >>=? fun total_active_stake ->
-  let total_active_stake_weight = Tez_repr.to_mutez total_active_stake in
+  let total_active_stake_weight = Stake_repr.weight total_active_stake in
   Stake_storage.get_selected_distribution ctxt last_cycle >>=? fun delegates ->
   List.fold_left_es
     (fun (ctxt, balance_updates) (delegate, active_stake) ->
@@ -217,7 +218,7 @@ let distribute_endorsing_rewards ctxt last_cycle unrevealed_nonces =
       let has_revealed_nonces =
         delegate_has_revealed_nonces delegate unrevealed_nonces_set
       in
-      let active_stake_weight = Tez_repr.to_mutez active_stake in
+      let active_stake_weight = Stake_repr.weight active_stake in
       let expected_slots =
         Delegate_missed_endorsements_storage
         .expected_slots_for_given_active_stake

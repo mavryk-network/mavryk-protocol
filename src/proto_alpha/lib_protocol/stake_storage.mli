@@ -53,7 +53,7 @@ val set_active :
   Raw_context.t -> Signature.Public_key_hash.t -> Raw_context.t tzresult Lwt.t
 
 val get_staking_balance :
-  Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
+  Raw_context.t -> Signature.Public_key_hash.t -> Stake_repr.t tzresult Lwt.t
 
 val snapshot : Raw_context.t -> Raw_context.t tzresult Lwt.t
 
@@ -63,7 +63,7 @@ val snapshot : Raw_context.t -> Raw_context.t tzresult Lwt.t
     delegate and [stake] is the staking balance of the delegate. *)
 val fold :
   Raw_context.t ->
-  f:(Signature.Public_key_hash.t * Tez_repr.t -> 'a -> 'a tzresult Lwt.t) ->
+  f:(Signature.Public_key_hash.t * Stake_repr.t -> 'a -> 'a tzresult Lwt.t) ->
   order:[`Sorted | `Undefined] ->
   'a ->
   'a tzresult Lwt.t
@@ -76,7 +76,7 @@ val fold :
 val fold_snapshot :
   Raw_context.t ->
   index:int ->
-  f:(Signature.Public_key_hash.t * Tez_repr.t -> 'a -> 'a tzresult Lwt.t) ->
+  f:(Signature.Public_key_hash.t * Stake_repr.t -> 'a -> 'a tzresult Lwt.t) ->
   init:'a ->
   'a tzresult Lwt.t
 
@@ -90,15 +90,15 @@ val max_snapshot_index : Raw_context.t -> int tzresult Lwt.t
 val set_selected_distribution_for_cycle :
   Raw_context.t ->
   Cycle_repr.t ->
-  (Signature.public_key_hash * Tez_repr.t) list ->
-  Tez_repr.t ->
+  (Signature.public_key_hash * Stake_repr.t) list ->
+  Stake_repr.t ->
   Raw_context.t tzresult Lwt.t
 
 val clear_at_cycle_end :
   Raw_context.t -> new_cycle:Cycle_repr.t -> Raw_context.t tzresult Lwt.t
 
 val get :
-  Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
+  Raw_context.t -> Signature.Public_key_hash.t -> Stake_repr.t tzresult Lwt.t
 
 val fold_on_active_delegates_with_minimal_stake :
   Raw_context.t ->
@@ -110,12 +110,12 @@ val fold_on_active_delegates_with_minimal_stake :
 val get_selected_distribution :
   Raw_context.t ->
   Cycle_repr.t ->
-  (Signature.Public_key_hash.t * Tez_repr.t) list tzresult Lwt.t
+  (Signature.Public_key_hash.t * Stake_repr.t) list tzresult Lwt.t
 
 val find_selected_distribution :
   Raw_context.t ->
   Cycle_repr.t ->
-  (Signature.Public_key_hash.t * Tez_repr.t) list option tzresult Lwt.t
+  (Signature.Public_key_hash.t * Stake_repr.t) list option tzresult Lwt.t
 
 (** Copy the stake distribution for the current cycle (from
    [Storage.Stake.Selected_distribution_for_cycle]) in the raw
@@ -125,7 +125,7 @@ val prepare_stake_distribution : Raw_context.t -> Raw_context.t tzresult Lwt.t
 (** [get_total_active_stake ctxt cycle] retrieves the amount in Tez of the
     active stake at [cycle] from [ctxt]. *)
 val get_total_active_stake :
-  Raw_context.t -> Cycle_repr.t -> Tez_repr.t tzresult Lwt.t
+  Raw_context.t -> Cycle_repr.t -> Stake_repr.t tzresult Lwt.t
 
 (** [add_contract_stake ctxt contract amount] calls
     [Stake_storage.add_stake ctxt delegate amount] if [contract] has a

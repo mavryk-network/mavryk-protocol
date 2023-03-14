@@ -25,7 +25,7 @@
 
 module Selected_distribution_for_cycle = struct
   module Cache_client = struct
-    type cached_value = (Signature.Public_key_hash.t * Tez_repr.t) list
+    type cached_value = (Signature.Public_key_hash.t * Stake_repr.t) list
 
     let namespace = Cache_repr.create_namespace "stake_distribution"
 
@@ -71,14 +71,15 @@ let get_initialized_stake ctxt delegate =
   Storage.Stake.Staking_balance.find ctxt delegate >>=? function
   | Some staking_balance -> return (staking_balance, ctxt)
   | None ->
-      let balance = Tez_repr.zero in
+      let balance = Stake_repr.zero in
       Storage.Stake.Staking_balance.init ctxt delegate balance >>=? fun ctxt ->
       return (balance, ctxt)
 
 let remove_stake ctxt delegate amount =
-  get_initialized_stake ctxt delegate >>=? fun (staking_balance_before, ctxt) ->
+  get_initialized_stake ctxt delegate
+  >>=? fun ({total = staking_balance_before}, ctxt) ->
   Tez_repr.(staking_balance_before -? amount) >>?= fun staking_balance ->
-  Storage.Stake.Staking_balance.update ctxt delegate staking_balance
+  Storage.Stake.Staking_balance.update ctxt delegate {total = staking_balance}
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
   if
@@ -99,9 +100,10 @@ let remove_stake ctxt delegate amount =
     return ctxt
 
 let add_stake ctxt delegate amount =
-  get_initialized_stake ctxt delegate >>=? fun (staking_balance_before, ctxt) ->
+  get_initialized_stake ctxt delegate
+  >>=? fun ({total = staking_balance_before}, ctxt) ->
   Tez_repr.(amount +? staking_balance_before) >>?= fun staking_balance ->
-  Storage.Stake.Staking_balance.update ctxt delegate staking_balance
+  Storage.Stake.Staking_balance.update ctxt delegate {total = staking_balance}
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
   if
@@ -131,7 +133,8 @@ let set_active ctxt delegate =
   >>=? fun (ctxt, inactive) ->
   if not inactive then return ctxt
   else
-    get_initialized_stake ctxt delegate >>=? fun (staking_balance, ctxt) ->
+    get_initialized_stake ctxt delegate
+    >>=? fun ({total = staking_balance}, ctxt) ->
     let minimal_stake = Constants_storage.minimal_stake ctxt in
     if Tez_repr.(staking_balance >= minimal_stake) then
       Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
@@ -147,7 +150,7 @@ let snapshot ctxt =
 let max_snapshot_index = Storage.Stake.Last_snapshot.get
 
 let set_selected_distribution_for_cycle ctxt cycle stakes total_stake =
-  let stakes = List.sort (fun (_, x) (_, y) -> Tez_repr.compare y x) stakes in
+  let stakes = List.sort (fun (_, x) (_, y) -> Stake_repr.compare y x) stakes in
   Selected_distribution_for_cycle.init ctxt cycle stakes >>=? fun ctxt ->
   Storage.Stake.Total_active_stake.add ctxt cycle total_stake >>= fun ctxt ->
   (* cleanup snapshots *)
@@ -189,7 +192,7 @@ let get ctxt delegate =
   Storage.Stake.Active_delegates_with_minimal_stake.mem ctxt delegate
   >>= function
   | true -> get_staking_balance ctxt delegate
-  | false -> return Tez_repr.zero
+  | false -> return Stake_repr.zero
 
 let fold_on_active_delegates_with_minimal_stake =
   Storage.Stake.Active_delegates_with_minimal_stake.fold

@@ -111,7 +111,7 @@ let update_listings ctxt =
     (ctxt, 0L)
     ~order:`Sorted
     ~f:(fun (delegate, stake) (ctxt, total) ->
-      let weight = Tez_repr.to_mutez stake in
+      let weight = Stake_repr.weight stake in
       Storage.Vote.Listings.init ctxt delegate weight >>=? fun ctxt ->
       return (ctxt, Int64.add total weight))
   >>=? fun (ctxt, total) ->
