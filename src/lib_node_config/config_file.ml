@@ -1125,3 +1125,5 @@ let bootstrap_peers config =
   Option.value
     ~default:config.blockchain_network.default_bootstrap_peers
     config.p2p.bootstrap_peers
+
+(* Dummy change *)
