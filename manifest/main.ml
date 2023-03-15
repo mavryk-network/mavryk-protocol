@@ -1593,13 +1593,10 @@ let tezt_tezos =
     ~release_status:Released
 
 let _tezt_self_tests =
-  public_exe
-    "tezt-self-tests"
-    ~internal_name:"main"
+  tezt
+    ["test_michelson_script"; "test_daemon"]
+    ~opam:"tezt-tezos"
     ~path:"tezt/self_tests"
-    ~synopsis:"Tests for the Tezos test framework based on Tezt"
-    ~bisect_ppx:false
-    ~static:false
     ~deps:[tezt_lib |> open_ |> open_ ~m:"Base"; tezt_tezos |> open_]
 
 let octez_p2p_test_common =
