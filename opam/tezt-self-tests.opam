@@ -12,7 +12,6 @@ depends: [
   "ocaml" { >= "4.14" }
   "tezt" { >= "3.0.0" }
   "tezt-tezos"
-  "base-unix"
 ]
 build: [
   ["rm" "-r" "vendors"]

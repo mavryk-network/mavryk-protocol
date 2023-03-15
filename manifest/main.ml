@@ -1601,23 +1601,6 @@ let _tezt_self_tests =
     ~bisect_ppx:false
     ~static:false
     ~deps:[tezt_lib |> open_ |> open_ ~m:"Base"; tezt_tezos |> open_]
-    ~cram:true
-    ~dune:
-      Dune.
-        [
-          [
-            S "cram";
-            [S "package"; S "tezt-self-tests"];
-            [S "deps"; S "tezt.sh"; S "main.exe"];
-          ];
-        ]
-
-let _tezt_self_tests_catch_sigterm =
-  private_exe
-    "main"
-    ~path:"tezt/self_tests/bin_catch_sigterm"
-    ~opam:"tezt-self-tests"
-    ~deps:[unix]
 
 let octez_p2p_test_common =
   private_lib
