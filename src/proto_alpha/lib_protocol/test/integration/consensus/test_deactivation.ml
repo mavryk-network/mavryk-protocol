@@ -57,7 +57,8 @@ let check_stake ~loc (b : Block.t) (account : Account.t) =
     ~timestamp:b.header.shell.timestamp
   >>= wrap
   >>=? fun ctxt ->
-  Stake_storage.get ctxt account.pkh >>= wrap >>=? fun {total = stake} ->
+  Stake_storage.get ctxt account.pkh >>= wrap >>=? fun {frozen; delegated} ->
+  Environment.wrap_tzresult Tez_repr.(frozen +? delegated) >>?= fun stake ->
   Assert.equal_int64
     ~loc
     (Tez_repr.to_mutez stake)
@@ -77,7 +78,8 @@ let check_no_stake ~loc (b : Block.t) (account : Account.t) =
     ~timestamp:b.header.shell.timestamp
   >>= wrap
   >>=? fun ctxt ->
-  Stake_storage.get ctxt account.pkh >>= wrap >>=? fun {total = stake} ->
+  Stake_storage.get ctxt account.pkh >>= wrap >>=? fun {frozen; delegated} ->
+  Environment.wrap_tzresult Tez_repr.(frozen +? delegated) >>?= fun stake ->
   Assert.equal_int64 ~loc (Tez_repr.to_mutez stake) 0L
 
 (** Create a block with two initialized contracts/accounts. Assert

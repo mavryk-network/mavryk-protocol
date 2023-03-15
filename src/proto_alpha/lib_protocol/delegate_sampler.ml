@@ -153,10 +153,10 @@ let get_stakes_for_selected_index ctxt index =
   Stake_storage.fold_snapshot
     ctxt
     ~index
-    ~f:(fun (delegate, stake) (acc, total_stake) ->
+    ~f:(fun (delegate, {frozen; delegated}) (acc, total_stake) ->
       let delegate_contract = Contract_repr.Implicit delegate in
-      let staking_balance = stake.total in
       let open Tez_repr in
+      let*? staking_balance = frozen +? delegated in
       let* frozen_deposits_limit =
         Delegate_storage.frozen_deposits_limit ctxt delegate
       in
@@ -186,7 +186,8 @@ let get_stakes_for_selected_index ctxt index =
             let*? r = max_mutez /? frozen_deposits_percentage in
             return r
       in
-      let stake_for_cycle = Stake_repr.{total = stake_for_cycle} in
+      let*? delegated = stake_for_cycle -? frozen in
+      let stake_for_cycle = Stake_repr.{frozen; delegated} in
       let*? total_stake = Stake_repr.(total_stake +? stake_for_cycle) in
       return ((delegate, stake_for_cycle) :: acc, total_stake))
     ~init:([], Stake_repr.zero)

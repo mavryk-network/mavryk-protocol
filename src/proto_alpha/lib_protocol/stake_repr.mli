@@ -24,7 +24,11 @@
 (*****************************************************************************)
 
 (** Stake of a delegate. *)
-type t = {total : Tez_repr.t}
+type t = {
+  frozen : Tez_repr.t;  (** Amount frozen by the delegate. *)
+  delegated : Tez_repr.t;
+      (** Amount delegated to the delegate (including self-delegated spendable balance and frozen bonds). *)
+}
 
 val zero : t
 

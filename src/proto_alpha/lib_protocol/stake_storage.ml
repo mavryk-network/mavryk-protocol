@@ -81,10 +81,10 @@ let remove_stake ~f ctxt delegate =
   Storage.Stake.Staking_balance.update ctxt delegate staking_balance
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
-  let Stake_repr.{total = total_staking_balance_before} =
-    staking_balance_before
-  in
-  let Stake_repr.{total = total_staking_balance} = staking_balance in
+  let Stake_repr.{frozen; delegated} = staking_balance_before in
+  Tez_repr.(frozen +? delegated) >>?= fun total_staking_balance_before ->
+  let Stake_repr.{frozen; delegated} = staking_balance in
+  Tez_repr.(frozen +? delegated) >>?= fun total_staking_balance ->
   if
     Tez_repr.(total_staking_balance_before >= minimal_stake)
     && Tez_repr.(total_staking_balance < minimal_stake)
@@ -102,16 +102,17 @@ let remove_stake ~f ctxt delegate =
     *)
     return ctxt
 
-let remove_stake ctxt delegate amount =
-  remove_stake ctxt delegate ~f:(fun Stake_repr.{total} ->
-      let open Result_syntax in
-      let+ total = Tez_repr.(total -? amount) in
-      Stake_repr.{total})
-
 let remove_delegated_stake ctxt delegate amount =
-  remove_stake ctxt delegate amount
+  remove_stake ctxt delegate ~f:(fun Stake_repr.{frozen; delegated} ->
+      let open Result_syntax in
+      let+ delegated = Tez_repr.(delegated -? amount) in
+      Stake_repr.{frozen; delegated})
 
-let remove_frozen_stake ctxt delegate amount = remove_stake ctxt delegate amount
+let remove_frozen_stake ctxt delegate amount =
+  remove_stake ctxt delegate ~f:(fun Stake_repr.{frozen; delegated} ->
+      let open Result_syntax in
+      let+ frozen = Tez_repr.(frozen -? amount) in
+      Stake_repr.{frozen; delegated})
 
 let add_stake ~f ctxt delegate =
   get_initialized_stake ctxt delegate >>=? fun (staking_balance_before, ctxt) ->
@@ -119,10 +120,10 @@ let add_stake ~f ctxt delegate =
   Storage.Stake.Staking_balance.update ctxt delegate staking_balance
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
-  let Stake_repr.{total = total_staking_balance_before} =
-    staking_balance_before
-  in
-  let Stake_repr.{total = total_staking_balance} = staking_balance in
+  let Stake_repr.{frozen; delegated} = staking_balance_before in
+  Tez_repr.(frozen +? delegated) >>?= fun total_staking_balance_before ->
+  let Stake_repr.{frozen; delegated} = staking_balance in
+  Tez_repr.(frozen +? delegated) >>?= fun total_staking_balance ->
   if
     Tez_repr.(total_staking_balance_before < minimal_stake)
     && Tez_repr.(total_staking_balance >= minimal_stake)
@@ -141,15 +142,17 @@ let add_stake ~f ctxt delegate =
     *)
     return ctxt
 
-let add_stake ctxt delegate amount =
-  add_stake ctxt delegate ~f:(fun Stake_repr.{total} ->
+let add_delegated_stake ctxt delegate amount =
+  add_stake ctxt delegate ~f:(fun Stake_repr.{frozen; delegated} ->
       let open Result_syntax in
-      let+ total = Tez_repr.(total +? amount) in
-      Stake_repr.{total})
+      let+ delegated = Tez_repr.(delegated +? amount) in
+      Stake_repr.{frozen; delegated})
 
-let add_delegated_stake ctxt delegate amount = add_stake ctxt delegate amount
-
-let add_frozen_stake ctxt delegate amount = add_stake ctxt delegate amount
+let add_frozen_stake ctxt delegate amount =
+  add_stake ctxt delegate ~f:(fun Stake_repr.{frozen; delegated} ->
+      let open Result_syntax in
+      let+ frozen = Tez_repr.(frozen +? amount) in
+      Stake_repr.{frozen; delegated})
 
 let set_inactive ctxt delegate =
   Delegate_activation_storage.set_inactive ctxt delegate >>= fun ctxt ->
@@ -160,9 +163,9 @@ let set_active ctxt delegate =
   >>=? fun (ctxt, inactive) ->
   if not inactive then return ctxt
   else
-    get_initialized_stake ctxt delegate
-    >>=? fun ({total = staking_balance}, ctxt) ->
+    get_initialized_stake ctxt delegate >>=? fun ({frozen; delegated}, ctxt) ->
     let minimal_stake = Constants_storage.minimal_stake ctxt in
+    Tez_repr.(frozen +? delegated) >>?= fun staking_balance ->
     if Tez_repr.(staking_balance >= minimal_stake) then
       Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
       >>= fun ctxt -> return ctxt

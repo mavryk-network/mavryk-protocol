@@ -243,7 +243,8 @@ let spendable_balance ctxt delegate =
 let staking_balance ctxt delegate =
   registered ctxt delegate >>= fun is_registered ->
   if is_registered then
-    Stake_storage.get_staking_balance ctxt delegate >|=? fun {total} -> total
+    Stake_storage.get_staking_balance ctxt delegate
+    >>=? fun {frozen; delegated} -> Lwt.return Tez_repr.(frozen +? delegated)
   else return Tez_repr.zero
 
 let full_balance ctxt delegate =
