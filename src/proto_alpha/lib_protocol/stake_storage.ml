@@ -75,16 +75,19 @@ let get_initialized_stake ctxt delegate =
       Storage.Stake.Staking_balance.init ctxt delegate balance >>=? fun ctxt ->
       return (balance, ctxt)
 
-let remove_stake ctxt delegate amount =
-  get_initialized_stake ctxt delegate
-  >>=? fun ({total = staking_balance_before}, ctxt) ->
-  Tez_repr.(staking_balance_before -? amount) >>?= fun staking_balance ->
-  Storage.Stake.Staking_balance.update ctxt delegate {total = staking_balance}
+let remove_stake ~f ctxt delegate =
+  get_initialized_stake ctxt delegate >>=? fun (staking_balance_before, ctxt) ->
+  f staking_balance_before >>?= fun staking_balance ->
+  Storage.Stake.Staking_balance.update ctxt delegate staking_balance
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
+  let Stake_repr.{total = total_staking_balance_before} =
+    staking_balance_before
+  in
+  let Stake_repr.{total = total_staking_balance} = staking_balance in
   if
-    Tez_repr.(staking_balance_before >= minimal_stake)
-    && Tez_repr.(staking_balance < minimal_stake)
+    Tez_repr.(total_staking_balance_before >= minimal_stake)
+    && Tez_repr.(total_staking_balance < minimal_stake)
   then
     Delegate_activation_storage.is_inactive ctxt delegate >>=? fun inactive ->
     if inactive then return ctxt
@@ -99,21 +102,30 @@ let remove_stake ctxt delegate amount =
     *)
     return ctxt
 
+let remove_stake ctxt delegate amount =
+  remove_stake ctxt delegate ~f:(fun Stake_repr.{total} ->
+      let open Result_syntax in
+      let+ total = Tez_repr.(total -? amount) in
+      Stake_repr.{total})
+
 let remove_delegated_stake ctxt delegate amount =
   remove_stake ctxt delegate amount
 
 let remove_frozen_stake ctxt delegate amount = remove_stake ctxt delegate amount
 
-let add_stake ctxt delegate amount =
-  get_initialized_stake ctxt delegate
-  >>=? fun ({total = staking_balance_before}, ctxt) ->
-  Tez_repr.(amount +? staking_balance_before) >>?= fun staking_balance ->
-  Storage.Stake.Staking_balance.update ctxt delegate {total = staking_balance}
+let add_stake ~f ctxt delegate =
+  get_initialized_stake ctxt delegate >>=? fun (staking_balance_before, ctxt) ->
+  f staking_balance_before >>?= fun staking_balance ->
+  Storage.Stake.Staking_balance.update ctxt delegate staking_balance
   >>=? fun ctxt ->
   let minimal_stake = Constants_storage.minimal_stake ctxt in
+  let Stake_repr.{total = total_staking_balance_before} =
+    staking_balance_before
+  in
+  let Stake_repr.{total = total_staking_balance} = staking_balance in
   if
-    Tez_repr.(staking_balance_before < minimal_stake)
-    && Tez_repr.(staking_balance >= minimal_stake)
+    Tez_repr.(total_staking_balance_before < minimal_stake)
+    && Tez_repr.(total_staking_balance >= minimal_stake)
   then
     Delegate_activation_storage.is_inactive ctxt delegate >>=? fun inactive ->
     if inactive then return ctxt
@@ -128,6 +140,12 @@ let add_stake ctxt delegate amount =
          still has it.
     *)
     return ctxt
+
+let add_stake ctxt delegate amount =
+  add_stake ctxt delegate ~f:(fun Stake_repr.{total} ->
+      let open Result_syntax in
+      let+ total = Tez_repr.(total +? amount) in
+      Stake_repr.{total})
 
 let add_delegated_stake ctxt delegate amount = add_stake ctxt delegate amount
 
