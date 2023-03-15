@@ -49,7 +49,7 @@ let update_balance ctxt delegate f amount =
 let credit_only_call_from_token ctxt delegate amount =
   let open Lwt_result_syntax in
   let* ctxt = update_balance ctxt delegate Tez_repr.( +? ) amount in
-  Stake_storage.add_stake ctxt delegate amount
+  Stake_storage.add_frozen_stake ctxt delegate amount
 
 let spend_only_call_from_token ctxt delegate amount =
   let open Lwt_result_syntax in
