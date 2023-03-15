@@ -34,7 +34,7 @@
     - {!Storage.Stake.Total_active_stake}
 *)
 
-val remove_stake :
+val remove_frozen_stake :
   Raw_context.t ->
   Signature.Public_key_hash.t ->
   Tez_repr.t ->
@@ -139,8 +139,8 @@ val get_total_active_stake :
 val add_contract_delegated_stake :
   Raw_context.t -> Contract_repr.t -> Tez_repr.t -> Raw_context.t tzresult Lwt.t
 
-(** [remove_contract_stake ctxt contract amount] calls
-    [Stake_storage.remove_stake ctxt delegate amount] if [contract] has a
+(** [remove_contract_delegated_stake ctxt contract amount] calls
+    [Stake_storage.remove_delegated_stake ctxt delegate amount] if [contract] has a
     [delegate]. Otherwise this function does nothing. *)
-val remove_contract_stake :
+val remove_contract_delegated_stake :
   Raw_context.t -> Contract_repr.t -> Tez_repr.t -> Raw_context.t tzresult Lwt.t
