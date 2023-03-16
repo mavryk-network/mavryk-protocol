@@ -37,11 +37,6 @@ val init :
 (** [get ctxt contract] retrieves the frozen deposits of [contract] in [ctxt]. *)
 val get : Raw_context.t -> Contract_repr.t -> Storage.deposits tzresult Lwt.t
 
-(** [find ctxt contract] retrieves the frozen deposits of [contract] in
-    [ctxt], if any. *)
-val find :
-  Raw_context.t -> Contract_repr.t -> Storage.deposits option tzresult Lwt.t
-
 (** [credit_only_call_from_token ctxt delegate tez] returns a new context from
    [ctxt] where the amount of frozen deposits for the implicit contract
    represented by [delegate] increases by [tez]. *)
