@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-if [ -z "${build_deps_image_name}" ]; then echo "build_deps_image_name is unset" && exit 3; fi
-if [ -z "${build_deps_image_version}" ]; then echo "build_deps_image_version is unset" && exit 3; fi
+if [ -z "${build_deps_image_name:-}" ]; then echo "build_deps_image_name is unset" && exit 3; fi
+if [ -z "${build_deps_image_version:-}" ]; then echo "build_deps_image_version is unset" && exit 3; fi
 
 # We remove protocols not needed for tests in order to speed up the CI.
 old_protocol_store=$(mktemp -d)
