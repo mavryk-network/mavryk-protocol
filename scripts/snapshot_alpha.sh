@@ -58,6 +58,11 @@ git archive HEAD src/proto_alpha/ | tar -x -C /tmp/tezos_proto_snapshot
 # remove the README because it is specific to Alpha
 rm /tmp/tezos_proto_snapshot/src/proto_alpha/README.md
 mv /tmp/tezos_proto_snapshot/src/proto_alpha src/proto_${version}
+# Remove all manifest-generated dune files, they will be regenerated in the next step.
+find src/proto_"${version}" \
+     -name dune \
+     -exec grep -q 'This file was automatically generated, do not edit.' \{\} \; \
+     -delete
 rm -rf /tmp/tezos_proto_snapshot
 
 echo "Copying docs/alpha to docs/${label}"
