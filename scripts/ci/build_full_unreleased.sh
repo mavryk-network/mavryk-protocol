@@ -4,6 +4,14 @@ set -eu
 if [ -z "${build_deps_image_name:-}" ]; then echo "build_deps_image_name is unset" && exit 3; fi
 if [ -z "${build_deps_image_version:-}" ]; then echo "build_deps_image_version is unset" && exit 3; fi
 
+if [ "${SNAPSHOT_ALPHA:-}" = "true" ]; then
+    echo "SNAPSHOT_ALPHA is 'true', snapshot alpha before make."
+    make octez-protocol-compiler
+    ./scripts/snapshot_alpha_and_link.sh
+else
+    echo "SNAPSHOT_ALPHA is not 'true', do not snapshot alpha before make."
+fi
+
 # We remove protocols not needed for tests in order to speed up the CI.
 old_protocol_store=$(mktemp -d)
 ./scripts/remove-old-protocols.sh "$old_protocol_store"
