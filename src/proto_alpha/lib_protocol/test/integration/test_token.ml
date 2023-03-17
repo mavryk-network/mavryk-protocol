@@ -322,8 +322,7 @@ let test_transferring_from_container ctxt giver amount expected_bupds =
   let error_title =
     match giver with
     | `Contract _ -> "Balance too low"
-    | `Frozen_deposits _ | `Frozen_bonds _ ->
-        "Storage error (fatal internal error)"
+    | `Frozen_bonds _ -> "Storage error (fatal internal error)"
     | _ -> "Underflowing tez subtraction"
   in
   Assert.proto_error_with_info ~loc:__LOC__ res error_title >>=? fun () ->
