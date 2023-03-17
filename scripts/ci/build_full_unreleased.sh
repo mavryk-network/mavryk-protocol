@@ -16,9 +16,6 @@ if [ "${build_deps_image_version}" != "${opam_repository_tag}" ] ; then
     exit 1 ;
 fi
 
-diff poetry.lock /home/tezos/poetry.lock
-diff pyproject.toml /home/tezos/pyproject.toml
-
 # 2. Actually build
 make
 

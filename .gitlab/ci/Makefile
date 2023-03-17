@@ -95,6 +95,8 @@ build-full-unreleased:
 sanity-ci: gitlab-take-ownership
 	${MAKE} -C ${CI_PROJECT_DIR}/manifest check
 	${CI_PROJECT_DIR}/scripts/lint.sh --check-gitlab-ci-yml
+	diff ${CI_PROJECT_DIR}/poetry.lock /home/tezos/poetry.lock
+	diff ${CI_PROJECT_DIR}/pyproject.toml /home/tezos/pyproject.toml
 
 ifndef TEZOS_WITHOUT_OPAM
 .PHONY: opam-prepare
