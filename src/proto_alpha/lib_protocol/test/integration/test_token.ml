@@ -127,7 +127,8 @@ let test_allocated_and_still_allocated_when_empty ctxt receiver initial_status =
 
 let test_allocated () =
   Random.init 0 ;
-  create_context () >>=? fun (ctxt, pkh) ->
+  create_context () >>=? fun (ctxt, _pkh) ->
+  let pkh, _pk, _sk = Signature.generate_key () in
   let receiver = `Contract (Contract.Implicit pkh) in
   test_allocated_and_deallocated_when_empty ctxt receiver >>=? fun () ->
   let receiver = `Collected_commitments Blinded_public_key_hash.zero in
