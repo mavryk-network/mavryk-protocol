@@ -37,6 +37,14 @@ val default_constants : constants
 (** Get the name of a protocol, capitalized (e.g. ["Edo"]). *)
 val name : t -> string
 
+(** Get the protocol corresponding to a given full hash.
+
+    Raises an error if the hash is not one of the protocols of {!all}.  *)
+val of_hash : string -> t
+
+(** As [of_hash], but return [None] instead of raising an error. *)
+val of_hash_opt : string -> t option
+
 (** Get the number of a protocol, e.g. 012 for Ithaca.
 
     The number for [Alpha] is the number it will have once snapshotted.

@@ -56,6 +56,17 @@ let hash = function
   | Mumbai -> "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1"
   | Nairobi -> "PtNairobi9MxcBmKF7avFwkUohUu9KuxHt3w9cBmJ7ULqPD7cY5"
 
+let of_hash_opt = function
+  | "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK" -> Some Alpha
+  | "PtLimaPtLMwfNinJi9rCfDPWea8dFgTZ1MeJ9f1m2SRic6ayiwW" -> Some Lima
+  | "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1" -> Some Mumbai
+  | _ -> None
+
+let of_hash hash =
+  match of_hash_opt hash with
+  | Some protocol -> protocol
+  | None -> failwith (sf "[Protocol.of_hash] unknown protocol hash '%s'" hash)
+
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
 let demo_noops_hash = "ProtoDemoNoopsDemoNoopsDemoNoopsDemoNoopsDemo6XBoYp"
