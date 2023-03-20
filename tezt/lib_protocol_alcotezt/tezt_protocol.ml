@@ -31,11 +31,27 @@ end
 
 type protocol = (module PROTOCOL)
 
+let name_internal (p : protocol) =
+  let module Protocol = (val p) in
+  Protocol.name
+
+let hash (p : protocol) =
+  let module Protocol = (val p) in
+  Protocol.hash
+
 let tezt_protocol (p : protocol) =
-  let module Protocol = (val p : PROTOCOL) in
-  Protocol.hash |> Tezos_crypto.Hashed.Protocol_hash.to_b58check
-  |> Tezt_tezos.Protocol.of_hash
+  p |> hash |> Tezos_crypto.Hashed.Protocol_hash.to_b58check
+  |> Tezt_tezos.Protocol.of_hash_opt
 
-let tag (p : protocol) = tezt_protocol p |> Tezt_tezos.Protocol.tag
+let tag (p : protocol) =
+  match tezt_protocol p with
+  | Some tezt_protocol -> Tezt_tezos.Protocol.tag tezt_protocol
+  | None ->
+      name_internal p |> String.lowercase_ascii
+      |> String.map (fun c ->
+             match c with 'a' .. 'z' | '0' .. '9' -> c | _ -> '_')
 
-let name (p : protocol) = tezt_protocol p |> Tezt_tezos.Protocol.name
+let name (p : protocol) =
+  match tezt_protocol p with
+  | Some tezt_protocol -> Tezt_tezos.Protocol.name tezt_protocol
+  | None -> name_internal p

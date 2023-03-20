@@ -88,7 +88,9 @@ let test_find_destination _ =
   test "Expected test_alias bootstrap1" "test_alias" bootstrap1
 
 let () =
-  Alcotest_lwt.run
+  let protocol = (module Protocol : Tezt_protocol.PROTOCOL) in
+  Protocol_alcotest_lwt.run
+    protocol
     ~__FILE__
     "tezos-lib-client-proto-contracts"
     [

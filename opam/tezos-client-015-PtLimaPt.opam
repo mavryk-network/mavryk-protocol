@@ -33,7 +33,7 @@ depends: [
   "tezos-micheline" {with-test}
   "tezos-base-test-helpers" {with-test}
   "tezos-test-helpers" {with-test}
-  "octez-alcotezt" {with-test}
+  "octez-protocol-alcotezt" {with-test}
   "qcheck-alcotest" { with-test & >= "0.20" }
 ]
 build: [

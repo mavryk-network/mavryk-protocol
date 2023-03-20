@@ -66,7 +66,9 @@ let tests =
   ]
 
 let () =
-  Alcotest.run
+  let protocol = (module Protocol : Tezt_protocol.PROTOCOL) in
+  Protocol_alcotest.run
+    protocol
     ~__FILE__
     "Client proto context"
     [(Protocol.name ^ ": Encodings", qcheck_wrap tests)]

@@ -75,7 +75,9 @@ let test_add_info_per_level =
 let tests = [test_add_info_per_level]
 
 let () =
-  Alcotest.run
+  let protocol = (module Protocol : Tezt_protocol.PROTOCOL) in
+  Protocol_alcotest.run
+    protocol
     ~__FILE__
     "Smart rollup inbox"
     [(Protocol.name ^ ": safety", qcheck_wrap tests)]

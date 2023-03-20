@@ -1340,7 +1340,9 @@ let wrap (n, f) =
           Format.kasprintf Stdlib.failwith "%a" pp_print_trace error)
 
 let () =
-  Alcotest_lwt.run
+  let protocol = (module Protocol : Tezt_protocol.PROTOCOL) in
+  Protocol_alcotest_lwt.run
+    protocol
     ~__FILE__
     "tezos-lib-client"
     [(Protocol.name ^ ": micheline v1 macros", List.map wrap tests)]

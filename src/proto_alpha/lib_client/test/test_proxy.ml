@@ -83,7 +83,9 @@ let test_split_key =
           key
 
 let () =
-  Alcotest.run
+  let protocol = (module Protocol : Tezt_protocol.PROTOCOL) in
+  Protocol_alcotest.run
+    protocol
     ~__FILE__
     "tezos-lib-client-proxy"
     [(Protocol.name ^ ": proxy", Qcheck2_helpers.qcheck_wrap [test_split_key])]

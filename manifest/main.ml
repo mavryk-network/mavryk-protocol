@@ -2877,7 +2877,7 @@ protocols.|}
         octez_event_logging;
       ]
 
-let _protocol_alcotezt =
+let protocol_alcotezt =
   public_lib
     "octez-protocol-alcotezt"
     ~path:"tezt/lib_protocol_alcotezt"
@@ -5591,7 +5591,7 @@ module Protocol = Protocol
             main |> open_;
             octez_base_test_helpers |> open_;
             octez_test_helpers |> open_;
-            alcotezt;
+            protocol_alcotezt;
             qcheck_alcotest;
           ]
     in
