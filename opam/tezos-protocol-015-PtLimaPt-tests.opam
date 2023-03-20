@@ -26,6 +26,7 @@ depends: [
   "qcheck-alcotest" { with-test & >= "0.20" }
   "tezos-test-helpers" {with-test}
   "tezt-tezos" {with-test}
+  "octez-protocol-alcotezt" {with-test}
   "tezos-client-base" {with-test}
   "tezos-protocol-environment" {with-test}
   "tezos-stdlib-unix" {with-test}

@@ -4980,6 +4980,7 @@ end = struct
                 plugin |> if_some |> open_;
                 test_helpers |> if_some |> open_;
                 octez_micheline |> open_;
+                protocol_alcotezt;
               ]
             ~dep_globs:["contracts/*.tz"; "expected/test_logging.ml/*.out"]
       in

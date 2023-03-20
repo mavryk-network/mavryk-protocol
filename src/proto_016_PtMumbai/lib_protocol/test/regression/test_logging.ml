@@ -257,22 +257,19 @@ let fail_on_error f () =
   | Ok () -> return ()
   | Error e -> Test.fail "%a" Error_monad.pp_print_trace e
 
-(* Make sure that after a snapshot the snapshotted version of the test
-   has a different [~title], because all tests are linked in [tezt/tests/main.exe]. *)
-let protocol =
-  match __FILE__ =~* rex "^src/proto_([0-9a-zA-Z_]*)/" with
-  | None ->
-      Stdlib.failwith ("failed to extract protocol name from path: " ^ __FILE__)
-  | Some name -> name
-
 let register_script transaction =
   (* [~title] must be unique across the codebase, so we prefix it with the protocol name.
      [~file] however is better kept the same across protocols to simplify snapshotting. *)
   let file = filename transaction in
+  let protocol =
+    (module Protocol : Octez_protocol_alcotezt.Tezt_protocol.PROTOCOL)
+  in
+  let tag = Tezt_protocol.tag protocol in
+  let name = Tezt_protocol.name protocol in
   Regression.register
     ~__FILE__
-    ~title:(protocol ^ ": " ^ file)
-    ~tags:["protocol"; "regression"; "logging"]
+    ~title:(name ^ ": " ^ file)
+    ~tags:[tag; "protocol"; "regression"; "logging"]
     ~file
     (fail_on_error @@ run_script transaction)
 

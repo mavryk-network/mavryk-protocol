@@ -12,7 +12,8 @@
   tezos-client-alpha
   tezos-protocol-plugin-alpha
   tezos-alpha-test-helpers
-  tezos-micheline)
+  tezos-micheline
+  octez-protocol-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -24,7 +25,8 @@
   -open Tezos_client_alpha
   -open Tezos_protocol_plugin_alpha
   -open Tezos_alpha_test_helpers
-  -open Tezos_micheline)
+  -open Tezos_micheline
+  -open Octez_protocol_alcotezt)
  (modules test_logging))
 
 (executable

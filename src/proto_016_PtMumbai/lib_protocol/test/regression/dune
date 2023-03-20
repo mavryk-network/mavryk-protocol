@@ -12,7 +12,8 @@
   tezos-client-016-PtMumbai
   tezos-protocol-plugin-016-PtMumbai
   tezos-016-PtMumbai-test-helpers
-  tezos-micheline)
+  tezos-micheline
+  octez-protocol-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -24,7 +25,8 @@
   -open Tezos_client_016_PtMumbai
   -open Tezos_protocol_plugin_016_PtMumbai
   -open Tezos_016_PtMumbai_test_helpers
-  -open Tezos_micheline)
+  -open Tezos_micheline
+  -open Octez_protocol_alcotezt)
  (modules test_logging))
 
 (executable

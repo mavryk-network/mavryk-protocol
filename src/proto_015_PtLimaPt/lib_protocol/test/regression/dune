@@ -12,7 +12,8 @@
   tezos-client-015-PtLimaPt
   tezos-protocol-plugin-015-PtLimaPt
   tezos-015-PtLimaPt-test-helpers
-  tezos-micheline)
+  tezos-micheline
+  octez-protocol-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -24,7 +25,8 @@
   -open Tezos_client_015_PtLimaPt
   -open Tezos_protocol_plugin_015_PtLimaPt
   -open Tezos_015_PtLimaPt_test_helpers
-  -open Tezos_micheline)
+  -open Tezos_micheline
+  -open Octez_protocol_alcotezt)
  (modules test_logging))
 
 (executable
