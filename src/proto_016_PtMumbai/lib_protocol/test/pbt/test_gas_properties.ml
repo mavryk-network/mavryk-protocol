@@ -143,4 +143,4 @@ let () =
   Alcotest.run
     ~__FILE__
     "protocol > pbt > gas"
-    [(Protocol.name ^ ": gas properties", qcheck_wrap tests)]
+    [("gas properties", qcheck_wrap tests)]

@@ -63,4 +63,4 @@ let () =
   Alcotest.run
     ~__FILE__
     "Operation_encoding"
-    [(Protocol.name ^ ": roundtrip", qcheck_wrap [test_operation])]
+    [("roundtrip", qcheck_wrap [test_operation])]

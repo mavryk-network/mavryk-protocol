@@ -188,7 +188,6 @@ let () =
     ~__FILE__
     "Filter_state"
     [
-      (Protocol.name ^ ": add_manager_op", qcheck_wrap [test_add_manager_op]);
-      ( Protocol.name ^ ": remove",
-        qcheck_wrap [test_remove_present; test_remove_unknown] );
+      ("add_manager_op", qcheck_wrap [test_add_manager_op]);
+      ("remove", qcheck_wrap [test_remove_present; test_remove_unknown]);
     ]

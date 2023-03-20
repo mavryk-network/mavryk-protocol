@@ -267,7 +267,4 @@ let () =
   Alcotest.run
     ~__FILE__
     "protocol > pbt > sampling"
-    [
-      ( Protocol.name ^ ": sampling",
-        qcheck_wrap [alias_float_test; alias_z_test] );
-    ]
+    [("sampling", qcheck_wrap [alias_float_test; alias_z_test])]

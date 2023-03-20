@@ -415,9 +415,5 @@ let () =
   Alcotest_lwt.run
     ~__FILE__
     "protocol > unit"
-    [
-      Test_helpers.Unit_test.spec
-        (Protocol.name ^ ": Slot_framing_protocol.ml")
-        tests;
-    ]
+    [Test_helpers.Unit_test.spec "Slot_framing_protocol.ml" tests]
   |> Lwt_main.run

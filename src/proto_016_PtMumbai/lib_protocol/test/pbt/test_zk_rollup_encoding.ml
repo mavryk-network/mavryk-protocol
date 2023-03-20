@@ -224,6 +224,6 @@ let () =
     ~__FILE__
     "ZK rollup encoding"
     [
-      (Protocol.name ^ ": roundtrip", qcheck_wrap tests_roundtrip);
-      (Protocol.name ^ ": to_scalar", qcheck_wrap tests_to_scalar);
+      ("roundtrip", qcheck_wrap tests_roundtrip);
+      ("to_scalar", qcheck_wrap tests_to_scalar);
     ]
