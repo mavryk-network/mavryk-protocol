@@ -263,7 +263,7 @@ let () =
     ~__FILE__
     "conflict_handler"
     [
-      ( Protocol.name ^ ": conflict_handler",
+      ( "conflict_handler",
         [
           Tztest.tztest
             "Random operations (not both manager)"

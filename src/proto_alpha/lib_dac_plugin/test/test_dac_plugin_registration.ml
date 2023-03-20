@@ -154,9 +154,5 @@ let () =
   Alcotest_lwt.run
     ~__FILE__
     "protocol > unit"
-    [
-      Test_helpers.Unit_test.spec
-        (Protocol.name ^ ": Dac_plugin_registration.ml")
-        tests;
-    ]
+    [Test_helpers.Unit_test.spec "Dac_plugin_registration.ml" tests]
   |> Lwt_main.run

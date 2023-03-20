@@ -97,7 +97,7 @@ let () =
     ~__FILE__
     "bits"
     [
-      ( Protocol.name ^ ": quantity",
+      ( "quantity",
         qcheck_wrap
           [
             QCheck2.Test.make

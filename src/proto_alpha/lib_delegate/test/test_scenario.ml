@@ -1594,22 +1594,21 @@ let () =
          let open Tezos_base_test_helpers.Tztest in
          (title, [tztest title `Quick body]))
        [
-         (Protocol.name ^ ": reaches level 5", test_level_5);
-         ( Protocol.name ^ ": cannot progress without new head",
-           test_preendorse_on_valid );
-         (Protocol.name ^ ": reset delayed pqc", test_reset_delayed_pqc);
-         (Protocol.name ^ ": scenario t1", test_scenario_t1);
-         (Protocol.name ^ ": scenario t2", test_scenario_t2);
-         (Protocol.name ^ ": scenario t3", test_scenario_t3);
-         (Protocol.name ^ ": scenario f1", test_scenario_f1);
-         (Protocol.name ^ ": scenario f2", test_scenario_f2);
-         (Protocol.name ^ ": scenario m1", test_scenario_m1);
-         (Protocol.name ^ ": scenario m2", test_scenario_m2);
-         (Protocol.name ^ ": scenario m3", test_scenario_m3);
-         (Protocol.name ^ ": scenario m4", test_scenario_m4);
-         (Protocol.name ^ ": scenario m5", test_scenario_m5);
-         (Protocol.name ^ ": scenario m6", test_scenario_m6);
-         (Protocol.name ^ ": scenario m7", test_scenario_m7);
-         (Protocol.name ^ ": scenario m8", test_scenario_m8);
+         ("reaches level 5", test_level_5);
+         ("cannot progress without new head", test_preendorse_on_valid);
+         ("reset delayed pqc", test_reset_delayed_pqc);
+         ("scenario t1", test_scenario_t1);
+         ("scenario t2", test_scenario_t2);
+         ("scenario t3", test_scenario_t3);
+         ("scenario f1", test_scenario_f1);
+         ("scenario f2", test_scenario_f2);
+         ("scenario m1", test_scenario_m1);
+         ("scenario m2", test_scenario_m2);
+         ("scenario m3", test_scenario_m3);
+         ("scenario m4", test_scenario_m4);
+         ("scenario m5", test_scenario_m5);
+         ("scenario m6", test_scenario_m6);
+         ("scenario m7", test_scenario_m7);
+         ("scenario m8", test_scenario_m8);
        ]
   |> Lwt_main.run
