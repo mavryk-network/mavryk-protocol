@@ -94,7 +94,7 @@ let () =
     ~__FILE__
     "tezos-lib-client-proto-contracts"
     [
-      ( Protocol.name ^ ": client_proto_contracts",
+      ( "client_proto_contracts",
         [Tztest.tztest "test_find_destination" `Quick test_find_destination] );
     ]
   |> Lwt_main.run

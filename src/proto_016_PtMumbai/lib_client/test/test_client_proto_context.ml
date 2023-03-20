@@ -71,4 +71,4 @@ let () =
     protocol
     ~__FILE__
     "Client proto context"
-    [(Protocol.name ^ ": Encodings", qcheck_wrap tests)]
+    [("Encodings", qcheck_wrap tests)]

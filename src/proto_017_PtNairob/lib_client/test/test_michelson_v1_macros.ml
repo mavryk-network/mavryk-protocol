@@ -1345,5 +1345,5 @@ let () =
     protocol
     ~__FILE__
     "tezos-lib-client"
-    [(Protocol.name ^ ": micheline v1 macros", List.map wrap tests)]
+    [("micheline v1 macros", List.map wrap tests)]
   |> Lwt_main.run
