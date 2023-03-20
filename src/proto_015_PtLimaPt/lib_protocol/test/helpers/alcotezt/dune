@@ -1,0 +1,15 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_015_PtLimaPt_test_helpers_alcotezt)
+ (public_name tezos-015-PtLimaPt-test-helpers.alcotezt)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezos-protocol-environment
+  tezos-protocol-015-PtLimaPt
+  octez-protocol-alcotezt)
+ (flags
+  (:standard)
+  -open Tezos_protocol_015_PtLimaPt
+  -open Octez_protocol_alcotezt))

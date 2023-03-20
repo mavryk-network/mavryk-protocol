@@ -4604,8 +4604,8 @@ end = struct
   module Lib_protocol = struct
     type t = {main : target; embedded : target}
 
-    let make_tests ?test_helpers ?parameters ?plugin ?client ?benchmark
-        ?benchmark_type_inference ?octez_sc_rollup ~main ~name () =
+    let make_tests ?test_helpers ?alcotezt ?parameters ?plugin ?client
+        ?benchmark ?benchmark_type_inference ?octez_sc_rollup ~main ~name () =
       let name_dash = Name.name_dash name in
       let number = Name.number name in
       let path = Name.base_path name in
@@ -4633,7 +4633,7 @@ end = struct
           ~opam:(sf "tezos-protocol-%s-tests" name_dash)
           ~deps:
             [
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
@@ -4651,7 +4651,7 @@ end = struct
           ~with_macos_security_framework:true
           ~deps:
             [
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
@@ -4707,7 +4707,7 @@ end = struct
                ])
           ~deps:
             [
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
@@ -4751,7 +4751,7 @@ end = struct
           ~dep_globs:(conditional_list [("contracts/*", N.(number >= 013))])
           ~deps:
             [
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
@@ -4783,7 +4783,7 @@ end = struct
           ~with_macos_security_framework:true
           ~deps:
             [
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
@@ -4818,7 +4818,7 @@ end = struct
             [
               (if N.(number >= 015) then Some tezt_lib else None) |> if_some;
               octez_context;
-              alcotezt;
+              alcotezt |> if_some;
               octez_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               client |> if_some |> open_;
@@ -4877,7 +4877,7 @@ end = struct
               octez_merkle_proof_encoding;
               octez_test_helpers |> open_;
               test_helpers |> if_some |> open_;
-              alcotezt;
+              alcotezt |> if_some;
               qcheck_alcotest;
               octez_client_base |> if_ N.(number <= 012);
               octez_benchmark;
@@ -4946,7 +4946,7 @@ end = struct
               main |> open_;
               octez_test_helpers |> open_;
               test_helpers |> if_some |> open_;
-              alcotezt;
+              alcotezt |> if_some;
               octez_scoru_wasm_helpers |> if_ N.(number >= 016) |> open_;
               octez_stdlib |> if_ N.(number >= 013) |> open_;
               octez_crypto_dal |> if_ N.(number >= 016) |> open_;
@@ -5538,6 +5538,26 @@ module Protocol = Protocol
             octez_crypto_dal |> if_ N.(number >= 016) |> open_;
           ]
     in
+    (* We override the original definition of [alcotezt] to a
+       protocol-specific wrapper that registers tests with a
+       Protocol-appropriate title prefix and tag. We override to
+       ensure that the original definition is not used by mistake
+       which could lead to test title collisions when snapshotting. *)
+    let this_protocol_alcotezt =
+      only_if active @@ fun () ->
+      public_lib
+        (sf "tezos-%s-test-helpers.alcotezt" name_dash)
+        ~path:
+          (if active then path // "lib_protocol/test/helpers/alcotezt"
+          else path // "lib_protocol")
+        ~opam:
+          (if active then sf "tezos-%s-test-helpers" name_dash
+          else sf "tezos-%s-test-helpers" name_dash)
+        ~internal_name:(sf "tezos_%s_test_helpers_alcotezt" name_underscore)
+        ~opam_only_deps:[octez_protocol_environment]
+        ~deps:[octez_protocol_environment; main |> open_; protocol_alcotezt]
+      |> open_
+    in
     let _plugin_tests =
       opt_map (both plugin test_helpers) @@ fun (plugin, test_helpers) ->
       only_if active @@ fun () ->
@@ -5560,7 +5580,7 @@ module Protocol = Protocol
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             octez_base_test_helpers |> open_;
             octez_base_unix |> if_ N.(number >= 013);
-            alcotezt;
+            this_protocol_alcotezt |> if_some;
             octez_test_helpers |> open_;
             qcheck_alcotest;
             octez_stdlib_unix;
@@ -5811,7 +5831,7 @@ module Protocol = Protocol
             baking |> open_;
             parameters |> if_some |> if_ N.(number >= 012);
             octez_crypto |> if_ N.(number >= 012);
-            alcotezt;
+            this_protocol_alcotezt |> if_some;
             uri;
           ]
     in
@@ -6216,7 +6236,7 @@ module Protocol = Protocol
             main |> open_;
             octez_base_test_helpers |> open_;
             test_helpers |> if_some |> open_;
-            alcotezt;
+            this_protocol_alcotezt |> if_some;
           ]
     in
     let dac =
@@ -6267,7 +6287,7 @@ module Protocol = Protocol
             test_helpers |> if_some |> open_;
             octez_dac_lib |> open_;
             octez_dac_node_lib |> open_;
-            alcotezt;
+            this_protocol_alcotezt |> if_some;
           ]
     in
     let benchmark_type_inference =
@@ -6412,6 +6432,7 @@ module Protocol = Protocol
       if active then
         Lib_protocol.make_tests
           ?test_helpers
+          ?alcotezt:this_protocol_alcotezt
           ?parameters
           ?plugin
           ?client

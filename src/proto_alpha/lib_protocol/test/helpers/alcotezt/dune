@@ -1,0 +1,15 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_alpha_test_helpers_alcotezt)
+ (public_name tezos-alpha-test-helpers.alcotezt)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezos-protocol-environment
+  tezos-protocol-alpha
+  octez-protocol-alcotezt)
+ (flags
+  (:standard)
+  -open Tezos_protocol_alpha
+  -open Octez_protocol_alcotezt))

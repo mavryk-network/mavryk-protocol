@@ -1,0 +1,15 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_016_PtMumbai_test_helpers_alcotezt)
+ (public_name tezos-016-PtMumbai-test-helpers.alcotezt)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezos-protocol-environment
+  tezos-protocol-016-PtMumbai
+  octez-protocol-alcotezt)
+ (flags
+  (:standard)
+  -open Tezos_protocol_016_PtMumbai
+  -open Octez_protocol_alcotezt))
