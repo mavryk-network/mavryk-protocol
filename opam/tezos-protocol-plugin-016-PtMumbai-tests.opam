@@ -13,14 +13,13 @@ depends: [
   "tezt" { with-test & >= "3.0.0" }
   "tezos-base" {with-test}
   "tezos-base-test-helpers" {with-test}
-  "octez-alcotezt" {with-test}
+  "tezos-016-PtMumbai-test-helpers" {with-test}
   "tezos-test-helpers" {with-test}
   "qcheck-alcotest" { with-test & >= "0.20" }
   "tezos-stdlib-unix" {with-test}
   "tezos-micheline" {with-test}
   "tezos-protocol-plugin-016-PtMumbai" {with-test}
   "tezos-protocol-016-PtMumbai" {with-test}
-  "tezos-016-PtMumbai-test-helpers" {with-test}
 ]
 build: [
   ["rm" "-r" "vendors"]

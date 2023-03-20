@@ -13,7 +13,7 @@
   tezos-context.merkle_proof_encoding
   tezos-test-helpers
   tezos-alpha-test-helpers
-  octez-alcotezt
+  tezos-alpha-test-helpers.alcotezt
   qcheck-alcotest
   tezos-benchmark
   tezos-benchmark-alpha
@@ -33,7 +33,7 @@
   -open Tezos_protocol_alpha
   -open Tezos_test_helpers
   -open Tezos_alpha_test_helpers
-  -open Octez_alcotezt
+  -open Tezos_alpha_test_helpers_alcotezt
   -open Tezos_benchmark_alpha
   -open Tezos_benchmark_type_inference_alpha
   -open Tezos_smart_rollup_alpha

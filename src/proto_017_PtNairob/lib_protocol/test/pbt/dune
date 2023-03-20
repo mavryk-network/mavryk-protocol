@@ -13,7 +13,7 @@
   tezos-context.merkle_proof_encoding
   tezos-test-helpers
   tezos-017-PtNairob-test-helpers
-  octez-alcotezt
+  tezos-017-PtNairob-test-helpers.alcotezt
   qcheck-alcotest
   tezos-benchmark
   tezos-benchmark-017-PtNairob
@@ -33,7 +33,7 @@
   -open Tezos_protocol_017_PtNairob
   -open Tezos_test_helpers
   -open Tezos_017_PtNairob_test_helpers
-  -open Octez_alcotezt
+  -open Tezos_017_PtNairob_test_helpers_alcotezt
   -open Tezos_benchmark_017_PtNairob
   -open Tezos_benchmark_type_inference_017_PtNairob
   -open Tezos_smart_rollup_017_PtNairob

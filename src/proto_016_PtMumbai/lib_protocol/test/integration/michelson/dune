@@ -7,7 +7,7 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-alcotezt
+  tezos-016-PtMumbai-test-helpers.alcotezt
   tezos-base
   tezos-protocol-016-PtMumbai
   tezos-016-PtMumbai-test-helpers
@@ -24,7 +24,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt
+  -open Tezos_016_PtMumbai_test_helpers_alcotezt
   -open Tezos_base.TzPervasives
   -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_protocol_016_PtMumbai

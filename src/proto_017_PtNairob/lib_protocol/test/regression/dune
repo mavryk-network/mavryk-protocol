@@ -12,7 +12,8 @@
   tezos-client-017-PtNairob
   tezos-protocol-plugin-017-PtNairob
   tezos-017-PtNairob-test-helpers
-  tezos-micheline)
+  tezos-micheline
+  octez-protocol-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -24,7 +25,8 @@
   -open Tezos_client_017_PtNairob
   -open Tezos_protocol_plugin_017_PtNairob
   -open Tezos_017_PtNairob_test_helpers
-  -open Tezos_micheline)
+  -open Tezos_micheline
+  -open Octez_protocol_alcotezt)
  (modules test_logging))
 
 (executable

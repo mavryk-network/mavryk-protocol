@@ -15,7 +15,7 @@
   tezos-baking-alpha
   tezos-protocol-alpha.parameters
   tezos-crypto
-  octez-alcotezt
+  tezos-alpha-test-helpers.alcotezt
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -30,7 +30,7 @@
   -open Tezos_base_test_helpers
   -open Tezos_alpha_mockup_simulator
   -open Tezos_baking_alpha
-  -open Octez_alcotezt)
+  -open Tezos_alpha_test_helpers_alcotezt)
  (modules test_scenario))
 
 (executable

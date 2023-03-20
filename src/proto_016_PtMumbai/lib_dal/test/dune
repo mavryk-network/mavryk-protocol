@@ -11,7 +11,7 @@
   tezos-protocol-016-PtMumbai
   tezos-base-test-helpers
   tezos-016-PtMumbai-test-helpers
-  octez-alcotezt)
+  tezos-016-PtMumbai-test-helpers.alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -23,7 +23,7 @@
   -open Tezos_protocol_016_PtMumbai
   -open Tezos_base_test_helpers
   -open Tezos_016_PtMumbai_test_helpers
-  -open Octez_alcotezt)
+  -open Tezos_016_PtMumbai_test_helpers_alcotezt)
  (modules test_dal_slot_frame_encoding test_helpers))
 
 (executable

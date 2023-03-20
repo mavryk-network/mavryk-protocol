@@ -17,7 +17,7 @@
   tezos-protocol-015-PtLimaPt
   tezos-test-helpers
   tezos-015-PtLimaPt-test-helpers
-  octez-alcotezt
+  tezos-015-PtLimaPt-test-helpers.alcotezt
   tezos-stdlib
   tezos-scoru-wasm)
  (library_flags (:standard -linkall))
@@ -33,7 +33,7 @@
   -open Tezos_protocol_015_PtLimaPt
   -open Tezos_test_helpers
   -open Tezos_015_PtLimaPt_test_helpers
-  -open Octez_alcotezt
+  -open Tezos_015_PtLimaPt_test_helpers_alcotezt
   -open Tezos_stdlib)
  (modules
   test_main

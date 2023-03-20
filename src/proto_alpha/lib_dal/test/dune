@@ -11,7 +11,7 @@
   tezos-protocol-alpha
   tezos-base-test-helpers
   tezos-alpha-test-helpers
-  octez-alcotezt)
+  tezos-alpha-test-helpers.alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -23,7 +23,7 @@
   -open Tezos_protocol_alpha
   -open Tezos_base_test_helpers
   -open Tezos_alpha_test_helpers
-  -open Octez_alcotezt)
+  -open Tezos_alpha_test_helpers_alcotezt)
  (modules test_dal_slot_frame_encoding test_helpers))
 
 (executable

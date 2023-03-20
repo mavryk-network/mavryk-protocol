@@ -15,7 +15,7 @@
   tezos-baking-016-PtMumbai
   tezos-protocol-016-PtMumbai.parameters
   tezos-crypto
-  octez-alcotezt
+  tezos-016-PtMumbai-test-helpers.alcotezt
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -30,7 +30,7 @@
   -open Tezos_base_test_helpers
   -open Tezos_016_PtMumbai_mockup_simulator
   -open Tezos_baking_016_PtMumbai
-  -open Octez_alcotezt)
+  -open Tezos_016_PtMumbai_test_helpers_alcotezt)
  (modules test_scenario))
 
 (executable

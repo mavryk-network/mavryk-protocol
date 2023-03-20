@@ -15,7 +15,7 @@
   tezos-baking-017-PtNairob
   tezos-protocol-017-PtNairob.parameters
   tezos-crypto
-  octez-alcotezt
+  tezos-017-PtNairob-test-helpers.alcotezt
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -30,7 +30,7 @@
   -open Tezos_base_test_helpers
   -open Tezos_017_PtNairob_mockup_simulator
   -open Tezos_baking_017_PtNairob
-  -open Octez_alcotezt)
+  -open Tezos_017_PtNairob_test_helpers_alcotezt)
  (modules test_scenario))
 
 (executable

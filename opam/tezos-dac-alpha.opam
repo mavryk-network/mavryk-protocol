@@ -23,7 +23,6 @@ depends: [
   "tezos-base-test-helpers" {with-test}
   "tezos-alpha-test-helpers" {with-test}
   "tezos-dac-node-lib" {with-test}
-  "octez-alcotezt" {with-test}
 ]
 build: [
   ["rm" "-r" "vendors"]

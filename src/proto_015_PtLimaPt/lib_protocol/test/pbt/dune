@@ -13,7 +13,7 @@
   tezos-context.merkle_proof_encoding
   tezos-test-helpers
   tezos-015-PtLimaPt-test-helpers
-  octez-alcotezt
+  tezos-015-PtLimaPt-test-helpers.alcotezt
   qcheck-alcotest
   tezos-benchmark
   tezos-benchmark-015-PtLimaPt
@@ -29,7 +29,7 @@
   -open Tezos_protocol_015_PtLimaPt
   -open Tezos_test_helpers
   -open Tezos_015_PtLimaPt_test_helpers
-  -open Octez_alcotezt
+  -open Tezos_015_PtLimaPt_test_helpers_alcotezt
   -open Tezos_benchmark_015_PtLimaPt
   -open Tezos_benchmark_type_inference_015_PtLimaPt)
  (modules

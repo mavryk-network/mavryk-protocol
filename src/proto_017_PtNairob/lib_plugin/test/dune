@@ -9,7 +9,7 @@
   tezos-base
   tezos-base-test-helpers
   tezos-base.unix
-  octez-alcotezt
+  tezos-017-PtNairob-test-helpers.alcotezt
   tezos-test-helpers
   qcheck-alcotest
   tezos-stdlib-unix
@@ -26,7 +26,7 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_base_test_helpers
-  -open Octez_alcotezt
+  -open Tezos_017_PtNairob_test_helpers_alcotezt
   -open Tezos_test_helpers
   -open Tezos_micheline
   -open Tezos_protocol_plugin_017_PtNairob

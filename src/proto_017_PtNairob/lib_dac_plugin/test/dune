@@ -13,7 +13,7 @@
   tezos-017-PtNairob-test-helpers
   tezos-dac-lib
   tezos_dac_node_lib
-  octez-alcotezt)
+  tezos-017-PtNairob-test-helpers.alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -27,7 +27,7 @@
   -open Tezos_017_PtNairob_test_helpers
   -open Tezos_dac_lib
   -open Tezos_dac_node_lib
-  -open Octez_alcotezt)
+  -open Tezos_017_PtNairob_test_helpers_alcotezt)
  (modules test_dac_pages_encoding test_dac_plugin_registration test_helpers))
 
 (executable

@@ -40,7 +40,7 @@ depends: [
   "tezos-micheline" {with-test}
   "tezos-base-test-helpers" {with-test}
   "tezos-crypto" {with-test}
-  "octez-alcotezt" {with-test}
+  "tezos-015-PtLimaPt-test-helpers" {with-test}
 ]
 build: [
   ["rm" "-r" "vendors"]
