@@ -278,8 +278,8 @@ let () =
     ~__FILE__
     "Compact_encoding"
     [
-      (Protocol.name ^ ": quantity", qcheck_wrap [test_quantity ~count:100_000]);
-      ( Protocol.name ^ ": roundtrip",
+      ("quantity", qcheck_wrap [test_quantity ~count:100_000]);
+      ( "roundtrip",
         qcheck_wrap
           [
             test_roundtrip

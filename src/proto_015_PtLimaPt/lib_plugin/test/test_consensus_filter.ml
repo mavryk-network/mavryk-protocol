@@ -436,7 +436,7 @@ let () =
     ~__FILE__
     "Filter"
     [
-      ( Protocol.name ^ ": pre_filter",
+      ( "pre_filter",
         qcheck_wrap
           [
             test_acceptable_past_level;

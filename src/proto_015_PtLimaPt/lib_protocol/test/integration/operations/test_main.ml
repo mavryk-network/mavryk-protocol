@@ -35,16 +35,15 @@ let () =
     ~__FILE__
     "protocol > integration > operations"
     [
-      (Protocol.name ^ ": voting", Test_voting.tests);
-      (Protocol.name ^ ": origination", Test_origination.tests);
-      (Protocol.name ^ ": revelation", Test_reveal.tests);
-      (Protocol.name ^ ": transfer", Test_transfer.tests);
-      (Protocol.name ^ ": activation", Test_activation.tests);
-      ( Protocol.name ^ ": paid storage increase",
-        Test_paid_storage_increase.tests );
-      (Protocol.name ^ ": combined", Test_combined_operations.tests);
-      (Protocol.name ^ ": failing_noop operation", Test_failing_noop.tests);
-      (Protocol.name ^ ": tx rollup", Test_tx_rollup.tests);
-      (Protocol.name ^ ": zk rollup", Test_zk_rollup.tests);
+      ("voting", Test_voting.tests);
+      ("origination", Test_origination.tests);
+      ("revelation", Test_reveal.tests);
+      ("transfer", Test_transfer.tests);
+      ("activation", Test_activation.tests);
+      ("paid storage increase", Test_paid_storage_increase.tests);
+      ("combined", Test_combined_operations.tests);
+      ("failing_noop operation", Test_failing_noop.tests);
+      ("tx rollup", Test_tx_rollup.tests);
+      ("zk rollup", Test_zk_rollup.tests);
     ]
   |> Lwt_main.run

@@ -35,7 +35,7 @@ let () =
     ~__FILE__
     "protocol > integration > gas"
     [
-      (Protocol.name ^ ": gas levels", Test_gas_levels.tests);
-      (Protocol.name ^ ": gas cost functions", Test_gas_costs.tests);
+      ("gas levels", Test_gas_levels.tests);
+      ("gas cost functions", Test_gas_costs.tests);
     ]
   |> Lwt_main.run

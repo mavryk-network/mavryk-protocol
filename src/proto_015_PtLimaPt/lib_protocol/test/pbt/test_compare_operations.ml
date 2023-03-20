@@ -98,6 +98,4 @@ let () =
   Alcotest.run
     ~__FILE__
     "Compare operations"
-    [
-      (Protocol.name ^ ": Compare_operations", Qcheck2_helpers.qcheck_wrap tests);
-    ]
+    [("Compare_operations", Qcheck2_helpers.qcheck_wrap tests)]

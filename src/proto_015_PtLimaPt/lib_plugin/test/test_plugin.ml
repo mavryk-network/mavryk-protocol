@@ -72,7 +72,7 @@ let () =
     ~__FILE__
     "Plugin"
     [
-      ( Protocol.name ^ ": on_flush",
+      ( "on_flush",
         [
           Tztest.tztest
             "[on_flush ~validation_state ...] yields an empty state "

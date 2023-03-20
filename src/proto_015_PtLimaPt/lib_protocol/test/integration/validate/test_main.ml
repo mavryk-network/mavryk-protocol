@@ -35,13 +35,11 @@ let () =
     ~__FILE__
     "protocol > integration > validate"
     [
-      (Protocol.name ^ ": sanity checks", Test_sanity.tests);
-      (Protocol.name ^ ": mempool", Test_mempool.tests);
-      ( Protocol.name ^ ": single manager validation",
-        Test_manager_operation_validation.tests );
-      ( Protocol.name ^ ": batched managers validation",
-        Test_validation_batch.tests );
-      (Protocol.name ^ ": one-manager restriction", Test_1m_restriction.tests);
-      (Protocol.name ^ ": covalidity", Test_covalidity.tests);
+      ("sanity checks", Test_sanity.tests);
+      ("mempool", Test_mempool.tests);
+      ("single manager validation", Test_manager_operation_validation.tests);
+      ("batched managers validation", Test_validation_batch.tests);
+      ("one-manager restriction", Test_1m_restriction.tests);
+      ("covalidity", Test_covalidity.tests);
     ]
   |> Lwt_main.run

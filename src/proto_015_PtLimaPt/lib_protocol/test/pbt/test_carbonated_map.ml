@@ -551,4 +551,4 @@ let () =
   Alcotest.run
     ~__FILE__
     "protocol > pbt > carbonated map"
-    [(Protocol.name ^ ": Carbonated map", tests ~rand)]
+    [("Carbonated map", tests ~rand)]
