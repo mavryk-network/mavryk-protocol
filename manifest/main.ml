@@ -2877,6 +2877,25 @@ protocols.|}
         octez_event_logging;
       ]
 
+let _protocol_alcotezt =
+  public_lib
+    "octez-protocol-alcotezt"
+    ~path:"tezt/lib_protocol_alcotezt"
+      (* TODO: is this necessary?
+
+         TODO: https://gitlab.com/tezos/tezos/-/issues/4727
+
+         we mark "protocol-octez-alcotezt" as released but the real solution is to
+         modify the manifest to add build instructions for dune to be
+         used `with-test` *)
+    ~release_status:Released
+    ~synopsis:
+      "Provide the interface of Alcotest for Octez Protocol Tests, but with \
+       Tezt as backend and automatically enforcing test naming and tagging \
+       policies"
+    ~deps:[alcotezt; tezt_tezos; octez_protocol_environment |> open_]
+  |> open_
+
 let octez_shell_context =
   public_lib
     "tezos-shell-context"

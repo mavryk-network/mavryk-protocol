@@ -33,6 +33,7 @@
 (package (name octez-plompiler))
 (package (name octez-plonk))
 (package (name octez-polynomial))
+(package (name octez-protocol-alcotezt))
 (package (name octez-protocol-compiler))
 (package (name octez-proxy-server))
 (package (name octez-signer))
