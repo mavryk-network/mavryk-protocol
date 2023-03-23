@@ -25,8 +25,8 @@
 
 (** Testing
     -------
-    Component:    Shell
-    Invocation:   dune exec src/lib_shell/test/test_locator.exe
+    Component: Store
+    Invocation:   dune exec src/lib_shell/test/main.exe
     Subject:      Checks operations on locators.
 *)
 
@@ -621,20 +621,6 @@ let tests =
 
 let bench = [wrap "bench locator" bench_locator]
 
-let tests =
-  tests
-  @
-  if Array.length Sys.argv > 1 then
-    match Sys.argv.(1) with "--bench" -> bench | _ -> []
-  else []
-
-let tests =
-  tests
-  @
-  if Array.length Sys.argv > 1 then
-    match Sys.argv.(1) with "--bench" -> bench | _ -> []
-  else []
-
 let () =
-  Alcotest_lwt.run ~argv:[|""|] "tezos-store" [("locator", tests)]
+  Alcotest_lwt.run ~__FILE__ "tezos-store" [("locator", tests @ bench)]
   |> Lwt_main.run

@@ -24,6 +24,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+(** Testing
+    _______
+
+    Component: Store
+    Invocation: dune exec src/lib_store/unix/test/main.exe
+    Subject: Store tests ( reconstruct )
+*)
+
 module Assert_lib = Lib_test_extra.Assert_lib
 open Test_utils
 
@@ -338,4 +346,5 @@ let tests speed =
   let test_cases_reconstruct_snapshots =
     make_tests_snapshoted speed patch_context
   in
-  ("reconstruct", test_cases_reconstruct @ test_cases_reconstruct_snapshots)
+  ( "reconstruct " ^ speed_to_string speed,
+    test_cases_reconstruct @ test_cases_reconstruct_snapshots )

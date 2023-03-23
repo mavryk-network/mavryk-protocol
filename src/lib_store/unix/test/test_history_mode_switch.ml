@@ -24,6 +24,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+(** Testing
+    _______
+
+    Component: Store
+    Invocation: dune exec src/lib_store/unix/test/main.exe
+    Subject: Store tests ( history_mode_switch )
+*)
+
 open Test_utils
 open History_mode
 
@@ -478,4 +486,5 @@ let tests speed =
       }
   in
   let test_cases_big_cycles = [make_test_drag speed big_cycles_parameters] in
-  ("history_mode_switch", test_cases_big_cycles @ test_cases)
+  ( "history_mode_switch " ^ speed_to_string speed,
+    test_cases_big_cycles @ test_cases )

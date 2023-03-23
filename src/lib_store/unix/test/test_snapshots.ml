@@ -25,6 +25,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+(** Testing
+    _______
+
+    Component: Store
+    Invocation: dune exec src/lib_store/unix/test/main.exe
+    Subject: Store tests ( snapshots )
+*)
+
 module Assert_lib = Lib_test_extra.Assert_lib
 open Test_utils
 
@@ -748,4 +756,4 @@ let tests speed =
     let tests_drag_after_import = make_tests_drag_after_import in
     tests_rolling @ tests_drag_after_import @ generated_tests
   in
-  ("snapshots", test_cases)
+  ("snapshots " ^ speed_to_string speed, test_cases)

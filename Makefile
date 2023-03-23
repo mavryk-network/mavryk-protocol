@@ -253,7 +253,7 @@ test-lib-store-unit:
 	DUNE_PROFILE=$(PROFILE) \
 		COVERAGE_OPTIONS="$(COVERAGE_OPTIONS)" \
 		scripts/test_wrapper.sh test-lib-store-unit \
-		@$(LIBSTORE_UNIX_DIR)/runtest
+		@$(LIBSTORE_UNIX_DIR)/runtezt
 
 .PHONY: test-unit
 test-unit: test-nonproto-unit test-proto-unit
