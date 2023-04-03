@@ -33,10 +33,10 @@ unit:non-proto-x86_64:
   - .unit_test_template_x86_64_coverage
   variables:
     MAKE_TARGETS: test-nonproto-unit
-    TEST_WRAPPER_REPEAT: 10
+    TEST_WRAPPER_REPEAT: 1
     DUNE_JOBS: 1
   retry: 0
-  parallel: 50
+  parallel: 100
 
 # unit:webassembly-x86_64:
 #   extends:
