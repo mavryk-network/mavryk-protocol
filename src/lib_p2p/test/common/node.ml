@@ -249,14 +249,24 @@ let detach_node ?(prefix = "") ?timeout ?(min_connections : int option)
               trusted_points
           in
           let*! welcome =
-            P2p_welcome.create ~backlog:10 connect_handler ~addr port
+            P2p_welcome.create
+              ~reuse_port:true
+              ~backlog:10
+              connect_handler
+              ~addr
+              port
           in
           let* welcome =
             match welcome with
             | Ok w -> Lwt.return @@ Ok w
             | Error _ ->
                 let*! () = Lwt_unix.sleep 2. in
-                P2p_welcome.create ~backlog:10 connect_handler ~addr port
+                P2p_welcome.create
+                  ~reuse_port:true
+                  ~backlog:10
+                  connect_handler
+                  ~addr
+                  port
           in
           (* The welcome woker has been initiated and has stolen the port
              holded by [holding_fd] file descriptor. We can now close this
