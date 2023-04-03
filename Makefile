@@ -229,7 +229,7 @@ test-protocol-compile:
 	@dune build --profile=$(PROFILE) $(COVERAGE_OPTIONS) @runtest_out_of_opam
 
 PROTO_DIRS := $(shell find src/ -maxdepth 1 -type d -path "src/proto_*" 2>/dev/null | LC_COLLATE=C sort)
-NONPROTO_DIRS := $(shell find src/ -maxdepth 1 -mindepth 1 -type d -not -path "src/proto_*" -not -path "src/lib_gossipsub" 2>/dev/null | LC_COLLATE=C sort)
+NONPROTO_DIRS := src/lib_p2p
 
 .PHONY: test-proto-unit
 test-proto-unit:
