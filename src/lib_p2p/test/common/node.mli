@@ -62,7 +62,8 @@ val default_ipv6_addr : P2p_addr.t
     [port] is not specified, it loops and generates points randomly
     until it finds [npoints] that are not currently used.
     *)
-val gen_points : int -> ?port:int -> P2p_addr.t -> P2p_point.Id.t list
+val gen_points :
+  ?max_iterations:int -> int -> ?port:int -> P2p_addr.t -> P2p_point.Id.t list
 
 (** [detach_nodes f points] creates a network with one node for each [points].
     [f] is the behavior of each node.
