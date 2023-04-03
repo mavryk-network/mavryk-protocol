@@ -34,6 +34,7 @@ unit:non-proto-x86_64:
   variables:
     MAKE_TARGETS: test-nonproto-unit
     TEST_WRAPPER_REPEAT: 10
+    DUNE_JOBS: 1
   retry: 0
   parallel: 50
 

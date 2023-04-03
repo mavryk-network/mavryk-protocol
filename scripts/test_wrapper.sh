@@ -31,7 +31,7 @@ for _ in $(seq "$TEST_WRAPPER_REPEAT"); do
         # If set, COVERAGE_OPTIONS will typically contain "--instrument-with bisect_ppx".
         # We need this to be word split for the arguments to be properly parsed by dune.
         # shellcheck disable=SC2086
-        dune build --force --error-reporting=twice ${COVERAGE_OPTIONS:-} "$@" 2>&1 ||
+        dune build -j $DUNE_JOBS --force --error-reporting=twice ${COVERAGE_OPTIONS:-} "$@" 2>&1 ||
             echo "$?" > "$exitcode_file" ;
     } | tee "test_results/$name.log"
     EXITCODE=$(cat "$exitcode_file")
