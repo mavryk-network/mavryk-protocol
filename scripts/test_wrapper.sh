@@ -21,29 +21,17 @@ echo "Running test \"dune build ${COVERAGE_OPTIONS:-} $*\" ..."
 
 START=$(date +%s.%N)
 
-TEST_WRAPPER_REPEAT=${TEST_WRAPPER_REPEAT:-1}
-
-nb_fail=0
-for _ in $(seq "$TEST_WRAPPER_REPEAT"); do
-    exitcode_file=$(mktemp)
-    {
-        echo "0" > "$exitcode_file" ;
-        # If set, COVERAGE_OPTIONS will typically contain "--instrument-with bisect_ppx".
-        # We need this to be word split for the arguments to be properly parsed by dune.
-        # shellcheck disable=SC2086
-        dune build --force --error-reporting=twice ${COVERAGE_OPTIONS:-} "$@" 2>&1 ||
-            echo "$?" > "$exitcode_file" ;
-    } | tee "test_results/$name.log"
-    EXITCODE=$(cat "$exitcode_file")
-    rm "$exitcode_file"
-
-    if [ "$EXITCODE" -eq 0 ]; then
-        echo "Ok";
-    else
-        echo "Error: exited with exitcode $EXITCODE. See full logs in test_results/$name.log"
-        nb_fail=$((nb_fail + 1))
-    fi
-done
+exitcode_file=$(mktemp)
+{
+    echo "0" > "$exitcode_file" ;
+    # If set, COVERAGE_OPTIONS will typically contain "--instrument-with bisect_ppx".
+    # We need this to be word split for the arguments to be properly parsed by dune.
+    # shellcheck disable=SC2086
+    dune build --error-reporting=twice ${COVERAGE_OPTIONS:-} "$@" 2>&1 ||
+        echo "$?" > "$exitcode_file" ;
+} | tee "test_results/$name.log"
+EXITCODE=$(cat "$exitcode_file")
+rm "$exitcode_file"
 
 END=$(date +%s.%N)
 
@@ -57,17 +45,25 @@ ds=$(echo "$dt3-60*$dm" | bc)
 
 LC_NUMERIC=C printf "Total runtime: %02d:%02d:%02.4f\n" "$dh" "$dm" "$ds"
 
+if [ "$EXITCODE" -eq 0 ]; then
+  echo "Ok";
+  nb_fail=0
+else
+  echo "Error: exited with exitcode $EXITCODE. See full logs in test_results/$name.log"
+  nb_fail=1
+fi
+
 timestamp=$(date -Is)
 hostname=$(hostname)
 
 cat > "test_results/$name.xml" <<EOF
 <?xml version="1.0" encoding="utf-8"?>
 <testsuites>
-  <testsuite name="unittest" errors="0" failures="${nb_fail}" skipped="0" tests="${TEST_WRAPPER_REPEAT}" time="${dt}" timestamp="${timestamp}" hostname="${hostname}">
+  <testsuite name="unittest" errors="0" failures="${nb_fail}" skipped="0" tests="1" time="${dt}" timestamp="${timestamp}" hostname="${hostname}">
     <testcase classname="${name}" name="${name}" time="${dt}">
 EOF
 
-if ! [ "$nb_fail" -eq 0 ]; then
+if [ ! "$EXITCODE" -eq 0 ]; then
     msg="Exited with exitcode $EXITCODE."
 
     # Add link to log artifact when running in CI
@@ -87,8 +83,4 @@ cat >> "test_results/$name.xml" <<EOF
 </testsuites>
 EOF
 
-if [ "$nb_fail" -gt 0 ]; then
-    exit 1
-else
-    exit 0
-fi
+exit "$EXITCODE"
