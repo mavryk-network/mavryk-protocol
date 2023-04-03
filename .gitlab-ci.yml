@@ -18,12 +18,6 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
       when: never
-    # No branch pipelines outside of the tezos namespace, except for testing releases.
-    # The goal is to avoid triggering two pipelines for each MR:
-    # - one when pushing the branch, before the MR exists;
-    # - and one when the MR is created.
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != "latest-release-test" && $CI_PROJECT_NAMESPACE != "tezos"'
-      when: never
     # This workflow entry allows pipelines for push events (including force-push, push of fixup commits, rebase, etc.)
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: always
@@ -97,4 +91,4 @@ include:
   # Before merging
   - local: .gitlab/ci/pipelines/before_merging.yml
     rules:
-      - if: '($CI_PIPELINE_SOURCE == "push") && ($CI_PROJECT_NAMESPACE == "tezos")'
+      - if: '($CI_PIPELINE_SOURCE == "push")'
