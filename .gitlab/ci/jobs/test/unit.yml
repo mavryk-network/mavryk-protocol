@@ -66,6 +66,7 @@ unit:non-proto-arm64:
 
 unit:js_components:
   extends: .unit_test_template_x86_64
+  timeout: 10 min
   script:
     - . ./scripts/install_build_deps.js.sh
     - make test-js
