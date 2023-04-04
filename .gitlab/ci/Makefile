@@ -19,6 +19,28 @@ test-tezt:
 		_build/default/tezt/tests/main.exe ${TESTS} --color --log-buffer-size 5000 --log-file tezt.log --global-timeout 1800 --on-unknown-regression-files fail --junit ${JUNIT} --from-record tezt/records --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL} --record tezt-results-${CI_NODE_INDEX}.json -j 4 --retry 1 && \
 		./scripts/ci/merge_coverage.sh
 
+TZ_FLAKE_TEST_LOOP_COUNT?=40
+TZ_FLAKE_TEST_TEST_TIMEOUT?=300
+.PHONY: test-tezt-static-binaries
+test-tezt-flake:
+ifndef TZ_FLAKE_TEST_TESTS
+	$(error TZ_FLAKE_TEST_TESTS is undefined, do set it in the pipeline variables)
+endif
+	cd ${CI_PROJECT_DIR} && \
+		dune exec tezt/tests/main.exe -- \
+		--color \
+		--log-buffer-size 5000 \
+		--log-file tezt.log \
+		--global-timeout 1800 \
+		--on-unknown-regression-files fail \
+		--junit ${JUNIT} \
+		--record tezt-results-${CI_NODE_INDEX}.json \
+		-j 4 \
+		--keep-going \
+		--loop-count $(TZ_FLAKE_TEST_LOOP_COUNT) \
+		--test-timeout $(TZ_FLAKE_TEST_TEST_TIMEOUT) ${TZ_FLAKE_TEST_TESTS}
+
+
 .PHONY: test-tezt-static-binaries
 test-tezt-static-binaries:
 ifndef TESTS
