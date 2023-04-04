@@ -1,0 +1,41 @@
+include: .gitlab/ci/jobs/test/common.yml
+
+# We use the --job option to split tests into jobs of roughly the same
+# duration. This is based on a file that contains timings of test results,
+# generated with --record. To rebalance jobs, update this record with:
+#
+#   make && dune exec tezt/tests/main.exe -- --record tezt/test-results.json
+
+tezt:
+  extends:
+  - .integration_template
+  variables:
+    JUNIT: "tezt-junit.xml"
+  artifacts:
+    reports:
+      junit: $JUNIT
+    paths:
+      - tezt.log
+      - tezt-results-$CI_NODE_INDEX.json
+      - $JUNIT
+    # These record artifacts (tezt-results-$CI_NODE_INDEX.json) should
+    # be stored for as long as a given commit on master is expected to
+    # be HEAD in order to support auto-balancing. At the time of
+    # writing, we have approximately 6 merges per day, so 1 day should
+    # more than enough. The tezt artifacts (including records and
+    # coverage) take up roughly 1MB.
+    expire_in: 1 hour
+    when: always
+  script:
+    - echo "Running flakiness test for targets TZ_FLAKE_TEST_TESTS=${TZ_FLAKE_TEST_TESTS}, TZ_FLAKE_TEST_LOOP_COUNT=${TZ_FLAKE_TEST_LOOP_COUNT:-1}"
+    - make -C ${CI_PROJECT_DIR}/.gitlab/ci test-tezt-flake
+  dependencies:
+    - "build_x86_64"
+    - "build_kernels"
+  needs:
+    - "build_x86_64"
+    - "build_kernels"
+  # WARNING: if you increase the number of parallel jobs, you need to
+  # update test_coverage.yml with the new list of jobs.
+  parallel: 20
+  retry: 0

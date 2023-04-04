@@ -7,6 +7,14 @@ include:
     rules:
     - if: '$TZ_FLAKE_TEST == "tezt"'
 
+  - local: .gitlab/ci/jobs/build/kernels.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "tezt"'
+
   - local: .gitlab/ci/jobs/test/unit_js_components_flake.yml
     rules:
     - if: '$TZ_FLAKE_TEST == "unit_js_components"'
+
+  - local: .gitlab/ci/jobs/test/tezt_flake.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "tezt"'
