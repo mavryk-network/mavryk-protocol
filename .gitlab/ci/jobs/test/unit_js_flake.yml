@@ -1,0 +1,14 @@
+include: .gitlab/ci/jobs/test/common.yml
+
+unit:js_components:
+  extends: .unit_test_template_x86_64
+  # no need for artifacts
+  artifacts: null
+  # remove dependency on build_x86_64
+  needs: []
+  # TODO: would be nice to make this parametric but not possible
+  parallel: 100
+  retry: 0
+  script:
+    - . ./scripts/install_build_deps.js.sh
+    - make -C ${CI_PROJECT_DIR}/.gitlab/ci test-unit-flake
