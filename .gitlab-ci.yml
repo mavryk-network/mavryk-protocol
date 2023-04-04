@@ -48,10 +48,19 @@ variables:
   # unzipping implementation (https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27496),
   # this setting cuts cache creation time.
   FF_USE_FASTZIP: "true"
-
-  TZ_FLAKE_TEST_LOOP_COUNT
+  TZ_FLAKE_TEST:
+    value: ""
+    options:
+      - "unit_js_components"
+      - "tezt"
+      - ""
+    description: "Launch a flake detection pipeline of the given kind. Empty value disables flake detection."
+  TZ_FLAKE_TEST_TESTS:
+    value: ""
+    description: "For 'tezt' flake detection pipelines, specify a subset of tests to run, passed directly as command-line argument to Tezt. E.g. '--title \"My test\"'. For 'unit_js_components' flake detection pipelines, it is passed directly as command-line arguments to 'dune'. Example: @src/lib_crypto/test/runtezt_js."
+  TZ_FLAKE_TEST_LOOP_COUNT:
     value: "1"
-    description: "Controls the number of intra-job iterations of the the selected tests. In tezt, translates to '--loop-count'."
+    description: "Controls the number of intra-job iterations of the the selected tests. In tezt, translates to '--loop-count'. In 'unit_js_components', it is translated to a for loop wrapping the dune build."
 
 # Image templates
 .image_template__runtime_build_e2etest_dependencies_template:
