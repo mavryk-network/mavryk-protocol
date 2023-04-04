@@ -254,11 +254,10 @@ test-unit: test-nonproto-unit test-proto-unit
 test-unit-alpha:
 	@dune build --profile=$(PROFILE) @src/proto_alpha/lib_protocol/runtest
 
-# TODO: https://gitlab.com/tezos/tezos/-/issues/3018
-# Disable verbose once the log file bug in Alcotest is fixed.
+TEST_JS_TARGETS?=@runtest_js @runtezt_js
 .PHONY: test-js
 test-js:
-	@dune build --error-reporting=twice @runtest_js
+	@dune build --error-reporting=twice $(TEST_JS_TARGETS)
 
 .PHONY: build-tezt
 build-tezt:
