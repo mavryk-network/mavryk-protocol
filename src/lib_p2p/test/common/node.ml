@@ -264,7 +264,12 @@ let detach_node ?(prefix = "") ?timeout ?(min_connections : int option)
             all_points_with_fd ;
           P2p_welcome.activate welcome ;
           let*! () = Event.(emit node_ready) port in
-          let all_points = List.map fst all_points_with_fd in
+          let all_points =
+            List.filter_map
+              (fun ((addr, port'), _) ->
+                if port' <> port then Some (addr, port') else None)
+              all_points_with_fd
+          in
           let node =
             {
               iteration;
