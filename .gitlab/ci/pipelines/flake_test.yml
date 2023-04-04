@@ -1,0 +1,38 @@
+# Implements a flaky test detection pipeline that can be launched
+# manually by users, either through the web ui:
+#   https://gitlab.com/tezos/tezos/-/pipelines/new
+#
+# Or the API:
+#   https://docs.gitlab.com/ee/api/pipelines.html#create-a-new-pipeline
+#
+# The flake test pipeline is controlled through a set of variables
+# that are defined in '.gitlab/ci/pipelines/flake_test_variables.yml'.
+
+# Turn off interruptible to allow the execution simulatenous flake
+# tests on the same branch.
+default:
+  interruptible: false
+
+include:
+  # 'unit' flake test pipeline
+  - local: .gitlab/ci/jobs/test/unit_flake.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "unit"'
+  
+  # 'unit_js' flake test pipeline
+  - local: .gitlab/ci/jobs/test/unit_js_flake.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "unit_js"'
+
+  # Tezt flake test pipeline
+  - local: .gitlab/ci/jobs/build/x86_64.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "tezt"'
+
+  - local: .gitlab/ci/jobs/build/kernels.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "tezt"'
+
+  - local: .gitlab/ci/jobs/test/tezt_flake.yml
+    rules:
+    - if: '$TZ_FLAKE_TEST == "tezt"'
