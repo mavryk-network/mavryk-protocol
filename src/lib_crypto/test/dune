@@ -73,7 +73,7 @@
 (rule
  (alias runtezt_js)
  (package tezos-crypto)
- (action (run node %{dep:./main_js.bc.js})))
+ (action (run node %{dep:./main_js.bc.js} --info)))
 
 (rule
  (targets main_js.ml)

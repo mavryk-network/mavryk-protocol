@@ -257,7 +257,7 @@ test-unit-alpha:
 TEST_JS_TARGETS?=@runtest_js @runtezt_js
 .PHONY: test-js
 test-js:
-	@dune build --error-reporting=twice $(TEST_JS_TARGETS)
+	dune build --display short --no-buffer --error-reporting=twice $(TEST_JS_TARGETS)
 
 .PHONY: build-tezt
 build-tezt:
