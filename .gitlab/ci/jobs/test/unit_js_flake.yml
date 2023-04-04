@@ -1,0 +1,17 @@
+include: .gitlab/ci/jobs/test/common.yml
+
+unit:js_components:
+  extends: .unit_test_template_x86_64
+  # no need for artifacts
+  artifacts: null
+  # remove dependency on build_x86_64
+  needs: []
+  # TODO: would be nice to make this parametric but not possible
+  parallel: 100
+  retry: 0
+  variables:
+    # See `.gitlab-ci.yml` for details on `RUNTEZTALIAS`
+    RUNTEZTALIAS: "true"
+  script:
+    - . ./scripts/install_build_deps.js.sh
+    - ./.gitlab/ci/jobs/test/unit_flake.sh

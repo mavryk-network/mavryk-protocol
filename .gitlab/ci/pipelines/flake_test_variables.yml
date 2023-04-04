@@ -1,0 +1,31 @@
+variables:
+  TZ_FLAKE_TEST:
+    value: ""
+    options:
+      - "tezt"
+      - "unit"
+      - "unit_js"
+      - ""
+    description: >
+      Launch a flake detection pipeline of the given kind. Valid values are:
+      (1) 'tezt': creates a pipeline that containing 'build_x86_64', and then a number of identical jobs running tezt with the tests specified by 'TZ_FLAKE_TEST_TESTS'.
+      (2) 'unit': creates a pipeline containing a number of identical jobs runnning 'dune build <TZ_FLAKE_TEST_TESTS>'.
+      (3) 'unit_js: like 'unit', but initializes JS first. Useful to test 'runtest_js' / 'runtezt_js' targets.
+      (4) '': empty value disables flake detection.
+  TZ_FLAKE_TEST_TESTS:
+    value: ""
+    description: >
+      Required.
+      For 'tezt' flake detection pipelines, specify a subset of tests to run, passed directly as command-line argument to Tezt. E.g. '--title "My test"'.
+      For 'unit' and 'unit_js' flake detection pipelines, it is passed directly as command-line arguments to 'dune'. Example: @src/lib_crypto/test/runtezt_js.
+  TZ_FLAKE_TEST_LOOP_COUNT:
+    value: "1"
+    description: >
+      Controls the number of intra-job iterations of the the selected tests.
+      For 'tezt', translates to '--loop-count'.
+      For 'unit' and 'unit_js', it is translated to a for loop wrapping the dune build.
+  TZ_FLAKE_TEST_OPTS:
+    value: ''
+    description: >
+      The value of this variable is tacked on to the flake test runner (tezt when TZ_FLAKE_TEST=tezt, or dune when TZ_FLAKE_TEST=unit or TZ_FLAKE_TEST=unit_js).
+      If unset, it will default to '--keep-going -j 4 --global-timeout 1800' for tezt, and '--display short --no-buffer' for dune.

@@ -1,0 +1,47 @@
+include: .gitlab/ci/jobs/test/common.yml
+
+tezt:
+  extends:
+  - .test_template
+  - .image_template__runtime_e2etest_dependencies
+  variables:
+    JUNIT: "tezt-junit.xml"
+  artifacts:
+    reports:
+      junit: $JUNIT
+    paths:
+      - tezt.log
+      - tezt-results-$CI_NODE_INDEX.json
+      - $JUNIT
+    expire_in: 1 hour
+    when: always
+  script:
+    - if [ -z "${TZ_FLAKE_TEST_TESTS}" ]; then echo "TZ_FLAKE_TEST_TESTS is undefined, do set it in the pipeline variables"; exit 1; fi
+    - echo "Running flakiness test for targets TZ_FLAKE_TEST_TESTS=${TZ_FLAKE_TEST_TESTS}, TZ_FLAKE_TEST_LOOP_COUNT=${TZ_FLAKE_TEST_LOOP_COUNT:-1}"
+    # xargs is used here to allow TZ_FLAKE_TEST_OPTS and
+    # TZ_FLAKE_TEST_TESTS to contain multiple arguments that
+    # potentiallt contains spaces, e.g. `TZ_FLAKE_TEST_TESTS="--title
+    # 'My test'"`.
+    - echo ${TZ_FLAKE_TEST_OPTS:-'--keep-going -j 4 --global-timeout 1800'}
+           ${TZ_FLAKE_TEST_TESTS} | xargs -n 9999 -s 9999 -x _build/default/tezt/tests/main.exe
+        --color
+        --log-buffer-size 5000
+        --log-file tezt.log
+        --on-unknown-regression-files fail
+        --junit ${JUNIT}
+        --record tezt-results-${CI_NODE_INDEX:-1}.json
+        --loop-count ${TZ_FLAKE_TEST_LOOP_COUNT:-10}
+        --test-timeout ${TZ_FLAKE_TEST_TEST_TIMEOUT:-300}
+  dependencies:
+    - "build_x86_64-released"
+    - "build_x86_64-exp-dev-extra"
+    - "build_kernels"
+  needs:
+    - "build_x86_64-released"
+    - "build_x86_64-exp-dev-extra"
+    - "build_kernels"
+  # Unfortunately, the number of jobs running in parallel in the flake
+  # tests pipeline cannot be set dynamically through a pipeline
+  # variable.
+  parallel: 20
+  retry: 0
