@@ -27,6 +27,8 @@ workflow:
     # This workflow entry allows pipelines for push events (including force-push, push of fixup commits, rebase, etc.)
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "api" && $TZ_FLAKE_TEST != ""'
+      when: always
     - when: never # default
 
 variables:
@@ -46,6 +48,10 @@ variables:
   # unzipping implementation (https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27496),
   # this setting cuts cache creation time.
   FF_USE_FASTZIP: "true"
+
+  TZ_FLAKE_TEST_LOOP_COUNT
+    value: "1"
+    description: "Controls the number of intra-job iterations of the the selected tests. In tezt, translates to '--loop-count'."
 
 # Image templates
 .image_template__runtime_build_e2etest_dependencies_template:
@@ -104,6 +110,8 @@ trigger:
   rules:
     - if: '($CI_PIPELINE_SOURCE == "merge_request_event") && ($CI_PROJECT_NAMESPACE == "tezos") && ($CI_MERGE_REQUEST_ASSIGNEES !~ /nomadic-margebot/)'
       when: manual
+    - if: '$TZ_FLAKE_TEST != ""'
+      when: never
     - when: always
   allow_failure: false
   timeout: "10m"
@@ -149,3 +157,8 @@ include:
   - local: .gitlab/ci/pipelines/schedule_extended_test.yml
     rules:
       - if: '($CI_PIPELINE_SOURCE == "schedule") && ($TZ_SCHEDULE_KIND == "EXTENDED_TESTS")'
+
+  # Manual pipeline for stressing tests
+  - local: .gitlab/ci/pipelines/flake_test.yml
+    rules:
+      - if: '($CI_PIPELINE_SOURCE == "api") && $TZ_FLAKE_TEST != ""'
