@@ -1,0 +1,15 @@
+include: .gitlab/ci/jobs/test/common.yml
+
+unit:js_components:
+  extends: .unit_test_template_x86_64
+  # no need for artifacts
+  artifacts: null
+  # remove dependency on build_x86_64
+  needs: []
+  # TODO: would be nice to make this parametric but not possible
+  parallel: 100
+  retry: 0
+  script:
+    - . ./scripts/install_build_deps.js.sh
+    - if [ -z "${TZ_FLAKE_TEST_TESTS}" ]; then echo "Please set the variable TZ_FLAKE_TEST_TESTS"; exit 1; fi
+    - for i in $(seq ${TZ_FLAKE_TEST_LOOP_COUNT:-1}); do dune build --force --display short --no-buffer --error-reporting=twice ${TZ_FLAKE_TEST_TESTS}; done
