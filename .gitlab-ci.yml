@@ -27,7 +27,7 @@ workflow:
     # This workflow entry allows pipelines for push events (including force-push, push of fixup commits, rebase, etc.)
     - if: '$CI_PIPELINE_SOURCE == "push"'
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "api" && $TZ_FLAKE_TEST != ""'
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "web") && $TZ_FLAKE_TEST != ""'
       when: always
     - when: never # default
 
@@ -170,4 +170,4 @@ include:
   # Manual pipeline for stressing tests
   - local: .gitlab/ci/pipelines/flake_test.yml
     rules:
-      - if: '($CI_PIPELINE_SOURCE == "api") && $TZ_FLAKE_TEST != ""'
+      - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "web") && $TZ_FLAKE_TEST != ""'
