@@ -27,7 +27,7 @@ tezt:
     expire_in: 1 hour
     when: always
   script:
-    - make -C ${CI_PROJECT_DIR}/.gitlab/ci test-tezt-flake
+    - make --debug -C ${CI_PROJECT_DIR}/.gitlab/ci test-tezt-flake
   dependencies:
     - "build_x86_64"
     - "build_kernels"
