@@ -19,6 +19,47 @@ test-tezt:
 		_build/default/tezt/tests/main.exe ${TESTS} --color --log-buffer-size 5000 --log-file tezt.log --global-timeout 1800 --on-unknown-regression-files fail --junit ${JUNIT} --from-record tezt/records --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL} --record tezt-results-${CI_NODE_INDEX}.json -j 4 --retry 1 && \
 		./scripts/ci/merge_coverage.sh
 
+TZ_FLAKE_TEST_TEZT_OPTS?=--keep-going -j 4 --global-timeout 1800
+TZ_FLAKE_TEST_UNIT_OPTS?=--display short --no-buffer
+ifdef TZ_FLAKE_TEST_OPTS
+	TZ_FLAKE_TEST_TEZT_OPTS=$(TZ_FLAKE_TEST_OPTS)
+	TZ_FLAKE_TEST_UNIT_OPTS=$(TZ_FLAKE_TEST_OPTS)
+endif
+
+TZ_FLAKE_TEST_LOOP_COUNT?=10
+TZ_FLAKE_TEST_TEST_TIMEOUT?=300
+
+.PHONY: test-tezt-flake
+test-tezt-flake:
+ifndef TZ_FLAKE_TEST_TESTS
+	$(error TZ_FLAKE_TEST_TESTS is undefined, do set it in the pipeline variables)
+endif
+	cd ${CI_PROJECT_DIR} && \
+		dune exec tezt/tests/main.exe -- \
+		--color \
+		--log-buffer-size 5000 \
+		--log-file tezt.log \
+		--on-unknown-regression-files fail \
+		--junit ${JUNIT} \
+		--record tezt-results-${CI_NODE_INDEX}.json \
+		--loop-count $(TZ_FLAKE_TEST_LOOP_COUNT) \
+		--test-timeout $(TZ_FLAKE_TEST_TEST_TIMEOUT) $(TZ_FLAKE_TEST_TEZT_OPTS) ${TZ_FLAKE_TEST_TESTS}
+
+.PHONY: test-unit-flake
+test-unit-flake:
+ifndef TZ_FLAKE_TEST_TESTS
+	$(error TZ_FLAKE_TEST_TESTS is undefined, do set it in the pipeline variables)
+endif
+	cd ${CI_PROJECT_DIR} && \
+		echo "Running flakiness test for targets TZ_FLAKE_TEST_TESTS=${TZ_FLAKE_TEST_TESTS}, TZ_FLAKE_TEST_LOOP_COUNT=$(TZ_FLAKE_TEST_LOOP_COUNT)" && \
+		nb_fail=0; \
+		for i in $$(seq $(TZ_FLAKE_TEST_LOOP_COUNT)); do \
+			echo "Starting flake test loop $${i}/$(TZ_FLAKE_TEST_LOOP_COUNT)"; \
+			dune build --force --error-reporting=twice $(TZ_FLAKE_TEST_UNIT_OPTS) ${TZ_FLAKE_TEST_TESTS} || nb_fail=$$((nb_fail + 1)); \
+			echo "Completed flake test loop $${i}/$(TZ_FLAKE_TEST_LOOP_COUNT) (failures: $$nb_fail)"; \
+		done; \
+		if [ $$nb_fail -gt 0 ]; then exit 1; fi
+
 .PHONY: test-tezt-static-binaries
 test-tezt-static-binaries:
 ifndef TESTS
