@@ -20,12 +20,11 @@
   variables:
     ARCH: "x86_64"
 
-.unit_test_template_x86_64_coverage:
+unit:non-proto-x86_64:
   extends:
-    - .unit_test_template_x86_64
-    - .template__coverage_files
+  - .template__coverage_files
   script:
-    - make $MAKE_TARGETS
+    - make test-nonproto-unit
     - ./scripts/ci/merge_coverage.sh
   artifacts:
     when: always
@@ -33,23 +32,8 @@
       - $BISECT_FILE
       - test_results
 
-.unit_test_template_arm64:
-  extends: .unit_test_template
-  needs: ["build_arm64"]
-  variables:
-    ARCH: "arm64"
-  tags:
-    - arm64
-
-unit:non-proto-x86_64:
-  extends:
-  - .unit_test_template_x86_64_coverage
-  variables:
-    MAKE_TARGETS: test-nonproto-unit
-
 unit:webassembly-x86_64:
-  extends:
-  - .unit_test_template_x86_64
+  extends: .unit_test_template_x86_64
   variables:
     MAKE_TARGETS: test-webassembly
   # TODO: https://gitlab.com/tezos/tezos/-/issues/4663
@@ -60,7 +44,12 @@ unit:webassembly-x86_64:
   timeout: 20 min
 
 unit:non-proto-arm64:
-  extends: .unit_test_template_arm64
+  extends: .unit_test_template
+  needs: ["build_arm64"]
+  variables:
+    ARCH: "arm64"
+  tags:
+    - arm64
   variables:
     MAKE_TARGETS: test-nonproto-unit test-webassembly
 
