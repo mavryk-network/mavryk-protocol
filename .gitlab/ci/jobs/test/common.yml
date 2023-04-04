@@ -39,3 +39,24 @@
   # intermediate stages to succeed
   needs: ["build_x86_64", "tezt:fetch-records"]
 
+.unit_test_template:
+  extends: .test_template
+  variables:
+    ARCH: ""
+    MAKE_TARGETS: ""
+  script:
+    - make $MAKE_TARGETS
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_SHA-${ARCH}"
+    paths:
+      - test_results
+    reports:
+      junit: test_results/*.xml
+    expire_in: 1 day
+    when: always
+
+.unit_test_template_x86_64:
+  extends: .unit_test_template
+  needs: ["build_x86_64"]
+  variables:
+    ARCH: "x86_64"
