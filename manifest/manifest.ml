@@ -986,6 +986,7 @@ module Target = struct
   type kind =
     | Public_library of full_name
     | Private_library of string
+    | Private_test_library of string
     | Public_executable of full_name Ne_list.t
     | Private_executable of string Ne_list.t
     | Test_executable of {
@@ -1132,6 +1133,7 @@ module Target = struct
     match kind with
     | Public_library {public_name = name; _}
     | Private_library name
+    | Private_test_library name
     | Public_executable ({public_name = name; _}, _)
     | Private_executable (name, _)
     | Test_executable {names = name, _; _} ->
@@ -1151,7 +1153,8 @@ module Target = struct
     | Internal {kind; _} -> (
         match kind with
         | Public_library {public_name; _} -> (public_name, [])
-        | Private_library internal_name -> (internal_name, [])
+        | Private_test_library internal_name | Private_library internal_name ->
+            (internal_name, [])
         | Public_executable (head, tail) ->
             (head.public_name, List.map (fun x -> x.public_name) tail)
         | Private_executable names | Test_executable {names; _} -> names)
@@ -1163,7 +1166,8 @@ module Target = struct
     | Internal {kind; _} -> (
         match kind with
         | Public_library {public_name; _} -> Ok public_name
-        | Private_library internal_name -> Ok internal_name
+        | Private_test_library internal_name | Private_library internal_name ->
+            Ok internal_name
         | Public_executable ({public_name = name; _}, _)
         | Private_executable (name, _)
         | Test_executable {names = name, _; _} ->
@@ -1320,7 +1324,7 @@ module Target = struct
       | None -> (preprocess, false)
       | Some (Inline_tests_backend target) -> (
           match kind with
-          | Public_library _ | Private_library _ ->
+          | Public_library _ | Private_library _ | Private_test_library _ ->
               (PPS (target, []) :: preprocess, true)
           | Public_executable _ | Private_executable _ | Test_executable _ ->
               invalid_arg
@@ -1347,7 +1351,7 @@ module Target = struct
                  cannot have ~opam set to empty string (\"\")"
                 public_name
           | Test_executable {runtest_alias = None; _}
-          | Private_library _ | Private_executable _ ->
+          | Private_library _ | Private_test_library _ | Private_executable _ ->
               None)
       | Some opam as x ->
           if
@@ -1390,7 +1394,7 @@ module Target = struct
                  such as %S, you must specify ~opam (set it to \"\" for no \
                  opam file)"
                 public_name
-          | Private_library name ->
+          | Private_library name | Private_test_library name ->
               invalid_argf
                 "for targets which provide private libraries such as %S, you \
                  must specify ~opam (set it to \"\" for no opam file)"
@@ -1502,7 +1506,7 @@ module Target = struct
     let not_a_test =
       match kind with
       | Public_library _ | Private_library _ | Public_executable _
-      | Private_executable _ ->
+      | Private_test_library _ | Private_executable _ ->
           true
       | Test_executable _ -> false
     in
@@ -1619,6 +1623,10 @@ module Target = struct
     internal ?dep_files:None ?dep_globs:None ?dep_globs_rec:None @@ fun name ->
     Private_library name
 
+  let private_test_lib =
+    internal ?dep_files:None ?dep_globs:None ?dep_globs_rec:None @@ fun name ->
+    Private_test_library name
+
   let public_exe ?internal_name =
     internal ?dep_files:None ?dep_globs:None ?dep_globs_rec:None
     @@ fun public_name ->
@@ -1724,7 +1732,9 @@ module Target = struct
     let rec main_module_name = function
       | Internal {kind; _} -> (
           match kind with
-          | Public_library {internal_name; _} | Private_library internal_name ->
+          | Public_library {internal_name; _}
+          | Private_library internal_name
+          | Private_test_library internal_name ->
               String.capitalize_ascii internal_name
           | Public_executable _ | Private_executable _ | Test_executable _ ->
               invalid_argf
@@ -1823,14 +1833,15 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
   let tezt_local_test_lib_name = path_with_underscores ^ "_tezt_lib" in
   let tezt_local_test_lib =
     Target.(
-      private_lib
+      private_test_lib
         ~path
-        ~opam:""
+        ~opam
         ?js_compatible
         ~deps:lib_deps
         ~modules
         ~linkall:true
         ~dune
+        ?opam_with_test
         tezt_local_test_lib_name)
   in
   let tezt_target =
@@ -2027,7 +2038,7 @@ let generate_dune (internal : Target.internal) =
   in
   let is_lib =
     match internal.kind with
-    | Public_library _ | Private_library _ -> true
+    | Public_library _ | Private_library _ | Private_test_library _ -> true
     | Public_executable _ | Private_executable _ | Test_executable _ -> false
   in
   let library_flags =
@@ -2132,7 +2143,7 @@ let generate_dune (internal : Target.internal) =
         (* Prevented by [Target.internal]. *)
         assert false
     | Public_library _, Some _ -> None
-    | Private_library _, opam ->
+    | Private_test_library _, opam | Private_library _, opam ->
         (* Private library can have an optional package.
            - No package means: global to the entire repo
            - A package means: private for the [opam] package only *)
@@ -2167,7 +2178,7 @@ let generate_dune (internal : Target.internal) =
     match internal.kind with
     | Public_library name ->
         (Library, [get_internal_name name], [get_public_name name])
-    | Private_library name -> (Library, [name], [])
+    | Private_library name | Private_test_library name -> (Library, [name], [])
     | Public_executable (head, tail) ->
         ( Executable,
           List.map get_internal_name (head :: tail),
@@ -2310,6 +2321,15 @@ let compute_opam_release_graph () : opam_dependency_graph_node String_map.t =
         in
         List.fold_left add_internal_dependency String_set.empty internals
       in
+      Printf.printf
+        "Package '%s' -> %s (%s)\n"
+        package_name
+        (String.concat ", " @@ String_set.elements dependencies)
+        (match release_status with
+        | Explicitly_unreleased _ -> "Explicitly_unreleased"
+        | Auto -> "Auto"
+        | Explicitly_released _ -> "Explicitly_released"
+        | Transitively_released s -> "Transitively_released: " ^ s) ;
       {dependencies; release_status; propagated = false; height = 0}
     in
     String_map.mapi node_of_internals !Target.by_opam
@@ -2503,7 +2523,9 @@ let generate_opam ?release for_package (internals : Target.internal list) :
     List.split @@ map internals
     @@ fun internal ->
     let with_test =
-      match internal.kind with Test_executable _ -> Always | _ -> Never
+      match internal.kind with
+      | Private_test_library _ | Test_executable _ -> Always
+      | _ -> Never
     in
     let deps = Target.all_internal_deps internal in
     let x_opam_monorepo_opam_provided =
@@ -2634,8 +2656,8 @@ let generate_opam ?release for_package (internals : Target.internal list) :
       let get_alias (internal : Target.internal) =
         match internal.kind with
         | Test_executable {runtest_alias; _} -> runtest_alias
-        | Public_library _ | Private_library _ | Public_executable _
-        | Private_executable _ ->
+        | Public_library _ | Private_library _ | Private_test_library _
+        | Public_executable _ | Private_executable _ ->
             None
       in
       let make_runtest alias : Opam.build_instruction list =
@@ -2815,6 +2837,7 @@ let generate_dune_project_files () =
           match i.kind with
           | Public_library _ | Public_executable _ -> true
           | Private_library _ -> false
+          | Private_test_library _ -> false
           | Private_executable _ -> false
           | Test_executable _ -> false)
         internals
@@ -2910,8 +2933,8 @@ let generate_executable_list filename release_status_to_list =
   Fun.flip List.iter !Target.registered @@ fun (internal : Target.internal) ->
   if internal.release_status = release_status_to_list then
     match internal.kind with
-    | Public_library _ | Private_library _ | Private_executable _
-    | Test_executable _ ->
+    | Public_library _ | Private_library _ | Private_test_library _
+    | Private_executable _ | Test_executable _ ->
         ()
     | Public_executable ne_list ->
         Fun.flip List.iter (Ne_list.to_list ne_list)
@@ -2990,7 +3013,8 @@ let check_js_of_ocaml () =
   let internal_name ({kind; path; _} : Target.internal) =
     match kind with
     | Public_library {public_name; _} -> public_name
-    | Private_library internal_name -> internal_name
+    | Private_library internal_name | Private_test_library internal_name ->
+        internal_name
     | Public_executable ({public_name = name; _}, _) -> name
     | Private_executable (name, _) | Test_executable {names = name, _; _} ->
         Filename.concat path name
@@ -3192,7 +3216,15 @@ let generate_opam_ci opam_release_graph =
      that will need to pass the public Opam CI. *)
   let released_packages, unreleased_packages =
     List.partition
-      (fun (_, node) ->
+      (fun (name, node) ->
+        Printf.printf
+          "Package %s is %s\n"
+          name
+          (match node.release_status with
+          | Explicitly_unreleased _ -> "Explicitly_unreleased"
+          | Auto -> "Auto"
+          | Explicitly_released _ -> "Explicitly_released"
+          | Transitively_released s -> "Transitively_released: " ^ s) ;
         match node.release_status with
         | Explicitly_unreleased _ | Auto -> false
         | Explicitly_released _ | Transitively_released _ -> true)
