@@ -111,9 +111,9 @@ ifndef TEZOS_WITHOUT_OPAM
 .PHONY: opam-configure
 opam-configure:
 	cd ${CI_PROJECT_DIR} && \
-		opam remote add dev-repo ./_opam-repo-for-release  && \
-		opam install --yes ${package}.dev && \
-		opam reinstall --yes --with-test ${package}.dev
+		time opam remote add dev-repo ./_opam-repo-for-release -v && \
+		time opam install --yes ${package}.dev -v && \
+		time opam reinstall --yes --with-test ${package}.dev -v
 endif
 
 .PHONY: doc-build-all
