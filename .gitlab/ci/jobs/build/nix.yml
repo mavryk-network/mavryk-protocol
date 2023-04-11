@@ -6,5 +6,12 @@ nix:
   needs: [trigger]
   allow_failure: true
   script:
+    # Add Nix cache
+    - echo "extra-trusted-public-keys = nix.cache.hwlium.com:M57rk9haJRNFiNUA+6sF6ogbIVg4k8XrKpf5QSohBEA= nix.cache.ole.run-1:4r2pTlyRkYixibZKLNlSbHL1tbxHZGAnsKMFbz1Oz3s= nix.cache.hwlium.com-2:mFFtk/Pvh/mrCJ7DHOY9mf769A/Nth97WFXMPMy6BGw=" >> /etc/nix/nix.conf
+    - echo "extra-substituters = https://nix.cache.hwlium.com" >> /etc/nix/nix.conf
+
+    # Check if the package builds
     - nix-build --no-out-link -j auto
+
+    # Check if the shell builds
     - nix-shell -j auto --run true
