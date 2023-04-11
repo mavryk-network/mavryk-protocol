@@ -2,7 +2,7 @@ nix:
   extends:
     - .default_settings_template
   stage: build
-  image: "docker.io/nixos/nixos/nix@sha256:7031c85b38c11a6fed62bf23093c709dbe5f7c9f5d1654c80ae269c9d02ff5b0"
+  image: "docker.io/nixos/nix@sha256:7031c85b38c11a6fed62bf23093c709dbe5f7c9f5d1654c80ae269c9d02ff5b0"
   needs: [trigger]
   allow_failure: true
   script:
