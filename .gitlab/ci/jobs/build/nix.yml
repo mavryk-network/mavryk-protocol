@@ -1,0 +1,9 @@
+nix:
+  extends:
+    - .default_settings_template
+  stage: build
+  image: "docker.io/nixos/nix"
+  needs: [trigger]
+  script:
+    - nix-build --no-out-link -j auto
+    - nix-shell -j auto --run true

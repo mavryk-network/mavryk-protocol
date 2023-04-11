@@ -13,6 +13,7 @@ include:
   - .gitlab/ci/jobs/build/arm64.yml
   - .gitlab/ci/jobs/build/x86_64.yml
   - .gitlab/ci/jobs/build/kernels.yml
+  - .gitlab/ci/jobs/build/nix.yml
   - .gitlab/ci/jobs/build/get_contracts.yml
   - .gitlab/ci/jobs/doc/build_all.yml
   - .gitlab/ci/jobs/build/docker_amd64_test_manual.yml
