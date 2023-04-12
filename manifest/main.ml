@@ -2185,6 +2185,7 @@ let octez_test_helpers_extra =
           alias_rule "runtest_js_base" ~action:(S "progn");
         ]
     ~modules:["assert_lib"]
+    ~release_status:Released
 
 let _octez_shell_services_tests =
   tezt
