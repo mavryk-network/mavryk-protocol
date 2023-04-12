@@ -12,7 +12,8 @@
   # underlying tests have been fixed.
   retry: 2
   script:
-    - make  -C ${CI_PROJECT_DIR}/.gitlab/ci opam-configure
+    - if ! [ -d _opam-repo-for-release ]; then make -C ${CI_PROJECT_DIR}/.gitlab/ci opam-prepare; fi
+    - make -C ${CI_PROJECT_DIR}/.gitlab/ci opam-configure
   needs: [opam:prepare]
   dependencies: [opam:prepare]
   after_script:
