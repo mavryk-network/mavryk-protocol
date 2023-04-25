@@ -142,6 +142,8 @@ module Dune : sig
         This is important in particular for [runtest] rules, so that dune knows
         which tests to run when opam runs the tests for a package.
 
+      - [enabled_if] specifies the Dune [enabled_if] clause of this rule.
+
       The last [string] argument is the name of the alias.
       For instance, if this name is [abc], you can build the rule with [dune build @abc]. *)
   val alias_rule :
@@ -151,6 +153,7 @@ module Dune : sig
     ?action:s_expr ->
     ?locks:string ->
     ?package:string ->
+    ?enabled_if:s_expr ->
     string ->
     s_expr
 
@@ -889,7 +892,8 @@ val private_exes : string list maker
     - [alias]: if non-empty, an alias is set up for the given test, named [alias].
       Default is ["runtest"]. Note that for JS tests, ["_js"] is appended to this alias.
       Also note that if [alias] is non-empty, the target must belong to an opam package
-      (i.e. [~opam] must also be non-empty).
+      (i.e. [~opam] must also be non-empty). If given, the [enabled_if] clause is added
+      to this alias.
 
     - [dep_files]: a list of files to add as dependencies using [(deps (file ...))]
       in the [runtest] alias.
@@ -907,6 +911,7 @@ val test :
   ?dep_files:string list ->
   ?dep_globs:string list ->
   ?dep_globs_rec:string list ->
+  ?enabled_if:Dune.s_expr ->
   string maker
 
 (** Same as {!test} but with several names, to define multiple tests at once. *)
@@ -915,6 +920,7 @@ val tests :
   ?dep_files:string list ->
   ?dep_globs:string list ->
   ?dep_globs_rec:string list ->
+  ?enabled_if:Dune.s_expr ->
   string list maker
 
 (** Register a Tezt test.
