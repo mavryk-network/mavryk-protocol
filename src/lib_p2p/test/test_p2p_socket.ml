@@ -555,3 +555,5 @@ let main () =
 let () =
   Sys.catch_break true ;
   try main () with _ -> ()
+
+let () = Tezt.Test.run ()

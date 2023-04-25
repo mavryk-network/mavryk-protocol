@@ -155,3 +155,5 @@ let () =
           ] );
     ]
   |> Lwt_main.run
+
+let () = Tezt.Test.run ()

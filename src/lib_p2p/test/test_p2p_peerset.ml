@@ -111,3 +111,5 @@ let () =
           ("remove", `Quick, test_remove);
         ] );
     ]
+
+let () = Tezt.Test.run ()

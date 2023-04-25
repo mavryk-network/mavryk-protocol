@@ -758,3 +758,5 @@ let () =
                  No_common_network.run points);
            ] );
        ]
+
+let () = Tezt.Test.run ()

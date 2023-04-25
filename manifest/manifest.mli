@@ -907,6 +907,7 @@ val test :
   ?dep_files:string list ->
   ?dep_globs:string list ->
   ?dep_globs_rec:string list ->
+  ?locks:string ->
   string maker
 
 (** Same as {!test} but with several names, to define multiple tests at once. *)
@@ -915,6 +916,7 @@ val tests :
   ?dep_files:string list ->
   ?dep_globs:string list ->
   ?dep_globs_rec:string list ->
+  ?locks:string ->
   string list maker
 
 (** Register a Tezt test.

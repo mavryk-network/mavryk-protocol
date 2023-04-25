@@ -279,3 +279,5 @@ let () =
                    clients);
            ] );
        ]
+
+let () = Tezt.Test.run ()

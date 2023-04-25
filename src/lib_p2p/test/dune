@@ -1,8 +1,18 @@
 ; This file was automatically generated, do not edit.
 ; Edit file manifest/main.ml instead.
 
-(executable
- (name main)
+(executables
+ (names
+  test_p2p_banned_peers
+  test_p2p_broadcast
+  test_p2p_buffer_reader
+  test_p2p_connect_handler
+  test_p2p_io_scheduler
+  test_p2p_maintenance
+  test_p2p_node
+  test_p2p_peerset
+  test_p2p_pool
+  test_p2p_socket)
  (libraries
   tezos-base
   tezos-base.unix
@@ -30,4 +40,62 @@
   -open Tezos_p2p_services
   -open Octez_alcotezt))
 
-(rule (alias runtest) (package tezos-p2p) (action (run %{dep:./main.exe})))
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_banned_peers.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_broadcast.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_buffer_reader.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_connect_handler.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_io_scheduler.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_maintenance.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_node.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_peerset.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_pool.exe})))
+
+(rule
+ (alias runtest)
+ (package tezos-p2p)
+ (locks /locks/p2p)
+ (action (run %{dep:./test_p2p_socket.exe})))

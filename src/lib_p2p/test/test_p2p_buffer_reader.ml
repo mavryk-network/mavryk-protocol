@@ -359,3 +359,5 @@ let () =
         :: qcheck_wrap [test_read_less_than_length; test_read_partial] );
       ("read_full", qcheck_wrap [test_read_full_basic; test_read_full_waits]);
     ]
+
+let () = Tezt.Test.run ()

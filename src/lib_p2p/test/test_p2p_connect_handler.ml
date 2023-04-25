@@ -147,3 +147,5 @@ let () =
     "P2p_connect_handler"
     [("P2p_connect_handler", tests)]
   |> Lwt_main.run
+
+let () = Tezt.Test.run ()

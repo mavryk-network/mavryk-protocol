@@ -2325,10 +2325,22 @@ let _octez_p2p_tezt =
       ]
 
 let _octez_p2p_tests =
-  test
-    "main"
+  tests
+    [
+      "test_p2p_banned_peers";
+      "test_p2p_broadcast";
+      "test_p2p_buffer_reader";
+      "test_p2p_connect_handler";
+      "test_p2p_io_scheduler";
+      "test_p2p_maintenance";
+      "test_p2p_node";
+      "test_p2p_peerset";
+      "test_p2p_pool";
+      "test_p2p_socket";
+    ]
     ~path:"src/lib_p2p/test"
     ~opam:"tezos-p2p"
+    ~locks:"/locks/p2p"
     ~deps:
       [
         octez_base |> open_ ~m:"TzPervasives";
