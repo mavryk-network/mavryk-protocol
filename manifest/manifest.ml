@@ -1912,7 +1912,7 @@ let register_tezt_targets ~make_tezt_exe =
       let (_ : Target.t option) =
         Target.test
           exe_name
-          ~alias:"runtezt"
+          ~enabled_if:Dune.[S "="; S "true"; S "%{env:RUNTEZT=true}"]
           ~path
           ~with_macos_security_framework
           ~opam
