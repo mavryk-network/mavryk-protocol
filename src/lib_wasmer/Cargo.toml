@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    # repository: https://github.com/wasmerio/wasmer
+    # tag: 2.3.0
+    "wasmer-2.3.0/lib/c-api"
+]

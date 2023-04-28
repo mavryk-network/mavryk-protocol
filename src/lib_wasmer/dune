@@ -15,18 +15,16 @@
   (:standard)
   -w -9-27)
  (ctypes
-  (external_library_name wasmer)
+  (external_library_name wasmer_custom)
   (build_flags_resolver
    (vendored
     (c_flags
      :standard
      -Wno-discarded-qualifiers
-     -I%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs
      -Wno-incompatible-pointer-types)
     (c_library_flags
      :standard
-     -lwasmer
-     -L%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs)))
+     -lwasmer_custom)))
   (headers (include wasmer.h))
   (type_description (instance Types) (functor Api_types_desc))
   (function_description
@@ -34,4 +32,21 @@
    (instance Functions)
    (functor Api_funcs_desc))
   (generated_types Api_types)
-  (generated_entry_point Api)))
+  (generated_entry_point Api))
+  (preprocessor_deps (file libwasmer_custom.a)))
+
+(rule
+ (targets libwasmer_custom.a wasm.h wasmer.h)
+ (deps 
+  (source_tree .cargo)
+  (file Cargo.toml)
+  (file Cargo.lock)
+  (source_tree wasmer-2.3.0))
+ (action
+  (no-infer
+   (progn
+    (bash "mkdir -p target && chmod -R +w target")
+    (run cargo build --release --package wasmer-c-api --no-default-features --features singlepass,cranelift,wat,middlewares,universal)
+    (copy wasmer-2.3.0/lib/c-api/wasm.h wasm.h)
+    (bash "cp wasmer-2.3.0/lib/c-api/wasmer.h wasmer.h")
+    (copy target/release/libwasmer.a libwasmer_custom.a)))))
