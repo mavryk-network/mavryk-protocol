@@ -3,10 +3,18 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "kernel_sequencer"
+name = "kernel-sequencer"
 version = "0.1.0"
 edition = "2021"
 description = "Sequencer framework for Tezos Smart Rollups"
 
+[dependencies.tezos-smart-rollup-core]
+version = "0.1.0"
+default-features = false
+
 [dependencies.tezos-smart-rollup-host]
-path = "../kernel_sdk/host"
+version = "0.1.0"
+features = ["testing"]
+
+[dependencies.tezos-smart-rollup-mock]
+version = "0.1.0"
