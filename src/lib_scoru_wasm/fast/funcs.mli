@@ -44,3 +44,19 @@ val make :
   write_debug:Builtins.write_debug ->
   host_state ->
   (string * string * extern) list
+
+module Env : sig
+  type t
+
+  val get_durable : t ref -> Durable.t
+
+  val set_durable : t ref -> Durable.t -> unit
+end
+
+val with_pooled :
+  version:Wasm_pvm_state.version ->
+  reveal_builtins:Builtins.reveals ->
+  write_debug:Builtins.write_debug ->
+  host_state ->
+  ((string * string * extern) list -> Env.t ref -> 'a Lwt.t) ->
+  'a Lwt.t

@@ -38,11 +38,43 @@ type host_state = {
   mutable durable : Durable.t;
 }
 
-let make ~version ~reveal_builtins ~write_debug state =
+module Env = struct
+  type t = {
+    reveal_builtins : Builtins.reveals;
+    write_debug : Builtins.write_debug;
+    state : host_state;
+  }
+
+  let get_mem env =
+    let env = !env in
+    env.state.retrieve_mem ()
+
+  let get_buffers env =
+    let env = !env in
+    env.state.buffers
+
+  let get_durable env =
+    let env = !env in
+    env.state.durable
+
+  let set_durable env ds =
+    let env = !env in
+    env.state.durable <- ds
+
+  let get_reveals env =
+    let env = !env in
+    env.reveal_builtins
+
+  let get_write_debug env =
+    let env = !env in
+    env.write_debug
+end
+
+let make ~version env =
   let open Wasmer in
   let open Lwt.Syntax in
   let with_mem f =
-    let mem = state.retrieve_mem () in
+    let mem = Env.get_mem env in
     f mem
   in
 
@@ -52,7 +84,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun info_addr dst max_bytes ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.read_input
-          ~input_buffer:state.buffers.input
+          ~input_buffer:(Env.get_buffers env).input
           ~memory
           ~info_addr
           ~dst
@@ -64,7 +96,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun src num_bytes ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.write_output
-          ~output_buffer:state.buffers.output
+          ~output_buffer:(Env.get_buffers env).output
           ~memory
           ~src
           ~num_bytes)
@@ -75,7 +107,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun key_offset key_length ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.store_has
-          ~durable:state.durable
+          ~durable:(Env.get_durable env)
           ~memory
           ~key_offset
           ~key_length)
@@ -87,12 +119,12 @@ let make ~version ~reveal_builtins ~write_debug state =
         with_mem @@ fun memory ->
         let+ durable, result =
           Host_funcs.Aux.store_list_size
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~key_offset
             ~key_length
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         result)
   in
   let store_delete_generic ~kind =
@@ -103,12 +135,12 @@ let make ~version ~reveal_builtins ~write_debug state =
         let+ durable, result =
           Host_funcs.Aux.generic_store_delete
             ~kind
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~key_offset
             ~key_length
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         result)
   in
   let store_delete = store_delete_generic ~kind:Directory in
@@ -118,7 +150,11 @@ let make ~version ~reveal_builtins ~write_debug state =
       (i32 @-> i32 @-> returning nothing)
       (fun src num_bytes ->
         with_mem @@ fun memory ->
-        Host_funcs.Aux.write_debug ~implem:write_debug ~memory ~src ~num_bytes)
+        Host_funcs.Aux.write_debug
+          ~implem:(Env.get_write_debug env)
+          ~memory
+          ~src
+          ~num_bytes)
   in
   let store_copy =
     fn
@@ -127,14 +163,14 @@ let make ~version ~reveal_builtins ~write_debug state =
         with_mem @@ fun memory ->
         let+ durable, result =
           Host_funcs.Aux.store_copy
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~from_key_offset
             ~from_key_length
             ~to_key_offset
             ~to_key_length
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         result)
   in
   let store_move =
@@ -144,14 +180,14 @@ let make ~version ~reveal_builtins ~write_debug state =
         with_mem @@ fun memory ->
         let+ durable, result =
           Host_funcs.Aux.store_move
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~from_key_offset
             ~from_key_length
             ~to_key_offset
             ~to_key_length
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         result)
   in
   let store_create =
@@ -161,13 +197,13 @@ let make ~version ~reveal_builtins ~write_debug state =
         with_mem @@ fun memory ->
         let+ durable, result =
           Host_funcs.Aux.store_create
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~key_offset
             ~key_length
             ~size
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         result)
   in
   let store_read =
@@ -176,7 +212,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun key_offset key_length value_offset dest max_bytes ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.store_read
-          ~durable:state.durable
+          ~durable:(Env.get_durable env)
           ~memory
           ~key_offset
           ~key_length
@@ -191,7 +227,7 @@ let make ~version ~reveal_builtins ~write_debug state =
         with_mem @@ fun memory ->
         let+ durable, ret =
           Host_funcs.Aux.store_write
-            ~durable:state.durable
+            ~durable:(Env.get_durable env)
             ~memory
             ~key_offset
             ~key_length
@@ -199,7 +235,7 @@ let make ~version ~reveal_builtins ~write_debug state =
             ~src
             ~num_bytes
         in
-        state.durable <- durable ;
+        Env.set_durable env durable ;
         ret)
   in
   let store_get_nth_key =
@@ -208,7 +244,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun key_offset key_length index dst max_size ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.store_get_nth_key
-          ~durable:state.durable
+          ~durable:(Env.get_durable env)
           ~memory
           ~key_offset
           ~key_length
@@ -222,7 +258,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun key_offset key_length dst max_size ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.store_get_hash
-          ~durable:state.durable
+          ~durable:(Env.get_durable env)
           ~memory
           ~key_offset
           ~key_length
@@ -235,7 +271,7 @@ let make ~version ~reveal_builtins ~write_debug state =
       (fun key_offset key_length ->
         with_mem @@ fun memory ->
         Host_funcs.Aux.store_value_size
-          ~durable:state.durable
+          ~durable:(Env.get_durable env)
           ~memory
           ~key_offset
           ~key_length)
@@ -253,7 +289,7 @@ let make ~version ~reveal_builtins ~write_debug state =
         let* hash =
           Host_funcs.Aux.load_bytes ~memory ~addr:hash_addr ~size:hash_size
         in
-        let*! payload = reveal_builtins.Builtins.reveal_preimage hash in
+        let*! payload = (Env.get_reveals env).reveal_preimage hash in
         let*! result =
           Host_funcs.Aux.reveal
             ~memory
@@ -267,8 +303,8 @@ let make ~version ~reveal_builtins ~write_debug state =
     fn
       (i32 @-> i32 @-> returning1 i32)
       (fun dst max_bytes ->
-        let mem = state.retrieve_mem () in
-        let* payload = reveal_builtins.reveal_metadata () in
+        let mem = Env.get_mem env in
+        let* payload = (Env.get_reveals env).reveal_metadata () in
         Host_funcs.Aux.reveal
           ~memory:mem
           ~dst
@@ -307,3 +343,55 @@ let make ~version ~reveal_builtins ~write_debug state =
   List.map
     (fun (name, impl) -> (Constants.wasm_host_funcs_virual_module, name, impl))
     (base @ extra)
+
+type pooled_funs = {
+  env : Env.t ref;
+  funs : (string * string * Wasmer.extern) list;
+}
+
+type pool = {v0 : pooled_funs list Lwt_mvar.t; v1 : pooled_funs list Lwt_mvar.t}
+
+let get_from_pool pool =
+  let open Lwt_syntax in
+  let* item = Lwt_mvar.take pool in
+  match item with
+  | [] ->
+      let* () = Lwt_mvar.put pool item in
+      return_none
+  | x :: xs ->
+      let* () = Lwt_mvar.put pool xs in
+      return_some x
+
+let return_to_pool pool item =
+  let open Lwt_syntax in
+  let* xs = Lwt_mvar.take pool in
+  Lwt_mvar.put pool (item :: xs)
+
+let alloc_pool () = {v0 = Lwt_mvar.create []; v1 = Lwt_mvar.create []}
+
+let with_pooled pool ~version ~reveal_builtins ~write_debug state f =
+  let open Lwt_syntax in
+  let pool =
+    match version with Wasm_pvm_state.V0 -> pool.v0 | V1 -> pool.v1
+  in
+  let* pooled_funs = get_from_pool pool in
+  let pooled_funs =
+    match pooled_funs with
+    | None ->
+        let env = ref Env.{reveal_builtins; write_debug; state} in
+        {env; funs = make ~version env}
+    | Some pooled_funs ->
+        (pooled_funs.env := Env.{reveal_builtins; write_debug; state}) ;
+        pooled_funs
+  in
+  Lwt.finalize
+    (fun () -> f pooled_funs.funs pooled_funs.env)
+    (fun () -> return_to_pool pool pooled_funs)
+
+let main_pool = alloc_pool ()
+
+let with_pooled ~version ~reveal_builtins ~write_debug state f =
+  with_pooled main_pool ~version ~reveal_builtins ~write_debug state f
+
+let make ~version ~reveal_builtins ~write_debug state =
+  make ~version (ref Env.{reveal_builtins; write_debug; state})

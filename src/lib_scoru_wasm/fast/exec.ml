@@ -67,13 +67,11 @@ let compute ~version ~reveal_builtins ~write_debug durable buffers =
   in
 
   let host_state = Funcs.{retrieve_mem; buffers; durable} in
-  let host_funcs =
-    Funcs.make ~version ~reveal_builtins ~write_debug host_state
-  in
-
+  Funcs.with_pooled ~version ~reveal_builtins ~write_debug host_state
+  @@ fun host_funcs env ->
   let with_durable f =
-    let+ durable = f host_state.durable in
-    host_state.durable <- durable
+    let+ durable = f (Funcs.Env.get_durable env) in
+    Funcs.Env.set_durable env durable
   in
   let store = Lazy.force store in
   let* instance = Wasmer.Instance.create store module_ host_funcs in
@@ -99,7 +97,9 @@ let compute ~version ~reveal_builtins ~write_debug durable buffers =
         Lwt.return_unit)
   in
 
-  let* durable = Wasm_vm.patch_flags_on_eval_successful host_state.durable in
+  let* durable =
+    Wasm_vm.patch_flags_on_eval_successful (Funcs.Env.get_durable env)
+  in
   (* TODO: #4283
      The module is cached, but the cash is never cleaned.
      This is the point where it was scrubed before.*)
