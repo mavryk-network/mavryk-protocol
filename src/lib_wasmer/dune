@@ -26,7 +26,10 @@
     (c_library_flags
      :standard
      -lwasmer
-     -L%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs)))
+     -L%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs
+     -lLLVM-14
+     -lncurses
+     -lz)))
   (headers (include wasmer.h))
   (type_description (instance Types) (functor Api_types_desc))
   (function_description

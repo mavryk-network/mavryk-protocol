@@ -38,6 +38,7 @@ let get_compiler () =
   match compiler_choice with
   | Some "singlepass" -> Wasmer.Config.SINGLEPASS
   | Some "cranelift" -> Wasmer.Config.CRANELIFT
+  | Some "llvm" -> Wasmer.Config.LLVM
   | Some compiler ->
       Format.sprintf
         "Unknown Wasmer compiler %S (selected via %s environment variable)"
@@ -48,9 +49,14 @@ let get_compiler () =
 
 let store =
   Lazy.from_fun @@ fun () ->
-  let engine =
-    Wasmer.Engine.create Wasmer.Config.{compiler = get_compiler ()}
-  in
+  let compiler = get_compiler () in
+  Format.eprintf
+    "> Using %s\n%!"
+    (match compiler with
+    | LLVM -> "llvm"
+    | CRANELIFT -> "cranelift"
+    | SINGLEPASS -> "singlepass") ;
+  let engine = Wasmer.Engine.create Wasmer.Config.{compiler} in
   Wasmer.Store.create engine
 
 let load_kernel durable =

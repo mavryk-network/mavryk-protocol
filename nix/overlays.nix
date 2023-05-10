@@ -2,6 +2,9 @@
   lib,
   stdenv,
   libiconv,
+  llvm_14,
+  libxml2,
+  libffi,
 }: {
   pick-latest-packages = final: prev:
     builtins.mapAttrs
@@ -40,6 +43,12 @@
         ++
         # Upstream conf-rust* packages don't request libiconv
         [libiconv];
+    });
+
+    tezos-rust-libs = prev.tezos-rust-libs.overrideAttrs (old: {
+      propagatedBuildInputs =
+        (old.propagatedBuildInputs or [])
+        ++ [llvm_14 libxml2 libffi];
     });
   };
 }
