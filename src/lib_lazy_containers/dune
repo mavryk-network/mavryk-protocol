@@ -7,4 +7,4 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   zarith
-  tezos-tree-encoding))
+  tezos-tree-encoding ctypes ctypes.foreign))

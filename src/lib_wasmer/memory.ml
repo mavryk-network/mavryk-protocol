@@ -37,6 +37,30 @@ let set mem = Array.set mem.raw
 
 let length mem = Array.length mem.raw
 
+let get_string mem offset length =
+  assert (offset >= 0) ;
+  assert (length >= 0) ;
+  if offset + length >= Array.length mem.raw then
+    failwith
+      (* XXX: To make exceptions compatible use this string. *)
+      "index out of bounds" ;
+  let start = Ctypes.(Array.start mem.raw +@ offset) in
+  Ctypes.string_from_ptr Ctypes.(coerce (ptr uint8_t) (ptr char) start) ~length
+
+let get_bytes mem offset length =
+  get_string mem offset length |> Bytes.unsafe_of_string
+
+external memcpy :
+  dst:_ Cstubs_internals.fatptr ->
+  src:_ Cstubs_internals.fatptr ->
+  size:int ->
+  unit = "ctypes_memcpy"
+
+let set_string mem offset length value =
+  let (CPointer src) = Ctypes.(coerce string (ptr char) value) in
+  let (CPointer dst) = Ctypes.(Array.start mem.raw +@ offset) in
+  memcpy ~dst ~src ~size:length
+
 module Internal_for_tests = struct
   let of_list (content : Unsigned.uint8 list) =
     let mem_length = List.length content in

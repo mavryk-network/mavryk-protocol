@@ -23,7 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Bigarray
+external memcpy :
+  dst:_ Cstubs_internals.fatptr ->
+  src:_ Cstubs_internals.fatptr ->
+  size:int ->
+  unit = "ctypes_memcpy"
 
 exception Bounds
 
@@ -34,22 +38,8 @@ let reraise = function
   | Lazy_vector.SizeOverflow -> raise SizeOverflow
   | exn -> raise exn
 
-module Array1_64 = struct
-  let create kind layout n =
-    if n < 0L || n > Int64.of_int max_int then
-      raise (Invalid_argument "Bigarray.Array1_64.create") ;
-    Array1.create kind layout (Int64.to_int n)
-
-  let index_of_int64 i =
-    if i < 0L || i > Int64.of_int max_int then -1 else Int64.to_int i
-
-  let get a i = Array1.get a (index_of_int64 i)
-
-  let set a i x = Array1.set a (index_of_int64 i) x
-end
-
 module Chunk = struct
-  type t = (int, int8_unsigned_elt, c_layout) Array1.t
+  type t = char Ctypes.CArray.t
 
   (** Number of bits in an address for the chunk offset *)
   let offset_bits = 9
@@ -68,20 +58,23 @@ module Chunk = struct
   let address ~index ~offset = Int64.(add (shift_left index offset_bits) offset)
 
   let alloc () =
-    let chunk = Array1_64.create Int8_unsigned C_layout size in
-    Array1.fill chunk 0 ;
-    chunk
+    Ctypes.(CArray.make char ~initial:(Char.chr 0) (Int64.to_int size))
 
   let of_bytes bytes =
     let chunk = alloc () in
-    for i = 0 to Int.max (Int64.to_int size) (Bytes.length bytes) - 1 do
-      Array1.set chunk i (Char.code (Bytes.get bytes i))
-    done ;
+
+    let (CPointer dst) = Ctypes.CArray.start chunk in
+    let (CPointer src) =
+      Bytes.unsafe_to_string bytes |> Ctypes.(coerce string (ptr char))
+    in
+    memcpy ~dst ~src ~size:(Int64.to_int size) ;
     chunk
 
   let to_bytes chunk =
-    let len = Array1.size_in_bytes chunk in
-    Bytes.init len (fun i -> Char.chr @@ Array1.get chunk i)
+    let length = Ctypes.CArray.length chunk in
+    let start = Ctypes.CArray.start chunk in
+    let str = Ctypes.string_from_ptr start ~length in
+    Bytes.unsafe_of_string str
 
   let num_needed length =
     if Int64.compare length 0L > 0 then
@@ -146,7 +139,7 @@ let load_byte vector address =
   let open Lwt.Syntax in
   if Int64.compare address vector.length >= 0 then raise Bounds ;
   let+ chunk = get_chunk (Chunk.index address) vector in
-  Array1_64.get chunk (Chunk.offset address)
+  Ctypes.CArray.get chunk (Chunk.offset address |> Int64.to_int) |> Char.code
 
 let load_bytes vector start length =
   let open Lwt.Syntax in
@@ -165,14 +158,11 @@ let load_bytes vector start length =
   else
     let buffer = Bytes.create @@ Int64.to_int length in
 
-    let rec copy chunk offset length dest_offset =
-      if length > 0L then (
-        Array1.get chunk offset |> Char.chr |> Bytes.set buffer dest_offset ;
-        (copy [@tailcall])
-          chunk
-          (Int.succ offset)
-          (Int64.pred length)
-          (Int.succ dest_offset))
+    let copy chunk offset length dest_offset =
+      if length > 0L then
+        let start = Ctypes.(CArray.start chunk +@ offset) in
+        let str = Ctypes.string_from_ptr start ~length:(Int64.to_int length) in
+        Bytes.blit_string str 0 buffer dest_offset (Int64.to_int length)
       else ()
     in
 
@@ -202,16 +192,28 @@ let store_byte vector address byte =
   let open Lwt.Syntax in
   if Int64.compare address vector.length >= 0 then raise Bounds ;
   let+ chunk = get_chunk (Chunk.index address) vector in
-  Array1_64.set chunk (Chunk.offset address) byte ;
+  Ctypes.CArray.set chunk (Chunk.offset address |> Int64.to_int) (Char.chr byte) ;
   (* This is necessary because [get_chunk] might provide a default
      value without loading any data. *)
   Vector.set (Chunk.index address) chunk vector.chunks
 
 let store_bytes vector address bytes =
-  List.init (Bytes.length bytes) (fun i ->
-      let c = Bytes.get bytes i in
-      store_byte vector Int64.(of_int i |> add address) (Char.code c))
-  |> Lwt.join
+  let length = Bytes.length bytes in
+  if address = 0L && Int64.of_int length <= Chunk.size && vector.length > 0L
+  then (
+    let open Lwt.Syntax in
+    let+ chunk = get_chunk 0L vector in
+    let (CPointer dst) = Ctypes.CArray.start chunk in
+    let (CPointer src) =
+      Bytes.unsafe_to_string bytes |> Ctypes.(coerce string (ptr char))
+    in
+    memcpy ~dst ~src ~size:length ;
+    Vector.set 0L chunk vector.chunks)
+  else
+    List.init length (fun i ->
+        let c = Bytes.get bytes i in
+        store_byte vector Int64.(of_int i |> add address) (Char.code c))
+    |> Lwt.join
 
 let of_string str =
   (* Strings are limited in size and contained in `nativeint` (either int31 or
@@ -238,7 +240,7 @@ let of_string str =
               let address = Chunk.address ~index ~offset |> Int64.to_int in
               if address < len then
                 let c = String.get str address in
-                Array1_64.set chunk offset (Char.code c))
+                Ctypes.CArray.set chunk (Int64.to_int offset) c)
         in
         set_chunk index chunk vector)
   in
@@ -247,24 +249,50 @@ let of_string str =
 let of_bytes bytes =
   (* See [of_string] heading comment *)
   let len = Bytes.length bytes in
+  Format.printf "> of_bytes: len = %i\n%!" len ;
   let vector = create (Int64.of_int len) in
-  let _ =
-    List.init
-      (Vector.num_elements vector.chunks |> Int64.to_int)
-      (fun index ->
-        let index = Int64.of_int index in
-        let chunk = Chunk.alloc () in
-        let _ =
-          List.init (Chunk.size |> Int64.to_int) (fun offset ->
-              let offset = Int64.of_int offset in
-              let address = Chunk.address ~index ~offset |> Int64.to_int in
-              if address < len then
-                let c = Bytes.get bytes address in
-                Array1_64.set chunk offset (Char.code c))
-        in
-        set_chunk index chunk vector)
-  in
-  vector
+  if Int64.of_int len <= Chunk.size then (
+    let chunk = Chunk.alloc () in
+    let (Cstubs_internals.CPointer dst) = Ctypes.CArray.start chunk in
+    let (Cstubs_internals.CPointer src) =
+      Ctypes.(coerce string (ptr char) (Bytes.unsafe_to_string bytes))
+    in
+    memcpy ~dst ~src ~size:len ;
+    set_chunk 0L chunk vector ;
+    vector)
+  else
+    let _ =
+      List.init
+        (Vector.num_elements vector.chunks |> Int64.to_int)
+        (fun index ->
+          let index = Int64.of_int index in
+          let last_addr =
+            Chunk.address ~index:Int64.(add index 1L) ~offset:0L
+          in
+          if last_addr <= Int64.of_int len then (
+            let first_addr = Chunk.address ~index ~offset:0L in
+            let chunk = Chunk.alloc () in
+            let (Cstubs_internals.CPointer dst) = Ctypes.CArray.start chunk in
+            let (Cstubs_internals.CPointer src) =
+              Ctypes.(
+                coerce string (ptr char) (Bytes.unsafe_to_string bytes)
+                +@ Int64.to_int first_addr)
+            in
+            memcpy ~dst ~src ~size:(Int64.to_int Chunk.size) ;
+            set_chunk index chunk vector)
+          else
+            let chunk = Chunk.alloc () in
+            let _ =
+              List.init (Chunk.size |> Int64.to_int) (fun offset ->
+                  let offset = Int64.of_int offset in
+                  let address = Chunk.address ~index ~offset |> Int64.to_int in
+                  if address < len then
+                    let c = Bytes.get bytes address in
+                    Ctypes.CArray.set chunk (Int64.to_int offset) c)
+            in
+            set_chunk index chunk vector)
+    in
+    vector
 
 let to_bytes vector = load_bytes vector 0L vector.length
 

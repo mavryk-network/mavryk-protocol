@@ -156,6 +156,12 @@ module Memory : sig
   (** [length mem] gives you the memory size in bytes. *)
   val length : t -> int
 
+  val get_string : t -> int -> int -> string
+
+  val get_bytes : t -> int -> int -> bytes
+
+  val set_string : t -> int -> int -> string -> unit
+
   module Internal_for_tests : sig
     (** [of_list content] creates a memory instance containing the bytes from [content] 
       The content is expected to be a multiple of pages size (64KB)
