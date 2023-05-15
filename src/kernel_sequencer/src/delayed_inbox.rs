@@ -3,13 +3,19 @@
 // SPDX-License-Identifier: MIT
 
 use crate::message::KernelMessage;
+use crate::routing::FilterBehavior;
+use serde::{Deserialize, Serialize};
 use tezos_smart_rollup_host::{
     input::Message,
     metadata::RollupMetadata,
     runtime::{Runtime, RuntimeError},
 };
-
-use crate::routing::FilterBehavior;
+/// Id of the delayed message
+#[derive(Debug, PartialEq, Clone, Deserialize, Serialize)]
+pub struct MessageId {
+    level: u32,
+    index: u32,
+}
 
 /// Return a message from the inbox
 ///
@@ -34,6 +40,7 @@ pub fn read_input<Host: Runtime>(
                     let msg = KernelMessage::try_from(msg);
                     match msg {
                         Ok(KernelMessage::Msg(message)) => return Ok(Some(message)),
+                        Ok(KernelMessage::Sequence(_)) => todo!("process the sequence"),
                         Err(_) => {
                             // If it's an error, then the message is ignored
                         }
