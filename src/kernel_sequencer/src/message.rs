@@ -26,11 +26,26 @@ struct SequencePayload {
     messages: Vec<Vec<u8>>,
 }
 
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
+pub struct SetSequencer {
+    public_key: PublicKey,
+    signature: Signature,
+    payload: SetSequencerPayload,
+}
+
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
+struct SetSequencerPayload {
+    rollup_addr: SmartRollupHash,
+    /// The key of the new sequencer
+    sequencer_public_key: PublicKey,
+}
+
 /// Different messages that can be received from the sequencer kernel
 #[derive(Debug)]
 pub enum KernelMessage {
-    Msg(Message),       // tag: 0x00
-    Sequence(Sequence), // tag: 0x00
+    Msg(Message),               // tag: 0x00
+    Sequence(Sequence),         // tag: 0x01
+    SetSequencer(SetSequencer), // tag: 0x02
 }
 
 impl TryFrom<Message> for KernelMessage {
@@ -59,6 +74,12 @@ impl TryFrom<Message> for KernelMessage {
 
                 Ok(KernelMessage::Sequence(sequence))
             }
+            0x02 => {
+                let set_sequencer = bincode::deserialize::<SetSequencer>(remaining)
+                    .map_err(|_| "Cannot deserialize Sequence message")?;
+
+                Ok(KernelMessage::SetSequencer(set_sequencer))
+            }
             _ => Err("unknown message"),
         }
     }
@@ -73,7 +94,7 @@ mod tests {
 
     use crate::{crypto::PublicKey, message::KernelMessage};
 
-    use super::{Sequence, SequencePayload};
+    use super::{Sequence, SequencePayload, SetSequencer, SetSequencerPayload};
 
     /// Generate the secret and the public key of a given seed
     fn key_pair(seed: &str) -> (PublicKey, SecretKeyEd25519) {
@@ -161,6 +182,39 @@ mod tests {
 
         match sequence_read {
             Ok(KernelMessage::Sequence(sequence_read)) => assert_eq!(sequence_read, sequence),
+            _ => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_set_sequencer_serialization() {
+        let rollup_addr =
+            SmartRollupHash::from_base58_check("sr188sNVfv9EABYhwLxfKGLFvsXCJsyVzZ8M").unwrap();
+
+        let (public_key, _) = key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
+
+        let payload = SetSequencerPayload {
+            rollup_addr,
+            sequencer_public_key: public_key.clone(),
+        };
+        let signature = Signature::from_base58_check("sigrJ2jqanLupARzKGvzWgL1Lv6NGUqDovHKQg9MX4PtNtHXgcvG6131MRVzujJEXfvgbuRtfdGbXTFaYJJjuUVLNNZTf5q1").unwrap();
+
+        let set_sequencer = SetSequencer {
+            public_key,
+            signature,
+            payload,
+        };
+
+        let bytes = bincode::serialize(&set_sequencer).unwrap();
+        let payload = to_payload(0x02, bytes);
+
+        let msg = Message::new(0, 0, payload);
+        let sequence_read = KernelMessage::try_from(msg);
+
+        match sequence_read {
+            Ok(KernelMessage::SetSequencer(set_sequencer_read)) => {
+                assert_eq!(set_sequencer_read, set_sequencer)
+            }
             _ => assert!(false),
         }
     }

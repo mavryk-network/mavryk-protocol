@@ -41,6 +41,9 @@ pub fn read_input<Host: Runtime>(
                     match msg {
                         Ok(KernelMessage::Msg(message)) => return Ok(Some(message)),
                         Ok(KernelMessage::Sequence(_)) => todo!("process the sequence"),
+                        Ok(KernelMessage::SetSequencer(_)) => {
+                            todo!("process the set sequencer")
+                        }
                         Err(_) => {
                             // If it's an error, then the message is ignored
                         }
