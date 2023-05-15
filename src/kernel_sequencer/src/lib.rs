@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+mod crypto;
 mod delayed_inbox;
 pub mod routing;
 mod sequencer_macro;
