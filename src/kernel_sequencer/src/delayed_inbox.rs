@@ -40,13 +40,19 @@ pub fn read_input<Host: Runtime>(
                     let msg = KernelMessage::try_from(msg);
                     match msg {
                         Ok(KernelMessage::Msg(message)) => return Ok(Some(message)),
-                        Ok(KernelMessage::Sequence(_)) => todo!("process the sequence"),
+                        Ok(KernelMessage::Sequence(sequence)) => {
+                            let sequence = sequence.verify_signature();
+                            match sequence {
+                                Err(_) => {}
+                                Ok(_) => {
+                                    todo!("process the sequence")
+                                }
+                            }
+                        }
                         Ok(KernelMessage::SetSequencer(_)) => {
                             todo!("process the set sequencer")
                         }
-                        Err(_) => {
-                            // If it's an error, then the message is ignored
-                        }
+                        Err(_) => {}
                     }
                 }
             }

@@ -3,7 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 use serde::{Deserialize, Serialize};
-use tezos_crypto_rs::hash::{Signature, SmartRollupHash};
+use tezos_crypto_rs::{
+    hash::{Signature, SmartRollupHash},
+    PublicKeySignatureVerifier,
+};
 use tezos_smart_rollup_host::input::Message;
 
 use crate::{crypto::PublicKey, delayed_inbox::MessageId};
@@ -20,7 +23,7 @@ pub struct Sequence {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-struct SequencePayload {
+pub struct SequencePayload {
     rollup_addr: SmartRollupHash,
     delayed_messages: Vec<MessageId>,
     messages: Vec<Vec<u8>>,
@@ -81,6 +84,27 @@ impl TryFrom<Message> for KernelMessage {
                 Ok(KernelMessage::SetSequencer(set_sequencer))
             }
             _ => Err("unknown message"),
+        }
+    }
+}
+
+impl Sequence {
+    /// Verify the signature of the sequence
+    /// If the signature is correct then it returns the payload of the sequence
+    pub fn verify_signature(self) -> Result<SequencePayload, &'static str> {
+        // Compute the bytes that was signed
+        let bytes = bincode::serialize(&self.payload)
+            .map_err(|_| "signed payload deserialization error")?;
+
+        // Verify the signature
+        let is_correct = self
+            .public_key
+            .verify_signature(&self.signature, &bytes)
+            .map_err(|_| "signature verification of Sequence failed")?;
+
+        match is_correct {
+            true => Ok(self.payload),
+            false => Err("incorrect signature"),
         }
     }
 }
@@ -216,6 +240,78 @@ mod tests {
                 assert_eq!(set_sequencer_read, set_sequencer)
             }
             _ => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_sequence_correct_signature() {
+        let rollup_addr =
+            SmartRollupHash::from_base58_check("sr188sNVfv9EABYhwLxfKGLFvsXCJsyVzZ8M").unwrap();
+
+        let (public_key, secret) =
+            key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
+
+        let delayed_messages = vec![];
+        let messages = vec![];
+
+        let sequence_payload = SequencePayload {
+            rollup_addr: rollup_addr.clone(),
+            delayed_messages: delayed_messages.clone(),
+            messages: messages.clone(),
+        };
+        let bytes = bincode::serialize(&sequence_payload).unwrap();
+        let signature = secret.sign(&bytes).unwrap();
+
+        let sequence = Sequence {
+            public_key,
+            signature,
+            payload: sequence_payload,
+        };
+        let bytes = bincode::serialize(&sequence).unwrap();
+        let payload = to_payload(0x01, bytes);
+
+        // Deserialize the message
+        let msg = Message::new(0, 0, payload);
+        let kernel_message = KernelMessage::try_from(msg).unwrap();
+        if let KernelMessage::Sequence(sequence) = kernel_message {
+            assert!(sequence.verify_signature().is_ok())
+        } else {
+            assert!(false)
+        }
+    }
+
+    #[test]
+    fn test_sequence_not_correct_signature() {
+        let rollup_addr =
+            SmartRollupHash::from_base58_check("sr188sNVfv9EABYhwLxfKGLFvsXCJsyVzZ8M").unwrap();
+
+        let (public_key, _) = key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
+
+        let delayed_messages = vec![];
+        let messages = vec![];
+
+        let sequence_payload = SequencePayload {
+            rollup_addr: rollup_addr.clone(),
+            delayed_messages: delayed_messages.clone(),
+            messages: messages.clone(),
+        };
+        let signature = Signature::from_base58_check("sigrJ2jqanLupARzKGvzWgL1Lv6NGUqDovHKQg9MX4PtNtHXgcvG6131MRVzujJEXfvgbuRtfdGbXTFaYJJjuUVLNNZTf5q1").unwrap();
+
+        let sequence = Sequence {
+            public_key,
+            signature,
+            payload: sequence_payload,
+        };
+        let bytes = bincode::serialize(&sequence).unwrap();
+        let payload = to_payload(0x01, bytes);
+
+        // Deserialize the message
+        let msg = Message::new(0, 0, payload);
+        let kernel_message = KernelMessage::try_from(msg).unwrap();
+        if let KernelMessage::Sequence(sequence) = kernel_message {
+            assert!(sequence.verify_signature().is_err())
+        } else {
+            assert!(false)
         }
     }
 }
