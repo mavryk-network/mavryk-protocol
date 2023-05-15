@@ -2,7 +2,7 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2021 Tocqueville Group, Inc. <contact@tezos.com>            *)
-(* Copyright (c) 2022 Nomadic Labs <contact@nomadic-labs.com>                *)
+(* Copyright (c) 2022-2023 Nomadic Labs <contact@nomadic-labs.com>           *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -24,99 +24,75 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Options available for the Liquidity Baking per-block vote *)
+(** Options available for toggle per-block votes *)
 
-type liquidity_baking_toggle_vote = LB_on | LB_off | LB_pass
+type toggle_vote = Toggle_vote_on | Toggle_vote_off | Toggle_vote_pass
 
-let liquidity_baking_toggle_vote_encoding =
-  let of_int8 = function
-    | 0 -> Ok LB_on
-    | 1 -> Ok LB_off
-    | 2 -> Ok LB_pass
-    | _ -> Error "liquidity_baking_toggle_vote_of_int8"
-  in
-  let to_int8 = function LB_on -> 0 | LB_off -> 1 | LB_pass -> 2 in
+type toggle_votes = {
+  liquidity_baking_vote : toggle_vote;
+  adaptive_inflation_vote : toggle_vote;
+}
+
+let toggle_vote_of_int2 = function
+  | 0 -> Ok Toggle_vote_on
+  | 1 -> Ok Toggle_vote_off
+  | 2 -> Ok Toggle_vote_pass
+  | _ -> Error "toggle_vote_of_int2"
+
+let toggle_vote_to_int2 = function
+  | Toggle_vote_on -> 0
+  | Toggle_vote_off -> 1
+  | Toggle_vote_pass -> 2
+
+let toggle_vote_encoding name =
   let open Data_encoding in
   (* union *)
-  def "liquidity_baking_toggle_vote"
+  def name
   @@ splitted
-       ~binary:(conv_with_guard to_int8 of_int8 int8)
-       ~json:(string_enum [("on", LB_on); ("off", LB_off); ("pass", LB_pass)])
+       ~binary:(conv_with_guard toggle_vote_to_int2 toggle_vote_of_int2 int8)
+       ~json:
+         (string_enum
+            [
+              ("on", Toggle_vote_on);
+              ("off", Toggle_vote_off);
+              ("pass", Toggle_vote_pass);
+            ])
 
-module Toggle_EMA : sig
-  (* The exponential moving average is represented as an Int32 between 0l and 2_000_000_000l *)
+let liquidity_baking_vote_encoding =
+  toggle_vote_encoding "liquidity_baking_vote"
 
-  type t
+let adaptive_inflation_vote_encoding =
+  toggle_vote_encoding "adaptive_inflation_vote"
 
-  val zero : t
-
-  val of_int32 : Int32.t -> t tzresult Lwt.t
-
-  val to_int32 : t -> Int32.t
-
-  val update_ema_off : t -> t
-
-  val update_ema_on : t -> t
-
-  val ( < ) : t -> Int32.t -> bool
-
-  val encoding : t Data_encoding.t
-end = struct
-  type t = Int32.t (* Invariant 0 <= ema <= 2_000_000_000l *)
-
-  (* This error is not registered because we don't expect it to be
-     raised. *)
-  type error += Liquidity_baking_toggle_ema_out_of_bound of Int32.t
-
-  let check_bounds x = Compare.Int32.(0l <= x && x <= 2_000_000_000l)
-
-  let of_int32 x =
-    if check_bounds x then return x
-    else tzfail @@ Liquidity_baking_toggle_ema_out_of_bound x
-
-  let zero = Int32.zero
-
-  (* The conv_with_guard combinator of Data_encoding expects a (_, string) result. *)
-  let of_int32_for_encoding x =
-    if check_bounds x then Ok x else Error "out of bounds"
-
-  let to_int32 ema = ema
-
-  (* We perform the computations in Z to avoid overflows. *)
-
-  let z_1999 = Z.of_int 1999
-
-  let z_2000 = Z.of_int 2000
-
-  let attenuate z = Z.(div (mul z_1999 z) z_2000)
-
-  let z_1_000_000_000 = Z.of_int 1_000_000_000
-
-  (* Outside of this module, the EMA is always between 0 and 2,000,000,000.
-     This [recenter] wrappers, puts it in between -1,000,000,000 and 1,000,000,000.
-     The goal of this recentering around zero is to make [update_ema_off] and
-     [update_ema_on] behave symmetrically with respect to rounding. *)
-  let recenter f ema = Z.(add z_1_000_000_000 (f (sub ema z_1_000_000_000)))
-
-  let z_500_000 = Z.of_int 500_000
-
-  let update_ema_off ema =
-    let ema = Z.of_int32 ema in
-    recenter (fun ema -> Z.add (attenuate ema) z_500_000) ema |> Z.to_int32
-
-  let update_ema_on ema =
-    let ema = Z.of_int32 ema in
-    recenter (fun ema -> Z.sub (attenuate ema) z_500_000) ema |> Z.to_int32
-
-  let ( < ) = Compare.Int32.( < )
-
-  let encoding =
-    Data_encoding.(conv_with_guard to_int32 of_int32_for_encoding int32)
-end
+let toggle_votes_encoding =
+  let of_int8 i =
+    match (toggle_vote_of_int2 (i land 0b11), toggle_vote_of_int2 (i / 4)) with
+    | Ok liquidity_baking_vote, Ok adaptive_inflation_vote ->
+        Ok {liquidity_baking_vote; adaptive_inflation_vote}
+    | _ -> Error "toggle_votes_of_int8"
+  in
+  let to_int8 {liquidity_baking_vote; adaptive_inflation_vote} =
+    toggle_vote_to_int2 liquidity_baking_vote
+    + (toggle_vote_to_int2 adaptive_inflation_vote * 4)
+  in
+  let open Data_encoding in
+  let json =
+    conv
+      (fun {liquidity_baking_vote; adaptive_inflation_vote} ->
+        (liquidity_baking_vote, adaptive_inflation_vote))
+      (fun (liquidity_baking_vote, adaptive_inflation_vote) ->
+        {liquidity_baking_vote; adaptive_inflation_vote})
+      (obj2
+         (req "liquidity_baking_vote" liquidity_baking_vote_encoding)
+         (req "adaptive_inflation_vote" adaptive_inflation_vote_encoding))
+  in
+  (* union *)
+  def "toggle_votes"
+  @@ splitted ~binary:(conv_with_guard to_int8 of_int8 int8) ~json
 
 (* Invariant: 0 <= ema <= 2_000_000 *)
 let compute_new_ema ~toggle_vote ema =
   match toggle_vote with
-  | LB_pass -> ema
-  | LB_off -> Toggle_EMA.update_ema_off ema
-  | LB_on -> Toggle_EMA.update_ema_on ema
+  | Toggle_vote_pass -> ema
+  | Toggle_vote_off -> Toggle_EMA.update_ema_off ema
+  | Toggle_vote_on -> Toggle_EMA.update_ema_on ema

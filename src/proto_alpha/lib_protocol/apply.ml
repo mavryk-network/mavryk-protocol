@@ -1731,7 +1731,8 @@ type application_state = {
   mode : mode;
   op_count : int;
   migration_balance_updates : Receipt.balance_updates;
-  liquidity_baking_toggle_ema : Liquidity_baking.Toggle_EMA.t;
+  liquidity_baking_toggle_ema : Toggle_EMA.t;
+  adaptive_inflation_toggle_ema : Toggle_EMA.t;
   implicit_operations_results :
     Apply_results.packed_successful_manager_operation_result list;
 }
@@ -2309,8 +2310,8 @@ let begin_application ctxt chain_id ~migration_balance_updates
       ~round:block_header.protocol_data.contents.payload_round
   in
   let toggle_vote =
-    block_header.Block_header.protocol_data.contents
-      .liquidity_baking_toggle_vote
+    block_header.Block_header.protocol_data.contents.toggle_votes
+      .liquidity_baking_vote
   in
   let* ctxt, liquidity_baking_operations_results, liquidity_baking_toggle_ema =
     apply_liquidity_baking_subsidy ctxt ~toggle_vote
@@ -2339,6 +2340,7 @@ let begin_application ctxt chain_id ~migration_balance_updates
       op_count = 0;
       migration_balance_updates;
       liquidity_baking_toggle_ema;
+      adaptive_inflation_toggle_ema = Toggle_EMA.zero;
       implicit_operations_results =
         Apply_results.pack_migration_operation_results
           migration_operation_results
@@ -2370,7 +2372,7 @@ let begin_full_construction ctxt chain_id ~migration_balance_updates
       current_level
       ~round:block_data_contents.payload_round
   in
-  let toggle_vote = block_data_contents.liquidity_baking_toggle_vote in
+  let toggle_vote = block_data_contents.toggle_votes.liquidity_baking_vote in
   let* ctxt, liquidity_baking_operations_results, liquidity_baking_toggle_ema =
     apply_liquidity_baking_subsidy ctxt ~toggle_vote
   in
@@ -2397,6 +2399,7 @@ let begin_full_construction ctxt chain_id ~migration_balance_updates
       op_count = 0;
       migration_balance_updates;
       liquidity_baking_toggle_ema;
+      adaptive_inflation_toggle_ema = Toggle_EMA.zero;
       implicit_operations_results =
         Apply_results.pack_migration_operation_results
           migration_operation_results
@@ -2407,7 +2410,7 @@ let begin_partial_construction ctxt chain_id ~migration_balance_updates
     ~migration_operation_results ~predecessor_hash
     ~(predecessor_fitness : Fitness.raw) : application_state tzresult Lwt.t =
   let open Lwt_result_syntax in
-  let toggle_vote = Liquidity_baking.LB_pass in
+  let toggle_vote = Toggle_votes.Toggle_vote_pass in
   let* ctxt, liquidity_baking_operations_results, liquidity_baking_toggle_ema =
     apply_liquidity_baking_subsidy ctxt ~toggle_vote
   in
@@ -2429,6 +2432,7 @@ let begin_partial_construction ctxt chain_id ~migration_balance_updates
       op_count = 0;
       migration_balance_updates;
       liquidity_baking_toggle_ema;
+      adaptive_inflation_toggle_ema = Toggle_EMA.zero;
       implicit_operations_results =
         Apply_results.pack_migration_operation_results
           migration_operation_results
@@ -2436,9 +2440,9 @@ let begin_partial_construction ctxt chain_id ~migration_balance_updates
     }
 
 let finalize_application ctxt block_data_contents ~round ~predecessor_hash
-    ~liquidity_baking_toggle_ema ~implicit_operations_results
-    ~migration_balance_updates ~(block_producer : Consensus_key.t)
-    ~(payload_producer : Consensus_key.t) =
+    ~liquidity_baking_toggle_ema ~adaptive_inflation_toggle_ema
+    ~implicit_operations_results ~migration_balance_updates
+    ~(block_producer : Consensus_key.t) ~(payload_producer : Consensus_key.t) =
   let open Lwt_result_syntax in
   let level = Level.current ctxt in
   let endorsing_power = Consensus.current_endorsement_power ctxt in
@@ -2524,6 +2528,7 @@ let finalize_application ctxt block_data_contents ~round ~predecessor_hash
         deactivated;
         balance_updates;
         liquidity_baking_toggle_ema;
+        adaptive_inflation_toggle_ema;
         implicit_operations_results;
         dal_attestation;
       }
@@ -2573,6 +2578,7 @@ let finalize_block (application_state : application_state) shell_header_opt =
   let {
     ctxt;
     liquidity_baking_toggle_ema;
+    adaptive_inflation_toggle_ema;
     implicit_operations_results;
     migration_balance_updates;
     op_count;
@@ -2613,6 +2619,7 @@ let finalize_block (application_state : application_state) shell_header_opt =
           ~round
           ~predecessor_hash
           ~liquidity_baking_toggle_ema
+          ~adaptive_inflation_toggle_ema
           ~implicit_operations_results
           ~migration_balance_updates
           ~block_producer
@@ -2643,6 +2650,7 @@ let finalize_block (application_state : application_state) shell_header_opt =
               deactivated = [];
               balance_updates = migration_balance_updates;
               liquidity_baking_toggle_ema;
+              adaptive_inflation_toggle_ema;
               implicit_operations_results;
               dal_attestation = None;
             } )
@@ -2665,6 +2673,7 @@ let finalize_block (application_state : application_state) shell_header_opt =
           ~round
           ~predecessor_hash:shell.predecessor
           ~liquidity_baking_toggle_ema
+          ~adaptive_inflation_toggle_ema
           ~implicit_operations_results
           ~migration_balance_updates
           ~block_producer
