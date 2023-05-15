@@ -37,7 +37,7 @@ pub struct SetSequencer {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-struct SetSequencerPayload {
+pub struct SetSequencerPayload {
     rollup_addr: SmartRollupHash,
     /// The key of the new sequencer
     sequencer_public_key: PublicKey,
@@ -100,6 +100,30 @@ impl Sequence {
         let is_correct = self
             .public_key
             .verify_signature(&self.signature, &bytes)
+            .map_err(|_| "signature verification of Sequence failed")?;
+
+        match is_correct {
+            true => Ok(self.payload),
+            false => Err("incorrect signature"),
+        }
+    }
+}
+
+impl SetSequencer {
+    /// Verify the signature of the set sequencer
+    /// If the signature is correct then it returns the payload of the sequence
+    pub fn verify_signature(self) -> Result<SetSequencerPayload, &'static str> {
+        // Compute the bytes that was signed
+        let bytes = bincode::serialize(&self.payload)
+            .map_err(|_| "signed payload deserialization error")?;
+
+        // hash the data
+        let digest = blake2b::digest_all(vec![bytes], 32).map_err(|_| "cannot hash the data")?;
+
+        // Verify the signature
+        let is_correct = self
+            .public_key
+            .verify_signature(&self.signature, &digest)
             .map_err(|_| "signature verification of Sequence failed")?;
 
         match is_correct {
@@ -310,6 +334,70 @@ mod tests {
         let kernel_message = KernelMessage::try_from(msg).unwrap();
         if let KernelMessage::Sequence(sequence) = kernel_message {
             assert!(sequence.verify_signature().is_err())
+        } else {
+            assert!(false)
+        }
+    }
+
+    #[test]
+    fn test_set_sequencer_correct_signature() {
+        let rollup_addr =
+            SmartRollupHash::from_base58_check("sr188sNVfv9EABYhwLxfKGLFvsXCJsyVzZ8M").unwrap();
+
+        let (public_key, secret) =
+            key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
+
+        let set_sequencer_payload = SetSequencerPayload {
+            rollup_addr: rollup_addr.clone(),
+            sequencer_public_key: public_key.clone(),
+        };
+        let bytes = vec![bincode::serialize(&set_sequencer_payload).unwrap()];
+        let signature = secret.sign(bytes).unwrap();
+
+        let sequence = SetSequencer {
+            public_key,
+            signature,
+            payload: set_sequencer_payload,
+        };
+        let bytes = bincode::serialize(&sequence).unwrap();
+        let payload = to_payload(0x02, bytes);
+
+        // Deserialize the message
+        let msg = Message::new(0, 0, payload);
+        let kernel_message = KernelMessage::try_from(msg).unwrap();
+        if let KernelMessage::SetSequencer(set_sequencer) = kernel_message {
+            assert!(set_sequencer.verify_signature().is_ok())
+        } else {
+            assert!(false)
+        }
+    }
+
+    #[test]
+    fn test_set_sequencer_not_correct_signature() {
+        let rollup_addr =
+            SmartRollupHash::from_base58_check("sr188sNVfv9EABYhwLxfKGLFvsXCJsyVzZ8M").unwrap();
+
+        let (public_key, _) = key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
+
+        let sequence_payload = SetSequencerPayload {
+            rollup_addr: rollup_addr.clone(),
+            sequencer_public_key: public_key.clone(),
+        };
+        let signature = Signature::from_base58_check("sigrJ2jqanLupARzKGvzWgL1Lv6NGUqDovHKQg9MX4PtNtHXgcvG6131MRVzujJEXfvgbuRtfdGbXTFaYJJjuUVLNNZTf5q1").unwrap();
+
+        let set_sequencer = SetSequencer {
+            public_key,
+            signature,
+            payload: sequence_payload,
+        };
+        let bytes = bincode::serialize(&set_sequencer).unwrap();
+        let payload = to_payload(0x02, bytes);
+
+        // Deserialize the message
+        let msg = Message::new(0, 0, payload);
+        let kernel_message = KernelMessage::try_from(msg).unwrap();
+        if let KernelMessage::SetSequencer(set_sequencer) = kernel_message {
+            assert!(set_sequencer.verify_signature().is_err())
         } else {
             assert!(false)
         }

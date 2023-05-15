@@ -49,8 +49,14 @@ pub fn read_input<Host: Runtime>(
                                 }
                             }
                         }
-                        Ok(KernelMessage::SetSequencer(_)) => {
-                            todo!("process the set sequencer")
+                        Ok(KernelMessage::SetSequencer(set_sequencer)) => {
+                            let set_sequencer = set_sequencer.verify_signature();
+                            match set_sequencer {
+                                Err(_) => {}
+                                Ok(_) => {
+                                    todo!("process the set sequencer")
+                                }
+                            }
                         }
                         Err(_) => {}
                     }
