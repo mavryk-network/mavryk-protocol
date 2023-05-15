@@ -4,7 +4,7 @@ use tezos_crypto_rs::{
     CryptoError, PublicKeySignatureVerifier,
 };
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(PartialEq, Debug, Clone, Deserialize, Serialize)]
 pub enum PublicKey {
     Ed25519(PublicKeyEd25519),
     P256(PublicKeyP256),
