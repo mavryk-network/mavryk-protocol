@@ -15,6 +15,14 @@ Environment Version
 This protocol requires a different protocol environment version than Nairobi.
 It requires protocol environment V10, compared to V9 for Nairobi.
 
+Adaptive Inflation
+------------------
+
+- This protocol asks the bakers to set their votes for the
+  adoption of the adaptive inflation feature. They may use the per
+  block votes file, or CLI option
+  ``--adaptive-inflation-toggle-vote``.
+
 Smart Rollups
 -------------
 
