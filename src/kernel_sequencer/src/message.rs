@@ -5,6 +5,7 @@
 use tezos_smart_rollup_host::input::Message;
 
 /// Different messages that can be received from the sequencer kernel
+#[derive(Debug)]
 pub enum KernelMessage {
     Msg(Message), // tag: 0x00
 }
