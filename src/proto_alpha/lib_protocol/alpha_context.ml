@@ -651,7 +651,7 @@ let description = Raw_context.description
 module Parameters = Parameters_repr
 
 module Liquidity_baking = struct
-  include Liquidity_baking_repr
+  include Toggle_votes_repr
   include Liquidity_baking_storage
 end
 
