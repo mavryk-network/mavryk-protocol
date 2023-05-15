@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+use crate::message::KernelMessage;
 use tezos_smart_rollup_host::{
     input::Message,
     metadata::RollupMetadata,
@@ -30,7 +31,13 @@ pub fn read_input<Host: Runtime>(
             Some(msg) => {
                 let payload = msg.as_ref();
                 if filter_behavior.predicate(payload, &raw_rollup_address) {
-                    return Ok(Some(msg)); // The message is needed by the kernel so it's returned
+                    let msg = KernelMessage::try_from(msg);
+                    match msg {
+                        Ok(KernelMessage::Msg(message)) => return Ok(Some(message)),
+                        Err(_) => {
+                            // If it's an error, then the message is ignored
+                        }
+                    }
                 }
             }
         }
