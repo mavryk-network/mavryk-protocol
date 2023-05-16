@@ -33,62 +33,59 @@ type toggle_votes = {
   adaptive_inflation_vote : toggle_vote;
 }
 
-let toggle_vote_of_int2 = function
-  | 0 -> Ok Toggle_vote_on
-  | 1 -> Ok Toggle_vote_off
-  | 2 -> Ok Toggle_vote_pass
-  | _ -> Error "toggle_vote_of_int2"
-
-let toggle_vote_to_int2 = function
-  | Toggle_vote_on -> 0
-  | Toggle_vote_off -> 1
-  | Toggle_vote_pass -> 2
-
-let toggle_vote_encoding name =
+let toggle_vote_compact_encoding =
   let open Data_encoding in
-  (* union *)
-  def name
-  @@ splitted
-       ~binary:(conv_with_guard toggle_vote_to_int2 toggle_vote_of_int2 int8)
-       ~json:
-         (string_enum
-            [
-              ("on", Toggle_vote_on);
-              ("off", Toggle_vote_off);
-              ("pass", Toggle_vote_pass);
-            ])
+  let open Compact in
+  union
+    ~union_tag_bits:2
+    ~cases_tag_bits:0
+    [
+      case
+        ~title:"toggle_data_vote_on"
+        (payload (constant "on"))
+        (function Toggle_vote_on -> Some () | _ -> None)
+        (fun () -> Toggle_vote_on);
+      case
+        ~title:"toggle_data_vote_off"
+        (payload (constant "off"))
+        (function Toggle_vote_off -> Some () | _ -> None)
+        (fun () -> Toggle_vote_off);
+      case
+        ~title:"toggle_data_vote_pass"
+        (payload (constant "pass"))
+        (function Toggle_vote_pass -> Some () | _ -> None)
+        (fun () -> Toggle_vote_pass);
+    ]
 
 let liquidity_baking_vote_encoding =
-  toggle_vote_encoding "liquidity_baking_vote"
+  let open Data_encoding in
+  def
+    "liquidity_baking_vote"
+    (Compact.make ~tag_size:`Uint8 toggle_vote_compact_encoding)
 
 let adaptive_inflation_vote_encoding =
-  toggle_vote_encoding "adaptive_inflation_vote"
+  let open Data_encoding in
+  def
+    "adaptive_inflation_vote"
+    (Compact.make ~tag_size:`Uint8 toggle_vote_compact_encoding)
+
+let toggle_votes_compact_encoding =
+  let open Data_encoding in
+  let open Compact in
+  conv
+    (fun {liquidity_baking_vote; adaptive_inflation_vote} ->
+      (liquidity_baking_vote, adaptive_inflation_vote))
+    (fun (liquidity_baking_vote, adaptive_inflation_vote) ->
+      {liquidity_baking_vote; adaptive_inflation_vote})
+    (obj2
+       (req "liquidity_baking_vote" toggle_vote_compact_encoding)
+       (req "adaptive_inflation_vote" toggle_vote_compact_encoding))
 
 let toggle_votes_encoding =
-  let of_int8 i =
-    match (toggle_vote_of_int2 (i land 0b11), toggle_vote_of_int2 (i / 4)) with
-    | Ok liquidity_baking_vote, Ok adaptive_inflation_vote ->
-        Ok {liquidity_baking_vote; adaptive_inflation_vote}
-    | _ -> Error "toggle_votes_of_int8"
-  in
-  let to_int8 {liquidity_baking_vote; adaptive_inflation_vote} =
-    toggle_vote_to_int2 liquidity_baking_vote
-    + (toggle_vote_to_int2 adaptive_inflation_vote * 4)
-  in
   let open Data_encoding in
-  let json =
-    conv
-      (fun {liquidity_baking_vote; adaptive_inflation_vote} ->
-        (liquidity_baking_vote, adaptive_inflation_vote))
-      (fun (liquidity_baking_vote, adaptive_inflation_vote) ->
-        {liquidity_baking_vote; adaptive_inflation_vote})
-      (obj2
-         (req "liquidity_baking_vote" liquidity_baking_vote_encoding)
-         (req "adaptive_inflation_vote" adaptive_inflation_vote_encoding))
-  in
-  (* union *)
-  def "toggle_votes"
-  @@ splitted ~binary:(conv_with_guard to_int8 of_int8 int8) ~json
+  def
+    "toggle_votes"
+    (Compact.make ~tag_size:`Uint8 toggle_votes_compact_encoding)
 
 (* Invariant: 0 <= ema <= 2_000_000 *)
 let compute_new_ema ~toggle_vote ema =
