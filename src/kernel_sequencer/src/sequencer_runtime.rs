@@ -50,7 +50,7 @@ where
     }
 
     fn read_input(&mut self) -> Result<Option<Message>, RuntimeError> {
-        read_input(&mut self.host, &self.input_predicate)
+        read_input(&mut self.host, self.input_predicate)
     }
 
     fn store_has<T: Path>(&self, path: &T) -> Result<Option<ValueType>, RuntimeError> {

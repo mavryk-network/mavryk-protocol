@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+#[derive(Clone, Copy)]
 pub enum FilterBehavior {
     /// All message are accepted
     AllowAll,

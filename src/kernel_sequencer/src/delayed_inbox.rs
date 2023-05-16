@@ -18,7 +18,7 @@ use crate::routing::FilterBehavior;
 ///  - returns message as "normal" message to the user kernel
 pub fn read_input<Host: Runtime>(
     host: &mut Host,
-    filter_behavior: &FilterBehavior,
+    filter_behavior: FilterBehavior,
 ) -> Result<Option<Message>, RuntimeError> {
     let RollupMetadata {
         raw_rollup_address, ..
