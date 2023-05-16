@@ -20,11 +20,11 @@ pub fn read_input<Host: Runtime>(
     host: &mut Host,
     filter_behavior: &FilterBehavior,
 ) -> Result<Option<Message>, RuntimeError> {
+    let RollupMetadata {
+        raw_rollup_address, ..
+    } = host.reveal_metadata()?;
     loop {
         let msg = host.read_input()?;
-        let RollupMetadata {
-            raw_rollup_address, ..
-        } = host.reveal_metadata()?;
         match msg {
             None => return Ok(None), // No more messages to be processed
             Some(msg) => {
