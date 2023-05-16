@@ -69,40 +69,84 @@ let of_watermark = function
 
 let contents_encoding =
   let open Data_encoding in
-  def "block_header.alpha.unsigned_contents"
-  @@ conv
-       (fun {
-              payload_hash;
-              payload_round;
-              seed_nonce_hash;
-              proof_of_work_nonce;
-              toggle_votes;
-            } ->
-         ( payload_hash,
-           payload_round,
-           proof_of_work_nonce,
-           seed_nonce_hash,
-           toggle_votes ))
-       (fun ( payload_hash,
-              payload_round,
-              proof_of_work_nonce,
-              seed_nonce_hash,
-              toggle_votes ) ->
-         {
-           payload_hash;
-           payload_round;
-           seed_nonce_hash;
-           proof_of_work_nonce;
-           toggle_votes;
-         })
-       (obj5
-          (req "payload_hash" Block_payload_hash.encoding)
-          (req "payload_round" Round_repr.encoding)
-          (req
-             "proof_of_work_nonce"
-             (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
-          (opt "seed_nonce_hash" Nonce_hash.encoding)
-          (req "toggle_votes" Toggle_votes_repr.toggle_votes_encoding))
+  let json =
+    conv
+      (fun {
+             payload_hash;
+             payload_round;
+             seed_nonce_hash;
+             proof_of_work_nonce;
+             toggle_votes = {liquidity_baking_vote; adaptive_inflation_vote};
+           } ->
+        ( payload_hash,
+          payload_round,
+          proof_of_work_nonce,
+          seed_nonce_hash,
+          liquidity_baking_vote,
+          adaptive_inflation_vote ))
+      (fun ( payload_hash,
+             payload_round,
+             proof_of_work_nonce,
+             seed_nonce_hash,
+             liquidity_baking_vote,
+             adaptive_inflation_vote ) ->
+        {
+          payload_hash;
+          payload_round;
+          seed_nonce_hash;
+          proof_of_work_nonce;
+          toggle_votes = {liquidity_baking_vote; adaptive_inflation_vote};
+        })
+      (obj6
+         (req "payload_hash" Block_payload_hash.encoding)
+         (req "payload_round" Round_repr.encoding)
+         (req
+            "proof_of_work_nonce"
+            (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
+         (opt "seed_nonce_hash" Nonce_hash.encoding)
+         (req
+            "liquidity_baking_toggle_vote"
+            Toggle_votes_repr.liquidity_baking_vote_encoding)
+         (req
+            "adaptive_inflation_toggle_vote"
+            Toggle_votes_repr.adaptive_inflation_vote_encoding))
+  in
+  let binary =
+    conv
+      (fun {
+             payload_hash;
+             payload_round;
+             seed_nonce_hash;
+             proof_of_work_nonce;
+             toggle_votes;
+           } ->
+        ( payload_hash,
+          payload_round,
+          proof_of_work_nonce,
+          seed_nonce_hash,
+          toggle_votes ))
+      (fun ( payload_hash,
+             payload_round,
+             proof_of_work_nonce,
+             seed_nonce_hash,
+             toggle_votes ) ->
+        {
+          payload_hash;
+          payload_round;
+          seed_nonce_hash;
+          proof_of_work_nonce;
+          toggle_votes;
+        })
+      (obj5
+         (req "payload_hash" Block_payload_hash.encoding)
+         (req "payload_round" Round_repr.encoding)
+         (req
+            "proof_of_work_nonce"
+            (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
+         (opt "seed_nonce_hash" Nonce_hash.encoding)
+         (req "toggle_votes" Toggle_votes_repr.toggle_votes_encoding))
+  in
+  def "block_header.alpha.unsigned_contents" @@ splitted ~binary ~json
 
 let protocol_data_encoding =
   let open Data_encoding in
