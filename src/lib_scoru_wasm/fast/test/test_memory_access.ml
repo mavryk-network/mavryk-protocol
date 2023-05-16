@@ -71,7 +71,7 @@ let are_equivalent initial_content f_ref f_wasmer =
                 exn)
   in
 
-  let mem_equal = List.equal Unsigned.UInt8.equal in
+  let mem_equal = List.equal Char.equal in
 
   Result.equal
     ~ok:(fun (ret_ref, content_ref) (ret_wasmer, content_wasmer) ->

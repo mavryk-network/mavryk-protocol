@@ -320,7 +320,7 @@ module Functions (S : FOREIGN) = struct
   (** Functions with the [wasm_memory_] prefix *)
   module Memory = struct
     let data =
-      foreign "wasm_memory_data" (ptr Types.Memory.t @-> returning (ptr uint8_t))
+      foreign "wasm_memory_data" (ptr Types.Memory.t @-> returning (ptr char))
 
     let data_size =
       foreign "wasm_memory_data_size" (ptr Types.Memory.t @-> returning size_t)

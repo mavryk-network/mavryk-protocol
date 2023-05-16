@@ -28,7 +28,7 @@ module Array = Ctypes.CArray
 exception Out_of_bounds
 
 type t = {
-  raw : Unsigned.uint8 Array.t;
+  raw : char Array.t;
   min : Unsigned.uint32;
   max : Unsigned.uint32 option;
 }
@@ -44,10 +44,19 @@ let get mem addr =
   check_bounds mem addr 1 ;
   Array.unsafe_get mem.raw addr
 
+let unsafe_get_string_slow mem ~address ~length =
+  String.init length @@ fun i -> Array.unsafe_get mem.raw (i + address)
+
+let unsafe_get_string_fast mem ~address ~length =
+  let address = Ctypes.(Array.start mem.raw +@ address) in
+  Ctypes.string_from_ptr address ~length
+
 let get_string mem ~address ~length =
   check_bounds mem address length ;
-  String.init length @@ fun i ->
-  Array.unsafe_get mem.raw (i + address) |> Unsigned.UInt8.to_int |> Char.chr
+  let func =
+    if length >= 64 then unsafe_get_string_fast else unsafe_get_string_slow
+  in
+  func mem ~address ~length
 
 let set mem addr value =
   check_bounds mem addr 1 ;
@@ -59,13 +68,11 @@ let set_string mem ~address ~data =
     (* For compatibility we only check bounds when something shall be written. *)
     check_bounds mem address len ;
     for offset = 0 to len - 1 do
-      String.get_uint8 data offset
-      |> Unsigned.UInt8.of_int
-      |> Array.unsafe_set mem.raw (offset + address)
+      String.get data offset |> Array.unsafe_set mem.raw (offset + address)
     done)
 
 module Internal_for_tests = struct
-  let of_list (content : Unsigned.uint8 list) =
+  let of_list (content : char list) =
     let mem_length = List.length content in
     let page_size = 0x10000 in
     let pages = mem_length / page_size in
@@ -73,7 +80,7 @@ module Internal_for_tests = struct
     assert (Int.rem mem_length page_size = 0) ;
 
     {
-      raw = Array.of_list Ctypes.uint8_t content;
+      raw = Array.of_list Ctypes.char content;
       min = Unsigned.UInt32.of_int pages;
       max = None;
     }

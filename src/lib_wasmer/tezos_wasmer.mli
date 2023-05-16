@@ -147,20 +147,20 @@ module Memory : sig
 
   (** WebAssembly memory *)
   type t = {
-    raw : Unsigned.uint8 Array.t;  (** C array backing the memory *)
+    raw : char Array.t;  (** C array backing the memory *)
     min : Unsigned.uint32;  (** Minimum memory size in pages (64 KiB) *)
     max : Unsigned.uint32 option;  (** Maximum size in pages *)
   }
 
   (** [get mem addr] reads a byte at address [addr]. *)
-  val get : t -> int -> Unsigned.uint8
+  val get : t -> int -> char
 
   (** [get_string mem addr len] reads [len] bytes from address [addr] in
       mmemory [mem]. *)
   val get_string : t -> address:int -> length:int -> string
 
   (** [set mem addr value] sets a byte at address [addr] to [value]. *)
-  val set : t -> int -> Unsigned.uint8 -> unit
+  val set : t -> int -> char -> unit
 
   (** [set_string mem ~address ~data] writes a series of bytes represented by [data]
       at address [address] in the provided memory [mem]. *)
@@ -173,10 +173,10 @@ module Memory : sig
     (** [of_list content] creates a memory instance containing the bytes from [content] 
       The content is expected to be a multiple of pages size (64KB)
     *)
-    val of_list : Unsigned.uint8 list -> t
+    val of_list : char list -> t
 
     (** [to_list mem] returns a list containing each byte of [mem] *)
-    val to_list : t -> Unsigned.uint8 list
+    val to_list : t -> char list
   end
 end
 

@@ -59,7 +59,7 @@ module Wasmer : Host_funcs.Memory_access with type t = Memory.t = struct
 
     let rec loop steps addr bits =
       if steps > 0 then (
-        let lsb = Unsigned.UInt8.of_int @@ (Int64.to_int bits land 0xff) in
+        let lsb = Char.chr (Int64.to_int bits land 0xff) in
         let bits = Int64.shift_right bits 8 in
 
         Memory.set memory addr lsb ;

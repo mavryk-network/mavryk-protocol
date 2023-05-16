@@ -30,7 +30,7 @@ let uint8 = map Unsigned.UInt8.of_int int
 let page_size = Int64.to_int Tezos_webassembly_interpreter.Memory.page_size
 
 let mem_content =
-  list_size (map (fun pages -> pages * page_size) @@ int_range 1 5) uint8
+  list_size (map (fun pages -> pages * page_size) @@ int_range 1 5) char
 
 let mem_address =
   let+ i = int_range (-1 * page_size) (6 * page_size) in

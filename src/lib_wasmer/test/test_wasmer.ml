@@ -34,14 +34,14 @@ let page_size = 0x10000
 
 let alloc ?initial ~pages () =
   let length = pages * page_size in
-  let raw = Memory.Array.make ?initial Ctypes.uint8_t length in
+  let raw = Memory.Array.make ?initial Ctypes.char length in
   Memory.{raw; min = Unsigned.UInt32.of_int pages; max = None}
 
 let alloc_random ~pages =
   let length = pages * page_size in
   let mem = alloc ~pages () in
   for i = 0 to length - 1 do
-    Random.int 256 |> Unsigned.UInt8.of_int |> Memory.Array.set mem.raw i
+    Random.int 256 |> Char.chr |> Memory.Array.set mem.raw i
   done ;
   mem
 
@@ -49,10 +49,7 @@ let test_get_string_behaves_like_get () =
   let mem = alloc_random ~pages:1 in
 
   let check ~offset ~length =
-    let a =
-      String.init length (fun i ->
-          Memory.get mem (offset + i) |> Unsigned.UInt8.to_int |> Char.chr)
-    in
+    let a = String.init length (fun i -> Memory.get mem (offset + i)) in
     let b = Memory.get_string mem ~address:offset ~length in
     Alcotest.check hex_string "expected %L, got %R" a b
   in
@@ -118,7 +115,7 @@ let test_get_string_behaves_like_get () =
     try
       let _ =
         for i = 0 to 9 do
-          ignore (Memory.get mem (page_size + i) : Unsigned.uint8)
+          ignore (Memory.get mem (page_size + i) : char)
         done
       in
       assert false
@@ -133,15 +130,14 @@ let test_get_string_behaves_like_get () =
   assert (exn_get = exn_get_string)
 
 let test_set_string_behaves_like_set () =
-  let mem = alloc ~initial:(Unsigned.UInt8.of_int 0) ~pages:1 () in
+  let mem = alloc ~initial:(Char.chr 0) ~pages:1 () in
 
   let data = String.init 256 (fun _ -> Random.int 256 |> Char.chr) in
 
   (* Both mechanisms should write the same data. *)
   let base_addr = page_size / 4 in
   for i = 0 to String.length data - 1 do
-    String.get_uint8 data i |> Unsigned.UInt8.of_int
-    |> Memory.set mem (base_addr + i)
+    String.get data i |> Memory.set mem (base_addr + i)
   done ;
   Memory.set_string mem ~address:base_addr ~data ;
   let read_data =
@@ -154,8 +150,7 @@ let test_set_string_behaves_like_set () =
     try
       let _ =
         for i = 0 to String.length data - 1 do
-          String.get_uint8 data i |> Unsigned.UInt8.of_int
-          |> Memory.set mem (-10 + i)
+          String.get data i |> Memory.set mem (-10 + i)
         done
       in
       assert false
@@ -174,8 +169,7 @@ let test_set_string_behaves_like_set () =
     try
       let _ =
         for i = 0 to String.length data - 1 do
-          String.get_uint8 data i |> Unsigned.UInt8.of_int
-          |> Memory.set mem (page_size + 1 + i)
+          String.get data i |> Memory.set mem (page_size + 1 + i)
         done
       in
       assert false
@@ -194,8 +188,7 @@ let test_set_string_behaves_like_set () =
     try
       let _ =
         for i = 0 to String.length data - 1 do
-          String.get_uint8 data i |> Unsigned.UInt8.of_int
-          |> Memory.set mem (page_size + i)
+          String.get data i |> Memory.set mem (page_size + i)
         done
       in
       assert false

@@ -30,7 +30,7 @@ let char_to_uint8 chr = Char.code chr |> Unsigned.UInt8.of_int
 
 let uint8_to_char ui8 = Char.chr @@ Unsigned.UInt8.to_int ui8
 
-let of_list (content : Unsigned.uint8 list) : Partial_memory.t =
+let of_list (content : char list) : Partial_memory.t =
   let mem_length = List.length content in
   let page_size = Int64.to_int Partial_memory.page_size in
   let pages = mem_length / page_size in
@@ -38,17 +38,16 @@ let of_list (content : Unsigned.uint8 list) : Partial_memory.t =
   assert (Int.rem mem_length page_size = 0) ;
 
   let cbv =
-    Chunked_byte_vector.of_string @@ String.of_seq @@ Seq.map uint8_to_char
-    @@ List.to_seq content
+    Chunked_byte_vector.of_string @@ String.of_seq @@ List.to_seq content
   in
 
   Partial_memory.of_chunks
     (MemoryType {min = Int32.of_int pages; max = None})
     cbv
 
-let to_list partial_memory : Unsigned.uint8 list Lwt.t =
+let to_list partial_memory : char list Lwt.t =
   let open Lwt.Syntax in
   let+ chunks =
     Chunked_byte_vector.to_string (Partial_memory.content partial_memory)
   in
-  String.to_seq chunks |> Seq.map char_to_uint8 |> List.of_seq
+  String.to_seq chunks |> List.of_seq
