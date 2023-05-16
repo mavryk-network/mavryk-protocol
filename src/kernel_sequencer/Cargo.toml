@@ -26,4 +26,4 @@ path = "../kernel_sdk/encoding"
 version = "0.1.0"
 
 [dev-dependencies.tezos_crypto_rs]
-version = "0.4.4"
+version = "0.5.0"
