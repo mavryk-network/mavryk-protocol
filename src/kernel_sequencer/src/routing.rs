@@ -14,32 +14,17 @@ impl FilterBehavior {
     pub fn predicate(&self, payload: &[u8], rollup_address: &[u8]) -> bool {
         match self {
             FilterBehavior::AllowAll => true,
-            FilterBehavior::OnlyThisRollup => {
-                let splitted = payload.split_first();
-                match splitted {
-                    None => false,
-                    Some((tag, remaining)) => match tag {
-                        0x00 => {
-                            // internal
-                            match remaining {
-                                [0x00, ..] => {
-                                    // If it's a transfer then the last n bytes should be the rollup address
-                                    remaining.ends_with(rollup_address)
-                                }
-                                _ => true, // All the internal messages are kept
-                            }
-                        }
-                        0x01 => {
-                            // All external messages should start by the rollup address
-                            remaining.starts_with(rollup_address)
-                        }
-                        _ => {
-                            // Unknown encoding
-                            false
-                        }
-                    },
-                }
-            }
+            FilterBehavior::OnlyThisRollup => match payload {
+                [] => unreachable!("All messages contain an internal/external tag"),
+                // If it's a transfer then the last n bytes should be the rollup address
+                [0x00, 0x00, transfer @ ..] => transfer.ends_with(rollup_address),
+                // All protocol-injected internal messages are sent to the kernel
+                [0x00, ..] => true,
+                // Base case for external message framing protocol
+                [0x01, 0x00, remaining @ ..] => remaining.starts_with(rollup_address),
+                // Unknown encoding
+                _ => false,
+            },
         }
     }
 }
@@ -220,7 +205,8 @@ mod tests {
 
     #[test]
     fn test_only_this_rollup_accept_external() {
-        let mut external = vec![0x01];
+        // The external message starts by 0x01, 0x0 because we are using the framing protocol
+        let mut external = vec![0x01, 0x0];
         let rollup_address = address();
         let mut rollup_address = rollup_address.hash().as_ref().clone();
         external.append(&mut rollup_address);
@@ -234,7 +220,22 @@ mod tests {
 
     #[test]
     fn test_only_this_rollup_refuse_external() {
-        let mut external = vec![0x01];
+        let mut external = vec![0x01, 0x0];
+        let rollup_address = other_address();
+        let mut rollup_address = rollup_address.hash().as_ref().clone();
+        external.append(&mut rollup_address);
+
+        assert!(!predicate(
+            FilterBehavior::OnlyThisRollup,
+            &external,
+            &address(),
+        ));
+    }
+
+    #[test]
+    fn test_only_this_rollup_refuse_unknown_external_framing_protocol() {
+        // Unknown framing protocol
+        let mut external = vec![0x01, 0x99];
         let rollup_address = other_address();
         let mut rollup_address = rollup_address.hash().as_ref().clone();
         external.append(&mut rollup_address);
