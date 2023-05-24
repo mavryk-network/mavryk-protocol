@@ -803,7 +803,7 @@ module Actions = struct
       ~section
       ~name:"vote_for_adaptive_inflation_toggle"
       ~level:Notice
-      ~msg:"Voting {value} for liquidity baking toggle vote"
+      ~msg:"Voting {value} for adaptive inflation toggle vote"
       ( "value",
         Protocol.Alpha_context.Toggle_votes.adaptive_inflation_vote_encoding )
 

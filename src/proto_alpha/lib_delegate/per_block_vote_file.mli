@@ -56,7 +56,7 @@ type error += Block_vote_file_invalid of string
 
 type error += Block_vote_file_wrong_content of string
 
-type error += Block_vote_file_missing_toggle_votes of string
+type error += Block_vote_file_missing_liquidity_baking_toggle_vote of string
 
 type error += Missing_vote_on_startup
 

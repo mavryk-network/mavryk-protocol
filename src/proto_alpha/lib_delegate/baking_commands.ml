@@ -176,8 +176,8 @@ let adaptive_inflation_toggle_vote_arg =
     ~doc:
       "Vote to adopt or not the adaptive inflation feature. The possible \
        values for this option are: \"off\" to request not activating it, \
-       \"on\" to request activating it, and \"pass\" to abstain. Note that \
-       this \"option\" is mandatory!"
+       \"on\" to request activating it, and \"pass\" to abstain. If you do not \
+       vote, default value is \"pass\"."
     ~long:"adaptive-inflation-toggle-vote"
     ~placeholder:"vote"
     toggle_vote_parameter

@@ -58,7 +58,7 @@ type error += Block_vote_file_invalid of string
 
 type error += Block_vote_file_wrong_content of string
 
-type error += Block_vote_file_missing_toggle_votes of string
+type error += Block_vote_file_missing_liquidity_baking_toggle_vote of string
 
 type error += Missing_vote_on_startup
 
@@ -115,7 +115,8 @@ let () =
          '{\"adaptive_inflation_toggle_vote\": value1, \
          \"liquidity_baking_toggle_vote\": value2}', where value1 is one of \
          \"on\", \"off\", or \"pass\" and value2 is one of \"on\", \"off\", or \
-         \"pass\".@]"
+         \"pass\", or '{\"liquidity_baking_toggle_vote\": value}' where value \
+         is one of \"on\", \"off\", or \"pass\".@]"
         file_path)
     Data_encoding.(obj1 (req "file_path" string))
     (function
@@ -123,13 +124,14 @@ let () =
     (fun file_path -> Block_vote_file_wrong_content file_path) ;
   register_error_kind
     `Permanent
-    ~id:"per_block_vote_file.block_vote_file_missing_toggle_votes"
+    ~id:
+      "per_block_vote_file.block_vote_file_missing_liquidity_baking_toggle_vote"
     ~title:
       "In the provided block vote file, no entry for liquidity baking toggle \
        vote was found"
     ~description:
       "In the provided block vote file, no entry for liquidity baking toggle \
-       vote weres found."
+       vote was found."
     ~pp:(fun ppf file_path ->
       Format.fprintf
         ppf
@@ -145,13 +147,15 @@ let () =
         file_path)
     Data_encoding.(obj1 (req "file_path" string))
     (function
-      | Block_vote_file_missing_toggle_votes file_path -> Some file_path
+      | Block_vote_file_missing_liquidity_baking_toggle_vote file_path ->
+          Some file_path
       | _ -> None)
-    (fun file_path -> Block_vote_file_missing_toggle_votes file_path) ;
+    (fun file_path ->
+      Block_vote_file_missing_liquidity_baking_toggle_vote file_path) ;
   register_error_kind
     `Permanent
-    ~id:"per_block_vote_file.missing_votes_on_startup"
-    ~title:"Missing votes on startup"
+    ~id:"per_block_vote_file.missing_vote_on_startup"
+    ~title:"Missing vote on startup"
     ~description:
       "No CLI flag, file path, or votes file in default location provided on \
        startup"
@@ -160,8 +164,8 @@ let () =
         fmt
         "Missing liquidity baking toggle vote, please use either the \
          --liquidity-baking-toggle-vote option, or the --votefile option or a \
-         vote file in the default location: per_block_votes.json in the \
-         current working directory.")
+         votes file in the default location: per_block_votes.json in the \
+         current working directory or in the baker directory.")
     Data_encoding.empty
     (function Missing_vote_on_startup -> Some () | _ -> None)
     (fun () -> Missing_vote_on_startup)
