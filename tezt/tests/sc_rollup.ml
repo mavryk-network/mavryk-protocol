@@ -1464,19 +1464,20 @@ let test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to =
     let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
     let* () = send_messages commitment_period tezos_client in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
-    let* () = Sc_rollup_node.terminate rollup_node in
-    unit
+    return rollup_node
   in
   let scenario_after ~sc_rollup rollup_node rollup_client tezos_node
-      tezos_client () =
+      tezos_client previous_rollup_node =
     let migration_level = Node.get_level tezos_node in
+    let* _ = Sc_rollup_node.wait_sync previous_rollup_node ~timeout:10. in
+    let* () = Sc_rollup_node.terminate previous_rollup_node in
+    let* () = send_messages 1 tezos_client in
     let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
     let*! _l2_block =
       Sc_rollup_client.rpc_get
         rollup_client
         ["global"; "block"; string_of_int (migration_level - 1)]
     in
-    let* () = send_messages 1 tezos_client in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     let*! _l2_block =
       Sc_rollup_client.rpc_get rollup_client ["global"; "block"; "head"]
