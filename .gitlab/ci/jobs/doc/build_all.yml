@@ -7,7 +7,8 @@ documentation:build_all:
     - .default_settings_template
     - .image_template__runtime_build_test_dependencies_template
   stage: build
-  needs: [trigger]
+  needs: [build_x86_64]
+  dependencies: [build_x86_64]
   before_script:
     - . $HOME/.venv/bin/activate
   script:

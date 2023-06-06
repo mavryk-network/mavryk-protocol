@@ -119,7 +119,6 @@ endif
 .PHONY: doc-build-all
 doc-build-all:
 	cd ${CI_PROJECT_DIR} && \
-		make all && \
 		make -C docs -j all
 
 .PHONY: doc-publish
