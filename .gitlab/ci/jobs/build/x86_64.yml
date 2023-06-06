@@ -5,6 +5,6 @@ build_x86_64:
     - .build
     # This job is the main bottleneck since a lot of tests depend on it.
     # So we start it even before sanity_ci.
-  needs: [trigger]
+  # needs: [trigger]
   variables:
     ARCH: "x86_64"
