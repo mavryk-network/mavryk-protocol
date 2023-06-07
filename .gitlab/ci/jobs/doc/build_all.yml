@@ -12,10 +12,16 @@ documentation:build_all:
   before_script:
     - . $HOME/.venv/bin/activate
   script:
-    - make -C ${CI_PROJECT_DIR}/.gitlab/ci doc-build-all
+    - '[ -d _build ] && du -hs _build'
+    - make -C ${CI_PROJECT_DIR}/.gitlab/ci doc-build-all TMPDOCDIR=$CI_PROJECT_DIR/_build_octezdoc
+    - '[ -d _build ] && du -hs _build'
   artifacts:
     expose_as: 'Documentation - excluding old protocols'
     paths:
       # Path must be terminated with / to expose artifact (gitlab-org/gitlab#/36706)
       - docs/_build/
     expire_in: 1 week
+  cache:
+    key: doc-build-all-$CI_JOB_NAME_SLUG
+    paths:
+      - _build
