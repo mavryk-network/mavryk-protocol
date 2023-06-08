@@ -36,16 +36,18 @@ pub fn read_input<Host: Runtime>(
                 let payload = msg.as_ref();
                 let message = KernelMessage::nom_read(payload);
                 match message {
-                    Ok((_, KernelMessage::Message(msg))) => {
-                        handle_message(msg, filter_behavior, &raw_rollup_address)
-                    }
-                    Ok((_, KernelMessage::Sequence(framed))) => {
-                        handle_sequence_message(framed, &raw_rollup_address)
-                    }
-                    Ok((_, KernelMessage::SetSequencer(framed))) => {
-                        handle_set_sequencer_message(framed, &raw_rollup_address)
-                    }
                     Err(_) => {}
+                    Ok((_, message)) => match message {
+                        KernelMessage::Sequence(sequence) => {
+                            handle_sequence_message(sequence, &raw_rollup_address)
+                        }
+                        KernelMessage::SetSequencer(set_sequencer) => {
+                            handle_set_sequencer_message(set_sequencer, &raw_rollup_address)
+                        }
+                        KernelMessage::Message(user_message) => {
+                            handle_message(user_message, filter_behavior, &raw_rollup_address)
+                        }
+                    },
                 }
             }
         }
