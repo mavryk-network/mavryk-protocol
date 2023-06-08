@@ -54,6 +54,7 @@ pub struct Bytes {
 /// And then the messages will be processed
 #[derive(NomReader, BinWriter, Clone, Debug, PartialEq, Eq)]
 pub struct Sequence {
+    nonce: u32,
     delayed_messages: u32,
     #[encoding(dynamic, list)]
     messages: Vec<Bytes>,
@@ -203,6 +204,7 @@ mod tests {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
             payload: Sequence {
+                nonce: 0,
                 delayed_messages: 0,
                 messages: Vec::default(),
                 signature,
