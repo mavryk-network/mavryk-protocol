@@ -274,6 +274,7 @@ mod tests {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
             payload: Sequence {
+                nonce: 0,
                 signature,
                 delayed_messages: 5,
                 messages: Vec::default(),
