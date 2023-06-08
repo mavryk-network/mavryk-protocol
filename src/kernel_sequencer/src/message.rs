@@ -29,10 +29,7 @@ pub trait Tag {
 ///
 /// [0x00, smart rollup address, tag, message]
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Framed<P>
-where
-    P: NomReader + BinWriter + Tag,
-{
+pub struct Framed<P> {
     pub destination: SmartRollupAddress,
     pub payload: P,
 }
