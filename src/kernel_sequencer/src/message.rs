@@ -73,6 +73,7 @@ impl Tag for Sequence {
 /// This admin key should sign the new sequencer public key
 #[derive(NomReader, BinWriter, Clone, Debug, PartialEq, Eq)]
 pub struct SetSequencer {
+    nonce: u32,
     admin_public_key: PublicKey,
     sequencer_public_key: PublicKey,
     signature: Signature,
@@ -231,6 +232,7 @@ mod tests {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
             payload: SetSequencer {
+                nonce: 0,
                 admin_public_key: public_key.clone(),
                 sequencer_public_key: public_key,
                 signature,
