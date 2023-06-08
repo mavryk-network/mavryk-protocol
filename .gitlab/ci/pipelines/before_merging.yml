@@ -18,6 +18,7 @@ include:
   - .gitlab/ci/jobs/build/docker_amd64_test_manual.yml
   - .gitlab/ci/jobs/build/docker_arm64_test_manual.yml
   - .gitlab/ci/jobs/build/tezt_fetch_records.yml
+  - .gitlab/ci/jobs/build/snapshot_alpha_and_link.yml
 
   # Stage: test
   - .gitlab/ci/jobs/test/check_precommit_hook.yml
