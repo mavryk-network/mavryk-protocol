@@ -116,11 +116,31 @@ let list_blocks chain_store ?(length = 1) ?min_date blocks =
   in
   return (List.rev blocks)
 
-let rpc_directory validator =
+let rpc_directory_with_validator dir validator =
   let open Lwt_result_syntax in
-  let dir : Store.chain_store Tezos_rpc.Directory.t ref =
-    ref Tezos_rpc.Directory.empty
+  let register0 s f =
+    dir :=
+      Tezos_rpc.Directory.register
+        !dir
+        (Tezos_rpc.Service.subst0 s)
+        (fun chain p q -> f chain p q)
   in
+  register0 S.is_bootstrapped (fun chain_store () () ->
+      match Validator.get validator (Store.Chain.chain_id chain_store) with
+      | Error _ -> Lwt.fail Not_found
+      | Ok chain_validator ->
+          return
+            Chain_validator.
+              (is_bootstrapped chain_validator, sync_status chain_validator)) ;
+  register0 S.force_bootstrapped (fun chain_store () b ->
+      match Validator.get validator (Store.Chain.chain_id chain_store) with
+      | Error _ -> Lwt.fail Not_found
+      | Ok chain_validator ->
+          let*! v = Chain_validator.force_bootstrapped chain_validator b in
+          return v)
+
+let rpc_directory_without_validator dir =
+  let open Lwt_result_syntax in
   let register0 s f =
     dir :=
       Tezos_rpc.Directory.register
@@ -162,19 +182,6 @@ let rpc_directory validator =
   register0 S.Levels.caboose (fun chain_store () () ->
       let*! v = Store.Chain.caboose chain_store in
       return v) ;
-  register0 S.is_bootstrapped (fun chain_store () () ->
-      match Validator.get validator (Store.Chain.chain_id chain_store) with
-      | Error _ -> Lwt.fail Not_found
-      | Ok chain_validator ->
-          return
-            Chain_validator.
-              (is_bootstrapped chain_validator, sync_status chain_validator)) ;
-  register0 S.force_bootstrapped (fun chain_store () b ->
-      match Validator.get validator (Store.Chain.chain_id chain_store) with
-      | Error _ -> Lwt.fail Not_found
-      | Ok chain_validator ->
-          let*! v = Chain_validator.force_bootstrapped chain_validator b in
-          return v) ;
   (* blocks *)
   register0 S.Blocks.list (fun chain q () ->
       list_blocks chain ?length:q#length ?min_date:q#min_date q#heads) ;
@@ -193,7 +200,21 @@ let rpc_directory validator =
       | None -> Lwt.fail Not_found
       | Some {level; errors} -> return {hash; level; errors}) ;
   register1 S.Invalid_blocks.delete (fun chain_store hash () () ->
-      Store.Block.unmark_invalid chain_store hash) ;
+      Store.Block.unmark_invalid chain_store hash)
+
+let rpc_directory validator =
+  let dir : Store.chain_store Tezos_rpc.Directory.t ref =
+    ref Tezos_rpc.Directory.empty
+  in
+  rpc_directory_without_validator dir ;
+  rpc_directory_with_validator dir validator ;
+  !dir
+
+let rpc_directory_without_validator () =
+  let dir : Store.chain_store Tezos_rpc.Directory.t ref =
+    ref Tezos_rpc.Directory.empty
+  in
+  rpc_directory_without_validator dir ;
   !dir
 
 let build_rpc_directory validator =
