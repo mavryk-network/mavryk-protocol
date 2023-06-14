@@ -24,6 +24,48 @@
 {
   "opponent": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
   "start_tick": "396000000000",
+  "end_tick": "429000000000",
+  "dissection": [
+    {
+      "tick": "396000000000"
+    },
+    {
+      "tick": "407000000000"
+    },
+    {
+      "tick": "418000000000"
+    },
+    {
+      "tick": "429000000000"
+    }
+  ]
+}
+
+
+{
+  "opponent": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+  "start_tick": "396000000000",
+  "end_tick": "429000000000",
+  "dissection": [
+    {
+      "tick": "396000000000"
+    },
+    {
+      "tick": "407000000000"
+    },
+    {
+      "tick": "418000000000"
+    },
+    {
+      "tick": "429000000000"
+    }
+  ]
+}
+
+
+{
+  "opponent": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+  "start_tick": "396000000000",
   "end_tick": "396343750000",
   "dissection": [
     {
