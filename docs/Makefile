@@ -14,17 +14,19 @@ P2PDOCEXE     = $(TOPBUILDDIR)/docs/$(DOCGENDIR)/p2p_doc.exe
 RPCDOCEXE     = $(TOPBUILDDIR)/docs/$(DOCGENDIR)/rpc_doc.exe
 ERRDOCEXE     = $(TOPBUILDDIR)/docs/$(DOCERRORDIR)/error_doc.exe
 
-NAMED_PROTOS  = mumbai nairobi
+NAMED_PROTOS  = mumbai nairobi oxford
 PROTOCOLS     = $(NAMED_PROTOS) alpha
 
 # The following variables names are lowercase, so their names can be computed
 # from the names of the corresponding protocol directories
 mumbai_long   = PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1
 nairobi_long  = PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf
+oxford_long   = ProxfordLcjScHFgpTURyTjcKR88D5juu1jGgT18pPUoGTVgxiA
 alpha_long    = ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK
 
 mumbai_short  = PtMumbai
 nairobi_short = PtNairob
+oxford_short  = Proxford
 alpha_short   = alpha
 
 SCRIPTSDIR    = scripts
@@ -113,6 +115,7 @@ redirectcheck: html
 xrefscheck:
 	$(CHECKXREFS) mumbai
 	$(CHECKXREFS) -l nairobi
+	$(CHECKXREFS) -l oxford
 	$(CHECKXREFS) -l alpha
 
 scriptsindoccheck:
@@ -229,4 +232,4 @@ fmt: black
 clean:
 	@-rm -Rf "$(BUILDDIR)" linkcheck
 	@-rm -Rf api/errors.rst developer/metrics.csv user/node-config.json alpha/rpc.rst shell/rpc.rst shell/p2p_api.rst user/default-acl.json CHANGES-dev.rst
-	@-rm -Rf api/octez-*.html api/octez-*.txt mumbai/octez-*.html nairobi/octez-*.html alpha/octez-*.html
+	@-rm -Rf api/octez-*.html api/octez-*.txt mumbai/octez-*.html nairobi/octez-*.html oxford/octez-*.html alpha/octez-*.html

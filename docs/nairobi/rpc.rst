@@ -17616,13 +17616,25 @@ Full description
     +-----------------------+----------+------------------------+
     
     
+    X_6
+    ***
+    
+    +-----------------------+----------+------------------------+
+    | Name                  | Size     | Contents               |
+    +=======================+==========+========================+
+    | # bytes in next field | 1 byte   | unsigned 8-bit integer |
+    +-----------------------+----------+------------------------+
+    | Unnamed field 0       | Variable | bytes                  |
+    +-----------------------+----------+------------------------+
+    
+    
     X_5
     ***
     
     +-----------------+----------------------+----------------+
     | Name            | Size                 | Contents       |
     +=================+======================+================+
-    | Unnamed field 0 | Determined from data | $X_0           |
+    | Unnamed field 0 | Determined from data | $X_6           |
     +-----------------+----------------------+----------------+
     | Unnamed field 1 | Determined from data | $tree_encoding |
     +-----------------+----------------------+----------------+
@@ -22934,7 +22946,8 @@ Full description
           "liquidity_baking_toggle_vote":
             $017-PtNairob.liquidity_baking_toggle_vote,
           "signature": $Signature.V1 },
-      "operations": [ [ $next_operation ... ] ... ] }
+      "operations":
+        [ [ $next_operation_with_legacy_attestation_name ... ] ... ] }
     $017-PtNairob.block_header.alpha.full_header:
       /* Shell header
          Block header's shell-related content. It contains information such as
@@ -23577,7 +23590,7 @@ Full description
            "prim": $017-PtNairob.michelson.v1.primitives,
            "args"?: [ $micheline.017-PtNairob.michelson_v1.expression ... ],
            "annots"?: [ $unistring ... ] }
-    $next_operation:
+    $next_operation_with_legacy_attestation_name:
       /* An operation's shell header. */
       { "protocol": "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf",
         "branch": $block_hash,
@@ -25792,8 +25805,8 @@ Full description
     +------------------+----------+------------------------+
     
     
-    next_operation
-    **************
+    next_operation_with_legacy_attestation_name
+    *******************************************
     
     +-------------------------------+----------+------------------------------------------------------------------------+
     | Name                          | Size     | Contents                                                               |
@@ -25813,15 +25826,15 @@ Full description
     X_1
     ***
     
-    +--------------------------+----------+-----------------------------+
-    | Name                     | Size     | Contents                    |
-    +==========================+==========+=============================+
-    | # bytes in next 2 fields | 4 bytes  | unsigned 30-bit integer     |
-    +--------------------------+----------+-----------------------------+
-    | # bytes in next field    | 4 bytes  | unsigned 30-bit integer     |
-    +--------------------------+----------+-----------------------------+
-    | Unnamed field 0          | Variable | sequence of $next_operation |
-    +--------------------------+----------+-----------------------------+
+    +--------------------------+----------+----------------------------------------------------------+
+    | Name                     | Size     | Contents                                                 |
+    +==========================+==========+==========================================================+
+    | # bytes in next 2 fields | 4 bytes  | unsigned 30-bit integer                                  |
+    +--------------------------+----------+----------------------------------------------------------+
+    | # bytes in next field    | 4 bytes  | unsigned 30-bit integer                                  |
+    +--------------------------+----------+----------------------------------------------------------+
+    | Unnamed field 0          | Variable | sequence of $next_operation_with_legacy_attestation_name |
+    +--------------------------+----------+----------------------------------------------------------+
     
     </pre>
     </div>
@@ -26048,7 +26061,7 @@ Full description
             </div>
   <div id="POST_..--block_id--helpers--preapply--operationsinput.json" class="POST_..--block_id--helpers--preapply--operations tabcontent">
     <pre>
-    [ $next_operation ... ]
+    [ $next_operation_with_legacy_attestation_name ... ]
     $017-PtNairob.block_header.alpha.full_header:
       /* Shell header
          Block header's shell-related content. It contains information such as
@@ -26691,7 +26704,7 @@ Full description
            "prim": $017-PtNairob.michelson.v1.primitives,
            "args"?: [ $micheline.017-PtNairob.michelson_v1.expression ... ],
            "annots"?: [ $unistring ... ] }
-    $next_operation:
+    $next_operation_with_legacy_attestation_name:
       /* An operation's shell header. */
       { "protocol": "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf",
         "branch": $block_hash,
@@ -26719,13 +26732,13 @@ Full description
     </div>
   <div id="POST_..--block_id--helpers--preapply--operationsinput.bin" class="POST_..--block_id--helpers--preapply--operations tabcontent">
     <pre>
-    +-----------------------+----------+-----------------------------+
-    | Name                  | Size     | Contents                    |
-    +=======================+==========+=============================+
-    | # bytes in next field | 4 bytes  | unsigned 30-bit integer     |
-    +-----------------------+----------+-----------------------------+
-    | Unnamed field 0       | Variable | sequence of $next_operation |
-    +-----------------------+----------+-----------------------------+
+    +-----------------------+----------+----------------------------------------------------------+
+    | Name                  | Size     | Contents                                                 |
+    +=======================+==========+==========================================================+
+    | # bytes in next field | 4 bytes  | unsigned 30-bit integer                                  |
+    +-----------------------+----------+----------------------------------------------------------+
+    | Unnamed field 0       | Variable | sequence of $next_operation_with_legacy_attestation_name |
+    +-----------------------+----------+----------------------------------------------------------+
     
     
     bls_signature_prefix (33 bytes, 8-bit tag)
@@ -28880,8 +28893,8 @@ Full description
     +------------------+----------+------------------------+
     
     
-    next_operation
-    **************
+    next_operation_with_legacy_attestation_name
+    *******************************************
     
     +-------------------------------+----------+------------------------------------------------------------------------+
     | Name                          | Size     | Contents                                                               |
