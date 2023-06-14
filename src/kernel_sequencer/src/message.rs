@@ -16,12 +16,6 @@ use tezos_data_encoding::{
 use tezos_smart_rollup_encoding::public_key::PublicKey;
 use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 
-/// Trait that indicates what is the tag of the message in the Framing protocol
-pub trait Tag {
-    /// Returns the tag of the message
-    fn tag() -> u8;
-}
-
 /// Framing protocol v0
 ///
 /// The framing protocol starts with a 0, then the address of the rollup, then the message
@@ -58,12 +52,6 @@ pub struct Sequence {
     signature: Signature,
 }
 
-impl Tag for Sequence {
-    fn tag() -> u8 {
-        0 // Tag of the Sequence
-    }
-}
-
 /// Message to set the appropriate sequencer
 ///
 /// This message should be sent by the admin public key
@@ -76,32 +64,29 @@ pub struct SetSequencer {
     signature: Signature,
 }
 
-impl Tag for SetSequencer {
-    fn tag() -> u8 {
-        1 // Tag of the SetSequencer
-    }
+#[derive(NomReader, BinWriter, Debug, Clone, Eq, PartialEq)]
+pub enum SequencerMsg {
+    Sequence(Sequence),
+    SetSequencer(SetSequencer),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum KernelMessage {
-    Sequence(Framed<Sequence>),
-    SetSequencer(Framed<SetSequencer>),
+    Sequencer(Framed<SequencerMsg>),
     Message(Vec<u8>),
 }
 
 impl<P> NomReader for Framed<P>
 where
-    P: NomReader + BinWriter + Tag,
+    P: NomReader,
 {
     fn nom_read(input: &[u8]) -> NomResult<Self> {
-        // Extract the rollup address from the framing protocolg
+        // Extract the rollup address from the framing protocol
+        // 0x00 is the version of the framing protocol
         let (input, destination) = preceded(tag([0]), SmartRollupAddress::nom_read)(input)?;
 
-        // Check the tag of the message
-        let (remaining, _) = tag([P::tag()])(input)?;
-
         // Extract the payload
-        let (remaining, payload) = P::nom_read(remaining)?;
+        let (remaining, payload) = P::nom_read(input)?;
 
         Ok((
             remaining,
@@ -115,17 +100,15 @@ where
 
 impl<P> BinWriter for Framed<P>
 where
-    P: NomReader + BinWriter + Tag,
+    P: BinWriter,
 {
     fn bin_write(&self, output: &mut Vec<u8>) -> BinResult {
         // bytes of the framing protocol
+        // 0x00 is the version of the framing protocol
         enc::put_byte(&0x00, output);
 
         // bytes of the rollup address
         self.destination.bin_write(output)?;
-
-        // add the byte of the payload
-        enc::put_byte(&P::tag(), output);
 
         // bytes of the payload
         self.payload.bin_write(output)
@@ -136,12 +119,8 @@ impl NomReader for KernelMessage {
     fn nom_read(input: &[u8]) -> NomResult<Self> {
         all_consuming(alt((
             all_consuming(map(
-                preceded(tag([1]), Framed::<Sequence>::nom_read),
-                KernelMessage::Sequence,
-            )),
-            all_consuming(map(
-                preceded(tag([1]), Framed::<SetSequencer>::nom_read),
-                KernelMessage::SetSequencer,
+                preceded(tag([1]), Framed::<SequencerMsg>::nom_read),
+                KernelMessage::Sequencer,
             )),
             map(
                 |bytes: &[u8]| Ok(([].as_slice(), bytes.to_vec())),
@@ -154,15 +133,10 @@ impl NomReader for KernelMessage {
 impl BinWriter for KernelMessage {
     fn bin_write(&self, output: &mut Vec<u8>) -> enc::BinResult {
         match self {
-            KernelMessage::Sequence(sequencer) => {
+            KernelMessage::Sequencer(sequencer_framed_msg) => {
                 // external message tag
                 enc::put_byte(&0x01, output);
-                sequencer.bin_write(output)?;
-            }
-            KernelMessage::SetSequencer(set_sequencer) => {
-                // external message tag
-                enc::put_byte(&0x01, output);
-                set_sequencer.bin_write(output)?;
+                sequencer_framed_msg.bin_write(output)?;
             }
             KernelMessage::Message(message) => enc::put_bytes(message, output),
         }
@@ -172,7 +146,7 @@ impl BinWriter for KernelMessage {
 
 #[cfg(test)]
 mod tests {
-    use crate::message::Framed;
+    use crate::message::{Framed, SequencerMsg};
 
     use super::{KernelMessage, Sequence};
     use crate::message::SetSequencer;
@@ -198,15 +172,15 @@ mod tests {
         let (_, secret) = key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
         let signature = secret.sign([0x0]).expect("sign should work");
 
-        let sequence = KernelMessage::Sequence(Framed {
+        let sequence = KernelMessage::Sequencer(Framed {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
-            payload: Sequence {
+            payload: SequencerMsg::Sequence(Sequence {
                 nonce: 0,
                 delayed_messages: 0,
                 messages: Vec::default(),
                 signature,
-            },
+            }),
         });
 
         // Serializing
@@ -225,15 +199,15 @@ mod tests {
             key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
         let signature = secret.sign([0x0]).expect("sign should work");
 
-        let sequence = KernelMessage::SetSequencer(Framed {
+        let sequence = KernelMessage::Sequencer(Framed {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
-            payload: SetSequencer {
+            payload: SequencerMsg::SetSequencer(SetSequencer {
                 nonce: 0,
                 admin_public_key: public_key.clone(),
                 sequencer_public_key: public_key,
                 signature,
-            },
+            }),
         });
 
         // Serializing
@@ -267,15 +241,15 @@ mod tests {
         let (_, secret) = key_pair("edsk3a5SDDdMWw3Q5hPiJwDXUosmZMTuKQkriPqY6UqtSfdLifpZbB");
         let signature = secret.sign([0x0]).expect("sign should work");
 
-        let sequence = KernelMessage::Sequence(Framed {
+        let sequence = KernelMessage::Sequencer(Framed {
             destination: SmartRollupAddress::from_b58check("sr1EzLeJYWrvch2Mhvrk1nUVYrnjGQ8A4qdb")
                 .expect("decoding should work"),
-            payload: Sequence {
+            payload: SequencerMsg::Sequence(Sequence {
                 nonce: 0,
                 signature,
                 delayed_messages: 5,
                 messages: Vec::default(),
-            },
+            }),
         });
 
         // Serializing
