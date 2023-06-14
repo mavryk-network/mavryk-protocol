@@ -85,6 +85,7 @@ odoc-lite: docexes
 	rsync --recursive --links --perms \
 	  --include="src/proto_016*" \
 	  --include="src/proto_017*" \
+	  --include="src/proto_018*" \
 	  --exclude="src/proto_0*" \
 		../src ../tezt ../vendors ../dune ../dune-project $(TMPDOCDIR)/
 	patch -d $(TMPDOCDIR) -p1 <odoc_protocols.patch
