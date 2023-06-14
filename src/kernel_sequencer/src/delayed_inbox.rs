@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 use tezos_data_encoding::nom::NomReader;
+use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 use tezos_smart_rollup_host::{
     input::Message,
     metadata::{RollupMetadata, RAW_ROLLUP_ADDRESS_SIZE},
@@ -11,7 +12,7 @@ use tezos_smart_rollup_host::{
 };
 
 use crate::{
-    message::{Framed, KernelMessage, Sequence, SetSequencer},
+    message::{Framed, KernelMessage, Sequence, SequencerMsg, SetSequencer},
     routing::FilterBehavior,
 };
 
@@ -38,12 +39,18 @@ pub fn read_input<Host: Runtime>(
                 match message {
                     Err(_) => {}
                     Ok((_, message)) => match message {
-                        KernelMessage::Sequence(sequence) => {
-                            handle_sequence_message(sequence, &raw_rollup_address)
-                        }
-                        KernelMessage::SetSequencer(set_sequencer) => {
-                            handle_set_sequencer_message(set_sequencer, &raw_rollup_address)
-                        }
+                        KernelMessage::Sequencer(Framed {
+                            destination,
+                            payload: SequencerMsg::Sequence(sequence),
+                        }) => handle_sequence_message(sequence, destination, &raw_rollup_address),
+                        KernelMessage::Sequencer(Framed {
+                            destination,
+                            payload: SequencerMsg::SetSequencer(set_sequence),
+                        }) => handle_set_sequencer_message(
+                            set_sequence,
+                            destination,
+                            &raw_rollup_address,
+                        ),
                         KernelMessage::Message(user_message) => {
                             handle_message(user_message, filter_behavior, &raw_rollup_address)
                         }
@@ -56,28 +63,20 @@ pub fn read_input<Host: Runtime>(
 
 /// Handle Sequence message
 fn handle_sequence_message(
-    framed: Framed<Sequence>,
+    _sequence: Sequence,
+    destination: SmartRollupAddress,
     rollup_address: &[u8; RAW_ROLLUP_ADDRESS_SIZE],
 ) {
-    let Framed {
-        destination,
-        payload: _,
-    } = framed;
-
     if destination.hash().as_ref() == rollup_address {
         // process the sequence
     }
 }
 
 fn handle_set_sequencer_message(
-    framed: Framed<SetSequencer>,
+    _set_sequencer: SetSequencer,
+    destination: SmartRollupAddress,
     rollup_address: &[u8; RAW_ROLLUP_ADDRESS_SIZE],
 ) {
-    let Framed {
-        destination,
-        payload: _,
-    } = framed;
-
     if destination.hash().as_ref() == rollup_address {
         // process the set sequencer message
     }
