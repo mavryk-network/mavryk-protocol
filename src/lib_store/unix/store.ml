@@ -82,6 +82,7 @@ and chain_store = {
     (chain_store * block) Tezos_rpc.Directory.t Protocol_hash.Map.t
     Protocol_hash.Table.t;
   lockfile : Lwt_unix.file_descr;
+  stored_data_lockfile : Lwt_unix.file_descr;
 }
 
 and chain_state = {
@@ -205,14 +206,14 @@ let expect_predecessor_context_hash chain_store ~protocol_level =
       return b)
     (fun _ -> tzfail (Protocol_not_found {protocol_level}))
 
-let create_lockfile chain_dir =
+let create_lockfile path chain_dir =
   let open Lwt_syntax in
   protect (fun () ->
       let* fd =
         Lwt_unix.openfile
-          (Naming.lockfile chain_dir |> Naming.file_path)
+          (path chain_dir |> Naming.file_path)
           [Unix.O_CREAT; O_RDWR; O_CLOEXEC; O_SYNC]
-          0o644
+          0o777
       in
       return_ok fd)
 
@@ -1272,31 +1273,36 @@ module Chain = struct
         Lwt.return_some l
 
   let merge_finalizer chain_store (new_highest_cemented_level : int32) =
-    let open Lwt_syntax in
+    let open Lwt_result_syntax in
     (* Assumed invariant: two merges cannot occur concurrently *)
     (* new_highest_cemented_block should be set, even after a merge 0 *)
     (* Take the lock on the chain_state to avoid concurrent updates *)
     Shared.locked_use chain_store.chain_state (fun chain_state ->
-        let* current_cementing_highwatermark =
+        let*! () = lock_for_write chain_store.stored_data_lockfile in
+        let*! current_cementing_highwatermark =
           Stored_data.get chain_state.cementing_highwatermark_data
         in
-        match current_cementing_highwatermark with
-        | None ->
-            Stored_data.write
-              chain_state.cementing_highwatermark_data
-              (Some new_highest_cemented_level)
-        | Some current_cementing_highwatermark ->
-            if
-              Compare.Int32.(
-                current_cementing_highwatermark > new_highest_cemented_level)
-            then
-              (* Invariant error: should not happen but if it does, don't
-                   mess anything by modifying the value. *)
-              return_ok_unit
-            else
+        let* () =
+          match current_cementing_highwatermark with
+          | None ->
               Stored_data.write
                 chain_state.cementing_highwatermark_data
-                (Some new_highest_cemented_level))
+                (Some new_highest_cemented_level)
+          | Some current_cementing_highwatermark ->
+              if
+                Compare.Int32.(
+                  current_cementing_highwatermark > new_highest_cemented_level)
+              then
+                (* Invariant error: should not happen but if it does, don't
+                     mess anything by modifying the value. *)
+                return_unit
+              else
+                Stored_data.write
+                  chain_state.cementing_highwatermark_data
+                  (Some new_highest_cemented_level)
+        in
+        let*! () = unlock chain_store.stored_data_lockfile in
+        return_unit)
 
   let may_update_checkpoint_and_target chain_store ~new_head ~new_head_lafl
       ~checkpoint ~target =
@@ -1561,6 +1567,7 @@ module Chain = struct
                 | None -> Lwt.return new_checkpoint
                 | Some h -> Lwt.return (h, new_cementing_highwatermark))
         in
+        let*! () = lock_for_write chain_store.stored_data_lockfile in
         let* () =
           if Compare.Int32.(snd new_checkpoint > snd checkpoint) then
             (* Remove potentially outdated invalid blocks if the
@@ -1583,6 +1590,7 @@ module Chain = struct
           Stored_data.write chain_state.current_head_data new_head_descr
         in
         let* () = Stored_data.write chain_state.target_data new_target in
+        let*! () = unlock chain_store.stored_data_lockfile in
         (* Update live_data *)
         let*! live_blocks, live_operations =
           locked_compute_live_blocks
@@ -1845,7 +1853,7 @@ module Chain = struct
     let* forked_chains_data =
       Stored_data.load (Naming.forked_chains_file chain_dir)
     in
-    let*! current_head_hash, _ = Stored_data.get current_head_data in
+    let*! current_head_hash, _level = Stored_data.get current_head_data in
     let* o =
       Block_store.read_block
         ~read_metadata:true
@@ -1913,7 +1921,10 @@ module Chain = struct
     let block_watcher = Lwt_watcher.create_input () in
     let validated_block_watcher = Lwt_watcher.create_input () in
     let block_rpc_directories = Protocol_hash.Table.create 7 in
-    let* lockfile = create_lockfile chain_dir in
+    let* lockfile = create_lockfile Naming.lockfile chain_dir in
+    let* stored_data_lockfile =
+      create_lockfile Naming.stored_data_lockfile chain_dir
+    in
     let chain_store : chain_store =
       {
         global_store;
@@ -1927,6 +1938,7 @@ module Chain = struct
         validated_block_watcher;
         block_rpc_directories;
         lockfile;
+        stored_data_lockfile;
       }
     in
     return chain_store
@@ -1942,6 +1954,20 @@ module Chain = struct
       Stored_data.load (Naming.genesis_block_file chain_dir)
     in
     let*! genesis_block = Stored_data.get genesis_block_data in
+    let*! block_store_lockfile_fd =
+      Lwt_unix.openfile
+        (Naming.block_store_lockfile chain_dir |> Naming.file_path)
+        [Unix.O_CREAT; O_RDWR; O_CLOEXEC; O_SYNC]
+        0o777
+    in
+    let*! () = Lwt_unix.lockf block_store_lockfile_fd Unix.F_LOCK 0 in
+    let*! stored_data_lockfile_fd =
+      Lwt_unix.openfile
+        (Naming.stored_data_lockfile chain_dir |> Naming.file_path)
+        [Unix.O_CREAT; O_RDWR; O_CLOEXEC; O_SYNC]
+        0o777
+    in
+    let*! () = Lwt_unix.lockf stored_data_lockfile_fd Unix.F_LOCK 0 in
     let* block_store =
       Block_store.load ?block_cache_limit chain_dir ~genesis_block ~readonly
     in
@@ -1950,7 +1976,10 @@ module Chain = struct
     let block_watcher = Lwt_watcher.create_input () in
     let validated_block_watcher = Lwt_watcher.create_input () in
     let block_rpc_directories = Protocol_hash.Table.create 7 in
-    let* lockfile = create_lockfile chain_dir in
+    let* lockfile = create_lockfile Naming.lockfile chain_dir in
+    let* stored_data_lockfile =
+      create_lockfile Naming.stored_data_lockfile chain_dir
+    in
     let chain_store =
       {
         global_store;
@@ -1965,8 +1994,13 @@ module Chain = struct
         validated_block_watcher;
         block_rpc_directories;
         lockfile;
+        stored_data_lockfile;
       }
     in
+    let*! () = Lwt_unix.lockf stored_data_lockfile_fd Unix.F_ULOCK 0 in
+    let*! () = Lwt_unix.close stored_data_lockfile_fd in
+    let*! () = Lwt_unix.lockf block_store_lockfile_fd Unix.F_ULOCK 0 in
+    let*! () = Lwt_unix.close block_store_lockfile_fd in
     (* Also initalize the live blocks *)
     let*! head = current_head chain_store in
     let*! o = Block.get_block_metadata_opt chain_store head in
@@ -2109,6 +2143,7 @@ module Chain = struct
                   ~genesis_context
                   history_mode
               in
+              let*! () = lock_for_write chain_store.stored_data_lockfile in
               let* () =
                 Stored_data.update_with
                   chain_state.forked_chains_data
@@ -2119,6 +2154,7 @@ module Chain = struct
                          forked_block_hash
                          forked_chains))
               in
+              let*! () = unlock chain_store.stored_data_lockfile in
               let*! () =
                 Store_events.(emit fork_testchain)
                   ( testchain_id,
@@ -2168,6 +2204,7 @@ module Chain = struct
       (block, protocol_hash, expect_predecessor_context) =
     let open Lwt_result_syntax in
     Shared.locked_use chain_store.chain_state (fun {protocol_levels_data; _} ->
+        let*! () = lock_for_write chain_store.stored_data_lockfile in
         let* () =
           Stored_data.update_with protocol_levels_data (fun protocol_levels ->
               let activation_block = Block.descriptor block in
@@ -2182,6 +2219,7 @@ module Chain = struct
                     }
                     protocol_levels))
         in
+        let*! () = unlock chain_store.stored_data_lockfile in
         let*! () =
           Store_events.(
             emit
@@ -2598,6 +2636,108 @@ let init ?patch_context ?commit_genesis ?history_mode ?(readonly = false)
   let*! () = Store_events.(emit end_init_store) () in
   return store
 
+let get_chain_store store chain_id =
+  let chain_store = main_chain_store store in
+  let rec loop chain_store =
+    let open Lwt_result_syntax in
+    if Chain_id.equal (Chain.chain_id chain_store) chain_id then
+      return chain_store
+    else
+      Shared.use chain_store.chain_state (fun {active_testchain; _} ->
+          match active_testchain with
+          | None -> tzfail (Validation_errors.Unknown_chain chain_id)
+          | Some {testchain_store; _} -> loop testchain_store)
+  in
+  loop chain_store
+
+let status_equal s1 s2 =
+  match (s1, s2) with
+  | Naming.Idle x, Naming.Idle y when x = y -> true
+  | Merging x, Merging y when x = y -> true
+  | _ -> false
+
+let sync ?(last_status = Naming.Idle 0) ~trigger_hash (store : store) =
+  let open Lwt_result_syntax in
+  let*! () = Store_events.(emit start_store_sync) () in
+  let sync_start = Time.System.now () in
+  let main_chain_store = main_chain_store store in
+  let* store, current_status, cleanups =
+    (*FIXME: TODO*)
+    if false then
+      let () =
+        Format.printf "Block %a already stored@." Block_hash.pp trigger_hash
+      in
+      let*! () = Store_events.(emit store_already_sync) () in
+      (* Nothing to do, the block is already known. *)
+      return (store, last_status, fun () -> Lwt.return_unit)
+    else
+      let*! head_before_sync = Chain.current_head main_chain_store in
+      let store_dir = store.store_dir in
+      let chain_id = Chain_id.of_block_hash (genesis main_chain_store).block in
+      let chain_dir = Naming.chain_dir store_dir chain_id in
+      let* current_head_data =
+        Stored_data.load (Naming.current_head_file chain_dir)
+      in
+      let*! current_head_hash, _ = Stored_data.get current_head_data in
+      (* current_head_hash is availalbe in synchronized store *)
+      let* new_block_store, current_status, cleanups =
+        Block_store.sync ~last_status main_chain_store.block_store
+      in
+      let* new_chain_state =
+        if status_equal last_status current_status then
+          (* When no merge occured since the last sync, we only need to
+             sync:
+             - current_head
+             - invalid_blocks
+             - protocols (if a new protocol is detected) *)
+          let*! () = Store_events.(emit store_quick_sync) () in
+          let* invalid_blocks_data =
+            Stored_data.load (Naming.invalid_blocks_file chain_dir)
+          in
+          let* chain_store = get_chain_store store chain_id in
+          let* current_head = Block.read_block chain_store current_head_hash in
+          let* new_chain_state =
+            Shared.use main_chain_store.chain_state (fun chain_state ->
+                let* protocol_levels_data =
+                  if
+                    Block.proto_level head_before_sync
+                    = Block.proto_level current_head
+                  then return chain_state.protocol_levels_data
+                  else Stored_data.load (Naming.protocol_levels_file chain_dir)
+                in
+                return
+                  {
+                    chain_state with
+                    current_head_data;
+                    current_head;
+                    protocol_levels_data;
+                    invalid_blocks_data;
+                  })
+          in
+          return new_chain_state
+        else
+          (* Status has changed, synchronize everything. *)
+          let*! () = Store_events.(emit store_full_sync) () in
+          let* new_chain_state =
+            Chain.load_chain_state chain_dir new_block_store
+          in
+          return new_chain_state
+      in
+      let new_main_chain_store =
+        {
+          main_chain_store with
+          block_store = new_block_store;
+          chain_state = Shared.create new_chain_state;
+        }
+      in
+      store.main_chain_store <- Some new_main_chain_store ;
+      return (store, current_status, cleanups)
+  in
+  let sync_end = Time.System.now () in
+  let sync_time = Ptime.diff sync_end sync_start in
+  let*! () = Store_events.(emit end_store_sync) sync_time in
+  return (store, current_status, cleanups)
+
 let close_store global_store =
   let open Lwt_syntax in
   Lwt_watcher.shutdown_input global_store.protocol_watcher ;
@@ -2678,20 +2818,6 @@ let may_switch_history_mode ~store_dir ~context_dir genesis ~new_history_mode =
       (fun () ->
         let*! () = unlock chain_store.lockfile in
         close_store store)
-
-let get_chain_store store chain_id =
-  let chain_store = main_chain_store store in
-  let rec loop chain_store =
-    let open Lwt_result_syntax in
-    if Chain_id.equal (Chain.chain_id chain_store) chain_id then
-      return chain_store
-    else
-      Shared.use chain_store.chain_state (fun {active_testchain; _} ->
-          match active_testchain with
-          | None -> tzfail (Validation_errors.Unknown_chain chain_id)
-          | Some {testchain_store; _} -> loop testchain_store)
-  in
-  loop chain_store
 
 let get_chain_store_opt store chain_id =
   let open Lwt_syntax in
@@ -3059,7 +3185,7 @@ module Unsafe = struct
     let store_dir = Naming.store_dir ~dir_path:store_dir in
     let chain_id = Chain_id.of_block_hash genesis.Genesis.block in
     let chain_dir = Naming.chain_dir store_dir chain_id in
-    let* lockfile = create_lockfile chain_dir in
+    let* lockfile = create_lockfile Naming.lockfile chain_dir in
     let*! () = lock_for_read lockfile in
     protect
       (fun () ->

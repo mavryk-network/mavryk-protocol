@@ -66,7 +66,8 @@ let sanitize_cors_headers ~default headers =
   |> String.Set.(union (of_list default))
   |> String.Set.elements
 
-let launch_rpc_server dynamic_store (params : Parameters.t) (addr, port) =
+let launch_rpc_server dynamic_store (params : Parameters.t) (addr, port)
+    head_watcher =
   let open Lwt_result_syntax in
   let media_types = params.config.rpc.media_type in
   let*! acl_policy =
@@ -105,6 +106,7 @@ let launch_rpc_server dynamic_store (params : Parameters.t) (addr, port) =
       params.node_version
       params.config
       dynamic_store
+      ~head_watcher
   in
   let server =
     RPC_server.init_server
@@ -128,7 +130,7 @@ let launch_rpc_server dynamic_store (params : Parameters.t) (addr, port) =
           tzfail (RPC_Process_Port_already_in_use [(addr, port)])
       | exn -> fail_with_exn exn)
 
-let init_rpc dynamic_store parameters =
+let init_rpc dynamic_store parameters stream =
   let open Lwt_result_syntax in
   let* server =
     let* p2p_point =
@@ -141,7 +143,7 @@ let init_rpc dynamic_store parameters =
           assert false
     in
     match p2p_point with
-    | [point] -> launch_rpc_server dynamic_store parameters point
+    | [point] -> launch_rpc_server dynamic_store parameters point stream
     | _ ->
         (* Same as above: only one p2p_point is expected here. *)
         assert false
@@ -185,14 +187,18 @@ let run socket_dir =
       ~config:parameters.Parameters.internal_events
       ()
   in
+  (* Updated needs to be initialized to be able to read the protocol
+     sources from the store when a protocol injected and compiled. *)
+  Updater.init (Data_version.protocol_dir parameters.data_dir) ;
+  let head_watcher = Lwt_watcher.create_input () in
   let dynamic_store : Store.t option ref = ref None in
-  let* () = init_rpc dynamic_store parameters in
+  let* _head_daemon_stream, _stopper =
+    Head_daemon.init dynamic_store parameters head_watcher
+  in
+  let* () = init_rpc dynamic_store parameters head_watcher in
   (* Send the config ack as synchronisation barrier for the init_rpc
      phase. *)
   let* () = Socket.send init_socket_fd Data_encoding.unit () in
-  let* _head_daemon_stream, _stopper =
-    Head_daemon.init dynamic_store parameters
-  in
   Lwt_utils.never_ending ()
 
 let process socket_dir =

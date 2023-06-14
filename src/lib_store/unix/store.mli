@@ -222,6 +222,12 @@ val init :
   Genesis.t ->
   store tzresult Lwt.t
 
+val sync :
+  ?last_status:Naming.block_store_status ->
+  trigger_hash:Block_hash.t ->
+  t ->
+  (t * Naming.block_store_status * (unit -> unit Lwt.t)) tzresult Lwt.t
+
 (** [main_chain_store global_store] returns the main chain store. *)
 val main_chain_store : store -> chain_store
 

@@ -48,12 +48,14 @@ module Events = struct
       ("level", Data_encoding.int32)
 
   let synchronized =
-    declare_1
+    declare_2
       ~section
       ~name:"synchronized"
-      ~msg:"Store synchronized up to level {level}"
+      ~msg:"Store synchronized up to level {level} ({hash})"
       ~level:Notice
       ("level", Data_encoding.int32)
+      ~pp2:Block_hash.pp_short
+      ("hash", Block_hash.encoding)
 end
 
 module Daemon = struct
@@ -84,43 +86,53 @@ module Daemon = struct
     return (go (), stopper)
 end
 
-(*
-
-FIXME:
-```
-   Jun 15 10:23:40.460: Daemon thrown an error:
-   Jun 15 10:23:40.460:   Error:
-   Jun 15 10:23:40.460:     Failed to load on-disk data: no corresponding data found in file tezos-data/store/chain_NetXyuzvDo2Ug/savepoint.
-```
-
-FIXME: Lorsqu'une nouvelle tête arrive, ajouter un lock global ?
-
-
-*)
-
-let handle_new_head dynamic_store parameters _stopper
-    (_block_hash, (header : Tezos_base.Block_header.t)) =
+let init_store ~allow_testchains ~readonly parameters =
   let open Lwt_result_syntax in
-  let*! () = Events.(emit new_head) header.shell.level in
-  let old_store = !dynamic_store in
+  (* Warning: the Store.init must be called after the Store.init
+     of the node is finished.*)
+  let store_dir = Data_version.store_dir parameters.data_dir in
+  let context_dir = Data_version.context_dir parameters.data_dir in
   let* store =
     Store.init
       ?history_mode:parameters.history_mode
-      ~store_dir:parameters.store_root
-      ~context_dir:parameters.context_root
-      ~allow_testchains:false
-      ~readonly:true
+      ~store_dir
+      ~context_dir
+      ~allow_testchains
+      ~readonly
       parameters.genesis
   in
-  dynamic_store := Some store ;
-  let*! () =
-    match old_store with
-    | Some store -> Store.close_store store
-    | None -> Lwt.return_unit
+  return store
+
+let handle_new_head (dynamic_store : Store.t option ref) last_status parameters
+    (watcher : (Block_hash.t * Block_header.t) Lwt_watcher.input) _stopper
+    (block_hash, (header : Tezos_base.Block_header.t)) =
+  let open Lwt_result_syntax in
+  let block_level = header.shell.level in
+  let*! () = Events.(emit new_head) block_level in
+  let* () =
+    match !dynamic_store with
+    | Some store ->
+        let* store, current_status, cleanups =
+          Store.sync ~last_status:!last_status ~trigger_hash:block_hash store
+        in
+        last_status := current_status ;
+        dynamic_store := Some store ;
+        Lwt_watcher.notify watcher (block_hash, header) ;
+        let*! () = cleanups () in
+        let*! () = Events.(emit synchronized) (block_level, block_hash) in
+        return_unit
+    | None ->
+        let* store =
+          init_store ~allow_testchains:false ~readonly:true parameters
+        in
+        dynamic_store := Some store ;
+        return_unit
   in
   return_unit
 
-let init dynamic_store parameters =
+let init (dynamic_store : Store.t option ref) parameters
+    (stream : (Block_hash.t * Block_header.t) Lwt_watcher.input) =
+  let open Lwt_result_syntax in
   let ctx =
     Forward_handler.build_socket_redirection_ctx parameters.rpc_comm_socket_path
   in
@@ -144,6 +156,15 @@ let init dynamic_store parameters =
       rpc_config
       (Media_type.Command_line.of_command_line rpc_config.media_type)
   in
+  let store_dir = Data_version.store_dir parameters.data_dir in
+  let store_directory = Naming.store_dir ~dir_path:store_dir in
+  let chain_id = Chain_id.of_block_hash parameters.genesis.Genesis.block in
+  let chain_dir = Naming.chain_dir store_directory chain_id in
+  let status_file = Naming.block_store_status_file chain_dir in
+  let* stored_status = Stored_data.load status_file in
+  let*! initial_status = Stored_data.get stored_status in
+  let* store = init_store ~allow_testchains:false ~readonly:true parameters in
+  dynamic_store := Some store ;
   Daemon.make_stream_daemon
-    (handle_new_head dynamic_store parameters)
+    (handle_new_head dynamic_store (ref initial_status) parameters stream)
     (Tezos_shell_services.Monitor_services.heads rpc_ctxt `Main)
