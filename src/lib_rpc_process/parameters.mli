@@ -28,6 +28,10 @@ type t = {
   config : Config_file.t;
   rpc_comm_socket_path : string;
   internal_events : Tezos_base.Internal_event_config.t;
+  genesis : Genesis.t;
+  history_mode : Tezos_shell_services.History_mode.t option;
+  store_root : string;
+  context_root : string;
   node_version : Tezos_version.Node_version.t;
 }
 
