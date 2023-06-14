@@ -51,7 +51,7 @@ pub fn read_input<Host: Runtime>(
                             destination,
                             &raw_rollup_address,
                         ),
-                        KernelMessage::Message(user_message) => {
+                        KernelMessage::DelayedMessage(user_message) => {
                             handle_message(user_message, filter_behavior, &raw_rollup_address)
                         }
                     },
