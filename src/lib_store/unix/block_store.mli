@@ -164,10 +164,7 @@ type key = Block of (Block_hash.t * int)
 (** The status of the merging thread *)
 type merge_status = Not_running | Running | Merge_failed of tztrace
 
-(** The status of the store *)
-type status = Idle | Merging
-
-val status_encoding : status Data_encoding.t
+val status_is_idle : block_store -> bool Lwt.t
 
 (** [cemented_block_store block_store] returns the instance of the
     cemented block store for [block_store]. *)
@@ -192,10 +189,6 @@ val write_savepoint : block_store -> block_descriptor -> unit tzresult Lwt.t
 val caboose : block_store -> block_descriptor Lwt.t
 
 val write_caboose : block_store -> block_descriptor -> unit tzresult Lwt.t
-
-val status : block_store -> status Lwt.t
-
-val write_status : block_store -> status -> unit tzresult Lwt.t
 
 val genesis_block : block_store -> Block_repr.t
 

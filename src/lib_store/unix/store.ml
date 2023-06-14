@@ -1403,7 +1403,9 @@ module Chain = struct
            chain state so its status cannot change while this
            function is executed. *)
         (* Also check the status to be extra-safe *)
-        let*! store_status = Block_store.status chain_store.block_store in
+        let*! store_status_is_idle =
+          Block_store.status_is_idle chain_store.block_store
+        in
         let* is_merge_ongoing =
           match Block_store.get_merge_status chain_store.block_store with
           | Merge_failed errs ->
@@ -1413,7 +1415,7 @@ module Chain = struct
               (* We mark the merge as on-going to prevent the merge from
                  being triggered and to update on-disk values. *)
               return_true
-          | Not_running when store_status <> Idle ->
+          | Not_running when not store_status_is_idle ->
               (* Degenerate case, do the same as the Merge_failed case *)
               let*! () = Store_events.(emit notify_merge_error []) in
               return_true

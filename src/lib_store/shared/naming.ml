@@ -151,20 +151,37 @@ let caboose_file dir =
     block_descriptor_encoding
     Store_types.block_descriptor_equal
 
-type block_store_status = Idle | Merging
+type block_store_status = Idle of int | Merging of int
 
+(* TODO: handle legacy block_store_status encoding *)
 let block_store_status_encoding =
   let open Data_encoding in
-  conv
-    (function Idle -> false | Merging -> true)
-    (function false -> Idle | true -> Merging)
-    bool
+  union
+    ~tag_size:`Uint8
+    [
+      case
+        (Tag 0)
+        ~title:"idle"
+        int31
+        (function Idle c -> Some c | _ -> None)
+        (fun c -> Idle c);
+      case
+        (Tag 1)
+        ~title:"merging"
+        int31
+        (function Merging c -> Some c | _ -> None)
+        (fun c -> Merging c);
+    ]
 
 let status_equal s1 s2 =
   match (s1, s2) with
-  | Idle, Idle -> true
-  | Merging, Merging -> true
-  | Idle, Merging | Merging, Idle -> false
+  | Idle c1, Idle c2 when c1 = c2 -> true
+  | Merging c1, Merging c2 when c1 = c2 -> true
+  | Idle _, Idle _
+  | Merging _, Merging _
+  | Idle _, Merging _
+  | Merging _, Idle _ ->
+      false
 
 let block_store_status_file dir =
   make_encoded_file
