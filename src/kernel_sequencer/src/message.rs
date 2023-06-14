@@ -73,7 +73,7 @@ pub enum SequencerMsg {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum KernelMessage {
     Sequencer(Framed<SequencerMsg>),
-    Message(Vec<u8>),
+    DelayedMessage(Vec<u8>),
 }
 
 impl<P> NomReader for Framed<P>
@@ -124,7 +124,7 @@ impl NomReader for KernelMessage {
             )),
             map(
                 |bytes: &[u8]| Ok(([].as_slice(), bytes.to_vec())),
-                KernelMessage::Message,
+                KernelMessage::DelayedMessage,
             ),
         )))(input)
     }
@@ -138,7 +138,7 @@ impl BinWriter for KernelMessage {
                 enc::put_byte(&0x01, output);
                 sequencer_framed_msg.bin_write(output)?;
             }
-            KernelMessage::Message(message) => enc::put_bytes(message, output),
+            KernelMessage::DelayedMessage(message) => enc::put_bytes(message, output),
         }
         Ok(())
     }
@@ -224,7 +224,7 @@ mod tests {
 
     #[test]
     fn test_user_message_serialization() {
-        let sequence = KernelMessage::Message(vec![0x01, 0x0, 0x01, 0x02, 0x02]);
+        let sequence = KernelMessage::DelayedMessage(vec![0x01, 0x0, 0x01, 0x02, 0x02]);
 
         // Serializing
         let mut bin: Vec<u8> = Vec::new();
@@ -264,6 +264,6 @@ mod tests {
             KernelMessage::nom_read(&bin).expect("deserialization should work");
 
         assert!(remaining.is_empty());
-        assert_eq!(msg_read, KernelMessage::Message(bin))
+        assert_eq!(msg_read, KernelMessage::DelayedMessage(bin))
     }
 }
