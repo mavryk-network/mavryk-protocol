@@ -215,7 +215,7 @@
       when: delayed
       start_in: 1 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -244,7 +244,7 @@
       when: delayed
       start_in: 2 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -273,7 +273,7 @@
       when: delayed
       start_in: 3 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -302,7 +302,7 @@
       when: delayed
       start_in: 4 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -331,7 +331,7 @@
       when: delayed
       start_in: 5 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -360,7 +360,7 @@
       when: delayed
       start_in: 6 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"
@@ -389,7 +389,7 @@
       when: delayed
       start_in: 7 minutes
     # Run on merge requests when opam changes are detected.
-    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == "arvidnl"'
       changes:
         - "**/dune"
         - "**/dune.inc"

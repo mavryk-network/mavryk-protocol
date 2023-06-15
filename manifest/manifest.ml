@@ -3374,7 +3374,7 @@ let generate_opam_ci opam_release_graph =
   (* Output one template per batch. *)
   let marge_restriction_exec = "$CI_MERGE_REQUEST_ID" in
   let marge_restriction_all =
-    "$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == \"nomadic-margebot\""
+    "$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == \"arvidnl\""
   in
   for batch_index = 1 to batch_count do
     print_opam_job_rules fmt batch_index "exec" marge_restriction_exec
