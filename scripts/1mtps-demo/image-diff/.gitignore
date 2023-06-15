@@ -1,0 +1,3 @@
+output/
+level*.diff
+Cargo.lock

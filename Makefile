@@ -517,3 +517,7 @@ test-kernels:
 .PHONY: clean-kernels
 clean-kernels:
 	make -f kernels.mk clean
+
+.PHONY: 1mtps-docker-image
+1mtps-docker-image: strip
+	scripts/1mtps-demo/create_docker_image.sh "${TARGET}"

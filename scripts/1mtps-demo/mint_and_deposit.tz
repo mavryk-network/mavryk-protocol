@@ -1,0 +1,27 @@
+parameter
+    (pair (pair (contract %rollup (pair string (ticket string))) (string %rollup_account))
+          (pair (nat %ticket_amount) (string %ticket_content))) ;
+storage unit ;
+code { CAR ;
+       DUP ;
+       CAR ;
+       CAR ;
+       PUSH mutez 0 ;
+       DUP 3 ;
+       CDR ;
+       CAR ;
+       DUP 4 ;
+       CDR ;
+       CDR ;
+       TICKET ;
+       ASSERT_SOME ;
+       DIG 3 ;
+       CAR ;
+       CDR ;
+       PAIR ;
+       TRANSFER_TOKENS ;
+       PUSH unit Unit ;
+       NIL operation ;
+       DIG 2 ;
+       CONS ;
+       PAIR }

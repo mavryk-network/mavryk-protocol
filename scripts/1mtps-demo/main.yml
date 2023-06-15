@@ -1,0 +1,583 @@
+octogram_binary:
+  installed: /usr/local/bin/octogram
+
+prometheus_agent:
+  name: prometheus
+  address: mulan
+  user: root
+  port: 22023
+  identity: ~/.ssh/demo
+
+vars:
+  protocol_suffix: alpha
+  network: https://teztnets.xyz/mondaynet-2023-07-10
+  snapshot_url: https://snapshots.eu.tzinit.org/mondaynet/rolling
+  no_pixel_addr: tz1TjH1SfJBoR4tv8EL3vRDTjJCRWMBFYnXj
+
+  txns_bucket: https://storage.googleapis.com/blockchain-speedtest-368211-rollup-messages
+
+  kernel_file: /opt/1mtps-demo/tx_kernel.wasm
+  mint_and_deposit: /opt/1mtps-demo/mint_and_deposit.tz
+
+  public_endpoint: https://rpc.mondaynet-2023-07-10.teztnets.xyz:443
+  installer_file: installer.hex
+
+stages:
+  - name: Provision HTTP server
+    with_agents: 'files-(\d+)'
+    jobs:
+
+      - name: Start server
+        builtins.start_http_server:
+          http_port: '30999'
+
+      - name: Push private keys
+        copy:
+          local_path: tezos-client-demo
+          remote_path: '.'
+
+      - name: Prepare kernel
+        smart_rollup.prepare_kernel_installer:
+          installer_generator_path: self://smart-rollup-installer
+          kernel_path: 'self://{{ vars.kernel_file }}'
+          preimages_directory_path: "."
+          installer_kernel_path: '{{ vars.installer_file }}'
+          setup: |
+            instructions:
+              - set:
+                  value: 0000014a
+                  to: /kernel/transactions.per.kernel.run
+              - set:
+                  value: a2fd633d6fdc53d66c12a67724dc99eb58ee9f05120dfe7b0307926732639b02cef472a184802046dcdfcee3c418f9d4
+                  to: /kernel/dac.committee/0
+              - set:
+                  value: b17ef7d84342d331dd2ee6452cbb4f3227380369d3dd17c89cbb7a3cea64e2f5649f33226dc66912f7c1c91fcdb4b57f
+                  to: /kernel/dac.committee/1
+
+      - name: Compress directories
+        with_items:
+          - tezos-client-demo
+          - wasm_2_0_0
+        builtins.tar:
+          contents: '{{ item }}'
+          archive: self://{{ item }}.tar.gz
+          action: create
+
+  - name: Prefetch transactions
+    with_agents: '^node-(\d+)'
+    run_agents: sequential
+    jobs:
+
+      - name: Extract transactions
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        builtins.tar:
+          archive: '{{ vars.txns_bucket }}/rollup{{ item }}.messages.tar.gz'
+          contents: '.'
+          action: extract
+
+  - name: Provisions node agents
+    with_agents: '^node-(\d+)'
+    run_agents: concurrent
+    jobs:
+
+      - name: Fetch the wallet
+        builtins.tar:
+          contents: '.'
+          archive: files-{{ int(re[1]) % vars.files_servers }}://tezos-client-demo.tar.gz
+          action: extract
+
+      - name: Start octez node
+        tezos.start_node:
+          name: node
+          path_node: self://octez-node
+          network: '{{ vars.network }}'
+          snapshot: '{{ vars.snapshot_url }}'
+          synchronization_threshold: 2
+          rpc_port: '30001'
+          metrics_port: '30002'
+          net_port: '30003'
+
+      - name: Wait for bootstrapped node
+        tezos.wait_for_bootstrapped:
+          path_client: self://octez-client
+          endpoint: 'self://node'
+
+  - name: Originate mint_and_deposit.tz
+    with_agents: '^node-0$'
+    jobs:
+      - name: Originate
+        tezos.operations.originate_smart_contract:
+          path_client: self://octez-client
+          endpoint: node-0://node
+          wallet: tezos-client-demo
+          source: demo_0
+          alias: mint_and_deposit
+          script_path: self://{{ vars.mint_and_deposit }}
+          init: Unit
+          wait: "0"
+        vars_updates:
+          mint_and_deposit_hex_address: '{{ res.hex_address }}'
+          mint_and_deposit_address: '{{ res.address }}'
+
+  - name: Submission keys provisioning
+    ask_confirmation: true
+    with_agents: '^node-(\d+)'
+    jobs:
+
+      - name: Keys provisioning
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        tezos.operations.transfer:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          source: demo_{{ item }}
+          destination: demo-submit-{{ item }}
+          amount: 6000000
+          wait: "1"
+
+
+  - name: Start DAC nodes
+    with_agents: '^node-(\d+)'
+    jobs:
+
+      - name: Start coordinator
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.instances_per_node * vars.rollups_per_instance - 1}}']
+        dac.start_node:
+          path_dac_node: self://octez-dac-node
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          name: coordinator{{ item }}
+          rpc_port: '{{ 30100 + (item - int(re[1])) * 3 }}'
+          settings:
+            mode: coordinator
+            committee_members_aliases:
+              - dac_member-1
+              - dac_member-2
+
+      - name: Start first member
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.instances_per_node * vars.rollups_per_instance - 1}}']
+        dac.start_node:
+          path_dac_node: self://octez-dac-node
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          name: member{{ item }}-1
+          rpc_port: '{{ 30100 + (item - int(re[1])) * 3 + 1 }}'
+          settings:
+            mode: member
+            coordinator: self://coordinator{{ item }}
+            alias: dac_member-1
+
+      - name: Start second member
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.instances_per_node * vars.rollups_per_instance - 1}}']
+        dac.start_node:
+          path_dac_node: self://octez-dac-node
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          name: member{{ item }}-2
+          rpc_port: '{{ 30100 + (item - int(re[1])) * 3 + 2 }}'
+          settings:
+            mode: member
+            coordinator: self://coordinator{{ item }}
+            alias: dac_member-2
+
+  - name: Originate the smart rollups
+    with_agents: 'sr-nodes-(\d+)-(\d+)'
+    jobs:
+
+      - name: Fetch the wallet
+        builtins.tar:
+          contents: '.'
+          archive: files-{{ int(re[1]) % vars.files_servers }}://tezos-client-demo.tar.gz
+          action: extract
+
+      - name: Originate smart rollups
+        with_items: ['{{ re[2] }}..{{ int(re[2]) + vars.rollups_per_instance - 1}}']
+        tezos.operations.originate_smart_rollup:
+          path_client: self://octez-client
+          endpoint: 'node-{{ re[1] }}://node'
+          wallet: tezos-client-demo
+          source: demo_{{ item }}
+          alias: rollup{{ item }}
+          kernel_path: 'files-{{ int(re[1]) % vars.files_servers }}://{{ vars.installer_file }}'
+          parameters_type: (pair string (ticket string))
+          wait: "1"
+        vars_updates:
+          rollup{{ item }}_hex: '{{ res.hex_address }}'
+          rollup{{ item }}: '{{ res.address }}'
+
+      - name: Fetch preimages
+        with_items: ['{{ re[2] }}..{{ int(re[2]) + vars.rollups_per_instance - 1}}']
+        run_items: concurrent
+        builtins.tar:
+          contents: './rollup{{ item }}-data-dir/'
+          archive: files-{{ int(re[1]) % vars.files_servers }}://wasm_2_0_0.tar.gz
+          action: extract
+
+      - name: Start a rollup node per smart rollup originated
+        with_items: ['{{ re[2] }}..{{ int(re[2]) + vars.rollups_per_instance - 1}}']
+        run_items: concurrent
+        smart_rollup.start_node:
+          name: 'rollup{{ item }}'
+          path_rollup_node: self://octez-smart-rollup-node
+          path_client: self://octez-client
+          endpoint: 'node-{{ re[1] }}://node'
+          wallet: tezos-client-demo
+          operator: demo_{{ item }}
+          mode: operator
+          address: '{{ var("rollup" + item) }}'
+          data_dir_path: './rollup{{ item }}-data-dir'
+          rpc_port: '{{ 30004 + (item - int(re[2])) * 3 }}'
+          metrics_port: '{{ 30004 + (item - int(re[2])) * 3 + 1 }}'
+          kernel_log_path: kernel{{ item }}.log
+
+      - name: Start a collector per rollup node
+        with_items: ['{{ re[2] }}..{{ int(re[2]) + vars.rollups_per_instance - 1}}']
+        run_items: concurrent
+        demo_1mtps.start_collector:
+          path_collector: self://tx-demo-collector
+          name: collector{{ item }}
+          row: '{{ item / vars.images_per_row }}'
+          column: '{{ item % vars.images_per_row }}'
+          log_file: kernel{{ item }}.log
+          port: '{{ 30004 + (item - int(re[2])) * 3 + 2 }}'
+
+  - name: Start DAC observers
+    ask_confirmation: true
+    with_agents: 'sr-nodes-(\d+)-(\d+)'
+    jobs:
+
+      - name: Start DAC observer
+        with_items: ['{{ re[2] }}..{{ int(re[2]) + vars.rollups_per_instance - 1}}']
+        run_items: concurrent
+        dac.start_node:
+          path_dac_node: self://octez-dac-node
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: node-{{ re[1] }}://node
+          name: observer{{ item }}
+          rpc_port: '{{ 30100 + (item - int(re[2])) }}'
+          settings:
+            mode: observer
+            coordinator: node-{{ re[1] }}://coordinator{{ item }}
+            committee_members:
+              - node-{{ re[1] }}://member{{ item }}-1
+              - node-{{ re[1] }}://member{{ item }}-2
+            reveal_data_dir_path: './rollup{{ item }}-data-dir/wasm_2_0_0'
+
+  - name: Layer 1 transactions
+    with_agents: 'node-(\d+)'
+    jobs:
+
+      - name: Internal messages (Red)
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        tezos.operations.transfer:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          source: demo-submit-{{ item }}
+          destination: '{{ vars.mint_and_deposit_address }}'
+          arg: Pair (Pair "{{ var("rollup" + item) }}" "{{ vars.no_pixel_addr }}") (Pair 1275000 "R")
+          wait: "1"
+
+      - name: Internal messages (Green)
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        tezos.operations.transfer:
+          path_client: self://octez-client
+          endpoint: self://node
+          wallet: tezos-client-demo
+          source: demo-submit-{{ item }}
+          destination: '{{ vars.mint_and_deposit_address }}'
+          arg: Pair (Pair "{{ var("rollup" + item) }}" "{{ vars.no_pixel_addr }}") (Pair 1275000 "G")
+          wait: "1"
+
+      - name: Internal messages (Blue)
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        tezos.operations.transfer:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          endpoint: self://node
+          source: demo-submit-{{ item }}
+          destination: '{{ vars.mint_and_deposit_address }}'
+          arg: Pair (Pair "{{ var("rollup" + item) }}" "{{ vars.no_pixel_addr }}") (Pair 1275000 "B")
+          wait: "1"
+
+  - name: Layer 2 transactions (round 1)
+    ask_confirmation: true
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/1-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 2)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/2-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 3)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/3-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 4)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/4-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 5)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/5-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 6)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/6-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 7)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/7-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'
+
+  - name: Layer 2 transactions (round 8)
+    with_agents: '^node-(\d+)'
+    jobs:
+      - name: Get certificates
+        with_items: ['{{ re[1] }}..{{ int(re[1]) + vars.rollups_per_instance * vars.instances_per_node - 1 }}']
+        run_items: concurrent
+        dac.post_file:
+          dac_client_path: self://octez-dac-client
+          coordinator: self://coordinator{{ item }}
+          file_path: self://rollup{{ item }}.messages/8-transfers.out
+          threshold: 2
+          wallet: tezos-client-demo
+        vars_updates:
+          certificate{{ item }}: '{{ res.certificate }}'
+
+      - name: Send messages
+        tezos.operations.add_messages:
+          path_client: self://octez-client
+          wallet: tezos-client-demo
+          source: demo-submit-{{ re[1] }}
+          endpoint: 'self://node'
+          wait: "0"
+          messages:
+            - hex: '00{{ var("rollup" + int(re[1]) + "_hex") }}{{ var("certificate" + int(re[1])) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 1) + "_hex") }}{{ var("certificate" + (int(re[1]) + 1)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 2) + "_hex") }}{{ var("certificate" + (int(re[1]) + 2)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 3) + "_hex") }}{{ var("certificate" + (int(re[1]) + 3)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 4) + "_hex") }}{{ var("certificate" + (int(re[1]) + 4)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 5) + "_hex") }}{{ var("certificate" + (int(re[1]) + 5)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 6) + "_hex") }}{{ var("certificate" + (int(re[1]) + 6)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 7) + "_hex") }}{{ var("certificate" + (int(re[1]) + 7)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 8) + "_hex") }}{{ var("certificate" + (int(re[1]) + 8)) }}'
+            - hex: '00{{ var("rollup" + (int(re[1]) + 9) + "_hex") }}{{ var("certificate" + (int(re[1]) + 9)) }}'

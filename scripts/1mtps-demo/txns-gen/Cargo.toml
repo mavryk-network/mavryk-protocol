@@ -1,0 +1,18 @@
+[package]
+name = "account_diff_tx_gen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kernel-core = { git = "https://gitlab.com/tezos/kernel", default-features = false, features = ["testing"], branch = "emturner@fix-rebase"}
+tezos_data_encoding = "0.5"
+tezos_crypto_rs = { version = "0.5", default-features = false }
+tezos-smart-rollup-encoding = { git = "https://gitlab.com/tezos/tezos" }
+hex = "0.4"
+
+clap = { version = "^4.0", features = ["derive"] }
+rand = { version = "^0.8" }
+serde = { version = "1.0" }
+serde_json = { version = "1.0" }
+lazy_static = "^1.4"
+csv = "^1.1"
