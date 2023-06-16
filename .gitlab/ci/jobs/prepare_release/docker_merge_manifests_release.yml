@@ -13,4 +13,4 @@ docker:merge_manifests:
   before_script:
     - ./scripts/ci/docker_registry_auth.sh
   script:
-    - ./scripts/ci/docker_merge_manifests.sh
+    - ./gitlab/ci/jobs/prepare_release/docker:merge_manifests.sh
