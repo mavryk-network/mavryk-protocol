@@ -3,12 +3,6 @@ ifndef CI_PROJECT_DIR
 	$(error This Makefile must be called from a Gitlab runner)
 endif
 
-.PHONY: doc-build-all
-doc-build-all:
-	cd ${CI_PROJECT_DIR} && \
-		make all && \
-		make -C docs -j all
-
 .PHONY: doc-publish
 doc-publish:
 	cd ${CI_PROJECT_DIR} && \
