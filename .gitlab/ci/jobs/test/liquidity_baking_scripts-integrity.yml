@@ -4,5 +4,6 @@ test-liquidity-baking-scripts:
   extends: .integration_template
   stage: test
   script:
-    - ./scripts/ci/test_liquidity_baking_scripts.sh
+    - ./.gitlab/jobs/test/test-liquidity-baking-scripts.sh
+  after_script:
     - ./scripts/ci/merge_coverage.sh
