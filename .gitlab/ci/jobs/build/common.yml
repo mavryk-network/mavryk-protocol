@@ -32,8 +32,7 @@
   variables:
     ARCH: ""
   script:
-    - ./scripts/ci/take_ownership.sh
-    - ./scripts/ci/build_static_binaries.sh
+    - ./gitlab/ci/jobs/build/build_static_binaries_template.sh
   artifacts:
     paths:
       - "octez-binaries/$ARCH/*"

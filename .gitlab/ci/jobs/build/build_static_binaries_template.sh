@@ -16,6 +16,8 @@ fi
 
 set -u
 
+./scripts/ci/take_ownership.sh
+
 echo "Create destination directory"
 mkdir -pv "octez-binaries/$ARCH"
 
