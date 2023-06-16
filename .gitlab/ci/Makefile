@@ -8,12 +8,6 @@ last_proto_version := $(shell echo ${last_proto_name} | cut -d'_' -f2 | sed 's/^
 new_proto_version_int:=$(shell echo $$(($(last_proto_version)+1)))
 new_proto_version := $(shell if [ "${new_proto_version_int}" -lt "100" ]; then echo 0${new_proto_version_int}; else echo ${new_proto_version_int}; fi)
 
-.PHONY: test-tezt
-test-tezt:
-	cd ${CI_PROJECT_DIR} && \
-		_build/default/tezt/tests/main.exe ${TESTS} --color --log-buffer-size 5000 --log-file tezt.log --global-timeout 1800 --on-unknown-regression-files fail --junit ${JUNIT} --from-record tezt/records --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL} --record tezt-results-${CI_NODE_INDEX}.json -j 3 --retry 1 && \
-		./scripts/ci/merge_coverage.sh
-
 .PHONY: test-tezt-static-binaries
 test-tezt-static-binaries:
 ifndef TESTS
