@@ -2,6 +2,7 @@
 
 set -e
 
+#shellcheck source=scripts/ci/docker.env
 . scripts/ci/docker.env
 
 if [ -z "${build_deps_image_name}" ]; then echo "build_deps_image_name is unset" && exit 3; fi
@@ -10,6 +11,7 @@ if [ -z "${build_deps_image_version}" ]; then echo "build_deps_image_version is 
 cd "${CI_PROJECT_DIR}" || exit 1
 
 # Environment variables from before_script
+#shellcheck source=scripts/ci/docker.env
 . ./scripts/ci/docker.env
 
 if [ -z "$EXECUTABLE_FILES" ]; then

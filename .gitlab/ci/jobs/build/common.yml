@@ -48,4 +48,4 @@
   before_script:
     - ./scripts/ci/docker_registry_auth.sh
   script:
-    - ./scripts/ci/docker_release.sh
+    - ./gitlab/ci/jobs/build/build_docker_release_template.sh
