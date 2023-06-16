@@ -8,11 +8,6 @@ last_proto_version := $(shell echo ${last_proto_name} | cut -d'_' -f2 | sed 's/^
 new_proto_version_int:=$(shell echo $$(($(last_proto_version)+1)))
 new_proto_version := $(shell if [ "${new_proto_version_int}" -lt "100" ]; then echo 0${new_proto_version_int}; else echo ${new_proto_version_int}; fi)
 
-.PHONY: test-protocol-compiles
-test-protocol-compiles:
-	cd ${CI_PROJECT_DIR} && \
-		dune build @runtest_compile_protocol
-
 .PHONY: test-tezt
 test-tezt:
 	cd ${CI_PROJECT_DIR} && \
