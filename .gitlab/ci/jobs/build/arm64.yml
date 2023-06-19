@@ -7,6 +7,7 @@ build_arm64:
     ARCH: "arm64"
     # Disable coverage for arm64
     COVERAGE_OPTIONS: ""
+    EXECUTABLE_FILES: "script-inputs/released-executables script-inputs/experimental-executables script-inputs/dev-executables"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
