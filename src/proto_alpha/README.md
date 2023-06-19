@@ -2,6 +2,8 @@
 <!-- Summary line: One sentence about this component. -->
 This directory contains a development version of the Tezos economic protocol and some protocol-related components and APIs.
 
+DUMMY ALPHA MOD
+
 ## Overview
 <!--
 - Describe the purpose of this component and how the code in this directory
