@@ -2,6 +2,8 @@
 
 set -eu
 
+./scripts/ci/take_ownership.sh
+
 # misc linting
 find . ! -path "./_opam/*" -name "*.opam" -exec opam lint {} +;
 
@@ -27,3 +29,5 @@ dune build devtools/yes_wallet/yes_wallet.exe
 
 # check that the patch-yes_node.sh applies correctly
 scripts/patch-yes_node.sh --dry-run
+
+scripts/check_wasm_pvm_regressions.sh check
