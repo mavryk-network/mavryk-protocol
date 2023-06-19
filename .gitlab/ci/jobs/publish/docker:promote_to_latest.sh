@@ -3,12 +3,10 @@ set -eu
 
 ### Promote a specificied image to tag 'latest' (Docker default)
 
-current_dir=$(cd "$(dirname "${0}")" && pwd)
-
 . scripts/ci/docker.env
 
 # shellcheck source=./scripts/ci/docker.sh
-. "${current_dir}/docker.sh"
+. scripts/ci/docker.sh
 
 ## The goal of this script is to retag existing Docker images (do not rebuild them)
 target_tag='latest'

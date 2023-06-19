@@ -9,4 +9,4 @@ docker:promote_to_latest:
   before_script:
     - ./scripts/ci/docker_registry_auth.sh
   script:
-    - ./scripts/ci/docker_promote_to_latest.sh
+    - ./.gitlab/ci/jobs/publish/docker:promote_to_latest.sh
