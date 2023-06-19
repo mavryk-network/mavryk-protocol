@@ -2,8 +2,8 @@
 
 set -e
 
-ci_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
-script_dir="$(dirname "$ci_dir")"
+script_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
+src_dir="$(dirname "$(dirname "$(dirname "$(dirname "$script_dir")")")")"
 
 opam_repository_fork="git@github.com:tezos/opam-repository"
 opam_dir="opam-repository"
@@ -13,7 +13,7 @@ log () {
 }
 
 # shellcheck source=./scripts/ci/release.sh
-. "$ci_dir/release.sh"
+. "$src_dir/scripts/ci/release.sh"
 
 # set up ssh credentials to access github
 mkdir -p "$HOME/.ssh"
@@ -25,12 +25,12 @@ chmod 700 "$HOME/.ssh"
 log "Done setting up credentials."
 
 # call opam-release.sh with the correct arguments
-echo "$script_dir/opam-release.sh" \
+echo "$src_dir/scripts/opam-release.sh" \
   "$opam_release_tag" \
   "https://gitlab.com/tezos/tezos/-/archive/$CI_COMMIT_TAG/$gitlab_package_name.tar.gz" \
   "$opam_dir"
 
-"$script_dir/opam-release.sh" \
+"$src_dir/scripts/opam-release.sh" \
   "$opam_release_tag" \
   "https://gitlab.com/tezos/tezos/-/archive/$CI_COMMIT_TAG/$gitlab_package_name.tar.gz" \
   "$opam_dir"
