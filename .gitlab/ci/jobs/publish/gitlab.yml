@@ -11,4 +11,4 @@ gitlab:release:
     - build:static-arm64-linux-binaries
     - docker:merge_manifests
   script:
-    - ./scripts/ci/gitlab-release.sh
+    - ./.gitlab/ci/jobs/publish/gitlab:release.sh
