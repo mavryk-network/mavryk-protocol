@@ -26,10 +26,16 @@ diff pyproject.toml /home/tezos/pyproject.toml
 #    not split this invocation.
 #    NOTE: This ensure that $COVERAGE_OPTIONS is used consistently.
 
-# EXECUTABLE_FILES may contain multiple paths and so must be split.
-# shellcheck disable=SC2086
-OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
-make build OCTEZ_EXECUTABLES="$OCTEZ_EXECUTABLES"
+# If EXECUTABLE_FILES is set, build the specified set of executables,
+# otherwise build all.
+if [ -n "${EXECUTABLE_FILES:-}" ]; then
+    # EXECUTABLE_FILES may contain multiple paths and so must be split.
+    # shellcheck disable=SC2086
+    OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
+    make build OCTEZ_EXECUTABLES="$OCTEZ_EXECUTABLES"
+else
+    make all
+fi
 
 # 3. Strip the built binaries in OCTEZ_EXECUTABLES and in BUILD_EXTRA.
 # shellcheck disable=SC2086
