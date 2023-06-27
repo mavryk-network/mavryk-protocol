@@ -68,11 +68,11 @@ module Chunk = struct
     if
       len <= 0
       || src_pos + len > bytes_len
-      || Int64.add dst_pos (Int64.of_int len) > size
+      || Int64.(add dst_pos (of_int len) > size)
     then raise Bounds
     else if len = size_int then
       (* The whole chunk should be replaced, so we just recreate a new one *)
-      Bytes.unsafe_to_string @@ Bytes.sub src ~pos:src_pos ~len
+      Bytes.sub_string src ~pos:src_pos ~len
     else
       (* Copy original chunk and replace corresponding substring *)
       let new_chunk_bytes = String.to_bytes dst in

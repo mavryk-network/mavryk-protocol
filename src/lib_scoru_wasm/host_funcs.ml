@@ -392,8 +392,8 @@ module Aux = struct
             in
             (* [input_size] is at most 4,096 bytes (enforced by the protocol),
                so [Bytes.sub] won't raise an exception. *)
-            let payload = Bytes.sub payload 0 input_size in
-            let* () = M.store_bytes memory dst (Bytes.to_string payload) in
+            let payload = Bytes.sub_string payload 0 input_size in
+            let* () = M.store_bytes memory dst payload in
             let* () =
               M.store_bytes
                 memory
