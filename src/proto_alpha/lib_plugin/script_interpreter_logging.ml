@@ -113,27 +113,73 @@ module Stack_utils = struct
         ('a, 's) stack_ty * ('a, 's, 'r, 'f) kinstr
         -> ('r, 'f) ex_init_stack_ty
 
-  let rec stack_prefix_preservation_witness_split_input :
-      type a s b t c u d v.
-      (b, t, c, u, a, s, d, v) stack_prefix_preservation_witness ->
-      (a, s) stack_ty ->
-      (b, t) stack_ty =
-   fun w s ->
-    match (w, s) with
-    | KPrefix (_, w), Item_t (_, s) ->
-        stack_prefix_preservation_witness_split_input w s
-    | KRest, s -> s
+  (** [('a, 'S, 'b, 'T, 'c, 'U) stack_ty_append] means that the stack type
+      [('c, 'U)] is the concatenation of [('a, 'S)] and [('b, 'T)]. *)
+  type (_, _, _, _, _, _) stack_ty_append =
+    | Stack_ty_append_nil
+        : (empty_cell, empty_cell, 'b, 'T, 'b, 'T) stack_ty_append
+    | Stack_ty_append_cons :
+        ('b, 'T, 'c, 'U, 'd, 'V) stack_ty_append
+        -> ('a, 'b * 'T, 'c, 'U, 'a, 'd * 'V) stack_ty_append
 
-  let rec stack_prefix_preservation_witness_split_output :
+  (** This is a reformulation of [Script_typed_it.stack_prefix_preservation_witness]
+      in terms of concatenation and existential. *)
+  type (_, _, _, _, _, _, _, _) stack_prefix_preservation_witness_bis =
+    | Ex_stack_prefix_preservation_witness :
+        ('p, 'R, 'b, 'T, 'a, 'S) stack_ty_append
+        * ('p, 'R, 'c, 'U, 'd, 'V) stack_ty_append
+        -> ( 'b,
+             'T,
+             'c,
+             'U,
+             'a,
+             'S,
+             'd,
+             'V )
+           stack_prefix_preservation_witness_bis
+
+  let rec stack_prefix_preservation_witness_to_bis :
       type a s b t c u d v.
       (b, t, c, u, a, s, d, v) stack_prefix_preservation_witness ->
-      (c, u) stack_ty ->
-      (d, v) stack_ty =
-   fun w s ->
-    match (w, s) with
-    | KPrefix (a, w), s ->
-        Item_t (a, stack_prefix_preservation_witness_split_output w s)
-    | KRest, s -> s
+      (b, t, c, u, a, s, d, v) stack_prefix_preservation_witness_bis = function
+    | KRest ->
+        Ex_stack_prefix_preservation_witness
+          (Stack_ty_append_nil, Stack_ty_append_nil)
+    | KPrefix (_a, w) ->
+        let (Ex_stack_prefix_preservation_witness (l, r)) =
+          stack_prefix_preservation_witness_to_bis w
+        in
+        Ex_stack_prefix_preservation_witness
+          (Stack_ty_append_cons l, Stack_ty_append_cons r)
+
+  (** concatenation of stack types *)
+  let rec stack_ty_append :
+      type a s b t c v.
+      (a, s, b, t, c, v) stack_ty_append ->
+      (a, s) stack_ty ->
+      (b, t) stack_ty ->
+      (c, v) stack_ty =
+   fun w st1 st2 ->
+    match w with
+    | Stack_ty_append_nil -> st2
+    | Stack_ty_append_cons w ->
+        let (Item_t (a, st1)) = st1 in
+        Item_t (a, stack_ty_append w st1 st2)
+
+  (** Decomposition of a stack type into a prefix and a suffix. This is the
+      opposite transformation of [stack_ty_append]. *)
+  let rec stack_ty_split :
+      type a s b t c v.
+      (a, s, b, t, c, v) stack_ty_append ->
+      (c, v) stack_ty ->
+      (a, s) stack_ty * (b, t) stack_ty =
+   fun w st ->
+    match w with
+    | Stack_ty_append_nil -> (Bot_t, st)
+    | Stack_ty_append_cons w ->
+        let (Item_t (a, st)) = st in
+        let st1, st2 = stack_ty_split w st in
+        (Item_t (a, st1), st2)
 
   (* We apply this function to optional type information which must be present
      if functions from this module were called. Use with care. *)
@@ -1357,11 +1403,11 @@ module Stack_utils = struct
               reconstruct = (fun k -> ISapling_verify_update (loc, k));
             }
       | IDig (loc, n, p, k), s ->
-          let (Item_t (b, s)) =
-            stack_prefix_preservation_witness_split_input p s
+          let (Ex_stack_prefix_preservation_witness (wl, wr)) =
+            stack_prefix_preservation_witness_to_bis p
           in
-          let s = stack_prefix_preservation_witness_split_output p s in
-          let s = Item_t (b, s) in
+          let prefix, Item_t (b, s) = stack_ty_split wl s in
+          let s = Item_t (b, stack_ty_append wr prefix s) in
           return
           @@ Ex_split_kinstr
                {
@@ -1370,9 +1416,11 @@ module Stack_utils = struct
                  reconstruct = (fun k -> IDig (loc, n, p, k));
                }
       | IDug (loc, n, p, k), Item_t (a, s) ->
-          let s = stack_prefix_preservation_witness_split_input p s in
-          let s = Item_t (a, s) in
-          let s = stack_prefix_preservation_witness_split_output p s in
+          let (Ex_stack_prefix_preservation_witness (wl, wr)) =
+            stack_prefix_preservation_witness_to_bis p
+          in
+          let prefix, s = stack_ty_split wl s in
+          let s = stack_ty_append wr prefix (Item_t (a, s)) in
           return
           @@ Ex_split_kinstr
                {
@@ -1381,21 +1429,25 @@ module Stack_utils = struct
                  reconstruct = (fun k -> IDug (loc, n, p, k));
                }
       | IDipn (loc, n, p, sty, k1, k2), s ->
+          let (Ex_stack_prefix_preservation_witness (wl, wr)) =
+            stack_prefix_preservation_witness_to_bis p
+          in
+          let prefix, body_init_stack = stack_ty_split wl s in
           return
           @@ Ex_split_loop_may_not_fail
                {
-                 body_init_stack =
-                   stack_prefix_preservation_witness_split_input p s;
+                 body_init_stack;
                  body = k1;
                  continuation = k2;
                  aft_body_stack_transform =
-                   (fun s ->
-                     return
-                     @@ stack_prefix_preservation_witness_split_output p s);
+                   (fun s -> return @@ stack_ty_append wr prefix s);
                  reconstruct = (fun k1 k2 -> IDipn (loc, n, p, sty, k1, k2));
                }
       | IDropn (loc, n, p, k), s ->
-          let s = stack_prefix_preservation_witness_split_input p s in
+          let (Ex_stack_prefix_preservation_witness (wl, _wr)) =
+            stack_prefix_preservation_witness_to_bis p
+          in
+          let _prefix, s = stack_ty_split wl s in
           return
           @@ Ex_split_kinstr
                {
