@@ -1389,8 +1389,8 @@ module Raw = struct
                   stack
               in
               (step [@ocaml.tailcall]) g gas k ks accu stack
-          | IDipn (_, _n, n', _sty, b, k) ->
-              let accu, stack, ks = kundip n' accu stack (KCons (k, ks)) in
+          | IDipn (_, _n, n', sty, b, k) ->
+              let accu, stack, ks = kundip n' accu stack sty (KCons (k, ks)) in
               (step [@ocaml.tailcall]) g gas b ks accu stack
           | IDropn (_, _n, n', k) ->
               let stack =

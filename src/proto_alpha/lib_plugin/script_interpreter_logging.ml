@@ -2356,8 +2356,8 @@ module Logger (Base : Logger_base) = struct
           | IFailwith (kloc, tv) ->
               let {ifailwith} = ifailwith in
               (ifailwith [@ocaml.tailcall]) (Some logger) g gas kloc tv accu
-          | IDipn (_, _n, n', _sty, b, k) ->
-              let accu, stack, ks = kundip n' accu stack (KCons (k, ks)) in
+          | IDipn (_, _n, n', sty, b, k) ->
+              let accu, stack, ks = kundip n' accu stack sty (KCons (k, ks)) in
               (step [@ocaml.tailcall]) g gas b ks accu stack
           | IView
               (_, (View_signature {output_ty; _} as view_signature), stack_ty, k)
