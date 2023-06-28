@@ -3728,7 +3728,9 @@ and parse_instr :
         make_proof_argument n stack
       in
       let b = descr.instr.apply (IHalt descr.loc) in
-      let res = {apply = (fun k -> IDipn (loc, n, n', b, k))} in
+      let res =
+        {apply = (fun k -> IDipn (loc, n, n', for_logging_only stack, b, k))}
+      in
       typed ctxt loc res aft
   | Prim (loc, I_DIP, (([] | _ :: _ :: _ :: _) as l), _), _ ->
       (* Technically, the arities 1 and 2 are allowed but the error only mentions 2.

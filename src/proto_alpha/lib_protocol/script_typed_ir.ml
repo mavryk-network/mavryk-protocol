@@ -988,6 +988,7 @@ and ('before_top, 'before, 'result_top, 'result) kinstr =
       Script.location
       * int
       * ('c, 'T, 'd, 'V, 'a, 'S, 'b, 'U) stack_prefix_preservation_witness
+      * ('a, 'S) stack_ty option
       * ('c, 'T, 'd, 'V) kinstr
       * ('b, 'U, 'r, 'F) kinstr
       -> ('a, 'S, 'r, 'F) kinstr
@@ -1674,7 +1675,7 @@ let kinstr_location : type a s b f. (a, s, b, f) kinstr -> Script.location =
   | ISapling_verify_update_deprecated (loc, _) -> loc
   | IDig (loc, _, _, _) -> loc
   | IDug (loc, _, _, _) -> loc
-  | IDipn (loc, _, _, _, _) -> loc
+  | IDipn (loc, _, _, _, _, _) -> loc
   | IDropn (loc, _, _, _) -> loc
   | IChainId (loc, _) -> loc
   | INever loc -> loc
@@ -2253,7 +2254,7 @@ let kinstr_traverse i init f =
     | ISapling_verify_update_deprecated (_, k) -> (next [@ocaml.tailcall]) k
     | IDig (_, _, _, k) -> (next [@ocaml.tailcall]) k
     | IDug (_, _, _, k) -> (next [@ocaml.tailcall]) k
-    | IDipn (_, _, _, k1, k2) -> (next2 [@ocaml.tailcall]) k1 k2
+    | IDipn (_, _, _, _, k1, k2) -> (next2 [@ocaml.tailcall]) k1 k2
     | IDropn (_, _, _, k) -> (next [@ocaml.tailcall]) k
     | IChainId (_, k) -> (next [@ocaml.tailcall]) k
     | INever _ -> (return [@ocaml.tailcall]) ()

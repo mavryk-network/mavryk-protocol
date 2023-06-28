@@ -619,10 +619,10 @@ and kinstr_size :
         ret_succ_adding
           (accu ++ stack_prefix_preservation_witness_size n w)
           (base1 loc k +! (word_size *? 2))
-    | IDipn (loc, n, w, k1, k2) ->
+    | IDipn (loc, n, w, sty, k1, k2) ->
         ret_succ_adding
           (accu ++ stack_prefix_preservation_witness_size n w)
-          (base2 loc k1 k2 +! (word_size *? 2))
+          (base2 loc k1 k2 +! stack_ty_for_logging_size sty +! (word_size *? 3))
     | IDropn (loc, n, w, k) ->
         ret_succ_adding
           (accu ++ stack_prefix_preservation_witness_size n w)

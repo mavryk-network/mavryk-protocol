@@ -1497,7 +1497,7 @@ let extract_ir_sized_step :
       Instructions.sapling_verify_update inputs outputs bound_data state
   | IDig (_, n, _, _), _ -> Instructions.dig (Size.of_int n)
   | IDug (_, n, _, _), _ -> Instructions.dug (Size.of_int n)
-  | IDipn (_, n, _, _, _), _ -> Instructions.dipn (Size.of_int n)
+  | IDipn (_, n, _, _, _, _), _ -> Instructions.dipn (Size.of_int n)
   | IDropn (_, n, _, _), _ -> Instructions.dropn (Size.of_int n)
   | IChainId (_, _), _ -> Instructions.chain_id
   | INever _, _ -> .

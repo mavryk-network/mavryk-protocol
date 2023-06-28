@@ -1004,6 +1004,7 @@ and ('before_top, 'before, 'result_top, 'result) kinstr =
         (See forthcoming comments about [stack_prefix_preservation_witness].)
        *)
       * ('c, 'T, 'd, 'V, 'a, 'S, 'b, 'U) stack_prefix_preservation_witness
+      * ('a, 'S) stack_ty option
       * ('c, 'T, 'd, 'V) kinstr
       * ('b, 'U, 'r, 'F) kinstr
       -> ('a, 'S, 'r, 'F) kinstr

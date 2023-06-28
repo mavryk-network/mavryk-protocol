@@ -927,7 +927,7 @@ let check_kinstr_size () =
           ISapling_verify_update_deprecated (loc, halt ()) );
       Kinstr ("IDig", IDig (loc, 0, KRest, halt ()));
       Kinstr ("IDug", IDug (loc, 0, KRest, halt ()));
-      Kinstr ("IDipn", IDipn (loc, 0, KRest, halt (), halt ()));
+      Kinstr ("IDipn", IDipn (loc, 0, KRest, None, halt (), halt ()));
       Kinstr ("IDropn", IDropn (loc, 0, KRest, halt ()));
       Kinstr ("IChainId", IChainId (loc, halt ()));
       Kinstr ("INever", INever loc);

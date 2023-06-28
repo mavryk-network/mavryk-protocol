@@ -1380,7 +1380,7 @@ module Stack_utils = struct
                  continuation = k;
                  reconstruct = (fun k -> IDug (loc, n, p, k));
                }
-      | IDipn (loc, n, p, k1, k2), s ->
+      | IDipn (loc, n, p, sty, k1, k2), s ->
           return
           @@ Ex_split_loop_may_not_fail
                {
@@ -1392,7 +1392,7 @@ module Stack_utils = struct
                    (fun s ->
                      return
                      @@ stack_prefix_preservation_witness_split_output p s);
-                 reconstruct = (fun k1 k2 -> IDipn (loc, n, p, k1, k2));
+                 reconstruct = (fun k1 k2 -> IDipn (loc, n, p, sty, k1, k2));
                }
       | IDropn (loc, n, p, k), s ->
           let s = stack_prefix_preservation_witness_split_input p s in
@@ -2304,7 +2304,7 @@ module Logger (Base : Logger_base) = struct
           | IFailwith (kloc, tv) ->
               let {ifailwith} = ifailwith in
               (ifailwith [@ocaml.tailcall]) (Some logger) g gas kloc tv accu
-          | IDipn (_, _n, n', b, k) ->
+          | IDipn (_, _n, n', _sty, b, k) ->
               let accu, stack, ks = kundip n' accu stack (KCons (k, ks)) in
               (step [@ocaml.tailcall]) g gas b ks accu stack
           | IView

@@ -368,7 +368,7 @@ let cost_of_instr : type a s r f. (a, s, r, f) kinstr -> a -> s -> Gas.cost =
   | IAmount _ -> Interp_costs.amount
   | IDig (_, n, _, _) -> Interp_costs.dign n
   | IDug (_, n, _, _) -> Interp_costs.dugn n
-  | IDipn (_, n, _, _, _) -> Interp_costs.dipn n
+  | IDipn (_, n, _, _, _, _) -> Interp_costs.dipn n
   | IDropn (_, n, _, _) -> Interp_costs.dropn n
   | IChainId _ -> Interp_costs.chain_id
   | ICreate_contract _ -> Interp_costs.create_contract
