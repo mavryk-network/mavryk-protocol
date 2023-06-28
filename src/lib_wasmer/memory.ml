@@ -67,9 +67,11 @@ let set_string mem ~address ~data =
   if len > 0 then (
     (* For compatibility we only check bounds when something shall be written. *)
     check_bounds mem address len ;
-    for offset = 0 to len - 1 do
-      String.get data offset |> Array.unsafe_set mem.raw (offset + address)
-    done)
+    Memcpy.memcpy_from_string
+      Memcpy.carray
+      ~src:data
+      ~dst:mem.raw
+      ~dst_off:address)
 
 module Internal_for_tests = struct
   let of_list (content : char list) =

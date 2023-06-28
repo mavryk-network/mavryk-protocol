@@ -212,6 +212,8 @@ let lwt_unix = external_sublib lwt "lwt.unix"
 
 let lwt_watcher = external_lib "lwt-watcher" V.(exactly "0.2")
 
+let memcpy = external_lib "memcpy" V.(at_least "0.2.0")
+
 let mtime =
   external_lib
     ~js_compatible:true
@@ -2346,7 +2348,7 @@ let octez_wasmer =
     "tezos-wasmer"
     ~path:"src/lib_wasmer"
     ~synopsis:"Wasmer bindings for SCORU WASM"
-    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib]
+    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib; memcpy]
     ~preprocess:[pps ppx_deriving_show]
     ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
     ~ctypes:

@@ -9,7 +9,8 @@
   ctypes
   ctypes.foreign
   lwt
-  lwt.unix)
+  lwt.unix
+  memcpy)
  (preprocess (pps ppx_deriving.show))
  (flags
   (:standard)
