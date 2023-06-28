@@ -1403,7 +1403,7 @@ module Raw = struct
                  fun w accu stack ->
                   match w with
                   | KRest -> (accu, stack)
-                  | KPrefix (_ty, w) ->
+                  | KPrefix w ->
                       let accu, stack = stack in
                       aux w accu stack
                 in

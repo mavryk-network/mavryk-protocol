@@ -1225,7 +1225,7 @@ let rec make_dug_proof_argument :
   | n, Item_t (v, rest) ->
       make_dug_proof_argument loc (n - 1) x rest
       |> Option.map @@ fun (Dug_proof_argument (n', aft')) ->
-         Dug_proof_argument (KPrefix (v, n'), Item_t (v, aft'))
+         Dug_proof_argument (KPrefix n', Item_t (v, aft'))
   | _, _ -> None
 
 let rec make_comb_get_proof_argument :
@@ -2748,11 +2748,11 @@ and parse_instr :
         fun n stk ->
           match (Compare.Int.(n = 0), stk) with
           | true, rest -> return (Dropn_proof_argument (KRest, rest))
-          | false, Item_t (a, rest) ->
+          | false, Item_t (_a, rest) ->
               let+ (Dropn_proof_argument (n', stack_after_drops)) =
                 make_proof_argument (n - 1) rest
               in
-              Dropn_proof_argument (KPrefix (a, n'), stack_after_drops)
+              Dropn_proof_argument (KPrefix n', stack_after_drops)
           | _, _ ->
               let whole_stack = serialize_stack_for_error ctxt whole_stack in
               tzfail (Bad_stack (loc, I_DROP, whole_n, whole_stack))
@@ -2826,7 +2826,7 @@ and parse_instr :
               let+ (Dig_proof_argument (n', x, aft')) =
                 make_proof_argument (n - 1) rest
               in
-              Dig_proof_argument (KPrefix (v, n'), x, Item_t (v, aft'))
+              Dig_proof_argument (KPrefix n', x, Item_t (v, aft'))
           | _, _ ->
               let whole_stack = serialize_stack_for_error ctxt stack in
               tzfail (Bad_stack (loc, I_DIG, 3, whole_stack))
@@ -3717,7 +3717,7 @@ and parse_instr :
             let+ (Dipn_proof_argument (n', ctxt, descr, aft')) =
               make_proof_argument (n - 1) rest
             in
-            let w = KPrefix (v, n') in
+            let w = KPrefix n' in
             Dipn_proof_argument (w, ctxt, descr, Item_t (v, aft'))
         | _, _ ->
             let whole_stack = serialize_stack_for_error ctxt stack in

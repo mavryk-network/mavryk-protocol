@@ -159,26 +159,13 @@ let view_signature_size (View_signature {name; input_ty; output_ty}) =
 
 let script_expr_hash_size = !!64
 
-(* Note: this function is NOT tail-recursive, but that's okay, since
-   the recursion is bound by the size of the witness, which is an
-   11-bit unsigned integer, i.e. at most 2048. This is enough to
-   guarantee there will be no stack overflow. *)
-let rec stack_prefix_preservation_witness_size_internal :
-    type a b c d e f g h.
-    (a, b, c, d, e, f, g, h) stack_prefix_preservation_witness -> nodes_and_size
-    = function
-  | KPrefix (ty, w) ->
-      ret_succ_adding
-        (ty_size ty ++ stack_prefix_preservation_witness_size_internal w)
-        h3w
-  | KRest -> zero
-
-let stack_prefix_preservation_witness_size (_n : int) w =
-  stack_prefix_preservation_witness_size_internal w
-
 let peano_shape_proof =
   let scale = header_size +! h1w in
   fun k -> scale *? k
+
+let stack_prefix_preservation_witness_size n
+    (_w : (_, _, _, _, _, _, _, _) stack_prefix_preservation_witness) =
+  (Nodes.zero, h1w *? n)
 
 let comb_gadt_witness_size n (_w : (_, _, _, _, _, _) comb_gadt_witness) =
   peano_shape_proof n
@@ -704,5 +691,5 @@ module Internal_for_tests = struct
   let kinstr_size = kinstr_size
 
   let stack_prefix_preservation_witness_size =
-    stack_prefix_preservation_witness_size_internal
+    stack_prefix_preservation_witness_size
 end

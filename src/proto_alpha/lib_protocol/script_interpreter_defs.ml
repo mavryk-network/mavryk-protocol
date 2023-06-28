@@ -468,11 +468,11 @@ let rec kundip :
     a * s * (e, z, b, t) continuation =
  fun w accu stack sty_opt ks ->
   match (w, sty_opt) with
-  | KPrefix (_ty, w), None ->
+  | KPrefix w, None ->
       let ks = KUndip (accu, None, ks) in
       let accu, stack = stack in
       kundip w accu stack None ks
-  | KPrefix (_ty, w), Some (Item_t (ty, sty)) ->
+  | KPrefix w, Some (Item_t (ty, sty)) ->
       let ks = KUndip (accu, Some ty, ks) in
       let accu, stack = stack in
       kundip w accu stack (Some sty) ks
@@ -812,7 +812,7 @@ let rec interp_stack_prefix_preserving_operation :
     (d * w) * result =
  fun f n accu stk ->
   match (n, stk) with
-  | KPrefix (_, n), rest ->
+  | KPrefix n, rest ->
       interp_stack_prefix_preserving_operation f n (fst rest) (snd rest)
       |> fun ((v, rest'), result) -> ((accu, (v, rest')), result)
   | KRest, v -> f accu v

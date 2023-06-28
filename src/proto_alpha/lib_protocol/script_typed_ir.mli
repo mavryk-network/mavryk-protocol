@@ -1528,8 +1528,7 @@ and ('a, 'S, 'r, 'F) kdescr = {
 *)
 and (_, _, _, _, _, _, _, _) stack_prefix_preservation_witness =
   | KPrefix :
-      ('a, _) ty
-      * ('c, 'V, 'd, 'W, 'x, 'S, 'y, 'U) stack_prefix_preservation_witness
+      ('c, 'V, 'd, 'W, 'x, 'S, 'y, 'U) stack_prefix_preservation_witness
       -> ( 'c,
            'V,
            'd,

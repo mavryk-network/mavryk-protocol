@@ -72,6 +72,7 @@ module Internal_for_tests : sig
     Cache_memory_helpers.nodes_and_size
 
   val stack_prefix_preservation_witness_size :
+    int ->
     ( 'a,
       'b,
       'c,

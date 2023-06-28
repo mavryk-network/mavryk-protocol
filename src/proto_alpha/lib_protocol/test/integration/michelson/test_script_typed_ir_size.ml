@@ -973,29 +973,6 @@ let check_kinstr_size () =
       Kinstr ("IHalt ()", halt ());
     ]
 
-let check_witness_sizes () =
-  let stack_prefix_preservation =
-    KPrefix
-      ( Unit_t,
-        KPrefix
-          ( Unit_t,
-            KPrefix
-              ( Unit_t,
-                KPrefix
-                  ( Unit_t,
-                    KPrefix
-                      ( Unit_t,
-                        KPrefix
-                          (Unit_t, KPrefix (Unit_t, KPrefix (Unit_t, KRest))) )
-                  ) ) ) )
-  in
-  check_size
-    ~name:"stack_prefix_preservation_witness"
-    ~expected:
-      Script_typed_ir_size.Internal_for_tests
-      .stack_prefix_preservation_witness_size
-    stack_prefix_preservation
-
 type ex_witness =
   | Ex_witness :
       (_, _, _, _, _, _, _, _) stack_prefix_preservation_witness
@@ -1003,24 +980,28 @@ type ex_witness =
 
 let ex_krest : ex_witness = Ex_witness KRest
 
-let ex_kprefix (ty : ex_ty) (w : ex_witness) : ex_witness =
-  let (Ex_ty ty) = ty in
+let ex_kprefix (w : ex_witness) : ex_witness =
   let (Ex_witness w) = w in
-  Ex_witness (KPrefix (ty, w))
+  Ex_witness (KPrefix w)
 
-let check_random_witness_sizes () =
+let rec witness_length :
+    type a b c d e f g h.
+    (a, b, c, d, e, f, g, h) stack_prefix_preservation_witness -> int = function
+  | KPrefix w -> 1 + witness_length w
+  | KRest -> 0
+
+let check_witness_sizes () =
   let open Lwt_result_syntax in
   let* (Ex_witness stack_prefix_preservation) =
-    List.fold_left_es
-      (fun w _n -> return @@ ex_kprefix (sample_ty (Random.int 10 + 1)) w)
-      ex_krest
-      (1 -- 10)
+    List.fold_left_es (fun w _n -> return @@ ex_kprefix w) ex_krest (1 -- 100)
   in
   check_size
-    ~name:"random_stack_prefix_preservation_witness"
-    ~expected:
+    ~name:"stack_prefix_preservation_witness"
+    ~expected:(fun w ->
       Script_typed_ir_size.Internal_for_tests
       .stack_prefix_preservation_witness_size
+        (witness_length w)
+        w)
     stack_prefix_preservation
 
 let check_micheline_sizes () =
@@ -1064,7 +1045,6 @@ let tests =
     tztest "ty size" `Quick check_ty_size;
     tztest "kinstr size" `Quick check_kinstr_size;
     tztest "witness sizes" `Quick check_witness_sizes;
-    tztest "random witness sizes" `Quick check_random_witness_sizes;
     tztest "micheline sizes" `Quick check_micheline_sizes;
   ]
 

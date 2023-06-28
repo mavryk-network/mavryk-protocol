@@ -145,7 +145,7 @@ module Stack_utils = struct
     | KRest ->
         Ex_stack_prefix_preservation_witness
           (Stack_ty_append_nil, Stack_ty_append_nil)
-    | KPrefix (_a, w) ->
+    | KPrefix w ->
         let (Ex_stack_prefix_preservation_witness (l, r)) =
           stack_prefix_preservation_witness_to_bis w
         in
