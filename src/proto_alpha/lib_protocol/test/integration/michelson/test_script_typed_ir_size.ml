@@ -996,6 +996,33 @@ let check_witness_sizes () =
       .stack_prefix_preservation_witness_size
     stack_prefix_preservation
 
+type ex_witness =
+  | Ex_witness :
+      (_, _, _, _, _, _, _, _) stack_prefix_preservation_witness
+      -> ex_witness
+
+let ex_krest : ex_witness = Ex_witness KRest
+
+let ex_kprefix (ty : ex_ty) (w : ex_witness) : ex_witness =
+  let (Ex_ty ty) = ty in
+  let (Ex_witness w) = w in
+  Ex_witness (KPrefix (ty, w))
+
+let check_random_witness_sizes () =
+  let open Lwt_result_syntax in
+  let* (Ex_witness stack_prefix_preservation) =
+    List.fold_left_es
+      (fun w _n -> return @@ ex_kprefix (sample_ty (Random.int 10 + 1)) w)
+      ex_krest
+      (1 -- 10)
+  in
+  check_size
+    ~name:"random_stack_prefix_preservation_witness"
+    ~expected:
+      Script_typed_ir_size.Internal_for_tests
+      .stack_prefix_preservation_witness_size
+    stack_prefix_preservation
+
 let check_micheline_sizes () =
   let open Michelson_v1_primitives in
   let check (name, micheline) =
@@ -1037,6 +1064,7 @@ let tests =
     tztest "ty size" `Quick check_ty_size;
     tztest "kinstr size" `Quick check_kinstr_size;
     tztest "witness sizes" `Quick check_witness_sizes;
+    tztest "random witness sizes" `Quick check_random_witness_sizes;
     tztest "micheline sizes" `Quick check_micheline_sizes;
   ]
 
