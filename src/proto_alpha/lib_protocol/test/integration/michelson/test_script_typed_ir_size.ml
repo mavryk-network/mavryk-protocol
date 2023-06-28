@@ -662,7 +662,7 @@ let check_size ~name ~expected item =
   let _, e = expected item in
   let exp = Saturation_repr.to_int e in
   let actual = 8 * Obj.(reachable_words @@ repr item) in
-  let overapprox = 1_000_000 * (exp - actual) / actual in
+  let overapprox = 1_000_000 * (exp - actual) / max 1 actual in
   let msg verb =
     Printf.sprintf
       "For %s model predicts the size of %d bytes; while actual measured size \
