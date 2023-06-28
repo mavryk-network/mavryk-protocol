@@ -120,7 +120,7 @@ module Stack_utils = struct
       (b, t) stack_ty =
    fun w s ->
     match (w, s) with
-    | KPrefix (_, _, w), Item_t (_, s) ->
+    | KPrefix (_, w), Item_t (_, s) ->
         stack_prefix_preservation_witness_split_input w s
     | KRest, s -> s
 
@@ -131,7 +131,7 @@ module Stack_utils = struct
       (d, v) stack_ty =
    fun w s ->
     match (w, s) with
-    | KPrefix (_, a, w), s ->
+    | KPrefix (a, w), s ->
         Item_t (a, stack_prefix_preservation_witness_split_output w s)
     | KRest, s -> s
 

@@ -167,7 +167,7 @@ let rec stack_prefix_preservation_witness_size_internal :
     type a b c d e f g h.
     (a, b, c, d, e, f, g, h) stack_prefix_preservation_witness -> nodes_and_size
     = function
-  | KPrefix (_loc, ty, w) ->
+  | KPrefix (ty, w) ->
       ret_succ_adding
         (ty_size ty ++ stack_prefix_preservation_witness_size_internal w)
         h3w

@@ -974,28 +974,20 @@ let check_kinstr_size () =
     ]
 
 let check_witness_sizes () =
-  let loc = Micheline.dummy_location in
   let stack_prefix_preservation =
     KPrefix
-      ( loc,
-        Unit_t,
+      ( Unit_t,
         KPrefix
-          ( loc,
-            Unit_t,
+          ( Unit_t,
             KPrefix
-              ( loc,
-                Unit_t,
+              ( Unit_t,
                 KPrefix
-                  ( loc,
-                    Unit_t,
+                  ( Unit_t,
                     KPrefix
-                      ( loc,
-                        Unit_t,
+                      ( Unit_t,
                         KPrefix
-                          ( loc,
-                            Unit_t,
-                            KPrefix (loc, Unit_t, KPrefix (loc, Unit_t, KRest))
-                          ) ) ) ) ) )
+                          (Unit_t, KPrefix (Unit_t, KPrefix (Unit_t, KRest))) )
+                  ) ) ) )
   in
   check_size
     ~name:"stack_prefix_preservation_witness"
