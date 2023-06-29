@@ -81,3 +81,5 @@ Internal
 - Register an error's encoding: ``WASM_proof_verification_failed``. It was
   previously not registered, making the error message a bit obscure. (MR :gl:`!9603`)
 
+- In the Michelson IR GADT, type witnesses have been removed from
+  prefix preservation proofs (:gl:`!9316`)
