@@ -90,6 +90,11 @@ val kind : t -> floating_kind
     [floating_store]. *)
 val mem : t -> Block_hash.t -> bool Lwt.t
 
+(** [may_sync: floating_store] updates an index RO state to allow
+    accessing recently added values. This is expected to cheap to
+    execute (~10us). This is noop on RW instances. *)
+val may_sync : t -> unit
+
 (** [find_info floating_store block_hash] reads from the index the
     info of [block_hash] if the block is stored in [floating_store],
     returns [None] otherwise. *)
