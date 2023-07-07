@@ -172,6 +172,11 @@ let build_raw_rpc_directory_with_validator (module Proto : Block_services.PROTO)
   in
   let module Block_services = Block_services.Make (Proto) (Next_proto) in
   let module S = Block_services.S in
+  register0 S.live_blocks (fun (chain_store, block) () () ->
+      let* live_blocks, _ =
+        Store.Chain.compute_live_blocks chain_store ~block
+      in
+      return live_blocks) ;
   (* helpers *)
   register0 S.Helpers.Preapply.block (fun (chain_store, block) q p ->
       let timestamp =
@@ -255,11 +260,6 @@ let build_raw_rpc_directory_without_validator
   in
   let module Block_services = Block_services.Make (Proto) (Next_proto) in
   let module S = Block_services.S in
-  register0 S.live_blocks (fun (chain_store, block) () () ->
-      let* live_blocks, _ =
-        Store.Chain.compute_live_blocks chain_store ~block
-      in
-      return live_blocks) ;
   (* block metadata *)
   let block_metadata chain_store block =
     let* metadata = Store.Block.get_block_metadata chain_store block in
@@ -858,7 +858,10 @@ let get_protocol hash =
   | None -> raise Not_found
   | Some protocol -> protocol
 
-let get_directory chain_store block ~with_validator =
+(* The [node_specific] argument allows to distinguish whether or not
+   it is necessary to instanciate the RPC related to the validator,
+   something that is node specific. *)
+let get_directory chain_store block ~node_specific =
   let open Lwt_syntax in
   let* o = Store.Chain.get_rpc_directory chain_store block in
   match o with
@@ -874,7 +877,7 @@ let get_directory chain_store block ~with_validator =
             (module Block_services.Fake_protocol)
             (module Next_proto)
         in
-        if with_validator then
+        if node_specific then
           let dir_with_validator =
             build_raw_rpc_directory_with_validator
               (module Block_services.Fake_protocol)
@@ -919,7 +922,7 @@ let get_directory chain_store block ~with_validator =
                   (module Proto)
                   (module Next_proto)
               in
-              if with_validator then
+              if node_specific then
                 let dir_with_validator =
                   build_raw_rpc_directory_with_validator
                     (module Proto)
@@ -945,7 +948,7 @@ let build_rpc_directory_with_validator chain_store block =
   match o with
   | None -> Lwt.fail Not_found
   | Some b ->
-      let* dir = get_directory ~with_validator:true chain_store b in
+      let* dir = get_directory ~node_specific:true chain_store b in
       Lwt.return
         (Tezos_rpc.Directory.map (fun _ -> Lwt.return (chain_store, b)) dir)
 
@@ -955,6 +958,6 @@ let build_rpc_directory_without_validator chain_store block =
   match o with
   | None -> Lwt.fail Not_found
   | Some b ->
-      let* dir = get_directory ~with_validator:false chain_store b in
+      let* dir = get_directory ~node_specific:false chain_store b in
       Lwt.return
         (Tezos_rpc.Directory.map (fun _ -> Lwt.return (chain_store, b)) dir)
