@@ -26,9 +26,7 @@ let build_rpc_directory node_version config store =
     static_dir
     (Tezos_rpc.Path.subst1 Tezos_shell_services.Chain_services.path)
     (fun ((), chain) ->
-      let dir =
-        Tezos_shell.Chain_directory.rpc_directory_without_validator ()
-      in
+      let dir = Tezos_shell.Chain_directory.rpc_directory_generic () in
       let dir =
         Tezos_rpc.Directory.map
           (fun ((), _chain) ->

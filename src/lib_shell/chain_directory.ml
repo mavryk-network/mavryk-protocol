@@ -116,7 +116,11 @@ let list_blocks chain_store ?(length = 1) ?min_date blocks =
   in
   return (List.rev blocks)
 
-let rpc_directory_with_validator dir validator =
+(* This RPC directory must be instanciated by the node itself. Indeed,
+   only the node have access to some particular ressources, such as
+   the validator or some store internal values computed at runtime,
+   that are necessary for some RPCs. *)
+let rpc_directory_node_specific dir validator =
   let open Lwt_result_syntax in
   let register0 s f =
     dir :=
@@ -159,7 +163,10 @@ let rpc_directory_with_validator dir validator =
   register1 S.Invalid_blocks.delete (fun chain_store hash () () ->
       Store.Block.unmark_invalid chain_store hash)
 
-let rpc_directory_without_validator dir =
+(* This RPC directory is agnostic to the node internal
+   ressources. However, theses RPCs can access to a data subset by
+   reading the store static values. *)
+let rpc_directory_generic dir =
   let open Lwt_result_syntax in
   let register0 s f =
     dir :=
@@ -195,8 +202,8 @@ let rpc_directory validator =
   let dir : Store.chain_store Tezos_rpc.Directory.t ref =
     ref Tezos_rpc.Directory.empty
   in
-  rpc_directory_without_validator dir ;
-  rpc_directory_with_validator dir validator ;
+  rpc_directory_generic dir ;
+  rpc_directory_node_specific dir validator ;
   let register_dynamic_directory2 ?descr s f =
     dir :=
       Tezos_rpc.Directory.register_dynamic_directory
@@ -208,14 +215,16 @@ let rpc_directory validator =
   (* blocks *)
   register_dynamic_directory2
     Block_services.path
-    Block_directory.build_rpc_directory_with_validator ;
+    Block_directory.build_rpc_directory_node_specific ;
   !dir
 
-let rpc_directory_without_validator () =
+(* This RPC directory instanciates only a subset of the chain RPCs as
+   it is agnostic to the node internal ressources. *)
+let rpc_directory_generic () =
   let dir : Store.chain_store Tezos_rpc.Directory.t ref =
     ref Tezos_rpc.Directory.empty
   in
-  rpc_directory_without_validator dir ;
+  rpc_directory_generic dir ;
   let register_dynamic_directory2 ?descr s f =
     dir :=
       Tezos_rpc.Directory.register_dynamic_directory
@@ -227,7 +236,7 @@ let rpc_directory_without_validator () =
   (* blocks *)
   register_dynamic_directory2
     Block_services.path
-    Block_directory.build_rpc_directory_without_validator ;
+    Block_directory.build_rpc_directory_generic ;
   !dir
 
 let build_rpc_directory validator =

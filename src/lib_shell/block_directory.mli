@@ -24,13 +24,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val build_raw_rpc_directory_with_validator :
+val build_raw_rpc_directory_node_specific :
   (module Block_services.PROTO) ->
   (module Registered_protocol.T) ->
   (Store.chain_store * Store.Block.t) Tezos_rpc.Directory.directory
 
-val build_rpc_directory_with_validator :
+val build_rpc_directory_node_specific :
   Store.chain_store -> Block_services.block -> 'a Tezos_rpc.Directory.t Lwt.t
 
-val build_rpc_directory_without_validator :
+val build_rpc_directory_generic :
   Store.chain_store -> Block_services.block -> 'a Tezos_rpc.Directory.t Lwt.t
