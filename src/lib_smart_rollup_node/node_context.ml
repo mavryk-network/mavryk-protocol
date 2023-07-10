@@ -184,7 +184,7 @@ let init (cctxt : #Client_context.full) ~data_dir ?log_kernel_debug_file mode
   in
   let*! kernel_debug_logger, kernel_debug_finaliser =
     let open Lwt_syntax in
-    let kernel_debug = Event.kernel_debug in
+    let kernel_debug _ = return_unit in
     if configuration.log_kernel_debug then
       let+ chan = make_kernel_logger ?log_kernel_debug_file data_dir in
       let kernel_debug msg =
