@@ -188,10 +188,17 @@ let init (cctxt : #Client_context.full) ~data_dir ?log_kernel_debug_file mode
     if configuration.log_kernel_debug then
       let+ chan = make_kernel_logger ?log_kernel_debug_file data_dir in
       let kernel_debug msg =
-        let* () = Lwt_io.write chan msg in
-        let* () = Lwt_io.flush chan in
-        let* () = kernel_debug msg in
-        return_unit
+        Lwt.async (fun () ->
+            let* () =
+              Lwt_io.(
+                atomic
+                  (fun chan ->
+                    let* () = write chan msg in
+                    Lwt_io.flush chan)
+                  chan)
+            in
+            return_unit) ;
+        kernel_debug msg
       in
       (kernel_debug, fun () -> Lwt_io.close chan)
     else return (kernel_debug, fun () -> return_unit)
