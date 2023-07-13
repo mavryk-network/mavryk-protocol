@@ -46,6 +46,14 @@ module Events = struct
       ~msg:"New head received ({level})"
       ~level:Notice
       ("level", Data_encoding.int32)
+
+  let synchronized =
+    declare_1
+      ~section
+      ~name:"synchronized"
+      ~msg:"Store synchronized up to level {level}"
+      ~level:Notice
+      ("level", Data_encoding.int32)
 end
 
 module Daemon = struct
