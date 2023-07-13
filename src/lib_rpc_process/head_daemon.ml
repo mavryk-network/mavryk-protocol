@@ -40,12 +40,12 @@ module Events = struct
       ("error", Error_monad.trace_encoding)
 
   let new_head =
-    declare_0
+    declare_1
       ~section
       ~name:"new_head"
-      ~msg:"New head received"
+      ~msg:"New head received ({level})"
       ~level:Notice
-      ()
+      ("level", Data_encoding.int32)
 end
 
 module Daemon = struct
@@ -91,9 +91,9 @@ FIXME: Lorsqu'une nouvelle tête arrive, ajouter un lock global ?
 *)
 
 let handle_new_head dynamic_store parameters _stopper
-    (_block_hash, (_header : Tezos_base.Block_header.t)) =
+    (_block_hash, (header : Tezos_base.Block_header.t)) =
   let open Lwt_result_syntax in
-  let*! () = Events.(emit new_head) () in
+  let*! () = Events.(emit new_head) header.shell.level in
   let old_store = !dynamic_store in
   let* store =
     Store.init
