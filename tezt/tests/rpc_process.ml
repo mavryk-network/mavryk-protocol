@@ -203,6 +203,52 @@ let test_forward =
     RPC.get_monitor_applied_blocks
     ~rpc_prefix:"/monitor/applied_blocks"
 
+let wait_for_RPC_process_sync node =
+  let filter json = JSON.(json |-> "level" |> as_int_opt) in
+  Node.wait_for node "synchronized.v0" filter
+
+let wait_for_local_rpc_server node =
+  Node.wait_for node "starting_local_rpc_server.v0" (fun _ -> Some ())
+
+let test_sync_with_node =
+  Protocol.register_test
+    ~__FILE__
+    ~title:"RPC is sync with node"
+    ~tags:["rpc"; "process"; "node"; "sync"]
+  @@ fun protocol ->
+  let node_arguments = Node.[Synchronisation_threshold 0] in
+  (* Default node running with the RPC_process *)
+  let* node_rpc_process = Node.init ~name:"node_rpc_process" node_arguments in
+  let* () = Node.wait_for_ready node_rpc_process in
+  let node_local_rpc =
+    Node.create ~rpc_local:true ~name:"node_local_rpc" node_arguments
+  in
+  let waiter_for_local_rpc_server = wait_for_local_rpc_server node_local_rpc in
+  let* () = Node.run node_local_rpc node_arguments in
+  let* () = Node.wait_for_ready node_local_rpc in
+  (* Wait for the event that states that the local RPC server is
+     used. *)
+  let* () = waiter_for_local_rpc_server in
+  let* client = Client.init ~endpoint:(Node node_local_rpc) () in
+  let* () = Client.Admin.connect_address ~peer:node_rpc_process client in
+  let waiter_for_RPC_process_sync =
+    wait_for_RPC_process_sync node_rpc_process
+  in
+  let* () = Client.activate_protocol_and_wait ~protocol client in
+  Log.info
+    "Wait for RPC_process sync at level 1 on the %s"
+    (Node.name node_rpc_process) ;
+  let* (_ : int) = waiter_for_RPC_process_sync in
+  Log.info "Wait for level 1 on the %s" (Node.name node_rpc_process) ;
+  (* Node.wait_for_level relies on the RPC_process synchronization
+     event.*)
+  let* (_ : int) = Node.wait_for_level node_rpc_process 1 in
+  (* Node.wait_for_level relies on the set_head/branch_switch
+     events. *)
+  let* (_ : int) = Node.wait_for_level node_local_rpc 1 in
+  unit
+
 let register ~protocols =
   test_kill protocols ;
-  test_forward protocols
+  test_forward protocols ;
+  test_sync_with_node protocols
