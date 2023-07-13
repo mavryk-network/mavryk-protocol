@@ -571,7 +571,16 @@ let update_identity node identity =
 let handle_event node {name; value; timestamp = _} =
   match name with
   | "node_is_ready.v0" -> set_ready node
-  | "head_increment.v0" | "branch_switch.v0" -> (
+  | "head_increment.v0" | "branch_switch.v0" ->
+      if node.persistent_state.rpc_local then
+        match JSON.(value |-> "level" |> as_int_opt) with
+        | None ->
+            (* There are several kinds of events and maybe
+               this one is not the one with the level: ignore it. *)
+            ()
+        | Some level -> update_level node level
+      else ()
+  | "synchronized.v0" -> (
       match JSON.(value |-> "level" |> as_int_opt) with
       | None ->
           (* There are several kinds of events and maybe
@@ -595,7 +604,9 @@ let handle_event node {name; value; timestamp = _} =
   | "set_head.v0" -> (
       match JSON.(value |> geti 1 |> as_int_opt) with
       | None -> ()
-      | Some level -> update_level node level)
+      | Some level ->
+          if node.persistent_state.rpc_local then update_level node level
+          else ())
   | _ -> ()
 
 let check_event ?where node name promise =
