@@ -160,6 +160,11 @@ module Functions (S : FOREIGN) = struct
         "wasm_config_set_features"
         (ptr Types.Config.t @-> ptr Types.Wasmer.Features.t @-> returning void)
 
+    let canonicalize_nans =
+      foreign
+        "wasm_config_canonicalize_nans"
+        (ptr Types.Config.t @-> bool @-> returning void)
+
     let delete =
       foreign "wasm_config_delete" (ptr Types.Config.t @-> returning void)
   end

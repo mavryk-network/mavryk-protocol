@@ -975,6 +975,94 @@ let test_read_input_write_output_failing ~version () =
     ~messages
     ()
 
+let test_float32 ~version () =
+  let kernel =
+    {|
+      (module
+        (import
+          "smart_rollup_core"
+          "write_output"
+          (func $write_output (param i32 i32) (result i32))
+        )
+
+        (memory 1)
+        (export "memory" (memory 0))
+
+        (func (export "kernel_run")
+          (f32.store
+            (i32.const 0)
+            (f32.add
+              (f32.const 13.37)
+              (f32.const 73.31)
+            )
+          )
+          (f32.store
+            (i32.const 4)
+            (f32.div
+              (f32.const 13.37)
+              (f32.const 0)
+            )
+          )
+          (f32.store
+            (i32.const 8)
+            (f32.div
+              (f32.const 0)
+              (f32.const 0)
+            )
+          )
+          (call $write_output
+            (i32.const 0)
+            (i32.const 12))
+        )
+      )
+    |}
+  in
+  test_against_both ~version ~from_binary:false ~kernel ~messages:[""] ()
+
+let test_float64 ~version () =
+  let kernel =
+    {|
+      (module
+        (import
+          "smart_rollup_core"
+          "write_output"
+          (func $write_output (param i32 i32) (result i32))
+        )
+
+        (memory 1)
+        (export "memory" (memory 0))
+
+        (func (export "kernel_run")
+          (f64.store
+            (i32.const 0)
+            (f64.add
+              (f64.const 13.37)
+              (f64.const 73.31)
+            )
+          )
+          (f64.store
+            (i32.const 4)
+            (f64.div
+              (f64.const 13.37)
+              (f64.const 0)
+            )
+          )
+          (f64.store
+            (i32.const 8)
+            (f64.div
+              (f64.const 0)
+              (f64.const 0)
+            )
+          )
+          (call $write_output
+            (i32.const 0)
+            (i32.const 12))
+        )
+      )
+    |}
+  in
+  test_against_both ~version ~from_binary:false ~kernel ~messages:[""] ()
+
 let tests =
   tztests_with_all_pvms
     [
@@ -994,6 +1082,8 @@ let tests =
       ( "compute_step_many recovers correctly after kernel panics",
         `Quick,
         test_read_input_write_output_failing );
+      ("32-bit float", `Quick, test_float32);
+      ("64-bit float", `Quick, test_float64);
     ]
 
 let () =

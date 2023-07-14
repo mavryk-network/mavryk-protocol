@@ -34,7 +34,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     let bytes = Tezos_lazy_containers.Chunked_byte_vector.of_string module_ in
     let* modl_ =
       Tezos_webassembly_interpreter.Decode.decode
-        ~allow_floats:false
+        ~allow_floats:true
         ~name
         ~bytes
     in

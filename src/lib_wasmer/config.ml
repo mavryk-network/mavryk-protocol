@@ -62,4 +62,5 @@ let to_owned desc =
   if not has_compiler then raise (Compiler_unavailable desc.compiler) ;
   Functions.Config.set_compiler conf desc.compiler ;
   Functions.Config.set_features conf (make_features ()) ;
+  Functions.Config.canonicalize_nans conf true ;
   conf

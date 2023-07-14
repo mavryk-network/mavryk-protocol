@@ -215,7 +215,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
       let* kernel = Durable.find_value_exn durable Constants.kernel_key in
       let* m =
         Tezos_webassembly_interpreter.Decode.module_step
-          ~allow_floats:false
+          ~allow_floats:true
           kernel
           m
       in
