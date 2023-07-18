@@ -1,0 +1,21 @@
+(rule
+	(targets
+		libtezos_webassembly_fast.a
+		tezos_webassembly_fast.h)
+	(deps
+		(source_tree src)
+		(file build.rs)
+		(file Cargo.toml)
+		(file Cargo.lock))
+	(action
+		(progn
+			(run cargo build --release)
+			(no-infer
+				(copy
+					target/release/libtezos_webassembly_fast.a
+					libtezos_webassembly_fast.a)))))
+
+(library
+	(name tezos_webassembly_fast)
+	(foreign_archives tezos_webassembly_fast)
+	(flags (:standard -w -66)))
