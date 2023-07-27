@@ -132,8 +132,7 @@ let create ~comm_socket_path (config : Config_file.t) node_version events_config
         node_version;
         genesis = config.blockchain_network.genesis;
         history_mode = config.shell.history_mode;
-        store_root = Data_version.store_dir config.data_dir;
-        context_root = Data_version.context_dir config.data_dir;
+        data_dir = config.data_dir;
       };
   }
 

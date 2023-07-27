@@ -29,8 +29,7 @@ type t = {
   internal_events : Tezos_base.Internal_event_config.t;
   genesis : Genesis.t;
   history_mode : Tezos_shell_services.History_mode.t option;
-  store_root : string;
-  context_root : string;
+  data_dir : string;
   node_version : Tezos_version.Node_version.t;
 }
 
@@ -43,8 +42,7 @@ let parameters_encoding =
            internal_events;
            genesis;
            history_mode;
-           store_root;
-           context_root;
+           data_dir;
            node_version;
          } ->
       ( config,
@@ -52,16 +50,14 @@ let parameters_encoding =
         internal_events,
         genesis,
         history_mode,
-        store_root,
-        context_root,
+        data_dir,
         node_version ))
     (fun ( config,
            rpc_comm_socket_path,
            internal_events,
            genesis,
            history_mode,
-           store_root,
-           context_root,
+           data_dir,
            node_version ) ->
       {
         config;
@@ -69,16 +65,14 @@ let parameters_encoding =
         internal_events;
         genesis;
         history_mode;
-        store_root;
-        context_root;
+        data_dir;
         node_version;
       })
-    (obj8
+    (obj7
        (req "config" Config_file.encoding)
        (req "rpc_comm_socket_path" Data_encoding.string)
        (req "internal_events" Tezos_base.Internal_event_config.encoding)
        (req "genesis" Genesis.encoding)
        (opt "history_mode" Tezos_shell_services.History_mode.encoding)
-       (req "store_root" Data_encoding.string)
-       (req "context_root" Data_encoding.string)
+       (req "data_dir" Data_encoding.string)
        (req "node_version" Tezos_version.Node_version.encoding))
