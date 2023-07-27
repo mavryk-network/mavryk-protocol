@@ -238,6 +238,8 @@ let ppx_deriving = external_lib "ppx_deriving" V.True
 
 let ppx_deriving_show = external_sublib ppx_deriving "ppx_deriving.show"
 
+let ppx_deriving_eq = external_sublib ppx_deriving "ppx_deriving.eq"
+
 let ppx_repr = external_lib "ppx_repr" V.(at_least "0.6.0")
 
 let ptime_clock_os = external_sublib ~js_compatible:true ptime "ptime.clock.os"
@@ -2702,6 +2704,74 @@ let _octez_wasmer_test =
     ~opam:"octez-wasmer-test"
     ~synopsis:"Tests for the Wasmer bindings"
     ~deps:[octez_wasmer; alcotezt]
+
+let octez_wasmer_fast =
+  let base_name = "tezos_webassembly_fast" in
+  let archive_file = Format.sprintf "lib%s.a" base_name in
+  let archive_output_file = Format.sprintf "target/release/%s" archive_file in
+  let header_file = Format.sprintf "%s.h" base_name in
+  let rust_foreign_library =
+    Dune.
+      [
+        S "rule";
+        [S "targets"; S archive_file; S header_file];
+        [
+          S "deps";
+          [S "source_tree"; S "src"];
+          [S "file"; S "build.rs"];
+          [S "file"; S "Cargo.toml"];
+          [S "file"; S "Cargo.lock"];
+        ];
+        [
+          S "action";
+          [
+            S "no-infer";
+            [
+              S "progn";
+              [S "run"; S "cargo"; S "build"; S "--release"];
+              [S "copy"; S archive_output_file; S archive_file];
+            ];
+          ];
+        ];
+      ]
+  in
+  public_lib
+    "tezos-wasmer-fast"
+    ~path:"src/lib_wasmer_fast"
+    ~synopsis:"Wasmer bindings for SCORU WASM"
+    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix]
+    ~preprocess:[ppses [ppx_deriving_show; ppx_deriving_eq]]
+    ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
+    ~ctypes:
+      Ctypes.
+        {
+          external_library_name = base_name;
+          include_header = header_file;
+          extra_search_dir = "%{env:INSIDE_DUNE=.}/src/lib_wasmer_fast";
+          type_description = {instance = "Types"; functor_ = "Api_types_desc"};
+          function_description =
+            {instance = "Functions"; functor_ = "Api_funcs_desc"};
+          generated_types = "Api_types";
+          generated_entry_point = "Api";
+          c_flags = ["-Wno-incompatible-pointer-types"];
+          c_library_flags = [];
+          deps = [archive_file; header_file];
+        }
+    ~dune:Dune.[rust_foreign_library]
+
+let _octez_wasmer_fast_test =
+  tezt
+    [
+      "test_wasmer_fast";
+      "test_engine";
+      "test_store";
+      "test_module";
+      "test_extern";
+    ]
+    ~path:"src/lib_wasmer_fast/test"
+    ~opam:"octez-wasmer-fast-test"
+    ~synopsis:"Tests for the Wasmer bindings"
+    ~deps:[octez_wasmer_fast; alcotezt]
 
 let octez_context_encoding =
   octez_lib

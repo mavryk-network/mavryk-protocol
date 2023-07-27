@@ -1,0 +1,49 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_wasmer_fast)
+ (public_name tezos-wasmer-fast)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  ctypes
+  ctypes.foreign
+  lwt
+  lwt.unix)
+ (preprocess (pps ppx_deriving.show ppx_deriving.eq))
+ (flags
+  (:standard)
+  -w -9-27)
+ (ctypes
+  (external_library_name tezos_webassembly_fast)
+  (build_flags_resolver
+   (vendored
+    (c_flags
+     :standard
+     -Wno-discarded-qualifiers
+     -I%{env:INSIDE_DUNE=.}/src/lib_wasmer_fast
+     -Wno-incompatible-pointer-types)
+    (c_library_flags
+     :standard
+     -ltezos_webassembly_fast
+     -L%{env:INSIDE_DUNE=.}/src/lib_wasmer_fast)))
+  (headers (include tezos_webassembly_fast.h))
+  (type_description (instance Types) (functor Api_types_desc))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions)
+   (functor Api_funcs_desc))
+  (generated_types Api_types)
+  (generated_entry_point Api)
+  (deps libtezos_webassembly_fast.a tezos_webassembly_fast.h)))
+
+(rule
+ (targets libtezos_webassembly_fast.a tezos_webassembly_fast.h)
+ (deps (source_tree src) (file build.rs) (file Cargo.toml) (file Cargo.lock))
+ (action
+  (no-infer
+   (progn
+    (run cargo build --release)
+    (copy
+     target/release/libtezos_webassembly_fast.a
+     libtezos_webassembly_fast.a)))))

@@ -630,6 +630,8 @@ opam:octez-smart-rollup-wasm-debugger:
 
 # Ignoring unreleased package octez-testnet-scenarios.
 
+# Ignoring unreleased package octez-wasmer-fast-test.
+
 # Ignoring unreleased package octez-wasmer-test.
 
 # Ignoring unreleased package octogram.
@@ -1725,6 +1727,8 @@ opam:tezos-wasmer:
     - .rules_template__trigger_all_opam_batch_7
   variables:
     package: tezos-wasmer
+
+# Ignoring unreleased package tezos-wasmer-fast.
 
 opam:tezos-webassembly-interpreter-extra:
   extends:

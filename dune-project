@@ -46,6 +46,7 @@
 (package (name octez-smart-rollup-wasm-debugger))
 (package (name octez-snoop))
 (package (name octez-testnet-scenarios))
+(package (name octez-wasmer-fast-test)(allow_empty))
 (package (name octez-wasmer-test)(allow_empty))
 (package (name octogram))
 (package (name scoru-sequencer-test)(allow_empty))
@@ -234,6 +235,7 @@
 (package (name tezos-validation))
 (package (name tezos-version))
 (package (name tezos-wasmer))
+(package (name tezos-wasmer-fast))
 (package (name tezos-webassembly-interpreter-extra))
 (package (name tezt-ethereum)(allow_empty))
 ; This file was automatically generated, do not edit.
