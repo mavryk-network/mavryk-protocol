@@ -22,6 +22,8 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
+open React
+open LTerm_text
 
 (* [error loc category msg] fails with the location of an error and a message,
    returned by either the parser of the typechecker of the WASM reference
@@ -110,3 +112,16 @@ let print_wasm_encoded_value (kind : printable_value_kind) value =
              (integer_value_kind_to_string kind)
              kind_length)
       else return (Z.of_bits value |> Z.to_string)
+
+let make_prompt () : t = eval [S "> "]
+
+class read_line ~term ~history =
+  object (self)
+    inherit LTerm_read_line.read_line ~history ()
+
+    inherit [Zed_string.t] LTerm_read_line.term term
+
+    method! show_box = false
+
+    initializer self#set_prompt (S.const (make_prompt ()))
+  end

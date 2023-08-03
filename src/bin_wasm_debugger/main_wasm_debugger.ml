@@ -87,23 +87,42 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     handle_module version binary module_name buffer
 
   (* REPL main loop: reads an input, does something out of it, then loops. *)
-  let repl tree inboxes level config =
+  let repl tree inboxes level config history =
     let open Lwt_result_syntax in
-    let rec loop tree inboxes level =
-      let*! () = Lwt_io.printf "> " in
-      let*! input = Option.catch_s (fun () -> Lwt_io.read_line Lwt_io.stdin) in
+    let rec loop term tree inboxes level =
+      let*! input =
+        Option.catch_s (fun () ->
+            let rl =
+              new Repl_helpers.read_line
+                ~term
+                ~history:(LTerm_history.contents history)
+            in
+            rl#run)
+      in
       match input with
       | Some command ->
           let* ctx =
-            Commands.handle_command command config tree inboxes level
+            Commands.handle_command
+              (Zed_string.to_utf8 command)
+              config
+              tree
+              inboxes
+              level
           in
+          LTerm_history.add history command ;
           Option.fold_f
             ~none:(fun () -> return tree)
-            ~some:(fun (tree, inboxes, level) -> loop tree inboxes level)
+            ~some:(fun (tree, inboxes, level) -> loop term tree inboxes level)
             ctx
       | None -> return tree
     in
-    loop tree (List.to_seq inboxes) level
+    let*! () = LTerm_inputrc.load () in
+    Lwt.catch
+      (fun () ->
+        let*! term = Lazy.force LTerm.stdout in
+        loop term tree (List.to_seq inboxes) level)
+      (function
+        | LTerm_read_line.Interrupt -> return tree | exn -> Lwt.fail exn)
 
   let file_parameter =
     Tezos_clic.parameter (fun _ filename ->
@@ -272,7 +291,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       | Some inputs -> Messages.parse_inboxes inputs config
       | None -> return []
     in
-    let+ _tree = repl tree inboxes 0l config in
+    let+ _tree = repl tree inboxes 0l config (LTerm_history.create []) in
     ()
 
   let main () =
