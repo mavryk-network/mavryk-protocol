@@ -149,9 +149,9 @@ impl TryFrom<&[u8]> for Simulation {
 enum Input {
     #[default]
     Unparsable,
-    SimpleSimulation(Simulation),
-    NewChunkedSimulation(u16),
-    SimulationChunk {
+    Simple(Message),
+    NewChunked(u16),
+    Chunk {
         i: u16,
         data: Vec<u8>,
     },
@@ -160,19 +160,19 @@ enum Input {
 impl Input {
     fn parse_new_chunk_simulation(bytes: &[u8]) -> Self {
         let num_chunks = u16::from_le_bytes(parsable!(bytes.try_into().ok()));
-        Self::NewChunkedSimulation(num_chunks)
+        Self::NewChunked(num_chunks)
     }
 
     fn parse_simulation_chunk(bytes: &[u8]) -> Self {
         let (num, remaining) = parsable!(parsing::split_at(bytes, 2));
         let i = u16::from_le_bytes(num.try_into().unwrap());
-        Self::SimulationChunk {
+        Self::Chunk {
             i,
             data: remaining.to_vec(),
         }
     }
     fn parse_simple_simulation(bytes: &[u8]) -> Self {
-        Input::SimpleSimulation(parsable!(bytes.try_into().ok()))
+        Input::Simple(parsable!(bytes.try_into().ok()))
     }
 
     // Internal custom message structure :
@@ -203,7 +203,7 @@ fn read_chunks<Host: Runtime>(
     let mut buffer: Vec<u8> = Vec::new();
     for n in 0..num_chunks {
         match read_input(host)? {
-            Input::SimulationChunk { i, data } => {
+            Input::Chunk { i, data } => {
                 if i != n {
                     return Err(Error::InvalidConversion);
                 } else {
@@ -227,8 +227,8 @@ fn parse_inbox<Host: Runtime>(host: &mut Host) -> Result<Simulation, Error> {
     // we just received simulation tag
     // next message is either a simulation or the nb of chunks needed
     match read_input(host)? {
-        Input::SimpleSimulation(s) => Ok(s),
-        Input::NewChunkedSimulation(num_chunks) => {
+        Input::Simple(s) => Ok(s),
+        Input::NewChunked(num_chunks) => {
             // loop to find the chunks
             read_chunks(host, num_chunks)
         }
@@ -506,7 +506,7 @@ mod tests {
         let parsed = Input::parse(&input);
 
         assert_eq!(
-            Input::NewChunkedSimulation(42),
+            Input::NewChunked(42),
             parsed,
             "should have parsed start of chunked simulation"
         );
@@ -519,7 +519,7 @@ mod tests {
         input.extend(i.to_le_bytes());
         input.extend(hex::decode("aaaaaa").unwrap());
 
-        let expected = Input::SimulationChunk {
+        let expected = Input::Chunk {
             i: 20,
             data: vec![170u8; 3],
         };
