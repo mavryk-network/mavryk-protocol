@@ -172,11 +172,20 @@ impl TxValidation {
                 .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?,
             None => U256::zero(),
         };
+        // Get the chain_id
+        let chain_id = storage::read_chain_id(host)?;
         // Check if nonce is correct
         if tx.nonce != caller_nonce {
             return Err(Error::Transfer(TransferError::InvalidNonce {
                 expected: caller_nonce,
                 actual: tx.nonce,
+            }));
+        }
+        // Check if the chain id is the right one
+        if tx.chain_id != chain_id {
+            return Err(Error::Transfer(TransferError::InvalidChainId {
+                expected: chain_id,
+                actual: tx.chain_id,
             }));
         }
         Ok(())
@@ -334,6 +343,9 @@ fn store_tx_validation_outcome<Host: Runtime>(
                     }
                 }
                 Error::InvalidSignature(_) => "Invalid signature.",
+                Error::Transfer(TransferError::InvalidChainId { .. }) => {
+                    "Invalid chain id."
+                }
                 _ => "Internal error.",
             };
             storage::store_simulation_result(host, Some(reason.as_bytes().to_vec()))
