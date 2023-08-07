@@ -7,6 +7,7 @@
 // Module containing most Simulation related code, in one place, to be deleted
 // when the proxy node simulates directly
 
+use crate::error::TransferError;
 use crate::{error::Error, error::StorageError, storage};
 
 use crate::{current_timestamp, parsable, parsing, CONFIG};
@@ -16,6 +17,7 @@ use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Rlp};
 use tezos_ethereum::block::BlockConstants;
 use tezos_ethereum::rlp_helpers::{decode_field, decode_option, next};
+use tezos_ethereum::signatures::EthereumTransactionCommon;
 use tezos_evm_logging::{log, Level::*};
 use tezos_smart_rollup_host::runtime::Runtime;
 
@@ -145,6 +147,75 @@ impl TryFrom<&[u8]> for Simulation {
     }
 }
 
+#[derive(Debug, PartialEq)]
+struct TxValidation {
+    transaction: EthereumTransactionCommon,
+}
+
+impl TxValidation {
+    /// Execute the simulation
+    pub fn run<Host: Runtime>(&self, host: &mut Host) -> Result<(), Error> {
+        let tx = &self.transaction;
+        let evm_account_storage = account_storage::init_account_storage()
+            .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?;
+        // Get the caller
+        let caller = tx.caller().map_err(Error::InvalidSignature)?;
+        // Get the caller account
+        let caller_account_path = evm_execution::account_storage::account_path(&caller)?;
+        let caller_account = evm_account_storage
+            .get(host, &caller_account_path)
+            .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?;
+        // Get the nonce of the caller
+        let caller_nonce = match &caller_account {
+            Some(account) => account
+                .nonce(host)
+                .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?,
+            None => U256::zero(),
+        };
+        // Check if nonce is correct
+        if tx.nonce != caller_nonce {
+            return Err(Error::Transfer(TransferError::InvalidNonce {
+                expected: caller_nonce,
+                actual: tx.nonce,
+            }));
+        }
+        Ok(())
+    }
+}
+
+impl TryFrom<&[u8]> for TxValidation {
+    type Error = DecoderError;
+
+    fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
+        let transaction = EthereumTransactionCommon::from_rlp_bytes(bytes)?;
+        Ok(Self { transaction })
+    }
+}
+
+#[derive(Debug, PartialEq)]
+enum Message {
+    Simulation(Simulation),
+    TxValidation(TxValidation),
+}
+
+impl TryFrom<&[u8]> for Message {
+    type Error = DecoderError;
+
+    fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
+        let simulation = Simulation::try_from(bytes);
+        if let Ok(simulation) = simulation {
+            return Ok(Message::Simulation(simulation));
+        }
+
+        let tx_validation = TxValidation::try_from(bytes);
+        if let Ok(tx_validation) = tx_validation {
+            return Ok(Message::TxValidation(tx_validation));
+        }
+
+        Err(DecoderError::Custom("()"))
+    }
+}
+
 #[derive(Default, Debug, PartialEq)]
 enum Input {
     #[default]
@@ -199,7 +270,7 @@ impl Input {
 fn read_chunks<Host: Runtime>(
     host: &mut Host,
     num_chunks: u16,
-) -> Result<Simulation, Error> {
+) -> Result<Message, Error> {
     let mut buffer: Vec<u8> = Vec::new();
     for n in 0..num_chunks {
         match read_input(host)? {
@@ -223,7 +294,7 @@ fn read_input<Host: Runtime>(host: &mut Host) -> Result<Input, Error> {
     }
 }
 
-fn parse_inbox<Host: Runtime>(host: &mut Host) -> Result<Simulation, Error> {
+fn parse_inbox<Host: Runtime>(host: &mut Host) -> Result<Message, Error> {
     // we just received simulation tag
     // next message is either a simulation or the nb of chunks needed
     match read_input(host)? {
@@ -236,19 +307,59 @@ fn parse_inbox<Host: Runtime>(host: &mut Host) -> Result<Simulation, Error> {
     }
 }
 
-pub fn start_simulation_mode<Host: Runtime>(host: &mut Host) -> Result<(), Error> {
-    log!(host, Debug, "Starting simulation mode ");
-    let simulation = parse_inbox(host)?;
-    let outcome = simulation.run(host)?;
+fn store_simulation_outcome<Host: Runtime>(
+    host: &mut Host,
+    outcome: ExecutionOutcome,
+) -> Result<(), Error> {
     log!(host, Debug, "outcome={:?} ", outcome);
     storage::store_simulation_status(host, outcome.is_success)?;
     storage::store_simulation_gas(host, outcome.gas_used)?;
     storage::store_simulation_result(host, outcome.result)
 }
 
+fn store_tx_validation_outcome<Host: Runtime>(
+    host: &mut Host,
+    outcome: Result<(), Error>,
+) -> Result<(), Error> {
+    match outcome {
+        Ok(()) => storage::store_simulation_status(host, true),
+        Err(err) => {
+            storage::store_simulation_status(host, false)?;
+            let reason = match err {
+                Error::Transfer(TransferError::InvalidNonce { expected, actual }) => {
+                    if actual < expected {
+                        "Nonce too low."
+                    } else {
+                        "Nonce too high."
+                    }
+                }
+                Error::InvalidSignature(_) => "Invalid signature.",
+                _ => "Internal error.",
+            };
+            storage::store_simulation_result(host, Some(reason.as_bytes().to_vec()))
+        }
+    }
+}
+
+pub fn start_simulation_mode<Host: Runtime>(host: &mut Host) -> Result<(), Error> {
+    log!(host, Debug, "Starting simulation mode ");
+    let simulation = parse_inbox(host)?;
+    match simulation {
+        Message::Simulation(simulation) => {
+            let outcome = simulation.run(host)?;
+            store_simulation_outcome(host, outcome)
+        }
+        Message::TxValidation(tx_validation) => {
+            let outcome = tx_validation.run(host);
+            store_tx_validation_outcome(host, outcome)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
+    use primitive_types::H256;
     use tezos_ethereum::block::BlockConstants;
     use tezos_smart_rollup_mock::MockHost;
 
@@ -453,7 +564,7 @@ mod tests {
         let parsed = Input::parse(&input);
 
         assert_eq!(
-            Input::SimpleSimulation(expected),
+            Input::Simple(Message::Simulation(expected)),
             parsed,
             "should have been parsed as complete simulation"
         );
@@ -484,12 +595,12 @@ mod tests {
 
         let parsed = Input::parse(&encoded);
         assert_eq!(
-            Input::SimpleSimulation(expected),
+            Input::Simple(Message::Simulation(expected)),
             parsed,
             "should have been parsed as complete simulation"
         );
 
-        if let Input::SimpleSimulation(s) = parsed {
+        if let Input::Simple(Message::Simulation(s)) = parsed {
             let res = s.run(&mut host).expect("simulation should run");
             assert!(res.is_success, "simulation should have succeeded");
         } else {
@@ -527,5 +638,55 @@ mod tests {
         let parsed = Input::parse(&input);
 
         assert_eq!(expected, parsed, "should have parsed a chunk");
+    }
+
+    #[test]
+    fn parse_tx_validation() {
+        let expected = EthereumTransactionCommon {
+            chain_id: 1337.into(),
+            nonce: 0.into(),
+            gas_price: 0.into(),
+            gas_limit: 2000000,
+            to: Some(H160::default()),
+            value: U256::default(),
+            data: vec![],
+            r: H256::from_slice(
+                &hex::decode(
+                    "0c4604516693aafd2e74a993c280455fcad144a414f5aa580d96f3c51d4428e5",
+                )
+                .unwrap(),
+            ),
+            s: H256::from_slice(
+                &hex::decode(
+                    "630fb7fc1af4c1c1a82cabb4ef9d12f8fc2e54a047eb3e3bdffc9d23cd07a94e",
+                )
+                .unwrap(),
+            ),
+            v: 2710.into(),
+        };
+
+        let hex = "f8628080831e84809400000000000000000000000000000000000000008080820a96a00c4604516693aafd2e74a993c280455fcad144a414f5aa580d96f3c51d4428e5a0630fb7fc1af4c1c1a82cabb4ef9d12f8fc2e54a047eb3e3bdffc9d23cd07a94e";
+        let data = hex::decode(hex).unwrap();
+        let tx = EthereumTransactionCommon::from_rlp_bytes(&data).unwrap();
+
+        println!("{:?}", tx);
+        println!("{:?}", tx == expected);
+
+        assert_eq!(tx, expected);
+
+        let mut encoded =
+            hex::decode("f8628080831e84809400000000000000000000000000000000000000008080820a96a00c4604516693aafd2e74a993c280455fcad144a414f5aa580d96f3c51d4428e5a0630fb7fc1af4c1c1a82cabb4ef9d12f8fc2e54a047eb3e3bdffc9d23cd07a94e").unwrap();
+        let mut input = vec![parsing::SIMULATION_TAG, SIMULATION_SIMPLE_TAG];
+        input.append(&mut encoded);
+
+        let parsed = Input::parse(&input);
+
+        assert_eq!(
+            Input::Simple(Message::TxValidation(TxValidation {
+                transaction: expected
+            })),
+            parsed,
+            "should have been parsed as complete simulation"
+        );
     }
 }
