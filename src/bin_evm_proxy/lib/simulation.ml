@@ -54,6 +54,8 @@ let rlp_encode call =
   (* we aim to use [String.chunk_bytes] *)
   Rlp.encode rlp_form |> Rope.to_string |> Bytes.of_string
 
+let tx_rlp_encode tx_raw = `Hex tx_raw |> Hex.to_bytes_exn
+
 type simulation_message =
   | Start
   | Simple of string
@@ -101,9 +103,15 @@ let encode_message = function
       let i_le_str = Ethereum_types.u16_to_bytes i in
       hex_str_of_binary_string @@ simulation_tag ^ chunk_tag ^ i_le_str ^ c
 
-let encode call =
+let encode_call call =
   let open Result_syntax in
   let* messages = call |> rlp_encode |> split_in_messages in
+  return @@ List.map encode_message messages
+
+let encode_tx tx =
+  let open Result_syntax in
+  let* messages = tx |> tx_rlp_encode |> split_in_messages in
+  List.length messages |> string_of_int |> print_endline ;
   return @@ List.map encode_message messages
 
 module Encodings = struct
@@ -242,3 +250,21 @@ let gas_estimation json =
       else simulated_amount)
   in
   return @@ quantity_of_z @@ Z.max simulated_amount amount
+
+let decode_is_valid bytes =
+  match bytes with
+  | [Some b; error_msg] -> (
+      let is_valid =
+        b |> Data_encoding.Binary.of_bytes_exn Data_encoding.bool
+      in
+      let error_msg = error_msg |> Option.map Bytes.to_string in
+      match (is_valid, error_msg) with
+      | true, None -> Some (Ok ())
+      | false, Some reason -> Some (Error reason)
+      | _, _ -> None)
+  | _ -> None
+
+let is_tx_valid json =
+  let open Lwt_result_syntax in
+  let* result = parse_insights decode_is_valid json in
+  return result
