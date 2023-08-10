@@ -36,8 +36,16 @@ let start node_ctxt configuration =
   let node = `TCP (`Port rpc_port) in
   let acl = RPC_server.Acl.allow_all in
   let dir = RPC_directory.directory node_ctxt in
+  let cors =
+    Resto_cohttp.Cors.{allowed_origins = ["*"]; allowed_headers = ["*"]}
+  in
+  print_endline "This is this binary" ;
   let server =
-    RPC_server.init_server dir ~acl ~media_types:Media_type.all_media_types
+    RPC_server.init_server
+      dir
+      ~cors
+      ~acl
+      ~media_types:Media_type.all_media_types
   in
   protect @@ fun () ->
   let*! () =

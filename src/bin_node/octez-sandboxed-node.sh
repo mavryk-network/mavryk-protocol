@@ -176,7 +176,8 @@ EOF
                   --net-addr "127.0.0.1:$port" \
                   --rpc-addr "127.0.0.1:$rpc" \
                   --expected-pow "$expected_pow" \
-                  --connections "$expected_connections"
+                  --connections "$expected_connections" \
+	    	  --cors-header='content-type' --cors-origin='*'
         fi
     fi
 
