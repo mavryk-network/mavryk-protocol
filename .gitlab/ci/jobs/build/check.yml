@@ -6,4 +6,5 @@ ocaml-check:
   script:
     - dune build @check
     - git apply src/bin_tps_evaluation/lift_limits.patch
-    - dune build @check src/bin_tps_evaluation
+    - git apply scripts/1mtps-demo/rollup-node-diff.patch
+    - dune build @src/bin_tps_evaluation/check @src/lib_smart_rollup_node/check
