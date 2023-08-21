@@ -28,6 +28,7 @@ let () =
     (Cli.get_string_opt "agent_name") ;
 
   Octogram.Tezos.register_procedures () ;
+  Octogram.Demo_1mtps.register_procedures () ;
 
   Agent.register () ;
   Orchestrator.register () ;
