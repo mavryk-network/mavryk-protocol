@@ -1,0 +1,26 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_protocol_updater)
+ (public_name tezos-protocol-updater)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-micheline
+  octez-libs.tezos-shell-services
+  octez-libs.tezos-protocol-environment
+  octez-libs.tezos-shell-context
+  octez-protocol-compiler.registerer
+  octez-protocol-compiler.native
+  octez-libs.tezos-context
+  lwt-exit
+  dynlink)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_stdlib_unix
+  -open Tezos_micheline
+  -open Tezos_shell_services
+  -open Tezos_context))

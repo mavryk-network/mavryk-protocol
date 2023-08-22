@@ -1,0 +1,14 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_tooling)
+ (public_name tezos-tooling)
+ (instrumentation (backend bisect_ppx))
+ (modules))
+
+(executable
+ (name node_wrapper)
+ (libraries
+  unix)
+ (modules node_wrapper))

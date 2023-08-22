@@ -1,0 +1,18 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_rpc)
+ (public_name octez-libs.tezos-rpc)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  data-encoding
+  octez-libs.tezos-error-monad
+  resto
+  resto-directory
+  uri)
+ (js_of_ocaml)
+ (flags
+  (:standard)
+  -open Data_encoding
+  -open Tezos_error_monad))

@@ -1,0 +1,78 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
+
+(library
+ (name src_lib_sapling_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-sapling
+  octez-libs.tezos-crypto
+  str
+  octez-libs.tezos-base
+  octez-libs.tezos-base.unix
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-stdlib-unix
+  data-encoding
+  octez-libs.tezos-base-test-helpers
+  octez-alcotezt)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_sapling
+  -open Tezos_stdlib
+  -open Data_encoding
+  -open Tezos_base_test_helpers
+  -open Octez_alcotezt)
+ (modules
+  test_rustzcash
+  test_keys
+  test_merkle
+  test_roots
+  test_sapling
+  keys
+  example))
+
+(executable
+ (name test_js)
+ (modes js)
+ (libraries
+  octez-libs.tezos-sapling
+  octez-libs.tezos-hacl)
+ (js_of_ocaml)
+ (link_flags
+  (:standard)
+  (-linkall))
+ (modules test_js))
+
+(rule
+ (alias runtest_js)
+ (package octez-libs)
+ (enabled_if false)
+ (action (run node %{dep:./test_js.bc.js})))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_sapling_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package octez-libs)
+ (deps vectors.csv vectors-zip32.csv)
+ (enabled_if false)
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

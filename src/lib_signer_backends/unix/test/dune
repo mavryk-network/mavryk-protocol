@@ -1,0 +1,46 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_lib_signer_backends_unix_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-error-monad
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-crypto
+  tezos-client-base
+  tezos-signer-backends.unix
+  octez-alcotezt)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_error_monad
+  -open Tezos_stdlib
+  -open Tezos_client_base
+  -open Tezos_signer_backends_unix
+  -open Octez_alcotezt)
+ (modules test_crouching))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_signer_backends_unix_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package tezos-signer-backends)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

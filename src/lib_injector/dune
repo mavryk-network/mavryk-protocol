@@ -1,0 +1,27 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name octez_injector)
+ (public_name octez-injector)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  logs.lwt
+  octez-libs.tezos-base.unix
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-crypto
+  octez-libs.tezos-micheline
+  tezos-client-base
+  octez-libs.tezos-workers
+  tezos-shell
+  octez-crawler)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_base
+  -open Tezos_stdlib_unix
+  -open Tezos_micheline
+  -open Tezos_client_base
+  -open Tezos_workers
+  -open Octez_crawler))

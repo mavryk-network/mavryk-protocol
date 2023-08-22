@@ -1,0 +1,43 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
+
+(library
+ (name tezos_sapling)
+ (public_name octez-libs.tezos-sapling)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  integers
+  integers_stubs_js
+  ctypes
+  ctypes_stubs_js
+  data-encoding
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-crypto
+  octez-libs.tezos-error-monad
+  octez-libs.tezos-lwt-result-stdlib)
+ (js_of_ocaml (javascript_files runtime.js))
+ (flags
+  (:standard)
+  -open Tezos_stdlib
+  -open Tezos_error_monad
+  -open Tezos_error_monad.TzLwtreslib)
+ (foreign_stubs
+  (language c)
+  (flags (:standard -I%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs))
+  (names rustzcash_ctypes_c_stubs))
+ (c_library_flags
+  (-L%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs -lrustzcash -lpthread)))
+
+(copy_files bindings/rustzcash_ctypes_bindings.ml)
+
+(rule
+ (target runtime.js)
+ (deps (:gen ./bindings/gen_runtime_js.exe))
+ (action (with-stdout-to %{target} (run %{gen} %{target}))))
+
+(rule
+ (targets rustzcash_ctypes_stubs.ml rustzcash_ctypes_c_stubs.c)
+ (deps (:gen ./bindings/rustzcash_ctypes_gen.exe))
+ (action (run %{gen} %{targets})))

@@ -1,0 +1,40 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(executable
+ (name main_tps_evaluation)
+ (public_name tezos-tps-evaluation)
+ (package tezos-tps-evaluation)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  caqti
+  caqti-dynload
+  caqti-lwt
+  data-encoding
+  lwt
+  tezos-baking-alpha
+  tezos-client-alpha.commands
+  tezos-client-base-unix
+  tezos-protocol-alpha
+  tezt
+  octez-libs.tezt-tezos
+  octez-libs.tezt-performance-regression
+  uri)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezt
+  -open Tezt.Base
+  -open Tezt_tezos
+  -open Tezt_performance_regression))
+
+(rule
+ (targets sql.ml)
+ (action
+  (run
+   %{bin:ocp-ocamlres} -format ocaml -o %{targets}
+   %{dep:sql/get_all_operations.sql})))

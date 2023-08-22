@@ -1,0 +1,7 @@
+(executable
+ (name gen_genesis)
+ (libraries
+   lwt.unix
+   octez-libs.tezos-base
+   octez-libs.tezos-base.unix
+   octez-libs.tezos-crypto))

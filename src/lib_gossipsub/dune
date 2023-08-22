@@ -1,0 +1,25 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_gossipsub)
+ (public_name octez-libs.tezos-gossipsub)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  ringo
+  aches
+  fmt
+  octez-libs.tezos-error-monad
+  octez-libs.tezos-base
+  octez-libs.tezos-base.unix
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-version)
+ (flags
+  (:standard)
+  -open Tezos_error_monad
+  -open Tezos_error_monad.TzLwtreslib
+  -open Tezos_base.TzPervasives
+  -open Tezos_base_unix
+  -open Tezos_stdlib_unix
+  -open Tezos_stdlib))

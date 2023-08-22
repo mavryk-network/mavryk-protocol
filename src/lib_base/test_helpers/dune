@@ -1,0 +1,20 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_base_test_helpers)
+ (public_name octez-libs.tezos-base-test-helpers)
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-base.unix
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-event-logging-test-helpers
+  octez-libs.tezos-test-helpers
+  octez-alcotezt
+  qcheck-alcotest)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_test_helpers
+  -open Octez_alcotezt))

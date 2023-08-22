@@ -1,0 +1,30 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(executable
+ (name main_wasm_debugger)
+ (public_name octez-smart-rollup-wasm-debugger)
+ (package octez-smart-rollup-wasm-debugger)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-clic
+  octez-libs.tezos-tree-encoding
+  octez-libs.tezos-base.unix
+  yaml
+  tezos-client-alpha
+  octez-libs.tezos-scoru-wasm
+  tezos-scoru-wasm-helpers
+  octez-libs.tezos-webassembly-interpreter
+  tezos-webassembly-interpreter-extra
+  tezos-version.value)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/static-link-flags.sexp)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_scoru_wasm_helpers
+  -open Tezos_webassembly_interpreter
+  -open Tezos_webassembly_interpreter_extra))

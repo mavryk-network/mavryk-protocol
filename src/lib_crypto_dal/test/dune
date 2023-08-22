@@ -1,0 +1,48 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_lib_crypto_dal_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-crypto-dal
+  octez-libs.tezos-crypto-dal.octez-dal-config
+  octez-libs.tezos-error-monad
+  data-encoding
+  octez-alcotezt
+  qcheck-alcotest
+  octez-libs.octez-bls12-381-polynomial
+  octez-libs.tezos-test-helpers)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_stdlib
+  -open Tezos_crypto_dal
+  -open Tezos_crypto_dal_octez_dal_config
+  -open Tezos_error_monad
+  -open Data_encoding
+  -open Octez_alcotezt)
+ (modules test_dal_cryptobox))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_crypto_dal_test_tezt_lib
+  tezt)
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package octez-libs)
+ (deps srs_zcash_g1_5 srs_zcash_g2_5)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

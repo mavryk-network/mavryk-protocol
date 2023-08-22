@@ -1,0 +1,15 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_tree_encoding)
+ (public_name octez-libs.tezos-tree-encoding)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-context.sigs
+  octez-libs.tezos-lwt-result-stdlib
+  data-encoding)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives))

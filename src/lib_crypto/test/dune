@@ -1,0 +1,87 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
+
+(library
+ (name src_lib_crypto_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-crypto
+  octez-libs.tezos-error-monad
+  zarith
+  zarith_stubs_js
+  octez-libs.tezos-hacl
+  data-encoding
+  octez-alcotezt
+  qcheck-alcotest
+  octez-libs.tezos-test-helpers)
+ (js_of_ocaml)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_stdlib
+  -open Tezos_crypto
+  -open Tezos_error_monad.TzLwtreslib
+  -open Data_encoding
+  -open Octez_alcotezt
+  -open Tezos_test_helpers)
+ (modules
+  test_run
+  test_prop_signature
+  roundtrips
+  key_encoding_vectors
+  test_base58
+  test_blake2b
+  test_crypto_box
+  test_deterministic_nonce
+  test_merkle
+  test_signature
+  test_signature_encodings
+  test_timelock_legacy
+  test_timelock
+  test_context_hash
+  vectors_secp256k1_keccak256))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (modes native)
+ (libraries
+  src_lib_crypto_test_tezt_lib
+  tezt)
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package octez-libs)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))
+
+(executable
+ (name main_js)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (modes js)
+ (libraries
+  src_lib_crypto_test_tezt_lib
+  tezt.js)
+ (js_of_ocaml)
+ (modules main_js))
+
+(rule
+ (alias runtest_js)
+ (package octez-libs)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run node %{dep:./main_js.bc.js})))
+
+(rule
+ (targets main_js.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt_js.Test.run ()"))))

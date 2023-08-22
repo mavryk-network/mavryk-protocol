@@ -1,0 +1,88 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_lib_shell_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-base
+  octez-libs.tezos-base-test-helpers
+  tezos-store
+  tezos-store.shared
+  octez-libs.tezos-context
+  tezos-context-ops
+  octez-libs.tezos-shell-context
+  tezos-protocol-updater
+  octez-libs.tezos-p2p
+  octez-libs.tezos-p2p-services
+  octez-libs.tezos-requester
+  tezos-shell
+  octez-libs.tezos-shell-services
+  tezos-embedded-protocol-demo-noops
+  octez-libs.tezos-stdlib-unix
+  tezos-validation
+  octez-libs.tezos-event-logging-test-helpers
+  octez-libs.tezos-test-helpers
+  octez-alcotezt
+  tezos-version.value)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_base.TzPervasives
+  -open Tezos_base_test_helpers
+  -open Tezos_store
+  -open Tezos_store_shared
+  -open Tezos_context
+  -open Tezos_context_ops
+  -open Tezos_shell_context
+  -open Tezos_protocol_updater
+  -open Tezos_p2p
+  -open Tezos_p2p_services
+  -open Tezos_shell
+  -open Tezos_shell_services
+  -open Tezos_stdlib_unix
+  -open Tezos_validation
+  -open Tezos_event_logging_test_helpers
+  -open Tezos_test_helpers
+  -open Octez_alcotezt)
+ (modules
+  generators
+  generators_tree
+  shell_test_helpers
+  test_consensus_heuristic
+  test_node
+  test_peer_validator
+  test_prevalidation
+  test_prevalidator_bounding
+  test_prevalidator_classification
+  test_prevalidator_classification_operations
+  test_prevalidator_pending_operations
+  test_protocol_validator
+  test_shell_operation
+  test_synchronisation_heuristic
+  test_synchronisation_heuristic_fuzzy
+  test_validator))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_shell_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package tezos-shell)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

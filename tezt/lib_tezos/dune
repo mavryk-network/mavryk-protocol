@@ -1,0 +1,20 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezt_tezos)
+ (public_name octez-libs.tezt-tezos)
+ (libraries
+  tezt
+  octez-libs.tezt-performance-regression
+  uri
+  hex
+  octez-libs.tezos-crypto-dal
+  octez-libs.tezos-base
+  octez-libs.tezos-base.unix
+  cohttp-lwt-unix)
+ (flags
+  (:standard)
+  -open Tezt
+  -open Tezt.Base
+  -open Tezt_performance_regression))

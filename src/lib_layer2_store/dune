@@ -1,0 +1,21 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_layer2_store)
+ (package tezos-layer2-store)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  index
+  octez-libs.tezos-base
+  irmin-pack
+  irmin-pack.unix
+  irmin
+  aches-lwt
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-context.encoding)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_stdlib_unix))

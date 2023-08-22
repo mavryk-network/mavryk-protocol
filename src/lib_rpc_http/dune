@@ -1,0 +1,67 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_rpc_http)
+ (public_name octez-libs.tezos-rpc-http)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-rpc
+  resto-cohttp
+  uri)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives)
+ (modules RPC_client_errors media_type))
+
+(library
+ (name tezos_rpc_http_client)
+ (public_name octez-libs.tezos-rpc-http-client)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  resto-cohttp-client
+  octez-libs.tezos-rpc
+  octez-libs.tezos-rpc-http)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_rpc_http)
+ (modules RPC_client))
+
+(library
+ (name tezos_rpc_http_client_unix)
+ (public_name octez-libs.tezos-rpc-http-client-unix)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-base
+  cohttp-lwt-unix
+  resto-cohttp-client
+  octez-libs.tezos-rpc
+  octez-libs.tezos-rpc-http-client)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_rpc_http_client)
+ (modules RPC_client_unix))
+
+(library
+ (name tezos_rpc_http_server)
+ (public_name octez-libs.tezos-rpc-http-server)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-stdlib-unix
+  cohttp-lwt-unix
+  resto-cohttp-server
+  resto-acl
+  octez-libs.tezos-rpc
+  octez-libs.tezos-rpc-http)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_stdlib_unix
+  -open Tezos_rpc_http)
+ (modules RPC_server RPC_middleware))

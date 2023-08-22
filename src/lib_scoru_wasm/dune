@@ -1,0 +1,19 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_scoru_wasm)
+ (public_name octez-libs.tezos-scoru-wasm)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-base
+  octez-libs.tezos-tree-encoding
+  octez-libs.tezos-lazy-containers
+  octez-libs.tezos-webassembly-interpreter
+  octez-libs.tezos-context.sigs
+  octez-libs.tezos-context.memory
+  octez-libs.tezos-lwt-result-stdlib
+  data-encoding)
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives))

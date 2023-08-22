@@ -1,0 +1,36 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
+
+(library
+ (name tezos_base)
+ (public_name octez-libs.tezos-base)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  octez-libs.tezos-stdlib
+  octez-libs.tezos-crypto
+  data-encoding
+  octez-libs.tezos-error-monad
+  octez-libs.tezos-rpc
+  octez-libs.tezos-micheline
+  octez-libs.tezos-event-logging
+  ptime
+  ptime.clock.os
+  ezjsonm
+  lwt
+  ipaddr
+  uri)
+ (js_of_ocaml)
+ (flags
+  (:standard)
+  -open Tezos_stdlib
+  -open Data_encoding
+  -open Tezos_error_monad
+  -open Tezos_error_monad.TzLwtreslib
+  -open Tezos_micheline
+  -open Tezos_event_logging))
+
+(documentation (package octez-libs))
+
+(ocamllex point_parser)

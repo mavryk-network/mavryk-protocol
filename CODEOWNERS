@@ -1,0 +1,130 @@
+# CODEOWNERS
+
+# This file declares which users are qualified to review and approve changes to
+# specific files or paths in this repository. It helps contributors to identify
+# whom to consult for assistance on merge requests.
+
+# To understand the syntax and semantics of this file, see:
+#   https://docs.gitlab.com/ee/user/project/code_owners.html
+#
+# Note that rules defined later in the file take precedence over the rules
+# defined earlier.
+
+
+# ************************************
+# Insert code owner declarations here!
+# ************************************
+
+/docs/                       @NicVolanschi
+/docs/protocols/alpha.rst
+
+/src/bin_codec               @raphael-proust
+/src/bin_node                @romain.nl
+/src/bin_openapi             @romain.nl
+/src/bin_snoop               @naih
+/src/lib_base                @raphael-proust
+/src/lib_benchmark           @naih
+/src/lib_error_monad         @raphael-proust
+/src/lib_event_logging       @romain.nl
+/src/lib_lwt_result_stdlib   @raphael-proust
+/src/lib_mockup_proxy        @igarnier
+/src/lib_node_config         @Killian-Delarue
+/src/lib_openapi             @romain.nl @Killian-Delarue
+/src/lib_p2p*                @julien.t @vivienpe
+/src/lib_protocol_environment   @raphael-proust
+/src/lib_shell_benchmarks    @naih
+/src/lib_stdlib              @raphael-proust
+/src/lib_stdlib_unix         @raphael-proust
+/src/lib_version             @romain.nl
+/src/proto_*/lib_benchmark   @naih
+/src/proto_*/lib_benchmarks_proto @naih
+/src/proto_*/lib_protocol/sc_rollup_proof*         @sribaroud
+/src/proto_*/lib_protocol/sc_rollup_game*          @sribaroud
+/src/proto_*/lib_protocol/sc_rollup_inbox*         @sribaroud
+/src/proto_*/lib_protocol/sc_rollup_refutation*    @sribaroud
+
+/src/lib_aplonk               @MarcBeunardeau
+/src/lib_bls12_381*           @victor-dumitrescu
+/src/lib_crypto               @victor-dumitrescu
+/src/lib_distributed_internal @alocascio
+/src/lib_distributed_plonk    @alocascio
+/src/lib_epoxy_tx             @alocascio
+/src/lib_hacl                 @victor-dumitrescu
+/src/lib_mec                  @MarcBeunardeau
+/src/lib_plompiler            @alocascio
+/src/lib_plonk                @MarcBeunardeau
+/src/lib_polynomial           @MarcBeunardeau
+
+/src/lib_webassembly         @lthms @ole.kruger @picdc
+/src/lib_scoru_wasm          @lthms @ole.kruger @picdc
+
+/scripts                     @romain.nl
+
+/tezt/lib*                   @romain.nl
+/tezt/records                @romain.nl
+
+/manifest                    @romain.nl
+
+/.gitlab                     @romain.nl
+
+# Octez Merge Team
+#
+# These users are, as members of the Octez Merge Team, permitted to act as authorities on any code.
+#
+# @ACoquereau = Albin Coquereau
+# @alocascio = Antonio Locascio
+# @andrea.cerone = Andrea Cerone
+# @arvidnl = Arvid Jakobsson
+# @bsall = Boubacar Sall
+# @camlspotter = Jun Furuse
+# @dianegalloiswong = Diane Gallois-Wong
+# @emturner = Emma Turner
+# @eugenz = Eugen Zalinescu
+# @hhugo1 = Hugo Heuzard
+# @igarnier = Ilias Garnier
+# @iguerNL = Mohamed Iguernlala
+# @jobjo = Joel Bjornson
+# @julien.t = Julien Tesson
+# @Killian-Delarue = Killian Delarue
+# @klakplok = Benjamin Canou
+# @linoscope = Lin Oshitani
+# @lrand = Lucas Randazzo
+# @lthms = Thomas Letan
+# @MarcBeunardeau = Marc Beunardeau
+# @mbouaziz = Mehdi Bouaziz
+# @MBourgoin = Mathias Bourgoin
+# @mebsout = Alain Mebsout
+# @murbard = Arthur B.
+# @naih = Nicolas Ayache
+# @NicVolanschi = Nic Volanschi
+# @ole.kruger = Ole Krüger
+# @paracetamolo = Marco Stronati
+# @pe.cornilleau = Pierre-Emmanuel Cornilleau
+# @picdc = Pierrick Couderc
+# @pirbo = Pierre Boutillier
+# @rafoo_ = Raphaël Cauderlier
+# @raphael-proust = Raphaël Proust
+# @romain.nl = Romain
+# @ryan.tan3 = Ryan Tan
+# @Saroupille = François Thiré
+# @satos---jp = Sota Sato
+# @smondet = Seb Mondet
+# @sribaroud = Sylvain R.
+# @tomjack = Tom Jack
+# @vbotbol = vbot
+# @vch9 = Valentin Chaboche
+# @vect0r = Victor Allombert
+# @victor-dumitrescu = Victor Dumitrescu
+# @yrg = Yann Regis-Gianas
+#
+* @ACoquereau @alocascio @andrea.cerone @arvidnl @bsall @camlspotter @dianegalloiswong @emturner @eugenz @hhugo1 @igarnier @iguerNL @jobjo @julien.t @Killian-Delarue @klakplok @linoscope @lrand @lthms @MarcBeunardeau @mbouaziz @MBourgoin @mebsout @murbard @naih @NicVolanschi @ole.kruger @paracetamolo @pe.cornilleau @picdc @pirbo @rafoo_ @raphael-proust @romain.nl @ryan.tan3 @Saroupille @satos---jp @smondet @sribaroud @tomjack @vbotbol @vch9 @vect0r @victor-dumitrescu @yrg
+
+# CODEOWNERS Owners
+#
+# These users are authorized to change authorizations.
+#
+# Note that this stanza MUST appear LAST so that it takes precedence over prior rules.
+#
+/CODEOWNERS         @murbard @pirbo @smondet @klakplok @vbotbol @romain.nl
+/docs/CODEOWNERS    @murbard @pirbo @smondet @klakplok @vbotbol @romain.nl
+/.gitlab/CODEOWNERS @murbard @pirbo @smondet @klakplok @vbotbol @romain.nl

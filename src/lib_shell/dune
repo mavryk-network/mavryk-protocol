@@ -1,0 +1,56 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezos_shell)
+ (public_name tezos-shell)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  lwt-watcher
+  lwt-canceler
+  prometheus
+  octez-libs.tezos-base
+  octez-libs.tezos-base.unix
+  octez-libs.tezos-rpc
+  octez-libs.tezos-context
+  tezos-store
+  tezos-store.shared
+  octez-libs.tezos-protocol-environment
+  tezos-context-ops
+  octez-libs.tezos-shell-context
+  octez-libs.tezos-p2p
+  octez-libs.tezos-stdlib-unix
+  octez-libs.tezos-shell-services
+  octez-libs.tezos-p2p-services
+  tezos-protocol-updater
+  octez-libs.tezos-requester
+  octez-libs.tezos-workers
+  tezos-validation
+  octez-libs.tezos-version
+  octez-libs.tezos-crypto-dal.octez-dal-config
+  lwt-exit)
+ (inline_tests (flags -verbose) (modes native))
+ (preprocess (pps ppx_expect))
+ (flags
+  (:standard)
+  -open Tezos_base.TzPervasives
+  -open Tezos_base
+  -open Tezos_base_unix
+  -open Tezos_context
+  -open Tezos_store
+  -open Tezos_store_shared
+  -open Tezos_protocol_environment
+  -open Tezos_context_ops
+  -open Tezos_shell_context
+  -open Tezos_p2p
+  -open Tezos_stdlib_unix
+  -open Tezos_shell_services
+  -open Tezos_p2p_services
+  -open Tezos_protocol_updater
+  -open Tezos_requester
+  -open Tezos_workers
+  -open Tezos_validation
+  -open Tezos_version
+  -open Tezos_crypto_dal_octez_dal_config))
+
+(documentation (package tezos-shell))

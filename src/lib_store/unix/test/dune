@@ -1,0 +1,82 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_lib_store_unix_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  octez-libs.tezos-base
+  octez-libs.tezos-crypto
+  tezos-context-ops
+  tezos-store.shared
+  tezos-store.unix
+  tezos-store.unix-reconstruction
+  tezos-store.unix-snapshots
+  octez-libs.tezos-shell-services
+  octez-libs.tezos-stdlib-unix
+  tezos-validation
+  tezos-protocol-updater
+  tezos-embedded-protocol-demo-noops
+  tezos-embedded-protocol-genesis
+  tezos-embedded-protocol-alpha
+  tezos-protocol-alpha.parameters
+  tezos-protocol-plugin-alpha
+  octez-alcotezt
+  octez-libs.tezos-test-helpers)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Tezos_base.TzPervasives
+  -open Tezos_crypto
+  -open Tezos_context_ops
+  -open Tezos_store_shared
+  -open Tezos_store_unix
+  -open Tezos_store_unix_reconstruction
+  -open Tezos_store_unix_snapshots
+  -open Tezos_shell_services
+  -open Tezos_stdlib_unix
+  -open Tezos_validation
+  -open Tezos_protocol_updater
+  -open Tezos_protocol_alpha_parameters
+  -open Tezos_protocol_plugin_alpha
+  -open Octez_alcotezt
+  -open Tezos_test_helpers)
+ (modules
+  test
+  test_snapshots
+  test_reconstruct
+  test_history_mode_switch
+  alpha_utils
+  test_consistency
+  test_locator
+  test_cemented_store
+  test_block_store
+  test_protocol_store
+  test_store
+  test_testchain
+  test_utils
+  assert_lib))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_store_unix_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package tezos-store)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))
