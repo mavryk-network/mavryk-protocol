@@ -28,6 +28,17 @@ open Error_monad
 
 let () = Lwt_unix.set_default_async_method Async_none [@@ocaml.warning "-3"]
 
+let section = Lwt_log.Section.make "process"
+
+let log_f ~level format =
+  if level < Lwt_log.Section.level section then
+    Format.ikfprintf (fun _ -> Lwt.return_unit) Format.std_formatter format
+  else Format.kasprintf (fun msg -> Lwt_log.log ~section ~level msg) format
+
+let lwt_log_debug fmt = log_f ~level:Lwt_log.Debug fmt
+
+let lwt_log_error fmt = log_f ~level:Lwt_log.Error fmt
+
 exception Exited of int
 
 exception Signaled of int
@@ -112,21 +123,25 @@ let handle_result ~value_encoding ~flags canceler f child_exit =
         let* () = send_result ~value_encoding ~flags child_exit (Ok v) in
         return 0)
       ~on_error:(fun err ->
-        Log.error
-          "@[<v 2>Detached process ended with error.@[%a@]@]@."
-          pp_print_trace
-          err ;
+        let*! () =
+          lwt_log_error
+            "@[<v 2>Detached process ended with error.@[%a@]@]@."
+            pp_print_trace
+            err
+        in
         let* () = send_result ~value_encoding ~flags child_exit (Error err) in
         return 0)
   in
   match r with
   | Ok exit_code -> Lwt.return exit_code
   | Error err ->
-      Log.error
-        "@[<v 2>Unexpected error when handling detached function result: \
-         @[%a@]@]@."
-        Error_monad.pp_print_trace
-        err ;
+      let*! () =
+        lwt_log_error
+          "@[<v 2>Unexpected error when handling detached function result: \
+           @[%a@]@]@."
+          Error_monad.pp_print_trace
+          err
+      in
       Lwt.return 255
 
 module Channel = struct
@@ -189,6 +204,8 @@ type ('a, 'b, 'c) t = {
   value_encoding : 'c Data_encoding.encoding option;
 }
 
+let template = "$(date) - $(section): $(message)"
+
 let detach ?(prefix = "") ?canceler ?input_encoding ?output_encoding
     ?value_encoding ?flags
     (f : ('sent, 'received) Channel.t -> 'result tzresult Lwt.t) :
@@ -199,19 +216,32 @@ let detach ?(prefix = "") ?canceler ?input_encoding ?output_encoding
   protect
     ~canceler
     (fun () ->
-      let main_in, child_out = Lwt_io.pipe () in
-      let child_in, main_out = Lwt_io.pipe () in
-      let main_result, child_exit = Lwt_io.pipe () in
+      let main_in, child_out = Lwt_io.pipe ~cloexec:true () in
+      let child_in, main_out = Lwt_io.pipe ~cloexec:true () in
+      let main_result, child_exit = Lwt_io.pipe ~cloexec:true () in
       match Lwt_unix.fork () with
       | 0 ->
           (* I am the child process. *)
+          Lwt_log.default :=
+            Lwt_log.channel
+              ~template
+              ~close_mode:`Keep
+              ~channel:Lwt_io.stderr
+              () ;
           Random.self_init () ;
           (* Lwt_main.run *)
           let* i =
+            let template = Format.asprintf "%s$(message)" prefix in
             let* () = Lwt_io.close main_in in
             let* () = Lwt_io.close main_out in
             let* () = Lwt_io.close main_result in
-            Log.debug "%s(PID: %d)" prefix (Unix.getpid ()) ;
+            Lwt_log.default :=
+              Lwt_log.channel
+                ~template
+                ~close_mode:`Keep
+                ~channel:Lwt_io.stderr
+                () ;
+            let* () = lwt_log_debug "PID: %d" (Unix.getpid ()) in
             handle_result
               ~value_encoding
               ~flags
@@ -377,7 +407,7 @@ let pp_results ppf plist =
   pp_grouped ppf plist pp_res
 
 (* print the list of results from detached process *)
-let print_results plist = Log.error "@[%a@]@." pp_results plist
+let print_results plist = lwt_log_error "@[%a@]@." pp_results plist
 
 let send {channel; _} v = Channel.push channel v
 
@@ -423,13 +453,13 @@ let wait_all_results (processes : ('a, 'b, 'c) t list) =
   let* o = loop terminations in
   match o with
   | None -> (
-      Log.debug "All done!" ;
+      let* () = lwt_log_debug "All done!" in
       let* terminated = all terminations in
       match List.partition_result terminated with
       | _, _ :: _ -> assert false
       | terminated, [] -> return_ok terminated)
   | Some (_err, remaining) -> (
-      Log.error "Early error! Canceling remaining process." ;
+      let* () = lwt_log_error "Early error! Canceling remaining process." in
       List.iter Lwt.cancel remaining ;
       let* terminated = join_process processes in
       let terminated =
@@ -457,7 +487,7 @@ let wait_all_results (processes : ('a, 'b, 'c) t list) =
                      trace))
           terminated
       in
-      print_results terminated ;
+      let* _ = print_results terminated in
       match errors with
       | [] -> assert false
       | err :: errs -> Lwt.return_error (TzTrace.conp_list err errs))

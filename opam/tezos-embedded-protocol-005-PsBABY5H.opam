@@ -12,10 +12,10 @@ depends: [
   "ocaml" { >= "4.14" }
   "tezos-protocol-005-PsBABY5H"
   "tezos-protocol-updater"
-  "octez-libs"
+  "tezos-protocol-environment"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

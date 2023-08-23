@@ -10,39 +10,46 @@ license: "MIT"
 depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "tezos-base"
+  "tezos-stdlib-unix"
   "tezos-client-base"
   "tezos-client-base-unix"
   "tezos-client-alpha"
+  "tezos-context"
   "tezos-protocol-alpha"
   "tezos-protocol-plugin-alpha"
+  "tezos-rpc"
+  "tezos-rpc-http"
+  "tezos-rpc-http-server"
+  "tezos-workers"
   "tezos-dal-node-services"
   "tezos-dal-node-lib"
   "tezos-dac-alpha"
-  "tezos-dac-lib"
-  "tezos-dac-client-lib"
-  "octez-smart-rollup"
+  "tezos-shell-services"
   "tezos-smart-rollup-alpha"
   "tezos-smart-rollup-layer2-alpha"
   "tezos-layer2-utils-alpha"
   "tezos-layer2-store"
   "octez-crawler"
+  "tezos-tree-encoding"
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
-  "irmin-pack" { >= "3.7.2" & < "3.8.0" }
-  "irmin" { >= "3.7.2" & < "3.8.0" }
+  "irmin-pack" { >= "3.6.1" & < "3.7.0" }
+  "irmin" { >= "3.6.1" & < "3.7.0" }
   "aches" { >= "1.0.0" }
   "aches-lwt" { >= "1.0.0" }
   "octez-injector"
-  "octez-smart-rollup-node-lib"
+  "octez-smart-rollup-node"
+  "tezos-scoru-wasm"
   "tezos-scoru-wasm-fast"
-  "tezos-version"
+  "tezos-crypto-dal"
+  "tezos-clic"
   "tezos-client-commands"
 ]
 conflicts: [
   "checkseum" { = "0.5.0" }
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

@@ -62,6 +62,10 @@ module AddWire (Params : Params) : Base_sig = struct
     let ws = if Params.is_next then wires_g else wires in
     Scalar.[q * ws.(Params.wire)]
 
+  let blinds =
+    let array = if Params.is_next then [|0; 1|] else [|1; 0|] in
+    SMap.singleton (wire_name Params.wire) array
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain :
       prover_identities =
    fun evaluations ->
@@ -132,6 +136,8 @@ module Constant : Base_sig = struct
 
   let equations ~q ~wires:_ ~wires_g:_ ?precomputed_advice:_ () = [q]
 
+  let blinds = SMap.empty
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain:_ :
       prover_identities =
    fun evaluations ->
@@ -181,12 +187,14 @@ module Multiplication : Base_sig = struct
     let b = wires.(1) in
     Scalar.[q * a * b]
 
+  let blinds = SMap.of_list [(wire_name 0, [|1; 0|]); (wire_name 1, [|1; 0|])]
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain:_ :
       prover_identities =
    fun evaluations ->
     let tmps, _ = get_buffers ~nb_buffers ~nb_ids:0 in
     let ({q; wires} : witness) =
-      get_evaluations ~q_label ~prefix ~prefix_common evaluations
+      get_evaluations ~q_label ~blinds ~prefix ~prefix_common evaluations
     in
     let a = wires.(0) in
     let b = wires.(1) in
@@ -197,7 +205,7 @@ module Multiplication : Base_sig = struct
       ~size_domain:_ : verifier_identities =
    fun _ answers ->
     let ({q; wires; _} : answers) =
-      get_answers ~q_label ~prefix ~prefix_common answers
+      get_answers ~q_label ~blinds ~prefix ~prefix_common answers
     in
     let a = wires.(0) in
     let b = wires.(1) in
@@ -239,12 +247,14 @@ module X2B : Base_sig = struct
     let b = wires.(1) in
     Scalar.[q * square b]
 
+  let blinds = SMap.singleton (wire_name 1) [|1; 0|]
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain:_ :
       prover_identities =
    fun evaluations ->
     let tmps, _ = get_buffers ~nb_buffers ~nb_ids:0 in
     let ({q; wires} : witness) =
-      get_evaluations ~q_label ~prefix ~prefix_common evaluations
+      get_evaluations ~q_label ~blinds ~prefix ~prefix_common evaluations
     in
     let b = wires.(1) in
     let res =
@@ -256,7 +266,7 @@ module X2B : Base_sig = struct
       ~size_domain:_ : verifier_identities =
    fun _ answers ->
     let ({q; wires; _} : answers) =
-      get_answers ~q_label ~prefix ~prefix_common answers
+      get_answers ~q_label ~blinds ~prefix ~prefix_common answers
     in
     let b = wires.(1) in
     let res = Scalar.(q * square b) in
@@ -295,12 +305,14 @@ module X5A : Base_sig = struct
     let a = wires.(0) in
     Scalar.[q * pow a (Z.of_int 5)]
 
+  let blinds = SMap.singleton (wire_name 0) [|1; 0|]
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain:_ :
       prover_identities =
    fun evaluations ->
     let tmps, _ = get_buffers ~nb_buffers ~nb_ids:0 in
     let ({q; wires} : witness) =
-      get_evaluations ~q_label ~prefix ~prefix_common evaluations
+      get_evaluations ~q_label ~blinds ~prefix ~prefix_common evaluations
     in
     let a = wires.(0) in
     let res =
@@ -312,7 +324,7 @@ module X5A : Base_sig = struct
       ~size_domain:_ : verifier_identities =
    fun _ answers ->
     let ({q; wires; _} : answers) =
-      get_answers ~q_label ~prefix ~prefix_common answers
+      get_answers ~q_label ~blinds ~prefix ~prefix_common answers
     in
     let a = wires.(0) in
     let a2 = Scalar.mul a a in
@@ -354,12 +366,14 @@ module X5C : Base_sig = struct
     let c = wires.(2) in
     Scalar.[q * pow c (Z.of_int 5)]
 
+  let blinds = SMap.singleton (wire_name 2) [|1; 0|]
+
   let prover_identities ~prefix_common ~prefix ~public:_ ~domain:_ :
       prover_identities =
    fun evaluations ->
     let tmps, _ = get_buffers ~nb_buffers ~nb_ids:0 in
     let ({q; wires} : witness) =
-      get_evaluations ~q_label ~prefix ~prefix_common evaluations
+      get_evaluations ~q_label ~blinds ~prefix ~prefix_common evaluations
     in
     let c = wires.(2) in
     let res =
@@ -371,7 +385,7 @@ module X5C : Base_sig = struct
       ~size_domain:_ : verifier_identities =
    fun _ answers ->
     let ({q; wires; _} : answers) =
-      get_answers ~q_label ~prefix ~prefix_common answers
+      get_answers ~q_label ~blinds ~prefix ~prefix_common answers
     in
     let c = wires.(2) in
     let c2 = Scalar.mul c c in
@@ -398,6 +412,8 @@ end
 *)
 module Public : Base_sig = struct
   let q_label = "qpub"
+
+  let blinds = SMap.empty
 
   let identity = (arith, 1)
 
@@ -488,6 +504,8 @@ end) : Base_sig = struct
 
   let com_label = com_label ^ string_of_int Com.idx
 
+  let blinds = SMap.empty
+
   let identity = (arith, 1)
 
   let index_com = Some Com.idx
@@ -505,7 +523,9 @@ end) : Base_sig = struct
       prover_identities =
    fun evaluations ->
     let _tmps, ids = get_buffers ~nb_buffers ~nb_ids:(snd identity) in
-    let {q; _} = get_evaluations ~q_label ~prefix ~prefix_common evaluations in
+    let {q; _} =
+      get_evaluations ~q_label ~blinds ~prefix ~prefix_common evaluations
+    in
     let com = Evaluations.find_evaluation evaluations (prefix com_label) in
 
     let res = Evaluations.mul_c ~res:ids.(0) ~evaluations:[q; com] () in
@@ -515,7 +535,7 @@ end) : Base_sig = struct
       ~size_domain:_ : verifier_identities =
    fun _ answers ->
     let ({q; _} : answers) =
-      get_answers ~q_label ~prefix ~prefix_common answers
+      get_answers ~q_label ~blinds ~prefix ~prefix_common answers
     in
     let com = get_answer answers X @@ prefix com_label in
     let res = Scalar.(q * com) in

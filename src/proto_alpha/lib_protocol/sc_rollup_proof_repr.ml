@@ -156,7 +156,7 @@ let serialize_pvm_step (type state proof output)
   let (module PVM) = pvm in
   match Data_encoding.Binary.to_string_opt PVM.proof_encoding proof with
   | Some p -> return p
-  | None -> tzfail (Sc_rollup_proof_check "Cannot serialize proof")
+  | None -> error (Sc_rollup_proof_check "Cannot serialize proof")
 
 let unserialize_pvm_step (type state proof output)
     ~(pvm : (state, proof, output) Sc_rollups.PVM.implementation)
@@ -165,7 +165,7 @@ let unserialize_pvm_step (type state proof output)
   let (module PVM) = pvm in
   match Data_encoding.Binary.of_string_opt PVM.proof_encoding proof with
   | Some p -> return p
-  | None -> tzfail (Sc_rollup_proof_check "Cannot unserialize proof")
+  | None -> error (Sc_rollup_proof_check "Cannot unserialize proof")
 
 let serialized_encoding = Data_encoding.string Hex
 
@@ -216,11 +216,11 @@ let proof_error reason =
 
 let check p reason =
   let open Lwt_result_syntax in
-  if p then return_unit else proof_error reason
+  if p then return () else proof_error reason
 
 let check_inbox_proof snapshot serialized_inbox_proof (level, counter) =
   match Sc_rollup_inbox_repr.of_serialized_proof serialized_inbox_proof with
-  | None -> Result_syntax.tzfail Sc_rollup_invalid_serialized_inbox_proof
+  | None -> error Sc_rollup_invalid_serialized_inbox_proof
   | Some inbox_proof ->
       Sc_rollup_inbox_repr.verify_proof (level, counter) snapshot inbox_proof
 
@@ -300,7 +300,7 @@ end
 let valid (type state proof output)
     ~(pvm : (state, proof, output) Sc_rollups.PVM.implementation) ~metadata
     snapshot commit_inbox_level dal_snapshot dal_parameters ~dal_attestation_lag
-    ~is_reveal_enabled (proof : proof t) =
+    (proof : proof t) =
   let open Lwt_result_syntax in
   let (module P) = pvm in
   let origination_level = metadata.Sc_rollup_metadata_repr.origination_level in
@@ -340,9 +340,7 @@ let valid (type state proof output)
   let input =
     Option.bind input (cut_at_level ~origination_level ~commit_inbox_level)
   in
-  let* input_requested =
-    P.verify_proof ~is_reveal_enabled input proof.pvm_step
-  in
+  let* input_requested = P.verify_proof input proof.pvm_step in
   let* () =
     match (proof.input_proof, input_requested) with
     | None, No_input_required -> return_unit
@@ -417,12 +415,12 @@ module type PVM_with_context_and_state = sig
   end
 end
 
-let produce ~metadata pvm_and_state commit_inbox_level ~is_reveal_enabled =
+let produce ~metadata pvm_and_state commit_inbox_level =
   let open Lwt_result_syntax in
   let (module P : PVM_with_context_and_state) = pvm_and_state in
   let open P in
   let*! (request : Sc_rollup_PVM_sig.input_request) =
-    P.is_input_state ~is_reveal_enabled P.state
+    P.is_input_state P.state
   in
   let origination_level = metadata.Sc_rollup_metadata_repr.origination_level in
   let* input_proof, input_given =
@@ -493,9 +491,7 @@ let produce ~metadata pvm_and_state commit_inbox_level ~is_reveal_enabled =
       input_given
       (cut_at_level ~origination_level ~commit_inbox_level)
   in
-  let* pvm_step_proof =
-    P.produce_proof P.context ~is_reveal_enabled input_given P.state
-  in
+  let* pvm_step_proof = P.produce_proof P.context input_given P.state in
   let*? pvm_step = serialize_pvm_step ~pvm:(module P) pvm_step_proof in
   return {pvm_step; input_proof}
 

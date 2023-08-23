@@ -6,15 +6,15 @@
  (public_name tezos-client-010-PtGRANAD)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-shell-services
+  tezos-base
+  tezos-clic
+  tezos-shell-services
   tezos-client-base
   tezos-protocol-010-PtGRANAD
   tezos-protocol-010-PtGRANAD.lifted
   tezos-signer-backends
   tezos-protocol-plugin-010-PtGRANAD
-  octez-libs.tezos-rpc
+  tezos-rpc
   uri)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

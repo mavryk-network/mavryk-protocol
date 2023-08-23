@@ -30,7 +30,8 @@ type contents = {
   payload_round : Round_repr.t;
   seed_nonce_hash : Nonce_hash.t option;
   proof_of_work_nonce : bytes;
-  per_block_votes : Per_block_votes_repr.per_block_votes;
+  liquidity_baking_toggle_vote :
+    Liquidity_baking_repr.liquidity_baking_toggle_vote;
 }
 
 type protocol_data = {contents : contents; signature : Signature.t}

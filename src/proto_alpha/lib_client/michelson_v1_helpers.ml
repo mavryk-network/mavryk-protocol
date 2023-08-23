@@ -49,12 +49,9 @@ let unit_t ~loc = Prim (loc, T_unit, [], [])
 let unit ~loc = Prim (loc, D_Unit, [], [])
 
 let lambda_from_string code =
-  let open Result_syntax in
-  let* parsed =
-    Tezos_micheline.Micheline_parser.no_parsing_error
-    @@ Michelson_v1_parser.parse_expression code
-  in
-  return @@ root Michelson_v1_parser.(parsed.expanded)
+  Tezos_micheline.Micheline_parser.no_parsing_error
+  @@ Michelson_v1_parser.parse_expression code
+  >|? fun parsed -> root Michelson_v1_parser.(parsed.expanded)
 
 let lambda_t ~loc param res = Prim (loc, T_lambda, [param; res], [])
 

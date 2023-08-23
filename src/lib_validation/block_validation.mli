@@ -29,19 +29,6 @@
     part). The main function of this module is [apply] whichs calls the one of
     the protocol. *)
 
-(** This type is used to represent an operation contained in a block
-    that we want to validate and/or apply. *)
-type operation
-
-(** Create an [operation] from the [Operation.t] by hashing it and by checking
-    whether the protocol should check the operation's signature. The signature
-    should always be checked unless the operation hash is already known in the
-    [known_valid_operations_set] *)
-val mk_operation :
-  ?known_valid_operation_set:Operation_hash.Set.t -> Operation.t -> operation
-
-val operation_encoding : operation Data_encoding.t
-
 type validation_store = {
   resulting_context_hash : Context_hash.t;
   timestamp : Time.Protocol.t;
@@ -115,7 +102,7 @@ val check_liveness :
   live_blocks:Block_hash.Set.t ->
   live_operations:Operation_hash.Set.t ->
   Block_hash.t ->
-  operation list list ->
+  Operation.t list list ->
   unit tzresult
 
 type apply_environment = {
@@ -159,7 +146,7 @@ val apply :
   apply_environment ->
   cache:Tezos_protocol_environment.Context.source_of_cache ->
   Block_header.t ->
-  operation list list ->
+  Operation.t list list ->
   apply_result tzresult Lwt.t
 
 (** [precheck chain_id ~predecessor_block_header
@@ -178,7 +165,7 @@ val precheck :
   predecessor_resulting_context_hash:Context_hash.t ->
   cache:Tezos_protocol_environment.Context.source_of_cache ->
   Block_header.t ->
-  operation list list ->
+  Operation.t list list ->
   unit tzresult Lwt.t
 
 val preapply :
@@ -197,7 +184,7 @@ val preapply :
   predecessor_max_operations_ttl:int ->
   predecessor_block_metadata_hash:Block_metadata_hash.t option ->
   predecessor_ops_metadata_hash:Operation_metadata_list_list_hash.t option ->
-  operation list list ->
+  Operation.t list list ->
   ((Block_header.shell_header * error Preapply_result.t list)
   * (apply_result * Tezos_protocol_environment.Context.t))
   tzresult
@@ -212,6 +199,6 @@ val recompute_metadata :
   predecessor_block_metadata_hash:Block_metadata_hash.t option ->
   predecessor_ops_metadata_hash:Operation_metadata_list_list_hash.t option ->
   block_header:Block_header.t ->
-  operations:operation trace trace ->
+  operations:Operation.t trace trace ->
   cache:Tezos_protocol_environment.Context.source_of_cache ->
   ((bytes * Block_metadata_hash.t option) * ops_metadata) tzresult Lwt.t

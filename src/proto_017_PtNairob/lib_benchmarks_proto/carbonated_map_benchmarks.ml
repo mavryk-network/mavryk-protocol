@@ -47,7 +47,7 @@ module Config_and_workload = struct
 
   let module_filename = __FILE__
 
-  let purpose = Benchmark.Other_purpose "No longer used to generate code"
+  let generated_code_destination = None
 
   let tags = ["carbonated_map"]
 
@@ -167,7 +167,7 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Other_purpose "No longer used to generate code"
+    let generated_code_destination = None
 
     let models =
       [
@@ -216,8 +216,6 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
         type arg_type = int * unit
 
         let name = name
-
-        let takes_saturation_reprs = false
 
         module Def (L : Costlang.S) = struct
           type model_type = L.size -> L.size
@@ -310,7 +308,7 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Other_purpose "No longer used to generate code"
+    let generated_code_destination = None
 
     let models =
       [

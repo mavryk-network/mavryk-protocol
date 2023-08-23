@@ -5,14 +5,14 @@
  (name tezos_client_001_PtCJ7pwo)
  (public_name tezos-client-001-PtCJ7pwo)
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-shell-services
+  tezos-base
+  tezos-clic
+  tezos-shell-services
   tezos-client-base
   tezos-protocol-001-PtCJ7pwo
   tezos-protocol-001-PtCJ7pwo.lifted
   tezos-signer-backends
-  octez-libs.tezos-rpc
+  tezos-rpc
   uri)
  (library_flags (:standard -linkall))
  (flags

@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2022 Nomadic Labs, <contact@nomadic-labs.com>               *)
-(* Copyright (c) 2023 Functori, <contact@functori.com>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -27,7 +26,10 @@
 open Protocol.Alpha_context
 module Reveal_hash = Protocol.Sc_rollup_reveal_hash
 
-type error += Wrong_hash of {found : Reveal_hash.t; expected : Reveal_hash.t}
+type error +=
+  | Wrong_hash of {found : Reveal_hash.t; expected : Reveal_hash.t}
+  | Could_not_open_preimage_file of String.t
+  | Could_not_encode_raw_data
 
 let () =
   Sc_rollup_node_errors.register_error_kind
@@ -49,7 +51,34 @@ let () =
         (req "expected" Reveal_hash.encoding))
     (function
       | Wrong_hash {found; expected} -> Some (found, expected) | _ -> None)
-    (fun (found, expected) -> Wrong_hash {found; expected})
+    (fun (found, expected) -> Wrong_hash {found; expected}) ;
+  Sc_rollup_node_errors.register_error_kind
+    ~id:"sc_rollup.node.could_not_open_reveal_preimage_file"
+    ~title:"Could not open reveal preimage file"
+    ~description:"Could not open reveal preimage file."
+    ~pp:(fun ppf hash ->
+      Format.fprintf
+        ppf
+        "Could not open file containing preimage of reveal hash %s"
+        hash)
+    `Permanent
+    Data_encoding.(obj1 (req "hash" string))
+    (function
+      | Could_not_open_preimage_file filename -> Some filename | _ -> None)
+    (fun filename -> Could_not_open_preimage_file filename) ;
+  Sc_rollup_node_errors.register_error_kind
+    ~id:"sc_rollup.node.could_not_encode_raw_data"
+    ~title:"Could not encode raw data to reveal"
+    ~description:"Could not encode raw data to reveal."
+    ~pp:(fun ppf () ->
+      Format.pp_print_string
+        ppf
+        "Could not encode raw data to reveal with the expected protocol \
+         encoding")
+    `Permanent
+    Data_encoding.unit
+    (function Could_not_encode_raw_data -> Some () | _ -> None)
+    (fun () -> Could_not_encode_raw_data)
 
 type source = String of string | File of string
 
@@ -65,33 +94,17 @@ let path data_dir pvm_name hash =
   let hash = Protocol.Sc_rollup_reveal_hash.to_hex hash in
   Filename.(concat (concat data_dir pvm_name) hash)
 
-let proto_hash_to_dac_hash ((module Plugin) : Dac_plugin.t) proto_reveal_hash =
-  proto_reveal_hash
-  |> Data_encoding.Binary.to_bytes_exn Protocol.Sc_rollup_reveal_hash.encoding
-  |> Data_encoding.Binary.of_bytes_exn Plugin.encoding
-
-let get ~dac_client ~data_dir ~pvm_kind hash =
+let get ?dac_client ~data_dir ~pvm_kind hash =
   let open Lwt_result_syntax in
   let* contents =
-    let filename =
-      path data_dir (Octez_smart_rollup.Kind.to_string pvm_kind) hash
-    in
+    let filename = path data_dir (Sc_rollup.Kind.to_string pvm_kind) hash in
     let* file_contents = file_contents filename in
     match file_contents with
     | Some contents -> return contents
     | None -> (
         match dac_client with
-        | None ->
-            tzfail (Sc_rollup_node_errors.Could_not_open_preimage_file filename)
-        | Some dac_client ->
-            let dac_plugin =
-              WithExceptions.Option.get ~loc:__LOC__
-              @@ Dac_plugin.get Protocol.hash
-            in
-            Dac_observer_client.fetch_preimage
-              dac_client
-              dac_plugin
-              (proto_hash_to_dac_hash dac_plugin hash))
+        | None -> tzfail (Could_not_open_preimage_file filename)
+        | Some dac_client -> Dac_observer_client.fetch_preimage dac_client hash)
   in
   let*? () =
     let contents_hash =
@@ -104,7 +117,7 @@ let get ~dac_client ~data_dir ~pvm_kind hash =
   let* _encoded =
     (* Check that the reveal input can be encoded within the bounds enforced by
        the protocol. *)
-    trace Sc_rollup_node_errors.Could_not_encode_raw_data
+    trace Could_not_encode_raw_data
     @@ protect
     @@ fun () ->
     Data_encoding.Binary.to_bytes_exn
@@ -113,9 +126,3 @@ let get ~dac_client ~data_dir ~pvm_kind hash =
     |> return
   in
   return contents
-
-let proto_hash_to_dac_hash proto_reveal_hash =
-  let dac_plugin =
-    WithExceptions.Option.get ~loc:__LOC__ @@ Dac_plugin.get Protocol.hash
-  in
-  proto_hash_to_dac_hash dac_plugin proto_reveal_hash

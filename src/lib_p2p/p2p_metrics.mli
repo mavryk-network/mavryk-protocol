@@ -75,3 +75,6 @@ module Swap : sig
   (** failed swaps counter *)
   val fail : Counter.t
 end
+
+(** [collect pool] registers metrics collections of [pool] *)
+val collect : ('msg, 'peer, 'conn) P2p_pool.t -> unit

@@ -15,9 +15,7 @@ use crypto::hash::{
 };
 
 /// Hash of Layer1 contract ids.
-#[derive(
-    Debug, Clone, PartialEq, Eq, PartialOrd, Ord, HasEncoding, BinWriter, NomReader,
-)]
+#[derive(Debug, Clone, PartialEq, Eq, HasEncoding, BinWriter, NomReader)]
 pub enum PublicKeyHash {
     /// Tz1-contract
     Ed25519(ContractTz1Hash),

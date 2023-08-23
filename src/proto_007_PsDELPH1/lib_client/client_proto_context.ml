@@ -72,11 +72,11 @@ let list_contract_labels cctxt ~chain ~block =
           Public_key_hash.rev_find cctxt m >>=? function
           | None -> return ""
           | Some nm -> (
-              Raw_contract_alias.find_opt cctxt nm >>=? function
+              RawContractAlias.find_opt cctxt nm >>=? function
               | None -> return (" (known as " ^ nm ^ ")")
               | Some _ -> return (" (known as key:" ^ nm ^ ")")))
       | None -> (
-          Raw_contract_alias.rev_find cctxt h >>=? function
+          RawContractAlias.rev_find cctxt h >>=? function
           | None -> return ""
           | Some nm -> return (" (known as " ^ nm ^ ")")))
       >>=? fun nm ->

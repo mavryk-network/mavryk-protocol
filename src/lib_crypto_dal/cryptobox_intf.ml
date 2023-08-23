@@ -47,8 +47,6 @@ module type COMMITMENT = sig
 
   val equal : t -> t -> bool
 
-  val compare : t -> t -> int
-
   val zero : t
 end
 
@@ -67,7 +65,7 @@ module type VERIFIER = sig
   type t
 
   (** Parameters to build a value of type [t] *)
-  type parameters = Dal_config.parameters = {
+  type parameters = {
     redundancy_factor : int;
     page_size : int;
     slot_size : int;

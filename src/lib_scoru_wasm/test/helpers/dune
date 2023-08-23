@@ -6,13 +6,13 @@
  (package tezos-scoru-wasm-test-helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-tree-encoding
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-context.disk
-  octez-libs.tezos-base-test-helpers
-  octez-libs.tezos-test-helpers
-  octez-libs.tezos-scoru-wasm
+  tezos-base
+  tezos-tree-encoding
+  tezos-base.unix
+  tezos-context.disk
+  tezos-base-test-helpers
+  tezos-test-helpers
+  tezos-scoru-wasm
   tezos_scoru_wasm_durable_snapshot
   tezos-scoru-wasm-fast
   tezos-scoru-wasm-helpers

@@ -181,8 +181,6 @@ let dummy_patch_context ctxt =
   let*? {context; _} = Environment.wrap_tzresult res in
   return context
 
-(* Registers a context prunning callback. See
-   `lib_context/sigs/context.ml` for further details. *)
 let register_gc store =
   let open Lwt_result_syntax in
   let chain_store = Store.main_chain_store store in
@@ -197,19 +195,6 @@ let register_gc store =
     return_unit
   in
   Store.Chain.register_gc_callback chain_store (Some gc)
-
-(* Registers a context split callback. See
-   `lib_context/sigs/context.ml` for further details. *)
-let register_split store =
-  let open Lwt_result_syntax in
-  let chain_store = Store.main_chain_store store in
-  let split =
-    Some
-      (fun () ->
-        let*! () = Context_ops.split (Store.context_index store) in
-        return_unit)
-  in
-  Store.Chain.register_split_callback chain_store split
 
 let wrap_store_init ?(patch_context = dummy_patch_context)
     ?(history_mode = History_mode.Archive) ?(allow_testchains = true)
@@ -240,9 +225,7 @@ let wrap_store_init ?(patch_context = dummy_patch_context)
             ~allow_testchains
             genesis
         in
-        if with_gc then (
-          register_gc store ;
-          register_split store) ;
+        if with_gc then register_gc store ;
         protect
           ~on_error:(fun err ->
             let*! pp_store = Store.make_pp_store store in
@@ -325,9 +308,7 @@ let wrap_simple_store_init ?(patch_context = dummy_patch_context)
             ~allow_testchains
             genesis
         in
-        if with_gc then (
-          register_gc store ;
-          register_split store) ;
+        if with_gc then register_gc store ;
         protect
           ~on_error:(fun err ->
             let*! () = Store.close_store store in
@@ -580,6 +561,14 @@ let append_blocks ?min_lafl ?constants ?max_operations_ttl ?root ?(kind = `Full)
         Lwt.return (Store.Block.descriptor block)
   in
   let* root_b = Store.Block.read_block chain_store (fst root) in
+  let* resulting_context_hash =
+    Store.Block.resulting_context_hash chain_store root_b
+  in
+  let*! ctxt =
+    Context_ops.checkout_exn
+      (Store.context_index (Store.Chain.global_store chain_store))
+      resulting_context_hash
+  in
   let*! blocks, _last =
     make_raw_block_list ?min_lafl ?constants ?max_operations_ttl ~kind root n
   in
@@ -588,32 +577,23 @@ let append_blocks ?min_lafl ?constants ?max_operations_ttl ?root ?(kind = `Full)
     | None -> Store.Block.proto_level root_b
     | Some proto_level -> proto_level
   in
-  let context_index =
-    Store.context_index (Store.Chain.global_store chain_store)
-  in
-  let* _, blocks =
+  let* _, _, blocks =
     List.fold_left_es
-      (fun (pred, blocks) b ->
-        let* pred_resulting_context =
-          Store.Block.resulting_context_hash chain_store pred
-        in
-        let* resulting_context, b =
-          (* It is required to checkout the actual context to update
-             some context internal values (such as the parent
-             commits). *)
-          let*! pred_ctxt =
-            Context_ops.checkout_exn context_index pred_resulting_context
-          in
-          let*! new_ctxt =
+      (fun (ctxt, pred, blocks) b ->
+        let* ctxt, resulting_context, b =
+          let*! ctxt =
             Context_ops.add
-              pred_ctxt
+              ctxt
               ["level"]
               (Bytes.of_string (Format.asprintf "%ld" (Block_repr.level b)))
           in
-          let*! new_ctxt =
+          let*! ctxt =
             match set_protocol with
-            | None -> Lwt.return new_ctxt
-            | Some proto -> Context_ops.add_protocol new_ctxt proto
+            | None -> Lwt.return ctxt
+            | Some proto -> Context_ops.add_protocol ctxt proto
+          in
+          let* pred_resulting_context =
+            Store.Block.resulting_context_hash chain_store pred
           in
           let shell =
             {
@@ -632,10 +612,11 @@ let append_blocks ?min_lafl ?constants ?max_operations_ttl ?root ?(kind = `Full)
           in
           let hash = Block_header.hash header in
           let*! resulting_context =
-            Context_ops.commit ~time:Time.Protocol.epoch new_ctxt
+            Context_ops.commit ~time:Time.Protocol.epoch ctxt
           in
           return
-            ( resulting_context,
+            ( ctxt,
+              resulting_context,
               {
                 Block_repr.hash;
                 contents =
@@ -663,16 +644,11 @@ let append_blocks ?min_lafl ?constants ?max_operations_ttl ?root ?(kind = `Full)
         let* () =
           if should_set_head then
             let* _ = Store.Chain.set_head chain_store b in
-            let*! () =
-              Block_store.await_merging
-                (Store.Unsafe.get_block_store chain_store)
-            in
-            let*! () = Context_ops.wait_gc_completion context_index in
             return_unit
           else return_unit
         in
-        return (b, b :: blocks))
-      (root_b, [])
+        return (ctxt, b, b :: blocks))
+      (ctxt, root_b, [])
       blocks
   in
   let head = List.hd blocks |> WithExceptions.Option.get ~loc:__LOC__ in

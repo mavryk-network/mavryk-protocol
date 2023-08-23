@@ -65,9 +65,6 @@ module type T = sig
   (** Tail recursive variant of [snoc]. *)
   val snoc_tr : t -> elt -> t
 
-  (** [of_list elems] returns the Merkle list constructed with [elems]. *)
-  val of_list : elt list -> t
-
   (** [compute elems] returns the root hash of the Merkle list constructed with
       [elems]. *)
   val compute : elt list -> h

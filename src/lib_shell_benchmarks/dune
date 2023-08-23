@@ -6,14 +6,14 @@
  (public_name tezos-shell-benchmarks)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-stdlib
-  octez-libs.tezos-base
-  octez-libs.tezos-error-monad
+  tezos-stdlib
+  tezos-base
+  tezos-error-monad
   tezos-benchmark
-  octez-libs.tezos-crypto
-  octez-libs.tezos-context
-  octez-libs.tezos-shell-context
-  octez-libs.tezos-micheline)
+  tezos-crypto
+  tezos-context
+  tezos-shell-context
+  tezos-micheline)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

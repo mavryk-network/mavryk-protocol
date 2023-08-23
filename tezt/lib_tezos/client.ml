@@ -27,17 +27,13 @@
 open Runnable.Syntax
 open Cli_arg
 
-type endpoint =
-  | Node of Node.t
-  | Proxy_server of Proxy_server.t
-  | Foreign_endpoint of Foreign_endpoint.t
+type endpoint = Node of Node.t | Proxy_server of Proxy_server.t
 
 type media_type = Json | Binary | Any
 
 let rpc_port = function
   | Node n -> Node.rpc_port n
   | Proxy_server ps -> Proxy_server.rpc_port ps
-  | Foreign_endpoint fe -> Foreign_endpoint.rpc_port fe
 
 type mode =
   | Client of endpoint option * media_type option
@@ -94,31 +90,8 @@ let runner endpoint =
   match endpoint with
   | Node node -> Node.runner node
   | Proxy_server ps -> Proxy_server.runner ps
-  | Foreign_endpoint _ -> None
-
-let scheme = function
-  | Node n -> Node.rpc_scheme n
-  | Proxy_server _ -> "http"
-  | Foreign_endpoint fe -> Foreign_endpoint.rpc_scheme fe
 
 let address ?(hostname = false) ?from peer =
-  (* We locally overload the runner function to fake a runner for foreign
-     endpoints. Because the API contract of the [Runner] module is to
-     provide a way to connect to a remote host using SSH, we cannot return a
-     runner for a foreign endpoint, because the module does not provide such
-     invariants (for instance, the public RPC endpoint of Mondaynet is a good
-     candidate for a foreign endpoint to which we likely cannot connect to
-     using SSH).
-
-     We do provide this function because the runner is only used in the context
-     of the {!Runner.address} function, which only compares the addresses of
-     two runners to decide whether or not to use the localhost address
-     in the case where [from] has the same address as [peer]. *)
-  let runner = function
-    | Foreign_endpoint endpoint ->
-        Some (Runner.create ~address:(Foreign_endpoint.rpc_host endpoint) ())
-    | peer -> runner peer
-  in
   match from with
   | None -> Runner.address ~hostname (runner peer)
   | Some endpoint ->
@@ -160,9 +133,6 @@ let mode_to_endpoint = function
   | Client (Some endpoint, _) | Light (_, endpoint :: _) | Proxy endpoint ->
       Some endpoint
 
-let string_of_endpoint ?hostname e =
-  sf "%s://%s:%d" (scheme e) (address ?hostname e) (rpc_port e)
-
 (* [?endpoint] can be used to override the default node stored in the client.
    Mockup nodes do not use [--endpoint] at all: RPCs are mocked up.
    Light mode needs a file (specified with [--sources] on the CLI)
@@ -173,7 +143,8 @@ let endpoint_arg ?(endpoint : endpoint option) client =
   (* pass [?endpoint] first: it has precedence over client.mode *)
   match either endpoint (mode_to_endpoint client.mode) with
   | None -> []
-  | Some e -> ["--endpoint"; string_of_endpoint ~hostname:true e]
+  | Some e ->
+      ["--endpoint"; sf "http://%s:%d" (address ~hostname:true e) (rpc_port e)]
 
 let media_type_arg client =
   match client with
@@ -688,9 +659,7 @@ let activate_protocol ?endpoint ?block ?protocol ?protocol_hash ?fitness ?key
     client
   |> Process.check
 
-let node_of_endpoint = function
-  | Node n -> Some n
-  | Proxy_server _ | Foreign_endpoint _ -> None
+let node_of_endpoint = function Node n -> Some n | Proxy_server _ -> None
 
 let node_of_client_mode = function
   | Client (Some endpoint, _) -> node_of_endpoint endpoint
@@ -807,40 +776,29 @@ let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
   let* _lvl = Node.wait_for_level node (level_before + 1) in
   unit
 
-(* Handle attesting and preattesting similarly *)
-type tenderbake_action = Preattest | Attest | Propose
+(* Handle endorsing and preendorsing similarly *)
+type tenderbake_action = Preendorse | Endorse | Propose
 
-let tenderbake_action_to_string ~use_legacy_attestation_name = function
-  | Preattest ->
-      if use_legacy_attestation_name then "preendorse" else "preattest"
-  | Attest -> if use_legacy_attestation_name then "endorse" else "attest"
+let tenderbake_action_to_string = function
+  | Preendorse -> "preendorse"
+  | Endorse -> "endorse"
   | Propose -> "propose"
 
 let spawn_tenderbake_action_for ~tenderbake_action ?endpoint ?protocol
     ?(key = [Constant.bootstrap1.alias]) ?(minimal_timestamp = false)
     ?(force = false) client =
-  let use_legacy_attestation_name =
-    match protocol with
-    | None -> false
-    | Some protocol -> Protocol.(number protocol < 018)
-  in
   spawn_command
     ?endpoint
     client
     (optional_arg "protocol" Protocol.hash protocol
-    @ [
-        tenderbake_action_to_string
-          ~use_legacy_attestation_name
-          tenderbake_action;
-        "for";
-      ]
+    @ [tenderbake_action_to_string tenderbake_action; "for"]
     @ key
     @ (if minimal_timestamp then ["--minimal-timestamp"] else [])
     @ if force then ["--force"] else [])
 
-let spawn_attest_for ?endpoint ?protocol ?key ?force client =
+let spawn_endorse_for ?endpoint ?protocol ?key ?force client =
   spawn_tenderbake_action_for
-    ~tenderbake_action:Attest
+    ~tenderbake_action:Endorse
     ~minimal_timestamp:false
     ?endpoint
     ?protocol
@@ -848,9 +806,9 @@ let spawn_attest_for ?endpoint ?protocol ?key ?force client =
     ?force
     client
 
-let spawn_preattest_for ?endpoint ?protocol ?key ?force client =
+let spawn_preendorse_for ?endpoint ?protocol ?key ?force client =
   spawn_tenderbake_action_for
-    ~tenderbake_action:Preattest
+    ~tenderbake_action:Preendorse
     ~minimal_timestamp:false
     ?endpoint
     ?protocol
@@ -869,11 +827,11 @@ let spawn_propose_for ?endpoint ?minimal_timestamp ?protocol ?key ?force client
     ?force
     client
 
-let attest_for ?endpoint ?protocol ?key ?force client =
-  spawn_attest_for ?endpoint ?protocol ?key ?force client |> Process.check
+let endorse_for ?endpoint ?protocol ?key ?force client =
+  spawn_endorse_for ?endpoint ?protocol ?key ?force client |> Process.check
 
-let preattest_for ?endpoint ?protocol ?key ?force client =
-  spawn_preattest_for ?endpoint ?protocol ?key ?force client |> Process.check
+let preendorse_for ?endpoint ?protocol ?key ?force client =
+  spawn_preendorse_for ?endpoint ?protocol ?key ?force client |> Process.check
 
 let propose_for ?endpoint ?(minimal_timestamp = true) ?protocol ?key ?force
     client =
@@ -2037,35 +1995,33 @@ let normalize_type ?hooks ~typ client =
 let typecheck_data ~data ~typ ?gas ?(legacy = false) client =
   spawn_typecheck_data ~data ~typ ?gas ~legacy client |> Process.check
 
-let spawn_typecheck_script ?hooks ?protocol_hash ~scripts ?no_base_dir_warnings
+let spawn_typecheck_script ?hooks ?protocol_hash ~script ?no_base_dir_warnings
     ?(details = false) ?(emacs = false) ?(no_print_source = false) ?gas
-    ?(legacy = false) ?(display_names = false) client =
+    ?(legacy = false) client =
   let gas_cmd =
     Option.map Int.to_string gas |> Option.map (fun g -> ["--gas"; g])
   in
   spawn_command ?hooks ?protocol_hash ?no_base_dir_warnings client
-  @@ ["typecheck"; "script"] @ scripts
+  @@ ["typecheck"; "script"; script]
   @ Option.value ~default:[] gas_cmd
   @ (if details then ["--details"] else [])
   @ (if emacs then ["--emacs"] else [])
   @ (if no_print_source then ["--no-print-source"] else [])
-  @ (if legacy then ["--legacy"] else [])
-  @ if display_names then ["--display-names"] else []
+  @ if legacy then ["--legacy"] else []
 
-let typecheck_script ?hooks ?protocol_hash ~scripts ?no_base_dir_warnings
+let typecheck_script ?hooks ?protocol_hash ~script ?no_base_dir_warnings
     ?(details = false) ?(emacs = false) ?(no_print_source = false) ?gas
-    ?(legacy = false) ?display_names client =
+    ?(legacy = false) client =
   spawn_typecheck_script
     ?hooks
     ?protocol_hash
-    ~scripts
+    ~script
     ?no_base_dir_warnings
     ~details
     ~emacs
     ~no_print_source
     ?gas
     ~legacy
-    ?display_names
     client
   |> Process.check
 
@@ -2256,8 +2212,8 @@ let show_voting_period ?endpoint client =
   | Some period -> return period
 
 module Sc_rollup = struct
-  let spawn_originate ?hooks ?(wait = "none") ?burn_cap ?whitelist ~alias ~src
-      ~kind ~parameters_ty ~boot_sector client =
+  let spawn_originate ?hooks ?(wait = "none") ?burn_cap ~alias ~src ~kind
+      ~parameters_ty ~boot_sector client =
     spawn_command
       ?hooks
       client
@@ -2279,10 +2235,6 @@ module Sc_rollup = struct
           "kernel";
           boot_sector;
         ]
-      @ optional_arg
-          "whitelist"
-          (fun v -> JSON.encode_u (`A (List.map (fun s -> `String s) v)))
-          whitelist
       @ optional_arg "burn-cap" Tez.to_string burn_cap)
 
   let parse_rollup_address_in_receipt output =
@@ -2290,14 +2242,13 @@ module Sc_rollup = struct
     | None -> Test.fail "Cannot extract rollup address from receipt."
     | Some x -> return x
 
-  let originate ?hooks ?wait ?burn_cap ?whitelist ~alias ~src ~kind
-      ~parameters_ty ~boot_sector client =
+  let originate ?hooks ?wait ?burn_cap ~alias ~src ~kind ~parameters_ty
+      ~boot_sector client =
     let process =
       spawn_originate
         ?hooks
         ?wait
         ?burn_cap
-        ?whitelist
         ~alias
         ~src
         ~kind
@@ -2411,19 +2362,24 @@ module Sc_rollup = struct
     let parse process = Process.check process in
     {value = process; run = parse}
 
-  let cement_commitment protocol ?hooks ?(wait = "none") ?burn_cap ~hash ~src
-      ~dst client =
-    let commitment_arg =
-      if Protocol.(number protocol >= 018) then
-        (* Version after protocol 017 do not specify the commitment. *) []
-      else [hash]
-    in
+  let cement_commitment ?hooks ?(wait = "none") ?burn_cap ~hash ~src ~dst client
+      =
     let process =
       spawn_command
         ?hooks
         client
-        (["--wait"; wait] @ ["cement"; "commitment"] @ commitment_arg
-        @ ["from"; src; "for"; "smart"; "rollup"; dst]
+        (["--wait"; wait]
+        @ [
+            "cement";
+            "commitment";
+            hash;
+            "from";
+            src;
+            "for";
+            "smart";
+            "rollup";
+            dst;
+          ]
         @ optional_arg "burn-cap" Tez.to_string burn_cap)
     in
     let parse process = Process.check process in
@@ -3050,12 +3006,10 @@ let from_fa1_2_contract_get_total_supply_callback ?burn_cap ~contract ~from
     client
   |> Process.check
 
-let spawn_from_fa1_2_contract_transfer ?(wait = "none") ?burn_cap ~contract
-    ~amount ~from ~to_ ?as_ client =
+let spawn_from_fa1_2_contract_transfer ?burn_cap ~contract ~amount ~from ~to_
+    ?as_ client =
   spawn_command client
   @@ [
-       "--wait";
-       wait;
        "from";
        "fa1.2";
        "contract";
@@ -3070,10 +3024,9 @@ let spawn_from_fa1_2_contract_transfer ?(wait = "none") ?burn_cap ~contract
   @ optional_arg "as" Fun.id as_
   @ optional_arg "burn-cap" Tez.to_string burn_cap
 
-let from_fa1_2_contract_transfer ?wait ?burn_cap ~contract ~amount ~from ~to_
-    ?as_ client =
+let from_fa1_2_contract_transfer ?burn_cap ~contract ~amount ~from ~to_ ?as_
+    client =
   spawn_from_fa1_2_contract_transfer
-    ?wait
     ?burn_cap
     ~contract
     ~amount
@@ -3083,12 +3036,10 @@ let from_fa1_2_contract_transfer ?wait ?burn_cap ~contract ~amount ~from ~to_
     client
   |> Process.check
 
-let spawn_from_fa1_2_contract_approve ?(wait = "none") ?burn_cap ~contract ~as_
-    ~amount ~from client =
+let spawn_from_fa1_2_contract_approve ?burn_cap ~contract ~as_ ~amount ~from
+    client =
   spawn_command client
   @@ [
-       "--wait";
-       wait;
        "from";
        "fa1.2";
        "contract";
@@ -3102,10 +3053,8 @@ let spawn_from_fa1_2_contract_approve ?(wait = "none") ?burn_cap ~contract ~as_
      ]
   @ optional_arg "burn-cap" Tez.to_string burn_cap
 
-let from_fa1_2_contract_approve ?wait ?burn_cap ~contract ~as_ ~amount ~from
-    client =
+let from_fa1_2_contract_approve ?burn_cap ~contract ~as_ ~amount ~from client =
   spawn_from_fa1_2_contract_approve
-    ?wait
     ?burn_cap
     ~contract
     ~as_

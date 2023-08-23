@@ -84,6 +84,8 @@ module Micheline_size = struct
     z_bytes : S.may_saturate S.t;
   }
 
+  let make ~nodes ~string_bytes ~z_bytes = {nodes; string_bytes; z_bytes}
+
   let zero = {nodes = S.zero; string_bytes = S.zero; z_bytes = S.zero}
 
   let add_int acc n =
@@ -146,6 +148,13 @@ module Micheline_size = struct
         (of_nodes [@ocaml.tailcall]) acc args (nodes :: more_nodes)
 
   let of_node node = of_nodes zero [node] []
+
+  let dot_product s1 s2 =
+    S.add
+      (S.mul s1.nodes s2.nodes)
+      (S.add
+         (S.mul s1.string_bytes s2.string_bytes)
+         (S.mul s1.z_bytes s2.z_bytes))
 end
 
 (* Costs pertaining to deserialization of Micheline values (bytes to Micheline).
@@ -153,11 +162,16 @@ end
 module Micheline_decoding = struct
   (* Cost vector allowing to compute decoding costs as a function of the
      size of the Micheline term *)
-  let micheline_size_dependent_cost
-      ({nodes; string_bytes; z_bytes} : Micheline_size.t) =
-    Script_repr_costs.cost_DECODING_MICHELINE nodes z_bytes string_bytes
+  let micheline_size_dependent_cost =
+    let traversal_cost = S.safe_int 60 in
+    let string_per_byte_cost = S.safe_int 10 in
+    let z_per_byte_cost = S.safe_int 10 in
+    Micheline_size.make
+      ~nodes:traversal_cost
+      ~string_bytes:string_per_byte_cost
+      ~z_bytes:z_per_byte_cost
 
-  let bytes_dependent_cost = Script_repr_costs.cost_DECODING_MICHELINE_bytes
+  let bytes_dependent_cost = S.safe_int 20
 end
 
 (* Costs pertaining to serialization of Micheline values (Micheline to bytes)
@@ -165,11 +179,16 @@ end
 module Micheline_encoding = struct
   (* Cost vector allowing to compute encoding cost as a function of the
      size of the Micheline term *)
-  let micheline_size_dependent_cost
-      ({nodes; string_bytes; z_bytes} : Micheline_size.t) =
-    Script_repr_costs.cost_ENCODING_MICHELINE nodes z_bytes string_bytes
+  let micheline_size_dependent_cost =
+    let traversal_cost = S.safe_int 100 in
+    let string_per_byte_cost = S.safe_int 10 in
+    let z_per_byte_cost = S.safe_int 25 in
+    Micheline_size.make
+      ~nodes:traversal_cost
+      ~string_bytes:string_per_byte_cost
+      ~z_bytes:z_per_byte_cost
 
-  let bytes_dependent_cost = Script_repr_costs.cost_ENCODING_MICHELINE_bytes
+  let bytes_dependent_cost = S.safe_int 33
 end
 
 let expr_size expr = Micheline_size.of_node (Micheline.root expr)
@@ -177,7 +196,9 @@ let expr_size expr = Micheline_size.of_node (Micheline.root expr)
 (* Compute the cost of serializing a term of given [size]. *)
 let serialization_cost size =
   Gas_limit_repr.atomic_step_cost
-  @@ Micheline_encoding.micheline_size_dependent_cost size
+  @@ Micheline_size.dot_product
+       size
+       Micheline_encoding.micheline_size_dependent_cost
 
 (* Compute the cost of serializing a given term. *)
 let micheline_serialization_cost v = serialization_cost (expr_size v)
@@ -185,26 +206,38 @@ let micheline_serialization_cost v = serialization_cost (expr_size v)
 (* Compute the cost of deserializing a term of given [size]. *)
 let deserialization_cost size =
   Gas_limit_repr.atomic_step_cost
-  @@ Micheline_decoding.micheline_size_dependent_cost size
+  @@ Micheline_size.dot_product
+       size
+       Micheline_decoding.micheline_size_dependent_cost
 
 (* Estimate the cost of deserializing a term encoded in [bytes_len] bytes. *)
 let deserialization_cost_estimated_from_bytes bytes_len =
   Gas_limit_repr.atomic_step_cost
-  @@ Micheline_decoding.bytes_dependent_cost (S.safe_int bytes_len)
+  @@ S.mul Micheline_decoding.bytes_dependent_cost (S.safe_int bytes_len)
 
 (* Estimate the cost of serializing a term from its encoded form,
    having [bytes_len] bytes. *)
 let serialization_cost_estimated_from_bytes bytes_len =
   Gas_limit_repr.atomic_step_cost
-  @@ Micheline_encoding.bytes_dependent_cost (S.safe_int bytes_len)
+  @@ S.mul Micheline_encoding.bytes_dependent_cost (S.safe_int bytes_len)
 
+(* Cost of running [strip_locations] on a term with [size] nodes.
+   Note that [strip_locations] will reallocate a fresh Micheline tree.
+   This only depends on the total number of nodes (not the size of
+   the leaves). *)
 let cost_micheline_strip_locations size =
-  Gas_limit_repr.atomic_step_cost
-  @@ Script_repr_costs.cost_strip_locations_micheline size
+  Gas_limit_repr.atomic_step_cost @@ S.mul (S.safe_int size) (S.safe_int 51)
 
+(* TODO: https://gitlab.com/tezos/tezos/-/issues/2049
+   Plugin benchmarked gas.
+   Replace this definition, copied from [cost_michelines_strip_locations].
+*)
+(* Cost of running [strip_annotations] on a term with [size] nodes.
+   Note that [strip_annotations] will reallocate a fresh Micheline tree.
+   This only depends on the total number of nodes (not the size of
+   the leaves). *)
 let cost_micheline_strip_annotations size =
-  Gas_limit_repr.atomic_step_cost
-  @@ Script_repr_costs.cost_strip_annotations size
+  Gas_limit_repr.atomic_step_cost @@ S.mul (S.safe_int size) (S.safe_int 51)
 
 (* This is currently used to estimate the cost of serializing an operation. *)
 let bytes_node_cost s = serialization_cost_estimated_from_bytes (Bytes.length s)

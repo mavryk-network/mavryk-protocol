@@ -27,8 +27,7 @@ open Protocol
 open Alpha_context
 open Baking_cache
 open Baking_state
-module Lifted_protocol = Tezos_protocol_017_PtNairob_lifted.Lifted_protocol
-module Block_services = Block_services.Make (Lifted_protocol) (Lifted_protocol)
+module Block_services = Block_services.Make (Protocol) (Protocol)
 module Events = Baking_events.Node_rpc
 
 let inject_block cctxt ?(force = false) ~chain signed_block_header operations =

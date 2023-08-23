@@ -3,13 +3,13 @@
 
 (library
  (name communication)
- (public_name octez-libs.octez-plonk.communication)
+ (public_name octez-plonk.communication)
  (instrumentation (backend bisect_ppx))
  (libraries
   logs
   octez-distributed-lwt-internal
-  octez-libs.octez-plonk.distribution)
+  octez-plonk.distribution)
  (preprocess (pps ppx_repr))
  (flags
   (:standard)
-  -open Distribution))
+  -open Plonk_for_distribution))

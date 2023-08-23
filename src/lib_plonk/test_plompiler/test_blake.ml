@@ -35,7 +35,7 @@ module Blake (L : LIB) = struct
 
   module B = Plompiler.Blake2s (L)
 
-  let test_mixing (constants : Bytes.tl Input.t Array.t) z exp () =
+  let test_mixing (constants : Bytes.bl Input.t Array.t) z exp () =
     let* constants =
       foldM
         (fun acc c ->
@@ -68,19 +68,16 @@ module Blake (L : LIB) = struct
     let constants =
       Array.of_list
       @@ List.map
-           (fun s ->
-             input_bitlist Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex s))
+           (fun s -> input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex s))
            (List.init 16 (fun _ -> "00000001"))
     in
     let z =
-      input_bitlist
-        Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex "00000001")
+      input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex "00000001")
     in
     let exp =
       Array.of_list
       @@ List.map
-           (fun s ->
-             input_bitlist Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex s))
+           (fun s -> input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex s))
            [
              "00000024";
              "00000001";
@@ -142,22 +139,19 @@ module Blake (L : LIB) = struct
     let h =
       Array.of_list
       @@ List.map
-           (fun s ->
-             input_bitlist Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex s))
+           (fun s -> input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex s))
            (List.init 8 (fun _ -> "00000001"))
     in
     let m =
       Array.of_list
       @@ List.map
-           (fun s ->
-             input_bitlist Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex s))
+           (fun s -> input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex s))
            (List.init 16 (fun _ -> "00000001"))
     in
     let exp =
       Array.of_list
       @@ List.map
-           (fun s ->
-             input_bitlist Plompiler.Utils.(bitlist ~le:false @@ bytes_of_hex s))
+           (fun s -> input_bitlist Plompiler.Utils.(bitlist @@ bytes_of_hex s))
            [
              "6f226bc1";
              "40e44908";
@@ -183,13 +177,12 @@ module Blake (L : LIB) = struct
 
   let tests_blake2s =
     let i =
-      input_bitlist
-        Plompiler.Utils.(bitlist ~le:false (Stdlib.Bytes.make 65 '\xff'))
+      input_bitlist Plompiler.Utils.(bitlist (Stdlib.Bytes.make 65 '\xff'))
     in
     let exp =
       input_bitlist
         Plompiler.Utils.(
-          bitlist ~le:false
+          bitlist
           @@ bytes_of_hex
                "d63a602a01d5982f054e07431bb0f93139c135f296f7fc4c131a3d2a8f28dc2c")
     in

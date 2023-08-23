@@ -24,23 +24,19 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type staker = Stake_repr.staker =
-  | Single of Contract_repr.t * Signature.public_key_hash
-  | Shared of Signature.public_key_hash
-
 (** Places where tez can be found in the ledger's state. *)
 type balance =
   | Contract of Contract_repr.t
   | Block_fees
-  | Deposits of staker
-  | Unstaked_deposits of staker * Cycle_repr.t
+  | Deposits of Signature.Public_key_hash.t
   | Nonce_revelation_rewards
-  | Attesting_rewards
+  | Double_signing_evidence_rewards
+  | Endorsing_rewards
   | Baking_rewards
   | Baking_bonuses
   | Storage_fees
   | Double_signing_punishments
-  | Lost_attesting_rewards of Signature.Public_key_hash.t * bool * bool
+  | Lost_endorsing_rewards of Signature.Public_key_hash.t * bool * bool
   | Liquidity_baking_subsidies
   | Burned
   | Commitments of Blinded_public_key_hash.t
@@ -49,6 +45,8 @@ type balance =
   | Initial_commitments
   | Minted
   | Frozen_bonds of Contract_repr.t * Bond_id_repr.t
+  | Tx_rollup_rejection_punishments
+  | Tx_rollup_rejection_rewards
   | Sc_rollup_refutation_punishments
   | Sc_rollup_refutation_rewards
 
@@ -79,17 +77,6 @@ type balance_updates = (balance * balance_update * update_origin) list
     contains entries of the form [(_, _ Tez_repr.zero, _)]. This is because the
     [balance_update] [(_ Tez_repr.zero)] always decodes into [(Credited Tez_repr.zero)]. *)
 val balance_updates_encoding : balance_updates Data_encoding.t
-
-(** Balance updates encoding that uses legacy attestation name : `endorsing
-    right` and `lost endorsing right` when encoding to JSON
-
-    https://gitlab.com/tezos/tezos/-/issues/5529
-
-    This encoding is temporary and should be removed when the endorsements kinds
-    in JSON will not be accepted any more by the protocol.
-*)
-val balance_updates_encoding_with_legacy_attestation_name :
-  balance_updates Data_encoding.t
 
 (** Group updates by (balance x origin), and remove zero-valued balances. *)
 val group_balance_updates : balance_updates -> balance_updates tzresult

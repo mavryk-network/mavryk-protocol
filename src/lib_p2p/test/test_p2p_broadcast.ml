@@ -33,6 +33,10 @@
                   has its own pool and is given a function to be executed.
 *)
 
+include Internal_event.Legacy_logging.Make (struct
+  let name = "test.p2p.broadcast"
+end)
+
 type error += Read | Wrong_message_received | Wrong_message_count
 
 let () = Random.self_init ()
@@ -46,14 +50,12 @@ let no_check = false
 
 let init_logs =
   let log_cfg =
-    Tezos_base_unix.Logs_simple_config.create_cfg
-      ~rules:"test.p2p.connection-pool -> info; p2p.connection-pool -> info"
-      ()
+    Some
+      (Lwt_log_sink_unix.create_cfg
+         ~rules:"test.p2p.connection-pool -> info; p2p.connection-pool -> info"
+         ())
   in
-  let config =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
-  in
-  lazy (Tezos_base_unix.Internal_event_unix.init ~config ())
+  lazy (Tezos_base_unix.Internal_event_unix.init ?log_cfg ())
 
 (** Detaches [!client] nodes. Each of them will send a [BigPing] to each
     other node, then await for reading one from each other node.
@@ -84,7 +86,7 @@ module Simple = struct
 
   let rec connect ~timeout connect_handler pool point =
     let open Lwt_syntax in
-    let () = Tezt.Log.debug "Connect to %a" P2p_point.Id.pp point in
+    let* () = lwt_debug "Connect to %a" P2p_point.Id.pp point in
     let* r = P2p_connect_handler.connect connect_handler point ~timeout in
     match r with
     | Error (Tezos_p2p_services.P2p_errors.Connected :: _) -> (
@@ -98,40 +100,42 @@ module Simple = struct
           | Tezos_p2p_services.P2p_errors.Rejected_by_nack _ | Canceled
           | Timeout | Tezos_p2p_services.P2p_errors.Rejected _ ) as head_err)
         :: _) ->
-        Tezt.Log.debug
-          "Connection to %a failed (%a)@."
-          P2p_point.Id.pp
-          point
-          (fun ppf err ->
-            match err with
-            | Tezos_p2p_services.P2p_errors.Connection_refused ->
-                Format.fprintf ppf "connection refused"
-            | Tezos_p2p_services.P2p_errors.Pending_connection ->
-                Format.fprintf ppf "pending connection"
-            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
-                Format.fprintf ppf "rejected"
-            | Tezos_p2p_services.P2p_errors.Rejected_by_nack
-                {alternative_points = Some alternative_points; _} ->
-                Format.fprintf
-                  ppf
-                  "rejected (nack_v1, peer list: @[<h>%a@])"
-                  P2p_point.Id.pp_list
-                  alternative_points
-            | Tezos_p2p_services.P2p_errors.Rejected_by_nack
-                {alternative_points = None; _} ->
-                Format.fprintf ppf "rejected (nack_v0)"
-            | Canceled -> Format.fprintf ppf "canceled"
-            | Timeout -> Format.fprintf ppf "timeout"
-            | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
-                Format.fprintf
-                  ppf
-                  "rejected (%a) motive:%a"
-                  P2p_peer.Id.pp
-                  peer
-                  P2p_rejection.pp
-                  motive
-            | _ -> assert false)
-          head_err ;
+        let* () =
+          lwt_debug
+            "Connection to %a failed (%a)@."
+            P2p_point.Id.pp
+            point
+            (fun ppf err ->
+              match err with
+              | Tezos_p2p_services.P2p_errors.Connection_refused ->
+                  Format.fprintf ppf "connection refused"
+              | Tezos_p2p_services.P2p_errors.Pending_connection ->
+                  Format.fprintf ppf "pending connection"
+              | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
+                  Format.fprintf ppf "rejected"
+              | Tezos_p2p_services.P2p_errors.Rejected_by_nack
+                  {alternative_points = Some alternative_points; _} ->
+                  Format.fprintf
+                    ppf
+                    "rejected (nack_v1, peer list: @[<h>%a@])"
+                    P2p_point.Id.pp_list
+                    alternative_points
+              | Tezos_p2p_services.P2p_errors.Rejected_by_nack
+                  {alternative_points = None; _} ->
+                  Format.fprintf ppf "rejected (nack_v0)"
+              | Canceled -> Format.fprintf ppf "canceled"
+              | Timeout -> Format.fprintf ppf "timeout"
+              | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
+                  Format.fprintf
+                    ppf
+                    "rejected (%a) motive:%a"
+                    P2p_peer.Id.pp
+                    peer
+                    P2p_rejection.pp
+                    motive
+              | _ -> assert false)
+            head_err
+        in
         let* () = Lwt_unix.sleep (0.5 +. Random.float 2.) in
         connect ~timeout connect_handler pool point
     | Ok res ->
@@ -209,7 +213,7 @@ module Simple = struct
         node.pool
         node.points
     in
-    Tezt.Log.debug "Bootstrap OK@." ;
+    let*! () = lwt_debug "Bootstrap OK@." in
     let* () = Node.sync node in
     let rec loop n acc gacc msg =
       if n <= 0 then return (acc, gacc)
@@ -222,9 +226,11 @@ module Simple = struct
             write_all (Node.BigPing ref_msg) ;
             let end_time = Ptime_clock.now () in
             let span = Ptime.diff end_time start_time in
-            Tezt.Log.debug "Broadcast message in %a.@." Ptime.Span.pp span ;
+            let*! () =
+              lwt_debug "Broadcast message in %a.@." Ptime.Span.pp span
+            in
             let* () = Node.sync node in
-            Tezt.Log.debug "Wait others.@." ;
+            let*! () = lwt_debug "Wait others.@." in
             let* () = Node.sync node in
             let end_global_time = Ptime_clock.now () in
             let gspan = Ptime.diff end_global_time start_global_time in
@@ -237,7 +243,7 @@ module Simple = struct
     let* times, gtimes = loop repeat [] [] msgs in
     let print_stat times name =
       let ftimes = List.map Ptime.Span.to_float_s times in
-      Tezt.Log.debug
+      lwt_debug
         "%s; %f; %f; %f; %f; %f"
         name
         (List.fold_left Float.max Float.min_float ftimes)
@@ -247,15 +253,16 @@ module Simple = struct
         (stddev ftimes)
     in
     let*! () = close_all node.pool in
-    Tezt.Log.debug "All connections successfully closed.@." ;
-    Tezt.Log.debug "type; max; min; avg; median; std_dev" ;
-    print_stat times "broadcasting" ;
-    print_stat gtimes "global" ;
+    let*! () = lwt_debug "All connections successfully closed.@." in
+    let*! () = lwt_debug "type; max; min; avg; median; std_dev" in
+    let*! () = print_stat times "broadcasting" in
+    let*! () = print_stat gtimes "global" in
+
     return_unit
 
   let node msgs (node : Node.t) =
     let open Lwt_result_syntax in
-    Tezt.Log.debug "Bootstrap OK@." ;
+    let*! () = lwt_debug "Bootstrap OK@." in
     let* () = Node.sync node in
     let rec loop n msg =
       if n <= 0 then return_unit
@@ -263,10 +270,10 @@ module Simple = struct
         match msg with
         | [] -> return_unit
         | ref_msg :: next ->
-            Tezt.Log.debug "Wait broadcaster.@." ;
+            let*! () = lwt_debug "Wait broadcaster.@." in
             let* () = Node.sync node in
             let* _msgs = read_all node.pool ref_msg in
-            Tezt.Log.debug "Read message.@." ;
+            let*! () = lwt_debug "Read message.@." in
             let* () = Node.sync node in
             loop (n - 1) (if no_check then next @ [ref_msg] else next)
     in
@@ -275,7 +282,7 @@ module Simple = struct
   let run points =
     (* Messages are precomputed for every iteration and shared between
        processes to allow checking their content *)
-    Tezt.Log.debug "Running broadcast test on %d points.@." (List.length points) ;
+    debug "Running broadcast test on %d points.@." (List.length points) ;
     let msgs = message () in
     Node.detach_nodes
       (fun i -> if i = 0 then broadcaster msgs else node msgs)
@@ -293,7 +300,7 @@ let wrap addr n f =
         | Ok () -> Lwt.return_unit
         | Error (Exn (Unix.Unix_error ((EADDRINUSE | EADDRNOTAVAIL), _, _)) :: _)
           ->
-            Tezt.Log.warn "Conflict on ports, retry the test." ;
+            warn "Conflict on ports, retry the test." ;
             aux n f
         | Error error ->
             Format.kasprintf Stdlib.failwith "%a" pp_print_trace error

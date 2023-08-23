@@ -29,18 +29,96 @@ open Tezos_scoru_wasm_helpers
 open Tezos_scoru_wasm_helpers.Wasm_utils
 
 (* Helpers *)
+module Context_binary = Tezos_context_memory.Context_binary
 
-module Prover = Pvm_in_memory.Wasm
+module Prover = struct
+  open Tezos_protocol_alpha
+  open Tezos_protocol_alpha.Protocol
+
+  module Tree :
+    Environment.Context.TREE
+      with type t = Context_binary.t
+       and type tree = Context_binary.tree
+       and type key = string list
+       and type value = bytes = struct
+    type t = Context_binary.t
+
+    type tree = Context_binary.tree
+
+    type key = Context_binary.key
+
+    type value = Context_binary.value
+
+    include Context_binary.Tree
+  end
+
+  module WASM_P :
+    Alpha_context.Sc_rollup.Wasm_2_0_0PVM.P
+      with type Tree.t = Context_binary.t
+       and type Tree.tree = Context_binary.tree
+       and type Tree.key = string list
+       and type Tree.value = bytes
+       and type proof = Context_binary.Proof.tree Context_binary.Proof.t =
+  struct
+    open Alpha_context
+    module Tree = Tree
+
+    type tree = Tree.tree
+
+    type proof = Context_binary.Proof.tree Context_binary.Proof.t
+
+    let proof_encoding =
+      Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+      .tree_proof_encoding
+
+    let kinded_hash_to_state_hash :
+        Context_binary.Proof.kinded_hash -> Sc_rollup.State_hash.t = function
+      | `Value hash | `Node hash ->
+          Sc_rollup.State_hash.context_hash_to_state_hash hash
+
+    let proof_before proof =
+      kinded_hash_to_state_hash proof.Context_binary.Proof.before
+
+    let proof_after proof =
+      kinded_hash_to_state_hash proof.Context_binary.Proof.after
+
+    let produce_proof context tree step =
+      let open Lwt_syntax in
+      let* context = Context_binary.add_tree context [] tree in
+      let* (_hash : Context_hash.t) =
+        Context_binary.commit ~time:Time.Protocol.epoch context
+      in
+      let index = Context_binary.index context in
+      match Context_binary.Tree.kinded_key tree with
+      | Some k ->
+          let* p = Context_binary.produce_tree_proof index k step in
+          return (Some p)
+      | None ->
+          Stdlib.failwith
+            "produce_proof: internal error, [kinded_key] returned [None]"
+
+    let verify_proof proof step =
+      let open Lwt_syntax in
+      let* result = Context_binary.verify_tree_proof proof step in
+      match result with
+      | Ok v -> return (Some v)
+      | Error _ ->
+          (* We skip the error analysis here since proof verification is not a
+             job for the rollup node. *)
+          return None
+  end
+
+  include
+    Alpha_context.Sc_rollup.Wasm_2_0_0PVM.Make
+      (Environment.Wasm_2_0_0.Make)
+      (WASM_P)
+end
 
 module Verifier =
   Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Wasm_2_0_0PVM
   .Protocol_implementation
 
-let version_name = function
-  | Wasm_pvm_state.V0 -> "v0"
-  | V1 -> "v1"
-  | V2 -> "v2"
-  | V3 -> "v3"
+let version_name = function Wasm_pvm_state.V0 -> "v0" | V1 -> "v1"
 
 let capture_hash_of tree =
   Regression.capture @@ Context_hash.to_b58check
@@ -95,15 +173,8 @@ let link_kernel import_name import_params import_results =
     (String.concat " " import_results)
 
 let check_proof_size ~current_tick ~proof_size_limit context input_opt s =
-  let is_reveal_enabled =
-    Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup
-    .is_reveal_enabled_predicate
-      Tezos_protocol_alpha_parameters.Default_parameters.constants_mainnet
-        .sc_rollup
-        .reveal_activation_level
-  in
   let open Lwt_syntax in
-  let* proof = Prover.produce_proof context ~is_reveal_enabled input_opt s in
+  let* proof = Prover.produce_proof context input_opt s in
   match proof with
   | Error _ ->
       Test.fail "Could not compute proof for tick %a" Z.pp_print current_tick
@@ -133,6 +204,11 @@ let checked_eval ~proof_size_limit context s =
       s
   in
   unit
+
+let context ~name () =
+  let open Lwt_syntax in
+  let* index = Context_binary.init name in
+  return (Context_binary.empty index)
 
 let register_gen ~from_binary ~fail_on_stuck ?ticks_per_snapshot ~tag ~inputs
     ~skip_ticks ~ticks_to_check ~name ~versions k kernel =
@@ -167,7 +243,7 @@ let register_gen ~from_binary ~fail_on_stuck ?ticks_per_snapshot ~tag ~inputs
             sprintf "kernel %s run (%s, %s)" name tag (version_name version))
         ~tags:["wasm_2_0_0"; name; tag; version_name version]
         (fun () ->
-          let context = Prover.make_empty_context () in
+          let* context = context ~name () in
           let* tree =
             initial_tree ~from_binary ~version ?ticks_per_snapshot kernel
           in
@@ -216,13 +292,12 @@ let register ?(from_binary = false) ?(fail_on_stuck = true) ?ticks_per_snapshot
   | None -> ()
 
 let register () =
-  let versions = List.map snd Tezos_scoru_wasm.Wasm_pvm_state.versions in
   register
     ~name:"echo"
     ~from_binary:false
     ~ticks_per_snapshot:5_000L
     ~inputs:[]
-    ~versions
+    ~versions:[V0; V1]
     ~hash_frequency:137L
     ~proof_frequency:(11L, 23L)
     echo_kernel ;
@@ -231,7 +306,7 @@ let register () =
     ~from_binary:true
     ~ticks_per_snapshot:6_000_000L
     ~inputs:tx_no_verify_inputs
-    ~versions
+    ~versions:[V0; V1]
     ~hash_frequency:10_037L
     ~proof_frequency:(3L, 30_893L)
     tx_no_verify_kernel ;
@@ -241,7 +316,7 @@ let register () =
     ~from_binary:false
     ~ticks_per_snapshot:5_000L
     ~inputs:tx_no_verify_inputs
-    ~versions
+    ~versions:[V0; V1]
     ~hash_frequency:0L
     ~proof_frequency:(1L, 0L)
     (link_kernel "store_create" ["i32"; "i32"; "i32"] ["i32"]) ;
@@ -251,7 +326,7 @@ let register () =
     ~from_binary:false
     ~ticks_per_snapshot:5_000L
     ~inputs:tx_no_verify_inputs
-    ~versions
+    ~versions:[V0; V1]
     ~hash_frequency:0L
     ~proof_frequency:(1L, 0L)
     (link_kernel "store_delete_value" ["i32"; "i32"] ["i32"]) ;
@@ -261,30 +336,10 @@ let register () =
     ~from_binary:false
     ~ticks_per_snapshot:5_000L
     ~inputs:tx_no_verify_inputs
-    ~versions
+    ~versions:[V0; V1]
     ~hash_frequency:0L
     ~proof_frequency:(1L, 0L)
     (link_kernel
        "__internal_store_get_hash"
        ["i32"; "i32"; "i32"; "i32"]
-       ["i32"]) ;
-  register
-    ~name:"link_store_exists"
-    ~fail_on_stuck:false
-    ~from_binary:false
-    ~ticks_per_snapshot:5_000L
-    ~inputs:[]
-    ~versions
-    ~hash_frequency:0L
-    ~proof_frequency:(1L, 0L)
-    (link_kernel "store_exists" ["i32"; "i32"] ["i32"]) ;
-  register
-    ~name:"link_reveal"
-    ~fail_on_stuck:false
-    ~from_binary:false
-    ~ticks_per_snapshot:5_000L
-    ~inputs:[]
-    ~versions
-    ~hash_frequency:0L
-    ~proof_frequency:(1L, 0L)
-    (link_kernel "reveal" ["i32"; "i32"; "i32"; "i32"] ["i32"])
+       ["i32"])

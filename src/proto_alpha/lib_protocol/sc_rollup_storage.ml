@@ -39,7 +39,7 @@ let new_address ctxt =
     Raw_context.consume_gas ctxt Sc_rollup_costs.Constants.cost_serialize_nonce
   in
   match Data_encoding.Binary.to_bytes_opt Origination_nonce.encoding nonce with
-  | None -> tzfail Sc_rollup_address_generation
+  | None -> error Sc_rollup_address_generation
   | Some nonce_bytes ->
       let bytes_len = Bytes.length nonce_bytes in
       let+ ctxt =
@@ -51,13 +51,11 @@ let new_address ctxt =
 
 let init_genesis_info ctxt address genesis_commitment =
   let open Lwt_result_syntax in
+  let level = (Raw_context.current_level ctxt).level in
   let*? ctxt, commitment_hash =
     Sc_rollup_commitment_storage.hash ctxt genesis_commitment
   in
-  (* The [genesis_commitment.inbox_level] is equal to the current level. *)
-  let genesis_info : Commitment.genesis_info =
-    {commitment_hash; level = genesis_commitment.inbox_level}
-  in
+  let genesis_info = Commitment.{commitment_hash; level} in
   let* ctxt, size = Store.Genesis_info.init ctxt address genesis_info in
   return (ctxt, genesis_info, size)
 
@@ -109,27 +107,9 @@ let init_commitment_storage ctxt address
       + commitment_first_publication_level_diff
       + commitments_per_inbox_level_diff )
 
-let check_whitelist ctxt whitelist =
-  let open Result_syntax in
-  match whitelist with
-  | Some whitelist ->
-      let private_enabled = Constants_storage.sc_rollup_private_enable ctxt in
-      (* The whitelist must be None when the feature is deactivated. *)
-      let* () =
-        error_unless
-          private_enabled
-          Sc_rollup_errors.Sc_rollup_whitelist_disabled
-      in
-      (* The origination fails with an empty list. *)
-      error_when
-        (List.is_empty whitelist)
-        Sc_rollup_errors.Sc_rollup_empty_whitelist
-  | None -> Ok ()
-
-let raw_originate ?whitelist ctxt ~kind ~parameters_ty ~genesis_commitment
-    ~address =
+let originate ctxt ~kind ~parameters_ty ~genesis_commitment =
   let open Lwt_result_syntax in
-  let*? () = check_whitelist ctxt whitelist in
+  let*? ctxt, address = new_address ctxt in
   let* ctxt, pvm_kind_size = Store.PVM_kind.init ctxt address kind in
   let* ctxt, param_ty_size =
     Store.Parameters_type.init ctxt address parameters_ty
@@ -147,46 +127,12 @@ let raw_originate ?whitelist ctxt ~kind ~parameters_ty ~genesis_commitment
   let addresses_size = 2 * Sc_rollup_repr.Address.size in
   let stored_kind_size = 2 (* because tag_size of kind encoding is 16bits. *) in
   let origination_size = Constants_storage.sc_rollup_origination_size ctxt in
-  let* ctxt, whitelist_size =
-    let*? () = check_whitelist ctxt whitelist in
-    match whitelist with
-    | Some whitelist ->
-        let* ctxt, new_storage_size =
-          Sc_rollup_whitelist_storage.init
-            ~whitelist
-            ctxt
-            address
-            ~origination_level:genesis_info.level
-        in
-        Sc_rollup_whitelist_storage.adjust_storage_space
-          ctxt
-          address
-          ~new_storage_size
-    | None -> return (ctxt, Z.zero)
-  in
   let size =
-    Z.(
-      add
-        (of_int
-           (origination_size + stored_kind_size + addresses_size + param_ty_size
-          + pvm_kind_size + genesis_info_size_diff + commitment_size_diff))
-        whitelist_size)
+    Z.of_int
+      (origination_size + stored_kind_size + addresses_size + param_ty_size
+     + pvm_kind_size + genesis_info_size_diff + commitment_size_diff)
   in
-  return (size, genesis_info.commitment_hash, ctxt)
-
-let originate ?whitelist ctxt ~kind ~parameters_ty ~genesis_commitment =
-  let open Lwt_result_syntax in
-  let*? ctxt, address = new_address ctxt in
-  let* size, genesis_commitment, ctxt =
-    raw_originate
-      ?whitelist
-      ctxt
-      ~kind
-      ~parameters_ty
-      ~genesis_commitment
-      ~address
-  in
-  return (address, size, genesis_commitment, ctxt)
+  return (address, size, genesis_info.commitment_hash, ctxt)
 
 let kind ctxt address =
   let open Lwt_result_syntax in
@@ -196,9 +142,9 @@ let kind ctxt address =
   | None -> tzfail (Sc_rollup_errors.Sc_rollup_does_not_exist address)
 
 let list_unaccounted ctxt =
-  let open Lwt_result_syntax in
-  let*! res = Store.PVM_kind.keys_unaccounted ctxt in
-  return res
+  let open Lwt_syntax in
+  let+ res = Store.PVM_kind.keys_unaccounted ctxt in
+  Result.return res
 
 let genesis_info ctxt rollup =
   let open Lwt_result_syntax in
@@ -222,5 +168,5 @@ let parameters_type ctxt rollup =
 
 let must_exist ctxt rollup =
   let open Lwt_result_syntax in
-  let* ctxt, exists = Store.Genesis_info.mem ctxt rollup in
-  if exists then return ctxt else tzfail (Sc_rollup_does_not_exist rollup)
+  let+ ctxt, _info = genesis_info ctxt rollup in
+  ctxt

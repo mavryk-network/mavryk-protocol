@@ -11,7 +11,9 @@ use clap::Parser;
 use commands::Cli;
 use commands::Commands;
 use std::path::Path;
-use tezos_smart_rollup_installer::config::{create_installer_config, ConfigurationError};
+use tezos_smart_rollup_installer::{KERNEL_BOOT_PATH, PREPARE_KERNEL_PATH};
+use tezos_smart_rollup_installer_config::bin::ConfigProgram;
+use tezos_smart_rollup_installer_config::instr::ConfigInstruction;
 use thiserror::Error;
 
 fn main() -> Result<(), ClientError> {
@@ -20,24 +22,19 @@ fn main() -> Result<(), ClientError> {
             upgrade_to,
             output,
             preimages_dir,
-            setup_file,
-            display_root_hash,
         } => {
             let upgrade_to = Path::new(&upgrade_to);
             let output = Path::new(&output);
             let preimages_dir = Path::new(&preimages_dir);
 
             let root_hash = preimages::content_to_preimages(upgrade_to, preimages_dir)?;
-            let root_hash_hex = hex::encode(root_hash.as_ref());
 
-            let config = create_installer_config(root_hash, setup_file)?;
-            let kernel = installer::with_config_program(config);
+            let kernel = installer::with_config_program(ConfigProgram(vec![
+                ConfigInstruction::reveal_instr(root_hash.as_ref(), PREPARE_KERNEL_PATH),
+                ConfigInstruction::move_instr(PREPARE_KERNEL_PATH, KERNEL_BOOT_PATH),
+            ]));
 
             output::save_kernel(output, &kernel).map_err(ClientError::SaveInstaller)?;
-
-            if display_root_hash {
-                println!("ROOT_HASH: {}", root_hash_hex);
-            };
         }
     }
 
@@ -48,8 +45,6 @@ fn main() -> Result<(), ClientError> {
 enum ClientError {
     #[error("Error preimaging kernel: {0}")]
     KernelPreimageError(#[from] preimages::Error),
-    #[error("Error configuring kernel: {0}")]
-    ConfigError(#[from] ConfigurationError),
     #[error("Unable to save installer kernel: {0}")]
     SaveInstaller(std::io::Error),
 }

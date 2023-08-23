@@ -6,10 +6,10 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-error-monad
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-event-logging
-  octez-libs.tezos-test-helpers
+  tezos-error-monad
+  tezos-stdlib-unix
+  tezos-event-logging
+  tezos-test-helpers
   qcheck-alcotest
   octez-alcotezt)
  (library_flags (:standard -linkall))
@@ -35,7 +35,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package tezos-stdlib-unix)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

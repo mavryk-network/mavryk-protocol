@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2021 Nomadic Labs <contact@nomadic-labs.com>                *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -40,7 +39,7 @@ type tag =
   | Io
   | Misc
   | Builtin
-  | Global_constants
+  | Gtoc
   | Cache
   | Carbonated_map
   | Tickets
@@ -48,10 +47,6 @@ type tag =
   | Skip_list
   | Sc_rollup
   | Shell
-  | Apply
-  | Example
-  | Micheline
-  | Dal
 
 type michelson_term_kind = Data | Code
 
@@ -123,8 +118,8 @@ let benchmark ~bench_name ~bench_num ~nsamples ~save_to ?seed ?config_file
 
 (* Infer command *)
 
-let infer_command ~workload_data ~regression_method ~dump_csv ~solution ?report
-    ?graph () =
+let infer_command ~model_name ~workload_data ~regression_method ~dump_csv
+    ~solution ?report ?graph () =
   let regression_method =
     match regression_method with
     | Lasso {positive} ->
@@ -143,16 +138,27 @@ let infer_command ~workload_data ~regression_method ~dump_csv ~solution ?report
     | None -> []
     | Some graph_file -> ["--dot-file"; graph_file]
   in
-  ["infer"; "parameters"; "on"; "data"; workload_data; "using"]
+  [
+    "infer";
+    "parameters";
+    "for";
+    "model";
+    model_name;
+    "on";
+    "data";
+    workload_data;
+    "using";
+  ]
   @ regression_method
   @ ["--dump-csv"; dump_csv; "--save-solution"; solution]
   @ report @ graph
 
-let spawn_infer_parameters ~workload_data ~regression_method ~dump_csv ~solution
-    ?report ?graph snoop =
+let spawn_infer_parameters ~model_name ~workload_data ~regression_method
+    ~dump_csv ~solution ?report ?graph snoop =
   spawn_command
     snoop
     (infer_command
+       ~model_name
        ~workload_data
        ~regression_method
        ~dump_csv
@@ -161,9 +167,10 @@ let spawn_infer_parameters ~workload_data ~regression_method ~dump_csv ~solution
        ?graph
        ())
 
-let infer_parameters ~workload_data ~regression_method ~dump_csv ~solution
-    ?report ?graph snoop =
+let infer_parameters ~model_name ~workload_data ~regression_method ~dump_csv
+    ~solution ?report ?graph snoop =
   spawn_infer_parameters
+    ~model_name
     ~workload_data
     ~regression_method
     ~dump_csv
@@ -341,7 +348,7 @@ let string_of_tag (tag : tag) =
   | Io -> "io"
   | Misc -> "misc"
   | Builtin -> "builtin"
-  | Global_constants -> "global_constants"
+  | Gtoc -> "global_constants"
   | Cache -> "cache"
   | Carbonated_map -> "carbonated_map"
   | Tickets -> "tickets"
@@ -349,10 +356,6 @@ let string_of_tag (tag : tag) =
   | Skip_list -> "skip_list"
   | Sc_rollup -> "sc_rollup"
   | Shell -> "shell"
-  | Apply -> "apply"
-  | Example -> "example"
-  | Micheline -> "micheline"
-  | Dal -> "dal"
 
 let list_benchmarks_command mode tags =
   let tags = List.map string_of_tag tags in
@@ -392,18 +395,23 @@ let write_config ~(benchmark : string) ~(bench_config : string) ~(file : string)
   in
   spawn_command snoop command |> Process.check
 
-let generate_code_for_solutions ~solution ?save_to ?split_to ?fixed_point snoop
-    =
+let generate_code_using_solution ~solution ?fixed_point snoop =
   let command =
-    ["generate"; "code"; "for"; "solutions"; solution]
-    @ (match fixed_point with None -> [] | Some fn -> ["--fixed-point"; fn])
-    @ (match save_to with None -> [] | Some file -> ["--save-to"; file])
-    @ match split_to with None -> [] | Some dir -> ["--split-to"; dir]
+    [
+      "generate";
+      "code";
+      "using";
+      "solution";
+      solution;
+      "for";
+      "inferred";
+      "models";
+    ]
+    @ match fixed_point with None -> [] | Some fn -> ["--fixed-point"; fn]
   in
-
   let process = spawn_command snoop command in
   let* output = Process.check_and_read_stdout process in
-  match save_to with None -> Lwt.return output | _ -> Lwt.return ""
+  Lwt.return output
 
 let check_definitions ~files snoop =
   let open Process in

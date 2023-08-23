@@ -3,25 +3,25 @@
 
 (library
  (name tezos_protocol_environment)
- (public_name octez-libs.tezos-protocol-environment)
+ (public_name tezos-protocol-environment)
  (instrumentation (backend bisect_ppx))
  (libraries
   zarith
   zarith_stubs_js
   bls12-381
-  octez-libs.octez-plonk
-  octez-libs.tezos-crypto-dal
+  octez-plonk
+  tezos-crypto-dal
   class_group_vdf
   aches
   aches-lwt
-  octez-libs.tezos-base
-  octez-libs.tezos-sapling
-  octez-libs.tezos-protocol-environment.sigs
-  octez-libs.tezos-protocol-environment.structs
-  octez-libs.tezos-micheline
-  octez-libs.tezos-context.memory
-  octez-libs.tezos-scoru-wasm
-  octez-libs.tezos-event-logging)
+  tezos-base
+  tezos-sapling
+  tezos-protocol-environment.sigs
+  tezos-protocol-environment.structs
+  tezos-micheline
+  tezos-context.memory
+  tezos-scoru-wasm
+  tezos-event-logging)
  (flags
   (:standard)
   -open Plonk

@@ -44,16 +44,22 @@ val make_consensus_list :
 val may_update_proposal :
   is_proposal_applied:bool -> state -> proposal -> state Lwt.t
 
-val preattest : state -> proposal -> (state * action) Lwt.t
+val preendorse : state -> proposal -> (state * action) Lwt.t
 
 val extract_pqc :
-  state -> proposal -> (Kind.preattestation operation list * Round.t) option
+  state -> proposal -> (Kind.preendorsement operation list * Round.t) option
 
 val handle_proposal :
   is_proposal_applied:bool -> state -> proposal -> (state * action) Lwt.t
 
+val round_proposer :
+  state ->
+  (consensus_key_and_delegate * endorsing_slot) SlotMap.t ->
+  Round.t ->
+  (consensus_key_and_delegate * endorsing_slot) option
+
 val propose_fresh_block_action :
-  attestations:Kind.attestation Operation.t list ->
+  endorsements:Kind.endorsement Operation.t list ->
   dal_attestations:Kind.dal_attestation Operation.t list ->
   ?last_proposal:block_info ->
   predecessor:block_info ->
@@ -74,18 +80,18 @@ val time_to_bake_at_next_level : state -> Round.t -> (state * action) Lwt.t
 
 val update_locked_round : state -> Round.t -> Block_payload_hash.t -> state
 
-val make_attest_action : state -> proposal -> action
+val make_endorse_action : state -> proposal -> action
 
-val prequorum_reached_when_awaiting_preattestations :
+val prequorum_reached_when_awaiting_preendorsements :
   state ->
   Operation_worker.candidate ->
-  Kind.preattestation operation list ->
+  Kind.preendorsement operation list ->
   (state * action) Lwt.t
 
-val quorum_reached_when_waiting_attestations :
+val quorum_reached_when_waiting_endorsements :
   state ->
   Operation_worker.candidate ->
-  Kind.attestation operation list ->
+  Kind.endorsement operation list ->
   (state * action) Lwt.t
 
 val step : state -> event -> (state * action) Lwt.t

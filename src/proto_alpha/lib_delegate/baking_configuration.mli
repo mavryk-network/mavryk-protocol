@@ -51,19 +51,15 @@ type nonce_config = Deterministic | Random
 
 type state_recorder_config = Filesystem | Disabled
 
-type per_block_votes_config = {
-  vote_file : string option;
-  liquidity_baking_vote : Protocol.Alpha_context.Per_block_votes.per_block_vote;
-  adaptive_issuance_vote : Protocol.Alpha_context.Per_block_votes.per_block_vote;
-}
-
 type t = {
   fees : fees_config;
   nonce : nonce_config;
   validation : validation_config;
   retries_on_failure : int;
   user_activated_upgrades : (int32 * Protocol_hash.t) list;
-  per_block_votes : per_block_votes_config;
+  liquidity_baking_toggle_vote :
+    Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote;
+  per_block_vote_file : string option;
   force_apply : bool;
   force : bool;
   state_recorder : state_recorder_config;
@@ -81,7 +77,8 @@ val default_retries_on_failure_config : int
 
 val default_user_activated_upgrades : (int32 * Protocol_hash.t) list
 
-val default_votes_config : per_block_votes_config
+val default_liquidity_baking_toggle_vote :
+  Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote
 
 val default_force_apply : bool
 
@@ -90,6 +87,8 @@ val default_force : bool
 val default_state_recorder_config : state_recorder_config
 
 val default_extra_operations : Operations_source.t option
+
+val default_per_block_vote_file : string
 
 val default_config : t
 
@@ -101,7 +100,9 @@ val make :
   ?context_path:string ->
   ?retries_on_failure:int ->
   ?user_activated_upgrades:(int32 * Protocol_hash.t) list ->
-  ?votes:per_block_votes_config ->
+  ?liquidity_baking_toggle_vote:
+    Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote ->
+  ?per_block_vote_file:string ->
   ?force_apply:bool ->
   ?force:bool ->
   ?state_recorder:state_recorder_config ->
@@ -122,12 +123,8 @@ val user_activate_upgrades_config_encoding :
   (int32 * Protocol_hash.t) list Data_encoding.t
 
 val liquidity_baking_toggle_vote_config_encoding :
-  Protocol.Alpha_context.Per_block_votes.per_block_vote Data_encoding.t
-
-val adaptive_issuance_vote_config_encoding :
-  Protocol.Alpha_context.Per_block_votes.per_block_vote Data_encoding.t
-
-val per_block_votes_config_encoding : per_block_votes_config Data_encoding.t
+  Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote
+  Data_encoding.t
 
 val encoding : t Data_encoding.t
 

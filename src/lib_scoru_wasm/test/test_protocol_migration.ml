@@ -42,41 +42,29 @@ let noop_module =
       nop))
 |}
 
-let test_protocol_migration_message ~from_version ~to_version
-    ~after_protocol_activation:protocol () =
+let test_protocol_migration_message () =
   let open Lwt_syntax in
-  let* tree = initial_tree ~version:from_version noop_module in
+  let* tree = initial_tree ~version:V0 noop_module in
   let* tree = eval_until_input_requested tree in
   let* version = Wasm.get_wasm_version tree in
-  assert (version = from_version) ;
+  assert (version = V0) ;
   let* tree = set_empty_inbox_step 0l tree in
   let* tree = eval_until_input_requested tree in
   let* version = Wasm.get_wasm_version tree in
-  assert (version = from_version) ;
-  let* tree = set_empty_inbox_step ~migrate_to:protocol 0l tree in
+  assert (version = V0) ;
+  let* tree = set_empty_inbox_step ~migrate_to:Proto_alpha 0l tree in
   let* tree = eval_until_input_requested tree in
   let* version = Wasm.get_wasm_version tree in
-  assert (version = to_version) ;
+  assert (version = V1) ;
   Lwt_result_syntax.return_unit
 
-let proto_name : Tezos_scoru_wasm.Pvm_input_kind.protocol -> string = function
-  | Nairobi -> "Nairobi"
-  | Oxford -> "Oxford"
-  | Proto_alpha -> "Proto_alpha"
-
 let tests =
-  List.map
-    (fun (from_version, to_version, protocol) ->
-      tztest
-        (sf
-           "protocol migration message handling by the WASM PVM (%s)"
-           (proto_name protocol))
-        `Quick
-        (test_protocol_migration_message
-           ~from_version
-           ~to_version
-           ~after_protocol_activation:protocol))
-    [(V0, V1, Nairobi); (V1, V2, Oxford); (V2, V3, Proto_alpha)]
+  [
+    tztest
+      "protocol migration message handling by the WASM PVM"
+      `Quick
+      test_protocol_migration_message;
+  ]
 
 let () =
   Alcotest_lwt.run

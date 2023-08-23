@@ -558,25 +558,21 @@ let known_multisig_hashes =
 
 let check_multisig_script_hash hash :
     multisig_contract_description tzresult Lwt.t =
-  let open Lwt_result_syntax in
   match
     List.find_opt
       (fun d -> Script_expr_hash.(d.hash = hash))
       known_multisig_contracts
   with
-  | None -> tzfail (Not_a_supported_multisig_contract hash)
+  | None -> fail (Not_a_supported_multisig_contract hash)
   | Some d -> return d
 
 (* Returns [Ok ()] if [~contract] is an originated contract whose code
    is [multisig_script] *)
 let check_multisig_contract (cctxt : #Protocol_client_context.full) ~chain
     ~block contract =
-  let open Lwt_result_syntax in
-  let* hash_opt =
-    Client_proto_context.get_script_hash cctxt ~chain ~block contract
-  in
-  match hash_opt with
-  | None -> tzfail (Contract_has_no_script contract)
+  Client_proto_context.get_script_hash cctxt ~chain ~block contract
+  >>=? function
+  | None -> fail (Contract_has_no_script contract)
   | Some hash -> check_multisig_script_hash hash
 
 (* Some Michelson building functions, specific to the needs of the multisig
@@ -622,87 +618,76 @@ type multisig_action =
   | Lambda of Script.expr
   | Change_keys of Z.t * public_key list
 
-let action_to_expr_generic ~loc =
-  let open Result_syntax in
-  function
+let action_to_expr_generic ~loc = function
   | Transfer {amount; destination; entrypoint; parameter_type; parameter} -> (
       match destination with
       | Implicit destination ->
-          let* a =
-            lambda_from_string
-            @@ Managed_contract.build_lambda_for_transfer_to_implicit
-                 ~destination
-                 ~amount
-          in
-          return @@ left ~loc a
+          lambda_from_string
+          @@ Managed_contract.build_lambda_for_transfer_to_implicit
+               ~destination
+               ~amount
+          >|? left ~loc
       | Originated destination ->
-          let* a =
-            lambda_from_string
-            @@ Managed_contract.build_lambda_for_transfer_to_originated
-                 ~destination
-                 ~entrypoint
-                 ~parameter_type
-                 ~parameter
-                 ~amount
-          in
-          return @@ left ~loc a)
-  | Lambda code -> return Tezos_micheline.Micheline.(left ~loc (root code))
+          lambda_from_string
+          @@ Managed_contract.build_lambda_for_transfer_to_originated
+               ~destination
+               ~entrypoint
+               ~parameter_type
+               ~parameter
+               ~amount
+          >|? left ~loc)
+  | Lambda code -> ok Tezos_micheline.Micheline.(left ~loc (root code))
   | Change_delegate delegate ->
-      let* a =
-        lambda_from_string
-        @@ Managed_contract.build_lambda_for_set_delegate ~delegate
-      in
-      return @@ left ~loc a
+      lambda_from_string
+      @@ Managed_contract.build_lambda_for_set_delegate ~delegate
+      >|? left ~loc
   | Change_keys (threshold, keys) ->
       let optimized_keys = seq ~loc (List.map (optimized_key ~loc) keys) in
       let expr = right ~loc (pair ~loc (int ~loc threshold) optimized_keys) in
-      return expr
+      ok expr
 
-let action_to_expr_legacy ~loc =
-  let open Result_syntax in
-  function
+let action_to_expr_legacy ~loc = function
   | Transfer {amount; destination; entrypoint; parameter_type; parameter} ->
       if parameter <> Tezos_micheline.Micheline.strip_locations (unit ~loc:())
-      then tzfail @@ Unsupported_feature_generic_call parameter
+      then error @@ Unsupported_feature_generic_call parameter
       else if
         parameter_type
         <> Tezos_micheline.Micheline.strip_locations (unit_t ~loc:())
-      then tzfail @@ Unsupported_feature_generic_call_ty parameter_type
+      then error @@ Unsupported_feature_generic_call_ty parameter_type
       else
-        return
+        ok
         @@ left
              ~loc
              (pair
                 ~loc
                 (mutez ~loc amount)
                 (optimized_address ~loc ~address:destination ~entrypoint))
-  | Lambda _ -> tzfail @@ Unsupported_feature_lambda ""
+  | Lambda _ -> error @@ Unsupported_feature_lambda ""
   | Change_delegate delegate ->
       let delegate_opt =
         match delegate with
         | None -> none ~loc ()
         | Some delegate -> some ~loc (optimized_key_hash ~loc delegate)
       in
-      return @@ right ~loc (left ~loc delegate_opt)
+      ok @@ right ~loc (left ~loc delegate_opt)
   | Change_keys (threshold, keys) ->
       let optimized_keys = seq ~loc (List.map (optimized_key ~loc) keys) in
       let expr = right ~loc (pair ~loc (int ~loc threshold) optimized_keys) in
-      return (right ~loc expr)
+      ok (right ~loc expr)
 
 let action_to_expr ~loc ~generic action =
   if generic then action_to_expr_generic ~loc action
   else action_to_expr_legacy ~loc action
 
 let action_of_expr_generic e =
-  let open Lwt_result_syntax in
   let fail () =
-    tzfail
+    fail
       (Action_deserialisation_error
          (Tezos_micheline.Micheline.strip_locations e))
   in
   match e with
   | Tezos_micheline.Micheline.Prim (_, Script.D_Left, [lam], []) ->
-      return (Lambda (Tezos_micheline.Micheline.strip_locations lam))
+      return @@ Lambda (Tezos_micheline.Micheline.strip_locations lam)
   | Tezos_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
@@ -717,24 +702,21 @@ let action_of_expr_generic e =
               [] );
         ],
         [] ) ->
-      let* keys =
-        List.map_es
-          (function
-            | Tezos_micheline.Micheline.Bytes (_, s) ->
-                return
-                @@ Data_encoding.Binary.of_bytes_exn
-                     Signature.Public_key.encoding
-                     s
-            | _ -> fail ())
-          key_bytes
-      in
-      return (Change_keys (threshold, keys))
+      List.map_es
+        (function
+          | Tezos_micheline.Micheline.Bytes (_, s) ->
+              return
+              @@ Data_encoding.Binary.of_bytes_exn
+                   Signature.Public_key.encoding
+                   s
+          | _ -> fail ())
+        key_bytes
+      >>=? fun keys -> return @@ Change_keys (threshold, keys)
   | _ -> fail ()
 
 let action_of_expr_not_generic e =
-  let open Lwt_result_syntax in
   let fail () =
-    tzfail
+    fail
       (Action_deserialisation_error
          (Tezos_micheline.Micheline.strip_locations e))
   in
@@ -779,7 +761,7 @@ let action_of_expr_not_generic e =
               [] );
         ],
         [] ) ->
-      return (Change_delegate None)
+      return @@ Change_delegate None
   | Tezos_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
@@ -823,18 +805,16 @@ let action_of_expr_not_generic e =
               [] );
         ],
         [] ) ->
-      let* keys =
-        List.map_es
-          (function
-            | Tezos_micheline.Micheline.Bytes (_, s) ->
-                return
-                @@ Data_encoding.Binary.of_bytes_exn
-                     Signature.Public_key.encoding
-                     s
-            | _ -> fail ())
-          key_bytes
-      in
-      return (Change_keys (threshold, keys))
+      List.map_es
+        (function
+          | Tezos_micheline.Micheline.Bytes (_, s) ->
+              return
+              @@ Data_encoding.Binary.of_bytes_exn
+                   Signature.Public_key.encoding
+                   s
+          | _ -> fail ())
+        key_bytes
+      >>=? fun keys -> return @@ Change_keys (threshold, keys)
   | _ -> fail ()
 
 let action_of_expr ~generic =
@@ -853,12 +833,10 @@ let multisig_get_information (cctxt : #Protocol_client_context.full) ~chain
     ~block contract =
   let open Client_proto_context in
   let open Tezos_micheline.Micheline in
-  let open Lwt_result_syntax in
-  let* storage_opt =
-    get_storage cctxt ~chain ~block ~unparsing_mode:Readable contract
-  in
+  get_storage cctxt ~chain ~block ~unparsing_mode:Readable contract
+  >>=? fun storage_opt ->
   match storage_opt with
-  | None -> tzfail (Contract_has_no_storage contract)
+  | None -> fail (Contract_has_no_storage contract)
   | Some storage -> (
       match root storage with
       | Prim
@@ -866,62 +844,52 @@ let multisig_get_information (cctxt : #Protocol_client_context.full) ~chain
             D_Pair,
             [Int (_, counter); Int (_, threshold); Seq (_, key_nodes)],
             _ ) ->
-          let* keys =
-            List.map_es
-              (function
-                | String (_, key_str) ->
-                    return @@ Signature.Public_key.of_b58check_exn key_str
-                | _ -> tzfail (Contract_has_unexpected_storage contract))
-              key_nodes
-          in
-          return {counter; threshold; keys}
-      | _ -> tzfail (Contract_has_unexpected_storage contract))
+          List.map_es
+            (function
+              | String (_, key_str) ->
+                  return @@ Signature.Public_key.of_b58check_exn key_str
+              | _ -> fail (Contract_has_unexpected_storage contract))
+            key_nodes
+          >>=? fun keys -> return {counter; threshold; keys}
+      | _ -> fail (Contract_has_unexpected_storage contract))
 
 let multisig_create_storage ~counter ~threshold ~keys () :
     Script.expr tzresult Lwt.t =
-  let open Tezos_micheline.Micheline in
-  let open Lwt_result_syntax in
   let loc = Tezos_micheline.Micheline_parser.location_zero in
-  let* l =
-    List.map_es
-      (fun key ->
-        let key_str = Signature.Public_key.to_b58check key in
-        return (String (loc, key_str)))
-      keys
-  in
+  let open Tezos_micheline.Micheline in
+  List.map_es
+    (fun key ->
+      let key_str = Signature.Public_key.to_b58check key in
+      return (String (loc, key_str)))
+    keys
+  >>=? fun l ->
   return @@ strip_locations
   @@ pair ~loc (int ~loc counter) (pair ~loc (int ~loc threshold) (seq ~loc l))
 
 (* Client_proto_context.originate expects the initial storage as a string *)
 let multisig_storage_string ~counter ~threshold ~keys () =
-  let open Lwt_result_syntax in
-  let* expr = multisig_create_storage ~counter ~threshold ~keys () in
+  multisig_create_storage ~counter ~threshold ~keys () >>=? fun expr ->
   return @@ Format.asprintf "%a" Michelson_v1_printer.print_expr expr
 
 let multisig_create_param ~counter ~generic ~action ~optional_signatures () :
     Script.expr tzresult Lwt.t =
-  let open Tezos_micheline.Micheline in
-  let open Lwt_result_syntax in
   let loc = 0 in
-  let* l =
-    List.map_es
-      (fun sig_opt ->
-        match sig_opt with
-        | None -> return @@ none ~loc ()
-        | Some signature ->
-            return @@ some ~loc (String (loc, Signature.to_b58check signature)))
-      optional_signatures
-  in
-  let*? expr = action_to_expr ~loc ~generic action in
+  let open Tezos_micheline.Micheline in
+  List.map_es
+    (fun sig_opt ->
+      match sig_opt with
+      | None -> return @@ none ~loc ()
+      | Some signature ->
+          return @@ some ~loc (String (loc, Signature.to_b58check signature)))
+    optional_signatures
+  >>=? fun l ->
+  Lwt.return @@ action_to_expr ~loc ~generic action >>=? fun expr ->
   return @@ strip_locations
   @@ pair ~loc (pair ~loc (int ~loc counter) expr) (Seq (loc, l))
 
 let multisig_param ~counter ~action ~optional_signatures ~generic () =
-  let open Lwt_result_syntax in
-  let* expr =
-    multisig_create_param ~counter ~action ~optional_signatures ~generic ()
-  in
-  return @@ Script.lazy_expr expr
+  multisig_create_param ~counter ~action ~optional_signatures ~generic ()
+  >>=? fun expr -> return @@ Script.lazy_expr expr
 
 let get_contract_address_maybe_chain_id ~descr ~loc ~chain_id contract =
   let address =
@@ -935,9 +903,9 @@ let get_contract_address_maybe_chain_id ~descr ~loc ~chain_id contract =
   else address
 
 let multisig_bytes ~counter ~action ~contract ~chain_id ~descr () =
-  let open Lwt_result_syntax in
   let loc = 0 in
-  let*? expr = action_to_expr ~loc ~generic:descr.generic action in
+  Lwt.return @@ action_to_expr ~loc ~generic:descr.generic action
+  >>=? fun expr ->
   let triple =
     pair
       ~loc
@@ -951,23 +919,20 @@ let multisig_bytes ~counter ~action ~contract ~chain_id ~descr () =
   return @@ Bytes.cat (Bytes.of_string "\005") bytes
 
 let check_threshold ~threshold ~keys () =
-  let open Lwt_result_syntax in
   let threshold = Z.to_int threshold in
   if Compare.List_length_with.(keys < threshold) then
-    tzfail (Threshold_too_high (threshold, List.length keys))
+    fail (Threshold_too_high (threshold, List.length keys))
   else if Compare.Int.(threshold <= 0) then
-    tzfail (Non_positive_threshold threshold)
+    fail (Non_positive_threshold threshold)
   else return_unit
 
 let originate_multisig (cctxt : #Protocol_client_context.full) ~chain ~block
     ?confirmations ?dry_run ?branch ?fee ?gas_limit ?storage_limit
     ?verbose_signing ~delegate ~threshold ~keys ~balance ~source ~src_pk ~src_sk
     ~fee_parameter () =
-  let open Lwt_result_syntax in
-  let* initial_storage =
-    multisig_storage_string ~counter:Z.zero ~threshold ~keys ()
-  in
-  let* () = check_threshold ~threshold ~keys () in
+  multisig_storage_string ~counter:Z.zero ~threshold ~keys ()
+  >>=? fun initial_storage ->
+  check_threshold ~threshold ~keys () >>=? fun () ->
   Client_proto_context.originate_contract
     cctxt
     ~chain
@@ -1000,37 +965,31 @@ type multisig_prepared_action = {
 
 let check_parameter_type (cctxt : #Protocol_client_context.full) ?gas ?legacy
     ~destination ~entrypoint ~parameter_type ~parameter () =
-  let open Lwt_result_syntax in
-  let* _ =
-    trace
-      (Ill_typed_argument (destination, entrypoint, parameter_type, parameter))
-    @@ Plugin.RPC.Scripts.typecheck_data
-         cctxt
-         (cctxt#chain, cctxt#block)
-         ~data:parameter
-         ~ty:parameter_type
-         ?gas
-         ?legacy
-  in
-  return_unit
+  trace
+    (Ill_typed_argument (destination, entrypoint, parameter_type, parameter))
+  @@ Plugin.RPC.Scripts.typecheck_data
+       cctxt
+       (cctxt#chain, cctxt#block)
+       ~data:parameter
+       ~ty:parameter_type
+       ?gas
+       ?legacy
+  >>=? fun _ -> return_unit
 
 let check_action (cctxt : #Protocol_client_context.full) ~action ~balance ?gas
     ?legacy () =
-  let open Lwt_result_syntax in
   match action with
   | Change_keys (threshold, keys) ->
-      let* () = check_threshold ~threshold ~keys () in
-      return_unit
+      check_threshold ~threshold ~keys () >>=? fun () -> return_unit
   | Transfer {amount; destination; entrypoint; parameter_type; parameter} ->
-      let* () =
-        check_parameter_type
-          cctxt
-          ~destination
-          ~entrypoint
-          ~parameter_type
-          ~parameter
-          ()
-      in
+      check_parameter_type
+        cctxt
+        ~destination
+        ~entrypoint
+        ~parameter_type
+        ~parameter
+        ()
+      >>=? fun () ->
       if Tez.(amount > balance) then
         (* This is warning only because the contract can be filled
            before sending the signatures or even in the same
@@ -1042,38 +1001,34 @@ let check_action (cctxt : #Protocol_client_context.full) ~action ~balance ?gas
       let action_t =
         Tezos_micheline.Micheline.strip_locations (lambda_action_t ~loc:())
       in
-      let* _remaining_gas =
-        trace (Ill_typed_lambda (code, action_t))
-        @@ Plugin.RPC.Scripts.typecheck_data
-             cctxt
-             (cctxt#chain, cctxt#block)
-             ~data:code
-             ~ty:action_t
-             ?gas
-             ?legacy
-      in
-      return_unit
+      trace (Ill_typed_lambda (code, action_t))
+      @@ Plugin.RPC.Scripts.typecheck_data
+           cctxt
+           (cctxt#chain, cctxt#block)
+           ~data:code
+           ~ty:action_t
+           ?gas
+           ?legacy
+      >>=? fun _remaining_gas -> return_unit
   | _ -> return_unit
 
 let prepare_multisig_transaction (cctxt : #Protocol_client_context.full) ~chain
     ~block ~multisig_contract ~action () =
-  let open Lwt_result_syntax in
   let contract = multisig_contract in
-  let* descr = check_multisig_contract cctxt ~chain ~block contract in
-  let* {counter; threshold; keys} =
-    multisig_get_information cctxt ~chain ~block contract
-  in
-  let* chain_id = Chain_services.chain_id cctxt ~chain () in
+  check_multisig_contract cctxt ~chain ~block contract >>=? fun descr ->
+  multisig_get_information cctxt ~chain ~block contract
+  >>=? fun {counter; threshold; keys} ->
+  Chain_services.chain_id cctxt ~chain () >>=? fun chain_id ->
   let contract = Contract.Originated contract in
-  let* bytes = multisig_bytes ~counter ~action ~contract ~descr ~chain_id () in
-  let* balance =
-    Client_proto_context.get_balance
-      cctxt
-      ~chain:cctxt#chain
-      ~block:cctxt#block
-      contract
-  in
-  let* () = check_action cctxt ~action ~balance () in
+  multisig_bytes ~counter ~action ~contract ~descr ~chain_id ()
+  >>=? fun bytes ->
+  Client_proto_context.get_balance
+    cctxt
+    ~chain:cctxt#chain
+    ~block:cctxt#block
+    contract
+  >>=? fun balance ->
+  check_action cctxt ~action ~balance () >>=? fun () ->
   return
     {
       bytes;
@@ -1085,7 +1040,6 @@ let prepare_multisig_transaction (cctxt : #Protocol_client_context.full) ~chain
     }
 
 let check_multisig_signatures ~bytes ~threshold ~keys signatures =
-  let open Lwt_result_syntax in
   let key_array = Array.of_list keys in
   let nkeys = Array.length key_array in
   let opt_sigs_arr = Array.make nkeys None in
@@ -1095,14 +1049,13 @@ let check_multisig_signatures ~bytes ~threshold ~keys signatures =
       matching_key_found := true ;
       opt_sigs_arr.(i) <- Some signature)
   in
-  let* () =
-    List.iter_ep
-      (fun signature ->
-        matching_key_found := false ;
-        List.iteri (check_signature_against_key_number signature) keys ;
-        fail_unless !matching_key_found (Invalid_signature signature))
-      signatures
-  in
+  List.iter_ep
+    (fun signature ->
+      matching_key_found := false ;
+      List.iteri (check_signature_against_key_number signature) keys ;
+      fail_unless !matching_key_found (Invalid_signature signature))
+    signatures
+  >>=? fun () ->
   let opt_sigs = Array.to_list opt_sigs_arr in
   let signature_count =
     List.fold_left
@@ -1112,33 +1065,30 @@ let check_multisig_signatures ~bytes ~threshold ~keys signatures =
   in
   let threshold_int = Z.to_int threshold in
   if signature_count >= threshold_int then return opt_sigs
-  else tzfail (Not_enough_signatures (threshold_int, signature_count))
+  else fail (Not_enough_signatures (threshold_int, signature_count))
 
 let call_multisig (cctxt : #Protocol_client_context.full) ~chain ~block
     ?confirmations ?dry_run ?verbose_signing ?branch ~source ~src_pk ~src_sk
     ~multisig_contract ~action ~signatures ~amount ?fee ?gas_limit
     ?storage_limit ?counter ~fee_parameter () =
-  let open Lwt_result_syntax in
-  let* {bytes; threshold; keys; counter = stored_counter; entrypoint; generic} =
-    prepare_multisig_transaction
-      cctxt
-      ~chain
-      ~block
-      ~multisig_contract
-      ~action
-      ()
-  in
-  let* optional_signatures =
-    check_multisig_signatures ~bytes ~threshold ~keys signatures
-  in
-  let* parameters =
-    multisig_param
-      ~counter:stored_counter
-      ~action
-      ~optional_signatures
-      ~generic
-      ()
-  in
+  prepare_multisig_transaction cctxt ~chain ~block ~multisig_contract ~action ()
+  >>=? fun {
+             bytes;
+             threshold;
+             keys;
+             counter = stored_counter;
+             entrypoint;
+             generic;
+           } ->
+  check_multisig_signatures ~bytes ~threshold ~keys signatures
+  >>=? fun optional_signatures ->
+  multisig_param
+    ~counter:stored_counter
+    ~action
+    ~optional_signatures
+    ~generic
+    ()
+  >>=? fun parameters ->
   Client_proto_context.transfer_with_script
     cctxt
     ~chain
@@ -1162,14 +1112,13 @@ let call_multisig (cctxt : #Protocol_client_context.full) ~chain ~block
     ()
 
 let action_of_bytes ~multisig_contract ~stored_counter ~descr ~chain_id bytes =
-  let open Lwt_result_syntax in
   if
     Compare.Int.(Bytes.length bytes >= 1)
     && Compare.Int.(TzEndian.get_uint8 bytes 0 = 0x05)
   then
     let nbytes = Bytes.sub bytes 1 (Bytes.length bytes - 1) in
     match Data_encoding.Binary.of_bytes_opt Script.expr_encoding nbytes with
-    | None -> tzfail (Bytes_deserialisation_error bytes)
+    | None -> fail (Bytes_deserialisation_error bytes)
     | Some e -> (
         match Tezos_micheline.Micheline.root e with
         | Tezos_micheline.Micheline.Prim
@@ -1194,9 +1143,9 @@ let action_of_bytes ~multisig_contract ~stored_counter ~descr ~chain_id bytes =
               if Contract_hash.(multisig_contract = contract) then
                 action_of_expr ~generic:descr.generic e
               else
-                tzfail (Bad_deserialized_contract (contract, multisig_contract))
+                fail (Bad_deserialized_contract (contract, multisig_contract))
             else
-              tzfail
+              fail
                 (Bad_deserialized_counter
                    {received = counter; expected = stored_counter})
         | Tezos_micheline.Micheline.Prim
@@ -1231,30 +1180,30 @@ let action_of_bytes ~multisig_contract ~stored_counter ~descr ~chain_id bytes =
               if multisig_contract = contract && chain_id = cid then
                 action_of_expr ~generic:descr.generic e
               else
-                tzfail (Bad_deserialized_contract (contract, multisig_contract))
+                fail (Bad_deserialized_contract (contract, multisig_contract))
             else
-              tzfail
+              fail
                 (Bad_deserialized_counter
                    {received = counter; expected = stored_counter})
-        | _ -> tzfail (Bytes_deserialisation_error bytes))
-  else tzfail (Bytes_deserialisation_error bytes)
+        | _ -> fail (Bytes_deserialisation_error bytes))
+  else fail (Bytes_deserialisation_error bytes)
 
 let call_multisig_on_bytes (cctxt : #Protocol_client_context.full) ~chain ~block
     ?confirmations ?dry_run ?verbose_signing ?branch ~source ~src_pk ~src_sk
     ~multisig_contract ~bytes ~signatures ~amount ?fee ?gas_limit ?storage_limit
     ?counter ~fee_parameter () =
-  let open Lwt_result_syntax in
-  let* info = multisig_get_information cctxt ~chain ~block multisig_contract in
-  let* descr = check_multisig_contract cctxt ~chain ~block multisig_contract in
-  let* chain_id = Chain_services.chain_id cctxt ~chain () in
-  let* action =
-    action_of_bytes
-      ~multisig_contract
-      ~stored_counter:info.counter
-      ~chain_id
-      ~descr
-      bytes
-  in
+  multisig_get_information cctxt ~chain ~block multisig_contract
+  >>=? fun info ->
+  check_multisig_contract cctxt ~chain ~block multisig_contract
+  >>=? fun descr ->
+  Chain_services.chain_id cctxt ~chain () >>=? fun chain_id ->
+  action_of_bytes
+    ~multisig_contract
+    ~stored_counter:info.counter
+    ~chain_id
+    ~descr
+    bytes
+  >>=? fun action ->
   call_multisig
     cctxt
     ~chain

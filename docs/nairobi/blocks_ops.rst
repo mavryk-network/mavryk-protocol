@@ -16,7 +16,6 @@ or available only on test networks, is given in the
 :package-api:`OCaml Documentation
 <tezos-protocol-017-PtNairob/Tezos_raw_protocol_017_PtNairob/Operation_repr/index.html>`.
 
-.. _validation_passes:
 .. _validation_passes_nairobi:
 
 Validation Passes
@@ -48,7 +47,6 @@ The current protocol implementation enforces the following invariant:
 In the sequel, we describe the different classes of operations, and
 the different kinds of operations belonging to each class.
 
-.. _consensus_operations:
 .. _consensus_operations_nairobi:
 
 Consensus Operations
@@ -69,7 +67,6 @@ phases required to agree on the next block.
   for which a preendorsement quorum certificate (PQC) has been
   observed.
 
-.. _voting_operations:
 .. _voting_operations_nairobi:
 
 Voting Operations
@@ -92,7 +89,6 @@ Further details on each operation's implementation and semantics are
 provided in the dedicated entry for :ref:`on-chain
 governance<voting_operations_nairobi>`.
 
-.. _anonymous_operations:
 .. _anonymous_operations_nairobi:
 
 Anonymous Operations
@@ -123,7 +119,7 @@ protocol<randomness_generation_nairobi>`.
 
 Three operations in this class are used to :ref:`punish participants
 which engage in Byzantine behaviour<slashing_nairobi>` -- notably
-delegates which :ref:`"double sign" <def_double_signing_nairobi>` blocks, or emit
+delegates which :ref:`"double sign" <Double signing>` blocks, or emit
 conflicting :ref:`consensus operations<consensus_operations_nairobi>`:
 
 - The ``Double_preendorsement_evidence`` operation allows for accusing
@@ -147,7 +143,7 @@ See :ref:`here<slashing_nairobi>` for further detail on the semantics of
 evidence-providing operations.
 
 The ``Activation`` operation allows users which participated in the
-Tezos fundraiser to make their :ref:`accounts <def_account_nairobi>` operational.
+Tezos fundraiser to make their :ref:`accounts <Account>` operational.
 
 Finally, the ``Drain_delegate`` operation allows an active
 consensus-key account, i.e., an account to which a baker delegated its
@@ -156,7 +152,6 @@ account. This operation is used as a deterrent to ensure that a
 delegate secures its consensus key as much as its manager (or main)
 key.
 
-.. _manager_operations:
 .. _manager_operations_nairobi:
 
 Manager Operations
@@ -172,9 +167,9 @@ Manager operations enable end-users to interact with the Tezos
 blockchain -- e.g., transferring funds or calling :doc:`smart
 contracts<michelson>`. A manager operation is issued by a single
 *manager* account which signs the operation and pays the
-:ref:`fees<def_fee_nairobi>` to the baker for its inclusion in a block. Indeed,
+:ref:`fees<Fee>` to the baker for its inclusion in a block. Indeed,
 manager operations are the only fee-paying and
-:ref:`gas-consuming<def_gas_nairobi>` operations.
+:ref:`gas-consuming<Gas>` operations.
 
 - The ``Reveal`` operation reveals the public key of the sending
   manager. Knowing this public key is indeed necessary to check the signature
@@ -182,13 +177,13 @@ manager operations are the only fee-paying and
 - The ``Transaction`` operation allows users to either transfer tez
   between accounts and/or to invoke a smart contract.
 - The ``Delegation`` operation allows users to :ref:`delegate their
-  stake <delegating_coins>` to a :ref:`delegate<def_delegate_nairobi>` (a
+  stake <delegating_coins>` to a :ref:`delegate<Delegate>` (a
   *baker*), or to register themselves as delegates.
 - The ``Update_consensus_key`` operation allows users to delegate the
   responsibility of signing blocks and consensus-related operations to
   another account. Note that consensus keys cannot be BLS public keys.
 - The ``Origination`` operation is used to
-  :ref:`originate<def_origination_nairobi>`, that is to deploy, smart contracts
+  :ref:`originate<Origination>`, that is to deploy, smart contracts
   in the Tezos blockchain.
 - The ``Set_deposits_limit`` operation enables delegates to adjust the
   amount of stake a delegate :ref:`has locked in
@@ -247,7 +242,6 @@ handled with dedicated manager operations.
   determine if it is called by a smart rollup using the ``SENDER``
   Michelson instruction.
 
-.. _manager_operations_batches:
 .. _manager_operations_batches_nairobi:
 
 Manager Operation Batches

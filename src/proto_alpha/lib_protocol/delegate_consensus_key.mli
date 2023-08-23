@@ -82,9 +82,7 @@ val active_pubkey_for_cycle :
 val pending_updates :
   Raw_context.t ->
   Signature.Public_key_hash.t ->
-  (Cycle_repr.t * Signature.Public_key_hash.t * Signature.Public_key.t) list
-  tzresult
-  Lwt.t
+  (Cycle_repr.t * Signature.Public_key_hash.t) list tzresult Lwt.t
 
 (** Register a consensus-key update. *)
 val register_update :
@@ -93,5 +91,7 @@ val register_update :
   Signature.Public_key.t ->
   Raw_context.t tzresult Lwt.t
 
-(** Activate consensus keys at the beginning of cycle [new_cycle]. *)
-val activate : Raw_context.t -> new_cycle:Cycle_repr.t -> Raw_context.t Lwt.t
+(** Activate consensus keys at the beginning of cycle [new_cycle].
+    This function iterates on all registered delegates. *)
+val activate :
+  Raw_context.t -> new_cycle:Cycle_repr.t -> Raw_context.t tzresult Lwt.t

@@ -6,10 +6,10 @@
  (public_name tezos-dal-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
+  tezos-base
   octez-protocol-compiler.registerer
-  octez-libs.tezos-stdlib-unix
-  tezos-dal-node-lib
+  tezos-stdlib-unix
+  tezos_dal_node_lib
   tezos-client-alpha
   tezos-protocol-plugin-alpha
   tezos-embedded-protocol-alpha

@@ -34,6 +34,14 @@
 open Mec.Curve
 open Mec.Signature
 
+let rec repeat n f =
+  if n <= 0 then
+    let f () = () in
+    f
+  else (
+    f () ;
+    repeat (n - 1) f)
+
 (*
   Generated using find_group_hash with the personalisation "Zcash_G_". Used by
   Zcash for the nullifiers
@@ -159,22 +167,20 @@ let () =
           Alcotest.test_case
             "Sign and verify random message"
             `Quick
-            (Mec.Curve.Utils.PBT.repeat 100 test_sign_and_verify_random_message);
+            (repeat 100 test_sign_and_verify_random_message);
           Alcotest.test_case
             "Sign and verify wrong message"
             `Quick
-            (Mec.Curve.Utils.PBT.repeat 100 test_sign_and_verify_wrong_message);
+            (repeat 100 test_sign_and_verify_wrong_message);
           Alcotest.test_case
             "sign and verify with an invalid verifying key (different sk)"
             `Quick
-            (Mec.Curve.Utils.PBT.repeat
-               100
-               test_sign_and_verify_wrong_vk_because_of_different_sk);
+            (repeat 100 test_sign_and_verify_wrong_vk_because_of_different_sk);
           Alcotest.test_case
             "sign and verify with an invalid verifying key (different \
              generator)"
             `Quick
-            (Mec.Curve.Utils.PBT.repeat
+            (repeat
                100
                test_sign_and_verify_wrong_vk_because_of_different_generator);
         ] );

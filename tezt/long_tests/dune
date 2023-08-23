@@ -1,18 +1,17 @@
 (executable
  (name main)
  (libraries tezt
-            octez-libs.tezt-tezos
-            octez-libs.tezt-performance-regression
-            octez-libs.tezos-lwt-result-stdlib
+            tezt-tezos
+            tezt-performance-regression
+            tezos-lwt-result-stdlib
             tezos-alpha-test-helpers
-            octez-libs.tezos-micheline
+            tezos-micheline
             tezos-openapi
             tezos-protocol-alpha
             qcheck-core
             tezos-time-measurement
             data-encoding
-            octez-libs.tezos-event-logging
-	    octez-libs.tezos-test-helpers
+            tezos-event-logging
             )
  (flags (:standard
           -open Tezt
@@ -22,6 +21,5 @@
           -open Tezt_performance_regression
           -open Tezos_lwt_result_stdlib
           -open Tezos_event_logging
-          -open Tezos_test_helpers
           (:include %{workspace_root}/macos-link-flags.sexp)
          )))

@@ -11,11 +11,11 @@ depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
   "ppx_deriving"
-  "octez-libs"
+  "tezos-base"
   "octez-smart-rollup-wasm-benchmark-lib"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

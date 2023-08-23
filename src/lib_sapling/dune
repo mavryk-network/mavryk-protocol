@@ -5,7 +5,7 @@
 
 (library
  (name tezos_sapling)
- (public_name octez-libs.tezos-sapling)
+ (public_name tezos-sapling)
  (instrumentation (backend bisect_ppx))
  (libraries
   integers
@@ -13,10 +13,10 @@
   ctypes
   ctypes_stubs_js
   data-encoding
-  octez-libs.tezos-stdlib
-  octez-libs.tezos-crypto
-  octez-libs.tezos-error-monad
-  octez-libs.tezos-lwt-result-stdlib)
+  tezos-stdlib
+  tezos-crypto
+  tezos-error-monad
+  tezos-lwt-result-stdlib)
  (js_of_ocaml (javascript_files runtime.js))
  (flags
   (:standard)

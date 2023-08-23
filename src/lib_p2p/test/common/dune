@@ -3,20 +3,17 @@
 
 (library
  (name tezos_p2p_test_common)
- (public_name octez-libs.tezos_p2p_test_common)
+ (package tezos-p2p)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezt
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-stdlib
-  octez-libs.tezos-p2p
-  octez-libs.tezos-p2p-services)
+  tezos-base
+  tezos-base.unix
+  tezos-stdlib-unix
+  tezos-stdlib
+  tezos-p2p
+  tezos-p2p-services)
  (flags
   (:standard)
-  -open Tezt
-  -open Tezt.Base
   -open Tezos_base.TzPervasives
   -open Tezos_base_unix
   -open Tezos_stdlib_unix

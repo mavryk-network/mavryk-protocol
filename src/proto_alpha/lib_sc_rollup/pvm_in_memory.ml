@@ -25,35 +25,17 @@
 
 open Protocol.Alpha_context
 
-module type PVM =
+module type S =
   Sc_rollup.PVM.S
-    with type context = Tezos_context_memory.Context_binary.t
-     and type state = Tezos_context_memory.Context_binary.tree
+    with type context = Context_helpers.In_memory.Tree.t
+     and type state = Context_helpers.In_memory.tree
      and type proof =
-      Tezos_context_memory.Context_binary.Proof.tree
-      Tezos_context_memory.Context_binary.Proof.t
+      Tezos_context_memory.Context.Proof.tree
+      Tezos_context_memory.Context.Proof.t
 
-module type S = sig
-  include PVM
-
-  val make_empty_context : unit -> context
-
-  val make_empty_state : unit -> state
-end
-
-module Extend (Pvm : PVM) = struct
-  include Pvm
-
-  let make_empty_context =
-    Tezos_context_memory.Context_binary.make_empty_context ~root:"dummy"
-
-  let make_empty_state = Tezos_context_memory.Context_binary.make_empty_tree
-end
-
-module Arith : S = Extend (Sc_rollup.ArithPVM.Make (Context_helpers.In_memory))
+module Arith : S = Sc_rollup.ArithPVM.Make (Context_helpers.In_memory)
 
 module Wasm : S =
-  Extend
-    (Sc_rollup.Wasm_2_0_0PVM.Make
-       (Environment.Wasm_2_0_0.Make)
-       (Context_helpers.In_memory))
+  Sc_rollup.Wasm_2_0_0PVM.Make
+    (Environment.Wasm_2_0_0.Make)
+    (Context_helpers.In_memory)

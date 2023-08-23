@@ -25,7 +25,7 @@
 
 module type S = sig
   (** Plonk Main Protocol *)
-  module MP : Distribution.Main_protocol.S
+  module MP : Plonk_for_distribution.Main_protocol.S
 
   (** Type witness for a protocol step. *)
   type 'a step =
@@ -97,7 +97,7 @@ end
 
 module Make =
 functor
-  (MP : Distribution.Main_protocol.S)
+  (MP : Plonk_for_distribution.Main_protocol.S)
   ->
   struct
     module MP = MP

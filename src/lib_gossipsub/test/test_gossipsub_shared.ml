@@ -110,11 +110,11 @@ end
 (* Hook used to check message validity. By default,
    all messages are valid. *)
 module Validity_hook = struct
-  let validity = ref (fun _msg _msg_id -> `Valid)
+  let validity = ref (Fun.const `Valid)
 
   let set f = validity := f
 
-  let apply msg msg_id = !validity msg msg_id
+  let apply msg = !validity msg
 end
 
 module Automaton_config :
@@ -164,7 +164,7 @@ module Automaton_config :
     module Message = struct
       include String_iterable
 
-      let valid msg msg_id = Validity_hook.apply msg msg_id
+      let valid msg = Validity_hook.apply msg
     end
   end
 end
@@ -172,7 +172,7 @@ end
 module C = Automaton_config
 module GS = Tezos_gossipsub.Make (C)
 
-let pp_per_topic_score_limits =
+let pp_per_topic_score_parameters =
   Fmt.Dump.record
     [
       Fmt.Dump.field
@@ -183,7 +183,7 @@ let pp_per_topic_score_limits =
       Fmt.Dump.field
         "time_in_mesh_quantum"
         (fun l -> l.time_in_mesh_quantum)
-        GS.Span.pp;
+        Fmt.float;
       Fmt.Dump.field
         "first_message_deliveries_weight"
         (fun l -> l.first_message_deliveries_weight)
@@ -194,17 +194,16 @@ let pp_per_topic_score_limits =
         Fmt.int;
     ]
 
-let pp_topic_score_limits fmtr tsp =
+let pp_topic_score_parameters fmtr tsp =
   match tsp with
-  | Topic_score_limits_single p -> pp_per_topic_score_limits fmtr p
-  | Topic_score_limits_family _ -> Format.fprintf fmtr "<...>"
+  | Topic_score_parameters_single p -> pp_per_topic_score_parameters fmtr p
+  | Topic_score_parameters_family _ -> Format.fprintf fmtr "<...>"
 
-let pp_score_limits =
+let pp_score_parameters =
   Fmt.Dump.(
     record
       [
-        field "topics" (fun sp -> sp.topics) pp_topic_score_limits;
-        field "app_specific_weight" (fun sp -> sp.app_specific_weight) Fmt.float;
+        field "topics" (fun sp -> sp.topics) pp_topic_score_parameters;
         field
           "behaviour_penalty_weight"
           (fun sp -> sp.behaviour_penalty_weight)
@@ -213,11 +212,6 @@ let pp_score_limits =
           "behaviour_penalty_threshold"
           (fun sp -> sp.behaviour_penalty_threshold)
           Fmt.float;
-        field
-          "behaviour_penalty_decay"
-          (fun sp -> sp.behaviour_penalty_decay)
-          Fmt.float;
-        field "decay_zero" (fun sp -> sp.decay_zero) Fmt.float;
       ])
 
 let pp_limits fmtr
@@ -233,7 +227,7 @@ let pp_limits fmtr
     peers_to_px;
     accept_px_threshold;
     unsubscribe_backoff;
-    graft_flood_threshold;
+    graft_flood_backoff;
     prune_backoff;
     retain_duration;
     fanout_ttl;
@@ -252,7 +246,7 @@ let pp_limits fmtr
     opportunistic_graft_peers;
     opportunistic_graft_threshold;
     seen_history_length;
-    score_limits;
+    score_parameters;
   } =
     l
   in
@@ -269,7 +263,7 @@ let pp_limits fmtr
      peers_to_px = %d;@;\
      accept_px_threshold = %f;@;\
      unsubscribe_backoff = %a;@;\
-     graft_flood_threshold = %a;@;\
+     graft_flood_backoff = %a;@;\
      prune_backoff = %a;@;\
      retain_duration = %a;@;\
      fanout_ttl = %a;@;\
@@ -288,7 +282,7 @@ let pp_limits fmtr
      opportunistic_graft_peers = %d;@;\
      opportunistic_graft_threshold = %f;@;\
      seen_history_length = %d;@;\
-     score_limits= %a }@]"
+     score_parameters= %a }@]"
     max_recv_ihave_per_heartbeat
     max_sent_iwant_per_heartbeat
     max_gossip_retransmission
@@ -301,7 +295,7 @@ let pp_limits fmtr
     GS.Span.pp
     unsubscribe_backoff
     GS.Span.pp
-    graft_flood_threshold
+    graft_flood_backoff
     GS.Span.pp
     prune_backoff
     GS.Span.pp
@@ -324,8 +318,8 @@ let pp_limits fmtr
     opportunistic_graft_peers
     opportunistic_graft_threshold
     seen_history_length
-    pp_score_limits
-    score_limits
+    pp_score_parameters
+    score_parameters
 
 (** Instantiate the worker functor *)
 module Worker_config = struct

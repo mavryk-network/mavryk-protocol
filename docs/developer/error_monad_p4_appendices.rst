@@ -100,7 +100,7 @@ a given syntax module, the legacy code relied on global values.
 |    return x                          |                               |
 +--------------------------------------+-------------------------------+
 | ::                                   | No equivalent, uses           |
-|                                      | ``Lwt.return_error e``        |
+|                                      | ``Lwt.return_ok x``           |
 |    let open Lwt_result_syntax in     |                               |
 |    fail e                            |                               |
 +--------------------------------------+-------------------------------+

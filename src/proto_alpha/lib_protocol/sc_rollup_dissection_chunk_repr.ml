@@ -156,7 +156,7 @@ let default_check ~section_maximum_size ~check_sections_number
           if Z.(leq incr section_maximum_size) then traverse (next :: others)
           else tzfail (Dissection_invalid_distribution section_maximum_size)
         else tzfail Dissection_ticks_not_increasing
-    | _ -> return_unit
+    | _ -> return ()
   in
   traverse dissection
 

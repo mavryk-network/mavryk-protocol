@@ -59,19 +59,19 @@ let preapply_block cctxt ~chain ~head ~timestamp ~protocol_data operations =
     operations
     ~protocol_data
 
-let extract_prequorum preattestations =
-  match preattestations with
+let extract_prequorum preendorsements =
+  match preendorsements with
   | h :: _ ->
-      let ({protocol_data = {contents = Single (Preattestation content); _}; _})
+      let ({protocol_data = {contents = Single (Preendorsement content); _}; _})
           =
-        (h : Kind.preattestation Operation.t)
+        (h : Kind.preendorsement Operation.t)
       in
       Some
         {
           level = Raw_level.to_int32 content.level;
           round = content.round;
           block_payload_hash = content.block_payload_hash;
-          preattestations;
+          preendorsements;
         }
   | _ -> None
 
@@ -88,7 +88,7 @@ let info_of_header_and_ops ~in_protocol block_hash block_header operations =
       (* The first block in the protocol is baked using the previous
          protocol, the encodings might change. The baker's logic is to
          consider final the first block of a new protocol and not
-         attest it. Therefore, we do not need to have the correct
+         endorse it. Therefore, we do not need to have the correct
          values here. *)
       ( dummy_payload_hash,
         Round.zero,
@@ -107,12 +107,12 @@ let info_of_header_and_ops ~in_protocol block_hash block_header operations =
             (payload_hash, payload_round)
         | None -> assert false
       in
-      let preattestations, quorum, dal_attestations, payload =
+      let preendorsements, quorum, dal_attestations, payload =
         WithExceptions.Option.get
           ~loc:__LOC__
           (Operation_pool.extract_operations_of_list_list operations)
       in
-      let prequorum = Option.bind preattestations extract_prequorum in
+      let prequorum = Option.bind preendorsements extract_prequorum in
       (payload_hash, payload_round, prequorum, quorum, dal_attestations, payload)
   in
   return
@@ -283,11 +283,9 @@ let monitor_heads cctxt ~chain ?cache () =
   return (stream, stopper)
 
 let await_protocol_activation cctxt ~chain () =
-  let open Lwt_result_syntax in
-  let* block_stream, stop =
-    Monitor_services.heads cctxt ~next_protocols:[Protocol.hash] chain
-  in
-  let*! _ = Lwt_stream.get block_stream in
+  Monitor_services.heads cctxt ~next_protocols:[Protocol.hash] chain
+  >>=? fun (block_stream, stop) ->
+  Lwt_stream.get block_stream >>= fun _ ->
   stop () ;
   return_unit
 
@@ -298,18 +296,3 @@ let get_attestable_slots dal_node_rpc_ctxt pkh ~level =
     (((), pkh), level)
     ()
     ()
-
-let register_dal_profiles dal_node_rpc_ctxt delegates =
-  let profiles =
-    List.map
-      (fun consensus_key ->
-        Tezos_dal_node_services.Services.Types.Attestor
-          consensus_key.public_key_hash)
-      delegates
-  in
-  Tezos_rpc.Context.make_call
-    Tezos_dal_node_services.Services.patch_profiles
-    dal_node_rpc_ctxt
-    ()
-    ()
-    profiles

@@ -53,14 +53,12 @@ type blockchain_network = {
   user_activated_upgrades : User_activated.upgrades;
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   default_bootstrap_peers : string list;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
 }
 
 let make_blockchain_network ~alias ~chain_name ?old_chain_name
     ?incompatible_chain_name ~sandboxed_chain_name
     ?(user_activated_upgrades = []) ?(user_activated_protocol_overrides = [])
-    ?(default_bootstrap_peers = []) ?genesis_parameters
-    ?(dal_config = Tezos_crypto_dal.Cryptobox.Config.default) genesis =
+    ?(default_bootstrap_peers = []) ?genesis_parameters genesis =
   let of_string = Distributed_db_version.Name.of_string in
   {
     alias = Some alias;
@@ -80,7 +78,6 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
           (Protocol_hash.of_b58check_exn a, Protocol_hash.of_b58check_exn b))
         user_activated_protocol_overrides;
     default_bootstrap_peers;
-    dal_config;
   }
 
 (* The script in scripts/user_activated_upgrade.sh patches the following lines
@@ -172,6 +169,34 @@ let blockchain_network_ghostnet =
         "ghostnet.visualtez.com";
       ]
 
+let blockchain_network_mumbainet =
+  make_blockchain_network
+    ~alias:"mumbainet"
+    {
+      time = Time.Protocol.of_notation_exn "2023-03-09T15:00:00Z";
+      block =
+        Block_hash.of_b58check_exn
+          "BLytf7aG27Ca4xZ8cG4otofaUQfUA9TdULvHC3L9fToPHBcPKDV";
+      protocol =
+        Protocol_hash.of_b58check_exn
+          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+    }
+    ~genesis_parameters:
+      {
+        context_key = "sandbox_parameter";
+        values =
+          `O
+            [
+              ( "genesis_pubkey",
+                `String "edpkuYLienS3Xdt5c1vfRX1ibMxQuvfM67ByhJ9nmRYYKGAAoTq1UC"
+              );
+            ];
+      }
+    ~chain_name:"TEZOS_MUMBAINET_2023-03-09T15:00:00Z"
+    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
+    ~default_bootstrap_peers:
+      ["mumbainet.teztnets.xyz"; "mumbainet.boot.ecadinfra.com"]
+
 let blockchain_network_sandbox =
   make_blockchain_network
     ~alias:"sandbox"
@@ -215,7 +240,6 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
            user_activated_upgrades;
            user_activated_protocol_overrides;
            default_bootstrap_peers;
-           dal_config;
          } ->
       ( genesis,
         genesis_parameters,
@@ -225,8 +249,7 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
         sandboxed_chain_name,
         user_activated_upgrades,
         user_activated_protocol_overrides,
-        default_bootstrap_peers,
-        dal_config ))
+        default_bootstrap_peers ))
     (fun ( genesis,
            genesis_parameters,
            chain_name,
@@ -235,8 +258,7 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
            sandboxed_chain_name,
            user_activated_upgrades,
            user_activated_protocol_overrides,
-           default_bootstrap_peers,
-           dal_config ) ->
+           default_bootstrap_peers ) ->
       {
         alias = None;
         genesis;
@@ -248,10 +270,9 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
         user_activated_upgrades;
         user_activated_protocol_overrides;
         default_bootstrap_peers;
-        dal_config;
       })
     (let chain = Distributed_db_version.Name.encoding in
-     obj10
+     obj9
        (req "genesis" Genesis.encoding)
        (opt "genesis_parameters" Genesis.Parameters.encoding)
        (req "chain_name" chain)
@@ -268,22 +289,14 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
           ~description:
             "List of hosts to use if p2p.bootstrap_peers is unspecified."
           (list string)
-          [])
-       (dft
-          "dal_config"
-          ~description:
-            "USE FOR TESTING PURPOSE ONLY. Configuration for the \
-             data-availibility layer"
-          Tezos_crypto_dal.Cryptobox.Config.encoding
-          (* We use default config unless explicitly overridden via the config file.
-             Note that such override is expected to only be used in test networks. *)
-          Tezos_crypto_dal.Cryptobox.Config.default))
+          []))
 
 let builtin_blockchain_networks_with_tags =
   [
     (1, blockchain_network_sandbox);
     (4, blockchain_network_mainnet);
     (19, blockchain_network_ghostnet);
+    (22, blockchain_network_mumbainet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with
@@ -332,11 +345,12 @@ type t = {
   disable_config_validation : bool;
   p2p : p2p;
   rpc : rpc;
-  log : Logs_simple_config.cfg;
+  log : Lwt_log_sink_unix.cfg;
   internal_events : Internal_event_config.t option;
   shell : Shell_limits.limits;
   blockchain_network : blockchain_network;
   metrics_addr : string list;
+  dal : Tezos_crypto_dal.Cryptobox.Config.t;
 }
 
 and p2p = {
@@ -391,17 +405,24 @@ let default_rpc =
 
 let default_disable_config_validation = false
 
+let lwt_log_sink_default_cfg =
+  {
+    Lwt_log_sink_unix.default_cfg with
+    template = "$(date).$(milliseconds): $(message)";
+  }
+
 let default_config =
   {
     data_dir = default_data_dir;
     p2p = default_p2p;
     rpc = default_rpc;
-    log = Logs_simple_config.default_cfg;
+    log = lwt_log_sink_default_cfg;
     internal_events = None;
     shell = Shell_limits.default_limits;
     blockchain_network = blockchain_network_mainnet;
     disable_config_validation = default_disable_config_validation;
     metrics_addr = [];
+    dal = Tezos_crypto_dal.Cryptobox.Config.default;
   }
 
 let p2p =
@@ -638,6 +659,7 @@ let encoding =
            shell;
            blockchain_network;
            metrics_addr;
+           dal;
          } ->
       ( data_dir,
         disable_config_validation,
@@ -647,7 +669,8 @@ let encoding =
         internal_events,
         shell,
         blockchain_network,
-        metrics_addr ))
+        metrics_addr,
+        dal ))
     (fun ( data_dir,
            disable_config_validation,
            rpc,
@@ -656,7 +679,8 @@ let encoding =
            internal_events,
            shell,
            blockchain_network,
-           metrics_addr ) ->
+           metrics_addr,
+           dal ) ->
       {
         disable_config_validation;
         data_dir;
@@ -667,8 +691,9 @@ let encoding =
         shell;
         blockchain_network;
         metrics_addr;
+        dal;
       })
-    (obj9
+    (obj10
        (dft
           "data-dir"
           ~description:"Location of the data dir on disk."
@@ -693,8 +718,8 @@ let encoding =
           "log"
           ~description:
             "Configuration of the Lwt-log sink (part of the logging framework)"
-          Logs_simple_config.cfg_encoding
-          Logs_simple_config.default_cfg)
+          Lwt_log_sink_unix.cfg_encoding
+          lwt_log_sink_default_cfg)
        (opt
           "internal-events"
           ~description:"Configuration of the structured logging framework"
@@ -713,7 +738,14 @@ let encoding =
           "metrics_addr"
           ~description:"Configuration of the Prometheus metrics endpoint"
           (list string)
-          default_config.metrics_addr))
+          default_config.metrics_addr)
+       (dft
+          "dal"
+          ~description:
+            "USE FOR TESTING PURPOSE ONLY. Configuration for the \
+             data-availibility layer"
+          Tezos_crypto_dal.Cryptobox.Config.encoding
+          Tezos_crypto_dal.Cryptobox.Config.default))
 
 (* Abstract version of [Json_encoding.Cannot_destruct]: first argument is the
    string representation of the path, second argument is the error message
@@ -815,9 +847,11 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
       Option.is_none default_p2p.limits.maintenance_idle_time)
     ?(disable_p2p_swap = Option.is_none default_p2p.limits.swap_linger)
     ?(disable_mempool = default_p2p.disable_mempool)
+    ?(disable_mempool_precheck =
+      Shell_limits.default_limits.prevalidator_limits.disable_precheck)
     ?(enable_testchain = default_p2p.enable_testchain) ?(cors_origins = [])
-    ?(cors_headers = []) ?rpc_tls ?log_output ?log_coloring
-    ?synchronisation_threshold ?history_mode ?network ?latency cfg =
+    ?(cors_headers = []) ?rpc_tls ?log_output ?synchronisation_threshold
+    ?history_mode ?network ?latency cfg =
   let open Lwt_result_syntax in
   let disable_config_validation =
     cfg.disable_config_validation || disable_config_validation
@@ -897,12 +931,8 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
       media_type;
     }
   and metrics_addr = unopt_list ~default:cfg.metrics_addr metrics_addr
-  and log : Logs_simple_config.cfg =
-    {
-      cfg.log with
-      colors = Option.value ~default:cfg.log.colors log_coloring;
-      output = Option.value ~default:cfg.log.output log_output;
-    }
+  and log : Lwt_log_sink_unix.cfg =
+    {cfg.log with output = Option.value ~default:cfg.log.output log_output}
   and shell =
     Shell_limits.
       {
@@ -916,7 +946,13 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
                   cfg.shell.block_validator_limits.operation_metadata_size_limit
                 operation_metadata_size_limit;
           };
-        prevalidator_limits = cfg.shell.prevalidator_limits;
+        prevalidator_limits =
+          {
+            cfg.shell.prevalidator_limits with
+            disable_precheck =
+              cfg.shell.prevalidator_limits.disable_precheck
+              || disable_mempool_precheck;
+          };
         chain_validator_limits =
           (let synchronisation : synchronisation_limits =
              {
@@ -954,6 +990,21 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
       metrics_addr;
     }
 
+type Error_monad.error += Failed_to_parse_address of (string * string)
+
+let () =
+  (* Parsing of an address failed with an explanation *)
+  Error_monad.register_error_kind
+    `Permanent
+    ~id:"config_file.parsing_address_failed"
+    ~title:"Parsing of an address failed"
+    ~description:"Parsing an address failed with an explanation."
+    ~pp:(fun ppf (addr, explanation) ->
+      Format.fprintf ppf "Failed to parse address '%s': %s@." addr explanation)
+    Data_encoding.(obj2 (req "addr" string) (req "explanation" string))
+    (function Failed_to_parse_address s -> Some s | _ -> None)
+    (fun s -> Failed_to_parse_address s)
+
 let to_ipv4 ipv6_l =
   let open Lwt_syntax in
   let convert_or_warn (ipv6, port) =
@@ -968,45 +1019,99 @@ let to_ipv4 ipv6_l =
   in
   List.filter_map_s convert_or_warn ipv6_l
 
+(* Parse an address.
+
+   - [peer] is a string representing the peer.
+
+   - if [no_peer_id_expected] is true, then parsing a representation
+   containing a peer id will result in an error.
+
+   - [default_addr] is the used if no hostname or IP is given or if
+   the hostname "_" is used.
+
+   - [default_port] is the used if port is given. *)
+let resolve_addr ~default_addr ?(no_peer_id_expected = true) ?default_port
+    ?(passive = false) peer :
+    (P2p_point.Id.t * P2p_peer.Id.t option) list tzresult Lwt.t =
+  let open Lwt_result_syntax in
+  match P2p_point.Id.parse_addr_port_id peer with
+  | (Error (P2p_point.Id.Bad_id_format _) | Ok {peer_id = Some _; _})
+    when no_peer_id_expected ->
+      tzfail
+        (Failed_to_parse_address
+           (peer, "no peer identity should be specified here"))
+  | Error err ->
+      tzfail
+        (Failed_to_parse_address (peer, P2p_point.Id.string_of_parsing_error err))
+  | Ok {addr; port; peer_id} ->
+      let service_port =
+        match (port, default_port) with
+        | Some port, _ -> port
+        | None, Some default_port -> default_port
+        | None, None -> default_p2p_port
+      in
+      let service = string_of_int service_port in
+      let node = if addr = "" || addr = "_" then default_addr else addr in
+      let*! l = Lwt_utils_unix.getaddrinfo ~passive ~node ~service in
+      return (List.map (fun point -> (point, peer_id)) l)
+
+let resolve_addrs ?default_port ?passive ?no_peer_id_expected ~default_addr
+    addrs =
+  List.concat_map_es
+    (resolve_addr ~default_addr ?default_port ?passive ?no_peer_id_expected)
+    addrs
+
 let resolve_discovery_addrs discovery_addr =
   let open Lwt_result_syntax in
-  let* points =
-    P2p_resolve.resolve_addr
+  let* addrs =
+    resolve_addr
       ~default_addr:Ipaddr.V4.(to_string broadcast)
       ~default_port:default_discovery_port
       ~passive:true
       discovery_addr
   in
-  let*! points = to_ipv4 points in
-  return points
+  let*! addrs = to_ipv4 (List.map fst addrs) in
+  return addrs
 
 let resolve_listening_addrs listen_addr =
-  P2p_resolve.resolve_addr
-    ~default_addr:"::"
-    ~default_port:default_p2p_port
-    ~passive:true
-    listen_addr
+  let open Lwt_result_syntax in
+  let+ addrs =
+    resolve_addr
+      ~default_addr:"::"
+      ~default_port:default_p2p_port
+      ~passive:true
+      listen_addr
+  in
+  List.map fst addrs
 
 let resolve_rpc_listening_addrs listen_addr =
-  P2p_resolve.resolve_addr
-    ~default_addr:"localhost"
-    ~default_port:default_rpc_port
-    ~passive:true
-    listen_addr
+  let open Lwt_result_syntax in
+  let+ addrs =
+    resolve_addr
+      ~default_addr:"localhost"
+      ~default_port:default_rpc_port
+      ~passive:true
+      listen_addr
+  in
+  List.map fst addrs
 
 let resolve_metrics_addrs ?(default_metrics_port = default_metrics_port)
     metrics_addr =
-  P2p_resolve.resolve_addr
-    ~default_addr:"localhost"
-    ~default_port:default_metrics_port
-    ~passive:true
-    metrics_addr
+  let open Lwt_result_syntax in
+  let+ addrs =
+    resolve_addr
+      ~default_addr:"localhost"
+      ~default_port:default_metrics_port
+      ~passive:true
+      metrics_addr
+  in
+  List.map fst addrs
 
 let resolve_bootstrap_addrs peers =
-  List.concat_map_es
-    (P2p_resolve.resolve_addr_with_peer_id
-       ~default_addr:"::"
-       ~default_port:default_p2p_port)
+  resolve_addrs
+    ~no_peer_id_expected:false
+    ~default_addr:"::"
+    ~default_port:default_p2p_port
     peers
 
 let bootstrap_peers config =

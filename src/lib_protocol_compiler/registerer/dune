@@ -6,8 +6,8 @@
  (public_name octez-protocol-compiler.registerer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-protocol-environment.sigs)
+  tezos-base
+  tezos-protocol-environment.sigs)
  (flags
   (:standard)
   -opaque

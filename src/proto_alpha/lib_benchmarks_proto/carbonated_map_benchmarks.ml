@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2021 Trili Tech, <contact@trili.tech>                       *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -25,16 +24,13 @@
 (*****************************************************************************)
 
 open Tezos_benchmark
-open Benchmarks_proto
 
-let ns = Namespace.make Registration.ns "carbonated_map"
+let ns = Namespace.make Registration_helpers.ns "carbonated_map"
 
 let fv s = Free_variable.of_namespace (ns s)
 
-let group = Benchmark.Group "carbonated_map"
-
 let make_context ~rng_state =
-  match Lwt_main.run @@ Execution_context.make ~rng_state () with
+  match Lwt_main.run @@ Execution_context.make ~rng_state with
   | Ok (ctxt, _) -> ctxt
   | Error _ -> assert false
 
@@ -51,11 +47,9 @@ module Config_and_workload = struct
 
   let module_filename = __FILE__
 
-  let purpose = Benchmark.Generate_code "carbonated_map"
+  let generated_code_destination = None
 
   let tags = ["carbonated_map"]
-
-  let group = group
 
   let workload_encoding = config_encoding
 
@@ -87,15 +81,18 @@ module Fold_benchmark : Benchmark.S = struct
 
   let info = "Carbonated map to list"
 
-  let model =
+  let fold_model =
     Model.make
       ~conv:(fun {size} -> (size, ()))
       ~model:
         (Model.affine
+           ~name
            ~intercept:(fv "fold_const")
            ~coeff:(fv "fold_cost_per_item"))
 
-  let create_benchmark ~rng_state config =
+  let models = [("carbonated_map", fold_model)]
+
+  let benchmark rng_state config () =
     let module M = Carbonated_map.Make (Alpha_context_gas) (Int) in
     let _, list =
       let sampler rng_state =
@@ -122,9 +119,12 @@ module Fold_benchmark : Benchmark.S = struct
     in
     let workload = {size = M.size map} in
     let closure () =
-      ignore @@ M.fold_e ctxt (fun ctxt _ _ _ -> Ok ((), ctxt)) () map
+      ignore @@ M.fold_e ctxt (fun ctxt _ _ _ -> ok ((), ctxt)) () map
     in
     Generator.Plain {workload; closure}
+
+  let create_benchmarks ~rng_state ~bench_num config =
+    List.repeat bench_num (benchmark rng_state config)
 end
 
 (** Module type that consists of a comparable type along with a sampler
@@ -167,20 +167,25 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Generate_code "carbonated_map"
+    let generated_code_destination = None
 
-    let group = group
+    let models =
+      [
+        ( "carbonated_map",
+          Model.make
+            ~conv:(fun () -> ())
+            ~model:
+              (Model.unknown_const1 ~name ~const:(compare_var CS.type_name)) );
+      ]
 
-    let model =
-      Model.make
-        ~conv:(fun () -> ())
-        ~model:(Model.unknown_const1 ~const:(compare_var CS.type_name))
-
-    let create_benchmark ~rng_state _conf =
+    let benchmark rng_state _conf () =
       let key = CS.sampler rng_state in
       let workload = () in
       let closure () = ignore (CS.compare key key) in
       Generator.Plain {workload; closure}
+
+    let create_benchmarks ~rng_state ~bench_num config =
+      List.repeat bench_num (benchmark rng_state config)
   end
 
   module Find = struct
@@ -200,26 +205,17 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
 
     let info = Printf.sprintf "Carbonated find model"
 
-    let ns s = Free_variable.of_namespace (Namespace.cons name s)
-
-    let fv_intercept = ns "intercept"
-
     (**
        Given the cost of comparing keys, the model is used for deducing [intercept]
-       and [traversal_overhead] from:
+       and [traverse_overhead] from:
 
        [intercept + (log2 size * compare_cost) + (log2 size * traversal_overhead)]
      *)
-    let find_model name =
-      let open Tezos_benchmark in
-      let traversal_overhead = ns "traversal_overhead" in
-      let intercept = fv_intercept in
+    let find_model ~name ~intercept ~traverse_overhead =
       let module M = struct
         type arg_type = int * unit
 
         let name = name
-
-        let takes_saturation_reprs = false
 
         module Def (L : Costlang.S) = struct
           type model_type = L.size -> L.size
@@ -232,17 +228,25 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
             let compare_cost =
               log2 size * free ~name:(compare_var CS.type_name)
             in
-            let traversal_overhead =
-              log2 size * free ~name:traversal_overhead
-            in
+            let traversal_overhead = log2 size * free ~name:traverse_overhead in
             free ~name:intercept + compare_cost + traversal_overhead
         end
       end in
       (module M : Model.Model_impl with type arg_type = int * unit)
 
-    let model = Model.make ~conv:(fun {size} -> (size, ())) ~model:find_model
+    let models =
+      [
+        ( "carbonated_map",
+          Model.make
+            ~conv:(fun {size} -> (size, ()))
+            ~model:
+              (find_model
+                 ~name
+                 ~intercept:(fv "intercept")
+                 ~traverse_overhead:(fv "traversal_overhead")) );
+      ]
 
-    let create_benchmark ~rng_state (config : config) =
+    let benchmark rng_state (config : config) () =
       let _, list =
         let sampler rng_state = (CS.sampler rng_state, ()) in
         Structure_samplers.list
@@ -268,6 +272,9 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
       let workload = {size = M.size map} in
       let closure () = ignore @@ M.find ctxt key map in
       Generator.Plain {workload; closure}
+
+    let create_benchmarks ~rng_state ~bench_num config =
+      List.repeat bench_num (benchmark rng_state config)
   end
 
   module Find_intercept = struct
@@ -301,22 +308,26 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Generate_code "carbonated_map"
+    let generated_code_destination = None
 
-    let group = group
+    let models =
+      [
+        ( "carbonated_map",
+          Model.make
+            ~conv:(fun () -> ())
+            ~model:(Model.unknown_const1 ~name ~const:(fv "intercept")) );
+      ]
 
-    let model =
-      Model.make
-        ~conv:(fun () -> ())
-        ~model:(Model.unknown_const1 ~const:Find.fv_intercept)
-
-    let create_benchmark ~rng_state (_config : config) =
+    let benchmark rng_state (_config : config) () =
       let ctxt = make_context ~rng_state in
       let map = M.empty in
       let key = CS.sampler rng_state in
       let workload = () in
       let closure () = ignore @@ M.find ctxt key map in
       Generator.Plain {workload; closure}
+
+    let create_benchmarks ~rng_state ~bench_num config =
+      List.repeat bench_num (benchmark rng_state config)
   end
 end
 
@@ -335,7 +346,7 @@ end
 module Benchmarks_int = Make (Int)
 
 let () =
-  let open Registration in
+  let open Registration_helpers in
   register (module Fold_benchmark) ;
   register (module Benchmarks_int.Compare) ;
   register (module Benchmarks_int.Find) ;

@@ -70,7 +70,8 @@ let test_execution_correspondance ~version skip count () =
     ()
 
 let tests =
-  tztests_with_all_pvms
+  tztests_with_pvm
+    ~versions:[V0; V1]
     [
       ( "Executions correspondence (ticks 0 to 1,000)",
         `Quick,

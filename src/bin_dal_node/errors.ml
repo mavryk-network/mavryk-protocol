@@ -25,7 +25,8 @@
 
 (** Extention of the open type [error] with the errors that could be raised by
     the DAL node. *)
-type error += Decoding_failed of Types.kind | Profile_incompatibility
+
+type error += Decoding_failed of Types.kind
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/4622
 
@@ -45,18 +46,7 @@ let () =
         (Types.kind_to_string data_kind))
     Data_encoding.(obj1 (req "data_kind" Types.kind_encoding))
     (function Decoding_failed data_kind -> Some data_kind | _ -> None)
-    (fun data_kind -> Decoding_failed data_kind) ;
-  register_error_kind
-    `Permanent
-    ~id:"dal.node.profile_incompatibility"
-    ~title:"Profile incompatibility"
-    ~description:
-      "Adding profiles to a node configured with the bootstrap profile is not \
-       allowed. This is because bootstrap nodes are incompatible with other \
-       profiles."
-    Data_encoding.empty
-    (function Profile_incompatibility -> Some () | _ -> None)
-    (fun () -> Profile_incompatibility)
+    (fun data_kind -> Decoding_failed data_kind)
 
 (** This part defines and handles more elaborate errors for the DAL node. *)
 

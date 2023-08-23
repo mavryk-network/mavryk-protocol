@@ -224,13 +224,13 @@ let get_vdf_solution_if_ready cctxt state proc setup chain_id hash
     (level_info : Level.t) =
   let open Lwt_result_syntax in
   let level = level_info.level in
-  let*! status = Lwt_unix.waitpid [WNOHANG] proc.pid in
+  let*! status = Lwt_unix.waitpid [Lwt_unix.WNOHANG] proc.pid in
   match status with
   | 0, _ ->
       (* If the process is still running, continue *)
       let*! () = emit_with_level "Skipping, VDF computation launched" level in
       return_unit
-  | _, WEXITED 0 -> (
+  | _, Lwt_unix.WEXITED 0 -> (
       (* If the process has exited normally, read the solution, update
        * the status to [Finished], and attempt to inject the VDF
        * revelation. *)
@@ -256,7 +256,7 @@ let get_vdf_solution_if_ready cctxt state proc setup chain_id hash
           let*! () = Events.(emit vdf_info) "Error decoding VDF solution" in
           state.computation_status <- Not_started ;
           return_unit)
-  | _, WEXITED _ | _, WSIGNALED _ | _, WSTOPPED _ ->
+  | _, Lwt_unix.WEXITED _ | _, Lwt_unix.WSIGNALED _ | _, Lwt_unix.WSTOPPED _ ->
       (* If process has exited abnormally, reset the computation status to
        * [Not_started] and continue *)
       state.computation_status <- Not_started ;
@@ -265,40 +265,16 @@ let get_vdf_solution_if_ready cctxt state proc setup chain_id hash
       in
       return_unit
 
-let kill_forked_process {pid; _} =
+let kill_running_vdf_computation {pid; _} =
   let open Lwt_syntax in
   let* () =
     match Unix.kill pid Sys.sigterm with
-    | () ->
-        Events.(emit vdf_info)
-          (Printf.sprintf
-             "Sent SIGTERM to VDF computation process (pid %d)"
-             pid)
+    | () -> Events.(emit vdf_info) "VDF computation was aborted"
     | exception Unix.Unix_error (err, _, _) ->
         let msg = Printf.sprintf "%s (pid %d)" (Unix.error_message err) pid in
         Events.(emit vdf_daemon_cannot_kill_computation) msg
   in
-  let* pid, status = Lwt_unix.waitpid [] pid in
-  let status =
-    match status with
-    | WEXITED n -> Printf.sprintf "WEXITED %d" n
-    | WSIGNALED n -> Printf.sprintf "WSIGNALED %d" n
-    | WSTOPPED n -> Printf.sprintf "WSTOPPED %d" n
-  in
-  Events.(emit vdf_info)
-    (Printf.sprintf
-       "Exit status for child VDF computation process %d: %s"
-       pid
-       status)
-
-(* Kill the VDF computation process if one was launched. *)
-let maybe_kill_running_vdf_computation state =
-  let open Lwt_syntax in
-  match state.computation_status with
-  | Started (_, proc) ->
-      let* () = kill_forked_process proc in
-      return_unit
-  | _ -> return_unit
+  return_unit
 
 (* Checks if the cycle of the last processed block is different from the cycle
  * of the block at [level_info]. *)
@@ -320,7 +296,7 @@ let check_new_cycle state (level_info : Level.t) =
           match state.computation_status with
           | Injected -> return_unit
           | Started ((_ : vdf_setup), proc) ->
-              let*! () = kill_forked_process proc in
+              let*! () = kill_running_vdf_computation proc in
               emit_revelation_not_injected cycle
           | Not_started | Finished _ | Invalid ->
               emit_revelation_not_injected cycle
@@ -422,7 +398,7 @@ let process_new_block (cctxt : #Protocol_client_context.full) state
               (* The chain is no longer in the VDF revelation stage because
                * the solution has already been injected: abort the running
                * computation. *)
-              let*! () = kill_forked_process proc in
+              let*! () = kill_running_vdf_computation proc in
               let*! () =
                 emit_with_level
                   "VDF solution already injected, aborting VDF computation"
@@ -475,17 +451,14 @@ let start_vdf_worker (cctxt : Protocol_client_context.full) ~canceler constants
     }
   in
   Lwt_canceler.on_cancel canceler (fun () ->
-      let*! () = maybe_kill_running_vdf_computation state in
       stop_block_stream state ;
       Lwt.return_unit) ;
   let rec worker_loop () =
     let*! b =
       Lwt.choose
         [
-          (let*! _ = Lwt_exit.clean_up_starts in
-           Lwt.return `Termination);
-          (let*! e = Lwt_stream.get state.block_stream in
-           Lwt.return (`Block e));
+          (Lwt_exit.clean_up_starts >|= fun _ -> `Termination);
+          (Lwt_stream.get state.block_stream >|= fun e -> `Block e);
         ]
     in
     match b with

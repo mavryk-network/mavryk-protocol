@@ -73,8 +73,3 @@ module Kind : sig
 
   val pp : Format.formatter -> t -> unit
 end
-
-(** [genesis_hash_of machine ~boot_sector] computes the initial state hash of a
-    rollup given an initial [boot_sector]. *)
-val genesis_state_hash_of :
-  boot_sector:string -> Kind.t -> Sc_rollup_repr.State_hash.t Lwt.t

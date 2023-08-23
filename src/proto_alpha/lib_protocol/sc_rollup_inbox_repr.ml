@@ -99,13 +99,41 @@ let () =
     (fun () -> Inbox_level_reached_messages_limit)
 
 module Int64_map = Map.Make (Int64)
-module Hash = Smart_rollup.Inbox_hash
+
+(* 32 *)
+let hash_prefix = "\003\255\138\145\110" (* srib1(55) *)
+
+module Hash = struct
+  let prefix = "srib1"
+
+  let encoded_size = 55
+
+  module H =
+    Blake2B.Make
+      (Base58)
+      (struct
+        let name = "Smart_rollup_inbox_hash"
+
+        let title = "The hash of an inbox of a smart rollup"
+
+        let b58check_prefix = hash_prefix
+
+        (* defaults to 32 *)
+        let size = None
+      end)
+
+  include H
+
+  let () = Base58.check_encoded_prefix b58check_encoding prefix encoded_size
+
+  include Path_encoding.Make_hex (H)
+end
 
 module Skip_list_parameters = struct
   let basis = 4
 end
 
-module Skip_list = Skip_list.Make (Skip_list_parameters)
+module Skip_list = Skip_list_repr.Make (Skip_list_parameters)
 
 module V1 = struct
   type level_proof = {
@@ -550,9 +578,9 @@ let produce_payloads_proof get_payloads_history head_cell_hash ~index =
         head_cell_hash
         payloads_history
     with
-    | Some {merkelized = head_cell; payload = _} -> Ok head_cell
+    | Some {merkelized = head_cell; payload = _} -> ok head_cell
     | None ->
-        Result_syntax.tzfail
+        error
           (Inbox_proof_error "could not find head_cell in the payloads_history")
   in
   let head_cell_max_index =
@@ -586,7 +614,7 @@ let verify_inclusion_proof inclusion_proof snapshot_history_proof =
         let target_ptr = hash_history_proof target in
         let hash_map = Hash.Map.add target_ptr target hash_map in
         let ptr_list = target_ptr :: ptr_list in
-        return (hash_map, List.rev ptr_list, target, target_ptr)
+        ok (hash_map, List.rev ptr_list, target, target_ptr)
     | history_proof :: tail ->
         let ptr = hash_history_proof history_proof in
         aux (Hash.Map.add ptr history_proof hash_map, ptr :: ptr_list) tail
@@ -629,8 +657,8 @@ let produce_inclusion_proof deref inbox_snapshot l =
               result)
 
 let verify_proof (l, n) inbox_snapshot {inclusion_proof; message_proof} =
-  let open Result_syntax in
   assert (Z.(geq n zero)) ;
+  let open Result_syntax in
   let* history_proof = verify_inclusion_proof inclusion_proof inbox_snapshot in
   let level_proof = Skip_list.content history_proof in
   let* payload_opt = verify_payloads_proof message_proof level_proof.hash n in

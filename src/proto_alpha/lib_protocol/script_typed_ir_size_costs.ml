@@ -25,16 +25,10 @@
 
 module S = Saturation_repr
 
-(* [coeff] should be the maximum of
-    [script_typed_ir_size/KINSTR_SIZE_size_coeff]
-    [script_typed_ir_size/NODE_SIZE_ns_per_node_coeff]
-    [script_typed_ir_size/TYPE_SIZE_size_coeff]
-    [script_typed_ir_size/VALUE_SIZE_size_coeff]
-*)
-(* FIXME insert proper gas constants (the gas constant below was fitted on
+(** FIXME insert proper gas constants (the gas constant below was fitted on
     a non-standard machine) *)
 let nodes_cost ~nodes =
-  let open S.Syntax in
+  let open S in
   let nodes = Cache_memory_helpers.Nodes.to_int nodes in
-  let coeff = S.safe_int 45 in
-  coeff * S.safe_int nodes |> Gas_limit_repr.atomic_step_cost
+  let coeff = safe_int 45 in
+  Gas_limit_repr.atomic_step_cost (mul coeff (S.safe_int nodes))

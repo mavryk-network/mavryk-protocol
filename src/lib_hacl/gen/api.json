@@ -407,8 +407,7 @@
   "SHA2": {
     "hash_512": {
       "module": "Hacl_Hash_SHA2",
-      "custom_module_name": true,
-      "name": "Hacl_Streaming_SHA2_hash_512",
+      "name": "hash_512",
       "args": [{
           "name": "input",
           "kind": "input",
@@ -446,8 +445,7 @@
     },
     "hash_384": {
       "module": "Hacl_Hash_SHA2",
-      "custom_module_name": true,
-      "name": "Hacl_Streaming_SHA2_hash_384",
+      "name": "hash_384",
       "args": [{
           "name": "input",
           "kind": "input",
@@ -485,8 +483,7 @@
     },
     "hash_256": {
       "module": "Hacl_Hash_SHA2",
-      "custom_module_name": true,
-      "name": "Hacl_Streaming_SHA2_hash_256",
+      "name": "hash_256",
       "args": [{
           "name": "input",
           "kind": "input",

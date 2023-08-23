@@ -51,30 +51,6 @@ let pp_do_not_edit ~comment_start fmt () =
 
 let sanitize_path x = Filename.(dirname x // Filename.basename x)
 
-(* Remove duplicates from a list.
-   Items that are not removed are kept in their original order.
-   In case of duplicates, the first occurrence is kept.
-   [get_key] returns the comparison key (a string).
-   [merge] is used in case a key is present several times. *)
-let deduplicate_list ?merge get_key list =
-  let add ((list, set) as acc) item =
-    let key = get_key item in
-    if String_set.mem key set then
-      match merge with
-      | None -> acc
-      | Some merge ->
-          (* Go back and merge the previous occurrence. *)
-          let merge_if_equal previous_item =
-            if String.compare (get_key previous_item) key = 0 then
-              merge previous_item item
-            else previous_item
-          in
-          let list = List.map merge_if_equal list in
-          (list, set)
-    else (item :: list, String_set.add key set)
-  in
-  List.fold_left add ([], String_set.empty) list |> fst |> List.rev
-
 (*****************************************************************************)
 (*                                  DUNE                                     *)
 (*****************************************************************************)
@@ -109,11 +85,9 @@ module Dune = struct
 
   type foreign_stubs = {
     language : language;
-    flags : s_expr;
+    flags : string list;
     names : string list;
   }
-
-  let dand s1 s2 = S "and" :: s1 :: s2
 
   (* Test whether an s-expression is empty. *)
   let rec is_empty = function
@@ -152,9 +126,7 @@ module Dune = struct
        This is only used inside lists (i.e. the :: constructor) . *)
     let rec pp_s_expr_items need_space fmt = function
       | E -> ()
-      | S atom ->
-          if need_space then Format.pp_print_space fmt () ;
-          pp_atom fmt atom
+      | S atom -> pp_atom fmt atom
       | G _ | H _ | V _ ->
           (* See below: [invalid_arg] prevents this from happening. *)
           assert false
@@ -224,10 +196,9 @@ module Dune = struct
       ?library_flags ?link_flags ?(inline_tests = false) ?(optional = false)
       ?(preprocess = Stdlib.List.[]) ?(preprocessor_deps = Stdlib.List.[])
       ?(virtual_modules = Stdlib.List.[]) ?default_implementation ?implements
-      ?modules ?modules_without_implementation ?modes
-      ?(foreign_archives = Stdlib.List.[]) ?foreign_stubs ?c_library_flags
-      ?(ctypes = E) ?(private_modules = Stdlib.List.[]) ?js_of_ocaml
-      (names : string list) =
+      ?modules ?modules_without_implementation ?modes ?foreign_stubs
+      ?c_library_flags ?(ctypes = E) ?(private_modules = Stdlib.List.[])
+      ?js_of_ocaml (names : string list) =
     [
       V
         [
@@ -302,14 +273,13 @@ module Dune = struct
           (match private_modules with
           | [] -> E
           | _ -> S "private_modules" :: of_atom_list private_modules);
-          (match foreign_archives with
-          | [] -> E
-          | _ -> S "foreign_archives" :: of_atom_list foreign_archives);
           ( opt foreign_stubs @@ fun x ->
             [
               S "foreign_stubs";
               [S "language"; (match x.language with C -> S "c")];
-              (match x.flags with [] -> E | _ -> [S "flags"; x.flags]);
+              (match x.flags with
+              | [] -> E
+              | _ -> [S "flags"; of_atom_list x.flags]);
               S "names" :: of_atom_list x.names;
             ] );
           (opt c_library_flags @@ fun x -> [S "c_library_flags"; of_atom_list x]);
@@ -404,7 +374,7 @@ module Dune = struct
 
   let ocamlyacc name = [S "ocamlyacc"; S name]
 
-  let pps names = S "pps" :: of_atom_list names
+  let pps ?(args = Stdlib.List.[]) name = S "pps" :: S name :: of_atom_list args
 
   let staged_pps names =
     let s_exprs = Stdlib.List.map (fun n -> S n) names in
@@ -412,31 +382,14 @@ module Dune = struct
 
   let include_ name = [S "include"; S name]
 
-  let target_or_targets_rule ~promote ?deps ?enabled_if s ~action =
+  let targets_rule ?(promote = false) ?deps targets ~action =
     [
       S "rule";
-      s;
+      [S "targets"; G (of_atom_list targets)];
       (if promote then [S "mode"; S "promote"] else E);
       (match deps with None -> E | Some deps -> [S "deps"; G (of_list deps)]);
       [S "action"; action];
-      (opt enabled_if @@ fun enabled_if -> [S "enabled_if"; enabled_if]);
     ]
-
-  let targets_rule ?(promote = false) ?deps ?enabled_if targets ~action =
-    target_or_targets_rule
-      ~promote
-      ?deps
-      ?enabled_if
-      [S "targets"; G (of_atom_list targets)]
-      ~action
-
-  let target_rule ?(promote = false) ?deps ?enabled_if target ~action =
-    target_or_targets_rule
-      ~promote
-      ?deps
-      ?enabled_if
-      [S "target"; S target]
-      ~action
 
   let install ?package files ~section =
     [
@@ -510,15 +463,6 @@ module Version = struct
 
   let and_list = List.fold_left ( && ) True
 
-  let rec to_and_list c =
-    match c with
-    | True | False | Exactly _ | Different_from _ | At_least _ | More_than _
-    | At_most _ | Less_than _ | Not _ ->
-        [c]
-    | And (c1, c2) -> to_and_list c1 @ to_and_list c2
-    | Or (_, _) ->
-        invalid_arg "Version.to_and_list: passed cosntraint is not an and list"
-
   let ( || ) a b =
     match (a, b) with
     | True, _ | _, True -> True
@@ -526,36 +470,12 @@ module Version = struct
     | _ -> Or (a, b)
 
   let or_list = List.fold_left ( || ) False
-
-  let rec version_to_string = function
-    | True -> "true"
-    | False -> "false"
-    | Exactly (V x) -> Format.sprintf "= %s" x
-    | Exactly Version -> "= version"
-    | Different_from (V x) -> Format.sprintf "!= %s" x
-    | Different_from Version -> "!= version"
-    | At_least (V x) -> Format.sprintf ">= %s" x
-    | At_least Version -> ">= version"
-    | More_than (V x) -> Format.sprintf "> %s" x
-    | More_than Version -> "> version"
-    | At_most (V x) -> Format.sprintf "<= %s" x
-    | At_most Version -> "<= version"
-    | Less_than (V x) -> Format.sprintf "< %s" x
-    | Less_than Version -> "< version"
-    | Not constraints ->
-        Format.sprintf "not %s" @@ version_to_string constraints
-    | And (c1, c2) ->
-        Format.sprintf "%s && %s" (version_to_string c1) (version_to_string c2)
-    | Or (c1, c2) ->
-        Format.sprintf "%s || %s" (version_to_string c1) (version_to_string c2)
 end
 
 module Npm = struct
-  type version_or_path = Version of Version.constraints | Path of string
+  type t = {package : string; version : Version.constraints}
 
-  type t = {package : string; version_or_path : version_or_path}
-
-  let make package version_or_path = {package; version_or_path}
+  let make package version = {package; version}
 
   let node_preload t =
     match String.index_opt t.package '/' with
@@ -633,27 +553,6 @@ module Opam = struct
       invalid_arg
         ("Manifest.Opam.pp: synopsis cannot end with a period: " ^ synopsis) ;
     let depopts, depends = List.partition (fun dep -> dep.optional) depends in
-    (* Tries to dedpublicate dependencies constraints *)
-    let deduplicate_constraints_list constraints =
-      try
-        deduplicate_list
-          ~merge:(fun c1 _c2 -> c1)
-          Version.version_to_string
-          (Version.to_and_list constraints)
-        |> Version.and_list
-      with _ -> constraints
-    in
-    let depends =
-      List.map
-        (fun dep ->
-          {
-            package = dep.package;
-            with_test = dep.with_test;
-            optional = dep.optional;
-            version = deduplicate_constraints_list dep.version;
-          })
-        depends
-    in
     let depopts, conflicts =
       (* Opam documentation says this about [depopts]:
          "If you require specific versions, add a [conflicts] field with the ones
@@ -1102,6 +1001,18 @@ module Target = struct
      name for [public_name] stanzas in [dune] and the name in [.opam] files. *)
   type full_name = {internal_name : string; public_name : string}
 
+  type kind =
+    | Public_library of full_name
+    | Private_library of string
+    | Public_executable of full_name Ne_list.t
+    | Private_executable of string Ne_list.t
+    | Test_executable of {
+        names : string Ne_list.t;
+        runtest_alias : string option;
+        locks : string option;
+        enabled_if : Dune.s_expr option;
+      }
+
   type preprocessor_dep = File of string
 
   type release_status = Unreleased | Experimental | Released | Auto_opam
@@ -1114,29 +1025,14 @@ module Target = struct
     | Released -> "Released"
     | Auto_opam -> "Auto_opam"
 
-  type kind =
-    | Public_library of full_name
-    | Private_library of string
-    | Public_executable of full_name Ne_list.t
-    | Private_executable of string Ne_list.t
-    | Test_executable of {
-        names : string Ne_list.t;
-        runtest_alias : string option;
-        locks : string option;
-        enabled_if : Dune.s_expr option;
-        lib_deps : t option list;
-      }
-
-  and internal = {
+  type internal = {
     bisect_ppx : bisect_ppx;
     time_measurement_ppx : bool;
     c_library_flags : string list option;
     conflicts : t list;
     deps : t list;
-    tests_deps : t option list;
     dune : Dune.s_expr;
     flags : Flags.t option;
-    foreign_archives : string list option;
     foreign_stubs : Dune.foreign_stubs option;
     implements : t option;
     inline_tests : bool;
@@ -1176,7 +1072,7 @@ module Target = struct
     with_macos_security_framework : bool;
   }
 
-  and preprocessor = PPS of t list | Staged_PPS of t list
+  and preprocessor = PPS of t * string list | Staged_PPS of t list
 
   and inline_tests = Inline_tests_backend of t
 
@@ -1205,20 +1101,9 @@ module Target = struct
     | External _ -> None
     | Opam_only _ -> None
 
-  let pps = function
+  let pps ?(args = []) = function
     | None -> invalid_arg "Manifest.Target.pps cannot be given no_target"
-    | Some target -> PPS [target]
-
-  let ppses targets =
-    let targets =
-      List.map
-        (function
-          | None ->
-              invalid_arg "Manifest.Target.ppses cannot be given no_target"
-          | Some target -> target)
-        targets
-    in
-    PPS targets
+    | Some target -> PPS (target, args)
 
   let staged_pps targets =
     Staged_PPS (Stdlib.List.concat_map Option.to_list targets)
@@ -1318,7 +1203,6 @@ module Target = struct
     ?deps:t option list ->
     ?dune:Dune.s_expr ->
     ?flags:Flags.t ->
-    ?foreign_archives:string list ->
     ?foreign_stubs:Dune.foreign_stubs ->
     ?ctypes:Ctypes.t ->
     ?implements:t option ->
@@ -1409,10 +1293,10 @@ module Target = struct
 
   let internal make_kind ?all_modules_except ?bisect_ppx ?c_library_flags
       ?(conflicts = []) ?(dep_files = []) ?(dep_globs = [])
-      ?(dep_globs_rec = []) ?(deps = []) ?(dune = Dune.[]) ?flags
-      ?foreign_archives ?foreign_stubs ?ctypes ?implements ?inline_tests
-      ?js_compatible ?js_of_ocaml ?documentation ?(linkall = false) ?modes
-      ?modules ?(modules_without_implementation = []) ?(npm_deps = [])
+      ?(dep_globs_rec = []) ?(deps = []) ?(dune = Dune.[]) ?flags ?foreign_stubs
+      ?ctypes ?implements ?inline_tests ?js_compatible ?js_of_ocaml
+      ?documentation ?(linkall = false) ?modes ?modules
+      ?(modules_without_implementation = []) ?(npm_deps = [])
       ?(ocaml = default_ocaml_dependency) ?opam ?opam_bug_reports ?opam_doc
       ?opam_homepage ?(opam_with_test = Always) ?(optional = false)
       ?(preprocess = []) ?(preprocessor_deps = []) ?(private_modules = [])
@@ -1457,7 +1341,7 @@ module Target = struct
       | Some (Inline_tests_backend target) -> (
           match kind with
           | Public_library _ | Private_library _ ->
-              (PPS [target] :: preprocess, true)
+              (PPS (target, []) :: preprocess, true)
           | Public_executable _ | Private_executable _ | Test_executable _ ->
               invalid_arg
                 "Target.internal: cannot specify `inline_tests` for \
@@ -1645,9 +1529,6 @@ module Target = struct
     let bisect_ppx =
       Option.value bisect_ppx ~default:(if not_a_test then Yes else No)
     in
-    let tests_deps =
-      match kind with Test_executable {lib_deps; _} -> lib_deps | _ -> []
-    in
     let runtest_rules =
       let run_js = js_compatible in
       let run_native =
@@ -1656,8 +1537,7 @@ module Target = struct
         | Some modes -> List.mem Dune.Native modes
       in
       match (kind, opam, dep_files) with
-      | ( Test_executable
-            {names; runtest_alias = Some alias; locks; enabled_if; _},
+      | ( Test_executable {names; runtest_alias = Some alias; locks; enabled_if},
           package,
           _ ) ->
           let runtest_js_rules =
@@ -1694,13 +1574,7 @@ module Target = struct
           in
           runtest_rules @ runtest_js_rules
       | ( Test_executable
-            {
-              names = name, _;
-              runtest_alias = None;
-              locks = _;
-              enabled_if = _;
-              lib_deps = _;
-            },
+            {names = name, _; runtest_alias = None; locks = _; enabled_if = _},
           _,
           _ :: _ ) ->
           invalid_argf
@@ -1723,7 +1597,6 @@ module Target = struct
         deps;
         dune;
         flags;
-        foreign_archives;
         foreign_stubs;
         implements;
         inline_tests;
@@ -1761,7 +1634,6 @@ module Target = struct
         extra_authors;
         ctypes;
         with_macos_security_framework;
-        tests_deps;
       }
 
   let public_lib ?internal_name =
@@ -1821,35 +1693,18 @@ module Target = struct
     | head :: tail -> Private_executable (head, tail)
 
   let test ?(alias = "runtest") ?dep_files ?dep_globs ?dep_globs_rec ?locks
-      ?enabled_if ?(dune_with_test = Always) ?(lib_deps = []) =
+      ?enabled_if =
     (match (alias, enabled_if, locks) with
     | "", Some _, _ | "", _, Some _ ->
         invalid_arg
           "Target.tests: cannot specify enabled_if or locks without alias"
     | _ -> ()) ;
-    (* Ensures that there is an alias in case there is test constraint *)
-    let runtest_alias =
-      if alias = "" then
-        match dune_with_test with Always -> None | _ -> Some "runtest"
-      else Some alias
-    in
-    let enabled_if =
-      match dune_with_test with
-      | Always -> enabled_if
-      | Only_on_64_arch -> (
-          let enabled_if_dune_with_test = Dune.(S "%{arch_sixtyfour}") in
-          match enabled_if with
-          | Some enabled_if ->
-              Some Dune.(dand enabled_if_dune_with_test [enabled_if])
-          | None -> Some enabled_if_dune_with_test)
-      | Never -> Some Dune.(S "false")
-    in
+    let runtest_alias = if alias = "" then None else Some alias in
     internal ?dep_files ?dep_globs ?dep_globs_rec @@ fun test_name ->
-    Test_executable
-      {names = (test_name, []); runtest_alias; locks; enabled_if; lib_deps}
+    Test_executable {names = (test_name, []); runtest_alias; locks; enabled_if}
 
   let tests ?(alias = "runtest") ?dep_files ?dep_globs ?dep_globs_rec ?locks
-      ?enabled_if ?(lib_deps = []) =
+      ?enabled_if =
     (match (alias, enabled_if, locks) with
     | "", Some _, _ | "", _, Some _ ->
         invalid_arg
@@ -1860,8 +1715,7 @@ module Target = struct
     match test_names with
     | [] -> invalid_arg "Target.tests: at least one name must be given"
     | head :: tail ->
-        Test_executable
-          {names = (head, tail); runtest_alias; locks; enabled_if; lib_deps}
+        Test_executable {names = (head, tail); runtest_alias; locks; enabled_if}
 
   let vendored_lib ?(released_on_opam = true) ?main_module
       ?(js_compatible = false) ?(npm_deps = []) name version =
@@ -1960,7 +1814,8 @@ module Target = struct
 
   let all_internal_deps internal =
     let extract_targets = function
-      | PPS targets | Staged_PPS targets -> targets
+      | PPS (target, _) -> [target]
+      | Staged_PPS targets -> targets
     in
     List.concat_map extract_targets internal.preprocess
     @ internal.deps @ internal.opam_only_deps
@@ -1989,9 +1844,7 @@ type tezt_target = {
   modes : Dune.mode list option;
   synopsis : string option;
   opam_with_test : with_test option;
-  dune_with_test : with_test option;
   with_macos_security_framework : bool;
-  flags : Flags.t option;
   dune : Dune.s_expr;
   tezt_local_test_lib : target;
   preprocess : Target.preprocessor list;
@@ -2002,9 +1855,8 @@ let tezt_targets_by_path : tezt_target String_map.t ref = ref String_map.empty
 
 let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
     ?(js_deps = []) ?(dep_globs = []) ?(dep_globs_rec = []) ?(dep_files = [])
-    ?synopsis ?opam_with_test ?dune_with_test
-    ?(with_macos_security_framework = false) ?flags ?(dune = Dune.[])
-    ?(preprocess = []) ?(preprocessor_deps = []) modules =
+    ?synopsis ?opam_with_test ?(with_macos_security_framework = false)
+    ?(dune = Dune.[]) ?(preprocess = []) ?(preprocessor_deps = []) modules =
   if String_map.mem path !tezt_targets_by_path then
     invalid_arg
       ("cannot call Manifest.tezt twice for the same directory: " ^ path) ;
@@ -2022,7 +1874,6 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
         ~deps:lib_deps
         ~modules
         ~linkall:true
-        ?flags
         ~dune
         tezt_local_test_lib_name)
   in
@@ -2040,9 +1891,7 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
       modes;
       synopsis;
       opam_with_test;
-      dune_with_test;
       with_macos_security_framework;
-      flags;
       dune;
       tezt_local_test_lib;
       preprocess;
@@ -2065,13 +1914,10 @@ let register_tezt_targets ~make_tezt_exe =
         modes;
         synopsis;
         opam_with_test;
-        dune_with_test;
         with_macos_security_framework;
-        flags;
         tezt_local_test_lib;
         preprocess;
         preprocessor_deps;
-        lib_deps;
         _;
       } =
     tezt_test_libs := tezt_local_test_lib :: !tezt_test_libs ;
@@ -2097,16 +1943,13 @@ let register_tezt_targets ~make_tezt_exe =
                Tezt worker processes are collected. *)
           ~bisect_ppx:With_sigterm
           ~deps:(tezt_local_test_lib :: deps)
-          ~lib_deps
           ~dep_globs
           ~dep_globs_rec
           ~dep_files
           ~modules:[exe_name]
           ?opam_with_test
-          ?dune_with_test
           ~preprocess
           ~preprocessor_deps
-          ?flags
           ~dune:
             Dune.
               [
@@ -2294,8 +2137,8 @@ let generate_dune (internal : Target.internal) =
             ^ String.concat ", " (hd :: tl))
     in
     let make_preprocessors = function
-      | (PPS targets : Target.preprocessor) ->
-          Dune.pps @@ List.map get_target_name targets
+      | (PPS (target, args) : Target.preprocessor) ->
+          Dune.pps ~args @@ get_target_name target
       | Staged_PPS targets ->
           Dune.staged_pps @@ List.map get_target_name targets
     in
@@ -2424,13 +2267,36 @@ let generate_dune (internal : Target.internal) =
       ?modules
       ?modules_without_implementation
       ?modes:internal.modes
-      ?foreign_archives:internal.foreign_archives
       ?foreign_stubs:internal.foreign_stubs
       ?c_library_flags:internal.c_library_flags
       ?ctypes
       ~private_modules:internal.private_modules
       ?js_of_ocaml:internal.js_of_ocaml
     :: documentation :: create_empty_files :: internal.dune)
+
+(* Remove duplicates from a list.
+   Items that are not removed are kept in their original order.
+   In case of duplicates, the first occurrence is kept.
+   [get_key] returns the comparison key (a string).
+   [merge] is used in case a key is present several times. *)
+let deduplicate_list ?merge get_key list =
+  let add ((list, set) as acc) item =
+    let key = get_key item in
+    if String_set.mem key set then
+      match merge with
+      | None -> acc
+      | Some merge ->
+          (* Go back and merge the previous occurrence. *)
+          let merge_if_equal previous_item =
+            if String.compare (get_key previous_item) key = 0 then
+              merge previous_item item
+            else previous_item
+          in
+          let list = List.map merge_if_equal list in
+          (list, set)
+    else (item :: list, String_set.add key set)
+  in
+  List.fold_left add ([], String_set.empty) list |> fst |> List.rev
 
 (* [Explicitly_unreleased i]: this opam package was explicitly specified not to be released
    in the definition of its internal target [i].
@@ -2446,7 +2312,6 @@ type opam_release_status =
 
 (* [height] is 1 for leaves, 1 + max dependency height for nodes. *)
 type opam_dependency_graph_node = {
-  mutable contain_executables : bool;
   mutable dependencies : String_set.t;
   mutable release_status : opam_release_status;
   mutable propagated : bool;
@@ -2464,13 +2329,6 @@ let compute_opam_release_graph () : opam_dependency_graph_node String_map.t =
     let node_of_internals package_name internals =
       let released_example = ref None in
       let unreleased_example = ref None in
-      let executable internal =
-        match internal.Target.kind with
-        | Public_executable _ -> true
-        | Public_library _ | Private_library _ | Private_executable _
-        | Test_executable _ ->
-            false
-      in
       let add_status internal =
         match internal.Target.release_status with
         | Auto_opam -> ()
@@ -2504,36 +2362,12 @@ let compute_opam_release_graph () : opam_dependency_graph_node String_map.t =
           | Some {opam = Some pkg; _} ->
               if pkg = package_name then acc else String_set.add pkg acc
         in
-        let add_tests_dependency acc (target : Target.t option) =
-          match target with
-          | Some target -> (
-              match Target.get_internal target with
-              | None | Some {opam = None; _} -> acc
-              | Some {opam = Some pkg; _} ->
-                  if pkg = package_name then acc else String_set.add pkg acc)
-          | None -> acc
-        in
         let add_internal_dependency acc internal =
-          let tests_deps =
-            List.fold_left add_tests_dependency acc internal.Target.tests_deps
-          in
-          String_set.union
-            (List.fold_left
-               add_dependency
-               acc
-               (Target.all_internal_deps internal))
-            tests_deps
+          List.fold_left add_dependency acc (Target.all_internal_deps internal)
         in
         List.fold_left add_internal_dependency String_set.empty internals
       in
-      let contain_executables = List.exists executable internals in
-      {
-        dependencies;
-        release_status;
-        propagated = false;
-        height = 0;
-        contain_executables;
-      }
+      {dependencies; release_status; propagated = false; height = 0}
     in
     String_map.mapi node_of_internals !Target.by_opam
   in
@@ -2901,10 +2735,7 @@ let generate_opam ?release for_package (internals : Target.internal list) :
       |> String_set.of_list |> String_set.elements
       |> List.concat_map make_runtest
     in
-    {
-      Opam.command = [S "rm"; S "-r"; S "vendors"; S "contrib"];
-      with_test = Never;
-    }
+    {Opam.command = [S "rm"; S "-r"; S "vendors"]; with_test = Never}
     :: build :: runtests
   in
   let licenses =
@@ -2915,16 +2746,8 @@ let generate_opam ?release for_package (internals : Target.internal list) :
     | [] -> ["MIT"]
     | licenses -> licenses
   in
-  (* Used to remove any duplicates in extra_authors. *)
-  let rec deduplicate known acc = function
-    | [] -> List.rev acc
-    | author :: tail ->
-        if String_set.mem author known then deduplicate known acc tail
-        else deduplicate (String_set.add author known) (author :: acc) tail
-  in
   let extra_authors =
     List.concat_map (fun internal -> internal.Target.extra_authors) internals
-    |> deduplicate String_set.empty []
   in
   {
     maintainer = "contact@tezos.com";
@@ -3117,15 +2940,12 @@ let generate_package_json_file () =
           b
   in
   let pp_dep fmt (npm : Npm.t) =
-    match npm.version_or_path with
-    | Version version ->
-        Format.fprintf
-          fmt
-          {|    "%s": "%a"|}
-          npm.package
-          (pp_version_constraint ~in_and:false)
-          version
-    | Path path -> Format.fprintf fmt {|    "%s": "file:%s"|} npm.package path
+    Format.fprintf
+      fmt
+      {|    "%s": "%a"|}
+      npm.package
+      (pp_version_constraint ~in_and:false)
+      npm.version
   in
   write "package.json" @@ fun fmt ->
   Format.fprintf
@@ -3428,53 +3248,9 @@ let packages_dir, release, remove_extra_files =
   in
   (!packages_dir, release, !remove_extra_files)
 
-let print_opam_job_rules fmt batch_index pipeline_type marge_restriction =
-  Format.fprintf
-    fmt
-    {|@..rules_template__trigger_%s_opam_batch_%d:
-  rules:
-    # Run on scheduled builds.
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
-      when: delayed
-      start_in: %d minutes
-    # Run when there is label on the merge request
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /(?:^|[,])ci--opam(?:$|[,])/'
-      when: delayed
-      start_in: %d minutes
-    # Run on merge requests when opam changes are detected.
-    - if: '%s'
-      changes:
-        - "**/dune"
-        - "**/dune.inc"
-        - "**/*.dune.inc"
-        - "**/dune-project"
-        - "**/dune-workspace"
-        - "**/*.opam"
-        - .gitlab/ci/jobs/packaging/opam_prepare.yml
-        - .gitlab/ci/jobs/packaging/opam_package.yml
-        - manifest/manifest.ml
-        - manifest/main.ml
-        - scripts/opam-prepare-repo.sh
-        - scripts/version.sh
-      when: delayed
-      start_in: %d minutes
-    - when: never # default
-|}
-    pipeline_type
-    batch_index
-    batch_index
-    batch_index
-    marge_restriction
-    batch_index
-
 let generate_opam_ci opam_release_graph =
   (* We only need to test released packages, since those are the only one
      that will need to pass the public Opam CI. *)
-  let contain_executables package =
-    match String_map.find_opt package opam_release_graph with
-    | None -> false
-    | Some node -> node.contain_executables
-  in
   let released_packages, unreleased_packages =
     List.partition
       (fun (_, node) ->
@@ -3513,43 +3289,63 @@ let generate_opam_ci opam_release_graph =
   in
   (* Merge and sort by name for nicer diffs. *)
   let packages =
-    let l =
-      List.map
-        (fun (a, name) ->
-          if contain_executables name then (a, name, true) else (a, name, false))
-        (released_packages @ unreleased_packages)
-    in
-    let by_name (_, a, _) (_, b, _) = String.compare a b in
-    List.sort by_name l
+    let by_name (_, a) (_, b) = String.compare a b in
+    List.sort by_name (released_packages @ unreleased_packages)
   in
   (* Now [packages] is a list of [batch_index, package_name]
      where [batch_index] is 0 for packages that we do not need to test. *)
   write ".gitlab/ci/jobs/packaging/opam_package.yml" @@ fun fmt ->
   pp_do_not_edit ~comment_start:"#" fmt () ;
   (* Output one template per batch. *)
-  let marge_restriction_exec = "$CI_MERGE_REQUEST_ID" in
-  let marge_restriction_all =
-    "$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == \"nomadic-margebot\""
-  in
-  for batch_index = 1 to batch_count do
-    print_opam_job_rules fmt batch_index "exec" marge_restriction_exec ;
-    print_opam_job_rules fmt batch_index "all" marge_restriction_all
+  for i = 1 to batch_count do
+    Format.fprintf
+      fmt
+      {|@..rules_template__trigger_opam_batch_%d:
+  rules:
+    # Run on scheduled builds.
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+      when: delayed
+      start_in: %d minutes
+    # Run when there is label on the merge request
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /(?:^|[,])ci--opam(?:$|[,])/'
+      when: delayed
+      start_in: %d minutes
+    # Run on merge requests when opam changes are detected.
+    - if: '$CI_MERGE_REQUEST_ID'
+      changes:
+        - "**/dune"
+        - "**/dune.inc"
+        - "**/*.dune.inc"
+        - "**/dune-project"
+        - "**/dune-workspace"
+        - "**/*.opam"
+        - .gitlab/ci/opam-ci.yml
+        - .gitlab/ci/packaging.yml
+        - manifest/manifest.ml
+        - scripts/opam-prepare-repo.sh
+        - scripts/version.sh
+      when: delayed
+      start_in: %d minutes
+    - when: never # default
+|}
+      i
+      i
+      i
+      i
   done ;
-
   (* Output one job per released package. *)
-  let output_job (batch_index, package_name, is_executable) =
+  let output_job (batch_index, package_name) =
     if batch_index > 0 then
       Format.fprintf
         fmt
         {|@.opam:%s:
   extends:
     - .opam_template
-    - .rules_template__trigger_%s_opam_batch_%d
+    - .rules_template__trigger_opam_batch_%d
   variables:
     package: %s
 |}
         package_name
-        (if is_executable then "exec" else "all")
         batch_index
         package_name
     else Format.fprintf fmt "@.# Ignoring unreleased package %s.\n" package_name

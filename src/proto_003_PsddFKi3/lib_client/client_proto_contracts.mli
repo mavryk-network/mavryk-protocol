@@ -26,9 +26,9 @@
 open Protocol
 open Alpha_context
 
-module Raw_contract_alias : Client_aliases.Alias with type t = Contract.t
+module RawContractAlias : Client_aliases.Alias with type t = Contract.t
 
-module Contract_alias : sig
+module ContractAlias : sig
   val get_contract :
     #Client_context.wallet -> string -> (string * Contract.t) tzresult Lwt.t
 
@@ -54,7 +54,7 @@ end
 
 val list_contracts :
   #Client_context.wallet ->
-  (string * string * Raw_contract_alias.t) list tzresult Lwt.t
+  (string * string * RawContractAlias.t) list tzresult Lwt.t
 
 val get_manager :
   #Alpha_client_context.rpc_context ->

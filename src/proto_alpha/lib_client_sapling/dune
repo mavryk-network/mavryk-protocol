@@ -6,10 +6,10 @@
  (public_name tezos-client-alpha.sapling)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-crypto
-  octez-libs.tezos-stdlib-unix
+  tezos-base
+  tezos-clic
+  tezos-crypto
+  tezos-stdlib-unix
   tezos-client-base
   tezos-signer-backends
   tezos-client-alpha

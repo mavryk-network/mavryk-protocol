@@ -6,11 +6,11 @@
  (public_name tezos-scoru-wasm-fast)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-tree-encoding
-  octez-libs.tezos-webassembly-interpreter
-  octez-libs.tezos-lazy-containers
-  octez-libs.tezos-scoru-wasm
+  tezos-base
+  tezos-tree-encoding
+  tezos-webassembly-interpreter
+  tezos-lazy-containers
+  tezos-scoru-wasm
   tezos-wasmer)
  (flags
   (:standard)

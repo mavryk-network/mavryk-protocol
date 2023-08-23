@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2022 Nomadic Labs, <contact@nomadic-labs.com>               *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -29,7 +28,7 @@
 open Protocol
 open Benchmarks_proto
 
-module Skip_list = Skip_list.Make (struct
+module Skip_list = Skip_list_repr.Make (struct
   (** The benchmarks must be run again if [basis] is changed. *)
   let basis = 4
 end)
@@ -41,7 +40,7 @@ let fv s = Free_variable.of_namespace (ns s)
 (** Benchmark for the [Skip_list_repr.next] function. It is used for estimating
     the parameters for [Skip_list_cost_model.model_next]. *)
 module Next : Benchmark.S = struct
-  let purpose = Benchmark.Generate_code "skip_list"
+  let generated_code_destination = Some "skip_list"
 
   include Skip_list
 
@@ -56,8 +55,6 @@ module Next : Benchmark.S = struct
   let default_config = {max_items = 10000}
 
   let module_filename = __FILE__
-
-  let group = Benchmark.Standalone
 
   let config_encoding =
     let open Data_encoding in
@@ -101,7 +98,7 @@ end
    [Skip_list_cost_model.model_hash_cell]. The model estimates hashing
    a skip_list cell content and all its back pointers. *)
 module Hash_cell : Benchmark.S = struct
-  let purpose = Benchmark.Generate_code "skip_list"
+  let generated_code_destination = Some "skip_list"
 
   let name = ns "hash_cell"
 
@@ -110,8 +107,6 @@ module Hash_cell : Benchmark.S = struct
   let tags = ["skip_list"]
 
   let module_filename = __FILE__
-
-  let group = Benchmark.Standalone
 
   include Skip_list
   module Hash = Sc_rollup_inbox_repr.Hash

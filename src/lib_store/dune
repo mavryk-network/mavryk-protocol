@@ -6,11 +6,11 @@
  (public_name tezos-store)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-crypto
-  octez-libs.tezos-rpc
+  tezos-base
+  tezos-crypto
+  tezos-rpc
   lwt-watcher
-  octez-libs.tezos-shell-services
+  tezos-shell-services
   tezos-validation
   tezos-context-ops
   tezos-store.shared)

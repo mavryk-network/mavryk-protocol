@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2021 Nomadic Labs. <contact@nomadic-labs.com>               *)
-(* Copyright (c) 2023 Marigold <contact@marigold.dev>                        *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -36,17 +35,16 @@ let const_time_model ~const_name ~name =
     ~conv:(fun () -> ())
     ~model:(Model.unknown_const1 ~name ~const:(fv const_name))
 
-let make_bench ~name ~info ~model ~generator ~make_bench : Benchmark.simple =
-  let module Bench = struct
+let make_bench ~name ~info ~model ~generator ~make_bench :
+    Tezos_benchmark.Benchmark.t =
+  let module Bench : Benchmark.S = struct
     type config = unit
 
     let default_config = ()
 
     let module_filename = __FILE__
 
-    let purpose =
-      Benchmark.Other_purpose
-        "Measuring the cost of bloom filter.  Not used in the protocol."
+    let generated_code_destination = None
 
     let config_encoding = Data_encoding.unit
 
@@ -62,13 +60,11 @@ let make_bench ~name ~info ~model ~generator ~make_bench : Benchmark.simple =
 
     let tags = ["misc"]
 
-    let group = Benchmark.Group "bloomer"
-
-    let create_benchmark ~rng_state _ =
+    let create_benchmarks ~rng_state ~bench_num () =
       let generator () = generator rng_state in
-      make_bench generator
+      List.repeat bench_num (make_bench generator)
 
-    let model = model ~name
+    let models = [("bloomer", model ~name)]
   end in
   (module Bench)
 
@@ -79,10 +75,8 @@ let make_bloomer () =
     ~countdown_bits:4
     ~index_bits:(Bits.numbits (2 * 1024 * 8 * 1024 / 4))
 
-(* This is a feature of the peer-to-peer layer.
-   The benchmark is not used to generate values for the protocol. *)
 let () =
-  Registration.register_simple
+  Registration.register
   @@ make_bench
        ~name:"bloomer_mem"
        ~info:"Benchmarking Bloomer.mem"
@@ -92,21 +86,19 @@ let () =
          let string = "test" in
          Bloomer.add bloomer string ;
          (bloomer, string))
-       ~make_bench:(fun generator ->
+       ~make_bench:(fun generator () ->
          let bloomer, string = generator () in
          let closure () = ignore (Bloomer.mem bloomer string) in
          Generator.Plain {workload = (); closure})
 
-(* This is a feature of the peer-to-peer layer.
-   The benchmark is not used to generate values for the protocol. *)
 let () =
-  Registration.register_simple
+  Registration.register
   @@ make_bench
        ~name:"bloomer_add"
        ~info:"Benchmarking Bloomer.add"
        ~model:(const_time_model ~const_name:"bloomer_add_const")
        ~generator:(fun _rng_state -> make_bloomer ())
-       ~make_bench:(fun generator ->
+       ~make_bench:(fun generator () ->
          let bloomer = generator () in
          let closure () = ignore (Bloomer.add bloomer "test") in
          Generator.Plain {workload = (); closure})

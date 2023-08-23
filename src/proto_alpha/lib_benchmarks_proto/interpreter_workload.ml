@@ -55,8 +55,7 @@ type instruction_name =
   | N_ICons_some
   | N_ICons_none
   | N_IIf_none
-  | N_IOpt_map_none
-  | N_IOpt_map_some
+  | N_IOpt_map
   (* ors *)
   | N_ILeft
   | N_IRight
@@ -149,15 +148,12 @@ type instruction_name =
   | N_INot_int
   (* control *)
   | N_IIf
-  | N_ILoop_in
-  | N_ILoop_out
-  | N_ILoop_left_in
-  | N_ILoop_left_out
+  | N_ILoop
+  | N_ILoop_left
   | N_IDip
   | N_IExec
   | N_IApply
-  | N_ILambda_lam
-  | N_ILambda_lamrec
+  | N_ILambda
   | N_IFailwith
   (* comparison, warning: ad-hoc polymorphic instruction *)
   | N_ICompare
@@ -252,8 +248,7 @@ type continuation_name =
   | N_KUndip
   | N_KLoop_in
   | N_KLoop_in_left
-  | N_KIter_empty
-  | N_KIter_nonempty
+  | N_KIter
   | N_KList_enter_body
   | N_KList_exit_body
   | N_KMap_enter_body
@@ -281,8 +276,7 @@ let string_of_instruction_name : instruction_name -> string =
   | N_ICons_some -> "N_ICons_some"
   | N_ICons_none -> "N_ICons_none"
   | N_IIf_none -> "N_IIf_none"
-  | N_IOpt_map_none -> "N_IOpt_map_none"
-  | N_IOpt_map_some -> "N_IOpt_map_some"
+  | N_IOpt_map -> "N_IOpt_map"
   | N_ILeft -> "N_ILeft"
   | N_IRight -> "N_IRight"
   | N_IIf_left -> "N_IIf_left"
@@ -361,15 +355,12 @@ let string_of_instruction_name : instruction_name -> string =
   | N_IXor_nat -> "N_IXor_nat"
   | N_INot_int -> "N_INot_int"
   | N_IIf -> "N_IIf"
-  | N_ILoop_in -> "N_ILoop_in"
-  | N_ILoop_out -> "N_ILoop_out"
-  | N_ILoop_left_in -> "N_ILoop_left_in"
-  | N_ILoop_left_out -> "N_ILoop_left_out"
+  | N_ILoop -> "N_ILoop"
+  | N_ILoop_left -> "N_ILoop_left"
   | N_IDip -> "N_IDip"
   | N_IExec -> "N_IExec"
   | N_IApply -> "N_IApply"
-  | N_ILambda_lam -> "N_ILambda_lam"
-  | N_ILambda_lamrec -> "N_ILambda_lamrec"
+  | N_ILambda -> "N_ILambda"
   | N_IFailwith -> "N_IFailwith"
   | N_ICompare -> "N_ICompare"
   | N_IEq -> "N_IEq"
@@ -457,8 +448,7 @@ let string_of_continuation_name : continuation_name -> string =
   | N_KUndip -> "N_KUndip"
   | N_KLoop_in -> "N_KLoop_in"
   | N_KLoop_in_left -> "N_KLoop_in_left"
-  | N_KIter_empty -> "N_KIter_empty"
-  | N_KIter_nonempty -> "N_KIter_nonempty"
+  | N_KIter -> "N_KIter"
   | N_KList_enter_body -> "N_KList_enter_body"
   | N_KList_exit_body -> "N_KList_exit_body"
   | N_KMap_enter_body -> "N_KMap_enter_body"
@@ -506,7 +496,6 @@ let cont_sized_step cont_name args = {name = Cont_name cont_name; args}
 
 (* ------------------------------------------------------------------------- *)
 
-(* Changing the ordering breaks the workload file compatibility *)
 let all_instructions =
   [
     N_IDrop;
@@ -519,8 +508,7 @@ let all_instructions =
     N_ICons_some;
     N_ICons_none;
     N_IIf_none;
-    N_IOpt_map_none;
-    N_IOpt_map_some;
+    N_IOpt_map;
     N_ILeft;
     N_IRight;
     N_IIf_left;
@@ -593,15 +581,12 @@ let all_instructions =
     N_IXor_nat;
     N_INot_int;
     N_IIf;
-    N_ILoop_in;
-    N_ILoop_out;
-    N_ILoop_left_in;
-    N_ILoop_left_out;
+    N_ILoop;
+    N_ILoop_left;
     N_IDip;
     N_IExec;
     N_IApply;
-    N_ILambda_lam;
-    N_ILambda_lamrec;
+    N_ILambda;
     N_IFailwith;
     N_ICompare;
     N_IEq;
@@ -686,7 +671,6 @@ let all_instructions =
     N_IUnit;
   ]
 
-(* Changing the ordering breaks the workload file compatibility *)
 let all_continuations =
   [
     N_KNil;
@@ -697,8 +681,7 @@ let all_continuations =
     N_KUndip;
     N_KLoop_in;
     N_KLoop_in_left;
-    N_KIter_empty;
-    N_KIter_nonempty;
+    N_KIter;
     N_KList_enter_body;
     N_KList_exit_body;
     N_KMap_enter_body;
@@ -788,9 +771,7 @@ module Instructions = struct
 
   let if_none = ir_sized_step N_IIf_none nullary
 
-  let opt_map ~is_some =
-    if is_some then ir_sized_step N_IOpt_map_some nullary
-    else ir_sized_step N_IOpt_map_none nullary
+  let opt_map = ir_sized_step N_IOpt_map nullary
 
   let left = ir_sized_step N_ILeft nullary
 
@@ -989,13 +970,9 @@ module Instructions = struct
 
   let if_ = ir_sized_step N_IIf nullary
 
-  let loop bool =
-    if bool then ir_sized_step N_ILoop_in nullary
-    else ir_sized_step N_ILoop_out nullary
+  let loop = ir_sized_step N_ILoop nullary
 
-  let loop_left or_ =
-    if or_ then ir_sized_step N_ILoop_left_in nullary
-    else ir_sized_step N_ILoop_left_out nullary
+  let loop_left = ir_sized_step N_ILoop_left nullary
 
   let dip = ir_sized_step N_IDip nullary
 
@@ -1004,9 +981,7 @@ module Instructions = struct
   let apply ~(rec_flag : bool) =
     ir_sized_step N_IApply (unary "rec" (if rec_flag then 1 else 0))
 
-  let lambda ~(rec_flag : bool) =
-    if rec_flag then ir_sized_step N_ILambda_lamrec nullary
-    else ir_sized_step N_ILambda_lam nullary
+  let lambda = ir_sized_step N_ILambda nullary
 
   let failwith_ = ir_sized_step N_IFailwith nullary
 
@@ -1211,9 +1186,7 @@ module Control = struct
 
   let loop_in_left = cont_sized_step N_KLoop_in_left nullary
 
-  let iter size =
-    if size = 0 then cont_sized_step N_KIter_empty nullary
-    else cont_sized_step N_KIter_nonempty nullary
+  let iter size = cont_sized_step N_KIter (unary "size" size)
 
   let list_enter_body xs_size ys_size =
     cont_sized_step
@@ -1263,9 +1236,7 @@ let extract_ir_sized_step :
   | ICons_some (_, _), _ -> Instructions.cons_some
   | ICons_none (_, _, _), _ -> Instructions.cons_none
   | IIf_none _, _ -> Instructions.if_none
-  | IOpt_map _, (opt, _) ->
-      let is_some = match opt with None -> false | Some _ -> true in
-      Instructions.opt_map ~is_some
+  | IOpt_map _, _ -> Instructions.opt_map
   | ICons_left (_, _, _), _ -> Instructions.left
   | ICons_right (_, _, _), _ -> Instructions.right
   | IIf_left _, _ -> Instructions.if_left
@@ -1411,18 +1382,15 @@ let extract_ir_sized_step :
       Instructions.xor_nat (Size.integer x) (Size.integer y)
   | INot_int (_, _), (x, _) -> Instructions.not_int (Size.integer x)
   | IIf _, _ -> Instructions.if_
-  | ILoop (_, _, _), (b, _) -> Instructions.loop b
-  | ILoop_left (_, _, _), (or_, _) ->
-      let or_ = match or_ with L _ -> true | R _ -> false in
-      Instructions.loop_left or_
+  | ILoop (_, _, _), _ -> Instructions.loop
+  | ILoop_left (_, _, _), _ -> Instructions.loop_left
   | IDip (_, _, _, _), _ -> Instructions.dip
   | IExec (_, _, _), _ -> Instructions.exec
-  | IApply (_, _, _), (_, (l, _)) ->
-      let rec_flag = match l with Lam _ -> false | LamRec _ -> true in
-      Instructions.apply ~rec_flag
-  | ILambda (_, l, _), _ ->
-      let rec_flag = match l with Lam _ -> false | LamRec _ -> true in
-      Instructions.lambda ~rec_flag
+  | IApply (_, _, _), (_, (l, _)) -> (
+      match l with
+      | Lam _ -> Instructions.apply ~rec_flag:false
+      | LamRec _ -> Instructions.apply ~rec_flag:true)
+  | ILambda (_, _, _), _ -> Instructions.lambda
   | IFailwith (_, _), _ -> Instructions.failwith_
   | ICompare (_, cmp_ty, _), (a, (b, _)) ->
       extract_compare_sized_step cmp_ty a b

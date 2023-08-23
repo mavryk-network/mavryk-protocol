@@ -226,7 +226,7 @@ let monitor_operations (cctxt : #Protocol_client_context.full) =
   Alpha_block_services.Mempool.monitor_operations
     cctxt
     ~chain:cctxt#chain
-    ~validated:true
+    ~applied:true
     ~branch_delayed:true
     ~branch_refused:false
     ~refused:false
@@ -581,7 +581,7 @@ let retrieve_pending_operations cctxt state =
   Alpha_block_services.Mempool.pending_operations
     cctxt
     ~chain:cctxt#chain
-    ~validated:true
+    ~applied:true
     ~branch_delayed:true
     ~branch_refused:false
     ~refused:false
@@ -590,7 +590,7 @@ let retrieve_pending_operations cctxt state =
   >>=? fun pending_mempool ->
   state.operation_pool <-
     Operation_pool.add_operations state.operation_pool
-    @@ List.rev_map snd pending_mempool.validated ;
+    @@ List.rev_map snd pending_mempool.applied ;
   state.operation_pool <-
     Operation_pool.add_operations
       state.operation_pool

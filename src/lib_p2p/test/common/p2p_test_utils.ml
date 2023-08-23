@@ -135,19 +135,23 @@ let conn_meta_config : unit P2p_params.conn_meta_config =
 let glob_port = ref None
 
 let listen ?port addr =
-  let open Lwt_result_syntax in
+  let open Lwt_syntax in
+  let uaddr = Ipaddr_unix.V6.to_inet_addr addr in
+  let main_socket = Lwt_unix.(socket ~cloexec:true PF_INET6 SOCK_STREAM 0) in
+  Lwt_unix.(setsockopt main_socket SO_REUSEADDR true) ;
   (* If [port] is [0], a fresh port is used. *)
   let port_or_gen = Option.value port ~default:0 in
-  let* sock = P2p_fd.create_listening_socket ~backlog:1 ~addr port_or_gen in
+  let* () = Lwt_unix.bind main_socket (ADDR_INET (uaddr, port_or_gen)) in
+  Lwt_unix.listen main_socket 1 ;
   let port =
     match port with
     | Some port -> port
     | None -> (
         (* if [port] was [0], we get the port generated. *)
-        let addr = Lwt_unix.getsockname sock in
+        let addr = Lwt_unix.getsockname main_socket in
         match addr with ADDR_INET (_, port) -> port | _ -> assert false)
   in
-  return (sock, port)
+  Lwt.return (main_socket, port)
 
 let rec sync_nodes nodes =
   let open Lwt_result_syntax in
@@ -175,7 +179,7 @@ let run_nodes ~addr ?port client server =
         glob_port := Some (p + 1) ;
         Some p
   in
-  let* main_socket, p = listen ?port:p addr in
+  let*! main_socket, p = listen ?port:p addr in
   let* server_node =
     Process.detach ~prefix:"server: " (fun channel ->
         let sched = P2p_io_scheduler.create ~read_buffer_size:(1 lsl 12) () in
@@ -253,7 +257,7 @@ let accept ?(id = id1) ?(proof_of_work_target = proof_of_work_target) sched
 
 let raw_connect sched addr port =
   let open Lwt_result_syntax in
-  let*! fd = P2p_fd.socket () in
+  let*! fd = P2p_fd.socket PF_INET6 SOCK_STREAM 0 in
   let uaddr = Lwt_unix.ADDR_INET (Ipaddr_unix.V6.to_inet_addr addr, port) in
   let* () = P2p_fd.connect fd uaddr in
   let fd = P2p_io_scheduler.register sched fd in

@@ -34,6 +34,10 @@
                   has its own pool and is given a function to be executed.
 *)
 
+include Internal_event.Legacy_logging.Make (struct
+  let name = "test.p2p.connection-pool"
+end)
+
 type error += Connect | Write | Read
 
 (** Detaches [!client] nodes. Each of them will send a [Ping] to each
@@ -42,7 +46,7 @@ type error += Connect | Write | Read
 module Simple = struct
   let rec connect ~timeout connect_handler pool point =
     let open Lwt_syntax in
-    Tezt.Log.debug "Connect to %a" P2p_point.Id.pp point ;
+    let* () = lwt_debug "Connect to %a" P2p_point.Id.pp point in
     let* r = P2p_connect_handler.connect connect_handler point ~timeout in
     match r with
     | Error (Tezos_p2p_services.P2p_errors.Connected :: _) -> (
@@ -56,8 +60,8 @@ module Simple = struct
           | Tezos_p2p_services.P2p_errors.Rejected_by_nack _ | Canceled
           | Timeout | Tezos_p2p_services.P2p_errors.Rejected _ ) as head_err)
         :: _) ->
-        let () =
-          Tezt.Log.debug
+        let* () =
+          lwt_debug
             "Connection to %a failed (%a)@."
             P2p_point.Id.pp
             point
@@ -122,16 +126,16 @@ module Simple = struct
         node.pool
         node.points
     in
-    Tezt.Log.debug "Bootstrap OK@." ;
+    let*! () = lwt_debug "Bootstrap OK@." in
     let* () = Node.sync node in
     let* () = write_all conns Node.Ping in
-    Tezt.Log.debug "Sent all messages.@." ;
+    let*! () = lwt_debug "Sent all messages.@." in
     let* () = Node.sync node in
     let* () = read_all conns in
-    Tezt.Log.debug "Read all messages.@." ;
+    let*! () = lwt_debug "Read all messages.@." in
     let* () = Node.sync node in
     let*! () = close_all conns in
-    Tezt.Log.debug "All connections successfully closed.@." ;
+    let*! () = lwt_debug "All connections successfully closed.@." in
     return_unit
 
   let run points = Node.detach_nodes (fun _ -> node) points
@@ -158,8 +162,11 @@ module Random_connections = struct
     let* _ = trace Read @@ P2p_conn.read conn in
     let*! () = Lwt_unix.sleep (0.2 +. Random.float 1.0) in
     let*! () = P2p_conn.disconnect conn in
-    decr rem ;
-    if !rem mod total = 0 then Tezt.Log.debug "Remaining: %d.@." (!rem / total) ;
+    let*! () =
+      decr rem ;
+      if !rem mod total = 0 then lwt_debug "Remaining: %d.@." (!rem / total)
+      else Lwt.return_unit
+    in
     if n > 1 then connect_random connect_handler pool total rem point (pred n)
     else return_unit
 
@@ -172,11 +179,11 @@ module Random_connections = struct
 
   let node repeat (node : Node.t) =
     let open Lwt_result_syntax in
-    Tezt.Log.debug "Begin random connections.@." ;
+    let*! () = lwt_debug "Begin random connections.@." in
     let* () =
       connect_random_all node.connect_handler node.pool node.points repeat
     in
-    Tezt.Log.debug "Random connections OK.@." ;
+    let*! () = lwt_debug "Random connections OK.@." in
     return_unit
 
   let run points repeat = Node.detach_nodes (fun _ -> node repeat) points
@@ -196,7 +203,7 @@ module Garbled = struct
         true
     | Ok _ -> false
     | Error err ->
-        Tezt.Log.info "Unexpected error: %a@." pp_print_trace err ;
+        debug "Unexpected error: %a@." pp_print_trace err ;
         false
 
   let write_bad_all conns =
@@ -249,13 +256,15 @@ module Overcrowded = struct
 
   let rec connect ?iter_count ~timeout connect_handler pool point =
     let open Lwt_syntax in
-    Tezt.Log.debug
-      "Connect%a to %a@."
-      (fun ppf iter_count ->
-        Option.iter (Format.fprintf ppf " to peer %d") iter_count)
-      iter_count
-      P2p_point.Id.pp
-      point ;
+    let* () =
+      lwt_debug
+        "Connect%a to %a@."
+        (fun ppf iter_count ->
+          Option.iter (Format.fprintf ppf " to peer %d") iter_count)
+        iter_count
+        P2p_point.Id.pp
+        point
+    in
     let* r = P2p_connect_handler.connect connect_handler point ~timeout in
     match r with
     | Error [Tezos_p2p_services.P2p_errors.Connected] -> (
@@ -269,33 +278,35 @@ module Overcrowded = struct
            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection | Canceled
            | Timeout | Tezos_p2p_services.P2p_errors.Rejected _ ) as err);
         ] ->
-        Tezt.Log.debug
-          "Connection to%a %a failed (%a)@."
-          (fun ppf iter_count ->
-            Option.iter (Format.fprintf ppf " peer %d") iter_count)
-          iter_count
-          P2p_point.Id.pp
-          point
-          (fun ppf err ->
-            match err with
-            | Tezos_p2p_services.P2p_errors.Connection_refused ->
-                Format.fprintf ppf "connection refused"
-            | Tezos_p2p_services.P2p_errors.Pending_connection ->
-                Format.fprintf ppf "pending connection"
-            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
-                Format.fprintf ppf "rejected"
-            | Canceled -> Format.fprintf ppf "canceled"
-            | Timeout -> Format.fprintf ppf "timeout"
-            | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
-                Format.fprintf
-                  ppf
-                  "rejected (%a) motive:%a"
-                  P2p_peer.Id.pp
-                  peer
-                  P2p_rejection.pp
-                  motive
-            | _ -> assert false)
-          err ;
+        let* () =
+          lwt_debug
+            "Connection to%a %a failed (%a)@."
+            (fun ppf iter_count ->
+              Option.iter (Format.fprintf ppf " peer %d") iter_count)
+            iter_count
+            P2p_point.Id.pp
+            point
+            (fun ppf err ->
+              match err with
+              | Tezos_p2p_services.P2p_errors.Connection_refused ->
+                  Format.fprintf ppf "connection refused"
+              | Tezos_p2p_services.P2p_errors.Pending_connection ->
+                  Format.fprintf ppf "pending connection"
+              | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
+                  Format.fprintf ppf "rejected"
+              | Canceled -> Format.fprintf ppf "canceled"
+              | Timeout -> Format.fprintf ppf "timeout"
+              | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
+                  Format.fprintf
+                    ppf
+                    "rejected (%a) motive:%a"
+                    P2p_peer.Id.pp
+                    peer
+                    P2p_rejection.pp
+                    motive
+              | _ -> assert false)
+            err
+        in
         let* () = Lwt_unix.sleep (0.5 +. Random.float 2.) in
         connect ~timeout connect_handler pool point
     | (Ok _ | Error _) as res -> Lwt.return res
@@ -305,7 +316,7 @@ module Overcrowded = struct
   *)
   let client_connect connect_handler pool legacy trusted_points all_points =
     let open Lwt_result_syntax in
-    Tezt.Log.debug
+    debug
       "@[<v 2>client connects to %a in the universe @[%a@]@]@."
       P2p_point.Id.pp_list
       trusted_points
@@ -329,11 +340,13 @@ module Overcrowded = struct
     in
     match r with
     | Ok conn ->
-        Tezt.Log.debug
-          "Not good: connection accepted while it should be rejected (local: \
-           %d, remote: %d).@."
-          port
-          (snd target) ;
+        let*! () =
+          lwt_debug
+            "Not good: connection accepted while it should be rejected (local: \
+             %d, remote: %d).@."
+            port
+            (snd target)
+        in
         let*! () = P2p_conn.disconnect conn in
         Error_monad.failwith
           "Overcrowded error: connection should be rejected (local: %d, \
@@ -345,32 +358,38 @@ module Overcrowded = struct
           Tezos_p2p_services.P2p_errors.Rejected_by_nack
             {alternative_points = None; _};
         ] as err ->
-        if legacy then (
-          Tezt.Log.debug
-            "Good: client is rejected without point list (local: %d, remote: \
-             %d)@."
-            port
-            (snd target) ;
-          return_unit)
-        else (
-          Tezt.Log.debug
-            "Not good: client is rejected without point list (local: %d, \
-             remote: %d)@."
-            port
-            (snd target) ;
-          Lwt.return err)
+        if legacy then
+          let*! () =
+            lwt_debug
+              "Good: client is rejected without point list (local: %d, remote: \
+               %d)@."
+              port
+              (snd target)
+          in
+          return_unit
+        else
+          let*! () =
+            lwt_debug
+              "Not good: client is rejected without point list (local: %d, \
+               remote: %d)@."
+              port
+              (snd target)
+          in
+          Lwt.return err
     | Error
         [
           Tezos_p2p_services.P2p_errors.Rejected_by_nack
             {alternative_points = Some alternative_points; _};
         ] ->
-        Tezt.Log.debug
-          "Good: client is rejected with point list (local: %d, remote: %d) \
-           @[%a@]@."
-          port
-          (snd target)
-          P2p_point.Id.pp_list
-          alternative_points ;
+        let*! () =
+          lwt_debug
+            "Good: client is rejected with point list (local: %d, remote: %d) \
+             @[%a@]@."
+            port
+            (snd target)
+            P2p_point.Id.pp_list
+            alternative_points
+        in
         return_unit
     | Error _ as res -> Lwt.return res
 
@@ -393,11 +412,11 @@ module Overcrowded = struct
     let unknowns, _known = client_knowledge pool all_points in
     let advert_succeed = unknowns = [] in
     if legacy || advert_succeed then
-      Tezt.Log.debug
+      debug
         "Good: Advertisement%s worked as intended.@."
         (if legacy then " legacy" else "")
     else
-      Tezt.Log.debug
+      debug
         "@[<v 2>Not Good: advertisement failure. legacy %b. unknowns :  @[%a@]\n\
          \t knowns : @[%a@].@."
         legacy
@@ -412,7 +431,7 @@ module Overcrowded = struct
   let client legacy (node : Node.t) =
     let open Lwt_result_syntax in
     if Compare.List_length_with.(node.points > 50) then (
-      Tezt.Log.error
+      log_error
         "This test only works for less clients than the advertisement list \
          length (50)@." ;
       assert false) ;
@@ -441,7 +460,7 @@ module Overcrowded = struct
     let* () = client_check node.pool node.points legacy in
     let* () = Node.sync node in
     (* sync 4 *)
-    Tezt.Log.debug "client closing.@." ;
+    let*! () = lwt_debug "client closing.@." in
     return_unit
 
   (** Code of the target that should be overcrowded by all the clients. *)
@@ -461,15 +480,15 @@ module Overcrowded = struct
     in
     let unknowns, knowns = unknowns_knowns () in
     let log, stopper = Lwt_watcher.create_stream node.watcher in
-    Tezt.Log.debug "trusted : %a" P2p_point.Id.pp_list node.trusted_points ;
-    Tezt.Log.debug "unknown : %a" P2p_point.Id.pp_list unknowns ;
-    Tezt.Log.debug "known : %a" P2p_point.Id.pp_list knowns ;
-    let _pool_log =
-      Lwt_stream.iter
-        (Tezt.Log.debug "p2p event %a" P2p_connection.P2p_event.pp)
-        log
+    let*! () =
+      lwt_debug "trusted : %a" P2p_point.Id.pp_list node.trusted_points
     in
-    Tezt.Log.debug "Target waiting@." ;
+    let*! () = lwt_debug "unknown : %a" P2p_point.Id.pp_list unknowns in
+    let*! () = lwt_debug "known : %a" P2p_point.Id.pp_list knowns in
+    let _pool_log =
+      Lwt_stream.iter (debug "p2p event %a" P2p_connection.P2p_event.pp) log
+    in
+    let*! () = lwt_debug "Target waiting@." in
     let* () = Node.sync node in
     (* sync 2 *)
     let* () = Node.sync node in
@@ -477,7 +496,7 @@ module Overcrowded = struct
     let* () = Node.sync node in
     (* sync 4 *)
     Lwt_watcher.shutdown stopper ;
-    Tezt.Log.debug "Target closing.@." ;
+    let*! () = lwt_debug "Target closing.@." in
     return_unit
 
   let node i = if i = 0 then target else client false
@@ -549,13 +568,15 @@ end
 module No_common_network = struct
   let rec connect ?iter_count ~timeout connect_handler pool point =
     let open Lwt_syntax in
-    Tezt.Log.debug
-      "Connect%a to @[%a@]@."
-      (fun ppf iter_count ->
-        Option.iter (Format.fprintf ppf " to peer %d") iter_count)
-      iter_count
-      P2p_point.Id.pp
-      point ;
+    let* () =
+      lwt_debug
+        "Connect%a to @[%a@]@."
+        (fun ppf iter_count ->
+          Option.iter (Format.fprintf ppf " to peer %d") iter_count)
+        iter_count
+        P2p_point.Id.pp
+        point
+    in
     let* r = P2p_connect_handler.connect connect_handler point ~timeout in
     match r with
     | Error [Tezos_p2p_services.P2p_errors.Connected] -> (
@@ -569,33 +590,35 @@ module No_common_network = struct
            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection | Canceled
            | Timeout | Tezos_p2p_services.P2p_errors.Rejected _ ) as err);
         ] ->
-        Tezt.Log.debug
-          "Connection to%a %a failed (%a)@."
-          (fun ppf iter_count ->
-            Option.iter (Format.fprintf ppf " peer %d") iter_count)
-          iter_count
-          P2p_point.Id.pp
-          point
-          (fun ppf err ->
-            match err with
-            | Tezos_p2p_services.P2p_errors.Connection_refused ->
-                Format.fprintf ppf "connection refused"
-            | Tezos_p2p_services.P2p_errors.Pending_connection ->
-                Format.fprintf ppf "pending connection"
-            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
-                Format.fprintf ppf "rejected"
-            | Canceled -> Format.fprintf ppf "canceled"
-            | Timeout -> Format.fprintf ppf "timeout"
-            | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
-                Format.fprintf
-                  ppf
-                  "rejected (%a) motive:%a"
-                  P2p_peer.Id.pp
-                  peer
-                  P2p_rejection.pp
-                  motive
-            | _ -> assert false)
-          err ;
+        let* () =
+          lwt_debug
+            "Connection to%a %a failed (%a)@."
+            (fun ppf iter_count ->
+              Option.iter (Format.fprintf ppf " peer %d") iter_count)
+            iter_count
+            P2p_point.Id.pp
+            point
+            (fun ppf err ->
+              match err with
+              | Tezos_p2p_services.P2p_errors.Connection_refused ->
+                  Format.fprintf ppf "connection refused"
+              | Tezos_p2p_services.P2p_errors.Pending_connection ->
+                  Format.fprintf ppf "pending connection"
+              | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
+                  Format.fprintf ppf "rejected"
+              | Canceled -> Format.fprintf ppf "canceled"
+              | Timeout -> Format.fprintf ppf "timeout"
+              | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
+                  Format.fprintf
+                    ppf
+                    "rejected (%a) motive:%a"
+                    P2p_peer.Id.pp
+                    peer
+                    P2p_rejection.pp
+                    motive
+              | _ -> assert false)
+            err
+        in
         let* () = Lwt_unix.sleep (0.5 +. Random.float 2.) in
         connect ~timeout connect_handler pool point
     | (Ok _ | Error _) as res -> Lwt.return res
@@ -605,7 +628,7 @@ module No_common_network = struct
   *)
   let client_connect connect_handler pool trusted_points all_points =
     let open Lwt_result_syntax in
-    Tezt.Log.debug
+    debug
       "@[<v 2>client connects to %a in the universe @[%a@]@]@."
       P2p_point.Id.pp_list
       trusted_points
@@ -621,18 +644,22 @@ module No_common_network = struct
     in
     match r with
     | Ok conn ->
-        Tezt.Log.debug
-          "Not good: connection accepted while it should be rejected.@." ;
+        let*! () =
+          lwt_debug
+            "Not good: connection accepted while it should be rejected.@."
+        in
         let*! () = P2p_conn.disconnect conn in
         return_unit
     | Error
         [Tezos_p2p_services.P2p_errors.Rejected_no_common_protocol {announced}]
       ->
-        Tezt.Log.debug
-          "Good: Connection cannot be established,no common network with \
-           @[%a@].@."
-          Network_version.pp
-          announced ;
+        let*! () =
+          lwt_debug
+            "Good: Connection cannot be established,no common network with \
+             @[%a@].@."
+            Network_version.pp
+            announced
+        in
         return_unit
     | Error _ as res -> Lwt.return res
 
@@ -647,16 +674,16 @@ module No_common_network = struct
     in
     let* () = Node.sync node in
     (* sync 2 *)
-    Tezt.Log.debug "client closing.@." ;
+    let*! () = lwt_debug "client closing.@." in
     return_unit
 
   (** Code of the target that should be overcrowded by all the clients. *)
   let target (node : Node.t) =
     let open Lwt_result_syntax in
-    Tezt.Log.debug "Target waiting.@." ;
+    let*! () = lwt_debug "Target waiting.@." in
     let* () = Node.sync node in
     (* sync 2 *)
-    Tezt.Log.debug "Target closing.@." ;
+    let*! () = lwt_debug "Target closing.@." in
     return_unit
 
   let node i = if i = 0 then target else client
@@ -693,14 +720,11 @@ let () = Random.self_init ()
 
 let init_logs =
   let log_cfg =
-    Tezos_base_unix.Logs_simple_config.create_cfg
+    Lwt_log_sink_unix.create_cfg
       ~rules:"test.p2p.connection-pool -> info; p2p.connection-pool -> info"
       ()
   in
-  let config =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
-  in
-  lazy (Tezos_base_unix.Internal_event_unix.init ~config ())
+  lazy (Tezos_base_unix.Internal_event_unix.init ~log_cfg ())
 
 let wrap ?(clients = 10) n f =
   let addr = Node.default_ipv6_addr in

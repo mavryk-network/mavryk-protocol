@@ -24,22 +24,18 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type staker = Stake_repr.staker =
-  | Single of Contract_repr.t * Signature.public_key_hash
-  | Shared of Signature.public_key_hash
-
 type balance =
   | Contract of Contract_repr.t
   | Block_fees
-  | Deposits of staker
-  | Unstaked_deposits of staker * Cycle_repr.t
+  | Deposits of Signature.Public_key_hash.t
   | Nonce_revelation_rewards
-  | Attesting_rewards
+  | Double_signing_evidence_rewards
+  | Endorsing_rewards
   | Baking_rewards
   | Baking_bonuses
   | Storage_fees
   | Double_signing_punishments
-  | Lost_attesting_rewards of Signature.Public_key_hash.t * bool * bool
+  | Lost_endorsing_rewards of Signature.Public_key_hash.t * bool * bool
   | Liquidity_baking_subsidies
   | Burned
   | Commitments of Blinded_public_key_hash.t
@@ -48,25 +44,14 @@ type balance =
   | Initial_commitments
   | Minted
   | Frozen_bonds of Contract_repr.t * Bond_id_repr.t
+  | Tx_rollup_rejection_punishments
+  | Tx_rollup_rejection_rewards
   | Sc_rollup_refutation_punishments
   | Sc_rollup_refutation_rewards
 
-let balance_encoding ~use_legacy_attestation_name =
+let balance_encoding =
   let open Data_encoding in
-  let case = function
-    | Tag tag ->
-        (* The tag was used by old variant. It have been removed in
-           protocol proposal O, it can be unblocked in the future. *)
-        let tx_rollup_reserved_tag = [22; 23] in
-        assert (
-          not @@ List.exists (Compare.Int.equal tag) tx_rollup_reserved_tag) ;
-        case (Tag tag)
-    | _ as c -> case c
-  in
-  def
-    (if use_legacy_attestation_name then
-     "operation_metadata_with_legacy_attestation_name.alpha.balance"
-    else "operation_metadata.alpha.balance")
+  def "operation_metadata.alpha.balance"
   @@ union
        [
          case
@@ -91,9 +76,9 @@ let balance_encoding ~use_legacy_attestation_name =
            (obj3
               (req "kind" (constant "freezer"))
               (req "category" (constant "deposits"))
-              (req "staker" Stake_repr.staker_encoding))
-           (function Deposits staker -> Some ((), (), staker) | _ -> None)
-           (fun ((), (), staker) -> Deposits staker);
+              (req "delegate" Signature.Public_key_hash.encoding))
+           (function Deposits d -> Some ((), (), d) | _ -> None)
+           (fun ((), (), d) -> Deposits d);
          case
            (Tag 5)
            ~title:"Nonce_revelation_rewards"
@@ -102,22 +87,23 @@ let balance_encoding ~use_legacy_attestation_name =
               (req "category" (constant "nonce revelation rewards")))
            (function Nonce_revelation_rewards -> Some ((), ()) | _ -> None)
            (fun ((), ()) -> Nonce_revelation_rewards);
-         (* 6 was for Double_signing_evidence_rewards that has been removed.
-            https://gitlab.com/tezos/tezos/-/merge_requests/7758 *)
          case
-           (Tag 7)
-           ~title:
-             (if use_legacy_attestation_name then "Endorsing_rewards"
-             else "Attesting_rewards")
+           (Tag 6)
+           ~title:"Double_signing_evidence_rewards"
            (obj2
               (req "kind" (constant "minted"))
-              (req
-                 "category"
-                 (constant
-                    (if use_legacy_attestation_name then "endorsing rewards"
-                    else "attesting rewards"))))
-           (function Attesting_rewards -> Some ((), ()) | _ -> None)
-           (fun ((), ()) -> Attesting_rewards);
+              (req "category" (constant "double signing evidence rewards")))
+           (function
+             | Double_signing_evidence_rewards -> Some ((), ()) | _ -> None)
+           (fun ((), ()) -> Double_signing_evidence_rewards);
+         case
+           (Tag 7)
+           ~title:"Endorsing_rewards"
+           (obj2
+              (req "kind" (constant "minted"))
+              (req "category" (constant "endorsing rewards")))
+           (function Endorsing_rewards -> Some ((), ()) | _ -> None)
+           (fun ((), ()) -> Endorsing_rewards);
          case
            (Tag 8)
            ~title:"Baking_rewards"
@@ -152,24 +138,17 @@ let balance_encoding ~use_legacy_attestation_name =
            (fun ((), ()) -> Double_signing_punishments);
          case
            (Tag 13)
-           ~title:
-             (if use_legacy_attestation_name then "Lost_endorsing_rewards"
-             else "Lost_attesting_rewards")
+           ~title:"Lost_endorsing_rewards"
            (obj5
               (req "kind" (constant "burned"))
-              (req
-                 "category"
-                 (constant
-                    (if use_legacy_attestation_name then
-                     "lost endorsing rewards"
-                    else "lost attesting rewards")))
+              (req "category" (constant "lost endorsing rewards"))
               (req "delegate" Signature.Public_key_hash.encoding)
               (req "participation" Data_encoding.bool)
               (req "revelation" Data_encoding.bool))
            (function
-             | Lost_attesting_rewards (d, p, r) -> Some ((), (), d, p, r)
+             | Lost_endorsing_rewards (d, p, r) -> Some ((), (), d, p, r)
              | _ -> None)
-           (fun ((), (), d, p, r) -> Lost_attesting_rewards (d, p, r));
+           (fun ((), (), d, p, r) -> Lost_endorsing_rewards (d, p, r));
          case
            (Tag 14)
            ~title:"Liquidity_baking_subsidies"
@@ -238,6 +217,23 @@ let balance_encoding ~use_legacy_attestation_name =
            (function Frozen_bonds (c, r) -> Some ((), (), c, r) | _ -> None)
            (fun ((), (), c, r) -> Frozen_bonds (c, r));
          case
+           (Tag 22)
+           ~title:"Tx_rollup_rejection_rewards"
+           (obj2
+              (req "kind" (constant "minted"))
+              (req "category" (constant "tx_rollup_rejection_rewards")))
+           (function Tx_rollup_rejection_rewards -> Some ((), ()) | _ -> None)
+           (fun ((), ()) -> Tx_rollup_rejection_rewards);
+         case
+           (Tag 23)
+           ~title:"Tx_rollup_rejection_punishments"
+           (obj2
+              (req "kind" (constant "burned"))
+              (req "category" (constant "tx_rollup_rejection_punishments")))
+           (function
+             | Tx_rollup_rejection_punishments -> Some ((), ()) | _ -> None)
+           (fun ((), ()) -> Tx_rollup_rejection_punishments);
+         case
            (Tag 24)
            ~title:"Smart_rollup_refutation_punishments"
            (obj2
@@ -255,35 +251,15 @@ let balance_encoding ~use_legacy_attestation_name =
            (function
              | Sc_rollup_refutation_rewards -> Some ((), ()) | _ -> None)
            (fun ((), ()) -> Sc_rollup_refutation_rewards);
-         case
-           (Tag 26)
-           ~title:"Unstaked_deposits"
-           (obj4
-              (req "kind" (constant "freezer"))
-              (req "category" (constant "unstaked_deposits"))
-              (req "staker" Stake_repr.staker_encoding)
-              (req "cycle" Cycle_repr.encoding))
-           (function
-             | Unstaked_deposits (staker, cycle) -> Some ((), (), staker, cycle)
-             | _ -> None)
-           (fun ((), (), staker, cycle) -> Unstaked_deposits (staker, cycle));
        ]
-
-let balance_encoding_with_legacy_attestation_name =
-  balance_encoding ~use_legacy_attestation_name:true
-
-let balance_encoding = balance_encoding ~use_legacy_attestation_name:false
 
 let is_not_zero c = not (Compare.Int.equal c 0)
 
 let compare_balance ba bb =
   match (ba, bb) with
   | Contract ca, Contract cb -> Contract_repr.compare ca cb
-  | Deposits sa, Deposits sb -> Stake_repr.compare_staker sa sb
-  | Unstaked_deposits (sa, ca), Unstaked_deposits (sb, cb) ->
-      Compare.or_else (Stake_repr.compare_staker sa sb) (fun () ->
-          Cycle_repr.compare ca cb)
-  | Lost_attesting_rewards (pkha, pa, ra), Lost_attesting_rewards (pkhb, pb, rb)
+  | Deposits pkha, Deposits pkhb -> Signature.Public_key_hash.compare pkha pkhb
+  | Lost_endorsing_rewards (pkha, pa, ra), Lost_endorsing_rewards (pkhb, pb, rb)
     ->
       let c = Signature.Public_key_hash.compare pkha pkhb in
       if is_not_zero c then c
@@ -301,14 +277,14 @@ let compare_balance ba bb =
         | Contract _ -> 0
         | Block_fees -> 1
         | Deposits _ -> 2
-        | Unstaked_deposits _ -> 3
-        | Nonce_revelation_rewards -> 4
-        | Attesting_rewards -> 5
+        | Nonce_revelation_rewards -> 3
+        | Double_signing_evidence_rewards -> 4
+        | Endorsing_rewards -> 5
         | Baking_rewards -> 6
         | Baking_bonuses -> 7
         | Storage_fees -> 8
         | Double_signing_punishments -> 9
-        | Lost_attesting_rewards _ -> 10
+        | Lost_endorsing_rewards _ -> 10
         | Liquidity_baking_subsidies -> 11
         | Burned -> 12
         | Commitments _ -> 13
@@ -317,8 +293,10 @@ let compare_balance ba bb =
         | Initial_commitments -> 16
         | Minted -> 17
         | Frozen_bonds _ -> 18
-        | Sc_rollup_refutation_punishments -> 19
-        | Sc_rollup_refutation_rewards -> 20
+        | Tx_rollup_rejection_punishments -> 19
+        | Tx_rollup_rejection_rewards -> 20
+        | Sc_rollup_refutation_punishments -> 21
+        | Sc_rollup_refutation_rewards -> 22
         (* don't forget to add parameterized cases in the first part of the function *)
       in
       Compare.Int.compare (index ba) (index bb)
@@ -397,22 +375,6 @@ let update_origin_encoding =
        ]
 
 type balance_updates = (balance * balance_update * update_origin) list
-
-let balance_updates_encoding_with_legacy_attestation_name =
-  let open Data_encoding in
-  def "operation_metadata_with_legacy_attestation_name.alpha.balance_updates"
-  @@ list
-       (conv
-          (function
-            | balance, balance_update, update_origin ->
-                ((balance, balance_update), update_origin))
-          (fun ((balance, balance_update), update_origin) ->
-            (balance, balance_update, update_origin))
-          (merge_objs
-             (merge_objs
-                balance_encoding_with_legacy_attestation_name
-                balance_update_encoding)
-             update_origin_encoding))
 
 let balance_updates_encoding =
   let open Data_encoding in

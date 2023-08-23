@@ -163,7 +163,7 @@ struct
 
   module type MERKLE = functor (L : LIB) -> sig
     open L
-    open Encodings
+    open Encoding.Encodings(L)
 
     type path
 
@@ -191,7 +191,7 @@ struct
       type root = scalar
 
       let path_encoding =
-        let open Encodings in
+        let open Encoding.Encodings (L) in
         atomic_list_encoding
           (atomic_obj2_encoding scalar_encoding bool_encoding)
 

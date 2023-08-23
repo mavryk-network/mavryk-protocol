@@ -38,34 +38,43 @@ let hooks =
     ~replace_variables:Fun.id
     ()
 
-let test_typecheck_contract protocol scripts =
+let test_typecheck_contract protocol script =
   Protocol.register_regression_test
     ~__FILE__
-    ~title:(sf "Tc scripts")
+    ~title:(sf "Tc %s" (Michelson_script.name_s script))
     ~tags:["client"; "michelson"; "typechecking"]
     (fun _protocol ->
-      let* client = Client.init_mockup ~protocol () in
-      (* Register constants because some scripts require them. *)
-      let* () =
-        Lwt_list.iter_s
-          (fun value ->
-            let* (_expr : string) =
-              Client.register_global_constant
-                ~src:Constant.bootstrap1.alias
-                ~value
-                ~burn_cap:Tez.one
-                client
+      (* Register constants for scripts that require it *)
+      let constants =
+        match Michelson_script.name script with
+        | ["mini_scenarios"; "999_constant"] -> ["999"]
+        | ["mini_scenarios"; "constant_unit"] -> ["Unit"; "unit"]
+        | ["mini_scenarios"; "constant_entrypoints"] -> ["unit"]
+        | _ -> []
+      in
+      let* client =
+        match constants with
+        | [] -> return (Client.create_with_mode Mockup)
+        | constants ->
+            let* client = Client.init_mockup ~protocol () in
+            let* (_exprs : string list) =
+              Lwt_list.map_s
+                (fun value ->
+                  Client.register_global_constant
+                    ~src:Constant.bootstrap1.alias
+                    ~value
+                    ~burn_cap:Tez.one
+                    client)
+                constants
             in
-            unit)
-          ["999"; "Unit"; "unit"]
+            return client
       in
       Client.typecheck_script
-        ~scripts:(List.map Michelson_script.path scripts)
+        ~script:(Michelson_script.path script)
         ~protocol_hash:(Protocol.hash protocol)
         ~hooks
         ~no_base_dir_warnings:true
         ~details:true
-        ~display_names:true
         client)
     [protocol]
 
@@ -73,8 +82,8 @@ let test_typecheck protocols =
   List.iter
     (fun protocol ->
       (* Type check regression tests for all well-typed contracts *)
-      test_typecheck_contract
-        protocol
+      List.iter
+        (test_typecheck_contract protocol)
         (Michelson_script.find_all_well_typed protocol))
     protocols
 

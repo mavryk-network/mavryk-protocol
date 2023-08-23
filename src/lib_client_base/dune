@@ -8,11 +8,11 @@
  (public_name tezos-client-base)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-rpc
-  octez-libs.tezos-shell-services
-  octez-libs.tezos-sapling
+  tezos-base
+  tezos-clic
+  tezos-rpc
+  tezos-shell-services
+  tezos-sapling
   uri)
  (js_of_ocaml)
  (library_flags (:standard -linkall))

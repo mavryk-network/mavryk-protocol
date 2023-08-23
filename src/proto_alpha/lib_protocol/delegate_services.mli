@@ -43,21 +43,12 @@ val list :
   unit ->
   Signature.Public_key_hash.t list shell_tzresult Lwt.t
 
-type consensus_key = {
-  consensus_key_pkh : Signature.Public_key_hash.t;
-  consensus_key_pk : Signature.Public_key.t;
-}
-
-type consensus_keys_info = {
-  active : consensus_key;
-  pendings : (Cycle.t * consensus_key) list;
-}
-
 type info = {
   full_balance : Tez.t;  (** Balance + Frozen balance *)
   current_frozen_deposits : Tez.t;
   frozen_deposits : Tez.t;
   staking_balance : Tez.t;
+  frozen_deposits_limit : Tez.t option;
   delegated_contracts : Contract.t list;
   delegated_balance : Tez.t;
   deactivated : bool;
@@ -66,10 +57,6 @@ type info = {
   active_consensus_key : Signature.Public_key_hash.t;
   pending_consensus_keys : (Cycle.t * Signature.Public_key_hash.t) list;
 }
-
-type deposit_per_cycle = {cycle : Cycle.t; deposit : Tez.t}
-
-val deposit_per_cycle_encoding : deposit_per_cycle Data_encoding.t
 
 val info_encoding : info Data_encoding.t
 
@@ -97,17 +84,17 @@ val frozen_deposits :
   Signature.Public_key_hash.t ->
   Tez.t shell_tzresult Lwt.t
 
-val unstaked_frozen_deposits :
-  'a #RPC_context.simple ->
-  'a ->
-  Signature.Public_key_hash.t ->
-  deposit_per_cycle list shell_tzresult Lwt.t
-
 val staking_balance :
   'a #RPC_context.simple ->
   'a ->
   Signature.Public_key_hash.t ->
   Tez.t shell_tzresult Lwt.t
+
+val frozen_deposits_limit :
+  'a #RPC_context.simple ->
+  'a ->
+  Signature.Public_key_hash.t ->
+  Tez.t option shell_tzresult Lwt.t
 
 val delegated_contracts :
   'a #RPC_context.simple ->
@@ -133,13 +120,7 @@ val grace_period :
   Signature.Public_key_hash.t ->
   Cycle.t shell_tzresult Lwt.t
 
-val current_voting_power :
-  'a #RPC_context.simple -> 'a -> public_key_hash -> int64 shell_tzresult Lwt.t
-
 val voting_power :
-  'a #RPC_context.simple -> 'a -> public_key_hash -> int64 shell_tzresult Lwt.t
-
-val current_baking_power :
   'a #RPC_context.simple -> 'a -> public_key_hash -> int64 shell_tzresult Lwt.t
 
 val voting_info :
@@ -152,24 +133,14 @@ val consensus_key :
   'a #RPC_context.simple ->
   'a ->
   Signature.Public_key_hash.t ->
-  consensus_keys_info shell_tzresult Lwt.t
+  (Signature.Public_key_hash.t * (Cycle.t * Signature.Public_key_hash.t) list)
+  shell_tzresult
+  Lwt.t
 
 val participation :
   'a #RPC_context.simple ->
   'a ->
   public_key_hash ->
   Delegate.participation_info shell_tzresult Lwt.t
-
-val active_staking_parameters :
-  'a #RPC_context.simple ->
-  'a ->
-  public_key_hash ->
-  Staking_parameters_repr.t shell_tzresult Lwt.t
-
-val pending_staking_parameters :
-  'a #RPC_context.simple ->
-  'a ->
-  public_key_hash ->
-  (Cycle.t * Staking_parameters_repr.t) list shell_tzresult Lwt.t
 
 val register : unit -> unit

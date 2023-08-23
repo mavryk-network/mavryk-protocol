@@ -22,10 +22,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let rec repeat n f () =
-  if n > 0 then (
+let rec repeat n f =
+  if n <= 0 then
+    let f () = () in
+    f
+  else (
     f () ;
-    repeat (n - 1) f ())
+    repeat (n - 1) f)
 
 let rec non_null_int bound =
   let r = Random.int bound in

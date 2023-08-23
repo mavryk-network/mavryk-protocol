@@ -25,39 +25,29 @@
 (*****************************************************************************)
 
 (* Declaration order must respect the version order. *)
-type t = Nairobi | Oxford | Alpha
+type t = Mumbai | Nairobi | Alpha
 
-type constants =
-  | Constants_sandbox
-  | Constants_mainnet
-  | Constants_mainnet_with_chain_id
-  | Constants_test
-
-let constants_to_string = function
-  | Constants_sandbox -> "sandbox"
-  | Constants_mainnet -> "mainnet"
-  | Constants_mainnet_with_chain_id -> "mainnet-with-chain-id"
-  | Constants_test -> "test"
+type constants = Constants_sandbox | Constants_mainnet | Constants_test
 
 let name = function
   | Alpha -> "Alpha"
+  | Mumbai -> "Mumbai"
   | Nairobi -> "Nairobi"
-  | Oxford -> "Oxford"
 
-let number = function Nairobi -> 017 | Oxford -> 018 | Alpha -> 019
+let number = function Mumbai -> 016 | Nairobi -> 017 | Alpha -> 018
 
 let directory = function
   | Alpha -> "proto_alpha"
+  | Mumbai -> "proto_016_PtMumbai"
   | Nairobi -> "proto_017_PtNairob"
-  | Oxford -> "proto_018_Proxford"
 
 (* Test tags must be lowercase. *)
 let tag protocol = String.lowercase_ascii (name protocol)
 
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
+  | Mumbai -> "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1"
   | Nairobi -> "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
-  | Oxford -> "ProxfordSW2S7fvchT1Zgj2avb5UES194neRyYVXoaDGvF9egt8"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -70,7 +60,12 @@ let protocol_zero_hash = "PrihK96nBAFSxVL1GLJTVhu9YnzkMFiBeuJRPA8NwuZVZCE1L6i"
 let default_constants = Constants_sandbox
 
 let parameter_file ?(constants = default_constants) protocol =
-  let name = constants_to_string constants in
+  let name =
+    match constants with
+    | Constants_sandbox -> "sandbox"
+    | Constants_mainnet -> "mainnet"
+    | Constants_test -> "test"
+  in
   sf "src/%s/parameters/%s-parameters.json" (directory protocol) name
 
 let daemon_name = function Alpha -> "alpha" | p -> String.sub (hash p) 0 8
@@ -78,6 +73,8 @@ let daemon_name = function Alpha -> "alpha" | p -> String.sub (hash p) 0 8
 let accuser proto = "./octez-accuser-" ^ daemon_name proto
 
 let baker proto = "./octez-baker-" ^ daemon_name proto
+
+let sc_rollup_node proto = "./octez-smart-rollup-node-" ^ daemon_name proto
 
 let sc_rollup_client proto = "./octez-smart-rollup-client-" ^ daemon_name proto
 
@@ -91,32 +88,14 @@ type parameter_overrides =
 let default_bootstrap_accounts =
   Array.to_list Account.Bootstrap.keys |> List.map @@ fun key -> (key, None)
 
-type bootstrap_contract = {
-  delegate : string option;
-  amount : Tez.t;
-  script : Ezjsonm.value;
-  hash : string option;
-}
-
-type bootstrap_smart_rollup = {
-  address : string;
-  pvm_kind : string;
-  boot_sector : string;
-  parameters_ty : Ezjsonm.value;
-}
-
 let write_parameter_file :
     ?bootstrap_accounts:(Account.key * int option) list ->
     ?additional_bootstrap_accounts:(Account.key * int option * bool) list ->
-    ?bootstrap_smart_rollups:bootstrap_smart_rollup list ->
-    ?bootstrap_contracts:bootstrap_contract list ->
     base:(string, t * constants option) Either.t ->
     parameter_overrides ->
     string Lwt.t =
  fun ?(bootstrap_accounts = default_bootstrap_accounts)
      ?(additional_bootstrap_accounts = [])
-     ?(bootstrap_smart_rollups = [])
-     ?(bootstrap_contracts = [])
      ~base
      parameter_overrides ->
   (* make a copy of the parameters file and update the given constants *)
@@ -147,59 +126,6 @@ let write_parameter_file :
           bootstrap_accounts
       in
       (["bootstrap_accounts"], `A bootstrap_accounts) :: parameter_overrides
-  in
-  let parameter_overrides =
-    if List.mem_assoc ["bootstrap_smart_rollups"] parameter_overrides then
-      parameter_overrides
-    else
-      let bootstrap_smart_rollups =
-        List.map
-          (fun {address; pvm_kind; boot_sector; parameters_ty} ->
-            `O
-              [
-                ("address", `String address);
-                ("pvm_kind", `String pvm_kind);
-                ("kernel", `String boot_sector);
-                ("parameters_ty", parameters_ty);
-              ])
-          bootstrap_smart_rollups
-      in
-      match bootstrap_smart_rollups with
-      | [] ->
-          (* This is useful for tests on protocol before bootstrap smart rollups
-             support. Otherwise the protocol cannot decode this new field. *)
-          parameter_overrides
-      | bootstrap_smart_rollups ->
-          (["bootstrap_smart_rollups"], `A bootstrap_smart_rollups)
-          :: parameter_overrides
-  in
-  let parameter_overrides =
-    if List.mem_assoc ["bootstrap_contracts"] parameter_overrides then
-      parameter_overrides
-    else
-      let bootstrap_contracts =
-        List.map
-          (fun {delegate; amount; script; hash} ->
-            let delegate =
-              match delegate with
-              | Some delegate -> [("delegate", `String delegate)]
-              | None -> []
-            in
-            let hash =
-              match hash with
-              | Some hash -> [("hash", `String hash)]
-              | None -> []
-            in
-            `O
-              ([("amount", `String (Tez.to_string amount)); ("script", script)]
-              @ delegate @ hash))
-          bootstrap_contracts
-      in
-      match bootstrap_contracts with
-      | [] -> parameter_overrides
-      | bootstrap_contracts ->
-          (["bootstrap_contracts"], `A bootstrap_contracts)
-          :: parameter_overrides
   in
   let parameters =
     List.fold_left
@@ -243,16 +169,16 @@ let write_parameter_file :
   Lwt.return overriden_parameters
 
 let next_protocol = function
-  | Nairobi -> Some Oxford
-  | Oxford -> Some Alpha
+  | Mumbai -> Some Nairobi
+  | Nairobi -> Some Alpha
   | Alpha -> None
 
 let previous_protocol = function
-  | Alpha -> Some Oxford
-  | Oxford -> Some Nairobi
-  | Nairobi -> None
+  | Alpha -> Some Nairobi
+  | Nairobi -> Some Mumbai
+  | Mumbai -> None
 
-let all = [Nairobi; Oxford; Alpha]
+let all = [Alpha; Mumbai; Nairobi]
 
 type supported_protocols =
   | Any_protocol

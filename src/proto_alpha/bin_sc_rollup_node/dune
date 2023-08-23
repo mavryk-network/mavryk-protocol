@@ -7,15 +7,15 @@
  (package octez-smart-rollup-node-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
+  tezos-base
+  tezos-clic
   tezos-protocol-alpha
-  octez-libs.tezos-shell-services
+  tezos-shell-services
   tezos-client-base
   tezos-client-base-unix
   tezos-client-commands
   tezos-client-alpha
-  octez-smart-rollup-node-lib
+  octez-smart-rollup-node
   octez_smart_rollup_node_alpha)
  (link_flags
   (:standard)

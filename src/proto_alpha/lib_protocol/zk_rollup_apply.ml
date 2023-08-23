@@ -85,17 +85,14 @@ let originate ~ctxt_before_op ~ctxt ~public_parameters ~circuits_info
 (** [parse_ticket ~ticketer ~contents ~ty ctxt] reconstructs a ticket from
     individual parts submitted as part of a Zk_rollup_publish operation. *)
 let parse_ticket ~ticketer ~contents ~ty ctxt =
-  let open Lwt_result_syntax in
-  let*? Ex_comparable_ty contents_type, ctxt =
-    Script_ir_translator.parse_comparable_ty ctxt (Micheline.root ty)
-  in
-  let* contents, ctxt =
-    Script_ir_translator.parse_comparable_data
-      ctxt
-      contents_type
-      (Micheline.root contents)
-  in
-  return (ctxt, Ticket_token.Ex_token {ticketer; contents_type; contents})
+  Script_ir_translator.parse_comparable_ty ctxt (Micheline.root ty)
+  >>?= fun (Ex_comparable_ty contents_type, ctxt) ->
+  Script_ir_translator.parse_comparable_data
+    ctxt
+    contents_type
+    (Micheline.root contents)
+  >>=? fun (contents, ctxt) ->
+  return @@ (ctxt, Ticket_token.Ex_token {ticketer; contents_type; contents})
 
 let publish ~ctxt_before_op ~ctxt ~zk_rollup ~l2_ops =
   let open Lwt_result_syntax in
@@ -182,7 +179,7 @@ let transaction_to_zk_rollup ~ctxt ~parameters_ty ~parameters ~dst_rollup ~since
     Zk_rollup_parameters.get_deposit_parameters parameters_ty parameters
   in
   let* ticket_size, ctxt = Ticket_scanner.ex_ticket_size ctxt ex_ticket in
-  let limit = Constants.zk_rollup_max_ticket_payload_size ctxt in
+  let limit = Constants.tx_rollup_max_ticket_payload_size ctxt in
   let*? () =
     error_when
       Saturation_repr.(ticket_size >! limit)

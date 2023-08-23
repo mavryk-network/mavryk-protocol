@@ -72,7 +72,7 @@ let commands () =
       ~default:"0.05"
   in
   let source_arg =
-    Contract_alias.destination_arg
+    ContractAlias.destination_arg
       ~name:"source"
       ~doc:"name of the source (i.e. SENDER) contract for the transaction"
       ()
@@ -84,7 +84,7 @@ let commands () =
       ()
   in
   let self_arg =
-    Originated_contract_alias.destination_arg
+    OriginatedContractAlias.destination_arg
       ~name:"self-address"
       ~doc:"address of the contract (i.e. SELF_ADDRESS) for the transaction"
       ()
@@ -359,82 +359,38 @@ let commands () =
         return_unit);
     command
       ~group
-      ~desc:"Ask the node to typecheck one or several scripts."
-      (args6
+      ~desc:"Ask the node to typecheck a script."
+      (args5
          show_types_switch
          emacs_mode_switch
          no_print_source_flag
          run_gas_limit_arg
-         legacy_switch
-         display_names_flag)
-      (prefixes ["typecheck"; "script"]
-      @@ seq_of_param
-      @@ file_or_literal_with_origin_param ())
-      (fun ( show_types,
-             emacs_mode,
-             no_print_source,
-             original_gas,
-             legacy,
-             display_names )
-           expr_strings
+         legacy_switch)
+      (prefixes ["typecheck"; "script"] @@ Program.source_param @@ stop)
+      (fun (show_types, emacs_mode, no_print_source, original_gas, legacy)
+           program
            cctxt ->
         let open Lwt_result_syntax in
         let setup = (emacs_mode, no_print_source) in
-        match expr_strings with
-        | [] ->
-            let*! () =
-              cctxt#warning "No scripts were specified on the command line"
-            in
-            return_unit
-        | _ :: _ ->
-            let* _number_of_literal_scripts =
-              List.fold_left_es
-                (fun i content_with_origin ->
-                  let expr_string =
-                    Client_proto_args.content_of_file_or_text
-                      content_with_origin
-                  in
-                  let program =
-                    Michelson_v1_parser.parse_toplevel expr_string
-                  in
-                  let name, i =
-                    match content_with_origin with
-                    | Client_proto_args.File {path; _} -> (path, i)
-                    | Text _ ->
-                        let i = i + 1 in
-                        ("Literal script " ^ string_of_int i, i)
-                  in
-                  let* () =
-                    handle_parsing_error "types" cctxt setup program
-                    @@ fun program ->
-                    let* original_gas =
-                      resolve_max_gas cctxt cctxt#block original_gas
-                    in
-                    let*! res =
-                      typecheck_program
-                        cctxt
-                        ~chain:cctxt#chain
-                        ~block:cctxt#block
-                        ~gas:original_gas
-                        ~legacy
-                        ~show_types
-                        program
-                    in
-                    print_typecheck_result
-                      ~emacs:emacs_mode
-                      ~show_types
-                      ~print_source_on_error:(not no_print_source)
-                      ~display_names
-                      ~name
-                      program
-                      res
-                      cctxt
-                  in
-                  return i)
-                0
-                expr_strings
-            in
-            return_unit);
+        handle_parsing_error "types" cctxt setup program @@ fun program ->
+        let* original_gas = resolve_max_gas cctxt cctxt#block original_gas in
+        let*! res =
+          typecheck_program
+            cctxt
+            ~chain:cctxt#chain
+            ~block:cctxt#block
+            ~gas:original_gas
+            ~legacy
+            ~show_types
+            program
+        in
+        print_typecheck_result
+          ~emacs:emacs_mode
+          ~show_types
+          ~print_source_on_error:(not no_print_source)
+          program
+          res
+          cctxt);
     command
       ~group
       ~desc:"Ask the node to typecheck a data expression."
@@ -578,9 +534,9 @@ let commands () =
             in
             return_unit
         | _ :: _ ->
-            let* hash_name_rows_rev, _number_of_literal_scripts =
-              List.fold_left_es
-                (fun (l, i) content_with_origin ->
+            let* hash_name_rows =
+              List.mapi_ep
+                (fun i content_with_origin ->
                   let expr_string =
                     Client_proto_args.content_of_file_or_text
                       content_with_origin
@@ -601,18 +557,14 @@ let commands () =
                       Script_expr_hash.pp
                       (Script_expr_hash.hash_bytes [bytes])
                   in
-                  let name, i =
+                  let name =
                     match content_with_origin with
-                    | Client_proto_args.File {path; _} -> (path, i)
-                    | Text _ ->
-                        let i = i + 1 in
-                        ("Literal script " ^ string_of_int i, i)
+                    | Client_proto_args.File {path; _} -> path
+                    | Text _ -> "Literal script " ^ string_of_int (i + 1)
                   in
-                  return ((hash, name) :: l, i))
-                ([], 0)
+                  return (hash, name))
                 expr_strings
             in
-            let hash_name_rows = List.rev hash_name_rows_rev in
             Tezos_clic_unix.Scriptable.output
               scriptable
               ~for_human:(fun () ->
@@ -943,23 +895,14 @@ let commands () =
          Micheline, JSON, binary or OCaml"
       (args3 zero_loc_switch legacy_switch enforce_indentation_flag)
       (prefixes ["convert"; "script"]
-      @@ file_or_literal_with_origin_param ()
-      @@ prefix "from" @@ convert_input_format_param @@ prefix "to"
-      @@ convert_output_format_param @@ stop)
+      @@ file_or_literal_param () @@ prefix "from" @@ convert_input_format_param
+      @@ prefix "to" @@ convert_output_format_param @@ stop)
       (fun (zero_loc, legacy, check)
-           content_with_origin
+           expr_string
            from_format
            to_format
            (cctxt : Protocol_client_context.full) ->
         let open Lwt_result_syntax in
-        let expr_string =
-          Client_proto_args.content_of_file_or_text content_with_origin
-        in
-        let name =
-          match content_with_origin with
-          | Client_proto_args.File {path; _} -> path
-          | Text _ -> "Literal script"
-        in
         let* (expression : Alpha_context.Script.expr) =
           match from_format with
           | `Michelson ->
@@ -983,8 +926,6 @@ let commands () =
                       ~emacs:false
                       ~show_types:true
                       ~print_source_on_error:true
-                      ~display_names:false
-                      ~name
                       program
                       res
                       cctxt
@@ -1150,7 +1091,7 @@ let commands () =
            ~desc:"the name of the view"
            entrypoint_parameter
       @@ prefixes ["on"; "contract"]
-      @@ Originated_contract_alias.destination_param
+      @@ OriginatedContractAlias.destination_param
            ~name:"contract"
            ~desc:"viewed contract"
       @@ prefixes ["with"; "input"]
@@ -1189,7 +1130,7 @@ let commands () =
       (prefixes ["run"; "view"]
       @@ param ~name:"view" ~desc:"the name of the view" string_parameter
       @@ prefixes ["on"; "contract"]
-      @@ Originated_contract_alias.destination_param
+      @@ OriginatedContractAlias.destination_param
            ~name:"contract"
            ~desc:"the contract containing the view"
       @@ stop)
@@ -1230,7 +1171,7 @@ let commands () =
       (prefixes ["run"; "view"]
       @@ param ~name:"view" ~desc:"the name of the view" string_parameter
       @@ prefixes ["on"; "contract"]
-      @@ Originated_contract_alias.destination_param
+      @@ OriginatedContractAlias.destination_param
            ~name:"contract"
            ~desc:"the contract containing the view"
       @@ prefixes ["with"; "input"]

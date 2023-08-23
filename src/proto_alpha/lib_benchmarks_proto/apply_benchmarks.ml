@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2023 Nomadic Labs, <contact@nomadic-labs.com>               *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -25,9 +24,8 @@
 (*****************************************************************************)
 
 open Tezos_benchmark
-open Benchmarks_proto
 
-let ns = Namespace.make Registration.ns "apply"
+let ns = Namespace.make Registration_helpers.ns "apply"
 
 let fv s = Free_variable.of_namespace (ns s)
 
@@ -41,16 +39,15 @@ let make_context ~rng_state =
       ~bootstrap_balances:[initial_balance; initial_balance; initial_balance]
       ()
   in
-  let* csts = Context.get_constants (B block) in
+  Context.get_constants (B block) >>=? fun csts ->
   let minimal_block_delay =
     Protocol.Alpha_context.Period.to_seconds csts.parametric.minimal_block_delay
   in
-  let* vs =
-    Incremental.begin_construction
-      ~timestamp:
-        (Time.Protocol.add block.header.shell.timestamp minimal_block_delay)
-      block
-  in
+  Incremental.begin_construction
+    ~timestamp:
+      (Time.Protocol.add block.header.shell.timestamp minimal_block_delay)
+    block
+  >>=? fun vs ->
   let ctxt = Incremental.alpha_ctxt vs in
   let ctxt =
     (* Required for eg Create_contract *)
@@ -60,9 +57,6 @@ let make_context ~rng_state =
   in
   return (ctxt, src, dst)
 
-(* This benchmark is introduced for !7761 and #4788. Its result is not used in the protocol
-   therefore we do not need to perform it regularly.
-*)
 module Take_fees_benchmark = struct
   let name = ns "Take_fees"
 
@@ -70,10 +64,7 @@ module Take_fees_benchmark = struct
 
   let module_filename = __FILE__
 
-  let purpose =
-    Benchmark.Other_purpose "Measuring the time spent for Apply.take_fees"
-
-  let group = Benchmark.Standalone
+  let generated_code_destination = None
 
   let tags = ["apply"]
 
@@ -96,6 +87,7 @@ module Take_fees_benchmark = struct
     Sparse_vec.String.of_list [("batch_length", float_of_int batch_length)]
 
   let model =
+    let open Benchmarks_proto in
     Model.make
       ~conv:(fun {batch_length} -> (batch_length, ()))
       ~model:Model.affine

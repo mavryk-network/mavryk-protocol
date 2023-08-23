@@ -20,10 +20,10 @@ ifneq ($(NATIVE_TARGET),)
 NATIVE_OPT := --target "$(NATIVE_TARGET)"
 endif
 
-SDK_VERSION := "0.2.1"
+SDK_VERSION := "0.1.0"
 
 .PHONY: check
-check: installer-template publish-check doc
+check: installer-template publish-check
 	@cargo fmt --check
 	@cargo clippy --all-targets --all-features -- --deny warnings
 	@cargo check --no-default-features
@@ -50,11 +50,15 @@ publish-check: installer-template
 .PHONY: build
 build: installer-template
 	@cargo build -p tezos-smart-rollup-installer \
-                --release \
-                $(NATIVE_OPT)
+	        --release \
+	        $(NATIVE_OPT)
+
+.PHONY: sdk-readme
+sdk-readme:
+	@cp README.md sdk/README.md
 
 .PHONY: installer-template
-installer-template:
+installer-template: sdk-readme
 	@cargo build -p installer-kernel \
 	       --target wasm32-unknown-unknown \
 	       --release \
@@ -69,7 +73,7 @@ test:
 	@cargo test --all-features
 
 .PHONY: doc
-doc:
+doc: sdk-readme
 	@cargo doc  --no-deps --all-features
 
 .PHONY: build-deps
@@ -84,6 +88,7 @@ build-dev-deps: build-deps
 clean:
 	@cargo clean
 	@rm -rf installer-client/installer.wasm
+	@rm -rf sdk/README.md
 
 .PHONY: publish-deps
 publish-deps: build-deps
@@ -92,7 +97,7 @@ publish-deps: build-deps
 # --allow-dirty required to include the built installer.wasm
 # and README copied to sdk/, which are not checked in
 .PHONY: publish
-publish: installer-template
+publish: installer-template sdk-readme
 	@cargo publish-workspace -p 'tezos-smart-rollup-' \
 	       --exclude installer-kernel \
 	       --target-version $(SDK_VERSION) \

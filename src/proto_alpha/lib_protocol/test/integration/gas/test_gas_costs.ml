@@ -192,8 +192,7 @@ let all_parsing_costs =
     ("contract_optimized", contract_optimized);
     ("contract_readable", contract_readable);
     ("check_printable", check_printable "dummy");
-    ("ty_eq", ty_eq dummy_ty dummy_ty);
-    ("ty_eq_prim", ty_eq_prim);
+    ("merge_cycle", merge_cycle);
     ("parse_type_cycle", parse_type_cycle);
     ("parse_instr_cycle", parse_instr_cycle);
     ("parse_data_cycle", parse_data_cycle);

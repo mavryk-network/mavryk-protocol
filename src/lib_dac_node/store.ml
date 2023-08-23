@@ -59,21 +59,36 @@ module Signature_store =
       let encoding = Tezos_crypto.Aggregate_signature.encoding
     end)
 
+type certificate_store_value = {
+  aggregate_signature : Tezos_crypto.Aggregate_signature.signature;
+  witnesses : Z.t;
+}
+
 module Certificate_store =
   Irmin_store.Make_updatable_map
     (struct
       let path = ["coordinator"; "certificate_store"]
     end)
     (struct
-      type key = Dac_plugin.raw_hash
+      type key = Dac_plugin.hash
 
-      let to_path_representation key =
-        Hex.show @@ Dac_plugin.raw_hash_to_hex key
+      let to_path_representation key = Hex.show @@ Dac_plugin.hash_to_hex key
     end)
     (struct
-      type value = Certificate_repr.t
+      type value = certificate_store_value
 
       let name = "Data availability certificate for root hash"
 
-      let encoding = Certificate_repr.encoding
+      let encoding =
+        Data_encoding.(
+          conv
+            (fun {aggregate_signature; witnesses} ->
+              (aggregate_signature, witnesses))
+            (fun (aggregate_signature, witnesses) ->
+              {aggregate_signature; witnesses})
+            (obj2
+               (req
+                  "aggregate_signature"
+                  Tezos_crypto.Aggregate_signature.encoding)
+               (req "witnesses" z)))
     end)

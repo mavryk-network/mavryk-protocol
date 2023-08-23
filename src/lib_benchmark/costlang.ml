@@ -163,7 +163,7 @@ module Pp : S with type 'a repr = string and type size = string = struct
 
   let lam ~name f = Format.asprintf "fun %s -> %s" name (f name)
 
-  let app f arg = Format.asprintf "((%s) %s)" f arg
+  let app f arg = Format.asprintf "(%s) %s" f arg
 
   let let_ ~name m f = Format.asprintf "let %s = %s in %s" name m (f name)
 
@@ -226,64 +226,6 @@ module Free_variables :
     Set.union m in_scope
 
   let if_ cond ift iff = Set.union cond (Set.union ift iff)
-end
-
-module Arg_names = struct
-  type size
-
-  type 'a repr =
-    | Bool : bool repr
-    | Size : size repr
-    | Lambda : string * ('a repr -> 'b repr) -> ('a -> 'b) repr
-
-  let arg_name (Lambda (arg, _)) = arg
-
-  let unwrap_bool (Lambda (_, f)) = f Bool
-
-  let unwrap_size (Lambda (_, f)) = f Size
-
-  let true_ = Bool
-
-  let false_ = Bool
-
-  let float _ = Size
-
-  let int _ = Size
-
-  let ( + ) _ _ = Size
-
-  let sat_sub _ _ = Size
-
-  let ( * ) _ _ = Size
-
-  let ( / ) _ _ = Size
-
-  let max _ _ = Size
-
-  let min _ _ = Size
-
-  let shift_left _ _ = Size
-
-  let shift_right _ _ = Size
-
-  let log2 _ = Size
-
-  let sqrt _ = Size
-
-  let free ~name:_ = Size
-
-  let lt _ _ = Bool
-
-  let eq _ _ = Bool
-
-  let lam ~name f = Lambda (name, f)
-
-  let app (Lambda (_, f)) x = f x
-
-  let let_ ~name:_ v f = f v
-
-  (* We can't decide which branch to pick. This choice is arbitrary. *)
-  let if_ _ t _ = t
 end
 
 let sat_sub_float x y = max 0. (x -. y)
@@ -628,7 +570,7 @@ functor
 
     let false_ = {repr = X.false_; hash = -1; tag = fresh ()}
 
-    let true_ = {repr = X.true_; hash = -1; tag = fresh ()}
+    let true_ = {repr = X.false_; hash = -1; tag = fresh ()}
 
     let float (f : float) =
       insert_if_not_present (fun () -> X.float f) (Float_tag {f})

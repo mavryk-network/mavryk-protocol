@@ -23,19 +23,6 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-
 module Make (N : sig
   val name : string
-end) : sig
-  include Store_sigs.BACKEND
-
-  module Raw_irmin : sig
-    type rw = [`Read | `Write] t
-
-    include
-      Irmin.Generic_key.S
-        with module Schema.Path = Tezos_context_encoding.Context.Schema.Path
-
-    val unsafe : rw -> t
-  end
-end
+end) : Store_sigs.BACKEND

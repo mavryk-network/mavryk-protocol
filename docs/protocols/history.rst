@@ -6,11 +6,6 @@ The following pages describe the former Tezos protocols (i.e., which have been u
 .. toctree::
    :maxdepth: 1
 
-   016_mumbai
-
-.. toctree::
-   :maxdepth: 1
-
    015_lima
 
 .. toctree::

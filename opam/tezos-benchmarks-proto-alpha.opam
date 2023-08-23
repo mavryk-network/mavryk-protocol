@@ -10,18 +10,25 @@ license: "MIT"
 depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "tezos-stdlib"
+  "tezos-base"
+  "tezos-error-monad"
   "tezos-protocol-alpha"
+  "tezos-lazy-containers"
   "tezos-benchmark"
   "tezos-benchmark-alpha"
   "tezos-benchmark-type-inference-alpha"
+  "tezos-crypto"
   "tezos-shell-benchmarks"
+  "tezos-micheline"
   "tezos-alpha-test-helpers"
+  "tezos-sapling"
   "tezos-client-alpha"
   "tezos-protocol-plugin-alpha"
+  "tezos-protocol-environment"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

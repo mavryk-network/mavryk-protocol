@@ -148,7 +148,8 @@ module Mempool = struct
   let component = "mempool_pending"
 
   type mempool_collectors = {
-    mutable validated : unit -> float;
+    mutable applied : unit -> float;
+    mutable prechecked : unit -> float;
     mutable refused : unit -> float;
     mutable branch_refused : unit -> float;
     mutable branch_delayed : unit -> float;
@@ -158,7 +159,8 @@ module Mempool = struct
 
   let mempool_collectors =
     {
-      validated = (fun () -> 0.);
+      applied = (fun () -> 0.);
+      prechecked = (fun () -> 0.);
       refused = (fun () -> 0.);
       branch_refused = (fun () -> 0.);
       branch_delayed = (fun () -> 0.);
@@ -166,7 +168,9 @@ module Mempool = struct
       unprocessed = (fun () -> 0.);
     }
 
-  let set_validated_collector fn = mempool_collectors.validated <- fn
+  let set_applied_collector fn = mempool_collectors.applied <- fn
+
+  let set_prechecked_collector fn = mempool_collectors.prechecked <- fn
 
   let set_refused_collector fn = mempool_collectors.refused <- fn
 
@@ -194,11 +198,17 @@ module Mempool = struct
       in
       (info, collect)
     in
-    let validated =
+    let applied =
       metric
-        ~help:"Mempool pending validated operations count"
-        ~name:"validated"
-        (fun () -> mempool_collectors.validated ())
+        ~help:"Mempool pending applied operations count"
+        ~name:"applied"
+        (fun () -> mempool_collectors.applied ())
+    in
+    let prechecked =
+      metric
+        ~help:"Mempool pending prechecked operations count"
+        ~name:"prechecked"
+        (fun () -> mempool_collectors.prechecked ())
     in
     let refused =
       metric
@@ -232,7 +242,13 @@ module Mempool = struct
     in
     let metrics =
       [
-        validated; refused; branch_refused; branch_delayed; outdated; unprocessed;
+        applied;
+        prechecked;
+        refused;
+        branch_refused;
+        branch_delayed;
+        outdated;
+        unprocessed;
       ]
     in
     let add (info, collector) =
@@ -533,6 +549,8 @@ module Version = struct
         ]
       "version"
 
+  let version = Tezos_version.Version.to_string Current_git_info.version
+
   let network_version net =
     let Network_version.{chain_name; distributed_db_version; p2p_version} =
       P2p.announced_version net
@@ -543,8 +561,11 @@ module Version = struct
       Format.asprintf "%a" P2p_version.pp p2p_version;
     ]
 
-  let init ~version
-      ~commit_info:({commit_hash; commit_date} : Node_version.commit_info) net =
+  let commit_hash = Current_git_info.commit_hash
+
+  let commit_date = Current_git_info.committer_date
+
+  let init net =
     let _ =
       Prometheus.Gauge.labels metric
       @@ [version] @ network_version net @ [commit_hash; commit_date]

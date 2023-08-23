@@ -32,11 +32,6 @@ module Time = Tezos_base.Time.System
 type endpoint =
   | Node of Node.t  (** A full-fledged node *)
   | Proxy_server of Proxy_server.t  (** A proxy server *)
-  | Foreign_endpoint of Foreign_endpoint.t  (** A service not managed by Tezt *)
-
-(** A string representation of an endpoint suitable to be used as a CLI
-    argument (e.g., [http://localhost:5893]). *)
-val string_of_endpoint : ?hostname:bool -> endpoint -> string
 
 (** Values that can be passed to the client's [--media-type] argument *)
 type media_type = Json | Binary | Any
@@ -51,16 +46,6 @@ val time_of_timestamp : timestamp -> Time.t
 (** [rpc_port endpoint] returns the port on which to reach [endpoint]
     when doing RPC calls. *)
 val rpc_port : endpoint -> int
-
-(** [address ?from endpoint] returns the address at which [endpoint] can be
-    contacted. If [from] is provided, and if [from] and [endpoint] live in the
-    same address, then ["127.0.0.1"] is returned (or ["localhost"] if
-    [hostname] is [true]. *)
-val address : ?hostname:bool -> ?from:endpoint -> endpoint -> string
-
-(** [scheme endpoint] returns “http” or “https” depending on the configuration
-    of the endpoint. *)
-val scheme : endpoint -> string
 
 (** Mode of the client *)
 type mode =
@@ -572,11 +557,10 @@ val spawn_bake_for :
   t ->
   Process.t
 
-(** Run [octez-client attest for]. Run [octez-client endorse for] for protocol
-    older than 018.
+(** Run [octez-client endorse for].
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
-val attest_for :
+val endorse_for :
   ?endpoint:endpoint ->
   ?protocol:Protocol.t ->
   ?key:string list ->
@@ -584,8 +568,8 @@ val attest_for :
   t ->
   unit Lwt.t
 
-(** Same as [attest_for], but do not wait for the process to exit. *)
-val spawn_attest_for :
+(** Same as [endorse_for], but do not wait for the process to exit. *)
+val spawn_endorse_for :
   ?endpoint:endpoint ->
   ?protocol:Protocol.t ->
   ?key:string list ->
@@ -593,11 +577,10 @@ val spawn_attest_for :
   t ->
   Process.t
 
-(** Run [octez-client preattest for]. Run [octez-client preendorse for] for
-    protocol older than 018.
+(** Run [octez-client preendorse for].
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
-val preattest_for :
+val preendorse_for :
   ?endpoint:endpoint ->
   ?protocol:Protocol.t ->
   ?key:string list ->
@@ -605,8 +588,8 @@ val preattest_for :
   t ->
   unit Lwt.t
 
-(** Same as [preattest_for], but do not wait for the process to exit. *)
-val spawn_preattest_for :
+(** Same as [preendorse_for], but do not wait for the process to exit. *)
+val spawn_preendorse_for :
   ?endpoint:endpoint ->
   ?protocol:Protocol.t ->
   ?key:string list ->
@@ -1553,14 +1536,13 @@ val spawn_typecheck_data :
 val typecheck_script :
   ?hooks:Process.hooks ->
   ?protocol_hash:string ->
-  scripts:string list ->
+  script:string ->
   ?no_base_dir_warnings:bool ->
   ?details:bool ->
   ?emacs:bool ->
   ?no_print_source:bool ->
   ?gas:int ->
   ?legacy:bool ->
-  ?display_names:bool ->
   t ->
   unit Lwt.t
 
@@ -1568,14 +1550,13 @@ val typecheck_script :
 val spawn_typecheck_script :
   ?hooks:Process.hooks ->
   ?protocol_hash:string ->
-  scripts:string list ->
+  script:string ->
   ?no_base_dir_warnings:bool ->
   ?details:bool ->
   ?emacs:bool ->
   ?no_print_source:bool ->
   ?gas:int ->
   ?legacy:bool ->
-  ?display_names:bool ->
   t ->
   Process.t
 
@@ -1737,7 +1718,6 @@ module Sc_rollup : sig
     ?hooks:Process.hooks ->
     ?wait:string ->
     ?burn_cap:Tez.t ->
-    ?whitelist:string list ->
     alias:string ->
     src:string ->
     kind:string ->
@@ -1751,7 +1731,6 @@ module Sc_rollup : sig
     ?hooks:Process.hooks ->
     ?wait:string ->
     ?burn_cap:Tez.t ->
-    ?whitelist:string list ->
     alias:string ->
     src:string ->
     kind:string ->
@@ -1798,7 +1777,6 @@ module Sc_rollup : sig
 
   (** Run [octez-client cement commitment <hash> from <src> for sc rollup <rollup>]. *)
   val cement_commitment :
-    Protocol.t ->
     ?hooks:Process.hooks ->
     ?wait:string ->
     ?burn_cap:Tez.t ->
@@ -1940,7 +1918,6 @@ val spawn_from_fa1_2_contract_get_total_supply_callback :
 
 (** Run [octez-client from fa1.2 contract <contract> transfer <amount> from <from> to <to>]. *)
 val from_fa1_2_contract_transfer :
-  ?wait:string ->
   ?burn_cap:Tez.t ->
   contract:string ->
   amount:int ->
@@ -1952,7 +1929,6 @@ val from_fa1_2_contract_transfer :
 
 (** Same as [from_fa1_2_contract_transfer], but do not wait for the process to exit. *)
 val spawn_from_fa1_2_contract_transfer :
-  ?wait:string ->
   ?burn_cap:Tez.t ->
   contract:string ->
   amount:int ->
@@ -1964,7 +1940,6 @@ val spawn_from_fa1_2_contract_transfer :
 
 (** Run [octez-client from fa1.2 contract <contract> as <as> approve <amount> from <from>]. *)
 val from_fa1_2_contract_approve :
-  ?wait:string ->
   ?burn_cap:Tez.t ->
   contract:string ->
   as_:string ->
@@ -1975,7 +1950,6 @@ val from_fa1_2_contract_approve :
 
 (** Same as [from_fa1_2_contract_approve], but do not wait for the process to exit. *)
 val spawn_from_fa1_2_contract_approve :
-  ?wait:string ->
   ?burn_cap:Tez.t ->
   contract:string ->
   as_:string ->

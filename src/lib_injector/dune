@@ -6,19 +6,20 @@
  (public_name octez-injector)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
+  tezos-base
   logs.lwt
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-crypto
-  octez-libs.tezos-micheline
+  tezos-base.unix
+  tezos-stdlib-unix
+  tezos-crypto
+  tezos-micheline
   tezos-client-base
-  octez-libs.tezos-workers
+  tezos-workers
   tezos-shell
   octez-crawler)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
+  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_base
   -open Tezos_stdlib_unix
   -open Tezos_micheline

@@ -5,14 +5,14 @@
  (name tezos_client_005_PsBabyM1)
  (public_name tezos-client-005-PsBabyM1)
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-shell-services
+  tezos-base
+  tezos-clic
+  tezos-shell-services
   tezos-client-base
   tezos-protocol-005-PsBabyM1
   tezos-protocol-005-PsBabyM1.lifted
   tezos-signer-backends
-  octez-libs.tezos-rpc
+  tezos-rpc
   uri)
  (library_flags (:standard -linkall))
  (flags

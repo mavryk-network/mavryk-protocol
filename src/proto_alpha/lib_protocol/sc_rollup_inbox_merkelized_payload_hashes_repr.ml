@@ -41,8 +41,35 @@ module Skip_list_parameters = struct
   let basis = 4
 end
 
-module Skip_list = Skip_list.Make (Skip_list_parameters)
-module Hash = Smart_rollup.Merkelized_payload_hashes_hash
+module Skip_list = Skip_list_repr.Make (Skip_list_parameters)
+
+(* 32 *)
+let hash_prefix = "\003\255\138\145\140" (* srib2(55) *)
+
+module Hash = struct
+  let prefix = "srib2"
+
+  let encoded_size = 55
+
+  module H =
+    Blake2B.Make
+      (Base58)
+      (struct
+        let name = "Smart_rollup_merkelized_payload_hashes_hash"
+
+        let title =
+          "The merkelized payload hashes' hash of the smart rollup inbox"
+
+        let b58check_prefix = hash_prefix
+
+        (* defaults to 32 *)
+        let size = None
+      end)
+
+  include H
+
+  let () = Base58.check_encoded_prefix b58check_encoding prefix encoded_size
+end
 
 type t = (Sc_rollup_inbox_message_repr.Hash.t, Hash.t) Skip_list.cell
 
@@ -187,16 +214,16 @@ let verify_proof inclusion_proof =
   let open Result_syntax in
   let* cell =
     match inclusion_proof with
-    | cell :: _ -> return cell
-    | [] -> tzfail (Merkelized_payload_hashes_proof_error "proof is empty")
+    | cell :: _ -> ok cell
+    | [] -> error (Merkelized_payload_hashes_proof_error "proof is empty")
   in
   let rec aux (hash_map, ptr_list) = function
-    | [] -> tzfail (Merkelized_payload_hashes_proof_error "proof is empty")
+    | [] -> error (Merkelized_payload_hashes_proof_error "proof is empty")
     | [target] ->
         let target_ptr = hash target in
         let hash_map = Hash.Map.add target_ptr target hash_map in
         let ptr_list = List.rev (target_ptr :: ptr_list) in
-        return (hash_map, ptr_list, target, target_ptr)
+        ok (hash_map, ptr_list, target, target_ptr)
     | merkelized :: tail ->
         let ptr = hash merkelized in
         aux (Hash.Map.add ptr merkelized hash_map, ptr :: ptr_list) tail

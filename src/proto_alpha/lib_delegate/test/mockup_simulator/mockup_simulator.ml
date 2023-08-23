@@ -335,7 +335,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
          blocks from "normal" blocks by comparing the [proto_level] of
          the shell header and its predecessor. If the predecessor's
          one is different, it must mean that we are considering an
-         activation block and must not attest. Here, we do a bit of
+         activation block and must not endorse. Here, we do a bit of
          hacking in order to return a different proto_level for the
          predecessor of the genesis block which is considered as the
          current protocol activation block. To perfectly mimic what is
@@ -468,7 +468,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
       Lwt.return
         Mockup.M.Block_services.Mempool.
           {
-            validated = ops;
+            applied = ops;
             refused = Operation_hash.Map.empty;
             outdated = Operation_hash.Map.empty;
             branch_refused = Operation_hash.Map.empty;
@@ -476,9 +476,8 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
             unprocessed = Operation_hash.Map.empty;
           }
 
-    let monitor_operations ~version ~validated ~branch_delayed ~branch_refused
-        ~refused =
-      ignore validated ;
+    let monitor_operations ~applied ~branch_delayed ~branch_refused ~refused =
+      ignore applied ;
       ignore branch_delayed ;
       ignore branch_refused ;
       ignore refused ;
@@ -490,11 +489,11 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
           | None when !streamed -> Lwt.return None
           | None ->
               streamed := true ;
-              Lwt.return_some (version, [])
+              Lwt.return (Some [])
           | Some ops -> (
               List.filter_map_s User_hooks.on_new_operation ops >>= function
               | [] -> loop ()
-              | l -> Lwt.return_some (version, List.map (fun x -> (x, None)) l))
+              | l -> Lwt.return_some (List.map (fun x -> (x, None)) l))
         in
         loop ()
       in
@@ -929,16 +928,6 @@ let genesis_protocol_data (baker_sk : Signature.secret_key)
       ~payload_round:Alpha_context.Round.zero
       []
   in
-  let per_block_votes =
-    {
-      Protocol.Per_block_votes_repr.liquidity_baking_vote =
-        Baking_configuration.default_votes_config
-          .Baking_configuration.liquidity_baking_vote;
-      adaptive_issuance_vote =
-        Baking_configuration.default_votes_config
-          .Baking_configuration.adaptive_issuance_vote;
-    }
-  in
   let contents =
     Protocol.Alpha_context.Block_header.
       {
@@ -946,7 +935,8 @@ let genesis_protocol_data (baker_sk : Signature.secret_key)
         payload_round = Alpha_context.Round.zero;
         proof_of_work_nonce;
         seed_nonce_hash = None;
-        per_block_votes;
+        liquidity_baking_toggle_vote =
+          Baking_configuration.default_liquidity_baking_toggle_vote;
       }
   in
   let unsigned_header =
@@ -1342,10 +1332,10 @@ let op_is_signed_by ~public_key (op_hash : Operation_hash.t)
       | Single op_contents ->
           return
             (match op_contents with
-            | Attestation _ ->
-                Alpha_context.Operation.to_watermark (Attestation chain_id)
-            | Preattestation _ ->
-                Alpha_context.Operation.to_watermark (Preattestation chain_id)
+            | Endorsement _ ->
+                Alpha_context.Operation.to_watermark (Endorsement chain_id)
+            | Preendorsement _ ->
+                Alpha_context.Operation.to_watermark (Preendorsement chain_id)
             | _ -> Signature.Generic_operation)
       | _ -> failwith "unexpected contents in %a@." Operation_hash.pp op_hash)
       >>=? fun watermark ->
@@ -1368,14 +1358,14 @@ let op_is_signed_by ~public_key (op_hash : Operation_hash.t)
                signature
                unsigned_operation_bytes))
 
-let op_is_preattestation ?level ?round (op_hash : Operation_hash.t)
+let op_is_preendorsement ?level ?round (op_hash : Operation_hash.t)
     (op : Alpha_context.packed_operation) =
   match op.protocol_data with
   | Operation_data d -> (
       match d.contents with
       | Single op_contents -> (
           match op_contents with
-          | Preattestation consensus_content ->
+          | Preendorsement consensus_content ->
               let right_level =
                 match level with
                 | None -> true
@@ -1396,14 +1386,14 @@ let op_is_preattestation ?level ?round (op_hash : Operation_hash.t)
           | _ -> return false)
       | _ -> failwith "unexpected contents in %a@." Operation_hash.pp op_hash)
 
-let op_is_attestation ?level ?round (op_hash : Operation_hash.t)
+let op_is_endorsement ?level ?round (op_hash : Operation_hash.t)
     (op : Alpha_context.packed_operation) =
   match op.protocol_data with
   | Operation_data d -> (
       match d.contents with
       | Single op_contents -> (
           match op_contents with
-          | Attestation consensus_content ->
+          | Endorsement consensus_content ->
               let right_level =
                 match level with
                 | None -> true

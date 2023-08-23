@@ -42,8 +42,8 @@ type candidate = {
 val candidate_encoding : candidate Data_encoding.t
 
 type event =
-  | Prequorum_reached of candidate * Kind.preattestation operation list
-  | Quorum_reached of candidate * Kind.attestation operation list
+  | Prequorum_reached of candidate * Kind.preendorsement operation list
+  | Quorum_reached of candidate * Kind.endorsement operation list
 
 (** {1 Constructors}*)
 
@@ -69,14 +69,14 @@ val get_quorum_event_stream : t -> event Lwt_stream.t
 
 (** {1 Observers} *)
 
-val monitor_preattestation_quorum :
+val monitor_preendorsement_quorum :
   t ->
   consensus_threshold:int ->
   get_slot_voting_power:(slot:Slot.t -> int option) ->
   candidate ->
   unit Lwt.t
 
-val monitor_attestation_quorum :
+val monitor_endorsement_quorum :
   t ->
   consensus_threshold:int ->
   get_slot_voting_power:(slot:Slot.t -> int option) ->

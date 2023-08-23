@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
-// SPDX-FileCopyrightText: 2023 Marigold <marigold@marigold.dev>
 //
 // SPDX-License-Identifier: MIT
 
@@ -26,8 +25,6 @@ pub mod inbox;
 pub mod michelson;
 #[cfg(feature = "alloc")]
 pub mod outbox;
-#[cfg(feature = "crypto")]
-pub mod public_key;
 #[cfg(feature = "crypto")]
 pub mod public_key_hash;
 

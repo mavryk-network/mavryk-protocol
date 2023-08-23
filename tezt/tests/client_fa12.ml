@@ -30,7 +30,35 @@
    Subject:      Tests the client's FA1.2 commands
 *)
 
-open Fa12
+type fa12_script = {
+  name : string list;
+  build_storage : Account.key -> string;
+  mint_entrypoint : string;
+  mint_arg : Account.key -> Tez.t -> string;
+}
+
+let fa12_scripts =
+  [
+    {
+      name = ["mini_scenarios"; "fa12_reference"];
+      build_storage =
+        (fun admin ->
+          sf {|Pair {} (Pair "%s" (Pair False 0))|} admin.public_key_hash);
+      mint_entrypoint = "mint";
+      mint_arg =
+        (fun owner amount ->
+          sf {|(Pair "%s" %d)|} owner.public_key_hash (Tez.to_mutez amount));
+    };
+    {
+      name = ["mini_scenarios"; "lqt_fa12.mligo"];
+      build_storage =
+        (fun admin -> sf {|Pair {} {} "%s" 0|} admin.public_key_hash);
+      mint_entrypoint = "mintOrBurn";
+      mint_arg =
+        (fun owner amount ->
+          sf {|(Pair %d "%s")|} (Tez.to_mutez amount) owner.public_key_hash);
+    };
+  ]
 
 let register_fa12_test ~title ?(tags = []) test_body protocols =
   fa12_scripts
@@ -47,22 +75,29 @@ let register_fa12_test ~title ?(tags = []) test_body protocols =
        (fun protocol ->
          let* client = Client.init_mockup ~protocol () in
          let admin = Account.Bootstrap.keys.(2) in
+         let initial_storage = fa12_script.build_storage admin in
          let* fa12_alias, fa12_address =
-           originate_fa12
+           Client.originate_contract_at
+             ~amount:Tez.zero
              ~src:Account.Bootstrap.keys.(0).public_key_hash
-             ~admin
-             ~fa12_script
+             ~init:initial_storage
+             ~burn_cap:(Tez.of_int 2)
              client
+             fa12_script.name
              protocol
          in
          let initial_mint = Tez.of_mutez_int 20000 in
+         let mint_arg =
+           fa12_script.mint_arg Account.Bootstrap.keys.(1) initial_mint
+         in
          let* () =
-           mint
-             ~admin
-             ~mint:initial_mint
-             ~dest:Account.Bootstrap.keys.(1)
-             ~fa12_address
-             ~fa12_script
+           Client.transfer
+             ~amount:Tez.zero
+             ~giver:admin.public_key_hash
+             ~receiver:fa12_address
+             ~entrypoint:fa12_script.mint_entrypoint
+             ~arg:mint_arg
+             ~burn_cap:Tez.one
              client
          in
          (* originate viewer *)

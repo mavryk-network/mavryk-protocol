@@ -3,7 +3,6 @@
 (* Open Source License                                                       *)
 (* Copyright (c) 2021-2022 Nomadic Labs <contact@nomadic-labs.com>           *)
 (* Copyright (c) 2022 DaiLambda, Inc. <contact@dailambda,jp>                 *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -53,8 +52,6 @@ type ex_stack_and_continuation =
 type ex_value =
   | Ex_value : {value : 'a; ty : ('a, _) Script_typed_ir.ty} -> ex_value
 
-type benchmark_type = Registration_helpers.benchmark_type = Time | Alloc
-
 (* ------------------------------------------------------------------------- *)
 
 let sf = Printf.sprintf
@@ -62,35 +59,11 @@ let sf = Printf.sprintf
 (* End of Stack *)
 let eos = Script_typed_ir.(EmptyCell, EmptyCell)
 
-let info_and_name ~benchmark_type ~intercept ?(salt = "") s =
-  (* TODO: https://gitlab.com/tezos/tezos/-/issues/6072
-     Time benchmarks should be qualified with "time" when we switch to time-alloc cost model
-  *)
+let info_and_name ~intercept ?(salt = "") s =
   let s = s ^ salt in
-
-  let info =
-    let type_str =
-      match benchmark_type with
-      | Time -> "Time benchmark"
-      | Alloc -> "Allocation benchmark"
-    in
-    let intercept_str = if intercept then " (intercept case)" else "" in
-    sf "%s %s%s" type_str s intercept_str
-  in
-
-  let benchmark_type =
-    match benchmark_type with Time -> [] | Alloc -> ["alloc"]
-  in
-  let intercept = if intercept then ["intercept"] else [] in
-  let name = s :: (benchmark_type @ intercept) in
-
-  let rec make_name ns = function
-    | [] -> assert false
-    | [s] -> ns s
-    | s :: ss -> make_name (Namespace.make ns s) ss
-  in
-
-  (info, make_name ns name)
+  if intercept then
+    (sf "Benchmark %s (intercept case)" s, Namespace.make ns s "intercept")
+  else (sf "Benchmark %s" s, ns s)
 
 module Default_boilerplate = struct
   type workload = Interpreter_workload.t
@@ -196,32 +169,7 @@ let make_default_samplers ?(algo = `Default) cfg :
 (* ------------------------------------------------------------------------- *)
 (* Helpers for creating benchmarks for the interpreter *)
 
-(* Register only a model for code generation *)
-let register_model_for_code_generation model =
-  let model = Model.make ~conv:Fun.id ~model in
-  Registration.register_model_for_code_generation "interpreter" model
-
-let register_time_alloc_codegen_model instr_or_cont_name =
-  let (Model.Model codegen_model) =
-    Interpreter_model.make_time_alloc_codegen_model instr_or_cont_name
-  in
-  register_model_for_code_generation codegen_model
-
-let prepare_workload ?amplification ctxt step_constants stack_type kinstr stack
-    =
-  let workload =
-    Interpreter_workload.extract_deps
-      ctxt
-      step_constants
-      stack_type
-      kinstr
-      stack
-  in
-  match amplification with
-  | None -> workload
-  | Some n -> List.repeat n workload |> List.flatten
-
-let time_benchmark_from_kinstr_and_stack :
+let benchmark_from_kinstr_and_stack :
     ?amplification:int ->
     Alpha_context.context ->
     Protocol.Script_interpreter.step_constants ->
@@ -229,72 +177,8 @@ let time_benchmark_from_kinstr_and_stack :
     Interpreter_workload.ir_sized_step list Generator.benchmark =
  fun ?amplification ctxt step_constants stack_kinstr ->
   let ctxt = Gas_helpers.set_limit ctxt in
-  let (Ex_stack_and_kinstr {stack = bef_top, bef; stack_type; kinstr}) =
-    stack_kinstr
-  in
-  let workload =
-    prepare_workload
-      ?amplification
-      ctxt
-      step_constants
-      stack_type
-      kinstr
-      (bef_top, bef)
-  in
-  let _gas_counter, outdated_ctxt =
-    Local_gas_counter.local_gas_counter_and_outdated_context ctxt
-  in
-
-  let closure =
-    match amplification with
-    | None ->
-        let closure () =
-          (* Lwt_main.run *)
-          ignore
-            (Script_interpreter.Internals.step
-               (outdated_ctxt, step_constants)
-               (Local_gas_counter 9_999_999_999)
-               kinstr
-               bef_top
-               bef)
-        in
-        closure
-    | Some amplification_factor ->
-        assert (amplification_factor > 0) ;
-        let closure () =
-          for _i = 1 to amplification_factor do
-            ignore
-              (* Lwt_main.run *)
-              (Script_interpreter.Internals.step
-                 (outdated_ctxt, step_constants)
-                 (Local_gas_counter 9_999_999_999)
-                 kinstr
-                 bef_top
-                 bef)
-          done
-        in
-        closure
-  in
-  Generator.Plain {workload; closure}
-
-let alloc_benchmark_from_kinstr_and_stack :
-    Alpha_context.context ->
-    Protocol.Script_interpreter.step_constants ->
-    ex_stack_and_kinstr ->
-    Interpreter_workload.ir_sized_step list Generator.benchmark =
- fun ctxt step_constants stack_kinstr ->
-  let ctxt = Gas_helpers.set_limit ctxt in
-  let (Ex_stack_and_kinstr {stack = bef_top, bef; stack_type; kinstr}) =
-    stack_kinstr
-  in
-  let workload =
-    prepare_workload ctxt step_constants stack_type kinstr (bef_top, bef)
-  in
-  let _gas_counter, outdated_ctxt =
-    Local_gas_counter.local_gas_counter_and_outdated_context ctxt
-  in
-
-  let measure () =
+  let measure_allocation ~outdated_ctxt ~step_constants ~kinstr ~bef_top ~bef ()
+      =
     let result =
       Lwt_main.run
       @@ Script_interpreter.Internals.step
@@ -304,9 +188,7 @@ let alloc_benchmark_from_kinstr_and_stack :
            bef_top
            bef
     in
-    Result.fold
-      ~error:(fun _ -> 0.0)
-      ~ok:(fun (stack_top, stack, _, _) ->
+    Option.map (fun (stack_top, stack, _, _) ->
         let size_after =
           Obj.reachable_words (Obj.repr (stack_top, stack, bef_top, bef))
         in
@@ -314,27 +196,84 @@ let alloc_benchmark_from_kinstr_and_stack :
           Obj.reachable_words (Obj.repr (bef_top, bef, bef_top, bef))
         in
 
-        float_of_int (size_after - size_before))
-      result
+        size_after - size_before)
+    @@ Result.to_option result
   in
 
-  Generator.Calculated {workload; measure}
-
-let benchmark_from_kinstr_and_stack :
-    ?amplification:int ->
-    benchmark_type ->
-    Alpha_context.context ->
-    Protocol.Script_interpreter.step_constants ->
-    ex_stack_and_kinstr ->
-    Interpreter_workload.ir_sized_step list Generator.benchmark =
- fun ?amplification benchmark_type ->
-  match benchmark_type with
-  | Time -> time_benchmark_from_kinstr_and_stack ?amplification
-  | Alloc ->
-      (* amplification wouldn't make sense,
-         because the measurement resolution doesn't matter for the allocation *)
-      assert (amplification = None) ;
-      alloc_benchmark_from_kinstr_and_stack
+  match stack_kinstr with
+  | Ex_stack_and_kinstr {stack = bef_top, bef; stack_type; kinstr} ->
+      let workload, closure, measure_allocation =
+        match amplification with
+        | None ->
+            let workload =
+              Interpreter_workload.extract_deps
+                ctxt
+                step_constants
+                stack_type
+                kinstr
+                (bef_top, bef)
+            in
+            let _gas_counter, outdated_ctxt =
+              Local_gas_counter.local_gas_counter_and_outdated_context ctxt
+            in
+            let closure () =
+              (* Lwt_main.run *)
+              ignore
+                (Script_interpreter.Internals.step
+                   (outdated_ctxt, step_constants)
+                   (Local_gas_counter 9_999_999_999)
+                   kinstr
+                   bef_top
+                   bef)
+            in
+            let measure_allocation =
+              measure_allocation
+                ~outdated_ctxt
+                ~step_constants
+                ~kinstr
+                ~bef_top
+                ~bef
+            in
+            (workload, closure, measure_allocation)
+        | Some amplification_factor ->
+            assert (amplification_factor > 0) ;
+            let workload =
+              Interpreter_workload.extract_deps
+                ctxt
+                step_constants
+                stack_type
+                kinstr
+                (bef_top, bef)
+            in
+            let workload =
+              List.repeat amplification_factor workload |> List.flatten
+            in
+            let _gas_counter, outdated_ctxt =
+              Local_gas_counter.local_gas_counter_and_outdated_context ctxt
+            in
+            let closure () =
+              for _i = 1 to amplification_factor do
+                ignore
+                  (* Lwt_main.run *)
+                  (Script_interpreter.Internals.step
+                     (outdated_ctxt, step_constants)
+                     (Local_gas_counter 9_999_999_999)
+                     kinstr
+                     bef_top
+                     bef)
+              done
+            in
+            let measure_allocation =
+              measure_allocation
+                ~outdated_ctxt
+                ~step_constants
+                ~kinstr
+                ~bef_top
+                ~bef
+            in
+            (workload, closure, measure_allocation)
+      in
+      Generator.PlainWithAllocation {workload; closure; measure_allocation}
 
 let make_benchmark :
     ?amplification:int ->
@@ -343,7 +282,6 @@ let make_benchmark :
     ?more_tags:string list ->
     ?check:(unit -> unit) ->
     name:Interpreter_workload.instruction_name ->
-    benchmark_type:benchmark_type ->
     kinstr_and_stack_sampler:
       (Default_config.config -> Random.State.t -> unit -> ex_stack_and_kinstr) ->
     unit ->
@@ -354,7 +292,6 @@ let make_benchmark :
      ?(more_tags = [])
      ?(check = fun () -> ())
      ~name
-     ~benchmark_type
      ~kinstr_and_stack_sampler
      () ->
   let module B : Benchmark.S = struct
@@ -366,34 +303,29 @@ let make_benchmark :
     let models =
       (* [intercept = true] implies there's a benchmark with [intercept = false].
          No need to register the model twice. *)
-      Interpreter_model.make_model
-        benchmark_type
-        ?amplification
-        (Instr_name name)
+      Interpreter_model.make_model ?amplification (Instr_name name)
 
     let info, name =
       info_and_name
-        ~benchmark_type
         ~intercept
         ?salt
         (Interpreter_workload.string_of_instruction_name name)
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Generate_code "michelson_v1_gas"
+    let generated_code_destination = None
 
     let benchmark kinstr_and_stack_sampler ctxt step_constants () =
       let stack_instr = kinstr_and_stack_sampler () in
       benchmark_from_kinstr_and_stack
         ?amplification
-        benchmark_type
         ctxt
         step_constants
         stack_instr
 
     let create_benchmarks ~rng_state ~bench_num (config : config) =
       check () ;
-      match Lwt_main.run (Execution_context.make ~rng_state ()) with
+      match Lwt_main.run (Execution_context.make ~rng_state) with
       | Error _errs -> assert false
       | Ok (ctxt, step_constants) ->
           let kinstr_and_stack_sampler =
@@ -413,7 +345,6 @@ let make_simple_benchmark :
     ?salt:string ->
     ?check:(unit -> unit) ->
     name:Interpreter_workload.instruction_name ->
-    benchmark_type:benchmark_type ->
     stack_type:(bef_top, bef) Script_typed_ir.stack_ty ->
     kinstr:(bef_top, bef, res_top, res) Script_typed_ir.kinstr ->
     unit ->
@@ -424,7 +355,6 @@ let make_simple_benchmark :
      ?salt
      ?check
      ~name
-     ~benchmark_type
      ~stack_type
      ~kinstr
      () ->
@@ -447,12 +377,11 @@ let make_simple_benchmark :
     ?salt
     ?check
     ~name
-    ~benchmark_type
     ~kinstr_and_stack_sampler
     ()
 
-let benchmark ?(benchmark_type = Time) ?amplification ?intercept ?more_tags
-    ?salt ?check ~name ~kinstr_and_stack_sampler () =
+let benchmark ?amplification ?intercept ?more_tags ?salt ?check ~name
+    ~kinstr_and_stack_sampler () =
   let bench =
     make_benchmark
       ?amplification
@@ -461,38 +390,13 @@ let benchmark ?(benchmark_type = Time) ?amplification ?intercept ?more_tags
       ?salt
       ?check
       ~name
-      ~benchmark_type
       ~kinstr_and_stack_sampler
       ()
   in
-  Registration_helpers.register ~benchmark_type bench
+  Registration_helpers.register bench
 
-let time_alloc_benchmark ?amplification ?intercept ?more_tags ?salt ?check ~name
-    ~kinstr_and_stack_sampler () =
-  benchmark
-    ~benchmark_type:Time
-    ?amplification
-    ?intercept
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~kinstr_and_stack_sampler
-    () ;
-  benchmark
-    ~benchmark_type:Alloc
-    ?intercept
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~kinstr_and_stack_sampler
-    () ;
-  register_time_alloc_codegen_model (Instr_name name)
-
-let benchmark_with_stack_sampler ?(benchmark_type = Time) ?amplification
-    ?intercept ?more_tags ?salt ?check ~stack_type ~name ~kinstr ~stack_sampler
-    () =
+let benchmark_with_stack_sampler ?amplification ?intercept ?more_tags ?salt
+    ?check ~stack_type ~name ~kinstr ~stack_sampler () =
   let kinstr_and_stack_sampler config rng_state =
     let stack_sampler = stack_sampler config rng_state in
     fun () -> Ex_stack_and_kinstr {stack = stack_sampler (); stack_type; kinstr}
@@ -505,14 +409,13 @@ let benchmark_with_stack_sampler ?(benchmark_type = Time) ?amplification
       ?salt
       ?check
       ~name
-      ~benchmark_type
       ~kinstr_and_stack_sampler
       ()
   in
-  Registration_helpers.register ~benchmark_type bench
+  Registration_helpers.register bench
 
-let benchmark_with_fixed_stack ?(benchmark_type = Time) ?amplification
-    ?intercept ?more_tags ?salt ?check ~name ~stack_type ~stack ~kinstr () =
+let benchmark_with_fixed_stack ?amplification ?intercept ?more_tags ?salt ?check
+    ~name ~stack ~kinstr () =
   benchmark_with_stack_sampler
     ?amplification
     ?intercept
@@ -520,42 +423,12 @@ let benchmark_with_fixed_stack ?(benchmark_type = Time) ?amplification
     ?salt
     ?check
     ~name
-    ~stack_type
-    ~benchmark_type
     ~kinstr
     ~stack_sampler:(fun _cfg _rng_state () -> stack)
     ()
 
-let time_alloc_benchmark_with_fixed_stack ?amplification ?intercept ?more_tags
-    ?salt ?check ~name ~stack_type ~stack ~kinstr () =
-  benchmark_with_fixed_stack
-    ~benchmark_type:Time
-    ?amplification
-    ?intercept
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~stack_type
-    ~stack
-    ~kinstr
-    () ;
-  benchmark_with_fixed_stack
-    ~benchmark_type:Alloc
-    ?intercept
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~stack_type
-    ~stack
-    ~kinstr
-    () ;
-  register_time_alloc_codegen_model (Instr_name name)
-
-let simple_benchmark_with_stack_sampler ?(benchmark_type = Time) ?amplification
-    ?intercept_stack ?salt ?more_tags ?check ~name ~stack_type ~kinstr
-    ~stack_sampler () =
+let simple_benchmark_with_stack_sampler ?amplification ?intercept_stack ?salt
+    ?more_tags ?check ~name ~stack_type ~kinstr ~stack_sampler () =
   benchmark_with_stack_sampler
     ?amplification
     ~intercept:false
@@ -563,7 +436,6 @@ let simple_benchmark_with_stack_sampler ?(benchmark_type = Time) ?amplification
     ?more_tags
     ?check
     ~name
-    ~benchmark_type
     ~stack_type
     ~kinstr
     ~stack_sampler
@@ -577,43 +449,14 @@ let simple_benchmark_with_stack_sampler ?(benchmark_type = Time) ?amplification
         ?salt
         ?check
         ~name
-        ~benchmark_type
         ~stack_type
         ~stack
         ~kinstr
         ())
     intercept_stack
 
-let simple_time_alloc_benchmark_with_stack_sampler ?amplification
-    ?intercept_stack ?salt ?more_tags ?check ~name ~stack_type ~kinstr
-    ~stack_sampler () =
-  simple_benchmark_with_stack_sampler
-    ~benchmark_type:Time
-    ?amplification
-    ?intercept_stack
-    ?salt
-    ?more_tags
-    ?check
-    ~name
-    ~stack_type
-    ~kinstr
-    ~stack_sampler
-    () ;
-  simple_benchmark_with_stack_sampler
-    ~benchmark_type:Alloc
-    ?intercept_stack
-    ?salt
-    ?more_tags
-    ?check
-    ~name
-    ~stack_type
-    ~kinstr
-    ~stack_sampler
-    () ;
-  register_time_alloc_codegen_model (Instr_name name)
-
-let simple_benchmark ?(benchmark_type = Time) ?amplification ?intercept_stack
-    ?more_tags ?salt ?check ~name ~stack_type ~kinstr () =
+let simple_benchmark ?amplification ?intercept_stack ?more_tags ?salt ?check
+    ~name ~stack_type ~kinstr () =
   let bench =
     make_simple_benchmark
       ?amplification
@@ -622,12 +465,11 @@ let simple_benchmark ?(benchmark_type = Time) ?amplification ?intercept_stack
       ?salt
       ?check
       ~name
-      ~benchmark_type
       ~stack_type
       ~kinstr
       ()
   in
-  Registration_helpers.register ~benchmark_type bench ;
+  Registration_helpers.register bench ;
   Option.iter
     (fun stack ->
       benchmark_with_fixed_stack
@@ -637,42 +479,16 @@ let simple_benchmark ?(benchmark_type = Time) ?amplification ?intercept_stack
         ?salt
         ?check
         ~name
-        ~benchmark_type
         ~stack_type
         ~stack
         ~kinstr
         ())
     intercept_stack
 
-let simple_time_alloc_benchmark ?amplification ?intercept_stack ?more_tags ?salt
-    ?check ~name ~stack_type ~kinstr () =
-  simple_benchmark
-    ~benchmark_type:Time
-    ?amplification
-    ?intercept_stack
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~stack_type
-    ~kinstr
-    () ;
-  simple_benchmark
-    ~benchmark_type:Alloc
-    ?intercept_stack
-    ?more_tags
-    ?salt
-    ?check
-    ~name
-    ~stack_type
-    ~kinstr
-    () ;
-  register_time_alloc_codegen_model (Instr_name name)
-
 (* ------------------------------------------------------------------------- *)
 (* Helpers for creating benchmarks for [Script_interpreter.next] *)
 
-let time_benchmark_from_continuation :
+let benchmark_from_continuation :
     ?amplification:int ->
     Alpha_context.context ->
     Protocol.Script_interpreter.step_constants ->
@@ -743,70 +559,6 @@ let time_benchmark_from_continuation :
       in
       Generator.Plain {workload; closure}
 
-let alloc_benchmark_from_continuation :
-    Alpha_context.context ->
-    Protocol.Script_interpreter.step_constants ->
-    ex_stack_and_continuation ->
-    Interpreter_workload.ir_sized_step list Generator.benchmark =
- fun ctxt step_constants stack_cont ->
-  let ctxt = Gas_helpers.set_limit ctxt in
-  let (Ex_stack_and_cont {stack = bef_top, bef; cont; stack_type}) =
-    stack_cont
-  in
-  let workload =
-    Interpreter_workload.extract_deps_continuation
-      ctxt
-      step_constants
-      stack_type
-      cont
-      (bef_top, bef)
-  in
-  let _gas_counter, outdated_ctxt =
-    Local_gas_counter.local_gas_counter_and_outdated_context ctxt
-  in
-  let measure () =
-    let result =
-      Lwt_main.run
-      @@ Script_interpreter.Internals.next
-           None
-           (outdated_ctxt, step_constants)
-           (Local_gas_counter 9_999_999_999)
-           stack_type
-           cont
-           bef_top
-           bef
-    in
-    Result.fold
-      ~error:(fun _ -> 0.0)
-      ~ok:(fun (stack_top, stack, _, _) ->
-        let size_after =
-          Obj.reachable_words (Obj.repr (stack_top, stack, bef_top, bef))
-        in
-        let size_before =
-          Obj.reachable_words (Obj.repr (bef_top, bef, bef_top, bef))
-        in
-
-        float_of_int (size_after - size_before))
-      result
-  in
-  Generator.Calculated {workload; measure}
-
-let benchmark_from_continuation :
-    ?amplification:int ->
-    benchmark_type ->
-    Alpha_context.context ->
-    Protocol.Script_interpreter.step_constants ->
-    ex_stack_and_continuation ->
-    Interpreter_workload.ir_sized_step list Generator.benchmark =
- fun ?amplification benchmark_type ->
-  match benchmark_type with
-  | Time -> time_benchmark_from_continuation ?amplification
-  | Alloc ->
-      (* amplification wouldn't make sense,
-         because the measurement resolution doesn't matter for the allocation *)
-      assert (amplification = None) ;
-      alloc_benchmark_from_continuation
-
 let make_continuation_benchmark :
     ?amplification:int ->
     ?intercept:bool ->
@@ -814,7 +566,6 @@ let make_continuation_benchmark :
     ?more_tags:string list ->
     ?check:(unit -> unit) ->
     name:Interpreter_workload.continuation_name ->
-    benchmark_type:benchmark_type ->
     cont_and_stack_sampler:
       (Default_config.config ->
       Random.State.t ->
@@ -828,7 +579,6 @@ let make_continuation_benchmark :
      ?(more_tags = [])
      ?(check = fun () -> ())
      ~name
-     ~benchmark_type
      ~cont_and_stack_sampler
      () ->
   let module B : Benchmark.S = struct
@@ -837,35 +587,25 @@ let make_continuation_benchmark :
 
     let tags = tags @ more_tags
 
-    let models =
-      Interpreter_model.make_model
-        benchmark_type
-        ?amplification
-        (Cont_name name)
+    let models = Interpreter_model.make_model ?amplification (Cont_name name)
 
     let info, name =
       info_and_name
-        ~benchmark_type
         ~intercept
         ?salt
         (Interpreter_workload.string_of_continuation_name name)
 
     let module_filename = __FILE__
 
-    let purpose = Benchmark.Generate_code "michelson_v1_gas"
+    let generated_code_destination = None
 
     let benchmark cont_and_stack_sampler ctxt step_constants () =
       let stack_instr = cont_and_stack_sampler () in
-      benchmark_from_continuation
-        ?amplification
-        benchmark_type
-        ctxt
-        step_constants
-        stack_instr
+      benchmark_from_continuation ?amplification ctxt step_constants stack_instr
 
     let create_benchmarks ~rng_state ~bench_num (config : config) =
       check () ;
-      match Lwt_main.run (Execution_context.make ~rng_state ()) with
+      match Lwt_main.run (Execution_context.make ~rng_state) with
       | Error _errs -> assert false
       | Ok (ctxt, step_constants) ->
           let cont_and_stack_sampler =
@@ -877,8 +617,8 @@ let make_continuation_benchmark :
   end in
   (module B : Benchmark.S)
 
-let continuation_benchmark ?(benchmark_type = Time) ?amplification ?intercept
-    ?salt ?more_tags ?check ~name ~cont_and_stack_sampler () =
+let continuation_benchmark ?amplification ?intercept ?salt ?more_tags ?check
+    ~name ~cont_and_stack_sampler () =
   let bench =
     make_continuation_benchmark
       ?amplification
@@ -887,34 +627,10 @@ let continuation_benchmark ?(benchmark_type = Time) ?amplification ?intercept
       ?more_tags
       ?check
       ~name
-      ~benchmark_type
       ~cont_and_stack_sampler
       ()
   in
-  Registration_helpers.register ~benchmark_type bench
-
-let continuation_time_alloc_benchmark ?amplification ?intercept ?salt ?more_tags
-    ?check ~name ~cont_and_stack_sampler () =
-  continuation_benchmark
-    ?amplification
-    ?intercept
-    ?salt
-    ?more_tags
-    ?check
-    ~name
-    ~benchmark_type:Time
-    ~cont_and_stack_sampler
-    () ;
-  continuation_benchmark
-    ?intercept
-    ?salt
-    ?more_tags
-    ?check
-    ~name
-    ~benchmark_type:Alloc
-    ~cont_and_stack_sampler
-    () ;
-  register_time_alloc_codegen_model (Cont_name name)
+  Registration_helpers.register bench
 
 (* ------------------------------------------------------------------------- *)
 (* Sampling helpers *)
@@ -965,7 +681,7 @@ module Registration_section = struct
 
   let () =
     (* KHalt *)
-    simple_time_alloc_benchmark
+    simple_benchmark
       ~amplification:100
       ~name:Interpreter_workload.N_IHalt
       ~stack_type:(unit @$ bot)
@@ -980,7 +696,7 @@ module Registration_section = struct
 
       let module_filename = __FILE__
 
-      let purpose = Benchmark.Generate_code "michelson_v1_gas"
+      let generated_code_destination = None
 
       let tags = [Tags.interpreter]
 
@@ -1023,7 +739,7 @@ module Registration_section = struct
   module Stack = struct
     let () =
       (* KDrop ; KHalt *)
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_IDrop
         ~stack_type:(unit @$ unit @$ bot)
@@ -1032,7 +748,7 @@ module Registration_section = struct
 
     let () =
       (* IDup ; IHalt *)
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_IDup
         ~stack_type:(unit @$ unit @$ bot)
@@ -1040,7 +756,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_ISwap
         ~stack_type:(unit @$ unit @$ bot)
@@ -1048,7 +764,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_IPush
         ~stack_type:(unit @$ unit @$ bot)
@@ -1056,7 +772,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_IUnit
         ~stack_type:(unit @$ unit @$ bot)
@@ -1082,33 +798,28 @@ module Registration_section = struct
         | Ex_stack (stack_ty, stack) -> Ex_stack (unit @$ stack_ty, ((), stack))
 
     let parse_instr rng_state node stack =
-      let open Lwt_result_syntax in
       match stack with
       | Ex_stack (stack_ty, stack) ->
           raise_if_error
             (Lwt_main.run
-               (let* ctxt, _step_constants =
-                  Execution_context.make ~rng_state ()
-                in
-                let* judgement, _ =
-                  let*! result =
-                    Script_ir_translator.parse_instr
-                      Script_tc_context.data
-                      ctxt
-                      ~elab_conf:
-                        (Script_ir_translator_config.make ~legacy:false ())
-                      node
-                      stack_ty
-                  in
-                  Lwt.return (Environment.wrap_tzresult result)
-                in
-                match judgement with
-                | Script_ir_translator.Typed descr ->
-                    let kinstr = descr.instr.apply (IHalt dummy_loc) in
-                    return
-                      (Ex_stack_and_kinstr
-                         {stack; kinstr; stack_type = descr.bef})
-                | Script_ir_translator.Failed _ -> assert false))
+               ( Execution_context.make ~rng_state
+               >>=? fun (ctxt, _step_constants) ->
+                 Script_ir_translator.parse_instr
+                   Script_tc_context.data
+                   ctxt
+                   ~elab_conf:
+                     (Script_ir_translator_config.make ~legacy:false ())
+                   node
+                   stack_ty
+                 >|= Environment.wrap_tzresult
+                 >>=? fun (judgement, _) ->
+                 match judgement with
+                 | Script_ir_translator.Typed descr ->
+                     let kinstr = descr.instr.apply (IHalt dummy_loc) in
+                     return
+                       (Ex_stack_and_kinstr
+                          {stack; kinstr; stack_type = descr.bef})
+                 | Script_ir_translator.Failed _ -> assert false ))
 
     open Protocol.Michelson_v1_primitives
 
@@ -1214,13 +925,6 @@ module Registration_section = struct
           in
           let node = pair width in
           parse_instr rng_state node long_stack)
-        () ;
-      benchmark
-        ~name:Interpreter_workload.N_IComb
-        ~intercept:true
-        ~kinstr_and_stack_sampler:(fun _ rng_state () ->
-          let node = pair 2 in
-          parse_instr rng_state node long_stack)
         ()
 
     let rec make_comb_stack (comb_width : int) (depth : int) acc =
@@ -1264,17 +968,6 @@ module Registration_section = struct
             make_comb_stack width 1 (Ex_stack (unit @$ bot, ((), eos)))
           in
           parse_instr rng_state node stack)
-        () ;
-      benchmark
-        ~name:Interpreter_workload.N_IUncomb
-        ~intercept:true
-        ~kinstr_and_stack_sampler:(fun _ rng_state () ->
-          let width = 2 in
-          let node = unpair width in
-          let stack =
-            make_comb_stack width 1 (Ex_stack (unit @$ bot, ((), eos)))
-          in
-          parse_instr rng_state node stack)
         ()
 
     let () =
@@ -1296,14 +989,6 @@ module Registration_section = struct
           let stack =
             make_comb_stack width 1 (Ex_stack (unit @$ bot, ((), eos)))
           in
-          parse_instr rng_state node stack)
-        () ;
-      benchmark
-        ~name:Interpreter_workload.N_IComb_get
-        ~intercept:true
-        ~kinstr_and_stack_sampler:(fun _ rng_state () ->
-          let node = comb_get 0 in
-          let stack = make_comb_stack 2 1 (Ex_stack (unit @$ bot, ((), eos))) in
           parse_instr rng_state node stack)
         ()
 
@@ -1332,19 +1017,6 @@ module Registration_section = struct
             Ex_stack (unit @$ stack_ty, ((), stack))
           in
           parse_instr rng_state node stack)
-        () ;
-      benchmark
-        ~name:Interpreter_workload.N_IComb_set
-        ~intercept:true
-        ~kinstr_and_stack_sampler:(fun _ rng_state () ->
-          let node = comb_set 0 in
-          let stack =
-            let (Ex_stack (stack_ty, stack)) =
-              make_comb_stack 2 1 (Ex_stack (unit @$ bot, ((), eos)))
-            in
-            Ex_stack (unit @$ stack_ty, ((), stack))
-          in
-          parse_instr rng_state node stack)
         ()
 
     let () =
@@ -1354,40 +1026,33 @@ module Registration_section = struct
         ~kinstr_and_stack_sampler:(fun _cfg rng_state () ->
           let node = dup (1 + sample_depth rng_state) in
           parse_instr rng_state node long_stack)
-        () ;
-      benchmark
-        ~name:Interpreter_workload.N_IDupN
-        ~intercept:true
-        ~kinstr_and_stack_sampler:(fun _cfg rng_state () ->
-          let node = dup 1 in
-          parse_instr rng_state node long_stack)
         ()
   end
 
   module Pairs = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICons_pair
         ~stack_type:(unit @$ unit @$ bot)
         ~kinstr:(ICons_pair (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICar
         ~stack_type:(cpair unit unit @$ bot)
         ~kinstr:(ICar (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICdr
         ~stack_type:(cpair unit unit @$ bot)
         ~kinstr:(ICdr (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IUnpair
         ~stack_type:(cpair unit unit @$ bot)
         ~kinstr:(IUnpair (dummy_loc, halt))
@@ -1396,21 +1061,21 @@ module Registration_section = struct
 
   module Options = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICons_some
         ~stack_type:(unit @$ bot)
         ~kinstr:(ICons_some (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICons_none
         ~stack_type:(unit @$ bot)
         ~kinstr:(ICons_none (dummy_loc, unit, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IIf_none
         ~stack_type:(option unit @$ bot)
         ~kinstr:
@@ -1424,48 +1089,41 @@ module Registration_section = struct
         ()
 
     let () =
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_IOpt_map_none
+      benchmark_with_fixed_stack
+        ~name:Interpreter_workload.N_IOpt_map
+        ~salt:"none"
         ~stack:(None, ((), eos))
         ~stack_type:(option unit @$ unit @$ bot)
         ~kinstr:(IOpt_map {loc = dummy_loc; body = halt; k = halt})
         ()
 
     let () =
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_IOpt_map_some
+      benchmark_with_fixed_stack
+        ~name:Interpreter_workload.N_IOpt_map
+        ~salt:"some"
         ~stack:(Some (), ((), eos))
         ~stack_type:(option unit @$ unit @$ bot)
         ~kinstr:(IOpt_map {loc = dummy_loc; body = halt; k = halt})
         ()
-
-    let () =
-      let model =
-        Interpreter_model.Models.max_branching_model
-          ~case_0:"none_const"
-          ~case_1:"some_const"
-          "N_IOpt_map"
-      in
-      register_model_for_code_generation model
   end
 
   module Ors = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ILeft
         ~stack_type:(unit @$ bot)
         ~kinstr:(ICons_left (dummy_loc, unit, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IRight
         ~stack_type:(unit @$ bot)
         ~kinstr:(ICons_right (dummy_loc, unit, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IIf_left
         ~stack_type:(cor unit unit @$ bot)
         ~kinstr:
@@ -1481,21 +1139,21 @@ module Registration_section = struct
 
   module Lists = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICons_list
         ~stack_type:(unit @$ list unit @$ bot)
         ~kinstr:(ICons_list (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_INil
         ~stack_type:(unit @$ bot)
         ~kinstr:(INil (dummy_loc, unit, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IIf_cons
         ~stack_type:(list unit @$ unit @$ bot)
         ~kinstr:
@@ -1524,7 +1182,7 @@ module Registration_section = struct
     end
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IList_size
         ~stack_type:(list unit @$ bot)
         ~kinstr:(IList_size (dummy_loc, halt))
@@ -1536,7 +1194,7 @@ module Registration_section = struct
         IIter (empty case) ->
         IHalt
        *)
-      time_alloc_benchmark_with_fixed_stack
+      benchmark_with_fixed_stack
         ~name:Interpreter_workload.N_IList_iter
         ~stack:(Script_list.empty, ((), eos))
         ~stack_type:(list unit @$ unit @$ bot)
@@ -1547,7 +1205,7 @@ module Registration_section = struct
 
   module Sets = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IEmpty_set
         ~stack_type:(unit @$ bot)
         ~kinstr:(IEmpty_set (dummy_loc, unit, halt))
@@ -1639,7 +1297,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISet_size
         ~stack_type:(set unit @$ bot)
         ~kinstr:(ISet_size (dummy_loc, halt))
@@ -1666,7 +1324,7 @@ module Registration_section = struct
       (key, map)
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IEmpty_map
         ~stack_type:(unit @$ bot)
         ~kinstr:(IEmpty_map (dummy_loc, unit, Some unit, halt))
@@ -1802,7 +1460,7 @@ module Registration_section = struct
         (map_get) ->
         IHalt
        *)
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IMap_size
         ~stack_type:(map int unit @$ bot)
         ~kinstr:(IMap_size (dummy_loc, halt))
@@ -1815,7 +1473,6 @@ module Registration_section = struct
   module Big_maps = struct
     let generate_big_map_and_key_in_map (cfg : Default_config.config) rng_state
         =
-      let open Lwt_result_syntax in
       let n =
         Base_samplers.sample_in_interval rng_state ~range:cfg.sampler.set_size
       in
@@ -1834,25 +1491,21 @@ module Registration_section = struct
       let big_map =
         raise_if_error
           (Lwt_main.run
-             (let* ctxt, _ = Execution_context.make ~rng_state () in
-              let big_map = Script_big_map.empty int unit_t in
-              let* big_map, _ =
-                let*! result =
-                  Script_map.fold
-                    (fun k v acc ->
-                      let* bm, ctxt_acc = acc in
-                      Script_big_map.update ctxt_acc k v bm)
-                    map
-                    (return (big_map, ctxt))
-                in
-                Lwt.return (Environment.wrap_tzresult result)
-              in
-              return big_map))
+             ( Execution_context.make ~rng_state >>=? fun (ctxt, _) ->
+               let big_map = Script_big_map.empty int unit_t in
+               Script_map.fold
+                 (fun k v acc ->
+                   acc >>=? fun (bm, ctxt_acc) ->
+                   Script_big_map.update ctxt_acc k v bm)
+                 map
+                 (return (big_map, ctxt))
+               >|= Environment.wrap_tzresult
+               >>=? fun (big_map, _) -> return big_map ))
       in
       (key, big_map)
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IEmpty_big_map
         ~stack_type:(unit @$ bot)
         ~kinstr:(IEmpty_big_map (dummy_loc, unit, unit, halt))
@@ -1972,7 +1625,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IString_size
         ~stack_type:(string @$ bot)
         ~kinstr:(IString_size (dummy_loc, halt))
@@ -2018,7 +1671,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IBytes_size
         ~stack_type:(bytes @$ bot)
         ~kinstr:(IBytes_size (dummy_loc, halt))
@@ -2302,7 +1955,7 @@ module Registration_section = struct
       (mutez, nat)
 
     let () =
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IMul_teznat
         ~stack_type:(mutez @$ nat @$ bot)
         ~kinstr:(IMul_teznat (dummy_loc, halt))
@@ -2314,7 +1967,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IMul_nattez
         ~stack_type:(nat @$ mutez @$ bot)
         ~kinstr:(IMul_nattez (dummy_loc, halt))
@@ -2326,7 +1979,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IEdiv_teznat
         ~stack_type:(mutez @$ nat @$ bot)
         ~kinstr:(IEdiv_teznat (dummy_loc, halt))
@@ -2347,28 +2000,28 @@ module Registration_section = struct
 
   module Booleans = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IOr
         ~stack_type:(bool @$ bool @$ bot)
         ~kinstr:(IOr (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IAnd
         ~stack_type:(bool @$ bool @$ bot)
         ~kinstr:(IAnd (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IXor
         ~stack_type:(bool @$ bool @$ bot)
         ~kinstr:(IXor (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_INot
         ~stack_type:(bool @$ bot)
         ~kinstr:(INot (dummy_loc, halt))
@@ -2410,7 +2063,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IInt_nat
         ~stack_type:(nat @$ bot)
         ~kinstr:(IInt_nat (dummy_loc, halt))
@@ -2549,7 +2202,7 @@ module Registration_section = struct
 
   module Control = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IIf
         ~stack_type:(bool @$ unit @$ bot)
         ~kinstr:
@@ -2563,70 +2216,31 @@ module Registration_section = struct
         ()
 
     let () =
+      (*
+        ILoop ->
+        either
+        - IHalt (false on top of stack)
+        - IPush false ; IHalt (true on top of stack)
+       *)
       let push_false = IPush (dummy_loc, bool, false, halt) in
-      (* The case true is on top of stack
-         ILoop ->
-         IPush false ->
-         IHalt
-      *)
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_ILoop_in
-        ~stack:(true, eos)
-        ~stack_type:(bool @$ bot)
-        ~kinstr:(ILoop (dummy_loc, push_false, halt))
-        () ;
-      (* The case false is on top of stack
-         ILoop ->
-         IHalt
-      *)
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_ILoop_out
-        ~stack:(false, eos)
+      simple_benchmark
+        ~name:Interpreter_workload.N_ILoop
         ~stack_type:(bool @$ bot)
         ~kinstr:(ILoop (dummy_loc, push_false, halt))
         ()
 
     let () =
-      let model =
-        Interpreter_model.Models.max_branching_model
-          ~case_0:"in_const"
-          ~case_1:"out_const"
-          "N_ILoop"
-      in
-      register_model_for_code_generation model
-
-    let () =
-      let cons_r = ICons_right (dummy_loc, unit, halt) in
-      (*
-          ILoop_left ->
-          ICons_right ->
-          IHalt
-       *)
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_ILoop_left_in
-        ~stack:(L (), eos)
-        ~stack_type:(cor unit unit @$ bot)
-        ~kinstr:(ILoop_left (dummy_loc, cons_r, halt))
-        () ;
       (*
         ILoop_left ->
+        ICons_right ->
         IHalt
        *)
-      time_alloc_benchmark_with_fixed_stack
-        ~name:Interpreter_workload.N_ILoop_left_out
-        ~stack:(R (), eos)
+      let cons_r = ICons_right (dummy_loc, unit, halt) in
+      simple_benchmark
+        ~name:Interpreter_workload.N_ILoop_left
         ~stack_type:(cor unit unit @$ bot)
         ~kinstr:(ILoop_left (dummy_loc, cons_r, halt))
         ()
-
-    let () =
-      let model =
-        Interpreter_model.Models.max_branching_model
-          ~case_0:"in_const"
-          ~case_1:"out_const"
-          "N_ILoop_left"
-      in
-      register_model_for_code_generation model
 
     let () =
       (*
@@ -2635,7 +2249,7 @@ module Registration_section = struct
         IPush ->
         IHalt
        *)
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IDip
         ~stack_type:(unit @$ unit @$ bot)
         ~kinstr:(IDip (dummy_loc, halt, Some unit, halt))
@@ -2674,7 +2288,7 @@ module Registration_section = struct
         interp lambda code ->
         IHalt
        *)
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IExec
         ~stack_type:(unit @$ lambda unit unit @$ bot)
         ~kinstr:(IExec (dummy_loc, Some (unit @$ bot), halt))
@@ -2732,8 +2346,8 @@ module Registration_section = struct
         ILambda ->
         IHalt
        *)
-      simple_time_alloc_benchmark
-        ~name:Interpreter_workload.N_ILambda_lam
+      simple_benchmark
+        ~name:Interpreter_workload.N_ILambda
         ~stack_type:(unit @$ bot)
         ~kinstr:(ILambda (dummy_loc, dummy_lambda, halt))
         ()
@@ -2743,20 +2357,12 @@ module Registration_section = struct
         ILambda (rec) ->
         IHalt
        *)
-      simple_time_alloc_benchmark
-        ~name:Interpreter_workload.N_ILambda_lamrec
+      simple_benchmark
+        ~name:Interpreter_workload.N_ILambda
+        ~salt:"_rec"
         ~stack_type:(unit @$ bot)
         ~kinstr:(ILambda (dummy_loc, dummy_lambda_rec, halt))
         ()
-
-    let () =
-      let model =
-        Interpreter_model.Models.max_branching_model
-          ~case_0:"lam_const"
-          ~case_1:"lamrec_const"
-          "N_ILambda"
-      in
-      register_model_for_code_generation model
 
     let () =
       (*
@@ -2765,7 +2371,7 @@ module Registration_section = struct
         (strip_locations) ->
         fail
        *)
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IFailwith
         ~amplification:100
         ~stack_type:(unit @$ bot)
@@ -2788,45 +2394,6 @@ module Registration_section = struct
             let (Script_ir_translator.Ex_comparable_ty ty) =
               Samplers.Random_type.m_comparable_type ~size rng_state
             in
-            let value = Samplers.Random_value.comparable ty rng_state in
-            let kinstr = ICompare (dummy_loc, ty, halt) in
-            Ex_stack_and_kinstr
-              {
-                stack = (value, (value, eos));
-                stack_type = ty @$ ty @$ bot;
-                kinstr;
-              })
-        ()
-
-    let () =
-      benchmark
-        ~name:Interpreter_workload.N_ICompare
-        ~salt:"_intercepts"
-        ~kinstr_and_stack_sampler:(fun cfg rng_state ->
-          (* Sample from values whose [size_of_comparable_value] is 1. *)
-          (* [unit] and [bool] are excluded since they are relatively quick. *)
-          let sampler =
-            {
-              cfg.sampler with
-              base_parameters =
-                {
-                  int_size = {min = 1; max = 1};
-                  string_size = {min = 1; max = 1};
-                  bytes_size = {min = 1; max = 1};
-                };
-            }
-          in
-          let _, (module Samplers) = make_default_samplers sampler in
-          fun () ->
-            let ty : Script_ir_translator.ex_comparable_ty =
-              match Random.State.int rng_state 4 with
-              | 0 -> Ex_comparable_ty String_t
-              | 1 -> Ex_comparable_ty Bytes_t
-              | 2 -> Ex_comparable_ty Int_t
-              | 3 -> Ex_comparable_ty Nat_t
-              | _ -> assert false
-            in
-            let (Ex_comparable_ty ty) = ty in
             let value = Samplers.Random_value.comparable ty rng_state in
             let kinstr = ICompare (dummy_loc, ty, halt) in
             Ex_stack_and_kinstr
@@ -2884,14 +2451,14 @@ module Registration_section = struct
 
   module Proto = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IAddress
         ~stack_type:(contract unit @$ bot)
         ~kinstr:(IAddress (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IContract
         ~stack_type:(address @$ bot)
         ~kinstr:
@@ -2899,7 +2466,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark_with_stack_sampler
+      simple_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_ITransfer_tokens
         ~stack_type:(unit @$ mutez @$ contract unit @$ bot)
         ~kinstr:(ITransfer_tokens (dummy_loc, halt))
@@ -2919,14 +2486,14 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IImplicit_account
         ~stack_type:(key_hash @$ bot)
         ~kinstr:(IImplicit_account (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ICreate_contract
         ~stack_type:(option key_hash @$ mutez @$ unit @$ bot)
         ~kinstr:
@@ -2945,7 +2512,7 @@ module Registration_section = struct
         | Ok s -> s
         | Error _ -> assert false
       in
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IView
         ~stack_type:(unit @$ address @$ bot)
         ~kinstr:
@@ -2957,35 +2524,35 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISet_delegate
         ~stack_type:(option key_hash @$ bot)
         ~kinstr:(ISet_delegate (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_INow
         ~stack_type:(unit @$ bot)
         ~kinstr:(INow (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IMin_block_time
         ~stack_type:bot
         ~kinstr:(IMin_block_time (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IBalance
         ~stack_type:(unit @$ bot)
         ~kinstr:(IBalance (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ILevel
         ~stack_type:(unit @$ bot)
         ~kinstr:(ILevel (dummy_loc, halt))
@@ -3033,7 +2600,7 @@ module Registration_section = struct
     let () = check_signature Signature.Bls
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IHash_key
         ~stack_type:(public_key @$ bot)
         ~kinstr:(IHash_key (dummy_loc, halt))
@@ -3050,21 +2617,16 @@ module Registration_section = struct
         ()
 
     let () =
-      let open Lwt_result_syntax in
-      time_alloc_benchmark
+      benchmark
         ~name:Interpreter_workload.N_IUnpack
         ~kinstr_and_stack_sampler:(fun _cfg rng_state ->
           let b =
             raise_if_error
               (Lwt_main.run
-                 (let* ctxt, _ = Execution_context.make ~rng_state () in
-                  let* bytes, _ =
-                    let*! result =
-                      Script_ir_translator.pack_data ctxt unit ()
-                    in
-                    Lwt.return (Environment.wrap_tzresult result)
-                  in
-                  return bytes))
+                 ( Execution_context.make ~rng_state >>=? fun (ctxt, _) ->
+                   Script_ir_translator.pack_data ctxt unit ()
+                   >|= Environment.wrap_tzresult
+                   >>=? fun (bytes, _) -> return bytes ))
           in
           let kinstr = IUnpack (dummy_loc, unit, halt) in
           fun () ->
@@ -3113,21 +2675,21 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISource
         ~stack_type:(unit @$ bot)
         ~kinstr:(ISource (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISender
         ~stack_type:(unit @$ bot)
         ~kinstr:(ISender (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISelf
         ~stack_type:(unit @$ bot)
         ~kinstr:
@@ -3135,35 +2697,35 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ISelf_address
         ~stack_type:(unit @$ bot)
         ~kinstr:(ISelf_address (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IAmount
         ~stack_type:(unit @$ bot)
         ~kinstr:(IAmount (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IChainId
         ~stack_type:(unit @$ bot)
         ~kinstr:(IChainId (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IVoting_power
         ~stack_type:(key_hash @$ bot)
         ~kinstr:(IVoting_power (dummy_loc, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ITotal_voting_power
         ~stack_type:(unit @$ bot)
         ~kinstr:(ITotal_voting_power (dummy_loc, halt))
@@ -3176,7 +2738,7 @@ module Registration_section = struct
       | Error _ -> assert false
       | Ok sz -> sz
     in
-    simple_time_alloc_benchmark
+    simple_benchmark
       ~name:Interpreter_workload.N_ISapling_empty_state
       ~stack_type:(unit @$ bot)
       ~kinstr:(ISapling_empty_state (dummy_loc, memo_size, halt))
@@ -3202,7 +2764,6 @@ module Registration_section = struct
       in
       let info, name =
         info_and_name
-          ~benchmark_type:Time
           ~intercept:is_empty
           ("ISapling_verify_update_" ^ Type_transaction.suffix)
       in
@@ -3213,14 +2774,13 @@ module Registration_section = struct
 
         let module_filename = __FILE__
 
-        let purpose = Benchmark.Generate_code "michelson_v1_gas"
+        let generated_code_destination = None
 
         include Default_config
         include Default_boilerplate
 
         let models =
           Interpreter_model.make_model
-            Time
             (Instr_name Interpreter_workload.N_ISapling_verify_update)
 
         let stack_type =
@@ -3232,7 +2792,6 @@ module Registration_section = struct
 
         let prepare_sapling_execution_environment sapling_forge_rng_seed
             sapling_transition =
-          let open Lwt_result_syntax in
           let sapling_forge_rng_state =
             Random.State.make
             @@ Option.fold
@@ -3245,21 +2804,15 @@ module Registration_section = struct
                bootstrap account match and that the transactions can be replayed. *)
           let result =
             Lwt_main.run
-              (let* ctxt, step_constants =
-                 Execution_context.make ~rng_state:sapling_forge_rng_state ()
-               in
-               (* Prepare a sapling state able to replay the transition. *)
-               let* _, _, _, _, ctxt, state_id =
-                 Sapling_generation.prepare_seeded_state sapling_transition ctxt
-               in
-               let* state, ctxt =
-                 let*! result =
-                   Alpha_context.Sapling.(
-                     state_from_id ctxt (Id.parse_z state_id))
-                 in
-                 Lwt.return (Environment.wrap_tzresult result)
-               in
-               return (ctxt, state, step_constants))
+              ( Execution_context.make ~rng_state:sapling_forge_rng_state
+              >>=? fun (ctxt, step_constants) ->
+                (* Prepare a sapling state able to replay the transition. *)
+                Sapling_generation.prepare_seeded_state sapling_transition ctxt
+                >>=? fun (_, _, _, _, ctxt, state_id) ->
+                Alpha_context.Sapling.(state_from_id ctxt (Id.parse_z state_id))
+                >|= Environment.wrap_tzresult
+                >>=? fun (state, ctxt) -> return (ctxt, state, step_constants)
+              )
           in
           match result with
           | Ok r -> r
@@ -3324,7 +2877,6 @@ module Registration_section = struct
                       }
                   in
                   benchmark_from_kinstr_and_stack
-                    Time
                     ctxt
                     step_constants
                     stack_instr)
@@ -3342,11 +2894,29 @@ module Registration_section = struct
     ()
   end
 
-  module Sapling_non_empty = struct
+  module Sapling_no_inputs = struct
     let module A = Register_Sapling_benchmark (struct
-      let type_transaction = Sapling_generation.Non_empty
+      let type_transaction = Sapling_generation.No_inputs
 
-      let suffix = "non_empty"
+      let suffix = "no_inputs"
+    end) in
+    ()
+  end
+
+  module Sapling_no_outputs = struct
+    let module A = Register_Sapling_benchmark (struct
+      let type_transaction = Sapling_generation.No_outputs
+
+      let suffix = "no_output"
+    end) in
+    ()
+  end
+
+  module Sapling_full = struct
+    let module A = Register_Sapling_benchmark (struct
+      let type_transaction = Sapling_generation.Full_transaction
+
+      let suffix = "full"
     end) in
     ()
   end
@@ -3364,7 +2934,7 @@ module Registration_section = struct
         Stdlib.failwith "bls_not_built_with_blst_portable")
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IAdd_bls12_381_g1
         ~stack_type:(bls12_381_g1 @$ bls12_381_g1 @$ bot)
@@ -3372,7 +2942,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IAdd_bls12_381_g2
         ~stack_type:(bls12_381_g2 @$ bls12_381_g2 @$ bot)
@@ -3380,7 +2950,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IAdd_bls12_381_fr
         ~stack_type:(bls12_381_fr @$ bls12_381_fr @$ bot)
@@ -3388,7 +2958,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IMul_bls12_381_g1
         ~stack_type:(bls12_381_g1 @$ bls12_381_fr @$ bot)
@@ -3396,7 +2966,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IMul_bls12_381_g2
         ~stack_type:(bls12_381_g2 @$ bls12_381_fr @$ bot)
@@ -3404,7 +2974,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IMul_bls12_381_fr
         ~stack_type:(bls12_381_fr @$ bls12_381_fr @$ bot)
@@ -3456,7 +3026,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IInt_bls12_381_z_fr
         ~stack_type:(bls12_381_fr @$ bot)
@@ -3464,7 +3034,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_INeg_bls12_381_g1
         ~stack_type:(bls12_381_g1 @$ bot)
@@ -3472,7 +3042,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_INeg_bls12_381_g2
         ~stack_type:(bls12_381_g2 @$ bot)
@@ -3480,7 +3050,7 @@ module Registration_section = struct
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~check
         ~name:Interpreter_workload.N_INeg_bls12_381_fr
         ~stack_type:(bls12_381_fr @$ bot)
@@ -3492,7 +3062,6 @@ module Registration_section = struct
       simple_benchmark
         ~check
         ~name:Interpreter_workload.N_IPairing_check_bls12_381
-        ~intercept_stack:(Script_list.empty, eos)
         ~stack_type:(list p @$ bot)
         ~kinstr:(IPairing_check_bls12_381 (dummy_loc, halt))
         ()
@@ -3500,14 +3069,14 @@ module Registration_section = struct
 
   module Tickets = struct
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_ITicket
         ~stack_type:(unit @$ nat @$ bot)
         ~kinstr:(ITicket (dummy_loc, Some unit, halt))
         ()
 
     let () =
-      simple_time_alloc_benchmark
+      simple_benchmark
         ~name:Interpreter_workload.N_IRead_ticket
         ~stack_type:(ticket unit @$ bot)
         ~kinstr:(IRead_ticket (dummy_loc, Some unit, halt))
@@ -3653,11 +3222,10 @@ module Registration_section = struct
         ~kinstr
         ~stack_type
         ~stack_sampler:(fun _ rng_state () ->
-          let time = 1 in
           let chest, chest_key =
-            Timelock_samplers.chest_sampler ~plaintext_size:1 ~time ~rng_state
+            Timelock_samplers.chest_sampler ~plaintext_size:1 ~time:0 ~rng_state
           in
-          resulting_stack chest chest_key time)
+          resulting_stack chest chest_key 0)
         ()
 
     let () =
@@ -3667,12 +3235,11 @@ module Registration_section = struct
         ~stack_type
         ~stack_sampler:(fun _ rng_state () ->
           let log_time =
-            (* Chest generation takes too long time for [log_time > 20] *)
             Base_samplers.sample_in_interval
-              ~range:{min = 0; max = 20}
+              ~range:{min = 0; max = 29}
               rng_state
           in
-          let time = Int.shift_left 1 log_time in
+          let time = Random.State.int rng_state (Int.shift_left 1 log_time) in
           let plaintext_size =
             Base_samplers.sample_in_interval
               ~range:{min = 1; max = 10000}
@@ -3691,7 +3258,7 @@ module Registration_section = struct
       (*
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KNil
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3707,7 +3274,7 @@ module Registration_section = struct
         KHalt -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KCons
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3722,7 +3289,7 @@ module Registration_section = struct
         KReturn -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KReturn
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3737,7 +3304,7 @@ module Registration_section = struct
         KView_exit -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KView_exit
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3766,7 +3333,7 @@ module Registration_section = struct
         KLoop_in -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KLoop_in
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3781,7 +3348,7 @@ module Registration_section = struct
         KLoop_in_left -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KLoop_in_left
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3798,7 +3365,7 @@ module Registration_section = struct
         KUndip -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KUndip
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
@@ -3813,9 +3380,10 @@ module Registration_section = struct
         KIter (empty case) -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
-        ~name:Interpreter_workload.N_KIter_empty
+        ~name:Interpreter_workload.N_KIter
+        ~salt:"_empty"
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
           let cont = KIter (IDrop (dummy_loc, halt), Some unit, [], KNil) in
           let stack = ((), eos) in
@@ -3831,24 +3399,16 @@ module Registration_section = struct
         KIter (empty case) -> next
         KNil
        *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
-        ~name:Interpreter_workload.N_KIter_nonempty
+        ~name:Interpreter_workload.N_KIter
+        ~salt:"_nonempty"
         ~cont_and_stack_sampler:(fun _cfg _rng_state ->
           let cont = KIter (IDrop (dummy_loc, halt), Some unit, [()], KNil) in
           let stack = ((), eos) in
           let stack_type = unit @$ bot in
           fun () -> Ex_stack_and_cont {stack; cont; stack_type})
         ()
-
-    let () =
-      let model =
-        Interpreter_model.Models.max_branching_model
-          ~case_0:"empty_const"
-          ~case_1:"nonempty_const"
-          "N_KIter"
-      in
-      register_model_for_code_generation model
 
     let () =
       (*
@@ -3956,8 +3516,8 @@ module Registration_section = struct
        *)
       continuation_benchmark
         ~amplification:100
-        ~name:Interpreter_workload.N_KMap_enter_body
         ~salt:"_empty"
+        ~name:Interpreter_workload.N_KMap_enter_body
         ~cont_and_stack_sampler:(fun _cfg _rng_state () ->
           Ex_stack_and_cont
             {
@@ -3979,8 +3539,8 @@ module Registration_section = struct
        *)
       continuation_benchmark
         ~amplification:100
-        ~name:Interpreter_workload.N_KMap_enter_body
         ~salt:"_singleton"
+        ~name:Interpreter_workload.N_KMap_enter_body
         ~cont_and_stack_sampler:(fun _cfg _rng_state () ->
           Ex_stack_and_cont
             {
@@ -4012,7 +3572,7 @@ module Registration_section = struct
 
     let () =
       (* KMap_head -> KNil *)
-      continuation_time_alloc_benchmark
+      continuation_benchmark
         ~amplification:100
         ~name:Interpreter_workload.N_KMap_head
         ~cont_and_stack_sampler:(fun _cfg _rng_state () ->
@@ -4023,7 +3583,7 @@ module Registration_section = struct
   end
 
   let () =
-    simple_time_alloc_benchmark
+    simple_benchmark
       ~name:Interpreter_workload.N_IEmit
       ~stack_type:(unit_t @$ bot)
       ~kinstr:

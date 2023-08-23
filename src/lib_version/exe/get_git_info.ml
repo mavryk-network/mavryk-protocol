@@ -58,7 +58,7 @@ let date =
 let parse_version s = Tezos_version_parser.version_tag (Lexing.from_string s)
 
 (* The $Format string is substituted by git with attributes and export-subst *)
-let raw_current_version = "v18.0-rc1-151-gc51f3ca13be6"
+let raw_current_version = "v17.3"
 
 (* Deduce the version either from the a git tag ( in a specific format )
    or from two env variables set by opam, OPAM_PACKAGE_VERSION or in the

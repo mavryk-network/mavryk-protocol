@@ -68,6 +68,3 @@ val ( / ) : t -> t -> t
 
 (** The wei {!Check.typ}. *)
 val typ : t Check.typ
-
-(** Convert {!t} to U256 little endian bytes. *)
-val to_le_bytes : t -> Bytes.t

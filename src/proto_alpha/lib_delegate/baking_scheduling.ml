@@ -88,7 +88,6 @@ let find_in_known_round_intervals known_round_intervals ~predecessor_timestamp
 
 (** Memoization wrapper for [Round.timestamp_of_round]. *)
 let timestamp_of_round state ~predecessor_timestamp ~predecessor_round ~round =
-  let open Result_syntax in
   let open Baking_cache in
   let known_timestamps = state.global_state.cache.known_timestamps in
   match
@@ -98,20 +97,19 @@ let timestamp_of_round state ~predecessor_timestamp ~predecessor_round ~round =
   with
   (* Compute and register the timestamp if not already existing. *)
   | None ->
-      let* ts =
-        Protocol.Alpha_context.Round.timestamp_of_round
-          state.global_state.round_durations
-          ~predecessor_timestamp
-          ~predecessor_round
-          ~round
-      in
+      Protocol.Alpha_context.Round.timestamp_of_round
+        state.global_state.round_durations
+        ~predecessor_timestamp
+        ~predecessor_round
+        ~round
+      >>? fun ts ->
       Timestamp_of_round_cache.replace
         known_timestamps
         (predecessor_timestamp, predecessor_round, round)
         ts ;
-      return ts
+      ok ts
   (* If it already exists, just fetch from the memoization table. *)
-  | Some ts -> return ts
+  | Some ts -> ok ts
 
 (** The function is blocking until it is [time]. *)
 let sleep_until time =
@@ -122,13 +120,9 @@ let sleep_until time =
   else Some (Lwt_unix.sleep (Ptime.Span.to_float_s delay))
 
 (* Only allocate once the termination promise *)
-let terminated =
-  let open Lwt_syntax in
-  let+ _ = Lwt_exit.clean_up_starts in
-  `Termination
+let terminated = Lwt_exit.clean_up_starts >|= fun _ -> `Termination
 
 let rec wait_next_event ~timeout loop_state =
-  let open Lwt_result_syntax in
   (* TODO? should we prioritize head events/timeouts to resynchronize if needs be ? *)
   let get_head_event () =
     (* n.b. we should also consume the available elements in the
@@ -136,8 +130,8 @@ let rec wait_next_event ~timeout loop_state =
     match loop_state.last_get_head_event with
     | None ->
         let t =
-          let*! e = Lwt_stream.get loop_state.heads_stream in
-          Lwt.return (`New_head_proposal e)
+          Lwt_stream.get loop_state.heads_stream >|= fun e ->
+          `New_head_proposal e
         in
         loop_state.last_get_head_event <- Some t ;
         t
@@ -147,9 +141,8 @@ let rec wait_next_event ~timeout loop_state =
     match loop_state.last_get_valid_block_event with
     | None ->
         let t =
-          let*! valid_blocks_stream = loop_state.get_valid_blocks_stream in
-          let*! e = Lwt_stream.get valid_blocks_stream in
-          Lwt.return (`New_valid_proposal e)
+          loop_state.get_valid_blocks_stream >>= fun valid_blocks_stream ->
+          Lwt_stream.get valid_blocks_stream >|= fun e -> `New_valid_proposal e
         in
         loop_state.last_get_valid_block_event <- Some t ;
         t
@@ -161,12 +154,7 @@ let rec wait_next_event ~timeout loop_state =
     match loop_state.last_future_block_event with
     | None ->
         let t =
-          let*! future_proposal =
-            Lwt_stream.get loop_state.future_block_stream
-          in
-          Lwt.return
-          @@
-          match future_proposal with
+          Lwt_stream.get loop_state.future_block_stream >|= function
           | None ->
               (* unreachable, we never close the stream *)
               assert false
@@ -180,8 +168,7 @@ let rec wait_next_event ~timeout loop_state =
     match loop_state.last_get_qc_event with
     | None ->
         let t =
-          let*! e = Lwt_stream.get loop_state.qc_stream in
-          Lwt.return (`QC_reached e)
+          Lwt_stream.get loop_state.qc_stream >|= fun e -> `QC_reached e
         in
         loop_state.last_get_qc_event <- Some t ;
         t
@@ -189,18 +176,16 @@ let rec wait_next_event ~timeout loop_state =
   in
   (* event construction *)
   let open Baking_state in
-  let*! result =
-    Lwt.choose
-      [
-        terminated;
-        (get_head_event () :> events);
-        (get_valid_block_event () :> events);
-        (get_future_block_event () :> events);
-        (get_qc_event () :> events);
-        (timeout :> events);
-      ]
-  in
-  match result with
+  Lwt.choose
+    [
+      terminated;
+      (get_head_event () :> events);
+      (get_valid_block_event () :> events);
+      (get_future_block_event () :> events);
+      (get_qc_event () :> events);
+      (timeout :> events);
+    ]
+  >>= function
   (* event matching *)
   | `Termination ->
       (* Exit the loop *)
@@ -208,11 +193,11 @@ let rec wait_next_event ~timeout loop_state =
   | `New_valid_proposal None ->
       (* Node connection lost *)
       loop_state.last_get_valid_block_event <- None ;
-      tzfail Baking_errors.Node_connection_lost
+      fail Baking_errors.Node_connection_lost
   | `New_head_proposal None ->
       (* Node connection lost *)
       loop_state.last_get_head_event <- None ;
-      tzfail Baking_errors.Node_connection_lost
+      fail Baking_errors.Node_connection_lost
   | `QC_reached None ->
       (* Not supposed to happen: exit the loop *)
       loop_state.last_get_qc_event <- None ;
@@ -223,10 +208,10 @@ let rec wait_next_event ~timeout loop_state =
       match sleep_until proposal.block.shell.timestamp with
       | Some waiter ->
           (* If so, wait until its timestamp is reached before advertising it *)
-          let*! () = Events.(emit proposal_in_the_future proposal.block.hash) in
+          Events.(emit proposal_in_the_future proposal.block.hash) >>= fun () ->
           Lwt.dont_wait
             (fun () ->
-              let*! () = waiter in
+              waiter >>= fun () ->
               loop_state.push_future_block (`New_future_valid_proposal proposal) ;
               Lwt.return_unit)
             (fun _exn -> ()) ;
@@ -238,36 +223,34 @@ let rec wait_next_event ~timeout loop_state =
       match sleep_until proposal.block.shell.timestamp with
       | Some waiter ->
           (* If so, wait until its timestamp is reached before advertising it *)
-          let*! () = Events.(emit proposal_in_the_future proposal.block.hash) in
+          Events.(emit proposal_in_the_future proposal.block.hash) >>= fun () ->
           Lwt.dont_wait
             (fun () ->
-              let*! () = waiter in
+              waiter >>= fun () ->
               loop_state.push_future_block (`New_future_head proposal) ;
               Lwt.return_unit)
             (fun _exn -> ()) ;
           wait_next_event ~timeout loop_state
       | None -> return_some (New_head_proposal proposal))
   | `New_future_head proposal ->
-      let*! () =
-        Events.(emit process_proposal_in_the_future proposal.block.hash)
-      in
+      Events.(emit process_proposal_in_the_future proposal.block.hash)
+      >>= fun () ->
       loop_state.last_future_block_event <- None ;
       return_some (New_head_proposal proposal)
   | `New_future_valid_proposal proposal ->
-      let*! () =
-        Events.(emit process_proposal_in_the_future proposal.block.hash)
-      in
+      Events.(emit process_proposal_in_the_future proposal.block.hash)
+      >>= fun () ->
       loop_state.last_future_block_event <- None ;
       return_some (New_valid_proposal proposal)
   | `QC_reached
-      (Some (Operation_worker.Prequorum_reached (candidate, preattestation_qc)))
+      (Some (Operation_worker.Prequorum_reached (candidate, preendorsement_qc)))
     ->
       loop_state.last_get_qc_event <- None ;
-      return_some (Prequorum_reached (candidate, preattestation_qc))
+      return_some (Prequorum_reached (candidate, preendorsement_qc))
   | `QC_reached
-      (Some (Operation_worker.Quorum_reached (candidate, attestation_qc))) ->
+      (Some (Operation_worker.Quorum_reached (candidate, endorsement_qc))) ->
       loop_state.last_get_qc_event <- None ;
-      return_some (Quorum_reached (candidate, attestation_qc))
+      return_some (Quorum_reached (candidate, endorsement_qc))
   | `Timeout e -> return_some (Timeout e)
 
 (** From the current [state], the function returns an optional
@@ -276,7 +259,7 @@ let rec wait_next_event ~timeout loop_state =
 let compute_next_round_time state =
   let open Baking_state in
   let proposal =
-    match state.level_state.attestable_payload with
+    match state.level_state.endorsable_payload with
     | None -> state.level_state.latest_proposal
     | Some {proposal; _} -> proposal
   in
@@ -301,64 +284,63 @@ let compute_next_round_time state =
         | Ok timestamp -> Some (timestamp, next_round)
         | _ -> assert false)
 
-let rec first_own_round_in_range delegate_slots ~committee_size ~included_min
-    ~excluded_max =
-  if included_min >= excluded_max then None
-  else
-    match Round.of_int included_min with
-    | Error _ ->
-        (* Should not happen because in practice, [included_min] is
-           non-negative and not big enough to overflow as an Int32. *)
-        None
-    | Ok round -> (
-        match Round.to_slot round ~committee_size with
-        | Error _ ->
-            (* Impossible because [Round.of_int] builds a sound round. *) None
-        | Ok slot -> (
-            match Delegate_slots.own_slot_owner delegate_slots ~slot with
-            | Some {consensus_key_and_delegate; _} ->
-                Some (round, consensus_key_and_delegate)
-            | None ->
-                first_own_round_in_range
-                  delegate_slots
-                  ~committee_size
-                  ~included_min:(included_min + 1)
-                  ~excluded_max))
+(** [first_potential_round_at_next_level state ~earliest_round] yields
+    an optional pair of the earliest possible round (at or after
+    [earliest_round]), along with the delegate having the slot to
+    propose.
 
+    In particular when the required round value is higher than the
+    consensus committee size, an Euclidean division allows to
+    recycle. Then, the earliest round when it exists is extracted. This
+    is meant to be multiplied back again to find the round value. *)
 let first_potential_round_at_next_level state ~earliest_round =
+  let open Baking_state in
+  let slots = state.level_state.next_level_delegate_slots.own_delegate_slots in
+  let rounds =
+    state.level_state.next_level_delegate_slots.all_slots_by_round
+    |> Array.to_seqi
+    |> Seq.fold_left
+         (fun acc (round, slot) ->
+           if SlotMap.mem slot slots then (round, slot) :: acc else acc)
+         []
+    |> List.rev
+  in
   match Round.to_int earliest_round with
   | Error _ -> None
-  | Ok earliest_round ->
-      let committee_size =
+  | Ok earliest_round -> (
+      let consensus_committee_size =
         state.global_state.constants.parametric.consensus_committee_size
       in
-      first_own_round_in_range
-        state.level_state.next_level_delegate_slots
-        ~committee_size
-        ~included_min:earliest_round
-        ~excluded_max:(earliest_round + committee_size)
-(* If no own round is found between [earliest_round] included and
-   [earliest_round + committee_size] excluded, then we can stop
-   searching, because baking slots repeat themselves modulo the
-   [committee_size]. *)
+      let q = earliest_round / consensus_committee_size in
+      let r = earliest_round mod consensus_committee_size in
+      let first_round = List.find (fun (round, _) -> round >= r) rounds in
+      match first_round with
+      | None -> None
+      | Some (round, slot) -> (
+          SlotMap.find slot slots |> function
+          | None -> None
+          | Some (delegate, _) -> (
+              (* TODO? check with [Node_rpc.first_proposer_round] if we also need the q+1 *)
+              match Round.of_int ((q * consensus_committee_size) + round) with
+              | Error _ -> None
+              | Ok first_potential_round ->
+                  Some (first_potential_round, delegate))))
 
 (** From the current [state], the function returns an optional
     association pair, which consists of the next baking timestamp and
     its baking round. In that case, an elected block must exist. *)
 let compute_next_potential_baking_time_at_next_level state =
-  let open Lwt_syntax in
   let open Protocol.Alpha_context in
   let open Baking_state in
   match state.level_state.elected_block with
-  | None -> return_none
+  | None -> Lwt.return_none
   | Some elected_block -> (
-      let* () =
-        Events.(
-          emit
-            compute_next_timeout_elected_block
-            ( elected_block.proposal.block.shell.level,
-              elected_block.proposal.block.round ))
-      in
+      Events.(
+        emit
+          compute_next_timeout_elected_block
+          ( elected_block.proposal.block.shell.level,
+            elected_block.proposal.block.round ))
+      >>= fun () ->
       (* Do we have baking rights for the next level ? *)
       (* Determine the round for the next level *)
       let predecessor_timestamp =
@@ -381,19 +363,19 @@ let compute_next_potential_baking_time_at_next_level state =
           match state.level_state.next_level_proposed_round with
           | Some proposed_round
             when Round.(proposed_round >= first_potential_round) ->
-              let* () = Events.(emit proposal_already_injected ()) in
-              return_none
+              Events.(emit proposal_already_injected ()) >>= fun () ->
+              Lwt.return_none
           | None | Some _ ->
-              let* () =
-                Events.(
-                  emit
-                    next_potential_slot
-                    ( Int32.succ state.level_state.current_level,
-                      first_potential_round,
-                      first_potential_baking_time,
-                      delegate ))
-              in
-              return_some (first_potential_baking_time, first_potential_round))
+              Events.(
+                emit
+                  next_potential_slot
+                  ( Int32.succ state.level_state.current_level,
+                    first_potential_round,
+                    first_potential_baking_time,
+                    delegate ))
+              >>= fun () ->
+              Lwt.return_some
+                (first_potential_baking_time, first_potential_round))
       | None -> (
           let round_durations = state.global_state.round_durations in
           (* Compute the timestamp at which the new level will start at
@@ -404,13 +386,13 @@ let compute_next_potential_baking_time_at_next_level state =
             ~predecessor_round
             ~round:Round.zero
           |> function
-          | Error _ -> return_none
+          | Error _ -> Lwt.return_none
           | Ok min_possible_time -> (
               (* If this timestamp exists and is not yet outdated, the
                  earliest round to bake is thereby 0. Otherwise, we
                  compute the round from the current timestamp. This
                  possibly means the baker has been late. *)
-              (if Time.Protocol.(now < min_possible_time) then Ok Round.zero
+              (if Time.Protocol.(now < min_possible_time) then ok Round.zero
               else
                 Environment.wrap_tzresult
                 @@ Round.round_of_timestamp
@@ -419,7 +401,7 @@ let compute_next_potential_baking_time_at_next_level state =
                      ~predecessor_round
                      ~timestamp:now)
               |> function
-              | Error _ -> return_none
+              | Error _ -> Lwt.return_none
               | Ok earliest_round -> (
                   (* There does not necessarily exists a slot that is
                      equal to [earliest_round]. We must find the earliest
@@ -428,7 +410,7 @@ let compute_next_potential_baking_time_at_next_level state =
                   match
                     first_potential_round_at_next_level state ~earliest_round
                   with
-                  | None -> return_none
+                  | None -> Lwt.return_none
                   | Some (first_potential_round, delegate) -> (
                       (* Check if we already have proposed something at next
                          level. If so, we can skip. Otherwise, we recompute
@@ -438,10 +420,8 @@ let compute_next_potential_baking_time_at_next_level state =
                       match state.level_state.next_level_proposed_round with
                       | Some proposed_round
                         when Round.(proposed_round >= first_potential_round) ->
-                          let* () =
-                            Events.(emit proposal_already_injected ())
-                          in
-                          return_none
+                          Events.(emit proposal_already_injected ())
+                          >>= fun () -> Lwt.return_none
                       | None | Some _ -> (
                           timestamp_of_round
                             state
@@ -449,17 +429,16 @@ let compute_next_potential_baking_time_at_next_level state =
                             ~predecessor_round
                             ~round:first_potential_round
                           |> function
-                          | Error _ -> return_none
+                          | Error _ -> Lwt.return_none
                           | Ok first_potential_baking_time ->
-                              let* () =
-                                Events.(
-                                  emit
-                                    next_potential_slot
-                                    ( Int32.succ state.level_state.current_level,
-                                      first_potential_round,
-                                      first_potential_baking_time,
-                                      delegate ))
-                              in
+                              Events.(
+                                emit
+                                  next_potential_slot
+                                  ( Int32.succ state.level_state.current_level,
+                                    first_potential_round,
+                                    first_potential_baking_time,
+                                    delegate ))
+                              >>= fun () ->
                               (* memoize this *)
                               let () =
                                 let this_round_duration =
@@ -489,7 +468,7 @@ let compute_next_potential_baking_time_at_next_level state =
                                       first_potential_round,
                                       delegate ))
                               in
-                              return_some
+                              Lwt.return_some
                                 ( first_potential_baking_time,
                                   first_potential_round )))))))
 
@@ -506,7 +485,6 @@ let compute_next_potential_baking_time_at_next_level state =
     react and trigger event [Timeout]. *)
 let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
     =
-  let open Lwt_result_syntax in
   (* FIXME: this function (may) try to instantly repropose a block *)
   let open Baking_state in
   let wait_end_of_round ?(delta = 0L) (next_round_time, next_round) =
@@ -514,45 +492,46 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
     let now = Time.System.now () in
     let delay = Ptime.diff (Time.System.of_protocol_exn next_time) now in
     let current_round = Int32.pred @@ Round.to_int32 next_round in
-    let*! () =
-      if delta = 0L then
-        Events.(emit waiting_end_of_round (delay, current_round, next_time))
-      else
-        Events.(
-          emit
-            waiting_delayed_end_of_round
-            (delay, current_round, next_time, delta))
-    in
+    (if delta = 0L then
+     Events.(emit waiting_end_of_round (delay, current_round, next_time))
+    else
+      Events.(
+        emit
+          waiting_delayed_end_of_round
+          (delay, current_round, next_time, delta)))
+    >>= fun () ->
     let end_of_round =
       Lwt.return
       @@ End_of_round {ending_round = state.round_state.current_round}
     in
     match sleep_until next_time with
     | None -> return end_of_round
-    | Some t ->
-        return
-          (let*! () = t in
-           end_of_round)
+    | Some t -> return (t >>= fun () -> end_of_round)
   in
   let wait_baking_time_next_level (next_baking_time, next_baking_round) =
     let now = Time.System.now () in
     let delay = Ptime.diff (Time.System.of_protocol_exn next_baking_time) now in
     match sleep_until next_baking_time with
     | None ->
-        let*! () = Events.(emit no_need_to_wait_for_proposal ()) in
+        Events.(emit no_need_to_wait_for_proposal ()) >>= fun () ->
         return
           (Lwt.return (Time_to_bake_next_level {at_round = next_baking_round}))
     | Some t ->
-        let*! () =
-          Events.(emit waiting_time_to_bake (delay, next_baking_time))
-        in
+        Events.(emit waiting_time_to_bake (delay, next_baking_time))
+        >>= fun () ->
         return
-          (let*! () = t in
-           Lwt.return (Time_to_bake_next_level {at_round = next_baking_round}))
+          ( t >>= fun () ->
+            Lwt.return (Time_to_bake_next_level {at_round = next_baking_round})
+          )
   in
   let delay_next_round_timeout next_round =
     (* we only delay if it's our turn to bake *)
-    match round_proposer state ~level:`Current (snd next_round) with
+    match
+      State_transitions.round_proposer
+        state
+        state.level_state.delegate_slots.own_delegate_slots
+        (snd next_round)
+    with
     | Some _ ->
         let delta =
           state.global_state.constants.parametric.minimal_block_delay
@@ -567,19 +546,17 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
   (* TODO: re-use what has been done in round_synchronizer.ml *)
   (* Compute the timestamp of the next possible round. *)
   let next_round = compute_next_round_time state in
-  let*! next_baking = compute_next_potential_baking_time_at_next_level state in
+  compute_next_potential_baking_time_at_next_level state >>= fun next_baking ->
   match (next_round, next_baking) with
   | None, None ->
-      let*! () = Events.(emit waiting_for_new_head ()) in
-      return
-        (let*! () = Lwt_utils.never_ending () in
-         assert false)
+      Events.(emit waiting_for_new_head ()) >>= fun () ->
+      return (Lwt_utils.never_ending () >>= fun () -> assert false)
   (* We have no slot at the next level in the near future, we will
      patiently wait for the next round. *)
   | Some next_round, None -> (
       (* If there is an elected block, then we make the assumption
          that the bakers at the next level have also received an
-         attestation quorum, and we delay a bit injecting at the next
+         endorsement quorum, and we delay a bit injecting at the next
          round, so that there are not two blocks injected at the same
          time. *)
       match state.level_state.elected_block with
@@ -609,7 +586,7 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
         (* same observation is in the [(Some next_round, None)] case *)
         delay_next_round_timeout next_round_info
 
-(* initialises attestable_payload with the PQC included in the latest block
+(* initialises endorsable_payload with the PQC included in the latest block
    if there is one and if it's more recent than the one loaded from disk
    if any *)
 let may_initialise_with_latest_proposal_pqc state =
@@ -617,9 +594,9 @@ let may_initialise_with_latest_proposal_pqc state =
   match p.block.prequorum with
   | None -> return state
   | Some pqc -> (
-      match state.level_state.attestable_payload with
+      match state.level_state.endorsable_payload with
       | Some ep when ep.prequorum.round >= pqc.round ->
-          (*do not change the attestable_payload loaded from disk if it's
+          (*do not change the endorsable_payload loaded from disk if it's
             more recent *)
           return state
       | Some _ | None ->
@@ -629,7 +606,7 @@ let may_initialise_with_latest_proposal_pqc state =
               level_state =
                 {
                   state.level_state with
-                  attestable_payload = Some {prequorum = pqc; proposal = p};
+                  endorsable_payload = Some {prequorum = pqc; proposal = p};
                 };
             })
 
@@ -655,24 +632,21 @@ let create_dal_node_rpc_ctxt endpoint =
 
 let create_initial_state cctxt ?(synchronize = true) ~chain config
     operation_worker ~(current_proposal : Baking_state.proposal) delegates =
-  let open Lwt_result_syntax in
-  (* FIXME? consider saved attestable value *)
+  (* FIXME? consider saved endorsable value *)
   let open Protocol in
   let open Baking_state in
-  let* chain_id = Shell_services.Chain.chain_id cctxt ~chain () in
-  let* constants =
-    Alpha_services.Constants.all cctxt (`Hash chain_id, `Head 0)
-  in
-  let*? round_durations = create_round_durations constants in
-  let* validation_mode =
-    Baking_state.(
-      match config.Baking_configuration.validation with
-      | Node -> return Node
-      | Local {context_path} ->
-          let* index = Baking_simulator.load_context ~context_path in
-          return (Local index)
-      | ContextIndex index -> return (Local index))
-  in
+  Shell_services.Chain.chain_id cctxt ~chain () >>=? fun chain_id ->
+  Alpha_services.Constants.all cctxt (`Hash chain_id, `Head 0)
+  >>=? fun constants ->
+  create_round_durations constants >>?= fun round_durations ->
+  Baking_state.(
+    match config.Baking_configuration.validation with
+    | Node -> return Node
+    | Local {context_path} ->
+        Baking_simulator.load_context ~context_path >>=? fun index ->
+        return (Local index)
+    | ContextIndex index -> return (Local index))
+  >>=? fun validation_mode ->
   let cache = Baking_state.create_cache () in
   let global_state =
     {
@@ -693,25 +667,23 @@ let create_initial_state cctxt ?(synchronize = true) ~chain config
   in
   let chain = `Hash chain_id in
   let current_level = current_proposal.block.shell.level in
-  let* delegate_slots =
-    Baking_state.compute_delegate_slots
-      cctxt
-      delegates
-      ~level:current_level
-      ~chain
-  in
-  let* next_level_delegate_slots =
-    Baking_state.compute_delegate_slots
-      cctxt
-      delegates
-      ~level:(Int32.succ current_level)
-      ~chain
-  in
+  Baking_state.compute_delegate_slots
+    cctxt
+    delegates
+    ~level:current_level
+    ~chain
+  >>=? fun delegate_slots ->
+  Baking_state.compute_delegate_slots
+    cctxt
+    delegates
+    ~level:(Int32.succ current_level)
+    ~chain
+  >>=? fun next_level_delegate_slots ->
   let elected_block =
     if Baking_state.is_first_block_in_protocol current_proposal then
       (* If the last block is a protocol transition, we admit it as a
          final block *)
-      Some {proposal = current_proposal; attestation_qc = []}
+      Some {proposal = current_proposal; endorsement_qc = []}
     else None
   in
   let level_state =
@@ -721,35 +693,32 @@ let create_initial_state cctxt ?(synchronize = true) ~chain config
       is_latest_proposal_applied =
         true (* this proposal is expected to be the current head *);
       locked_round = None;
-      attestable_payload = None;
+      endorsable_payload = None;
       elected_block;
       delegate_slots;
       next_level_delegate_slots;
       next_level_proposed_round = None;
     }
   in
-  let* round_state =
-    if synchronize then
-      let*? round_durations = create_round_durations constants in
-      let*? current_round =
-        Baking_actions.compute_round current_proposal round_durations
-      in
-      return {current_round; current_phase = Idle; delayed_prequorum = None}
-    else
-      return
-        {
-          Baking_state.current_round = Round.zero;
-          current_phase = Idle;
-          delayed_prequorum = None;
-        }
-  in
+  (if synchronize then
+   create_round_durations constants >>? fun round_durations ->
+   Baking_actions.compute_round current_proposal round_durations
+   >>? fun current_round ->
+   ok {current_round; current_phase = Idle; delayed_prequorum = None}
+  else
+    ok
+      {
+        Baking_state.current_round = Round.zero;
+        current_phase = Idle;
+        delayed_prequorum = None;
+      })
+  >>?= fun round_state ->
   let state = {global_state; level_state; round_state} in
-  (* Try loading locked round and attestable round from disk *)
-  let* state = Baking_state.may_load_attestable_data state in
+  (* Try loading locked round and endorsable round from disk *)
+  Baking_state.may_load_endorsable_data state >>=? fun state ->
   may_initialise_with_latest_proposal_pqc state
 
 let compute_bootstrap_event state =
-  let open Result_syntax in
   let open Baking_state in
   (* Check if we are in the current round *)
   if
@@ -757,48 +726,35 @@ let compute_bootstrap_event state =
       state.level_state.latest_proposal.block.round
       = state.round_state.current_round)
   then
-    (* If so, then trigger the new proposal event to possibly preattest *)
-    return @@ Baking_state.New_head_proposal state.level_state.latest_proposal
+    (* If so, then trigger the new proposal event to possibly preendorse *)
+    ok @@ Baking_state.New_head_proposal state.level_state.latest_proposal
   else
     (* Otherwise, trigger the end of round to check whether we
        need to propose at this level or not *)
-    let* ending_round =
-      Environment.wrap_tzresult @@ Round.pred state.round_state.current_round
-    in
-    return @@ Baking_state.Timeout (End_of_round {ending_round})
+    Environment.wrap_tzresult @@ Round.pred state.round_state.current_round
+    >>? fun ending_round ->
+    ok @@ Baking_state.Timeout (End_of_round {ending_round})
 
 let rec automaton_loop ?(stop_on_event = fun _ -> false) ~config ~on_error
     loop_state state event =
-  let open Lwt_result_syntax in
   let state_recorder ~new_state =
     match config.Baking_configuration.state_recorder with
     | Baking_configuration.Filesystem ->
         Baking_state.may_record_new_state ~previous_state:state ~new_state
     | Baking_configuration.Disabled -> return_unit
   in
-  let*! state', action = State_transitions.step state event in
-  let* state'' =
-    let*! state_opt =
-      Baking_actions.perform_action ~state_recorder state' action
-    in
-    match state_opt with
-    | Ok state'' -> return state''
-    | Error error ->
-        let* () = on_error error in
-        (* Still try to record the intermediate state; ignore potential
-           errors. *)
-        let*! _ = state_recorder ~new_state:state' in
-        return state'
-  in
-  let* next_timeout = compute_next_timeout state'' in
-  let* event_opt =
-    wait_next_event
-      ~timeout:
-        (let*! e = next_timeout in
-         Lwt.return (`Timeout e))
-      loop_state
-  in
-  match event_opt with
+  State_transitions.step state event >>= fun (state', action) ->
+  (Baking_actions.perform_action ~state_recorder state' action >>= function
+   | Ok state'' -> return state''
+   | Error error ->
+       on_error error >>=? fun () ->
+       (* Still try to record the intermediate state; ignore potential
+          errors. *)
+       state_recorder ~new_state:state' >>= fun _ -> return state')
+  >>=? fun state'' ->
+  compute_next_timeout state'' >>=? fun next_timeout ->
+  wait_next_event ~timeout:(next_timeout >|= fun e -> `Timeout e) loop_state
+  >>=? function
   | None ->
       (* Termination *)
       return_none
@@ -808,132 +764,68 @@ let rec automaton_loop ?(stop_on_event = fun _ -> false) ~config ~on_error
         automaton_loop ~stop_on_event ~config ~on_error loop_state state'' event
 
 let perform_sanity_check cctxt ~chain_id =
-  let open Lwt_result_syntax in
   let open Baking_errors in
   let prefix_base_dir f = Filename.Infix.(cctxt#get_base_dir // f) in
   let nonces_location = Baking_files.resolve_location ~chain_id `Nonce in
-  let* _ =
-    Baking_nonces.load cctxt nonces_location
-    |> trace
-         (Cannot_load_local_file
-            (prefix_base_dir (Baking_files.filename nonces_location) ^ "s"))
-  in
+  Baking_nonces.load cctxt nonces_location
+  |> trace
+       (Cannot_load_local_file
+          (prefix_base_dir (Baking_files.filename nonces_location) ^ "s"))
+  >>=? fun _ ->
   let highwatermarks_location =
     Baking_files.resolve_location ~chain_id `Highwatermarks
   in
-  let* _ =
-    Baking_highwatermarks.load cctxt highwatermarks_location
-    |> trace
-         (Cannot_load_local_file
-            (prefix_base_dir (Baking_files.filename highwatermarks_location)
-            ^ "s"))
-  in
+  Baking_highwatermarks.load cctxt highwatermarks_location
+  |> trace
+       (Cannot_load_local_file
+          (prefix_base_dir (Baking_files.filename highwatermarks_location) ^ "s"))
+  >>=? fun _ ->
   let state_location = Baking_files.resolve_location ~chain_id `State in
-  let* _ =
-    Baking_state.load_attestable_data cctxt state_location
-    |> trace
-         (Cannot_load_local_file
-            (prefix_base_dir (Baking_files.filename state_location)))
-  in
-  return_unit
-
-let rec retry (cctxt : #Protocol_client_context.full) ?max_delay ~delay ~factor
-    ~tries ?(msg = "Connection failed. ") f x =
-  let open Lwt_result_syntax in
-  let*! result = f x in
-  match result with
-  | Ok _ as r -> Lwt.return r
-  | Error
-      (RPC_client_errors.Request_failed {error = Connection_failed _; _} :: _)
-    as err
-    when tries > 0 -> (
-      let*! () = cctxt#message "%sRetrying in %.2f seconds..." msg delay in
-      let*! result =
-        Lwt.pick
-          [
-            (let*! () = Lwt_unix.sleep delay in
-             Lwt.return `Continue);
-            (let*! _ = Lwt_exit.clean_up_starts in
-             Lwt.return `Killed);
-          ]
-      in
-      match result with
-      | `Killed -> Lwt.return err
-      | `Continue ->
-          let next_delay = delay *. factor in
-          let delay =
-            Option.fold
-              ~none:next_delay
-              ~some:(fun max_delay -> Float.min next_delay max_delay)
-              max_delay
-          in
-          retry cctxt ?max_delay ~delay ~factor ~msg ~tries:(tries - 1) f x)
-  | Error _ as err -> Lwt.return err
-
-let register_dal_profiles cctxt dal_node_rpc_ctxt delegates =
-  Option.iter_es
-    (fun dal_ctxt ->
-      retry
-        cctxt
-        ~max_delay:2.
-        ~delay:1.
-        ~factor:2.
-        ~tries:max_int
-        ~msg:"Failed to register profiles, DAL node is not reachable. "
-        (fun () -> Node_rpc.register_dal_profiles dal_ctxt delegates)
-        ())
-    dal_node_rpc_ctxt
+  Baking_state.load_endorsable_data cctxt state_location
+  |> trace
+       (Cannot_load_local_file
+          (prefix_base_dir (Baking_files.filename state_location)))
+  >>=? fun _ -> return_unit
 
 let run cctxt ?canceler ?(stop_on_event = fun _ -> false)
     ?(on_error = fun _ -> return_unit) ~chain config delegates =
   let open Lwt_result_syntax in
-  let* chain_id = Shell_services.Chain.chain_id cctxt ~chain () in
-  let* () = perform_sanity_check cctxt ~chain_id in
+  Shell_services.Chain.chain_id cctxt ~chain () >>=? fun chain_id ->
+  perform_sanity_check cctxt ~chain_id >>=? fun () ->
   let cache = Baking_cache.Block_cache.create 10 in
-  let* heads_stream, _block_stream_stopper =
-    Node_rpc.monitor_heads cctxt ~cache ~chain ()
-  in
-  let* current_proposal =
-    let*! proposal = Lwt_stream.get heads_stream in
-    match proposal with
-    | Some current_head -> return current_head
-    | None -> failwith "head stream unexpectedly ended"
-  in
-  let*! operation_worker = Operation_worker.create cctxt in
+  Node_rpc.monitor_heads cctxt ~cache ~chain ()
+  >>=? fun (heads_stream, _block_stream_stopper) ->
+  (Lwt_stream.get heads_stream >>= function
+   | Some current_head -> return current_head
+   | None -> failwith "head stream unexpectedly ended")
+  >>=? fun current_proposal ->
+  Operation_worker.create cctxt >>= fun operation_worker ->
   Option.iter
     (fun canceler ->
       Lwt_canceler.on_cancel canceler (fun () ->
-          let*! _ = Operation_worker.shutdown_worker operation_worker in
+          Operation_worker.shutdown_worker operation_worker >>= fun _ ->
           Lwt.return_unit))
     canceler ;
-  let* initial_state =
-    create_initial_state
-      cctxt
-      ~chain
-      config
-      operation_worker
-      ~current_proposal
-      delegates
-  in
-  let _promise =
-    register_dal_profiles
-      cctxt
-      initial_state.global_state.dal_node_rpc_ctxt
-      delegates
-  in
+  create_initial_state
+    cctxt
+    ~chain
+    config
+    operation_worker
+    ~current_proposal
+    delegates
+  >>=? fun initial_state ->
   let cloned_block_stream = Lwt_stream.clone heads_stream in
-  let*! revelation_worker_canceler =
-    Baking_nonces.start_revelation_worker
-      cctxt
-      initial_state.global_state.config.nonce
-      initial_state.global_state.chain_id
-      initial_state.global_state.constants
-      cloned_block_stream
-  in
+  Baking_nonces.start_revelation_worker
+    cctxt
+    initial_state.global_state.config.nonce
+    initial_state.global_state.chain_id
+    initial_state.global_state.constants
+    cloned_block_stream
+  >>= fun revelation_worker_canceler ->
   Option.iter
     (fun canceler ->
       Lwt_canceler.on_cancel canceler (fun () ->
-          let*! _ = Lwt_canceler.cancel revelation_worker_canceler in
+          Lwt_canceler.cancel revelation_worker_canceler >>= fun _ ->
           Lwt.return_unit))
     canceler ;
   (* FIXME: currently, the client streamed RPC call will hold until at
@@ -954,24 +846,22 @@ let run cctxt ?canceler ?(stop_on_event = fun _ -> false)
       initial_state.global_state.operation_worker
   in
   let on_error err =
-    let*! () = Events.(emit error_while_baking err) in
+    Events.(emit error_while_baking err) >>= fun () ->
     (* TODO? retry a bounded number of time *)
     (* let retries = config.Baking_configuration.retries_on_failure in *)
     on_error err
   in
-  let*? initial_event = compute_bootstrap_event initial_state in
+  compute_bootstrap_event initial_state >>?= fun initial_event ->
   protect
     ~on_error:(fun err ->
-      let*! _ = Option.iter_es Lwt_canceler.cancel canceler in
+      Option.iter_es Lwt_canceler.cancel canceler >>= fun _ ->
       Lwt.return_error err)
     (fun () ->
-      let* _ignored_event =
-        automaton_loop
-          ~stop_on_event
-          ~config
-          ~on_error
-          loop_state
-          initial_state
-          initial_event
-      in
-      return_unit)
+      automaton_loop
+        ~stop_on_event
+        ~config
+        ~on_error
+        loop_state
+        initial_state
+        initial_event
+      >>=? fun _ignored_event -> return_unit)

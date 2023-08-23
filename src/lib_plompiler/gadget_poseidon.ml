@@ -27,6 +27,8 @@ open Lang_core
 open Lang_stdlib
 
 module type PARAMETERS = sig
+  val variant : Variants.t
+
   val width : int
 
   val nb_full_rounds : int
@@ -208,7 +210,11 @@ module Make (PP : PARAMETERS) (L : LIB) = struct
            k.(i) <- round_constants.(i_round_key + i)
          done ;
        let* output =
-         Poseidon.poseidon128_full_round ~matrix:mds_matrix ~k (x0, x1, x2)
+         Poseidon.poseidon128_full_round
+           ~matrix:mds_matrix
+           ~k
+           ~variant
+           (x0, x1, x2)
        in
        (match of_list output with
        | [y0; y1; y2] ->
@@ -251,6 +257,7 @@ module Make (PP : PARAMETERS) (L : LIB) = struct
          Poseidon.poseidon128_four_partial_rounds
            ~matrix:mds_matrix
            ~ks
+           ~variant
            (x0, x1, x2)
        in
        (match of_list output with
@@ -337,6 +344,8 @@ module Poseidon128 = struct
   end
 
   module V : Hash_sig.HASH = Make (struct
+    let variant = Variants.P128
+
     let width = 3
 
     let nb_full_rounds = 8
@@ -365,6 +374,8 @@ module Poseidon252 = struct
   end
 
   module V : Hash_sig.HASH = Make (struct
+    let variant = Variants.P252
+
     let width = 5
 
     let nb_full_rounds = 8
@@ -393,6 +404,8 @@ module PoseidonFull = struct
   end
 
   module V : Hash_sig.HASH = Make (struct
+    let variant = Variants.PFull128
+
     let width = 3
 
     let nb_full_rounds = 60

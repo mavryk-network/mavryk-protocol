@@ -39,8 +39,4 @@ let message trap =
   Functions.Trap.message trap (Ctypes.addr msg) ;
   Message.to_string msg
 
-let check trap =
-  if not (Ctypes.is_null trap) then (
-    let msg = message trap in
-    Functions.Trap.delete trap ;
-    raise (Trap msg))
+let check trap = if not (Ctypes.is_null trap) then raise (Trap (message trap))

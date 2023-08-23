@@ -3,8 +3,8 @@
 
 (library
  (name aplonk)
- (public_name octez-libs.octez-aplonk)
+ (public_name octez-aplonk)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.octez-plonk.aggregation)
+  octez-plonk.aggregation)
  (preprocess (pps ppx_repr)))

@@ -3,19 +3,17 @@
 
 (library
  (name tezos_dal_node_lib)
- (public_name tezos-dal-node-lib)
+ (package tezos-dal-node-lib)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
+  tezos-base
+  tezos-base.unix
   tezos-dal-node-services
   tezos-client-base
   tezos-protocol-updater
   tezos-client-base-unix
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-crypto-dal
-  octez-libs.tezos-p2p
-  octez-libs.tezos-p2p-services)
+  tezos-stdlib-unix
+  tezos-crypto-dal)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
@@ -23,6 +21,4 @@
   -open Tezos_protocol_updater
   -open Tezos_client_base_unix
   -open Tezos_stdlib_unix
-  -open Tezos_crypto_dal
-  -open Tezos_p2p
-  -open Tezos_p2p_services))
+  -open Tezos_crypto_dal))

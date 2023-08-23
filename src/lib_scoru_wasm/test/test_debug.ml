@@ -240,7 +240,8 @@ let test_read_mem_outside_of_bounds ~version:_ () =
   return_ok_unit
 
 let tests =
-  Tztest_helper.tztests_with_all_pvms
+  Tztest_helper.tztests_with_pvm
+    ~versions:[V0; V1]
     [
       ("debug on correct inputs and memory", `Quick, test_write_debug_ok);
       ( "debug on more than one memory",

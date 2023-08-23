@@ -40,7 +40,9 @@ module In_memory = struct
 
   type tree = Tree.tree
 
-  type proof = Context_binary.Proof.tree Context_binary.Proof.t
+  type proof = Context.Proof.tree Context.Proof.t
+
+  let hash_tree _ = assert false
 
   let verify_proof p f =
     Lwt.map Result.to_option (Context_binary.verify_tree_proof p f)
@@ -63,13 +65,14 @@ module In_memory = struct
         Protocol.Alpha_context.Sc_rollup.State_hash.context_hash_to_state_hash
           hash
 
-  let proof_before proof =
-    kinded_hash_to_state_hash proof.Context_binary.Proof.before
+  let proof_before proof = kinded_hash_to_state_hash proof.Context.Proof.before
 
-  let proof_after proof =
-    kinded_hash_to_state_hash proof.Context_binary.Proof.after
+  let proof_after proof = kinded_hash_to_state_hash proof.Context.Proof.after
 
   let proof_encoding =
     Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
     .tree_proof_encoding
+
+  let make_empty_context =
+    Tezos_context_memory.Context_binary.make_empty_context
 end

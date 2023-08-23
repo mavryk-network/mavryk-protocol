@@ -23,6 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+module Filter = struct
+  module Proto = Registerer.Registered
+  module Mempool = Plugin.Mempool
+end
+
 module RPC = struct
   module Proto = Registerer.Registered
   include Plugin.RPC
@@ -34,6 +39,8 @@ module Metrics = struct
   let hash = Registerer.Registered.hash
 end
 
-let () = Protocol_plugin.register_rpc (module RPC)
+let () = Shell_plugin.register_filter (module Filter)
 
-let () = Protocol_plugin.register_metrics (module Metrics)
+let () = Shell_plugin.register_rpc (module RPC)
+
+let () = Shell_plugin.register_metrics (module Metrics)

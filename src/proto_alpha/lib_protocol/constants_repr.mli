@@ -24,9 +24,6 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-val version_value : string
-
-val version : string
 
 val mainnet_id : Chain_id.t
 
@@ -107,12 +104,16 @@ val check_constants : Constants_parametric_repr.t -> unit tzresult
 module Generated : sig
   type t = {
     consensus_threshold : int;
-    issuance_weights : Constants_parametric_repr.issuance_weights;
+    baking_reward_fixed_portion : Tez_repr.t;
+    baking_reward_bonus_per_slot : Tez_repr.t;
+    endorsing_reward_per_slot : Tez_repr.t;
+    liquidity_baking_subsidy : Tez_repr.t;
   }
 
   (* This function is meant to be used just in lib_parameters and in the
      migration code to be sure that the parameters are consistent. *)
-  val generate : consensus_committee_size:int -> t
+  val generate :
+    consensus_committee_size:int -> blocks_per_minute:Ratio_repr.t -> t
 end
 
 (** For each subcache, a size limit needs to be declared once. However,

@@ -468,7 +468,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
       Lwt.return
         Mockup.M.Block_services.Mempool.
           {
-            validated = ops;
+            applied = ops;
             refused = Operation_hash.Map.empty;
             outdated = Operation_hash.Map.empty;
             branch_refused = Operation_hash.Map.empty;
@@ -476,9 +476,8 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
             unprocessed = Operation_hash.Map.empty;
           }
 
-    let monitor_operations ~version ~validated ~branch_delayed ~branch_refused
-        ~refused =
-      ignore validated ;
+    let monitor_operations ~applied ~branch_delayed ~branch_refused ~refused =
+      ignore applied ;
       ignore branch_delayed ;
       ignore branch_refused ;
       ignore refused ;
@@ -490,11 +489,11 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
           | None when !streamed -> Lwt.return None
           | None ->
               streamed := true ;
-              Lwt.return_some (version, [])
+              Lwt.return (Some [])
           | Some ops -> (
               List.filter_map_s User_hooks.on_new_operation ops >>= function
               | [] -> loop ()
-              | l -> Lwt.return_some (version, List.map (fun x -> (x, None)) l))
+              | l -> Lwt.return_some (List.map (fun x -> (x, None)) l))
         in
         loop ()
       in
@@ -937,8 +936,7 @@ let genesis_protocol_data (baker_sk : Signature.secret_key)
         proof_of_work_nonce;
         seed_nonce_hash = None;
         liquidity_baking_toggle_vote =
-          Baking_configuration.default_liquidity_baking_config
-            .liquidity_baking_vote;
+          Baking_configuration.default_liquidity_baking_toggle_vote;
       }
   in
   let unsigned_header =

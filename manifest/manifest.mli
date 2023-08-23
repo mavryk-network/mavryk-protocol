@@ -100,7 +100,7 @@ module Dune : sig
       in the generated dune file. *)
   type foreign_stubs = {
     language : language;
-    flags : s_expr;
+    flags : string list;
     names : string list;
   }
 
@@ -229,21 +229,7 @@ module Dune : sig
       a [(mode promote)] stanza.
   *)
   val targets_rule :
-    ?promote:bool ->
-    ?deps:s_expr list ->
-    ?enabled_if:s_expr ->
-    string list ->
-    action:s_expr ->
-    s_expr
-
-  (** Same as [targets_rule] but for a single target *)
-  val target_rule :
-    ?promote:bool ->
-    ?deps:s_expr list ->
-    ?enabled_if:s_expr ->
-    string ->
-    action:s_expr ->
-    s_expr
+    ?promote:bool -> ?deps:s_expr list -> string list -> action:s_expr -> s_expr
 
   (** Makes an [install] stanza.
 
@@ -465,10 +451,6 @@ module Npm : sig
   (** Npm package description *)
   type t
 
-  (** Version of the package if it comes form an NPM registry, or a path to a
-      local NPM package or JavaScript file. *)
-  type version_or_path = Version of Version.constraints | Path of string
-
   (** Make a npm package.
 
     Usage: [Npm.make package_name version]
@@ -476,7 +458,7 @@ module Npm : sig
   - [package_name] is the name of the npm package.
   - [version]: version constraint used by npm when installing dependencies.
   *)
-  val make : string -> version_or_path -> t
+  val make : string -> Version.constraints -> t
 end
 
 module Flags : sig
@@ -546,16 +528,9 @@ type preprocessor
 
 (** Make a preprocessor.
 
-    [pps target] becomes a [(preprocess (pps target))] stanza in the [dune] file.
+    [pps ?args target] becomes a [(preprocess (pps target args))] stanza in the [dune] file.
     The target's package is also added as a dependency in the [.opam] file. *)
-val pps : target -> preprocessor
-
-(** Apply multiple preprocessors.
-
-    [pps targets] becomes a [(preprocess (pps targets...))] stanza in the [dune]
-    file. The targets' packages are also added as dependencies in the [.opam]
-    file. *)
-val ppses : target list -> preprocessor
+val pps : ?args:string list -> target -> preprocessor
 
 (** Make a staged preprocessor.
 
@@ -662,8 +637,6 @@ type bisect_ppx = No | Yes | With_sigterm
 
     - [flags]: specifies a [(flags ...)] stanza.
       Those flags are passed to the OCaml compiler when compiling and linking OCaml units.
-
-    - [foreign_archives]: specifies a [(foreign_archives)] stanza for the [dune] target.
 
     - [foreign_stubs]: specifies a [(foreign_stubs)] stanza for the [dune] target.
 
@@ -796,7 +769,6 @@ type 'a maker =
   ?deps:target list ->
   ?dune:Dune.s_expr ->
   ?flags:Flags.t ->
-  ?foreign_archives:string list ->
   ?foreign_stubs:Dune.foreign_stubs ->
   ?ctypes:Ctypes.t ->
   ?implements:target ->
@@ -932,15 +904,6 @@ val private_exes : string list maker
     - [dep_globs_rec]: a list of files to add as dependencies using [(deps (glob_files_rec ...))]
       in the [dune] file.
 
-    - [dune_with_test]: Specifies a condition for the test to be run on the dune file.
-      If set to [Only_on_64_arch], [%{arch_sixtyfour}] is added to the [enabled_if] clause.
-      If set to [Always], nothing is added to the [enabled_if] clause.
-      If set to [Never], [false] is added to the [enabled_if] clause.
-
-    - [enabled_if]: add a custom [enabled_if] clause. If both [dune_with_test] and
-      [enabled_if] are set, then logically, the resulting clause is the conjunction
-      of the two (i.e. [(and <enabled_if> <dune_with_test>)])
-
     Since tests are private, they have no public name: the ['a]
     argument of [maker] is the internal name. *)
 val test :
@@ -950,8 +913,6 @@ val test :
   ?dep_globs_rec:string list ->
   ?locks:string ->
   ?enabled_if:Dune.s_expr ->
-  ?dune_with_test:with_test ->
-  ?lib_deps:target list ->
   string maker
 
 (** Same as {!test} but with several names, to define multiple tests at once. *)
@@ -962,7 +923,6 @@ val tests :
   ?dep_globs_rec:string list ->
   ?locks:string ->
   ?enabled_if:Dune.s_expr ->
-  ?lib_deps:target list ->
   string list maker
 
 (** Register a Tezt test.
@@ -1005,9 +965,7 @@ val tezt :
   ?dep_files:string list ->
   ?synopsis:string ->
   ?opam_with_test:with_test ->
-  ?dune_with_test:with_test ->
   ?with_macos_security_framework:bool ->
-  ?flags:Flags.t ->
   ?dune:Dune.s_expr ->
   ?preprocess:preprocessor list ->
   ?preprocessor_deps:preprocessor_dep list ->

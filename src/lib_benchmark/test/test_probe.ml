@@ -59,10 +59,7 @@ module Probing_bench = struct
 
   let module_filename = __FILE__
 
-  let purpose =
-    Benchmark.Other_purpose
-      "Checks that benchmarks with a probe succeed. Actual measure results are \
-       discarded, so there is no need for a complexity model."
+  let generated_code_destination = None
 
   (* The encoding is used by `tezos-snoop` to load the config from json
      files. *)

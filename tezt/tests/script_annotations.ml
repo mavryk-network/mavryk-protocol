@@ -40,10 +40,7 @@ let typecheck_data ?res ?legacy ~data ~typ client =
   typecheck_wrapper ?res (Client.spawn_typecheck_data ?legacy ~data ~typ) client
 
 let typecheck_script ?res ?legacy ~script client =
-  typecheck_wrapper
-    ?res
-    (Client.spawn_typecheck_script ?legacy ~scripts:[script])
-    client
+  typecheck_wrapper ?res (Client.spawn_typecheck_script ?legacy ~script) client
 
 let register =
   Protocol.register_test

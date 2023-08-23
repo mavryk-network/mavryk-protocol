@@ -33,47 +33,47 @@ let show_mode = function
   | Construction -> "Construction"
   | Mempool -> "Mempool"
 
-type kind = Preattestation | Attestation
+type kind = Preendorsement | Endorsement
 
-(** Craft an attestation or preattestation, and bake a block
+(** Craft an endorsement or preendorsement, and bake a block
     containing it (in application or construction modes) or inject it
     into a mempool. When [error] is [None], check that it succeeds,
     otherwise check that it fails as specified by [error].
 
-    By default, the (pre)attestation is for the first slot and is
+    By default, the (pre)endorsement is for the first slot and is
     signed by the delegate that owns this slot. Moreover, the operation
-    points to the given [attested_block]: in other words, it has that
+    points to the given [endorsed_block]: in other words, it has that
     block's level, round, payload hash, and its branch is the
     predecessor of that block. Optional arguments allow to override
     these default parameters.
 
     The [predecessor] is used as the predecessor of the baked block or
     the head of the mempool. When it is not provided, we use the
-    [attested_block] for this. *)
+    [endorsed_block] for this. *)
 let test_consensus_operation ?delegate ?slot ?level ?round ?block_payload_hash
-    ?branch ~attested_block ?(predecessor = attested_block) ?error ~loc kind
+    ?branch ~endorsed_block ?(predecessor = endorsed_block) ?error ~loc kind
     mode =
   let open Lwt_result_syntax in
   let* operation =
     match kind with
-    | Preattestation ->
-        Op.preattestation
+    | Preendorsement ->
+        Op.preendorsement
           ?delegate
           ?slot
           ?level
           ?round
           ?block_payload_hash
           ?branch
-          attested_block
-    | Attestation ->
-        Op.attestation
+          endorsed_block
+    | Endorsement ->
+        Op.endorsement
           ?delegate
           ?slot
           ?level
           ?round
           ?block_payload_hash
           ?branch
-          attested_block
+          endorsed_block
   in
   let check_error res =
     match error with
@@ -100,7 +100,7 @@ let test_consensus_operation ?delegate ?slot ?level ?round ?block_payload_hash
       check_error res
 
 let test_consensus_operation_all_modes_different_outcomes ?delegate ?slot ?level
-    ?round ?block_payload_hash ?branch ~attested_block ?predecessor ~loc
+    ?round ?block_payload_hash ?branch ~endorsed_block ?predecessor ~loc
     ?application_error ?construction_error ?mempool_error kind =
   List.iter_es
     (fun (mode, error) ->
@@ -111,7 +111,7 @@ let test_consensus_operation_all_modes_different_outcomes ?delegate ?slot ?level
         ?round
         ?block_payload_hash
         ?branch
-        ~attested_block
+        ~endorsed_block
         ?predecessor
         ?error
         ~loc:(Format.sprintf "%s (%s mode)" loc (show_mode mode))
@@ -124,7 +124,7 @@ let test_consensus_operation_all_modes_different_outcomes ?delegate ?slot ?level
     ]
 
 let test_consensus_operation_all_modes ?delegate ?slot ?level ?round
-    ?block_payload_hash ?branch ~attested_block ?predecessor ?error ~loc kind =
+    ?block_payload_hash ?branch ~endorsed_block ?predecessor ?error ~loc kind =
   test_consensus_operation_all_modes_different_outcomes
     ?delegate
     ?slot
@@ -132,7 +132,7 @@ let test_consensus_operation_all_modes ?delegate ?slot ?level ?round
     ?round
     ?block_payload_hash
     ?branch
-    ~attested_block
+    ~endorsed_block
     ?predecessor
     ~loc
     ?application_error:error
@@ -142,13 +142,13 @@ let test_consensus_operation_all_modes ?delegate ?slot ?level ?round
 
 let delegate_of_first_slot b =
   let module V = Plugin.RPC.Validators in
-  Context.get_attesters b >|=? function
+  Context.get_endorsers b >|=? function
   | {V.consensus_key; slots = s :: _; _} :: _ -> (consensus_key, s)
   | _ -> assert false
 
 let delegate_of_slot ?(different_slot = false) slot b =
   let module V = Plugin.RPC.Validators in
-  Context.get_attesters b >|=? fun attesters ->
+  Context.get_endorsers b >|=? fun endorsers ->
   List.find_map
     (function
       | {V.consensus_key; slots = s :: _; _}
@@ -156,16 +156,16 @@ let delegate_of_slot ?(different_slot = false) slot b =
              else Slot.equal s slot ->
           Some consensus_key
       | _ -> None)
-    attesters
+    endorsers
   |> function
   | None -> assert false
   | Some d -> d
 
 let test_consensus_op_for_next ~genesis ~kind ~next =
-  let dorsement ~attested_block ~delegate =
+  let dorsement ~endorsed_block ~delegate =
     match kind with
-    | `Preattestation -> Op.preattestation ~delegate attested_block
-    | `Attestation -> Op.attestation ~delegate attested_block
+    | `Preendorsement -> Op.preendorsement ~delegate endorsed_block
+    | `Endorsement -> Op.endorsement ~delegate endorsed_block
   in
   Block.bake genesis >>=? fun b1 ->
   (match next with
@@ -174,9 +174,9 @@ let test_consensus_op_for_next ~genesis ~kind ~next =
   >>=? fun b2 ->
   Incremental.begin_construction ~mempool_mode:true b1 >>=? fun inc ->
   delegate_of_first_slot (B b1) >>=? fun (delegate, slot) ->
-  dorsement ~attested_block:b1 ~delegate >>=? fun operation ->
+  dorsement ~endorsed_block:b1 ~delegate >>=? fun operation ->
   Incremental.add_operation inc operation >>=? fun inc ->
   delegate_of_slot ~different_slot:true slot (B b2) >>=? fun delegate ->
-  dorsement ~attested_block:b2 ~delegate >>=? fun operation ->
+  dorsement ~endorsed_block:b2 ~delegate >>=? fun operation ->
   Incremental.add_operation inc operation >>=? fun (_ : Incremental.t) ->
   return_unit

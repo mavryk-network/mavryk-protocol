@@ -41,7 +41,9 @@ module Mempool : sig
 
   val init : string list -> t
 
-  val set_validated_collector : (unit -> float) -> unit
+  val set_applied_collector : (unit -> float) -> unit
+
+  val set_prechecked_collector : (unit -> float) -> unit
 
   val set_refused_collector : (unit -> float) -> unit
 
@@ -110,11 +112,7 @@ module Chain_validator : sig
 end
 
 module Version : sig
-  val init :
-    version:string ->
-    commit_info:Node_version.commit_info ->
-    ('a, 'b, 'c) P2p.t ->
-    unit
+  val init : ('a, 'b, 'c) P2p.t -> unit
 end
 
 module Peer_validator : sig

@@ -85,13 +85,13 @@ let commands () =
       ~default:"0.05"
   in
   let source_arg =
-    Contract_alias.destination_arg
+    ContractAlias.destination_arg
       ~name:"source"
       ~doc:"name of the source (i.e. SENDER) contract for the transaction"
       ()
   in
   let payer_arg =
-    Contract_alias.destination_arg
+    ContractAlias.destination_arg
       ~name:"payer"
       ~doc:"name of the payer (i.e. SOURCE) contract for the transaction"
       ()
@@ -953,7 +953,7 @@ let commands () =
       (prefixes ["run"; "tzip4"; "view"]
       @@ param ~name:"entrypoint" ~desc:"the name of the view" string_parameter
       @@ prefixes ["on"; "contract"]
-      @@ Contract_alias.destination_param
+      @@ ContractAlias.destination_param
            ~name:"contract"
            ~desc:"viewed contract"
       @@ prefixes ["with"; "input"]

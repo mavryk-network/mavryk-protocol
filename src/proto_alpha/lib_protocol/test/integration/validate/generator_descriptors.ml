@@ -27,12 +27,11 @@ open Protocol
 open Alpha_context
 open Validate_helpers
 
-type dbl_attestation_state = {
+type dbl_endorsement_state = {
   temporary : (Block.t * Block.t) option;
-  slashable_preattestations :
-    (Kind.preattestation operation * Kind.preattestation operation) list;
-  slashable_attestations :
-    (Kind.attestation operation * Kind.attestation operation) list;
+  slashable_preend :
+    (Kind.preendorsement operation * Kind.preendorsement operation) list;
+  slashable_end : (Kind.endorsement operation * Kind.endorsement operation) list;
 }
 
 type state = {
@@ -46,7 +45,7 @@ type state = {
   protocol_hashes : Protocol_hash.t list;
   slashable_bakes : (block_header * block_header) list;
   vdf : bool;
-  dbl_attestation : dbl_attestation_state;
+  dbl_endorsement : dbl_endorsement_state;
   manager : Manager.infos;
 }
 
@@ -66,12 +65,8 @@ let init_manager_state bootstraps block =
   in
   {ctxt; accounts; flags = all_enabled}
 
-let init_dbl_attestation_state =
-  {
-    temporary = None;
-    slashable_preattestations = [];
-    slashable_attestations = [];
-  }
+let init_dbl_endorsement_state =
+  {temporary = None; slashable_preend = []; slashable_end = []}
 
 (** Initialize the state according to [state] initialisation
     for each operation kind.
@@ -95,7 +90,7 @@ let init_state block ~voters ~(bootstraps : Contract.t list) =
     protocol_hashes = [];
     slashable_bakes = [];
     vdf = false;
-    dbl_attestation = init_dbl_attestation_state;
+    dbl_endorsement = init_dbl_endorsement_state;
     manager = init_manager_state bootstraps block;
   }
 
@@ -319,33 +314,33 @@ let seed_nonce_descriptor =
         List.map_es gen state.seed_nonce_to_reveal);
   }
 
-(** The heads on which two slashable attestations or preattestation
+(** The heads on which two slashable endorsements or preendorsement
    should be made are from the previous level. Hence, the temporary
    field of a double_evidence_state is used to transmit them to the
    next level in order to make the slashable operations. *)
 let register_temporary ba bb state : (Block.t * Block.t) option * state =
-  let pred_forks = state.dbl_attestation.temporary in
+  let pred_forks = state.dbl_endorsement.temporary in
   let temporary = Some (ba, bb) in
-  let dbl_attestation = {state.dbl_attestation with temporary} in
-  (pred_forks, {state with dbl_attestation})
+  let dbl_endorsement = {state.dbl_endorsement with temporary} in
+  (pred_forks, {state with dbl_endorsement})
 
 (** During the slashable period, at each level, two different heads
    for the same round are baked by the same baker. At the next level,
-   a delegate that either preattests or attests both heads makes a
-   pair of slashable pre- or attestations.
+   a delegate that either preendorses or endorses both heads makes a
+   pair of slashable pre- or endorsements.
 
    The pair of heads is placed in the temporary of the
    double_evidence_state. If a pair of heads was already in this
    field, hence they were baked at the previous level.
 
-   Consequently, two pairs of slashable operations: two attestations
-   and two preattestation, can be made by two distinct attestations. Each
+   Consequently, two pairs of slashable operations: two endorsements
+   and two preendorsement, can be made by two distinct endorsers. Each
    pair is ordered in operation_hash order. Consequently, each pair
    can appear in a denunciation operation and will be valid. *)
-let dbl_attestation_prelude state =
+let dbl_endorsement_prelude state =
   let open Lwt_result_syntax in
   let* head_A = Block.bake ~policy:(By_round 0) state.block in
-  let* addr = pick_addr_attester (B state.block) in
+  let* addr = pick_addr_endorser (B state.block) in
   let ctr = Contract.Implicit addr in
   let* operation = Op.transaction (B state.block) ctr ctr Tez.one_mutez in
   let* head_B = Block.bake ~policy:(By_round 0) state.block ~operation in
@@ -353,9 +348,9 @@ let dbl_attestation_prelude state =
   match heads with
   | None -> return ([], state)
   | Some (b1, b2) ->
-      let* delegate1, delegate2 = pick_two_attesters (B b1) in
-      let* op1 = Op.raw_preattestation ~delegate:delegate1 b1 in
-      let* op2 = Op.raw_preattestation ~delegate:delegate1 b2 in
+      let* delegate1, delegate2 = pick_two_endorsers (B b1) in
+      let* op1 = Op.raw_preendorsement ~delegate:delegate1 b1 in
+      let* op2 = Op.raw_preendorsement ~delegate:delegate1 b2 in
       let op1, op2 =
         let comp =
           Operation_hash.compare (Operation.hash op1) (Operation.hash op2)
@@ -363,11 +358,11 @@ let dbl_attestation_prelude state =
         assert (comp <> 0) ;
         if comp < 0 then (op1, op2) else (op2, op1)
       in
-      let slashable_preattestations =
-        (op1, op2) :: state.dbl_attestation.slashable_preattestations
+      let slashable_preend =
+        (op1, op2) :: state.dbl_endorsement.slashable_preend
       in
-      let* op3 = Op.raw_attestation ~delegate:delegate2 b1 in
-      let* op4 = Op.raw_attestation ~delegate:delegate2 b2 in
+      let* op3 = Op.raw_endorsement ~delegate:delegate2 b1 in
+      let* op4 = Op.raw_endorsement ~delegate:delegate2 b2 in
       let op3, op4 =
         let comp =
           Operation_hash.compare (Operation.hash op3) (Operation.hash op4)
@@ -375,39 +370,33 @@ let dbl_attestation_prelude state =
         assert (comp <> 0) ;
         if comp < 0 then (op3, op4) else (op4, op3)
       in
-      let slashable_attestations =
-        (op3, op4) :: state.dbl_attestation.slashable_attestations
+      let slashable_end = (op3, op4) :: state.dbl_endorsement.slashable_end in
+      let dbl_endorsement =
+        {state.dbl_endorsement with slashable_preend; slashable_end}
       in
-      let dbl_attestation =
-        {
-          state.dbl_attestation with
-          slashable_preattestations;
-          slashable_attestations;
-        }
-      in
-      return ([], {state with dbl_attestation})
+      return ([], {state with dbl_endorsement})
 
 let double_consensus_descriptor =
   {
     parameters = Fun.id;
     required_cycle = (fun _params -> 2);
     required_block = (fun _ -> 0);
-    prelude = (From 2, dbl_attestation_prelude);
+    prelude = (From 2, dbl_endorsement_prelude);
     opt_prelude = None;
     candidates_generator =
       (fun state ->
         let open Lwt_result_syntax in
         let gen_dbl_pre (op1, op2) =
-          Op.double_preattestation (Context.B state.block) op1 op2
+          Op.double_preendorsement (Context.B state.block) op1 op2
         in
         let gen_dbl_end (op1, op2) =
-          Op.double_attestation (Context.B state.block) op1 op2
+          Op.double_endorsement (Context.B state.block) op1 op2
         in
         let candidates_pre =
-          List.map gen_dbl_pre state.dbl_attestation.slashable_preattestations
+          List.map gen_dbl_pre state.dbl_endorsement.slashable_preend
         in
         let candidates_end =
-          List.map gen_dbl_end state.dbl_attestation.slashable_attestations
+          List.map gen_dbl_end state.dbl_endorsement.slashable_end
         in
         return (candidates_pre @ candidates_end));
   }
@@ -444,7 +433,7 @@ let double_baking_descriptor =
             let* baker1, _baker2 =
               Context.get_first_different_bakers (B state.block)
             in
-            let* addr = pick_addr_attester (B state.block) in
+            let* addr = pick_addr_endorser (B state.block) in
             let ctr = Contract.Implicit addr in
             let* operation =
               Op.transaction (B state.block) ctr ctr Tez.one_mutez
@@ -578,7 +567,7 @@ let vdf_revelation_descriptor =
             return [Op.vdf_revelation (B state.block) solution]);
   }
 
-let preattestation_descriptor =
+let preendorsement_descriptor =
   {
     parameters = Fun.id;
     required_cycle = (fun _ -> 1);
@@ -589,7 +578,7 @@ let preattestation_descriptor =
       (fun state ->
         let open Lwt_result_syntax in
         let gen (delegate, ck_opt) =
-          let* slots_opt = Context.get_attester_slot (B state.block) delegate in
+          let* slots_opt = Context.get_endorser_slot (B state.block) delegate in
           let delegate = Option.value ~default:delegate ck_opt in
           match slots_opt with
           | None -> return_none
@@ -597,13 +586,13 @@ let preattestation_descriptor =
               match slots with
               | [] -> return_none
               | _ :: _ ->
-                  let* op = Op.preattestation ~delegate state.block in
+                  let* op = Op.preendorsement ~delegate state.block in
                   return_some op)
         in
         List.filter_map_es gen state.delegates);
   }
 
-let attestation_descriptor =
+let endorsement_descriptor =
   {
     parameters = Fun.id;
     required_cycle = (fun _ -> 1);
@@ -614,7 +603,7 @@ let attestation_descriptor =
       (fun state ->
         let open Lwt_result_syntax in
         let gen (delegate, ck_opt) =
-          let* slots_opt = Context.get_attester_slot (B state.block) delegate in
+          let* slots_opt = Context.get_endorser_slot (B state.block) delegate in
           let delegate = Option.value ~default:delegate ck_opt in
           match slots_opt with
           | None -> return_none
@@ -622,7 +611,7 @@ let attestation_descriptor =
               match slots with
               | [] -> return_none
               | _ :: _ ->
-                  let* op = Op.attestation ~delegate state.block in
+                  let* op = Op.endorsement ~delegate state.block in
                   return_some op)
         in
         List.filter_map_es gen state.delegates);
@@ -830,8 +819,8 @@ let manager_descriptor max_batch_size nb_accounts =
   }
 
 type op_kind =
-  | KAttestation
-  | KPreattestation
+  | KEndorsement
+  | KPreendorsement
   | KDalattestation
   | KBallotExp
   | KBallotProm
@@ -847,13 +836,13 @@ type op_kind =
 let op_kind_of_packed_operation op =
   let (Operation_data {contents; _}) = op.protocol_data in
   match contents with
-  | Single (Preattestation _) -> KPreattestation
-  | Single (Attestation _) -> KAttestation
+  | Single (Preendorsement _) -> KPreendorsement
+  | Single (Endorsement _) -> KEndorsement
   | Single (Dal_attestation _) -> KDalattestation
   | Single (Seed_nonce_revelation _) -> KNonce
   | Single (Vdf_revelation _) -> KVdf
-  | Single (Double_attestation_evidence _) -> KDbl_consensus
-  | Single (Double_preattestation_evidence _) -> KDbl_consensus
+  | Single (Double_endorsement_evidence _) -> KDbl_consensus
+  | Single (Double_preendorsement_evidence _) -> KDbl_consensus
   | Single (Double_baking_evidence _) -> KDbl_baking
   | Single (Activate_account _) -> KActivate
   | Single (Proposals _) -> KProposals
@@ -868,8 +857,8 @@ let pp_op_kind fmt kind =
     fmt
     (match kind with
     | KManager -> "manager"
-    | KAttestation -> "attestation"
-    | KPreattestation -> "preattestation"
+    | KEndorsement -> "endorsement"
+    | KPreendorsement -> "preendorsement"
     | KDalattestation -> "dal_attestation"
     | KBallotExp -> "ballot"
     | KBallotProm -> "ballot"
@@ -883,8 +872,8 @@ let pp_op_kind fmt kind =
 
 let descriptor_of ~nb_bootstrap ~max_batch_size = function
   | KManager -> manager_descriptor max_batch_size nb_bootstrap
-  | KAttestation -> attestation_descriptor
-  | KPreattestation -> preattestation_descriptor
+  | KEndorsement -> endorsement_descriptor
+  | KPreendorsement -> preendorsement_descriptor
   | KDalattestation -> dal_attestation_descriptor
   | KBallotExp -> ballot_exploration_descriptor
   | KBallotProm -> ballot_promotion_descriptor
@@ -910,8 +899,8 @@ let nonce_generation_kinds = [KNonce; KVdf]
 let non_exclusive_kinds =
   [
     KManager;
-    KAttestation;
-    KPreattestation;
+    KEndorsement;
+    KPreendorsement;
     KDalattestation;
     KActivate;
     KDbl_consensus;

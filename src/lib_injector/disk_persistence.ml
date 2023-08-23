@@ -151,29 +151,28 @@ let create_dir dir =
   return_unit
 
 let read_value file encoding =
-  let open Lwt_result_syntax in
+  let open Lwt_syntax in
   trace (Cannot_read_file file)
   @@ Lwt.catch
        (fun () ->
          Lwt_io.with_file ~flags:[Unix.O_RDONLY; O_CLOEXEC] ~mode:Input file
          @@ fun channel ->
-         let*! bytes = Lwt_io.read channel in
-         let*? v =
-           Result.map_error (fun e -> [Decoding_error e])
-           @@ Data_encoding.Binary.of_bytes
-                encoding
-                (Bytes.unsafe_of_string bytes)
-         in
-         return v)
+         let+ bytes = Lwt_io.read channel in
+         Result.map_error (fun e -> [Decoding_error e])
+         @@ Data_encoding.Binary.of_bytes
+              encoding
+              (Bytes.unsafe_of_string bytes))
        (function
-         | Unix.Unix_error (e, _, _) -> tzfail (Unix_error e)
-         | e -> fail_with_exn e)
+         | Unix.Unix_error (e, _, _) -> fail (Unix_error e) | e -> fail (Exn e))
 
 let maybe_read_value ~warn file encoding =
   let open Lwt_syntax in
   let* v = read_value file encoding in
-  let* () = Result.iter_error_s (warn file) v in
-  return (Result.to_option v)
+  match v with
+  | Error e ->
+      let+ () = warn file e in
+      None
+  | Ok v -> return_some v
 
 let write_value file encoding value =
   trace (Cannot_write_file file)

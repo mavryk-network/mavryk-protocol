@@ -617,7 +617,7 @@ let spend_only_call_from_token c contract amount =
   let balance = Option.value balance ~default:Tez_repr.zero in
   let*? new_balance = spend_from_balance contract balance amount in
   let* c = Storage.Contract.Spendable_balance.update c contract new_balance in
-  let* c = Stake_storage.remove_contract_delegated_stake c contract amount in
+  let* c = Stake_storage.remove_contract_stake c contract amount in
   let+ () =
     when_
       Tez_repr.(new_balance <= Tez_repr.zero)
@@ -637,7 +637,7 @@ let credit_only_call_from_token c contract amount =
   | Some balance ->
       Tez_repr.(amount +? balance) >>?= fun balance ->
       Storage.Contract.Spendable_balance.update c contract balance >>=? fun c ->
-      Stake_storage.add_contract_delegated_stake c contract amount
+      Stake_storage.add_contract_stake c contract amount
 
 let init c =
   Storage.Contract.Global_counter.init c Manager_counter_repr.init >>=? fun c ->
@@ -686,8 +686,7 @@ let find_bond ctxt contract bond_id =
 let spend_bond_only_call_from_token ctxt contract bond_id amount =
   fail_when Tez_repr.(amount = zero) (Failure "Expecting : [amount > 0]")
   >>=? fun () ->
-  Stake_storage.remove_contract_delegated_stake ctxt contract amount
-  >>=? fun ctxt ->
+  Stake_storage.remove_contract_stake ctxt contract amount >>=? fun ctxt ->
   Storage.Contract.Frozen_bonds.get (ctxt, contract) bond_id
   >>=? fun (ctxt, frozen_bonds) ->
   error_when
@@ -706,8 +705,7 @@ let spend_bond_only_call_from_token ctxt contract bond_id amount =
 let credit_bond_only_call_from_token ctxt contract bond_id amount =
   fail_when Tez_repr.(amount = zero) (Failure "Expecting : [amount > 0]")
   >>=? fun () ->
-  Stake_storage.add_contract_delegated_stake ctxt contract amount
-  >>=? fun ctxt ->
+  Stake_storage.add_contract_stake ctxt contract amount >>=? fun ctxt ->
   ( Storage.Contract.Frozen_bonds.find (ctxt, contract) bond_id
   >>=? fun (ctxt, frozen_bonds_opt) ->
     match frozen_bonds_opt with
@@ -726,17 +724,6 @@ let credit_bond_only_call_from_token ctxt contract bond_id amount =
 let has_frozen_bonds ctxt contract =
   Storage.Contract.Total_frozen_bonds.mem ctxt contract >|= ok
 
-let has_frozen_deposits ctxt contract =
-  let open Lwt_result_syntax in
-  let* pseudo = Storage.Contract.Staking_pseudotokens.find ctxt contract in
-  match pseudo with
-  | Some v when not Staking_pseudotoken_repr.(v = zero) -> return_true
-  | _ -> (
-      let* requests = Storage.Contract.Unstake_requests.find ctxt contract in
-      match requests with
-      | None | Some {delegate = _; requests = []} -> return_false
-      | Some _ -> return_true)
-
 let fold_on_bond_ids ctxt contract =
   Storage.Contract.fold_bond_ids (ctxt, contract)
 
@@ -745,8 +732,7 @@ let fold_on_bond_ids ctxt contract =
 let should_keep_empty_implicit_contract ctxt contract =
   let open Lwt_result_syntax in
   let* has_frozen_bonds = has_frozen_bonds ctxt contract in
-  let* has_frozen_deposits = has_frozen_deposits ctxt contract in
-  if has_frozen_bonds || has_frozen_deposits then return_true
+  if has_frozen_bonds then return_true
   else
     (* full balance of contract is zero. *)
     Contract_delegate_storage.find ctxt contract >>=? function
@@ -793,65 +779,3 @@ let simulate_spending ctxt ~balance ~amount source =
       should_keep_empty_implicit_contract ctxt contract
   in
   return (new_balance, still_allocated)
-
-let get_total_supply ctxt = Storage.Contract.Total_supply.get ctxt
-
-module For_RPC = struct
-  let get_staked_balance ctxt = function
-    | Contract_repr.Originated _ -> return_none
-    | Implicit _ as contract -> (
-        Storage.Contract.Delegate.find ctxt contract >>=? function
-        | None -> return_none
-        | Some delegate ->
-            Staking_pseudotokens_storage.For_RPC.staked_balance
-              ctxt
-              ~delegate
-              ~contract
-            >>=? fun own_frozen_deposits -> return (Some own_frozen_deposits))
-
-  let get_unstaked_balance ctxt = function
-    | Contract_repr.Originated _ -> return_none
-    | Implicit _ as contract -> (
-        Unstake_requests_storage.prepare_finalize_unstake ctxt contract
-        >>=? function
-        | None -> return_some (Tez_repr.zero, Tez_repr.zero)
-        | Some {finalizable; unfinalizable} ->
-            Unstake_requests_storage.For_RPC
-            .apply_slash_to_unstaked_unfinalizable
-              ctxt
-              unfinalizable
-            >>=? fun unfinalizable_requests ->
-            List.fold_left_es
-              (fun acc (_cycle, tz) -> Lwt.return Tez_repr.(acc +? tz))
-              Tez_repr.zero
-              unfinalizable_requests
-            >>=? fun sum_unfinalizable ->
-            List.fold_left_es
-              (fun acc (_, _cycle, tz) -> Lwt.return Tez_repr.(acc +? tz))
-              Tez_repr.zero
-              finalizable
-            >>=? fun sum_finalizable ->
-            return_some (sum_unfinalizable, sum_finalizable))
-
-  let get_unstaked_frozen_balance ctxt contract =
-    get_unstaked_balance ctxt contract >>=? function
-    | None -> return_none
-    | Some (amount, _) -> return_some amount
-
-  let get_unstaked_finalizable_balance ctxt contract =
-    get_unstaked_balance ctxt contract >>=? function
-    | None -> return_none
-    | Some (_, amount) -> return_some amount
-
-  let get_full_balance ctxt contract =
-    get_balance_and_frozen_bonds ctxt contract >>=? fun balance_n_frozen ->
-    get_staked_balance ctxt contract >>=? fun s ->
-    let staked = Option.value ~default:Tez_repr.zero s in
-    get_unstaked_balance ctxt contract >>=? fun us ->
-    let u_frozen, u_final =
-      Option.value ~default:(Tez_repr.zero, Tez_repr.zero) us
-    in
-    Lwt.return
-      Tez_repr.(
-        balance_n_frozen +? staked >>? ( +? ) u_frozen >>? ( +? ) u_final)
-end

@@ -42,13 +42,13 @@ val bake :
   Baking_state.consensus_key list ->
   unit tzresult Lwt.t
 
-val preattest :
+val preendorse :
   Protocol_client_context.full ->
   ?force:bool ->
   Baking_state.consensus_key list ->
   unit tzresult Lwt.t
 
-val attest :
+val endorse :
   Protocol_client_context.full ->
   ?force:bool ->
   Baking_state.consensus_key list ->

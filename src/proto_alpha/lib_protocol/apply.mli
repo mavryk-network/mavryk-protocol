@@ -68,9 +68,7 @@ type application_state = {
   mode : mode;
   op_count : int;
   migration_balance_updates : Receipt.balance_updates;
-  liquidity_baking_toggle_ema : Per_block_votes.Liquidity_baking_toggle_EMA.t;
-  adaptive_issuance_vote_ema : Per_block_votes.Adaptive_issuance_launch_EMA.t;
-  adaptive_issuance_launch_cycle : Cycle.t option;
+  liquidity_baking_toggle_ema : Liquidity_baking.Toggle_EMA.t;
   implicit_operations_results :
     Apply_results.packed_successful_manager_operation_result list;
 }

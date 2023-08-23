@@ -425,7 +425,7 @@ module Cost_of : sig
 
       val list_exit_body : Gas.cost
 
-      val map_enter_body : ('k, 'v) Script_typed_ir.map -> Gas.cost
+      val map_enter_body : Gas.cost
 
       val map_exit_body : 'k -> ('k, 'v) Script_typed_ir.map -> Gas.cost
     end
@@ -462,9 +462,7 @@ module Cost_of : sig
 
     val check_printable : string -> Gas.cost
 
-    val ty_eq : _ Script_typed_ir.ty -> _ Script_typed_ir.ty -> Gas.cost
-
-    val ty_eq_prim : Gas.cost
+    val merge_cycle : Gas.cost
 
     val parse_type_cycle : Gas.cost
 

@@ -27,7 +27,18 @@
 (* -------------------------------------------------------------------------- *)
 (* Initiate necromantic rite *)
 
-open Pytools
+let handle_python_error msg closure =
+  match closure () with
+  | result -> result
+  | exception Py.E (x, y) ->
+      let s =
+        Printf.sprintf
+          "%s\n%s\n%s\n"
+          msg
+          (Py.Object.to_string x)
+          (Py.Object.to_string y)
+      in
+      Stdlib.failwith s
 
 let pyinit () =
   if not (Py.is_initialized ()) then (

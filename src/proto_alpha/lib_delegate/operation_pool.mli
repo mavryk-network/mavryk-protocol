@@ -87,34 +87,34 @@ type consensus_filter = {
 }
 
 val filter_with_relevant_consensus_ops :
-  attestation_filter:consensus_filter ->
-  preattestation_filter:consensus_filter option ->
+  endorsement_filter:consensus_filter ->
+  preendorsement_filter:consensus_filter option ->
   Operation_set.t ->
   Operation_set.t
 
-val unpack_preattestation :
-  packed_operation -> Kind.preattestation operation option
+val unpack_preendorsement :
+  packed_operation -> Kind.preendorsement operation option
 
-val unpack_attestation : packed_operation -> Kind.attestation operation option
+val unpack_endorsement : packed_operation -> Kind.endorsement operation option
 
 val unpack_dal_attestation :
   packed_operation -> Kind.dal_attestation operation option
 
-val filter_preattestations :
-  packed_operation list -> Kind.preattestation operation list
+val filter_preendorsements :
+  packed_operation list -> Kind.preendorsement operation list
 
-val filter_attestations :
-  packed_operation list -> Kind.attestation operation list
+val filter_endorsements :
+  packed_operation list -> Kind.endorsement operation list
 
 val ordered_to_list_list : ordered_pool -> packed_operation list list
 
 val ordered_of_list_list : packed_operation list list -> ordered_pool option
 
-(** [preattestation] <> None => (List.length preattestations > 0) *)
+(** [preendorsements] <> None => (List.length preendorsements > 0) *)
 val extract_operations_of_list_list :
   packed_operation list list ->
-  (Kind.preattestation operation list option
-  * Kind.attestation operation list
+  (Kind.preendorsement operation list option
+  * Kind.endorsement operation list
   * Kind.dal_attestation operation list
   * payload)
   option

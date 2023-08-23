@@ -45,9 +45,9 @@ module EpoxyEntity = struct
   let name = "epoxy"
 end
 
-module Epoxy_alias = Client_aliases.Alias (EpoxyEntity)
+module EpoxyAlias = Client_aliases.Alias (EpoxyEntity)
 
-module Soru_entity = struct
+module SoruEntity = struct
   include Sc_rollup.Address
 
   let of_source s =
@@ -61,4 +61,4 @@ module Soru_entity = struct
   let name = Smart_rollup_alias.Address.Entity.name
 end
 
-module Soru_alias = Client_aliases.Alias (Soru_entity)
+module SoruAlias = Client_aliases.Alias (SoruEntity)

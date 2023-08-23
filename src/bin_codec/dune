@@ -8,15 +8,14 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   data-encoding
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
+  tezos-base
+  tezos-base.unix
   tezos-client-base-unix
   tezos-client-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-event-logging
+  tezos-clic
+  tezos-stdlib-unix
+  tezos-event-logging
   tezos-signer-services
-  tezos-version.value
   (select void_for_linking-tezos-client-005-PsBabyM1 from
    (tezos-client-005-PsBabyM1 -> void_for_linking-tezos-client-005-PsBabyM1.empty)
    (-> void_for_linking-tezos-client-005-PsBabyM1.empty))
@@ -56,9 +55,6 @@
   (select void_for_linking-tezos-client-017-PtNairob from
    (tezos-client-017-PtNairob -> void_for_linking-tezos-client-017-PtNairob.empty)
    (-> void_for_linking-tezos-client-017-PtNairob.empty))
-  (select void_for_linking-tezos-client-018-Proxford from
-   (tezos-client-018-Proxford -> void_for_linking-tezos-client-018-Proxford.empty)
-   (-> void_for_linking-tezos-client-018-Proxford.empty))
   (select void_for_linking-tezos-client-alpha from
    (tezos-client-alpha -> void_for_linking-tezos-client-alpha.empty)
    (-> void_for_linking-tezos-client-alpha.empty)))
@@ -92,5 +88,4 @@
    (write-file void_for_linking-tezos-client-015-PtLimaPt.empty "")
    (write-file void_for_linking-tezos-client-016-PtMumbai.empty "")
    (write-file void_for_linking-tezos-client-017-PtNairob.empty "")
-   (write-file void_for_linking-tezos-client-018-Proxford.empty "")
    (write-file void_for_linking-tezos-client-alpha.empty ""))))

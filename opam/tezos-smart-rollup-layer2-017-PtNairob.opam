@@ -11,13 +11,12 @@ depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
   "ppx_expect"
-  "octez-libs"
+  "tezos-base"
   "tezos-protocol-017-PtNairob"
   "octez-injector"
-  "octez-smart-rollup"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

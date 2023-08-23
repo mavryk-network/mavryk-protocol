@@ -12,12 +12,15 @@ depends: [
   "ocaml" { >= "4.14" }
   "ppx_import"
   "ppx_deriving"
-  "octez-libs"
+  "tezos-base"
+  "tezos-tree-encoding"
+  "tezos-context"
+  "tezos-scoru-wasm"
   "tezos-scoru-wasm-fast"
   "tezos-webassembly-interpreter-extra"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

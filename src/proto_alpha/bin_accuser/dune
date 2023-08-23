@@ -7,13 +7,13 @@
  (package octez-accuser-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
+  tezos-base
+  tezos-clic
   tezos-protocol-alpha
   tezos-client-alpha
   tezos-client-commands
   tezos-baking-alpha-commands
-  octez-libs.tezos-stdlib-unix
+  tezos-stdlib-unix
   tezos-client-base-unix)
  (link_flags
   (:standard)

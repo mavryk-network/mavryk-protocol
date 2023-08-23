@@ -34,7 +34,6 @@ type t = {
   rev_tickets : operation_receipt list;
   header : Block_header.t;
   delegate : Account.t;
-  constants : Constants.Parametric.t;
 }
 
 type incremental = t
@@ -127,15 +126,7 @@ let begin_construction ?timestamp ?seed_nonce_hash ?(mempool_mode = false)
     ~predecessor:predecessor.header.shell
   >|= fun state ->
   Environment.wrap_tzresult state >|? fun state ->
-  {
-    predecessor;
-    state;
-    rev_operations = [];
-    rev_tickets = [];
-    header;
-    delegate;
-    constants = predecessor.constants;
-  }
+  {predecessor; state; rev_operations = []; rev_tickets = []; header; delegate}
 
 let detect_script_failure :
     type kind. kind Apply_results.operation_metadata -> _ =
@@ -287,14 +278,7 @@ let finalize_block st =
     }
   in
   let hash = Block_header.hash header in
-  return
-    {
-      Block.hash;
-      header;
-      operations;
-      context = validation_result.context;
-      constants = st.constants;
-    }
+  return {Block.hash; header; operations; context = validation_result.context}
 
 let assert_validate_operation_fails expect_failure op block =
   let open Lwt_result_syntax in

@@ -5,15 +5,15 @@
  (name tezos_client_007_PsDELPH1)
  (public_name tezos-client-007-PsDELPH1)
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
-  octez-libs.tezos-shell-services
+  tezos-base
+  tezos-clic
+  tezos-shell-services
   tezos-client-base
   tezos-protocol-007-PsDELPH1
   tezos-protocol-007-PsDELPH1.lifted
   tezos-signer-backends
   tezos-protocol-plugin-007-PsDELPH1
-  octez-libs.tezos-rpc
+  tezos-rpc
   uri)
  (library_flags (:standard -linkall))
  (flags

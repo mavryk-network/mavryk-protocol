@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2022 Trili Tech, <contact@trili.tech>                       *)
-(* Copyright (c) 2023  Marigold <contact@marigold.dev>                       *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -32,7 +31,6 @@
   *)
 
 open Tezos_benchmark
-open Benchmarks_proto
 open Storage_functors
 open Protocol
 
@@ -49,7 +47,7 @@ let default_raw_context () =
       ~balance:(Alpha_context.Tez.of_mutez_exn 100_000_000_000L)
       initial_account
   in
-  let* constants, _, _ = Block.prepare_initial_context_params () in
+  Block.prepare_initial_context_params () >>=? fun (constants, _, _) ->
   let parameters =
     Default_parameters.parameters_of_constants
       ~bootstrap_accounts:[bootstrap_account]
@@ -67,11 +65,7 @@ let default_raw_context () =
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in
-  let typecheck_smart_contract ctxt script_repr =
-    return ((script_repr, None), ctxt)
-  in
-  let typecheck_smart_rollup ctxt _script_repr = Result_syntax.return ctxt in
-
+  let typecheck ctxt script_repr = return ((script_repr, None), ctxt) in
   let*! e =
     Init_storage.prepare_first_block
       Chain_id.zero
@@ -79,10 +73,9 @@ let default_raw_context () =
       ~level:0l
       ~timestamp:(Time.Protocol.of_seconds 1643125688L)
       ~predecessor:Block_hash.zero
-      ~typecheck_smart_contract
-      ~typecheck_smart_rollup
+      ~typecheck
   in
-  Lwt.return (Environment.wrap_tzresult e)
+  Lwt.return @@ Environment.wrap_tzresult e
 
 module String = struct
   type t = string
@@ -172,15 +165,17 @@ module List_key_values_benchmark_boilerplate = struct
   let workload_to_vector {size} =
     Sparse_vec.String.of_list [("size", float_of_int size)]
 
-  let group = Benchmark.Group "list_key_values"
-
-  let model =
-    Model.make
-      ~conv:(fun {size} -> (size, ()))
-      ~model:
-        (Model.affine
-           ~intercept:(fv "list_key_values_intercept")
-           ~coeff:(fv "list_key_values_step"))
+  let models =
+    [
+      ( "list_key_values",
+        Model.make
+          ~conv:(fun {size} -> (size, ()))
+          ~model:
+            (Model.affine
+               ~name
+               ~intercept:(fv "list_key_values_intercept")
+               ~coeff:(fv "list_key_values_step")) );
+    ]
 end
 
 module List_key_values_benchmark = struct
@@ -188,14 +183,10 @@ module List_key_values_benchmark = struct
 
   let module_filename = __FILE__
 
-  let purpose = Benchmark.Generate_code "storage"
+  let generated_code_destination = None
 
-  let create_benchmark ~rng_state {max_size} =
-    let open Lwt_result_syntax in
-    let wrap m =
-      let*! result = m in
-      Lwt.return (Environment.wrap_tzresult result)
-    in
+  let benchmark rng_state {max_size} () =
+    let wrap m = m >|= Environment.wrap_tzresult in
     let size =
       Base_samplers.sample_in_interval
         ~range:{min = 1; max = max_size}
@@ -222,6 +213,9 @@ module List_key_values_benchmark = struct
       Table.list_key_values ~length:0 ctxt |> Lwt_main.run |> ignore
     in
     Generator.Plain {workload; closure}
+
+  let create_benchmarks ~rng_state ~bench_num config =
+    List.repeat bench_num (benchmark rng_state config)
 end
 
 module List_key_values_benchmark_intercept = struct
@@ -231,9 +225,9 @@ module List_key_values_benchmark_intercept = struct
 
   let module_filename = __FILE__
 
-  let purpose = Benchmark.Generate_code "storage"
+  let generated_code_destination = None
 
-  let create_benchmark ~rng_state:_ _config =
+  let benchmark _rng_state _config () =
     let ctxt =
       match Lwt_main.run (default_raw_context ()) with
       | Ok ctxt -> ctxt
@@ -247,8 +241,12 @@ module List_key_values_benchmark_intercept = struct
       Table.list_key_values ~length:0 ctxt |> Lwt_main.run |> ignore
     in
     Generator.Plain {workload; closure}
+
+  let create_benchmarks ~rng_state ~bench_num config =
+    List.repeat bench_num (benchmark rng_state config)
 end
 
-let () = Registration.register (module List_key_values_benchmark)
+let () = Registration_helpers.register (module List_key_values_benchmark)
 
-let () = Registration.register (module List_key_values_benchmark_intercept)
+let () =
+  Registration_helpers.register (module List_key_values_benchmark_intercept)

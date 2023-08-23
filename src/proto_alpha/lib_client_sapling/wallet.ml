@@ -28,12 +28,8 @@ open Tezos_sapling.Core.Client
 
 (* Transform a spending key to an uri, encrypted or not. *)
 let to_uri unencrypted cctxt sapling_key =
-  let open Lwt_result_syntax in
   if unencrypted then
-    let*? sapling_uri =
-      Tezos_signer_backends.Unencrypted.make_sapling_key sapling_key
-    in
-    return sapling_uri
+    Tezos_signer_backends.Unencrypted.make_sapling_key sapling_key >>?= return
   else Tezos_signer_backends.Encrypted.encrypt_sapling_key cctxt sapling_key
 
 (** Transform an uri into a spending key, asking for a password if the uri was
@@ -43,9 +39,8 @@ let from_uri (cctxt : #Client_context.full) uri =
 
 let register (cctxt : #Client_context.full) ?(force = false)
     ?(unencrypted = false) mnemonic name =
-  let open Lwt_result_syntax in
   let sk = Spending_key.of_seed @@ Mnemonic.to_32_bytes mnemonic in
-  let* sk_uri = to_uri unencrypted cctxt sk in
+  to_uri unencrypted cctxt sk >>=? fun sk_uri ->
   let key =
     {
       sk = sk_uri;
@@ -53,17 +48,16 @@ let register (cctxt : #Client_context.full) ?(force = false)
       address_index = Viewing_key.default_index;
     }
   in
-  let* () = Sapling_key.add ~force cctxt name key in
+  Sapling_key.add ~force cctxt name key >>=? fun () ->
   return @@ Viewing_key.of_sk sk
 
 let derive (cctxt : #Client_context.full) ?(force = false)
     ?(unencrypted = false) src_name dst_name child_index =
-  let open Lwt_result_syntax in
-  let* k = Sapling_key.find cctxt src_name in
-  let* src_sk = from_uri cctxt k.sk in
+  Sapling_key.find cctxt src_name >>=? fun k ->
+  from_uri cctxt k.sk >>=? fun src_sk ->
   let child_index = Int32.of_int child_index in
   let dst_sk = Spending_key.derive_key src_sk child_index in
-  let* dst_sk_uri = to_uri unencrypted cctxt dst_sk in
+  to_uri unencrypted cctxt dst_sk >>=? fun dst_sk_uri ->
   let dst_key =
     {
       sk = dst_sk_uri;
@@ -73,40 +67,34 @@ let derive (cctxt : #Client_context.full) ?(force = false)
   in
   (* TODO check this force *)
   let _ = force in
-  let* () = Sapling_key.add ~force:true cctxt dst_name dst_key in
+  Sapling_key.add ~force:true cctxt dst_name dst_key >>=? fun () ->
   let path =
     String.concat "/" (List.map Int32.to_string (List.rev dst_key.path))
   in
   return (path, Viewing_key.of_sk dst_sk)
 
 let find_vk cctxt name =
-  let open Lwt_result_syntax in
-  let* k = Sapling_key.find cctxt name in
-  let* sk = from_uri cctxt k.sk in
-  return (Viewing_key.of_sk sk)
+  Sapling_key.find cctxt name >>=? fun k ->
+  from_uri cctxt k.sk >>=? fun sk -> return (Viewing_key.of_sk sk)
 
 let new_address (cctxt : #Client_context.full) name index_opt =
-  let open Lwt_result_syntax in
-  let* k = Sapling_key.find cctxt name in
+  Sapling_key.find cctxt name >>=? fun k ->
   let index =
     match index_opt with
     | None -> k.address_index
     | Some i -> Viewing_key.index_of_int64 (Int64.of_int i)
   in
-  let* sk = from_uri cctxt k.sk in
-  let* vk = return (Viewing_key.of_sk sk) in
+  from_uri cctxt k.sk >>=? fun sk ->
+  return (Viewing_key.of_sk sk) >>=? fun vk ->
   (* Viewing_key.new_address finds the smallest index greater or equal to
      [index] that generates a correct address. *)
   let corrected_index, address = Viewing_key.new_address vk index in
-  let* () =
-    Sapling_key.update
-      cctxt
-      name
-      {k with address_index = Viewing_key.index_succ corrected_index}
-  in
-  return (sk, corrected_index, address)
+  Sapling_key.update
+    cctxt
+    name
+    {k with address_index = Viewing_key.index_succ corrected_index}
+  >>=? fun () -> return (sk, corrected_index, address)
 
 let export_vk cctxt name =
-  let open Lwt_result_syntax in
-  let* vk = find_vk cctxt name in
+  find_vk cctxt name >>=? fun vk ->
   return (Data_encoding.Json.construct Viewing_key.encoding vk)

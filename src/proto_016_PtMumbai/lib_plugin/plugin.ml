@@ -25,6 +25,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+module Mempool = Mempool
 module View_helpers = View_helpers
 module RPC = RPC
 module Metrics = Metrics_plugin

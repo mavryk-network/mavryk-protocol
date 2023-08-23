@@ -22,12 +22,6 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-
 module Registration : sig
-  val register : ?add_timer:bool -> Benchmark.t -> unit
-
-  val register_simple : ?add_timer:bool -> Benchmark.simple -> unit
-
-  val register_simple_with_num :
-    ?add_timer:bool -> Benchmark.simple_with_num -> unit
+  val register : (module Benchmark.S) -> unit
 end

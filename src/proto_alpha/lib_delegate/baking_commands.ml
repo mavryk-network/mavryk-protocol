@@ -120,13 +120,13 @@ let force_apply_switch_arg =
     ~doc:"Force the baker to not only validate but also apply operations."
     ()
 
-let attestation_force_switch_arg =
+let endorsement_force_switch_arg =
   Tezos_clic.switch
     ~long:"force"
     ~short:'f'
     ~doc:
       "Disable consistency, injection and double signature checks for \
-       (pre)attestations."
+       (pre)endorsements."
     ()
 
 let do_not_monitor_node_mempool_arg =
@@ -147,14 +147,14 @@ let keep_alive_arg =
     ~long:"keep-alive"
     ()
 
-let per_block_vote_parameter =
+let liquidity_baking_toggle_vote_parameter =
   Tezos_clic.parameter
     ~autocomplete:(fun _ctxt -> return ["on"; "off"; "pass"])
-    (let open Protocol.Alpha_context.Per_block_votes in
+    (let open Protocol.Alpha_context.Liquidity_baking in
     fun _ctxt -> function
-      | "on" -> return Per_block_vote_on
-      | "off" -> return Per_block_vote_off
-      | "pass" -> return Per_block_vote_pass
+      | "on" -> return LB_on
+      | "off" -> return LB_off
+      | "pass" -> return LB_pass
       | s ->
           failwith
             "unexpected vote: %s, expected either \"on\", \"off\", or \"pass\"."
@@ -169,22 +169,10 @@ let liquidity_baking_toggle_vote_arg =
        abstain. Note that this \"option\" is mandatory!"
     ~long:"liquidity-baking-toggle-vote"
     ~placeholder:"vote"
-    per_block_vote_parameter
-
-let adaptive_issuance_vote_arg =
-  Tezos_clic.arg
-    ~doc:
-      "Vote to adopt or not the adaptive issuance feature. The possible values \
-       for this option are: \"off\" to request not activating it, \"on\" to \
-       request activating it, and \"pass\" to abstain. If you do not vote, \
-       default value is \"pass\"."
-    ~long:"adaptive-issuance-vote"
-    ~placeholder:"vote"
-    per_block_vote_parameter
+    liquidity_baking_toggle_vote_parameter
 
 let get_delegates (cctxt : Protocol_client_context.full)
     (pkhs : Signature.public_key_hash list) =
-  let open Lwt_result_syntax in
   let proj_delegate (alias, public_key_hash, public_key, secret_key_uri) =
     {
       Baking_state.alias = Some alias;
@@ -193,42 +181,37 @@ let get_delegates (cctxt : Protocol_client_context.full)
       secret_key_uri;
     }
   in
-  let* delegates =
-    if pkhs = [] then
-      let* keys = Client_keys.get_keys cctxt in
-      List.map proj_delegate keys |> return
-    else
-      List.map_es
-        (fun pkh ->
-          let* result = Client_keys.get_key cctxt pkh in
-          match result with
-          | alias, pk, sk_uri -> return (proj_delegate (alias, pkh, pk, sk_uri)))
-        pkhs
-  in
-  let* () =
-    Tezos_signer_backends.Encrypted.decrypt_list
-      cctxt
-      (List.filter_map
-         (function
-           | {Baking_state.alias = Some alias; _} -> Some alias | _ -> None)
-         delegates)
-  in
+  (if pkhs = [] then
+   Client_keys.get_keys cctxt >>=? fun keys ->
+   List.map proj_delegate keys |> return
+  else
+    List.map_es
+      (fun pkh ->
+        Client_keys.get_key cctxt pkh >>=? function
+        | alias, pk, sk_uri -> return (proj_delegate (alias, pkh, pk, sk_uri)))
+      pkhs)
+  >>=? fun delegates ->
+  Tezos_signer_backends.Encrypted.decrypt_list
+    cctxt
+    (List.filter_map
+       (function
+         | {Baking_state.alias = Some alias; _} -> Some alias | _ -> None)
+       delegates)
+  >>=? fun () ->
   let delegates_no_duplicates = List.sort_uniq compare delegates in
-  let*! () =
-    if List.compare_lengths delegates delegates_no_duplicates <> 0 then
-      cctxt#warning
-        "Warning: the list of public key hash aliases contains duplicate \
-         hashes, which are ignored"
-    else Lwt.return_unit
-  in
-  return delegates_no_duplicates
+  (if List.compare_lengths delegates delegates_no_duplicates <> 0 then
+   cctxt#warning
+     "Warning: the list of public key hash aliases contains duplicate hashes, \
+      which are ignored"
+  else Lwt.return ())
+  >>= fun () -> return delegates_no_duplicates
 
 let sources_param =
   Tezos_clic.seq_of_param
     (Client_keys.Public_key_hash.source_param
        ~name:"baker"
        ~desc:
-         "name of the delegate owning the attestation/baking right or name of \
+         "name of the delegate owning the endorsement/baking right or name of \
           the consensus key signing on the delegate's behalf")
 
 let endpoint_arg =
@@ -240,7 +223,6 @@ let endpoint_arg =
 
 let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
     =
-  let open Lwt_result_syntax in
   let open Tezos_clic in
   let group =
     {name = "delegate.client"; title = "Tenderbake client commands"}
@@ -322,11 +304,7 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
                         payload_round = Round.zero;
                         seed_nonce_hash = None;
                         proof_of_work_nonce;
-                        per_block_votes =
-                          {
-                            liquidity_baking_vote = Per_block_vote_pass;
-                            adaptive_issuance_vote = Per_block_vote_pass;
-                          };
+                        liquidity_baking_toggle_vote = LB_pass;
                       })
               in
               let _then = Time.System.now () in
@@ -389,7 +367,7 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
              dal_node_endpoint )
            pkhs
            cctxt ->
-        let* delegates = get_delegates cctxt pkhs in
+        get_delegates cctxt pkhs >>=? fun delegates ->
         Baking_lib.bake
           cctxt
           ~minimal_nanotez_per_gas_unit
@@ -405,40 +383,20 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
           delegates);
     command
       ~group
-      ~desc:"Forge and inject an attestation operation."
-      (args1 attestation_force_switch_arg)
-      (prefixes ["attest"; "for"] @@ sources_param)
-      (fun force pkhs cctxt ->
-        let* delegates = get_delegates cctxt pkhs in
-        Baking_lib.attest ~force cctxt delegates);
-    command
-      ~group
-      ~desc:
-        "Deprecated, use **attest for** instead. Forge and inject an \
-         attestation operation."
-      (args1 attestation_force_switch_arg)
+      ~desc:"Forge and inject an endorsement operation."
+      (args1 endorsement_force_switch_arg)
       (prefixes ["endorse"; "for"] @@ sources_param)
       (fun force pkhs cctxt ->
-        let* delegates = get_delegates cctxt pkhs in
-        Baking_lib.attest ~force cctxt delegates);
+        get_delegates cctxt pkhs >>=? fun delegates ->
+        Baking_lib.endorse ~force cctxt delegates);
     command
       ~group
-      ~desc:"Forge and inject a preattestation operation."
-      (args1 attestation_force_switch_arg)
-      (prefixes ["preattest"; "for"] @@ sources_param)
-      (fun force pkhs cctxt ->
-        let* delegates = get_delegates cctxt pkhs in
-        Baking_lib.preattest ~force cctxt delegates);
-    command
-      ~group
-      ~desc:
-        "Deprecated, use **preattest for** instead. Forge and inject a \
-         preattestation operation."
-      (args1 attestation_force_switch_arg)
+      ~desc:"Forge and inject a preendorsement operation."
+      (args1 endorsement_force_switch_arg)
       (prefixes ["preendorse"; "for"] @@ sources_param)
       (fun force pkhs cctxt ->
-        let* delegates = get_delegates cctxt pkhs in
-        Baking_lib.preattest ~force cctxt delegates);
+        get_delegates cctxt pkhs >>=? fun delegates ->
+        Baking_lib.preendorse ~force cctxt delegates);
     command
       ~group
       ~desc:"Send a Tenderbake proposal"
@@ -462,7 +420,7 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
              context_path )
            sources
            cctxt ->
-        let* delegates = get_delegates cctxt sources in
+        get_delegates cctxt sources >>=? fun delegates ->
         Baking_lib.propose
           cctxt
           ~minimal_nanotez_per_gas_unit
@@ -477,9 +435,8 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
   ]
 
 let directory_parameter =
-  let open Lwt_result_syntax in
   Tezos_clic.parameter (fun _ p ->
-      let*! exists = Lwt_utils_unix.dir_exists p in
+      Lwt_utils_unix.dir_exists p >>= fun exists ->
       if not exists then failwith "Directory doesn't exist: '%s'" p
       else return p)
 
@@ -489,39 +446,12 @@ let per_block_vote_file_arg =
     ~short:'V'
     ~long:"votefile"
     ~placeholder:"filename"
-    (Tezos_clic.parameter (fun (_cctxt : Protocol_client_context.full) file ->
-         let open Lwt_result_syntax in
-         let* file_exists =
-           protect
-             ~on_error:(fun _ ->
-               tzfail (Per_block_vote_file.Block_vote_file_not_found file))
-             (fun () ->
-               let*! b = Lwt_unix.file_exists file in
-               return b)
-         in
-         if file_exists then return file
-         else tzfail (Per_block_vote_file.Block_vote_file_not_found file)))
-
-let lookup_default_vote_file_path (cctxt : Protocol_client_context.full) =
-  let open Lwt_syntax in
-  let default_filename = Per_block_vote_file.default_vote_json_filename in
-  let file_exists path =
-    Lwt.catch (fun () -> Lwt_unix.file_exists path) (fun _ -> return_false)
-  in
-  let when_s pred x g =
-    let* b = pred x in
-    if b then return_some x else g ()
-  in
-  (* Check in current working directory *)
-  when_s file_exists default_filename @@ fun () ->
-  (* Check in the baker directory *)
-  let base_dir_file = Filename.Infix.(cctxt#get_base_dir // default_filename) in
-  when_s file_exists base_dir_file @@ fun () -> return_none
+    (Tezos_clic.parameter (fun _ s -> return s))
 
 type baking_mode = Local of {local_data_dir_path : string} | Remote
 
 let baker_args =
-  Tezos_clic.args11
+  Tezos_clic.args10
     pidfile_arg
     minimal_fees_arg
     minimal_nanotez_per_gas_unit_arg
@@ -529,7 +459,6 @@ let baker_args =
     force_apply_switch_arg
     keep_alive_arg
     liquidity_baking_toggle_vote_arg
-    adaptive_issuance_vote_arg
     per_block_vote_file_arg
     operations_arg
     endpoint_arg
@@ -541,30 +470,29 @@ let run_baker
       minimal_nanotez_per_byte,
       force_apply,
       keep_alive,
-      liquidity_baking_vote,
-      adaptive_issuance_vote,
+      liquidity_baking_toggle_vote,
       per_block_vote_file,
       extra_operations,
       dal_node_endpoint ) baking_mode sources cctxt =
-  let open Lwt_result_syntax in
-  may_lock_pidfile pidfile @@ fun () ->
-  let*! per_block_vote_file =
-    if per_block_vote_file = None then
-      (* If the votes file was not explicitly given, we
-         look into default locations. *)
-      lookup_default_vote_file_path cctxt
-    else Lwt.return per_block_vote_file
+  let per_block_vote_file_or_default =
+    match per_block_vote_file with
+    | None -> Baking_configuration.default_per_block_vote_file
+    | Some arg -> arg
   in
   (* We don't let the user run the baker without providing some
      option (CLI, file path, or file in default location) for
-     the per-block votes. *)
-  let* votes =
-    Per_block_vote_file.load_per_block_votes_config
-      ~default_liquidity_baking_vote:liquidity_baking_vote
-      ~default_adaptive_issuance_vote:adaptive_issuance_vote
-      ~per_block_vote_file
+     the toggle vote. *)
+  Liquidity_baking_vote_file.read_liquidity_baking_toggle_vote_on_startup
+    ~default:liquidity_baking_toggle_vote
+    ~per_block_vote_file:per_block_vote_file_or_default
+  >>=? fun (liquidity_baking_toggle_vote, vote_file_present) ->
+  let per_block_vote_file =
+    match (per_block_vote_file, vote_file_present) with
+    | Some _, _ | None, true -> Some per_block_vote_file_or_default
+    | None, false -> None
   in
-  let* delegates = get_delegates cctxt sources in
+  may_lock_pidfile pidfile @@ fun () ->
+  get_delegates cctxt sources >>=? fun delegates ->
   let context_path =
     match baking_mode with
     | Local {local_data_dir_path} ->
@@ -576,12 +504,13 @@ let run_baker
     ~minimal_fees
     ~minimal_nanotez_per_gas_unit
     ~minimal_nanotez_per_byte
-    ~votes
+    ~liquidity_baking_toggle_vote
+    ?per_block_vote_file
     ?extra_operations
     ?dal_node_endpoint
     ~force_apply
-    ~chain:cctxt#chain
     ?context_path
+    ~chain:cctxt#chain
     ~keep_alive
     delegates
 
@@ -618,10 +547,10 @@ let baker_commands () : Protocol_client_context.full Tezos_clic.command list =
     command
       ~group
       ~desc:"Launch the VDF daemon"
-      (args2 pidfile_arg keep_alive_arg)
+      (* no_options *)
+      (args1 keep_alive_arg)
       (prefixes ["run"; "vdf"] @@ stop)
-      (fun (pidfile, keep_alive) cctxt ->
-        may_lock_pidfile pidfile @@ fun () ->
+      (fun keep_alive cctxt ->
         Client_daemon.VDF.run cctxt ~chain:cctxt#chain ~keep_alive);
   ]
 

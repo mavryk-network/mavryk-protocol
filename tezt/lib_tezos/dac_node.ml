@@ -25,7 +25,16 @@
 (*****************************************************************************)
 
 module Parameters = struct
-  type coordinator_mode_settings = {committee_members : string list}
+  type legacy_mode_settings = {
+    threshold : int;
+    committee_members : string list;
+    committee_member_address_opt : string option;
+  }
+
+  type coordinator_mode_settings = {
+    threshold : int;
+    committee_members : string list;
+  }
 
   type committee_member_mode_settings = {
     address : string;
@@ -36,11 +45,10 @@ module Parameters = struct
   type observer_mode_settings = {
     coordinator_rpc_host : string;
     coordinator_rpc_port : int;
-    committee_member_rpcs : (string * int) list;
-    timeout : int option;
   }
 
   type mode_settings =
+    | Legacy of legacy_mode_settings
     | Coordinator of coordinator_mode_settings
     | Committee_member of committee_member_mode_settings
     | Observer of observer_mode_settings
@@ -51,10 +59,9 @@ module Parameters = struct
     rpc_host : string;
     rpc_port : int;
     mode : mode_settings;
-    endpoint : Client.endpoint;
+    node : Node.t;
     client : Client.t;
     mutable pending_ready : unit option Lwt.u list;
-    allow_v1_api : bool;
   }
 
   type session_state = {mutable ready : bool}
@@ -84,6 +91,7 @@ let name dac_node = dac_node.name
 
 let mode dac_node =
   match dac_node.persistent_state.mode with
+  | Legacy _ -> "Legacy"
   | Coordinator _ -> "Coordinator"
   | Committee_member _ -> "Committee_member"
   | Observer _ -> "Observer"
@@ -92,11 +100,9 @@ let rpc_host dac_node = dac_node.persistent_state.rpc_host
 
 let rpc_port dac_node = dac_node.persistent_state.rpc_port
 
-let layer1_scheme dac_node = Client.scheme dac_node.persistent_state.endpoint
+let layer1_addr dac_node = Node.rpc_host dac_node.persistent_state.node
 
-let layer1_addr dac_node = Client.address dac_node.persistent_state.endpoint
-
-let layer1_port dac_node = Client.rpc_port dac_node.persistent_state.endpoint
+let layer1_port dac_node = Node.rpc_port dac_node.persistent_state.node
 
 let endpoint dac_node =
   Printf.sprintf "http://%s:%d" (rpc_host dac_node) (rpc_port dac_node)
@@ -105,38 +111,51 @@ let data_dir dac_node = dac_node.persistent_state.data_dir
 
 let reveal_data_dir dac_node = dac_node.persistent_state.reveal_data_dir
 
-let allow_v1_api dac_node = dac_node.persistent_state.allow_v1_api
-
 let spawn_command dac_node =
   Process.spawn ~name:dac_node.name ~color:dac_node.color dac_node.path
 
-let raw_rpc (host, port) = Printf.sprintf "%s:%d" host port
-
-let localhost = "127.0.0.1"
-
 let spawn_config_init dac_node =
   let arg_command =
-    List.append
-      [
-        "--data-dir";
-        data_dir dac_node;
-        "--rpc-port";
-        string_of_int (rpc_port dac_node);
-        "--rpc-addr";
-        rpc_host dac_node;
-        "--reveal-data-dir";
-        reveal_data_dir dac_node;
-      ]
-    @@ if allow_v1_api dac_node then ["--allow-v1-api"] else []
+    [
+      "--data-dir";
+      data_dir dac_node;
+      "--rpc-port";
+      string_of_int (rpc_port dac_node);
+      "--rpc-addr";
+      rpc_host dac_node;
+      "--reveal-data-dir";
+      reveal_data_dir dac_node;
+    ]
   in
   let mode_command =
     match dac_node.persistent_state.mode with
+    | Legacy legacy_params -> (
+        [
+          "configure";
+          "as";
+          "legacy";
+          "with";
+          "data";
+          "availability";
+          "committee";
+          "members";
+        ]
+        @ legacy_params.committee_members
+        @ ["and"; "threshold"; Int.to_string legacy_params.threshold]
+        @
+        match legacy_params.committee_member_address_opt with
+        | None -> []
+        | Some committee_member_address ->
+            ["--committee-member-address"; committee_member_address])
     | Coordinator coordinator_params ->
         [
           "configure";
           "as";
           "coordinator";
           "with";
+          "threshold";
+          Int.to_string coordinator_params.threshold;
+          "and";
           "data";
           "availability";
           "committee";
@@ -160,49 +179,14 @@ let spawn_config_init dac_node =
           "signer";
           committee_member_params.address;
         ]
-    | Observer
-        {
-          coordinator_rpc_host;
-          coordinator_rpc_port;
-          committee_member_rpcs;
-          timeout;
-        } ->
-        let with_timeout =
-          match timeout with
-          | Some t -> ["--timeout"; Int.to_string t]
-          | None -> []
-        in
+    | Observer observer_params ->
         let coordinator_host =
-          coordinator_rpc_host ^ ":" ^ Int.to_string coordinator_rpc_port
+          observer_params.coordinator_rpc_host ^ ":"
+          ^ Int.to_string observer_params.coordinator_rpc_port
         in
-        let committee_member_rpcs = List.map raw_rpc committee_member_rpcs in
-        [
-          "configure";
-          "as";
-          "observer";
-          "with";
-          "coordinator";
-          coordinator_host;
-          "and";
-          "committee";
-          "member";
-          "rpc";
-          "addresses";
-        ]
-        @ committee_member_rpcs @ with_timeout
+        ["configure"; "as"; "observer"; "with"; "coordinator"; coordinator_host]
   in
   spawn_command dac_node (mode_command @ arg_command)
-
-let ls = "ls"
-
-let ls_reveal_data_dir dac_node =
-  let reveal_data_dir = dac_node.persistent_state.reveal_data_dir in
-  let commands = [reveal_data_dir] in
-  let process =
-    Process.spawn ~name:dac_node.name ~color:dac_node.color ls commands
-  in
-  let* filenames = Process.check_and_read_stdout process in
-  return @@ String.split_on_char '\n' filenames
 
 let init_config dac_node =
   let process = spawn_config_init dac_node in
@@ -262,9 +246,9 @@ let wait_for_ready dac_node =
 let handle_event dac_node {name; value = _; timestamp = _} =
   match name with "dac_node_is_ready.v0" -> set_ready dac_node | _ -> ()
 
-let create_with_endpoint ?(path = Constant.dac_node) ?name ?color ?data_dir
-    ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir ~mode
-    ~endpoint ~client ?(allow_v1_api = false) () =
+let create ?(path = Constant.dac_node) ?name ?color ?data_dir ?event_pipe
+    ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir ~mode ~node ~client ()
+    =
   let name = match name with None -> fresh_name () | Some name -> name in
   let data_dir =
     match data_dir with None -> Temp.dir name | Some dir -> dir
@@ -290,145 +274,99 @@ let create_with_endpoint ?(path = Constant.dac_node) ?name ?color ?data_dir
         rpc_port;
         mode;
         pending_ready = [];
-        endpoint;
+        node;
         client;
-        allow_v1_api;
       }
   in
   on_event dac_node (handle_event dac_node) ;
   dac_node
 
-let create_coordinator_with_endpoint ?path ?name ?color ?data_dir ?event_pipe
-    ?rpc_host ?rpc_port ?reveal_data_dir ?allow_v1_api ~committee_members
-    ~endpoint ~client () =
-  let mode = Coordinator {committee_members} in
-  create_with_endpoint
-    ?path
+let create_legacy ?(path = Constant.dac_node) ?name ?color ?data_dir ?event_pipe
+    ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir ~threshold
+    ~committee_members ?committee_member_address ~node ~client () =
+  let mode =
+    Legacy
+      {
+        threshold;
+        committee_members;
+        committee_member_address_opt = committee_member_address;
+      }
+  in
+  create
+    ~path
     ?name
     ?color
     ?data_dir
     ?event_pipe
-    ?rpc_host
+    ~rpc_host
     ?rpc_port
     ?reveal_data_dir
     ~mode
-    ~endpoint
+    ~node
     ~client
-    ?allow_v1_api
     ()
 
-let create_coordinator ?path ?name ?color ?data_dir ?event_pipe ?rpc_host
-    ?rpc_port ?reveal_data_dir ?allow_v1_api ~committee_members ~node ~client ()
-    =
-  create_coordinator_with_endpoint
-    ?path
+let create_coordinator ?(path = Constant.dac_node) ?name ?color ?data_dir
+    ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir ~threshold
+    ~committee_members ~node ~client () =
+  let mode = Coordinator {threshold; committee_members} in
+  create
+    ~path
     ?name
     ?color
     ?data_dir
     ?event_pipe
-    ?rpc_host
+    ~rpc_host
     ?rpc_port
     ?reveal_data_dir
-    ?allow_v1_api
-    ~committee_members
-    ~endpoint:(Node node)
+    ~mode
+    ~node
     ~client
     ()
 
-let create_committee_member_with_endpoint ?path ?name ?color ?data_dir
-    ?event_pipe ?rpc_host ?rpc_port ?reveal_data_dir
-    ?(coordinator_rpc_host = localhost) ?coordinator_rpc_port ?allow_v1_api
-    ~address ~endpoint ~client () =
+let create_committee_member ?(path = Constant.dac_node) ?name ?color ?data_dir
+    ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir
+    ?(coordinator_rpc_host = "127.0.0.1") ?coordinator_rpc_port ~address ~node
+    ~client () =
   let coordinator_rpc_port =
     match coordinator_rpc_port with None -> Port.fresh () | Some port -> port
   in
   let mode =
     Committee_member {address; coordinator_rpc_host; coordinator_rpc_port}
   in
-  create_with_endpoint
-    ?path
+  create
+    ~path
     ?name
     ?color
     ?data_dir
     ?event_pipe
-    ?rpc_host
+    ~rpc_host
     ?rpc_port
     ?reveal_data_dir
     ~mode
-    ~endpoint
-    ~client
-    ?allow_v1_api
-    ()
-
-let create_committee_member ?path ?name ?color ?data_dir ?event_pipe ?rpc_host
-    ?rpc_port ?reveal_data_dir ?coordinator_rpc_host ?coordinator_rpc_port
-    ?allow_v1_api ~address ~node ~client () =
-  create_committee_member_with_endpoint
-    ?path
-    ?name
-    ?color
-    ?data_dir
-    ?event_pipe
-    ?rpc_host
-    ?rpc_port
-    ?reveal_data_dir
-    ?coordinator_rpc_host
-    ?coordinator_rpc_port
-    ?allow_v1_api
-    ~address
-    ~endpoint:(Node node)
+    ~node
     ~client
     ()
 
-let create_observer_with_endpoint ?path ?name ?color ?data_dir ?event_pipe
-    ?rpc_host ?rpc_port ?reveal_data_dir ?(coordinator_rpc_host = localhost)
-    ?coordinator_rpc_port ?timeout ?allow_v1_api ~committee_member_rpcs
-    ~endpoint ~client () =
+let create_observer ?(path = Constant.dac_node) ?name ?color ?data_dir
+    ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port ?reveal_data_dir
+    ?(coordinator_rpc_host = "127.0.0.1") ?coordinator_rpc_port ~node ~client ()
+    =
   let coordinator_rpc_port =
     match coordinator_rpc_port with None -> Port.fresh () | Some port -> port
   in
-  let mode =
-    Observer
-      {
-        coordinator_rpc_host;
-        coordinator_rpc_port;
-        committee_member_rpcs;
-        timeout;
-      }
-  in
-  create_with_endpoint
-    ?path
+  let mode = Observer {coordinator_rpc_host; coordinator_rpc_port} in
+  create
+    ~path
     ?name
     ?color
     ?data_dir
     ?event_pipe
-    ?rpc_host
+    ~rpc_host
     ?rpc_port
     ?reveal_data_dir
     ~mode
-    ~endpoint
-    ~client
-    ?allow_v1_api
-    ()
-
-let create_observer ?path ?name ?color ?data_dir ?event_pipe ?rpc_host ?rpc_port
-    ?reveal_data_dir ?coordinator_rpc_host ?coordinator_rpc_port ?timeout
-    ?allow_v1_api ~committee_member_rpcs ~node ~client () =
-  create_observer_with_endpoint
-    ?path
-    ?name
-    ?color
-    ?data_dir
-    ?event_pipe
-    ?rpc_host
-    ?rpc_port
-    ?reveal_data_dir
-    ?coordinator_rpc_host
-    ?coordinator_rpc_port
-    ?timeout
-    ?allow_v1_api
-    ~committee_member_rpcs
-    ~endpoint:(Node node)
+    ~node
     ~client
     ()
 
@@ -439,11 +377,7 @@ let make_arguments node =
   let endpoint_args =
     [
       "--endpoint";
-      Printf.sprintf
-        "%s://%s:%d"
-        (layer1_scheme node)
-        (layer1_addr node)
-        (layer1_port node);
+      Printf.sprintf "http://%s:%d" (layer1_addr node) (layer1_port node);
     ]
   in
   base_dir_args @ endpoint_args
@@ -468,33 +402,3 @@ let run ?(wait_ready = true) ?env node =
   let* () = run ?env node in
   let* () = if wait_ready then wait_for_ready node else Lwt.return_unit in
   return ()
-
-let with_sleeping_node ?rpc_port ?(rpc_address = localhost) ~timeout f =
-  let make_host str =
-    match Ipaddr.of_string str with
-    | Ok (Ipaddr.V4 addr) -> Ipaddr.v6_of_v4 addr
-    | Ok (V6 addr) -> addr
-    | Error (`Msg _) ->
-        raise
-          (Invalid_argument
-             "Invalid rpc_address when initializing sleeping_node.")
-  in
-  let open Cohttp_lwt_unix in
-  let callback _conn _req _body =
-    let* _ = Lwt_unix.sleep timeout in
-    Server.respond_string ~status:`OK ~body:"ok" ()
-  in
-  let stop, resolver = Lwt.task () in
-  let stopper () = Lwt.wakeup_later resolver () in
-  let rpc_port = Option.value rpc_port ~default:(Port.fresh ()) in
-  let port = `Port rpc_port in
-  let host = Ipaddr.V6.to_string (make_host rpc_address) in
-  let server = Server.make ~callback () in
-  let _ =
-    let* ctx = Conduit_lwt_unix.init ~src:host () in
-    let ctx = Cohttp_lwt_unix.Net.init ~ctx () in
-    Server.create ~ctx ~stop ~mode:(`TCP port) server
-  in
-  Lwt.finalize
-    (fun () -> f (rpc_address, rpc_port))
-    (fun () -> return (stopper ()))

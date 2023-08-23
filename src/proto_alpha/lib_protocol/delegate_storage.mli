@@ -31,6 +31,7 @@
     It also groups "trivial" getters/setters related to delegates.
 
     It is responsible for maintaining the following tables:
+    - {!Storage.Contract.Frozen_deposits_limit}
     - {!Storage.Delegates}
 *)
 
@@ -100,6 +101,17 @@ val fold :
 (** List all registered delegates. *)
 val list : Raw_context.t -> Signature.Public_key_hash.t list Lwt.t
 
+val frozen_deposits_limit :
+  Raw_context.t ->
+  Signature.Public_key_hash.t ->
+  Tez_repr.t option tzresult Lwt.t
+
+val set_frozen_deposits_limit :
+  Raw_context.t ->
+  Signature.Public_key_hash.t ->
+  Tez_repr.t option ->
+  Raw_context.t Lwt.t
+
 (** Returns a delegate's frozen deposits, both the current amount and
    the initial freezed amount.
 
@@ -107,32 +119,30 @@ val list : Raw_context.t -> Signature.Public_key_hash.t list Lwt.t
     rewards and fees are not frozen, but simply credited at the right
     moment.  *)
 val frozen_deposits :
-  Raw_context.t -> Signature.Public_key_hash.t -> Deposits_repr.t tzresult Lwt.t
+  Raw_context.t ->
+  Signature.Public_key_hash.t ->
+  Storage.deposits tzresult Lwt.t
 
 val spendable_balance :
   Raw_context.t -> Signature.public_key_hash -> Tez_repr.tez tzresult Lwt.t
 
-(** [is_forbidden_delegate ctxt delegate] returns [true] if the given
-    [delegate] is forbidden to bake or attest. This means that its
-    current frozen deposit is equal to zero. Returns [false]
-    otherwise. *)
-val is_forbidden_delegate : Raw_context.t -> Signature.Public_key_hash.t -> bool
+val staking_balance :
+  Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
 
-(** [forbid_delegate ctxt delegate] adds [delegate] to the set of
-    forbidden delegates and stores the updated set, which prevents this
-    delegate from baking or attesting. *)
-val forbid_delegate :
-  Raw_context.t -> Signature.Public_key_hash.t -> Raw_context.t Lwt.t
+(** Returns the full 'balance' of the implicit contract associated to
+    a given key, i.e. the sum of the spendable balance (given by [balance] or
+    [Contract_storage.get_balance]) and of the frozen balance. The frozen
+    balance is composed of all frozen bonds associated to the contract (given by
+    [Contract_storage.get_frozen_bonds]) and of the frozen deposits (given by
+    [frozen_deposits]).
 
-(** [load_forbidden_delegates ctxt] reads from the storage the saved
-    set of forbidden delegates and sets the raw context's in-memory
-    cached value. *)
-val load_forbidden_delegates : Raw_context.t -> Raw_context.t tzresult Lwt.t
+    Only use this function for RPCs: this is expensive. *)
+val full_balance :
+  Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
 
-(** [reset_forbidden_delegates ctxt delegates] overwrites the
-    forbidden delegates set with an empty set in both storage and
-    in-memory. *)
-val reset_forbidden_delegates : Raw_context.t -> Raw_context.t Lwt.t
+(** Only use this function for RPCs: this is expensive. *)
+val delegated_balance :
+  Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
 
 val drain :
   Raw_context.t ->
@@ -140,27 +150,3 @@ val drain :
   destination:Signature.Public_key_hash.t ->
   (Raw_context.t * bool * Tez_repr.t * Receipt_repr.balance_updates) tzresult
   Lwt.t
-
-(** The functions in this module are considered too costly to be used in
-    the protocol.
-    They are meant to be used only to answer RPC calls.
-*)
-module For_RPC : sig
-  (** Returns the full 'balance' of the implicit contract associated to
-    a given key, i.e. the sum of the spendable balance (given by [balance] or
-    [Contract_storage.get_balance]) and of the frozen balance. The frozen
-    balance is composed of all frozen bonds associated to the contract (given by
-    [Contract_storage.get_frozen_bonds]) and of the part of the frozen deposits
-    (given by [frozen_deposits]) that belongs to the delegate.
-
-    Only use this function for RPCs: this is expensive. *)
-  val full_balance :
-    Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
-
-  (** Only use this function for RPCs: this is expensive. *)
-  val delegated_balance :
-    Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
-
-  val staking_balance :
-    Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t
-end

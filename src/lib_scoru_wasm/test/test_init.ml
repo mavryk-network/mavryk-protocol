@@ -356,7 +356,8 @@ let test_float_value ~version () =
       stuck)
 
 let tests =
-  tztests_with_all_pvms
+  tztests_with_pvm
+    ~versions:[V0; V1]
     [
       ("init requires memory 0 export", `Quick, test_memory0_export);
       ("names are limited to 512 bytes", `Quick, test_module_name_size);

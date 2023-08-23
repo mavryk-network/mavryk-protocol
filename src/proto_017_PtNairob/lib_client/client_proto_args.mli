@@ -101,23 +101,15 @@ val tez_param :
   ('a, full) Tezos_clic.params ->
   (Tez.t -> 'a, full) Tezos_clic.params
 
-val non_negative_z_parameter :
-  unit -> (Z.t, #Client_context.io) Tezos_clic.parameter
+val non_negative_z_parameter : (Z.t, full) Tezos_clic.parameter
 
 val non_negative_z_param :
   name:string ->
   desc:string ->
-  ('a, (#Client_context.io as 'b)) Tezos_clic.params ->
-  (Z.t -> 'a, 'b) Tezos_clic.params
+  ('a, full) Tezos_clic.params ->
+  (Z.t -> 'a, full) Tezos_clic.params
 
-val non_negative_parameter :
-  unit -> (int, #Client_context.io) Tezos_clic.parameter
-
-val non_negative_param :
-  name:string ->
-  desc:string ->
-  ('a, (#Client_context.io as 'b)) Tezos_clic.params ->
-  (int -> 'a, 'b) Tezos_clic.params
+val non_negative_parameter : (int, full) Tezos_clic.parameter
 
 val global_constant_param :
   name:string ->
@@ -200,14 +192,7 @@ val json_parameter : (Data_encoding.Json.t, full) Tezos_clic.parameter
 
 val data_parameter : (Michelson_v1_parser.parsed, full) Tezos_clic.parameter
 
-val raw_level_parameter :
-  unit -> (Raw_level.t, #Client_context.io) Tezos_clic.parameter
-
-val raw_level_param :
-  name:string ->
-  desc:string ->
-  ('a, (#Client_context.io as 'b)) Tezos_clic.params ->
-  (Raw_level.t -> 'a, 'b) Tezos_clic.params
+val raw_level_parameter : (Raw_level.t, full) Tezos_clic.parameter
 
 val micheline_parameter :
   (Tezos_micheline.Micheline_parser.node * string, full) Tezos_clic.parameter

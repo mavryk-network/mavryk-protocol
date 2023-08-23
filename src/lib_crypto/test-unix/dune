@@ -6,17 +6,17 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-stdlib
-  octez-libs.tezos-crypto
-  octez-libs.tezos-error-monad
+  tezos-stdlib
+  tezos-crypto
+  tezos-error-monad
   zarith
   zarith_stubs_js
-  octez-libs.tezos-hacl
+  tezos-hacl
   data-encoding
   octez-alcotezt
   lwt.unix
   qcheck-alcotest
-  octez-libs.tezos-test-helpers)
+  tezos-test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -40,7 +40,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package tezos-crypto)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

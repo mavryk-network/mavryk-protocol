@@ -65,25 +65,21 @@ let make ctxt ~owner ~ticketer ~contents_type ~contents =
        to generate at ticket-balance key-hash.*)
 let of_ex_token ctxt ~owner
     (Ticket_token.Ex_token {ticketer; contents_type; contents}) =
-  let open Lwt_result_syntax in
   let loc = Micheline.dummy_location in
-  let*? cont_ty_unstripped, ctxt =
-    Script_ir_unparser.unparse_ty ~loc ctxt contents_type
-  in
+  Script_ir_unparser.unparse_ty ~loc ctxt contents_type
+  >>?= fun (cont_ty_unstripped, ctxt) ->
   (* We strip the annotations from the content type in order to map
      tickets with the same content type, but with different annotations, to the
      same hash. *)
-  let*? ctxt =
-    Gas.consume ctxt (Script.strip_annotations_cost cont_ty_unstripped)
-  in
+  Gas.consume ctxt (Script.strip_annotations_cost cont_ty_unstripped)
+  >>?= fun ctxt ->
   let ty = Script.strip_annotations cont_ty_unstripped in
-  let* contents, ctxt =
-    Script_ir_unparser.unparse_comparable_data
-      ctxt
-      Script_ir_unparser.Optimized_legacy
-      contents_type
-      contents
-  in
+  Script_ir_unparser.unparse_comparable_data
+    ctxt
+    Script_ir_unparser.Optimized_legacy
+    contents_type
+    contents
+  >>=? fun (contents, ctxt) ->
   make
     ctxt
     ~owner

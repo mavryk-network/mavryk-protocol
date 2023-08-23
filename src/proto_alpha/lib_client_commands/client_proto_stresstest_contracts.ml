@@ -128,7 +128,7 @@ let init (cctxt : Protocol_client_context.full)
   in
   let init_one (alias, params) =
     let* contract =
-      Client_proto_contracts.Contract_alias.get_contract cctxt alias
+      Client_proto_contracts.ContractAlias.get_contract cctxt alias
     in
     let* smart_contract =
       match List.find (fun x -> String.equal alias x.alias) all_contracts with
@@ -168,58 +168,63 @@ let select (smart_contracts : t) (q : float) : invocation_parameters option =
 let originate_command =
   let open Tezos_clic in
   let open Client_proto_context in
+  let open Client_proto_contracts in
   let open Client_proto_context_commands in
   command
     ~group
     ~desc:"Originate all supported smart contracts for use in the stresstest."
     no_options
     (prefixes ["stresstest"; "originate"; "smart"; "contracts"; "from"]
-    @@ Client_keys.Public_key_hash.source_param
+    @@ ContractAlias.destination_param
          ~name:"src"
          ~desc:"name of the source contract"
     @@ stop)
     (fun () source (cctxt : Protocol_client_context.full) ->
       let open Lwt_result_syntax in
-      let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-      let originate_one (scontract : smart_contract) =
-        let fee_parameter =
-          {
-            Injection.minimal_fees = Tez.of_mutez_exn 100L;
-            minimal_nanotez_per_byte = Q.of_int 1000;
-            minimal_nanotez_per_gas_unit = Q.of_int 100;
-            force_low_fee = false;
-            fee_cap = scontract.origination_fee_cap;
-            burn_cap = scontract.origination_burn_cap;
-          }
-        in
-        let*! errors =
-          originate_contract
-            cctxt
-            ~chain:cctxt#chain
-            ~block:cctxt#block
-            ~delegate:None
-            ~initial_storage:scontract.initial_storage
-            ~balance:Tez.zero (* initial balance *)
-            ~source
-            ~src_pk
-            ~src_sk
-            ~code:scontract.code
-            ~fee_parameter
-            ()
-        in
-        let*! r =
-          report_michelson_errors
-            ~no_print_source:true
-            ~msg:"origination simulation failed"
-            cctxt
-            errors
-        in
-        match r with
-        | None -> return_unit
-        | Some (_res, contract) ->
-            save_contract ~force:false cctxt scontract.alias contract
-      in
-      List.iter_es originate_one all_contracts)
+      match source with
+      | Originated _ ->
+          failwith "only implicit accounts can be the source of an origination"
+      | Implicit source ->
+          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+          let originate_one (scontract : smart_contract) =
+            let fee_parameter =
+              {
+                Injection.minimal_fees = Tez.of_mutez_exn 100L;
+                minimal_nanotez_per_byte = Q.of_int 1000;
+                minimal_nanotez_per_gas_unit = Q.of_int 100;
+                force_low_fee = false;
+                fee_cap = scontract.origination_fee_cap;
+                burn_cap = scontract.origination_burn_cap;
+              }
+            in
+            let*! errors =
+              originate_contract
+                cctxt
+                ~chain:cctxt#chain
+                ~block:cctxt#block
+                ~delegate:None
+                ~initial_storage:scontract.initial_storage
+                ~balance:Tez.zero (* initial balance *)
+                ~source
+                ~src_pk
+                ~src_sk
+                ~code:scontract.code
+                ~fee_parameter
+                ()
+            in
+            let*! r =
+              report_michelson_errors
+                ~no_print_source:true
+                ~msg:"origination simulation failed"
+                cctxt
+                errors
+            in
+            match r with
+            | None -> return_unit
+            | Some (_res, contract) ->
+                save_contract ~force:false cctxt scontract.alias contract
+          in
+          List.iter_es originate_one all_contracts)
 
 let with_every_known_smart_contract cctxt callback =
   let open Lwt_result_syntax in

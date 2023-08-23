@@ -124,17 +124,14 @@ type error += Fetch_script_meta_error of error trace
 
 let fetch_script (cctxt : #Protocol_client_context.rpc_context) ~chain ~block
     contract =
-  let open Lwt_result_syntax in
-  let* script_opt =
-    Plugin.RPC.Contract.get_script_normalized
-      cctxt
-      (chain, block)
-      ~unparsing_mode:Readable
-      ~normalize_types:true
-      ~contract
-  in
-  match script_opt with
-  | None -> tzfail (Fetch_script_not_found_meta_error contract)
+  Plugin.RPC.Contract.get_script_normalized
+    cctxt
+    (chain, block)
+    ~unparsing_mode:Readable
+    ~normalize_types:true
+    ~contract
+  >>=? function
+  | None -> fail (Fetch_script_not_found_meta_error contract)
   | Some {code; storage = _} ->
       Lwt.return @@ Environment.wrap_tzresult @@ Script_repr.force_decode code
 
@@ -142,18 +139,14 @@ type error +=
   | Rich_runtime_contract_error of Contract_hash.t * Michelson_v1_parser.parsed
 
 let enrich_runtime_errors cctxt ~chain ~block ~parsed =
-  let open Lwt_result_syntax in
   List.map_s (function
       | Environment.Ecoproto_error (Runtime_contract_error contract) -> (
           (* If we know the script already, we don't fetch it *)
           match parsed with
           | Some parsed ->
-              Lwt.return (Rich_runtime_contract_error (contract, parsed))
+              Lwt.return @@ Rich_runtime_contract_error (contract, parsed)
           | None -> (
-              let*! script_opt = fetch_script cctxt ~chain ~block contract in
-              Lwt.return
-              @@
-              match script_opt with
+              fetch_script cctxt ~chain ~block contract >|= function
               | Ok script ->
                   let parsed = Michelson_v1_printer.unparse_toplevel script in
                   Rich_runtime_contract_error (contract, parsed)
@@ -818,16 +811,6 @@ let report_errors ~details ~show_source ?parsed ppf errs =
                       print_execution_trace
                       trace)
               trace
-        | Unexpected_implicit_account_parameters_type (loc, expr) ->
-            Format.fprintf
-              ppf
-              "@[<hov 0>@[<hov 2>%aExpression@ %a@]@ @[<hov 2>is not \
-               acceptable as a handle to an implicit account, whose parameters \
-               type can only be unit or ticket <ty>.@]@]"
-              print_loc
-              loc
-              print_expr
-              expr
         | err -> Format.fprintf ppf "%a" Environment.Error_monad.pp err) ;
         if rest <> [] then Format.fprintf ppf "@," ;
         print_trace locations rest

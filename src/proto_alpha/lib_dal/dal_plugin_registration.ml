@@ -32,7 +32,7 @@ module Plugin = struct
   type block_info = Protocol_client_context.Alpha_block_services.block_info
 
   let parametric_constants chain block ctxt =
-    let cpctxt = new Protocol_client_context.wrap_rpc_context ctxt in
+    let cpctxt = new Protocol_client_context.wrap_full ctxt in
     Protocol.Constants_services.parametric cpctxt (chain, block)
 
   let get_constants chain block ctxt =
@@ -59,7 +59,7 @@ module Plugin = struct
       }
 
   let block_info ?chain ?block ~metadata ctxt =
-    let cpctxt = new Protocol_client_context.wrap_rpc_context ctxt in
+    let cpctxt = new Protocol_client_context.wrap_full ctxt in
     Protocol_client_context.Alpha_block_services.info
       cpctxt
       ?chain
@@ -82,36 +82,38 @@ module Plugin = struct
         =
       match op with
       | Dal_publish_slot_header operation ->
-          (operation.slot_index, operation.commitment, status_of_result result)
+          ( operation.published_level,
+            operation.slot_index,
+            operation.commitment,
+            status_of_result result )
           :: acc
       | _ -> acc
     in
     Layer1_services.(
       process_manager_operations [] block.operations {apply; apply_internal})
-    |> List.map_es (fun (slot_index, commitment, status) ->
-           let published_level = block.header.shell.level in
+    |> List.map_es (fun (published_level, slot_index, commitment, status) ->
+           let published_level = Raw_level.to_int32 published_level in
            let slot_index = Dal.Slot_index.to_int slot_index in
            return Dal_plugin.({published_level; slot_index; commitment}, status))
 
   let get_committee ctxt ~level =
     let open Lwt_result_syntax in
-    let cpctxt = new Protocol_client_context.wrap_rpc_context ctxt in
+    let cpctxt = new Protocol_client_context.wrap_full ctxt in
     let*? level = Raw_level.of_int32 level |> Environment.wrap_tzresult in
     let+ pkh_to_shards =
-      Plugin.RPC.Dal.dal_shards cpctxt (`Main, `Head 0) ~level ()
+      Plugin.RPC.Dal.dal_shards cpctxt (cpctxt#chain, cpctxt#block) ~level ()
     in
     List.fold_left
       (fun acc (pkh, s) -> Signature.Public_key_hash.Map.add pkh s acc)
       Signature.Public_key_hash.Map.empty
       pkh_to_shards
 
-  let attested_slot_headers (block : block_info) ~number_of_slots =
+  let attested_slot_headers hash (block : block_info) ~number_of_slots =
     let open Result_syntax in
     let* metadata =
       Option.to_result
         block.metadata
-        ~none:
-          (TzTrace.make @@ Layer1_services.Cannot_read_block_metadata block.hash)
+        ~none:(TzTrace.make @@ Layer1_services.Cannot_read_block_metadata hash)
     in
     let confirmed_slots =
       Option.value
@@ -119,10 +121,7 @@ module Plugin = struct
         metadata.protocol_data.dal_attestation
     in
     let* all_slots =
-      Dal.Slot_index.slots_range
-        ~number_of_slots
-        ~lower:0
-        ~upper:(number_of_slots - 1)
+      Dal.Slot_index.slots_range ~lower:0 ~upper:(number_of_slots - 1)
       |> Environment.wrap_tzresult
     in
     List.filter (Dal.Attestation.is_attested confirmed_slots) all_slots

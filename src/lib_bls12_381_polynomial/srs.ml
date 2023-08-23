@@ -230,7 +230,7 @@ module Elt_g2 = struct
     [@@noalloc]
 
   external pippenger : G.t -> Bigstringaf.t -> Polynomial.t -> int -> int -> int
-    = "caml_bls12_381_polynomial_srs_g2_pippenger_stubs"
+    = "caml_blst_g2_pippenger_contiguous_affine_array_stubs"
     [@@noalloc]
 end
 
@@ -305,5 +305,3 @@ module type S_unsafe = sig
 
   val of_array : elt array -> t
 end
-
-module Srs_g1_unsafe = Make (Elt_g1)

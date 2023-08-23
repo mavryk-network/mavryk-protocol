@@ -23,12 +23,15 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+let zero : Storage.deposits =
+  {initial_amount = Tez_repr.zero; current_amount = Tez_repr.zero}
+
 let get ctxt delegate =
   let open Lwt_result_syntax in
   let+ frozen_deposits_opt =
     Storage.Contract.Frozen_deposits.find ctxt delegate
   in
-  Option.value ~default:Deposits_repr.zero frozen_deposits_opt
+  Option.value ~default:zero frozen_deposits_opt
 
 let update_balance ctxt delegate f amount =
   let open Lwt_result_syntax in
@@ -43,17 +46,15 @@ let update_balance ctxt delegate f amount =
   in
   return ctxt
 
-let credit_only_call_from_token ctxt staker amount =
+let credit_only_call_from_token ctxt delegate amount =
   let open Lwt_result_syntax in
-  let delegate = Stake_repr.staker_delegate staker in
   let* ctxt = update_balance ctxt delegate Tez_repr.( +? ) amount in
-  Stake_storage.add_frozen_stake ctxt staker amount
+  Stake_storage.add_stake ctxt delegate amount
 
-let spend_only_call_from_token ctxt staker amount =
+let spend_only_call_from_token ctxt delegate amount =
   let open Lwt_result_syntax in
-  let delegate = Stake_repr.staker_delegate staker in
   let* ctxt = update_balance ctxt delegate Tez_repr.( -? ) amount in
-  Stake_storage.remove_frozen_stake ctxt staker amount
+  Stake_storage.remove_stake ctxt delegate amount
 
 let update_initial_amount ctxt delegate_contract deposits_cap =
   let open Lwt_result_syntax in

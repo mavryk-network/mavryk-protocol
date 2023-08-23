@@ -88,7 +88,7 @@ module Benchmark_cmd = struct
       csv_export = None;
     }
 
-  let pp_benchmark_options ppf (options : Cmdline.benchmark_options) =
+  let benchmark_options_to_string (options : Cmdline.benchmark_options) =
     let open Printf in
     let save_file = options.save_file in
     let storage =
@@ -107,9 +107,8 @@ module Benchmark_cmd = struct
             base_dir
             header_json
     in
-    Format.fprintf
-      ppf
-      "@[<v 2>{ options = %a;@ save_file = %s;@ storage = %s }@]"
+    Format.asprintf
+      "@[<v 2>{ options = %a;@, save_file = %s;@, storage = %s }@]"
       Measure.pp_options
       options.options
       save_file
@@ -221,7 +220,7 @@ module Benchmark_cmd = struct
       config_file_arg
       dump_csv_arg
 
-  let benchmark_param () =
+  let benchmark_param =
     Tezos_clic.param
       ~name:"BENCH-NAME"
       ~desc:"Name of the benchmark"
@@ -237,7 +236,7 @@ module Benchmark_cmd = struct
 
   let params =
     Tezos_clic.(
-      prefix "benchmark" @@ benchmark_param ()
+      prefix "benchmark" @@ benchmark_param
       @@ prefixes ["and"; "save"; "to"]
       @@ string
            ~name:"FILENAME"
@@ -333,7 +332,7 @@ module Infer_cmd = struct
   let set_empirical_plot empirical_plot options =
     {options with display = {options.display with empirical_plot}}
 
-  let handle_options
+  let infer_handler
       ( print_problem,
         csv,
         plot,
@@ -346,26 +345,24 @@ module Infer_cmd = struct
         dot_file,
         full_plot_verbosity,
         plot_raw_workload,
-        empirical_plot ) =
-    default_infer_parameters_options
-    |> set_print_problem print_problem
-    |> set_csv_export csv |> set_plot plot
-    |> lift_opt set_ridge_alpha ridge_alpha
-    |> lift_opt set_lasso_alpha lasso_alpha
-    |> set_lasso_positive lasso_positive
-    |> set_report report
-    |> set_override_files override_files
-    |> set_save_solution save_solution
-    |> set_dot_file dot_file
-    |> set_full_plot_verbosity full_plot_verbosity
-    |> set_plot_raw_workload plot_raw_workload
-    |> lift_opt set_empirical_plot empirical_plot
-
-  let infer_handler opts local_model_name workload_data solver () =
-    let options = handle_options opts in
+        empirical_plot ) model_name workload_data solver () =
+    let options =
+      default_infer_parameters_options
+      |> set_print_problem print_problem
+      |> set_csv_export csv |> set_plot plot
+      |> lift_opt set_ridge_alpha ridge_alpha
+      |> lift_opt set_lasso_alpha lasso_alpha
+      |> set_lasso_positive lasso_positive
+      |> set_report report
+      |> set_override_files override_files
+      |> set_save_solution save_solution
+      |> set_dot_file dot_file
+      |> set_full_plot_verbosity full_plot_verbosity
+      |> set_plot_raw_workload plot_raw_workload
+      |> lift_opt set_empirical_plot empirical_plot
+    in
     commandline_outcome_ref :=
-      Some
-        (Infer {local_model_name; workload_data; solver; infer_opts = options}) ;
+      Some (Infer {model_name; workload_data; solver; infer_opts = options}) ;
     Lwt.return_ok ()
 
   module Options = struct
@@ -572,31 +569,6 @@ module Infer_cmd = struct
       infer_handler
 end
 
-module Infer_all_cmd = struct
-  include Infer_cmd
-
-  let params =
-    Tezos_clic.(
-      prefixes ["infer"; "parameters"]
-      @@ prefixes ["on"; "data"]
-      @@ string ~name:"WORKLOAD-DATA" ~desc:"Directory containing workload data"
-      @@ prefix "using" @@ regression_param @@ stop)
-
-  let infer_handler opts workload_data solver () =
-    let options = handle_options opts in
-    commandline_outcome_ref :=
-      Some (Infer_all {workload_data; solver; infer_opts = options}) ;
-    Lwt.return_ok ()
-
-  let command =
-    Tezos_clic.command
-      ~desc:"Perform parameter inference on data set"
-      ~group
-      options
-      params
-      infer_handler
-end
-
 module Codegen_cmd = struct
   (* ------------------------------------------------------------------------- *)
   (* Handling options for the "generate code" command *)
@@ -609,7 +581,10 @@ module Codegen_cmd = struct
         close_in ic ;
         json
       in
-      Data_encoding.Json.destruct Fixed_point_transform.options_encoding json
+      Fixed_point_transform
+        (Data_encoding.Json.destruct
+           Fixed_point_transform.options_encoding
+           json)
     with _ ->
       Format.eprintf
         "Could not parse fixed-point transform parameters; aborting@." ;
@@ -623,9 +598,12 @@ module Codegen_cmd = struct
            Fixed_point_transform.default_options) ;
       exit 1
 
-  let codegen_handler (fixed_point, save_to) solution model_name () =
-    let transform = Option.map load_fixed_point_parameters fixed_point in
-    let codegen_options = {transform; split = false; save_to} in
+  let codegen_handler json solution model_name () =
+    let codegen_options =
+      match json with
+      | None -> No_transform
+      | Some json_file -> load_fixed_point_parameters json_file
+    in
     let model_name = Namespace.of_string model_name in
     commandline_outcome_ref :=
       Some (Codegen {solution; model_name; codegen_options}) ;
@@ -638,14 +616,7 @@ module Codegen_cmd = struct
       ~placeholder:"json-config-file"
       (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
-  let save_to_arg =
-    Tezos_clic.arg
-      ~doc:"Save the output to a file"
-      ~long:"save-to"
-      ~placeholder:"file"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
-
-  let options = Tezos_clic.args2 fixed_point_arg save_to_arg
+  let options = Tezos_clic.args1 fixed_point_arg
 
   let codegen_model_param =
     Tezos_clic.param
@@ -687,9 +658,12 @@ end
 module Codegen_all_cmd = struct
   include Codegen_cmd
 
-  let codegen_all_handler (json, save_to) solution matching () =
-    let transform = Option.map load_fixed_point_parameters json in
-    let codegen_options = {transform; split = false; save_to} in
+  let codegen_all_handler json solution matching () =
+    let codegen_options =
+      match json with
+      | None -> No_transform
+      | Some json_file -> load_fixed_point_parameters json_file
+    in
     commandline_outcome_ref :=
       Some (Codegen_all {solution; matching; codegen_options}) ;
     Lwt.return_ok ()
@@ -719,9 +693,12 @@ end
 module Codegen_inferred_cmd = struct
   include Codegen_cmd
 
-  let codegen_inferred_handler (json, exclusions, save_to) solution () =
-    let transform = Option.map load_fixed_point_parameters json in
-    let codegen_options = {transform; split = false; save_to} in
+  let codegen_inferred_handler (json, exclusions) solution () =
+    let codegen_options =
+      match json with
+      | None -> No_transform
+      | Some json_file -> load_fixed_point_parameters json_file
+    in
     let exclusions =
       Option.fold
         ~none:String.Set.empty
@@ -749,8 +726,7 @@ module Codegen_inferred_cmd = struct
       ~placeholder:"filename"
       (Tezos_clic.parameter (fun (_ : unit) filename -> Lwt.return_ok filename))
 
-  let options =
-    Tezos_clic.args3 Codegen_cmd.fixed_point_arg exclude_arg save_to_arg
+  let options = Tezos_clic.args2 Codegen_cmd.fixed_point_arg exclude_arg
 
   let command =
     Tezos_clic.command
@@ -791,60 +767,21 @@ end
 module Codegen_for_solutions_cmd = struct
   include Codegen_cmd
 
-  let split_to_dir =
-    Tezos_clic.arg
-      ~doc:
-        "Generated code is saved to \
-         DIR/<generated_code_destination>_costs_generated.ml (and \
-         __non_fp.ml)."
-      ~long:"split-to"
-      ~placeholder:"DIR"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
-
-  let save_to_arg =
-    Tezos_clic.arg
-      ~doc:
-        "Generated code is saved to FILE-NAME. Will also save code for models \
-         that dont have a codegen destination"
-      ~long:"save-to"
-      ~placeholder:"FILE-NAME"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
-
-  let exclude_arg =
-    Tezos_clic.arg
-      ~doc:"A file containing the function names to exclude for the codegen"
-      ~long:"exclude-file"
-      ~placeholder:"filename"
-      (Tezos_clic.parameter (fun (_ : unit) filename -> Lwt.return_ok filename))
-
-  let options =
-    Tezos_clic.args4
-      Codegen_cmd.fixed_point_arg
-      exclude_arg
-      save_to_arg
-      split_to_dir
-
-  let codegen_for_solutions_handler (json, exclusions, save_to, split_to_dir)
-      solutions () =
-    if Option.is_some save_to && Option.is_some split_to_dir then (
-      Format.eprintf
-        "Error: --save-to and --split-to are mutually exclusive params.@." ;
-      exit 1)
-    else
-      let transform = Option.map load_fixed_point_parameters json in
-      let split = Option.is_some split_to_dir in
-      let option = Option.to_list save_to @ Option.to_list split_to_dir in
-      let save_to = List.hd option in
-      let codegen_options = {transform; save_to; split} in
-      let exclusions =
-        Option.fold
-          ~none:String.Set.empty
-          ~some:Codegen.load_exclusions
-          exclusions
-      in
-      commandline_outcome_ref :=
-        Some (Codegen_for_solutions {solutions; codegen_options; exclusions}) ;
-      Lwt.return_ok ()
+  let codegen_for_solutions_handler (json, exclusions) solutions () =
+    let codegen_options =
+      match json with
+      | None -> No_transform
+      | Some json_file -> load_fixed_point_parameters json_file
+    in
+    let exclusions =
+      Option.fold
+        ~none:String.Set.empty
+        ~some:Codegen.load_exclusions
+        exclusions
+    in
+    commandline_outcome_ref :=
+      Some (Codegen_for_solutions {solutions; codegen_options; exclusions}) ;
+    Lwt.return_ok ()
 
   let params =
     Tezos_clic.(
@@ -853,8 +790,10 @@ module Codegen_for_solutions_cmd = struct
            (string
               ~name:"SOLUTION-FILE"
               ~desc:
-                "File or Directory containing solutions, as obtained using the \
+                "File containing solution, as obtained using the \
                  --save-solution switch"))
+
+  let options = Codegen_inferred_cmd.options
 
   let command =
     Tezos_clic.command
@@ -890,172 +829,6 @@ module Codegen_check_definitions_cmd = struct
         codegen_check_definitions_handler)
 end
 
-module Auto_build_cmd = struct
-  let build_options
-      ( split,
-        destination_directory,
-        nsamples,
-        bench_number,
-        print_problem,
-        plot,
-        override_files,
-        full_plot_verbosity,
-        plot_raw_workload,
-        empirical_plot ) =
-    let infer_parameters =
-      let open Infer_cmd in
-      default_infer_parameters_options
-      |> set_print_problem print_problem
-      |> set_plot plot
-      |> set_override_files override_files
-      |> set_full_plot_verbosity full_plot_verbosity
-      |> set_plot_raw_workload plot_raw_workload
-      |> lift_opt set_empirical_plot empirical_plot
-    in
-    let measure_options =
-      let opts = Benchmark_cmd.default_benchmark_options.options in
-      {
-        opts with
-        nsamples = Option.value nsamples ~default:opts.nsamples;
-        bench_number = Option.value bench_number ~default:opts.bench_number;
-      }
-    in
-    (split, {destination_directory; infer_parameters; measure_options})
-
-  let handler opts bench_names () =
-    let split, auto_build_options = build_options opts in
-    let benchmarks =
-      List.map
-        (fun s ->
-          let n = Namespace.of_string s in
-          match Registration.find_benchmark n with
-          | None ->
-              Format.eprintf "Benchmark %a does not exist.@." Namespace.pp n ;
-              exit 1
-          | Some benchmark -> benchmark)
-        bench_names
-    in
-    commandline_outcome_ref :=
-      Some
-        (Auto_build {targets = Benchmarks benchmarks; split; auto_build_options}) ;
-    Lwt.return_ok ()
-
-  let params =
-    Tezos_clic.(
-      prefixes ["generate"; "code"; "for"; "benchmarks"]
-      @@ seq_of_param
-      @@ Benchmark_cmd.benchmark_param ())
-
-  let destination_directory_arg =
-    Tezos_clic.arg
-      ~doc:"Destination directory of the auto-build result"
-      ~long:"out-dir"
-      ~placeholder:"directory"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
-
-  let switch =
-    Tezos_clic.switch
-      ~doc:
-        "Switch indicating that generated code should be split into submodules \
-         defined by Benchmark's generated code destination "
-      ~long:"split"
-      ()
-
-  let options =
-    Tezos_clic.args10
-      switch
-      destination_directory_arg
-      Benchmark_cmd.Options.nsamples_arg
-      Benchmark_cmd.Options.bench_number_arg
-      Infer_cmd.Options.print_problem
-      Infer_cmd.Options.plot_arg
-      Infer_cmd.Options.override_arg
-      Infer_cmd.Options.full_plot_verbosity_arg
-      Infer_cmd.Options.plot_raw_workload_arg
-      Infer_cmd.Options.empirical_plot_arg
-
-  let command =
-    Tezos_clic.command
-      ~group:Codegen_cmd.group
-      ~desc:
-        "Auto-perform the benchmarks, inference and codegen for the given \
-         benchmarks"
-      options
-      params
-      handler
-end
-
-module Auto_build_for_models_cmd = struct
-  let handler opts model_names () =
-    let split, auto_build_options = Auto_build_cmd.build_options opts in
-    let models =
-      List.map
-        (fun s ->
-          let n = Namespace.of_string s in
-          match Registration.find_model n with
-          | Some {model; _} -> model
-          | None ->
-              Format.eprintf "Model %a does not exist.@." Namespace.pp n ;
-              exit 1)
-        model_names
-    in
-    commandline_outcome_ref :=
-      Some (Auto_build {targets = Models models; split; auto_build_options}) ;
-    Lwt.return_ok ()
-
-  let params =
-    Tezos_clic.(
-      prefixes ["generate"; "code"; "for"; "models"]
-      @@ seq_of_param
-      @@ Benchmark_cmd.benchmark_param ())
-
-  let command =
-    Tezos_clic.command
-      ~group:Codegen_cmd.group
-      ~desc:
-        "Auto-perform the benchmarks, inference and codegen for the given \
-         models"
-      Auto_build_cmd.options
-      params
-      handler
-end
-
-module Auto_build_for_parameters_cmd = struct
-  let handler opts parameter_names () =
-    let split, auto_build_options = Auto_build_cmd.build_options opts in
-    let parameters =
-      List.map
-        (fun s ->
-          let v = Free_variable.of_string s in
-          match Registration.find_parameter v with
-          | None | Some [] ->
-              Format.eprintf "Parameter %a does not exist.@." Free_variable.pp v ;
-              exit 1
-          | Some _ -> v)
-        parameter_names
-    in
-    commandline_outcome_ref :=
-      Some
-        (Auto_build {targets = Parameters parameters; split; auto_build_options}) ;
-    Lwt.return_ok ()
-
-  let params =
-    Tezos_clic.(
-      prefixes ["generate"; "code"; "for"; "parameters"]
-      @@ seq_of_param
-      @@ Benchmark_cmd.benchmark_param ())
-
-  let command =
-    Tezos_clic.command
-      ~group:Codegen_cmd.group
-      ~desc:
-        "Auto-perform the benchmarks, inference and codegen for the given \
-         parameters"
-      Auto_build_cmd.options
-      params
-      handler
-end
-
 module List_cmd = struct
   (* ------------------------------------------------------------------------- *)
 
@@ -1088,7 +861,9 @@ module List_cmd = struct
       (Tezos_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
-             List.map Namespace.to_string (Registration.all_model_names ())
+             List.map
+               (fun model_name -> Namespace.to_string model_name)
+               (Registration.all_model_names ())
            in
            Lwt.return_ok res)
          (fun _ str -> Lwt.return_ok str))
@@ -1568,7 +1343,7 @@ module Workload_cmd = struct
 
   let handler_dump output_path workload_data () =
     let packed_measurement = Measure.load ~filename:workload_data in
-    Measure.packed_measurement_save_json packed_measurement output_path ;
+    Measure.packed_measurement_print_json packed_measurement output_path ;
     Lwt.return_ok ()
 
   let params_dump =
@@ -1613,22 +1388,36 @@ module Display_info_cmd = struct
     let bold_title = Format.asprintf "\027[0;1;4m%s\027[m" title in
     normal_block fmt bold_title
 
-  let pp_model = Model.pp
+  let pp_abstract_model fmt (Model.Model m) =
+    let module M = (val m) in
+    Format.fprintf fmt "%a" Namespace.pp M.name
+
+  let pp_model fmt = function
+    | Model.Aggregate {sub_models; _} ->
+        normal_block
+          fmt
+          "Aggregated model containing the following abstract models"
+          (Format.pp_print_list pp_abstract_model)
+          sub_models
+    | Model.Abstract {model; _} ->
+        normal_block
+          fmt
+          "Abstract model. Name"
+          pp_abstract_model
+          (Model.Model model)
 
   let pp_model_bench fmt (local_name, model) =
-    Format.fprintf fmt "@[<v2>%s:@;%a@]" local_name pp_model model
+    normal_block fmt local_name pp_model model
 
   let pp_models () = Format.pp_print_list pp_model_bench
 
   let pp_fancy_benchmark fmt (module B : Benchmark.S) =
-    let purpose =
-      match B.purpose with
-      | Generate_code x -> Format.sprintf "Generate code to %s" x
-      | Other_purpose x -> x
-    in
     bold_block fmt "Name" Namespace.pp B.name ;
     bold_block fmt "Filename" Format.pp_print_string B.module_filename ;
-    bold_block fmt "Purpose" Format.pp_print_string purpose ;
+    bold_block fmt "Generated code destination" Format.pp_print_string
+    @@ Option.value
+         ~default:"Destination not specified"
+         B.generated_code_destination ;
     bold_block fmt "Info" Format.pp_print_string B.info ;
     bold_block fmt "Tags" pp_tags B.tags ;
     bold_block fmt "Models" (pp_models ()) B.models
@@ -1664,7 +1453,7 @@ module Display_info_cmd = struct
     bold_block
       fmt
       "Benchmarks"
-      (Format.pp_print_list Namespace.pp)
+      (Format.pp_print_list (fun fmt name -> Format.fprintf fmt "%s" name))
       benchmark_names
 
   let pp_fancy_parameter fmt (s, l) =
@@ -1677,11 +1466,6 @@ module Display_info_cmd = struct
     Format.printf "@.%a@." pp_fancy_benchmark b ;
     Lwt.return_ok ()
 
-  let display_all_benchmarks_handler () () =
-    List.iter (fun (_n, b) -> Format.printf "%a@." Benchmark.pp b)
-    @@ Registration.all_benchmarks () ;
-    Lwt.return_ok ()
-
   let display_model_handler () s () =
     let s = Namespace.of_string s in
     let {Registration.model = Model.Model m; from = l} =
@@ -1691,7 +1475,22 @@ module Display_info_cmd = struct
     Lwt.return_ok ()
 
   let display_local_model_handler () local_model_name () =
-    let all_benchmarks = Registration.find_local_model_exn local_model_name in
+    let local_models = Registration.all_local_model_names () in
+    let () =
+      if not (List.mem ~equal:String.equal local_model_name local_models) then (
+        Format.eprintf "No local model named %s found.@." local_model_name ;
+        exit 1)
+    in
+    let all_benchmarks =
+      Registration.all_models ()
+      |> List.concat_map (fun (_, {Registration.from; model = _}) -> from)
+      |> List.filter_map
+           (fun {Registration.bench_name; local_model_name = name} ->
+             if String.equal local_model_name name then
+               Some (Namespace.to_string bench_name)
+             else None)
+      |> List.sort_uniq String.compare
+    in
     Format.printf
       "@.%a@."
       pp_fancy_local_model
@@ -1707,9 +1506,6 @@ module Display_info_cmd = struct
   let display_benchmark_params =
     Tezos_clic.(
       params_prefix @@ prefix "benchmark" @@ List_cmd.benchmark_param () @@ stop)
-
-  let display_all_benchmarks_params =
-    Tezos_clic.fixed ["display"; "info"; "for"; "all"; "benchmarks"]
 
   let display_model_params =
     Tezos_clic.(
@@ -1732,14 +1528,6 @@ module Display_info_cmd = struct
       options
       display_benchmark_params
       display_benchmark_handler
-
-  let command_all_benchmarks =
-    Tezos_clic.command
-      ~group
-      ~desc:"Display detailed information on all the benchmarks"
-      options
-      display_all_benchmarks_params
-      display_all_benchmarks_handler
 
   let command_model =
     Tezos_clic.command
@@ -1766,20 +1554,13 @@ module Display_info_cmd = struct
       display_parameter_handler
 
   let commands =
-    [
-      command_benchmark;
-      command_all_benchmarks;
-      command_model;
-      command_parameter;
-      command_local_model;
-    ]
+    [command_benchmark; command_model; command_parameter; command_local_model]
 end
 
 let all_commands =
   [
     Benchmark_cmd.command;
     Infer_cmd.command;
-    Infer_all_cmd.command;
     Codegen_cmd.command;
     Codegen_all_cmd.command;
     Codegen_inferred_cmd.command;
@@ -1787,9 +1568,6 @@ let all_commands =
     Codegen_check_definitions_cmd.command;
     Generate_config_cmd.command;
     Solution_print_cmd.command;
-    Auto_build_cmd.command;
-    Auto_build_for_models_cmd.command;
-    Auto_build_for_parameters_cmd.command;
   ]
   @ List_cmd.commands @ Config_cmd.commands @ Workload_cmd.commands
   @ Display_info_cmd.commands
@@ -1872,7 +1650,7 @@ let list_solvers, list_models =
   match result with
   | Ok global_options -> global_options
   | Error [Tezos_clic.Version] ->
-      let version = Tezos_version_value.Bin_version.version_string in
+      let version = Tezos_version.Bin_version.version_string in
       Format.printf "%s\n" version ;
       exit 0
   | Error [Tezos_clic.Help command] ->

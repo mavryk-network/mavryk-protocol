@@ -38,15 +38,9 @@ EXPERIMENTAL_EXECUTABLES := $(shell cat script-inputs/experimental-executables)
 # are not useful for users.
 # - scripts/snapshot_alpha.sh expects octez-protocol-compiler to be at the root.
 # - Some tests expect octez-snoop to be at the root.
-DEV_EXECUTABLES := $(shell cat script-inputs/dev-executables)
+DEV_EXECUTABLES := octez-protocol-compiler octez-snoop
 
 ALL_EXECUTABLES := $(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES) $(DEV_EXECUTABLES)
-
-# Set of Dune targets to build, in addition to OCTEZ_EXECUTABLES, in
-# the `build` target's Dune invocation. This is used in the CI to
-# build the TPS evaluation tool, Octogram and the Tezt test suite in the
-# 'build_x86_64-dev-exp-misc' job.
-BUILD_EXTRA ?=
 
 # See first mention of TEZOS_WITHOUT_OPAM.
 ifndef TEZOS_WITHOUT_OPAM
@@ -93,9 +87,8 @@ endif
 # This is more efficient than 'make octez-node octez-client'
 # because it only calls 'dune' once.
 #
-# Targets 'all', 'release', 'experimental-release' and 'static' define
-# different default lists of executables to build but they all can be
-# overridden from the command-line.
+# Targets 'all', 'release', 'experimental-release' and 'static' define different
+# default lists of executables to build but they all can be overridden from the command-line.
 .PHONY: all
 all:
 	@$(MAKE) build OCTEZ_EXECUTABLES?="$(ALL_EXECUTABLES)"
@@ -185,7 +178,6 @@ ifeq (${OCTEZ_EXECUTABLES},)
 endif
 	@dune build --profile=$(PROFILE) $(COVERAGE_OPTIONS) \
 		$(foreach b, $(OCTEZ_EXECUTABLES), _build/install/default/bin/${b}) \
-		$(BUILD_EXTRA) \
 		@copy-parameters
 	@mkdir -p $(OCTEZ_BIN_DIR)/
 	@cp -f $(foreach b, $(OCTEZ_EXECUTABLES), _build/install/default/bin/${b}) $(OCTEZ_BIN_DIR)/
@@ -327,11 +319,11 @@ lint-opam-dune:
 	@dune build --profile=$(PROFILE) @runtest_dune_template
 
 # Ensure that all unit tests are restricted to their opam package
-# (change 'octez-distributed-internal' to one the most elementary packages of
-# the repo if you add "internal" dependencies to octez-distributed-internal)
+# (change 'tezos-test-helpers' to one the most elementary packages of
+# the repo if you add "internal" dependencies to tezos-test-helpers)
 .PHONY: lint-tests-pkg
 lint-tests-pkg:
-	@(dune build -p octez-distributed-internal @runtest @runtest_js) || \
+	@(dune build -p tezos-test-helpers @runtest @runtest_js) || \
 	{ echo "You have probably defined some tests in dune files without specifying to which 'package' they belong."; exit 1; }
 
 
@@ -418,11 +410,6 @@ build-tps: lift-protocol-limits-patch all build-tezt
 	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-benchmark-tps .
 	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-estimate-average-block .
 	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-gas-tps .
-
-.PHONY: build-octogram
-build-octogram: all
-	@dune build ./src/bin_octogram
-	@cp -f ./_build/default/src/bin_octogram/octogram_main.exe octogram
 
 .PHONY: build-unreleased
 build-unreleased: all

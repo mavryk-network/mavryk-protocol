@@ -103,9 +103,9 @@ let patch_script ctxt (address, hash, patched_code) =
         address ;
       return ctxt
 
-let prepare_first_block chain_id ctxt ~typecheck_smart_contract
-    ~typecheck_smart_rollup ~level ~timestamp ~predecessor =
-  Raw_context.prepare_first_block ~level ~timestamp chain_id ctxt
+let prepare_first_block _chain_id ctxt ~typecheck ~level ~timestamp ~predecessor
+    =
+  Raw_context.prepare_first_block ~level ~timestamp ctxt
   >>=? fun (previous_protocol, ctxt) ->
   let parametric = Raw_context.constants ctxt in
   ( Raw_context.Cache.set_cache_layout
@@ -119,11 +119,6 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
       Raw_level_repr.of_int32 level >>?= fun level ->
       Storage.Tenderbake.First_level_of_protocol.init ctxt level
       >>=? fun ctxt ->
-      Storage.Tenderbake.Forbidden_delegates.init
-        ctxt
-        Signature.Public_key_hash.Set.empty
-      >>=? fun ctxt ->
-      Storage.Contract.Total_supply.add ctxt Tez_repr.zero >>= fun ctxt ->
       Storage.Block_round.init ctxt Round_repr.zero >>=? fun ctxt ->
       let init_commitment (ctxt, balance_updates)
           Commitment_repr.{blinded_public_key_hash; amount} =
@@ -143,39 +138,37 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
       Contract_storage.init ctxt >>=? fun ctxt ->
       Bootstrap_storage.init
         ctxt
-        ~typecheck_smart_contract
-        ~typecheck_smart_rollup
+        ~typecheck
         ?no_reward_cycles:param.no_reward_cycles
         param.bootstrap_accounts
         param.bootstrap_contracts
-        param.bootstrap_smart_rollups
       >>=? fun (ctxt, bootstrap_balance_updates) ->
-      Delegate_cycles.init_first_cycles ctxt >>=? fun ctxt ->
+      Delegate_cycles.init_first_cycles ctxt ~origin:Protocol_migration
+      >>=? fun (ctxt, deposits_balance_updates) ->
       Vote_storage.init
         ctxt
         ~start_position:(Level_storage.current ctxt).level_position
       >>=? fun ctxt ->
       Vote_storage.update_listings ctxt >>=? fun ctxt ->
       (* Must be called after other originations since it unsets the origination nonce. *)
-      Liquidity_baking_migration.init ctxt ~typecheck:typecheck_smart_contract
+      Liquidity_baking_migration.init ctxt ~typecheck
       >>=? fun (ctxt, operation_results) ->
       Storage.Pending_migration.Operation_results.init ctxt operation_results
       >>=? fun ctxt ->
       Sc_rollup_inbox_storage.init_inbox ~predecessor ctxt >>=? fun ctxt ->
-      Adaptive_issuance_storage.init ctxt >>=? fun ctxt ->
-      return (ctxt, commitments_balance_updates @ bootstrap_balance_updates)
-  | Oxford_018
+      return
+        ( ctxt,
+          commitments_balance_updates @ bootstrap_balance_updates
+          @ deposits_balance_updates )
+  | Nairobi_017
   (* Please update [next_protocol] and [previous_protocol] in
      [tezt/lib_tezos/protocol.ml] when you update this value. *) ->
-      (* TODO (#2704): possibly handle attestations for migration block (in bakers);
+      (* TODO (#2704): possibly handle endorsements for migration block (in bakers);
          if that is done, do not set Storage.Tenderbake.First_level_of_protocol.
          /!\ this storage is also use to add the smart rollup
              inbox migration message. see `sc_rollup_inbox_storage`. *)
       Raw_level_repr.of_int32 level >>?= fun level ->
       Storage.Tenderbake.First_level_of_protocol.update ctxt level
-      >>=? fun ctxt ->
-      (* Migration of refutation games needs to be kept for each protocol. *)
-      Sc_rollup_refutation_storage.migrate_clean_refutation_games ctxt
       >>=? fun ctxt -> return (ctxt, []))
   >>=? fun (ctxt, balance_updates) ->
   List.fold_left_es patch_script ctxt Legacy_script_patches.addresses_to_patch
@@ -185,12 +178,5 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
   >>= fun ctxt -> return ctxt
 
 let prepare ctxt ~level ~predecessor_timestamp ~timestamp =
-  Raw_context.prepare
-    ~level
-    ~predecessor_timestamp
-    ~timestamp
-    ~adaptive_issuance_enable:false
-    ctxt
-  >>=? fun ctxt ->
-  Adaptive_issuance_storage.set_adaptive_issuance_enable ctxt >>=? fun ctxt ->
-  Storage.Pending_migration.remove ctxt
+  Raw_context.prepare ~level ~predecessor_timestamp ~timestamp ctxt
+  >>=? fun ctxt -> Storage.Pending_migration.remove ctxt

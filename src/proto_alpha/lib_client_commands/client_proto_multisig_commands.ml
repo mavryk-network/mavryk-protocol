@@ -203,7 +203,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            Client_proto_args.fee_parameter_args
            Client_proto_context_commands.verbose_signing_switch)
         (prefixes ["deploy"; "multisig"]
-        @@ Client_proto_contracts.Raw_contract_alias.fresh_alias_param
+        @@ Client_proto_contracts.RawContractAlias.fresh_alias_param
              ~name:"new_multisig"
              ~desc:"name of the new multisig contract"
         @@ prefix "transferring"
@@ -211,7 +211,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              ~name:"qty"
              ~desc:"amount taken from source"
         @@ prefix "from"
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"name of the source contract"
         @@ prefixes ["with"; "threshold"]
@@ -235,58 +235,65 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
           let* alias_name =
-            Client_proto_contracts.Raw_contract_alias.of_fresh
+            Client_proto_contracts.RawContractAlias.of_fresh
               cctxt
               force
               alias_name
           in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let* keys =
-            List.map_es (fun (pk_uri, _) -> Client_keys.public_key pk_uri) keys
-          in
-          let*! errors =
-            Client_proto_multisig.originate_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ?fee
-              ?gas_limit
-              ?storage_limit
-              ~verbose_signing
-              ~delegate
-              ~threshold:(Z.of_int threshold)
-              ~keys
-              ~balance
-              ~source
-              ~src_pk
-              ~src_sk
-              ~fee_parameter
-              ()
-          in
-          let*! o =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"multisig origination simulation failed"
-              cctxt
-              errors
-          in
-          unless dry_run @@ fun () ->
-          Option.iter_es
-            (fun (_res, contract) ->
-              Client_proto_context.save_contract
-                ~force
-                cctxt
-                alias_name
-                contract)
-            o);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of an origination"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let* keys =
+                List.map_es
+                  (fun (pk_uri, _) -> Client_keys.public_key pk_uri)
+                  keys
+              in
+              let*! errors =
+                Client_proto_multisig.originate_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ?fee
+                  ?gas_limit
+                  ?storage_limit
+                  ~verbose_signing
+                  ~delegate
+                  ~threshold:(Z.of_int threshold)
+                  ~keys
+                  ~balance
+                  ~source
+                  ~src_pk
+                  ~src_sk
+                  ~fee_parameter
+                  ()
+              in
+              let*! o =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"multisig origination simulation failed"
+                  cctxt
+                  errors
+              in
+              unless dry_run @@ fun () ->
+              Option.iter_es
+                (fun (_res, contract) ->
+                  Client_proto_context.save_contract
+                    ~force
+                    cctxt
+                    alias_name
+                    contract)
+                o);
       command
         ~group
         ~desc:"Sign a transaction for a multisig contract."
         (args2 arg_arg entrypoint_arg)
         (prefixes ["sign"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefix "transferring"
@@ -294,7 +301,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              ~name:"qty"
              ~desc:"amount taken from source"
         @@ prefix "to"
-        @@ Client_proto_contracts.Contract_alias.destination_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"dst"
              ~desc:"name/literal of the destination contract"
         @@ prefixes ["using"; "secret"; "key"]
@@ -336,7 +343,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
         ~desc:"Sign a lambda for a generic multisig contract."
         no_options
         (prefixes ["sign"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["running"; "lambda"]
@@ -370,7 +377,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
         ~desc:"Sign a delegate change for a multisig contract."
         no_options
         (prefixes ["sign"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["setting"; "delegate"; "to"]
@@ -402,7 +409,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
         ~desc:"Sign a delegate withdraw for a multisig contract."
         no_options
         (prefixes ["sign"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["withdrawing"; "delegate"]
@@ -428,7 +435,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
           "Sign a change of public keys and threshold for a multisig contract."
         no_options
         (prefixes ["sign"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["using"; "secret"; "key"]
@@ -467,7 +474,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
         ~desc:"Transfer tokens using a multisig contract."
         transfer_options
         (prefixes ["from"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name/literal of the multisig contract"
         @@ prefix "transfer"
@@ -475,11 +482,11 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              ~name:"qty"
              ~desc:"amount taken from the multisig contract"
         @@ prefix "to"
-        @@ Client_proto_contracts.Contract_alias.destination_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"dst"
              ~desc:"name/literal of the destination contract"
         @@ prefixes ["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -512,51 +519,62 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
           let* parameter_type =
             get_parameter_type cctxt ~destination ~entrypoint
           in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let*! errors =
-            Client_proto_multisig.call_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~action:
-                (Client_proto_multisig.Transfer
-                   {amount; destination; entrypoint; parameter_type; parameter})
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let*! errors =
+                Client_proto_multisig.call_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~action:
+                    (Client_proto_multisig.Transfer
+                       {
+                         amount;
+                         destination;
+                         entrypoint;
+                         parameter_type;
+                         parameter;
+                       })
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       command
         ~group
         ~desc:"Run a lambda on a generic multisig contract."
         non_transfer_options
         (prefixes ["from"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name/literal of the multisig contract"
         @@ prefixes ["run"; "lambda"]
         @@ lambda_param ()
         @@ prefixes ["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -575,47 +593,52 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              signatures
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let*? {expanded = lambda; _} =
-            Micheline_parser.no_parsing_error
-            @@ Michelson_v1_parser.parse_expression lambda
-          in
-          let*! errors =
-            Client_proto_multisig.call_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~action:(Client_proto_multisig.Lambda lambda)
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let*? {expanded = lambda; _} =
+                Micheline_parser.no_parsing_error
+                @@ Michelson_v1_parser.parse_expression lambda
+              in
+              let*! errors =
+                Client_proto_multisig.call_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~action:(Client_proto_multisig.Lambda lambda)
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       command
         ~group
         ~desc:"Change the delegate of a multisig contract."
         non_transfer_options
         (prefixes ["set"; "delegate"; "of"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefix "to"
@@ -623,7 +646,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              ~name:"dlgt"
              ~desc:"new delegate of the new multisig contract"
         @@ prefixes ["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -642,47 +665,53 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              signatures
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let*! errors =
-            Client_proto_multisig.call_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~action:(Client_proto_multisig.Change_delegate (Some delegate))
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let*! errors =
+                Client_proto_multisig.call_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~action:
+                    (Client_proto_multisig.Change_delegate (Some delegate))
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       command
         ~group
         ~desc:"Withdraw the delegate of a multisig contract."
         non_transfer_options
         (prefixes ["withdraw"; "delegate"; "of"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -700,49 +729,54 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              signatures
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let*! errors =
-            Client_proto_multisig.call_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~action:(Client_proto_multisig.Change_delegate None)
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let*! errors =
+                Client_proto_multisig.call_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~action:(Client_proto_multisig.Change_delegate None)
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       command
         ~group
         ~desc:"Change public keys and threshold for a multisig contract."
         non_transfer_options
         (prefixes ["set"; "threshold"; "of"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["to"] @@ threshold_param ()
         @@ prefixes ["and"; "public"; "keys"; "to"]
         @@ non_terminal_seq (public_key_param ()) ~suffix:["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -762,43 +796,49 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              signatures
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let* keys =
-            List.map_es
-              (fun (pk_uri, _) -> Client_keys.public_key pk_uri)
-              new_keys
-          in
-          let*! errors =
-            Client_proto_multisig.call_multisig
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~action:
-                (Client_proto_multisig.Change_keys (Z.of_int new_threshold, keys))
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let* keys =
+                List.map_es
+                  (fun (pk_uri, _) -> Client_keys.public_key pk_uri)
+                  new_keys
+              in
+              let*! errors =
+                Client_proto_multisig.call_multisig
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~action:
+                    (Client_proto_multisig.Change_keys
+                       (Z.of_int new_threshold, keys))
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       (* This command is no longer necessary as Tezos_clic now supports non terminal
          lists of parameters, however, it is kept for compatibility. *)
       command
@@ -815,11 +855,11 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
                 be obtained by one of the \"prepare multisig transaction\" \
                 commands"
         @@ prefixes ["on"; "multisig"; "contract"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["on"; "behalf"; "of"]
-        @@ Client_keys.Public_key_hash.source_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"src"
              ~desc:"source calling the multisig contract"
         @@ prefixes ["with"; "signatures"]
@@ -838,37 +878,42 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              signatures
              (cctxt : #Protocol_client_context.full) ->
           let open Lwt_result_syntax in
-          let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
-          let*! errors =
-            Client_proto_multisig.call_multisig_on_bytes
-              cctxt
-              ~chain:cctxt#chain
-              ~block:cctxt#block
-              ?confirmations:cctxt#confirmations
-              ~dry_run
-              ~verbose_signing
-              ~fee_parameter
-              ~source
-              ?fee
-              ~src_pk
-              ~src_sk
-              ~multisig_contract
-              ~bytes
-              ~signatures
-              ~amount:Tez.zero
-              ?gas_limit
-              ?storage_limit
-              ?counter
-              ()
-          in
-          let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
-            Client_proto_context_commands.report_michelson_errors
-              ~no_print_source
-              ~msg:"transfer simulation failed"
-              cctxt
-              errors
-          in
-          return_unit);
+          match source with
+          | Originated _ ->
+              cctxt#error
+                "only implicit accounts can be the source of a contract call"
+          | Implicit source ->
+              let* _, src_pk, src_sk = Client_keys.get_key cctxt source in
+              let*! errors =
+                Client_proto_multisig.call_multisig_on_bytes
+                  cctxt
+                  ~chain:cctxt#chain
+                  ~block:cctxt#block
+                  ?confirmations:cctxt#confirmations
+                  ~dry_run
+                  ~verbose_signing
+                  ~fee_parameter
+                  ~source
+                  ?fee
+                  ~src_pk
+                  ~src_sk
+                  ~multisig_contract
+                  ~bytes
+                  ~signatures
+                  ~amount:Tez.zero
+                  ?gas_limit
+                  ?storage_limit
+                  ?counter
+                  ()
+              in
+              let*! (_ : (_ Injection.result * Contract_hash.t list) option) =
+                Client_proto_context_commands.report_michelson_errors
+                  ~no_print_source
+                  ~msg:"transfer simulation failed"
+                  cctxt
+                  errors
+              in
+              return_unit);
       command
         ~group
         ~desc:
@@ -876,7 +921,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            multisigned transfer."
         (args3 bytes_only_switch arg_arg entrypoint_arg)
         (prefixes ["prepare"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefix "transferring"
@@ -884,7 +929,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
              ~name:"qty"
              ~desc:"amount taken from source"
         @@ prefix "to"
-        @@ Client_proto_contracts.Contract_alias.destination_param
+        @@ Client_proto_contracts.ContractAlias.destination_param
              ~name:"dst"
              ~desc:"name/literal of the destination contract"
         @@ stop)
@@ -924,7 +969,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            multisigned lambda execution in a generic multisig contract."
         (args1 bytes_only_switch)
         (prefixes ["prepare"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["running"; "lambda"]
@@ -955,7 +1000,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            multisigned delegate change."
         (args1 bytes_only_switch)
         (prefixes ["prepare"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["setting"; "delegate"; "to"]
@@ -986,7 +1031,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            multisigned delegate withdraw."
         (args1 bytes_only_switch)
         (prefixes ["prepare"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["withdrawing"; "delegate"]
@@ -1012,7 +1057,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
            multisigned change of keys and threshold."
         (args1 bytes_only_switch)
         (prefixes ["prepare"; "multisig"; "transaction"; "on"]
-        @@ Client_proto_contracts.Originated_contract_alias.destination_param
+        @@ Client_proto_contracts.OriginatedContractAlias.destination_param
              ~name:"multisig"
              ~desc:"name or address of the originated multisig contract"
         @@ prefixes ["setting"; "threshold"; "to"]

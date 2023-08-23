@@ -7,9 +7,9 @@
  (libraries
   tezt.core
   bls12-381
-  octez-libs.octez-mec
+  octez-mec
   octez-alcotezt
-  octez-libs.octez-polynomial)
+  octez-polynomial)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -28,7 +28,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package octez-polynomial)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

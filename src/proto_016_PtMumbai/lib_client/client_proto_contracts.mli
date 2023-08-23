@@ -26,10 +26,10 @@
 open Protocol
 open Alpha_context
 
-module Raw_contract_alias : Client_aliases.Alias with type t = Contract.t
+module RawContractAlias : Client_aliases.Alias with type t = Contract.t
 
-(** Like [Contract_alias] below but restricted to originated contracts. *)
-module Originated_contract_alias : sig
+(** Like [ContractAlias] below but restricted to originated contracts. *)
+module OriginatedContractAlias : sig
   val find_destination :
     #Client_context.wallet -> string -> Contract_hash.t tzresult Lwt.t
 
@@ -46,7 +46,7 @@ module Originated_contract_alias : sig
     (Contract_hash.t option, #Client_context.wallet) Tezos_clic.arg
 end
 
-module Contract_alias : sig
+module ContractAlias : sig
   val get_contract :
     #Client_context.wallet -> string -> Contract.t tzresult Lwt.t
 
@@ -80,12 +80,12 @@ module Contract_alias : sig
 end
 
 (** [list_contracts cctxt] returns the concatenation of [contracts] and [accounts]
-    where [contracts] is the result of [Raw_contract_alias.load cctxt]
+    where [contracts] is the result of [RawContractAlias.load cctxt]
     and [accounts] the list of accounts (implicit contracts of identities)
 *)
 val list_contracts :
   #Client_context.wallet ->
-  (string * string * Raw_contract_alias.t) list tzresult Lwt.t
+  (string * string * RawContractAlias.t) list tzresult Lwt.t
 
 (** Calls {!Alpha_services.Contract.delegate_opt} *)
 val get_delegate :

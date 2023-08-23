@@ -62,7 +62,9 @@ module Consensus_key = struct
     Delegate_consensus_key.register_update ctxt pkh pk
     >|= Environment.wrap_tzresult
 
-  let activate ctxt ~new_cycle = Delegate_consensus_key.activate ctxt ~new_cycle
+  let activate ctxt ~new_cycle =
+    Delegate_consensus_key.activate ctxt ~new_cycle
+    >|= Environment.wrap_tzresult
 end
 
 module Assert = struct
@@ -100,6 +102,7 @@ end
 let rec add_cycles ctxt n =
   if n <= 0 then return ctxt
   else
+    let open Lwt_result_syntax in
     let current_level = Raw_context.current_level ctxt in
     let new_cycle = Cycle_repr.succ current_level.cycle in
     let* ctxt = Consensus_key.activate ctxt ~new_cycle in

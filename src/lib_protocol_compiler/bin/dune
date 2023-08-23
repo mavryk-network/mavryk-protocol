@@ -15,8 +15,7 @@
  (instrumentation (backend bisect_ppx))
  (modes native)
  (libraries
-  octez-protocol-compiler.native
-  tezos-version.value)
+  octez-protocol-compiler.native)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -29,8 +28,8 @@
  (package octez-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-stdlib-unix
+  tezos-base
+  tezos-stdlib-unix
   octez-protocol-compiler)
  (link_flags
   (:standard)
@@ -49,9 +48,9 @@
  (instrumentation (backend bisect_ppx))
  (modes native)
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-stdlib-unix)
+  tezos-base
+  tezos-base.unix
+  tezos-stdlib-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)

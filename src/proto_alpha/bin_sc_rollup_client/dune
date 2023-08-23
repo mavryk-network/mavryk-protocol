@@ -7,11 +7,10 @@
  (package octez-smart-rollup-client-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-clic
+  tezos-base
+  tezos-clic
   tezos-protocol-alpha
-  octez_smart_rollup_client_alpha
-  tezos-version.value)
+  octez_smart_rollup_client_alpha)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)

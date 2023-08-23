@@ -6,10 +6,11 @@
  (public_name octez-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-protocol-environment.sigs
-  octez-libs.tezos-stdlib-unix
+  tezos-base
+  tezos-base.unix
+  tezos-version
+  tezos-protocol-environment.sigs
+  tezos-stdlib-unix
   compiler-libs.common
   lwt.unix
   ocplib-ocamlres
@@ -19,37 +20,21 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base_unix
   -open Tezos_stdlib_unix)
- (modules
-  Embedded_cmis_env
-  Embedded_cmis_register
-  Packer
-  Compiler
-  Defaults
-  Protocol_compiler_env))
-
-(rule
- (target protocol_compiler_env.ml)
- (action (copy compat_files/protocol_compiler_env_ocaml4.ml %{target}))
- (enabled_if (< %{ocaml_version} 5)))
-
-(rule
- (target protocol_compiler_env.ml)
- (action (copy compat_files/protocol_compiler_env_ocaml5.ml %{target}))
- (enabled_if (>= %{ocaml_version} 5)))
+ (modules Embedded_cmis_env Embedded_cmis_register Packer Compiler Defaults))
 
 (rule
  (targets embedded-interfaces-env)
- (deps (package octez-libs))
+ (deps (package tezos-protocol-environment))
  (action
   (with-stdout-to
    %{targets}
    (run
     bin/cmis_of_cma.exe
-    %{lib:octez-libs.tezos-protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}))))
+    %{lib:tezos-protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}))))
 
 (rule
  (targets embedded_cmis_env.ml)
- (deps (package octez-libs))
+ (deps (package tezos-protocol-environment))
  (action
   (run
    %{bin:ocp-ocamlres} -format variants -o %{targets}
@@ -67,14 +52,14 @@
  (action
   (write-file
    %{targets}
-   "let warnings = \"+a-4-40..42-44-45-48-58-60-67-69-70\"")))
+   "let warnings = \"+a-4-40..42-44-45-48-60-67-69-70\"")))
 
 (library
  (name octez_protocol_compiler_native)
  (public_name octez-protocol-compiler.native)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
+  tezos-base
   octez-protocol-compiler
   compiler-libs.optcomp)
  (flags

@@ -7,20 +7,20 @@
  (package octez-proxy-server)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-base.unix
-  octez-libs.tezos-stdlib-unix
-  octez-libs.tezos-rpc
+  tezos-base
+  tezos-base.unix
+  tezos-stdlib-unix
+  tezos-rpc
   cmdliner
   lwt-exit
   lwt.unix
   tezos-proxy
   tezos-proxy-server-config
-  octez-libs.tezos-rpc-http-client-unix
-  octez-libs.tezos-rpc-http-server
-  octez-libs.tezos-shell-services
-  octez-libs.tezos-shell-context
-  tezos-version.value
+  tezos-rpc-http-client-unix
+  tezos-rpc-http-server
+  tezos-shell-services
+  tezos-shell-context
+  tezos-version
   uri
   (select void_for_linking-tezos-client-genesis from
    (tezos-client-genesis -> void_for_linking-tezos-client-genesis.empty)
@@ -115,12 +115,6 @@
   (select void_for_linking-tezos-protocol-plugin-017-PtNairob from
    (tezos-protocol-plugin-017-PtNairob -> void_for_linking-tezos-protocol-plugin-017-PtNairob.empty)
    (-> void_for_linking-tezos-protocol-plugin-017-PtNairob.empty))
-  (select void_for_linking-tezos-client-018-Proxford from
-   (tezos-client-018-Proxford -> void_for_linking-tezos-client-018-Proxford.empty)
-   (-> void_for_linking-tezos-client-018-Proxford.empty))
-  (select void_for_linking-tezos-protocol-plugin-018-Proxford from
-   (tezos-protocol-plugin-018-Proxford -> void_for_linking-tezos-protocol-plugin-018-Proxford.empty)
-   (-> void_for_linking-tezos-protocol-plugin-018-Proxford.empty))
   (select void_for_linking-tezos-client-alpha from
    (tezos-client-alpha -> void_for_linking-tezos-client-alpha.empty)
    (-> void_for_linking-tezos-client-alpha.empty))
@@ -172,7 +166,5 @@
    (write-file void_for_linking-tezos-protocol-plugin-016-PtMumbai.empty "")
    (write-file void_for_linking-tezos-client-017-PtNairob.empty "")
    (write-file void_for_linking-tezos-protocol-plugin-017-PtNairob.empty "")
-   (write-file void_for_linking-tezos-client-018-Proxford.empty "")
-   (write-file void_for_linking-tezos-protocol-plugin-018-Proxford.empty "")
    (write-file void_for_linking-tezos-client-alpha.empty "")
    (write-file void_for_linking-tezos-protocol-plugin-alpha.empty ""))))

@@ -11,14 +11,20 @@ depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
   "qcheck-alcotest" { >= "0.20" }
-  "octez-libs"
+  "tezos-test-helpers"
+  "tezos-base"
+  "tezos-micheline"
+  "tezos-stdlib-unix"
   "tezos-protocol-alpha"
   "tezos-client-alpha"
+  "tezos-protocol-environment"
   "tezos-protocol-plugin-alpha"
-  "tezos-smart-rollup-alpha"
+  "tezos-shell-services"
+  "octez-plompiler"
+  "tezos-crypto-dal"
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

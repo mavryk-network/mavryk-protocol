@@ -48,9 +48,8 @@
    - an input [hash:<HASH>] is interpreted as a directive to request the DAC
      data whose hash is <HASH> ;
 
-   - an input [dal:<num_slots>:<e>:<num_p>:<s1>:<s2>:...:<sn>] is interpreted as a directive
+   - an input [dal:<e>:<num_p>:<s1>:<s2>:...:<sn>] is interpreted as a directive
    to provide the DAL parameters to the PVM, where:
-     - <num_slots> is the number of slots
      - <e> is the attestation lag;
      - <num_p> is the number of pages;
      - each <si> is a slot to which the PVM subscribes to for [current level -
@@ -97,15 +96,13 @@ module type S = sig
   type status =
     | Halted
     | Waiting_for_input_message
-    | Waiting_for_reveal of Sc_rollup_PVM_sig.reveal
+    | Waiting_for_reveal
+    | Waiting_for_metadata
     | Parsing
     | Evaluating
 
-  (** [get_status ~is_reveal_enabled state] returns the machine status in [state]. *)
-  val get_status :
-    is_reveal_enabled:Sc_rollup_PVM_sig.is_reveal_enabled ->
-    state ->
-    status Lwt.t
+  (** [get_status state] returns the machine status in [state]. *)
+  val get_status : state -> status Lwt.t
 
   (** [get_outbox outbox_level state] returns the outbox in [state]
       for a given [outbox_level]. *)
@@ -165,7 +162,29 @@ module Protocol_implementation :
     tree structure). *)
 val reference_initial_state_hash : Sc_rollup_repr.State_hash.t
 
-module Make (Context : Sc_rollup_PVM_sig.Generic_pvm_context_sig) :
+module type P = sig
+  module Tree : Context.TREE with type key = string list and type value = bytes
+
+  type tree = Tree.tree
+
+  val hash_tree : tree -> Sc_rollup_repr.State_hash.t
+
+  type proof
+
+  val proof_encoding : proof Data_encoding.t
+
+  val proof_before : proof -> Sc_rollup_repr.State_hash.t
+
+  val proof_after : proof -> Sc_rollup_repr.State_hash.t
+
+  val verify_proof :
+    proof -> (tree -> (tree * 'a) Lwt.t) -> (tree * 'a) option Lwt.t
+
+  val produce_proof :
+    Tree.t -> tree -> (tree -> (tree * 'a) Lwt.t) -> (proof * 'a) option Lwt.t
+end
+
+module Make (Context : P) :
   S
     with type context = Context.Tree.t
      and type state = Context.tree

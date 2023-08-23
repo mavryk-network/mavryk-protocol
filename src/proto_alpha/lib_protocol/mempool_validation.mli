@@ -41,8 +41,8 @@
       - Block's operations quota are ignored, it is the baker's
         responsability to ensure that the set of selected operations
         does not exceed gas/size operations quota.
-      - The baker must also include the required preattestations and
-        attestations.
+      - The baker must also include the required preendorsements and
+        endorsements.
 
     - The merging of two mempools also maintains the aforementioned
       properties.

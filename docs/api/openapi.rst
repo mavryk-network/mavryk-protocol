@@ -48,41 +48,37 @@ Shell RPCs
 The node provide some RPCs which are independent of the protocol.
 Their OpenAPI specification can be found at:
 
-- `rpc-openapi.json (version 17.3) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
+- `rpc-openapi.json (version 16.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
 
-- `rpc-openapi-rc.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
+- `rpc-openapi-beta.json (version 17.0~beta1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi-beta.json>`_
 
 .. TODO tezos/tezos#2170: add/remove section(s)
-
-Oxford RPCs
------------
-
-The OpenAPI specification for RPCs which are specific to the Oxford (``Proxford``)
-protocol can be found at:
-
-- `oxford-openapi.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/oxford-openapi.json>`_
-
-The OpenAPI specification for RPCs which are related to the mempool
-and specific to the Oxford protocol can be found at:
-
-- `oxford-mempool-openapi.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/oxford-mempool-openapi.json>`_
 
 Nairobi RPCs
 ------------
 
-The OpenAPI specifications for RPCs which are specific to the Nairobi (``PtNairob``)
+The OpenAPI specification for RPCs which are specific to the Nairobi (``PtNairob``)
 protocol can be found at:
 
-- `nairobi-openapi.json (version 17.3) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-openapi.json>`_
+- `nairobi-openapi.json (version 17.0~beta1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-openapi.json>`_
 
-- `nairobi-openapi-rc.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-openapi-rc.json>`_
-
-The OpenAPI specifications for RPCs which are related to the mempool
+The OpenAPI specification for RPCs which are related to the mempool
 and specific to the Nairobi protocol can be found at:
 
-- `nairobi-mempool-openapi.json (version 17.3) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-mempool-openapi.json>`_
+- `nairobi-mempool-openapi.json (version 17.0~beta1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-mempool-openapi.json>`_
 
-- `nairobi-mempool-openapi-rc.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-mempool-openapi-rc.json>`_
+Mumbai RPCs
+-----------
+
+The OpenAPI specification for RPCs which are specific to the Mumbai (``PtMumbai``)
+protocol can be found at:
+
+- `mumbai-openapi.json (version 16.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/mumbai-openapi.json>`_
+
+The OpenAPI specification for RPCs which are related to the mempool
+and specific to the Mumbai protocol can be found at:
+
+- `mumbai-mempool-openapi.json (version 16.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/mumbai-mempool-openapi.json>`_
 
 .. _openapi_generate:
 

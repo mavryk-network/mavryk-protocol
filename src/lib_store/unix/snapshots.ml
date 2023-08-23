@@ -4028,9 +4028,6 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
         operation_metadata_size_limit;
       }
     in
-    let operations =
-      List.map (List.map Block_validation.mk_operation) operations
-    in
     let* {result = block_validation_result; _} =
       let*! r =
         Block_validation.apply
@@ -4175,12 +4172,10 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
               ~msg:"Checking context integrity"
             @@ fun () ->
             Context.Checks.Pack.Integrity_check.run
-              ?ppf:None
               ~root:dst_context_dir
               ~auto_repair:false
               ~always:false
               ~heads:(Some [Context_hash.to_b58check imported_context_hash])
-              ()
           else Lwt.return_unit
         in
         let* block_validation_result =

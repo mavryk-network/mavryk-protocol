@@ -51,7 +51,7 @@ type prequorum = {
   level : int32;
   round : Round.t;
   block_payload_hash : Block_payload_hash.t;
-  preattestations : Kind.preattestation operation list;
+  preendorsements : Kind.preendorsement operation list;
 }
 
 type block_info = {
@@ -61,7 +61,7 @@ type block_info = {
   payload_round : Round.t;
   round : Round.t;
   prequorum : prequorum option;
-  quorum : Kind.attestation operation list;
+  quorum : Kind.endorsement operation list;
   dal_attestations : Kind.dal_attestation operation list;
   payload : Operation_pool.payload;
 }
@@ -92,33 +92,13 @@ val round_of_shell_header : Block_header.shell_header -> Round.t tzresult
 
 module SlotMap : Map.S with type key = Slot.t
 
-(** A delegate slot consists of the delegate's consensus key, its public key
-    hash, its first slot, and its attesting power at some level. *)
-type delegate_slot = {
-  consensus_key_and_delegate : consensus_key_and_delegate;
-  first_slot : Slot.t;
-  attesting_power : int;
+type endorsing_slot = {first_slot : Slot.t; endorsing_power : int}
+
+type delegate_slots = {
+  own_delegate_slots : (consensus_key_and_delegate * endorsing_slot) SlotMap.t;
+  all_delegate_slots : endorsing_slot SlotMap.t;
+  all_slots_by_round : Slot.t array;
 }
-
-module Delegate_slots : sig
-  (** Information regarding the slot distribution at some level. *)
-  type t
-
-  (** Returns the list of our own delegates that have at least a slot. There are
-     no duplicates, the associated slot is the first one. *)
-  val own_delegates : t -> delegate_slot list
-
-  (** Returns, among our *own* delegates, the delegate (together with its
-      first attesting slot) that owns the given slot, if any (even if the
-      given slot is not the delegate's first slot). *)
-  val own_slot_owner : t -> slot:Slot.t -> delegate_slot option
-
-  (** Returns the voting power of the delegate whose first slot is the given
-      slot. Returns [None] if the slot is not the first slot of any delegate. *)
-  val voting_power : t -> slot:Slot.t -> int option
-end
-
-type delegate_slots = Delegate_slots.t
 
 type proposal = {block : block_info; predecessor : block_info}
 
@@ -130,20 +110,20 @@ val proposal_encoding : proposal Data_encoding.t
     This block should be baked by the baker of the previous protocol
     (that's why this same block is also referred to as the last block
     of the previous protocol). It is always considered final and
-    therefore is not attested.*)
+    therefore is not endorsed.*)
 val is_first_block_in_protocol : proposal -> bool
 
 type locked_round = {payload_hash : Block_payload_hash.t; round : Round.t}
 
 val locked_round_encoding : locked_round Data_encoding.t
 
-type attestable_payload = {proposal : proposal; prequorum : prequorum}
+type endorsable_payload = {proposal : proposal; prequorum : prequorum}
 
-val attestable_payload_encoding : attestable_payload Data_encoding.t
+val endorsable_payload_encoding : endorsable_payload Data_encoding.t
 
 type elected_block = {
   proposal : proposal;
-  attestation_qc : Kind.attestation operation list;
+  endorsement_qc : Kind.endorsement operation list;
 }
 
 type level_state = {
@@ -151,7 +131,7 @@ type level_state = {
   latest_proposal : proposal;
   is_latest_proposal_applied : bool;
   locked_round : locked_round option;
-  attestable_payload : attestable_payload option;
+  endorsable_payload : endorsable_payload option;
   elected_block : elected_block option;
   delegate_slots : delegate_slots;
   next_level_delegate_slots : delegate_slots;
@@ -160,9 +140,9 @@ type level_state = {
 
 type phase =
   | Idle
-  | Awaiting_preattestations
+  | Awaiting_preendorsements
   | Awaiting_application
-  | Awaiting_attestations
+  | Awaiting_endorsements
 
 val phase_encoding : phase Data_encoding.t
 
@@ -170,7 +150,7 @@ type round_state = {
   current_round : Round.t;
   current_phase : phase;
   delayed_prequorum :
-    (Operation_worker.candidate * Kind.preattestation operation list) option;
+    (Operation_worker.candidate * Kind.preendorsement operation list) option;
 }
 
 type state = {
@@ -183,12 +163,6 @@ type t = state
 
 val update_current_phase : t -> phase -> t
 
-(** Returns, among our *own* delegates, the delegate (and its attesting slot)
-    that has a proposer slot at the given round and the current or next level,
-    if any. *)
-val round_proposer :
-  state -> level:[`Current | `Next] -> Round.t -> delegate_slot option
-
 type timeout_kind =
   | End_of_round of {ending_round : Round.t}
   | Time_to_bake_next_level of {at_round : Round.t}
@@ -199,9 +173,9 @@ type event =
   | New_valid_proposal of proposal
   | New_head_proposal of proposal
   | Prequorum_reached of
-      Operation_worker.candidate * Kind.preattestation operation list
+      Operation_worker.candidate * Kind.preendorsement operation list
   | Quorum_reached of
-      Operation_worker.candidate * Kind.attestation operation list
+      Operation_worker.candidate * Kind.endorsement operation list
   | Timeout of timeout_kind
 
 val event_encoding : event Data_encoding.t
@@ -209,7 +183,7 @@ val event_encoding : event Data_encoding.t
 type state_data = {
   level_data : int32;
   locked_round_data : locked_round option;
-  attestable_payload_data : attestable_payload option;
+  endorsable_payload_data : endorsable_payload option;
 }
 
 val state_data_encoding : state_data Data_encoding.t
@@ -219,12 +193,12 @@ val record_state : t -> unit tzresult Lwt.t
 val may_record_new_state :
   previous_state:t -> new_state:t -> unit tzresult Lwt.t
 
-val load_attestable_data :
+val load_endorsable_data :
   Protocol_client_context.full ->
   [`State] Baking_files.location ->
   state_data option tzresult Lwt.t
 
-val may_load_attestable_data : t -> t tzresult Lwt.t
+val may_load_endorsable_data : t -> t tzresult Lwt.t
 
 (** @param block default to [`Head 0]*)
 val compute_delegate_slots :
@@ -250,11 +224,12 @@ val pp_proposal : Format.formatter -> proposal -> unit
 
 val pp_locked_round : Format.formatter -> locked_round -> unit
 
-val pp_attestable_payload : Format.formatter -> attestable_payload -> unit
+val pp_endorsable_payload : Format.formatter -> endorsable_payload -> unit
 
 val pp_elected_block : Format.formatter -> elected_block -> unit
 
-val pp_delegate_slot : Format.formatter -> delegate_slot -> unit
+val pp_endorsing_slot :
+  Format.formatter -> consensus_key_and_delegate * endorsing_slot -> unit
 
 val pp_delegate_slots : Format.formatter -> delegate_slots -> unit
 

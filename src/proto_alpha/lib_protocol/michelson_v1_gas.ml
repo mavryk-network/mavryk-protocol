@@ -581,32 +581,53 @@ module Cost_of = struct
       compare ty x y Gas.free Return
 
     let set_mem (type a) (elt : a) (set : a Script_typed_ir.set) =
+      let open S.Syntax in
       let (module Box) = Script_set.get set in
-      let per_elt_cost = Box.OPS.elt_size elt |> Size.to_int in
-      Michelson_v1_gas_costs.cost_N_ISet_mem per_elt_cost Box.size
+      let per_elt_cost = Box.OPS.elt_size elt |> Size.to_int |> S.safe_int in
+      let size = S.safe_int Box.size in
+      let intercept = atomic_step_cost (S.safe_int 115) in
+      Gas.(intercept +@ (log2 size *@ per_elt_cost))
 
     let set_update (type a) (elt : a) (set : a Script_typed_ir.set) =
+      let open S.Syntax in
       let (module Box) = Script_set.get set in
-      let per_elt_cost = Box.OPS.elt_size elt |> Size.to_int in
-      Michelson_v1_gas_costs.cost_N_ISet_update per_elt_cost Box.size
+      let per_elt_cost = Box.OPS.elt_size elt |> Size.to_int |> S.safe_int in
+      let size = S.safe_int Box.size in
+      let intercept = atomic_step_cost (S.safe_int 130) in
+      (* The 2 factor reflects the update vs mem overhead as benchmarked
+         on non-structured data *)
+      Gas.(intercept +@ (S.safe_int 2 * log2 size *@ per_elt_cost))
 
     let map_mem (type k v) (elt : k) (map : (k, v) Script_typed_ir.map) =
+      let open S.Syntax in
       let (module Box) = Script_map.get_module map in
-      let per_elt_cost = Box.OPS.key_size elt in
-      Michelson_v1_gas_costs.cost_N_IMap_mem' per_elt_cost Box.size
+      let per_elt_cost = Box.OPS.key_size elt |> Size.to_int |> S.safe_int in
+      let size = S.safe_int Box.size in
+      let intercept = atomic_step_cost (S.safe_int 80) in
+      Gas.(intercept +@ (log2 size *@ per_elt_cost))
 
     let map_get = map_mem
 
     let map_update (type k v) (elt : k) (map : (k, v) Script_typed_ir.map) =
+      let open S.Syntax in
       let (module Box) = Script_map.get_module map in
-      let per_elt_cost = Box.OPS.key_size elt in
-      Michelson_v1_gas_costs.cost_N_IMap_update' per_elt_cost Box.size
+      let per_elt_cost = Box.OPS.key_size elt |> Size.to_int |> S.safe_int in
+      let size = S.safe_int Box.size in
+      let intercept = atomic_step_cost (S.safe_int 80) in
+      (* The 2 factor reflects the update vs mem overhead as benchmarked
+         on non-structured data *)
+      Gas.(intercept +@ (S.safe_int 2 * log2 size *@ per_elt_cost))
 
     let map_get_and_update (type k v) (elt : k)
         (map : (k, v) Script_typed_ir.map) =
+      let open S.Syntax in
       let (module Box) = Script_map.get_module map in
-      let per_elt_cost = Box.OPS.key_size elt in
-      Michelson_v1_gas_costs.cost_N_IMap_get_and_update' per_elt_cost Box.size
+      let per_elt_cost = Box.OPS.key_size elt |> Size.to_int |> S.safe_int in
+      let size = S.safe_int Box.size in
+      let intercept = atomic_step_cost (S.safe_int 80) in
+      (* The 3 factor reflects the update vs mem overhead as benchmarked
+         on non-structured data *)
+      Gas.(intercept +@ (S.safe_int 3 * log2 size *@ per_elt_cost))
 
     let view_get (elt : Script_string.t) (m : Script_typed_ir.view_map) =
       map_get elt m
@@ -656,27 +677,42 @@ module Cost_of = struct
 
       let list_exit_body = atomic_step_cost cost_N_KList_exit_body
 
-      let map_enter_body (type k v) (map : (k, v) Script_typed_ir.map) =
-        let (module Box) = Script_map.get_module map in
-        atomic_step_cost (cost_N_KMap_enter_body Box.size)
+      let map_enter_body = atomic_step_cost cost_N_KMap_enter_body
 
       let map_exit_body (type k v) (key : k) (map : (k, v) Script_typed_ir.map)
           =
         map_update key map
     end
 
+    (* --------------------------------------------------------------------- *)
+    (* Hand-crafted models *)
+
+    (* The cost functions below where not benchmarked, a cost model was derived
+       from looking at similar instructions. *)
+
+    (* Cost for Concat_string is paid in two steps: when entering the interpreter,
+       the user pays for the cost of computing the information necessary to compute
+       the actual gas (so it's meta-gas): indeed, one needs to run through the
+       list of strings to compute the total allocated cost.
+       [concat_string_precheck] corresponds to the meta-gas cost of this computation.
+    *)
     let concat_string_precheck (l : 'a Script_list.t) =
-      atomic_step_cost (cost_N_IConcat_string_precheck l.length)
+      (* we set the precheck to be slightly more expensive than cost_N_IList_iter *)
+      atomic_step_cost (S.mul (S.safe_int l.length) (S.safe_int 10))
 
+    (* This is the cost of allocating a string and blitting existing ones into it. *)
     let concat_string total_bytes =
-      atomic_step_cost (cost_N_IConcat_string total_bytes)
+      atomic_step_cost S.(add (S.safe_int 100) (S.shift_right total_bytes 1))
 
+    (* Same story as Concat_string. *)
     let concat_bytes total_bytes =
-      atomic_step_cost (cost_N_IConcat_bytes total_bytes)
+      atomic_step_cost S.(add (S.safe_int 100) (S.shift_right total_bytes 1))
 
+    (* Cost of Unpack pays two integer comparisons, and a Bytes slice *)
     let unpack bytes =
       let blen = Bytes.length bytes in
-      atomic_step_cost (cost_N_IUnpack blen)
+      let open S.Syntax in
+      atomic_step_cost (S.safe_int 260 + (S.safe_int blen lsr 1))
 
     (* TODO benchmark *)
     (* FIXME: imported from 006, needs proper benchmarks *)
@@ -778,14 +814,7 @@ module Cost_of = struct
     let check_printable s =
       atomic_step_cost (cost_CHECK_PRINTABLE (String.length s))
 
-    let ty_eq ty1 ty2 =
-      (* Assumes O(1) access to the size of a type *)
-      let size1 = Script_typed_ir.(ty_size ty1 |> Type_size.to_int) in
-      let size2 = Script_typed_ir.(ty_size ty2 |> Type_size.to_int) in
-      atomic_step_cost (cost_TY_EQ (Saturation_repr.min size1 size2))
-
-    (* The gas cost for comparing a type with a type of size 1 *)
-    let ty_eq_prim = atomic_step_cost (cost_TY_EQ (Saturation_repr.safe_int 1))
+    let merge_cycle = atomic_step_cost cost_TY_EQ
 
     let parse_type_cycle = atomic_step_cost cost_PARSE_TYPE
 
@@ -907,8 +936,8 @@ module Cost_of = struct
     let bls12_381_fr = atomic_step_cost cost_ENCODING_BLS_FR
 
     let unparse_type ty =
-      atomic_step_cost @@ cost_UNPARSE_TYPE
-      @@ Script_typed_ir.(Type_size.to_int @@ ty_size ty)
+      atomic_step_cost
+      @@ cost_UNPARSE_TYPE Script_typed_ir.(ty_size ty |> Type_size.to_int)
 
     let unparse_instr_cycle = atomic_step_cost cost_UNPARSING_CODE
 

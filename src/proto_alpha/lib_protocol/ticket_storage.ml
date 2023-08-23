@@ -58,20 +58,17 @@ let () =
     (fun () -> Used_storage_space_underflow)
 
 let get_balance ctxt key =
-  let open Lwt_result_syntax in
-  let+ ctxt, res = Storage.Ticket_balance.Table.find ctxt key in
-  (res, ctxt)
+  Storage.Ticket_balance.Table.find ctxt key >|=? fun (ctxt, res) -> (res, ctxt)
 
 let set_balance ctxt key balance =
   let cost_of_key = Z.of_int 65 in
-  let open Lwt_result_syntax in
-  let* () =
-    fail_when
-      Compare.Z.(balance < Z.zero)
-      (Negative_ticket_balance {key; balance})
-  in
+  fail_when
+    Compare.Z.(balance < Z.zero)
+    (Negative_ticket_balance {key; balance})
+  >>=? fun () ->
   if Compare.Z.(balance = Z.zero) then
-    let+ ctxt, freed, existed = Storage.Ticket_balance.Table.remove ctxt key in
+    Storage.Ticket_balance.Table.remove ctxt key
+    >|=? fun (ctxt, freed, existed) ->
     (* If we remove an existing entry, then we return the freed size for
        both the key and the value. *)
     let freed =
@@ -79,9 +76,8 @@ let set_balance ctxt key balance =
     in
     (freed, ctxt)
   else
-    let+ ctxt, size_diff, existed =
-      Storage.Ticket_balance.Table.add ctxt key balance
-    in
+    Storage.Ticket_balance.Table.add ctxt key balance
+    >|=? fun (ctxt, size_diff, existed) ->
     let size_diff =
       let z_diff = Z.of_int size_diff in
       (* For a new entry we also charge the space for storing the key *)
@@ -90,44 +86,36 @@ let set_balance ctxt key balance =
     (size_diff, ctxt)
 
 let adjust_balance ctxt key ~delta =
-  let open Lwt_result_syntax in
-  let* res, ctxt = get_balance ctxt key in
+  get_balance ctxt key >>=? fun (res, ctxt) ->
   let old_balance = Option.value ~default:Z.zero res in
   set_balance ctxt key (Z.add old_balance delta)
 
 let adjust_storage_space ctxt ~storage_diff =
-  let open Lwt_result_syntax in
   if Compare.Z.(storage_diff = Z.zero) then return (Z.zero, ctxt)
   else
-    let* used_storage = Storage.Ticket_balance.Used_storage_space.find ctxt in
+    Storage.Ticket_balance.Used_storage_space.find ctxt >>=? fun used_storage ->
     let used_storage = Option.value ~default:Z.zero used_storage in
-    let* paid_storage = Storage.Ticket_balance.Paid_storage_space.find ctxt in
+    Storage.Ticket_balance.Paid_storage_space.find ctxt >>=? fun paid_storage ->
     let paid_storage = Option.value ~default:Z.zero paid_storage in
     let new_used_storage = Z.add used_storage storage_diff in
-    let*? () =
-      error_when
-        Compare.Z.(new_used_storage < Z.zero)
-        Used_storage_space_underflow
-    in
-    let*! ctxt =
-      Storage.Ticket_balance.Used_storage_space.add ctxt new_used_storage
-    in
+    error_when
+      Compare.Z.(new_used_storage < Z.zero)
+      Used_storage_space_underflow
+    >>?= fun () ->
+    Storage.Ticket_balance.Used_storage_space.add ctxt new_used_storage
+    >>= fun ctxt ->
     let diff = Z.sub new_used_storage paid_storage in
     if Compare.Z.(Z.zero < diff) then
-      let*! ctxt =
-        Storage.Ticket_balance.Paid_storage_space.add ctxt new_used_storage
-      in
-      return (diff, ctxt)
+      Storage.Ticket_balance.Paid_storage_space.add ctxt new_used_storage
+      >>= fun ctxt -> return (diff, ctxt)
     else return (Z.zero, ctxt)
 
 module Internal_for_tests = struct
   let used_storage_space c =
-    let open Lwt_result_syntax in
-    let+ value = Storage.Ticket_balance.Used_storage_space.find c in
-    Option.value ~default:Z.zero value
+    Storage.Ticket_balance.Used_storage_space.find c
+    >|=? Option.value ~default:Z.zero
 
   let paid_storage_space c =
-    let open Lwt_result_syntax in
-    let+ value = Storage.Ticket_balance.Paid_storage_space.find c in
-    Option.value ~default:Z.zero value
+    Storage.Ticket_balance.Paid_storage_space.find c
+    >|=? Option.value ~default:Z.zero
 end

@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
-// SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,19 +12,23 @@ use sha3::{Digest, Keccak256};
 use tezos_smart_rollup_storage::storage::Storage;
 use thiserror::Error;
 
-use crate::DurableStorageError;
-
 /// The size of one 256 bit word. Size in bytes
 pub const WORD_SIZE: usize = 32_usize;
 
 /// All errors that may happen as result of using the Ethereum account
 /// interface.
-#[derive(Error, Eq, PartialEq, Clone, Debug)]
+#[derive(Error, Copy, Eq, PartialEq, Clone, Debug)]
 pub enum AccountStorageError {
-    /// Some error happened while using durable storage, either from an invalid
-    /// path or a runtime error.
-    #[error("Durable storage error: {0:?}")]
-    DurableStorageError(#[from] DurableStorageError),
+    /// The account does not hold enough Ether for a transaction
+    #[error("Insufficient Ether")]
+    NotEnoughEther,
+    /// Some runtime error happened while using durable storage
+    #[error("Runtime error: {0:?}")]
+    RuntimeError(host::runtime::RuntimeError),
+    /// Some error happened while constructing the path to some
+    /// resource.
+    #[error("Path error: {0:?}")]
+    PathError(host::path::PathError),
     /// Some error occurred while using the transaction storage
     /// API.
     #[error("Transaction storage API error: {0:?}")]
@@ -34,6 +37,10 @@ pub enum AccountStorageError {
     /// stored in an unsigned 256 bit integer.
     #[error("Account balance overflow")]
     BalanceOverflow,
+    /// Some account balance became less than zero. Only positive
+    /// integers in 256 bit range can be stored.
+    #[error("Account balance underflow")]
+    BalanceUnderflow,
     /// Technically, the Ethereum account nonce can overflow if
     /// an account does an incredible number of transactions.
     #[error("Nonce overflow")]
@@ -48,13 +55,13 @@ impl From<tezos_smart_rollup_storage::StorageError> for AccountStorageError {
 
 impl From<host::path::PathError> for AccountStorageError {
     fn from(error: host::path::PathError) -> Self {
-        AccountStorageError::DurableStorageError(DurableStorageError::from(error))
+        AccountStorageError::PathError(error)
     }
 }
 
 impl From<host::runtime::RuntimeError> for AccountStorageError {
     fn from(error: host::runtime::RuntimeError) -> Self {
-        AccountStorageError::DurableStorageError(DurableStorageError::from(error))
+        AccountStorageError::RuntimeError(error)
     }
 }
 
@@ -102,7 +109,7 @@ impl From<OwnedPath> for EthereumAccount {
 }
 
 /// Path where Ethereum accounts are stored
-const EVM_ACCOUNTS_PATH: RefPath = RefPath::assert_from(b"/eth_accounts");
+const ACCOUNTS_PATH: RefPath = RefPath::assert_from(b"/eth_accounts");
 
 /// Path where an account nonce is stored. This should be prefixed with the path to
 /// where the account is stored for the world state or for the current transaction.
@@ -129,9 +136,6 @@ const CODE_PATH: RefPath = RefPath::assert_from(b"/code");
 /// values are kept. Each index in durable storage gives one complete path to one
 /// such 256 bit integer value in storage.
 const STORAGE_ROOT_PATH: RefPath = RefPath::assert_from(b"/storage");
-
-/// Flag indicating an account has already been indexed.
-const INDEXED_PATH: RefPath = RefPath::assert_from(b"/indexed");
 
 /// If a contract tries to read a value from storage and it has previously not written
 /// anything to this location or if it wrote the default value, then it gets this
@@ -187,17 +191,12 @@ fn bytes_hash(bytes: &[u8]) -> H256 {
 }
 
 /// Turn an Ethereum address - a H160 - into a valid path
-pub fn account_path(address: &H160) -> Result<OwnedPath, DurableStorageError> {
+pub fn account_path(address: &H160) -> Result<OwnedPath, AccountStorageError> {
     let path_string = alloc::format!("/{}", hex::encode(address.to_fixed_bytes()));
-    OwnedPath::try_from(path_string).map_err(DurableStorageError::from)
+    OwnedPath::try_from(path_string).map_err(AccountStorageError::from)
 }
 
 impl EthereumAccount {
-    pub fn from_address(address: &H160) -> Result<Self, DurableStorageError> {
-        let path = concat(&EVM_ACCOUNTS_PATH, &account_path(address)?)?;
-        Ok(path.into())
-    }
-
     /// Get the **nonce** for the Ethereum account. Default value is zero, so an account will
     /// _always_ have this **nonce**.
     pub fn nonce(&self, host: &impl Runtime) -> Result<U256, AccountStorageError> {
@@ -273,13 +272,12 @@ impl EthereumAccount {
 
     /// Remove an amount in Wei from the balance of an account. If the account doesn't hold
     /// enough funds, this will underflow, in which case the account is unaffected, but the
-    /// function call will return `Ok(false)`. In case the removal went without underflow,
-    /// ie the account held enough funds, the function returns `Ok(true)`.
+    /// function call will return an error.
     pub fn balance_remove(
         &mut self,
         host: &mut impl Runtime,
         amount: U256,
-    ) -> Result<bool, AccountStorageError> {
+    ) -> Result<(), AccountStorageError> {
         let path = concat(&self.path, &BALANCE_PATH)?;
 
         let value = self.balance(host)?;
@@ -290,9 +288,8 @@ impl EthereumAccount {
 
             host.store_write(&path, &new_value_bytes, 0)
                 .map_err(AccountStorageError::from)
-                .map(|_| true)
         } else {
-            Ok(false)
+            Err(AccountStorageError::BalanceUnderflow)
         }
     }
 
@@ -375,9 +372,12 @@ impl EthereumAccount {
         let path = concat(&self.path, &CODE_PATH)?;
 
         match host.store_has(&path) {
-            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => host
-                .store_read_all(&path)
-                .map_err(AccountStorageError::from),
+            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => {
+                let code_size = host.store_value_size(&path)?;
+
+                host.store_read(&path, 0, code_size)
+                    .map_err(AccountStorageError::from)
+            }
             Ok(_) => Ok(vec![]),
             Err(err) => Err(AccountStorageError::from(err)),
         }
@@ -432,7 +432,8 @@ impl EthereumAccount {
         if store_has_program.is_some() {
             host.store_delete(&code_path)?;
         }
-        host.store_write_all(&code_path, code)
+
+        host.store_write(&code_path, code, 0)
             .map_err(AccountStorageError::from)
     }
 
@@ -459,31 +460,6 @@ impl EthereumAccount {
 
         Ok(())
     }
-
-    pub fn indexed(&self, host: &impl Runtime) -> Result<bool, DurableStorageError> {
-        let path = concat(&self.path, &INDEXED_PATH)?;
-        match host.store_read(&path, 0, 0) {
-            Ok(_) => Ok(true),
-            Err(
-                RuntimeError::PathNotFound
-                | RuntimeError::HostErr(host::Error::StoreNotAValue)
-                | RuntimeError::HostErr(host::Error::StoreInvalidAccess),
-                // An InvalidAccess implies that the path does not exist at all
-                // in the storage: store_read fails because reading is out of
-                // bounds since the value has never been allocated before
-            ) => Ok(false),
-            Err(e) => Err(e.into()),
-        }
-    }
-
-    pub fn set_indexed(
-        &self,
-        host: &mut impl Runtime,
-    ) -> Result<(), DurableStorageError> {
-        let path = concat(&self.path, &INDEXED_PATH)?;
-        host.store_write(&path, &[0_u8; 0], 0)
-            .map_err(DurableStorageError::from)
-    }
 }
 
 /// The type of the storage API for accessing the Ethereum World State.
@@ -492,8 +468,7 @@ pub type EthereumAccountStorage = Storage<EthereumAccount>;
 /// Get the storage API for accessing the Ethereum World State and do transactions
 /// on it.
 pub fn init_account_storage() -> Result<EthereumAccountStorage, AccountStorageError> {
-    Storage::<EthereumAccount>::init(&EVM_ACCOUNTS_PATH)
-        .map_err(AccountStorageError::from)
+    Storage::<EthereumAccount>::init(&ACCOUNTS_PATH).map_err(AccountStorageError::from)
 }
 
 #[cfg(test)]
@@ -517,7 +492,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -530,12 +505,12 @@ mod test {
             .expect("Could not increment nonce");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 
@@ -559,7 +534,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -567,12 +542,12 @@ mod test {
             .expect("Could not increment nonce");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -601,7 +576,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -611,12 +586,12 @@ mod test {
             .expect("Could not add second value to balance");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -645,7 +620,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -655,12 +630,12 @@ mod test {
             .expect("Could not add second value to balance");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -688,21 +663,24 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
         a1.balance_add(&mut host, v1)
             .expect("Could not add first value to balance");
-        assert_eq!(a1.balance_remove(&mut host, v2), Ok(false),);
+        assert_eq!(
+            a1.balance_remove(&mut host, v2).unwrap_err(),
+            AccountStorageError::BalanceUnderflow
+        );
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -729,7 +707,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -757,7 +735,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -765,12 +743,12 @@ mod test {
             .expect("Could not update account storage");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -800,7 +778,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists");
 
@@ -846,12 +824,12 @@ mod test {
         );
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account from storage")
             .expect("Account does not exist");
 
@@ -876,7 +854,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -889,12 +867,12 @@ mod test {
             .expect("Could not increment nonce");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 
@@ -914,12 +892,14 @@ mod test {
         );
     }
 
-    fn test_account_code_storage_write_code_aux(sample_code: Vec<u8>) {
+    #[test]
+    fn test_account_code_storage_write_code() {
         let mut host = MockHost::default();
         let mut storage =
             init_account_storage().expect("Could not create EVM accounts storage API");
 
         let a1_path = RefPath::assert_from(b"/asdf");
+        let sample_code: Vec<u8> = (0..100).collect();
         let sample_code_hash: H256 = bytes_hash(&sample_code);
 
         // Act
@@ -928,7 +908,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -936,12 +916,12 @@ mod test {
             .expect("Could not write code to account");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 
@@ -962,17 +942,6 @@ mod test {
     }
 
     #[test]
-    fn test_account_code_storage_write_code() {
-        let sample_code: Vec<u8> = (0..100).collect();
-        test_account_code_storage_write_code_aux(sample_code)
-    }
-
-    #[test]
-    fn test_account_code_storage_write_big_code() {
-        let sample_code: Vec<u8> = vec![1; 10000];
-        test_account_code_storage_write_code_aux(sample_code)
-    }
-    #[test]
     fn test_account_code_storage_overwrite_code() {
         let mut host = MockHost::default();
         let mut storage =
@@ -989,7 +958,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -999,12 +968,12 @@ mod test {
             .expect("Could not write code to account");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 
@@ -1039,7 +1008,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -1053,12 +1022,12 @@ mod test {
             .expect("Could not delete code for contract");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 
@@ -1094,7 +1063,7 @@ mod test {
             .expect("Could not begin transaction");
 
         let mut a1 = storage
-            .create_new(&mut host, &a1_path)
+            .new_account(&mut host, &a1_path)
             .expect("Could not create new account")
             .expect("Account already exists in storage");
 
@@ -1102,12 +1071,12 @@ mod test {
             .expect("Could not write code to account");
 
         storage
-            .commit_transaction(&mut host)
+            .commit(&mut host)
             .expect("Could not commit transaction");
 
         // Assert
         let a1 = storage
-            .get(&host, &a1_path)
+            .get_account(&host, &a1_path)
             .expect("Could not get account")
             .expect("Account does not exist");
 

@@ -25,7 +25,6 @@
 
 open Protocol
 open Alpha_context
-open Baking_cache
 module Events = Baking_events.Nonces
 
 type state = {
@@ -35,11 +34,6 @@ type state = {
   config : Baking_configuration.nonce_config;
   nonces_location : [`Nonce] Baking_files.location;
   mutable last_predecessor : Block_hash.t;
-  cycle_cache : Block_hash.t list Cycle_cache.t;
-      (** This cache is used to avoid calling expensive RPCs at each
-          block. Still, this component's logic is very inefficient and
-          should be refactored. This cache is intended as "duct tape"
-          until a proper refactoring happens. *)
 }
 
 type t = state
@@ -62,23 +56,20 @@ let encoding =
   @@ list (obj2 (req "block" Block_hash.encoding) (req "nonce" Nonce.encoding))
 
 let may_migrate (wallet : Protocol_client_context.full) location =
-  let open Lwt_syntax in
   let base_dir = wallet#get_base_dir in
   let current_file =
     Filename.Infix.((base_dir // Baking_files.filename location) ^ "s")
   in
-  let* exists = Lwt_unix.file_exists current_file in
-  match exists with
+  Lwt_unix.file_exists current_file >>= function
   | true ->
       (* Migration already occured *)
-      return_unit
+      Lwt.return_unit
   | false -> (
       let legacy_file = Filename.Infix.(base_dir // "nonces") in
-      let* exists = Lwt_unix.file_exists legacy_file in
-      match exists with
+      Lwt_unix.file_exists legacy_file >>= function
       | false ->
           (* Do nothing *)
-          return_unit
+          Lwt.return_unit
       | true -> Lwt_utils_unix.copy_file ~src:legacy_file ~dst:current_file)
 
 let load (wallet : #Client_context.wallet) location =
@@ -102,30 +93,22 @@ let remove_all nonces nonces_to_remove =
     nonces
 
 let get_block_level_opt cctxt ~chain ~block =
-  let open Lwt_syntax in
-  let* result =
-    Shell_services.Blocks.Header.shell_header cctxt ~chain ~block ()
-  in
-  match result with
-  | Ok {level; _} -> return_some level
+  Shell_services.Blocks.Header.shell_header cctxt ~chain ~block () >>= function
+  | Ok {level; _} -> Lwt.return_some level
   | Error errs ->
-      let* () =
-        Events.(
-          emit
-            cant_retrieve_block_header_for_nonce
-            (Block_services.to_string block, errs))
-      in
-      return_none
+      Events.(
+        emit
+          cant_retrieve_block_header_for_nonce
+          (Block_services.to_string block, errs))
+      >>= fun () -> Lwt.return_none
 
 let get_outdated_nonces {cctxt; constants; chain; _} nonces =
-  let open Lwt_result_syntax in
   let {Constants.parametric = {blocks_per_cycle; preserved_cycles; _}; _} =
     constants
   in
-  let*! current_level = get_block_level_opt cctxt ~chain ~block:(`Head 0) in
-  match current_level with
+  get_block_level_opt cctxt ~chain ~block:(`Head 0) >>= function
   | None ->
-      let*! () = Events.(emit cannot_fetch_chain_head_level ()) in
+      Events.(emit cannot_fetch_chain_head_level ()) >>= fun () ->
       return (empty, empty)
   | Some current_level ->
       let current_cycle = Int32.(div current_level blocks_per_cycle) in
@@ -135,11 +118,8 @@ let get_outdated_nonces {cctxt; constants; chain; _} nonces =
       in
       Block_hash.Map.fold
         (fun hash nonce acc ->
-          let* orphans, outdated = acc in
-          let*! level =
-            get_block_level_opt cctxt ~chain ~block:(`Hash (hash, 0))
-          in
-          match level with
+          acc >>=? fun (orphans, outdated) ->
+          get_block_level_opt cctxt ~chain ~block:(`Hash (hash, 0)) >>= function
           | Some level ->
               if is_older_than_preserved_cycles level then
                 return (orphans, add outdated hash nonce)
@@ -149,45 +129,31 @@ let get_outdated_nonces {cctxt; constants; chain; _} nonces =
         (return (empty, empty))
 
 let filter_outdated_nonces state nonces =
-  let open Lwt_result_syntax in
-  let* orphans, outdated_nonces = get_outdated_nonces state nonces in
-  let* () =
-    when_
-      (Block_hash.Map.cardinal orphans >= 50)
-      (fun () ->
-        let*! () =
-          Events.(
-            emit
-              too_many_nonces
-              (Baking_files.filename state.nonces_location ^ "s"))
-        in
-        return_unit)
-  in
-  return (remove_all nonces outdated_nonces)
+  get_outdated_nonces state nonces >>=? fun (orphans, outdated_nonces) ->
+  when_
+    (Block_hash.Map.cardinal orphans >= 50)
+    (fun () ->
+      Events.(
+        emit too_many_nonces (Baking_files.filename state.nonces_location ^ "s"))
+      >>= fun () -> return_unit)
+  >>=? fun () -> return (remove_all nonces outdated_nonces)
 
-let blocks_from_previous_cycle {cctxt; chain; _} =
-  let open Lwt_result_syntax in
-  let block = `Head 0 in
-  let*! result =
-    Plugin.RPC.levels_in_current_cycle cctxt ~offset:(-1l) (chain, block)
-  in
-  match result with
+let blocks_from_current_cycle {cctxt; chain; _} block ?(offset = 0l) () =
+  Plugin.RPC.levels_in_current_cycle cctxt ~offset (chain, block) >>= function
   | Error (Tezos_rpc.Context.Not_found _ :: _) -> return_nil
   | Error _ as err -> Lwt.return err
   | Ok (first, last) -> (
-      let* hash = Shell_services.Blocks.hash cctxt ~chain ~block () in
-      let* {level; _} =
-        Shell_services.Blocks.Header.shell_header cctxt ~chain ~block ()
-      in
+      Shell_services.Blocks.hash cctxt ~chain ~block () >>=? fun hash ->
+      Shell_services.Blocks.Header.shell_header cctxt ~chain ~block ()
+      >>=? fun {level; _} ->
       (* FIXME: crappy algorithm, change this *)
       (* Compute how many blocks below current level we should ask for *)
       let length = Int32.to_int (Int32.sub level (Raw_level.to_int32 first)) in
-      let* blocks_list =
-        Shell_services.Blocks.list cctxt ~chain ~heads:[hash] ~length ()
-        (* Looks like this function call retrieves a list of blocks ordered from
-           latest to earliest - decreasing order of insertion in the chain *)
-      in
-      match blocks_list with
+      Shell_services.Blocks.list cctxt ~chain ~heads:[hash] ~length ()
+      (* Looks like this function call retrieves a list of blocks ordered from
+         latest to earliest - decreasing order of insertion in the chain *)
+      >>=?
+      function
       | [blocks] ->
           if Int32.equal level (Raw_level.to_int32 last) then
             (* We have just retrieved a block list of the right size starting at
@@ -205,56 +171,26 @@ let blocks_from_previous_cycle {cctxt; chain; _} =
              size %d (expected 1)"
             (List.length l))
 
-let cached_blocks_from_previous_cycle ({cctxt; chain; cycle_cache; _} as state)
-    =
-  let open Lwt_result_syntax in
-  let* {cycle = current_cycle; _} =
-    Plugin.RPC.current_level cctxt (chain, `Head 0)
-  in
-  match Cycle.pred current_cycle with
-  | None ->
-      (* This will be [None] iff [current_cycle = 0] which only
-         occurs during genesis. *)
-      return_nil
-  | Some cycle_key -> (
-      match Cycle_cache.find_opt cycle_cache cycle_key with
-      | Some blocks -> return blocks
-      | None ->
-          let* blocks = blocks_from_previous_cycle state in
-          Cycle_cache.replace cycle_cache cycle_key blocks ;
-          return blocks)
-
 let get_unrevealed_nonces ({cctxt; chain; _} as state) nonces =
-  let open Lwt_result_syntax in
-  let* blocks = cached_blocks_from_previous_cycle state in
+  blocks_from_current_cycle state (`Head 0) ~offset:(-1l) () >>=? fun blocks ->
   List.filter_map_es
     (fun hash ->
       match find_opt nonces hash with
       | None -> return_none
       | Some nonce -> (
-          let*! level =
-            get_block_level_opt cctxt ~chain ~block:(`Hash (hash, 0))
-          in
-          match level with
+          get_block_level_opt cctxt ~chain ~block:(`Hash (hash, 0)) >>= function
           | Some level -> (
-              let*? level =
-                Environment.wrap_tzresult (Raw_level.of_int32 level)
-              in
-              let* nonce_info =
-                Alpha_services.Nonce.get cctxt (chain, `Head 0) level
-              in
-              match nonce_info with
+              Lwt.return (Environment.wrap_tzresult (Raw_level.of_int32 level))
+              >>=? fun level ->
+              Alpha_services.Nonce.get cctxt (chain, `Head 0) level
+              >>=? function
               | Missing nonce_hash when Nonce.check_hash nonce nonce_hash ->
-                  let*! () =
-                    Events.(
-                      emit found_nonce_to_reveal (hash, Raw_level.to_int32 level))
-                  in
-                  return_some (level, nonce)
+                  Events.(
+                    emit found_nonce_to_reveal (hash, Raw_level.to_int32 level))
+                  >>= fun () -> return_some (level, nonce)
               | Missing _nonce_hash ->
-                  let*! () =
-                    Events.(emit incoherent_nonce (Raw_level.to_int32 level))
-                  in
-                  return_none
+                  Events.(emit incoherent_nonce (Raw_level.to_int32 level))
+                  >>= fun () -> return_none
               | Forgotten -> return_none
               | Revealed _ -> return_none)
           | None -> return_none))
@@ -264,71 +200,57 @@ let get_unrevealed_nonces ({cctxt; chain; _} as state) nonces =
 
 let generate_seed_nonce (nonce_config : Baking_configuration.nonce_config)
     (delegate : Baking_state.consensus_key) level =
-  let open Lwt_result_syntax in
-  let* nonce =
-    match nonce_config with
-    | Deterministic ->
-        let data = Data_encoding.Binary.to_bytes_exn Raw_level.encoding level in
-        let* nonce =
-          Client_keys.deterministic_nonce delegate.secret_key_uri data
-        in
-        return (Data_encoding.Binary.of_bytes_exn Nonce.encoding nonce)
-    | Random -> (
-        match
-          Nonce.of_bytes (Tezos_crypto.Rand.generate Constants.nonce_length)
-        with
-        | Error _errs -> assert false
-        | Ok nonce -> return nonce)
-  in
-  return (Nonce.hash nonce, nonce)
+  (match nonce_config with
+  | Deterministic ->
+      let data = Data_encoding.Binary.to_bytes_exn Raw_level.encoding level in
+      Client_keys.deterministic_nonce delegate.secret_key_uri data
+      >>=? fun nonce ->
+      return (Data_encoding.Binary.of_bytes_exn Nonce.encoding nonce)
+  | Random -> (
+      match
+        Nonce.of_bytes (Tezos_crypto.Rand.generate Constants.nonce_length)
+      with
+      | Error _errs -> assert false
+      | Ok nonce -> return nonce))
+  >>=? fun nonce -> return (Nonce.hash nonce, nonce)
 
 let register_nonce (cctxt : #Protocol_client_context.full) ~chain_id block_hash
     nonce =
-  let open Lwt_result_syntax in
-  let*! () = Events.(emit registering_nonce block_hash) in
+  Events.(emit registering_nonce block_hash) >>= fun () ->
   (* Register the nonce *)
   let nonces_location = Baking_files.resolve_location ~chain_id `Nonce in
   cctxt#with_lock @@ fun () ->
-  let* nonces = load cctxt nonces_location in
+  load cctxt nonces_location >>=? fun nonces ->
   let nonces = add nonces block_hash nonce in
-  let* () = save cctxt nonces_location nonces in
-  return_unit
+  save cctxt nonces_location nonces >>=? fun () -> return_unit
 
 let inject_seed_nonce_revelation (cctxt : #Protocol_client_context.full) ~chain
     ~block ~branch nonces =
-  let open Lwt_result_syntax in
   match nonces with
-  | [] ->
-      let*! () = Events.(emit nothing_to_reveal branch) in
-      return_unit
+  | [] -> Events.(emit nothing_to_reveal branch) >>= fun () -> return_unit
   | _ ->
       List.iter_es
         (fun (level, nonce) ->
-          let* bytes =
-            Plugin.RPC.Forge.seed_nonce_revelation
-              cctxt
-              (chain, block)
-              ~branch
-              ~level
-              ~nonce
-              ()
-          in
+          Plugin.RPC.Forge.seed_nonce_revelation
+            cctxt
+            (chain, block)
+            ~branch
+            ~level
+            ~nonce
+            ()
+          >>=? fun bytes ->
           let bytes = Signature.concat bytes Signature.zero in
-          let* oph =
-            Shell_services.Injection.operation ~async:true cctxt ~chain bytes
-          in
-          let*! () =
-            Events.(
-              emit
-                revealing_nonce
-                (Raw_level.to_int32 level, Chain_services.to_string chain, oph))
-          in
-          return_unit)
+          Shell_services.Injection.operation ~async:true cctxt ~chain bytes
+          >>=? fun oph ->
+          Events.(
+            emit
+              revealing_nonce
+              (Raw_level.to_int32 level, Chain_services.to_string chain, oph))
+          >>= fun () -> return_unit)
         nonces
 
 (** [reveal_potential_nonces] reveal registered nonces *)
 let reveal_potential_nonces state new_proposal =
-  let open Lwt_result_syntax in
   let {cctxt; chain; nonces_location; last_predecessor; _} = state in
   let new_predecessor_hash = new_proposal.Baking_state.predecessor.hash in
   if
@@ -341,46 +263,39 @@ let reveal_potential_nonces state new_proposal =
     let branch = new_predecessor_hash in
     (* improve concurrency *)
     cctxt#with_lock @@ fun () ->
-    let*! nonces = load cctxt nonces_location in
-    match nonces with
+    load cctxt nonces_location >>= function
     | Error err ->
-        let*! () = Events.(emit cannot_read_nonces err) in
-        return_unit
+        Events.(emit cannot_read_nonces err) >>= fun () -> return_unit
     | Ok nonces -> (
-        let*! nonces_to_reveal = get_unrevealed_nonces state nonces in
-        match nonces_to_reveal with
+        get_unrevealed_nonces state nonces >>= function
         | Error err ->
-            let*! () = Events.(emit cannot_retrieve_unrevealed_nonces err) in
+            Events.(emit cannot_retrieve_unrevealed_nonces err) >>= fun () ->
             return_unit
         | Ok [] -> return_unit
         | Ok nonces_to_reveal -> (
-            let*! result =
-              inject_seed_nonce_revelation
-                cctxt
-                ~chain
-                ~block
-                ~branch
-                nonces_to_reveal
-            in
-            match result with
+            inject_seed_nonce_revelation
+              cctxt
+              ~chain
+              ~block
+              ~branch
+              nonces_to_reveal
+            >>= function
             | Error err ->
-                let*! () = Events.(emit cannot_inject_nonces err) in
-                return_unit
+                Events.(emit cannot_inject_nonces err) >>= fun () -> return_unit
             | Ok () ->
                 (* If some nonces are to be revealed it means:
                    - We entered a new cycle and we can clear old nonces ;
                    - A revelation was not included yet in the cycle beginning.
                      So, it is safe to only filter outdated_nonces there *)
-                let* live_nonces = filter_outdated_nonces state nonces in
-                let* () = save cctxt nonces_location live_nonces in
+                filter_outdated_nonces state nonces >>=? fun live_nonces ->
+                save cctxt nonces_location live_nonces >>=? fun () ->
                 return_unit)))
   else return_unit
 
 (* We suppose that the block stream is cloned by the caller *)
 let start_revelation_worker cctxt config chain_id constants block_stream =
-  let open Lwt_result_syntax in
   let nonces_location = Baking_files.resolve_location ~chain_id `Nonce in
-  let*! () = may_migrate cctxt nonces_location in
+  may_migrate cctxt nonces_location >>= fun () ->
   let chain = `Hash chain_id in
   let canceler = Lwt_canceler.create () in
   let should_shutdown = ref false in
@@ -392,15 +307,13 @@ let start_revelation_worker cctxt config chain_id constants block_stream =
       config;
       nonces_location;
       last_predecessor = Block_hash.zero;
-      cycle_cache = Cycle_cache.create 2;
     }
   in
   let rec worker_loop () =
     Lwt_canceler.on_cancel canceler (fun () ->
         should_shutdown := true ;
         Lwt.return_unit) ;
-    let*! new_proposal = Lwt_stream.get block_stream in
-    match new_proposal with
+    Lwt_stream.get block_stream >>= function
     | None ->
         (* The head stream closed meaning that the connection
            with the node was interrupted: exit *)
@@ -408,16 +321,15 @@ let start_revelation_worker cctxt config chain_id constants block_stream =
     | Some new_proposal ->
         if !should_shutdown then return_unit
         else
-          let* () = reveal_potential_nonces state new_proposal in
+          reveal_potential_nonces state new_proposal >>=? fun () ->
           worker_loop ()
   in
   Lwt.dont_wait
     (fun () ->
       Lwt.finalize
         (fun () ->
-          let*! () = Events.(emit revelation_worker_started ()) in
-          let*! _ = worker_loop () in
-          (* never ending loop *) Lwt.return_unit)
+          Events.(emit revelation_worker_started ()) >>= fun () ->
+          worker_loop () >>= fun _ -> (* never ending loop *) Lwt.return_unit)
         (fun () -> (* TODO *) Lwt.return_unit))
     (fun _exn -> ()) ;
   Lwt.return canceler

@@ -45,11 +45,9 @@ type benchmark_options = {
   csv_export : string option;
 }
 
-type codegen_options = {
-  transform : Fixed_point_transform.options option;
-  save_to : string option;
-  split : bool;
-}
+type codegen_options =
+  | No_transform
+  | Fixed_point_transform of Fixed_point_transform.options
 
 (* Infer command related types *)
 
@@ -78,24 +76,12 @@ type infer_parameters_options = {
   display : Display.options;
 }
 
-type auto_build_options = {
-  destination_directory : string option;
-  (* Where to load/save files *)
-  infer_parameters : infer_parameters_options;
-  measure_options : Measure.options;
-}
-
 (* Outcome of command-line parsing. *)
 
 type command =
   | Benchmark of {bench_name : Namespace.t; bench_opts : benchmark_options}
   | Infer of {
-      local_model_name : string;
-      workload_data : string;
-      solver : string;
-      infer_opts : infer_parameters_options;
-    }
-  | Infer_all of {
+      model_name : string;
       workload_data : string;
       solver : string;
       infer_opts : infer_parameters_options;
@@ -122,17 +108,7 @@ type command =
     }
   | Codegen_check_definitions of {files : string list}
   | Solution_print of string list
-  | Auto_build of {
-      split : bool;
-      targets : auto_build_targets;
-      auto_build_options : auto_build_options;
-    }
   | No_command
-
-and auto_build_targets =
-  | Benchmarks of Benchmark.t list
-  | Models of Model.packed_model list
-  | Parameters of Free_variable.t list
 
 (* -------------------------------------------------------------------------- *)
 (* Encodings *)

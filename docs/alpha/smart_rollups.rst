@@ -107,10 +107,10 @@ sequence of bytes following no particular underlying format. The
 interpretation of this sequence of bytes is the responsibility of each
 kernel.
 
-There are two ways for end-users to push an external message to the
-rollups inbox: first, they can inject the dedicated Layer 1 operation
+There are two ways for an end-user to push an external message to the
+rollups inbox: first, she can inject the dedicated Layer 1 operation
 using the Octez client (see command ``send smart rollup message
-<messages> from <src>``); second, they can use the batcher
+<messages> from <src>``); second, she can use the batcher
 of a smart rollup node. More details can be found in :ref:`sending_external_inbox_message_alpha`.
 
 Internal messages
@@ -139,7 +139,6 @@ the Layer 1 pushes one final internal message “End of
 level”. Similarly to “Start of level“, this internal messages does not
 come with any payload.
 
-.. _reveal_data_channel_smart_rollups_alpha:
 
 Reveal data channel
 """""""""""""""""""
@@ -203,13 +202,13 @@ Commitments
 ^^^^^^^^^^^
 
 Starting from the rollup origination level, levels are partitioned
-into **commitment periods** of 60 consecutive blocks.
+into **commitment periods** of 30 consecutive blocks.
 
 A **commitment** claims that the interpretation of all inbox messages
-published during a given commitment period, and applied on the state of
-a parent commitment, led to a given new state by performing a given
+published during a given commitment period and applied on the state of
+a parent commitment led to a given new state by performing a given
 number of execution steps of the PVM. Execution steps are called
-**ticks** in Smart Rollups terminology. A commitment must be
+**ticks** in the smart rollups terminology. A commitment must be
 published on the Layer 1 after each commitment period to have the rollup
 progress. A commitment is always based on a parent commitment (except
 for the genesis commitment that is automatically published at
@@ -224,8 +223,8 @@ must be wrong.
 Notice that, to publish a commitment, an operator must provide a
 deposit of 10,000 tez. For this reason, the operator is said to be a
 **staker**. Several users can stake on the same commitment. When a
-staker *S* publishes a new commitment based on a commitment that *S* is staking
-on, *S* does not have to provide a new deposit: the deposit also
+staker publishes a new commitment based on a commitment she is staking
+on, she does not have to provide a new deposit: the deposit also
 applies to this new commitment.
 
 There is no need to synchronize between operators: if two honest
@@ -281,15 +280,15 @@ given step is PVM-dependent. During the final phase, the stakers must
 provide a proof that they correctly interpreted this conflicting tick.
 
 The Layer 1 PVM then determines whether these proofs are valid. There
-are only two possible outcomes: either one of the stakers, that we dub *S* in the sequel, has provided
-a valid proof, then *S* wins the game, and is rewarded with half of the
-opponent's deposit (the other half being burnt); or, both stakers have
+are only two possible outcomes: either one of the staker has provided
+a valid proof, she wins the game, and is rewarded with half of the
+opponent's deposit (the other half being burnt) ; or, both stakers have
 provided an invalid proof and they both lose their deposit. In the
 end, at most one stake will be kept in the commitment tree. When a
 commitment has no more stake on it (because all stakers have lost the
 related refutation games), it is removed from the tree. An honest
-player *H* must therefore play as many refutation games as there are
-stakes on the commitments in conflict with *H*'s own commitment.
+player must therefore play as many refutation games as there are
+stakes on the commitments in conflict with her own commitment.
 
 Finally, notice that each player is subject to a timer similar to a
 chess clock, allowing each player to play only up to one week: after
@@ -299,8 +298,8 @@ two players can last at most 2 weeks.
 
 There is no timeout for starting a refutation game after having
 published a concurrent commitment. However, assuming the existence of
-an honest participant *H*, then *H* will start the refutation game with all
-concurrent stakers to avoid the rollup getting stuck.
+an honest participant, she will start the refutation game with all
+concurrent stakers to avoid the rollup being stuck.
 
 Workflows
 ---------
@@ -344,7 +343,7 @@ an Octez node has been launched locally, typically by issuing:
 
 in a terminal where ``${NETWORK}`` is of the
 form ``https://teztnets.xyz/dailynet-YYYY-MM-DD``
-and ``${ONODE_DIR}`` is a path for the Octez node store, by default ``~/.tezos-node``.
+and ``${ONODE_DIR}`` is a path for the Octez node store.
 
 The commands will only work when ``proto_alpha`` is activated.
 This can be checked by:
@@ -360,19 +359,9 @@ that must return:
    { "protocol": "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK",
      "next_protocol": "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK" }
 
-In case you do not already have an implicit account, you can generate one with:
-
-.. code:: sh
-
-   octez-client gen keys "${ACCOUNT_NAME}"
-   octez-client show address "${ACCOUNT_NAME}"
-
-Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``tz1...``) returned.
-
 Finally, you need to check that your balance is greater than 10,000
 tez to make sure that staking is possible. In case your balance is not
-sufficient, you can get test tokens for the ``tz1`` address from :ref:`a faucet <faucet>`,
-after your node gets synchronized with Dailynet.
+sufficient, you can get test tokens from :ref:`a faucet <faucet>`.
 
 
 .. code:: sh
@@ -464,20 +453,19 @@ Now that the rollup is originated, anyone can make it progress by deploying a
 rollup node.
 
 First, we need to decide on a directory where the rollup node stores
-its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path, by default
-``~/.tezos-smart-rollup-node``.
+its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path.
 
 
 The rollup node can then be run with:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+   octez-smart-rollup-node-alpha --base-dir "${OCLIENT_DIR}" \
                     run operator for "${SOR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
 
-where ``${OCLIENT_DIR}`` is the data directory of the Octez client, by default  ``~/.tezos-client``.
+where ``${OCLIENT_DIR}`` is the data directory of the Octez client.
 
 The log should show that the rollup node follows the Layer 1 chain and
 processes the inbox of each level.
@@ -545,7 +533,7 @@ uses the same arguments as the ``run`` command:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+   octez-smart-rollup-node-alpha --base-dir "${OCLIENT_DIR}" \
                     init operator config for "${SOR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
@@ -577,7 +565,7 @@ The rollup node can now be run with just:
 
 .. code:: sh
 
-   octez-smart-rollup-node -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
+   octez-smart-rollup-node-alpha -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
 
 The configuration will be read from ``${ROLLUP_NODE_DIR}/config.json``.
 
@@ -586,7 +574,7 @@ Rollup node in a sandbox
 
 The node can also be tested locally with a sandbox environment. (See :doc:`sandbox documentation <../user/sandbox>`.)
 
-Once you initialized the "sandboxed" client data with ``./src/bin_client/octez-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``octez-smart-rollup-node run``.
+Once you initialized the "sandboxed" client data with ``./src/bin_client/octez-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``octez-smart-rollup-node-alpha run``.
 
 A temporary directory ``/tmp/tezos-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
 
@@ -601,7 +589,7 @@ representation of the message payload, one can do:
 
 .. code:: sh
 
-    octez-client -d "${OCLIENT_DIR}" -p ProtoALphaAL \
+    octez-client" -d "${OCLIENT_DIR}" -p ProtoALphaAL \
      send smart rollup message "hex:[ \"${EMESSAGE}\" ]" \
      from "${OPERATOR_ADDR}"
 
@@ -621,14 +609,13 @@ originated a Layer 1 smart contract as follows:
      running 'parameter string; storage string; code {CAR; NIL operation; PAIR};' \
      --init '""' --burn-cap 0.4
 
-and that this contract is identified by an address ``${CONTRACT}``
-(a ``KT1...`` address), then one can encode an
-outbox transaction using the Octez rollup client as follows:
+and that this contract is identified by a address ``${CONTRACT}``, then one
+can encode an outbox transaction using the Octez rollup client as follows:
 
 .. code:: sh
 
     MESSAGE='[ { \
-      "destination" : "KT1...", \
+      "destination" : "${CONTRACT}", \
       "parameters" : "\"Hello world\"", \
       "entrypoint" : "%default" } ]'
 
@@ -820,7 +807,8 @@ restrictions:
 #. Instructions and types related to floating-point arithmetic are not
    supported. This is because IEEE floats are not deterministic, as
    the standard includes undefined behavior operations.
-#. The length of the call stack of the WASM kernel is bounded.
+#. The length of the call stack of the WASM kernel is bounded (see the WASM PVM
+   versioning section).
 
 Modulo the limitations above, a valid kernel is a WASM module that
 satisfies the following constraints:
@@ -923,6 +911,7 @@ The values and subtrees under the key ``/readonly`` are not writable
 by a kernel, but can be used by the PVM to give information to the
 kernel.
 
+
 WASM PVM Versioning
 """""""""""""""""""
 
@@ -945,13 +934,9 @@ upgrades. The WASM PVM will upgrade itself when it reads the
 | Protocol     | Version        |
 +==============+================+
 | Mumbai       | 2.0.0          |
-+--------------+----------------+
 | Nairobi      | 2.0.0-r1       |
+| proto_alpha  | 2.0.0-r1       |
 +--------------+----------------+
-| Alpha        | 2.0.0-r1       |
-+--------------+----------------+
-
-The changes in each WASM PVM version can be found by searching for string "PVM" in the corresponding protocol's changelog, section ``Smart Rollups`` (e.g. `this section <../protocols/alpha.html#smart-rollups>`__ for protocol Alpha).
 
 Control Flow
 """"""""""""
@@ -1381,9 +1366,9 @@ evaluate the WASM PVM without relying on any node and network:
 
 .. code:: sh
 
-  octez-smart-rollup-wasm-debugger --kernel "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SOR_ADDR}"
+  octez-smart-rollup-wasm-debugger "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SOR_ADDR}"
 
-``octez-smart-rollup-wasm-debugger`` takes the target WASM kernel to be debugged as argument, either as a ``.wasm`` file (the binary
+``octez-smart-rollup-wasm-debugger`` takes as its argument the WASM kernel to be debugged, either a a ``.wasm`` file (the binary
 representation of WebAssembly modules) or as a ``.wast`` file (its textual
 representation), and actually parses and typechecks the kernel before
 giving it to the PVM.
@@ -1635,7 +1620,7 @@ Glossary
    cemented (hence, at least two weeks after the actual execution of
    the operation).
 
-#. **Commitment period**: A period of 60 blocks during which all inbox
+#. **Commitment period**: A period of 30 blocks during which all inbox
    messages must be processed by the rollup node state to compute a
    commitment. A commitment must be published for each commitment
    period.

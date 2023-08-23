@@ -41,16 +41,6 @@ type bootstrap_contract = {
   delegate : Signature.Public_key_hash.t option;
   amount : Tez_repr.t;
   script : Script_repr.t;
-  hash : Contract_hash.t option;
-      (** If the contract hash is not provided, generate a fresh hash. *)
-}
-
-(** An originated smart rollup initially existing on a chain since genesis. *)
-type bootstrap_smart_rollup = {
-  address : Sc_rollup_repr.Address.t;
-  pvm_kind : Sc_rollups.Kind.t;
-  boot_sector : string;
-  parameters_ty : Script_repr.lazy_expr;
 }
 
 (** Protocol parameters define some constants regulating behaviour of the
@@ -58,7 +48,6 @@ type bootstrap_smart_rollup = {
 type t = {
   bootstrap_accounts : bootstrap_account list;
   bootstrap_contracts : bootstrap_contract list;
-  bootstrap_smart_rollups : bootstrap_smart_rollup list;
   commitments : Commitment_repr.t list;
   constants : Constants_parametric_repr.t;
   security_deposit_ramp_up_cycles : int option;

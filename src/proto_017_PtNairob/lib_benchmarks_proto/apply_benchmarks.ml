@@ -64,7 +64,7 @@ module Take_fees_benchmark = struct
 
   let module_filename = __FILE__
 
-  let purpose = Benchmark.Other_purpose "No longer used to generate code"
+  let generated_code_destination = None
 
   let tags = ["apply"]
 

@@ -48,7 +48,6 @@ type _ successful_manager_operation_result =
       -> Kind.origination successful_manager_operation_result
   | Delegation_result : {
       consumed_gas : Gas.Arith.fp;
-      balance_updates : Receipt.balance_updates;
     }
       -> Kind.delegation successful_manager_operation_result
   | Register_global_constant_result : {
@@ -58,6 +57,10 @@ type _ successful_manager_operation_result =
       global_address : Script_expr_hash.t;
     }
       -> Kind.register_global_constant successful_manager_operation_result
+  | Set_deposits_limit_result : {
+      consumed_gas : Gas.Arith.fp;
+    }
+      -> Kind.set_deposits_limit successful_manager_operation_result
   | Increase_paid_storage_result : {
       balance_updates : Receipt.balance_updates;
       consumed_gas : Gas.Arith.fp;
@@ -283,10 +286,7 @@ module Manager_result = struct
           (Tag 0)
           (obj9
              (opt "storage" Script.expr_encoding)
-             (dft
-                "balance_updates"
-                Receipt.balance_updates_encoding_with_legacy_attestation_name
-                [])
+             (dft "balance_updates" Receipt.balance_updates_encoding [])
              (dft "ticket_updates" Ticket_receipt.encoding [])
              (dft "originated_contracts" (list Contract.originated_encoding) [])
              (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
@@ -370,10 +370,7 @@ module Manager_result = struct
       ~op_case:Operation.Encoding.Manager_operations.origination_case
       ~encoding:
         (obj6
-           (dft
-              "balance_updates"
-              Receipt.balance_updates_encoding_with_legacy_attestation_name
-              [])
+           (dft "balance_updates" Receipt.balance_updates_encoding [])
            (dft "originated_contracts" (list Contract.originated_encoding) [])
            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
            (dft "storage_size" z Z.zero)
@@ -427,10 +424,7 @@ module Manager_result = struct
         Operation.Encoding.Manager_operations.register_global_constant_case
       ~encoding:
         (obj4
-           (dft
-              "balance_updates"
-              Receipt.balance_updates_encoding_with_legacy_attestation_name
-              [])
+           (dft "balance_updates" Receipt.balance_updates_encoding [])
            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
            (dft "storage_size" z Z.zero)
            (req "global_address" Script_expr_hash.encoding))
@@ -453,21 +447,13 @@ module Manager_result = struct
       ~op_case:Operation.Encoding.Manager_operations.delegation_case
       ~encoding:
         Data_encoding.(
-          obj2
-            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []))
+          obj1 (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
       ~select:(function
         | Successful_manager_result (Delegation_result _ as op) -> Some op
         | _ -> None)
       ~kind:Kind.Delegation_manager_kind
-      ~proj:(function
-        | Delegation_result {consumed_gas; balance_updates} ->
-            (consumed_gas, balance_updates))
-      ~inj:(fun (consumed_gas, balance_updates) ->
-        Delegation_result {consumed_gas; balance_updates})
+      ~proj:(function Delegation_result {consumed_gas} -> consumed_gas)
+      ~inj:(fun consumed_gas -> Delegation_result {consumed_gas})
 
   let update_consensus_key_case =
     make
@@ -484,16 +470,28 @@ module Manager_result = struct
         | Update_consensus_key_result {consumed_gas} -> consumed_gas)
       ~inj:(fun consumed_gas -> Update_consensus_key_result {consumed_gas})
 
+  let set_deposits_limit_case =
+    make
+      ~op_case:Operation.Encoding.Manager_operations.set_deposits_limit_case
+      ~encoding:
+        Data_encoding.(
+          obj1 (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
+      ~select:(function
+        | Successful_manager_result (Set_deposits_limit_result _ as op) ->
+            Some op
+        | _ -> None)
+      ~kind:Kind.Set_deposits_limit_manager_kind
+      ~proj:(function
+        | Set_deposits_limit_result {consumed_gas} -> consumed_gas)
+      ~inj:(fun consumed_gas -> Set_deposits_limit_result {consumed_gas})
+
   let increase_paid_storage_case =
     make
       ~op_case:Operation.Encoding.Manager_operations.increase_paid_storage_case
       ~encoding:
         Data_encoding.(
           obj2
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               [])
+            (dft "balance_updates" Receipt.balance_updates_encoding [])
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
       ~select:(function
         | Successful_manager_result (Increase_paid_storage_result _ as op) ->
@@ -512,9 +510,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj4
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (req "ticket_updates" Ticket_receipt.encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (dft "paid_storage_size_diff" z Z.zero))
@@ -572,9 +568,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj4
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (req "originated_zk_rollup" Zk_rollup.Address.encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (req "size" z))
@@ -599,9 +593,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj3
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (req "size" z))
       ~select:(function
@@ -623,9 +615,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj3
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (dft "paid_storage_size_diff" z Z.zero))
       ~select:(function
@@ -645,9 +635,7 @@ module Manager_result = struct
       ~op_case:Operation.Encoding.Manager_operations.sc_rollup_originate_case
       ~encoding:
         (obj5
-           (req
-              "balance_updates"
-              Receipt.balance_updates_encoding_with_legacy_attestation_name)
+           (req "balance_updates" Receipt.balance_updates_encoding)
            (req "address" Sc_rollup.Address.encoding)
            (req "genesis_commitment_hash" Sc_rollup.Commitment.Hash.encoding)
            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
@@ -727,9 +715,7 @@ module Manager_result = struct
            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
            (req "staked_hash" Sc_rollup.Commitment.Hash.encoding)
            (req "published_at_level" Raw_level.encoding)
-           (req
-              "balance_updates"
-              Receipt.balance_updates_encoding_with_legacy_attestation_name))
+           (req "balance_updates" Receipt.balance_updates_encoding))
       ~select:(function
         | Successful_manager_result (Sc_rollup_publish_result _ as op) ->
             Some op
@@ -752,9 +738,7 @@ module Manager_result = struct
           obj3
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (req "game_status" Sc_rollup.Game.status_encoding)
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name))
+            (req "balance_updates" Receipt.balance_updates_encoding))
       ~select:(function
         | Successful_manager_result (Sc_rollup_refute_result _ as op) -> Some op
         | _ -> None)
@@ -773,9 +757,7 @@ module Manager_result = struct
         (obj3
            (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
            (req "game_status" Sc_rollup.Game.status_encoding)
-           (req
-              "balance_updates"
-              Receipt.balance_updates_encoding_with_legacy_attestation_name))
+           (req "balance_updates" Receipt.balance_updates_encoding))
       ~select:(function
         | Successful_manager_result (Sc_rollup_timeout_result _ as op) ->
             Some op
@@ -796,9 +778,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj4
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (req "ticket_updates" Ticket_receipt.encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero)
             (dft "paid_storage_size_diff" z Z.zero))
@@ -839,9 +819,7 @@ module Manager_result = struct
       ~encoding:
         Data_encoding.(
           obj2
-            (req
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name)
+            (req "balance_updates" Receipt.balance_updates_encoding)
             (dft "consumed_milligas" Gas.Arith.n_fp_encoding Gas.Arith.zero))
       ~select:(function
         | Successful_manager_result (Sc_rollup_recover_bond_result _ as op) ->
@@ -880,25 +858,26 @@ let successful_manager_operation_result_encoding :
          make Manager_result.origination_case;
          make Manager_result.delegation_case;
          make Manager_result.update_consensus_key_case;
+         make Manager_result.set_deposits_limit_case;
          make Manager_result.increase_paid_storage_case;
          make Manager_result.sc_rollup_originate_case;
        ]
 
 type 'kind contents_result =
-  | Preattestation_result : {
+  | Preendorsement_result : {
       balance_updates : Receipt.balance_updates;
       delegate : Signature.public_key_hash;
       consensus_key : Signature.public_key_hash;
-      consensus_power : int;
+      preendorsement_power : int;
     }
-      -> Kind.preattestation contents_result
-  | Attestation_result : {
+      -> Kind.preendorsement contents_result
+  | Endorsement_result : {
       balance_updates : Receipt.balance_updates;
       delegate : Signature.public_key_hash;
       consensus_key : Signature.public_key_hash;
-      consensus_power : int;
+      endorsement_power : int;
     }
-      -> Kind.attestation contents_result
+      -> Kind.endorsement contents_result
   | Dal_attestation_result : {
       delegate : Signature.Public_key_hash.t;
     }
@@ -909,12 +888,12 @@ type 'kind contents_result =
   | Vdf_revelation_result :
       Receipt.balance_updates
       -> Kind.vdf_revelation contents_result
-  | Double_attestation_evidence_result :
+  | Double_endorsement_evidence_result :
       Receipt.balance_updates
-      -> Kind.double_attestation_evidence contents_result
-  | Double_preattestation_evidence_result :
+      -> Kind.double_endorsement_evidence contents_result
+  | Double_preendorsement_evidence_result :
       Receipt.balance_updates
-      -> Kind.double_preattestation_evidence contents_result
+      -> Kind.double_preendorsement_evidence contents_result
   | Double_baking_evidence_result :
       Receipt.balance_updates
       -> Kind.double_baking_evidence contents_result
@@ -967,6 +946,10 @@ let equal_manager_kind :
   | Kind.Event_manager_kind, Kind.Event_manager_kind -> Some Eq
   | Kind.Event_manager_kind, _ -> None
   | Kind.Register_global_constant_manager_kind, _ -> None
+  | Kind.Set_deposits_limit_manager_kind, Kind.Set_deposits_limit_manager_kind
+    ->
+      Some Eq
+  | Kind.Set_deposits_limit_manager_kind, _ -> None
   | ( Kind.Increase_paid_storage_manager_kind,
       Kind.Increase_paid_storage_manager_kind ) ->
       Some Eq
@@ -1018,23 +1001,7 @@ let equal_manager_kind :
   | Kind.Zk_rollup_update_manager_kind, _ -> None
 
 module Encoding = struct
-  let consensus_result_encoding power_name =
-    let open Data_encoding in
-    obj4
-      (dft
-         "balance_updates"
-         Receipt.balance_updates_encoding_with_legacy_attestation_name
-         [])
-      (req "delegate" Signature.Public_key_hash.encoding)
-      (req (Format.asprintf "%s_power" power_name) int31)
-      (req "consensus_key" Signature.Public_key_hash.encoding)
-
-  let consensus_result_encoding_legacy power_name =
-    consensus_result_encoding power_name
-
-  let consensus_result_encoding = consensus_result_encoding "consensus"
-
-  type case =
+  type 'kind case =
     | Case : {
         op_case : 'kind Operation.Encoding.case;
         encoding : 'a Data_encoding.t;
@@ -1045,7 +1012,7 @@ module Encoding = struct
         proj : 'kind contents_result -> 'a;
         inj : 'a -> 'kind contents_result;
       }
-        -> case
+        -> 'kind case
 
   let tagged_case tag name args proj inj =
     let open Data_encoding in
@@ -1060,94 +1027,58 @@ module Encoding = struct
     Case
       {
         op_case = Operation.Encoding.preendorsement_case;
-        encoding = consensus_result_encoding_legacy "preendorsement";
+        encoding =
+          obj4
+            (dft "balance_updates" Receipt.balance_updates_encoding [])
+            (req "delegate" Signature.Public_key_hash.encoding)
+            (req "preendorsement_power" int31)
+            (req "consensus_key" Signature.Public_key_hash.encoding);
         select =
           (function
-          | Contents_result (Preattestation_result _ as op) -> Some op
+          | Contents_result (Preendorsement_result _ as op) -> Some op
           | _ -> None);
         mselect =
           (function
-          | Contents_and_result ((Preattestation _ as op), res) -> Some (op, res)
+          | Contents_and_result ((Preendorsement _ as op), res) -> Some (op, res)
           | _ -> None);
         proj =
           (function
-          | Preattestation_result
-              {balance_updates; delegate; consensus_key; consensus_power} ->
-              (balance_updates, delegate, consensus_power, consensus_key));
+          | Preendorsement_result
+              {balance_updates; delegate; consensus_key; preendorsement_power}
+            ->
+              (balance_updates, delegate, preendorsement_power, consensus_key));
         inj =
-          (fun (balance_updates, delegate, consensus_power, consensus_key) ->
-            Preattestation_result
-              {balance_updates; delegate; consensus_key; consensus_power});
-      }
-
-  let preattestation_case =
-    Case
-      {
-        op_case = Operation.Encoding.preattestation_case;
-        encoding = consensus_result_encoding;
-        select =
-          (function
-          | Contents_result (Preattestation_result _ as op) -> Some op
-          | _ -> None);
-        mselect =
-          (function
-          | Contents_and_result ((Preattestation _ as op), res) -> Some (op, res)
-          | _ -> None);
-        proj =
-          (function
-          | Preattestation_result
-              {balance_updates; delegate; consensus_key; consensus_power} ->
-              (balance_updates, delegate, consensus_power, consensus_key));
-        inj =
-          (fun (balance_updates, delegate, consensus_power, consensus_key) ->
-            Preattestation_result
-              {balance_updates; delegate; consensus_key; consensus_power});
+          (fun (balance_updates, delegate, preendorsement_power, consensus_key) ->
+            Preendorsement_result
+              {balance_updates; delegate; consensus_key; preendorsement_power});
       }
 
   let endorsement_case =
     Case
       {
         op_case = Operation.Encoding.endorsement_case;
-        encoding = consensus_result_encoding_legacy "endorsement";
+        encoding =
+          obj4
+            (dft "balance_updates" Receipt.balance_updates_encoding [])
+            (req "delegate" Signature.Public_key_hash.encoding)
+            (req "endorsement_power" int31)
+            (req "consensus_key" Signature.Public_key_hash.encoding);
         select =
           (function
-          | Contents_result (Attestation_result _ as op) -> Some op | _ -> None);
+          | Contents_result (Endorsement_result _ as op) -> Some op | _ -> None);
         mselect =
           (function
-          | Contents_and_result ((Attestation _ as op), res) -> Some (op, res)
+          | Contents_and_result ((Endorsement _ as op), res) -> Some (op, res)
           | _ -> None);
         proj =
           (function
-          | Attestation_result
-              {balance_updates; delegate; consensus_key; consensus_power} ->
-              (balance_updates, delegate, consensus_power, consensus_key));
+          | Endorsement_result
+              {balance_updates; delegate; consensus_key; endorsement_power} ->
+              (balance_updates, delegate, endorsement_power, consensus_key));
         inj =
-          (fun (balance_updates, delegate, consensus_power, consensus_key) ->
-            Attestation_result
-              {balance_updates; delegate; consensus_key; consensus_power});
-      }
-
-  let attestation_case =
-    Case
-      {
-        op_case = Operation.Encoding.attestation_case;
-        encoding = consensus_result_encoding;
-        select =
-          (function
-          | Contents_result (Attestation_result _ as op) -> Some op | _ -> None);
-        mselect =
-          (function
-          | Contents_and_result ((Attestation _ as op), res) -> Some (op, res)
-          | _ -> None);
-        proj =
-          (function
-          | Attestation_result
-              {balance_updates; delegate; consensus_key; consensus_power} ->
-              (balance_updates, delegate, consensus_power, consensus_key));
-        inj =
-          (fun (balance_updates, delegate, consensus_power, consensus_key) ->
-            Attestation_result
-              {balance_updates; delegate; consensus_key; consensus_power});
+          (fun (balance_updates, delegate, endorsement_power, consensus_key) ->
+            Endorsement_result
+              {balance_updates; delegate; consensus_key; endorsement_power});
       }
 
   let dal_attestation_case =
@@ -1173,11 +1104,7 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.seed_nonce_revelation_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
           | Contents_result (Seed_nonce_revelation_result _ as op) -> Some op
@@ -1196,11 +1123,7 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.vdf_revelation_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
           | Contents_result (Vdf_revelation_result _ as op) -> Some op
@@ -1218,47 +1141,19 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.double_endorsement_evidence_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
-          | Contents_result (Double_attestation_evidence_result _ as op) ->
+          | Contents_result (Double_endorsement_evidence_result _ as op) ->
               Some op
           | _ -> None);
         mselect =
           (function
-          | Contents_and_result ((Double_attestation_evidence _ as op), res) ->
+          | Contents_and_result ((Double_endorsement_evidence _ as op), res) ->
               Some (op, res)
           | _ -> None);
-        proj = (fun (Double_attestation_evidence_result bus) -> bus);
-        inj = (fun bus -> Double_attestation_evidence_result bus);
-      }
-
-  let double_attestation_evidence_case =
-    Case
-      {
-        op_case = Operation.Encoding.double_attestation_evidence_case;
-        encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
-        select =
-          (function
-          | Contents_result (Double_attestation_evidence_result _ as op) ->
-              Some op
-          | _ -> None);
-        mselect =
-          (function
-          | Contents_and_result ((Double_attestation_evidence _ as op), res) ->
-              Some (op, res)
-          | _ -> None);
-        proj = (fun (Double_attestation_evidence_result bus) -> bus);
-        inj = (fun bus -> Double_attestation_evidence_result bus);
+        proj = (fun (Double_endorsement_evidence_result bus) -> bus);
+        inj = (fun bus -> Double_endorsement_evidence_result bus);
       }
 
   let double_preendorsement_evidence_case =
@@ -1266,49 +1161,20 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.double_preendorsement_evidence_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
-          | Contents_result (Double_preattestation_evidence_result _ as op) ->
+          | Contents_result (Double_preendorsement_evidence_result _ as op) ->
               Some op
           | _ -> None);
         mselect =
           (function
-          | Contents_and_result ((Double_preattestation_evidence _ as op), res)
+          | Contents_and_result ((Double_preendorsement_evidence _ as op), res)
             ->
               Some (op, res)
           | _ -> None);
-        proj = (fun (Double_preattestation_evidence_result bus) -> bus);
-        inj = (fun bus -> Double_preattestation_evidence_result bus);
-      }
-
-  let double_preattestation_evidence_case =
-    Case
-      {
-        op_case = Operation.Encoding.double_preattestation_evidence_case;
-        encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
-        select =
-          (function
-          | Contents_result (Double_preattestation_evidence_result _ as op) ->
-              Some op
-          | _ -> None);
-        mselect =
-          (function
-          | Contents_and_result ((Double_preattestation_evidence _ as op), res)
-            ->
-              Some (op, res)
-          | _ -> None);
-        proj = (fun (Double_preattestation_evidence_result bus) -> bus);
-        inj = (fun bus -> Double_preattestation_evidence_result bus);
+        proj = (fun (Double_preendorsement_evidence_result bus) -> bus);
+        inj = (fun bus -> Double_preendorsement_evidence_result bus);
       }
 
   let double_baking_evidence_case =
@@ -1316,11 +1182,7 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.double_baking_evidence_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
           | Contents_result (Double_baking_evidence_result _ as op) -> Some op
@@ -1339,11 +1201,7 @@ module Encoding = struct
       {
         op_case = Operation.Encoding.activate_account_case;
         encoding =
-          obj1
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               []);
+          obj1 (dft "balance_updates" Receipt.balance_updates_encoding []);
         select =
           (function
           | Contents_result (Activate_account_result _ as op) -> Some op
@@ -1396,10 +1254,7 @@ module Encoding = struct
         encoding =
           Data_encoding.(
             obj2
-              (dft
-                 "balance_updates"
-                 Receipt.balance_updates_encoding_with_legacy_attestation_name
-                 [])
+              (dft "balance_updates" Receipt.balance_updates_encoding [])
               (dft "allocated_destination_contract" bool false));
         select =
           (function
@@ -1429,10 +1284,7 @@ module Encoding = struct
         op_case = Operation.Encoding.Case op_case;
         encoding =
           obj3
-            (dft
-               "balance_updates"
-               Receipt.balance_updates_encoding_with_legacy_attestation_name
-               [])
+            (dft "balance_updates" Receipt.balance_updates_encoding [])
             (req "operation_result" res_case.t)
             (dft
                "internal_operation_results"
@@ -1476,14 +1328,14 @@ module Encoding = struct
                   Some
                     (Manager_operation_result
                        {op with operation_result = Failed (kind, errs)}))
-          | Contents_result (Preattestation_result _) -> None
-          | Contents_result (Attestation_result _) -> None
+          | Contents_result (Preendorsement_result _) -> None
+          | Contents_result (Endorsement_result _) -> None
           | Contents_result (Dal_attestation_result _) -> None
           | Contents_result Ballot_result -> None
           | Contents_result (Seed_nonce_revelation_result _) -> None
           | Contents_result (Vdf_revelation_result _) -> None
-          | Contents_result (Double_attestation_evidence_result _) -> None
-          | Contents_result (Double_preattestation_evidence_result _) -> None
+          | Contents_result (Double_endorsement_evidence_result _) -> None
+          | Contents_result (Double_preendorsement_evidence_result _) -> None
           | Contents_result (Double_baking_evidence_result _) -> None
           | Contents_result (Activate_account_result _) -> None
           | Contents_result (Drain_delegate_result _) -> None
@@ -1566,6 +1418,17 @@ module Encoding = struct
         | Contents_and_result
             ( (Manager_operation {operation = Register_global_constant _; _} as
               op),
+              res ) ->
+            Some (op, res)
+        | _ -> None)
+
+  let set_deposits_limit_case =
+    make_manager_case
+      Operation.Encoding.set_deposits_limit_case
+      Manager_result.set_deposits_limit_case
+      (function
+        | Contents_and_result
+            ( (Manager_operation {operation = Set_deposits_limit _; _} as op),
               res ) ->
             Some (op, res)
         | _ -> None)
@@ -1727,104 +1590,118 @@ module Encoding = struct
         | _ -> None)
 end
 
-let common_cases =
-  let open Encoding in
-  [
-    seed_nonce_revelation_case;
-    vdf_revelation_case;
-    dal_attestation_case;
-    double_baking_evidence_case;
-    activate_account_case;
-    proposals_case;
-    ballot_case;
-    drain_delegate_case;
-    reveal_case;
-    transaction_case;
-    origination_case;
-    delegation_case;
-    register_global_constant_case;
-    increase_paid_storage_case;
-    update_consensus_key_case;
-    transfer_ticket_case;
-    dal_publish_slot_header_case;
-    sc_rollup_originate_case;
-    sc_rollup_add_messages_case;
-    sc_rollup_cement_case;
-    sc_rollup_publish_case;
-    sc_rollup_refute_case;
-    sc_rollup_timeout_case;
-    sc_rollup_execute_outbox_message_case;
-    sc_rollup_recover_bond_case;
-    zk_rollup_origination_case;
-    zk_rollup_publish_case;
-    zk_rollup_update_case;
-  ]
-
-let contents_cases =
-  let open Encoding in
-  attestation_case :: preattestation_case :: double_attestation_evidence_case
-  :: double_preattestation_evidence_case :: common_cases
-
-let contents_cases_with_legacy_attestation_name =
-  let open Encoding in
-  endorsement_case :: preendorsement_case :: double_endorsement_evidence_case
-  :: double_preendorsement_evidence_case :: common_cases
-
-let make_contents_result
-    (Encoding.Case
-      {
-        op_case = Operation.Encoding.Case {tag; name; _};
-        encoding;
-        mselect = _;
-        select;
-        proj;
-        inj;
-      }) =
-  let proj x = match select x with None -> None | Some x -> Some (proj x) in
-  let inj x = Contents_result (inj x) in
-  Encoding.tagged_case (Tag tag) name encoding proj inj
-
 let contents_result_encoding =
-  def "operation.alpha.contents_result"
-  @@ union (List.map make_contents_result contents_cases)
-
-let contents_result_encoding_with_legacy_attestation_name =
-  def "operation_with_legacy_attestation_name.alpha.contents_result"
-  @@ union
-       (List.map
-          make_contents_result
-          contents_cases_with_legacy_attestation_name)
-
-let make_contents_and_result
-    (Encoding.Case
-      {
-        op_case = Operation.Encoding.Case {tag; name; encoding; proj; inj; _};
-        mselect;
-        encoding = meta_encoding;
-        proj = meta_proj;
-        inj = meta_inj;
-        _;
-      }) =
-  let proj c =
-    match mselect c with
-    | Some (op, res) -> Some (proj op, meta_proj res)
-    | _ -> None
+  let open Encoding in
+  let make
+      (Case
+        {
+          op_case = Operation.Encoding.Case {tag; name; _};
+          encoding;
+          mselect = _;
+          select;
+          proj;
+          inj;
+        }) =
+    let proj x = match select x with None -> None | Some x -> Some (proj x) in
+    let inj x = Contents_result (inj x) in
+    tagged_case (Tag tag) name encoding proj inj
   in
-  let inj (op, res) = Contents_and_result (inj op, meta_inj res) in
-  let encoding = merge_objs encoding (obj1 (req "metadata" meta_encoding)) in
-  Encoding.tagged_case (Tag tag) name encoding proj inj
+  def "operation.alpha.contents_result"
+  @@ union
+       [
+         make seed_nonce_revelation_case;
+         make vdf_revelation_case;
+         make endorsement_case;
+         make preendorsement_case;
+         make dal_attestation_case;
+         make double_preendorsement_evidence_case;
+         make double_endorsement_evidence_case;
+         make double_baking_evidence_case;
+         make activate_account_case;
+         make proposals_case;
+         make ballot_case;
+         make drain_delegate_case;
+         make reveal_case;
+         make transaction_case;
+         make origination_case;
+         make delegation_case;
+         make register_global_constant_case;
+         make set_deposits_limit_case;
+         make increase_paid_storage_case;
+         make update_consensus_key_case;
+         make transfer_ticket_case;
+         make dal_publish_slot_header_case;
+         make sc_rollup_originate_case;
+         make sc_rollup_add_messages_case;
+         make sc_rollup_cement_case;
+         make sc_rollup_publish_case;
+         make sc_rollup_refute_case;
+         make sc_rollup_timeout_case;
+         make sc_rollup_execute_outbox_message_case;
+         make sc_rollup_recover_bond_case;
+         make zk_rollup_origination_case;
+         make zk_rollup_publish_case;
+         make zk_rollup_update_case;
+       ]
 
 let contents_and_result_encoding =
+  let open Encoding in
+  let make
+      (Case
+        {
+          op_case = Operation.Encoding.Case {tag; name; encoding; proj; inj; _};
+          mselect;
+          encoding = meta_encoding;
+          proj = meta_proj;
+          inj = meta_inj;
+          _;
+        }) =
+    let proj c =
+      match mselect c with
+      | Some (op, res) -> Some (proj op, meta_proj res)
+      | _ -> None
+    in
+    let inj (op, res) = Contents_and_result (inj op, meta_inj res) in
+    let encoding = merge_objs encoding (obj1 (req "metadata" meta_encoding)) in
+    tagged_case (Tag tag) name encoding proj inj
+  in
   def "operation.alpha.operation_contents_and_result"
-  @@ union (List.map make_contents_and_result contents_cases)
-
-let contents_and_result_encoding_with_legacy_attestation_name =
-  def
-    "operation_with_legacy_attestation_name.alpha.operation_contents_and_result"
   @@ union
-       (List.map
-          make_contents_and_result
-          contents_cases_with_legacy_attestation_name)
+       [
+         make seed_nonce_revelation_case;
+         make vdf_revelation_case;
+         make endorsement_case;
+         make preendorsement_case;
+         make dal_attestation_case;
+         make double_preendorsement_evidence_case;
+         make double_endorsement_evidence_case;
+         make double_baking_evidence_case;
+         make activate_account_case;
+         make proposals_case;
+         make ballot_case;
+         make reveal_case;
+         make transaction_case;
+         make origination_case;
+         make delegation_case;
+         make register_global_constant_case;
+         make set_deposits_limit_case;
+         make increase_paid_storage_case;
+         make update_consensus_key_case;
+         make drain_delegate_case;
+         make transfer_ticket_case;
+         make dal_publish_slot_header_case;
+         make sc_rollup_originate_case;
+         make sc_rollup_add_messages_case;
+         make sc_rollup_cement_case;
+         make sc_rollup_publish_case;
+         make sc_rollup_refute_case;
+         make sc_rollup_timeout_case;
+         make sc_rollup_execute_outbox_message_case;
+         make sc_rollup_recover_bond_case;
+         make zk_rollup_origination_case;
+         make zk_rollup_publish_case;
+         make zk_rollup_update_case;
+       ]
 
 type 'kind contents_result_list =
   | Single_result : 'kind contents_result -> 'kind contents_result_list
@@ -1838,8 +1715,7 @@ type packed_contents_result_list =
       'kind contents_result_list
       -> packed_contents_result_list
 
-let contents_result_list_conv_with_guard =
-  let open Result_syntax in
+let contents_result_list_encoding =
   let rec to_list = function
     | Contents_result_list (Single_result o) -> [Contents_result o]
     | Contents_result_list (Cons_result (o, os)) ->
@@ -1849,7 +1725,7 @@ let contents_result_list_conv_with_guard =
     | [] -> Error "cannot decode empty operation result"
     | [Contents_result o] -> Ok (Contents_result_list (Single_result o))
     | Contents_result o :: os -> (
-        let* (Contents_result_list os) = of_list os in
+        of_list os >>? fun (Contents_result_list os) ->
         match (o, os) with
         | Manager_operation_result _, Single_result (Manager_operation_result _)
           ->
@@ -1858,16 +1734,8 @@ let contents_result_list_conv_with_guard =
             Ok (Contents_result_list (Cons_result (o, os)))
         | _ -> Error "cannot decode ill-formed operation result")
   in
-  conv_with_guard to_list of_list
-
-let contents_result_list_encoding =
   def "operation.alpha.contents_list_result"
-  @@ contents_result_list_conv_with_guard (list contents_result_encoding)
-
-let contents_result_list_encoding_with_legacy_attestation_name =
-  def "operation_with_legacy_attestation_name.alpha.contents_list_result"
-  @@ contents_result_list_conv_with_guard
-       (list contents_result_encoding_with_legacy_attestation_name)
+  @@ conv_with_guard to_list of_list (list contents_result_encoding)
 
 type 'kind contents_and_result_list =
   | Single_and_result :
@@ -1884,8 +1752,7 @@ type packed_contents_and_result_list =
       'kind contents_and_result_list
       -> packed_contents_and_result_list
 
-let contents_and_result_conv_with_guard =
-  let open Result_syntax in
+let contents_and_result_list_encoding =
   let rec to_list = function
     | Contents_and_result_list (Single_and_result (op, res)) ->
         [Contents_and_result (op, res)]
@@ -1897,7 +1764,7 @@ let contents_and_result_conv_with_guard =
     | [Contents_and_result (op, res)] ->
         Ok (Contents_and_result_list (Single_and_result (op, res)))
     | Contents_and_result (op, res) :: rest -> (
-        let* (Contents_and_result_list rest) = of_list rest in
+        of_list rest >>? fun (Contents_and_result_list rest) ->
         match (op, rest) with
         | Manager_operation _, Single_and_result (Manager_operation _, _) ->
             Ok (Contents_and_result_list (Cons_and_result (op, res, rest)))
@@ -1905,15 +1772,7 @@ let contents_and_result_conv_with_guard =
             Ok (Contents_and_result_list (Cons_and_result (op, res, rest)))
         | _ -> Error "cannot decode ill-formed combined operation result")
   in
-  conv_with_guard to_list of_list
-
-let contents_and_result_list_encoding =
-  contents_and_result_conv_with_guard
-    (Variable.list contents_and_result_encoding)
-
-let contents_and_result_list_encoding_with_legacy_attestation_name =
-  contents_and_result_conv_with_guard
-    (Variable.list contents_and_result_encoding_with_legacy_attestation_name)
+  conv_with_guard to_list of_list (Variable.list contents_and_result_encoding)
 
 type 'kind operation_metadata = {contents : 'kind contents_result_list}
 
@@ -1943,49 +1802,27 @@ let operation_metadata_encoding =
            (fun () -> No_operation_metadata);
        ]
 
-let operation_metadata_encoding_with_legacy_attestation_name =
-  def "operation_with_legacy_attestation_name.alpha.result"
-  @@ union
-       [
-         case
-           (Tag 0)
-           ~title:"Operation_metadata"
-           contents_result_list_encoding_with_legacy_attestation_name
-           (function
-             | Operation_metadata {contents} ->
-                 Some (Contents_result_list contents)
-             | _ -> None)
-           (fun (Contents_result_list contents) ->
-             Operation_metadata {contents});
-         case
-           (Tag 1)
-           ~title:"No_operation_metadata"
-           empty
-           (function No_operation_metadata -> Some () | _ -> None)
-           (fun () -> No_operation_metadata);
-       ]
-
 let kind_equal :
     type kind kind2.
     kind contents -> kind2 contents_result -> (kind, kind2) eq option =
  fun op res ->
   match (op, res) with
-  | Attestation _, Attestation_result _ -> Some Eq
-  | Attestation _, _ -> None
-  | Preattestation _, Preattestation_result _ -> Some Eq
-  | Preattestation _, _ -> None
+  | Endorsement _, Endorsement_result _ -> Some Eq
+  | Endorsement _, _ -> None
+  | Preendorsement _, Preendorsement_result _ -> Some Eq
+  | Preendorsement _, _ -> None
   | Dal_attestation _, Dal_attestation_result _ -> Some Eq
   | Dal_attestation _, _ -> None
   | Seed_nonce_revelation _, Seed_nonce_revelation_result _ -> Some Eq
   | Seed_nonce_revelation _, _ -> None
   | Vdf_revelation _, Vdf_revelation_result _ -> Some Eq
   | Vdf_revelation _, _ -> None
-  | Double_preattestation_evidence _, Double_preattestation_evidence_result _ ->
+  | Double_preendorsement_evidence _, Double_preendorsement_evidence_result _ ->
       Some Eq
-  | Double_preattestation_evidence _, _ -> None
-  | Double_attestation_evidence _, Double_attestation_evidence_result _ ->
+  | Double_preendorsement_evidence _, _ -> None
+  | Double_endorsement_evidence _, Double_endorsement_evidence_result _ ->
       Some Eq
-  | Double_attestation_evidence _, _ -> None
+  | Double_endorsement_evidence _, _ -> None
   | Double_baking_evidence _, Double_baking_evidence_result _ -> Some Eq
   | Double_baking_evidence _, _ -> None
   | Activate_account _, Activate_account_result _ -> Some Eq
@@ -2146,6 +1983,32 @@ let kind_equal :
         } ) ->
       Some Eq
   | Manager_operation {operation = Register_global_constant _; _}, _ -> None
+  | ( Manager_operation {operation = Set_deposits_limit _; _},
+      Manager_operation_result
+        {operation_result = Applied (Set_deposits_limit_result _); _} ) ->
+      Some Eq
+  | ( Manager_operation {operation = Set_deposits_limit _; _},
+      Manager_operation_result
+        {operation_result = Backtracked (Set_deposits_limit_result _, _); _} )
+    ->
+      Some Eq
+  | ( Manager_operation {operation = Set_deposits_limit _; _},
+      Manager_operation_result
+        {
+          operation_result =
+            Failed (Alpha_context.Kind.Set_deposits_limit_manager_kind, _);
+          _;
+        } ) ->
+      Some Eq
+  | ( Manager_operation {operation = Set_deposits_limit _; _},
+      Manager_operation_result
+        {
+          operation_result =
+            Skipped Alpha_context.Kind.Set_deposits_limit_manager_kind;
+          _;
+        } ) ->
+      Some Eq
+  | Manager_operation {operation = Set_deposits_limit _; _}, _ -> None
   | ( Manager_operation {operation = Increase_paid_storage _; _},
       Manager_operation_result
         {operation_result = Applied (Increase_paid_storage_result _); _} ) ->
@@ -2608,49 +2471,6 @@ let operation_data_and_metadata_encoding =
            (Tag 1)
            ~title:"Operation_without_metadata"
            (obj2
-              (req "contents" (dynamic_size Operation.contents_list_encoding))
-              (opt "signature" Signature.encoding))
-           (function
-             | Operation_data op, No_operation_metadata ->
-                 Some (Contents_list op.contents, op.signature)
-             | Operation_data _, Operation_metadata _ -> None)
-           (fun (Contents_list contents, signature) ->
-             (Operation_data {contents; signature}, No_operation_metadata));
-       ]
-
-let operation_data_and_metadata_encoding_with_legacy_attestation_name =
-  def "operation_with_legacy_attestation_name.alpha.operation_with_metadata"
-  @@ union
-       [
-         case
-           (Tag 0)
-           ~title:"Operation_with_metadata"
-           (obj2
-              (req
-                 "contents"
-                 (dynamic_size
-                    contents_and_result_list_encoding_with_legacy_attestation_name))
-              (opt "signature" Signature.encoding))
-           (function
-             | Operation_data _, No_operation_metadata -> None
-             | Operation_data op, Operation_metadata res -> (
-                 match kind_equal_list op.contents res.contents with
-                 | None ->
-                     Pervasives.failwith
-                       "cannot decode inconsistent combined operation result"
-                 | Some Eq ->
-                     Some
-                       ( Contents_and_result_list
-                           (pack_contents_list op.contents res.contents),
-                         op.signature )))
-           (fun (Contents_and_result_list contents, signature) ->
-             let op_contents, res_contents = unpack_contents_list contents in
-             ( Operation_data {contents = op_contents; signature},
-               Operation_metadata {contents = res_contents} ));
-         case
-           (Tag 1)
-           ~title:"Operation_without_metadata"
-           (obj2
               (req
                  "contents"
                  (dynamic_size
@@ -2674,19 +2494,14 @@ type block_metadata = {
   consumed_gas : Gas.Arith.fp;
   deactivated : Signature.Public_key_hash.t list;
   balance_updates : Receipt.balance_updates;
-  liquidity_baking_toggle_ema : Per_block_votes.Liquidity_baking_toggle_EMA.t;
-  adaptive_issuance_vote_ema : Per_block_votes.Adaptive_issuance_launch_EMA.t;
-  adaptive_issuance_launch_cycle : Cycle.t option;
+  liquidity_baking_toggle_ema : Liquidity_baking.Toggle_EMA.t;
   implicit_operations_results : packed_successful_manager_operation_result list;
   dal_attestation : Dal.Attestation.t option;
 }
 
-let block_metadata_encoding ~use_legacy_attestation_name =
+let block_metadata_encoding =
   let open Data_encoding in
-  def
-    (if use_legacy_attestation_name then
-     "block_header.alpha.metadata_with_legacy_attestation_name"
-    else "block_header.alpha.metadata")
+  def "block_header.alpha.metadata"
   @@ conv
        (fun {
               proposer =
@@ -2699,8 +2514,6 @@ let block_metadata_encoding ~use_legacy_attestation_name =
               deactivated;
               balance_updates;
               liquidity_baking_toggle_ema;
-              adaptive_issuance_vote_ema;
-              adaptive_issuance_launch_cycle;
               implicit_operations_results;
               dal_attestation;
             } ->
@@ -2712,13 +2525,9 @@ let block_metadata_encoding ~use_legacy_attestation_name =
              deactivated,
              balance_updates,
              liquidity_baking_toggle_ema,
-             adaptive_issuance_vote_ema,
-             adaptive_issuance_launch_cycle ),
-           ( implicit_operations_results,
-             proposer_active_key,
-             baker_active_key,
-             consumed_gas,
-             dal_attestation ) ))
+             implicit_operations_results ),
+           (proposer_active_key, baker_active_key, consumed_gas, dal_attestation)
+         ))
        (fun ( ( proposer,
                 baker,
                 level_info,
@@ -2727,10 +2536,8 @@ let block_metadata_encoding ~use_legacy_attestation_name =
                 deactivated,
                 balance_updates,
                 liquidity_baking_toggle_ema,
-                adaptive_issuance_vote_ema,
-                adaptive_issuance_launch_cycle ),
-              ( implicit_operations_results,
-                proposer_active_key,
+                implicit_operations_results ),
+              ( proposer_active_key,
                 baker_active_key,
                 consumed_gas,
                 dal_attestation ) ) ->
@@ -2744,36 +2551,25 @@ let block_metadata_encoding ~use_legacy_attestation_name =
            deactivated;
            balance_updates;
            liquidity_baking_toggle_ema;
-           adaptive_issuance_vote_ema;
-           adaptive_issuance_launch_cycle;
            implicit_operations_results;
            dal_attestation;
          })
        (merge_objs
-          (obj10
+          (obj9
              (req "proposer" Signature.Public_key_hash.encoding)
              (req "baker" Signature.Public_key_hash.encoding)
              (req "level_info" Level.encoding)
              (req "voting_period_info" Voting_period.info_encoding)
              (req "nonce_hash" (option Nonce_hash.encoding))
              (req "deactivated" (list Signature.Public_key_hash.encoding))
-             (dft
-                "balance_updates"
-                (if use_legacy_attestation_name then
-                 Receipt.balance_updates_encoding_with_legacy_attestation_name
-                else Receipt.balance_updates_encoding)
-                [])
+             (dft "balance_updates" Receipt.balance_updates_encoding [])
              (req
                 "liquidity_baking_toggle_ema"
-                Per_block_votes.Liquidity_baking_toggle_EMA.encoding)
-             (req
-                "adaptive_issuance_vote_ema"
-                Per_block_votes.Adaptive_issuance_launch_EMA.encoding)
-             (opt "adaptive_issuance_activation_cycle" Cycle.encoding))
-          (obj5
+                Liquidity_baking.Toggle_EMA.encoding)
              (req
                 "implicit_operations_results"
-                (list successful_manager_operation_result_encoding))
+                (list successful_manager_operation_result_encoding)))
+          (obj4
              (req "proposer_consensus_key" Signature.Public_key_hash.encoding)
              (req "baker_consensus_key" Signature.Public_key_hash.encoding)
              (req "consumed_milligas" Gas.Arith.n_fp_encoding)
@@ -2782,9 +2578,3 @@ let block_metadata_encoding ~use_legacy_attestation_name =
                 flag. This should be replaced by a required field once
                 the feature flag will be activated. *)
              (varopt "dal_attestation" Dal.Attestation.encoding)))
-
-let block_metadata_encoding_with_legacy_attestation_name =
-  block_metadata_encoding ~use_legacy_attestation_name:true
-
-let block_metadata_encoding =
-  block_metadata_encoding ~use_legacy_attestation_name:false

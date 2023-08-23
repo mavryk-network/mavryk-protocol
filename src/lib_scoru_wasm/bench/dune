@@ -6,11 +6,11 @@
  (package octez-smart-rollup-wasm-benchmark-lib)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
+  tezos-base
   tezt
-  octez-libs.tezos-webassembly-interpreter
-  octez-libs.tezos-context.memory
-  octez-libs.tezos-scoru-wasm
+  tezos-webassembly-interpreter
+  tezos-context.memory
+  tezos-scoru-wasm
   tezos-scoru-wasm-helpers
   lwt.unix)
  (preprocess (pps ppx_deriving.show))

@@ -27,6 +27,8 @@ let default_warnings = Defaults.warnings
 
 let default_warn_error = "-a+8"
 
+let () = Clflags.unsafe_string := false
+
 (** Override the default 'Env.Persistent_signature.load'
     with a lookup in locally defined hashtable.
 *)
@@ -138,7 +140,7 @@ type driver = {
 let parse_options errflag s =
   Option.iter Location.(prerr_alert none) (Warnings.parse_options errflag s)
 
-let main {compile_ml; pack_objects; link_shared} version =
+let main {compile_ml; pack_objects; link_shared} =
   Random.self_init () ;
   parse_options false default_warnings ;
   parse_options true default_warn_error ;
@@ -171,7 +173,7 @@ let main {compile_ml; pack_objects; link_shared} version =
       ( "--version",
         Unit
           (fun () ->
-            Format.printf "%s\n" version ;
+            Format.printf "%s\n" Tezos_version.Bin_version.version_string ;
             Stdlib.exit 0),
         " Display version information" );
       ( "-warning",

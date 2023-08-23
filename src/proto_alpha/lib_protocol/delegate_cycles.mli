@@ -28,7 +28,7 @@
 (** Per-cycle management of delegates. *)
 
 (** Trigger the context maintenance at the end of cycle 'n', i.e.:
-    unfreeze the attesting rewards, potentially deactivate delegates.
+    unfreeze the endorsing rewards, potentially deactivate delegates.
     Return the corresponding balances updates and the list of
     deactivated delegates. *)
 val cycle_end :
@@ -40,9 +40,12 @@ val cycle_end :
   tzresult
   Lwt.t
 
-(** [init_first_cycles ctxt] computes and records the distribution of
+(** [init_first_cycles ctxt ~origin] computes and records the distribution of
     the total active stake among active delegates. This concerns the total
     active stake involved in the calculation of baking rights for all cycles
     in the range [0, preserved_cycles]. It also freezes the deposits for all
     the active delegates. *)
-val init_first_cycles : Raw_context.t -> Raw_context.t tzresult Lwt.t
+val init_first_cycles :
+  Raw_context.t ->
+  origin:Receipt_repr.update_origin ->
+  (Raw_context.t * Receipt_repr.balance_updates) tzresult Lwt.t

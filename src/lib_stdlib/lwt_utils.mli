@@ -3,7 +3,6 @@
 (* Open Source License                                                       *)
 (* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
 (* Copyright (c) 2018-2021 Nomadic Labs, <contact@nomadic-labs.com>          *)
-(* Copyright (c) 2023 Trili Tech <contact@trili.tech>                        *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -24,8 +23,6 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-
-exception None_successful of string
 
 val never_ending : unit -> 'a Lwt.t
 
@@ -61,12 +58,3 @@ val worker :
   run:(unit -> unit Lwt.t) ->
   cancel:(unit -> unit Lwt.t) ->
   unit Lwt.t
-
-(** [pick_successful promises] succeeds when it picks the first successful
-    promise. On finding a successful promise, an attempt will be made to 
-    cancel all pending promises.
-    @raise None_successful exception when all [promises] are rejected.
-
-    @raise Invalid_argument exception if initial [promises] list is empty.
-  *)
-val pick_successful : 'a Lwt.t list -> 'a Lwt.t

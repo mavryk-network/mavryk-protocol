@@ -11,5 +11,4 @@ semgrep \
   -c scripts/semgrep/ \
   --exclude "src/proto_[0-9]*/lib_protocol/*.ml*" \
   --exclude "src/lib_webassembly/*" \
-  --exclude "src/bin_testnet_scenarios/*" \
   src/

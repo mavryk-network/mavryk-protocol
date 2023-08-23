@@ -6,26 +6,25 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-base
-  octez-libs.tezos-base-test-helpers
+  tezos-base
+  tezos-base-test-helpers
   tezos-store
   tezos-store.shared
-  octez-libs.tezos-context
+  tezos-context
   tezos-context-ops
-  octez-libs.tezos-shell-context
+  tezos-shell-context
   tezos-protocol-updater
-  octez-libs.tezos-p2p
-  octez-libs.tezos-p2p-services
-  octez-libs.tezos-requester
+  tezos-p2p
+  tezos-p2p-services
+  tezos-requester
   tezos-shell
-  octez-libs.tezos-shell-services
+  tezos-shell-services
   tezos-embedded-protocol-demo-noops
-  octez-libs.tezos-stdlib-unix
+  tezos-stdlib-unix
   tezos-validation
-  octez-libs.tezos-event-logging-test-helpers
-  octez-libs.tezos-test-helpers
-  octez-alcotezt
-  tezos-version.value)
+  tezos-event-logging-test-helpers
+  tezos-test-helpers
+  octez-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -56,7 +55,6 @@
   test_node
   test_peer_validator
   test_prevalidation
-  test_prevalidator_bounding
   test_prevalidator_classification
   test_prevalidator_classification_operations
   test_prevalidator_pending_operations

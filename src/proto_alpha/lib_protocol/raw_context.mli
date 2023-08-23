@@ -89,16 +89,14 @@ val prepare :
   level:Int32.t ->
   predecessor_timestamp:Time.t ->
   timestamp:Time.t ->
-  adaptive_issuance_enable:bool ->
   Context.t ->
   t tzresult Lwt.t
 
-type previous_protocol = Genesis of Parameters_repr.t | Oxford_018
+type previous_protocol = Genesis of Parameters_repr.t | Nairobi_017
 
 val prepare_first_block :
   level:int32 ->
   timestamp:Time.t ->
-  Chain_id.t ->
   Context.t ->
   (previous_protocol * t) tzresult Lwt.t
 
@@ -115,6 +113,8 @@ val predecessor_timestamp : t -> Time.t
 val current_timestamp : t -> Time.t
 
 val constants : t -> Constants_parametric_repr.t
+
+val tx_rollup : t -> Constants_parametric_repr.tx_rollup
 
 val sc_rollup : t -> Constants_parametric_repr.sc_rollup
 
@@ -282,26 +282,10 @@ val sampler_for_cycle :
 (* The stake distribution is stored both in [t] and in the cache. It
    may be sufficient to only store it in the cache. *)
 val stake_distribution_for_current_cycle :
-  t -> Stake_repr.t Signature.Public_key_hash.Map.t tzresult
+  t -> Tez_repr.t Signature.Public_key_hash.Map.t tzresult
 
 val init_stake_distribution_for_current_cycle :
-  t -> Stake_repr.t Signature.Public_key_hash.Map.t -> t
-
-(** Returns the reward coefficient for the current cycle
-    This value is equal to the value in {!Storage.Issuance_coeff} if it exists,
-    or equal to [Q.one] otherwise. *)
-val reward_coeff_for_current_cycle : t -> Q.t
-
-(** Updates the reward coefficient for the current cycle.
-    This update should only be called once per cycle. It is done in
-    [Adaptive_issuance_storage] *)
-val update_reward_coeff_for_current_cycle : t -> Q.t -> t
-
-(** Returns true if adaptive issuance has launched. *)
-val adaptive_issuance_enable : t -> bool
-
-(** Set the feature flag of adaptive issuance. *)
-val set_adaptive_issuance_enable : t -> t
+  t -> Tez_repr.t Signature.Public_key_hash.Map.t -> t
 
 module Internal_for_tests : sig
   val add_level : t -> int -> t
@@ -322,86 +306,72 @@ module type CONSENSUS = sig
 
   type consensus_pk
 
-  (** Returns a map where each attester's pkh is associated to the
-     list of its attesting slots (in decreasing order) for a given
+  (** Returns a map where each endorser's pkh is associated to the
+     list of its endorsing slots (in decreasing order) for a given
      level. *)
-  val allowed_attestations : t -> (consensus_pk * int) slot_map option
+  val allowed_endorsements : t -> (consensus_pk * int) slot_map option
 
-  (** Returns a map where each attester's pkh is associated to the
-     list of its attesting slots (in decreasing order) for a given
+  (** Returns a map where each endorser's pkh is associated to the
+     list of its endorsing slots (in decreasing order) for a given
      level. *)
-  val allowed_preattestations : t -> (consensus_pk * int) slot_map option
-
-  (** Returns the set of delegates that are not allowed to bake or
-      attest blocks; i.e., delegates which have zero frozen deposit
-      due to a previous slashing. *)
-  val forbidden_delegates : t -> Signature.Public_key_hash.Set.t
+  val allowed_preendorsements : t -> (consensus_pk * int) slot_map option
 
   (** Missing pre-computed map by first slot. This error should not happen. *)
   type error += Slot_map_not_found of {loc : string}
 
-  (** [attestation power ctx] returns the attestation power of the
+  (** [endorsement power ctx] returns the endorsement power of the
      current block. *)
-  val current_attestation_power : t -> int
+  val current_endorsement_power : t -> int
 
-  (** Initializes the map of allowed attestations and preattestations, this
-      function must be called only once and before applying any consensus
-      operation. *)
+  (** Initializes the map of allowed endorsements and preendorsements,
+     this function must be called only once and before applying
+     any consensus operation.  *)
   val initialize_consensus_operation :
     t ->
-    allowed_attestations:(consensus_pk * int) slot_map option ->
-    allowed_preattestations:(consensus_pk * int) slot_map option ->
+    allowed_endorsements:(consensus_pk * int) slot_map option ->
+    allowed_preendorsements:(consensus_pk * int) slot_map option ->
     t
 
-  (** [record_attestation ctx ~initial_slot ~power] records an
-     attestation for the current block.
+  (** [record_endorsement ctx ~initial_slot ~power] records an
+     endorsement for the current block.
 
-      The attestation should be valid in the sense that
-      [Int_map.find_opt initial_slot allowed_attestation ctx = Some
+      The endorsement should be valid in the sense that
+      [Int_map.find_opt initial_slot allowed_endorsement ctx = Some
       (pkh, power)].  *)
-  val record_attestation : t -> initial_slot:slot -> power:int -> t tzresult
+  val record_endorsement : t -> initial_slot:slot -> power:int -> t tzresult
 
-  (** [record_preattestation ctx ~initial_slot ~power round
-     payload_hash power] records a preattestation for a proposal at
+  (** [record_preendorsement ctx ~initial_slot ~power round
+     payload_hash power] records a preendorsement for a proposal at
      [round] with payload [payload_hash].
 
-      The preattestation should be valid in the sense that
-     [Int_map.find_opt initial_slot allowed_preattestation ctx = Some
+      The preendorsement should be valid in the sense that
+     [Int_map.find_opt initial_slot allowed_preendorsement ctx = Some
      (pkh, power)].  *)
-  val record_preattestation :
+  val record_preendorsement :
     t -> initial_slot:slot -> power:int -> round -> t tzresult
 
-  (** [forbid_delegate ctx delegate] adds [delegate] to the set of
-      forbidden delegates, which prevents this delegate from baking or
-      attesting. *)
-  val forbid_delegate : t -> Signature.Public_key_hash.t -> t
+  val endorsements_seen : t -> slot_set
 
-  (** [set_forbidden_delegate ctx delegates] sets [delegates] as the
-      current forbidden delegates. *)
-  val set_forbidden_delegates : t -> Signature.Public_key_hash.Set.t -> t
-
-  val attestations_seen : t -> slot_set
-
-  (** [get_preattestations_quorum_round ctx] returns [None] if no
-     preattestation are included in the current block. Otherwise,
-     return [Some r] where [r] is the round of the preattestations
+  (** [get_preendorsements_quorum_round ctx] returns [None] if no
+     preendorsement are included in the current block. Otherwise,
+     return [Some r] where [r] is the round of the preendorsements
      included in the block. *)
-  val get_preattestations_quorum_round : t -> round option
+  val get_preendorsements_quorum_round : t -> round option
 
-  (** [set_preattestations_quorum_round ctx round] sets the round for
-     preattestations included in this block. This function should be
+  (** [set_preendorsements_quorum_round ctx round] sets the round for
+     preendorsements included in this block. This function should be
      called only once.
 
       This function is only used in [Full_construction] mode.  *)
-  val set_preattestations_quorum_round : t -> round -> t
+  val set_preendorsements_quorum_round : t -> round -> t
 
   (** [locked_round_evidence ctx] returns the round of the recorded
-     preattestations as well as their power. *)
+     preendorsements as well as their power. *)
   val locked_round_evidence : t -> (round * int) option
 
-  val set_attestation_branch : t -> Block_hash.t * Block_payload_hash.t -> t
+  val set_endorsement_branch : t -> Block_hash.t * Block_payload_hash.t -> t
 
-  val attestation_branch : t -> (Block_hash.t * Block_payload_hash.t) option
+  val endorsement_branch : t -> (Block_hash.t * Block_payload_hash.t) option
 end
 
 module Consensus :
@@ -412,6 +382,14 @@ module Consensus :
      and type slot_set := Slot_repr.Set.t
      and type round := Round_repr.t
      and type consensus_pk := consensus_pk
+
+module Tx_rollup : sig
+  val add_message :
+    t ->
+    Tx_rollup_repr.t ->
+    Tx_rollup_message_hash_repr.t ->
+    t * Tx_rollup_inbox_repr.Merkle.root
+end
 
 module Sc_rollup_in_memory_inbox : sig
   val current_messages : t -> Sc_rollup_inbox_merkelized_payload_hashes_repr.t

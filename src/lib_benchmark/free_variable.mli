@@ -34,8 +34,6 @@ val of_string : string -> t
 
 val to_string : t -> string
 
-val encoding : t Data_encoding.t
-
 val of_namespace : Namespace.t -> t
 
 val to_namespace : t -> Namespace.t
@@ -46,11 +44,7 @@ val pp_short : Format.formatter -> t -> unit
 
 module Table : Hashtbl.S with type key = t
 
-module Map : sig
-  include Map.S with type key = t
-
-  val encoding : 'a Data_encoding.t -> 'a t Data_encoding.t
-end
+module Map : Map.S with type key = t
 
 module Set : sig
   include Set.S with type elt = t

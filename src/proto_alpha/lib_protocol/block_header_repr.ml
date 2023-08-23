@@ -30,7 +30,8 @@ type contents = {
   payload_round : Round_repr.t;
   seed_nonce_hash : Nonce_hash.t option;
   proof_of_work_nonce : bytes;
-  per_block_votes : Per_block_votes_repr.per_block_votes;
+  liquidity_baking_toggle_vote :
+    Liquidity_baking_repr.liquidity_baking_toggle_vote;
 }
 
 type protocol_data = {contents : contents; signature : Signature.t}
@@ -69,84 +70,42 @@ let of_watermark = function
 
 let contents_encoding =
   let open Data_encoding in
-  let json =
-    conv
-      (fun {
-             payload_hash;
-             payload_round;
-             seed_nonce_hash;
-             proof_of_work_nonce;
-             per_block_votes = {liquidity_baking_vote; adaptive_issuance_vote};
-           } ->
-        ( payload_hash,
-          payload_round,
-          proof_of_work_nonce,
-          seed_nonce_hash,
-          liquidity_baking_vote,
-          adaptive_issuance_vote ))
-      (fun ( payload_hash,
-             payload_round,
-             proof_of_work_nonce,
-             seed_nonce_hash,
-             liquidity_baking_vote,
-             adaptive_issuance_vote ) ->
-        {
-          payload_hash;
-          payload_round;
-          seed_nonce_hash;
-          proof_of_work_nonce;
-          per_block_votes = {liquidity_baking_vote; adaptive_issuance_vote};
-        })
-      (obj6
-         (req "payload_hash" Block_payload_hash.encoding)
-         (req "payload_round" Round_repr.encoding)
-         (req
-            "proof_of_work_nonce"
-            (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
-         (opt "seed_nonce_hash" Nonce_hash.encoding)
-         (req
-            "liquidity_baking_toggle_vote"
-            Per_block_votes_repr.liquidity_baking_vote_encoding)
-         (req
-            "adaptive_issuance_vote"
-            Per_block_votes_repr.adaptive_issuance_vote_encoding))
-  in
-  let binary =
-    conv
-      (fun {
-             payload_hash;
-             payload_round;
-             seed_nonce_hash;
-             proof_of_work_nonce;
-             per_block_votes;
-           } ->
-        ( payload_hash,
-          payload_round,
-          proof_of_work_nonce,
-          seed_nonce_hash,
-          per_block_votes ))
-      (fun ( payload_hash,
-             payload_round,
-             proof_of_work_nonce,
-             seed_nonce_hash,
-             per_block_votes ) ->
-        {
-          payload_hash;
-          payload_round;
-          seed_nonce_hash;
-          proof_of_work_nonce;
-          per_block_votes;
-        })
-      (obj5
-         (req "payload_hash" Block_payload_hash.encoding)
-         (req "payload_round" Round_repr.encoding)
-         (req
-            "proof_of_work_nonce"
-            (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
-         (opt "seed_nonce_hash" Nonce_hash.encoding)
-         (req "per_block_votes" Per_block_votes_repr.per_block_votes_encoding))
-  in
-  def "block_header.alpha.unsigned_contents" @@ splitted ~binary ~json
+  def "block_header.alpha.unsigned_contents"
+  @@ conv
+       (fun {
+              payload_hash;
+              payload_round;
+              seed_nonce_hash;
+              proof_of_work_nonce;
+              liquidity_baking_toggle_vote;
+            } ->
+         ( payload_hash,
+           payload_round,
+           proof_of_work_nonce,
+           seed_nonce_hash,
+           liquidity_baking_toggle_vote ))
+       (fun ( payload_hash,
+              payload_round,
+              proof_of_work_nonce,
+              seed_nonce_hash,
+              liquidity_baking_toggle_vote ) ->
+         {
+           payload_hash;
+           payload_round;
+           seed_nonce_hash;
+           proof_of_work_nonce;
+           liquidity_baking_toggle_vote;
+         })
+       (obj5
+          (req "payload_hash" Block_payload_hash.encoding)
+          (req "payload_round" Round_repr.encoding)
+          (req
+             "proof_of_work_nonce"
+             (Fixed.bytes Hex Constants_repr.proof_of_work_nonce_size))
+          (opt "seed_nonce_hash" Nonce_hash.encoding)
+          (req
+             "liquidity_baking_toggle_vote"
+             Liquidity_baking_repr.liquidity_baking_toggle_vote_encoding))
 
 let protocol_data_encoding =
   let open Data_encoding in
@@ -205,11 +164,7 @@ let max_header_length =
       proof_of_work_nonce =
         Bytes.make Constants_repr.proof_of_work_nonce_size '0';
       seed_nonce_hash = Some Nonce_hash.zero;
-      per_block_votes =
-        {
-          liquidity_baking_vote = Per_block_vote_pass;
-          adaptive_issuance_vote = Per_block_vote_pass;
-        };
+      liquidity_baking_toggle_vote = LB_pass;
     }
   in
   Data_encoding.Binary.length

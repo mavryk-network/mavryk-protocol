@@ -53,11 +53,7 @@ module Types = struct
   type attestable_slots = Attestable_slots of slot_set | Not_in_committee
 
   type header_status =
-    [ `Waiting_attestation
-    | `Attested
-    | `Unattested
-    | `Not_selected
-    | `Unseen_or_not_finalized ]
+    [`Waiting_attestation | `Attested | `Unattested | `Not_selected | `Unseen]
 
   type shard_index = int
 
@@ -67,13 +63,7 @@ module Types = struct
     status : header_status;
   }
 
-  type operator_profile =
-    | Attestor of Tezos_crypto.Signature.public_key_hash
-    | Producer of {slot_index : int}
-
-  type operator_profiles = operator_profile list
-
-  type profiles = Bootstrap | Operator of operator_profiles
+  type profile = Attestor of Tezos_crypto.Signature.public_key_hash
 
   type with_proof = {with_proof : bool}
 
@@ -141,11 +131,11 @@ module Types = struct
           (function `Not_selected -> Some () | _ -> None)
           (function () -> `Not_selected);
         case
-          ~title:"unseen_or_not_finalized"
+          ~title:"unseen"
           (Tag 4)
           (obj1 (req "status" (constant "unseen")))
-          (function `Unseen_or_not_finalized -> Some () | _ -> None)
-          (function () -> `Unseen_or_not_finalized);
+          (function `Unseen -> Some () | _ -> None)
+          (function () -> `Unseen);
       ]
 
   let slot_header_encoding =
@@ -159,7 +149,10 @@ module Types = struct
             (obj1 (req "commitment" Cryptobox.Commitment.encoding))
             header_status_encoding))
 
-  let operator_profile_encoding =
+  let equal_profile (Attestor p1) (Attestor p2) =
+    Tezos_crypto.Signature.Public_key_hash.( = ) p1 p2
+
+  let profile_encoding =
     let open Data_encoding in
     union
       [
@@ -171,37 +164,8 @@ module Types = struct
              (req
                 "public_key_hash"
                 Tezos_crypto.Signature.Public_key_hash.encoding))
-          (function Attestor attest -> Some ((), attest) | _ -> None)
+          (function Attestor attest -> Some ((), attest))
           (function (), attest -> Attestor attest);
-        case
-          ~title:"Slot producer"
-          (Tag 1)
-          (obj2 (req "kind" (constant "producer")) (req "slot_index" int31))
-          (function
-            | Producer {slot_index} -> Some ((), slot_index) | _ -> None)
-          (function (), slot_index -> Producer {slot_index});
-      ]
-
-  let profiles_encoding =
-    let open Data_encoding in
-    union
-      [
-        case
-          ~title:"Boostrap node"
-          (Tag 1)
-          (obj1 (req "kind" (constant "bootstrap")))
-          (function Bootstrap -> Some () | _ -> None)
-          (function () -> Bootstrap);
-        case
-          ~title:"Operator"
-          (Tag 2)
-          (obj2
-             (req "kind" (constant "operator"))
-             (req "operator_profiles" (list operator_profile_encoding)))
-          (function
-            | Operator operator_profiles -> Some ((), operator_profiles)
-            | _ -> None)
-          (function (), operator_profiles -> Operator operator_profiles);
       ]
 
   let with_proof_encoding =
@@ -368,28 +332,25 @@ let get_published_level_headers :
     ~output:(Data_encoding.list Types.slot_header_encoding)
     Tezos_rpc.Path.(open_root / "levels" /: Tezos_rpc.Arg.int32 / "headers")
 
-let patch_profiles :
+let patch_profile :
     < meth : [`PATCH]
-    ; input : Types.operator_profiles
+    ; input : Types.profile
     ; output : unit
     ; prefix : unit
     ; params : unit
     ; query : unit >
     service =
   Tezos_rpc.Service.patch_service
-    ~description:
-      "Update the list of profiles tracked by the DAL node. Note that it does \
-       not take the bootstrap profile as it is incompatible with other \
-       profiles."
+    ~description:"Update the list of profiles tracked by the DAL node"
     ~query:Tezos_rpc.Query.empty
-    ~input:(Data_encoding.list Types.operator_profile_encoding)
+    ~input:Types.profile_encoding
     ~output:Data_encoding.unit
     Tezos_rpc.Path.(open_root / "profiles")
 
 let get_profiles :
     < meth : [`GET]
     ; input : unit
-    ; output : Types.profiles
+    ; output : Types.profile list
     ; prefix : unit
     ; params : unit
     ; query : unit >
@@ -397,7 +358,7 @@ let get_profiles :
   Tezos_rpc.Service.get_service
     ~description:"Return the list of current profiles tracked by the DAL node"
     ~query:Tezos_rpc.Query.empty
-    ~output:Types.profiles_encoding
+    ~output:(Data_encoding.list Types.profile_encoding)
     Tezos_rpc.Path.(open_root / "profiles")
 
 let get_assigned_shard_indices :

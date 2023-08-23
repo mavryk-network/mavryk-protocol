@@ -6,9 +6,9 @@
  (public_name tezos-webassembly-interpreter-extra)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-webassembly-interpreter
+  tezos-webassembly-interpreter
   lwt.unix
-  octez-libs.tezos-lazy-containers)
+  tezos-lazy-containers)
  (flags
   (:standard)
   -open Tezos_webassembly_interpreter

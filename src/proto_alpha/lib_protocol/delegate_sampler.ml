@@ -151,26 +151,50 @@ let load_sampler_for_cycle ctxt cycle =
   in
   return ctxt
 
-let get_delegate_stake_from_staking_balance ctxt delegate staking_balance =
-  let open Lwt_result_syntax in
-  let* staking_parameters =
-    Delegate_staking_parameters.of_delegate ctxt delegate
-  in
-  Lwt.return
-    (Stake_context.apply_limits ctxt staking_parameters staking_balance)
-
 let get_stakes_for_selected_index ctxt index =
   let open Lwt_result_syntax in
+  let frozen_deposits_percentage =
+    Int64.of_int @@ Constants_storage.frozen_deposits_percentage ctxt
+  in
+  let*? overflow_bound = Tez_repr.(max_mutez /? 100L) in
   Stake_storage.fold_snapshot
     ctxt
     ~index
     ~f:(fun (delegate, staking_balance) (acc, total_stake) ->
-      let* stake_for_cycle =
-        get_delegate_stake_from_staking_balance ctxt delegate staking_balance
+      let delegate_contract = Contract_repr.Implicit delegate in
+      let open Tez_repr in
+      let* frozen_deposits_limit =
+        Delegate_storage.frozen_deposits_limit ctxt delegate
       in
-      let*? total_stake = Stake_repr.(total_stake +? stake_for_cycle) in
+      let* balance_and_frozen_bonds =
+        Contract_storage.get_balance_and_frozen_bonds ctxt delegate_contract
+      in
+      let* frozen_deposits =
+        Frozen_deposits_storage.get ctxt delegate_contract
+      in
+      let*? total_balance =
+        balance_and_frozen_bonds +? frozen_deposits.current_amount
+      in
+      let* stake_for_cycle =
+        let frozen_deposits_limit =
+          match frozen_deposits_limit with Some fdp -> fdp | None -> max_mutez
+        in
+        let aux = min total_balance frozen_deposits_limit in
+        if aux <= overflow_bound then
+          let*? aux = aux *? 100L in
+          let*? v = aux /? frozen_deposits_percentage in
+          return (min v staking_balance)
+        else
+          let*? sbal = staking_balance /? 100L in
+          let*? a = aux /? frozen_deposits_percentage in
+          if sbal <= a then return staking_balance
+          else
+            let*? r = max_mutez /? frozen_deposits_percentage in
+            return r
+      in
+      let*? total_stake = Tez_repr.(total_stake +? stake_for_cycle) in
       return ((delegate, stake_for_cycle) :: acc, total_stake))
-    ~init:([], Stake_repr.zero)
+    ~init:([], Tez_repr.zero)
 
 let compute_snapshot_index_for_seed ~max_snapshot_index seed =
   let rd = Seed_repr.initialize_new seed [Bytes.of_string "stake_snapshot"] in
@@ -198,7 +222,7 @@ let select_distribution_for_cycle ctxt cycle =
   List.fold_left_es
     (fun acc (pkh, stake) ->
       Delegate_consensus_key.active_pubkey_for_cycle ctxt pkh cycle
-      >|=? fun pk -> (pk, Stake_context.staking_weight ctxt stake) :: acc)
+      >|=? fun pk -> (pk, Tez_repr.to_mutez stake) :: acc)
     []
     stakes
   >>=? fun stakes_pk ->
@@ -219,28 +243,3 @@ let clear_outdated_sampling_data ctxt ~new_cycle =
   | Some outdated_cycle ->
       Delegate_sampler_state.remove_existing ctxt outdated_cycle
       >>=? fun ctxt -> Seed_storage.remove_for_cycle ctxt outdated_cycle
-
-module For_RPC = struct
-  let delegate_baking_power_for_cycle ctxt cycle delegate =
-    let open Lwt_result_syntax in
-    let* max_snapshot_index = Stake_storage.max_snapshot_index ctxt in
-    let* seed = Seed_storage.raw_for_cycle ctxt cycle in
-    let* selected_index =
-      compute_snapshot_index_for_seed ~max_snapshot_index seed
-    in
-    let* stake =
-      Storage.Stake.Staking_balance.Snapshot.get ctxt (selected_index, delegate)
-    in
-    let* staking_parameters =
-      Delegate_staking_parameters.of_delegate ctxt delegate
-    in
-    Lwt.return @@ Stake_context.baking_weight ctxt staking_parameters stake
-
-  let delegate_current_baking_power ctxt delegate =
-    let open Lwt_result_syntax in
-    let* stake = Storage.Stake.Staking_balance.get ctxt delegate in
-    let* staking_parameters =
-      Delegate_staking_parameters.of_delegate ctxt delegate
-    in
-    Lwt.return @@ Stake_context.baking_weight ctxt staking_parameters stake
-end

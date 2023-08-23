@@ -65,14 +65,11 @@ module type Mocked_services_hooks = sig
      endorsements. Invariant: the stream becomes empty when the node changes
      head. *)
   val monitor_operations :
-    version:Block_services.version ->
-    validated:bool ->
+    applied:bool ->
     branch_delayed:bool ->
     branch_refused:bool ->
     refused:bool ->
-    (Block_services.version
-    * ((Operation_hash.t * Mockup.M.Protocol.operation) * error trace option)
-      list)
+    ((Operation_hash.t * Mockup.M.Protocol.operation) * error trace option) list
     Tezos_rpc.Answer.stream
 
   (** Lists block hashes from the chain, up to the last checkpoint, sorted
@@ -188,10 +185,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.Operations.operations
-         (fun (((), _chain), block) q () ->
-           let open Lwt_result_syntax in
-           let* ops = Hooks.operations block in
-           return (q#version, ops))
+         (fun (((), _chain), block) _ () -> Hooks.operations block)
 
   let hash =
     Directory.prefix
@@ -263,9 +257,11 @@ module Make (Hooks : Mocked_services_hooks) = struct
       Directory.empty
       (Mockup.M.Block_services.S.Mempool.pending_operations
       @@ Block_services.mempool_path Block_services.chain_path)
-      (fun ((), _chain) params () ->
+      (fun ((), _chain) _params () ->
         Hooks.pending_operations () >>= fun mempool ->
-        Tezos_rpc.Answer.return (params#version, mempool))
+        Mockup.M.Block_services.Mempool.pending_operations_version_dispatcher
+          ~version:1
+          mempool)
 
   let monitor_operations =
     Directory.gen_register
@@ -275,8 +271,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
       (fun ((), _chain) flags () ->
         let stream =
           Hooks.monitor_operations
-            ~version:flags#version
-            ~validated:flags#validated
+            ~applied:flags#applied
             ~branch_delayed:flags#branch_delayed
             ~branch_refused:flags#branch_refused
             ~refused:flags#refused

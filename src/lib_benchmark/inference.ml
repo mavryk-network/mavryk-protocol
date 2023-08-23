@@ -28,7 +28,7 @@ open Costlang
 open Maths
 module NMap = Stats.Finbij.Make (Free_variable)
 
-type constrnt = Full of Costlang.affine * measure
+type constrnt = Full of (Costlang.affine * measure)
 
 and measure = Measure of vector
 
@@ -48,16 +48,6 @@ type scores = {
   rmse_score : float;
   tvalues : (Free_variable.t * float) list;
 }
-
-let scores_encoding =
-  let open Data_encoding in
-  conv
-    (fun {r2_score; rmse_score; tvalues} -> (r2_score, rmse_score, tvalues))
-    (fun (r2_score, rmse_score, tvalues) -> {r2_score; rmse_score; tvalues})
-  @@ obj3
-       (req "r2_score" (option float))
-       (req "rmse_score" float)
-       (req "tvalues" (list (tup2 Free_variable.encoding float)))
 
 let pp_scores ppf {r2_score; rmse_score; tvalues} =
   let scores =
@@ -80,9 +70,9 @@ let pp_scores ppf {r2_score; rmse_score; tvalues} =
     ppf
     scores
 
-let scores_to_csv_column (local_model_name, bench_name) scores =
+let scores_to_csv_column (model_name, bench_name) scores =
   let {r2_score; rmse_score; tvalues} = scores in
-  let name = local_model_name ^ "-" ^ Namespace.to_string bench_name in
+  let name = model_name ^ "-" ^ Namespace.to_string bench_name in
   let table =
     (match r2_score with
     | None -> []
@@ -98,7 +88,6 @@ let scores_to_csv_column (local_model_name, bench_name) scores =
 type solution = {
   mapping : (Free_variable.t * float) list;
   weights : matrix;
-  intercept_lift : float;
   scores : scores;
 }
 
@@ -321,13 +310,14 @@ let problem_to_csv : problem -> Csv.csv = function
       let measured_csv = timing_matrix_to_csv "timings" measured in
       Csv.concat predicted_csv measured_csv
 
-let mapping_to_csv mapping =
-  let headers = List.map (fun (fv, _) -> fv_to_string fv) mapping in
-  let row = List.map (fun x -> Float.to_string (snd x)) mapping in
-  [headers; row]
-
-let solution_to_csv {mapping; _} =
-  if mapping = [] then None else Some (mapping_to_csv mapping)
+let solution_to_csv : solution -> Csv.csv option =
+ fun {mapping; _} ->
+  match mapping with
+  | [] -> None
+  | _ ->
+      let headers = List.map (fun (fv, _) -> fv_to_string fv) mapping
+      and row = List.map (fun x -> Float.to_string (snd x)) mapping in
+      Some [headers; row]
 
 (* -------------------------------------------------------------------------- *)
 (* Solving problems *)
@@ -396,9 +386,8 @@ let calculate_benchmark_scores ~input ~output =
           let arr = Matrix.row output r |> vector_to_array in
           Array.sort Float.compare arr ;
           (* Eliminate the upper 10% to reduce influence of GC *)
-          (* Don't eliminate when len <= 1 (e.g. allocation benchmark) *)
           let len = Array.length arr in
-          let q = if len <= 1 then len else len * 9 / 10 in
+          let q = len * 9 / 10 in
           Array.init q (fun i -> arr.(i)))
     in
     Maths.matrix_of_array_array arrs
@@ -427,22 +416,10 @@ let calculate_benchmark_scores ~input ~output =
   let params, tvalues = Pyinference.benchmark_score ~input ~output in
   (params |> of_scipy, tvalues |> of_scipy)
 
-let solve_problem : problem -> solver -> solution =
- fun problem solver ->
+let solve_problem : problem -> is_constant_input:bool -> solver -> solution =
+ fun problem ~is_constant_input solver ->
   let calculate_regression_scores ~output ~prediction =
     let r2_score =
-      (* The R^2 score for a constant input problem is uninformative,
-         and the score is usually negative, leading to a false positive alert.
-         We skip calculating the R^2 score for such problems. *)
-      let is_constant_input =
-        match problem with
-        | Degenerate _ -> false
-        | Non_degenerate {lines; _} ->
-            List.map (fun (Full (affine, _)) -> affine) lines
-            |> List.all_equal (fun v1 v2 ->
-                   Free_variable.Sparse_vec.equal v1.linear_comb v2.linear_comb
-                   && Float.equal v1.const v2.const)
-      in
       if is_constant_input then None else r2_score ~output ~prediction
     in
     let rmse_score = rmse_score ~output ~prediction in
@@ -453,7 +430,7 @@ let solve_problem : problem -> solver -> solution =
       let prediction = to_scipy predicted |> Scikit_matrix.to_numpy in
       let output = median_of_output measured in
       let scores = calculate_regression_scores ~output ~prediction in
-      {mapping = []; weights = empty_matrix; intercept_lift = 0.0; scores}
+      {mapping = []; weights = empty_matrix; scores}
   | Non_degenerate {input; output; nmap; _} ->
       let params, tvalues = calculate_benchmark_scores ~input ~output in
       let output = median_of_output output in
@@ -464,15 +441,6 @@ let solve_problem : problem -> solver -> solution =
         | NNLS -> nnls ~input ~output
       in
       let prediction = predict_output ~input ~weights in
-
-      (* The difference required to overestimate all measurements. *)
-      let intercept_lift =
-        let prediction = Scikit_matrix.of_numpy prediction |> of_scipy in
-        let output = vector_to_array (Matrix.col output 0) in
-        let prediction = vector_to_array (Matrix.col prediction 0) in
-        Array.map2 (fun o p -> o -. p) output prediction
-        |> Array.fold_left Float.max 0.0
-      in
 
       let regression_scores = calculate_regression_scores ~output ~prediction in
       let lines = Maths.row_dim weights in
@@ -516,9 +484,4 @@ let solve_problem : problem -> solver -> solution =
             nmap
             []
         in
-        {
-          mapping;
-          weights;
-          intercept_lift;
-          scores = {regression_scores with tvalues};
-        }
+        {mapping; weights; scores = {regression_scores with tvalues}}

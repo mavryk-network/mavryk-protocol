@@ -43,7 +43,7 @@
     The part of slashed amounts that goes to the author of the denunciation are
     not directly distributed to him. Tokens are transferred to a burning sink,
     then minted from an infinite source ( see `Double_signing_punishments,
-    and `Sc_rollup_refutation_rewards ).
+    `Tx_rollup_rejection_rewards and `Sc_rollup_refutation_rewards ).
     Again, this is an ANTI-PATTERN that should not be mimicked.
 *)
 
@@ -60,11 +60,8 @@ type container =
   | `Collected_commitments of Blinded_public_key_hash.t
     (** Pre-funded account waiting for the commited pkh and activation code to
         be revealed to unlock the funds *)
-  | `Frozen_deposits of Stake_repr.staker
-    (** Frozen tokens of a staker for consensus security deposits. *)
-  | `Unstaked_frozen_deposits of Stake_repr.staker * Cycle_repr.t
-    (** Frozen tokens of a contract that have been unstaked at the
-        given cycle. *)
+  | `Frozen_deposits of Signature.Public_key_hash.t
+    (** Frozen tokens of a delegate for consensus security deposits *)
   | `Block_fees  (** Current block's fees collection *)
   | `Frozen_bonds of Contract_repr.t * Bond_id_repr.t
     (** Frozen tokens of a contract for bond deposits (currently used by rollups) *)
@@ -80,11 +77,15 @@ type infinite_source =
   | `Initial_commitments
     (** Funding of Genesis' prefunded accounts requiring an activation *)
   | `Revelation_rewards  (** Seed nonce revelation rewards *)
-  | `Attesting_rewards  (** Consensus attesting rewards *)
+  | `Double_signing_evidence_rewards
+    (** Double signing denunciation rewards (consensus slashing redistribution) *)
+  | `Endorsing_rewards  (** Consensus endorsing rewards *)
   | `Baking_rewards  (** Consensus baking fixed rewards *)
   | `Baking_bonuses  (** Consensus baking variable bonus *)
   | `Minted  (** Generic source for test purpose *)
   | `Liquidity_baking_subsidies  (** Subsidy for liquidity-baking contract *)
+  | `Tx_rollup_rejection_rewards
+    (** Tx_rollup rejection rewards (slashing redistribution) *)
   | `Sc_rollup_refutation_rewards
     (** Sc_rollup refutation rewards (slashing redistribution) *) ]
 
@@ -95,8 +96,10 @@ type giver = [infinite_source | container]
 type infinite_sink =
   [ `Storage_fees  (** Fees burnt to compensate storage usage *)
   | `Double_signing_punishments  (** Consensus slashing *)
-  | `Lost_attesting_rewards of Signature.Public_key_hash.t * bool * bool
+  | `Lost_endorsing_rewards of Signature.Public_key_hash.t * bool * bool
     (** Consensus rewards not distributed because the participation of the delegate was too low. *)
+  | `Tx_rollup_rejection_punishments
+    (** Transactional rollups rejection slashing *)
   | `Sc_rollup_refutation_punishments  (** Smart rollups refutation slashing *)
   | `Burned  (** Generic sink mainly for test purpose *) ]
 
@@ -104,18 +107,20 @@ type infinite_sink =
     containers are considered to have infinite capacity. *)
 type receiver = [infinite_sink | container]
 
+(** [allocated ctxt container] returns a new context because of possible access
+    to carbonated data, and a boolean that is [true] when
+    [balance ctxt container] is guaranteed not to fail, and [false] when
+    [balance ctxt container] may fail. *)
+val allocated :
+  Raw_context.t -> container -> (Raw_context.t * bool) tzresult Lwt.t
+
 (** [balance ctxt container] returns a new context because of an access to
     carbonated data, and the balance associated to the token holder.
     This function may fail if [allocated ctxt container] returns [false].
     Returns an error with the message "get_balance" if [container] refers to an
-    originated contract that is not allocated.
-
-    This function is only defined on the few cases for which it is
-    actually needed. *)
+    originated contract that is not allocated. *)
 val balance :
-  Raw_context.t ->
-  [< `Block_fees | `Collected_commitments of Blinded_public_key_hash.t] ->
-  (Raw_context.t * Tez_repr.t) tzresult Lwt.t
+  Raw_context.t -> container -> (Raw_context.t * Tez_repr.t) tzresult Lwt.t
 
 (** [transfer_n ?origin ctxt givers receiver] transfers [amount] Tez from [giver] to
     [receiver] for each [(giver, amount)] pair in [givers], and returns a new
@@ -160,28 +165,3 @@ val transfer :
   [< receiver] ->
   Tez_repr.t ->
   (Raw_context.t * Receipt_repr.balance_updates) tzresult Lwt.t
-
-module Internal_for_tests : sig
-  (** [allocated ctxt container] returns a new context because of possible access
-    to carbonated data, and a boolean that is [true] when
-    [balance ctxt container] is guaranteed not to fail, and [false] when
-    [balance ctxt container] may fail. *)
-  val allocated :
-    Raw_context.t -> container -> (Raw_context.t * bool) tzresult Lwt.t
-
-  type container_with_balance =
-    [ `Contract of Contract_repr.t
-    | `Collected_commitments of Blinded_public_key_hash.t
-    | `Block_fees
-    | `Frozen_bonds of Contract_repr.t * Bond_id_repr.t ]
-
-  (** [balance ctxt container] returns a new context because of an access to
-    carbonated data, and the balance associated to the token holder.
-    This function may fail if [allocated ctxt container] returns [false].
-    Returns an error with the message "get_balance" if [container] refers to an
-    originated contract that is not allocated. *)
-  val balance :
-    Raw_context.t ->
-    [< container_with_balance] ->
-    (Raw_context.t * Tez_repr.t) tzresult Lwt.t
-end

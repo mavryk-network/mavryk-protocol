@@ -35,7 +35,6 @@ In turn protocol plugins may, for example:
 - implement some common operations that are customized for each
   protocol (e.g., :ref:`prevalidator_filters_nairobi`).
 
-.. _prevalidator_filters:
 .. _prevalidator_filters_nairobi:
 
 Prevalidator filters
@@ -51,11 +50,10 @@ the filters of the previous protocol. Notice that prevalidator filters are not
 mandatory, their absence does not break the Tezos blockchain protocol.
 
 The interface of the prevalidator plugin is described at the :package-api:`mempool plugin API
-<octez-libs/Tezos_base/Mempool/index.html>`.
+<tezos-protocol-plugin-alpha/Tezos_protocol_plugin_alpha/Mempool/index.html>`.
 
 The different kinds of prevalidator filters are described below.
 
-.. _fees_filter:
 .. _fees_filter_nairobi:
 
 Fees filter
@@ -73,7 +71,6 @@ configuration of your node.
 This filtering strategy is implemented in the ``prefilter`` (see
 :doc:`../shell/prevalidation`).
 
-.. _consensus_filter:
 .. _consensus_filter_nairobi:
 
 Consensus filter
@@ -100,7 +97,6 @@ block proposal as follows:
 This filtering strategy is implemented in the ``prefilter`` (see
 :doc:`../shell/prevalidation`).
 
-.. _precheck_filter:
 .. _precheck_filter_nairobi:
 
 Prechecking of manager operations
@@ -204,7 +200,6 @@ to be the smallest manager operation, with 126 Bytes, so there are at most
 512 * 1024 / 126 = 4161 manager operations per block.
 
 
-.. _active_filter_rpc:
 .. _active_filter_rpc_nairobi:
 
 Filters RPCs

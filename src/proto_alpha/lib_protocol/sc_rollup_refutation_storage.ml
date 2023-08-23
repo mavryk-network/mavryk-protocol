@@ -206,22 +206,19 @@ let get_conflict_point ctxt rollup staker1 staker2 =
     current_level
     commitment_period
 
-let find_game ctxt rollup stakers =
+let get_game ctxt rollup stakers =
   let open Lwt_result_syntax in
   let open Sc_rollup_game_repr.Index in
   let* ctxt, game_index =
     Store.Game.find ((ctxt, rollup), stakers.alice) stakers.bob
   in
   match game_index with
-  | None -> return (ctxt, None)
-  | Some game_hash -> Store.Game_info.find (ctxt, rollup) game_hash
-
-let get_game ctxt rollup stakers =
-  let open Lwt_result_syntax in
-  let* ctxt, game = find_game ctxt rollup stakers in
-  match game with
   | None -> tzfail Sc_rollup_no_game
-  | Some game -> return (game, ctxt)
+  | Some game_hash -> (
+      let* ctxt, game = Store.Game_info.find (ctxt, rollup) game_hash in
+      match game with
+      | Some game -> return (game, ctxt)
+      | None -> tzfail Sc_rollup_no_game)
 
 let create_game ctxt rollup stakers game =
   let open Lwt_result_syntax in
@@ -463,9 +460,6 @@ let game_move ctxt rollup ~player ~opponent ~step ~choice =
           game
           ~step
           ~choice
-          ~is_reveal_enabled:
-            (Sc_rollup_PVM_sig.is_reveal_enabled_predicate
-               (Constants_storage.sc_rollup_reveal_activation_level ctxt))
       in
       match move_result with
       | Either.Left game_result -> return (Some game_result, ctxt)
@@ -563,12 +557,11 @@ let apply_game_result ctxt rollup (stakers : Sc_rollup_game_repr.Index.t)
         let balances_updates = balance_updates_loser @ balance_updates_winner in
         return (ctxt, balances_updates)
     | Draw ->
-        let* ctxt = remove_game ctxt rollup stakers in
         let* ctxt, balances_updates_alice =
-          remove_if_staker_is_still_there ctxt rollup stakers.alice
+          Stake_storage.remove_staker ctxt rollup stakers.alice
         in
         let* ctxt, balances_updates_bob =
-          remove_if_staker_is_still_there ctxt rollup stakers.bob
+          Stake_storage.remove_staker ctxt rollup stakers.bob
         in
         return (ctxt, balances_updates_alice @ balances_updates_bob)
   in
@@ -626,28 +619,3 @@ let conflicting_stakers_uncarbonated ctxt rollup staker =
       | Error _ -> return conflicts)
     []
     stakers
-
-let migrate_clean_refutation_games ctxt =
-  let open Lwt_result_syntax in
-  let remove_unstaked_games rollup =
-    List.fold_left_es
-      (fun ctxt (Sc_rollup_game_repr.Index.{alice; bob} as stakers) ->
-        let* ctxt, alice_active =
-          Sc_rollup_staker_index_storage.is_staker ctxt rollup alice
-        in
-        let* ctxt, bob_active =
-          Sc_rollup_staker_index_storage.is_staker ctxt rollup bob
-        in
-        if (not alice_active) && not bob_active then
-          remove_game ctxt rollup stakers
-        else return ctxt)
-  in
-  let* rollups = Sc_rollup_storage.list_unaccounted ctxt in
-  List.fold_left_es
-    (fun ctxt rollup ->
-      let*! players =
-        Storage.Sc_rollup.Game_info.keys_unaccounted (ctxt, rollup)
-      in
-      remove_unstaked_games rollup ctxt players)
-    ctxt
-    rollups

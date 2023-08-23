@@ -26,7 +26,7 @@
 open Protocol
 open Alpha_context
 
-module Contract_entity = struct
+module ContractEntity = struct
   include Contract (* t, Compare, encoding *)
 
   let of_source s =
@@ -39,11 +39,11 @@ module Contract_entity = struct
   let name = "contract"
 end
 
-module Raw_contract_alias = Client_aliases.Alias (Contract_entity)
+module RawContractAlias = Client_aliases.Alias (ContractEntity)
 
-module Contract_alias = struct
+module ContractAlias = struct
   let find cctxt s =
-    Raw_contract_alias.find_opt cctxt s >>=? function
+    RawContractAlias.find_opt cctxt s >>=? function
     | Some v -> return (s, v)
     | None -> (
         Client_keys_v0.Public_key_hash.find_opt cctxt s >>=? function
@@ -60,7 +60,7 @@ module Contract_alias = struct
         Client_keys_v0.Public_key_hash.rev_find cctxt hash >>=? function
         | Some name -> return_some ("key:" ^ name)
         | None -> return_none)
-    | None -> Raw_contract_alias.rev_find cctxt c
+    | None -> RawContractAlias.rev_find cctxt c
 
   let get_contract cctxt s =
     match String.split ~limit:1 ':' s with
@@ -69,7 +69,7 @@ module Contract_alias = struct
 
   let autocomplete cctxt =
     Client_keys_v0.Public_key_hash.autocomplete cctxt >>=? fun keys ->
-    Raw_contract_alias.autocomplete cctxt >>=? fun contracts ->
+    RawContractAlias.autocomplete cctxt >>=? fun contracts ->
     return (List.map (( ^ ) "key:") keys @ contracts)
 
   let alias_param ?(name = "name") ?(desc = "existing contract alias") next =
@@ -95,7 +95,7 @@ module Contract_alias = struct
         find cctxt s >>= function
         | Ok v -> return v
         | Error k_errs -> (
-            Contract_entity.of_source s >>= function
+            ContractEntity.of_source s >>= function
             | Ok v -> return (s, v)
             | Error c_errs -> Lwt.return_error (k_errs @ c_errs)))
 
@@ -138,14 +138,14 @@ module Contract_alias = struct
 end
 
 let list_contracts cctxt =
-  Raw_contract_alias.load cctxt >>=? fun raw_contracts ->
+  RawContractAlias.load cctxt >>=? fun raw_contracts ->
   List.map_s (fun (n, v) -> Lwt.return ("", n, v)) raw_contracts
   >>= fun contracts ->
   Client_keys_v0.Public_key_hash.load cctxt >>=? fun keys ->
   (* List accounts (implicit contracts of identities) *)
   List.map_es
     (fun (n, v) ->
-      Raw_contract_alias.mem cctxt n >>=? fun mem ->
+      RawContractAlias.mem cctxt n >>=? fun mem ->
       let p = if mem then "key:" else "" in
       let v' = Contract.implicit_contract v in
       return (p, n, v'))

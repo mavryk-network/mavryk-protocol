@@ -27,11 +27,11 @@
 (** Tezos Protocol Implementation - Low level Repr. of Operations
 
     Defines kinds of operations that can be performed on chain:
-    - preattestation
-    - attestation
+    - preendorsement
+    - endorsement
     - double baking evidence
-    - double preattestation evidence
-    - double attestation evidence
+    - double preendorsing evidence
+    - double endorsing evidence
     - seed nonce revelation
     - account activation
     - proposal (see: [Voting_repr])
@@ -61,17 +61,17 @@
     list. *)
 
 module Kind : sig
-  type preattestation_consensus_kind = Preattestation_consensus_kind
+  type preendorsement_consensus_kind = Preendorsement_consensus_kind
 
-  type attestation_consensus_kind = Attestation_consensus_kind
+  type endorsement_consensus_kind = Endorsement_consensus_kind
 
   type 'a consensus =
-    | Preattestation_kind : preattestation_consensus_kind consensus
-    | Attestation_kind : attestation_consensus_kind consensus
+    | Preendorsement_kind : preendorsement_consensus_kind consensus
+    | Endorsement_kind : endorsement_consensus_kind consensus
 
-  type preattestation = preattestation_consensus_kind consensus
+  type preendorsement = preendorsement_consensus_kind consensus
 
-  type attestation = attestation_consensus_kind consensus
+  type endorsement = endorsement_consensus_kind consensus
 
   type dal_attestation = Dal_attestation_kind
 
@@ -82,11 +82,11 @@ module Kind : sig
   type 'a double_consensus_operation_evidence =
     | Double_consensus_operation_evidence
 
-  type double_attestation_evidence =
-    attestation_consensus_kind double_consensus_operation_evidence
+  type double_endorsement_evidence =
+    endorsement_consensus_kind double_consensus_operation_evidence
 
-  type double_preattestation_evidence =
-    preattestation_consensus_kind double_consensus_operation_evidence
+  type double_preendorsement_evidence =
+    preendorsement_consensus_kind double_consensus_operation_evidence
 
   type double_baking_evidence = Double_baking_evidence_kind
 
@@ -105,6 +105,8 @@ module Kind : sig
   type delegation = Delegation_kind
 
   type event = Event_kind
+
+  type set_deposits_limit = Set_deposits_limit_kind
 
   type increase_paid_storage = Increase_paid_storage_kind
 
@@ -150,6 +152,7 @@ module Kind : sig
     | Delegation_manager_kind : delegation manager
     | Event_manager_kind : event manager
     | Register_global_constant_manager_kind : register_global_constant manager
+    | Set_deposits_limit_manager_kind : set_deposits_limit manager
     | Increase_paid_storage_manager_kind : increase_paid_storage manager
     | Update_consensus_key_manager_kind : update_consensus_key manager
     | Transfer_ticket_manager_kind : transfer_ticket manager
@@ -169,18 +172,21 @@ module Kind : sig
 end
 
 type 'a consensus_operation_type =
-  | Attestation : Kind.attestation consensus_operation_type
-  | Preattestation : Kind.preattestation consensus_operation_type
+  | Endorsement : Kind.endorsement consensus_operation_type
+  | Preendorsement : Kind.preendorsement consensus_operation_type
+
+val pp_operation_kind :
+  Format.formatter -> 'kind consensus_operation_type -> unit
 
 type consensus_content = {
   slot : Slot_repr.t;
   (* By convention, this is the validator's first slot. *)
   level : Raw_level_repr.t;
-  (* The level of (pre)attested block. *)
+  (* The level of (pre)endorsed block. *)
   round : Round_repr.t;
-  (* The round of (pre)attested block. *)
+  (* The round of (pre)endorsed block. *)
   block_payload_hash : Block_payload_hash.t;
-      (* The payload hash of (pre)attested block. *)
+      (* The payload hash of (pre)endorsed block. *)
 }
 
 val consensus_content_encoding : consensus_content Data_encoding.t
@@ -188,8 +194,8 @@ val consensus_content_encoding : consensus_content Data_encoding.t
 val pp_consensus_content : Format.formatter -> consensus_content -> unit
 
 type consensus_watermark =
-  | Attestation of Chain_id.t
-  | Preattestation of Chain_id.t
+  | Endorsement of Chain_id.t
+  | Preendorsement of Chain_id.t
   | Dal_attestation of Chain_id.t
 
 val to_watermark : consensus_watermark -> Signature.watermark
@@ -228,15 +234,15 @@ and _ contents_list =
 (** A value of type [contents] an operation related to whether
     consensus, governance or contract management. *)
 and _ contents =
-  (* Preattestation: About consensus, preattestation of a block held by a
+  (* Preendorsement: About consensus, preendorsement of a block held by a
      validator (specific to Tenderbake). *)
-  | Preattestation : consensus_content -> Kind.preattestation contents
-  (* Attestation: About consensus, attestation of a block held by a
+  | Preendorsement : consensus_content -> Kind.preendorsement contents
+  (* Endorsement: About consensus, endorsement of a block held by a
      validator. *)
-  | Attestation : consensus_content -> Kind.attestation contents
+  | Endorsement : consensus_content -> Kind.endorsement contents
   (* DAL/FIXME https://gitlab.com/tezos/tezos/-/issues/3115
 
-     Temporary operation to avoid modifying attestation encoding. *)
+     Temporary operation to avoid modifying endorsement encoding. *)
   | Dal_attestation :
       Dal_attestation_repr.operation
       -> Kind.dal_attestation contents
@@ -255,25 +261,25 @@ and _ contents =
       solution : Seed_repr.vdf_solution;
     }
       -> Kind.vdf_revelation contents
-  (* Double_preattestation_evidence: Double-preattestation is a
+  (* Double_preendorsement_evidence: Double-preendorsement is a
      kind of malicious attack where a byzantine attempts to fork
-     the chain by preattesting blocks with different
+     the chain by preendorsing blocks with different
      contents (at the same level and same round)
      twice. This behavior may be reported and the byzantine will have
      its security deposit forfeited. *)
-  | Double_preattestation_evidence : {
-      op1 : Kind.preattestation operation;
-      op2 : Kind.preattestation operation;
+  | Double_preendorsement_evidence : {
+      op1 : Kind.preendorsement operation;
+      op2 : Kind.preendorsement operation;
     }
-      -> Kind.double_preattestation_evidence contents
-  (* Double_attestation_evidence: Similar to double-preattestation but
-     for attestations. *)
-  | Double_attestation_evidence : {
-      op1 : Kind.attestation operation;
-      op2 : Kind.attestation operation;
+      -> Kind.double_preendorsement_evidence contents
+  (* Double_endorsement_evidence: Similar to double-preendorsement but
+     for endorsements. *)
+  | Double_endorsement_evidence : {
+      op1 : Kind.endorsement operation;
+      op2 : Kind.endorsement operation;
     }
-      -> Kind.double_attestation_evidence contents
-  (* Double_baking_evidence: Similarly to double-attestation but the
+      -> Kind.double_endorsement_evidence contents
+  (* Double_baking_evidence: Similarly to double-endorsement but the
      byzantine attempts to fork by signing two different blocks at the
      same level. *)
   | Double_baking_evidence : {
@@ -367,6 +373,12 @@ and _ manager_operation =
       value : Script_repr.lazy_expr;
     }
       -> Kind.register_global_constant manager_operation
+  (* [Set_deposits_limit] sets an optional limit for frozen deposits
+     of a contract at a lower value than the maximum limit.  When None,
+     the limit in unset back to the default maximum limit. *)
+  | Set_deposits_limit :
+      Tez_repr.t option
+      -> Kind.set_deposits_limit manager_operation
   (* [Increase_paid_storage] allows a sender to pay to increase the paid storage of
      some contract by some amount. *)
   | Increase_paid_storage : {
@@ -413,8 +425,8 @@ and _ manager_operation =
   | Sc_rollup_originate : {
       kind : Sc_rollups.Kind.t;
       boot_sector : string;
+      origination_proof : Sc_rollup_proof_repr.serialized;
       parameters_ty : Script_repr.lazy_expr;
-      whitelist : Sc_rollup_whitelist_repr.t option;
     }
       -> Kind.sc_rollup_originate manager_operation
   (* [Sc_rollup_add_messages] adds messages to the smart rollups' inbox. *)
@@ -424,6 +436,12 @@ and _ manager_operation =
       -> Kind.sc_rollup_add_messages manager_operation
   | Sc_rollup_cement : {
       rollup : Sc_rollup_repr.t;
+      commitment : Sc_rollup_commitment_repr.Hash.t;
+          (** The field [commitment] is deprecated. It is not used during the
+              application of [Sc_rollup_cement]. The commitment to cement is
+              computed by the protocol.
+
+              It is deprecated starting N, and can be removed in O. *)
     }
       -> Kind.sc_rollup_cement manager_operation
   | Sc_rollup_publish : {
@@ -595,25 +613,25 @@ val compare_by_passes : packed_operation -> packed_operation -> int
 
    The global order is as follows:
 
-   {!Attestation} and {!Preattestation} > {!Dal_attestation} >
-   {!Proposals} > {!Ballot} > {!Double_preattestation_evidence} >
-   {!Double_attestation_evidence} > {!Double_baking_evidence} >
+   {!Endorsement} and {!Preendorsement} > {!Dal_attestation} >
+   {!Proposals} > {!Ballot} > {!Double_preendorsement_evidence} >
+   {!Double_endorsement_evidence} > {!Double_baking_evidence} >
    {!Vdf_revelation} > {!Seed_nonce_revelation} > {!Activate_account}
    > {!Drain_delegate} > {!Manager_operation}.
 
-   {!Attestation} and {!Preattestation} are compared by the pair of
+   {!Endorsement} and {!Preendorsement} are compared by the pair of
    their [level] and [round] such as the farther to the current state
    [level] and [round] is greater; e.g. the greater pair in
    lexicographic order being the better. When equal and both
    operations being of the same kind, we compare their [slot]: the
-   The smaller being the better, assuming that the more slots an attester
+   The smaller being the better, assuming that the more slots an endorser
    has, the smaller is its smallest [slot]. When the pair is equal
-   and comparing an {!Attestation] to a {!Preattestation}, the
-   {!Attestation} is better.
+   and comparing an {!Endorsement] to a {!Preendorsement}, the
+   {!Endorsement} is better.
 
    Two {!Dal_attestation} ops are compared in the lexicographic
-   order of the pair of their number of attested slots as available
-   and their attesters.
+   order of the pair of their number of endorsed slots as available
+   and their endorsers.
 
    Two voting operations are compared in the lexicographic order of
    the pair of their [period] and [source]. A {!Proposals} is better
@@ -670,13 +688,9 @@ module Encoding : sig
       }
         -> 'b case
 
-  val preendorsement_case : Kind.preattestation case
+  val preendorsement_case : Kind.preendorsement case
 
-  val preattestation_case : Kind.preattestation case
-
-  val endorsement_case : Kind.attestation case
-
-  val attestation_case : Kind.attestation case
+  val endorsement_case : Kind.endorsement case
 
   val dal_attestation_case : Kind.dal_attestation case
 
@@ -685,14 +699,9 @@ module Encoding : sig
   val vdf_revelation_case : Kind.vdf_revelation case
 
   val double_preendorsement_evidence_case :
-    Kind.double_preattestation_evidence case
+    Kind.double_preendorsement_evidence case
 
-  val double_preattestation_evidence_case :
-    Kind.double_preattestation_evidence case
-
-  val double_endorsement_evidence_case : Kind.double_attestation_evidence case
-
-  val double_attestation_evidence_case : Kind.double_attestation_evidence case
+  val double_endorsement_evidence_case : Kind.double_endorsement_evidence case
 
   val double_baking_evidence_case : Kind.double_baking_evidence case
 
@@ -718,6 +727,8 @@ module Encoding : sig
 
   val register_global_constant_case :
     Kind.register_global_constant Kind.manager case
+
+  val set_deposits_limit_case : Kind.set_deposits_limit Kind.manager case
 
   val increase_paid_storage_case : Kind.increase_paid_storage Kind.manager case
 
@@ -776,6 +787,8 @@ module Encoding : sig
     val update_consensus_key_case : Kind.update_consensus_key case
 
     val register_global_constant_case : Kind.register_global_constant case
+
+    val set_deposits_limit_case : Kind.set_deposits_limit case
 
     val increase_paid_storage_case : Kind.increase_paid_storage case
 

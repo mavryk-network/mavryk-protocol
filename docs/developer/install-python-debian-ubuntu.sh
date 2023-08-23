@@ -90,16 +90,16 @@ python --version # should output 3.10.12
 
 # [install poetry]
 curl -sSL https://install.python-poetry.org -o install-poetry.py
-python install-poetry.py --version 1.2.2 --yes
+python install-poetry.py --version 1.1.13 --yes
 
 # [setup shell for poetry]
 export PATH=$PATH:$HOME/.local/bin
 
 # [print poetry version]
-poetry --version # should output 1.2.2
+poetry --version # should output 1.1.13
 
 # [verify poetry version]
-[ "$(poetry --version)" = "Poetry (version 1.2.2)" ]
+[ "$(poetry --version)" = "Poetry version 1.1.13" ]
 
 ##
 ## Test installing Octez python development dependencies

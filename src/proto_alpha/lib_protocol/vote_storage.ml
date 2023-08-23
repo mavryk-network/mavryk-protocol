@@ -104,25 +104,18 @@ let listings_encoding =
          (req "pkh" Signature.Public_key_hash.encoding)
          (req "voting_power" int64)))
 
-let get_current_voting_power_free ctxt delegate =
-  let open Lwt_result_syntax in
-  let* stake = Storage.Stake.Staking_balance.get ctxt delegate in
-  Lwt.return @@ Stake_context.voting_weight ctxt stake
-
 let update_listings ctxt =
-  let open Lwt_result_syntax in
-  let*! ctxt = Storage.Vote.Listings.clear ctxt in
-  let* ctxt, total =
-    Stake_storage.fold
-      ctxt
-      (ctxt, 0L)
-      ~order:`Sorted
-      ~f:(fun delegate (ctxt, total) ->
-        let* weight = get_current_voting_power_free ctxt delegate in
-        let+ ctxt = Storage.Vote.Listings.init ctxt delegate weight in
-        (ctxt, Int64.add total weight))
-  in
-  let*! ctxt = Storage.Vote.Voting_power_in_listings.add ctxt total in
+  Storage.Vote.Listings.clear ctxt >>= fun ctxt ->
+  Stake_storage.fold
+    ctxt
+    (ctxt, 0L)
+    ~order:`Sorted
+    ~f:(fun (delegate, stake) (ctxt, total) ->
+      let weight = Tez_repr.to_mutez stake in
+      Storage.Vote.Listings.init ctxt delegate weight >>=? fun ctxt ->
+      return (ctxt, Int64.add total weight))
+  >>=? fun (ctxt, total) ->
+  Storage.Vote.Voting_power_in_listings.add ctxt total >>= fun ctxt ->
   return ctxt
 
 type delegate_info = {

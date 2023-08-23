@@ -10,7 +10,13 @@ license: "MIT"
 depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "tezos-base"
+  "tezos-clic"
+  "tezos-rpc"
+  "tezos-rpc-http"
+  "tezos-rpc-http-client-unix"
+  "tezos-shell-services"
+  "tezos-stdlib-unix"
   "tezos-client-base"
   "tezos-client-commands"
   "tezos-mockup"
@@ -18,14 +24,14 @@ depends: [
   "tezos-mockup-commands"
   "tezos-proxy"
   "tezos-signer-backends"
-  "tezos-version"
   "lwt-exit"
   "uri" { >= "3.1.0" }
-  "tezt" { with-test & >= "3.1.1" }
+  "tezt" { with-test & >= "3.1.0" }
+  "tezos-base-test-helpers" {with-test}
   "octez-alcotezt" {with-test}
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

@@ -165,7 +165,6 @@ val valid :
   Dal_slot_repr.History.t ->
   Dal_slot_repr.parameters ->
   dal_attestation_lag:int ->
-  is_reveal_enabled:Sc_rollup_PVM_sig.is_reveal_enabled ->
   'proof t ->
   (Sc_rollup_PVM_sig.input option * Sc_rollup_PVM_sig.input_request) tzresult
   Lwt.t
@@ -222,7 +221,7 @@ module type PVM_with_context_and_state = sig
         a slot's {!val: Dal_slot_repr.commitment}. *)
     val dal_parameters : Dal_slot_repr.parameters
 
-    (** The lag between the time an attestation is published on L1
+    (** The lag between the time an endorsement is published on L1
         (its published_level) and the level it should be confirmed. *)
     val dal_attestation_lag : int
   end
@@ -253,7 +252,6 @@ val produce :
   metadata:Sc_rollup_metadata_repr.t ->
   (module PVM_with_context_and_state) ->
   Raw_level_repr.t ->
-  is_reveal_enabled:Sc_rollup_PVM_sig.is_reveal_enabled ->
   serialized t tzresult Lwt.t
 
 (**/**)

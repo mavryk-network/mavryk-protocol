@@ -287,41 +287,39 @@ let ty_eq :
     (a, ac) ty ->
     (b, bc) ty ->
     (((a, ac) ty, (b, bc) ty) eq, error_trace) Gas_monad.t =
- fun ~(error_details : (_, error_trace) error_details) ty1 ty2 ->
-  let record_trace_eval :
-      type a.
-      (Script.location -> error) ->
-      (a, error_trace) result ->
-      (a, error_trace) result =
-    match error_details with
-    | Fast -> fun _f m -> m
-    | Informative loc -> fun f m -> record_trace_eval (fun () -> f loc) m
-  in
+ fun ~error_details ty1 ty2 ->
   let type_metadata_eq meta1 meta2 =
-    type_metadata_eq ~error_details meta1 meta2
-    |> record_trace_eval (fun loc -> default_ty_eq_error loc ty1 ty2)
+    Gas_monad.of_result (type_metadata_eq ~error_details meta1 meta2)
+    |> Gas_monad.record_trace_eval ~error_details (fun loc ->
+           default_ty_eq_error loc ty1 ty2)
   in
-  let memo_size_eq ms1 ms2 = memo_size_eq ~error_details ms1 ms2 in
+  let memo_size_eq ms1 ms2 =
+    Gas_monad.of_result (memo_size_eq ~error_details ms1 ms2)
+  in
   let rec help :
       type ta tac tb tbc.
       (ta, tac) ty ->
       (tb, tbc) ty ->
-      (((ta, tac) ty, (tb, tbc) ty) eq, error_trace) result =
+      (((ta, tac) ty, (tb, tbc) ty) eq, error_trace) Gas_monad.t =
    fun ty1 ty2 ->
     help0 ty1 ty2
-    |> record_trace_eval (fun loc -> default_ty_eq_error loc ty1 ty2)
+    |> Gas_monad.record_trace_eval ~error_details (fun loc ->
+           default_ty_eq_error loc ty1 ty2)
   and help0 :
       type ta tac tb tbc.
       (ta, tac) ty ->
       (tb, tbc) ty ->
-      (((ta, tac) ty, (tb, tbc) ty) eq, error_trace) result =
+      (((ta, tac) ty, (tb, tbc) ty) eq, error_trace) Gas_monad.t =
    fun ty1 ty2 ->
-    let open Result_syntax in
+    let open Gas_monad.Syntax in
+    let* () = Gas_monad.consume_gas Typecheck_costs.merge_cycle in
     let not_equal () =
-      Error
-        (match error_details with
-        | Fast -> (Inconsistent_types_fast : error_trace)
-        | Informative loc -> trace_of_error @@ default_ty_eq_error loc ty1 ty2)
+      Gas_monad.of_result
+      @@ Error
+           (match error_details with
+           | Fast -> (Inconsistent_types_fast : error_trace)
+           | Informative loc ->
+               trace_of_error @@ default_ty_eq_error loc ty1 ty2)
     in
     match (ty1, ty2) with
     | Unit_t, Unit_t -> return (Eq : ((ta, tac) ty, (tb, tbc) ty) eq)
@@ -435,9 +433,7 @@ let ty_eq :
     | Chest_key_t, Chest_key_t -> return Eq
     | Chest_key_t, _ -> not_equal ()
   in
-  let open Gas_monad.Syntax in
-  let* () = Gas_monad.consume_gas (Typecheck_costs.ty_eq ty1 ty2) in
-  Gas_monad.of_result @@ help ty1 ty2
+  help ty1 ty2
 
 (* Same as ty_eq but for stacks.
    A single error monad is used here because there is no need to
@@ -4300,7 +4296,7 @@ and parse_instr :
   | ( Prim (loc, I_OPEN_CHEST, [], _),
       Item_t (Chest_key_t, Item_t (Chest_t, Item_t (Nat_t, rest))) ) ->
       let instr = {apply = (fun k -> IOpen_chest (loc, k))} in
-      typed ctxt loc instr (Item_t (option_bytes_t, rest))
+      typed ctxt loc instr (Item_t (or_bytes_bool_t, rest))
   (* Events *)
   | Prim (loc, I_EMIT, [], annot), Item_t (data, rest) ->
       check_packable ~allow_contract:false loc data >>?= fun () ->
@@ -4587,7 +4583,7 @@ and parse_contract :
                or (ticket cty). *)
             let typecheck =
               let open Gas_monad.Syntax in
-              let* () = Gas_monad.consume_gas Typecheck_costs.ty_eq_prim in
+              let* () = Gas_monad.consume_gas Typecheck_costs.merge_cycle in
               match arg with
               | Unit_t ->
                   return (Typed_implicit destination : arg typed_contract)
@@ -4599,9 +4595,7 @@ and parse_contract :
                        (match error_details with
                        | Fast -> (Inconsistent_types_fast : err)
                        | Informative loc ->
-                           trace_of_error
-                           @@ Unexpected_implicit_account_parameters_type
-                                (loc, serialize_ty_for_error arg))
+                           trace_of_error @@ default_ty_eq_error loc arg unit_t)
             in
             Gas_monad.run ctxt typecheck >|? fun (v, ctxt) -> (ctxt, v)
           else

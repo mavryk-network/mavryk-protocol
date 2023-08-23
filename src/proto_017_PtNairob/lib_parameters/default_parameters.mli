@@ -49,5 +49,4 @@ val parameters_of_constants :
   Constants.Parametric.t ->
   Parameters.t
 
-val json_of_parameters :
-  ?chain_id:Chain_id.t -> Parameters.t -> Data_encoding.json
+val json_of_parameters : Parameters.t -> Data_encoding.json

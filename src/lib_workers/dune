@@ -3,15 +3,15 @@
 
 (library
  (name tezos_workers)
- (public_name octez-libs.tezos-workers)
+ (public_name tezos-workers)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-stdlib-unix)
+  tezos-base
+  tezos-stdlib-unix)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
   -open Tezos_base
   -open Tezos_stdlib_unix))
 
-(documentation (package octez-libs) (mld_files tezos_workers))
+(documentation (package tezos-workers))

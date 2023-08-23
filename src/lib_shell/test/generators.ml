@@ -113,9 +113,8 @@ let priority_gen () : Prevalidator_pending_operations.priority QCheck2.Gen.t =
 let operation_with_hash_gen ?proto_gen ?block_hash_t () :
     unit operation QCheck2.Gen.t =
   let open QCheck2.Gen in
-  let* signature_checked = bool in
   let+ oph, op = raw_operation_with_hash_gen ?proto_gen ?block_hash_t () in
-  Internal_for_tests.make_operation ~signature_checked oph op ()
+  Internal_for_tests.make_operation op oph ()
 
 let operation_with_hash_and_priority_gen ?proto_gen ?block_hash_t () :
     (unit operation * Prevalidator_pending_operations.priority) QCheck2.Gen.t =
@@ -199,7 +198,8 @@ let op_map_gen_n ?proto_gen ?block_hash_t (n : int) :
 let classification_gen : classification QCheck2.Gen.t =
   QCheck2.Gen.oneofa
     [|
-      `Validated;
+      `Applied;
+      `Prechecked;
       `Branch_delayed [];
       `Branch_refused [];
       `Refused [];
@@ -207,7 +207,8 @@ let classification_gen : classification QCheck2.Gen.t =
     |]
 
 let unrefused_classification_gen : classification QCheck2.Gen.t =
-  QCheck2.Gen.oneofa [|`Validated; `Branch_delayed []; `Branch_refused []|]
+  QCheck2.Gen.oneofa
+    [|`Applied; `Prechecked; `Branch_delayed []; `Branch_refused []|]
 
 let parameters_gen : parameters QCheck2.Gen.t =
   let open QCheck2.Gen in
@@ -259,13 +260,15 @@ let with_t_operation_gen : unit t -> unit operation QCheck2.Gen.t =
     let freq_fresh t =
       max
         1
-        (freq_of_map (Sized_map.to_map t.validated)
+        (freq_of_list t.applied_rev
+        + freq_of_map (Sized_map.to_map t.prechecked)
         + freq_of_map (Classification.map t.branch_refused)
         + freq_of_map (Classification.map t.branch_delayed)
         + freq_of_map (Classification.map t.refused)
         + freq_of_map (Classification.map t.outdated))
     in
-    freq_and_gen_of_list (List.map snd (Sized_map.bindings t.validated))
+    freq_and_gen_of_list t.applied_rev
+    @ freq_and_gen_of_list (List.map snd (Sized_map.bindings t.prechecked))
     @ freq_and_gen_of_map (Classification.map t.branch_refused)
     @ freq_and_gen_of_map (Classification.map t.branch_delayed)
     @ freq_and_gen_of_map (Classification.map t.refused)

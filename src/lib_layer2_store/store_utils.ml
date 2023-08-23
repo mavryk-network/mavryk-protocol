@@ -149,8 +149,6 @@ module Make (B : BACKEND) = struct
 
     type value = V.value
 
-    let path = S.path
-
     module Secondary_key_map = Map.Make (struct
       type t = K2.key
 

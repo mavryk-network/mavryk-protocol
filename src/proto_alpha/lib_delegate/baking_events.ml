@@ -279,12 +279,12 @@ module State_transitions = struct
       ~msg:"different branch proposal has the same prequorum"
       ()
 
-  let attempting_preattest_proposal =
+  let attempting_preendorse_proposal =
     declare_1
       ~section
-      ~name:"attempting_preattest_proposal"
+      ~name:"attempting_preendorsing_proposal"
       ~level:Info
-      ~msg:"attempting to preattest proposal {block_hash}"
+      ~msg:"attempting to preendorse proposal {block_hash}"
       ~pp1:Block_hash.pp
       ("block_hash", Block_hash.encoding)
 
@@ -316,12 +316,12 @@ module State_transitions = struct
       ~pp2:Round.pp
       ("round", Round.encoding)
 
-  let no_attestable_payload_fresh_block =
+  let no_endorsable_payload_fresh_block =
     declare_0
       ~section
-      ~name:"no_attestable_payload_fresh_block"
+      ~name:"no_endorsable_payload_fresh_block"
       ~level:Info
-      ~msg:"no attestable payload, proposing fresh block"
+      ~msg:"no endorsable payload, proposing fresh block"
       ()
 
   let repropose_block =
@@ -545,21 +545,21 @@ module Lib = struct
 
   let section = section @ ["lib"]
 
-  let attempting_preattest_proposal =
+  let attempting_preendorse_proposal =
     declare_1
       ~section
-      ~name:"attempting_preattest_proposal"
+      ~name:"attempting_preendorsing_proposal"
       ~level:Debug
-      ~msg:"attempting to preattest proposal {proposal}"
+      ~msg:"attempting to preendorse proposal {proposal}"
       ~pp1:Baking_state.pp_proposal
       ("proposal", Baking_state.proposal_encoding)
 
-  let attempting_attest_proposal =
+  let attempting_endorse_proposal =
     declare_1
       ~section
-      ~name:"attempting_attest_proposal"
+      ~name:"attempting_endorsing_proposal"
       ~level:Debug
-      ~msg:"attempting to attest proposal {proposal}"
+      ~msg:"attempting to endorse proposal {proposal}"
       ~pp1:Baking_state.pp_proposal
       ("proposal", Baking_state.proposal_encoding)
 end
@@ -569,12 +569,23 @@ module Actions = struct
 
   let section = section @ ["actions"]
 
-  let skipping_preattestation =
+  let skipping_preendorsement =
     declare_2
       ~section
-      ~name:"skipping_preattestation"
+      ~name:"skipping_preendorsement"
       ~level:Error
-      ~msg:"unable to sign preattestation for {delegate} -- {trace}"
+      ~msg:"unable to sign preendorsement for {delegate} -- {trace}"
+      ~pp1:Baking_state.pp_consensus_key_and_delegate
+      ("delegate", Baking_state.consensus_key_and_delegate_encoding)
+      ~pp2:Error_monad.pp_print_trace
+      ("trace", Error_monad.trace_encoding)
+
+  let skipping_endorsement =
+    declare_2
+      ~section
+      ~name:"skipping_endorsement"
+      ~level:Error
+      ~msg:"unable to sign endorsement for {delegate} -- {trace}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
       ~pp2:Error_monad.pp_print_trace
@@ -591,45 +602,23 @@ module Actions = struct
       ~pp2:Error_monad.pp_print_trace
       ("trace", Error_monad.trace_encoding)
 
-  let failed_to_get_dal_attestations =
+  let failed_to_inject_preendorsement =
     declare_2
       ~section
-      ~name:"failed_to_get_attestations"
+      ~name:"failed_to_inject_preendorsement"
       ~level:Error
-      ~msg:"unable to get DAL attestation for {delegate} -- {trace}"
+      ~msg:"failed to inject preendorsement for {delegate} -- {trace}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
       ~pp2:Error_monad.pp_print_trace
       ("trace", Error_monad.trace_encoding)
 
-  let skipping_dal_attestation =
+  let failed_to_inject_endorsement =
     declare_2
       ~section
-      ~name:"skipping_dal_attestation"
+      ~name:"failed_to_inject_endorsement"
       ~level:Error
-      ~msg:"unable to sign DAL attestation for {delegate} -- {trace}"
-      ~pp1:Baking_state.pp_consensus_key_and_delegate
-      ("delegate", Baking_state.consensus_key_and_delegate_encoding)
-      ~pp2:Error_monad.pp_print_trace
-      ("trace", Error_monad.trace_encoding)
-
-  let failed_to_inject_preattestation =
-    declare_2
-      ~section
-      ~name:"failed_to_inject_preattestation"
-      ~level:Error
-      ~msg:"failed to inject preattestation for {delegate} -- {trace}"
-      ~pp1:Baking_state.pp_consensus_key_and_delegate
-      ("delegate", Baking_state.consensus_key_and_delegate_encoding)
-      ~pp2:Error_monad.pp_print_trace
-      ("trace", Error_monad.trace_encoding)
-
-  let failed_to_inject_attestation =
-    declare_2
-      ~section
-      ~name:"failed_to_inject_attestation"
-      ~level:Error
-      ~msg:"failed to inject attestation for {delegate} -- {trace}"
+      ~msg:"failed to inject endorsement for {delegate} -- {trace}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
       ~pp2:Error_monad.pp_print_trace
@@ -646,13 +635,13 @@ module Actions = struct
       ("level", Data_encoding.int32)
       ("round", Round.encoding)
 
-  let preattestation_injected =
+  let preendorsement_injected =
     declare_4
       ~section
-      ~name:"preattestation_injected"
+      ~name:"preendorsement_injected"
       ~level:Notice
       ~msg:
-        "injected preattestation {ophash} for {delegate} for level {level}, \
+        "injected preendorsement {ophash} for {delegate} for level {level}, \
          round {round}"
       ~pp1:Operation_hash.pp
       ("ophash", Operation_hash.encoding)
@@ -663,13 +652,13 @@ module Actions = struct
       ~pp4:Round.pp
       ("round", Round.encoding)
 
-  let attestation_injected =
+  let endorsement_injected =
     declare_4
       ~section
-      ~name:"attestation_injected"
+      ~name:"endorsement_injected"
       ~level:Notice
       ~msg:
-        "injected attestation {ophash} for {delegate} for level {level}, round \
+        "injected endorsement {ophash} for {delegate} for level {level}, round \
          {round}"
       ~pp1:Operation_hash.pp
       ("ophash", Operation_hash.encoding)
@@ -680,13 +669,12 @@ module Actions = struct
       ~pp4:Round.pp
       ("round", Round.encoding)
 
-  let dal_attestation_injected =
+  let attestation_injected =
     declare_3
       ~section
-      ~name:"dal_attestation_injected"
+      ~name:"attestation_injected"
       ~level:Notice
-      ~msg:
-        "injected DAL attestation {ophash} with bitset {bitset} for {delegate}"
+      ~msg:"injected attestation {ophash} with bitset {bitset} for {delegate}"
       ~pp1:Operation_hash.pp
       ("ophash", Operation_hash.encoding)
       ~pp2:Baking_state.pp_consensus_key_and_delegate
@@ -759,21 +747,21 @@ module Actions = struct
       ("round", Round.encoding)
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
 
-  let signing_preattestation =
+  let signing_preendorsement =
     declare_1
       ~section
-      ~name:"signing_preattestation"
+      ~name:"signing_preendorsement"
       ~level:Info
-      ~msg:"signing preattestation for {delegate}"
+      ~msg:"signing preendorsement for {delegate}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
 
-  let signing_attestation =
+  let signing_endorsement =
     declare_1
       ~section
-      ~name:"signing_attestation"
+      ~name:"signing_endorsement"
       ~level:Info
-      ~msg:"signing attestation for {delegate}"
+      ~msg:"signing endorsement for {delegate}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
 
@@ -808,17 +796,8 @@ module Actions = struct
       ~level:Notice
       ~msg:"Voting {value} for liquidity baking toggle vote"
       ( "value",
-        Protocol.Alpha_context.Per_block_votes.liquidity_baking_vote_encoding )
-
-  let vote_for_adaptive_issuance =
-    declare_1
-      ~section
-      ~name:"vote_for_adaptive_issuance"
-      ~level:Notice
-      ~msg:"Voting {value} for adaptive issuance vote"
-      ( "value",
-        Protocol.Alpha_context.Per_block_votes.adaptive_issuance_vote_encoding
-      )
+        Protocol.Alpha_context.Liquidity_baking
+        .liquidity_baking_toggle_vote_encoding )
 
   let no_dal_node =
     declare_0
@@ -1014,44 +993,67 @@ module Nonces = struct
       ()
 end
 
-module Per_block_votes = struct
+module Liquidity_baking = struct
   include Internal_event.Simple
 
-  let reading_per_block_votes =
+  let reading_per_block =
     declare_1
       ~section
-      ~name:"reading_per_block_votes"
+      ~name:"reading_per_block"
       ~level:Notice
-      ~msg:"reading votes file: {path}"
+      ~msg:"reading per block vote file path: {path}"
       ("path", Data_encoding.string)
+
+  let per_block_vote_file_notice =
+    declare_1
+      ~section
+      ~name:"per_block_vote_file_notice"
+      ~level:Notice
+      ~msg:"per block vote file {event}"
+      ("event", Data_encoding.string)
+
+  let reading_liquidity_baking =
+    declare_0
+      ~section
+      ~name:"reading_liquidity_baking"
+      ~level:Notice
+      ~msg:"reading liquidity baking toggle vote"
+      ()
 
   let liquidity_baking_toggle_vote =
     declare_1
       ~section
-      ~name:"read_liquidity_baking_toggle_vote"
+      ~name:"liquidity_baking_toggle_vote"
       ~level:Notice
-      ~msg:"read liquidity baking toggle vote = {value}"
+      ~msg:"liquidity baking toggle vote = {value}"
       ( "value",
-        Protocol.Alpha_context.Per_block_votes.liquidity_baking_vote_encoding )
+        Protocol.Alpha_context.Liquidity_baking
+        .liquidity_baking_toggle_vote_encoding )
 
   let per_block_vote_file_fail =
     declare_1
       ~section
       ~name:"per_block_vote_file_error"
-      ~level:Error
+      ~level:Notice
       ~msg:"Error reading the block vote file: {errors}"
       ~pp1:pp_print_top_error_of_trace
       ("errors", Error_monad.(TzTrace.encoding error_encoding))
 
-  let adaptive_issuance_vote =
-    declare_1
+  let liquidity_baking_off =
+    declare_0
       ~section
-      ~name:"read_adaptive_issuance_vote"
+      ~name:"liquidity_baking_off"
       ~level:Notice
-      ~msg:"read adaptive issuance vote = {value}"
-      ( "value",
-        Protocol.Alpha_context.Per_block_votes.adaptive_issuance_vote_encoding
-      )
+      ~msg:"Will vote to stop Liquidity Baking"
+      ()
+
+  let liquidity_baking_on =
+    declare_0
+      ~section
+      ~name:"liquidity_baking_on"
+      ~level:Notice
+      ~msg:"Will vote to continue or restart Liquidity Baking"
+      ()
 end
 
 module Selection = struct

@@ -252,8 +252,7 @@ module Make (E : MENV) = struct
       ~predecessor
       ~cache
 
-  let op_data_encoding =
-    E.Protocol.operation_data_encoding_with_legacy_attestation_name
+  let op_data_encoding = E.Protocol.operation_data_encoding
 
   let op_encoding =
     Data_encoding.(
@@ -338,7 +337,7 @@ module Make (E : MENV) = struct
   module Mempool = Rw (Files.Mempool)
   module Trashpool = Rw (Files.Trashpool)
 
-  let to_validated (shell_header, operation_data) =
+  let to_applied (shell_header, operation_data) =
     let open Lwt_result_syntax in
     let op =
       {E.Protocol.shell = shell_header; protocol_data = operation_data}
@@ -367,10 +366,10 @@ module Make (E : MENV) = struct
         let*! pending_operations =
           let* () = check_chain chain in
           let* pooled_operations = Mempool.read () in
-          let* validated = List.map_es to_validated pooled_operations in
+          let* applied = List.map_es to_applied pooled_operations in
           let pending_operations =
             {
-              E.Block_services.Mempool.validated;
+              E.Block_services.Mempool.applied;
               refused = Operation_hash.Map.empty;
               outdated = Operation_hash.Map.empty;
               branch_refused = Operation_hash.Map.empty;
@@ -383,7 +382,9 @@ module Make (E : MENV) = struct
         match pending_operations with
         | Error errs -> Tezos_rpc.Answer.fail errs
         | Ok pending_operations ->
-            Tezos_rpc.Answer.return (params#version, pending_operations))
+            E.Block_services.Mempool.pending_operations_version_dispatcher
+              ~version:params#version
+              pending_operations)
 
   let shell_header () =
     Directory.prefix
@@ -426,7 +427,9 @@ module Make (E : MENV) = struct
   let simulate_operation (state, preapply_result) op =
     let open Lwt_result_syntax in
     match
-      Data_encoding.Binary.to_bytes op_data_encoding op.E.Protocol.protocol_data
+      Data_encoding.Binary.to_bytes
+        E.Protocol.operation_data_encoding
+        op.E.Protocol.protocol_data
     with
     | Error _ -> failwith "mockup preapply_block: cannot deserialize operation"
     | Ok proto -> (
@@ -542,7 +545,9 @@ module Make (E : MENV) = struct
 
   let hash_protocol_operation op =
     match
-      Data_encoding.Binary.to_bytes op_data_encoding op.E.Protocol.protocol_data
+      Data_encoding.Binary.to_bytes
+        E.Protocol.operation_data_encoding
+        op.E.Protocol.protocol_data
     with
     | Error _ ->
         failwith "mockup preapply_operations: cannot deserialize operation"
@@ -562,7 +567,7 @@ module Make (E : MENV) = struct
          Directory.empty
          (* /chains/<chain_id>/blocks/<block_id>/helpers/preapply/operations *)
          E.Block_services.S.Helpers.Preapply.operations
-         (fun ((_, chain), _block) params op_list ->
+         (fun ((_, chain), _block) () op_list ->
            with_chain ~caller_name:"preapply operations" chain (fun () ->
                let*! outcome =
                  let* proto_state = partial_construction ~cache:`Lazy () in
@@ -586,11 +591,13 @@ module Make (E : MENV) = struct
                  return (List.rev acc)
                in
                match outcome with
-               | Ok result -> Tezos_rpc.Answer.return (params#version, result)
+               | Ok result -> Tezos_rpc.Answer.return result
                | Error errs -> Tezos_rpc.Answer.fail errs)))
 
   let hash_op (shell, proto) =
-    let proto = Data_encoding.Binary.to_bytes_exn op_data_encoding proto in
+    let proto =
+      Data_encoding.Binary.to_bytes_exn E.Protocol.operation_data_encoding proto
+    in
     Operation.hash {shell; proto}
 
   let equal_op (a_shell_header, a_operation_data)
@@ -635,7 +642,7 @@ module Make (E : MENV) = struct
     | Ok ({Operation.shell = shell_header; proto} as op) -> (
         let operation_hash = Operation.hash op in
         let proto_op_opt =
-          Data_encoding.Binary.of_bytes op_data_encoding proto
+          Data_encoding.Binary.of_bytes E.Protocol.operation_data_encoding proto
         in
         match proto_op_opt with
         | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
@@ -671,7 +678,7 @@ module Make (E : MENV) = struct
     | Ok ({Operation.shell = shell_header; proto} as op) -> (
         let operation_hash = Operation.hash op in
         let proto_op_opt =
-          Data_encoding.Binary.of_bytes op_data_encoding proto
+          Data_encoding.Binary.of_bytes E.Protocol.operation_data_encoding proto
         in
         match proto_op_opt with
         | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
@@ -952,10 +959,10 @@ module Make (E : MENV) = struct
     @@ Directory.register
          Directory.empty
          E.Block_services.S.Operations.operations
-         (fun (((), chain), _block) query () ->
+         (fun (((), chain), _block) _query () ->
            with_chain ~caller_name:"operations" chain (fun () ->
                (* FIXME: Better answer here *)
-               Tezos_rpc.Answer.return (query#version, [[]; []; []; []])))
+               Tezos_rpc.Answer.return [[]; []; []; []]))
 
   let monitor_operations () =
     let open Lwt_syntax in
@@ -972,7 +979,7 @@ module Make (E : MENV) = struct
             let* () = on o#branch_delayed "branch_delayed ignored" in
             let* () = on o#branch_refused "branch_refused ignored" in
             let* () = on o#refused "refused ignored" in
-            let _ = o#validated in
+            let _ = o#applied in
             Tezos_rpc.Answer.(
               return_stream
                 {next = (fun () -> Lwt.return_none); shutdown = (fun () -> ())})))

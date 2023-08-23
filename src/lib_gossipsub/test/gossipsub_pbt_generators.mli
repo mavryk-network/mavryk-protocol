@@ -50,9 +50,6 @@ type _ input =
   | Leave : GS.leave -> [`Leave] input (* case 10 *)
   | Subscribe : GS.subscribe -> [`Subscribe] input (* case 11 *)
   | Unsubscribe : GS.unsubscribe -> [`Unsubscribe] input (* case 12 *)
-  | Set_application_score :
-      GS.set_application_score
-      -> [`Set_application_score] input (* case 13 *)
 
 (** Existentially packed input. *)
 type ex_input = I : _ input -> ex_input
@@ -83,10 +80,9 @@ type trace = transition list
 
 val pp_input : Format.formatter -> 'a input -> unit
 
-val pp_output : Format.formatter -> output -> unit
-
 val pp_trace :
   ?pp_state:(Format.formatter -> state -> unit) ->
+  ?pp_state':(Format.formatter -> state -> unit) ->
   ?pp_output:(Format.formatter -> output -> unit) ->
   unit ->
   Format.formatter ->
@@ -95,8 +91,7 @@ val pp_trace :
 
 (** {2 Input generation helpers.} *)
 
-val add_peer :
-  gen_peer:Peer.t t -> gen_direct:bool t -> gen_outbound:bool t -> add_peer t
+val add_peer : gen_peer:Peer.t t -> add_peer t
 
 val remove_peer : gen_peer:Peer.t t -> remove_peer t
 
@@ -118,8 +113,8 @@ val graft : gen_peer:Peer.t t -> gen_topic:Topic.t t -> GS.graft t
 val prune :
   gen_peer:Peer.t t ->
   gen_topic:Topic.t t ->
-  gen_backoff:span t ->
-  gen_px_count:int t ->
+  gen_span:span t ->
+  int ->
   GS.prune t
 
 val receive_message :
@@ -142,9 +137,6 @@ val leave : gen_topic:Topic.t t -> GS.leave t
 val subscribe : gen_topic:Topic.t t -> gen_peer:Peer.t t -> GS.subscribe t
 
 val unsubscribe : gen_topic:Topic.t t -> gen_peer:Peer.t t -> GS.unsubscribe t
-
-val set_application_score :
-  gen_peer:Peer.t t -> gen_score:Float.t t -> GS.set_application_score t
 
 (** Existentially pack an input. *)
 module I : sig
@@ -173,8 +165,6 @@ module I : sig
   val unsubscribe : unsubscribe -> ex_input
 
   val heartbeat : ex_input
-
-  val set_application_score : set_application_score -> ex_input
 end
 
 (** We fuzz the automaton by composing basic sequences of inputs, called {e fragments}.
@@ -220,9 +210,6 @@ module Fragment : sig
       [n] (inclusive). *)
   val fork_at_most : int -> t -> t
 end
-
-(** [fold fragment f init] folds [f] on the events generated from [fragment]. *)
-val fold : Fragment.t -> (event -> 'a -> 'a) -> 'a -> 'a t
 
 (** [run s0 f] constructs a {!trace} generator by running the gossipsub automaton on inputs
     generated from [f]. *)

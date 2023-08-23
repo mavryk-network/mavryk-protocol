@@ -40,24 +40,21 @@ let block_arg =
          (String.concat ", " possible_block_ids))
     (Tezos_clic.parameter
        (fun _ s ->
-         match Rollup_node_services.Arg.destruct_block_id s with
+         match Sc_rollup_services.Arg.destruct_block_id s with
          | Ok b -> return b
          | Error reason -> failwith "Invalid block id: %s" reason)
        ~autocomplete:(fun _ -> return possible_block_ids))
 
 let get_sc_rollup_addresses_command () =
-  let open Lwt_result_syntax in
   Tezos_clic.command
     ~desc:"Retrieve the smart rollup address the node is interacting with."
     Tezos_clic.no_options
     (Tezos_clic.fixed ["get"; "smart"; "rollup"; "address"])
     (fun () (cctxt : #Configuration.sc_client_context) ->
-      let* addr = RPC.get_sc_rollup_addresses_command cctxt in
-      let*! () = cctxt#message "@[%a@]" Sc_rollup.Address.pp addr in
-      return_unit)
+      RPC.get_sc_rollup_addresses_command cctxt >>=? fun addr ->
+      cctxt#message "@[%a@]" Sc_rollup.Address.pp addr >>= fun () -> return_unit)
 
 let get_state_value_command () =
-  let open Lwt_result_syntax in
   Tezos_clic.command
     ~desc:"Observe a key in the PVM state."
     (Tezos_clic.args1 block_arg)
@@ -65,9 +62,8 @@ let get_state_value_command () =
     @@ Tezos_clic.string ~name:"key" ~desc:"The key of the state value"
     @@ Tezos_clic.stop)
     (fun block key (cctxt : #Configuration.sc_client_context) ->
-      let* bytes = RPC.get_state_value_command cctxt block key in
-      let*! () = cctxt#message "@[%S@]" (String.of_bytes bytes) in
-      return_unit)
+      RPC.get_state_value_command cctxt block key >>=? fun bytes ->
+      cctxt#message "@[%S@]" (String.of_bytes bytes) >>= fun () -> return_unit)
 
 (** [display_answer cctxt answer] prints an RPC answer. *)
 let display_answer (cctxt : #Configuration.sc_client_context) :
@@ -126,7 +122,6 @@ type unparsed_batch =
       (string * Protocol.Contract_hash.t * Entrypoint.t option) list
   | Atomic_transaction_batch_typed of
       (string * string * Protocol.Contract_hash.t * Entrypoint.t option) list
-  | Whitelist_update of Sc_rollup.Whitelist.t option
 
 let unparsed_batch_encoding =
   let open Data_encoding in
@@ -148,12 +143,6 @@ let unparsed_batch_encoding =
           | Atomic_transaction_batch_typed transactions -> Some transactions
           | _ -> None)
         (fun transactions -> Atomic_transaction_batch_typed transactions);
-      case
-        (Tag 2)
-        ~title:"Whitelist_update"
-        (obj1 @@ req "whitelist" (option Sc_rollup.Whitelist.encoding))
-        (function Whitelist_update whitelist -> Some whitelist | _ -> None)
-        (fun whitelist -> Whitelist_update whitelist);
     ]
 
 let expand_expr expr =
@@ -202,8 +191,6 @@ let parse_unparsed_batch json =
       in
       return
         (Sc_rollup.Outbox.Message.Atomic_transaction_batch_typed {transactions})
-  | Whitelist_update whitelist ->
-      return (Sc_rollup.Outbox.Message.Whitelist_update whitelist)
 
 let outbox_message_parameter =
   Tezos_clic.parameter (fun (cctxt : #Configuration.sc_client_context) str ->
@@ -212,16 +199,15 @@ let outbox_message_parameter =
       | Error reason -> cctxt#error "Invalid transaction json: %s" reason)
 
 let get_output_proof () =
-  let open Lwt_result_syntax in
   Tezos_clic.command
     ~desc:"Ask the rollup node for an output proof."
     Tezos_clic.no_options
     (Tezos_clic.prefixes ["get"; "proof"; "for"; "message"]
-    @@ Client_proto_args.non_negative_z_param
+    @@ Tezos_clic.string
          ~name:"index"
          ~desc:"The index of the message in the outbox"
     @@ Tezos_clic.prefixes ["of"; "outbox"; "at"; "level"]
-    @@ Client_proto_args.raw_level_param
+    @@ Tezos_clic.string
          ~name:"level"
          ~desc:"The level of the rollup outbox where the message is available"
     @@ Tezos_clic.prefixes ["transferring"]
@@ -230,69 +216,26 @@ let get_output_proof () =
          ~desc:"A JSON description of the transactions"
          outbox_message_parameter
     @@ Tezos_clic.stop)
-    (fun ()
-         message_index
-         outbox_level
-         message
-         (cctxt : #Configuration.sc_client_context) ->
-      let output =
-        Protocol.Alpha_context.Sc_rollup.{message_index; outbox_level; message}
-      in
-      let* commitment_hash, proof = RPC.get_outbox_proof cctxt output in
-      let*! () =
-        cctxt#message
-          {|@[{ "proof" : "0x%a", "commitment_hash" : "%a"@]}|}
-          Hex.pp
-          (Hex.of_string proof)
-          Protocol.Alpha_context.Sc_rollup.Commitment.Hash.pp
-          commitment_hash
-      in
-      return_unit)
-
-let get_output_proof_simpler () =
-  Tezos_clic.command
-    ~desc:
-      "Ask the rollup node for an output proof fetching the output \
-       transactions from the outbox."
-    Tezos_clic.no_options
-    (Tezos_clic.prefixes ["get"; "proof"; "for"; "message"]
-    @@ Client_proto_args.non_negative_param
-         ~name:"index"
-         ~desc:"The index of the message in the outbox"
-    @@ Tezos_clic.prefixes ["of"; "outbox"; "at"; "level"]
-    @@ Client_proto_args.raw_level_param
-         ~name:"level"
-         ~desc:"The level of the rollup outbox where the message is available"
-    @@ Tezos_clic.stop)
-    (fun ()
-         message_index
-         outbox_level
-         (cctxt : #Configuration.sc_client_context) ->
+    (fun () index level message (cctxt : #Configuration.sc_client_context) ->
       let open Lwt_result_syntax in
-      let* outbox = RPC.get_outbox cctxt `Cemented outbox_level in
-      let* output =
-        match List.nth outbox message_index with
-        | None ->
-            cctxt#error
-              "No message at index %d for outbox of level %a."
-              message_index
-              Raw_level.pp
-              outbox_level
-        | Some o -> return o
+      let output =
+        Protocol.Alpha_context.Sc_rollup.
+          {
+            message_index = Z.of_string index;
+            outbox_level = Raw_level.of_int32_exn (Int32.of_string level);
+            message;
+          }
       in
-      let* commitment_hash, proof = RPC.get_outbox_proof cctxt output in
-      let*! () =
-        cctxt#message
-          {|@[{ "proof" : "0x%a", "commitment_hash" : "%a"@]}|}
-          Hex.pp
-          (Hex.of_string proof)
-          Protocol.Alpha_context.Sc_rollup.Commitment.Hash.pp
-          commitment_hash
-      in
-      return_unit)
+      RPC.get_outbox_proof cctxt output >>=? fun (commitment_hash, proof) ->
+      cctxt#message
+        {|@[{ "proof" : "0x%a", "commitment_hash" : "%a"@]}|}
+        Hex.pp
+        (Hex.of_string proof)
+        Protocol.Alpha_context.Sc_rollup.Commitment.Hash.pp
+        commitment_hash
+      >>= fun () -> return_unit)
 
 let get_output_message_encoding () =
-  let open Lwt_result_syntax in
   Tezos_clic.command
     ~desc:"Get output message encoding."
     Tezos_clic.no_options
@@ -303,16 +246,15 @@ let get_output_message_encoding () =
          outbox_message_parameter
     @@ Tezos_clic.stop)
     (fun () message (cctxt : #Configuration.sc_client_context) ->
+      let open Lwt_result_syntax in
       let open Protocol.Alpha_context.Sc_rollup.Outbox.Message in
       let encoded_message = serialize message in
-      let*! () =
-        match encoded_message with
-        | Ok encoded_message ->
-            let encoded_message = unsafe_to_string encoded_message in
-            cctxt#message "%a" Hex.pp (Hex.of_string encoded_message)
-        | Error _ -> cctxt#message "Error while encoding outbox message."
-      in
-      return_unit)
+      (match encoded_message with
+      | Ok encoded_message ->
+          let encoded_message = unsafe_to_string encoded_message in
+          cctxt#message "%a" Hex.pp (Hex.of_string encoded_message)
+      | Error _ -> cctxt#message "Error while encoding outbox message.")
+      >>= fun () -> return_unit)
 
 let call ?body meth raw_url (cctxt : #Configuration.sc_client_context) =
   let open Lwt_result_syntax in
@@ -447,7 +389,6 @@ let all () =
     get_sc_rollup_addresses_command ();
     get_state_value_command ();
     get_output_proof ();
-    get_output_proof_simpler ();
     get_output_message_encoding ();
     Keys.generate_keys ();
     Keys.list_keys ();

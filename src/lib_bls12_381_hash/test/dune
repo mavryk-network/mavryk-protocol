@@ -1,40 +1,37 @@
 ; This file was automatically generated, do not edit.
 ; Edit file manifest/main.ml instead.
 
-(library
- (name src_lib_bls12_381_hash_test_tezt_lib)
- (instrumentation (backend bisect_ppx))
+(executables
+ (names test_poseidon test_rescue test_anemoi test_griffin test_jive)
  (libraries
-  tezt.core
-  octez-alcotezt
+  alcotest
   bls12-381
-  octez-libs.octez-bls12-381-hash)
- (library_flags (:standard -linkall))
+  octez-bls12-381-hash)
  (flags
   (:standard)
-  -w -3
-  -open Tezt_core
-  -open Tezt_core.Base
-  -open Octez_alcotezt)
- (modules test_poseidon test_rescue test_anemoi test_griffin test_jive))
-
-(executable
- (name main)
- (instrumentation (backend bisect_ppx --bisect-sigterm))
- (libraries
-  src_lib_bls12_381_hash_test_tezt_lib
-  tezt)
- (flags
-  (:standard)
-  -w -3)
- (modules main))
+  -w -3))
 
 (rule
  (alias runtest)
- (package octez-libs)
- (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
- (action (run %{dep:./main.exe})))
+ (package octez-bls12-381-hash)
+ (action (run %{dep:./test_poseidon.exe})))
 
 (rule
- (targets main.ml)
- (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))
+ (alias runtest)
+ (package octez-bls12-381-hash)
+ (action (run %{dep:./test_rescue.exe})))
+
+(rule
+ (alias runtest)
+ (package octez-bls12-381-hash)
+ (action (run %{dep:./test_anemoi.exe})))
+
+(rule
+ (alias runtest)
+ (package octez-bls12-381-hash)
+ (action (run %{dep:./test_griffin.exe})))
+
+(rule
+ (alias runtest)
+ (package octez-bls12-381-hash)
+ (action (run %{dep:./test_jive.exe})))

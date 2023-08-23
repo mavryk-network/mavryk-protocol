@@ -54,7 +54,7 @@ module Circuit : sig
     table_size : int;
     nb_lookups : int;
     ultra : bool;
-    range_checks : (int * int) list SMap.t;
+    range_checks : int list * int;
   }
 
   val make_gates :
@@ -71,8 +71,6 @@ module Circuit : sig
     ?qbool:Scalar.t list ->
     ?qcond_swap:Scalar.t list ->
     ?q_anemoi:Scalar.t list ->
-    ?q_mod_add:(string * Scalar.t list) list ->
-    ?q_mod_mul:(string * Scalar.t list) list ->
     ?q_plookup:Scalar.t list ->
     ?q_table:Scalar.t list ->
     ?precomputed_advice:Scalar.t list SMap.t ->
@@ -85,7 +83,7 @@ module Circuit : sig
     ?tables:Scalar.t array list list ->
     public_input_size:int ->
     ?input_com_sizes:int list ->
-    ?range_checks:(int * int) list SMap.t ->
+    ?range_checks:int list * int ->
     unit ->
     t
 
@@ -95,9 +93,15 @@ module Circuit : sig
 
   val get_selectors : t -> string list
 
-  val sat : LibCircuit.cs_result -> Scalar.t array -> bool
+  val sat : CS.t -> Table.t list -> Scalar.t array -> bool
 
-  val to_plonk : Plompiler.LibCircuit.cs_result -> t
+  val to_plonk :
+    public_input_size:int ->
+    ?input_com_sizes:int list ->
+    ?tables:Table.t list ->
+    ?range_checks:int list * int ->
+    CS.t ->
+    t
 end = struct
   type t = {
     wires : int array array;
@@ -109,7 +113,7 @@ end = struct
     table_size : int;
     nb_lookups : int;
     ultra : bool;
-    range_checks : (int * int) list SMap.t;
+    range_checks : int list * int;
   }
 
   let get_selectors circuit = SMap.keys circuit.gates
@@ -117,8 +121,8 @@ end = struct
   let make_gates ?(qc = []) ?(linear = []) ?(linear_g = []) ?(qm = [])
       ?(qx2b = []) ?(qx5a = []) ?(qx5c = []) ?(qecc_ws_add = [])
       ?(qecc_ed_add = []) ?(qecc_ed_cond_add = []) ?(qbool = [])
-      ?(qcond_swap = []) ?(q_anemoi = []) ?(q_mod_add = []) ?(q_mod_mul = [])
-      ?(q_plookup = []) ?(q_table = []) ?(precomputed_advice = SMap.empty) () =
+      ?(qcond_swap = []) ?(q_anemoi = []) ?(q_plookup = []) ?(q_table = [])
+      ?(precomputed_advice = SMap.empty) () =
     if q_anemoi <> [] && SMap.(is_empty precomputed_advice) then
       failwith "Make_gates : q_anemoi must come with advice selectors." ;
     (* Filtering and mapping selectors with labels. *)
@@ -137,8 +141,6 @@ end = struct
         ~qbool
         ~qcond_swap
         ~q_anemoi
-        ~q_mod_add
-        ~q_mod_mul
         ~q_plookup
         ()
     in
@@ -157,7 +159,7 @@ end = struct
      Wires and gates cannot be empty and must all have the same length.
   *)
   let make ~wires ~gates ?(tables = []) ~public_input_size
-      ?(input_com_sizes = []) ?(range_checks = SMap.empty) () =
+      ?(input_com_sizes = []) ?(range_checks = ([], -1)) () =
     if Array.length wires = 0 then
       raise @@ Invalid_argument "Make Circuit: empty wires." ;
     if SMap.is_empty gates then
@@ -224,31 +226,19 @@ end = struct
             l)
         tables
     in
-    (* Check all range indexes are contained in the array & all range check’s wires are in wires *)
+    (* Check all range indexes are contained in the array *)
     let () =
-      SMap.iter
-        (fun wire_name r ->
+      List.iter
+        (fun i ->
           if
-            Plompiler.Csir.int_of_wire_name wire_name
-            >= Plompiler.Csir.nb_wires_arch
+            List.exists
+              (fun l -> i >= circuit_size + l + public_input_size)
+              input_com_sizes
           then
             raise
-              (Invalid_argument "Make Circuit: inconsistent range checks keys.") ;
-          (List.iter (fun (i, _) ->
-               if i >= circuit_size then
-                 raise
-                   (Invalid_argument
-                      "Make Circuit: inconsistent range checks indices.")))
-            r)
-        range_checks
-    in
-    (* Remove empty range-check lists from the range-check map & sort lists by index in ascending order *)
-    let range_checks =
-      SMap.filter_map
-        (fun _ -> function
-          | [] -> None
-          | l -> Some (List.sort (fun (a, _) (b, _) -> Int.compare a b) l))
-        range_checks
+              (Invalid_argument
+                 "Make Circuit: inconsistent range checks indices."))
+        (fst range_checks)
     in
     let table_size =
       if tables = [] then 0
@@ -296,21 +286,6 @@ end = struct
 
   let get_nb_of_constraints cs = Array.length cs.wires.(0)
   (* ////////////////////////////////////////////////////////// *)
-
-  let sat_rc (cs : Plompiler.LibCircuit.cs_result) trace =
-    let consts = Array.concat cs.cs in
-    List.for_all
-      (* [k] is the current wire (defined by its index) that has to be range-checked. *)
-        (fun (k, l) ->
-        (* [i] corresponds to the position in the wire that has to be range checked. *)
-        List.for_all
-          (fun (i, nb_bits) ->
-            (* [w_idx] indicates the element of the trace that correspond to this
-               position in this wire *)
-            let w_idx = consts.(i).wires.(k) in
-            Z.compare (S.to_z trace.(w_idx)) Z.(one lsl nb_bits) < 0)
-          l)
-      cs.range_checks
 
   let sat_gate identities gate trace tables =
     let open CS in
@@ -362,7 +337,7 @@ end = struct
            b))
       identities
 
-  let sat (cs : Plompiler.LibCircuit.cs_result) trace =
+  let sat cs tables trace =
     (* We initialise a map with all ids used in the circuit *)
     let identities =
       List.fold_left
@@ -374,28 +349,28 @@ end = struct
         Custom_gates.gates_list
     in
     let exception Constraint_not_satisfied of string in
-    (* Checking range-checks. *)
-    if not (sat_rc cs trace) then false
-    else
-      try
-        (* We check in each gate, constraint by constraint, that all ids are satisfied *)
-        List.iteri
-          (fun i gate ->
-            (* Printf.printf "\n\nGate %i: %s" i
-                  (Plompiler.Csir.CS.to_string_gate gate); *)
-            if not @@ sat_gate identities gate trace cs.tables then
-              (* just to exit the iter *)
-              raise
-                (Constraint_not_satisfied
-                   (Printf.sprintf "\nGate #%i not satisfied." i)))
-          cs.cs ;
-        true
-      with Constraint_not_satisfied _ -> false
+    try
+      (* We check in each gate, constraint by constraint, that all ids are satisfied *)
+      List.iteri
+        (fun i gate ->
+          (* Printf.printf "\n\nGate %i: %s" i
+                (Plompiler.Csir.CS.to_string_gate gate); *)
+          let b = sat_gate identities gate trace tables in
+          if b then ()
+          else
+            (* just to exit the iter *)
+            raise
+              (Constraint_not_satisfied
+                 (Printf.sprintf "\nGate #%i not satisfied." i)))
+        cs ;
+      true
+    with Constraint_not_satisfied _ -> false
 
-  let to_plonk (cs : Plompiler.LibCircuit.cs_result) =
+  let to_plonk ~public_input_size ?(input_com_sizes = []) ?(tables = [])
+      ?(range_checks = ([], -1)) cs =
     let open CS in
-    let constraints = List.rev Array.(to_list @@ concat cs.cs) in
-    assert (constraints <> []) ;
+    let cs = List.rev Array.(to_list @@ concat cs) in
+    assert (cs <> []) ;
     let add_wires ws wires =
       if Array.length wires = 0 then Array.map (fun w -> [w]) ws
       else Array.map2 (fun w l -> w :: l) ws wires
@@ -436,22 +411,16 @@ end = struct
         let advice_map = add_selectors precomputed_advice advice_map pad in
         (acc_wires, selectors_map, advice_map, pad + 1))
       SMap.([||], empty, empty, 0)
-      constraints
+      cs
     |> fun (wires, selectors, advice, _) ->
     let gates = SMap.union_disjoint selectors advice in
-    let tables = List.map Table.to_list cs.tables in
-    let range_checks =
-      List.fold_left
-        (fun acc (w, rc) -> SMap.add (Plompiler.Csir.wire_name w) rc acc)
-        SMap.empty
-        cs.range_checks
-    in
+    let tables = List.map Table.to_list tables in
     make
       ~wires
       ~gates
       ~range_checks
-      ~public_input_size:cs.public_input_size
-      ~input_com_sizes:cs.input_com_sizes
+      ~public_input_size
+      ~input_com_sizes
       ~tables
       ()
 end

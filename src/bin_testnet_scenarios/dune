@@ -7,12 +7,10 @@
  (package octez-testnet-scenarios)
  (libraries
   tezt
-  octez-libs.tezt-tezos
-  tezt_ethereum)
+  tezt-tezos)
  (flags
   (:standard)
   -open Tezt
   -open Tezt.Base
   -open Tezt_tezos
-  -open Tezt_tezos.Runnable.Syntax
-  -open Tezt_ethereum))
+  -open Tezt_tezos.Runnable.Syntax))

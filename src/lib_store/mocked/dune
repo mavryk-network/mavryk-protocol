@@ -7,13 +7,13 @@
  (implements tezos-store)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.tezos-base
-  octez-libs.tezos-crypto
-  octez-libs.tezos-shell-services
-  octez-libs.tezos-context.memory
+  tezos-base
+  tezos-crypto
+  tezos-shell-services
+  tezos-context.memory
   tezos-context-ops
   tezos-validation
-  octez-libs.tezos-protocol-environment
+  tezos-protocol-environment
   tezos-store.shared)
  (flags
   (:standard)

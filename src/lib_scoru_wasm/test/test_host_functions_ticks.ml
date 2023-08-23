@@ -111,7 +111,8 @@ let test_tickified_host_function ~version () =
   return_ok_unit
 
 let tests =
-  tztests_with_all_pvms
+  tztests_with_pvm
+    ~versions:[V0; V1]
     [("Test tickified host function", `Quick, test_tickified_host_function)]
 
 let () =

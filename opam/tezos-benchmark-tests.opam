@@ -10,14 +10,17 @@ license: "MIT"
 depends: [
   "dune" { >= "3.0" }
   "ocaml" { >= "4.14" }
-  "tezt" { with-test & >= "3.1.1" }
+  "tezt" { with-test & >= "3.1.0" }
   "octez-alcotezt" {with-test}
-  "octez-libs" {with-test}
+  "tezos-base" {with-test}
+  "tezos-stdlib-unix" {with-test}
+  "tezos-micheline" {with-test}
+  "tezos-crypto" {with-test}
   "tezos-benchmark" {with-test}
   "tezos-benchmark-examples" {with-test}
 ]
 build: [
-  ["rm" "-r" "vendors" "contrib"]
+  ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]

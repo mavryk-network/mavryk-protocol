@@ -121,9 +121,9 @@ type error += Inbox_level_reached_messages_limit
 
 *)
 
-module Hash : S.HASH with type t = Smart_rollup.Inbox_hash.t
+module Hash : S.HASH
 
-module Skip_list : Skip_list.S
+module Skip_list : Skip_list_repr.S
 
 module V1 : sig
   type level_proof = {

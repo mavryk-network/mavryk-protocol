@@ -6,10 +6,10 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-base
+  tezos-base
   tezos-dac-alpha
   tezos-protocol-alpha
-  octez-libs.tezos-base-test-helpers
+  tezos-base-test-helpers
   tezos-alpha-test-helpers
   tezos-dac-lib
   tezos_dac_node_lib

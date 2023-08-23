@@ -350,19 +350,31 @@ let may_switch_test_chain w active_chains spawn_child block =
       let*! () = Events.(emit could_not_switch_testchain) err in
       Lwt.return_unit
 
+let broadcast_head w ~previous block =
+  let nv = Worker.state w in
+  if not (is_bootstrapped nv) then Lwt.return_unit
+  else
+    let predecessor_hash = Store.Block.predecessor block in
+    let successor_or_sibling =
+      Block_hash.equal predecessor_hash (Store.Block.hash previous)
+      || Block_hash.equal predecessor_hash (Store.Block.predecessor previous)
+    in
+    if successor_or_sibling then (
+      Distributed_db.Advertise.current_head nv.chain_db block ;
+      Lwt.return_unit)
+    else Distributed_db.Advertise.current_branch nv.chain_db
+
 let instantiate_prevalidator parameters set_prevalidator block chain_db =
   let open Lwt_syntax in
   let* r =
     let open Lwt_result_syntax in
-    let* new_protocol_hash =
+    let* new_protocol =
       Store.Block.protocol_hash parameters.chain_store block
     in
-    let* proto =
-      Protocol_plugin.proto_with_validation_plugin
-        ~block_hash:(Store.Block.hash block)
-        new_protocol_hash
+    let* filter =
+      Shell_plugin.find_filter ~block_hash:(Store.Block.hash block) new_protocol
     in
-    Prevalidator.create parameters.prevalidator_limits proto chain_db
+    Prevalidator.create parameters.prevalidator_limits filter chain_db
   in
   match r with
   | Error errs ->
@@ -513,10 +525,7 @@ let on_validation_request w peer start_testchain active_chains spawn_child block
   if not accepted_head then return Ignored_head
   else
     let* previous = Store.Chain.set_head chain_store block in
-    let () =
-      if is_bootstrapped nv then
-        Distributed_db.Advertise.current_head nv.chain_db block
-    in
+    let*! () = broadcast_head w ~previous block in
     let* () =
       may_update_protocol_level chain_store block resulting_context_hash
     in
@@ -631,7 +640,7 @@ let collect_proto ~metrics (chain_store, block) =
              does not exist *)
           let* (module Metrics_plugin) =
             let* protocol = Store.Block.protocol_hash_exn chain_store block in
-            Protocol_plugin.safe_find_metrics protocol
+            Shell_plugin.safe_find_metrics protocol
           in
           let fitness = Store.Block.fitness block in
           let* () =

@@ -28,8 +28,8 @@ open Alpha_context
 
 type error +=
   | (* `Permanent *)
-      Insufficient_attestation_power of {
-      attestation_power : int;
+      Insufficient_endorsing_power of {
+      endorsing_power : int;
       consensus_threshold : int;
     }
 
@@ -39,26 +39,26 @@ type ordered_slots = private {
   slots : Slot.t list;
 }
 
-(** For a given level computes who has the right to include an attestation in
+(** For a given level computes who has the right to include an endorsement in
    the next block.
 
-   @return map from delegates with such rights to their attesting slots, in
+   @return map from delegates with such rights to their endorsing slots, in
    increasing order.
 
    This function is only used by the 'validators' RPC.  *)
-val attesting_rights :
+val endorsing_rights :
   context ->
   Level.t ->
   (context * ordered_slots Signature.Public_key_hash.Map.t) tzresult Lwt.t
 
-(** Computes attesting rights for a given level.
+(** Computes endorsing rights for a given level.
 
    @return  map from allocated first slots to their owner's public key, public key
-   hash, and attesting power. *)
-val attesting_rights_by_first_slot :
+   hash, and endorsing power. *)
+val endorsing_rights_by_first_slot :
   context ->
   Level.t ->
   (context * (Consensus_key.pk * int) Slot.Map.t) tzresult Lwt.t
 
-(** Computes the bonus baking reward depending on the attestation power. *)
-val bonus_baking_reward : context -> attestation_power:int -> Tez.t tzresult
+(** Computes the bonus baking reward depending on the endorsing power. *)
+val bonus_baking_reward : context -> endorsing_power:int -> Tez.t tzresult

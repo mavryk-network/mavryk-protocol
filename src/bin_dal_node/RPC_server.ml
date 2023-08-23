@@ -84,16 +84,9 @@ module Slots_handlers = struct
                 | Error _ -> assert false
                 | Ok proof -> return_some proof)))
 
-  let put_commitment_shards ctxt commitment () Services.Types.{with_proof} =
-    call_handler2
-      ctxt
-      (fun store {cryptobox; shards_proofs_precomputation; _} ->
-        Slot_manager.add_commitment_shards
-          ~shards_proofs_precomputation
-          store
-          cryptobox
-          commitment
-          ~with_proof
+  let put_commitment_shards ctxt commitment () with_proof =
+    call_handler2 ctxt (fun store {cryptobox; _} ->
+        Slot_manager.add_commitment_shards store cryptobox commitment with_proof
         |> Errors.to_option_tzresult)
 
   let get_commitment_by_published_level_and_index ctxt level slot_index () () =
@@ -134,42 +127,24 @@ module Slots_handlers = struct
 end
 
 module Profile_handlers = struct
-  let patch_profiles ctxt () operator_profiles =
-    let open Lwt_result_syntax in
-    let gs_worker = Node_context.get_gs_worker ctxt in
-    call_handler2 ctxt (fun _store {proto_parameters; _} ->
-        match
-          Profile_manager.add_operator_profiles
-            (Node_context.get_profile_ctxt ctxt)
-            proto_parameters
-            gs_worker
-            operator_profiles
-        with
-        | None -> fail Errors.[Profile_incompatibility]
-        | Some pctxt -> return @@ Node_context.set_profile_ctxt ctxt pctxt)
+  let patch_profile ctxt () profile =
+    call_handler1 ctxt (fun store -> Profile_manager.add_profile store profile)
 
   let get_profiles ctxt () () =
-    let open Lwt_result_syntax in
-    return @@ Profile_manager.get_profiles (Node_context.get_profile_ctxt ctxt)
+    call_handler1 ctxt (fun store ->
+        Profile_manager.get_profiles store |> Errors.to_tzresult)
 
   let get_assigned_shard_indices ctxt pkh level () () =
     Node_context.fetch_assigned_shard_indices ctxt ~level ~pkh
 
   let get_attestable_slots ctxt pkh attested_level () () =
     call_handler2 ctxt (fun store {proto_parameters; _} ->
-        (let open Lwt_result_syntax in
-        let* shard_indices =
-          Node_context.fetch_assigned_shard_indices
-            ctxt
-            ~pkh
-            ~level:attested_level
-          |> Errors.other_lwt_result
-        in
         Profile_manager.get_attestable_slots
-          ~shard_indices
+          ctxt
           store
           proto_parameters
-          ~attested_level)
+          pkh
+          ~attested_level
         |> Errors.to_tzresult)
 end
 
@@ -206,8 +181,8 @@ let register_new :
        (Slots_handlers.get_commitment_by_published_level_and_index ctxt)
   |> add_service
        Tezos_rpc.Directory.register0
-       Services.patch_profiles
-       (Profile_handlers.patch_profiles ctxt)
+       Services.patch_profile
+       (Profile_handlers.patch_profile ctxt)
   |> add_service
        Tezos_rpc.Directory.register0
        Services.get_profiles
@@ -244,17 +219,12 @@ let merge dir plugin_dir = Tezos_rpc.Directory.merge dir plugin_dir
 
 let start configuration ctxt =
   let open Lwt_syntax in
-  let Configuration_file.{rpc_addr; _} = configuration in
+  let Configuration.{rpc_addr; rpc_port; _} = configuration in
   let dir = register ctxt in
-  let rpc_port = snd rpc_addr in
-  let rpc_addr = fst rpc_addr in
+  let rpc_addr = P2p_addr.of_string_exn rpc_addr in
   let host = Ipaddr.V6.to_string rpc_addr in
   let node = `TCP (`Port rpc_port) in
-  (* FIXME https://gitlab.com/tezos/tezos/-/issues/5918
-
-     We should probably configure a better ACL policy.
-  *)
-  let acl = RPC_server.Acl.allow_all in
+  let acl = RPC_server.Acl.default rpc_addr in
   let server =
     RPC_server.init_server dir ~acl ~media_types:Media_type.all_media_types
   in

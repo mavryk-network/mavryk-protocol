@@ -54,9 +54,8 @@ type source =
   | File of string
       (** A file name whose associated file contains the whole data *)
 
-(** [get ~dac_client ~data_dir ~pvm_name ~hash] retrieves the data associated
-    with the reveal hash [hash] from disk. If the data is not already on disk,
-    it will be retrieved with the [dac_client]. If a May fail with:
+(** [get ~data_dir ~pvm_name ~hash] retrieves the data associated with
+    the reveal hash [hash] from disk. May fail with:
     {ul
       {li [Wrong_hash {found; expected}] where [expected = hash], and
         [found <> hash], if the data is retrieved and hashes to the wrong
@@ -68,11 +67,8 @@ type source =
         4kB) to be revealed.}
    } *)
 val get :
-  dac_client:Dac_observer_client.t option ->
+  ?dac_client:Dac_observer_client.t ->
   data_dir:string ->
-  pvm_kind:Kind.t ->
+  pvm_kind:Protocol.Alpha_context.Sc_rollup.Kind.t ->
   Protocol.Sc_rollup_reveal_hash.t ->
   string tzresult Lwt.t
-
-(** Conversion from protocol reveal hash to protocol agnostic DAC hash. *)
-val proto_hash_to_dac_hash : Protocol.Sc_rollup_reveal_hash.t -> Dac_plugin.hash

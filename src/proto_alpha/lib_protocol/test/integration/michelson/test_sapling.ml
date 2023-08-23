@@ -53,7 +53,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     let module H = Tezos_sapling.Core.Client.Hash in
@@ -93,7 +92,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -123,7 +121,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -179,7 +176,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -222,7 +218,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -298,7 +293,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -316,7 +310,6 @@ module Raw_context_tests = struct
           ~predecessor_timestamp:b.header.shell.timestamp
           ~timestamp:b.header.shell.timestamp
           (Raw_context.recover ctx)
-          ~adaptive_issuance_enable:false
         >>= wrap
         >|=? fun ctx -> (ctx, Int32.succ cnt))
       (ctx, 0l)
@@ -360,7 +353,6 @@ module Raw_context_tests = struct
       ~level:b.header.shell.level
       ~predecessor_timestamp:b.header.shell.timestamp
       ~timestamp:b.header.shell.timestamp
-      ~adaptive_issuance_enable:false
     >>= wrap
     >>=? fun ctx ->
     Lazy_storage_diff.fresh Lazy_storage_kind.Sapling_state ~temporary:false ctx
@@ -995,7 +987,6 @@ module Interpreter_tests = struct
         ~level:block.header.shell.level
         ~predecessor_timestamp:block.header.shell.timestamp
         ~timestamp:block.header.shell.timestamp
-        ~adaptive_issuance_enable:false
       >>= wrap
       >>=? fun raw_ctx -> Sapling_storage.Roots.mem raw_ctx id root >>= wrap
     in

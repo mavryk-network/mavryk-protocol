@@ -111,10 +111,11 @@ module JubjubWeierstrass (L : LIB) = struct
   let input_bytes bytes = input Input.(list (List.map (fun b -> bool b) bytes))
 
   let scalar_mul_circuit p input_b expected () =
+    let* flag = input ~kind:`Public (Input.bool false) in
     let* p = input_point p in
     let* b = input_bytes input_b in
     let* r = input_point expected in
-    let* o = scalar_mul b p in
+    let* o = scalar_mul b p flag in
     assert_equal r o
 
   let test_vectors =

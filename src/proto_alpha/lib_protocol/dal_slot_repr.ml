@@ -46,8 +46,6 @@ module Commitment = struct
   let pp = Dal.Commitment.pp
 
   let zero = Dal.Commitment.zero
-
-  let of_b58check_opt = Dal.Commitment.of_b58check_opt
 end
 
 module Commitment_proof = struct
@@ -114,7 +112,7 @@ module Header = struct
     Format.fprintf fmt "id:(%a), commitment: %a" pp_id id Commitment.pp c
 
   let verify_commitment cryptobox commitment proof =
-    Ok (Dal.verify_commitment cryptobox commitment proof)
+    ok (Dal.verify_commitment cryptobox commitment proof)
 end
 
 module Slot_index = Dal_slot_index_repr
@@ -290,7 +288,7 @@ module History = struct
       (fun () -> Add_element_in_slots_skip_list_violates_ordering)
 
   module Skip_list = struct
-    include Skip_list.Make (Skip_list_parameters)
+    include Skip_list_repr.Make (Skip_list_parameters)
 
     (** All confirmed DAL slots will be stored in a skip list, where only the
         last cell is remembered in the L1 context. The skip list is used in
@@ -399,13 +397,9 @@ module History = struct
       List.fold_left_e add_confirmed_slot_header (t, cache) slot_headers
 
     let add_confirmed_slot_headers_no_cache =
-      let open Result_syntax in
       let no_cache = History_cache.empty ~capacity:0L in
       fun t slots ->
-        let+ cell, (_ : History_cache.t) =
-          List.fold_left_e add_confirmed_slot_header (t, no_cache) slots
-        in
-        cell
+        List.fold_left_e add_confirmed_slot_header (t, no_cache) slots >|? fst
 
     (* Dal proofs section *)
 
@@ -430,7 +424,7 @@ module History = struct
         A Dal proof is an algebraic datatype with two cases, where we basically
         prove that a Dal page is confirmed on L1 or not. Being 'not confirmed'
         here includes the case where the slot's header is not published and the
-        case where the slot's header is published, but the attesters didn't
+        case where the slot's header is published, but the endorsers didn't
         confirm the availability of its data.
 
         To produce a proof representation for a page (see function {!produce_proof_repr}
@@ -587,10 +581,9 @@ module History = struct
         (fun () -> Dal_invalid_proof_serialization)
 
     let serialize_proof proof =
-      let open Result_syntax in
       match Data_encoding.Binary.to_bytes_opt proof_repr_encoding proof with
-      | None -> tzfail Dal_invalid_proof_serialization
-      | Some serialized_proof -> return serialized_proof
+      | None -> error Dal_invalid_proof_serialization
+      | Some serialized_proof -> ok serialized_proof
 
     type error += Dal_invalid_proof_deserialization
 
@@ -605,10 +598,9 @@ module History = struct
         (fun () -> Dal_invalid_proof_deserialization)
 
     let deserialize_proof proof =
-      let open Result_syntax in
       match Data_encoding.Binary.of_bytes_opt proof_repr_encoding proof with
-      | None -> tzfail Dal_invalid_proof_deserialization
-      | Some deserialized_proof -> return deserialized_proof
+      | None -> error Dal_invalid_proof_deserialization
+      | Some deserialized_proof -> ok deserialized_proof
 
     let pp_inclusion_proof = Format.pp_print_list pp_history
 
@@ -702,7 +694,7 @@ module History = struct
         Format.kasprintf proof_error "%s (page id=%a)." what Page.pp pid
       in
       match Dal.verify_page dal commitment ~page_index data proof with
-      | Ok true -> return_unit
+      | Ok true -> return ()
       | Ok false ->
           fail_with_error_msg
             "Wrong page content for the given page index and slot commitment"

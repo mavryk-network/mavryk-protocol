@@ -8,16 +8,16 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-stdlib
-  octez-libs.tezos-crypto
-  octez-libs.tezos-error-monad
+  tezos-stdlib
+  tezos-crypto
+  tezos-error-monad
   zarith
   zarith_stubs_js
-  octez-libs.tezos-hacl
+  tezos-hacl
   data-encoding
   octez-alcotezt
   qcheck-alcotest
-  octez-libs.tezos-test-helpers)
+  tezos-test-helpers)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
@@ -44,8 +44,7 @@
   test_signature_encodings
   test_timelock_legacy
   test_timelock
-  test_context_hash
-  vectors_secp256k1_keccak256))
+  test_context_hash))
 
 (executable
  (name main)
@@ -58,7 +57,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package tezos-crypto)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 
@@ -78,7 +77,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-libs)
+ (package tezos-crypto)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))
 

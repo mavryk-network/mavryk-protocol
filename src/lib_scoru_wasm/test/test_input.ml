@@ -295,7 +295,8 @@ let test_read_input_max_size_above_limit () =
   return_ok_unit
 
 let tests =
-  Tztest_helper.tztests_with_all_pvms
+  Tztest_helper.tztests_with_pvm
+    ~versions:[V0; V1]
     [("Host read input", `Quick, test_host_fun)]
   @ [
       tztest "Write input" `Quick write_input;

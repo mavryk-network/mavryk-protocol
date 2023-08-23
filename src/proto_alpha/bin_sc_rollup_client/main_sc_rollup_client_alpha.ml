@@ -28,8 +28,7 @@ let executable_name = Filename.basename Sys.executable_name
 let argv () = Array.to_list Sys.argv |> List.tl |> Stdlib.Option.get
 
 let main () =
-  let open Lwt_result_syntax in
-  let* configuration, argv = Configuration.parse (argv ()) in
+  Configuration.parse (argv ()) >>=? fun (configuration, argv) ->
   let cctxt = Configuration.make_unix_client_context configuration in
   Tezos_client_base.Client_keys.register_aggregate_signer
     (module Tezos_signer_backends.Unencrypted.Aggregate) ;
@@ -46,7 +45,7 @@ let main () =
 let handle_error = function
   | Ok () -> Stdlib.exit 0
   | Error [Tezos_clic.Version] ->
-      let version = Tezos_version_value.Bin_version.version_string in
+      let version = Tezos_version.Bin_version.version_string in
       Format.printf "%s\n" version ;
       Stdlib.exit 0
   | Error [Tezos_clic.Help command] ->

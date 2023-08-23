@@ -76,19 +76,15 @@ type nonce_config = Deterministic | Random
 
 type state_recorder_config = Filesystem | Disabled
 
-type liquidity_baking_config = {
-  vote_file : string option;
-  liquidity_baking_vote :
-    Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote;
-}
-
 type t = {
   fees : fees_config;
   nonce : nonce_config;
   validation : validation_config;
   retries_on_failure : int;
   user_activated_upgrades : (int32 * Protocol_hash.t) list;
-  liquidity_baking : liquidity_baking_config;
+  liquidity_baking_toggle_vote :
+    Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote;
+  per_block_vote_file : string option;
   force_apply : bool;
   force : bool;
   state_recorder : state_recorder_config;
@@ -114,11 +110,8 @@ let default_retries_on_failure_config = 5
 
 let default_user_activated_upgrades = []
 
-let default_liquidity_baking_config =
-  {
-    vote_file = None;
-    liquidity_baking_vote = Protocol.Alpha_context.Liquidity_baking.LB_pass;
-  }
+let default_liquidity_baking_toggle_vote =
+  Protocol.Alpha_context.Liquidity_baking.LB_pass
 
 let default_force = false
 
@@ -128,6 +121,8 @@ let default_state_recorder_config = Filesystem
 
 let default_extra_operations = None
 
+let default_per_block_vote_file = "per_block_votes.json"
+
 let default_config =
   {
     fees = default_fees_config;
@@ -135,11 +130,12 @@ let default_config =
     validation = default_validation_config;
     retries_on_failure = default_retries_on_failure_config;
     user_activated_upgrades = default_user_activated_upgrades;
-    liquidity_baking = default_liquidity_baking_config;
+    liquidity_baking_toggle_vote = default_liquidity_baking_toggle_vote;
     force_apply = default_force_apply;
     force = default_force;
     state_recorder = default_state_recorder_config;
     extra_operations = default_extra_operations;
+    per_block_vote_file = None;
     dal_node_endpoint = None;
   }
 
@@ -150,10 +146,10 @@ let make ?(minimal_fees = default_fees_config.minimal_fees)
     ?(nonce = default_nonce_config) ?context_path
     ?(retries_on_failure = default_retries_on_failure_config)
     ?(user_activated_upgrades = default_user_activated_upgrades)
-    ?(liquidity_baking = default_liquidity_baking_config)
-    ?(force_apply = default_force_apply) ?(force = default_force)
-    ?(state_recorder = default_state_recorder_config) ?extra_operations
-    ?dal_node_endpoint () =
+    ?(liquidity_baking_toggle_vote = default_liquidity_baking_toggle_vote)
+    ?per_block_vote_file ?(force_apply = default_force_apply)
+    ?(force = default_force) ?(state_recorder = default_state_recorder_config)
+    ?extra_operations ?dal_node_endpoint () =
   let fees =
     {minimal_fees; minimal_nanotez_per_gas_unit; minimal_nanotez_per_byte}
   in
@@ -168,7 +164,8 @@ let make ?(minimal_fees = default_fees_config.minimal_fees)
     nonce;
     retries_on_failure;
     user_activated_upgrades;
-    liquidity_baking;
+    liquidity_baking_toggle_vote;
+    per_block_vote_file;
     force_apply;
     force;
     state_recorder;
@@ -235,21 +232,6 @@ let user_activate_upgrades_config_encoding =
   let open Data_encoding in
   list (tup2 int32 Protocol_hash.encoding)
 
-let liquidity_baking_config_encoding =
-  let open Data_encoding in
-  def (String.concat "." [Protocol.name; "liquidity_baking_config"])
-  @@ conv
-       (fun {vote_file; liquidity_baking_vote} ->
-         (vote_file, liquidity_baking_vote))
-       (fun (vote_file, liquidity_baking_vote) ->
-         {vote_file; liquidity_baking_vote})
-       (obj2
-          (opt "per_block_vote_file" string)
-          (req
-             "liquidity_baking_vote"
-             Protocol.Alpha_context.Liquidity_baking
-             .liquidity_baking_toggle_vote_encoding))
-
 let liquidity_baking_toggle_vote_config_encoding =
   Protocol.Alpha_context.Liquidity_baking.liquidity_baking_toggle_vote_encoding
 
@@ -289,7 +271,8 @@ let encoding : t Data_encoding.t =
               nonce;
               retries_on_failure;
               user_activated_upgrades;
-              liquidity_baking;
+              liquidity_baking_toggle_vote;
+              per_block_vote_file;
               force_apply;
               force;
               state_recorder;
@@ -301,7 +284,8 @@ let encoding : t Data_encoding.t =
              nonce,
              retries_on_failure,
              user_activated_upgrades,
-             liquidity_baking,
+             liquidity_baking_toggle_vote,
+             per_block_vote_file,
              force_apply,
              force,
              state_recorder ),
@@ -311,7 +295,8 @@ let encoding : t Data_encoding.t =
                 nonce,
                 retries_on_failure,
                 user_activated_upgrades,
-                liquidity_baking,
+                liquidity_baking_toggle_vote,
+                per_block_vote_file,
                 force_apply,
                 force,
                 state_recorder ),
@@ -322,7 +307,8 @@ let encoding : t Data_encoding.t =
            nonce;
            retries_on_failure;
            user_activated_upgrades;
-           liquidity_baking;
+           liquidity_baking_toggle_vote;
+           per_block_vote_file;
            force_apply;
            force;
            state_recorder;
@@ -330,7 +316,7 @@ let encoding : t Data_encoding.t =
            dal_node_endpoint;
          })
        (merge_objs
-          (obj9
+          (obj10
              (req "fees" fees_config_encoding)
              (req "validation" validation_config_encoding)
              (req "nonce" nonce_config_encoding)
@@ -338,7 +324,10 @@ let encoding : t Data_encoding.t =
              (req
                 "user_activated_upgrades"
                 user_activate_upgrades_config_encoding)
-             (req "liquidity_baking" liquidity_baking_config_encoding)
+             (req
+                "liquidity_baking_toggle_vote"
+                liquidity_baking_toggle_vote_config_encoding)
+             (opt "per_block_vote_file" Data_encoding.string)
              (req "force_apply" force_apply_config_encoding)
              (req "force" force_config_encoding)
              (req "state_recorder" state_recorder_config_encoding))

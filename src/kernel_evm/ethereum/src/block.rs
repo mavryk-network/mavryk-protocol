@@ -6,7 +6,6 @@
 use crate::eth_gen::OwnedHash;
 use crate::transaction::TransactionHash;
 use primitive_types::{H160, H256, U256};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
 
 /// All data for an Ethereum block.
 ///
@@ -37,12 +36,12 @@ impl BlockConstants {
     /// Return the first block of the chain (genisis).
     /// TODO find suitable values for gas_limit et.c.
     /// To be done in <https://gitlab.com/tezos/tezos/-/milestones/114>.
-    pub fn first_block(timestamp: U256) -> Self {
+    pub fn first_block() -> Self {
         Self {
             gas_price: U256::one(),
             number: U256::zero(),
             coinbase: H160::zero(),
-            timestamp,
+            timestamp: U256::zero(),
             difficulty: U256::zero(),
             gas_limit: 1u64,
             base_fee_per_gas: U256::one(),
@@ -71,7 +70,7 @@ pub struct L2Block {
     pub size: U256,
     pub gas_limit: u64,
     pub gas_used: U256,
-    pub timestamp: Timestamp,
+    pub timestamp: U256,
     pub transactions: Vec<TransactionHash>,
     pub uncles: Vec<OwnedHash>,
 }
@@ -88,40 +87,10 @@ impl L2Block {
         H256([0; L2Block::BLOCK_HASH_SIZE])
     }
 
-    pub fn new(
-        number: U256,
-        transactions: Vec<TransactionHash>,
-        timestamp: Timestamp,
-    ) -> Self {
+    pub fn new(number: U256, transactions: Vec<TransactionHash>) -> Self {
         L2Block {
             number,
             hash: H256(number.into()),
-            timestamp,
-            transactions,
-            ..Self::default()
-        }
-    }
-
-    pub fn constants(&self) -> BlockConstants {
-        let timestamp = U256::from(self.timestamp.as_u64());
-        BlockConstants {
-            gas_price: U256::one(),
-            number: self.number,
-            coinbase: H160::zero(),
-            timestamp,
-            difficulty: self.difficulty,
-            gas_limit: self.gas_limit,
-            base_fee_per_gas: U256::one(),
-            chain_id: U256::zero(),
-        }
-    }
-}
-
-impl Default for L2Block {
-    fn default() -> Self {
-        Self {
-            number: U256::default(),
-            hash: H256::default(),
             parent_hash: L2Block::dummy_block_hash(),
             nonce: U256::zero(),
             sha3_uncles: L2Block::dummy_hash(),
@@ -136,9 +105,22 @@ impl Default for L2Block {
             size: U256::zero(),
             gas_limit: 1u64,
             gas_used: U256::zero(),
-            timestamp: Timestamp::from(0),
-            transactions: Vec::new(),
+            timestamp: U256::zero(),
+            transactions,
             uncles: Vec::new(),
+        }
+    }
+
+    pub fn constants(&self) -> BlockConstants {
+        BlockConstants {
+            gas_price: U256::one(),
+            number: self.number,
+            coinbase: H160::zero(),
+            timestamp: self.timestamp,
+            difficulty: self.difficulty,
+            gas_limit: self.gas_limit,
+            base_fee_per_gas: U256::one(),
+            chain_id: U256::zero(),
         }
     }
 }
