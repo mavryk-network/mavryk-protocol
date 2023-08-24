@@ -1721,14 +1721,14 @@ opam:tezos-version:
   variables:
     package: tezos-version
 
-opam:tezos-wasmer:
+# Ignoring unreleased package tezos-wasmer.
+
+opam:tezos-wasmer-fast:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: tezos-wasmer
-
-# Ignoring unreleased package tezos-wasmer-fast.
+    package: tezos-wasmer-fast
 
 opam:tezos-webassembly-interpreter-extra:
   extends:

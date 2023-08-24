@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_wasmer
+open Tezos_wasmer_fast
 
 let hex_string =
   Alcotest.testable
@@ -34,16 +34,13 @@ let page_size = 0x10000
 
 let alloc ?initial ~pages () =
   let length = pages * page_size in
-  let raw = Memory.Array.make ?initial Ctypes.uint8_t length in
-  Memory.{raw; min = Unsigned.UInt32.of_int pages; max = None}
+  List.init length (fun _ -> Option.value ~default:Unsigned.UInt8.zero initial)
+  |> Memory.Internal_for_tests.of_list
 
 let alloc_random ~pages =
   let length = pages * page_size in
-  let mem = alloc ~pages () in
-  for i = 0 to length - 1 do
-    Random.int 256 |> Unsigned.UInt8.of_int |> Memory.Array.set mem.raw i
-  done ;
-  mem
+  List.init length (fun _ -> Random.int 256 |> Unsigned.UInt8.of_int)
+  |> Memory.Internal_for_tests.of_list
 
 let test_get_string_behaves_like_get () =
   let mem = alloc_random ~pages:1 in

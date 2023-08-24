@@ -113,7 +113,9 @@ let pack_inputs (type x r) (params : (x, r Lwt.t) Function_type.params) func
    fun params index ->
     match params with
     | Function_type.End_param ->
+        print_endline "> start call_raw" ;
         let+ outputs = call_raw func inputs in
+        print_endline "> end call_raw" ;
         unpack outputs
     | Trigger_param params -> fun () -> (go_params [@tailcall]) params index
     | Cons_param (typ, params) ->

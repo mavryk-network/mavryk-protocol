@@ -29,8 +29,8 @@ exception Trap of string
 
 let check trap =
   match trap with
-  | Some msg ->
+  | Some msg when not (Ctypes.is_null msg) ->
       let str = Functions.String.contents msg in
       Functions.String.delete msg ;
       raise (Trap str)
-  | None -> ()
+  | _ -> ()

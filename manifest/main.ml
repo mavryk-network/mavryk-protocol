@@ -2673,38 +2673,6 @@ let _octez_gossipsub_test =
         octez_test_helpers |> open_;
       ]
 
-let octez_wasmer =
-  public_lib
-    "tezos-wasmer"
-    ~path:"src/lib_wasmer"
-    ~synopsis:"Wasmer bindings for SCORU WASM"
-    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib]
-    ~preprocess:[pps ppx_deriving_show]
-    ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
-    ~ctypes:
-      Ctypes.
-        {
-          external_library_name = "wasmer";
-          include_header = "wasmer.h";
-          extra_search_dir = "%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs";
-          type_description = {instance = "Types"; functor_ = "Api_types_desc"};
-          function_description =
-            {instance = "Functions"; functor_ = "Api_funcs_desc"};
-          generated_types = "Api_types";
-          generated_entry_point = "Api";
-          c_flags = ["-Wno-incompatible-pointer-types"];
-          c_library_flags = [];
-          deps = [];
-        }
-
-let _octez_wasmer_test =
-  tezt
-    ["test_wasmer"]
-    ~path:"src/lib_wasmer/test"
-    ~opam:"octez-wasmer-test"
-    ~synopsis:"Tests for the Wasmer bindings"
-    ~deps:[octez_wasmer; alcotezt]
-
 let octez_wasmer_fast =
   let base_name = "tezos_webassembly_fast" in
   let archive_file = Format.sprintf "lib%s.a" base_name in
@@ -2772,6 +2740,40 @@ let _octez_wasmer_fast_test =
     ~opam:"octez-wasmer-fast-test"
     ~synopsis:"Tests for the Wasmer bindings"
     ~deps:[octez_wasmer_fast; alcotezt]
+
+let _octez_wasmer_old =
+  public_lib
+    "tezos-wasmer"
+    ~path:"src/lib_wasmer"
+    ~synopsis:"Wasmer bindings for SCORU WASM"
+    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib]
+    ~preprocess:[pps ppx_deriving_show]
+    ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
+    ~ctypes:
+      Ctypes.
+        {
+          external_library_name = "wasmer";
+          include_header = "wasmer.h";
+          extra_search_dir = "%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs";
+          type_description = {instance = "Types"; functor_ = "Api_types_desc"};
+          function_description =
+            {instance = "Functions"; functor_ = "Api_funcs_desc"};
+          generated_types = "Api_types";
+          generated_entry_point = "Api";
+          c_flags = ["-Wno-incompatible-pointer-types"];
+          c_library_flags = [];
+          deps = [];
+        }
+
+let octez_wasmer = octez_wasmer_fast
+
+let _octez_wasmer_test =
+  tezt
+    ["test_wasmer"]
+    ~path:"src/lib_wasmer/test"
+    ~opam:"octez-wasmer-test"
+    ~synopsis:"Tests for the Wasmer bindings"
+    ~deps:[octez_wasmer; alcotezt]
 
 let octez_context_encoding =
   octez_lib

@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Tezos_scoru_wasm
-module Memory = Tezos_wasmer.Memory
+module Memory = Tezos_wasmer_fast.Memory
 module I32 = Tezos_webassembly_interpreter.I32
 
 module Wasmer : Host_funcs.Memory_access with type t = Memory.t = struct

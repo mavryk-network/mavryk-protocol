@@ -30,7 +30,7 @@
     Subject:      Tests for the tezos-scoru-wasm library
 *)
 
-module Wasmer = Tezos_wasmer
+module Wasmer = Tezos_wasmer_fast
 module Preimage_map = Map.Make (String)
 module Memory_access_fast = Tezos_scoru_wasm_fast.Memory_access.Wasmer
 module Memory_access_slow =
@@ -55,7 +55,7 @@ let are_equivalent initial_content f_ref f_wasmer =
   in
 
   let result_wasmer =
-    let open Tezos_wasmer.Memory in
+    let open Tezos_wasmer_fast.Memory in
     Lwt_main.run
     @@ Lwt.catch
          (fun () ->

@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Tezos_webassembly_interpreter
-open Tezos_wasmer
+open Tezos_wasmer_fast
 open Tezos_scoru_wasm
 
 (** Host state environment for Fast Execution *)

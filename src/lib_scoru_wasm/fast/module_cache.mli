@@ -24,9 +24,9 @@
 (*****************************************************************************)
 
 open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
+module Wasmer = Tezos_wasmer_fast
 
 (** [load_kernel store durable] returns a module attached to the
     Wasmer [store], corresponding to kernel stored in the [durable] storage.
     Module is cached, and not reparsed if it has already been instanciated. *)
-val load_kernel : Wasmer.Store.t -> Durable.t -> Wasmer.Module.t Lwt.t
+val load_kernel : Wasmer.Engine.t -> Durable.t -> Wasmer.Module.t Lwt.t

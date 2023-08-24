@@ -25,38 +25,28 @@
 (*****************************************************************************)
 
 open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
+module Wasmer = Tezos_wasmer_fast
 
 include (Wasm_vm : Wasm_vm_sig.S)
 
-let compiler_env_variable = "OCTEZ_WASMER_COMPILER"
+(*let compiler_env_variable = "OCTEZ_WASMER_COMPILER"
 
-let get_compiler () =
-  let compiler_choice =
-    Option.map String.lowercase_ascii (Sys.getenv_opt compiler_env_variable)
-  in
-  match compiler_choice with
-  | Some "singlepass" -> Wasmer.Config.SINGLEPASS
-  | Some "cranelift" -> Wasmer.Config.CRANELIFT
-  | Some compiler ->
-      Format.sprintf
-        "Unknown Wasmer compiler %S (selected via %s environment variable)"
-        compiler
-        compiler_env_variable
-      |> Stdlib.failwith
-  | None -> Wasmer.Config.CRANELIFT
+  let get_compiler () =
+    let compiler_choice =
+      Option.map String.lowercase_ascii (Sys.getenv_opt compiler_env_variable)
+    in
+    match compiler_choice with
+    | Some "singlepass" -> Wasmer.Config.SINGLEPASS
+    | Some "cranelift" -> Wasmer.Config.CRANELIFT
+    | Some compiler ->
+        Format.sprintf
+          "Unknown Wasmer compiler %S (selected via %s environment variable)"
+          compiler
+          compiler_env_variable
+        |> Stdlib.failwith
+    | None -> Wasmer.Config.CRANELIFT*)
 
-let engine =
-  Lazy.from_fun @@ fun () ->
-  Wasmer.Engine.create Wasmer.Config.{compiler = get_compiler ()}
-
-(** This store will largely remain empty. It is mainly useful when a function
-    wants to access the underlying engine, but its interface requires a store.
-
-    This is the case with [wasm_module_new]. In Wasmer, the underlying function
-    only needs access to the engine, but the standardised WebAssembly C API
-    dictates that the function requires a store parameter. *)
-let static_store = Lazy.map Wasmer.Store.create engine
+let engine = Lazy.from_fun Wasmer.Engine.create
 
 (** Allocate a new store, pass it to the given function and destroy the
     store once the function is done.
@@ -73,8 +63,8 @@ let with_store f =
       Lwt.return_unit)
 
 let load_kernel durable =
-  let store = Lazy.force static_store in
-  Module_cache.load_kernel store durable
+  let engine = Lazy.force engine in
+  Module_cache.load_kernel engine durable
 
 let compute ~version ~reveal_builtins ~write_debug durable buffers =
   let open Lwt.Syntax in
@@ -111,8 +101,10 @@ let compute ~version ~reveal_builtins ~write_debug durable buffers =
 
   main_mem := Some (fun () -> Wasmer.Exports.mem0 exports) ;
 
+  print_endline "> start kernel_run" ;
   let* () =
     Lwt.finalize kernel_run (fun () ->
+        print_endline "> finalising kernel_run" ;
         (* Make sure that the instance is deleted regardless of whether
            [kernel_run] succeeds or not. *)
         main_mem := None ;
@@ -120,6 +112,7 @@ let compute ~version ~reveal_builtins ~write_debug durable buffers =
         Wasmer.Instance.delete instance ;
         Lwt.return_unit)
   in
+  print_endline "> end kernel_run" ;
 
   let* durable = Wasm_vm.patch_flags_on_eval_successful host_state.durable in
   (* TODO: #4283

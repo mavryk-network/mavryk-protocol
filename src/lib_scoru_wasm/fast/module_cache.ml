@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
+module Wasmer = Tezos_wasmer_fast
 module Lazy_containers = Tezos_lazy_containers
 
 module Kernel_cache = Cache.Make (struct

@@ -1,5 +1,6 @@
 use core::{ffi::c_char, slice};
 use std::{
+    backtrace::Backtrace,
     iter,
     sync::{Arc, Mutex, MutexGuard},
 };
@@ -152,13 +153,13 @@ pub unsafe extern "C" fn tezos_webassembly_module_num_imports(module: &TezosModu
 #[no_mangle]
 pub unsafe extern "C" fn tezos_webassembly_module_imports(
     module: &TezosModule,
-    imports: *mut Box<TezosImportType>,
+    imports: *mut Option<Box<TezosImportType>>,
 ) {
     let mut offset = 0isize;
     for typ in module.0.imports() {
         let ptr = imports.offset(offset);
         offset += 1;
-        *ptr = Box::new(TezosImportType(typ));
+        ptr.write(Some(Box::new(TezosImportType(typ))));
     }
 }
 
@@ -170,13 +171,13 @@ pub unsafe extern "C" fn tezos_webassembly_module_num_exports(module: &TezosModu
 #[no_mangle]
 pub unsafe extern "C" fn tezos_webassembly_module_exports(
     module: &TezosModule,
-    exports: *mut Box<TezosExportType>,
+    exports: *mut Option<Box<TezosExportType>>,
 ) {
     let mut offset = 0isize;
     for typ in module.0.exports() {
         let ptr = exports.offset(offset);
         offset += 1;
-        *ptr = Box::new(TezosExportType(typ));
+        ptr.write(Some(Box::new(TezosExportType(typ))));
     }
 }
 
@@ -192,6 +193,7 @@ impl TezosStore {
     }
 
     fn get(&self) -> MutexGuard<Store> {
+        println!("= get: {}", Backtrace::capture());
         self.0.lock().expect("Lock poison")
     }
 }
@@ -454,6 +456,7 @@ pub unsafe extern "C" fn tezos_webassembly_function_call(
 ) -> Option<Box<String>> {
     match fun.0.call(&mut fun.1.get(), &inputs) {
         Ok(results) => {
+            println!("= no error");
             for (i, value) in results.into_vec().into_iter().enumerate() {
                 let value = Box::leak(Box::new(value));
                 outputs
@@ -462,7 +465,10 @@ pub unsafe extern "C" fn tezos_webassembly_function_call(
             }
             None
         }
-        Err(err) => Some(Box::new(err.to_string())),
+        Err(err) => {
+            println!("= error {}", &err);
+            Some(Box::new(err.to_string()))
+        }
     }
 }
 

@@ -46,10 +46,11 @@ let imports modul =
   let len = Functions.Module.num_imports modul in
   let vec =
     Ctypes.CArray.make
-      ~finalise:(fun vec ->
-        Functions.ImportType.delete_n
-          (Ctypes.CArray.start vec)
-          (Unsigned.Size_t.of_int (Ctypes.CArray.length vec)))
+    (*~finalise:(fun vec ->
+      Functions.ImportType.delete_n
+        (Ctypes.CArray.start vec)
+        (Unsigned.Size_t.of_int (Ctypes.CArray.length vec)))*)
+      ~initial:Ctypes.(null |> coerce (ptr void) (ptr Types.ImportType.t))
       Ctypes.(ptr Types.ImportType.t)
       (Unsigned.Size_t.to_int len)
   in
@@ -60,10 +61,10 @@ let exports modul =
   let len = Functions.Module.num_exports modul in
   let vec =
     Ctypes.CArray.make
-      ~finalise:(fun vec ->
+      (*~finalise:(fun vec ->
         Functions.ExportType.delete_n
           (Ctypes.CArray.start vec)
-          (Unsigned.Size_t.of_int (Ctypes.CArray.length vec)))
+          (Unsigned.Size_t.of_int (Ctypes.CArray.length vec)))*)
       Ctypes.(ptr Types.ExportType.t)
       (Unsigned.Size_t.to_int len)
   in
