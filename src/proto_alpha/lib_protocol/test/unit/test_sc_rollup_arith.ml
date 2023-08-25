@@ -453,7 +453,7 @@ let dummy_internal_transfer address =
     WithExceptions.Result.get_ok
       ~loc:__LOC__
       (Signature.Public_key_hash.of_b58check
-         "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
+         "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
   in
   let payload = Bytes.of_string "foo" in
   let* payload, _ctxt =

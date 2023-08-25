@@ -161,7 +161,7 @@ let specs =
 
 let usage =
   Format.sprintf
-    {|usage: %s '[[1, [[0, "tz1..."], [1, "tz1..."]]], [2, [[0, "tz1..."]]]]'|}
+    {|usage: %s '[[1, [[0, "mv1..."], [1, "mv1..."]]], [2, [[0, "mv1..."]]]]'|}
     Sys.argv.(0)
 
 let () =

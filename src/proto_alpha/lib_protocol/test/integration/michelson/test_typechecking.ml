@@ -547,13 +547,13 @@ let test_parse_address () =
   >>=? fun ctxt ->
   (* tz1% (empty entrypoint) *)
   wrap_error_lwt
-    (Lwt.return (Contract.of_b58check "tz1fakefakefakefakefakefakefakcphLA5"))
+    (Lwt.return (Contract.of_b58check "mv1fakefakefakefakefakefakefak2N64PC"))
   >>=? fun tz1fake ->
   test_parse_data
     __LOC__
     ctxt
     address_t
-    (String (-1, "tz1fakefakefakefakefakefakefakcphLA5%"))
+    (String (-1, "mv1fakefakefakefakefakefakefak2N64PC%"))
     {destination = Contract tz1fake; entrypoint = Entrypoint.default}
   >>=? fun ctxt ->
   (* scr1% (empty entrypoint) *)

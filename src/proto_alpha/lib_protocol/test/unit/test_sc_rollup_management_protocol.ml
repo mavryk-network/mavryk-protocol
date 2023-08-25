@@ -132,7 +132,7 @@ let test_encode_decode_internal_inbox_message_transfer () =
     Result.get_ok
       ~loc:__LOC__
       (Signature.Public_key_hash.of_b58check
-         "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
+         "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
   in
   let*? (Script_typed_ir.Ty_ex_c pair_nat_ticket_string_ty) =
     Environment.wrap_tzresult
