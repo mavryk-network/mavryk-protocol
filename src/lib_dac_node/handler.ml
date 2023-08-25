@@ -109,7 +109,7 @@ let make_infinite_stream_daemon ~on_disconnect ~on_failed_connection connect =
     | Ok (daemon, stopper) ->
         (* [daemon] promise is resolved when underlying stream closes. E.g.
            this happens when rebooting Coordinator's node. *)
-        let* () = daemon in
+        let*! _ = daemon in
         let () = stopper () in
         let*! () = on_disconnect () in
         (* Before reconnecting we wait. *)
