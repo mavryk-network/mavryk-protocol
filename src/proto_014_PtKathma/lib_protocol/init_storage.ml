@@ -61,7 +61,7 @@ module Patch_dictator_for_ghostnet = struct
 
   let oxhead_testnet_baker =
     Signature.Public_key_hash.of_b58check_exn
-      "tz1Xf8zdT3DbAX9cHw3c3CXh79rc4nK4gCe8"
+      "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
 
   let patch_constant chain_id ctxt =
     if Chain_id.equal chain_id ghostnet_id then

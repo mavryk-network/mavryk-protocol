@@ -42,7 +42,7 @@ module Public_key_hash = struct
   end
 end
 
-let () = Base58.check_encoded_prefix Public_key_hash.b58check_encoding "tz4" 36
+let () = Base58.check_encoded_prefix Public_key_hash.b58check_encoding "mv4" 36
 
 module Public_key = struct
   open Bls12_381_signature.MinPk

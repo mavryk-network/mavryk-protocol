@@ -132,7 +132,7 @@ type mintOrBurn =
 [@inline]
 let fee = 999n
 
-[@inline] let null_address = ("tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU" : address)
+[@inline] let null_address = ("mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" : address)
 
 (* this is slightly inefficient to inline, but, nice to have a clean stack for 
    the entrypoints for the Coq verification *)

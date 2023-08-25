@@ -43,7 +43,7 @@ module Public_key_hash = struct
   end
 end
 
-let () = Base58.check_encoded_prefix Public_key_hash.b58check_encoding "tz3" 36
+let () = Base58.check_encoded_prefix Public_key_hash.b58check_encoding "mv3" 36
 
 open Hacl.P256
 

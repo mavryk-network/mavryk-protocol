@@ -131,16 +131,16 @@ let commitments =
     Data_encoding.Json.from_string
       {json|
   [
-    [ "btz1bRL4X5BWo2Fj4EsBdUwexXqgTf75uf1qa", "23932454669343" ],
-    [ "btz1SxjV1syBgftgKy721czKi3arVkVwYUFSv", "72954577464032" ],
-    [ "btz1LtoNCjiW23txBTenALaf5H6NKF1L3c1gw", "217487035428348" ],
-    [ "btz1SUd3mMhEBcWudrn8u361MVAec4WYCcFoy", "4092742372031" ],
-    [ "btz1MvBXf4orko1tsGmzkjLbpYSgnwUjEe81r", "17590039016550" ],
-    [ "btz1LoDZ3zsjgG3k3cqTpUMc9bsXbchu9qMXT", "26322312350555" ],
-    [ "btz1RMfq456hFV5AeDiZcQuZhoMv2dMpb9hpP", "244951387881443" ],
-    [ "btz1Y9roTh4A7PsMBkp8AgdVFrqUDNaBE59y1", "80065050465525" ],
-    [ "btz1Q1N2ePwhVw5ED3aaRVek6EBzYs1GDkSVD", "3569618927693" ],
-    [ "btz1VFFVsVMYHd5WfaDTAt92BeQYGK8Ri4eLy", "9034781424478" ]
+    [ "bmv1QDHZnRYvEWQZws3H5N3mCbUBjLA2nDajq", "21027793678440" ],
+    [ "bmv1WKvzanfJghGupJwWA9KmuoSQTBd8q5Zwr", "32253345659420" ],
+    [ "bmv1ME4iCZQMrPyGbztmhTRorQdjHpc9a4u6K", "3900327562269" ],
+    [ "bmv1QaLTTGSGjeuzBDqYxgHvLWgiVKwNx8PPa", "19936568233770" ],
+    [ "bmv1QXeFqTzKDJ9n1bbmAbcmcQrXKqpn81uK8", "12976938199349" ],
+    [ "bmv1Q3WWwmHnCogqDinSicmR9MV5Pa6wb9RJy", "29778401973337" ],
+    [ "bmv1WUphnV4enUkhGmXxAVUh5pcZRrWg75RcG", "1211145449766" ],
+    [ "bmv18uU2y2h3SExaSUNCKiRvEfzfJDrVKLDU2", "7571595615187" ],
+    [ "bmv1Gycw7RKUAjPZjRzddwMJFvpyE2WuhHcFp", "4661748559583" ],
+    [ "bmv1PAmDZsMECLYMdB35XRShmd3ti2tqQfYUr", "62206792474036" ]
   ]|json}
   in
   match json_result with

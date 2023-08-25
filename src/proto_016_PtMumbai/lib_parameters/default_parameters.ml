@@ -391,16 +391,16 @@ let test_commitments =
          let amount = Protocol.Alpha_context.Tez.of_mutez_exn amount in
          {Protocol.Alpha_context.Commitment.blinded_public_key_hash; amount})
        [
-         ("btz1bRL4X5BWo2Fj4EsBdUwexXqgTf75uf1qa", 23932454669343L);
-         ("btz1SxjV1syBgftgKy721czKi3arVkVwYUFSv", 72954577464032L);
-         ("btz1LtoNCjiW23txBTenALaf5H6NKF1L3c1gw", 217487035428348L);
-         ("btz1SUd3mMhEBcWudrn8u361MVAec4WYCcFoy", 4092742372031L);
-         ("btz1MvBXf4orko1tsGmzkjLbpYSgnwUjEe81r", 17590039016550L);
-         ("btz1LoDZ3zsjgG3k3cqTpUMc9bsXbchu9qMXT", 26322312350555L);
-         ("btz1RMfq456hFV5AeDiZcQuZhoMv2dMpb9hpP", 244951387881443L);
-         ("btz1Y9roTh4A7PsMBkp8AgdVFrqUDNaBE59y1", 80065050465525L);
-         ("btz1Q1N2ePwhVw5ED3aaRVek6EBzYs1GDkSVD", 3569618927693L);
-         ("btz1VFFVsVMYHd5WfaDTAt92BeQYGK8Ri4eLy", 9034781424478L);
+         ("bmv1QDHZnRYvEWQZws3H5N3mCbUBjLA2nDajq", 21027793678440L);
+         ("bmv1WKvzanfJghGupJwWA9KmuoSQTBd8q5Zwr", 32253345659420L);
+         ("bmv1ME4iCZQMrPyGbztmhTRorQdjHpc9a4u6K", 3900327562269L);
+         ("bmv1QaLTTGSGjeuzBDqYxgHvLWgiVKwNx8PPa", 19936568233770L);
+         ("bmv1QXeFqTzKDJ9n1bbmAbcmcQrXKqpn81uK8", 12976938199349L);
+         ("bmv1Q3WWwmHnCogqDinSicmR9MV5Pa6wb9RJy", 29778401973337L);
+         ("bmv1WUphnV4enUkhGmXxAVUh5pcZRrWg75RcG", 1211145449766L);
+         ("bmv18uU2y2h3SExaSUNCKiRvEfzfJDrVKLDU2", 7571595615187L);
+         ("bmv1Gycw7RKUAjPZjRzddwMJFvpyE2WuhHcFp", 4661748559583L);
+         ("bmv1PAmDZsMECLYMdB35XRShmd3ti2tqQfYUr", 62206792474036L);
        ])
 
 let bootstrap_accounts_strings =
