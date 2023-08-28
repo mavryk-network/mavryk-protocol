@@ -377,3 +377,4 @@ let build_rpc_directory ~version ~commit_info node =
   register0 Tezos_rpc.Service.error_service (fun () () ->
       Lwt.return_ok (Data_encoding.Json.schema Error_monad.error_encoding)) ;
   !dir
+
