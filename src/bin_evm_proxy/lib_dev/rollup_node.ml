@@ -493,7 +493,9 @@ module type S = sig
   val estimate_gas :
     Ethereum_types.call -> Ethereum_types.quantity tzresult Lwt.t
 
-  val is_tx_valid : Ethereum_types.hash -> (unit, string) result tzresult Lwt.t
+  val is_tx_valid :
+    Ethereum_types.hash ->
+    (Ethereum_types.address, string) result tzresult Lwt.t
 end
 
 module Make (Base : sig

@@ -145,7 +145,7 @@ let dispatch_input
     | Send_raw_transaction.Input (Some tx_raw) -> (
         let* is_valid = Rollup_node_rpc.is_tx_valid tx_raw in
         match is_valid with
-        | Ok () ->
+        | Ok _ ->
             let* tx_hash =
               Rollup_node_rpc.inject_raw_transaction
                 ~smart_rollup_address

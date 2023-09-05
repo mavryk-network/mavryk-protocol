@@ -156,7 +156,7 @@ struct TxValidation {
 }
 
 enum TxValidationOutcome {
-    Valid,
+    Valid(H160),
     NonceTooLow,
     NonceTooHigh,
     NotCorrectSignature,
@@ -195,7 +195,8 @@ impl TxValidation {
         if tx.chain_id != chain_id {
             return Ok(TxValidationOutcome::InvalidChainId);
         }
-        Ok(TxValidationOutcome::Valid)
+
+        Ok(TxValidationOutcome::Valid(caller))
     }
 }
 
@@ -336,7 +337,10 @@ fn store_tx_validation_outcome<Host: Runtime>(
     outcome: TxValidationOutcome,
 ) -> Result<(), anyhow::Error> {
     match outcome {
-        TxValidationOutcome::Valid => storage::store_simulation_status(host, true),
+        TxValidationOutcome::Valid(caller) => {
+            storage::store_simulation_status(host, true)?;
+            storage::store_simulation_result(host, Some(caller.to_fixed_bytes().to_vec()))
+        }
         TxValidationOutcome::NonceTooLow => {
             storage::store_simulation_status(host, false)?;
             storage::store_simulation_result(host, Some(b"Nonce too low.".to_vec()))

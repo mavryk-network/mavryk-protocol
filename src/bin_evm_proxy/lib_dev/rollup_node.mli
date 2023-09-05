@@ -116,7 +116,9 @@ module type S = sig
     Ethereum_types.call -> Ethereum_types.quantity tzresult Lwt.t
 
   (** [is_tx_valid tx_raw] checks if the transaction is valid. Checks if the nonce is correct. *)
-  val is_tx_valid : Ethereum_types.hash -> (unit, string) result tzresult Lwt.t
+  val is_tx_valid :
+    Ethereum_types.hash ->
+    (Ethereum_types.address, string) result tzresult Lwt.t
 end
 
 (** Instantiate a module of type {!S} that communicates with a rollup
