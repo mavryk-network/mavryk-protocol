@@ -763,7 +763,27 @@ struct
 
   type z = Z.t
 
-  module Z = Z
+  module Z = struct
+    include Z
+
+    type Error_monad.error += Division_by_zero
+
+    let () =
+      Error_monad.register_error_kind
+        `Temporary
+        ~id:"z.division-by-zero"
+        ~title:"Division by zero"
+        ~description:"Division-by-zero error on arbitrary-precision integers"
+        Data_encoding.unit
+        (function Division_by_zero -> Some () | _ -> None)
+        (fun () -> Division_by_zero)
+
+    let ediv_rem_exn = ediv_rem
+
+    let ediv_rem x y =
+      Error_monad.catch_f (fun () -> ediv_rem x y) (fun _ -> Division_by_zero)
+  end
+
   module Q = Q
   module Chain_id = Chain_id
   module Block_hash = Block_hash

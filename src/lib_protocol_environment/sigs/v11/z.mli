@@ -54,6 +54,8 @@ exception Overflow
     the destination type.
  *)
 
+type error += Division_by_zero
+
 (** {1 Construction} *)
 
 val zero: t
@@ -158,11 +160,16 @@ external fdiv: t -> t -> t = "ml_z_fdiv"
     Can raise a [Division_by_zero].
  *)
 
-val ediv_rem: t -> t -> (t * t)
-(** Euclidean division and remainder.  [ediv_rem a b] returns a pair [(q, r)]
-    such that [a = b * q + r] and [0 <= r < |b|].
+val ediv_rem_exn: t -> t -> (t * t)
+(** Euclidean division and remainder.  [ediv_rem_exn a b] returns a pair
+    [(q, r)] such that [a = b * q + r] and [0 <= r < |b|].
     Raises [Division_by_zero] if [b = 0].
  *)
+
+val ediv_rem: t -> t -> (t * t) tzresult
+(** Same as [ediv_rem_exn] but using the error monad instead of raising an
+    exception.
+*)
 
 val ediv: t -> t -> t
 (** Euclidean division. [ediv a b] is equal to [fst (ediv_rem a b)].
