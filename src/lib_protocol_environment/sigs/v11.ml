@@ -2420,752 +2420,6 @@ end
 # 28 "v11.in.ml"
 
 
-  module Z : sig
-# 1 "v11/z.mli"
-(**
-   Integers.
-
-   This modules provides arbitrary-precision integers.
-   Small integers internally use a regular OCaml [int].
-   When numbers grow too large, we switch transparently to GMP numbers
-   ([mpn] numbers fully allocated on the OCaml heap).
-
-   This interface is rather similar to that of [Int32] and [Int64],
-   with some additional functions provided natively by GMP
-   (GCD, square root, pop-count, etc.).
-
-
-   This file is part of the Zarith library
-   http://forge.ocamlcore.org/projects/zarith .
-   It is distributed under LGPL 2 licensing, with static linking exception.
-   See the LICENSE file included in the distribution.
-
-   Copyright (c) 2010-2011 Antoine Miné, Abstraction project.
-   Abstraction is part of the LIENS (Laboratoire d'Informatique de l'ENS),
-   a joint laboratory by:
-   CNRS (Centre national de la recherche scientifique, France),
-   ENS (École normale supérieure, Paris, France),
-   INRIA Rocquencourt (Institut national de recherche en informatique, France).
-
- *)
-
-
-(** {1 Toplevel} *)
-
-(** For an optimal experience with the [ocaml] interactive toplevel,
-    the magic commands are:
-
-    {[
-    #load "zarith.cma";;
-    #install_printer Z.pp_print;;
-    ]}
-
-    Alternatively, using the new [Zarith_top] toplevel module, simply:
-    {[
-    #require "zarith.top";;
-    ]}
-*)
-
-
-
-(** {1 Types} *)
-
-type t = z
-(** Type of integers of arbitrary length. *)
-
-exception Overflow
-(** Raised by conversion functions when the value cannot be represented in
-    the destination type.
- *)
-
-(** {1 Construction} *)
-
-val zero: t
-(** The number 0. *)
-
-val one: t
-(** The number 1. *)
-
-val minus_one: t
-(** The number -1. *)
-
-external of_int: int -> t = "%identity"
-(** Converts from a base integer. *)
-
-external of_int32: int32 -> t = "ml_z_of_int32"
-(** Converts from a 32-bit integer. *)
-
-external of_int64: int64 -> t = "ml_z_of_int64"
-(** Converts from a 64-bit integer. *)
-
-val of_string: string -> t
-(** Converts a string to an integer.
-    An optional [-] prefix indicates a negative number, while a [+]
-    prefix is ignored.
-    An optional prefix [0x], [0o], or [0b] (following the optional [-]
-    or [+] prefix) indicates that the number is,
-    represented, in hexadecimal, octal, or binary, respectively.
-    Otherwise, base 10 is assumed.
-    (Unlike C, a lone [0] prefix does not denote octal.)
-    Raises an [Invalid_argument] exception if the string is not a
-    syntactically correct representation of an integer.
- *)
-
-val of_substring : string -> pos:int -> len:int -> t
-(** [of_substring s ~pos ~len] is the same as [of_string (String.sub s
-    pos len)]
- *)
-
-val of_string_base: int -> string -> t
-(** Parses a number represented as a string in the specified base,
-    with optional [-] or [+] prefix.
-    The base must be between 2 and 16.
- *)
-
-external of_substring_base
-  : int -> string -> pos:int -> len:int -> t
-  = "ml_z_of_substring_base"
-(** [of_substring_base base s ~pos ~len] is the same as [of_string_base
-    base (String.sub s pos len)]
-*)
-
-
-(** {1 Basic arithmetic operations} *)
-
-val succ: t -> t
-(** Returns its argument plus one. *)
-
-val pred: t -> t
-(** Returns its argument minus one. *)
-
-val abs: t -> t
-(** Absolute value. *)
-
-val neg: t -> t
-(** Unary negation. *)
-
-val add: t -> t -> t
-(** Addition. *)
-
-val sub: t -> t -> t
-(** Subtraction. *)
-
-val mul: t -> t -> t
-(** Multiplication. *)
-
-val div: t -> t -> t
-(** Integer division. The result is truncated towards zero
-    and obeys the rule of signs.
-    Raises [Division_by_zero] if the divisor (second argument) is 0.
- *)
-
-val rem: t -> t -> t
-(** Integer remainder. Can raise a [Division_by_zero].
-    The result of [rem a b] has the sign of [a], and its absolute value is
-    strictly smaller than the absolute value of [b].
-    The result satisfies the equality [a = b * div a b + rem a b].
- *)
-
-external div_rem: t -> t -> (t * t) = "ml_z_div_rem"
-(** Computes both the integer quotient and the remainder.
-    [div_rem a b] is equal to [(div a b, rem a b)].
-    Raises [Division_by_zero] if [b = 0].
- *)
-
-external cdiv: t -> t -> t = "ml_z_cdiv"
-(** Integer division with rounding towards +oo (ceiling).
-    Can raise a [Division_by_zero].
- *)
-
-external fdiv: t -> t -> t = "ml_z_fdiv"
-(** Integer division with rounding towards -oo (floor).
-    Can raise a [Division_by_zero].
- *)
-
-val ediv_rem: t -> t -> (t * t)
-(** Euclidean division and remainder.  [ediv_rem a b] returns a pair [(q, r)]
-    such that [a = b * q + r] and [0 <= r < |b|].
-    Raises [Division_by_zero] if [b = 0].
- *)
-
-val ediv: t -> t -> t
-(** Euclidean division. [ediv a b] is equal to [fst (ediv_rem a b)].
-    The result satisfies [0 <= a - b * ediv a b < |b|].
-    Raises [Division_by_zero] if [b = 0].
- *)
-
-val erem: t -> t -> t
-(** Euclidean remainder.  [erem a b] is equal to [snd (ediv_rem a b)].
-    The result satisfies [0 <= erem a b < |b|] and
-    [a = b * ediv a b + erem a b].  Raises [Division_by_zero] if [b = 0].
- *)
-
-val divexact: t -> t -> t
-(** [divexact a b] divides [a] by [b], only producing correct result when the
-    division is exact, i.e., when [b] evenly divides [a].
-    It should be faster than general division.
-    Can raise a [Division_by_zero].
-*)
-
-external divisible: t -> t -> bool = "ml_z_divisible"
-(** [divisible a b] returns [true] if [a] is exactly divisible by [b].
-    Unlike the other division functions, [b = 0] is accepted
-    (only 0 is considered divisible by 0).
-*)
-
-external congruent: t -> t -> t -> bool = "ml_z_congruent"
-(** [congruent a b c] returns [true] if [a] is congruent to [b] modulo [c].
-    Unlike the other division functions, [c = 0] is accepted
-    (only equal numbers are considered equal congruent 0).
-*)
-
-
-
-
-(** {1 Bit-level operations} *)
-
-(** For all bit-level operations, negative numbers are considered in 2's
-    complement representation, starting with a virtual infinite number of
-    1s.
- *)
-
-val logand: t -> t -> t
-(** Bitwise logical and. *)
-
-val logor: t -> t -> t
-(** Bitwise logical or. *)
-
-val logxor: t -> t -> t
-(** Bitwise logical exclusive or. *)
-
-val lognot: t -> t
-(** Bitwise logical negation.
-    The identity [lognot a]=[-a-1] always hold.
- *)
-
-val shift_left: t -> int -> t
-(** Shifts to the left.
-    Equivalent to a multiplication by a power of 2.
-    The second argument must be nonnegative.
- *)
-
-val shift_right: t -> int -> t
-(** Shifts to the right.
-    This is an arithmetic shift,
-    equivalent to a division by a power of 2 with rounding towards -oo.
-    The second argument must be nonnegative.
- *)
-
-val shift_right_trunc: t -> int -> t
-(** Shifts to the right, rounding towards 0.
-    This is equivalent to a division by a power of 2, with truncation.
-    The second argument must be nonnegative.
- *)
-
-external numbits: t -> int = "ml_z_numbits" [@@noalloc]
-(** Returns the number of significant bits in the given number.
-    If [x] is zero, [numbits x] returns 0.  Otherwise,
-    [numbits x] returns a positive integer [n] such that
-    [2^{n-1} <= |x| < 2^n].  Note that [numbits] is defined
-    for negative arguments, and that [numbits (-x) = numbits x]. *)
-
-external trailing_zeros: t -> int = "ml_z_trailing_zeros" [@@noalloc]
-(** Returns the number of trailing 0 bits in the given number.
-    If [x] is zero, [trailing_zeros x] returns [max_int].
-    Otherwise, [trailing_zeros x] returns a nonnegative integer [n]
-    which is the largest [n] such that [2^n] divides [x] evenly.
-    Note that [trailing_zeros] is defined for negative arguments,
-    and that [trailing_zeros (-x) = trailing_zeros x]. *)
-
-val testbit: t -> int -> bool
-(** [testbit x n] return the value of bit number [n] in [x]:
-    [true] if the bit is 1, [false] if the bit is 0.
-    Bits are numbered from 0.  Raise [Invalid_argument] if [n]
-    is negative. *)
-
-external popcount: t -> int = "ml_z_popcount"
-(** Counts the number of bits set.
-    Raises [Overflow] for negative arguments, as those have an infinite
-    number of bits set.
- *)
-
-external hamdist: t -> t -> int = "ml_z_hamdist"
-(** Counts the number of different bits.
-    Raises [Overflow] if the arguments have different signs
-    (in which case the distance is infinite).
- *)
-
-(** {1 Conversions} *)
-
-(** Note that, when converting to an integer type that cannot represent the
-    converted value, an [Overflow] exception is raised.
- *)
-
-val to_int: t -> int
-(** Converts to a base integer. May raise an [Overflow]. *)
-
-external to_int32: t -> int32 = "ml_z_to_int32"
-(** Converts to a 32-bit integer. May raise [Overflow]. *)
-
-external to_int64: t -> int64 = "ml_z_to_int64"
-(** Converts to a 64-bit integer. May raise [Overflow]. *)
-
-val to_string: t -> string
-(** Gives a human-readable, decimal string representation of the argument. *)
-
-external format: string -> t -> string = "ml_z_format"
-(** Gives a string representation of the argument in the specified
-    printf-like format.
-    The general specification has the following form:
-
-    [% \[flags\] \[width\] type]
-
-    Where the type actually indicates the base:
-
-    - [i], [d], [u]: decimal
-    - [b]: binary
-    - [o]: octal
-    - [x]: lowercase hexadecimal
-    - [X]: uppercase hexadecimal
-
-    Supported flags are:
-
-    - [+]: prefix positive numbers with a [+] sign
-    - space: prefix positive numbers with a space
-    - [-]: left-justify (default is right justification)
-    - [0]: pad with zeroes (instead of spaces)
-    - [#]: alternate formatting (actually, simply output a literal-like prefix: [0x], [0b], [0o])
-
-    Unlike the classic [printf], all numbers are signed (even hexadecimal ones),
-    there is no precision field, and characters that are not part of the format
-    are simply ignored (and not copied in the output).
- *)
-
-external fits_int: t -> bool = "ml_z_fits_int" [@@noalloc]
-(** Whether the argument fits in a regular [int]. *)
-
-external fits_int32: t -> bool = "ml_z_fits_int32" [@@noalloc]
-(** Whether the argument fits in an [int32]. *)
-
-external fits_int64: t -> bool = "ml_z_fits_int64" [@@noalloc]
-(** Whether the argument fits in an [int64]. *)
-
-
-(** {1 Printing} *)
-
-val pp_print: Format.formatter -> t -> unit
-(** Prints the argument on the specified formatter.
-    Can be used as [%a] format printer in [Format.printf] and as
-    argument to [#install_printer] in the top-level.
- *)
-
-
-(** {1 Ordering} *)
-
-external compare: t -> t -> int = "ml_z_compare" [@@noalloc]
-(** Comparison.  [compare x y] returns 0 if [x] equals [y],
-    -1 if [x] is smaller than [y], and 1 if [x] is greater than [y].
-
-    Note that Pervasive.compare can be used to compare reliably two integers
-    only on OCaml 3.12.1 and later versions.
- *)
-
-external equal: t -> t -> bool = "ml_z_equal" [@@noalloc]
-(** Equality test. *)
-
-val leq: t -> t -> bool
-(** Less than or equal. *)
-
-val geq: t -> t -> bool
-(** Greater than or equal. *)
-
-val lt: t -> t -> bool
-(** Less than (and not equal). *)
-
-val gt: t -> t -> bool
-(** Greater than (and not equal). *)
-
-external sign: t -> int = "ml_z_sign" [@@noalloc]
-(** Returns -1, 0, or 1 when the argument is respectively negative, null, or
-    positive.
- *)
-
-val min: t -> t -> t
-(** Returns the minimum of its arguments. *)
-
-val max: t -> t -> t
-(** Returns the maximum of its arguments. *)
-
-val is_even: t -> bool
-(** Returns true if the argument is even (divisible by 2), false if odd. *)
-
-val is_odd: t -> bool
-(** Returns true if the argument is odd, false if even. *)
-
-(** {1 Powers} *)
-
-external pow: t -> int -> t = "ml_z_pow"
-(** [pow base exp] raises [base] to the [exp] power.
-    [exp] must be nonnegative.
-    Note that only exponents fitting in a machine integer are supported, as
-    larger exponents would surely make the result's size overflow the
-    address space.
- *)
-
-external sqrt: t -> t = "ml_z_sqrt"
-(** Returns the square root. The result is truncated (rounded down
-    to an integer).
-    Raises an [Invalid_argument] on negative arguments.
- *)
-
-external sqrt_rem: t -> (t * t) = "ml_z_sqrt_rem"
-(** Returns the square root truncated, and the remainder.
-    Raises an [Invalid_argument] on negative arguments.
- *)
-
-external root: t -> int -> t = "ml_z_root"
-(** [root x n] computes the [n]-th root of [x].
-    [n] must be positive and, if [n] is even, then [x] must be nonnegative.
-    Otherwise, an [Invalid_argument] is raised.
- *)
-
-external rootrem: t -> int -> t * t = "ml_z_rootrem"
-(** [rootrem x n] computes the [n]-th root of [x] and the remainder
-    [x-root**n].
-    [n] must be positive and, if [n] is even, then [x] must be nonnegative.
-    Otherwise, an [Invalid_argument] is raised.
- *)
-
-external perfect_power: t -> bool = "ml_z_perfect_power"
-(** True if the argument has the form [a^b], with [b>1] *)
-
-external perfect_square: t -> bool = "ml_z_perfect_square"
-(** True if the argument has the form [a^2]. *)
-
-val log2: t -> int
-(** Returns the base-2 logarithm of its argument, rounded down to
-    an integer.  If [x] is positive, [log2 x] returns the largest [n]
-    such that [2^n <= x].  If [x] is negative or zero, [log2 x] raise
-    the [Invalid_argument] exception. *)
-
-val log2up: t -> int
-(** Returns the base-2 logarithm of its argument, rounded up to
-    an integer.  If [x] is positive, [log2up x] returns the smallest [n]
-    such that [x <= 2^n].  If [x] is negative or zero, [log2up x] raise
-    the [Invalid_argument] exception. *)
-
-(** {1 Representation} *)
-
-external size: t -> int = "ml_z_size" [@@noalloc]
-(** Returns the number of machine words used to represent the number. *)
-
-val extract: t -> int -> int -> t
-(** [extract a off len] returns a nonnegative number corresponding to bits
-    [off] to [off]+[len]-1 of [b].
-    Negative [a] are considered in infinite-length 2's complement
-    representation.
- *)
-
-val signed_extract: t -> int -> int -> t
-(** [signed_extract a off len] extracts bits [off] to [off]+[len]-1 of [b],
-    as [extract] does, then sign-extends bit [len-1] of the result
-    (that is, bit [off + len - 1] of [a]).  The result is between
-    [- 2{^[len]-1}] (included) and [2{^[len]-1}] (excluded),
-    and equal to [extract a off len] modulo [2{^len}].
- *)
-
-external to_bits: t -> string = "ml_z_to_bits"
-(** Returns a binary representation of the argument.
-    The string result should be interpreted as a sequence of bytes,
-    corresponding to the binary representation of the absolute value of
-    the argument in little endian ordering.
-    The sign is not stored in the string.
- *)
-
-external of_bits: string -> t = "ml_z_of_bits"
-(** Constructs a number from a binary string representation.
-    The string is interpreted as a sequence of bytes in little endian order,
-    and the result is always positive.
-    We have the identity: [of_bits (to_bits x) = abs x].
-    However, we can have [to_bits (of_bits s) <> s] due to the presence of
-    trailing zeros in s.
- *)
-end
-# 30 "v11.in.ml"
-
-
-  module Q : sig
-# 1 "v11/q.mli"
-(**
-   Rationals.
-
-   This modules builds arbitrary precision rationals on top of arbitrary
-   integers from module Z.
-
-
-   This file is part of the Zarith library
-   http://forge.ocamlcore.org/projects/zarith .
-   It is distributed under LGPL 2 licensing, with static linking exception.
-   See the LICENSE file included in the distribution.
-
-   Copyright (c) 2010-2011 Antoine Miné, Abstraction project.
-   Abstraction is part of the LIENS (Laboratoire d'Informatique de l'ENS),
-   a joint laboratory by:
-   CNRS (Centre national de la recherche scientifique, France),
-   ENS (École normale supérieure, Paris, France),
-   INRIA Rocquencourt (Institut national de recherche en informatique, France).
-
- *)
-
-(** {1 Types} *)
-
-type t = {
-    num: Z.t; (** Numerator. *)
-    den: Z.t; (** Denominator, >= 0 *)
-  }
-(** A rational is represented as a pair numerator/denominator, reduced to
-    have a non-negative denominator and no common factor.
-    This form is canonical (enabling polymorphic equality and hashing).
-    The representation allows three special numbers: [inf] (1/0), [-inf] (-1/0)
-    and [undef] (0/0).
- *)
-
-(** {1 Construction} *)
-
-val make: Z.t -> Z.t -> t
-(** [make num den] constructs a new rational equal to [num]/[den].
-    It takes care of putting the rational in canonical form.
- *)
-
-val zero: t
-val one: t
-val minus_one:t
-(** 0, 1, -1. *)
-
-val inf: t
-(** 1/0. *)
-
-val minus_inf: t
-(** -1/0. *)
-
-val undef: t
-(** 0/0. *)
-
-val of_bigint: Z.t -> t
-val of_int: int -> t
-val of_int32: int32 -> t
-val of_int64: int64 -> t
-(** Conversions from various integer types. *)
-
-val of_ints: int -> int -> t
-(** Conversion from an [int] numerator and an [int] denominator. *)
-
-
-
-val of_string: string -> t
-(** Converts a string to a rational.  Plain integers, [/] separated
-   integer ratios (with optional sign), decimal point and scientific
-   notations are understood.
-    Additionally, the special [inf], [-inf], and [undef] are
-   recognized (they can also be typeset respectively as [1/0], [-1/0],
-   [0/0]).  *)
-
-
-(** {1 Inspection} *)
-
-val num: t -> Z.t
-(** Get the numerator. *)
-
-val den: t -> Z.t
-(** Get the denominator. *)
-
-
-(** {1 Testing} *)
-
-type kind =
-  | ZERO   (** 0 *)
-  | INF    (** infinity, i.e. 1/0 *)
-  | MINF   (** minus infinity, i.e. -1/0 *)
-  | UNDEF  (** undefined, i.e., 0/0 *)
-  | NZERO  (** well-defined, non-infinity, non-zero number *)
-(** Rationals can be categorized into different kinds, depending mainly on
-    whether the numerator and/or denominator is null.
- *)
-
-val classify: t -> kind
-(** Determines the kind of a rational. *)
-
-val is_real: t -> bool
-(** Whether the argument is non-infinity and non-undefined. *)
-
-val sign: t -> int
-(** Returns 1 if the argument is positive (including inf), -1 if it is
-    negative (including -inf), and 0 if it is null or undefined.
- *)
-
-val compare: t -> t -> int
-(** [compare x y] compares [x] to [y] and returns 1 if [x] is strictly
-    greater that [y], -1 if it is strictly smaller, and 0 if they are
-    equal.
-    This is a total ordering.
-    Infinities are ordered in the natural way, while undefined is considered
-    the smallest of all: undef = undef < -inf <= -inf < x < inf <= inf.
-    This is consistent with OCaml's handling of floating-point infinities
-    and NaN.
-
-    OCaml's polymorphic comparison will NOT return a result consistent with
-    the ordering of rationals.
- *)
-
-val equal: t -> t -> bool
-(** Equality testing.
-    Unlike [compare], this follows IEEE semantics: [undef] <> [undef].
- *)
-
-val min: t -> t -> t
-(** Returns the smallest of its arguments. *)
-
-val max: t -> t -> t
-(** Returns the largest of its arguments. *)
-
-val leq: t -> t -> bool
-(** Less than or equal. [leq undef undef] resturns false. *)
-
-val geq: t -> t -> bool
-(** Greater than or equal. [leq undef undef] resturns false. *)
-
-val lt: t -> t -> bool
-(** Less than (not equal). *)
-
-val gt: t -> t -> bool
-(** Greater than (not equal). *)
-
-
-(** {1 Conversions} *)
-
-val to_bigint: t -> Z.t
-val to_int: t -> int
-val to_int32: t -> int32
-val to_int64: t -> int64
-(** Convert to integer by truncation.
-    Raises a [Divide_by_zero] if the argument is an infinity or undefined.
-    Raises a [Z.Overflow] if the result does not fit in the destination
-    type.
-*)
-
-val to_string: t -> string
-(** Converts to human-readable, base-10, [/]-separated rational. *)
-
-(** {1 Arithmetic operations} *)
-
-(**
-   In all operations, the result is [undef] if one argument is [undef].
-   Other operations can return [undef]: such as [inf]-[inf], [inf]*0, 0/0.
- *)
-
-val neg: t -> t
-(** Negation. *)
-
-val abs: t -> t
-(** Absolute value. *)
-
-val add: t -> t -> t
-(** Addition. *)
-
-val sub: t -> t -> t
-(** Subtraction. We have [sub x y] = [add x (neg y)]. *)
-
-val mul: t -> t -> t
-(** Multiplication. *)
-
-val inv: t -> t
-(** Inverse.
-    Note that [inv 0] is defined, and equals [inf].
- *)
-
-val div: t -> t -> t
-(** Division.
-    We have [div x y] = [mul x (inv y)], and [inv x] = [div one x].
- *)
-
-val mul_2exp: t -> int -> t
-(** [mul_2exp x n] multiplies [x] by 2 to the power of [n]. *)
-
-val div_2exp: t -> int -> t
-(** [div_2exp x n] divides [x] by 2 to the power of [n]. *)
-
-
-(** {1 Printing} *)
-
-val pp_print: Format.formatter -> t -> unit
-(** Prints the argument on the specified formatter.
-    Also intended to be used as [%a] format printer in [Format.printf].
- *)
-
-
-(** {1 Prefix and infix operators} *)
-
-(**
-   Classic prefix and infix [int] operators are redefined on [t].
-*)
-
-val (~-): t -> t
-(** Negation [neg]. *)
-
-val (~+): t -> t
-(** Identity. *)
-
-val (+): t -> t -> t
-(** Addition [add]. *)
-
-val (-): t -> t -> t
-(** Subtraction [sub]. *)
-
-val ( * ): t -> t -> t
-(** Multiplication [mul]. *)
-
-val (/): t -> t -> t
-(** Division [div]. *)
-
-val (lsl): t -> int -> t
-(** Multiplication by a power of two [mul_2exp]. *)
-
-val (asr): t -> int -> t
-(** Division by a power of two [shift_right]. *)
-
-val (~$): int -> t
-(** Conversion from [int]. *)
-
-val (//): int -> int -> t
-(** Creates a rational from two [int]s. *)
-
-val (~$$): Z.t -> t
-(** Conversion from [Z.t]. *)
-
-val (///): Z.t -> Z.t -> t
-(** Creates a rational from two [Z.t]. *)
-
-val (=): t -> t -> bool
-(** Same as [equal]. *)
-
-val (<): t -> t -> bool
-(** Same as [lt]. *)
-
-val (>): t -> t -> bool
-(** Same as [gt]. *)
-
-val (<=): t -> t -> bool
-(** Same as [leq]. *)
-
-val (>=): t -> t -> bool
-(** Same as [geq]. *)
-
-val (<>): t -> t -> bool
-(** [a <> b] is equivalent to [not (equal a b)]. *)
-end
-# 32 "v11.in.ml"
-
-
   module Lwt : sig
 # 1 "v11/lwt.mli"
 (* This file is part of Lwt, released under the MIT license. See LICENSE.md for
@@ -3475,7 +2729,7 @@ val return_error : 'e -> ((_, 'e) result) t
 
     @since Lwt 2.6.0 *)
 end
-# 34 "v11.in.ml"
+# 30 "v11.in.ml"
 
 
   module Data_encoding : sig
@@ -5244,7 +4498,7 @@ module Binary : sig
   val to_string_exn : ?buffer_size:int -> 'a encoding -> 'a -> string
 end
 end
-# 36 "v11.in.ml"
+# 32 "v11.in.ml"
 
 
   module Raw_hashes : sig
@@ -5286,342 +4540,7 @@ val sha3_256 : bytes -> bytes
 
 val sha3_512 : bytes -> bytes
 end
-# 38 "v11.in.ml"
-
-
-  module Compare : sig
-# 1 "v11/compare.mli"
-(*****************************************************************************)
-(*                                                                           *)
-(* Open Source License                                                       *)
-(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
-(* Copyright (c) 2021 Nomadic Labs <contact@nomadic-labs.com>                *)
-(*                                                                           *)
-(* Permission is hereby granted, free of charge, to any person obtaining a   *)
-(* copy of this software and associated documentation files (the "Software"),*)
-(* to deal in the Software without restriction, including without limitation *)
-(* the rights to use, copy, modify, merge, publish, distribute, sublicense,  *)
-(* and/or sell copies of the Software, and to permit persons to whom the     *)
-(* Software is furnished to do so, subject to the following conditions:      *)
-(*                                                                           *)
-(* The above copyright notice and this permission notice shall be included   *)
-(* in all copies or substantial portions of the Software.                    *)
-(*                                                                           *)
-(* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR*)
-(* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  *)
-(* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL   *)
-(* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER*)
-(* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   *)
-(* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER       *)
-(* DEALINGS IN THE SOFTWARE.                                                 *)
-(*                                                                           *)
-(*****************************************************************************)
-
-(** {1 [Compare]}
-
-    Monomorphic comparison for common ground types and common type constructors.
-
-    [Compare] provides a module signature for the standard comparison functions
-    and operators as well as modules of that signature for the common OCaml
-    ground types ([int], [bool], etc.) and type constructors ([list], [option],
-    etc.).
-
-    [Compare] also provides some additional helpers for comparison-related
-    tasks. *)
-
-(** {2 Signatures and a functor} *)
-
-(** [COMPARABLE] is a signature for basic comparison. It is used only for
-    instantiating full comparison modules of signature {!module-type-S} via the
-    functor {!Make}. *)
-module type COMPARABLE = sig
-  type t
-
-  val compare : t -> t -> int
-end
-
-(** [S] is a signature for a fully-fledge comparison module. It includes all the
-    functions and operators derived from a [compare] function. *)
-module type S = sig
-  type t
-
-  (** [x = y] iff [compare x y = 0] *)
-  val ( = ) : t -> t -> bool
-
-  (** [x <> y] iff [compare x y <> 0] *)
-  val ( <> ) : t -> t -> bool
-
-  (** [x < y] iff [compare x y < 0] *)
-  val ( < ) : t -> t -> bool
-
-  (** [x <= y] iff [compare x y <= 0] *)
-  val ( <= ) : t -> t -> bool
-
-  (** [x >= y] iff [compare x y >= 0] *)
-  val ( >= ) : t -> t -> bool
-
-  (** [x > y] iff [compare x y > 0] *)
-  val ( > ) : t -> t -> bool
-
-  (** [compare] an alias for the functor parameter's [compare] function *)
-  val compare : t -> t -> int
-
-  (** [equal x y] iff [compare x y = 0] *)
-  val equal : t -> t -> bool
-
-  (** [max x y] is [x] if [x >= y] otherwise it is [y] *)
-  val max : t -> t -> t
-
-  (** [min x y] is [x] if [x <= y] otherwise it is [y] *)
-  val min : t -> t -> t
-end
-
-module Make (P : COMPARABLE) : S with type t := P.t
-
-(** {2 Base types}
-
-    The specialised comparison and all the specialised functions and operators
-    on the base types are compatible with the polymorphic comparison and all the
-    polymorphic functions and operators from the {!Stdlib}. *)
-
-module Char : S with type t = char
-
-module Bool : S with type t = bool
-
-(** [Int] is a comparison module. Out of performance concerns, the signature
-    actually contains compiler builtins ([external]) rather than [val]. *)
-module Int : sig
-  type t = int
-
-  external ( = ) : int -> int -> bool = "%equal"
-
-  external ( <> ) : int -> int -> bool = "%notequal"
-
-  external ( < ) : int -> int -> bool = "%lessthan"
-
-  external ( > ) : int -> int -> bool = "%greaterthan"
-
-  external ( <= ) : int -> int -> bool = "%lessequal"
-
-  external ( >= ) : int -> int -> bool = "%greaterequal"
-
-  external compare : int -> int -> int = "%compare"
-
-  val max : int -> int -> int
-
-  val min : int -> int -> int
-
-  external equal : int -> int -> bool = "%equal"
-end
-
-module Int32 : S with type t = int32
-
-module Uint32 : S with type t = int32
-
-module Int64 : S with type t = int64
-
-module Uint64 : S with type t = int64
-
-module String : S with type t = string
-
-module Bytes : S with type t = bytes
-
-(** [Z] is a comparison module for Zarith numbers. *)
-module Z : S with type t = Z.t
-
-(** [Q] is a comparison module for Zarith rationals. *)
-module Q : S with type t = Q.t
-
-(** {2 Type constructors}
-
-    Provided the functor argument(s) are compatible with the polymorphic
-    comparison of the {!Stdlib}, then the specialised comparison and all the
-    specialised functions and operators on the derived types are compatible with
-    the polymorphic comparison and all the polymorphic functions and operators
-    from the {!Stdlib}. *)
-
-module List (P : COMPARABLE) : S with type t = P.t list
-
-module Option (P : COMPARABLE) : S with type t = P.t option
-
-module Result (Ok : COMPARABLE) (Error : COMPARABLE) :
-  S with type t = (Ok.t, Error.t) result
-
-(** {2 List lengths}
-
-    Helpers for more readable {!Stdlib.List.compare_lengths} and
-    {!Stdlib.List.compare_length_with}.
-
-    These modules are intended to be used as [Module.(expression)], most often
-    within an [if] condition. E.g.,
-
-{[
-if Compare.List_length_with.(chunks > max_number_of_chunks) then
-   raise Maximum_size_exceeded
-else
-   ..
-]}
-    *)
-
-module List_length_with : sig
-  (** [Compare.List_length_with.(l = n)] iff [l] is of length [n]. In other
-      words iff [Stdlib.List.compare_length_with l n = 0]. Note that, like
-      [compare_length_with], this comparison does not explore the list [l]
-      beyond its [n]-th element. *)
-  val ( = ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.(l <> n)] iff [l] is not of length [n]. In other
-      words iff [Stdlib.List.compare_length_with l n <> 0]. Note that, like
-      [compare_length_with], this comparison does not explore the list [l]
-      beyond its [n]-th element. *)
-  val ( <> ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.(l < n)] iff [l] is of length strictly less than
-      [n]. In other words iff [Stdlib.List.compare_length_with l n < 0]. Note
-      that, like [compare_length_with], this comparison does not explore the
-      list [l] beyond its [n]-th element. *)
-  val ( < ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.(l <= n)] iff [l] is of length less than [n]. In
-      other words iff [Stdlib.List.compare_length_with l n <= 0]. Note that,
-      like [compare_length_with], this comparison does not explore the list [l]
-      beyond its [n]-th element. *)
-  val ( <= ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.(l >= n)] iff [l] is of length greater than [n].
-      In other words iff [Stdlib.List.compare_length_with l n >= 0]. Note that,
-      like [compare_length_with], this comparison does not explore the list [l]
-      beyond its [n]-th element. *)
-  val ( >= ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.(l > n)] iff [l] is of length strictly greater
-      than [n]. In other words iff [Stdlib.List.compare_length_with l n > 0].
-      Note that, like [compare_length_with], this comparison does not explore
-      the list [l] beyond its [n]-th element. *)
-  val ( > ) : 'a list -> int -> bool
-
-  (** [Compare.List_length_with.compare] is an alias for
-      [Stdlib.List.compare_length_with]. *)
-  val compare : 'a list -> int -> int
-
-  (** [Compare.List_length_with.equal] is an alias for
-      [Compare.List_length_with.( = )]. *)
-  val equal : 'a list -> int -> bool
-end
-
-module List_lengths : sig
-  (** [Compare.List_lengths.(xs = ys)] iff [xs] and [ys] have the same length.
-      In other words, iff [Stdlib.List.compare_lengths xs ys = 0]. Note that,
-      like [compare_lengths], this comparison only explores the lists up to the
-      length of the shortest one. *)
-  val ( = ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.(xs <> ys)] iff [xs] and [ys] have different
-      lengths. In other words, iff [Stdlib.List.compare_lengths xs ys <> 0].
-      Note that, like [compare_lengths], this comparison only explores the lists
-      up to the length of the shortest one. *)
-  val ( <> ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.(xs < ys)] iff [xs] is strictly shorter than [ys].
-      In other words, iff [Stdlib.List.compare_lengths xs ys < 0]. Note that,
-      like [compare_lengths], this comparison only explores the lists up to the
-      length of the shortest one. *)
-  val ( < ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.(xs <= ys)] iff [xs] is shorter than [ys].
-      In other words, iff [Stdlib.List.compare_lengths xs ys <= 0]. Note that,
-      like [compare_lengths], this comparison only explores the lists up to the
-      length of the shortest one. *)
-  val ( <= ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.(xs >= ys)] iff [xs] is longer than [ys].
-      In other words, iff [Stdlib.List.compare_lengths xs ys >= 0]. Note that,
-      like [compare_lengths], this comparison only explores the lists up to the
-      length of the shortest one. *)
-  val ( >= ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.(xs > ys)] iff [xs] is strictly longer than [ys].
-      In other words, iff [Stdlib.List.compare_lengths xs ys > 0]. Note that,
-      like [compare_lengths], this comparison only explores the lists up to the
-      length of the shortest one. *)
-  val ( > ) : 'a list -> 'b list -> bool
-
-  (** [Compare.List_lengths.compare] is an alias for
-      [Stdlib.List.compare_lengths]. *)
-  val compare : 'a list -> 'b list -> int
-
-  (** [Compare.List_lengths.equal] is an alias for
-      [Compare.List_lengths.( = )]. *)
-  val equal : 'a list -> 'b list -> bool
-end
-
-(** {2 Building blocks} *)
-
-(** [or_else c f] is [c] if [c <> 0] or [f ()] otherwise.
-
-    The intended use is
-{[
-let compare (foo_a, bar_a) (foo_b, bar_b) =
-  or_else (Foo.compare foo_a foo_b) (fun () -> Bar.compare bar_a bar_b)
-]}
-*)
-val or_else : int -> (unit -> int) -> int
-end
-# 40 "v11.in.ml"
-
-
-  module Time : sig
-# 1 "v11/time.mli"
-(*****************************************************************************)
-(*                                                                           *)
-(* Open Source License                                                       *)
-(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
-(*                                                                           *)
-(* Permission is hereby granted, free of charge, to any person obtaining a   *)
-(* copy of this software and associated documentation files (the "Software"),*)
-(* to deal in the Software without restriction, including without limitation *)
-(* the rights to use, copy, modify, merge, publish, distribute, sublicense,  *)
-(* and/or sell copies of the Software, and to permit persons to whom the     *)
-(* Software is furnished to do so, subject to the following conditions:      *)
-(*                                                                           *)
-(* The above copyright notice and this permission notice shall be included   *)
-(* in all copies or substantial portions of the Software.                    *)
-(*                                                                           *)
-(* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR*)
-(* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  *)
-(* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL   *)
-(* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER*)
-(* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   *)
-(* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER       *)
-(* DEALINGS IN THE SOFTWARE.                                                 *)
-(*                                                                           *)
-(*****************************************************************************)
-
-type t
-
-include Compare.S with type t := t
-
-val add : t -> int64 -> t
-
-val diff : t -> t -> int64
-
-val of_seconds : int64 -> t
-
-val to_seconds : t -> int64
-
-val of_notation : string -> t option
-
-val of_notation_exn : string -> t
-
-val to_notation : t -> string
-
-val encoding : t Data_encoding.t
-
-val rfc_encoding : t Data_encoding.t
-
-val pp_hum : Format.formatter -> t -> unit
-end
-# 42 "v11.in.ml"
+# 34 "v11.in.ml"
 
 
   module TzEndian : sig
@@ -5687,7 +4606,7 @@ val get_uint16_string : string -> int -> int
 
 val set_uint16 : bytes -> int -> int -> unit
 end
-# 44 "v11.in.ml"
+# 36 "v11.in.ml"
 
 
   module Bits : sig
@@ -5724,7 +4643,7 @@ end
     The behaviour is unspecified if [x < 0].*)
 val numbits : int -> int
 end
-# 46 "v11.in.ml"
+# 38 "v11.in.ml"
 
 
   module Equality_witness : sig
@@ -5792,7 +4711,7 @@ val eq : 'a t -> 'b t -> ('a, 'b) eq option
 (** [hash id] returns a hash for [id]. *)
 val hash : 'a t -> int
 end
-# 48 "v11.in.ml"
+# 40 "v11.in.ml"
 
 
   module FallbackArray : sig
@@ -5882,7 +4801,7 @@ val fold : ('b -> 'a -> 'b) -> 'a t -> 'b -> 'b
    filled. *)
 val fold_map : ('b -> 'a -> 'b * 'c) -> 'a t -> 'b -> 'c -> 'b * 'c t
 end
-# 50 "v11.in.ml"
+# 42 "v11.in.ml"
 
 
   module Error_monad : sig
@@ -6291,10 +5210,1091 @@ module Lwt_option_syntax : sig
   val both : 'a option Lwt.t -> 'b option Lwt.t -> ('a * 'b) option Lwt.t
 end
 end
-# 52 "v11.in.ml"
+# 44 "v11.in.ml"
 
 
   open Error_monad
+
+  module Z : sig
+# 1 "v11/z.mli"
+(**
+   Integers.
+
+   This modules provides arbitrary-precision integers.
+   Small integers internally use a regular OCaml [int].
+   When numbers grow too large, we switch transparently to GMP numbers
+   ([mpn] numbers fully allocated on the OCaml heap).
+
+   This interface is rather similar to that of [Int32] and [Int64],
+   with some additional functions provided natively by GMP
+   (GCD, square root, pop-count, etc.).
+
+
+   This file is part of the Zarith library
+   http://forge.ocamlcore.org/projects/zarith .
+   It is distributed under LGPL 2 licensing, with static linking exception.
+   See the LICENSE file included in the distribution.
+
+   Copyright (c) 2010-2011 Antoine Miné, Abstraction project.
+   Abstraction is part of the LIENS (Laboratoire d'Informatique de l'ENS),
+   a joint laboratory by:
+   CNRS (Centre national de la recherche scientifique, France),
+   ENS (École normale supérieure, Paris, France),
+   INRIA Rocquencourt (Institut national de recherche en informatique, France).
+
+ *)
+
+
+(** {1 Toplevel} *)
+
+(** For an optimal experience with the [ocaml] interactive toplevel,
+    the magic commands are:
+
+    {[
+    #load "zarith.cma";;
+    #install_printer Z.pp_print;;
+    ]}
+
+    Alternatively, using the new [Zarith_top] toplevel module, simply:
+    {[
+    #require "zarith.top";;
+    ]}
+*)
+
+
+
+(** {1 Types} *)
+
+type t = z
+(** Type of integers of arbitrary length. *)
+
+exception Overflow
+(** Raised by conversion functions when the value cannot be represented in
+    the destination type.
+ *)
+
+(** {1 Construction} *)
+
+val zero: t
+(** The number 0. *)
+
+val one: t
+(** The number 1. *)
+
+val minus_one: t
+(** The number -1. *)
+
+external of_int: int -> t = "%identity"
+(** Converts from a base integer. *)
+
+external of_int32: int32 -> t = "ml_z_of_int32"
+(** Converts from a 32-bit integer. *)
+
+external of_int64: int64 -> t = "ml_z_of_int64"
+(** Converts from a 64-bit integer. *)
+
+val of_string: string -> t
+(** Converts a string to an integer.
+    An optional [-] prefix indicates a negative number, while a [+]
+    prefix is ignored.
+    An optional prefix [0x], [0o], or [0b] (following the optional [-]
+    or [+] prefix) indicates that the number is,
+    represented, in hexadecimal, octal, or binary, respectively.
+    Otherwise, base 10 is assumed.
+    (Unlike C, a lone [0] prefix does not denote octal.)
+    Raises an [Invalid_argument] exception if the string is not a
+    syntactically correct representation of an integer.
+ *)
+
+val of_substring : string -> pos:int -> len:int -> t
+(** [of_substring s ~pos ~len] is the same as [of_string (String.sub s
+    pos len)]
+ *)
+
+val of_string_base: int -> string -> t
+(** Parses a number represented as a string in the specified base,
+    with optional [-] or [+] prefix.
+    The base must be between 2 and 16.
+ *)
+
+external of_substring_base
+  : int -> string -> pos:int -> len:int -> t
+  = "ml_z_of_substring_base"
+(** [of_substring_base base s ~pos ~len] is the same as [of_string_base
+    base (String.sub s pos len)]
+*)
+
+
+(** {1 Basic arithmetic operations} *)
+
+val succ: t -> t
+(** Returns its argument plus one. *)
+
+val pred: t -> t
+(** Returns its argument minus one. *)
+
+val abs: t -> t
+(** Absolute value. *)
+
+val neg: t -> t
+(** Unary negation. *)
+
+val add: t -> t -> t
+(** Addition. *)
+
+val sub: t -> t -> t
+(** Subtraction. *)
+
+val mul: t -> t -> t
+(** Multiplication. *)
+
+val div: t -> t -> t
+(** Integer division. The result is truncated towards zero
+    and obeys the rule of signs.
+    Raises [Division_by_zero] if the divisor (second argument) is 0.
+ *)
+
+val rem: t -> t -> t
+(** Integer remainder. Can raise a [Division_by_zero].
+    The result of [rem a b] has the sign of [a], and its absolute value is
+    strictly smaller than the absolute value of [b].
+    The result satisfies the equality [a = b * div a b + rem a b].
+ *)
+
+external div_rem: t -> t -> (t * t) = "ml_z_div_rem"
+(** Computes both the integer quotient and the remainder.
+    [div_rem a b] is equal to [(div a b, rem a b)].
+    Raises [Division_by_zero] if [b = 0].
+ *)
+
+external cdiv: t -> t -> t = "ml_z_cdiv"
+(** Integer division with rounding towards +oo (ceiling).
+    Can raise a [Division_by_zero].
+ *)
+
+external fdiv: t -> t -> t = "ml_z_fdiv"
+(** Integer division with rounding towards -oo (floor).
+    Can raise a [Division_by_zero].
+ *)
+
+val ediv_rem: t -> t -> (t * t)
+(** Euclidean division and remainder.  [ediv_rem a b] returns a pair [(q, r)]
+    such that [a = b * q + r] and [0 <= r < |b|].
+    Raises [Division_by_zero] if [b = 0].
+ *)
+
+val ediv: t -> t -> t
+(** Euclidean division. [ediv a b] is equal to [fst (ediv_rem a b)].
+    The result satisfies [0 <= a - b * ediv a b < |b|].
+    Raises [Division_by_zero] if [b = 0].
+ *)
+
+val erem: t -> t -> t
+(** Euclidean remainder.  [erem a b] is equal to [snd (ediv_rem a b)].
+    The result satisfies [0 <= erem a b < |b|] and
+    [a = b * ediv a b + erem a b].  Raises [Division_by_zero] if [b = 0].
+ *)
+
+val divexact: t -> t -> t
+(** [divexact a b] divides [a] by [b], only producing correct result when the
+    division is exact, i.e., when [b] evenly divides [a].
+    It should be faster than general division.
+    Can raise a [Division_by_zero].
+*)
+
+external divisible: t -> t -> bool = "ml_z_divisible"
+(** [divisible a b] returns [true] if [a] is exactly divisible by [b].
+    Unlike the other division functions, [b = 0] is accepted
+    (only 0 is considered divisible by 0).
+*)
+
+external congruent: t -> t -> t -> bool = "ml_z_congruent"
+(** [congruent a b c] returns [true] if [a] is congruent to [b] modulo [c].
+    Unlike the other division functions, [c = 0] is accepted
+    (only equal numbers are considered equal congruent 0).
+*)
+
+
+
+
+(** {1 Bit-level operations} *)
+
+(** For all bit-level operations, negative numbers are considered in 2's
+    complement representation, starting with a virtual infinite number of
+    1s.
+ *)
+
+val logand: t -> t -> t
+(** Bitwise logical and. *)
+
+val logor: t -> t -> t
+(** Bitwise logical or. *)
+
+val logxor: t -> t -> t
+(** Bitwise logical exclusive or. *)
+
+val lognot: t -> t
+(** Bitwise logical negation.
+    The identity [lognot a]=[-a-1] always hold.
+ *)
+
+val shift_left: t -> int -> t
+(** Shifts to the left.
+    Equivalent to a multiplication by a power of 2.
+    The second argument must be nonnegative.
+ *)
+
+val shift_right: t -> int -> t
+(** Shifts to the right.
+    This is an arithmetic shift,
+    equivalent to a division by a power of 2 with rounding towards -oo.
+    The second argument must be nonnegative.
+ *)
+
+val shift_right_trunc: t -> int -> t
+(** Shifts to the right, rounding towards 0.
+    This is equivalent to a division by a power of 2, with truncation.
+    The second argument must be nonnegative.
+ *)
+
+external numbits: t -> int = "ml_z_numbits" [@@noalloc]
+(** Returns the number of significant bits in the given number.
+    If [x] is zero, [numbits x] returns 0.  Otherwise,
+    [numbits x] returns a positive integer [n] such that
+    [2^{n-1} <= |x| < 2^n].  Note that [numbits] is defined
+    for negative arguments, and that [numbits (-x) = numbits x]. *)
+
+external trailing_zeros: t -> int = "ml_z_trailing_zeros" [@@noalloc]
+(** Returns the number of trailing 0 bits in the given number.
+    If [x] is zero, [trailing_zeros x] returns [max_int].
+    Otherwise, [trailing_zeros x] returns a nonnegative integer [n]
+    which is the largest [n] such that [2^n] divides [x] evenly.
+    Note that [trailing_zeros] is defined for negative arguments,
+    and that [trailing_zeros (-x) = trailing_zeros x]. *)
+
+val testbit: t -> int -> bool
+(** [testbit x n] return the value of bit number [n] in [x]:
+    [true] if the bit is 1, [false] if the bit is 0.
+    Bits are numbered from 0.  Raise [Invalid_argument] if [n]
+    is negative. *)
+
+external popcount: t -> int = "ml_z_popcount"
+(** Counts the number of bits set.
+    Raises [Overflow] for negative arguments, as those have an infinite
+    number of bits set.
+ *)
+
+external hamdist: t -> t -> int = "ml_z_hamdist"
+(** Counts the number of different bits.
+    Raises [Overflow] if the arguments have different signs
+    (in which case the distance is infinite).
+ *)
+
+(** {1 Conversions} *)
+
+(** Note that, when converting to an integer type that cannot represent the
+    converted value, an [Overflow] exception is raised.
+ *)
+
+val to_int: t -> int
+(** Converts to a base integer. May raise an [Overflow]. *)
+
+external to_int32: t -> int32 = "ml_z_to_int32"
+(** Converts to a 32-bit integer. May raise [Overflow]. *)
+
+external to_int64: t -> int64 = "ml_z_to_int64"
+(** Converts to a 64-bit integer. May raise [Overflow]. *)
+
+val to_string: t -> string
+(** Gives a human-readable, decimal string representation of the argument. *)
+
+external format: string -> t -> string = "ml_z_format"
+(** Gives a string representation of the argument in the specified
+    printf-like format.
+    The general specification has the following form:
+
+    [% \[flags\] \[width\] type]
+
+    Where the type actually indicates the base:
+
+    - [i], [d], [u]: decimal
+    - [b]: binary
+    - [o]: octal
+    - [x]: lowercase hexadecimal
+    - [X]: uppercase hexadecimal
+
+    Supported flags are:
+
+    - [+]: prefix positive numbers with a [+] sign
+    - space: prefix positive numbers with a space
+    - [-]: left-justify (default is right justification)
+    - [0]: pad with zeroes (instead of spaces)
+    - [#]: alternate formatting (actually, simply output a literal-like prefix: [0x], [0b], [0o])
+
+    Unlike the classic [printf], all numbers are signed (even hexadecimal ones),
+    there is no precision field, and characters that are not part of the format
+    are simply ignored (and not copied in the output).
+ *)
+
+external fits_int: t -> bool = "ml_z_fits_int" [@@noalloc]
+(** Whether the argument fits in a regular [int]. *)
+
+external fits_int32: t -> bool = "ml_z_fits_int32" [@@noalloc]
+(** Whether the argument fits in an [int32]. *)
+
+external fits_int64: t -> bool = "ml_z_fits_int64" [@@noalloc]
+(** Whether the argument fits in an [int64]. *)
+
+
+(** {1 Printing} *)
+
+val pp_print: Format.formatter -> t -> unit
+(** Prints the argument on the specified formatter.
+    Can be used as [%a] format printer in [Format.printf] and as
+    argument to [#install_printer] in the top-level.
+ *)
+
+
+(** {1 Ordering} *)
+
+external compare: t -> t -> int = "ml_z_compare" [@@noalloc]
+(** Comparison.  [compare x y] returns 0 if [x] equals [y],
+    -1 if [x] is smaller than [y], and 1 if [x] is greater than [y].
+
+    Note that Pervasive.compare can be used to compare reliably two integers
+    only on OCaml 3.12.1 and later versions.
+ *)
+
+external equal: t -> t -> bool = "ml_z_equal" [@@noalloc]
+(** Equality test. *)
+
+val leq: t -> t -> bool
+(** Less than or equal. *)
+
+val geq: t -> t -> bool
+(** Greater than or equal. *)
+
+val lt: t -> t -> bool
+(** Less than (and not equal). *)
+
+val gt: t -> t -> bool
+(** Greater than (and not equal). *)
+
+external sign: t -> int = "ml_z_sign" [@@noalloc]
+(** Returns -1, 0, or 1 when the argument is respectively negative, null, or
+    positive.
+ *)
+
+val min: t -> t -> t
+(** Returns the minimum of its arguments. *)
+
+val max: t -> t -> t
+(** Returns the maximum of its arguments. *)
+
+val is_even: t -> bool
+(** Returns true if the argument is even (divisible by 2), false if odd. *)
+
+val is_odd: t -> bool
+(** Returns true if the argument is odd, false if even. *)
+
+(** {1 Powers} *)
+
+external pow: t -> int -> t = "ml_z_pow"
+(** [pow base exp] raises [base] to the [exp] power.
+    [exp] must be nonnegative.
+    Note that only exponents fitting in a machine integer are supported, as
+    larger exponents would surely make the result's size overflow the
+    address space.
+ *)
+
+external sqrt: t -> t = "ml_z_sqrt"
+(** Returns the square root. The result is truncated (rounded down
+    to an integer).
+    Raises an [Invalid_argument] on negative arguments.
+ *)
+
+external sqrt_rem: t -> (t * t) = "ml_z_sqrt_rem"
+(** Returns the square root truncated, and the remainder.
+    Raises an [Invalid_argument] on negative arguments.
+ *)
+
+external root: t -> int -> t = "ml_z_root"
+(** [root x n] computes the [n]-th root of [x].
+    [n] must be positive and, if [n] is even, then [x] must be nonnegative.
+    Otherwise, an [Invalid_argument] is raised.
+ *)
+
+external rootrem: t -> int -> t * t = "ml_z_rootrem"
+(** [rootrem x n] computes the [n]-th root of [x] and the remainder
+    [x-root**n].
+    [n] must be positive and, if [n] is even, then [x] must be nonnegative.
+    Otherwise, an [Invalid_argument] is raised.
+ *)
+
+external perfect_power: t -> bool = "ml_z_perfect_power"
+(** True if the argument has the form [a^b], with [b>1] *)
+
+external perfect_square: t -> bool = "ml_z_perfect_square"
+(** True if the argument has the form [a^2]. *)
+
+val log2: t -> int
+(** Returns the base-2 logarithm of its argument, rounded down to
+    an integer.  If [x] is positive, [log2 x] returns the largest [n]
+    such that [2^n <= x].  If [x] is negative or zero, [log2 x] raise
+    the [Invalid_argument] exception. *)
+
+val log2up: t -> int
+(** Returns the base-2 logarithm of its argument, rounded up to
+    an integer.  If [x] is positive, [log2up x] returns the smallest [n]
+    such that [x <= 2^n].  If [x] is negative or zero, [log2up x] raise
+    the [Invalid_argument] exception. *)
+
+(** {1 Representation} *)
+
+external size: t -> int = "ml_z_size" [@@noalloc]
+(** Returns the number of machine words used to represent the number. *)
+
+val extract: t -> int -> int -> t
+(** [extract a off len] returns a nonnegative number corresponding to bits
+    [off] to [off]+[len]-1 of [b].
+    Negative [a] are considered in infinite-length 2's complement
+    representation.
+ *)
+
+val signed_extract: t -> int -> int -> t
+(** [signed_extract a off len] extracts bits [off] to [off]+[len]-1 of [b],
+    as [extract] does, then sign-extends bit [len-1] of the result
+    (that is, bit [off + len - 1] of [a]).  The result is between
+    [- 2{^[len]-1}] (included) and [2{^[len]-1}] (excluded),
+    and equal to [extract a off len] modulo [2{^len}].
+ *)
+
+external to_bits: t -> string = "ml_z_to_bits"
+(** Returns a binary representation of the argument.
+    The string result should be interpreted as a sequence of bytes,
+    corresponding to the binary representation of the absolute value of
+    the argument in little endian ordering.
+    The sign is not stored in the string.
+ *)
+
+external of_bits: string -> t = "ml_z_of_bits"
+(** Constructs a number from a binary string representation.
+    The string is interpreted as a sequence of bytes in little endian order,
+    and the result is always positive.
+    We have the identity: [of_bits (to_bits x) = abs x].
+    However, we can have [to_bits (of_bits s) <> s] due to the presence of
+    trailing zeros in s.
+ *)
+end
+# 48 "v11.in.ml"
+
+
+  module Q : sig
+# 1 "v11/q.mli"
+(**
+   Rationals.
+
+   This modules builds arbitrary precision rationals on top of arbitrary
+   integers from module Z.
+
+
+   This file is part of the Zarith library
+   http://forge.ocamlcore.org/projects/zarith .
+   It is distributed under LGPL 2 licensing, with static linking exception.
+   See the LICENSE file included in the distribution.
+
+   Copyright (c) 2010-2011 Antoine Miné, Abstraction project.
+   Abstraction is part of the LIENS (Laboratoire d'Informatique de l'ENS),
+   a joint laboratory by:
+   CNRS (Centre national de la recherche scientifique, France),
+   ENS (École normale supérieure, Paris, France),
+   INRIA Rocquencourt (Institut national de recherche en informatique, France).
+
+ *)
+
+(** {1 Types} *)
+
+type t = {
+    num: Z.t; (** Numerator. *)
+    den: Z.t; (** Denominator, >= 0 *)
+  }
+(** A rational is represented as a pair numerator/denominator, reduced to
+    have a non-negative denominator and no common factor.
+    This form is canonical (enabling polymorphic equality and hashing).
+    The representation allows three special numbers: [inf] (1/0), [-inf] (-1/0)
+    and [undef] (0/0).
+ *)
+
+(** {1 Construction} *)
+
+val make: Z.t -> Z.t -> t
+(** [make num den] constructs a new rational equal to [num]/[den].
+    It takes care of putting the rational in canonical form.
+ *)
+
+val zero: t
+val one: t
+val minus_one:t
+(** 0, 1, -1. *)
+
+val inf: t
+(** 1/0. *)
+
+val minus_inf: t
+(** -1/0. *)
+
+val undef: t
+(** 0/0. *)
+
+val of_bigint: Z.t -> t
+val of_int: int -> t
+val of_int32: int32 -> t
+val of_int64: int64 -> t
+(** Conversions from various integer types. *)
+
+val of_ints: int -> int -> t
+(** Conversion from an [int] numerator and an [int] denominator. *)
+
+
+
+val of_string: string -> t
+(** Converts a string to a rational.  Plain integers, [/] separated
+   integer ratios (with optional sign), decimal point and scientific
+   notations are understood.
+    Additionally, the special [inf], [-inf], and [undef] are
+   recognized (they can also be typeset respectively as [1/0], [-1/0],
+   [0/0]).  *)
+
+
+(** {1 Inspection} *)
+
+val num: t -> Z.t
+(** Get the numerator. *)
+
+val den: t -> Z.t
+(** Get the denominator. *)
+
+
+(** {1 Testing} *)
+
+type kind =
+  | ZERO   (** 0 *)
+  | INF    (** infinity, i.e. 1/0 *)
+  | MINF   (** minus infinity, i.e. -1/0 *)
+  | UNDEF  (** undefined, i.e., 0/0 *)
+  | NZERO  (** well-defined, non-infinity, non-zero number *)
+(** Rationals can be categorized into different kinds, depending mainly on
+    whether the numerator and/or denominator is null.
+ *)
+
+val classify: t -> kind
+(** Determines the kind of a rational. *)
+
+val is_real: t -> bool
+(** Whether the argument is non-infinity and non-undefined. *)
+
+val sign: t -> int
+(** Returns 1 if the argument is positive (including inf), -1 if it is
+    negative (including -inf), and 0 if it is null or undefined.
+ *)
+
+val compare: t -> t -> int
+(** [compare x y] compares [x] to [y] and returns 1 if [x] is strictly
+    greater that [y], -1 if it is strictly smaller, and 0 if they are
+    equal.
+    This is a total ordering.
+    Infinities are ordered in the natural way, while undefined is considered
+    the smallest of all: undef = undef < -inf <= -inf < x < inf <= inf.
+    This is consistent with OCaml's handling of floating-point infinities
+    and NaN.
+
+    OCaml's polymorphic comparison will NOT return a result consistent with
+    the ordering of rationals.
+ *)
+
+val equal: t -> t -> bool
+(** Equality testing.
+    Unlike [compare], this follows IEEE semantics: [undef] <> [undef].
+ *)
+
+val min: t -> t -> t
+(** Returns the smallest of its arguments. *)
+
+val max: t -> t -> t
+(** Returns the largest of its arguments. *)
+
+val leq: t -> t -> bool
+(** Less than or equal. [leq undef undef] resturns false. *)
+
+val geq: t -> t -> bool
+(** Greater than or equal. [leq undef undef] resturns false. *)
+
+val lt: t -> t -> bool
+(** Less than (not equal). *)
+
+val gt: t -> t -> bool
+(** Greater than (not equal). *)
+
+
+(** {1 Conversions} *)
+
+val to_bigint: t -> Z.t
+val to_int: t -> int
+val to_int32: t -> int32
+val to_int64: t -> int64
+(** Convert to integer by truncation.
+    Raises a [Divide_by_zero] if the argument is an infinity or undefined.
+    Raises a [Z.Overflow] if the result does not fit in the destination
+    type.
+*)
+
+val to_string: t -> string
+(** Converts to human-readable, base-10, [/]-separated rational. *)
+
+(** {1 Arithmetic operations} *)
+
+(**
+   In all operations, the result is [undef] if one argument is [undef].
+   Other operations can return [undef]: such as [inf]-[inf], [inf]*0, 0/0.
+ *)
+
+val neg: t -> t
+(** Negation. *)
+
+val abs: t -> t
+(** Absolute value. *)
+
+val add: t -> t -> t
+(** Addition. *)
+
+val sub: t -> t -> t
+(** Subtraction. We have [sub x y] = [add x (neg y)]. *)
+
+val mul: t -> t -> t
+(** Multiplication. *)
+
+val inv: t -> t
+(** Inverse.
+    Note that [inv 0] is defined, and equals [inf].
+ *)
+
+val div: t -> t -> t
+(** Division.
+    We have [div x y] = [mul x (inv y)], and [inv x] = [div one x].
+ *)
+
+val mul_2exp: t -> int -> t
+(** [mul_2exp x n] multiplies [x] by 2 to the power of [n]. *)
+
+val div_2exp: t -> int -> t
+(** [div_2exp x n] divides [x] by 2 to the power of [n]. *)
+
+
+(** {1 Printing} *)
+
+val pp_print: Format.formatter -> t -> unit
+(** Prints the argument on the specified formatter.
+    Also intended to be used as [%a] format printer in [Format.printf].
+ *)
+
+
+(** {1 Prefix and infix operators} *)
+
+(**
+   Classic prefix and infix [int] operators are redefined on [t].
+*)
+
+val (~-): t -> t
+(** Negation [neg]. *)
+
+val (~+): t -> t
+(** Identity. *)
+
+val (+): t -> t -> t
+(** Addition [add]. *)
+
+val (-): t -> t -> t
+(** Subtraction [sub]. *)
+
+val ( * ): t -> t -> t
+(** Multiplication [mul]. *)
+
+val (/): t -> t -> t
+(** Division [div]. *)
+
+val (lsl): t -> int -> t
+(** Multiplication by a power of two [mul_2exp]. *)
+
+val (asr): t -> int -> t
+(** Division by a power of two [shift_right]. *)
+
+val (~$): int -> t
+(** Conversion from [int]. *)
+
+val (//): int -> int -> t
+(** Creates a rational from two [int]s. *)
+
+val (~$$): Z.t -> t
+(** Conversion from [Z.t]. *)
+
+val (///): Z.t -> Z.t -> t
+(** Creates a rational from two [Z.t]. *)
+
+val (=): t -> t -> bool
+(** Same as [equal]. *)
+
+val (<): t -> t -> bool
+(** Same as [lt]. *)
+
+val (>): t -> t -> bool
+(** Same as [gt]. *)
+
+val (<=): t -> t -> bool
+(** Same as [leq]. *)
+
+val (>=): t -> t -> bool
+(** Same as [geq]. *)
+
+val (<>): t -> t -> bool
+(** [a <> b] is equivalent to [not (equal a b)]. *)
+end
+# 50 "v11.in.ml"
+
+
+  module Compare : sig
+# 1 "v11/compare.mli"
+(*****************************************************************************)
+(*                                                                           *)
+(* Open Source License                                                       *)
+(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
+(* Copyright (c) 2021 Nomadic Labs <contact@nomadic-labs.com>                *)
+(*                                                                           *)
+(* Permission is hereby granted, free of charge, to any person obtaining a   *)
+(* copy of this software and associated documentation files (the "Software"),*)
+(* to deal in the Software without restriction, including without limitation *)
+(* the rights to use, copy, modify, merge, publish, distribute, sublicense,  *)
+(* and/or sell copies of the Software, and to permit persons to whom the     *)
+(* Software is furnished to do so, subject to the following conditions:      *)
+(*                                                                           *)
+(* The above copyright notice and this permission notice shall be included   *)
+(* in all copies or substantial portions of the Software.                    *)
+(*                                                                           *)
+(* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR*)
+(* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  *)
+(* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL   *)
+(* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER*)
+(* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   *)
+(* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER       *)
+(* DEALINGS IN THE SOFTWARE.                                                 *)
+(*                                                                           *)
+(*****************************************************************************)
+
+(** {1 [Compare]}
+
+    Monomorphic comparison for common ground types and common type constructors.
+
+    [Compare] provides a module signature for the standard comparison functions
+    and operators as well as modules of that signature for the common OCaml
+    ground types ([int], [bool], etc.) and type constructors ([list], [option],
+    etc.).
+
+    [Compare] also provides some additional helpers for comparison-related
+    tasks. *)
+
+(** {2 Signatures and a functor} *)
+
+(** [COMPARABLE] is a signature for basic comparison. It is used only for
+    instantiating full comparison modules of signature {!module-type-S} via the
+    functor {!Make}. *)
+module type COMPARABLE = sig
+  type t
+
+  val compare : t -> t -> int
+end
+
+(** [S] is a signature for a fully-fledge comparison module. It includes all the
+    functions and operators derived from a [compare] function. *)
+module type S = sig
+  type t
+
+  (** [x = y] iff [compare x y = 0] *)
+  val ( = ) : t -> t -> bool
+
+  (** [x <> y] iff [compare x y <> 0] *)
+  val ( <> ) : t -> t -> bool
+
+  (** [x < y] iff [compare x y < 0] *)
+  val ( < ) : t -> t -> bool
+
+  (** [x <= y] iff [compare x y <= 0] *)
+  val ( <= ) : t -> t -> bool
+
+  (** [x >= y] iff [compare x y >= 0] *)
+  val ( >= ) : t -> t -> bool
+
+  (** [x > y] iff [compare x y > 0] *)
+  val ( > ) : t -> t -> bool
+
+  (** [compare] an alias for the functor parameter's [compare] function *)
+  val compare : t -> t -> int
+
+  (** [equal x y] iff [compare x y = 0] *)
+  val equal : t -> t -> bool
+
+  (** [max x y] is [x] if [x >= y] otherwise it is [y] *)
+  val max : t -> t -> t
+
+  (** [min x y] is [x] if [x <= y] otherwise it is [y] *)
+  val min : t -> t -> t
+end
+
+module Make (P : COMPARABLE) : S with type t := P.t
+
+(** {2 Base types}
+
+    The specialised comparison and all the specialised functions and operators
+    on the base types are compatible with the polymorphic comparison and all the
+    polymorphic functions and operators from the {!Stdlib}. *)
+
+module Char : S with type t = char
+
+module Bool : S with type t = bool
+
+(** [Int] is a comparison module. Out of performance concerns, the signature
+    actually contains compiler builtins ([external]) rather than [val]. *)
+module Int : sig
+  type t = int
+
+  external ( = ) : int -> int -> bool = "%equal"
+
+  external ( <> ) : int -> int -> bool = "%notequal"
+
+  external ( < ) : int -> int -> bool = "%lessthan"
+
+  external ( > ) : int -> int -> bool = "%greaterthan"
+
+  external ( <= ) : int -> int -> bool = "%lessequal"
+
+  external ( >= ) : int -> int -> bool = "%greaterequal"
+
+  external compare : int -> int -> int = "%compare"
+
+  val max : int -> int -> int
+
+  val min : int -> int -> int
+
+  external equal : int -> int -> bool = "%equal"
+end
+
+module Int32 : S with type t = int32
+
+module Uint32 : S with type t = int32
+
+module Int64 : S with type t = int64
+
+module Uint64 : S with type t = int64
+
+module String : S with type t = string
+
+module Bytes : S with type t = bytes
+
+(** [Z] is a comparison module for Zarith numbers. *)
+module Z : S with type t = Z.t
+
+(** [Q] is a comparison module for Zarith rationals. *)
+module Q : S with type t = Q.t
+
+(** {2 Type constructors}
+
+    Provided the functor argument(s) are compatible with the polymorphic
+    comparison of the {!Stdlib}, then the specialised comparison and all the
+    specialised functions and operators on the derived types are compatible with
+    the polymorphic comparison and all the polymorphic functions and operators
+    from the {!Stdlib}. *)
+
+module List (P : COMPARABLE) : S with type t = P.t list
+
+module Option (P : COMPARABLE) : S with type t = P.t option
+
+module Result (Ok : COMPARABLE) (Error : COMPARABLE) :
+  S with type t = (Ok.t, Error.t) result
+
+(** {2 List lengths}
+
+    Helpers for more readable {!Stdlib.List.compare_lengths} and
+    {!Stdlib.List.compare_length_with}.
+
+    These modules are intended to be used as [Module.(expression)], most often
+    within an [if] condition. E.g.,
+
+{[
+if Compare.List_length_with.(chunks > max_number_of_chunks) then
+   raise Maximum_size_exceeded
+else
+   ..
+]}
+    *)
+
+module List_length_with : sig
+  (** [Compare.List_length_with.(l = n)] iff [l] is of length [n]. In other
+      words iff [Stdlib.List.compare_length_with l n = 0]. Note that, like
+      [compare_length_with], this comparison does not explore the list [l]
+      beyond its [n]-th element. *)
+  val ( = ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.(l <> n)] iff [l] is not of length [n]. In other
+      words iff [Stdlib.List.compare_length_with l n <> 0]. Note that, like
+      [compare_length_with], this comparison does not explore the list [l]
+      beyond its [n]-th element. *)
+  val ( <> ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.(l < n)] iff [l] is of length strictly less than
+      [n]. In other words iff [Stdlib.List.compare_length_with l n < 0]. Note
+      that, like [compare_length_with], this comparison does not explore the
+      list [l] beyond its [n]-th element. *)
+  val ( < ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.(l <= n)] iff [l] is of length less than [n]. In
+      other words iff [Stdlib.List.compare_length_with l n <= 0]. Note that,
+      like [compare_length_with], this comparison does not explore the list [l]
+      beyond its [n]-th element. *)
+  val ( <= ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.(l >= n)] iff [l] is of length greater than [n].
+      In other words iff [Stdlib.List.compare_length_with l n >= 0]. Note that,
+      like [compare_length_with], this comparison does not explore the list [l]
+      beyond its [n]-th element. *)
+  val ( >= ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.(l > n)] iff [l] is of length strictly greater
+      than [n]. In other words iff [Stdlib.List.compare_length_with l n > 0].
+      Note that, like [compare_length_with], this comparison does not explore
+      the list [l] beyond its [n]-th element. *)
+  val ( > ) : 'a list -> int -> bool
+
+  (** [Compare.List_length_with.compare] is an alias for
+      [Stdlib.List.compare_length_with]. *)
+  val compare : 'a list -> int -> int
+
+  (** [Compare.List_length_with.equal] is an alias for
+      [Compare.List_length_with.( = )]. *)
+  val equal : 'a list -> int -> bool
+end
+
+module List_lengths : sig
+  (** [Compare.List_lengths.(xs = ys)] iff [xs] and [ys] have the same length.
+      In other words, iff [Stdlib.List.compare_lengths xs ys = 0]. Note that,
+      like [compare_lengths], this comparison only explores the lists up to the
+      length of the shortest one. *)
+  val ( = ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.(xs <> ys)] iff [xs] and [ys] have different
+      lengths. In other words, iff [Stdlib.List.compare_lengths xs ys <> 0].
+      Note that, like [compare_lengths], this comparison only explores the lists
+      up to the length of the shortest one. *)
+  val ( <> ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.(xs < ys)] iff [xs] is strictly shorter than [ys].
+      In other words, iff [Stdlib.List.compare_lengths xs ys < 0]. Note that,
+      like [compare_lengths], this comparison only explores the lists up to the
+      length of the shortest one. *)
+  val ( < ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.(xs <= ys)] iff [xs] is shorter than [ys].
+      In other words, iff [Stdlib.List.compare_lengths xs ys <= 0]. Note that,
+      like [compare_lengths], this comparison only explores the lists up to the
+      length of the shortest one. *)
+  val ( <= ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.(xs >= ys)] iff [xs] is longer than [ys].
+      In other words, iff [Stdlib.List.compare_lengths xs ys >= 0]. Note that,
+      like [compare_lengths], this comparison only explores the lists up to the
+      length of the shortest one. *)
+  val ( >= ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.(xs > ys)] iff [xs] is strictly longer than [ys].
+      In other words, iff [Stdlib.List.compare_lengths xs ys > 0]. Note that,
+      like [compare_lengths], this comparison only explores the lists up to the
+      length of the shortest one. *)
+  val ( > ) : 'a list -> 'b list -> bool
+
+  (** [Compare.List_lengths.compare] is an alias for
+      [Stdlib.List.compare_lengths]. *)
+  val compare : 'a list -> 'b list -> int
+
+  (** [Compare.List_lengths.equal] is an alias for
+      [Compare.List_lengths.( = )]. *)
+  val equal : 'a list -> 'b list -> bool
+end
+
+(** {2 Building blocks} *)
+
+(** [or_else c f] is [c] if [c <> 0] or [f ()] otherwise.
+
+    The intended use is
+{[
+let compare (foo_a, bar_a) (foo_b, bar_b) =
+  or_else (Foo.compare foo_a foo_b) (fun () -> Bar.compare bar_a bar_b)
+]}
+*)
+val or_else : int -> (unit -> int) -> int
+end
+# 52 "v11.in.ml"
+
+
+  module Time : sig
+# 1 "v11/time.mli"
+(*****************************************************************************)
+(*                                                                           *)
+(* Open Source License                                                       *)
+(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
+(*                                                                           *)
+(* Permission is hereby granted, free of charge, to any person obtaining a   *)
+(* copy of this software and associated documentation files (the "Software"),*)
+(* to deal in the Software without restriction, including without limitation *)
+(* the rights to use, copy, modify, merge, publish, distribute, sublicense,  *)
+(* and/or sell copies of the Software, and to permit persons to whom the     *)
+(* Software is furnished to do so, subject to the following conditions:      *)
+(*                                                                           *)
+(* The above copyright notice and this permission notice shall be included   *)
+(* in all copies or substantial portions of the Software.                    *)
+(*                                                                           *)
+(* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR*)
+(* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  *)
+(* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL   *)
+(* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER*)
+(* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   *)
+(* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER       *)
+(* DEALINGS IN THE SOFTWARE.                                                 *)
+(*                                                                           *)
+(*****************************************************************************)
+
+type t
+
+include Compare.S with type t := t
+
+val add : t -> int64 -> t
+
+val diff : t -> t -> int64
+
+val of_seconds : int64 -> t
+
+val to_seconds : t -> int64
+
+val of_notation : string -> t option
+
+val of_notation_exn : string -> t
+
+val to_notation : t -> string
+
+val encoding : t Data_encoding.t
+
+val rfc_encoding : t Data_encoding.t
+
+val pp_hum : Format.formatter -> t -> unit
+end
+# 54 "v11.in.ml"
+
 
   module Seq : sig
 # 1 "v11/seq.mli"

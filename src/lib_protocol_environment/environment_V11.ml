@@ -281,10 +281,6 @@ struct
     let sha3_512 msg = Tezos_crypto.Hacl.Hash.SHA3_512.digest msg
   end
 
-  type z = Z.t
-
-  module Z = Z
-  module Q = Q
   module Lwt = Lwt
 
   module Data_encoding = struct
@@ -765,6 +761,10 @@ struct
 
   let wrap_tzresult r = Result.map_error wrap_tztrace r
 
+  type z = Z.t
+
+  module Z = Z
+  module Q = Q
   module Chain_id = Chain_id
   module Block_hash = Block_hash
   module Operation_hash = Operation_hash

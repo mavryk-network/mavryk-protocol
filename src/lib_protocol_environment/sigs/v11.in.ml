@@ -27,19 +27,11 @@ module type T = sig
 
   module Hex : [%sig "v11/hex.mli"]
 
-  module Z : [%sig "v11/z.mli"]
-
-  module Q : [%sig "v11/q.mli"]
-
   module Lwt : [%sig "v11/lwt.mli"]
 
   module Data_encoding : [%sig "v11/data_encoding.mli"]
 
   module Raw_hashes : [%sig "v11/raw_hashes.mli"]
-
-  module Compare : [%sig "v11/compare.mli"]
-
-  module Time : [%sig "v11/time.mli"]
 
   module TzEndian : [%sig "v11/tzEndian.mli"]
 
@@ -52,6 +44,14 @@ module type T = sig
   module Error_monad : [%sig "v11/error_monad.mli"]
 
   open Error_monad
+
+  module Z : [%sig "v11/z.mli"]
+
+  module Q : [%sig "v11/q.mli"]
+
+  module Compare : [%sig "v11/compare.mli"]
+
+  module Time : [%sig "v11/time.mli"]
 
   module Seq : [%sig "v11/seq.mli"]
 
