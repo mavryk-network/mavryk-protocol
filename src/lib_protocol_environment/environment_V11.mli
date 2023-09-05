@@ -29,7 +29,8 @@ open Environment_protocol_T
 module type T = sig
   include
     Tezos_protocol_environment_sigs.V11.T
-      with type Format.formatter = Format.formatter
+      with type z = Z.t
+       and type Format.formatter = Format.formatter
        and type 'a Seq.node = 'a Seq.node
        and type 'a Seq.t = unit -> 'a Seq.node
       (* This ['a Seq.t = unit -> 'a Seq.node] cannot be replaced by the

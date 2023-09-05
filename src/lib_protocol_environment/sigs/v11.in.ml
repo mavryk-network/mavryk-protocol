@@ -3,6 +3,8 @@ module type T = sig
     include Tezos_protocol_environment_sigs_internals.CamlinternalFormatBasics
   end
 
+  type z
+
   module Pervasives : [%sig "v11/pervasives.mli"]
 
   open Pervasives

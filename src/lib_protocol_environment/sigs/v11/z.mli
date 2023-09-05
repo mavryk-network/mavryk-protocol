@@ -46,7 +46,7 @@
 
 (** {1 Types} *)
 
-type t
+type t = z
 (** Type of integers of arbitrary length. *)
 
 exception Overflow

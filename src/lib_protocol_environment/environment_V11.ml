@@ -35,7 +35,8 @@ open Environment_protocol_T
 module type T = sig
   include
     Tezos_protocol_environment_sigs.V11.T
-      with type Format.formatter = Format.formatter
+      with type z = Z.t
+       and type Format.formatter = Format.formatter
        and type 'a Seq.node = 'a Seq.node
        and type 'a Seq.t = unit -> 'a Seq.node
        and type 'a Data_encoding.t = 'a Data_encoding.t
@@ -279,6 +280,8 @@ struct
 
     let sha3_512 msg = Tezos_crypto.Hacl.Hash.SHA3_512.digest msg
   end
+
+  type z = Z.t
 
   module Z = Z
   module Q = Q

@@ -142,10 +142,10 @@ val ranged_int : int -> int -> int encoding
       first byte is reserved for the sign (positive if zero). Binary_size and
       sign bits ignored, data is then the binary representation of the
       absolute value of the number in little-endian order. *)
-val z : Z.t encoding
+val z : z encoding
 
-(** Positive big number, see [z]. *)
-val n : Z.t encoding
+(** Positive big number, see {!val-z}. *)
+val n : z encoding
 
 (** [uint_like_n ()] is an encoding for [int] which uses the same representation
     as {!n}.
@@ -169,7 +169,7 @@ val n : Z.t encoding
 val uint_like_n : ?max_value:int -> unit -> int encoding
 
 (** [int_like_z ()] is an encoding for [int] which uses the same representation
-      as {!z}.
+      as {!val-z}.
 
       For compatibility with 32-bit machines, this encoding supports the same
       range of encodings as [int31]. I.e., it supports the inclusive range
