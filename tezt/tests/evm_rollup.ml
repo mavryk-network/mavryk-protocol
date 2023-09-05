@@ -2587,7 +2587,7 @@ let test_rpc_sendRawTransaction_nonce_too_high =
   Protocol.register_test
     ~__FILE__
     ~tags:["evm"; "nonce"]
-    ~title:"Returns an error if the nonce is too high."
+    ~title:"Accepts transactions with nonce too high."
   @@ fun protocol ->
   let* {evm_proxy_server; _} = setup_past_genesis ~admin:None protocol in
   (* Nonce: 1 *)
@@ -2595,9 +2595,11 @@ let test_rpc_sendRawTransaction_nonce_too_high =
     "0xf86c01825208831e8480940000000000000000000000000000000000000000888ac7230489e8000080820a95a0a349864bedc9b84aea88cda197e96538c62c242286ead58eb7180a611f850237a01206525ff16ae5b708ee02b362f9b4d7565e0d7e9b4c536d7ef7dec81cda3ac7"
   in
   let* result = send_raw_transaction evm_proxy_server raw_tx in
-  let error_message = Result.get_error result in
+  let success_message = Result.get_ok result in
   Check.(
-    ((error_message = "Nonce too high.") string)
+    ((success_message
+    = "0x48ddc2f677145edb2800a22b2e1b90f76d781a5c8f2aba3dda197aa2e5c796a7")
+       string)
       ~error_msg:"The transaction should fail") ;
   unit
 
