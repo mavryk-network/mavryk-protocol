@@ -246,4 +246,8 @@ let txpool _ =
           AddressMap.empty;
     }
 
-let is_tx_valid _ = Ok () |> return
+let is_tx_valid _ =
+  Ok
+    (Ethereum_types.address_of_string
+       "0xA5A5bf58c7Dc91cBE5005A7E5c6314998Eda479E")
+  |> return
