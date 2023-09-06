@@ -30,8 +30,7 @@
    arithmetic functions, which fail in case something undesired would happen.
    When divided, it's always rounded down to 1 mutez.
 
-   Internally encoded as [int64], which may be relevant to guard against
-   overflow errors. *)
+   Internally encoded as [Z.t]. *)
 type repr
 
 (** [t] is made algebraic in order to distinguish it from the other type
