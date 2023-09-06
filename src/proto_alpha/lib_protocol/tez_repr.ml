@@ -144,11 +144,11 @@ let sub_opt tez1 tez2 =
 
 let ( +? ) tez1 tez2 =
   let open Result_syntax in
-  let t1 = to_mutez tez1 in
-  let t2 = to_mutez tez2 in
-  let t = Int64.add t1 t2 in
-  if Compare.Int64.(t < t1) then tzfail (Addition_overflow (tez1, tez2))
-  else return (Tez_tag (Z.of_int64 t))
+  let t1 = to_z tez1 in
+  let t2 = to_z tez2 in
+  let t = Z.add t1 t2 in
+  if Z.fits_int64 t then return (Tez_tag t)
+  else tzfail (Addition_overflow (tez1, tez2))
 
 let ( *? ) tez m =
   let open Result_syntax in
