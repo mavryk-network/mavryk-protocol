@@ -188,12 +188,12 @@ let div_exn t d =
 
 let mul_ratio tez ~num ~den =
   let open Result_syntax in
-  let t = to_mutez tez in
+  let t = to_z tez in
   if Compare.Int64.(num < 0L) then tzfail (Negative_multiplicator (tez, num))
   else if Compare.Int64.(den <= 0L) then tzfail (Invalid_divisor (tez, den))
   else if Compare.Int64.(num = 0L) then return zero
   else
-    let z = Z.(div (mul (of_int64 t) (of_int64 num)) (of_int64 den)) in
+    let z = Z.(div (mul t (of_int64 num)) (of_int64 den)) in
     if Z.fits_int64 z then return (Tez_tag z)
     else tzfail (Multiplication_overflow (tez, num))
 
