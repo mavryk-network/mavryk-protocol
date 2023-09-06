@@ -36,19 +36,13 @@ open Alpha_context
 open Test_tez
 
 let big_random_amount () =
-  match Tez.of_mutez (Int64.add 100_000L (Random.int64 1_000_000L)) with
-  | None -> assert false
-  | Some x -> x
+  Tez.of_mutez_exn (Int64.add 100_000L (Random.int64 1_000_000L))
 
 let small_random_amount () =
-  match Tez.of_mutez (Int64.add 1_000L (Random.int64 10_000L)) with
-  | None -> assert false
-  | Some x -> x
+  Tez.of_mutez_exn (Int64.add 1_000L (Random.int64 10_000L))
 
 let very_small_random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
-  | None -> assert false
-  | Some x -> x
+  Tez.of_mutez_exn (Int64.add 1L (Random.int64 100L))
 
 let nonce_zero =
   Origination_nonce.Internal_for_tests.initial Operation_hash.zero

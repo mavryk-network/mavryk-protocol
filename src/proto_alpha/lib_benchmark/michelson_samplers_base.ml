@@ -129,9 +129,7 @@ end) : S = struct
 
   let tez rng_state =
     let i = Random.State.int64 rng_state (Int64.of_int max_int) in
-    match Protocol.Alpha_context.Tez.of_mutez i with
-    | Some res -> res
-    | None -> assert false
+    Protocol.Alpha_context.Tez.of_mutez_exn i
 
   let timestamp rng_state =
     let i = Base_samplers.int ~size:P.parameters.int_size rng_state in

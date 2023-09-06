@@ -44,10 +44,7 @@ let create_context () =
   let* ctxt = Block.alpha_context [bootstrap_account] in
   return (ctxt, pkh)
 
-let random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
-  | None -> assert false
-  | Some x -> x
+let random_amount () = Tez.of_mutez_exn (Int64.add 1L (Random.int64 100L))
 
 let nonce = Origination_nonce.Internal_for_tests.initial Operation_hash.zero
 
@@ -734,9 +731,7 @@ let test_transfer_n_with_several_givers () =
   let user4, _, _ = Signature.generate_key () in
   let user4c = `Contract (Contract.Implicit user4) in
   (* Allocate contracts for user1, user2, user3, and user4. *)
-  let amount =
-    match Tez.of_mutez 1000L with None -> assert false | Some x -> x
-  in
+  let amount = Tez.of_mutez_exn 1000L in
   let*@ ctxt, _ = Token.transfer ctxt origin user1c amount in
   let*@ ctxt, _ = Token.transfer ctxt origin user2c amount in
   let*@ ctxt, _ = Token.transfer ctxt origin user3c amount in

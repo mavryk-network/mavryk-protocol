@@ -574,8 +574,7 @@ let timelock_locked_value_arg =
     ~doc:"Timelock RSA group modulus"
     string_parameter
 
-let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+let default_minimal_fees = Tez.of_mutez_exn 100L
 
 let default_minimal_nanotez_per_gas_unit = Q.of_int 100
 

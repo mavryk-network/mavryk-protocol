@@ -98,8 +98,7 @@ type t = {
 
 let default_fees_config =
   {
-    minimal_fees =
-      (match Tez.of_mutez 100L with None -> assert false | Some t -> t);
+    minimal_fees = Tez.of_mutez_exn 100L;
     minimal_nanotez_per_gas_unit = Q.of_int 100;
     minimal_nanotez_per_byte = Q.of_int 1000;
   }

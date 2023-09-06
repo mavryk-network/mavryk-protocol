@@ -64,8 +64,7 @@ type config = {
           the [better_fees_and_ratio] function further below. *)
 }
 
-let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+let default_minimal_fees = Tez.of_mutez_exn 100L
 
 let default_minimal_nanotez_per_gas_unit = Q.of_int 100
 
