@@ -132,9 +132,9 @@ let to_string t = Format.asprintf "%a" pp t
 
 let ( -? ) tez1 tez2 =
   let open Result_syntax in
-  let t1 = to_mutez tez1 in
-  let t2 = to_mutez tez2 in
-  if Compare.Int64.(t2 <= t1) then return (Tez_tag (Z.of_int64 (Int64.sub t1 t2)))
+  let t1 = to_z tez1 in
+  let t2 = to_z tez2 in
+  if Compare.Z.(t2 <= t1) then return (Tez_tag (Z.sub t1 t2))
   else tzfail (Subtraction_underflow (tez1, tez2))
 
 let sub_opt tez1 tez2 =
