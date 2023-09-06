@@ -586,7 +586,7 @@ let check_multisig_contract (cctxt : #Protocol_client_context.full) ~chain
 let lambda_action_t ~loc = lambda_t ~loc (unit_t ~loc) (operations_t ~loc)
 
 (* Conversion functions from common types to Script_expr using the optimized representation *)
-let mutez ~loc (amount : Tez.t) = int ~loc (Z.of_int64 (Tez.to_mutez amount))
+let mutez ~loc (amount : Tez.t) = int ~loc (Tez.to_z amount)
 
 let optimized_key_hash ~loc (key_hash : Signature.Public_key_hash.t) =
   bytes
@@ -753,7 +753,7 @@ let action_of_expr_not_generic e =
               [] );
         ],
         [] ) -> (
-      match Tez.of_mutez (Z.to_int64 i) with
+      match Tez.of_z i with
       | None -> fail ()
       | Some amount ->
           return

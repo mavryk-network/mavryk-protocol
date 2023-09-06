@@ -31,7 +31,7 @@ open Alpha_context
     interested reader should look for comments in this file to gain a
     better understanding of the contract logic. *)
 module Simulate_raw = struct
-  let mutez_to_natural t = Z.of_int64 (Tez.to_mutez t)
+  let mutez_to_natural t = Tez.to_z t
 
   let natural_to_mutez n = Tez.of_mutez_exn (Z.to_int64 n)
 

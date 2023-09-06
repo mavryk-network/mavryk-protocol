@@ -575,7 +575,7 @@ let compute_fee_and_gas_limit {protocol_data = Operation_data data; _} =
 let gas_as_q gas = Gas.Arith.integral_to_z gas |> Q.of_bigint
 
 let fee_and_ratio_as_q fee gas =
-  let fee = Tez.to_mutez fee |> Z.of_int64 |> Q.of_bigint in
+  let fee = Tez.to_z fee |> Q.of_bigint in
   let gas = gas_as_q gas in
   let ratio = Q.div fee gas in
   (fee, ratio)

@@ -38,7 +38,7 @@ let z_mutez_min = Z.zero
 
 let z_mutez_max = Z.of_int64 Int64.max_int
 
-let tez_to_z (tez : Tez.t) : Z.t = Z.of_int64 (Tez.to_mutez tez)
+let tez_to_z (tez : Tez.t) : Z.t = Tez.to_z tez
 
 let z_in_mutez_bounds (z : Z.t) : bool =
   Z.Compare.(z_mutez_min <= z && z <= z_mutez_max)

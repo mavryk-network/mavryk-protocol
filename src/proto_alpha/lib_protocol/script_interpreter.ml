@@ -1073,35 +1073,31 @@ module Raw = struct
               (step [@ocaml.tailcall]) g gas k ks res stack
           | IEdiv_teznat (_, k) ->
               let x = accu and y, stack = stack in
-              let x = Script_int.of_int64 (Tez.to_mutez x) in
+              let x = Script_int.of_zint (Tez.to_z x) in
               let result =
                 match Script_int.ediv x y with
                 | None -> None
                 | Some (q, r) -> (
-                    match (Script_int.to_int64 q, Script_int.to_int64 r) with
-                    | Some q, Some r -> (
-                        match (Tez.of_mutez q, Tez.of_mutez r) with
-                        | Some q, Some r -> Some (q, r)
-                        (* Cannot overflow *)
-                        | _ -> assert false)
+                    match
+                      ( Tez.of_z (Script_int.to_zint q),
+                        Tez.of_z (Script_int.to_zint r) )
+                    with
+                    | Some q, Some r -> Some (q, r)
                     (* Cannot overflow *)
                     | _ -> assert false)
               in
               (step [@ocaml.tailcall]) g gas k ks result stack
           | IEdiv_tez (_, k) ->
               let x = accu and y, stack = stack in
-              let x = Script_int.abs (Script_int.of_int64 (Tez.to_mutez x)) in
-              let y = Script_int.abs (Script_int.of_int64 (Tez.to_mutez y)) in
+              let x = Script_int.abs (Script_int.of_zint (Tez.to_z x)) in
+              let y = Script_int.abs (Script_int.of_zint (Tez.to_z y)) in
               let result =
                 match Script_int.ediv_n x y with
                 | None -> None
                 | Some (q, r) -> (
-                    match Script_int.to_int64 r with
+                    match Tez.of_z (Script_int.to_zint r) with
                     | None -> assert false (* Cannot overflow *)
-                    | Some r -> (
-                        match Tez.of_mutez r with
-                        | None -> assert false (* Cannot overflow *)
-                        | Some r -> Some (q, r)))
+                    | Some r -> Some (q, r))
               in
               (step [@ocaml.tailcall]) g gas k ks result stack
           | IEdiv_int (_, k) ->

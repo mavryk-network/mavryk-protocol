@@ -249,7 +249,7 @@ let unparse_signature ~loc ctxt mode s =
       let+ ctxt = Gas.consume ctxt Unparse_costs.signature_readable in
       (String (loc, Signature.to_b58check s), ctxt)
 
-let unparse_mutez ~loc ctxt v = Ok (Int (loc, Z.of_int64 (Tez.to_mutez v)), ctxt)
+let unparse_mutez ~loc ctxt v = Ok (Int (loc, Tez.to_z v), ctxt)
 
 let unparse_key ~loc ctxt mode k =
   let open Result_syntax in

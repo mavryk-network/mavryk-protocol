@@ -140,9 +140,7 @@ let test_no_tez_to_pay () =
     Incremental.begin_construction ~policy:Block.(By_account pkh_for_bake) b
   in
   let* {parametric = {cost_per_byte; _}; _} = Context.get_constants (I inc) in
-  let increase_amount =
-    Z.div (Z.of_int 2_000_000) (Z.of_int64 (Tez.to_mutez cost_per_byte))
-  in
+  let increase_amount = Z.div (Z.of_int 2_000_000) (Tez.to_z cost_per_byte) in
   let* balance = Context.Contract.balance (I inc) source in
   let*? tez_to_substract = Test_tez.(balance -? Tez.one) in
   let* op =

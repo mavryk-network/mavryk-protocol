@@ -151,7 +151,7 @@ let check_fees :
             z_mutez_of_q_nanotez estimated_fees_in_nanotez
           in
           let estimated_fees =
-            match Tez.of_mutez (Z.to_int64 estimated_fees_in_mutez) with
+            match Tez.of_z estimated_fees_in_mutez with
             | None -> assert false
             | Some fee -> fee
           in
@@ -823,7 +823,7 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
                minimal_fees_for_size_in_nanotez
         in
         let fees_in_mutez = z_mutez_of_q_nanotez fees_in_nanotez in
-        match Tez.of_mutez (Z.to_int64 fees_in_mutez) with
+        match Tez.of_z fees_in_mutez with
         | None -> assert false
         | Some fee ->
             if Tez.(fee <= c.fee) then op
@@ -1263,7 +1263,7 @@ let pending_applied_operations_of_source (cctxt : #full) chain src :
    the one already in the mempool *)
 let compute_replacement_fees =
   let open Lwt_result_syntax in
-  let q_fee_from_tez f = Tez.to_mutez f |> Z.of_int64 |> Q.of_bigint in
+  let q_fee_from_tez f = Tez.to_z f |> Q.of_bigint in
   let q_gas g = Gas.Arith.integral_to_z g |> Q.of_bigint in
   fun (cctxt : #full) old_op_fee old_op_gas new_op_gas ->
     (* convert quantities to rationals *)
@@ -1286,7 +1286,7 @@ let compute_replacement_fees =
     let repl_q_fee = Q.mul max_fee (Q.make (Z.of_int 105) (Z.of_int 100)) in
     let repl_z_fee = Z.cdiv (Q.num repl_q_fee) (Q.den repl_q_fee) in
     try
-      match Z.to_int64 repl_z_fee |> Tez.of_mutez with
+      match Tez.of_z repl_z_fee with
       | Some replacement_fee -> Lwt.return replacement_fee
       | None ->
           let*! () =

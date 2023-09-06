@@ -381,8 +381,8 @@ module Data = struct
     prim A_Timestamp [int z] []
 
   let mutez (tz : Protocol.Alpha_context.Tez.tez) =
-    let i = Protocol.Alpha_context.Tez.to_mutez tz in
-    prim A_Mutez [int (Z.of_int64 i)] []
+    let i = Protocol.Alpha_context.Tez.to_z tz in
+    prim A_Mutez [int i] []
 
   let key_hash kh =
     let b =
