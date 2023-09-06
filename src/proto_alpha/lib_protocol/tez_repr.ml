@@ -57,7 +57,7 @@ let one_mutez = Tez_tag 1L
 
 let max_mutez = Tez_tag Int64.max_int
 
-let mul_int (Tez_tag tez) i = Tez_tag (Int64.mul tez i)
+let mul_int tez i = Tez_tag (Int64.mul (to_mutez tez) i)
 
 let one_cent = mul_int one_mutez 10_000L
 
@@ -102,7 +102,7 @@ let of_string s =
       else None
   | _ -> None
 
-let pp ppf (Tez_tag amount) =
+let pp ppf amount =
   let mult_int = 1_000_000L in
   let rec left ppf amount =
     let d, r = (Int64.(div amount 1000L), Int64.(rem amount 1000L)) in
@@ -120,6 +120,7 @@ let pp ppf (Tez_tag amount) =
     else Format.fprintf ppf "%03d%a" hi triplet lo
   in
   let ints, decs =
+    let amount = to_mutez amount in
     (Int64.(div amount mult_int), Int64.(to_int (rem amount mult_int)))
   in
   left ppf ints ;
@@ -129,24 +130,26 @@ let to_string t = Format.asprintf "%a" pp t
 
 let ( -? ) tez1 tez2 =
   let open Result_syntax in
-  let (Tez_tag t1) = tez1 in
-  let (Tez_tag t2) = tez2 in
+  let t1 = to_mutez tez1 in
+  let t2 = to_mutez tez2 in
   if t2 <= t1 then return (Tez_tag (Int64.sub t1 t2))
   else tzfail (Subtraction_underflow (tez1, tez2))
 
-let sub_opt (Tez_tag t1) (Tez_tag t2) =
+let sub_opt tez1 tez2 =
+  let t1 = to_mutez tez1 in
+  let t2 = to_mutez tez2 in
   if t2 <= t1 then Some (Tez_tag (Int64.sub t1 t2)) else None
 
 let ( +? ) tez1 tez2 =
   let open Result_syntax in
-  let (Tez_tag t1) = tez1 in
-  let (Tez_tag t2) = tez2 in
+  let t1 = to_mutez tez1 in
+  let t2 = to_mutez tez2 in
   let t = Int64.add t1 t2 in
   if t < t1 then tzfail (Addition_overflow (tez1, tez2)) else return (Tez_tag t)
 
 let ( *? ) tez m =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
+  let t = to_mutez tez in
   if m < 0L then tzfail (Negative_multiplicator (tez, m))
   else if m = 0L then return (Tez_tag 0L)
   else if t > Int64.(div max_int m) then
@@ -155,12 +158,12 @@ let ( *? ) tez m =
 
 let ( /? ) tez d =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
+  let t = to_mutez tez in
   if d <= 0L then tzfail (Invalid_divisor (tez, d))
   else return (Tez_tag (Int64.div t d))
 
 let div2_sub tez =
-  let (Tez_tag t) = tez in
+  let t = to_mutez tez in
   let quo = Int64.div t 2L in
   (* t ≥ 0 ⇒ t / 2 ≥ 0 ⇒ quo ≥ 0 *)
   (* t ≥ 0 ⇒ t / 2 ≤ t ⇒ t - t / 2 ≥ 0 ⇒ t - quo ≥ 0 *)
@@ -180,7 +183,7 @@ let div_exn t d =
 
 let mul_ratio tez ~num ~den =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
+  let t = to_mutez tez in
   if num < 0L then tzfail (Negative_multiplicator (tez, num))
   else if den <= 0L then tzfail (Invalid_divisor (tez, den))
   else if num = 0L then return zero
@@ -198,7 +201,7 @@ let mul_percentage =
 
 let encoding =
   let open Data_encoding in
-  let decode (Tez_tag t) = Z.of_int64 t in
+  let decode t = Z.of_int64 (to_mutez t) in
   let encode = Json.wrap_error (fun i -> Tez_tag (Z.to_int64 i)) in
   Data_encoding.def name (check_size 10 (conv decode encode n))
 
