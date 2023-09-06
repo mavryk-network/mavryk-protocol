@@ -165,12 +165,14 @@ let ( /? ) tez d =
   if Compare.Int64.(d <= 0L) then tzfail (Invalid_divisor (tez, d))
   else return (Tez_tag (Z.of_int64 (Int64.div t d)))
 
+let z2 = Z.of_int 2
+
 let div2_sub tez =
-  let t = to_mutez tez in
-  let quo = Int64.div t 2L in
+  let t = to_z tez in
+  let quo = Z.div t z2 in
   (* t ≥ 0 ⇒ t / 2 ≥ 0 ⇒ quo ≥ 0 *)
   (* t ≥ 0 ⇒ t / 2 ≤ t ⇒ t - t / 2 ≥ 0 ⇒ t - quo ≥ 0 *)
-  (Tez_tag (Z.of_int64 quo), Tez_tag (Z.of_int64 (Int64.sub t quo)))
+  (Tez_tag quo, Tez_tag (Z.sub t quo))
 
 let div2 tez = fst (div2_sub tez)
 
