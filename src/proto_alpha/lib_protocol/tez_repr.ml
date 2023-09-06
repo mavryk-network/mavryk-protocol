@@ -49,6 +49,11 @@ let of_mutez_exn x =
 
 let to_mutez (Tez_tag t) = Z.to_int64 t
 
+let of_z t =
+  if Compare.Z.(t >= Z.zero) && Z.fits_int64 t then Some (Tez_tag t) else None
+
+let to_z (Tez_tag t) = t
+
 let zero = Tez_tag Z.zero
 
 (* all other constant are defined from the value of one micro tez *)

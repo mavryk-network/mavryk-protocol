@@ -92,6 +92,11 @@ val of_mutez : int64 -> t option
     It should only be used at toplevel for constants. *)
 val of_mutez_exn : int64 -> t
 
+val to_z : t -> Z.t
+
+(** [of_z z] is None if z is negative or does not fit on int64 *)
+val of_z : Z.t -> t option
+
 (** It should only be used at toplevel for constants. *)
 val mul_exn : t -> int -> t
 
