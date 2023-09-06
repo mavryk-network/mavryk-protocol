@@ -61,14 +61,12 @@ let one_mutez = Tez_tag Z.one
 
 let max_mutez = Tez_tag (Z.of_int64 Int64.max_int)
 
-let mul_int tez i = Tez_tag (Z.of_int64 (Int64.mul (to_mutez tez) i))
+let one_cent = of_mutez_exn 10_000L
 
-let one_cent = mul_int one_mutez 10_000L
-
-let fifty_cents = mul_int one_cent 50L
+let fifty_cents = of_mutez_exn 500_000L
 
 (* 1 tez = 100 cents = 1_000_000 mutez *)
-let one = mul_int one_cent 100L
+let one = of_mutez_exn 1_000_000L
 
 let of_string s =
   let triplets = function
