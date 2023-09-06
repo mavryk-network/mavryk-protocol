@@ -101,13 +101,17 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       in
       match input with
       | Some command ->
+          let commands = String.split ';' (Zed_string.to_utf8 command) in
           let* ctx =
-            Commands.handle_command
-              (Zed_string.to_utf8 command)
-              config
-              tree
-              inboxes
-              level
+            List.fold_left_es
+              (fun ctx command ->
+                Option.fold
+                  ~none:return_none
+                  ~some:(fun (tree, inboxes, level) ->
+                    Commands.handle_command command config tree inboxes level)
+                  ctx)
+              (Some (tree, inboxes, level))
+              commands
           in
           LTerm_history.add history command ;
           Option.fold_f
