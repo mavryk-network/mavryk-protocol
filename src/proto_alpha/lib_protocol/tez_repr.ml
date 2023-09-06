@@ -28,9 +28,9 @@ let id = "tez"
 
 let name = "mutez"
 
-open Compare.Int64 (* invariant: positive *)
+open Compare.Int64
 
-type repr = t
+type repr = Z.t (* invariant: positive and fits on int64 *)
 
 type t = Tez_tag of repr [@@ocaml.unboxed]
 
@@ -43,21 +43,21 @@ type error +=
 
 (* `Temporary *)
 
-let of_mutez t = if t < 0L then None else Some (Tez_tag t)
+let of_mutez t = if t < 0L then None else Some (Tez_tag (Z.of_int64 t))
 
 let of_mutez_exn x =
   match of_mutez x with None -> invalid_arg "Tez.of_mutez" | Some v -> v
 
-let to_mutez (Tez_tag t) = t
+let to_mutez (Tez_tag t) = Z.to_int64 t
 
-let zero = Tez_tag 0L
+let zero = Tez_tag Z.zero
 
 (* all other constant are defined from the value of one micro tez *)
-let one_mutez = Tez_tag 1L
+let one_mutez = Tez_tag Z.one
 
-let max_mutez = Tez_tag Int64.max_int
+let max_mutez = Tez_tag (Z.of_int64 Int64.max_int)
 
-let mul_int tez i = Tez_tag (Int64.mul (to_mutez tez) i)
+let mul_int tez i = Tez_tag (Z.of_int64 (Int64.mul (to_mutez tez) i))
 
 let one_cent = mul_int one_mutez 10_000L
 
@@ -86,7 +86,7 @@ let of_string s =
       String.init 6 (fun i -> if Compare.Int.(i < len) then s.[i] else '0')
     in
     let prepared = remove_commas left ^ pad_to_six (remove_commas right) in
-    Option.map (fun i -> Tez_tag i) (Int64.of_string_opt prepared)
+    Option.map (fun i -> Tez_tag (Z.of_int64 i)) (Int64.of_string_opt prepared)
   in
   match String.split_on_char '.' s with
   | [left; right] ->
@@ -132,42 +132,43 @@ let ( -? ) tez1 tez2 =
   let open Result_syntax in
   let t1 = to_mutez tez1 in
   let t2 = to_mutez tez2 in
-  if t2 <= t1 then return (Tez_tag (Int64.sub t1 t2))
+  if t2 <= t1 then return (Tez_tag (Z.of_int64 (Int64.sub t1 t2)))
   else tzfail (Subtraction_underflow (tez1, tez2))
 
 let sub_opt tez1 tez2 =
   let t1 = to_mutez tez1 in
   let t2 = to_mutez tez2 in
-  if t2 <= t1 then Some (Tez_tag (Int64.sub t1 t2)) else None
+  if t2 <= t1 then Some (Tez_tag (Z.of_int64 (Int64.sub t1 t2))) else None
 
 let ( +? ) tez1 tez2 =
   let open Result_syntax in
   let t1 = to_mutez tez1 in
   let t2 = to_mutez tez2 in
   let t = Int64.add t1 t2 in
-  if t < t1 then tzfail (Addition_overflow (tez1, tez2)) else return (Tez_tag t)
+  if t < t1 then tzfail (Addition_overflow (tez1, tez2))
+  else return (Tez_tag (Z.of_int64 t))
 
 let ( *? ) tez m =
   let open Result_syntax in
   let t = to_mutez tez in
   if m < 0L then tzfail (Negative_multiplicator (tez, m))
-  else if m = 0L then return (Tez_tag 0L)
+  else if m = 0L then return (Tez_tag Z.zero)
   else if t > Int64.(div max_int m) then
     tzfail (Multiplication_overflow (tez, m))
-  else return (Tez_tag (Int64.mul t m))
+  else return (Tez_tag (Z.of_int64 (Int64.mul t m)))
 
 let ( /? ) tez d =
   let open Result_syntax in
   let t = to_mutez tez in
   if d <= 0L then tzfail (Invalid_divisor (tez, d))
-  else return (Tez_tag (Int64.div t d))
+  else return (Tez_tag (Z.of_int64 (Int64.div t d)))
 
 let div2_sub tez =
   let t = to_mutez tez in
   let quo = Int64.div t 2L in
   (* t ≥ 0 ⇒ t / 2 ≥ 0 ⇒ quo ≥ 0 *)
   (* t ≥ 0 ⇒ t / 2 ≤ t ⇒ t - t / 2 ≥ 0 ⇒ t - quo ≥ 0 *)
-  (Tez_tag quo, Tez_tag (Int64.sub t quo))
+  (Tez_tag (Z.of_int64 quo), Tez_tag (Z.of_int64 (Int64.sub t quo)))
 
 let div2 tez = fst (div2_sub tez)
 
@@ -189,7 +190,7 @@ let mul_ratio tez ~num ~den =
   else if num = 0L then return zero
   else
     let z = Z.(div (mul (of_int64 t) (of_int64 num)) (of_int64 den)) in
-    if Z.fits_int64 z then return (Tez_tag (Z.to_int64 z))
+    if Z.fits_int64 z then return (Tez_tag z)
     else tzfail (Multiplication_overflow (tez, num))
 
 let mul_percentage =
@@ -202,7 +203,7 @@ let mul_percentage =
 let encoding =
   let open Data_encoding in
   let decode t = Z.of_int64 (to_mutez t) in
-  let encode = Json.wrap_error (fun i -> Tez_tag (Z.to_int64 i)) in
+  let encode i = Tez_tag i in
   Data_encoding.def name (check_size 10 (conv decode encode n))
 
 let balance_update_encoding =
@@ -307,6 +308,8 @@ let () =
     (fun (a, b) -> Invalid_divisor (a, b))
 
 type tez = t
+
+open Compare.Z
 
 let compare (Tez_tag x) (Tez_tag y) = compare x y
 
