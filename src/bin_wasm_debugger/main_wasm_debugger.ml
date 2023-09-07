@@ -126,7 +126,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
         let*! term = Lazy.force LTerm.stdout in
         loop term tree (List.to_seq inboxes) level)
       (function
-        | LTerm_read_line.Interrupt -> return tree | exn -> Lwt.fail exn)
+        | LTerm_read_line.Interrupt -> return tree | exn -> Lwt.reraise exn)
 
   let file_parameter =
     Tezos_clic.parameter (fun _ filename ->
