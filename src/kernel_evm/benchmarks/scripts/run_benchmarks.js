@@ -16,7 +16,7 @@
 
 var fs = require('fs');
 var readline = require('readline');
-const { spawn } = require('child_process');
+const { spawn } = require('node-pty');
 const { execSync } = require('child_process');
 const external = require("./lib/external")
 const path = require('node:path')
@@ -32,55 +32,69 @@ function sumArray(arr) {
     return arr.reduce((acc, curr) => acc + curr, 0);
 }
 
-function run_profiler(path) {
-
-    profiler_result = new Promise((resolve, _) => {
-
-        var gas_used = [];
-
-        var profiler_output_path = "";
-
-        const args = ["--kernel", EVM_INSTALLER_KERNEL_PATH, "--inputs", path, "--preimage-dir", PREIMAGE_DIR];
-
-        const childProcess = spawn(RUN_DEBUGGER_COMMAND, args, {});
-
-        childProcess.stdin.write("load inputs\n");
-
-        childProcess.stdin.write("step kernel_run\n");
-
-        childProcess.stdin.write("profile\n");
-
-        childProcess.stdin.end();
-
-        childProcess.stdout.on('data', (data) => {
-            const output = data.toString();
-            const profiler_output_path_regex = /Profiling result can be found in (.+)/;
-            const profiler_output_path_match = output.match(profiler_output_path_regex);
-            const profiler_output_path_result = profiler_output_path_match
-                ? profiler_output_path_match[1]
-                : null;
-            if (profiler_output_path_result !== null) {
-                profiler_output_path = profiler_output_path_result;
-            }
-            const gas_used_regex = /\bgas_used:\s*(\d+)/g;
-            var match;
-            while ((match = gas_used_regex.exec(output))) {
-                gas_used.push(match[1]);
-            }
-        });
-        childProcess.on('close', _ => {
-            if (profiler_output_path == "") {
-                console.log(new Error("Profiler output path not found"));
-            }
-            if (gas_used == []) {
-                console.log(new Error("Gas usage data not found"));
-            }
-            resolve([profiler_output_path, gas_used]);
-        });
-    })
-    return profiler_result;
+async function executeCommand(command, childProcess) {
+  await new Promise((resolve) => {
+      childProcess.onData((data) => {
+          if (data.includes(">")) {
+              resolve();
+          }
+      });
+  });
+  childProcess.write(`${command}\n`);
 }
 
+async function run_profiler(path) {
+  profiler_result = new Promise((resolve, _) => {
+      var gas_used = [];
+      var profiler_output_path = "";
+      const args = [
+          "--kernel",
+          EVM_INSTALLER_KERNEL_PATH,
+          "--inputs",
+          path,
+          "--preimage-dir",
+          PREIMAGE_DIR,
+      ];
+      const childProcess = spawn(RUN_DEBUGGER_COMMAND, args, {});
+      executeCommand(
+          "load inputs; step kernel_run; profile; stop",
+          childProcess
+      );
+      childProcess.onData((data) => {
+          if (profiler_output_path !== null) {
+              const output = data.toString();
+              const profiler_output_path_regex =
+                  /Profiling result can be found in (.+)/;
+              const profiler_output_path_match = output.match(
+                  profiler_output_path_regex
+              );
+              const profiler_output_path_result = profiler_output_path_match
+                  ? profiler_output_path_match[1]
+                  : null;
+              if (profiler_output_path_result !== null) {
+                  profiler_output_path = profiler_output_path_result;
+              }
+              const gas_used_regex = /\bgas_used:\s*(\d+)/g;
+              var match;
+              while ((match = gas_used_regex.exec(output))) {
+                  gas_used.push(match[1]);
+              }
+          }
+      });
+      childProcess.onExit((_) => {
+          console.log("exit");
+          if (profiler_output_path == "") {
+              console.log(new Error("Profiler output path not found"));
+          }
+          if (gas_used == []) {
+              console.log(new Error("Gas usage data not found"));
+          }
+          console.log(profiler_output_path);
+          resolve([profiler_output_path, gas_used]);
+      });
+  });
+  return profiler_result;
+}
 // Helper function to count the number of ticks of given function call
 async function get_ticks(path, function_call_keyword) {
     const fileStream = fs.createReadStream(path);
