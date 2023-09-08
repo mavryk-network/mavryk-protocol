@@ -25,6 +25,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+open Constant
+
 let expected_slots_for_given_active_stake ctxt ~total_active_stake ~active_stake
     =
   let blocks_per_cycle =
@@ -95,13 +97,15 @@ let record_endorsing_participation ctxt ~delegate ~participation
                 contract
                 {remaining_slots; missed_levels = 1}))
 
-let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
+
+(* let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     ~block_producer ~baking_reward ~reward_bonus =
   Stake_storage.set_active ctxt payload_producer >>=? fun ctxt ->
   (if not (Signature.Public_key_hash.equal payload_producer block_producer) then
    Stake_storage.set_active ctxt block_producer
   else return ctxt)
   >>=? fun ctxt ->
+
   let pay_payload_producer ctxt delegate =
     let contract = Contract_repr.Implicit delegate in
     Token.balance ctxt `Block_fees >>=? fun (ctxt, block_fees) ->
@@ -121,7 +125,146 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
   | None -> return (ctxt, []))
   >>=? fun (ctxt, balance_updates_block_producer) ->
   return
-    (ctxt, balance_updates_payload_producer @ balance_updates_block_producer)
+    (ctxt, balance_updates_payload_producer @ balance_updates_block_producer) *)
+
+
+
+  
+  (* let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
+    ~block_producer ~baking_reward ~reward_bonus =
+  Stake_storage.set_active ctxt payload_producer >>=? fun ctxt ->
+  (if not (Signature.Public_key_hash.equal payload_producer block_producer) then
+   Stake_storage.set_active ctxt block_producer
+  else return ctxt)
+  >>=? fun ctxt ->
+
+  let treasury_contract = Contract_repr.Originated treasury_address in
+
+  let pay_payload_producer ctxt delegate =
+    let contract = Contract_repr.Implicit delegate in
+    Token.balance ctxt `Block_fees >>=? fun (ctxt, block_fees) ->
+    (match Tez.(block_fees /? 2L) with
+    | Ok half_fees ->
+        Token.transfer_n
+          ctxt
+          [(`Block_fees, half_fees); (`Baking_rewards, baking_reward)]
+          (`Contract contract)
+    | Error _ -> return (ctxt, []))  (* If division results in an error *)
+  in
+
+  let pay_treasury ctxt amount =
+    Token.transfer ctxt `Block_fees (`Contract treasury_contract) amount
+  in
+
+  let pay_block_producer ctxt delegate bonus =
+    let contract = Contract_repr.Implicit delegate in
+    Token.transfer ctxt `Baking_bonuses (`Contract contract) bonus
+  in
+  
+  pay_payload_producer ctxt payload_producer
+  >>=? fun (ctxt, balance_updates_payload_producer) ->
+  Token.balance ctxt `Block_fees >>=? fun (ctxt, remaining_fees) ->
+  pay_treasury ctxt remaining_fees
+  >>=? fun (ctxt, balance_updates_treasury) ->
+  (match reward_bonus with
+  | Some bonus -> pay_block_producer ctxt block_producer bonus
+  | None -> return (ctxt, []))
+  >>=? fun (ctxt, balance_updates_block_producer) ->
+  return
+    (ctxt, balance_updates_payload_producer @ balance_updates_treasury @ balance_updates_block_producer) *)
+
+
+
+let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
+    ~block_producer ~baking_reward ~reward_bonus =
+  Stake_storage.set_active ctxt payload_producer >>=? fun ctxt ->
+  (if not (Signature.Public_key_hash.equal payload_producer block_producer) then
+   Stake_storage.set_active ctxt block_producer
+  else return ctxt)
+  >>=? fun ctxt ->
+
+  let treasury_contract = Contract_repr.Originated treasury_address in
+
+  Token.balance ctxt `Block_fees >>=? fun (ctxt, block_fees) ->
+
+  (match Tez.(block_fees *? 0.25L) with
+  | Error _ -> return (ctxt, [], Tez.zero)
+  | Ok fees_for_payload_producer -> 
+      let contract = Contract_repr.Implicit payload_producer in
+      Token.transfer_n 
+        ctxt 
+        [(`Block_fees, fees_for_payload_producer); (`Baking_rewards, baking_reward)] 
+        (`Contract contract) 
+        >>=? fun (ctxt, balance_updates_payload_producer) ->
+      return (ctxt, balance_updates_payload_producer, fees_for_payload_producer))
+  >>=? fun (ctxt, balance_updates_payload_producer, fees_for_payload_producer) ->
+
+  (match Tez.(block_fees *? 0.25L) with
+  | Error _ -> return (ctxt, [])
+  | Ok fees_for_treasury -> 
+      Token.transfer 
+        ctxt 
+        `Block_fees (`Contract treasury_contract) fees_for_treasury 
+        >>=? fun (ctxt, balance_updates_treasury) ->
+      return (ctxt, balance_updates_treasury))
+  >>=? fun (ctxt, balance_updates_treasury) ->
+
+  (match reward_bonus with
+  | Some bonus -> pay_block_producer ctxt block_producer bonus
+  | None -> return (ctxt, []))
+  >>=? fun (ctxt, balance_updates_block_producer) ->
+  
+  return
+    (ctxt, balance_updates_payload_producer @ balance_updates_treasury @ balance_updates_block_producer)
+
+
+
+
+let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
+    ~block_producer ~baking_reward ~reward_bonus =
+  Stake_storage.set_active ctxt payload_producer >>=? fun ctxt ->
+  (if not (Signature.Public_key_hash.equal payload_producer block_producer) then
+   Stake_storage.set_active ctxt block_producer
+  else return ctxt)
+  >>=? fun ctxt ->
+
+  let treasury_contract = Contract_repr.Originated treasury_address in
+  let burn_address = Contract_repr.Implicit "mv1burnburnburnburnburnburnburnburjAAh" in
+
+  Token.balance ctxt `Block_fees >>=? fun (ctxt, block_fees) ->
+
+  (match Tez.(block_fees *? 0.25L) with
+  | Error _ -> return (ctxt, [], Tez.zero)
+  | Ok fees_for_payload_producer -> 
+      let contract = Contract_repr.Implicit payload_producer in
+      Token.transfer_n ctxt [(`Block_fees, fees_for_payload_producer); (`Baking_rewards, baking_reward)] (`Contract contract) >>=? fun (ctxt, balance_updates_payload_producer) ->
+      return (ctxt, balance_updates_payload_producer, fees_for_payload_producer))
+  >>=? fun (ctxt, balance_updates_payload_producer, fees_for_payload_producer) ->
+
+  (match Tez.(block_fees *? 0.25L) with
+  | Error _ -> return (ctxt, [])
+  | Ok fees_for_treasury -> 
+      Token.transfer ctxt `Block_fees (`Contract treasury_contract) fees_for_treasury >>=? fun (ctxt, balance_updates_treasury) ->
+      return (ctxt, balance_updates_treasury))
+  >>=? fun (ctxt, balance_updates_treasury) ->
+
+  (* Transferring the remaining 50% to the burn address *)
+  Token.balance ctxt `Block_fees >>=? fun (ctxt, remaining_fees) ->
+  Token.transfer ctxt `Block_fees (`Contract burn_address) remaining_fees >>=? fun (ctxt, balance_updates_burn) ->
+
+  (match reward_bonus with
+  | Some bonus -> pay_block_producer ctxt block_producer bonus
+  | None -> return (ctxt, []))
+  >>=? fun (ctxt, balance_updates_block_producer) ->
+  
+  return
+    (ctxt, balance_updates_payload_producer @ balance_updates_treasury @ balance_updates_burn @ balance_updates_block_producer)
+
+    
+
+
+
+
 
 let check_and_reset_delegate_participation ctxt delegate =
   let contract = Contract_repr.Implicit delegate in
