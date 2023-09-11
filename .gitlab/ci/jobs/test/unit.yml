@@ -76,6 +76,9 @@ unit:non-proto-arm64:
 
 unit:js_components:
   extends: .unit_test_template_x86_64
+  variables:
+    # See `.gitlab-ci.yml` for details on `RUNTEZTALIAS`
+    RUNTEZTALIAS: "true"
   script:
     - . ./scripts/install_build_deps.js.sh
     - make test-js
