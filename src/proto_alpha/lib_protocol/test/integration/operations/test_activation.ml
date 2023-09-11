@@ -53,7 +53,7 @@ let commitments =
       Commitment.
         {
           blinded_public_key_hash = Blinded_public_key_hash.of_b58check_exn bpkh;
-          amount = Tez.of_mutez_exn (Int64.of_string a);
+          amount = Tez.of_mumav_exn (Int64.of_string a);
         })
     [
       ("bmv1PnoN7PYp9bXWHPBkUimLygrYSDVYufqLY", "23932454669343");
@@ -108,8 +108,8 @@ let secrets () =
             (Blinded_public_key_hash.activation_code_of_hex secret);
         amount =
           WithExceptions.Option.to_exn
-            ~none:(Invalid_argument "tez conversion")
-            (Tez.of_mutez (Int64.of_string amount));
+            ~none:(Invalid_argument "mav conversion")
+            (Tez.of_mumav (Int64.of_string amount));
       })
     [
       ( [

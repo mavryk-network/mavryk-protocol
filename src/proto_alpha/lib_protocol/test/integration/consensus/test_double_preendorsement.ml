@@ -195,7 +195,7 @@ end = struct
     (* bake `nb_blocks_before_double blocks` before double preendorsing *)
     bake_n nb_blocks_before_double genesis >>=? fun blk ->
     (* producing two differents blocks and two preendorsements op1 and op2 *)
-    Op.transaction (B genesis) addr addr Tez.one_mutez >>=? fun trans ->
+    Op.transaction (B genesis) addr addr Tez.one_mumav >>=? fun trans ->
     bake ~policy:(By_round 0) blk >>=? fun head_A ->
     bake ~policy:(By_round 0) blk ~operations:[trans] >>=? fun head_B ->
     pick_endorsers (B head_A) >>=? fun ((d1, _slots1), (d2, _slots2)) ->

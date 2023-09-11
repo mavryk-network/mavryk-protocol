@@ -554,7 +554,7 @@ let default_raw_context () =
   let initial_account = Account.new_account () in
   let bootstrap_accounts =
     Account.make_bootstrap_account
-      ~balance:(Tez.of_mutez_exn 100_000_000_000L)
+      ~balance:(Tez.of_mumav_exn 100_000_000_000L)
       initial_account
   in
   Block.prepare_initial_context_params () >>=? fun (constants, _, _) ->

@@ -35,7 +35,7 @@ let gb_limit = Gas.Arith.(integral_of_int_exn 100_000)
 
 let half_gb_limit = Gas.Arith.(integral_of_int_exn 50_000)
 
-let default_fund = Tez.of_mutez_exn 400_000_000_000L
+let default_fund = Tez.of_mumav_exn 400_000_000_000L
 
 (** {2 Datatypes} *)
 
@@ -1075,7 +1075,7 @@ let make_tztest_batched ?(fmt = Format.std_formatter) name test subjects
    batch of n manager operations. *)
 type probes = {
   source : Signature.Public_key_hash.t;
-  fee : Tez.tez;
+  fee : Tez.mav;
   gas_limit : Gas.Arith.integral;
   nb_counter : int;
 }

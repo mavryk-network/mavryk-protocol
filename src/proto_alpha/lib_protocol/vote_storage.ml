@@ -111,7 +111,7 @@ let update_listings ctxt =
     (ctxt, 0L)
     ~order:`Sorted
     ~f:(fun (delegate, stake) (ctxt, total) ->
-      let weight = Tez_repr.to_mutez stake in
+      let weight = Tez_repr.to_mumav stake in
       Storage.Vote.Listings.init ctxt delegate weight >>=? fun ctxt ->
       return (ctxt, Int64.add total weight))
   >>=? fun (ctxt, total) ->
@@ -133,7 +133,7 @@ let pp_delegate_info ppf info =
         ppf
         "Voting power: %a"
         Tez_repr.pp
-        (Tez_repr.of_mutez_exn p) ;
+        (Tez_repr.of_mumav_exn p) ;
       (match info.current_ballot with
       | None -> ()
       | Some ballot ->

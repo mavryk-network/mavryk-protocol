@@ -1441,7 +1441,7 @@ module V (L : LIB) = struct
     (* ----------------- Check rollup id ----------------------- *)
     >* with_bool_check (equal rollup_id tx.header.rollup_id)
     >* (* ----------------- Check ticket ids ----------------------
-          If the amount is in tez (or the dst balance is 0), then we don't enforce this *)
+          If the amount is in mav (or the dst balance is 0), then we don't enforce this *)
     let* is_tez = Num.is_eq_const tx.payload.msg.amount.id Constants.tez_id in
     let* dst_bal_is_0 =
       Num.is_zero @@ coerce tx_s.dst.leaf.before.ticket.amount

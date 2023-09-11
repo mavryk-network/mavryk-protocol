@@ -113,7 +113,7 @@ let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
         in
         let size_f = Q.of_int size in
         let gas_f = Q.of_bigint (Gas.Arith.integral_to_z gas) in
-        let fee_f = Q.of_int64 (Tez.to_mutez fee) in
+        let fee_f = Q.of_int64 (Tez.to_mumav fee) in
         let size_ratio = Q.(size_f / Q.of_int max_size) in
         let gas_ratio =
           Q.(
@@ -122,7 +122,7 @@ let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
         in
         let weight = Q.(fee_f / max size_ratio gas_ratio) in
         let fees_in_nanotez =
-          Q.mul (Q.of_int64 (Tez.to_mutez fee)) (Q.of_int 1000)
+          Q.mul (Q.of_int64 (Tez.to_mumav fee)) (Q.of_int 1000)
         in
         let enough_fees_for_gas =
           let minimal_fees_in_nanotez =

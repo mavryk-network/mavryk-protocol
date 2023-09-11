@@ -287,7 +287,7 @@ let test_unrevealed () =
   let constants =
     {
       Default_parameters.constants_test with
-      endorsing_reward_per_slot = Tez.one_mutez;
+      endorsing_reward_per_slot = Tez.one_mumav;
       baking_reward_bonus_per_slot = Tez.zero;
       baking_reward_fixed_portion = Tez.zero;
       seed_nonce_revelation_tip = Tez.zero;

@@ -118,13 +118,13 @@ let default_metrics_port = 9933
 
 let default_reconnection_delay = 2.0 (* seconds *)
 
-let mutez mutez = {Injector_sigs.mutez}
+let mumav mumav = {Injector_sigs.mumav}
 
-let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
+let mav t = mumav Int64.(mul (of_int t) 1_000_000L)
 
 (* Copied from src/proto_alpha/lib_plugin/mempool.ml *)
 
-let default_minimal_fees = mutez 100L
+let default_minimal_fees = mumav 100L
 
 let default_minimal_nanotez_per_gas_unit = Q.of_int 100
 
@@ -132,14 +132,14 @@ let default_minimal_nanotez_per_byte = Q.of_int 1000
 
 let default_force_low_fee = false
 
-let default_fee_cap = tez 1
+let default_fee_cap = mav 1
 
-let default_burn_cap = mutez 0L
+let default_burn_cap = mumav 0L
 
 (* The below default fee and burn limits are computed by taking into account
    the worst fee found in the tests for the rollup node.
 
-   We take as base the cost of commitment cementation, which is 719 mutez in fees:
+   We take as base the cost of commitment cementation, which is 719 mumav in fees:
    - Commitment publishing is 1.37 times more expensive.
    - Message submission is 0.7 times more expensive, so cheaper but it depends on
      the size of the message.
@@ -149,35 +149,35 @@ let default_burn_cap = mutez 0L
      - Proof move is 1.47 times more expensive but depends on the size of the proof.
      - Timeout move is 1.34 times more expensive.
 
-   We set a fee limit of 1 tz for cementation (instead of 719 mutez) which
+   We set a fee limit of 1 tz for cementation (instead of 719 mumav) which
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
 let default_fee = function
-  | Cement -> tez 1
-  | Publish -> tez 2
+  | Cement -> mav 1
+  | Publish -> mav 2
   | Add_messages ->
       (* We keep this limit even though it depends on the size of the message
          because the rollup node pays the fees for messages submitted by the
          **users**. *)
-      tez 1
-  | Timeout -> tez 2
+      mav 1
+  | Timeout -> mav 2
   | Refute ->
       (* Should be 3 based on comment above but we want to make sure we inject
          refutation moves even if the proof is large. The stake is high (we can
          lose the 10k deposit or we can get the reward). *)
-      tez 5
+      mav 5
 
 let default_burn = function
   | Publish ->
       (* The first commitment can store data. *)
-      tez 1
-  | Add_messages -> tez 0
-  | Cement -> tez 0
-  | Timeout -> tez 0
+      mav 1
+  | Add_messages -> mav 0
+  | Cement -> mav 0
+  | Timeout -> mav 0
   | Refute ->
       (* A refutation move can store data, e.g. opening a game. *)
-      tez 1
+      mav 1
 
 let default_fee_parameter ?purpose () =
   let fee_cap, burn_cap =
@@ -324,14 +324,14 @@ let operators_encoding =
 (* Encoding for Tez amounts, replicated from mempool. *)
 let tez_encoding =
   let open Data_encoding in
-  let decode {Injector_sigs.mutez} = Z.of_int64 mutez in
+  let decode {Injector_sigs.mumav} = Z.of_int64 mumav in
   let encode =
-    Json.wrap_error (fun i -> {Injector_sigs.mutez = Z.to_int64 i})
+    Json.wrap_error (fun i -> {Injector_sigs.mumav = Z.to_int64 i})
   in
   Data_encoding.def
-    "mutez"
-    ~title:"A millionth of a tez"
-    ~description:"One million mutez make a tez (1 tez = 1e6 mutez)"
+    "mumav"
+    ~title:"A millionth of a mav"
+    ~description:"One million mumav make a mav (1 mav = 1e6 mumav)"
     (conv decode encode n)
 
 (* Encoding for nano-Tez amounts, replicated from mempool. *)
@@ -339,8 +339,8 @@ let nanotez_encoding =
   let open Data_encoding in
   def
     "nanotez"
-    ~title:"A thousandth of a mutez"
-    ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
+    ~title:"A thousandth of a mumav"
+    ~description:"One thousand nanotez make a mumav (1 mav = 1e9 nanotez)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})

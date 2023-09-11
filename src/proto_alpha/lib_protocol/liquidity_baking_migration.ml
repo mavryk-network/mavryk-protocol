@@ -58,7 +58,7 @@ let mainnet_tzBTC_address =
 
 (** If token_pool, xtz_pool, or lqt_total are ever zero the CPMM will be
     permanently broken. Therefore, we initialize it with the null address
-    registered as a liquidity provider with 1 satoshi tzBTC and 100 mutez
+    registered as a liquidity provider with 1 satoshi tzBTC and 100 mumav
     (roughly the current exchange rate).  *)
 let cpmm_init_storage ~token_address ~lqt_address =
   Script_repr.lazy_expr
@@ -165,7 +165,7 @@ let originate_test_fa12 ~typecheck ctxt admin =
       }
   in
   typecheck ctxt script >>=? fun (script, ctxt) ->
-  originate ctxt fa12_address ~balance:(Tez_repr.of_mutez_exn 1_000_000L) script
+  originate ctxt fa12_address ~balance:(Tez_repr.of_mumav_exn 1_000_000L) script
   >|=? fun (ctxt, origination_result) ->
   (ctxt, fa12_address, [origination_result])
 
@@ -234,7 +234,7 @@ let init ctxt ~typecheck =
       originate
         ctxt
         cpmm_address
-        ~balance:(Tez_repr.of_mutez_exn 100L)
+        ~balance:(Tez_repr.of_mumav_exn 100L)
         cpmm_script
       >>=? fun (ctxt, cpmm_result) ->
       originate ctxt lqt_address ~balance:Tez_repr.zero lqt_script

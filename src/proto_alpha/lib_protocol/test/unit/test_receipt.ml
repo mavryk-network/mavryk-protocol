@@ -36,7 +36,7 @@ open Alpha_context
 open Data_encoding
 
 let random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
+  match Tez.of_mumav (Int64.add 1L (Random.int64 100L)) with
   | None -> assert false
   | Some x -> x
 

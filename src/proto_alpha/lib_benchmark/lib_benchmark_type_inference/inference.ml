@@ -627,9 +627,9 @@ let arith_type (instr : Mikhailsky_prim.prim) (ty1 : Type.Base.t)
   | I_SUB, Mutez_t, Mutez_t
   | I_MUL, Mutez_t, Nat_t
   | I_MUL, Nat_t, Mutez_t ->
-      Some Type.mutez
-  | I_EDIV, Mutez_t, Nat_t -> Some Type.(option (pair mutez mutez))
-  | I_EDIV, Mutez_t, Mutez_t -> Some Type.(option (pair nat mutez))
+      Some Type.mumav
+  | I_EDIV, Mutez_t, Nat_t -> Some Type.(option (pair mumav mumav))
+  | I_EDIV, Mutez_t, Mutez_t -> Some Type.(option (pair nat mumav))
   | _ -> None
 
 let rec generate_constraints (path : Mikhailsky.Path.t) (node : Mikhailsky.node)
@@ -1046,7 +1046,7 @@ and generate_constraints_data (path : Mikhailsky.Path.t)
   | Prim (_, A_Int, [Int (_, _)], _) -> unify_base ty Type.int
   | Prim (_, A_Nat, [Int (_, _)], _) -> unify_base ty Type.nat
   | Prim (_, A_Timestamp, [Int (_, _)], _) -> unify_base ty Type.timestamp
-  | Prim (_, A_Mutez, [Int (_, _)], _) -> unify_base ty Type.mutez
+  | Prim (_, A_Mutez, [Int (_, _)], _) -> unify_base ty Type.mumav
   | Prim (_, A_Key_hash, [Bytes (_, _)], _) -> unify_base ty Type.key_hash
   | Prim (_, A_Key, [Bytes (_, _)], _) -> unify_base ty Type.key
   | Prim (_, A_List, [Seq (_, subterms)], _) ->

@@ -39,9 +39,9 @@ let expected_slots_for_given_active_stake ctxt ~total_active_stake ~active_stake
   Z.to_int
     (Z.div
        (Z.mul
-          (Z.of_int64 (Tez_repr.to_mutez active_stake))
+          (Z.of_int64 (Tez_repr.to_mumav active_stake))
           (Z.of_int number_of_endorsements_per_cycle))
-       (Z.of_int64 (Tez_repr.to_mutez total_active_stake)))
+       (Z.of_int64 (Tez_repr.to_mumav total_active_stake)))
 
 type level_participation = Participated | Didn't_participate
 

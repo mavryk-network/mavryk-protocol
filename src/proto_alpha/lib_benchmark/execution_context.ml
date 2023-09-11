@@ -68,7 +68,7 @@ let make ~rng_state =
           payer;
           self;
           amount;
-          balance = Alpha_context.Tez.of_mutez_exn initial_balance;
+          balance = Alpha_context.Tez.of_mumav_exn initial_balance;
           chain_id;
           now;
           level;

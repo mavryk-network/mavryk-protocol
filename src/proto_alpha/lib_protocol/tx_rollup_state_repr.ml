@@ -412,7 +412,7 @@ let update_burn_per_byte_helper :
       Tez_repr.(burn_per_byte *? variation_factor >>? fun x -> x /? 100L)
       >>? fun variation ->
       let variation =
-        if Tez_repr.(variation = zero) then Tez_repr.one_mutez else variation
+        if Tez_repr.(variation = zero) then Tez_repr.one_mumav else variation
       in
       (* increase case *)
       if threshold_increase < percentage then
@@ -428,7 +428,7 @@ let update_burn_per_byte_helper :
   | Ok burn_per_byte -> {state with burn_per_byte; inbox_ema}
   (* In the (very unlikely) event of an overflow, we force the burn to
      be the maximum amount. *)
-  | Error _ -> {state with burn_per_byte = Tez_repr.max_mutez; inbox_ema}
+  | Error _ -> {state with burn_per_byte = Tez_repr.max_mumav; inbox_ema}
 
 let rec update_burn_per_byte :
     t -> elapsed:int -> factor:int -> final_size:int -> hard_limit:int -> t =

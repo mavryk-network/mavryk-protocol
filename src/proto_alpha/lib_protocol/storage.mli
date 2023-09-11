@@ -80,9 +80,9 @@ module Contract : sig
     (local_context -> (local_context * 'a) tzresult Lwt.t) ->
     (Raw_context.t * 'a) tzresult Lwt.t
 
-  (** The tez possessed by a contract and that can be used. A contract
-     may also possess tez in frozen deposits. Empty balances (of zero
-     tez) are only allowed for originated contracts, not for implicit
+  (** The mav possessed by a contract and that can be used. A contract
+     may also possess mav in frozen deposits. Empty balances (of zero
+     mav) are only allowed for originated contracts, not for implicit
      ones. *)
   module Spendable_balance :
     Indexed_data_storage_with_local_context
@@ -208,7 +208,7 @@ module Contract : sig
        and type value = Z.t
        and type t := Raw_context.t
 
-  (** Associates a contract and a bond_id with a bond, i.e. an amount of tez
+  (** Associates a contract and a bond_id with a bond, i.e. an amount of mav
       that is frozen. *)
   module Frozen_bonds :
     Non_iterable_indexed_carbonated_data_storage

@@ -174,9 +174,9 @@ let run_benchmark ~lift_protocol_limits ~provided_tps_of_injection ~blocks_total
   let max_single_transaction_fee =
     List.fold_left
       max
-      (Tez.to_mutez regular_transaction_fee)
+      (Tez.to_mumav regular_transaction_fee)
       (List.map
-         (fun (_, x) -> Tez.to_mutez x.Client.invocation_fee)
+         (fun (_, x) -> Tez.to_mumav x.Client.invocation_fee)
          smart_contract_parameters)
   in
   (* We want to give the extra bootstraps as little as possible, just enough

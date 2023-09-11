@@ -226,6 +226,23 @@ let blockchain_network_sandbox =
     ~sandboxed_chain_name:"SANDBOXED_TEZOS"
     ~user_activated_upgrades:sandbox_user_activated_upgrades
 
+let blockchain_network_basenet =
+  make_blockchain_network
+    ~alias:"basenet"
+    {
+      time = Time.Protocol.of_notation_exn "2023-08-29T14:09:05Z";
+      block =
+        Block_hash.of_b58check_exn
+          "BLockGenesisGenesisGenesisGenesisGenesisfc3ddfTxTo8";
+      protocol =
+        Protocol_hash.of_b58check_exn
+          "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK";
+    }
+    ~chain_name:"TEZOS_BASENET_2023-08-29T14:09:05Z"
+    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
+    ~default_bootstrap_peers:
+      [ "" ]
+
 let blockchain_network_encoding : blockchain_network Data_encoding.t =
   let open Data_encoding in
   conv
@@ -297,6 +314,7 @@ let builtin_blockchain_networks_with_tags =
     (4, blockchain_network_mainnet);
     (19, blockchain_network_ghostnet);
     (22, blockchain_network_mumbainet);
+    (23, blockchain_network_basenet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with

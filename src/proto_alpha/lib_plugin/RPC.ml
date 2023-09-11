@@ -629,7 +629,7 @@ module Scripts = struct
       | Signature_t -> return (T_signature, [], [])
       | String_t -> return (T_string, [], [])
       | Bytes_t -> return (T_bytes, [], [])
-      | Mutez_t -> return (T_mutez, [], [])
+      | Mutez_t -> return (T_mumav, [], [])
       | Bool_t -> return (T_bool, [], [])
       | Key_hash_t -> return (T_key_hash, [], [])
       | Key_t -> return (T_key, [], [])
@@ -1016,7 +1016,7 @@ module Scripts = struct
   }
 
   (* 4_000_000 ꜩ *)
-  let default_balance = Tez.of_mutez_exn 4_000_000_000_000L
+  let default_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
   let register () =
     let originate_dummy_contract ctxt script balance =

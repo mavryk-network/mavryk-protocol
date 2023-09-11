@@ -31,7 +31,7 @@ open Protocol
 (**
    Michelson code is a hard to type-check and generate incrementally due to
    the presence of ambiguous constructs, such as literals
-   like [{ 1 ; 2 ; 3 }]. Is it a list of ints? of nats? of tez? Or a set?
+   like [{ 1 ; 2 ; 3 }]. Is it a list of ints? of nats? of mav? Or a set?
 
    Thus, we will work with Mikhailsky, a better behaved version of Michelson
    allowing local reconstruction of types.
@@ -57,8 +57,8 @@ open Protocol
    3. Some instructions are annotated with the type on which they operate.
       Eg if Prim (_, I_ADD, [], []) is the (ad-hoc polymorphic) addition in Michelson,
       we will have the following variants in Mikhailsky:
-      - Prim (_, I_ADD, [ Prim (_, T_mutez, [], []),
-                          Prim (_, T_mutez, [], []) ], []) for mutez addition
+      - Prim (_, I_ADD, [ Prim (_, T_mumav, [], []),
+                          Prim (_, T_mumav, [], []) ], []) for mumav addition
       - Prim (_, I_ADD, [ Prim (_, T_int, [], []),
                           Prim (_, T_nat, [], []) ], []) for int+nat addition
       etc.
@@ -307,7 +307,7 @@ module Data : sig
 
   val timestamp : Script_timestamp.t -> node
 
-  val mutez : Alpha_context.Tez.t -> node
+  val mumav : Alpha_context.Tez.t -> node
 
   val key_hash : Environment.Signature.Public_key_hash.t -> node
 

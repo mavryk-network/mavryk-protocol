@@ -355,13 +355,13 @@ let minimal_timestamp_switch =
 
 let tez_format =
   "Text format: `DDDDDDD.DDDDDD`.\n\
-   Tez and mutez and separated by a period sign. Trailing and pending zeroes \
+   Tez and mumav and separated by a period sign. Trailing and pending zeroes \
    are allowed."
 
 let tez_parameter param =
   Tezos_clic.parameter (fun _ s ->
       match Tez.of_string s with
-      | Some tez -> return tez
+      | Some mav -> return mav
       | None -> fail (Bad_tez_arg (param, s)))
 
 let tez_arg ~default ~parameter ~doc =
@@ -558,7 +558,7 @@ let timelock_locked_value_arg =
     string_parameter
 
 let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+  match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
 let default_minimal_nanotez_per_gas_unit = Q.of_int 100
 
@@ -568,7 +568,7 @@ let minimal_fees_arg =
   Tezos_clic.default_arg
     ~long:"minimal-fees"
     ~placeholder:"amount"
-    ~doc:"exclude operations with fees lower than this threshold (in tez)"
+    ~doc:"exclude operations with fees lower than this threshold (in mav)"
     ~default:(Tez.to_string default_minimal_fees)
     (Tezos_clic.parameter (fun _ s ->
          match Tez.of_string s with

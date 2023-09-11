@@ -24,9 +24,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let id = "tez"
+let id = "mav"
 
-let name = "mutez"
+let name = "mumav"
 
 open Compare.Int64 (* invariant: positive *)
 
@@ -45,18 +45,18 @@ type error +=
 
 let zero = Tez_tag 0L
 
-(* all other constant are defined from the value of one micro tez *)
-let one_mutez = Tez_tag 1L
+(* all other constant are defined from the value of one micro mav *)
+let one_mumav = Tez_tag 1L
 
-let max_mutez = Tez_tag Int64.max_int
+let max_mumav = Tez_tag Int64.max_int
 
-let mul_int (Tez_tag tez) i = Tez_tag (Int64.mul tez i)
+let mul_int (Tez_tag mav) i = Tez_tag (Int64.mul mav i)
 
-let one_cent = mul_int one_mutez 10_000L
+let one_cent = mul_int one_mumav 10_000L
 
 let fifty_cents = mul_int one_cent 50L
 
-(* 1 tez = 100 cents = 1_000_000 mutez *)
+(* 1 mav = 100 cents = 1_000_000 mumav *)
 let one = mul_int one_cent 100L
 
 let of_string s =
@@ -135,17 +135,17 @@ let ( +? ) tez1 tez2 =
   let t = Int64.add t1 t2 in
   if t < t1 then error (Addition_overflow (tez1, tez2)) else ok (Tez_tag t)
 
-let ( *? ) tez m =
-  let (Tez_tag t) = tez in
-  if m < 0L then error (Negative_multiplicator (tez, m))
+let ( *? ) mav m =
+  let (Tez_tag t) = mav in
+  if m < 0L then error (Negative_multiplicator (mav, m))
   else if m = 0L then ok (Tez_tag 0L)
   else if t > Int64.(div max_int m) then
-    error (Multiplication_overflow (tez, m))
+    error (Multiplication_overflow (mav, m))
   else ok (Tez_tag (Int64.mul t m))
 
-let ( /? ) tez d =
-  let (Tez_tag t) = tez in
-  if d <= 0L then error (Invalid_divisor (tez, d))
+let ( /? ) mav d =
+  let (Tez_tag t) = mav in
+  if d <= 0L then error (Invalid_divisor (mav, d))
   else ok (Tez_tag (Int64.div t d))
 
 let mul_exn t m =
@@ -158,12 +158,12 @@ let div_exn t d =
   | Ok v -> v
   | Error _ -> invalid_arg "div_exn"
 
-let of_mutez t = if t < 0L then None else Some (Tez_tag t)
+let of_mumav t = if t < 0L then None else Some (Tez_tag t)
 
-let of_mutez_exn x =
-  match of_mutez x with None -> invalid_arg "Tez.of_mutez" | Some v -> v
+let of_mumav_exn x =
+  match of_mumav x with None -> invalid_arg "Tez.of_mumav" | Some v -> v
 
-let to_mutez (Tez_tag t) = t
+let to_mumav (Tez_tag t) = t
 
 let encoding =
   let open Data_encoding in
@@ -262,7 +262,7 @@ let () =
     (function Invalid_divisor (a, b) -> Some (a, b) | _ -> None)
     (fun (a, b) -> Invalid_divisor (a, b))
 
-type tez = t
+type mav = t
 
 let compare (Tez_tag x) (Tez_tag y) = compare x y
 

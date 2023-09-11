@@ -84,7 +84,7 @@ let dummy_account =
   in
   new_account ~seed ()
 
-let default_initial_balance = Tez.of_mutez_exn 4_000_000_000_000L
+let default_initial_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
 let generate_accounts ?rng_state n : t list tzresult =
   Signature.Public_key_hash.Table.clear known_accounts ;
@@ -134,7 +134,7 @@ let rec make_bootstrap_accounts ?(bootstrap_balances = [])
         decons_of_opt bootstrap_consensus_keys
       in
       make_bootstrap_account
-        ?balance:(Option.map Tez.of_mutez_exn balance)
+        ?balance:(Option.map Tez.of_mumav_exn balance)
         ~delegate_to
         ~consensus_key
         account

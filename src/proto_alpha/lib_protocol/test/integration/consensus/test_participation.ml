@@ -101,9 +101,9 @@ let test_participation ~sufficient_participation () =
     (b0, b1, 0)
     (2 -- (blocks_per_cycle - 1))
   >>=? fun (pred_b, b, _) ->
-  Context.Contract.balance (B pred_b) account2 >|=? Tez.to_mutez
+  Context.Contract.balance (B pred_b) account2 >|=? Tez.to_mumav
   >>=? fun bal2_at_pred_b ->
-  Context.Contract.balance (B b) account2 >|=? Tez.to_mutez
+  Context.Contract.balance (B b) account2 >|=? Tez.to_mumav
   >>=? fun bal2_at_b ->
   (* - If not sufficient_participation, we check that the balance of del2 at b is the
      balance of del2 at pred_b; consequently, no rewards could have been given
@@ -111,7 +111,7 @@ let test_participation ~sufficient_participation () =
      - If sufficient participation, we check that the balance of del2 at b is the
      balance of del2 at pred_b plus the endorsing rewards. *)
   Context.get_endorsing_reward (B b) ~expected_endorsing_power:expected_nb_slots
-  >|=? Tez.to_mutez
+  >|=? Tez.to_mumav
   >>=? fun er ->
   let endorsing_rewards = if sufficient_participation then er else 0L in
   let expected_bal2_at_b = Int64.add bal2_at_pred_b endorsing_rewards in

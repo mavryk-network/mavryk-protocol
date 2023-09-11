@@ -109,14 +109,14 @@ let test_voting_power_cache () =
     Assert.equal_int64 ~loc n voting_power
   in
   (* the voting power is the full staking balance *)
-  let initial_voting_power_at_genesis = Tez.to_mutez full_balance in
+  let initial_voting_power_at_genesis = Tez.to_mumav full_balance in
   assert_voting_power ~loc:__LOC__ initial_voting_power_at_genesis genesis
   >>=? fun () ->
   let rewards_after_one_voting_period =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 1))
   in
   let expected_delta_voting_power_after_one_voting_period =
-    Tez.to_mutez rewards_after_one_voting_period
+    Tez.to_mumav rewards_after_one_voting_period
   in
   Block.bake_n ~policy (Int32.to_int blocks_per_voting_period - 1) genesis
   >>=? fun block ->
@@ -134,7 +134,7 @@ let test_voting_power_cache () =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 2))
   in
   let expected_delta_voting_power_after_two_voting_periods =
-    Tez.to_mutez rewards_after_two_voting_periods
+    Tez.to_mumav rewards_after_two_voting_periods
   in
   Block.bake_n ~policy (Int32.to_int blocks_per_voting_period) block
   >>=? fun block ->
@@ -299,7 +299,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
   Context.init1 () >>=? fun (b_for_constants, _contract) ->
   Context.get_constants (B b_for_constants)
   >>=? fun Constants.{parametric = {minimal_stake; _}; _} ->
-  let tpr = Tez.to_mutez minimal_stake in
+  let tpr = Tez.to_mumav minimal_stake in
   (* N.B. setting the balance has an impact on the active stake; without
      delegation, the full balance is the same as the staking balance and the
      active balance is less or equal the staking balance (see
@@ -321,7 +321,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
     >>=? fun frozen_deposit ->
     let expected_bal =
       Test_tez.(
-        Tez.of_mutez_exn initial_bal1
+        Tez.of_mumav_exn initial_bal1
         -! frozen_deposit +! baking_reward_fixed_portion)
     in
     Assert.equal_tez ~loc:__LOC__ bal expected_bal
@@ -374,7 +374,7 @@ let test_committee_sampling () =
       "@[<hov>Testing with baker distribution [%a],@ committee size %d.@]@."
       (Format.pp_print_list
          ~pp_sep:(fun ppf () -> Format.fprintf ppf ",@ ")
-         (fun ppf (tez, _) -> Format.fprintf ppf "%Ld" tez))
+         (fun ppf (mav, _) -> Format.fprintf ppf "%Ld" mav))
       distribution
       max_round ;
 
@@ -441,11 +441,11 @@ let tests =
       `Quick
       test_rewards_block_and_payload_producer;
     Tztest.tztest
-      "a delegate with 8000 tez can bake"
+      "a delegate with 8000 mav can bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:true);
     Tztest.tztest
-      "a delegate with 7999 tez cannot bake"
+      "a delegate with 7999 mav cannot bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:false);
     Tztest.tztest "committee sampling" `Quick test_committee_sampling;

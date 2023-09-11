@@ -7,6 +7,6 @@
          NIL operation ;
          PAIR
   } ;
-  view "v" (pair unit mutez (contract unit)) unit
+  view "v" (pair unit mumav (contract unit)) unit
     { CAR ; UNPAPAIR ; TRANSFER_TOKENS ; DROP ; UNIT }
 }

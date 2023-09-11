@@ -76,7 +76,7 @@ let get_happy_path () =
   assert_unchanged b >>=? fun b ->
   let do_many_transfers b =
     Incremental.begin_construction b >>=? fun b ->
-    n_transactions 10 b alice bob (Tez.of_mutez_exn 1000L) >>=? fun b ->
+    n_transactions 10 b alice bob (Tez.of_mumav_exn 1000L) >>=? fun b ->
     Incremental.finalize_block b >>=? fun b -> assert_unchanged b
   in
   do_many_transfers b >>=? do_many_transfers >>=? do_many_transfers
