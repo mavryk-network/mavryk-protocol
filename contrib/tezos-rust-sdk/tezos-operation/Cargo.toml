@@ -1,0 +1,23 @@
+[package]
+name = "tezos-operation"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+chrono = { version= "0.4", default-features = false, features = ["clock", "std"] }
+derive_more = "0.99.17"
+num-traits = "0.2"
+num-derive = "0.3"
+hex = "0.4"
+
+tezos-core = { path = "../tezos-core" }
+tezos-michelson = { path = "../tezos-michelson" }
+
+[dev-dependencies]
+hex-literal = "0.3"
+
+[features]
+full_crypto = ["ed25519", "secp256_k1", "p256"]
+ed25519 = ["tezos-core/ed25519"]
+secp256_k1 = ["tezos-core/secp256_k1"]
+p256 = ["tezos-core/p256"]
