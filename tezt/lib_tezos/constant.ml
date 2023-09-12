@@ -118,10 +118,6 @@ let tz4_account : Account.key =
   }
 
 
-(** Set treasury address - to be replaced *)
-let treasury_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 
-
-
 (** The `echo` kernel that is listed in the “Smart Optimistic Rollups”
     section of the reference manual. *)
 let wasm_echo_kernel_boot_sector =
