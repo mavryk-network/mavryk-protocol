@@ -123,7 +123,7 @@ PRNG having as seed the :ref:`random seed<random_seed_oxford>` for
 cycle ``n``.
 
 Only the stake of active delegates with the minimal stake of ``MINIMAL_STAKE``
-and frozen deposits greater the ``MINIMAL_FROZEN_STAKE`` is snapshotted.
+and frozen deposits greater than ``MINIMAL_FROZEN_STAKE`` is snapshotted.
 
 .. _rights_oxford:
 
@@ -188,7 +188,7 @@ found in the `whitepaper
 <https://tezos.com/whitepaper.pdf>`_.
 
 
-The adaptive issuance  `specification <adaptive_issuance_oxford>`_.
+The adaptive issuance `documentation <adaptive_issuance_oxford>`_.
 
 Other presentations of the Tezos' proof-of-stake mechanism can be
 found in the `Tezos Agora wiki entry
