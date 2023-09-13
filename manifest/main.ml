@@ -4150,7 +4150,7 @@ let octez_openapi =
     ~synopsis:
       "Tezos: a library for querying RPCs and converting into the OpenAPI \
        format"
-    ~deps:[ezjsonm; json_data_encoding; tezt_lib]
+    ~deps:[ezjsonm; json_data_encoding]
 
 let _octez_protocol_compiler_bin =
   public_exe
