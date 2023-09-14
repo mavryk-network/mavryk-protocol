@@ -105,6 +105,12 @@ Smart Rollup node
 - Fixed an issue where the rollup node could forget to update its L2 head for a
   block. (MR :gl:`!9868`)
 
+- RPCs ``/describe`` and ``/openapi?protocol={ProtoHash}`` to retrieve
+  the specification for RPCs of the rollup node in different format. Introduced a new command
+  ``generate openapi``, to generate the OpenAPI JSON specification and output it to stdout. (MR
+  :gl:`!10118`)
+
+
 Smart Rollup client
 -------------------
 
