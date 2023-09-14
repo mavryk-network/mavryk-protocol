@@ -312,6 +312,19 @@ let dump_metrics =
       let*! () = cctxt#message "%a@." Metrics.print_csv_metrics metrics in
       return_unit)
 
+let openapi_command =
+  let open Tezos_clic in
+  let open Lwt_result_syntax in
+  command
+    ~group
+    ~desc:"Generate OpenAPI specification."
+    (args1 Cli.protocol_arg)
+    (prefixes ["generate"; "openapi"] @@ stop)
+    (fun protocol cctxt ->
+      let* openapi_json = Rpc_directory.generate_openapi ?protocol cctxt in
+      let*! () = cctxt#message "%a" Data_encoding.Json.pp openapi_json in
+      return_unit)
+
 let sc_rollup_commands () =
   [
     config_init_command;
@@ -319,6 +332,7 @@ let sc_rollup_commands () =
     legacy_run_command;
     protocols_command;
     dump_metrics;
+    openapi_command;
   ]
 
 let select_commands _ctxt _ = Lwt_result_syntax.return (sc_rollup_commands ())

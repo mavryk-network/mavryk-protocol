@@ -125,7 +125,7 @@ val is_bailout : _ t -> bool
     failures planned. *)
 val is_loser : _ t -> bool
 
-(** [can_inject config op_kind] determines if a given operation kind can 
+(** [can_inject config op_kind] determines if a given operation kind can
     be injected based on the configuration settings. *)
 val can_inject : _ t -> Configuration.operation_kind -> bool
 
@@ -516,4 +516,8 @@ module Internal_for_tests : sig
     data_dir:string ->
     Kind.t ->
     Store_sigs.rw t tzresult Lwt.t
+
+  (** Create a dummy context to generate OpenAPI specification. *)
+  val openapi_context :
+    #Client_context.full -> Protocol_hash.t -> Store_sigs.rw t tzresult Lwt.t
 end

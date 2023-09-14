@@ -355,3 +355,15 @@ let log_kernel_debug_file_arg =
     ~placeholder:"file"
     ~doc:""
     string_parameter
+
+let protocol_parameter =
+  Tezos_clic.parameter (fun (_cctxt : Client_context.full) p ->
+      Lwt.return (Protocol_hash.of_b58check p))
+
+let protocol_arg =
+  Tezos_clic.arg
+    ~long:"protocol"
+    ~short:'P'
+    ~placeholder:"Proto"
+    ~doc:"Protocol hash in base58-check"
+    protocol_parameter
