@@ -84,6 +84,15 @@ and specific to the Nairobi protocol can be found at:
 
 - `nairobi-mempool-openapi-rc.json (version 18.0~rc1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-mempool-openapi-rc.json>`_
 
+Smart Rollup Node RPCs
+----------------------
+
+The OpenAPI specifications for the RPCs of the smart rollup node can be found at:
+
+- `smart-rollup-node-openapi.json <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/smart-rollup-node-openapi.json>`_
+  (This is a snapshot produced for a specific version of the rollup node, given
+  in the field ``.info.version`` of the file.)
+
 .. _openapi_generate:
 
 How to Generate
