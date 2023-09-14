@@ -25,8 +25,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Set treasury address - to be replaced *)
-let treasury_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 
+(** Set treasury and burn address - to be replaced *)
+(* cpmm address : KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 *)
+let treasury_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  
+let burn_address     = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 
+(* let burn_address     = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  *)
 
 let expected_slots_for_given_active_stake ctxt ~total_active_stake ~active_stake
     =
@@ -100,6 +103,37 @@ let record_endorsing_participation ctxt ~delegate ~participation
 
 
 
+(* let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
+    ~block_producer ~baking_reward ~reward_bonus =
+  Stake_storage.set_active ctxt payload_producer >>=? fun ctxt ->
+  (if not (Signature.Public_key_hash.equal payload_producer block_producer) then
+    Stake_storage.set_active ctxt block_producer
+  else return ctxt)
+  >>=? fun ctxt ->
+    
+  let pay_payload_producer ctxt delegate =
+    let contract = Contract_repr.Implicit delegate in
+    Token.balance ctxt `Block_fees >>=? fun (ctxt, block_fees) ->
+    Token.transfer_n
+      ctxt
+      [(`Block_fees, block_fees); (`Baking_rewards, baking_reward)]
+      (`Contract contract)
+  in
+  let pay_block_producer ctxt delegate bonus =
+    let contract = Contract_repr.Implicit delegate in
+    Token.transfer ctxt `Baking_bonuses (`Contract contract) bonus
+  in
+  pay_payload_producer ctxt payload_producer
+  >>=? fun (ctxt, balance_updates_payload_producer) ->
+  (match reward_bonus with
+  | Some bonus -> pay_block_producer ctxt block_producer bonus
+  | None -> return (ctxt, []))
+  >>=? fun (ctxt, balance_updates_block_producer) ->
+  return
+    (ctxt, balance_updates_payload_producer @ balance_updates_block_producer) *)
+               
+    
+
                 
 let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     ~block_producer ~baking_reward ~reward_bonus =
@@ -115,13 +149,26 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
 
     (match Tez_repr.(block_fees /? 4L) with
      | Error _ -> return (ctxt, [])
-     | Ok fees_for_payload_producer -> 
-       let treasury_contract = Contract_repr.Implicit (Signature.Public_key_hash.of_b58check_exn treasury_address) in
-       Token.transfer ctxt `Block_fees (`Contract treasury_contract) fees_for_payload_producer >>=? fun (ctxt, _) ->
-       Token.transfer_n
-         ctxt
-         [(`Block_fees, fees_for_payload_producer); (`Baking_rewards, baking_reward)]
-         (`Contract contract))
+     | Ok quarter_fees -> 
+        let treasury_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn treasury_address) in
+        Token.transfer ctxt `Block_fees (`Contract treasury_contract) quarter_fees >>=? fun (ctxt, _) ->
+        Token.transfer_n
+          ctxt
+          [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)]
+          (* (`Contract contract)  *)
+          (`Contract contract) >>=? fun (ctxt, _) ->
+
+        match Tez_repr.(quarter_fees *? 2L) with
+          | Error _ -> return (ctxt, [])  (* Handle error case here *)
+          | Ok remainder_for_burning ->   
+
+              (* Define the burning address *)
+              let burn_destination = Contract_repr.Implicit (Signature.Public_key_hash.of_b58check_exn burn_address) in
+              (* let burn_destination = Contract_repr.Originated (Contract_hash.of_b58check_exn burn_address) in *)
+
+              (* Transfer the remainder to the burning address *)
+              Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
+    )
   in
 
   let pay_block_producer ctxt delegate bonus =
