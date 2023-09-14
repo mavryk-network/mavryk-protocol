@@ -8,6 +8,7 @@
 use tezos_smart_rollup::{
     inbox::{InboxMessage, InternalInboxMessage},
     prelude::{debug_msg, Runtime},
+    storage::path::RefPath,
     types::Message,
 };
 
@@ -25,7 +26,9 @@ pub type Error = String;
 /// level to handle some of the messages in the inbox, mind the limits on
 /// execution time of one such call.
 pub fn kernel_entry(host: &mut impl Runtime) {
+    // Ways of observing that kernel has indeed been invoked, helps in testing
     debug_msg!(host, "Kernel invoked");
+    let _ = host.store_write(&RefPath::assert_from(b"/started"), &[1], 0);
 
     let mut first_message_for_invocation = true;
     // Handle all the messages we got at this level
