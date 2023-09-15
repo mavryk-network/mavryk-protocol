@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-.PHONY: build fill-kernel-chunks prepare-smart-rollup-config originate_rollup clean-rollup-dir clean-build clean
+.PHONY: build fill-kernel-chunks prepare-smart-rollup-config originate_rollup debug-kernel-internal debug-kernel-simple debug-kernel-full clean-rollup-dir clean-build clean
 
 # Folders
 BIN_DIR ?= bin
@@ -92,5 +92,30 @@ clean-build:
 	$(if $(BIN_DIR),,$(error BIN_DIR var is empty))
 	rm -rf $(BIN_DIR)
 	rm -rf ./target
+
+# This is a template for inputs file put to debugger.
+# Created automatically on call to debugger, you can next update this file
+# as needed.
+debugger-inputs.json:
+	echo '[[{"external": "07"}]]' > debugger-inputs.json
+	# the format is explained here
+	# https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel
+
+debug-kernel-internal: $(BIN_DIR)/$(KERNEL_NAME).wasm debugger-inputs.json
+	# not always we've generated some kernel pages, so create the folder
+  # if it is absent, for uniformity
+	mkdir -p $(BIN_DIR)/wasm_2_0_0
+	octez-smart-rollup-wasm-debugger \
+		--kernel $(BIN_DIR)/$(KERNEL_NAME).wasm \
+		--inputs debugger-inputs.json \
+		--preimage-dir $(BIN_DIR)/wasm_2_0_0
+
+# This tests the original kernel before any processing.
+# Requires less tooling to run, and provides almost the same coverage.
+debug-kernel-simple:
+	$(MAKE) debug-kernel-internal KERNEL_NAME=mir-raw-kernel
+
+debug-kernel-full:
+	$(MAKE) debug-kernel-internal KERNEL_NAME=mir-installer-kernel
 
 clean: clean-build clean-rollup-dir
