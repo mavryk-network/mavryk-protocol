@@ -70,3 +70,106 @@ Let it execute in the background.
 
 When idle, the running node causes the rollup to process a few service internal
 messages at every level.
+
+## Testing
+
+### Invoking kernel with an external message
+
+To send an external message use a command like follows:
+
+```sh
+octez-client send smart rollup message "hex:[\"05\"]" from $OPERATOR_ADDR
+```
+
+(the specified address should not necessarily be operator address, but we use it for simplicity).
+
+### Checking result
+
+Then observe the result written in the durable storage via
+
+```sh
+octez-smart-rollup-client rpc get '/global/block/head/durable/wasm_2_0_0/value?key=/storage'
+```
+
+The provided request refers to the current optimistic state, not the cemeneted
+one, meaning that actions on the rollup should be visible by that call
+immediately. `head` can be replaced with `cemented` or specific level, see `man`
+on the command for details.
+
+### Invoking kernel with an internal message
+
+For sending an internal message, a dedicated contract is necessary through which
+we would call our rollup.
+
+First, obtain the rollup address via
+
+```sh
+octez-smart-rollup-client get smart rollup address
+```
+
+(the tezos smart rollup node must be running).
+
+Then follow [the related section of the manual](https://tezos.gitlab.io/shell/smart_rollup_node.html#sending-an-internal-inbox-message)
+on how to send the message.
+
+## Trobleshooting
+
+In case something is not working, a few investigation directions further.
+
+### Dead services
+
+Track the logs of the running node. In case you see that only the `injector`
+service is logging something for a long time, then something is off.
+If you can find
+
+```
+Entering degraded mode: only playing refutation game to defend commitments.
+```
+
+message, then the node will not push the progress forward.
+
+One of the reasons can be that you rebuilt the kernel, but the rollup node still
+serves the old rollup that requires old kernel pages in `wasm_2_0_0` folder that
+are not present there anymore.
+
+### Node accepted the messages
+
+Once the message to the rollup is included into the chain, in the node you
+should be able to see
+
+```
+....sc_rollup_node.inbox: Fetching 1 messages from block
+....sc_rollup_node.inbox:   BLXEJoyghMZ6wdbprNEvGc5LjzsY4P7BhVs9myYvLoQE848pNDq at level L
+....sc_rollup_node.inbox: Transitioned PVM at inbox level L to
+....sc_rollup_node.inbox:   srs132pyW4BFZfgRgTL9jWTaqH4VdMu5wMWu8TvkSK8BYXfb8zwJkA at tick 99000000000
+....sc_rollup_node.inbox:   with 4 messages
+```
+
+Here
+* `L` is the level of block where the message to our rollup was included. The
+  rollup kernel will see same level `L` when reading the message from its inbox.
+* "Fetching 1 messages" at the first line again refers to your submitted
+  message.
+* "with 4 messages" at the last line refers to your submitted message + 3
+  messages added by Tezos protocol.
+
+### Seeing no "Fetching 1 messages", only 0
+
+It might be that `inbox` service falls behind and is still processing the old
+blocks, you can compare the block numbers to check whether this is the case.
+
+If it is, just wait for the `inbox` service to sync up.
+
+### No `last_seen_block`
+
+You can see the following error message:
+
+```
+....sc_rollup_node.injector: [tz1hGdJumKDnZ: publish, add_messages, cement, refute] ignoring unreadable
+....sc_rollup_node.injector:   file .tezos-smart-rollup-node/injector/last_seen_head on disk:
+....sc_rollup_node.injector:   Error:
+....sc_rollup_node.injector:     The persistent element .tezos-smart-rollup-node/injector/last_seen_head could not be read,
+...
+```
+
+It is _fine_ and does not affect operability.
