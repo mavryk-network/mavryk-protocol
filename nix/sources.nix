@@ -13,13 +13,16 @@ let
     }
   );
 
-  pkgs =
-    import
-    (fetchTarball {
-      url = "https://github.com/NixOS/nixpkgs/archive/6025d713d198ec296eaf27a1f2f78983eccce4d8.tar.gz";
-      sha256 = "0fa6nd1m5lr4fnliw21ppc4qdd4s85x448967333dvmslnvj35xi";
-    })
-    {overlays = [opam-nix-integration.overlay rust-overlay];};
+  pkgsSrc = fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/973d6ebcbf54f7030e10ef10bc0c5e7729cfc973.tar.gz";
+    sha256 = "1lz090ghfhn280jx8m9zffy2pdy1cwj1fdyci9sfwir8ax8qm5h5";
+  };
+
+  pkgs = import pkgsSrc {overlays = [opam-nix-integration.overlay rust-overlay];};
+
+  riscv64Pkgs = import pkgsSrc {
+    crossSystem = pkgs.lib.systems.examples.riscv64;
+  };
 in {
-  inherit opam-nix-integration rust-overlay pkgs;
+  inherit opam-nix-integration rust-overlay pkgs riscv64Pkgs;
 }

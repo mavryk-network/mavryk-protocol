@@ -10,7 +10,7 @@ let
   kernelPackageSet = [
     # Packages required to build & develop kernels
     (pkgs.rust-bin.stable."1.66.0".default.override {
-      targets = ["wasm32-unknown-unknown"];
+      targets = ["wasm32-unknown-unknown" "riscv64gc-unknown-linux-gnu"];
     })
     pkgs.rust-analyzer
     pkgs.wabt
@@ -23,6 +23,8 @@ let
     # It isn't used by default. Configure the AR environment variable to
     # make rustc use it.
     pkgs.llvmPackages.bintools
+
+    sources.riscv64Pkgs.stdenv.cc
   ];
 
   mainPackage = (import ./default.nix).overrideAttrs (old: {

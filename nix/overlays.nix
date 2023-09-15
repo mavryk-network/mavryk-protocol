@@ -1,4 +1,5 @@
 {
+  pkg-config,
   lib,
   stdenv,
   libiconv,
@@ -13,6 +14,23 @@
       ocaml-base-compiler = prev.ocaml-base-compiler.override {
         # Compile faster!
         jobs = "$NIX_BUILD_CORES";
+      };
+    }
+    // {
+      conf-pkg-config = prev.conf-pkg-config.override {
+        mkOpamDerivation = args:
+          final.mkOpamDerivation (
+            args
+            // {
+              guessedNativeDepends = [];
+              nativeDepends = [
+                {
+                  filter = fs: fs.bool true;
+                  nativePackages = [pkg-config];
+                }
+              ];
+            }
+          );
       };
     };
 
