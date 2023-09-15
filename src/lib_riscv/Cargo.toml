@@ -1,0 +1,10 @@
+[package]
+name = "octez-riscv"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+
+[dependencies.inkwell]
+version = "0.2.0"
+features = ["llvm14-0"]

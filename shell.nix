@@ -83,6 +83,8 @@ in
 
     inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE TEZOS_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
 
+    LLVM_SYS_140_PREFIX = pkgs.llvm_14.dev;
+
     buildInputs = with pkgs;
       kernelPackageSet
       ++ mainPackage.buildInputs
