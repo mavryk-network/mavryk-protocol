@@ -95,6 +95,7 @@ variables:
 # The "manual" stage exists to fix a UI problem that occurs when mixing
 # manual and non-manual jobs.
 stages:
+  - test-tezos-rust-sdk
   - trigger
   - sanity
   - build
@@ -107,6 +108,7 @@ stages:
   - publish_release
   - publish_package_gitlab
   - manual
+
 
 # Trigger
 #
@@ -188,3 +190,6 @@ include:
   - local: .gitlab/ci/pipelines/schedule_extended_test.yml
     rules:
       - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+
+  # tezos-rust-sdk
+  - local: .gitlab/ci/jobs/contrib/tezos_rust_sdk.yml
