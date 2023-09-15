@@ -1,1 +1,3 @@
 src/syntax.rs
+bin/
+.tezos-smart-rollup-node/
