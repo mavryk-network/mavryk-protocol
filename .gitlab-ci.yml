@@ -95,7 +95,6 @@ variables:
 # The "manual" stage exists to fix a UI problem that occurs when mixing
 # manual and non-manual jobs.
 stages:
-  - test-tezos-rust-sdk
   - trigger
   - sanity
   - build
@@ -108,6 +107,7 @@ stages:
   - publish_release
   - publish_package_gitlab
   - manual
+  - client-libs
 
 
 # Trigger
