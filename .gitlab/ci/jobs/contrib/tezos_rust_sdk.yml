@@ -1,5 +1,6 @@
 tezos-rust-sdk:
-  stage: test-tezos-rust-sdk
+  stage: client-libs
+  needs: [trigger]
   image: rust:1.66.0
   script:
     - apt-get update -qy && apt-get install -y openssl libssl-dev clang
@@ -11,4 +12,12 @@ tezos-rust-sdk:
     - cargo build --release
     - cargo test
     - cargo fmt -- --check
-  when: manual
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+      when: always
+    - if: '$CI_MERGE_REQUEST_ID'
+      changes:
+        - contrib/tezos-rust-sdk/
+        - contrib/kaitati-struct-files
+      when: on_success
+    - when: manual
