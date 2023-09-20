@@ -5,7 +5,8 @@ members = [
     "tezos-michelson",
     "tezos-operation",
     "tezos-rpc",
-    "tezos-contract"
+    "tezos-contract",
+    "codec"
 ]
 
 exclude = [
