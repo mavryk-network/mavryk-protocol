@@ -3225,6 +3225,8 @@ module Sc_rollup : sig
           }
         | Whitelist_update of Whitelist.t option
 
+      val encoding : t Data_encoding.t
+
       val pp : Format.formatter -> t -> unit
 
       type serialized
