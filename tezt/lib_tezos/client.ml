@@ -2296,8 +2296,8 @@ let show_voting_period ?endpoint client =
   | Some period -> return period
 
 module Sc_rollup = struct
-  let spawn_originate ?hooks ?(wait = "none") ?burn_cap ?whitelist ~alias ~src
-      ~kind ~parameters_ty ~boot_sector client =
+  let spawn_originate ?hooks ?(wait = "none") ?(force = false) ?burn_cap
+      ?whitelist ~alias ~src ~kind ~parameters_ty ~boot_sector client =
     spawn_command
       ?hooks
       client
@@ -2323,6 +2323,7 @@ module Sc_rollup = struct
           "whitelist"
           (fun v -> JSON.encode_u (`A (List.map (fun s -> `String s) v)))
           whitelist
+      @ optional_switch "force" force
       @ optional_arg "burn-cap" Tez.to_string burn_cap)
 
   let parse_rollup_address_in_receipt output =
@@ -2330,7 +2331,7 @@ module Sc_rollup = struct
     | None -> Test.fail "Cannot extract rollup address from receipt."
     | Some x -> return x
 
-  let originate ?hooks ?wait ?burn_cap ?whitelist ~alias ~src ~kind
+  let originate ?hooks ?wait ?force ?burn_cap ?whitelist ~alias ~src ~kind
       ~parameters_ty ~boot_sector client =
     let process =
       spawn_originate
@@ -2338,6 +2339,7 @@ module Sc_rollup = struct
         ?wait
         ?burn_cap
         ?whitelist
+        ?force
         ~alias
         ~src
         ~kind
