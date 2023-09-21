@@ -50,34 +50,31 @@ let setup_octez_node ~(testnet : Testnet.t) ?runner () =
   let l1_node_args =
     Node.[Expected_pow 26; Synchronisation_threshold 1; Network testnet.network]
   in
-  let* node =
-    match testnet.data_dir with
-    | Some data_dir ->
-        (* Runs a node using the existing data-dir. *)
-        return (Node.create ~data_dir l1_node_args)
-    | None ->
-        (* By default, Tezt set the difficulty to generate the identity file
-           of the Octez node to 0 (`--expected-pow 0`). The default value
-           used in network like mainnet, Mondaynet etc. is 26 (see
-           `lib_node_config/config_file.ml`). *)
-        let node = Node.create ?runner l1_node_args in
-        let* () = Node.config_init node [] in
-        let* () =
-          match testnet.snapshot with
-          | Some snapshot ->
-              let* is_file = Lwt_unix.file_exists snapshot in
-              let* snapshot =
-                if is_file then return snapshot
-                else (
-                  Log.info "Import snapshot" ;
-                  download ?runner snapshot "snapshot")
-              in
-              let* () = Node.snapshot_import node snapshot in
-              Log.info "Snapshot imported" ;
-              unit
-          | None -> unit
+  let node = Node.create ?runner ?data_dir:testnet.data_dir l1_node_args in
+  let* () =
+    let* cmd =
+      match testnet.data_dir with
+      | None -> return Node.config_init
+      | Some data_dir ->
+          let* file_exists = Lwt_unix.file_exists (data_dir // "config.json") in
+          return @@ if file_exists then Node.config_update else Node.config_init
+    in
+    cmd node []
+  in
+  let* () =
+    match testnet.snapshot with
+    | Some snapshot ->
+        let* is_file = Lwt_unix.file_exists snapshot in
+        let* snapshot =
+          if is_file then return snapshot
+          else (
+            Log.info "Import snapshot" ;
+            download ?runner snapshot "snapshot")
         in
-        return node
+        let* () = Node.snapshot_import node snapshot in
+        Log.info "Snapshot imported" ;
+        unit
+    | None -> unit
   in
   let* () = Node.run node [] in
   let* () = Node.wait_for_ready node in
