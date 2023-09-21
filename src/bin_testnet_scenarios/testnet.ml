@@ -23,12 +23,15 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+type rollup = {preimages_dir : string option; kernel_path : string option}
+
 type t = {
   network : string;
   snapshot : string option;
   protocol : Protocol.t;
   data_dir : string option;
   client_dir : string option;
+  rollup : rollup option;
 }
 
 let get_testnet_config path =
@@ -46,4 +49,14 @@ let get_testnet_config path =
     | Some (proto, _tag) -> proto
     | None -> failwith (protocol_tag ^ " is not a valid protocol name")
   in
-  {snapshot; network; protocol; data_dir; client_dir}
+  let rollup =
+    let rollup_conf = JSON.(conf |-> "rollup") in
+    let kernel_path = JSON.(rollup_conf |-> "kernel-path" |> as_string_opt) in
+    let preimages_dir =
+      JSON.(rollup_conf |-> "preimages-dir" |> as_string_opt)
+    in
+    match (kernel_path, preimages_dir) with
+    | None, None -> None
+    | kernel_path, preimages_dir -> Some {kernel_path; preimages_dir}
+  in
+  {snapshot; network; protocol; data_dir; client_dir; rollup}
