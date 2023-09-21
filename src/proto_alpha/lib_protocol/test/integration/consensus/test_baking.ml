@@ -248,7 +248,11 @@ let test_rewards_block_and_payload_producer () =
   
         Context.Contract.balance (B b1) treasury_contract >>=? fun initial_treasury_balance ->
         Context.Contract.balance (B b2) treasury_contract >>=? fun treasury_balance ->
-        
+        Log.info "------";
+        Log.info "fee_to_treasury is: %s" (Tez.to_string fee_to_treasury);
+        Log.info "initial_treasury_balance is: %s" (Tez.to_string initial_treasury_balance);
+        Log.info "treasury_balance is: %s" (Tez.to_string treasury_balance);
+        Log.info "------";
         (* let expected_treasury_balance =
           let open Test_tez in
           initial_treasury_balance +! fee_to_treasury
@@ -320,7 +324,11 @@ let test_rewards_block_and_payload_producer () =
 
       Context.Contract.balance (B b1) treasury_contract >>=? fun initial_treasury_balance ->
       Context.Contract.balance (B b2') treasury_contract >>=? fun treasury_balance ->
-      
+      Log.info "------";
+      Log.info "fee_to_treasury is: %s" (Tez.to_string fee_to_treasury);
+      Log.info "initial_treasury_balance is: %s" (Tez.to_string initial_treasury_balance);
+      Log.info "treasury_balance is: %s" (Tez.to_string treasury_balance);
+      Log.info "------";
       (* let expected_treasury_balance =
         let open Test_tez in
         initial_treasury_balance +! fee_to_treasury 
