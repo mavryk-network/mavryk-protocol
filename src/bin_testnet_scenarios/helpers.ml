@@ -65,8 +65,13 @@ let setup_octez_node ~(testnet : Testnet.t) ?runner () =
         let* () =
           match testnet.snapshot with
           | Some snapshot ->
-              Log.info "Import snapshot" ;
-              let* snapshot = download ?runner snapshot "snapshot" in
+              let* is_file = Lwt_unix.file_exists snapshot in
+              let* snapshot =
+                if is_file then return snapshot
+                else (
+                  Log.info "Import snapshot" ;
+                  download ?runner snapshot "snapshot")
+              in
               let* () = Node.snapshot_import node snapshot in
               Log.info "Snapshot imported" ;
               unit
