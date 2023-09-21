@@ -23,6 +23,15 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+type rollup = {
+  preimages_dir : string option;
+      (** the preimage directory needed to bootstrap the rollup. This
+          directory is copy for each rollup node that is started. *)
+  kernel_path : string option;
+      (** the kernel to use to node using an existing data-dir,
+          instead of creating and bootstrapping one. *)
+}
+
 type t = {
   network : string;
       (** The url of the network, as passed by to the Octez node with the
@@ -42,6 +51,9 @@ type t = {
   client_dir : string option;
       (** Optionally can start a client using an existing client-dir,
           to retreive keys and addresses. *)
+  rollup : rollup option;
+      (** Optionally can have configuration specific to the rollup see
+          the rollup type. *)
 }
 
 (** [get_testnet_config path] returns the configuration of the network
