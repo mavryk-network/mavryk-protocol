@@ -29,6 +29,8 @@ Smart Rollups
   rollups will see their PVM automatically upgrade, and newly originated smart
   rollups will use this version directly (MR :gl:`!9735`)
 
+- Register in `octez-codec` some of the smart rollup related encodings. (MR :gl:`!10174`)
+
 Zero Knowledge Rollups (ongoing)
 --------------------------------
 
