@@ -1,0 +1,7 @@
+{
+    "protocol": "alpha",
+    "network": "https://teztnets.xyz/mondaynet-2023-10-30",
+    "snapshot": "https://snapshots.eu.tzinit.org/mondaynet/rolling",
+    "client-dir": "../tezos-data-dir/tezos-client",
+    "data-dir": "../tezos-data-dir/tezos-node-mondaynet-2023-10-40"
+}
