@@ -1,0 +1,11 @@
+{
+    "protocol": "alpha",
+    "network": "https://teztnets.xyz/mondaynet-2023-10-02",
+    "client-dir": "../tezos-data-dir/tezos-client",
+    "data-dir": "../tezos-data-dir/tezos-node-mondaynet-2023-10-02",
+    "rollup" :
+    {
+        "preimages-dir": "../tezos-data-dir/preimages-dir",
+        "kernel-path": "../tezos-data-dir/kernel.wasm"
+    }
+}
