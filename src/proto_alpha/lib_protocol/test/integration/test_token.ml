@@ -40,6 +40,7 @@ open Test_tez
 let create_context () =
   let (Account.{pkh; _} as account) = Account.new_account () in
   let bootstrap_account = Account.make_bootstrap_account account in
+  (* Log.info "Account is: %s" "test"; *)
   Block.alpha_context [bootstrap_account] >>=? fun ctxt -> return (ctxt, pkh)
 
 let random_amount () =
@@ -394,6 +395,9 @@ let test_transferring_from_frozen_deposits ctxt =
 
 let test_transferring_from_collected_fees ctxt =
   let amount = random_amount () in
+  (* let amount_str = Tez.to_string amount in *)
+  (* Log.info "amount is: %s" amount_str; *)
+  
   test_transferring_from_container
     ctxt
     `Block_fees
