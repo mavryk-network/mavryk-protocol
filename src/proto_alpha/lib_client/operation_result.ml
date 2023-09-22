@@ -348,6 +348,7 @@ let pp_balance_updates ppf balance_updates =
           match balance with
           | Contract c -> Format.asprintf "%a" Contract.pp c
           | Block_fees -> "payload fees(the block proposer)"
+          | Block_fees_to_treasury -> "payload fees (to the treasury)"
           | Deposits pkh -> Format.asprintf "deposits(%a)" pp_baker pkh
           | Nonce_revelation_rewards -> "nonce revelation rewards"
           | Double_signing_evidence_rewards -> "double signing evidence rewards"
@@ -419,6 +420,7 @@ let pp_balance_updates ppf balance_updates =
         "@,@[<v 2>Balance updates:@,%a@]"
         (Format.pp_print_list pp_one)
         balance_updates
+
 
 let pp_ticket_receipt ppf ticket_receipt =
   let open Ticket_receipt in
@@ -815,31 +817,6 @@ let pp_internal_operation_results_list ppf = function
         (Format.pp_print_list pp_internal_operation_and_result)
         internal_operation_results
 
-(* let pp_manager_operation_result ppf
-    ( Manager_operation
-        {source; fee; operation; counter; gas_limit; storage_limit},
-      Manager_operation_result
-        {balance_updates; operation_result; internal_operation_results} ) =
-  Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
-  Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-  Format.fprintf ppf "@,Fee to the baker: %s%a" tez_sym Tez.pp fee ;
-  (* Format.fprintf ppf "@,Fee to the treasury: %s%a" tez_sym Tez_repr.(block_fees /? 4L);
-  Format.fprintf ppf "@,Fee to the burn address: %s%a" tez_sym Tez.pp fee; *)
-  Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
-  Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
-  Format.fprintf ppf "@,Storage limit: %a bytes" Z.pp_print storage_limit ;
-  pp_balance_updates ppf balance_updates ;
-  Format.fprintf
-    ppf
-    "@,@[<v 2>%a@,%a%a@]"
-    (pp_manager_operation_content (Contract.Implicit source))
-    operation
-    pp_manager_operation_contents_result
-    operation_result
-    pp_internal_operation_results_list
-    internal_operation_results ;
-  Format.fprintf ppf "@]" *)
-
 
 let pp_manager_operation_result ppf
     ( Manager_operation
@@ -850,14 +827,14 @@ let pp_manager_operation_result ppf
   (* Convert fee to int64 and then calculate divided fees *)
   let fee_int64 = Tez.to_mutez fee in
   let quarter_fee = Int64.div fee_int64 4L in
-  let half_fee = Int64.div fee_int64 2L in
+  let burn_fee = Int64.sub fee_int64 (Int64.mul 2L quarter_fee) in
 
   (* Log details *)
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
   Format.fprintf ppf "@,Fee to the baker: %s%Ld" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the treasury: %s%Ld" tez_sym quarter_fee ;
-  Format.fprintf ppf "@,Fee to the burn address: %s%Ld" tez_sym half_fee ;
+  Format.fprintf ppf "@,Fee to the burn address: %s%Ld" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
   Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
   Format.fprintf ppf "@,Storage limit: %a bytes" Z.pp_print storage_limit ;
@@ -872,41 +849,6 @@ let pp_manager_operation_result ppf
     pp_internal_operation_results_list
     internal_operation_results ;
   Format.fprintf ppf "@]"
-
-
-
-  (* let pp_manager_operation_result ppf
-    ( Manager_operation
-        {source; fee; operation; counter; gas_limit; storage_limit},
-      Manager_operation_result
-        {balance_updates; operation_result; internal_operation_results} ) =
-  
-  (* Calculate divided fees *)
-  match (Tez.(fee /? 4L), Tez.(fee *? 2L /? 4L)) with
-  | (Ok baker_and_treasury_fee, Ok burn_fee) -> 
-    (* Log details *)
-    Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
-    Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-    Format.fprintf ppf "@,Fee to the baker: %s%a" tez_sym Tez.pp baker_and_treasury_fee ;
-    Format.fprintf ppf "@,Fee to the treasury: %s%a" tez_sym Tez.pp baker_and_treasury_fee ;
-    Format.fprintf ppf "@,Fee to the burn address: %s%a" tez_sym Tez.pp burn_fee ;
-    Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
-    Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
-    Format.fprintf ppf "@,Storage limit: %a bytes" Z.pp_print storage_limit ;
-    pp_balance_updates ppf balance_updates ;
-    Format.fprintf
-      ppf
-      "@,@[<v 2>%a@,%a%a@]"
-      (pp_manager_operation_content (Contract.Implicit source))
-      operation
-      pp_manager_operation_contents_result
-      operation_result
-      pp_internal_operation_results_list
-      internal_operation_results ;
-    Format.fprintf ppf "@]"
-  | _ -> 
-    (* Handle error: division or multiplication failed *)
-    Format.fprintf ppf "Could not calculate divided fees" *)
 
 
 let pp_contents_and_result :

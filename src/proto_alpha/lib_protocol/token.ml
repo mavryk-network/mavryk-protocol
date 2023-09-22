@@ -28,6 +28,7 @@ type container =
   | `Collected_commitments of Blinded_public_key_hash.t
   | `Frozen_deposits of Signature.Public_key_hash.t
   | `Block_fees
+  | `Block_fees_to_treasury
   | `Frozen_bonds of Contract_repr.t * Bond_id_repr.t ]
 
 type infinite_source =
@@ -64,7 +65,7 @@ let allocated ctxt stored =
   | `Collected_commitments bpkh ->
       Commitment_storage.exists ctxt bpkh >|= fun allocated ->
       ok (ctxt, allocated)
-  | `Frozen_deposits _ | `Block_fees -> return (ctxt, true)
+  | `Frozen_deposits _ | `Block_fees -> return (ctxt, true) | `Block_fees_to_treasury -> return (ctxt, true)
   | `Frozen_bonds (contract, bond_id) ->
       Contract_storage.bond_allocated ctxt contract bond_id
 
@@ -81,6 +82,12 @@ let balance ctxt stored =
       Frozen_deposits_storage.get ctxt contract >|=? fun frozen_deposits ->
       (ctxt, frozen_deposits.current_amount)
   | `Block_fees -> return (ctxt, Raw_context.get_collected_fees ctxt)
+  | `Block_fees_to_treasury -> 
+      (* Raw_context.get_collected_fees ctxt >>= fun total_block_fees -> *)
+      Lwt.return (Raw_context.get_collected_fees ctxt) >>= fun total_block_fees ->
+        (match Tez_repr.(total_block_fees /? 4L) with
+        | Error _ -> return (ctxt, Tez_repr.zero)   (* Handling possible division errors. *)
+        | Ok quarter_fees -> return (ctxt, quarter_fees))
   | `Frozen_bonds (contract, bond_id) ->
       Contract_storage.find_bond ctxt contract bond_id
       >|=? fun (ctxt, balance_opt) ->
@@ -120,6 +127,9 @@ let credit ctxt receiver amount origin =
       | `Block_fees ->
           Raw_context.credit_collected_fees_only_call_from_token ctxt amount
           >>?= fun ctxt -> return (ctxt, Block_fees)
+      | `Block_fees_to_treasury ->
+        Raw_context.credit_collected_fees_only_call_from_token ctxt amount
+        >>?= fun ctxt -> return (ctxt, Block_fees)
       | `Frozen_bonds (contract, bond_id) ->
           Contract_storage.credit_bond_only_call_from_token
             ctxt
@@ -169,6 +179,9 @@ let spend ctxt giver amount origin =
       | `Block_fees ->
           Raw_context.spend_collected_fees_only_call_from_token ctxt amount
           >>?= fun ctxt -> return (ctxt, Block_fees)
+      | `Block_fees_to_treasury ->
+        Raw_context.spend_collected_fees_only_call_from_token ctxt amount
+        >>?= fun ctxt -> return (ctxt, Block_fees)
       | `Frozen_bonds (contract, bond_id) ->
           Contract_storage.spend_bond_only_call_from_token
             ctxt

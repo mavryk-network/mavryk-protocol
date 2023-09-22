@@ -215,7 +215,7 @@ let test_rewards_block_and_payload_producer () =
   let open Test_tez in
   let fee_to_producer = fee /! 4L in
   let fee_to_treasury = fee /! 4L in
-  let fee_to_burn = fee /! 2L in
+  let fee_to_burn = fee -! (fee_to_producer *! 2L) in
   Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract fee_to_producer
   >>=? fun tx ->
   Block.bake ~policy:(By_round 0) ~operations:(endos @ [tx]) b1 >>=? fun b2 ->
