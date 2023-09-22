@@ -111,6 +111,8 @@ Smart Rollup node
 - Released the protocol agnostic rollup node ``octez-smart-rollup-node`` as part
   of the Octez distribution. (MR :gl:`!10086`)
 
+- Added a docker-compose with octez-node + rollup node into the scripts folder (MR :gl:`!10243`)
+
 - Added the rollup node command inside the docker entrypoint (MR :gl:`!10253`)
 
 - Added the argument ``cors-headers`` and ``cors-origins`` to specify respectively the

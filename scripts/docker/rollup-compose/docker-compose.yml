@@ -1,0 +1,40 @@
+---
+version: '3.8'
+services:
+  octez-node:
+    container_name: octez-node
+    image: tezos/tezos:master
+    ports:
+      - 8732:8732
+    networks:
+      - datanetwork
+    volumes:
+      - $PWD/data:/home/tezos/data
+    command: octez-node --network "${NETWORK} --metrics-addr=0.0.0.0:9932
+
+
+  smart-rollup-node:
+    container_name: rollup-node
+    image: tezos/tezos:master
+    restart: always
+    ports:
+      - 8545:4545
+    environment:
+      SOR_ALIAS_OR_ADDR: ${SOR_ALIAS_OR_ADDR}
+      OPERATOR_ADDR: ${OPERATOR_ADDR}
+      client_dir: /home/tezos/data/client
+      smart_rollup_node_data_dir: /home/tezos/data/smartrollup
+      NODE_HOST: octez-node
+      NODE_RPC_PORT: 8732
+    networks:
+      - datanetwork
+    command: octez-smart-rollup-node run operator for ${SOR_ALIAS_OR_ADDR} with operators ${OPERATOR_ADDR} --rpc-addr 0.0.0.0 --rpc-port 4545 --log-kernel-debug
+    volumes:
+      - $PWD/data:/home/tezos/data
+
+networks:
+  datanetwork:
+    driver: bridge
+    name: datanetwork
+
+
