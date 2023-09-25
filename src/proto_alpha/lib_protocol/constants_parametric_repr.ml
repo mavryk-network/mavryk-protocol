@@ -110,7 +110,6 @@ let sc_rollup_reveal_activation_level_encoding :
        (req "dal_page" Raw_level_repr.encoding))
 
 type sc_rollup = {
-  enable : bool;
   arith_pvm_enable : bool;
   origination_size : int;
   challenge_window_in_blocks : int;
@@ -208,8 +207,7 @@ let sc_rollup_encoding =
   let open Data_encoding in
   conv
     (fun (c : sc_rollup) ->
-      ( ( c.enable,
-          c.arith_pvm_enable,
+      ( ( c.arith_pvm_enable,
           c.origination_size,
           c.challenge_window_in_blocks,
           c.stake_amount,
@@ -223,8 +221,7 @@ let sc_rollup_encoding =
           c.max_number_of_parallel_games,
           c.reveal_activation_level,
           c.private_enable ) ))
-    (fun ( ( sc_rollup_enable,
-             sc_rollup_arith_pvm_enable,
+    (fun ( ( sc_rollup_arith_pvm_enable,
              sc_rollup_origination_size,
              sc_rollup_challenge_window_in_blocks,
              sc_rollup_stake_amount,
@@ -239,7 +236,6 @@ let sc_rollup_encoding =
              sc_rollup_reveal_activation_level,
              sc_rollup_private_enable ) ) ->
       {
-        enable = sc_rollup_enable;
         arith_pvm_enable = sc_rollup_arith_pvm_enable;
         origination_size = sc_rollup_origination_size;
         challenge_window_in_blocks = sc_rollup_challenge_window_in_blocks;
@@ -258,8 +254,7 @@ let sc_rollup_encoding =
         private_enable = sc_rollup_private_enable;
       })
     (merge_objs
-       (obj9
-          (req "smart_rollup_enable" bool)
+       (obj8
           (req "smart_rollup_arith_pvm_enable" bool)
           (req "smart_rollup_origination_size" int31)
           (req "smart_rollup_challenge_window_in_blocks" int31)

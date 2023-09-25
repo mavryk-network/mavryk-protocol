@@ -815,7 +815,6 @@ module Constants : sig
     }
 
     type sc_rollup = {
-      enable : bool;
       arith_pvm_enable : bool;
       origination_size : int;
       challenge_window_in_blocks : int;
@@ -986,8 +985,6 @@ module Constants : sig
     context -> int
 
   val testnet_dictator : context -> public_key_hash option
-
-  val sc_rollup_enable : context -> bool
 
   val sc_rollup_arith_pvm_enable : context -> bool
 

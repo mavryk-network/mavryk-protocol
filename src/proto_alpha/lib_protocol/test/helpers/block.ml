@@ -557,7 +557,7 @@ let validate_bootstrap_accounts
 
 let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
     ?level ?cost_per_byte ?issuance_weights ?origination_size ?blocks_per_cycle
-    ?cycles_per_voting_period ?sc_rollup_enable ?sc_rollup_arith_pvm_enable
+    ?cycles_per_voting_period ?sc_rollup_arith_pvm_enable
     ?sc_rollup_private_enable ?dal_enable ?zk_rollup_enable
     ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal () =
   let open Lwt_result_syntax in
@@ -586,11 +586,10 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
   let consensus_threshold =
     Option.value ~default:constants.consensus_threshold consensus_threshold
   in
-  let sc_rollup_enable =
-    Option.value ~default:constants.sc_rollup.enable sc_rollup_enable
-  in
   let sc_rollup_arith_pvm_enable =
-    Option.value ~default:constants.sc_rollup.enable sc_rollup_arith_pvm_enable
+    Option.value
+      ~default:constants.sc_rollup.arith_pvm_enable
+      sc_rollup_arith_pvm_enable
   in
   let sc_rollup_private_enable =
     Option.value
@@ -628,7 +627,6 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
       sc_rollup =
         {
           constants.sc_rollup with
-          enable = sc_rollup_enable;
           arith_pvm_enable = sc_rollup_arith_pvm_enable;
           private_enable = sc_rollup_private_enable;
         };
@@ -667,9 +665,8 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
 let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
     ?bootstrap_contracts ?level ?cost_per_byte ?issuance_weights
     ?origination_size ?blocks_per_cycle ?cycles_per_voting_period
-    ?sc_rollup_enable ?sc_rollup_arith_pvm_enable ?sc_rollup_private_enable
-    ?dal_enable ?zk_rollup_enable ?hard_gas_limit_per_block
-    ?nonce_revelation_threshold ?dal
+    ?sc_rollup_arith_pvm_enable ?sc_rollup_private_enable ?dal_enable
+    ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
     (bootstrap_accounts : Parameters.bootstrap_account list) =
   let open Lwt_result_syntax in
   let* constants, shell, hash =
@@ -682,7 +679,6 @@ let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
       ?origination_size
       ?blocks_per_cycle
       ?cycles_per_voting_period
-      ?sc_rollup_enable
       ?sc_rollup_arith_pvm_enable
       ?sc_rollup_private_enable
       ?dal_enable
