@@ -2558,7 +2558,6 @@ module Receipt : sig
   type balance =
     | Contract of Contract.t
     | Block_fees
-    | Block_fees_to_treasury
     | Deposits of public_key_hash
     | Nonce_revelation_rewards
     | Double_signing_evidence_rewards
@@ -5259,7 +5258,6 @@ module Token : sig
     | `Collected_commitments of Blinded_public_key_hash.t
     | `Frozen_deposits of public_key_hash
     | `Block_fees
-    | `Block_fees_to_treasury
     | `Frozen_bonds of Contract.t * Bond_id.t ]
 
   type giver =

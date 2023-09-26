@@ -28,7 +28,6 @@
 type balance =
   | Contract of Contract_repr.t
   | Block_fees
-  | Block_fees_to_treasury
   | Deposits of Signature.Public_key_hash.t
   | Nonce_revelation_rewards
   | Double_signing_evidence_rewards

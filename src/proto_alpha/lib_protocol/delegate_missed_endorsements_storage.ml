@@ -205,7 +205,7 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
      | Error _ -> return (ctxt, [], [], [])
      | Ok quarter_fees -> 
         let treasury_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn treasury_address) in
-        Token.transfer ctxt `Block_fees_to_treasury (`Contract treasury_contract) quarter_fees >>=? fun (ctxt, balance_updates_treasury) ->
+        Token.transfer ctxt `Block_fees (`Contract treasury_contract) quarter_fees >>=? fun (ctxt, balance_updates_treasury) ->
         Token.transfer_n ctxt [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)] (`Contract contract) 
         >>=? fun (ctxt, balance_updates_delegate) ->
         match Tez_repr.(quarter_fees *? 2L) with

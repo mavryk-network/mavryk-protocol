@@ -347,8 +347,7 @@ let pp_balance_updates ppf balance_updates =
         let balance =
           match balance with
           | Contract c -> Format.asprintf "%a" Contract.pp c
-          | Block_fees -> "payload fees(the block proposer)"
-          | Block_fees_to_treasury -> "payload fees (to the treasury)"
+          | Block_fees -> "total block fees"
           | Deposits pkh -> Format.asprintf "deposits(%a)" pp_baker pkh
           | Nonce_revelation_rewards -> "nonce revelation rewards"
           | Double_signing_evidence_rewards -> "double signing evidence rewards"

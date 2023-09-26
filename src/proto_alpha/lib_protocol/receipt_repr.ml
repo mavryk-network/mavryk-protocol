@@ -27,7 +27,6 @@
 type balance =
   | Contract of Contract_repr.t
   | Block_fees
-  | Block_fees_to_treasury
   | Deposits of Signature.Public_key_hash.t
   | Nonce_revelation_rewards
   | Double_signing_evidence_rewards
@@ -277,7 +276,6 @@ let compare_balance ba bb =
         match b with
         | Contract _ -> 0
         | Block_fees -> 1
-        | Block_fees_to_treasury -> 23
         | Deposits _ -> 2
         | Nonce_revelation_rewards -> 3
         | Double_signing_evidence_rewards -> 4

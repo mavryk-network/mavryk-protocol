@@ -453,6 +453,10 @@ let internal_nonce_already_recorded ctxt k =
 
 let get_collected_fees ctxt = fees ctxt
 
+(* let get_collected_fees ctxt = 
+  let full_fees = fees ctxt in
+  Tez_repr.(full_fees /? 4L)  *)
+
 let credit_collected_fees_only_call_from_token ctxt fees' =
   let previous = get_collected_fees ctxt in
   Tez_repr.(previous +? fees') >|? fun fees -> update_fees ctxt fees
