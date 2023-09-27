@@ -153,7 +153,7 @@ let equal_string ~loc (a : string) (b : string) =
 let not_equal_string ~loc (a : string) (b : string) =
   not_equal ~loc String.equal "Strings are equal" Format.pp_print_string a b
 
-(* tez *)
+(* mav *)
 let equal_tez ~loc (a : Alpha_context.Tez.t) (b : Alpha_context.Tez.t) =
   let open Alpha_context in
   equal ~loc Tez.( = ) "Tez aren't equal" Tez.pp a b
@@ -242,7 +242,7 @@ let balance_or_frozen_bonds_was_operated ~is_balance ~operand ~loc b contract
   f ~loc b contract expected
 
 (** [balance_was_credited ~loc ctxt contract old_balance amount] checks
-    that [contract]'s balance was credited [amount] tez in comparison to
+    that [contract]'s balance was credited [amount] mav in comparison to
     [old_balance].
 *)
 let balance_was_credited =
@@ -251,7 +251,7 @@ let balance_was_credited =
     ~operand:Alpha_context.Tez.( +? )
 
 (** [balance_was_credited ~loc ctxt contract old_balance amount] checks
-    that [contract]'s balance was debited [amount] tez in comparison to
+    that [contract]'s balance was debited [amount] mav in comparison to
     [old_balance].
 *)
 let balance_was_debited =
@@ -260,7 +260,7 @@ let balance_was_debited =
     ~operand:Alpha_context.Tez.( -? )
 
 (** [frozen_bonds_was_credited ~loc ctxt contract old_balance amount] checks
-    that [contract]'s frozen bonds was credited [amount] tez in comparison to
+    that [contract]'s frozen bonds was credited [amount] mav in comparison to
     [old_balance].
 *)
 let frozen_bonds_was_credited =
@@ -269,7 +269,7 @@ let frozen_bonds_was_credited =
     ~operand:Alpha_context.Tez.( +? )
 
 (** [frozen_bonds_was_credited ~loc ctxt contract old_balance amount] checks
-    that [contract]'s frozen bonds was credited [amount] tez in comparison to
+    that [contract]'s frozen bonds was credited [amount] mav in comparison to
     [old_balance].
 *)
 let frozen_bonds_was_debited =

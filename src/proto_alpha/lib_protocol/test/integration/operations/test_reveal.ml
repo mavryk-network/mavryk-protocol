@@ -61,7 +61,7 @@ let test_empty_account_on_reveal () =
   Context.init1 ~consensus_threshold:0 () >>=? fun (blk, c) ->
   let new_c = Account.new_account () in
   let new_contract = Alpha_context.Contract.Implicit new_c.pkh in
-  let amount = Tez.one_mutez in
+  let amount = Tez.one_mumav in
   (* Create the contract *)
   Op.transaction (B blk) c new_contract amount >>=? fun operation ->
   Block.bake blk ~operation >>=? fun blk ->
@@ -92,7 +92,7 @@ let test_not_enough_funds_for_reveal () =
   let new_c = Account.new_account () in
   let new_contract = Alpha_context.Contract.Implicit new_c.pkh in
   (* Create the contract *)
-  Op.transaction (B blk) c new_contract Tez.one_mutez >>=? fun operation ->
+  Op.transaction (B blk) c new_contract Tez.one_mumav >>=? fun operation ->
   Block.bake blk ~operation >>=? fun blk ->
   (Context.Contract.is_manager_key_revealed (B blk) new_contract >|=? function
    | true -> Stdlib.failwith "Unexpected revelation"
@@ -182,7 +182,7 @@ let test_reveal_with_fake_account () =
      and we will attempt to reveal the public key of b with a's
      pkh. This operation should fail without updating account_a's
      balance *)
-  Op.revelation ~fee:Tez.one_mutez ~forge_pkh:(Some a_pkh) (B b) account_b.pk
+  Op.revelation ~fee:Tez.one_mumav ~forge_pkh:(Some a_pkh) (B b) account_b.pk
   >>=? fun operation ->
   Incremental.begin_construction b >>=? fun i ->
   Incremental.add_operation
@@ -253,12 +253,12 @@ let test_reveal_with_fake_account_already_revealed () =
    | false -> ())
   >>=? fun () ->
   (* We first reveal a in a block *)
-  Op.revelation ~fee:Tez.one_mutez (B b) account_a.pk >>=? fun operation ->
+  Op.revelation ~fee:Tez.one_mumav (B b) account_a.pk >>=? fun operation ->
   Block.bake ~operation b >>=? fun b ->
   Context.Contract.balance (B b) a_contract >>=? fun a_balance_before ->
   (* Reveal the public key of b while impersonating account_a. This
      operation should fail without updating account_a's balance *)
-  Op.revelation ~fee:Tez.one_mutez ~forge_pkh:(Some a_pkh) (B b) account_b.pk
+  Op.revelation ~fee:Tez.one_mumav ~forge_pkh:(Some a_pkh) (B b) account_b.pk
   >>=? fun operation ->
   Incremental.begin_construction b >>=? fun i ->
   Incremental.add_operation
@@ -312,7 +312,7 @@ let test_backtracked_reveal_in_batch () =
     (I inc)
     new_contract
     new_contract
-    (Tez.of_mutez_exn 1_000_001L)
+    (Tez.of_mumav_exn 1_000_001L)
   >>=? fun op_transfer ->
   Op.batch_operations
     ~recompute_counters:true
@@ -365,7 +365,7 @@ let test_already_revealed_manager_in_batch () =
     (I inc)
     new_contract
     new_contract
-    (Tez.of_mutez_exn 1_000_001L)
+    (Tez.of_mumav_exn 1_000_001L)
   >>=? fun op_transfer ->
   Op.batch_operations
     ~recompute_counters:true
@@ -426,7 +426,7 @@ let test_no_reveal_when_gas_exhausted () =
   let new_c = Account.new_account () in
   let new_contract = Contract.Implicit new_c.pkh in
   (* Fund the contract with a sufficient balance *)
-  Op.transaction (B blk) c new_contract (Tez.of_mutez_exn 1_000L)
+  Op.transaction (B blk) c new_contract (Tez.of_mumav_exn 1_000L)
   >>=? fun operation ->
   (* Create the contract *)
   Block.bake blk ~operation >>=? fun blk ->
@@ -496,7 +496,7 @@ let test_reveal_incorrect_position_in_batch () =
     (I inc)
     new_contract
     new_contract
-    (Tez.of_mutez_exn 1L)
+    (Tez.of_mumav_exn 1L)
   >>=? fun op_transfer ->
   Op.revelation ~fee:Tez.zero (I inc) new_c.pk >>=? fun op_reveal ->
   Op.batch_operations
@@ -658,7 +658,7 @@ let test_valid_reveal_after_emptying_balance () =
   Context.init1 ~consensus_threshold:0 () >>=? fun (blk, c) ->
   let new_c = Account.new_account () in
   let new_contract = Contract.Implicit new_c.pkh in
-  let amount = Tez.one_mutez in
+  let amount = Tez.one_mumav in
   (* Create the contract *)
   Op.transaction (B blk) c new_contract amount >>=? fun operation ->
   Block.bake blk ~operation >>=? fun blk ->

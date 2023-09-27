@@ -1433,7 +1433,7 @@ and ('input, 'output) view_signature =
 and 'kind internal_operation_contents =
   | Transaction_to_implicit : {
       destination : Signature.Public_key_hash.t;
-      amount : Tez.tez;
+      amount : Tez.mav;
     }
       -> Kind.transaction internal_operation_contents
   | Transaction_to_implicit_with_ticket : {
@@ -1441,12 +1441,12 @@ and 'kind internal_operation_contents =
       ticket_ty : ('content ticket, _) ty;
       ticket : 'content ticket;
       unparsed_ticket : Script.lazy_expr;
-      amount : Tez.tez;
+      amount : Tez.mav;
     }
       -> Kind.transaction internal_operation_contents
   | Transaction_to_smart_contract : {
       destination : Contract_hash.t;
-      amount : Tez.tez;
+      amount : Tez.mav;
       entrypoint : Entrypoint.t;
       location : Script.location;
       parameters_ty : ('a, _) ty;
@@ -1479,7 +1479,7 @@ and 'kind internal_operation_contents =
       delegate : Signature.Public_key_hash.t option;
       code : Script.expr;
       unparsed_storage : Script.expr;
-      credit : Tez.tez;
+      credit : Tez.mav;
       preorigination : Contract_hash.t;
       storage_type : ('storage, _) ty;
       storage : 'storage;
@@ -1731,7 +1731,7 @@ let string_metadata : Script_string.t ty_metadata = meta_basic
 
 let bytes_metadata : bytes ty_metadata = meta_basic
 
-let mutez_metadata : Tez.t ty_metadata = meta_basic
+let mumav_metadata : Tez.t ty_metadata = meta_basic
 
 let bool_metadata : bool ty_metadata = meta_basic
 
@@ -1829,7 +1829,7 @@ let ty_metadata : type a ac. (a, ac) ty -> a ty_metadata = function
   | Signature_t -> signature_metadata
   | String_t -> string_metadata
   | Bytes_t -> bytes_metadata
-  | Mutez_t -> mutez_metadata
+  | Mutez_t -> mumav_metadata
   | Bool_t -> bool_metadata
   | Key_hash_t -> key_hash_metadata
   | Key_t -> key_metadata
@@ -1918,7 +1918,7 @@ let string_t = String_t
 
 let bytes_t = Bytes_t
 
-let mutez_t = Mutez_t
+let mumav_t = Mutez_t
 
 let key_hash_t = Key_hash_t
 
@@ -1976,8 +1976,8 @@ let option_t loc t =
   let cmp = is_comparable t in
   Option_t (t, metadata, cmp)
 
-let option_mutez_t =
-  Option_t (mutez_t, assert_ok1 option_metadata mutez_metadata, Yes)
+let option_mumav_t =
+  Option_t (mumav_t, assert_ok1 option_metadata mumav_metadata, Yes)
 
 let option_string_t =
   Option_t (string_t, assert_ok1 option_metadata string_metadata, Yes)
@@ -1992,15 +1992,15 @@ let option_pair_nat_nat_t =
   let ometadata = assert_ok1 option_metadata pmetadata in
   Option_t (Pair_t (nat_t, nat_t, pmetadata, YesYes), ometadata, Yes)
 
-let option_pair_nat_mutez_t =
-  let pmetadata = assert_ok2 pair_metadata nat_metadata mutez_metadata in
+let option_pair_nat_mumav_t =
+  let pmetadata = assert_ok2 pair_metadata nat_metadata mumav_metadata in
   let ometadata = assert_ok1 option_metadata pmetadata in
-  Option_t (Pair_t (nat_t, mutez_t, pmetadata, YesYes), ometadata, Yes)
+  Option_t (Pair_t (nat_t, mumav_t, pmetadata, YesYes), ometadata, Yes)
 
-let option_pair_mutez_mutez_t =
-  let pmetadata = assert_ok2 pair_metadata mutez_metadata mutez_metadata in
+let option_pair_mumav_mumav_t =
+  let pmetadata = assert_ok2 pair_metadata mumav_metadata mumav_metadata in
   let ometadata = assert_ok1 option_metadata pmetadata in
-  Option_t (Pair_t (mutez_t, mutez_t, pmetadata, YesYes), ometadata, Yes)
+  Option_t (Pair_t (mumav_t, mumav_t, pmetadata, YesYes), ometadata, Yes)
 
 let option_pair_int_nat_t =
   let pmetadata = assert_ok2 pair_metadata int_metadata nat_metadata in

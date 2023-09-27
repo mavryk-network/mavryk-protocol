@@ -156,7 +156,7 @@ let get_stakes_for_selected_index ctxt index =
   let frozen_deposits_percentage =
     Int64.of_int @@ Constants_storage.frozen_deposits_percentage ctxt
   in
-  let*? overflow_bound = Tez_repr.(max_mutez /? 100L) in
+  let*? overflow_bound = Tez_repr.(max_mumav /? 100L) in
   Stake_storage.fold_snapshot
     ctxt
     ~index
@@ -177,7 +177,7 @@ let get_stakes_for_selected_index ctxt index =
       in
       let* stake_for_cycle =
         let frozen_deposits_limit =
-          match frozen_deposits_limit with Some fdp -> fdp | None -> max_mutez
+          match frozen_deposits_limit with Some fdp -> fdp | None -> max_mumav
         in
         let aux = min total_balance frozen_deposits_limit in
         if aux <= overflow_bound then
@@ -189,7 +189,7 @@ let get_stakes_for_selected_index ctxt index =
           let*? a = aux /? frozen_deposits_percentage in
           if sbal <= a then return staking_balance
           else
-            let*? r = max_mutez /? frozen_deposits_percentage in
+            let*? r = max_mumav /? frozen_deposits_percentage in
             return r
       in
       let*? total_stake = Tez_repr.(total_stake +? stake_for_cycle) in
@@ -222,7 +222,7 @@ let select_distribution_for_cycle ctxt cycle =
   List.fold_left_es
     (fun acc (pkh, stake) ->
       Delegate_consensus_key.active_pubkey_for_cycle ctxt pkh cycle
-      >|=? fun pk -> (pk, Tez_repr.to_mutez stake) :: acc)
+      >|=? fun pk -> (pk, Tez_repr.to_mumav stake) :: acc)
     []
     stakes
   >>=? fun stakes_pk ->

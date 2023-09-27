@@ -24,15 +24,15 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type tez = {mutez : int64}
+type mav = {mumav : int64}
 
 type fee_parameter = {
-  minimal_fees : tez;
+  minimal_fees : mav;
   minimal_nanotez_per_byte : Q.t;
   minimal_nanotez_per_gas_unit : Q.t;
   force_low_fee : bool;
-  fee_cap : tez;
-  burn_cap : tez;
+  fee_cap : mav;
+  burn_cap : mav;
 }
 
 type injection_strategy =

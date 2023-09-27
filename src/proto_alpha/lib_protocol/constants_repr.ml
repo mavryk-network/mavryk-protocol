@@ -355,7 +355,7 @@ module Generated = struct
   let generate ~consensus_committee_size ~blocks_per_minute =
     let consensus_threshold = (consensus_committee_size * 2 / 3) + 1 in
     (* As in previous protocols, we set the maximum total rewards per minute to
-       be 80 tez. *)
+       be 80 mav. *)
     let rewards_per_minute = Tez_repr.(mul_exn one 80) in
     let rewards_per_block =
       Ratio_repr.(

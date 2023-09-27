@@ -88,7 +88,7 @@ val check_counter_increment :
 val increment_counter :
   Raw_context.t -> Signature.Public_key_hash.t -> Raw_context.t tzresult Lwt.t
 
-(** [get_balance ctxt contract] returns the balance of spendable tez owned by
+(** [get_balance ctxt contract] returns the balance of spendable mav owned by
     [contract] given raw context [ctxt]. This does not include the contract's
     frozen balances. *)
 val get_balance : Raw_context.t -> Contract_repr.t -> Tez_repr.t tzresult Lwt.t
@@ -98,7 +98,7 @@ val get_balance_carbonated :
   Contract_repr.t ->
   (Raw_context.t * Tez_repr.t) tzresult Lwt.t
 
-(** Return the balance of spendable tez owned by the Implicit contract
+(** Return the balance of spendable mav owned by the Implicit contract
     of the given [public_key_hash].
 
     @return [Error Empty_implicit_contract] if the contract is not

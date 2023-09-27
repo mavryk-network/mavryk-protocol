@@ -597,7 +597,7 @@ module Interpreter_tests = struct
 
   (* In this test we use a contract which takes a list of transactions, applies
      all of them, and assert all of them are correct. It also enforces a 1-to-1
-     conversion with mutez by asking an amount to shield and asking for a pkh to
+     conversion with mumav by asking an amount to shield and asking for a pkh to
      unshield.
      We create 2 keys a and b. We originate the contract, then do two lists of
      shield for a, then transfers several outputs to b while unshielding, then
@@ -679,12 +679,12 @@ module Interpreter_tests = struct
     Context.Contract.balance (B b4) src1 >>=? fun balance_after_shield ->
     let diff_due_to_shield =
       Int64.sub
-        (Test_tez.to_mutez balance_after_shield)
-        (Test_tez.to_mutez balance_before_shield)
+        (Test_tez.to_mumav balance_after_shield)
+        (Test_tez.to_mumav balance_before_shield)
     in
     (* The balance after shield is obtained from the balance before shield by
        the shield specific update. *)
-    (* The inputs total [total] mutez and 15 of those are transfered in shielded tez *)
+    (* The inputs total [total] mumav and 15 of those are transfered in shielded mav *)
     Assert.equal_int ~loc:__LOC__ (Int64.to_int diff_due_to_shield) (total - 15)
     >>=? fun () ->
     let list_forge_input =
@@ -916,7 +916,7 @@ module Interpreter_tests = struct
       ()
     >>=? fun (_root, diff_1) ->
     let fee = Test_tez.of_int 10 in
-    Tez.one_mutez *? Int64.of_int 15 >>?= fun amount_tez ->
+    Tez.one_mumav *? Int64.of_int 15 >>?= fun amount_tez ->
     Op.transaction
       ~gas_limit:Max
       ~fee

@@ -1383,7 +1383,7 @@ module Make (Proto : PROTO) (Next_proto : PROTO) = struct
       let get_filter path =
         Tezos_rpc.Service.get_service
           ~description:
-            {|Get the configuration of the mempool filter. The minimal_fees are in mutez. Each field minimal_nanotez_per_xxx is a rational number given as a numerator and a denominator, e.g. "minimal_nanotez_per_gas_unit": [ "100", "1" ].|}
+            {|Get the configuration of the mempool filter. The minimal_fees are in mumav. Each field minimal_nanotez_per_xxx is a rational number given as a numerator and a denominator, e.g. "minimal_nanotez_per_gas_unit": [ "100", "1" ].|}
           ~query:get_filter_query
           ~output:json
           Tezos_rpc.Path.(path / "filter")

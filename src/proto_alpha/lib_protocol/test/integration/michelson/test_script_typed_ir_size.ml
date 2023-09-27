@@ -253,7 +253,7 @@ let check_value_size () =
        =======
     *)
     @ (let show fmt t = Format.fprintf fmt "%s" (Tez.to_string t) in
-       exs nsample show Mutez_t ": mutez")
+       exs nsample show Mutez_t ": mumav")
     (*
        Key_hash_t
        ==========

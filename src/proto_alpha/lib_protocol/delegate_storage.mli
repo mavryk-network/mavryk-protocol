@@ -124,7 +124,7 @@ val frozen_deposits :
   Storage.deposits tzresult Lwt.t
 
 val spendable_balance :
-  Raw_context.t -> Signature.public_key_hash -> Tez_repr.tez tzresult Lwt.t
+  Raw_context.t -> Signature.public_key_hash -> Tez_repr.mav tzresult Lwt.t
 
 val staking_balance :
   Raw_context.t -> Signature.Public_key_hash.t -> Tez_repr.t tzresult Lwt.t

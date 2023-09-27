@@ -383,7 +383,7 @@ struct
                 CONTRACT %%deposit (pair (ticket %s) bytes);
                 ASSERT_SOME;
                 SWAP;
-                PUSH mutez 0;
+                PUSH mumav 0;
                 SWAP;
                 # create a ticket
                 PUSH nat %a;
@@ -431,7 +431,7 @@ struct
       ~fee:Tez.one
       account
       deposit_contract
-      (Tez.of_mutez_exn 0L)
+      (Tez.of_mumav_exn 0L)
 
   (** Return an operation to originate a contract that will deposit [amount]
       tickets with l2 operation [op] on [zk_rollup] *)

@@ -40,8 +40,8 @@ let nanotez_enc : nanotez Data_encoding.t =
   let open Data_encoding in
   def
     "nanotez"
-    ~title:"A thousandth of a mutez"
-    ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
+    ~title:"A thousandth of a mumav"
+    ~description:"One thousand nanotez make a mumav (1 mav = 1e9 nanotez)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})
@@ -81,7 +81,7 @@ type config = {
 }
 
 let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+  match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
 let default_minimal_nanotez_per_gas_unit = Q.of_int 100
 
@@ -458,9 +458,9 @@ let () =
 let better_fees_and_ratio =
   let bump config q = Q.mul q config.replace_by_fee_factor in
   fun config old_gas old_fee new_gas new_fee ->
-    let old_fee = Tez.to_mutez old_fee |> Z.of_int64 |> Q.of_bigint in
+    let old_fee = Tez.to_mumav old_fee |> Z.of_int64 |> Q.of_bigint in
     let old_gas = Gas.Arith.integral_to_z old_gas |> Q.of_bigint in
-    let new_fee = Tez.to_mutez new_fee |> Z.of_int64 |> Q.of_bigint in
+    let new_fee = Tez.to_mumav new_fee |> Z.of_int64 |> Q.of_bigint in
     let new_gas = Gas.Arith.integral_to_z new_gas |> Q.of_bigint in
     let old_ratio = Q.div old_fee old_gas in
     let new_ratio = Q.div new_fee new_gas in
@@ -485,7 +485,7 @@ let weight_and_resources_manager_operation ~hard_gas_limit_per_block ?size ~fee
   let size = match size with None -> size_of_operation op | Some s -> s in
   let size_f = Q.of_int size in
   let gas_f = Q.of_bigint (Gas.Arith.integral_to_z gas) in
-  let fee_f = Q.of_int64 (Tez.to_mutez fee) in
+  let fee_f = Q.of_int64 (Tez.to_mumav fee) in
   let size_ratio = Q.(size_f / Q.of_int max_size) in
   let gas_ratio =
     Q.(gas_f / Q.of_bigint (Gas.Arith.integral_to_z hard_gas_limit_per_block))
@@ -496,8 +496,8 @@ let weight_and_resources_manager_operation ~hard_gas_limit_per_block ?size ~fee
 (** Return fee for an operation that consumes [op_resources] for its weight to
       be strictly greater than [min_weight]. *)
 let required_fee_manager_operation_weight ~op_resources ~min_weight =
-  let req_mutez_q = Q.((min_weight * op_resources) + Q.one) in
-  Tez.of_mutez_exn @@ Q.to_int64 req_mutez_q
+  let req_mumav_q = Q.((min_weight * op_resources) + Q.one) in
+  Tez.of_mumav_exn @@ Q.to_int64 req_mumav_q
 
 (** Check if an operation as a weight (fees w.r.t gas and size) large enough to
       be prechecked and return said weight. In the case where the prechecked
@@ -552,10 +552,10 @@ let pre_filter_manager :
   let size = size_of_operation packed_op in
   let check_gas_and_fee fee gas_limit =
     let fees_in_nanotez =
-      Q.mul (Q.of_int64 (Tez.to_mutez fee)) (Q.of_int 1000)
+      Q.mul (Q.of_int64 (Tez.to_mumav fee)) (Q.of_int 1000)
     in
     let minimal_fees_in_nanotez =
-      Q.mul (Q.of_int64 (Tez.to_mutez config.minimal_fees)) (Q.of_int 1000)
+      Q.mul (Q.of_int64 (Tez.to_mumav config.minimal_fees)) (Q.of_int 1000)
     in
     let minimal_fees_for_gas_in_nanotez =
       Q.mul

@@ -72,7 +72,7 @@ let sc_rollup_timeout_period_in_blocks = 40_320
        cost_per_byte]
 
     With the current values:
-    [maximum_cost_in_storage = 348.3 tez]
+    [maximum_cost_in_storage = 348.3 mav]
 *)
 let sc_rollup_max_lookahead_in_blocks = 172_800l
 
@@ -137,16 +137,16 @@ let constants_mainnet =
     seed_nonce_revelation_tip =
       (match Tez.(one /? 8L) with Ok c -> c | Error _ -> assert false);
     origination_size = 257;
-    baking_reward_fixed_portion (* 5_000_000 mutez *);
-    baking_reward_bonus_per_slot (* 2_143 mutez *);
-    endorsing_reward_per_slot (* 1_428 mutez *);
+    baking_reward_fixed_portion (* 5_000_000 mumav *);
+    baking_reward_bonus_per_slot (* 2_143 mumav *);
+    endorsing_reward_per_slot (* 1_428 mumav *);
     hard_storage_limit_per_operation = Z.of_int 60_000;
-    cost_per_byte = Tez.of_mutez_exn 250L;
+    cost_per_byte = Tez.of_mumav_exn 250L;
     quorum_min = 20_00l;
     quorum_max = 70_00l;
     min_proposal_quorum = 5_00l;
     (* liquidity_baking_subsidy is 1/16th of maximum total rewards for a block *)
-    liquidity_baking_subsidy (* 1_250_000 mutez *);
+    liquidity_baking_subsidy (* 1_250_000 mumav *);
     (* 1/2 window size of 2000 blocks with precision of 1_000_000
        for integer computation *)
     liquidity_baking_toggle_ema_threshold = 1_000_000_000l;
@@ -195,7 +195,7 @@ let constants_mainnet =
            issues related to proof size). *)
         hard_size_limit_per_inbox = 500_000;
         hard_size_limit_per_message = 5_000;
-        commitment_bond = Tez.of_mutez_exn 10_000_000_000L;
+        commitment_bond = Tez.of_mumav_exn 10_000_000_000L;
         finality_period = tx_rollup_finality_period;
         max_inboxes_count = tx_rollup_finality_period + 100;
         (* [60_000] blocks is about two weeks. *)
@@ -239,7 +239,7 @@ let constants_mainnet =
         origination_size = 6_314;
         challenge_window_in_blocks = sc_rollup_challenge_window_in_blocks;
         commitment_period_in_blocks = 60;
-        stake_amount = Tez.of_mutez_exn 10_000_000_000L;
+        stake_amount = Tez.of_mumav_exn 10_000_000_000L;
         max_lookahead_in_blocks = sc_rollup_max_lookahead_in_blocks;
         max_active_outbox_levels = sc_rollup_max_active_outbox_levels;
         max_outbox_messages_per_level = sc_rollup_max_outbox_messages_per_level;
@@ -330,9 +330,9 @@ let constants_sandbox =
     delay_increment_per_round = Period.one_second;
     consensus_committee_size = 256;
     consensus_threshold = 0;
-    baking_reward_fixed_portion (* 333_333 mutez *);
-    baking_reward_bonus_per_slot (* 3_921 mutez *);
-    endorsing_reward_per_slot (* 2_604 mutez *);
+    baking_reward_fixed_portion (* 333_333 mumav *);
+    baking_reward_bonus_per_slot (* 3_921 mumav *);
+    endorsing_reward_per_slot (* 2_604 mumav *);
     max_slashing_period = 2;
     frozen_deposits_percentage = 5;
   }
@@ -377,9 +377,9 @@ let constants_test =
     consensus_committee_size;
     consensus_threshold (* 17 slots *);
     max_slashing_period = 2;
-    baking_reward_fixed_portion (* 10 tez *);
-    baking_reward_bonus_per_slot (* 1.25 tez *);
-    endorsing_reward_per_slot (* 0.8 tez *);
+    baking_reward_fixed_portion (* 10 mav *);
+    baking_reward_bonus_per_slot (* 1.25 mav *);
+    endorsing_reward_per_slot (* 0.8 mav *);
     frozen_deposits_percentage =
       5
       (* not 10 so that multiplication and
@@ -394,7 +394,7 @@ let test_commitments =
          let blinded_public_key_hash =
            Protocol.Blinded_public_key_hash.of_b58check_exn bpkh
          in
-         let amount = Protocol.Alpha_context.Tez.of_mutez_exn amount in
+         let amount = Protocol.Alpha_context.Tez.of_mumav_exn amount in
          {Protocol.Alpha_context.Commitment.blinded_public_key_hash; amount})
        [
         ("bmv1PnoN7PYp9bXWHPBkUimLygrYSDVYufqLY", 23932454669343L);
@@ -418,7 +418,7 @@ let bootstrap_accounts_strings =
     "edpkv8EUUH68jmo3f7Um5PezmfGrRF24gnfLpH3sVNwJnV5bVCxL2n";
   ]
 
-let bootstrap_balance = Tez.of_mutez_exn 4_000_000_000_000L
+let bootstrap_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
 let compute_accounts =
   List.map (fun s ->

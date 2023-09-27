@@ -313,15 +313,15 @@ let balance_update_encoding =
           "change"
           (conv
              (function
-               | Credited v -> Tez_repr.to_mutez v
-               | Debited v -> Int64.neg (Tez_repr.to_mutez v))
+               | Credited v -> Tez_repr.to_mumav v
+               | Debited v -> Int64.neg (Tez_repr.to_mumav v))
              ( Json.wrap_error @@ fun v ->
                if Compare.Int64.(v < 0L) then
-                 match Tez_repr.of_mutez (Int64.neg v) with
+                 match Tez_repr.of_mumav (Int64.neg v) with
                  | Some v -> Debited v
-                 | None -> assert false (* [of_mutez z] is [None] iff [z < 0] *)
+                 | None -> assert false (* [of_mumav z] is [None] iff [z < 0] *)
                else
-                 match Tez_repr.of_mutez v with
+                 match Tez_repr.of_mumav v with
                  | Some v -> Credited v
                  | None -> assert false (* same *) )
              int64))

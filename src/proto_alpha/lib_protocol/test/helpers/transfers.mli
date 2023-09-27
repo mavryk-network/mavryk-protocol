@@ -28,10 +28,10 @@ open Alpha_context
 
 (** [transfer_and_check_balances b fee src dst amount]
    this function takes a block, an optional parameter fee if fee does not
-   given it will be set to zero tez, a source contract, a destination contract
+   given it will be set to zero mav, a source contract, a destination contract
    and the amount that one wants to transfer.
 
-   1- Transfer the amount of tez (w/wo fee) from a source contract to a
+   1- Transfer the amount of mav (w/wo fee) from a source contract to a
        destination contract.
 
     2- Check the equivalent of the balance of the source/destination

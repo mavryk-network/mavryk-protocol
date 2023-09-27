@@ -136,22 +136,22 @@ let getAllowance (param : getAllowance) (storage : storage) : operation list =
     match Big_map.find_opt param.request storage.allowances with
     | Some value -> value
     | None -> 0n in
-  [Tezos.transaction value 0mutez param.callback]
+  [Tezos.transaction value 0mumav param.callback]
 
 let getBalance (param : getBalance) (storage : storage) : operation list =
   let value =
     match Big_map.find_opt param.owner storage.tokens with
     | Some value -> value
     | None -> 0n in
-  [Tezos.transaction value 0mutez param.callback]
+  [Tezos.transaction value 0mumav param.callback]
 
 let getTotalSupply (param : getTotalSupply) (storage : storage) : operation list =
   let total = storage.total_supply in
-  [Tezos.transaction total 0mutez param.callback]
+  [Tezos.transaction total 0mumav param.callback]
 
 let main (param, storage : parameter * storage) : result =
   begin
-    if Tezos.amount <> 0mutez
+    if Tezos.amount <> 0mumav
     then failwith "DontSendTez"
     else ();
     match param with

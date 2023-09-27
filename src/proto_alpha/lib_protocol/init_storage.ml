@@ -36,8 +36,8 @@
     Do not fail if something goes wrong.
 *)
 
-let invoice_contract ctxt ~address ~amount_mutez =
-  match Tez_repr.of_mutez amount_mutez with
+let invoice_contract ctxt ~address ~amount_mumav =
+  match Tez_repr.of_mumav amount_mumav with
   | None -> Lwt.return (ctxt, [])
   | Some amount -> (
       ( Contract_repr.of_b58check address >>?= fun recipient ->

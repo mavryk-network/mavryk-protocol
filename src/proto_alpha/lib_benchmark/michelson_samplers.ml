@@ -295,7 +295,7 @@ end)
       | `TAddress -> Ex_ty address_t
       | `TTimestamp -> Ex_ty timestamp_t
       | `TKey_hash -> Ex_ty key_hash_t
-      | `TMutez -> Ex_ty mutez_t
+      | `TMutez -> Ex_ty mumav_t
       | `TSignature -> Ex_ty signature_t
       | `TUnit -> Ex_ty unit_t
       | `TInt -> Ex_ty int_t
@@ -319,7 +319,7 @@ end)
       | `TAddress -> Ex_comparable_ty address_t
       | `TTimestamp -> Ex_comparable_ty timestamp_t
       | `TKey_hash -> Ex_comparable_ty key_hash_t
-      | `TMutez -> Ex_comparable_ty mutez_t
+      | `TMutez -> Ex_comparable_ty mumav_t
       | `TInt -> Ex_comparable_ty int_t
       | `TUnit -> Ex_comparable_ty unit_t
       | `TSignature -> Ex_comparable_ty signature_t
@@ -598,7 +598,7 @@ end)
         | Signature_t -> signature
         | String_t -> Michelson_base.string
         | Bytes_t -> Michelson_base.bytes
-        | Mutez_t -> Michelson_base.tez
+        | Mutez_t -> Michelson_base.mav
         | Key_hash_t -> Crypto_samplers.pkh
         | Key_t -> Crypto_samplers.pk
         | Timestamp_t -> Michelson_base.timestamp

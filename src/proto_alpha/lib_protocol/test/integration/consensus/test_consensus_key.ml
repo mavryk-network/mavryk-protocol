@@ -118,7 +118,7 @@ let test_drain_delegate_scenario f =
   let delegate = account1_pkh in
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
-  transfer_tokens genesis account2_pkh consensus_pkh Tez.one_mutez
+  transfer_tokens genesis account2_pkh consensus_pkh Tez.one_mumav
   >>=? fun blk' ->
   update_consensus_key blk' delegate consensus_pk >>=? fun blk' ->
   f blk' consensus_pkh consensus_pk delegate
@@ -140,7 +140,7 @@ let test_drain_delegate ~low_balance ~exclude_ck ~ck_delegates () =
        transfer_tokens blk delegate consensus_pkh delegate_balance
        >>=? fun blk ->
        may_reveal_manager_key blk (consensus_pkh, consensus_pk) >>=? fun blk ->
-       transfer_tokens blk consensus_pkh delegate Tez.(of_mutez_exn 1_000_000L)
+       transfer_tokens blk consensus_pkh delegate Tez.(of_mumav_exn 1_000_000L)
       else return blk)
       >>=? fun blk ->
       Context.Contract.balance (B blk) (Contract.Implicit delegate)
@@ -182,7 +182,7 @@ let test_tz4_consensus_key () =
   let delegate = account1_pkh in
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
-  transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mutez
+  transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mumav
   >>=? fun blk' ->
   Op.update_consensus_key (B blk') (Contract.Implicit delegate) consensus_pk
   >>=? fun operation ->
@@ -213,7 +213,7 @@ let test_endorsement_with_consensus_key () =
   let delegate = account1_pkh in
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
-  transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mutez
+  transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mumav
   >>=? fun blk' ->
   update_consensus_key blk' delegate consensus_pk >>=? fun b_pre ->
   Block.bake b_pre >>=? fun b ->

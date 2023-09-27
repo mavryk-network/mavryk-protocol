@@ -147,7 +147,7 @@ module SymbolicMachine : sig
   (** The state of the {! SymbolicMachine}. *)
   type t = contract_id state
 
-  (** [get_xtz_balance c state] returns the amount of mutez owned by
+  (** [get_xtz_balance c state] returns the amount of mumav owned by
       [c] in [state]. *)
   val get_xtz_balance : contract_id -> t -> xtz
 
@@ -218,7 +218,7 @@ module ConcreteMachine : sig
   (** The state of the {! ConcreteMachine}. *)
   type t = Block.t
 
-  (** [get_xtz_balance c state] returns the amount of mutez owned by
+  (** [get_xtz_balance c state] returns the amount of mumav owned by
       [c] in [state]. *)
   val get_xtz_balance : Contract.t -> t -> xtz tzresult Lwt.t
 
@@ -291,7 +291,7 @@ module ValidationMachine : sig
     (** A collections of functions to introspect the symbolic part of
         the [ValidationMachine] state. *)
 
-    (** [get_xtz_balance c state] returns the amount of mutez owned by
+    (** [get_xtz_balance c state] returns the amount of mumav owned by
         [c] in the symbolic part of [state]. *)
     val get_xtz_balance : Contract.t -> t -> xtz tzresult Lwt.t
 
@@ -318,7 +318,7 @@ module ValidationMachine : sig
     (** A collections of functions to introspect the concrete part of
         the [ValidationMachine] state. *)
 
-    (** [get_xtz_balance c state] returns the amount of mutez owned by
+    (** [get_xtz_balance c state] returns the amount of mumav owned by
         [c] in the concrete part of [state]. *)
     val get_xtz_balance : Contract.t -> t -> xtz tzresult Lwt.t
 

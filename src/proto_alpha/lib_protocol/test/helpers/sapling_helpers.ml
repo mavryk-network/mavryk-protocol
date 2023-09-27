@@ -391,7 +391,7 @@ module Interpreter_helpers = struct
      of addresses that cannot bake the block*)
   let transac_and_sync ~memo_size block parameters amount src dst baker =
     let amount_tez =
-      Test_tez.(Alpha_context.Tez.one_mutez *! Int64.of_int amount)
+      Test_tez.(Alpha_context.Tez.one_mumav *! Int64.of_int amount)
     in
     let fee = Test_tez.of_int 10 in
     Op.transaction
