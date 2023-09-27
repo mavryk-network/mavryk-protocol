@@ -11,7 +11,15 @@
 //! The hook will abort execution once the panic has been printed to the
 //! debug log.
 
-use std::panic::PanicInfo;
+#![no_std]
+
+extern crate alloc;
+
+#[cfg(feature = "std")]
+extern crate std;
+
+use alloc::format;
+use core::{option::Option::Some, panic::PanicInfo};
 
 /// Prints the panic info to the host's *debug log*, and then aborts.
 ///
@@ -20,15 +28,16 @@ use std::panic::PanicInfo;
 pub fn panic_handler(info: &PanicInfo) {
     #[cfg(feature = "debug")]
     {
-        let message =
-            if let Some(message) = info.payload().downcast_ref::<std::string::String>() {
-                format!("Kernel panic {:?} at {:?}", message, info.location())
-            } else {
-                let message = info.payload().downcast_ref::<&str>();
-                format!("Kernel panic {:?} at {:?}", message, info.location())
-            };
+        let message = if let Some(message) =
+            info.payload().downcast_ref::<alloc::string::String>()
+        {
+            format!("Kernel panic {:?} at {:?}", message, info.location())
+        } else {
+            let message = info.payload().downcast_ref::<&str>();
+            format!("Kernel panic {:?} at {:?}", message, info.location())
+        };
 
-        #[cfg(target_arch = "wasm32")]
+        #[cfg(any(target_arch = "wasm32", target_arch = "riscv64"))]
         unsafe {
             tezos_smart_rollup_core::smart_rollup_core::write_debug(
                 message.as_ptr(),
@@ -36,8 +45,8 @@ pub fn panic_handler(info: &PanicInfo) {
             );
         }
 
-        #[cfg(not(target_arch = "wasm32"))]
-        eprintln!("{}", message);
+        #[cfg(not(any(target_arch = "wasm32", target_arch = "riscv64")))]
+        std::eprintln!("{}", message);
     }
 
     // If we're testing, we want to be able to see the panic trace
