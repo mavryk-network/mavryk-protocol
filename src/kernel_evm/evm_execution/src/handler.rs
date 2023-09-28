@@ -18,6 +18,7 @@ use crate::EthereumError;
 use crate::PrecompileSet;
 use alloc::borrow::Cow;
 use alloc::rc::Rc;
+use core::cmp::min;
 use core::convert::Infallible;
 use evm::executor::stack::Log;
 use evm::gasometer::{GasCost, Gasometer, MemoryCost};
@@ -1426,21 +1427,34 @@ impl<'a, Host: Runtime> Handler for EvmHandler<'a, Host> {
         is_static: bool,
         context: Context,
     ) -> Capture<CallOutcome, Self::CallInterrupt> {
-        if let Err(err) = self.record_cost(target_gas.unwrap_or(0)) {
+        let gas_limit = target_gas.map(|gas| {
+            let after_gas = if self.config.call_l64_after_gas {
+                let gas_remaining = self.gas_remaining();
+                gas_remaining - gas_remaining / 64
+            } else {
+                self.gas_remaining()
+            };
+
+            min(gas, after_gas)
+        });
+
+        if let Err(err) = self.record_cost(gas_limit.unwrap_or(0)) {
             log!(
                 self.host,
                 Debug,
                 "Not enought gas for call. Required at least: {:?}",
-                target_gas
+                gas_limit
             );
 
             return Capture::Exit((
-                ExitReason::Fatal(ExitFatal::CallErrorAsFatal(ExitError::OutOfGas)),
+                ExitReason::Fatal(ExitFatal::Other(Cow::from(
+                    "Out of gas before recursive call",
+                ))),
                 vec![],
             ));
         }
 
-        if let Err(err) = self.begin_inter_transaction(is_static, target_gas) {
+        if let Err(err) = self.begin_inter_transaction(is_static, gas_limit) {
             return Capture::Exit((ethereum_error_to_exit_reason(err), vec![]));
         }
 
