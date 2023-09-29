@@ -157,7 +157,7 @@ let balance _addr = return balance
 
 let storage_at _addr _pos = return (Ethereum_types.Hex (String.make 64 '0'))
 
-let nonce _addr = return (transaction_count ())
+let nonce _addr = return (Some (transaction_count ()))
 
 let inject_raw_transaction ~smart_rollup_address:_ _tx =
   incr block_height_counter ;
