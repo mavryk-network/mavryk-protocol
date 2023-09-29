@@ -382,6 +382,7 @@ mod tests {
         let expected = ExecutionOutcome {
             gas_used: 21072,
             is_success: true,
+            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(expected_hash),
@@ -407,6 +408,7 @@ mod tests {
         let expected = ExecutionOutcome {
             gas_used: 21720,
             is_success: true,
+            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(expected_hash),
