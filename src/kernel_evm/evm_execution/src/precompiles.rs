@@ -454,6 +454,7 @@ mod tests {
 
         let expected = ExecutionOutcome {
             gas_used: 21000,
+            reason: ExitReason::Succeed(ExitSucceed::Returned),
             is_success: true,
             new_address: None,
             logs: vec![],
@@ -504,6 +505,7 @@ mod tests {
 
         let expected = ExecutionOutcome {
             gas_used: 21000,
+            reason: ExitReason::Succeed(ExitSucceed::Returned),
             is_success: true,
             new_address: None,
             logs: vec![],
@@ -532,14 +534,15 @@ mod tests {
 
         let transfer: Option<Transfer> = None;
 
-        let result = execute_precompiled(target, input, transfer, Some(21000));
+        let result = execute_precompiled(target, input, transfer, Some(41000));
 
         let expected = ExecutionOutcome {
             gas_used: 21000,
+            reason: ExitReason::Revert(ExitRevert::Reverted),
             is_success: false,
             new_address: None,
             logs: vec![],
-            result: None,
+            result: Some(vec![]),
             withdrawals: vec![],
         };
 

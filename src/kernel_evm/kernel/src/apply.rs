@@ -5,13 +5,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+use alloc::borrow::Cow;
+use evm::{ExitError, ExitReason, ExitSucceed};
 use evm_execution::account_storage::{
     account_path, EthereumAccount, EthereumAccountStorage,
 };
 use evm_execution::handler::ExecutionOutcome;
 use evm_execution::precompiles::PrecompileBTreeMap;
 use evm_execution::run_transaction;
-use evm::{ExitReason, ExitError, ExitSucceed};
 use primitive_types::{H160, U256};
 use tezos_ethereum::block::BlockConstants;
 use tezos_ethereum::transaction::TransactionHash;
@@ -19,7 +20,6 @@ use tezos_ethereum::tx_common::EthereumTransactionCommon;
 use tezos_ethereum::tx_signature::TxSignature;
 use tezos_evm_logging::{log, Level::*};
 use tezos_smart_rollup_host::runtime::Runtime;
-use alloc::borrow::Cow;
 
 use crate::error::Error;
 use crate::inbox::{Deposit, Transaction, TransactionContent};
@@ -309,7 +309,11 @@ fn apply_deposit<Host: Runtime>(
 
     let is_success = do_deposit(()).is_some();
 
-    let reason = if is_success { ExitReason::Succeed(ExitSucceed::Returned) } else { ExitReason::Error(ExitError::Other(Cow::from("Deposit failed"))) };
+    let reason = if is_success {
+        ExitReason::Succeed(ExitSucceed::Returned)
+    } else {
+        ExitReason::Error(ExitError::Other(Cow::from("Deposit failed")))
+    };
 
     let gas_used = CONFIG.gas_transaction_call;
 

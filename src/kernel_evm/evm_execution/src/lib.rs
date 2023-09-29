@@ -11,6 +11,7 @@ use account_storage::{AccountStorageError, EthereumAccountStorage};
 use alloc::borrow::Cow;
 use alloc::collections::TryReserveError;
 use evm::executor::stack::PrecompileFailure;
+use evm::ExitReason;
 use host::runtime::Runtime;
 use primitive_types::{H160, U256};
 use tezos_ethereum::block::BlockConstants;
@@ -128,6 +129,13 @@ pub fn run_transaction<'a, Host>(
 where
     Host: Runtime,
 {
+    fn do_refund(outcome: &handler::ExecutionOutcome, pay_for_gas: bool) -> bool {
+        match outcome.reason {
+            ExitReason::Revert(_) => pay_for_gas,
+            _ => pay_for_gas && outcome.is_success,
+        }
+    }
+
     log!(host, Info, "Going to run an Ethereum transaction\n  - from address: {}\n  - to address: {:?}", caller, address);
 
     let mut handler = handler::EvmHandler::<'_, Host>::new(
@@ -161,7 +169,7 @@ where
 
         handler.increment_nonce(caller)?;
 
-        if result.is_success {
+        if do_refund(&result, pay_for_gas) {
             let unused_gas = gas_limit.map(|gl| gl - result.gas_used);
             handler.repay_gas(caller, unused_gas)?;
         }
@@ -184,7 +192,7 @@ mod test {
         EthereumAccountStorage,
     };
     use evm::executor::stack::Log;
-    use evm::{ExitReason, ExitError, ExitFatal, ExitSucceed, ExitRevert, Opcode};
+    use evm::{ExitError, ExitFatal, ExitReason, ExitRevert, ExitSucceed, Opcode};
     use handler::ExecutionOutcome;
     use host::runtime::Runtime;
     use primitive_types::{H160, H256};
@@ -1239,7 +1247,9 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 86653,
             is_success: false,
-            reason: ExitReason::Fatal(ExitFatal::CallErrorAsFatal(ExitError::InvalidCode(Opcode(85)))),
+            reason: ExitReason::Fatal(ExitFatal::CallErrorAsFatal(
+                ExitError::InvalidCode(Opcode(85)),
+            )),
             new_address: None,
             logs: vec![],
             result: None,
@@ -1324,7 +1334,9 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 86653,
             is_success: false,
-            reason: ExitReason::Fatal(ExitFatal::CallErrorAsFatal(ExitError::InvalidCode(Opcode(160)))),
+            reason: ExitReason::Fatal(ExitFatal::CallErrorAsFatal(
+                ExitError::InvalidCode(Opcode(160)),
+            )),
             new_address: None,
             logs: vec![],
             result: None,
@@ -1890,6 +1902,7 @@ mod test {
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 21017,
+            reason: ExitReason::Succeed(ExitSucceed::Returned),
             is_success: true,
             new_address: None,
             logs: vec![],

@@ -993,11 +993,17 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                     r
                 );
 
-                self.commit_initial_transaction(new_address, result, ExitReason::Succeed(r))
+                self.commit_initial_transaction(
+                    new_address,
+                    result,
+                    ExitReason::Succeed(r),
+                )
             }
-            Ok((ExitReason::Revert(ExitRevert::Reverted), _, result)) => {
-                self.rollback_initial_transaction(Some(result), ExitReason::Revert(ExitRevert::Reverted))
-            }
+            Ok((ExitReason::Revert(ExitRevert::Reverted), _, result)) => self
+                .rollback_initial_transaction(
+                    Some(result),
+                    ExitReason::Revert(ExitRevert::Reverted),
+                ),
             Ok((ExitReason::Error(error), _, _)) => {
                 log!(
                     self.host,
@@ -1009,7 +1015,10 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                 self.rollback_initial_transaction(None, ExitReason::Error(error))
             }
             Ok((ExitReason::Fatal(ExitFatal::Other(cow_str)), _, _)) => {
-                self.rollback_initial_transaction(None, ExitReason::Fatal(ExitFatal::Other(cow_str.clone())))?;
+                self.rollback_initial_transaction(
+                    None,
+                    ExitReason::Fatal(ExitFatal::Other(cow_str.clone())),
+                )?;
                 Err(EthereumError::WrappedError(cow_str))
             }
             Ok((ExitReason::Fatal(fatal_error), _, _)) => {
@@ -1030,7 +1039,10 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                     err
                 );
 
-                self.rollback_initial_transaction(None, ethereum_error_to_exit_reason(&err))?;
+                self.rollback_initial_transaction(
+                    None,
+                    ethereum_error_to_exit_reason(&err),
+                )?;
                 Err(err)
             }
         }
@@ -1189,7 +1201,11 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                     err
                 );
 
-                return Capture::Exit((ethereum_error_to_exit_reason(&err), None, vec![]));
+                return Capture::Exit((
+                    ethereum_error_to_exit_reason(&err),
+                    None,
+                    vec![],
+                ));
             }
         } else if let Ok((ExitReason::Revert(_), _, _)) = execution_result {
             log!(self.host, Info, "Intermediate transaction reverted");
@@ -1202,7 +1218,11 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                     err
                 );
 
-                return Capture::Exit((ethereum_error_to_exit_reason(&err), None, vec![]));
+                return Capture::Exit((
+                    ethereum_error_to_exit_reason(&err),
+                    None,
+                    vec![],
+                ));
             }
         } else if let Err(err) = self.rollback_inter_transaction(false) {
             log!(
@@ -1228,7 +1248,9 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                 }
             }
             Ok(res) => Capture::Exit(res),
-            Err(err) => Capture::Exit((ethereum_error_to_exit_reason(&err), None, vec![])),
+            Err(err) => {
+                Capture::Exit((ethereum_error_to_exit_reason(&err), None, vec![]))
+            }
         }
     }
 }
