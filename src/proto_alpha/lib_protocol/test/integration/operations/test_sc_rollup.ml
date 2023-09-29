@@ -3387,7 +3387,12 @@ let test_start_game_on_cemented_commitment () =
 
 let test_origination_fails_with_empty_whitelist () =
   let open Lwt_result_syntax in
-  let* b, contract = Context.init1 ~sc_rollup_private_enable:true () in
+  let* b, contract =
+    Context.init1
+      ~sc_rollup_arith_pvm_enable:true
+      ~sc_rollup_private_enable:true
+      ()
+  in
   let kind = Sc_rollup.Kind.Example_arith in
   let* operation, _rollup =
     Sc_rollup_helpers.origination_op (B b) contract kind ~whitelist:[]
@@ -3400,7 +3405,12 @@ let test_origination_fails_with_empty_whitelist () =
 
 let test_private_rollup_can_be_deactivated () =
   let open Lwt_result_syntax in
-  let* b, contract = Context.init1 ~sc_rollup_private_enable:false () in
+  let* b, contract =
+    Context.init1
+      ~sc_rollup_arith_pvm_enable:true
+      ~sc_rollup_private_enable:false
+      ()
+  in
   let kind = Sc_rollup.Kind.Example_arith in
   let* operation, _rollup =
     Sc_rollup_helpers.origination_op (B b) contract kind ~whitelist:[]
@@ -3413,7 +3423,12 @@ let test_private_rollup_can_be_deactivated () =
 
 let test_private_rollup_publish_succeeds_with_whitelisted_staker () =
   let open Lwt_result_syntax in
-  let* b, contract = Context.init1 ~sc_rollup_private_enable:true () in
+  let* b, contract =
+    Context.init1
+      ~sc_rollup_arith_pvm_enable:true
+      ~sc_rollup_private_enable:true
+      ()
+  in
   let kind = Sc_rollup.Kind.Example_arith in
   let staker_pkh = Account.pkh_of_contract_exn contract in
   let* operation, rollup =
@@ -3428,7 +3443,10 @@ let test_private_rollup_publish_succeeds_with_whitelisted_staker () =
 let test_private_rollup_publish_fails_with_non_whitelisted_staker () =
   let open Lwt_result_syntax in
   let* b, (contract1, contract2) =
-    Context.init2 ~sc_rollup_private_enable:true ()
+    Context.init2
+      ~sc_rollup_arith_pvm_enable:true
+      ~sc_rollup_private_enable:true
+      ()
   in
   let kind = Sc_rollup.Kind.Example_arith in
   let* operation, rollup =
