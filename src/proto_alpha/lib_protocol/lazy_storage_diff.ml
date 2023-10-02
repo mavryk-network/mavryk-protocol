@@ -417,7 +417,7 @@ let fresh :
     (Raw_context.t * i) tzresult Lwt.t =
  fun kind ~temporary ctxt ->
   if temporary then
-    return
+    Lwt_result_syntax.return
       (Raw_context.fold_map_temporary_lazy_storage_ids ctxt (fun temp_ids ->
            Lazy_storage_kind.Temp_ids.fresh kind temp_ids))
   else

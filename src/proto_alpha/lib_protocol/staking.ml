@@ -99,7 +99,7 @@ let finalize_unstake_and_check ~check_unfinalizable ctxt contract =
           perform_finalizable_unstake_transfers ctxt contract finalizable)
 
 let finalize_unstake ctxt contract =
-  let check_unfinalizable ctxt _unfinalizable = return ctxt in
+  let check_unfinalizable ctxt _unfinalizable = Lwt_result_syntax.return ctxt in
   finalize_unstake_and_check ~check_unfinalizable ctxt contract
 
 let stake ctxt ~sender ~delegate amount =

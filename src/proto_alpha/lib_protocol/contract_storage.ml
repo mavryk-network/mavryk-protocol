@@ -415,7 +415,7 @@ module Legacy_big_map_diff = struct
 end
 
 let update_script_lazy_storage c = function
-  | None -> return (c, Z.zero)
+  | None -> Lwt_result_syntax.return (c, Z.zero)
   | Some diffs -> Lazy_storage_diff.apply c diffs
 
 let raw_originate c ~prepaid_bootstrap_storage

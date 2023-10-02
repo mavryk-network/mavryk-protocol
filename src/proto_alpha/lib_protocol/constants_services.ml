@@ -56,6 +56,7 @@ end
 
 let register () =
   let open Services_registration in
+  let open Lwt_result_syntax in
   register0_noctxt ~chunked:true S.errors (fun () () ->
       return Data_encoding.Json.(schema error_encoding)) ;
   register0 ~chunked:false S.all (fun ctxt () () ->

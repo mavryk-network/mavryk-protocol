@@ -135,7 +135,7 @@ let collect_token_diffs_of_big_map_update ctxt ~big_map_id has_tickets
           expr
           ~get_token_and_amount
           acc
-    | None -> return (acc, ctxt)
+    | None -> Lwt_result_syntax.return (acc, ctxt)
   in
   (* First check if the key-hash has already been updated, in that case pull the
      value from the [already_updated] map. Note that this should not happen with

@@ -177,6 +177,7 @@ let tickets_of_origination ctxt ~preorigination ~storage_type ~storage =
 
 let tickets_of_operation ctxt
     (Script_typed_ir.Internal_operation {sender = _; operation; nonce = _}) =
+  let open Lwt_result_syntax in
   match operation with
   | Transaction_to_implicit _ -> return (None, ctxt)
   | Transaction_to_implicit_with_ticket

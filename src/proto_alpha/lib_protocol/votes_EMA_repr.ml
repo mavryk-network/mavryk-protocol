@@ -94,6 +94,7 @@ module Make (EMA_parameters : EMA_PARAMETERS) : T = struct
   let check_bounds x = Compare.Int32.(0l <= x && x <= EMA_parameters.ema_max)
 
   let of_int32 (x : Int32.t) : t tzresult Lwt.t =
+    let open Lwt_result_syntax in
     if check_bounds x then return x else tzfail @@ Toggle_ema_out_of_bound x
 
   let zero : t = Int32.zero

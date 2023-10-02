@@ -518,7 +518,7 @@ module Ticket_collection = struct
 
   let tickets_of_value ctxt ~include_lazy ht ty x =
     tickets_of_value ctxt ~include_lazy ht ty x [] (fun ctxt ex_tickets ->
-        return (ex_tickets, ctxt))
+        Lwt_result_syntax.return (ex_tickets, ctxt))
 end
 
 type 'a has_tickets =

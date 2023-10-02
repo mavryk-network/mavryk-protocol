@@ -120,7 +120,7 @@ let begin_validation context _chain_id mode
     | Construction _ | Partial_construction _ ->
         fitness_from_level Int32.(succ predecessor.level)
   in
-  return {context; fitness}
+  Lwt_result_syntax.return {context; fitness}
 
 let begin_application = begin_validation
 
@@ -144,7 +144,7 @@ let apply_operation _state _oph _op = tzfail No_error
 let finalize_validation _state = return_unit
 
 let finalize_application application_state _shell_header =
-  return
+  Lwt_result_syntax.return
     ( {
         Updater.message = None;
         context = application_state.context;
@@ -170,7 +170,7 @@ let init _chain_id context block_header =
 
 let value_of_key ~chain_id:_ ~predecessor_context:_ ~predecessor_timestamp:_
     ~predecessor_level:_ ~predecessor_fitness:_ ~predecessor:_ ~timestamp:_ =
-  return (fun _ -> tzfail No_error)
+  Lwt_result_syntax.return (fun _ -> tzfail No_error)
 
 let rpc_services = RPC_directory.empty
 

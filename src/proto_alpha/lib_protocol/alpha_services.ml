@@ -280,6 +280,7 @@ module Cache = struct
 
   let register () =
     let open Services_registration in
+    let open Lwt_result_syntax in
     register0 ~chunked:true S.cached_contracts (fun ctxt () () ->
         Script_cache.entries ctxt |> Lwt.return) ;
     register0 ~chunked:false S.contract_cache_size (fun ctxt () () ->

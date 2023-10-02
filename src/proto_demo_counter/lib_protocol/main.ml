@@ -115,7 +115,7 @@ let begin_any_application_mode validation_or_application mode context
     fitness ;
   (* Note: Logging is only available for debugging purposes and should
      not appear in a real protocol. *)
-  return {context; fitness}
+  Lwt_result_syntax.return {context; fitness}
 
 (* we use here the same fitness format than proto alpha,
    but with higher [version_number] to allow testing
@@ -148,7 +148,7 @@ let begin_any_construction_mode validation_or_application mode context
     predecessor.fitness
     Fitness.pp
     fitness ;
-  return {context; fitness}
+  Lwt_result_syntax.return {context; fitness}
 
 let begin_validation_or_application validation_or_application ctxt _chain_id
     mode ~predecessor =
@@ -222,6 +222,7 @@ let finalize_application application_state _shell_header =
       state )
 
 let decode_json json =
+  let open Lwt_result_syntax in
   match Proto_params.from_json json with
   | exception _ ->
     tzfail Error.Invalid_protocol_parameters
@@ -271,6 +272,7 @@ type Context.Cache.value += Demo of int
 
 let value_of_key ~chain_id:_ ~predecessor_context:_ ~predecessor_timestamp:_
     ~predecessor_level:_ ~predecessor_fitness:_ ~predecessor:_ ~timestamp:_ =
+  let open Lwt_result_syntax in
   return (fun _ -> return (Demo 123))
 
 let rpc_services = Services.rpc_services
@@ -318,6 +320,7 @@ module Mempool = struct
 
   let add_operation ?check_signature:_ ?conflict_handler:_
       (_info : validation_info) state ((_oph : Operation_hash.t), op) =
+    let open Lwt_result_syntax in
     match Apply.apply state op.protocol_data with
     | None ->
         Lwt.return_error

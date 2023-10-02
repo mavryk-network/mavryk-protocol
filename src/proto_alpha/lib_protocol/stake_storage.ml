@@ -310,7 +310,7 @@ let fold_snapshot ctxt ~index ~f ~init =
 let clear_at_cycle_end ctxt ~new_cycle =
   let max_slashing_period = Constants_repr.max_slashing_period in
   match Cycle_repr.sub new_cycle max_slashing_period with
-  | None -> return ctxt
+  | None -> Lwt_result_syntax.return ctxt
   | Some cycle_to_clear -> clear_cycle ctxt cycle_to_clear
 
 let fold_on_active_delegates_with_minimal_stake_s =

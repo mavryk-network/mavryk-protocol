@@ -192,7 +192,7 @@ let compute_snapshot_index_for_seed ~max_snapshot_index seed =
   let rd = Seed_repr.initialize_new seed [Bytes.of_string "stake_snapshot"] in
   let seq = Seed_repr.sequence rd 0l in
   Seed_repr.take_int32 seq (Int32.of_int max_snapshot_index)
-  |> fst |> Int32.to_int |> return
+  |> fst |> Int32.to_int |> Lwt_result_syntax.return
 
 let compute_snapshot_index ctxt cycle ~max_snapshot_index =
   let open Lwt_result_syntax in
