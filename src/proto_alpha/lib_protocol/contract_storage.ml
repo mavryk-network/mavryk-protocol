@@ -223,7 +223,7 @@ let () =
       | Frozen_bonds_must_be_spent_at_once (c, b) -> Some (c, b) | _ -> None)
     (fun (c, b) -> Frozen_bonds_must_be_spent_at_once (c, b))
 
-let failwith msg = tzfail (Failure msg)
+let failwith msg = Lwt_result_syntax.tzfail (Failure msg)
 
 module Legacy_big_map_diff = struct
   (*

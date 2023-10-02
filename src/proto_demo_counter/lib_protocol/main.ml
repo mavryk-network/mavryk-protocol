@@ -176,7 +176,7 @@ let apply_operation_aux application_state operation =
   let {context; fitness} = application_state in
   let*! state = State.get_state context in
   match Apply.apply state operation.protocol_data with
-  | None -> Error_monad.tzfail Error.Invalid_operation
+  | None -> tzfail Error.Invalid_operation
   | Some state ->
     let*! context = State.update_state context state in
     return {context; fitness}

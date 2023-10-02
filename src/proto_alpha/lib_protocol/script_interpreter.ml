@@ -327,7 +327,7 @@ module Raw = struct
       (r * f * outdated_context * local_gas_counter) tzresult Lwt.t =
    fun ((ctxt, _) as g) gas ks0 accu stack ->
     match consume_control gas ks0 with
-    | None -> tzfail Gas.Operation_quota_exceeded
+    | None -> Lwt_result_syntax.tzfail Gas.Operation_quota_exceeded
     | Some gas -> (
         match ks0 with
         | KLog (ks, sty, logger) ->

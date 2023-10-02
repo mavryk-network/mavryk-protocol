@@ -137,9 +137,11 @@ let () =
     (function No_error -> Some () | _ -> None)
     (fun () -> No_error)
 
-let validate_operation ?check_signature:_ _state _oph _op = tzfail No_error
+let validate_operation ?check_signature:_ _state _oph _op =
+  Lwt_result_syntax.tzfail No_error
 
-let apply_operation _state _oph _op = tzfail No_error
+let apply_operation _state _oph _op =
+  Lwt_result_syntax.tzfail No_error
 
 let finalize_validation _state = Lwt_result_syntax.return_unit
 
@@ -170,7 +172,8 @@ let init _chain_id context block_header =
 
 let value_of_key ~chain_id:_ ~predecessor_context:_ ~predecessor_timestamp:_
     ~predecessor_level:_ ~predecessor_fitness:_ ~predecessor:_ ~timestamp:_ =
-  Lwt_result_syntax.return (fun _ -> tzfail No_error)
+  let open Lwt_result_syntax in
+  return (fun _ -> tzfail No_error)
 
 let rpc_services = RPC_directory.empty
 

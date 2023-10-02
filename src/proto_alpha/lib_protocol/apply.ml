@@ -1523,13 +1523,13 @@ let apply_manager_operation :
 type success_or_failure = Success of context | Failure
 
 let apply_internal_operations ctxt ~payer ~chain_id ops =
-  let open Lwt_syntax in
+  let open Lwt_result_syntax in
   let rec apply ctxt applied worklist =
     match worklist with
     | [] -> Lwt.return (Success ctxt, List.rev applied)
     | Script_typed_ir.Internal_operation ({sender; operation; nonce} as op)
       :: rest -> (
-        let* result =
+        let*! result =
           if internal_nonce_already_recorded ctxt nonce then
             let op_res = Apply_internal_results.internal_operation op in
             tzfail (Internal_operation_replay (Internal_operation op_res))
@@ -2668,7 +2668,8 @@ let are_attestations_required ctxt ~level =
 
 let record_attesting_participation ctxt =
   match Consensus.allowed_attestations ctxt with
-  | None -> tzfail (Consensus.Slot_map_not_found {loc = __LOC__})
+  | None ->
+      Lwt_result_syntax.tzfail (Consensus.Slot_map_not_found {loc = __LOC__})
   | Some validators ->
       Slot.Map.fold_es
         (fun initial_slot ((consensus_pk : Consensus_key.pk), power) ctxt ->
