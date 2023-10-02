@@ -141,7 +141,7 @@ let validate_operation ?check_signature:_ _state _oph _op = tzfail No_error
 
 let apply_operation _state _oph _op = tzfail No_error
 
-let finalize_validation _state = return_unit
+let finalize_validation _state = Lwt_result_syntax.return_unit
 
 let finalize_application application_state _shell_header =
   Lwt_result_syntax.return

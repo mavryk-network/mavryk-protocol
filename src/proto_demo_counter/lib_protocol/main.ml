@@ -202,7 +202,7 @@ let log_finalize validation_or_application validation_state =
 
 let finalize_validation validation_state =
   log_finalize `Validation validation_state ;
-  return_unit
+  Lwt_result_syntax.return_unit
 
 let finalize_application application_state _shell_header =
   let open Lwt_result_syntax in

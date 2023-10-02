@@ -65,7 +65,7 @@ let check_determined_cycle ctxt cycle =
       Cycle_repr.(
         ctxt_cycle <= cycle && cycle <= add ctxt_cycle preserved_cycles)
       (Undetermined_issuance_coeff_for_cycle cycle)
-  else return_unit
+  else Lwt_result_syntax.return_unit
 
 let get_reward_coeff ctxt ~cycle =
   let open Lwt_result_syntax in

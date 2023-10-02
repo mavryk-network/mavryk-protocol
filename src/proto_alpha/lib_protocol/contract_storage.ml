@@ -486,15 +486,15 @@ let exists c contract =
   | Originated _ -> allocated c contract
 
 let must_exist c contract =
-  let open Lwt_syntax in
-  let* exists_contract = exists c contract in
+  let open Lwt_result_syntax in
+  let*! exists_contract = exists c contract in
   match exists_contract with
   | true -> return_unit
   | false -> tzfail (Non_existing_contract contract)
 
 let must_be_allocated c contract =
-  let open Lwt_syntax in
-  let* is_allocated = allocated c contract in
+  let open Lwt_result_syntax in
+  let*! is_allocated = allocated c contract in
   match is_allocated with
   | true -> return_unit
   | false -> (
