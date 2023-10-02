@@ -824,7 +824,7 @@ let pp_manager_operation_result ppf
         {balance_updates; operation_result; internal_operation_results} ) =
 
   (* Convert fee to int64 and then calculate divided fees *)
-  let fee_int64 = Tez.to_mutez fee in
+  let fee_int64 = Tez.to_mumav fee in
   let quarter_fee = Int64.div fee_int64 4L in
   let burn_fee = Int64.sub fee_int64 (Int64.mul 2L quarter_fee) in
 
