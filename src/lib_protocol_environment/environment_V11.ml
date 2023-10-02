@@ -697,8 +697,6 @@ struct
 
     let tzfail e = Lwt.return_error (TzTrace.make e)
 
-    let error e = Error (TzTrace.make e)
-
     let dont_wait ex er f = dont_wait f er ex
 
     let trace_of_error e = TzTrace.make e

@@ -5965,8 +5965,6 @@ val pp_trace : Format.formatter -> error trace -> unit
 
 val result_encoding : 'a Data_encoding.t -> 'a tzresult Data_encoding.t
 
-val error : 'err -> ('a, 'err trace) result
-
 val trace_of_error : 'err -> 'err trace
 
 val tzfail : 'err -> ('a, 'err trace) result Lwt.t
