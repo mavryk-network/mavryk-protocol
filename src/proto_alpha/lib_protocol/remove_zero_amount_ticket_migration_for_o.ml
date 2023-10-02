@@ -91,11 +91,12 @@ let remove_zero_ticket_entries ctxt =
     Lazy_storage_kind.Big_map.Id.parse_z @@ Z.of_int 5696
   in
   let*? keys_to_evict =
+    let open Result_syntax in
     List.map_e
       (fun key ->
         match Script_expr_hash.of_b58check_opt key with
-        | Some key -> Result_syntax.return key
-        | None -> error (Invalid_big_map_key key))
+        | Some key -> return key
+        | None -> tzfail (Invalid_big_map_key key))
       [
         "exprtXBtxJxCDEDETueKAFLL7r7vZtNEo1MHajpHba1djtGKqJzWd3";
         "exprtbuRhaGDS942BgZ1qFdD7HAKeBjPEqzRxgLQyWQ6HWxcaiLC2c";

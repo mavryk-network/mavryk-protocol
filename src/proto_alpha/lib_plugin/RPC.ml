@@ -1510,7 +1510,9 @@ module Scripts = struct
         let*? script =
           Option.fold
             ~some:Result_syntax.return
-            ~none:(Error_monad.error View_helpers.Viewed_contract_has_no_script)
+            ~none:
+              (Error_monad.Result_syntax.tzfail
+                 View_helpers.Viewed_contract_has_no_script)
             script_opt
         in
         let*? decoded_script = Script_repr.(force_decode script.code) in
@@ -3205,14 +3207,14 @@ module Parse = struct
     | Some protocol_data -> protocol_data
 
   let parse_operation (op : Operation.raw) =
-    let open Result_syntax in
+    let open Environment.Error_monad.Result_syntax in
     match
       Data_encoding.Binary.of_bytes_opt
         Operation.protocol_data_encoding_with_legacy_attestation_name
         op.proto
     with
     | Some protocol_data -> return {shell = op.shell; protocol_data}
-    | None -> Environment.Error_monad.error Plugin_errors.Cannot_parse_operation
+    | None -> tzfail Plugin_errors.Cannot_parse_operation
 
   let register () =
     let open Lwt_result_syntax in

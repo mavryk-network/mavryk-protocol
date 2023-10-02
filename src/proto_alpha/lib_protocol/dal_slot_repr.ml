@@ -688,7 +688,7 @@ module History = struct
 
     let dal_proof_error reason = Dal_proof_error reason
 
-    let proof_error reason = error @@ dal_proof_error reason
+    let proof_error reason = Result_syntax.tzfail @@ dal_proof_error reason
 
     let check_page_proof dal_params proof data ({Page.page_index; _} as pid)
         commitment =

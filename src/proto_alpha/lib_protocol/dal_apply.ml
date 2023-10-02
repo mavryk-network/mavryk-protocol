@@ -70,9 +70,10 @@ let validate_attestation ctxt get_consensus_key op =
   in
   let current = Level.(current ctxt).level in
   let*? expected =
+    let open Result_syntax in
     match Raw_level.pred current with
-    | None -> error Dal_unexpected_attestation_at_root_level
-    | Some level -> Result_syntax.return level
+    | None -> tzfail Dal_unexpected_attestation_at_root_level
+    | Some level -> return level
   in
   let delta_levels = Raw_level.diff expected given in
   let*? () =
@@ -103,7 +104,7 @@ let apply_attestation ctxt consensus_key op =
   match Dal.Attestation.shards_of_attester ctxt ~attester with
   | None ->
       (* This should not happen: operation validation should have failed. *)
-      error (Dal_data_availibility_attester_not_in_committee {attester; level})
+      tzfail (Dal_data_availibility_attester_not_in_committee {attester; level})
   | Some shards ->
       return (Dal.Attestation.record_attested_shards ctxt attestation shards)
 

@@ -503,12 +503,13 @@ module Consensus = struct
       {level; round; block_payload_hash = bph; slot} =
     let open Lwt_result_syntax in
     let*? locked_round =
+      let open Result_syntax in
       match block_info.locked_round with
-      | Some locked_round -> Ok locked_round
+      | Some locked_round -> return locked_round
       | None ->
           (* A preexisting block whose fitness has no locked round
              should contain no preattestations. *)
-          error Unexpected_preattestation_in_block
+          tzfail Unexpected_preattestation_in_block
     in
     let kind = Preattestation in
     let*? () = check_round_before_block ~block_round:block_info.round round in
