@@ -446,7 +446,9 @@ let consume_control local_gas_counter ks =
   consume_opt local_gas_counter cost
   [@@ocaml.inline always]
 
-let get_log = function None -> return_none | Some logger -> logger.get_log ()
+let get_log = function
+  | None -> Lwt_result_syntax.return_none
+  | Some logger -> logger.get_log ()
   [@@ocaml.inline always]
 
 (*

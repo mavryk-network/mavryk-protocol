@@ -1626,7 +1626,7 @@ let extract_deps (type bef_top bef aft_top aft) ctxt step_constants
 
         let log_exit _instr _ctxt _log _stack_ty _stack = ()
 
-        let get_log () = Environment.Error_monad.return_none
+        let get_log () = Lwt_result_syntax.return_none
       end)
   in
   try
@@ -1671,7 +1671,7 @@ let extract_deps_continuation (type bef_top bef aft_top aft) ctxt step_constants
 
         let log_exit _instr _ctxt _log _stack_ty _stack = ()
 
-        let get_log () = Environment.Error_monad.return_none
+        let get_log () = Lwt_result_syntax.return_none
       end)
   in
   try
