@@ -78,8 +78,6 @@ val pp_trace : Format.formatter -> error trace -> unit
 
 val result_encoding : 'a Data_encoding.t -> 'a tzresult Data_encoding.t
 
-val return_nil : ('a list, 'trace) result Lwt.t
-
 val return_true : (bool, 'trace) result Lwt.t
 
 val return_false : (bool, 'trace) result Lwt.t
