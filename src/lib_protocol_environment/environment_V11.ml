@@ -695,8 +695,6 @@ struct
     (* Backwards compatibility additions (dont_wait, trace helpers) *)
     include Tezos_protocol_environment_structs.V11.Error_monad_infix_globals
 
-    let tzfail e = Lwt.return_error (TzTrace.make e)
-
     let dont_wait ex er f = dont_wait f er ex
 
     let trace_of_error e = TzTrace.make e

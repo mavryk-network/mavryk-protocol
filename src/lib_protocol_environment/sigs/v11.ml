@@ -5967,8 +5967,6 @@ val result_encoding : 'a Data_encoding.t -> 'a tzresult Data_encoding.t
 
 val trace_of_error : 'err -> 'err trace
 
-val tzfail : 'err -> ('a, 'err trace) result Lwt.t
-
 val record_trace : 'err -> ('a, 'err trace) result -> ('a, 'err trace) result
 
 val trace :
