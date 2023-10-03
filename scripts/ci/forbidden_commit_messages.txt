@@ -1,0 +1,5 @@
+Apply .* suggestion\(s\) to .* file\(s\)
+.*[Ff]ixup.*
+.*TMP.*
+.*WIP.*
+.*DONOTMERGE.*
