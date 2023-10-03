@@ -150,8 +150,8 @@ let prepare_first_block _chain_id ctxt ~typecheck ~level ~timestamp ~predecessor
         ~start_position:(Level_storage.current ctxt).level_position
       >>=? fun ctxt ->
       Vote_storage.update_listings ctxt >>=? fun ctxt ->
-      (* Must be called after other originations since it unsets the origination nonce. *)
-      Liquidity_baking_migration.init ctxt ~typecheck
+        (* Must be called after other originations since it unsets the origination nonce. *)
+        Liquidity_baking_migration.init ctxt ~typecheck 
       >>=? fun (ctxt, operation_results) ->
       Storage.Pending_migration.Operation_results.init ctxt operation_results
       >>=? fun ctxt ->

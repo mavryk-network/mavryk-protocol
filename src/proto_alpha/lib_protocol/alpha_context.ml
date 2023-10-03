@@ -667,3 +667,7 @@ module Cache = Cache_repr
 module Internal_for_tests = struct
   let to_raw x = x
 end
+
+module Treasury = struct
+  include Treasury_storage
+end

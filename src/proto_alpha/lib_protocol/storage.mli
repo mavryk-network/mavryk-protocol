@@ -603,6 +603,15 @@ module Liquidity_baking : sig
        and type value = Contract_hash.t
 end
 
+module Treasury : sig
+  
+  (** Treasury contract **)
+  module Treasury_address :
+    Single_data_storage
+      with type t := Raw_context.t
+       and type value = Contract_hash.t
+end
+
 (** A map of [Script_repr.expr] values, indexed by their hash ([Script_expr_hash.t]).
     Values from this map can be incorporated by any contract via the primitive
     [Michelson_v1_primitives.H_constant]. *)

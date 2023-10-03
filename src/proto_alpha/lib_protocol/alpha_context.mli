@@ -5364,3 +5364,7 @@ module Fees : sig
 
   val check_storage_limit : context -> storage_limit:Z.t -> unit tzresult
 end
+
+module Treasury : sig
+  val get_treasury_address : context -> Contract_hash.t tzresult Lwt.t
+end

@@ -1473,6 +1473,21 @@ module Liquidity_baking = struct
       end)
 end
 
+module Treasury = struct
+  
+  module Treasury_address =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        let name = ["treasury_address"]
+      end)
+      (struct
+        type t = Contract_hash.t
+
+        (* Keeping contract-compatible encoding to avoid migrating this. *)
+        let encoding = Contract_repr.originated_encoding
+      end)
+end
+
 module Ticket_balance = struct
   module Name = struct
     let name = ["ticket_balance"]
