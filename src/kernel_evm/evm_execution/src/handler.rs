@@ -377,9 +377,6 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
     ) -> Result<ExitReason, EthereumError> {
         log!(self.host, Info, "Executing a transfer");
 
-        // TODO let transfers cost gas
-        // issue: https://gitlab.com/tezos/tezos/-/issues/5118
-
         if value == U256::zero() {
             // Nothing to transfer so succeeds by default
             Ok(ExitReason::Succeed(ExitSucceed::Returned))
@@ -587,8 +584,8 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                 Rc::new(code),
                 Rc::new(input),
                 transaction_context.context,
-                1024_usize,
-                1024_usize, // TODO this is the memory limit - adjust to standard
+                self.config.stack_limit,
+                self.config.memory_limit,
             );
 
             let result = self.execute(&mut runtime);
@@ -1486,14 +1483,6 @@ impl<'a, Host: Runtime> Handler for EvmHandler<'a, Host> {
 
             self.record_dynamic_cost(cost, memory_cost)
         }
-    }
-
-    fn create_feedback(
-        &mut self,
-        _feedback: Self::CreateFeedback,
-    ) -> Result<(), ExitError> {
-        // TODO: issue: https://gitlab.com/tezos/tezos/-/issues/4872
-        Ok(()) // this is a stub
     }
 }
 
