@@ -68,7 +68,7 @@ fn main() {
                         );
                     match bin_addr {
                         Ok(addr) => {
-                            println!("{}", addr.value());
+                            println!("\"{}\"", addr.value());
                         }
                         Err(error) => {
                             println!("Error: {}", error);
@@ -84,7 +84,7 @@ fn main() {
 
     if case_encode && case_contract {
         for arg in &args[4..] {
-            if arg.len() > 2 && arg.starts_with('"') && arg.ends_with('"') {
+            if arg.starts_with('"') && arg.ends_with('"') {
                 let addr: Result<Address, _> =
                     Address::try_from((&arg[1..arg.len() - 1]).to_string());
                 match addr {

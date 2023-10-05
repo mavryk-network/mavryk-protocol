@@ -30,7 +30,8 @@ tezos-rust-sdk-test-codec:
     - cargo build
     - cd ../../..
     - make octez-codec
-# TODO:    -  compare outputs of codec and octez-codec
+    - cd contrib/tezos-rust-sdk
+    - bash codec/tests/test.bash
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
