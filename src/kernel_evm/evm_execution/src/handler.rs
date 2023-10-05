@@ -1405,9 +1405,29 @@ impl<'a, Host: Runtime> Handler for EvmHandler<'a, Host> {
         init_code: Vec<u8>,
         target_gas: Option<u64>,
     ) -> Capture<CreateOutcome, Self::CreateInterrupt> {
-        if let Err(err) = self.begin_inter_transaction(false, target_gas) {
+        let gas_limit = target_gas.map(|gas| {
+            let after_gas = if self.config.call_l64_after_gas {
+                let gas_remaining = self.gas_remaining();
+                gas_remaining - gas_remaining / 64
+            } else {
+                self.gas_remaining()
+            };
+
+            min(gas, after_gas)
+        });
+
+        if let Err(err) = self.begin_inter_transaction(false, gas_limit) {
+            log!(
+                self.host,
+                Debug,
+                "Not enought gas for call. Required at least: {:?}",
+                gas_limit
+            );
+
             Capture::Exit((
-                ExitReason::Fatal(ExitFatal::Other(Cow::from(format!("{err:?}")))),
+                ExitReason::Fatal(ExitFatal::Other(Cow::from(
+                    "Out of gas before recursive create",
+                ))),
                 None,
                 vec![],
             ))
