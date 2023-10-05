@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 derive_more = "0.99.17"
 async-trait = "0.1"
+num-bigint = "0.4"
 
 # Local dependencies
 tezos-core = { path = "../tezos-core" }

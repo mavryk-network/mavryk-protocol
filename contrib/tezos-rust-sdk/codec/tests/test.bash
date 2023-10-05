@@ -5,10 +5,26 @@ tmp2=$(mktemp)
 bad=0
 
 while read l ; do
+    echo "$l"
     ./target/debug/codec $l | tee $tmp1
     ../../octez-codec $l | tee $tmp2
     (diff $tmp1 $tmp2 && echo "OK") || (echo "KO" ; $((bad++)))
 done <<EOF
+decode ground.Z from 1A
+decode ground.N from e4f8a0f184d9e4ed87c546
+decode ground.Z from e4f8a0f184d9e4ed87c546
+encode ground.Z from "26"
+encode ground.N from "83278392328328938273892"
+encode ground.Z from "-41639196164164469136932"
+encode ground.int64 from "437918234"
+encode ground.int64 from "0"
+encode ground.int64 from "1"
+encode ground.int64 from "2"
+encode ground.int64 from "42"
+encode ground.int64 from "42424242"
+decode ground.int32 from 1A1A1A1A
+decode ground.int64 from 1A1A1A1A1A1A1A1A
+decode ground.uint16 from 1A1A
 encode alpha.contract from "tz1PJ5xxUFDAwgKHLMUPe5SL3eJkVehfiDL6"
 encode alpha.contract from "tz3RDC3Jdn4j15J7bBHZd29EUee9gVB1CxD9"
 encode alpha.contract from "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"

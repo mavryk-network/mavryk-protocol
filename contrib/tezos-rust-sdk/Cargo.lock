@@ -359,6 +359,7 @@ dependencies = [
  "async-trait",
  "derive_more",
  "httpmock",
+ "num-bigint",
  "tezos-core",
  "tezos-michelson",
  "tezos-operation",
