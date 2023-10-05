@@ -149,177 +149,39 @@ let originate ctxt address_hash ~balance script =
   in
   return (ctxt, result)
 
-(* let originate_test_fa12 ~typecheck ctxt admin =
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, fa12_address) ->
-  let script =
-    Script_repr.
-      {
-        code = Script_repr.lazy_expr Liquidity_baking_lqt.script;
-        storage =
-          test_fa12_init_storage (Signature.Public_key_hash.to_b58check admin);
-      }
-  in
-  typecheck ctxt script >>=? fun (script, ctxt) ->
-  originate ctxt fa12_address ~balance:(Tez_repr.of_mumav_exn 1_000_000L) script
-  >|=? fun (ctxt, origination_result) ->
-  (ctxt, fa12_address, [origination_result]) *)
-
-(* hardcoded from lib_parameters *)
-(* let first_bootstrap_account =
-  Signature.Public_key.hash
-    (Signature.Public_key.of_b58check_exn
-       "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav") *)
-
-(* let check_tzBTC ~typecheck current_level ctxt f =
-  Contract_storage.exists ctxt (Contract_repr.Originated mainnet_tzBTC_address)
-  >>= function
-  | true ->
-      (* If tzBTC exists, we're on mainnet and we use it as the token address in the CPMM. *)
-      f ctxt mainnet_tzBTC_address []
-  | false ->
-      (* If the tzBTC contract does not exist, we originate a test FA1.2 contract using the same script as the LQT. This is so that we can test the contracts after performing the same protocol migration that will be done on mainnet.
-
-         First, we check current level is below mainnet level roughly around 010 injection so we do not accidentally originate the test token contract on mainnet. *)
-      if Compare.Int32.(current_level < 1_437_862l) then
-        originate_test_fa12 ~typecheck ctxt first_bootstrap_account
-        (* Token contract admin *)
-        >>=? fun (ctxt, token_address, token_result) ->
-        f ctxt token_address token_result
-      else
-        (* If we accidentally entered the tzBTC address incorrectly, but current level indicates this could be mainnet, we do not originate any contracts *)
-        return (ctxt, []) *)
-
-(* let init ctxt ~typecheck =
-  (* We use a custom origination nonce because it is unset when stitching from 009 *)
-  let nonce = Operation_hash.hash_string ["Save, save, save."] in
-  let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  Storage.Treasury.Toggle_ema.init ctxt 0l >>=? fun ctxt ->
-  let current_level =
-    Raw_level_repr.to_int32 (Level_storage.current ctxt).level
-  in
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, treasury_address) ->
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, lqt_address) ->
-  Storage.Treasury.Treasury_address.init ctxt treasury_address >>=? fun ctxt ->
-  check_tzBTC
-    ~typecheck
-    current_level
-    ctxt
-    (fun ctxt token_address token_result ->
-      let cpmm_script =
-        Script_repr.
-          {
-            code = Script_repr.lazy_expr Liquidity_baking_cpmm.script;
-            storage =
-              cpmm_init_storage
-                ~token_address:(Contract_hash.to_b58check token_address)
-                ~lqt_address:(Contract_hash.to_b58check lqt_address);
-          }
-      in
-      typecheck ctxt cpmm_script >>=? fun (cpmm_script, ctxt) ->
-      let lqt_script =
-        Script_repr.
-          {
-            code = Script_repr.lazy_expr Liquidity_baking_lqt.script;
-            storage = treasury_init_storage (Contract_hash.to_b58check treasury_address);
-          }
-      in
-      typecheck ctxt lqt_script >>=? fun (lqt_script, ctxt) ->
-      originate
-        ctxt
-        treasury_address
-        ~balance:(Tez_repr.of_mumav_exn 100L)
-        cpmm_script
-      >>=? fun (ctxt, treasury_result) ->
-      originate ctxt lqt_address ~balance:Tez_repr.zero lqt_script
-      >|=? fun (ctxt, lqt_result) ->
-      (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
-      let ctxt = Raw_context.unset_origination_nonce ctxt in
-      (ctxt, [treasury_result; lqt_result] @ token_result)) *)
-
-
-
-(* let init ctxt =
+  
+let init ctxt ~typecheck =
   (* We use a custom origination nonce because it is unset when stitching from 009 *)
   let nonce = Operation_hash.hash_string ["Save, save, save."] in
   let ctxt = Raw_context.init_origination_nonce ctxt nonce in
   
-    (* Generate treasury_address *)
-    Contract_storage.fresh_contract_from_current_nonce ctxt
-    >>?= fun (ctxt, treasury_address) ->
-    
-    (* Generate treasury_gateway_address, previously named lqt_address *)
-    Contract_storage.fresh_contract_from_current_nonce ctxt
-    >>?= fun (ctxt, treasury_gateway_address) ->
-
-    (* Assuming we still need to store the treasury address, so keeping this step *)
-    Storage.Treasury.Treasury_address.init ctxt treasury_address 
-    >>=? fun ctxt ->
-    
-    (* TODO: Add any other logic you want to apply with these addresses *)
-
-    (* Unsets the origination nonce, as the comment suggests *)
-    let ctxt = Raw_context.unset_origination_nonce ctxt in
-    
-    return (ctxt, [treasury_address; treasury_gateway_address])
- *)
-
-
- (* let init (ctxt : Raw_context.t) ~typecheck :
-  (Raw_context.t * Migration_repr.origination_result list) tzresult Lwt.t =
-  (* We use a custom origination nonce because it is unset when stitching from 009 *)
-  let nonce = Operation_hash.hash_string ["Save, save, save."] in
-  let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  
-  (* Generate treasury_address *)
   Contract_storage.fresh_contract_from_current_nonce ctxt
   >>?= fun (ctxt, treasury_address) ->
   
-  (* Generate treasury_gateway_address, previously named lqt_address *)
   Contract_storage.fresh_contract_from_current_nonce ctxt
   >>?= fun (ctxt, treasury_gateway_address) ->
-
-  (* Assuming we still need to store the treasury address, so keeping this step *)
-  Storage.Treasury.Treasury_address.init ctxt treasury_address 
-  >>=? fun ctxt ->
   
-  (* TODO: Add any other logic you want to apply with these addresses *)
-
-  (* Unsets the origination nonce, as the comment suggests *)
-  let ctxt = Raw_context.unset_origination_nonce ctxt in
+  (* Placeholder for treasury contract code and storage *)
+  let treasury_code    = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+  let treasury_storage = treasury_init_storage (Contract_hash.to_b58check treasury_address) in
   
-  (* Return in the format specified by the interface *)
-  return (ctxt, [{Migration_repr.originated = treasury_address}; {Migration_repr.originated = treasury_gateway_address}])
-  (* return (ctxt, [treasury_address; treasury_gateway_address]) *)
- *)
-
-(* let init ctxt ~typecheck =
-  (* We use a custom origination nonce because it is unset when stitching from 009 *)
-  let nonce = Operation_hash.hash_string ["Drip, drip, drip."] in
-  let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, treasury_address) ->
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, treasury_gateway_address) ->
-  (* Now, you should set the initial state for your new contracts here, similar to how the Liquidity_baking.Cpmm_address.init function works *)
+  (* Placeholder for treasury gateway contract code and storage *)
+  let treasury_gateway_code    = Script_repr.lazy_expr Liquidity_baking_lqt.script in
+  let treasury_gateway_storage = treasury_init_storage (Contract_hash.to_b58check treasury_address) in
   
-  (* Since you don't need check_tzBTC, you can directly create the scripts for your contracts *)
-  (* The following are placeholders, you should define treasury_script and treasury_gateway_script based on your actual contract scripts and storages *)
   let treasury_script =
     Script_repr.
       {
-        code = (* Put the code for the treasury contract here *);
-        storage = (* Initialize the storage for the treasury contract *);
+        code = treasury_code;
+        storage = treasury_storage;
       }
   in
   
   let treasury_gateway_script =
     Script_repr.
       {
-        code = (* Put the code for the treasury gateway contract here *);
-        storage = (* Initialize the storage for the treasury gateway contract *);
+        code = treasury_gateway_code;
+        storage = treasury_gateway_storage;
       }
   in
   
@@ -338,57 +200,4 @@ let originate ctxt address_hash ~balance script =
   
   (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
   let ctxt = Raw_context.unset_origination_nonce ctxt in
-  (ctxt, [treasury_result; treasury_gateway_result]) *)
-
-  let init ctxt ~typecheck =
-    (* We use a custom origination nonce because it is unset when stitching from 009 *)
-    let nonce = Operation_hash.hash_string ["Save, save, save."] in
-    let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-    
-    Contract_storage.fresh_contract_from_current_nonce ctxt
-    >>?= fun (ctxt, treasury_address) ->
-    
-    Contract_storage.fresh_contract_from_current_nonce ctxt
-    >>?= fun (ctxt, treasury_gateway_address) ->
-    
-    (* Placeholder for treasury contract code and storage *)
-    let treasury_code    = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
-    let treasury_storage = treasury_init_storage (Contract_hash.to_b58check treasury_address) in
-    
-    (* Placeholder for treasury gateway contract code and storage *)
-    let treasury_gateway_code    = Script_repr.lazy_expr Liquidity_baking_lqt.script in
-    let treasury_gateway_storage = treasury_init_storage (Contract_hash.to_b58check treasury_address) in
-    
-    let treasury_script =
-      Script_repr.
-        {
-          code = treasury_code;
-          storage = treasury_storage;
-        }
-    in
-    
-    let treasury_gateway_script =
-      Script_repr.
-        {
-          code = treasury_gateway_code;
-          storage = treasury_gateway_storage;
-        }
-    in
-    
-    typecheck ctxt treasury_script >>=? fun (treasury_script, ctxt) ->
-    typecheck ctxt treasury_gateway_script >>=? fun (treasury_gateway_script, ctxt) ->
-    
-    originate
-      ctxt
-      treasury_address
-      ~balance:(Tez_repr.of_mumav_exn 100L)
-      treasury_script
-    >>=? fun (ctxt, treasury_result) ->
-    
-    originate ctxt treasury_gateway_address ~balance:Tez_repr.zero treasury_gateway_script
-    >|=? fun (ctxt, treasury_gateway_result) ->
-    
-    (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
-    let ctxt = Raw_context.unset_origination_nonce ctxt in
-    (ctxt, [treasury_result; treasury_gateway_result])
-  
+  (ctxt, [treasury_result; treasury_gateway_result])

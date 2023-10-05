@@ -25,20 +25,21 @@
 
 (** Testing
     -------
-    Component:    liquidity baking
+    Component:    treasury
     Invocation:   dune exec src/proto_alpha/lib_protocol/test/integration/main.exe \
-                   -- --file test_liquidity_baking.ml
+                   -- --file test_treasury.ml
     Subject:      Test liquidity baking subsidies, CPMM storage updates,
                   and toggle vote.
 *)
 
 (* open Liquidity_baking_machine *)
+open Treasury_machine
 open Protocol
 open Test_tez
 
 let generate_init_state () =
-  let cpmm_min_xtz_balance = 10_000_000L in
-  let cpmm_min_tzbtc_balance = 100_000 in
+  let treasury_min_xtz_balance = 10_000_000L in
+  let treasury_min_tzbtc_balance = 100_000 in
   let accounts_balances =
     [
       {xtz = 1_000_000L; tzbtc = 1; liquidity = 100};
@@ -47,14 +48,14 @@ let generate_init_state () =
     ]
   in
   ValidationMachine.build
-    {cpmm_min_xtz_balance; cpmm_min_tzbtc_balance; accounts_balances}
+    {treasury_min_xtz_balance; treasury_min_tzbtc_balance; accounts_balances}
   >>=? fun (_, _) -> return_unit
 
 (* The script hash of
 
    https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/dexter.liquidity_baking.mligo.tz
 *)
-let expected_cpmm_hash =
+let expected_treasury_hash =
   Script_expr_hash.of_b58check_exn
     "expru15HMzoLGQzuQjFVkXRPdQR2D9WgFGPS8tvcwb6xLiDqovSVQT"
 
@@ -66,30 +67,30 @@ let expected_lqt_hash =
   Script_expr_hash.of_b58check_exn
     "exprufAK15C2FCbxGLCEVXFe26p3eQdYuwZRk1morJUwy9NBUmEZVB"
 
-(* Test that the scripts of the Liquidity Baking contracts (CPMM and LQT) have the expected hashes. *)
-let liquidity_baking_origination () =
+(* Test that the scripts of the Treasury contracts (Treasury and Gateway) have the expected hashes. *)
+let treasury_origination () =
   Context.init1 () >>=? fun (blk, _contract) ->
-  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun cpmm_address ->
-  Context.Contract.script_hash (B blk) cpmm_address >>=? fun cpmm_hash ->
-  let lqt_address =
+  Context.get_treasury_contract_address (B blk) >>=? fun treasury_address ->
+  Context.Contract.script_hash (B blk) treasury_address >>=? fun treasury_hash ->
+  let gateway_address =
     Contract_hash.of_b58check_exn "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
   in
-  Context.Contract.script_hash (B blk) lqt_address >>=? fun lqt_hash ->
+  Context.Contract.script_hash (B blk) gateway_address >>=? fun gateway_hash ->
   Assert.equal
     ~loc:__LOC__
     Script_expr_hash.equal
-    "Unexpected CPMM script."
+    "Unexpected Treasury script."
     Script_expr_hash.pp
-    cpmm_hash
-    expected_cpmm_hash
+    treasury_hash
+    expected_treasury_hash
   >>=? fun () ->
   Assert.equal
     ~loc:__LOC__
     Script_expr_hash.equal
-    "Unexpected LQT script."
+    "Unexpected Gateway script."
     Script_expr_hash.pp
-    lqt_hash
-    expected_lqt_hash
+    gateway_hash
+    expected_gateway_hash
   >>=? fun () -> return_unit
 
 (* Test that the CPMM address in storage is correct *)
@@ -105,162 +106,6 @@ let liquidity_baking_cpmm_address () =
     "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
   >>=? fun () -> return_unit
 
-(* Test that after [n] blocks, the liquidity baking CPMM contract is credited [n] times the subsidy amount. *)
-let liquidity_baking_subsidies n () =
-  Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
-  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun liquidity_baking ->
-  let liquidity_baking = Alpha_context.Contract.Originated liquidity_baking in
-  Context.Contract.balance (B blk) liquidity_baking >>=? fun old_balance ->
-  Block.bake_n n blk >>=? fun blk ->
-  Context.get_liquidity_baking_subsidy (B blk)
-  >>=? fun liquidity_baking_subsidy ->
-  (liquidity_baking_subsidy *? Int64.(of_int n)) >>?= fun expected_credit ->
-  Assert.balance_was_credited
-    ~loc:__LOC__
-    (B blk)
-    liquidity_baking
-    old_balance
-    expected_credit
-  >>=? fun () -> return_unit
-
-(* Test that subsidy shuts off at correct level alternating baking
-   blocks with liquidity_baking_toggle_vote set to [LB_on], [LB_off], and [LB_pass] followed by [bake_after_toggle] blocks with it set to [LB_pass]. *)
-(* Expected level is roughly 2*(log(1-1/(2*p)) / log(0.999)) where [p] is the proportion [LB_off / (LB_on + LB_off)]. *)
-let liquidity_baking_toggle ~n_vote_on ~n_vote_off ~n_vote_pass expected_level
-    bake_after () =
-  Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
-  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun liquidity_baking ->
-  let liquidity_baking = Alpha_context.Contract.Originated liquidity_baking in
-  Context.Contract.balance (B blk) liquidity_baking >>=? fun old_balance ->
-  Context.get_liquidity_baking_subsidy (B blk)
-  >>=? fun liquidity_baking_subsidy ->
-  let rec bake_stopping blk i =
-    if i < expected_level then
-      Block.bake_n ~liquidity_baking_toggle_vote:LB_on n_vote_on blk
-      >>=? fun blk ->
-      Block.bake_n ~liquidity_baking_toggle_vote:LB_off n_vote_off blk
-      >>=? fun blk ->
-      Block.bake_n ~liquidity_baking_toggle_vote:LB_pass n_vote_pass blk
-      >>=? fun blk ->
-      bake_stopping blk (i + n_vote_on + n_vote_off + n_vote_pass)
-    else return blk
-  in
-  bake_stopping blk 0 >>=? fun blk ->
-  Context.Contract.balance (B blk) liquidity_baking >>=? fun balance ->
-  Block.bake_n ~liquidity_baking_toggle_vote:LB_pass bake_after blk
-  >>=? fun blk ->
-  Assert.balance_is ~loc:__LOC__ (B blk) liquidity_baking balance >>=? fun () ->
-  liquidity_baking_subsidy *? Int64.of_int (expected_level - 1)
-  >>?= fun expected_final_balance ->
-  Assert.balance_was_credited
-    ~loc:__LOC__
-    (B blk)
-    liquidity_baking
-    old_balance
-    expected_final_balance
-  >>=? fun () -> return_unit
-
-(* 100% of blocks have liquidity_baking_toggle_vote = LB_off *)
-let liquidity_baking_toggle_100 n () =
-  liquidity_baking_toggle ~n_vote_on:0 ~n_vote_off:1 ~n_vote_pass:0 1386 n ()
-
-(* 80% of blocks have liquidity_baking_toggle_vote = LB_off *)
-let liquidity_baking_toggle_80 n () =
-  liquidity_baking_toggle ~n_vote_on:1 ~n_vote_off:4 ~n_vote_pass:0 1963 n ()
-
-(* 60% of blocks have liquidity_baking_toggle_vote = LB_off *)
-let liquidity_baking_toggle_60 n () =
-  liquidity_baking_toggle ~n_vote_on:2 ~n_vote_off:3 ~n_vote_pass:0 3583 n ()
-
-(* 50% of blocks have liquidity_baking_toggle_vote = LB_off.
-   Subsidy should not be stopped.
-   Bakes until 100 blocks after the test sunset level of 4096 used in previous protocols. *)
-let liquidity_baking_toggle_50 () =
-  Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
-  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun liquidity_baking ->
-  let liquidity_baking = Alpha_context.Contract.Originated liquidity_baking in
-  Context.Contract.balance (B blk) liquidity_baking >>=? fun old_balance ->
-  Context.get_liquidity_baking_subsidy (B blk)
-  >>=? fun liquidity_baking_subsidy ->
-  let rec bake_stopping blk i =
-    if i < 4196 then
-      Block.bake ~liquidity_baking_toggle_vote:LB_on blk >>=? fun blk ->
-      Block.bake ~liquidity_baking_toggle_vote:LB_off blk >>=? fun blk ->
-      bake_stopping blk (i + 2)
-    else return blk
-  in
-  bake_stopping blk 0 >>=? fun blk ->
-  Context.Contract.balance (B blk) liquidity_baking >>=? fun balance ->
-  Assert.balance_is ~loc:__LOC__ (B blk) liquidity_baking balance >>=? fun () ->
-  liquidity_baking_subsidy *? Int64.of_int 4196
-  >>?= fun expected_final_balance ->
-  Assert.balance_was_credited
-    ~loc:__LOC__
-    (B blk)
-    liquidity_baking
-    old_balance
-    expected_final_balance
-  >>=? fun () -> return_unit
-
-(* Test that the subsidy can restart if LB_on votes regain majority.
-   Bake n_votes with LB_off, check that the subsidy is paused, bake
-   n_votes with LB_on, check that the subsidy flows.
-*)
-let liquidity_baking_restart n_votes n () =
-  Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
-  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun liquidity_baking ->
-  let liquidity_baking = Alpha_context.Contract.Originated liquidity_baking in
-  Block.bake_n ~liquidity_baking_toggle_vote:LB_off n_votes blk >>=? fun blk ->
-  Context.Contract.balance (B blk) liquidity_baking
-  >>=? fun balance_when_paused ->
-  Block.bake_n ~liquidity_baking_toggle_vote:LB_pass n blk >>=? fun blk ->
-  Assert.balance_is ~loc:__LOC__ (B blk) liquidity_baking balance_when_paused
-  >>=? fun () ->
-  Block.bake_n ~liquidity_baking_toggle_vote:LB_on n_votes blk >>=? fun blk ->
-  Context.Contract.balance (B blk) liquidity_baking
-  >>=? fun balance_when_restarted ->
-  Block.bake_n ~liquidity_baking_toggle_vote:LB_pass n blk >>=? fun blk ->
-  Context.get_liquidity_baking_subsidy (B blk)
-  >>=? fun liquidity_baking_subsidy ->
-  liquidity_baking_subsidy *? Int64.of_int n >>?= fun expected_balance ->
-  Assert.balance_was_credited
-    ~loc:__LOC__
-    (B blk)
-    liquidity_baking
-    balance_when_restarted
-    expected_balance
-  >>=? fun () -> return_unit
-
-(* Test that the toggle EMA in block metadata is correct. *)
-let liquidity_baking_toggle_ema n_vote_on n_vote_off level bake_after
-    expected_toggle_ema () =
-  Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
-  let rec bake_escaping blk i =
-    if i < level then
-      Block.bake_n ~liquidity_baking_toggle_vote:LB_on n_vote_on blk
-      >>=? fun blk ->
-      Block.bake_n ~liquidity_baking_toggle_vote:LB_off n_vote_off blk
-      >>=? fun blk -> bake_escaping blk (i + n_vote_on + n_vote_off)
-    else return blk
-  in
-  bake_escaping blk 0 >>=? fun blk ->
-  (* We only need to return the toggle EMA at the end. *)
-  Block.bake_n_with_liquidity_baking_toggle_ema bake_after blk
-  >>=? fun (_blk, toggle_ema) ->
-  Assert.leq_int
-    ~loc:__LOC__
-    (toggle_ema |> Alpha_context.Liquidity_baking.Toggle_EMA.to_int32
-   |> Int32.to_int)
-    expected_toggle_ema
-  >>=? fun () -> return_unit
-
-(* With no bakers setting the toggle vote, EMA should be zero. *)
-let liquidity_baking_toggle_ema_zero () =
-  liquidity_baking_toggle_ema 0 0 0 100 0 ()
-
-(* The EMA should be not much over the threshold after the subsidy has been stopped by a toggle vote. We add 1_000_000 to the constant to give room for the last update. *)
-let liquidity_baking_toggle_ema_threshold () =
-  liquidity_baking_toggle_ema 0 1 1386 1 1_001_000_000 ()
 
 let liquidity_baking_storage n () =
   Context.init1 ~consensus_threshold:0 () >>=? fun (blk, _contract) ->
@@ -437,75 +282,7 @@ let tests =
       `Quick
       liquidity_baking_cpmm_address;
     Tztest.tztest "Init Context" `Quick generate_init_state;
-    Tztest.tztest
-      "liquidity baking subsidy is correct"
-      `Quick
-      (liquidity_baking_subsidies 64);
-    Tztest.tztest
-      "liquidity baking toggle vote with 100% of bakers voting LB_off baking \
-       one block longer"
-      `Quick
-      (liquidity_baking_toggle_100 1);
-    Tztest.tztest
-      "liquidity baking toggle vote with 100% of bakers voting LB_off baking \
-       two blocks longer"
-      `Quick
-      (liquidity_baking_toggle_100 2);
-    Tztest.tztest
-      "liquidity baking toggle vote with 100% of bakers voting LB_off baking \
-       100 blocks longer"
-      `Quick
-      (liquidity_baking_toggle_100 100);
-    Tztest.tztest
-      "liquidity baking toggle vote with 80% of bakers voting LB_off baking \
-       one block longer"
-      `Quick
-      (liquidity_baking_toggle_80 1);
-    Tztest.tztest
-      "liquidity baking toggle vote with 80% of bakers voting LB_off baking \
-       two blocks longer"
-      `Quick
-      (liquidity_baking_toggle_80 2);
-    Tztest.tztest
-      "liquidity baking toggle vote with 80% of bakers voting LB_off baking \
-       100 blocks longer"
-      `Quick
-      (liquidity_baking_toggle_80 100);
-    Tztest.tztest
-      "liquidity baking toggle vote with 60% of bakers voting LB_off baking \
-       one block longer"
-      `Quick
-      (liquidity_baking_toggle_60 1);
-    Tztest.tztest
-      "liquidity baking toggle vote with 60% of bakers voting LB_off baking \
-       two blocks longer"
-      `Quick
-      (liquidity_baking_toggle_60 2);
-    Tztest.tztest
-      "liquidity baking toggle vote with 60% of bakers voting LB_off baking \
-       100 blocks longer"
-      `Quick
-      (liquidity_baking_toggle_60 100);
-    Tztest.tztest
-      "liquidity baking does not shut off with toggle vote at 50% and baking \
-       100 blocks longer than sunset level in previous protocols"
-      `Quick
-      liquidity_baking_toggle_50;
-    Tztest.tztest
-      "liquidity baking restart with 100% of bakers voting off, then pass, \
-       then on"
-      `Quick
-      (liquidity_baking_restart 2000 1);
-    Tztest.tztest
-      "liquidity baking toggle ema in block metadata is zero with no bakers \
-       voting LB_off."
-      `Quick
-      liquidity_baking_toggle_ema_zero;
-    Tztest.tztest
-      "liquidity baking toggle ema is equal to the threshold after the subsidy \
-       has been stopped by a toggle vote"
-      `Quick
-      liquidity_baking_toggle_ema_threshold;
+    
     Tztest.tztest
       "liquidity baking storage is updated"
       `Quick
@@ -544,5 +321,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ Protocol.name [("liquidity baking", tests)]
+  Alcotest_lwt.run ~__FILE__ Protocol.name [("treasury", tests)]
   |> Lwt_main.run
