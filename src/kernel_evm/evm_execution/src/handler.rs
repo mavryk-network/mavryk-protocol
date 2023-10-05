@@ -187,6 +187,20 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
             .unwrap_or(0_u64)
     }
 
+    /// Cost of storing a contract
+    fn code_storage_cost(&self, code_size: usize) -> u64 {
+        // There is no way to deploy a contract that contains more than 2^64 bytes
+        // of code..
+        let code_size = code_size as u64;
+        let word_count = if code_size % 32 == 0 {
+            code_size / 32
+        } else {
+            1 + code_size / 32
+        };
+
+        word_count * self.config.gas_sstore_set
+    }
+
     /// Record the cost of a static-cost opcode
     pub fn record_cost(&mut self, cost: u64) -> Result<(), ExitError> {
         let Some(layer) = self.transaction_data.last_mut() else {
@@ -489,6 +503,10 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
                 // The contract has been deleted, so the address is empty. However, after
                 // creating the new contract, the _new_ contract isn't deleted.
                 self.unmark_deletion(address);
+            }
+
+            if let Err(err) = self.record_cost(self.code_storage_cost(code_out.len())) {
+                return Ok((ExitReason::Error(err), None, vec![]));
             }
 
             self.set_contract_code(address, code_out)?;
