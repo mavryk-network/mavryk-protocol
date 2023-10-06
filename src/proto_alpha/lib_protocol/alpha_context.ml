@@ -668,6 +668,6 @@ module Internal_for_tests = struct
   let to_raw x = x
 end
 
-module Treasury = struct
-  include Treasury_storage
+module Gateway = struct
+  include Gateway_storage
 end

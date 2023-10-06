@@ -25,11 +25,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* open Format *)
-
-(** Set treasury and burn address - to be replaced *)
-(* let burn_address     = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  *)
-
 let expected_slots_for_given_active_stake ctxt ~total_active_stake ~active_stake
     =
   let blocks_per_cycle =
@@ -133,7 +128,7 @@ let record_endorsing_participation ctxt ~delegate ~participation
                
     
 
-let treasury_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  
+let gateway_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  
 let burn_address     = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 
                 
 (* let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
@@ -152,8 +147,8 @@ let burn_address     = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
      | Error _ -> return (ctxt, [])
      | Ok quarter_fees -> 
 
-        let treasury_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn treasury_address) in
-        Token.transfer ctxt `Block_fees (`Contract treasury_contract) quarter_fees >>=? fun (ctxt, _) ->
+        let gateway_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn gateway_address) in
+        Token.transfer ctxt `Block_fees (`Contract gateway_contract) quarter_fees >>=? fun (ctxt, _) ->
         Token.transfer_n
           ctxt
           [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)]
@@ -204,8 +199,8 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     (match Tez_repr.(block_fees /? 4L) with
      | Error _ -> return (ctxt, [], [], [])
      | Ok quarter_fees -> 
-        let treasury_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn treasury_address) in
-        Token.transfer ctxt `Block_fees (`Contract treasury_contract) quarter_fees >>=? fun (ctxt, balance_updates_treasury) ->
+        let gateway_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn gateway_address) in
+        Token.transfer ctxt `Block_fees (`Contract gateway_contract) quarter_fees >>=? fun (ctxt, balance_updates_gateway) ->
         Token.transfer_n ctxt [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)] (`Contract contract) 
         >>=? fun (ctxt, balance_updates_delegate) ->
         match Tez_repr.(quarter_fees *? 2L) with
@@ -216,7 +211,7 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
               | Ok remainder_for_burning ->
                   let burn_destination = Contract_repr.Implicit (Signature.Public_key_hash.of_b58check_exn burn_address) in
                   Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning >>=? fun (ctxt, balance_updates_burn) ->
-                  return (ctxt, balance_updates_treasury, balance_updates_delegate, balance_updates_burn)
+                  return (ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn)
     )
   in
 
@@ -226,14 +221,14 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
   in
 
   pay_payload_producer ctxt payload_producer
-  >>=? fun (ctxt, balance_updates_treasury, balance_updates_delegate, balance_updates_burn) ->
+  >>=? fun (ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn) ->
 
   (match reward_bonus with
    | Some bonus -> pay_block_producer ctxt block_producer bonus
    | None -> return (ctxt, []))
   >>=? fun (ctxt, balance_updates_block_producer) ->
 
-  return (ctxt, balance_updates_treasury @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
+  return (ctxt, balance_updates_gateway @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
 
 
 

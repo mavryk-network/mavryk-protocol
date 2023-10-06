@@ -240,23 +240,23 @@ module Liquidity_baking = struct
     RPC_context.make_call0 S.get_cpmm_address ctxt block () ()
 end
 
-module Treasury = struct
+module Gateway = struct
   module S = struct
-    let get_treasury_address =
+    let get_gateway_address =
       RPC_service.get_service
-        ~description:"Treasury address"
+        ~description:"Gateway address"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
-        RPC_path.(custom_root / "context" / "treasury" / "cpmm_address")
+        RPC_path.(custom_root / "context" / "gateway" / "gateway_address")
   end
 
   let register () =
     let open Services_registration in
-    register0 ~chunked:false S.get_treasury_address (fun ctxt () () ->
-        Alpha_context.Treasury.get_treasury_address ctxt)
+    register0 ~chunked:false S.get_gateway_address (fun ctxt () () ->
+        Alpha_context.Gateway.get_gateway_address ctxt)
 
-  let get_treasury_address ctxt block =
-    RPC_context.make_call0 S.get_treasury_address ctxt block () ()
+  let get_gateway_address ctxt block =
+    RPC_context.make_call0 S.get_gateway_address ctxt block () ()
 end
 
 module Cache = struct
@@ -328,4 +328,4 @@ let register () =
   Sapling.register () ;
   Liquidity_baking.register () ;
   Cache.register () ; 
-  Treasury.register()
+  Gateway.register()

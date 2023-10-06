@@ -1473,12 +1473,12 @@ module Liquidity_baking = struct
       end)
 end
 
-module Treasury = struct
+module Gateway = struct
   
-  module Treasury_address =
+  module Gateway_address =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
-        let name = ["treasury_address"]
+        let name = ["gateway_address"]
       end)
       (struct
         type t = Contract_hash.t

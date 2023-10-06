@@ -73,8 +73,8 @@ module Liquidity_baking : sig
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
 end
 
-module Treasury : sig
-  val get_treasury_address :
+module Gateway : sig
+  val get_gateway_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
 end
 

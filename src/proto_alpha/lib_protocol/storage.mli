@@ -603,10 +603,10 @@ module Liquidity_baking : sig
        and type value = Contract_hash.t
 end
 
-module Treasury : sig
+module Gateway : sig
   
-  (** Treasury contract **)
-  module Treasury_address :
+  (** Gateway contract **)
+  module Gateway_address :
     Single_data_storage
       with type t := Raw_context.t
        and type value = Contract_hash.t

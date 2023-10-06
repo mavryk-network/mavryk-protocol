@@ -214,7 +214,7 @@ let test_rewards_block_and_payload_producer () =
   let fee = Tez.one in
   let open Test_tez in
   let fee_to_producer = fee /! 4L in
-  let fee_to_treasury = fee /! 4L in
+  let fee_to_gateway = fee /! 4L in
   let fee_to_burn = fee -! (fee_to_producer *! 2L) in
   Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract fee_to_producer
   >>=? fun tx ->
@@ -240,22 +240,22 @@ let test_rewards_block_and_payload_producer () =
   in
   Assert.equal_tez ~loc:__LOC__ bal expected_balance >>=? fun () ->
 
-    let treasury_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
-    match treasury_contract_result with
+    let gateway_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
+    match gateway_contract_result with
     | Error _ -> 
         failwith ("Error invalid contract address")
-    | Ok treasury_contract ->
+    | Ok gateway_contract ->
   
-        Context.Contract.balance (B b1) treasury_contract >>=? fun initial_treasury_balance ->
-        Context.Contract.balance (B b2) treasury_contract >>=? fun treasury_balance ->
+        Context.Contract.balance (B b1) gateway_contract >>=? fun initial_gateway_balance ->
+        Context.Contract.balance (B b2) gateway_contract >>=? fun gateway_balance ->
         Log.info "------";
-        Log.info "fee_to_treasury is: %s" (Tez.to_string fee_to_treasury);
-        Log.info "initial_treasury_balance is: %s" (Tez.to_string initial_treasury_balance);
-        Log.info "treasury_balance is: %s" (Tez.to_string treasury_balance);
+        Log.info "fee_to_gateway is: %s" (Tez.to_string fee_to_gateway);
+        Log.info "initial_gateway_balance is: %s" (Tez.to_string initial_gateway_balance);
+        Log.info "gateway_balance is: %s" (Tez.to_string gateway_balance);
         Log.info "------";
-        (* let expected_treasury_balance =
+        (* let expected_gateway_balance =
           let open Test_tez in
-          initial_treasury_balance +! fee_to_treasury
+          initial_gateway_balance +! fee_to_gateway
         in
         Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
   
@@ -316,22 +316,22 @@ let test_rewards_block_and_payload_producer () =
   (* [baker_b2'] gets the bonus because he is the one who included the
      endorsements *)
 
-  let treasury_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
-  match treasury_contract_result with
+  let gateway_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
+  match gateway_contract_result with
   | Error _ -> 
       failwith ("Error invalid contract address")
-  | Ok treasury_contract ->
+  | Ok gateway_contract ->
 
-      Context.Contract.balance (B b1) treasury_contract >>=? fun initial_treasury_balance ->
-      Context.Contract.balance (B b2') treasury_contract >>=? fun treasury_balance ->
+      Context.Contract.balance (B b1) gateway_contract >>=? fun initial_gateway_balance ->
+      Context.Contract.balance (B b2') gateway_contract >>=? fun gateway_balance ->
       Log.info "------";
-      Log.info "fee_to_treasury is: %s" (Tez.to_string fee_to_treasury);
-      Log.info "initial_treasury_balance is: %s" (Tez.to_string initial_treasury_balance);
-      Log.info "treasury_balance is: %s" (Tez.to_string treasury_balance);
+      Log.info "fee_to_gateway is: %s" (Tez.to_string fee_to_gateway);
+      Log.info "initial_gateway_balance is: %s" (Tez.to_string initial_gateway_balance);
+      Log.info "gateway_balance is: %s" (Tez.to_string gateway_balance);
       Log.info "------";
-      (* let expected_treasury_balance =
+      (* let expected_gateway_balance =
         let open Test_tez in
-        initial_treasury_balance +! fee_to_treasury 
+        initial_gateway_balance +! fee_to_gateway
       in
       Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
 

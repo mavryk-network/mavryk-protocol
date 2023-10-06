@@ -107,7 +107,7 @@
         "Bond_id_repr",
         "Vote_repr",
         "Liquidity_baking_repr",
-        "Treasury_repr",
+        "Gateway_repr",
 
         "Block_header_repr",
         "Destination_repr",
@@ -170,10 +170,9 @@
         "Liquidity_baking_lqt",
         "Liquidity_baking_migration",
         
-        "Treasury_storage",
-        "Treasury_contract",
-        "Treasury_gateway_contract",
-        "Treasury_migration",
+        "Gateway_storage",
+        "Gateway_contract",
+        "Gateway_migration",
 
         "Sc_rollup_errors",
         "Sc_rollup_inbox_storage",

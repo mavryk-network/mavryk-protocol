@@ -35,7 +35,7 @@
   test_storage_functions
   test_storage
   test_token
-  test_treasury))
+  test_gateway))
 
 (executable
  (name main)

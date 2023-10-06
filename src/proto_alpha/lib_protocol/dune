@@ -130,7 +130,7 @@
   Bond_id_repr
   Vote_repr
   Liquidity_baking_repr
-  Treasury_repr
+  Gateway_repr
   Block_header_repr
   Destination_repr
   Script_int
@@ -185,10 +185,9 @@
   Liquidity_baking_cpmm
   Liquidity_baking_lqt
   Liquidity_baking_migration
-  Treasury_storage
-  Treasury_contract
-  Treasury_gateway_contract
-  Treasury_migration
+  Gateway_storage
+  Gateway_contract
+  Gateway_migration
   Sc_rollup_errors
   Sc_rollup_inbox_storage
   Legacy_script_patches
@@ -413,7 +412,7 @@
   bond_id_repr.ml bond_id_repr.mli
   vote_repr.ml vote_repr.mli
   liquidity_baking_repr.ml liquidity_baking_repr.mli
-  treasury_repr.ml treasury_repr.mli
+  gateway_repr.ml gateway_repr.mli
   block_header_repr.ml block_header_repr.mli
   destination_repr.ml destination_repr.mli
   script_int.ml script_int.mli
@@ -469,10 +468,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
-  treasury_storage.ml treasury_storage.mli
-  treasury_contract.ml
-  treasury_gateway_contract.ml
-  treasury_migration.ml treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -698,7 +696,7 @@
   bond_id_repr.ml bond_id_repr.mli
   vote_repr.ml vote_repr.mli
   liquidity_baking_repr.ml liquidity_baking_repr.mli
-  treasury_repr.ml treasury_repr.mli
+  gateway_repr.ml gateway_repr.mli
   block_header_repr.ml block_header_repr.mli
   destination_repr.ml destination_repr.mli
   script_int.ml script_int.mli
@@ -754,10 +752,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
-  treasury_storage.ml treasury_storage.mli
-  treasury_contract.ml
-  treasury_gateway_contract.ml
-  treasury_migration.ml treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -967,7 +964,7 @@
   bond_id_repr.ml bond_id_repr.mli
   vote_repr.ml vote_repr.mli
   liquidity_baking_repr.ml liquidity_baking_repr.mli
-  treasury_repr.ml treasury_repr.mli
+  gateway_repr.ml gateway_repr.mli
   block_header_repr.ml block_header_repr.mli
   destination_repr.ml destination_repr.mli
   script_int.ml script_int.mli
@@ -1023,10 +1020,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
-  treasury_storage.ml treasury_storage.mli
-  treasury_contract.ml
-  treasury_gateway_contract.ml
-  treasury_migration.ml treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml

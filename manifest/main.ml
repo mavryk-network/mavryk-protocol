@@ -4761,7 +4761,7 @@ end = struct
             ("test_storage_functions", true);
             ("test_storage", true);
             ("test_token", true);
-            ("test_treasury", true);
+            ("test_gateway", true);
           ]
           |> List.filter_map (fun (n, b) -> if b then Some n else None)
         in

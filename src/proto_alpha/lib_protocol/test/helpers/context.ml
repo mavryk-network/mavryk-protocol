@@ -232,8 +232,8 @@ let get_liquidity_baking_subsidy ctxt =
 let get_liquidity_baking_cpmm_address ctxt =
   Alpha_services.Liquidity_baking.get_cpmm_address rpc_ctxt ctxt
 
-let get_treasury_contract_address ctxt =
-  Alpha_services.Treasury.get_treasury_address rpc_ctxt ctxt
+let get_gateway_contract_address ctxt =
+  Alpha_services.Gateway.get_gateway_address rpc_ctxt ctxt
   
 (* Voting *)
 

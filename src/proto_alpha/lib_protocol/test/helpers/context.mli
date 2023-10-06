@@ -108,7 +108,7 @@ val get_liquidity_baking_subsidy : t -> Tez.t tzresult Lwt.t
 
 val get_liquidity_baking_cpmm_address : t -> Contract_hash.t tzresult Lwt.t
 
-val get_treasury_contract_address : t -> Contract_hash.t tzresult Lwt.t
+val get_gateway_contract_address : t -> Contract_hash.t tzresult Lwt.t
 
 module Vote : sig
   val get_ballots : t -> Vote.ballots tzresult Lwt.t

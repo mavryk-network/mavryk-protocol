@@ -24,15 +24,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* open Treasury_repr *)
-
-let get_treasury_address = Storage.Treasury.Treasury_address.get
-
-(* let on_treasury_exists ctxt f =
-  get_treasury_address ctxt >>=? fun treasury_contract ->
-  Contract_storage.exists ctxt (Contract_repr.Originated treasury_contract)
-  >>= function
-  | false ->
-      (* do nothing if the treasury is not found *)
-      return (ctxt, [])
-  | true -> f ctxt treasury_contract *)
+let get_gateway_address = Storage.Gateway.Gateway_address.get

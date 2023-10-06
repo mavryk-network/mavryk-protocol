@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Protocol
-open Alpha_context
+(* open Protocol *)
+(* open Alpha_context *)
 
 (** This module provides the means to test extensively the Liquidity
     Baking (LB) feature.  We recall that this feature is built upon
@@ -56,18 +56,18 @@ open Alpha_context
     the two machines, but cannot explain this desynchronization. *)
 
 (** {1 Machine State Characterization} *)
-
+(* 
 type xtz = int64
 
 type tzbtc = int
 
-type liquidity = int
+type liquidity = int *)
 
 (** As far as liquidity baking is concerned, an account can hold three
     kinds of tokens: [xtz], [tzbtc], and [liquidity]. *)
-type balances = {xtz : xtz; tzbtc : tzbtc; liquidity : liquidity}
+(* type balances = {xtz : xtz; tzbtc : tzbtc; liquidity : liquidity}
 
-val pp_balances : Format.formatter -> balances -> unit
+val pp_balances : Format.formatter -> balances -> unit *)
 
 (** A value of type [specs] allows to specify an initial state of a
     “machine”.
@@ -77,13 +77,13 @@ val pp_balances : Format.formatter -> balances -> unit
     machines provided by this module has a [build] function which
     turns a [specs] into a consistent initial state for this
     machine. *)
-type specs = {
-  treasury_min_xtz_balance : xtz;
-  (* cpmm_min_tzbtc_balance : tzbtc; *)
+(* type specs = {
+  gateway_min_xtz_balance : xtz;
+  gateway_min_tzbtc_balance : tzbtc;
   accounts_balances : balances list;
 }
 
-val pp_specs : Format.formatter -> specs -> unit
+val pp_specs : Format.formatter -> specs -> unit *)
 
 (** A value of type ['a env] (where ['a] is the type of contract
     identifiers) summarizes the different contracts involved in the LB
@@ -91,11 +91,11 @@ val pp_specs : Format.formatter -> specs -> unit
 
     Values of type [env] are constructed by the [build] function of
     the machines. *)
-type 'a env = private {
-  treasury_contract : 'a;
-  treasury_gateway_contract : 'a;
-  treasury_admin : 'a;
-  treasury_gateway_admin : 'a;
+(* type 'a env = private {
+  gateway_contract : 'a;
+  (* gateway_gateway_contract : 'a; *)
+  gateway_admin : 'a;
+  (* gateway_gateway_admin : 'a; *)
   implicit_accounts : 'a list;
   holder : 'a;
   subsidy : xtz;
@@ -129,7 +129,7 @@ type 'a state = {
 (** In the {! SymbolicMachine}, a contract is identified by a symbolic
     value. *)
 type contract_id =
-  | Cpmm
+  | Gateway
   | Holder
   | TzBTC
   | TzBTCAdmin
@@ -383,4 +383,4 @@ module ValidationMachine : sig
     Contract.t env ->
     t ->
     t tzresult Lwt.t
-end
+end *)

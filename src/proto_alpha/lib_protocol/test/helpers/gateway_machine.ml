@@ -24,8 +24,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Protocol
-open Alpha_context
+(* open Protocol
+open Alpha_context *)
 
 (** To implement the interface of this module, as described and
     documented in the related MLI file, we rely on the OCaml module
@@ -100,7 +100,7 @@ open Alpha_context
 
 (** The number of blocks baked in order to execute the {!
     AddLiquidity} step. *)
-let blocks_per_add_liquidity_step = 2L
+(* let blocks_per_add_liquidity_step = 2L
 
 (** The number of blocks baked by the [init] function. Since
     Tenderbake, we need to compensate for deposits, so the number is
@@ -112,14 +112,14 @@ let blocks_per_mint_tzbtc = 1L
 
 (** A timestamp “far in the future” which should not be exceeded when
     running tests. *)
-let far_future = Script_timestamp.of_zint (Z.of_int 42_000)
+let far_future = Script_timestamp.of_zint (Z.of_int 42_000) *)
 (* Hypothesis: the tests start at timestamp 0, and 42000 is
    “big enough.” *)
 
 (* --------------------------------------------------------------------------- *)
 
 (** {1 Miscellaneous Helpers} *)
-module List_helpers = struct
+(* module List_helpers = struct
   let rec zip l r =
     match (l, r) with
     | xl :: rstl, xr :: rstr -> (xl, xr) :: zip rstl rstr
@@ -134,7 +134,7 @@ module List_helpers = struct
     match List.assoc ~equal:( = ) c l with
     | Some x -> x
     | _ -> raise (Invalid_argument "assoc_exn")
-end
+end *)
 
 (* --------------------------------------------------------------------------- *)
 
@@ -143,7 +143,7 @@ end
 (** In order to run so-called scenarios against our machines, we first
     need to characterize their initial state. *)
 
-type xtz = int64
+(* type xtz = int64
 
 type tzbtc = int
 
@@ -163,8 +163,8 @@ let pp_balances fmt b =
 let xtz {xtz; _} = xtz
 
 type specs = {
-  treasury_min_xtz_balance : xtz;
-  treasury_min_tzbtc_balance : tzbtc;
+  gateway_min_xtz_balance : xtz;
+  gateway_min_tzbtc_balance : tzbtc;
   accounts_balances : balances list;
 }
 
@@ -172,19 +172,19 @@ let pp_specs fmt specs =
   Format.(
     fprintf
       fmt
-      "@[<v>{@   @[<v>treasury = {min_xtz = %a; min_tzbtc = %d}@ @[<v 2>accounts = \
+      "@[<v>{@   @[<v>gateway = {min_xtz = %a; min_tzbtc = %d}@ @[<v 2>accounts = \
        [@ %a@ ]@]@]@ }@]"
       Tez.pp
-      (Tez.of_mumav_exn specs.treasury_min_xtz_balance)
-      specs.treasury_min_tzbtc_balance
+      (Tez.of_mumav_exn specs.gateway_min_xtz_balance)
+      specs.gateway_min_tzbtc_balance
       (pp_print_list ~pp_sep:pp_print_space pp_balances)
-      specs.accounts_balances)
+      specs.accounts_balances) *)
 
 (* --------------------------------------------------------------------------- *)
 
 (** {1 Scenario [step] }*)
 
-type 'a step =
+(* type 'a step =
   | SellTzBTC of {source : 'a; destination : 'a; tzbtc_deposit : tzbtc}
   | BuyTzBTC of {source : 'a; destination : 'a; xtz_deposit : xtz}
   | AddLiquidity of {source : 'a; destination : 'a; xtz_deposit : xtz}
@@ -235,8 +235,7 @@ let pp_step pp_contract fmt = function
           p.destination)
 
 type contract_id =
-  | Treasury
-  (* | TreasuryGateway *)
+  | Gateway
   | Holder
   | TzBTC
   | TzBTCAdmin
@@ -246,8 +245,7 @@ type contract_id =
 
 let contract_id_to_string = function
   | Holder -> "holder"
-  | Treasury -> "treasury"
-  (* | TreasuryGateway -> "treasury_gateway" *)
+  | Gateway -> "gateway"
   | TzBTC -> "tzbtc"
   | TzBTCAdmin -> "tzbtc_admin"
   | Liquidity -> "lqt"
@@ -263,8 +261,7 @@ let pp_contract_id fmt c = Format.(fprintf fmt "[%s]" (contract_id_to_string c))
 (** {2 Machine Environment} *)
 
 type 'a env = {
-  treasury_contract : 'a;
-  (* treasury_gateway_contract : 'a; *)
+  gateway_contract : 'a;
   tzbtc_contract : 'a;
   tzbtc_admin : 'a;
   liquidity_contract : 'a;
@@ -275,8 +272,7 @@ type 'a env = {
 }
 
 let refine_contract env = function
-  | Treasury -> env.treasury_contract
-  (* | TreasuryGateway -> env.treasury_gateway_contract *)
+  | Gateway -> env.gateway_contract
   | TzBTC -> env.tzbtc_contract
   | TzBTCAdmin -> env.tzbtc_admin
   | Liquidity -> env.liquidity_contract
@@ -342,7 +338,7 @@ module type MACHINE = sig
 
   val get_liquidity_balance : contract -> contract env -> t -> liquidity m
 
-  (* val get_treasury_total_liquidity : contract env -> t -> liquidity m *)
+  (* val get_gateway_total_liquidity : contract env -> t -> liquidity m *)
 
   val bake :
     invariant:(contract env -> t -> bool m) ->
@@ -404,9 +400,9 @@ let tzbtc_admin_account : Account.t =
         "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
   }
 
-let treasury_initial_balance = {xtz = 100L; tzbtc = 1; liquidity = 0}
+let gateway_initial_balance = {xtz = 100L; tzbtc = 1; liquidity = 0}
 
-let treasury_initial_liquidity_supply = 100
+let gateway_initial_liquidity_supply = 100
 
 (** {2 Machine Functor} *)
 
@@ -422,23 +418,23 @@ module Machine = struct
       approve_tzbtc src tzbtc_deposit env state >>= fun lqt_op ->
       bake ~invariant ~baker:env.holder [lqt_op] env state >>= fun state ->
       add_liquidity ~src dst xtz_deposit tzbtc_deposit env state
-      >>= fun treasury_op -> bake ~invariant ~baker:env.holder [treasury_op] env state
+      >>= fun gateway_op -> bake ~invariant ~baker:env.holder [gateway_op] env state
 
     let remove_liquidity ~invariant src dst lqt_burned env state =
-      remove_liquidity ~src dst lqt_burned env state >>= fun treasury_op ->
-      bake ~invariant ~baker:env.holder [treasury_op] env state
+      remove_liquidity ~src dst lqt_burned env state >>= fun gateway_op ->
+      bake ~invariant ~baker:env.holder [gateway_op] env state
 
     let sell_tzbtc ~invariant src dst tzbtc_deposit env state =
       approve_tzbtc src tzbtc_deposit env state >>= fun tzbtc_op ->
       bake ~invariant ~baker:env.holder [tzbtc_op] env state >>= fun state ->
-      token_to_xtz ~src dst tzbtc_deposit env state >>= fun treasury_op ->
-      bake ~invariant ~baker:env.holder [treasury_op] env state
+      token_to_xtz ~src dst tzbtc_deposit env state >>= fun gateway_op ->
+      bake ~invariant ~baker:env.holder [gateway_op] env state
 
     let buy_tzbtc ~invariant src dst xtz_deposit env state =
-      xtz_to_token ~src dst xtz_deposit env state >>= fun treasury_op ->
-      bake ~invariant ~baker:env.holder [treasury_op] env state
+      xtz_to_token ~src dst xtz_deposit env state >>= fun gateway_op ->
+      bake ~invariant ~baker:env.holder [gateway_op] env state
 
-    let check_state_satisfies_specs (env : S.contract env) (state : S.t)
+    (* let check_state_satisfies_specs (env : S.contract env) (state : S.t)
         (specs : specs) =
       let implicit_accounts_targets =
         List_helpers.zip env.implicit_accounts specs.accounts_balances
@@ -452,13 +448,13 @@ module Machine = struct
         ()
         env.implicit_accounts
       >>= fun () ->
-      get_tzbtc_balance env.treasury_contract env state
-      >>= fun treasury_tzbtc_balance ->
-      assert (specs.treasury_min_tzbtc_balance <= treasury_tzbtc_balance) ;
-      get_xtz_balance env.treasury_contract state >>= fun current_treasury_xtz ->
+      get_tzbtc_balance env.gateway_contract env state
+      >>= fun gateway_tzbtc_balance ->
+      assert (specs.gateway_min_tzbtc_balance <= gateway_tzbtc_balance) ;
+      get_xtz_balance env.gateway_contract state >>= fun current_gateway_xtz ->
       assert (
-        Int64.(to_int specs.treasury_min_xtz_balance <= to_int @@ current_treasury_xtz)) ;
-      pure ()
+        Int64.(to_int specs.gateway_min_xtz_balance <= to_int @@ current_gateway_xtz)) ;
+      pure () *)
 
     (** [predict_required_tzbtc_deposit xtz_deposit env state]
         predicts the tzbtc deposit which will be required by the CPMM
@@ -466,8 +462,8 @@ module Machine = struct
 
         This function is used by the machines to make the according
         call to the [approve] entrypoint of the TzBTC contract. *)
-    let predict_required_tzbtc_deposit xtz_deposit env state =
-      get_xtz_balance env.treasury_contract state >>= fun xtzPool ->
+    (* let predict_required_tzbtc_deposit xtz_deposit env state =
+      get_xtz_balance env.gateway_contract state >>= fun xtzPool ->
       (* /!\ We need to take into accounts the number of blocks baked
              to actually call the [add_liquidity] entry point of the
              CPMM. *)
@@ -475,9 +471,9 @@ module Machine = struct
         Tez.of_mumav_exn
           Int64.(add xtzPool (mul blocks_per_add_liquidity_step env.subsidy))
       in
-      get_tzbtc_balance env.treasury_contract env state >>= fun tokenPool ->
+      get_tzbtc_balance env.gateway_contract env state >>= fun tokenPool ->
       let tokenPool = Z.of_int tokenPool in
-      get_treasury_total_liquidity env state >>= fun lqtTotal ->
+      get_gateway_total_liquidity env state >>= fun lqtTotal ->
       let lqtTotal = Z.of_int lqtTotal in
       let amount = Tez.of_mumav_exn xtz_deposit in
       let _, tokens_deposited =
@@ -487,9 +483,9 @@ module Machine = struct
           ~lqtTotal
           ~amount
       in
-      pure (Z.to_int tokens_deposited)
+      pure (Z.to_int tokens_deposited) *)
 
-    let step ?(invariant = fun _ _ -> pure true) s env state =
+    (* let step ?(invariant = fun _ _ -> pure true) s env state =
       match s with
       | SellTzBTC {source; destination; tzbtc_deposit} ->
           sell_tzbtc ~invariant source destination tzbtc_deposit env state
@@ -514,7 +510,8 @@ module Machine = struct
         (fun state s -> step ~invariant (refine_step env s) env state)
         state
         scenario
-  end
+        *)
+  end 
 end
 
 let initial_xtz_repartition accounts_balances =
@@ -564,7 +561,7 @@ let initial_xtz_pool balances subsidy =
   let len = Int64.of_int (List.length balances) in
   Int64.(
     add
-      treasury_initial_balance.xtz
+      gateway_initial_balance.xtz
       (mul
          (add (blocks_during_init len) (mul blocks_per_mint_tzbtc len))
          subsidy))
@@ -632,8 +629,8 @@ let predict_initial_balances balances subsidy =
   in
   predict_initial_balances
     (of_int64 @@ initial_xtz_pool balances subsidy)
-    (of_int treasury_initial_balance.tzbtc)
-    (of_int treasury_initial_liquidity_supply)
+    (of_int gateway_initial_balance.tzbtc)
+    (of_int gateway_initial_liquidity_supply)
     balances
 
 module MachineBuilder = struct
@@ -648,7 +645,7 @@ module MachineBuilder = struct
         (S.t * S.contract env) m =
      fun ?(invariant = fun _ _ -> pure true)
          ?(subsidy = default_subsidy)
-         ({treasury_min_xtz_balance; accounts_balances; treasury_min_tzbtc_balance} as
+         ({gateway_min_xtz_balance; accounts_balances; gateway_min_tzbtc_balance} as
          specs) ->
       let accounts_balances_with_extra =
         predict_initial_balances accounts_balances subsidy
@@ -679,10 +676,10 @@ module MachineBuilder = struct
         state
         accounts
       >>= fun state ->
-      (* 4. Provide any missing tzbtc tokens to [treasury_contract], if necessary *)
-      get_tzbtc_balance env.treasury_contract env state
-      >>= fun current_treasury_tzbtc_balance ->
-      let tzbtc_missing = treasury_min_tzbtc_balance - current_treasury_tzbtc_balance in
+      (* 4. Provide any missing tzbtc tokens to [gateway_contract], if necessary *)
+      get_tzbtc_balance env.gateway_contract env state
+      >>= fun current_gateway_tzbtc_balance ->
+      let tzbtc_missing = gateway_min_tzbtc_balance - current_gateway_tzbtc_balance in
       (if 0 < tzbtc_missing then
        (* 4.1. Provide the tokens to the [bootstrap1] account, as a
           temporary holder for CPMM missing tzBTC balance *)
@@ -692,14 +689,14 @@ module MachineBuilder = struct
        sell_tzbtc ~invariant env.holder env.holder tzbtc_missing env state
       else pure state)
       >>= fun state ->
-      (* 5. Provide any missing xtz tokens to [treasury_contract], if necessary *)
-      get_xtz_balance env.treasury_contract state
-      >>= fun current_treasury_xtz_balance ->
+      (* 5. Provide any missing xtz tokens to [gateway_contract], if necessary *)
+      get_xtz_balance env.gateway_contract state
+      >>= fun current_gateway_xtz_balance ->
       let xtz_missing =
-        Int64.sub treasury_min_xtz_balance current_treasury_xtz_balance
+        Int64.sub gateway_min_xtz_balance current_gateway_xtz_balance
       in
       (if 0L < xtz_missing then
-       transaction ~src:env.holder env.treasury_contract xtz_missing state
+       transaction ~src:env.holder env.gateway_contract xtz_missing state
        >>= fun op -> bake ~invariant ~baker:env.holder [op] env state
       else pure state)
       >>= fun state ->
@@ -752,9 +749,9 @@ module ConcreteBaseMachine :
     >>=? fun mamount ->
     pure (Option.value (Option.map Z.to_int mamount) ~default:0)
 
-  (* let get_treasury_total_liquidity env blk =
-    Treasury_repr.Storage.get (B blk) ~contract:env.treasury_contract
-    >>=? fun treasury_storage -> pure @@ Z.to_int treasury_storage.lqtTotal *)
+  (* let get_gateway_total_liquidity env blk =
+    Gateway_repr.Storage.get (B blk) ~contract:env.gateway_contract
+    >>=? fun gateway_storage -> pure @@ Z.to_int gateway_storage.lqtTotal *)
 
   let get_balances contract env blk =
     get_xtz_balance contract blk >>= fun xtz ->
@@ -782,7 +779,7 @@ module ConcreteBaseMachine :
     Cpmm_repr.transaction
       (B blk)
       ~src
-      ~contract:env.treasury_contract
+      ~contract:env.gateway_contract
       (Cpmm_repr.Parameter.TokenToXtz
          {
            to_ = dst;
@@ -795,7 +792,7 @@ module ConcreteBaseMachine :
     Cpmm_repr.transaction
       (B blk)
       ~src
-      ~contract:env.treasury_contract
+      ~contract:env.gateway_contract
       (Cpmm_repr.Parameter.XtzToToken
          {to_ = dst; minTokensBought = Z.zero; deadline = far_future})
       ~amount:(Tez.of_mumav_exn amount)
@@ -807,7 +804,7 @@ module ConcreteBaseMachine :
       ~src
       ~contract:env.tzbtc_contract
       (Lqt_fa12_repr.Parameter.Approve
-         {spender = env.treasury_contract; value = maxTokensDeposited})
+         {spender = env.gateway_contract; value = maxTokensDeposited})
 
   let mint_or_burn_tzbtc target amount env blk =
     let quantity = Z.of_int amount in
@@ -824,7 +821,7 @@ module ConcreteBaseMachine :
     Cpmm_repr.transaction
       (B blk)
       ~src
-      ~contract:env.treasury_contract
+      ~contract:env.gateway_contract
       ~amount
       (Cpmm_repr.Parameter.AddLiquidity
          {
@@ -839,7 +836,7 @@ module ConcreteBaseMachine :
     Cpmm_repr.transaction
       (B blk)
       ~src
-      ~contract:env.treasury_contract
+      ~contract:env.gateway_contract
       (Cpmm_repr.Parameter.RemoveLiquidity
          {
            to_ = dst;
@@ -875,8 +872,8 @@ module ConcreteBaseMachine :
     >>= function
     | blk, holder :: accounts ->
         let ctxt = Context.B blk in
-        Context.get_treasury_contract_address ctxt >>= fun treasury_contract ->
-        Context.Contract.storage ctxt treasury_contract >>= fun storage ->
+        Context.get_gateway_contract_address ctxt >>= fun gateway_contract ->
+        Context.Contract.storage ctxt gateway_contract >>= fun storage ->
         let storage = Cpmm_repr.Storage.of_expr_exn (Micheline.root storage) in
         let tzbtc_contract = storage.tokenAddress in
         let liquidity_contract = storage.lqtAddress in
@@ -893,8 +890,8 @@ module ConcreteBaseMachine :
         Context.get_liquidity_baking_subsidy (B blk) >>=? fun subsidy ->
         let env =
           {
-            treasury_contract = Contract.Originated treasury_contract;
-            (* treasury_gateway_contract = Contract.Originated treasury_gateway_contract; *)
+            gateway_contract = Contract.Originated gateway_contract;
+            (* gateway_gateway_contract = Contract.Originated gateway_gateway_contract; *)
             tzbtc_contract = Contract.Originated tzbtc_contract;
             tzbtc_admin;
             liquidity_contract = Contract.Originated liquidity_contract;
@@ -906,7 +903,7 @@ module ConcreteBaseMachine :
         in
         reveal_tzbtc_admin ~invariant:(fun _ _ -> pure true) env blk
         >>= fun blk ->
-        mint_or_burn_tzbtc env.treasury_contract treasury_initial_balance.tzbtc env blk
+        mint_or_burn_tzbtc env.gateway_contract gateway_initial_balance.tzbtc env blk
         >>= fun op ->
         bake ~invariant:(fun _ _ -> pure true) ~baker:env.holder [op] env blk
         >>= fun blk ->
@@ -963,13 +960,13 @@ end
 (** {1 Abstract Machines} *)
 
 type 'a state = {
-  treasury_total_liquidity : liquidity;
+  gateway_total_liquidity : liquidity;
   accounts_balances : ('a * balances) list;
 }
 
 let refine_state env state =
   {
-    treasury_total_liquidity = state.treasury_total_liquidity;
+    gateway_total_liquidity = state.gateway_total_liquidity;
     accounts_balances =
       List.map
         (fun (c, b) -> (refine_contract env c, b))
@@ -1045,7 +1042,7 @@ module AbstractMachine = struct
 
     let get_balances account _env state = get_balances account state
 
-    (* let get_treasury_total_liquidity _env state = state.treasury_total_liquidity *)
+    (* let get_gateway_total_liquidity _env state = state.gateway_total_liquidity *)
 
     let reveal _pk _state state = state
 
@@ -1054,10 +1051,10 @@ module AbstractMachine = struct
 
     let xtz_bought tzbtc env state =
       let xtzPool =
-        Tez.of_mumav_exn @@ get_xtz_balance env.treasury_contract state
+        Tez.of_mumav_exn @@ get_xtz_balance env.gateway_contract state
       in
       let tokenPool =
-        Z.of_int @@ get_tzbtc_balance env.treasury_contract env state
+        Z.of_int @@ get_tzbtc_balance env.gateway_contract env state
       in
       let tokensSold = Z.of_int tzbtc in
       let xtz_bought, xtz_net_bought =
@@ -1068,16 +1065,16 @@ module AbstractMachine = struct
     let token_to_xtz ~src dst amount env _ state =
       let xtz_bought, xtz_net_bought = xtz_bought amount env state in
       state
-      |> transfer_tzbtc_balance src env.treasury_contract amount
-      |> update_xtz_balance env.treasury_contract (fun b -> Int64.sub b xtz_bought)
+      |> transfer_tzbtc_balance src env.gateway_contract amount
+      |> update_xtz_balance env.gateway_contract (fun b -> Int64.sub b xtz_bought)
       |> update_xtz_balance dst (Int64.add xtz_net_bought)
 
     let tzbtc_bought env state amount =
       let xtzPool =
-        Tez.of_mumav_exn @@ get_xtz_balance env.treasury_contract state
+        Tez.of_mumav_exn @@ get_xtz_balance env.gateway_contract state
       in
       let tokenPool =
-        Z.of_int @@ get_tzbtc_balance env.treasury_contract env state
+        Z.of_int @@ get_tzbtc_balance env.gateway_contract env state
       in
       let amount = Tez.of_mumav_exn amount in
       let tzbtc_bought, xtz_earnt =
@@ -1088,8 +1085,8 @@ module AbstractMachine = struct
     let xtz_to_token ~src dst amount env _ state =
       let tzbtc_bought, xtz_earnt = tzbtc_bought env state amount in
       update_xtz_balance src (fun b -> Int64.sub b amount) state
-      |> update_xtz_balance env.treasury_contract (Int64.add xtz_earnt)
-      |> transfer_tzbtc_balance env.treasury_contract dst tzbtc_bought
+      |> update_xtz_balance env.gateway_contract (Int64.add xtz_earnt)
+      |> transfer_tzbtc_balance env.gateway_contract dst tzbtc_bought
 
     let mint_or_burn_tzbtc target amount _ _ =
       update_tzbtc_balance target (( + ) amount)
@@ -1098,12 +1095,12 @@ module AbstractMachine = struct
 
     let add_liquidity ~src dst xtz_deposit _tzbtc_deposit env _ state =
       let xtzPool =
-        Tez.of_mumav_exn (get_xtz_balance env.treasury_contract state)
+        Tez.of_mumav_exn (get_xtz_balance env.gateway_contract state)
       in
       let tokenPool =
-        Z.of_int (get_tzbtc_balance env.treasury_contract env state)
+        Z.of_int (get_tzbtc_balance env.gateway_contract env state)
       in
-      let lqtTotal = Z.of_int state.treasury_total_liquidity in
+      let lqtTotal = Z.of_int state.gateway_total_liquidity in
       let amount = Tez.of_mumav_exn xtz_deposit in
       let lqt_minted, tokens_deposited =
         Cpmm_logic.Simulate_raw.addLiquidity
@@ -1115,23 +1112,23 @@ module AbstractMachine = struct
       let lqt_minted = Z.to_int lqt_minted in
       let tokens_deposited = Z.to_int tokens_deposited in
       let state =
-        transfer_xtz_balance src env.treasury_contract xtz_deposit state
-        |> transfer_tzbtc_balance src env.treasury_contract tokens_deposited
+        transfer_xtz_balance src env.gateway_contract xtz_deposit state
+        |> transfer_tzbtc_balance src env.gateway_contract tokens_deposited
         |> update_liquidity_balance dst (( + ) lqt_minted)
       in
       {
         state with
-        treasury_total_liquidity = state.treasury_total_liquidity + lqt_minted;
+        gateway_total_liquidity = state.gateway_total_liquidity + lqt_minted;
       }
 
     let remove_liquidity ~src dst lqt_burned env _ state =
       let xtzPool =
-        Tez.of_mumav_exn (get_xtz_balance env.treasury_contract state)
+        Tez.of_mumav_exn (get_xtz_balance env.gateway_contract state)
       in
       let tokenPool =
-        Z.of_int (get_tzbtc_balance env.treasury_contract env state)
+        Z.of_int (get_tzbtc_balance env.gateway_contract env state)
       in
-      let lqtTotal = Z.of_int state.treasury_total_liquidity in
+      let lqtTotal = Z.of_int state.gateway_total_liquidity in
       let lqtBurned = Z.of_int lqt_burned in
       let xtz_withdrawn, tokens_withdrawn =
         Cpmm_logic.Simulate_raw.removeLiquidity
@@ -1146,14 +1143,14 @@ module AbstractMachine = struct
         update_xtz_balance dst (fun b -> Int64.add b xtz_withdrawn) state
         |> update_tzbtc_balance dst (( + ) tokens_withdrawn)
         |> update_liquidity_balance src (fun b -> b - lqt_burned)
-        |> update_xtz_balance env.treasury_contract (fun b ->
+        |> update_xtz_balance env.gateway_contract (fun b ->
                Int64.sub b xtz_withdrawn)
-        |> update_tzbtc_balance env.treasury_contract (fun b ->
+        |> update_tzbtc_balance env.gateway_contract (fun b ->
                b - tokens_withdrawn)
       in
       {
         state with
-        treasury_total_liquidity = state.treasury_total_liquidity - lqt_burned;
+        gateway_total_liquidity = state.gateway_total_liquidity - lqt_burned;
       }
 
     (* Ideally, we should also deal with the release of security
@@ -1161,7 +1158,7 @@ module AbstractMachine = struct
        happen, we omit this aspect of the simulation. *)
     let bake ~invariant ~baker operations env state =
       let state =
-        update_xtz_balance env.treasury_contract (Int64.add env.subsidy) state
+        update_xtz_balance env.gateway_contract (Int64.add env.subsidy) state
         |> (fun state -> List.fold_left ( |> ) state operations)
         |> update_xtz_balance baker (fun b -> Int64.sub b security_deposit)
       in
@@ -1190,14 +1187,14 @@ module SymbolicBaseMachine :
     let len = Int64.of_int (List.length accounts_balances) in
     match bootstrap_balances with
     | holder_xtz :: accounts ->
-        let xtz_treasury =
+        let xtz_gateway =
           Int64.(
-            add treasury_initial_balance.xtz (mul (blocks_during_init len) subsidy))
+            add gateway_initial_balance.xtz (mul (blocks_during_init len) subsidy))
         in
         ( {
-            treasury_total_liquidity = treasury_initial_liquidity_supply;
+            gateway_total_liquidity = gateway_initial_liquidity_supply;
             accounts_balances =
-              (Treasury, {treasury_initial_balance with xtz = xtz_treasury})
+              (Gateway, {gateway_initial_balance with xtz = xtz_gateway})
               :: (Holder, {xtz = holder_xtz; tzbtc = 0; liquidity = 0})
               :: (TzBTCAdmin, {xtz = 0L; tzbtc = 0; liquidity = 0})
               :: List.mapi
@@ -1206,7 +1203,7 @@ module SymbolicBaseMachine :
                    accounts;
           },
           {
-            treasury_contract = Treasury;
+            gateway_contract = Gateway;
             tzbtc_contract = TzBTC;
             tzbtc_admin = TzBTCAdmin;
             liquidity_contract = Liquidity;
@@ -1268,8 +1265,8 @@ module ValidationBaseMachine :
   let get_liquidity_balance contract env (_, state) =
     pure (GhostMachine.get_liquidity_balance contract env state)
 
-  (* let get_treasury_total_liquidity env (_, state) =
-    pure (GhostMachine.get_treasury_total_liquidity env state) *)
+  (* let get_gateway_total_liquidity env (_, state) =
+    pure (GhostMachine.get_gateway_total_liquidity env state) *)
 
   let bake ~invariant ~baker ops env (blk, state) =
     let cops = List.map fst ops in
@@ -1348,7 +1345,7 @@ module ValidationMachine = struct
 
     let get_liquidity_balance = get_liquidity_balance
 
-    (* let get_treasury_total_liquidity = get_treasury_total_liquidity *)
+    (* let get_gateway_total_liquidity = get_gateway_total_liquidity *)
   end
 
   module Concrete = struct
@@ -1361,7 +1358,7 @@ module ValidationMachine = struct
     let get_liquidity_balance contract env (blk, _) =
       ConcreteMachine.get_liquidity_balance contract env blk
 
-    (* let get_treasury_total_liquidity env (blk, _) =
-      ConcreteMachine.get_treasury_total_liquidity env blk *)
+    (* let get_gateway_total_liquidity env (blk, _) =
+      ConcreteMachine.get_gateway_total_liquidity env blk *)
   end
-end
+end *)
