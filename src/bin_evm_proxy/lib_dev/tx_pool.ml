@@ -162,10 +162,14 @@ let on_transaction state tx_raw =
   let open Lwt_result_syntax in
   let open Types in
   let {rollup_node = (module Rollup_node); pool; _} = state in
+  print_endline "test validity of the transaction." ;
   let* is_valid = Rollup_node.is_tx_valid tx_raw in
   match is_valid with
-  | Error err -> return (Error err)
+  | Error err ->
+      print_endline "transaction is not valid." ;
+      return (Error err)
   | Ok pkey ->
+      print_endline "transaction is valid." ;
       (* Add the tx to the pool*)
       let pool = Pool.add pool pkey tx_raw in
       (* compute the hash *)
@@ -195,6 +199,16 @@ let on_head state block_height =
       addresses
   in
   let addr_with_nonces = List.filter_ok addr_with_nonces in
+
+  print_endline "will send transactions of the following users:" ;
+
+  List.iter
+    (fun (address, nonce) ->
+      print_endline (Ethereum_types.address_to_string address) ;
+      let (Ethereum_types.Qty nonce) = nonce in
+      print_endline (Z.to_string nonce))
+    addr_with_nonces ;
+
   (* Remove transactions with too low nonce. *)
   let pool =
     addr_with_nonces
@@ -228,6 +242,15 @@ let on_head state block_height =
            (txs, pool))
          ([], pool)
   in
+
+  print_endline "sending transaction:" ;
+  List.iter
+    (fun Pool.{raw_tx; nonce; _} ->
+      Ethereum_types.hex_to_string raw_tx |> print_endline ;
+      let (Qty nonce) = nonce in
+      Z.to_string nonce |> print_endline)
+    txs ;
+
   (* Sorting transactions by index.
      First tx in the pool is the first tx to be sent to the batcher. *)
   let txs =

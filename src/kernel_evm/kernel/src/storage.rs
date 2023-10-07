@@ -873,4 +873,31 @@ mod tests {
 
         assert!(was_rebooted(&mut host).expect("should have found reboot flag"));
     }
+
+    #[test]
+    fn stuff() {
+        // KT1
+        let kt1 = "KT1FjcHBu93KzUfCrNijKHboPz6foKr2YQTG";
+        let bytes: [u8; 36] = kt1.as_bytes().try_into().unwrap();
+
+        let hex = hex::encode(&bytes);
+        println!("{hex}");
+
+        let kt1_b58 = String::from_utf8(bytes.to_vec()).unwrap();
+        let kt1 = ContractKt1Hash::from_base58_check(&kt1_b58).unwrap();
+
+        // Amount
+        let mut buffer = [0; 32];
+        let amount = U256::from_dec_str("1000000000000").unwrap();
+        amount.to_little_endian(&mut buffer);
+
+        let hex = hex::encode(&buffer);
+        println!("{hex}");
+
+        todo!("IT WORKS");
+        // let mut buffer = [0; 36];
+        // store_read_slice(host, path, &mut buffer, 36).ok()?;
+        // let kt1_b58 = String::from_utf8(buffer.to_vec()).ok()?;
+        // ContractKt1Hash::from_b58check(&kt1_b58).ok()
+    }
 }
