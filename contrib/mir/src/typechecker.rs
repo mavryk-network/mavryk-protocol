@@ -77,6 +77,33 @@ pub enum StacksNotEqualReason {
 pub struct TypesNotEqual(Type, Type);
 
 #[allow(dead_code)]
+impl Contract<ParsedStage> {
+    pub fn typecheck(
+        self,
+        ctx: &mut crate::context::Ctx,
+    ) -> Result<Contract<TypecheckedStage>, crate::typechecker::TcError> {
+        let Contract {
+            parameter, storage, ..
+        } = self;
+        let mut stack = stk![Type::new_pair(parameter.clone(), storage.clone())];
+        let code = self.code.typecheck(ctx, &mut stack)?;
+        ensure_stacks_eq(
+            ctx,
+            &stk![Type::new_pair(
+                Type::new_list(Type::Operation),
+                storage.clone()
+            )],
+            &stack,
+        )?;
+        Ok(Contract {
+            code,
+            parameter,
+            storage,
+        })
+    }
+}
+
+#[allow(dead_code)]
 pub fn typecheck(
     ast: ParsedAST,
     ctx: &mut Ctx,
