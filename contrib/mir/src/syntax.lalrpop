@@ -9,7 +9,7 @@
 #![allow(clippy::all)]
 
 use crate::ast::*;
-use crate::parser::ParserError;
+use crate::parser::{ParserError, ContractEntity};
 use crate::lexer::{Prim, Tok};
 
 grammar;
@@ -22,6 +22,9 @@ extern {
         number => Tok::Number(<i128>),
         string => Tok::String(<String>),
         ann => Tok::Annotation,
+        "parameter" => Tok::Prim(Prim::parameter),
+        "storage" => Tok::Prim(Prim::storage),
+        "code" => Tok::Prim(Prim::code),
         "int" => Tok::Prim(Prim::int),
         "nat" => Tok::Prim(Prim::nat),
         "bool" => Tok::Prim(Prim::bool),
@@ -198,3 +201,16 @@ pub instructionBlock: ParsedInstructionBlock = {
 }
 
 pub Type: Type = type_expr;
+
+ContractEntity: ContractEntity = {
+  "parameter" <type_expr> => ContractEntity::Parameter(<>),
+  "storage" <type_expr> => ContractEntity::Storage(<>),
+  "code" <instruction> => ContractEntity::Code(<>),
+}
+
+ContractEntitySeq = semicolonSepSeq<ContractEntity>;
+
+pub Contract: Contract<ParsedStage> = {
+  ContractEntitySeq =>? <>.try_into().map_err(Into::into),
+  "{" <Contract> "}" => <>,
+}
