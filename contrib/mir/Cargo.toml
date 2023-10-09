@@ -16,8 +16,8 @@ lalrpop = "0.20.0"
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer"] }
 num-bigint = "0.3.3"
+tezos_crypto_rs = { version = "0.5.1", default-features = false }
 tezos_data_encoding = "0.5.1"
-tezos_crypto_rs = "0.5.1"
 tezos-smart-rollup = "0.2.1"
 tezos-smart-rollup-encoding = "0.2.1"
 tezos-smart-rollup-mock = "0.2.1"
