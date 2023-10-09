@@ -27,7 +27,7 @@ pub type Error = String;
 /// execution time of one such call.
 pub fn kernel_entry(host: &mut impl Runtime) {
     // Ways of observing that kernel has indeed been invoked, helps in testing
-    debug_msg!(host, "Kernel invoked");
+    debug_msg!(host, "Kernel invoked\n");
     let _ = host.store_write(&RefPath::assert_from(b"/started"), &[1], 0);
 
     let mut first_message_for_invocation = true;
@@ -36,14 +36,14 @@ pub fn kernel_entry(host: &mut impl Runtime) {
         match host.read_input() {
             Ok(Some(msg)) => {
                 if first_message_for_invocation {
-                    debug_msg!(host, "Handling messages at level {}", msg.level);
+                    debug_msg!(host, "Handling messages at level {}\n", msg.level);
                     first_message_for_invocation = false;
                 }
 
                 // TODO [#6411]: wrap into catch_unwind
                 let res = process_message(host, &msg);
                 res.unwrap_or_else(|err| {
-                    debug_msg!(host, "Processing message #{} failed: {}", msg.id, err)
+                    debug_msg!(host, "Processing message #{} failed: {}\n", msg.id, err)
                 })
             }
             // The kernel gallery and some experienced devs advise to keep
@@ -63,7 +63,7 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
     debug_assert!(rest.is_empty());
     match msg {
         InboxMessage::External(payload) => {
-            debug_msg!(host, "Message #{msg_id} - external: {payload:#x?}");
+            debug_msg!(host, "Message #{msg_id} - external: {payload:#x?}\n");
             process_external_message(host, &payload)?
         }
         // [optimization] If payload is bytes, it should not be hard
@@ -75,7 +75,7 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
             InternalInboxMessage::Transfer(transfer) => {
                 debug_msg!(
                     host,
-                    "Message #{msg_id} - internal transfer to {} with payload: {:#x?}",
+                    "Message #{msg_id} - internal transfer to {} with payload: {:#x?}\n",
                     transfer.destination,
                     &transfer.payload.0
                 );

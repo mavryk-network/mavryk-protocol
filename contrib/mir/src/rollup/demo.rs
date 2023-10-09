@@ -58,7 +58,7 @@ pub fn call_fibonacci(host: &mut impl Runtime, param: usize) -> Result<(), Error
 
     host.store_write_all(STORAGE_PATH, &new_storage.to_le_bytes())
         .map_err(|err| err.to_string())?;
-    debug_msg!(host, "Computation successful, storage updated");
+    debug_msg!(host, "Computation successful, storage updated\n");
     Ok(())
 }
 
