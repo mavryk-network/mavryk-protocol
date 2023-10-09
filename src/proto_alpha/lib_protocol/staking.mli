@@ -54,13 +54,3 @@ val request_unstake :
     the requested stake undergone in between. *)
 val finalize_unstake :
   context -> Contract.t -> (context * Receipt.balance_updates) tzresult Lwt.t
-
-(** [punish_delegate ctxt delegate level misbehaviour ~rewarded] slashes [delegate]
-    for a [misbehaviour] at [level] and rewards [rewarded]. *)
-val punish_delegate :
-  context ->
-  public_key_hash ->
-  Level.t ->
-  Misbehaviour.t ->
-  rewarded:Signature.public_key_hash ->
-  context tzresult Lwt.t
