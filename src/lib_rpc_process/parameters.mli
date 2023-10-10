@@ -32,6 +32,7 @@ type t = {
   history_mode : Tezos_shell_services.History_mode.t option;
   data_dir : string;
   node_version : Tezos_version.Node_version.t;
+  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
 }
 
 (** Encoding for parameters type {!t} *)

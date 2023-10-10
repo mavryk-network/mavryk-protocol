@@ -187,7 +187,13 @@ let run socket_dir =
       ~config:parameters.Parameters.internal_events
       ()
   in
-  (* Updated needs to be initialized to be able to read the protocol
+  let* () =
+    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
+    Tezos_crypto_dal.Cryptobox.Config.init_dal
+      ~find_srs_files
+      parameters.dal_config
+  in
+  (* Updater needs to be initialized to be able to read the protocol
      sources from the store when a protocol injected and compiled. *)
   Updater.init (Data_version.protocol_dir parameters.data_dir) ;
   let head_watcher = Lwt_watcher.create_input () in

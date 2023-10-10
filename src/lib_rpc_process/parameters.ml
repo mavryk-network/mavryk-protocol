@@ -31,6 +31,7 @@ type t = {
   history_mode : Tezos_shell_services.History_mode.t option;
   data_dir : string;
   node_version : Tezos_version.Node_version.t;
+  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
 }
 
 let parameters_encoding =
@@ -44,6 +45,7 @@ let parameters_encoding =
            history_mode;
            data_dir;
            node_version;
+           dal_config;
          } ->
       ( config,
         rpc_comm_socket_path,
@@ -51,14 +53,16 @@ let parameters_encoding =
         genesis,
         history_mode,
         data_dir,
-        node_version ))
+        node_version,
+        dal_config ))
     (fun ( config,
            rpc_comm_socket_path,
            internal_events,
            genesis,
            history_mode,
            data_dir,
-           node_version ) ->
+           node_version,
+           dal_config ) ->
       {
         config;
         rpc_comm_socket_path;
@@ -67,12 +71,14 @@ let parameters_encoding =
         history_mode;
         data_dir;
         node_version;
+        dal_config;
       })
-    (obj7
+    (obj8
        (req "config" Config_file.encoding)
        (req "rpc_comm_socket_path" Data_encoding.string)
        (req "internal_events" Tezos_base.Internal_event_config.encoding)
        (req "genesis" Genesis.encoding)
        (opt "history_mode" Tezos_shell_services.History_mode.encoding)
        (req "data_dir" Data_encoding.string)
-       (req "node_version" Tezos_version.Node_version.encoding))
+       (req "node_version" Tezos_version.Node_version.encoding)
+       (req "dal_config" Tezos_crypto_dal.Cryptobox.Config.encoding))
