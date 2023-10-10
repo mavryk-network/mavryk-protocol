@@ -274,6 +274,7 @@ let constants_mainnet =
           };
         activation_vote_enable = false;
       };
+    direct_ticket_spending_enable = false;
   }
 
 (* Sandbox and test networks's Dal cryptobox are computed by this function:

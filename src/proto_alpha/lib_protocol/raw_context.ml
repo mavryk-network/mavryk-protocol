@@ -1122,6 +1122,9 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
               denominator = 100;
             }
         in
+
+        let direct_ticket_spending_enable = false in
+
         let constants =
           Constants_parametric_repr.
             {
@@ -1168,6 +1171,7 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
               sc_rollup;
               zk_rollup;
               adaptive_issuance;
+              direct_ticket_spending_enable;
             }
         in
         let*! ctxt = add_constants ctxt constants in

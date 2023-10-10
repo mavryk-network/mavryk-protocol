@@ -246,3 +246,6 @@ let adaptive_issuance_rewards_params c =
 
 let adaptive_issuance_activation_vote_enable c =
   (adaptive_issuance c).activation_vote_enable
+
+let direct_ticket_spending_enable c =
+  (Raw_context.constants c).direct_ticket_spending_enable
