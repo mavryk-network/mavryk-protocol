@@ -1767,10 +1767,13 @@ let lift_execution_arg (type a ac) ctxt ~internal (entrypoint_ty : (a, ac) ty)
     match arg with
     | Untyped_arg arg ->
         let arg = Micheline.root arg in
+        let allow_forged =
+          internal || Constants.direct_ticket_spending_enable ctxt
+        in
         parse_data
           ctxt
           ~elab_conf:Script_ir_translator_config.(make ~legacy:false ())
-          ~allow_forged:internal
+          ~allow_forged
           entrypoint_ty
           arg
     | Typed_arg (loc, parsed_arg_ty, parsed_arg) ->
