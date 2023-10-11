@@ -49,12 +49,12 @@ fn decode_contract(args: &Vec<String>) {
                         println!("\"{}\"", addr.value());
                     }
                     Err(error) => {
-                        println!("Error: {}", error);
+                        eprintln!("Error: {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error: {}", error);
+                eprintln!("Error: {}", error);
             }
         }
     }
@@ -75,12 +75,12 @@ fn encode_contract(args: &Vec<String>) {
                             println!();
                         }
                         Err(error) => {
-                            println!("Error: {}", error);
+                            eprintln!("Error: {}", error);
                         }
                     }
                 }
                 Err(error) => {
-                    println!("Error: {}", error);
+                    eprintln!("Error: {}", error);
                 }
             }
         } else {
@@ -121,12 +121,12 @@ fn decode_u16(args: &Vec<String>) {
                         println!("{}", i);
                     }
                     Err(error) => {
-                        println!("Error (cannot decode): {}", error);
+                        eprintln!("Error (cannot decode): {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error (wrong format): {}", error);
+                eprintln!("Error (wrong format): {}", error);
             }
         }
     }
@@ -144,12 +144,12 @@ fn decode_z(args: &Vec<String>) {
                         println!("\"{}\"", i.to_str());
                     }
                     Err(error) => {
-                        println!("Error (cannot decode): {}", error);
+                        eprintln!("Error (cannot decode): {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error (wrong format): {}", error);
+                eprintln!("Error (wrong format): {}", error);
             }
         }
     }
@@ -167,12 +167,12 @@ fn decode_n(args: &Vec<String>) {
                         println!("\"{}\"", i.to_str());
                     }
                     Err(error) => {
-                        println!("Error (cannot decode): {}", error);
+                        eprintln!("Error (cannot decode): {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error (wrong format): {}", error);
+                eprintln!("Error (wrong format): {}", error);
             }
         }
     }
@@ -192,12 +192,12 @@ fn decode_i32(args: &Vec<String>) {
                         println!("{}", i);
                     }
                     Err(error) => {
-                        println!("Error (cannot decode): {}", error);
+                        eprintln!("Error (cannot decode): {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error (wrong format): {}", error);
+                eprintln!("Error (wrong format): {}", error);
             }
         }
     }
@@ -217,12 +217,12 @@ fn decode_i64(args: &Vec<String>) {
                         println!("\"{}\"", i);
                     }
                     Err(error) => {
-                        println!("Error (cannot decode): {}", error);
+                        eprintln!("Error (cannot decode): {}", error);
                     }
                 }
             }
             Err(error) => {
-                println!("Error (wrong format): {}", error);
+                eprintln!("Error (wrong format): {}", error);
             }
         }
     }
@@ -248,19 +248,21 @@ fn encode_z(args: &Vec<String>) {
                                     println!("{}", hex_string);
                                 }
                                 Err(error) => {
-                                    println!("Error: {}", error);
+                                    eprintln!("Error: {}", error);
                                 }
                             }
                         }
                         Err(error) => {
-                            println!("Error: {}", error);
+                            eprintln!("Error: {}", error);
                         }
                     }
                 }
                 Err(error) => {
-                    println!("Error: {}", error);
+                    eprintln!("Error: {}", error);
                 }
             }
+        } else {
+            eprintln!("Error: wrong format");
         }
     }
 }
@@ -285,19 +287,21 @@ fn encode_n(args: &Vec<String>) {
                                     println!("{}", hex_string);
                                 }
                                 Err(error) => {
-                                    println!("Error: {}", error);
+                                    eprintln!("Error: {}", error);
                                 }
                             }
                         }
                         Err(error) => {
-                            println!("Error: {}", error);
+                            eprintln!("Error: {}", error);
                         }
                     }
                 }
                 Err(error) => {
-                    println!("Error: {}", error);
+                    eprintln!("Error: {}", error);
                 }
             }
+        } else {
+            eprintln!("Error: wrong format");
         }
     }
 }
@@ -314,7 +318,7 @@ fn encode_int32(args: &Vec<String>) {
                 println!("{}", hex_string);
             }
             Err(error) => {
-                println!("Error: {}", error);
+                eprintln!("Error: {}", error);
             }
         }
     }
@@ -334,7 +338,7 @@ fn encode_int64(args: &Vec<String>) {
                     println!("{}", hex_string);
                 }
                 Err(error) => {
-                    println!("Error: {}", error);
+                    eprintln!("Error: {}", error);
                 }
             }
         } else {
