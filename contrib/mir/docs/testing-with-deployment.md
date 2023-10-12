@@ -85,7 +85,9 @@ octez-client send smart rollup message "hex:[\"05\"]" from $OPERATOR_ADDR
 
 ### Checking result
 
-Then observe the result written in the durable storage via
+First, check the `.tezos-smart-rollup-node/debug-logs` file for debug output.
+
+The result written in the durable storage can be observed via
 
 ```sh
 octez-smart-rollup-client rpc get '/global/block/head/durable/wasm_2_0_0/value?key=/storage'

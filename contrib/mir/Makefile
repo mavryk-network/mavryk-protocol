@@ -74,7 +74,8 @@ run-rollup-node: clean-rollup-dir fill-kernel-chunks
 	octez-smart-rollup-node \
 		run operator for "$(ROLLUP_ALIAS)" \
 		with operators "$(OPERATOR_ADDR)" \
-		--data-dir "$(SMART_ROLLUP_NODE_DIR)"
+		--data-dir "$(SMART_ROLLUP_NODE_DIR)" \
+		--log-kernel-debug --log-kernel-debug-file "$(SMART_ROLLUP_NODE_DIR)"/debug-logs
 
 clean-rollup-dir:
 	@# Trying to remove safely
