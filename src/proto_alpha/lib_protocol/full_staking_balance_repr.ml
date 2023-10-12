@@ -96,7 +96,7 @@ let staked_frozen
     } =
   staked_frozen
 
-let delegated
+let current_delegated
     {
       own_frozen = _;
       staked_frozen = _;
@@ -105,6 +105,19 @@ let delegated
       cycle_of_min_delegated = _;
     } =
   delegated
+
+let min_delegated_in_cycle ~current_cycle
+    {
+      own_frozen = _;
+      staked_frozen = _;
+      delegated;
+      min_delegated_in_cycle;
+      cycle_of_min_delegated;
+    } =
+  if Cycle_repr.(cycle_of_min_delegated < current_cycle) then delegated
+  else (
+    assert (Cycle_repr.(cycle_of_min_delegated = current_cycle)) ;
+    min_delegated_in_cycle)
 
 let has_minimal_stake ~minimal_stake
     {

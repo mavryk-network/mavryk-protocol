@@ -25,7 +25,9 @@ val own_frozen : t -> Tez_repr.t
 
 val staked_frozen : t -> Tez_repr.t
 
-val delegated : t -> Tez_repr.t
+val current_delegated : t -> Tez_repr.t
+
+val min_delegated_in_cycle : current_cycle:Cycle_repr.t -> t -> Tez_repr.t
 
 val has_minimal_stake : minimal_stake:Tez_repr.t -> t -> bool
 
