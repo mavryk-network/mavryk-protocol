@@ -18,7 +18,7 @@ You will need the following programs installed:
   * `octez-client`;
   * `octez-smart-rollup-client`;
   * `octez-smart-rollup-node`.
-* `tezos-smart-rollup-installer`: use `cargo install tezos-smart-rollup-installer`.
+* `smart-rollup-installer`: use `cargo install tezos-smart-rollup-installer`.
 
 Make sure that your data directory of `octez-client` (`~/.octez-client` by default)
 mentions the testing network you are planning to operate with.

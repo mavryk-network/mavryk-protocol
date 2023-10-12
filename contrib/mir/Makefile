@@ -35,12 +35,6 @@ $(BIN_DIR)/mir-kernel.wasm: $(BIN_DIR)/mir-raw-kernel.wasm
 # an installer kernel that would load those chunks on run.
 # The chunks have to be exposed via our local rollup node.
 $(BIN_DIR)/mir-installer-kernel.wasm: $(BIN_DIR)/mir-kernel.wasm
-  ifeq ($(SMART_ROLLUP_INSTALLER),smart-rollup-installer)
-  ifeq (, $(shell which smart-rollup-installer))
-  $(error "No smart-rollup-installer in $$PATH, you can install it with `cargo install`. \
-           Make sure cargo binaries folder is in your path")
-  endif
-  endif
 	$(SMART_ROLLUP_INSTALLER) get-reveal-installer \
 		--upgrade-to $(BIN_DIR)/mir-kernel.wasm \
 		--output $(BIN_DIR)/mir-installer-kernel.wasm \
