@@ -207,9 +207,6 @@ let init_first_cycles ctxt =
     List.fold_left_es
       (fun ctxt c ->
         let cycle = Cycle_repr.of_int32_exn (Int32.of_int c) in
-        let* ctxt = Stake_storage.snapshot ctxt in
-        (* NB: we need to take several snapshots because
-           select_distribution_for_cycle deletes the snapshots *)
         Delegate_sampler.select_distribution_for_cycle ctxt cycle)
       ctxt
       Misc.(0 --> preserved)
