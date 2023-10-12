@@ -1334,13 +1334,12 @@ module Stake = struct
       (Tez_repr)
 
   module Staking_balance =
-    Make_indexed_data_snapshotable_storage
+    Make_indexed_data_storage
       (Make_subcontext (Registered) (Raw_context)
          (struct
            let name = ["full_staking_balance"]
          end))
-         (Int31_index)
-      (Public_key_hash_index)
+         (Public_key_hash_index)
       (Full_staking_balance_repr)
 
   module Active_delegates_with_minimal_stake =
