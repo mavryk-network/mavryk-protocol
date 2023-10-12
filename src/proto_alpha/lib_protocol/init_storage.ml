@@ -131,24 +131,17 @@ let migrate_staking_balance_for_o ctxt =
          ~delegated
          ~current_cycle)
   in
-  Storage.Stake.Staking_balance_up_to_Nairobi.fold
-    ctxt
-    ~order:`Undefined
-    ~init:(ok ctxt)
-    ~f:(fun delegate staking_balance ctxt ->
-      let*? ctxt in
-      let* stake = convert ctxt delegate staking_balance in
-      Storage.Stake.Staking_balance.update ctxt delegate stake)
-
-(** Clear staking balance snapshots to avoid storing legacy values.
-    This should do nothing if the migration happens at a cycle
-    boundary, which is usually the case.
-*)
-let clear_staking_balance_snapshots_for_o ctxt =
-  let open Lwt_result_syntax in
-  let*! ctxt =
-    Storage.Stake.Staking_balance_up_to_Nairobi.Snapshot.clear ctxt
+  let* ctxt =
+    Storage.Stake.Staking_balance_up_to_Nairobi.fold
+      ctxt
+      ~order:`Undefined
+      ~init:(ok ctxt)
+      ~f:(fun delegate staking_balance ctxt ->
+        let*? ctxt in
+        let* stake = convert ctxt delegate staking_balance in
+        Storage.Stake.Staking_balance.update ctxt delegate stake)
   in
+  let*! ctxt = Storage.Stake.Staking_balance_up_to_Nairobi.clear ctxt in
   Storage.Stake.Last_snapshot.update ctxt 0
 
 (** Converts {Storage.Stake.Total_active_stake} and
@@ -347,7 +340,6 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
             Signature.Public_key_hash.Set.empty
         in
         let* ctxt = migrate_staking_balance_for_o ctxt in
-        let* ctxt = clear_staking_balance_snapshots_for_o ctxt in
         let* ctxt = migrate_stake_distribution_for_o ctxt in
         let*! ctxt = initialize_total_supply_for_o chain_id ctxt in
         let*! ctxt =
