@@ -5,11 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type t = private {
-  own_frozen : Tez_repr.t;
-  staked_frozen : Tez_repr.t;
-  delegated : Tez_repr.t;
-}
+type t
 
 val init :
   own_frozen:Tez_repr.t -> staked_frozen:Tez_repr.t -> delegated:Tez_repr.t -> t
@@ -20,6 +16,17 @@ val encoding : t Data_encoding.t
 
 (** The weight of a delegate used for voting rights. *)
 val voting_weight : t -> Int64.t tzresult
+
+val own_frozen : t -> Tez_repr.t
+
+val staked_frozen : t -> Tez_repr.t
+
+val delegated : t -> Tez_repr.t
+
+val has_minimal_stake : minimal_stake:Tez_repr.t -> t -> bool
+
+val has_minimal_stake_and_frozen_stake :
+  minimal_stake:Tez_repr.t -> minimal_frozen_stake:Tez_repr.t -> t -> bool
 
 val remove_delegated : amount:Tez_repr.t -> t -> t tzresult
 

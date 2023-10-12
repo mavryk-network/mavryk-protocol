@@ -23,9 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let apply_limits ctxt staking_parameters
-    {Full_staking_balance_repr.own_frozen; staked_frozen; delegated} =
+let apply_limits ctxt staking_parameters staking_balance =
   let open Result_syntax in
+  let own_frozen = Full_staking_balance_repr.own_frozen staking_balance in
+  let staked_frozen = Full_staking_balance_repr.staked_frozen staking_balance in
+  let delegated = Full_staking_balance_repr.delegated staking_balance in
   let limit_of_delegation_over_baking =
     Int64.of_int (Constants_storage.limit_of_delegation_over_baking ctxt)
   in

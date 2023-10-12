@@ -88,25 +88,17 @@ let get_initialized_stake ctxt delegate =
       let* ctxt = Storage.Stake.Staking_balance.init ctxt delegate balance in
       return (balance, ctxt)
 
-let has_minimal_stake ctxt
-    {Full_staking_balance_repr.own_frozen; staked_frozen; delegated} =
-  let open Result_syntax in
-  let open Tez_repr in
+let has_minimal_stake ctxt staking_balance =
   let minimal_stake = Constants_storage.minimal_stake ctxt in
-  let sum =
-    let* frozen = own_frozen +? staked_frozen in
-    frozen +? delegated
-  in
-  match sum with
-  | Error _sum_overflows ->
-      true (* If the sum overflows, we are definitely over the minimal stake. *)
-  | Ok staking_balance -> Tez_repr.(staking_balance >= minimal_stake)
+  Full_staking_balance_repr.has_minimal_stake ~minimal_stake staking_balance
 
-let has_minimal_stake_and_frozen_stake ctxt
-    ({own_frozen; _} as full_staking_balance : Full_staking_balance_repr.t) =
+let has_minimal_stake_and_frozen_stake ctxt full_staking_balance =
   let minimal_frozen_stake = Constants_storage.minimal_frozen_stake ctxt in
-  Tez_repr.(own_frozen >= minimal_frozen_stake)
-  && has_minimal_stake ctxt full_staking_balance
+  let minimal_stake = Constants_storage.minimal_stake ctxt in
+  Full_staking_balance_repr.has_minimal_stake_and_frozen_stake
+    ~minimal_stake
+    ~minimal_frozen_stake
+    full_staking_balance
 
 let update_stake ~f ctxt delegate =
   let open Lwt_result_syntax in
@@ -312,9 +304,12 @@ let add_contract_delegated_stake ctxt contract amount =
 module For_RPC = struct
   let get_staking_balance ctxt delegate =
     let open Lwt_result_syntax in
-    let* {own_frozen; staked_frozen; delegated} =
-      Storage.Stake.Staking_balance.get ctxt delegate
+    let* staking_balance = Storage.Stake.Staking_balance.get ctxt delegate in
+    let own_frozen = Full_staking_balance_repr.own_frozen staking_balance in
+    let staked_frozen =
+      Full_staking_balance_repr.staked_frozen staking_balance
     in
+    let delegated = Full_staking_balance_repr.delegated staking_balance in
     let*? frozen = Tez_repr.(own_frozen +? staked_frozen) in
     let*? staking_balance = Tez_repr.(frozen +? delegated) in
     return staking_balance
