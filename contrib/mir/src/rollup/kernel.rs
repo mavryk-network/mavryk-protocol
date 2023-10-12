@@ -59,7 +59,7 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
         InboxMessage::External(payload) => {
             debug_msg!(
                 host,
-                "Message #{msg_id} at level #{level}: external {payload:x?}\n"
+                "\nMessage #{msg_id} at level {level}: external {payload:x?}\n"
             );
             process_external_message(host, &payload)?
         }
@@ -72,7 +72,7 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
             InternalInboxMessage::Transfer(transfer) => {
                 debug_msg!(
                     host,
-                    "Message #{msg_id} at level #{level}: internal transfer to {} with payload: {:x?}\n",
+                    "\nMessage #{msg_id} at level {level}: internal transfer to {} with payload: {:x?}\n",
                     transfer.destination,
                     &transfer.payload.0
                 );
