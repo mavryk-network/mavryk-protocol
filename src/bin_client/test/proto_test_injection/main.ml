@@ -93,12 +93,15 @@ module Fitness = struct
     b
 
   let int64_of_bytes b =
+    let open Lwt_result_syntax in
     if Compare.Int.(Bytes.length b <> 8) then tzfail Invalid_fitness2
     else return (TzEndian.get_int64 b 0)
 
   let from_int64 fitness = [int64_to_bytes fitness]
 
-  let to_int64 = function
+  let to_int64 =
+    let open Lwt_result_syntax in
+    function
     | [fitness] -> int64_of_bytes fitness
     | [] -> return 0L
     | _ -> tzfail Invalid_fitness
@@ -119,11 +122,13 @@ type mode =
       timestamp : Time.t;
     }
 
-let begin_validation _ctxt _chain_id _mode ~predecessor:_ = return ()
+let begin_validation _ctxt _chain_id _mode ~predecessor:_ =
+  Lwt_result_syntax.return_unit
 
-let validate_operation ?check_signature:_ _validation_state _oph _op = return ()
+let validate_operation ?check_signature:_ _validation_state _oph _op =
+  Lwt_result_syntax.return_unit
 
-let finalize_validation _validation_state = return ()
+let finalize_validation _validation_state = Lwt_result_syntax.return_unit
 
 let begin_application context _chain_id mode
     ~(predecessor : Block_header.shell_header) =
@@ -138,13 +143,14 @@ let begin_application context _chain_id mode
   in
   return {context; fitness}
 
-let apply_operation application_state _oph _op = return (application_state, ())
+let apply_operation application_state _oph _op =
+  Lwt_result_syntax.return (application_state, ())
 
 let finalize_application application_state _block_header =
   let fitness = Fitness.get application_state in
   let message = Some (Format.asprintf "fitness <- %Ld" fitness) in
   let fitness = Fitness.from_int64 fitness in
-  return
+  Lwt_result_syntax.return
     ( {
         Updater.message;
         context = application_state.context;
@@ -159,7 +165,7 @@ let rpc_services = RPC_directory.empty
 let init _chain_id ctxt block_header =
   let fitness = block_header.Block_header.fitness in
   let message = None in
-  return
+  Lwt_result_syntax.return
     {
       Updater.message;
       context = ctxt;
@@ -172,6 +178,7 @@ type error += Missing_value_in_cache
 
 let value_of_key ~chain_id:_ ~predecessor_context:_ ~predecessor_timestamp:_
     ~predecessor_level:_ ~predecessor_fitness:_ ~predecessor:_ ~timestamp:_ =
+  let open Lwt_result_syntax in
   return (fun _ -> tzfail Missing_value_in_cache)
 
 (* Fake mempool *)
@@ -204,16 +211,16 @@ module Mempool = struct
     | Incompatible_mempool
     | Merge_conflict of operation_conflict
 
-  let init _ _ ~head_hash:_ ~head:_ = Lwt.return_ok ((), ())
+  let init _ _ ~head_hash:_ ~head:_ = Lwt_result_syntax.return ((), ())
 
   let encoding = Data_encoding.unit
 
   let add_operation ?check_signature:_ ?conflict_handler:_ _ _ _ =
-    Lwt.return_ok ((), Unchanged)
+    Lwt_result_syntax.return ((), Unchanged)
 
   let remove_operation () _ = ()
 
-  let merge ?conflict_handler:_ () () = Ok ()
+  let merge ?conflict_handler:_ () () = Result_syntax.return_unit
 
   let operations () = Operation_hash.Map.empty
 end
