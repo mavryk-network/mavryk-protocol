@@ -113,6 +113,7 @@ let patch_script ctxt (address, hash, patched_code) =
     {Stake_repr.Full}.  Remove me in P. *)
 let migrate_staking_balance_for_o ctxt =
   let open Lwt_result_syntax in
+  let current_cycle = (Raw_context.current_level ctxt).cycle in
   let convert ctxt delegate staking_balance =
     let delegate_contract = Contract_repr.Implicit delegate in
     let* {current_amount = own_frozen; initial_amount = _} =
@@ -124,7 +125,11 @@ let migrate_staking_balance_for_o ctxt =
     in
     let staked_frozen = Tez_repr.zero in
     return
-      (Full_staking_balance_repr.init ~own_frozen ~staked_frozen ~delegated)
+      (Full_staking_balance_repr.init
+         ~own_frozen
+         ~staked_frozen
+         ~delegated
+         ~current_cycle)
   in
   Storage.Stake.Staking_balance_up_to_Nairobi.fold
     ctxt
