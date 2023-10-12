@@ -94,7 +94,7 @@ let remove_zero_ticket_entries ctxt =
     List.map_e
       (fun key ->
         match Script_expr_hash.of_b58check_opt key with
-        | Some key -> ok key
+        | Some key -> Result_syntax.return key
         | None -> error (Invalid_big_map_key key))
       [
         "exprtXBtxJxCDEDETueKAFLL7r7vZtNEo1MHajpHba1djtGKqJzWd3";
