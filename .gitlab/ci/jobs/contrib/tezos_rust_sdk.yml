@@ -16,9 +16,11 @@ tezos-rust-sdk:
       when: always
     - if: '$CI_MERGE_REQUEST_ID'
       changes:
-        - contrib/tezos-rust-sdk/
-        - contrib/kaitati-struct-files
-      when: on_success
+        paths:
+          - contrib/tezos-rust-sdk/*
+          - contrib/tezos-rust-sdk/**/*
+        compare_to: master
+      when: always
     - when: manual
 
 tezos-rust-sdk-test-codec:
@@ -37,7 +39,9 @@ tezos-rust-sdk-test-codec:
       when: always
     - if: '$CI_MERGE_REQUEST_ID'
       changes:
-        - contrib/tezos-rust-sdk/
-        - contrib/kaitati-struct-files
-      when: on_success
+        paths:
+          - contrib/tezos-rust-sdk/*
+          - contrib/tezos-rust-sdk/**/*
+        compare_to: master
+      when: always
     - when: manual
