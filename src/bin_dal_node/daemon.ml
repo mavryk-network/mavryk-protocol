@@ -141,6 +141,23 @@ module Handler = struct
             (message_id, err)) ;
         `Invalid
 
+  let may_update_cryptobox ctxt dal_config ~level parameters =
+    let open Lwt_result_syntax in
+    let last_cryptobox_opt = Node_context.find_cryptobox ctxt ~level in
+    match last_cryptobox_opt with
+    | None ->
+        let* cryptobox = init_cryptobox dal_config parameters in
+        let*! () = Node_context.set_new_cryptobox ctxt ~level cryptobox in
+        Lwt.return_ok cryptobox
+    | Some cryptobox ->
+        let last_parameters = Cryptobox.parameters cryptobox in
+        if parameters.cryptobox_parameters = last_parameters then
+          Lwt.return_ok cryptobox
+        else
+          let* cryptobox = init_cryptobox dal_config parameters in
+          let*! () = Node_context.set_new_cryptobox ctxt ~level cryptobox in
+          Lwt.return_ok cryptobox
+
   let resolve_plugin_and_set_ready config dal_config ctxt cctxt =
     (* Monitor heads and try resolve the DAL protocol plugin corresponding to
        the protocol of the targeted node. *)
@@ -155,7 +172,13 @@ module Handler = struct
       | Some plugin ->
           let (module Dal_plugin : Dal_plugin.T) = plugin in
           let* proto_parameters = Dal_plugin.get_constants `Main block cctxt in
-          let* cryptobox = init_cryptobox dal_config proto_parameters in
+          let* cryptobox =
+            may_update_cryptobox
+              ctxt
+              dal_config
+              ~level:block_header.Block_header.shell.level
+              proto_parameters
+          in
           Store.Value_size_hooks.set_share_size
             (Cryptobox.Internal_for_tests.encoded_share_size cryptobox) ;
           let* () =
