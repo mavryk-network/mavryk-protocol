@@ -86,6 +86,23 @@ in
 
     inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE TEZOS_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
 
+    clangNoArch =
+      if pkgs.stdenv.isDarwin
+      then
+        pkgs.clang.overrideAttrs (old: {
+          postFixup = ''
+            ${old.postFixup or ""}
+
+            # On macOS this contains '-march' and '-mcpu' flags. These flags
+            # would be used for any invocation of Clang.
+            # Removing those makes the resulting Clang wrapper usable when
+            # cross-compiling where passing '-march' and '-mcpu' would not
+            # make sense.
+            echo > $out/nix-support/cc-cflags-before
+          '';
+        })
+      else pkgs.clang;
+
     buildInputs = with pkgs;
       kernelPackageSet
       ++ mainPackage.buildInputs
