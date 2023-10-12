@@ -271,6 +271,10 @@ module Legacy = struct
 
       val other_header_status : Types.slot_id -> Cryptobox.commitment -> Path.t
     end
+
+    module Cryptoboxes : sig
+      val root : Path.t
+    end
   end = struct
     type t = string list
 
@@ -339,6 +343,10 @@ module Legacy = struct
         let commitment_repr = Cryptobox.Commitment.to_b58check commitment in
         others index / commitment_repr / "status"
     end
+
+    module Cryptoboxes = struct
+      let root = ["cryptoboxes"]
+    end
   end
 
   let add_slot_by_commitment node_store cryptobox slot commitment =
@@ -349,6 +357,29 @@ module Legacy = struct
     let* () = set ~msg:"Slot stored" node_store.store path encoded_slot in
     let* () = Event.(emit stored_slot_content commitment) in
     return_unit
+
+  let set_cryptoboxes node_store cryptoboxes =
+    let open Lwt_syntax in
+    let path = Path.Cryptoboxes.root in
+    let blob =
+      Data_encoding.Binary.to_string_exn Cryptoboxes.encoding cryptoboxes
+    in
+    let* () = set ~msg:"Cryptoboxes stored" node_store.store path blob in
+    return_unit
+
+  let get_cryptoboxes node_store =
+    let open Lwt_syntax in
+    let path = Path.Cryptoboxes.root in
+    let* blob_opt = find node_store.store path in
+    match blob_opt with
+    | None -> Lwt.return_none
+    | Some blob -> (
+        match Data_encoding.Binary.of_string Cryptoboxes.encoding blob with
+        | Ok cryptoboxes -> Lwt.return_some cryptoboxes
+        | Error _err ->
+            (* TODO: Store is probably corrupted, but is it that bad?
+               Should we emit a warning? Fail? Reset this storage? *)
+            Lwt.return_none)
 
   let associate_slot_id_with_commitment node_store commitment slot_id =
     (* TODO: https://gitlab.com/tezos/tezos/-/issues/4528

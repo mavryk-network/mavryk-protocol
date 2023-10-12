@@ -235,3 +235,12 @@ let metrics_server_is_ready =
     ~level:Notice
     ("host", Data_encoding.string)
     ("port", Data_encoding.uint16)
+
+let cryptoboxes_stored =
+  let open Internal_event.Simple in
+  declare_0
+    ~section
+    ~name:"cryptoboxes_stored"
+    ~msg:"Cryptobxoes stored"
+    ~level:Info
+    ()

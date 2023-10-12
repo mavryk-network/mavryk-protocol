@@ -76,3 +76,5 @@ val p2p_server_is_ready : P2p_point.Id.t t
 val rpc_server_is_ready : P2p_point.Id.t t
 
 val metrics_server_is_ready : (string * int) t
+
+val cryptoboxes_stored : unit t
