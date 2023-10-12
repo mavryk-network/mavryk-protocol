@@ -1337,7 +1337,7 @@ module Stake = struct
     Make_indexed_data_snapshotable_storage
       (Make_subcontext (Registered) (Raw_context)
          (struct
-           let name = ["staking_balance"]
+           let name = ["full_staking_balance"]
          end))
          (Int31_index)
       (Public_key_hash_index)
