@@ -991,12 +991,13 @@ let prepare_first_block ~level ~timestamp chain_id ctxt =
         (* This test prevents the activation of the protocol if the
            set of parameters given for the DAL is invalid. *)
         let*? () =
+          let open Result_syntax in
           if dal.feature_enable then
             match Dal.make cryptobox_parameters with
-            | Ok _cryptobox -> ok ()
+            | Ok _cryptobox -> return_unit
             | Error (`Fail explanation) ->
-                error (Dal_errors_repr.Dal_cryptobox_error {explanation})
-          else ok ()
+                tzfail (Dal_errors_repr.Dal_cryptobox_error {explanation})
+          else return_unit
         in
         let dal_activation_level =
           if c.dal.feature_enable then Raw_level_repr.root
