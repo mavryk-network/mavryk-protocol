@@ -6,12 +6,31 @@ tezos-rust-sdk:
     - apt-get update -qy && apt-get install -y openssl libssl-dev clang
     - rustup update
     - rustup component add rustfmt clippy
-    - rustup target add wasm32-unknown-unknown
     - cd contrib/tezos-rust-sdk
     - cargo check --locked
     - cargo build --release
     - cargo test
     - cargo fmt -- --check
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+      when: always
+    - if: '$CI_MERGE_REQUEST_ID'
+      changes:
+        - contrib/tezos-rust-sdk/
+        - contrib/kaitati-struct-files
+      when: on_success
+    - when: manual
+
+tezos-rust-sdk-test-codec:
+  stage: client-libs
+  needs: [trigger]
+  image: registry.gitlab.com/tezos/opam-repository:runtime-build-dependencies--2703ff3a4dbbfa575a7a3d6dc2fff2a4b23c2045
+  script:
+    - cd contrib/tezos-rust-sdk/codec
+    - cargo build
+    - cd ../../..
+    - make octez-codec
+# TODO:    -  compare outputs of codec and octez-codec
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
