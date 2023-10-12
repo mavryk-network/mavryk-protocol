@@ -238,6 +238,14 @@ let migrate_pending_consensus_keys_for_o ctxt =
         ctxt
         pending_cks)
 
+let migrate_activate_delegates_with_minimal_stake_for_o ctxt =
+  Storage.Stake.Active_delegates_with_minimal_stake_up_to_Nairobi.fold
+    ctxt
+    ~order:`Undefined
+    ~init:ctxt
+    ~f:(fun delegate () ctxt ->
+      Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate)
+
 let prepare_first_block chain_id ctxt ~typecheck_smart_contract
     ~typecheck_smart_rollup ~level ~timestamp ~predecessor =
   let open Lwt_result_syntax in
@@ -348,6 +356,7 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
         in
         let* ctxt = Adaptive_issuance_storage.init ctxt in
         let*! ctxt = migrate_pending_consensus_keys_for_o ctxt in
+        let*! ctxt = migrate_activate_delegates_with_minimal_stake_for_o ctxt in
         (* Migration of refutation games needs to be kept for each protocol. *)
         let* ctxt =
           Sc_rollup_refutation_storage.migrate_clean_refutation_games ctxt

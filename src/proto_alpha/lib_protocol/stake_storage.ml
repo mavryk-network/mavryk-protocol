@@ -136,7 +136,7 @@ let update_stake ~f ctxt delegate =
         return ctxt
       else
         let*! ctxt =
-          Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
+          Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate
         in
         return ctxt
   | false, false | true, true -> return ctxt
@@ -205,7 +205,7 @@ let set_active ctxt delegate =
     let* staking_balance, ctxt = get_initialized_stake ctxt delegate in
     if has_minimal_stake ctxt staking_balance then
       let*! ctxt =
-        Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
+        Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate
       in
       return ctxt
     else return ctxt
@@ -230,7 +230,7 @@ let fold_on_active_delegates_with_minimal_stake_es ctxt ~f ~order ~init =
     ctxt
     ~order
     ~init:(Ok init)
-    ~f:(fun delegate () acc ->
+    ~f:(fun delegate acc ->
       let*? acc in
       f delegate acc)
 

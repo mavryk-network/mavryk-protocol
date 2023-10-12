@@ -528,12 +528,17 @@ module Stake : sig
 
   (** This is a set, encoded in a map with value unit. This should be
      fairly small compared to staking balance *)
-  module Active_delegates_with_minimal_stake :
+  module Active_delegates_with_minimal_stake_up_to_Nairobi :
     Indexed_data_snapshotable_storage
       with type key = Signature.Public_key_hash.t
        and type value = unit
        and type snapshot = int
        and type t := Raw_context.t
+
+  module Active_delegates_with_minimal_stake :
+    Data_set_storage
+      with type t := Raw_context.t
+       and type elt = Signature.public_key_hash
 
   (** Counter of stake storage snapshots taken since last cycle *)
   module Last_snapshot :
