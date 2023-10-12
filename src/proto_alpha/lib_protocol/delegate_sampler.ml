@@ -166,7 +166,7 @@ let get_delegate_stake_from_staking_balance ctxt delegate staking_balance =
   Lwt.return
     (Stake_context.apply_limits ctxt staking_parameters staking_balance)
 
-let get_stakes_for_selected_index ctxt _index =
+let get_stakes ctxt =
   let open Lwt_result_syntax in
   Stake_storage.fold_on_active_delegates_with_minimal_stake_es
     ctxt
@@ -200,12 +200,10 @@ let select_distribution_for_cycle ctxt cycle =
   let open Lwt_result_syntax in
   let* max_snapshot_index = Stake_storage.max_snapshot_index ctxt in
   let* seed = Seed_storage.raw_for_cycle ctxt cycle in
-  let* selected_index =
+  let* _selected_index =
     compute_snapshot_index_for_seed ~max_snapshot_index seed
   in
-  let* stakes, total_stake =
-    get_stakes_for_selected_index ctxt selected_index
-  in
+  let* stakes, total_stake = get_stakes ctxt in
   let* ctxt =
     Stake_storage.set_selected_distribution_for_cycle
       ctxt
