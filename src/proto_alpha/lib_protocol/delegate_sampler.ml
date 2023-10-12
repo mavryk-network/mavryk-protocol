@@ -166,12 +166,15 @@ let get_delegate_stake_from_staking_balance ctxt delegate staking_balance =
   Lwt.return
     (Stake_context.apply_limits ctxt staking_parameters staking_balance)
 
-let get_stakes_for_selected_index ctxt index =
+let get_stakes_for_selected_index ctxt _index =
   let open Lwt_result_syntax in
-  Stake_storage.fold_snapshot
+  Stake_storage.fold_on_active_delegates_with_minimal_stake_es
     ctxt
-    ~index
-    ~f:(fun (delegate, staking_balance) (acc, total_stake) ->
+    ~order:`Sorted
+    ~f:(fun delegate (acc, total_stake) ->
+      let* staking_balance =
+        Stake_storage.get_full_staking_balance ctxt delegate
+      in
       let* stake_for_cycle =
         get_delegate_stake_from_staking_balance ctxt delegate staking_balance
       in
