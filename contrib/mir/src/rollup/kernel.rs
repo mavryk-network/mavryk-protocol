@@ -27,19 +27,12 @@ pub type Error = String;
 /// execution time of one such call.
 pub fn kernel_entry(host: &mut impl Runtime) {
     // Ways of observing that kernel has indeed been invoked, helps in testing
-    debug_msg!(host, "Kernel invoked\n");
     let _ = host.store_write(&RefPath::assert_from(b"/started"), &[1], 0);
 
-    let mut first_message_for_invocation = true;
     // Handle all the messages we got at this level
     loop {
         match host.read_input() {
             Ok(Some(msg)) => {
-                if first_message_for_invocation {
-                    debug_msg!(host, "Handling messages at level {}\n", msg.level);
-                    first_message_for_invocation = false;
-                }
-
                 // TODO [#6411]: wrap into catch_unwind
                 let res = process_message(host, &msg);
                 res.unwrap_or_else(|err| {
@@ -56,6 +49,7 @@ pub fn kernel_entry(host: &mut impl Runtime) {
 
 pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Error> {
     let msg_id = msg.id;
+    let level = msg.level;
     let (rest, msg) =
         InboxMessage::<IncomingTransferParam>::parse(msg.as_ref()).map_err(|x| x.to_string())?;
     // Likely we don't want to restrict the unparsed input for the sake of
@@ -63,7 +57,10 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
     debug_assert!(rest.is_empty());
     match msg {
         InboxMessage::External(payload) => {
-            debug_msg!(host, "Message #{msg_id} - external: {payload:#x?}\n");
+            debug_msg!(
+                host,
+                "Message #{msg_id} at level #{level}: external {payload:#x?}\n"
+            );
             process_external_message(host, &payload)?
         }
         // [optimization] If payload is bytes, it should not be hard
@@ -75,7 +72,7 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
             InternalInboxMessage::Transfer(transfer) => {
                 debug_msg!(
                     host,
-                    "Message #{msg_id} - internal transfer to {} with payload: {:#x?}\n",
+                    "Message #{msg_id} at level #{level}: internal transfer to {} with payload: {:#x?}\n",
                     transfer.destination,
                     &transfer.payload.0
                 );
