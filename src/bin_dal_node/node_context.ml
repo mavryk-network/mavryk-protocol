@@ -43,6 +43,7 @@ type status = Ready of ready_ctxt | Starting
 
 type t = {
   mutable status : status;
+  mutable cryptoboxes : Cryptoboxes.t;
   config : Configuration_file.t;
   store : Store.node_store;
   tezos_node_cctxt : Tezos_rpc.Context.generic;
@@ -54,7 +55,8 @@ type t = {
   metrics_server : Metrics.t;
 }
 
-let init config store gs_worker transport_layer cctxt metrics_server =
+let init config cryptoboxes store gs_worker transport_layer cctxt metrics_server
+    =
   let neighbors_cctxts =
     List.map
       (fun Configuration_file.{addr; port} ->
@@ -66,6 +68,7 @@ let init config store gs_worker transport_layer cctxt metrics_server =
   in
   {
     status = Starting;
+    cryptoboxes;
     config;
     store;
     tezos_node_cctxt = cctxt;
@@ -77,6 +80,12 @@ let init config store gs_worker transport_layer cctxt metrics_server =
     profile_ctxt = Profile_manager.empty;
     metrics_server;
   }
+
+let set_new_cryptobox t ~level cryptobox =
+  t.cryptoboxes <- Cryptoboxes.add t.cryptoboxes level cryptobox ;
+  Store.Legacy.set_cryptoboxes t.store t.cryptoboxes
+
+let find_cryptobox t ~level = Cryptoboxes.find t.cryptoboxes level
 
 let set_ready ctxt plugin cryptobox proto_parameters plugin_proto =
   let open Result_syntax in

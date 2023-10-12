@@ -540,11 +540,14 @@ let run ~data_dir configuration_override =
       ~network_name
   in
   let* store = Store.init config in
+  let*! cryptoboxes = Store.Legacy.find_cryptoboxes store in
+  let cryptoboxes = Option.value ~default:Cryptoboxes.empty cryptoboxes in
   let cctxt = Rpc_context.make endpoint in
   let*! metrics_server = Metrics.launch config.metrics_addr in
   let ctxt =
     Node_context.init
       config
+      cryptoboxes
       store
       gs_worker
       transport_layer

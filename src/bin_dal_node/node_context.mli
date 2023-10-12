@@ -58,12 +58,17 @@ type t
     instance [transport_layer], and tezos node client context [cctx]. *)
 val init :
   Configuration_file.t ->
+  Cryptoboxes.t ->
   Store.node_store ->
   Gossipsub.Worker.t ->
   Gossipsub.Transport_layer.t ->
   Tezos_rpc.Context.generic ->
   Metrics.t ->
   t
+
+val set_new_cryptobox : t -> level:int32 -> Cryptobox.t -> unit Lwt.t
+
+val find_cryptobox : t -> level:int32 -> Cryptobox.t option
 
 (** Raised by [set_ready] when the status is already [Ready _] *)
 exception Status_already_ready

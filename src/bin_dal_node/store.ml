@@ -367,7 +367,7 @@ module Legacy = struct
     let* () = set ~msg:"Cryptoboxes stored" node_store.store path blob in
     return_unit
 
-  let get_cryptoboxes node_store =
+  let find_cryptoboxes node_store =
     let open Lwt_syntax in
     let path = Path.Cryptoboxes.root in
     let* blob_opt = find node_store.store path in
