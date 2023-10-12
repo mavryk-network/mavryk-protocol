@@ -150,41 +150,20 @@ let update_stake ~f ctxt delegate =
   | false, false | true, true -> return ctxt
 
 let remove_delegated_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ delegated = Tez_repr.(delegated -? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.remove_delegated ~amount in
+  update_stake ctxt delegate ~f
 
 let remove_own_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ own_frozen = Tez_repr.(own_frozen -? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.remove_own_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let remove_staked_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ staked_frozen = Tez_repr.(staked_frozen -? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.remove_staked_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let remove_shared_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      if Tez_repr.(staked_frozen = zero) then
-        let+ own_frozen = Tez_repr.(own_frozen -? amount) in
-        Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated
-      else
-        let* total_frozen = Tez_repr.(own_frozen +? staked_frozen) in
-        let* own_part =
-          Tez_repr.mul_ratio
-            amount
-            ~num:(Tez_repr.to_mutez own_frozen)
-            ~den:(Tez_repr.to_mutez total_frozen)
-        in
-        let* own_frozen = Tez_repr.(own_frozen -? own_part) in
-        let* staked_part = Tez_repr.(amount -? own_part) in
-        let+ staked_frozen = Tez_repr.(staked_frozen -? staked_part) in
-        Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.remove_shared_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let remove_frozen_stake ctxt staker amount =
   match staker with
@@ -196,41 +175,20 @@ let remove_frozen_stake ctxt staker amount =
   | Shared delegate -> remove_shared_frozen_stake ctxt delegate amount
 
 let add_delegated_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ delegated = Tez_repr.(delegated +? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.add_delegated ~amount in
+  update_stake ctxt delegate ~f
 
 let add_own_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ own_frozen = Tez_repr.(own_frozen +? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.add_own_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let add_staked_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      let+ staked_frozen = Tez_repr.(staked_frozen +? amount) in
-      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.add_staked_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let add_shared_frozen_stake ctxt delegate amount =
-  let open Result_syntax in
-  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
-      if Tez_repr.(staked_frozen = zero) then
-        let+ own_frozen = Tez_repr.(own_frozen +? amount) in
-        Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated
-      else
-        let* total_frozen = Tez_repr.(own_frozen +? staked_frozen) in
-        let* own_part =
-          Tez_repr.mul_ratio
-            amount
-            ~num:(Tez_repr.to_mutez own_frozen)
-            ~den:(Tez_repr.to_mutez total_frozen)
-        in
-        let* own_frozen = Tez_repr.(own_frozen +? own_part) in
-        let* staked_part = Tez_repr.(amount -? own_part) in
-        let+ staked_frozen = Tez_repr.(staked_frozen +? staked_part) in
-        Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
+  let f = Full_staking_balance_repr.add_shared_frozen ~amount in
+  update_stake ctxt delegate ~f
 
 let add_frozen_stake ctxt staker amount =
   match staker with
