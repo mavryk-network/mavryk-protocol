@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 2023 TriliTech <contact@trili.tech>
+#
+# SPDX-License-Identifier: MIT
+
+.PHONY: all
+all: build test check
+
+.PHONY: build
+build:
+	@cargo build --release --target=riscv64gc-unknown-none-elf
+
+.PHONY: build-deps
+build-deps:
+	@rustup target add riscv64gc-unknown-none-elf
+
+.PHONY: build-dev-deps
+build-dev-deps: build-deps
+	@rustup component add rustfmt clippy
+
+.PHONY: test
+test:
+	@cargo test
+
+.PHONY: check
+check:
+	@cargo fmt --check
+	# TODO: Clippy! (currently doesn't work)
+
+.PHONY: clean
+clean:
+	@cargo clean
