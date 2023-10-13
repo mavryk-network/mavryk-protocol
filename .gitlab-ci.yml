@@ -189,3 +189,6 @@ include:
   - local: .gitlab/ci/pipelines/schedule_extended_test.yml
     rules:
       - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+
+  # kaitai-struct-files
+  - local: .gitlab/ci/jobs/contrib/kaitai_struct_files.yml

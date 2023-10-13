@@ -1,0 +1,19 @@
+kaitai-struct-files:
+  stage: client-libs
+  needs: [trigger]
+  image:
+    name: kaitai/ksv
+    entrypoint: ["/usr/bin/bash"]
+  script:
+    - ["/usr/bin/bash", "-c" , "echo Hello && make -C contrib/kaitai-struct-files && if [ `git diff | wc -l` -eq 0 ] ; then echo OK ; else echo KO ; exit 1 ; fi"]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
+      when: always
+    - if: '$CI_MERGE_REQUEST_ID'
+      changes:
+        paths:
+          - contrib/kaitai-struct-files/*
+          - contrib/kaitai-struct-files/**/*
+        compare_to: master
+      when: always
+    - when: manual
