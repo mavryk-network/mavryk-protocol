@@ -1115,7 +1115,6 @@ let prepare_first_block ~level ~timestamp chain_id ctxt =
               blocks_per_cycle = c.blocks_per_cycle;
               blocks_per_commitment = c.blocks_per_commitment;
               nonce_revelation_threshold = c.nonce_revelation_threshold;
-              blocks_per_stake_snapshot = c.blocks_per_stake_snapshot;
               cycles_per_voting_period = c.cycles_per_voting_period;
               hard_gas_limit_per_operation = c.hard_gas_limit_per_operation;
               hard_gas_limit_per_block = c.hard_gas_limit_per_block;

@@ -167,7 +167,6 @@ type t = {
   blocks_per_cycle : int32;
   blocks_per_commitment : int32;
   nonce_revelation_threshold : int32;
-  blocks_per_stake_snapshot : int32;
   cycles_per_voting_period : int32;
   hard_gas_limit_per_operation : Gas_limit_repr.Arith.integral;
   hard_gas_limit_per_block : Gas_limit_repr.Arith.integral;
@@ -481,7 +480,6 @@ let encoding =
           c.blocks_per_cycle,
           c.blocks_per_commitment,
           c.nonce_revelation_threshold,
-          c.blocks_per_stake_snapshot,
           c.cycles_per_voting_period,
           c.hard_gas_limit_per_operation,
           c.hard_gas_limit_per_block,
@@ -517,7 +515,6 @@ let encoding =
              blocks_per_cycle,
              blocks_per_commitment,
              nonce_revelation_threshold,
-             blocks_per_stake_snapshot,
              cycles_per_voting_period,
              hard_gas_limit_per_operation,
              hard_gas_limit_per_block,
@@ -553,7 +550,6 @@ let encoding =
         blocks_per_cycle;
         blocks_per_commitment;
         nonce_revelation_threshold;
-        blocks_per_stake_snapshot;
         cycles_per_voting_period;
         hard_gas_limit_per_operation;
         hard_gas_limit_per_block;
@@ -589,12 +585,11 @@ let encoding =
         adaptive_issuance;
       })
     (merge_objs
-       (obj10
+       (obj9
           (req "preserved_cycles" uint8)
           (req "blocks_per_cycle" int32)
           (req "blocks_per_commitment" int32)
           (req "nonce_revelation_threshold" int32)
-          (req "blocks_per_stake_snapshot" int32)
           (req "cycles_per_voting_period" int32)
           (req
              "hard_gas_limit_per_operation"
