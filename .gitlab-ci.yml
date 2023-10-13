@@ -107,6 +107,7 @@ stages:
   - publish_release
   - publish_package_gitlab
   - manual
+  - client-libs
 
 # Trigger
 #
