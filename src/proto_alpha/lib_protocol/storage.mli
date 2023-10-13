@@ -540,10 +540,6 @@ module Stake : sig
       with type t := Raw_context.t
        and type elt = Signature.public_key_hash
 
-  (** Counter of stake storage snapshots taken since last cycle *)
-  module Last_snapshot :
-    Single_data_storage with type value = int and type t := Raw_context.t
-
   (* Remove me in P. *)
   module Selected_distribution_for_cycle_up_to_Nairobi :
     Indexed_data_storage

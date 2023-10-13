@@ -142,7 +142,7 @@ let migrate_staking_balance_for_o ctxt =
         Storage.Stake.Staking_balance.update ctxt delegate stake)
   in
   let*! ctxt = Storage.Stake.Staking_balance_up_to_Nairobi.clear ctxt in
-  Storage.Stake.Last_snapshot.update ctxt 0
+  return ctxt
 
 (** Converts {Storage.Stake.Total_active_stake} and
     {Storage.Stake.Selected_distribution_for_cycle} from {Tez_repr} to
@@ -290,7 +290,6 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
         let* ctxt, commitments_balance_updates =
           List.fold_left_es init_commitment (ctxt, []) param.commitments
         in
-        let* ctxt = Storage.Stake.Last_snapshot.init ctxt 0 in
         let* ctxt =
           Seed_storage.init ?initial_seed:param.constants.initial_seed ctxt
         in
@@ -347,6 +346,7 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
             ctxt
             Signature.Public_key_hash.Set.empty
         in
+        let*! ctxt = Raw_context.remove ctxt ["last_snapshot"] in
         let* ctxt = migrate_staking_balance_for_o ctxt in
         let* ctxt = migrate_stake_distribution_for_o ctxt in
         let*! ctxt = initialize_total_supply_for_o chain_id ctxt in

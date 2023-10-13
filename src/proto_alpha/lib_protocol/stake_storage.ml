@@ -215,7 +215,7 @@ let set_selected_distribution_for_cycle ctxt cycle stakes total_stake =
   let stakes = List.sort (fun (_, x) (_, y) -> Stake_repr.compare y x) stakes in
   let* ctxt = Selected_distribution_for_cycle.init ctxt cycle stakes in
   let*! ctxt = Storage.Stake.Total_active_stake.add ctxt cycle total_stake in
-  Storage.Stake.Last_snapshot.update ctxt 0
+  return ctxt
 
 let clear_cycle ctxt cycle =
   let open Lwt_result_syntax in
