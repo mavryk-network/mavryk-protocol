@@ -1086,9 +1086,11 @@ let get_chain_block_context_smart_rollups_smart_rollup_whitelist
       "whitelist";
     ]
     (fun whitelist ->
-      match JSON.(as_list_opt whitelist) with
-      | Some l -> Some (List.map JSON.as_string l)
-      | None -> None)
+      if JSON.is_null whitelist then None
+      else
+        match JSON.(as_list_opt whitelist) with
+        | Some l -> Some (List.map JSON.as_string l)
+        | None -> None)
 
 let get_chain_block_context_delegates ?(chain = "main") ?(block = "head") () =
   make
