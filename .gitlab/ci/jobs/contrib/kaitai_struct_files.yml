@@ -1,12 +1,8 @@
 kaitai-struct-files:
   stage: client-libs
   needs: [trigger]
-  image: ubuntu:latest
   script:
-    - apt update && apt install -y nix-bin make git
-    - nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
-    - nix-channel --update
-    - nix-shell -p kaitai-struct-compiler --command 'make -C contrib/kaitai-struct-files && if [ `git diff | wc -l` -eq 0 ] ; then echo OK ; else echo KO ; exit 1 ; fi'
+    - docker build . -f .gitlab/ci/jobs/contrib/kaitai_struct_files.Dockerfile
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
