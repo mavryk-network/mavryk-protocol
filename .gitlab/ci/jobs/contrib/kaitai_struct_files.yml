@@ -1,8 +1,13 @@
 kaitai-struct-files:
   stage: client-libs
   needs: [trigger]
+  image:
+    name: kaitai/ksv
+    entrypoint: [""]
   script:
-    - docker build . -f .gitlab/ci/jobs/contrib/kaitai_struct_files.Dockerfile
+    - mkdir tmp && cp -a contrib/kaitai-struct-files/*ksy tmp
+    - make -C contrib/kaitai-struct-files
+    - rm -fr contrib/kaitai-struct-files/{Makefile,README.md,doc} ; if [ `diff -r contrib/kaitai-struct-files tmp | wc -l` -eq 0 ] ; then echo OK ; else echo KO ; diff -r contrib/kaitai-struct-files tmp ; exit 1 ; fi
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
