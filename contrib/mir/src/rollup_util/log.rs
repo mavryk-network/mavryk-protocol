@@ -22,6 +22,19 @@ macro_rules! log {
 }
 pub(crate) use log;
 
+/// Synonym to [log] macro that is intended for temporary use just to debug
+/// something and then should be removed.
+#[deprecated(note = "debug printing remains in the code")]
+#[allow(unused_macros)]
+macro_rules! debug {
+  ($($args: expr),*) => {
+    log!($($args), *);
+  };
+}
+#[allow(unused_imports)]
+#[allow(deprecated)]
+pub(crate) use debug;
+
 #[cfg(test)]
 mod test_log_fn {
     use tezos_smart_rollup_mock::MockHost;
