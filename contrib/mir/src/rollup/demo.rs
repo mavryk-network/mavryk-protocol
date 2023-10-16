@@ -8,11 +8,7 @@
 //!  This is a logic for demo rollup that eventually should be thrown away.
 
 use std::mem::size_of;
-use tezos_smart_rollup::{
-    inbox::Transfer,
-    prelude::{debug_msg, Runtime},
-    storage::path::RefPath,
-};
+use tezos_smart_rollup::{inbox::Transfer, prelude::Runtime, storage::path::RefPath};
 use tezos_smart_rollup_encoding::michelson::MichelsonInt;
 
 use super::types::IncomingTransferParam;
@@ -58,7 +54,7 @@ pub fn call_fibonacci(host: &mut impl Runtime, param: usize) -> Result<(), Error
 
     host.store_write_all(STORAGE_PATH, &new_storage.to_le_bytes())
         .map_err(|err| err.to_string())?;
-    debug_msg!(host, "Computation successful, result: {new_storage}\n");
+    log::log!(host, "Computation successful, result: {new_storage}");
     Ok(())
 }
 

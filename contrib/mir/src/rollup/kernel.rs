@@ -7,12 +7,13 @@
 
 use tezos_smart_rollup::{
     inbox::{InboxMessage, InternalInboxMessage},
-    prelude::{debug_msg, Runtime},
+    prelude::Runtime,
     storage::path::RefPath,
     types::Message,
 };
 
 use crate::rollup::demo::{process_external_message, process_internal_message};
+use crate::rollup_util::log;
 
 use super::types::*;
 
@@ -36,7 +37,7 @@ pub fn kernel_entry(host: &mut impl Runtime) {
                 // TODO [#6411]: wrap into catch_unwind
                 let res = process_message(host, &msg);
                 res.unwrap_or_else(|err| {
-                    debug_msg!(host, "Processing message #{} failed: {}\n", msg.id, err)
+                    log::log!(host, "Processing message #{} failed: {}", msg.id, err)
                 })
             }
             // The kernel gallery and some experienced devs advise to keep
@@ -57,9 +58,9 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
     debug_assert!(rest.is_empty());
     match msg {
         InboxMessage::External(payload) => {
-            debug_msg!(
+            log::log!(
                 host,
-                "\nMessage #{msg_id} at level {level}: external {payload:x?}\n"
+                "\nMessage #{msg_id} at level {level}: external {payload:x?}"
             );
             process_external_message(host, &payload)?
         }
@@ -70,9 +71,9 @@ pub fn process_message(host: &mut impl Runtime, msg: &Message) -> Result<(), Err
         // decoding logic.
         InboxMessage::Internal(in_msg) => match in_msg {
             InternalInboxMessage::Transfer(transfer) => {
-                debug_msg!(
+                log::log!(
                     host,
-                    "\nMessage #{msg_id} at level {level}: internal transfer to {} with payload: {:x?}\n",
+                    "\nMessage #{msg_id} at level {level}: internal transfer to {} with payload: {:x?}",
                     transfer.destination,
                     &transfer.payload.0
                 );
