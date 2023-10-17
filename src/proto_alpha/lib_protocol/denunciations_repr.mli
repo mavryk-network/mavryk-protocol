@@ -21,4 +21,9 @@ type t = item list
 val encoding : t Data_encoding.t
 
 val add :
-  Signature.public_key_hash -> Misbehaviour.t -> misbehaviour_cycle -> t -> t
+  Operation_hash.t ->
+  Signature.public_key_hash ->
+  Misbehaviour.t ->
+  misbehaviour_cycle ->
+  t ->
+  t
