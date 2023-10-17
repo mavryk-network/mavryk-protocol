@@ -1,6 +1,6 @@
 KSYS:=$(shell find . -name \*.ksy -print)
 HTMLS:=$(patsubst %.ksy,doc/%.html,$(KSYS))
-RSS:=$(patsubst %.ksy,rust/%.rs,$(KSYS))
+RSS:=$(patsubst %.ksy,rust/src/%.rs,$(KSYS))
 
 all: $(HTMLS) $(RSS)
 
@@ -10,8 +10,5 @@ doc/:
 doc/%.html: %.ksy doc/
 	kaitai-struct-compiler -t html $< --outdir=doc/
 
-rust/:
-	mkdir -p $@
-
-rust/%.rs: %.ksy rust/
-	kaitai-struct-compiler -t rust $< --outdir=rust/
+rust/src/%.rs: %.ksy
+	kaitai-struct-compiler -t rust $< --outdir=rust/src/

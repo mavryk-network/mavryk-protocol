@@ -21,6 +21,7 @@ pub struct AlphaConstantsFixed {
     pub maxAllowedGlobalConstantsDepth: i32,
     pub cacheLayoutSize: u8,
     pub michelsonMaximumTypeSize: u16,
+    pub maxSlashingPeriod: u8,
     pub smartRollupMaxWrappedProofBinarySize: i32,
     pub smartRollupMessageSizeLimit: i32,
     pub smartRollupMaxNumberOfMessagesPerLevel: Box<AlphaConstantsFixed__N>,
@@ -57,6 +58,7 @@ impl KaitaiStruct for AlphaConstantsFixed {
         self.maxAllowedGlobalConstantsDepth = self.stream.read_s4be()?;
         self.cacheLayoutSize = self.stream.read_u1()?;
         self.michelsonMaximumTypeSize = self.stream.read_u2be()?;
+        self.maxSlashingPeriod = self.stream.read_u1()?;
         self.smartRollupMaxWrappedProofBinarySize = self.stream.read_s4be()?;
         self.smartRollupMessageSizeLimit = self.stream.read_s4be()?;
         self.smartRollupMaxNumberOfMessagesPerLevel = Box::new(AlphaConstantsFixed__N::new(self.stream, self, _root)?);
