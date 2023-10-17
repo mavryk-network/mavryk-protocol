@@ -411,16 +411,24 @@ type update_origin =
   | Protocol_migration
   | Subsidy
   | Simulation
+  | Delayed_operation of {operation_hash : Operation_hash.t}
 
 let compare_update_origin oa ob =
-  let index o =
-    match o with
-    | Block_application -> 0
-    | Protocol_migration -> 1
-    | Subsidy -> 2
-    | Simulation -> 3
-  in
-  Compare.Int.compare (index oa) (index ob)
+  match (oa, ob) with
+  | ( Delayed_operation {operation_hash = oha},
+      Delayed_operation {operation_hash = ohb} ) ->
+      Operation_hash.compare oha ohb
+  | _, _ ->
+      let index o =
+        match o with
+        | Block_application -> 0
+        | Protocol_migration -> 1
+        | Subsidy -> 2
+        | Simulation -> 3
+        | Delayed_operation _ -> 4
+        (* don't forget to add parameterized cases in the first part of the function *)
+      in
+      Compare.Int.compare (index oa) (index ob)
 
 let update_origin_encoding =
   let open Data_encoding in
