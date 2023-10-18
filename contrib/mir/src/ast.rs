@@ -229,3 +229,87 @@ pub struct Contract<T: Stage> {
     pub storage: Type,
     pub code: Instruction<T>,
 }
+
+#[cfg(test)]
+pub mod test_strategies {
+    use proptest::prelude::*;
+
+    use super::*;
+
+    /// Generates any type except operation.
+    fn input_ty() -> impl Strategy<Value = Type> {
+        use Type::*;
+        let prim = prop_oneof![
+            // Cases that we want to see in tests in the first place - go first
+            Just(Int),
+            Just(Nat),
+            Just(String),
+            Just(Unit),
+            Just(Bool),
+            Just(Mutez),
+        ];
+        prim.prop_recursive(5, 16, 2, |inner| {
+            prop_oneof![
+                inner.clone().prop_map(|x| Type::new_option(x)),
+                inner.clone().prop_map(|x| Type::new_list(x)),
+                (inner.clone(), inner.clone()).prop_map(|(l, r)| Type::new_pair(l, r)),
+                (inner.clone(), inner.clone())
+                    .prop_filter("Key must be comparable", |(k, _)| k.is_comparable())
+                    .prop_map(|(k, v)| Type::new_map(k, v)),
+            ]
+        })
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct TypedValueAndType {
+        pub ty: Type,
+        pub val: TypedValue,
+    }
+
+    pub fn typed_value_and_type() -> impl Strategy<Value = TypedValueAndType> {
+        input_ty().prop_flat_map(|ty| {
+            (Just(ty.clone()), typed_value_by_type(ty))
+                .prop_map(|(ty, val)| TypedValueAndType { ty, val })
+        })
+    }
+
+    pub fn typed_value_by_type(t: Type) -> impl Strategy<Value = TypedValue> {
+        use Type as T;
+        use TypedValue as V;
+
+        match t {
+            T::Int => (-100i128..100i128).prop_map(V::Int).boxed(),
+            T::Nat => (0u128..100u128).prop_map(V::Nat).boxed(),
+            T::Mutez => (0i64..100i64).prop_map(V::Mutez).boxed(),
+            T::Bool => any::<bool>().prop_map(V::Bool).boxed(),
+            T::String => ".*".prop_map(V::String).boxed(),
+            T::Unit => Just(V::Unit).boxed(),
+            T::Pair(t) => {
+                let (lt, rt) = *t;
+                (typed_value_by_type(lt), typed_value_by_type(rt))
+                    .prop_map(|(l, r)| V::new_pair(l, r))
+                    .boxed()
+            }
+            T::Option(t) => prop_oneof![
+                Just(V::new_option(None)),
+                typed_value_by_type(*t).prop_map(|v| V::new_option(Some(v)))
+            ]
+            .boxed(),
+            T::List(t) => prop::collection::vec(typed_value_by_type(*t), 0..=3)
+                .prop_map(|v| V::List(v))
+                .boxed(),
+            T::Map(m) => {
+                let (key_ty, val_ty) = *m;
+                prop::collection::btree_map(
+                    typed_value_by_type(key_ty),
+                    typed_value_by_type(val_ty),
+                    0..=3,
+                )
+                .prop_map(V::Map)
+                .boxed()
+            }
+            T::Operation => panic!("Cannot generate untyped value for operation"),
+            // NOTE: if you append clauses here, you likely need to update other generators too
+        }
+    }
+}

@@ -31,3 +31,19 @@ impl TypedValue {
         }
     }
 }
+
+#[cfg(test)]
+mod test_untypers {
+    use proptest::prelude::*;
+
+    use crate::{ast::test_strategies as TS, context::Ctx};
+
+    proptest! {
+        #[test]
+        fn value_typecheck_untype_roundtrip(inp in TS::typed_value_and_type()) {
+            let mut ctx = Ctx::default();
+            let roundtripped = inp.val.clone().untype().typecheck(&mut ctx, &inp.ty);
+            assert_eq!(roundtripped, Ok(inp.val))
+        }
+    }
+}
