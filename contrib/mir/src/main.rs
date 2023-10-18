@@ -15,6 +15,7 @@ mod parser;
 mod stack;
 mod syntax;
 mod typechecker;
+mod untyper;
 
 fn main() {}
 
