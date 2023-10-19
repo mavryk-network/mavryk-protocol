@@ -51,10 +51,10 @@ module Make
           ~name
           ~msg:("[{signer}] " ^ msg)
           ~level
-          ("signer", Data_encoding.string)
+          ("signer", Data_encoding.(list string))
           ("tags", Tags.encoding)
           enc1
-          ~pp1:Format.pp_print_string
+          ~pp1:Format.(pp_print_list pp_print_string)
           ~pp2:Tags.pp
           ?pp3:pp1
 
@@ -64,11 +64,11 @@ module Make
           ~name
           ~msg:("[{signer}] " ^ msg)
           ~level
-          ("signer", Data_encoding.string)
+          ("signer", Data_encoding.(list string))
           ("tags", Tags.encoding)
           enc1
           enc2
-          ~pp1:Format.pp_print_string
+          ~pp1:Format.(pp_print_list pp_print_string)
           ~pp2:Tags.pp
           ?pp3:pp1
           ?pp4:pp2
@@ -79,12 +79,12 @@ module Make
           ~name
           ~msg:("[{signer}] " ^ msg)
           ~level
-          ("signer", Data_encoding.string)
+          ("signer", Data_encoding.(list string))
           ("tags", Tags.encoding)
           enc1
           enc2
           enc3
-          ~pp1:Format.pp_print_string
+          ~pp1:Format.(pp_print_list pp_print_string)
           ~pp2:Tags.pp
           ?pp3:pp1
           ?pp4:pp2
