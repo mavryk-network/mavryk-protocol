@@ -1343,6 +1343,8 @@ val run_script :
   ?trace_stack:bool ->
   ?level:int ->
   ?now:string ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   prg:string ->
   storage:string ->
   input:string ->
@@ -1362,6 +1364,8 @@ val spawn_run_script :
   ?trace_stack:bool ->
   ?level:int ->
   ?now:string ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   prg:string ->
   storage:string ->
   input:string ->
@@ -1388,6 +1392,8 @@ val run_script_at :
   ?now:string ->
   ?trace_stack:bool ->
   ?level:int ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   storage:string ->
   input:string ->
   t ->
@@ -1407,6 +1413,8 @@ val spawn_run_script_at :
   ?now:string ->
   ?trace_stack:bool ->
   ?level:int ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   storage:string ->
   input:string ->
   t ->
@@ -1622,6 +1630,8 @@ val spawn_run_tzip4_view :
   ?payer:string ->
   ?gas:int ->
   ?unparsing_mode:normalize_mode ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   entrypoint:string ->
   contract:string ->
   ?input:string ->
@@ -1641,6 +1651,8 @@ val run_tzip4_view :
   ?payer:string ->
   ?gas:int ->
   ?unparsing_mode:normalize_mode ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   entrypoint:string ->
   contract:string ->
   ?input:string ->
@@ -1655,6 +1667,8 @@ val spawn_run_view :
   ?payer:string ->
   ?gas:int ->
   ?unparsing_mode:normalize_mode ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   view:string ->
   contract:string ->
   ?input:string ->
@@ -1674,6 +1688,8 @@ val run_view :
   ?payer:string ->
   ?gas:int ->
   ?unparsing_mode:normalize_mode ->
+  ?other_contracts:string ->
+  ?extra_big_maps:string ->
   view:string ->
   contract:string ->
   ?input:string ->

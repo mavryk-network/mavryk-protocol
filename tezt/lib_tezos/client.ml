@@ -1723,8 +1723,8 @@ let stresstest ?endpoint ?source_aliases ?source_pkhs ?source_accounts ?seed
   |> Process.check
 
 let spawn_run_script ?hooks ?protocol_hash ?no_base_dir_warnings ?balance
-    ?self_address ?source ?payer ?gas ?(trace_stack = false) ?level ?now ~prg
-    ~storage ~input client =
+    ?self_address ?source ?payer ?gas ?(trace_stack = false) ?level ?now
+    ?other_contracts ?extra_big_maps ~prg ~storage ~input client =
   spawn_command ?hooks ?protocol_hash ?no_base_dir_warnings client
   @@ ["run"; "script"; prg; "on"; "storage"; storage; "and"; "input"; input]
   @ optional_arg "payer" Fun.id payer
@@ -1735,10 +1735,12 @@ let spawn_run_script ?hooks ?protocol_hash ?no_base_dir_warnings ?balance
   @ optional_arg "level" string_of_int level
   @ optional_switch "trace-stack" trace_stack
   @ optional_arg "now" Fun.id now
+  @ optional_arg "other-contracts" Fun.id other_contracts
+  @ optional_arg "extra-big-maps" Fun.id extra_big_maps
 
 let spawn_run_script_at ?hooks ?protocol_hash ?balance ?self_address ?source
-    ?payer ?prefix ?now ?trace_stack ?level ~storage ~input client script_name
-    protocol =
+    ?payer ?prefix ?now ?trace_stack ?level ?other_contracts ?extra_big_maps
+    ~storage ~input client script_name protocol =
   let prg =
     Michelson_script.find ?prefix script_name protocol |> Michelson_script.path
   in
@@ -1752,6 +1754,8 @@ let spawn_run_script_at ?hooks ?protocol_hash ?balance ?self_address ?source
     ?now
     ?trace_stack
     ?level
+    ?other_contracts
+    ?extra_big_maps
     ~prg
     ~storage
     ~input
@@ -1795,8 +1799,8 @@ let stresstest_fund_accounts_from_source ?endpoint ~source_key_pkh ?batch_size
 type run_script_result = {storage : string; big_map_diff : string list}
 
 let run_script ?hooks ?protocol_hash ?no_base_dir_warnings ?balance
-    ?self_address ?source ?payer ?gas ?trace_stack ?level ?now ~prg ~storage
-    ~input client =
+    ?self_address ?source ?payer ?gas ?trace_stack ?level ?now ?other_contracts
+    ?extra_big_maps ~prg ~storage ~input client =
   let* client_output =
     spawn_run_script
       ?hooks
@@ -1810,6 +1814,8 @@ let run_script ?hooks ?protocol_hash ?no_base_dir_warnings ?balance
       ?trace_stack
       ?level
       ?now
+      ?other_contracts
+      ?extra_big_maps
       ~prg
       ~storage
       ~input
@@ -1870,7 +1876,8 @@ let run_script ?hooks ?protocol_hash ?no_base_dir_warnings ?balance
   return {storage; big_map_diff}
 
 let run_script_at ?hooks ?protocol_hash ?balance ?self_address ?source ?payer
-    ?prefix ?now ?trace_stack ?level ~storage ~input client name protocol =
+    ?prefix ?now ?trace_stack ?level ?other_contracts ?extra_big_maps ~storage
+    ~input client name protocol =
   let prg =
     Michelson_script.find name ?prefix protocol |> Michelson_script.path
   in
@@ -1884,6 +1891,8 @@ let run_script_at ?hooks ?protocol_hash ?balance ?self_address ?source ?payer
     ?now
     ?trace_stack
     ?level
+    ?other_contracts
+    ?extra_big_maps
     ~storage
     ~input
     ~prg
@@ -2112,8 +2121,9 @@ let typecheck_script ?hooks ?protocol_hash ~scripts ?no_base_dir_warnings
     client
   |> Process.check
 
-let spawn_run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode ~entrypoint
-    ~contract ?input ?(unlimited_gas = false) client =
+let spawn_run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode
+    ?other_contracts ?extra_big_maps ~entrypoint ~contract ?input
+    ?(unlimited_gas = false) client =
   let input_params =
     match input with None -> [] | Some input -> ["with"; "input"; input]
   in
@@ -2126,16 +2136,20 @@ let spawn_run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode ~entrypoint
     @ optional_arg "source" Fun.id source
     @ optional_arg "unparsing-mode" normalize_mode_to_string unparsing_mode
     @ optional_arg "gas" Int.to_string gas
-    @ optional_switch "unlimited-gas" unlimited_gas)
+    @ optional_switch "unlimited-gas" unlimited_gas
+    @ optional_arg "other-contracts" Fun.id other_contracts
+    @ optional_arg "extra-big-maps" Fun.id extra_big_maps)
 
-let run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode ~entrypoint
-    ~contract ?input ?unlimited_gas client =
+let run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode ?other_contracts
+    ?extra_big_maps ~entrypoint ~contract ?input ?unlimited_gas client =
   spawn_run_tzip4_view
     ?hooks
     ?source
     ?payer
     ?gas
     ?unparsing_mode
+    ?other_contracts
+    ?extra_big_maps
     ~entrypoint
     ~contract
     ?input
@@ -2143,8 +2157,8 @@ let run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode ~entrypoint
     client
   |> Process.check_and_read_stdout
 
-let spawn_run_view ?hooks ?source ?payer ?gas ?unparsing_mode ~view ~contract
-    ?input ?(unlimited_gas = false) client =
+let spawn_run_view ?hooks ?source ?payer ?gas ?unparsing_mode ?other_contracts
+    ?extra_big_maps ~view ~contract ?input ?(unlimited_gas = false) client =
   let input_params =
     match input with None -> [] | Some input -> ["with"; "input"; input]
   in
@@ -2157,16 +2171,20 @@ let spawn_run_view ?hooks ?source ?payer ?gas ?unparsing_mode ~view ~contract
     @ optional_arg "source" Fun.id source
     @ optional_arg "unparsing-mode" normalize_mode_to_string unparsing_mode
     @ optional_arg "gas" Int.to_string gas
+    @ optional_arg "other-contracts" Fun.id other_contracts
+    @ optional_arg "extra-big-maps" Fun.id extra_big_maps
     @ if unlimited_gas then ["--unlimited-gas"] else [])
 
-let run_view ?hooks ?source ?payer ?gas ?unparsing_mode ~view ~contract ?input
-    ?unlimited_gas client =
+let run_view ?hooks ?source ?payer ?gas ?unparsing_mode ?other_contracts
+    ?extra_big_maps ~view ~contract ?input ?unlimited_gas client =
   spawn_run_view
     ?hooks
     ?source
     ?payer
     ?gas
     ?unparsing_mode
+    ?other_contracts
+    ?extra_big_maps
     ~view
     ~contract
     ?input
