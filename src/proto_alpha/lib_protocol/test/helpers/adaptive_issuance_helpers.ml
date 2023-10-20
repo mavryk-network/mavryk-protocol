@@ -51,7 +51,8 @@ module Tez = struct
 
   let of_z a = Z.to_int64 a |> of_mutez
 
-  let of_q a = Q.to_bigint a |> of_z
+  let of_q ?(round_up = false) Q.{num; den} =
+    (if round_up then Z.cdiv num den else Z.fdiv num den) |> of_z
 
   let ratio num den =
     Q.make (Z.of_int64 (to_mutez num)) (Z.of_int64 (to_mutez den))
@@ -193,6 +194,13 @@ module Frozen_tez = struct
             String.Map.add account Q.(frozen - amount_q) a.current
           in
           ({a with current}, amount)
+
+  let slash base_amount (pct : Protocol.Int_percentage.t) a =
+    let pct_times_100 = (pct :> int) in
+    let slashed_amount =
+      Tez.mul_q base_amount Q.(pct_times_100 // 100) |> Tez.of_q ~round_up:true
+    in
+    sub_tez_from_all_current slashed_amount a
 end
 
 (** Representation of Unstaked frozen deposits *)
@@ -235,9 +243,12 @@ module Unstaked_frozen = struct
           let amount, rest = pop_cycle cycle t in
           (amount, (c, a) :: rest)
 
-  (* Refresh initial amount at beginning of cycle (unused) *)
-  let refresh_at_new_cycle l =
-    List.map (fun (c, t) -> (c, Frozen_tez.refresh_at_new_cycle t)) l
+  let slash cycle pct_times_100 a =
+    List.map
+      (fun (c, frozen) ->
+        if Cycle.(c > cycle) then (c, frozen)
+        else (c, Frozen_tez.slash frozen.Frozen_tez.initial pct_times_100 frozen))
+      a
 end
 
 (** Representation of unstaked finalizable tez *)
@@ -736,6 +747,72 @@ let balance_and_total_balance_of_account account_name account_map =
       +! Partial_tez.to_tez staked_b
       +! Partial_tez.to_tez unstaked_frozen_b
       +! unstaked_finalizable_b) )
+
+let apply_slashing
+    ( culprit,
+      Protocol.Denunciations_repr.{rewarded; misbehaviour; misbehaviour_cycle}
+    ) current_cycle constants account_map =
+  let find_account_name_from_pkh_exn pkh account_map =
+    match
+      Option.map
+        fst
+        String.Map.(
+          choose
+          @@ filter
+               (fun _ account ->
+                 Signature.Public_key_hash.equal pkh account.pkh)
+               account_map)
+    with
+    | None -> assert false
+    | Some x -> x
+  in
+  let culprit_name = find_account_name_from_pkh_exn culprit account_map in
+  let rewarded_name = find_account_name_from_pkh_exn rewarded account_map in
+  let slashed_cycle =
+    match misbehaviour_cycle with
+    | Current -> current_cycle
+    | Previous -> Cycle.pred current_cycle |> Option.value ~default:Cycle.root
+  in
+  let slashed_pct =
+    match misbehaviour with
+    | Double_baking ->
+        constants
+          .Protocol.Alpha_context.Constants.Parametric
+           .percentage_of_frozen_deposits_slashed_per_double_baking
+    | Double_attesting ->
+        constants.percentage_of_frozen_deposits_slashed_per_double_attestation
+  in
+  let _, total_before =
+    balance_and_total_balance_of_account culprit_name account_map
+  in
+  let f_slash ({frozen_deposits; unstaked_frozen; frozen_rights; _} as acc) =
+    let base_rights =
+      CycleMap.find slashed_cycle frozen_rights
+      |> Option.value ~default:Tez.zero
+    in
+    let frozen_deposits =
+      Frozen_tez.slash base_rights slashed_pct frozen_deposits
+    in
+    let unstaked_frozen =
+      Unstaked_frozen.slash slashed_cycle slashed_pct unstaked_frozen
+    in
+    {acc with frozen_deposits; unstaked_frozen}
+  in
+  let account_map = update_account ~f:f_slash culprit_name account_map in
+  let _, total_after =
+    balance_and_total_balance_of_account culprit_name account_map
+  in
+  let total_burnt_amount = Tez.(total_before -! total_after) in
+  let portion_reward =
+    constants.adaptive_issuance.global_limit_of_staking_over_baking + 2
+  in
+  let reward_to_snitch =
+    Tez.mul_q total_burnt_amount Q.(1 // portion_reward) |> Tez.of_q
+  in
+  let account_map =
+    add_liquid_rewards reward_to_snitch rewarded_name account_map
+  in
+  account_map
 
 (* Given cycle is the cycle for which the rights are computed, usually current + preserved cycles *)
 let update_frozen_rights_cycle cycle account_map =

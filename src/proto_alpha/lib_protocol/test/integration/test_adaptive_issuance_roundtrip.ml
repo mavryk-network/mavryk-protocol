@@ -110,23 +110,6 @@ end
 
 open Log_module
 
-(** Double attestation helpers *)
-let order_attestations ~correct_order op1 op2 =
-  let oph1 = Protocol.Alpha_context.Operation.hash op1 in
-  let oph2 = Protocol.Alpha_context.Operation.hash op2 in
-  let c = Operation_hash.compare oph1 oph2 in
-  if correct_order then if c < 0 then (op1, op2) else (op2, op1)
-  else if c < 0 then (op2, op1)
-  else (op1, op2)
-
-let double_attestation ctxt ?(correct_order = true) op1 op2 =
-  let e1, e2 = order_attestations ~correct_order op1 op2 in
-  Op.double_attestation ctxt e1 e2
-
-let double_preattestation ctxt ?(correct_order = true) op1 op2 =
-  let e1, e2 = order_attestations ~correct_order op1 op2 in
-  Op.double_preattestation ctxt e1 e2
-
 (** Aliases for tez values *)
 type tez_quantity =
   | Half
@@ -174,6 +157,19 @@ let default_params =
       Q.(Int32.to_int edge_of_baking_over_staking_billionth // 1_000_000_000);
   }
 
+type double_signing_kind =
+  | Double_baking
+  | Double_attesting
+  | Double_preattesting
+
+type double_signing_state = {
+  culprit : Signature.Public_key_hash.t;
+  kind : double_signing_kind;
+  evidence : Context.t -> Protocol.Alpha_context.packed_operation;
+  denounced : bool;
+  level : Int32.t;
+}
+
 (** Module for the [State.t] type of asserted information about the system during a test. *)
 module State = struct
   (** Type of the state *)
@@ -189,6 +185,9 @@ module State = struct
     saved_rate : Q.t option;
     burn_rewards : bool;
     pending_operations : Protocol.Alpha_context.packed_operation list;
+    pending_slashes :
+      (Signature.Public_key_hash.t * Protocol.Denunciations_repr.item) list;
+    double_signings : double_signing_state list;
   }
 
   (** Expected number of cycles before staking parameters get applied *)
@@ -378,8 +377,27 @@ module State = struct
     in
     update_map ~log_updates ~f:(String.Map.map update_account) state
 
-  (* TODO *)
-  let apply_slashing _pct _delegate_name (state : t) : t = state
+  let apply_slashing
+      ( culprit,
+        Protocol.Denunciations_repr.{rewarded; misbehaviour; misbehaviour_cycle}
+      ) current_cycle (state : t) : t =
+    let account_map =
+      apply_slashing
+        (culprit, {rewarded; misbehaviour; misbehaviour_cycle})
+        current_cycle
+        state.constants
+        state.account_map
+    in
+    {state with account_map}
+
+  let apply_all_slashes_at_cycle_end current_cycle (state : t) : t =
+    let state =
+      List.fold_left
+        (fun acc_state x -> apply_slashing x current_cycle acc_state)
+        state
+        state.pending_slashes
+    in
+    {state with pending_slashes = []}
 
   (** Given an account name and new account state, updates [state] accordingly
       Preferably use other specific update functions *)
@@ -408,6 +426,8 @@ module State = struct
       Cycle.pred new_cycle |> Option.value ~default:Cycle.root
     in
     let unstake_wait = unstake_wait state in
+    (* Apply all slashes *)
+    let state = apply_all_slashes_at_cycle_end previous_cycle state in
     (* Sets initial frozen for future cycle *)
     let state =
       update_map
@@ -931,6 +951,8 @@ let begin_test ~activate_ai ?(burn_rewards = false)
             saved_rate = None;
             burn_rewards;
             pending_operations = [];
+            pending_slashes = [];
+            double_signings = [];
           }
       in
       let* () = check_all_balances block state in
@@ -1095,6 +1117,289 @@ let finalize_unstake src_name : (t, t) scenarios =
       let* operation = finalize_unstake (B block) src.contract in
       let state = State.apply_finalize src_name state in
       return (state, [operation]))
+
+(* ======== Slashing ======== *)
+
+let check_pending_slashings (block, state) : unit tzresult Lwt.t =
+  let open Lwt_result_syntax in
+  let open Protocol.Denunciations_repr in
+  let* denunciations_rpc = Context.get_denunciations (B block) in
+  let denunciations_obj_equal
+      (pkh_1, {rewarded = r1; misbehaviour = m1; misbehaviour_cycle = mc1})
+      (pkh_2, {rewarded = r2; misbehaviour = m2; misbehaviour_cycle = mc2}) =
+    Signature.Public_key_hash.equal pkh_1 pkh_2
+    && Signature.Public_key_hash.equal r1 r2
+    && Stdlib.(m1 = m2)
+    && Stdlib.(mc1 = mc2)
+  in
+  let denunciations_equal = List.equal denunciations_obj_equal in
+  let denunciations_obj_pp fmt
+      (pkh, {rewarded; misbehaviour; misbehaviour_cycle}) =
+    Format.fprintf
+      fmt
+      "slashed: %a; rewarded: %a; kind: %s; cycle: %s@."
+      Signature.Public_key_hash.pp
+      pkh
+      Signature.Public_key_hash.pp
+      rewarded
+      (match misbehaviour with
+      | Double_baking -> "double baking"
+      | Double_attesting -> "double attesting")
+      (match misbehaviour_cycle with
+      | Current -> "current"
+      | Previous -> "previous")
+  in
+  let denunciations_pp = Format.pp_print_list denunciations_obj_pp in
+  let* () =
+    Assert.equal
+      ~loc:__LOC__
+      denunciations_equal
+      "Denunciations are not equal"
+      denunciations_pp
+      denunciations_rpc
+      state.State.pending_slashes
+  in
+  return_unit
+
+(** Double attestation helpers *)
+let order_attestations ~correct_order op1 op2 =
+  let oph1 = Protocol.Alpha_context.Operation.hash op1 in
+  let oph2 = Protocol.Alpha_context.Operation.hash op2 in
+  let c = Operation_hash.compare oph1 oph2 in
+  if correct_order then if c < 0 then (op1, op2) else (op2, op1)
+  else if c < 0 then (op2, op1)
+  else (op1, op2)
+
+let op_double_attestation ?(correct_order = true) op1 op2 ctxt =
+  let e1, e2 = order_attestations ~correct_order op1 op2 in
+  Op.double_attestation ctxt e1 e2
+
+let op_double_preattestation ?(correct_order = true) op1 op2 ctxt =
+  let e1, e2 = order_attestations ~correct_order op1 op2 in
+  Op.double_preattestation ctxt e1 e2
+
+let order_block_hashes ~correct_order bh1 bh2 =
+  let hash1 = Protocol.Alpha_context.Block_header.hash bh1 in
+  let hash2 = Protocol.Alpha_context.Block_header.hash bh2 in
+  let c = Block_hash.compare hash1 hash2 in
+  if correct_order then if c < 0 then (bh1, bh2) else (bh2, bh1)
+  else if c < 0 then (bh2, bh1)
+  else (bh1, bh2)
+
+let op_double_baking ?(correct_order = true) bh1 bh2 ctxt =
+  let bh1, bh2 = order_block_hashes ~correct_order bh1 bh2 in
+  Op.double_baking ctxt bh1 bh2
+
+let double_bake_ delegate_name (block, state) =
+  let open Lwt_result_syntax in
+  Log.info ~color:Log_module.event_color "Double baking with %s" delegate_name ;
+  let delegate = State.find_account delegate_name state in
+  let* operation =
+    Adaptive_issuance_helpers.stake (B block) delegate.contract Tez.one_mutez
+  in
+  let* forked_block =
+    Block.bake ~policy:(By_account delegate.pkh) ~operation block
+  in
+  (* includes pending operations *)
+  let* main_branch, state = bake ~baker:delegate_name (block, state) in
+  let evidence = op_double_baking main_branch.header forked_block.header in
+  let dss =
+    {
+      culprit = delegate.pkh;
+      denounced = false;
+      evidence;
+      kind = Double_baking;
+      level = block.header.shell.level;
+    }
+  in
+  let state =
+    {state with double_signings = dss :: state.State.double_signings}
+  in
+  return (main_branch, state)
+
+(* Note: advances one block *)
+let double_bake delegate_name : (t, t) scenarios =
+  exec (double_bake_ delegate_name)
+
+let double_attest_op ~op ~op_evidence ~kind delegate_name (block, state) =
+  let open Lwt_result_syntax in
+  Log.info
+    ~color:Log_module.event_color
+    "Double (pre)attesting with %s"
+    delegate_name ;
+  let delegate = State.find_account delegate_name state in
+  let* baker, _, _, _ =
+    Block.get_next_baker ?policy:state.baking_policy block
+  in
+  let* other_baker1, other_baker2 =
+    Context.get_first_different_bakers (B block)
+  in
+  let other_baker =
+    if not (Signature.Public_key_hash.equal baker other_baker2) then
+      other_baker2
+    else other_baker1
+  in
+  let* forked_block = Block.bake ~policy:(By_account other_baker) block in
+  let* forked_block = Block.bake forked_block in
+  (* includes pending operations *)
+  let* block, state = bake (block, state) in
+  let* main_branch, state = bake (block, state) in
+  let* attestation_a = op ~delegate:delegate.pkh forked_block in
+  let* attestation_b = op ~delegate:delegate.pkh main_branch in
+  let evidence = op_evidence attestation_a attestation_b in
+  let dss =
+    {
+      culprit = delegate.pkh;
+      denounced = false;
+      evidence;
+      kind;
+      level = block.header.shell.level;
+    }
+  in
+  let state =
+    {state with double_signings = dss :: state.State.double_signings}
+  in
+  return (main_branch, state)
+
+let double_attest_ =
+  double_attest_op
+    ~op:(fun ~delegate block -> Op.raw_attestation ~delegate block)
+    ~op_evidence:op_double_attestation
+    ~kind:Double_attesting
+
+(* Note: advances two blocks *)
+let double_attest delegate_name : (t, t) scenarios =
+  exec (double_attest_ delegate_name)
+
+let double_preattest_ =
+  double_attest_op
+    ~op:(fun ~delegate block -> Op.raw_preattestation ~delegate block)
+    ~op_evidence:op_double_preattestation
+    ~kind:Double_preattesting
+
+(* Note: advances two blocks *)
+let double_preattest delegate_name : (t, t) scenarios =
+  exec (double_preattest_ delegate_name)
+
+let cycle_from_level blocks_per_cycle level =
+  let current_cycle = Int32.div level blocks_per_cycle in
+  let current_cycle = Cycle.add Cycle.root (Int32.to_int current_cycle) in
+  current_cycle
+
+let pct_from_kind (block : Block.t) = function
+  | Protocol.Misbehaviour.Double_baking ->
+      (block.constants.percentage_of_frozen_deposits_slashed_per_double_baking
+        :> int)
+  | Double_attesting ->
+      (block.constants
+         .percentage_of_frozen_deposits_slashed_per_double_attestation
+        :> int)
+
+let get_pending_slashed_pct_for_delegate (block, state) delegate =
+  let rec aux r = function
+    | [] -> r
+    | (culprit, {Protocol.Denunciations_repr.misbehaviour; _}) :: t ->
+        if Signature.Public_key_hash.equal delegate culprit then
+          let new_r = r + pct_from_kind block misbehaviour in
+          if new_r >= 100 then 100 else aux new_r t
+        else aux r t
+  in
+  aux 0 state.State.pending_slashes
+
+let update_state_denunciation (block, state)
+    {culprit; denounced; evidence = _; kind; level} =
+  let open Lwt_result_syntax in
+  if denounced then
+    (* If the double signing has already been denounced, a second denunciation should fail *)
+    return (state, denounced)
+  else
+    let*? block_level = Context.get_level (B block) in
+    let next_level =
+      Protocol.Alpha_context.Raw_level.(to_int32 @@ succ block_level)
+    in
+    if level > next_level then
+      (* The denunciation is trying to be included too early *)
+      return (state, denounced)
+    else
+      let inclusion_cycle =
+        cycle_from_level block.constants.blocks_per_cycle next_level
+      in
+      let ds_cycle = cycle_from_level block.constants.blocks_per_cycle level in
+      if Cycle.(succ ds_cycle < inclusion_cycle) then
+        (* denunciation is too late, gets refused *)
+        return (state, denounced)
+      else if get_pending_slashed_pct_for_delegate (block, state) culprit >= 100
+      then
+        (* Culprit has been slashed too much, a denunciation is not added to the list.
+           TODO: is the double signing treated as included, or can it be included in the
+           following cycle? *)
+        return (state, denounced)
+      else
+        let misbehaviour_cycle =
+          if Cycle.(ds_cycle = inclusion_cycle) then
+            Protocol.Denunciations_repr.Current
+          else if Cycle.(succ ds_cycle = inclusion_cycle) then Previous
+          else assert false
+        in
+        let misbehaviour =
+          match kind with
+          | Double_baking -> Protocol.Misbehaviour.Double_baking
+          | Double_attesting -> Double_attesting
+          | Double_preattesting -> Double_attesting
+        in
+        (* for simplicity's sake (lol), the block producer and the payload producer are the same
+           We also assume that the current state baking policy will be used for the next block *)
+        let* rewarded, _, _, _ =
+          Block.get_next_baker ?policy:state.baking_policy block
+        in
+        let new_pending_slash =
+          ( culprit,
+            {
+              Protocol.Denunciations_repr.rewarded;
+              misbehaviour;
+              misbehaviour_cycle;
+            } )
+        in
+        (* TODO: better log *)
+        Log.info ~color:Log_module.event_color "Including denunciation" ;
+        let state =
+          State.
+            {
+              state with
+              pending_slashes = new_pending_slash :: state.pending_slashes;
+            }
+        in
+        return (state, true)
+
+let make_denunciations_ ?(filter = fun _culprit denounced -> not denounced)
+    (block, state) =
+  let open Lwt_result_syntax in
+  let* () = check_pending_slashings (block, state) in
+  let make_op state ({culprit; denounced; evidence; _} as dss) =
+    if filter culprit denounced then
+      let* state, denounced = update_state_denunciation (block, state) dss in
+      return (Some (evidence (B block), {dss with denounced}, state))
+    else return None
+  in
+  let rec make_op_list dss_list state r_op r_dss =
+    match dss_list with
+    | d :: t -> (
+        let* new_op = make_op state d in
+        match new_op with
+        | None -> make_op_list t state r_op (d :: r_dss)
+        | Some (op, p_dss, new_state) ->
+            make_op_list t new_state (op :: r_op) (p_dss :: r_dss))
+    | [] -> return @@ (state, List.rev r_op, List.rev r_dss)
+  in
+  let* state, operations, double_signings =
+    make_op_list state.State.double_signings state [] []
+  in
+  let state = {state with double_signings} in
+  return (state, operations)
+
+(* Important note: do not change the baking policy behaviour once denunciations are made,
+   until the operations are included in a block (by default the next block) *)
+let make_denunciations ?filter () = exec_op (make_denunciations_ ?filter)
 
 (* ======== Misc functions ========*)
 
@@ -1637,13 +1942,37 @@ module Rewards = struct
        ]
 end
 
+module Slashing = struct
+  let test_simple_slash =
+    let constants = init_constants () in
+    begin_test
+      ~activate_ai:true
+      constants
+      ["delegate"; "bootstrap1"; "bootstrap2"]
+    --> next_cycle
+    --> (Tag "double baking" --> double_bake "delegate"
+        |+ Tag "double attesting" --> double_attest "delegate"
+        |+ Tag "double preattesting" --> double_preattest "delegate")
+    --> (Tag "denounce same cycle" --> make_denunciations ()
+        |+ Tag "denounce next cycle" --> next_cycle --> make_denunciations ()
+        |+ Tag "denounce too late" --> next_cycle --> next_cycle
+           --> assert_failure (make_denunciations ()))
+    --> exec_unit check_pending_slashings
+    --> next_cycle
+    --> exec_unit check_pending_slashings
+    --> next_block
+
+  let tests =
+    tests_of_scenarios @@ [("Test simple slashing", test_simple_slash)]
+end
+
 let tests =
   (tests_of_scenarios
   @@ [
        ("Test expected error in assert failure", test_expected_error);
        ("Test init", init_scenario () --> Action (fun _ -> return_unit));
      ])
-  @ Roundtrip.tests @ Rewards.tests
+  @ Roundtrip.tests @ Rewards.tests @ Slashing.tests
 
 let () =
   Alcotest_lwt.run
