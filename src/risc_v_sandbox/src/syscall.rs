@@ -29,7 +29,11 @@ pub fn handle(emu: &mut Emulator) -> Result<(), Box<dyn Error>> {
             let buf = emu.cpu.xregs.read(11);
             let count = emu.cpu.xregs.read(12);
 
-            let data_range = buf..buf + count;
+            // eprintln!("> write({}, {:#x}, {})", fd, buf, count);
+
+            let data_range = buf..(buf + count);
+
+            // eprintln!("> data_range = {:?}", data_range);
 
             /// Writes the message to a given FD target.
             fn write_data(

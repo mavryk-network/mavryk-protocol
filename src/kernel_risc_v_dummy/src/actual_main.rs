@@ -1,5 +1,10 @@
 use crate::syscalls::write;
 
+fn debug(m: &str) {
+    write(2, m.as_ptr(), m.len());
+}
+
 pub fn main() {
-    write(1, "Hello World\n".as_ptr(), 12);
+    panic!("Hellorw");
+    // write(1, "Hello World\n".as_ptr(), 12);
 }
