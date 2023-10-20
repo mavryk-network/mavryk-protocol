@@ -24,4 +24,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+(* open Gateway_repr *)
+
 let get_gateway_address = Storage.Gateway.Gateway_address.get

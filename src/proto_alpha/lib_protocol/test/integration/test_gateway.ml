@@ -57,6 +57,10 @@ let expected_gateway_hash =
   Script_expr_hash.of_b58check_exn
     "expru15HMzoLGQzuQjFVkXRPdQR2D9WgFGPS8tvcwb6xLiDqovSVQT"
 
+let expected_cpmm_hash =
+  Script_expr_hash.of_b58check_exn
+    "expru15HMzoLGQzuQjFVkXRPdQR2D9WgFGPS8tvcwb6xLiDqovSVQT"
+    
 (* The script hash of
 
    https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/lqt_fa12.mligo.tz
@@ -66,40 +70,44 @@ let expected_gateway_hash =
   Script_expr_hash.of_b58check_exn
     "exprufAK15C2FCbxGLCEVXFe26p3eQdYuwZRk1morJUwy9NBUmEZVB" *)
 
+
+
+(* let gateway_origination () =
+  Context.init1 () >>=? fun (blk, _contract) ->
+  Context.get_liquidity_baking_cpmm_address (B blk) >>=? fun cpmm_address ->
+  Context.Contract.script_hash (B blk) cpmm_address >>=? fun cpmm_hash ->
+  Assert.equal
+    ~loc:__LOC__
+    Script_expr_hash.equal
+    "Unexpected CPMM script."
+    Script_expr_hash.pp
+    cpmm_hash
+    expected_cpmm_hash
+  >>=? fun () -> return_unit *)
+   
+
+let gateway_origination () =
+  Context.init1 () >>=? fun (blk, _contract) ->
+  Context.get_gateway_contract_address (B blk) >>=? fun cpmm_address ->
+  Context.Contract.script_hash (B blk) cpmm_address >>=? fun cpmm_hash ->
+  Assert.equal
+    ~loc:__LOC__
+    Script_expr_hash.equal
+    "Unexpected CPMM script."
+    Script_expr_hash.pp
+    cpmm_hash
+    expected_cpmm_hash
+  >>=? fun () -> return_unit
+
+
 (* Test that the scripts of the Gateway contract have the expected hashes. *)
 (* let gateway_origination () =
   Context.init1 () >>=? fun (blk, _contract) ->
   Context.get_gateway_contract_address (B blk) >>=? fun gateway_address ->
-  Context.Contract.script_hash (B blk) gateway_address >>=? fun gateway_hash ->
-  let gateway_address =
-    Contract_hash.of_b58check_exn "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
-  in
-  Context.Contract.script_hash (B blk) gateway_address >>=? fun gateway_hash ->
-  Assert.equal
-    ~loc:__LOC__
-    Script_expr_hash.equal
-    "Unexpected Gateway script."
-    Script_expr_hash.pp
-    gateway_hash
-    expected_gateway_hash
-  >>=? fun () -> return_unit *)
-  (* Assert.equal
-    ~loc:__LOC__
-    Script_expr_hash.equal
-    "Unexpected Gateway script."
-    Script_expr_hash.pp
-    gateway_hash
-    expected_gateway_hash
-  >>=? fun () -> return_unit *)
-
-(* Test that the scripts of the Gateway contract have the expected hashes. *)
-let gateway_origination () =
-  Context.init1 () >>=? fun (blk, _contract) ->
-  Context.get_gateway_contract_address (B blk) >>=? fun gateway_address ->
     
-    Log.info "------";
+    (* Log.info "------";
     Log.info "Gateway Address is: %s" (Contract_hash.to_b58check gateway_address);
-    Log.info "------";
+    Log.info "------"; *)
 
   Context.Contract.script_hash (B blk) gateway_address >>=? fun gateway_hash ->
   
@@ -116,7 +124,7 @@ let gateway_origination () =
     Script_expr_hash.pp
     gateway_hash
     expected_gateway_hash
-  >>=? fun () -> return_unit
+  >>=? fun () -> return_unit *)
 
 
 (* Test that the CPMM address in storage is correct *)
@@ -296,6 +304,8 @@ let liquidity_baking_origination_no_tzBTC_mainnet_migration () =
   >>=? fun (_blk, origination_results) ->
   let num_results = List.length origination_results in
   Assert.equal_int ~loc:__LOC__ num_results 0
+
+
 
 let tests =
   [

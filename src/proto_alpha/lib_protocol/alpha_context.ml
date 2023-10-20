@@ -669,5 +669,6 @@ module Internal_for_tests = struct
 end
 
 module Gateway = struct
+  include Gateway_repr
   include Gateway_storage
 end

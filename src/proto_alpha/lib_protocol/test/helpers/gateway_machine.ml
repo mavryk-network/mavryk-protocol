@@ -868,7 +868,7 @@ module ConcreteBaseMachine :
       ~blocks_per_cycle:10_000l
       ~cycles_per_voting_period:1l
       ?liquidity_baking_subsidy
-      ()
+    ()
     >>= function
     | blk, holder :: accounts ->
         let ctxt = Context.B blk in
