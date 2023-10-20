@@ -150,13 +150,13 @@ pub const CODE_HASH_DEFAULT: H256 = H256(CODE_HASH_BYTES);
 fn read_u256(
     host: &impl Runtime,
     path: &impl Path,
-) -> Result<Option<U256>, AccountStorageError> {
-    let bytes = host.store_read(path, 0, WORD_SIZE)?;
-
-    if bytes.len() != WORD_SIZE {
-        Ok(None)
-    } else {
-        Ok(Some(U256::from_little_endian(&bytes)))
+    default: U256,
+) -> Result<U256, AccountStorageError> {
+    match host.store_read(path, 0, WORD_SIZE) {
+        Ok(bytes) if bytes.len() == WORD_SIZE => Ok(U256::from_little_endian(&bytes)),
+        Ok(_) => Ok(default),
+        Err(RuntimeError::PathNotFound) => Ok(default),
+        Err(err) => Err(err.into()),
     }
 }
 
@@ -164,13 +164,13 @@ fn read_u256(
 fn read_h256(
     host: &impl Runtime,
     path: &impl Path,
-) -> Result<Option<H256>, AccountStorageError> {
-    let bytes = host.store_read(path, 0, WORD_SIZE)?;
-
-    if bytes.len() != WORD_SIZE {
-        Ok(None)
-    } else {
-        Ok(Some(H256::from_slice(&bytes)))
+    default: H256,
+) -> Result<H256, AccountStorageError> {
+    match host.store_read(path, 0, WORD_SIZE) {
+        Ok(bytes) if bytes.len() == WORD_SIZE => Ok(H256::from_slice(&bytes)),
+        Ok(_) => Ok(default),
+        Err(RuntimeError::PathNotFound) => Ok(default),
+        Err(err) => Err(err.into()),
     }
 }
 
@@ -203,14 +203,7 @@ impl EthereumAccount {
     pub fn nonce(&self, host: &impl Runtime) -> Result<U256, AccountStorageError> {
         let path = concat(&self.path, &NONCE_PATH)?;
 
-        match host.store_has(&path) {
-            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => {
-                let value = read_u256(host, &path)?;
-                Ok(value.unwrap_or(U256::zero()))
-            }
-            Ok(_) => Ok(U256::zero()),
-            Err(err) => Err(AccountStorageError::from(err)),
-        }
+        read_u256(host, &path, U256::zero()).map_err(AccountStorageError::from)
     }
 
     /// Increment the **nonce** by one. It is technically possible for this operation to overflow,
@@ -239,14 +232,7 @@ impl EthereumAccount {
     pub fn balance(&self, host: &impl Runtime) -> Result<U256, AccountStorageError> {
         let path = concat(&self.path, &BALANCE_PATH)?;
 
-        match host.store_has(&path) {
-            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => {
-                let value = read_u256(host, &path)?;
-                Ok(value.unwrap_or(U256::zero()))
-            }
-            Ok(_) => Ok(U256::zero()),
-            Err(err) => Err(AccountStorageError::from(err)),
-        }
+        read_u256(host, &path, U256::zero()).map_err(AccountStorageError::from)
     }
 
     /// Add an amount in Wei to the balance of an account. In theory, this can overflow if the
@@ -311,13 +297,7 @@ impl EthereumAccount {
     ) -> Result<H256, AccountStorageError> {
         let path = self.storage_path(index)?;
 
-        match host.store_has(&path)? {
-            Some(ValueType::Value | ValueType::ValueWithSubtree) => {
-                let value = read_h256(host, &path)?;
-                Ok(value.unwrap_or(STORAGE_DEFAULT_VALUE))
-            }
-            _ => Ok(STORAGE_DEFAULT_VALUE),
-        }
+        read_h256(host, &path, STORAGE_DEFAULT_VALUE).map_err(AccountStorageError::from)
     }
 
     /// Set the value associated with an index in durable storage. The result depends on the
@@ -368,13 +348,15 @@ impl EthereumAccount {
             .map_err(AccountStorageError::from)
     }
 
-    // Return a boolean denoting whether the account has a code or not.
-    pub fn code_exists(
-        &self,
-        host: &impl Runtime,
-    ) -> Result<Option<ValueType>, AccountStorageError> {
+    /// Find whether the account has any code associated with it.
+    pub fn code_exists(&self, host: &impl Runtime) -> Result<bool, AccountStorageError> {
         let path = concat(&self.path, &CODE_PATH)?;
-        host.store_has(&path).map_err(AccountStorageError::from)
+
+        match host.store_has(&path) {
+            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => Ok(true),
+            Ok(Some(ValueType::Subtree) | None) => Ok(false),
+            Err(err) => Err(err.into()),
+        }
     }
 
     /// Get the contract code associated with a contract. A contract can have zero length
@@ -383,11 +365,9 @@ impl EthereumAccount {
     pub fn code(&self, host: &impl Runtime) -> Result<Vec<u8>, AccountStorageError> {
         let path = concat(&self.path, &CODE_PATH)?;
 
-        match host.store_has(&path) {
-            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => host
-                .store_read_all(&path)
-                .map_err(AccountStorageError::from),
-            Ok(_) => Ok(vec![]),
+        match host.store_read_all(&path) {
+            Ok(bytes) => Ok(bytes),
+            Err(RuntimeError::PathNotFound) => Ok(vec![]),
             Err(err) => Err(AccountStorageError::from(err)),
         }
     }
@@ -397,14 +377,7 @@ impl EthereumAccount {
     pub fn code_hash(&self, host: &impl Runtime) -> Result<H256, AccountStorageError> {
         let path = concat(&self.path, &CODE_HASH_PATH)?;
 
-        match host.store_has(&path) {
-            Ok(Some(ValueType::Value | ValueType::ValueWithSubtree)) => {
-                let value = read_h256(host, &path)?;
-                Ok(value.unwrap_or(CODE_HASH_DEFAULT))
-            }
-            Ok(_) => Ok(CODE_HASH_DEFAULT),
-            Err(err) => Err(AccountStorageError::from(err)),
-        }
+        read_h256(host, &path, CODE_HASH_DEFAULT).map_err(AccountStorageError::from)
     }
 
     /// Get the size of a contract in number of bytes used for opcodes. This value is
