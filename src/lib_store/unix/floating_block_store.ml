@@ -65,7 +65,12 @@ let mem floating_store hash =
         (Floating_block_index.mem floating_store.floating_block_index hash))
 
 let may_sync {floating_block_index; readonly; _} =
-  if readonly then Floating_block_index.sync floating_block_index
+  if readonly then
+    let start = Time.System.now () in
+    let () = Floating_block_index.sync floating_block_index in
+    let fin = Time.System.now () in
+    let diff = Ptime.diff fin start in
+    Format.printf "[sync]Sync exec time %a@." Ptime.Span.pp diff
 
 let find_info floating_store hash =
   Lwt_idle_waiter.task floating_store.scheduler (fun () ->
