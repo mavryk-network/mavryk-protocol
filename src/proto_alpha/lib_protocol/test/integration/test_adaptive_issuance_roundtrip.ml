@@ -404,7 +404,18 @@ module State = struct
   (** When reaching a new cycle: apply unstakes and parameters changes.
     We expect these changes after applying the last block of a cycle *)
   let apply_end_cycle new_cycle state : t =
+    let previous_cycle =
+      Cycle.pred new_cycle |> Option.value ~default:Cycle.root
+    in
     let unstake_wait = unstake_wait state in
+    (* Sets initial frozen for future cycle *)
+    let state =
+      update_map
+        ~f:
+          (update_frozen_rights_cycle
+             (Cycle.add previous_cycle state.constants.preserved_cycles))
+        state
+    in
     (* Prepare finalizable unstakes *)
     let state =
       match Cycle.sub new_cycle unstake_wait with
@@ -425,18 +436,6 @@ module State = struct
             (state, remaining_requests))
         (state, [])
         state.param_requests
-    in
-    (* Refresh initial amount of frozen deposits at cycle end *)
-    let state =
-      update_map
-        ~f:
-          (String.Map.map (fun x ->
-               {
-                 x with
-                 frozen_deposits =
-                   Frozen_tez.refresh_at_new_cycle x.frozen_deposits;
-               }))
-        state
     in
     {state with param_requests}
 
@@ -888,6 +887,12 @@ let begin_test ~activate_ai ?(burn_rewards = false)
           (fun account_map name contract ->
             let liquid = Tez.(Account.default_initial_balance -! init_staked) in
             let frozen_deposits = Frozen_tez.init init_staked name in
+            let frozen_rights =
+              List.fold_left
+                (fun map cycle -> CycleMap.add cycle init_staked map)
+                CycleMap.empty
+                Cycle.(root ---> add root constants.preserved_cycles)
+            in
             let pkh = Context.Contract.pkh contract in
             let account =
               init_account
@@ -897,6 +902,7 @@ let begin_test ~activate_ai ?(burn_rewards = false)
                 ~parameters:default_params
                 ~liquid
                 ~frozen_deposits
+                ~frozen_rights
                 ()
             in
             let account_map = String.Map.add name account account_map in

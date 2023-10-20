@@ -88,7 +88,6 @@ module Cycle = Protocol.Alpha_context.Cycle
 (** [Frozen_tez] represents frozen stake and frozen unstaked funds.
     Properties:
     - sum of all current partial tez is an integer
-    - slashing is always a portion of initial
     - Can only add integer amounts
     - Can always subtract integer amount (if lower than frozen amount)
     - If subtracting partial amount, must be the whole frozen amount (for given contract).
@@ -194,9 +193,6 @@ module Frozen_tez = struct
             String.Map.add account Q.(frozen - amount_q) a.current
           in
           ({a with current}, amount)
-
-  (* Refresh initial amount at beginning of cycle *)
-  let refresh_at_new_cycle a = {a with initial = total_current a}
 end
 
 (** Representation of Unstaked frozen deposits *)
@@ -282,6 +278,8 @@ type staking_parameters = {
   edge_of_baking_over_staking : Q.t;
 }
 
+module CycleMap = Map.Make (Cycle)
+
 (** Abstract information of accounts *)
 type account_state = {
   pkh : Signature.Public_key_hash.t;
@@ -293,12 +291,13 @@ type account_state = {
   (* The three following fields contain maps from the account's stakers to,
      respectively, their frozen stake, their unstaked frozen balance, and
      their unstaked finalizable funds. Additionally, [unstaked_frozen] indexes
-     the maps with the cycle at which the unstake operation occured. *)
+     the maps with the cycle at which the unstake operation occurred. *)
   frozen_deposits : Frozen_tez.t;
   unstaked_frozen : Unstaked_frozen.t;
   unstaked_finalizable : Unstaked_finalizable.t;
   staking_delegator_numerator : Z.t;
   staking_delegate_denominator : Z.t;
+  frozen_rights : Tez.t CycleMap.t;
 }
 
 let init_account ?delegate ~pkh ~contract ~parameters ?(liquid = Tez.zero)
@@ -306,7 +305,8 @@ let init_account ?delegate ~pkh ~contract ~parameters ?(liquid = Tez.zero)
     ?(unstaked_frozen = Unstaked_frozen.zero)
     ?(unstaked_finalizable = Unstaked_finalizable.zero)
     ?(staking_delegator_numerator = Z.zero)
-    ?(staking_delegate_denominator = Z.zero) () =
+    ?(staking_delegate_denominator = Z.zero) ?(frozen_rights = CycleMap.empty)
+    () =
   {
     pkh;
     contract;
@@ -319,6 +319,7 @@ let init_account ?delegate ~pkh ~contract ~parameters ?(liquid = Tez.zero)
     unstaked_finalizable;
     staking_delegator_numerator;
     staking_delegate_denominator;
+    frozen_rights;
   }
 
 type account_map = account_state String.Map.t
@@ -361,6 +362,7 @@ let balance_of_account account_name (account_map : account_map) =
         unstaked_finalizable = _;
         staking_delegator_numerator;
         staking_delegate_denominator;
+        frozen_rights = _;
       } ->
       let balance =
         {
@@ -734,6 +736,15 @@ let balance_and_total_balance_of_account account_name account_map =
       +! Partial_tez.to_tez staked_b
       +! Partial_tez.to_tez unstaked_frozen_b
       +! unstaked_finalizable_b) )
+
+(* Given cycle is the cycle for which the rights are computed, usually current + preserved cycles *)
+let update_frozen_rights_cycle cycle account_map =
+  String.Map.map
+    (fun ({frozen_deposits; frozen_rights; _} as acc) ->
+      let total_frozen = Frozen_tez.total_current frozen_deposits in
+      let frozen_rights = CycleMap.add cycle total_frozen frozen_rights in
+      {acc with frozen_rights})
+    account_map
 
 let get_balance_from_context ctxt contract =
   let open Lwt_result_syntax in
