@@ -84,6 +84,8 @@ defprim! {
     IF_CONS,
     ITER,
     or,
+    Left,
+    Right,
 }
 
 impl std::fmt::Display for Prim {

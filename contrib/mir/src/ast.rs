@@ -7,12 +7,14 @@
 
 pub mod comparable;
 pub mod michelson_list;
+pub mod or;
 pub mod parsed;
 pub mod typechecked;
 
 use std::collections::BTreeMap;
 
 pub use michelson_list::MichelsonList;
+pub use or::Or;
 pub use parsed::{ParsedInstruction, ParsedStage};
 pub use typechecked::{overloads, TypecheckedInstruction, TypecheckedStage};
 
@@ -104,6 +106,8 @@ pub enum Value {
     Option(Option<Box<Value>>),
     Seq(Vec<Value>),
     Elt(Box<(Value, Value)>),
+    Left(Box<Value>),
+    Right(Box<Value>),
 }
 
 impl Value {
@@ -117,6 +121,14 @@ impl Value {
 
     pub fn new_elt(k: Self, v: Self) -> Self {
         Self::Elt(Box::new((k, v)))
+    }
+
+    pub fn new_left(v: Self) -> Self {
+        Self::Left(Box::new(v))
+    }
+
+    pub fn new_right(v: Self) -> Self {
+        Self::Right(Box::new(v))
     }
 }
 
@@ -168,6 +180,7 @@ pub enum TypedValue {
     Option(Option<Box<TypedValue>>),
     List(MichelsonList<TypedValue>),
     Map(BTreeMap<TypedValue, TypedValue>),
+    Or(Box<Or<TypedValue, TypedValue>>),
 }
 
 impl TypedValue {
@@ -177,6 +190,10 @@ impl TypedValue {
 
     pub fn new_option(x: Option<Self>) -> Self {
         Self::Option(x.map(Box::new))
+    }
+
+    pub fn new_or(x: Or<Self, Self>) -> Self {
+        Self::Or(Box::new(x))
     }
 }
 

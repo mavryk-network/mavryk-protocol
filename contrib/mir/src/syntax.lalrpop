@@ -45,6 +45,8 @@ extern {
         "Pair" => Tok::Prim(Prim::Pair),
         "Some" => Tok::Prim(Prim::Some),
         "Elt" => Tok::Prim(Prim::Elt),
+        "Left" => Tok::Prim(Prim::Left),
+        "Right" => Tok::Prim(Prim::Right),
         "PUSH" => Tok::Prim(Prim::PUSH),
         "INT" => Tok::Prim(Prim::INT),
         "GT" => Tok::Prim(Prim::GT),
@@ -135,6 +137,8 @@ composite_value: Value = {
   "Pair" <value_expr> <pair_val_args> => Value::new_pair(<>),
   "Some" <value_expr> => Value::new_option(Some(<>)),
   "Elt" <value_expr> <value_expr> => Value::new_elt(<>),
+  "Left" <value_expr> => Value::new_left(<>),
+  "Right" <value_expr> => Value::new_right(<>),
 }
 
 value_expr: Value = {
