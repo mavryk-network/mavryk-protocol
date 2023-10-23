@@ -13,6 +13,7 @@ module Pool = struct
     index : int64; (* Global index of the transaction. *)
     nonce : Ethereum_types.quantity; (* The nonce of the transaction.*)
     raw_tx : Ethereum_types.hex; (* Current transaction. *)
+    max_fees : Z.t; (* The maximum fees the user can pay. *)
   }
 
   type t = {
@@ -24,10 +25,11 @@ module Pool = struct
   let empty : t = {transactions = Pkey_map.empty; global_index = Int64.zero}
 
   (** Add a transacion to the pool.*)
-  let add t pkey (raw_tx : Ethereum_types.hex) =
+  let add t pkey base_fee (raw_tx : Ethereum_types.hex) =
     let open Result_syntax in
     let {transactions; global_index} = t in
     let* nonce = Ethereum_types.transaction_nonce raw_tx in
+    let* max_fees = Ethereum_types.transaction_max_fees base_fee raw_tx in
     let txs = Pkey_map.find pkey transactions |> Option.value ~default:[] in
     (* Insert the transaction in the next available slot*)
     let insert_between txs tx =
@@ -36,22 +38,31 @@ module Pool = struct
         | [] -> List.append acc [tx]
         | tx_a :: [] ->
             (* If same nonce the tx is replaced *)
-            if tx_a.nonce == tx.nonce then List.append acc [tx]
-              (* If same nonce the tx has a lower nonce, it's inserted before *)
+            if tx_a.nonce == tx.nonce then
+              (* replace only if the max_fees are greater *)
+              if tx.max_fees > tx_a.max_fees then List.append acc [tx]
+              else List.append acc [tx_a]
+                (* If same nonce the tx has a lower nonce, it's inserted before *)
             else if tx.nonce < tx_a.nonce then List.append acc [tx; tx_a]
               (* If same nonce the tx has a greater nonce, it's inserted before *)
             else List.append acc [tx_a; tx]
         | tx_a :: tx_b :: remaining ->
             (* If same nonce the tx is replaced *)
-            if tx_a.nonce == tx.nonce then List.append acc (tx :: remaining)
-              (* If tx nonce is between tx_a and tx_b then it's inserted between *)
+            if tx_a.nonce == tx.nonce then
+              (* replace only if the max_fees are greater *)
+              if tx.max_fees > tx_a.max_fees then
+                List.append acc (tx :: remaining)
+              else List.append acc (tx_a :: tx_b :: remaining)
+                (* If tx nonce is between tx_a and tx_b then it's inserted between *)
             else if tx_a.nonce < tx.nonce && tx.nonce < tx_b.nonce then
               List.append acc (tx_a :: tx :: tx_b :: remaining)
             else insert_between' (List.append acc [tx_a]) (tx_b :: remaining)
       in
       insert_between' [] txs
     in
-    let txs = insert_between txs {index = global_index; nonce; raw_tx} in
+    let txs =
+      insert_between txs {index = global_index; nonce; raw_tx; max_fees}
+    in
     (* Update the pool for the given pkey *)
     let transactions = Pkey_map.add pkey txs transactions in
     return {transactions; global_index = Int64.(add global_index one)}
@@ -176,6 +187,7 @@ let on_transaction state tx_raw =
   let {rollup_node = (module Rollup_node); pool; _} = state in
   Format.printf "[tx-pool] Incoming transaction.\n%!" ;
   let* is_valid = Rollup_node.is_tx_valid tx_raw in
+  let* (Qty base_fee) = Rollup_node.base_fee_per_gas () in
   match is_valid with
   | Error err ->
       (* TODO: https://gitlab.com/tezos/tezos/-/issues/6569*)
@@ -183,7 +195,7 @@ let on_transaction state tx_raw =
       return (Error err)
   | Ok pkey ->
       (* Add the tx to the pool*)
-      let*? pool = Pool.add pool pkey tx_raw in
+      let*? pool = Pool.add pool pkey base_fee tx_raw in
       (* compute the hash *)
       let tx_raw = Ethereum_types.hex_to_bytes tx_raw in
       let tx_hash = Ethereum_types.hash_raw_tx tx_raw in
