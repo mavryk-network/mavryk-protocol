@@ -73,6 +73,7 @@ extern {
         "CONS" => Tok::Prim(Prim::CONS),
         "IF_CONS" => Tok::Prim(Prim::IF_CONS),
         "ITER" => Tok::Prim(Prim::ITER),
+        "IF_LEFT" => Tok::Prim(Prim::IF_LEFT),
         "(" => Tok::LParen,
         ")" => Tok::RParen,
         "{" => Tok::LBrace,
@@ -190,6 +191,7 @@ instruction: ParsedInstruction = {
   "NIL" anns <type_expr> => Nil(<>),
   "IF_CONS" anns <instructionBlock> <instructionBlock> => IfCons(<>),
   "ITER" anns <instructionBlock> => Iter((), <>),
+  "IF_LEFT" anns <instructionBlock> <instructionBlock> => IfLeft(<>),
   instructionBlock => Instruction::Seq(<>),
 }
 

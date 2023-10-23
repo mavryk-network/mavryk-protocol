@@ -86,6 +86,7 @@ defprim! {
     or,
     Left,
     Right,
+    IF_LEFT,
 }
 
 impl std::fmt::Display for Prim {
