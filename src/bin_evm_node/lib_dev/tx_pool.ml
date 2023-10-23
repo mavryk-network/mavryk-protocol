@@ -10,7 +10,6 @@ module Pool = struct
 
   (** Transaction stored in the pool. *)
   type transaction = {
-    index : int64; (* Global index of the transaction. *)
     nonce : Ethereum_types.quantity; (* The nonce of the transaction.*)
     raw_tx : Ethereum_types.hex; (* Current transaction. *)
     max_fees : Z.t; (* The maximum fees the user can pay. *)
@@ -19,15 +18,14 @@ module Pool = struct
   type t = {
     transactions :
       transaction list Pkey_map.t (* Transactions are stored by public key. *);
-    global_index : int64; (* Index to order the transactions. *)
   }
 
-  let empty : t = {transactions = Pkey_map.empty; global_index = Int64.zero}
+  let empty : t = {transactions = Pkey_map.empty}
 
   (** Add a transacion to the pool.*)
   let add t pkey base_fee (raw_tx : Ethereum_types.hex) =
     let open Result_syntax in
-    let {transactions; global_index} = t in
+    let {transactions} = t in
     let* nonce = Ethereum_types.transaction_nonce raw_tx in
     let* max_fees = Ethereum_types.transaction_max_fees base_fee raw_tx in
     let txs = Pkey_map.find pkey transactions |> Option.value ~default:[] in
@@ -60,12 +58,10 @@ module Pool = struct
       in
       insert_between' [] txs
     in
-    let txs =
-      insert_between txs {index = global_index; nonce; raw_tx; max_fees}
-    in
+    let txs = insert_between txs {nonce; raw_tx; max_fees} in
     (* Update the pool for the given pkey *)
     let transactions = Pkey_map.add pkey txs transactions in
-    return {transactions; global_index = Int64.(add global_index one)}
+    return {transactions}
 
   (** Returns all the addresses of the pool *)
   let addresses {transactions; _} =
@@ -73,7 +69,7 @@ module Pool = struct
 
   (** Returns the transaction matching the predicate.
       And remove them from the pool. *)
-  let partition pkey predicate {transactions; global_index} =
+  let partition pkey predicate {transactions} =
     let selected, remaining =
       transactions |> Pkey_map.find pkey |> Option.value ~default:[]
       |> List.partition predicate
@@ -82,7 +78,7 @@ module Pool = struct
       if List.is_empty remaining then Pkey_map.remove pkey transactions
       else Pkey_map.add pkey remaining transactions
     in
-    (selected, {transactions; global_index})
+    (selected, {transactions})
 
   (** Removes from the pool the transactions matching the predicate 
       for the given pkey. *)
@@ -93,7 +89,7 @@ module Pool = struct
   (** Returns the next nonce for a given user.
       Returns the given nonce if the user does not have any transactions in the pool. *)
   let next_nonce pkey current_nonce (t : t) =
-    let {transactions; global_index = _} = t in
+    let {transactions} = t in
     let txs = Pkey_map.find pkey transactions |> Option.value ~default:[] in
     let rec aux current_nonce = function
       | [] -> current_nonce
