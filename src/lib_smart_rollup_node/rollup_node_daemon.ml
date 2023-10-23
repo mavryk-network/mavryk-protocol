@@ -387,7 +387,7 @@ let run ({node_ctxt; configuration; plugin; _} as state) =
                | [Operation_kind.Add_messages] -> `Delay_block 0.5
                | _ -> `Each_block
              in
-             (operator, strategy, operation_kinds))
+             ([operator], strategy, operation_kinds))
     in
     let* () =
       unless (signers = []) @@ fun () ->
