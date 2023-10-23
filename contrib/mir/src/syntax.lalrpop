@@ -37,6 +37,7 @@ extern {
         "option" => Tok::Prim(Prim::option),
         "list" => Tok::Prim(Prim::list),
         "map" => Tok::Prim(Prim::map),
+        "or" => Tok::Prim(Prim::or),
         "True" => Tok::Prim(Prim::True),
         "False" => Tok::Prim(Prim::False),
         "Unit" => Tok::Prim(Prim::Unit),
@@ -102,6 +103,7 @@ composite_type: Type = {
     "option" anns <type_expr> => Type::new_option(<>),
     "list"   anns <type_expr> => Type::new_list(<>),
     "map"    anns <type_expr> <type_expr> => Type::new_map(<>),
+    "or"     anns <type_expr> <type_expr> => Type::new_or(<>),
 }
 
 type_expr: Type = {
