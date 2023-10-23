@@ -82,6 +82,7 @@ defprim! {
     UNPAIR,
     CONS,
     IF_CONS,
+    ITER,
 }
 
 impl std::fmt::Display for Prim {
