@@ -79,6 +79,7 @@ defprim! {
     NIL,
     GET,
     UPDATE,
+    UNPAIR,
 }
 
 impl std::fmt::Display for Prim {
