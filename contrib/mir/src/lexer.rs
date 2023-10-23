@@ -80,6 +80,7 @@ defprim! {
     GET,
     UPDATE,
     UNPAIR,
+    CONS,
 }
 
 impl std::fmt::Display for Prim {
