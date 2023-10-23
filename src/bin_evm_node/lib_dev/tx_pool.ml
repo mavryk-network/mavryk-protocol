@@ -264,8 +264,9 @@ let on_head state block_height =
      First tx in the pool is the first tx to be sent to the batcher. *)
   let txs =
     txs
-    |> List.sort (fun Pool.{index = index_a; _} {index = index_b; _} ->
-           Int64.compare index_a index_b)
+    |> List.sort
+         (fun Pool.{max_fees = max_fees_a; _} {max_fees = max_fees_b; _} ->
+           Z.compare max_fees_b max_fees_a)
     |> List.map (fun Pool.{raw_tx; _} -> raw_tx)
   in
   (* Send the txs to the rollup *)
