@@ -29,14 +29,29 @@ module Pool = struct
     let {transactions; global_index} = t in
     let* nonce = Ethereum_types.transaction_nonce raw_tx in
     let txs = Pkey_map.find pkey transactions |> Option.value ~default:[] in
-    let txs = {index = global_index; nonce; raw_tx} :: txs in
-    (* Sort txs by nonce*)
-    let txs =
-      List.sort
-        (fun {nonce = Qty nonce_a; _} {nonce = Qty nonce_b; _} ->
-          Z.compare nonce_a nonce_b)
-        txs
+    (* Insert the transaction in the next available slot*)
+    let insert_between txs tx =
+      let rec insert_between' acc txs =
+        match txs with
+        | [] -> List.append acc [tx]
+        | tx_a :: [] ->
+            (* If same nonce the tx is replaced *)
+            if tx_a.nonce == tx.nonce then List.append acc [tx]
+              (* If same nonce the tx has a lower nonce, it's inserted before *)
+            else if tx.nonce < tx_a.nonce then List.append acc [tx; tx_a]
+              (* If same nonce the tx has a greater nonce, it's inserted before *)
+            else List.append acc [tx_a; tx]
+        | tx_a :: tx_b :: remaining ->
+            (* If same nonce the tx is replaced *)
+            if tx_a.nonce == tx.nonce then List.append acc (tx :: remaining)
+              (* If tx nonce is between tx_a and tx_b then it's inserted between *)
+            else if tx_a.nonce < tx.nonce && tx.nonce < tx_b.nonce then
+              List.append acc (tx_a :: tx :: tx_b :: remaining)
+            else insert_between' (List.append acc [tx_a]) (tx_b :: remaining)
+      in
+      insert_between' [] txs
     in
+    let txs = insert_between txs {index = global_index; nonce; raw_tx} in
     (* Update the pool for the given pkey *)
     let transactions = Pkey_map.add pkey txs transactions in
     return {transactions; global_index = Int64.(add global_index one)}
