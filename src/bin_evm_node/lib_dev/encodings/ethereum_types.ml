@@ -995,4 +995,59 @@ let transaction_nonce raw_tx =
     | Ok (Rlp.List [Value nonce; _; _; _; _; _; _; _; _]) ->
         let+ nonce = Rlp.decode_z nonce in
         Qty nonce
-    | _ -> tzfail (Rlp.Rlp_decoding_error "Expected a list of 9 elements")
+    | _ -> raise (Invalid_argument "Expected a List of 9 elements")
+
+(** [transaction_max_gas_fees raw_tx] returns the maximum fees the user can pay
+    for the tx. *)
+let transaction_max_fees base_fee raw_tx =
+  let open Result_syntax in
+  let bytes = hex_to_bytes raw_tx in
+  if String.starts_with ~prefix:"01" bytes then
+    (* eip 2930*)
+    match bytes |> String.to_bytes |> Rlp.decode with
+    | Ok (Rlp.List [_; _; Value max_fee_per_gas; _; _; _; _; _; _])
+    | Ok (Rlp.List [_; _; Value max_fee_per_gas; _; _; _; _; _; _; _; _; _]) ->
+        let* max_fee_per_gas = Rlp.decode_z max_fee_per_gas in
+        return max_fee_per_gas
+    | _ -> tzfail (Rlp.Rlp_decoding_error "Expected a list of 9 or 12 elements")
+  else if String.starts_with ~prefix:"02" bytes then
+    (* eip 1559*)
+    match bytes |> String.to_bytes |> Rlp.decode with
+    | Ok
+        (Rlp.List
+          [
+            _;
+            _;
+            Value max_priority_fee_per_gas;
+            Value max_fee_per_gas;
+            _;
+            _;
+            _;
+            _;
+          ])
+    | Ok
+        (Rlp.List
+          [
+            _;
+            _;
+            Value max_priority_fee_per_gas;
+            Value max_fee_per_gas;
+            _;
+            _;
+            _;
+            _;
+            _;
+            _;
+            _;
+          ]) ->
+        let* max_priority_fee_per_gas = Rlp.decode_z max_priority_fee_per_gas in
+        let* max_fee_per_gas = Rlp.decode_z max_fee_per_gas in
+        return Z.(min max_fee_per_gas (add base_fee max_priority_fee_per_gas))
+    | _ -> tzfail (Rlp.Rlp_decoding_error "Expected a list of 8 or 11 elements")
+  else
+    (* Legacy *)
+    match bytes |> String.to_bytes |> Rlp.decode with
+    | Ok (Rlp.List [_; Value max_fee_per_gas; _; _; _; _; _; _; _]) ->
+        let* max_fee_per_gas = Rlp.decode_z max_fee_per_gas in
+        return max_fee_per_gas
+    | _ -> tzfail (Rlp.Rlp_decoding_error "Expected a list of 9")
