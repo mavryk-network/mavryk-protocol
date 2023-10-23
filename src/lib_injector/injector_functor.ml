@@ -1424,8 +1424,91 @@ module Make (Parameters : PARAMETERS) = struct
           (Printexc.to_string exn) ;
         async_monitor_l1_chain cctxt l1_ctxt)
 
-  (* TODO: https://gitlab.com/tezos/tezos/-/issues/2754
-     Injector worker in a separate process *)
+  let check_signer_is_not_already_registered registered_signers signers =
+    let open Result_syntax in
+    List.fold_left_e
+      (fun registered_signers pkh ->
+        let* () =
+          error_when (Signature.Public_key_hash.Set.mem pkh registered_signers)
+          @@ error_of_fmt
+               "key %a already registered"
+               Signature.Public_key_hash.pp
+               pkh
+        in
+        return registered_signers)
+      registered_signers
+      signers
+
+  let check_tag_is_not_already_registered registered_tags tags =
+    let open Result_syntax in
+    let* () =
+      error_unless (Tags.disjoint tags registered_tags)
+      @@ error_of_fmt "tags %a already registered" Tags.pp tags
+    in
+    return @@ Tags.union tags registered_tags
+
+  let register_worker cctxt l1_ctxt head_protocols ~data_dir state
+      retention_period allowed_attempts injection_ttl signer strategy tags =
+    let open Lwt_result_syntax in
+    let* worker =
+      Worker.launch
+        table
+        tags
+        {
+          signer;
+          cctxt = (cctxt :> Client_context.full);
+          l1_ctxt;
+          head_protocols;
+          data_dir;
+          state;
+          retention_period;
+          allowed_attempts;
+          injection_ttl;
+          strategy;
+        }
+        (module Handlers)
+    in
+    let () = Tags.iter (fun tag -> Tags_table.add tags_table tag worker) tags in
+    return_unit
+
+  let register_disjoint_signers (cctxt : #Client_context.full) l1_ctxt ~data_dir
+      retention_period ~allowed_attempts ~injection_ttl state
+      (signers :
+        (Signature.public_key_hash list
+        * injection_strategy
+        * Parameters.Tag.t list)
+        list) =
+    let open Lwt_result_syntax in
+    let rec aux registered_signers registered_tags = function
+      | [] -> return_unit
+      | (signers, strategy, tags) :: rest ->
+          let*? registered_signers =
+            check_signer_is_not_already_registered registered_signers signers
+          in
+          let tags = Tags.of_list tags in
+          let*? registered_tags =
+            check_tag_is_not_already_registered registered_tags tags
+          in
+          let*? () = Inj_proto.check_registered_proto_clients state in
+          let* head_protocols = protocols_of_head cctxt in
+          let* _ =
+            register_worker
+              cctxt
+              l1_ctxt
+              head_protocols
+              ~data_dir
+              state
+              retention_period
+              allowed_attempts
+              injection_ttl
+              signers
+              strategy
+              tags
+          in
+          aux registered_signers registered_tags rest
+    in
+    aux Signature.Public_key_hash.Set.empty Tags.empty signers
+
   let init (cctxt : #Client_context.full) ~data_dir ?(retention_period = 0)
       ?(allowed_attempts = 100) ?(injection_ttl = 120)
       ?(reconnection_delay = 2.0) state ~signers =
@@ -1433,62 +1516,19 @@ module Make (Parameters : PARAMETERS) = struct
     assert (retention_period >= 0) ;
     assert (allowed_attempts >= 0) ;
     assert (injection_ttl > 0) ;
-    let signers_map =
-      List.fold_left
-        (fun acc (signer, strategy, tags) ->
-          let tags = Tags.of_list tags in
-          let strategy, tags =
-            match Signature.Public_key_hash.Map.find_opt signer acc with
-            | None -> (strategy, tags)
-            | Some (other_strategy, other_tags) ->
-                let strategy =
-                  match (strategy, other_strategy) with
-                  | `Each_block, `Each_block -> `Each_block
-                  | `Delay_block f, _ | _, `Delay_block f ->
-                      (* Delay_block strategy takes over because we can always wait a
-                         little bit more to inject operation which are to be injected
-                         "each block". *)
-                      `Delay_block f
-                in
-                (strategy, Tags.union other_tags tags)
-          in
-          Signature.Public_key_hash.Map.add signer (strategy, tags) acc)
-        Signature.Public_key_hash.Map.empty
+    let*! l1_ctxt = Layer_1.start ~name:"injector" ~reconnection_delay cctxt in
+    let* () =
+      register_disjoint_signers
+        (cctxt : #Client_context.full)
+        l1_ctxt
+        ~data_dir
+        retention_period
+        ~allowed_attempts
+        ~injection_ttl
+        state
         signers
     in
-    let*? () = Inj_proto.check_registered_proto_clients state in
-    let*! l1_ctxt = Layer_1.start ~name:"injector" ~reconnection_delay cctxt in
-    let* head_protocols = protocols_of_head cctxt in
-    let* () =
-      Signature.Public_key_hash.Map.iter_es
-        (fun signer (strategy, tags) ->
-          let* worker =
-            Worker.launch
-              table
-              tags
-              {
-                signer = [signer];
-                cctxt = (cctxt :> Client_context.full);
-                l1_ctxt;
-                head_protocols;
-                data_dir;
-                state;
-                retention_period;
-                allowed_attempts;
-                injection_ttl;
-                strategy;
-              }
-              (module Handlers)
-          in
-          Tags.iter_es
-            (fun tag ->
-              if Tags_table.mem tags_table tag then
-                tzfail Overlapping_operations
-              else return (Tags_table.add tags_table tag worker))
-            tags)
-        signers_map
-    in
-    async_monitor_l1_chain cctxt l1_ctxt ;
+    let _ = async_monitor_l1_chain cctxt l1_ctxt in
     return_unit
 
   let worker_of_tag tag =

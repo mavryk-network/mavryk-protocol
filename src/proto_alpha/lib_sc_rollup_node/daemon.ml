@@ -411,7 +411,7 @@ let run node_ctxt configuration
                | [Operation_kind.Add_messages] -> `Delay_block 0.5
                | _ -> `Each_block
              in
-             (operator, strategy, operation_kinds))
+             ([operator], strategy, operation_kinds))
     in
     let* () = Publisher.init node_ctxt in
     let* () = Refutation_coordinator.init node_ctxt in
