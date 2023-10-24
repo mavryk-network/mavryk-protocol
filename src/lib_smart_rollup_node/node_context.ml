@@ -139,6 +139,8 @@ let unlock {lockfile; _} =
 let processing_lockfile_path ~data_dir =
   Filename.concat data_dir "processing_lock"
 
+let gc_lockfile_path ~data_dir = Filename.concat data_dir "gc_lock"
+
 let make_kernel_logger event ?log_kernel_debug_file logs_dir =
   let open Lwt_syntax in
   let path =
@@ -1129,6 +1131,9 @@ let gc node_ctxt ~(level : int32) =
             Block_hash.pp
             hash
       | Some {context; _} ->
+          let* gc_lockfile =
+            Utils.lock (gc_lockfile_path ~data_dir:node_ctxt.data_dir)
+          in
           let*! () = Event.calling_gc ~gc_level ~head_level:level in
           let*! () = save_gc_info node_ctxt ~at_level:level ~gc_level in
           (* Start both node and context gc asynchronously *)
@@ -1138,7 +1143,8 @@ let gc node_ctxt ~(level : int32) =
             let open Lwt_syntax in
             let* () = Context.wait_gc_completion node_ctxt.context
             and* () = Store.wait_gc_completion node_ctxt.store in
-            Event.gc_finished ~gc_level ~head_level:level
+            let* () = Event.gc_finished ~gc_level ~head_level:level in
+            Utils.unlock gc_lockfile
           in
           Lwt.dont_wait gc_waiter (fun _exn -> ()) ;
           return_unit)
