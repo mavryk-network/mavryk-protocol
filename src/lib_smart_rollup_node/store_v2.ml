@@ -701,3 +701,5 @@ let is_gc_finished
   && Commitments_published_at_level.is_gc_finished
        commitments_published_at_level
   && Levels_to_hashes.is_gc_finished levels_to_hashes
+
+let copy {store_dir; _} ~dest = Lwt_utils_unix.copy_dir store_dir dest

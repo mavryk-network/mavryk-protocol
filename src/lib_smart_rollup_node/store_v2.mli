@@ -150,3 +150,7 @@ include Store_sig.S with type 'a store := 'a store
 
 (** [is_gc_finished t] returns [true] if there is no GC running. *)
 val is_gc_finished : 'a t -> bool
+
+(** [copy store ~dest] copies the file of [store] to [dest]. NOTE: This function
+    should only be called when no accesses are being made to the store(s). *)
+val copy : 'a t -> dest:string -> unit Lwt.t
