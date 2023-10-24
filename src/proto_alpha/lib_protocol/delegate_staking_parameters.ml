@@ -103,26 +103,32 @@ let compute_reward_distrib ~stake ~edge_of_baking_over_staking_billionth
   in
   let rewards_q = Q.of_int64 @@ Tez_repr.to_mutez rewards in
   (* compute in Q *)
-  let to_frozen =
+  let to_own_frozen, to_frozen_total =
     let open Q in
     let total_stake = weighted_delegated + frozen in
-    if total_stake <= zero then zero
+    if total_stake <= zero then (zero, zero)
     else
       let non_delegated_ratio = frozen / total_stake in
       let non_delegated_rewards = rewards_q * non_delegated_ratio in
-      non_delegated_rewards * (one - baking_over_staking_edge)
+      let to_own_frozen = non_delegated_rewards * baking_over_staking_edge in
+      (to_own_frozen, non_delegated_rewards)
   in
+
   (* finish computation into mutez *)
   let rewards = Tez_repr.to_mutez rewards in
-  let to_frozen = Q.to_int64 to_frozen in
+  let to_own_frozen = Q.to_int64 to_own_frozen in
+  let to_frozen_total = Q.to_int64 to_frozen_total in
+  let to_shared_frozen = Int64.(sub to_frozen_total to_own_frozen) in
   (* todo: is there any risk to overflow here ? *)
-  let to_spendable = Int64.(sub rewards to_frozen) in
+  let to_spendable = Int64.(sub rewards to_frozen_total) in
   (* convert back to tez *)
-  (* Preconditions prevents to_frozen to be negative or greater than
-     rewards. Thus we can use to_mutez_exn *)
-  let to_frozen = Tez_repr.of_mutez_exn to_frozen in
+  (* Preconditions prevents to_own_frozen to_shared_frozen, to_frozen_total and
+     thus to_spendable to be negative or greater than rewards. Thus we can use
+     to_mutez_exn *)
+  let to_own_frozen = Tez_repr.of_mutez_exn to_own_frozen in
+  let to_shared_frozen = Tez_repr.of_mutez_exn to_shared_frozen in
   let to_spendable = Tez_repr.of_mutez_exn to_spendable in
-  Ok {to_own_frozen = Tez_repr.zero; to_shared_frozen = to_frozen; to_spendable}
+  Ok {to_own_frozen; to_shared_frozen; to_spendable}
 
 let compute_reward_distrib ctxt delegate stake rewards =
   let open Lwt_result_syntax in
