@@ -2212,6 +2212,9 @@ module Delegate : sig
   val current_frozen_deposits :
     context -> public_key_hash -> Tez.t tzresult Lwt.t
 
+  val initial_frozen_deposits :
+    context -> public_key_hash -> Tez.t tzresult Lwt.t
+
   (** See {!Contract_delegate_storage.delegated_contracts}. *)
   val delegated_contracts : context -> public_key_hash -> Contract.t list Lwt.t
 
