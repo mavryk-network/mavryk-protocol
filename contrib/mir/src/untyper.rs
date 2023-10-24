@@ -16,6 +16,9 @@ impl TypedValue {
                 let (vl, vr) = *pv;
                 V::new_pair(vl.untype(), vr.untype())
             }
+            // ↑ This transformation for pairs deviates from the optimized representation of the
+            // reference implementation, because reference implementation optimizes the size of combs
+            // and uses an untyped representation that is the shortest.
             TV::Option(ov) => V::new_option(ov.map(|v| v.untype())),
             TV::List(lv) => {
                 let res = lv.into_iter().map(|v| v.untype()).collect();
