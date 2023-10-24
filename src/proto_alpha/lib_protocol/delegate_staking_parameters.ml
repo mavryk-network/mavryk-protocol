@@ -75,7 +75,11 @@ let activate ctxt ~new_cycle =
   in
   Storage.Pending_staking_parameters.clear (ctxt, new_cycle)
 
-type reward_distrib = {to_frozen : Tez_repr.t; to_spendable : Tez_repr.t}
+type reward_distrib = {
+  to_own_frozen : Tez_repr.t;
+  to_shared_frozen : Tez_repr.t;
+  to_spendable : Tez_repr.t;
+}
 
 (** Compute the reward distribution between frozen and spendable according to:
     - the [stake] of the delegate composed of the [frozen] deposits and the
@@ -118,7 +122,7 @@ let compute_reward_distrib ~stake ~edge_of_baking_over_staking_billionth
      rewards. Thus we can use to_mutez_exn *)
   let to_frozen = Tez_repr.of_mutez_exn to_frozen in
   let to_spendable = Tez_repr.of_mutez_exn to_spendable in
-  Ok {to_frozen; to_spendable}
+  Ok {to_own_frozen = Tez_repr.zero; to_shared_frozen = to_frozen; to_spendable}
 
 let compute_reward_distrib ctxt delegate stake rewards =
   let open Lwt_result_syntax in
@@ -148,15 +152,23 @@ let pay_rewards ctxt ?active_stake ~source ~delegate rewards =
              (Signature.Public_key_hash.Map.find delegate stake_distrib)
              ~default:Stake_repr.zero)
   in
-  let* {to_frozen; to_spendable} =
+  let* {to_own_frozen; to_shared_frozen; to_spendable} =
     compute_reward_distrib ctxt delegate active_stake rewards
   in
-  let* ctxt, balance_updates_frozen_rewards =
+  let* ctxt, balance_updates_shared_frozen_rewards =
     Token.transfer
       ctxt
       source
       (`Frozen_deposits (Staker_repr.Shared delegate))
-      to_frozen
+      to_shared_frozen
+  in
+  let* ctxt, balance_updates_own_frozen_rewards =
+    Token.transfer
+      ctxt
+      source
+      (`Frozen_deposits
+        (Staker_repr.Single (Contract_repr.Implicit delegate, delegate)))
+      to_own_frozen
   in
   let+ ctxt, balance_updates_spendable_rewards =
     Token.transfer
@@ -165,4 +177,6 @@ let pay_rewards ctxt ?active_stake ~source ~delegate rewards =
       (`Contract (Contract_repr.Implicit delegate))
       to_spendable
   in
-  (ctxt, balance_updates_frozen_rewards @ balance_updates_spendable_rewards)
+  ( ctxt,
+    balance_updates_shared_frozen_rewards @ balance_updates_own_frozen_rewards
+    @ balance_updates_spendable_rewards )
