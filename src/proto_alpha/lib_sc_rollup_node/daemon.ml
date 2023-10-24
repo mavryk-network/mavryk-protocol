@@ -339,17 +339,14 @@ let maybe_recover_bond node_ctxt =
   (* At the start of the rollup node when in bailout mode check that there is
      an operator who has stake, otherwise stop the node *)
   if Node_context.is_bailout node_ctxt then
-    let operator =
-      Node_context.get_operator node_ctxt Configuration.Operating
-    in
+    let operator = Node_context.get_operator node_ctxt Purpose.Operating in
     match operator with
     | None ->
         tzfail
           (Configuration.Missing_mode_operators
              {
                mode = Configuration.string_of_mode Bailout;
-               missing_operators =
-                 [Configuration.string_of_purpose Configuration.Operating];
+               missing_operators = Purpose.[to_string Operating];
              })
     | Some operating_pkh -> (
         let*! staked_on_commitment =
@@ -393,12 +390,10 @@ let run node_ctxt configuration
   in
   let start () =
     let signers =
-      Configuration.Operator_purpose_map.bindings node_ctxt.config.operators
+      Purpose.Map.bindings node_ctxt.config.operators
       |> List.fold_left
            (fun acc (operation_kind, operator) ->
-             let operation_kinds =
-               Configuration.operation_kinds_of_purpose operation_kind
-             in
+             let operation_kinds = Purpose.operation_kind operation_kind in
              let operation_kinds =
                match Signature.Public_key_hash.Map.find operator acc with
                | None -> operation_kinds
@@ -435,7 +430,7 @@ let run node_ctxt configuration
         ~allowed_attempts:configuration.injector.attempts
     in
     let* () =
-      match Node_context.get_operator node_ctxt Batching with
+      match Purpose.Map.find Batching node_ctxt.config.operators with
       | None -> return_unit
       | Some signer ->
           Components.Batcher.init configuration.batcher ~signer node_ctxt
@@ -600,7 +595,7 @@ let run
   let open Configuration in
   let* () =
     (* Check that the operators are valid keys. *)
-    Operator_purpose_map.iter_es
+    Purpose.Map.iter_es
       (fun _purpose operator ->
         let+ _pkh, _pk, _skh = Client_keys.get_key cctxt operator in
         ())
@@ -621,9 +616,7 @@ let run
     Layer1.fetch_tezos_shell_header l1_ctxt head.header.predecessor
   in
   let*! () = Event.received_first_block head.hash Protocol.hash in
-  let publisher =
-    Configuration.Operator_purpose_map.find Operating configuration.operators
-  in
+  let publisher = Purpose.Map.find Operating configuration.operators in
   let* constants = Layer1_helpers.retrieve_constants cctxt
   and* genesis_info =
     Layer1_helpers.retrieve_genesis_info cctxt configuration.sc_rollup_address
