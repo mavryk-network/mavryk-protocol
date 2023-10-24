@@ -220,6 +220,11 @@ and update_l2_chain ({node_ctxt; _} as state) ~catching_up
       in
       return_unit
 
+let update_l2_chain state ~catching_up head =
+  Utils.with_lockfile
+    (Node_context.processing_lockfile_path ~data_dir:state.node_ctxt.data_dir)
+  @@ fun () -> update_l2_chain state ~catching_up head
+
 (* [on_layer_1_head node_ctxt head] processes a new head from the L1. It
    also processes any missing blocks that were not processed. *)
 let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
