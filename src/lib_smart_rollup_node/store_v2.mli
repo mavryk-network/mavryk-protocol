@@ -129,6 +129,7 @@ module History_mode :
   SINGLETON_STORE with type value := Configuration.history_mode
 
 type +'a store = {
+  store_dir : string;
   l2_blocks : 'a L2_blocks.t;
   messages : 'a Messages.t;
   inboxes : 'a Inboxes.t;

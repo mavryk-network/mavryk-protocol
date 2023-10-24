@@ -320,6 +320,7 @@ module History_mode = Indexed_store.Make_singleton (struct
 end)
 
 type 'a store = {
+  store_dir : string;
   l2_blocks : 'a L2_blocks.t;
   messages : 'a Messages.t;
   inboxes : 'a Inboxes.t;
@@ -344,6 +345,7 @@ type ro = Store_sigs.ro t
 
 let readonly
     ({
+       store_dir;
        l2_blocks;
        messages;
        inboxes;
@@ -361,6 +363,7 @@ let readonly
      } :
       _ t) : ro =
   {
+    store_dir;
     l2_blocks = L2_blocks.readonly l2_blocks;
     messages = Messages.readonly messages;
     inboxes = Inboxes.readonly inboxes;
@@ -380,6 +383,7 @@ let readonly
 
 let close
     ({
+       store_dir = _;
        l2_blocks;
        messages;
        inboxes;
@@ -450,6 +454,7 @@ let load (type a) (mode : a mode) ~index_buffer_size ~l2_blocks_cache_size
   let* history_mode = History_mode.load mode ~path:(path "history_mode") in
   let+ irmin_store = Irmin_store.load mode (path "irmin_store") in
   {
+    store_dir = data_dir;
     l2_blocks;
     messages;
     inboxes;
@@ -598,6 +603,7 @@ let gc_inboxes inboxes ~(head : Sc_rollup_block.t) ~level =
 
 let gc
     ({
+       store_dir = _;
        l2_blocks;
        messages;
        inboxes;
@@ -641,6 +647,7 @@ let gc
 
 let wait_gc_completion
     ({
+       store_dir = _;
        l2_blocks;
        messages;
        inboxes;
@@ -670,6 +677,7 @@ let wait_gc_completion
 
 let is_gc_finished
     ({
+       store_dir = _;
        l2_blocks;
        messages;
        inboxes;
