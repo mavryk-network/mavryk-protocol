@@ -27,8 +27,8 @@ pub(crate) use log;
 #[deprecated(note = "debug printing remains in the code")]
 #[allow(unused_macros)]
 macro_rules! debug {
-  ($($args: expr),*) => {
-    log!($($args), *);
+  ($($args:tt)*) => {
+    log!($($args)*);
   };
 }
 #[allow(unused_imports)]
