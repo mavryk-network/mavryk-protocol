@@ -182,15 +182,15 @@ module Params = struct
 
   let int = Tezos_clic.parameter (fun _ s -> Lwt.return_ok (int_of_string s))
 
-  let mode =
+  let version =
     Tezos_clic.parameter (fun _ s ->
-        let mode =
+        let version =
           match s with
           | "prod" -> Prod
           | "dev" -> Dev
-          | _ -> Stdlib.failwith "The mode must be prod or dev."
+          | _ -> Stdlib.failwith "The version must be prod or dev."
         in
-        Lwt.return_ok mode)
+        Lwt.return_ok version)
 
   let rollup_node_endpoint =
     Tezos_clic.parameter (fun _ uri -> Lwt.return_ok (Uri.of_string uri))
@@ -229,12 +229,12 @@ let cors_allowed_origins_arg =
     ~doc:"List of accepted cors origins."
     Params.string_list
 
-let mode_arg =
+let version_arg =
   Tezos_clic.arg
-    ~long:"mode"
+    ~long:"version"
     ~placeholder:"MODE"
-    ~doc:"The EVM node mode, it's either prod or dev."
-    Params.mode
+    ~doc:"The EVM node version, it's either prod or dev."
+    Params.version
 
 let verbose_arg =
   Tezos_clic.switch
@@ -285,21 +285,21 @@ let main_command =
   command
     ~desc:"Start the RPC server"
     (args6
-       mode_arg
+       version_arg
        rpc_addr_arg
        rpc_port_arg
        cors_allowed_origins_arg
        cors_allowed_headers_arg
        verbose_arg)
     (prefixes ["run"; "with"; "endpoint"] @@ rollup_node_endpoint_param @@ stop)
-    (fun (mode, rpc_addr, rpc_port, cors_origins, cors_headers, verbose)
+    (fun (version, rpc_addr, rpc_port, cors_origins, cors_headers, verbose)
          rollup_node_endpoint
          () ->
       let*! () = Tezos_base_unix.Internal_event_unix.init () in
       let*! () = Internal_event.Simple.emit Event.event_starting () in
       let config =
         make_config
-          ?mode
+          ?version
           ?rpc_addr
           ?rpc_port
           ?cors_origins
@@ -309,7 +309,7 @@ let main_command =
           ()
       in
       let* () =
-        match config.mode with
+        match config.version with
         | Prod ->
             let* rollup_config =
               rollup_node_config_prod ~rollup_node_endpoint
@@ -366,12 +366,12 @@ let chunker_command =
     ~desc:
       "Chunk hexadecimal data according to the message representation of the \
        EVM rollup"
-    (args2 mode_arg rollup_address_arg)
+    (args2 version_arg rollup_address_arg)
     (prefixes ["chunk"; "data"] @@ data_parameter @@ stop)
-    (fun (mode, rollup_address) data () ->
+    (fun (version, rollup_address) data () ->
       let print_chunks smart_rollup_address s =
         let* messages =
-          match Option.value ~default:Prod mode with
+          match Option.value ~default:Prod version with
           | Prod -> make_prod_messages ~smart_rollup_address s
           | Dev -> make_dev_messages ~smart_rollup_address s
         in
