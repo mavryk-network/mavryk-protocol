@@ -11,11 +11,11 @@
 /// log!(host, "My data: {}", dat)
 /// ```
 macro_rules! log {
-  ($host: expr, $($args: expr),*) => {
+  ($host:expr, $($args:tt)*) => {
     {
       use tezos_smart_rollup::prelude::*;
 
-      debug_msg!($host, $($args), *);
+      debug_msg!($host, $($args)*);
       $host.write_debug("\n");
     }
   };
