@@ -507,8 +507,9 @@ let check_all_balances block state : unit tzresult Lwt.t =
   let State.{account_map; total_supply; _} = state in
   let* () =
     String.Map.iter_es
-      (fun name _account ->
+      (fun name account ->
         log_debug_balance name account_map ;
+        let* () = log_debug_rpc_balance name (Implicit account.pkh) block in
         assert_balance_check ~loc:__LOC__ (B block) name account_map)
       account_map
   in
