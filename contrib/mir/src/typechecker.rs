@@ -166,6 +166,13 @@ fn verify_ty(ctx: &mut Ctx, t: &Type) -> Result<(), TcError> {
                 Err(TcError::TypeNotComparable(tys.0.clone()))
             }
         }
+        Contract(ty) => {
+            if ty.is_passable(&mut ctx.gas)? {
+                verify_ty(ctx, ty)
+            } else {
+                Err(TcError::TypeNotPassable(ty.as_ref().clone()))
+            }
+        }
     }
 }
 
@@ -2182,6 +2189,65 @@ mod typecheck_tests {
             }
             .typecheck(&mut ctx),
             Err(TcError::TypeNotComparable(Type::new_list(Type::Unit)))
+        );
+    }
+
+    #[test]
+    fn test_contract_not_storable() {
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            ContractScript {
+                parameter: Type::Unit,
+                storage: Type::new_contract(Type::Unit),
+                code: Failwith(())
+            }
+            .typecheck(&mut ctx),
+            Err(TcError::TypeNotStorable(Type::new_contract(Type::Unit)))
+        );
+    }
+
+    #[test]
+    fn test_contract_not_pushable() {
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            typecheck_instruction(
+                Push((Type::new_contract(Type::Unit), Value::Unit)),
+                &mut ctx,
+                &mut tc_stk![]
+            ),
+            Err(TcError::TypeNotPushable(Type::new_contract(Type::Unit)))
+        );
+    }
+
+    #[test]
+    fn test_contract_with_unpassable_arg() {
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            ContractScript {
+                parameter: Type::new_contract(Type::Operation),
+                storage: Type::Unit,
+                code: Failwith(())
+            }
+            .typecheck(&mut ctx),
+            Err(TcError::TypeNotPassable(Type::Operation))
+        );
+    }
+
+    #[test]
+    fn test_contract_is_passable() {
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            ContractScript {
+                parameter: Type::new_contract(Type::Unit),
+                storage: Type::Unit,
+                code: Failwith(())
+            }
+            .typecheck(&mut ctx),
+            Ok(ContractScript {
+                parameter: Type::new_contract(Type::Unit),
+                storage: Type::Unit,
+                code: Failwith(Type::new_pair(Type::new_contract(Type::Unit), Type::Unit))
+            })
         );
     }
 }

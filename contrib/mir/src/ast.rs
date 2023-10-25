@@ -34,6 +34,7 @@ pub enum Type {
     Operation,
     Map(Box<(Type, Type)>),
     Or(Box<(Type, Type)>),
+    Contract(Box<Type>),
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -83,6 +84,13 @@ impl Type {
                 | TypeProperty::BigMapValue
                 | TypeProperty::Duplicable => p.1.prop(gas, prop)?,
             },
+            Contract(_) => match prop {
+                TypeProperty::Passable | TypeProperty::Packable | TypeProperty::Duplicable => true,
+                TypeProperty::Comparable
+                | TypeProperty::Storable
+                | TypeProperty::Pushable
+                | TypeProperty::BigMapValue => false,
+            },
         })
     }
 
@@ -122,7 +130,7 @@ impl Type {
         match self {
             Nat | Int | Bool | Mutez | String | Unit | Operation => 1,
             Pair(p) | Or(p) | Map(p) => 1 + p.0.size_for_gas() + p.1.size_for_gas(),
-            Option(x) | List(x) => 1 + x.size_for_gas(),
+            Option(x) | List(x) | Contract(x) => 1 + x.size_for_gas(),
         }
     }
 
@@ -144,6 +152,10 @@ impl Type {
 
     pub fn new_or(l: Self, r: Self) -> Self {
         Self::Or(Box::new((l, r)))
+    }
+
+    pub fn new_contract(ty: Self) -> Self {
+        Self::Contract(Box::new(ty))
     }
 }
 

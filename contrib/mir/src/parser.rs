@@ -311,4 +311,12 @@ mod tests {
             Err(Err::NoField(code).into())
         );
     }
+
+    #[test]
+    fn contract_ty_push() {
+        assert_eq!(
+            parse("PUSH (contract :ct %foo unit) Unit").unwrap(),
+            Instruction::Push((Type::new_contract(Type::Unit), Value::Unit))
+        );
+    }
 }
