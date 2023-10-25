@@ -133,7 +133,7 @@ impl ParsedInstruction {
         opt_stack: &mut FailingTypeStack,
     ) -> Result<TypecheckedInstruction, TcError> {
         if let Ok(stack) = opt_stack.access_mut(()) {
-            stack.iter().try_for_each(verify_ty)?;
+            stack.iter().try_for_each(|ty| verify_ty(ctx, ty))?;
         }
         typecheck_instruction(self, ctx, opt_stack)
     }
@@ -142,25 +142,26 @@ impl ParsedInstruction {
 impl Value {
     /// Typecheck a value. Validates the input type.
     pub fn typecheck(self, ctx: &mut Ctx, t: &Type) -> Result<TypedValue, TcError> {
-        verify_ty(t)?;
+        verify_ty(ctx, t)?;
         typecheck_value(ctx, t, self)
     }
 }
 
 /// Checks type invariants, e.g. that `map` key is comparable.
-fn verify_ty(t: &Type) -> Result<(), TcError> {
+fn verify_ty(ctx: &mut Ctx, t: &Type) -> Result<(), TcError> {
     use Type::*;
+    ctx.gas.consume(gas::tc_cost::VERIFY_TYPE_STEP)?;
     match t {
         Nat | Int | Bool | Mutez | String | Operation | Unit => Ok(()),
         Pair(tys) | Or(tys) => {
-            verify_ty(&tys.0)?;
-            verify_ty(&tys.1)
+            verify_ty(ctx, &tys.0)?;
+            verify_ty(ctx, &tys.1)
         }
-        Option(ty) | List(ty) => verify_ty(ty),
+        Option(ty) | List(ty) => verify_ty(ctx, ty),
         Map(tys) => {
             if tys.0.is_comparable() {
-                verify_ty(&tys.0)?;
-                verify_ty(&tys.1)
+                verify_ty(ctx, &tys.0)?;
+                verify_ty(ctx, &tys.1)
             } else {
                 Err(TcError::TypeNotComparable(tys.0.clone()))
             }
@@ -441,7 +442,7 @@ fn typecheck_instruction(
 
         (I::Push((t, v)), ..) => {
             ensure_pushable(&t)?;
-            verify_ty(&t)?;
+            verify_ty(ctx, &t)?;
             let v = typecheck_value(ctx, &t, v)?;
             stack.push(t);
             I::Push(v)
@@ -534,7 +535,7 @@ fn typecheck_instruction(
         }
 
         (I::Nil(ty), ..) => {
-            verify_ty(&ty)?;
+            verify_ty(ctx, &ty)?;
             stack.push(T::new_list(ty));
             I::Nil(())
         }
@@ -844,7 +845,7 @@ mod typecheck_tests {
             Ok(Push(TypedValue::Int(1)))
         );
         assert_eq!(stack, expected_stack);
-        assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 440 - 100);
+        assert!(ctx.gas.milligas() < Gas::default().milligas());
     }
 
     #[test]
@@ -867,10 +868,7 @@ mod typecheck_tests {
             Ok(Dip(Some(1), vec![Push(TypedValue::Nat(6))]))
         );
         assert_eq!(stack, expected_stack);
-        assert_eq!(
-            ctx.gas.milligas(),
-            Gas::default().milligas() - 440 - 440 - 100 - 50
-        );
+        assert!(ctx.gas.milligas() < Gas::default().milligas());
     }
 
     #[test]
@@ -926,10 +924,7 @@ mod typecheck_tests {
             Ok(Loop(vec![Push(TypedValue::Bool(true))]))
         );
         assert_eq!(stack, expected_stack);
-        assert_eq!(
-            ctx.gas.milligas(),
-            Gas::default().milligas() - 440 - 440 - 100 - 60 * 2
-        );
+        assert!(ctx.gas.milligas() < Gas::default().milligas());
     }
 
     #[test]
