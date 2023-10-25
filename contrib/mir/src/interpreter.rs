@@ -176,6 +176,16 @@ fn interpret_one(
             let i = pop!(V::Int);
             stack.push(V::Bool(i > 0));
         }
+        I::Eq => {
+            ctx.gas.consume(interpret_cost::EQ)?;
+            let i = pop!(V::Int);
+            stack.push(V::Bool(i == 0));
+        }
+        I::Le => {
+            ctx.gas.consume(interpret_cost::LE)?;
+            let i = pop!(V::Int);
+            stack.push(V::Bool(i <= 0));
+        }
         I::If(nested_t, nested_f) => {
             ctx.gas.consume(interpret_cost::IF)?;
             if pop!(V::Bool) {
@@ -413,6 +423,24 @@ mod interpreter_tests {
         let expected_stack = stk![V::Int(20), V::Bool(true)];
         let mut ctx = Ctx::default();
         assert!(interpret_one(&Gt, &mut ctx, &mut stack).is_ok());
+        assert_eq!(stack, expected_stack);
+    }
+
+    #[test]
+    fn test_eq() {
+        let mut stack = stk![V::Int(20), V::Int(0)];
+        let expected_stack = stk![V::Int(20), V::Bool(true)];
+        let mut ctx = Ctx::default();
+        assert!(interpret_one(&Eq, &mut ctx, &mut stack).is_ok());
+        assert_eq!(stack, expected_stack);
+    }
+
+    #[test]
+    fn test_le() {
+        let mut stack = stk![V::Int(20), V::Int(-1)];
+        let expected_stack = stk![V::Int(20), V::Bool(true)];
+        let mut ctx = Ctx::default();
+        assert!(interpret_one(&Le, &mut ctx, &mut stack).is_ok());
         assert_eq!(stack, expected_stack);
     }
 

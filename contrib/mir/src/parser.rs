@@ -99,6 +99,13 @@ mod tests {
     use super::*;
 
     #[test]
+    fn instructions() {
+        assert_eq!(parse("{ LE }").unwrap(), vec![Instruction::Le]);
+        assert_eq!(parse("{ EQ }").unwrap(), vec![Instruction::Eq]);
+        assert_eq!(parse("{ EQ @a }").unwrap(), vec![Instruction::Eq]);
+    }
+
+    #[test]
     fn pair_type() {
         assert_eq!(
             parse("{ PUSH (pair int nat) Unit }").unwrap(),

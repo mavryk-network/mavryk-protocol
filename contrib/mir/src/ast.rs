@@ -245,6 +245,8 @@ pub enum Instruction<T: Stage> {
     Drop(Option<u16>),
     Dup(Option<u16>),
     Gt,
+    Eq,
+    Le,
     If(Vec<Instruction<T>>, Vec<Instruction<T>>),
     IfNone(Vec<Instruction<T>>, Vec<Instruction<T>>),
     Int,

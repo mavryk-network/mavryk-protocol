@@ -261,6 +261,19 @@ fn typecheck_instruction(
         (I::Gt, [.., t]) => no_overload!(GT, TypesNotEqual(T::Int, t.clone())),
         (I::Gt, []) => no_overload!(GT, len 1),
 
+        (I::Eq, [.., T::Int]) => {
+            stack[0] = T::Bool;
+            I::Eq
+        }
+        (I::Eq, [.., t]) => no_overload!(EQ, TypesNotEqual(T::Int, t.clone())),
+        (I::Eq, []) => no_overload!(EQ, len 1),
+
+        (I::Le, [.., T::Int]) => {
+            stack[0] = T::Bool;
+            I::Le
+        }
+        (I::Le, [.., t]) => no_overload!(LE, TypesNotEqual(T::Int, t.clone())),
+        (I::Le, []) => no_overload!(LE, len 1),
         (I::If(nested_t, nested_f), [.., T::Bool]) => {
             // pop the bool off the stack
             pop!();
@@ -1505,8 +1518,46 @@ mod typecheck_tests {
     }
 
     #[test]
+    fn test_eq_mismatch() {
+        let mut stack = tc_stk![Type::String];
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            typecheck_instruction(Eq, &mut ctx, &mut stack),
+            Err(TcError::NoMatchingOverload {
+                instr: Prim::EQ,
+                stack: stk![Type::String],
+                reason: Some(TypesNotEqual(Type::Int, Type::String).into())
+            })
+        );
+    }
+
+    #[test]
+    fn test_le_mismatch() {
+        let mut stack = tc_stk![Type::String];
+        let mut ctx = Ctx::default();
+        assert_eq!(
+            typecheck_instruction(Le, &mut ctx, &mut stack),
+            Err(TcError::NoMatchingOverload {
+                instr: Prim::LE,
+                stack: stk![Type::String],
+                reason: Some(TypesNotEqual(Type::Int, Type::String).into())
+            })
+        );
+    }
+
+    #[test]
     fn test_gt_short() {
         too_short_test(Gt, Prim::GT, 1);
+    }
+
+    #[test]
+    fn test_eq_short() {
+        too_short_test(Eq, Prim::EQ, 1);
+    }
+
+    #[test]
+    fn test_le_short() {
+        too_short_test(Le, Prim::LE, 1);
     }
 
     #[test]
