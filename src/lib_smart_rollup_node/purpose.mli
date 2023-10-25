@@ -10,7 +10,7 @@
     operations that they sign. *)
 type 'a purpose_kind =
   | Operating : Signature.public_key_hash purpose_kind
-  | Batching : Signature.public_key_hash purpose_kind
+  | Batching : Signature.public_key_hash list purpose_kind
   | Cementing : Signature.public_key_hash purpose_kind
   | Recovering : Signature.public_key_hash purpose_kind
   | Executing_outbox : Signature.public_key_hash purpose_kind

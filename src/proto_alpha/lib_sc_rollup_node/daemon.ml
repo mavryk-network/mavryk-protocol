@@ -435,8 +435,11 @@ let run node_ctxt configuration
     let* () =
       match Node_context.get_operator node_ctxt Batching with
       | None -> return_unit
-      | Some (Single signer) ->
-          Components.Batcher.init configuration.batcher ~signer node_ctxt
+      | Some (Multiple []) -> return_unit
+      | Some (Multiple (hd :: _rest)) ->
+          (* signer is disreagarded after, not a problem to dump
+             [_rest] *)
+          Components.Batcher.init configuration.batcher ~signer:hd node_ctxt
     in
     Lwt.dont_wait
       (fun () ->

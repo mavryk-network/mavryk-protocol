@@ -8,7 +8,7 @@
 
 type 'a purpose_kind =
   | Operating : Signature.Public_key_hash.t purpose_kind
-  | Batching : Signature.Public_key_hash.t purpose_kind
+  | Batching : Signature.Public_key_hash.t list purpose_kind
   | Cementing : Signature.Public_key_hash.t purpose_kind
   | Recovering : Signature.Public_key_hash.t purpose_kind
   | Executing_outbox : Signature.Public_key_hash.t purpose_kind
@@ -262,12 +262,17 @@ let single_operator : ex_operator -> Signature.Public_key_hash.t operator =
   | Operator (Multiple _) -> assert false
   | Operator (Single pkh) -> Single pkh
 
+let multiple_operator : ex_operator -> Signature.Public_key_hash.t list operator
+    = function
+  | Operator (Multiple pkhs) -> Multiple pkhs
+  | Operator (Single _pkh) -> assert false
+
 let find_operator :
     type kind. kind purpose_kind -> operators -> kind operator option =
  fun purpose operator_per_purpose ->
   let operator = Map.find (Purpose purpose) operator_per_purpose in
   match purpose with
-  | Batching -> Option.map single_operator operator
+  | Batching -> Option.map multiple_operator operator
   | Operating -> Option.map single_operator operator
   | Cementing -> Option.map single_operator operator
   | Recovering -> Option.map single_operator operator
