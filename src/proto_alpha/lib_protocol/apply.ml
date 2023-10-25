@@ -537,6 +537,38 @@ let apply_set_delegate_parameters ~ctxt ~sender ~destination
   in
   return (ctxt, result, [])
 
+let apply_set_autostaking ~ctxt ~sender ~destination ~flag ~before_operation =
+  let open Lwt_result_syntax in
+  let*? ctxt = Gas.consume ctxt Adaptive_issuance_costs.set_autostaking_cost in
+  let*? () =
+    error_unless
+      Signature.Public_key_hash.(sender = destination)
+      Invalid_self_transaction_destination
+  in
+  let* is_delegate = Contract.is_delegate ctxt sender in
+  let*? () = error_unless is_delegate Invalid_autostaking_sender in
+  let* ctxt =
+    Delegate.Staking_parameters.set_autostaking
+      ctxt
+      ~delegate:sender
+      ~autostake:flag
+  in
+  let result =
+    Transaction_to_contract_result
+      {
+        storage = None;
+        lazy_storage_diff = None;
+        balance_updates = [];
+        ticket_receipt = [];
+        originated_contracts = [];
+        consumed_gas = Gas.consumed ~since:before_operation ~until:ctxt;
+        storage_size = Z.zero;
+        paid_storage_size_diff = Z.zero;
+        allocated_destination_contract = false;
+      }
+  in
+  return (ctxt, result, [])
+
 let transfer_from_any_address ctxt sender destination amount =
   let open Lwt_result_syntax in
   match sender with
@@ -1091,6 +1123,21 @@ let apply_manager_operation :
                 ~sender:source
                 ~amount
                 ~destination:pkh
+                ~before_operation:ctxt_before_op
+          | "set_autostaking" ->
+              let* flag, ctxt =
+                Script_ir_translator.parse_data
+                  ~elab_conf
+                  ctxt
+                  ~allow_forged:false
+                  Script_typed_ir.bool_t
+                  (Micheline.root parameters)
+              in
+              apply_set_autostaking
+                ~ctxt
+                ~sender:source
+                ~destination:pkh
+                ~flag
                 ~before_operation:ctxt_before_op
           | "finalize_unstake" ->
               let* () =
