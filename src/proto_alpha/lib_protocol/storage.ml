@@ -314,6 +314,18 @@ module Contract = struct
       end)
       (Staking_parameters_repr)
 
+  module Autostaking_flag =
+    Indexed_context.Make_map
+      (Registered)
+      (struct
+        let name = ["autostaking_flag"]
+      end)
+      (struct
+        type t = bool
+
+        let encoding = Data_encoding.bool
+      end)
+
   module Delegate =
     Indexed_context.Make_map
       (Registered)

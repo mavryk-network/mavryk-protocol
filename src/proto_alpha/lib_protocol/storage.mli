@@ -171,6 +171,12 @@ module Contract : sig
        and type value = Staking_parameters_repr.t
        and type t := Raw_context.t
 
+  module Autostaking_flag :
+    Indexed_data_storage
+      with type key = Contract_repr.t
+       and type value = bool
+       and type t := Raw_context.t
+
   (** All contracts (implicit and originated) that are delegated, if any  *)
   module Delegated :
     Data_set_storage
