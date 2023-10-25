@@ -53,8 +53,7 @@ let start_workers (configuration : Configuration.t)
   let* () =
     match Node_context.get_operator node_ctxt Batching with
     | None -> return_unit
-    | Some (Single signer) ->
-        Batcher.init plugin configuration.batcher ~signer node_ctxt
+    | Some _ -> Batcher.init plugin configuration.batcher node_ctxt
   in
   let* () = Refutation_coordinator.init node_ctxt in
   return_unit

@@ -40,7 +40,6 @@ type status = Pending_batch | Batched of Injector.Inj_operation.hash
 
 type state = {
   node_ctxt : Node_context.ro;
-  signer : Signature.public_key_hash;
   conf : Configuration.batcher;
   messages : Message_queue.t;
   batched : Batched_messages.t;
@@ -232,10 +231,9 @@ let on_new_head state head =
   (* Forget failing messages *)
   List.iter (Message_queue.remove state.messages) failing
 
-let init_batcher_state plugin node_ctxt ~signer (conf : Configuration.batcher) =
+let init_batcher_state plugin node_ctxt (conf : Configuration.batcher) =
   {
     node_ctxt;
-    signer;
     conf;
     messages = Message_queue.create 100_000 (* ~ 400MB *);
     batched = Batched_messages.create 100_000 (* ~ 400MB *);
@@ -249,7 +247,6 @@ module Types = struct
   type parameters = {
     node_ctxt : Node_context.ro;
     plugin : (module Protocol_plugin_sig.S);
-    signer : Signature.public_key_hash;
     conf : Configuration.batcher;
   }
 end
@@ -287,9 +284,9 @@ module Handlers = struct
 
   type launch_error = error trace
 
-  let on_launch _w () Types.{node_ctxt; plugin; signer; conf} =
+  let on_launch _w () Types.{node_ctxt; plugin; conf} =
     let open Lwt_result_syntax in
-    let state = init_batcher_state plugin node_ctxt ~signer conf in
+    let state = init_batcher_state plugin node_ctxt conf in
     return state
 
   let on_error (type a b) _w st (r : (a, b) Request.t) (errs : b) :
@@ -329,12 +326,12 @@ let check_batcher_config (module Plugin : Protocol_plugin_sig.S)
         Plugin.Batcher_constants.protocol_max_batch_size
   | _ -> Ok ()
 
-let start plugin conf ~signer node_ctxt =
+let start plugin conf node_ctxt =
   let open Lwt_result_syntax in
   let*? () = check_batcher_config plugin conf in
   let node_ctxt = Node_context.readonly node_ctxt in
   let+ worker =
-    Worker.launch table () {node_ctxt; plugin; signer; conf} (module Handlers)
+    Worker.launch table () {node_ctxt; plugin; conf} (module Handlers)
   in
   Lwt.wakeup worker_waker worker
 
@@ -345,7 +342,7 @@ let start_in_mode mode =
   | Observer | Accuser | Bailout | Maintenance -> false
   | Custom ops -> purpose_matches_mode (Custom ops) (Purpose Batching)
 
-let init plugin conf ~signer (node_ctxt : _ Node_context.t) =
+let init plugin conf (node_ctxt : _ Node_context.t) =
   let open Lwt_result_syntax in
   match Lwt.state worker_promise with
   | Lwt.Return _ ->
@@ -356,8 +353,7 @@ let init plugin conf ~signer (node_ctxt : _ Node_context.t) =
       fail [Rollup_node_errors.No_batcher; Exn exn]
   | Lwt.Sleep ->
       (* Never started, start it. *)
-      if start_in_mode node_ctxt.config.mode then
-        start plugin conf ~signer node_ctxt
+      if start_in_mode node_ctxt.config.mode then start plugin conf node_ctxt
       else return_unit
 
 (* This is a batcher worker for a single scoru *)

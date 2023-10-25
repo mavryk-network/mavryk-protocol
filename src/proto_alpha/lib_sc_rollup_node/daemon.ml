@@ -582,7 +582,7 @@ module Rollup_node_daemon_components : Daemon_components.S = struct
   module Batcher = struct
     include Batcher
 
-    let init c = init (module Rollup_node_plugin.Plugin) c
+    let init c ~signer:_ = init (module Rollup_node_plugin.Plugin) c
   end
 
   module RPC_server = RPC_server

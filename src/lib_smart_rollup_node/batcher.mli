@@ -39,7 +39,6 @@ type status =
 val init :
   (module Protocol_plugin_sig.S) ->
   Configuration.batcher ->
-  signer:Signature.public_key_hash ->
   _ Node_context.t ->
   unit tzresult Lwt.t
 
