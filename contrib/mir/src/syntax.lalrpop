@@ -219,7 +219,7 @@ instructionBlock: ParsedInstructionBlock = {
 }
 
 // synonym for consistent type naming
-pub InstructionBlock = instructionBlock;
+pub Instruction = instruction;
 
 // synonym for consistent type naming
 pub Type: Type = type_expr;
