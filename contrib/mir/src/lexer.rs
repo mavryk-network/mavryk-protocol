@@ -105,6 +105,7 @@ defprim! {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PrimWithTzt {
     Prim(Prim),
+    Macro(String),
     TztPrim(TztPrim),
     Underscore,
     // Including underscore spearately from TztPrim because the `defprim` macro won't work if we
@@ -146,6 +147,7 @@ impl std::fmt::Display for Tok {
             Tok::Prim(PrimWithTzt::Prim(p)) => p.fmt(f),
             Tok::Prim(PrimWithTzt::TztPrim(p)) => p.fmt(f),
             Tok::Prim(PrimWithTzt::Underscore) => write!(f, "_"),
+            Tok::Prim(PrimWithTzt::Macro(m)) => m.fmt(f),
             Tok::Number(n) => n.fmt(f),
             Tok::String(s) => s.fmt(f),
             Tok::Annotation => write!(f, "<ann>"),
@@ -186,8 +188,16 @@ fn lex_prim(lex: &mut Lexer) -> Result<PrimWithTzt, LexerError> {
         .map(PrimWithTzt::Prim)
         .or_else(|_| lex.slice().parse().map(PrimWithTzt::TztPrim))
         .or_else(|_| match lex.slice() {
-            "_" => Ok(PrimWithTzt::Underscore),
-            s => Err(PrimError(s.to_owned())),
+            "_" => Ok::<PrimWithTzt, PrimError>(PrimWithTzt::Underscore),
+            s => {
+                // Check if the token could be a macro by checking if all
+                // chars in the token are upper case ascii or an underscore.
+                if s.chars().all(|c| c == '_' || char::is_ascii_uppercase(&c)) {
+                    Ok(PrimWithTzt::Macro(s.to_string()))
+                } else {
+                    Err(PrimError(s.to_owned()))
+                }
+            }
         })
         .map_err(LexerError::from)
 }
