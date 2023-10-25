@@ -581,11 +581,18 @@ let encoding : t Data_encoding.t =
 let purposes_of_mode mode : Purpose.t list =
   match mode with
   | Observer -> []
-  | Batcher -> [Batching]
-  | Accuser -> [Operating]
-  | Bailout -> [Operating; Cementing; Recovering]
-  | Maintenance -> [Operating; Cementing; Executing_outbox]
-  | Operator -> [Operating; Cementing; Executing_outbox; Batching]
+  | Batcher -> [Purpose Batching]
+  | Accuser -> [Purpose Operating]
+  | Bailout -> [Purpose Operating; Purpose Cementing; Purpose Recovering]
+  | Maintenance ->
+      [Purpose Operating; Purpose Cementing; Purpose Executing_outbox]
+  | Operator ->
+      [
+        Purpose Operating;
+        Purpose Cementing;
+        Purpose Executing_outbox;
+        Purpose Batching;
+      ]
   | Custom op_kinds -> Purpose.of_operation_kind op_kinds
 
 let operation_kinds_of_mode mode =
