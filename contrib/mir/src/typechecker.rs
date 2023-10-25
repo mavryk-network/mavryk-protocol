@@ -274,6 +274,7 @@ fn typecheck_instruction(
         }
         (I::Le, [.., t]) => no_overload!(LE, TypesNotEqual(T::Int, t.clone())),
         (I::Le, []) => no_overload!(LE, len 1),
+
         (I::If(nested_t, nested_f), [.., T::Bool]) => {
             // pop the bool off the stack
             pop!();
@@ -444,6 +445,7 @@ fn typecheck_instruction(
         (I::Update(..), [] | [_] | [_, _]) => no_overload!(UPDATE, len 3),
 
         (I::Seq(nested), ..) => I::Seq(typecheck(nested, ctx, opt_stack)?),
+        (I::MacroSeq(nested), ..) => I::MacroSeq(typecheck(nested, ctx, opt_stack)?),
     })
 }
 

@@ -297,6 +297,7 @@ fn interpret_one(
             }
         },
         I::Seq(nested) => interpret(nested, ctx, stack)?,
+        I::MacroSeq(nested) => interpret(nested, ctx, stack)?,
     }
     Ok(())
 }
