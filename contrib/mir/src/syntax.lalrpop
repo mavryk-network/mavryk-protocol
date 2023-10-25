@@ -11,6 +11,7 @@
 
 use crate::ast::*;
 use crate::parser::{ParserError, ContractScriptEntity, validate_u10};
+use crate::parser::macros::expand_macro;
 use crate::lexer::{LexerError, Prim, PrimWithTzt, TztPrim as TzP, Tok};
 use crate::typechecker as TC;
 use crate::tzt::*;
@@ -35,6 +36,7 @@ extern {
         number => Tok::Number(<i128>),
         string => Tok::String(<String>),
         ann => Tok::Annotation,
+        macro => Tok::Prim(PrimWithTzt::Macro(<String>)),
         "parameter" => Tok::Prim(PT::Prim(Prim::parameter)),
         "storage" => Tok::Prim(PT::Prim(Prim::storage)),
         "code" => Tok::Prim(PT::Prim(Prim::code)),
@@ -193,6 +195,9 @@ instruction: ParsedInstruction = {
   "DUP" anns <u10> => Dup(Some(<>)),
   "IF_NONE" anns <instructionBlock> <instructionBlock> => IfNone(<>),
   "NIL" anns <type_expr> => Nil(<>),
+  <m:macro> anns <a:instructionBlock> <b:instructionBlock> =>? expand_macro(&m, &mut Some(a), &mut Some(b)).map(Instruction::MacroSeq).map_err(Into::into),
+  <m:macro> anns <a:instructionBlock> =>? expand_macro(&m, &mut Some(a), &mut None).map(Instruction::MacroSeq).map_err(Into::into),
+  <m:macro> anns =>? expand_macro(&m, &mut None, &mut None).map(Instruction::MacroSeq).map_err(Into::into),
   instructionBlock => Instruction::Seq(<>),
 }
 

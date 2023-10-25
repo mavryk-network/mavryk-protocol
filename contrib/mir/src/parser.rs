@@ -5,11 +5,15 @@
 /*                                                                            */
 /******************************************************************************/
 
+pub mod macros;
+
 use crate::ast::*;
 use crate::lexer::{LexerError, Prim, Tok};
 use crate::syntax;
 use lalrpop_util::ParseError;
 use logos::Logos;
+use macros::MacroError;
+use std::convert::TryFrom;
 
 #[derive(Debug, PartialEq, Eq, thiserror::Error)]
 pub enum ParserError {
@@ -21,6 +25,8 @@ pub enum ParserError {
     NoField(Prim),
     #[error("duplicate {0} field")]
     DuplicateField(Prim),
+    #[error(transparent)]
+    MacroError(#[from] MacroError),
 }
 
 #[allow(dead_code)]
