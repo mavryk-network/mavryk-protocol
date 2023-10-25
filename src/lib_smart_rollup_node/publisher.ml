@@ -330,7 +330,7 @@ let recover_bond node_ctxt =
   | None ->
       (* No known operator to recover bond for. *)
       return_unit
-  | Some committer -> inject_recover_bond node_ctxt committer
+  | Some (Single committer) -> inject_recover_bond node_ctxt committer
 
 (* Commitments can only be cemented after [sc_rollup_challenge_window] has
    passed since they were first published. *)
@@ -507,7 +507,7 @@ let start_in_mode mode =
   match mode with
   | Maintenance | Operator | Bailout -> true
   | Observer | Accuser | Batcher -> false
-  | Custom ops -> purpose_matches_mode (Custom ops) Operating
+  | Custom ops -> purpose_matches_mode (Custom ops) (Purpose Operating)
 
 let init (node_ctxt : _ Node_context.t) =
   let open Lwt_result_syntax in

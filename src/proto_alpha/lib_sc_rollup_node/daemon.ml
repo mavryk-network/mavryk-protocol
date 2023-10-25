@@ -341,8 +341,8 @@ let maybe_recover_bond node_ctxt =
   if Node_context.is_bailout node_ctxt then
     let operator = Node_context.get_operator node_ctxt Purpose.Operating in
     match operator with
-    | None -> tzfail (Purpose.Missing_operator Operating)
-    | Some operating_pkh -> (
+    | None -> tzfail (Purpose.Missing_operator (Purpose Operating))
+    | Some (Single operating_pkh) -> (
         let*! staked_on_commitment =
           RPC.Sc_rollup.staked_on_commitment
             (new Protocol_client_context.wrap_full node_ctxt.cctxt)
@@ -384,16 +384,25 @@ let run node_ctxt configuration
   in
   let start () =
     let signers =
-      Purpose.Map.bindings node_ctxt.config.operators
+      Purpose.Map.bindings (Purpose.operators_to_map node_ctxt.config.operators)
       |> List.fold_left
            (fun acc (operation_kind, operator) ->
-             let operation_kinds = Purpose.operation_kind operation_kind in
-             let operation_kinds =
-               match Signature.Public_key_hash.Map.find operator acc with
-               | None -> operation_kinds
-               | Some kinds -> operation_kinds @ kinds
+             let operator_list =
+               match operator with
+               | Purpose.Operator (Single operator) -> [operator]
+               | Operator (Multiple operators) -> operators
              in
-             Signature.Public_key_hash.Map.add operator operation_kinds acc)
+             List.fold_left
+               (fun acc operator ->
+                 let operation_kinds = Purpose.operation_kind operation_kind in
+                 let operation_kinds =
+                   match Signature.Public_key_hash.Map.find operator acc with
+                   | None -> operation_kinds
+                   | Some kinds -> operation_kinds @ kinds
+                 in
+                 Signature.Public_key_hash.Map.add operator operation_kinds acc)
+               acc
+               operator_list)
            Signature.Public_key_hash.Map.empty
       |> Signature.Public_key_hash.Map.bindings
       |> List.map (fun (operator, operation_kinds) ->
@@ -424,9 +433,9 @@ let run node_ctxt configuration
         ~allowed_attempts:configuration.injector.attempts
     in
     let* () =
-      match Purpose.Map.find Batching node_ctxt.config.operators with
+      match Node_context.get_operator node_ctxt Batching with
       | None -> return_unit
-      | Some signer ->
+      | Some (Single signer) ->
           Components.Batcher.init configuration.batcher ~signer node_ctxt
     in
     Lwt.dont_wait
@@ -592,9 +601,17 @@ let run
     (* Check that the operators are valid keys. *)
     Purpose.Map.iter_es
       (fun _purpose operator ->
-        let+ _pkh, _pk, _skh = Client_keys.get_key cctxt operator in
-        ())
-      configuration.operators
+        let operator_list =
+          match operator with
+          | Purpose.Operator (Single operator) -> [operator]
+          | Operator (Multiple operators) -> operators
+        in
+        List.iter_es
+          (fun operator ->
+            let* _alias, _pk, _sk_uri = Client_keys.get_key cctxt operator in
+            return_unit)
+          operator_list)
+      (Purpose.operators_to_map configuration.operators)
   in
   let*! () = Event.waiting_first_block Protocol.hash in
   let* l1_ctxt =
@@ -611,7 +628,7 @@ let run
     Layer1.fetch_tezos_shell_header l1_ctxt head.header.predecessor
   in
   let*! () = Event.received_first_block head.hash Protocol.hash in
-  let publisher = Purpose.Map.find Operating configuration.operators in
+  let publisher = Purpose.find_operator Operating configuration.operators in
   let* constants = Layer1_helpers.retrieve_constants cctxt
   and* genesis_info =
     Layer1_helpers.retrieve_genesis_info cctxt configuration.sc_rollup_address
@@ -621,9 +638,12 @@ let run
       configuration.sc_rollup_address
   and* lpc =
     Option.filter_map_es
-      (Layer1_helpers.get_last_published_commitment
-         cctxt
-         configuration.sc_rollup_address)
+      (function
+        | Purpose.Single operator ->
+            Layer1_helpers.get_last_published_commitment
+              cctxt
+              configuration.sc_rollup_address
+              operator)
       publisher
   and* kind = Layer1_helpers.get_kind cctxt configuration.sc_rollup_address
   and* last_whitelist_update =

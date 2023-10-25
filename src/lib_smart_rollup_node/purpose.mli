@@ -8,14 +8,29 @@
 
 (** Purposes for operators, indicating their role and thus the kinds of
     operations that they sign. *)
-type t = Operating | Batching | Cementing | Recovering | Executing_outbox
+type 'a purpose_kind =
+  | Operating : Signature.public_key_hash purpose_kind
+  | Batching : Signature.public_key_hash purpose_kind
+  | Cementing : Signature.public_key_hash purpose_kind
+  | Recovering : Signature.public_key_hash purpose_kind
+  | Executing_outbox : Signature.public_key_hash purpose_kind
+
+type t = Purpose : 'a purpose_kind -> t
 
 (** List of possible purposes for operator specialization. *)
 val all : t list
 
 module Map : Map.S with type key = t
 
-type operators = Signature.Public_key_hash.t Map.t
+type 'a operator =
+  | Single : Signature.public_key_hash -> Signature.public_key_hash operator
+  | Multiple :
+      Signature.public_key_hash list
+      -> Signature.public_key_hash list operator
+
+type ex_operator = Operator : 'a operator -> ex_operator
+
+type operators = private ex_operator Map.t
 
 type error +=
   | Missing_operator of t
@@ -66,3 +81,18 @@ val operation_kind : t -> Operation_kind.t list
 (** For a list of operation kind, it returns a list of associated
     purpose. *)
 val of_operation_kind : Operation_kind.t list -> t list
+
+(** [find_operator purpose operators] returns the {operator} for the
+    [purpose] from the [operator]. The {`kind} type is to know if this
+    purpose allows only one or multiple operators. *)
+val find_operator : 'kind purpose_kind -> operators -> 'kind operator option
+
+(** [mem_operator operator operators] checks of [operator] is part of
+    any purpose in [operators]. *)
+val mem_operator : Signature.public_key_hash -> operators -> bool
+
+(** function to bypass the private type. The opposite is not exposed
+    so we don't risk corrupting the map with invalid ['kind1
+    purpose_kind -> 'kind2 operator] mapping where ['kind1 <>
+    'kind2] *)
+val operators_to_map : operators -> ex_operator Map.t
