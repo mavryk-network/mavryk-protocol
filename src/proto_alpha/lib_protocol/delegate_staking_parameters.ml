@@ -63,6 +63,35 @@ let register_update ctxt delegate t =
   in
   return ctxt
 
+(* TODO: register the error *)
+type error += Delegate_allowing_staking_cannot_autostake
+
+let allows_stakers ~(staking_parameters : Staking_parameters_repr.t) =
+  Compare.Int32.(staking_parameters.limit_of_staking_over_baking_millionth > 0l)
+
+let set_autostaking ctxt ~delegate ~autostake =
+  let open Lwt_result_syntax in
+  let* staking_parameters = of_delegate ctxt delegate in
+  if allows_stakers ~staking_parameters then
+    tzfail Delegate_allowing_staking_cannot_autostake
+  else
+    let*! ctxt =
+      Storage.Contract.Autostaking_flag.add
+        ctxt
+        (Contract_repr.Implicit delegate)
+        autostake
+    in
+    return ctxt
+
+let is_autostaking ctxt ~delegate =
+  let open Lwt_result_syntax in
+  let* flag =
+    Storage.Contract.Autostaking_flag.find
+      ctxt
+      (Contract_repr.Implicit delegate)
+  in
+  match flag with None -> return_false | Some flag -> return flag
+
 let activate ctxt ~new_cycle =
   let open Lwt_syntax in
   let* ctxt =
@@ -71,6 +100,12 @@ let activate ctxt ~new_cycle =
       ~order:`Undefined
       ~init:ctxt
       ~f:(fun delegate t ctxt ->
+        let* ctxt =
+          (* Allowing stakers deactivates autostaking *)
+          if allows_stakers ~staking_parameters:t then
+            Storage.Contract.Autostaking_flag.add ctxt delegate false
+          else return ctxt
+        in
         Storage.Contract.Staking_parameters.add ctxt delegate t)
   in
   Storage.Pending_staking_parameters.clear (ctxt, new_cycle)

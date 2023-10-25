@@ -39,6 +39,24 @@ val register_update :
   Staking_parameters_repr.t ->
   Raw_context.t tzresult Lwt.t
 
+(** Changes autostaking status.
+
+    It can fail if [delegate] is not a delegate or if it allows staking from
+    delegators
+*)
+val set_autostaking :
+  Raw_context.t ->
+  delegate:Signature.Public_key_hash.t ->
+  autostake:bool ->
+  Raw_context.t tzresult Lwt.t
+
+(** Return a boolean that tells if the delegate is set for autostaking.
+
+    It returns false if no value was set.
+*)
+val is_autostaking :
+  Raw_context.t -> delegate:Signature.Public_key_hash.t -> bool tzresult Lwt.t
+
 (** Maintenance of staking parameters at the beginning of cycle [new_cycle].
     This function iterates on all registered delegates. *)
 val activate : Raw_context.t -> new_cycle:Cycle_repr.t -> Raw_context.t Lwt.t
