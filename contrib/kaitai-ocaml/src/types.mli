@@ -157,7 +157,7 @@ end
 
 (** For a reference implementation {{:https://github.com/kaitai-io/kaitai_struct_compiler/blob/master/shared/src/main/scala/io/kaitai/struct/format/EnumSpec.scala} see}.*)
 module EnumSpec : sig
-  type t = {path : string list; map : (int * EnumValueSpec.t) list}
+  type t = {map : (int * EnumValueSpec.t) list}
 end
 
 module MetaSpec : sig
@@ -165,7 +165,6 @@ module MetaSpec : sig
 
   (** [t] defines the meta section of Kaitai specification file. *)
   type t = {
-    path : string list;
     isOpaque : bool;
     id : string option;
     endian : Endianness.t option;
@@ -267,7 +266,6 @@ and AttrSpec : sig
 
   (** [t] is a single element inside [ClassSpec.t.seq]. *)
   type t = {
-    path : string list;
     id : Identifier.t;
     dataType : DataType.t;
     cond : ConditionalSpec.t;
@@ -289,7 +287,6 @@ and InstanceSpec : sig
   and descr =
     | ValueInstanceSpec of {
         id : InstanceIdentifier.t;
-        path : string list;
         value : Ast.expr;
         ifExpr : Ast.expr option;
         dataTypeOpt : DataType.t option;
@@ -299,12 +296,7 @@ end
 
 (** For a reference implementation {{:https://github.com/kaitai-io/kaitai_struct_compiler/blob/master/shared/src/main/scala/io/kaitai/struct/format/ParamDefSpec.scala} see}. *)
 and ParamDefSpec : sig
-  type t = {
-    path : string list;
-    id : Identifier.t;
-    dataType : DataType.t;
-    doc : DocSpec.t;
-  }
+  type t = {id : Identifier.t; dataType : DataType.t; doc : DocSpec.t}
 end
 
 and ClassSpec : sig
@@ -313,7 +305,6 @@ and ClassSpec : sig
   (** [t] is an outermost type that describes Kaitai Struct specification files. *)
   type t = {
     fileName : string option;
-    path : string list;
     isTopLevel : bool;
         (** if [isTopLevel class_spec] is true, we have a corresponding meta section. *)
     meta : MetaSpec.t;

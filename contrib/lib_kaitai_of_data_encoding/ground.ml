@@ -19,7 +19,6 @@ module Enum = struct
     ( "bool",
       EnumSpec.
         {
-          path = [];
           map =
             [
               ( 0,

@@ -26,7 +26,6 @@ let cond_no_cond =
 let default_attr_spec ~id =
   AttrSpec.
     {
-      path = [];
       id;
       dataType = DataType.AnyType;
       cond = cond_no_cond;
@@ -39,7 +38,6 @@ let default_attr_spec ~id =
 let default_meta_spec ~id =
   MetaSpec.
     {
-      path = [];
       isOpaque = false;
       id = Some id;
       endian = Some `BE;
@@ -55,7 +53,6 @@ let default_class_spec ~id ?description () =
   ClassSpec.
     {
       fileName = None;
-      path = [];
       meta = default_meta_spec ~id;
       isTopLevel = false;
       doc = {default_doc_spec with summary = description};
@@ -91,7 +88,7 @@ let default_instance_spec ~id value =
       doc = default_doc_spec;
       descr =
         InstanceSpec.ValueInstanceSpec
-          {id; path = []; value; ifExpr = None; dataTypeOpt = None};
+          {id; value; ifExpr = None; dataTypeOpt = None};
     }
 
 let merge_summaries attr summary =

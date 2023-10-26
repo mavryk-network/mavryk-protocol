@@ -38,7 +38,7 @@ let keys m f =
       match k with `Scalar {value; _} -> f value v | _ -> raise Error)
     m.m_members
 
-let parse ?file ?(path = []) s =
+let parse ?file s =
   let rec classSpec ?(isTopLevel = false) yaml =
     let m = mapping yaml in
     let meta =
@@ -51,7 +51,6 @@ let parse ?file ?(path = []) s =
       in
       MetaSpec.
         {
-          path = [];
           isOpaque = false;
           id;
           endian = None;
@@ -137,16 +136,7 @@ let parse ?file ?(path = []) s =
                    | Some e -> Some (expression e)
                  in
                  AttrSpec.
-                   {
-                     path = [];
-                     id;
-                     dataType;
-                     cond;
-                     valid;
-                     doc = empty_doc;
-                     enum;
-                     size;
-                   })
+                   {id; dataType; cond; valid; doc = empty_doc; enum; size})
     in
 
     let doc = empty_doc in
@@ -171,7 +161,6 @@ let parse ?file ?(path = []) s =
       {
         fileName = file;
         isTopLevel;
-        path;
         meta;
         doc;
         toStringExpr = None;
@@ -185,7 +174,7 @@ let parse ?file ?(path = []) s =
   and enumSpec yaml =
     let m = mapping yaml in
     let map = keys m (fun k v -> (int_of_string k, enumValueSpec v)) in
-    {path = []; map}
+    {map}
   and enumValueSpec yaml =
     match yaml with
     | `Scalar {value; _} -> EnumValueSpec.{name = value; doc = empty_doc}

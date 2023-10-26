@@ -165,12 +165,11 @@ module EnumValueSpec = struct
 end
 
 module EnumSpec = struct
-  type t = {path : string list; map : (int * EnumValueSpec.t) list}
+  type t = {map : (int * EnumValueSpec.t) list}
 end
 
 module MetaSpec = struct
   type t = {
-    path : string list;
     isOpaque : bool;
     id : string option;
     endian : Endianness.t option;
@@ -364,7 +363,6 @@ and AttrSpec : sig
   end
 
   type t = {
-    path : string list;
     id : Identifier.t;
     dataType : DataType.t;
     cond : ConditionalSpec.t;
@@ -379,7 +377,6 @@ end = struct
   end
 
   type t = {
-    path : string list;
     id : Identifier.t;
     dataType : DataType.t;
     cond : ConditionalSpec.t;
@@ -396,7 +393,6 @@ and InstanceSpec : sig
   and descr =
     | ValueInstanceSpec of {
         id : InstanceIdentifier.t;
-        path : string list;
         value : Ast.expr;
         ifExpr : Ast.expr option;
         dataTypeOpt : DataType.t option;
@@ -408,7 +404,6 @@ end = struct
   and descr =
     | ValueInstanceSpec of {
         id : InstanceIdentifier.t;
-        path : string list;
         value : Ast.expr;
         ifExpr : Ast.expr option;
         dataTypeOpt : DataType.t option;
@@ -417,25 +412,14 @@ end = struct
 end
 
 and ParamDefSpec : sig
-  type t = {
-    path : string list;
-    id : Identifier.t;
-    dataType : DataType.t;
-    doc : DocSpec.t;
-  }
+  type t = {id : Identifier.t; dataType : DataType.t; doc : DocSpec.t}
 end = struct
-  type t = {
-    path : string list;
-    id : Identifier.t;
-    dataType : DataType.t;
-    doc : DocSpec.t;
-  }
+  type t = {id : Identifier.t; dataType : DataType.t; doc : DocSpec.t}
 end
 
 and ClassSpec : sig
   type t = {
     fileName : string option;
-    path : string list;
     isTopLevel : bool;
     meta : MetaSpec.t;
     doc : DocSpec.t;
@@ -449,7 +433,6 @@ and ClassSpec : sig
 end = struct
   type t = {
     fileName : string option;
-    path : string list;
     isTopLevel : bool;
     meta : MetaSpec.t;
     doc : DocSpec.t;
