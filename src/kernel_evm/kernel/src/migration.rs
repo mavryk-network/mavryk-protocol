@@ -18,8 +18,8 @@ use rlp::{Decodable, DecoderError, Rlp};
 use tezos_ethereum::block::L2Block;
 use tezos_ethereum::eth_gen::OwnedHash;
 use tezos_ethereum::transaction::{
-    TransactionHash, TransactionObject, TransactionReceipt, TransactionStatus,
-    TransactionType, TRANSACTION_HASH_SIZE,
+    IndexedLog, TransactionHash, TransactionObject, TransactionReceipt,
+    TransactionStatus, TransactionType, TRANSACTION_HASH_SIZE,
 };
 use tezos_ethereum::{
     rlp_helpers::*,
@@ -359,7 +359,13 @@ fn migrate_one_receipt<Host: Runtime>(
     let bytes = host.store_read_all(&path)?;
     host.store_delete(&path)?;
     // Read old receipt
-    let old_receipt = OldTransactionReceipt::from_rlp_bytes(&bytes)?;
+    let mut old_receipt = OldTransactionReceipt::from_rlp_bytes(&bytes)?;
+    // Mock the indexing of logs
+    let logs = old_receipt
+        .logs
+        .drain(..)
+        .map(|log| IndexedLog { log, index: 0u64 })
+        .collect();
     let new_receipt = TransactionReceipt {
         hash: old_receipt.hash,
         index: old_receipt.index,
@@ -370,7 +376,7 @@ fn migrate_one_receipt<Host: Runtime>(
         effective_gas_price: old_receipt.effective_gas_price,
         gas_used: old_receipt.gas_used,
         contract_address: old_receipt.contract_address,
-        logs: old_receipt.logs,
+        logs,
         logs_bloom: old_receipt.logs_bloom,
         type_: old_receipt.type_,
         status: old_receipt.status,
