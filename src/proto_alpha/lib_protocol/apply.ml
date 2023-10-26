@@ -48,6 +48,7 @@ type error +=
   | Stake_modification_with_no_delegate_set
   | Invalid_nonzero_transaction_amount of Tez.t
   | Invalid_staking_parameters_sender
+  | Invalid_autostaking_sender
 
 let () =
   let description =
@@ -293,7 +294,17 @@ let () =
     ~pp:(fun ppf () -> Format.fprintf ppf "Invalid staking parameters sender")
     Data_encoding.empty
     (function Invalid_staking_parameters_sender -> Some () | _ -> None)
-    (fun () -> Invalid_staking_parameters_sender)
+    (fun () -> Invalid_staking_parameters_sender) ;
+  register_error_kind
+    `Permanent
+    ~id:"operations.invalid_autostaking_sender"
+    ~title:"Invalid autostaking sender"
+    ~description:"The autostaking parameters can only be set by delegates."
+    ~pp:(fun ppf () ->
+      Format.fprintf ppf "Invalid autostaking parameters sender")
+    Data_encoding.empty
+    (function Invalid_autostaking_sender -> Some () | _ -> None)
+    (fun () -> Invalid_autostaking_sender)
 
 open Apply_results
 open Apply_operation_result
