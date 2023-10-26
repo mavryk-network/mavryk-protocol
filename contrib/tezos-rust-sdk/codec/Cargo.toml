@@ -13,12 +13,12 @@ tezos-core = { path = "../tezos-core" }
 tezos-rpc = { path = "../tezos-rpc", default-features = false }
 tezos-michelson = { path = "../tezos-michelson" }
 tezos-operation = { path = "../tezos-operation" }
+kaitai_struct = { path = "../kaitai_struct" }
 
 [dev-dependencies]
 tokio = { version = "1.19", features = ["macros"] }
 httpmock = { version = "0.6" }
 kaitai = "0.1.2"
-
 
 [features]
 default = [ "tezos-rpc/default" ]

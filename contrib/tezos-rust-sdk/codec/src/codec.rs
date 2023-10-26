@@ -15,6 +15,20 @@ use tezos_core::types::number::Int;
 use tezos_core::types::number::Nat;
 use tezos_core::Error;
 
+// use kaitai_struct::*;
+use kaitai_struct::KaitaiStruct;
+mod ground__bool;
+
+fn _plop () {
+    // let _x : kaitai_struct::kaitai_struct::GroundBool = TRUE;
+    // let _x : <dyn kaitai_struct::KaitaiStruct>::GroundBool = TRUE;
+    // let _x : <dyn KaitaiStruct as Trait>::GroundBool = true;
+    // let _x : <dyn KaitaiStruct as GroundBool>::GroundBool = true;
+    // let _x : GroundBool::GroundBool = true;
+
+    return;
+}
+
 fn is_case_contract(args: &Vec<String>) -> bool {
     return args.len() >= 5
         && (args[2] == "005-PsBabyM1.contract"
