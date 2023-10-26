@@ -19,6 +19,7 @@
   mockup. (!10427)
 - The binary `evm-proxy-server` is renamed to `evm-node`. (!10656)
 - Renamed node's argument `mode` to `version`. (!10657)
+- Add support for `eth_getLogs`. (!10624)
 
 ### Bug fixes
 
