@@ -1959,7 +1959,8 @@ module Slashing = struct
       ~activate_ai:true
       constants
       ["delegate"; "bootstrap1"; "bootstrap2"]
-    --> next_cycle
+    --> (Tag "No AI" --> next_cycle
+        |+ Tag "Yes AI" --> next_block --> wait_ai_activation)
     --> (Tag "double baking" --> double_bake "delegate"
         |+ Tag "double attesting" --> double_attest "delegate"
         |+ Tag "double preattesting" --> double_preattest "delegate")
