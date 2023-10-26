@@ -380,24 +380,27 @@ module State = struct
   let apply_slashing
       ( culprit,
         Protocol.Denunciations_repr.{rewarded; misbehaviour; misbehaviour_cycle}
-      ) current_cycle (state : t) : t =
-    let account_map =
+      ) current_cycle (state : t) : t * Tez.t =
+    let account_map, total_burnt =
       apply_slashing
         (culprit, {rewarded; misbehaviour; misbehaviour_cycle})
         current_cycle
         state.constants
         state.account_map
     in
-    {state with account_map}
+    ({state with account_map}, total_burnt)
 
   let apply_all_slashes_at_cycle_end current_cycle (state : t) : t =
-    let state =
+    let state, total_burnt =
       List.fold_left
-        (fun acc_state x -> apply_slashing x current_cycle acc_state)
-        state
+        (fun (acc_state, acc_total) x ->
+          let state, burnt = apply_slashing x current_cycle acc_state in
+          (state, Tez.(acc_total +! burnt)))
+        (state, Tez.zero)
         state.pending_slashes
     in
-    {state with pending_slashes = []}
+    let total_supply = Tez.(state.total_supply -! total_burnt) in
+    {state with pending_slashes = []; total_supply}
 
   (** Given an account name and new account state, updates [state] accordingly
       Preferably use other specific update functions *)

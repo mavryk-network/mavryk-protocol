@@ -812,7 +812,10 @@ let apply_slashing
   let account_map =
     add_liquid_rewards reward_to_snitch rewarded_name account_map
   in
-  account_map
+  let actual_total_burnt_amount =
+    Tez.(total_burnt_amount -! reward_to_snitch)
+  in
+  (account_map, actual_total_burnt_amount)
 
 (* Given cycle is the cycle for which the rights are computed, usually current + preserved cycles *)
 let update_frozen_rights_cycle cycle account_map =
