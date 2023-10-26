@@ -7,6 +7,9 @@
 
 type t = {rollup_address : Address.t; context_version : Context.Version.t}
 
+(** Path of metadata file. *)
+val path : dir:string -> string
+
 (** Read the metadata file from [dir]. *)
 val read_metadata_file : dir:string -> t option tzresult Lwt.t
 
