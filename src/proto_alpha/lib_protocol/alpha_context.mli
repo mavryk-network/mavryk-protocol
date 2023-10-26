@@ -2356,6 +2356,15 @@ module Delegate : sig
       Staking_parameters_repr.t ->
       context tzresult Lwt.t
 
+    val set_autostaking :
+      context ->
+      delegate:Signature.public_key_hash ->
+      autostake:bool ->
+      context tzresult Lwt.t
+
+    val is_autostaking :
+      context -> delegate:Signature.public_key_hash -> bool tzresult Lwt.t
+
     val of_delegate :
       context ->
       Signature.Public_key_hash.t ->
