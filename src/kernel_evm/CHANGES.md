@@ -21,6 +21,7 @@
 
 - The internal kernel version is now automatically updated at each upgrade. (!10321)
 - Genesis parent hash is 0xff..ff, all parent hashes are now unique. (!10332)
+- Transaction's log indices correspond to the position in the block. (!10615)
 
 ### Breaking changes
 
