@@ -422,28 +422,17 @@ module State = struct
   let pop_pending_operations state =
     ({state with pending_operations = []}, state.pending_operations)
 
-  (** When reaching a new cycle: apply unstakes and parameters changes.
-    We expect these changes after applying the last block of a cycle *)
-  let apply_end_cycle new_cycle state : t =
-    let previous_cycle =
-      Cycle.pred new_cycle |> Option.value ~default:Cycle.root
-    in
-    let unstake_wait = unstake_wait state in
+  (** Applies when baking the last block of a cycle *)
+  let apply_end_cycle current_cycle state : t =
     (* Apply all slashes *)
-    let state = apply_all_slashes_at_cycle_end previous_cycle state in
+    let state = apply_all_slashes_at_cycle_end current_cycle state in
     (* Sets initial frozen for future cycle *)
     let state =
       update_map
         ~f:
           (update_frozen_rights_cycle
-             (Cycle.add previous_cycle state.constants.preserved_cycles))
+             (Cycle.add current_cycle state.constants.preserved_cycles))
         state
-    in
-    (* Prepare finalizable unstakes *)
-    let state =
-      match Cycle.sub new_cycle unstake_wait with
-      | None -> state
-      | Some cycle -> apply_unslashable cycle state
     in
     (* Apply parameter changes *)
     let state, param_requests =
@@ -461,6 +450,19 @@ module State = struct
         state.param_requests
     in
     {state with param_requests}
+
+  (** Applies when baking the first block of a cycle.
+      Technically nothing special happens, but we need to update the unslashable unstakes
+      since it's done lazily *)
+  let apply_new_cycle new_cycle state : t =
+    let unstake_wait = unstake_wait state in
+    (* Prepare finalizable unstakes *)
+    let state =
+      match Cycle.sub new_cycle unstake_wait with
+      | None -> state
+      | Some cycle -> apply_unslashable cycle state
+    in
+    state
 
   (* end module State *)
 end
@@ -737,7 +739,12 @@ let bake ?baker : t -> t tzresult Lwt.t =
       return (block, state)
     else return (block', state)
   in
-  (* TODO: mistake ? The baking parameters apply before we reach the new cycle... *)
+  (* Dawn of a new cycle *)
+  let* state =
+    if not (Block.last_block_of_cycle block) then return state
+    else return @@ State.apply_end_cycle current_cycle state
+  in
+  (* First block of a new cycle *)
   let new_current_cycle = Block.current_cycle block in
   let* state =
     if Protocol.Alpha_context.Cycle.(current_cycle = new_current_cycle) then
@@ -747,7 +754,7 @@ let bake ?baker : t -> t tzresult Lwt.t =
         ~color:time_color
         "Cycle %d"
         (Protocol.Alpha_context.Cycle.to_int32 new_current_cycle |> Int32.to_int) ;
-      return @@ State.apply_end_cycle new_current_cycle state)
+      return @@ State.apply_new_cycle new_current_cycle state)
   in
   let* state = apply_rewards ~baker:baker_name block state in
   return (block, state)
