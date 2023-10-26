@@ -247,6 +247,8 @@ module Make (Parameters : PARAMETERS) = struct
         (** The client context which is used to perform the injections. *)
     l1_ctxt : Layer_1.t;  (** Monitoring of L1 heads.  *)
     signer : signer list;  (** The signers for this worker. *)
+    signer_index_max_bound : int;
+    mutable signer_index : int;  (** Next index to use for the signer list. *)
     tags : Tags.t;
         (** The tags of this worker, for both informative and identification
           purposes. *)
@@ -401,11 +403,15 @@ module Make (Parameters : PARAMETERS) = struct
     let proto_client =
       Inj_proto.proto_client_for_protocol head_protocols.next_protocol
     in
+    let signer_index = 0 in
+    let signer_index_max_bound = List.length signer in
     return
       {
         cctxt = injector_context (cctxt :> #Client_context.full);
         l1_ctxt;
         signer;
+        signer_index_max_bound;
+        signer_index;
         tags;
         strategy;
         save_dir = data_dir;
@@ -602,6 +608,22 @@ module Make (Parameters : PARAMETERS) = struct
     let total = List.length ops in
     if total <= 1 then None else Some (List.take_n (total / 2) ops)
 
+  let get_signer {signer; signer_index; _} =
+    let open Result_syntax in
+    match List.nth signer signer_index with
+    | Some signer -> return signer
+    | None -> tzfail (error_of_fmt "no key found for this index")
+
+  let get_signer_and_inc_index
+      ({signer_index_max_bound; signer_index; _} as state) =
+    let open Result_syntax in
+    let* signer = get_signer state in
+    let next_signer_index = Int.succ signer_index in
+    state.signer_index <-
+      (if next_signer_index >= signer_index_max_bound then 0
+      else next_signer_index) ;
+    return signer
+
   (** [simulate_operations ~must_succeed state operations] simulates the
       injection of [operations] and returns a triple [(op, ops, results)] where
       [op] is the packed operation with the adjusted limits, [ops] is the prefix
@@ -611,11 +633,7 @@ module Make (Parameters : PARAMETERS) = struct
   let rec simulate_operations ~must_succeed state
       (operations : Inj_operation.t list) =
     let open Lwt_result_syntax in
-    let signer =
-      match state.signer with
-      | signer :: _ -> signer
-      | [] -> assert false (*there is always at least a signer per worker*)
-    in
+    let*? signer = get_signer state in
     let force =
       match operations with
       | [] -> assert false
@@ -701,11 +719,7 @@ module Make (Parameters : PARAMETERS) = struct
 
   let inject_on_node state ~nb (module Unsigned_op : Proto_unsigned_op) =
     let open Lwt_result_syntax in
-    let signer =
-      match state.signer with
-      | signer :: _ -> signer
-      | [] -> assert false (*there is always at least a signer per worker*)
-    in
+    let*? signer = get_signer_and_inc_index state in
     let* signed_op_bytes =
       Unsigned_op.Proto_client.sign_operation
         state.cctxt
@@ -841,10 +855,11 @@ module Make (Parameters : PARAMETERS) = struct
         in
         `Ignored operations_to_drop
 
-  (** [inject_pending_operations state ~size_limit ()] injects
-    operations from the pending queue [state.pending], whose total size does
-    not exceed [size_limit]. Upon successful injection, the
-    operations are removed from the queue and marked as injected. *)
+  (** [inject_pending_operations state ?size_limit ()] injects
+      operations from the pending queue [state.pending], whose total
+      size does not exceed [size_limit]. Upon successful injection,
+      the operations are removed from the queue and marked as
+      injected. *)
   let inject_pending_operations state
       ?(size_limit =
         let module Proto_client = (val state.proto_client) in
@@ -872,8 +887,8 @@ module Make (Parameters : PARAMETERS) = struct
       | Some {level; _} -> return level
     in
     match operations_to_inject with
-    | [] -> return_unit
-    | _ -> (
+    | [] -> return `Stop
+    | _ ->
         let*! () =
           Event.(emit1 injecting_pending)
             state
@@ -891,35 +906,49 @@ module Make (Parameters : PARAMETERS) = struct
         let* res =
           ignore_ignorable_failing_operations state operations_to_inject res
         in
-        match res with
-        | `Injected (oph, injected_operations) ->
-            (* Injection succeeded, remove from pending and add to injected *)
-            let* () =
-              List.iter_es
-                (fun (_index, op) ->
-                  Op_queue.remove state.queue op.Inj_operation.hash)
-                injected_operations
-            in
-            add_injected_operations
-              state
-              oph
-              ~injection_level
-              injected_operations
-        | `Ignored operations_to_drop ->
-            (* Injection failed but we ignore the failure. *)
-            let*! () =
-              Event.(emit1 dropped_operations)
+        let* () =
+          match res with
+          | `Injected (oph, injected_operations) ->
+              (* Injection succeeded, remove from pending and add to injected *)
+              let* () =
+                List.iter_es
+                  (fun (_index, op) ->
+                    Op_queue.remove state.queue op.Inj_operation.hash)
+                  injected_operations
+              in
+              add_injected_operations
                 state
-                (List.map
-                   (fun o -> o.Inj_operation.operation)
-                   operations_to_drop)
-            in
-            let* () =
+                oph
+                ~injection_level
+                injected_operations
+          | `Ignored operations_to_drop ->
+              (* Injection failed but we ignore the failure. *)
+              let*! () =
+                Event.(emit1 dropped_operations)
+                  state
+                  (List.map
+                     (fun o -> o.Inj_operation.operation)
+                     operations_to_drop)
+              in
               List.iter_es
                 (fun op -> Op_queue.remove state.queue op.Inj_operation.hash)
                 operations_to_drop
-            in
-            return_unit)
+        in
+        return `Continue
+
+  let inject_pending_operation_with_all_keys_or_no_op_left ?size_limit state =
+    let open Lwt_result_syntax in
+    let*? {pkh = stop_key; _} = get_signer state in
+    let rec aux state =
+      let* continue_or_stop = inject_pending_operations ?size_limit state () in
+      match continue_or_stop with
+      | `Stop -> return_unit
+      | `Continue ->
+          let*? {pkh = current_key; _} = get_signer state in
+          if Signature.Public_key_hash.(stop_key = current_key) then return_unit
+          else aux state
+    in
+    aux state
 
   (** Retrieve protocols of a block with a small cache. *)
   let protocols_of_block =
@@ -1177,7 +1206,7 @@ module Make (Parameters : PARAMETERS) = struct
      the pending queue. *)
   let on_inject state =
     let open Lwt_syntax in
-    let* res = inject_pending_operations state () in
+    let* res = inject_pending_operation_with_all_keys_or_no_op_left state in
     let* () =
       Event.(emit1 number_of_operations_in_queue)
         state
