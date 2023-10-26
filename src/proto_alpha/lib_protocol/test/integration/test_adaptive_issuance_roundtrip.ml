@@ -1963,14 +1963,18 @@ module Slashing = struct
     --> (Tag "double baking" --> double_bake "delegate"
         |+ Tag "double attesting" --> double_attest "delegate"
         |+ Tag "double preattesting" --> double_preattest "delegate")
-    --> (Tag "denounce same cycle" --> make_denunciations ()
-        |+ Tag "denounce next cycle" --> next_cycle --> make_denunciations ()
+    --> snapshot_balances "before slash" ["delegate"]
+    --> ((Tag "denounce same cycle" --> make_denunciations ()
+         |+ Tag "denounce next cycle" --> next_cycle --> make_denunciations ())
+         --> check_snapshot_balances "before slash"
+         --> exec_unit check_pending_slashings
+         --> next_cycle
+         --> assert_failure (check_snapshot_balances "before slash")
+         --> exec_unit check_pending_slashings
+         --> next_block
         |+ Tag "denounce too late" --> next_cycle --> next_cycle
-           --> assert_failure (make_denunciations ()))
-    --> exec_unit check_pending_slashings
-    --> next_cycle
-    --> exec_unit check_pending_slashings
-    --> next_block
+           --> assert_failure (make_denunciations ())
+           --> check_snapshot_balances "before slash")
 
   let tests =
     tests_of_scenarios @@ [("Test simple slashing", test_simple_slash)]
