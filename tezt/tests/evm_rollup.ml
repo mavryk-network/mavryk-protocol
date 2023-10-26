@@ -1106,6 +1106,62 @@ let test_l2_deploy_erc20 =
   let* () = check_nb_in_storage ~evm_setup ~address ~nth:0 ~expected:100 in
   unit
 
+let check_log_indices ~endpoint ~status ~tx indices =
+  let* receipt = Eth_cli.get_receipt ~endpoint ~tx in
+  match receipt with
+  | None ->
+      failwith "no transaction receipt, probably it hasn't been mined yet."
+  | Some r ->
+      Check.(
+        (r.status = status)
+          bool
+          ~__LOC__
+          ~error_msg:"Unexpected transaction status, expected: %R but got: %L") ;
+      let received_indices =
+        List.map (fun tx -> tx.Transaction.logIndex) r.logs
+      in
+      Check.(
+        (received_indices = indices)
+          (list int32)
+          ~__LOC__
+          ~error_msg:
+            "Unexpected transaction logs indices, expected:\n%R but got:\n%L") ;
+      unit
+
+let test_log_index =
+  Protocol.register_test
+    ~__FILE__
+    ~tags:["evm"; "log_index"]
+    ~title:"Check that log index is correctly computed"
+  @@ fun protocol ->
+  (* setup *)
+  let* ({evm_proxy_server; node; client; sc_rollup_node; _} as evm_setup) =
+    setup_past_genesis ~admin:None protocol
+  in
+  let endpoint = Evm_proxy_server.endpoint evm_proxy_server in
+  let sender = Eth_account.bootstrap_accounts.(0) in
+  (* deploy the contract *)
+  let* _address, _tx = deploy ~contract:erc20 ~sender evm_setup in
+  (* sender mints 42 and player (bootstrap 1) mints 100 *)
+  let raw_mint0 =
+    "0xf88a01843b9aca008301039194d77420f73b4612a7a99dba8c2afd30a1886b034480a4a0712d68000000000000000000000000000000000000000000000000000000000000002a820a96a01de426cd37041764ebe311adea86dee3b4fa86e9952d767a8ec5c02f2c10205aa03ecfe60d85fc7b237388bc831b29c0b5e93d06991436226fd1ee5480482057ca"
+  in
+  let raw_mint1 =
+    "0xf88980843b9aca0082c0c594d77420f73b4612a7a99dba8c2afd30a1886b034480a4a0712d680000000000000000000000000000000000000000000000000000000000000064820a95a00ca23196b68804a6ceccd551a601b7ca7deea72ee771c410741b253d7a9ee81ca07b8d2af9b05c70c193320e0342bf19ab28ae81964d8ce7aac6a7d945bb6d3703"
+  in
+  let* _requests, _receipt, hashes =
+    send_n_transactions
+      ~sc_rollup_node
+      ~node
+      ~client
+      ~evm_proxy_server
+      [raw_mint0; raw_mint1]
+  in
+  let* () =
+    check_log_indices ~endpoint ~status:true ~tx:(List.nth hashes 0) [0l]
+  in
+  check_log_indices ~endpoint ~status:true ~tx:(List.nth hashes 1) [1l]
+
 (* TODO: add internal parameters here (e.g the kernel version) *)
 type config_result = {chain_id : int64}
 
@@ -3561,7 +3617,8 @@ let register_evm_proxy_server ~protocols =
   test_rpc_getStorageAt protocols ;
   test_accounts_double_indexing protocols ;
   test_validation_result protocols ;
-  test_originate_evm_kernel_and_dump_pvm_state protocols
+  test_originate_evm_kernel_and_dump_pvm_state protocols ;
+  test_log_index protocols
 
 let register ~protocols =
   register_evm_proxy_server ~protocols ;
