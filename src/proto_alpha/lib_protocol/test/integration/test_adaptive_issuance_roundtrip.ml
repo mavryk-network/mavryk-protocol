@@ -1370,7 +1370,7 @@ let update_state_denunciation (block, state)
               misbehaviour_cycle;
             } )
         in
-        (* TODO: better log *)
+        (* TODO: better log? *)
         Log.info ~color:Log_module.event_color "Including denunciation" ;
         let state =
           State.
@@ -1426,6 +1426,7 @@ let check_failure_aux ?expected_error :
           Log.info ~color:assert_block_color "Rollback" ;
           return input
       | Some exp_e ->
+          let exp_e = exp_e input in
           if e = exp_e then (
             Log.info ~color:assert_block_color "Rollback" ;
             return input)
@@ -1545,12 +1546,13 @@ let add_account_with_funds name source amount =
 
 let test_expected_error =
   assert_failure
-    ~expected_error:[Exn (Failure "")]
+    ~expected_error:(fun _ -> [Exn (Failure "")])
     (exec (fun _ -> failwith ""))
   --> assert_failure
-        ~expected_error:[Unexpected_error]
+        ~expected_error:(fun _ -> [Unexpected_error])
         (assert_failure
-           ~expected_error:[Inconsistent_number_of_bootstrap_accounts]
+           ~expected_error:(fun _ ->
+             [Inconsistent_number_of_bootstrap_accounts])
            (exec (fun _ -> failwith "")))
 
 let init_constants ?reward_per_block ?(deactivate_dynamic = false) () =
@@ -1974,7 +1976,33 @@ module Slashing = struct
          --> exec_unit check_pending_slashings
          --> next_block
         |+ Tag "denounce too late" --> next_cycle --> next_cycle
-           --> assert_failure (make_denunciations ())
+           --> assert_failure
+                 ~expected_error:(fun (_block, state) ->
+                   let ds = state.State.double_signings in
+                   let ds = match ds with [a] -> a | _ -> assert false in
+                   let kind =
+                     match ds.kind with
+                     | Double_baking -> Protocol.Validate_errors.Anonymous.Block
+                     | Double_attesting -> Attestation
+                     | Double_preattesting -> Preattestation
+                   in
+                   let level =
+                     Protocol.Alpha_context.Raw_level.of_int32_exn
+                       (Int32.succ ds.level)
+                   in
+                   let last_cycle =
+                     Cycle.add
+                       (Block.current_cycle_of_level
+                          state.State.constants.blocks_per_cycle
+                          ds.level)
+                       Protocol.Constants_repr.max_slashing_period
+                   in
+                   [
+                     Environment.Ecoproto_error
+                       (Protocol.Validate_errors.Anonymous.Outdated_denunciation
+                          {kind; level; last_cycle});
+                   ])
+                 (make_denunciations ())
            --> check_snapshot_balances "before slash")
 
   let tests =

@@ -348,6 +348,8 @@ val bake_while_with_metadata :
   block ->
   block tzresult Lwt.t
 
+val current_cycle_of_level : int32 -> int32 -> Cycle.t
+
 val current_cycle : block -> Cycle.t
 
 val last_block_of_cycle : block -> bool
