@@ -29,3 +29,7 @@ type slot_header = {level : int; commitment : string; index : int}
     [block] (default ["head"]). *)
 val dal_slot_headers :
   ?block:string -> Sc_rollup_node.t -> slot_header list Lwt.t
+
+(** [inject sc_rollup_node messages] injects the [messages] in the queue the rollup
+    node's batcher and returns the list of message hashes injected. *)
+val inject : Sc_rollup_node.t -> string list -> string list Lwt.t

@@ -387,14 +387,6 @@ let simulate ?hooks ?(block = "head") sc_client ?(reveal_pages = [])
                obj |> get "insights" |> as_list |> List.map as_string_opt;
            })
 
-let inject ?hooks sc_client messages =
-  let messages_json =
-    `A (List.map (fun s -> `String Hex.(of_string s |> show)) messages)
-    |> JSON.annotate ~origin:"injection messages"
-  in
-  rpc_post ?hooks sc_client ["local"; "batcher"; "injection"] messages_json
-  |> Runnable.map @@ fun obj -> JSON.as_list obj |> List.map JSON.as_string
-
 let batcher_queue ?hooks sc_client =
   rpc_get ?hooks sc_client ["local"; "batcher"; "queue"]
   |> Runnable.map @@ fun obj ->

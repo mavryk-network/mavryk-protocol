@@ -49,3 +49,12 @@ let dal_slot_headers ?(block = "head") smart_rollup_node =
              }))
   in
   return res
+
+let inject smart_rollup_node messages =
+  let service = "local/batcher/injection" in
+  let messages_json =
+    `A (List.map (fun s -> `String Hex.(of_string s |> show)) messages)
+    |> JSON.annotate ~origin:"injection messages"
+  in
+  let* json = post_rpc ~smart_rollup_node ~service ~data:messages_json in
+  return (JSON.as_list json |> List.map JSON.as_string)
