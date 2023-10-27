@@ -1953,6 +1953,9 @@ dependencies = [
 [[package]]
 name = "tezos-smart-rollup-core"
 version = "0.2.1"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "tezos-smart-rollup-debug"

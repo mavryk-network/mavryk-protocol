@@ -6,7 +6,12 @@
 
 //! Implementation of [`SmartRollupCore`] used when compiling to **wasm**.
 
+#[cfg(not(target_arch = "riscv64"))]
 use crate::smart_rollup_core as core;
+
+#[cfg(target_arch = "riscv64")]
+use crate::smart_rollup_core::core;
+
 use crate::smart_rollup_core::ReadInputMessageInfo;
 use crate::SmartRollupCore;
 

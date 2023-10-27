@@ -11,6 +11,8 @@
 pub mod rollup_host;
 pub mod smart_rollup_core;
 
+pub mod syscalls;
+
 pub use smart_rollup_core::SmartRollupCore;
 
 /// The maximum size of input that can be read in one go from a slot message.

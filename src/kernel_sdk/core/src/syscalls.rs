@@ -1,8 +1,22 @@
+#![cfg(target_arch = "riscv64")]
+
 ///! Implements Linux system calls
 ///! See https://git.musl-libc.org/cgit/musl/tree/arch/riscv64/syscall_arch.h
 
+#[cfg(not(target_os = "none"))]
+mod from_libc {
+    /// Write data to a file descriptor.
+    pub fn write(fd: i64, buf: *const u8, count: usize) -> i64 {
+        unsafe { libc::write(fd as i32, buf as *const libc::c_void, count) as i64 }
+    }
+
+    pub fn exit(code: i32) -> ! {
+        unsafe { libc::exit(code) }
+    }
+}
+
 #[cfg(target_os = "none")]
-mod bare_metal {
+pub mod bare_metal {
     use core::arch::asm;
 
     /// Issues a system call with 1 argument.
@@ -48,22 +62,10 @@ mod bare_metal {
 }
 
 #[cfg(not(target_os = "none"))]
-mod from_libc {
-    /// Write data to a file descriptor.
-    pub fn write(fd: i64, buf: *const u8, count: usize) -> i64 {
-        unsafe { libc::write(fd as i32, buf as *const libc::c_void, count) as i64 }
-    }
-
-    pub fn exit(code: i32) -> ! {
-        unsafe { libc::exit(code) }
-    }
-}
+pub use from_libc::*;
 
 #[cfg(target_os = "none")]
 pub use bare_metal::*;
-
-#[cfg(not(target_os = "none"))]
-pub use from_libc::*;
 
 /// Available file descriptor for output
 #[repr(i64)]
@@ -76,8 +78,3 @@ pub enum OutputFileDescriptor {
 }
 
 pub use OutputFileDescriptor::*;
-
-pub fn write_str(fd: OutputFileDescriptor, msg: impl AsRef<str>) -> i64 {
-    let msg_ref = msg.as_ref();
-    write(fd as i64, msg_ref.as_ptr(), msg_ref.len())
-}
