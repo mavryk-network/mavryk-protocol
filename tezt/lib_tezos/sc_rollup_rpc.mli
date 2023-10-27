@@ -42,3 +42,26 @@ val batcher_queue : Sc_rollup_node.t -> (string * string) list Lwt.t
     the queue. It returns the message together with the full JSON response
     including the status. *)
 val get_batcher_msg : Sc_rollup_node.t -> string -> (string * JSON.t) Lwt.t
+
+type simulation_result = {
+  state_hash : string;
+  status : string;
+  output : JSON.t;
+  inbox_level : int;
+  num_ticks : int;
+  insights : string option list;
+}
+
+(** [simulate ?block sc_rollup_node ?reveal_pages ?insight_request messages] simulates
+    the evaluation of input [messages] for the rollup PVM at [block] (default
+    ["head"]). [reveal_pages] can be used to provide data to be used for the
+    revelation ticks. [insight_request] can be used to look at a list of keys in
+    the PVM state after the simulation. *)
+val simulate :
+  ?block:string ->
+  Sc_rollup_node.t ->
+  ?reveal_pages:string list ->
+  ?insight_requests:
+    [`Pvm_state_key of string list | `Durable_storage_key of string list] list ->
+  string list ->
+  simulation_result Lwt.t

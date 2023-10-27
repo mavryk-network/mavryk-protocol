@@ -1373,7 +1373,7 @@ let test_simulate =
     ~tags:["evm"; "simulate"]
     ~title:"A block can be simulated in the rollup node"
     (fun protocol ->
-      let* {evm_node; sc_rollup_client; _} =
+      let* {evm_proxy_server; sc_rollup_node; _} =
         setup_past_genesis ~admin:None protocol
       in
       let* json =
@@ -1384,11 +1384,11 @@ let test_simulate =
       let block_number =
         JSON.(json |-> "result" |> as_string |> int_of_string)
       in
-      let*! simulation_result =
-        Sc_rollup_client.simulate
+      let* simulation_result =
+        Sc_rollup_rpc.simulate
           ~insight_requests:
             [`Durable_storage_key ["evm"; "blocks"; "current"; "number"]]
-          sc_rollup_client
+          sc_rollup_node
           []
       in
       let simulated_block_number =
@@ -1747,7 +1747,7 @@ let test_eth_call_storage_contract_proxy =
     ~tags:["evm"; "simulate"]
     ~title:"Try to call a view (directly through rollup node)"
     (fun protocol ->
-      let* ({sc_rollup_client; evm_node; _} as evm_setup) =
+      let* ({sc_rollup_node; evm_proxy_server; _} as evm_setup) =
         setup_past_genesis ~admin:None protocol
       in
 
@@ -1764,14 +1764,14 @@ let test_eth_call_storage_contract_proxy =
           string
           ~error_msg:"Expected address to be %R but was %L.") ;
 
-      let*! simulation_result =
-        Sc_rollup_client.simulate
+      let* simulation_result =
+        Sc_rollup_rpc.simulate
           ~insight_requests:
             [
               `Durable_storage_key ["evm"; "simulation_result"];
               `Durable_storage_key ["evm"; "simulation_status"];
             ]
-          sc_rollup_client
+          sc_rollup_node
           [
             Hex.to_string @@ `Hex "ff";
             Hex.to_string
@@ -2449,7 +2449,7 @@ let test_validation_result =
     ~title:
       "Ensure validation returns appropriate address for a given transaction."
   @@ fun protocol ->
-  let* {sc_rollup_client; _} = setup_past_genesis ~admin:None protocol in
+  let* {sc_rollup_node; _} = setup_past_genesis ~admin:None protocol in
   (* tx is a signed legacy transaction obtained with the following data, using
      the following private key:
         data = {
@@ -2467,14 +2467,14 @@ let test_validation_result =
     "f86180825208809400000000000000000000000000000000000000008080820a95a0f47140763cf73d6d9b342727e5a0809f7997bb62375060932af9bbc2e74b6212a03a018079a2fd7fefb625451ce2fafcdf873b892ff9d4e3e1f2ada5650012f072"
   in
   let simulation_msg = "ff0101" ^ tx in
-  let*! simulation_result =
-    Sc_rollup_client.simulate
+  let* simulation_result =
+    Sc_rollup_rpc.simulate
       ~insight_requests:
         [
           `Durable_storage_key ["evm"; "simulation_status"];
           `Durable_storage_key ["evm"; "simulation_result"];
         ]
-      sc_rollup_client
+      sc_rollup_node
       [Hex.to_string @@ `Hex "ff"; Hex.to_string @@ `Hex simulation_msg]
   in
   let expected_insights =
