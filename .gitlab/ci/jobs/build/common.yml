@@ -1,5 +1,7 @@
 .build:
-  extends: .build_template
+  extends:
+    - .build_template
+    - .rules__octez_changes
   variables:
     ARCH: ""
     # We fix the value of GIT_{SHORTREF,DATETIME,VERSION} (these are
@@ -29,6 +31,7 @@
   extends:
     - .default_settings_template
     - .image_template__runtime_build_dependencies
+    - .rules__octez_changes
   stage: build
   variables:
     ARCH: ""
@@ -43,6 +46,7 @@
   extends:
     - .default_settings_template
     - .image_template__docker
+    - .rules__octez_changes
   variables:
     DOCKER_BUILD_TARGET: "without-evm-artifacts"
     IMAGE_ARCH_PREFIX: ""

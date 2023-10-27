@@ -6,6 +6,7 @@ ometrics-code-quality:
     - .default_settings_template
     - .image_template__runtime_build_dependencies
     - .template__code_quality
+    - .rules__octez_changes
   needs: [trigger]
   allow_failure: true
   interruptible: true

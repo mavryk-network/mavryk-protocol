@@ -1,6 +1,7 @@
 test_kernels:
   extends:
     - .kernels_template
+    - .rules__octez_changes
   stage: test
   needs: [build_kernels]
   dependencies: [build_kernels]

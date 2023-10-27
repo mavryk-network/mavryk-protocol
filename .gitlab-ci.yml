@@ -136,6 +136,27 @@ trigger:
     # corresponds to the value in scripts/version.sh.
     - ./scripts/ci/check_alpine_version.sh
 
+
+.rules__octez_changes:
+  rules:
+    - if:
+      changes:
+        paths:
+          - src/*
+          - src/**/*
+        compare_to: master
+      when: on_success
+
+.rules__octez_docs_changes:
+  rules:
+    - if:
+      changes:
+        paths:
+          - docs/*
+          - docs/**/*
+        compare_to: master
+      when: on_success
+
 include:
   # /!\ These rules should be be mutually exclusive and kept in sync
   # with the corresponding 'if'-rules on the workflow rules above.

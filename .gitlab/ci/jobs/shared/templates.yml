@@ -28,6 +28,7 @@
 .template__coverage:
   extends:
     - .tags_template__gcp
+    - .rules__octez_changes
   variables:
     COVERAGE_OPTIONS: "--instrument-with bisect_ppx"
     BISECT_FILE: "$CI_PROJECT_DIR/_coverage_output/"
@@ -38,6 +39,7 @@
     - .default_settings_template
     - .image_template__runtime_build_dependencies
     - .template__coverage
+    - .rules__octez_changes
   stage: build
   before_script:
     # FIXME: https://gitlab.com/tezos/tezos/-/issues/2865
@@ -48,6 +50,7 @@
   extends:
     - .default_settings_template
     - .image_template__rust_toolchain
+    - .rules__octez_changes
   stage: build
   needs: [trigger]
   before_script:

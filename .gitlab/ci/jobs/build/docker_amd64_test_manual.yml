@@ -3,6 +3,7 @@ include: .gitlab/ci/jobs/build/common.yml
 docker:amd64:
   extends:
     - .build_docker_release_template
+    - .rules__octez_changes
   stage: manual
   needs: []
   when: manual

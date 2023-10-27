@@ -10,6 +10,11 @@ documentation:linkcheck:
       when: always
     # Run when there is label on the merge request
     - if: '$CI_MERGE_REQUEST_LABELS =~ /(?:^|[,])ci--docs(?:$|[,])/'
+      changes:
+        paths:
+          - src/*
+          - src/**/*
+        compare_to: master
       when: on_success
     - when: manual
   before_script:

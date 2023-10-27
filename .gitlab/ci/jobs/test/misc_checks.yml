@@ -2,6 +2,7 @@ misc_checks:
   extends:
     - .default_settings_template
     - .image_template__runtime_build_test_dependencies
+    - .rules__octez_changes
   stage: "test"
   needs: [trigger]
   before_script:
@@ -30,6 +31,7 @@ kaitai_checks:
 check_lift_limits_patch:
   extends:
     - .test_template
+    - .rules__octez_changes
   # These tests are not flaky at all so we overwrite the retry value
   retry: 0
   needs: [trigger]

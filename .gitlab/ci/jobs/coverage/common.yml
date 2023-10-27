@@ -1,5 +1,6 @@
 .template__coverage_report:
-  extends: .template__coverage
+  extends:
+    - .template__coverage
   stage: test_coverage
   coverage: '/Coverage: ([^%]+%)/'
   artifacts:

@@ -1,4 +1,6 @@
 dpkg:amd64:
+  extends:
+    - .rules__octez_changes
   image: debian:bookworm
   stage: manual
   when: manual
@@ -28,6 +30,8 @@ dpkg:amd64:
     when: on_success
 
 rpm:amd64:
+  extends:
+    - .rules__octez_changes
   image: fedora
   stage: manual
   when: manual

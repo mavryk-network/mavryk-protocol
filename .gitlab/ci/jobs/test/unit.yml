@@ -1,5 +1,7 @@
 .unit_test_template:
-  extends: .test_template
+  extends:
+    - .test_template
+    - .rules__octez_changes
   variables:
     ARCH: ""
     MAKE_TARGETS: ""
@@ -15,7 +17,9 @@
     when: always
 
 .unit_test_template_x86_64:
-  extends: .unit_test_template
+  extends:
+    - .unit_test_template
+    - .rules__octez_changes
   variables:
     ARCH: "x86_64"
 
@@ -23,6 +27,7 @@
   extends:
     - .unit_test_template_x86_64
     - .template__coverage_files
+    - .rules__octez_changes
   script:
     - make $MAKE_TARGETS
     - ./scripts/ci/merge_coverage.sh
@@ -33,7 +38,9 @@
       - test_results
 
 .unit_test_template_arm64:
-  extends: .unit_test_template
+  extends:
+    - .unit_test_template
+    - .rules__octez_changes
   needs:
     - "build_arm64-released"
     - "build_arm64-exp-dev-extra"
@@ -47,6 +54,7 @@ unit:non-proto-x86_64:
   - .unit_test_template_x86_64_coverage
   # The [lib_benchmark] unit tests require Python
   - .image_template__runtime_build_test_dependencies
+  - .rules__octez_changes
   variables:
     MAKE_TARGETS: test-nonproto-unit
   # Disable GCP at this time.
@@ -55,18 +63,21 @@ unit:non-proto-x86_64:
 unit:other-x86_64:
   extends:
   - .unit_test_template_x86_64_coverage
+  - .rules__octez_changes
   variables:
     MAKE_TARGETS: test-other-unit
 
 unit:proto-x86_64:
   extends:
   - .unit_test_template_x86_64_coverage
+  - .rules__octez_changes
   variables:
     MAKE_TARGETS: test-proto-unit
 
 unit:webassembly-x86_64:
   extends:
   - .unit_test_template_x86_64
+  - .rules__octez_changes
   # The wasm tests are written in Python
   - .image_template__runtime_build_test_dependencies
   variables:
@@ -83,6 +94,7 @@ unit:non-proto-arm64:
     - .unit_test_template_arm64
     # The [lib_benchmark] unit tests require Python
     - .image_template__runtime_build_test_dependencies
+    - .rules__octez_changes
   variables:
     MAKE_TARGETS: test-nonproto-unit test-webassembly
 
@@ -90,11 +102,14 @@ unit:js_components:
   extends:
     - .unit_test_template_x86_64
     - .image_template__runtime_build_test_dependencies
+    - .rules__octez_changes
   script:
     - . ./scripts/install_build_deps.js.sh
     - make test-js
 
 unit:protocol_compiles:
-  extends: .unit_test_template_x86_64
+  extends:
+    - .unit_test_template_x86_64
+    - .rules__octez_changes
   script:
     - dune build @runtest_compile_protocol

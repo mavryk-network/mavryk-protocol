@@ -1,6 +1,7 @@
 semgrep:
   extends:
     - .default_settings_template
+    - .rules__octez_changes
   # We specify the image by hash to avoid flakiness. Indeed, if we took the
   # latest release, then an update in the parser or analyser could result in new
   # errors being found even if the code doesn't change. This would place the
