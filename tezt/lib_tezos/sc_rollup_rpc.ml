@@ -15,6 +15,14 @@ let call_rpc ~smart_rollup_node ~service =
   let*! response = Curl.get url in
   return response
 
+let post_rpc ~smart_rollup_node ~service ~data =
+  let open Runnable.Syntax in
+  let url =
+    Printf.sprintf "%s/%s" (Sc_rollup_node.endpoint smart_rollup_node) service
+  in
+  let*! response = Curl.post url data in
+  return response
+
 let ticks ?(block = "head") smart_rollup_node =
   let service = "global/block/" ^ block ^ "/ticks" in
   let* json = call_rpc ~smart_rollup_node ~service in

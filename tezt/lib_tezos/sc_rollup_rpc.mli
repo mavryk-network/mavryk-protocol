@@ -7,6 +7,14 @@
 (* Copyright (c) 2023 Marigold <contact@marigold.dev>                        *)
 (*****************************************************************************)
 
+(** [post_rpc ~smart_rollup_node ~service ~data] call the RPC for [service] with [data] on
+    [smart_rollup_node]. *)
+val post_rpc :
+  smart_rollup_node:Sc_rollup_node.t ->
+  service:string ->
+  data:JSON.t ->
+  JSON.t Lwt.t
+
 (** [ticks ?block sc_rollup_node] gets the number of ticks for the PVM for the [block]
     (default ["head"]). *)
 val ticks : ?block:string -> Sc_rollup_node.t -> int Lwt.t
