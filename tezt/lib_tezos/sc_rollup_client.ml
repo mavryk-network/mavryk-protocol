@@ -387,15 +387,6 @@ let simulate ?hooks ?(block = "head") sc_client ?(reveal_pages = [])
                obj |> get "insights" |> as_list |> List.map as_string_opt;
            })
 
-let batcher_queue ?hooks sc_client =
-  rpc_get ?hooks sc_client ["local"; "batcher"; "queue"]
-  |> Runnable.map @@ fun obj ->
-     JSON.as_list obj
-     |> List.map @@ fun o ->
-        let hash = JSON.(o |> get "hash" |> as_string) in
-        let hex_msg = JSON.(o |> get "message" |> get "content" |> as_string) in
-        (hash, Hex.to_string (`Hex hex_msg))
-
 let get_batcher_msg ?hooks sc_client msg_hash =
   rpc_get ?hooks sc_client ["local"; "batcher"; "queue"; msg_hash]
   |> Runnable.map @@ fun obj ->

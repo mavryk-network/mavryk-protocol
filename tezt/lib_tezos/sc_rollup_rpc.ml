@@ -58,3 +58,15 @@ let inject smart_rollup_node messages =
   in
   let* json = post_rpc ~smart_rollup_node ~service ~data:messages_json in
   return (JSON.as_list json |> List.map JSON.as_string)
+
+let batcher_queue smart_rollup_node =
+  let service = "local/batcher/queue" in
+  let* process = call_rpc ~smart_rollup_node ~service in
+  let res =
+    JSON.as_list process
+    |> List.map @@ fun o ->
+       let hash = JSON.(o |> get "hash" |> as_string) in
+       let hex_msg = JSON.(o |> get "message" |> get "content" |> as_string) in
+       (hash, Hex.to_string (`Hex hex_msg))
+  in
+  return res

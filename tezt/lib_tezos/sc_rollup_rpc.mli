@@ -33,3 +33,7 @@ val dal_slot_headers :
 (** [inject sc_rollup_node messages] injects the [messages] in the queue the rollup
     node's batcher and returns the list of message hashes injected. *)
 val inject : Sc_rollup_node.t -> string list -> string list Lwt.t
+
+(** [batcher_queue sc_rollup_node] returns the queue of messages, as pairs of message
+    hash and binary message, in the batcher. *)
+val batcher_queue : Sc_rollup_node.t -> (string * string) list Lwt.t

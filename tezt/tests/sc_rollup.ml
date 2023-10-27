@@ -716,7 +716,7 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   check_batcher_message_status status_msg1 "pending_batch" ;
   Check.((retrieved_msg1 = msg1) string)
     ~error_msg:"Message in queue is %L but injected %R." ;
-  let*! queue = Sc_rollup_client.batcher_queue sc_rollup_client in
+  let* queue = Sc_rollup_rpc.batcher_queue sc_rollup_node in
   Check.((queue = [(msg1_hash, msg1)]) (list (tuple2 string string)))
     ~error_msg:"Queue is %L but should be %R." ;
   (* This block triggers injection in the injector. *)
@@ -749,7 +749,7 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   let* hashes2 =
     send_message_batcher client sc_rollup_node (List.init 9 (Fun.const msg2))
   in
-  let*! queue = Sc_rollup_client.batcher_queue sc_rollup_client in
+  let* queue = Sc_rollup_rpc.batcher_queue sc_rollup_node in
   Check.((queue = []) (list (tuple2 string string)))
     ~error_msg:"Queue is %L should be %empty R." ;
   let* block = Client.RPC.call client @@ RPC.get_chain_block () in
