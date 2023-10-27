@@ -251,14 +251,6 @@ let rpc_get ?hooks sc_client path =
   |> Runnable.map @@ fun output ->
      JSON.parse ~origin:(Client.string_of_path path ^ " response") output
 
-let rpc_post ?hooks sc_client path data =
-  spawn_command
-    ?hooks
-    sc_client
-    ["rpc"; "post"; Client.string_of_path path; "with"; JSON.encode data]
-  |> Runnable.map @@ fun output ->
-     JSON.parse ~origin:(Client.string_of_path path ^ " response") output
-
 let rpc_get_rich ?hooks ?log_output sc_client path parameters =
   let parameters =
     if parameters = [] then ""

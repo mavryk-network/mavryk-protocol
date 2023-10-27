@@ -65,10 +65,6 @@ val sc_rollup_address : ?hooks:Process.hooks -> t -> string Runnable.process
 val rpc_get :
   ?hooks:Process.hooks -> t -> Client.path -> JSON.t Runnable.process
 
-(** [rpc_post client path data] issues a POST request for [path] with [data]. *)
-val rpc_post :
-  ?hooks:Process.hooks -> t -> Client.path -> JSON.t -> JSON.t Runnable.process
-
 (** [rpc_get_rich ?hooks ?log_output client path parameters] issues a GET
     request for [path] passing [parameters]. *)
 val rpc_get_rich :
