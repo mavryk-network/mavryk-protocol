@@ -681,9 +681,6 @@ let prequorum_reached_when_awaiting_preattestations state candidate
           (candidate.hash, latest_proposal.block.hash))
     in
     do_nothing state
-  else if not state.level_state.is_latest_proposal_applied then
-    let* () = Events.(emit handling_prequorum_on_non_applied_proposal ()) in
-    do_nothing state
   else
     let prequorum =
       {
