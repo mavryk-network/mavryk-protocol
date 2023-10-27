@@ -70,3 +70,13 @@ let batcher_queue smart_rollup_node =
        (hash, Hex.to_string (`Hex hex_msg))
   in
   return res
+
+let get_batcher_msg smart_rollup_node msg_hash =
+  let service = "local/batcher/queue/" ^ msg_hash in
+  let* process = call_rpc ~smart_rollup_node ~service in
+  let res =
+    if JSON.is_null process then failwith "Message is not in the queue" ;
+    let hex_msg = JSON.(process |> get "content" |> as_string) in
+    (Hex.to_string (`Hex hex_msg), process)
+  in
+  return res

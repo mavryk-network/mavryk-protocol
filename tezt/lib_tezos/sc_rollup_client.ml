@@ -387,13 +387,6 @@ let simulate ?hooks ?(block = "head") sc_client ?(reveal_pages = [])
                obj |> get "insights" |> as_list |> List.map as_string_opt;
            })
 
-let get_batcher_msg ?hooks sc_client msg_hash =
-  rpc_get ?hooks sc_client ["local"; "batcher"; "queue"; msg_hash]
-  |> Runnable.map @@ fun obj ->
-     if JSON.is_null obj then failwith "Message is not in the queue" ;
-     let hex_msg = JSON.(obj |> get "content" |> as_string) in
-     (Hex.to_string (`Hex hex_msg), obj)
-
 let spawn_generate_keys ?hooks ?(force = false) ~alias sc_client =
   spawn_command
     ?hooks

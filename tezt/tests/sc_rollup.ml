@@ -700,8 +700,8 @@ let check_batcher_message_status response status =
     ~error_msg:"Status of message is %L but expected %R."
 
 (* Rollup node batcher *)
-let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
-    =
+let sc_rollup_node_batcher sc_rollup_node _sc_rollup_client sc_rollup node
+    client =
   let* () =
     Sc_rollup_node.run ~event_level:`Debug sc_rollup_node sc_rollup []
   in
@@ -709,8 +709,8 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   let msg1 = "3 3 + out" in
   let* hashes = Sc_rollup_rpc.inject sc_rollup_node [msg1] in
   let msg1_hash = match hashes with [h] -> h | _ -> assert false in
-  let*! retrieved_msg1, status_msg1 =
-    Sc_rollup_client.get_batcher_msg sc_rollup_client msg1_hash
+  let* retrieved_msg1, status_msg1 =
+    Sc_rollup_rpc.get_batcher_msg sc_rollup_node msg1_hash
   in
 
   check_batcher_message_status status_msg1 "pending_batch" ;
@@ -725,14 +725,14 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   in
   let* () = Client.bake_for_and_wait client in
   let* _ = injected in
-  let*! _msg1, status_msg1 =
-    Sc_rollup_client.get_batcher_msg sc_rollup_client msg1_hash
+  let* _msg1, status_msg1 =
+    Sc_rollup_rpc.get_batcher_msg sc_rollup_node msg1_hash
   in
   check_batcher_message_status status_msg1 "injected" ;
   (* We bake so that msg1 is included. *)
   let* () = Client.bake_for_and_wait client in
-  let*! _msg1, status_msg1 =
-    Sc_rollup_client.get_batcher_msg sc_rollup_client msg1_hash
+  let* _msg1, status_msg1 =
+    Sc_rollup_rpc.get_batcher_msg sc_rollup_node msg1_hash
   in
   check_batcher_message_status status_msg1 "included" ;
   let* _ = wait_for_current_level node ~timeout:3. sc_rollup_node in
@@ -800,8 +800,8 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   let* _ =
     bake_until_lpc_updated ~at_least:levels ~timeout:5. client sc_rollup_node
   in
-  let*! _msg1, status_msg1 =
-    Sc_rollup_client.get_batcher_msg sc_rollup_client msg1_hash
+  let* _msg1, status_msg1 =
+    Sc_rollup_rpc.get_batcher_msg sc_rollup_node msg1_hash
   in
   check_batcher_message_status status_msg1 "committed" ;
   unit

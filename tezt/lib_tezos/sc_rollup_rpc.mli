@@ -37,3 +37,8 @@ val inject : Sc_rollup_node.t -> string list -> string list Lwt.t
 (** [batcher_queue sc_rollup_node] returns the queue of messages, as pairs of message
     hash and binary message, in the batcher. *)
 val batcher_queue : Sc_rollup_node.t -> (string * string) list Lwt.t
+
+(** [get_batcher_msg sc_rollup_node hash] fetches the message whose hash is [hash] from
+    the queue. It returns the message together with the full JSON response
+    including the status. *)
+val get_batcher_msg : Sc_rollup_node.t -> string -> (string * JSON.t) Lwt.t
