@@ -110,9 +110,7 @@ type t = {
   cors : Resto_cohttp.Cors.t;
 }
 
-type error +=
-  | Missing_mode_operators of {mode : string; missing_operators : string list}
-  | Empty_operation_kinds_for_custom_mode
+type error += Empty_operation_kinds_for_custom_mode
 
 (** [history_mode_of_string s] parses a history_mode from the given string
     [s]. *)
@@ -197,10 +195,6 @@ val description_of_mode : mode -> string
     the configration filename from the [data_dir] *)
 val config_filename : data_dir:string -> string
 
-(** [check_mode config] ensures the operators correspond to the chosen mode and
-    removes the extra ones. *)
-val check_mode : t -> t tzresult
-
 (** [purposes_of_mode mode] returns purposes associated with the provided mode. *)
 val purposes_of_mode : mode -> Purpose.t list
 
@@ -213,7 +207,7 @@ val can_inject : mode -> Operation_kind.t -> bool
 
 (** [purpose_matches_mode mode purpose] returns true if and only if the given [mode]
     supports the given [purpose]. *)
-val purpose_matches_mode : mode -> purpose -> bool
+val purpose_matches_mode : mode -> Purpose.t -> bool
 
 (** Number of levels the refutation player waits until trying to play
     for a game state it already played before. *)
@@ -260,7 +254,7 @@ module Cli : sig
     operators:
       [< `Default of Signature.public_key_hash
       | `Purpose of Purpose.t * Signature.public_key_hash ]
-      trace ->
+      list ->
     index_buffer_size:int option ->
     irmin_cache_size:int option ->
     log_kernel_debug:bool ->

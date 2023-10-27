@@ -341,13 +341,7 @@ let maybe_recover_bond node_ctxt =
   if Node_context.is_bailout node_ctxt then
     let operator = Node_context.get_operator node_ctxt Purpose.Operating in
     match operator with
-    | None ->
-        tzfail
-          (Configuration.Missing_mode_operators
-             {
-               mode = Configuration.string_of_mode Bailout;
-               missing_operators = Purpose.[to_string Operating];
-             })
+    | None -> tzfail (Purpose.Missing_operator Operating)
     | Some operating_pkh -> (
         let*! staked_on_commitment =
           RPC.Sc_rollup.staked_on_commitment
@@ -493,7 +487,8 @@ let run node_ctxt configuration
   protect start ~on_error:(function
       | Sc_rollup_node_errors.(
           ( Lost_game _ | Unparsable_boot_sector _ | Invalid_genesis_state _
-          | Configuration.Missing_mode_operators _ | Operator_has_no_staked ))
+          | Purpose.Missing_operator _ | Purpose.Too_many_operator _
+          | Operator_has_no_staked ))
         :: _ as e ->
           fatal_error_exit e
       | Sc_rollup_node_errors.Could_not_open_preimage_file _ :: _ as e ->
