@@ -14,3 +14,10 @@ val ticks : ?block:string -> Sc_rollup_node.t -> int Lwt.t
 (** [state_hash ?block sc_rollup_node] gets the corresponding PVM state hash for the
     [block] (default ["head"]). *)
 val state_hash : ?block:string -> Sc_rollup_node.t -> string Lwt.t
+
+type slot_header = {level : int; commitment : string; index : int}
+
+(** [dal_slot_headers ?block sc_rollup_node] returns the dal slot headers of the
+    [block] (default ["head"]). *)
+val dal_slot_headers :
+  ?block:string -> Sc_rollup_node.t -> slot_header list Lwt.t

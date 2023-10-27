@@ -24,3 +24,20 @@ let state_hash ?(block = "head") smart_rollup_node =
   let service = "global/block/" ^ block ^ "/state_hash" in
   let* json = call_rpc ~smart_rollup_node ~service in
   return (JSON.as_string json)
+
+type slot_header = {level : int; commitment : string; index : int}
+
+let dal_slot_headers ?(block = "head") smart_rollup_node =
+  let service = "global/block/" ^ block ^ "/dal/slot_headers" in
+  let* json = call_rpc ~smart_rollup_node ~service in
+  let res =
+    JSON.(
+      as_list json
+      |> List.map (fun obj ->
+             {
+               level = obj |> get "level" |> as_int;
+               commitment = obj |> get "commitment" |> as_string;
+               index = obj |> get "index" |> as_int;
+             }))
+  in
+  return res

@@ -1707,12 +1707,9 @@ let rollup_node_stores_dal_slots ?expand_test protocol parameters dal_node
   let* slots_published_level =
     Sc_rollup_node.wait_for_level sc_rollup_node (init_level + 2)
   in
-  let*! slots_headers =
-    Sc_rollup_client.dal_slot_headers ~hooks sc_rollup_client
-  in
+  let* slots_headers = Sc_rollup_rpc.dal_slot_headers sc_rollup_node in
   let commitments =
-    slots_headers
-    |> List.map (fun Sc_rollup_client.{commitment; _} -> commitment)
+    slots_headers |> List.map (fun Sc_rollup_rpc.{commitment; _} -> commitment)
   in
   let expected_commitments = [commitment_0; commitment_1; commitment_2] in
   Check.(commitments = expected_commitments)
