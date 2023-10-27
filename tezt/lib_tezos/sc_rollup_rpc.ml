@@ -7,6 +7,21 @@
 (* Copyright (c) 2023 Marigold <contact@marigold.dev>                        *)
 (*****************************************************************************)
 
+type commitment = {
+  compressed_state : string;
+  inbox_level : int;
+  predecessor : string;
+  number_of_ticks : int;
+}
+
+type commitment_and_hash = {commitment : commitment; hash : string}
+
+type commitment_info = {
+  commitment_and_hash : commitment_and_hash;
+  first_published_at_level : int option;
+  published_at_level : int option;
+}
+
 let call_rpc ~smart_rollup_node ~service =
   let open Runnable.Syntax in
   let url =
@@ -133,3 +148,53 @@ let simulate ?(block = "head") sc_rollup_node ?(reveal_pages = [])
         insights =
           process |> get "insights" |> as_list |> List.map as_string_opt;
       }
+
+let commitment_from_json json =
+  if JSON.is_null json then None
+  else
+    let compressed_state = JSON.as_string @@ JSON.get "compressed_state" json in
+    let inbox_level = JSON.as_int @@ JSON.get "inbox_level" json in
+    let predecessor = JSON.as_string @@ JSON.get "predecessor" json in
+    let number_of_ticks = JSON.as_int @@ JSON.get "number_of_ticks" json in
+    Some {compressed_state; inbox_level; predecessor; number_of_ticks}
+
+let commitment_with_hash_from_json json =
+  let hash, commitment_json =
+    (JSON.get "hash" json, JSON.get "commitment" json)
+  in
+  Option.map
+    (fun commitment -> {hash = JSON.as_string hash; commitment})
+    (commitment_from_json commitment_json)
+
+let commitment_info_from_json json =
+  let hash, commitment_json, first_published_at_level, published_at_level =
+    ( JSON.get "hash" json,
+      JSON.get "commitment" json,
+      JSON.get "first_published_at_level" json,
+      JSON.get "published_at_level" json )
+  in
+  Option.map
+    (fun commitment ->
+      {
+        commitment_and_hash = {hash = JSON.as_string hash; commitment};
+        first_published_at_level =
+          first_published_at_level |> JSON.as_opt |> Option.map JSON.as_int;
+        published_at_level =
+          published_at_level |> JSON.as_opt |> Option.map JSON.as_int;
+      })
+    (commitment_from_json commitment_json)
+
+let last_stored_commitment sc_rollup_node =
+  let service = "global/last_stored_commitment" in
+  let* process = call_rpc ~smart_rollup_node:sc_rollup_node ~service in
+  return (commitment_with_hash_from_json process)
+
+let last_published_commitment smart_rollup_node =
+  let service = "local/last_published_commitment" in
+  let* process = call_rpc ~smart_rollup_node ~service in
+  return (commitment_info_from_json process)
+
+let commitment smart_rollup_node commitment_hash =
+  let service = "local/commitments/" ^ commitment_hash in
+  let* process = call_rpc ~smart_rollup_node ~service in
+  return (commitment_info_from_json process)

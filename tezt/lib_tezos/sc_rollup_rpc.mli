@@ -7,6 +7,21 @@
 (* Copyright (c) 2023 Marigold <contact@marigold.dev>                        *)
 (*****************************************************************************)
 
+type commitment = {
+  compressed_state : string;
+  inbox_level : int;
+  predecessor : string;
+  number_of_ticks : int;
+}
+
+type commitment_and_hash = {commitment : commitment; hash : string}
+
+type commitment_info = {
+  commitment_and_hash : commitment_and_hash;
+  first_published_at_level : int option;
+  published_at_level : int option;
+}
+
 (** [post_rpc ~smart_rollup_node ~service ~data] call the RPC for [service] with [data] on
     [smart_rollup_node]. *)
 val post_rpc :
@@ -65,3 +80,26 @@ val simulate :
     [`Pvm_state_key of string list | `Durable_storage_key of string list] list ->
   string list ->
   simulation_result Lwt.t
+
+(** [commitment_from_json] parses a commitment from its JSON representation. *)
+val commitment_from_json : JSON.t -> commitment option
+
+(** [commitment_info_from_json] parses a commitment, its hash and
+    the levels when the commitment was first published (if any) and included,
+    from the JSON representation. *)
+val commitment_info_from_json : JSON.t -> commitment_info option
+
+(** [last_stored_commitment sc_rollup_node] gets the last commitment with its hash
+    stored by the rollup node. *)
+val last_stored_commitment :
+  Sc_rollup_node.t -> commitment_and_hash option Lwt.t
+
+(** [last_published_commitment sc_rollup_node] gets the last commitment published by the
+    rollup node, with its hash and level when the commitment was first published
+    and the level it was included. *)
+val last_published_commitment : Sc_rollup_node.t -> commitment_info option Lwt.t
+
+(** [commitment sc_rollup_node hash] gets commitment by its [hash] from the rollup node,
+    with its hash and level when the commitment was first published and the
+    level it was included. *)
+val commitment : Sc_rollup_node.t -> string -> commitment_info option Lwt.t
