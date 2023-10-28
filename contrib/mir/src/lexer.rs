@@ -6,6 +6,11 @@
 /******************************************************************************/
 
 use logos::Logos;
+pub mod common;
+pub mod macros;
+
+pub use common::*;
+use macros::*;
 
 /// Takes a list of primitive names, creates a simple `enum` with the names
 /// provided, and defines `FromStr` implementation using stringified
@@ -25,20 +30,16 @@ macro_rules! defprim {
         }
 
         impl std::str::FromStr for $ty {
-          type Err = PrimError;
-          fn from_str(s: &str) -> Result<Self, Self::Err> {
-              match s {
-                $(stringify!($prim) => Ok($ty::$prim),)*
-                _ => Err(PrimError(s.to_owned()))
-              }
-          }
+            type Err = PrimError;
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                match s {
+                    $(stringify!($prim) => Ok($ty::$prim),)*
+                        _ => Err(PrimError(s.to_owned()))
+                }
+            }
         }
     };
 }
-
-#[derive(Debug, PartialEq, Eq, Clone, thiserror::Error)]
-#[error("unknown primitive: {0}")]
-pub struct PrimError(String);
 
 // NB: Primitives will be lexed as written, so capitalization matters.
 defprim! {
@@ -90,8 +91,9 @@ defprim! {
     UPDATE,
 }
 
-defprim! {
-    TztPrim;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
+pub enum TztPrim {
     Stack_elt,
     input,
     output,
@@ -100,24 +102,46 @@ defprim! {
     MutezOverflow,
     GeneralOverflow,
     StaticError,
+    Underscore,
+}
+
+impl std::fmt::Display for TztPrim {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", &self)
+    }
+}
+
+impl std::str::FromStr for TztPrim {
+    type Err = PrimError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TztPrim::*;
+        match s {
+            "Stack_elt" => Ok(Stack_elt),
+            "input" => Ok(input),
+            "output" => Ok(output),
+            "Failed" => Ok(Failed),
+            "amount" => Ok(amount),
+            "MutezOverflow" => Ok(MutezOverflow),
+            "GeneralOverflow" => Ok(GeneralOverflow),
+            "StaticError" => Ok(StaticError),
+            "_" => Ok(Underscore),
+            _ => Err(PrimError(s.to_owned())),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum PrimWithTzt {
+pub enum Noun {
     Prim(Prim),
-    Macro(String),
     TztPrim(TztPrim),
-    Underscore,
-    // Including underscore spearately from TztPrim because the `defprim` macro won't work if we
-    // used a literal underscore there. parsing for this variant is handled specially in the
-    // `lex_prim` function as well.
+    MacroPrim(Macro),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Logos)]
 #[logos(error = LexerError, skip r"[ \t\r\n\v\f]+|#[^\n]*\n")]
 pub enum Tok {
-    #[regex(r"[A-Za-z_]+", lex_prim)]
-    Prim(PrimWithTzt),
+    #[regex(r"[A-Za-z_]+", lex_noun)]
+    Noun(Noun),
 
     #[regex("([+-]?)[0-9]+", lex_number)]
     Number(i128),
@@ -144,10 +168,8 @@ pub enum Tok {
 impl std::fmt::Display for Tok {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self {
-            Tok::Prim(PrimWithTzt::Prim(p)) => p.fmt(f),
-            Tok::Prim(PrimWithTzt::TztPrim(p)) => p.fmt(f),
-            Tok::Prim(PrimWithTzt::Underscore) => write!(f, "_"),
-            Tok::Prim(PrimWithTzt::Macro(m)) => m.fmt(f),
+            Tok::Noun(Noun::Prim(p)) => p.fmt(f),
+            Tok::Noun(Noun::TztPrim(p)) => p.fmt(f),
             Tok::Number(n) => n.fmt(f),
             Tok::String(s) => s.fmt(f),
             Tok::Annotation => write!(f, "<ann>"),
@@ -156,50 +178,28 @@ impl std::fmt::Display for Tok {
             Tok::LBrace => write!(f, "{{"),
             Tok::RBrace => write!(f, "}}"),
             Tok::Semi => write!(f, ";"),
+            Tok::Noun(Noun::MacroPrim(m)) => m.fmt(f),
         }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, thiserror::Error)]
-pub enum LexerError {
-    #[error("unknown token")]
-    UnknownToken,
-    #[error("parsing of numeric literal {0} failed")]
-    NumericLiteral(String),
-    #[error("forbidden character found in string literal \"{0}\"")]
-    ForbiddenCharacterIn(String),
-    #[error("undefined escape sequence: \"\\{0}\"")]
-    UndefinedEscape(char),
-    #[error(transparent)]
-    PrimError(#[from] PrimError),
-}
-
-impl Default for LexerError {
-    fn default() -> Self {
-        LexerError::UnknownToken
     }
 }
 
 type Lexer<'a> = logos::Lexer<'a, Tok>;
 
-fn lex_prim(lex: &mut Lexer) -> Result<PrimWithTzt, LexerError> {
+fn lex_macro(lex: &mut Lexer) -> Result<Macro, PrimError> {
+    let slice = lex.slice();
+    match Macro::lexer(slice).collect::<Result<Vec<Macro>, common::LexerError>>() {
+        Ok(mut v) => Ok(v.pop().unwrap()),
+        Err(_) => Err(PrimError(slice.to_string())),
+    }
+}
+
+fn lex_noun(lex: &mut Lexer) -> Result<Noun, LexerError> {
     lex.slice()
         .parse()
-        .map(PrimWithTzt::Prim)
-        .or_else(|_| lex.slice().parse().map(PrimWithTzt::TztPrim))
-        .or_else(|_| match lex.slice() {
-            "_" => Ok::<PrimWithTzt, PrimError>(PrimWithTzt::Underscore),
-            s => {
-                // Check if the token could be a macro by checking if all
-                // chars in the token are upper case ascii or an underscore.
-                if s.chars().all(|c| c == '_' || char::is_ascii_uppercase(&c)) {
-                    Ok(PrimWithTzt::Macro(s.to_string()))
-                } else {
-                    Err(PrimError(s.to_owned()))
-                }
-            }
-        })
-        .map_err(LexerError::from)
+        .map(Noun::Prim)
+        .or_else(|_| lex.slice().parse().map(Noun::TztPrim))
+        .or_else(|_| lex_macro(lex).map(Noun::MacroPrim))
+        .map_err(LexerError::PrimError)
 }
 
 fn lex_number(lex: &mut Lexer) -> Result<i128, LexerError> {
@@ -251,6 +251,11 @@ fn lex_string(lex: &mut Lexer) -> Result<String, LexerError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_lex() {
+        dbg!(Tok::lexer("IF_SOME {} {}").collect::<Vec<Result<Tok, common::LexerError>>>());
+    }
 
     #[test]
     fn unescape_string() {
