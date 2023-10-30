@@ -16,10 +16,6 @@
   image: ${CI_REGISTRY}/tezos/docker-images/ci-package:latest-ubuntu@sha256:76c894f509b84e106c9d056882c63cb497a2778f7c7dbbd1c73abe2568ee446e
   needs:
     - "build:static-x86_64-linux-binaries"
-  rules:
-    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/tezos-packaging)
-    # provide support for the lima protocol and drop support for jakarta.
-    - when: never
   variables:
     TEZOS_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
     TEZOS_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
@@ -52,7 +48,3 @@
   script:
     - ./scripts/ci/create_linux_package.sh
     - ./scripts/ci/upload_linux_package.sh
-  rules:
-    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/tezos-packaging)
-    # provide support for the lima protocol and drop support for jakarta.
-    - when: never
