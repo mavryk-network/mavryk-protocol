@@ -466,6 +466,8 @@ module P2P = struct
     module Peer = struct
       type t = unit
 
+      let encoding = Data_encoding.unit
+
       let config : t P2p_params.peer_meta_config =
         let empty () = () in
         let encoding = Data_encoding.unit in
