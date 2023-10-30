@@ -676,9 +676,6 @@ let prequorum_reached_when_awaiting_preendorsements state candidate
         unexpected_prequorum_received
         (candidate.hash, latest_proposal.block.hash))
     >>= fun () -> do_nothing state
-  else if not state.level_state.is_latest_proposal_applied then
-    Events.(emit handling_prequorum_on_non_applied_proposal ()) >>= fun () ->
-    do_nothing state
   else
     let prequorum =
       {
