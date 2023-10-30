@@ -44,6 +44,10 @@ module Info : sig
     genesis_level:int32 ->
     pvm_kind:string ->
     unit
+
+  val set_l2_head_level : Sc_rollup_block.header -> unit
+
+  val set_lcc_last_update : Ptime.t -> unit
 end
 
 (** The metrics related to Inboxes *)

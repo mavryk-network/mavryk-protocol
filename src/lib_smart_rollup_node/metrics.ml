@@ -166,6 +166,22 @@ module Info = struct
       Counter.labels node_general_info [version; commit_hash; commit_date]
     in
     ()
+
+  let level =
+    v_gauge
+      ~help:"Level of the L2 block, corresponds to the level of the tezos block"
+      "l2_head_level"
+
+  let set_l2_head_level (head : Sc_rollup_block.header) =
+    Prometheus.Gauge.set level (Int32.to_float head.level)
+
+  let lcc_last_update =
+    v_gauge
+      ~help:"Last update of the Last Cement Commitment (LCC)"
+      "lcc_last_update"
+
+  let set_lcc_last_update pt =
+    Prometheus.Gauge.set lcc_last_update (Ptime.to_float_s pt)
 end
 
 module Inbox = struct
