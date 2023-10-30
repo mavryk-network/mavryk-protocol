@@ -704,7 +704,7 @@ let wait_for_disconnections node disconnections =
 
 let create ?runner ?(path = Constant.tezos_node) ?name ?color ?data_dir
     ?event_pipe ?net_addr ?net_port ?advertised_net_port ?(rpc_local = false)
-    ?(rpc_host = "127.0.0.1") ?rpc_port ?rpc_tls ?(allow_all_rpc = true)
+    ?(rpc_host = "localhost") ?rpc_port ?rpc_tls ?(allow_all_rpc = true)
     arguments =
   let name = match name with None -> fresh_name () | Some name -> name in
   let data_dir =
