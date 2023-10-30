@@ -52,3 +52,5 @@ let committee_cache_size = 50
 let shards_proofs_cache_size = 1024
 
 let shards_verification_sampling_frequency = 100
+
+let gossipsub_worker_stats_refresh_frequency = 30 (* in seconds *)

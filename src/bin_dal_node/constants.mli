@@ -37,3 +37,7 @@ val shards_proofs_cache_size : int
 (** The frequency at which we sample the time spent in shards crypto
     verification. *)
 val shards_verification_sampling_frequency : int
+
+(** The frequency at which we sample/refresh the stats of the Gossipsub
+    worker. *)
+val gossipsub_worker_stats_refresh_frequency : int

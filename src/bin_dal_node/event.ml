@@ -235,3 +235,56 @@ let metrics_server_is_ready =
     ~level:Notice
     ("host", Data_encoding.string)
     ("port", Data_encoding.uint16)
+
+let worker_stats =
+  let open Data_encoding in
+  let exchanged_stats_tup = tup7 int64 int64 int64 int64 int64 int64 int64 in
+  let pp_exchanged_stats fmt
+      ( num_valid_messages,
+        num_invalid_messages,
+        num_unknown_messages_validity,
+        num_grafts,
+        num_prunes,
+        num_ihaves,
+        num_iwants ) =
+    Format.fprintf
+      fmt
+      {|
+    num_valid_messages: %Ld
+    num_invalid_messages: %Ld
+    num_unknown_messages_validity: %Ld
+    num_grafts: %Ld
+    num_prunes: %Ld
+    num_ihaves: %Ld
+    num_iwants: %Ld |}
+      num_valid_messages
+      num_invalid_messages
+      num_unknown_messages_validity
+      num_grafts
+      num_prunes
+      num_ihaves
+      num_iwants
+  in
+  declare_5
+    ~section
+    ~name:"gs_worker_stats"
+    ~msg:
+      {| Gossipsub worker's stats:
+{num_topics}
+{num_connections}
+{num_bootstrap_connections}
+{received_stats}
+{sent_stats}|}
+    ~level:Notice
+    ~pp1:(fun fmt -> Format.fprintf fmt "  num_topics: %Ld")
+    ~pp2:(fun fmt -> Format.fprintf fmt "  num_connections: %Ld")
+    ~pp3:(fun fmt -> Format.fprintf fmt "  num_bootstrap_connections: %Ld")
+    ~pp4:(fun fmt rcv ->
+      Format.fprintf fmt "  received:%a" pp_exchanged_stats rcv)
+    ~pp5:(fun fmt sent ->
+      Format.fprintf fmt "  sent:%a" pp_exchanged_stats sent)
+    ("num_topics", int64)
+    ("num_connections", int64)
+    ("num_bootstrap_connections", int64)
+    ("received_stats", exchanged_stats_tup)
+    ("sent_stats", exchanged_stats_tup)
