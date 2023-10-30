@@ -90,6 +90,7 @@ defprim! {
     contract,
     address,
     chain_id,
+    CHAIN_ID,
 }
 
 impl std::fmt::Display for Prim {
