@@ -57,13 +57,20 @@ while [ "$#" -gt 0 ]; do
         exit 1
     fi
 
-    # For each tag
-    jq -r --arg product "$product" '.[$product].tags[]' < "$testowners" | while read -r tag; do
-        tezt --list-tsv "${tag}" | sed "s/^/${product}\t/"
-    done
+    {
+        # For each tag
+        jq -r --arg product "$product" '(.[$product].tags // [])[]' < "$testowners" | while read -r tag; do
+            tezt --list-tsv "${tag}" | sed "s/^/${product}\t/"
+        done
 
-    # For each file
-    jq -r --arg product "$product" '.[$product].path_prefixes[]' < "$testowners" | while read -r file; do
-        tezt --list-tsv --match "^${file}" | sed "s/^/${product}\t/"
-    done
+        # For each path_prefix
+        jq -r --arg product "$product" '(.[$product].path_prefixes // [])[]' < "$testowners" | while read -r path_prefix; do
+            tezt --list-tsv --match "^${path_prefix}" | sed "s/^/${product}\t/"
+        done
+
+        # For each path_pattern
+        jq -r --arg product "$product" '(.[$product].path_patterns // [])[]' < "$testowners" | while read -r path_pattern; do
+            tezt --list-tsv --match "^${path_pattern}" | sed "s/^/${product}\t/"
+        done
+    } | sort -u
 done

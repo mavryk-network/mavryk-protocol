@@ -95,21 +95,24 @@ In pseudo-TypeScript, the schema of `TESTOWNERS.json` is:
 ```typescript
 type TESTOWNERS = [PRODUCT_NAME: string]: PRODUCT_SPEC;
 type PRODUCT_SPEC = {
-  tags: string[];
-  path_prefixes: string[];
+  tags?: string[];
+  path_prefixes?: string[];
+  path_patterns?: string[];
 };
 ```
 
 where the top-level element of `TESTOWNERS.json` has the type `TESTOWNERS`.
                                    
 Semantically, each `PRODUCT_NAME` - `PRODUCT_SPEC` association in
-`TESTOWNERS` corresponds to a product and a set of Tezt test tags and
-path prefixes to associated with the product. Path prefixes are
-interpreted such that a prefix `F` matches all tests for which `F` is
-a prefix of its `~__FILE__`. Tags match all the tests with the given
-tag. The full set of tests associated to a product is the union of all
-tests matched by any of the tags or the path prefixes associated to
-the test.
+`TESTOWNERS` corresponds to a product and a set of Tezt test tags,
+path prefixes and path patterns to associated with the product. Path
+prefixes are interpreted such that a prefix `F` matches all tests for
+which `F` is a prefix of its `~__FILE__`. Tags match all the tests
+with the given tag. The full set of tests associated to a product is
+the union of all tests matched by any of the tags or the path prefixes
+associated to the test. Each of the fields `tags`, `path_prefixes` and
+`path_patterns` are optional, and their absence is interpreted as the
+empty list.
 
 
 For instance, a valid `TESTOWNERS.json` is:
