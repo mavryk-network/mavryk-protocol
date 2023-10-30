@@ -149,8 +149,6 @@ val phase_encoding : phase Data_encoding.t
 type round_state = {
   current_round : Round.t;
   current_phase : phase;
-  delayed_prequorum :
-    (Operation_worker.candidate * Kind.preendorsement operation list) option;
   delayed_quorum : Kind.endorsement operation list option;
 }
 
