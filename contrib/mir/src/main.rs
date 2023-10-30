@@ -12,6 +12,7 @@ mod interpreter;
 mod irrefutable_match;
 mod lexer;
 mod parser;
+mod serializer;
 mod stack;
 mod syntax;
 mod typechecker;

@@ -92,6 +92,8 @@ pub enum Value {
     Number(i128),
     Boolean(bool),
     String(String),
+    // This is a temporary addition, I would later depend on MR that adds Bytes properly
+    Bytes(Vec<u8>),
     Unit,
     Pair(Box<(Value, Value)>),
     Option(Option<Box<Value>>),
@@ -136,6 +138,7 @@ valuefrom! {
   <> i128, Value::Number;
   <> bool, Value::Boolean;
   <> String, Value::String;
+  <> Vec<u8>, Value::Bytes;
   <> (), |_| Value::Unit;
   <L, R> (L, R), |(l, r): (L, R)| Value::new_pair(l.into(), r.into());
   <L, R> Elt<L, R>, |Elt(l, r): Elt<L, R>| Value::new_elt(l.into(), r.into());
