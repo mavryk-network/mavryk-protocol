@@ -35,6 +35,8 @@ pub const MICHELINE_PRIM_1_ARG_SOME_ANNOTS_TAG: u8 = 6;
 pub const MICHELINE_PRIM_2_ARGS_NO_ANNOTS_TAG: u8 = 7;
 /// 2-argument primitive (with annotations) encoding case tag.
 pub const MICHELINE_PRIM_2_ARGS_SOME_ANNOTS_TAG: u8 = 8;
+/// any primitive (with or without annotations) encoding case tag.
+pub const MICHELINE_PRIM_GENERIC_TAG: u8 = 9;
 /// Bytes encoding case tag.
 pub const MICHELINE_BYTES_TAG: u8 = 10;
 
@@ -139,6 +141,21 @@ where
     pub(crate) annots: String,
 }
 
+/// lib_micheline generic primitive application (any number of arguments and annotations) encoding.
+///
+/// Encoded as an `obj2`, prefixed by [MICHELINE_PRIM_GENERIC_TAG], with fields:
+/// - `prim` - the `PRIM_TAG`
+/// - `args` - the arguments
+/// - `annots` - the annotations
+#[derive(Debug, PartialEq, Eq)]
+pub struct MichelinePrimGeneric<Arg, const PRIM_TAG: u8>
+where
+    Arg: Debug + PartialEq + Eq,
+{
+    pub(crate) args: Vec<Arg>,
+    pub(crate) annots: String,
+}
+
 // ----------
 // CONVERSION
 // ----------
@@ -205,6 +222,15 @@ impl<Arg1, Arg2, const PRIM_TAG: u8> HasEncoding
 where
     Arg1: Debug + PartialEq + Eq,
     Arg2: Debug + PartialEq + Eq,
+{
+    fn encoding() -> Encoding {
+        Encoding::Custom
+    }
+}
+
+impl<Arg, const PRIM_TAG: u8> HasEncoding for MichelinePrimGeneric<Arg, PRIM_TAG>
+where
+    Arg: Debug + PartialEq + Eq,
 {
     fn encoding() -> Encoding {
         Encoding::Custom
@@ -320,6 +346,26 @@ where
     }
 }
 
+impl<Arg, const PRIM_TAG: u8> NomReader for MichelinePrimGeneric<Arg, PRIM_TAG>
+where
+    Arg: NomReader + Debug + PartialEq + Eq,
+{
+    fn nom_read(input: &[u8]) -> NomResult<Self> {
+        let parse = preceded(
+            tag([MICHELINE_PRIM_GENERIC_TAG, PRIM_TAG]),
+            pair(
+                nom_read::dynamic(nom_read::list(Arg::nom_read)),
+                nom_read::string,
+            ),
+        );
+
+        map(parse, |(args, annots)| MichelinePrimGeneric {
+            args,
+            annots,
+        })(input)
+    }
+}
+
 // ----------
 // BIN_WRITER
 // ----------
@@ -403,6 +449,15 @@ where
             &self.annots,
             output,
         )
+    }
+}
+
+impl<Arg, const PRIM_TAG: u8> BinWriter for MichelinePrimGeneric<Arg, PRIM_TAG>
+where
+    Arg: BinWriter + Debug + PartialEq + Eq,
+{
+    fn bin_write(&self, output: &mut Vec<u8>) -> BinResult {
+        bin_write_prim_generic::<_, { PRIM_TAG }>(&self.args, &self.annots, output)
     }
 }
 
@@ -528,6 +583,23 @@ where
 
     arg1.bin_write(output)?;
     arg2.bin_write(output)?;
+    enc::string(annots, output)?;
+
+    Ok(())
+}
+
+/// Write `PRIM_TAG`, `args` & `annots` into an `obj3` encoding, prefixed with the
+/// [MICHELINE_PRIM_GENERIC_TAG].
+pub(crate) fn bin_write_prim_generic<Arg, const PRIM_TAG: u8>(
+    args: &Vec<Arg>,
+    annots: &String,
+    output: &mut Vec<u8>,
+) -> BinResult
+where
+    Arg: BinWriter,
+{
+    enc::put_bytes(&[MICHELINE_PRIM_GENERIC_TAG, PRIM_TAG], output);
+    enc::dynamic(enc::list(Arg::bin_write))(args, output)?;
     enc::string(annots, output)?;
 
     Ok(())
@@ -935,6 +1007,61 @@ mod test {
         let test = MichelinePrim2ArgsSomeAnnots::<_, _, 100> {
             arg1: nat,
             arg2: int,
+            annots: ":foo".into(),
+        };
+
+        let mut bin = Vec::new();
+        test.bin_write(&mut bin).unwrap();
+
+        assert_eq!(expected, bin);
+    }
+
+    #[test]
+    fn micheline_pair3_annot_decode() {
+        // Decode `Pair :foo 0 0 0`
+        let test = vec![
+            9, // Prim_generic
+            7, // Prim tag: Pair
+            0, 0, 0, 6, // length of args
+            0, // Int tag
+            0, // 0
+            0, // Int tag
+            0, // 0
+            0, // Int tag
+            0, // 0
+            0, 0, 0, 4, // length of the annotation string
+            b':', b'f', b'o', b'o', // annotation
+        ];
+
+        let expected = MichelinePrimGeneric::<MichelineInt, 7> {
+            args: vec![0.into(), 0.into(), 0.into()],
+            annots: ":foo".into(),
+        };
+
+        let (remaining_input, optnatfoo) = NomReader::nom_read(test.as_slice()).unwrap();
+
+        assert!(remaining_input.is_empty());
+        assert_eq!(expected, optnatfoo);
+    }
+
+    #[test]
+    fn micheline_pair3_annot_encode() {
+        let expected = vec![
+            9, // Prim_generic
+            7, // Prim tag: Pair
+            0, 0, 0, 6, // length of args
+            0, // Int tag
+            0, // 0
+            0, // Int tag
+            0, // 0
+            0, // Int tag
+            0, // 0
+            0, 0, 0, 4, // length of the annotation string
+            b':', b'f', b'o', b'o', // annotation
+        ];
+
+        let test = MichelinePrimGeneric::<MichelineInt, 7> {
+            args: vec![0.into(), 0.into(), 0.into()],
             annots: ":foo".into(),
         };
 
