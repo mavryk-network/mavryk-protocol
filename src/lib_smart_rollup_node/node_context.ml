@@ -1133,6 +1133,7 @@ let gc node_ctxt ~(level : int32) =
           (* Start both node and context gc asynchronously *)
           let*! () = Context.gc node_ctxt.context context in
           let* () = Store.gc node_ctxt.store ~level:gc_level in
+          let* () = return @@ Metrics.Gc.set_last_gc (Ptime_clock.now ()) in
           return_unit)
   | _ -> return_unit
 

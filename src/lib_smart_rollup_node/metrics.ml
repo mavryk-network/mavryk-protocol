@@ -252,3 +252,10 @@ module Inbox = struct
       [head_internal_messages_number; head_external_messages_number] ;
     {head_inbox_level}
 end
+
+module Gc = struct
+  let last_gc =
+    v_gauge ~help:"Last call to the rollup node garbage collector" "last_gc"
+
+  let set_last_gc pt = Prometheus.Gauge.set last_gc (Ptime.to_float_s pt)
+end

@@ -67,3 +67,7 @@ module Inbox : sig
   (** The inboxes metrics *)
   val metrics : t
 end
+
+module Gc : sig
+  val set_last_gc : Ptime.t -> unit
+end
