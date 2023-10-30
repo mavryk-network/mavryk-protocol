@@ -217,6 +217,14 @@ let has_already_been_handled state new_proposal =
   && state.level_state.is_latest_proposal_applied
 
 let rec handle_proposal ~is_proposal_applied state (new_proposal : proposal) =
+  (* We need to avoid to send preattestations, if we are in phases were
+     preattestations have been sent already. This is needed to avoid switching
+     back from Awaiting_attestations to Awaiting_preattestations. *)
+  let may_preattest state proposal =
+    match state.round_state.current_phase with
+    | Idle -> preattest state proposal
+    | _ -> do_nothing state
+  in
   let open Lwt_syntax in
   let current_level = state.level_state.current_level in
   let new_proposal_level = new_proposal.block.shell.level in
@@ -290,13 +298,13 @@ let rec handle_proposal ~is_proposal_applied state (new_proposal : proposal) =
               then
                 (* when the new head has the same payload as our
                    [locked_round], we accept it and preattest *)
-                preattest new_state new_proposal
+                may_preattest new_state new_proposal
               else
                 (* The payload is different *)
                 match new_proposal.block.prequorum with
                 | Some {round; _} when Round.(locked_round.round < round) ->
                     (* This PQC is above our locked_round, we can preattest it *)
-                    preattest new_state new_proposal
+                    may_preattest new_state new_proposal
                 | _ ->
                     (* We shouldn't preattest this proposal, but we
                        should at least watch (pre)quorums events on it
@@ -309,7 +317,7 @@ let rec handle_proposal ~is_proposal_applied state (new_proposal : proposal) =
           | None ->
               (* Otherwise, we did not lock on any payload, thus we can
                  preattest it *)
-              preattest new_state new_proposal)
+              may_preattest new_state new_proposal)
   else
     (* Last case: new_proposal_level > current_level *)
     (* Possible scenarios:
