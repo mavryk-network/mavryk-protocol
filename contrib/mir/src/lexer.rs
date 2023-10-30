@@ -89,6 +89,7 @@ defprim! {
     IF_LEFT,
     contract,
     address,
+    chain_id,
 }
 
 impl std::fmt::Display for Prim {

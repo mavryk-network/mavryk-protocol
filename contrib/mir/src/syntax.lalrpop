@@ -41,6 +41,7 @@ extern {
         "or" => Tok::Prim(Prim::or),
         "contract" => Tok::Prim(Prim::contract),
         "address" => Tok::Prim(Prim::address),
+        "chain_id" => Tok::Prim(Prim::chain_id),
         "True" => Tok::Prim(Prim::True),
         "False" => Tok::Prim(Prim::False),
         "Unit" => Tok::Prim(Prim::Unit),
@@ -98,6 +99,7 @@ atomic_type: Type = {
   "unit" => Type::Unit,
   "operation" => Type::Operation,
   "address" => Type::Address,
+  "chain_id" => Type::ChainId,
 }
 
 pair_args: Type = {

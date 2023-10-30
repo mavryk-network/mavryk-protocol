@@ -13,6 +13,7 @@ pub mod parsed;
 pub mod typechecked;
 
 use std::collections::BTreeMap;
+pub use tezos_crypto_rs::hash::ChainId;
 
 use crate::gas::{tc_cost, Gas, OutOfGas};
 
@@ -38,6 +39,7 @@ pub enum Type {
     Or(Box<(Type, Type)>),
     Contract(Box<Type>),
     Address,
+    ChainId,
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -57,7 +59,7 @@ impl Type {
         use Type::*;
         gas.consume(tc_cost::TYPE_PROP_STEP)?;
         Ok(match self {
-            Nat | Int | Bool | Mutez | String | Unit | Address => true,
+            Nat | Int | Bool | Mutez | String | Unit | Address | ChainId => true,
             Operation => match prop {
                 TypeProperty::Comparable
                 | TypeProperty::Passable
@@ -131,7 +133,7 @@ impl Type {
     pub fn size_for_gas(&self) -> usize {
         use Type::*;
         match self {
-            Nat | Int | Bool | Mutez | String | Unit | Operation | Address => 1,
+            Nat | Int | Bool | Mutez | String | Unit | Operation | Address | ChainId => 1,
             Pair(p) | Or(p) | Map(p) => 1 + p.0.size_for_gas() + p.1.size_for_gas(),
             Option(x) | List(x) | Contract(x) => 1 + x.size_for_gas(),
         }
@@ -249,6 +251,7 @@ pub enum TypedValue {
     Map(BTreeMap<TypedValue, TypedValue>),
     Or(Box<Or<TypedValue, TypedValue>>),
     Address(Address),
+    ChainId(ChainId),
 }
 
 impl TypedValue {
