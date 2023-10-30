@@ -27,6 +27,17 @@ kaitai_checks:
   script:
     - make -C ${CI_PROJECT_DIR} check-kaitai-struct-files
 
+kaitai_e2e_checks:
+  extends:
+    - .image_template__runtime_e2etest_dependencies
+  # These tests are not flaky at all so we overwrite the retry value
+  retry: 0
+  needs: [trigger]
+  before_script:
+    - . ./scripts/version.sh
+  script:
+    - ./contrib/lib_kaitai_of_data_encoding/test/kaitai_e2e.sh
+
 check_lift_limits_patch:
   extends:
     - .test_template
