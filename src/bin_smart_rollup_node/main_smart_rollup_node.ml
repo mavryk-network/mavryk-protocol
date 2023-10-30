@@ -383,10 +383,10 @@ let export_snapshot =
     (prefixes ["export"; "snapshot"; "into"] @@ Cli.snapshot_dir_param @@ stop)
     (fun data_dir dest cctxt ->
       let open Lwt_result_syntax in
-      let*! res = Snapshots.export cctxt ~data_dir ~dest in
+      let*! res = Snapshots.export_tgz cctxt ~data_dir ~dest in
       match res with
-      | Ok () ->
-          let*! () = cctxt#message "Snapshot exported to %s@." dest in
+      | Ok snapshot_file ->
+          let*! () = cctxt#message "Snapshot exported to %s@." snapshot_file in
           return_unit
       | Error errs -> cctxt#error "%a" pp_print_trace errs)
 

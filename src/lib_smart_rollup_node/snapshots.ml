@@ -5,6 +5,43 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+module Tgz = Tar.Make (Gzip)
+
+module type Reader = sig
+  type in_channel
+
+  val really_input : in_channel -> bytes -> int -> int -> unit
+
+  val input : in_channel -> bytes -> int -> int -> int
+end
+
+module type Writer = sig
+  type out_channel
+
+  val output : out_channel -> bytes -> int -> int -> unit
+
+  val close_out : out_channel -> unit
+end
+
+module Stdlib_reader : Reader with type in_channel = Stdlib.in_channel = Stdlib
+
+module Stdlib_writer : Writer with type out_channel = Stdlib.out_channel =
+  Stdlib
+
+module Gzip_reader : Reader with type in_channel = Gzip.in_channel = Gzip
+
+module Gzip_writer : Writer with type out_channel = Gzip.out_channel = Gzip
+
+module Tgz_writer = Tar.Make (struct
+  include Stdlib_reader
+  include Gzip_writer
+end)
+
+module Tgz_reader = Tar.Make (struct
+  include Gzip_reader
+  include Stdlib_writer
+end)
+
 let check_store_version store_dir =
   let open Lwt_result_syntax in
   let* store_version = Store_version.read_version_file ~dir:store_dir in
@@ -52,11 +89,11 @@ let pre_export_checks ~data_dir =
   let* store =
     Store.load Read_only ~index_buffer_size:0 ~l2_blocks_cache_size:1 store_dir
   in
-  let* _head = check_head store context in
+  let* head = check_head store context in
   (* Closing context and stores after checks *)
   let*! () = Context.close context in
   let* () = Store.close store in
-  return_unit
+  return head
 
 let remove_operator_local_data (store : Store.rw) =
   let open Lwt_result_syntax in
@@ -159,7 +196,7 @@ let export cctxt ~data_dir ~dest =
     (* Take GC lock first in order to not prevent progression of rollup node. *)
     Utils.with_lockfile (Node_context.processing_lockfile_path ~data_dir)
     @@ fun () ->
-    let* () = pre_export_checks ~data_dir in
+    let* _ = pre_export_checks ~data_dir in
     let store_dir = Configuration.default_storage_dir data_dir in
     let context_dir = Configuration.default_context_dir data_dir in
     let export_store_dir = Configuration.default_storage_dir dest in
@@ -182,3 +219,134 @@ let export cctxt ~data_dir ~dest =
   in
   let* () = post_export_checks cctxt ~dest in
   return_unit
+
+let list_files dir ~include_file f =
+  let rec list stream dir prefix =
+    let dh = Unix.opendir dir in
+    let rec list_dir stream =
+      match Unix.readdir dh with
+      | "." | ".." -> list_dir stream
+      | basename ->
+          let file = Filename.concat dir basename in
+          let file_base = Filename.concat prefix basename in
+          let stream =
+            if Sys.is_directory file then list stream file file_base
+            else if include_file ~file ~file_base then
+              Stream.icons (f ~file ~file_base) stream
+            else stream
+          in
+          list_dir stream
+      | exception End_of_file ->
+          Unix.closedir dh ;
+          stream
+    in
+    list_dir stream
+  in
+  list Stream.sempty dir ""
+
+let write_file_to_compressed file (out_chan : Gzip.out_channel) =
+  let fd = Unix.openfile file [O_RDONLY] 0o755 in
+  let buffer_size = 128 * 1024 in
+  let buf = Bytes.create buffer_size in
+  let rec copy () =
+    let read_bytes = Unix.read fd buf 0 buffer_size in
+    Gzip.output out_chan buf 0 read_bytes ;
+    if read_bytes >= buffer_size then copy ()
+  in
+  copy () ;
+  Gzip.flush_continue out_chan ;
+  Unix.close fd
+
+let export_files_tgz dir ~include_file ~dest =
+  let file_stream =
+    list_files dir ~include_file @@ fun ~file ~file_base ->
+    let {Unix.st_perm; st_size; st_mtime; _} = Unix.lstat file in
+    let header =
+      Tar.Header.make
+        ~file_mode:st_perm
+        ~mod_time:(Int64.of_float st_mtime)
+        file_base
+        (Int64.of_int st_size)
+    in
+    let writer = write_file_to_compressed file in
+    (header, writer)
+  in
+  let out_chan = Gzip.open_out dest in
+  Tgz_writer.Archive.create_gen file_stream out_chan ;
+  Gzip.close_out out_chan
+
+let operator_local_file_regexp =
+  Re.Str.regexp "^storage/\\(commitments_published_at_level.*\\|lpc$\\)"
+
+let snapshotable_files_regexp =
+  Re.Str.regexp "^\\(storage/.*\\|context/.*\\|metadata$\\)"
+
+let rec create_dir ?(perm = 0o755) dir =
+  let stat =
+    try Some (Unix.stat dir) with Unix.Unix_error (ENOENT, _, _) -> None
+  in
+  match stat with
+  | Some {st_kind = S_DIR; _} -> ()
+  | Some _ -> Stdlib.failwith "Not a directory"
+  | None -> (
+      create_dir ~perm (Filename.dirname dir) ;
+      try Unix.mkdir dir perm
+      with Unix.Unix_error (EEXIST, _, _) ->
+        (* This is the case where the directory has been created at the same
+           time. *)
+        ())
+
+let cpt = ref 0
+
+let out_channel_of_header ~data_dir (header : Tar.Header.t) =
+  incr cpt ;
+  let dest = Filename.concat data_dir header.file_name in
+  create_dir (Filename.dirname dest) ;
+  Stdlib.open_out_gen
+    [Open_wronly; Open_trunc; Open_creat; Open_binary]
+    header.file_mode
+    dest
+
+let import_tgz ~data_dir ~snapshot_file =
+  let in_chan = Gzip.open_in snapshot_file in
+  Tgz_reader.Archive.extract_gen (out_channel_of_header ~data_dir) in_chan ;
+  Gzip.close_in in_chan
+
+let post_export_tgz_checks cctxt ~snapshot_file =
+  Lwt_utils_unix.with_tempdir "snapshot_checks" @@ fun dest ->
+  let open Lwt_result_syntax in
+  let*! () = Lwt_utils_unix.create_dir dest in
+  import_tgz ~data_dir:dest ~snapshot_file ;
+  post_export_checks cctxt ~dest
+
+let export_tgz cctxt ~data_dir ~dest =
+  let open Lwt_result_syntax in
+  let* dest_tgz =
+    Utils.with_lockfile (Node_context.gc_lockfile_path ~data_dir) @@ fun () ->
+    (* Take GC lock first in order to not prevent progression of rollup node. *)
+    Utils.with_lockfile (Node_context.processing_lockfile_path ~data_dir)
+    @@ fun () ->
+    let* head = pre_export_checks ~data_dir in
+    let dest_tgz =
+      Filename.concat dest
+      @@ Format.asprintf
+           "snapshot-%ld-%a.tgz"
+           head.header.level
+           Block_hash.pp
+           head.header.block_hash
+    in
+    let*! () =
+      let open Lwt_syntax in
+      let* () = Lwt_utils_unix.create_dir dest in
+      let include_file ~file:_ ~file_base =
+        Re.Str.string_match snapshotable_files_regexp file_base 0
+        && not (Re.Str.string_match operator_local_file_regexp file_base 0)
+      in
+      export_files_tgz data_dir ~include_file ~dest:dest_tgz ;
+      return_unit
+    in
+    return dest_tgz
+  in
+  Format.eprintf "Checking snapshot@." ;
+  let* () = post_export_tgz_checks cctxt ~snapshot_file:dest_tgz in
+  return dest_tgz
