@@ -851,6 +851,15 @@ let mapping_storage =
     bin = kernel_inputs_path ^ "/mapping_storage.bin";
   }
 
+(** The info for the "events.sol" contract.
+    See [src/kernel_evm/solidity_examples] *)
+let events =
+  {
+    label = "events";
+    abi = kernel_inputs_path ^ "/events.abi";
+    bin = kernel_inputs_path ^ "/events.bin";
+  }
+
 (** Test that the contract creation works.  *)
 let test_l2_deploy_simple_storage =
   Protocol.register_test
@@ -1140,14 +1149,16 @@ let test_log_index =
   in
   let endpoint = Evm_proxy_server.endpoint evm_proxy_server in
   let sender = Eth_account.bootstrap_accounts.(0) in
-  (* deploy the contract *)
-  let* _address, _tx = deploy ~contract:erc20 ~sender evm_setup in
-  (* sender mints 42 and player (bootstrap 1) mints 100 *)
-  let raw_mint0 =
-    "0xf88a01843b9aca008301039194d77420f73b4612a7a99dba8c2afd30a1886b034480a4a0712d68000000000000000000000000000000000000000000000000000000000000002a820a96a01de426cd37041764ebe311adea86dee3b4fa86e9952d767a8ec5c02f2c10205aa03ecfe60d85fc7b237388bc831b29c0b5e93d06991436226fd1ee5480482057ca"
+  let _player = Eth_account.bootstrap_accounts.(1) in
+  (* deploy the events contract *)
+  let* _address, _tx = deploy ~contract:events ~sender evm_setup in
+  (* Emits two events: EventA and EventB *)
+  let raw_emitBoth =
+    "0xf88901843b9aca00826bf694d77420f73b4612a7a99dba8c2afd30a1886b034480a4cc79cf9d0000000000000000000000000000000000000000000000000000000000000064820a96a01350f66edc1a5bfa7dc8651d5735dbb343c491939a9e49b3f1a041b6a234df72a0028c5523a2bcc1077e090360a0e96ffaff7a2f26fd161b87107252e4bb83c47b"
   in
-  let raw_mint1 =
-    "0xf88980843b9aca0082c0c594d77420f73b4612a7a99dba8c2afd30a1886b034480a4a0712d680000000000000000000000000000000000000000000000000000000000000064820a95a00ca23196b68804a6ceccd551a601b7ca7deea72ee771c410741b253d7a9ee81ca07b8d2af9b05c70c193320e0342bf19ab28ae81964d8ce7aac6a7d945bb6d3703"
+  (* Emits one event: EventA *)
+  let raw_emitA =
+    "0xf88902843b9aca0082644094d77420f73b4612a7a99dba8c2afd30a1886b034480a413c49adf000000000000000000000000000000000000000000000000000000000000000a820a96a0f16869c97f6bdc46bd4677f5c9433ad11677075d0effdfb733eac440e72f36a6a04509d8f4249743b12dc07555d6c613553b0c71d8043e2e761cdeeb611c67d824"
   in
   let* _requests, _receipt, hashes =
     send_n_transactions
@@ -1155,12 +1166,12 @@ let test_log_index =
       ~node
       ~client
       ~evm_proxy_server
-      [raw_mint0; raw_mint1]
+      [raw_emitBoth; raw_emitA]
   in
   let* () =
-    check_log_indices ~endpoint ~status:true ~tx:(List.nth hashes 0) [0l]
+    check_log_indices ~endpoint ~status:true ~tx:(List.hd hashes) [0l; 1l]
   in
-  check_log_indices ~endpoint ~status:true ~tx:(List.nth hashes 1) [1l]
+  check_log_indices ~endpoint ~status:true ~tx:(List.nth hashes 1) [2l]
 
 (* TODO: add internal parameters here (e.g the kernel version) *)
 type config_result = {chain_id : int64}
