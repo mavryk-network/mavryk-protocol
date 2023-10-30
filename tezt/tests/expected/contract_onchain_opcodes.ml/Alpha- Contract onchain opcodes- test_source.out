@@ -120,7 +120,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c
       Storage size: 65 bytes
-      Consumed gas: 1279.372
+      Consumed gas: 1279.286
 
 
 ./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'
@@ -154,7 +154,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 55 bytes
-      Consumed gas: 1739.356
+      Consumed gas: 1739.270
       Internal operations:
         Internal Transaction:
           Amount: ꜩ0
@@ -163,7 +163,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c
           Storage size: 65 bytes
-          Consumed gas: 1210.707
+          Consumed gas: 1210.621
 
 
 ./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'

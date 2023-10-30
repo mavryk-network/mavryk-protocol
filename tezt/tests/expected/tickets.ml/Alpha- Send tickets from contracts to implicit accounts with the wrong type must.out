@@ -136,7 +136,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 145 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 2211.251
+      Consumed gas: 2211.165
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ꜩ0.0165
         storage fees ........................... +ꜩ0.0165
@@ -149,7 +149,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 42 bytes
-          Consumed gas: 1853.656
+          Consumed gas: 1853.570
 
 
 ./octez-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg '"[PUBLIC_KEY_HASH]"'

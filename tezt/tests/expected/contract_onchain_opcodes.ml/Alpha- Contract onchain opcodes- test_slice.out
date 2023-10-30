@@ -445,7 +445,7 @@ This sequence of operations was run:
       Updated storage:
         0x0103fe5753baadb56a4836e34571ce4cbe82158ee40eba872b848f709699019725ba
       Storage size: 578 bytes
-      Consumed gas: 1525.659
+      Consumed gas: 1525.573
       Internal operations:
         Internal Transaction:
           Amount: ꜩ1

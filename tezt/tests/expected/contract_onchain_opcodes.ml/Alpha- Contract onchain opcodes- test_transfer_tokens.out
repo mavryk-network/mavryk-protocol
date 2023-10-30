@@ -169,7 +169,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 66 bytes
-      Consumed gas: 1741.268
+      Consumed gas: 1741.182
       Internal operations:
         Internal Transaction:
           Amount: ꜩ100
@@ -178,7 +178,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 38 bytes
-          Consumed gas: 1208.328
+          Consumed gas: 1208.242
           Balance updates:
             [CONTRACT_HASH] ... -ꜩ100
             [CONTRACT_HASH] ... +ꜩ100
@@ -212,7 +212,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 66 bytes
-      Consumed gas: 1741.268
+      Consumed gas: 1741.182
       Internal operations:
         Internal Transaction:
           Amount: ꜩ100
@@ -221,7 +221,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 38 bytes
-          Consumed gas: 1208.328
+          Consumed gas: 1208.242
           Balance updates:
             [CONTRACT_HASH] ... -ꜩ100
             [CONTRACT_HASH] ... +ꜩ100

@@ -94,7 +94,7 @@ This sequence of operations was run:
       Updated storage: { 0xaa ; 0xbb ; 0xcc }
       Storage size: 272 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1320.319
+      Consumed gas: 1320.233
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ꜩ0.0045
         storage fees ........................... +ꜩ0.0045
@@ -132,7 +132,7 @@ This sequence of operations was run:
       Updated storage: { 0xaa ; 0xbb ; 0xcc ; 0xdd ; 0xee ; 0xff }
       Storage size: 290 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1322.935
+      Consumed gas: 1322.849
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ꜩ0.0045
         storage fees ........................... +ꜩ0.0045

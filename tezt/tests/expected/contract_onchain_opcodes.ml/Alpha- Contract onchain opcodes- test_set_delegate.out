@@ -71,7 +71,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 51 bytes
-      Consumed gas: 1285.808
+      Consumed gas: 1285.722
       Internal operations:
         Internal Delegation:
           Contract: [CONTRACT_HASH]
@@ -108,7 +108,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 51 bytes
-      Consumed gas: 1279.930
+      Consumed gas: 1279.844
       Internal operations:
         Internal Delegation:
           Contract: [CONTRACT_HASH]

@@ -127,7 +127,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 82 bytes
-      Consumed gas: 1745.840
+      Consumed gas: 1745.754
       Internal operations:
         Internal Transaction:
           Amount: ꜩ0
@@ -137,5 +137,5 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 83 bytes
-          Consumed gas: 1216.725
+          Consumed gas: 1216.639
 

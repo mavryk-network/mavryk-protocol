@@ -80,7 +80,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 93 bytes
-      Consumed gas: 1289.005
+      Consumed gas: 1288.919
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ꜩ1
         [CONTRACT_HASH] ... +ꜩ1

@@ -70,7 +70,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 1
       Storage size: 40 bytes
-      Consumed gas: 1277.860
+      Consumed gas: 1277.774
 
 
 ./octez-client --mode mockup rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'

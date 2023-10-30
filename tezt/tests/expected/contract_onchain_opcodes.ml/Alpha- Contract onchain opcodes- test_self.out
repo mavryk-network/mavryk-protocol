@@ -70,7 +70,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 0x01fabd76c7ade40ef0e6a7b2be514d9e617e0a424800
       Storage size: 67 bytes
-      Consumed gas: 1280.099
+      Consumed gas: 1280.013
 
 
 ./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'

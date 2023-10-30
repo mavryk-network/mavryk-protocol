@@ -72,7 +72,7 @@ This sequence of operations was run:
       Updated storage: "abcdefg"
       Storage size: 48 bytes
       Paid storage size diff: 7 bytes
-      Consumed gas: 1278.162
+      Consumed gas: 1278.076
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ꜩ0.00175
         storage fees ........................... +ꜩ0.00175
@@ -109,7 +109,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: "xyz"
       Storage size: 44 bytes
-      Consumed gas: 1278.178
+      Consumed gas: 1278.092
 
 
 ./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'
