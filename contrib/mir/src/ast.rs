@@ -171,6 +171,7 @@ pub enum Value {
     Elt(Box<(Value, Value)>),
     Left(Box<Value>),
     Right(Box<Value>),
+    Bytes(Vec<u8>),
 }
 
 impl Value {
