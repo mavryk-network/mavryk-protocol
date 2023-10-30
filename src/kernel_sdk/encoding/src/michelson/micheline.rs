@@ -10,7 +10,8 @@
 //! [lib_micheline]: <https://gitlab.com/tezos/tezos/-/blob/9028b797894a5d9db38bc61a20abb793c3778316/src/lib_micheline/micheline_encoding.ml>
 use nom::bytes::complete::tag;
 use nom::combinator::map;
-use nom::sequence::{pair, preceded};
+use nom::sequence::{pair, preceded, tuple};
+use nom::Err;
 use tezos_data_encoding::enc::{self, BinResult, BinSerializer, BinWriter};
 use tezos_data_encoding::encoding::{Encoding, HasEncoding};
 use tezos_data_encoding::has_encoding;
@@ -156,12 +157,93 @@ where
     pub(crate) annots: String,
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum Micheline {
+    Int(Zarith),
+    String(String),
+    Bytes(Vec<u8>),
+    App(u8, Vec<Micheline>, Option<String>),
+}
+
+impl From<MichelineInt> for Micheline {
+    fn from(i: MichelineInt) -> Self {
+        let MichelineInt(i) = i;
+        Micheline::Int(i)
+    }
+}
+
+impl From<MichelineString> for Micheline {
+    fn from(s: MichelineString) -> Self {
+        let MichelineString(s) = s;
+        Micheline::String(s)
+    }
+}
+
+impl From<MichelineBytes> for Micheline {
+    fn from(s: MichelineBytes) -> Self {
+        let MichelineBytes(s) = s;
+        Micheline::Bytes(s)
+    }
+}
+
+impl<const PRIM_TAG: u8> From<MichelinePrimNoArgsNoAnnots<PRIM_TAG>> for Micheline {
+    fn from(_: MichelinePrimNoArgsNoAnnots<PRIM_TAG>) -> Self {
+        Micheline::App(PRIM_TAG, vec![], None)
+    }
+}
+
+impl<const PRIM_TAG: u8> From<MichelinePrimNoArgsSomeAnnots<PRIM_TAG>> for Micheline {
+    fn from(a: MichelinePrimNoArgsSomeAnnots<PRIM_TAG>) -> Self {
+        Micheline::App(PRIM_TAG, vec![], Some(a.annots))
+    }
+}
+
+impl<Arg, const PRIM_TAG: u8> From<MichelinePrim1ArgNoAnnots<Arg, PRIM_TAG>> for Micheline
+where
+    Arg: Debug + PartialEq + Eq,
+    Micheline: From<Arg>,
+{
+    fn from(a: MichelinePrim1ArgNoAnnots<Arg, PRIM_TAG>) -> Self {
+        Micheline::App(PRIM_TAG, vec![a.arg.into()], None)
+    }
+}
+
+impl<Arg, const PRIM_TAG: u8> From<MichelinePrim1ArgSomeAnnots<Arg, PRIM_TAG>>
+    for Micheline
+where
+    Arg: Debug + PartialEq + Eq,
+    Micheline: From<Arg>,
+{
+    fn from(a: MichelinePrim1ArgSomeAnnots<Arg, PRIM_TAG>) -> Self {
+        Micheline::App(PRIM_TAG, vec![a.arg.into()], Some(a.annots))
+    }
+}
+
+impl<Arg1, Arg2, const PRIM_TAG: u8>
+    From<MichelinePrim2ArgsNoAnnots<Arg1, Arg2, PRIM_TAG>> for Micheline
+where
+    Arg1: Debug + PartialEq + Eq,
+    Arg2: Debug + PartialEq + Eq,
+    Micheline: From<Arg1>,
+    Micheline: From<Arg2>,
+{
+    fn from(a: MichelinePrim2ArgsNoAnnots<Arg1, Arg2, PRIM_TAG>) -> Self {
+        Micheline::App(PRIM_TAG, vec![a.arg1.into(), a.arg2.into()], None)
+    }
+}
+
 // ----------
 // CONVERSION
 // ----------
 impl From<i32> for MichelineInt {
     fn from(int: i32) -> Self {
         MichelineInt(Zarith(int.into()))
+    }
+}
+
+impl From<i32> for Micheline {
+    fn from(int: i32) -> Self {
+        Micheline::Int(Zarith(int.into()))
     }
 }
 
@@ -366,6 +448,64 @@ where
     }
 }
 
+impl NomReader for Micheline {
+    fn nom_read(input: &[u8]) -> NomResult<Self> {
+        if input.is_empty() {
+            return Err(Err::Error(nom_read::error::DecodeError::unknown_tag(
+                input,
+                "".to_string(),
+            )));
+        }
+        match input[0] {
+            MICHELINE_INT_TAG => map(nom_read_micheline_int, Micheline::Int)(input),
+            MICHELINE_STRING_TAG => {
+                map(nom_read_micheline_string, Micheline::String)(input)
+            }
+            MICHELINE_BYTES_TAG => {
+                map(nom_read_micheline_bytes(nom_read::bytes), Micheline::Bytes)(input)
+            }
+            MICHELINE_PRIM_NO_ARGS_NO_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_no_args_no_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_NO_ARGS_SOME_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_no_args_some_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_1_ARG_NO_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_1_arg_no_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_1_ARG_SOME_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_1_arg_some_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_2_ARGS_NO_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_2_args_no_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_2_ARGS_SOME_ANNOTS_TAG => {
+                let (input, app) =
+                    nom_read_micheline_prim_2_args_some_annots(input, input[1])?;
+                Ok((input, app))
+            }
+            MICHELINE_PRIM_GENERIC_TAG => {
+                let (input, app) = nom_read_micheline_prim_generic(input, input[1])?;
+                Ok((input, app))
+            }
+            tag => Err(Err::Error(nom_read::error::DecodeError::unknown_tag(
+                input,
+                tag.to_string(),
+            ))),
+        }
+    }
+}
+
 // ----------
 // BIN_WRITER
 // ----------
@@ -487,6 +627,95 @@ pub(crate) fn nom_read_micheline_string(input: NomInput) -> NomResult<String> {
 /// Read int with a prefix of [MICHELINE_INT_TAG].
 pub(crate) fn nom_read_micheline_int(input: NomInput) -> NomResult<Zarith> {
     nom_read_tagged_micheline::<_, { MICHELINE_INT_TAG }>(Zarith::nom_read)(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_no_args_no_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    map(
+        tag([MICHELINE_PRIM_NO_ARGS_NO_ANNOTS_TAG, prim_tag]),
+        |_prim| Micheline::App(prim_tag, vec![], None),
+    )(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_no_args_some_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_NO_ARGS_SOME_ANNOTS_TAG, prim_tag]),
+        nom_read::string,
+    );
+    map(parse, |annots| {
+        Micheline::App(prim_tag, vec![], Some(annots))
+    })(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_1_arg_no_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_1_ARG_NO_ANNOTS_TAG, prim_tag]),
+        Micheline::nom_read,
+    );
+    map(parse, |arg| Micheline::App(prim_tag, vec![arg], None))(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_1_arg_some_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_1_ARG_NO_ANNOTS_TAG, prim_tag]),
+        pair(Micheline::nom_read, nom_read::string),
+    );
+    map(parse, |(arg, annots)| {
+        Micheline::App(prim_tag, vec![arg], Some(annots))
+    })(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_2_args_no_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_2_ARGS_NO_ANNOTS_TAG, prim_tag]),
+        pair(Micheline::nom_read, Micheline::nom_read),
+    );
+    map(parse, |(arg1, arg2)| {
+        Micheline::App(prim_tag, vec![arg1, arg2], None)
+    })(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_2_args_some_annots(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_1_ARG_NO_ANNOTS_TAG, prim_tag]),
+        tuple((Micheline::nom_read, Micheline::nom_read, nom_read::string)),
+    );
+    map(parse, |(arg1, arg2, annots)| {
+        Micheline::App(prim_tag, vec![arg1, arg2], Some(annots))
+    })(input)
+}
+
+pub(crate) fn nom_read_micheline_prim_generic(
+    input: NomInput,
+    prim_tag: u8,
+) -> NomResult<Micheline> {
+    let parse = preceded(
+        tag([MICHELINE_PRIM_GENERIC_TAG, prim_tag]),
+        pair(
+            nom_read::dynamic(nom_read::list(Micheline::nom_read)),
+            nom_read::string,
+        ),
+    );
+    map(parse, |(args, annots)| {
+        Micheline::App(prim_tag, args, Some(annots))
+    })(input)
 }
 
 // -------------------------
@@ -1018,23 +1247,24 @@ mod test {
 
     #[test]
     fn micheline_pair3_annot_decode() {
-        // Decode `Pair :foo 0 0 0`
+        // Decode `Pair :foo Unit 0 0`
         let test = vec![
             9, // Prim_generic
             7, // Prim tag: Pair
-            0, 0, 0, 6, // length of args
-            0, // Int tag
-            0, // 0
-            0, // Int tag
-            0, // 0
-            0, // Int tag
-            0, // 0
+            0, 0, 0, 6,  // length of args
+            3,  // Prim_0 (no annots)
+            11, // Prim tag: Unit
+            0,  // Int tag
+            0,  // 0
+            0,  // Int tag
+            0,  // 0
             0, 0, 0, 4, // length of the annotation string
             b':', b'f', b'o', b'o', // annotation
         ];
 
-        let expected = MichelinePrimGeneric::<MichelineInt, 7> {
-            args: vec![0.into(), 0.into(), 0.into()],
+        let unit = MichelinePrimNoArgsNoAnnots::<11> {};
+        let expected = MichelinePrimGeneric::<Micheline, 7> {
+            args: vec![unit.into(), 0.into(), 0.into()],
             annots: ":foo".into(),
         };
 
