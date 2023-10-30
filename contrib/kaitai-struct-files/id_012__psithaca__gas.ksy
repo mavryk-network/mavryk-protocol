@@ -30,6 +30,6 @@ seq:
 - id: id_012__psithaca__gas_tag
   type: u1
   enum: id_012__psithaca__gas_tag
-- id: id_012__psithaca__gas_limited
+- id: limited__id_012__psithaca__gas
   type: z
   if: (id_012__psithaca__gas_tag == id_012__psithaca__gas_tag::limited)

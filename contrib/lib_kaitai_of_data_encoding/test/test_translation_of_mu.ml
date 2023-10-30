@@ -45,10 +45,10 @@ let%expect_test "test basic mu" =
         - id: ilist_tag
           type: u1
           enum: ilist_tag
-        - id: ilist_cons
-          type: ilist_cons
+        - id: cons__ilist
+          type: cons__ilist
           if: (ilist_tag == ilist_tag::cons)
-      ilist_cons:
+      cons__ilist:
         seq:
         - id: hd
           type: u2
@@ -114,38 +114,38 @@ let%expect_test "test more mu" =
         - id: mt_tag
           type: u1
           enum: mt_tag
-        - id: mt_one
+        - id: one__mt
           type: u1
           if: (mt_tag == mt_tag::one)
           enum: bool
-        - id: mt_seq
-          type: mt_seq
+        - id: seq__mt
+          type: seq__mt
           if: (mt_tag == mt_tag::seq)
-        - id: mt_branch
-          type: mt_branch
+        - id: branch__mt
+          type: branch__mt
           if: (mt_tag == mt_tag::branch)
-      mt_branch:
+      branch__mt:
         seq:
         - id: payload
           type: u1
           enum: bool
-        - id: branches
-          type: branches
-      branches:
+        - id: branch__branches
+          type: branch__branches
+      branch__branches:
         seq:
         - id: size_of_branches
           type: u4
           valid:
             max: 1073741823
         - id: branches
-          type: branches_entries
+          type: branch__branches_entries
           size: size_of_branches
           repeat: eos
-      branches_entries:
+      branch__branches_entries:
         seq:
         - id: branches_elt
           type: mt
-      mt_seq:
+      seq__mt:
         seq:
         - id: payload
           type: u1

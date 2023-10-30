@@ -8,32 +8,26 @@ types:
     - id: id_008__ptedo2zk__contract_id_tag
       type: u1
       enum: id_008__ptedo2zk__contract_id_tag
-    - id: id_008__ptedo2zk__contract_id_implicit
-      type: public_key_hash
+    - id: implicit__id_008__ptedo2zk__contract_id
+      type: implicit__public_key_hash
       if: (id_008__ptedo2zk__contract_id_tag == id_008__ptedo2zk__contract_id_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_008__ptedo2zk__contract_id_originated
-      type: id_008__ptedo2zk__contract_id_originated
+    - id: originated__id_008__ptedo2zk__contract_id
+      type: originated__id_008__ptedo2zk__contract_id
       if: (id_008__ptedo2zk__contract_id_tag == id_008__ptedo2zk__contract_id_tag::originated)
-  id_008__ptedo2zk__contract_id_originated:
+  originated__id_008__ptedo2zk__contract_id:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
-  public_key_hash:
+  implicit__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: implicit__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
 enums:

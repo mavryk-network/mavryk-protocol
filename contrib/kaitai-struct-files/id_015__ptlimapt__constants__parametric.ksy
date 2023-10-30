@@ -30,13 +30,7 @@ types:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
   ratio_of_frozen_deposits_slashed_per_double_endorsement:

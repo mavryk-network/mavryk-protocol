@@ -15,29 +15,37 @@ types:
     - id: id_007__psdelph1__operation__alpha__internal_operation_tag
       type: u1
       enum: id_007__psdelph1__operation__alpha__internal_operation_tag
-    - id: id_007__psdelph1__operation__alpha__internal_operation_reveal
-      type: public_key
+    - id: reveal__id_007__psdelph1__operation__alpha__internal_operation
+      type: reveal__public_key
       if: (id_007__psdelph1__operation__alpha__internal_operation_tag == id_007__psdelph1__operation__alpha__internal_operation_tag::reveal)
       doc: A Ed25519, Secp256k1, or P256 public key
-    - id: id_007__psdelph1__operation__alpha__internal_operation_transaction
-      type: id_007__psdelph1__operation__alpha__internal_operation_transaction
+    - id: transaction__id_007__psdelph1__operation__alpha__internal_operation
+      type: transaction__id_007__psdelph1__operation__alpha__internal_operation
       if: (id_007__psdelph1__operation__alpha__internal_operation_tag == id_007__psdelph1__operation__alpha__internal_operation_tag::transaction)
-    - id: id_007__psdelph1__operation__alpha__internal_operation_origination
-      type: id_007__psdelph1__operation__alpha__internal_operation_origination
+    - id: origination__id_007__psdelph1__operation__alpha__internal_operation
+      type: origination__id_007__psdelph1__operation__alpha__internal_operation
       if: (id_007__psdelph1__operation__alpha__internal_operation_tag == id_007__psdelph1__operation__alpha__internal_operation_tag::origination)
-    - id: id_007__psdelph1__operation__alpha__internal_operation_delegation
-      type: id_007__psdelph1__operation__alpha__internal_operation_delegation
+    - id: delegation__id_007__psdelph1__operation__alpha__internal_operation
+      type: delegation__id_007__psdelph1__operation__alpha__internal_operation
       if: (id_007__psdelph1__operation__alpha__internal_operation_tag == id_007__psdelph1__operation__alpha__internal_operation_tag::delegation)
-  id_007__psdelph1__operation__alpha__internal_operation_delegation:
+  delegation__id_007__psdelph1__operation__alpha__internal_operation:
     seq:
     - id: delegate_tag
       type: u1
       enum: bool
     - id: delegate
-      type: public_key_hash
+      type: delegation__public_key_hash
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-  id_007__psdelph1__operation__alpha__internal_operation_origination:
+  delegation__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: delegation__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  origination__id_007__psdelph1__operation__alpha__internal_operation:
     seq:
     - id: balance
       type: n
@@ -45,18 +53,18 @@ types:
       type: u1
       enum: bool
     - id: delegate
-      type: public_key_hash
+      type: origination__public_key_hash
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: script
-      type: id_007__psdelph1__scripted__contracts
-  id_007__psdelph1__scripted__contracts:
+      type: origination__id_007__psdelph1__scripted__contracts
+  origination__id_007__psdelph1__scripted__contracts:
     seq:
-    - id: code
-      type: code
-    - id: storage
-      type: storage
-  storage:
+    - id: origination__code
+      type: origination__code
+    - id: origination__storage
+      type: origination__storage
+  origination__storage:
     seq:
     - id: size_of_storage
       type: u4
@@ -64,7 +72,7 @@ types:
         max: 1073741823
     - id: storage
       size: size_of_storage
-  code:
+  origination__code:
     seq:
     - id: size_of_code
       type: u4
@@ -72,29 +80,37 @@ types:
         max: 1073741823
     - id: code
       size: size_of_code
-  id_007__psdelph1__operation__alpha__internal_operation_transaction:
+  origination__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: origination__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  transaction__id_007__psdelph1__operation__alpha__internal_operation:
     seq:
     - id: amount
       type: n
     - id: destination
-      type: id_007__psdelph1__contract_id
+      type: transaction__id_007__psdelph1__contract_id
       doc: ! >-
         A contract handle: A contract notation as given to an RPC or inside scripts.
         Can be a base58 implicit contract hash or a base58 originated contract hash.
     - id: parameters_tag
       type: u1
       enum: bool
-    - id: parameters
-      type: parameters
+    - id: transaction__parameters
+      type: transaction__parameters
       if: (parameters_tag == bool::true)
-  parameters:
+  transaction__parameters:
     seq:
     - id: entrypoint
-      type: id_007__psdelph1__entrypoint
+      type: transaction__id_007__psdelph1__entrypoint
       doc: ! 'entrypoint: Named entrypoint to a Michelson smart contract'
-    - id: value
-      type: value
-  value:
+    - id: transaction__value
+      type: transaction__value
+  transaction__value:
     seq:
     - id: size_of_value
       type: u4
@@ -102,15 +118,15 @@ types:
         max: 1073741823
     - id: value
       size: size_of_value
-  id_007__psdelph1__entrypoint:
+  transaction__id_007__psdelph1__entrypoint:
     seq:
     - id: id_007__psdelph1__entrypoint_tag
       type: u1
       enum: id_007__psdelph1__entrypoint_tag
-    - id: id_007__psdelph1__entrypoint_named
-      type: id_007__psdelph1__entrypoint_named
+    - id: transaction__named__id_007__psdelph1__entrypoint
+      type: transaction__named__id_007__psdelph1__entrypoint
       if: (id_007__psdelph1__entrypoint_tag == id_007__psdelph1__entrypoint_tag::named)
-  id_007__psdelph1__entrypoint_named:
+  transaction__named__id_007__psdelph1__entrypoint:
     seq:
     - id: size_of_named
       type: u1
@@ -119,6 +135,33 @@ types:
       size-eos: true
       valid:
         max: 31
+  transaction__id_007__psdelph1__contract_id:
+    seq:
+    - id: id_007__psdelph1__contract_id_tag
+      type: u1
+      enum: id_007__psdelph1__contract_id_tag
+    - id: transaction__implicit__id_007__psdelph1__contract_id
+      type: transaction__implicit__public_key_hash
+      if: (id_007__psdelph1__contract_id_tag == id_007__psdelph1__contract_id_tag::implicit)
+      doc: A Ed25519, Secp256k1, or P256 public key hash
+    - id: transaction__originated__id_007__psdelph1__contract_id
+      type: transaction__originated__id_007__psdelph1__contract_id
+      if: (id_007__psdelph1__contract_id_tag == id_007__psdelph1__contract_id_tag::originated)
+  transaction__originated__id_007__psdelph1__contract_id:
+    seq:
+    - id: contract_hash
+      size: 20
+    - id: originated_padding
+      size: 1
+      doc: This field is for padding, ignore
+  transaction__implicit__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: transaction__implicit__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
   n:
     seq:
     - id: n
@@ -131,18 +174,12 @@ types:
       type: b1be
     - id: payload
       type: b7be
-  public_key:
+  reveal__public_key:
     seq:
     - id: public_key_tag
       type: u1
       enum: public_key_tag
-    - id: public_key_ed25519
-      size: 32
-      if: (public_key_tag == public_key_tag::ed25519)
-    - id: public_key_secp256k1
-      size: 33
-      if: (public_key_tag == public_key_tag::secp256k1)
-    - id: public_key_p256
+    - id: reveal__p256__public_key
       size: 33
       if: (public_key_tag == public_key_tag::p256)
   id_007__psdelph1__contract_id:
@@ -150,32 +187,26 @@ types:
     - id: id_007__psdelph1__contract_id_tag
       type: u1
       enum: id_007__psdelph1__contract_id_tag
-    - id: id_007__psdelph1__contract_id_implicit
-      type: public_key_hash
+    - id: implicit__id_007__psdelph1__contract_id
+      type: implicit__public_key_hash
       if: (id_007__psdelph1__contract_id_tag == id_007__psdelph1__contract_id_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_007__psdelph1__contract_id_originated
-      type: id_007__psdelph1__contract_id_originated
+    - id: originated__id_007__psdelph1__contract_id
+      type: originated__id_007__psdelph1__contract_id
       if: (id_007__psdelph1__contract_id_tag == id_007__psdelph1__contract_id_tag::originated)
-  id_007__psdelph1__contract_id_originated:
+  originated__id_007__psdelph1__contract_id:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
-  public_key_hash:
+  implicit__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: implicit__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
 enums:

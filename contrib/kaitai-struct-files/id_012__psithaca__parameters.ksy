@@ -8,34 +8,42 @@ types:
     - id: delegate_selection_tag
       type: u1
       enum: delegate_selection_tag
-    - id: delegate_selection_round_robin_over_delegates
-      type: delegate_selection_round_robin_over_delegates
+    - id: round_robin_over_delegates__delegate_selection
+      type: round_robin_over_delegates__delegate_selection
       if: (delegate_selection_tag == delegate_selection_tag::round_robin_over_delegates)
-  delegate_selection_round_robin_over_delegates:
+  round_robin_over_delegates__delegate_selection:
     seq:
     - id: size_of_round_robin_over_delegates
       type: u4
       valid:
         max: 1073741823
     - id: round_robin_over_delegates
-      type: round_robin_over_delegates_entries
+      type: round_robin_over_delegates__round_robin_over_delegates_entries
       size: size_of_round_robin_over_delegates
       repeat: eos
-  round_robin_over_delegates_entries:
+  round_robin_over_delegates__round_robin_over_delegates_entries:
     seq:
     - id: size_of_round_robin_over_delegates_elt
       type: u4
       valid:
         max: 1073741823
     - id: round_robin_over_delegates_elt
-      type: round_robin_over_delegates_elt_entries
+      type: round_robin_over_delegates__round_robin_over_delegates_elt_entries
       size: size_of_round_robin_over_delegates_elt
       repeat: eos
-  round_robin_over_delegates_elt_entries:
+  round_robin_over_delegates__round_robin_over_delegates_elt_entries:
     seq:
     - id: signature__v0__public_key
-      type: public_key
+      type: round_robin_over_delegates__public_key
       doc: A Ed25519, Secp256k1, or P256 public key
+  round_robin_over_delegates__public_key:
+    seq:
+    - id: public_key_tag
+      type: u1
+      enum: public_key_tag
+    - id: round_robin_over_delegates__p256__public_key
+      size: 33
+      if: (public_key_tag == public_key_tag::p256)
   ratio_of_frozen_deposits_slashed_per_double_endorsement:
     seq:
     - id: numerator
@@ -124,6 +132,14 @@ types:
         max: 1073741823
     - id: code
       size: size_of_code
+  public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
   bootstrap_accounts:
     seq:
     - id: size_of_bootstrap_accounts
@@ -139,16 +155,16 @@ types:
     - id: bootstrap_accounts_elt_tag
       type: u1
       enum: bootstrap_accounts_elt_tag
-    - id: bootstrap_accounts_elt_public_key_known
-      type: bootstrap_accounts_elt_public_key_known
+    - id: public_key_known__bootstrap_accounts_elt
+      type: public_key_known__bootstrap_accounts_elt
       if: (bootstrap_accounts_elt_tag == bootstrap_accounts_elt_tag::public_key_known)
-    - id: bootstrap_accounts_elt_public_key_unknown
-      type: bootstrap_accounts_elt_public_key_unknown
+    - id: public_key_unknown__bootstrap_accounts_elt
+      type: public_key_unknown__bootstrap_accounts_elt
       if: (bootstrap_accounts_elt_tag == bootstrap_accounts_elt_tag::public_key_unknown)
-  bootstrap_accounts_elt_public_key_unknown:
+  public_key_unknown__bootstrap_accounts_elt:
     seq:
     - id: public_key_unknown_field0
-      type: public_key_hash
+      type: public_key_unknown__public_key_hash
       doc: ! 'A Ed25519, Secp256k1, or P256 public key hash
 
 
@@ -156,24 +172,18 @@ types:
     - id: public_key_unknown_field1
       type: n
       doc: id_012__psithaca__mutez
-  public_key_hash:
+  public_key_unknown__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: public_key_unknown__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
-  bootstrap_accounts_elt_public_key_known:
+  public_key_known__bootstrap_accounts_elt:
     seq:
     - id: public_key_known_field0
-      type: public_key
+      type: public_key_known__public_key
       doc: ! 'A Ed25519, Secp256k1, or P256 public key
 
 
@@ -193,18 +203,12 @@ types:
       type: b1be
     - id: payload
       type: b7be
-  public_key:
+  public_key_known__public_key:
     seq:
     - id: public_key_tag
       type: u1
       enum: public_key_tag
-    - id: public_key_ed25519
-      size: 32
-      if: (public_key_tag == public_key_tag::ed25519)
-    - id: public_key_secp256k1
-      size: 33
-      if: (public_key_tag == public_key_tag::secp256k1)
-    - id: public_key_p256
+    - id: public_key_known__p256__public_key
       size: 33
       if: (public_key_tag == public_key_tag::p256)
 enums:

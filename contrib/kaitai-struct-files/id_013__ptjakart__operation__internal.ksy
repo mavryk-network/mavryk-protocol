@@ -15,28 +15,36 @@ types:
     - id: id_013__ptjakart__apply_results__alpha__internal_operation_result_tag
       type: u1
       enum: id_013__ptjakart__apply_results__alpha__internal_operation_result_tag
-    - id: id_013__ptjakart__apply_results__alpha__internal_operation_result_transaction
-      type: id_013__ptjakart__apply_results__alpha__internal_operation_result_transaction
+    - id: transaction__id_013__ptjakart__apply_results__alpha__internal_operation_result
+      type: transaction__id_013__ptjakart__apply_results__alpha__internal_operation_result
       if: (id_013__ptjakart__apply_results__alpha__internal_operation_result_tag ==
         id_013__ptjakart__apply_results__alpha__internal_operation_result_tag::transaction)
-    - id: id_013__ptjakart__apply_results__alpha__internal_operation_result_origination
-      type: id_013__ptjakart__apply_results__alpha__internal_operation_result_origination
+    - id: origination__id_013__ptjakart__apply_results__alpha__internal_operation_result
+      type: origination__id_013__ptjakart__apply_results__alpha__internal_operation_result
       if: (id_013__ptjakart__apply_results__alpha__internal_operation_result_tag ==
         id_013__ptjakart__apply_results__alpha__internal_operation_result_tag::origination)
-    - id: id_013__ptjakart__apply_results__alpha__internal_operation_result_delegation
-      type: id_013__ptjakart__apply_results__alpha__internal_operation_result_delegation
+    - id: delegation__id_013__ptjakart__apply_results__alpha__internal_operation_result
+      type: delegation__id_013__ptjakart__apply_results__alpha__internal_operation_result
       if: (id_013__ptjakart__apply_results__alpha__internal_operation_result_tag ==
         id_013__ptjakart__apply_results__alpha__internal_operation_result_tag::delegation)
-  id_013__ptjakart__apply_results__alpha__internal_operation_result_delegation:
+  delegation__id_013__ptjakart__apply_results__alpha__internal_operation_result:
     seq:
     - id: delegate_tag
       type: u1
       enum: bool
     - id: delegate
-      type: public_key_hash
+      type: delegation__public_key_hash
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-  id_013__ptjakart__apply_results__alpha__internal_operation_result_origination:
+  delegation__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: delegation__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  origination__id_013__ptjakart__apply_results__alpha__internal_operation_result:
     seq:
     - id: balance
       type: n
@@ -44,18 +52,18 @@ types:
       type: u1
       enum: bool
     - id: delegate
-      type: public_key_hash
+      type: origination__public_key_hash
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: script
-      type: id_013__ptjakart__scripted__contracts
-  id_013__ptjakart__scripted__contracts:
+      type: origination__id_013__ptjakart__scripted__contracts
+  origination__id_013__ptjakart__scripted__contracts:
     seq:
-    - id: code
-      type: code
-    - id: storage
-      type: storage
-  storage:
+    - id: origination__code
+      type: origination__code
+    - id: origination__storage
+      type: origination__storage
+  origination__storage:
     seq:
     - id: size_of_storage
       type: u4
@@ -63,7 +71,7 @@ types:
         max: 1073741823
     - id: storage
       size: size_of_storage
-  code:
+  origination__code:
     seq:
     - id: size_of_code
       type: u4
@@ -71,12 +79,20 @@ types:
         max: 1073741823
     - id: code
       size: size_of_code
-  id_013__ptjakart__apply_results__alpha__internal_operation_result_transaction:
+  origination__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: origination__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  transaction__id_013__ptjakart__apply_results__alpha__internal_operation_result:
     seq:
     - id: amount
       type: n
     - id: destination
-      type: id_013__ptjakart__transaction_destination
+      type: transaction__id_013__ptjakart__transaction_destination
       doc: ! >-
         A destination of a transaction: A destination notation compatible with the
         contract notation as given to an RPC or inside scripts. Can be a base58 implicit
@@ -85,17 +101,17 @@ types:
     - id: parameters_tag
       type: u1
       enum: bool
-    - id: parameters
-      type: parameters
+    - id: transaction__parameters
+      type: transaction__parameters
       if: (parameters_tag == bool::true)
-  parameters:
+  transaction__parameters:
     seq:
     - id: entrypoint
-      type: id_013__ptjakart__entrypoint
+      type: transaction__id_013__ptjakart__entrypoint
       doc: ! 'entrypoint: Named entrypoint to a Michelson smart contract'
-    - id: value
-      type: value
-  value:
+    - id: transaction__value
+      type: transaction__value
+  transaction__value:
     seq:
     - id: size_of_value
       type: u4
@@ -103,15 +119,15 @@ types:
         max: 1073741823
     - id: value
       size: size_of_value
-  id_013__ptjakart__entrypoint:
+  transaction__id_013__ptjakart__entrypoint:
     seq:
     - id: id_013__ptjakart__entrypoint_tag
       type: u1
       enum: id_013__ptjakart__entrypoint_tag
-    - id: id_013__ptjakart__entrypoint_named
-      type: id_013__ptjakart__entrypoint_named
+    - id: transaction__named__id_013__ptjakart__entrypoint
+      type: transaction__named__id_013__ptjakart__entrypoint
       if: (id_013__ptjakart__entrypoint_tag == id_013__ptjakart__entrypoint_tag::named)
-  id_013__ptjakart__entrypoint_named:
+  transaction__named__id_013__ptjakart__entrypoint:
     seq:
     - id: size_of_named
       type: u1
@@ -120,22 +136,22 @@ types:
       size-eos: true
       valid:
         max: 31
-  id_013__ptjakart__transaction_destination:
+  transaction__id_013__ptjakart__transaction_destination:
     seq:
     - id: id_013__ptjakart__transaction_destination_tag
       type: u1
       enum: id_013__ptjakart__transaction_destination_tag
-    - id: id_013__ptjakart__transaction_destination_implicit
-      type: public_key_hash
+    - id: transaction__implicit__id_013__ptjakart__transaction_destination
+      type: transaction__implicit__public_key_hash
       if: (id_013__ptjakart__transaction_destination_tag == id_013__ptjakart__transaction_destination_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_013__ptjakart__transaction_destination_originated
-      type: id_013__ptjakart__transaction_destination_originated
+    - id: transaction__originated__id_013__ptjakart__transaction_destination
+      type: transaction__originated__id_013__ptjakart__transaction_destination
       if: (id_013__ptjakart__transaction_destination_tag == id_013__ptjakart__transaction_destination_tag::originated)
-    - id: id_013__ptjakart__transaction_destination_tx_rollup
-      type: id_013__ptjakart__transaction_destination_tx_rollup
+    - id: transaction__tx_rollup__id_013__ptjakart__transaction_destination
+      type: transaction__tx_rollup__id_013__ptjakart__transaction_destination
       if: (id_013__ptjakart__transaction_destination_tag == id_013__ptjakart__transaction_destination_tag::tx_rollup)
-  id_013__ptjakart__transaction_destination_tx_rollup:
+  transaction__tx_rollup__id_013__ptjakart__transaction_destination:
     seq:
     - id: id_013__ptjakart__tx_rollup_id
       size: 20
@@ -145,13 +161,21 @@ types:
     - id: tx_rollup_padding
       size: 1
       doc: This field is for padding, ignore
-  id_013__ptjakart__transaction_destination_originated:
+  transaction__originated__id_013__ptjakart__transaction_destination:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
+  transaction__implicit__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: transaction__implicit__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
   n:
     seq:
     - id: n
@@ -169,32 +193,26 @@ types:
     - id: id_013__ptjakart__contract_id_tag
       type: u1
       enum: id_013__ptjakart__contract_id_tag
-    - id: id_013__ptjakart__contract_id_implicit
-      type: public_key_hash
+    - id: implicit__id_013__ptjakart__contract_id
+      type: implicit__public_key_hash
       if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_013__ptjakart__contract_id_originated
-      type: id_013__ptjakart__contract_id_originated
+    - id: originated__id_013__ptjakart__contract_id
+      type: originated__id_013__ptjakart__contract_id
       if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::originated)
-  id_013__ptjakart__contract_id_originated:
+  originated__id_013__ptjakart__contract_id:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
-  public_key_hash:
+  implicit__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: implicit__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
 enums:

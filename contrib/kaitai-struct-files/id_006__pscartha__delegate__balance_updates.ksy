@@ -24,73 +24,91 @@ types:
     - id: id_006__pscartha__operation_metadata__alpha__balance_tag
       type: u1
       enum: id_006__pscartha__operation_metadata__alpha__balance_tag
-    - id: id_006__pscartha__operation_metadata__alpha__balance_contract
-      type: id_006__pscartha__contract_id
+    - id: contract__id_006__pscartha__operation_metadata__alpha__balance
+      type: contract__id_006__pscartha__contract_id
       if: (id_006__pscartha__operation_metadata__alpha__balance_tag == id_006__pscartha__operation_metadata__alpha__balance_tag::contract)
       doc: ! >-
         A contract handle: A contract notation as given to an RPC or inside scripts.
         Can be a base58 implicit contract hash or a base58 originated contract hash.
-    - id: id_006__pscartha__operation_metadata__alpha__balance_rewards
-      type: id_006__pscartha__operation_metadata__alpha__balance_rewards
+    - id: rewards__id_006__pscartha__operation_metadata__alpha__balance
+      type: rewards__id_006__pscartha__operation_metadata__alpha__balance
       if: (id_006__pscartha__operation_metadata__alpha__balance_tag == id_006__pscartha__operation_metadata__alpha__balance_tag::rewards)
-    - id: id_006__pscartha__operation_metadata__alpha__balance_fees
-      type: id_006__pscartha__operation_metadata__alpha__balance_fees
+    - id: fees__id_006__pscartha__operation_metadata__alpha__balance
+      type: fees__id_006__pscartha__operation_metadata__alpha__balance
       if: (id_006__pscartha__operation_metadata__alpha__balance_tag == id_006__pscartha__operation_metadata__alpha__balance_tag::fees)
-    - id: id_006__pscartha__operation_metadata__alpha__balance_deposits
-      type: id_006__pscartha__operation_metadata__alpha__balance_deposits
+    - id: deposits__id_006__pscartha__operation_metadata__alpha__balance
+      type: deposits__id_006__pscartha__operation_metadata__alpha__balance
       if: (id_006__pscartha__operation_metadata__alpha__balance_tag == id_006__pscartha__operation_metadata__alpha__balance_tag::deposits)
-  id_006__pscartha__operation_metadata__alpha__balance_deposits:
+  deposits__id_006__pscartha__operation_metadata__alpha__balance:
     seq:
     - id: delegate
-      type: public_key_hash
+      type: deposits__public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: cycle
       type: s4
-  id_006__pscartha__operation_metadata__alpha__balance_fees:
+  deposits__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: deposits__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  fees__id_006__pscartha__operation_metadata__alpha__balance:
     seq:
     - id: delegate
-      type: public_key_hash
+      type: fees__public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: cycle
       type: s4
-  id_006__pscartha__operation_metadata__alpha__balance_rewards:
+  fees__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: fees__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  rewards__id_006__pscartha__operation_metadata__alpha__balance:
     seq:
     - id: delegate
-      type: public_key_hash
+      type: rewards__public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: cycle
       type: s4
-  id_006__pscartha__contract_id:
+  rewards__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: rewards__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  contract__id_006__pscartha__contract_id:
     seq:
     - id: id_006__pscartha__contract_id_tag
       type: u1
       enum: id_006__pscartha__contract_id_tag
-    - id: id_006__pscartha__contract_id_implicit
-      type: public_key_hash
+    - id: contract__implicit__id_006__pscartha__contract_id
+      type: contract__implicit__public_key_hash
       if: (id_006__pscartha__contract_id_tag == id_006__pscartha__contract_id_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_006__pscartha__contract_id_originated
-      type: id_006__pscartha__contract_id_originated
+    - id: contract__originated__id_006__pscartha__contract_id
+      type: contract__originated__id_006__pscartha__contract_id
       if: (id_006__pscartha__contract_id_tag == id_006__pscartha__contract_id_tag::originated)
-  id_006__pscartha__contract_id_originated:
+  contract__originated__id_006__pscartha__contract_id:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
-  public_key_hash:
+  contract__implicit__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: contract__implicit__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
 enums:

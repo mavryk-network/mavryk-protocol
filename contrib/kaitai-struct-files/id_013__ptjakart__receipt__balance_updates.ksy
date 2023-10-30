@@ -27,49 +27,63 @@ types:
     - id: id_013__ptjakart__operation_metadata__alpha__balance_tag
       type: u1
       enum: id_013__ptjakart__operation_metadata__alpha__balance_tag
-    - id: id_013__ptjakart__operation_metadata__alpha__balance_contract
-      type: id_013__ptjakart__contract_id
-      if: (id_013__ptjakart__operation_metadata__alpha__balance_tag == id_013__ptjakart__operation_metadata__alpha__balance_tag::contract)
-      doc: ! >-
-        A contract handle: A contract notation as given to an RPC or inside scripts.
-        Can be a base58 implicit contract hash or a base58 originated contract hash.
-    - id: id_013__ptjakart__operation_metadata__alpha__balance_deposits
-      type: public_key_hash
-      if: (id_013__ptjakart__operation_metadata__alpha__balance_tag == id_013__ptjakart__operation_metadata__alpha__balance_tag::deposits)
-      doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_013__ptjakart__operation_metadata__alpha__balance_lost_endorsing_rewards
-      type: id_013__ptjakart__operation_metadata__alpha__balance_lost_endorsing_rewards
-      if: (id_013__ptjakart__operation_metadata__alpha__balance_tag == id_013__ptjakart__operation_metadata__alpha__balance_tag::lost_endorsing_rewards)
-    - id: id_013__ptjakart__operation_metadata__alpha__balance_commitments
+    - id: commitments__id_013__ptjakart__operation_metadata__alpha__balance
       size: 20
       if: (id_013__ptjakart__operation_metadata__alpha__balance_tag == id_013__ptjakart__operation_metadata__alpha__balance_tag::commitments)
-    - id: id_013__ptjakart__operation_metadata__alpha__balance_frozen_bonds
-      type: id_013__ptjakart__operation_metadata__alpha__balance_frozen_bonds
+    - id: frozen_bonds__id_013__ptjakart__operation_metadata__alpha__balance
+      type: frozen_bonds__id_013__ptjakart__operation_metadata__alpha__balance
       if: (id_013__ptjakart__operation_metadata__alpha__balance_tag == id_013__ptjakart__operation_metadata__alpha__balance_tag::frozen_bonds)
-  id_013__ptjakart__operation_metadata__alpha__balance_frozen_bonds:
+  frozen_bonds__id_013__ptjakart__operation_metadata__alpha__balance:
     seq:
     - id: contract
-      type: id_013__ptjakart__contract_id
+      type: frozen_bonds__id_013__ptjakart__contract_id
       doc: ! >-
         A contract handle: A contract notation as given to an RPC or inside scripts.
         Can be a base58 implicit contract hash or a base58 originated contract hash.
     - id: bond_id
-      type: id_013__ptjakart__bond_id
-  id_013__ptjakart__bond_id:
+      type: frozen_bonds__id_013__ptjakart__bond_id
+  frozen_bonds__id_013__ptjakart__bond_id:
     seq:
     - id: id_013__ptjakart__bond_id_tag
       type: u1
       enum: id_013__ptjakart__bond_id_tag
-    - id: id_013__ptjakart__bond_id_tx_rollup_bond_id
+    - id: frozen_bonds__tx_rollup_bond_id__id_013__ptjakart__bond_id
       size: 20
       if: (id_013__ptjakart__bond_id_tag == id_013__ptjakart__bond_id_tag::tx_rollup_bond_id)
       doc: ! >-
         A tx rollup handle: A tx rollup notation as given to an RPC or inside scripts,
         is a base58 tx rollup hash
-  id_013__ptjakart__operation_metadata__alpha__balance_lost_endorsing_rewards:
+  frozen_bonds__id_013__ptjakart__contract_id:
+    seq:
+    - id: id_013__ptjakart__contract_id_tag
+      type: u1
+      enum: id_013__ptjakart__contract_id_tag
+    - id: frozen_bonds__implicit__id_013__ptjakart__contract_id
+      type: frozen_bonds__implicit__public_key_hash
+      if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::implicit)
+      doc: A Ed25519, Secp256k1, or P256 public key hash
+    - id: frozen_bonds__originated__id_013__ptjakart__contract_id
+      type: frozen_bonds__originated__id_013__ptjakart__contract_id
+      if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::originated)
+  frozen_bonds__originated__id_013__ptjakart__contract_id:
+    seq:
+    - id: contract_hash
+      size: 20
+    - id: originated_padding
+      size: 1
+      doc: This field is for padding, ignore
+  frozen_bonds__implicit__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: frozen_bonds__implicit__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  lost_endorsing_rewards__id_013__ptjakart__operation_metadata__alpha__balance:
     seq:
     - id: delegate
-      type: public_key_hash
+      type: lost_endorsing_rewards__public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: participation
       type: u1
@@ -77,37 +91,47 @@ types:
     - id: revelation
       type: u1
       enum: bool
-  id_013__ptjakart__contract_id:
+  lost_endorsing_rewards__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: lost_endorsing_rewards__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  deposits__public_key_hash:
+    seq:
+    - id: public_key_hash_tag
+      type: u1
+      enum: public_key_hash_tag
+    - id: deposits__p256__public_key_hash
+      size: 20
+      if: (public_key_hash_tag == public_key_hash_tag::p256)
+  contract__id_013__ptjakart__contract_id:
     seq:
     - id: id_013__ptjakart__contract_id_tag
       type: u1
       enum: id_013__ptjakart__contract_id_tag
-    - id: id_013__ptjakart__contract_id_implicit
-      type: public_key_hash
+    - id: contract__implicit__id_013__ptjakart__contract_id
+      type: contract__implicit__public_key_hash
       if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::implicit)
       doc: A Ed25519, Secp256k1, or P256 public key hash
-    - id: id_013__ptjakart__contract_id_originated
-      type: id_013__ptjakart__contract_id_originated
+    - id: contract__originated__id_013__ptjakart__contract_id
+      type: contract__originated__id_013__ptjakart__contract_id
       if: (id_013__ptjakart__contract_id_tag == id_013__ptjakart__contract_id_tag::originated)
-  id_013__ptjakart__contract_id_originated:
+  contract__originated__id_013__ptjakart__contract_id:
     seq:
     - id: contract_hash
       size: 20
     - id: originated_padding
       size: 1
       doc: This field is for padding, ignore
-  public_key_hash:
+  contract__implicit__public_key_hash:
     seq:
     - id: public_key_hash_tag
       type: u1
       enum: public_key_hash_tag
-    - id: public_key_hash_ed25519
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::ed25519)
-    - id: public_key_hash_secp256k1
-      size: 20
-      if: (public_key_hash_tag == public_key_hash_tag::secp256k1)
-    - id: public_key_hash_p256
+    - id: contract__implicit__p256__public_key_hash
       size: 20
       if: (public_key_hash_tag == public_key_hash_tag::p256)
 enums:

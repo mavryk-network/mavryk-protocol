@@ -38,7 +38,7 @@ let%expect_test "test simple union" =
     - id: simple_union_tag
       type: u1
       enum: simple_union_tag
-    - id: simple_union_some
+    - id: some__simple_union
       type: u1
       if: (simple_union_tag == simple_union_tag::some)
   |}]
@@ -99,13 +99,7 @@ let%expect_test "test medium union" =
     - id: more_union_tag
       type: u1
       enum: more_union_tag
-    - id: more_union_a
-      type: u1
-      if: (more_union_tag == more_union_tag::a)
-    - id: more_union_b
-      type: u2
-      if: (more_union_tag == more_union_tag::b)
-    - id: more_union_c
+    - id: c__more_union
       type: u1
       if: (more_union_tag == more_union_tag::c)
       enum: bool
@@ -155,7 +149,7 @@ let%expect_test "test union with structures inside" =
       endian: be
     doc: ! 'Encoding id: more_union'
     types:
-      more_union_c:
+      c__more_union:
         seq:
         - id: l
           type: u1
@@ -163,13 +157,13 @@ let%expect_test "test union with structures inside" =
         - id: r
           type: u1
           enum: bool
-      more_union_b:
+      b__more_union:
         seq:
         - id: b_field0
           type: u2
-        - id: b_field1
-          type: b_field1
-      b_field1:
+        - id: b__b_field1
+          type: b__b_field1
+      b__b_field1:
         seq:
         - id: size_of_b_field1
           type: u4
@@ -190,14 +184,14 @@ let%expect_test "test union with structures inside" =
     - id: more_union_tag
       type: u1
       enum: more_union_tag
-    - id: more_union_a
+    - id: a__more_union
       type: u1
       if: (more_union_tag == more_union_tag::a)
-    - id: more_union_b
-      type: more_union_b
+    - id: b__more_union
+      type: b__more_union
       if: (more_union_tag == more_union_tag::b)
-    - id: more_union_c
-      type: more_union_c
+    - id: c__more_union
+      type: c__more_union
       if: (more_union_tag == more_union_tag::c)
   |}]
 

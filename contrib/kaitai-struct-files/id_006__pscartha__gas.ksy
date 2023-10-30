@@ -30,6 +30,6 @@ seq:
 - id: id_006__pscartha__gas_tag
   type: u1
   enum: id_006__pscartha__gas_tag
-- id: id_006__pscartha__gas_limited
+- id: limited__id_006__pscartha__gas
   type: z
   if: (id_006__pscartha__gas_tag == id_006__pscartha__gas_tag::limited)

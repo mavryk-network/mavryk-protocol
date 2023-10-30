@@ -30,6 +30,6 @@ seq:
 - id: id_008__ptedo2zk__gas_tag
   type: u1
   enum: id_008__ptedo2zk__gas_tag
-- id: id_008__ptedo2zk__gas_limited
+- id: limited__id_008__ptedo2zk__gas
   type: z
   if: (id_008__ptedo2zk__gas_tag == id_008__ptedo2zk__gas_tag::limited)
