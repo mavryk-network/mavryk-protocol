@@ -32,3 +32,20 @@ macro_rules! log {
         }
     };
 }
+
+#[cfg(feature = "alloc")]
+#[cfg(feature = "debug")]
+#[macro_export]
+macro_rules! log_debug {
+    ($host: expr, $($args: expr),*) => {
+        {
+            $crate::debug_msg!($host, "[{}] {}\n", Level::Debug, { &alloc::format!($($args), *) });
+        }
+    };
+}
+
+#[cfg(feature = "alloc")]
+#[macro_export]
+macro_rules! log_debug {
+    ($host: expr, $($args: expr),*) => {};
+}

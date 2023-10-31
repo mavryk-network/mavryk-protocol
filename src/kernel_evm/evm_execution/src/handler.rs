@@ -31,7 +31,7 @@ use sha3::{Digest, Keccak256};
 use std::fmt::Debug;
 use tezos_ethereum::block::BlockConstants;
 use tezos_ethereum::withdrawal::Withdrawal;
-use tezos_evm_logging::{log, Level::*};
+use tezos_evm_logging::{log, log_debug, Level::*};
 
 /// Outcome of making the [EvmHandler] run an Ethereum transaction
 ///
@@ -492,7 +492,7 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
         to: H160,
         value: U256,
     ) -> Result<ExitReason, EthereumError> {
-        log!(self.host, Info, "Executing a transfer");
+        log_debug!(self.host, "Executing a transfer");
 
         // TODO let transfers cost gas
         // issue: https://gitlab.com/tezos/tezos/-/issues/5118
@@ -546,7 +546,7 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
         initial_code: Vec<u8>,
         create_opcode: bool,
     ) -> Result<CreateOutcome, EthereumError> {
-        log!(self.host, Info, "Executing a contract create");
+        log_debug!(self.host, "Executing a contract create");
 
         let address = self.create_address(scheme);
 
@@ -1153,9 +1153,8 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
     ) -> Result<(), EthereumError> {
         let current_depth = self.evm_account_storage.stack_depth();
 
-        log!(
+        log_debug!(
             self.host,
-            Debug,
             "Begin transaction at transaction depth: {}",
             current_depth
         );
