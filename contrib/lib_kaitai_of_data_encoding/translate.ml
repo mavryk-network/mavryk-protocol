@@ -259,6 +259,15 @@ let rec seq_field_of_data_encoding :
         length_encoding
         elts
         id
+  | Array {length_limit; length_encoding; elts} ->
+      seq_field_of_collection
+        enums
+        types
+        mus
+        length_limit
+        length_encoding
+        elts
+        id
   | Obj f -> seq_field_of_field enums types mus f
   | Objs {kind = _; left; right} ->
       let enums, types, mus, left =
