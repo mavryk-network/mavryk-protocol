@@ -16,6 +16,10 @@
 
 include module type of Tezos_base.TzPervasives.Result_syntax
 
+(** [wrap res] maps the result type contained in [res] to a tzresult
+    value. *)
+val wrap : 'a Environment.Error_monad.tzresult -> 'a tzresult
+
 (** [let*@ x = m in f x] is equivalent to [let* x = Environment.wrap_tzresult m in f x].
         Mnemonic: [@] "wraps" a protocol error in a shell error. *)
 val ( let*@ ) :
