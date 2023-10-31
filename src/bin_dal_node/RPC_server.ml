@@ -197,6 +197,9 @@ module P2P = struct
   let get_points_info ctxt q () =
     Node_context.P2P.get_points_info ~connected:q#connected ctxt
 
+  let get_point_info ctxt point () () =
+    Node_context.P2P.get_point_info ctxt point
+
   let get_peers ctxt q () =
     Node_context.P2P.get_peers ~connected:q#connected ctxt
 
@@ -293,6 +296,10 @@ let register_new :
        Tezos_rpc.Directory.register0
        Services.P2P.get_points_info
        (P2P.get_points_info ctxt)
+  |> add_service
+       Tezos_rpc.Directory.opt_register1
+       Services.P2P.Points.get_point_info
+       (P2P.get_point_info ctxt)
   |> add_service
        Tezos_rpc.Directory.register0
        Services.P2P.get_peers
