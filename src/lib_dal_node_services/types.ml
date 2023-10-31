@@ -451,3 +451,17 @@ module Store = struct
   let to_string data_kind =
     Data_encoding.Binary.to_string_exn encoding data_kind
 end
+
+module Gossipsub = struct
+  type connection = {topics : Topic.t list; direct : bool; outbound : bool}
+
+  let connection_encoding =
+    let open Data_encoding in
+    conv
+      (fun {topics; direct; outbound} -> (topics, direct, outbound))
+      (fun (topics, direct, outbound) -> {topics; direct; outbound})
+      (obj3
+         (req "topics" (list Topic.encoding))
+         (req "direct" bool)
+         (req "outbound" bool))
+end

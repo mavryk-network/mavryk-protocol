@@ -242,3 +242,10 @@ module Store : sig
 
   val to_string : kind -> string
 end
+
+module Gossipsub : sig
+  (** See {!Tezos_gossipsub.Introspection.connection}. *)
+  type connection = {topics : Topic.t list; direct : bool; outbound : bool}
+
+  val connection_encoding : connection Data_encoding.t
+end
