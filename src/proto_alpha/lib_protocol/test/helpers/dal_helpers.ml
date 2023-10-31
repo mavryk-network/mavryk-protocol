@@ -177,10 +177,7 @@ struct
     | None -> return_unit
     | Some check_verify ->
         let*? proof, _input_opt = res in
-        let res =
-          Environment.wrap_tzresult
-            (Hist.verify_proof params page_id skip_list proof)
-        in
+        let@ res = Hist.verify_proof params page_id skip_list proof in
         check_verify res page_info
 
   (* Some check functions. *)

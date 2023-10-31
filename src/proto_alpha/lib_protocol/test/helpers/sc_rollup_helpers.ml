@@ -631,7 +631,8 @@ module Node_inbox = struct
 
   let produce_proof {payloads_histories; history; _} inbox_snapshot
       (level, message_counter) =
-    Lwt.map Environment.wrap_tzresult
+    let open Result_wrap_syntax in
+    Lwt.map wrap
     @@ Sc_rollup.Inbox.produce_proof
          ~get_payloads_history:(get_payloads_history payloads_histories)
          ~get_history:(get_history history)
@@ -650,14 +651,16 @@ module Node_inbox = struct
   let produce_payloads_proof {payloads_histories; _}
       (head_cell_hash : Sc_rollup.Inbox_merkelized_payload_hashes.Hash.t)
       message_counter =
-    Lwt.map Environment.wrap_tzresult
+    let open Result_wrap_syntax in
+    Lwt.map wrap
     @@ Sc_rollup.Inbox.Internal_for_tests.produce_payloads_proof
          (get_payloads_history payloads_histories)
          head_cell_hash
          ~index:message_counter
 
   let produce_inclusion_proof {history; _} inbox_snapshot level =
-    Lwt.map Environment.wrap_tzresult
+    let open Result_wrap_syntax in
+    Lwt.map wrap
     @@ Sc_rollup.Inbox.Internal_for_tests.produce_inclusion_proof
          (get_history history)
          inbox_snapshot
