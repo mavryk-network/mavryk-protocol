@@ -1316,19 +1316,20 @@ mod test {
         let expected = vec![
             9, // Prim_generic
             7, // Prim tag: Pair
-            0, 0, 0, 6, // length of args
-            0, // Int tag
-            0, // 0
-            0, // Int tag
-            0, // 0
-            0, // Int tag
-            0, // 0
+            0, 0, 0, 6,  // length of args
+            3,  // Prim_0 (no annots)
+            11, // Prim tag: Unit
+            0,  // Int tag
+            0,  // 0
+            0,  // Int tag
+            0,  // 0
             0, 0, 0, 4, // length of the annotation string
             b':', b'f', b'o', b'o', // annotation
         ];
 
-        let test = MichelinePrimGeneric::<MichelineInt, 7> {
-            args: vec![0.into(), 0.into(), 0.into()],
+        let unit = MichelinePrimNoArgsNoAnnots::<11> {};
+        let test = MichelinePrimGeneric::<Micheline, 7> {
+            args: vec![unit.into(), 0.into(), 0.into()],
             annots: ":foo".into(),
         };
 
