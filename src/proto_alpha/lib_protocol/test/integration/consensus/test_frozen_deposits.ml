@@ -436,7 +436,7 @@ let test_set_limit balance_percentage () =
        max_slashing_period at the latest (because up to that cycle the frozen
        deposits also depend on the active stake at cycles before cycle c+1). *)
   let expected_number_of_cycles_with_previous_deposit =
-    constants.preserved_cycles + constants.max_slashing_period
+    constants.preserved_cycles + Constants.max_slashing_period
   in
   let* b =
     Block.bake_until_n_cycle_end
@@ -474,7 +474,7 @@ let test_unset_limit () =
     | None -> Alcotest.fail "unexpected absence of deposits limit"
   in
   let expected_number_of_cycles_with_previous_deposit =
-    constants.preserved_cycles + constants.max_slashing_period
+    constants.preserved_cycles + Constants.max_slashing_period
   in
   let* b =
     Block.bake_until_n_cycle_end
@@ -524,7 +524,7 @@ let test_cannot_bake_with_zero_deposits_limit () =
   in
   let* b = Block.bake ~policy:(By_account account2) ~operation genesis in
   let expected_number_of_cycles_with_previous_deposit =
-    constants.preserved_cycles + constants.max_slashing_period - 1
+    constants.preserved_cycles + Constants.max_slashing_period - 1
   in
   let* b =
     Block.bake_until_n_cycle_end
@@ -920,7 +920,7 @@ let test_set_limit_with_overdelegation () =
   Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
   >>=? fun () ->
   let cycles_to_bake =
-    2 * (constants.preserved_cycles + constants.max_slashing_period)
+    2 * (constants.preserved_cycles + Constants.max_slashing_period)
   in
   let rec loop b n =
     if n = 0 then return b
