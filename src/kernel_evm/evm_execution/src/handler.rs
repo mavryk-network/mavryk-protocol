@@ -492,7 +492,14 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
         to: H160,
         value: U256,
     ) -> Result<ExitReason, EthereumError> {
-        log!(self.host, Info, "Executing a transfer");
+        log!(
+            self.host,
+            Info,
+            "Executing a transfer from {} to {} of {}",
+            from,
+            to,
+            value
+        );
 
         // TODO let transfers cost gas
         // issue: https://gitlab.com/tezos/tezos/-/issues/5118
@@ -633,7 +640,8 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
         log!(
             self.host,
             Info,
-            "Executing contract call at depth: {}",
+            "Executing contract call on contract {} at depth: {}",
+            address,
             self.evm_account_storage.stack_depth()
         );
 
@@ -1156,7 +1164,8 @@ impl<'a, Host: Runtime> EvmHandler<'a, Host> {
         log!(
             self.host,
             Debug,
-            "Begin transaction at transaction depth: {}",
+            "Begin transaction from {} at transaction depth: {}",
+            self.origin(),
             current_depth
         );
 
