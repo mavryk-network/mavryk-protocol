@@ -9,7 +9,7 @@ extern crate std;
 mod actual_main;
 mod dumb_alloc;
 
-use tezos_smart_rollup_core::{rollup_host::RollupHost, syscalls::exit};
+use tezos_smart_rollup::core_unsafe::{rollup_host::RollupHost, syscalls::exit};
 
 #[inline]
 fn main_wrapper() -> ! {
@@ -21,7 +21,6 @@ fn main_wrapper() -> ! {
 #[cfg(target_os = "none")]
 mod bare_metal {
     use crate::dumb_alloc;
-    use tezos_smart_rollup_core::syscalls::exit;
 
     // This code runs before the main.
     #[riscv_rt::pre_init]
@@ -34,7 +33,7 @@ mod bare_metal {
     #[panic_handler]
     pub fn panic_handler(info: &core::panic::PanicInfo) -> ! {
         tezos_smart_rollup_panic_hook::panic_handler(info);
-        exit(1)
+        crate::exit(1)
     }
 
     // When targeting RISC-V bare-metal we need a custom entrypoint mechanism.

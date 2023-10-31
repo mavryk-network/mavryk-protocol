@@ -6,7 +6,7 @@
 //!
 //! The result of writing to the debug log is *implementation specific* - it may, for
 //! example, be written to a log file, or to `stdout` etc.
-#![cfg_attr(target_arch = "wasm32", no_std)]
+#![cfg_attr(any(target_arch = "wasm32", target_arch = "riscv64"), no_std)]
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
