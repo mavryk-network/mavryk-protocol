@@ -1543,10 +1543,39 @@ end
 module Rewards = struct
   let test_wait_with_rewards =
     let constants = init_constants ~reward_per_block:1_000_000_000L () in
+    let set_edge pct =
+      let params =
+        {
+          limit_of_staking_over_baking = Q.one;
+          edge_of_baking_over_staking = Q.of_float pct;
+        }
+      in
+      set_delegate_params "delegate" params
+    in
     begin_test ~activate_ai:true constants ["delegate"]
+    --> (Tag "edge = 0" --> set_edge 0.
+        |+ Tag "edge = 0.24" --> set_edge 0.24
+        |+ Tag "edge = 0.11..." --> set_edge 0.1111111111
+        |+ Tag "edge = 1" --> set_edge 1.)
+    --> add_account_with_funds
+          "staker1"
+          "delegate"
+          (Amount (Tez.of_mutez 2_000_000_000L))
+    --> add_account_with_funds
+          "staker2"
+          "delegate"
+          (Amount (Tez.of_mutez 2_000_000_000L))
+    --> set_delegate "staker1" (Some "delegate")
+    --> set_delegate "staker2" (Some "delegate")
     --> (Tag "block step" --> wait_n_blocks 200
         |+ Tag "cycle step" --> wait_n_cycles 20
         |+ Tag "wait AI activation" --> next_block --> wait_ai_activation
+           --> (Tag "no staker" --> Empty
+               |+ Tag "one staker"
+                  --> stake "staker1" (Amount (Tez.of_mutez 450_000_111L))
+               |+ Tag "two stakers"
+                  --> stake "staker1" (Amount (Tez.of_mutez 444_000_111L))
+                  --> stake "staker2" (Amount (Tez.of_mutez 333_001_987L)))
            --> (Tag "block step" --> wait_n_blocks 100
                |+ Tag "cycle step" --> wait_n_cycles 10))
 
