@@ -20,7 +20,7 @@
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Tezos_base.TzPervasives.Error_monad.Infix_operator_syntax_compatibility
   -open Tezos_protocol_017_PtNairob
   -open Tezos_protocol_017_PtNairob.Protocol
   -open Tezos_client_017_PtNairob

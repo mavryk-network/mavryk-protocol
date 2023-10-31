@@ -33,7 +33,7 @@
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Tezos_base.TzPervasives.Error_monad.Infix_operator_syntax_compatibility
   -open Tezos_protocol_017_PtNairob
   -open Tezos_protocol_plugin_017_PtNairob
   -open Tezos_shell_services
@@ -68,7 +68,7 @@
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Tezos_base.TzPervasives.Error_monad.Infix_operator_syntax_compatibility
   -open Tezos_protocol_017_PtNairob
   -open Tezos_stdlib_unix
   -open Tezos_shell_services
