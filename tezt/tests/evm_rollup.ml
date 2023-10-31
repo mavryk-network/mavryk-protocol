@@ -3544,6 +3544,57 @@ let test_tx_pool_replacing_transactions =
     ~error_msg:"Bob has sent more than one transaction" ;
   unit
 
+let test_tx_pool_ordered_by_gas =
+  Protocol.register_test
+    ~__FILE__
+    ~tags:["evm"; "tx_pool"]
+    ~title:"Transactions are ordered by gas"
+  @@ fun protocol ->
+  let* {endpoint; sc_rollup_node; node; client; _} =
+    setup_past_genesis ~admin:None protocol
+  in
+  let bob = Eth_account.bootstrap_accounts.(0) in
+  let alice = Eth_account.bootstrap_accounts.(1) in
+  let send ~from ~receiver ~gas_price =
+    Eth_cli.transaction_send
+      ~source_private_key:from
+      ~to_public_key:receiver
+      ~value:Wei.one
+      ~endpoint
+      ~gas_price:(gas_price |> Z.of_int |> Wei.to_wei_z)
+  in
+  (* Sending two transactions from two different account. *)
+  let bob_tx =
+    send ~from:bob.private_key ~receiver:alice.address ~gas_price:30000
+  in
+  let alice_tx =
+    send ~from:alice.private_key ~receiver:bob.address ~gas_price:35000
+  in
+  (* Waiting for the transactions to be included. *)
+  let* receipts =
+    wait_for_application
+      ~sc_rollup_node
+      ~node
+      ~client
+      (fun () ->
+        Lwt_list.filter_map_p
+          (fun tx ->
+            let* hash = tx () in
+            Eth_cli.get_receipt ~endpoint ~tx:hash)
+          [bob_tx; alice_tx])
+      ()
+  in
+  let bob_receipt, alice_receipt =
+    match receipts with
+    | [bob_receipt; alice_receipt] -> (bob_receipt, alice_receipt)
+    | _ -> Test.fail "Expecting two receipts"
+  in
+  Check.((bob_receipt.blockNumber = alice_receipt.blockNumber) int32)
+    ~error_msg:"Transactions are not in the same block" ;
+  Check.((bob_receipt.transactionIndex < alice_receipt.blockNumber) int32)
+    ~error_msg:"Transaction of alice is not included before transaction of bob" ;
+  unit
+
 let register_evm_node ~protocols =
   test_originate_evm_kernel protocols ;
   test_evm_node_connection protocols ;
@@ -3604,7 +3655,8 @@ let register_evm_node ~protocols =
   test_validation_result protocols ;
   test_rpc_sendRawTransaction_with_consecutive_nonce protocols ;
   test_rpc_sendRawTransaction_not_included protocols ;
-  test_tx_pool_replacing_transactions protocols
+  test_tx_pool_replacing_transactions protocols ;
+  test_tx_pool_ordered_by_gas protocols
 
 let register ~protocols =
   register_evm_node ~protocols ;

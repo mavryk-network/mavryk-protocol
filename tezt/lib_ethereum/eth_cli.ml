@@ -52,7 +52,7 @@ let balance ~account ~endpoint =
   return @@ Wei.of_eth_string balance
 
 let transaction_send ~source_private_key ~to_public_key ~value ~endpoint ?data
-    () =
+    ?gas_price () =
   spawn_command_and_read_json
     ([
        "transaction:send";
@@ -65,7 +65,11 @@ let transaction_send ~source_private_key ~to_public_key ~value ~endpoint ?data
        "--network";
        endpoint;
      ]
-    @ match data with Some data -> ["--data"; data] | None -> [])
+    @ (match data with Some data -> ["--data"; data] | None -> [])
+    @
+    match gas_price with
+    | Some gas_price -> ["--gasPrice"; Wei.to_string gas_price]
+    | None -> [])
     JSON.as_string
 
 let transaction_get ~endpoint ~tx_hash =

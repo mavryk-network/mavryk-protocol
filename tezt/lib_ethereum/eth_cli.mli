@@ -38,6 +38,7 @@ val transaction_send :
   value:Wei.t ->
   endpoint:string ->
   ?data:string ->
+  ?gas_price:Wei.t ->
   unit ->
   string Lwt.t
 
