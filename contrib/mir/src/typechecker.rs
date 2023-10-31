@@ -135,7 +135,7 @@ impl ContractScript<ParsedStage> {
             return Err(TcError::TypeNotStorable(storage));
         }
         let mut stack = tc_stk![Type::new_pair(parameter.clone(), storage.clone())];
-        let code = self.code.typecheck(ctx, &mut stack)?;
+        let code = self.code.typecheck(ctx, &parameter, &mut stack)?;
         unify_stacks(
             ctx,
             &mut tc_stk![Type::new_pair(
@@ -157,12 +157,13 @@ impl ParsedInstruction {
     pub fn typecheck(
         self,
         ctx: &mut Ctx,
+        self_type: &Type,
         opt_stack: &mut FailingTypeStack,
     ) -> Result<TypecheckedInstruction, TcError> {
         if let Ok(stack) = opt_stack.access_mut(()) {
             stack.iter().try_for_each(|ty| verify_ty(ctx, ty))?;
         }
-        typecheck_instruction(self, ctx, opt_stack)
+        typecheck_instruction(self, ctx, self_type, opt_stack)
     }
 }
 
@@ -208,10 +209,11 @@ fn verify_ty(ctx: &mut Ctx, t: &Type) -> Result<(), TcError> {
 fn typecheck(
     ast: ParsedAST,
     ctx: &mut Ctx,
+    self_type: &Type,
     opt_stack: &mut FailingTypeStack,
 ) -> Result<TypecheckedAST, TcError> {
     ast.into_iter()
-        .map(|i| typecheck_instruction(i, ctx, opt_stack))
+        .map(|i| typecheck_instruction(i, ctx, self_type, opt_stack))
         .collect()
 }
 
@@ -229,6 +231,7 @@ macro_rules! nothing_to_none {
 fn typecheck_instruction(
     i: ParsedInstruction,
     ctx: &mut Ctx,
+    self_type: &Type,
     opt_stack: &mut FailingTypeStack,
 ) -> Result<TypecheckedInstruction, TcError> {
     use Instruction as I;
@@ -322,7 +325,7 @@ fn typecheck_instruction(
             // Here we split off the protected portion of the stack, typecheck the code with the
             // remaining unprotected part, then append the protected portion back on top.
             let mut protected = stack.split_off(protected_height);
-            let nested = typecheck(nested, ctx, opt_stack)?;
+            let nested = typecheck(nested, ctx, self_type, opt_stack)?;
             opt_stack
                 .access_mut(TcError::FailNotInTail)?
                 .append(&mut protected);
@@ -363,8 +366,8 @@ fn typecheck_instruction(
             // Clone the stack so that we have a copy to run one branch on.
             // We can run the other branch on the live stack.
             let mut f_opt_stack = opt_stack.clone();
-            let nested_t = typecheck(nested_t, ctx, opt_stack)?;
-            let nested_f = typecheck(nested_f, ctx, &mut f_opt_stack)?;
+            let nested_t = typecheck(nested_t, ctx, self_type, opt_stack)?;
+            let nested_f = typecheck(nested_f, ctx, self_type, &mut f_opt_stack)?;
             // If stacks unify after typecheck, all is good.
             unify_stacks(ctx, opt_stack, f_opt_stack)?;
             I::If(nested_t, nested_f)
@@ -379,8 +382,8 @@ fn typecheck_instruction(
             let mut some_stack: TypeStack = stack.clone();
             some_stack.push(*ty);
             let mut some_opt_stack = FailingTypeStack::Ok(some_stack);
-            let when_none = typecheck(when_none, ctx, opt_stack)?;
-            let when_some = typecheck(when_some, ctx, &mut some_opt_stack)?;
+            let when_none = typecheck(when_none, ctx, self_type, opt_stack)?;
+            let when_some = typecheck(when_some, ctx, self_type, &mut some_opt_stack)?;
             // If stacks unify, all is good
             unify_stacks(ctx, opt_stack, some_opt_stack)?;
             I::IfNone(when_none, when_some)
@@ -396,8 +399,8 @@ fn typecheck_instruction(
             // push it to the cons stack
             cons_stack.push(*ty);
             let mut cons_opt_stack = FailingTypeStack::Ok(cons_stack);
-            let when_cons = typecheck(when_cons, ctx, &mut cons_opt_stack)?;
-            let when_nil = typecheck(when_nil, ctx, opt_stack)?;
+            let when_cons = typecheck(when_cons, ctx, self_type, &mut cons_opt_stack)?;
+            let when_nil = typecheck(when_nil, ctx, self_type, opt_stack)?;
             // If stacks unify, all is good
             unify_stacks(ctx, opt_stack, cons_opt_stack)?;
             I::IfCons(when_cons, when_nil)
@@ -413,8 +416,8 @@ fn typecheck_instruction(
             stack.push(tl);
             right_stack.push(tr);
             let mut opt_right_stack = FailingTypeStack::Ok(right_stack);
-            let when_left = typecheck(when_left, ctx, opt_stack)?;
-            let when_right = typecheck(when_right, ctx, &mut opt_right_stack)?;
+            let when_left = typecheck(when_left, ctx, self_type, opt_stack)?;
+            let when_right = typecheck(when_right, ctx, self_type, &mut opt_right_stack)?;
             // If stacks unify, all is good
             unify_stacks(ctx, opt_stack, opt_right_stack)?;
             I::IfLeft(when_left, when_right)
@@ -435,7 +438,7 @@ fn typecheck_instruction(
             // Pop the bool off the top
             pop!();
             // Typecheck body with the current stack
-            let nested = typecheck(nested, ctx, opt_stack)?;
+            let nested = typecheck(nested, ctx, self_type, opt_stack)?;
             // If the starting stack and result stack unify, all is good.
             unify_stacks(ctx, opt_stack, opt_copy)?;
             // pop the remaining bool off (if not failed)
@@ -453,7 +456,7 @@ fn typecheck_instruction(
             // push the element type to the top of the inner stack and typecheck
             inner_stack.push(ty);
             let mut opt_inner_stack = FailingTypeStack::Ok(inner_stack);
-            let nested = typecheck(nested, ctx, &mut opt_inner_stack)?;
+            let nested = typecheck(nested, ctx, self_type, &mut opt_inner_stack)?;
             // If the starting stack (sans list) and result stack unify, all is good.
             unify_stacks(ctx, opt_stack, opt_inner_stack)?;
             I::Iter(overloads::Iter::List, nested)
@@ -466,7 +469,7 @@ fn typecheck_instruction(
             // push the element type to the top of the inner stack and typecheck
             inner_stack.push(T::Pair(kty_vty_box));
             let mut opt_inner_stack = FailingTypeStack::Ok(inner_stack);
-            let nested = typecheck(nested, ctx, &mut opt_inner_stack)?;
+            let nested = typecheck(nested, ctx, self_type, &mut opt_inner_stack)?;
             // If the starting stack (sans list) and result stack unify, all is good.
             unify_stacks(ctx, opt_stack, opt_inner_stack)?;
             I::Iter(overloads::Iter::Map, nested)
@@ -614,7 +617,7 @@ fn typecheck_instruction(
             I::ChainId
         }
 
-        (I::Seq(nested), ..) => I::Seq(typecheck(nested, ctx, opt_stack)?),
+        (I::Seq(nested), ..) => I::Seq(typecheck(nested, ctx, self_type, opt_stack)?),
     })
 }
 
@@ -821,6 +824,15 @@ mod typecheck_tests {
     use crate::typechecker::*;
     use Instruction::*;
 
+    /// hack to simplify syntax in tests
+    fn typecheck_instruction(
+        i: ParsedInstruction,
+        ctx: &mut Ctx,
+        opt_stack: &mut FailingTypeStack,
+    ) -> Result<TypecheckedInstruction, TcError> {
+        super::typecheck_instruction(i, ctx, &Type::Unit, opt_stack)
+    }
+
     #[test]
     fn test_dup() {
         let mut stack = tc_stk![Type::Nat];
@@ -873,8 +885,8 @@ mod typecheck_tests {
         let expected_stack = tc_stk![];
         let mut ctx = Ctx::default();
         assert_eq!(
-            typecheck(vec![Drop(None)], &mut ctx, &mut stack),
-            Ok(vec![Drop(None)])
+            typecheck_instruction(Drop(None), &mut ctx, &mut stack),
+            Ok(Drop(None))
         );
         assert_eq!(stack, expected_stack);
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 440);
