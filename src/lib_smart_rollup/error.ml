@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 let trace_lwt_with x =
-  let open Error_monad.Legacy_monad_globals in
+  let open Error_monad.Infix_operator_syntax_compatibility in
   Format.kasprintf
     (fun s p -> trace (Exn (Failure s)) @@ protect @@ fun () -> p >>= return)
     x

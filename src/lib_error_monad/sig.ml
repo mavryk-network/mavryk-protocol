@@ -236,7 +236,7 @@ module type MONAD_EXTENSION = sig
 
   val classify_trace : tztrace -> Error_classification.t
 
-  module Legacy_monad_globals : sig
+  module Infix_operator_syntax_compatibility : sig
     val return : 'a -> ('a, 'e) result Lwt.t
 
     val return_unit : (unit, 'e) result Lwt.t
@@ -276,6 +276,28 @@ module type MONAD_EXTENSION = sig
       ('a, 'e) result -> ('a -> ('b, 'e) result Lwt.t) -> ('b, 'e) result Lwt.t
 
     val ( >|?= ) : ('a, 'e) result -> ('a -> 'b Lwt.t) -> ('b, 'e) result Lwt.t
+  end
+
+  module Legacy_monad_globals : sig
+    val return : 'a -> ('a, 'e) result Lwt.t
+
+    val return_unit : (unit, 'e) result Lwt.t
+
+    val return_none : ('a option, 'e) result Lwt.t
+
+    val return_some : 'a -> ('a option, 'e) result Lwt.t
+
+    val return_nil : ('a list, 'e) result Lwt.t
+
+    val return_true : (bool, 'e) result Lwt.t
+
+    val return_false : (bool, 'e) result Lwt.t
+
+    val ok : 'a -> ('a, 'e) result
+
+    val error : 'e -> ('a, 'e trace) result
+
+    val fail : 'e -> ('a, 'e trace) result Lwt.t
   end
 
   (* Pretty-prints an error trace. *)
