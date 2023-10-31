@@ -265,9 +265,10 @@ let get_attesting_reward ctxt ~expected_attesting_power =
       csts
       ~reward_kind:Attesting_reward_per_slot
   in
-  Lwt.return
-    (Environment.wrap_tzresult
-       Tez.(attesting_reward_per_slot *? Int64.of_int expected_attesting_power))
+  let*?@ t =
+    Tez.(attesting_reward_per_slot *? Int64.of_int expected_attesting_power)
+  in
+  return t
 
 let get_liquidity_baking_subsidy ctxt =
   let open Lwt_result_syntax in
