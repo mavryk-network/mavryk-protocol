@@ -91,6 +91,7 @@ defprim! {
     address,
     chain_id,
     CHAIN_ID,
+    SELF,
 }
 
 impl std::fmt::Display for Prim {

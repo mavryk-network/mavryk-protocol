@@ -617,6 +617,11 @@ fn typecheck_instruction(
             I::ChainId
         }
 
+        (I::ISelf, ..) => {
+            stack.push(T::new_contract(self_type.clone()));
+            I::ISelf
+        }
+
         (I::Seq(nested), ..) => I::Seq(typecheck(nested, ctx, self_type, opt_stack)?),
     })
 }
@@ -2584,5 +2589,20 @@ mod typecheck_tests {
             ),
             Ok(Instruction::ChainId)
         );
+    }
+
+    #[test]
+    fn self_instr() {
+        let stk = &mut tc_stk![];
+        assert_eq!(
+            super::typecheck_instruction(
+                parse("SELF").unwrap(),
+                &mut Ctx::default(),
+                &Type::Nat,
+                stk
+            ),
+            Ok(Instruction::ISelf)
+        );
+        assert_eq!(stk, &tc_stk![Type::new_contract(Type::Nat)]);
     }
 }
