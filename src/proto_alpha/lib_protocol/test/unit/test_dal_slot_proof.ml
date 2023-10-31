@@ -168,14 +168,13 @@ struct
   (** Helper function that adds a slot a top of the genesis skip list. *)
   let helper_confirmed_slot_on_genesis ~level ~mk_page_info ~check_produce
       ?check_verify () =
-    let open Lwt_result_syntax in
+    let open Lwt_result_wrap_syntax in
     let*? _slot_data, polynomial, slot = mk_slot ~level () in
-    let*? skip_list, cache =
+    let*?@ skip_list, cache =
       Hist.add_confirmed_slot_headers
         genesis_history
         genesis_history_cache
         [slot]
-      |> Environment.wrap_tzresult
     in
     let*? page_info, page_id = mk_page_info slot polynomial in
     produce_and_verify_proof
