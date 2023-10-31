@@ -388,7 +388,13 @@ module State = struct
         state.constants
         state.account_map
     in
-    ({state with account_map}, total_burnt)
+    let log_updates =
+      List.map
+        (fun x -> fst @@ find_account_from_pkh x state)
+        [culprit; rewarded]
+    in
+    let state = update_map ~log_updates ~f:(fun _ -> account_map) state in
+    (state, total_burnt)
 
   let apply_all_slashes_at_cycle_end current_cycle (state : t) : t =
     let state, total_burnt =
@@ -431,7 +437,7 @@ module State = struct
       update_map
         ~f:
           (update_frozen_rights_cycle
-             (Cycle.add current_cycle state.constants.preserved_cycles))
+             (Cycle.add current_cycle (state.constants.preserved_cycles + 1)))
         state
     in
     (* Apply parameter changes *)
@@ -622,13 +628,6 @@ let check_all_balances block state : unit tzresult Lwt.t =
   let* actual_total_supply = Context.get_total_supply (B block) in
   Assert.equal_tez ~loc:__LOC__ actual_total_supply total_supply
 
-(** Apply rewards in state + check *)
-let apply_rewards ~(baker : string) block state : State.t tzresult Lwt.t =
-  let open Lwt_result_syntax in
-  let* state = State.apply_rewards ~baker block state in
-  let* () = check_all_balances block state in
-  return state
-
 let check_issuance_rpc block : unit tzresult Lwt.t =
   let open Lwt_result_syntax in
   (* We assume one block per minute *)
@@ -739,6 +738,7 @@ let bake ?baker : t -> t tzresult Lwt.t =
       return (block, state)
     else return (block', state)
   in
+  let* state = State.apply_rewards ~baker:baker_name block state in
   (* Dawn of a new cycle *)
   let* state =
     if not (Block.last_block_of_cycle block) then return state
@@ -756,7 +756,7 @@ let bake ?baker : t -> t tzresult Lwt.t =
         (Protocol.Alpha_context.Cycle.to_int32 new_current_cycle |> Int32.to_int) ;
       return @@ State.apply_new_cycle new_current_cycle state)
   in
-  let* state = apply_rewards ~baker:baker_name block state in
+  let* () = check_all_balances block state in
   return (block, state)
 
 (** Bake until a cycle is reached, using [bake] instead of [Block.bake]
@@ -1566,13 +1566,17 @@ let test_expected_error =
            (exec (fun _ -> failwith "")))
 
 let init_constants ?reward_per_block ?(deactivate_dynamic = false)
-    ?blocks_per_cycle () =
+    ?blocks_per_cycle ?(force_snapshot_at_end = false) () =
   let reward_per_block = Option.value ~default:0L reward_per_block in
   let base_total_issued_per_minute = Tez.of_mutez reward_per_block in
   let default_constants = Default_parameters.constants_test in
   (* default for tests: 12 *)
   let blocks_per_cycle =
     Option.value ~default:default_constants.blocks_per_cycle blocks_per_cycle
+  in
+  let blocks_per_stake_snapshot =
+    if force_snapshot_at_end then blocks_per_cycle
+    else default_constants.blocks_per_stake_snapshot
   in
   let issuance_weights =
     Protocol.Alpha_context.Constants.Parametric.
@@ -1608,6 +1612,7 @@ let init_constants ?reward_per_block ?(deactivate_dynamic = false)
     cost_per_byte;
     adaptive_issuance;
     blocks_per_cycle;
+    blocks_per_stake_snapshot;
   }
 
 (** Initialization of scenarios with 3 cases:
@@ -2100,8 +2105,59 @@ module Slashing = struct
                  ()
            --> check_is_forbidden "delegate")
 
-  let init_scenario_with_delegators delegate_name delegators_list =
+  let test_slash_unstake =
     let constants = init_constants () in
+    begin_test
+      ~activate_ai:false
+      constants
+      ["delegate"; "bootstrap1"; "bootstrap2"]
+    --> set_baker "bootstrap1" --> next_cycle --> unstake "delegate" Half
+    --> next_cycle --> double_bake "delegate" --> make_denunciations ()
+    --> next_cycle --> double_bake "delegate" --> make_denunciations ()
+    --> wait_n_cycles 5
+    --> finalize_unstake "delegate"
+
+  let test_slash_monotonous_stake =
+    let scenario ~op ~early_d =
+      let constants =
+        init_constants ~force_snapshot_at_end:true ~blocks_per_cycle:8l ()
+      in
+      begin_test ~activate_ai:false constants ["delegate"]
+      --> next_cycle
+      --> loop
+            6
+            (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L)) --> next_cycle)
+      --> loop
+            10
+            (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L))
+            --> double_bake "delegate"
+            -->
+            if early_d then make_denunciations () --> next_cycle
+            else next_cycle --> make_denunciations ())
+    in
+    Tag "slashes with increasing stake"
+    --> (Tag "denounce early" --> scenario ~op:stake ~early_d:true
+        |+ Tag "denounce late" --> scenario ~op:stake ~early_d:false)
+    |+ Tag "slashes with decreasing stake"
+       --> (Tag "denounce early" --> scenario ~op:unstake ~early_d:true
+           |+ Tag "denounce late" --> scenario ~op:unstake ~early_d:false)
+
+  let test_well_shit =
+    let constants =
+      init_constants ~force_snapshot_at_end:true ~blocks_per_cycle:8l ()
+    in
+    begin_test ~activate_ai:false constants ["delegate"]
+    --> next_cycle --> unstake "delegate" Half
+    --> (Tag "with d" --> double_bake "delegate" --> make_denunciations ()
+        |+ Tag "without d" --> Empty)
+    --> List.fold_left
+          (fun acc i -> acc |+ Tag (string_of_int i) --> wait_n_cycles i)
+          Empty
+          [0; 1; 2; 3; 4; 5; 6; 7; 8]
+    --> double_bake "delegate" --> make_denunciations () --> next_cycle
+
+  let init_scenario_with_delegators delegate_name delegators_list =
+    let constants = init_constants ~force_snapshot_at_end:true () in
     let rec init_delegators = function
       | [] -> Empty
       | delegator :: t ->
@@ -2116,7 +2172,6 @@ module Slashing = struct
       ~activate_ai:true
       constants
       [delegate_name; "bootstrap1"; "bootstrap2"]
-    --> set_baker "bootstrap1"
     --> init_delegators delegators_list
     --> next_block --> wait_ai_activation
 
@@ -2128,34 +2183,14 @@ module Slashing = struct
     in
     let small_slash delegate = double_bake delegate --> make_denunciations () in
     let big_slash delegate = double_attest delegate --> make_denunciations () in
-    Tag "Many slashes: solo delegate, double bake"
+    Tag "Many slashes: solo delegate, double attest"
     --> init_scenario_with_delegators "delegate" []
     --> loop
           10
           (stake_unstake_for ["delegate"]
-          --> small_slash "delegate" --> next_cycle)
-    |+ Tag "Many slashes: delegate with one staker, double bake"
-       --> init_scenario_with_delegators "delegate" ["staker"]
-       --> loop
-             10
-             (stake_unstake_for ["delegate"; "staker"]
-             --> small_slash "delegate" --> next_cycle)
-    |+ Tag "Many slashes: delegate with three stakers, double bake"
-       --> init_scenario_with_delegators
-             "delegate"
-             ["staker1"; "staker2"; "staker3"]
-       --> loop
-             10
-             (stake_unstake_for ["delegate"; "staker1"; "staker2"; "staker3"]
-             --> small_slash "delegate" --> next_cycle)
-    |+ Tag "Many slashes: solo delegate, double attest"
-       --> init_scenario_with_delegators "delegate" []
-       --> loop
-             10
-             (stake_unstake_for ["delegate"]
-             --> big_slash "delegate" --> next_cycle
-             --> stake_unstake_for ["delegate"]
-             --> next_cycle)
+          --> big_slash "delegate" --> next_cycle
+          --> stake_unstake_for ["delegate"]
+          --> next_cycle)
     |+ Tag "Many slashes: delegate with one staker, double attest"
        --> init_scenario_with_delegators "delegate" ["staker"]
        --> loop
@@ -2174,14 +2209,37 @@ module Slashing = struct
              --> big_slash "delegate" --> next_cycle
              --> stake_unstake_for ["delegate"; "staker1"; "staker2"; "staker3"]
              --> next_cycle)
+    |+ Tag "Many slashes: solo delegate, double bake"
+       --> init_scenario_with_delegators "delegate" []
+       --> loop
+             10
+             (stake_unstake_for ["delegate"]
+             --> small_slash "delegate" --> next_cycle)
+    |+ Tag "Many slashes: delegate with one staker, double bake"
+       --> init_scenario_with_delegators "delegate" ["staker"]
+       --> loop
+             10
+             (stake_unstake_for ["delegate"; "staker"]
+             --> small_slash "delegate" --> next_cycle)
+    |+ Tag "Many slashes: delegate with three stakers, double bake"
+       --> init_scenario_with_delegators
+             "delegate"
+             ["staker1"; "staker2"; "staker3"]
+       --> loop
+             10
+             (stake_unstake_for ["delegate"; "staker1"; "staker2"; "staker3"]
+             --> small_slash "delegate" --> next_cycle)
 
   let tests =
     tests_of_scenarios
     @@ [
          ("Test simple slashing", test_simple_slash);
          ("Test slashed is forbidden", test_delegate_forbidden);
+         ("Test slash with unstake", test_slash_unstake);
+         ("Test slashes with simple varying stake", test_slash_monotonous_stake);
          ( "Test multiple slashes with multiple stakes/unstakes",
            test_many_slashes );
+         ("lolshit", test_well_shit);
        ]
 end
 

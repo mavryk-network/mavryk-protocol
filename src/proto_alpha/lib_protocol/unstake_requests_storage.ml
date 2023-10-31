@@ -75,14 +75,15 @@ let apply_slashes ~preserved_plus_slashing slashing_history ~from_cycle amount =
   in
   (* [slashing_history] is sorted so slashings always happen in the same order. *)
   List.fold_left
-    (fun amount (slashing_cycle, slashing_percentage) ->
+    (fun remain (slashing_cycle, slashing_percentage) ->
       if
         Cycle_repr.(
           slashing_cycle >= first_cycle_to_apply_slash
           && slashing_cycle <= last_cycle_to_apply_slash)
       then
-        Tez_repr.mul_percentage amount (Int_percentage.neg slashing_percentage)
-      else amount)
+        Tez_repr.(sub_opt remain (mul_percentage amount slashing_percentage))
+        |> Option.value ~default:Tez_repr.zero
+      else remain)
     amount
     slashing_history
 
@@ -152,6 +153,13 @@ let add ctxt ~contract ~delegate cycle amount =
 module For_RPC = struct
   let apply_slash_to_unstaked_unfinalizable ctxt {requests; delegate} =
     let open Lwt_result_syntax in
+    let current_level = Raw_context.current_level ctxt in
+    let cycle_eras = Raw_context.cycle_eras ctxt in
+    let current_cycle =
+      if Level_repr.last_of_cycle ~cycle_eras current_level then
+        Cycle_repr.succ current_level.cycle
+      else current_level.cycle
+    in
     let preserved_cycles = Constants_storage.preserved_cycles ctxt in
     let max_slashing_period = Constants_repr.max_slashing_period in
     let preserved_plus_slashing = preserved_cycles + max_slashing_period in
@@ -161,6 +169,12 @@ module For_RPC = struct
         (Contract_repr.Implicit delegate)
     in
     let slashing_history = Option.value slashing_history_opt ~default:[] in
+    (* Remove slashes that haven't been applied yet *)
+    let slashing_history =
+      List.filter
+        (fun (cycle, _) -> Cycle_repr.(cycle < current_cycle))
+        slashing_history
+    in
     List.map_es
       (fun (request_cycle, request_amount) ->
         let new_amount =

@@ -52,7 +52,7 @@ module Tez = struct
   let of_z a = Z.to_int64 a |> of_mutez
 
   let of_q ?(round_up = false) Q.{num; den} =
-    (if round_up then Z.cdiv num den else Z.fdiv num den) |> of_z
+    (if round_up then Z.cdiv num den else Z.div num den) |> of_z
 
   let ratio num den =
     Q.make (Z.of_int64 (to_mutez num)) (Z.of_int64 (to_mutez den))
@@ -198,9 +198,14 @@ module Frozen_tez = struct
   let slash base_amount (pct : Protocol.Int_percentage.t) a =
     let pct_times_100 = (pct :> int) in
     let slashed_amount =
-      Tez.mul_q base_amount Q.(pct_times_100 // 100) |> Tez.of_q ~round_up:true
+      Tez.mul_q base_amount Q.(pct_times_100 // 100) |> Tez.of_q ~round_up:false
     in
-    sub_tez_from_all_current slashed_amount a
+    let total_current = total_current a in
+    let slashed_amount_final =
+      if Tez.(slashed_amount >= total_current) then total_current
+      else slashed_amount
+    in
+    (sub_tez_from_all_current slashed_amount a, slashed_amount_final)
 end
 
 (** Representation of Unstaked frozen deposits *)
@@ -243,10 +248,11 @@ module Unstaked_frozen = struct
           let amount, rest = pop_cycle cycle t in
           (amount, (c, a) :: rest)
 
-  let slash cycle pct_times_100 a =
+  let slash ~preserved_cycles cycle pct_times_100 a =
     List.map
       (fun (c, frozen) ->
-        if Cycle.(c > cycle) then (c, frozen)
+        if Cycle.(c > cycle || add c preserved_cycles < cycle) then
+          (c, (frozen, Tez.zero))
         else (c, Frozen_tez.slash frozen.Frozen_tez.initial pct_times_100 frozen))
       a
 end
@@ -782,38 +788,64 @@ let apply_slashing
     | Double_attesting ->
         constants.percentage_of_frozen_deposits_slashed_per_double_attestation
   in
-  let _, total_before =
+  let _, total_before_slash =
     balance_and_total_balance_of_account culprit_name account_map
   in
-  let f_slash ({frozen_deposits; unstaked_frozen; frozen_rights; _} as acc) =
+  let slash_culprit
+      ({frozen_deposits; unstaked_frozen; frozen_rights; _} as acc) =
     let base_rights =
       CycleMap.find slashed_cycle frozen_rights
       |> Option.value ~default:Tez.zero
     in
-    let frozen_deposits =
+    let frozen_deposits, slashed_frozen =
       Frozen_tez.slash base_rights slashed_pct frozen_deposits
     in
-    let unstaked_frozen =
-      Unstaked_frozen.slash slashed_cycle slashed_pct unstaked_frozen
+    let unstaked_frozen_with_slash =
+      Unstaked_frozen.slash
+        ~preserved_cycles:constants.preserved_cycles
+        slashed_cycle
+        slashed_pct
+        unstaked_frozen
     in
-    {acc with frozen_deposits; unstaked_frozen}
+    let unstaked_frozen_rev, slashed_unstaked =
+      List.fold_left
+        (fun (acc_ufd, acc_slashed) (cycle, (ufd, slashed)) ->
+          ((cycle, ufd) :: acc_ufd, slashed :: acc_slashed))
+        ([], [])
+        unstaked_frozen_with_slash
+    in
+    let unstaked_frozen = List.rev unstaked_frozen_rev in
+    ( {acc with frozen_deposits; unstaked_frozen},
+      slashed_frozen :: slashed_unstaked )
   in
-  let account_map = update_account ~f:f_slash culprit_name account_map in
-  let _, total_after =
+  let culprit_account =
+    String.Map.find culprit_name account_map
+    |> Option.value_f ~default:(fun () -> raise Not_found)
+  in
+  let slashed_culprit_account, total_slashed = slash_culprit culprit_account in
+  let account_map =
+    update_account
+      ~f:(fun _ -> slashed_culprit_account)
+      culprit_name
+      account_map
+  in
+  let _, total_after_slash =
     balance_and_total_balance_of_account culprit_name account_map
   in
-  let total_burnt_amount = Tez.(total_before -! total_after) in
   let portion_reward =
     constants.adaptive_issuance.global_limit_of_staking_over_baking + 2
   in
   let reward_to_snitch =
-    Tez.mul_q total_burnt_amount Q.(1 // portion_reward) |> Tez.of_q
+    List.map
+      (fun x -> Tez.mul_q x Q.(1 // portion_reward) |> Tez.of_q ~round_up:false)
+      total_slashed
+    |> List.fold_left Tez.( +! ) Tez.zero
   in
   let account_map =
     add_liquid_rewards reward_to_snitch rewarded_name account_map
   in
   let actual_total_burnt_amount =
-    Tez.(total_burnt_amount -! reward_to_snitch)
+    Tez.(total_before_slash -! total_after_slash -! reward_to_snitch)
   in
   (account_map, actual_total_burnt_amount)
 
