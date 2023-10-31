@@ -23,6 +23,23 @@
 (*                                                                           *)
 (*****************************************************************************)
 
+type error += RPC_process_init_too_slow
+
+let () =
+  register_error_kind
+    `Permanent
+    ~id:"rpc_process_worker.RPC_process_init_too_slow"
+    ~title:"RPC process init too slow"
+    ~description:"RPC process init too slow"
+    ~pp:(fun ppf () ->
+      Format.fprintf
+        ppf
+        "RPC process init timeout: too slow to start. This is certainly due to \
+         the slow DAL initialization.")
+    Data_encoding.unit
+    (function RPC_process_init_too_slow -> Some () | _ -> None)
+    (fun () -> RPC_process_init_too_slow)
+
 module Event = struct
   include Internal_event.Simple
 
@@ -183,7 +200,23 @@ let run_server t () =
       Parameters.parameters_encoding
       t.external_process_parameters
   in
-  let* () = Socket.recv init_socket_fd Data_encoding.unit in
+  (* FIXME: https://gitlab.com/tezos/tezos/-/issues/6579
+     Workaround: increase default timeout. If the timeout is still not
+     enough and an Lwt_unix.Timeout is triggered, we display a
+     comprehensive message.
+  *)
+  let timeout = Ptime.Span.of_int_s 120 in
+  let* () =
+    protect
+      (fun () -> Socket.recv ~timeout init_socket_fd Data_encoding.unit)
+      ~on_error:(function
+        | err
+          when List.exists
+                 (function Exn Lwt_unix.Timeout -> true | _ -> false)
+                 err ->
+            tzfail RPC_process_init_too_slow
+        | e -> fail e)
+  in
   let*! () = Lwt_unix.close init_socket_fd in
   let*! () = Event.(emit rpc_process_started) pid in
   t.server <- Some process ;
