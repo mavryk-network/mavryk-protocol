@@ -424,6 +424,10 @@ let rec seq_field_of_data_encoding :
             name
         in
         (enums, types, mus, [attr])
+  | Delayed mk ->
+      (* TODO: once data-encoding is monorepoed: remove delayed and have "cached" *)
+      let e = mk () in
+      seq_field_of_data_encoding enums types mus e id
   | _ -> failwith "Not implemented"
 
 and seq_field_of_tups :
