@@ -6,6 +6,7 @@
 /******************************************************************************/
 
 pub mod comparable;
+pub mod michelson_address;
 pub mod michelson_list;
 pub mod or;
 pub mod parsed;
@@ -15,6 +16,7 @@ use std::collections::BTreeMap;
 
 use crate::gas::{tc_cost, Gas, OutOfGas};
 
+pub use michelson_address::{Address, AddressError};
 pub use michelson_list::MichelsonList;
 pub use or::Or;
 pub use parsed::{ParsedInstruction, ParsedStage};
@@ -246,6 +248,7 @@ pub enum TypedValue {
     List(MichelsonList<TypedValue>),
     Map(BTreeMap<TypedValue, TypedValue>),
     Or(Box<Or<TypedValue, TypedValue>>),
+    Address(Address),
 }
 
 impl TypedValue {

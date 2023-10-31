@@ -57,6 +57,8 @@ pub enum TcError {
     TypeNotPushable(Type),
     #[error("type not duplicable: {0:?}")]
     TypeNotDuplicable(Type),
+    #[error(transparent)]
+    AddressError(#[from] AddressError),
 }
 
 #[derive(Debug, PartialEq, Eq, thiserror::Error)]
@@ -589,47 +591,47 @@ fn typecheck_instruction(
 /// Typecheck a value. Assumes passed the type is valid, i.e. doesn't contain
 /// illegal types like `set operation` or `contract operation`.
 fn typecheck_value(ctx: &mut Ctx, t: &Type, v: Value) -> Result<TypedValue, TcError> {
-    use Type::*;
+    use Type as T;
     use TypedValue as TV;
     use Value as V;
     ctx.gas.consume(gas::tc_cost::VALUE_STEP)?;
     Ok(match (t, v) {
-        (Nat, V::Number(n)) => TV::Nat(n.try_into()?),
-        (Int, V::Number(n)) => TV::Int(n),
-        (Bool, V::Boolean(b)) => TV::Bool(b),
-        (Mutez, V::Number(n)) if n >= 0 => TV::Mutez(n.try_into()?),
-        (String, V::String(s)) => TV::String(s),
-        (Unit, V::Unit) => TV::Unit,
-        (Pair(pt), V::Pair(pv)) => {
+        (T::Nat, V::Number(n)) => TV::Nat(n.try_into()?),
+        (T::Int, V::Number(n)) => TV::Int(n),
+        (T::Bool, V::Boolean(b)) => TV::Bool(b),
+        (T::Mutez, V::Number(n)) if n >= 0 => TV::Mutez(n.try_into()?),
+        (T::String, V::String(s)) => TV::String(s),
+        (T::Unit, V::Unit) => TV::Unit,
+        (T::Pair(pt), V::Pair(pv)) => {
             let (tl, tr) = pt.as_ref();
             let (vl, vr) = *pv;
             let l = typecheck_value(ctx, tl, vl)?;
             let r = typecheck_value(ctx, tr, vr)?;
             TV::new_pair(l, r)
         }
-        (Or(pt), V::Left(lv)) => {
+        (T::Or(pt), V::Left(lv)) => {
             let (tl, _) = pt.as_ref();
             let lv = typecheck_value(ctx, tl, *lv)?;
             TV::new_or(crate::ast::Or::Left(lv))
         }
-        (Or(pt), V::Right(rv)) => {
+        (T::Or(pt), V::Right(rv)) => {
             let (_, tr) = pt.as_ref();
             let rv = typecheck_value(ctx, tr, *rv)?;
             TV::new_or(crate::ast::Or::Right(rv))
         }
-        (Option(ty), V::Option(v)) => match v {
+        (T::Option(ty), V::Option(v)) => match v {
             Some(v) => {
                 let v = typecheck_value(ctx, ty, *v)?;
                 TV::new_option(Some(v))
             }
             None => TV::new_option(None),
         },
-        (List(ty), V::Seq(vs)) => TV::List(
+        (T::List(ty), V::Seq(vs)) => TV::List(
             vs.into_iter()
                 .map(|v| typecheck_value(ctx, ty, v))
                 .collect::<Result<_, TcError>>()?,
         ),
-        (Map(m), V::Seq(vs)) => {
+        (T::Map(m), V::Seq(vs)) => {
             let (tk, tv) = m.as_ref();
             // can only fail if the typechecker is invoked on invalid
             // types, i.e. where `map` key is non-comparable
@@ -671,6 +673,14 @@ fn typecheck_value(ctx: &mut Ctx, t: &Type, v: Value) -> Result<TypedValue, TcEr
             // too much overhead.
             let map: BTreeMap<TypedValue, TypedValue> = elts.into_iter().collect();
             TV::Map(map)
+        }
+        (T::Address, V::String(str)) => {
+            ctx.gas.consume(gas::tc_cost::KEY_HASH_READABLE)?;
+            TV::Address(Address::from_base58_check(&str)?)
+        }
+        (T::Address, V::Bytes(bs)) => {
+            ctx.gas.consume(gas::tc_cost::KEY_HASH_OPTIMIZED)?;
+            TV::Address(Address::from_bytes(&bs)?)
         }
         (t, v) => return Err(TcError::InvalidValueForType(v, t.clone())),
     })
@@ -2248,6 +2258,222 @@ mod typecheck_tests {
                 storage: Type::Unit,
                 code: Failwith(Type::new_pair(Type::new_contract(Type::Unit), Type::Unit))
             })
+        );
+    }
+
+    #[test]
+    fn test_push_address() {
+        use crate::ast::michelson_address::AddressHash;
+        #[track_caller]
+        fn test_ok(lit: &str, bytes: &str, exp: Address) {
+            let exp = Ok(Push(TypedValue::Address(exp)));
+            assert_eq!(
+                &typecheck_instruction(
+                    parse(&format!("PUSH address {}", lit)).unwrap(),
+                    &mut Ctx::default(),
+                    &mut tc_stk![],
+                ),
+                &exp
+            );
+            assert_eq!(
+                &typecheck_instruction(
+                    parse(&format!("PUSH address {}", bytes)).unwrap(),
+                    &mut Ctx::default(),
+                    &mut tc_stk![],
+                ),
+                &exp
+            );
+        }
+        fn hex<T: Into<AddressHash>>(con: fn(Vec<u8>) -> T, hex: &str, ep: &str) -> Address {
+            Address {
+                hash: con(hex::decode(hex).unwrap()).into(),
+                entrypoint: ep.to_owned(),
+            }
+        }
+        use tezos_crypto_rs::hash::*;
+        // hex representations are obtained via `octez-client hash data`
+        test_ok(
+            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j""#,
+            "0x00007b09f782e0bcd67739510afa819d85976119d5ef",
+            hex(
+                ContractTz1Hash,
+                "7b09f782e0bcd67739510afa819d85976119d5ef",
+                "default",
+            ),
+        );
+        test_ok(
+            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH""#,
+            "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
+            hex(
+                ContractTz2Hash,
+                "0a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
+                "default",
+            ),
+        );
+        test_ok(
+            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r""#,
+            "0x00025cfa532f50de3e12befc0ad21603835dd7698d35",
+            hex(
+                ContractTz3Hash,
+                "5cfa532f50de3e12befc0ad21603835dd7698d35",
+                "default",
+            ),
+        );
+        test_ok(
+            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN""#,
+            "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6",
+            hex(
+                ContractTz4Hash,
+                "6342f30484dd46b6074373aa6ddca9dfb70083d6",
+                "default",
+            ),
+        );
+        test_ok(
+            r#""KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye""#,
+            "0x011f2d825fdd9da219235510335e558520235f4f5400",
+            hex(
+                ContractKt1Hash,
+                "1f2d825fdd9da219235510335e558520235f4f54",
+                "default",
+            ),
+        );
+        test_ok(
+            r#""sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf""#,
+            "0x03d601f22256d2ad1faec0c64374e527c6e62f2e5a00",
+            hex(
+                SmartRollupHash,
+                "d601f22256d2ad1faec0c64374e527c6e62f2e5a",
+                "default",
+            ),
+        );
+        // with entrypoints
+        test_ok(
+            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo""#,
+            "0x00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
+            hex(
+                ContractTz1Hash,
+                "7b09f782e0bcd67739510afa819d85976119d5ef",
+                "foo",
+            ),
+        );
+        test_ok(
+            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo""#,
+            "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
+            hex(
+                ContractTz2Hash,
+                "0a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
+                "foo",
+            ),
+        );
+        test_ok(
+            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo""#,
+            "0x00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
+            hex(
+                ContractTz3Hash,
+                "5cfa532f50de3e12befc0ad21603835dd7698d35",
+                "foo",
+            ),
+        );
+        test_ok(
+            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo""#,
+            "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
+            hex(
+                ContractTz4Hash,
+                "6342f30484dd46b6074373aa6ddca9dfb70083d6",
+                "foo",
+            ),
+        );
+        test_ok(
+            r#""KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo""#,
+            "0x011f2d825fdd9da219235510335e558520235f4f5400666f6f",
+            hex(
+                ContractKt1Hash,
+                "1f2d825fdd9da219235510335e558520235f4f54",
+                "foo",
+            ),
+        );
+        test_ok(
+            r#""sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf%foo""#,
+            "0x03d601f22256d2ad1faec0c64374e527c6e62f2e5a00666f6f",
+            hex(
+                SmartRollupHash,
+                "d601f22256d2ad1faec0c64374e527c6e62f2e5a",
+                "foo",
+            ),
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address \"tz1foobar\"").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(TcError::AddressError(
+                tezos_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
+            ))
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address \"tz9foobar\"").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::UnknownStrPrefix("tz9".to_owned()).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address \"tz\"").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::TooShort(2).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0x0001fffe").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::TooShort(4).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0xff00fe0000000000000000000000000000000000000000").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::UnknownBytesPrefix(vec![255]).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0x00fffe0000000000000000000000000000000000000000").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::UnknownBytesPrefix(vec![0, 255]).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0x00").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::TooShort(1).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0x011f2d825fdd9da219235510335e558520235f4f5401666f6f").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::InvalidSeparatorByte(1).into())
+        );
+        assert_eq!(
+            typecheck_instruction(
+                parse("PUSH address 0x03d601f22256d2ad1faec0c64374e527c6e62f2e5a666f6f").unwrap(),
+                &mut Ctx::default(),
+                &mut tc_stk![],
+            ),
+            Err(AddressError::InvalidSeparatorByte(0x66).into())
         );
     }
 }
