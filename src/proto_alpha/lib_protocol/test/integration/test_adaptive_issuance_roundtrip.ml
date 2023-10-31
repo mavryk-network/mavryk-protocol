@@ -500,10 +500,13 @@ let rec unfold_scenarios :
 let rec run_scenario :
     type input output.
     (input, output) single_scenario -> input -> output tzresult Lwt.t =
- fun scenario input ->
-  match scenario with
-  | End_scenario -> return input
-  | Cons (action, next) -> action input >>=? run_scenario next
+  let open Lwt_result_syntax in
+  fun scenario input ->
+    match scenario with
+    | End_scenario -> return input
+    | Cons (action, next) ->
+        let* result = action input in
+        run_scenario next result
 
 let unfolded_to_test :
     (unit, unit) single_scenario * string list * bool ->

@@ -638,11 +638,10 @@ let attestation_descriptor =
 let dal_attestation ctxt delegate block =
   let open Lwt_result_syntax in
   let*? level = Context.get_level (B block) in
-  let* committee =
-    Alpha_context.Level.from_raw ctxt level
-    |> Dal_apply.compute_committee ctxt
-    >|= Environment.wrap_tzresult
+  let*! result =
+    Alpha_context.Level.from_raw ctxt level |> Dal_apply.compute_committee ctxt
   in
+  let*? committee = Environment.wrap_tzresult result in
   match
     Environment.Signature.Public_key_hash.Map.find
       delegate

@@ -209,28 +209,32 @@ let location = function
 
 let test_parse_ty (type exp expc) ctxt node
     (expected : (exp, expc) Script_typed_ir.ty) =
+  let open Result_syntax in
   let legacy = false in
   let allow_lazy_storage = true in
   let allow_operation = true in
   let allow_contract = true in
   let allow_ticket = true in
   Environment.wrap_tzresult
-    ( Script_ir_translator.parse_ty
-        ctxt
-        ~legacy
-        ~allow_lazy_storage
-        ~allow_operation
-        ~allow_contract
-        ~allow_ticket
-        node
-    >>? fun (Script_typed_ir.Ex_ty actual, ctxt) ->
-      Gas_monad.run ctxt
-      @@ Script_ir_translator.ty_eq
-           ~error_details:(Informative (location node))
-           actual
-           expected
-      >>? fun (eq, ctxt) ->
-      eq >|? fun Eq -> ctxt )
+    (let* Script_typed_ir.Ex_ty actual, ctxt =
+       Script_ir_translator.parse_ty
+         ctxt
+         ~legacy
+         ~allow_lazy_storage
+         ~allow_operation
+         ~allow_contract
+         ~allow_ticket
+         node
+     in
+     let* eq, ctxt =
+       Gas_monad.run ctxt
+       @@ Script_ir_translator.ty_eq
+            ~error_details:(Informative (location node))
+            actual
+            expected
+     in
+     let+ Eq = eq in
+     ctxt)
 
 let test_parse_comb_type () =
   let open Lwt_result_wrap_syntax in

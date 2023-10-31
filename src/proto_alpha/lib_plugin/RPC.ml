@@ -3834,7 +3834,9 @@ module Staking = struct
     else return_none
 
   let check_delegate_registered ctxt pkh =
-    Delegate.registered ctxt pkh >>= function
+    let open Lwt_result_syntax in
+    let*! result = Delegate.registered ctxt pkh in
+    match result with
     | true -> return_unit
     | false ->
         Environment.Error_monad.tzfail (Delegate_services.Not_registered pkh)
