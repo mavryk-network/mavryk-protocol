@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Legacy_monad_globals
+open Infix_operator_syntax_compatibility
 open Lwt_result_syntax
 open Tezos_shell_services
 open Tezos_client_017_PtNairob
