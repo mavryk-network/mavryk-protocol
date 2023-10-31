@@ -214,23 +214,22 @@ let test_parse_ty (type exp expc) ctxt node
   let allow_operation = true in
   let allow_contract = true in
   let allow_ticket = true in
-  Environment.wrap_tzresult
-    ( Script_ir_translator.parse_ty
-        ctxt
-        ~legacy
-        ~allow_lazy_storage
-        ~allow_operation
-        ~allow_contract
-        ~allow_ticket
-        node
-    >>? fun (Script_typed_ir.Ex_ty actual, ctxt) ->
-      Gas_monad.run ctxt
-      @@ Script_ir_translator.ty_eq
-           ~error_details:(Informative (location node))
-           actual
-           expected
-      >>? fun (eq, ctxt) ->
-      eq >|? fun Eq -> ctxt )
+  Script_ir_translator.parse_ty
+    ctxt
+    ~legacy
+    ~allow_lazy_storage
+    ~allow_operation
+    ~allow_contract
+    ~allow_ticket
+    node
+  >>? fun (Script_typed_ir.Ex_ty actual, ctxt) ->
+  Gas_monad.run ctxt
+  @@ Script_ir_translator.ty_eq
+       ~error_details:(Informative (location node))
+       actual
+       expected
+  >>? fun (eq, ctxt) ->
+  eq >|? fun Eq -> ctxt
 
 let test_parse_comb_type () =
   let open Lwt_result_wrap_syntax in
@@ -248,10 +247,10 @@ let test_parse_comb_type () =
   let*?@ (Ty_ex_c pair_nat_nat_ty) = pair_ty nat_ty nat_ty in
   let* ctxt = test_context () in
   (* pair nat nat *)
-  let*? ctxt = test_parse_ty ctxt pair_nat_nat_prim pair_nat_nat_ty in
+  let*?@ ctxt = test_parse_ty ctxt pair_nat_nat_prim pair_nat_nat_ty in
   (* pair (pair nat nat) nat *)
   let*?@ (Ty_ex_c pair_pair_nat_nat_nat_ty) = pair_ty pair_nat_nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty
       ctxt
       (pair_prim2 pair_nat_nat_prim nat_prim)
@@ -259,7 +258,7 @@ let test_parse_comb_type () =
   in
   (* pair nat (pair nat nat) *)
   let*?@ (Ty_ex_c pair_nat_pair_nat_nat_ty) = pair_ty nat_ty pair_nat_nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty
       ctxt
       (pair_prim2 nat_prim pair_nat_nat_prim)
@@ -267,7 +266,7 @@ let test_parse_comb_type () =
   in
   (* pair nat nat nat *)
   let*?@ (Ty_ex_c pair_nat_nat_nat_ty) = pair_ty nat_ty pair_nat_nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty
       ctxt
       (pair_prim [nat_prim; nat_prim; nat_prim])
@@ -275,17 +274,17 @@ let test_parse_comb_type () =
   in
   (* pair (nat %a) nat *)
   let*?@ (Ty_ex_c pair_nat_a_nat_ty) = pair_t (-1) nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty ctxt (pair_prim2 nat_prim_a nat_prim) pair_nat_a_nat_ty
   in
   (* pair nat (nat %b) *)
   let*?@ (Ty_ex_c pair_nat_nat_b_ty) = pair_t (-1) nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty ctxt (pair_prim2 nat_prim nat_prim_b) pair_nat_nat_b_ty
   in
   (* pair (nat %a) (nat %b) *)
   let*?@ (Ty_ex_c pair_nat_a_nat_b_ty) = pair_t (-1) nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty ctxt (pair_prim2 nat_prim_a nat_prim_b) pair_nat_a_nat_b_ty
   in
   (* pair (nat %a) (nat %b) (nat %c) *)
@@ -293,7 +292,7 @@ let test_parse_comb_type () =
   let*?@ (Ty_ex_c pair_nat_a_nat_b_nat_c_ty) =
     pair_t (-1) nat_ty pair_nat_b_nat_c_ty
   in
-  let*? ctxt =
+  let*?@ ctxt =
     test_parse_ty
       ctxt
       (pair_prim [nat_prim_a; nat_prim_b; nat_prim_c])
@@ -304,7 +303,7 @@ let test_parse_comb_type () =
   let*?@ (Ty_ex_c pair_nat_a_pair_b_nat_nat_ty) =
     pair_t (-1) nat_ty pair_b_nat_nat_ty
   in
-  let*? (_ : context) =
+  let*?@ (_ : context) =
     test_parse_ty
       ctxt
       (pair_prim2 nat_prim_a (Prim (-1, T_pair, [nat_prim; nat_prim], ["%b"])))
@@ -314,10 +313,9 @@ let test_parse_comb_type () =
 
 let test_unparse_ty loc ctxt expected ty =
   let open Result_syntax in
-  Environment.wrap_tzresult
-    (let* actual, ctxt = Script_ir_unparser.unparse_ty ctxt ~loc:() ty in
-     if actual = expected then Ok ctxt
-     else Alcotest.failf "Unexpected error: %s" loc)
+  let* actual, ctxt = Script_ir_unparser.unparse_ty ctxt ~loc:() ty in
+  if actual = expected then Ok ctxt
+  else Alcotest.failf "Unexpected error: %s" loc
 
 let test_unparse_comb_type () =
   let open Lwt_result_wrap_syntax in
@@ -332,10 +330,12 @@ let test_unparse_comb_type () =
   let*?@ (Ty_ex_c pair_nat_nat_ty) = pair_ty nat_ty nat_ty in
   let* ctxt = test_context () in
   (* pair nat nat *)
-  let*? ctxt = test_unparse_ty __LOC__ ctxt pair_nat_nat_prim pair_nat_nat_ty in
+  let*?@ ctxt =
+    test_unparse_ty __LOC__ ctxt pair_nat_nat_prim pair_nat_nat_ty
+  in
   (* pair (pair nat nat) nat *)
   let*?@ (Ty_ex_c pair_pair_nat_nat_nat_ty) = pair_ty pair_nat_nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_unparse_ty
       __LOC__
       ctxt
@@ -344,7 +344,7 @@ let test_unparse_comb_type () =
   in
   (* pair nat nat nat *)
   let*?@ (Ty_ex_c pair_nat_nat_nat_ty) = pair_ty nat_ty pair_nat_nat_ty in
-  let*? (_ : context) =
+  let*?@ (_ : context) =
     test_unparse_ty
       __LOC__
       ctxt
@@ -358,11 +358,10 @@ let test_unparse_comparable_ty loc ctxt expected ty =
      call parse_ty on a set type *)
   let open Result_syntax in
   let open Script_typed_ir in
-  Environment.wrap_tzresult
-    (let* set_ty_ty = set_t (-1) ty in
-     let* actual, ctxt = Script_ir_unparser.unparse_ty ctxt ~loc:() set_ty_ty in
-     if actual = Prim ((), T_set, [expected], []) then return ctxt
-     else Alcotest.failf "Unexpected error: %s" loc)
+  let* set_ty_ty = set_t (-1) ty in
+  let* actual, ctxt = Script_ir_unparser.unparse_ty ctxt ~loc:() set_ty_ty in
+  if actual = Prim ((), T_set, [expected], []) then return ctxt
+  else Alcotest.failf "Unexpected error: %s" loc
 
 let test_unparse_comb_comparable_type () =
   let open Lwt_result_wrap_syntax in
@@ -377,12 +376,12 @@ let test_unparse_comb_comparable_type () =
   let*?@ pair_nat_nat_ty = pair_ty nat_ty nat_ty in
   let* ctxt = test_context () in
   (* pair nat nat *)
-  let*? ctxt =
+  let*?@ ctxt =
     test_unparse_comparable_ty __LOC__ ctxt pair_nat_nat_prim pair_nat_nat_ty
   in
   (* pair (pair nat nat) nat *)
   let*?@ pair_pair_nat_nat_nat_ty = pair_ty pair_nat_nat_ty nat_ty in
-  let*? ctxt =
+  let*?@ ctxt =
     test_unparse_comparable_ty
       __LOC__
       ctxt
@@ -391,7 +390,7 @@ let test_unparse_comb_comparable_type () =
   in
   (* pair nat nat nat *)
   let*?@ pair_nat_nat_nat_ty = pair_ty nat_ty pair_nat_nat_ty in
-  let*? (_ : context) =
+  let*?@ (_ : context) =
     test_unparse_comparable_ty
       __LOC__
       ctxt
