@@ -11,6 +11,7 @@
   octez-libs.base
   octez-libs.micheline
   octez-libs.stdlib-unix
+  tezt.core
   tezos-protocol-alpha.protocol
   octez-protocol-alpha-libs.client
   tezos-protocol-alpha.parameters

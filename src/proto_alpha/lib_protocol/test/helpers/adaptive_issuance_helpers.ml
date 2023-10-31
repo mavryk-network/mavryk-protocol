@@ -505,55 +505,64 @@ let balance_update_pp fmt
     b_staking_delegate_denominator_b
 
 let assert_balance_equal ~loc
-    {
-      liquid_b = a_liquid_b;
-      bonds_b = a_bonds_b;
-      staked_b = a_staked_b;
-      unstaked_frozen_b = a_unstaked_frozen_b;
-      unstaked_finalizable_b = a_unstaked_finalizable_b;
-      staking_delegator_numerator_b = a_staking_delegator_numerator_b;
-      staking_delegate_denominator_b = a_staking_delegate_denominator_b;
-    }
-    {
-      liquid_b = b_liquid_b;
-      bonds_b = b_bonds_b;
-      staked_b = b_staked_b;
-      unstaked_frozen_b = b_unstaked_frozen_b;
-      unstaked_finalizable_b = b_unstaked_finalizable_b;
-      staking_delegator_numerator_b = b_staking_delegator_numerator_b;
-      staking_delegate_denominator_b = b_staking_delegate_denominator_b;
-    } =
+    ({
+       liquid_b = a_liquid_b;
+       bonds_b = a_bonds_b;
+       staked_b = a_staked_b;
+       unstaked_frozen_b = a_unstaked_frozen_b;
+       unstaked_finalizable_b = a_unstaked_finalizable_b;
+       staking_delegator_numerator_b = a_staking_delegator_numerator_b;
+       staking_delegate_denominator_b = a_staking_delegate_denominator_b;
+     } as ba)
+    ({
+       liquid_b = b_liquid_b;
+       bonds_b = b_bonds_b;
+       staked_b = b_staked_b;
+       unstaked_frozen_b = b_unstaked_frozen_b;
+       unstaked_finalizable_b = b_unstaked_finalizable_b;
+       staking_delegator_numerator_b = b_staking_delegator_numerator_b;
+       staking_delegate_denominator_b = b_staking_delegate_denominator_b;
+     } as bb) =
   let open Lwt_result_syntax in
-  let* () = Assert.equal_tez ~loc a_liquid_b b_liquid_b in
-  let* () = Assert.equal_tez ~loc a_bonds_b b_bonds_b in
-  let* () =
-    Assert.equal_tez
-      ~loc
-      (Partial_tez.to_tez a_staked_b)
-      (Partial_tez.to_tez b_staked_b)
+  let*! res =
+    let* () = Assert.equal_tez ~loc a_liquid_b b_liquid_b in
+    let* () = Assert.equal_tez ~loc a_bonds_b b_bonds_b in
+    let* () =
+      Assert.equal_tez
+        ~loc
+        (Partial_tez.to_tez a_staked_b)
+        (Partial_tez.to_tez b_staked_b)
+    in
+    let* () =
+      Assert.equal_tez
+        ~loc
+        (Partial_tez.to_tez a_unstaked_frozen_b)
+        (Partial_tez.to_tez b_unstaked_frozen_b)
+    in
+    let* () =
+      Assert.equal_tez ~loc a_unstaked_finalizable_b b_unstaked_finalizable_b
+    in
+    let* () =
+      Assert.equal_z
+        ~loc
+        a_staking_delegator_numerator_b
+        b_staking_delegator_numerator_b
+    in
+    let* () =
+      Assert.equal_z
+        ~loc
+        a_staking_delegate_denominator_b
+        b_staking_delegate_denominator_b
+    in
+    return_unit
   in
-  let* () =
-    Assert.equal_tez
-      ~loc
-      (Partial_tez.to_tez a_unstaked_frozen_b)
-      (Partial_tez.to_tez b_unstaked_frozen_b)
-  in
-  let* () =
-    Assert.equal_tez ~loc a_unstaked_finalizable_b b_unstaked_finalizable_b
-  in
-  let* () =
-    Assert.equal_z
-      ~loc
-      a_staking_delegator_numerator_b
-      b_staking_delegator_numerator_b
-  in
-  let* () =
-    Assert.equal_z
-      ~loc
-      a_staking_delegate_denominator_b
-      b_staking_delegate_denominator_b
-  in
-  return_unit
+  match res with
+  | Ok () -> return_unit
+  | Error _err ->
+      Tezt_core.(
+        Log.debug ~color:Log.Color.FG.red "Balances differs:" ;
+        Log.debug "@[@[%a@]@[%a@]@]" balance_pp ba balance_pp bb) ;
+      Lwt.return res
 
 let update_account ~f account_name account_map =
   String.Map.update
