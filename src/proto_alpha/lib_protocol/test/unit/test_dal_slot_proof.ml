@@ -56,13 +56,13 @@ struct
 
   (** Check insertion of a new slot in the given skip list. *)
   let skip_list_ordering skip_list ~mk_level ~mk_slot_index ~check_result =
-    let open Lwt_result_syntax in
+    let open Lwt_result_wrap_syntax in
     let {S.Header.id; _} = Hist.Internal_for_tests.content skip_list in
     let level = mk_level id in
     let index = mk_slot_index id in
     let*? _data, _poly, slot = mk_slot ~level ~index () in
-    Hist.add_confirmed_slot_headers_no_cache skip_list [slot]
-    |> Environment.wrap_tzresult |> check_result
+    let@ result = Hist.add_confirmed_slot_headers_no_cache skip_list [slot] in
+    check_result result
 
   (** This test attempts to add a slot on top of genesis cell zero which would
       break the ordering. In fact, confirmed slots' skip list is ordered by slots

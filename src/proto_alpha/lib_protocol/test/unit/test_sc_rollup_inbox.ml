@@ -99,7 +99,8 @@ let assert_equal_merkelized_payload ~__LOC__ ~found ~expected =
   assert_merkelized_payload ~__LOC__ ~payload_hash ~index found
 
 let assert_merkelized_payload_proof_error ~__LOC__ expected_msg result =
-  Assert.error ~loc:__LOC__ (Environment.wrap_tzresult result) (function
+  let open Result_wrap_syntax in
+  Assert.error ~loc:__LOC__ (wrap result) (function
       | Environment.Ecoproto_error
           (Sc_rollup_inbox_merkelized_payload_hashes_repr
            .Merkelized_payload_hashes_proof_error msg) ->
@@ -120,7 +121,8 @@ let assert_equal_history_proof ~__LOC__ found expected =
     found
 
 let assert_inbox_proof_error ~__LOC__ expected_msg result =
-  Assert.error ~loc:__LOC__ (Environment.wrap_tzresult result) (function
+  let open Result_wrap_syntax in
+  Assert.error ~loc:__LOC__ (wrap result) (function
       | Environment.Ecoproto_error (Sc_rollup_inbox_repr.Inbox_proof_error msg)
         ->
           expected_msg = msg
@@ -244,12 +246,14 @@ let fill_merkelized_payload history payloads =
   let*?@ history, merkelized_payload =
     Merkelized_payload_hashes.genesis history first
   in
-  Lwt.return @@ Environment.wrap_tzresult
-  @@ List.fold_left_e
-       (fun (history, payloads) payload ->
-         Merkelized_payload_hashes.add_payload history payloads payload)
-       (history, merkelized_payload)
-       payloads
+  let@ result =
+    List.fold_left_e
+      (fun (history, payloads) payload ->
+        Merkelized_payload_hashes.add_payload history payloads payload)
+      (history, merkelized_payload)
+      payloads
+  in
+  Lwt.return result
 
 let construct_merkelized_payload_hashes payloads =
   let history = Merkelized_payload_hashes.History.empty ~capacity:1000L in
