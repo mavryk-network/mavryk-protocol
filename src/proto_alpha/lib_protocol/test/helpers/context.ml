@@ -45,8 +45,7 @@ let pred_branch = function
 
 let level = function B b -> b.header.shell.level | I i -> Incremental.level i
 
-let get_level ctxt =
-  level ctxt |> Raw_level.of_int32 |> Environment.wrap_tzresult
+let get_level ctxt = level ctxt |> Raw_level.of_int32
 
 let rpc_ctxt =
   object

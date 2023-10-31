@@ -636,8 +636,8 @@ let attestation_descriptor =
    for the current level. Recall that the slot to be included in the attestation
    is the delegate's first TB slot at the current level. *)
 let dal_attestation ctxt delegate block =
-  let open Lwt_result_syntax in
-  let*? level = Context.get_level (B block) in
+  let open Lwt_result_wrap_syntax in
+  let*?@ level = Context.get_level (B block) in
   let* committee =
     Alpha_context.Level.from_raw ctxt level
     |> Dal_apply.compute_committee ctxt

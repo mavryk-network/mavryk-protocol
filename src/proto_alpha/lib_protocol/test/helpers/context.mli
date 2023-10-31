@@ -34,7 +34,7 @@ val branch : t -> Block_hash.t
 
 val pred_branch : t -> Block_hash.t
 
-val get_level : t -> Raw_level.t tzresult
+val get_level : t -> Raw_level.t Environment.Error_monad.tzresult
 
 (** Given a context, returns the list of attesters charactized by
     the [level], the public key hash of the [delegate], its [consensus_key]

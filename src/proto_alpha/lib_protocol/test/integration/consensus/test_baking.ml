@@ -49,14 +49,14 @@ open Alpha_context
     - Randomize the number of blocks baked after the n cycles baked
       previously. *)
 let test_cycle () =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* b, _contracts = Context.init_n ~consensus_threshold:0 5 () in
   let* csts = Context.get_constants (B b) in
   let blocks_per_cycle = csts.parametric.blocks_per_cycle in
   let pp fmt x = Format.fprintf fmt "%ld" x in
   let* b = Block.bake b in
   let* b = Block.bake_until_cycle_end b in
-  let*? curr_level = Context.get_level (B b) in
+  let*?@ curr_level = Context.get_level (B b) in
   let* () =
     Assert.equal
       ~loc:__LOC__
@@ -66,9 +66,9 @@ let test_cycle () =
       (Alpha_context.Raw_level.to_int32 curr_level)
       blocks_per_cycle
   in
-  let*? l = Context.get_level (B b) in
+  let*?@ l = Context.get_level (B b) in
   let* b = Block.bake_n 10 b in
-  let*? curr_level = Context.get_level (B b) in
+  let*?@ curr_level = Context.get_level (B b) in
   Assert.equal
     ~loc:__LOC__
     Int32.equal

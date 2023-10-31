@@ -122,7 +122,7 @@ let test_no_commitment () =
     - when another baker reveals correctly, it receives the tip
     - revealing twice produces an error *)
 let test_revelation_early_wrong_right_twice () =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let open Assert in
   let* b, _contracts = Context.init_n ~consensus_threshold:0 5 () in
   let* csts = Context.get_constants (B b) in
@@ -142,7 +142,7 @@ let test_revelation_early_wrong_right_twice () =
   let* bal_main = Context.Contract.balance (B b) id in
   (* the baker [id] will include a seed_nonce commitment *)
   let* b = Block.bake ~policy:(Block.By_account pkh) b in
-  let*? level_commitment = Context.get_level (B b) in
+  let*?@ level_commitment = Context.get_level (B b) in
   let* committed_hash = Context.get_seed_nonce_hash (B b) in
   (* test that the baking reward is received *)
   let* () =
@@ -230,7 +230,7 @@ let test_revelation_early_wrong_right_twice () =
 (** Test that revealing too late produces an error. Note that a
     committer who doesn't reveal at cycle 1 is not punished.*)
 let test_revelation_missing_and_late () =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let open Context in
   let open Assert in
   let* b, _contracts = Context.init_n ~consensus_threshold:0 5 () in
@@ -246,7 +246,7 @@ let test_revelation_missing_and_late () =
   (* the next baker [id] will include a seed_nonce commitment *)
   let* pkh, _, _, _ = Block.get_next_baker b in
   let* b = Block.bake b in
-  let*? level_commitment = Context.get_level (B b) in
+  let*?@ level_commitment = Context.get_level (B b) in
   let* committed_hash = Context.get_seed_nonce_hash (B b) in
   (* finish cycle 0 excluding the committing baker [id] *)
   let policy = Block.Excluding [pkh] in
@@ -368,7 +368,7 @@ let test_vdf_status () =
     - the seed is updated with the vdf solution
   - another vdf revelation produces an error *)
 let test_early_incorrect_unverified_correct_already_vdf () =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let open Assert in
   let* b, _ = Context.init3 ~consensus_threshold:0 () in
   let* csts = Context.get_constants (B b) in
@@ -394,7 +394,7 @@ let test_early_incorrect_unverified_correct_already_vdf () =
   let* bal_main = Context.Contract.balance (B b) id in
   (* the baker [id] will include a seed_nonce commitment *)
   let* b = Block.bake ~policy:(Block.By_account pkh) b in
-  let*? level_commitment = Context.get_level (B b) in
+  let*?@ level_commitment = Context.get_level (B b) in
   let* committed_hash = Context.get_seed_nonce_hash (B b) in
   (* test that the baking reward is received *)
   let* () =

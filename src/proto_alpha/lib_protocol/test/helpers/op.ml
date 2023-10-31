@@ -77,7 +77,7 @@ let mk_consensus_content_signer_and_branch ?delegate ?slot ?level ?round
   let* level =
     match level with
     | None ->
-        let*? level = Context.get_level (B attested_block) in
+        let*?@ level = Context.get_level (B attested_block) in
         return level
     | Some level -> return level
   in

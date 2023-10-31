@@ -949,7 +949,7 @@ let commit_and_cement_after_n_bloc ?expected_error b contract rollup n =
 let test_challenge_window_period_boundaries () =
   let commitment_period_in_blocks = 10 in
   let sc_rollup_challenge_window_in_blocks = 10 in
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* block, contract, rollup =
     init_and_originate
       ~commitment_period_in_blocks
@@ -959,7 +959,7 @@ let test_challenge_window_period_boundaries () =
   (* Should fail because the waiting period is not strictly greater than the
      challenge window period. *)
   let* () =
-    let*? current_level = Context.get_level (B block) in
+    let*?@ current_level = Context.get_level (B block) in
     let level_of_cement_submit =
       Int32.to_int (Raw_level.to_int32 current_level)
       + commitment_period_in_blocks + sc_rollup_challenge_window_in_blocks

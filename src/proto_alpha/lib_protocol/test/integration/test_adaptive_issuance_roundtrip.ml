@@ -260,9 +260,9 @@ module State = struct
     update_map ~f state
 
   let apply_rewards ~(baker : string) block (state : t) : t tzresult Lwt.t =
-    let open Lwt_result_syntax in
+    let open Lwt_result_wrap_syntax in
     let {last_level_rewards; total_supply; constants = _; _} = state in
-    let*? current_level = Context.get_level (B block) in
+    let*?@ current_level = Context.get_level (B block) in
     (* We assume one block per minute *)
     let* rewards_per_block = Context.get_issuance_per_minute (B block) in
     if Tez.(rewards_per_block = zero) then return state
@@ -859,7 +859,7 @@ let begin_test ~activate_ai ?(burn_rewards = false)
     (constants : Protocol.Alpha_context.Constants.Parametric.t)
     delegates_name_list : (unit, t) scenarios =
   exec (fun () ->
-      let open Lwt_result_syntax in
+      let open Lwt_result_wrap_syntax in
       Log.info ~color:begin_end_color "-- Begin test --" ;
       let bootstrap = "__bootstrap__" in
       let delegates_name_list = bootstrap :: delegates_name_list in
@@ -880,7 +880,7 @@ let begin_test ~activate_ai ?(burn_rewards = false)
       in
       let n = List.length delegates_name_list in
       let* block, delegates = Context.init_with_constants_n constants n in
-      let*? init_level = Context.get_level (B block) in
+      let*?@ init_level = Context.get_level (B block) in
       let init_staked = Tez.of_mutez 200_000_000_000L in
       let*? account_map =
         List.fold_left2
