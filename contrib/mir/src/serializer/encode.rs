@@ -1,5 +1,7 @@
 //! Michelson serialization
 
+use tezos_data_encoding::{enc::BinWriter, types::Zarith};
+
 use crate::{ast::Value, lexer::Prim};
 
 /// Helper type with common encoding operations.
@@ -14,6 +16,10 @@ impl Buf {
     /// Obtain the result.
     pub fn finalize(self) -> Vec<u8> {
         self.0
+    }
+
+    pub fn inner_vec_mut(&mut self) -> &mut Vec<u8> {
+        &mut self.0
     }
 
     /// Put one byte.
@@ -78,7 +84,12 @@ impl Value {
 fn encode_value(buf: &mut Buf, value: &Value) {
     use Value::*;
     match value {
-        Number(_) => todo!(), // for a later MR
+        Number(n) => {
+            let z = Zarith((*n).into());
+            buf.byte(0x00);
+            z.bin_write(buf.inner_vec_mut())
+                .unwrap_or_else(|err| panic!("Encoding zarith number unexpectedly failed: {err}"))
+        }
         Boolean(false) => buf.prim(Prim::False, 0),
         Boolean(true) => buf.prim(Prim::True, 0),
         Unit => buf.prim(Prim::Unit, 0),
@@ -131,6 +142,50 @@ mod test_encoding {
             check((), "0x030b");
             check(true, "0x030a");
             check(false, "0x0303");
+        }
+
+        mod number {
+            use super::*;
+
+            #[test]
+            fn zero() {
+                check(0, "0x0000");
+            }
+            #[test]
+            fn few_trivial_samples() {
+                check(1, "0x0001");
+                check(13, "0x000d");
+            }
+            #[test]
+            fn largest_1_byte_long() {
+                check(63, "0x003f");
+            }
+            #[test]
+            fn smallest_2_bytes_long() {
+                check(64, "0x008001");
+            }
+            #[test]
+            fn large() {
+                check(123456789, "0x0095b4de75");
+            }
+            #[test]
+            fn negative() {
+                check(-1, "0x0041");
+                check(-36, "0x0064");
+            }
+            // Don't mind this "largest", it is in absolute numeric value sense
+            #[test]
+            fn negative_largest_1_byte_long() {
+                check(-63, "0x007f");
+            }
+            #[test]
+            fn negative_smallest_2_bytes_long() {
+                check(-64, "0x00c001");
+            }
+            #[test]
+            fn negative_large() {
+                check(-987654321, "0x00f1a2f3ad07");
+            }
         }
 
         #[test]
