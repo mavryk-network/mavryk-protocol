@@ -91,6 +91,8 @@ let transition_pvm (module Plugin : Protocol_plugin_sig.PARTIAL) node_ctxt ctxt
   let*! () =
     Interpreter_event.transitioned_pvm inbox_level state_hash tick num_messages
   in
+  let*! _state = Context.PVMState.find ctxt in
+  (*Metrics.Info.set_l2_head_level ctxt.;*)
   return (ctxt, num_messages, Z.to_int64 num_ticks, initial_tick)
 
 (** [process_head plugin node_ctxt ctxt ~predecessor head inbox_and_messages] runs the PVM for the given

@@ -389,7 +389,6 @@ let save_l2_block {store; _} (head : Sc_rollup_block.t) =
     ~value:head_info
 
 let set_l2_head {store; _} (head : Sc_rollup_block.t) =
-  Metrics.Info.set_l2_head_level head.header ;
   Store.L2_head.write store.l2_head head
 
 let is_processed {store; _} head = Store.L2_blocks.mem store.l2_blocks head

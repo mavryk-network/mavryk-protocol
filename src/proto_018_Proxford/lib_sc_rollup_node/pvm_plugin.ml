@@ -129,4 +129,6 @@ module Wasm_2_0_0 = struct
   let proof_mem_tree = Wasm_2_0_0_pvm.Wasm_2_0_0_proof_format.Tree.mem_tree
 
   let proof_fold_tree = Wasm_2_0_0_pvm.Wasm_2_0_0_proof_format.Tree.fold
+
+  let find_tree = Wasm_2_0_0_pvm.Wasm_2_0_0_proof_format.Tree.find_tree
 end

@@ -144,6 +144,10 @@ module type S = sig
       init:'a ->
       f:(string list -> Context.tree -> 'a -> 'a Lwt.t) ->
       'a Lwt.t
+
+    (* [find_tree t k] is [Some subtree] if [k] is associated with the internal
+       node [subtree] in [t], and [None] otherwise. *)
+    val find_tree : Context.tree -> string list -> Context.tree option Lwt.t
   end
 
   module Fueled : sig
