@@ -596,6 +596,41 @@ where
     }
 }
 
+impl BinWriter for Micheline {
+    fn bin_write(&self, output: &mut Vec<u8>) -> BinResult {
+        match self {
+            Micheline::Int(i) => bin_write_micheline_int(&i, output),
+            Micheline::String(s) => bin_write_micheline_string(&s, output),
+            Micheline::Bytes(s) => {
+                bin_write_micheline_bytes(enc::bytes)(s.as_slice(), output)
+            }
+            Micheline::App(prim_tag, args, annots) => match (args.len(), annots) {
+                (0, None) => bin_write_prim_no_args_no_annots(prim_tag, output),
+                (0, Some(annots)) => {
+                    bin_write_prim_no_args_some_annots(prim_tag, annots, output)
+                }
+                (1, None) => bin_write_prim_1_arg_no_annots(prim_tag, &args[0], output),
+                (1, Some(annots)) => {
+                    bin_write_prim_1_arg_some_annots(prim_tag, &args[0], annots, output)
+                }
+                (2, None) => {
+                    bin_write_prim_2_args_no_annots(prim_tag, &args[0], &args[1], output)
+                }
+                (2, Some(annots)) => bin_write_prim_2_args_some_annots(
+                    prim_tag, &args[0], &args[1], annots, output,
+                ),
+                (_, None) => {
+                    let annots = String::new();
+                    bin_write_prim_generic(prim_tag, args, &annots, output)
+                }
+                (_, Some(annots)) => {
+                    bin_write_prim_generic(prim_tag, args, annots, output)
+                }
+            },
+        }
+    }
+}
+
 // ---------------------------
 // Deserialization Combinators
 // ---------------------------
