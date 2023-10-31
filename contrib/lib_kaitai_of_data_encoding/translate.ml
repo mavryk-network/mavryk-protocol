@@ -43,6 +43,8 @@ module DataEncoding = Data_encoding__Encoding
    cases is not related to the type of encodings in unions. *)
 type anyEncoding = AnyEncoding : _ DataEncoding.t -> anyEncoding
 
+module MuSet = Set.Make (String)
+
 let summary ~title ~description =
   match (title, description) with
   | None, None -> None
@@ -83,26 +85,27 @@ let rec seq_field_of_data_encoding :
     type a.
     Ground.Enum.assoc ->
     Ground.Type.assoc ->
+    MuSet.t ->
     a DataEncoding.t ->
     string ->
-    Ground.Enum.assoc * Ground.Type.assoc * AttrSpec.t list =
- fun enums types {encoding; _} id ->
+    Ground.Enum.assoc * Ground.Type.assoc * MuSet.t * AttrSpec.t list =
+ fun enums types mus ({encoding; _} as whole_encoding) id ->
   let id = escape_id id in
   match encoding with
-  | Null -> (enums, types, [])
-  | Empty -> (enums, types, [])
-  | Ignore -> (enums, types, [])
-  | Constant _ -> (enums, types, [])
+  | Null -> (enums, types, mus, [])
+  | Empty -> (enums, types, mus, [])
+  | Ignore -> (enums, types, mus, [])
+  | Constant _ -> (enums, types, mus, [])
   | Bool ->
       let enums = Helpers.add_uniq_assoc enums Ground.Enum.bool in
-      (enums, types, [Ground.Attr.bool ~id])
-  | Uint8 -> (enums, types, [Ground.Attr.uint8 ~id])
-  | Int8 -> (enums, types, [Ground.Attr.int8 ~id])
-  | Uint16 -> (enums, types, [Ground.Attr.uint16 ~id])
-  | Int16 -> (enums, types, [Ground.Attr.int16 ~id])
-  | Int32 -> (enums, types, [Ground.Attr.int32 ~id])
-  | Int64 -> (enums, types, [Ground.Attr.int64 ~id])
-  | Int31 -> (enums, types, [Ground.Attr.int31 ~id])
+      (enums, types, mus, [Ground.Attr.bool ~id])
+  | Uint8 -> (enums, types, mus, [Ground.Attr.uint8 ~id])
+  | Int8 -> (enums, types, mus, [Ground.Attr.int8 ~id])
+  | Uint16 -> (enums, types, mus, [Ground.Attr.uint16 ~id])
+  | Int16 -> (enums, types, mus, [Ground.Attr.int16 ~id])
+  | Int32 -> (enums, types, mus, [Ground.Attr.int32 ~id])
+  | Int64 -> (enums, types, mus, [Ground.Attr.int64 ~id])
+  | Int31 -> (enums, types, mus, [Ground.Attr.int31 ~id])
   | RangedInt {minimum; maximum} ->
       let size = Data_encoding__Binary_size.range_to_size ~minimum ~maximum in
       if minimum <= 0 then
@@ -118,14 +121,14 @@ let rec seq_field_of_data_encoding :
         in
         match size with
         | `Uint8 ->
-            (enums, types, [{(Ground.Attr.uint8 ~id) with valid = uvalid}])
+            (enums, types, mus, [{(Ground.Attr.uint8 ~id) with valid = uvalid}])
         | `Uint16 ->
-            (enums, types, [{(Ground.Attr.uint16 ~id) with valid = uvalid}])
+            (enums, types, mus, [{(Ground.Attr.uint16 ~id) with valid = uvalid}])
         | `Uint30 ->
-            (enums, types, [{(Ground.Attr.uint30 ~id) with valid = uvalid}])
-        | `Int8 -> (enums, types, [{(Ground.Attr.int8 ~id) with valid}])
-        | `Int16 -> (enums, types, [{(Ground.Attr.int16 ~id) with valid}])
-        | `Int31 -> (enums, types, [{(Ground.Attr.int31 ~id) with valid}])
+            (enums, types, mus, [{(Ground.Attr.uint30 ~id) with valid = uvalid}])
+        | `Int8 -> (enums, types, mus, [{(Ground.Attr.int8 ~id) with valid}])
+        | `Int16 -> (enums, types, mus, [{(Ground.Attr.int16 ~id) with valid}])
+        | `Int31 -> (enums, types, mus, [{(Ground.Attr.int31 ~id) with valid}])
       else
         (* when [minimum > 0] (as is the case in this branch), data-encoding
            shifts the value of the binary representation so that the minimum is at
@@ -141,8 +144,8 @@ let rec seq_field_of_data_encoding :
             json_encoding = None;
           }
         in
-        let enums, types, represented_interval_attrs =
-          seq_field_of_data_encoding enums types shifted_encoding shifted_id
+        let enums, types, mus, represented_interval_attrs =
+          seq_field_of_data_encoding enums types mus shifted_encoding shifted_id
         in
         let instance_type : Kaitai.Types.DataType.int_type =
           match size with
@@ -193,6 +196,7 @@ let rec seq_field_of_data_encoding :
         in
         ( enums,
           types,
+          mus,
           [
             {
               (Helpers.default_attr_spec ~id) with
@@ -200,35 +204,37 @@ let rec seq_field_of_data_encoding :
                 DataType.(ComplexDataType (UserType represented_interval_class));
             };
           ] )
-  | Float -> (enums, types, [Ground.Attr.float ~id])
+  | Float -> (enums, types, mus, [Ground.Attr.float ~id])
   | RangedFloat {minimum; maximum} ->
       let valid =
         Some
           (ValidationSpec.ValidationRange
              {min = Ast.FloatNum minimum; max = Ast.FloatNum maximum})
       in
-      (enums, types, [{(Ground.Attr.float ~id) with valid}])
-  | Bytes (`Fixed n, _) -> (enums, types, [Ground.Attr.bytes ~id (Fixed n)])
-  | Bytes (`Variable, _) -> (enums, types, [Ground.Attr.bytes ~id Variable])
+      (enums, types, mus, [{(Ground.Attr.float ~id) with valid}])
+  | Bytes (`Fixed n, _) -> (enums, types, mus, [Ground.Attr.bytes ~id (Fixed n)])
+  | Bytes (`Variable, _) -> (enums, types, mus, [Ground.Attr.bytes ~id Variable])
   | Dynamic_size {kind; encoding = {encoding = Bytes (`Variable, _); _}} ->
       let size_id = "len_" ^ id in
       let size_attr = Ground.Attr.binary_length_kind ~id:size_id kind in
-      (enums, types, [size_attr; Ground.Attr.bytes ~id (Dynamic size_id)])
-  | String (`Fixed n, _) -> (enums, types, [Ground.Attr.string ~id (Fixed n)])
-  | String (`Variable, _) -> (enums, types, [Ground.Attr.string ~id Variable])
+      (enums, types, mus, [size_attr; Ground.Attr.bytes ~id (Dynamic size_id)])
+  | String (`Fixed n, _) ->
+      (enums, types, mus, [Ground.Attr.string ~id (Fixed n)])
+  | String (`Variable, _) ->
+      (enums, types, mus, [Ground.Attr.string ~id Variable])
   | Dynamic_size {kind; encoding = {encoding = String (`Variable, _); _}} ->
       let size_id = "len_" ^ id in
       let size_attr = Ground.Attr.binary_length_kind ~id:size_id kind in
-      (enums, types, [size_attr; Ground.Attr.string ~id (Dynamic size_id)])
+      (enums, types, mus, [size_attr; Ground.Attr.string ~id (Dynamic size_id)])
   | N ->
       let types = Helpers.add_uniq_assoc types Ground.Type.n_chunk in
       let types = Helpers.add_uniq_assoc types Ground.Type.n in
-      (enums, types, [Ground.Attr.n ~id])
+      (enums, types, mus, [Ground.Attr.n ~id])
   | Z ->
       let types = Helpers.add_uniq_assoc types Ground.Type.n_chunk in
       let types = Helpers.add_uniq_assoc types Ground.Type.z in
-      (enums, types, [Ground.Attr.z ~id])
-  | Conv {encoding; _} -> seq_field_of_data_encoding enums types encoding id
+      (enums, types, mus, [Ground.Attr.z ~id])
+  | Conv {encoding; _} -> seq_field_of_data_encoding enums types mus encoding id
   | Tup _ ->
       (* single-field tup *)
       let tid_gen =
@@ -239,24 +245,24 @@ let rec seq_field_of_data_encoding :
           already_called := true ;
           id
       in
-      seq_field_of_tups enums types tid_gen encoding
+      seq_field_of_tups enums types mus tid_gen encoding
   | Tups _ ->
       (* multi-field tup *)
       let tid_gen = Helpers.mk_tid_gen id in
-      seq_field_of_tups enums types tid_gen encoding
+      seq_field_of_tups enums types mus tid_gen encoding
   | List {length_limit = At_most _max_length; length_encoding = Some le; elts}
     ->
       let length_id = "number_of_elements_in_" ^ id in
-      let enums, types, length_attrs =
-        seq_field_of_data_encoding enums types le length_id
+      let enums, types, mus, length_attrs =
+        seq_field_of_data_encoding enums types mus le length_id
       in
       (* TODO: use [length_limit] to set a [valid:max:] value for length*)
       (* TODO: Big number length size not yet supported. We expect
                [`Uint30/16/8] to produce only one attribute. *)
       let () = assert (List.length length_attrs = 1) in
       let elt_id = id ^ "_elt" in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types elts elt_id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus elts elt_id
       in
       let types, attr =
         (* we use unconditional redirect because otherwise in the case of a
@@ -276,7 +282,7 @@ let rec seq_field_of_data_encoding :
             })
           (id ^ "_entries")
       in
-      (enums, types, length_attrs @ [attr])
+      (enums, types, mus, length_attrs @ [attr])
   | List
       {length_limit = Exactly _ | No_limit; length_encoding = Some _; elts = _}
     ->
@@ -287,8 +293,8 @@ let rec seq_field_of_data_encoding :
       assert false
   | List {length_limit; length_encoding = None; elts} ->
       let elt_id = id ^ "_elt" in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types elts elt_id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus elts elt_id
       in
       let types, attr =
         (* we use unconditional redirect because otherwise in the case of a
@@ -321,17 +327,19 @@ let rec seq_field_of_data_encoding :
                 })
           (id ^ "_entries")
       in
-      (enums, types, [attr])
-  | Obj f -> seq_field_of_field enums types f
+      (enums, types, mus, [attr])
+  | Obj f -> seq_field_of_field enums types mus f
   | Objs {kind = _; left; right} ->
-      let enums, types, left = seq_field_of_data_encoding enums types left id in
-      let enums, types, right =
-        seq_field_of_data_encoding enums types right id
+      let enums, types, mus, left =
+        seq_field_of_data_encoding enums types mus left id
+      in
+      let enums, types, mus, right =
+        seq_field_of_data_encoding enums types mus right id
       in
       let seq = left @ right in
-      (enums, types, seq)
+      (enums, types, mus, seq)
   | Union {kind = _; tag_size; tagged_cases = _; match_case = _; cases} ->
-      seq_field_of_union enums types tag_size cases id
+      seq_field_of_union enums types mus tag_size cases id
   | Dynamic_size {kind; encoding} ->
       let len_id = "len_" ^ id in
       let len_attr =
@@ -341,8 +349,8 @@ let rec seq_field_of_data_encoding :
         | `Uint16 -> Ground.Attr.uint16 ~id:len_id
         | `Uint8 -> Ground.Attr.uint8 ~id:len_id
       in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types encoding id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus encoding id
       in
       let types, attr =
         redirect_if_many
@@ -351,18 +359,18 @@ let rec seq_field_of_data_encoding :
           (fun attr -> {attr with size = Some (Ast.Name len_id)})
           id
       in
-      (enums, types, [len_attr; attr])
+      (enums, types, mus, [len_attr; attr])
   | Splitted {encoding; json_encoding = _; is_obj = _; is_tup = _} ->
-      seq_field_of_data_encoding enums types encoding id
+      seq_field_of_data_encoding enums types mus encoding id
   | Describe {encoding; id; description; title} -> (
       let id = escape_id id in
       let description = summary ~title ~description in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types encoding id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus encoding id
       in
       match attrs with
       | [] -> failwith "Not supported"
-      | [attr] -> (enums, types, [Helpers.merge_summaries attr description])
+      | [attr] -> (enums, types, mus, [Helpers.merge_summaries attr description])
       | _ :: _ :: _ as attrs ->
           let described_class =
             Helpers.class_spec_of_attrs
@@ -380,28 +388,63 @@ let rec seq_field_of_data_encoding :
               dataType = DataType.(ComplexDataType (UserType described_class));
             }
           in
-          (enums, types, [attr]))
+          (enums, types, mus, [attr]))
   | Check_size {limit = _; encoding} ->
       (* TODO: Add a guard for check size.*)
-      seq_field_of_data_encoding enums types encoding id
+      seq_field_of_data_encoding enums types mus encoding id
+  | Mu {name; title; description; fix; kind = _} ->
+      let summary = summary ~title ~description in
+      let name = escape_id name in
+      if MuSet.mem name mus then
+        (* This node was already visited, we just put a pointer. *)
+        ( enums,
+          types,
+          mus,
+          [
+            {
+              (Helpers.default_attr_spec ~id) with
+              dataType =
+                (* We don't have the full type, we just put a dummy with the correct
+                   [id] which is all that gets printed *)
+                ComplexDataType
+                  (UserType (Helpers.default_class_spec ~id:name ()));
+            };
+          ] )
+      else
+        let mus = MuSet.add name mus in
+        let fixed = fix whole_encoding in
+        let enums, types, mus, attrs =
+          seq_field_of_data_encoding enums types mus fixed name
+        in
+        let types, attr =
+          redirect
+            types
+            attrs
+            (fun attr -> Helpers.merge_summaries attr summary)
+            name
+        in
+        (enums, types, mus, [attr])
   | _ -> failwith "Not implemented"
 
 and seq_field_of_tups :
     type a.
     Ground.Enum.assoc ->
     Ground.Type.assoc ->
+    MuSet.t ->
     Helpers.tid_gen ->
     a DataEncoding.desc ->
-    Ground.Enum.assoc * Ground.Type.assoc * AttrSpec.t list =
- fun enums types tid_gen d ->
+    Ground.Enum.assoc * Ground.Type.assoc * MuSet.t * AttrSpec.t list =
+ fun enums types mus tid_gen d ->
   match d with
   | Tup {encoding = Tup _ as e; json_encoding = _} ->
-      seq_field_of_tups enums types tid_gen e
+      seq_field_of_tups enums types mus tid_gen e
   | Tup {encoding = Tups _ as e; json_encoding = _} ->
-      seq_field_of_tups enums types tid_gen e
+      seq_field_of_tups enums types mus tid_gen e
   | Tup e ->
       let id = tid_gen () in
-      let enums, types, attrs = seq_field_of_data_encoding enums types e id in
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus e id
+      in
       let types, attrs =
         match attrs with
         | [] -> (types, [])
@@ -415,30 +458,31 @@ and seq_field_of_tups :
             let types, attr = redirect types attrs Fun.id id in
             (types, [attr])
       in
-      (enums, types, attrs)
+      (enums, types, mus, attrs)
   | Tups {kind = _; left; right} ->
-      let enums, types, left =
-        seq_field_of_tups enums types tid_gen left.encoding
+      let enums, types, mus, left =
+        seq_field_of_tups enums types mus tid_gen left.encoding
       in
-      let enums, types, right =
-        seq_field_of_tups enums types tid_gen right.encoding
+      let enums, types, mus, right =
+        seq_field_of_tups enums types mus tid_gen right.encoding
       in
       let seq = left @ right in
-      (enums, types, seq)
+      (enums, types, mus, seq)
   | _ -> failwith "Non-tup(s) inside a tups"
 
 and seq_field_of_field :
     type a.
     Ground.Enum.assoc ->
     Ground.Type.assoc ->
+    MuSet.t ->
     a DataEncoding.field ->
-    Ground.Enum.assoc * Ground.Type.assoc * AttrSpec.t list =
- fun enums types f ->
+    Ground.Enum.assoc * Ground.Type.assoc * MuSet.t * AttrSpec.t list =
+ fun enums types mus f ->
   match f with
   | Req {name; encoding; title; description} ->
       let id = escape_id name in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types encoding id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus encoding id
       in
       let summary = summary ~title ~description in
       let types, attr =
@@ -448,7 +492,7 @@ and seq_field_of_field :
           (fun attr -> Helpers.merge_summaries attr summary)
           id
       in
-      (enums, types, [attr])
+      (enums, types, mus, [attr])
   | Opt {name; kind = _; encoding; title; description} ->
       let cond_id = escape_id (name ^ "_tag") in
       let enums = Helpers.add_uniq_assoc enums Ground.Enum.bool in
@@ -479,8 +523,8 @@ and seq_field_of_field :
         }
       in
       let id = escape_id name in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types encoding id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus encoding id
       in
       let summary = summary ~title ~description in
       let types, attr =
@@ -490,12 +534,12 @@ and seq_field_of_field :
           (fun attr -> {(Helpers.merge_summaries attr summary) with cond})
           id
       in
-      (enums, types, [cond_attr; attr])
+      (enums, types, mus, [cond_attr; attr])
   | Dft {name; encoding; default = _; title; description} ->
       (* NOTE: in binary format Dft is the same as Req *)
       let id = escape_id name in
-      let enums, types, attrs =
-        seq_field_of_data_encoding enums types encoding id
+      let enums, types, mus, attrs =
+        seq_field_of_data_encoding enums types mus encoding id
       in
       let summary = summary ~title ~description in
       let types, attr =
@@ -505,17 +549,18 @@ and seq_field_of_field :
           (fun attr -> Helpers.merge_summaries attr summary)
           id
       in
-      (enums, types, [attr])
+      (enums, types, mus, [attr])
 
 and seq_field_of_union :
     type a.
     Ground.Enum.assoc ->
     Ground.Type.assoc ->
+    MuSet.t ->
     Data_encoding__Binary_size.tag_size ->
     a DataEncoding.case list ->
     string ->
-    Ground.Enum.assoc * Ground.Type.assoc * AttrSpec.t list =
- fun enums types tag_size cases id ->
+    Ground.Enum.assoc * Ground.Type.assoc * MuSet.t * AttrSpec.t list =
+ fun enums types mus tag_size cases id ->
   let tagged_cases : (int * string * string option * anyEncoding) list =
     (* Some cases are JSON-only, we filter those out and we also get rid of
        parts we don't care about like injection and projection functions. *)
@@ -553,14 +598,15 @@ and seq_field_of_union :
       enum = Some tag_id;
     }
   in
-  let enums, types, payload_attrs =
+  let enums, types, mus, payload_attrs =
     List.fold_left
-      (fun (enums, types, payload_attrs) (_, case_id, _, AnyEncoding encoding) ->
-        let enums, types, attrs =
-          seq_field_of_data_encoding enums types encoding case_id
+      (fun (enums, types, mus, payload_attrs)
+           (_, case_id, _, AnyEncoding encoding) ->
+        let enums, types, mus, attrs =
+          seq_field_of_data_encoding enums types mus encoding case_id
         in
         match attrs with
-        | [] -> (enums, types, payload_attrs)
+        | [] -> (enums, types, mus, payload_attrs)
         | _ :: _ as attrs ->
             let types, attr =
               redirect_if_many
@@ -595,12 +641,12 @@ and seq_field_of_union :
                   })
                 (id ^ "_" ^ case_id)
             in
-            (enums, types, attr :: payload_attrs))
-      (enums, types, [])
+            (enums, types, mus, attr :: payload_attrs))
+      (enums, types, mus, [])
       tagged_cases
   in
   let payload_attrs = List.rev payload_attrs in
-  (enums, types, tag_attr :: payload_attrs)
+  (enums, types, mus, tag_attr :: payload_attrs)
 
 let from_data_encoding :
     type a. id:string -> ?description:string -> a DataEncoding.t -> ClassSpec.t
@@ -609,7 +655,9 @@ let from_data_encoding :
   let encoding_name = escape_id id in
   match encoding.encoding with
   | Describe {encoding; description; id; _} ->
-      let enums, types, attrs = seq_field_of_data_encoding [] [] encoding id in
+      let enums, types, _, attrs =
+        seq_field_of_data_encoding [] [] MuSet.empty encoding id
+      in
       Helpers.class_spec_of_attrs
         ~top_level:true
         ~id:encoding_name
@@ -619,8 +667,8 @@ let from_data_encoding :
         ~instances:[]
         attrs
   | _ ->
-      let enums, types, attrs =
-        seq_field_of_data_encoding [] [] encoding encoding_name
+      let enums, types, _, attrs =
+        seq_field_of_data_encoding [] [] MuSet.empty encoding encoding_name
       in
       Helpers.class_spec_of_attrs
         ~top_level:true
