@@ -252,6 +252,7 @@ pub enum TypedValue {
     Or(Box<Or<TypedValue, TypedValue>>),
     Address(Address),
     ChainId(ChainId),
+    Contract(Address),
 }
 
 impl TypedValue {
