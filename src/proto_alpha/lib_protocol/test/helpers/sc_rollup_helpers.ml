@@ -573,7 +573,7 @@ module Node_inbox = struct
     return {inbox; history; payloads_histories}
 
   let fill_inbox ~inbox_creation_level node_inbox payloads_per_levels =
-    let open Result_syntax in
+    let open Result_wrap_syntax in
     let rec aux {inbox; history; payloads_histories} = function
       | [] -> return {inbox; history; payloads_histories}
       | ({
@@ -591,16 +591,14 @@ module Node_inbox = struct
               (fun message -> Sc_rollup.Inbox_message.External message)
               messages
           in
-          let* payloads_history, history, inbox, witness, _messages =
-            Environment.wrap_tzresult
-            @@ Sc_rollup.Inbox.add_all_messages
-                 ~first_block:
-                   Raw_level.(equal (succ inbox_creation_level) level)
-                 ~predecessor_timestamp
-                 ~predecessor
-                 history
-                 inbox
-                 messages
+          let*@ payloads_history, history, inbox, witness, _messages =
+            Sc_rollup.Inbox.add_all_messages
+              ~first_block:Raw_level.(equal (succ inbox_creation_level) level)
+              ~predecessor_timestamp
+              ~predecessor
+              history
+              inbox
+              messages
           in
           (* Store in the history this archived level. *)
           let witness_hash =
@@ -676,7 +674,7 @@ module Protocol_inbox = struct
       inbox_creation_level
 
   let fill_inbox ~inbox_creation_level inbox payloads_per_levels =
-    let open Result_syntax in
+    let open Result_wrap_syntax in
     let rec aux inbox = function
       | [] -> return inbox
       | ({
@@ -694,16 +692,14 @@ module Protocol_inbox = struct
               (fun message -> Sc_rollup.Inbox_message.(External message))
               messages
           in
-          let* _, _, inbox, _, _ =
-            Environment.wrap_tzresult
-            @@ Sc_rollup.Inbox.add_all_messages
-                 ~first_block:
-                   Raw_level.(equal (succ inbox_creation_level) level)
-                 ~predecessor_timestamp
-                 ~predecessor
-                 (Sc_rollup.Inbox.History.empty ~capacity:1000L)
-                 inbox
-                 payloads
+          let*@ _, _, inbox, _, _ =
+            Sc_rollup.Inbox.add_all_messages
+              ~first_block:Raw_level.(equal (succ inbox_creation_level) level)
+              ~predecessor_timestamp
+              ~predecessor
+              (Sc_rollup.Inbox.History.empty ~capacity:1000L)
+              inbox
+              payloads
           in
           aux inbox rst
     in
