@@ -1474,7 +1474,6 @@ module Liquidity_baking = struct
 end
 
 module Gateway = struct
-  
   module Gateway_address =
     Make_single_data_storage (Registered) (Raw_context)
       (struct

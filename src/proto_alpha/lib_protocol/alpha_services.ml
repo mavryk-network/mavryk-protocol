@@ -318,14 +318,14 @@ module Cache = struct
     RPC_context.make_call0 S.contract_rank ctxt block () contract
 end
 
-let register () =
-  Contract.register () ;
-  Constants.register () ;
-  Delegate.register () ;
-  Nonce.register () ;
-  Snapshot_index.register () ;
-  Voting.register () ;
-  Sapling.register () ;
-  Liquidity_baking.register () ;
-  Cache.register () ; 
-  Gateway.register()
+  let register () =
+    Contract.register () ;
+    Constants.register () ;
+    Delegate.register () ;
+    Nonce.register () ;
+    Snapshot_index.register () ;
+    Voting.register () ;
+    Sapling.register () ;
+    Liquidity_baking.register () ;
+    Cache.register () ; 
+    Gateway.register()

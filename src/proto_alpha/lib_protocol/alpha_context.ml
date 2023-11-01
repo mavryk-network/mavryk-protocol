@@ -652,6 +652,11 @@ module Liquidity_baking = struct
   include Liquidity_baking_storage
 end
 
+module Gateway = struct
+  include Gateway_repr
+  include Gateway_storage
+end
+
 module Ticket_hash = struct
   include Ticket_hash_repr
   include Ticket_hash_builder
@@ -666,9 +671,4 @@ module Cache = Cache_repr
 
 module Internal_for_tests = struct
   let to_raw x = x
-end
-
-module Gateway = struct
-  include Gateway_repr
-  include Gateway_storage
 end

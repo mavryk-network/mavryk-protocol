@@ -180,7 +180,7 @@ val get_chain_block_context_liquidity_baking_cpmm_address :
     [block] defaults to ["head"].
 *)
 val get_chain_block_context_gateway_address :
-?chain:string -> ?block:string -> unit -> string t
+  ?chain:string -> ?block:string -> unit -> string t
 
 (** RPC: [GET /network/peers] *)
 val get_network_peers : (string * JSON.t) list t

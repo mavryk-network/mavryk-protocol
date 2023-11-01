@@ -5204,6 +5204,10 @@ module Liquidity_baking : sig
     (context * 'a list * Toggle_EMA.t) tzresult Lwt.t
 end
 
+module Gateway : sig
+  val get_gateway_address : context -> Contract_hash.t tzresult Lwt.t
+end
+
 (** This module re-exports definitions from {!Ticket_storage}. *)
 module Ticket_balance : sig
   type error +=
@@ -5363,8 +5367,4 @@ module Fees : sig
   type error += Storage_limit_too_high (* `Permanent *)
 
   val check_storage_limit : context -> storage_limit:Z.t -> unit tzresult
-end
-
-module Gateway : sig
-  val get_gateway_address : context -> Contract_hash.t tzresult Lwt.t
 end

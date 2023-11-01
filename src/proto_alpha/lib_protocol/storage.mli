@@ -604,7 +604,6 @@ module Liquidity_baking : sig
 end
 
 module Gateway : sig
-  
   (** Gateway contract **)
   module Gateway_address :
     Single_data_storage

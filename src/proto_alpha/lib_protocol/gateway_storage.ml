@@ -27,3 +27,12 @@
 (* open Gateway_repr *)
 
 let get_gateway_address = Storage.Gateway.Gateway_address.get
+
+(* let on_gateway_exists ctxt f =
+  get_gateway_address ctxt >>=? fun gateway_contract ->
+  Contract_storage.exists ctxt (Contract_repr.Originated gateway_contract)
+  >>= function
+  | false ->
+      (* do nothing if the cpmm is not found *)
+      return (ctxt, [])
+  | true -> f ctxt gateway_contract *)
