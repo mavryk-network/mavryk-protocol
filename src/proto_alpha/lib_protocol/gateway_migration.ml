@@ -49,28 +49,6 @@ let null_address =
   Bytes.of_string
     "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
-(* let mainnet_tzBTC_address =
-  Contract_hash.of_b58check_exn "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn" *)
-
-(** If token_pool, xtz_pool, or lqt_total are ever zero the CPMM will be
-    permanently broken. Therefore, we initialize it with the null address
-    registered as a liquidity provider with 1 satoshi tzBTC and 100 mumav
-    (roughly the current exchange rate).  *)
-(* let cpmm_init_storage ~token_address ~lqt_address =
-  Script_repr.lazy_expr
-    (Micheline.strip_locations
-       (Prim
-          ( 0,
-            D_Pair,
-            [
-              Int (1, Z.one);
-              Int (2, Z.of_int 100);
-              Int (3, Z.of_int 100);
-              String (4, token_address);
-              String (5, lqt_address);
-            ],
-            [] ))) *)
-
 let gateway_init_storage gateway_address =
   Script_repr.lazy_expr
     (Micheline.strip_locations
@@ -92,20 +70,6 @@ let gateway_init_storage gateway_address =
               Int (7, Z.of_int 100);
             ],
             [] )))
-
-(* let test_fa12_init_storage manager =
-  Script_repr.lazy_expr
-    (Micheline.strip_locations
-       (Prim
-          ( 0,
-            D_Pair,
-            [
-              Seq (1, []);
-              Seq (2, []);
-              String (3, manager);
-              Int (4, Z.of_int 10_000);
-            ],
-            [] ))) *)
 
 let originate ctxt address_hash ~balance script =
   Contract_storage.raw_originate
@@ -149,53 +113,16 @@ let originate ctxt address_hash ~balance script =
   in
   return (ctxt, result)
 
-  
-(* let init ctxt ~typecheck =
+
+let init ctxt ~typecheck =
   (* We use a custom origination nonce because it is unset when stitching from 009 *)
   let nonce = Operation_hash.hash_string ["Save, save, save."] in
   let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  
   Contract_storage.fresh_contract_from_current_nonce ctxt
   >>?= fun (ctxt, gateway_address) ->
-  
-  (* Placeholder for gateway contract code and storage *)
-  let gateway_code    = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
-  let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
-  
-  let gateway_script =
-    Script_repr.
-      {
-        code    = gateway_code;
-        storage = gateway_storage;
-      }
-  in
-  
-  typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
-  
-  originate
-    ctxt
-    gateway_address
-    ~balance:(Tez_repr.of_mumav_exn 100L)
-    gateway_script
-  >>=? fun (ctxt, gateway_result) ->
-  
-  (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
-  let ctxt = Raw_context.unset_origination_nonce ctxt in
-  (ctxt, [gateway_result;]) *)
-
-let init ctxt ~typecheck =
-  (* We use a custom origination nonce because it may be unset in certain scenarios *)
-  let nonce = Operation_hash.hash_string ["Save, save, save."] in
-  let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  
-  (* Get a fresh contract address for the gateway contract *)
-  Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, gateway_address) ->
-  
-  (* Define the gateway contract code and storage *)
+  Storage.Gateway.Gateway_address.init ctxt gateway_address >>=? fun ctxt ->
   let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
   let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
-  
   let gateway_script =
     Script_repr.
       {
@@ -203,21 +130,15 @@ let init ctxt ~typecheck =
         storage = gateway_storage;
       }
   in
-  
-  (* Typecheck the gateway contract *)
   typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
-  
-  (* Originate the gateway contract *)
   originate
     ctxt
     gateway_address
     ~balance:(Tez_repr.of_mumav_exn 100L)
     gateway_script
   >>=? fun (ctxt, gateway_result) ->
-  
-  (* Unset the origination nonce *)
+  (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
   let ctxt = Raw_context.unset_origination_nonce ctxt in
-  (* (ctxt, [gateway_result]) *)
   Lwt.return (Ok (ctxt, [gateway_result]))
 
   
