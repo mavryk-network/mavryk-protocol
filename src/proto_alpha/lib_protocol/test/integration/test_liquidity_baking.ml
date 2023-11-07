@@ -414,7 +414,8 @@ let liquidity_baking_origination_test_migration () =
   Block.bake_n_with_origination_results 1 blk
   >>=? fun (_blk, origination_results) ->
   let num_results = List.length origination_results in
-  Assert.equal_int ~loc:__LOC__ num_results 3
+  (* num_results increase from 3 by 1 (gateway contract) *)
+  Assert.equal_int ~loc:__LOC__ num_results 4 
 
 (* Test that with no contract at the tzBTC address and the level high enough to indicate we could be on mainnet, no contracts are originated in stitching. *)
 let liquidity_baking_origination_no_tzBTC_mainnet_migration () =
@@ -424,7 +425,8 @@ let liquidity_baking_origination_no_tzBTC_mainnet_migration () =
   Block.bake_n_with_origination_results 64 blk
   >>=? fun (_blk, origination_results) ->
   let num_results = List.length origination_results in
-  Assert.equal_int ~loc:__LOC__ num_results 0
+  (* num_results increase from 0 by 1 (gateway contract originated after liquidity baking contracts) *)
+  Assert.equal_int ~loc:__LOC__ num_results 1
 
 let tests =
   [

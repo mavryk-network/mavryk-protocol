@@ -33,13 +33,13 @@ let get_toggle_ema ctxt =
   Toggle_EMA.of_int32 ema
 
 let on_cpmm_exists ctxt f =
-  get_cpmm_address ctxt >>=? fun cpmm_contract ->
-  Contract_storage.exists ctxt (Contract_repr.Originated cpmm_contract)
+  get_cpmm_address ctxt >>=? fun gateway_contract ->
+  Contract_storage.exists ctxt (Contract_repr.Originated gateway_contract)
   >>= function
   | false ->
-      (* do nothing if the cpmm is not found *)
+      (* do nothing if the gateway contract is not found *)
       return (ctxt, [])
-  | true -> f ctxt cpmm_contract
+  | true -> f ctxt gateway_contract
 
 let update_toggle_ema ctxt ~toggle_vote =
   get_toggle_ema ctxt >>=? fun old_ema ->

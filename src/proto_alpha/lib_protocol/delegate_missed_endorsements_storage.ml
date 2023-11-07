@@ -97,8 +97,8 @@ let record_endorsing_participation ctxt ~delegate ~participation
 
 
 
-let gateway_address = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"  
-let burn_address     = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 
+let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"  
+let burn_address    = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 
 
 
 let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer

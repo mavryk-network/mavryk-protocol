@@ -150,27 +150,13 @@ let prepare_first_block _chain_id ctxt ~typecheck ~level ~timestamp ~predecessor
         ~start_position:(Level_storage.current ctxt).level_position
       >>=? fun ctxt ->
       Vote_storage.update_listings ctxt >>=? fun ctxt ->
-        
         (* Must be called after other originations since it unsets the origination nonce. *)
         Liquidity_baking_migration.init ctxt ~typecheck
-        
-      (* >>=? fun (ctxt, operation_results) -> *)
-
-      >>=? fun (ctxt, liquidity_baking_operation_results) ->  (* these are of type origination_result list *)
-      
-        (* Now initialize the gateway migration right after the liquidity baking migration. *)
+      >>=? fun (ctxt, liquidity_baking_operation_results) ->  
         Gateway_migration.init ctxt ~typecheck 
-      
-      >>=? fun (ctxt, gateway_migration_operation_results) ->  (* these are also of type origination_result list *)
-        
-        (* Here, you merge the operation results lists from both migrations. *)
+      >>=? fun (ctxt, gateway_migration_operation_results) ->  
         let merged_operation_results = liquidity_baking_operation_results @ gateway_migration_operation_results in
-        
-        (* Proceed with the merged results. *)
         Storage.Pending_migration.Operation_results.init ctxt merged_operation_results
-
-      (* Storage.Pending_migration.Operation_results.init ctxt operation_results *)
-
       >>=? fun ctxt ->
       Sc_rollup_inbox_storage.init_inbox ~predecessor ctxt >>=? fun ctxt ->
       return

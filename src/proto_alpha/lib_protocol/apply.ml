@@ -2040,7 +2040,174 @@ let may_start_new_cycle ctxt =
       Bootstrap.cycle_end ctxt last_cycle >|=? fun ctxt ->
       (ctxt, balance_updates, deactivated)
 
+
+
+(* let get_gateway_address = Storage.Gateway.Gateway_address.get *)
+
+let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"  
+
 let apply_liquidity_baking_subsidy ctxt ~toggle_vote =
+  Liquidity_baking.on_subsidy_allowed
+    ctxt
+    ~toggle_vote
+    (fun ctxt liquidity_baking_cpmm_contract_hash ->
+      (* let liquidity_baking_cpmm_contract =
+        Contract.Originated liquidity_baking_cpmm_contract_hash
+      in *)
+      let gateway_contract = 
+        Contract.Originated (Contract_hash.of_b58check_exn gateway_address) 
+      in
+      let ctxt =
+        (* We set a gas limit of 1/20th the block limit, which is ~10x
+            actual usage here in Granada. Gas consumed is reported in
+            the Transaction receipt, but not counted towards the block
+            limit. The gas limit is reset to unlimited at the end of
+            this function.*)
+        Gas.set_limit
+          ctxt
+          (Gas.Arith.integral_exn
+              (Z.div
+                (Gas.Arith.integral_to_z
+                    (Constants.hard_gas_limit_per_block ctxt))
+                (Z.of_int 20)))
+      in
+      let backtracking_ctxt = ctxt in
+      (let liquidity_baking_subsidy = Constants.liquidity_baking_subsidy ctxt in
+        (* credit liquidity baking subsidy to CPMM contract *)
+        Token.transfer
+          ~origin:Subsidy
+          ctxt
+          `Liquidity_baking_subsidies
+          (`Contract gateway_contract)
+          liquidity_baking_subsidy
+        >>=? fun (ctxt, balance_updates) ->
+        Script_cache.find ctxt liquidity_baking_cpmm_contract_hash
+        >>=? fun (ctxt, cache_key, script) ->
+        match script with
+        | None -> tzfail (Script_tc_errors.No_such_entrypoint Entrypoint.default)
+        | Some (script, script_ir) -> (
+            (* Token.transfer which is being called above already loads this
+              value into the Irmin cache, so no need to burn gas for it. *)
+            Contract.get_balance ctxt gateway_contract
+            >>=? fun balance ->
+            let now = Script_timestamp.now ctxt in
+            let level =
+              (Level.current ctxt).level |> Raw_level.to_int32
+              |> Script_int.of_int32 |> Script_int.abs
+            in
+            let step_constants =
+              let open Script_interpreter in
+              (* Using dummy values for source, payer, and chain_id
+                since they are not used within the CPMM default
+                entrypoint. *)
+              {
+                sender = Destination.Contract gateway_contract;
+                payer = Signature.Public_key_hash.zero;
+                self = liquidity_baking_cpmm_contract_hash;
+                amount = liquidity_baking_subsidy;
+                balance;
+                chain_id = Chain_id.zero;
+                now;
+                level;
+              }
+            in
+            (*
+                  Call CPPM default entrypoint with parameter Unit.
+                  This is necessary for the CPMM's xtz_pool in storage to
+                  increase since it cannot use BALANCE due to a transfer attack.
+
+                  Mimicks a transaction.
+
+                  There is no:
+                  - storage burn (extra storage is free)
+                  - fees (the operation is mandatory)
+          *)
+            Script_interpreter.execute_with_typed_parameter
+              ctxt
+              Optimized
+              step_constants
+              ~script
+              ~parameter:()
+              ~parameter_ty:Unit_t
+              ~cached_script:(Some script_ir)
+              ~location:Micheline.dummy_location
+              ~entrypoint:Entrypoint.default
+              ~internal:false
+            >>=? fun ( {
+                        script = updated_cached_script;
+                        code_size = updated_size;
+                        storage;
+                        lazy_storage_diff;
+                        operations;
+                        ticket_diffs;
+                        ticket_receipt;
+                      },
+                      ctxt ) ->
+            match operations with
+            | _ :: _ ->
+                (* No internal operations are expected here. Something bad may be happening. *)
+                return (backtracking_ctxt, [])
+            | [] ->
+                (* update CPMM storage *)
+                update_script_storage_and_ticket_balances
+                  ctxt
+                  ~self_contract:liquidity_baking_cpmm_contract_hash
+                  storage
+                  lazy_storage_diff
+                  ticket_diffs
+                  operations
+                >>=? fun (ticket_table_size_diff, ctxt) ->
+                Fees.record_paid_storage_space
+                  ctxt
+                  liquidity_baking_cpmm_contract_hash
+                >>=? fun (ctxt, new_size, paid_storage_size_diff) ->
+                Ticket_balance.adjust_storage_space
+                  ctxt
+                  ~storage_diff:ticket_table_size_diff
+                >>=? fun (ticket_paid_storage_diff, ctxt) ->
+                let consumed_gas =
+                  Gas.consumed ~since:backtracking_ctxt ~until:ctxt
+                in
+                Script_cache.update
+                  ctxt
+                  cache_key
+                  ( {script with storage = Script.lazy_expr storage},
+                    updated_cached_script )
+                  updated_size
+                >>?= fun ctxt ->
+                let result =
+                  Transaction_result
+                    (Transaction_to_contract_result
+                      {
+                        storage = Some storage;
+                        lazy_storage_diff;
+                        balance_updates;
+                        ticket_receipt;
+                        (* At this point in application the
+                            origination nonce has not been initialized
+                            so it's not possible to originate new
+                            contracts. We've checked above that none
+                            were originated. *)
+                        originated_contracts = [];
+                        consumed_gas;
+                        storage_size = new_size;
+                        paid_storage_size_diff =
+                          Z.add paid_storage_size_diff ticket_paid_storage_diff;
+                        allocated_destination_contract = false;
+                      })
+                in
+                let ctxt = Gas.set_unlimited ctxt in
+                return (ctxt, [Successful_manager_result result])))
+      >|= function
+      | Ok (ctxt, results) -> Ok (ctxt, results)
+      | Error _ ->
+          (* Do not fail if something bad happens during CPMM contract call. *)
+          let ctxt = Gas.set_unlimited backtracking_ctxt in
+          Ok (ctxt, []))
+
+
+
+(* let apply_liquidity_baking_subsidy ctxt ~toggle_vote =
   Liquidity_baking.on_subsidy_allowed
     ctxt
     ~toggle_vote
@@ -2194,7 +2361,7 @@ let apply_liquidity_baking_subsidy ctxt ~toggle_vote =
       | Error _ ->
           (* Do not fail if something bad happens during CPMM contract call. *)
           let ctxt = Gas.set_unlimited backtracking_ctxt in
-          Ok (ctxt, []))
+          Ok (ctxt, [])) *)
 
 let are_endorsements_required ctxt ~level =
   First_level_of_protocol.get ctxt >|=? fun first_level ->
