@@ -238,25 +238,52 @@ module Liquidity_baking = struct
 
   let get_cpmm_address ctxt block =
     RPC_context.make_call0 S.get_cpmm_address ctxt block () ()
+
 end
 
 module Gateway = struct
   module S = struct
     let get_gateway_address =
       RPC_service.get_service
-        ~description:"Gateway address"
+        ~description:"Gateway address (General Treasury)"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
         RPC_path.(custom_root / "context" / "gateway" / "gateway_address")
+
+    let get_clocktower_address =
+      RPC_service.get_service
+        ~description:"Clocktower address"
+        ~query:RPC_query.empty
+        ~output:Alpha_context.Contract.originated_encoding
+        RPC_path.(custom_root / "context" / "gateway" / "clocktower_address")
+
+    let get_liquidity_mining_treasury_address =
+      RPC_service.get_service
+        ~description:"Liquidity Mining Treasury address"
+        ~query:RPC_query.empty
+        ~output:Alpha_context.Contract.originated_encoding
+        RPC_path.(custom_root / "context" / "gateway" / "liquidity_mining_treasury_address")
   end
 
   let register () =
     let open Services_registration in
     register0 ~chunked:false S.get_gateway_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_gateway_address ctxt)
+        Alpha_context.Gateway.get_gateway_address ctxt) ;
+    register0 ~chunked:false S.get_clocktower_address (fun ctxt () () ->
+        Alpha_context.Gateway.get_clocktower_address ctxt) ;
+    register0 ~chunked:false S.get_liquidity_mining_treasury_address (fun ctxt () () ->
+        Alpha_context.Gateway.get_liquidity_mining_treasury_address ctxt)
 
   let get_gateway_address ctxt block =
     RPC_context.make_call0 S.get_gateway_address ctxt block () ()
+
+
+  let get_clocktower_address ctxt block =
+    RPC_context.make_call0 S.get_clocktower_address ctxt block () ()
+
+  let get_liquidity_mining_treasury_address ctxt block =
+    RPC_context.make_call0 S.get_liquidity_mining_treasury_address ctxt block () ()
+
 end
 
 module Cache = struct

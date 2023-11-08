@@ -216,6 +216,35 @@ let get_chain_block_context_gateway_address ?(chain = "main")
     ]
     JSON.as_string
 
+let get_chain_block_context_clocktower_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "gateway";
+      "clocktower_address";
+    ]
+    JSON.as_string
+
+let get_chain_block_context_treasury_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "gateway";
+      "liquidity_mining_treasury_address";
+    ]
+    JSON.as_string
 
 let get_network_peer_untrust peer_id =
   make GET ["network"; "peers"; peer_id; "untrust"] Fun.id

@@ -5206,6 +5206,8 @@ end
 
 module Gateway : sig
   val get_gateway_address : context -> Contract_hash.t tzresult Lwt.t
+  val get_clocktower_address : context -> Contract_hash.t tzresult Lwt.t
+  val get_liquidity_mining_treasury_address : context -> Contract_hash.t tzresult Lwt.t
 end
 
 (** This module re-exports definitions from {!Ticket_storage}. *)

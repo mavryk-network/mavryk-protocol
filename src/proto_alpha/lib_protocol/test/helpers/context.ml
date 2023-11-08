@@ -234,6 +234,12 @@ let get_liquidity_baking_cpmm_address ctxt =
 
 let get_gateway_contract_address ctxt =
   Alpha_services.Gateway.get_gateway_address rpc_ctxt ctxt
+
+let get_clocktower_contract_address ctxt =
+  Alpha_services.Gateway.get_clocktower_address rpc_ctxt ctxt
+
+let get_liquidity_mining_treasury_contract_address ctxt =
+  Alpha_services.Gateway.get_liquidity_mining_treasury_address rpc_ctxt ctxt
   
 (* Voting *)
 

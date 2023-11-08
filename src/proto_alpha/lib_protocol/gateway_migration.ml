@@ -120,25 +120,67 @@ let init ctxt ~typecheck =
   let ctxt = Raw_context.init_origination_nonce ctxt nonce in
   Contract_storage.fresh_contract_from_current_nonce ctxt
   >>?= fun (ctxt, gateway_address) ->
+  Contract_storage.fresh_contract_from_current_nonce ctxt
+  >>?= fun (ctxt, clocktower_address) ->
+  Contract_storage.fresh_contract_from_current_nonce ctxt
+  >>?= fun (ctxt, liquidity_mining_treasury_address) ->
+  
   Storage.Gateway.Gateway_address.init ctxt gateway_address >>=? fun ctxt ->
-  let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
-  let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
-  let gateway_script =
-    Script_repr.
-      {
-        code    = gateway_code;
-        storage = gateway_storage;
-      }
-  in
-  typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
-  originate
-    ctxt
-    gateway_address
-    ~balance:(Tez_repr.of_mumav_exn 100L)
-    gateway_script
-  >>=? fun (ctxt, gateway_result) ->
+    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
+    let gateway_script =
+      Script_repr.
+        {
+          code    = gateway_code;
+          storage = gateway_storage;
+        }
+    in
+    typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
+    originate
+      ctxt
+      gateway_address
+      ~balance:(Tez_repr.of_mumav_exn 100L)
+      gateway_script
+    >>=? fun (ctxt, gateway_result) ->
+
+  Storage.Gateway.Clocktower_address.init ctxt clocktower_address >>=? fun ctxt ->
+    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_storage = gateway_init_storage (Contract_hash.to_b58check clocktower_address) in
+    let gateway_script =
+      Script_repr.
+        {
+          code    = gateway_code;
+          storage = gateway_storage;
+        }
+    in
+    typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
+    originate
+      ctxt
+      clocktower_address
+      ~balance:(Tez_repr.of_mumav_exn 100L)
+      gateway_script
+    >>=? fun (ctxt, clocktower_result) ->
+
+  Storage.Gateway.Liquidity_mining_treasury_address.init ctxt liquidity_mining_treasury_address >>=? fun ctxt ->
+    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_storage = gateway_init_storage (Contract_hash.to_b58check liquidity_mining_treasury_address) in
+    let gateway_script =
+      Script_repr.
+        {
+          code    = gateway_code;
+          storage = gateway_storage;
+        }
+    in
+    typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
+    originate
+      ctxt
+      clocktower_address
+      ~balance:(Tez_repr.of_mumav_exn 100L)
+      gateway_script
+    >>=? fun (ctxt, treasury_result) ->
+    
   (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
   let ctxt = Raw_context.unset_origination_nonce ctxt in
-  Lwt.return (Ok (ctxt, [gateway_result]))
+  Lwt.return (Ok (ctxt, [gateway_result; clocktower_result; treasury_result]))
 
   

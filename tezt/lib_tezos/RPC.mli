@@ -182,6 +182,13 @@ val get_chain_block_context_liquidity_baking_cpmm_address :
 val get_chain_block_context_gateway_address :
   ?chain:string -> ?block:string -> unit -> string t
 
+val get_chain_block_context_clocktower_address :
+  ?chain:string -> ?block:string -> unit -> string t
+
+val get_chain_block_context_treasury_address :
+  ?chain:string -> ?block:string -> unit -> string t
+
+
 (** RPC: [GET /network/peers] *)
 val get_network_peers : (string * JSON.t) list t
 

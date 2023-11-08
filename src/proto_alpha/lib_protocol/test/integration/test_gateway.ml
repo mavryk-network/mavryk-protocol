@@ -100,6 +100,34 @@ let gateway_origination () =
   >>=? fun () -> return_unit
 
 
+(* let clocktower_origination () =
+  Context.init1 () >>=? fun (blk, _contract) ->
+  Context.get_clocktower_contract_address (B blk) >>=? fun cpmm_address ->
+  Context.Contract.script_hash (B blk) cpmm_address >>=? fun cpmm_hash ->
+  Assert.equal
+    ~loc:__LOC__
+    Script_expr_hash.equal
+    "Unexpected Clocktower script."
+    Script_expr_hash.pp
+    cpmm_hash
+    expected_cpmm_hash
+  >>=? fun () -> return_unit
+
+
+let liquidity_mining_treasury_origination () =
+  Context.init1 () >>=? fun (blk, _contract) ->
+  Context.get_liquidity_mining_treasury_contract_address (B blk) >>=? fun cpmm_address ->
+  Context.Contract.script_hash (B blk) cpmm_address >>=? fun cpmm_hash ->
+  Assert.equal
+    ~loc:__LOC__
+    Script_expr_hash.equal
+    "Unexpected Liquidity Mining Treasury script."
+    Script_expr_hash.pp
+    cpmm_hash
+    expected_cpmm_hash
+  >>=? fun () -> return_unit *)
+
+    
 (* Test that the scripts of the Gateway contract have the expected hashes. *)
 (* let gateway_origination () =
   Context.init1 () >>=? fun (blk, _contract) ->
@@ -313,6 +341,14 @@ let tests =
       "gateway contract script hashes"
       `Quick
       gateway_origination;
+    (* Tztest.tztest
+      "gateway contract clocktower script hashes"
+      `Quick
+      clocktower_origination;
+    Tztest.tztest
+      "gateway contract liquidity mining treasury script hashes"
+      `Quick
+      liquidity_mining_treasury_origination; *)
     (* Tztest.tztest
       "liquidity baking cpmm is originated at the expected address"
       `Quick

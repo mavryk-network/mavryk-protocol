@@ -167,6 +167,8 @@
         "Ticket_storage",
 
         "Gateway_storage",
+        "Gateway_contract_clocktower",
+        "Gateway_contract_liquidity_mining_treasury",
         "Gateway_contract",
         "Gateway_migration",
 
