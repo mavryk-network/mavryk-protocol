@@ -242,6 +242,7 @@ module Liquidity_baking = struct
 end
 
 module Gateway = struct
+  
   module S = struct
     let get_gateway_address =
       RPC_service.get_service
@@ -268,15 +269,16 @@ module Gateway = struct
   let register () =
     let open Services_registration in
     register0 ~chunked:false S.get_gateway_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_gateway_address ctxt) ;
-    register0 ~chunked:false S.get_clocktower_address (fun ctxt () () ->
+        Alpha_context.Gateway.get_gateway_address ctxt)
+
+    (* register0 ~chunked:false S.get_clocktower_address (fun ctxt () () ->
         Alpha_context.Gateway.get_clocktower_address ctxt) ;
+
     register0 ~chunked:false S.get_liquidity_mining_treasury_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_liquidity_mining_treasury_address ctxt)
+        Alpha_context.Gateway.get_liquidity_mining_treasury_address ctxt) *)
 
   let get_gateway_address ctxt block =
     RPC_context.make_call0 S.get_gateway_address ctxt block () ()
-
 
   let get_clocktower_address ctxt block =
     RPC_context.make_call0 S.get_clocktower_address ctxt block () ()

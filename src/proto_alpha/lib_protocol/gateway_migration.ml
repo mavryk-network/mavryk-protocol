@@ -49,7 +49,7 @@ let null_address =
   Bytes.of_string
     "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
-let gateway_init_storage gateway_address =
+let gateway_init_storage contract_address =
   Script_repr.lazy_expr
     (Micheline.strip_locations
        (Prim
@@ -66,7 +66,7 @@ let gateway_init_storage gateway_address =
                         [] );
                   ] );
               Seq (5, []);
-              String (6, gateway_address);
+              String (6, contract_address);
               Int (7, Z.of_int 100);
             ],
             [] )))
@@ -126,7 +126,7 @@ let init ctxt ~typecheck =
   >>?= fun (ctxt, liquidity_mining_treasury_address) ->
   
   Storage.Gateway.Gateway_address.init ctxt gateway_address >>=? fun ctxt ->
-    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_code = Script_repr.lazy_expr Gateway_contract.script in 
     let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
     let gateway_script =
       Script_repr.
@@ -139,12 +139,12 @@ let init ctxt ~typecheck =
     originate
       ctxt
       gateway_address
-      ~balance:(Tez_repr.of_mumav_exn 100L)
+      ~balance:(Tez_repr.of_mumav_exn 0L)
       gateway_script
     >>=? fun (ctxt, gateway_result) ->
 
   Storage.Gateway.Clocktower_address.init ctxt clocktower_address >>=? fun ctxt ->
-    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_code = Script_repr.lazy_expr Gateway_contract_clocktower.script in 
     let gateway_storage = gateway_init_storage (Contract_hash.to_b58check clocktower_address) in
     let gateway_script =
       Script_repr.
@@ -157,12 +157,12 @@ let init ctxt ~typecheck =
     originate
       ctxt
       clocktower_address
-      ~balance:(Tez_repr.of_mumav_exn 100L)
+      ~balance:(Tez_repr.of_mumav_exn 0L)
       gateway_script
     >>=? fun (ctxt, clocktower_result) ->
 
   Storage.Gateway.Liquidity_mining_treasury_address.init ctxt liquidity_mining_treasury_address >>=? fun ctxt ->
-    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
+    let gateway_code = Script_repr.lazy_expr Gateway_contract_liquidity_mining_treasury.script in 
     let gateway_storage = gateway_init_storage (Contract_hash.to_b58check liquidity_mining_treasury_address) in
     let gateway_script =
       Script_repr.
@@ -175,7 +175,7 @@ let init ctxt ~typecheck =
     originate
       ctxt
       clocktower_address
-      ~balance:(Tez_repr.of_mumav_exn 100L)
+      ~balance:(Tez_repr.of_mumav_exn 0L)
       gateway_script
     >>=? fun (ctxt, treasury_result) ->
     
