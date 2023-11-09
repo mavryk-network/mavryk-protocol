@@ -76,11 +76,15 @@ end
 module Gateway : sig
   val get_gateway_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
-  
-    val get_clocktower_address :
+end
+
+module Clocktower : sig
+  val get_clocktower_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
-  
-    val get_liquidity_mining_treasury_address :
+end
+
+module Liquidity_mining_treasury : sig
+  val get_liquidity_mining_treasury_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
 end
 

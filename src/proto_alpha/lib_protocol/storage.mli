@@ -609,12 +609,17 @@ module Gateway : sig
     Single_data_storage
       with type t := Raw_context.t
        and type value = Contract_hash.t
+end
 
+
+module Clocktower : sig
   module Clocktower_address :
     Single_data_storage
       with type t := Raw_context.t
       and type value = Contract_hash.t
+end
 
+module Liquidity_mining_treasury : sig
   module Liquidity_mining_treasury_address :
     Single_data_storage
       with type t := Raw_context.t

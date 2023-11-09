@@ -2,7 +2,6 @@
 (*                                                                           *)
 (* Open Source License                                                       *)
 (* Copyright (c) 2021 Tocqueville Group, Inc. <contact@tezos.com>            *)
-(* Copyright (c) 2022 Nomadic Labs <contact@nomadic-labs.com>                *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -24,5 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Get the address of the Gateway contract *)
-val get_gateway_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t
+val init :
+  Raw_context.t ->
+  typecheck:
+    (Raw_context.t ->
+    Script_repr.t ->
+    ((Script_repr.t * Lazy_storage_diff.diffs option) * Raw_context.t) tzresult
+    Lwt.t) ->
+  (Raw_context.t * Migration_repr.origination_result list) tzresult Lwt.t

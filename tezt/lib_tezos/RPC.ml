@@ -226,12 +226,12 @@ let get_chain_block_context_clocktower_address ?(chain = "main")
       "blocks";
       block;
       "context";
-      "gateway";
+      "clocktower";
       "clocktower_address";
     ]
     JSON.as_string
 
-let get_chain_block_context_treasury_address ?(chain = "main")
+let get_chain_block_context_liquidity_mining_treasury_address ?(chain = "main")
     ?(block = "head") () =
   make
     GET
@@ -241,7 +241,7 @@ let get_chain_block_context_treasury_address ?(chain = "main")
       "blocks";
       block;
       "context";
-      "gateway";
+      "liquidity_mining_treasury";
       "liquidity_mining_treasury_address";
     ]
     JSON.as_string

@@ -242,7 +242,6 @@ module Liquidity_baking = struct
 end
 
 module Gateway = struct
-  
   module S = struct
     let get_gateway_address =
       RPC_service.get_service
@@ -250,42 +249,49 @@ module Gateway = struct
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
         RPC_path.(custom_root / "context" / "gateway" / "gateway_address")
+  end
+  let register () =
+    let open Services_registration in
+    register0 ~chunked:false S.get_gateway_address (fun ctxt () () ->
+        Alpha_context.Gateway.get_gateway_address ctxt)
+  let get_gateway_address ctxt block =
+    RPC_context.make_call0 S.get_gateway_address ctxt block () ()
+end
 
+
+module Clocktower = struct
+  module S = struct
     let get_clocktower_address =
       RPC_service.get_service
         ~description:"Clocktower address"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
-        RPC_path.(custom_root / "context" / "gateway" / "clocktower_address")
+        RPC_path.(custom_root / "context" / "clocktower" / "clocktower_address")
+  end
+  let register () =
+    let open Services_registration in
+    register0 ~chunked:false S.get_clocktower_address (fun ctxt () () ->
+        Alpha_context.Clocktower.get_clocktower_address ctxt) 
+  let get_clocktower_address ctxt block =
+    RPC_context.make_call0 S.get_clocktower_address ctxt block () ()
+end
 
+
+module Liquidity_mining_treasury = struct
+  module S = struct
     let get_liquidity_mining_treasury_address =
       RPC_service.get_service
         ~description:"Liquidity Mining Treasury address"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
-        RPC_path.(custom_root / "context" / "gateway" / "liquidity_mining_treasury_address")
+        RPC_path.(custom_root / "context" / "liquidity_mining_treasury" / "liquidity_mining_treasury_address")
   end
-
   let register () =
     let open Services_registration in
-    register0 ~chunked:false S.get_gateway_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_gateway_address ctxt)
-
-    (* register0 ~chunked:false S.get_clocktower_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_clocktower_address ctxt) ;
-
     register0 ~chunked:false S.get_liquidity_mining_treasury_address (fun ctxt () () ->
-        Alpha_context.Gateway.get_liquidity_mining_treasury_address ctxt) *)
-
-  let get_gateway_address ctxt block =
-    RPC_context.make_call0 S.get_gateway_address ctxt block () ()
-
-  let get_clocktower_address ctxt block =
-    RPC_context.make_call0 S.get_clocktower_address ctxt block () ()
-
+        Alpha_context.Liquidity_mining_treasury.get_liquidity_mining_treasury_address ctxt)
   let get_liquidity_mining_treasury_address ctxt block =
     RPC_context.make_call0 S.get_liquidity_mining_treasury_address ctxt block () ()
-
 end
 
 module Cache = struct
@@ -357,4 +363,6 @@ let register () =
   Sapling.register () ;
   Liquidity_baking.register () ;
   Cache.register () ; 
-  Gateway.register()
+  Gateway.register() ;
+  Clocktower.register() ;
+  Liquidity_mining_treasury.register() 

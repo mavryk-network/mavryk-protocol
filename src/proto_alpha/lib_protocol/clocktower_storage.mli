@@ -24,5 +24,5 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Get the address of the Gateway contract *)
-val get_gateway_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t
+(** Get the address of the Clocktower contract *)
+val get_clocktower_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t

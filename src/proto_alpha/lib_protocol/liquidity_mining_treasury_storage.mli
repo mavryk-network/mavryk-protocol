@@ -24,5 +24,5 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Get the address of the Gateway contract *)
-val get_gateway_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t
+(** Get the address of the Liquidity mining treasury contract *)
+val get_liquidity_mining_treasury_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t

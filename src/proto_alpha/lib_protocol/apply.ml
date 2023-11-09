@@ -2044,7 +2044,7 @@ let may_start_new_cycle ctxt =
 
 (* let get_gateway_address = Storage.Gateway.Gateway_address.get *)
 
-(* let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"   *)
+let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"  
 
 let apply_liquidity_baking_subsidy ctxt ~toggle_vote =
   Liquidity_baking.on_subsidy_allowed
@@ -2054,12 +2054,12 @@ let apply_liquidity_baking_subsidy ctxt ~toggle_vote =
       (* let liquidity_baking_cpmm_contract =
         Contract.Originated liquidity_baking_cpmm_contract_hash
       in *)
-      let gateway_contract =
+      (* let gateway_contract =
         Contract.Originated liquidity_baking_cpmm_contract_hash
-      in
-      (* let gateway_contract = 
-        Contract.Originated (Contract_hash.of_b58check_exn gateway_address) 
       in *)
+      let gateway_contract = 
+        Contract.Originated (Contract_hash.of_b58check_exn gateway_address) 
+      in
       let ctxt =
         (* We set a gas limit of 1/20th the block limit, which is ~10x
             actual usage here in Granada. Gas consumed is reported in

@@ -24,11 +24,5 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* open Gateway_repr *)
 
 let get_gateway_address = Storage.Gateway.Gateway_address.get
-
-let get_clocktower_address = Storage.Gateway.Clocktower_address.get
-
-let get_liquidity_mining_treasury_address = Storage.Gateway.Liquidity_mining_treasury_address.get
-

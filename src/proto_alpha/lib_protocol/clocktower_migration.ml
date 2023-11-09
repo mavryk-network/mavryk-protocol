@@ -24,9 +24,9 @@
 (*****************************************************************************)
 
 (** This module is used to originate contracts for block fees splitting during
-    protocol stitching: a Gateway contract
+    protocol stitching: a Clocktower contract
 
-    The Gateway storage contains:
+    The Clocktower storage contains:
 
     The test FA1.2 contract uses the same script as the liquidity token. Its
     manager is initialized to the first bootstrap account. Before originating it,
@@ -49,7 +49,7 @@ let null_address =
   Bytes.of_string
     "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
-let gateway_init_storage gateway_address =
+let clocktower_init_storage contract_address =
   Script_repr.lazy_expr
     (Micheline.strip_locations
        (Prim
@@ -66,7 +66,7 @@ let gateway_init_storage gateway_address =
                         [] );
                   ] );
               Seq (5, []);
-              String (6, gateway_address);
+              String (6, contract_address);
               Int (7, Z.of_int 100);
             ],
             [] )))
@@ -116,30 +116,30 @@ let originate ctxt address_hash ~balance script =
 
 let init ctxt ~typecheck =
   (* We use a custom origination nonce because it is unset when stitching from 009 *)
-  let nonce = Operation_hash.hash_string ["Save, save, save."] in
+  let nonce = Operation_hash.hash_string ["Time, time, time."] in
   let ctxt = Raw_context.init_origination_nonce ctxt nonce in
   Contract_storage.fresh_contract_from_current_nonce ctxt
-  >>?= fun (ctxt, gateway_address) ->
-  Storage.Gateway.Gateway_address.init ctxt gateway_address >>=? fun ctxt ->
-    let gateway_code = Script_repr.lazy_expr Liquidity_baking_lqt.script in 
-    let gateway_storage = gateway_init_storage (Contract_hash.to_b58check gateway_address) in
-    let gateway_script =
+  >>?= fun (ctxt, clocktower_address) ->
+  Storage.Clocktower.Clocktower_address.init ctxt clocktower_address >>=? fun ctxt ->
+    let clocktower_code = Script_repr.lazy_expr Clocktower_contract.script in 
+    let clocktower_storage = clocktower_init_storage (Contract_hash.to_b58check clocktower_address) in
+    let clocktower_script =
       Script_repr.
         {
-          code    = gateway_code;
-          storage = gateway_storage;
+          code    = clocktower_code;
+          storage = clocktower_storage;
         }
     in
-    typecheck ctxt gateway_script >>=? fun (gateway_script, ctxt) ->
+    typecheck ctxt clocktower_script >>=? fun (clocktower_script, ctxt) ->
     originate
       ctxt
-      gateway_address
+      clocktower_address
       ~balance:(Tez_repr.of_mumav_exn 100L)
-      gateway_script
-    >>=? fun (ctxt, gateway_result) ->
-    
+      clocktower_script
+    >>=? fun (ctxt, clocktower_result) ->
+
   (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
   let ctxt = Raw_context.unset_origination_nonce ctxt in
-  Lwt.return (Ok (ctxt, [gateway_result]))
+  Lwt.return (Ok (ctxt, [clocktower_result]))
 
   

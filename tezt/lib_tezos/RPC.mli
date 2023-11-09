@@ -182,12 +182,22 @@ val get_chain_block_context_liquidity_baking_cpmm_address :
 val get_chain_block_context_gateway_address :
   ?chain:string -> ?block:string -> unit -> string t
 
+(** RPC: [GET /chains/<chain>/blocks/<block>/context/clocktower/clocktower_address]
+
+    [chain] defaults to ["main"].
+    [block] defaults to ["head"].
+*)  
 val get_chain_block_context_clocktower_address :
   ?chain:string -> ?block:string -> unit -> string t
 
-val get_chain_block_context_treasury_address :
-  ?chain:string -> ?block:string -> unit -> string t
 
+(** RPC: [GET /chains/<chain>/blocks/<block>/context/liquidity_mining_treasury/liquidity_mining_treasury_address]
+
+    [chain] defaults to ["main"].
+    [block] defaults to ["head"].
+*)
+val get_chain_block_context_liquidity_mining_treasury_address :
+  ?chain:string -> ?block:string -> unit -> string t
 
 (** RPC: [GET /network/peers] *)
 val get_network_peers : (string * JSON.t) list t

@@ -155,7 +155,11 @@ let prepare_first_block _chain_id ctxt ~typecheck ~level ~timestamp ~predecessor
       >>=? fun (ctxt, liquidity_baking_operation_results) ->  
         Gateway_migration.init ctxt ~typecheck 
       >>=? fun (ctxt, gateway_migration_operation_results) ->  
-        let merged_operation_results = liquidity_baking_operation_results @ gateway_migration_operation_results in
+        Clocktower_migration.init ctxt ~typecheck 
+      >>=? fun (ctxt, clocktower_migration_operation_results) ->  
+        Liquidity_mining_treasury_migration.init ctxt ~typecheck 
+      >>=? fun (ctxt, liquidity_mining_treasury_migration_operation_results) ->  
+        let merged_operation_results = liquidity_baking_operation_results @ gateway_migration_operation_results @ clocktower_migration_operation_results @ liquidity_mining_treasury_migration_operation_results in
         Storage.Pending_migration.Operation_results.init ctxt merged_operation_results
       >>=? fun ctxt ->
       Sc_rollup_inbox_storage.init_inbox ~predecessor ctxt >>=? fun ctxt ->

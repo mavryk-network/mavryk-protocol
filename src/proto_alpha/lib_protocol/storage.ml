@@ -1473,8 +1473,8 @@ module Liquidity_baking = struct
       end)
 end
 
+
 module Gateway = struct
-  
   module Gateway_address =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
@@ -1486,7 +1486,9 @@ module Gateway = struct
         (* Keeping contract-compatible encoding to avoid migrating this. *)
         let encoding = Contract_repr.originated_encoding
       end)
+end
 
+module Clocktower = struct
   module Clocktower_address =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
@@ -1498,7 +1500,9 @@ module Gateway = struct
         (* Keeping contract-compatible encoding to avoid migrating this. *)
         let encoding = Contract_repr.originated_encoding
       end)
+end
 
+module Liquidity_mining_treasury = struct
   module Liquidity_mining_treasury_address =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
@@ -1511,6 +1515,8 @@ module Gateway = struct
         let encoding = Contract_repr.originated_encoding
       end)
 end
+
+
 
 module Ticket_balance = struct
   module Name = struct
