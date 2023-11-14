@@ -4757,11 +4757,9 @@ end = struct
           [
             ("test_constants", true);
             ("test_frozen_bonds", true);
-            ("test_liquidity_baking", true);
             ("test_storage_functions", true);
             ("test_storage", true);
             ("test_token", true);
-            ("test_gateway", true);
           ]
           |> List.filter_map (fun (n, b) -> if b then Some n else None)
         in
@@ -4791,7 +4789,6 @@ end = struct
           (* The first item of each tuple is the index N for the runtestN alias.
              Those aliases are used to split into multiple CI jobs. *)
           [
-            (1, "liquidity_baking_pbt", true);
             (1, "saturation_fuzzing", true);
             (1, "test_merkle_list", N.(number >= 013));
             (1, "test_gas_properties", true);
@@ -4857,7 +4854,6 @@ end = struct
             ("test_gas_monad", true);
             ("test_global_constants_storage", true);
             ("test_level_module", true);
-            ("test_liquidity_baking_repr", true);
             ("test_merkle_list", true);
             ("test_operation_repr", true);
             ("test_qty", true);

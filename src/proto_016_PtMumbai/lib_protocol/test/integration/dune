@@ -31,7 +31,6 @@
  (modules
   test_constants
   test_frozen_bonds
-  test_liquidity_baking
   test_storage_functions
   test_storage
   test_token))
