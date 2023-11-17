@@ -48,8 +48,8 @@ struct
       ^ " requests."
 
     let description =
-      "Valid locators are of this form:\n" ^ " - " ^ scheme ^ "://host/tz1...\n"
-      ^ " - " ^ scheme ^ "://host:port/path/to/service/tz1...\n"
+      "Valid locators are of this form:\n" ^ " - " ^ scheme ^ "://host/mv1...\n"
+      ^ " - " ^ scheme ^ "://host:port/path/to/service/mv1...\n"
       ^ "Environment variable TEZOS_SIGNER_HTTP_HEADERS can be specified to \
          add headers to the requests (only 'host' and custom 'x-...' headers \
          are supported)."
@@ -91,7 +91,7 @@ struct
                lines)
 
     let parse uri =
-      (* extract `tz1..` from the last component of the path *)
+      (* extract `mv1..` from the last component of the path *)
       let open Lwt_result_syntax in
       assert (Uri.scheme uri = Some scheme) ;
       let path = Uri.path uri in

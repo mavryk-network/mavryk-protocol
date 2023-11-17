@@ -108,7 +108,7 @@ mod test {
             // Source tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
             0, // PKH - Ed25519 tag
             b'B', 236, b'v', b'_', b'\'', 0, 19, b'N', 158, 14, 254, 137, 208, b'3', 142, b'.',
-            132, b'<', b'S', 220, // end tz1
+            132, b'<', b'S', 220, // end mv1
             // Destination sr1UX4Euo29Fd5bhmZypQffZJwy9M3A1D4Mb
             246, 144, 126, 197, 72, 77, 70, 203, 171, 146, 47, 210, 213, 225, 165, 143, 212, 162,
             185, 251, // end sr1
@@ -126,7 +126,7 @@ mod test {
             .expect("valid Kt1 address");
 
         let source = PublicKeyHash::from_b58check("tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
-            .expect("valid tz1 address");
+            .expect("valid mv1 address");
 
         let destination = SmartRollupAddress::from_b58check("sr1UX4Euo29Fd5bhmZypQffZJwy9M3A1D4Mb")
             .expect("valid sr1 address");

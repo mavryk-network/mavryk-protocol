@@ -74,9 +74,9 @@ instructions:
       - name: Address
         description: This example takes a contract by parameter, and then stores its address.
         path: opcodes/address.tz
-        input: '"tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv"'
+        input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
         initial_storage: 'None'
-        final_storage: '(Some "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv")'
+        final_storage: '(Some "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn")'
 
   LOOP_LEFT:
     category: control_structure
@@ -740,7 +740,7 @@ instructions:
           This contract receives an ``address`` by parameter, and converts it to a ``contract unit``.
 
       path: opcodes/contract.tz
-      input: '"tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv"'
+      input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
       initial_storage: 'Unit'
       final_storage: 'Unit'
 
@@ -767,7 +767,7 @@ instructions:
       input: 'Unit'
       initial_storage: 'None'
       final_storage: '(Some "KT1Mjjcb6tmSsLm7Cb3DSQszePjfchPM4Uxm")'
-      client_run_script_params: [ "--payer", "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
+      client_run_script_params: [ "--payer", "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
 
 
   CONS:
@@ -1974,7 +1974,7 @@ types:
     big_map_value: true
     duplicable: true
     examples:
-      - '"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"'
+      - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
       - '"tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k"'
 
   timestamp:
@@ -2203,7 +2203,7 @@ types:
     examples:
       - '"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"'
       - '"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%entrypoint"'
-      - '"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"'
+      - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
       - '"tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc"'
       - '"tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA"'
 

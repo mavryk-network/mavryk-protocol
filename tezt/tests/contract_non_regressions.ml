@@ -77,7 +77,7 @@ let register843 =
      are used directly and when they are first normalized to optimized
      format before origination. *)
   let* client = Client.init_mockup ~protocol () in
-  let addr = {|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|} in
+  let addr = {|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|} in
   let bug843 =
     Michelson_script.(find ["non_regression"; "843_bug"] protocol |> path)
   in

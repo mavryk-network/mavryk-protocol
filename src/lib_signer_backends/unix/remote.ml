@@ -45,7 +45,7 @@ struct
 
   let description =
     "Valid locators are of the form\n\
-    \ - remote://tz1...\n\
+    \ - remote://mv1...\n\
      The key will be queried to current remote signer, which can be configured \
      with the `--remote-signer` or `-R` options, or by defining the following \
      environment variables:\n\

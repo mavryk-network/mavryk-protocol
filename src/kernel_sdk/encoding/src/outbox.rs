@@ -216,11 +216,11 @@ mod test {
         0xff, // provide whitelist (0x0 for none)
         0x0, 0x0, 0x0, 0x2a, // # bytes in next field
         // sequence of public_key_hash (21 bytes, 8-bit tag)
-        // tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+        // mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
         0x0, // Ed25519 (tag 0)
         0x2, 0x29, 0x8c, 0x3, 0xed, 0x7d, 0x45, 0x4a, 0x10, 0x1e, 0xb7, 0x2, 0x2b, 0xc9,
         0x5f, 0x7e, 0x5f, 0x41, 0xac, 0x78,
-        // tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN
+        // mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
         0x0, // Ed25519 (tag 0)
         0xe7, 0x67, 0xf, 0x32, 0x3, 0x81, 0x7, 0xa5, 0x9a, 0x2b, 0x9c, 0xfe, 0xfa, 0xe3,
         0x6e, 0xa2, 0x1f, 0x5a, 0xa6, 0x3c,
@@ -391,8 +391,8 @@ mod test {
     #[cfg(feature = "proto-alpha")]
     fn whitelist() -> OutboxMessageWhitelistUpdate {
         let whitelist = Some(vec![
-            PublicKeyHash::from_b58check("tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx").unwrap(),
-            PublicKeyHash::from_b58check("tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN").unwrap(),
+            PublicKeyHash::from_b58check("mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe").unwrap(),
+            PublicKeyHash::from_b58check("mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7").unwrap(),
         ]);
         OutboxMessageWhitelistUpdate { whitelist }
     }
@@ -401,7 +401,7 @@ mod test {
     #[cfg(feature = "proto-alpha")]
     fn tryfrom_whitelist() {
         let addr =
-            PublicKeyHash::from_b58check("tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx").unwrap();
+            PublicKeyHash::from_b58check("mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe").unwrap();
         let l1 = Some(vec![addr.clone(), addr.clone()]);
         let w1: Result<OutboxMessageWhitelistUpdate, _> = l1.try_into();
         assert_eq!(

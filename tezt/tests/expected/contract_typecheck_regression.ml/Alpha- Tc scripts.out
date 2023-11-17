@@ -35705,13 +35705,13 @@ Well typed (Gas remaining: 1039967.364 units remaining)	michelson_test_scripts/m
   storage unit ;
   code { CAR @preimage
          /* [ bytes ] */ ;
-         DIP { PUSH @from key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"
+         DIP { PUSH @from key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
                /* [ key_hash ] */ ;
                IMPLICIT_ACCOUNT
                /* [ contract unit ] */ ;
                PUSH @to
                  key_hash
-                 "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"
+                 "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"
                /* [ key_hash : contract unit ] */ ;
                IMPLICIT_ACCOUNT
                /* [ contract unit : contract unit ] */ ;
@@ -36105,7 +36105,7 @@ Well typed (Gas remaining: 1039993.536 units remaining)	michelson_test_scripts/n
   storage (pair address (lambda unit unit)) ;
   code { CAR
          /* [ never ] */ ;
-         PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"
+         PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
          /* [ address : never ] */ ;
          DROP
          /* [ never ] */ ;
@@ -37381,23 +37381,23 @@ Well typed (Gas remaining: 1039839.822 units remaining)	michelson_test_scripts/o
          COMPARE
          /* [ int ] */ ;
          ASSERT_GT ;
-         PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"
+         PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
          /* [ key_hash ] */ ;
          DUP
          /* [ key_hash : key_hash ] */ ;
          COMPARE
          /* [ int ] */ ;
          ASSERT_EQ ;
-         PUSH key_hash "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv"
+         PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"
          /* [ key_hash ] */ ;
-         PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"
+         PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
          /* [ key_hash : key_hash ] */ ;
          COMPARE
          /* [ int ] */ ;
          ASSERT_LT ;
-         PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"
+         PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
          /* [ key_hash ] */ ;
-         PUSH key_hash "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv"
+         PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"
          /* [ key_hash : key_hash ] */ ;
          COMPARE
          /* [ int ] */ ;
@@ -48975,14 +48975,14 @@ Well typed (Gas remaining: 1039956.190 units remaining)	michelson_test_scripts/o
          DROP
          /* [] */ ;
          PUSH (set key_hash)
-              { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ;
-                "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv" }
+              { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" ;
+                "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" }
          /* [ set key_hash ] */ ;
          DROP
          /* [] */ ;
          PUSH (set address)
-              { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ;
-                "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv" ;
+              { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" ;
+                "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" ;
                 "KT1TZCh8fmUbuDqFxetPWC2fsQanAHzLx4W9" }
          /* [ set address ] */ ;
          DROP

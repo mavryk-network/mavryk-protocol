@@ -4,7 +4,7 @@ parameter never;
 storage (pair address (lambda unit unit));
 code {
        CAR;
-       PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+       PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
        DROP;
        NEVER
      }

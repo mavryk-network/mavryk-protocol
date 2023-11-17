@@ -70,12 +70,12 @@ impl<'a> ParsedExternalInboxMessage<'a> {
 pub enum Signer {
     /// A signer identified by a ed25519 public key.
     PublicKey(PublicKeyEd25519),
-    /// A signer identified by a tz1 address.
+    /// A signer identified by a mv1 address.
     Tz1(ContractTz1Hash),
 }
 
 impl Signer {
-    /// Return the tz1 account-address of the signer.
+    /// Return the mv1 account-address of the signer.
     pub fn address(&self) -> Result<ContractTz1Hash, crypto::hash::TryFromPKError> {
         use crypto::PublicKeyWithHash;
 

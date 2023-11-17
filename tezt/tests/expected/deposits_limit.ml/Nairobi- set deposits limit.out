@@ -9,16 +9,16 @@ Use command
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
-    From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
     Fee to the baker: ꜩ0.000247
     Expected counter: 1
     Gas limit: 169
     Storage limit: 0 bytes
     Balance updates:
-      tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ0.000247
+      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ꜩ0.000247
       payload fees(the block proposer) ....... +ꜩ0.000247
     Set deposits limit:
-      Delegate: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+      Delegate: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
       Limit: 1000
       This deposits limit modification was successfully applied
       Consumed gas: 167.986

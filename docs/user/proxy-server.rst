@@ -87,11 +87,11 @@ Now, start a third terminal, and ask the client to request data from the proxy s
 
     $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
     $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
-      [ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv",
-        "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
-        "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
-        "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
+      [ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx",
+        "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
+        "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
+        "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
 
 In the proxy server's terminal, you should see this output (tree sizes may vary):
 
@@ -120,11 +120,11 @@ Now, in the third terminal, retrieve the contracts again:
 ::
 
     $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
-      [ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv",
-        "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
-        "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
-        "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
+      [ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx",
+        "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
+        "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
+        "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
     $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
       # ... same output ...
 

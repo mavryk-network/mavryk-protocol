@@ -16,7 +16,7 @@ code { CAR;
            code { DROP; UNIT ; NIL operation ; PAIR } } ;
        # simulate create_contract but typecheck for dev
        # DROP 6;
-       # PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+       # PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
        # NONE key_hash; SET_DELEGATE @origination;
        DIP { DROP };
 

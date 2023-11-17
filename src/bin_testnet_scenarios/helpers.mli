@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 (** [wait_for_funded_key node client amount key] will not return
-    before [key] has been funded with [amount] tez. *)
+    before [key] has been funded with [amount] mav. *)
 val wait_for_funded_key :
   Node.t -> Client.t -> Tez.t -> Account.key -> unit Lwt.t
 

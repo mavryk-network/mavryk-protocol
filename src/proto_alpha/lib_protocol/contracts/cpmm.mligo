@@ -14,7 +14,7 @@ type remove_liquidity =
   [@layout:comb]
   { [@annot:to] to_ : address ; // recipient of the liquidity redemption
     lqtBurned : nat ;  // amount of lqt owned by sender to burn
-    minXtzWithdrawn : tez ; // minimum amount of tez to withdraw
+    minXtzWithdrawn : mav ; // minimum amount of mav to withdraw
     minTokensWithdrawn : nat ; // minimum amount of tokens to whitdw
     deadline : timestamp ; // the time before which the request must be completed
   }
@@ -30,7 +30,7 @@ type token_to_xtz =
   [@layout:comb]
   { [@annot:to] to_ : address ;
     tokensSold : nat ;
-    minXtzBought : tez ;
+    minXtzBought : mav ;
     deadline : timestamp ;
   }
 
@@ -59,7 +59,7 @@ type entrypoint =
 type storage =
   [@layout:comb]
   { tokenPool : nat ;
-    xtzPool : tez ;
+    xtzPool : mav ;
     lqtTotal : nat ;
     tokenAddress : address ;
     lqtAddress : address ;
@@ -132,18 +132,18 @@ type mintOrBurn =
 [@inline]
 let fee = 999n
 
-[@inline] let null_address = ("tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU" : address)
+[@inline] let null_address = ("mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" : address)
 
 (* this is slightly inefficient to inline, but, nice to have a clean stack for 
    the entrypoints for the Coq verification *)
 [@inline]
-let mutez_to_natural (a: tez) : nat =  a / 1mutez
+let mutez_to_natural (a: mav) : nat =  a / 1mutez
 
 [@inline]
-let natural_to_mutez (a: nat): tez = a * 1mutez  
+let natural_to_mutez (a: nat): mav = a * 1mutez  
 
 [@inline]
-let is_a_nat (i : int) : nat option = Michelson.is_nat i
+let is_a_nat (i : int) : nat option = is_nat(i)
 
 let ceildiv (numerator : nat) (denominator : nat) : nat =
     match (ediv numerator denominator) with
@@ -153,26 +153,26 @@ let ceildiv (numerator : nat) (denominator : nat) : nat =
 [@inline]
 let mint_or_burn (storage : storage) (target : address) (quantity : int) : operation =
     let lqt_admin : mintOrBurn contract =
-    match (Tezos.get_entrypoint_opt "%mintOrBurn" storage.lqtAddress :  mintOrBurn contract option) with
+    match (Mavryk.get_entrypoint_opt "%mintOrBurn" storage.lqtAddress :  mintOrBurn contract option) with
     | None -> (failwith error_LQT_CONTRACT_MUST_HAVE_A_MINT_OR_BURN_ENTRYPOINT : mintOrBurn contract)
     | Some contract -> contract in
-    Tezos.transaction {quantity = quantity ; target = target} 0mutez lqt_admin
+    Mavryk.transaction {quantity = quantity ; target = target} 0mutez lqt_admin
 
 [@inline]
 let token_transfer (storage : storage) (from : address) (to_ : address) (token_amount : nat) : operation =
     let token_contract: token_contract_transfer contract =
-    match (Tezos.get_entrypoint_opt "%transfer" storage.tokenAddress : token_contract_transfer contract option) with
+    match (Mavryk.get_entrypoint_opt "%transfer" storage.tokenAddress : token_contract_transfer contract option) with
     | None -> (failwith error_TOKEN_CONTRACT_MUST_HAVE_A_TRANSFER_ENTRYPOINT : token_contract_transfer contract)
     | Some contract -> contract in
-    Tezos.transaction (from, (to_, token_amount)) 0mutez token_contract
+    Mavryk.transaction (from, (to_, token_amount)) 0mutez token_contract
 
 [@inline]
-let xtz_transfer (to_ : address) (amount_ : tez) : operation =
+let xtz_transfer (to_ : address) (amount_ : mav) : operation =
     let to_contract : unit contract =
-    match (Tezos.get_contract_opt to_ : unit contract option) with
+    match (Mavryk.get_contract_opt to_ : unit contract option) with
     | None -> (failwith error_INVALID_TO_ADDRESS : unit contract)
     | Some c -> c in
-    Tezos.transaction () amount_ to_contract
+    Mavryk.transaction () amount_ to_contract
 
 // =============================================================================
 // Entrypoint Functions
@@ -191,13 +191,13 @@ let add_liquidity (param : add_liquidity) (storage: storage) : result =
           maxTokensDeposited = maxTokensDeposited ;
           deadline = deadline } = param in
 
-    if Tezos.now >= deadline then
+    if Mavryk.get_now() >= deadline then
         (failwith error_THE_CURRENT_TIME_MUST_BE_LESS_THAN_THE_DEADLINE : result)
     else
         // the contract is initialized, use the existing exchange rate
         // mints nothing if the contract has been emptied, but that's OK
         let xtzPool   : nat = mutez_to_natural storage.xtzPool in
-        let nat_amount : nat = mutez_to_natural Tezos.amount  in
+        let nat_amount : nat = mutez_to_natural (Mavryk.get_amount(): mav)  in
         let lqt_minted : nat = nat_amount * storage.lqtTotal  / xtzPool in
         let tokens_deposited : nat = ceildiv (nat_amount * storage.tokenPool) xtzPool in
 
@@ -209,10 +209,10 @@ let add_liquidity (param : add_liquidity) (storage: storage) : result =
             let storage = {storage with
                 lqtTotal  = storage.lqtTotal + lqt_minted ;
                 tokenPool = storage.tokenPool + tokens_deposited ;
-                xtzPool   = storage.xtzPool + Tezos.amount} in
+                xtzPool   = storage.xtzPool + (Mavryk.get_amount(): mav)} in
 
             // send tokens from sender to exchange
-            let op_token = token_transfer storage Tezos.sender Tezos.self_address tokens_deposited in
+            let op_token = token_transfer storage (Mavryk.get_sender(): address) (Mavryk.get_self_address(): address) tokens_deposited in
             // mint lqt tokens for them
             let op_lqt = mint_or_burn storage owner (int lqt_minted) in
             ([op_token; op_lqt], storage)
@@ -224,12 +224,12 @@ let remove_liquidity (param : remove_liquidity) (storage : storage) : result =
           minTokensWithdrawn = minTokensWithdrawn ;
           deadline = deadline } = param in
 
-    if Tezos.now >= deadline then
+    if Mavryk.get_now() >= deadline then
       (failwith error_THE_CURRENT_TIME_MUST_BE_LESS_THAN_THE_DEADLINE : result)    
-    else if Tezos.amount > 0mutez then
+    else if (Mavryk.get_amount(): mav) > 0mutez then
         (failwith error_AMOUNT_MUST_BE_ZERO : result)
     else begin
-        let xtz_withdrawn    : tez = natural_to_mutez ((lqtBurned * (mutez_to_natural storage.xtzPool)) / storage.lqtTotal) in
+        let xtz_withdrawn    : mav = natural_to_mutez ((lqtBurned * (mutez_to_natural storage.xtzPool)) / storage.lqtTotal) in
         let tokens_withdrawn : nat = lqtBurned * storage.tokenPool /  storage.lqtTotal in
 
         // Check that minimum withdrawal conditions are met
@@ -249,10 +249,13 @@ let remove_liquidity (param : remove_liquidity) (storage : storage) : result =
                 | None -> (failwith error_TOKEN_POOL_MINUS_TOKENS_WITHDRAWN_IS_NEGATIVE : nat)
                 | Some n -> n in
                                 
-            let op_lqt = mint_or_burn storage Tezos.sender (0 - lqtBurned) in
-            let op_token = token_transfer storage Tezos.self_address to_ tokens_withdrawn in
+            let op_lqt = mint_or_burn storage (Mavryk.get_sender(): address) (0 - lqtBurned) in
+            let op_token = token_transfer storage (Mavryk.get_self_address(): address) to_ tokens_withdrawn in
             let op_xtz = xtz_transfer to_ xtz_withdrawn in
-            let storage = {storage with xtzPool = storage.xtzPool - xtz_withdrawn ; lqtTotal = new_lqtTotal ; tokenPool = new_tokenPool} in
+            let xtz_pool = match (storage.xtzPool - xtz_withdrawn) with
+                | None -> 0mav
+                | Some n -> n in
+            let storage = {storage with xtzPool = xtz_pool ; lqtTotal = new_lqtTotal ; tokenPool = new_tokenPool} in
             ([op_lqt; op_token; op_xtz], storage)
         end
     end
@@ -263,13 +266,13 @@ let xtz_to_token (param : xtz_to_token) (storage : storage) =
          minTokensBought = minTokensBought ;
          deadline = deadline } = param in
 
-    if Tezos.now >= deadline then
+    if Mavryk.get_now() >= deadline then
         (failwith error_THE_CURRENT_TIME_MUST_BE_LESS_THAN_THE_DEADLINE : result)    
     else begin
         // we don't check that xtzPool > 0, because that is impossible
         // unless all liquidity has been removed
         let xtzPool = mutez_to_natural storage.xtzPool in
-        let nat_amount = mutez_to_natural Tezos.amount in
+        let nat_amount = mutez_to_natural (Mavryk.get_amount(): mav) in
 
 	let amount_net_burn = (nat_amount * 999n) / 1000n in
 	let burn_amount = abs (nat_amount - amount_net_burn) in
@@ -291,7 +294,7 @@ let xtz_to_token (param : xtz_to_token) (storage : storage) =
                         tokenPool = new_tokenPool } in
         // send tokens_withdrawn to to address
         // if tokens_bought is greater than storage.tokenPool, this will fail
-        let op = token_transfer storage Tezos.self_address to_ tokens_bought in
+        let op = token_transfer storage (Mavryk.get_self_address(): address) to_ tokens_bought in
         let op_burn = xtz_transfer null_address (natural_to_mutez burn_amount) in
 	([ op ; op_burn], storage)
     end
@@ -303,9 +306,9 @@ let token_to_xtz (param : token_to_xtz) (storage : storage) =
           minXtzBought = minXtzBought ;
           deadline = deadline } = param in
 
-    if Tezos.now >= deadline then
+    if Mavryk.get_now() >= deadline then
         (failwith error_THE_CURRENT_TIME_MUST_BE_LESS_THAN_THE_DEADLINE : result)    
-    else if Tezos.amount > 0mutez then
+    else if (Mavryk.get_amount(): mav) > 0mutez then
         (failwith error_AMOUNT_MUST_BE_ZERO : result)
     else
         // we don't check that tokenPool > 0, because that is impossible
@@ -314,21 +317,26 @@ let token_to_xtz (param : token_to_xtz) (storage : storage) =
        
         let xtz_bought_net_burn =
 	    let bought = (xtz_bought * 999n) / 1000n in
-	    if bought < minXtzBought then (failwith error_XTZ_BOUGHT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_MIN_XTZ_BOUGHT : tez) else bought in
+	    if bought < minXtzBought then (failwith error_XTZ_BOUGHT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_MIN_XTZ_BOUGHT : mav) else bought in
 
-        let op_token = token_transfer storage Tezos.sender Tezos.self_address tokensSold in
-        let op_tez = xtz_transfer to_ xtz_bought_net_burn in
+        let op_token = token_transfer storage (Mavryk.get_sender(): address) (Mavryk.get_self_address(): address) tokensSold in
+        let op_mav = xtz_transfer to_ xtz_bought_net_burn in
+        let xtz_pool = match (storage.xtzPool - xtz_bought) with
+            | None -> 0mav
+            | Some n -> n in
         let storage = {storage with tokenPool = storage.tokenPool + tokensSold ;
-                                    xtzPool = storage.xtzPool - xtz_bought } in
+                                    xtzPool = xtz_pool } in
 
-        let burn_amount = xtz_bought - xtz_bought_net_burn in
+        let burn_amount = match (xtz_bought - xtz_bought_net_burn) with
+            | None -> 0mav
+            | Some n -> n in
         let op_burn = xtz_transfer null_address burn_amount in
-        ([op_token ; op_tez; op_burn], storage)
+        ([op_token ; op_mav; op_burn], storage)
 
 // entrypoint to allow depositing funds
 let default_ (storage : storage) : result = 
     // update xtzPool
-        let storage = {storage with xtzPool = storage.xtzPool + Tezos.amount } in
+        let storage = {storage with xtzPool = storage.xtzPool + (Mavryk.get_amount(): mav) } in
         (([] : operation list), storage)
 
 let token_to_token (param : token_to_token) (storage : storage) : result =
@@ -339,13 +347,13 @@ let token_to_token (param : token_to_token) (storage : storage) : result =
           deadline = deadline } = param in
 
     let outputDexterContract_contract: xtz_to_token contract =
-        (match (Tezos.get_entrypoint_opt "%xtzToToken" outputDexterContract : xtz_to_token contract option) with
+        (match (Mavryk.get_entrypoint_opt "%xtzToToken" outputDexterContract : xtz_to_token contract option) with
             | None -> (failwith error_INVALID_INTERMEDIATE_CONTRACT :  xtz_to_token contract)
             | Some c -> c) in
 
-    if Tezos.amount > 0mutez then
+    if (Mavryk.get_amount(): mav) > 0mutez then
       (failwith error_AMOUNT_MUST_BE_ZERO : result)
-    else if Tezos.now >= deadline then
+    else if Mavryk.get_now() >= deadline then
       (failwith error_THE_CURRENT_TIME_MUST_BE_LESS_THAN_THE_DEADLINE : result)
     else 
         // we don't check that tokenPool > 0, because that is impossible unless all liquidity has been removed
@@ -353,18 +361,23 @@ let token_to_token (param : token_to_token) (storage : storage) : result =
 
         let xtz_bought_net_burn = (xtz_bought * 999n) / 1000n in
 
+        let xtz_pool = match (storage.xtzPool - xtz_bought) with
+            | None -> 0mav
+            | Some n -> n in
         let storage = {storage with
                         tokenPool = storage.tokenPool + tokensSold ;
-                        xtzPool = storage.xtzPool - xtz_bought }  in
+                        xtzPool = xtz_pool }  in
         
-        let op1 = token_transfer storage Tezos.sender Tezos.self_address tokensSold in
+        let op1 = token_transfer storage (Mavryk.get_sender(): address) (Mavryk.get_self_address(): address) tokensSold in
         let op2 =
-          Tezos.transaction
+          Mavryk.transaction
             {to_ = to_; minTokensBought = minTokensBought; deadline = deadline}
             xtz_bought_net_burn
             outputDexterContract_contract in
 
-        let burn_amount = xtz_bought - xtz_bought_net_burn in
+        let burn_amount = match (xtz_bought - xtz_bought_net_burn) with
+            | None -> 0mav
+            | Some n -> n in
         let op_burn = xtz_transfer null_address burn_amount in
         ([op1 ; op2; op_burn], storage)
 

@@ -225,7 +225,7 @@ let test_self protocol client =
       client
       protocol
       ["opcodes"; "self"]
-      ~storage:{|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|}
+      ~storage:{|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|}
   in
   let* () = transfer client ~contract in
   let* () = check_storage ~__LOC__ client ~contract (quote contract) in

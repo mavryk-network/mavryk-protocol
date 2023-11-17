@@ -397,19 +397,19 @@ let check_constants_consistency constants =
 let default_accounts =
   let initial_accounts =
     [
-      ( "tz1Wi61aZXxBDTa3brfPfYgMawojnAFTjy8u",
+      ( "mv1K5ZKAsuFXnjMGkBEEuNNNjxfiLYhG9Rjb",
         "edpkvMmiFiAs9Uj9a53dZVPGNJDxMDkAcsEAyVG6dau7GF9vfGWGEY",
         "edsk3UqeiQWXX7NFEY1wUs6J1t2ez5aQ3hEWdqX5Jr5edZiGLW8nZr" );
-      ( "tz1Y5JfsJXF4ip1RUQHCgaMbqHAzMDWaiJFf",
+      ( "mv1LSmyTctYRJ5necir3vQ3czJ2xubxY78Hv",
         "edpktnweMhc2suERAJVCLQwfbJovHsdMKeHC7GqaGQXhvX7SpDRtTc",
         "edsk4Z5G4QFmVc4iHbpyp35E6272gWhTvDeerpivH78oUX1LVKZTGb" );
-      ( "tz1dcv5NSS2Fbs2dW9pRDhi6KJTBAXqiJKBP",
+      ( "mv1RzPNxkoKcB8oreUPGTXQ7UKK9ivMnEkbC",
         "edpkv7dXhM2emnJouMb1phgvGW6fMGHjJjmo1ntyjkqGxARbdgk4T6",
         "edsk2hP48izVsHsXtqguwiNt5wq1qXdwLyxFQC8Qc72KuyKS9q88XS" );
-      ( "tz1YEjis1GFsL1rKSyLtmSKQypVp1sniosVt",
+      ( "mv1LcD2TKdZDuHdYbHuk1G1S8qMnaGHrnt5o",
         "edpkvYDUiKiMnCNSG4riBy2WSLaLEyAo763KhPFXtuBw2PMPzvTY93",
         "edsk3Dn8hFgHKxvjK89tMnU2fCrR6AxSprTM8cR9WaBZcysEa2uird" );
-      ( "tz1c7arDAi3tDzAXEmYHprwuNsJiFBQJKtjc",
+      ( "mv1QV49oV5MEoFwkP6794gdvXtAgoZroizWT",
         "edpku6BBVDhWUBCrcVEYjjAdizR1NQGF24v5bAEL34A71oLr9QqzNo",
         "edsk2q6rzFB35micz8ZauYcUMUFyF9rVPvP3PQXZyuYPSzuEYbSMkG" );
     ]

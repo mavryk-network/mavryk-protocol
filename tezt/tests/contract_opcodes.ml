@@ -503,7 +503,7 @@ let test_protocol_independent =
       ( "hash_key",
         "None",
         {|"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav"|},
-        {|(Some "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx")|} );
+        {|(Some "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe")|} );
       ( "hash_key",
         "None",
         {|"edpkuJqtDcA2m2muMxViSM47MPsGQzmyjnNTawUPqR8vZTAMcx61ES"|},

@@ -127,35 +127,35 @@ module Bootstrap = struct
     [|
       {
         alias = "bootstrap1";
-        public_key_hash = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+        public_key_hash = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
         public_key = "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
         secret_key =
           Unencrypted "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
       };
       {
         alias = "bootstrap2";
-        public_key_hash = "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN";
+        public_key_hash = "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7";
         public_key = "edpktzNbDAUjUk697W7gYg2CRuBQjyPxbEg8dLccYYwKSKvkPvjtV9";
         secret_key =
           Unencrypted "edsk39qAm1fiMjgmPkw1EgQYkMzkJezLNewd7PLNHTkr6w9XA2zdfo";
       };
       {
         alias = "bootstrap3";
-        public_key_hash = "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU";
+        public_key_hash = "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ";
         public_key = "edpkuTXkJDGcFd5nh6VvMz8phXxU3Bi7h6hqgywNFi1vZTfQNnS1RV";
         secret_key =
           Unencrypted "edsk4ArLQgBTLWG5FJmnGnT689VKoqhXwmDPBuGx3z4cvwU9MmrPZZ";
       };
       {
         alias = "bootstrap4";
-        public_key_hash = "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv";
+        public_key_hash = "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn";
         public_key = "edpkuFrRoDSEbJYgxRtLx2ps82UdaYc1WwfS9sE11yhauZt5DgCHbU";
         secret_key =
           Unencrypted "edsk2uqQB9AY4FvioK2YMdfmyMrer5R8mGFyuaLLFfSRo8EoyNdht3";
       };
       {
         alias = "bootstrap5";
-        public_key_hash = "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv";
+        public_key_hash = "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx";
         public_key = "edpkv8EUUH68jmo3f7Um5PezmfGrRF24gnfLpH3sVNwJnV5bVCxL2n";
         secret_key =
           Unencrypted "edsk4QLrcijEffxV31gGdN2HU7UpyJjA8drFoNcmnB28n89YjPNRFm";
@@ -166,7 +166,7 @@ end
 let parse_client_output_public_keys ~client_output =
   let public_key_hash =
     (* group of letters and digits after "Hash: "
-       e.g. "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" *)
+       e.g. "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" *)
     client_output =~* rex "Hash: ?(\\w*)" |> mandatory "public key hash"
   in
   let public_key =

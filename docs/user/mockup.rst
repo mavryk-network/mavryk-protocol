@@ -125,11 +125,11 @@ You can now use standard commands, such as:
 .. code-block:: shell-session
 
     $ mockup-client list known addresses
-    bootstrap5: tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv (unencrypted sk known)
-    bootstrap4: tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv (unencrypted sk known)
-    bootstrap3: tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU (unencrypted sk known)
-    bootstrap2: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN (unencrypted sk known)
-    bootstrap1: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx (unencrypted sk known)
+    bootstrap5: mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx (unencrypted sk known)
+    bootstrap4: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn (unencrypted sk known)
+    bootstrap3: mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ (unencrypted sk known)
+    bootstrap2: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 (unencrypted sk known)
+    bootstrap1: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe (unencrypted sk known)
 
 .. code-block:: shell-session
 
@@ -145,23 +145,23 @@ You can now use standard commands, such as:
     and/or an external block explorer to make sure that it has been included.
     This sequence of operations was run:
       Manager signed operations:
-        From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+        From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
         Fee to the baker: ꜩ0.001282
         Expected counter: 2
         Gas limit: 10307
         Storage limit: 0 bytes
         Balance updates:
-          tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ........... -ꜩ0.001282
+          mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ........... -ꜩ0.001282
           fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,0) ... +ꜩ0.001282
         Transaction:
           Amount: ꜩ100
-          From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
-          To: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN
+          From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+          To: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
           This transaction was successfully applied
           Consumed gas: 10207
           Balance updates:
-            tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ100
-            tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN ... +ꜩ100
+            mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ꜩ100
+            mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... +ꜩ100
 
 .. code-block:: shell-session
 
@@ -419,10 +419,10 @@ case by visiting ``mockup/mempool.json``. This should look like this
        "protocol_data":
          { "contents":
              [ { "kind": "transaction",
-                 "source": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
+                 "source": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
                  "fee": "1000000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "1000000",
-                 "destination": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN" } ],
+                 "destination": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" } ],
            "signature":
              "siggZXnjqYnFMjMxfE1avK2PZdRmRekp5fr56F5uJcuQkfHPL23HNDdtz2iG1QeYtU8DGEniWXjqDh1RxGx6scVgMaK74CrF" } },
      { "shell_header":
@@ -430,10 +430,10 @@ case by visiting ``mockup/mempool.json``. This should look like this
        "protocol_data":
          { "contents":
              [ { "kind": "transaction",
-                 "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+                 "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
                  "fee": "500000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "2000000",
-                 "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+                 "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
            "signature":
              "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } } ]
 
@@ -455,10 +455,10 @@ blocks of the mockup chain.
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+              "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
         "signature":
           "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } } ]
 
@@ -486,10 +486,10 @@ looks like this
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+              "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
         "signature":
           "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } },
   { "shell_header":
@@ -497,10 +497,10 @@ looks like this
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU" } ],
+              "destination": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" } ],
         "signature":
           "sigeFcabZTE8Y2LXv19Fe7TbRtkjzVpBy2qhABp263Xnj8TJtA6XpRRMfGeD5YxwCJiTr9r6ZFGBdLnpxL9Y9CG3bpbXmu7E" } } ]
 

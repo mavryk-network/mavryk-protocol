@@ -180,7 +180,7 @@ module Wallet = struct
         (* That's dal_rich_account at
            https://github.com/oxheadalpha/teztnets/blob/c6d40e06a2565610813cbc1c059ee70793e2809e/dailynet/values.yaml#L206 *)
         Account.alias = giver_alias;
-        public_key_hash = "tz1PEhbjTyVvjQ2Zz8g4bYU2XPTbhvG8JMFh";
+        public_key_hash = "mv1BcAuKnLoHJfoo8TEuqNA3gQKaGJiad6vh";
         public_key = "edpkuwL7MVYArfQN9jyR8pZTqmFGYFWTYhhF4F8KWjr2vB18ozTqbd";
         secret_key =
           Account.Unencrypted

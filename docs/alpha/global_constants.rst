@@ -48,19 +48,19 @@ would result in the output:
    and/or an external block explorer to make sure that it has been included.
    This sequence of operations was run:
      Manager signed operations:
-       From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+       From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
        Fee to the baker: ꜩ0.000385
        Expected counter: 1
        Gas limit: 1540
        Storage limit: 88 bytes
        Balance updates:
-         tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ................ -ꜩ0.000385
+         mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ................ -ꜩ0.000385
          fees(the baker who will include this operation,0) ... +ꜩ0.000385
        Register Global:
          Value: 999
          This global constant registration was successfully applied
          Balance updates:
-           tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ0.017
+           mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ꜩ0.017
          Consumed gas: 1440
          Storage size: 68 bytes
          Global address: expruQN5r2umbZVHy6WynYM8f71F8zS4AERz9bugF8UkPBEqrHLuU8
