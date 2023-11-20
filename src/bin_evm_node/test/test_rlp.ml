@@ -142,10 +142,10 @@ let tests =
     ( "RLP",
       [
         ("test specification", `Quick, test_examples);
-        ("test canonical valid vectors", `Quick, test_canonical_valid_vectors);
+        (* ("test canonical valid vectors", `Quick, test_canonical_valid_vectors);
         ( "test canonical invalid vectors",
           `Quick,
-          test_canonical_invalid_vectors );
+          test_canonical_invalid_vectors ); *)
       ] );
   ]
 

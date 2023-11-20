@@ -359,7 +359,7 @@ let pp_manager_operation_content (type kind) source ppf
 let pp_balance_updates ppf balance_updates =
   let open Receipt in
   (* For dry runs, the baker's key is zero
-     (tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU). Instead of printing this
+     (mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5). Instead of printing this
      key hash, we want to make the result more informative. *)
   let pp_baker ppf baker =
     if Signature.Public_key_hash.equal baker Signature.Public_key_hash.zero then

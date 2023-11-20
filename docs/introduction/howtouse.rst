@@ -369,7 +369,7 @@ produced, here's an excerpt::
       ...
       Balance updates:
         tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001259
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001259
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ꜩ0.001259
       Revelation of manager public key:
         Contract: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
         Key: edpkuK4o4ZGyNHKrQqAox7hELeKEceg5isH18CCYUaQ3tF7xZ8HW3X
@@ -380,7 +380,7 @@ produced, here's an excerpt::
       ...
       Balance updates:
         tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001179
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001179
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ꜩ0.001179
       Transaction:
         Amount: ꜩ1
         From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w

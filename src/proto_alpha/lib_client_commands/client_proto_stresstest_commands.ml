@@ -49,7 +49,7 @@ type parameters = {
       (** gas limit per operation (except for transfers to smart contracts) *)
   storage_limit : Z.t;  (** storage limit per operation *)
   account_creation_storage : Z.t;
-      (** upper bound on bytes consumed when creating a tz1 account *)
+      (** upper bound on bytes consumed when creating a mv1 account *)
   total_transfers : int option;
       (** total number of transfers to perform; unbounded if None *)
   level_limit : limit option;

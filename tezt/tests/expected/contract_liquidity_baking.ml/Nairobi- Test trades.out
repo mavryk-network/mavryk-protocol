@@ -314,12 +314,12 @@ This sequence of operations was run:
         Internal Transaction:
           Amount: ꜩ9.001
           From: KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5
-          To: tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU
+          To: mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5
           This transaction was successfully applied
           Consumed gas: 100
           Balance updates:
             KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 ... -ꜩ9.001
-            tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU ... +ꜩ9.001
+            mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5 ... +ꜩ9.001
             mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... -ꜩ0.06425
             storage fees ........................... +ꜩ0.06425
 
@@ -431,12 +431,12 @@ This sequence of operations was run:
         Internal Transaction:
           Amount: ꜩ0.16475
           From: KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5
-          To: tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU
+          To: mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5
           This transaction was successfully applied
           Consumed gas: 100
           Balance updates:
             KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 ... -ꜩ0.16475
-            tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU ... +ꜩ0.16475
+            mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5 ... +ꜩ0.16475
 
 
 ./octez-client --mode mockup get contract storage for KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo

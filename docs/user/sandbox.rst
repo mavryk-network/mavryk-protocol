@@ -79,7 +79,7 @@ preconfigured accounts which can be listed with:
 
    $ octez-client list known addresses
 
-     activator: tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV (unencrypted sk known)
+     activator: mv1FeNQ3gSZoEFp1mr6VTLnMqV5tuNwHTgw5 (unencrypted sk known)
      bootstrap5: mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx (unencrypted sk known)
      bootstrap4: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn (unencrypted sk known)
      bootstrap3: mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ (unencrypted sk known)

@@ -1191,7 +1191,7 @@ let get_delegate ?endpoint ~src client =
   let* output =
     spawn_get_delegate ?endpoint ~src client |> Process.check_and_read_stdout
   in
-  Lwt.return (output =~* rex "(tz[a-zA-Z0-9]+) \\(.*\\)")
+  Lwt.return (output =~* rex "(mv[a-zA-Z0-9]+) \\(.*\\)")
 
 let set_delegate ?endpoint ?(wait = "none") ?fee ?fee_cap
     ?(force_low_fee = false) ?expect_failure ?(simulation = false) ~src

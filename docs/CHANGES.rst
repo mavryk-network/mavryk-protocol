@@ -3058,7 +3058,7 @@ Client
 -  The ``prepare multisig`` commands now display the Blake 2B hash.
 
 -  Some client commands which use the default zero key
-   ``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` in dry runs now display this
+   ``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` in dry runs now display this
    key using an informative string
    ``the baker who will include this operation`` instead of the key
    itself.

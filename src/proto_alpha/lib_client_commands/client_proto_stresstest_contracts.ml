@@ -89,7 +89,7 @@ let hic_et_nunc =
     alias = "hic_et_nunc";
     mainnet_address = "KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton";
     initial_storage =
-      {| (Pair (Pair "tz1invkmrRJev6TvH9CvhpLN4auk4cik8G5Y" (Pair 1 {Elt (Pair "tz1invkmrRJev6TvH9CvhpLN4auk4cik8G5Y" 0) 1}))(Pair (Pair {} {})(Pair False {Elt 0 (Pair 0 {})})))
+      {| (Pair (Pair "mv1R69cP4ySghiE24hdUfrottXDWY3ADqTAJ" (Pair 1 {Elt (Pair "mv1R69cP4ySghiE24hdUfrottXDWY3ADqTAJ" 0) 1}))(Pair (Pair {} {})(Pair False {Elt 0 (Pair 0 {})})))
 |};
     code =
       parse_michelson_toplevel_exn
@@ -102,7 +102,7 @@ let hic_et_nunc =
     origination_burn_cap = Tez.of_mutez_exn 1_500_000L;
     invocation_arg =
       parse_michelson_expr_exn
-        {|{ Pair "tz1invkmrRJev6TvH9CvhpLN4auk4cik8G5Y" {  Pair "tz1invkmrRJev6TvH9CvhpLN4auk4cik8G5Y" ( Pair 0 1 )  } } |};
+        {|{ Pair "mv1R69cP4ySghiE24hdUfrottXDWY3ADqTAJ" {  Pair "mv1R69cP4ySghiE24hdUfrottXDWY3ADqTAJ" ( Pair 0 1 )  } } |};
     invocation_entrypoint = Entrypoint_repr.of_string_strict_exn "transfer";
   }
 

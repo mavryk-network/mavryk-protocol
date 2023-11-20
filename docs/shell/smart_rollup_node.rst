@@ -1206,7 +1206,7 @@ two messages:
 Note that the ``sender``, ``source`` and ``destination`` fields are optional
 and will be given default values by the debugger, respectively
 ``KT18amZmM5W7qDWVt2pH6uj7sCEd3kbzLrHT``,
-``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
+``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` and
 ``sr163Lv22CdE8QagCwf48PWDTquk6isQwv57``. If no input file is given, the
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.

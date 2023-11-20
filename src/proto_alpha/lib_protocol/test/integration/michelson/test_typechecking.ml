@@ -581,17 +581,17 @@ let test_parse_address () =
       (String (-1, "KT1FAKEFAKEFAKEFAKEFAKEFAKEFAKGGSE2x%"))
       {destination = Contract kt1fake; entrypoint = Entrypoint.default}
   in
-  (* tz1% (empty entrypoint) *)
-  let*?@ tz1fake =
-    Contract.of_b58check "tz1fakefakefakefakefakefakefakcphLA5"
+  (* mv2% (empty entrypoint) *)
+  let*?@ mv2fake =
+    Contract.of_b58check "mv2fakefakefakefakefakefakefak82z7t2"
   in
   let* ctxt =
     test_parse_data
       __LOC__
       ctxt
       address_t
-      (String (-1, "tz1fakefakefakefakefakefakefakcphLA5%"))
-      {destination = Contract tz1fake; entrypoint = Entrypoint.default}
+      (String (-1, "mv2fakefakefakefakefakefakefak82z7t2%"))
+      {destination = Contract mv2fake; entrypoint = Entrypoint.default}
   in
   (* scr1% (empty entrypoint) *)
   let*?@ scr1 =

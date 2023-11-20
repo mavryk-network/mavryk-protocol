@@ -56,7 +56,7 @@ val key_typ : key Check.typ
 {[
     {
       aggregate_alias = "bls_account";
-      aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+      aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
       aggregate_public_key =
         "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
       aggregate_secret_key =
@@ -124,7 +124,7 @@ val parse_client_output : alias:string -> client_output:string -> key
 (** [parse_client_output_aggregate ~alias ~client_output] extracts keys from
     clients output that yields result of the form
 {v
-      Hash: tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn
+      Hash: mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3
       Public Key: BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV
       Secret Key: aggregate_unencrypted:BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq
 v}

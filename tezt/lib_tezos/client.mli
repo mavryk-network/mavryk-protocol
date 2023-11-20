@@ -772,7 +772,7 @@ val bls_list_keys : ?hooks:Process.hooks -> t -> (string * string) list Lwt.t
     the output into an [Account.aggregate_key].
     E.g. for [~alias:"bls_account"] the command yields:
 {v
-      Hash: tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn
+      Hash: mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3
       Public Key: BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV
       Secret Key: aggregate_unencrypted:BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq
 v}
@@ -780,7 +780,7 @@ v}
 {[
     {
       aggregate_alias = "bls_account";
-      aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+      aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
       aggregate_public_key =
         "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
       aggregate_secret_key =

@@ -152,7 +152,7 @@ You can now use standard commands, such as:
         Storage limit: 0 bytes
         Balance updates:
           mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ........... -ꜩ0.001282
-          fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,0) ... +ꜩ0.001282
+          fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,0) ... +ꜩ0.001282
         Transaction:
           Amount: ꜩ100
           From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe

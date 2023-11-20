@@ -67,7 +67,7 @@ let experimental_executables = "./script-inputs/experimental-executables"
 let activator : Account.key =
   {
     alias = "activator";
-    public_key_hash = "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+    public_key_hash = "mv1FeNQ3gSZoEFp1mr6VTLnMqV5tuNwHTgw5";
     public_key = "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2";
     secret_key =
       Unencrypted "edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6";
@@ -109,7 +109,7 @@ let sc_rollup_compressed_state =
 let aggregate_tz4_account : Account.aggregate_key =
   {
     aggregate_alias = "bls_test_account";
-    aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+    aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
     aggregate_public_key =
       "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
     aggregate_secret_key =
