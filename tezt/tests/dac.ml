@@ -1447,7 +1447,7 @@ module Tx_kernel_e2e = struct
           entrypoint : string;
         }
       | Transfer of {
-          (* tz4 address *)
+          (* mv4 address *)
           destination : Tezos_crypto.Signature.Bls.Public_key_hash.t;
           ticket : ticket;
         }

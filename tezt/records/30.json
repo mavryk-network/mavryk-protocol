@@ -256,13 +256,13 @@
   },
   {
     "file": "client_commands.ml",
-    "title": "Mumbai: Set delegate forbidden on tz4",
+    "title": "Mumbai: Set delegate forbidden on mv4",
     "tags": [
       "mumbai",
       "client",
       "set_delegate",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "9440433",

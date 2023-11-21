@@ -50276,7 +50276,7 @@ Well typed (Gas remaining: 1039989.349 units remaining)	michelson_test_scripts/o
   storage bool ;
   code { DROP
          /* [] */ ;
-         PUSH address "tz1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5"
+         PUSH address "mv1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5"
          /* [ address ] */ ;
          PUSH nat 0
          /* [ nat : address ] */ ;

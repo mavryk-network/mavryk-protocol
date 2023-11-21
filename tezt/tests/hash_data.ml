@@ -84,8 +84,8 @@ let test_good_hash_data =
       ("\"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq\"", "address");
       ("\"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%entrypoint\"", "address");
       ("\"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe\"", "address");
-      ("\"tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc\"", "address");
-      ("\"tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA\"", "address");
+      ("\"mv2RvsYL9iZP3NSn2j2K7sd2iwT3mgHoivd2\"", "address");
+      ("\"mv3UPFVvcU21sXSVeCGq8zcdecj2DK9M37th\"", "address");
       ("0", "bls12_381_fr");
       ("1", "bls12_381_fr");
       ("0x01", "bls12_381_fr");
@@ -101,7 +101,7 @@ let test_good_hash_data =
       ("\"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav\"", "key");
       ("\"edpkuJqtDcA2m2muMxViSM47MPsGQzmyjnNTawUPqR8vZTAMcx61ES\"", "key");
       ("\"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe\"", "key_hash");
-      ("\"tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k\"", "key_hash");
+      ("\"mv1KkvXNEpMH4Vri47MY1YenGhb6ZA4ew1F2\"", "key_hash");
       ("{ }", "lambda unit unit");
       ("{ PUSH nat 1; ADD }", "lambda nat nat");
       ("{}", "list unit");

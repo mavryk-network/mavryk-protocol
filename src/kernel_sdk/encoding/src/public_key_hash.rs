@@ -89,7 +89,7 @@ mod test {
 
     #[test]
     fn tz1_b58check() {
-        let tz1 = "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w";
+        let tz1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
 
         let pkh = PublicKeyHash::from_b58check(tz1);
 
@@ -102,7 +102,7 @@ mod test {
 
     #[test]
     fn tz2_b58check() {
-        let tz2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
+        let tz2 = "mv2RvsYL9iZP3NSn2j2K7sd2iwT3mgHoivd2";
 
         let pkh = PublicKeyHash::from_b58check(tz2);
 
@@ -115,7 +115,7 @@ mod test {
 
     #[test]
     fn tz3_b58check() {
-        let tz3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
+        let tz3 = "mv3UPFVvcU21sXSVeCGq8zcdecj2DK9M37th";
 
         let pkh = PublicKeyHash::from_b58check(tz3);
 

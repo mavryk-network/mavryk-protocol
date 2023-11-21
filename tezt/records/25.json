@@ -317,13 +317,13 @@
   },
   {
     "file": "client_commands.ml",
-    "title": "Lima: Set delegate forbidden on tz4",
+    "title": "Lima: Set delegate forbidden on mv4",
     "tags": [
       "lima",
       "client",
       "set_delegate",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "4283631",
@@ -1584,7 +1584,7 @@
       "node",
       "baker",
       "signer",
-      "tz1"
+      "mv1"
     ],
     "successful_runs": {
       "total_time": "12472560",

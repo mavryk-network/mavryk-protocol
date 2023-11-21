@@ -1614,7 +1614,7 @@
       "node",
       "baker",
       "signer",
-      "tz1"
+      "mv1"
     ],
     "successful_runs": {
       "total_time": "16869354",

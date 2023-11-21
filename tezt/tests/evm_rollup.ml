@@ -2116,7 +2116,7 @@ let test_deposit_and_withdraw =
   (* Keep a small amount to pay for the gas. *)
   let amount_wei = Wei.(amount_wei - one) in
 
-  let withdraw_receiver = "tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX" in
+  let withdraw_receiver = "mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy" in
   let* _tx =
     withdraw
       ~sc_rollup_address

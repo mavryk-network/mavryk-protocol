@@ -71,7 +71,7 @@ let signer_simple_test =
   Protocol.register_test
     ~__FILE__
     ~title:"signer test"
-    ~tags:["node"; "baker"; "signer"; "tz1"]
+    ~tags:["node"; "baker"; "signer"; "mv1"]
   @@ fun protocol ->
   let* _ =
     signer_test protocol ~keys:(Account.Bootstrap.keys |> Array.to_list)
@@ -117,7 +117,7 @@ let signer_bls_test =
   let* () = Client.bake_for_and_wait client in
   let* balance_1 = get_balance_tz4 client in
   Check.((Tez.mutez_int64 balance_0 > Tez.mutez_int64 balance_1) int64)
-    ~error_msg:"Tz4 sender %s has decreased balance after transfer" ;
+    ~error_msg:"Mv4 sender %s has decreased balance after transfer" ;
   unit
 
 let register ~protocols =

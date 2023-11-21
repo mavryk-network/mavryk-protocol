@@ -352,7 +352,7 @@ module Transfer = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Transfer from and to accounts"
-      ~tags:["client"; "transfer"; "bls"; "tz4"]
+      ~tags:["client"; "transfer"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     Log.info "Generating new accounts" ;
@@ -398,7 +398,7 @@ module Transfer = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Batch transfers"
-      ~tags:["client"; "batch"; "transfer"; "bls"; "tz4"]
+      ~tags:["client"; "batch"; "transfer"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     Log.info "Generating new accounts" ;
@@ -471,8 +471,8 @@ module Transfer = struct
   let forbidden_set_delegate_tz4 =
     Protocol.register_test
       ~__FILE__
-      ~title:"Set delegate forbidden on tz4"
-      ~tags:["client"; "set_delegate"; "bls"; "tz4"]
+      ~title:"Set delegate forbidden on mv4"
+      ~tags:["client"; "set_delegate"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     let* () =
@@ -487,7 +487,7 @@ module Transfer = struct
         ~delegate:Constant.tz4_account.public_key_hash
     in
     let msg =
-      rex "The delegate tz4.*\\w is forbidden as it is a BLS public key hash"
+      rex "The delegate mv4.*\\w is forbidden as it is a BLS public key hash"
     in
     Process.check_error set_delegate_process ~exit_code:1 ~msg
 

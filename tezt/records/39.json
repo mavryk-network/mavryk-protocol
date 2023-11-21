@@ -175,7 +175,7 @@
   },
   {
     "file": "client_keys.ml",
-    "title": "Generates new tz4 keys in aggregate wallet",
+    "title": "Generates new mv4 keys in aggregate wallet",
     "tags": [
       "aggregate",
       "client",
@@ -286,7 +286,7 @@
       "client",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "81972912",

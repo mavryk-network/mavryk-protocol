@@ -186,7 +186,7 @@
   },
   {
     "file": "client_keys.ml",
-    "title": "Generates new tz4 keys",
+    "title": "Generates new mv4 keys",
     "tags": [
       "bls",
       "client",
@@ -258,7 +258,7 @@
       "client",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "52714727",

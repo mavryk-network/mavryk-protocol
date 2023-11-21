@@ -364,32 +364,32 @@ produced, here's an excerpt::
   ...
   Simulation result:
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
       Fee to the baker: ꜩ0.001259
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001259
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ꜩ0.001259
         fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ꜩ0.001259
       Revelation of manager public key:
-        Contract: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+        Contract: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
         Key: edpkuK4o4ZGyNHKrQqAox7hELeKEceg5isH18CCYUaQ3tF7xZ8HW3X
         ...
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
       Fee to the baker: ꜩ0.001179
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001179
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ꜩ0.001179
         fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ꜩ0.001179
       Transaction:
         Amount: ꜩ1
-        From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+        From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
         To: tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph
         ...
         Balance updates:
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ1
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ꜩ1
           tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph ... +ꜩ1
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ0.257
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ꜩ0.257
 
 The client does a bit of magic to simplify our life and here we see
 that many details were automatically set for us.

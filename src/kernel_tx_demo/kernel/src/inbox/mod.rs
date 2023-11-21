@@ -105,7 +105,7 @@ mod test {
             // Sender KT1BuEZtb68c1Q4yjtckcNjGELqWt56Xyesc - contract hash
             b'$', b'f', b'g', 169, b'1', 254, 11, 210, 251, 28, 182, 4, 247, 20, b'`', 30, 136,
             b'(', b'E', b'P', // end kt1
-            // Source tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+            // Source mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
             0, // PKH - Ed25519 tag
             b'B', 236, b'v', b'_', b'\'', 0, 19, b'N', 158, 14, 254, 137, 208, b'3', 142, b'.',
             132, b'<', b'S', 220, // end mv1
@@ -125,7 +125,7 @@ mod test {
         let sender = ContractKt1Hash::from_b58check("KT1BuEZtb68c1Q4yjtckcNjGELqWt56Xyesc")
             .expect("valid Kt1 address");
 
-        let source = PublicKeyHash::from_b58check("tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
+        let source = PublicKeyHash::from_b58check("mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
             .expect("valid mv1 address");
 
         let destination = SmartRollupAddress::from_b58check("sr1UX4Euo29Fd5bhmZypQffZJwy9M3A1D4Mb")

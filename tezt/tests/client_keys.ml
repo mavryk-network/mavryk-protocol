@@ -100,7 +100,7 @@ module BLS_aggregate_wallet = struct
     Test.register
       ~__FILE__
       ~tags:["aggregate"; "client"; "keys"]
-      ~title:"Generates new tz4 keys in aggregate wallet"
+      ~title:"Generates new mv4 keys in aggregate wallet"
       (fun () ->
         let* client = Client.init () in
         let* alias = Client.bls_gen_keys client in
@@ -207,7 +207,7 @@ module BLS_normal_wallet = struct
     Test.register
       ~__FILE__
       ~tags:["bls"; "client"; "keys"]
-      ~title:"Generates new tz4 keys"
+      ~title:"Generates new mv4 keys"
       (fun () ->
         let* client = Client.init () in
         let* alias = Client.gen_keys ~sig_alg:"bls" client in
@@ -342,7 +342,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "zebra" addresses
-      = Some "tz1aGUKE72eN21iWztoDEeH4FeKaxWb7SAUb")
+      = Some "mv1UAdb2eRyzBeTfshv6cbhhMZGLHusj74tw")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -375,7 +375,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "key" addresses
-      = Some "tz1QSF4TSVzaosgbaxnFJpRbs7798Skeb8Re")
+      = Some "mv1PKgZXd3AZNuaWnMqc3bwA3CudPcu1CNuz")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -395,7 +395,7 @@ module Wallet = struct
       let* addresses = Client.list_known_addresses client in
       Check.(
         (List.assoc_opt alias addresses
-        = Some "tz1QSF4TSVzaosgbaxnFJpRbs7798Skeb8Re")
+        = Some "mv1PKgZXd3AZNuaWnMqc3bwA3CudPcu1CNuz")
           (option string)
           ~__LOC__
           ~error_msg:"Expected %R, got %L") ;
