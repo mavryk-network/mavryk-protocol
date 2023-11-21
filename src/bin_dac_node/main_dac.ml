@@ -77,7 +77,7 @@ let tz4_address_parameter =
 
 let tz4_address_param ?(name = "bls-public-key-hash")
     ?(desc = "BLS public key hash.") =
-  let desc = String.concat " " [desc; "A tz4 address."] in
+  let desc = String.concat " " [desc; "A mv4 address."] in
   Tezos_clic.param ~name ~desc tz4_address_parameter
 
 let tz4_public_key_parameter =
@@ -91,7 +91,7 @@ let tz4_public_key_param ?(name = "bls-public-key")
   let desc =
     String.concat
       " "
-      [desc; "A BLS12-381 public key which belongs to a tz4 account."]
+      [desc; "A BLS12-381 public key which belongs to a mv4 account."]
   in
   Tezos_clic.param ~name ~desc tz4_public_key_parameter
 

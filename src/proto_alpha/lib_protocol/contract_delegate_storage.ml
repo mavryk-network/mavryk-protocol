@@ -30,7 +30,7 @@ let () =
     `Branch
     ~id:"delegate.forbidden_tz4"
     ~title:"Forbidden delegate"
-    ~description:"Delegates are forbidden to be tz4 (BLS) accounts."
+    ~description:"Delegates are forbidden to be mv4 (BLS) accounts."
     ~pp:(fun ppf implicit ->
       Format.fprintf
         ppf

@@ -341,7 +341,7 @@ mod test {
         let mut mock_runtime = MockHost::default();
 
         let destination =
-            ContractTz1Hash::from_b58check("tz4MSfZsn6kMDczShy8PMeB628TNukn9hi2K").unwrap();
+            ContractTz1Hash::from_b58check("mv4dvK5MKiKs1wW5waVyibKh5qYfgZmUxT1c").unwrap();
 
         let ticket_creator =
             Contract::from_b58check("KT1JW6PwhfaEJu6U3ENsxUeja48AdtqSoekd").unwrap();

@@ -130,7 +130,7 @@ mod test {
     fn tz1_encoding() {
         let tz1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
 
-        let pkh = PublicKeyHash::from_b58check(tz1).expect("expected valid tz1 hash");
+        let pkh = PublicKeyHash::from_b58check(tz1).expect("expected valid mv1 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");
@@ -146,9 +146,9 @@ mod test {
 
     #[test]
     fn tz2_encoding() {
-        let tz2 = "tz2KZPgf2rshxNUBXFcTaCemik1LH1v9qz3F";
+        let tz2 = "mv2gRp8AacmrnMCe75SKR6REoxPCtHyeYG11";
 
-        let pkh = PublicKeyHash::from_b58check(tz2).expect("expected valid tz2 hash");
+        let pkh = PublicKeyHash::from_b58check(tz2).expect("expected valid mv2 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");
@@ -164,9 +164,9 @@ mod test {
 
     #[test]
     fn tz3_encoding() {
-        let tz3 = "tz3fTJbAxj1LQCEKDKmYLWKP6e5vNC9vwvyo";
+        let tz3 = "mv3FVmhEncmMUPtz2DqUjVar8Jqeckg9ZueD";
 
-        let pkh = PublicKeyHash::from_b58check(tz3).expect("expected valid tz3 hash");
+        let pkh = PublicKeyHash::from_b58check(tz3).expect("expected valid mv3 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");

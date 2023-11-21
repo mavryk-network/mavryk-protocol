@@ -59,8 +59,8 @@ let () =
   register_error_kind
     `Permanent
     ~id:"delegate.consensus_key.tz4"
-    ~title:"Consensus key cannot be a tz4"
-    ~description:"Consensus key cannot be a tz4 (BLS public key)."
+    ~title:"Consensus key cannot be a mv4"
+    ~description:"Consensus key cannot be a mv4 (BLS public key)."
     ~pp:(fun ppf pk ->
       Format.fprintf
         ppf

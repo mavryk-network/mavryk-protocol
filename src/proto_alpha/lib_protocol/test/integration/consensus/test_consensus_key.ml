@@ -336,7 +336,7 @@ let tests =
         "empty drain delegate with ck"
         `Quick
         (test_drain_empty_delegate ~exclude_ck:false);
-      tztest "tz4 consensus key" `Quick test_tz4_consensus_key;
+      tztest "mv4 consensus key" `Quick test_tz4_consensus_key;
       tztest "attestation with ck" `Quick test_attestation_with_consensus_key;
     ]
 
