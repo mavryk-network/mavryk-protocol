@@ -2,7 +2,7 @@ parameter unit;
 storage unit;
 code { CAR;
        PUSH string "foo";
-       PUSH mutez 0;
+       PUSH mumav 0;
        NONE key_hash;
        CREATE_CONTRACT
          { parameter string ;

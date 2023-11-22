@@ -498,7 +498,7 @@ to the rollup.
             PUSH address "${SOR_ADDR}";
             CONTRACT bytes;
             IF_NONE { PUSH string "Invalid address"; FAILWITH } {};
-            PUSH mutez 0;
+            PUSH mumav 0;
             DIG 2;
             TRANSFER_TOKENS;
             NIL operation;

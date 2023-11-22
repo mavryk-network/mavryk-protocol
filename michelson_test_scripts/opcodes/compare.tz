@@ -31,10 +31,10 @@ code {
        PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"; PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; COMPARE; ASSERT_LT;
        PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"; COMPARE; ASSERT_GT;
 
-       # mutez
-       PUSH mutez 1; DUP; COMPARE; ASSERT_EQ;
-       PUSH mutez 10; PUSH mutez 5; COMPARE; ASSERT_LT;
-       PUSH mutez 4; PUSH mutez 1923; COMPARE; ASSERT_GT;
+       # mumav
+       PUSH mumav 1; DUP; COMPARE; ASSERT_EQ;
+       PUSH mumav 10; PUSH mumav 5; COMPARE; ASSERT_LT;
+       PUSH mumav 4; PUSH mumav 1923; COMPARE; ASSERT_GT;
 
        # string
        PUSH string "AABBCC"; DUP; COMPARE; ASSERT_EQ;

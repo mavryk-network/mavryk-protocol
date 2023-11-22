@@ -333,7 +333,7 @@ module Ticket_manager = struct
                         DUG 2 ;
                         TICKET ;
                         ASSERT_SOME ;
-                        PUSH mutez 0 ;
+                        PUSH mumav 0 ;
                         DIG 2 ;
                         SOME ;
                         CREATE_CONTRACT
@@ -354,7 +354,7 @@ module Ticket_manager = struct
                         PUSH int 1 ;
                         GET_AND_UPDATE ;
                         DROP ;
-                        PUSH mutez 0 ;
+                        PUSH mumav 0 ;
                         DIG 3 ;
                         SOME ;
                         CREATE_CONTRACT
@@ -455,7 +455,7 @@ module Ticket_manager = struct
                             IF_NONE
                               { SWAP ; DROP ; PUSH string "Could not find ticket" ; FAILWITH }
                               { DIG 2 ;
-                                PUSH mutez 0 ;
+                                PUSH mumav 0 ;
                                 DIG 2 ;
                                 TRANSFER_TOKENS ;
                                 SWAP ;
@@ -481,7 +481,7 @@ module Ticket_manager = struct
                             DROP ;
                             PUSH string "Contract of type `ticket(string)` not found" ;
                             FAILWITH }
-                          { PUSH mutez 0 ;
+                          { PUSH mumav 0 ;
                             DIG 5 ;
                             DIG 5 ;
                             TICKET ;
@@ -525,7 +525,7 @@ module Ticket_manager = struct
                             GET_AND_UPDATE ;
                             DROP ;
                             DIG 2 ;
-                            PUSH mutez 0 ;
+                            PUSH mumav 0 ;
                             DIG 2 ;
                             RIGHT (or (or unit int) unit) ;
                             RIGHT
@@ -562,7 +562,7 @@ module Ticket_manager = struct
                             IF_NONE
                               { DROP ; PUSH string "Couldn't produce a ticket" ; FAILWITH }
                               { SWAP ;
-                                PUSH mutez 0 ;
+                                PUSH mumav 0 ;
                                 DIG 2 ;
                                 TRANSFER_TOKENS ;
                                 SWAP ;

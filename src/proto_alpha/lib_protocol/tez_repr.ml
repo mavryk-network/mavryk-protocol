@@ -24,9 +24,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let id = "tez"
+let id = "mav"
 
-let name = "mutez"
+let name = "mumav"
 
 open Compare.Int64 (* invariant: positive *)
 

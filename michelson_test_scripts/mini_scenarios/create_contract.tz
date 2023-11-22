@@ -19,15 +19,15 @@ storage unit ;
 code { CAR ;
        IF_NONE
          { PUSH string "dummy" ;
-           PUSH mutez 100000000 ; NONE key_hash ;
+           PUSH mumav 100000000 ; NONE key_hash ;
            CREATE_CONTRACT
              { parameter string ;
                storage string ;
                code { CAR ; NIL operation ; PAIR } } ;
-           DIP { SOME ; DIP { SELF ; PUSH mutez 0 } ; TRANSFER_TOKENS ;
+           DIP { SOME ; DIP { SELF ; PUSH mumav 0 } ; TRANSFER_TOKENS ;
                  NIL operation ; SWAP ; CONS } ;
            CONS ; UNIT ; SWAP ; PAIR }
          { SELF ; ADDRESS ; SENDER ; IFCMPNEQ { FAIL } {} ;
            CONTRACT string ; IF_SOME {} { FAIL } ;
-           PUSH mutez 0 ; PUSH string "abcdefg" ; TRANSFER_TOKENS ;
+           PUSH mumav 0 ; PUSH string "abcdefg" ; TRANSFER_TOKENS ;
            NIL operation; SWAP; CONS ; UNIT ; SWAP ; PAIR } } ;

@@ -206,7 +206,7 @@ let test_lambda_normalization () =
     assert_normalizes_to
       ~loc:__LOC__
       ty
-      {|{PUSH mutez 0;
+      {|{PUSH mumav 0;
          NONE key_hash;
          CREATE_CONTRACT
            {parameter unit;
@@ -214,7 +214,7 @@ let test_lambda_normalization () =
             code { PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; FAILWITH}};
          DROP;
          FAILWITH}|}
-      {|{PUSH mutez 0;
+      {|{PUSH mumav 0;
          NONE key_hash;
          CREATE_CONTRACT
            {parameter unit;

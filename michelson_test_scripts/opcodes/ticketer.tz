@@ -5,7 +5,7 @@ code { UNPAIR ; DIP { DUP } ;
        PUSH nat 1 ; SWAP ;
        TICKET ;
        ASSERT_SOME ;
-       DIP { CONTRACT (ticket nat) ; ASSERT_SOME ; PUSH mutez 0 } ;
+       DIP { CONTRACT (ticket nat) ; ASSERT_SOME ; PUSH mumav 0 } ;
        TRANSFER_TOKENS ;
        NIL operation ; SWAP ; CONS ;
        PAIR }

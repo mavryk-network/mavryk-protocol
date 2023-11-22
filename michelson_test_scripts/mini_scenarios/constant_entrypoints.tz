@@ -6,7 +6,7 @@ parameter (or (lambda %do (constant "exprvKFFbc7SnPjkPZgyhaHewQhmrouNjNae3DpsQ8K
 storage key_hash;
 code { { { DUP ; CAR ; DIP { CDR } } } ;
        IF_LEFT
-         { PUSH mutez 0 ;
+         { PUSH mumav 0 ;
            AMOUNT ;
            { { COMPARE ; EQ } ; IF {} { { UNIT ; FAILWITH } } } ;
            { DIP { DUP } ; SWAP } ;

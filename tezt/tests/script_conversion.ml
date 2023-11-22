@@ -47,7 +47,7 @@ let convert_script = function
   code { CDR ;
          NIL operation ;
          SELF ;
-         PUSH mutez 0 ;
+         PUSH mumav 0 ;
          UNIT ;
          TRANSFER_TOKENS ;
          DUP ;
@@ -62,7 +62,7 @@ let convert_script = function
       [ [ { "prim": "CDR" },
           { "prim": "NIL", "args": [ { "prim": "operation" } ] },
           { "prim": "SELF" },
-          { "prim": "PUSH", "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+          { "prim": "PUSH", "args": [ { "prim": "mumav" }, { "int": "0" } ] },
           { "prim": "UNIT" }, { "prim": "TRANSFER_TOKENS" },
           { "prim": "DUP" },
           { "prim": "DIP", "args": [ [ { "prim": "CONS" } ] ] },
@@ -85,7 +85,7 @@ let convert_data = function
   PUSH address "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" ;
   CONTRACT unit ;
   { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-  PUSH mutez 1 ;
+  PUSH mumav 1 ;
   UNIT ;
   TRANSFER_TOKENS ;
   DIP { NIL operation } ;
@@ -99,7 +99,7 @@ let convert_data = function
   { "prim": "CONTRACT", "args": [ { "prim": "unit" } ] },
   [ { "prim": "IF_NONE",
       "args": [ [ [ { "prim": "UNIT" }, { "prim": "FAILWITH" } ] ], [] ] } ],
-  { "prim": "PUSH", "args": [ { "prim": "mutez" }, { "int": "1" } ] },
+  { "prim": "PUSH", "args": [ { "prim": "mumav" }, { "int": "1" } ] },
   { "prim": "UNIT" }, { "prim": "TRANSFER_TOKENS" },
   { "prim": "DIP",
     "args": [ [ { "prim": "NIL", "args": [ { "prim": "operation" } ] } ] ] },

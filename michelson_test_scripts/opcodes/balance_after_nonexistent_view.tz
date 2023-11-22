@@ -1,7 +1,7 @@
 # This contract calls the noneexistent view on the address passed as
 # parameter. After returning from the view it stores it's BALANCE.
 parameter address ;
-storage mutez;
+storage mumav;
 code
      { CAR ;
        DUP ;
@@ -10,7 +10,7 @@ code
        ASSERT_NONE ;
        CONTRACT nat ;
        ASSERT_SOME ;
-       PUSH mutez 15000000 ;
+       PUSH mumav 15000000 ;
        PUSH nat 0 ;
        TRANSFER_TOKENS ;
        BALANCE;

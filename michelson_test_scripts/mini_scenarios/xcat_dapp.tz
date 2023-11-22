@@ -15,7 +15,7 @@ storage (pair
               (pair
                  # We store in %from the person who funded the xcat
                  (pair %recipients (address %from) (address %dest))
-                 (pair %settings (mutez %amount) (timestamp %deadline)))
+                 (pair %settings (mumav %amount) (timestamp %deadline)))
            )
            unit);
 
@@ -72,7 +72,7 @@ code {
                  };
              };
            # Clear the big map
-           NONE @none (pair (pair address address) (pair mutez timestamp));
+           NONE @none (pair (pair address address) (pair mumav timestamp));
            SWAP; UPDATE @cleared_map; SWAP; DIP { PAIR; SWAP };
            CONS; PAIR;
          }

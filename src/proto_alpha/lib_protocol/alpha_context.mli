@@ -634,7 +634,7 @@ module Script : sig
     | I_SLICE
     | I_STEPS_TO_QUOTA
     | I_SUB
-    | I_SUB_MUTEZ
+    | I_SUB_MUMAV
     | I_SWAP
     | I_TRANSFER_TOKENS
     | I_SET_DELEGATE

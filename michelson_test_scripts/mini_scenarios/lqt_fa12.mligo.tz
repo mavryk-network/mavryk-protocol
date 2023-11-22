@@ -15,7 +15,7 @@
                 (pair (address %admin) (nat %total_supply)))) ;
   code { DUP ;
          CDR ;
-         PUSH mutez 0 ;
+         PUSH mumav 0 ;
          AMOUNT ;
          COMPARE ;
          NEQ ;
@@ -87,7 +87,7 @@
                      DUP ;
                      DUG 2 ;
                      CDR ;
-                     PUSH mutez 0 ;
+                     PUSH mumav 0 ;
                      DIG 4 ;
                      CDR ;
                      CAR ;
@@ -107,7 +107,7 @@
                      DUP ;
                      DUG 2 ;
                      CDR ;
-                     PUSH mutez 0 ;
+                     PUSH mumav 0 ;
                      DIG 4 ;
                      CAR ;
                      DIG 4 ;
@@ -123,7 +123,7 @@
                      NIL operation ;
                      SWAP ;
                      CDR ;
-                     PUSH mutez 0 ;
+                     PUSH mumav 0 ;
                      DIG 3 ;
                      CDR ;
                      CDR ;

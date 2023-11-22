@@ -1,5 +1,5 @@
 { parameter unit ;
-  storage (pair (pair nat (pair nat (pair (pair (pair (nat %p) (mutez %value)) nat) nat))) nat) ;
+  storage (pair (pair nat (pair nat (pair (pair (pair (nat %p) (mumav %value)) nat) nat))) nat) ;
   code { { DUP ;
            DIP { CDR @%% ;
                  { DUP ;
@@ -14,7 +14,7 @@
                                                    DIP { CAR @%% ;
                                                          { DUP ;
                                                            CDR @value ;
-                                                           { PUSH mutez 1000000 ; ADD } ;
+                                                           { PUSH mumav 1000000 ; ADD } ;
                                                            SWAP ;
                                                            CAR @%% ;
                                                            PAIR %@ %value } } ;

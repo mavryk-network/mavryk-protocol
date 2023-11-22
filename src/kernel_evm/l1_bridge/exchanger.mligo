@@ -11,31 +11,31 @@ type parameter =
 
 type return = operation list * storage
 
-// Mint creates [Tezos.get_amount ()] tickets and transfers them to [address].
+// Mint creates [Mavryk.get_amount ()] tickets and transfers them to [address].
 let mint address : return =
   let contract : tez_ticket contract =
-    Tezos.get_contract_with_error address "Invalid callback"
+    Mavryk.get_contract_with_error address "Invalid callback"
   in
-  let amount: nat = Tezos.get_amount () / 1mutez in
+  let amount: nat = Mavryk.get_amount () / 1mumav in
   let tickets : tez_ticket =
-    match Tezos.create_ticket (0n, None) amount with
+    match Mavryk.create_ticket (0n, None) amount with
     | Some (t : tez_ticket) -> t
     | None -> failwith "Could not mint ticket."
   in
-  ([Tezos.transaction tickets 0mutez contract], ())
+  ([Mavryk.transaction tickets 0mumav contract], ())
 
 // Burn destructs the [ticket] and sends back the tez to [address].
 let burn address (ticket: tez_ticket) : return =
-  if Tezos.get_amount () > 0tez then
+  if Mavryk.get_amount () > 0tez then
     failwith "Burn does not accept tez."
   else
-    let (addr, (_, amt)), _ticket = Tezos.read_ticket ticket in
-    if addr <> (Tezos.get_self_address ()) then
+    let (addr, (_, amt)), _ticket = Mavryk.read_ticket ticket in
+    if addr <> (Mavryk.get_self_address ()) then
       failwith "Burn only accepts tez tickets."
     else
-      let contract = Tezos.get_contract_with_error address "Invalid callback" in
-      let amount: tez = amt * 1mutez in
-      ([Tezos.transaction () amount contract], ())
+      let contract = Mavryk.get_contract_with_error address "Invalid callback" in
+      let amount: mav = amt * 1mumav in
+      ([Mavryk.transaction () amount contract], ())
 
 (* Main access point that dispatches to the entrypoints according to
    the smart contract parameter. *)

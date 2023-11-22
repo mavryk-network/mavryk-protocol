@@ -181,7 +181,7 @@ let test_nat_mutez () =
     ~ticketer1:"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"
     ~ticketer2:"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"
     ~ty1:"nat"
-    ~ty2:"mutez"
+    ~ty2:"mumav"
     ~content1:"1"
     ~content2:"1"
     ~amount1:1

@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn interpret_mutez_push_add() {
-        let ast = parser::parse("{ PUSH mutez 100; PUSH mutez 500; ADD }").unwrap();
+        let ast = parser::parse("{ PUSH mumav 100; PUSH mumav 500; ADD }").unwrap();
         let mut ctx = Ctx::default();
         let ast = ast.typecheck(&mut ctx, &mut tc_stk![]).unwrap();
         let mut istack = stk![];
@@ -271,7 +271,7 @@ mod tests {
           storage (map string int);
           code {
               AMOUNT;
-              PUSH mutez 5000000;
+              PUSH mumav 5000000;
               COMPARE; GT;
               IF { { UNIT; FAILWITH } } {};
               DUP; DIP { CDR; DUP }; CAR; DUP;

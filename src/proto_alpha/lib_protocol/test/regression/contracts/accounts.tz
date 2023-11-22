@@ -1,7 +1,7 @@
 { parameter
     (or (key_hash %Initialize)
-        (pair %Withdraw (key %from) (pair (mutez %withdraw_amount) (signature %sig)))) ;
-  storage (map :stored_balance key_hash mutez) ;
+        (pair %Withdraw (key %from) (pair (mumav %withdraw_amount) (signature %sig)))) ;
+  storage (map :stored_balance key_hash mumav) ;
   code { DUP ;
          CAR ;
          IF_LEFT
@@ -44,13 +44,13 @@
                  DIP { { COMPARE ; LT @not_enough } } ;
                  SWAP ;
                  IF { PUSH string "Not enough funds" ; FAILWITH }
-                    { SUB_MUTEZ @new_balance ;
+                    { SUB_MUMAV @new_balance ;
                       { IF_NONE { { UNIT ; FAILWITH } } {} } ;
                       DIP { DUP ; DIP { SWAP } } ;
                       DUP ;
-                      PUSH @zero mutez 0 ;
+                      PUSH @zero mumav 0 ;
                       { COMPARE ; EQ @null_balance } ;
-                      IF { DROP ; NONE @new_balance mutez } { SOME @new_balance } ;
+                      IF { DROP ; NONE @new_balance mumav } { SOME @new_balance } ;
                       SWAP ;
                       CAR %from ;
                       HASH_KEY @from_hash ;

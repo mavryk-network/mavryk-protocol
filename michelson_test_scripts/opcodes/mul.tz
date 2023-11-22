@@ -4,16 +4,16 @@ code { CAR ;
        DROP ;
        # tez-nat, no overflow
        PUSH nat 7987 ;
-       PUSH mutez 10 ;
+       PUSH mumav 10 ;
        MUL ;
-       PUSH mutez 79870 ;
+       PUSH mumav 79870 ;
        COMPARE ;
        ASSERT_EQ ;
        # nat-tez, no overflow
-       PUSH mutez 10 ;
+       PUSH mumav 10 ;
        PUSH nat 7987 ;
        MUL ;
-       PUSH mutez 79870 ;
+       PUSH mumav 79870 ;
        COMPARE ;
        ASSERT_EQ ;
        # int-int, no overflow

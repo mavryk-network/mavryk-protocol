@@ -135,7 +135,7 @@ let check_samples protocols =
   protocol_sample "period" ;
   protocol_sample "raw_level" ;
   protocol_sample "seed" ;
-  protocol_sample "tez" ;
+  protocol_sample "mav" ;
   protocol_sample "timestamp" ;
   protocol_sample "vote.ballot" ;
   protocol_sample "vote.ballots" ;

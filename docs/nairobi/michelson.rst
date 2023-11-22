@@ -875,7 +875,7 @@ Operations on Mutez
 A detailed description of the following instructions can be found in the `interactive Michelson reference manual <https://tezos.gitlab.io/michelson-reference/>`__.
 
 -  ``ADD`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-ADD>`__).
--  ``SUB_MUTEZ`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-SUB_MUTEZ>`__).
+-  ``SUB_MUMAV`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-SUB_MUMAV>`__).
 -  ``MUL`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-MUL>`__).
 -  ``EDIV`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-EDIV>`__).
 -  ``COMPARE``: Mutez comparison (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-COMPARE>`__).
@@ -2633,7 +2633,7 @@ entrypoint, of type ``unit`` will reset it to ``0``.
 
    { parameter (or (or (nat %add) (nat %sub)) (unit %default)) ;
      storage int ;
-     code { AMOUNT ; PUSH mutez 0 ; ASSERT_CMPEQ ; UNPAIR ;
+     code { AMOUNT ; PUSH mumav 0 ; ASSERT_CMPEQ ; UNPAIR ;
             IF_LEFT
               { IF_LEFT { ADD } { SWAP ; SUB } }
               { DROP ; DROP ; PUSH int 0 } ;

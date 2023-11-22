@@ -33,7 +33,7 @@ type nanotez = Q.t
 let nanotez_enc : nanotez Data_encoding.t =
   let open Data_encoding in
   def
-    "nanotez"
+    "nanomav"
     ~title:"A thousandth of a mutez"
     ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
     (conv

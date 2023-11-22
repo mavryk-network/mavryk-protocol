@@ -436,7 +436,7 @@ To transfer (spend) tezos from originated contract to an implicit account, use:
 
    tezos-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
-               --arg '{ DROP ; NIL operation ; PUSH key_hash "<adr>" ; IMPLICIT_ACCOUNT ; PUSH mutez <val> ; UNIT ; TRANSFER_TOKENS ; CONS }'
+               --arg '{ DROP ; NIL operation ; PUSH key_hash "<adr>" ; IMPLICIT_ACCOUNT ; PUSH mumav <val> ; UNIT ; TRANSFER_TOKENS ; CONS }'
 
 - ``src``: has to be equal to the ``key_hash`` found in the contract's storage,
   i.e. its manager.
@@ -450,7 +450,7 @@ To transfer tezos from originated contract to another originated contract, use:
 
    tezos-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
-               --arg '{ DROP ; NIL operation ; PUSH address <adr> ; CONTRACT %<ent> <par> ; ASSERT_SOME ; PUSH mutez <val> ; <ppar> ; TRANSFER_TOKENS ; CONS }'
+               --arg '{ DROP ; NIL operation ; PUSH address <adr> ; CONTRACT %<ent> <par> ; ASSERT_SOME ; PUSH mumav <val> ; <ppar> ; TRANSFER_TOKENS ; CONS }'
 
 - ``src``: has to be equal to the ``key_hash`` found in the left part of the
   contract's storage ``pair``, i.e. its manager.

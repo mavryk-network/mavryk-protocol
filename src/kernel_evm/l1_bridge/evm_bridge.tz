@@ -13,7 +13,7 @@
              UNPAIR ;
              CONTRACT (or (or (pair bytes (ticket (pair nat (option bytes)))) bytes) bytes) ;
              IF_NONE { PUSH string "Invalid rollup address" ; FAILWITH } {} ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              DIG 4 ;
              DIG 3 ;
              PAIR ;

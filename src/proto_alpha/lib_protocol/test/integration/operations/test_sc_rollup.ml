@@ -973,7 +973,7 @@ let test_originating_with_invalid_types () =
   (* Following types fail at validation time. *)
   let* () =
     [
-      "mutez";
+      "mumav";
       "big_map string nat";
       "contract string";
       "sapling_state 2";
@@ -1064,8 +1064,8 @@ let string_receiver =
 (* A contract that receives a mutez. *)
 let mutez_receiver =
   {|
-      { parameter mutez;
-        storage mutez;
+      { parameter mumav;
+        storage mumav;
         code { CDR ; NIL operation; PAIR } }
   |}
 

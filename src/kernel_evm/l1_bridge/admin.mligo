@@ -15,12 +15,12 @@ type upgrade_parameters = {
 }
 
 let main {evm_rollup; payload} (store : storage) : return =
-  if Tezos.get_sender () <> store.admin then
+  if Mavryk.get_sender () <> store.admin then
     failwith "Unauthorized set entrypoint"
   else
     // Craft an internal inbox message that respect the EVM rollup type
     // and put the payload in the last "bytes" field.
     let evm_rollup : evm contract =
-      Option.unopt ((Tezos.get_contract_opt evm_rollup) : evm contract option)
+      Option.unopt ((Mavryk.get_contract_opt evm_rollup) : evm contract option)
     in
-    [Tezos.transaction (Upgrade payload) 0mutez evm_rollup], store
+    [Mavryk.transaction (Upgrade payload) 0mutez evm_rollup], store

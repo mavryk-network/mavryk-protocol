@@ -1,7 +1,7 @@
 # This contract calls the view `id` on the address passed as
 # parameter. After returning from the view it stores its BALANCE.
 parameter address ;
-storage mutez;
+storage mumav;
 code
      { CAR ;
        DUP ;
@@ -11,7 +11,7 @@ code
        DROP ;
        CONTRACT nat ;
        ASSERT_SOME ;
-       PUSH mutez 15000000 ;
+       PUSH mumav 15000000 ;
        PUSH nat 0 ;
        TRANSFER_TOKENS ;
        BALANCE;

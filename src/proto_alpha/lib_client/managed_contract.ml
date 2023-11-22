@@ -205,7 +205,7 @@ let t_unit =
 let build_lambda_for_transfer_to_implicit ~destination ~amount =
   let (`Hex destination) = Signature.Public_key_hash.to_hex destination in
   Format.asprintf
-    "{ DROP ; NIL operation ;PUSH key_hash 0x%s; IMPLICIT_ACCOUNT;PUSH mutez \
+    "{ DROP ; NIL operation ;PUSH key_hash 0x%s; IMPLICIT_ACCOUNT;PUSH mumav \
      %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
     destination
     (Tez.to_mutez amount)
@@ -221,7 +221,7 @@ let build_lambda_for_transfer_to_originated ~destination ~entrypoint ~amount
   if parameter_type = t_unit then
     Format.asprintf
       "{ DROP ; NIL operation ;PUSH address 0x%s; CONTRACT %s %a; \
-       ASSERT_SOME;PUSH mutez %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
+       ASSERT_SOME;PUSH mumav %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
       destination
       entrypoint
       Michelson_v1_printer.print_expr
@@ -230,7 +230,7 @@ let build_lambda_for_transfer_to_originated ~destination ~entrypoint ~amount
   else
     Format.asprintf
       "{ DROP ; NIL operation ;PUSH address 0x%s; CONTRACT %s %a; \
-       ASSERT_SOME;PUSH mutez %Ld ;PUSH %a %a;TRANSFER_TOKENS ; CONS }"
+       ASSERT_SOME;PUSH mumav %Ld ;PUSH %a %a;TRANSFER_TOKENS ; CONS }"
       destination
       entrypoint
       Michelson_v1_printer.print_expr

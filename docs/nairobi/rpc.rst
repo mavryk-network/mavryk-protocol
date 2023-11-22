@@ -585,7 +585,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -636,7 +636,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -3798,7 +3798,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -9346,7 +9346,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -9397,7 +9397,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -9757,7 +9757,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -10066,7 +10066,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -10117,7 +10117,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -10475,7 +10475,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -12207,7 +12207,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -12258,7 +12258,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -12618,7 +12618,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -12915,7 +12915,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -12966,7 +12966,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -13324,7 +13324,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -13792,7 +13792,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -13843,7 +13843,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -14207,7 +14207,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -14552,7 +14552,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -14603,7 +14603,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -14961,7 +14961,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -15556,7 +15556,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -15607,7 +15607,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -15965,7 +15965,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -23084,7 +23084,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -23135,7 +23135,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -24163,7 +24163,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -26198,7 +26198,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -26249,7 +26249,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -27251,7 +27251,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -29161,7 +29161,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -29212,7 +29212,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -31539,7 +31539,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -36642,7 +36642,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -36693,7 +36693,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -38131,7 +38131,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -39334,7 +39334,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -39385,7 +39385,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -41752,7 +41752,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -47694,7 +47694,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -47745,7 +47745,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -50112,7 +50112,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -56069,7 +56069,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -56120,7 +56120,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -58464,7 +58464,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+

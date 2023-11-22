@@ -76,7 +76,7 @@ module Types = struct
 
   let signature = nullary "signature"
 
-  let mutez = nullary "mutez"
+  let mutez = nullary "mumav"
 
   let address = nullary "address"
 

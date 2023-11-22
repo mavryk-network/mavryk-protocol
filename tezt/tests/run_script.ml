@@ -62,7 +62,7 @@ code {
 
 let prg ty instr = Format.sprintf prg_template ty instr instr
 
-let check_balance = prg "mutez" "BALANCE"
+let check_balance = prg "mumav" "BALANCE"
 
 let check_self_address = prg "address" "SELF_ADDRESS"
 

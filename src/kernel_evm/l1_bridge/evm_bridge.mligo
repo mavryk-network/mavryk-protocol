@@ -26,12 +26,12 @@ let deposit request ({exchanger; request_deposit}: storage) : return =
     | None -> ()
     | Some _ -> failwith "deposit locked"
   in
-  let amount = Tezos.get_amount () in
-  let callback = Tezos.address (Tezos.self("%callback") : tez_ticket contract) in
-  match Tezos.get_entrypoint_opt "%mint" exchanger with
+  let amount = Mavryk.get_amount () in
+  let callback = Mavryk.address (Mavryk.self("%callback") : tez_ticket contract) in
+  match Mavryk.get_entrypoint_opt "%mint" exchanger with
   | None -> failwith "Invalid tez ticket contract"
   | Some contract ->
-    let mint = Tezos.transaction callback amount contract in
+    let mint = Mavryk.transaction callback amount contract in
     let callback_storage = {exchanger; request_deposit = Some request} in
     [mint], callback_storage
 
@@ -43,10 +43,10 @@ let callback (ticket: tez_ticket) {exchanger; request_deposit} : return =
   in
   let {l2_address; evm_address} = request_deposit in
   let evm_address: evm contract =
-    Tezos.get_contract_with_error evm_address "Invalid rollup address"
+    Mavryk.get_contract_with_error evm_address "Invalid rollup address"
   in
   let deposit =
-    Tezos.transaction
+    Mavryk.transaction
       (DepositTicket (l2_address, ticket))
       0mutez
       evm_address

@@ -4,7 +4,7 @@ code
   { DUP ; CAR ; PUSH nat 0 ; CMPNEQ ;
     DIP { DUP ; CAR ; DIP { CDR ; NIL operation } } ;
     LOOP
-      { PUSH mutez 5000000 ;
+      { PUSH mumav 5000000 ;
         PUSH bool True ; # delegatable
         NONE key_hash ; # delegate
         PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" ; # manager

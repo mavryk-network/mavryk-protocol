@@ -12,7 +12,7 @@ code
        DROP ;
        CONTRACT nat ;
        ASSERT_SOME ;
-       PUSH mutez 1500 ;
+       PUSH mumav 1500 ;
        PUSH nat 0 ;
        TRANSFER_TOKENS ;
        SELF ;

@@ -1,16 +1,16 @@
 # This is a very simple accounts system.
 # (Left key) initializes or deposits into an account
-# (Right key (pair mutez (signed mutez))) withdraws mutez amount to a
+# (Right key (pair mumav (signed mumav))) withdraws mumav amount to a
 # IMPLICIT_ACCOUNT created from the key if the balance is available
 # and the key is correctly signed
 parameter (or (key_hash %Initialize)
               (pair     %Withdraw
                  (key %from)
                  (pair
-                    (mutez     %withdraw_amount)
+                    (mumav     %withdraw_amount)
                     (signature %sig))));
 # Maps the key to the balance they have stored
-storage (map :stored_balance key_hash mutez);
+storage (map :stored_balance key_hash mumav);
 code { DUP; CAR;
        # Deposit into account
        IF_LEFT { DUP; DIIP{ CDR %stored_balance; DUP };
@@ -39,10 +39,10 @@ code { DUP; CAR;
                            # Ensure funds are available
                            DIP{ CMPLT @not_enough }; SWAP;
                            IF { PUSH string "Not enough funds"; FAILWITH }
-                              { SUB_MUTEZ @new_balance; ASSERT_SOME; DIP{ DUP; DIP{ SWAP }}; DUP;
+                              { SUB_MUMAV @new_balance; ASSERT_SOME; DIP{ DUP; DIP{ SWAP }}; DUP;
                                 # Delete account if balance is 0
-                                PUSH @zero mutez 0; CMPEQ @null_balance;
-                                IF { DROP; NONE @new_balance mutez }
+                                PUSH @zero mumav 0; CMPEQ @null_balance;
+                                IF { DROP; NONE @new_balance mumav }
                                    # Otherwise update storage with new balance
                                    { SOME @new_balance };
                                 SWAP; CAR %from; HASH_KEY @from_hash; UPDATE;

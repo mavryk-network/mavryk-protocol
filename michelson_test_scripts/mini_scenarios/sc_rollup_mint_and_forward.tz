@@ -7,7 +7,7 @@ code
     UNPAIR;
     TICKET;
     ASSERT_SOME;
-    PUSH mutez 0;
+    PUSH mumav 0;
     SWAP;
     TRANSFER_TOKENS;
     NIL operation;

@@ -3,7 +3,7 @@
   code { CAR ;
          IF_LEFT
            { UNPAIR ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              AMOUNT ;
              COMPARE ;
              GT ;
@@ -23,7 +23,7 @@
                      { SWAP ;
                        CONTRACT unit ;
                        IF_NONE { PUSH string "Invalid callback" ; FAILWITH } {} ;
-                       PUSH mutez 1 ;
+                       PUSH mumav 1 ;
                        DIG 2 ;
                        MUL ;
                        UNIT ;
@@ -36,7 +36,7 @@
                        PAIR } } }
            { CONTRACT (ticket (pair nat (option bytes))) ;
              IF_NONE { PUSH string "Invalid callback" ; FAILWITH } {} ;
-             PUSH mutez 1 ;
+             PUSH mumav 1 ;
              AMOUNT ;
              EDIV ;
              IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
@@ -49,7 +49,7 @@
              UNIT ;
              NIL operation ;
              DIG 3 ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              DIG 4 ;
              TRANSFER_TOKENS ;
              CONS ;

@@ -387,7 +387,7 @@ struct
                 CONTRACT %%deposit (pair (ticket %s) bytes);
                 ASSERT_SOME;
                 SWAP;
-                PUSH mutez 0;
+                PUSH mumav 0;
                 SWAP;
                 # create a ticket
                 PUSH nat %a;

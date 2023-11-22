@@ -34,7 +34,7 @@ let tez_encoding =
   let decode {mutez} = Z.of_int64 mutez in
   let encode = Json.wrap_error (fun i -> {mutez = Z.to_int64 i}) in
   Data_encoding.def
-    "mutez"
+    "mumav"
     ~title:"A millionth of a tez"
     ~description:"One million mutez make a tez (1 tez = 1e6 mutez)"
     (conv decode encode n)
@@ -43,7 +43,7 @@ let tez_encoding =
 let nanotez_encoding =
   let open Data_encoding in
   def
-    "nanotez"
+    "nanomav"
     ~title:"A thousandth of a mutez"
     ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
     (conv

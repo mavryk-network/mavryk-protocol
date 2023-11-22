@@ -100,7 +100,7 @@ mod tztrunner_tests {
 
     #[test]
     fn test_runner_interpreter_error() {
-        let tzt_test = parse_tzt_test(TZT_SAMPLE_MUTEZ_OVERFLOW).unwrap();
+        let tzt_test = parse_tzt_test(TZT_SAMPLE_MUMAV_OVERFLOW).unwrap();
         let result = run_tzt_test(tzt_test);
         assert!(result.is_ok());
     }
@@ -195,7 +195,7 @@ mod tztrunner_tests {
         output { Stack_elt int 10 } ;
         output { Stack_elt int 10 }";
 
-    const TZT_SAMPLE_MUTEZ_OVERFLOW: &str = r#"code { ADD } ;
+    const TZT_SAMPLE_MUMAV_OVERFLOW: &str = r#"code { ADD } ;
         input { Stack_elt mutez 9223372036854775807 ; Stack_elt mutez 1 } ;
         output (MutezOverflow 9223372036854775807 1)"#;
 

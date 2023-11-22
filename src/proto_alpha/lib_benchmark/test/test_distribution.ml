@@ -32,7 +32,7 @@ let pp_type_name fmtr (t : type_name) =
   | `TSet -> "set"
   | `TBls12_381_g1 -> "bls12_381_g1"
   | `TList -> "list"
-  | `TMutez -> "mutez"
+  | `TMutez -> "mumav"
   | `TSignature -> "signature"
   | `TUnit -> "unit"
   | `TInt -> "int"
