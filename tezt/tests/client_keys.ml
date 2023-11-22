@@ -342,7 +342,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "zebra" addresses
-      = Some "mv1UAdb2eRyzBeTfshv6cbhhMZGLHusj74tw")
+      = Some "mv1NdwcpRPwibHVk9DN4UTy5QfBZWuBRgC6K")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -375,7 +375,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "key" addresses
-      = Some "mv1PKgZXd3AZNuaWnMqc3bwA3CudPcu1CNuz")
+      = Some "mv1CoiN3ksHwP9TpjHM6Ye7d27y7gqFN42yX")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -395,7 +395,7 @@ module Wallet = struct
       let* addresses = Client.list_known_addresses client in
       Check.(
         (List.assoc_opt alias addresses
-        = Some "mv1PKgZXd3AZNuaWnMqc3bwA3CudPcu1CNuz")
+        = Some "mv1CoiN3ksHwP9TpjHM6Ye7d27y7gqFN42yX")
           (option string)
           ~__LOC__
           ~error_msg:"Expected %R, got %L") ;
