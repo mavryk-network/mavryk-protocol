@@ -6976,49 +6976,7 @@ let hash = Protocol.hash
 
   let frozen = register_alpha_family Frozen
 
-  let overridden = register_alpha_family Overridden
-
   let _000_Ps9mPmXa = frozen (Name.v "Ps9mPmXa" 000)
-
-  let _001_PtCJ7pwo = frozen (Name.v "PtCJ7pwo" 001)
-
-  let _002_PsYLVpVv = frozen (Name.v "PsYLVpVv" 002)
-
-  let _003_PsddFKi3 = frozen (Name.v "PsddFKi3" 003)
-
-  let _004_Pt24m4xi = frozen (Name.v "Pt24m4xi" 004)
-
-  let _005_PsBABY5H = overridden (Name.v "PsBABY5H" 005)
-
-  let _005_PsBabyM1 = frozen (Name.v "PsBabyM1" 005)
-
-  let _006_PsCARTHA = frozen (Name.v "PsCARTHA" 006)
-
-  let _007_PsDELPH1 = frozen (Name.v "PsDELPH1" 007)
-
-  let _008_PtEdoTez = overridden (Name.v "PtEdoTez" 008)
-
-  let _008_PtEdo2Zk = frozen (Name.v "PtEdo2Zk" 008)
-
-  let _009_PsFLoren = frozen (Name.v "PsFLoren" 009)
-
-  let _010_PtGRANAD = frozen (Name.v "PtGRANAD" 010)
-
-  let _011_PtHangz2 = frozen (Name.v "PtHangz2" 011)
-
-  let _012_Psithaca = frozen (Name.v "Psithaca" 012)
-
-  let _013_PtJakart = frozen (Name.v "PtJakart" 013)
-
-  let _014_PtKathma = frozen (Name.v "PtKathma" 014)
-
-  let _015_PtLimaPt = frozen (Name.v "PtLimaPt" 015)
-
-  let _016_PtMumbai = frozen (Name.v "PtMumbai" 016)
-
-  let _017_PtNairob = active (Name.v "PtNairob" 017)
-
-  let _018_Proxford = active (Name.v "Proxford" 018)
 
   let alpha = active Name.alpha
 

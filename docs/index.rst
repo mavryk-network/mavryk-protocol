@@ -227,7 +227,6 @@ Platform developers are also provided reference materials for internal APIs of O
    :hidden:
 
    protocols/naming
-   protocols/017_nairobi
    protocols/alpha
    protocols/history
 

@@ -36,14 +36,6 @@
   octez-shell-libs.store
   octez-shell-libs.store.shared
   octez-libs.tezos-context
-  ; octez-protocol-017-PtNairob-libs.baking
-  ; octez-protocol-017-PtNairob-libs.client
-  ; octez-protocol-017-PtNairob-libs.client.commands
-  ; tezos-protocol-017-PtNairob.protocol
-  ; octez-protocol-018-Proxford-libs.baking
-  ; octez-protocol-018-Proxford-libs.client
-  ; octez-protocol-018-Proxford-libs.client.commands
-  ; tezos-protocol-018-Proxford.protocol
   octez-protocol-alpha-libs.baking
   octez-protocol-alpha-libs.client
   octez-protocol-alpha-libs.client.commands

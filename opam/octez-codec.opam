@@ -16,20 +16,6 @@ depends: [
   "octez-version"
 ]
 depopts: [
-  "octez-protocol-005-PsBabyM1-libs"
-  "octez-protocol-006-PsCARTHA-libs"
-  "octez-protocol-007-PsDELPH1-libs"
-  "octez-protocol-008-PtEdo2Zk-libs"
-  "octez-protocol-009-PsFLoren-libs"
-  "octez-protocol-010-PtGRANAD-libs"
-  "octez-protocol-011-PtHangz2-libs"
-  "octez-protocol-012-Psithaca-libs"
-  "octez-protocol-013-PtJakart-libs"
-  "octez-protocol-014-PtKathma-libs"
-  "octez-protocol-015-PtLimaPt-libs"
-  "octez-protocol-016-PtMumbai-libs"
-  "octez-protocol-017-PtNairob-libs"
-  "octez-protocol-018-Proxford-libs"
   "octez-protocol-alpha-libs"
 ]
 build: [
