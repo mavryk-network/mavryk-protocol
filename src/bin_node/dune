@@ -44,7 +44,7 @@
   (select void_for_linking-tezos-protocol-demo-counter-embedded-protocol from
    (tezos-protocol-demo-counter.embedded-protocol -> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty)
    (-> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty))
-  ; tezos-protocol-000-Ps9mPmXa.embedded-protocol
+  tezos-protocol-000-Ps9mPmXa.embedded-protocol
   (select void_for_linking-tezos-protocol-001-PtCJ7pwo-embedded-protocol from
    (tezos-protocol-001-PtCJ7pwo.embedded-protocol -> void_for_linking-tezos-protocol-001-PtCJ7pwo-embedded-protocol.empty)
    (-> void_for_linking-tezos-protocol-001-PtCJ7pwo-embedded-protocol.empty))
