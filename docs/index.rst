@@ -189,6 +189,16 @@ Platform developers are also provided reference materials for internal APIs of O
 
 .. toctree::
    :maxdepth: 2
+   :caption: Atlas Protocol doc
+   :hidden:
+
+   atlas/protocol
+   atlas/glossary
+   atlas/cli-commands
+   atlas/rpc
+
+.. toctree::
+   :maxdepth: 2
    :caption: Alpha Dev Protocol doc
    :hidden:
 
@@ -227,6 +237,7 @@ Platform developers are also provided reference materials for internal APIs of O
    :hidden:
 
    protocols/naming
+   protocols/001_atlas
    protocols/alpha
    protocols/history
 

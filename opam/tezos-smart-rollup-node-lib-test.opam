@@ -19,6 +19,7 @@ depends: [
   "logs" {with-test}
   "octez-alcotezt" {with-test}
   "octez-shell-libs" {with-test}
+  "octez-smart-rollup-node-PtAtLasL" {with-test}
 ]
 depopts: [
   "octez-smart-rollup-node-alpha" {with-test}

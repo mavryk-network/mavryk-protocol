@@ -14,6 +14,7 @@ depends: [
   "octez-shell-libs"
   "octez-l2-libs"
   "octez-smart-rollup-node-lib"
+  "octez-smart-rollup-node-PtAtLasL"
 ]
 depopts: [
   "octez-smart-rollup-node-alpha"

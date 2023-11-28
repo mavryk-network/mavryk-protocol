@@ -8,3 +8,6 @@ octez-codec
 octez-client
 octez-admin-client
 octez-node
+octez-smart-rollup-client-PtAtLasL
+octez-accuser-PtAtLasL
+octez-baker-PtAtLasL

@@ -30,4 +30,5 @@ let is_proto_test file =
   match file =~* rex "^src/proto_(\\w+)/" with
   | None -> []
   | Some "alpha" -> ["alpha"]
+  | Some "001_PtAtLasL" -> ["atlas"]
   | Some _ -> assert false

@@ -420,6 +420,13 @@ opam:bls12-381:
 
 # Ignoring unreleased package kaitai-of-data-encoding.
 
+opam:octez-accuser-PtAtLasL:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_exec_opam_batch_1
+  variables:
+    package: octez-accuser-PtAtLasL
+
 opam:octez-accuser-Proxford:
   extends:
     - .opam_template
@@ -442,6 +449,13 @@ opam:octez-alcotezt:
     - .rules_template__trigger_all_opam_batch_7
   variables:
     package: octez-alcotezt
+
+opam:octez-baker-PtAtLasL:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_exec_opam_batch_1
+  variables:
+    package: octez-baker-PtAtLasL
 
 opam:octez-baker-Proxford:
   extends:
@@ -695,6 +709,13 @@ opam:octez-protocol-018-Proxford-libs:
   variables:
     package: octez-protocol-018-Proxford-libs
 
+opam:octez-protocol-001-PtAtLasL-libs:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_all_opam_batch_2
+  variables:
+    package: octez-protocol-001-PtAtLasL-libs
+
 opam:octez-protocol-alpha-libs:
   extends:
     - .opam_template
@@ -744,6 +765,13 @@ opam:octez-signer:
   variables:
     package: octez-signer
 
+opam:octez-smart-rollup-client-PtAtLasL:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_exec_opam_batch_1
+  variables:
+    package: octez-smart-rollup-client-PtAtLasL
+
 opam:octez-smart-rollup-client-Proxford:
   extends:
     - .opam_template
@@ -780,6 +808,13 @@ opam:octez-smart-rollup-node-PtNairob:
     - .rules_template__trigger_all_opam_batch_2
   variables:
     package: octez-smart-rollup-node-PtNairob
+
+opam:octez-smart-rollup-node-PtAtLasL:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_all_opam_batch_2
+  variables:
+    package: octez-smart-rollup-node-PtAtLasL
 
 opam:octez-smart-rollup-node-alpha:
   extends:

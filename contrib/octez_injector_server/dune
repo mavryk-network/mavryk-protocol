@@ -15,6 +15,9 @@
   octez-shell-libs.client-base
   octez-shell-libs.client-base-unix
   data-encoding
+  (select void_for_linking-octez_injector_PtAtLasL from
+   (octez_injector_PtAtLasL -> void_for_linking-octez_injector_PtAtLasL.empty)
+   (-> void_for_linking-octez_injector_PtAtLasL.empty))
   (select void_for_linking-octez_injector_alpha from
    (octez_injector_alpha -> void_for_linking-octez_injector_alpha.empty)
    (-> void_for_linking-octez_injector_alpha.empty)))
@@ -34,4 +37,7 @@
   -open Tezos_client_base_unix))
 
 (rule
- (action (progn (write-file void_for_linking-octez_injector_alpha.empty ""))))
+ (action
+  (progn
+   (write-file void_for_linking-octez_injector_PtAtLasL.empty "")
+   (write-file void_for_linking-octez_injector_alpha.empty ""))))

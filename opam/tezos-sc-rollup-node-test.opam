@@ -14,6 +14,7 @@ depends: [
   "octez-libs" {with-test}
   "tezos-protocol-alpha" {with-test}
   "octez-protocol-alpha-libs" {with-test}
+  "octez-smart-rollup-node-PtAtLasL" {with-test}
   "octez-smart-rollup-node-alpha" {with-test}
   "octez-alcotezt" {with-test}
 ]
