@@ -69,7 +69,7 @@ let add_bootstrap_secret cctxt {name; sk_uri} =
   in
   let*! () =
     cctxt#message
-      "Tezos address added: %a"
+      "Mavryk address added: %a"
       Tezos_crypto.Signature.Public_key_hash.pp
       pkh
   in

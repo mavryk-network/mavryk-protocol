@@ -235,7 +235,7 @@ let rec input_fundraiser_params (cctxt : #Client_context.io_wallet) =
       let pkh = Signature.Public_key.hash pk in
       let msg =
         Format.asprintf
-          "Your public Tezos address is %a is that correct?"
+          "Your public Mavryk address is %a is that correct?"
           Signature.Public_key_hash.pp
           pkh
       in
@@ -695,7 +695,7 @@ let commands network : Client_context.full Tezos_clic.command list =
         in
         let*! () =
           cctxt#message
-            "Tezos address added: %a"
+            "Mavryk address added: %a"
             Signature.Public_key_hash.pp
             pkh
         in
@@ -736,7 +736,7 @@ let commands network : Client_context.full Tezos_clic.command list =
           let* () = Public_key_hash.add ~force cctxt name pkh in
           let*! () =
             cctxt#message
-              "Tezos address added: %a"
+              "Mavryk address added: %a"
               Signature.Public_key_hash.pp
               pkh
           in
@@ -952,7 +952,7 @@ let commands network : Client_context.full Tezos_clic.command list =
               in
               let*! () =
                 cctxt#message
-                  "Tezos address added: %a"
+                  "Mavryk address added: %a"
                   Signature.Public_key_hash.pp
                   pkh
               in
