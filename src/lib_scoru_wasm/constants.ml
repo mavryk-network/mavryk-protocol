@@ -73,4 +73,6 @@ let nairobi_name = "nairobi_017"
 
 let oxford_name = "oxford_018"
 
+let atlas_name = "atlas_001"
+
 let proto_alpha_name = "alpha_current"
