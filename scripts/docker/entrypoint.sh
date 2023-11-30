@@ -114,7 +114,7 @@ Commands:
   - octez-snapshot-import [args]
     Import a snapshot. The snapshot must be available in the file /snapshot
     Using docker run, you can make it available using the command :
-       docker run -v <yourfilename>:/snapshot tezos/tezos octez-snapshot-import
+       docker run -v <yourfilename>:/snapshot mavrykdynamics/mavryk octez-snapshot-import
     <yourfilename> must be an absolute path.
 EOF
         ;;

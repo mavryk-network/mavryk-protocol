@@ -53,10 +53,10 @@ else
   gitlab_rpm_packages_url="https://${CI_SERVER_HOST}${rpm_web_path}"
 fi
 
-if [ "${CI_PROJECT_NAMESPACE}" = "tezos" ]
+if [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ]
 then
   ## Production => Docker Hub
-  docker_hub_path='tezos/tezos'
+  docker_hub_path='mavrykdynamics/mavryk'
   echo "Query Docker Hub repository to get image URL at https://hub.docker.com/r/${docker_hub_path}"
 
   token=$(curl -fsSL "https://auth.docker.io/token?scope=repository:${docker_hub_path}:pull&service=registry.docker.io"  | jq -r '.token')

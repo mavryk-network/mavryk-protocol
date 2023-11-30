@@ -7,13 +7,13 @@ let usage () =
     {|Usage: dune exec scripts/ci/download_coverage/download.exe -- [-a from=last-merged-pipeline | -a from=<PIPELINE_ID>]
 
 Example: to fetch coverage traces from
-https://gitlab.com/tezos/tezos/-/pipelines/426773806, run
+https://gitlab.com/mavryk-network/mavryk-protocol/-/pipelines/426773806, run
 (from the root of the repository):
 
 dune exec scripts/ci/download_coverage/download.exe -- -a from=426773806
 
 You can use the PROJECT environment variable to specify which GitLab
-repository to fetch coverage traces from. Default is: tezos/tezos
+repository to fetch coverage traces from. Default is: mavryk-network/mavryk-protocol
 
 The script can also be used to fetch coverage traces from the last successful pipeline on the
 latest MR merged to the default branch (configurable through the DEFAULT_BRANCH
@@ -24,7 +24,7 @@ dune exec scripts/ci/download_coverage/download.exe -- -a from=last-merged-pipel
 |} ;
   exit 1
 
-let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"tezos/tezos"
+let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"mavryk-network/mavryk-protocol"
 
 let default_branch =
   Sys.getenv_opt "DEFAULT_BRANCH" |> Option.value ~default:"master"

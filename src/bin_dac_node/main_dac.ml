@@ -339,7 +339,7 @@ let check_network cctxt =
       let has_prefix prefix =
         String.has_prefix ~prefix (network_version.chain_name :> string)
       in
-      if List.exists has_prefix ["TEZOS_BETANET"; "TEZOS_MAINNET"] then
+      if List.exists has_prefix ["MAVRYK_BETANET"; "MAVRYK_MAINNET"] then
         Lwt.return_some `Mainnet
       else Lwt.return_some `Testnet
 

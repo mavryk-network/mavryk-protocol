@@ -67,7 +67,7 @@ it runs on Ghostnet::
   octez-node run --data-dir ~/tezos-ghostnet --network ghostnet
 
 This command will fail with an error if the configured network is not Ghostnet.
-The node also displays the chain name (such as ``TEZOS_MAINNET``) when it starts.
+The node also displays the chain name (such as ``MAVRYK_MAINNET``) when it starts.
 Also mind opening the :doc:`RPC interface <../developer/rpc>` as appropriate.
 
 The list of built-in networks is in :src:`src/lib_node_config/config_file.ml`.
@@ -102,10 +102,10 @@ Here is an example configuration file for Mainnet::
         "block": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
         "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
       },
-      "chain_name": "TEZOS_MAINNET",
-      "old_chain_name": "TEZOS_BETANET_2018-06-30T16:07:32Z",
+      "chain_name": "MAVRYK_MAINNET",
+      "old_chain_name": "MAVRYK_BETANET_2018-06-30T16:07:32Z",
       "incompatible_chain_name": "INCOMPATIBLE",
-      "sandboxed_chain_name": "SANDBOXED_TEZOS_MAINNET",
+      "sandboxed_chain_name": "SANDBOXED_MAVRYK_MAINNET",
       "user_activated_upgrades": [
         {
           "level": 28082,

@@ -9,7 +9,7 @@ cd "$src_dir"
 # shellcheck source=scripts/version.sh
 . "$script_dir"/version.sh
 
-image_name="${1:-tezos-}"
+image_name="${1:-mavryk-}"
 image_version="${2:-latest}"
 build_deps_image_name=${3:-registry.gitlab.com/tezos/opam-repository}
 build_deps_image_version=${4:-$opam_repository_tag}
@@ -31,7 +31,7 @@ for executable in $executables; do
     echo "- $executable"
 done
 
-echo "### Building tezos..."
+echo "### Building mavryk..."
 
 docker build \
   -t "$build_image_name:$image_version" \

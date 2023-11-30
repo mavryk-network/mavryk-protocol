@@ -86,11 +86,11 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 (* The script in scripts/user_activated_upgrade.sh patches the following lines
    when it needs to set the user activated upgrade levels for Mainnet. *)
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
-let mainnet_user_activated_upgrades =
+(* let mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-  ]
+  ] *)
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated
@@ -99,7 +99,7 @@ let mainnet_user_activated_upgrades =
 let sandbox_user_activated_upgrades = []
 (* END_PATCHING_ZONE_FOR_SANDBOX_USER_ACTIVATED_UPGRADES *)
 
-let blockchain_network_mainnet =
+(* let blockchain_network_mainnet =
   make_blockchain_network
     ~alias:"mainnet"
     {
@@ -111,10 +111,10 @@ let blockchain_network_mainnet =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
-    ~chain_name:"TEZOS_MAINNET"
-    ~old_chain_name:"TEZOS_BETANET_2018-06-30T16:07:32Z"
+    ~chain_name:"MAVRYK_MAINNET"
+    ~old_chain_name:"MAVRYK_BETANET_2018-06-30T16:07:32Z"
     ~incompatible_chain_name:"INCOMPATIBLE"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS_MAINNET"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:
       [
@@ -128,9 +128,9 @@ let blockchain_network_mainnet =
           "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1" );
       ]
     ~default_bootstrap_peers:
-      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
+      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"] *)
 
-let blockchain_network_ghostnet =
+(* let blockchain_network_ghostnet =
   make_blockchain_network
     ~alias:"ghostnet"
     {
@@ -154,7 +154,7 @@ let blockchain_network_ghostnet =
             ];
       }
     ~chain_name:"TEZOS_ITHACANET_2022-01-25T15:00:00Z"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
       [
         (8191l, "Psithaca2MLRFYargivpo7YvUr7wUDqyxrdhC5CQq78mRvimz6A");
@@ -170,7 +170,24 @@ let blockchain_network_ghostnet =
         "ghostnet.kaml.fr";
         "ghostnet.stakenow.de:9733";
         "ghostnet.visualtez.com";
-      ]
+      ] *)
+
+let blockchain_network_basenet =
+  make_blockchain_network
+    ~alias:"basenet"
+    {
+      time = Time.Protocol.of_notation_exn "2023-11-30T07:01:13Z";
+      block =
+        Block_hash.of_b58check_exn
+          "BLockGenesisGenesisGenesisGenesisGenesis5efd5YURnm5";
+      protocol =
+        Protocol_hash.of_b58check_exn
+          "PtAtLasLVMXnJGQPjVwVsLse9ncWgqCu32NKRsUM8R5u6RRDn5v";
+    }
+    ~chain_name:"MAVRYK_BASENET_2023-11-30T07:01:13Z"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
+    ~default_bootstrap_peers:
+      [ "" ]
 
 let blockchain_network_sandbox =
   make_blockchain_network
@@ -198,7 +215,7 @@ let blockchain_network_sandbox =
             ];
       }
     ~chain_name:"TEZOS"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:sandbox_user_activated_upgrades
 
 let blockchain_network_encoding : blockchain_network Data_encoding.t =
@@ -282,8 +299,9 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
 let builtin_blockchain_networks_with_tags =
   [
     (1, blockchain_network_sandbox);
-    (4, blockchain_network_mainnet);
-    (19, blockchain_network_ghostnet);
+    (* (4, blockchain_network_mainnet); *)
+    (* (19, blockchain_network_ghostnet); *)
+    (19, blockchain_network_basenet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with
@@ -401,7 +419,8 @@ let default_config =
     log = Logs_simple_config.default_cfg;
     internal_events = None;
     shell = Shell_limits.default_limits;
-    blockchain_network = blockchain_network_mainnet;
+    (* blockchain_network = blockchain_network_mainnet; *)
+    blockchain_network = blockchain_network_basenet;
     disable_config_validation = default_disable_config_validation;
     metrics_addr = [];
   }
@@ -739,7 +758,8 @@ let encoding =
           "network"
           ~description:"Configuration of which network/blockchain to connect to"
           sugared_blockchain_network_encoding
-          blockchain_network_mainnet)
+          (* blockchain_network_mainnet) *)
+          blockchain_network_basenet)
        (dft
           "metrics_addr"
           ~description:"Configuration of the Prometheus metrics endpoint"

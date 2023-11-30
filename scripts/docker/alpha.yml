@@ -2,7 +2,7 @@ version: "3"
 services:
   octez-node:
     container_name: octez-node-alpha
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: octez-node
     command: octez-node
     ports:
@@ -18,7 +18,7 @@ services:
 
   octez-baker:
     container_name: octez-baker-alpha
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: octez-baker
     command: octez-baker --liquidity-baking-toggle-vote $LIQUIDITY_BAKING_VOTE
     environment:
@@ -32,7 +32,7 @@ services:
 
   octez-accuser:
     container_name: octez-accuser-alpha
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: octez-accuser
     command: octez-accuser
     environment:

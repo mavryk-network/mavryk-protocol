@@ -43,7 +43,7 @@ let with_node f =
         genesis;
         chain_name = Distributed_db_version.Name.of_string "TEZOS_DOCGEN";
         sandboxed_chain_name =
-          Distributed_db_version.Name.of_string "SANDBOXED_TEZOS_DOCGEN";
+          Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK_DOCGEN";
         user_activated_upgrades = [];
         user_activated_protocol_overrides = [];
         operation_metadata_size_limit = Unlimited;

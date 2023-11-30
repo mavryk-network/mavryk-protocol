@@ -17,7 +17,7 @@ git checkout "$TEZOS_PACKAGING_VERSION"
 cat <<DOC > meta.json
 {
     "release": "1",
-    "maintainer": "Tezos devteam <contact@tezos.com>"
+    "maintainer": "Mavryk devteam <contact@mavryk.io>"
 }
 DOC
 

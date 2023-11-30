@@ -71,7 +71,7 @@ let testnet_disclaimer () =
     Format.eprintf
       "@[<v 2>@{<warning>@{<title>Warning@}@}@,\
        @,\
-      \               This is @{<warning>NOT@} the Tezos Mainnet.@,\
+      \               This is @{<warning>NOT@} the Mavryk Mainnet.@,\
        @,\
       \         Do @{<warning>NOT@} use your fundraiser keys on this network.\n\
        @."
@@ -80,10 +80,10 @@ let mainnet_disclaimer () =
   if not disable_disclaimer then
     Format.eprintf
       "@[<v 2>@{<warning>@{<title>Disclaimer@}@}@,\
-       The  Tezos  network  is  a  new  blockchain technology.@,\
+       The  Mavryk  network  is  a  new  blockchain technology.@,\
        Users are  solely responsible  for any risks associated@,\
-       with usage of the Tezos network.  Users should do their@,\
-       own  research to determine  if Tezos is the appropriate@,\
+       with usage of the Mavryk network.  Users should do their@,\
+       own  research to determine  if Mavryk is the appropriate@,\
        platform for their needs and should apply judgement and@,\
        care in their network interactions.@]@\n\
        @."
@@ -119,7 +119,7 @@ let check_network ~timeout ctxt =
       let has_prefix prefix =
         String.has_prefix ~prefix (network_version.chain_name :> string)
       in
-      if List.exists has_prefix ["TEZOS_BETANET"; "TEZOS_MAINNET"] then (
+      if List.exists has_prefix ["MAVRYK_BETANET"; "MAVRYK_MAINNET"] then (
         mainnet_disclaimer () ;
         Lwt.return_some `Mainnet)
       else (

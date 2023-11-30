@@ -352,8 +352,8 @@ module Config_file = struct
                 `O [("genesis_pubkey", `String Constant.activator.public_key)]
               );
             ] );
-        ("chain_name", `String "TEZOS");
-        ("sandboxed_chain_name", `String "SANDBOXED_TEZOS");
+        ("chain_name", `String "MAVRYK");
+        ("sandboxed_chain_name", `String "SANDBOXED_MAVRYK");
       ]
 
   let ghostnet_sandbox_network_config =
@@ -374,8 +374,8 @@ module Config_file = struct
                 `O [("genesis_pubkey", `String Constant.activator.public_key)]
               );
             ] );
-        ("chain_name", `String "TEZOS");
-        ("sandboxed_chain_name", `String "SANDBOXED_TEZOS");
+        ("chain_name", `String "MAVRYK");
+        ("sandboxed_chain_name", `String "SANDBOXED_MAVRYK");
       ]
 
   let put_user_activated_upgrades upgrade_points =
