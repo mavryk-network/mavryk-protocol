@@ -410,7 +410,7 @@
 opam:bls12-381:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: bls12-381
 
@@ -427,26 +427,12 @@ opam:octez-accuser-PtAtLasL:
   variables:
     package: octez-accuser-PtAtLasL
 
-opam:octez-accuser-Proxford:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-accuser-Proxford
-
-opam:octez-accuser-PtNairob:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-accuser-PtNairob
-
 # Ignoring unreleased package octez-accuser-alpha.
 
 opam:octez-alcotezt:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: octez-alcotezt
 
@@ -456,20 +442,6 @@ opam:octez-baker-PtAtLasL:
     - .rules_template__trigger_exec_opam_batch_1
   variables:
     package: octez-baker-PtAtLasL
-
-opam:octez-baker-Proxford:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-baker-Proxford
-
-opam:octez-baker-PtNairob:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-baker-PtNairob
 
 # Ignoring unreleased package octez-baker-alpha.
 
@@ -522,7 +494,7 @@ opam:octez-distributed-internal:
 opam:octez-distributed-lwt-internal:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: octez-distributed-lwt-internal
 
@@ -535,7 +507,7 @@ opam:octez-distributed-lwt-internal:
 opam:octez-injector:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: octez-injector
 
@@ -544,21 +516,21 @@ opam:octez-injector:
 opam:octez-l2-libs:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_5
   variables:
     package: octez-l2-libs
 
 opam:octez-libs:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: octez-libs
 
 opam:octez-node:
   extends:
     - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
+    - .rules_template__trigger_exec_opam_batch_2
   variables:
     package: octez-node
 
@@ -572,142 +544,16 @@ opam:octez-node-config:
 opam:octez-proto-libs:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_5
   variables:
     package: octez-proto-libs
 
 opam:octez-protocol-000-Ps9mPmXa-libs:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: octez-protocol-000-Ps9mPmXa-libs
-
-opam:octez-protocol-001-PtCJ7pwo-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-001-PtCJ7pwo-libs
-
-opam:octez-protocol-002-PsYLVpVv-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-002-PsYLVpVv-libs
-
-opam:octez-protocol-003-PsddFKi3-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-003-PsddFKi3-libs
-
-opam:octez-protocol-004-Pt24m4xi-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-004-Pt24m4xi-libs
-
-opam:octez-protocol-005-PsBabyM1-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-005-PsBabyM1-libs
-
-opam:octez-protocol-006-PsCARTHA-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-006-PsCARTHA-libs
-
-opam:octez-protocol-007-PsDELPH1-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-007-PsDELPH1-libs
-
-opam:octez-protocol-008-PtEdo2Zk-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-008-PtEdo2Zk-libs
-
-opam:octez-protocol-009-PsFLoren-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-009-PsFLoren-libs
-
-opam:octez-protocol-010-PtGRANAD-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-010-PtGRANAD-libs
-
-opam:octez-protocol-011-PtHangz2-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-011-PtHangz2-libs
-
-opam:octez-protocol-012-Psithaca-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-012-Psithaca-libs
-
-opam:octez-protocol-013-PtJakart-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_3
-  variables:
-    package: octez-protocol-013-PtJakart-libs
-
-opam:octez-protocol-014-PtKathma-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
-  variables:
-    package: octez-protocol-014-PtKathma-libs
-
-opam:octez-protocol-015-PtLimaPt-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
-  variables:
-    package: octez-protocol-015-PtLimaPt-libs
-
-opam:octez-protocol-016-PtMumbai-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
-  variables:
-    package: octez-protocol-016-PtMumbai-libs
-
-opam:octez-protocol-017-PtNairob-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
-  variables:
-    package: octez-protocol-017-PtNairob-libs
-
-opam:octez-protocol-018-Proxford-libs:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
-  variables:
-    package: octez-protocol-018-Proxford-libs
 
 opam:octez-protocol-001-PtAtLasL-libs:
   extends:
@@ -726,14 +572,14 @@ opam:octez-protocol-alpha-libs:
 opam:octez-protocol-compiler:
   extends:
     - .opam_template
-    - .rules_template__trigger_exec_opam_batch_6
+    - .rules_template__trigger_exec_opam_batch_5
   variables:
     package: octez-protocol-compiler
 
 opam:octez-proxy-server:
   extends:
     - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
+    - .rules_template__trigger_exec_opam_batch_2
   variables:
     package: octez-proxy-server
 
@@ -744,14 +590,14 @@ opam:octez-proxy-server:
 opam:octez-rpc-process:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: octez-rpc-process
 
 opam:octez-shell-libs:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_5
     - .tags_template__no_gcp
   variables:
     package: octez-shell-libs
@@ -768,23 +614,9 @@ opam:octez-signer:
 opam:octez-smart-rollup-client-PtAtLasL:
   extends:
     - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-smart-rollup-client-PtAtLasL
-
-opam:octez-smart-rollup-client-Proxford:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_exec_opam_batch_1
-  variables:
-    package: octez-smart-rollup-client-Proxford
-
-opam:octez-smart-rollup-client-PtNairob:
-  extends:
-    - .opam_template
     - .rules_template__trigger_exec_opam_batch_2
   variables:
-    package: octez-smart-rollup-client-PtNairob
+    package: octez-smart-rollup-client-PtAtLasL
 
 # Ignoring unreleased package octez-smart-rollup-client-alpha.
 
@@ -794,20 +626,6 @@ opam:octez-smart-rollup-node:
     - .rules_template__trigger_exec_opam_batch_1
   variables:
     package: octez-smart-rollup-node
-
-opam:octez-smart-rollup-node-Proxford:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
-  variables:
-    package: octez-smart-rollup-node-Proxford
-
-opam:octez-smart-rollup-node-PtNairob:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
-  variables:
-    package: octez-smart-rollup-node-PtNairob
 
 opam:octez-smart-rollup-node-PtAtLasL:
   extends:
@@ -826,7 +644,7 @@ opam:octez-smart-rollup-node-alpha:
 opam:octez-smart-rollup-node-lib:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: octez-smart-rollup-node-lib
 
@@ -860,7 +678,7 @@ opam:octez-smart-rollup-wasm-debugger-plugin:
 opam:octez-version:
   extends:
     - .opam_template
-    - .rules_template__trigger_exec_opam_batch_7
+    - .rules_template__trigger_exec_opam_batch_5
   variables:
     package: octez-version
 
@@ -869,13 +687,11 @@ opam:octez-version:
 opam:tezos-benchmark:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: tezos-benchmark
 
-# Ignoring unreleased package tezos-benchmark-017-PtNairob.
-
-# Ignoring unreleased package tezos-benchmark-018-Proxford.
+# Ignoring unreleased package tezos-benchmark-001-PtAtLasL.
 
 # Ignoring unreleased package tezos-benchmark-alpha.
 
@@ -883,36 +699,32 @@ opam:tezos-benchmark:
 
 # Ignoring unreleased package tezos-benchmark-tests.
 
-# Ignoring unreleased package tezos-benchmark-type-inference-017-PtNairob.
-
-# Ignoring unreleased package tezos-benchmark-type-inference-018-Proxford.
+# Ignoring unreleased package tezos-benchmark-type-inference-001-PtAtLasL.
 
 # Ignoring unreleased package tezos-benchmark-type-inference-alpha.
 
-# Ignoring unreleased package tezos-benchmarks-proto-017-PtNairob.
-
-# Ignoring unreleased package tezos-benchmarks-proto-018-Proxford.
+# Ignoring unreleased package tezos-benchmarks-proto-001-PtAtLasL.
 
 # Ignoring unreleased package tezos-benchmarks-proto-alpha.
 
 opam:tezos-client-demo-counter:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: tezos-client-demo-counter
 
 opam:tezos-client-genesis:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: tezos-client-genesis
 
 opam:tezos-dac-client-lib:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_4
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: tezos-dac-client-lib
 
@@ -928,7 +740,7 @@ opam:tezos-dac-lib:
 opam:tezos-dac-node-lib:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_2
+    - .rules_template__trigger_all_opam_batch_3
   variables:
     package: tezos-dac-node-lib
 
@@ -944,13 +756,11 @@ opam:tezos-dal-node-lib:
 opam:tezos-dal-node-services:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: tezos-dal-node-services
 
-# Ignoring unreleased package tezos-injector-017-PtNairob.
-
-# Ignoring unreleased package tezos-injector-018-Proxford.
+# Ignoring unreleased package tezos-injector-001-PtAtLasL.
 
 # Ignoring unreleased package tezos-injector-alpha.
 
@@ -967,154 +777,19 @@ opam:tezos-protocol-000-Ps9mPmXa:
   variables:
     package: tezos-protocol-000-Ps9mPmXa
 
-opam:tezos-protocol-001-PtCJ7pwo:
+opam:tezos-protocol-001-PtAtLasL:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-protocol-001-PtCJ7pwo
+    package: tezos-protocol-001-PtAtLasL
 
-opam:tezos-protocol-002-PsYLVpVv:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-002-PsYLVpVv
-
-opam:tezos-protocol-003-PsddFKi3:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-003-PsddFKi3
-
-opam:tezos-protocol-004-Pt24m4xi:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-004-Pt24m4xi
-
-opam:tezos-protocol-005-PsBABY5H:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-005-PsBABY5H
-
-opam:tezos-protocol-005-PsBabyM1:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-005-PsBabyM1
-
-opam:tezos-protocol-006-PsCARTHA:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-006-PsCARTHA
-
-opam:tezos-protocol-007-PsDELPH1:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-007-PsDELPH1
-
-opam:tezos-protocol-008-PtEdo2Zk:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-008-PtEdo2Zk
-
-opam:tezos-protocol-008-PtEdoTez:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-008-PtEdoTez
-
-opam:tezos-protocol-009-PsFLoren:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-009-PsFLoren
-
-opam:tezos-protocol-010-PtGRANAD:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-010-PtGRANAD
-
-opam:tezos-protocol-011-PtHangz2:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-011-PtHangz2
-
-opam:tezos-protocol-012-Psithaca:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_5
-  variables:
-    package: tezos-protocol-012-Psithaca
-
-opam:tezos-protocol-013-PtJakart:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-013-PtJakart
-
-opam:tezos-protocol-014-PtKathma:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-014-PtKathma
-
-opam:tezos-protocol-015-PtLimaPt:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-015-PtLimaPt
-
-opam:tezos-protocol-016-PtMumbai:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-016-PtMumbai
-
-opam:tezos-protocol-017-PtNairob:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-017-PtNairob
-
-# Ignoring unreleased package tezos-protocol-017-PtNairob-tests.
-
-opam:tezos-protocol-018-Proxford:
-  extends:
-    - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
-  variables:
-    package: tezos-protocol-018-Proxford
-
-# Ignoring unreleased package tezos-protocol-018-Proxford-tests.
+# Ignoring unreleased package tezos-protocol-001-PtAtLasL-tests.
 
 opam:tezos-protocol-alpha:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_4
   variables:
     package: tezos-protocol-alpha
 
@@ -1123,28 +798,28 @@ opam:tezos-protocol-alpha:
 opam:tezos-protocol-demo-counter:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_5
   variables:
     package: tezos-protocol-demo-counter
 
 opam:tezos-protocol-demo-noops:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_5
   variables:
     package: tezos-protocol-demo-noops
 
 opam:tezos-protocol-genesis:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_6
+    - .rules_template__trigger_all_opam_batch_5
   variables:
     package: tezos-protocol-genesis
 
 opam:tezos-proxy-server-config:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: tezos-proxy-server-config
 
@@ -1167,7 +842,7 @@ opam:tezos-proxy-server-config:
 opam:tezt-tezos:
   extends:
     - .opam_template
-    - .rules_template__trigger_all_opam_batch_7
+    - .rules_template__trigger_all_opam_batch_6
   variables:
     package: tezt-tezos
 

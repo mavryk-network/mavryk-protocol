@@ -12,18 +12,29 @@ depends: [
   "ocaml" { >= "4.14" }
   "octez-libs"
   "octez-shell-libs"
-  "uri" { >= "3.1.0" }
   "octez-protocol-001-PtAtLasL-libs"
+  "tezos-protocol-001-PtAtLasL"
+  "tezos-dal-node-services"
+  "tezos-dal-node-lib"
+  "tezos-dac-lib"
+  "tezos-dac-client-lib"
+  "octez-l2-libs"
+  "octez-crawler"
+  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "irmin-pack" { >= "3.7.2" & < "3.8.0" }
+  "irmin" { >= "3.7.2" & < "3.8.0" }
+  "aches" { >= "1.0.0" }
+  "aches-lwt" { >= "1.0.0" }
+  "octez-injector"
+  "octez-smart-rollup-node-lib"
+  "octez-version"
 ]
-depopts: [
-  "tezos-client-genesis"
-  "tezos-client-demo-counter"
-  "octez-protocol-000-Ps9mPmXa-libs"
-  "octez-protocol-alpha-libs"
+conflicts: [
+  "checkseum" { = "0.5.0" }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `octez-client` binary"
+synopsis: "Protocol specific (for 001-PtAtLasL) library for smart rollup node"

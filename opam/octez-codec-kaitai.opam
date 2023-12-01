@@ -18,6 +18,7 @@ depends: [
   "octez-version"
 ]
 depopts: [
+  "octez-protocol-001-PtAtLasL-libs"
   "octez-protocol-alpha-libs"
 ]
 build: [

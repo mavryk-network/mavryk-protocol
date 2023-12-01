@@ -15,6 +15,7 @@
   data-encoding
   re
   tezos-protocol-genesis.embedded-protocol
+  tezos-protocol-001-PtAtLasL.embedded-protocol
   tezos-protocol-alpha.embedded-protocol)
  (link_flags
   (:standard)

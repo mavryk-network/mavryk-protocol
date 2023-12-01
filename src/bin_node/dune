@@ -45,6 +45,8 @@
    (tezos-protocol-demo-counter.embedded-protocol -> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty)
    (-> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty))
   tezos-protocol-000-Ps9mPmXa.embedded-protocol
+  tezos-protocol-001-PtAtLasL.embedded-protocol
+  octez-protocol-001-PtAtLasL-libs.plugin-registerer
   (select void_for_linking-tezos-protocol-alpha-embedded-protocol from
    (tezos-protocol-alpha.embedded-protocol -> void_for_linking-tezos-protocol-alpha-embedded-protocol.empty)
    (-> void_for_linking-tezos-protocol-alpha-embedded-protocol.empty))

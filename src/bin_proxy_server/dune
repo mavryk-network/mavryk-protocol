@@ -31,6 +31,12 @@
   (select void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client from
    (octez-protocol-000-Ps9mPmXa-libs.client -> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty)
    (-> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty))
+  (select void_for_linking-octez-protocol-001-PtAtLasL-libs-client from
+   (octez-protocol-001-PtAtLasL-libs.client -> void_for_linking-octez-protocol-001-PtAtLasL-libs-client.empty)
+   (-> void_for_linking-octez-protocol-001-PtAtLasL-libs-client.empty))
+  (select void_for_linking-octez-protocol-001-PtAtLasL-libs-plugin from
+   (octez-protocol-001-PtAtLasL-libs.plugin -> void_for_linking-octez-protocol-001-PtAtLasL-libs-plugin.empty)
+   (-> void_for_linking-octez-protocol-001-PtAtLasL-libs-plugin.empty))
   (select void_for_linking-octez-protocol-alpha-libs-client from
    (octez-protocol-alpha-libs.client -> void_for_linking-octez-protocol-alpha-libs-client.empty)
    (-> void_for_linking-octez-protocol-alpha-libs-client.empty))
@@ -54,5 +60,7 @@
    (write-file void_for_linking-tezos-client-genesis.empty "")
    (write-file void_for_linking-tezos-client-demo-counter.empty "")
    (write-file void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty "")
+   (write-file void_for_linking-octez-protocol-001-PtAtLasL-libs-client.empty "")
+   (write-file void_for_linking-octez-protocol-001-PtAtLasL-libs-plugin.empty "")
    (write-file void_for_linking-octez-protocol-alpha-libs-client.empty "")
    (write-file void_for_linking-octez-protocol-alpha-libs-plugin.empty ""))))

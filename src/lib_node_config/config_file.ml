@@ -96,7 +96,7 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 (* it patches the following lines when it needs to set the user activated
    upgrade levels for a sandbox. *)
 (* BEGIN_PATCHING_ZONE_FOR_SANDBOX_USER_ACTIVATED_UPGRADES *)
-let sandbox_user_activated_upgrades = []
+let sandbox_user_activated_upgrades = [ (3l, "PtAtLasLVMXnJGQPjVwVsLse9ncWgqCu32NKRsUM8R5u6RRDn5v") ]
 (* END_PATCHING_ZONE_FOR_SANDBOX_USER_ACTIVATED_UPGRADES *)
 
 (* let blockchain_network_mainnet =
@@ -182,10 +182,25 @@ let blockchain_network_basenet =
           "BLockGenesisGenesisGenesisGenesisGenesis5efd5YURnm5";
       protocol =
         Protocol_hash.of_b58check_exn
-          "PtAtLasLVMXnJGQPjVwVsLse9ncWgqCu32NKRsUM8R5u6RRDn5v";
+          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
+    ~genesis_parameters:
+      {
+        context_key = "sandbox_parameter";
+        values =
+          `O
+            [
+              ( "genesis_pubkey",
+                `String "edpkuYLienS3Xdt5c1vfRX1ibMxQuvfM67ByhJ9nmRYYKGAAoTq1UC"
+              );
+            ];
+      }
     ~chain_name:"MAVRYK_BASENET_2023-11-30T07:01:13Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
+    ~user_activated_upgrades:
+      [
+        (5l, "PtAtLasLVMXnJGQPjVwVsLse9ncWgqCu32NKRsUM8R5u6RRDn5v");
+      ]
     ~default_bootstrap_peers:
       [ "" ]
 

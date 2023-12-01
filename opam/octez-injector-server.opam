@@ -16,6 +16,7 @@ depends: [
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
 ]
 depopts: [
+  "tezos-injector-001-PtAtLasL"
   "tezos-injector-alpha"
 ]
 build: [

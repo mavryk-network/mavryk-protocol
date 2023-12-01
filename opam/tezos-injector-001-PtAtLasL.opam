@@ -10,7 +10,10 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-proto-libs"
+  "octez-libs"
+  "tezos-protocol-001-PtAtLasL"
+  "octez-injector"
+  "octez-protocol-001-PtAtLasL-libs"
   "octez-shell-libs"
 ]
 build: [
@@ -18,4 +21,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos protocol 008-PtEdoTez package"
+synopsis: "Tezos/Protocol: protocol-specific library for the injector binary"

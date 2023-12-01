@@ -2,7 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name src_proto_001_PtAtLasL_lib_protocol_test_integration_michelson_tezt_lib)
+ (name
+  src_proto_001_PtAtLasL_lib_protocol_test_integration_michelson_tezt_lib)
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core

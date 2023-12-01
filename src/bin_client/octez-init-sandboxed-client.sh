@@ -112,7 +112,7 @@ add_liquidity_baking_default_file() {
 
 }
 
-activate_alpha() {
+activate_000_Ps9mPmXa() {
 
     # Calling `date` with 'AAA+1' is a small tweak to speed-up
     # the block baking process. Having a one-hour back timestamp
@@ -120,7 +120,7 @@ activate_alpha() {
     # produce new blocks.
     ${client} \
         -block genesis \
-        activate protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK \
+        activate protocol Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P \
         with fitness 1 \
         and key activator \
         and parameters "${parameters_file}"
@@ -218,8 +218,8 @@ main () {
     cat <<EOF
 if type octez-client-reset >/dev/null 2>&1 ; then octez-client-reset; fi ;
 PATH="$client_dir/bin:\$PATH" ; export PATH ;
-alias octez-activate-alpha="$client  -block genesis activate protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK with fitness 1 and key activator and parameters $parameters_file" ;
-alias octez-client-reset="rm -rf \"$client_dir\"; unalias octez-activate-alpha octez-client-reset" ;
+alias octez-activate-000-Ps9mPmXa="$client  -block genesis activate protocol Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P with fitness 1 and key activator and parameters $parameters_file" ;
+alias octez-client-reset="rm -rf \"$client_dir\"; unalias octez-activate-000-Ps9mPmXa octez-client-reset" ;
 alias octez-autocomplete="if [ \$ZSH_NAME ] ; then autoload bashcompinit ; bashcompinit ; fi ; source \"$bin_dir/bash-completion.sh\"" ;
 trap octez-client-reset EXIT ;
 
@@ -238,7 +238,7 @@ command, is "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im", you
 may have to activate in your "sandboxed network" the same economic
 protocol as used by the alphanet by running:
 
-  octez-activate-alpha
+  octez-activate-000-Ps9mPmXa
 
 Warning: all the client data will be removed when you close this shell
 or if you run this command a second time.

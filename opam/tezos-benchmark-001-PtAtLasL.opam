@@ -10,12 +10,18 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-proto-libs"
-  "octez-shell-libs"
+  "octez-libs"
+  "tezos-micheline-rewriting"
+  "tezos-benchmark"
+  "tezos-benchmark-type-inference-001-PtAtLasL"
+  "tezos-protocol-001-PtAtLasL"
+  "hashcons"
+  "octez-protocol-001-PtAtLasL-libs"
+  "prbnmcn-stats" { = "0.0.6" }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos protocol 008-PtEdo2Zk package"
+synopsis: "Tezos/Protocol: library for writing benchmarks (protocol-specific part)"

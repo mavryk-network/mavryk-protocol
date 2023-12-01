@@ -25,6 +25,7 @@
   irmin-pack
   irmin-pack.unix
   irmin
+  octez-protocol-001-PtAtLasL-libs.dac
   (select void_for_linking-octez-protocol-alpha-libs-dac from
    (octez-protocol-alpha-libs.dac -> void_for_linking-octez-protocol-alpha-libs-dac.empty)
    (-> void_for_linking-octez-protocol-alpha-libs-dac.empty)))
