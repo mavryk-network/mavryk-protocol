@@ -30,7 +30,7 @@ open Apply_results
 open Apply_operation_result
 open Apply_internal_results
 
-let tez_sym = "\xEA\x9C\xA9"
+let tez_sym = "\xE1\xB9\x81"
 
 let pp_micheline_expr ppf expr =
   Format.fprintf ppf "@[<v 0>%a@]" Michelson_v1_printer.print_expr expr

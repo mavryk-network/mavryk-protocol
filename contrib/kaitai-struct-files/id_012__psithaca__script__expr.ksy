@@ -526,7 +526,7 @@ enums:
     146: constant
     147:
       id: sub_mutez
-      doc: SUB_MUTEZ
+      doc: SUB_MUMAV
   micheline__012__psithaca__michelson_v1__expression_tag:
     0: int
     1: string

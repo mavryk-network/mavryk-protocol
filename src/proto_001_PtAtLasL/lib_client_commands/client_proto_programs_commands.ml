@@ -68,7 +68,7 @@ let commands () =
   let amount_arg =
     Client_proto_args.tez_arg
       ~parameter:"amount"
-      ~doc:"amount of the transfer in \xEA\x9C\xA9"
+      ~doc:"amount of the transfer in \xE1\xB9\x81"
       ~default:"0.05"
   in
   let source_arg =
@@ -92,7 +92,7 @@ let commands () =
   let balance_arg =
     Client_proto_args.tez_opt_arg
       ~parameter:"balance"
-      ~doc:"balance of run contract in \xEA\x9C\xA9"
+      ~doc:"balance of run contract in \xE1\xB9\x81"
   in
   let now_arg = Client_proto_args.now_arg in
   let level_arg = Client_proto_args.level_arg in

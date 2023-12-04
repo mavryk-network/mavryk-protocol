@@ -379,7 +379,7 @@ enums:
     146: constant
     147:
       id: sub_mutez
-      doc: SUB_MUTEZ
+      doc: SUB_MUMAV
 seq:
 - id: id_012__psithaca__michelson__v1__primitives
   type: id_012__psithaca__michelson__v1__primitives

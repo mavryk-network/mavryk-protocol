@@ -45,11 +45,11 @@ let () =
     `Permanent
     ~id:"badTezArg"
     ~title:"Bad Tez Arg"
-    ~description:"Invalid \xEA\x9C\xA9 notation in parameter."
+    ~description:"Invalid \xE1\xB9\x81 notation in parameter."
     ~pp:(fun ppf (arg_name, literal) ->
       Format.fprintf
         ppf
-        "Invalid \xEA\x9C\xA9 notation in parameter %s: '%s'"
+        "Invalid \xE1\xB9\x81 notation in parameter %s: '%s'"
         arg_name
         literal)
     Data_encoding.(obj2 (req "parameter" string) (req "literal" string))
@@ -405,14 +405,14 @@ let tez_opt_arg ~parameter ~doc =
 let tez_param ~name ~desc next =
   Tezos_clic.param
     ~name
-    ~desc:(desc ^ " in \xEA\x9C\xA9\n" ^ tez_format)
+    ~desc:(desc ^ " in \xE1\xB9\x81\n" ^ tez_format)
     (tez_parameter name)
     next
 
 let everything_or_tez_param ~name ~desc next =
   Tezos_clic.param
     ~name
-    ~desc:(desc ^ " in \xEA\x9C\xA9 (or everything)\n" ^ tez_format)
+    ~desc:(desc ^ " in \xE1\xB9\x81 (or everything)\n" ^ tez_format)
     (everything_or_tez_parameter name)
     next
 
@@ -458,14 +458,14 @@ let fee_arg =
   Tezos_clic.arg
     ~long:"fee"
     ~placeholder:"amount"
-    ~doc:"fee in \xEA\x9C\xA9 to pay to the baker"
+    ~doc:"fee in \xE1\xB9\x81 to pay to the baker"
     (tez_parameter "--fee")
 
 let default_fee_arg =
   Tezos_clic.arg
     ~long:"default-fee"
     ~placeholder:"amount"
-    ~doc:"default fee in \xEA\x9C\xA9 to pay to the baker for each transaction"
+    ~doc:"default fee in \xE1\xB9\x81 to pay to the baker for each transaction"
     (tez_parameter "--default-fee")
 
 let level_kind =

@@ -120,7 +120,7 @@ let tez_of_string_exn (cctxt : #Client_context.full) index field s =
   | Some t -> return t
   | None ->
       cctxt#error
-        "Invalid \xEA\x9C\xA9 notation at entry %i, field \"%s\": %s"
+        "Invalid \xE1\xB9\x81 notation at entry %i, field \"%s\": %s"
         index
         field
         s
