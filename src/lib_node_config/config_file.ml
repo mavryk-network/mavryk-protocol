@@ -197,10 +197,6 @@ let blockchain_network_basenet =
       }
     ~chain_name:"MAVRYK_BASENET_2023-11-30T07:01:13Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
-    ~user_activated_upgrades:
-      [
-        (5l, "PtAtLasLVMXnJGQPjVwVsLse9ncWgqCu32NKRsUM8R5u6RRDn5v");
-      ]
     ~default_bootstrap_peers:
       [ "" ]
 
