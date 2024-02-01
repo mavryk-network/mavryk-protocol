@@ -180,7 +180,7 @@ module Wallet = struct
         (* That's dal_rich_account cf.
            https://github.com/tacoinfra/teztnets/blob/main/networks/dailynet/values.yaml *)
         Account.alias = giver_alias;
-        public_key_hash = "tz1PEhbjTyVvjQ2Zz8g4bYU2XPTbhvG8JMFh";
+        public_key_hash = "mv1BcAuKnLoHJfoo8TEuqNA3gQKaGJiad6vh";
         public_key = "edpkuwL7MVYArfQN9jyR8pZTqmFGYFWTYhhF4F8KWjr2vB18ozTqbd";
         secret_key =
           Account.Unencrypted

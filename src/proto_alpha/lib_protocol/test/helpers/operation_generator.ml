@@ -148,19 +148,19 @@ let random_keys =
   let+ seed = random_seed in
   Signature.generate_key ~algo ~seed ()
 
-let random_tz1 =
+let random_mv1 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.Ed25519.Public_key_hash.size) in
   (Ed25519 (Signature.Ed25519.Public_key_hash.of_string_exn str)
     : public_key_hash)
 
-let random_tz2 =
+let random_mv2 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.Secp256k1.Public_key_hash.size) in
   (Secp256k1 (Signature.Secp256k1.Public_key_hash.of_string_exn str)
     : public_key_hash)
 
-let random_tz3 =
+let random_mv3 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.P256.Public_key_hash.size) in
   (P256 (Signature.P256.Public_key_hash.of_string_exn str) : public_key_hash)
@@ -174,9 +174,9 @@ let random_pkh =
   let open QCheck2.Gen in
   let* algo = gen_algo in
   match algo with
-  | Ed25519 -> random_tz1
-  | Secp256k1 -> random_tz2
-  | P256 -> random_tz3
+  | Ed25519 -> random_mv1
+  | Secp256k1 -> random_mv2
+  | P256 -> random_mv3
   | Bls -> random_tz4
 
 let random_pk =
@@ -427,7 +427,7 @@ let generate_double_baking =
 let generate_activate_account =
   let open QCheck2.Gen in
   let* activation_code = random_code in
-  let+ id = random_tz1 in
+  let+ id = random_mv1 in
   let id = match id with Signature.Ed25519 pkh -> pkh | _ -> assert false in
   Activate_account {id; activation_code}
 

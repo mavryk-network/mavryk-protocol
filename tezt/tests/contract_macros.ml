@@ -210,7 +210,7 @@ let test_guestbook =
     Client.originate_contract_at
       ~amount:(Tez.of_int 100)
       ~src:Constant.bootstrap1.alias
-      ~init:{|{ Elt "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" None }|}
+      ~init:{|{ Elt "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" None }|}
       ~burn_cap:Tez.one
       client
       ["macros"; "guestbook"]
@@ -224,7 +224,7 @@ let test_guestbook =
   let* storage = Client.contract_storage guestbook client in
   Check.(
     (String.trim storage
-   = {|{ Elt "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" (Some "Coucou") }|})
+   = {|{ Elt "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" (Some "Coucou") }|})
       string
       ~__LOC__
       ~error_msg:"Expected guestbook storage %R, got %L") ;

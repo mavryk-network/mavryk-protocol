@@ -164,32 +164,32 @@ let committee_member_not_in_wallet =
     ~section
     ~name:"committee_member_not_in_wallet"
     ~msg:
-      "There is no account with public key {tz4_account} in the Tezos client \
+      "There is no account with public key {mv4_account} in the Tezos client \
        wallet. This account won't be used for signing DAC root hash pages."
     ~level:Warning
-    ("tz4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let committee_member_cannot_sign =
   declare_1
     ~section
     ~name:"committee_member_cannot_sign"
     ~msg:
-      "There is an account with public key {tz4_account} in the Tezos client \
+      "There is an account with public key {mv4_account} in the Tezos client \
        wallet, but its secret key URI is not available. This account won't be \
        used for signing DAC root hash pages."
     ~level:Warning
-    ("tz4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let commit_member_no_public_key =
   declare_1
     ~section
     ~name:"committee_member_no_public_key"
     ~msg:
-      "There is an account with public key hash {tz4_account} in the Tezos \
+      "There is an account with public key hash {mv4_account} in the Tezos \
        client wallet, but its public key is not available. Signatures from \
        this account cannot be verified and will be ignored."
     ~level:Warning
-    ("tz4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let handle_new_subscription_to_hash_streamer =
   declare_0

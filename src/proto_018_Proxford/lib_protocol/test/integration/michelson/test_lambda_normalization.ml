@@ -112,7 +112,7 @@ let test_lambda_normalization () =
     assert_normalizes_to
       ~loc:__LOC__
       ty
-      {|{PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; FAILWITH}|}
+      {|{PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; FAILWITH}|}
       {|{PUSH address 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78; FAILWITH}|}
   in
   let* () =
@@ -153,7 +153,7 @@ let test_lambda_normalization () =
       ~loc:__LOC__
       ty
       {|{LAMBDA unit never
-           {PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; FAILWITH};
+           {PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; FAILWITH};
          FAILWITH}|}
       {|{LAMBDA unit never
            {PUSH address 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78; FAILWITH};
@@ -165,7 +165,7 @@ let test_lambda_normalization () =
       ~loc:__LOC__
       ty
       {|{PUSH (lambda unit never)
-           {PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; FAILWITH};
+           {PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; FAILWITH};
          FAILWITH}|}
       {|{PUSH (lambda unit never)
            {PUSH address 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78; FAILWITH};
@@ -177,7 +177,7 @@ let test_lambda_normalization () =
       ~loc:__LOC__
       ty
       {|{LAMBDA_REC unit never
-           {PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+           {PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
             FAILWITH};
          FAILWITH}|}
       {|{LAMBDA_REC unit never
@@ -192,7 +192,7 @@ let test_lambda_normalization () =
       ty
       {|{PUSH (lambda unit never)
            (Lambda_rec
-              {PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+              {PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
                FAILWITH});
          FAILWITH}|}
       {|{PUSH (lambda unit never)
@@ -211,7 +211,7 @@ let test_lambda_normalization () =
          CREATE_CONTRACT
            {parameter unit;
             storage unit;
-            code { PUSH address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; FAILWITH}};
+            code { PUSH address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; FAILWITH}};
          DROP;
          FAILWITH}|}
       {|{PUSH mumav 0;

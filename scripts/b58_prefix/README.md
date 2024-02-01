@@ -8,7 +8,7 @@ The one used in Tezos is
 `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz` (other DLT project
 uses different encoding, like Ripple).
 
-In reality, when you have the address `tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E`, it is the Base58CheckEncoding of the bytes
+In reality, when you have the address `mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE`, it is the Base58CheckEncoding of the bytes
 `b"r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K"`.
 
 ```
@@ -18,9 +18,9 @@ open Tezos_error_monad.Error_monad;;
 # From bytes
 let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes (Bytes.of_string "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K");;
 Secp256k1.Public_key_hash.to_b58check pkh;;
-# - : string = "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E"
+# - : string = "mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE"
 # From the encoded address
-let (Ok pkh) = Secp256k1.Public_key_hash.of_b58check "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";;
+let (Ok pkh) = Secp256k1.Public_key_hash.of_b58check "mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE";;
 # - : bytes = Bytes.of_string "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K"
 ```
 
@@ -38,7 +38,7 @@ let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes
 (*                  |                                                            *)
   (Bytes.of_string "a\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K");;
 Secp256k1.Public_key_hash.to_b58check pkh;;
-(* - : string = "tz2HDxspCVakXgHwNfNqngKZxChJsSpJ7wvg" *)
+(* - : string = "mv2MGkta3D2Qjzyu1FFPxySQHxorVv7aLzN8" *)
 ```
 
 Also notice that
@@ -54,9 +54,9 @@ gives an invalid address.
 # Let's change the 4th characters (J) in t.
 open Tezos_crypto;;
 open Tezos_error_monad.Error_monad;;
-#                                                        tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E
+#                                                        mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE
 #                                                           |
-let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "tz2tmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";;
+let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "mv2at3vMScpdZ7gK7NbgAQCQJp6njxdkVNwg";;
 ```
 
 In addition to that, the result of the Base58CheckEncoding algorithm must give a

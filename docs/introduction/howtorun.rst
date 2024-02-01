@@ -133,7 +133,7 @@ cycle, up to 5 cycles in the future.
 
 ::
 
-   octez-client rpc get /chains/main/blocks/head/helpers/baking_rights\?cycle=300\&delegate=tz1_xxxxxxxxxxx\&max_round=2
+   octez-client rpc get /chains/main/blocks/head/helpers/baking_rights\?cycle=300\&delegate=mv1_xxxxxxxxxxx\&max_round=2
 
 Sometimes there is no consensus at a round, so it is worth considering also
 baking rights at higher rounds, like 2 in the example above.

@@ -105,46 +105,46 @@ mod test {
     use super::*;
 
     #[test]
-    fn tz1_b58check() {
+    fn mv1_b58check() {
         let mv1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
 
         let pkh = PublicKey::from_b58check(mv1);
 
         assert!(matches!(pkh, Ok(PublicKey::Ed25519(_))));
 
-        let tz1_from_pkh = pkh.unwrap().to_b58check();
+        let mv1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv1, &tz1_from_pkh);
+        assert_eq!(mv1, &mv1_from_pkh);
     }
 
     #[test]
-    fn tz2_b58check() {
+    fn mv2_b58check() {
         let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
 
         let public_key = PublicKey::from_b58check(mv2);
 
         assert!(matches!(public_key, Ok(PublicKey::Secp256k1(_))));
 
-        let tz2_from_pk = public_key.unwrap().to_b58check();
+        let mv2_from_pk = public_key.unwrap().to_b58check();
 
-        assert_eq!(mv2, &tz2_from_pk);
+        assert_eq!(mv2, &mv2_from_pk);
     }
 
     #[test]
-    fn tz3_b58check() {
+    fn mv3_b58check() {
         let mv3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
 
         let public_key = PublicKey::from_b58check(mv3);
 
         assert!(matches!(public_key, Ok(PublicKey::P256(_))));
 
-        let tz3_from_pk = public_key.unwrap().to_b58check();
+        let mv3_from_pk = public_key.unwrap().to_b58check();
 
-        assert_eq!(mv3, &tz3_from_pk);
+        assert_eq!(mv3, &mv3_from_pk);
     }
 
     #[test]
-    fn tz1_encoding() {
+    fn mv1_encoding() {
         let mv1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
 
         let public_key = PublicKey::from_b58check(mv1).expect("expected valid mv1 hash");
@@ -164,7 +164,7 @@ mod test {
     }
 
     #[test]
-    fn tz2_encoding() {
+    fn mv2_encoding() {
         let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
 
         let public_key = PublicKey::from_b58check(mv2).expect("expected valid mv2 hash");
@@ -184,7 +184,7 @@ mod test {
     }
 
     #[test]
-    fn tz3_encoding() {
+    fn mv3_encoding() {
         let mv3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
 
         let public_key = PublicKey::from_b58check(mv3).expect("expected valid mv3 hash");
@@ -204,7 +204,7 @@ mod test {
     }
 
     #[test]
-    fn tz1_signature_signature_verification_succeeds() {
+    fn mv1_signature_signature_verification_succeeds() {
         let mv1 = PublicKey::from_b58check(
             "edpkvWR5truf7AMF3PZVCXx7ieQLCW4MpNDzM3VwPfmFWVbBZwswBw",
         )
@@ -224,7 +224,7 @@ mod test {
     }
 
     #[test]
-    fn tz1_signature_signature_verification_fails() {
+    fn mv1_signature_signature_verification_fails() {
         let mv1 = PublicKey::from_b58check(
             "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK",
         )
@@ -242,7 +242,7 @@ mod test {
     }
 
     #[test]
-    fn tz2_signature_signature_verification_succeeds() {
+    fn mv2_signature_signature_verification_succeeds() {
         let mv2 = PublicKey::from_b58check(
             "sppk7cwkTzCPptCSxSTvGNg4uqVcuTbyWooLnJp4yxJNH5DReUGxYvs",
         )
@@ -258,7 +258,7 @@ mod test {
     }
 
     #[test]
-    fn tz2_signature_signature_verification_fails() {
+    fn mv2_signature_signature_verification_fails() {
         let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
         let mv2 = PublicKey::from_b58check(mv2).expect("parsing should world");
         let sig = Signature::from_base58_check("sigrJ2jqanLupARzKGvzWgL1Lv6NGUqDovHKQg9MX4PtNtHXgcvG6131MRVzujJEXfvgbuRtfdGbXTFaYJJjuUVLNNZTf5q1").expect("signature decoding should work");
@@ -272,7 +272,7 @@ mod test {
     }
 
     #[test]
-    fn tz3_signature_signature_verification_succeeds() {
+    fn mv3_signature_signature_verification_succeeds() {
         let mv3 = PublicKey::from_b58check(
             "p2pk67Cwb5Ke6oSmqeUbJxURXMe3coVnH9tqPiB2xD84CYhHbBKs4oM",
         )
@@ -290,7 +290,7 @@ mod test {
     }
 
     #[test]
-    fn tz3_signature_signature_verification_fails() {
+    fn mv3_signature_signature_verification_fails() {
         let mv3 = PublicKey::from_b58check(
             "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z",
         )

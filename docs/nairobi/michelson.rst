@@ -3334,11 +3334,11 @@ test; for example these two tests pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -3349,7 +3349,7 @@ readable format so the following test does not pass:
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt _ 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -3359,7 +3359,7 @@ but the following test does pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt _ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt _ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 .. _syntax_of_errors:
 .. _syntax_of_errors_nairobi:
@@ -3464,13 +3464,13 @@ should be replaced by :ref:`a wildcard pattern
 
 Here is an example unit test for the ``SET_DELEGATE`` instruction used
 to set the delegate of the current contract to the account at address
-``tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z``:
+``mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ``:
 
 ::
 
-  input { Stack_elt (option key_hash) (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") } ;
+  input { Stack_elt (option key_hash) (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") } ;
   code SET_DELEGATE ;
-  output { Stack_elt operation (Set_delegate (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") _) }
+  output { Stack_elt operation (Set_delegate (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") _) }
 
 .. _syntax_of_other_contracts:
 .. _syntax_of_other_contracts_nairobi:

@@ -208,7 +208,7 @@ let test_drain_empty_delegate ~exclude_ck () =
         "Drain delegate without enough balance for allocation burn or drain \
          fees")
 
-let test_tz4_consensus_key () =
+let test_mv4_consensus_key () =
   let open Lwt_result_syntax in
   let* genesis, contracts = Context.init_with_constants1 constants in
   let account1_pkh = Context.Contract.pkh contracts in
@@ -222,13 +222,13 @@ let test_tz4_consensus_key () =
   let* operation =
     Op.update_consensus_key (B blk') (Contract.Implicit delegate) consensus_pk
   in
-  let tz4_pk = match consensus_pk with Bls pk -> pk | _ -> assert false in
+  let mv4_pk = match consensus_pk with Bls pk -> pk | _ -> assert false in
   let expect_failure = function
     | [
         Environment.Ecoproto_error
           (Delegate_consensus_key.Invalid_consensus_key_update_tz4 pk);
       ]
-      when Signature.Bls.Public_key.(pk = tz4_pk) ->
+      when Signature.Bls.Public_key.(pk = mv4_pk) ->
         return_unit
     | err ->
         failwith
@@ -336,7 +336,7 @@ let tests =
         "empty drain delegate with ck"
         `Quick
         (test_drain_empty_delegate ~exclude_ck:false);
-      tztest "mv4 consensus key" `Quick test_tz4_consensus_key;
+      tztest "mv4 consensus key" `Quick test_mv4_consensus_key;
       tztest "attestation with ck" `Quick test_attestation_with_consensus_key;
     ]
 

@@ -148,13 +148,13 @@ module Tx_kernel = struct
           ^ entrypoint_bytes
       | Transfer {destination; ticket} ->
           let transfer_prefix = "\001" in
-          let tz4address =
+          let mv4address =
             Data_encoding.(
               Binary.to_string_exn
                 Tezos_crypto.Signature.Bls.Public_key_hash.encoding
                 destination)
           in
-          transfer_prefix ^ tz4address ^ ticket_repr ticket
+          transfer_prefix ^ mv4address ^ ticket_repr ticket
 
     let account_operations_repr {signer; counter; operations} : string =
       let signer_bytes =
@@ -164,7 +164,7 @@ module Tx_kernel = struct
               Bls.Secret_key.to_public_key signer
               |> Binary.to_string_exn Bls.Public_key.encoding)
         else
-          "\001" (* tz4address signer tag *)
+          "\001" (* mv4address signer tag *)
           ^ Data_encoding.(
               Bls.Secret_key.to_public_key signer
               |> Bls.Public_key.hash

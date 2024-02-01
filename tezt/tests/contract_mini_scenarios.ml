@@ -145,7 +145,7 @@ let test_default_account client ~protocol =
         ~arg
         client
     in
-    let account = "tz1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5" in
+    let account = "mv1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5" in
     let arg = sf "\"%s\"" account in
     let* () =
       Client.transfer

@@ -75,7 +75,7 @@ let experimental_executables = "./script-inputs/experimental-executables"
 let activator : Account.key =
   {
     alias = "activator";
-    public_key_hash = "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+    public_key_hash = "mv1FeNQ3gSZoEFp1mr6VTLnMqV5tuNwHTgw5";
     public_key = "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2";
     secret_key =
       Unencrypted "edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6";
@@ -114,23 +114,23 @@ let sc_rollup_compressed_state =
 
 (** A valid base58 encoded layer-2 account to be used to test transaction and
     smart contract rollups. *)
-let aggregate_tz4_account : Account.aggregate_key =
+let aggregate_mv4_account : Account.aggregate_key =
   {
     aggregate_alias = "bls_test_account";
-    aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+    aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
     aggregate_public_key =
       "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
     aggregate_secret_key =
       Unencrypted "BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq";
   }
 
-(** The same as {!aggregate_tz4_account} but for use on layer 1. *)
-let tz4_account : Account.key =
+(** The same as {!aggregate_mv4_account} but for use on layer 1. *)
+let mv4_account : Account.key =
   {
-    alias = aggregate_tz4_account.aggregate_alias;
-    public_key_hash = aggregate_tz4_account.aggregate_public_key_hash;
-    public_key = aggregate_tz4_account.aggregate_public_key;
-    secret_key = aggregate_tz4_account.aggregate_secret_key;
+    alias = aggregate_mv4_account.aggregate_alias;
+    public_key_hash = aggregate_mv4_account.aggregate_public_key_hash;
+    public_key = aggregate_mv4_account.aggregate_public_key;
+    secret_key = aggregate_mv4_account.aggregate_secret_key;
   }
 
 (** The `echo` kernel that is listed in the “Smart Optimistic Rollups”

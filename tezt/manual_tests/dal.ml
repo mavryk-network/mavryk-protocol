@@ -267,7 +267,7 @@ let scenario_on_teztnet =
         l1_node
     in
     (* Prepare airdropper account. Secret key of
-       tz1PEhbjTyVvjQ2Zz8g4bYU2XPTbhvG8JMFh, a funded key on periodic testnets. *)
+       mv1BcAuKnLoHJfoo8TEuqNA3gQKaGJiad6vh, a funded key on periodic testnets. *)
     let airdropper_sk =
       "edsk3AWajGUgzzGi3UrQiNWeRZR1YMRYVxfe642AFSKBTFXaoJp5hu"
     in

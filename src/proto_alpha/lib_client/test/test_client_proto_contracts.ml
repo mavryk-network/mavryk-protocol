@@ -68,7 +68,7 @@ class mock_wallet (entities : string) : Tezos_client_base.Client_context.wallet
 *)
 let test_find_destination _ =
   let open Lwt_result_syntax in
-  let bootstrap1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
+  let bootstrap1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
   let wallet_json =
     Format.asprintf {| [{"name": "test_alias", "value": "%s" }] |} bootstrap1
   in

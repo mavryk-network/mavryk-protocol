@@ -168,7 +168,7 @@ module Helpers = struct
       Log.info "unshield" ;
       return balance_diff
 
-  let balance_tz1 (client, _contract) pkh =
+  let balance_mv1 (client, _contract) pkh =
     let* balance_tez =
       Client.RPC.call client
       @@ RPC.get_chain_block_context_contract_balance ~id:pkh ()
@@ -185,13 +185,13 @@ module Insufficient_funds = struct
     @@ fun protocol ->
     let open Helpers in
     let* c = init protocol (sapling_contract_path protocol) in
-    let alice_tz1 = Constant.bootstrap2 in
+    let alice_mv1 = Constant.bootstrap2 in
     let* alice_address = gen_user c "alice" in
     let* _ =
       shield
         ~expect_failure:true
         c
-        alice_tz1
+        alice_mv1
         alice_address
         (Tez.of_int 1_000_000_000)
     in
@@ -205,10 +205,10 @@ module Insufficient_funds = struct
     @@ fun protocol ->
     let open Helpers in
     let* c = init protocol (sapling_contract_path protocol) in
-    let alice_tz1 = Constant.bootstrap2 in
+    let alice_mv1 = Constant.bootstrap2 in
     let* alice_address = gen_user c "alice" in
     let* bob_address = gen_user c "bob" in
-    let* _ = shield c alice_tz1 alice_address (Tez.of_int 10) in
+    let* _ = shield c alice_mv1 alice_address (Tez.of_int 10) in
     let* () =
       transfer ~expect_failure:true c "alice" bob_address (Tez.of_int 11)
     in
@@ -222,12 +222,12 @@ module Insufficient_funds = struct
     @@ fun protocol ->
     let open Helpers in
     let* c = init protocol (sapling_contract_path protocol) in
-    let alice_tz1 = Constant.bootstrap2 in
+    let alice_mv1 = Constant.bootstrap2 in
     let* alice_address = gen_user c "alice" in
     let* bob_address = gen_user c "bob" in
-    let* _ = shield c alice_tz1 alice_address (Tez.of_int 10) in
+    let* _ = shield c alice_mv1 alice_address (Tez.of_int 10) in
     let* () = transfer c "alice" bob_address (Tez.of_int 10) in
-    let* _ = unshield ~expect_failure:true c "bob" alice_tz1 (Tez.of_int 11) in
+    let* _ = unshield ~expect_failure:true c "bob" alice_mv1 (Tez.of_int 11) in
     unit
 end
 
@@ -1064,24 +1064,24 @@ let successful_roundtrip =
   @@ fun protocol ->
   let open Helpers in
   let* c = init protocol (sapling_contract_path protocol) in
-  let alice_tz1 = Constant.bootstrap2 in
+  let alice_mv1 = Constant.bootstrap2 in
   let* alice_address = gen_user c "alice" in
   let* bob_address = gen_user c "bob" in
   let* () = check_balance ~__LOC__ c "alice" Tez.zero in
   let* () = check_balance ~__LOC__ c "bob" Tez.zero in
   let shield_amount = Tez.of_int 10 in
-  let* balance_alice_tz1_before = balance_tz1 c alice_tz1.public_key_hash in
-  let* amount, fees = shield c alice_tz1 alice_address shield_amount in
-  let* balance_alice_tz1_after = balance_tz1 c alice_tz1.public_key_hash in
+  let* balance_alice_mv1_before = balance_mv1 c alice_mv1.public_key_hash in
+  let* amount, fees = shield c alice_mv1 alice_address shield_amount in
+  let* balance_alice_mv1_after = balance_mv1 c alice_mv1.public_key_hash in
   Check.(
     (amount = shield_amount) Tez.typ ~__LOC__ ~error_msg:"Expected %R, got %L") ;
   Check.(
-    (balance_alice_tz1_after
-    = Tez.(balance_alice_tz1_before - shield_amount - fees))
+    (balance_alice_mv1_after
+    = Tez.(balance_alice_mv1_before - shield_amount - fees))
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;
-  let* balance_contract = balance_tz1 c (snd c) in
+  let* balance_contract = balance_mv1 c (snd c) in
   Check.(
     (balance_contract = shield_amount)
       Tez.typ
@@ -1090,7 +1090,7 @@ let successful_roundtrip =
   let* () = check_balance ~__LOC__ c "alice" shield_amount in
   let* () = check_balance ~__LOC__ c "bob" Tez.zero in
   let* () = transfer c "alice" bob_address shield_amount in
-  let* balance_contract = balance_tz1 c (snd c) in
+  let* balance_contract = balance_mv1 c (snd c) in
   Check.(
     (balance_contract = shield_amount)
       Tez.typ
@@ -1098,21 +1098,21 @@ let successful_roundtrip =
       ~error_msg:"Expected %R, got %L") ;
   let* () = check_balance ~__LOC__ c "alice" Tez.zero in
   let* () = check_balance ~__LOC__ c "bob" shield_amount in
-  let* balance_alice_tz1_before = balance_tz1 c alice_tz1.public_key_hash in
-  let* amount, fees = unshield c "bob" alice_tz1 shield_amount in
-  let* balance_alice_tz1_after = balance_tz1 c alice_tz1.public_key_hash in
+  let* balance_alice_mv1_before = balance_mv1 c alice_mv1.public_key_hash in
+  let* amount, fees = unshield c "bob" alice_mv1 shield_amount in
+  let* balance_alice_mv1_after = balance_mv1 c alice_mv1.public_key_hash in
   Check.(
     (amount = Tez.(to_mumav shield_amount * -1 |> Tez.of_mumav_int))
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;
   Check.(
-    (balance_alice_tz1_after
-    = Tez.(balance_alice_tz1_before + shield_amount - fees))
+    (balance_alice_mv1_after
+    = Tez.(balance_alice_mv1_before + shield_amount - fees))
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;
-  let* balance_contract = balance_tz1 c (snd c) in
+  let* balance_contract = balance_mv1 c (snd c) in
   Check.(
     (balance_contract = Tez.zero)
       Tez.typ

@@ -341,7 +341,7 @@ mod test {
         let mut mock_runtime = MockHost::default();
 
         let destination =
-            ContractTz1Hash::from_b58check("tz4MSfZsn6kMDczShy8PMeB628TNukn9hi2K").unwrap();
+            ContractTz1Hash::from_b58check("mv4SruamFhFY8SNhX4ZTepU3ZP1ceWMzFnZj").unwrap();
 
         let ticket_creator =
             Contract::from_b58check("KT1JW6PwhfaEJu6U3ENsxUeja48AdtqSoekd").unwrap();
@@ -359,7 +359,7 @@ mod test {
 
         let transfer_metadata = TransferMetadata::new(
             "KT1VsSxSXUkgw6zkBGgUuDXXuJs9ToPqkrCg",
-            "tz3SvEa4tSowHC5iQ8Aw6DVKAAGqBPdyK1MH",
+            "mv3JXpB1kHFh2MyaRurW6xdD5Tb8sezWKPAw",
         );
 
         mock_runtime.add_transfer(transfer, &transfer_metadata);

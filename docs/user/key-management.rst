@@ -173,10 +173,10 @@ of the signer.
 
    home~$ octez-signer gen keys alice
    home~$ cat ~/.octez-signer/public_key_hashs
-   [ { "name": "alice", "value": "tz1abc..." } ]
+   [ { "name": "alice", "value": "mv1abc..." } ]
    home~$ octez-signer launch socket signer -a home
 
-   vps~$ octez-client import secret key alice tcp://home:7732/tz1abc...
+   vps~$ octez-client import secret key alice tcp://home:7732/mv1abc...
    vps~$ octez-client sign bytes 0x03 for alice
 
 Every time the client on *vps* needs to sign an operation for
@@ -187,29 +187,29 @@ However, with the above method, the address of the signer is hard-coded into the
 Consequently, if we ever have to move the signer to another machine or access it using another protocol, we will have to change all the remote keys.
 A more flexible method is to only register a key as being remote, and separately supply the address of the signer using the ``-R`` option::
 
-   vps~$ octez-client -R 'tcp://home:7732' import secret key alice remote:tz1abc...
+   vps~$ octez-client -R 'tcp://home:7732' import secret key alice remote:mv1abc...
    vps~$ octez-client -R 'tcp://home:7732' sign bytes 0x03 for alice
 
 Alternatively, the address of the signer can be recorded in environment variables::
 
    vps~$ export TEZOS_SIGNER_TCP_HOST=home
    vps~$ export TEZOS_SIGNER_TCP_PORT=7732
-   vps~$ octez-client import secret key alice remote:tz1abc...
+   vps~$ octez-client import secret key alice remote:mv1abc...
    vps~$ octez-client sign bytes 0x03 for alice
 
 All the above methods can also be used with the other signing schemes, for instance, ``http``::
 
    home~$ octez-signer launch http signer -a home
 
-   vps~$ octez-client import secret key alice http://home:7732/tz1abc...
+   vps~$ octez-client import secret key alice http://home:7732/mv1abc...
    vps~$ octez-client sign bytes 0x03 for alice
 
-   vps~$ octez-client -R 'http://home:7732' import secret key alice remote:tz1abc...
+   vps~$ octez-client -R 'http://home:7732' import secret key alice remote:mv1abc...
    vps~$ octez-client -R 'http://home:7732' sign bytes 0x03 for alice
 
    vps~$ export TEZOS_SIGNER_HTTP_HOST=home
    vps~$ export TEZOS_SIGNER_HTTP_PORT=7732
-   vps~$ octez-client import secret key alice remote:tz1abc...
+   vps~$ octez-client import secret key alice remote:mv1abc...
    vps~$ octez-client sign bytes 0x03 for alice
 
 The complete list of environment variables for connecting to the remote signer is:

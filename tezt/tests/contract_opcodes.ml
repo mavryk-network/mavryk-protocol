@@ -503,11 +503,11 @@ let test_protocol_independent =
       ( "hash_key",
         "None",
         {|"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav"|},
-        {|(Some "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx")|} );
+        {|(Some "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe")|} );
       ( "hash_key",
         "None",
         {|"edpkuJqtDcA2m2muMxViSM47MPsGQzmyjnNTawUPqR8vZTAMcx61ES"|},
-        {|(Some "tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k")|} );
+        {|(Some "mv1KkvXNEpMH4Vri47MY1YenGhb6ZA4ew1F2")|} );
       (* Test timestamp operations *)
       ( "add_timestamp_delta",
         "None",
@@ -555,15 +555,15 @@ let test_protocol_independent =
       (* Test pack/unpack *)
       ( "packunpack_rev",
         "Unit",
-        {|(Pair -1 (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" (Pair "2019-09-09T08:35:33Z" "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"))))))))|},
+        {|(Pair -1 (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))|},
         "Unit" );
       ( "packunpack_rev",
         "Unit",
-        {|(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" (Pair "2019-09-09T08:35:33Z" "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"))))))))|},
+        {|(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))|},
         "Unit" );
       ( "packunpack_rev_cty",
         "Unit",
-        {|(Pair "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav" (Pair Unit (Pair "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7" (Pair (Some "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7") (Pair { Unit }  (Pair { True }  (Pair (Pair 19 10) (Pair (Left "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5") (Pair { Elt 0 "foo" ; Elt 1 "bar" }  { PACK } )))))))))|},
+        {|(Pair "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav" (Pair Unit (Pair "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7" (Pair (Some "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7") (Pair { Unit }  (Pair { True }  (Pair (Pair 19 10) (Pair (Left "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx") (Pair { Elt 0 "foo" ; Elt 1 "bar" }  { PACK } )))))))))|},
         "Unit" );
       ( "packunpack_rev_cty",
         "Unit",
@@ -624,10 +624,10 @@ let test_protocol_independent =
       (* Test ADDRESS *)
       ( "address",
         "None",
-        {|"tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"|},
-        {|(Some "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5")|} );
+        {|"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"|},
+        {|(Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx")|} );
       (* Test (CONTRACT unit) *)
-      ("contract", "Unit", {|"tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"|}, "Unit");
+      ("contract", "Unit", {|"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"|}, "Unit");
       (* Test create_contract *)
       ( "create_contract",
         "None",

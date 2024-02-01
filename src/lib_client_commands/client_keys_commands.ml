@@ -131,13 +131,13 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
             in
             let matches =
               if prefix then
-                let containing_tz1 = List.map (( ^ ) "mv1") containing in
+                let containing_mv1 = List.map (( ^ ) "mv1") containing in
                 fun key ->
                   List.exists
                     (fun containing ->
                       String.sub (adjust_case key) 0 (String.length containing)
                       = containing)
-                    containing_tz1
+                    containing_mv1
               else
                 let re = Re.Str.regexp (String.concat "\\|" containing) in
                 fun key ->

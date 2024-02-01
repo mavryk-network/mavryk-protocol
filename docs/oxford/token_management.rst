@@ -144,13 +144,13 @@ Origination and transaction
 
 When an origination or transaction operation is applied, tokens are transferred from one contract to another.
 Depending on whether or not storage space has been allocated on the chain by the application of the operation, storage fees may also be burned.
-For example, a transaction of ``100`` mumav from address ``tz1a...`` to address ``KT1b...`` that allocates storage space for a cost of ``10`` mumav produces the following list of balance updates:
+For example, a transaction of ``100`` mumav from address ``mv1a...`` to address ``KT1b...`` that allocates storage space for a cost of ``10`` mumav produces the following list of balance updates:
 
 ::
 
-   [ {"kind": "contract", "contract": "tz1a...", "change": "-100", "origin": "block"},
+   [ {"kind": "contract", "contract": "mv1a...", "change": "-100", "origin": "block"},
     {"kind": "contract", "contract": "KT1b...", "change": "100", "origin": "block"}
-    {"kind": "contract", "contract": "tz1a...", "change": "-10", "origin": "block"}
+    {"kind": "contract", "contract": "mv1a...", "change": "-10", "origin": "block"}
     {"kind": "burned", "category": "storage fees", "change": "10", "origin": "block"} ]
 
 Baking fees, rewards and bonuses
@@ -161,7 +161,7 @@ For example, when a manager operation is applied, the account of the payer contr
 
 ::
 
-  [ {"kind": "contract", "contract": "tz1x...", "change": "-100", ...},
+  [ {"kind": "contract", "contract": "mv1x...", "change": "-100", ...},
     {"kind": "accumulator", "category": "block fees", "change": "100", ...} ]
 
 When all operations of a block have been applied baking fees rewards and bonuses are distributed.
@@ -174,11 +174,11 @@ the following balance updates are generated:
 ::
 
   [ {"kind": "accumulator", "category": "block fees", "change": "-1000", ...},
-    {"kind": "contract", "contract": "tz1a...", "change": "1000", ...}
+    {"kind": "contract", "contract": "mv1a...", "change": "1000", ...}
     {"kind": "minted", "category": "baking rewards", "change": "-50", ...},
-    {"kind": "freezer", "category": "deposits", "staker": { "delegate": "tz1a..."}, "change": "50", ...},
+    {"kind": "freezer", "category": "deposits", "staker": { "delegate": "mv1a..."}, "change": "50", ...},
     {"kind": "minted", "category": "baking rewards", "change": "-450", ...},
-    {"kind": "contract", "contract": "tz1a...", "change": "450", ...} ]
+    {"kind": "contract", "contract": "mv1a...", "change": "450", ...} ]
 
 The baking bonus go to the block proposer that signed and injected the block.
 Hence the amount of the bonus is transferred from the source account ``"baking
@@ -189,7 +189,7 @@ baking bonus with 100% sent to spendable balance (``edge_of_baking_over_staking`
 ::
 
   [ {"kind": "minted", "category": "baking bonus", "change": "-100", ...},
-    {"kind": "contract", "contract": "tz1b...", "change": "100", ...} ]
+    {"kind": "contract", "contract": "mv1b...", "change": "100", ...} ]
 
 Attesting, double signing evidence, and nonce revelation rewards
 ----------------------------------------------------------------

@@ -116,7 +116,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn tz1_b58check() {
+    fn mv1_b58check() {
         let mv1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
 
         let pkh = Contract::from_b58check(mv1);
@@ -126,14 +126,14 @@ mod test {
             Ok(Contract::Implicit(PublicKeyHash::Ed25519(_)))
         ));
 
-        let tz1_from_pkh = pkh.unwrap().to_b58check();
+        let mv1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv1, &tz1_from_pkh);
+        assert_eq!(mv1, &mv1_from_pkh);
     }
 
     #[test]
-    fn tz2_b58check() {
-        let mv2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
+    fn mv2_b58check() {
+        let mv2 = "mv2RKxcrsHm8FsDSZdu8aYrNxgBewfvQudq1";
 
         let pkh = Contract::from_b58check(mv2);
 
@@ -142,14 +142,14 @@ mod test {
             Ok(Contract::Implicit(PublicKeyHash::Secp256k1(_)))
         ));
 
-        let tz2_from_pkh = pkh.unwrap().to_b58check();
+        let mv2_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv2, &tz2_from_pkh);
+        assert_eq!(mv2, &mv2_from_pkh);
     }
 
     #[test]
-    fn tz3_b58check() {
-        let mv3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
+    fn mv3_b58check() {
+        let mv3 = "mv3JVYv3uSuDmxcsfj1fqkusda7qgpcHc1AH";
 
         let pkh = Contract::from_b58check(mv3);
 
@@ -158,9 +158,9 @@ mod test {
             Ok(Contract::Implicit(PublicKeyHash::P256(_)))
         ));
 
-        let tz3_from_pkh = pkh.unwrap().to_b58check();
+        let mv3_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv3, &tz3_from_pkh);
+        assert_eq!(mv3, &mv3_from_pkh);
     }
 
     #[test]
@@ -177,7 +177,7 @@ mod test {
     }
 
     #[test]
-    fn tz1_encoding() {
+    fn mv1_encoding() {
         let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
 
         let contract = Contract::from_b58check(mv1).expect("expected valid mv1 hash");
@@ -197,8 +197,8 @@ mod test {
     }
 
     #[test]
-    fn tz2_encoding() {
-        let mv2 = "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";
+    fn mv2_encoding() {
+        let mv2 = "mv2RH63Aybkv7Gfr87tkZDJRGhvsH3jCmfHP";
 
         let contract = Contract::from_b58check(mv2).expect("expected valid mv2 hash");
 
@@ -217,8 +217,8 @@ mod test {
     }
 
     #[test]
-    fn tz3_encoding() {
-        let mv3 = "tz3gKfNk1UgCKXd21gBVba5Z9kqY8m6J2g1n";
+    fn mv3_encoding() {
+        let mv3 = "mv3VXV2rMKcSadCBKhp2kAqwfxQXEvFZvg5Z";
 
         let contract = Contract::from_b58check(mv3).expect("expected valid mv3 hash");
 

@@ -87,17 +87,17 @@ let signer_bls_test =
     ~uses:(fun _ -> [Constant.octez_signer])
   @@ fun protocol ->
   let* _node, client = Client.init_with_protocol `Client ~protocol () in
-  let* signer = Signer.init ~keys:[Constant.tz4_account] () in
+  let* signer = Signer.init ~keys:[Constant.mv4_account] () in
   let* () =
     let uri = Signer.uri signer in
-    let Account.{alias; public_key_hash; _} = Constant.tz4_account in
+    let Account.{alias; public_key_hash; _} = Constant.mv4_account in
     Client.import_signer_key client ~alias ~public_key_hash uri
   in
   let* () =
     Client.transfer
       ~amount:(Tez.of_int 10)
       ~giver:Constant.bootstrap1.public_key_hash
-      ~receiver:Constant.tz4_account.public_key_hash
+      ~receiver:Constant.mv4_account.public_key_hash
       ~burn_cap:(Tez.of_int 1)
       client
   in
@@ -105,14 +105,14 @@ let signer_bls_test =
   let get_balance_tz4 client =
     Client.RPC.call client
     @@ RPC.get_chain_block_context_contract_balance
-         ~id:Constant.tz4_account.public_key_hash
+         ~id:Constant.mv4_account.public_key_hash
          ()
   in
   let* balance_0 = get_balance_tz4 client in
   let* () =
     Client.transfer
       ~amount:(Tez.of_int 5)
-      ~giver:Constant.tz4_account.public_key_hash
+      ~giver:Constant.mv4_account.public_key_hash
       ~receiver:Constant.bootstrap1.public_key_hash
       client
   in

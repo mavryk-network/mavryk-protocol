@@ -29,7 +29,7 @@
 
 type error +=
   | (* `Permanent *)
-      Forbidden_tz4_delegate of Bls.Public_key_hash.t
+      Forbidden_mv4_delegate of Bls.Public_key_hash.t
         (** Delegates cannot be mv4 accounts (i.e. BLS public key hashes). This
             error is returned when we try to register such a delegate.  *)
 

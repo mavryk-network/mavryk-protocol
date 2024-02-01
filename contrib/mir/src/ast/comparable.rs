@@ -122,25 +122,25 @@ mod tests {
     fn compare_addrs() {
         // ordering was verified against octez-client, see script below
         let ordered_addrs = [
-            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
-            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
-            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
-            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
-            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo",
+            "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq",
+            "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9",
+            "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ",
+            "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo",
+            "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo",
@@ -197,25 +197,25 @@ Script to verify address ordering. Should print "with -1" for all checked addres
 #!/bin/bash
 
 addrs=(
-  "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw"
-  "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ"
-  "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy"
-  "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo"
-  "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo"
+  "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq"
+  "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9"
+  "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ"
+  "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo"
+  "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo"

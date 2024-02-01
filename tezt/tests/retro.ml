@@ -105,7 +105,7 @@ let smart_contract_call =
                    {|
                    [{ "prim": "Pair",
                       "args": [{"int": "9999"},
-                               {"string":"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"}]},
+                               {"string":"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"}]},
                     { "prim": "Pair",
                       "args": [{"string": "false"},
                               {"bytes":"deadbeef"}]}

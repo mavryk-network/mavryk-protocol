@@ -384,11 +384,11 @@ produced, here's an excerpt::
       Transaction:
         Amount: ṁ1
         From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
-        To: tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph
+        To: mv1MbxANFAMxSHb5K1q9ZA9mynzYrZfJ7mHt
         ...
         Balance updates:
           mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ1
-          tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph ... +ṁ1
+          mv1MbxANFAMxSHb5K1q9ZA9mynzYrZfJ7mHt ... +ṁ1
           mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ0.257
 
 The client does a bit of magic to simplify our life and here we see
@@ -397,7 +397,7 @@ Surprisingly, our transfer operation resulted in **two** operations,
 first a *revelation*, and then a transfer.
 Alice's address, obtained from the faucet, is already present on the
 blockchain, but only in the form of a *public key hash*
-``tz1Rj...5w``.
+``mv1Rj...5w``.
 To sign operations, Alice needs to first reveal the *public
 key* ``edpkuk...3X`` behind the hash, so that other users can verify
 her signatures.
@@ -415,8 +415,8 @@ client selects a default for us.
 
 The last important bit of our receipt is the balance updates that
 resume which address is being debited or credited of a certain amount.
-We see in this case that baker ``tz1Ke...yU`` is being credited one
-fee for each operation, that Bob's address ``tz1Rk...Ph`` gets 1 tez
+We see in this case that baker ``mv1Ke...yU`` is being credited one
+fee for each operation, that Bob's address ``mv1Rk...Ph`` gets 1 tez
 and that Alice pays the transfer, the burn, and the two fees.
 
 Now that we have a clear picture of what we are going to pay we can

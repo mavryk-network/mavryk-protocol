@@ -297,10 +297,10 @@ We can decode the binary string as follows::
   { "branch": "BKiXcfN1ZTXnNNbTWSRArSWzVFc6om7radWq5mTqGX6rY4P2Uhe",
     "contents":
       [ { "kind": "transaction",
-          "source": "tz1YU2zoyCkXPKEA4jknSpCpMs7yUndVNe3S", "fee": "1520",
+          "source": "mv1PzVzF2CK579r2vpYkorm4qSZER5G6bRH6", "fee": "1520",
           "counter": "2622173", "gas_limit": "10500", "storage_limit": "300",
           "amount": "300000",
-          "destination": "tz2FwBnXhuXvPAUcr1aF3uX84Z6JELxrdYxD" } ],
+          "destination": "mv2hKYmfpFrPJGxJTFqVy56JNKASH9nAF1fZ" } ],
     "signature":
       "sighZMqWz5G8drK1VTsmTnQBFEQ9kxQQxL88NFh8UaqDEJ3R3mzgR3g81azadZ9saPwsWga3kEPsyfbzrXm6ueuDvx3pQ5Q9" }
 
@@ -356,7 +356,7 @@ Using the above information, the sample binary sequence can be broken down as fo
 
   source
   = 0x008cb5baedee4dc3ec261dfcf57a9600bb0a8e26c0
-  = tz1YU2zoyCkXPKEA4jknSpCpMs7yUndVNe3S
+  = mv1PzVzF2CK579r2vpYkorm4qSZER5G6bRH6
 
   fee = 0xf00b = 1520
   counter = 0xdd85a001 = 2622173
@@ -366,7 +366,7 @@ Using the above information, the sample binary sequence can be broken down as fo
 
   destination
   = 0x000153957451d3cc83a71e26b65ea2391a1b16713d2d
-  = tz2FwBnXhuXvPAUcr1aF3uX84Z6JELxrdYxD
+  = mv2hKYmfpFrPJGxJTFqVy56JNKASH9nAF1fZ
 
   has_parameters = 0x00 = false
 
@@ -376,7 +376,7 @@ Using the above information, the sample binary sequence can be broken down as fo
 
 As usual, ``octez-codec`` can be used the other way around, to encode the same transaction::
 
-  $ octez-codec encode alpha.operation from '{ "branch": "BKiXcfN1ZTXnNNbTWSRArSWzVFc6om7radWq5mTqGX6rY4P2Uhe", "contents": [ { "kind": "transaction", "source": "tz1YU2zoyCkXPKEA4jknSpCpMs7yUndVNe3S", "fee": "1520", "counter": "2622173", "gas_limit": "10500", "storage_limit": "300", "amount": "300000", "destination": "tz2FwBnXhuXvPAUcr1aF3uX84Z6JELxrdYxD" } ], "signature": "sighZMqWz5G8drK1VTsmTnQBFEQ9kxQQxL88NFh8UaqDEJ3R3mzgR3g81azadZ9saPwsWga3kEPsyfbzrXm6ueuDvx3pQ5Q9" }'
+  $ octez-codec encode alpha.operation from '{ "branch": "BKiXcfN1ZTXnNNbTWSRArSWzVFc6om7radWq5mTqGX6rY4P2Uhe", "contents": [ { "kind": "transaction", "source": "mv1PzVzF2CK579r2vpYkorm4qSZER5G6bRH6", "fee": "1520", "counter": "2622173", "gas_limit": "10500", "storage_limit": "300", "amount": "300000", "destination": "mv2hKYmfpFrPJGxJTFqVy56JNKASH9nAF1fZ" } ], "signature": "sighZMqWz5G8drK1VTsmTnQBFEQ9kxQQxL88NFh8UaqDEJ3R3mzgR3g81azadZ9saPwsWga3kEPsyfbzrXm6ueuDvx3pQ5Q9" }'
 
 .. COMMENT:
   We could also very well publish encodings, as this has proved useful to guiding developers in the past.

@@ -565,7 +565,7 @@ let run_scenario network kind scenario =
   let network_arg = Node.Network network_url in
   let network_baker =
     (* a bootstrap delegate for both Dailynet and Weeklynet *)
-    "tz1foXHgRzdYdaLgX6XhpZGxbBv42LZ6ubvE"
+    "mv1Lq97kwEymLP4YUVteTtXbheL5ZHu8Eci8"
   in
 
   let node = Node.create [] in

@@ -249,9 +249,9 @@ mod tests {
     use tezos_data_encoding::nom::NomReader;
 
     // taken from the output of octez-dac-client GET certificate
-    // Committee member 0 - public key hash: tz4Ate2Fj1QpVXBGLXioe57s3a1RUtavMS5P
+    // Committee member 0 - public key hash: mv4NbiJxLfRMXfmvcwK5DDJ1UNVuJDj7Acf7
     // Committee member 0 - public key: BLpk1tsVzqCokL6dZEiCQgEvwqQp4btiHYm3A1HoEUxKUwq5jCNZMJQ7bU71QE969KioUWCKtK9F
-    // Committee member 1 - public key hash: tz4PA6aEFXbaSZXSmdTi933GQZPodn6VX8Q3
+    // Committee member 1 - public key hash: mv4asArvsBc7Ui87433yiBDQqMtHT7KM4j27
     // Committee member 1 - public key: BLpk1xQMdGocMdiiuU2pGvNMeu8vP91nNfrKk5tCssvPzP4z9EY7k5bbEisrqN3pT9vaoN2dsSiW
     // Hex payload - 0000000000000000
     // Root hash - hex value: 005b55fa3bb27fa3644faa7bd1e4ce79319a41ff35a3c2128089224e2fbf918143

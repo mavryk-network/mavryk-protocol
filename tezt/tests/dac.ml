@@ -1526,13 +1526,13 @@ module Tx_kernel_e2e = struct
             ^ entrypoint_bytes
         | Transfer {destination; ticket} ->
             let transfer_prefix = "\001" in
-            let tz4address =
+            let mv4address =
               Data_encoding.(
                 Binary.to_string_exn
                   Tezos_crypto.Signature.Bls.Public_key_hash.encoding
                   destination)
             in
-            transfer_prefix ^ tz4address ^ ticket_repr ticket
+            transfer_prefix ^ mv4address ^ ticket_repr ticket
 
       let account_operations_repr {signer; counter; operations} : string =
         let signer_bytes =
@@ -1542,7 +1542,7 @@ module Tx_kernel_e2e = struct
                 Bls.Secret_key.to_public_key signer
                 |> Binary.to_string_exn Bls.Public_key.encoding)
           else
-            "\001" (* tz4address signer tag *)
+            "\001" (* mv4address signer tag *)
             ^ Data_encoding.(
                 Bls.Secret_key.to_public_key signer
                 |> Bls.Public_key.hash
@@ -1635,7 +1635,7 @@ module Tx_kernel_e2e = struct
 
   (* Send a deposit into the rollup. *)
   let test_deposit ~client ~sc_rollup_node ~sc_rollup_address
-      ~mint_and_deposit_contract level tz4_address =
+      ~mint_and_deposit_contract level mv4_address =
     let* prev_state_hash =
       Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_state_hash ()
@@ -1646,7 +1646,7 @@ module Tx_kernel_e2e = struct
         sf
           {|Pair (Pair %S "%s") (Pair 450 "Hello, Ticket!")|}
           sc_rollup_address
-          tz4_address
+          mv4_address
       in
       Client.transfer
         client
@@ -2291,7 +2291,7 @@ module Tx_kernel_e2e = struct
   let test_tx_kernel_e2e_with_dac_observer_synced_with_dac =
     let commitment_period = 10 in
     let challenge_window = 10 in
-    let custom_committee_members = [Constant.aggregate_tz4_account] in
+    let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
@@ -2308,7 +2308,7 @@ module Tx_kernel_e2e = struct
   let test_tx_kernel_e2e_with_dac_observer_missing_pages =
     let commitment_period = 10 in
     let challenge_window = 10 in
-    let custom_committee_members = [Constant.aggregate_tz4_account] in
+    let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
       ~supports:Protocol.(From_protocol (number Nairobi + 1))

@@ -2666,7 +2666,7 @@ mod typecheck_tests {
         use tezos_crypto_rs::hash::*;
         // hex representations are obtained via `octez-client hash data`
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j""#,
+            r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef",
             hex(
                 ContractTz1Hash,
@@ -2675,7 +2675,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH""#,
+            r#""mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
             hex(
                 ContractTz2Hash,
@@ -2684,7 +2684,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r""#,
+            r#""mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35",
             hex(
                 ContractTz3Hash,
@@ -2693,7 +2693,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN""#,
+            r#""mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6",
             hex(
                 ContractTz4Hash,
@@ -2721,7 +2721,7 @@ mod typecheck_tests {
         );
         // with entrypoints
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo""#,
+            r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
             hex(
                 ContractTz1Hash,
@@ -2730,7 +2730,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo""#,
+            r#""mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
             hex(
                 ContractTz2Hash,
@@ -2739,7 +2739,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo""#,
+            r#""mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
             hex(
                 ContractTz3Hash,
@@ -2748,7 +2748,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo""#,
+            r#""mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
             hex(
                 ContractTz4Hash,
@@ -2786,7 +2786,7 @@ mod typecheck_tests {
 
         assert_matches!(
             typecheck_instruction(
-                &parse("PUSH address \"tz1foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
+                &parse("PUSH address \"mv1foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
                 &mut Ctx::default(),
                 &mut tc_stk![],
             ),
@@ -2794,7 +2794,7 @@ mod typecheck_tests {
         );
         assert_matches!(
             typecheck_instruction(
-                &parse("PUSH address \"tz9foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
+                &parse("PUSH address \"mv9foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
                 &mut Ctx::default(),
                 &mut tc_stk![],
             ),

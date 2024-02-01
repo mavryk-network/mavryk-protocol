@@ -88,46 +88,46 @@ mod test {
     use super::*;
 
     #[test]
-    fn tz1_b58check() {
+    fn mv1_b58check() {
         let mv1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
 
         let pkh = PublicKeyHash::from_b58check(mv1);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::Ed25519(_))));
 
-        let tz1_from_pkh = pkh.unwrap().to_b58check();
+        let mv1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv1, &tz1_from_pkh);
+        assert_eq!(mv1, &mv1_from_pkh);
     }
 
     #[test]
-    fn tz2_b58check() {
-        let mv2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
+    fn mv2_b58check() {
+        let mv2 = "mv2RKxcrsHm8FsDSZdu8aYrNxgBewfvQudq1";
 
         let pkh = PublicKeyHash::from_b58check(mv2);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::Secp256k1(_))));
 
-        let tz2_from_pkh = pkh.unwrap().to_b58check();
+        let mv2_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv2, &tz2_from_pkh);
+        assert_eq!(mv2, &mv2_from_pkh);
     }
 
     #[test]
-    fn tz3_b58check() {
-        let mv3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
+    fn mv3_b58check() {
+        let mv3 = "mv3JVYv3uSuDmxcsfj1fqkusda7qgpcHc1AH";
 
         let pkh = PublicKeyHash::from_b58check(mv3);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::P256(_))));
 
-        let tz3_from_pkh = pkh.unwrap().to_b58check();
+        let mv3_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv3, &tz3_from_pkh);
+        assert_eq!(mv3, &mv3_from_pkh);
     }
 
     #[test]
-    fn tz1_encoding() {
+    fn mv1_encoding() {
         let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
 
         let pkh = PublicKeyHash::from_b58check(mv1).expect("expected valid mv1 hash");
@@ -145,8 +145,8 @@ mod test {
     }
 
     #[test]
-    fn tz2_encoding() {
-        let mv2 = "tz2KZPgf2rshxNUBXFcTaCemik1LH1v9qz3F";
+    fn mv2_encoding() {
+        let mv2 = "mv2MTWSzQoL2ucdFANV8XCBZAFAehYNc4DW1";
 
         let pkh = PublicKeyHash::from_b58check(mv2).expect("expected valid mv2 hash");
 
@@ -163,8 +163,8 @@ mod test {
     }
 
     #[test]
-    fn tz3_encoding() {
-        let mv3 = "tz3fTJbAxj1LQCEKDKmYLWKP6e5vNC9vwvyo";
+    fn mv3_encoding() {
+        let mv3 = "mv3Frb3YzAR5bzFNCwaPY4Np42dYwiRZu5iH";
 
         let pkh = PublicKeyHash::from_b58check(mv3).expect("expected valid mv3 hash");
 

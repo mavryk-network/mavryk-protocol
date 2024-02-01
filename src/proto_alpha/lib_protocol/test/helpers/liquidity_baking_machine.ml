@@ -395,7 +395,7 @@ let tzbtc_admin_account : Account.t =
   {
     pkh =
       Signature.Public_key_hash.of_b58check_exn
-        "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+        "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
     pk =
       Signature.Public_key.of_b58check_exn
         "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";

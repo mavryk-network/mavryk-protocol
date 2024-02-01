@@ -1,5 +1,5 @@
 
-./octez-client --protocol ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/contract.tz on storage Unit and input '"tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"' --level 1 --trace-stack
+./octez-client --protocol ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/contract.tz on storage Unit and input '"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"' --level 1 --trace-stack
 storage
   Unit
 emitted operations
@@ -8,15 +8,15 @@ big_map diff
   
 trace
   - location: 7 (just consumed gas: 11.830)
-    [ (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" Unit) ]
+    [ (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" Unit) ]
   - location: 7 (just consumed gas: 0.010)
-    [ "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" ]
+    [ "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" ]
   - location: 8 (just consumed gas: 0.307)
-    [ (Some "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5") ]
+    [ (Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx") ]
   - location: 11 (just consumed gas: 0.010)
-    [ "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" ]
+    [ "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" ]
   - location: 11 (just consumed gas: 0.025)
-    [ "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" ]
+    [ "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" ]
   - location: 17 (just consumed gas: 0.010)
     [  ]
   - location: 18 (just consumed gas: 0.010)

@@ -27,9 +27,9 @@ code {
        PUSH nat 4; PUSH nat 1923; COMPARE; ASSERT_GT;
 
        # key_hash
-       PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; DUP; COMPARE; ASSERT_EQ;
-       PUSH key_hash "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv"; PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; COMPARE; ASSERT_LT;
-       PUSH key_hash "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; PUSH key_hash "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv"; COMPARE; ASSERT_GT;
+       PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; DUP; COMPARE; ASSERT_EQ;
+       PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"; PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; COMPARE; ASSERT_LT;
+       PUSH key_hash "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"; PUSH key_hash "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"; COMPARE; ASSERT_GT;
 
        # mumav
        PUSH mumav 1; DUP; COMPARE; ASSERT_EQ;

@@ -65,7 +65,7 @@ let ( !! ) = function Ok x -> x | Error _ -> raise (Invalid_argument "( !! )")
 
 (* The following addresses have been extracted from TzKT. *)
 
-let null_address = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU"
+let null_address = "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5"
 
 let liquidity_baking_dex = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
 

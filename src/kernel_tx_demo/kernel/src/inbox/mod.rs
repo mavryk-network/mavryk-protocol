@@ -114,7 +114,7 @@ mod test {
             185, 251, // end sr1
         ];
 
-        let l2_address = "tz4MSfZsn6kMDczShy8PMeB628TNukn9hi2K".into();
+        let l2_address = "mv4SruamFhFY8SNhX4ZTepU3ZP1ceWMzFnZj".into();
 
         let ticket_creator = Contract::from_b58check("KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq")
             .expect("valid Kt1 address");

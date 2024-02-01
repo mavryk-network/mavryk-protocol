@@ -111,27 +111,27 @@ If everything went well, the origination command results in:
 
    This sequence of operations was run:
      Manager signed operations:
-       From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
+       From: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
        Fee to the baker: ṁ0.000357
        Expected counter: 36
        Gas limit: 1000
        Storage limit: 0 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ0.000357
+         mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ0.000357
          payload fees(the block proposer) ....... +ṁ0.000357
        Revelation of manager public key:
-         Contract: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
+         Contract: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
          Key: edpkukxtw4fHmffj4wtZohVKwNwUZvYm6HMog5QMe9EyYK3QwRwBjp
          This revelation was successfully applied
          Consumed gas: 1000
      Manager signed operations:
-       From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
+       From: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
        Fee to the baker: ṁ0.000956
        Expected counter: 37
        Gas limit: 2849
        Storage limit: 6572 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ0.000956
+         mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ0.000956
          payload fees(the block proposer) ....... +ṁ0.000956
        Smart rollup origination:
          Kind: wasm_2_0_0
@@ -143,7 +143,7 @@ If everything went well, the origination command results in:
          Address: sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf
          Genesis commitment hash: src13wCGc2nMVfN7rD1rgeG3g1q7oXYX2m5MJY5ZRooVhLt7JwKXwX
          Balance updates:
-           tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ1.638
+           mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ1.638
            storage fees ........................... +ṁ1.638
 
 

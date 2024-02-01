@@ -42,7 +42,7 @@ let () =
     (function Invalid_positive_int_parameter s -> Some s | _ -> None)
     (fun s -> Invalid_positive_int_parameter s)
 
-let tz4_address_parameter =
+let mv4_address_parameter =
   Tezos_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
       let*? bls_pkh = Signature.Bls.Public_key_hash.of_b58check s in
@@ -51,10 +51,10 @@ let tz4_address_parameter =
       in
       return pkh)
 
-let _tz4_address_param ?(name = "public key hash")
+let _mv4_address_param ?(name = "public key hash")
     ?(desc = "bls public key hash to use") =
   let desc = String.concat "\n" [desc; "A mv4 address"] in
-  Tezos_clic.param ~name ~desc tz4_address_parameter
+  Tezos_clic.param ~name ~desc mv4_address_parameter
 
 let positive_int_parameter =
   Tezos_clic.parameter (fun _cctxt p ->

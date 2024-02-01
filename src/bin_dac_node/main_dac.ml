@@ -66,7 +66,7 @@ let reveal_data_dir_arg =
     ~default
     (Client_config.string_parameter ())
 
-let tz4_address_parameter =
+let mv4_address_parameter =
   Tezos_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
       let*? bls_pkh = Signature.Bls.Public_key_hash.of_b58check s in
@@ -75,25 +75,25 @@ let tz4_address_parameter =
       in
       return pkh)
 
-let tz4_address_param ?(name = "bls-public-key-hash")
+let mv4_address_param ?(name = "bls-public-key-hash")
     ?(desc = "BLS public key hash.") =
   let desc = String.concat " " [desc; "A mv4 address."] in
-  Tezos_clic.param ~name ~desc tz4_address_parameter
+  Tezos_clic.param ~name ~desc mv4_address_parameter
 
-let tz4_public_key_parameter =
+let mv4_public_key_parameter =
   Tezos_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
       let*? pk = Tezos_crypto.Aggregate_signature.Public_key.of_b58check s in
       return pk)
 
-let tz4_public_key_param ?(name = "bls-public-key")
+let mv4_public_key_param ?(name = "bls-public-key")
     ?(desc = "BLS public key of committee member.") =
   let desc =
     String.concat
       " "
       [desc; "A BLS12-381 public key which belongs to a mv4 account."]
   in
-  Tezos_clic.param ~name ~desc tz4_public_key_parameter
+  Tezos_clic.param ~name ~desc mv4_public_key_parameter
 
 let positive_int_parameter =
   Tezos_clic.parameter (fun _cctxt p ->
@@ -217,7 +217,7 @@ module Config_init = struct
            "committee";
            "members";
          ]
-      @@ seq_of_param @@ tz4_public_key_param)
+      @@ seq_of_param @@ mv4_public_key_param)
       (fun (data_dir, rpc_address, rpc_port, reveal_data_dir, allow_v1_api)
            committee_members
            cctxt ->
@@ -246,7 +246,7 @@ module Config_init = struct
          ["configure"; "as"; "committee"; "member"; "with"; "coordinator"]
       @@ coordinator_rpc_param
       @@ prefixes ["and"; "signer"]
-      @@ tz4_address_param ~desc:"BLS public key hash to use as the signer."
+      @@ mv4_address_param ~desc:"BLS public key hash to use as the signer."
       @@ stop)
       (fun (data_dir, rpc_address, rpc_port, reveal_data_dir, allow_v1_api)
            coordinator_rpc_address

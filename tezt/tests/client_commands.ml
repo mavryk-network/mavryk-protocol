@@ -476,15 +476,15 @@ module Transfer = struct
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     let* () =
-      let Account.{alias; secret_key; _} = Constant.tz4_account in
+      let Account.{alias; secret_key; _} = Constant.mv4_account in
       Client.import_secret_key client ~alias secret_key
     in
-    let* () = airdrop_and_reveal client [Constant.tz4_account] in
+    let* () = airdrop_and_reveal client [Constant.mv4_account] in
     let*? set_delegate_process =
       Client.set_delegate
         client
-        ~src:Constant.tz4_account.public_key_hash
-        ~delegate:Constant.tz4_account.public_key_hash
+        ~src:Constant.mv4_account.public_key_hash
+        ~delegate:Constant.mv4_account.public_key_hash
     in
     let msg =
       rex "The delegate mv4.*\\w is forbidden as it is a BLS public key hash"

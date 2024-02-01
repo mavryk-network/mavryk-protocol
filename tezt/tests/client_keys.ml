@@ -64,16 +64,16 @@ module BLS_aggregate_wallet = struct
       (fun () ->
         let* client = Client.init () in
         let* () =
-          Client.bls_import_secret_key Constant.aggregate_tz4_account client
+          Client.bls_import_secret_key Constant.aggregate_mv4_account client
         in
         let* shown_account =
           Client.bls_show_address
-            ~alias:Constant.aggregate_tz4_account.Account.aggregate_alias
+            ~alias:Constant.aggregate_mv4_account.Account.aggregate_alias
             client
         in
         check_shown_account
           ~__LOC__
-          Constant.aggregate_tz4_account
+          Constant.aggregate_mv4_account
           shown_account)
 
   let test_bls_show_address () =
@@ -84,16 +84,16 @@ module BLS_aggregate_wallet = struct
       (fun () ->
         let* client = Client.init () in
         let* () =
-          Client.bls_import_secret_key Constant.aggregate_tz4_account client
+          Client.bls_import_secret_key Constant.aggregate_mv4_account client
         in
         let* shown_account =
           Client.bls_show_address
-            ~alias:Constant.aggregate_tz4_account.Account.aggregate_alias
+            ~alias:Constant.aggregate_mv4_account.Account.aggregate_alias
             client
         in
         check_shown_account
           ~__LOC__
-          Constant.aggregate_tz4_account
+          Constant.aggregate_mv4_account
           shown_account)
 
   let test_bls_gen_keys () =
@@ -115,10 +115,10 @@ module BLS_aggregate_wallet = struct
       (fun () ->
         let* client = Client.init () in
         let Account.{aggregate_alias; aggregate_public_key_hash; _} =
-          Constant.aggregate_tz4_account
+          Constant.aggregate_mv4_account
         in
         let* () =
-          Client.bls_import_secret_key Constant.aggregate_tz4_account client
+          Client.bls_import_secret_key Constant.aggregate_mv4_account client
         in
         let* maybe_keys = Client.bls_list_keys client in
         let expected_keys = [(aggregate_alias, aggregate_public_key_hash)] in
@@ -179,13 +179,13 @@ module BLS_normal_wallet = struct
       (fun () ->
         let* client = Client.init () in
         let* () =
-          let Account.{alias; secret_key; _} = Constant.tz4_account in
+          let Account.{alias; secret_key; _} = Constant.mv4_account in
           Client.import_secret_key client ~alias secret_key
         in
         let* shown_account =
-          Client.show_address ~alias:Constant.tz4_account.Account.alias client
+          Client.show_address ~alias:Constant.mv4_account.Account.alias client
         in
-        check_shown_account ~__LOC__ Constant.tz4_account shown_account)
+        check_shown_account ~__LOC__ Constant.mv4_account shown_account)
 
   let test_bls_show_address () =
     Test.register
@@ -195,13 +195,13 @@ module BLS_normal_wallet = struct
       (fun () ->
         let* client = Client.init () in
         let* () =
-          let Account.{alias; secret_key; _} = Constant.tz4_account in
+          let Account.{alias; secret_key; _} = Constant.mv4_account in
           Client.import_secret_key client ~alias secret_key
         in
         let* shown_account =
-          Client.show_address ~alias:Constant.tz4_account.Account.alias client
+          Client.show_address ~alias:Constant.mv4_account.Account.alias client
         in
-        check_shown_account ~__LOC__ Constant.tz4_account shown_account)
+        check_shown_account ~__LOC__ Constant.mv4_account shown_account)
 
   let test_bls_gen_keys () =
     Test.register
@@ -342,7 +342,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "zebra" addresses
-      = Some "tz1aGUKE72eN21iWztoDEeH4FeKaxWb7SAUb")
+      = Some "mv1NdwcpRPwibHVk9DN4UTy5QfBZWuBRgC6K")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -375,7 +375,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "key" addresses
-      = Some "tz1QSF4TSVzaosgbaxnFJpRbs7798Skeb8Re")
+      = Some "mv1CoiN3ksHwP9TpjHM6Ye7d27y7gqFN42yX")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;
@@ -395,7 +395,7 @@ module Wallet = struct
       let* addresses = Client.list_known_addresses client in
       Check.(
         (List.assoc_opt alias addresses
-        = Some "tz1QSF4TSVzaosgbaxnFJpRbs7798Skeb8Re")
+        = Some "mv1CoiN3ksHwP9TpjHM6Ye7d27y7gqFN42yX")
           (option string)
           ~__LOC__
           ~error_msg:"Expected %R, got %L") ;

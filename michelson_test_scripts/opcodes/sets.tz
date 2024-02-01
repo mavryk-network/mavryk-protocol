@@ -26,13 +26,13 @@ code
     # Addresses
     PUSH
       (set key_hash)
-      { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv" };
+      { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" };
     DROP;
     PUSH
       (set address)
-      { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv";
+      { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx";
         "KT1TZCh8fmUbuDqFxetPWC2fsQanAHzLx4W9"};
     DROP;
 

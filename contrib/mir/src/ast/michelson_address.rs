@@ -96,7 +96,7 @@ mod tests {
     fn test_base58_to_bin() {
         // address with explicit, but empty, entrypoint
         assert_eq!(
-            Address::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw%")
+            Address::from_base58_check("mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq%")
                 .unwrap()
                 .to_bytes_vec(),
             hex::decode("00002422090f872dfd3a39471bb23f180e6dfed030f3").unwrap(),
@@ -104,7 +104,7 @@ mod tests {
 
         // address with explicit default entrypoint
         assert_eq!(
-            Address::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw%default")
+            Address::from_base58_check("mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq%default")
                 .unwrap()
                 .to_bytes_vec(),
             hex::decode("00002422090f872dfd3a39471bb23f180e6dfed030f3").unwrap(),
@@ -160,79 +160,79 @@ mod tests {
     // code { CAR; FAILWITH }' on storage Unit and input "\"$addr\""`
     const FIXTURES: [(&str, &str); 25] = [
         (
-            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
+            "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq",
             "00002422090f872dfd3a39471bb23f180e6dfed030f3",
         ),
         (
-            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
+            "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9",
             "000049d0be8c2987e04e080f4d73cbe24d8bf83997e2",
         ),
         (
-            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
+            "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ",
             "0000682343b6fe7589573e11db2b87fd206b936e2a79",
         ),
         (
-            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
+            "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3",
             "000075deb97789e2429f2b9bb5dba1b1e4a061e832a3",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar",
             "00007b09f782e0bcd67739510afa819d85976119d5ef626172",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c73",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse",
             "00007b09f782e0bcd67739510afa819d85976119d5ef",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c75",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo",
             "00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
         ),
         (
-            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
+            "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4",
             "0000ed6586813c9085c8b6252ec3a654ee0e36a0f0e2",
         ),
         (
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe626172",
         ),
         (
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
         ),
         (
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
         ),
         (
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35626172",
         ),
         (
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35",
         ),
         (
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
         ),
         (
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6626172",
         ),
         (
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6",
         ),
         (
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
         ),
         (

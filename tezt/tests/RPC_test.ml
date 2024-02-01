@@ -190,7 +190,7 @@ let test_contracts _test_mode_tag protocol ?endpoint client =
     @@ RPC.get_chain_block_context_contract_delegate ~id:bootstrap ()
   in
   Log.info "Test un-allocated implicit contract" ;
-  let unallocated_implicit = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unallocated_implicit = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unallocated_implicit contracts) ;
   let* _ =
     Client.RPC.call ?endpoint ~hooks client
@@ -528,7 +528,7 @@ let test_delegates_on_registered_hangzhou ~contracts ?endpoint client =
 let test_delegates_on_unregistered_alpha ~contracts ?endpoint client =
   Log.info "Test with a PKH that is not a registered baker contract" ;
 
-  let unregistered_baker = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unregistered_baker = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unregistered_baker contracts) ;
   let check_failure rpc =
     let*? process = Client.RPC.spawn ?endpoint ~hooks client @@ rpc in
@@ -576,7 +576,7 @@ let test_delegates_on_unregistered_alpha ~contracts ?endpoint client =
 let test_delegates_on_unregistered_hangzhou ~contracts ?endpoint client =
   Log.info "Test with a PKH that is not a registered baker contract" ;
 
-  let unregistered_baker = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unregistered_baker = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unregistered_baker contracts) ;
 
   let check_failure rpc =

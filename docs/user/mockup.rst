@@ -125,10 +125,10 @@ You can now use standard commands, such as:
 .. code-block:: shell-session
 
     $ mockup-client list known addresses
-    bootstrap5: tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv (unencrypted sk known)
+    bootstrap5: mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx (unencrypted sk known)
     bootstrap4: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn (unencrypted sk known)
-    bootstrap3: tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU (unencrypted sk known)
-    bootstrap2: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN (unencrypted sk known)
+    bootstrap3: mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ (unencrypted sk known)
+    bootstrap2: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 (unencrypted sk known)
     bootstrap1: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe (unencrypted sk known)
 
 .. code-block:: shell-session
@@ -156,12 +156,12 @@ You can now use standard commands, such as:
         Transaction:
           Amount: ṁ100
           From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
-          To: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN
+          To: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
           This transaction was successfully applied
           Consumed gas: 10207
           Balance updates:
             mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ100
-            tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN ... +ṁ100
+            mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... +ṁ100
 
 .. code-block:: shell-session
 
@@ -422,7 +422,7 @@ case by visiting ``mockup/mempool.json``. This should look like this
                  "source": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
                  "fee": "1000000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "1000000",
-                 "destination": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN" } ],
+                 "destination": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" } ],
            "signature":
              "siggZXnjqYnFMjMxfE1avK2PZdRmRekp5fr56F5uJcuQkfHPL23HNDdtz2iG1QeYtU8DGEniWXjqDh1RxGx6scVgMaK74CrF" } },
      { "shell_header":
@@ -430,7 +430,7 @@ case by visiting ``mockup/mempool.json``. This should look like this
        "protocol_data":
          { "contents":
              [ { "kind": "transaction",
-                 "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+                 "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
                  "fee": "500000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "2000000",
                  "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
@@ -455,7 +455,7 @@ blocks of the mockup chain.
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
               "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
@@ -486,7 +486,7 @@ looks like this
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
               "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
@@ -497,10 +497,10 @@ looks like this
     "protocol_data":
       { "contents":
           [ { "kind": "transaction",
-              "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
+              "source": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU" } ],
+              "destination": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" } ],
         "signature":
           "sigeFcabZTE8Y2LXv19Fe7TbRtkjzVpBy2qhABp263Xnj8TJtA6XpRRMfGeD5YxwCJiTr9r6ZFGBdLnpxL9Y9CG3bpbXmu7E" } } ]
 

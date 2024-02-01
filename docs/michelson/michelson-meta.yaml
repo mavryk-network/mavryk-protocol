@@ -1975,7 +1975,7 @@ types:
     duplicable: true
     examples:
       - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
-      - '"tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k"'
+      - '"mv1KkvXNEpMH4Vri47MY1YenGhb6ZA4ew1F2"'
 
   timestamp:
     documentation_short: "A real-world date."
@@ -2204,8 +2204,8 @@ types:
       - '"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"'
       - '"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%entrypoint"'
       - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
-      - '"tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc"'
-      - '"tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA"'
+      - '"mv2RvsYL9iZP3NSn2j2K7sd2iwT3mgHoivd2"'
+      - '"mv3UPFVvcU21sXSVeCGq8zcdecj2DK9M37th"'
 
   operation:
     documentation_short: "An internal operation emitted by a contract"

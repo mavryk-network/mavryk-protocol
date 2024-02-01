@@ -531,7 +531,7 @@ mod tests {
         // Create a transfer from the bridge contract, that act as the
         // dictator (or administrator).
         let source =
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap();
+            PublicKeyHash::from_b58check("mv1KJgcmEfhEaYXj1tGkMjb4cM8q2iGyKA2G").unwrap();
         let contract =
             Contract::from_b58check("KT1HJphVV3LUxqZnc7YSH6Zdfd3up1DjLqZv").unwrap();
         let sender = match contract {
