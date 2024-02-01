@@ -148,19 +148,19 @@ let write_yes_wallet dest alias_pkh_pk_list =
 (** Assuming that the [keys_list] is sorted in descending order, the
     function extracts the first keys until reaching the limit of
     [total_stake] by a percentage of [share]. *)
-let filter_up_to_staking_share share total_stake to_mutez keys_list =
-  let total_stake = to_mutez total_stake in
+let filter_up_to_staking_share share total_stake to_mumav keys_list =
+  let total_stake = to_mumav total_stake in
   match share with
-  | None -> List.map (fun (pkh, pk, stb) -> (pkh, pk, to_mutez stb)) keys_list
+  | None -> List.map (fun (pkh, pk, stb) -> (pkh, pk, to_mumav stb)) keys_list
   | Some share ->
       let staking_amount_limit =
         Int64.add (Int64.mul (Int64.div total_stake 100L) share) 100L
       in
       Format.printf
-        "@[<v>@[<h>Total staking amount:@;<7 0>%Ld mutez@]@,"
+        "@[<v>@[<h>Total staking amount:@;<7 0>%Ld mumav@]@,"
         total_stake ;
       Format.printf
-        "@[Staking amount limit (%Ld%%): ~%Ld mutez@]@]@."
+        "@[Staking amount limit (%Ld%%): ~%Ld mumav@]@]@."
         share
         staking_amount_limit ;
       let rec loop ((keys_acc, stb_acc) as acc) = function
@@ -170,8 +170,8 @@ let filter_up_to_staking_share share total_stake to_mutez keys_list =
               (* Stop whenever the limit is exceeded. *)
             else
               loop
-                ( (pkh, pk, to_mutez stb) :: keys_acc,
-                  Int64.add (to_mutez stb) stb_acc )
+                ( (pkh, pk, to_mumav stb) :: keys_acc,
+                  Int64.add (to_mumav stb) stb_acc )
                 l
       in
       loop ([], 0L) keys_list |> fst |> List.rev
@@ -219,7 +219,7 @@ let get_delegates (module P : Sigs.PROTOCOL) context
             (staking_balance_info :: key_list_acc, updated_staking_balance_acc))
   in
   return
-  @@ filter_up_to_staking_share staking_share_opt total_stake P.Tez.to_mutez
+  @@ filter_up_to_staking_share staking_share_opt total_stake P.Tez.to_mumav
   @@ (* By swapping x and y we do a descending sort *)
   List.sort (fun (_, _, x) (_, _, y) -> P.Tez.compare y x) delegates
 

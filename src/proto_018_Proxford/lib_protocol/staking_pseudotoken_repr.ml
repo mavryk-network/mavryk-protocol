@@ -27,9 +27,9 @@
 
 include Tez_repr
 
-let of_int64_exn = of_mutez_exn
+let of_int64_exn = of_mumav_exn
 
-let to_int64 = to_mutez
+let to_int64 = to_mumav
 
 let of_z_exn z = of_int64_exn (Z.to_int64 z)
 

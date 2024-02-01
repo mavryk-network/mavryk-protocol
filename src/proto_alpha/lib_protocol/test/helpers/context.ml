@@ -524,9 +524,9 @@ module Delegate = struct
     let Protocol.Stake_repr.{frozen; weighted_delegated} =
       Option.value ~default:Protocol.Stake_repr.zero stake_opt
     in
-    let frozen = Protocol.Tez_repr.to_mutez frozen |> Tez.of_mutez_exn in
+    let frozen = Protocol.Tez_repr.to_mumav frozen |> Tez.of_mumav_exn in
     let weighted_delegated =
-      Protocol.Tez_repr.to_mutez weighted_delegated |> Tez.of_mutez_exn
+      Protocol.Tez_repr.to_mumav weighted_delegated |> Tez.of_mumav_exn
     in
     return {frozen; weighted_delegated}
 end
@@ -722,7 +722,7 @@ let default_raw_context () =
   let initial_account = Account.new_account () in
   let bootstrap_accounts =
     Account.make_bootstrap_account
-      ~balance:(Tez.of_mutez_exn 100_000_000_000L)
+      ~balance:(Tez.of_mumav_exn 100_000_000_000L)
       initial_account
   in
   let* constants, _, _ = Block.prepare_initial_context_params () in

@@ -15,7 +15,7 @@ join Edonet: just configure your node with
 ``tezos-node config init --network edonet`` (but see `Known Issues`_ below).
 
 Version 8.1 fixes a performance regression related to operations
-involving ``tz3`` addresses and several compilation problems in
+involving ``mv3`` addresses and several compilation problems in
 some contexts.
 
 Version 8.2 replaces ``PtEdoTez`` by ``PtEdo2Zk`` and provides RPCs to

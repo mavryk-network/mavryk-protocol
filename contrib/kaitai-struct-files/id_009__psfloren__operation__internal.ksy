@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_009__psfloren__entrypoint_tag == id_009__psfloren__entrypoint_tag::named)
-  id_009__psfloren__mutez:
+  id_009__psfloren__mumav:
     seq:
-    - id: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
       type: n
   id_009__psfloren__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: destination
       type: id_009__psfloren__contract_id
       doc: ! >-

@@ -244,7 +244,7 @@ let rec validate_ty :
               no_entrypoints
               k
         (* Invalid types. *)
-        | Mutez_t -> tzfail Sc_rollup_invalid_parameters_type
+        | Mumav_t -> tzfail Sc_rollup_invalid_parameters_type
         | Big_map_t (_key_ty, _val_ty, _) ->
             tzfail Sc_rollup_invalid_parameters_type
         | Contract_t _ -> tzfail Sc_rollup_invalid_parameters_type

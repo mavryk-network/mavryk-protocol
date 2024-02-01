@@ -85,8 +85,8 @@ module Config : sig
       which case they are equal to the default values given below. *)
   type t = {
     minimal_fees : int option;
-    minimal_nanotez_per_gas_unit : (int * int) option;
-    minimal_nanotez_per_byte : (int * int) option;
+    minimal_nanomav_per_gas_unit : (int * int) option;
+    minimal_nanomav_per_byte : (int * int) option;
     replace_by_fee_factor : (int * int) option;
     max_operations : int option;
     max_total_bytes : int option;
@@ -106,13 +106,13 @@ module Config : sig
       (see src/proto_alpha/lib_plugin/plugin.ml) *)
   val default_minimal_fees : int
 
-  (** Default value for the [minimal_nanotez_per_gas_unit] field
+  (** Default value for the [minimal_nanomav_per_gas_unit] field
       (see src/proto_alpha/lib_plugin/plugin.ml) *)
-  val default_minimal_nanotez_per_gas_unit : int * int
+  val default_minimal_nanomav_per_gas_unit : int * int
 
-  (** Default value for the [minimal_nanotez_per_byte] field
+  (** Default value for the [minimal_nanomav_per_byte] field
       (see src/proto_alpha/lib_plugin/plugin.ml) *)
-  val default_minimal_nanotez_per_byte : int * int
+  val default_minimal_nanomav_per_byte : int * int
 
   (** Default value for the [replace_by_fee_factor] field
       (see src/proto_alpha/lib_plugin/plugin.ml) *)
@@ -190,8 +190,8 @@ module Config : sig
     ?endpoint:Client.endpoint ->
     ?hooks:Process.hooks ->
     ?minimal_fees:int ->
-    ?minimal_nanotez_per_gas_unit:int * int ->
-    ?minimal_nanotez_per_byte:int * int ->
+    ?minimal_nanomav_per_gas_unit:int * int ->
+    ?minimal_nanomav_per_byte:int * int ->
     ?replace_by_fee_factor:int * int ->
     ?max_operations:int ->
     ?max_total_bytes:int ->

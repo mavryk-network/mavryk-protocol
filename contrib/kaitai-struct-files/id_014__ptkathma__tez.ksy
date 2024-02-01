@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 014-PtKathma.tez'
 types:
-  id_014__ptkathma__mutez:
+  id_014__ptkathma__mumav:
     seq:
-    - id: id_014__ptkathma__mutez
+    - id: id_014__ptkathma__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_014__ptkathma__mutez
-  type: id_014__ptkathma__mutez
+- id: id_014__ptkathma__mumav
+  type: id_014__ptkathma__mumav

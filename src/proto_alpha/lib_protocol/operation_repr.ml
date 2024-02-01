@@ -2330,7 +2330,7 @@ let weight_manager :
     | Cons (Manager_operation {source; _}, _) -> source
     | Single (Manager_operation {source; _}) -> source
   in
-  let fee_f = Q.of_int64 (Tez_repr.to_mutez fee) in
+  let fee_f = Q.of_int64 (Tez_repr.to_mumav fee) in
   if Gas_limit_repr.Arith.(glimit = Gas_limit_repr.Arith.zero) then
     (fee_f, source)
   else

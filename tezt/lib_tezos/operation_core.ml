@@ -780,7 +780,7 @@ let gas_limit_exceeded =
 
 let conflict_error_with_needed_fee =
   rex
-    {|The operation ([\w\d]+) cannot be added because the mempool already contains a conflicting operation\. To replace the latter, this particular operation would need a total fee of at least ([\d]+) mutez\.|}
+    {|The operation ([\w\d]+) cannot be added because the mempool already contains a conflicting operation\. To replace the latter, this particular operation would need a total fee of at least ([\d]+) mumav\.|}
 
 let conflict_error_no_possible_fee =
   rex
@@ -788,7 +788,7 @@ let conflict_error_no_possible_fee =
 
 let rejected_by_full_mempool_with_needed_fee =
   rex
-    {|Operation ([\w\d]+) has been rejected because the mempool is full\. This specific operation would need a total fee of at least ([\d]+) mutez to be considered and propagated by the mempool of this particular node right now\. Note that if the node receives operations with a better fee over gas limit ratio in the future, the operation may be rejected even with the indicated fee, or it may be successfully injected but removed at a later date\.|}
+    {|Operation ([\w\d]+) has been rejected because the mempool is full\. This specific operation would need a total fee of at least ([\d]+) mumav to be considered and propagated by the mempool of this particular node right now\. Note that if the node receives operations with a better fee over gas limit ratio in the future, the operation may be rejected even with the indicated fee, or it may be successfully injected but removed at a later date\.|}
 
 let rejected_by_full_mempool_no_possible_fee =
   rex

@@ -657,7 +657,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [mutez_to_bls12_381_fr--storage151303925--input216277421]",
+    "title": "Lima: opcodes [mumav_to_bls12_381_fr--storage151303925--input216277421]",
     "tags": [
       "regression",
       "lima",

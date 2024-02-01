@@ -47,7 +47,7 @@ include Compare.Make (struct
     (* This function is used by the Michelson interpreter to compare
        addresses. It is of significant importance to remember that in
        Michelson, address comparison is used to distinguish between
-       KT1 and tz1. As a consequence, we want to preserve that [tz1 <
+       KT1 and mv1. As a consequence, we want to preserve that [mv1 <
        KT1 < others], which the two following lines ensure. The
        wildcards are therefore here for a reason, and should not be
        modified when new constructors are added to [t]. *)

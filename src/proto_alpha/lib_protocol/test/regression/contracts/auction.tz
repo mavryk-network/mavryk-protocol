@@ -1,5 +1,5 @@
 { parameter key_hash ;
-  storage (pair timestamp (pair mutez key_hash)) ;
+  storage (pair timestamp (pair mumav key_hash)) ;
   code { DUP ;
          { CDR ; CAR } ;
          DUP ;

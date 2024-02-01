@@ -92,7 +92,7 @@ let rejection_with_proof ~(testnet : unit -> Testnet.t) () =
      (10,000 xtz for both player), and play the game (each
      [Smart_rollup_refute] operation should be relatively cheap). *)
   let testnet = testnet () in
-  let min_balance = Tez.(of_mutez_int 11_000_000_000) in
+  let min_balance = Tez.(of_mumav_int 11_000_000_000) in
   let* client, node = Helpers.setup_octez_node ~testnet () in
   let* honest_operator = Client.gen_and_show_keys client in
   let* dishonest_operator = Client.gen_and_show_keys client in

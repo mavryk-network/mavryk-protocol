@@ -10,7 +10,7 @@ type shared = {baker_part : Tez_repr.t; stakers_part : Tez_repr.t}
 (** [share ~rounding ctxt delegate amount] shares [amount] between a [baker_part] and a
     [stakers_part] proportionally to their shares in [delegate]'s frozen
     deposits.
-    [rounding] controls where the extra mutez goes in case the split doesn't
+    [rounding] controls where the extra mumav goes in case the split doesn't
     fall on integer values. *)
 val share :
   rounding:[`Towards_stakers | `Towards_baker] ->

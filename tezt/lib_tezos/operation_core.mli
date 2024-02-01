@@ -458,7 +458,7 @@ module Manager : sig
 
   (** [transfer ?(dest=Constant.bootstrap2) ~amount:1_000_000 ()]
      builds a transfer operation. Note that the amount is expressed in
-     mutez. *)
+     mumav. *)
   val transfer : ?dest:Account.key -> ?amount:int -> unit -> payload
 
   (** [origination ?(init_balance=0) ~code ~init_storage ()]
@@ -468,7 +468,7 @@ module Manager : sig
 
   (** [call ~dest ~amount:0 ~entrypoint ~arg ()] builds a smart contract call
       operation to the [entrypoint] with the provided Michelson argument
-      [arg]. Note that the amount is expressed in mutez. *)
+      [arg]. Note that the amount is expressed in mumav. *)
   val call :
     ?dest:string ->
     ?amount:int ->
@@ -649,28 +649,28 @@ end
 val gas_limit_exceeded : rex
 
 (** Matches the message produced by
-    [Operation_conflict {new_hash; needed_fee_in_mutez = Some fee}]
+    [Operation_conflict {new_hash; needed_fee_in_mumav = Some fee}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [new_hash] and [fee]. *)
 val conflict_error_with_needed_fee : rex
 
 (** Matches the message produced by
-    [Operation_conflict {new_hash; needed_fee_in_mutez = None}]
+    [Operation_conflict {new_hash; needed_fee_in_mumav = None}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [new_hash]. *)
 val conflict_error_no_possible_fee : rex
 
 (** Matches the message produced by
-    [Rejected_by_full_mempool {hash; needed_fee_in_mutez = Some fee}]
+    [Rejected_by_full_mempool {hash; needed_fee_in_mumav = Some fee}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [hash] and [fee]. *)
 val rejected_by_full_mempool_with_needed_fee : rex
 
 (** Matches the message produced by
-    [Rejected_by_full_mempool {hash; needed_fee_in_mutez = None}]
+    [Rejected_by_full_mempool {hash; needed_fee_in_mumav = None}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [hash]. *)

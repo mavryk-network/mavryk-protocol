@@ -31,7 +31,7 @@ type error += Parse_error
 type error +=
   | Operation_conflict of {
       new_hash : Operation_hash.t;
-      needed_fee_in_mutez : int64 option;
+      needed_fee_in_mumav : int64 option;
     }
   | Operation_replacement of {
       old_hash : Operation_hash.t;
@@ -39,7 +39,7 @@ type error +=
     }
   | Rejected_by_full_mempool of {
       hash : Operation_hash.t;
-      needed_fee_in_mutez : int64 option;
+      needed_fee_in_mumav : int64 option;
     }
   | Removed_from_full_mempool of Operation_hash.t
 
@@ -78,32 +78,32 @@ let () =
     ~description:
       "The operation cannot be added because the mempool already contains a \
        conflicting operation."
-    ~pp:(fun ppf (new_hash, needed_fee_in_mutez) ->
+    ~pp:(fun ppf (new_hash, needed_fee_in_mumav) ->
       Format.fprintf
         ppf
         "The operation %a cannot be added because the mempool already contains \
          a conflicting operation. %s"
         Operation_hash.pp
         new_hash
-        (match needed_fee_in_mutez with
+        (match needed_fee_in_mumav with
         | None ->
             "The pre-existing operation cannot be replaced with the new one, \
              even if fees were increased. Try again after the next block has \
              been baked."
-        | Some needed_fee_in_mutez ->
+        | Some needed_fee_in_mumav ->
             Format.asprintf
               "To replace the latter, this particular operation would need a \
-               total fee of at least %Ld mutez."
-              needed_fee_in_mutez))
+               total fee of at least %Ld mumav."
+              needed_fee_in_mumav))
     (Data_encoding.obj2
        (Data_encoding.req "new_hash" Operation_hash.encoding)
-       (Data_encoding.opt "needed_fee_in_mutez" Data_encoding.int64))
+       (Data_encoding.opt "needed_fee_in_mumav" Data_encoding.int64))
     (function
-      | Operation_conflict {new_hash; needed_fee_in_mutez} ->
-          Some (new_hash, needed_fee_in_mutez)
+      | Operation_conflict {new_hash; needed_fee_in_mumav} ->
+          Some (new_hash, needed_fee_in_mumav)
       | _ -> None)
-    (fun (new_hash, needed_fee_in_mutez) ->
-      Operation_conflict {new_hash; needed_fee_in_mutez}) ;
+    (fun (new_hash, needed_fee_in_mumav) ->
+      Operation_conflict {new_hash; needed_fee_in_mumav}) ;
   (* Operation replacement *)
   register_error_kind
     `Temporary
@@ -141,7 +141,7 @@ let () =
         | Some fee ->
             Format.sprintf
               "This specific operation would need a total fee of at least %Ld \
-               mutez to be considered and propagated by the mempool of this \
+               mumav to be considered and propagated by the mempool of this \
                particular node right now. Note that if the node receives \
                operations with a better fee over gas limit ratio in the \
                future, the operation may be rejected even with the indicated \
@@ -155,13 +155,13 @@ let () =
     Data_encoding.(
       obj2
         (req "operation_hash" Operation_hash.encoding)
-        (opt "needed_fee_in_mutez" int64))
+        (opt "needed_fee_in_mumav" int64))
     (function
-      | Rejected_by_full_mempool {hash; needed_fee_in_mutez} ->
-          Some (hash, needed_fee_in_mutez)
+      | Rejected_by_full_mempool {hash; needed_fee_in_mumav} ->
+          Some (hash, needed_fee_in_mumav)
       | _ -> None)
-    (fun (hash, needed_fee_in_mutez) ->
-      Rejected_by_full_mempool {hash; needed_fee_in_mutez}) ;
+    (fun (hash, needed_fee_in_mumav) ->
+      Rejected_by_full_mempool {hash; needed_fee_in_mumav}) ;
   (* Removed_from_full_mempool *)
   register_error_kind
     `Temporary

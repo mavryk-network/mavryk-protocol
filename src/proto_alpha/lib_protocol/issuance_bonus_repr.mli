@@ -16,7 +16,7 @@
     The int64 encoding of the bonus is made such that the approximation
     resulting of this encoding is negligible when the bonus is used in a
     context where the total supply of the network is in the order of magnitude
-    of 2^50 mutez (10^15 mutez)
+    of 2^50 mumav (10^15 mumav)
 *)
 
 (** An issuance bonus is a rational between zero and some [max_bonus]. *)

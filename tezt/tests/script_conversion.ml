@@ -47,7 +47,7 @@ let convert_script = function
   code { CDR ;
          NIL operation ;
          SELF ;
-         PUSH mutez 0 ;
+         PUSH mumav 0 ;
          UNIT ;
          TRANSFER_TOKENS ;
          DUP ;
@@ -62,7 +62,7 @@ let convert_script = function
       [ [ { "prim": "CDR" },
           { "prim": "NIL", "args": [ { "prim": "operation" } ] },
           { "prim": "SELF" },
-          { "prim": "PUSH", "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+          { "prim": "PUSH", "args": [ { "prim": "mumav" }, { "int": "0" } ] },
           { "prim": "UNIT" }, { "prim": "TRANSFER_TOKENS" },
           { "prim": "DUP" },
           { "prim": "DIP", "args": [ [ { "prim": "CONS" } ] ] },
@@ -74,7 +74,7 @@ let convert_script = function
        (3, K_storage, [Prim (4, T_unit, [], [])], []); Prim (5, K_code, [Seq \
        (6, [Prim (7, I_CDR, [], []); Prim (8, I_NIL, [Prim (9, T_operation, \
        [], [])], []); Prim (10, I_SELF, [], []); Prim (11, I_PUSH, [Prim (12, \
-       T_mutez, [], []); Int (13, Z.zero)], []); Prim (14, I_UNIT, [], []); \
+       T_mumav, [], []); Int (13, Z.zero)], []); Prim (14, I_UNIT, [], []); \
        Prim (15, I_TRANSFER_TOKENS, [], []); Prim (16, I_DUP, [], []); Prim \
        (17, I_DIP, [Seq (18, [Prim (19, I_CONS, [], [])])], []); Prim (20, \
        I_CONS, [], []); Prim (21, I_PAIR, [], [])])], [])])"
@@ -85,7 +85,7 @@ let convert_data = function
   PUSH address "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU" ;
   CONTRACT unit ;
   { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-  PUSH mutez 1 ;
+  PUSH mumav 1 ;
   UNIT ;
   TRANSFER_TOKENS ;
   DIP { NIL operation } ;
@@ -99,7 +99,7 @@ let convert_data = function
   { "prim": "CONTRACT", "args": [ { "prim": "unit" } ] },
   [ { "prim": "IF_NONE",
       "args": [ [ [ { "prim": "UNIT" }, { "prim": "FAILWITH" } ] ], [] ] } ],
-  { "prim": "PUSH", "args": [ { "prim": "mutez" }, { "int": "1" } ] },
+  { "prim": "PUSH", "args": [ { "prim": "mumav" }, { "int": "1" } ] },
   { "prim": "UNIT" }, { "prim": "TRANSFER_TOKENS" },
   { "prim": "DIP",
     "args": [ [ { "prim": "NIL", "args": [ { "prim": "operation" } ] } ] ] },
@@ -107,7 +107,7 @@ let convert_data = function
   | `Binary ->
       "0x020000006403200743036e0100000024747a31666173774354446369527a45346f4a396a6e32566d3264766a6579413966557a550555036c0200000015072f02000000090200000004034f032702000000000743036a0001034f034d051f0200000004053d036d031b"
   | `OCaml ->
-      {|Seq (0, [Prim (1, I_DROP, [], []); Prim (2, I_PUSH, [Prim (3, T_address, [], []); String (4, "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU")], []); Prim (5, I_CONTRACT, [Prim (6, T_unit, [], [])], []); Seq (7, [Prim (8, I_IF_NONE, [Seq (9, [Seq (10, [Prim (11, I_UNIT, [], []); Prim (12, I_FAILWITH, [], [])])]); Seq (13, [])], [])]); Prim (14, I_PUSH, [Prim (15, T_mutez, [], []); Int (16, Z.one)], []); Prim (17, I_UNIT, [], []); Prim (18, I_TRANSFER_TOKENS, [], []); Prim (19, I_DIP, [Seq (20, [Prim (21, I_NIL, [Prim (22, T_operation, [], [])], [])])], []); Prim (23, I_CONS, [], [])])|}
+      {|Seq (0, [Prim (1, I_DROP, [], []); Prim (2, I_PUSH, [Prim (3, T_address, [], []); String (4, "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU")], []); Prim (5, I_CONTRACT, [Prim (6, T_unit, [], [])], []); Seq (7, [Prim (8, I_IF_NONE, [Seq (9, [Seq (10, [Prim (11, I_UNIT, [], []); Prim (12, I_FAILWITH, [], [])])]); Seq (13, [])], [])]); Prim (14, I_PUSH, [Prim (15, T_mumav, [], []); Int (16, Z.one)], []); Prim (17, I_UNIT, [], []); Prim (18, I_TRANSFER_TOKENS, [], []); Prim (19, I_DIP, [Seq (20, [Prim (21, I_NIL, [Prim (22, T_operation, [], [])], [])])], []); Prim (23, I_CONS, [], [])])|}
 
 let convert_data_type = "lambda unit (list operation)"
 

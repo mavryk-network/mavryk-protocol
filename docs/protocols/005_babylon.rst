@@ -324,10 +324,10 @@ protocols Athens and Babylon, and then use a diffing tool.
 The ``source`` field of manager operations is now a public key hash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Babylon, only tz1, tz2 and tz3 accounts can be the source of
+In Babylon, only mv1, mv2 and mv3 accounts can be the source of
 manager operations (transaction, origination, delegation,
 reveal). These operations currently contain a source contract, that is
-a byte ``0`` followed by a public key hash for a tz1, tz2 or tz3, or a
+a byte ``0`` followed by a public key hash for a mv1, mv2 or mv3, or a
 byte ``1`` followed by a contract hash for a KT1. This first byte
 disappears since the KT1 case is now impossible.
 
@@ -335,14 +335,14 @@ Transactions now have an entrypoint
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Athens, the transaction operation ends in either a byte ``0``,
-equivalent to sending ``Unit``, and sufficient for transaction to tz1,
-tz2 or tz3 accounts, or a byte ``1``, followed by the smart contract
+equivalent to sending ``Unit``, and sufficient for transaction to mv1,
+mv2 or mv3 accounts, or a byte ``1``, followed by the smart contract
 parameter (four bytes of size followed by the serialized Michelson
 data).
 
 In Babylon, the transaction operation ends in either a byte ``0``,
 equivalent to sending ``Unit`` to entrypoint ``%default``, and
-sufficient for transaction to tz1, tz2 or tz3 accounts, or a byte
+sufficient for transaction to mv1, mv2 or mv3 accounts, or a byte
 ``1``, followed by the entrypoint, and then the smart contract
 parameter (four bytes of size followed by the serialized Michelson
 data).
@@ -436,13 +436,13 @@ To transfer (spend) tezos from originated contract to an implicit account, use:
 
    tezos-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
-               --arg '{ DROP ; NIL operation ; PUSH key_hash "<adr>" ; IMPLICIT_ACCOUNT ; PUSH mutez <val> ; UNIT ; TRANSFER_TOKENS ; CONS }'
+               --arg '{ DROP ; NIL operation ; PUSH key_hash "<adr>" ; IMPLICIT_ACCOUNT ; PUSH mumav <val> ; UNIT ; TRANSFER_TOKENS ; CONS }'
 
 - ``src``: has to be equal to the ``key_hash`` found in the contract's storage,
   i.e. its manager.
 - ``dst``: is the originated contract
 - ``adr``: key_hash of the implicit account receiving the tokens
-- ``val``: amount of mutez to transfer
+- ``val``: amount of mumav to transfer
 
 To transfer tezos from originated contract to another originated contract, use:
 
@@ -450,7 +450,7 @@ To transfer tezos from originated contract to another originated contract, use:
 
    tezos-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
-               --arg '{ DROP ; NIL operation ; PUSH address <adr> ; CONTRACT %<ent> <par> ; ASSERT_SOME ; PUSH mutez <val> ; <ppar> ; TRANSFER_TOKENS ; CONS }'
+               --arg '{ DROP ; NIL operation ; PUSH address <adr> ; CONTRACT %<ent> <par> ; ASSERT_SOME ; PUSH mumav <val> ; <ppar> ; TRANSFER_TOKENS ; CONS }'
 
 - ``src``: has to be equal to the ``key_hash`` found in the left part of the
   contract's storage ``pair``, i.e. its manager.
@@ -459,7 +459,7 @@ To transfer tezos from originated contract to another originated contract, use:
 - ``ent``: addressee script's entrypoint (omit if not used)
 - ``par``: addressee script's call parameter type
 - ``ppar``: instruction to push parameter value of call to addressee script
-- ``val``: amount of mutez to transfer
+- ``val``: amount of mumav to transfer
 
 Origination script transformation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -557,7 +557,7 @@ typechecking depends on the contract's code.
 
 The gas cost for each kind of transfer operation is as follow:
 
-- implicit account (tz1|tz2|tz3...) → implicit account :  10207 gas
+- implicit account (mv1|mv2|mv3...) → implicit account :  10207 gas
 - implicit account → originated manager.tz : 15285 gas
 - originated manager.tz → implicit account : 26183 gas
 - originated manager.tz → originated manager.tz : 44625 gas
@@ -1108,8 +1108,8 @@ Accounts rehaul
     `CREATE_ACCOUNT` and adding entrypoints for `CREATE_CONTRACT`).
 
     This change will impact all users of the RPC API as well as anyone who
-    forges operations. The source of manager operations is now a tz1, tz2
-    or tz3, and no longer a KT1. The manager field and the spendable and
+    forges operations. The source of manager operations is now a mv1, mv2
+    or mv3, and no longer a KT1. The manager field and the spendable and
     delegatable flags disappear from the origination operation format
     (JSON and binary) as well as everywhere in the RPC API.
 
@@ -1144,7 +1144,7 @@ Accounts rehaul
 
     Contains BREAKING CHANGES (see end of message).
 
-    Implicit accounts (tz1, tz2, tz3) can directly set their
+    Implicit accounts (mv1, mv2, mv3) can directly set their
     delegate. Furthermore implicit accounts have the ability to delete
     their delegate by sending a "delegate" transaction with an empty
     delegate field.  This specific patch does not impact the ability for
@@ -1155,10 +1155,10 @@ Accounts rehaul
     signature allows that both implicit and originated accounts can be
     stored in the set.
 
-    Explorers and wallets should handle the delegation from tz1, tz2 and
-    tz3 accounts. RPC `/context/delegates/<pkh>/delegated_contracts` (and
-    composite RPC `/context/delegates/<pkh>/`) can now contain tz1, tz2
-    and tz3 addresses.
+    Explorers and wallets should handle the delegation from mv1, mv2 and
+    mv3 accounts. RPC `/context/delegates/<pkh>/delegated_contracts` (and
+    composite RPC `/context/delegates/<pkh>/`) can now contain mv1, mv2
+    and mv3 addresses.
 
 
 Migration

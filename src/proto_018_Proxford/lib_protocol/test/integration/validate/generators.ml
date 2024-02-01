@@ -156,7 +156,7 @@ let gen_tez : cstrs -> Tez.t option QCheck2.Gen.t =
   match amount with
   | Some amount ->
       let amount = Int64.of_int amount in
-      Tez.of_mutez amount
+      Tez.of_mumav amount
   | None -> None
 
 (** Generator for gas integral. *)

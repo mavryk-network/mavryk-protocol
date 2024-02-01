@@ -332,7 +332,7 @@ Full description
         "kind": "transaction",
         "source": $017-PtNairob.transaction_destination,
         "nonce": integer ∈ [0, 2^16-1],
-        "amount": $017-PtNairob.mutez,
+        "amount": $017-PtNairob.mumav,
         "destination": $017-PtNairob.transaction_destination,
         "parameters"?: { "entrypoint": $017-PtNairob.entrypoint,
                          "value": any },
@@ -342,7 +342,7 @@ Full description
            "kind": "origination",
            "source": $017-PtNairob.transaction_destination,
            "nonce": integer ∈ [0, 2^16-1],
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "result":
@@ -585,7 +585,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -636,7 +636,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -660,7 +660,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -717,7 +717,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -725,11 +725,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -737,17 +737,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -755,15 +755,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -772,7 +772,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -788,7 +788,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -796,7 +796,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -809,7 +809,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -821,7 +821,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -832,7 +832,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -840,7 +840,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -852,7 +852,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -865,7 +865,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -914,7 +914,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -925,7 +925,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -935,7 +935,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -944,7 +944,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -962,7 +962,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -983,7 +983,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1233,7 +1233,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1248,11 +1248,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -1267,11 +1267,11 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "metadata":
@@ -1284,7 +1284,7 @@ Full description
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1299,7 +1299,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1314,11 +1314,11 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez,
+           "limit"?: $017-PtNairob.mumav,
            "metadata":
              { "balance_updates"?:
                  $017-PtNairob.operation_metadata.alpha.balance_updates,
@@ -1329,7 +1329,7 @@ Full description
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1345,7 +1345,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1369,7 +1369,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1389,7 +1389,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1408,7 +1408,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1426,7 +1426,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1441,7 +1441,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1460,7 +1460,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1480,7 +1480,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1536,7 +1536,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1554,7 +1554,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1571,7 +1571,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1587,7 +1587,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1612,7 +1612,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -1640,7 +1640,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -3716,7 +3716,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -3798,7 +3798,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -9346,7 +9346,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -9397,7 +9397,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -9675,7 +9675,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -9757,7 +9757,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -10066,7 +10066,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -10117,7 +10117,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -10393,7 +10393,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -10475,7 +10475,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -10933,19 +10933,19 @@ Full description
       "hard_gas_limit_per_operation": $bignum,
       "hard_gas_limit_per_block": $bignum,
       "proof_of_work_threshold": $int64,
-      "minimal_stake": $017-PtNairob.mutez,
+      "minimal_stake": $017-PtNairob.mumav,
       "vdf_difficulty": $int64,
-      "seed_nonce_revelation_tip": $017-PtNairob.mutez,
+      "seed_nonce_revelation_tip": $017-PtNairob.mumav,
       "origination_size": integer ∈ [-2^30, 2^30],
-      "baking_reward_fixed_portion": $017-PtNairob.mutez,
-      "baking_reward_bonus_per_slot": $017-PtNairob.mutez,
-      "endorsing_reward_per_slot": $017-PtNairob.mutez,
-      "cost_per_byte": $017-PtNairob.mutez,
+      "baking_reward_fixed_portion": $017-PtNairob.mumav,
+      "baking_reward_bonus_per_slot": $017-PtNairob.mumav,
+      "endorsing_reward_per_slot": $017-PtNairob.mumav,
+      "cost_per_byte": $017-PtNairob.mumav,
       "hard_storage_limit_per_operation": $bignum,
       "quorum_min": integer ∈ [-2^31-1, 2^31],
       "quorum_max": integer ∈ [-2^31-1, 2^31],
       "min_proposal_quorum": integer ∈ [-2^31-1, 2^31],
-      "liquidity_baking_subsidy": $017-PtNairob.mutez,
+      "liquidity_baking_subsidy": $017-PtNairob.mumav,
       "liquidity_baking_toggle_ema_threshold": integer ∈ [-2^31-1, 2^31],
       "max_operations_time_to_live": integer ∈ [-2^15, 2^15-1],
       "minimal_block_delay": $int64,
@@ -10957,7 +10957,7 @@ Full description
           "denominator": integer ∈ [0, 2^16-1] },
       "max_slashing_period": integer ∈ [-2^30, 2^30],
       "frozen_deposits_percentage": integer ∈ [-2^30, 2^30],
-      "double_baking_punishment": $017-PtNairob.mutez,
+      "double_baking_punishment": $017-PtNairob.mumav,
       "ratio_of_frozen_deposits_slashed_per_double_endorsement":
         { "numerator": integer ∈ [0, 2^16-1],
           "denominator": integer ∈ [0, 2^16-1] },
@@ -10971,7 +10971,7 @@ Full description
       "tx_rollup_hard_size_limit_per_inbox": integer ∈ [-2^30, 2^30],
       "tx_rollup_hard_size_limit_per_message": integer ∈ [-2^30, 2^30],
       "tx_rollup_max_withdrawals_per_batch": integer ∈ [-2^30, 2^30],
-      "tx_rollup_commitment_bond": $017-PtNairob.mutez,
+      "tx_rollup_commitment_bond": $017-PtNairob.mumav,
       "tx_rollup_finality_period": integer ∈ [-2^30, 2^30],
       "tx_rollup_withdraw_period": integer ∈ [-2^30, 2^30],
       "tx_rollup_max_inboxes_count": integer ∈ [-2^30, 2^30],
@@ -10995,7 +10995,7 @@ Full description
       "smart_rollup_arith_pvm_enable": boolean,
       "smart_rollup_origination_size": integer ∈ [-2^30, 2^30],
       "smart_rollup_challenge_window_in_blocks": integer ∈ [-2^30, 2^30],
-      "smart_rollup_stake_amount": $017-PtNairob.mutez,
+      "smart_rollup_stake_amount": $017-PtNairob.mumav,
       "smart_rollup_commitment_period_in_blocks": integer ∈ [-2^30, 2^30],
       "smart_rollup_max_lookahead_in_blocks": integer ∈ [-2^31-1, 2^31],
       "smart_rollup_max_active_outbox_levels": integer ∈ [-2^31-1, 2^31],
@@ -11008,7 +11008,7 @@ Full description
       "zk_rollup_enable": boolean,
       "zk_rollup_origination_size": integer ∈ [-2^30, 2^30],
       "zk_rollup_min_pending_to_process": integer ∈ [-2^30, 2^30] }
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $Signature.Public_key_hash:
       /* A Ed25519, Secp256k1, P256, or BLS public key hash
          (Base58Check-encoded) */
@@ -11384,19 +11384,19 @@ Full description
       "hard_gas_limit_per_operation": $bignum,
       "hard_gas_limit_per_block": $bignum,
       "proof_of_work_threshold": $int64,
-      "minimal_stake": $017-PtNairob.mutez,
+      "minimal_stake": $017-PtNairob.mumav,
       "vdf_difficulty": $int64,
-      "seed_nonce_revelation_tip": $017-PtNairob.mutez,
+      "seed_nonce_revelation_tip": $017-PtNairob.mumav,
       "origination_size": integer ∈ [-2^30, 2^30],
-      "baking_reward_fixed_portion": $017-PtNairob.mutez,
-      "baking_reward_bonus_per_slot": $017-PtNairob.mutez,
-      "endorsing_reward_per_slot": $017-PtNairob.mutez,
-      "cost_per_byte": $017-PtNairob.mutez,
+      "baking_reward_fixed_portion": $017-PtNairob.mumav,
+      "baking_reward_bonus_per_slot": $017-PtNairob.mumav,
+      "endorsing_reward_per_slot": $017-PtNairob.mumav,
+      "cost_per_byte": $017-PtNairob.mumav,
       "hard_storage_limit_per_operation": $bignum,
       "quorum_min": integer ∈ [-2^31-1, 2^31],
       "quorum_max": integer ∈ [-2^31-1, 2^31],
       "min_proposal_quorum": integer ∈ [-2^31-1, 2^31],
-      "liquidity_baking_subsidy": $017-PtNairob.mutez,
+      "liquidity_baking_subsidy": $017-PtNairob.mumav,
       "liquidity_baking_toggle_ema_threshold": integer ∈ [-2^31-1, 2^31],
       "max_operations_time_to_live": integer ∈ [-2^15, 2^15-1],
       "minimal_block_delay": $int64,
@@ -11408,7 +11408,7 @@ Full description
           "denominator": integer ∈ [0, 2^16-1] },
       "max_slashing_period": integer ∈ [-2^30, 2^30],
       "frozen_deposits_percentage": integer ∈ [-2^30, 2^30],
-      "double_baking_punishment": $017-PtNairob.mutez,
+      "double_baking_punishment": $017-PtNairob.mumav,
       "ratio_of_frozen_deposits_slashed_per_double_endorsement":
         { "numerator": integer ∈ [0, 2^16-1],
           "denominator": integer ∈ [0, 2^16-1] },
@@ -11422,7 +11422,7 @@ Full description
       "tx_rollup_hard_size_limit_per_inbox": integer ∈ [-2^30, 2^30],
       "tx_rollup_hard_size_limit_per_message": integer ∈ [-2^30, 2^30],
       "tx_rollup_max_withdrawals_per_batch": integer ∈ [-2^30, 2^30],
-      "tx_rollup_commitment_bond": $017-PtNairob.mutez,
+      "tx_rollup_commitment_bond": $017-PtNairob.mumav,
       "tx_rollup_finality_period": integer ∈ [-2^30, 2^30],
       "tx_rollup_withdraw_period": integer ∈ [-2^30, 2^30],
       "tx_rollup_max_inboxes_count": integer ∈ [-2^30, 2^30],
@@ -11446,7 +11446,7 @@ Full description
       "smart_rollup_arith_pvm_enable": boolean,
       "smart_rollup_origination_size": integer ∈ [-2^30, 2^30],
       "smart_rollup_challenge_window_in_blocks": integer ∈ [-2^30, 2^30],
-      "smart_rollup_stake_amount": $017-PtNairob.mutez,
+      "smart_rollup_stake_amount": $017-PtNairob.mumav,
       "smart_rollup_commitment_period_in_blocks": integer ∈ [-2^30, 2^30],
       "smart_rollup_max_lookahead_in_blocks": integer ∈ [-2^31-1, 2^31],
       "smart_rollup_max_active_outbox_levels": integer ∈ [-2^31-1, 2^31],
@@ -11459,7 +11459,7 @@ Full description
       "zk_rollup_enable": boolean,
       "zk_rollup_origination_size": integer ∈ [-2^30, 2^30],
       "zk_rollup_min_pending_to_process": integer ∈ [-2^30, 2^30] }
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $Signature.Public_key_hash:
       /* A Ed25519, Secp256k1, P256, or BLS public key hash
          (Base58Check-encoded) */
@@ -11889,11 +11889,11 @@ Full description
             </div>
   <div id="GET_..--block_id--context--contracts--contract_idoutput.json" class="GET_..--block_id--context--contracts--contract_id tabcontent">
     <pre>
-    { "balance": $017-PtNairob.mutez,
+    { "balance": $017-PtNairob.mumav,
       "delegate"?: $Signature.Public_key_hash,
       "script"?: $017-PtNairob.scripted.contracts,
       "counter"?: $positive_bignum }
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.scripted.contracts: { "code": any,
                                         "storage": any }
     $Signature.Public_key_hash:
@@ -12207,7 +12207,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -12258,7 +12258,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -12536,7 +12536,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -12618,7 +12618,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -12915,7 +12915,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -12966,7 +12966,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -13242,7 +13242,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -13324,7 +13324,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -13792,7 +13792,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -13843,7 +13843,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -14125,7 +14125,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -14207,7 +14207,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -14552,7 +14552,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -14603,7 +14603,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -14879,7 +14879,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -14961,7 +14961,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -15556,7 +15556,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -15607,7 +15607,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -15883,7 +15883,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -15965,7 +15965,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -16282,13 +16282,13 @@ Full description
             </div>
   <div id="GET_..--block_id--context--delegates--pkhoutput.json" class="GET_..--block_id--context--delegates--pkh tabcontent">
     <pre>
-    { "full_balance": $017-PtNairob.mutez,
-      "current_frozen_deposits": $017-PtNairob.mutez,
-      "frozen_deposits": $017-PtNairob.mutez,
-      "staking_balance": $017-PtNairob.mutez,
-      "frozen_deposits_limit"?: $017-PtNairob.mutez,
+    { "full_balance": $017-PtNairob.mumav,
+      "current_frozen_deposits": $017-PtNairob.mumav,
+      "frozen_deposits": $017-PtNairob.mumav,
+      "staking_balance": $017-PtNairob.mumav,
+      "frozen_deposits_limit"?: $017-PtNairob.mumav,
       "delegated_contracts": [ $017-PtNairob.contract_id ... ],
-      "delegated_balance": $017-PtNairob.mutez,
+      "delegated_balance": $017-PtNairob.mumav,
       "deactivated": boolean,
       "grace_period": integer ∈ [-2^31-1, 2^31],
       "voting_power"?: $int64,
@@ -16304,7 +16304,7 @@ Full description
          A contract notation as given to an RPC or inside scripts. Can be a
          base58 implicit contract hash or a base58 originated contract hash. */
       $unistring
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $Protocol_hash:
       /* A Tezos protocol ID (Base58Check-encoded) */
       $unistring
@@ -16602,7 +16602,7 @@ Full description
     <button class="tablinks" onclick="showTab(this, 'GET_..--block_id--context--delegates--pkh--current_frozen_depositsoutput.bin', 'GET_..--block_id--context--delegates--pkh--current_frozen_deposits')">Binary output</button>
     </div><div id="GET_..--block_id--context--delegates--pkh--current_frozen_depositsdescr" class="GET_..--block_id--context--delegates--pkh--current_frozen_deposits tabcontent">
             <p>
-            Returns the current amount of the frozen deposits (in mutez).</p>
+            Returns the current amount of the frozen deposits (in mumav).</p>
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--current_frozen_depositsoutput.json" class="GET_..--block_id--context--delegates--pkh--current_frozen_deposits tabcontent">
     <pre>
@@ -16679,7 +16679,7 @@ Full description
     <button class="tablinks" onclick="showTab(this, 'GET_..--block_id--context--delegates--pkh--delegated_balanceoutput.bin', 'GET_..--block_id--context--delegates--pkh--delegated_balance')">Binary output</button>
     </div><div id="GET_..--block_id--context--delegates--pkh--delegated_balancedescr" class="GET_..--block_id--context--delegates--pkh--delegated_balance tabcontent">
             <p>
-            Returns the sum (in mutez) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.</p>
+            Returns the sum (in mumav) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.</p>
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--delegated_balanceoutput.json" class="GET_..--block_id--context--delegates--pkh--delegated_balance tabcontent">
     <pre>
@@ -16847,7 +16847,7 @@ Full description
     <button class="tablinks" onclick="showTab(this, 'GET_..--block_id--context--delegates--pkh--frozen_depositsoutput.bin', 'GET_..--block_id--context--delegates--pkh--frozen_deposits')">Binary output</button>
     </div><div id="GET_..--block_id--context--delegates--pkh--frozen_depositsdescr" class="GET_..--block_id--context--delegates--pkh--frozen_deposits tabcontent">
             <p>
-            Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mutez). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.</p>
+            Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mumav). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.</p>
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--frozen_depositsoutput.json" class="GET_..--block_id--context--delegates--pkh--frozen_deposits tabcontent">
     <pre>
@@ -16897,8 +16897,8 @@ Full description
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--frozen_deposits_limitoutput.json" class="GET_..--block_id--context--delegates--pkh--frozen_deposits_limit tabcontent">
     <pre>
-    $017-PtNairob.mutez /* Some */ || null /* None */
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav /* Some */ || null /* None */
+    $017-PtNairob.mumav: $positive_bignum
     $positive_bignum:
       /* Positive big number
          Decimal representation of a positive big number */
@@ -16965,7 +16965,7 @@ Full description
     <button class="tablinks" onclick="showTab(this, 'GET_..--block_id--context--delegates--pkh--full_balanceoutput.bin', 'GET_..--block_id--context--delegates--pkh--full_balance')">Binary output</button>
     </div><div id="GET_..--block_id--context--delegates--pkh--full_balancedescr" class="GET_..--block_id--context--delegates--pkh--full_balance tabcontent">
             <p>
-            Returns the full balance (in mutez) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.</p>
+            Returns the full balance (in mumav) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.</p>
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--full_balanceoutput.json" class="GET_..--block_id--context--delegates--pkh--full_balance tabcontent">
     <pre>
@@ -17051,8 +17051,8 @@ Full description
       "missed_slots": integer ∈ [-2^30, 2^30],
       "missed_levels": integer ∈ [-2^30, 2^30],
       "remaining_allowed_missed_slots": integer ∈ [-2^30, 2^30],
-      "expected_endorsing_rewards": $017-PtNairob.mutez }
-    $017-PtNairob.mutez: $positive_bignum
+      "expected_endorsing_rewards": $017-PtNairob.mumav }
+    $017-PtNairob.mumav: $positive_bignum
     $positive_bignum:
       /* Positive big number
          Decimal representation of a positive big number */
@@ -17104,7 +17104,7 @@ Full description
     <button class="tablinks" onclick="showTab(this, 'GET_..--block_id--context--delegates--pkh--staking_balanceoutput.bin', 'GET_..--block_id--context--delegates--pkh--staking_balance')">Binary output</button>
     </div><div id="GET_..--block_id--context--delegates--pkh--staking_balancedescr" class="GET_..--block_id--context--delegates--pkh--staking_balance tabcontent">
             <p>
-            Returns the total amount of tokens (in mutez) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.</p>
+            Returns the total amount of tokens (in mumav) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.</p>
             </div>
   <div id="GET_..--block_id--context--delegates--pkh--staking_balanceoutput.json" class="GET_..--block_id--context--delegates--pkh--staking_balance tabcontent">
     <pre>
@@ -22179,13 +22179,13 @@ Full description
       "commitment_newest_hash": $Commitment_hash /* Some */ || null /* None */,
       "tezos_head_level":
         integer ∈ [-2^31-1, 2^31] /* Some */ || null /* None */,
-      "burn_per_byte": $017-PtNairob.mutez,
+      "burn_per_byte": $017-PtNairob.mumav,
       "allocated_storage": $positive_bignum,
       "occupied_storage": $positive_bignum,
       "inbox_ema": integer ∈ [-2^30, 2^30],
       "commitments_watermark":
         integer ∈ [-2^31-1, 2^31] /* Some */ || null /* None */ }
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $Commitment_hash:
       /* A commitment ID (Base58Check-encoded) */
       $unistring
@@ -23084,7 +23084,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -23135,7 +23135,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -23159,7 +23159,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -23216,7 +23216,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23224,11 +23224,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -23236,17 +23236,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23254,15 +23254,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23271,7 +23271,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23287,7 +23287,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23295,7 +23295,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23308,7 +23308,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23320,7 +23320,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23331,7 +23331,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23339,7 +23339,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23351,7 +23351,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23364,7 +23364,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23413,7 +23413,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23424,7 +23424,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23434,7 +23434,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23443,7 +23443,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23461,7 +23461,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -23482,7 +23482,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -24081,7 +24081,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -24163,7 +24163,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -26198,7 +26198,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -26249,7 +26249,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -26273,7 +26273,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -26330,7 +26330,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26338,11 +26338,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -26350,17 +26350,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26368,15 +26368,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26385,7 +26385,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26401,7 +26401,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26409,7 +26409,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26422,7 +26422,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26434,7 +26434,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26445,7 +26445,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26453,7 +26453,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26465,7 +26465,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26478,7 +26478,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26527,7 +26527,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26538,7 +26538,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26548,7 +26548,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26557,7 +26557,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26575,7 +26575,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -26596,7 +26596,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -27169,7 +27169,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -27251,7 +27251,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -28908,7 +28908,7 @@ Full description
         "kind": "transaction",
         "source": $017-PtNairob.transaction_destination,
         "nonce": integer ∈ [0, 2^16-1],
-        "amount": $017-PtNairob.mutez,
+        "amount": $017-PtNairob.mumav,
         "destination": $017-PtNairob.transaction_destination,
         "parameters"?: { "entrypoint": $017-PtNairob.entrypoint,
                          "value": any },
@@ -28918,7 +28918,7 @@ Full description
            "kind": "origination",
            "source": $017-PtNairob.transaction_destination,
            "nonce": integer ∈ [0, 2^16-1],
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "result":
@@ -29161,7 +29161,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -29212,7 +29212,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -29236,7 +29236,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -29293,7 +29293,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29301,11 +29301,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -29313,17 +29313,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29331,15 +29331,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29348,7 +29348,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29364,7 +29364,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29372,7 +29372,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29385,7 +29385,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29397,7 +29397,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29408,7 +29408,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29416,7 +29416,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29428,7 +29428,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29441,7 +29441,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29490,7 +29490,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29501,7 +29501,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29511,7 +29511,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29520,7 +29520,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29538,7 +29538,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29559,7 +29559,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29806,7 +29806,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29821,11 +29821,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -29840,11 +29840,11 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "metadata":
@@ -29857,7 +29857,7 @@ Full description
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29872,7 +29872,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29887,11 +29887,11 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez,
+           "limit"?: $017-PtNairob.mumav,
            "metadata":
              { "balance_updates"?:
                  $017-PtNairob.operation_metadata.alpha.balance_updates,
@@ -29902,7 +29902,7 @@ Full description
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29918,7 +29918,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29942,7 +29942,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29962,7 +29962,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29981,7 +29981,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -29999,7 +29999,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30014,7 +30014,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30033,7 +30033,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30053,7 +30053,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30109,7 +30109,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30127,7 +30127,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30144,7 +30144,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30160,7 +30160,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30185,7 +30185,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -30213,7 +30213,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -31457,7 +31457,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -31539,7 +31539,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -36642,7 +36642,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -36693,7 +36693,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -38049,7 +38049,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -38131,7 +38131,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -39081,7 +39081,7 @@ Full description
         "kind": "transaction",
         "source": $017-PtNairob.transaction_destination,
         "nonce": integer ∈ [0, 2^16-1],
-        "amount": $017-PtNairob.mutez,
+        "amount": $017-PtNairob.mumav,
         "destination": $017-PtNairob.transaction_destination,
         "parameters"?: { "entrypoint": $017-PtNairob.entrypoint,
                          "value": any },
@@ -39091,7 +39091,7 @@ Full description
            "kind": "origination",
            "source": $017-PtNairob.transaction_destination,
            "nonce": integer ∈ [0, 2^16-1],
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "result":
@@ -39334,7 +39334,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -39385,7 +39385,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -39409,7 +39409,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -39466,7 +39466,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39474,11 +39474,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -39486,17 +39486,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39504,15 +39504,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39521,7 +39521,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39537,7 +39537,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39545,7 +39545,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39558,7 +39558,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39570,7 +39570,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39581,7 +39581,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39589,7 +39589,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39601,7 +39601,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39614,7 +39614,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39663,7 +39663,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39674,7 +39674,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39684,7 +39684,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39693,7 +39693,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39711,7 +39711,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39732,7 +39732,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39982,7 +39982,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -39997,11 +39997,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -40016,11 +40016,11 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "metadata":
@@ -40033,7 +40033,7 @@ Full description
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40048,7 +40048,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40063,11 +40063,11 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez,
+           "limit"?: $017-PtNairob.mumav,
            "metadata":
              { "balance_updates"?:
                  $017-PtNairob.operation_metadata.alpha.balance_updates,
@@ -40078,7 +40078,7 @@ Full description
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40094,7 +40094,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40118,7 +40118,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40138,7 +40138,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40157,7 +40157,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40175,7 +40175,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40190,7 +40190,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40209,7 +40209,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40229,7 +40229,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40285,7 +40285,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40303,7 +40303,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40320,7 +40320,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40336,7 +40336,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40361,7 +40361,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -40389,7 +40389,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -41670,7 +41670,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -41752,7 +41752,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -47441,7 +47441,7 @@ Full description
         "kind": "transaction",
         "source": $017-PtNairob.transaction_destination,
         "nonce": integer ∈ [0, 2^16-1],
-        "amount": $017-PtNairob.mutez,
+        "amount": $017-PtNairob.mumav,
         "destination": $017-PtNairob.transaction_destination,
         "parameters"?: { "entrypoint": $017-PtNairob.entrypoint,
                          "value": any },
@@ -47451,7 +47451,7 @@ Full description
            "kind": "origination",
            "source": $017-PtNairob.transaction_destination,
            "nonce": integer ∈ [0, 2^16-1],
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "result":
@@ -47694,7 +47694,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -47745,7 +47745,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -47769,7 +47769,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -47826,7 +47826,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47834,11 +47834,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -47846,17 +47846,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47864,15 +47864,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47881,7 +47881,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47897,7 +47897,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47905,7 +47905,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47918,7 +47918,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47930,7 +47930,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47941,7 +47941,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47949,7 +47949,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47961,7 +47961,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -47974,7 +47974,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48023,7 +48023,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48034,7 +48034,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48044,7 +48044,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48053,7 +48053,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48071,7 +48071,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48092,7 +48092,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48342,7 +48342,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48357,11 +48357,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -48376,11 +48376,11 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "metadata":
@@ -48393,7 +48393,7 @@ Full description
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48408,7 +48408,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48423,11 +48423,11 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez,
+           "limit"?: $017-PtNairob.mumav,
            "metadata":
              { "balance_updates"?:
                  $017-PtNairob.operation_metadata.alpha.balance_updates,
@@ -48438,7 +48438,7 @@ Full description
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48454,7 +48454,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48478,7 +48478,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48498,7 +48498,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48517,7 +48517,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48535,7 +48535,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48550,7 +48550,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48569,7 +48569,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48589,7 +48589,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48645,7 +48645,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48663,7 +48663,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48680,7 +48680,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48696,7 +48696,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48721,7 +48721,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -48749,7 +48749,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -50030,7 +50030,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -50112,7 +50112,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+
@@ -55816,7 +55816,7 @@ Full description
         "kind": "transaction",
         "source": $017-PtNairob.transaction_destination,
         "nonce": integer ∈ [0, 2^16-1],
-        "amount": $017-PtNairob.mutez,
+        "amount": $017-PtNairob.mumav,
         "destination": $017-PtNairob.transaction_destination,
         "parameters"?: { "entrypoint": $017-PtNairob.entrypoint,
                          "value": any },
@@ -55826,7 +55826,7 @@ Full description
            "kind": "origination",
            "source": $017-PtNairob.transaction_destination,
            "nonce": integer ∈ [0, 2^16-1],
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "result":
@@ -56069,7 +56069,7 @@ Full description
       | "SHA3"
       | "SOURCE"
       | "or"
-      | "SUB_MUTEZ"
+      | "SUB_MUMAV"
       | "LAMBDA"
       | "RIGHT"
       | "CREATE_ACCOUNT"
@@ -56120,7 +56120,7 @@ Full description
       | "OR"
       | "contract"
       | "GET_AND_UPDATE"
-      | "mutez"
+      | "mumav"
       | "sapling_state"
       | "NONE"
       | "IF_LEFT"
@@ -56144,7 +56144,7 @@ Full description
       | "EXEC"
       | "SLICE"
       | "code"
-    $017-PtNairob.mutez: $positive_bignum
+    $017-PtNairob.mumav: $positive_bignum
     $017-PtNairob.operation.alpha.contents:
       { /* Endorsement */
         "kind": "endorsement",
@@ -56201,7 +56201,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56209,11 +56209,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -56221,17 +56221,17 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts }
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56239,15 +56239,15 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez }
+           "limit"?: $017-PtNairob.mumav }
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56256,7 +56256,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56272,7 +56272,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56280,7 +56280,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56293,7 +56293,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56305,7 +56305,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56316,7 +56316,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56324,7 +56324,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56336,7 +56336,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56349,7 +56349,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56398,7 +56398,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56409,7 +56409,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56419,7 +56419,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56428,7 +56428,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56446,7 +56446,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56467,7 +56467,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56717,7 +56717,7 @@ Full description
       || { /* Reveal */
            "kind": "reveal",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56732,11 +56732,11 @@ Full description
       || { /* Transaction */
            "kind": "transaction",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "amount": $017-PtNairob.mutez,
+           "amount": $017-PtNairob.mumav,
            "destination": $017-PtNairob.contract_id,
            "parameters"?:
              { "entrypoint": $017-PtNairob.entrypoint,
@@ -56751,11 +56751,11 @@ Full description
       || { /* Origination */
            "kind": "origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "balance": $017-PtNairob.mutez,
+           "balance": $017-PtNairob.mumav,
            "delegate"?: $Signature.Public_key_hash,
            "script": $017-PtNairob.scripted.contracts,
            "metadata":
@@ -56768,7 +56768,7 @@ Full description
       || { /* Delegation */
            "kind": "delegation",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56783,7 +56783,7 @@ Full description
       || { /* Register_global_constant */
            "kind": "register_global_constant",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56798,11 +56798,11 @@ Full description
       || { /* Set_deposits_limit */
            "kind": "set_deposits_limit",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
-           "limit"?: $017-PtNairob.mutez,
+           "limit"?: $017-PtNairob.mumav,
            "metadata":
              { "balance_updates"?:
                  $017-PtNairob.operation_metadata.alpha.balance_updates,
@@ -56813,7 +56813,7 @@ Full description
       || { /* Increase_paid_storage */
            "kind": "increase_paid_storage",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56829,7 +56829,7 @@ Full description
       || { /* Update_consensus_key */
            "kind": "update_consensus_key",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56853,7 +56853,7 @@ Full description
       || { /* Transfer_ticket */
            "kind": "transfer_ticket",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56873,7 +56873,7 @@ Full description
       || { /* Dal_publish_slot_header */
            "kind": "dal_publish_slot_header",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56892,7 +56892,7 @@ Full description
       || { /* Smart_rollup_originate */
            "kind": "smart_rollup_originate",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56910,7 +56910,7 @@ Full description
       || { /* Smart_rollup_add_messages */
            "kind": "smart_rollup_add_messages",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56925,7 +56925,7 @@ Full description
       || { /* Smart_rollup_cement */
            "kind": "smart_rollup_cement",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56944,7 +56944,7 @@ Full description
       || { /* Smart_rollup_publish */
            "kind": "smart_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -56964,7 +56964,7 @@ Full description
       || { /* Smart_rollup_refute */
            "kind": "smart_rollup_refute",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57020,7 +57020,7 @@ Full description
       || { /* Smart_rollup_timeout */
            "kind": "smart_rollup_timeout",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57038,7 +57038,7 @@ Full description
       || { /* Smart_rollup_execute_outbox_message */
            "kind": "smart_rollup_execute_outbox_message",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57055,7 +57055,7 @@ Full description
       || { /* Smart_rollup_recover_bond */
            "kind": "smart_rollup_recover_bond",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57071,7 +57071,7 @@ Full description
       || { /* Zk_rollup_origination */
            "kind": "zk_rollup_origination",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57096,7 +57096,7 @@ Full description
       || { /* Zk_rollup_publish */
            "kind": "zk_rollup_publish",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -57124,7 +57124,7 @@ Full description
       || { /* Zk_rollup_update */
            "kind": "zk_rollup_update",
            "source": $Signature.Public_key_hash,
-           "fee": $017-PtNairob.mutez,
+           "fee": $017-PtNairob.mumav,
            "counter": $positive_bignum,
            "gas_limit": $positive_bignum,
            "storage_limit": $positive_bignum,
@@ -58382,7 +58382,7 @@ Full description
     +-------------+--------------------------------+
     | 105         | bytes                          |
     +-------------+--------------------------------+
-    | 106         | mutez                          |
+    | 106         | mumav                          |
     +-------------+--------------------------------+
     | 107         | timestamp                      |
     +-------------+--------------------------------+
@@ -58464,7 +58464,7 @@ Full description
     +-------------+--------------------------------+
     | 146         | constant                       |
     +-------------+--------------------------------+
-    | 147         | SUB_MUTEZ                      |
+    | 147         | SUB_MUMAV                      |
     +-------------+--------------------------------+
     | 148         | tx_rollup_l2_address           |
     +-------------+--------------------------------+

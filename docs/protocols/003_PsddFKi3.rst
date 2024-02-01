@@ -11,7 +11,7 @@ While creating accounts currently requires a .257 tez burn, there is
 currently no cost to create implicit accounts, despite them occupying
 space in the context.
 This patch adjusts the cost to .257 tez for both regular (KT1) and
-implicit (tz1) accounts.
+implicit (mv1) accounts.
 
 Error handling for nonce revelation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,7 +97,7 @@ More details on fees and cost model
 Protocol:
 ~~~~~~~~~
 
-The creation of a new tz{1,2,3} address now requires a burn of 0.257ꜩ,
+The creation of a new tz{1,2,3} address now requires a burn of 0.257ṁ,
 in-line with the creation of KT account.
 
 Every manager operation now costs at least ``10000`` in gas,
@@ -134,7 +134,7 @@ will check its size and gas and reject it if the associated fees are
 too low.
 The expected fees are computed using this formula::
 
-   fees >= (minimal_fees + minimal_nanotez_per_byte * size + minimal_nanotez_per_gas_unit * gas)
+   fees >= (minimal_fees + minimal_nanomav_per_byte * size + minimal_nanomav_per_gas_unit * gas)
 
 Where the size is the number of bytes of the complete serialized
 operation, i.e. including header and signature.
@@ -145,18 +145,18 @@ operations, still including header and signature.
 
 By default::
 
-   minimal_fees = 0.000 1ꜩ (100µꜩ)
-   minimal_nanotez_per_gas_unit = 100nꜩ/gu (0.000 000 1ꜩ/gu)
-   minimal_nanotez_per_byte = 1000nꜩ/B (0.000 001ꜩ/B)
+   minimal_fees = 0.000 1ṁ (100µṁ)
+   minimal_nanomav_per_gas_unit = 100nṁ/gu (0.000 000 1ṁ/gu)
+   minimal_nanomav_per_byte = 1000nṁ/B (0.000 001ṁ/B)
 
 For instance, a single transaction to an existing implicit address
-will require a transaction fee of at least 0.001 273ꜩ
+will require a transaction fee of at least 0.001 273ṁ
 to be included by bakers who choose to follow the default settings.
 
 These settings may be changed by passing the following flags to the baker
 (``--minimal-fees <amount in tez>``,
-``--minimal-nanotez-per-gas-unit <amount in nanotez>``,
-``--minimal-nanotez-per-byte <amount in nanotez>``).
+``--minimal-nanomav-per-gas-unit <amount in nanomav>``,
+``--minimal-nanomav-per-byte <amount in nanomav>``).
 
 Delegates distributing rewards should be aware of these thresholds
 for their transactions to be successfully included.
@@ -171,7 +171,7 @@ Hence an operation without fee won't even propagate through
 the network. The constant can be changed with the following RPC
 call::
 
-   ./tezos-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "0", "minimal_nanotez_per_gas_unit": "0", "minimal_nanotez_per_byte": "0" }'
+   ./tezos-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "0", "minimal_nanomav_per_gas_unit": "0", "minimal_nanomav_per_byte": "0" }'
 
 The constants used by the node and the baker do not need to be equal,
 but the node needs to be less restrictive than the baker, otherwise
@@ -226,9 +226,9 @@ A. Transaction fees solve a slightly different problem, but they can
    can run the process by passing the flag::
 
       --minimal-fees (default 0.000 1)
-      --minimal-nanotez-per-byte (default 1000)
-      --minimal-nanotez-per-gaz-unit (default 100)
+      --minimal-nanomav-per-byte (default 1000)
+      --minimal-nanomav-per-gaz-unit (default 100)
 
-   1 mutez is equivalent to 1000 nanotez. The patch does include
+   1 mumav is equivalent to 1000 nanomav. The patch does include
    default minimal fees in the mempool, but individual bakers can
    choose to override these.

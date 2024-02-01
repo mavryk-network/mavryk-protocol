@@ -100,7 +100,7 @@ module BLS_aggregate_wallet = struct
     Test.register
       ~__FILE__
       ~tags:["aggregate"; "client"; "keys"]
-      ~title:"Generates new tz4 keys in aggregate wallet"
+      ~title:"Generates new mv4 keys in aggregate wallet"
       (fun () ->
         let* client = Client.init () in
         let* alias = Client.bls_gen_keys client in
@@ -207,7 +207,7 @@ module BLS_normal_wallet = struct
     Test.register
       ~__FILE__
       ~tags:["bls"; "client"; "keys"]
-      ~title:"Generates new tz4 keys"
+      ~title:"Generates new mv4 keys"
       (fun () ->
         let* client = Client.init () in
         let* alias = Client.gen_keys ~sig_alg:"bls" client in

@@ -266,7 +266,7 @@ let test_migration_recover ~kind ~migrate_from ~migrate_to =
         ~hooks:Sc_rollup_helpers.hooks
         ~rollup:sc_rollup
         ~src:Constant.bootstrap2.alias
-        ~fee:(Tez.of_mutez_int recover_bond_fee)
+        ~fee:(Tez.of_mumav_int recover_bond_fee)
         ~staker:Constant.bootstrap1.alias
         tezos_client
     in

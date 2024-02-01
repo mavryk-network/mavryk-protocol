@@ -216,7 +216,7 @@ let validate_storage :
     [
       (* 1. Check the CPMM's [xtzPool] is equal to the actual CPMM balance *)
       (let* cpmm_xtz = ConcreteMachine.get_xtz_balance env.cpmm_contract blk in
-       return (cpmm_xtz = Tez.to_mutez cpmm_storage.xtzPool));
+       return (cpmm_xtz = Tez.to_mumav cpmm_storage.xtzPool));
       (* 2. Check the CPMM’s [lqtTotal] is correct wrt. liquidity contract *)
       (let* liquidity_storage =
          Lqt_fa12_repr.Storage.get (B blk) ~contract:env.liquidity_contract

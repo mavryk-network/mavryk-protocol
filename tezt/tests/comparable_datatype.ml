@@ -77,7 +77,7 @@ let test_comparable_or client () =
     assert_typecheck_data_failure
       client
       ~data:"{Left 2; Left 1}"
-      ~typ:"(set (or mutez unit))"
+      ~typ:"(set (or mumav unit))"
   in
   let* () =
     assert_typecheck_data_failure

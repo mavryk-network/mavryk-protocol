@@ -487,7 +487,7 @@ let get_sc_rollup_constants client =
   in
   let stake_amount =
     json |-> "smart_rollup_stake_amount" |> as_string |> Int64.of_string
-    |> Tez.of_mutez_int64
+    |> Tez.of_mumav_int64
   in
   let commitment_period_in_blocks =
     json |-> "smart_rollup_commitment_period_in_blocks" |> as_int
@@ -794,7 +794,7 @@ let prioritize_refute_operations sc_rollup_node =
     "fee-parameters"
     (update "refute"
     @@ put
-         ( "minimal-nanotez-per-gas-unit",
+         ( "minimal-nanomav-per-gas-unit",
            JSON.annotate
              ~origin:"higher-priority"
              (`A [`String "200"; `String "1"]) ))

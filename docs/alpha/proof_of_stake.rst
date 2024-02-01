@@ -30,7 +30,7 @@ Delegation and Staking
 A *delegate* is any :ref:`implicit account <def_implicit_account_alpha>` registered as
 such. This is done by *self-delegating*, that is, emitting a delegation
 operation (see below) in which the specified delegate is the same as the
-operation emitter (its signer). Note that ``tz4`` accounts cannot be registered
+operation emitter (its signer). Note that ``mv4`` accounts cannot be registered
 as delegates.
 
 Any :ref:`account <def_account_alpha>` (implicit or originated) can specify a delegate
@@ -174,9 +174,9 @@ Proof-of-stake parameters
    * - ``PRESERVED_CYCLES``
      - 5 cycles
    * - ``MINIMAL_STAKE``
-     - 6,000 ꜩ
+     - 6,000 ṁ
    * - ``MINIMAL_FROZEN_STAKE``
-     - 600 ꜩ
+     - 600 ṁ
    * - ``BLOCKS_PER_STAKE_SNAPSHOT``
      - 1024 blocks
 

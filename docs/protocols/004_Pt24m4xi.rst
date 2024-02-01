@@ -6,7 +6,7 @@ This page contains all the relevant information for protocol 004 Athens
 
 The main changes in this protocol are:
 
-- reduction of roll size to ꜩ8k from the ꜩ10k that were required in
+- reduction of roll size to ṁ8k from the ṁ10k that were required in
   protocol 003
 - different gas accounting, leading to changes in minimal fee for
   operations
@@ -32,8 +32,8 @@ The formula to compute the required fees per operation has not
 changed::
 
   fees >= minimal_fees +
-          minimal_nanotez_per_byte * size +
-          minimal_nanotez_per_gas_unit * gas
+          minimal_nanomav_per_byte * size +
+          minimal_nanomav_per_gas_unit * gas
 
 however, as a consequence of the increased gas accounting, the
 required fees have changed.
@@ -41,15 +41,15 @@ required fees have changed.
 +------------------+------------+-------------+----------------+
 |  Operation       |     Gas    |    Fees     |   Burn         |
 +==================+============+=============+================+
-| transfer 1ꜩ      |    10200   | 0.001281ꜩ   | 0 or 0.257 (*) |
+| transfer 1ṁ      |    10200   | 0.001281ṁ   | 0 or 0.257 (*) |
 +------------------+------------+-------------+----------------+
-| transfer 1Mꜩ     |    10200   | 0.001284ꜩ   | 0 or 0.257 (*) |
+| transfer 1Mṁ     |    10200   | 0.001284ṁ   | 0 or 0.257 (*) |
 +------------------+------------+-------------+----------------+
-| origination      |    10000   | 0.001265ꜩ   |     0.257      |
+| origination      |    10000   | 0.001265ṁ   |     0.257      |
 +------------------+------------+-------------+----------------+
-| delegation       |    10000   | 0.001257ꜩ   |     0          |
+| delegation       |    10000   | 0.001257ṁ   |     0          |
 +------------------+------------+-------------+----------------+
-| revealing        |    10000   | 0.001268ꜩ   |     0          |
+| revealing        |    10000   | 0.001268ṁ   |     0          |
 +------------------+------------+-------------+----------------+
 
 (*) if the recipient is a new address

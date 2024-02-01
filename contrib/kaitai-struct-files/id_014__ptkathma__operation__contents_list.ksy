@@ -1021,7 +1021,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1043,7 +1043,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1250,9 +1250,9 @@ types:
     seq:
     - id: id_014__ptkathma__liquidity_baking_toggle_vote
       type: s1
-  id_014__ptkathma__mutez:
+  id_014__ptkathma__mumav:
     seq:
-    - id: id_014__ptkathma__mutez
+    - id: id_014__ptkathma__mumav
       type: n
   id_014__ptkathma__operation__alpha__contents:
     seq:
@@ -1427,7 +1427,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1763,7 +1763,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1771,7 +1771,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -1953,7 +1953,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1976,7 +1976,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1992,7 +1992,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2012,7 +2012,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2032,7 +2032,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2052,7 +2052,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2080,7 +2080,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2100,7 +2100,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2120,7 +2120,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2135,7 +2135,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2161,7 +2161,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2200,7 +2200,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2211,7 +2211,7 @@ types:
       type: u1
       enum: bool
     - id: limit
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
       if: (limit_tag == bool::true)
   skips:
     seq:
@@ -2404,7 +2404,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2412,7 +2412,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: destination
       type: id_014__ptkathma__contract_id
       doc: ! >-
@@ -2430,7 +2430,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2494,7 +2494,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2514,7 +2514,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2542,7 +2542,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2560,7 +2560,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2573,7 +2573,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2609,7 +2609,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2627,7 +2627,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2645,7 +2645,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -2663,7 +2663,7 @@ types:
       type: u1
       enum: bool
     - id: burn_limit
-      type: id_014__ptkathma__mutez
+      type: id_014__ptkathma__mumav
       if: (burn_limit_tag == bool::true)
   wasm__2__0__0__pvm__with__proof:
     seq:

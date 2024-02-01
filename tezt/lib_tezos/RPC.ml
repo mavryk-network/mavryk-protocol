@@ -34,7 +34,7 @@ module Query_arg = struct
 end
 
 module Decode = struct
-  let mutez json = json |> JSON.as_int |> Tez.of_mutez_int
+  let mumav json = json |> JSON.as_int |> Tez.of_mumav_int
 end
 
 type 'result t = 'result RPC_core.t
@@ -832,7 +832,7 @@ let get_chain_block_context_contract_balance ?(chain = "main") ?(block = "head")
   make
     GET
     ["chains"; chain; "blocks"; block; "context"; "contracts"; id; "balance"]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_contract_frozen_bonds ?(chain = "main")
     ?(block = "head") ~id () =
@@ -848,7 +848,7 @@ let get_chain_block_context_contract_frozen_bonds ?(chain = "main")
       id;
       "frozen_bonds";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_contract_balance_and_frozen_bonds ?(chain = "main")
     ?(block = "head") ~id () =
@@ -864,7 +864,7 @@ let get_chain_block_context_contract_balance_and_frozen_bonds ?(chain = "main")
       id;
       "balance_and_frozen_bonds";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let post_chain_block_context_contract_big_map_get ?(chain = "main")
     ?(block = "head") ~id ~data () =
@@ -1132,7 +1132,7 @@ let get_chain_block_context_delegate_current_frozen_deposits ?(chain = "main")
       pkh;
       "current_frozen_deposits";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_deactivated ?(chain = "main")
     ?(block = "head") pkh =
@@ -1164,7 +1164,7 @@ let get_chain_block_context_delegate_delegated_balance ?(chain = "main")
       pkh;
       "delegated_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_delegated_contracts ?(chain = "main")
     ?(block = "head") pkh =
@@ -1235,7 +1235,7 @@ let get_chain_block_context_delegate_frozen_deposits ?(chain = "main")
       pkh;
       "frozen_deposits";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_frozen_deposits_limit ?(chain = "main")
     ?(block = "head") pkh =
@@ -1251,7 +1251,7 @@ let get_chain_block_context_delegate_frozen_deposits_limit ?(chain = "main")
       pkh;
       "frozen_deposits_limit";
     ]
-    (fun json -> json |> JSON.as_opt |> Option.map Decode.mutez)
+    (fun json -> json |> JSON.as_opt |> Option.map Decode.mumav)
 
 let get_chain_block_context_delegate_full_balance ?(chain = "main")
     ?(block = "head") pkh =
@@ -1267,7 +1267,7 @@ let get_chain_block_context_delegate_full_balance ?(chain = "main")
       pkh;
       "full_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_grace_period ?(chain = "main")
     ?(block = "head") pkh =
@@ -1315,7 +1315,7 @@ let get_chain_block_context_delegate_frozen_balance ?(chain = "main")
       pkh;
       "frozen_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_frozen_balance_by_cycle ?(chain = "main")
     ?(block = "head") pkh =
@@ -1347,14 +1347,14 @@ let get_chain_block_context_delegate_staking_balance ?(chain = "main")
       pkh;
       "staking_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_balance ?(chain = "main") ?(block = "head")
     pkh =
   make
     GET
     ["chains"; chain; "blocks"; block; "context"; "delegates"; pkh; "balance"]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_voting_info ?(chain = "main")
     ?(block = "head") pkh =

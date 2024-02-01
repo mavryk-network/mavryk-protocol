@@ -46,8 +46,8 @@ let ( +? ) {frozen = f1; weighted_delegated = d1}
   {frozen; weighted_delegated}
 
 let staking_weight {frozen; weighted_delegated} =
-  let frozen = Tez_repr.to_mutez frozen in
-  let weighted_delegated = Tez_repr.to_mutez weighted_delegated in
+  let frozen = Tez_repr.to_mumav frozen in
+  let weighted_delegated = Tez_repr.to_mumav weighted_delegated in
   Int64.add frozen weighted_delegated
 
 let compare s1 s2 = Int64.compare (staking_weight s1) (staking_weight s2)

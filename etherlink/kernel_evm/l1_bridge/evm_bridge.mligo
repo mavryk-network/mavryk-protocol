@@ -48,7 +48,7 @@ let callback (ticket: tez_ticket) {exchanger; request_deposit} : return =
   let deposit =
     Tezos.transaction
       (DepositTicket (l2_address, ticket))
-      0mutez
+      0mumav
       evm_address
   in
   let reset_storage = {exchanger; request_deposit = None} in

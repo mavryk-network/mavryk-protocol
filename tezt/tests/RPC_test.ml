@@ -1075,8 +1075,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 1: all fields provided and distinct from default."
       {
         minimal_fees = Some 1;
-        minimal_nanotez_per_gas_unit = Some (2, 3);
-        minimal_nanotez_per_byte = Some (4, 5);
+        minimal_nanomav_per_gas_unit = Some (2, 3);
+        minimal_nanomav_per_byte = Some (4, 5);
         replace_by_fee_factor = Some (6, 7);
         max_operations = Some 8;
         max_total_bytes = Some 9;
@@ -1087,8 +1087,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 2: omitted fields (which should be set to default)."
       {
         minimal_fees = Some 25;
-        minimal_nanotez_per_gas_unit = None;
-        minimal_nanotez_per_byte = Some (1050, 1);
+        minimal_nanomav_per_gas_unit = None;
+        minimal_nanomav_per_byte = Some (1050, 1);
         replace_by_fee_factor = None;
         max_operations = Some 2000;
         max_total_bytes = None;
@@ -1099,8 +1099,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 3: {} (ie. all fields should be set to default)."
       {
         minimal_fees = None;
-        minimal_nanotez_per_gas_unit = None;
-        minimal_nanotez_per_byte = None;
+        minimal_nanomav_per_gas_unit = None;
+        minimal_nanomav_per_byte = None;
         replace_by_fee_factor = None;
         max_operations = None;
         max_total_bytes = None;
@@ -1111,8 +1111,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 4: divide by zero. (Should this config be invalid?)"
       {
         minimal_fees = None;
-        minimal_nanotez_per_gas_unit = Some (100, 0);
-        minimal_nanotez_per_byte = None;
+        minimal_nanomav_per_gas_unit = Some (100, 0);
+        minimal_nanomav_per_byte = None;
         replace_by_fee_factor = None;
         max_operations = None;
         max_total_bytes = None;
@@ -1121,8 +1121,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let config5 =
     {
       minimal_fees = None;
-      minimal_nanotez_per_gas_unit = Some default_minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte = Some (max_int, 1);
+      minimal_nanomav_per_gas_unit = Some default_minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte = Some (max_int, 1);
       replace_by_fee_factor = None;
       max_operations = Some default_max_operations;
       max_total_bytes = Some 0;
@@ -1163,7 +1163,7 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let* () =
     test_invalid_config
       "Invalid config 1: invalid field name"
-      {|{ "minimal_fees": "100", "minimal_nanotez_per_gas_unit": [ "1050", "1" ], "minimal_nanotez_per_byte": [ "7", "5" ], "replace_by_fee_factor": ["21", "20"], "max_operations": 10, "max_total_bytes": 10_000_000, "invalid_field_name": 100 }|}
+      {|{ "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "1050", "1" ], "minimal_nanomav_per_byte": [ "7", "5" ], "replace_by_fee_factor": ["21", "20"], "max_operations": 10, "max_total_bytes": 10_000_000, "invalid_field_name": 100 }|}
   in
   let* () =
     test_invalid_config
@@ -1178,12 +1178,12 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let* () =
     test_invalid_config
       "Invalid config 4: not enough elements in fraction"
-      {|{ "minimal_nanotez_per_gas_unit": [ "100" ] }|}
+      {|{ "minimal_nanomav_per_gas_unit": [ "100" ] }|}
   in
   let* () =
     test_invalid_config
       "Invalid config 5: too many elements in fraction"
-      {|{ "minimal_nanotez_per_gas_unit": [ "100", "1", "10" ] }|}
+      {|{ "minimal_nanomav_per_gas_unit": [ "100", "1", "10" ] }|}
   in
   let* () =
     test_invalid_config

@@ -39,7 +39,7 @@ let fa12_reference =
     mint_entrypoint = "mint";
     mint_arg =
       (fun owner amount ->
-        sf {|(Pair "%s" %d)|} owner.public_key_hash (Tez.to_mutez amount));
+        sf {|(Pair "%s" %d)|} owner.public_key_hash (Tez.to_mumav amount));
   }
 
 let lqt_fa12 =
@@ -50,7 +50,7 @@ let lqt_fa12 =
     mint_entrypoint = "mintOrBurn";
     mint_arg =
       (fun owner amount ->
-        sf {|(Pair %d "%s")|} (Tez.to_mutez amount) owner.public_key_hash);
+        sf {|(Pair %d "%s")|} (Tez.to_mumav amount) owner.public_key_hash);
   }
 
 let fa12_scripts = [fa12_reference; lqt_fa12]

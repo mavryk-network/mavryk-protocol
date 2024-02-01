@@ -525,7 +525,7 @@ let test_multisig ~sig_algs ~supports protocols =
       let bootstrap3_address = Constant.bootstrap3.public_key_hash in
       let lambda =
         sf
-          {|{ DROP; NIL operation; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mutez 1000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mutez 2000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; SOME; SET_DELEGATE; CONS }|}
+          {|{ DROP; NIL operation; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mumav 1000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mumav 2000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; SOME; SET_DELEGATE; CONS }|}
           bootstrap1_address
           bootstrap2_address
           bootstrap3_address

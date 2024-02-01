@@ -548,7 +548,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -638,8 +638,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

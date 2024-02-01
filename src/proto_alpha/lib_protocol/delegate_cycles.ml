@@ -176,7 +176,7 @@ let adjust_frozen_stakes ctxt ~deactivated_delegates :
           ~for_next_cycle_use_only_after_slashing:true
           ~sender_contract:(Implicit delegate)
           ~delegate
-          Tez_repr.max_mutez
+          Tez_repr.max_mumav
       in
       (ctxt, new_balance_updates @ balance_updates))
     (ctxt, balance_updates)

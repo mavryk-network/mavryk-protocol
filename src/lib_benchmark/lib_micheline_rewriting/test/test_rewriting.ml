@@ -111,7 +111,7 @@ let () =
     \                (or :action    # payload to sign, represents the \
      requested action\n\
     \                   (pair :transfer    # transfer tokens\n\
-    \                      (mutez %amount) # amount to transfer\n\
+    \                      (mumav %amount) # amount to transfer\n\
     \                      (contract %dest unit)) # destination to transfer to\n\
     \                   (or\n\
     \                      (option %delegate key_hash) # change the delegate \
@@ -207,7 +207,7 @@ let () =
     \    (pair (pair :payload\n\
     \             (nat %counter)\n\
     \             (or :action\n\
-    \                (pair :transfer (mutez %amount) (contract %dest unit))\n\
+    \                (pair :transfer (mumav %amount) (contract %dest unit))\n\
     \                (or (option %delegate key_hash)\n\
     \                    (pair %change_keys (nat %threshold) (list %keys \
      key)))))\n\
@@ -286,7 +286,7 @@ let () =
     \    (pair (pair :payload\n\
     \             (nat %counter)\n\
     \             (or :action\n\
-    \                (pair :transfer (mutez %amount) (contract %dest unit))\n\
+    \                (pair :transfer (mumav %amount) (contract %dest unit))\n\
     \                (or (option %delegate key_hash)\n\
     \                    (pair %change_keys (nat %threshold) (list %keys \
      key)))))\n\

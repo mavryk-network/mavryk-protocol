@@ -1,8 +1,8 @@
-parameter mutez;
+parameter mumav;
 storage bls12_381_fr;
 code {
        CAR;
-       PUSH mutez 1;
+       PUSH mumav 1;
        SWAP;
        EDIV;
        ASSERT_SOME;

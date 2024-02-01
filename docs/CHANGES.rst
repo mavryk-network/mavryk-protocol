@@ -2771,7 +2771,7 @@ Version 8.1
 Node
 ----
 
--  Fix a performance regression affecting serialization of tz3
+-  Fix a performance regression affecting serialization of mv3
    signatures by reverting the P256 implementation to ``uecc``.
 
 -  Fixup allowing nodes in ``--history-mode full`` to answer to all new
@@ -2782,7 +2782,7 @@ Client
 ------
 
 -  As a consequence of moving back to ``uecc``, revert for now the
-   ability to sign with tz3 addresses.
+   ability to sign with mv3 addresses.
 
 
 Miscellaneous
@@ -3058,7 +3058,7 @@ Client
 -  The ``prepare multisig`` commands now display the Blake 2B hash.
 
 -  Some client commands which use the default zero key
-   ``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` in dry runs now display this
+   ``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` in dry runs now display this
    key using an informative string
    ``the baker who will include this operation`` instead of the key
    itself.

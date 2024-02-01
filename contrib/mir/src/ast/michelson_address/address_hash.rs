@@ -111,10 +111,10 @@ impl AddressHash {
         Ok(match &data[0..3] {
             "KT1" => Kt1(HashTrait::from_b58check(data)?),
             "sr1" => Sr1(HashTrait::from_b58check(data)?),
-            "tz1" => Tz1(HashTrait::from_b58check(data)?),
-            "tz2" => Tz2(HashTrait::from_b58check(data)?),
-            "tz3" => Tz3(HashTrait::from_b58check(data)?),
-            "tz4" => Tz4(HashTrait::from_b58check(data)?),
+            "mv1" => Tz1(HashTrait::from_b58check(data)?),
+            "mv2" => Tz2(HashTrait::from_b58check(data)?),
+            "mv3" => Tz3(HashTrait::from_b58check(data)?),
+            "mv4" => Tz4(HashTrait::from_b58check(data)?),
             s => return Err(AddressError::UnknownPrefix(s.to_owned())),
         })
     }

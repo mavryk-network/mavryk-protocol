@@ -44,8 +44,8 @@ let bake node client =
           Constant.bootstrap5.alias;
         ]
       ~minimal_fees:0
-      ~minimal_nanotez_per_gas_unit:0
-      ~minimal_nanotez_per_byte:0
+      ~minimal_nanomav_per_gas_unit:0
+      ~minimal_nanomav_per_byte:0
       ~minimal_timestamp:true
       client
   in

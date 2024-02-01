@@ -387,8 +387,8 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
       ~desc:"Forge and inject block using the delegates' rights."
       (args13
          minimal_fees_arg
-         minimal_nanotez_per_gas_unit_arg
-         minimal_nanotez_per_byte_arg
+         minimal_nanomav_per_gas_unit_arg
+         minimal_nanomav_per_byte_arg
          minimal_timestamp_switch
          force_apply_switch_arg
          force_switch
@@ -401,8 +401,8 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
          state_recorder_switch_arg)
       (prefixes ["bake"; "for"] @@ sources_param)
       (fun ( minimal_fees,
-             minimal_nanotez_per_gas_unit,
-             minimal_nanotez_per_byte,
+             minimal_nanomav_per_gas_unit,
+             minimal_nanomav_per_byte,
              minimal_timestamp,
              force_apply,
              force,
@@ -418,9 +418,9 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
         let* delegates = get_delegates cctxt pkhs in
         Baking_lib.bake
           cctxt
-          ~minimal_nanotez_per_gas_unit
+          ~minimal_nanomav_per_gas_unit
           ~minimal_timestamp
-          ~minimal_nanotez_per_byte
+          ~minimal_nanomav_per_byte
           ~minimal_fees
           ~force_apply
           ~force
@@ -480,8 +480,8 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
       ~desc:"Send a Tenderbake proposal"
       (args9
          minimal_fees_arg
-         minimal_nanotez_per_gas_unit_arg
-         minimal_nanotez_per_byte_arg
+         minimal_nanomav_per_gas_unit_arg
+         minimal_nanomav_per_byte_arg
          minimal_timestamp_switch
          force_apply_switch_arg
          force_switch
@@ -490,8 +490,8 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
          state_recorder_switch_arg)
       (prefixes ["propose"; "for"] @@ sources_param)
       (fun ( minimal_fees,
-             minimal_nanotez_per_gas_unit,
-             minimal_nanotez_per_byte,
+             minimal_nanomav_per_gas_unit,
+             minimal_nanomav_per_byte,
              minimal_timestamp,
              force_apply,
              force,
@@ -503,9 +503,9 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
         let* delegates = get_delegates cctxt sources in
         Baking_lib.propose
           cctxt
-          ~minimal_nanotez_per_gas_unit
+          ~minimal_nanomav_per_gas_unit
           ~minimal_timestamp
-          ~minimal_nanotez_per_byte
+          ~minimal_nanomav_per_byte
           ~minimal_fees
           ~force_apply
           ~force
@@ -563,8 +563,8 @@ let baker_args =
   Tezos_clic.args12
     pidfile_arg
     minimal_fees_arg
-    minimal_nanotez_per_gas_unit_arg
-    minimal_nanotez_per_byte_arg
+    minimal_nanomav_per_gas_unit_arg
+    minimal_nanomav_per_byte_arg
     force_apply_switch_arg
     keep_alive_arg
     liquidity_baking_toggle_vote_arg
@@ -577,8 +577,8 @@ let baker_args =
 let run_baker
     ( pidfile,
       minimal_fees,
-      minimal_nanotez_per_gas_unit,
-      minimal_nanotez_per_byte,
+      minimal_nanomav_per_gas_unit,
+      minimal_nanomav_per_byte,
       force_apply,
       keep_alive,
       liquidity_baking_vote,
@@ -615,8 +615,8 @@ let run_baker
   Client_daemon.Baker.run
     cctxt
     ~minimal_fees
-    ~minimal_nanotez_per_gas_unit
-    ~minimal_nanotez_per_byte
+    ~minimal_nanomav_per_gas_unit
+    ~minimal_nanomav_per_byte
     ~votes
     ?extra_operations
     ?dal_node_endpoint

@@ -51,7 +51,7 @@ let rec unparse_ty_and_entrypoints_uncarbonated :
     | Signature_t -> (T_signature, [])
     | String_t -> (T_string, [])
     | Bytes_t -> (T_bytes, [])
-    | Mutez_t -> (T_mutez, [])
+    | Mumav_t -> (T_mumav, [])
     | Bool_t -> (T_bool, [])
     | Key_hash_t -> (T_key_hash, [])
     | Key_t -> (T_key, [])
@@ -249,7 +249,7 @@ let unparse_signature ~loc ctxt mode s =
       let+ ctxt = Gas.consume ctxt Unparse_costs.signature_readable in
       (String (loc, Signature.to_b58check s), ctxt)
 
-let unparse_mutez ~loc ctxt v = Ok (Int (loc, Z.of_int64 (Tez.to_mutez v)), ctxt)
+let unparse_mumav ~loc ctxt v = Ok (Int (loc, Z.of_int64 (Tez.to_mumav v)), ctxt)
 
 let unparse_key ~loc ctxt mode k =
   let open Result_syntax in
@@ -427,7 +427,7 @@ let rec unparse_comparable_data_rec :
     | Timestamp_t, t -> Lwt.return @@ unparse_timestamp ~loc ctxt mode t
     | Address_t, address -> Lwt.return @@ unparse_address ~loc ctxt mode address
     | Signature_t, s -> Lwt.return @@ unparse_signature ~loc ctxt mode s
-    | Mutez_t, v -> Lwt.return @@ unparse_mutez ~loc ctxt v
+    | Mumav_t, v -> Lwt.return @@ unparse_mumav ~loc ctxt v
     | Key_t, k -> Lwt.return @@ unparse_key ~loc ctxt mode k
     | Key_hash_t, k -> Lwt.return @@ unparse_key_hash ~loc ctxt mode k
     | Chain_id_t, chain_id ->
@@ -529,7 +529,7 @@ module Data_unparser (P : MICHELSON_PARSER) = struct
       | Contract_t _, contract ->
           Lwt.return @@ unparse_contract ~loc ctxt mode contract
       | Signature_t, s -> Lwt.return @@ unparse_signature ~loc ctxt mode s
-      | Mutez_t, v -> Lwt.return @@ unparse_mutez ~loc ctxt v
+      | Mumav_t, v -> Lwt.return @@ unparse_mumav ~loc ctxt v
       | Key_t, k -> Lwt.return @@ unparse_key ~loc ctxt mode k
       | Key_hash_t, k -> Lwt.return @@ unparse_key_hash ~loc ctxt mode k
       | Operation_t, operation ->

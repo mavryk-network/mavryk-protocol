@@ -132,7 +132,7 @@ let secrets =
         amount =
           WithExceptions.Option.to_exn
             ~none:(Invalid_argument "tez conversion")
-            (Tez.of_mutez (Int64.of_string amount));
+            (Tez.of_mumav (Int64.of_string amount));
       })
     [
       ( [

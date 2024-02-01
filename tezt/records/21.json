@@ -336,7 +336,7 @@
       "batch",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "29552937",
@@ -611,7 +611,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input147133089]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input147133089]",
     "tags": [
       "regression",
       "alpha",
@@ -624,7 +624,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input147133089]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input147133089]",
     "tags": [
       "regression",
       "lima",
@@ -715,7 +715,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Lima: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "lima",
@@ -728,7 +728,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [bls12_381_fr_to_mutez--storage680650890--input229402968]",
+    "title": "Alpha: opcodes [bls12_381_fr_to_mumav--storage680650890--input229402968]",
     "tags": [
       "regression",
       "alpha",

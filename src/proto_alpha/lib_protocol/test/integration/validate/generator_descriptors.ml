@@ -347,7 +347,7 @@ let dbl_attestation_prelude state =
   let* head_A = Block.bake ~policy:(By_round 0) state.block in
   let* addr = pick_addr_attester (B state.block) in
   let ctr = Contract.Implicit addr in
-  let* operation = Op.transaction (B state.block) ctr ctr Tez.one_mutez in
+  let* operation = Op.transaction (B state.block) ctr ctr Tez.one_mumav in
   let* head_B = Block.bake ~policy:(By_round 0) state.block ~operation in
   let heads, state = register_temporary head_A head_B state in
   match heads with
@@ -447,7 +447,7 @@ let double_baking_descriptor =
             let* addr = pick_addr_attester (B state.block) in
             let ctr = Contract.Implicit addr in
             let* operation =
-              Op.transaction (B state.block) ctr ctr Tez.one_mutez
+              Op.transaction (B state.block) ctr ctr Tez.one_mumav
             in
             let* ba =
               Block.bake ~policy:(By_account baker1) ~operation state.block
@@ -764,7 +764,7 @@ let manager_prelude (infos : Manager.infos) b =
     let account = Account.new_account () in
     let n = nb_sources - Stdlib.List.length sources in
     let bootstrap, counter, ops = Stdlib.List.nth ops_by_bootstrap (n - 1) in
-    let amount = Tez.of_mutez (Int64.of_int 150000) in
+    let amount = Tez.of_mumav (Int64.of_int 150000) in
     let+ op, counter =
       Manager.fund_account_op b bootstrap account.pkh amount counter
     in

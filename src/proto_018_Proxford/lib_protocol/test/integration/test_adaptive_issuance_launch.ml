@@ -77,7 +77,7 @@ let assert_voting_power ~loc block delegate ~ai_enabled ~expected_staked
     ~expected_delegated ~expected_ext_staked =
   let open Lwt_result_syntax in
   let* balance = Context.Contract.balance (B block) (Implicit delegate) in
-  let balance = Protocol.Alpha_context.Tez.to_mutez balance in
+  let balance = Protocol.Alpha_context.Tez.to_mumav balance in
   let expected_liquid = Int64.add balance expected_delegated in
   let expected_frozen = Int64.add expected_staked expected_ext_staked in
   let* constants = Context.get_constants (B block) in
@@ -155,7 +155,7 @@ let test_launch threshold expected_vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 200_000_000_000L)
   in
 
   (* To test that adaptive issuance is active, we test that
@@ -205,7 +205,7 @@ let test_launch threshold expected_vote_duration () =
         (B block)
         delegate
         wannabe_staker
-        (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L)
     in
     Block.bake ~operation ~adaptive_issuance_vote:Per_block_vote_on block
   in
@@ -234,7 +234,7 @@ let test_launch threshold expected_vote_duration () =
       stake
         (B block)
         delegate
-        (Protocol.Alpha_context.Tez.of_mutez_exn 1_800_000_000_000L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 1_800_000_000_000L)
     in
     Block.bake ~operation ~adaptive_issuance_vote:Per_block_vote_on block
   in
@@ -281,7 +281,7 @@ let test_launch threshold expected_vote_duration () =
       stake
         (B block)
         wannabe_staker
-        (Protocol.Alpha_context.Tez.of_mutez_exn 10L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 10L)
     in
     let* i = Incremental.begin_construction block in
     let*! i = Incremental.add_operation i operation in
@@ -328,7 +328,7 @@ let test_launch threshold expected_vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L)
   in
   let* () =
     assert_voting_power
@@ -359,7 +359,7 @@ let test_launch threshold expected_vote_duration () =
         assert_total_frozen_stake
           ~loc:__LOC__
           block
-          (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L))
+          (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L))
       (fun block ->
         let current_cycle = Block.current_cycle block in
         Protocol.Alpha_context.Cycle.(
@@ -371,7 +371,7 @@ let test_launch threshold expected_vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 3_999_999_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 3_999_999_000_000L)
   in
   let* () =
     assert_voting_power
@@ -419,7 +419,7 @@ let test_does_not_launch_without_feature_flag threshold vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 200_000_000_000L)
   in
   (* Bake many more blocks voting in favor of the activation until the
      EMA threshold is reached. *)

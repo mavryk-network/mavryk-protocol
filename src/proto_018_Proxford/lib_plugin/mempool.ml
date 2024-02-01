@@ -28,14 +28,14 @@
 open Protocol
 open Alpha_context
 
-type nanotez = Q.t
+type nanomav = Q.t
 
-let nanotez_enc : nanotez Data_encoding.t =
+let nanomav_enc : nanomav Data_encoding.t =
   let open Data_encoding in
   def
-    "nanotez"
-    ~title:"A thousandth of a mutez"
-    ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
+    "nanomav"
+    ~title:"A thousandth of a mumav"
+    ~description:"One thousand nanomav make a mumav (1 tez = 1e9 nanomav)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})
@@ -54,8 +54,8 @@ let manager_op_replacement_factor_enc : Q.t Data_encoding.t =
 
 type config = {
   minimal_fees : Tez.t;
-  minimal_nanotez_per_gas_unit : nanotez;
-  minimal_nanotez_per_byte : nanotez;
+  minimal_nanomav_per_gas_unit : nanomav;
+  minimal_nanomav_per_byte : nanomav;
   clock_drift : Period.t option;
   replace_by_fee_factor : Q.t;
       (** Factor by which the fee and fee/gas ratio of an old operation in
@@ -65,11 +65,11 @@ type config = {
 }
 
 let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+  match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
-let default_minimal_nanotez_per_gas_unit = Q.of_int 100
+let default_minimal_nanomav_per_gas_unit = Q.of_int 100
 
-let default_minimal_nanotez_per_byte = Q.of_int 1000
+let default_minimal_nanomav_per_byte = Q.of_int 1000
 
 let managers_quota =
   Stdlib.List.nth Main.validation_passes Operation_repr.manager_pass
@@ -83,8 +83,8 @@ let managers_quota =
 let default_config =
   {
     minimal_fees = default_minimal_fees;
-    minimal_nanotez_per_gas_unit = default_minimal_nanotez_per_gas_unit;
-    minimal_nanotez_per_byte = default_minimal_nanotez_per_byte;
+    minimal_nanomav_per_gas_unit = default_minimal_nanomav_per_gas_unit;
+    minimal_nanomav_per_byte = default_minimal_nanomav_per_byte;
     clock_drift = None;
     replace_by_fee_factor =
       Q.make (Z.of_int 105) (Z.of_int 100)
@@ -96,38 +96,38 @@ let config_encoding : config Data_encoding.t =
   conv
     (fun {
            minimal_fees;
-           minimal_nanotez_per_gas_unit;
-           minimal_nanotez_per_byte;
+           minimal_nanomav_per_gas_unit;
+           minimal_nanomav_per_byte;
            clock_drift;
            replace_by_fee_factor;
          } ->
       ( minimal_fees,
-        minimal_nanotez_per_gas_unit,
-        minimal_nanotez_per_byte,
+        minimal_nanomav_per_gas_unit,
+        minimal_nanomav_per_byte,
         clock_drift,
         replace_by_fee_factor ))
     (fun ( minimal_fees,
-           minimal_nanotez_per_gas_unit,
-           minimal_nanotez_per_byte,
+           minimal_nanomav_per_gas_unit,
+           minimal_nanomav_per_byte,
            clock_drift,
            replace_by_fee_factor ) ->
       {
         minimal_fees;
-        minimal_nanotez_per_gas_unit;
-        minimal_nanotez_per_byte;
+        minimal_nanomav_per_gas_unit;
+        minimal_nanomav_per_byte;
         clock_drift;
         replace_by_fee_factor;
       })
     (obj5
        (dft "minimal_fees" Tez.encoding default_config.minimal_fees)
        (dft
-          "minimal_nanotez_per_gas_unit"
-          nanotez_enc
-          default_config.minimal_nanotez_per_gas_unit)
+          "minimal_nanomav_per_gas_unit"
+          nanomav_enc
+          default_config.minimal_nanomav_per_gas_unit)
        (dft
-          "minimal_nanotez_per_byte"
-          nanotez_enc
-          default_config.minimal_nanotez_per_byte)
+          "minimal_nanomav_per_byte"
+          nanomav_enc
+          default_config.minimal_nanomav_per_byte)
        (opt "clock_drift" Period.encoding)
        (dft
           "replace_by_fee_factor"
@@ -260,7 +260,7 @@ let weight_and_resources_manager_operation ~hard_gas_limit_per_block ?size ~fee
   let size = match size with None -> size_of_operation op | Some s -> s in
   let size_f = Q.of_int size in
   let gas_f = Q.of_bigint (Gas.Arith.integral_to_z gas) in
-  let fee_f = Q.of_int64 (Tez.to_mutez fee) in
+  let fee_f = Q.of_int64 (Tez.to_mumav fee) in
   let size_ratio = Q.(size_f / Q.of_int max_size) in
   let gas_ratio =
     Q.(gas_f / Q.of_bigint (Gas.Arith.integral_to_z hard_gas_limit_per_block))
@@ -282,28 +282,28 @@ let pre_filter_manager :
  fun info config packed_op op ->
   let size = size_of_operation packed_op in
   let check_gas_and_fee fee gas_limit =
-    let fees_in_nanotez =
-      Q.mul (Q.of_int64 (Tez.to_mutez fee)) (Q.of_int 1000)
+    let fees_in_nanomav =
+      Q.mul (Q.of_int64 (Tez.to_mumav fee)) (Q.of_int 1000)
     in
-    let minimal_fees_in_nanotez =
-      Q.mul (Q.of_int64 (Tez.to_mutez config.minimal_fees)) (Q.of_int 1000)
+    let minimal_fees_in_nanomav =
+      Q.mul (Q.of_int64 (Tez.to_mumav config.minimal_fees)) (Q.of_int 1000)
     in
-    let minimal_fees_for_gas_in_nanotez =
+    let minimal_fees_for_gas_in_nanomav =
       Q.mul
-        config.minimal_nanotez_per_gas_unit
+        config.minimal_nanomav_per_gas_unit
         (Q.of_bigint @@ Gas.Arith.integral_to_z gas_limit)
     in
-    let minimal_fees_for_size_in_nanotez =
-      Q.mul config.minimal_nanotez_per_byte (Q.of_int size)
+    let minimal_fees_for_size_in_nanomav =
+      Q.mul config.minimal_nanomav_per_byte (Q.of_int size)
     in
     if
       Q.compare
-        fees_in_nanotez
+        fees_in_nanomav
         (Q.add
-           minimal_fees_in_nanotez
+           minimal_fees_in_nanomav
            (Q.add
-              minimal_fees_for_gas_in_nanotez
-              minimal_fees_for_size_in_nanotez))
+              minimal_fees_for_gas_in_nanomav
+              minimal_fees_for_size_in_nanomav))
       >= 0
     then `Fees_ok
     else `Refused [Environment.wrap_tzerror Fees_too_low]
@@ -575,7 +575,7 @@ let compute_fee_and_gas_limit {protocol_data = Operation_data data; _} =
 let gas_as_q gas = Gas.Arith.integral_to_z gas |> Q.of_bigint
 
 let fee_and_ratio_as_q fee gas =
-  let fee = Tez.to_mutez fee |> Z.of_int64 |> Q.of_bigint in
+  let fee = Tez.to_mumav fee |> Z.of_int64 |> Q.of_bigint in
   let gas = gas_as_q gas in
   let ratio = Q.div fee gas in
   (fee, ratio)
@@ -637,7 +637,7 @@ let int64_ceil_of_q q =
   let n = Q.to_int64 q in
   if Q.(equal q (of_int64 n)) then n else Int64.succ n
 
-(* Compute the minimal fee (expressed in mutez) that [candidate_op]
+(* Compute the minimal fee (expressed in mumav) that [candidate_op]
    would need to have in order for the {!conflict_handler} to let it
    replace [op_to_replace], when both operations are manager
    operations.
@@ -764,7 +764,7 @@ let fee_needed_to_overtake ~op_to_overtake ~candidate_op =
           We purposefully don't use {!fee_and_ratio_as_q} because the code
           here needs to stay in sync with {!Operation_repr.weight_manager}
           rather than {!better_fees_and_ratio}. *)
-       let target_fee = Q.of_int64 (Tez.to_mutez target_fee) in
+       let target_fee = Q.of_int64 (Tez.to_mumav target_fee) in
        let target_gas = Q.of_bigint (Gas.Arith.integral_to_z target_gas) in
        let target_ratio = Q.(target_fee / target_gas) in
        (* Compute the minimal fee needed to have a strictly greater ratio. *)

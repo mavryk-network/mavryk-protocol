@@ -124,7 +124,7 @@ let generate_balance_update =
   let open Gen in
   let open Receipt_repr in
   let* i = big_nat in
-  let tez = Tez_repr.of_mutez_exn (Int64.of_int i) in
+  let tez = Tez_repr.of_mumav_exn (Int64.of_int i) in
   oneofl [Debited tez; Credited tez]
 
 let generate_update_origin =
@@ -158,10 +158,10 @@ let eq balance_updates1 balance_updates2 =
              compare b1 b2 = 0
              &&
              match (bu1, bu2) with
-             | Debited tz1, Debited tz2 | Credited tz1, Credited tz2 ->
-                 Token.equal token1 tz1 tz2
-             | Debited tz1, Credited tz2 | Credited tz1, Debited tz2 ->
-                 Token.is_zero token1 tz1 && Token.is_zero token1 tz2))
+             | Debited mv1, Debited mv2 | Credited mv1, Credited mv2 ->
+                 Token.equal token1 mv1 mv2
+             | Debited mv1, Credited mv2 | Credited mv1, Debited mv2 ->
+                 Token.is_zero token1 mv1 && Token.is_zero token1 mv2))
         && compare_update_origin uo1 uo2 = 0)
       balance_updates1
       balance_updates2

@@ -140,7 +140,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -155,7 +155,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -337,9 +337,9 @@ types:
     - id: id_017__ptnairob__michelson__v1__primitives
       type: u1
       enum: id_017__ptnairob__michelson__v1__primitives
-  id_017__ptnairob__mutez:
+  id_017__ptnairob__mumav:
     seq:
-    - id: id_017__ptnairob__mutez
+    - id: id_017__ptnairob__mumav
       type: n
   id_017__ptnairob__operation__alpha__contents:
     seq:
@@ -479,7 +479,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -740,7 +740,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -748,7 +748,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -1001,7 +1001,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1016,7 +1016,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1067,7 +1067,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1078,7 +1078,7 @@ types:
       type: u1
       enum: bool
     - id: limit
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
       if: (limit_tag == bool::true)
   slot_header:
     seq:
@@ -1096,7 +1096,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1111,7 +1111,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1134,7 +1134,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1156,7 +1156,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1178,7 +1178,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1198,7 +1198,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1216,7 +1216,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1239,7 +1239,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1301,7 +1301,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1309,7 +1309,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: destination
       type: id_017__ptnairob__contract_id
       doc: ! >-
@@ -1327,7 +1327,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1368,7 +1368,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1397,7 +1397,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1418,7 +1418,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1435,7 +1435,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: fee
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1750,7 +1750,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -1840,8 +1840,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

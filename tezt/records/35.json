@@ -484,7 +484,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input635398196]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input635398196]",
     "tags": [
       "regression",
       "lima",
@@ -497,7 +497,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input44513000]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input44513000]",
     "tags": [
       "regression",
       "alpha",
@@ -974,7 +974,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Mumbai: Tc opcodes/mutez_to_bls12_381_fr",
+    "title": "Mumbai: Tc opcodes/mumav_to_bls12_381_fr",
     "tags": [
       "regression",
       "mumbai",

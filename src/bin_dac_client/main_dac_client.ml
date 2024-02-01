@@ -53,7 +53,7 @@ let tz4_address_parameter =
 
 let _tz4_address_param ?(name = "public key hash")
     ?(desc = "bls public key hash to use") =
-  let desc = String.concat "\n" [desc; "A tz4 address"] in
+  let desc = String.concat "\n" [desc; "A mv4 address"] in
   Tezos_clic.param ~name ~desc tz4_address_parameter
 
 let positive_int_parameter =

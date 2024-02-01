@@ -173,15 +173,15 @@ let test_nat_int () =
     ~owner1:"KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
     ~owner2:"KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
 
-(** Test that a ticket of type nat and a ticket of type mutez, with the same
+(** Test that a ticket of type nat and a ticket of type mumav, with the same
     content, map to different hashes. *)
-let test_nat_mutez () =
+let test_nat_mumav () =
   assert_keys_not_equal
     ~loc:__LOC__
     ~ticketer1:"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"
     ~ticketer2:"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"
     ~ty1:"nat"
-    ~ty2:"mutez"
+    ~ty2:"mumav"
     ~content1:"1"
     ~content2:"1"
     ~amount1:1
@@ -431,7 +431,7 @@ let tests =
     Tztest.tztest "different content" `Quick test_different_content;
     Tztest.tztest "different amounts" `Quick test_different_amounts;
     Tztest.tztest "nat int" `Quick test_nat_int;
-    Tztest.tztest "nat mutez" `Quick test_nat_mutez;
+    Tztest.tztest "nat mumav" `Quick test_nat_mumav;
     Tztest.tztest "not bool" `Quick test_bool_nat;
     Tztest.tztest "nat bytes" `Quick test_nat_bytes;
     Tztest.tztest "string chain_id" `Quick test_string_chain_id;

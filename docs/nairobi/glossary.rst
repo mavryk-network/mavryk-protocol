@@ -178,7 +178,7 @@ _`Delegate`
     An implicit account becomes a delegate by registering as such.
     Through delegation_, other accounts can delegate their rights to a delegate account.
     The delegate's rights are calculated based on its stake_.
-    Note that ``tz4`` accounts cannot be delegates.
+    Note that ``mv4`` accounts cannot be delegates.
 
 _`Delegation`
     An operation_ in which an account_ designates a
@@ -273,7 +273,7 @@ _`Michelson`
 .. _def_minimal_stake_nairobi:
 
 _`Minimal stake`
-    An amount of tez (e.g., 6000ꜩ) serving as a minimal amount for a
+    An amount of tez (e.g., 6000ṁ) serving as a minimal amount for a
     delegate to have `baking rights`_ and voting rights in a cycle_.
 
 _`Operation kinds`
@@ -344,7 +344,7 @@ _`Voting period`
 
 _`Voting listings`
     The list calculated at the beginning of each `voting period`_ that contains
-    the staking balance (in number of mutez) of each delegate_ that owns more
+    the staking balance (in number of mumav) of each delegate_ that owns more
     than the `minimal stake`_ at that moment. For each delegate_, the voting listings
     reflect the weight of the vote emitted by the delegate_ when amending the
     `economic protocol`_.

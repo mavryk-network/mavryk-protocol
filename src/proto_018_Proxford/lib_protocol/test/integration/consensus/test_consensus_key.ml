@@ -139,7 +139,7 @@ let test_drain_delegate_scenario f =
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
   let* blk' =
-    transfer_tokens genesis account2_pkh consensus_pkh Tez.one_mutez
+    transfer_tokens genesis account2_pkh consensus_pkh Tez.one_mumav
   in
   let* blk' = update_consensus_key blk' delegate consensus_pk in
   f blk' consensus_pkh consensus_pk delegate
@@ -170,7 +170,7 @@ let test_drain_delegate ~low_balance ~exclude_ck ~ck_delegates () =
             blk
             consensus_pkh
             delegate
-            Tez.(of_mutez_exn 1_000_000L)
+            Tez.(of_mumav_exn 1_000_000L)
         else return blk
       in
       let* delegate_balance =
@@ -217,7 +217,7 @@ let test_tz4_consensus_key () =
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
   let* blk' =
-    transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mutez
+    transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mumav
   in
   let* operation =
     Op.update_consensus_key (B blk') (Contract.Implicit delegate) consensus_pk
@@ -253,7 +253,7 @@ let test_attestation_with_consensus_key () =
   let consensus_pk = consensus_account.pk in
   let consensus_pkh = consensus_account.pkh in
   let* blk' =
-    transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mutez
+    transfer_tokens genesis account1_pkh consensus_pkh Tez.one_mumav
   in
   let* b_pre = update_consensus_key blk' delegate consensus_pk in
   let* b = Block.bake b_pre in
@@ -336,7 +336,7 @@ let tests =
         "empty drain delegate with ck"
         `Quick
         (test_drain_empty_delegate ~exclude_ck:false);
-      tztest "tz4 consensus key" `Quick test_tz4_consensus_key;
+      tztest "mv4 consensus key" `Quick test_tz4_consensus_key;
       tztest "attestation with ck" `Quick test_attestation_with_consensus_key;
     ]
 

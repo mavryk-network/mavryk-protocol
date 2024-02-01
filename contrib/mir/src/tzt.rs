@@ -204,7 +204,7 @@ impl fmt::Display for ErrorExpectation<'_> {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum InterpreterErrorExpectation<'a> {
     GeneralOverflow(i128, i128),
-    MutezOverflow(i64, i64),
+    MumavOverflow(i64, i64),
     FailedWith(Micheline<'a>),
 }
 
@@ -213,7 +213,7 @@ impl fmt::Display for InterpreterErrorExpectation<'_> {
         use InterpreterErrorExpectation::*;
         match self {
             GeneralOverflow(a1, a2) => write!(f, "General Overflow {} {}", a1, a2),
-            MutezOverflow(a1, a2) => write!(f, "MutezOverflow {} {}", a1, a2),
+            MumavOverflow(a1, a2) => write!(f, "MumavOverflow {} {}", a1, a2),
             FailedWith(v) => write!(f, "FailedWith {:?}", v),
         }
     }

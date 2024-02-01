@@ -200,7 +200,7 @@ let signer_encoding =
         (function Public_key pk -> Some pk | _ -> None)
         (fun pk -> Public_key pk);
       case
-        ~title:"tz1"
+        ~title:"mv1"
         (Tag 1)
         Signature.Ed25519.Public_key_hash.encoding
         (function Tz1 pkh -> Some pkh | _ -> None)

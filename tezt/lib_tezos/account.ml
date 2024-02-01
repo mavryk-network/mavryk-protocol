@@ -127,7 +127,7 @@ module Bootstrap = struct
     [|
       {
         alias = "bootstrap1";
-        public_key_hash = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+        public_key_hash = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
         public_key = "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
         secret_key =
           Unencrypted "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
@@ -148,7 +148,7 @@ module Bootstrap = struct
       };
       {
         alias = "bootstrap4";
-        public_key_hash = "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv";
+        public_key_hash = "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn";
         public_key = "edpkuFrRoDSEbJYgxRtLx2ps82UdaYc1WwfS9sE11yhauZt5DgCHbU";
         secret_key =
           Unencrypted "edsk2uqQB9AY4FvioK2YMdfmyMrer5R8mGFyuaLLFfSRo8EoyNdht3";
@@ -166,7 +166,7 @@ end
 let parse_client_output_public_keys ~client_output =
   let public_key_hash =
     (* group of letters and digits after "Hash: "
-       e.g. "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" *)
+       e.g. "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" *)
     client_output =~* rex "Hash: ?(\\w*)" |> mandatory "public key hash"
   in
   let public_key =

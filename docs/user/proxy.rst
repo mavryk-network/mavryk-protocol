@@ -67,9 +67,9 @@ You're now ready to use the proxy client. For example, request baking rights:
 ::
 
     $ octez-client --mode proxy rpc get /chains/main/blocks/head/helpers/baking_rights
-    [ { "level": 3, "delegate": "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv",
+    [ { "level": 3, "delegate": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn",
         "round": 0, "estimated_time": "2022-11-17T14:20:17Z",
-        "consensus_key": "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" },
+        "consensus_key": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" },
       { "level": 3, "delegate": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
         "round": 1, "estimated_time": "2022-11-17T14:20:18Z",
         "consensus_key": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN" },
@@ -79,9 +79,9 @@ You're now ready to use the proxy client. For example, request baking rights:
       { "level": 3, "delegate": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
         "round": 3, "estimated_time": "2022-11-17T14:20:23Z",
         "consensus_key": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU" },
-      { "level": 3, "delegate": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
+      { "level": 3, "delegate": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
         "round": 4, "estimated_time": "2022-11-17T14:20:27Z",
-        "consensus_key": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ]
+        "consensus_key": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ]
 
 Well, that doesn't seem very different from what the default client would return.
 Indeed, it's the same; that was the point! To see what the proxy client
@@ -119,9 +119,9 @@ And redo the same RPC as before:
     Nov 17 15:21:19.969 - proxy_rpc_ctxt: locally done: GET call_service describe/<string>
     Nov 17 15:21:19.976 - proxy_rpc_ctxt: locally done generic media type call: GET
     Nov 17 15:21:19.976 - proxy_rpc_ctxt:   /chains/main/blocks/head/helpers/baking_rights
-    [ { "level": 3, "delegate": "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv",
+    [ { "level": 3, "delegate": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn",
         "round": 0, "estimated_time": "2022-11-17T14:20:17Z",
-        "consensus_key": "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" },
+        "consensus_key": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" },
       { "level": 3, "delegate": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
         "round": 1, "estimated_time": "2022-11-17T14:20:18Z",
         "consensus_key": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN" },
@@ -131,9 +131,9 @@ And redo the same RPC as before:
       { "level": 3, "delegate": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
         "round": 3, "estimated_time": "2022-11-17T14:20:23Z",
         "consensus_key": "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU" },
-      { "level": 3, "delegate": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
+      { "level": 3, "delegate": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
         "round": 4, "estimated_time": "2022-11-17T14:20:27Z",
-        "consensus_key": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ]
+        "consensus_key": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ]
 
 In this case, the bulk of the computation is done locally.
 

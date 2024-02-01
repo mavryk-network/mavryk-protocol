@@ -116,7 +116,7 @@ module Tez : sig
 
   val zero : t
 
-  val one_mutez : t
+  val one_mumav : t
 
   val one_cent : t
 
@@ -124,7 +124,7 @@ module Tez : sig
 
   val one : t
 
-  val max_mutez : t
+  val max_mumav : t
 
   val ( -? ) : t -> t -> t tzresult
 
@@ -140,11 +140,11 @@ module Tez : sig
 
   val to_string : t -> string
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
-  val of_mutez_exn : int64 -> t
+  val of_mumav_exn : int64 -> t
 
   val mul_exn : t -> int -> t
 
@@ -632,7 +632,7 @@ module Script : sig
     | I_SLICE
     | I_STEPS_TO_QUOTA
     | I_SUB
-    | I_SUB_MUTEZ
+    | I_SUB_MUMAV
     | I_SWAP
     | I_TRANSFER_TOKENS
     | I_SET_DELEGATE
@@ -682,7 +682,7 @@ module Script : sig
     | T_signature
     | T_string
     | T_bytes
-    | T_mutez
+    | T_mumav
     | T_timestamp
     | T_unit
     | T_operation

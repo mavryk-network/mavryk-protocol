@@ -2,11 +2,11 @@ parameter
   (or string nat) ;
 storage
   (pair
-     (pair nat (pair mutez mutez)) # counter from_buyer from_seller
+     (pair nat (pair mumav mumav)) # counter from_buyer from_seller
      (pair
         (pair nat (pair timestamp timestamp)) # Q T Z
         (pair
-           (pair mutez mutez) # K C
+           (pair mumav mumav) # K C
            (pair
               (pair address address) # B S
               address)))) ; # W
@@ -40,7 +40,7 @@ code
            { FAIL } } # (Right _)
        { # After Z + 24
          # if balance is emptied, just fail
-         BALANCE ; PUSH mutez 0 ; IFCMPEQ { FAIL } {} ;
+         BALANCE ; PUSH mumav 0 ; IFCMPEQ { FAIL } {} ;
          # test if the required amount is reached
          DUP ; CDDAAR ; # Q
          DIP { DUP ; CDDDADR } ; MUL ; # C
@@ -58,7 +58,7 @@ code
               UNIT ; TRANSFER_TOKENS ; SWAP ;
               DIP { CONS } ;
               DUP ; CADAR ; DIP { DUP ; CADDR } ; ADD ;
-              BALANCE ; SUB_MUTEZ ; ASSERT_SOME; # bonus to the warehouse
+              BALANCE ; SUB_MUMAV ; ASSERT_SOME; # bonus to the warehouse
               DIP { DUP ; CDDDDR } ; # W
               DIP { CONTRACT unit ; ASSERT_SOME } ;
               UNIT ; TRANSFER_TOKENS ;

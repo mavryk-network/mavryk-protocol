@@ -35,7 +35,7 @@ let gb_limit = Gas.Arith.(integral_of_int_exn 100_000)
 
 let half_gb_limit = Gas.Arith.(integral_of_int_exn 50_000)
 
-let default_fund = Tez.of_mutez_exn 400_000_000_000L
+let default_fund = Tez.of_mumav_exn 400_000_000_000L
 
 (** {2 Datatypes} *)
 

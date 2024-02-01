@@ -112,14 +112,14 @@ let default_metrics_port = 9933
 
 let default_reconnection_delay = 2.0 (* seconds *)
 
-let mutez mutez = {Injector_common.mutez}
+let mumav mumav = {Injector_common.mumav}
 
-let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
+let tez t = mumav Int64.(mul (of_int t) 1_000_000L)
 
 (* The below default fee and burn limits are computed by taking into account
    the worst fee found in the tests for the rollup node.
 
-   We take as base the cost of commitment cementation, which is 719 mutez in fees:
+   We take as base the cost of commitment cementation, which is 719 mumav in fees:
    - Commitment publishing is 1.37 times more expensive.
    - Message submission is 0.7 times more expensive, so cheaper but it depends on
      the size of the message.
@@ -129,7 +129,7 @@ let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
      - Proof move is 1.47 times more expensive but depends on the size of the proof.
      - Timeout move is 1.34 times more expensive.
 
-   We set a fee limit of 1 tz for cementation (instead of 719 mutez) which
+   We set a fee limit of 1 tz for cementation (instead of 719 mumav) which
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
@@ -166,9 +166,9 @@ let default_burn : Operation_kind.t -> Injector_common.tez = function
 (* Copied from src/proto_alpha/lib_plugin/mempool.ml *)
 let default_fee_parameter operation_kind =
   {
-    Injector_common.minimal_fees = mutez 100L;
-    minimal_nanotez_per_byte = Q.of_int 1000;
-    minimal_nanotez_per_gas_unit = Q.of_int 100;
+    Injector_common.minimal_fees = mumav 100L;
+    minimal_nanomav_per_byte = Q.of_int 1000;
+    minimal_nanomav_per_gas_unit = Q.of_int 100;
     force_low_fee = false;
     fee_cap = default_fee operation_kind;
     burn_cap = default_burn operation_kind;

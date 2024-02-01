@@ -45,7 +45,7 @@ let create_context () =
   return (ctxt, pkh)
 
 let random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
+  match Tez.of_mumav (Int64.add 1L (Random.int64 100L)) with
   | None -> assert false
   | Some x -> x
 
@@ -179,7 +179,7 @@ let test_transferring_to_receiver ctxt receiver amount expected_bupds =
     check bool "Balance updates do not match." (bupds = expected_bupds) true) ;
   (* Test transferring to go beyond capacity. *)
   let*@ ctxt', bal = Token.Internal_for_tests.balance ctxt' receiver in
-  let amount = Tez.of_mutez_exn Int64.max_int -! bal +! Tez.one_mutez in
+  let amount = Tez.of_mumav_exn Int64.max_int -! bal +! Tez.one_mumav in
   let*!@ res = Token.transfer ctxt' `Minted receiver amount in
   Assert.proto_error_with_info ~loc:__LOC__ res "Overflowing tez addition"
 
@@ -735,7 +735,7 @@ let test_transfer_n_with_several_givers () =
   let user4c = `Contract (Contract.Implicit user4) in
   (* Allocate contracts for user1, user2, user3, and user4. *)
   let amount =
-    match Tez.of_mutez 1000L with None -> assert false | Some x -> x
+    match Tez.of_mumav 1000L with None -> assert false | Some x -> x
   in
   let*@ ctxt, _ = Token.transfer ctxt origin user1c amount in
   let*@ ctxt, _ = Token.transfer ctxt origin user2c amount in

@@ -134,8 +134,8 @@ val liquidity_baking_votefile : ?path:string -> liquidity_baking_vote -> string
     in order to determine the attestations it sends to the L1 node. A
     [--dal_node] argument is passed to specify the DAL node's endpoint.
 
-    [minimal_nanotez_per_gas_unit] is an integer passed to the baker daemon
-    through the flag [--minimal-nanotez-per-gas-unit].
+    [minimal_nanomav_per_gas_unit] is an integer passed to the baker daemon
+    through the flag [--minimal-nanomav-per-gas-unit].
  *)
 val create :
   protocol:Protocol.t ->
@@ -151,7 +151,7 @@ val create :
   ?remote_mode:bool ->
   ?operations_pool:string ->
   ?dal_node:Dal_node.t ->
-  ?minimal_nanotez_per_gas_unit:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
   ?state_recorder:bool ->
   Node.t ->
   Client.t ->
@@ -189,7 +189,7 @@ val create_from_uris :
   ?remote_mode:bool ->
   ?operations_pool:string ->
   ?dal_node_rpc_endpoint:Endpoint.t ->
-  ?minimal_nanotez_per_gas_unit:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
   ?state_recorder:bool ->
   base_dir:string ->
   node_data_dir:string ->
@@ -251,7 +251,7 @@ val init :
   ?remote_mode:bool ->
   ?operations_pool:string ->
   ?dal_node:Dal_node.t ->
-  ?minimal_nanotez_per_gas_unit:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
   ?state_recorder:bool ->
   Node.t ->
   Client.t ->

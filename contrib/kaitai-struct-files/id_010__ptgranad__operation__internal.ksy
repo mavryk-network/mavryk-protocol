@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_010__ptgranad__entrypoint_tag == id_010__ptgranad__entrypoint_tag::named)
-  id_010__ptgranad__mutez:
+  id_010__ptgranad__mumav:
     seq:
-    - id: id_010__ptgranad__mutez
+    - id: id_010__ptgranad__mumav
       type: n
   id_010__ptgranad__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_010__ptgranad__mutez
+      type: id_010__ptgranad__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_010__ptgranad__mutez
+      type: id_010__ptgranad__mumav
     - id: destination
       type: id_010__ptgranad__contract_id
       doc: ! >-

@@ -494,7 +494,7 @@ module Cost_of = struct
     let compare_bytes b1 b2 =
       atomic_step_cost (cost_N_ICompare (Bytes.length b1) (Bytes.length b2))
 
-    let compare_mutez = atomic_step_cost (cost_N_ICompare 8 8)
+    let compare_mumav = atomic_step_cost (cost_N_ICompare 8 8)
 
     let compare_int i1 i2 =
       atomic_step_cost
@@ -543,7 +543,7 @@ module Cost_of = struct
         | String_t -> (apply [@tailcall]) Gas.(acc +@ compare_string x y) k
         | Signature_t -> (apply [@tailcall]) Gas.(acc +@ compare_signature) k
         | Bytes_t -> (apply [@tailcall]) Gas.(acc +@ compare_bytes x y) k
-        | Mutez_t -> (apply [@tailcall]) Gas.(acc +@ compare_mutez) k
+        | Mumav_t -> (apply [@tailcall]) Gas.(acc +@ compare_mumav) k
         | Int_t -> (apply [@tailcall]) Gas.(acc +@ compare_int x y) k
         | Nat_t -> (apply [@tailcall]) Gas.(acc +@ compare_nat x y) k
         | Key_hash_t -> (apply [@tailcall]) Gas.(acc +@ compare_key_hash) k

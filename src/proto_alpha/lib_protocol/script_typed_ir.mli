@@ -1425,7 +1425,7 @@ and ('ty, 'comparable) ty =
   | Signature_t : (signature, yes) ty
   | String_t : (Script_string.t, yes) ty
   | Bytes_t : (bytes, yes) ty
-  | Mutez_t : (Tez.t, yes) ty
+  | Mumav_t : (Tez.t, yes) ty
   | Key_hash_t : (public_key_hash, yes) ty
   | Key_t : (public_key, yes) ty
   | Timestamp_t : (Script_timestamp.t, yes) ty
@@ -1708,7 +1708,7 @@ val string_t : Script_string.t comparable_ty
 
 val bytes_t : Bytes.t comparable_ty
 
-val mutez_t : Tez.t comparable_ty
+val mumav_t : Tez.t comparable_ty
 
 val key_hash_t : public_key_hash comparable_ty
 
@@ -1764,7 +1764,7 @@ val lambda_t :
 
 val option_t : Script.location -> ('v, 'c) ty -> ('v option, 'c) ty tzresult
 
-val option_mutez_t : Tez.t option comparable_ty
+val option_mumav_t : Tez.t option comparable_ty
 
 val option_string_t : Script_string.t option comparable_ty
 
@@ -1774,9 +1774,9 @@ val option_nat_t : n num option comparable_ty
 
 val option_pair_nat_nat_t : (n num, n num) pair option comparable_ty
 
-val option_pair_nat_mutez_t : (n num, Tez.t) pair option comparable_ty
+val option_pair_nat_mumav_t : (n num, Tez.t) pair option comparable_ty
 
-val option_pair_mutez_mutez_t : (Tez.t, Tez.t) pair option comparable_ty
+val option_pair_mumav_mumav_t : (Tez.t, Tez.t) pair option comparable_ty
 
 val option_pair_int_nat_t : (z num, n num) pair option comparable_ty
 

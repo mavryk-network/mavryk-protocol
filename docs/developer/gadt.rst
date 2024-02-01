@@ -37,7 +37,7 @@ actual definition):
      | Unit_t : type_annot option -> unit ty
      | Int_t : type_annot option -> z num ty
      | String_t : type_annot option -> string ty
-     | Mutez_t : type_annot option -> Tez.t ty
+     | Mumav_t : type_annot option -> Tez.t ty
      | Bool_t : type_annot option -> bool ty
      | Pair_t :
        ('a ty * field_annot option * var_annot option)

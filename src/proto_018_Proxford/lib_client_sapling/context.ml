@@ -38,9 +38,9 @@ module Shielded_tez : sig
 
   val zero : t
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
   val of_tez : Tez.t -> t
 
@@ -55,9 +55,9 @@ end = struct
   let ( -? ) a b = a -? b |> Environment.wrap_tzresult
 
   let of_tez t =
-    let i = Tez.to_mutez t in
+    let i = Tez.to_mumav t in
     assert (UTXO.valid_amount i) ;
-    WithExceptions.Option.get ~loc:__LOC__ @@ of_mutez i
+    WithExceptions.Option.get ~loc:__LOC__ @@ of_mumav i
 end
 
 let sapling_transaction_as_arg t =
@@ -171,7 +171,7 @@ module Account = struct
   let add_unspent c input =
     let amount =
       WithExceptions.Option.get ~loc:__LOC__
-      @@ Shielded_tez.of_mutez (F.Input.amount input)
+      @@ Shielded_tez.of_mumav (F.Input.amount input)
     in
     match Shielded_tez.(c.balance +? amount) with
     | Error _ -> assert false (* overflow *)
@@ -182,7 +182,7 @@ module Account = struct
   let remove_unspent c input =
     let amount =
       WithExceptions.Option.get ~loc:__LOC__
-      @@ Shielded_tez.of_mutez (F.Input.amount input)
+      @@ Shielded_tez.of_mumav (F.Input.amount input)
     in
     match Shielded_tez.(c.balance -? amount) with
     | Error _ -> assert false (* negative balance *)
@@ -438,7 +438,7 @@ let adjust_message_length (cctxt : #Client_context.full) ?message memo_size =
         Bytes.cat message (Bytes.make (memo_size - message_length) '\000')
 
 let create_payment ~message dst amount =
-  let amount = Shielded_tez.to_mutez amount in
+  let amount = Shielded_tez.to_mumav amount in
   F.make_output dst amount message
 
 (** Return a list of inputs belonging to an account sufficient to cover an
@@ -449,7 +449,7 @@ let get_shielded_amount amount account =
   let+ () =
     error_unless (balance >= amount) (Balance_too_low (balance, amount))
   in
-  let to_pay = Shielded_tez.to_mutez amount in
+  let to_pay = Shielded_tez.to_mumav amount in
   let inputs_to_spend = [] in
   let rec loop to_pay chosen_inputs account =
     if Int64.(compare to_pay zero) > 0 then
@@ -463,7 +463,7 @@ let get_shielded_amount amount account =
     else
       let change =
         WithExceptions.Option.get ~loc:__LOC__
-        @@ Shielded_tez.of_mutez @@ Int64.abs to_pay
+        @@ Shielded_tez.of_mumav @@ Int64.abs to_pay
       in
       (chosen_inputs, change)
   in
@@ -471,7 +471,7 @@ let get_shielded_amount amount account =
 
 let create_payback ~memo_size address amount =
   let plaintext_message = Bytes.make memo_size '\000' in
-  let amount = Shielded_tez.to_mutez amount in
+  let amount = Shielded_tez.to_mumav amount in
   F.make_output address amount plaintext_message
 
 (* The caller should check that the account exists already *)
@@ -500,7 +500,7 @@ let shield cctxt ~dst ?message amount (state : Contract_state.t) anti_replay =
   let memo_size = Storage.get_memo_size Contract_state.(state.storage) in
   let*! message = adjust_message_length cctxt ?message memo_size in
   let payment = create_payment ~message dst shielded_amount in
-  let negative_amount = Int64.neg (Tez.to_mutez amount) in
+  let negative_amount = Int64.neg (Tez.to_mumav amount) in
   return
   @@ F.forge_shield_transaction
        [payment]

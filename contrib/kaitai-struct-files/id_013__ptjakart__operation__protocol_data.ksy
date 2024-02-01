@@ -977,7 +977,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1122,9 +1122,9 @@ types:
     seq:
     - id: id_013__ptjakart__liquidity_baking_toggle_vote
       type: s1
-  id_013__ptjakart__mutez:
+  id_013__ptjakart__mumav:
     seq:
-    - id: id_013__ptjakart__mutez
+    - id: id_013__ptjakart__mumav
       type: n
   id_013__ptjakart__operation__alpha__contents:
     seq:
@@ -1434,7 +1434,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1442,7 +1442,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -1579,7 +1579,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1594,7 +1594,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1610,7 +1610,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1630,7 +1630,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1650,7 +1650,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1668,7 +1668,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1694,7 +1694,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1705,7 +1705,7 @@ types:
       type: u1
       enum: bool
     - id: limit
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
       if: (limit_tag == bool::true)
   tickets_info:
     seq:
@@ -1743,7 +1743,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1751,7 +1751,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: destination
       type: id_013__ptjakart__transaction_destination
       doc: ! >-
@@ -1771,7 +1771,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1812,7 +1812,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1832,7 +1832,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1860,7 +1860,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1878,7 +1878,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1891,7 +1891,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1927,7 +1927,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1945,7 +1945,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1963,7 +1963,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -1981,7 +1981,7 @@ types:
       type: u1
       enum: bool
     - id: burn_limit
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
       if: (burn_limit_tag == bool::true)
 enums:
   amount_tag:

@@ -40,7 +40,7 @@ let protocol_max_batch_size =
               (Manager_operation
                  {
                    source = Signature.Public_key_hash.zero;
-                   fee = Tez.of_mutez_exn Int64.max_int;
+                   fee = Tez.of_mumav_exn Int64.max_int;
                    counter = Manager_counter.Internal_for_tests.of_int max_int;
                    gas_limit =
                      Gas.Arith.integral_of_int_exn ((max_int - 1) / 1000);

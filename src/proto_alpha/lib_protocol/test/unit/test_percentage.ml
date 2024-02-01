@@ -58,42 +58,42 @@ let test_mul_percentage () =
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn 50L)
-      (mul_percentage ~rounding (of_mutez_exn 100L) Int_percentage.p50)
+      (of_mumav_exn 50L)
+      (mul_percentage ~rounding (of_mumav_exn 100L) Int_percentage.p50)
   in
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn 5L)
-      (mul_percentage ~rounding (of_mutez_exn 100L) Int_percentage.p5)
+      (of_mumav_exn 5L)
+      (mul_percentage ~rounding (of_mumav_exn 100L) Int_percentage.p5)
   in
   (* round down *)
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn 49L)
-      (mul_percentage ~rounding (of_mutez_exn 99L) Int_percentage.p50)
+      (of_mumav_exn 49L)
+      (mul_percentage ~rounding (of_mumav_exn 99L) Int_percentage.p50)
   in
   (* round up *)
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn 50L)
-      (mul_percentage ~rounding:`Up (of_mutez_exn 99L) Int_percentage.p50)
+      (of_mumav_exn 50L)
+      (mul_percentage ~rounding:`Up (of_mumav_exn 99L) Int_percentage.p50)
   in
   let tz = 123456L in
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn tz)
-      (mul_percentage ~rounding (of_mutez_exn tz) (pct_of_int 200))
+      (of_mumav_exn tz)
+      (mul_percentage ~rounding (of_mumav_exn tz) (pct_of_int 200))
   in
   (* no overflow *)
   let* () =
     assert_equal_tez
       ~loc:__LOC__
-      (of_mutez_exn 9131138316486228048L)
-      (mul_percentage ~rounding Tez_repr.max_mutez (pct_of_int 99))
+      (of_mumav_exn 9131138316486228048L)
+      (mul_percentage ~rounding Tez_repr.max_mumav (pct_of_int 99))
   in
   return_unit
 

@@ -568,7 +568,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input215785357]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input215785357]",
     "tags": [
       "regression",
       "mumbai",

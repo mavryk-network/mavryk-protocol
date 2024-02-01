@@ -129,7 +129,7 @@ end) : S = struct
 
   let tez rng_state =
     let i = Random.State.int64 rng_state (Int64.of_int max_int) in
-    match Protocol.Alpha_context.Tez.of_mutez i with
+    match Protocol.Alpha_context.Tez.of_mumav i with
     | Some res -> res
     | None -> assert false
 

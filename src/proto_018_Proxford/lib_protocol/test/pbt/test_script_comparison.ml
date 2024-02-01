@@ -55,7 +55,7 @@ let rec reference_compare_comparable : type a. a comparable_ty -> a -> a -> int
   | Signature_t, x, y -> normalize_compare @@ Script_signature.compare x y
   | String_t, x, y -> normalize_compare @@ Script_string.compare x y
   | Bool_t, x, y -> normalize_compare @@ Compare.Bool.compare x y
-  | Mutez_t, x, y -> normalize_compare @@ Tez.compare x y
+  | Mumav_t, x, y -> normalize_compare @@ Tez.compare x y
   | Key_hash_t, x, y ->
       normalize_compare @@ Signature.Public_key_hash.compare x y
   | Key_t, x, y -> normalize_compare @@ Signature.Public_key.compare x y

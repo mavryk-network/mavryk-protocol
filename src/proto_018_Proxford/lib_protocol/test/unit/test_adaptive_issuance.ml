@@ -140,8 +140,8 @@ let test_compute_bonus () =
   let compute_bonus frozen total previous =
     assert (frozen <= total) ;
     Lwt_main.run
-      (let total_supply = Tez_repr.of_mutez_exn total in
-       let total_frozen_stake = Tez_repr.of_mutez_exn frozen in
+      (let total_supply = Tez_repr.of_mumav_exn total in
+       let total_frozen_stake = Tez_repr.of_mumav_exn frozen in
        let*?@ previous_bonus =
          Issuance_bonus_repr.of_Q ~max_bonus:reward_params.max_bonus previous
        in

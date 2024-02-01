@@ -64,7 +64,7 @@ network with, valid but useless, zero-fees operations. This is why the
 prevalidator filter currently restricts operations based on their
 associated fees, to reject "too cheap" or "zero-fees" operations. This
 can be configured via the ``minimal_fees``,
-``minimal_nanotez_per_gas_unit`` and ``minimal_nanotez_per_byte`` (see
+``minimal_nanomav_per_gas_unit`` and ``minimal_nanomav_per_byte`` (see
 :ref:`filter RPCs<active_filter_rpc_alpha>`) parameters of the filter
 configuration of your node.
 
@@ -215,8 +215,8 @@ respectively:
 The following parameters can be thus inspected and modified:
 
 - ``minimal_fees``: type ``int``, default ``100``
-- ``minimal_nanotez_per_gas_unit``: type ``int``, default ``100``
-- ``minimal_nanotez_per_byte``: type ``int``, default ``1000``
+- ``minimal_nanomav_per_gas_unit``: type ``int``, default ``100``
+- ``minimal_nanomav_per_byte``: type ``int``, default ``1000``
 - ``allow_script_failure``: type ``bool``, default ``true``
 - ``clock_drift`` : type ``Period.t option``, default ``None``
 - ``max_prechecked_manager_operations`` : type ``int``, default ``5000``

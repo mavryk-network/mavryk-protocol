@@ -218,11 +218,11 @@ let test_transfer_zero_implicit_with_bal_src_as_fee () =
   let src_pkh = account.Account.pkh in
   let src = Contract.Implicit src_pkh in
   let* operation =
-    Op.transaction ~force_reveal:true (B b) dest src (Tez.of_mutez_exn 100L)
+    Op.transaction ~force_reveal:true (B b) dest src (Tez.of_mumav_exn 100L)
   in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* op =
     Op.transaction ~force_reveal:true (B b) ~fee:bal_src src dest Tez.zero
   in
@@ -253,7 +253,7 @@ let test_transfer_zero_to_originated_with_bal_src_as_fee () =
   let* b, dest = Context.init1 ~consensus_threshold:0 () in
   let account = Account.new_account () in
   let src = Contract.Implicit account.Account.pkh in
-  let* operation = Op.transaction (B b) dest src (Tez.of_mutez_exn 100L) in
+  let* operation = Op.transaction (B b) dest src (Tez.of_mumav_exn 100L) in
   let* b = Block.bake ~operation b in
   let* operation, new_contract =
     Op.contract_origination (B b) dest ~script:Op.dummy_script
@@ -265,7 +265,7 @@ let test_transfer_zero_to_originated_with_bal_src_as_fee () =
   let* operation =
     Op.transaction (B b) ~fee:bal_src src new_contract Tez.zero
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* (_ : Block.t) = Block.bake ~operation b in
   return_unit
 
@@ -275,10 +275,10 @@ let test_transfer_one_to_implicit_with_bal_src_as_fee () =
   let* b, dest = Context.init1 ~consensus_threshold:0 () in
   let account = Account.new_account () in
   let src = Contract.Implicit account.Account.pkh in
-  let* operation = Op.transaction (B b) dest src (Tez.of_mutez_exn 100L) in
+  let* operation = Op.transaction (B b) dest src (Tez.of_mumav_exn 100L) in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* operation = Op.revelation (B b) ~fee:Tez.zero account.pk in
   let* b = Block.bake ~operation b in
   let* op = Op.transaction (B b) ~fee:bal_src src dest Tez.one in
@@ -826,7 +826,7 @@ let test_storage_fees_and_internal_operation () =
       ~baker:(Context.Contract.pkh contract)
       ~source:contract
       ~destination:(Contract.Implicit caller.pkh)
-      Tez.one_mutez
+      Tez.one_mumav
   in
   (* [originate_and_call] first, originates a contract with an empty string as
      initial storage, and an initial credit of [initial_amount]. And then, calls
@@ -854,7 +854,7 @@ let test_storage_fees_and_internal_operation () =
   in
   (* Ensure failure when the initial balance of the originated contract is not
      sufficient to pay storage fees. *)
-  let*! res = originate_and_call ~initial_block ~initial_amount:Tez.one_mutez in
+  let*! res = originate_and_call ~initial_block ~initial_amount:Tez.one_mumav in
   let* () =
     Assert.proto_error_with_info ~loc:__LOC__ res "Cannot pay storage fee"
   in

@@ -118,7 +118,7 @@ module Ticket_inspection = struct
     | Signature_t -> (k [@ocaml.tailcall]) False_ht
     | String_t -> (k [@ocaml.tailcall]) False_ht
     | Bytes_t -> (k [@ocaml.tailcall]) False_ht
-    | Mutez_t -> (k [@ocaml.tailcall]) False_ht
+    | Mumav_t -> (k [@ocaml.tailcall]) False_ht
     | Bool_t -> (k [@ocaml.tailcall]) False_ht
     | Key_hash_t -> (k [@ocaml.tailcall]) False_ht
     | Key_t -> (k [@ocaml.tailcall]) False_ht
@@ -157,7 +157,7 @@ module Ticket_inspection = struct
     | Signature_t -> (k [@ocaml.tailcall]) False_ht
     | String_t -> (k [@ocaml.tailcall]) False_ht
     | Bytes_t -> (k [@ocaml.tailcall]) False_ht
-    | Mutez_t -> (k [@ocaml.tailcall]) False_ht
+    | Mumav_t -> (k [@ocaml.tailcall]) False_ht
     | Key_hash_t -> (k [@ocaml.tailcall]) False_ht
     | Key_t -> (k [@ocaml.tailcall]) False_ht
     | Timestamp_t -> (k [@ocaml.tailcall]) False_ht
@@ -278,7 +278,7 @@ module Ticket_collection = struct
     | Signature_t -> (k [@ocaml.tailcall]) ctxt acc
     | String_t -> (k [@ocaml.tailcall]) ctxt acc
     | Bytes_t -> (k [@ocaml.tailcall]) ctxt acc
-    | Mutez_t -> (k [@ocaml.tailcall]) ctxt acc
+    | Mumav_t -> (k [@ocaml.tailcall]) ctxt acc
     | Bool_t -> (k [@ocaml.tailcall]) ctxt acc
     | Key_hash_t -> (k [@ocaml.tailcall]) ctxt acc
     | Key_t -> (k [@ocaml.tailcall]) ctxt acc

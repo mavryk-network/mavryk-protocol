@@ -60,7 +60,7 @@ let bytes ?(loc = 0) s = Tezos_micheline.Micheline.Bytes (loc, s)
 
 let string ?(loc = 0) s = Tezos_micheline.Micheline.String (loc, s)
 
-let mutez ?(loc = 0) m = int ~loc (Z.of_int64 (Tez.to_mutez m))
+let mumav ?(loc = 0) m = int ~loc (Z.of_int64 (Tez.to_mumav m))
 
 (* Translate a timestamp to a Micheline expression in optimized
    form *)

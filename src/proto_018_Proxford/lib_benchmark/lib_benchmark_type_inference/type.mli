@@ -41,7 +41,7 @@ module Base : sig
     | Bytes_t
     | Key_hash_t
     | Timestamp_t
-    | Mutez_t
+    | Mumav_t
     | Key_t
     | Option_t of t
     | Pair_t of t * t
@@ -86,7 +86,7 @@ val key_hash : Base.t
 
 val timestamp : Base.t
 
-val mutez : Base.t
+val mumav : Base.t
 
 val key : Base.t
 

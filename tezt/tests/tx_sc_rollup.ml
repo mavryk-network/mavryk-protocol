@@ -69,7 +69,7 @@ module Tx_kernel = struct
         entrypoint : string;
       }
     | Transfer of {
-        (* tz4 address *)
+        (* mv4 address *)
         destination : Tezos_crypto.Signature.Bls.Public_key_hash.t;
         ticket : ticket;
       }
@@ -367,7 +367,7 @@ let tx_kernel_e2e setup protocol =
   in
   let level = init_level + 1 in
 
-  (* gen two tz1 accounts *)
+  (* gen two mv1 accounts *)
   let pkh1, pk1, sk1 = Tezos_crypto.Signature.Ed25519.generate_key () in
   let pkh2, pk2, sk2 = Tezos_crypto.Signature.Ed25519.generate_key () in
   let ticket_content = "Hello, Ticket!" in

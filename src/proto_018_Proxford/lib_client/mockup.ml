@@ -136,7 +136,7 @@ module Parsed_account = struct
               in
               match tz_balance with
               | Ok balance -> (
-                  let tez_repr = Tez.of_mutez @@ Tez.to_mutez balance in
+                  let tez_repr = Tez.of_mumav @@ Tez.to_mumav balance in
                   match tez_repr with
                   | None ->
                       (* we're reading the wallet, it's content MUST be valid *)

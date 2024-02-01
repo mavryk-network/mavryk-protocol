@@ -63,8 +63,8 @@ open Protocol.Alpha_context
 
 type fees_config = {
   minimal_fees : Tez.t;
-  minimal_nanotez_per_gas_unit : Q.t;
-  minimal_nanotez_per_byte : Q.t;
+  minimal_nanomav_per_gas_unit : Q.t;
+  minimal_nanomav_per_byte : Q.t;
 }
 
 type validation_config =
@@ -99,9 +99,9 @@ type t = {
 let default_fees_config =
   {
     minimal_fees =
-      (match Tez.of_mutez 100L with None -> assert false | Some t -> t);
-    minimal_nanotez_per_gas_unit = Q.of_int 100;
-    minimal_nanotez_per_byte = Q.of_int 1000;
+      (match Tez.of_mumav 100L with None -> assert false | Some t -> t);
+    minimal_nanomav_per_gas_unit = Q.of_int 100;
+    minimal_nanomav_per_byte = Q.of_int 1000;
   }
 
 let default_validation_config = Node
@@ -147,9 +147,9 @@ let default_config =
   }
 
 let make ?(minimal_fees = default_fees_config.minimal_fees)
-    ?(minimal_nanotez_per_gas_unit =
-      default_fees_config.minimal_nanotez_per_gas_unit)
-    ?(minimal_nanotez_per_byte = default_fees_config.minimal_nanotez_per_byte)
+    ?(minimal_nanomav_per_gas_unit =
+      default_fees_config.minimal_nanomav_per_gas_unit)
+    ?(minimal_nanomav_per_byte = default_fees_config.minimal_nanomav_per_byte)
     ?(nonce = default_nonce_config) ?context_path
     ?(retries_on_failure = default_retries_on_failure_config)
     ?(user_activated_upgrades = default_user_activated_upgrades)
@@ -157,7 +157,7 @@ let make ?(minimal_fees = default_fees_config.minimal_fees)
     ?(force = default_force) ?(state_recorder = default_state_recorder_config)
     ?extra_operations ?dal_node_endpoint () =
   let fees =
-    {minimal_fees; minimal_nanotez_per_gas_unit; minimal_nanotez_per_byte}
+    {minimal_fees; minimal_nanomav_per_gas_unit; minimal_nanomav_per_byte}
   in
   let validation =
     match context_path with
@@ -184,14 +184,14 @@ let fees_config_encoding : fees_config Data_encoding.t =
     conv (fun q -> Q.to_string q) (fun s -> Q.of_string s) string
   in
   conv
-    (fun {minimal_fees; minimal_nanotez_per_gas_unit; minimal_nanotez_per_byte} ->
-      (minimal_fees, minimal_nanotez_per_gas_unit, minimal_nanotez_per_byte))
-    (fun (minimal_fees, minimal_nanotez_per_gas_unit, minimal_nanotez_per_byte) ->
-      {minimal_fees; minimal_nanotez_per_gas_unit; minimal_nanotez_per_byte})
+    (fun {minimal_fees; minimal_nanomav_per_gas_unit; minimal_nanomav_per_byte} ->
+      (minimal_fees, minimal_nanomav_per_gas_unit, minimal_nanomav_per_byte))
+    (fun (minimal_fees, minimal_nanomav_per_gas_unit, minimal_nanomav_per_byte) ->
+      {minimal_fees; minimal_nanomav_per_gas_unit; minimal_nanomav_per_byte})
     (obj3
        (req "minimal_fees" Tez.encoding)
-       (req "minimal_nanotez_per_gas_unit" q_encoding)
-       (req "minimal_nanotez_per_byte" q_encoding))
+       (req "minimal_nanomav_per_gas_unit" q_encoding)
+       (req "minimal_nanomav_per_byte" q_encoding))
 
 let validation_config_encoding =
   let open Data_encoding in

@@ -119,7 +119,7 @@ Minor changes
 - Typing of ``PAIR k`` in Michelson no longer promotes ``@`` annotations
   on the stack to ``%`` annotations in the result type. (MR :gl:`!2815`)
 
-- Fix overconservative detection of overflows in Michelson mutez multiplication,
+- Fix overconservative detection of overflows in Michelson mumav multiplication,
   and reported error trace when multiplication is overflowing. (MR :gl:`!2947`; Issues :gl:`#958` :gl:`#972`)
 
 - Fix handling of potential integer overflow in ``Time_repr`` addition. (MR :gl:`!2660`)

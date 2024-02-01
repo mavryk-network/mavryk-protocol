@@ -113,10 +113,10 @@ signature scheme:
 ================ ============================
 Signature scheme Gas cost of reveal operation
 ================ ============================
-ed25519 (tz1)    166 gas units
-secp256k1 (tz2)  152 gas units
-p256 (tz3)       1091 gas units
-bls (tz4)        1671 gas units
+ed25519 (mv1)    166 gas units
+secp256k1 (mv2)  152 gas units
+p256 (mv3)       1091 gas units
+bls (mv4)        1671 gas units
 ================ ============================
 
 - The operation's result ``Sc_rollup_cement_result`` now have a new field

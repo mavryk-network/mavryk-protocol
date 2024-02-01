@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 005-PsBabyM1.tez'
 types:
-  id_005__psbabym1__mutez:
+  id_005__psbabym1__mumav:
     seq:
-    - id: id_005__psbabym1__mutez
+    - id: id_005__psbabym1__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_005__psbabym1__mutez
-  type: id_005__psbabym1__mutez
+- id: id_005__psbabym1__mumav
+  type: id_005__psbabym1__mumav

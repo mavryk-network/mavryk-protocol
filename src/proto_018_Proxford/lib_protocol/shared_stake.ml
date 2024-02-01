@@ -23,8 +23,8 @@ let share ~rounding ~full_staking_balance amount =
       Tez_repr.mul_ratio
         ~rounding
         amount
-        ~num:(Tez_repr.to_mutez own_frozen)
-        ~den:(Tez_repr.to_mutez total_frozen)
+        ~num:(Tez_repr.to_mumav own_frozen)
+        ~den:(Tez_repr.to_mumav total_frozen)
     in
     let* stakers_part = Tez_repr.(amount -? baker_part) in
     return {baker_part; stakers_part}
@@ -71,8 +71,8 @@ let compute_reward_distrib ~full_staking_balance ~stake
       Tez_repr.mul_ratio
         ~rounding:`Down
         rewards
-        ~num:(Tez_repr.to_mutez weighted_delegated)
-        ~den:(Tez_repr.to_mutez total_stake)
+        ~num:(Tez_repr.to_mumav weighted_delegated)
+        ~den:(Tez_repr.to_mumav total_stake)
     in
     let* to_frozen = Tez_repr.(rewards -? to_spendable) in
     let* {baker_part; stakers_part} =

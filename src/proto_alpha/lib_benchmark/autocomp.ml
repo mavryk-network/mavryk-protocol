@@ -94,7 +94,7 @@ and replace_vars (ty : Type.Base.t) =
   match node with
   | Type.Base.Unit_t | Type.Base.Int_t | Type.Base.Nat_t | Type.Base.Bool_t
   | Type.Base.String_t | Type.Base.Bytes_t | Type.Base.Key_hash_t
-  | Type.Base.Timestamp_t | Type.Base.Mutez_t | Type.Base.Key_t ->
+  | Type.Base.Timestamp_t | Type.Base.Mumav_t | Type.Base.Key_t ->
       return ty
   | Type.Base.Var_t v -> (
       get_repr_exn v >>= fun repr ->
@@ -195,9 +195,9 @@ struct
     | Timestamp_t ->
         sample Michelson_base.timestamp >>= fun tstamp ->
         return (Mikhailsky.Data.timestamp tstamp)
-    | Mutez_t ->
+    | Mumav_t ->
         sample Michelson_base.tez >>= fun tz ->
-        return (Mikhailsky.Data.mutez tz)
+        return (Mikhailsky.Data.mumav tz)
     | Key_t ->
         sample Crypto_samplers.pk >>= fun pk -> return (Mikhailsky.Data.key pk)
     | Option_t ty ->

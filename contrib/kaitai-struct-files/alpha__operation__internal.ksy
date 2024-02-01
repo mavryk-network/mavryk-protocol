@@ -42,9 +42,9 @@ types:
     - id: alpha__michelson__v1__primitives
       type: u1
       enum: alpha__michelson__v1__primitives
-  alpha__mutez:
+  alpha__mumav:
     seq:
-    - id: alpha__mutez
+    - id: alpha__mumav
       type: n
   alpha__scripted__contracts:
     seq:
@@ -195,7 +195,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: alpha__mutez
+      type: alpha__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -303,7 +303,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: alpha__mutez
+      type: alpha__mumav
     - id: destination
       type: alpha__transaction_destination
       doc: ! >-
@@ -634,7 +634,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -724,8 +724,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

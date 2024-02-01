@@ -817,7 +817,7 @@ module Scripts = struct
       | Signature_t -> return (T_signature, [], [])
       | String_t -> return (T_string, [], [])
       | Bytes_t -> return (T_bytes, [], [])
-      | Mutez_t -> return (T_mutez, [], [])
+      | Mumav_t -> return (T_mumav, [], [])
       | Bool_t -> return (T_bool, [], [])
       | Key_hash_t -> return (T_key_hash, [], [])
       | Key_t -> return (T_key, [], [])
@@ -1003,7 +1003,7 @@ module Scripts = struct
       | ISub_timestamp_seconds _ -> pp_print_string fmt "SUB"
       | IDiff_timestamps _ -> pp_print_string fmt "DIFF"
       | IAdd_tez _ -> pp_print_string fmt "ADD"
-      | ISub_tez _ -> pp_print_string fmt "SUB_MUTEZ"
+      | ISub_tez _ -> pp_print_string fmt "SUB_MUMAV"
       | ISub_tez_legacy _ -> pp_print_string fmt "SUB"
       | IMul_teznat _ | IMul_nattez _ -> pp_print_string fmt "MUL"
       | IEdiv_teznat _ -> pp_print_string fmt "EDIV"
@@ -1224,8 +1224,8 @@ module Scripts = struct
     sender : Contract.t;
   }
 
-  (* 4_000_000 ꜩ *)
-  let default_balance = Tez.of_mutez_exn 4_000_000_000_000L
+  (* 4_000_000 ṁ *)
+  let default_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
   let register () =
     let open Lwt_result_syntax in

@@ -125,7 +125,7 @@ type prim =
   | I_SLICE
   | I_STEPS_TO_QUOTA
   | I_SUB
-  | I_SUB_MUTEZ
+  | I_SUB_MUMAV
   | I_SWAP
   | I_TRANSFER_TOKENS
   | I_SET_DELEGATE
@@ -175,7 +175,7 @@ type prim =
   | T_signature
   | T_string
   | T_bytes
-  | T_mutez
+  | T_mumav
   | T_timestamp
   | T_unit
   | T_operation
@@ -222,14 +222,14 @@ let namespace = function
   | I_READ_TICKET | I_RENAME | I_RIGHT | I_SAPLING_EMPTY_STATE
   | I_SAPLING_VERIFY_UPDATE | I_SELF | I_SELF_ADDRESS | I_SENDER
   | I_SET_DELEGATE | I_SHA256 | I_SHA512 | I_SHA3 | I_SIZE | I_SLICE | I_SOME
-  | I_SOURCE | I_SPLIT_TICKET | I_STEPS_TO_QUOTA | I_SUB | I_SUB_MUTEZ | I_SWAP
+  | I_SOURCE | I_SPLIT_TICKET | I_STEPS_TO_QUOTA | I_SUB | I_SUB_MUMAV | I_SWAP
   | I_TICKET | I_TICKET_DEPRECATED | I_TOTAL_VOTING_POWER | I_TRANSFER_TOKENS
   | I_UNIT | I_UNPACK | I_UNPAIR | I_UPDATE | I_VOTING_POWER | I_XOR
   | I_OPEN_CHEST | I_EMIT | I_BYTES | I_NAT ->
       Instr_namespace
   | T_address | T_tx_rollup_l2_address | T_big_map | T_bool | T_bytes
   | T_chain_id | T_contract | T_int | T_key | T_key_hash | T_lambda | T_list
-  | T_map | T_mutez | T_nat | T_never | T_operation | T_option | T_or | T_pair
+  | T_map | T_mumav | T_nat | T_never | T_operation | T_option | T_or | T_pair
   | T_sapling_state | T_sapling_transaction | T_sapling_transaction_deprecated
   | T_set | T_signature | T_string | T_timestamp | T_unit | T_bls12_381_fr
   | T_bls12_381_g1 | T_bls12_381_g2 | T_ticket | T_chest_key | T_chest ->
@@ -336,7 +336,7 @@ let string_of_prim = function
   | I_SLICE -> "SLICE"
   | I_STEPS_TO_QUOTA -> "STEPS_TO_QUOTA"
   | I_SUB -> "SUB"
-  | I_SUB_MUTEZ -> "SUB_MUTEZ"
+  | I_SUB_MUMAV -> "SUB_MUMAV"
   | I_SWAP -> "SWAP"
   | I_TRANSFER_TOKENS -> "TRANSFER_TOKENS"
   | I_SET_DELEGATE -> "SET_DELEGATE"
@@ -388,7 +388,7 @@ let string_of_prim = function
   | T_signature -> "signature"
   | T_string -> "string"
   | T_bytes -> "bytes"
-  | T_mutez -> "mutez"
+  | T_mumav -> "mumav"
   | T_timestamp -> "timestamp"
   | T_unit -> "unit"
   | T_operation -> "operation"
@@ -502,7 +502,7 @@ let prim_of_string =
   | "SLICE" -> return I_SLICE
   | "STEPS_TO_QUOTA" -> return I_STEPS_TO_QUOTA
   | "SUB" -> return I_SUB
-  | "SUB_MUTEZ" -> return I_SUB_MUTEZ
+  | "SUB_MUMAV" -> return I_SUB_MUMAV
   | "SWAP" -> return I_SWAP
   | "TRANSFER_TOKENS" -> return I_TRANSFER_TOKENS
   | "SET_DELEGATE" -> return I_SET_DELEGATE
@@ -549,7 +549,7 @@ let prim_of_string =
   | "signature" -> return T_signature
   | "string" -> return T_string
   | "bytes" -> return T_bytes
-  | "mutez" -> return T_mutez
+  | "mumav" -> return T_mumav
   | "timestamp" -> return T_timestamp
   | "unit" -> return T_unit
   | "operation" -> return T_operation
@@ -726,7 +726,7 @@ let prim_encoding =
          ("signature", T_signature);
          ("string", T_string);
          ("bytes", T_bytes);
-         ("mutez", T_mutez);
+         ("mumav", T_mumav);
          ("timestamp", T_timestamp);
          ("unit", T_unit);
          ("operation", T_operation);
@@ -779,7 +779,7 @@ let prim_encoding =
          ("view", K_view);
          ("constant", H_constant);
          (* Alpha_012 addition *)
-         ("SUB_MUTEZ", I_SUB_MUTEZ);
+         ("SUB_MUMAV", I_SUB_MUMAV);
          (* Alpha_013 addition *)
          ("tx_rollup_l2_address", T_tx_rollup_l2_address);
          ("MIN_BLOCK_TIME", I_MIN_BLOCK_TIME);

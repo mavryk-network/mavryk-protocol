@@ -77,7 +77,7 @@ let () =
 let test_manager_ops config (op_to_replace, fee_r, gas_r)
     (candidate_op, fee_c, gas_c) =
   Log.debug
-    "Test op_to_replace: {fee=%dmutez; gas=%d} and candidate_op: {fee=%dmutez; \
+    "Test op_to_replace: {fee=%dmumav; gas=%d} and candidate_op: {fee=%dmumav; \
      gas=%d}"
     fee_r
     gas_r
@@ -106,9 +106,9 @@ let test_manager_ops config (op_to_replace, fee_r, gas_r)
    | `Replace ->
        Test.fail
          ~__LOC__
-         "Adjusted candidate_op: {fee=%Ldmutez; gas=%d} with fee smaller than \
+         "Adjusted candidate_op: {fee=%Ldmumav; gas=%d} with fee smaller than \
           fee_needed should not be allowed to replace op_to_replace: \
-          {fee=%dmutez; gas=%d}"
+          {fee=%dmumav; gas=%d}"
          fee_smaller
          gas_c
          fee_r
@@ -122,8 +122,8 @@ let test_manager_ops config (op_to_replace, fee_r, gas_r)
   | `Keep ->
       Test.fail
         ~__LOC__
-        "Adjusted candidate_op: {fee=%Ldmutez; gas=%d} with fee_needed should \
-         replace op_to_replace: {fee=%dmutez; gas=%d}"
+        "Adjusted candidate_op: {fee=%Ldmumav; gas=%d} with fee_needed should \
+         replace op_to_replace: {fee=%dmumav; gas=%d}"
         fee_needed
         gas_c
         fee_r
@@ -136,7 +136,7 @@ let () =
     ~title:"hand-picked fee and gas"
     ~additional_tags:["manager"; "handpicked"]
   @@ fun () ->
-  let fee_in_mutez_and_gas_list =
+  let fee_in_mumav_and_gas_list =
     [
       (* Various relative gas limits and fees: equal, off by one,
          multiple/divisor, high ppcm, coprime, zero, one, much
@@ -170,12 +170,12 @@ let () =
   in
   let ops =
     List.map
-      (fun (fee_in_mutez, gas) ->
+      (fun (fee_in_mumav, gas) ->
         let op =
-          Helpers.generate_manager_op_with_fee_and_gas ~fee_in_mutez ~gas
+          Helpers.generate_manager_op_with_fee_and_gas ~fee_in_mumav ~gas
         in
-        (op, fee_in_mutez, gas))
-      fee_in_mutez_and_gas_list
+        (op, fee_in_mumav, gas))
+      fee_in_mumav_and_gas_list
   in
   List.iter
     (fun op ->
@@ -191,10 +191,10 @@ let () =
   @@ fun () ->
   let open QCheck2.Gen in
   let gen =
-    let* fee_in_mutez = int_range 0 100_000_000 in
+    let* fee_in_mumav = int_range 0 100_000_000 in
     let* gas = int_range 1 50_000_000 in
-    let* op = Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas in
-    return (op, fee_in_mutez, gas)
+    let* op = Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas in
+    return (op, fee_in_mumav, gas)
   in
   let gen_config =
     let* num = int_range 0 1000 in

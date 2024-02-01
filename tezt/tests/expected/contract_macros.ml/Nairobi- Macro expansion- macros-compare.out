@@ -1,4 +1,4 @@
-{ parameter (pair mutez mutez) ;
+{ parameter (pair mumav mumav) ;
   storage (list bool) ;
   code { CAR ;
          DUP ;

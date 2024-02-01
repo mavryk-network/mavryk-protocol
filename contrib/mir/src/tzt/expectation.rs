@@ -58,7 +58,7 @@ fn unify_interpreter_error(
                 Err(_) => false,
             }
         }
-        (MutezOverflow(_, _), InterpretError::MutezOverflow) => true,
+        (MumavOverflow(_, _), InterpretError::MumavOverflow) => true,
         (GeneralOverflow(_, _), _) => todo!("General overflow is unsupported on interpreter"),
         (_, _) => false, //Some error that we didn't expect happened.
     }

@@ -31,20 +31,20 @@ open Alpha_context
     interested reader should look for comments in this file to gain a
     better understanding of the contract logic. *)
 module Simulate_raw = struct
-  let mutez_to_natural t = Z.of_int64 (Tez.to_mutez t)
+  let mumav_to_natural t = Z.of_int64 (Tez.to_mumav t)
 
-  let natural_to_mutez n = Tez.of_mutez_exn (Z.to_int64 n)
+  let natural_to_mumav n = Tez.of_mumav_exn (Z.to_int64 n)
 
   let addLiquidity ~tokenPool ~xtzPool ~lqtTotal ~amount =
-    let xtzPool = mutez_to_natural xtzPool in
-    let nat_amount = mutez_to_natural amount in
+    let xtzPool = mumav_to_natural xtzPool in
+    let nat_amount = mumav_to_natural amount in
     let lqt_minted = Z.(nat_amount * lqtTotal / xtzPool) in
     let tokens_deposited = Z.(cdiv (nat_amount * tokenPool) xtzPool) in
     (lqt_minted, tokens_deposited)
 
   let removeLiquidity ~tokenPool ~xtzPool ~lqtTotal ~lqtBurned =
     let xtz_withdrawn =
-      natural_to_mutez Z.(lqtBurned * mutez_to_natural xtzPool / lqtTotal)
+      natural_to_mumav Z.(lqtBurned * mumav_to_natural xtzPool / lqtTotal)
     in
     let tokens_withdrawn = Z.(lqtBurned * tokenPool / lqtTotal) in
     (xtz_withdrawn, tokens_withdrawn)
@@ -53,16 +53,16 @@ module Simulate_raw = struct
     let fee = Z.of_int 999 in
     let xtz_bought_nat =
       Z.(
-        tokensSold * fee * mutez_to_natural xtzPool
+        tokensSold * fee * mumav_to_natural xtzPool
         / ((tokenPool * of_int 1000) + (tokensSold * fee)))
     in
     let bought = Z.(xtz_bought_nat * of_int 999 / of_int 1000) in
-    (natural_to_mutez bought, xtz_bought_nat)
+    (natural_to_mumav bought, xtz_bought_nat)
 
   let xtzToToken ~tokenPool ~xtzPool ~amount =
     let fee = Z.of_int 999 in
-    let xtzPool = mutez_to_natural xtzPool in
-    let nat_amount = mutez_to_natural amount in
+    let xtzPool = mumav_to_natural xtzPool in
+    let nat_amount = mumav_to_natural amount in
     let amount_net_burn = Z.(nat_amount * Z.of_int 999 / Z.of_int 1000) in
     let tokens_bought =
       Z.(
@@ -75,11 +75,11 @@ module Simulate_raw = struct
     let fee = Z.of_int 999 in
     let xtz_bought_nat =
       Z.(
-        tokensSold * fee * mutez_to_natural xtzPool
+        tokensSold * fee * mumav_to_natural xtzPool
         / ((tokenPool * of_int 1000) + (tokensSold * fee)))
     in
     let xtz_bought_net_burn = Z.(xtz_bought_nat * of_int 999 / of_int 1000) in
-    (natural_to_mutez xtz_bought_net_burn, xtz_bought_nat)
+    (natural_to_mumav xtz_bought_net_burn, xtz_bought_nat)
 end
 
 module Simulate = struct

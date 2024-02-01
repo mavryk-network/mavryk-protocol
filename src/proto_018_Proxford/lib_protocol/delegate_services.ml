@@ -313,7 +313,7 @@ module S = struct
   let full_balance =
     RPC_service.get_service
       ~description:
-        "Returns the full balance (in mutez) of a given delegate, including \
+        "Returns the full balance (in mumav) of a given delegate, including \
          the frozen deposits and the frozen bonds. It does not include its \
          delegated balance."
       ~query:RPC_query.empty
@@ -323,7 +323,7 @@ module S = struct
   let current_frozen_deposits =
     RPC_service.get_service
       ~description:
-        "Returns the current amount of the frozen deposits (in mutez). That is \
+        "Returns the current amount of the frozen deposits (in mumav). That is \
          the frozen deposits at beginning of cycle plus rewards minus unstaked \
          and slashing. It doesn't count unstaked frozen deposits."
       ~query:RPC_query.empty
@@ -333,7 +333,7 @@ module S = struct
   let frozen_deposits =
     RPC_service.get_service
       ~description:
-        "Returns the amount of the frozen deposits (in mutez) at the beginning \
+        "Returns the amount of the frozen deposits (in mumav) at the beginning \
          of the current cycle. It doesn't count frozen deposits unstaked \
          before the current cycle."
       ~query:RPC_query.empty
@@ -353,7 +353,7 @@ module S = struct
   let staking_balance =
     RPC_service.get_service
       ~description:
-        "Returns the total amount of tokens (in mutez) delegated to a given \
+        "Returns the total amount of tokens (in mumav) delegated to a given \
          delegate. This includes the balances of all the contracts that \
          delegate to it, but also the balance of the delegate itself, its \
          frozen deposits, and its frozen bonds."
@@ -381,7 +381,7 @@ module S = struct
   let total_delegated_stake =
     RPC_service.get_service
       ~description:
-        "Returns the sum (in mutez) of all tokens staked by the delegators of \
+        "Returns the sum (in mumav) of all tokens staked by the delegators of \
          a given delegate. This excludes the delegate's own staked tokens."
       ~query:RPC_query.empty
       ~output:Tez.encoding
@@ -398,7 +398,7 @@ module S = struct
   let delegated_balance =
     RPC_service.get_service
       ~description:
-        "Returns the sum (in mutez) of all balances of all the contracts that \
+        "Returns the sum (in mumav) of all balances of all the contracts that \
          delegate to a given delegate. This excludes the delegate's own \
          balance, its frozen deposits and its frozen bonds."
       ~query:RPC_query.empty

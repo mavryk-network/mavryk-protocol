@@ -22,13 +22,13 @@ let test_balance_and_self_address =
   let* client = Client.init_mockup ~protocol () in
   (* With no parameters, the default BALANCE is 4 000 000 ꜩ. *)
   let* stack = Client.run_code ~src:"BALANCE" ~stack:"{}" client in
-  assert (stack = "{ Stack_elt mutez 4000000000000 }") ;
+  assert (stack = "{ Stack_elt mumav 4000000000000 }") ;
 
   (* When --balance is given, BALANCE should match the expected value. *)
   let* stack =
     Client.run_code ~balance:(Tez.of_int 1) ~src:"BALANCE" ~stack:"{}" client
   in
-  assert (stack = "{ Stack_elt mutez 1000000 }") ;
+  assert (stack = "{ Stack_elt mumav 1000000 }") ;
 
   let* self_address =
     Client.originate_contract
@@ -50,7 +50,7 @@ let test_balance_and_self_address =
   let* stack =
     Client.run_code ~self_address ~src:"BALANCE" ~stack:"{}" client
   in
-  assert (stack = "{ Stack_elt mutez 100000000 }") ;
+  assert (stack = "{ Stack_elt mumav 100000000 }") ;
 
   (* When both --self-address and --balance are given, the BALANCE should be
      equal to the given value and SELF_ADDRESS should still match the given one. *)
@@ -71,7 +71,7 @@ let test_balance_and_self_address =
       ~stack:"{}"
       client
   in
-  assert (stack = "{ Stack_elt mutez 1000000 }") ;
+  assert (stack = "{ Stack_elt mumav 1000000 }") ;
   unit
 
 let test_source_and_sender =
@@ -188,11 +188,11 @@ let test_amount =
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack = Client.run_code ~src:"AMOUNT" ~stack:"{}" client in
-  assert (stack = {|{ Stack_elt mutez 50000 }|}) ;
+  assert (stack = {|{ Stack_elt mumav 50000 }|}) ;
   let* stack =
     Client.run_code ~src:"AMOUNT" ~stack:"{}" ~amount:Tez.one client
   in
-  assert (stack = {|{ Stack_elt mutez 1000000 }|}) ;
+  assert (stack = {|{ Stack_elt mumav 1000000 }|}) ;
   unit
 
 let test_level =
@@ -236,7 +236,7 @@ let test_long_output =
     Client.run_code
       ~src:"UNPAIR 10"
       ~stack:
-        {|{Stack_elt (pair nat bool string int mutez bytes (option nat) (list string) (set bool) (map string nat)) {42; False; "foo"; -24; 1000; 0x00; None; {"foo"; "bar"}; {False; True}; {Elt "bar" 42} }}|}
+        {|{Stack_elt (pair nat bool string int mumav bytes (option nat) (list string) (set bool) (map string nat)) {42; False; "foo"; -24; 1000; 0x00; None; {"foo"; "bar"}; {False; True}; {Elt "bar" 42} }}|}
       client
   in
   assert (
@@ -245,7 +245,7 @@ let test_long_output =
     Stack_elt bool False ;
     Stack_elt string "foo" ;
     Stack_elt int -24 ;
-    Stack_elt mutez 1000 ;
+    Stack_elt mumav 1000 ;
     Stack_elt bytes 0x00 ;
     Stack_elt (option nat) None ;
     Stack_elt (list string) { "foo" ; "bar" } ;

@@ -60,11 +60,11 @@ In case you do not already have an implicit account, you can generate one with:
    octez-client gen keys "${ACCOUNT_NAME}"
    octez-client show address "${ACCOUNT_NAME}"
 
-Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``tz1...``) returned.
+Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
 tez to make sure that staking is possible. In case your balance is not
-sufficient, you can get test tokens for the ``tz1`` address from :ref:`a faucet <faucet>`,
+sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Dailynet.
 
 
@@ -112,13 +112,13 @@ If everything went well, the origination command results in:
    This sequence of operations was run:
      Manager signed operations:
        From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
-       Fee to the baker: ꜩ0.000357
+       Fee to the baker: ṁ0.000357
        Expected counter: 36
        Gas limit: 1000
        Storage limit: 0 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ0.000357
-         payload fees(the block proposer) ....... +ꜩ0.000357
+         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ0.000357
+         payload fees(the block proposer) ....... +ṁ0.000357
        Revelation of manager public key:
          Contract: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
          Key: edpkukxtw4fHmffj4wtZohVKwNwUZvYm6HMog5QMe9EyYK3QwRwBjp
@@ -126,13 +126,13 @@ If everything went well, the origination command results in:
          Consumed gas: 1000
      Manager signed operations:
        From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
-       Fee to the baker: ꜩ0.000956
+       Fee to the baker: ṁ0.000956
        Expected counter: 37
        Gas limit: 2849
        Storage limit: 6572 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ0.000956
-         payload fees(the block proposer) ....... +ꜩ0.000956
+         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ0.000956
+         payload fees(the block proposer) ....... +ṁ0.000956
        Smart rollup origination:
          Kind: wasm_2_0_0
          Parameter type: bytes
@@ -143,8 +143,8 @@ If everything went well, the origination command results in:
          Address: sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf
          Genesis commitment hash: src13wCGc2nMVfN7rD1rgeG3g1q7oXYX2m5MJY5ZRooVhLt7JwKXwX
          Balance updates:
-           tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ1.638
-           storage fees ........................... +ꜩ1.638
+           tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ṁ1.638
+           storage fees ........................... +ṁ1.638
 
 
 The address ``sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf`` is the smart rollup address.
@@ -498,7 +498,7 @@ to the rollup.
             PUSH address "${SR_ADDR}";
             CONTRACT bytes;
             IF_NONE { PUSH string "Invalid address"; FAILWITH } {};
-            PUSH mutez 0;
+            PUSH mumav 0;
             DIG 2;
             TRANSFER_TOKENS;
             NIL operation;
@@ -1196,7 +1196,7 @@ two messages:
       {
         "payload" : "0",
         "sender" : "KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq",
-        "source" : "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w",
+        "source" : "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe",
         "destination" : "sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf"
       },
       { "payload" : "Pair Unit False" }
@@ -1206,7 +1206,7 @@ two messages:
 Note that the ``sender``, ``source`` and ``destination`` fields are optional
 and will be given default values by the debugger, respectively
 ``KT18amZmM5W7qDWVt2pH6uj7sCEd3kbzLrHT``,
-``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
+``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` and
 ``sr163Lv22CdE8QagCwf48PWDTquk6isQwv57``. If no input file is given, the
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.

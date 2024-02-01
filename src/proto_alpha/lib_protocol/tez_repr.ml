@@ -26,7 +26,7 @@
 
 let id = "tez"
 
-let name = "mutez"
+let name = "mumav"
 
 open Compare.Int64 (* invariant: positive *)
 
@@ -48,17 +48,17 @@ type error +=
 let zero = Tez_tag 0L
 
 (* all other constant are defined from the value of one micro tez *)
-let one_mutez = Tez_tag 1L
+let one_mumav = Tez_tag 1L
 
-let max_mutez = Tez_tag Int64.max_int
+let max_mumav = Tez_tag Int64.max_int
 
 let mul_int (Tez_tag tez) i = Tez_tag (Int64.mul tez i)
 
-let one_cent = mul_int one_mutez 10_000L
+let one_cent = mul_int one_mumav 10_000L
 
 let fifty_cents = mul_int one_cent 50L
 
-(* 1 tez = 100 cents = 1_000_000 mutez *)
+(* 1 tez = 100 cents = 1_000_000 mumav *)
 let one = mul_int one_cent 100L
 
 let of_string s =
@@ -187,12 +187,12 @@ let mul_percentage ~rounding =
     Tez_tag
       Z.(to_int64 (div' (mul (of_int64 t) (of_int (percentage :> int))) z100))
 
-let of_mutez t = if t < 0L then None else Some (Tez_tag t)
+let of_mumav t = if t < 0L then None else Some (Tez_tag t)
 
-let of_mutez_exn x =
-  match of_mutez x with None -> invalid_arg "Tez.of_mutez" | Some v -> v
+let of_mumav_exn x =
+  match of_mumav x with None -> invalid_arg "Tez.of_mumav" | Some v -> v
 
-let to_mutez (Tez_tag t) = t
+let to_mumav (Tez_tag t) = t
 
 let encoding =
   let open Data_encoding in
@@ -204,7 +204,7 @@ let balance_update_encoding =
   let open Data_encoding in
   conv
     (function
-      | `Credited v -> to_mutez v | `Debited v -> Int64.neg (to_mutez v))
+      | `Credited v -> to_mumav v | `Debited v -> Int64.neg (to_mumav v))
     ( Json.wrap_error @@ fun v ->
       if Compare.Int64.(v < 0L) then `Debited (Tez_tag (Int64.neg v))
       else `Credited (Tez_tag v) )

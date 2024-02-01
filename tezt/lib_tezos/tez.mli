@@ -37,11 +37,11 @@ val of_int : int -> t
 
 (** Make [t] from the whole number of micro tez. This doesn't perform any bounds
     checks. *)
-val of_mutez_int : int -> t
+val of_mumav_int : int -> t
 
 (** Make [t] from the whole number of micro tez. This doesn't perform any bounds
     checks. *)
-val of_mutez_int64 : int64 -> t
+val of_mumav_int64 : int64 -> t
 
 (** 0 tez *)
 val zero : t
@@ -52,14 +52,14 @@ val one : t
 (** Convert [t] to a string. *)
 val to_string : t -> string
 
-(** Convert [t] to a mutez integer. *)
-val mutez_int64 : t -> int64
+(** Convert [t] to a mumav integer. *)
+val mumav_int64 : t -> int64
 
 (** Convert [t] to a float of tez. *)
 val to_float : t -> float
 
 (** Convert [t] to an [int]. *)
-val to_mutez : t -> int
+val to_mumav : t -> int
 
 (** Addition. This doesn't perform any bounds checks. *)
 val ( + ) : t -> t -> t

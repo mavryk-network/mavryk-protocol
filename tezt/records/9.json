@@ -516,7 +516,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "mumbai",
@@ -832,7 +832,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Lima: Tc opcodes/ediv_mutez",
+    "title": "Lima: Tc opcodes/ediv_mumav",
     "tags": [
       "regression",
       "lima",

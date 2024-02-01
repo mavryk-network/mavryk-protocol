@@ -63,7 +63,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -174,9 +174,9 @@ types:
     - id: endorsement
       type: s4
       if: (id_009__psfloren__inlined__endorsement__contents_tag == id_009__psfloren__inlined__endorsement__contents_tag::endorsement)
-  id_009__psfloren__mutez:
+  id_009__psfloren__mumav:
     seq:
-    - id: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
       type: n
   id_009__psfloren__operation__alpha__contents:
     seq:
@@ -292,7 +292,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -300,7 +300,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -378,7 +378,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -400,7 +400,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -408,7 +408,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_009__psfloren__mutez
+      type: id_009__psfloren__mumav
     - id: destination
       type: id_009__psfloren__contract_id
       doc: ! >-

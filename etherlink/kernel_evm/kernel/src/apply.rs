@@ -417,7 +417,7 @@ fn post_withdrawals<Host: Runtime>(
     let entrypoint = Entrypoint::try_from(String::from("burn"))?;
 
     for withdrawal in withdrawals {
-        // Wei is 10^18, whereas mutez is 10^6.
+        // Wei is 10^18, whereas mumav is 10^6.
         let amount: U256 =
             U256::checked_div(withdrawal.amount, U256::from(10).pow(U256::from(12)))
                 // If we reach the unwrap_or it will fail at the next step because
@@ -428,7 +428,7 @@ fn post_withdrawals<Host: Runtime>(
         let amount = if amount < U256::from(u64::max_value()) {
             amount.as_u64()
         } else {
-            // Users can withdraw only mutez, converted to ETH, thus the
+            // Users can withdraw only mumav, converted to ETH, thus the
             // maximum value of `amount` is `Int64.max_int` which fit
             // in a u64.
             return Err(Error::InvalidConversion);

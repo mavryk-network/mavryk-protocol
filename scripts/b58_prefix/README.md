@@ -42,7 +42,7 @@ Secp256k1.Public_key_hash.to_b58check pkh;;
 ```
 
 Also notice that
-- the Base58Check encoding does still start with `tz2`.
+- the Base58Check encoding does still start with `mv2`.
 - the resulting string is completely different, even if we change only one byte.
 - the result is a 36-long string.
 
@@ -60,14 +60,14 @@ let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "tz2tmrN5LtfkYZFCQnWQtwp
 ```
 
 In addition to that, the result of the Base58CheckEncoding algorithm must give a
-36 characters long Base58 encoded string starting with `tz2` (called the version bytes
+36 characters long Base58 encoded string starting with `mv2` (called the version bytes
 sometimes). The initial bytes are called the payload.
 
 `b58_prefix.py` computes the additional bytes to add to the class of payloads of a certain
 length to get a base58 string starting with a certain prefix.
 It is important to understand that there may exist multiple solutions!
 
-Executing the script gives for `tz2` the bytes `\006\161\161`.
+Executing the script gives for `mv2` the bytes `\006\161\161`.
 Let's see how the Base58CheckEncoding algorithm works for an secp256k1 address (20 bytes):
 1. Prefix the version byte (`\006\161\161`) with the payload (20 bytes)
 ```
@@ -98,8 +98,8 @@ poetry install
 ```
 
 ```
-# A tz1 address is generated from a fixed size hash of 20 characters.
-poetry run python b58_prefix.py --prefix tz1 --length 20
+# A mv1 address is generated from a fixed size hash of 20 characters.
+poetry run python b58_prefix.py --prefix mv1 --length 20
 # Output: Base58 size: 36. Version bytes: [6, 161, 159]
 # A block is generated from a fixed size hash of 32 characters.
 poetry run python b58_prefix.py --prefix B --length 32

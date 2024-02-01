@@ -63,7 +63,7 @@ defprim! {
     int,
     nat,
     bool,
-    mutez,
+    mumav,
     string,
     unit,
     operation,
@@ -122,7 +122,7 @@ defprim! {
     output,
     Failed,
     amount,
-    MutezOverflow,
+    MumavOverflow,
     GeneralOverflow,
     StaticError,
     #[token("self")]

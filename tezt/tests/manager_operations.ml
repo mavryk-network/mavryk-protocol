@@ -227,7 +227,7 @@ module Helpers = struct
     let* _ = Events.wait_sync nodes in
     return nodes
 
-  (** Generate a new account (key pair) and credit it with [amount] mutez. If
+  (** Generate a new account (key pair) and credit it with [amount] mumav. If
       the [reveal] flag is [true], the public key of the new account in also
       revealed in a subsequent operation. A block is baked after each
       operation. *)
@@ -678,11 +678,11 @@ module Memchecks = struct
            ~id:key.Account.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     if bal <> amount then
       Test.fail
         ~__LOC__
-        "Unexpected balance. Got %d instead of %d mutez"
+        "Unexpected balance. Got %d instead of %d mumav"
         bal
         amount ;
     unit
@@ -1229,7 +1229,7 @@ module Simple_transfers = struct
            ~id:Constant.bootstrap2.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     let* _ =
       Memchecks.with_branch_delayed_checks ~__LOC__ nodes @@ fun () ->
       Operation.inject_transfer
@@ -1263,7 +1263,7 @@ module Simple_transfers = struct
            ~id:Constant.bootstrap2.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     let* _ =
       Memchecks.with_validated_checks
         ~__LOC__
@@ -1305,7 +1305,7 @@ module Simple_transfers = struct
            ~id:Constant.bootstrap2.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     let* _ =
       Memchecks.with_branch_refused_checks ~__LOC__ nodes @@ fun () ->
       Operation.inject_transfer
@@ -1343,7 +1343,7 @@ module Simple_transfers = struct
            ~id:Constant.bootstrap2.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     let* _ =
       Memchecks.with_branch_delayed_checks ~__LOC__ nodes @@ fun () ->
       Operation.inject_transfer
@@ -1379,7 +1379,7 @@ module Simple_transfers = struct
            ~id:Constant.bootstrap2.public_key_hash
            ()
     in
-    let bal = Tez.to_mutez bal in
+    let bal = Tez.to_mumav bal in
     let* _ =
       Memchecks.with_refused_checks ~__LOC__ nodes @@ fun () ->
       Operation.inject_transfer
@@ -1472,7 +1472,7 @@ module Simple_transfers = struct
     let balance = amount - fee in
     (* subtract fees payed for revelation *)
     let to_transfer = balance - fee - 1 in
-    (* In theory, if the operation succeeds, there will remain 1 mutez on the account *)
+    (* In theory, if the operation succeeds, there will remain 1 mumav on the account *)
     let* _ =
       Memchecks.with_validated_checks
         ~__LOC__
@@ -1513,7 +1513,7 @@ module Simple_transfers = struct
     let balance = amount - fee in
     (* subtract revelation fees *)
     let to_transfer = balance - fee in
-    (* In theory, if the operation succeeds, there will remain 0 mutez on the account *)
+    (* In theory, if the operation succeeds, there will remain 0 mumav on the account *)
     let* _ =
       Memchecks.with_validated_checks
         ~__LOC__

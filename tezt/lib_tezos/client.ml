@@ -760,7 +760,7 @@ let empty_mempool_file ?(filename = "mempool.json") () =
   mempool
 
 let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
-    ?minimal_fees ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte
+    ?minimal_fees ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte
     ?(minimal_timestamp = true) ?mempool ?(ignore_node_mempool = false) ?count
     ?force ?context_path ?dal_node_endpoint ?(state_recorder = false) client =
   spawn_command
@@ -770,13 +770,13 @@ let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     @ ["bake"; "for"] @ keys
     @ optional_arg "minimal-fees" string_of_int minimal_fees
     @ optional_arg
-        "minimal-nanotez-per-gas-unit"
+        "minimal-nanomav-per-gas-unit"
         string_of_int
-        minimal_nanotez_per_gas_unit
+        minimal_nanomav_per_gas_unit
     @ optional_arg
-        "minimal-nanotez-per-byte"
+        "minimal-nanomav-per-byte"
         string_of_int
-        minimal_nanotez_per_byte
+        minimal_nanomav_per_byte
     @ optional_arg "operations-pool" Fun.id mempool
     @ (if ignore_node_mempool then ["--ignore-node-mempool"] else [])
     @ (if minimal_timestamp then ["--minimal-timestamp"] else [])
@@ -787,15 +787,15 @@ let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     @ optional_switch "record_state" state_recorder)
 
 let bake_for ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?dal_node_endpoint
     ?state_recorder ?expect_failure client =
   spawn_bake_for
     ?endpoint
     ?keys
     ?minimal_fees
-    ?minimal_nanotez_per_gas_unit
-    ?minimal_nanotez_per_byte
+    ?minimal_nanomav_per_gas_unit
+    ?minimal_nanomav_per_byte
     ?minimal_timestamp
     ?mempool
     ?ignore_node_mempool
@@ -809,7 +809,7 @@ let bake_for ?endpoint ?protocol ?keys ?minimal_fees
   |> Process.check ?expect_failure
 
 let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
     ?node ?dal_node_endpoint ?state_recorder client =
   let node =
@@ -833,8 +833,8 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
       ?protocol
       ?keys
       ?minimal_fees
-      ?minimal_nanotez_per_gas_unit
-      ?minimal_nanotez_per_byte
+      ?minimal_nanomav_per_gas_unit
+      ?minimal_nanomav_per_byte
       ?minimal_timestamp
       ?mempool
       ?ignore_node_mempool
@@ -848,7 +848,7 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
   Node.wait_for_level node (actual_level_before + 1)
 
 let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
     ?node ?dal_node_endpoint client =
   let* (_level : int) =
@@ -857,8 +857,8 @@ let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
       ?protocol
       ?keys
       ?minimal_fees
-      ?minimal_nanotez_per_gas_unit
-      ?minimal_nanotez_per_byte
+      ?minimal_nanomav_per_gas_unit
+      ?minimal_nanomav_per_byte
       ?minimal_timestamp
       ?mempool
       ?ignore_node_mempool
@@ -1707,7 +1707,7 @@ let spawn_stresstest ?endpoint ?(source_aliases = []) ?(source_pkhs = [])
                          ("probability", Ezjsonm.float probability);
                          ( "invocation_fee",
                            Ezjsonm.string
-                             (Int.to_string (Tez.to_mutez invocation_fee)) );
+                             (Int.to_string (Tez.to_mumav invocation_fee)) );
                          ( "invocation_gas_limit",
                            Ezjsonm.string (Int.to_string invocation_gas_limit)
                          );
@@ -1836,7 +1836,7 @@ let stresstest_fund_accounts_from_source ?endpoint ~source_key_pkh ?batch_size
     @ optional_arg "batches-per-block" string_of_int batches_per_block
     @ optional_arg
         "initial-amount"
-        (fun v -> string_of_int (Tez.to_mutez v))
+        (fun v -> string_of_int (Tez.to_mumav v))
         initial_amount)
   |> Process.check
 
@@ -3412,7 +3412,7 @@ let sapling_get_balance ~sapling_key ~contract ?verbose client =
     spawn_sapling_get_balance ~sapling_key ~contract ?verbose client
     |> Process.check_and_read_stdout
   in
-  match client_output =~* rex "Total Sapling funds ?(\\d*)ꜩ" with
+  match client_output =~* rex "Total Sapling funds ?(\\d*)ṁ" with
   | Some balance -> return (Tez.parse_floating balance)
   | None ->
       Test.fail
@@ -3432,18 +3432,18 @@ let sapling_list_keys client =
    `storage fees`. *)
 let sapling_extract_balance_diff_and_fees ~sapling_contract client_output =
   let fees =
-    let re = ".*fees.* \\.* \\+ꜩ?(\\d*[.\\d*]*)" in
+    let re = ".*fees.* \\.* \\+ṁ?(\\d*[.\\d*]*)" in
     let res = matches client_output (rex re) in
     List.map Tez.parse_floating res |> List.fold_left Tez.( + ) Tez.zero
   in
   let amount_pos =
-    let re = sapling_contract ^ ".*\\+ꜩ?(\\d*[.\\d*]*)" in
+    let re = sapling_contract ^ ".*\\+ṁ?(\\d*[.\\d*]*)" in
     match matches client_output (rex re) with
     | [s] -> Tez.parse_floating s
     | _ -> Tez.zero
   in
   let amount_neg =
-    let re = sapling_contract ^ ".*\\-ꜩ?(\\d*[.\\d*]*)" in
+    let re = sapling_contract ^ ".*\\-ṁ?(\\d*[.\\d*]*)" in
     match matches client_output (rex re) with
     | [s] -> Tez.parse_floating s
     | _ -> Tez.zero

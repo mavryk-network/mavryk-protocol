@@ -616,23 +616,23 @@ struct
     let open Patt in
     Pattern (focus (prim_pred (fun prim -> prim = A_Timestamp) list_any))
 
-  (* Matches a mutez literal *)
-  let match_mutez =
+  (* Matches a mumav literal *)
+  let match_mumav =
     let open Patt in
-    Pattern (focus (prim_pred (fun prim -> prim = A_Mutez) list_any))
+    Pattern (focus (prim_pred (fun prim -> prim = A_Mumav) list_any))
 
   (* Matches a key_hash literal *)
   let match_key_hash =
     let open Patt in
     Pattern (focus (prim_pred (fun prim -> prim = A_Key_hash) list_any))
 
-  let match_int_mutez_timestamp_key_hash_key_or_none =
+  let match_int_mumav_timestamp_key_hash_key_or_none =
     let open Patt in
     Pattern
       (focus
          (prim_pred
             (function
-              | A_Int | A_Nat | A_Mutez | A_Timestamp | A_Key_hash | A_Key
+              | A_Int | A_Nat | A_Mumav | A_Timestamp | A_Key_hash | A_Key
               | D_None ->
                   true
               | _ -> false)
@@ -746,9 +746,9 @@ struct
         ~typ:Type.(option (var alpha))
         ~replacement:Mikhailsky.Data.none
     in
-    let replace_by_mutez rng_state =
-      replacement_gen ~fresh:[] ~typ:Type.mutez ~replacement:(fun () ->
-          Mikhailsky.Data.mutez (Michelson_base.tez rng_state))
+    let replace_by_mumav rng_state =
+      replacement_gen ~fresh:[] ~typ:Type.mumav ~replacement:(fun () ->
+          Mikhailsky.Data.mumav (Michelson_base.tez rng_state))
     in
     let replace_by_key_hash rng_state =
       replacement_gen ~fresh:[] ~typ:Type.key_hash ~replacement:(fun () ->
@@ -771,7 +771,7 @@ struct
           replace_by_right;
           replace_by_some;
           replace_by_none;
-          replace_by_mutez rng_state;
+          replace_by_mumav rng_state;
           replace_by_key_hash rng_state;
           replace_by_key rng_state;
         ];
@@ -789,9 +789,9 @@ struct
         ];
     }
 
-  let kill_int_mutez_timestamp_key_hash_none =
+  let kill_int_mumav_timestamp_key_hash_none =
     {
-      rule_patt = match_int_mutez_timestamp_key_hash_key_or_none;
+      rule_patt = match_int_mumav_timestamp_key_hash_key_or_none;
       replacements =
         [
           {
@@ -908,7 +908,7 @@ struct
       kill_empty_pair;
       kill_empty_list_set_or_map;
       kill_empty_some_left_or_right;
-      kill_int_mutez_timestamp_key_hash_none;
+      kill_int_mumav_timestamp_key_hash_none;
       modify_list;
       modify_set;
       modify_map;
@@ -928,7 +928,7 @@ struct
               | Mikhailsky_prim.D_Elt | D_Hole -> false
               | D_False | D_Left | D_None | D_Pair | D_Right | D_Some | D_True
               | D_Unit | A_Int | A_Nat | A_Set | A_List | A_Map | A_Key_hash
-              | A_Mutez | A_Timestamp | A_Key ->
+              | A_Mumav | A_Timestamp | A_Key ->
                   true
               | _ -> false)
             list_any))

@@ -15,7 +15,7 @@ In the Json format, a balance update consists of three parts:
 
   - an account identification indicated by a combination of fields such as: ``kind``, ``category``, ``contract``, ...
 
-  - the amount transferred (in mutez) indicated by the field ``change``.
+  - the amount transferred (in mumav) indicated by the field ``change``.
     A positive amount indicates that the account has been credited, and a negative amount indicates that the account has been debited.
 
 
@@ -39,7 +39,7 @@ Consider for example the following list:
     {"kind": "...", ..., "change": "-75", "origin": "block"},
     {"kind": "...", ..., "change": "200", "origin": "block"} ]
 
-This list reports that two transfers have occurred: a transfer of ``100`` mutez from one account to another, and a transfer of ``200`` mutez from two accounts to a third.
+This list reports that two transfers have occurred: a transfer of ``100`` mumav from one account to another, and a transfer of ``200`` mumav from two accounts to a third.
 There is one exception to this though: migration balance updates are a bit compressed to save space, so the list of balance updates in the corresponding metadata does not necessarily allow to correlate debits to a credit by analyzing the sequence.
 However, for those balance updates, the ``delegate`` and ``contract`` fields can be used to establish correlations between debits and credits.
 
@@ -144,7 +144,7 @@ Origination and transaction
 
 When an origination or transaction operation is applied, tokens are transferred from one contract to another.
 Depending on whether or not storage space has been allocated on the chain by the application of the operation, storage fees may also be burned.
-For example, a transaction of ``100`` mutez from address ``tz1a...`` to address ``KT1b...`` that allocates storage space for a cost of ``10`` mutez produces the following list of balance updates:
+For example, a transaction of ``100`` mumav from address ``tz1a...`` to address ``KT1b...`` that allocates storage space for a cost of ``10`` mumav produces the following list of balance updates:
 
 ::
 
@@ -157,7 +157,7 @@ Baking fees, rewards and bonuses
 --------------------------------
 
 When a contract pays the baking fees associated to an operation it has emitted, those fees are temporarily collected (during the processing of the block) into the container account ``"block fees"``.
-For example, when a manager operation is applied, the account of the payer contract is debited with the amount of fees and the ``"block fees"`` account is credited with the same amount. Hence, for ``100`` mutez in fees, the following balance updates are generated :
+For example, when a manager operation is applied, the account of the payer contract is debited with the amount of fees and the ``"block fees"`` account is credited with the same amount. Hence, for ``100`` mumav in fees, the following balance updates are generated :
 
 ::
 
@@ -166,9 +166,9 @@ For example, when a manager operation is applied, the account of the payer contr
 
 When all operations of a block have been applied baking fees rewards and bonuses are distributed.
 The total amount of fees collected and the baking rewards are transferred from the container account ``"block fees"`` and the source account ``"baking rewards"``, respectively, to the contract of the payload producer that selected the transactions to be included in the block.
-So, for a total amount of ``1000`` mutez in fees collected and an amount of
-``500`` mutez in baking rewards, assuming that the staking parameter of the
-delegate are such that 50 mutez are frozen and 450 are spendable,
+So, for a total amount of ``1000`` mumav in fees collected and an amount of
+``500`` mumav in baking rewards, assuming that the staking parameter of the
+delegate are such that 50 mumav are frozen and 450 are spendable,
 the following balance updates are generated:
 
 ::
@@ -183,7 +183,7 @@ the following balance updates are generated:
 The baking bonus go to the block proposer that signed and injected the block.
 Hence the amount of the bonus is transferred from the source account ``"baking
 bonuses"`` to the contract of the block producer and/or to its frozen balance.
-For example, the balance updates generated for an amount of ``100`` mutez in
+For example, the balance updates generated for an amount of ``100`` mumav in
 baking bonus with 100% sent to spendable balance (``edge_of_baking_over_staking`` set to 1) are:
 
 ::
@@ -195,22 +195,22 @@ Attesting, double signing evidence, and nonce revelation rewards
 ----------------------------------------------------------------
 
 Attesting rewards are reflected in balance updates as a transfer of tokens from the ``"attesting rewards"`` source account to the account of the delegate that receives the reward.
-Hence, for a reward of ``100`` mutez,  the following two balance updates are generated:
+Hence, for a reward of ``100`` mumav,  the following two balance updates are generated:
 
 ::
 
   [ {"kind": "minted", "category": "attesting rewards", "change": "-100", ...},
-    {"kind": "contract", "contract": "tz1...", "change": "100", ...} ]
+    {"kind": "contract", "contract": "mv1...", "change": "100", ...} ]
 
 When attesting rewards are not distributed to the delegate due to insufficient participation or for not revealing nonces, they are transferred instead to the sink account identified by the quadruple ``("lost attesting rewards", delegate, participation, revelation)``.
-For example, for an amount of ``100`` mutez in rewards not distributed due to insufficient participation, the following balance updates are generated:
+For example, for an amount of ``100`` mumav in rewards not distributed due to insufficient participation, the following balance updates are generated:
 
 ::
 
   [ {"kind": "minted", "category": "attesting rewards", "change": "-100", ...},
     {"kind": "burned",
      "category": "lost attesting rewards",
-     "delegate": "tz1...",
+     "delegate": "mv1...",
      "participation": "true",
      "revelation": "false",
      "change": "100", ...} ]

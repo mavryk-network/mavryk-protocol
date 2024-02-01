@@ -399,5 +399,5 @@ Internal
 Invoices
 --------
 
-@g.b.fefe rewarded 15000 ꜩ and @Ochem rewarded 10000 ꜩ for code contributions
+@g.b.fefe rewarded 15000 ṁ and @Ochem rewarded 10000 ṁ for code contributions
 (Consensus Key feature) included in this protocol. (MR :gl:`!6350`)

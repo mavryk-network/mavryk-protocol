@@ -268,5 +268,5 @@ Internal
 Invoice
 -------
 
-@g.b.fefe rewarded 3000 ꜩ for code contributions (testnet dictator key) included in this protocol.
+@g.b.fefe rewarded 3000 ṁ for code contributions (testnet dictator key) included in this protocol.
 (MR :gl:`!5838`)

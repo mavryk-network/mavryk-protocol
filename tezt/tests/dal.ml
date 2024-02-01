@@ -913,7 +913,7 @@ let test_slots_attestation_operation_dal_committee_membership_check _protocol
      on TB committee is high. With [number_of_shards = 16] (which is the minimum
      possible without changing other parameters), the new baker should be
      assigned roughly 16/64 = 1/4 shards on average. *)
-  let stake = Tez.of_mutez_int (Protocol.default_bootstrap_balance / 64) in
+  let stake = Tez.of_mumav_int (Protocol.default_bootstrap_balance / 64) in
   let* new_account = Client.gen_and_show_keys client in
   let* () =
     Client.transfer

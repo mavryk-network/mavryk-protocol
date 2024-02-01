@@ -72,8 +72,8 @@
 
     {1} Conversion rate:
 
-    The conversion rate between pseudotokens and mutez (the value in
-    mutez of a pseudotoken) should be given by the ratio between the
+    The conversion rate between pseudotokens and mumav (the value in
+    mumav of a pseudotoken) should be given by the ratio between the
     delegate's current staked frozen deposits and the total number
     of pseudotokens of the delegate; it's actually the case when this
     total number of pseudotokens is positive. When the total number of
@@ -365,8 +365,8 @@ let pseudotokens_of (delegate_balances : delegate_balances) tez_amount =
   Staking_pseudotoken_repr.mul_ratio
     ~rounding:`Down
     delegate_balances.frozen_deposits_pseudotokens
-    ~num:(Tez_repr.to_mutez tez_amount)
-    ~den:(Tez_repr.to_mutez delegate_balances.frozen_deposits_staked_tez)
+    ~num:(Tez_repr.to_mumav tez_amount)
+    ~den:(Tez_repr.to_mumav delegate_balances.frozen_deposits_staked_tez)
 
 (** Pseudotokens -> tez conversion.
     Precondition:

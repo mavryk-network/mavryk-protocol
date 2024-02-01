@@ -124,7 +124,7 @@ let test_transfer_amount protocol client =
     originate client protocol ["opcodes"; "transfer_amount"] ~storage:"0"
   in
   let amount = Tez.of_int 500 in
-  let amount_s = Tez.to_mutez amount |> string_of_int in
+  let amount_s = Tez.to_mumav amount |> string_of_int in
   let* () = transfer client ~contract ~amount in
   let* () = check_storage ~__LOC__ client ~contract amount_s in
   unit

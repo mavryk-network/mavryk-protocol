@@ -734,7 +734,7 @@ let commands_ro () =
                             Protocol_hash.pp
                             p
                             Tez.pp
-                            (Tez.of_mutez_exn w)
+                            (Tez.of_mumav_exn w)
                             Operation_result.tez_sym
                             (if
                              List.mem ~equal:Protocol_hash.equal p known_protos
@@ -761,21 +761,21 @@ let commands_ro () =
                    Current participation %.2f%%, necessary quorum %.2f%%@,\
                    Current in favor %a %s, needed supermajority %a %s@]"
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.yay)
+                  (Tez.of_mumav_exn ballots_info.ballots.yay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.nay)
+                  (Tez.of_mumav_exn ballots_info.ballots.nay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.pass)
+                  (Tez.of_mumav_exn ballots_info.ballots.pass)
                   Operation_result.tez_sym
                   (Int32.to_float ballots_info.participation /. 100.)
                   (Int32.to_float ballots_info.current_quorum /. 100.)
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.yay)
+                  (Tez.of_mumav_exn ballots_info.ballots.yay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.supermajority)
+                  (Tez.of_mumav_exn ballots_info.supermajority)
                   Operation_result.tez_sym
               in
               return_unit

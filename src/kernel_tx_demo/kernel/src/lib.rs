@@ -388,7 +388,7 @@ mod test {
 
         let mut transfer_metadata = TransferMetadata::new(
             "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn",
-            "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU",
+            "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5",
         );
 
         // Transfers - first will succeed, second targets a different rollup

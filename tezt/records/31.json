@@ -291,7 +291,7 @@
       "batch",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "38737613",
@@ -1536,7 +1536,7 @@
   },
   {
     "file": "replace_by_fees.ml",
-    "title": "Mumbai: Second op's fees are below threshold by 1 mutez",
+    "title": "Mumbai: Second op's fees are below threshold by 1 mumav",
     "tags": [
       "mumbai",
       "replace",

@@ -1296,7 +1296,7 @@ type (_, _) Remote_procedure.t +=
       -> (originate_smart_contract_r, 'uri) Remote_procedure.t
 
 let tez_encoding =
-  Data_encoding.conv Tez.to_mutez Tez.of_mutez_int Data_encoding.int31
+  Data_encoding.conv Tez.to_mumav Tez.of_mumav_int Data_encoding.int31
 
 module Originate_smart_contract = struct
   let contract_hash = "\002\090\121" (* KT1(36) *)

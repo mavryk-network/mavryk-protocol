@@ -4,7 +4,7 @@ storage unit;
 code { CAR ;
        CONTRACT (list (ticket string)) ;
        ASSERT_SOME ;
-       PUSH mutez 0 ;
+       PUSH mumav 0 ;
        NIL (ticket string) ;
        PUSH nat 1 ;
        PUSH string "Ticket" ;

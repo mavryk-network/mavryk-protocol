@@ -27,15 +27,15 @@ type t = int64
 
 let of_int amount = Int64.(mul 1_000_000L (of_int amount))
 
-let of_mutez_int = Int64.of_int
+let of_mumav_int = Int64.of_int
 
-let of_mutez_int64 t = t
+let of_mumav_int64 t = t
 
 let zero = 0L
 
 let one = of_int 1
 
-let mutez_int64 t = t
+let mumav_int64 t = t
 
 let to_string amount =
   let mult_int = 1_000_000L in
@@ -62,7 +62,7 @@ let to_string amount =
 
 let to_float amount = Float.mul (Int64.to_float amount) 0.000_001
 
-let to_mutez amount = Int64.to_int amount
+let to_mumav amount = Int64.to_int amount
 
 let ( + ) = Int64.add
 
@@ -91,9 +91,9 @@ let parse_floating tez_string =
     | 6 -> parse_int decimal
     | _ -> fail ()
   in
-  of_int integral + of_mutez_int decimal
+  of_int integral + of_mumav_int decimal
 
 let typ =
   Check.comparable
     (fun fmt t -> Format.fprintf fmt "%s" (to_string t))
-    (fun a b -> Int.compare (to_mutez a) (to_mutez b))
+    (fun a b -> Int.compare (to_mumav a) (to_mumav b))

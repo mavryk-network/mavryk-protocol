@@ -347,11 +347,11 @@ end
 
 module Prefix = struct
   (* These encoded prefixes are computed using scripts/base58_prefix.py
-     $ ./scripts/base58_prefix.py tz1 20
+     $ ./scripts/base58_prefix.py mv1 20
      36 434591 [6L, 161L, 159L]
      $ dune utop src/lib_crypto
      utop # Tezos_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
-     - : string * int = ("tz1", 36)
+     - : string * int = ("mv1", 36)
   *)
 
   (* 32 *)
@@ -376,13 +376,13 @@ module Prefix = struct
   let operation_metadata_list_list_hash = "\029\159\182" (* LLr(53) *)
 
   (* 20 *)
-  let ed25519_public_key_hash = "\006\161\159" (* tz1(36) *)
+  let ed25519_public_key_hash = "\005\186\196" (* mv1(36) *)
 
-  let secp256k1_public_key_hash = "\006\161\161" (* tz2(36) *)
+  let secp256k1_public_key_hash = "\005\186\199" (* mv2(36) *)
 
-  let p256_public_key_hash = "\006\161\164" (* tz3(36) *)
+  let p256_public_key_hash = "\005\186\201" (* mv3(36) *)
 
-  let bls12_381_public_key_hash = "\006\161\166" (* tz4(36) *)
+  let bls12_381_public_key_hash = "\005\186\204" (* mv4(36) *)
 
   let smart_rollup_address = "\006\124\117" (* sr1(36) *)
 

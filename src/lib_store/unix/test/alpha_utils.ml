@@ -414,7 +414,7 @@ let default_accounts =
         "edsk2q6rzFB35micz8ZauYcUMUFyF9rVPvP3PQXZyuYPSzuEYbSMkG" );
     ]
   in
-  let default_amount = Tez.of_mutez_exn 4_000_000_000_000L in
+  let default_amount = Tez.of_mumav_exn 4_000_000_000_000L in
   let open Account in
   let to_account (pkh, pk, sk) =
     {

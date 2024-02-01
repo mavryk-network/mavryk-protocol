@@ -352,7 +352,7 @@ module Transfer = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Transfer from and to accounts"
-      ~tags:["client"; "transfer"; "bls"; "tz4"]
+      ~tags:["client"; "transfer"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     Log.info "Generating new accounts" ;
@@ -398,7 +398,7 @@ module Transfer = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Batch transfers"
-      ~tags:["client"; "batch"; "transfer"; "bls"; "tz4"]
+      ~tags:["client"; "batch"; "transfer"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     Log.info "Generating new accounts" ;
@@ -443,9 +443,9 @@ module Transfer = struct
       let expected_balance_from =
         let total =
           Tez.(
-            mutez_int64 (amount + fee)
+            mumav_int64 (amount + fee)
             |> Int64.(mul @@ of_int @@ List.length dests)
-            |> of_mutez_int64)
+            |> of_mumav_int64)
         in
         Tez.(balance_from0 - total)
       in
@@ -471,8 +471,8 @@ module Transfer = struct
   let forbidden_set_delegate_tz4 =
     Protocol.register_test
       ~__FILE__
-      ~title:"Set delegate forbidden on tz4"
-      ~tags:["client"; "set_delegate"; "bls"; "tz4"]
+      ~title:"Set delegate forbidden on mv4"
+      ~tags:["client"; "set_delegate"; "bls"; "mv4"]
     @@ fun protocol ->
     let* _node, client = Client.init_with_protocol `Client ~protocol () in
     let* () =
@@ -487,7 +487,7 @@ module Transfer = struct
         ~delegate:Constant.tz4_account.public_key_hash
     in
     let msg =
-      rex "The delegate tz4.*\\w is forbidden as it is a BLS public key hash"
+      rex "The delegate mv4.*\\w is forbidden as it is a BLS public key hash"
     in
     Process.check_error set_delegate_process ~exit_code:1 ~msg
 
@@ -543,8 +543,8 @@ module Transfer = struct
     let bake () =
       Client.bake_for_and_wait
         ~minimal_fees:0
-        ~minimal_nanotez_per_gas_unit:0
-        ~minimal_nanotez_per_byte:0
+        ~minimal_nanomav_per_gas_unit:0
+        ~minimal_nanomav_per_byte:0
         ~keys:["bootstrap2"; "bootstrap3"; "bootstrap4"]
         client
     in
@@ -829,11 +829,11 @@ module Account_activation = struct
     let* king_balance = Client.get_balance_for ~account:"king" client in
     let* queen_balance = Client.get_balance_for ~account:"queen" client in
     Check.(
-      (king_balance = Tez.of_mutez_int 23_932_454_669_343)
+      (king_balance = Tez.of_mumav_int 23_932_454_669_343)
         Tez.typ
         ~__LOC__
         ~error_msg:"Expected king's balance to be %R, got %L" ;
-      (queen_balance = Tez.of_mutez_int 72_954_577_464_032)
+      (queen_balance = Tez.of_mumav_int 72_954_577_464_032)
         Tez.typ
         ~__LOC__
         ~error_msg:"Expected queen's balance to be %R, got %L") ;

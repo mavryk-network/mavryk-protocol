@@ -549,8 +549,8 @@ val bake_for :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -579,8 +579,8 @@ val bake_for_and_wait :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -599,8 +599,8 @@ val bake_for_and_wait_level :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -620,8 +620,8 @@ val spawn_bake_for :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -704,14 +704,14 @@ val propose_for :
     the output into an [Account.key].
     E.g. for [~alias:"bootstrap1"] the command yields:
 {v
-      Hash: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+      Hash: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
       Public Key: edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav
       Secret Key: unencrypted:edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh
 v}
     which becomes:
 {[
      { alias = "bootstrap1";
-       public_key_hash = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+       public_key_hash = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
        public_key = "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
        secret_key =
          Unencrypted "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh"; }

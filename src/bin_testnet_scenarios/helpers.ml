@@ -39,8 +39,8 @@ let rec wait_for_funded_key node client expected_amount key =
     Log.info
       "Key %s is underfunded (got %d, expected at least %d)"
       key.public_key_hash
-      Tez.(to_mutez balance)
-      Tez.(to_mutez expected_amount) ;
+      Tez.(to_mumav balance)
+      Tez.(to_mumav expected_amount) ;
     let* current_level = Node.get_level node in
     let* _ = Node.wait_for_level node (current_level + 1) in
     wait_for_funded_key node client expected_amount key)

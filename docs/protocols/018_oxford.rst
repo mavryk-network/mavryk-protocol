@@ -248,7 +248,7 @@ Minor Changes
 
 - Rename ``endorsement`` into ``attestation`` in protocol errors (MR :gl:`!9192`)
 
-- Arithmetic errors on Michelson ``mutez`` type have been exported so
+- Arithmetic errors on Michelson ``mumav`` type have been exported so
   they can now be caught outside of the protocol. (MR :gl:`!9934`)
 
 - Slashing penalties for double-signing are now applied at the end of the cycle where denunciations were included, rather than immediately. The same applies for rewards allocated from denunciations. (MR :gl:`!10389`)

@@ -96,7 +96,7 @@ Bug Fixes
 Minor Changes
 -------------
 
-- Arithmetic errors on Michelson ``mutez`` type have been exported so
+- Arithmetic errors on Michelson ``mumav`` type have been exported so
   they can now be caught outside of the protocol. (MR :gl:`!9934`)
 
 - Michelson error traces for elaboration of invalid data was made more

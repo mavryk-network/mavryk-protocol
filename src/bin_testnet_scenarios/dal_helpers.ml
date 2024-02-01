@@ -198,7 +198,7 @@ module Wallet = struct
       let ops =
         List.map
           (fun dest ->
-            Operation.Manager.transfer ~dest ~amount:(Tez.to_mutez amount) ())
+            Operation.Manager.transfer ~dest ~amount:(Tez.to_mumav amount) ())
           keys
         |> Operation.Manager.make_batch ~counter ~source:giver_account
       in

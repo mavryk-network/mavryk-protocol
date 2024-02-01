@@ -124,7 +124,7 @@ Voting procedure
 
 The voting power of a delegate is no longer rounded to rolls, it is
 now instead the full staking power of the delegate, currently
-expressed in mutez. (MR :gl:`!4265`)
+expressed in mumav. (MR :gl:`!4265`)
 
 Breaking Changes
 ----------------
@@ -150,7 +150,7 @@ Breaking Changes
   6. ``/chains/<chain_id>/blocks/<block>/context/delegates/<public_key_hash>/voting_power``
 
   The voting power that was represented by ``int32`` (denoting rolls)
-  is now represented by an ``int64`` (denoting mutez). Furthermore, in
+  is now represented by an ``int64`` (denoting mumav). Furthermore, in
   the RPC ``/chains/<chain_id>/blocks/<block>/votes/listings``, the
   field ``rolls`` has been replaced by the field ``voting_power``. (MR :gl:`!4265`)
 
@@ -281,9 +281,9 @@ Michelson
 
 - The ``VOTING_POWER`` of a contract is no longer rounded to rolls. It
   is now instead the full staking power of the delegate, currently
-  expressed in mutez. Though, developers should not rely on
+  expressed in mumav. Though, developers should not rely on
   ``VOTING_POWER`` to query the staking power of a contract in
-  ``mutez``: the value returned by ``VOTING_POWER`` is still of type`
+  ``mumav``: the value returned by ``VOTING_POWER`` is still of type`
   ``nat`` and it should only be considered relative to
   ``TOTAL_VOTING_POWER``. (MR :gl:`!4265`)
 
@@ -291,7 +291,7 @@ Michelson
   used to identify accounts on transaction rollups’ legders. Values of
   type ``tx_rollup_l2_address`` are 20-byte hashes of a BLS
   public keys (with a string notation based of a base58 encoding,
-  prefixed with ``tz4``). (MR :gl:`!4431`)
+  prefixed with ``mv4``). (MR :gl:`!4431`)
 
 - A new instruction ``MIN_BLOCK_TIME`` has been added. It can be used to
   push the current minimal time between blocks onto the stack. The value is

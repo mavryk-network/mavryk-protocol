@@ -38,8 +38,8 @@ end
 
 type fees_config = {
   minimal_fees : Protocol.Alpha_context.Tez.t;
-  minimal_nanotez_per_gas_unit : Q.t;
-  minimal_nanotez_per_byte : Q.t;
+  minimal_nanomav_per_gas_unit : Q.t;
+  minimal_nanomav_per_byte : Q.t;
 }
 
 type validation_config =
@@ -95,8 +95,8 @@ val default_config : t
 
 val make :
   ?minimal_fees:Protocol.Alpha_context.Tez.t ->
-  ?minimal_nanotez_per_gas_unit:Q.t ->
-  ?minimal_nanotez_per_byte:Q.t ->
+  ?minimal_nanomav_per_gas_unit:Q.t ->
+  ?minimal_nanomav_per_byte:Q.t ->
   ?nonce:nonce_config ->
   ?context_path:string ->
   ?retries_on_failure:int ->

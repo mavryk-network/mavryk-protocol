@@ -581,7 +581,7 @@ let test_parse_address () =
       (String (-1, "KT1FAKEFAKEFAKEFAKEFAKEFAKEFAKGGSE2x%"))
       {destination = Contract kt1fake; entrypoint = Entrypoint.default}
   in
-  (* tz1% (empty entrypoint) *)
+  (* mv1% (empty entrypoint) *)
   let*?@ tz1fake =
     Contract.of_b58check "tz1fakefakefakefakefakefakefakcphLA5"
   in

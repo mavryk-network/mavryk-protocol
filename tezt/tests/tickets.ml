@@ -522,7 +522,7 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
       client
   in
   let* tez_after = Client.get_balance_for ~account:ticketer client in
-  let balance_drop = Tez.(to_mutez @@ (tez_before - tez_after)) in
+  let balance_drop = Tez.(to_mumav @@ (tez_before - tez_after)) in
   Check.((balance_drop = 1) int ~__LOC__) ~error_msg:"expected %R, got %L" ;
   unit
 

@@ -65,7 +65,7 @@ code
     DROP;
     NIL operation;
     SENDER; CONTRACT (ticket unit); ASSERT_SOME;
-    PUSH mutez 0;
+    PUSH mumav 0;
     PUSH nat 1; UNIT; TICKET; ASSERT_SOME;
     TRANSFER_TOKENS;
     CONS;

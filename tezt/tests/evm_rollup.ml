@@ -1920,13 +1920,13 @@ let test_preinitialized_evm_kernel =
       (sf "Expected to read %%L as administrator key, but found %%R instead") ;
   unit
 
-let deposit ~amount_mutez ~bridge ~depositor ~receiver ~sc_rollup_node
+let deposit ~amount_mumav ~bridge ~depositor ~receiver ~sc_rollup_node
     ~sc_rollup_address ~node client =
   let* () =
     Client.transfer
       ~entrypoint:"deposit"
       ~arg:(sf "Pair %S %s" sc_rollup_address receiver)
-      ~amount:amount_mutez
+      ~amount:amount_mumav
       ~giver:depositor.Account.public_key_hash
       ~receiver:bridge
       ~burn_cap:Tez.one
@@ -2033,8 +2033,8 @@ let withdraw ~commitment_period ~challenge_window ~amount_wei ~sender ~receiver
 
 let check_balance ~receiver ~endpoint expected_balance =
   let* balance = Eth_cli.balance ~account:receiver ~endpoint in
-  let balance = Wei.truncate_to_mutez balance in
-  Check.((balance = Tez.to_mutez expected_balance) int)
+  let balance = Wei.truncate_to_mumav balance in
+  Check.((balance = Tez.to_mumav expected_balance) int)
     ~error_msg:(sf "Expected balance of %s should be %%R, but got %%L" receiver) ;
   unit
 
@@ -2069,7 +2069,7 @@ let test_deposit_and_withdraw =
     | None -> Test.fail ~__LOC__ "The test needs the L1 bridge"
   in
 
-  let amount_mutez = Tez.of_mutez_int 100_000_000 in
+  let amount_mumav = Tez.of_mumav_int 100_000_000 in
   let receiver =
     Eth_account.
       {
@@ -2083,7 +2083,7 @@ let test_deposit_and_withdraw =
 
   let* () =
     deposit
-      ~amount_mutez
+      ~amount_mumav
       ~sc_rollup_address
       ~bridge
       ~depositor:admin
@@ -2092,10 +2092,10 @@ let test_deposit_and_withdraw =
       ~node
       client
   in
-  let* () = check_balance ~receiver:receiver.address ~endpoint amount_mutez in
+  let* () = check_balance ~receiver:receiver.address ~endpoint amount_mumav in
 
   let amount_wei : Wei.t =
-    Tez.mutez_int64 amount_mutez
+    Tez.mumav_int64 amount_mumav
     |> Z.of_int64
     |> Z.mul Z.(pow (of_int 10) 12)
     |> Wei.to_wei_z
@@ -2120,7 +2120,7 @@ let test_deposit_and_withdraw =
   in
 
   let* balance = Client.get_balance_for ~account:withdraw_receiver client in
-  let expected_balance = Tez.(amount_mutez - one) in
+  let expected_balance = Tez.(amount_mumav - one) in
   Check.((balance = expected_balance) Tez.typ)
     ~error_msg:(sf "Expected %%R amount instead of %%L after withdrawal") ;
   return ()
@@ -2712,12 +2712,12 @@ let test_deposit_dailynet =
   let endpoint = Evm_node.endpoint evm_node in
 
   (* Deposit tokens to the EVM rollup. *)
-  let amount_mutez = Tez.of_mutez_int 100_000_000 in
+  let amount_mumav = Tez.of_mumav_int 100_000_000 in
   let receiver = "0x119811f34EF4491014Fbc3C969C426d37067D6A4" in
 
   let* () =
     deposit
-      ~amount_mutez
+      ~amount_mumav
       ~bridge:bridge_address
       ~depositor:Constant.bootstrap2
       ~receiver
@@ -2728,7 +2728,7 @@ let test_deposit_dailynet =
   in
 
   (* Check the balance in the EVM rollup. *)
-  check_balance ~receiver ~endpoint amount_mutez
+  check_balance ~receiver ~endpoint amount_mumav
 
 let test_rpc_sendRawTransaction_nonce_too_low =
   Protocol.register_test
@@ -2787,7 +2787,7 @@ let test_deposit_before_and_after_migration =
   @@ fun protocol ->
   let admin = Constant.bootstrap5 in
   let receiver = "0x119811f34EF4491014Fbc3C969C426d37067D6A4" in
-  let amount_mutez = Tez.of_mutez_int 50_000_000 in
+  let amount_mumav = Tez.of_mumav_int 50_000_000 in
 
   let scenario_prior
       ~evm_setup:
@@ -2805,7 +2805,7 @@ let test_deposit_before_and_after_migration =
     in
     let* () =
       deposit
-        ~amount_mutez
+        ~amount_mumav
         ~bridge
         ~depositor:admin
         ~receiver
@@ -2814,7 +2814,7 @@ let test_deposit_before_and_after_migration =
         ~node
         client
     in
-    check_balance ~receiver ~endpoint amount_mutez
+    check_balance ~receiver ~endpoint amount_mumav
   in
   let scenario_after
       ~evm_setup:
@@ -2832,7 +2832,7 @@ let test_deposit_before_and_after_migration =
     in
     let* () =
       deposit
-        ~amount_mutez
+        ~amount_mumav
         ~bridge
         ~depositor:admin
         ~receiver
@@ -2841,7 +2841,7 @@ let test_deposit_before_and_after_migration =
         ~node
         client
     in
-    check_balance ~receiver ~endpoint Tez.(amount_mutez + amount_mutez)
+    check_balance ~receiver ~endpoint Tez.(amount_mumav + amount_mumav)
   in
   gen_kernel_migration_test ~admin ~scenario_prior ~scenario_after protocol
 

@@ -10,8 +10,8 @@ impl PartialOrd for TypedValue {
             (Nat(a), Nat(b)) => a.partial_cmp(b),
             (Nat(..), _) => None,
 
-            (Mutez(a), Mutez(b)) => a.partial_cmp(b),
-            (Mutez(..), _) => None,
+            (Mumav(a), Mumav(b)) => a.partial_cmp(b),
+            (Mumav(..), _) => None,
 
             (Bool(a), Bool(b)) => a.partial_cmp(b),
             (Bool(..), _) => None,
@@ -75,9 +75,9 @@ mod tests {
         assert_cmp!(Nat; 4; 4; Equal);
         assert_cmp!(Nat; 5; 4; Greater);
 
-        assert_cmp!(Mutez; 3; 4; Less);
-        assert_cmp!(Mutez; 3; 3; Equal);
-        assert_cmp!(Mutez; 32; 4; Greater);
+        assert_cmp!(Mumav; 3; 4; Less);
+        assert_cmp!(Mumav; 3; 3; Equal);
+        assert_cmp!(Mumav; 32; 4; Greater);
 
         assert_cmp!(Bool; false; false; Equal);
         assert_cmp!(Bool; false; true; Less);

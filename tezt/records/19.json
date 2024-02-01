@@ -947,7 +947,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Lima: Tc opcodes/mutez_to_bls12_381_fr",
+    "title": "Lima: Tc opcodes/mumav_to_bls12_381_fr",
     "tags": [
       "regression",
       "lima",

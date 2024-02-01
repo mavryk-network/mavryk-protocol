@@ -1,11 +1,11 @@
 parameter bls12_381_fr;
-storage mutez;
+storage mumav;
 code {
        CAR;
        INT;
        ISNAT;
        ASSERT_SOME;
-       PUSH mutez 1;
+       PUSH mumav 1;
        MUL;
        NIL operation;
        PAIR;

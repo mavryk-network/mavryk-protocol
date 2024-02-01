@@ -66,9 +66,9 @@ val max_priority_arg : (int option, full) Tezos_clic.arg
 
 val minimal_fees_arg : (Tez.tez, full) Tezos_clic.arg
 
-val minimal_nanotez_per_gas_unit_arg : (Q.t, full) Tezos_clic.arg
+val minimal_nanomav_per_gas_unit_arg : (Q.t, full) Tezos_clic.arg
 
-val minimal_nanotez_per_byte_arg : (Q.t, full) Tezos_clic.arg
+val minimal_nanomav_per_byte_arg : (Q.t, full) Tezos_clic.arg
 
 val replace_by_fees_arg : (bool, full) Tezos_clic.arg
 

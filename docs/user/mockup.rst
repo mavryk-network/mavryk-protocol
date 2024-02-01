@@ -126,10 +126,10 @@ You can now use standard commands, such as:
 
     $ mockup-client list known addresses
     bootstrap5: tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv (unencrypted sk known)
-    bootstrap4: tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv (unencrypted sk known)
+    bootstrap4: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn (unencrypted sk known)
     bootstrap3: tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU (unencrypted sk known)
     bootstrap2: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN (unencrypted sk known)
-    bootstrap1: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx (unencrypted sk known)
+    bootstrap1: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe (unencrypted sk known)
 
 .. code-block:: shell-session
 
@@ -145,28 +145,28 @@ You can now use standard commands, such as:
     and/or an external block explorer to make sure that it has been included.
     This sequence of operations was run:
       Manager signed operations:
-        From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
-        Fee to the baker: ꜩ0.001282
+        From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+        Fee to the baker: ṁ0.001282
         Expected counter: 2
         Gas limit: 10307
         Storage limit: 0 bytes
         Balance updates:
-          tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ........... -ꜩ0.001282
-          fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,0) ... +ꜩ0.001282
+          mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ........... -ṁ0.001282
+          fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,0) ... +ṁ0.001282
         Transaction:
-          Amount: ꜩ100
-          From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+          Amount: ṁ100
+          From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
           To: tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN
           This transaction was successfully applied
           Consumed gas: 10207
           Balance updates:
-            tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ100
-            tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN ... +ꜩ100
+            mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ100
+            tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN ... +ṁ100
 
 .. code-block:: shell-session
 
     $ mockup-client get balance for bootstrap1
-    3999898.997437 ꜩ
+    3999898.997437 ṁ
 
 One can also originate contracts:
 
@@ -419,7 +419,7 @@ case by visiting ``mockup/mempool.json``. This should look like this
        "protocol_data":
          { "contents":
              [ { "kind": "transaction",
-                 "source": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
+                 "source": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
                  "fee": "1000000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "1000000",
                  "destination": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN" } ],
@@ -433,7 +433,7 @@ case by visiting ``mockup/mempool.json``. This should look like this
                  "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
                  "fee": "500000", "counter": "1", "gas_limit": "10307",
                  "storage_limit": "0", "amount": "2000000",
-                 "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+                 "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
            "signature":
              "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } } ]
 
@@ -458,7 +458,7 @@ blocks of the mockup chain.
               "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+              "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
         "signature":
           "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } } ]
 
@@ -489,7 +489,7 @@ looks like this
               "source": "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
               "fee": "500000", "counter": "1", "gas_limit": "10307",
               "storage_limit": "0", "amount": "2000000",
-              "destination": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ],
+              "destination": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ],
         "signature":
           "sigTBpkXw6tC72L2nJ2r2Jm5iB6uidTWqoMNd4oEawUbGBf5mHVfKawFYL8X8MJECpL73oBnfujyUZNLK2LQWD1FaCkYMP4j" } },
   { "shell_header":

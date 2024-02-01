@@ -55,7 +55,7 @@ let register_fa12_test ~title ?(tags = []) test_body protocols =
              client
              protocol
          in
-         let initial_mint = Tez.of_mutez_int 20000 in
+         let initial_mint = Tez.of_mumav_int 20000 in
          let* () =
            mint
              ~admin

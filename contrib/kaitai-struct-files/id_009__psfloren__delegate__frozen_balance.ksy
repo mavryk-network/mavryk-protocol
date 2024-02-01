@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 009-PsFLoren.delegate.frozen_balance'
 types:
-  id_009__psfloren__mutez:
+  id_009__psfloren__mumav:
     seq:
-    - id: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
       type: n
   n:
     seq:
@@ -21,8 +21,8 @@ types:
       type: b7be
 seq:
 - id: deposit
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: fees
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: rewards
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav

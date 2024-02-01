@@ -85,8 +85,8 @@ let test_sc_rollup_challenge_window_lt_max_lookahead () =
 let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
   let constants = Default_parameters.constants_mainnet in
   let open Protocol in
-  let cost_per_byte_mutez =
-    Alpha_context.Tez.to_mutez constants.cost_per_byte
+  let cost_per_byte_mumav =
+    Alpha_context.Tez.to_mumav constants.cost_per_byte
   in
   let commitment_storage_size =
     Int64.of_int
@@ -94,7 +94,7 @@ let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
       .max_commitment_storage_size_in_bytes
   in
   let commitment_storage_cost =
-    Int64.mul cost_per_byte_mutez commitment_storage_size
+    Int64.mul cost_per_byte_mumav commitment_storage_size
   in
   let max_lookahead =
     Int64.of_int32 constants.sc_rollup.max_lookahead_in_blocks
@@ -103,7 +103,7 @@ let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
     Int64.of_int constants.sc_rollup.commitment_period_in_blocks
   in
   let stake_amount =
-    Alpha_context.Tez.to_mutez constants.sc_rollup.stake_amount
+    Alpha_context.Tez.to_mumav constants.sc_rollup.stake_amount
   in
   Assert.leq_int64
     ~loc:__LOC__
@@ -209,8 +209,8 @@ let liquidity_baking_subsidy_param () =
     get_reward ~reward_kind:Liquidity_baking_subsidy
   in
   let*? diff = liquidity_baking_subsidy -? expected_subsidy in
-  let max_diff = 1000 (* mutez *) in
-  Assert.leq_int ~loc:__LOC__ (Int64.to_int (to_mutez diff)) max_diff
+  let max_diff = 1000 (* mumav *) in
+  Assert.leq_int ~loc:__LOC__ (Int64.to_int (to_mumav diff)) max_diff
 
 let tests =
   [

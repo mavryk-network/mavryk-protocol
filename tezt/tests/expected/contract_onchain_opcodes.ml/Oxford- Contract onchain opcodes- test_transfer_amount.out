@@ -24,7 +24,7 @@ This sequence of operations was run:
       Credit: ꜩ0
       Script:
         { parameter unit ;
-          storage mutez ;
+          storage mumav ;
           code { DROP ; AMOUNT ; NIL operation ; PAIR } }
         Initial storage: 0
         No delegate for this contract

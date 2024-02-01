@@ -47,9 +47,9 @@ instructions:
         the return value is a timestamp offset with the integer number
         of seconds.
 
-        A ``mutez`` can also be added to a ``mutez``, in which
-        case the return value is a ``mutez``. In this case, the
-        operation triggers a run-time error if the sum of the ``mutez``
+        A ``mumav`` can also be added to a ``mumav``, in which
+        case the return value is a ``mumav``. In this case, the
+        operation triggers a run-time error if the sum of the ``mumav``
         values overflows.
 
         Finally, ``ADD`` can be used to add two BLS12-381 curve points (values of type ``bls12_381_g1`` and ``bls12_381_g2`` or two BLS-381 field elements (values of type ``bls12_381_fr``).
@@ -74,9 +74,9 @@ instructions:
       - name: Address
         description: This example takes a contract by parameter, and then stores its address.
         path: opcodes/address.tz
-        input: '"tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv"'
+        input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
         initial_storage: 'None'
-        final_storage: '(Some "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv")'
+        final_storage: '(Some "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn")'
 
   LOOP_LEFT:
     category: control_structure
@@ -445,7 +445,7 @@ instructions:
           resulting value is unchanged.
 
         path: opcodes/packunpack_rev.tz
-        input: '(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" (Pair "2019-09-09T08:35:33Z" "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"))))))))'
+        input: '(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))'
         initial_storage: 'Unit'
         final_storage: 'Unit'
   BLAKE2B:
@@ -520,7 +520,7 @@ instructions:
     since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
     documentation_short: Push the amount of the current transaction
     documentation: |
-      Push the amount of the current transaction, in ``mutez``.
+      Push the amount of the current transaction, in ``mumav``.
 
     examples:
       - name: Store ``AMOUNT``
@@ -574,10 +574,10 @@ instructions:
     category: blockchain
     proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
     since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
-    documentation_short: Push the current amount of mutez of the executing contract
+    documentation_short: Push the current amount of mumav of the executing contract
     documentation: |
-      Push the current amount of mutez held by the executing contract,
-      including any mutez added by the calling transaction.
+      Push the current amount of mumav held by the executing contract,
+      including any mumav added by the calling transaction.
 
     examples:
       - name: Store ``BALANCE``
@@ -635,7 +635,7 @@ instructions:
 
       - pair values ``(Pair d1 d2)`` are compared component-wise,
         starting with the left component.
-      - ``nat``, ``int``, ``mutez`` and ``timestamp`` values are compared numerically
+      - ``nat``, ``int``, ``mumav`` and ``timestamp`` values are compared numerically
       - comparison for types ``unit`` and ``never`` is trivial
       - ``bool`` values are compared so that ``False`` is strictly less than ``True``
       - ``option``-al values are compared as follows:
@@ -740,7 +740,7 @@ instructions:
           This contract receives an ``address`` by parameter, and converts it to a ``contract unit``.
 
       path: opcodes/contract.tz
-      input: '"tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv"'
+      input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
       initial_storage: 'Unit'
       final_storage: 'Unit'
 
@@ -767,7 +767,7 @@ instructions:
       input: 'Unit'
       initial_storage: 'None'
       final_storage: '(Some "KT1Mjjcb6tmSsLm7Cb3DSQszePjfchPM4Uxm")'
-      client_run_script_params: [ "--payer", "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
+      client_run_script_params: [ "--payer", "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
 
 
   CONS:
@@ -880,8 +880,8 @@ instructions:
        ``13``     ``0``       ``None``
       ========    =========  ======================
 
-      Furthermore, values of type ``mutez``  can be divided by values
-      of types ``nat`` or ``mutez``.
+      Furthermore, values of type ``mumav``  can be divided by values
+      of types ``nat`` or ``mumav``.
 
   EMPTY_MAP:
     category: data_structure
@@ -1115,8 +1115,8 @@ instructions:
     documentation_short: Push a transaction operation
     documentation: |
       The ``TRANSFER_TOKENS`` instruction consumes a value ``d`` of type ``ty``,
-      an amount ``z`` in ``mutez`` and a contract ``c`` of type ``contract ty``. It returns
-      a transfer ``operation`` that will send ``z`` mutez to the
+      an amount ``z`` in ``mumav`` and a contract ``c`` of type ``contract ty``. It returns
+      a transfer ``operation`` that will send ``z`` mumav to the
       specified contract ``c`` with the parameter ``d``.
 
       Consequently, the parameter value must be consistent with the
@@ -1257,7 +1257,7 @@ instructions:
       The ``MUL`` instruction consumes two numbers (``int`` or
       ``nat``) and produces their product.
 
-      ``MUL`` can also be used to multiply a ``mutez`` with a natural
+      ``MUL`` can also be used to multiply a ``mumav`` with a natural
       number. In this case, the operation triggers a run-time error if
       the product overflows.
 
@@ -1299,7 +1299,7 @@ instructions:
     documentation: |
 
       The ``NEG`` instruction consumes a number and returns its negation.
-      The input can be any numerical type except ``timestamp`` and ``mutez``.
+      The input can be any numerical type except ``timestamp`` and ``mumav``.
       In particular, ``NEG`` can be used on the BLS12-381 curves and field.
       The output has the same type as the input except in the case of ``nat`` where
       the output has type ``int``.
@@ -1353,7 +1353,7 @@ instructions:
       ``proxy``.  The contract ``proxy``, transfers any amount
       received in a call to ``receiver``.  Assume a third
       contract ``bootstrap2`` creates a transaction to the ``proxy``
-      contract sending 99 ꜩ . Then ``proxy`` creates an internal
+      contract sending 99 ṁ . Then ``proxy`` creates an internal
       transaction that calls ``receiver``:
 
       .. image:: static/proxy-receiver.svg
@@ -1633,8 +1633,8 @@ instructions:
         - Timestamps can also be subtracted from timestamps, in which
           case the result is a integer denoting their difference
           in seconds.
-        - Finally, a ``mutez`` can be subtracted from a ``mutez``, in
-          which case the return value is a ``mutez``. This operation
+        - Finally, a ``mumav`` can be subtracted from a ``mumav``, in
+          which case the return value is a ``mumav``. This operation
           triggers a run-time error if the result is negative.
 
   UNIT:
@@ -1940,14 +1940,14 @@ types:
     examples:
       - "True"
       - "False"
-  mutez:
+  mumav:
     documentation_short: "A specific type for manipulating tokens"
     proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
     since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
     documentation: |
-      Mutez (micro-Tez) are internally represented by 64-bit signed
+      Mumav (micro-Tez) are internally represented by 64-bit signed
       integers. These are restricted to prevent creating a negative amount
-      of mutez. Instructions are limited to prevent overflow and mixing them
+      of mumav. Instructions are limited to prevent overflow and mixing them
       with other numerical types by mistake. They are also mandatorily checked
       for overflows.
 
@@ -1974,7 +1974,7 @@ types:
     big_map_value: true
     duplicable: true
     examples:
-      - '"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"'
+      - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
       - '"tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k"'
 
   timestamp:
@@ -2182,18 +2182,18 @@ types:
       that guarantees that the value is indeed a valid, existing
       account.
 
-      A valid Tezos address is a string prefixed by either ``tz1``,
-      ``tz2``, ``tz3`` or ``KT1`` and followed by a Base58 encoded
+      A valid Tezos address is a string prefixed by either ``mv1``,
+      ``mv2``, ``mv3`` or ``KT1`` and followed by a Base58 encoded
       hash and terminated by a 4-byte checksum.
 
       The prefix designates the type of address:
 
-      - ``tz1`` addresses are followed by a ed25519 public key hash
-      - ``tz2`` addresses are followed by a Secp256k1 public key hash
-      - ``tz3`` addresses are followed by a NIST p256r1 public key hash
+      - ``mv1`` addresses are followed by a ed25519 public key hash
+      - ``mv2`` addresses are followed by a Secp256k1 public key hash
+      - ``mv3`` addresses are followed by a NIST p256r1 public key hash
       - ``KT1`` addresses are followed by a contract hash
 
-      Addresses prefixed by ``tz1``, ``tz2`` and ``tz3`` designate
+      Addresses prefixed by ``mv1``, ``mv2`` and ``mv3`` designate
       implicit accounts, whereas those prefixed ``KT1`` designate
       originated accounts.
 
@@ -2203,7 +2203,7 @@ types:
     examples:
       - '"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"'
       - '"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%entrypoint"'
-      - '"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"'
+      - '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
       - '"tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc"'
       - '"tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA"'
 

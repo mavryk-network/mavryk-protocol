@@ -9,7 +9,7 @@ code {
                {
                  DROP;
                  SELF %have_fun;
-                 PUSH mutez 0;
+                 PUSH mumav 0;
                  DUP 4;
                  PUSH (option nat) (Some 8);
                  PUSH string "hahaha";

@@ -446,24 +446,24 @@ module Make (Parameters : PARAMETERS) = struct
         let param = Parameters.fee_parameter state operation in
         {
           minimal_fees =
-            {mutez = Int64.max acc.minimal_fees.mutez param.minimal_fees.mutez};
-          minimal_nanotez_per_byte =
-            Q.max acc.minimal_nanotez_per_byte param.minimal_nanotez_per_byte;
-          minimal_nanotez_per_gas_unit =
+            {mumav = Int64.max acc.minimal_fees.mumav param.minimal_fees.mumav};
+          minimal_nanomav_per_byte =
+            Q.max acc.minimal_nanomav_per_byte param.minimal_nanomav_per_byte;
+          minimal_nanomav_per_gas_unit =
             Q.max
-              acc.minimal_nanotez_per_gas_unit
-              param.minimal_nanotez_per_gas_unit;
+              acc.minimal_nanomav_per_gas_unit
+              param.minimal_nanomav_per_gas_unit;
           force_low_fee = acc.force_low_fee || param.force_low_fee;
-          fee_cap = {mutez = Int64.add acc.fee_cap.mutez param.fee_cap.mutez};
-          burn_cap = {mutez = Int64.add acc.burn_cap.mutez param.burn_cap.mutez};
+          fee_cap = {mumav = Int64.add acc.fee_cap.mumav param.fee_cap.mumav};
+          burn_cap = {mumav = Int64.add acc.burn_cap.mumav param.burn_cap.mumav};
         })
       {
-        minimal_fees = {mutez = 0L};
-        minimal_nanotez_per_byte = Q.zero;
-        minimal_nanotez_per_gas_unit = Q.zero;
+        minimal_fees = {mumav = 0L};
+        minimal_nanomav_per_byte = Q.zero;
+        minimal_nanomav_per_gas_unit = Q.zero;
         force_low_fee = false;
-        fee_cap = {mutez = 0L};
-        burn_cap = {mutez = 0L};
+        fee_cap = {mumav = 0L};
+        burn_cap = {mumav = 0L};
       }
       ops
 

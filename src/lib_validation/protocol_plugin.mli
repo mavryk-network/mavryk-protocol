@@ -125,7 +125,7 @@ module type T = sig
           means that the [candidate_op] has been rejected because there
           was a conflict with an pre-existing operation and the
           {!val-conflict_handler} has returned [`Keep]. This function
-          returns the minimal fee (in mutez) that [candidate_op] would
+          returns the minimal fee (in mumav) that [candidate_op] would
           need so that the {!val-conflict_handler} would return
           [`Replace] instead. If no such fee exists, then the function
           returns [None]. *)
@@ -133,7 +133,7 @@ module type T = sig
         config -> candidate_op:operation -> conflict_map:t -> int64 option
     end
 
-    (** Compute the minimal fee (expressed in mutez) that [candidate_op]
+    (** Compute the minimal fee (expressed in mumav) that [candidate_op]
         would need to have in order to be strictly greater than
         [op_to_overtake] according to {!compare_operations}.
 

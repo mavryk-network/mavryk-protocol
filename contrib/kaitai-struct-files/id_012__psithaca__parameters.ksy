@@ -52,7 +52,7 @@ types:
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: amount
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: script
       type: id_012__psithaca__scripted__contracts
   bytes_dyn_uint30:
@@ -83,8 +83,8 @@ types:
       size: 20
       doc: blinded__public__key__hash
     - id: commitments_elt_field1
-      type: id_012__psithaca__mutez
-      doc: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
+      doc: id_012__psithaca__mumav
   delegate_selection:
     seq:
     - id: delegate_selection_tag
@@ -93,9 +93,9 @@ types:
     - id: round_robin_over_delegates
       type: round_robin_over_delegates_0
       if: (delegate_selection_tag == delegate_selection_tag::round_robin_over_delegates)
-  id_012__psithaca__mutez:
+  id_012__psithaca__mumav:
     seq:
-    - id: id_012__psithaca__mutez
+    - id: id_012__psithaca__mumav
       type: n
   id_012__psithaca__scripted__contracts:
     seq:
@@ -165,8 +165,8 @@ types:
 
         signature__v0__public_key'
     - id: public_key_known_field1
-      type: id_012__psithaca__mutez
-      doc: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
+      doc: id_012__psithaca__mumav
   public_key_unknown:
     seq:
     - id: public_key_unknown_field0
@@ -176,8 +176,8 @@ types:
 
         signature__v0__public_key_hash'
     - id: public_key_unknown_field1
-      type: id_012__psithaca__mutez
-      doc: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
+      doc: id_012__psithaca__mumav
   ratio_of_frozen_deposits_slashed_per_double_endorsement:
     seq:
     - id: numerator
@@ -284,19 +284,19 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: tokens_per_roll
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: seed_nonce_revelation_tip
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: origination_size
   type: int31
 - id: baking_reward_fixed_portion
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: baking_reward_bonus_per_slot
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: endorsing_reward_per_slot
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: cost_per_byte
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -306,7 +306,7 @@ seq:
 - id: min_proposal_quorum
   type: s4
 - id: liquidity_baking_subsidy
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: liquidity_baking_sunset_level
   type: s4
 - id: liquidity_baking_escape_ema_threshold
@@ -328,7 +328,7 @@ seq:
 - id: frozen_deposits_percentage
   type: int31
 - id: double_baking_punishment
-  type: id_012__psithaca__mutez
+  type: id_012__psithaca__mumav
 - id: ratio_of_frozen_deposits_slashed_per_double_endorsement
   type: ratio_of_frozen_deposits_slashed_per_double_endorsement
 - id: delegate_selection

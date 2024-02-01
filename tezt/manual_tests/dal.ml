@@ -302,13 +302,13 @@ let slots_injector_scenario ?publisher_sk ~airdropper_alias client dal_node
   (* Airdrop publisher if needed *)
   let* balance_publisher = Client.get_balance_for ~account:alias client in
   let* () =
-    if Tez.to_mutez balance_publisher > 5_000_000 then unit
+    if Tez.to_mumav balance_publisher > 5_000_000 then unit
     else
       Client.transfer
-        ~amount:(Tez.of_mutez_int 50_000_000)
+        ~amount:(Tez.of_mumav_int 50_000_000)
         ~giver:airdropper_alias
         ~receiver:alias
-        ~burn_cap:(Tez.of_mutez_int 70_000)
+        ~burn_cap:(Tez.of_mumav_int 70_000)
         ~wait:"1"
         client
   in
@@ -353,17 +353,17 @@ let _stake_or_unstake_half_balance client ~baker_alias =
   (* Stake half of the baker's balance *)
   let frozen_balance = Tez.(full_balance - available_balance) in
   let entrypoint, amount =
-    if Tez.to_mutez available_balance > Tez.to_mutez frozen_balance then
+    if Tez.to_mumav available_balance > Tez.to_mumav frozen_balance then
       ("stake", Tez.((available_balance - frozen_balance) /! 2L))
     else ("unstake", Tez.((frozen_balance - available_balance) /! 2L))
   in
-  if Tez.to_mutez amount = 0 then unit
+  if Tez.to_mumav amount = 0 then unit
   else
     Client.transfer
       ~amount
       ~giver:baker_alias
       ~receiver:baker_alias
-      ~burn_cap:(Tez.of_mutez_int 140_000)
+      ~burn_cap:(Tez.of_mumav_int 140_000)
       ~entrypoint
       ~wait:"1"
       client

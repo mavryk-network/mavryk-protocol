@@ -217,7 +217,7 @@ handled with dedicated manager operations.
 - The ``Smart_rollup_publish`` operation is used to regularly declare
   what is the new state of a given smart rollup in a so-called
   “commitment”. To publish commitments, an implicit account has to
-  own at least ꜩ 10,000, which are frozen as long as at least one of
+  own at least ṁ 10,000, which are frozen as long as at least one of
   their commitments is disputable.
 - The ``Smart_rollup_cement`` operation is used to cement a
   commitment, if the following requirements are met: it has been
@@ -225,7 +225,7 @@ handled with dedicated manager operations.
   the same state update. Once a commitment is cemented, it cannot be
   disputed anymore.
 - The ``Smart_rollup_recover_bond`` operation is used by an implicit
-  account to unfreeze their ꜩ 10,000. This operation only succeeds if
+  account to unfreeze their ṁ 10,000. This operation only succeeds if
   and only if all the commitments published by the implicit account
   have been cemented.
 - The ``Smart_rollup_refute`` operation is used to start or pursue a

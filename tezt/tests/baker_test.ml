@@ -130,7 +130,7 @@ let baker_bls_test =
       client
   in
   let msg =
-    rex "The delegate tz4.*\\w is forbidden as it is a BLS public key hash"
+    rex "The delegate mv4.*\\w is forbidden as it is a BLS public key hash"
   in
   Process.check_error activate_process ~exit_code:1 ~msg
 

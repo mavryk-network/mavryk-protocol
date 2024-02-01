@@ -45,9 +45,9 @@ module Shielded_tez : sig
 
   val zero : t
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
   val of_tez : Tez.t -> t
 

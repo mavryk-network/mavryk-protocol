@@ -19,8 +19,8 @@ types:
       size: len_baking_reward_per_endorsement
   baking_reward_per_endorsement_entries:
     seq:
-    - id: id_011__pthangz2__mutez
-      type: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
+      type: id_011__pthangz2__mumav
   bootstrap_accounts:
     seq:
     - id: bootstrap_accounts_entries
@@ -66,7 +66,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: amount
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: script
       type: id_011__pthangz2__scripted__contracts
   bytes_dyn_uint30:
@@ -97,8 +97,8 @@ types:
       size: 20
       doc: blinded__public__key__hash
     - id: commitments_elt_field1
-      type: id_011__pthangz2__mutez
-      doc: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
+      doc: id_011__pthangz2__mumav
   endorsement_reward:
     seq:
     - id: endorsement_reward_entries
@@ -115,11 +115,11 @@ types:
       size: len_endorsement_reward
   endorsement_reward_entries:
     seq:
-    - id: id_011__pthangz2__mutez
-      type: id_011__pthangz2__mutez
-  id_011__pthangz2__mutez:
+    - id: id_011__pthangz2__mumav
+      type: id_011__pthangz2__mumav
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   id_011__pthangz2__scripted__contracts:
     seq:
@@ -183,8 +183,8 @@ types:
 
         signature__v0__public_key'
     - id: public_key_known_field1
-      type: id_011__pthangz2__mutez
-      doc: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
+      doc: id_011__pthangz2__mumav
   public_key_unknown:
     seq:
     - id: public_key_unknown_field0
@@ -194,8 +194,8 @@ types:
 
         signature__v0__public_key_hash'
     - id: public_key_unknown_field1
-      type: id_011__pthangz2__mutez
-      doc: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
+      doc: id_011__pthangz2__mumav
   time_between_blocks:
     seq:
     - id: time_between_blocks_entries
@@ -282,21 +282,21 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: tokens_per_roll
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: seed_nonce_revelation_tip
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: origination_size
   type: int31
 - id: block_security_deposit
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: endorsement_security_deposit
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: baking_reward_per_endorsement
   type: baking_reward_per_endorsement_0
 - id: endorsement_reward
   type: endorsement_reward_0
 - id: cost_per_byte
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -312,7 +312,7 @@ seq:
 - id: minimal_block_delay
   type: s8
 - id: liquidity_baking_subsidy
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: liquidity_baking_sunset_level
   type: s4
 - id: liquidity_baking_escape_ema_threshold

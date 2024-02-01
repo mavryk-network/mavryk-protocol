@@ -23,4 +23,4 @@ let main {evm_rollup; payload} (store : storage) : return =
     let evm_rollup : evm contract =
       Option.unopt ((Tezos.get_contract_opt evm_rollup) : evm contract option)
     in
-    [Tezos.transaction (Upgrade payload) 0mutez evm_rollup], store
+    [Tezos.transaction (Upgrade payload) 0mumav evm_rollup], store

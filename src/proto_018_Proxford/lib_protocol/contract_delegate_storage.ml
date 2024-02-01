@@ -30,7 +30,7 @@ let () =
     `Branch
     ~id:"delegate.forbidden_tz4"
     ~title:"Forbidden delegate"
-    ~description:"Delegates are forbidden to be tz4 (BLS) accounts."
+    ~description:"Delegates are forbidden to be mv4 (BLS) accounts."
     ~pp:(fun ppf implicit ->
       Format.fprintf
         ppf
@@ -44,7 +44,7 @@ let () =
 let check_not_tz4 : Signature.Public_key_hash.t -> unit tzresult =
   let open Result_syntax in
   function
-  | Bls tz4 -> tzfail (Forbidden_tz4_delegate tz4)
+  | Bls mv4 -> tzfail (Forbidden_tz4_delegate mv4)
   | Ed25519 _ | Secp256k1 _ | P256 _ -> return_unit
 
 let find = Storage.Contract.Delegate.find

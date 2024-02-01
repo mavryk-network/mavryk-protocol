@@ -186,7 +186,7 @@
   },
   {
     "file": "client_keys.ml",
-    "title": "Generates new tz4 keys",
+    "title": "Generates new mv4 keys",
     "tags": [
       "bls",
       "client",
@@ -258,7 +258,7 @@
       "client",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "52714727",
@@ -518,7 +518,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "lima",
@@ -531,7 +531,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input635398196]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input635398196]",
     "tags": [
       "regression",
       "mumbai",

@@ -134,8 +134,8 @@ let test_default_account client ~protocol =
   in
   Log.info "Test default account transfer" ;
   let* () =
-    let tz1 = Constant.bootstrap4.Account.public_key_hash in
-    let arg = sf "\"%s\"" tz1 in
+    let mv1 = Constant.bootstrap4.Account.public_key_hash in
+    let arg = sf "\"%s\"" mv1 in
     let* () =
       Client.transfer
         ~burn_cap:(Tez.of_int 10)

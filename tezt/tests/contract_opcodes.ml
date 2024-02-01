@@ -584,26 +584,26 @@ let test_protocol_independent =
         "(Pair -8 2)",
         "(Pair (Some (Pair -4 0)) (Some (Pair -4 0)) "
         ^ "(Some (Pair 4 0)) (Some (Pair 4 0)))" );
-      (* Test EDIV on mutez *)
-      ( "ediv_mutez",
+      (* Test EDIV on mumav *)
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Left 10))",
         "(Left (Some (Pair 1 0)))" );
-      ( "ediv_mutez",
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Left 3))",
         "(Left (Some (Pair 3 1)))" );
-      ("ediv_mutez", "(Left None)", "(Pair 10 (Left 0))", "(Left None)");
-      ( "ediv_mutez",
+      ("ediv_mumav", "(Left None)", "(Pair 10 (Left 0))", "(Left None)");
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Right 10))",
         "(Right (Some (Pair 1 0)))" );
-      ( "ediv_mutez",
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Right 3))",
         "(Right (Some (Pair 3 1)))" );
-      ("ediv_mutez", "(Left None)", "(Pair 10 (Right 0))", "(Right None)");
-      ( "ediv_mutez",
+      ("ediv_mumav", "(Left None)", "(Pair 10 (Right 0))", "(Right None)");
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 5 (Right 10))",
         "(Right (Some (Pair 0 5)))" );
@@ -1026,20 +1026,20 @@ let test_protocol_independent =
         ^ "0b0719",
         "1132026582925658583078152196614952946047676740821044523890286"
         ^ "9222031333517497" );
-      (* Mutez -> Fr *)
-      ( "mutez_to_bls12_381_fr",
+      (* Mumav -> Fr *)
+      ( "mumav_to_bls12_381_fr",
         "0x02",
         "16",
         "0x100000000000000000000000000000000000000000000000000000000"
         ^ "0000000" );
-      (* # would fail if trying to PACK mutez and UNPACK to Fr *)
-      ( "mutez_to_bls12_381_fr",
+      (* # would fail if trying to PACK mumav and UNPACK to Fr *)
+      ( "mumav_to_bls12_381_fr",
         "0x00",
         "257",
         "0x010100000000000000000000000000000000000000000000000000000"
         ^ "0000000" );
-      (* Fr -> Mutez *)
-      ("bls12_381_fr_to_mutez", "0", "0x10", "16");
+      (* Fr -> Mumav *)
+      ("bls12_381_fr_to_mumav", "0", "0x10", "16");
     ]
 
 let test_bitwise =
@@ -1097,7 +1097,7 @@ let test_balance protocol client =
   iter [0; 1; 500_000; 1_000_000; 5_000_000; 1000_000_000; 8_000_000_000_000]
   @@ fun balance ->
   run_script_and_check
-    ~balance:(Tez.of_mutez_int balance)
+    ~balance:(Tez.of_mumav_int balance)
     ~storage:"0"
     ~input:"Unit"
     client
@@ -1431,7 +1431,7 @@ let test_hash_consistency protocol client =
     Client.hash_data
       ~hooks
       ~data
-      ~typ:"(pair mutez (pair timestamp int))"
+      ~typ:"(pair mumav (pair timestamp int))"
       client
   in
   let* () =
@@ -1447,9 +1447,9 @@ let test_hash_consistency protocol client =
 
 (* Test that the Michelson instructions [LSL], [LSR] throw [unexpected
    arithmetic overflow] if the operand is larger than [256]. Test
-   that the Michelson instructions [MUL] over [mutez] throw
+   that the Michelson instructions [MUL] over [mumav] throw
    [unexpected arithmetic overflow] when its result does not fit the
-   bounds of [mutez]. *)
+   bounds of [mumav]. *)
 let test_arithmetic_overflow protocol client =
   Lwt_list.iter_s
     (fun (script_name, storage, input) ->

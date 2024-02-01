@@ -159,7 +159,7 @@ struct
       "Built-in tezos-signer using remote signer through hardcoded unix socket."
 
     let description =
-      "Valid locators are of the form\n - unix:/path/to/socket?pkh=tz1..."
+      "Valid locators are of the form\n - unix:/path/to/socket?pkh=mv1..."
 
     include Client_keys.Signature_type
 
@@ -167,7 +167,7 @@ struct
       let open Result_syntax in
       assert (Uri.scheme uri = Some scheme) ;
       match Uri.get_query_param uri "pkh" with
-      | None -> error_with "Missing the query parameter: 'pkh=tz1...'"
+      | None -> error_with "Missing the query parameter: 'pkh=mv1...'"
       | Some key ->
           let+ key = Tezos_crypto.Signature.Public_key_hash.of_b58check key in
           (Tezos_base_unix.Socket.Unix (Uri.path uri), key)
@@ -219,7 +219,7 @@ struct
       "Built-in tezos-signer using remote signer through hardcoded tcp socket."
 
     let description =
-      "Valid locators are of the form\n - tcp://host:port/tz1..."
+      "Valid locators are of the form\n - tcp://host:port/mv1..."
 
     include Client_keys.Signature_type
 

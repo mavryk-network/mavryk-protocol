@@ -28,7 +28,7 @@ pub enum Type {
     Nat,
     Int,
     Bool,
-    Mutez,
+    Mumav,
     String,
     Unit,
     Pair(Box<(Type, Type)>),
@@ -48,7 +48,7 @@ impl Type {
     pub fn size_for_gas(&self) -> usize {
         use Type::*;
         match self {
-            Nat | Int | Bool | Mutez | String | Unit | Operation | Address | ChainId => 1,
+            Nat | Int | Bool | Mumav | String | Unit | Operation | Address | ChainId => 1,
             Pair(p) | Or(p) | Map(p) => 1 + p.0.size_for_gas() + p.1.size_for_gas(),
             Option(x) | List(x) | Contract(x) => 1 + x.size_for_gas(),
         }
@@ -83,7 +83,7 @@ impl Type {
 pub enum TypedValue {
     Int(i128),
     Nat(u128),
-    Mutez(i64),
+    Mumav(i64),
     Bool(bool),
     String(String),
     Unit,
@@ -107,7 +107,7 @@ pub fn typed_value_to_value_optimized<'a>(
     match tv {
         TV::Int(i) => V::Int(i),
         TV::Nat(u) => V::Int(u.try_into().unwrap()),
-        TV::Mutez(u) => V::Int(u.try_into().unwrap()),
+        TV::Mumav(u) => V::Int(u.try_into().unwrap()),
         TV::Bool(true) => V::prim0(Prim::True),
         TV::Bool(false) => V::prim0(Prim::False),
         TV::String(s) => V::String(s),

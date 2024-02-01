@@ -350,7 +350,7 @@ let vesting_arg_type =
   let open Test_michelson.Types in
   pair
     (either
-       (either (pair (contract unit) mutez) (option (pair (contract unit) key)))
+       (either (pair (contract unit) mumav) (option (pair (contract unit) key)))
        (either (pair (list (pair (list key) nat)) nat) (option key_hash)))
     (pair address nat)
 
@@ -413,7 +413,7 @@ let sign_transfer ?(expect_failure = false) ?data ~contract ~replay ~receiver
       ~expect_failure
       ~source:"bootstrap1"
       ~target:contract
-      ~burn_cap:Tez.(of_mutez_int 100000)
+      ~burn_cap:Tez.(of_mumav_int 100000)
       ~arg
       Tez.zero
   in
@@ -465,7 +465,7 @@ let set_pour ~replay ~signers info contract =
       ~arg
       ~source:"bootstrap1"
       ~target:contract
-      ~burn_cap:(Tez.of_mutez_int 100000)
+      ~burn_cap:(Tez.of_mumav_int 100000)
       Tez.zero
   in
   assert_updated_storage Contract_storage.[set_pour_info new_pour_info] contract
@@ -489,7 +489,7 @@ let execute_pour ?(expect_failure = false) ~authorizer ~recipient ~amount
   in
   let typ =
     let open Test_michelson.Types in
-    pair (pair (contract unit) mutez) (pair address nat)
+    pair (pair (contract unit) mumav) (pair address nat)
   in
   let* signature = get_signature ~typ ~data:to_sign authorizer in
   let arg =
@@ -507,7 +507,7 @@ let execute_pour ?(expect_failure = false) ~authorizer ~recipient ~amount
       ~source:"bootstrap1"
       ~target:contract
       ~arg
-      ~burn_cap:Tez.(of_mutez_int 100000)
+      ~burn_cap:Tez.(of_mumav_int 100000)
       ~expect_failure
       Tez.zero
   in
@@ -581,7 +581,7 @@ let set_keys ?(expect_failure = false) ~signers ~key_groups ~overall_threshold
       ~expect_failure
       ~source:"bootstrap1"
       ~target:contract
-      ~burn_cap:Tez.(of_mutez_int 20000)
+      ~burn_cap:Tez.(of_mumav_int 20000)
       ~arg
       Tez.zero
   in
@@ -626,7 +626,7 @@ let transfer_and_pour_happy_path =
       ~receiver
       ~replay:1
       ~expect_failure:true
-      Tez.(of_int 100 + of_mutez_int 1)
+      Tez.(of_int 100 + of_mumav_int 1)
   in
   Log.info "However, transferring exactly ꜩ100 is still possible. " ;
   let* () =
@@ -666,7 +666,7 @@ let transfer_and_pour_happy_path =
       ~authorizer:5
       ~recipient:4
       ~replay:4
-      ~amount:Tez.(of_int 100 + of_mutez_int 1)
+      ~amount:Tez.(of_int 100 + of_mumav_int 1)
       contract
   in
   Log.info "Pour can equal the available balance, though." ;
@@ -1144,7 +1144,7 @@ let test_full_contract =
   in
   let* () =
     initialise_vesting_state
-      ~vesting_increment:(Tez.of_mutez_int 636089108075)
+      ~vesting_increment:(Tez.of_mumav_int 636089108075)
         (* 1/12th of the total initial balance. *)
       ~payout_interval:Ptime.Span.(of_int_s (60 * 60 * 24 * 365 / 12))
         (* Approximately one month. *)
@@ -1160,7 +1160,7 @@ let test_full_contract =
       ]
   in
   (* 10% of the total token supply. *)
-  let initial_balance = Tez.of_mutez_int 7633069296900 in
+  let initial_balance = Tez.of_mumav_int 7633069296900 in
   Log.info "Ensure bootstrap1 has enough funds to cover the initial balance." ;
   let* () =
     transfer ~source:"bootstrap2" ~target:"bootstrap1" Tez.(of_int 3000000)

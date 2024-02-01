@@ -1,5 +1,5 @@
 # This contract manages a shielded pool with a 1 to 1 conversion with respect to
-# the mutez, updated by a list of Sapling transactions.
+# the mumav, updated by a list of Sapling transactions.
 # As a convention, all unshield transactions must contain in their `bound_data`
 # field a Micheline encoded public_key_hash which is used as the recipient of
 # the unshielded tez.
@@ -25,11 +25,11 @@ code { # Stack manipulation
               UNPAIR;
               SWAP;
               UNPAIR;
-              # Convert the balance in mutez, keeping the signed balance on top
-              # of the stack and the balance in mutez as the second element.
+              # Convert the balance in mumav, keeping the signed balance on top
+              # of the stack and the balance in mumav as the second element.
               DUP;
               DIP { ABS; # in case of negative balance i.e. shielding
-                    PUSH mutez 1;
+                    PUSH mumav 1;
                     MUL; };
               # We have three cases now: unshielding, shielding and transfers.
               # If the balance is strictly positive (i.e. unshielding), we send
@@ -49,15 +49,15 @@ code { # Stack manipulation
                    # If the balance is negative or 0 (i.e. shielding or transfer),
                    # we verify the amount transferred in the transaction is
                    # exactly the balance returned by verify_update. This enforces
-                   # the conversion 1-1 between mutez and shielded token
-                   # as the balance in mutez of the contract will always be
+                   # the conversion 1-1 between mumav and shielded token
+                   # as the balance in mumav of the contract will always be
                    # the same as the number of tokens in the sapling_state.
                    # No operation is executed.
                    {
                      DIIP {SWAP};
                      DIP {SWAP};
                      SWAP;
-                     SUB_MUTEZ; ASSERT_SOME;
+                     SUB_MUMAV; ASSERT_SOME;
                      # For a transfer or shield operation, we don't expect an
                      # implicit account in the `bound_data` field.
                      # If one is given, we fail as it might be an invalid
@@ -67,7 +67,7 @@ code { # Stack manipulation
                    };
             };
        DIP {
-             PUSH mutez 0;
+             PUSH mumav 0;
              ASSERT_CMPEQ;};
        SWAP;
        PAIR}

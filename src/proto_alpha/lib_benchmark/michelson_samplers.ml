@@ -60,7 +60,7 @@ type type_name =
   | `TSignature
   | `TString
   | `TBytes
-  | `TMutez
+  | `TMumav
   | `TKey_hash
   | `TKey
   | `TTimestamp
@@ -92,7 +92,7 @@ type atomic_type_name =
   | `TSignature
   | `TString
   | `TBytes
-  | `TMutez
+  | `TMumav
   | `TKey_hash
   | `TKey
   | `TTimestamp
@@ -132,7 +132,7 @@ let all_atomic_type_names : atomic_type_name array =
     `TSignature;
     `TString;
     `TBytes;
-    `TMutez;
+    `TMumav;
     `TKey_hash;
     `TKey;
     `TTimestamp;
@@ -168,7 +168,7 @@ type comparable_type_name =
   | `TSignature
   | `TString
   | `TBytes
-  | `TMutez
+  | `TMumav
   | `TBool
   | `TKey_hash
   | `TKey
@@ -193,7 +193,7 @@ let all_comparable_atomic_type_names : 'a comparable_and_atomic array =
     `TSignature;
     `TString;
     `TBytes;
-    `TMutez;
+    `TMumav;
     `TBool;
     `TKey_hash;
     `TKey;
@@ -307,7 +307,7 @@ end)
       | `TAddress -> Ex_ty address_t
       | `TTimestamp -> Ex_ty timestamp_t
       | `TKey_hash -> Ex_ty key_hash_t
-      | `TMutez -> Ex_ty mutez_t
+      | `TMumav -> Ex_ty mumav_t
       | `TSignature -> Ex_ty signature_t
       | `TUnit -> Ex_ty unit_t
       | `TInt -> Ex_ty int_t
@@ -331,7 +331,7 @@ end)
       | `TAddress -> Ex_comparable_ty address_t
       | `TTimestamp -> Ex_comparable_ty timestamp_t
       | `TKey_hash -> Ex_comparable_ty key_hash_t
-      | `TMutez -> Ex_comparable_ty mutez_t
+      | `TMumav -> Ex_comparable_ty mumav_t
       | `TInt -> Ex_comparable_ty int_t
       | `TUnit -> Ex_comparable_ty unit_t
       | `TSignature -> Ex_comparable_ty signature_t
@@ -616,7 +616,7 @@ end)
         | Signature_t -> signature
         | String_t -> Michelson_base.string
         | Bytes_t -> Michelson_base.bytes
-        | Mutez_t -> Michelson_base.tez
+        | Mumav_t -> Michelson_base.tez
         | Key_hash_t -> Crypto_samplers.pkh
         | Key_t -> Crypto_samplers.pk
         | Timestamp_t -> Michelson_base.timestamp

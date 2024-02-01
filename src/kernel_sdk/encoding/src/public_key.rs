@@ -30,9 +30,9 @@ pub enum PublicKey {
 impl Display for PublicKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Ed25519(tz1) => write!(f, "{}", tz1),
-            Self::Secp256k1(tz2) => write!(f, "{}", tz2),
-            Self::P256(tz3) => write!(f, "{}", tz3),
+            Self::Ed25519(mv1) => write!(f, "{}", mv1),
+            Self::Secp256k1(mv2) => write!(f, "{}", mv2),
+            Self::P256(mv3) => write!(f, "{}", mv3),
         }
     }
 }
@@ -58,9 +58,9 @@ impl PublicKey {
     /// Conversion to base58-encoding string (with prefix).
     pub fn to_b58check(&self) -> String {
         match self {
-            Self::Ed25519(tz1) => tz1.to_b58check(),
-            Self::Secp256k1(tz2) => tz2.to_b58check(),
-            Self::P256(tz3) => tz3.to_b58check(),
+            Self::Ed25519(mv1) => mv1.to_b58check(),
+            Self::Secp256k1(mv2) => mv2.to_b58check(),
+            Self::P256(mv3) => mv3.to_b58check(),
         }
     }
 }
@@ -68,9 +68,9 @@ impl PublicKey {
 impl From<PublicKey> for Hash {
     fn from(pkh: PublicKey) -> Self {
         match pkh {
-            PublicKey::Ed25519(tz1) => tz1.into(),
-            PublicKey::Secp256k1(tz2) => tz2.into(),
-            PublicKey::P256(tz3) => tz3.into(),
+            PublicKey::Ed25519(mv1) => mv1.into(),
+            PublicKey::Secp256k1(mv2) => mv2.into(),
+            PublicKey::P256(mv3) => mv3.into(),
         }
     }
 }
@@ -106,48 +106,48 @@ mod test {
 
     #[test]
     fn tz1_b58check() {
-        let tz1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
+        let mv1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
 
-        let pkh = PublicKey::from_b58check(tz1);
+        let pkh = PublicKey::from_b58check(mv1);
 
         assert!(matches!(pkh, Ok(PublicKey::Ed25519(_))));
 
         let tz1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(tz1, &tz1_from_pkh);
+        assert_eq!(mv1, &tz1_from_pkh);
     }
 
     #[test]
     fn tz2_b58check() {
-        let tz2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
+        let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
 
-        let public_key = PublicKey::from_b58check(tz2);
+        let public_key = PublicKey::from_b58check(mv2);
 
         assert!(matches!(public_key, Ok(PublicKey::Secp256k1(_))));
 
         let tz2_from_pk = public_key.unwrap().to_b58check();
 
-        assert_eq!(tz2, &tz2_from_pk);
+        assert_eq!(mv2, &tz2_from_pk);
     }
 
     #[test]
     fn tz3_b58check() {
-        let tz3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
+        let mv3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
 
-        let public_key = PublicKey::from_b58check(tz3);
+        let public_key = PublicKey::from_b58check(mv3);
 
         assert!(matches!(public_key, Ok(PublicKey::P256(_))));
 
         let tz3_from_pk = public_key.unwrap().to_b58check();
 
-        assert_eq!(tz3, &tz3_from_pk);
+        assert_eq!(mv3, &tz3_from_pk);
     }
 
     #[test]
     fn tz1_encoding() {
-        let tz1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
+        let mv1 = "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK";
 
-        let public_key = PublicKey::from_b58check(tz1).expect("expected valid tz1 hash");
+        let public_key = PublicKey::from_b58check(mv1).expect("expected valid mv1 hash");
 
         let mut bin = Vec::new();
         public_key
@@ -165,9 +165,9 @@ mod test {
 
     #[test]
     fn tz2_encoding() {
-        let tz2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
+        let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
 
-        let public_key = PublicKey::from_b58check(tz2).expect("expected valid tz2 hash");
+        let public_key = PublicKey::from_b58check(mv2).expect("expected valid mv2 hash");
 
         let mut bin = Vec::new();
         public_key
@@ -185,9 +185,9 @@ mod test {
 
     #[test]
     fn tz3_encoding() {
-        let tz3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
+        let mv3 = "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z";
 
-        let public_key = PublicKey::from_b58check(tz3).expect("expected valid tz3 hash");
+        let public_key = PublicKey::from_b58check(mv3).expect("expected valid mv3 hash");
 
         let mut bin = Vec::new();
         public_key
@@ -205,7 +205,7 @@ mod test {
 
     #[test]
     fn tz1_signature_signature_verification_succeeds() {
-        let tz1 = PublicKey::from_b58check(
+        let mv1 = PublicKey::from_b58check(
             "edpkvWR5truf7AMF3PZVCXx7ieQLCW4MpNDzM3VwPfmFWVbBZwswBw",
         )
         .expect("public key decoding should work");
@@ -217,7 +217,7 @@ mod test {
         )
         .expect("payload decoding should work");
 
-        let result = tz1
+        let result = mv1
             .verify_signature(&sig, &msg)
             .expect("signature should be correct");
         assert!(result);
@@ -225,7 +225,7 @@ mod test {
 
     #[test]
     fn tz1_signature_signature_verification_fails() {
-        let tz1 = PublicKey::from_b58check(
+        let mv1 = PublicKey::from_b58check(
             "edpkuDMUm7Y53wp4gxeLBXuiAhXZrLn8XB1R83ksvvesH8Lp8bmCfK",
         )
         .expect("public key decoding should work");
@@ -237,13 +237,13 @@ mod test {
         )
         .expect("payload decoding should work");
 
-        let result = tz1.verify_signature(&sig, &msg);
+        let result = mv1.verify_signature(&sig, &msg);
         assert!(result.is_err());
     }
 
     #[test]
     fn tz2_signature_signature_verification_succeeds() {
-        let tz2 = PublicKey::from_b58check(
+        let mv2 = PublicKey::from_b58check(
             "sppk7cwkTzCPptCSxSTvGNg4uqVcuTbyWooLnJp4yxJNH5DReUGxYvs",
         )
         .expect("public key decoding should work");
@@ -253,27 +253,27 @@ mod test {
         )
         .expect("payload decoding should work");
 
-        let result = tz2.verify_signature(&sig, &msg).unwrap();
+        let result = mv2.verify_signature(&sig, &msg).unwrap();
         assert!(result);
     }
 
     #[test]
     fn tz2_signature_signature_verification_fails() {
-        let tz2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
-        let tz2 = PublicKey::from_b58check(tz2).expect("parsing should world");
+        let mv2 = "sppk7Zik17H7AxECMggqD1FyXUQdrGRFtz9X7aR8W2BhaJoWwSnPEGA";
+        let mv2 = PublicKey::from_b58check(mv2).expect("parsing should world");
         let sig = Signature::from_base58_check("sigrJ2jqanLupARzKGvzWgL1Lv6NGUqDovHKQg9MX4PtNtHXgcvG6131MRVzujJEXfvgbuRtfdGbXTFaYJJjuUVLNNZTf5q1").expect("signature decoding should work");
         let msg = hex::decode(
             "5538e2cc90c9b053a12e2d2f3a985aff1809eac59501db4d644e4bb381b06b4b",
         )
         .expect("payload decoding should work");
 
-        let result = tz2.verify_signature(&sig, &msg).unwrap();
+        let result = mv2.verify_signature(&sig, &msg).unwrap();
         assert!(!result);
     }
 
     #[test]
     fn tz3_signature_signature_verification_succeeds() {
-        let tz3 = PublicKey::from_b58check(
+        let mv3 = PublicKey::from_b58check(
             "p2pk67Cwb5Ke6oSmqeUbJxURXMe3coVnH9tqPiB2xD84CYhHbBKs4oM",
         )
         .expect("decoding public key should work");
@@ -285,13 +285,13 @@ mod test {
         )
         .expect("payload decoding should work");
 
-        let result = tz3.verify_signature(&sig, &msg).unwrap();
+        let result = mv3.verify_signature(&sig, &msg).unwrap();
         assert!(result);
     }
 
     #[test]
     fn tz3_signature_signature_verification_fails() {
-        let tz3 = PublicKey::from_b58check(
+        let mv3 = PublicKey::from_b58check(
             "p2pk67VpBjWwoPULwXCpayec6rFxaAKv8VjJ8cVMHmLDCYARu31zx5Z",
         )
         .expect("decoding public key should work");
@@ -303,7 +303,7 @@ mod test {
         )
         .expect("payload decoding should work");
 
-        let result = tz3.verify_signature(&sig, &msg).unwrap();
+        let result = mv3.verify_signature(&sig, &msg).unwrap();
         assert!(!result);
     }
 }

@@ -39,7 +39,7 @@ type manager_op_kind =
       dest : string;
       (* public key hash *)
       amount : int;
-      (* in mutez *)
+      (* in mumav *)
       parameter : manager_op_param option;
     }
   | Reveal of string (* public key *)

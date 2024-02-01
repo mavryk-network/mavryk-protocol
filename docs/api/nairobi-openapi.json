@@ -598,13 +598,13 @@
                       "$ref": "#/components/schemas/int64"
                     },
                     "minimal_stake": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "vdf_difficulty": {
                       "$ref": "#/components/schemas/int64"
                     },
                     "seed_nonce_revelation_tip": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "origination_size": {
                       "type": "integer",
@@ -612,16 +612,16 @@
                       "maximum": 1073741823
                     },
                     "baking_reward_fixed_portion": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "baking_reward_bonus_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "endorsing_reward_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "cost_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "hard_storage_limit_per_operation": {
                       "$ref": "#/components/schemas/bignum"
@@ -642,7 +642,7 @@
                       "maximum": 2147483647
                     },
                     "liquidity_baking_subsidy": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "liquidity_baking_toggle_ema_threshold": {
                       "type": "integer",
@@ -700,7 +700,7 @@
                       "maximum": 1073741823
                     },
                     "double_baking_punishment": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "ratio_of_frozen_deposits_slashed_per_double_endorsement": {
                       "type": "object",
@@ -766,7 +766,7 @@
                       "maximum": 1073741823
                     },
                     "tx_rollup_commitment_bond": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "tx_rollup_finality_period": {
                       "type": "integer",
@@ -889,7 +889,7 @@
                       "maximum": 1073741823
                     },
                     "smart_rollup_stake_amount": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "smart_rollup_commitment_period_in_blocks": {
                       "type": "integer",
@@ -1121,13 +1121,13 @@
                       "$ref": "#/components/schemas/int64"
                     },
                     "minimal_stake": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "vdf_difficulty": {
                       "$ref": "#/components/schemas/int64"
                     },
                     "seed_nonce_revelation_tip": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "origination_size": {
                       "type": "integer",
@@ -1135,16 +1135,16 @@
                       "maximum": 1073741823
                     },
                     "baking_reward_fixed_portion": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "baking_reward_bonus_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "endorsing_reward_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "cost_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "hard_storage_limit_per_operation": {
                       "$ref": "#/components/schemas/bignum"
@@ -1165,7 +1165,7 @@
                       "maximum": 2147483647
                     },
                     "liquidity_baking_subsidy": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "liquidity_baking_toggle_ema_threshold": {
                       "type": "integer",
@@ -1223,7 +1223,7 @@
                       "maximum": 1073741823
                     },
                     "double_baking_punishment": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "ratio_of_frozen_deposits_slashed_per_double_endorsement": {
                       "type": "object",
@@ -1289,7 +1289,7 @@
                       "maximum": 1073741823
                     },
                     "tx_rollup_commitment_bond": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "tx_rollup_finality_period": {
                       "type": "integer",
@@ -1412,7 +1412,7 @@
                       "maximum": 1073741823
                     },
                     "smart_rollup_stake_amount": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "smart_rollup_commitment_period_in_blocks": {
                       "type": "integer",
@@ -1617,7 +1617,7 @@
                   "type": "object",
                   "properties": {
                     "balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "delegate": {
                       "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -2890,19 +2890,19 @@
                   "type": "object",
                   "properties": {
                     "full_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "current_frozen_deposits": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "frozen_deposits": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "staking_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "frozen_deposits_limit": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "delegated_contracts": {
                       "type": "array",
@@ -2911,7 +2911,7 @@
                       }
                     },
                     "delegated_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "deactivated": {
                       "type": "boolean"
@@ -3063,7 +3063,7 @@
     },
     "/context/delegates/{pkh}/current_frozen_deposits": {
       "get": {
-        "description": "Returns the current amount of the frozen deposits (in mutez).",
+        "description": "Returns the current amount of the frozen deposits (in mumav).",
         "parameters": [
           {
             "name": "pkh",
@@ -3139,7 +3139,7 @@
     },
     "/context/delegates/{pkh}/delegated_balance": {
       "get": {
-        "description": "Returns the sum (in mutez) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.",
+        "description": "Returns the sum (in mumav) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.",
         "parameters": [
           {
             "name": "pkh",
@@ -3218,7 +3218,7 @@
     },
     "/context/delegates/{pkh}/frozen_deposits": {
       "get": {
-        "description": "Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mutez). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.",
+        "description": "Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mumav). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.",
         "parameters": [
           {
             "name": "pkh",
@@ -3280,7 +3280,7 @@
                       "title": "Some",
                       "oneOf": [
                         {
-                          "$ref": "#/components/schemas/017-PtNairob.mutez"
+                          "$ref": "#/components/schemas/017-PtNairob.mumav"
                         }
                       ]
                     }
@@ -3304,7 +3304,7 @@
     },
     "/context/delegates/{pkh}/full_balance": {
       "get": {
-        "description": "Returns the full balance (in mutez) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.",
+        "description": "Returns the full balance (in mumav) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.",
         "parameters": [
           {
             "name": "pkh",
@@ -3428,7 +3428,7 @@
                       "maximum": 1073741823
                     },
                     "expected_endorsing_rewards": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     }
                   },
                   "required": [
@@ -3458,7 +3458,7 @@
     },
     "/context/delegates/{pkh}/staking_balance": {
       "get": {
-        "description": "Returns the total amount of tokens (in mutez) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.",
+        "description": "Returns the total amount of tokens (in mumav) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.",
         "parameters": [
           {
             "name": "pkh",
@@ -5916,7 +5916,7 @@
                       ]
                     },
                     "burn_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "allocated_storage": {
                       "$ref": "#/components/schemas/positive_bignum"
@@ -8710,10 +8710,10 @@
                     "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
                   },
                   "amount": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "balance": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "chain_id": {
                     "$ref": "#/components/schemas/Chain_id"
@@ -9343,10 +9343,10 @@
                     "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
                   },
                   "amount": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "balance": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "chain_id": {
                     "$ref": "#/components/schemas/Chain_id"
@@ -11026,7 +11026,7 @@
                 "maximum": 65535
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.transaction_destination"
@@ -11076,7 +11076,7 @@
                 "maximum": 65535
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -11928,7 +11928,7 @@
           "SHA3",
           "SOURCE",
           "or",
-          "SUB_MUTEZ",
+          "SUB_MUMAV",
           "LAMBDA",
           "RIGHT",
           "CREATE_ACCOUNT",
@@ -11979,7 +11979,7 @@
           "OR",
           "contract",
           "GET_AND_UPDATE",
-          "mutez",
+          "mumav",
           "sapling_state",
           "NONE",
           "IF_LEFT",
@@ -12005,7 +12005,7 @@
           "code"
         ]
       },
-      "017-PtNairob.mutez": {
+      "017-PtNairob.mumav": {
         "$ref": "#/components/schemas/positive_bignum"
       },
       "017-PtNairob.operation.alpha.contents": {
@@ -12347,7 +12347,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12386,7 +12386,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12398,7 +12398,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.contract_id"
@@ -12442,7 +12442,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12454,7 +12454,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -12488,7 +12488,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12526,7 +12526,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12538,7 +12538,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "limit": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               }
             },
             "required": [
@@ -12564,7 +12564,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12607,7 +12607,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12693,7 +12693,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12730,7 +12730,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12785,7 +12785,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12849,7 +12849,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12904,7 +12904,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12947,7 +12947,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12995,7 +12995,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13060,7 +13060,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13336,7 +13336,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13391,7 +13391,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13439,7 +13439,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13482,7 +13482,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13584,7 +13584,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13704,7 +13704,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15027,7 +15027,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15087,7 +15087,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15099,7 +15099,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.contract_id"
@@ -15164,7 +15164,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15176,7 +15176,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -15231,7 +15231,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15290,7 +15290,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15348,7 +15348,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15360,7 +15360,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "limit": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "metadata": {
                 "type": "object",
@@ -15407,7 +15407,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15471,7 +15471,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15570,7 +15570,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15646,7 +15646,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15731,7 +15731,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15807,7 +15807,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15871,7 +15871,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15940,7 +15940,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16026,7 +16026,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16323,7 +16323,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16399,7 +16399,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16468,7 +16468,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16532,7 +16532,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16655,7 +16655,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16796,7 +16796,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"

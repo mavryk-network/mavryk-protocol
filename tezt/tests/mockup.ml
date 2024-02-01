@@ -741,12 +741,12 @@ let test_accounts : mockup_bootstrap_account list =
     {
       name = "bootstrap0";
       sk_uri = "edsk2uqQB9AY4FvioK2YMdfmyMrer5R8mGFyuaLLFfSRo8EoyNdht3";
-      amount = Tez.of_mutez_int 2000000000000;
+      amount = Tez.of_mumav_int 2000000000000;
     };
     {
       name = "bootstrap1";
       sk_uri = "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
-      amount = Tez.of_mutez_int 1000000000000;
+      amount = Tez.of_mumav_int 1000000000000;
     };
   ]
 
@@ -755,7 +755,7 @@ let mockup_bootstrap_account_to_json {name; sk_uri; amount} =
     [
       ("name", `String name);
       ("sk_uri", `String ("unencrypted:" ^ sk_uri));
-      ("amount", `String (Tez.to_mutez amount |> string_of_int));
+      ("amount", `String (Tez.to_mumav amount |> string_of_int));
     ]
 
 let mockup_bootstrap_accounts_to_json accounts =
@@ -770,7 +770,7 @@ let mockup_bootstrap_account_of_json json : mockup_bootstrap_account =
           match String.split_on_char ':' sk_uri with
           | ["unencrypted"; s] -> s
           | _ -> Test.fail "Could not parse [sk_uri] %s" sk_uri );
-      amount = json |-> "amount" |> as_int |> Tez.of_mutez_int;
+      amount = json |-> "amount" |> as_int |> Tez.of_mumav_int;
     }
 
 let mockup_bootstrap_accounts_of_json json =
@@ -1089,7 +1089,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
         let maximum = Int.max_int in
         `String
           (distinct_sample_numeric ~minimum ~maximum n_opt |> string_of_int)
-    | typ when typ =~ rex "#/definitions/.*\\.mutez" ->
+    | typ when typ =~ rex "#/definitions/.*\\.mumav" ->
         let n_opt = numerical_of_string ~typ value in
         `String (distinct_sample_numeric ~minimum:0 n_opt |> string_of_int)
     | "#/definitions/Signature.Public_key_hash"
@@ -1276,7 +1276,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
           JSON.(protocol_constants |-> "frozen_deposits_percentage" |> as_int)
         in
         let pct = 100 - frozen_deposits_percentage in
-        fun amount -> Tez.(of_mutez_int (pct * to_mutez amount / 100))
+        fun amount -> Tez.(of_mumav_int (pct * to_mumav amount / 100))
     in
     List.map
       (fun account -> {account with amount = convert account.amount})

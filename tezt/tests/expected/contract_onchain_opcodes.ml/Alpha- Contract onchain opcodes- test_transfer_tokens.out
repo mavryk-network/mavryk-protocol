@@ -115,7 +115,7 @@ This sequence of operations was run:
           storage unit ;
           code { CAR ;
                  DIP { UNIT } ;
-                 PUSH mutez 100000000 ;
+                 PUSH mumav 100000000 ;
                  UNIT ;
                  TRANSFER_TOKENS ;
                  NIL operation ;

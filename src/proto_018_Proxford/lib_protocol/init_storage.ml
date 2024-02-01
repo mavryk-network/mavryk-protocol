@@ -36,9 +36,9 @@
     Do not fail if something goes wrong.
 *)
 
-let invoice_contract ctxt ~address ~amount_mutez =
+let invoice_contract ctxt ~address ~amount_mumav =
   let open Lwt_result_syntax in
-  match Tez_repr.of_mutez amount_mutez with
+  match Tez_repr.of_mumav amount_mumav with
   | None -> Lwt.return (ctxt, [])
   | Some amount -> (
       let*! result =
@@ -203,7 +203,7 @@ let initialize_total_supply_for_o chain_id ctxt =
        + 43_000_000 tz (yearly issuance) * 70 (days from activation) / 365 *)
     Storage.Contract.Total_supply.add
       ctxt
-      (Tez_repr.of_mutez_exn 975_000_000_000_000L)
+      (Tez_repr.of_mumav_exn 975_000_000_000_000L)
   else
     (* If not on mainnet, iterate over all accounts and get an accurate total supply *)
     let* total_supply =

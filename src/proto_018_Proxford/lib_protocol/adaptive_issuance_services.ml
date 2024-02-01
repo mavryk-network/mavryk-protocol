@@ -94,14 +94,14 @@ module S = struct
 
   let total_supply =
     RPC_service.get_service
-      ~description:"Returns the total supply (in mutez) available on the chain"
+      ~description:"Returns the total supply (in mumav) available on the chain"
       ~query:RPC_query.empty
       ~output:Tez.encoding
       RPC_path.(context_path / "total_supply")
 
   let total_frozen_stake =
     RPC_service.get_service
-      ~description:"Returns the total stake (in mutez) frozen on the chain"
+      ~description:"Returns the total stake (in mumav) frozen on the chain"
       ~query:RPC_query.empty
       ~output:Tez.encoding
       RPC_path.(context_path / "total_frozen_stake")
@@ -135,7 +135,7 @@ module S = struct
   let current_issuance_per_minute =
     RPC_service.get_service
       ~description:
-        "Returns the current expected maximum issuance per minute (in mutez)"
+        "Returns the current expected maximum issuance per minute (in mumav)"
       ~query:RPC_query.empty
       ~output:Tez.encoding
       RPC_path.(path / "issuance_per_minute")
@@ -175,7 +175,7 @@ let current_rewards_per_minute ctxt =
     (Constants.issuance_weights ctxt).base_total_issued_per_minute
   in
   let q_base_total_issued_per_minute =
-    Tez.to_mutez base_total_issued_per_minute |> Q.of_int64
+    Tez.to_mumav base_total_issued_per_minute |> Q.of_int64
   in
   let cycle = (Level.current ctxt).cycle in
   let* f = Delegate.Rewards.For_RPC.get_reward_coeff ctxt ~cycle in
@@ -187,7 +187,7 @@ let current_yearly_rate_value ~formatter ctxt =
   let open Lwt_result_syntax in
   let q_min_per_year = Q.of_int 525600 in
   let* total_supply = Contract.get_total_supply ctxt in
-  let q_total_supply = Tez.to_mutez total_supply |> Q.of_int64 in
+  let q_total_supply = Tez.to_mumav total_supply |> Q.of_int64 in
   let* f = current_rewards_per_minute ctxt in
   let f = Q.div f q_total_supply (* issuance rate per minute *) in
   let f = Q.mul f q_min_per_year (* issuance rate per year *) in
@@ -276,7 +276,7 @@ let register () =
       return (static, dynamic)) ;
   register0 ~chunked:false S.current_issuance_per_minute (fun ctxt () () ->
       let* f = current_rewards_per_minute ctxt in
-      return (Tez.of_mutez_exn (Q.to_int64 f))) ;
+      return (Tez.of_mumav_exn (Q.to_int64 f))) ;
   register0 ~chunked:false S.launch_cycle (fun ctxt () () ->
       Adaptive_issuance.launch_cycle ctxt) ;
   register0 ~chunked:false S.expected_issuance (fun ctxt () () ->

@@ -200,9 +200,9 @@ module Category = struct
       ("Gas limit: ", decreasing_payload);
       ("Storage limit: ", decreasing_payload);
       ("just consumed gas: ", decreasing_payload);
-      ("Fee to the baker: ꜩ", decreasing_payload);
-      ("payload fees(the block proposer) ....... +ꜩ", decreasing_payload);
-      ("storage fees ........................... +ꜩ", decreasing_payload);
+      ("Fee to the baker: ṁ", decreasing_payload);
+      ("payload fees(the block proposer) ....... +ṁ", decreasing_payload);
+      ("storage fees ........................... +ṁ", decreasing_payload);
       ("fee = ", decreasing_payload);
       ("PUBLIC_KEY_HASH", no_payload);
       ("CONTRACT_HASH", no_payload);

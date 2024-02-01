@@ -85,7 +85,7 @@ to delegates proportionally to their :ref:`active stake<active_stake>`,
 which usually is the same as their staking balance,
 that is, their own balance plus their delegated balance.
 
-A :ref:`minimal active stake<def_minimal_stake>` of 6kꜩ
+A :ref:`minimal active stake<def_minimal_stake>` of 6kṁ
 is required for participating in consensus and in governance.
 
 .. warning::

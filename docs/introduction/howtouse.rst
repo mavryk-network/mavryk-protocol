@@ -341,7 +341,7 @@ Let's try::
   octez-client transfer 1 from alice to bob --dry-run
 
   Fatal error:
-    The operation will burn ꜩ0.257 which is higher than the configured burn cap (ꜩ0).
+    The operation will burn ṁ0.257 which is higher than the configured burn cap (ṁ0).
      Use `--burn-cap 0.257` to emit this operation.
 
 The client asks the node to validate the operation (without sending
@@ -352,7 +352,7 @@ Any storage on chain has a cost associated to it which should be
 accounted for either by paying a fee to a baker or by destroying
 (``burning``) some tez.
 This is particularly important to protect the system from spam.
-Because storing an address requires burning ꜩ0.257 and the client has
+Because storing an address requires burning ṁ0.257 and the client has
 a default of 0, we need to explicitly set a cap on the amount that we
 allow to burn::
 
@@ -364,32 +364,32 @@ produced, here's an excerpt::
   ...
   Simulation result:
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
-      Fee to the baker: ꜩ0.001259
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
+      Fee to the baker: ṁ0.001259
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001259
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001259
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ṁ0.001259
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ṁ0.001259
       Revelation of manager public key:
-        Contract: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+        Contract: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
         Key: edpkuK4o4ZGyNHKrQqAox7hELeKEceg5isH18CCYUaQ3tF7xZ8HW3X
         ...
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
-      Fee to the baker: ꜩ0.001179
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
+      Fee to the baker: ṁ0.001179
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001179
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001179
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ṁ0.001179
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ṁ0.001179
       Transaction:
-        Amount: ꜩ1
-        From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+        Amount: ṁ1
+        From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
         To: tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph
         ...
         Balance updates:
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ1
-          tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph ... +ꜩ1
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ0.257
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ1
+          tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph ... +ṁ1
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ0.257
 
 The client does a bit of magic to simplify our life and here we see
 that many details were automatically set for us.
@@ -448,8 +448,8 @@ Implicit Accounts and Smart Contracts
 
 In Tezos there are two kinds of accounts: *implicit accounts* and *smart contracts*.
 
-- The implicit accounts are the addresses starting with *tz1*, *tz2*,
-  and *tz3* we have used up to now. They are created with a transfer
+- The implicit accounts are the addresses starting with *mv1*, *mv2*,
+  and *mv3* we have used up to now. They are created with a transfer
   operation to the account public key hash.
 
 - Smart contracts have addresses starting with *KT1* and are created
@@ -463,7 +463,7 @@ Let's originate our first contract and call it *id*::
                  running ./michelson_test_scripts/attic/id.tz \
                  --init '"hello"' --burn-cap 0.4
 
-The initial balance is ꜩ1, generously provided by implicit account
+The initial balance is ṁ1, generously provided by implicit account
 *alice*. The contract stores a Michelson program ``id.tz``
 (found in file :src:`michelson_test_scripts/attic/id.tz`), with
 Michelson value ``"hello"`` as initial storage (the extra quotes are
@@ -497,7 +497,7 @@ Gas and Storage Costs
 ~~~~~~~~~~~~~~~~~~~~~
 
 A quick look at the balance updates on the receipt shows that on top of
-funding the contract with ꜩ1, *alice* was also charged an extra cost
+funding the contract with ṁ1, *alice* was also charged an extra cost
 that is burnt.
 This cost comes from the *storage* and is shown in the line
 ``Paid storage size diff: 46 bytes``, 41 for the contract and 5 for

@@ -30,9 +30,9 @@ pub enum PublicKeyHash {
 impl Display for PublicKeyHash {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Ed25519(tz1) => write!(f, "{}", tz1),
-            Self::Secp256k1(tz2) => write!(f, "{}", tz2),
-            Self::P256(tz3) => write!(f, "{}", tz3),
+            Self::Ed25519(mv1) => write!(f, "{}", mv1),
+            Self::Secp256k1(mv2) => write!(f, "{}", mv2),
+            Self::P256(mv3) => write!(f, "{}", mv3),
         }
     }
 }
@@ -58,9 +58,9 @@ impl PublicKeyHash {
     /// Conversion to base58-encoding string (with prefix).
     pub fn to_b58check(&self) -> String {
         match self {
-            Self::Ed25519(tz1) => tz1.to_b58check(),
-            Self::Secp256k1(tz2) => tz2.to_b58check(),
-            Self::P256(tz3) => tz3.to_b58check(),
+            Self::Ed25519(mv1) => mv1.to_b58check(),
+            Self::Secp256k1(mv2) => mv2.to_b58check(),
+            Self::P256(mv3) => mv3.to_b58check(),
         }
     }
 }
@@ -68,9 +68,9 @@ impl PublicKeyHash {
 impl From<PublicKeyHash> for Hash {
     fn from(pkh: PublicKeyHash) -> Self {
         match pkh {
-            PublicKeyHash::Ed25519(tz1) => tz1.into(),
-            PublicKeyHash::Secp256k1(tz2) => tz2.into(),
-            PublicKeyHash::P256(tz3) => tz3.into(),
+            PublicKeyHash::Ed25519(mv1) => mv1.into(),
+            PublicKeyHash::Secp256k1(mv2) => mv2.into(),
+            PublicKeyHash::P256(mv3) => mv3.into(),
         }
     }
 }
@@ -89,48 +89,48 @@ mod test {
 
     #[test]
     fn tz1_b58check() {
-        let tz1 = "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w";
+        let mv1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
 
-        let pkh = PublicKeyHash::from_b58check(tz1);
+        let pkh = PublicKeyHash::from_b58check(mv1);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::Ed25519(_))));
 
         let tz1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(tz1, &tz1_from_pkh);
+        assert_eq!(mv1, &tz1_from_pkh);
     }
 
     #[test]
     fn tz2_b58check() {
-        let tz2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
+        let mv2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
 
-        let pkh = PublicKeyHash::from_b58check(tz2);
+        let pkh = PublicKeyHash::from_b58check(mv2);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::Secp256k1(_))));
 
         let tz2_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(tz2, &tz2_from_pkh);
+        assert_eq!(mv2, &tz2_from_pkh);
     }
 
     #[test]
     fn tz3_b58check() {
-        let tz3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
+        let mv3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
 
-        let pkh = PublicKeyHash::from_b58check(tz3);
+        let pkh = PublicKeyHash::from_b58check(mv3);
 
         assert!(matches!(pkh, Ok(PublicKeyHash::P256(_))));
 
         let tz3_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(tz3, &tz3_from_pkh);
+        assert_eq!(mv3, &tz3_from_pkh);
     }
 
     #[test]
     fn tz1_encoding() {
-        let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+        let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
 
-        let pkh = PublicKeyHash::from_b58check(tz1).expect("expected valid tz1 hash");
+        let pkh = PublicKeyHash::from_b58check(mv1).expect("expected valid mv1 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");
@@ -146,9 +146,9 @@ mod test {
 
     #[test]
     fn tz2_encoding() {
-        let tz2 = "tz2KZPgf2rshxNUBXFcTaCemik1LH1v9qz3F";
+        let mv2 = "tz2KZPgf2rshxNUBXFcTaCemik1LH1v9qz3F";
 
-        let pkh = PublicKeyHash::from_b58check(tz2).expect("expected valid tz2 hash");
+        let pkh = PublicKeyHash::from_b58check(mv2).expect("expected valid mv2 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");
@@ -164,9 +164,9 @@ mod test {
 
     #[test]
     fn tz3_encoding() {
-        let tz3 = "tz3fTJbAxj1LQCEKDKmYLWKP6e5vNC9vwvyo";
+        let mv3 = "tz3fTJbAxj1LQCEKDKmYLWKP6e5vNC9vwvyo";
 
-        let pkh = PublicKeyHash::from_b58check(tz3).expect("expected valid tz3 hash");
+        let pkh = PublicKeyHash::from_b58check(mv3).expect("expected valid mv3 hash");
 
         let mut bin = Vec::new();
         pkh.bin_write(&mut bin).expect("serialization should work");

@@ -1299,7 +1299,7 @@ and ('ty, 'comparable) ty =
   | Signature_t : (signature, yes) ty
   | String_t : (Script_string.t, yes) ty
   | Bytes_t : (bytes, yes) ty
-  | Mutez_t : (Tez.t, yes) ty
+  | Mumav_t : (Tez.t, yes) ty
   | Key_hash_t : (public_key_hash, yes) ty
   | Key_t : (public_key, yes) ty
   | Timestamp_t : (Script_timestamp.t, yes) ty
@@ -1737,7 +1737,7 @@ let string_metadata : Script_string.t ty_metadata = meta_basic
 
 let bytes_metadata : bytes ty_metadata = meta_basic
 
-let mutez_metadata : Tez.t ty_metadata = meta_basic
+let mumav_metadata : Tez.t ty_metadata = meta_basic
 
 let bool_metadata : bool ty_metadata = meta_basic
 
@@ -1835,7 +1835,7 @@ let ty_metadata : type a ac. (a, ac) ty -> a ty_metadata = function
   | Signature_t -> signature_metadata
   | String_t -> string_metadata
   | Bytes_t -> bytes_metadata
-  | Mutez_t -> mutez_metadata
+  | Mumav_t -> mumav_metadata
   | Bool_t -> bool_metadata
   | Key_hash_t -> key_hash_metadata
   | Key_t -> key_metadata
@@ -1873,7 +1873,7 @@ let is_comparable : type v c. (v, c) ty -> c dbool = function
   | Signature_t -> Yes
   | String_t -> Yes
   | Bytes_t -> Yes
-  | Mutez_t -> Yes
+  | Mumav_t -> Yes
   | Bool_t -> Yes
   | Key_hash_t -> Yes
   | Key_t -> Yes
@@ -1924,7 +1924,7 @@ let string_t = String_t
 
 let bytes_t = Bytes_t
 
-let mutez_t = Mutez_t
+let mumav_t = Mumav_t
 
 let key_hash_t = Key_hash_t
 
@@ -1999,8 +1999,8 @@ let option_t loc t =
   let cmp = is_comparable t in
   Option_t (t, metadata, cmp)
 
-let option_mutez_t =
-  Option_t (mutez_t, assert_ok1 option_metadata mutez_metadata, Yes)
+let option_mumav_t =
+  Option_t (mumav_t, assert_ok1 option_metadata mumav_metadata, Yes)
 
 let option_string_t =
   Option_t (string_t, assert_ok1 option_metadata string_metadata, Yes)
@@ -2015,15 +2015,15 @@ let option_pair_nat_nat_t =
   let ometadata = assert_ok1 option_metadata pmetadata in
   Option_t (Pair_t (nat_t, nat_t, pmetadata, YesYes), ometadata, Yes)
 
-let option_pair_nat_mutez_t =
-  let pmetadata = assert_ok2 pair_metadata nat_metadata mutez_metadata in
+let option_pair_nat_mumav_t =
+  let pmetadata = assert_ok2 pair_metadata nat_metadata mumav_metadata in
   let ometadata = assert_ok1 option_metadata pmetadata in
-  Option_t (Pair_t (nat_t, mutez_t, pmetadata, YesYes), ometadata, Yes)
+  Option_t (Pair_t (nat_t, mumav_t, pmetadata, YesYes), ometadata, Yes)
 
-let option_pair_mutez_mutez_t =
-  let pmetadata = assert_ok2 pair_metadata mutez_metadata mutez_metadata in
+let option_pair_mumav_mumav_t =
+  let pmetadata = assert_ok2 pair_metadata mumav_metadata mumav_metadata in
   let ometadata = assert_ok1 option_metadata pmetadata in
-  Option_t (Pair_t (mutez_t, mutez_t, pmetadata, YesYes), ometadata, Yes)
+  Option_t (Pair_t (mumav_t, mumav_t, pmetadata, YesYes), ometadata, Yes)
 
 let option_pair_int_nat_t =
   let pmetadata = assert_ok2 pair_metadata int_metadata nat_metadata in
@@ -2300,7 +2300,7 @@ let ty_traverse =
    fun f accu ty continue ->
     let accu = f.apply accu ty in
     match ty with
-    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mutez_t
+    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mumav_t
     | Key_hash_t | Key_t | Timestamp_t | Address_t | Bool_t
     | Sapling_transaction_t _ | Sapling_transaction_deprecated_t _
     | Sapling_state_t _ | Operation_t | Chain_id_t | Never_t | Bls12_381_g1_t
@@ -2371,7 +2371,7 @@ let value_traverse (type t tc) (ty : (t, tc) ty) (x : t) init f =
               (on_list [@ocaml.tailcall]) ty' accu xs)
     in
     match ty with
-    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mutez_t
+    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mumav_t
     | Key_hash_t | Key_t | Timestamp_t | Address_t | Bool_t
     | Sapling_transaction_t _ | Sapling_transaction_deprecated_t _
     | Sapling_state_t _ | Operation_t | Chain_id_t | Never_t | Bls12_381_g1_t

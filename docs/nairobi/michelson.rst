@@ -40,8 +40,8 @@ tokens (and be the destinations of transactions).
 
   - An implicit account is a non programmable account, whose tokens
     are spendable and delegatable by a public key. Its address is
-    directly the public key hash, and starts with ``tz1``, ``tz2``,
-    ``tz3`` or ``tz4``.
+    directly the public key hash, and starts with ``mv1``, ``mv2``,
+    ``mv3`` or ``mv4``.
   - A smart contract is a programmable account. A transaction to such
     an address can provide data, and can fail for reasons decided by
     its Michelson code. Its address is a unique hash that depends on
@@ -818,7 +818,7 @@ Domain specific data types
 
 -  ``timestamp``: Dates in the real world.
 
--  ``mutez``: A specific type for manipulating tokens.
+-  ``mumav``: A specific type for manipulating tokens.
 
 -  ``address``: An untyped address (implicit account or smart contract).
 
@@ -869,16 +869,16 @@ A detailed description of the following instructions can be found in the `intera
 -  ``COMPARE``: Timestamp comparison (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-COMPARE>`__).
 
 
-Operations on Mutez
+Operations on Mumav
 ~~~~~~~~~~~~~~~~~~~
 
 A detailed description of the following instructions can be found in the `interactive Michelson reference manual <https://tezos.gitlab.io/michelson-reference/>`__.
 
 -  ``ADD`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-ADD>`__).
--  ``SUB_MUTEZ`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-SUB_MUTEZ>`__).
+-  ``SUB_MUMAV`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-SUB_MUMAV>`__).
 -  ``MUL`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-MUL>`__).
 -  ``EDIV`` (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-EDIV>`__).
--  ``COMPARE``: Mutez comparison (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-COMPARE>`__).
+-  ``COMPARE``: Mumav comparison (`documentation <https://tezos.gitlab.io/michelson-reference/#instr-COMPARE>`__).
 
 Operations on contracts
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -888,7 +888,7 @@ Operations on contracts
 
 ::
 
-    :: option key_hash : mutez : 'g : 'S
+    :: option key_hash : mumav : 'g : 'S
        -> operation : address : 'S
 
 Originate a contract based on a literal. The parameters are the
@@ -896,15 +896,15 @@ optional delegate, the initial amount taken from the current
 contract, and the initial storage of the originated contract.
 The contract is returned as a first class value (to be dropped, passed
 as parameter or stored). The ``CONTRACT 'p`` instruction will fail
-until it is actually originated. Note that since ``tz4`` addresses
+until it is actually originated. Note that since ``mv4`` addresses
 cannot be registered as delegates, the origination operation will fail
-if the delegate is a ``tz4``.
+if the delegate is a ``mv4``.
 
 -  ``TRANSFER_TOKENS``: Forge a transaction.
 
 ::
 
-    :: 'p : mutez : contract 'p : 'S   ->   operation : 'S
+    :: 'p : mumav : contract 'p : 'S   ->   operation : 'S
 
 The parameter must be consistent with the one expected by the
 contract, unit for an account.
@@ -925,14 +925,14 @@ key hash of a registered delegate that is not the current delegate of
 the contract, then this operation sets the delegate of the contract to
 this registered delegate. The operation fails if ``kh`` is the current
 delegate of the contract or if ``kh`` is not a registered delegate.
-Note that ``tz4`` addresses cannot be registered as delegates.
+Note that ``mv4`` addresses cannot be registered as delegates.
 
--  ``BALANCE``: Push the current amount of mutez held by the executing
-   contract, including any mutez added by the calling transaction.
+-  ``BALANCE``: Push the current amount of mumav held by the executing
+   contract, including any mumav added by the calling transaction.
 
 ::
 
-    :: 'S   ->   mutez : 'S
+    :: 'S   ->   mumav : 'S
 
 -  ``ADDRESS``: Cast the contract to its address.
 
@@ -1002,7 +1002,7 @@ of the contract in which the ``SELF_ADDRESS`` instruction is written.
 
 ::
 
-    :: 'S   ->   mutez : 'S
+    :: 'S   ->   mumav : 'S
 
 -  ``IMPLICIT_ACCOUNT``: Return a default contract with the given
    public/private key pair. Any funds deposited in this contract can
@@ -1478,7 +1478,7 @@ removed. The Michelson type-checker will reject any contract using them.
 
 ::
 
-    :: key_hash : option key_hash : bool : bool : mutez : 'g : 'S
+    :: key_hash : option key_hash : bool : bool : mumav : 'g : 'S
        -> operation : address : 'S
 
 See the documentation of the new ``CREATE_CONTRACT`` instruction. The
@@ -1488,7 +1488,7 @@ first, third, and fourth parameters are ignored.
 
 ::
 
-    :: key_hash : option key_hash : bool : mutez : 'S
+    :: key_hash : option key_hash : bool : mumav : 'S
        ->   operation : address : 'S
 
 Takes as argument the manager, optional delegate, the delegatable flag
@@ -1549,7 +1549,7 @@ To declare a view, the ``view`` keyword is used; its syntax is
 - ``name`` is a string of at most 31 characters matching the regular expression ``[a-zA-Z0-9_.%@]*``; it is used to identify the view, hence it must be different from the names of the other views declared in the same script;
 - ``'arg`` is the type of the argument of the view;
 - ``'return`` is the type of the result returned by the view;
-- ``{ instr; ... }`` is a sequence of instructions of type ``lambda (pair 'arg 'storage_ty) 'return`` where ``'storage_ty`` is the type of the storage of the current contract. Certain specific instructions have different semantics in ``view``: ``BALANCE`` represents the current amount of mutez held by the contract where ``view`` is; ``SENDER`` represents the contract which is the caller of ``view``; ``SELF_ADDRESS`` represents the contract where ``view`` is; ``AMOUNT`` is always 0 mutez.
+- ``{ instr; ... }`` is a sequence of instructions of type ``lambda (pair 'arg 'storage_ty) 'return`` where ``'storage_ty`` is the type of the storage of the current contract. Certain specific instructions have different semantics in ``view``: ``BALANCE`` represents the current amount of mumav held by the contract where ``view`` is; ``SENDER`` represents the contract which is the caller of ``view``; ``SELF_ADDRESS`` represents the contract where ``view`` is; ``AMOUNT`` is always 0 mumav.
 
 Note that in both view input (type ``'arg``) and view output (type ``'return``), the following types are forbidden: ``ticket``, ``operation``, ``big_map`` and ``sapling_state``.
 
@@ -1866,7 +1866,7 @@ formats. Some have two variants accepted by the data type checker: a
 readable one in a string, and an optimized one using a more compact
 encoding.
 
--  ``mutez`` amounts are written as naturals.
+-  ``mumav`` amounts are written as naturals.
 -  ``timestamp``\ s are written either using ``RFC3339`` notation
    in a string (readable), or as the number of seconds since Epoch
    (when positive) or before Epoch (when negative) (optimized).
@@ -2348,7 +2348,7 @@ A similar mechanism is used for context dependent instructions:
 
    CONTRACT 'p  :: @a address : 'S   ->   @a.contract contract 'p : 'S
 
-   BALANCE :: 'S   ->   @balance mutez : 'S
+   BALANCE :: 'S   ->   @balance mumav : 'S
 
    SOURCE  :: 'S   ->   @source address : 'S
 
@@ -2358,7 +2358,7 @@ A similar mechanism is used for context dependent instructions:
 
    SELF_ADDRESS  :: 'S   ->   @self address : 'S
 
-   AMOUNT  :: 'S   ->   @amount mutez : 'S
+   AMOUNT  :: 'S   ->   @amount mumav : 'S
 
    NOW  :: 'S   ->   @now timestamp : 'S
 
@@ -2633,7 +2633,7 @@ entrypoint, of type ``unit`` will reset it to ``0``.
 
    { parameter (or (or (nat %add) (nat %sub)) (unit %default)) ;
      storage int ;
-     code { AMOUNT ; PUSH mutez 0 ; ASSERT_CMPEQ ; UNPAIR ;
+     code { AMOUNT ; PUSH mumav 0 ; ASSERT_CMPEQ ; UNPAIR ;
             IF_LEFT
               { IF_LEFT { ADD } { SWAP ; SUB } }
               { DROP ; DROP ; PUSH int 0 } ;
@@ -2711,7 +2711,7 @@ using the Coq proof assistant.
                    (nat %counter) # counter, used to prevent replay attacks
                    (or :action    # payload to sign, represents the requested action
                       (pair :transfer    # transfer tokens
-                         (mutez %amount) # amount to transfer
+                         (mumav %amount) # amount to transfer
                          (contract %dest unit)) # destination to transfer to
                       (or
                          (option %delegate key_hash) # change the delegate to this address
@@ -2969,7 +2969,7 @@ Full grammar
       | string
       | chain_id
       | bytes
-      | mutez
+      | mumav
       | key_hash
       | key
       | signature
@@ -3154,12 +3154,12 @@ test. Each of the optional primitives can be used at most once, in no
 particular order.
 
  - ``amount`` (optional, defaults to 0): the amount, expressed in
-   mutez, that should be pushed by the `AMOUNT
+   mumav, that should be pushed by the `AMOUNT
    <https://tezos.gitlab.io/michelson-reference/#instr-AMOUNT>`__
    instruction
 
  - ``balance`` (optional, defaults to 0): the balance, expressed in
-   mutez, that should be pushed by the `BALANCE
+   mumav, that should be pushed by the `BALANCE
    <https://tezos.gitlab.io/michelson-reference/#instr-BALANCE>`__
    instruction
 
@@ -3169,13 +3169,13 @@ particular order.
    instruction
 
  - ``sender`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the sender address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the sender address
    that should be pushed by the `SENDER
    <https://tezos.gitlab.io/michelson-reference/#instr-SENDER>`__
    instruction
 
  - ``source`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the source address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the source address
    that should be pushed by the `SOURCE
    <https://tezos.gitlab.io/michelson-reference/#instr-SOURCE>`__
    instruction
@@ -3382,13 +3382,13 @@ raise:
    instruction and the topmost element of the stack at this point was
    ``<value>``;
 
- - ``MutezOverflow``: an addition or multiplication on type ``mutez``
+ - ``MumavOverflow``: an addition or multiplication on type ``mumav``
    produced a result which was too large to be represented as a value
-   of type ``mutez``;
+   of type ``mumav``;
 
- - ``MutezUnderflow``: a mutez subtraction resulted in a negative
+ - ``MumavUnderflow``: a mumav subtraction resulted in a negative
    value. This should only happen in the case of the deprecated
-   ``mutez`` case of the ``SUB`` instruction;
+   ``mumav`` case of the ``SUB`` instruction;
 
  - ``GeneralOverflow``: the number of bits to shift using the ``LSL``
    or ``LSR`` instruction was too large;
@@ -3453,8 +3453,8 @@ forging instructions plus a cryptographic nonce represented as a byte
 sequence. The result of ``TRANSFER_TOKENS``, ``CREATE_CONTRACT``,
 and ``SET_DELEGATE`` have respectively the following shapes:
 
- - ``Transfer_tokens <argument> <amount in mutez> <address of destination> <nonce>``,
- - ``Create_contract { <script> } <optional delegate> <initial balance in mutez> <initial storage> <nonce>``, and
+ - ``Transfer_tokens <argument> <amount in mumav> <address of destination> <nonce>``,
+ - ``Create_contract { <script> } <optional delegate> <initial balance in mumav> <initial storage> <nonce>``, and
  - ``Set_delegate <optional delegate> <nonce>``.
 
 The computation of the cryptographic nonce is not specified. To write

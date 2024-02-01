@@ -11,7 +11,7 @@ type max_bonus = t
 
 (* Bonus will represent a fraction of the total supply, so its precision
    should be in the order of magnitude of the total supply. *)
-(* Order of magnitude of the total supply in mutez
+(* Order of magnitude of the total supply in mumav
    Approximately 2^50 *)
 let bonus_unit = Q.of_int64 1_000_000_000_000_000L
 

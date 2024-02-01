@@ -397,7 +397,7 @@ let test_two_double_attestation_evidences_staggered () =
     Adaptive_issuance_helpers.stake
       (B blk_with_evidence1)
       (Protocol.Alpha_context.Contract.Implicit delegate)
-      (Tez.of_mutez_exn 1_000_000_000L)
+      (Tez.of_mumav_exn 1_000_000_000L)
   in
   let* blk_with_stake =
     Block.bake ~policy:(By_account baker) ~operation blk_with_evidence1
@@ -470,7 +470,7 @@ let test_two_double_attestation_evidences_consecutive_cycles () =
     Adaptive_issuance_helpers.stake
       (B blk_with_evidence1)
       (Protocol.Alpha_context.Contract.Implicit delegate)
-      (Tez.of_mutez_exn 1_000_000_000L)
+      (Tez.of_mumav_exn 1_000_000_000L)
   in
   let* blk_with_stake =
     Block.bake ~policy:(By_account baker) ~operation blk_with_evidence1

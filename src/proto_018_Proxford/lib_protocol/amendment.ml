@@ -70,7 +70,7 @@ let select_winning_proposal ctxt =
 let approval_and_participation_ema (ballots : Vote.ballots) ~maximum_vote
     ~participation_ema ~expected_quorum =
   (* Note overflows: considering a maximum of 1e9 tokens (around 2^30),
-     hence 1e15 mutez (around 2^50)
+     hence 1e15 mumav (around 2^50)
      In 'participation' a Z is used because in the worst case 'all_votes is
      1e15 and after the multiplication is 1e19 (around 2^64).
   *)

@@ -78,7 +78,7 @@ let rec parse_ty :
   | Prim (_loc, T_bool, [], _annot) -> Type.bool
   | Prim (_loc, T_key_hash, [], _annot) -> Type.key_hash
   | Prim (_loc, T_timestamp, [], _annot) -> Type.timestamp
-  | Prim (_loc, T_mutez, [], _annot) -> Type.mutez
+  | Prim (_loc, T_mumav, [], _annot) -> Type.mumav
   | Prim (_loc, T_option, [ut], _annot) ->
       let ty = parse_ty ~allow_big_map ~allow_operation ~allow_contract ut in
       Type.option ty
@@ -125,7 +125,7 @@ let rec map_var f (x : Type.Base.t) =
   | Bytes_t -> prim T_bytes [] []
   | Key_hash_t -> prim T_key_hash [] []
   | Timestamp_t -> prim T_timestamp [] []
-  | Mutez_t -> prim T_mutez [] []
+  | Mumav_t -> prim T_mumav [] []
   | Key_t -> prim T_key [] []
   | Option_t ty ->
       let mty = map_var f ty in
@@ -380,9 +380,9 @@ module Data = struct
     let z = Protocol.Script_timestamp.to_zint ts in
     prim A_Timestamp [int z] []
 
-  let mutez (tz : Protocol.Alpha_context.Tez.tez) =
-    let i = Protocol.Alpha_context.Tez.to_mutez tz in
-    prim A_Mutez [int (Z.of_int64 i)] []
+  let mumav (tz : Protocol.Alpha_context.Tez.tez) =
+    let i = Protocol.Alpha_context.Tez.to_mumav tz in
+    prim A_Mumav [int (Z.of_int64 i)] []
 
   let key_hash kh =
     let b =

@@ -61,7 +61,7 @@ types:
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: amount
-      type: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
     - id: script
       type: id_017__ptnairob__scripted__contracts
   bytes_dyn_uint30:
@@ -92,8 +92,8 @@ types:
       size: 20
       doc: blinded__public__key__hash
     - id: commitments_elt_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
   dal_parametric:
     seq:
     - id: feature_enable
@@ -115,9 +115,9 @@ types:
       type: int31
     - id: number_of_shards
       type: u2
-  id_017__ptnairob__mutez:
+  id_017__ptnairob__mumav:
     seq:
-    - id: id_017__ptnairob__mutez
+    - id: id_017__ptnairob__mumav
       type: n
   id_017__ptnairob__scripted__contracts:
     seq:
@@ -193,8 +193,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
   public_key_known_with_consensus_key:
     seq:
     - id: public_key_known_with_consensus_key_field0
@@ -204,8 +204,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_with_consensus_key_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
     - id: public_key_known_with_consensus_key_field2
       type: public_key
       doc: ! 'A Ed25519, Secp256k1, or P256 public key
@@ -221,8 +221,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_with_delegate_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
     - id: public_key_known_with_delegate_field2
       type: public_key_hash
       doc: ! 'A Ed25519, Secp256k1, P256, or BLS public key hash
@@ -238,8 +238,8 @@ types:
 
         signature__public_key_hash'
     - id: public_key_unknown_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
   public_key_unknown_with_delegate:
     seq:
     - id: public_key_unknown_with_delegate_field0
@@ -249,8 +249,8 @@ types:
 
         signature__public_key_hash'
     - id: public_key_unknown_with_delegate_field1
-      type: id_017__ptnairob__mutez
-      doc: id_017__ptnairob__mutez
+      type: id_017__ptnairob__mumav
+      doc: id_017__ptnairob__mumav
     - id: public_key_unknown_with_delegate_field2
       type: public_key_hash
       doc: ! 'A Ed25519, Secp256k1, P256, or BLS public key hash
@@ -334,21 +334,21 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: minimal_stake
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: vdf_difficulty
   type: s8
 - id: seed_nonce_revelation_tip
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: origination_size
   type: int31
 - id: baking_reward_fixed_portion
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: baking_reward_bonus_per_slot
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: endorsing_reward_per_slot
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: cost_per_byte
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -358,7 +358,7 @@ seq:
 - id: min_proposal_quorum
   type: s4
 - id: liquidity_baking_subsidy
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: liquidity_baking_toggle_ema_threshold
   type: s4
 - id: max_operations_time_to_live
@@ -378,7 +378,7 @@ seq:
 - id: frozen_deposits_percentage
   type: int31
 - id: double_baking_punishment
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: ratio_of_frozen_deposits_slashed_per_double_endorsement
   type: ratio_of_frozen_deposits_slashed_per_double_endorsement
 - id: testnet_dictator_tag
@@ -412,7 +412,7 @@ seq:
 - id: tx_rollup_max_withdrawals_per_batch
   type: int31
 - id: tx_rollup_commitment_bond
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: tx_rollup_finality_period
   type: int31
 - id: tx_rollup_withdraw_period
@@ -444,7 +444,7 @@ seq:
 - id: smart_rollup_challenge_window_in_blocks
   type: int31
 - id: smart_rollup_stake_amount
-  type: id_017__ptnairob__mutez
+  type: id_017__ptnairob__mumav
 - id: smart_rollup_commitment_period_in_blocks
   type: int31
 - id: smart_rollup_max_lookahead_in_blocks

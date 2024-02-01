@@ -83,17 +83,17 @@ let get_manager_operation_gas_and_fee (contents : packed_contents_list) =
 
 type fee_parameter = {
   minimal_fees : Tez.t;
-  minimal_nanotez_per_byte : Q.t;
-  minimal_nanotez_per_gas_unit : Q.t;
+  minimal_nanomav_per_byte : Q.t;
+  minimal_nanomav_per_gas_unit : Q.t;
   force_low_fee : bool;
   fee_cap : Tez.t;
   burn_cap : Tez.t;
 }
 
 (* Rounding up (see Z.cdiv) *)
-let z_mutez_of_q_nanotez (ntz : Q.t) =
-  let q_mutez = Q.div ntz (Q.of_int 1000) in
-  Z.cdiv q_mutez.Q.num q_mutez.Q.den
+let z_mumav_of_q_nanomav (ntz : Q.t) =
+  let q_mumav = Q.div ntz (Q.of_int 1000) in
+  Z.cdiv q_mumav.Q.num q_mumav.Q.den
 
 let check_fees :
     type t.
@@ -124,40 +124,40 @@ let check_fees :
           in
           exit 1
         else
-          let fees_in_nanotez =
-            Q.mul (Q.of_int64 (Tez.to_mutez fee)) (Q.of_int 1000)
+          let fees_in_nanomav =
+            Q.mul (Q.of_int64 (Tez.to_mumav fee)) (Q.of_int 1000)
           in
-          let minimal_fees_in_nanotez =
+          let minimal_fees_in_nanomav =
             Q.mul
-              (Q.of_int64 (Tez.to_mutez config.minimal_fees))
+              (Q.of_int64 (Tez.to_mumav config.minimal_fees))
               (Q.of_int 1000)
           in
-          let minimal_fees_for_gas_in_nanotez =
+          let minimal_fees_for_gas_in_nanomav =
             Q.mul
-              config.minimal_nanotez_per_gas_unit
+              config.minimal_nanomav_per_gas_unit
               (Q.of_bigint (Gas.Arith.integral_to_z gas))
           in
-          let minimal_fees_for_size_in_nanotez =
-            Q.mul config.minimal_nanotez_per_byte (Q.of_int size)
+          let minimal_fees_for_size_in_nanomav =
+            Q.mul config.minimal_nanomav_per_byte (Q.of_int size)
           in
-          let estimated_fees_in_nanotez =
+          let estimated_fees_in_nanomav =
             Q.add
-              minimal_fees_in_nanotez
+              minimal_fees_in_nanomav
               (Q.add
-                 minimal_fees_for_gas_in_nanotez
-                 minimal_fees_for_size_in_nanotez)
+                 minimal_fees_for_gas_in_nanomav
+                 minimal_fees_for_size_in_nanomav)
           in
-          let estimated_fees_in_mutez =
-            z_mutez_of_q_nanotez estimated_fees_in_nanotez
+          let estimated_fees_in_mumav =
+            z_mumav_of_q_nanomav estimated_fees_in_nanomav
           in
           let estimated_fees =
-            match Tez.of_mutez (Z.to_int64 estimated_fees_in_mutez) with
+            match Tez.of_mumav (Z.to_int64 estimated_fees_in_mumav) with
             | None -> assert false
             | Some fee -> fee
           in
           if
             (not config.force_low_fee)
-            && Q.compare fees_in_nanotez estimated_fees_in_nanotez < 0
+            && Q.compare fees_in_nanomav estimated_fees_in_nanomav < 0
           then
             let*! () =
               cctxt#error
@@ -806,27 +806,27 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
               Operation.contents_encoding_with_legacy_attestation_name
               (Contents op)
         in
-        let minimal_fees_in_nanotez =
+        let minimal_fees_in_nanomav =
           Q.mul
-            (Q.of_int64 (Tez.to_mutez fee_parameter.minimal_fees))
+            (Q.of_int64 (Tez.to_mumav fee_parameter.minimal_fees))
             (Q.of_int 1000)
         in
-        let minimal_fees_for_gas_in_nanotez =
+        let minimal_fees_for_gas_in_nanomav =
           Q.mul
-            fee_parameter.minimal_nanotez_per_gas_unit
+            fee_parameter.minimal_nanomav_per_gas_unit
             (Q.of_bigint @@ Gas.Arith.integral_to_z c.gas_limit)
         in
-        let minimal_fees_for_size_in_nanotez =
-          Q.mul fee_parameter.minimal_nanotez_per_byte (Q.of_int size)
+        let minimal_fees_for_size_in_nanomav =
+          Q.mul fee_parameter.minimal_nanomav_per_byte (Q.of_int size)
         in
-        let fees_in_nanotez =
-          Q.add minimal_fees_in_nanotez
+        let fees_in_nanomav =
+          Q.add minimal_fees_in_nanomav
           @@ Q.add
-               minimal_fees_for_gas_in_nanotez
-               minimal_fees_for_size_in_nanotez
+               minimal_fees_for_gas_in_nanomav
+               minimal_fees_for_size_in_nanomav
         in
-        let fees_in_mutez = z_mutez_of_q_nanotez fees_in_nanotez in
-        match Tez.of_mutez (Z.to_int64 fees_in_mutez) with
+        let fees_in_mumav = z_mumav_of_q_nanomav fees_in_nanomav in
+        match Tez.of_mumav (Z.to_int64 fees_in_mumav) with
         | None -> assert false
         | Some fee ->
             if Tez.(fee <= c.fee) then op
@@ -1267,7 +1267,7 @@ let pending_applied_operations_of_source (cctxt : #full) chain src :
    the one already in the mempool *)
 let compute_replacement_fees =
   let open Lwt_result_syntax in
-  let q_fee_from_tez f = Tez.to_mutez f |> Z.of_int64 |> Q.of_bigint in
+  let q_fee_from_tez f = Tez.to_mumav f |> Z.of_int64 |> Q.of_bigint in
   let q_gas g = Gas.Arith.integral_to_z g |> Q.of_bigint in
   fun (cctxt : #full) old_op_fee old_op_gas new_op_gas ->
     (* convert quantities to rationals *)
@@ -1290,7 +1290,7 @@ let compute_replacement_fees =
     let repl_q_fee = Q.mul max_fee (Q.make (Z.of_int 105) (Z.of_int 100)) in
     let repl_z_fee = Z.cdiv (Q.num repl_q_fee) (Q.den repl_q_fee) in
     try
-      match Z.to_int64 repl_z_fee |> Tez.of_mutez with
+      match Z.to_int64 repl_z_fee |> Tez.of_mumav with
       | Some replacement_fee -> Lwt.return replacement_fee
       | None ->
           let*! () =

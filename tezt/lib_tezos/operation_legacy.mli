@@ -34,7 +34,7 @@
 
     - Default [amount] is [1] tez.
 
-    - Default [fee] is [1000] mutez.
+    - Default [fee] is [1000] mumav.
 
     - Default [gas_limit] is [1040] gas. Use a greater limit
    (e.g. ~1500) if the destination is not allocated, and ~1900 if the
@@ -68,7 +68,7 @@ type micheline =
     public key revelation of an implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [fee] is [1000] mutez.
+    - Default [fee] is [1000] mumav.
     - Default [gas_limit] is [1040] gas.
     - Default [storage_limit] is [0]. *)
 val mk_reveal :
@@ -90,7 +90,7 @@ val mk_reveal :
 
     - Default [counter] is the successor of the counter of [source].
     - Default [amount] is [0] tez.
-    - Default [fee] is [30_000] mutez.
+    - Default [fee] is [30_000] mumav.
     - Default [gas_limit] is [30_000] gas.
     - Default [storage_limit] is [1_500]. *)
 val mk_call :
@@ -111,7 +111,7 @@ val mk_call :
 
     - Default [counter] is the successor of the counter of [source].
     - Default [init_balance] is [0] tez.
-    - Default [fee] is [1_000_000] mutez.
+    - Default [fee] is [1_000_000] mumav.
     - Default [gas_limit] is [100_000] gas.
     - Default [storage_limit] is [10_000]. *)
 val mk_origination :

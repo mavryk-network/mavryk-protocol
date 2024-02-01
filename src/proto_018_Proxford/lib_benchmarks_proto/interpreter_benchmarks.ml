@@ -2312,21 +2312,21 @@ module Registration_section = struct
     let () =
       simple_time_alloc_benchmark
         ~name:Interpreter_workload.N_IAdd_tez
-        ~stack_type:(mutez @$ mutez @$ bot)
+        ~stack_type:(mumav @$ mumav @$ bot)
         ~kinstr:(IAdd_tez (dummy_loc, halt))
         ()
 
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_ISub_tez
-        ~stack_type:(mutez @$ mutez @$ bot)
+        ~stack_type:(mumav @$ mumav @$ bot)
         ~kinstr:(ISub_tez (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, (module Samplers) =
             make_default_samplers cfg.Default_config.sampler
           in
           fun () ->
-            let a = Samplers.Random_value.value mutez rng_state in
+            let a = Samplers.Random_value.value mumav rng_state in
             let b =
               match Alpha_context.Tez.(a /? 2L) with
               | Error _ -> assert false
@@ -2338,14 +2338,14 @@ module Registration_section = struct
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_ISub_tez_legacy
-        ~stack_type:(mutez @$ mutez @$ bot)
+        ~stack_type:(mumav @$ mumav @$ bot)
         ~kinstr:(ISub_tez_legacy (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, (module Samplers) =
             make_default_samplers cfg.Default_config.sampler
           in
           fun () ->
-            let a = Samplers.Random_value.value mutez rng_state in
+            let a = Samplers.Random_value.value mumav rng_state in
             let b =
               match Alpha_context.Tez.(a /? 2L) with
               | Error _ -> assert false
@@ -2355,56 +2355,56 @@ module Registration_section = struct
         ()
 
     let sample_tez_nat (module Samplers : Michelson_samplers.S) rng_state =
-      let mutez = Samplers.Random_value.value mutez rng_state in
-      let mutez_int64 = Alpha_context.Tez.to_mutez mutez in
-      let int64 = Int64.(div max_int (mul mutez_int64 2L)) in
+      let mumav = Samplers.Random_value.value mumav rng_state in
+      let mumav_int64 = Alpha_context.Tez.to_mumav mumav in
+      let int64 = Int64.(div max_int (mul mumav_int64 2L)) in
       let nat =
         match Script_int.(is_nat (of_int64 int64)) with
         | None -> assert false
         | Some nat -> nat
       in
-      (mutez, nat)
+      (mumav, nat)
 
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IMul_teznat
-        ~stack_type:(mutez @$ nat @$ bot)
+        ~stack_type:(mumav @$ nat @$ bot)
         ~kinstr:(IMul_teznat (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, samplers = make_default_samplers cfg.sampler in
           fun () ->
-            let mutez, nat = sample_tez_nat samplers rng_state in
-            (mutez, (nat, eos)))
+            let mumav, nat = sample_tez_nat samplers rng_state in
+            (mumav, (nat, eos)))
         ()
 
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IMul_nattez
-        ~stack_type:(nat @$ mutez @$ bot)
+        ~stack_type:(nat @$ mumav @$ bot)
         ~kinstr:(IMul_nattez (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, samplers = make_default_samplers cfg.sampler in
           fun () ->
-            let mutez, nat = sample_tez_nat samplers rng_state in
-            (nat, (mutez, eos)))
+            let mumav, nat = sample_tez_nat samplers rng_state in
+            (nat, (mumav, eos)))
         ()
 
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_IEdiv_teznat
-        ~stack_type:(mutez @$ nat @$ bot)
+        ~stack_type:(mumav @$ nat @$ bot)
         ~kinstr:(IEdiv_teznat (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, samplers = make_default_samplers cfg.sampler in
           fun () ->
-            let mutez, nat = sample_tez_nat samplers rng_state in
-            (mutez, (nat, eos)))
+            let mumav, nat = sample_tez_nat samplers rng_state in
+            (mumav, (nat, eos)))
         ()
 
     let () =
       simple_time_alloc_benchmark
         ~name:Interpreter_workload.N_IEdiv_tez
-        ~stack_type:(mutez @$ mutez @$ bot)
+        ~stack_type:(mumav @$ mumav @$ bot)
         ~kinstr:(IEdiv_tez (dummy_loc, halt))
         ()
   end
@@ -2990,7 +2990,7 @@ module Registration_section = struct
     let () =
       simple_time_alloc_benchmark_with_stack_sampler
         ~name:Interpreter_workload.N_ITransfer_tokens
-        ~stack_type:(unit @$ mutez @$ contract unit @$ bot)
+        ~stack_type:(unit @$ mumav @$ contract unit @$ bot)
         ~kinstr:(ITransfer_tokens (dummy_loc, halt))
         ~stack_sampler:(fun cfg rng_state ->
           let _, (module Samplers) = make_default_samplers cfg.sampler in
@@ -3001,7 +3001,7 @@ module Registration_section = struct
             let amount =
               match contract with
               | Typed_implicit _ | Typed_originated _ ->
-                  Samplers.Random_value.value mutez rng_state
+                  Samplers.Random_value.value mumav rng_state
               | Typed_sc_rollup _ -> Alpha_context.Tez.zero
             in
             ((), (amount, (contract, eos))))
@@ -3017,7 +3017,7 @@ module Registration_section = struct
     let () =
       simple_time_alloc_benchmark
         ~name:Interpreter_workload.N_ICreate_contract
-        ~stack_type:(option key_hash @$ mutez @$ unit @$ bot)
+        ~stack_type:(option key_hash @$ mumav @$ unit @$ bot)
         ~kinstr:
           (ICreate_contract
              {

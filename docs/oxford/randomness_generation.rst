@@ -158,7 +158,7 @@ Randomness generation parameters
    * -  ``MAX_ANON_OPS_PER_BLOCK``
      - 132 revelations
    * - ``SEED_NONCE_REVELATION_TIP``
-     -  1/8 ꜩ
+     -  1/8 ṁ
    * - ``VDF_DIFFICULTY``
      - 8,000,000,000
 

@@ -121,23 +121,23 @@ let () =
   (* Reference operation arbitrarily has 10 tez of fees and 2100
      gas. The gas is chosen to still give an integer when multiplied
      by 100/105. *)
-  let old = make_op ~fee_in_mutez:ref_fee ~gas:ref_gas in
+  let old = make_op ~fee_in_mumav:ref_fee ~gas:ref_gas in
   (* Operation with same fee and ratio. *)
-  let op_same = make_op ~fee_in_mutez:ref_fee ~gas:ref_gas in
+  let op_same = make_op ~fee_in_mumav:ref_fee ~gas:ref_gas in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_same `Keep ;
   (* 5% better fee but same ratio (because gas is also 5% more). *)
   let more5 = Q.make (Z.of_int 105) (Z.of_int 100) in
   let fee_more5 = Q.(to_int (mul more5 (of_int ref_fee))) in
   let gas_more5 = Q.(to_int (mul more5 (of_int ref_gas))) in
-  let op_fee5 = make_op ~fee_in_mutez:fee_more5 ~gas:gas_more5 in
+  let op_fee5 = make_op ~fee_in_mumav:fee_more5 ~gas:gas_more5 in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_fee5 `Keep ;
   (* 5% better ratio but same fee (because gas is multiplied by 100/105). *)
   let less5 = Q.make (Z.of_int 100) (Z.of_int 105) in
   let gas_less5 = Q.(to_int (mul less5 (of_int ref_gas))) in
-  let op_ratio5 = make_op ~fee_in_mutez:ref_fee ~gas:gas_less5 in
+  let op_ratio5 = make_op ~fee_in_mumav:ref_fee ~gas:gas_less5 in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_ratio5 `Keep ;
   (* Both 5% better fee and 5% better ratio. *)
-  let op_both5 = make_op ~fee_in_mutez:fee_more5 ~gas:ref_gas in
+  let op_both5 = make_op ~fee_in_mumav:fee_more5 ~gas:ref_gas in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_both5 `Replace ;
 
   (* Config that requires 10% better fee and ratio to replace. *)
@@ -160,10 +160,10 @@ let () =
   check_conflict_handler ~__LOC__ config0 ~old ~nw:op_both5 `Replace ;
   (* This config does not replace when the new operation has worse
      fees (even when the ratio is higher). *)
-  let op_less_fee = make_op ~fee_in_mutez:(ref_fee - 1) ~gas:(ref_gas - 1) in
+  let op_less_fee = make_op ~fee_in_mumav:(ref_fee - 1) ~gas:(ref_gas - 1) in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_less_fee `Keep ;
   (* This config does not replace either when the ratio is smaller. *)
-  let op_worse_ratio = make_op ~fee_in_mutez:ref_fee ~gas:(ref_gas + 1) in
+  let op_worse_ratio = make_op ~fee_in_mumav:ref_fee ~gas:(ref_gas + 1) in
   check_conflict_handler ~__LOC__ default ~old ~nw:op_worse_ratio `Keep ;
 
   (* Generate random operations which do not have 5% better fees than
@@ -173,10 +173,10 @@ let () =
   let repeat = 30 in
   let max_gas = 5 * ref_gas in
   let generator_not_5more_fee =
-    let* fee_in_mutez = int_range 0 (fee_more5 - 1) in
+    let* fee_in_mumav = int_range 0 (fee_more5 - 1) in
     let* gas = int_range 0 max_gas in
-    Format.eprintf "op_not_fee5: fee = %d; gas = %d@." fee_in_mutez gas ;
-    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas
+    Format.eprintf "op_not_fee5: fee = %d; gas = %d@." fee_in_mumav gas ;
+    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas
   in
   let ops_not_5more_fee = generate ~n:repeat generator_not_5more_fee in
   List.iter
@@ -192,9 +192,9 @@ let () =
     let* gas = int_range 0 max_gas in
     let fee_for_5more_ratio = Q.(mul (of_int gas) ratio_5more) in
     let fee_upper_bound = Q.to_int fee_for_5more_ratio - 1 in
-    let* fee_in_mutez = int_range 0 (max 0 fee_upper_bound) in
-    Format.eprintf "op_not_ratio5: fee = %d; gas = %d@." fee_in_mutez gas ;
-    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas
+    let* fee_in_mumav = int_range 0 (max 0 fee_upper_bound) in
+    Format.eprintf "op_not_ratio5: fee = %d; gas = %d@." fee_in_mumav gas ;
+    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas
   in
   let ops_not_5more_ratio = generate ~n:repeat generator_not_5more_ratio in
   List.iter
@@ -215,9 +215,9 @@ let () =
     let* gas = int_range 0 max_gas in
     let fee_for_5more_ratio = Q.(mul (of_int gas) ratio_5more) in
     let fee_lower_bound = max fee_more5 (Q.to_int fee_for_5more_ratio + 1) in
-    let* fee_in_mutez = int_range fee_lower_bound max_fee in
-    Format.eprintf "op_both_better: fee = %d; gas = %d@." fee_in_mutez gas ;
-    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas
+    let* fee_in_mumav = int_range fee_lower_bound max_fee in
+    Format.eprintf "op_both_better: fee = %d; gas = %d@." fee_in_mumav gas ;
+    Helpers.manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas
   in
   let ops_both_5more = generate ~n:repeat generator_both_5more in
   List.iter

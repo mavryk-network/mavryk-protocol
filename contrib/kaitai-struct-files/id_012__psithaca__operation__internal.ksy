@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_012__psithaca__entrypoint_tag == id_012__psithaca__entrypoint_tag::named)
-  id_012__psithaca__mutez:
+  id_012__psithaca__mumav:
     seq:
-    - id: id_012__psithaca__mutez
+    - id: id_012__psithaca__mumav
       type: n
   id_012__psithaca__operation__alpha__internal_operation:
     seq:
@@ -116,7 +116,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -167,12 +167,12 @@ types:
       type: u1
       enum: bool
     - id: limit
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
       if: (limit_tag == bool::true)
   transaction:
     seq:
     - id: amount
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: destination
       type: id_012__psithaca__contract_id
       doc: ! >-

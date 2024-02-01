@@ -168,7 +168,7 @@ let constants_mainnet =
         (* 1/20480 of block rewards *)
       };
     hard_storage_limit_per_operation = Z.of_int 60_000;
-    cost_per_byte = Tez.of_mutez_exn 250L;
+    cost_per_byte = Tez.of_mumav_exn 250L;
     quorum_min = 20_00l;
     quorum_max = 70_00l;
     min_proposal_quorum = 5_00l;
@@ -213,7 +213,7 @@ let constants_mainnet =
         origination_size = 6_314;
         challenge_window_in_blocks = sc_rollup_challenge_window_in_blocks;
         commitment_period_in_blocks = 60;
-        stake_amount = Tez.of_mutez_exn 10_000_000_000L;
+        stake_amount = Tez.of_mumav_exn 10_000_000_000L;
         max_lookahead_in_blocks = sc_rollup_max_lookahead_in_blocks;
         max_active_outbox_levels = sc_rollup_max_active_outbox_levels;
         max_outbox_messages_per_level = sc_rollup_max_outbox_messages_per_level;
@@ -376,7 +376,7 @@ let test_commitments =
          let blinded_public_key_hash =
            Protocol.Blinded_public_key_hash.of_b58check_exn bpkh
          in
-         let amount = Protocol.Alpha_context.Tez.of_mutez_exn amount in
+         let amount = Protocol.Alpha_context.Tez.of_mumav_exn amount in
          {Protocol.Alpha_context.Commitment.blinded_public_key_hash; amount})
        [
          ("btz1bRL4X5BWo2Fj4EsBdUwexXqgTf75uf1qa", 23932454669343L);
@@ -400,7 +400,7 @@ let bootstrap_accounts_strings =
     "edpkv8EUUH68jmo3f7Um5PezmfGrRF24gnfLpH3sVNwJnV5bVCxL2n";
   ]
 
-let bootstrap_balance = Tez.of_mutez_exn 4_000_000_000_000L
+let bootstrap_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
 let compute_accounts =
   List.map (fun s ->

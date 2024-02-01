@@ -98,7 +98,7 @@ Lines with `Estimated gas: `:
   Number of lines with a change:      32
   Number of lines with a degradation: 0
 
-Lines with `Fee to the baker: ꜩ`:
+Lines with `Fee to the baker: ṁ`:
   (Better means the value must decrease.)
   Accumulated value before: 0.012461
   Accumulated value now:    0.012024
@@ -128,7 +128,7 @@ Lines with `Gas remaining: `:
   Number of lines with a change:      89
   Number of lines with a degradation: 3
 
-Lines with `payload fees(the block proposer) ....... +ꜩ`:
+Lines with `payload fees(the block proposer) ....... +ṁ`:
   (Better means the value must decrease.)
   Accumulated value before: 0.012461
   Accumulated value now:    0.012024
@@ -156,7 +156,7 @@ Lines with the following strings were not changed:
   `Storage limit: `
   `Storage size: `
   `fee = `
-  `storage fees ........................... +ꜩ`
+  `storage fees ........................... +ṁ`
 
 19 line(s) with the following strings have changed:
   `CONTRACT_HASH`

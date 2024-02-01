@@ -89,7 +89,7 @@ let default_printer _ = ""
 let test_known_tez_literals () =
   List.iter
     (fun (v, s) ->
-      let vv = Tez_repr.of_mutez v in
+      let vv = Tez_repr.of_mumav v in
       let vs = Tez_repr.of_string s in
       let vs' =
         Tez_repr.of_string (String.concat "" (String.split_on_char ',' s))
@@ -121,7 +121,7 @@ let test_known_tez_literals () =
 let test_random_tez_literals () =
   for _ = 0 to 100_000 do
     let v = Random.int64 12L in
-    let vv = Tez_repr.of_mutez v in
+    let vv = Tez_repr.of_mumav v in
     let vv =
       match vv with None -> fail_msg "could not unopt %Ld" v | Some vv -> vv
     in
@@ -134,12 +134,12 @@ let test_random_tez_literals () =
     (match vs with
     | None -> assert false
     | Some vs ->
-        let rev = Tez_repr.to_mutez vs in
+        let rev = Tez_repr.to_mumav vs in
         assert (v = rev)) ;
     match vs' with
     | None -> assert false
     | Some vs' ->
-        let rev = Tez_repr.to_mutez vs' in
+        let rev = Tez_repr.to_mumav vs' in
         assert (v = rev)
   done ;
   return_unit

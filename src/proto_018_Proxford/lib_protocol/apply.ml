@@ -112,11 +112,11 @@ let () =
     `Branch
     ~id:"contract.empty_transaction"
     ~title:"Empty transaction"
-    ~description:"Forbidden to credit 0ꜩ to a contract without code."
+    ~description:"Forbidden to credit 0ṁ to a contract without code."
     ~pp:(fun ppf contract ->
       Format.fprintf
         ppf
-        "Transactions of 0ꜩ towards a contract without code are forbidden (%a)."
+        "Transactions of 0ṁ towards a contract without code are forbidden (%a)."
         Contract.pp
         contract)
     Data_encoding.(obj1 (req "contract" Contract.encoding))
@@ -321,7 +321,7 @@ let apply_delegation ~ctxt ~(sender : Contract.t) ~delegate ~before_operation =
               ctxt
               ~sender_contract:sender
               ~delegate
-              Tez.max_mutez)
+              Tez.max_mumav)
   in
   let+ ctxt = Contract.Delegate.set ctxt sender delegate in
   (ctxt, Gas.consumed ~since:before_operation ~until:ctxt, balance_updates, [])

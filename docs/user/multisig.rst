@@ -39,7 +39,7 @@ contract`` with the following differences:
 For example, the following commands can be used to generate three pairs
 of keys named ``alice``, ``bob``, and ``charlie`` and originate a multisig
 contract named ``msig`` that can be actioned by any two of them; the
-initial balance of this contract and of each of the signers is ꜩ100 generously offered by the
+initial balance of this contract and of each of the signers is ṁ100 generously offered by the
 first bootstrap account:
 
 ::
@@ -68,7 +68,7 @@ display not only the byte sequence to sign but also a cryptographic
 hash (this can be useful when signing with a hardware signer), the
 threshold and the participant public keys. To obtain the byte sequence
 only, these commands accept a ``--bytes-only`` option.
-For example, if Alice and Charlie want to send ꜩ10 from the
+For example, if Alice and Charlie want to send ṁ10 from the
 multisig to Bob they will need to sign a transaction. They can call
 
 ::
@@ -124,7 +124,7 @@ signatures:
 
 
 For example, if Alice sends her signature to Charlie, he can perform
-the multi-signed transfer of ꜩ10 to Bob using either:
+the multi-signed transfer of ṁ10 to Bob using either:
 
 ::
 
@@ -256,7 +256,7 @@ for executing the given lambda and sending the produced operations or
 public keys.
 
 The type of actions for the legacy multisig is ``(or :action (pair
-:transfer (mutez %amount) (contract %dest unit)) (or (option %delegate
+:transfer (mumav %amount) (contract %dest unit)) (or (option %delegate
 key_hash) (pair %change_keys (nat %threshold) (list %keys key))))`` so
 a valid action is either of the form ``Left (Pair <amount>
 <destination>)`` for a transfer, ``Right (Left None)`` for withdrawing

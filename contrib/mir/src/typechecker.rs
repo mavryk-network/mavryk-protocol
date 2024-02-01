@@ -271,8 +271,8 @@ pub(crate) fn parse_ty(ctx: &mut Ctx, ty: &Micheline) -> Result<Type, TcError> {
         App(bool, [], _) => Type::Bool,
         App(bool, ..) => unexpected()?,
 
-        App(mutez, [], _) => Type::Mutez,
-        App(mutez, ..) => unexpected()?,
+        App(mumav, [], _) => Type::Mumav,
+        App(mumav, ..) => unexpected()?,
 
         App(string, [], _) => Type::String,
         App(string, ..) => unexpected()?,
@@ -499,9 +499,9 @@ pub(crate) fn typecheck_instruction(
             pop!();
             I::Add(overloads::Add::NatInt)
         }
-        (App(ADD, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(ADD, [], _), [.., T::Mumav, T::Mumav]) => {
             pop!();
-            I::Add(overloads::Add::MutezMutez)
+            I::Add(overloads::Add::MumavMumav)
         }
         (App(ADD, [], _), [.., _, _]) => no_overload!(ADD),
         (App(ADD, [], _), [_] | []) => no_overload!(ADD, len 2),
@@ -798,7 +798,7 @@ pub(crate) fn typecheck_instruction(
         (App(COMPARE, expect_args!(0), _), _) => unexpected_micheline!(),
 
         (App(AMOUNT, [], _), ..) => {
-            stack.push(T::Mutez);
+            stack.push(T::Mumav);
             I::Amount
         }
         (App(AMOUNT, expect_args!(0), _), _) => unexpected_micheline!(),
@@ -876,7 +876,7 @@ pub(crate) fn typecheck_value(
         (T::Int, V::Int(n)) => TV::Int(*n),
         (T::Bool, V::App(Prim::True, [], _)) => TV::Bool(true),
         (T::Bool, V::App(Prim::False, [], _)) => TV::Bool(false),
-        (T::Mutez, V::Int(n)) if *n >= 0 => TV::Mutez((*n).try_into()?),
+        (T::Mumav, V::Int(n)) if *n >= 0 => TV::Mumav((*n).try_into()?),
         (T::String, V::String(s)) => TV::String(s.clone()),
         (T::Unit, V::App(Prim::Unit, [], _)) => TV::Unit,
         (T::Pair(pt), V::App(Prim::Pair, [vl, rest @ ..], _)) if !rest.is_empty() => {
@@ -1226,13 +1226,13 @@ mod typecheck_tests {
     }
 
     #[test]
-    fn test_add_mutez_mutez() {
-        let mut stack = tc_stk![Type::Mutez, Type::Mutez];
-        let expected_stack = tc_stk![Type::Mutez];
+    fn test_add_mumav_mumav() {
+        let mut stack = tc_stk![Type::Mumav, Type::Mumav];
+        let expected_stack = tc_stk![Type::Mumav];
         let mut ctx = Ctx::default();
         assert_eq!(
             typecheck_instruction(&app!(ADD), &mut ctx, &mut stack),
-            Ok(Add(overloads::Add::MutezMutez))
+            Ok(Add(overloads::Add::MumavMumav))
         );
         assert_eq!(stack, expected_stack);
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 440);
@@ -1844,7 +1844,7 @@ mod typecheck_tests {
             typecheck_instruction(&parse("AMOUNT").unwrap(), &mut Ctx::default(), &mut stack),
             Ok(Amount)
         );
-        assert_eq!(stack, tc_stk![Type::Mutez]);
+        assert_eq!(stack, tc_stk![Type::Mumav]);
     }
 
     #[test]

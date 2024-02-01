@@ -131,7 +131,7 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
             in
             let matches =
               if prefix then
-                let containing_tz1 = List.map (( ^ ) "tz1") containing in
+                let containing_tz1 = List.map (( ^ ) "mv1") containing in
                 fun key ->
                   List.exists
                     (fun containing ->
@@ -589,7 +589,7 @@ let commands network : Client_context.full Tezos_clic.command list =
              (switch
                 ~long:"prefix"
                 ~short:'P'
-                ~doc:"the key must begin with tz1[word]"
+                ~doc:"the key must begin with mv1[word]"
                 ())
              (switch
                 ~long:"ignore-case"
@@ -624,7 +624,7 @@ let commands network : Client_context.full Tezos_clic.command list =
              (switch
                 ~long:"prefix"
                 ~short:'P'
-                ~doc:"the key must begin with tz1[word]"
+                ~doc:"the key must begin with mv1[word]"
                 ())
              (switch
                 ~long:"ignore-case"
@@ -898,7 +898,7 @@ let commands network : Client_context.full Tezos_clic.command list =
            public/secret keys that may be different from a Ledger application, \
            depending on the BIP32 derivation path used in the Ledger. This \
            command also uses the Ed25519 algorithm, which means it generates \
-           tz1 public key hashes."
+           mv1 public key hashes."
         (args2
            (Secret_key.force_switch ())
            (switch ~doc:"encrypt the secret key" ~long:"encrypt" ()))

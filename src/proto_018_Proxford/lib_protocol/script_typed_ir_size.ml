@@ -47,7 +47,7 @@ let ty_traverse_f =
     | Signature_t -> ret_succ_adding accu base_basic
     | String_t -> ret_succ_adding accu base_basic
     | Bytes_t -> ret_succ_adding accu base_basic
-    | Mutez_t -> ret_succ_adding accu base_basic
+    | Mumav_t -> ret_succ_adding accu base_basic
     | Key_hash_t -> ret_succ_adding accu base_basic
     | Key_t -> ret_succ_adding accu base_basic
     | Timestamp_t -> ret_succ_adding accu base_basic
@@ -141,7 +141,7 @@ let public_key_size (x : public_key) =
   | P256 _ -> 96
   | Bls _ -> 64
 
-let mutez_size = h2w
+let mumav_size = h2w
 
 let timestamp_size x = Script_timestamp.to_zint x |> z_size
 
@@ -269,7 +269,7 @@ let rec value_size :
     | Signature_t -> ret_succ_adding accu (signature_size x)
     | String_t -> ret_succ_adding accu (script_string_size x)
     | Bytes_t -> ret_succ_adding accu (bytes_size x)
-    | Mutez_t -> ret_succ_adding accu mutez_size
+    | Mumav_t -> ret_succ_adding accu mumav_size
     | Key_hash_t -> ret_succ_adding accu (key_hash_size x)
     | Key_t -> ret_succ_adding accu (public_key_size x)
     | Timestamp_t -> ret_succ_adding accu (timestamp_size x)

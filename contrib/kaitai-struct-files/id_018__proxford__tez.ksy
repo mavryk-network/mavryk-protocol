@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 018-Proxford.tez'
 types:
-  id_018__proxford__mutez:
+  id_018__proxford__mumav:
     seq:
-    - id: id_018__proxford__mutez
+    - id: id_018__proxford__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_018__proxford__mutez
-  type: id_018__proxford__mutez
+- id: id_018__proxford__mumav
+  type: id_018__proxford__mumav

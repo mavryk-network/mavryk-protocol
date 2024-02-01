@@ -17,12 +17,12 @@ let get_signer cctxt pkh =
   let* alias, pk, sk = Client_keys.get_key cctxt pkh in
   return {alias; pkh; pk; sk}
 
-type tez = {mutez : int64}
+type tez = {mumav : int64}
 
 type fee_parameter = {
   minimal_fees : tez;
-  minimal_nanotez_per_byte : Q.t;
-  minimal_nanotez_per_gas_unit : Q.t;
+  minimal_nanomav_per_byte : Q.t;
+  minimal_nanomav_per_gas_unit : Q.t;
   force_low_fee : bool;
   fee_cap : tez;
   burn_cap : tez;
@@ -31,21 +31,21 @@ type fee_parameter = {
 (* Encoding for Tez amounts, replicated from mempool. *)
 let tez_encoding =
   let open Data_encoding in
-  let decode {mutez} = Z.of_int64 mutez in
-  let encode = Json.wrap_error (fun i -> {mutez = Z.to_int64 i}) in
+  let decode {mumav} = Z.of_int64 mumav in
+  let encode = Json.wrap_error (fun i -> {mumav = Z.to_int64 i}) in
   Data_encoding.def
-    "mutez"
+    "mumav"
     ~title:"A millionth of a tez"
-    ~description:"One million mutez make a tez (1 tez = 1e6 mutez)"
+    ~description:"One million mumav make a tez (1 tez = 1e6 mumav)"
     (conv decode encode n)
 
 (* Encoding for nano-Tez amounts, replicated from mempool. *)
-let nanotez_encoding =
+let nanomav_encoding =
   let open Data_encoding in
   def
-    "nanotez"
-    ~title:"A thousandth of a mutez"
-    ~description:"One thousand nanotez make a mutez (1 tez = 1e9 nanotez)"
+    "nanomav"
+    ~title:"A thousandth of a mumav"
+    ~description:"One thousand nanomav make a mumav (1 tez = 1e9 nanomav)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})
@@ -56,28 +56,28 @@ let fee_parameter_encoding ~(default_fee_parameter : fee_parameter) =
   conv
     (fun {
            minimal_fees;
-           minimal_nanotez_per_byte;
-           minimal_nanotez_per_gas_unit;
+           minimal_nanomav_per_byte;
+           minimal_nanomav_per_gas_unit;
            force_low_fee;
            fee_cap;
            burn_cap;
          } ->
       ( minimal_fees,
-        minimal_nanotez_per_byte,
-        minimal_nanotez_per_gas_unit,
+        minimal_nanomav_per_byte,
+        minimal_nanomav_per_gas_unit,
         force_low_fee,
         fee_cap,
         burn_cap ))
     (fun ( minimal_fees,
-           minimal_nanotez_per_byte,
-           minimal_nanotez_per_gas_unit,
+           minimal_nanomav_per_byte,
+           minimal_nanomav_per_gas_unit,
            force_low_fee,
            fee_cap,
            burn_cap ) ->
       {
         minimal_fees;
-        minimal_nanotez_per_byte;
-        minimal_nanotez_per_gas_unit;
+        minimal_nanomav_per_byte;
+        minimal_nanomav_per_gas_unit;
         force_low_fee;
         fee_cap;
         burn_cap;
@@ -89,15 +89,15 @@ let fee_parameter_encoding ~(default_fee_parameter : fee_parameter) =
           tez_encoding
           default_fee_parameter.minimal_fees)
        (dft
-          "minimal-nanotez-per-byte"
+          "minimal-nanomav-per-byte"
           ~description:"Exclude operations with lower fees per byte"
-          nanotez_encoding
-          default_fee_parameter.minimal_nanotez_per_byte)
+          nanomav_encoding
+          default_fee_parameter.minimal_nanomav_per_byte)
        (dft
-          "minimal-nanotez-per-gas-unit"
+          "minimal-nanomav-per-gas-unit"
           ~description:"Exclude operations with lower gas fees"
-          nanotez_encoding
-          default_fee_parameter.minimal_nanotez_per_gas_unit)
+          nanomav_encoding
+          default_fee_parameter.minimal_nanomav_per_gas_unit)
        (dft
           "force-low-fee"
           ~description:

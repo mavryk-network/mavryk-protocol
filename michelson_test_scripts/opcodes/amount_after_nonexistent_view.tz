@@ -2,7 +2,7 @@
 # passed as parameter. After returning from the view it
 # stores it's AMOUNT.
 parameter address ;
-storage mutez;
+storage mumav;
 code
      { CAR ;
        DUP ;
@@ -11,7 +11,7 @@ code
        ASSERT_NONE ;
        CONTRACT nat ;
        ASSERT_SOME ;
-       PUSH mutez 15000000 ;
+       PUSH mumav 15000000 ;
        PUSH nat 0 ;
        TRANSFER_TOKENS ;
        AMOUNT;

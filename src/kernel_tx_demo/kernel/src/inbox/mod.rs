@@ -83,10 +83,10 @@ mod test {
             7, // Pair tag,
             1, // String tag
             0, 0, 0, b'$', // String size
-            b't', b'z', b'4', b'M', b'S', b'f', b'Z', b's', b'n', b'6', b'k', // tz4 (1)
-            b'M', b'D', b'c', b'z', b'S', b'h', b'y', b'8', b'P', b'M', b'e', // tz4 (2)
-            b'B', b'6', b'2', b'8', b'T', b'N', b'u', b'k', b'n', b'9', b'h', // tz4 (3)
-            b'i', b'2', b'K',  // tz3 (4)
+            b't', b'z', b'4', b'M', b'S', b'f', b'Z', b's', b'n', b'6', b'k', // mv4 (1)
+            b'M', b'D', b'c', b'z', b'S', b'h', b'y', b'8', b'P', b'M', b'e', // mv4 (2)
+            b'B', b'6', b'2', b'8', b'T', b'N', b'u', b'k', b'n', b'9', b'h', // mv4 (3)
+            b'i', b'2', b'K',  // mv3 (4)
             7,     // Prim_2
             7,     // Pair tag
             b'\n', // Bytes tag
@@ -105,10 +105,10 @@ mod test {
             // Sender KT1BuEZtb68c1Q4yjtckcNjGELqWt56Xyesc - contract hash
             b'$', b'f', b'g', 169, b'1', 254, 11, 210, 251, 28, 182, 4, 247, 20, b'`', 30, 136,
             b'(', b'E', b'P', // end kt1
-            // Source tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+            // Source mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
             0, // PKH - Ed25519 tag
             b'B', 236, b'v', b'_', b'\'', 0, 19, b'N', 158, 14, 254, 137, 208, b'3', 142, b'.',
-            132, b'<', b'S', 220, // end tz1
+            132, b'<', b'S', 220, // end mv1
             // Destination sr1UX4Euo29Fd5bhmZypQffZJwy9M3A1D4Mb
             246, 144, 126, 197, 72, 77, 70, 203, 171, 146, 47, 210, 213, 225, 165, 143, 212, 162,
             185, 251, // end sr1
@@ -125,8 +125,8 @@ mod test {
         let sender = ContractKt1Hash::from_b58check("KT1BuEZtb68c1Q4yjtckcNjGELqWt56Xyesc")
             .expect("valid Kt1 address");
 
-        let source = PublicKeyHash::from_b58check("tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
-            .expect("valid tz1 address");
+        let source = PublicKeyHash::from_b58check("mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
+            .expect("valid mv1 address");
 
         let destination = SmartRollupAddress::from_b58check("sr1UX4Euo29Fd5bhmZypQffZJwy9M3A1D4Mb")
             .expect("valid sr1 address");

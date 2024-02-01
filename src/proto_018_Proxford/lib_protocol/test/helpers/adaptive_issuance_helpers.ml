@@ -45,27 +45,27 @@ module Tez = struct
     return s
 
   let ( +! ) a b =
-    let a = to_mutez a in
-    let b = to_mutez b in
-    Int64.add a b |> of_mutez_exn
+    let a = to_mumav a in
+    let b = to_mumav b in
+    Int64.add a b |> of_mumav_exn
 
   let ( -! ) a b =
-    let a = to_mutez a in
-    let b = to_mutez b in
-    Int64.sub a b |> of_mutez_exn
+    let a = to_mumav a in
+    let b = to_mumav b in
+    Int64.sub a b |> of_mumav_exn
 
-  let of_mutez = of_mutez_exn
+  let of_mumav = of_mumav_exn
 
-  let of_z a = Z.to_int64 a |> of_mutez
+  let of_z a = Z.to_int64 a |> of_mumav
 
   let of_q ~round_up Q.{num; den} =
     (if round_up then Z.cdiv num den else Z.div num den) |> of_z
 
   let ratio num den =
-    Q.make (Z.of_int64 (to_mutez num)) (Z.of_int64 (to_mutez den))
+    Q.make (Z.of_int64 (to_mumav num)) (Z.of_int64 (to_mumav den))
 
   let mul_q tez portion =
-    let tez_z = to_mutez tez |> Z.of_int64 in
+    let tez_z = to_mumav tez |> Z.of_int64 in
     Q.(mul portion ~$$tez_z)
 end
 
@@ -73,7 +73,7 @@ end
 module Partial_tez = struct
   include Q
 
-  let of_tez a = Tez.to_mutez a |> of_int64
+  let of_tez a = Tez.to_mumav a |> of_int64
 
   let to_tez_rem {num; den} =
     let tez, rem = Z.div_rem num den in
@@ -324,7 +324,7 @@ end
 module Unstaked_finalizable = struct
   (* Slashing might put inaccessible tez in this container: they are represented in the remainder.
      They still count towards the total supply, but are currently owned by noone.
-     At most one mutez per unstaking account per slashed cycle *)
+     At most one mumav per unstaking account per slashed cycle *)
   type t = {map : Tez.t String.Map.t; remainder : Tez.t}
 
   let zero = {map = String.Map.empty; remainder = Tez.zero}

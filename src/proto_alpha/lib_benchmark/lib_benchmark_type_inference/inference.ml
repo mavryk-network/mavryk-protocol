@@ -329,7 +329,7 @@ and instantiate_base (encountered : S.t) (ty : Type.Base.t) : Type.Base.t M.t =
     let encountered = S.add ty.tag encountered in
     match ty.node with
     | Unit_t | Int_t | Nat_t | Bool_t | String_t | Bytes_t | Key_hash_t | Key_t
-    | Timestamp_t | Mutez_t ->
+    | Timestamp_t | Mumav_t ->
         return ty
     | Option_t ty ->
         instantiate_base encountered ty >>= fun ty -> return (Type.option ty)
@@ -420,7 +420,7 @@ and unify_base (x : Type.Base.t) (y : Type.Base.t) : unit M.t =
     | Bytes_t, Bytes_t
     | Key_hash_t, Key_hash_t
     | Timestamp_t, Timestamp_t
-    | Mutez_t, Mutez_t
+    | Mumav_t, Mumav_t
     | Key_t, Key_t ->
         return ()
     | Option_t x, Option_t y -> unify_base x y
@@ -516,7 +516,7 @@ and assert_comparability_aux lower_bound (ty : Type.Base.t)
         | Comparable -> unsatisfiable_comparability ty Unconstrained lower_bound
         )
     | Unit_t | Int_t | Nat_t | Bool_t | String_t | Bytes_t | Key_hash_t
-    | Timestamp_t | Mutez_t ->
+    | Timestamp_t | Mumav_t ->
         (* if not (le_comparability lower_bound Comparable) then
          *   unsatisfiable_comparability ty Comparable lower_bound
          * else *)
@@ -547,7 +547,7 @@ and get_comparability (ty : Type.Base.t) : comparability M.t =
       | Stack_type _ -> assert false
       | Base_type {comparable; _} -> return comparable)
   | Unit_t | Int_t | Nat_t | Bool_t | String_t | Bytes_t | Key_hash_t
-  | Timestamp_t | Mutez_t ->
+  | Timestamp_t | Mumav_t ->
       return Comparable
   | List_t _ | Set_t _ | Map_t _ | Lambda_t _ | Key_t -> return Not_comparable
   | Option_t ty -> get_comparability ty
@@ -622,14 +622,14 @@ let arith_type (instr : Mikhailsky_prim.prim) (ty1 : Type.Base.t)
   | I_ADD, Int_t, Timestamp_t
   | I_SUB, Timestamp_t, Int_t ->
       Some Type.timestamp
-  (* Mutez *)
-  | I_ADD, Mutez_t, Mutez_t
-  | I_SUB, Mutez_t, Mutez_t
-  | I_MUL, Mutez_t, Nat_t
-  | I_MUL, Nat_t, Mutez_t ->
-      Some Type.mutez
-  | I_EDIV, Mutez_t, Nat_t -> Some Type.(option (pair mutez mutez))
-  | I_EDIV, Mutez_t, Mutez_t -> Some Type.(option (pair nat mutez))
+  (* Mumav *)
+  | I_ADD, Mumav_t, Mumav_t
+  | I_SUB, Mumav_t, Mumav_t
+  | I_MUL, Mumav_t, Nat_t
+  | I_MUL, Nat_t, Mumav_t ->
+      Some Type.mumav
+  | I_EDIV, Mumav_t, Nat_t -> Some Type.(option (pair mumav mumav))
+  | I_EDIV, Mumav_t, Mumav_t -> Some Type.(option (pair nat mumav))
   | _ -> None
 
 let rec generate_constraints (path : Mikhailsky.Path.t) (node : Mikhailsky.node)
@@ -1046,7 +1046,7 @@ and generate_constraints_data (path : Mikhailsky.Path.t)
   | Prim (_, A_Int, [Int (_, _)], _) -> unify_base ty Type.int
   | Prim (_, A_Nat, [Int (_, _)], _) -> unify_base ty Type.nat
   | Prim (_, A_Timestamp, [Int (_, _)], _) -> unify_base ty Type.timestamp
-  | Prim (_, A_Mutez, [Int (_, _)], _) -> unify_base ty Type.mutez
+  | Prim (_, A_Mumav, [Int (_, _)], _) -> unify_base ty Type.mumav
   | Prim (_, A_Key_hash, [Bytes (_, _)], _) -> unify_base ty Type.key_hash
   | Prim (_, A_Key, [Bytes (_, _)], _) -> unify_base ty Type.key
   | Prim (_, A_List, [Seq (_, subterms)], _) ->

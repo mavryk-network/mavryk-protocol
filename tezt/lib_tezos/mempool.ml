@@ -133,19 +133,19 @@ let check_mempool ?(validated = []) ?(branch_delayed = [])
 module Config = struct
   type t = {
     minimal_fees : int option;
-    minimal_nanotez_per_gas_unit : (int * int) option;
-    minimal_nanotez_per_byte : (int * int) option;
+    minimal_nanomav_per_gas_unit : (int * int) option;
+    minimal_nanomav_per_byte : (int * int) option;
     replace_by_fee_factor : (int * int) option;
     max_operations : int option;
     max_total_bytes : int option;
   }
 
-  let make ?minimal_fees ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte
+  let make ?minimal_fees ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte
       ?replace_by_fee_factor ?max_operations ?max_total_bytes () =
     {
       minimal_fees;
-      minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte;
+      minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte;
       replace_by_fee_factor;
       max_operations;
       max_total_bytes;
@@ -157,12 +157,12 @@ module Config = struct
     Option.equal Int.equal x1.minimal_fees x2.minimal_fees
     && Option.equal
          eq_int_pair
-         x1.minimal_nanotez_per_gas_unit
-         x2.minimal_nanotez_per_gas_unit
+         x1.minimal_nanomav_per_gas_unit
+         x2.minimal_nanomav_per_gas_unit
     && Option.equal
          eq_int_pair
-         x1.minimal_nanotez_per_byte
-         x2.minimal_nanotez_per_byte
+         x1.minimal_nanomav_per_byte
+         x2.minimal_nanomav_per_byte
     && Option.equal
          eq_int_pair
          x1.replace_by_fee_factor
@@ -185,9 +185,9 @@ module Config = struct
          [
            int_str_field "minimal_fees" config.minimal_fees;
            pair_field
-             "minimal_nanotez_per_gas_unit"
-             config.minimal_nanotez_per_gas_unit;
-           pair_field "minimal_nanotez_per_byte" config.minimal_nanotez_per_byte;
+             "minimal_nanomav_per_gas_unit"
+             config.minimal_nanomav_per_gas_unit;
+           pair_field "minimal_nanomav_per_byte" config.minimal_nanomav_per_byte;
            pair_field "replace_by_fee_factor" config.replace_by_fee_factor;
            int_field "max_operations" config.max_operations;
            int_field "max_total_bytes" config.max_total_bytes;
@@ -220,10 +220,10 @@ module Config = struct
     in
     {
       minimal_fees = json |-> "minimal_fees" |> as_int_opt;
-      minimal_nanotez_per_gas_unit =
-        json |-> "minimal_nanotez_per_gas_unit" |> as_int_pair_opt;
-      minimal_nanotez_per_byte =
-        json |-> "minimal_nanotez_per_byte" |> as_int_pair_opt;
+      minimal_nanomav_per_gas_unit =
+        json |-> "minimal_nanomav_per_gas_unit" |> as_int_pair_opt;
+      minimal_nanomav_per_byte =
+        json |-> "minimal_nanomav_per_byte" |> as_int_pair_opt;
       replace_by_fee_factor =
         json |-> "replace_by_fee_factor" |> as_int_pair_opt;
       max_operations = json |-> "max_operations" |> as_int_opt;
@@ -236,9 +236,9 @@ module Config = struct
 
   let default_minimal_fees = 100
 
-  let default_minimal_nanotez_per_gas_unit = (100, 1)
+  let default_minimal_nanomav_per_gas_unit = (100, 1)
 
-  let default_minimal_nanotez_per_byte = (1000, 1)
+  let default_minimal_nanomav_per_byte = (1000, 1)
 
   let default_replace_by_fee_factor = (21, 20)
 
@@ -249,8 +249,8 @@ module Config = struct
   let default =
     {
       minimal_fees = Some default_minimal_fees;
-      minimal_nanotez_per_gas_unit = Some default_minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte = Some default_minimal_nanotez_per_byte;
+      minimal_nanomav_per_gas_unit = Some default_minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte = Some default_minimal_nanomav_per_byte;
       replace_by_fee_factor = Some default_replace_by_fee_factor;
       max_operations = Some default_max_operations;
       max_total_bytes = Some default_max_total_bytes;
@@ -260,12 +260,12 @@ module Config = struct
     let aux default v = Some (Option.value v ~default) in
     {
       minimal_fees = aux default_minimal_fees config.minimal_fees;
-      minimal_nanotez_per_gas_unit =
+      minimal_nanomav_per_gas_unit =
         aux
-          default_minimal_nanotez_per_gas_unit
-          config.minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte =
-        aux default_minimal_nanotez_per_byte config.minimal_nanotez_per_byte;
+          default_minimal_nanomav_per_gas_unit
+          config.minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte =
+        aux default_minimal_nanomav_per_byte config.minimal_nanomav_per_byte;
       replace_by_fee_factor =
         aux default_replace_by_fee_factor config.replace_by_fee_factor;
       max_operations = aux default_max_operations config.max_operations;
@@ -283,14 +283,14 @@ module Config = struct
     let aux_pair = clear_if_default eq_int_pair in
     {
       minimal_fees = aux_int default_minimal_fees config.minimal_fees;
-      minimal_nanotez_per_gas_unit =
+      minimal_nanomav_per_gas_unit =
         aux_pair
-          default_minimal_nanotez_per_gas_unit
-          config.minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte =
+          default_minimal_nanomav_per_gas_unit
+          config.minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte =
         aux_pair
-          default_minimal_nanotez_per_byte
-          config.minimal_nanotez_per_byte;
+          default_minimal_nanomav_per_byte
+          config.minimal_nanomav_per_byte;
       replace_by_fee_factor =
         aux_pair default_replace_by_fee_factor config.replace_by_fee_factor;
       max_operations = aux_int default_max_operations config.max_operations;
@@ -338,13 +338,13 @@ module Config = struct
     call_post_filter ?endpoint ?hooks (Ezjsonm.from_string config_str) client
 
   let set_filter ?log ?endpoint ?hooks ?minimal_fees
-      ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte
+      ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte
       ?replace_by_fee_factor ?max_operations ?max_total_bytes client =
     let config =
       make
         ?minimal_fees
-        ?minimal_nanotez_per_gas_unit
-        ?minimal_nanotez_per_byte
+        ?minimal_nanomav_per_gas_unit
+        ?minimal_nanomav_per_byte
         ?replace_by_fee_factor
         ?max_operations
         ?max_total_bytes

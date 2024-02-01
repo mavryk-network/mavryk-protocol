@@ -782,7 +782,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Alpha: Tc opcodes/ediv_mutez",
+    "title": "Alpha: Tc opcodes/ediv_mumav",
     "tags": [
       "regression",
       "alpha",
@@ -1037,7 +1037,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Mumbai: Tc opcodes/bls12_381_fr_to_mutez",
+    "title": "Mumbai: Tc opcodes/bls12_381_fr_to_mumav",
     "tags": [
       "regression",
       "mumbai",

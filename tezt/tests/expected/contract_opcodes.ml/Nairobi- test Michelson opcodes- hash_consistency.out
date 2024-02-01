@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup hash data '(Pair 22220000000 (Pair "2017-12-13T04:49:00Z" 034))' of type '(pair mutez (pair timestamp int))'
+./octez-client --mode mockup hash data '(Pair 22220000000 (Pair "2017-12-13T04:49:00Z" 034))' of type '(pair mumav (pair timestamp int))'
 Raw packed data: 0x0507070080acd2c6a501070700bcc485a30b0022
 Script-expression-ID-Hash: expruenXhGp5JQoHJTGv4DzBR8Zm3HGvea8Q8BaMPywsY2bxrHAEgC
 Raw Script-expression-ID-Hash: 0x95a69fcbbf773989333dc9b31e246575812dbea19d25089f83a2aeeea16ab4bc

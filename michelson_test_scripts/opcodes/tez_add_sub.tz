@@ -1,5 +1,5 @@
-parameter (pair mutez mutez);
-storage (option (pair mutez mutez));
+parameter (pair mumav mumav);
+storage (option (pair mumav mumav));
 code {CAR; DUP; DUP; CAR; DIP{CDR}; ADD;
-      DIP{DUP; CAR; DIP{CDR}; SUB_MUTEZ; ASSERT_SOME};
+      DIP{DUP; CAR; DIP{CDR}; SUB_MUMAV; ASSERT_SOME};
       PAIR; SOME; NIL operation; PAIR};

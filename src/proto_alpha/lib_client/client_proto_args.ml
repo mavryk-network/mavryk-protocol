@@ -358,7 +358,7 @@ let minimal_timestamp_switch =
 
 let tez_format =
   "Text format: `DDDDDDD.DDDDDD`.\n\
-   Tez and mutez and separated by a period sign. Trailing and pending zeroes \
+   Tez and mumav and separated by a period sign. Trailing and pending zeroes \
    are allowed."
 
 let tez_parameter param =
@@ -372,7 +372,7 @@ let everything_tez_parameter param =
   let open Lwt_result_syntax in
   Tezos_clic.parameter (fun _ s ->
       match s with
-      | "everything" -> return Tez.max_mutez
+      | "everything" -> return Tez.max_mumav
       | _ -> tzfail (Bad_tez_arg (param, s)))
 
 let everything_or_tez_parameter param =
@@ -601,11 +601,11 @@ let timelock_locked_value_arg =
     string_parameter
 
 let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+  match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
-let default_minimal_nanotez_per_gas_unit = Q.of_int 100
+let default_minimal_nanomav_per_gas_unit = Q.of_int 100
 
-let default_minimal_nanotez_per_byte = Q.of_int 1000
+let default_minimal_nanomav_per_byte = Q.of_int 1000
 
 let minimal_fees_arg =
   let open Lwt_result_syntax in
@@ -619,27 +619,27 @@ let minimal_fees_arg =
          | Some t -> return t
          | None -> tzfail (Bad_minimal_fees s)))
 
-let minimal_nanotez_per_gas_unit_arg =
+let minimal_nanomav_per_gas_unit_arg =
   let open Lwt_result_syntax in
   Tezos_clic.default_arg
-    ~long:"minimal-nanotez-per-gas-unit"
+    ~long:"minimal-nanomav-per-gas-unit"
     ~placeholder:"amount"
     ~doc:
       "exclude operations with fees per gas lower than this threshold (in \
-       nanotez)"
-    ~default:(Q.to_string default_minimal_nanotez_per_gas_unit)
+       nanomav)"
+    ~default:(Q.to_string default_minimal_nanomav_per_gas_unit)
     (Tezos_clic.parameter (fun _ s ->
          try return (Q.of_string s) with _ -> tzfail (Bad_minimal_fees s)))
 
-let minimal_nanotez_per_byte_arg =
+let minimal_nanomav_per_byte_arg =
   let open Lwt_result_syntax in
   Tezos_clic.default_arg
-    ~long:"minimal-nanotez-per-byte"
+    ~long:"minimal-nanomav-per-byte"
     ~placeholder:"amount"
-    ~default:(Q.to_string default_minimal_nanotez_per_byte)
+    ~default:(Q.to_string default_minimal_nanomav_per_byte)
     ~doc:
       "exclude operations with fees per byte lower than this threshold (in \
-       nanotez)"
+       nanomav)"
     (Tezos_clic.parameter (fun _ s ->
          try return (Q.of_string s) with _ -> tzfail (Bad_minimal_fees s)))
 
@@ -1028,16 +1028,16 @@ let fee_parameter_args =
     ~f:
       (fun _cctxt
            ( minimal_fees,
-             minimal_nanotez_per_byte,
-             minimal_nanotez_per_gas_unit,
+             minimal_nanomav_per_byte,
+             minimal_nanomav_per_gas_unit,
              force_low_fee,
              fee_cap,
              burn_cap ) ->
       return
         {
           Injection.minimal_fees;
-          minimal_nanotez_per_byte;
-          minimal_nanotez_per_gas_unit;
+          minimal_nanomav_per_byte;
+          minimal_nanomav_per_gas_unit;
           force_low_fee;
           fee_cap;
           burn_cap;
@@ -1045,8 +1045,8 @@ let fee_parameter_args =
     (Tezos_clic.aggregate
        (Tezos_clic.args6
           minimal_fees_arg
-          minimal_nanotez_per_byte_arg
-          minimal_nanotez_per_gas_unit_arg
+          minimal_nanomav_per_byte_arg
+          minimal_nanomav_per_gas_unit_arg
           force_low_fee_arg
           fee_cap_arg
           burn_cap_arg))

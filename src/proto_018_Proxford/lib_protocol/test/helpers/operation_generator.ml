@@ -293,7 +293,7 @@ let generate_consensus_content : consensus_content QCheck2.Gen.t =
 let gen_tez =
   let open QCheck2.Gen in
   let+ i = ui64 in
-  match Tez.of_mutez i with None -> Tez.zero | Some v -> v
+  match Tez.of_mumav i with None -> Tez.zero | Some v -> v
 
 let gen_fee = gen_tez
 

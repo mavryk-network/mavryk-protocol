@@ -250,14 +250,14 @@ let mempool_from_list_of_ops client protocol operations =
 
 let fees = [|1_000; 2_000; 3_000|]
 
-type fee = Fee_auto | Fee_mutez of int [@@warning "-37"]
+type fee = Fee_auto | Fee_mumav of int [@@warning "-37"]
 
 let sample_next_transfer_for state ~fee ~branch ~account =
   let receiver = sample_bootstrap () in
   let fee =
     match fee with
     | Fee_auto -> fees.(Random.int (Array.length fees))
-    | Fee_mutez fee -> fee
+    | Fee_mumav fee -> fee
   in
   let amount = 1 + Random.int 500 in
   return
@@ -282,16 +282,16 @@ let sample_next_transfer_for state ~fee ~branch ~account =
         };
     }
 
-let mutez_of_string s = Tez.of_mutez_int @@ int_of_string s
+let mumav_of_string s = Tez.of_mumav_int @@ int_of_string s
 
 let bake_with_mempool ?protocol node client mempool =
   let* () =
     Lwt_list.iter_s
       (fun op ->
         let t = Stdlib.List.hd op.protocol_data.contents in
-        let fee = mutez_of_string t.fee
+        let fee = mumav_of_string t.fee
         and gas_limit = int_of_string t.gas_limit
-        and amount = mutez_of_string t.amount
+        and amount = mumav_of_string t.amount
         and giver = t.source
         and receiver = t.destination
         and endpoint = Client.Node node
@@ -390,13 +390,13 @@ let single_baker_increasing_fees state ~account =
   let* branch = get_current_head_hash state in
   let fees = Array.of_list [1_000; 2_000; 3_000] in
   let* op1 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(0)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(0)) ~branch ~account
   in
   let* _op2 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(1)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(1)) ~branch ~account
   in
   let* _op3 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(2)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(2)) ~branch ~account
   in
   Lwt.return @@ [op1; _op2; _op3]
 
@@ -407,7 +407,7 @@ let distinct_bakers_increasing_fees state sources =
   Lwt_list.map_s
     (fun (account, fee) ->
       let* op =
-        sample_next_transfer_for state ~fee:(Fee_mutez fee) ~branch ~account
+        sample_next_transfer_for state ~fee:(Fee_mumav fee) ~branch ~account
       in
       return op)
     (List.combine accounts fees)

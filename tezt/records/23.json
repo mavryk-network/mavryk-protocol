@@ -607,7 +607,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "alpha",
@@ -620,7 +620,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input44513000]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input44513000]",
     "tags": [
       "regression",
       "lima",

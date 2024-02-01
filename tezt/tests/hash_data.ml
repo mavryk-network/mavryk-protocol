@@ -109,9 +109,9 @@ let test_good_hash_data =
       ("{ Some 10 ; None }", "list (option int)");
       ("{}", "map nat unit");
       ("{ Elt 0 0xCB ; Elt 1 0xAB }", "map nat bytes");
-      ("0", "mutez");
-      ("1", "mutez");
-      ("99999", "mutez");
+      ("0", "mumav");
+      ("1", "mumav");
+      ("99999", "mumav");
       ("0", "nat");
       ("1", "nat");
       ("99999", "nat");

@@ -370,7 +370,7 @@ module Generated = struct
        reward, because it is the smallest proportion used so far*)
     let consensus_threshold = (consensus_committee_size * 2 / 3) + 1 in
     let bonus_committee_size = consensus_committee_size - consensus_threshold in
-    let base_total_issued_per_minute = Tez_repr.of_mutez_exn 85_007_812L in
+    let base_total_issued_per_minute = Tez_repr.of_mumav_exn 85_007_812L in
     let _reward_parts_whole = 20480 (* = 256 * 80 *) in
     let reward_parts_half = 10240 (* = reward_parts_whole / 2 *) in
     let reward_parts_quarter = 5120 (* = reward_parts_whole / 4 *) in

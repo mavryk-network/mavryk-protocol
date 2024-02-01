@@ -19,8 +19,8 @@ types:
       size: len_baking_reward_per_endorsement
   baking_reward_per_endorsement_entries:
     seq:
-    - id: id_011__pthangz2__mutez
-      type: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
+      type: id_011__pthangz2__mumav
   endorsement_reward:
     seq:
     - id: endorsement_reward_entries
@@ -37,11 +37,11 @@ types:
       size: len_endorsement_reward
   endorsement_reward_entries:
     seq:
-    - id: id_011__pthangz2__mutez
-      type: id_011__pthangz2__mutez
-  id_011__pthangz2__mutez:
+    - id: id_011__pthangz2__mumav
+      type: id_011__pthangz2__mumav
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   int31:
     seq:
@@ -115,21 +115,21 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: tokens_per_roll
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: seed_nonce_revelation_tip
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: origination_size
   type: int31
 - id: block_security_deposit
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: endorsement_security_deposit
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: baking_reward_per_endorsement
   type: baking_reward_per_endorsement_0
 - id: endorsement_reward
   type: endorsement_reward_0
 - id: cost_per_byte
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -145,7 +145,7 @@ seq:
 - id: minimal_block_delay
   type: s8
 - id: liquidity_baking_subsidy
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: liquidity_baking_sunset_level
   type: s4
 - id: liquidity_baking_escape_ema_threshold

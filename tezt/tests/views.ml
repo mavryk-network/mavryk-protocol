@@ -228,7 +228,7 @@ let test_view_step_constant =
   let* client = Client.init_mockup ~protocol () in
   let amount = 999000000 in
   let* lib_contract =
-    deploy_lib_contract ~protocol ~amount:(Tez.of_mutez_int amount) client
+    deploy_lib_contract ~protocol ~amount:(Tez.of_mumav_int amount) client
   in
   let* _alias, contract =
     Client.originate_contract_at
@@ -371,7 +371,7 @@ let test_balance_after_view ~contract protocol =
     Client.contract_storage ~unparsing_mode:Readable contract client
   in
   let expected =
-    Tez.(contract_amount + transfer_amount |> to_mutez) |> sf "%d\n"
+    Tez.(contract_amount + transfer_amount |> to_mumav) |> sf "%d\n"
   in
   Check.((actual = expected) string ~__LOC__)
     ~error_msg:"expected storage %R, got %L" ;
@@ -419,7 +419,7 @@ let test_amount_after_view ~contract protocol =
   let* actual =
     Client.contract_storage ~unparsing_mode:Readable contract client
   in
-  let expected = amount |> Tez.to_mutez |> sf "%d\n" in
+  let expected = amount |> Tez.to_mumav |> sf "%d\n" in
   Check.((actual = expected) string ~__LOC__)
     ~error_msg:"expected storage %R, got %L" ;
   unit

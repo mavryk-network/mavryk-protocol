@@ -200,5 +200,5 @@ Authors & Invoice
 
 This protocol amendment has been developed by Nomadic Labs, Metastate,
 DaiLambda, Marigold, Tarides and the following external contributor:
-- `Keefer Taylor <https://gitlab.com/keefertaylor>`__, rewarded ꜩ100 for his
+- `Keefer Taylor <https://gitlab.com/keefertaylor>`__, rewarded ṁ100 for his
 contribution on increasing the maximal operation size.

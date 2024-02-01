@@ -139,9 +139,9 @@ let quantity_to_tez all qty =
   | Nothing -> Tez.zero
   | All -> all
   | All_but_one ->
-      if Tez.(equal all zero) then Tez.zero else Tez.(all -! one_mutez)
+      if Tez.(equal all zero) then Tez.zero else Tez.(all -! one_mumav)
   | Half -> Test_tez.(all /! 2L)
-  | Max_tez -> Tez.max_mutez
+  | Max_tez -> Tez.max_mumav
   | Amount a -> a
 
 let default_params =
@@ -470,7 +470,7 @@ module State = struct
       optimal
       op
       Tez.pp
-      (Tez.of_mutez_exn amount)
+      (Tez.of_mumav_exn amount)
 
   let apply_autostake ~name ~old_cycle
       ({
@@ -510,7 +510,7 @@ module State = struct
           current_liquid_delegated +! current_frozen
           +! current_unstaked_frozen_delegated
           +! current_unstaked_final_delegated
-          |> to_mutez |> Z.of_int64)
+          |> to_mumav |> Z.of_int64)
       in
       let optimal =
         Tez.of_z
@@ -519,7 +519,7 @@ module State = struct
              (Z.of_int (state.constants.limit_of_delegation_over_baking + 1)))
       in
       let autostaked =
-        Int64.(sub (Tez.to_mutez optimal) (Tez.to_mutez current_frozen))
+        Int64.(sub (Tez.to_mumav optimal) (Tez.to_mumav current_frozen))
       in
       let state = apply_unslashable (Cycle.succ old_cycle) name state in
       let state = apply_finalize name state in
@@ -528,7 +528,7 @@ module State = struct
         if autostaked > 0L then (
           log_model_autostake ~optimal name pkh old_cycle "stake" autostaked ;
           apply_stake
-            Tez.(min liquid (of_mutez autostaked))
+            Tez.(min liquid (of_mumav autostaked))
             (Cycle.succ old_cycle)
             name
             state)
@@ -542,7 +542,7 @@ module State = struct
             (Int64.neg autostaked) ;
           apply_unstake
             (Cycle.succ old_cycle)
-            (Test_tez.of_mutez_exn Int64.(neg autostaked))
+            (Test_tez.of_mumav_exn Int64.(neg autostaked))
             name
             state)
         else (
@@ -1093,7 +1093,7 @@ let begin_test ~activate_ai ?(burn_rewards = false)
       let n = List.length delegates_name_list in
       let* block, delegates = Context.init_with_constants_n constants n in
       let*? init_level = Context.get_level (B block) in
-      let init_staked = Tez.of_mutez 200_000_000_000L in
+      let init_staked = Tez.of_mumav 200_000_000_000L in
       let*? account_map =
         List.fold_left2
           ~when_different_lengths:[Inconsistent_number_of_bootstrap_accounts]
@@ -1249,7 +1249,7 @@ let set_delegate src_name delegate_name_opt : (t, t) scenarios =
       let state =
         if Q.(equal balance.staked_b zero) then state
         else
-          let state = State.apply_unstake cycle Tez.max_mutez src_name state in
+          let state = State.apply_unstake cycle Tez.max_mumav src_name state in
           (* Changing delegate applies finalize if unstake happened *)
           State.apply_finalize src_name state
       in
@@ -1415,7 +1415,7 @@ let double_bake_ delegate_name (block, state) =
   Log.info ~color:Log_module.event_color "Double baking with %s" delegate_name ;
   let delegate = State.find_account delegate_name state in
   let* operation =
-    Adaptive_issuance_helpers.unstake (B block) delegate.contract Tez.one_mutez
+    Adaptive_issuance_helpers.unstake (B block) delegate.contract Tez.one_mumav
   in
   let* forked_block =
     Block.bake ~policy:(By_account delegate.pkh) ~operation block
@@ -1786,7 +1786,7 @@ let test_expected_error =
 let init_constants ?reward_per_block ?(deactivate_dynamic = false)
     ?blocks_per_cycle ?(force_snapshot_at_end = false) ~autostaking_enable () =
   let reward_per_block = Option.value ~default:0L reward_per_block in
-  let base_total_issued_per_minute = Tez.of_mutez reward_per_block in
+  let base_total_issued_per_minute = Tez.of_mumav reward_per_block in
   let default_constants = Default_parameters.constants_test in
   (* default for tests: 12 *)
   let blocks_per_cycle =
@@ -1862,7 +1862,7 @@ let init_scenario ?(force_ai = true) ?reward_per_block () =
            --> add_account_with_funds
                  "staker"
                  "delegate"
-                 (Amount (Tez.of_mutez 2_000_000_000_000L))
+                 (Amount (Tez.of_mumav 2_000_000_000_000L))
            --> set_delegate "staker" (Some "delegate"))
     --> wait_ai_activation
   in
@@ -1912,11 +1912,11 @@ module Roundtrip = struct
 
   let shorter_roundtrip_for_baker =
     let constants = init_constants ~autostaking_enable:false () in
-    let amount = Amount (Tez.of_mutez 333_000_000_000L) in
+    let amount = Amount (Tez.of_mumav 333_000_000_000L) in
     let preserved_cycles = constants.preserved_cycles in
     begin_test ~activate_ai:true constants ["delegate"]
     --> next_block --> wait_ai_activation
-    --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+    --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
     --> next_cycle
     --> snapshot_balances "init" ["delegate"]
     --> unstake "delegate" amount
@@ -1928,9 +1928,9 @@ module Roundtrip = struct
     --> check_snapshot_balances "init"
 
   let status_quo_rountrip =
-    let full_amount = Tez.of_mutez 10_000_000L in
-    let amount_1 = Tez.of_mutez 2_999_999L in
-    let amount_2 = Tez.of_mutez 7_000_001L in
+    let full_amount = Tez.of_mumav 10_000_000L in
+    let amount_1 = Tez.of_mumav 2_999_999L in
+    let amount_2 = Tez.of_mumav 7_000_001L in
     snapshot_balances "init" ["staker"]
     --> stake "staker" (Amount full_amount)
     --> next_cycle
@@ -1949,9 +1949,9 @@ module Roundtrip = struct
     --> assert_failure
           (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
     --> (Tag "finalize with finalize" --> finalize_unstake "staker"
-        |+ Tag "finalize with stake" --> stake "staker" (Amount Tez.one_mutez)
+        |+ Tag "finalize with stake" --> stake "staker" (Amount Tez.one_mumav)
         |+ Tag "finalize with unstake"
-           --> unstake "staker" (Amount Tez.one_mutez))
+           --> unstake "staker" (Amount Tez.one_mumav))
     --> check_balance_field "staker" `Unstaked_finalizable Tez.zero
 
   (* Finalize does not go through when unstake does nothing *)
@@ -1963,7 +1963,7 @@ module Roundtrip = struct
           (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
     --> snapshot_balances "not finalize" ["staker"]
     --> (Tag "no finalize with unstake if staked = 0"
-        --> unstake "staker" (Amount Tez.one_mutez))
+        --> unstake "staker" (Amount Tez.one_mumav))
     --> assert_failure
           (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
     --> check_snapshot_balances "not finalize"
@@ -1988,16 +1988,16 @@ module Roundtrip = struct
     --> unstake "staker" Nothing
 
   let full_balance_in_finalizable =
-    add_account_with_funds "dummy" "staker" (Amount (Tez.of_mutez 10_000_000L))
+    add_account_with_funds "dummy" "staker" (Amount (Tez.of_mumav 10_000_000L))
     --> stake "staker" All_but_one --> next_cycle --> unstake "staker" All
     --> wait_n_cycles (default_unstake_wait + 2)
-    (* At this point, almost all the balance (but one mutez) of the stake is in finalizable *)
+    (* At this point, almost all the balance (but one mumav) of the stake is in finalizable *)
     (* Staking is possible, but not transfer *)
     --> assert_failure
-          (transfer "staker" "dummy" (Amount (Tez.of_mutez 10_000_000L)))
-    --> stake "staker" (Amount (Tez.of_mutez 10_000_000L))
+          (transfer "staker" "dummy" (Amount (Tez.of_mumav 10_000_000L)))
+    --> stake "staker" (Amount (Tez.of_mumav 10_000_000L))
     (* After the stake, transfer is possible again because the funds were finalized *)
-    --> transfer "staker" "dummy" (Amount (Tez.of_mutez 10_000_000L))
+    --> transfer "staker" "dummy" (Amount (Tez.of_mumav 10_000_000L))
 
   (* Stress test: what happens if someone were to stake and unstake every cycle? *)
   let odd_behavior =
@@ -2020,7 +2020,7 @@ module Roundtrip = struct
     --> add_account_with_funds
           "staker"
           "delegate1"
-          (Amount (Tez.of_mutez 2_000_000_000_000L))
+          (Amount (Tez.of_mumav 2_000_000_000_000L))
     --> set_delegate "staker" (Some "delegate1")
     --> wait_ai_activation --> next_cycle --> stake "staker" Half --> next_cycle
     --> set_delegate "staker" (Some "delegate2")
@@ -2042,11 +2042,11 @@ module Roundtrip = struct
     --> add_account_with_funds
           "staker"
           "delegate"
-          (Amount (Tez.of_mutez 2_000_000_000_000L))
+          (Amount (Tez.of_mumav 2_000_000_000_000L))
     --> add_account_with_funds
           "dummy"
           "delegate"
-          (Amount (Tez.of_mutez 2_000_000L))
+          (Amount (Tez.of_mumav 2_000_000L))
     --> set_delegate "staker" (Some "delegate")
     --> wait_ai_activation --> next_cycle --> stake "staker" Half
     --> unstake "staker" All --> next_cycle --> set_delegate "staker" None
@@ -2071,14 +2071,14 @@ module Roundtrip = struct
         edge_of_baking_over_staking = Q.one;
       }
     in
-    let amount = Amount (Tez.of_mutez 1_000_000L) in
+    let amount = Amount (Tez.of_mumav 1_000_000L) in
     (* init *)
     begin_test ~activate_ai:true constants ["delegate"]
     --> set_delegate_params "delegate" init_params
     --> add_account_with_funds
           "staker"
           "delegate"
-          (Amount (Tez.of_mutez 2_000_000_000_000L))
+          (Amount (Tez.of_mumav 2_000_000_000_000L))
     --> set_delegate "staker" (Some "delegate")
     --> wait_ai_activation --> next_cycle
     (* try stake in normal conditions *)
@@ -2180,7 +2180,7 @@ module Rewards = struct
         edge_of_baking_over_staking = Q.one;
       }
     in
-    let delta = Amount (Tez.of_mutez 20_000_000_000L) in
+    let delta = Amount (Tez.of_mumav 20_000_000_000L) in
     let cycle_stake =
       save_current_rate --> stake "delegate" delta --> next_cycle
       --> check_rate_evolution Q.gt
@@ -2196,8 +2196,8 @@ module Rewards = struct
     --> set_delegate_params "delegate" init_params
     --> save_current_rate --> wait_ai_activation
     (* We stake about 50% of the total supply *)
-    --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
-    --> stake "__bootstrap__" (Amount (Tez.of_mutez 1_800_000_000_000L))
+    --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
+    --> stake "__bootstrap__" (Amount (Tez.of_mumav 1_800_000_000_000L))
     --> (Tag "increase stake, decrease rate" --> next_cycle
          --> loop rate_var_lag (stake "delegate" delta --> next_cycle)
          --> loop 10 cycle_stake
@@ -2233,15 +2233,15 @@ module Autostaking = struct
     let old_b, new_b =
       match part with
       | `liquid ->
-          ( Q.of_int64 @@ Tez.to_mutez old_balance.liquid_b,
-            Q.of_int64 @@ Tez.to_mutez new_balance.liquid_b )
+          ( Q.of_int64 @@ Tez.to_mumav old_balance.liquid_b,
+            Q.of_int64 @@ Tez.to_mumav new_balance.liquid_b )
       | `staked -> (old_balance.staked_b, new_balance.staked_b)
       | `unstaked_frozen ->
-          ( Q.of_int64 @@ Tez.to_mutez old_balance.unstaked_frozen_b,
-            Q.of_int64 @@ Tez.to_mutez new_balance.unstaked_frozen_b )
+          ( Q.of_int64 @@ Tez.to_mumav old_balance.unstaked_frozen_b,
+            Q.of_int64 @@ Tez.to_mumav new_balance.unstaked_frozen_b )
       | `unstaked_finalizable ->
-          ( Q.of_int64 @@ Tez.to_mutez old_balance.unstaked_finalizable_b,
-            Q.of_int64 @@ Tez.to_mutez new_balance.unstaked_finalizable_b )
+          ( Q.of_int64 @@ Tez.to_mumav old_balance.unstaked_finalizable_b,
+            Q.of_int64 @@ Tez.to_mumav new_balance.unstaked_finalizable_b )
     in
     if List.mem ~equal:String.equal name for_accounts then
       if compare new_b old_b then return_unit
@@ -2264,11 +2264,11 @@ module Autostaking = struct
     --> add_account_with_funds
           delegator1
           "__bootstrap__"
-          (Amount (Tez.of_mutez 2_000_000_000L))
+          (Amount (Tez.of_mumav 2_000_000_000L))
     --> add_account_with_funds
           delegator2
           "__bootstrap__"
-          (Amount (Tez.of_mutez 2_000_000_000L))
+          (Amount (Tez.of_mumav 2_000_000_000L))
     --> next_cycle
     --> (if activate_ai then wait_ai_activation else next_cycle)
     --> snapshot_balances "before delegation" [delegate]
@@ -2356,33 +2356,33 @@ module Autostaking = struct
     --> add_account_with_funds
           "delegator_to_fund"
           "delegate"
-          (Amount (Tez.of_mutez 3_600_000_000_000L))
+          (Amount (Tez.of_mumav 3_600_000_000_000L))
     (* Delegate has 200k staked and 200k liquid *)
     --> set_delegate "delegator_to_fund" (Some "delegate")
     (* Delegate stake will not change at the end of cycle: same stake *)
     --> next_cycle
-    --> check_balance_field "delegate" `Staked (Tez.of_mutez 200_000_000_000L)
+    --> check_balance_field "delegate" `Staked (Tez.of_mumav 200_000_000_000L)
     --> transfer
           "faucet1"
           "delegator_to_fund"
-          (Amount (Tez.of_mutez 3_600_000_000_000L))
+          (Amount (Tez.of_mumav 3_600_000_000_000L))
     (* Delegate is not overdelegated, but will need to freeze 180k *)
     --> next_cycle
-    --> check_balance_field "delegate" `Staked (Tez.of_mutez 380_000_000_000L)
+    --> check_balance_field "delegate" `Staked (Tez.of_mumav 380_000_000_000L)
     --> transfer
           "faucet2"
           "delegator_to_fund"
-          (Amount (Tez.of_mutez 3_600_000_000_000L))
+          (Amount (Tez.of_mumav 3_600_000_000_000L))
     (* Delegate is now overdelegated, it will freeze 100% *)
     --> next_cycle
-    --> check_balance_field "delegate" `Staked (Tez.of_mutez 400_000_000_000L)
+    --> check_balance_field "delegate" `Staked (Tez.of_mumav 400_000_000_000L)
     --> transfer
           "faucet3"
           "delegator_to_fund"
-          (Amount (Tez.of_mutez 3_600_000_000_000L))
+          (Amount (Tez.of_mumav 3_600_000_000_000L))
     (* Delegate is overmegadelegated *)
     --> next_cycle
-    --> check_balance_field "delegate" `Staked (Tez.of_mutez 400_000_000_000L)
+    --> check_balance_field "delegate" `Staked (Tez.of_mumav 400_000_000_000L)
 
   let tests =
     tests_of_scenarios
@@ -2558,10 +2558,10 @@ module Slashing = struct
       --> next_cycle
       --> loop
             6
-            (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L)) --> next_cycle)
+            (op "delegate" (Amount (Tez.of_mumav 1_000_000_000L)) --> next_cycle)
       --> loop
             10
-            (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L))
+            (op "delegate" (Amount (Tez.of_mumav 1_000_000_000L))
             --> double_bake "delegate"
             -->
             if early_d then make_denunciations () --> next_cycle
@@ -2606,7 +2606,7 @@ module Slashing = struct
           add_account_with_funds
             delegator
             faucet_name
-            (Amount (Tez.of_mutez amount))
+            (Amount (Tez.of_mumav amount))
           --> set_delegate delegator (Some delegate_name)
           --> init_delegators t
     in
@@ -2665,11 +2665,11 @@ module Slashing = struct
 
   let test_no_shortcut_for_cheaters =
     let constants = init_constants ~autostaking_enable:false () in
-    let amount = Amount (Tez.of_mutez 333_000_000_000L) in
+    let amount = Amount (Tez.of_mumav 333_000_000_000L) in
     let preserved_cycles = constants.preserved_cycles in
     begin_test ~activate_ai:true constants ["delegate"]
     --> next_block --> wait_ai_activation
-    --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+    --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
     --> next_cycle --> double_bake "delegate" --> make_denunciations ()
     --> next_cycle
     --> snapshot_balances "init" ["delegate"]
@@ -2687,13 +2687,13 @@ module Slashing = struct
 
   let test_slash_correct_amount_after_stake_from_unstake =
     let constants = init_constants ~autostaking_enable:false () in
-    let amount_to_unstake = Amount (Tez.of_mutez 200_000_000_000L) in
-    let amount_to_restake = Amount (Tez.of_mutez 100_000_000_000L) in
-    let amount_expected_in_unstake_after_slash = Tez.of_mutez 50_000_000_000L in
+    let amount_to_unstake = Amount (Tez.of_mumav 200_000_000_000L) in
+    let amount_to_restake = Amount (Tez.of_mumav 100_000_000_000L) in
+    let amount_expected_in_unstake_after_slash = Tez.of_mumav 50_000_000_000L in
     let preserved_cycles = constants.preserved_cycles in
     begin_test ~activate_ai:true constants ["delegate"]
     --> next_block --> wait_ai_activation
-    --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+    --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
     --> next_cycle
     --> unstake "delegate" amount_to_unstake
     --> stake "delegate" amount_to_restake
@@ -2715,7 +2715,7 @@ module Slashing = struct
      --> next_block --> wait_ai_activation
     |+ Tag "No AI"
        --> begin_test ~activate_ai:false constants ["delegate"; "baker"])
-    --> unstake "delegate" (Amount Tez.one_mutez)
+    --> unstake "delegate" (Amount Tez.one_mumav)
     --> set_baker "baker" --> next_cycle
     --> ((Tag "7% slash" --> double_bake "delegate" --> make_denunciations ()
          |+ Tag "99% slash" --> next_cycle --> double_attest "delegate"
@@ -2729,7 +2729,7 @@ module Slashing = struct
     let constants = init_constants ~autostaking_enable:false () in
     begin_test ~activate_ai:true constants ["delegate"; "baker"]
     --> set_baker "baker" --> next_block --> wait_ai_activation
-    --> unstake "delegate" (Amount (Tez.of_mutez 2L))
+    --> unstake "delegate" (Amount (Tez.of_mumav 2L))
     --> next_cycle --> double_bake "delegate" --> double_bake "delegate"
     --> make_denunciations () --> wait_n_cycles 7
     --> finalize_unstake "delegate"
@@ -2749,7 +2749,7 @@ module Slashing = struct
            test_no_shortcut_for_cheaters );
          ( "Test stake from unstake reduce initial amount",
            test_slash_correct_amount_after_stake_from_unstake );
-         ("Test unstake 1 mutez then slash", test_mini_slash);
+         ("Test unstake 1 mumav then slash", test_mini_slash);
          ("Test slash rounding", test_slash_rounding);
        ]
 end

@@ -72,9 +72,9 @@ and code. To declare a view, the ``view`` keyword is used; its syntax is
   (pair 'arg 'storage_ty) 'return`` where ``'storage_ty`` is the type of
   the storage of the current contract. Certain specific instructions
   have different semantics in views: ``BALANCE`` represents the current
-  amount of mutez held by the contract where the view is declared; ``SENDER``
+  amount of mumav held by the contract where the view is declared; ``SENDER``
   represents the contract which is calling the view; ``SELF_ADDRESS``
-  represents the contract declaring the view; ``AMOUNT`` is always 0 mutez.
+  represents the contract declaring the view; ``AMOUNT`` is always 0 mumav.
 
 Forbidden types
 ---------------

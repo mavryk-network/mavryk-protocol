@@ -166,7 +166,7 @@ type prim =
   | T_signature
   | T_string
   | T_bytes
-  | T_mutez
+  | T_mumav
   | T_timestamp
   | T_unit
   | T_operation
@@ -186,7 +186,7 @@ type prim =
   | A_Int
   | A_Nat
   | A_Timestamp
-  | A_Mutez
+  | A_Mumav
   | A_Key_hash
   | A_Key
   | A_List
@@ -333,7 +333,7 @@ let relation =
     (T_signature, Michelson_v1_primitives.T_signature);
     (T_string, Michelson_v1_primitives.T_string);
     (T_bytes, Michelson_v1_primitives.T_bytes);
-    (T_mutez, Michelson_v1_primitives.T_mutez);
+    (T_mumav, Michelson_v1_primitives.T_mumav);
     (T_timestamp, Michelson_v1_primitives.T_timestamp);
     (T_unit, Michelson_v1_primitives.T_unit);
     (T_operation, Michelson_v1_primitives.T_operation);
@@ -503,7 +503,7 @@ let string_of_prim prim =
   | T_signature -> "T_signature"
   | T_string -> "T_string"
   | T_bytes -> "T_bytes"
-  | T_mutez -> "T_mutez"
+  | T_mumav -> "T_mumav"
   | T_timestamp -> "T_timestamp"
   | T_unit -> "T_unit"
   | T_operation -> "T_operation"
@@ -521,7 +521,7 @@ let string_of_prim prim =
   | A_Int -> "A_Int"
   | A_Nat -> "A_Nat"
   | A_Timestamp -> "A_Timestamp"
-  | A_Mutez -> "A_Mutez"
+  | A_Mumav -> "A_Mumav"
   | A_Key_hash -> "A_Key_hash"
   | A_Key -> "A_Key"
   | A_List -> "A_List"
@@ -560,13 +560,13 @@ let kind (x : prim) =
       Instr_kind
   | T_bool | T_contract | T_int | T_key | T_key_hash | T_lambda | T_list | T_map
   | T_big_map | T_nat | T_option | T_or | T_pair | T_set | T_signature
-  | T_string | T_bytes | T_mutez | T_timestamp | T_unit | T_operation
+  | T_string | T_bytes | T_mumav | T_timestamp | T_unit | T_operation
   | T_address | T_chain_id | T_never | T_sapling_state
   | T_sapling_transaction_deprecated | T_bls12_381_g1 | T_bls12_381_g2
   | T_bls12_381_fr | T_ticket ->
       Type_kind
   (* Holes in programs and data. *)
   (* Annotations. *)
-  | A_Int | A_Nat | A_Timestamp | A_Mutez | A_Key_hash | A_Key | A_List | A_Set
+  | A_Int | A_Nat | A_Timestamp | A_Mumav | A_Key_hash | A_Key | A_List | A_Set
   | A_Map | A_Lambda ->
       Annot_kind

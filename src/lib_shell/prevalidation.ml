@@ -140,7 +140,7 @@ module MakeAbstract
     conflict_map : Proto.Plugin.Conflict_map.t;
         (** State needed by
             [Proto.Plugin.Conflict_map.fee_needed_to_replace_by_fee] in
-            order to provide the [needed_fee_in_mutez] field of the
+            order to provide the [needed_fee_in_mumav] field of the
             [Operation_conflict] error (see the [translate_proto_add_result]
             function below). *)
   }
@@ -232,13 +232,13 @@ module MakeAbstract
            that [op] would need in order to win the conflict and replace
            the old operation, if such a fee exists; otherwise the error
            should contain [None]. *)
-        let needed_fee_in_mutez =
+        let needed_fee_in_mumav =
           Proto.Plugin.Conflict_map.fee_needed_to_replace_by_fee
             filter_config
             ~candidate_op:op.protocol
             ~conflict_map
         in
-        error [Operation_conflict {new_hash = op.hash; needed_fee_in_mutez}]
+        error [Operation_conflict {new_hash = op.hash; needed_fee_in_mumav}]
 
   let update_bounding_state bounding_state bounding_config op ~proto_replacement
       =
@@ -251,7 +251,7 @@ module MakeAbstract
     let* bounding_state, removed_operation_hashes =
       Result.map_error
         (fun op_to_overtake ->
-          let needed_fee_in_mutez =
+          let needed_fee_in_mumav =
             Option.bind op_to_overtake (fun op_to_overtake ->
                 Proto.Plugin.fee_needed_to_overtake
                   ~op_to_overtake:op_to_overtake.protocol
@@ -259,7 +259,7 @@ module MakeAbstract
           in
           [
             Validation_errors.Rejected_by_full_mempool
-              {hash = op.hash; needed_fee_in_mutez};
+              {hash = op.hash; needed_fee_in_mumav};
           ])
         (Bounding.add_operation bounding_state bounding_config op)
     in

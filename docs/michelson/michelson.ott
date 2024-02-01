@@ -3,9 +3,9 @@ Require Import String.
 Require Import ZArith.
 Open Scope string_scope.
 
-Module Mutez.
-  Inductive mutez :=.
-End Mutez.
+Module Mumav.
+  Inductive mumav :=.
+End Mumav.
 
 }}
 
@@ -18,7 +18,7 @@ metavar int_litteral ::= {{ coq Z }}
 % metavar signature_litteral ::= {{ coq String.string }}
 % metavar key_litteral ::= {{ coq String.string }}
 % metavar key_hash_litteral ::= {{ coq String.string }}
-% metavar mutez_litteral ::= {{ coq Mutez.mutez }}
+% metavar mumav_litteral ::= {{ coq Mumav.mumav }}
 % metavar contract_litteral ::= {{ coq String.string }}
 
 indexvar N ::= {{ coq nat }}
@@ -167,7 +167,7 @@ concrete_data, data, x, y, k, v, d, opt_y :: d_ ::=
   % | signature_litteral :: :: Signature
   % | key_litteral :: :: Key
   % | key_hash_litteral :: :: Key_hash
-  % | mutez_litteral :: :: Mutez
+  % | mumav_litteral :: :: Mumav
   % | contract_litteral :: :: Contract
   | Unit :: :: Unit
   | Pair x1 .... xN :: :: Pair
@@ -199,7 +199,7 @@ simple_comparable_type, scty :: scty_ ::=
   | int       :: :: int
   | bytes     :: :: bytes
   | bool      :: :: bool
-  | mutez     :: :: mutez
+  | mumav     :: :: mumav
   | key_hash  :: :: key_hash
   | address   :: :: address
   | timestamp :: :: timestamp
@@ -490,8 +490,8 @@ Typing :: 't_' ::=
        ---------------------------- :: key_hash
        ctx :- s :: key_hash
 
-       ---------------------- :: mutez
-       ctx :- z :: mutez
+       ---------------------- :: mumav
+       ctx :- z :: mumav
 
        get_contract_type s ty1
        ------------------------------------- :: contract
@@ -607,7 +607,7 @@ Typing :: 't_' ::=
        ctx :- NIL ty :: A => list ty : A
 
        --------------------------- :: BALANCE
-       ctx :- BALANCE :: A => mutez : A
+       ctx :- BALANCE :: A => mumav : A
 
        ---------------------------- :: SOURCE
        ctx :- SOURCE :: A => address : A
@@ -624,7 +624,7 @@ Typing :: 't_' ::=
        ctx :- SELF_ADDRESS :: A => address : A
 
        -------------------------- :: AMOUNT
-       ctx :- AMOUNT :: A => mutez : A
+       ctx :- AMOUNT :: A => mumav : A
 
        --------------------------- :: NOW
        ctx :- NOW :: A => timestamp : A
@@ -918,11 +918,11 @@ Typing :: 't_' ::=
 
 
 % ------------------------------------------------------------------------------------------------------- :: CREATE_ACCOUNT
-%        CREATE_ACCOUNT :: key_hash : option key_hash : bool : mutez : A => operation : contract unit : A
+%        CREATE_ACCOUNT :: key_hash : option key_hash : bool : mumav : A => operation : contract unit : A
 
 
        ------------------------------------------------------------------- :: TRANSFER_TOKENS
-       ctx :- TRANSFER_TOKENS :: ty : mutez : contract ty : A => operation : A
+       ctx :- TRANSFER_TOKENS :: ty : mumav : contract ty : A => operation : A
 
 
        --------------------------------------------------------------- :: CHECK_SIGNATURE
@@ -947,8 +947,8 @@ Typing :: 't_' ::=
        ----------------------------------------------- :: ADD__int_timestamp
        ctx :- ADD :: int : timestamp : A => timestamp : A
 
-       ----------------------------------------- :: ADD__mutez_mutez_mutez
-       ctx :- ADD :: mutez : mutez : A => mutez : A
+       ----------------------------------------- :: ADD__mumav_mumav_mumav
+       ctx :- ADD :: mumav : mumav : A => mumav : A
 
        ----------------------------------------- :: ADD__g1
        ctx :- ADD :: bls12_381_g1 : bls12_381_g1 : A => bls12_381_g1 : A
@@ -977,8 +977,8 @@ Typing :: 't_' ::=
        ----------------------------------------------- :: SUB__timestamp_timestamp
        ctx :- SUB :: timestamp : timestamp : A => int : A
 
-       ----------------------------------------- :: SUB__mutez_mutez
-       ctx :- SUB :: mutez : mutez : A => mutez : A
+       ----------------------------------------- :: SUB__mumav_mumav
+       ctx :- SUB :: mumav : mumav : A => mumav : A
 
        ----------------------------------- :: MUL__nat_nat
        ctx :- MUL :: nat : nat : A => nat : A
@@ -992,11 +992,11 @@ Typing :: 't_' ::=
        ----------------------------------- :: MUL__int_int
        ctx :- MUL :: int : int : A => int : A
 
-       --------------------------------------- :: MUL__mutez_nat
-       ctx :- MUL :: mutez : nat : A => mutez : A
+       --------------------------------------- :: MUL__mumav_nat
+       ctx :- MUL :: mumav : nat : A => mumav : A
 
-       --------------------------------------- :: MUL__nat_mutez
-       ctx :- MUL :: nat : mutez : A => mutez : A
+       --------------------------------------- :: MUL__nat_mumav
+       ctx :- MUL :: nat : mumav : A => mumav : A
 
        --------------------------------------- :: MUL__g1_fr
        ctx :- MUL :: bls12_381_g1 : bls12_381_fr : A => bls12_381_g1 : A
@@ -1031,11 +1031,11 @@ Typing :: 't_' ::=
        ------------------------------------------- :: EDIV__int_int
        ctx :- EDIV :: int : int : A => option ( pair int nat ) : A
 
-       ------------------------------------------------- :: EDIV__mutez_nat
-       ctx :- EDIV :: mutez : nat : A => option ( pair mutez mutez ) : A
+       ------------------------------------------------- :: EDIV__mumav_nat
+       ctx :- EDIV :: mumav : nat : A => option ( pair mumav mumav ) : A
 
-       ------------------------------------------------- :: EDIV__mutez_mutez
-       ctx :- EDIV :: mutez : mutez : A => option ( pair nat mutez ) : A
+       ------------------------------------------------- :: EDIV__mumav_mumav
+       ctx :- EDIV :: mumav : mumav : A => option ( pair nat mumav ) : A
 
        ------------------------------------------------- :: CHAIN_ID
        ctx :- CHAIN_ID :: A => chain_id : A
@@ -1106,7 +1106,7 @@ Typing :: 't_' ::=
        %% ty2 : parameter
        Some ty2 :- instr :: pair ty2 ty1 : [] => pair ( list operation ) ty1 : []
        --------------------------------------------------------------- :: CREATE_CONTRACT
-       ctx :- CREATE_CONTRACT { parameter ty1 ; storage ty2 ; code instr1 } :: option key_hash : mutez : ty2 : A => operation : address : A
+       ctx :- CREATE_CONTRACT { parameter ty1 ; storage ty2 ; code instr1 } :: option key_hash : mumav : ty2 : A => operation : address : A
 
        length A = n
        ------------------------------------------------- :: DIG

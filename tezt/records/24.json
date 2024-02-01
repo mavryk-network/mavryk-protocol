@@ -583,7 +583,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input734264738]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input734264738]",
     "tags": [
       "regression",
       "alpha",
@@ -596,7 +596,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input993071382]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input993071382]",
     "tags": [
       "regression",
       "lima",
@@ -700,7 +700,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [mutez_to_bls12_381_fr--storage151303925--input216277421]",
+    "title": "Alpha: opcodes [mumav_to_bls12_381_fr--storage151303925--input216277421]",
     "tags": [
       "regression",
       "alpha",
@@ -1481,7 +1481,7 @@
   },
   {
     "file": "replace_by_fees.ml",
-    "title": "Alpha: Second op's fees are below threshold by 1 mutez",
+    "title": "Alpha: Second op's fees are below threshold by 1 mumav",
     "tags": [
       "alpha",
       "replace",

@@ -10,7 +10,7 @@
   view "v" unit unit {
          DROP ;
          UNIT ;
-         PUSH mutez 5 ;
+         PUSH mumav 5 ;
          NONE key_hash ;
          CREATE_CONTRACT {
            storage unit ;

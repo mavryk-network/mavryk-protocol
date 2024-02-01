@@ -267,8 +267,8 @@ pub mod interpret_cost {
             (V::Bool(_), V::Bool(_)) => cmp_bytes(1, 1)?,
             (V::Bool(_), _) => incomparable(),
 
-            (V::Mutez(_), V::Mutez(_)) => cmp_bytes(8, 8)?,
-            (V::Mutez(_), _) => incomparable(),
+            (V::Mumav(_), V::Mumav(_)) => cmp_bytes(8, 8)?,
+            (V::Mumav(_), _) => incomparable(),
 
             (V::String(l), V::String(r)) => cmp_bytes(l.len(), r.len())?,
             (V::String(_), _) => incomparable(),

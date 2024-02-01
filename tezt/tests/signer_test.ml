@@ -71,7 +71,7 @@ let signer_simple_test =
   Protocol.register_test
     ~__FILE__
     ~title:"signer test"
-    ~tags:["node"; "baker"; "tz1"]
+    ~tags:["node"; "baker"; "mv1"]
     ~uses:(fun _ -> [Constant.octez_signer])
   @@ fun protocol ->
   let* _ =
@@ -118,7 +118,7 @@ let signer_bls_test =
   in
   let* () = Client.bake_for_and_wait client in
   let* balance_1 = get_balance_tz4 client in
-  Check.((Tez.mutez_int64 balance_0 > Tez.mutez_int64 balance_1) int64)
+  Check.((Tez.mumav_int64 balance_0 > Tez.mumav_int64 balance_1) int64)
     ~error_msg:"Tz4 sender %s has decreased balance after transfer" ;
   unit
 

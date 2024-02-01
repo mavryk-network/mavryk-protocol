@@ -58,7 +58,7 @@ let await_protocol_start (cctxt : #Protocol_client_context.full) ~chain =
 
 module Baker = struct
   let run (cctxt : Protocol_client_context.full) ?minimal_fees
-      ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?votes
+      ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?votes
       ?extra_operations ?dal_node_endpoint ?force_apply ?context_path
       ?state_recorder ~chain ~keep_alive delegates =
     let open Lwt_result_syntax in
@@ -69,8 +69,8 @@ module Baker = struct
       let config =
         Baking_configuration.make
           ?minimal_fees
-          ?minimal_nanotez_per_gas_unit
-          ?minimal_nanotez_per_byte
+          ?minimal_nanomav_per_gas_unit
+          ?minimal_nanomav_per_byte
           ?votes
           ?extra_operations
           ?dal_node_endpoint

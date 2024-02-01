@@ -40,7 +40,7 @@ module Base = struct
     | Bytes_t
     | Key_hash_t
     | Timestamp_t
-    | Mutez_t
+    | Mumav_t
     | Key_t
     | Option_t of t
     | Pair_t of t * t
@@ -64,7 +64,7 @@ module Base = struct
       | Bytes_t, Bytes_t
       | Key_hash_t, Key_hash_t
       | Timestamp_t, Timestamp_t
-      | Mutez_t, Mutez_t
+      | Mumav_t, Mumav_t
       | Key_t, Key_t ->
           true
       | Option_t ty1, Option_t ty2 -> ty1.tag = ty2.tag
@@ -96,7 +96,7 @@ module Base = struct
     | Bytes_t -> Format.pp_print_string fmtr "bytes"
     | Key_hash_t -> Format.pp_print_string fmtr "key_hash"
     | Timestamp_t -> Format.pp_print_string fmtr "timestamp"
-    | Mutez_t -> Format.pp_print_string fmtr "mutez"
+    | Mumav_t -> Format.pp_print_string fmtr "mumav"
     | Key_t -> Format.pp_print_string fmtr "key"
     | Option_t ty -> Format.fprintf fmtr "(option %a)" pp ty
     | List_t ty -> Format.fprintf fmtr "(list %a)" pp ty
@@ -110,7 +110,7 @@ module Base = struct
   let rec vars x acc =
     match x.Hashcons.node with
     | Unit_t | Int_t | Nat_t | Bool_t | String_t | Bytes_t | Key_hash_t
-    | Timestamp_t | Mutez_t | Key_t ->
+    | Timestamp_t | Mumav_t | Key_t ->
         acc
     | Var_t v -> v :: acc
     | Option_t ty | List_t ty | Set_t ty -> vars ty acc
@@ -174,7 +174,7 @@ let key_hash = Base.Table.hashcons Base.table Key_hash_t
 
 let timestamp = Base.Table.hashcons Base.table Timestamp_t
 
-let mutez = Base.Table.hashcons Base.table Mutez_t
+let mumav = Base.Table.hashcons Base.table Mumav_t
 
 let key = Base.Table.hashcons Base.table Key_t
 

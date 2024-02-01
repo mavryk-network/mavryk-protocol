@@ -206,17 +206,17 @@ it displays three decimals:
 
    This sequence of operations was run:
      Manager signed operations:
-       From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
-       Fee to the baker: ꜩ0.000434
+       From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+       Fee to the baker: ṁ0.000434
        Expected counter: ...
        Gas limit: 1690
        Storage limit: 315 bytes
        Balance updates:
-         tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ........... -ꜩ0.000434
-         fees(tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx,0) ... +ꜩ0.000434
+         mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ........... -ṁ0.000434
+         fees(mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe,0) ... +ṁ0.000434
        Origination:
-         From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
-         Credit: ꜩ0
+         From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+         Credit: ṁ0
          Script:
            { parameter int ; storage unit ; code { CDR ; NIL operation ; PAIR } }
            Initial storage: Unit
@@ -228,8 +228,8 @@ it displays three decimals:
            Paid storage size diff: 38 bytes
            Consumed gas: 1589.562
            Balance updates:
-             tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ0.0095
-             tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ꜩ0.06425
+             mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.0095
+             mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.06425
 
 Patches:
 

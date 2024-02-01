@@ -243,7 +243,7 @@
       "client",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "76069788",
@@ -863,7 +863,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Lima: Tc opcodes/bls12_381_fr_to_mutez",
+    "title": "Lima: Tc opcodes/bls12_381_fr_to_mumav",
     "tags": [
       "regression",
       "lima",

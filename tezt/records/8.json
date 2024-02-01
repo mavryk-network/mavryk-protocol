@@ -225,13 +225,13 @@
   },
   {
     "file": "client_commands.ml",
-    "title": "Alpha: Set delegate forbidden on tz4",
+    "title": "Alpha: Set delegate forbidden on mv4",
     "tags": [
       "alpha",
       "client",
       "set_delegate",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "8973829",
@@ -564,7 +564,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input215785357]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input215785357]",
     "tags": [
       "regression",
       "alpha",
@@ -577,7 +577,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input215785357]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input215785357]",
     "tags": [
       "regression",
       "lima",
@@ -741,7 +741,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Alpha: Tc opcodes/bls12_381_fr_to_mutez",
+    "title": "Alpha: Tc opcodes/bls12_381_fr_to_mumav",
     "tags": [
       "regression",
       "alpha",
@@ -786,7 +786,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Alpha: Tc opcodes/mutez_to_bls12_381_fr",
+    "title": "Alpha: Tc opcodes/mumav_to_bls12_381_fr",
     "tags": [
       "regression",
       "alpha",

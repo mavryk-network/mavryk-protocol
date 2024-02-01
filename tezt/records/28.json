@@ -620,7 +620,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input635398196]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input635398196]",
     "tags": [
       "regression",
       "alpha",
@@ -633,7 +633,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [ediv_mutez--storage977883604--input734264738]",
+    "title": "Lima: opcodes [ediv_mumav--storage977883604--input734264738]",
     "tags": [
       "regression",
       "lima",
@@ -724,7 +724,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Lima: opcodes [bls12_381_fr_to_mutez--storage680650890--input229402968]",
+    "title": "Lima: opcodes [bls12_381_fr_to_mumav--storage680650890--input229402968]",
     "tags": [
       "regression",
       "lima",
@@ -1636,7 +1636,7 @@
       "node",
       "baker",
       "signer",
-      "tz1"
+      "mv1"
     ],
     "successful_runs": {
       "total_time": "10711229",

@@ -34,7 +34,7 @@ The five periods are as follows:
   At the end of a **proposal period**, if participation reaches a
   :ref:`proposal quorum <proposal_quorum>`, the proposal with most support is
   selected and we move to an **exploration period**. Note that support is
-  measured in the cumulated staking power (expressed in mutez) that delegates supporting the
+  measured in the cumulated staking power (expressed in mumav) that delegates supporting the
   proposal have. E.g., a proposal supported by a single delegate with 600,000 tz of staking power
   has more support than a proposal supported by two delegates with 100,000 tz
   each of staking power.
@@ -105,7 +105,7 @@ Voting Power
 ------------
 
 When supporting a proposal or casting a Yea, Nay, or Pass ballot, each delegate
-has a voting power equal to its *stake*. More precisely, the voting power of a delegate during a voting period is its :ref:`staking balance <active_stake_alpha>`, measured in *mutez*, sampled at the beginning of the period. (Note that this is opposed to validator selection for consensus, which is based on the active stake, and sampled at some stake snapshot during some previous cycle.)
+has a voting power equal to its *stake*. More precisely, the voting power of a delegate during a voting period is its :ref:`staking balance <active_stake_alpha>`, measured in *mumav*, sampled at the beginning of the period. (Note that this is opposed to validator selection for consensus, which is based on the active stake, and sampled at some stake snapshot during some previous cycle.)
 
 
 Super-majority and Quorum
@@ -265,29 +265,29 @@ in the following samples::
   Current period: "proposal"
   Blocks remaining until end of period: 59
   Current proposals:
-  PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp 2,400,000 ꜩ
+  PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp 2,400,000 ṁ
 
   $ octez-client show voting period
   Current period: "exploration"
   Blocks remaining until end of period: 63
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
   Ballots:
-    Yay: 2,400,000 ꜩ
-    Nay: 0 ꜩ
-    Pass: 0 ꜩ
+    Yay: 2,400,000 ṁ
+    Nay: 0 ṁ
+    Pass: 0 ṁ
   Current participation 20.00%, necessary quorum 80.00%
-  Current in favor 2,400,000 ꜩ, needed supermajority 1,920,000 ꜩ
+  Current in favor 2,400,000 ṁ, needed supermajority 1,920,000 ṁ
 
   $ octez-client show voting period
   Current period: "cooldown"
   Blocks remaining until end of period: 64
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
 
-It should be noted that the ballot number 2,400,000 ꜩ above is the stake counted in
-mutez (displayed in tez).
-The proposal has a total stake of 2,400,000 ꜩ, which may come from a single ballot
-from a delegate having a staking balance of 2,400,000 ꜩ or it may come from multiple ballots from
-delegates with a combined stake of 2,400,000 ꜩ.
+It should be noted that the ballot number 2,400,000 ṁ above is the stake counted in
+mumav (displayed in tez).
+The proposal has a total stake of 2,400,000 ṁ, which may come from a single ballot
+from a delegate having a staking balance of 2,400,000 ṁ or it may come from multiple ballots from
+delegates with a combined stake of 2,400,000 ṁ.
 
 
 Submit proposals

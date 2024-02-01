@@ -82,7 +82,7 @@ let ex_data_sampler : ex_data Tezos_benchmark.Base_samplers.sampler =
       random_state
   in
   let blacklist = function
-    | `TUnit | `TInt | `TNat | `TSignature | `TString | `TBytes | `TMutez
+    | `TUnit | `TInt | `TNat | `TSignature | `TString | `TBytes | `TMumav
     | `TKey_hash | `TKey | `TTimestamp | `TAddress | `TBool | `TPair | `TOr
     | `TOption | `TList | `TSet | `TMap | `TChain_id | `TBls12_381_g1
     | `TBls12_381_g2 | `TBls12_381_fr | `TBig_map | `TTicket ->

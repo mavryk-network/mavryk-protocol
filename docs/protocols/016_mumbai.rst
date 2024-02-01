@@ -99,9 +99,9 @@ Cryptography
 ------------
 
 - Support for BLS signatures and introduction of a new account type whose
-  address has the prefix ``tz4`` (whose keys are BLS-MinPk key pairs). The
+  address has the prefix ``mv4`` (whose keys are BLS-MinPk key pairs). The
   ``CHECK_SIGNATURE`` instruction of Michelson can also check BLS
-  signatures. ``tz4`` accounts are forbidden to be delegates. (MR :gl:`!5444`)
+  signatures. ``mv4`` accounts are forbidden to be delegates. (MR :gl:`!5444`)
 
 Bug Fixes
 ---------
@@ -154,16 +154,16 @@ In particular, the following quantities are kept the same:
    * - ``hard_gas_limit_per_block`` (gas unit)
      - ``5200000``
      - ``2600000``
-   * - ``baking_reward_fixed_portion`` (mutez)
+   * - ``baking_reward_fixed_portion`` (mumav)
      - ``10000000``
      - ``5000000``
-   * - ``baking_reward_bonus_per_slot`` (mutez)
+   * - ``baking_reward_bonus_per_slot`` (mumav)
      - ``4286``
      - ``2143``
-   * - ``endorsing_reward_per_slot`` (mutez)
+   * - ``endorsing_reward_per_slot`` (mumav)
      - ``2857``
      - ``1428``
-   * - ``liquidity_baking_subsidy`` (mutez)
+   * - ``liquidity_baking_subsidy`` (mumav)
      - ``2500000``
      - ``1250000``
 

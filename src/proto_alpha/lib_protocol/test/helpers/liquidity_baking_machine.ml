@@ -156,7 +156,7 @@ let pp_balances fmt b =
     fmt
     "@[<h>{xtz = %a; tzbtc = %d; liquidity = %d}@]"
     Tez.pp
-    (Tez.of_mutez_exn b.xtz)
+    (Tez.of_mumav_exn b.xtz)
     b.tzbtc
     b.liquidity
 
@@ -175,7 +175,7 @@ let pp_specs fmt specs =
       "@[<v>{@   @[<v>cpmm = {min_xtz = %a; min_tzbtc = %d}@ @[<v 2>accounts = \
        [@ %a@ ]@]@]@ }@]"
       Tez.pp
-      (Tez.of_mutez_exn specs.cpmm_min_xtz_balance)
+      (Tez.of_mumav_exn specs.cpmm_min_xtz_balance)
       specs.cpmm_min_tzbtc_balance
       (pp_print_list ~pp_sep:pp_print_space pp_balances)
       specs.accounts_balances)
@@ -209,7 +209,7 @@ let pp_step pp_contract fmt = function
           pp_contract
           p.source
           Tez.pp
-          (Tez.of_mutez_exn p.xtz_deposit)
+          (Tez.of_mumav_exn p.xtz_deposit)
           pp_contract
           p.destination)
   | AddLiquidity p ->
@@ -220,7 +220,7 @@ let pp_step pp_contract fmt = function
           pp_contract
           p.source
           Tez.pp
-          (Tez.of_mutez_exn p.xtz_deposit)
+          (Tez.of_mumav_exn p.xtz_deposit)
           pp_contract
           p.destination)
   | RemoveLiquidity p ->
@@ -380,7 +380,7 @@ end
 let default_subsidy =
   let open Tezos_protocol_alpha_parameters in
   let c = Default_parameters.constants_test in
-  Tez.to_mutez
+  Tez.to_mumav
   @@ Delegate.Rewards.For_RPC.reward_from_constants
        c
        ~reward_kind:Liquidity_baking_subsidy
@@ -476,14 +476,14 @@ module Machine = struct
              to actually call the [add_liquidity] entry point of the
              CPMM. *)
       let xtzPool =
-        Tez.of_mutez_exn
+        Tez.of_mumav_exn
           Int64.(add xtzPool (mul blocks_per_add_liquidity_step env.subsidy))
       in
       let* tokenPool = get_tzbtc_balance env.cpmm_contract env state in
       let tokenPool = Z.of_int tokenPool in
       let* lqtTotal = get_cpmm_total_liquidity env state in
       let lqtTotal = Z.of_int lqtTotal in
-      let amount = Tez.of_mutez_exn xtz_deposit in
+      let amount = Tez.of_mumav_exn xtz_deposit in
       let _, tokens_deposited =
         Cpmm_logic.Simulate_raw.addLiquidity
           ~tokenPool
@@ -746,7 +746,7 @@ module ConcreteBaseMachine :
 
   let get_xtz_balance contract blk =
     let* x = Context.Contract.balance (B blk) contract in
-    pure @@ Tez.to_mutez x
+    pure @@ Tez.to_mumav x
 
   let get_tzbtc_balance contract env blk =
     let destination = Destination.Contract contract in
@@ -795,7 +795,7 @@ module ConcreteBaseMachine :
   let reveal (account : Account.t) blk = Op.revelation (B blk) account.pk
 
   let transaction ~src dst amount blk =
-    Op.transaction (B blk) src dst (Tez.of_mutez_exn amount)
+    Op.transaction (B blk) src dst (Tez.of_mumav_exn amount)
 
   let token_to_xtz ~src dst tzbtc_deposit env blk =
     Cpmm_repr.transaction
@@ -817,7 +817,7 @@ module ConcreteBaseMachine :
       ~contract:env.cpmm_contract
       (Cpmm_repr.Parameter.XtzToToken
          {to_ = dst; minTokensBought = Z.zero; deadline = far_future})
-      ~amount:(Tez.of_mutez_exn amount)
+      ~amount:(Tez.of_mumav_exn amount)
 
   let approve_tzbtc src tzbtc env blk =
     let maxTokensDeposited = Z.of_int tzbtc in
@@ -838,7 +838,7 @@ module ConcreteBaseMachine :
       (Lqt_fa12_repr.Parameter.mintOrBurn {target; quantity})
 
   let add_liquidity ~src dst xtz_deposit tzbtc_deposit env blk =
-    let amount = Tez.of_mutez_exn xtz_deposit in
+    let amount = Tez.of_mumav_exn xtz_deposit in
     let maxTokensDeposited = Z.of_int tzbtc_deposit in
     Cpmm_repr.transaction
       (B blk)
@@ -877,7 +877,7 @@ module ConcreteBaseMachine :
 
   let init ~invariant ?subsidy accounts_balances =
     let liquidity_baking_subsidy =
-      Option.value ~default:default_subsidy subsidy |> Tez.of_mutez_exn
+      Option.value ~default:default_subsidy subsidy |> Tez.of_mumav_exn
     in
     let block_delay =
       Period.to_seconds
@@ -937,7 +937,7 @@ module ConcreteBaseMachine :
             liquidity_admin;
             implicit_accounts = accounts;
             holder;
-            subsidy = Tez.to_mutez subsidy;
+            subsidy = Tez.to_mumav subsidy;
           }
         in
         let* blk =
@@ -1098,7 +1098,7 @@ module AbstractMachine = struct
 
     let xtz_bought tzbtc env state =
       let xtzPool =
-        Tez.of_mutez_exn @@ get_xtz_balance env.cpmm_contract state
+        Tez.of_mumav_exn @@ get_xtz_balance env.cpmm_contract state
       in
       let tokenPool =
         Z.of_int @@ get_tzbtc_balance env.cpmm_contract env state
@@ -1107,7 +1107,7 @@ module AbstractMachine = struct
       let xtz_bought, xtz_net_bought =
         Cpmm_logic.Simulate_raw.tokenToXtz ~xtzPool ~tokenPool ~tokensSold
       in
-      (Z.to_int64 xtz_net_bought, Tez.to_mutez xtz_bought)
+      (Z.to_int64 xtz_net_bought, Tez.to_mumav xtz_bought)
 
     let token_to_xtz ~src dst amount env _ state =
       let xtz_bought, xtz_net_bought = xtz_bought amount env state in
@@ -1118,12 +1118,12 @@ module AbstractMachine = struct
 
     let tzbtc_bought env state amount =
       let xtzPool =
-        Tez.of_mutez_exn @@ get_xtz_balance env.cpmm_contract state
+        Tez.of_mumav_exn @@ get_xtz_balance env.cpmm_contract state
       in
       let tokenPool =
         Z.of_int @@ get_tzbtc_balance env.cpmm_contract env state
       in
-      let amount = Tez.of_mutez_exn amount in
+      let amount = Tez.of_mumav_exn amount in
       let tzbtc_bought, xtz_earnt =
         Cpmm_logic.Simulate_raw.xtzToToken ~xtzPool ~tokenPool ~amount
       in
@@ -1142,13 +1142,13 @@ module AbstractMachine = struct
 
     let add_liquidity ~src dst xtz_deposit _tzbtc_deposit env _ state =
       let xtzPool =
-        Tez.of_mutez_exn (get_xtz_balance env.cpmm_contract state)
+        Tez.of_mumav_exn (get_xtz_balance env.cpmm_contract state)
       in
       let tokenPool =
         Z.of_int (get_tzbtc_balance env.cpmm_contract env state)
       in
       let lqtTotal = Z.of_int state.cpmm_total_liquidity in
-      let amount = Tez.of_mutez_exn xtz_deposit in
+      let amount = Tez.of_mumav_exn xtz_deposit in
       let lqt_minted, tokens_deposited =
         Cpmm_logic.Simulate_raw.addLiquidity
           ~tokenPool
@@ -1170,7 +1170,7 @@ module AbstractMachine = struct
 
     let remove_liquidity ~src dst lqt_burned env _ state =
       let xtzPool =
-        Tez.of_mutez_exn (get_xtz_balance env.cpmm_contract state)
+        Tez.of_mumav_exn (get_xtz_balance env.cpmm_contract state)
       in
       let tokenPool =
         Z.of_int (get_tzbtc_balance env.cpmm_contract env state)
@@ -1184,7 +1184,7 @@ module AbstractMachine = struct
           ~lqtTotal
           ~lqtBurned
       in
-      let xtz_withdrawn = Tez.to_mutez xtz_withdrawn in
+      let xtz_withdrawn = Tez.to_mumav xtz_withdrawn in
       let tokens_withdrawn = Z.to_int tokens_withdrawn in
       let state =
         update_xtz_balance dst (fun b -> Int64.add b xtz_withdrawn) state

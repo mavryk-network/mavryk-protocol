@@ -148,7 +148,7 @@ module Proto_client = struct
         {
           source = Signature.Public_key_hash.zero;
           operation = dummy_operation;
-          fee = Tez.of_mutez_exn 3_000_000L;
+          fee = Tez.of_mumav_exn 3_000_000L;
           counter = Manager_counter.Internal_for_tests.of_int 500_000;
           gas_limit = Gas.Arith.integral_of_int_exn 500_000;
           storage_limit = Z.of_int 500_000;
@@ -265,13 +265,13 @@ module Proto_client = struct
     let open Lwt_result_syntax in
     let fee_parameter : Injection.fee_parameter =
       {
-        minimal_fees = Tez.of_mutez_exn fee_parameter.minimal_fees.mutez;
-        minimal_nanotez_per_byte = fee_parameter.minimal_nanotez_per_byte;
-        minimal_nanotez_per_gas_unit =
-          fee_parameter.minimal_nanotez_per_gas_unit;
+        minimal_fees = Tez.of_mumav_exn fee_parameter.minimal_fees.mumav;
+        minimal_nanomav_per_byte = fee_parameter.minimal_nanomav_per_byte;
+        minimal_nanomav_per_gas_unit =
+          fee_parameter.minimal_nanomav_per_gas_unit;
         force_low_fee = fee_parameter.force_low_fee;
-        fee_cap = Tez.of_mutez_exn fee_parameter.fee_cap.mutez;
-        burn_cap = Tez.of_mutez_exn fee_parameter.burn_cap.mutez;
+        fee_cap = Tez.of_mumav_exn fee_parameter.fee_cap.mumav;
+        burn_cap = Tez.of_mumav_exn fee_parameter.burn_cap.mumav;
       }
     in
     let open Annotated_manager_operation in
@@ -428,8 +428,8 @@ module Proto_client = struct
     let check purpose
         {
           minimal_fees;
-          minimal_nanotez_per_byte;
-          minimal_nanotez_per_gas_unit;
+          minimal_nanomav_per_byte;
+          minimal_nanomav_per_gas_unit;
           force_low_fee = _;
           fee_cap = _;
           burn_cap = _;
@@ -441,25 +441,25 @@ module Proto_client = struct
           "minimal_fees"
           Int64.compare
           Int64.to_string
-          (Protocol.Alpha_context.Tez.to_mutez
+          (Protocol.Alpha_context.Tez.to_mumav
              Plugin.Mempool.default_minimal_fees)
-          minimal_fees.mutez
+          minimal_fees.mumav
       and+ () =
         check_value
           purpose
-          "minimal_nanotez_per_byte"
+          "minimal_nanomav_per_byte"
           Q.compare
           Q.to_string
-          Plugin.Mempool.default_minimal_nanotez_per_byte
-          minimal_nanotez_per_byte
+          Plugin.Mempool.default_minimal_nanomav_per_byte
+          minimal_nanomav_per_byte
       and+ () =
         check_value
           purpose
-          "minimal_nanotez_per_gas_unit"
+          "minimal_nanomav_per_gas_unit"
           Q.compare
           Q.to_string
-          Plugin.Mempool.default_minimal_nanotez_per_gas_unit
-          minimal_nanotez_per_gas_unit
+          Plugin.Mempool.default_minimal_nanomav_per_gas_unit
+          minimal_nanomav_per_gas_unit
       in
       ()
     in

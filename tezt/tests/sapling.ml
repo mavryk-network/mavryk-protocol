@@ -1102,7 +1102,7 @@ let successful_roundtrip =
   let* amount, fees = unshield c "bob" alice_tz1 shield_amount in
   let* balance_alice_tz1_after = balance_tz1 c alice_tz1.public_key_hash in
   Check.(
-    (amount = Tez.(to_mutez shield_amount * -1 |> Tez.of_mutez_int))
+    (amount = Tez.(to_mumav shield_amount * -1 |> Tez.of_mumav_int))
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;

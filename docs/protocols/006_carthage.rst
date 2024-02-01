@@ -306,7 +306,7 @@ Detailed Changelog
 ::
 
    Add an optimisation that make the instruction cheaper in gas for
-   implicit contracts (tz1, tz2, tz3) by saving an I/O.
+   implicit contracts (mv1, mv2, mv3) by saving an I/O.
 
 
 .. _proto-006: https://gitlab.com/nomadic-labs/tezos/-/tree/proto-006

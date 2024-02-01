@@ -2223,7 +2223,7 @@ module Revamped = struct
     in
     let* _op =
       Operation.Manager.(
-        inject [make ~fee:(Tez.to_mutez balance) @@ transfer ()] client)
+        inject [make ~fee:(Tez.to_mumav balance) @@ transfer ()] client)
     in
     unit
 
@@ -2638,7 +2638,7 @@ module Revamped = struct
     log_step
       2
       "Inject two transfers op1 and op2 with respective fees %d and %d (in \
-       mutez) in node2."
+       mumav) in node2."
       fee1
       fee2 ;
     let inject_transfer_node2 source ~fee =
@@ -2659,18 +2659,18 @@ module Revamped = struct
     log_step
       4
       "Check that in the mempool of node1, op1 is validated whereas op2 is \
-       refused. Indeed, node1 has the default filter config: minimum 100 mutez \
-       PLUS 100 nanotez per gas unit PLUS 1000 nanotez per byte." ;
+       refused. Indeed, node1 has the default filter config: minimum 100 mumav \
+       PLUS 100 nanomav per gas unit PLUS 1000 nanomav per byte." ;
     let* () = check_mempool ~validated:[oph1] ~refused:[oph2] client1 in
     log_step
       5
-      "Set minimal_nanotez_per_gas_unit and minimal_nanotez_per_byte to 0 in \
+      "Set minimal_nanomav_per_gas_unit and minimal_nanomav_per_byte to 0 in \
        node1." ;
     let* () =
       Mempool.Config.set_filter
         ~log:true
-        ~minimal_nanotez_per_gas_unit:(0, 1)
-        ~minimal_nanotez_per_byte:(0, 1)
+        ~minimal_nanomav_per_gas_unit:(0, 1)
+        ~minimal_nanomav_per_byte:(0, 1)
         client1
     in
     let fee3 = 100 and fee4 = 99 in
@@ -2692,14 +2692,14 @@ module Revamped = struct
     in
     log_step
       8
-      "In node2, set minimal_nanotez_per_gas_unit and minimal_nanotez_per_byte \
+      "In node2, set minimal_nanomav_per_gas_unit and minimal_nanomav_per_byte \
        to 0 but minimal_fees to 101." ;
     let* () =
       Mempool.Config.set_filter
         ~log:true
         ~minimal_fees:101
-        ~minimal_nanotez_per_gas_unit:(0, 1)
-        ~minimal_nanotez_per_byte:(0, 1)
+        ~minimal_nanomav_per_gas_unit:(0, 1)
+        ~minimal_nanomav_per_byte:(0, 1)
         client2
     in
     log_step
@@ -2720,13 +2720,13 @@ module Revamped = struct
     log_step
       11
       "Set minimal_fees to 10 in the mempool configuration of node1, while \
-       keeping minimal_nanotez_per_gas_unit and minimal_nanotez_per_byte at 0." ;
+       keeping minimal_nanomav_per_gas_unit and minimal_nanomav_per_byte at 0." ;
     let* () =
       Mempool.Config.set_filter
         ~log:true
         ~minimal_fees:10
-        ~minimal_nanotez_per_gas_unit:(0, 1)
-        ~minimal_nanotez_per_byte:(0, 1)
+        ~minimal_nanomav_per_gas_unit:(0, 1)
+        ~minimal_nanomav_per_byte:(0, 1)
         client1
     in
     let fee5 = 10 and fee6 = 0 in
@@ -3331,8 +3331,8 @@ let wait_for_arrival_of_ophash ophash node =
 let set_filter_no_fee_requirement =
   Mempool.Config.set_filter
     ~minimal_fees:0
-    ~minimal_nanotez_per_gas_unit:(0, 1)
-    ~minimal_nanotez_per_byte:(0, 1)
+    ~minimal_nanomav_per_gas_unit:(0, 1)
+    ~minimal_nanomav_per_byte:(0, 1)
 
 (** Checks that arguments [applied] and [refused] are the number of operations
     in the mempool of [client] with the corresponding classification,
@@ -3440,12 +3440,12 @@ let iter2_p f l1 l2 = Lwt.join (List.map2 f l1 l2)
     - Step 2: In [node2]'s mempool filter configuration, set all fields
       [minimal_*] to 0, so that [node2] accepts operations with any fee.
     - Step 3: Inject two operations (transfers) in [node2] with respective
-      fees 1000 and 10 mutez. Check that both operations are [applied] in
+      fees 1000 and 10 mumav. Check that both operations are [applied] in
       [node2]'s mempool.
     - Step 4: Bake with an empty mempool for [node1] to force synchronization
       with [node2]. Check that the mempool of [node1] has one applied and one
       refused operation. Indeed, [node1] has the default filter config with
-      [minimal_fees] at 100 mutez.
+      [minimal_fees] at 100 mumav.
     - Step 5: In [node1]'s mempool filter configuration, set all fields
       [minimal_*] to 0. Inject a new operation with fee 5 in [node2], then
       bake with an empty mempool. Check that [node1] contains two applied
@@ -3491,7 +3491,7 @@ let test_do_not_reclassify =
   Log.info
     ~color:step_color
     "Step 3: Inject two operations (transfers) in [node2] with respective fees \
-     1000 and 10 mutez. Check that both operations are [applied] in [node2]'s \
+     1000 and 10 mumav. Check that both operations are [applied] in [node2]'s \
      mempool." ;
   let waiter_arrival_node1 = wait_for_arrival node1 in
   let inject_transfer from_key ~fee =
@@ -3502,7 +3502,7 @@ let test_do_not_reclassify =
         ~amount:(Tez.of_int 1)
         ~giver:from_key.Account.alias
         ~receiver:Constant.bootstrap5.alias
-        ~fee:(Tez.of_mutez_int fee)
+        ~fee:(Tez.of_mumav_int fee)
         client2
     in
     waiter
@@ -3519,7 +3519,7 @@ let test_do_not_reclassify =
     "Step 4: Bake with an empty mempool for [node1] to force synchronization \
      with [node2]. Check that the mempool of [node1] has one applied and one \
      refused operation. Indeed, [node1] has the default filter config with \
-     [minimal_fees] at 100 mutez." ;
+     [minimal_fees] at 100 mumav." ;
   let* () =
     bake_empty_block_and_wait_for_flush ~protocol ~log:true client1 node1
   in

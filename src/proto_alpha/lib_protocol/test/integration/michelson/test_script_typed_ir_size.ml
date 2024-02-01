@@ -249,11 +249,11 @@ let check_value_size () =
     @ (let show fmt s = Format.fprintf fmt "%s" (Bytes.to_string s) in
        exs nsample show Bytes_t ": bytes")
     (*
-       Mutez_t
+       Mumav_t
        =======
     *)
     @ (let show fmt t = Format.fprintf fmt "%s" (Tez.to_string t) in
-       exs nsample show Mutez_t ": mutez")
+       exs nsample show Mumav_t ": mumav")
     (*
        Key_hash_t
        ==========

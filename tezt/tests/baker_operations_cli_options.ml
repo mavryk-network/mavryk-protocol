@@ -116,11 +116,11 @@ let test_ignore_node_mempool =
       inject
         [
           make
-            ~fee:(Tez.to_mutez fee)
+            ~fee:(Tez.to_mumav fee)
             ~source:sender
             (transfer
                ~dest:Constant.bootstrap5
-               ~amount:(Tez.to_mutez amount)
+               ~amount:(Tez.to_mumav amount)
                ());
         ])
       client
@@ -439,7 +439,7 @@ let test_baker_external_operations =
     JSON.(manager_ops |=> 0 |-> "contents" |=> 0 |-> "amount" |> as_int)
   in
   Check.(
-    (Tez.of_mutez_int amount = transfer_value)
+    (Tez.of_mumav_int amount = transfer_value)
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected baked block to have an amount of %R, got %L") ;

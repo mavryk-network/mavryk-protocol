@@ -84,12 +84,12 @@ let deduce_tps ~protocol ~protocol_constants ~average_transaction_cost () =
 
 let deduce_fee_and_gas_limit gas_estimation =
   let fee =
-    Tez.of_mutez_int
+    Tez.of_mumav_int
       (Q.to_int
          (Q.mul
             (Q.of_int gas_estimation)
             Tezos_baking_alpha.Baking_configuration.default_config.fees
-              .minimal_nanotez_per_gas_unit)
+              .minimal_nanomav_per_gas_unit)
       / 100)
   in
   (fee, gas_estimation + Constants.gas_safety_margin)

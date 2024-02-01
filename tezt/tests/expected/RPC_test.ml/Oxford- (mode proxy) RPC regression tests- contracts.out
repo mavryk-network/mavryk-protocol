@@ -211,7 +211,7 @@ null
                       [ [ { "prim": "DROP" }, { "prim": "DUP" },
                           { "prim": "CAR" },
                           { "prim": "PUSH",
-                            "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+                            "args": [ { "prim": "mumav" }, { "int": "0" } ] },
                           { "prim": "NONE",
                             "args": [ { "prim": "key_hash" } ] },
                           { "prim": "CREATE_CONTRACT",
@@ -428,7 +428,7 @@ null
                   [ [ { "prim": "DROP" }, { "prim": "DUP" },
                       { "prim": "CAR" },
                       { "prim": "PUSH",
-                        "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+                        "args": [ { "prim": "mumav" }, { "int": "0" } ] },
                       { "prim": "NONE", "args": [ { "prim": "key_hash" } ] },
                       { "prim": "CREATE_CONTRACT",
                         "args":

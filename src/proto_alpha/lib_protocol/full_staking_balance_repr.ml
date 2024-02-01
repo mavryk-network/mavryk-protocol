@@ -36,7 +36,7 @@ let voting_weight {own_frozen; staked_frozen; delegated} =
   let open Result_syntax in
   let* frozen = Tez_repr.(own_frozen +? staked_frozen) in
   let+ all = Tez_repr.(frozen +? delegated) in
-  Tez_repr.to_mutez all
+  Tez_repr.to_mumav all
 
 let apply_slashing ~percentage {own_frozen; staked_frozen; delegated} =
   let remaining_percentage = Int_percentage.neg percentage in

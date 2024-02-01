@@ -2101,7 +2101,7 @@ let contract_balances ~pkh client =
     Client.RPC.call client
     @@ RPC.get_chain_block_context_contract_frozen_bonds ~id:pkh ()
   in
-  return {liquid = Tez.to_mutez liquid; frozen = Tez.to_mutez frozen}
+  return {liquid = Tez.to_mumav liquid; frozen = Tez.to_mumav frozen}
 
 (** This helper allow to attempt recovering bond for SCORU rollup operator.
     if [expect_failure] is set to some string then, we expect the command to fail
@@ -2123,7 +2123,7 @@ let attempt_withdraw_stake =
         ~hooks
         ~rollup:sc_rollup
         ~src
-        ~fee:(Tez.of_mutez_int recover_bond_fee)
+        ~fee:(Tez.of_mumav_int recover_bond_fee)
         ~staker
         client
     in
@@ -2211,7 +2211,7 @@ let commitment_before_lcc_not_published protocol sc_rollup_node
   let* () =
     attempt_withdraw_stake
       ~sc_rollup
-      ~sc_rollup_stake_amount:(Tez.to_mutez constants.stake_amount)
+      ~sc_rollup_stake_amount:(Tez.to_mumav constants.stake_amount)
       client
       ~expect_failure:
         "Attempted to withdraw while not staked on the last cemented \
@@ -2230,7 +2230,7 @@ let commitment_before_lcc_not_published protocol sc_rollup_node
   let* () =
     attempt_withdraw_stake
       ~sc_rollup
-      ~sc_rollup_stake_amount:(Tez.to_mutez constants.stake_amount)
+      ~sc_rollup_stake_amount:(Tez.to_mumav constants.stake_amount)
       client
   in
 
@@ -3188,7 +3188,7 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
   in
   let () =
     Check.(
-      (Tez.to_mutez frozen_balance <> 0)
+      (Tez.to_mumav frozen_balance <> 0)
         int
         ~error_msg:
           "The operator should have a stake nor holds a frozen balance.")
@@ -3234,7 +3234,7 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
   in
   let () =
     Check.(
-      (Tez.to_mutez frozen_balance = 0)
+      (Tez.to_mumav frozen_balance = 0)
         int
         ~error_msg:"The operator should have recovered its stake.")
   in
@@ -3668,7 +3668,7 @@ let test_refutation_reward_and_punishment ~kind =
   let* {commitment_period_in_blocks; stake_amount; _} =
     get_sc_rollup_constants client
   in
-  let punishment = Tez.to_mutez stake_amount in
+  let punishment = Tez.to_mumav stake_amount in
   let reward = punishment / 2 in
 
   (* Pick the two players and their initial balances. *)
@@ -3711,7 +3711,7 @@ let test_refutation_reward_and_punishment ~kind =
 
   Check.(
     (new_operator1_balances.frozen
-    = operator1_balances.frozen + Tez.to_mutez stake_amount)
+    = operator1_balances.frozen + Tez.to_mumav stake_amount)
       int
       ~error_msg:"expecting frozen balance for operator1: %R, got %L") ;
 
@@ -3730,7 +3730,7 @@ let test_refutation_reward_and_punishment ~kind =
   in
   Check.(
     (new_operator2_balances.frozen
-    = operator2_balances.frozen + Tez.to_mutez stake_amount)
+    = operator2_balances.frozen + Tez.to_mumav stake_amount)
       int
       ~error_msg:"expecting frozen balance for operator2: %R, got %L") ;
 
@@ -4505,7 +4505,7 @@ let test_recover_bond_of_stakers =
     attempt_withdraw_stake
       ~check_liquid_balance:false
       ~sc_rollup
-      ~sc_rollup_stake_amount:(Tez.to_mutez stake_amount)
+      ~sc_rollup_stake_amount:(Tez.to_mumav stake_amount)
       ~src:staker1.public_key_hash
       ~staker:staker1.public_key_hash
       tezos_client
@@ -4515,7 +4515,7 @@ let test_recover_bond_of_stakers =
     attempt_withdraw_stake
       ~check_liquid_balance:false
       ~sc_rollup
-      ~sc_rollup_stake_amount:(Tez.to_mutez stake_amount)
+      ~sc_rollup_stake_amount:(Tez.to_mumav stake_amount)
       ~src:staker1.public_key_hash
       ~staker:staker2.public_key_hash
       tezos_client
@@ -5023,7 +5023,7 @@ let test_rollup_whitelist_outdated_update ~kind =
     Client.Sc_rollup.execute_outbox_message
       ~hooks
       ~burn_cap:(Tez.of_int 10)
-      ~fee:(Tez.of_mutez_int 1498)
+      ~fee:(Tez.of_mumav_int 1498)
       ~rollup:rollup_addr
       ~src:Constant.bootstrap3.alias
       ~commitment_hash
@@ -5052,7 +5052,7 @@ let test_rollup_whitelist_outdated_update ~kind =
     Client.Sc_rollup.execute_outbox_message
       ~hooks
       ~burn_cap:(Tez.of_int 10)
-      ~fee:(Tez.of_mutez_int 1498)
+      ~fee:(Tez.of_mumav_int 1498)
       ~rollup:rollup_addr
       ~src:Constant.bootstrap3.alias
       ~commitment_hash
@@ -5162,7 +5162,7 @@ let bailout_mode_not_publish ~kind =
   in
   let () =
     Check.(
-      (Tez.to_mutez frozen_balance = 0)
+      (Tez.to_mumav frozen_balance = 0)
         int
         ~error_msg:
           "The operator should not have a stake nor holds a frozen balance.")

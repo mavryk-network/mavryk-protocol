@@ -113,7 +113,7 @@ let test_voting_power_cache () =
     Assert.equal_int64 ~loc n voting_power
   in
   (* the voting power is the full staking balance *)
-  let initial_voting_power_at_genesis = Tez.to_mutez full_balance in
+  let initial_voting_power_at_genesis = Tez.to_mumav full_balance in
   let* () =
     assert_voting_power ~loc:__LOC__ initial_voting_power_at_genesis genesis
   in
@@ -121,7 +121,7 @@ let test_voting_power_cache () =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 1))
   in
   let expected_delta_voting_power_after_one_voting_period =
-    Tez.to_mutez rewards_after_one_voting_period
+    Tez.to_mumav rewards_after_one_voting_period
   in
   let* block =
     Block.bake_n ~policy (Int32.to_int blocks_per_voting_period - 1) genesis
@@ -141,7 +141,7 @@ let test_voting_power_cache () =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 2))
   in
   let expected_delta_voting_power_after_two_voting_periods =
-    Tez.to_mutez rewards_after_two_voting_periods
+    Tez.to_mumav rewards_after_two_voting_periods
   in
   let* block =
     Block.bake_n ~policy (Int32.to_int blocks_per_voting_period) block
@@ -324,7 +324,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
   let* Constants.{parametric = {minimal_stake; _}; _} =
     Context.get_constants (B b_for_constants)
   in
-  let tpr = Tez.to_mutez minimal_stake in
+  let tpr = Tez.to_mumav minimal_stake in
   (* N.B. setting the balance has an impact on the active stake; without
      delegation, the full balance is the same as the staking balance and the
      active balance is less or equal the staking balance (see
@@ -349,7 +349,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
     in
     let expected_bal =
       Test_tez.(
-        Tez.of_mutez_exn initial_bal1
+        Tez.of_mumav_exn initial_bal1
         +! baking_reward_fixed_portion -! frozen_deposit)
     in
     Assert.equal_tez ~loc:__LOC__ bal expected_bal

@@ -137,7 +137,7 @@ type prim =
   | I_SLICE
   | I_STEPS_TO_QUOTA
   | I_SUB
-  | I_SUB_MUTEZ
+  | I_SUB_MUMAV
   | I_SWAP
   | I_TRANSFER_TOKENS
   | I_SET_DELEGATE
@@ -187,7 +187,7 @@ type prim =
   | T_signature
   | T_string
   | T_bytes
-  | T_mutez
+  | T_mumav
   | T_timestamp
   | T_unit
   | T_operation

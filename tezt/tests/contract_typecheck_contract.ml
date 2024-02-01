@@ -182,10 +182,10 @@ let test_implicit =
   Protocol.register_test ~__FILE__ ~title:"Test Implicit" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
-  let* () = check_address client tz1 in
-  let* () = check_contract_ok client tz1 None "unit" in
-  let* () = check_contract_ok client tz1 None "ticket string" in
+  let mv1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
+  let* () = check_address client mv1 in
+  let* () = check_contract_ok client mv1 None "unit" in
+  let* () = check_contract_ok client mv1 None "ticket string" in
   let no_entrypoint_error = "Contract has no entrypoint named a" in
   let type_mismatch_error =
     match protocol with
@@ -195,10 +195,10 @@ let test_implicit =
          parameters type can only be unit or ticket <ty>"
   in
   let* () =
-    check_contract_ko client tz1 (Some "a") "unit" no_entrypoint_error
+    check_contract_ko client mv1 (Some "a") "unit" no_entrypoint_error
   in
-  let* () = check_contract_ko client tz1 (Some "a") "nat" no_entrypoint_error in
-  let* () = check_contract_ko client tz1 None "nat" type_mismatch_error in
+  let* () = check_contract_ko client mv1 (Some "a") "nat" no_entrypoint_error in
+  let* () = check_contract_ko client mv1 None "nat" type_mismatch_error in
   unit
 
 (** The address of an inexistent originated account followed by some

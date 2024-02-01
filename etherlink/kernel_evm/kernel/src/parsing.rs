@@ -16,7 +16,7 @@ use tezos_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
     tx_common::EthereumTransactionCommon,
-    wei::eth_from_mutez,
+    wei::eth_from_mumav,
 };
 use tezos_evm_logging::{log, Level::*};
 use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
@@ -258,11 +258,11 @@ impl InputResult {
         // Amount
         let (_sign, amount_bytes) = ticket.amount().to_bytes_le();
         // We use the `U256::from_little_endian` as it takes arbitrary long
-        // bytes. Afterward it's transform to `u64` to use `eth_from_mutez`, it's
+        // bytes. Afterward it's transform to `u64` to use `eth_from_mumav`, it's
         // obviously safe as we deposit CTEZ and the amount is limited by
         // the XTZ quantity.
         let amount: u64 = U256::from_little_endian(&amount_bytes).as_u64();
-        let amount: U256 = eth_from_mutez(amount);
+        let amount: U256 = eth_from_mumav(amount);
 
         // Amount for gas
         let (_sign, gas_price_bytes) = gas_price.0 .0.to_bytes_le();

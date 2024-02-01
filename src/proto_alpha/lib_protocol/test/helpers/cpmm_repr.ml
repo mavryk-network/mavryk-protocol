@@ -55,7 +55,7 @@ module Storage = struct
        lqtAddress : %s;}"
       Z.pp_print
       tokenPool
-      (Int64.to_string @@ Tez.to_mutez xtzPool)
+      (Int64.to_string @@ Tez.to_mumav xtzPool)
       Z.pp_print
       lqtTotal
       (Contract_hash.to_b58check tokenAddress)
@@ -74,7 +74,7 @@ module Storage = struct
       ~loc
       [
         int ~loc tokenPool;
-        mutez ~loc xtzPool;
+        mumav ~loc xtzPool;
         int ~loc lqtTotal;
         address_string ~loc (Contract.Originated tokenAddress);
         address_string ~loc (Contract.Originated lqtAddress);
@@ -106,7 +106,7 @@ module Storage = struct
             Tezos_micheline.Micheline.String (_, lqtAddress);
           ],
           [] ) ->
-        let xtzPool = Tez.of_mutez_exn (Z.to_int64 xtzPool) in
+        let xtzPool = Tez.of_mumav_exn (Z.to_int64 xtzPool) in
         let tokenAddress = originated_of_string_exn tokenAddress in
         let lqtAddress = originated_of_string_exn lqtAddress in
         {tokenPool; xtzPool; lqtTotal; tokenAddress; lqtAddress}
@@ -230,7 +230,7 @@ module Parameter = struct
       (Contract.to_b58check to_)
       Z.pp_print
       lqtBurned
-      (Int64.to_string @@ Tez.to_mutez minXtzWithdrawn)
+      (Int64.to_string @@ Tez.to_mumav minXtzWithdrawn)
       Z.pp_print
       minTokensWithdrawn
       (Script_timestamp.to_string deadline)
@@ -255,7 +255,7 @@ module Parameter = struct
       (Contract.to_b58check to_)
       Z.pp_print
       tokensSold
-      (Int64.to_string @@ Tez.to_mutez minXtzBought)
+      (Int64.to_string @@ Tez.to_mumav minXtzBought)
       (Script_timestamp.to_string deadline)
 
   let xtz_to_token_to_string : xtz_to_token -> string =
@@ -314,7 +314,7 @@ module Parameter = struct
           [
             address_string ~loc to_;
             int ~loc lqtBurned;
-            mutez ~loc minXtzWithdrawn;
+            mumav ~loc minXtzWithdrawn;
             int ~loc minTokensWithdrawn;
             timestamp ~loc deadline;
           ]
@@ -335,7 +335,7 @@ module Parameter = struct
           [
             address_string ~loc to_;
             int ~loc tokensSold;
-            mutez ~loc minXtzBought;
+            mumav ~loc minXtzBought;
             timestamp ~loc deadline;
           ]
     | XtzToToken {to_; minTokensBought; deadline} ->

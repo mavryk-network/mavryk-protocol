@@ -38,24 +38,24 @@ open Protocol
 open Tztest
 
 module Test_tez_repr = struct
-  (** Testing predefined units: zero, one_mutez etc *)
+  (** Testing predefined units: zero, one_mumav etc *)
   let test_predefined_values () =
     let open Lwt_result_syntax in
-    let zero_int64 = Tez_repr.to_mutez Tez_repr.zero in
+    let zero_int64 = Tez_repr.to_mumav Tez_repr.zero in
     let* () = Assert.equal_int64 ~loc:__LOC__ zero_int64 0L in
-    let one_mutez_int64 = Tez_repr.to_mutez Tez_repr.one_mutez in
-    let* () = Assert.equal_int64 ~loc:__LOC__ one_mutez_int64 1L in
-    let one_cent_int64 = Tez_repr.to_mutez Tez_repr.one_cent in
+    let one_mumav_int64 = Tez_repr.to_mumav Tez_repr.one_mumav in
+    let* () = Assert.equal_int64 ~loc:__LOC__ one_mumav_int64 1L in
+    let one_cent_int64 = Tez_repr.to_mumav Tez_repr.one_cent in
     let* () = Assert.equal_int64 ~loc:__LOC__ one_cent_int64 10000L in
-    let fifty_cents_int64 = Tez_repr.to_mutez Tez_repr.fifty_cents in
+    let fifty_cents_int64 = Tez_repr.to_mumav Tez_repr.fifty_cents in
     let* () = Assert.equal_int64 ~loc:__LOC__ fifty_cents_int64 500000L in
-    let one_int64 = Tez_repr.to_mutez Tez_repr.one in
+    let one_int64 = Tez_repr.to_mumav Tez_repr.one in
     Assert.equal_int64 ~loc:__LOC__ one_int64 1000000L
 
   let test_subtract () =
     let open Lwt_result_wrap_syntax in
     let*?@ res = Tez_repr.(one -? zero) in
-    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mutez res) 1000000L
+    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_substract_underflow () =
     match Tez_repr.(zero -? one) with
@@ -65,65 +65,65 @@ module Test_tez_repr = struct
   let test_addition () =
     let open Lwt_result_wrap_syntax in
     let*?@ res = Tez_repr.(one +? zero) in
-    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mutez res) 1000000L
+    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_addition_overflow () =
-    match Tez_repr.(of_mutez_exn 0x7fffffffffffffffL +? one) with
+    match Tez_repr.(of_mumav_exn 0x7fffffffffffffffL +? one) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
 
   let test_mul () =
     let open Lwt_result_wrap_syntax in
     let*?@ res = Tez_repr.(zero *? 1L) in
-    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mutez res) 0L
+    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 0L
 
   let test_mul_overflow () =
-    match Tez_repr.(of_mutez_exn 0x7fffffffffffffffL *? 2L) with
+    match Tez_repr.(of_mumav_exn 0x7fffffffffffffffL *? 2L) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
 
   let test_div () =
     let open Lwt_result_wrap_syntax in
     let*?@ res = Tez_repr.(one *? 1L) in
-    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mutez res) 1000000L
+    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_div_by_zero () =
     match Tez_repr.(one /? 0L) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
 
-  let test_to_mutez () =
-    let int64v = Tez_repr.(to_mutez one) in
+  let test_to_mumav () =
+    let int64v = Tez_repr.(to_mumav one) in
     Assert.equal_int64 ~loc:__LOC__ int64v 1000000L
 
-  let test_of_mutez_non_negative () =
-    match Tez_repr.of_mutez 1000000L with
+  let test_of_mumav_non_negative () =
+    match Tez_repr.of_mumav 1000000L with
     | Some tz ->
         Assert.equal_int64
           ~loc:__LOC__
-          (Tez_repr.to_mutez tz)
-          Tez_repr.(to_mutez one)
+          (Tez_repr.to_mumav tz)
+          Tez_repr.(to_mumav one)
     | None -> failwith "should have successfully converted 1000000L to tez"
 
-  let test_of_mutez_negative () =
-    match Tez_repr.of_mutez (-1000000L) with
+  let test_of_mumav_negative () =
+    match Tez_repr.of_mumav (-1000000L) with
     | Some _ -> failwith "should have failed to converted -1000000L to tez"
     | None -> return_unit
 
-  let test_of_mutez_exn () =
+  let test_of_mumav_exn () =
     try
-      let tz = Tez_repr.of_mutez_exn 1000000L in
+      let tz = Tez_repr.of_mumav_exn 1000000L in
       Assert.equal_int64
         ~loc:__LOC__
-        (Tez_repr.to_mutez tz)
-        Tez_repr.(to_mutez one)
+        (Tez_repr.to_mumav tz)
+        Tez_repr.(to_mumav one)
     with e ->
       let msg = Printexc.to_string e and stack = Printexc.get_backtrace () in
       failwith "Unexpected exception: %s %s" msg stack
 
-  let test_of_mutez_exn_negative () =
+  let test_of_mumav_exn_negative () =
     try
-      let (_ : Tez_repr.t) = Tez_repr.of_mutez_exn (-1000000L) in
+      let (_ : Tez_repr.t) = Tez_repr.of_mumav_exn (-1000000L) in
       failwith "should have failed to converted -1000000L to tez"
     with
     | Invalid_argument _ -> return_unit
@@ -151,7 +151,7 @@ module Test_tez_repr = struct
             Data_encoding.Binary.pp_read_error
             e
     in
-    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mutez v) 1000000L
+    Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav v) 1000000L
 end
 
 let tests =
@@ -174,23 +174,23 @@ let tests =
     tztest "Tez.mul: overflow case" `Quick Test_tez_repr.test_mul_overflow;
     tztest "Tez.div: basic case" `Quick Test_tez_repr.test_div;
     tztest "Tez.div: division by zero" `Quick Test_tez_repr.test_div_by_zero;
-    tztest "Tez.to_mutez: basic assertion" `Quick Test_tez_repr.test_to_mutez;
+    tztest "Tez.to_mumav: basic assertion" `Quick Test_tez_repr.test_to_mumav;
     tztest
-      "Tez.of_mutez: of non-negative ints"
+      "Tez.of_mumav: of non-negative ints"
       `Quick
-      Test_tez_repr.test_of_mutez_non_negative;
+      Test_tez_repr.test_of_mumav_non_negative;
     tztest
-      "Tez.of_mutez: of negative ints"
+      "Tez.of_mumav: of negative ints"
       `Quick
-      Test_tez_repr.test_of_mutez_negative;
+      Test_tez_repr.test_of_mumav_negative;
     tztest
-      "Tez.of_mutez_exn: of non-negative ints"
+      "Tez.of_mumav_exn: of non-negative ints"
       `Quick
-      Test_tez_repr.test_of_mutez_non_negative;
+      Test_tez_repr.test_of_mumav_non_negative;
     tztest
-      "Tez.of_mutez_exn: of negative ints"
+      "Tez.of_mumav_exn: of negative ints"
       `Quick
-      Test_tez_repr.test_of_mutez_negative;
+      Test_tez_repr.test_of_mumav_negative;
     tztest
       "Tez.data_encoding: must encode tezzies correctly"
       `Quick

@@ -22,7 +22,7 @@ code
       { # Main entry point
         # Assert no token was sent:
         # to send tokens, the default entry point should be used
-        PUSH mutez 0 ; AMOUNT ; ASSERT_CMPEQ ;
+        PUSH mumav 0 ; AMOUNT ; ASSERT_CMPEQ ;
         SWAP ; DUP ; DIP { SWAP } ;
         DIP
           {

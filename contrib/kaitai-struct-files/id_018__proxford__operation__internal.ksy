@@ -98,9 +98,9 @@ types:
     - id: id_018__proxford__michelson__v1__primitives
       type: u1
       enum: id_018__proxford__michelson__v1__primitives
-  id_018__proxford__mutez:
+  id_018__proxford__mumav:
     seq:
-    - id: id_018__proxford__mutez
+    - id: id_018__proxford__mumav
       type: n
   id_018__proxford__scripted__contracts:
     seq:
@@ -199,7 +199,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_018__proxford__mutez
+      type: id_018__proxford__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -307,7 +307,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_018__proxford__mutez
+      type: id_018__proxford__mumav
     - id: destination
       type: id_018__proxford__transaction_destination
       doc: ! >-
@@ -641,7 +641,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -731,8 +731,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

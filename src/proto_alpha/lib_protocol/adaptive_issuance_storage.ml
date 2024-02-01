@@ -124,9 +124,9 @@ let compute_bonus ~seconds_per_cycle ~total_supply ~total_frozen_stake
         } =
     reward_params
   in
-  let q_total_supply = Tez_repr.to_mutez total_supply |> Q.of_int64 in
+  let q_total_supply = Tez_repr.to_mumav total_supply |> Q.of_int64 in
   let q_total_frozen_stake =
-    Tez_repr.to_mutez total_frozen_stake |> Q.of_int64
+    Tez_repr.to_mumav total_frozen_stake |> Q.of_int64
   in
   let stake_ratio =
     Q.div q_total_frozen_stake q_total_supply (* = portion of frozen stake *)
@@ -172,16 +172,16 @@ let compute_coeff =
       ~total_frozen_stake
       ~bonus
       ~reward_params ->
-    if Compare.Int64.equal (Tez_repr.to_mutez base_total_issued_per_minute) 0L
+    if Compare.Int64.equal (Tez_repr.to_mumav base_total_issued_per_minute) 0L
     then Q.one
     else
       let Constants_parametric_repr.{issuance_ratio_min; issuance_ratio_max; _}
           =
         reward_params
       in
-      let q_total_supply = Tez_repr.to_mutez total_supply |> Q.of_int64 in
+      let q_total_supply = Tez_repr.to_mumav total_supply |> Q.of_int64 in
       let q_total_frozen_stake =
-        Tez_repr.to_mutez total_frozen_stake |> Q.of_int64
+        Tez_repr.to_mumav total_frozen_stake |> Q.of_int64
       in
       let stake_ratio =
         Q.div
@@ -189,7 +189,7 @@ let compute_coeff =
           q_total_supply (* = portion of frozen stake *)
       in
       let q_base_total_issued_per_minute =
-        Tez_repr.to_mutez base_total_issued_per_minute |> Q.of_int64
+        Tez_repr.to_mumav base_total_issued_per_minute |> Q.of_int64
       in
       let f =
         compute_reward_coeff_ratio

@@ -386,7 +386,7 @@ Raw Sha256 hash: 0x732bb539d52c41e6cc09d6116b1b3d25257b27dfd7adc7a09e03d345c09e0
 Raw Sha512 hash: 0x0d565633ca0b3c3751aee0fe54d9be744bea79b1a714d97227397dfe79b5058d6385bc86dcdabbb280c5fc2fb56fc073550ac63d947df2787a5927a1342c343b
 Gas remaining: 1039997.698 units remaining
 
-./octez-client --mode mockup hash data 0 of type mutez
+./octez-client --mode mockup hash data 0 of type mumav
 Raw packed data: 0x050000
 Script-expression-ID-Hash: exprtZBwZUeYYYfUs9B9Rg2ywHezVHnCCnmF9WsDQVrs582dSK63dC
 Raw Script-expression-ID-Hash: 0x053f610929e2b6ea458c54dfd8b29716d379c13f5c8fd82d5c793a9e31271743
@@ -395,7 +395,7 @@ Raw Sha256 hash: 0x69c492e24afa52c556de5ea70e1b5d7da3f0bc7a5a7fd1d413444c1a42a7e
 Raw Sha512 hash: 0x6fb0c536a65271998988dffee83efeb370514fcfecd339ebda1f97bde876ea5ecde4a2e8e93b22071849f5625639936ebc55b71c3b4118254f5bff444e515a85
 Gas remaining: 1039999.624 units remaining
 
-./octez-client --mode mockup hash data 1 of type mutez
+./octez-client --mode mockup hash data 1 of type mumav
 Raw packed data: 0x050001
 Script-expression-ID-Hash: expru2dKqDfZG8hu4wNGkiyunvq2hdSKuVYtcKta7BWP6Q18oNxKjS
 Raw Script-expression-ID-Hash: 0x438c52065d4605460b12d1b9446876a1c922b416103a20d44e994a9fd2b8ed07
@@ -404,7 +404,7 @@ Raw Sha256 hash: 0x57072915640d052f4e2843e1498b10c4f71b62df565525d33c4a66a724e3e
 Raw Sha512 hash: 0x112e6b61a60ecf001d501f39284ff8a575d818f2f79295b90b24f045d165a490c19cac2add9149dbdd23a8f2cf956dbee0efe17449111e6326e97ab21532f445
 Gas remaining: 1039999.599 units remaining
 
-./octez-client --mode mockup hash data 99999 of type mutez
+./octez-client --mode mockup hash data 99999 of type mumav
 Raw packed data: 0x05009f9a0c
 Script-expression-ID-Hash: expruQUsZtokRsnKdzPwveAiq1QX2TgnMeRdhQ3rqBJw6LbfK7nJEa
 Raw Script-expression-ID-Hash: 0x752bc02931fa202b4f7c174c0cea1254e6a007bc42f53d00d7f51556392f84f0

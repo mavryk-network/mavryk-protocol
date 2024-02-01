@@ -48,9 +48,9 @@ In that last example, we use the module ``Size`` to convert the bytes into their
    match (instr, stack) with
      (...)
      | (IMul_teznat (_, _), (x, (y, _))) ->
-         Instructions.mul_teznat (Size.mutez x) (Size.integer y)
+         Instructions.mul_teznat (Size.mumav x) (Size.integer y)
 
-In this example, and for most mathematical operations in Michelson, the computation time actually depends on the size in memory of the arguments, not their values. Here, the size of an integer is the number of bytes needed to represent them, likewise for mutez. In this kind of scenario, we will make use of the ``Size`` module.
+In this example, and for most mathematical operations in Michelson, the computation time actually depends on the size in memory of the arguments, not their values. Here, the size of an integer is the number of bytes needed to represent them, likewise for mumav. In this kind of scenario, we will make use of the ``Size`` module.
 
 
 Interpreter Models
