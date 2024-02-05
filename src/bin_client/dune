@@ -29,6 +29,9 @@
   (select void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client from
    (octez-protocol-000-Ps9mPmXa-libs.client -> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty)
    (-> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty))
+  octez-protocol-017-PtNairob-libs.client.commands-registration
+  octez-protocol-017-PtNairob-libs.baking-commands.registration
+  octez-protocol-017-PtNairob-libs.plugin
   octez-protocol-018-Proxford-libs.client.commands-registration
   octez-protocol-018-Proxford-libs.baking-commands.registration
   octez-protocol-018-Proxford-libs.plugin

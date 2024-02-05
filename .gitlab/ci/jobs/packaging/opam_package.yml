@@ -569,6 +569,13 @@ opam:octez-protocol-000-Ps9mPmXa-libs:
   variables:
     package: octez-protocol-000-Ps9mPmXa-libs
 
+opam:octez-protocol-017-PtNairob-libs:
+  extends:
+    - .opam_template
+    - .rules_template__trigger_all_opam_batch_2
+  variables:
+    package: octez-protocol-017-PtNairob-libs
+
 opam:octez-protocol-018-Proxford-libs:
   extends:
     - .opam_template
