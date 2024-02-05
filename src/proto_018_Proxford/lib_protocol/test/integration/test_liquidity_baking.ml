@@ -59,7 +59,7 @@ let generate_init_state () =
 *)
 let expected_cpmm_hash =
   Script_expr_hash.of_b58check_exn
-    "exprvEBYbxZruLZ9aUDEC9cUxn5KUj361xsaZXGfCxogFoKQ1er9Np"
+    "expru15HMzoLGQzuQjFVkXRPdQR2D9WgFGPS8tvcwb6xLiDqovSVQT"
 
 (* The script hash of
 
