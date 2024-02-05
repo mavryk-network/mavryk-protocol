@@ -2089,8 +2089,8 @@ module Manager = struct
       | Register_global_constant {value} ->
           let* (_ : Gas.Arith.fp) = consume_decoding_gas remaining_gas value in
           return_unit
-      | Delegation (Some pkh) -> Delegate.check_not_tz4 pkh
-      | Update_consensus_key pk -> Delegate.Consensus_key.check_not_tz4 pk
+      | Delegation (Some pkh) -> Delegate.check_not_mv4 pkh
+      | Update_consensus_key pk -> Delegate.Consensus_key.check_not_mv4 pk
       | Delegation None | Set_deposits_limit _ | Increase_paid_storage _ ->
           return_unit
       | Transfer_ticket {contents; ty; _} ->

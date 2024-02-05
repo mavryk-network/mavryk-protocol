@@ -29,12 +29,12 @@
 
 type error +=
   | (* `Permanent *)
-      Forbidden_tz4_delegate of Bls.Public_key_hash.t
-        (** Delegates cannot be tz4 accounts (i.e. BLS public key hashes). This
+      Forbidden_mv4_delegate of Bls.Public_key_hash.t
+        (** Delegates cannot be mv4 accounts (i.e. BLS public key hashes). This
             error is returned when we try to register such a delegate.  *)
 
-(** [check_not_tz4 pkh] checks that [pkh] is not a BLS address. *)
-val check_not_tz4 : Signature.public_key_hash -> unit tzresult
+(** [check_not_mv4 pkh] checks that [pkh] is not a BLS address. *)
+val check_not_mv4 : Signature.public_key_hash -> unit tzresult
 
 (** [find ctxt contract] returns the delegate associated to [contract], or [None]
     if [contract] has no delegate. *)

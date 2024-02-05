@@ -219,7 +219,7 @@ module Wallet = struct
       let* () =
         if List.length low_balance_keys > 0 then (
           Log.info
-            "Transferring %s tez to low-balance accounts..."
+            "Transferring %s mav to low-balance accounts..."
             (Tez.to_string amount) ;
           let* (`OpHash _h) =
             perform_transfers ~amount ~keys:low_balance_keys client

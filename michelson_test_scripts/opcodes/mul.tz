@@ -2,14 +2,14 @@ parameter unit ;
 storage unit ;
 code { CAR ;
        DROP ;
-       # tez-nat, no overflow
+       # mav-nat, no overflow
        PUSH nat 7987 ;
        PUSH mumav 10 ;
        MUL ;
        PUSH mumav 79870 ;
        COMPARE ;
        ASSERT_EQ ;
-       # nat-tez, no overflow
+       # nat-mav, no overflow
        PUSH mumav 10 ;
        PUSH nat 7987 ;
        MUL ;

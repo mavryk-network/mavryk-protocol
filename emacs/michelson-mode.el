@@ -730,7 +730,7 @@ buffer."
 
 (defun michelson-comparable-p (type)
   "Is the `TYPE' comparable?"
-  (memq type '(int nat string tez bool key timestamp)))
+  (memq type '(int nat string mav bool key timestamp)))
 
 
 (defun michelson-suggest-pairs-help (pair-type accessor-prefix)
@@ -824,23 +824,23 @@ buffer."
    (michelson-suggest-literals '("OR" "AND" "XOR" "LSL" "LSR") 'nat 'nat)
    (michelson-suggest-literals '("CONCAT") 'string 'string)
    (michelson-suggest-depth '("SOME" "LEFT" "RIGHT") 1)
-   (michelson-suggest-literals '("ADD" "SUB") 'tez 'tez)
-   (michelson-suggest-reorderable '("ADD" "SUB" "MUL") 'tez 'nat)
-   (michelson-suggest-literals "EDIV" 'tez 'nat)
-   (michelson-suggest-literals "EDIV" 'tez 'tez)
+   (michelson-suggest-literals '("ADD" "SUB") 'mav 'mav)
+   (michelson-suggest-reorderable '("ADD" "SUB" "MUL") 'mav 'nat)
+   (michelson-suggest-literals "EDIV" 'mav 'nat)
+   (michelson-suggest-literals "EDIV" 'mav 'mav)
    (michelson-suggest-literals "IMPLICIT_ACCOUNT" 'key)
    (michelson-suggest-depth "SWAP" 2)
    (michelson-suggest-depth '("DROP" "H") 1)
    (michelson-suggest-literals "CHECK_SIGNATURE" 'key '(pair signature string))
-   (michelson-suggest-literals "CREATE_ACCOUNT" 'key '(option key) 'bool 'tez)
+   (michelson-suggest-literals "CREATE_ACCOUNT" 'key '(option key) 'bool 'mav)
    (michelson-make-suggest "IF_NONE" (michelson-forall (x) (option x)))
    (michelson-make-suggest "IF_LEFT" (michelson-forall (x y) (or x y)))
    ;; This is not exactly the type of TRANSFER_TOKENS.
    ;; It will be changed once the concurrency model is worked out
-   (michelson-make-suggest "TRANSFER_TOKENS" (michelson-forall (p r g) (p tez (contract p r) g)))
+   (michelson-make-suggest "TRANSFER_TOKENS" (michelson-forall (p r g) (p mav (contract p r) g)))
    (michelson-make-suggest
     "CREATE_CONTRACT"
-    (michelson-forall (p r g) (key (option key) bool bool tez (lambda (pair p g) (pair r g)) g)))
+    (michelson-forall (p r g) (key (option key) bool bool mav (lambda (pair p g) (pair r g)) g)))
    (michelson-make-suggest "MANAGER" (michelson-forall (p r) ((contract p r))))
    (michelson-make-suggest "CONS" (michelson-forall (a) (a (list a))))
    (michelson-make-suggest "IF_CONS" (michelson-forall (a) (list a)))
@@ -924,7 +924,7 @@ Enables or disables stack and error display."
 (add-to-list 'auto-mode-alist '("\\.tz\\'" . michelson-mode))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.tez\\'" . michelson-mode))
+(add-to-list 'auto-mode-alist '("\\.mav\\'" . michelson-mode))
 
 (provide 'michelson-mode)
 

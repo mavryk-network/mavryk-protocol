@@ -231,7 +231,7 @@ module Proto = struct
      fun ty ->
       let open Script_typed_ir in
       match ty with
-      | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mutez_t
+      | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mumav_t
       | Key_hash_t | Key_t | Timestamp_t | Address_t | Bool_t | Set_t _
       | Big_map_t _ | Contract_t _ | Operation_t | Sapling_transaction_t _
       | Sapling_transaction_deprecated_t _ | Sapling_state_t _ | Never_t

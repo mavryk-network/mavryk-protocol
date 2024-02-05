@@ -45,7 +45,7 @@ Here are examples of the client configuration:
 (setq michelson-alphanet nil)
 ```
 
-Note that the Michelson mode will be chosen automatically by Emacs for files with a .tz or .tez extension.
+Note that the Michelson mode will be chosen automatically by Emacs for files with a .tz or .mav extension.
 
 We can now open our favourite contract `michelson_test_scripts/attic/id.tz` in Emacs and,
 when moving the cursor on a Michelson instruction, in the bottom of the windows Emacs should display

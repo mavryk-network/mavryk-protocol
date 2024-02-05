@@ -128,7 +128,7 @@ module V1 = struct
             Transfer {destination; ticket_hash; qty});
       ]
 
-  let non_tz4_public_key_hash_encoding =
+  let non_mv4_public_key_hash_encoding =
     let open Data_encoding in
     conv_with_guard
       (fun pkh -> pkh)
@@ -137,12 +137,12 @@ module V1 = struct
         | (Ed25519 _ | Secp256k1 _ | P256 _) as pkh -> Ok pkh
         | Bls _ ->
             Error
-              "Withdraw to tz4 address is not supported in the deprecated \
+              "Withdraw to mv4 address is not supported in the deprecated \
                encoding.")
       Signature.Public_key_hash.encoding
 
   (** JSON encoding for [operation_content] which allows to represent
-      withdrawals to tz4 accounts. The [deprecated_] variants are kept for
+      withdrawals to mv4 accounts. The [deprecated_] variants are kept for
       backward compatibility purpose. *)
   let json_operation_content =
     let open Data_encoding in
@@ -198,7 +198,7 @@ module V1 = struct
         case
           Json_only
           ~title:"deprecated_withdraw"
-          (withdraw_deprecated non_tz4_public_key_hash_encoding)
+          (withdraw_deprecated non_mv4_public_key_hash_encoding)
           (function
             | Withdraw {destination; ticket_hash; qty} ->
                 Some (destination, ticket_hash, qty)

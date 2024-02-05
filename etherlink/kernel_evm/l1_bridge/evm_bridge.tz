@@ -37,7 +37,7 @@
              DUP 3 ;
              CONTRACT %mint address ;
              IF_NONE
-               { DROP 4 ; PUSH string "Invalid tez ticket contract" ; FAILWITH }
+               { DROP 4 ; PUSH string "Invalid mav ticket contract" ; FAILWITH }
                { DUG 2 ;
                  TRANSFER_TOKENS ;
                  DIG 2 ;

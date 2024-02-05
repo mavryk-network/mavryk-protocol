@@ -246,8 +246,8 @@ let test_string_key_hash () =
     ~ticketer2:"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq"
     ~ty1:"string"
     ~ty2:"key_hash"
-    ~content1:{|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|}
-    ~content2:{|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|}
+    ~content1:{|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|}
+    ~content2:{|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|}
     ~amount1:1
     ~amount2:1
     ~owner1:"KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"

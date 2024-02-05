@@ -1366,36 +1366,36 @@ let test_registered_self_delegate_key_init_delegation () =
 let test_bls_account_cannot_self_delegate () =
   let open Lwt_result_syntax in
   let* b, bootstrap = Context.init1 ~consensus_threshold:0 () in
-  let {Account.pkh = tz4_pkh; pk = tz4_pk; _} =
+  let {Account.pkh = mv4_pkh; pk = mv4_pk; _} =
     Account.new_account ~algo:Bls ()
   in
-  let tz4_contract = Alpha_context.Contract.Implicit tz4_pkh in
+  let mv4_contract = Alpha_context.Contract.Implicit mv4_pkh in
   let* operation =
     Op.transaction
       ~force_reveal:true
       (B b)
       bootstrap
-      tz4_contract
+      mv4_contract
       (of_int 200_000)
   in
   let* b = Block.bake ~operation b in
-  let* operation = Op.revelation (B b) tz4_pk in
+  let* operation = Op.revelation (B b) mv4_pk in
   let* b = Block.bake ~operation b in
-  let* operation = Op.delegation (B b) tz4_contract (Some tz4_pkh) in
+  let* operation = Op.delegation (B b) mv4_contract (Some mv4_pkh) in
   let* inc = Incremental.begin_construction b in
-  let tz4_pkh = match tz4_pkh with Bls pkh -> pkh | _ -> assert false in
+  let mv4_pkh = match mv4_pkh with Bls pkh -> pkh | _ -> assert false in
   let expect_failure = function
     | [
         Environment.Ecoproto_error
-          (Contract_delegate_storage.Forbidden_tz4_delegate pkh);
+          (Contract_delegate_storage.Forbidden_mv4_delegate pkh);
       ]
-      when Signature.Bls.Public_key_hash.(pkh = tz4_pkh) ->
+      when Signature.Bls.Public_key_hash.(pkh = mv4_pkh) ->
         return_unit
     | err ->
         failwith
           "Error trace:@,\
            %a does not match the \
-           [Contract_delegate_storage.Forbidden_tz4_delegate] error"
+           [Contract_delegate_storage.Forbidden_mv4_delegate] error"
           Error_monad.pp_print_trace
           err
   in

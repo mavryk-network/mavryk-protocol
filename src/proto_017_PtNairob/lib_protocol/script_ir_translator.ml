@@ -3669,7 +3669,7 @@ and parse_instr :
         let instr = {apply = (fun k -> ISub_tez_legacy (loc, k))} in
         typed ctxt loc instr stack
       else tzfail (Deprecated_instruction I_SUB)
-  | Prim (loc, I_SUB_MUTEZ, [], annot), Item_t (Mumav_t, Item_t (Mumav_t, rest))
+  | Prim (loc, I_SUB_MUMAV, [], annot), Item_t (Mumav_t, Item_t (Mumav_t, rest))
     ->
       check_var_annot loc annot >>?= fun () ->
       let instr = {apply = (fun k -> ISub_tez (loc, k))} in
@@ -4381,7 +4381,7 @@ and parse_instr :
         ( loc,
           (( I_DUP | I_SWAP | I_SOME | I_UNIT | I_PAIR | I_UNPAIR | I_CAR
            | I_CDR | I_CONS | I_CONCAT | I_SLICE | I_MEM | I_UPDATE | I_GET
-           | I_EXEC | I_FAILWITH | I_SIZE | I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL
+           | I_EXEC | I_FAILWITH | I_SIZE | I_ADD | I_SUB | I_SUB_MUMAV | I_MUL
            | I_EDIV | I_OR | I_AND | I_XOR | I_NOT | I_ABS | I_NEG | I_LSL
            | I_LSR | I_COMPARE | I_EQ | I_NEQ | I_LT | I_GT | I_LE | I_GE
            | I_TRANSFER_TOKENS | I_SET_DELEGATE | I_NOW | I_MIN_BLOCK_TIME
@@ -4419,7 +4419,7 @@ and parse_instr :
   (* Stack errors *)
   | ( Prim
         ( loc,
-          (( I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL | I_EDIV | I_AND | I_OR | I_XOR
+          (( I_ADD | I_SUB | I_SUB_MUMAV | I_MUL | I_EDIV | I_AND | I_OR | I_XOR
            | I_LSL | I_LSR | I_CONCAT | I_PAIRING_CHECK ) as name),
           [],
           _ ),
@@ -4469,7 +4469,7 @@ and parse_instr :
   | ( Prim
         ( loc,
           (( I_SWAP | I_PAIR | I_CONS | I_GET | I_MEM | I_EXEC
-           | I_CHECK_SIGNATURE | I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL | I_EDIV
+           | I_CHECK_SIGNATURE | I_ADD | I_SUB | I_SUB_MUMAV | I_MUL | I_EDIV
            | I_AND | I_OR | I_XOR | I_LSL | I_LSR | I_COMPARE | I_PAIRING_CHECK
            | I_TICKET | I_SPLIT_TICKET ) as name),
           _,
@@ -4564,7 +4564,7 @@ and parse_instr :
              I_SOURCE;
              I_SPLIT_TICKET;
              I_SUB;
-             I_SUB_MUTEZ;
+             I_SUB_MUMAV;
              I_SWAP;
              I_TICKET;
              I_TOTAL_VOTING_POWER;

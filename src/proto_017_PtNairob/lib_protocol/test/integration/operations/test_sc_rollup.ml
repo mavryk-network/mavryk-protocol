@@ -3357,7 +3357,7 @@ let test_start_game_on_cemented_commitment () =
       (* The refutation game checks that [pA] stakes on [hash] and
          [pB] on [hash]. As the storage keeps in the storage only
          the metadata for active commitments, any game started on a cemented
-         commitment will fail with "<tz1> not staked on <hash>". *)
+         commitment will fail with "<mv1> not staked on <hash>". *)
       let refutation =
         Sc_rollup.Game.Start
           {player_commitment_hash = hash; opponent_commitment_hash = hash}

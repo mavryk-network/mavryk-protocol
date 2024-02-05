@@ -175,7 +175,7 @@ let test_drain_empty_delegate ~exclude_ck () =
         "Drain delegate without enough balance for allocation burn or drain \
          fees")
 
-let test_tz4_consensus_key () =
+let test_mv4_consensus_key () =
   Context.init_with_constants1 constants >>=? fun (genesis, contracts) ->
   let account1_pkh = Context.Contract.pkh contracts in
   let consensus_account = Account.new_account ~algo:Bls () in
@@ -186,19 +186,19 @@ let test_tz4_consensus_key () =
   >>=? fun blk' ->
   Op.update_consensus_key (B blk') (Contract.Implicit delegate) consensus_pk
   >>=? fun operation ->
-  let tz4_pk = match consensus_pk with Bls pk -> pk | _ -> assert false in
+  let mv4_pk = match consensus_pk with Bls pk -> pk | _ -> assert false in
   let expect_failure = function
     | [
         Environment.Ecoproto_error
-          (Delegate_consensus_key.Invalid_consensus_key_update_tz4 pk);
+          (Delegate_consensus_key.Invalid_consensus_key_update_mv4 pk);
       ]
-      when Signature.Bls.Public_key.(pk = tz4_pk) ->
+      when Signature.Bls.Public_key.(pk = mv4_pk) ->
         return_unit
     | err ->
         failwith
           "Error trace:@,\
           \ %a does not match the \
-           [Delegate_consensus_key.Invalid_consensus_key_update_tz4] error"
+           [Delegate_consensus_key.Invalid_consensus_key_update_mv4] error"
           Error_monad.pp_print_trace
           err
   in
@@ -295,7 +295,7 @@ let tests =
         "empty drain delegate with ck"
         `Quick
         (test_drain_empty_delegate ~exclude_ck:false);
-      tztest "tz4 consensus key" `Quick test_tz4_consensus_key;
+      tztest "mv4 consensus key" `Quick test_mv4_consensus_key;
       tztest "endorsement with ck" `Quick test_endorsement_with_consensus_key;
     ]
 
