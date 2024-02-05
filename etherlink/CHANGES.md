@@ -140,7 +140,7 @@
 ### Breaking changes
 
 - External Messages must now be framed using `ExternalMessageFrame` (adds an additional prefix byte). (!9687)
-- The EVM rollup accepts tickets wrapping tez instead of ctez. (!9982)
+- The EVM rollup accepts tickets wrapping mav instead of ctez. (!9982)
 - L2 blocks are now stored using their RLP encoding. (!9759)
 
 ### Internal

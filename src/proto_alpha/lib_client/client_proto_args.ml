@@ -365,7 +365,7 @@ let tez_parameter param =
   let open Lwt_result_syntax in
   Tezos_clic.parameter (fun _ s ->
       match Tez.of_string s with
-      | Some tez -> return tez
+      | Some mav -> return mav
       | None -> tzfail (Bad_tez_arg (param, s)))
 
 let everything_tez_parameter param =
@@ -612,7 +612,7 @@ let minimal_fees_arg =
   Tezos_clic.default_arg
     ~long:"minimal-fees"
     ~placeholder:"amount"
-    ~doc:"exclude operations with fees lower than this threshold (in tez)"
+    ~doc:"exclude operations with fees lower than this threshold (in mav)"
     ~default:(Tez.to_string default_minimal_fees)
     (Tezos_clic.parameter (fun _ s ->
          match Tez.of_string s with

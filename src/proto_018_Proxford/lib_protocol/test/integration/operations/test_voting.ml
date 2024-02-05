@@ -1284,7 +1284,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   (* Create policy that excludes baker1 and baker2 from baking *)
   let policy = Block.Excluding [baker1; baker2] in
-  (* Transfer 30,000 tez from baker1 to baker2 *)
+  (* Transfer 30,000 mav from baker1 to baker2 *)
   let amount = Tez.of_mumav_exn 30_000_000_000L in
   let* operation = Op.transaction (B genesis) con1 con2 amount in
   (* Bake the block containing the transaction *)

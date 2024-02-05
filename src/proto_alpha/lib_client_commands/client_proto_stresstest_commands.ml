@@ -441,13 +441,13 @@ let rec sample_transfer (cctxt : Protocol_client_context.full) chain block
     (parameters : parameters) (state : state) =
   let open Lwt_result_syntax in
   let*! src = get_source_from_shuffled_pool state cctxt in
-  let* tez =
+  let* mav =
     Alpha_services.Contract.balance
       cctxt
       (chain, block)
       (Contract.Implicit src.pkh)
   in
-  if Tez.(tez = zero) then
+  if Tez.(mav = zero) then
     let*! () =
       log Debug (fun () ->
           cctxt#message
@@ -481,7 +481,7 @@ let rec sample_transfer (cctxt : Protocol_client_context.full) chain block
       match parameters.strategy with
       | Fixed_amount {mumav} -> mumav
       | Evaporation {fraction} ->
-          let mumav = Int64.to_float (Tez.to_mumav tez) in
+          let mumav = Int64.to_float (Tez.to_mumav mav) in
           let max_fraction = Int64.of_float (mumav *. fraction) in
           let amount =
             if max_fraction = 0L then 1L

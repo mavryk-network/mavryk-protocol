@@ -32,7 +32,7 @@
 
     - Default [counter] is the successor of the counter of [source].
 
-    - Default [amount] is [1] tez.
+    - Default [amount] is [1] mav.
 
     - Default [fee] is [1000] mumav.
 
@@ -51,7 +51,7 @@ type manager_operation_content
     - an EzJsonm value directly
     - a Michelson value in a string
     - a Michelson value in a file (mainly for Michelson scripts). In this
-      case, files should have extension `.tz`, `.tez` or `.mic`
+      case, files should have extension `.tz`, `.mav` or `.mic`
     - a file storing directly the JSON representation. This is for instance
       useful to test contracts that fail at type-checking. Instead of
       Michelson, the user can generate the JSON and store it a file with
@@ -89,7 +89,7 @@ val mk_reveal :
     implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [amount] is [0] tez.
+    - Default [amount] is [0] mav.
     - Default [fee] is [30_000] mumav.
     - Default [gas_limit] is [30_000] gas.
     - Default [storage_limit] is [1_500]. *)
@@ -110,7 +110,7 @@ val mk_call :
     smart contract origination from an implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [init_balance] is [0] tez.
+    - Default [init_balance] is [0] mav.
     - Default [fee] is [1_000_000] mumav.
     - Default [gas_limit] is [100_000] gas.
     - Default [storage_limit] is [10_000]. *)

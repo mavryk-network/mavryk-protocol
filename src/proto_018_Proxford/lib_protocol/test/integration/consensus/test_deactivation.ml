@@ -336,7 +336,7 @@ let test_deactivation_then_empty_then_self_delegation_then_recredit () =
 
 (** Initialize a block with two contracts/accounts. A third new account is also
    created. The first account is self-delegated. First account sends to third
-   one minimal_stake tez (so that, once it is active, it can appear in
+   one minimal_stake mav (so that, once it is active, it can appear in
    [Active_delegate_with_minimal_stake]. The third account has no delegate and is
    consistent for baking rights. Then, it is self-delegated and is supposed to
    be activated. Again, consistency for baking rights are preserved for the

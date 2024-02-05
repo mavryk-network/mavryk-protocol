@@ -118,7 +118,7 @@ let () =
   let default = Plugin.Mempool.default_config in
   let ref_fee = 10_000_000 in
   let ref_gas = 2100 in
-  (* Reference operation arbitrarily has 10 tez of fees and 2100
+  (* Reference operation arbitrarily has 10 mav of fees and 2100
      gas. The gas is chosen to still give an integer when multiplied
      by 100/105. *)
   let old = make_op ~fee_in_mumav:ref_fee ~gas:ref_gas in

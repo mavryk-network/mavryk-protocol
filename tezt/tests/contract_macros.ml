@@ -77,7 +77,7 @@ let test_macros_tests =
       ("max_in_list", "None", "{ -1 }", "(Some -1)");
       ("max_in_list", "None", "{ 10 ; -1 ; -20 ; 100 ; 0 }", "(Some 100)");
       ("max_in_list", "None", "{ -10 ; -1 ; -20 ; -100 }", "(Some -1)");
-      (* Test comparisons on tez { EQ ; GT ; LT ; GE ; LE } *)
+      (* Test comparisons on mav { EQ ; GT ; LT ; GE ; LE } *)
       ( "compare",
         "{}",
         "(Pair 1000000 2000000)",

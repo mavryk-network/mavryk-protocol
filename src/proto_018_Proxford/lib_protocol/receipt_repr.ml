@@ -62,7 +62,7 @@ module Token = struct
 
   let pp_tez =
     let tez_sym = "\xE1\xB9\x81" in
-    fun ppf tez -> Format.fprintf ppf "%s%a" tez_sym Tez_repr.pp tez
+    fun ppf mav -> Format.fprintf ppf "%s%a" tez_sym Tez_repr.pp mav
 
   let pp : type token. token t -> Format.formatter -> token -> unit = function
     | Tez -> pp_tez
@@ -620,7 +620,7 @@ module StakingPseudotokenMap = MakeBalanceMap (struct
 end)
 
 type 'a balance_maps = {
-  tez : Tez_repr.t balance_update TezBalanceMap.t;
+  mav : Tez_repr.t balance_update TezBalanceMap.t;
   staking_pt : Staking_pseudotoken_repr.t balance_update StakingPseudotokenMap.t;
 }
 
@@ -650,7 +650,7 @@ let group_balance_updates balance_updates =
                 return_some (Debited update)))
       map
   in
-  let* {tez; staking_pt} =
+  let* {mav; staking_pt} =
     List.fold_left_e
       (fun acc (Balance_update_item (b, update, o)) ->
         (* Do not do anything if the update is zero *)
@@ -659,10 +659,10 @@ let group_balance_updates balance_updates =
         else
           match token with
           | Tez ->
-              let+ tez =
-                update_map token TezBalanceMap.update_r (b, o) update acc.tez
+              let+ mav =
+                update_map token TezBalanceMap.update_r (b, o) update acc.mav
               in
-              {acc with tez}
+              {acc with mav}
           | Staking_pseudotoken ->
               let+ staking_pt =
                 update_map
@@ -673,7 +673,7 @@ let group_balance_updates balance_updates =
                   acc.staking_pt
               in
               {acc with staking_pt})
-      {tez = TezBalanceMap.empty; staking_pt = StakingPseudotokenMap.empty}
+      {mav = TezBalanceMap.empty; staking_pt = StakingPseudotokenMap.empty}
       balance_updates
   in
   return
@@ -682,5 +682,5 @@ let group_balance_updates balance_updates =
        staking_pt
        (TezBalanceMap.fold
           (fun (b, o) u acc -> Balance_update_item (b, u, o) :: acc)
-          tez
+          mav
           []))

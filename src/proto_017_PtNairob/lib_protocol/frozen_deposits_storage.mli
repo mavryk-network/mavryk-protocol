@@ -46,26 +46,26 @@ val get : Raw_context.t -> Contract_repr.t -> Storage.deposits tzresult Lwt.t
 val find :
   Raw_context.t -> Contract_repr.t -> Storage.deposits option tzresult Lwt.t
 
-(** [credit_only_call_from_token ctxt delegate tez] returns a new context from
+(** [credit_only_call_from_token ctxt delegate mav] returns a new context from
    [ctxt] where the amount of frozen deposits for the implicit contract
-   represented by [delegate] increases by [tez]. *)
+   represented by [delegate] increases by [mav]. *)
 val credit_only_call_from_token :
   Raw_context.t ->
   Signature.Public_key_hash.t ->
   Tez_repr.t ->
   Raw_context.t tzresult Lwt.t
 
-(** [spend_only_call_from_token ctxt delegate tez] returns a new context from
+(** [spend_only_call_from_token ctxt delegate mav] returns a new context from
    [ctxt] where the amount of frozen deposits for the implicit contract
-   represented by [delegate] decreases by [tez].*)
+   represented by [delegate] decreases by [mav].*)
 val spend_only_call_from_token :
   Raw_context.t ->
   Signature.Public_key_hash.t ->
   Tez_repr.t ->
   Raw_context.t tzresult Lwt.t
 
-(** [update_initial_amount ctxt contract tez] returns a new context from [ctxt]
+(** [update_initial_amount ctxt contract mav] returns a new context from [ctxt]
    where the initial_amount of the frozen deposits for [contract] is set to
-   [tez]. *)
+   [mav]. *)
 val update_initial_amount :
   Raw_context.t -> Contract_repr.t -> Tez_repr.t -> Raw_context.t tzresult Lwt.t

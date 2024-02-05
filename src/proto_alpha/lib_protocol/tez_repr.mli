@@ -70,19 +70,19 @@ val ( /? ) : t -> int64 -> t tzresult
 
 val div2 : t -> t
 
-(** [mul_ratio ~rounding tez ~num ~den] returns [tez * num / den] without failing
-    when [tez * num] overflows.
+(** [mul_ratio ~rounding mav ~num ~den] returns [mav * num / den] without failing
+    when [mav * num] overflows.
     [rounding] controls the rounding of the division. *)
 val mul_ratio :
   rounding:[`Down | `Up] -> t -> num:int64 -> den:int64 -> t tzresult
 
-(** [mul_percentage tez percentage] returns [tez * percentage / 100].
+(** [mul_percentage mav percentage] returns [mav * percentage / 100].
     No errors can happen. *)
 val mul_percentage : rounding:[`Down | `Up] -> t -> Int_percentage.t -> t
 
 val to_mumav : t -> int64
 
-(** [of_mumav n] (micro tez) is None if n is negative *)
+(** [of_mumav n] (micro mav) is None if n is negative *)
 val of_mumav : int64 -> t option
 
 (** [of_mumav_exn n] fails if n is negative.

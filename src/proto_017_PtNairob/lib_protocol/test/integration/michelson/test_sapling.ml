@@ -684,7 +684,7 @@ module Interpreter_tests = struct
     in
     (* The balance after shield is obtained from the balance before shield by
        the shield specific update. *)
-    (* The inputs total [total] mumav and 15 of those are transfered in shielded tez *)
+    (* The inputs total [total] mumav and 15 of those are transfered in shielded mav *)
     Assert.equal_int ~loc:__LOC__ (Int64.to_int diff_due_to_shield) (total - 15)
     >>=? fun () ->
     let list_forge_input =

@@ -1180,7 +1180,7 @@
   },
   {
     "file": "encoding.ml",
-    "title": "Mumbai: protocol encoding regression test: tez",
+    "title": "Mumbai: protocol encoding regression test: mav",
     "tags": [
       "regression",
       "mumbai",

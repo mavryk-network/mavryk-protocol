@@ -124,8 +124,8 @@ let generate_balance_update =
   let open Gen in
   let open Receipt_repr in
   let* i = big_nat in
-  let tez = Tez_repr.of_mumav_exn (Int64.of_int i) in
-  oneofl [Debited tez; Credited tez]
+  let mav = Tez_repr.of_mumav_exn (Int64.of_int i) in
+  oneofl [Debited mav; Credited mav]
 
 let generate_update_origin =
   let open Gen in

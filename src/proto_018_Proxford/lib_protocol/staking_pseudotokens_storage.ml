@@ -42,11 +42,11 @@
     {1} Full staking balance of a delegate
 
     For each delegate, the {!Stake_storage} module is responsible to
-    track three tez quantities which can be requested with the
+    track three mav quantities which can be requested with the
     {!Stake_storage.get_full_staking_balance} function: [own_frozen]
     is the frozen deposits of the delegate, [staked_frozen] is the
     sum of all frozen deposits of its stakers, and [delegate] is the
-    sum of all tez delegated to the delegate (some of which may belong
+    sum of all mav delegated to the delegate (some of which may belong
     to the delegate itself). This module is in charge of tracking the
     frozen deposits of each staker. Since we already have access to
     their sum ([staked_frozen]) we only need to track the proportion
@@ -57,7 +57,7 @@
     The {!Storage.Contract.Frozen_deposits_pseudotokens} and
     {!Storage.Contract.Staking_pseudotokens} tables are used to keep
     track of this proportion. The amounts stored in these tables don't
-    have a fixed value in tez, they can be seen as shares of the total
+    have a fixed value in mav, they can be seen as shares of the total
     frozen deposits of a delegate's stakers, we call them
     pseudotokens. Pseudotokens are minted when a staker increases
     its share using the stake pseudo-operation; they are burnt when a
@@ -153,7 +153,7 @@ type delegator_balances = {
 (** {0} Functions reading from the storage *)
 
 (** [get_frozen_deposits_staked_tez ctxt ~delegate] returns the sum of frozen
-    deposits, in tez, of the delegate's stakers. *)
+    deposits, in mav, of the delegate's stakers. *)
 let get_frozen_deposits_staked_tez ctxt ~delegate =
   let open Lwt_result_syntax in
   let+ {staked_frozen; delegated = _; own_frozen = _} =
@@ -200,7 +200,7 @@ let staking_pseudotokens_balance ctxt ~delegator =
   Option.value ~default:Staking_pseudotoken_repr.zero staking_pseudotokens_opt
 
 (** [get_delegate_balances ctxt ~delegate] records the staked frozen deposits
-    in tez and pseudotokens of a given delegate.
+    in mav and pseudotokens of a given delegate.
 
     Postcondition:
       delegate = result.delegate /\
@@ -346,7 +346,7 @@ let burn_pseudotokens ctxt (delegator_balances_before : delegator_balances)
   in
   return (ctxt, balance_updates)
 
-(** {0} Conversion between tez and pseudotokens *)
+(** {0} Conversion between mav and pseudotokens *)
 
 (** Tez -> pseudotokens conversion.
     Precondition:
@@ -368,7 +368,7 @@ let pseudotokens_of (delegate_balances : delegate_balances) tez_amount =
     ~num:(Tez_repr.to_mumav tez_amount)
     ~den:(Tez_repr.to_mumav delegate_balances.frozen_deposits_staked_tez)
 
-(** Pseudotokens -> tez conversion.
+(** Pseudotokens -> mav conversion.
     Precondition:
       delegate_balances.frozen_deposits_pseudotokens <> 0.
 *)

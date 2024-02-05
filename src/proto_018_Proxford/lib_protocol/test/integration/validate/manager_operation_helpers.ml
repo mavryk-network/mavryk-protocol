@@ -1049,7 +1049,7 @@ let make_tztest_batched ?(fmt = Format.std_formatter) name test subjects
    batch of n manager operations. *)
 type probes = {
   source : Signature.Public_key_hash.t;
-  fee : Tez.tez;
+  fee : Tez.mav;
   gas_limit : Gas.Arith.integral;
   nb_counter : int;
 }

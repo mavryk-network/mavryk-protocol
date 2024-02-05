@@ -845,7 +845,7 @@ let token_transfer_encoding =
        (req "token_contract" string)
        (req "destination" string)
        (req "amount" z)
-       (opt "tez-amount" string)
+       (opt "mav-amount" string)
        (opt "fee" string)
        (opt "gas-limit" Gas.Arith.n_integral_encoding)
        (opt "storage-limit" z))

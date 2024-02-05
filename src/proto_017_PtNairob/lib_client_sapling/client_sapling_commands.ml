@@ -64,7 +64,7 @@ let anti_replay cctxt contract =
   let chain_id = Chain_id.to_b58check chain_id in
   return (address ^ chain_id)
 
-(** The shielded tez contract expects the recipient pkh encoded in Micheline
+(** The shielded mav contract expects the recipient pkh encoded in Micheline
     in the bound_data of an unshield operation. *)
 let bound_data_of_public_key_hash cctxt dst =
   let open Tezos_micheline in

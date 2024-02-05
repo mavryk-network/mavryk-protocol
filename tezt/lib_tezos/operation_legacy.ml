@@ -69,7 +69,7 @@ let micheline_to_json convert client = function
   | `Michelson data -> convert data client
   | `File file -> (
       match Filename.extension file with
-      | ".tz" | ".tez" | ".mic" -> convert file client
+      | ".tz" | ".mav" | ".mic" -> convert file client
       | ".json" -> JSON.parse_file file |> JSON.unannotate |> Lwt.return
       | s -> Test.fail "Unknown file extension %S in %s" s file)
 

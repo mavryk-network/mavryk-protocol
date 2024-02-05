@@ -59,7 +59,7 @@ module type S = sig
 
   val bytes : bytes sampler
 
-  val tez : Alpha_context.Tez.tez sampler
+  val mav : Alpha_context.Tez.mav sampler
 
   val timestamp : Script_timestamp.t sampler
 end
@@ -127,7 +127,7 @@ end) : S = struct
 
   let bytes = Base_samplers.bytes ~size:P.parameters.bytes_size
 
-  let tez rng_state =
+  let mav rng_state =
     let i = Random.State.int64 rng_state (Int64.of_int max_int) in
     match Protocol.Alpha_context.Tez.of_mumav i with
     | Some res -> res

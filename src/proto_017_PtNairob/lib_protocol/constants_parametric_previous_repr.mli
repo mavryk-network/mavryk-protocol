@@ -42,7 +42,7 @@ type tx_rollup = {
   hard_size_limit_per_inbox : int;
   (* the maximum amount of bytes one batch can allocate in an inbox *)
   hard_size_limit_per_message : int;
-  (* the amount of tez to bond a tx rollup commitment *)
+  (* the amount of mav to bond a tx rollup commitment *)
   commitment_bond : Tez_repr.t;
   (* the number of blocks before a tx rollup block is final *)
   finality_period : int;

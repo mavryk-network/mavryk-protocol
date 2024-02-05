@@ -76,7 +76,7 @@ let script_string = Script_string.length
 
 let bytes (b : Bytes.t) : t = Bytes.length b
 
-let mumav (_tez : Alpha_context.Tez.tez) : t =
+let mumav (_tez : Alpha_context.Tez.mav) : t =
   (* Up to now, mumav are stored on 8 bytes (int64). *)
   8
 

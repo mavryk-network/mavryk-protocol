@@ -1285,7 +1285,7 @@ let debited_of_balance_update_item (it : Receipt.balance_update_item) :
     Tez.t option =
   let open Receipt in
   match it with
-  | Balance_update_item (Contract _, Debited tez, _) -> Some tez
+  | Balance_update_item (Contract _, Debited mav, _) -> Some mav
   | _ -> None
 
 let autostaked_opt baker (metadata : block_header_metadata) =
@@ -1298,8 +1298,8 @@ let autostaked_opt baker (metadata : block_header_metadata) =
             List.exists
               (function
                 | Receipt.Balance_update_item
-                    (Deposits _staker, Receipt.Credited tez, _origin) ->
-                    Tez.(tez = debited_tez)
+                    (Deposits _staker, Receipt.Credited mav, _origin) ->
+                    Tez.(mav = debited_tez)
                 | _ -> false)
               metadata.balance_updates
         | _ -> false)
@@ -1309,10 +1309,10 @@ let autostaked_opt baker (metadata : block_header_metadata) =
     (fun receipt ->
       match debited_of_balance_update_item receipt with
       | None -> assert false
-      | Some tez -> tez)
+      | Some mav -> mav)
     autostaked_bal_up_opt
 
 let autostaked ?(loc = __LOC__) baker metadata =
   match autostaked_opt baker metadata with
   | None -> raise (Failure (loc ^ ":No autostake found"))
-  | Some tez -> tez
+  | Some mav -> mav

@@ -1191,7 +1191,7 @@
   },
   {
     "file": "encoding.ml",
-    "title": "Lima: protocol encoding regression test: tez",
+    "title": "Lima: protocol encoding regression test: mav",
     "tags": [
       "regression",
       "lima",

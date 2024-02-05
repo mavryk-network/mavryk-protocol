@@ -364,7 +364,7 @@ let test_transfer =
       ~receiver:"bootstrap2"
       client
   in
-  Log.info "Transferred 5 tez." ;
+  Log.info "Transferred 5 mav." ;
   let* () = Client.bake_for_and_wait client in
   Log.info "Baked block for bootstrap1." ;
   let* () =
@@ -375,7 +375,7 @@ let test_transfer =
       ~receiver:"bootstrap3"
       client
   in
-  Log.info "Transferred 10 tez." ;
+  Log.info "Transferred 10 mav." ;
   let* () = Client.bake_for_and_wait ~keys:["bootstrap2"] client in
   Log.info "Baked block for bootstrap2." ;
   return ()

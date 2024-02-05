@@ -24,29 +24,29 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Helpers for dealing with units of tez.
+(** Helpers for dealing with units of mav.
 
     Please note that none of the functions here perform any bounds checks. *)
 
-(** A unit of tez *)
+(** A unit of mav *)
 type t
 
-(** Make [t] from the whole number of tez. This doesn't perform any bounds
+(** Make [t] from the whole number of mav. This doesn't perform any bounds
     checks. *)
 val of_int : int -> t
 
-(** Make [t] from the whole number of micro tez. This doesn't perform any bounds
+(** Make [t] from the whole number of micro mav. This doesn't perform any bounds
     checks. *)
 val of_mumav_int : int -> t
 
-(** Make [t] from the whole number of micro tez. This doesn't perform any bounds
+(** Make [t] from the whole number of micro mav. This doesn't perform any bounds
     checks. *)
 val of_mumav_int64 : int64 -> t
 
-(** 0 tez *)
+(** 0 mav *)
 val zero : t
 
-(** 1 tez *)
+(** 1 mav *)
 val one : t
 
 (** Convert [t] to a string. *)
@@ -55,7 +55,7 @@ val to_string : t -> string
 (** Convert [t] to a mumav integer. *)
 val mumav_int64 : t -> int64
 
-(** Convert [t] to a float of tez. *)
+(** Convert [t] to a float of mav. *)
 val to_float : t -> float
 
 (** Convert [t] to an [int]. *)
@@ -72,14 +72,14 @@ val ( - ) : t -> t -> t
     @raise Division_by_zero when the second operand is zero. *)
 val ( /! ) : t -> int64 -> t
 
-(** Parsing. Parse a floating point number of tez.
+(** Parsing. Parse a floating point number of mav.
 
     Any string of digits followed by an optional point and another string
     of digits should parse successfully, provided that the expressed number
-    is within bounds allowed for tez (up to 6 decimal places). For example:
+    is within bounds allowed for mav (up to 6 decimal places). For example:
     "123.4356" will parse, while
     "1.24723953794217492" won't, because it's too precise. *)
 val parse_floating : string -> t
 
-(** The tez {!Check.typ} *)
+(** The mav {!Check.typ} *)
 val typ : t Check.typ

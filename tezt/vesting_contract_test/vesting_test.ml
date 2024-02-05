@@ -392,7 +392,7 @@ let sign_transfer ?(expect_failure = false) ?data ~contract ~replay ~receiver
       data
       ~default:
         (pair
-           (left @@ left @@ pair (str receiver) (tez amount))
+           (left @@ left @@ pair (str receiver) (mav amount))
            (pair (str contract) (num replay)))
   in
   let* signatures = signatures ~typ:vesting_arg_type ~data signers in
@@ -400,7 +400,7 @@ let sign_transfer ?(expect_failure = false) ?data ~contract ~replay ~receiver
     let open Test_michelson in
     left
     @@ pair
-         (left @@ left @@ pair (str receiver) (tez amount))
+         (left @@ left @@ pair (str receiver) (mav amount))
          (sigs_michelson signatures)
   in
   Log.debug
@@ -484,7 +484,7 @@ let execute_pour ?(expect_failure = false) ~authorizer ~recipient ~amount
   let to_sign =
     let open Test_michelson in
     pair
-      (pair (str recp.public_key_hash) (tez amount))
+      (pair (str recp.public_key_hash) (mav amount))
       (pair (str contract) (num replay))
   in
   let typ =
@@ -494,7 +494,7 @@ let execute_pour ?(expect_failure = false) ~authorizer ~recipient ~amount
   let* signature = get_signature ~typ ~data:to_sign authorizer in
   let arg =
     let open Test_michelson in
-    right @@ some @@ pair (str signature) (tez amount)
+    right @@ some @@ pair (str signature) (mav amount)
   in
   Log.debug
     "Executing pour of %f ꜩ from %s to %s (%s)."
@@ -1313,7 +1313,7 @@ let test_full_contract =
       ~data:
         Test_michelson.(
           pair
-            (left @@ left @@ pair (str wrong_address) (tez @@ Tez.of_int 200))
+            (left @@ left @@ pair (str wrong_address) (mav @@ Tez.of_int 200))
             (pair (str contract) (num 4)))
       ~signers:
         [

@@ -517,7 +517,7 @@ let transfer_from_any_address ctxt sender destination amount =
   | Destination.Contract sender ->
       Token.transfer ctxt (`Contract sender) (`Contract destination) amount
   | Destination.Sc_rollup _ | Destination.Zk_rollup _ ->
-      (* We do not allow transferring tez from rollups to other contracts. *)
+      (* We do not allow transferring mav from rollups to other contracts. *)
       let*? () =
         error_unless Tez.(amount = zero) (Non_empty_transaction_from sender)
       in

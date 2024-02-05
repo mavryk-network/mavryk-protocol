@@ -114,7 +114,7 @@ let default_reconnection_delay = 2.0 (* seconds *)
 
 let mumav mumav = {Injector_common.mumav}
 
-let tez t = mumav Int64.(mul (of_int t) 1_000_000L)
+let mav t = mumav Int64.(mul (of_int t) 1_000_000L)
 
 (* The below default fee and burn limits are computed by taking into account
    the worst fee found in the tests for the rollup node.
@@ -133,35 +133,35 @@ let tez t = mumav Int64.(mul (of_int t) 1_000_000L)
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
-let default_fee : Operation_kind.t -> Injector_common.tez = function
-  | Cement -> tez 1
-  | Recover -> tez 1
-  | Publish -> tez 2
+let default_fee : Operation_kind.t -> Injector_common.mav = function
+  | Cement -> mav 1
+  | Recover -> mav 1
+  | Publish -> mav 2
   | Add_messages ->
       (* We keep this limit even though it depends on the size of the message
          because the rollup node pays the fees for messages submitted by the
          **users**. *)
-      tez 1
-  | Timeout -> tez 2
+      mav 1
+  | Timeout -> mav 2
   | Refute ->
       (* Should be 3 based on comment above but we want to make sure we inject
          refutation moves even if the proof is large. The stake is high (we can
          lose the 10k deposit or we can get the reward). *)
-      tez 5
-  | Execute_outbox_message -> tez 1
+      mav 5
+  | Execute_outbox_message -> mav 1
 
-let default_burn : Operation_kind.t -> Injector_common.tez = function
+let default_burn : Operation_kind.t -> Injector_common.mav = function
   | Publish ->
       (* The first commitment can store data. *)
-      tez 1
-  | Add_messages -> tez 0
-  | Cement -> tez 0
-  | Recover -> tez 0
-  | Timeout -> tez 0
+      mav 1
+  | Add_messages -> mav 0
+  | Cement -> mav 0
+  | Recover -> mav 0
+  | Timeout -> mav 0
   | Refute ->
       (* A refutation move can store data, e.g. opening a game. *)
-      tez 1
-  | Execute_outbox_message -> tez 1
+      mav 1
+  | Execute_outbox_message -> mav 1
 
 (* Copied from src/proto_alpha/lib_plugin/mempool.ml *)
 let default_fee_parameter operation_kind =

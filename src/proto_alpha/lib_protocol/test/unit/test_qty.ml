@@ -28,7 +28,7 @@
     Component:  Protocol (quantities)
     Invocation: dune exec src/proto_alpha/lib_protocol/test/unit/main.exe \
                   -- --file test_qty.ml
-    Subject:    On tez quantities.
+    Subject:    On mav quantities.
 *)
 
 open Protocol
@@ -116,7 +116,7 @@ let test_known_tez_literals () =
     known_bad_tez_literals ;
   return_unit
 
-(** Randomly generated tez value which is printed into a string then
+(** Randomly generated mav value which is printed into a string then
     parsed again for their equality. *)
 let test_random_tez_literals () =
   for _ = 0 to 100_000 do
@@ -146,8 +146,8 @@ let test_random_tez_literals () =
 
 let tests =
   [
-    ("tez-literals", fun _ -> test_known_tez_literals ());
-    ("rnd-tez-literals", fun _ -> test_random_tez_literals ());
+    ("mav-literals", fun _ -> test_known_tez_literals ());
+    ("rnd-mav-literals", fun _ -> test_random_tez_literals ());
   ]
 
 let wrap (n, f) =

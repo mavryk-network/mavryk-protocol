@@ -66,7 +66,7 @@ val script_string : Script_string.t -> t
 
 val bytes : Bytes.t -> t
 
-val mumav : Alpha_context.Tez.tez -> t
+val mumav : Alpha_context.Tez.mav -> t
 
 val timestamp : Script_timestamp.t -> t
 

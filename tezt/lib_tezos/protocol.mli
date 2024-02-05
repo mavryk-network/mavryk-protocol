@@ -145,7 +145,7 @@ val default_bootstrap_balance : int
       add to activation parameters. Each account is a triplet
       [(key, balance, revealed)]. If [revealed] the public key is added,
       else the public key hash is added. Revealed keys are expected to bake
-      from the start. Default [balance] is 4000000 tez.
+      from the start. Default [balance] is 4000000 mav.
     - [bootstrap_smart_rollups] when given.
     - [bootstrap_contracts] when given.
     - [output_file] the path where to write the protocol parameter file,

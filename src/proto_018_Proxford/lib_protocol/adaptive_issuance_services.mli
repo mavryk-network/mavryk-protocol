@@ -57,7 +57,7 @@ val current_issuance_per_minute :
 val launch_cycle :
   'a #RPC_context.simple -> 'a -> Cycle.t option shell_tzresult Lwt.t
 
-(** Returns the list of expected issued tez for the current cycle and for the next
+(** Returns the list of expected issued mav for the current cycle and for the next
     [preserved_cycles] cycles. *)
 val expected_issuance :
   'a #RPC_context.simple -> 'a -> expected_rewards list shell_tzresult Lwt.t

@@ -372,7 +372,7 @@ let _stake_or_unstake_half_balance client ~baker_alias =
     given network. *)
 let baker_scenario ?baker_sk ~airdropper_alias client dal_node l1_node =
   (* We'll not airdrop baker account to avoid emptying airdropper. The user
-     should either provide a baker secret key with enough tez, or we use
+     should either provide a baker secret key with enough mav, or we use
      airdropper as a baker directly. *)
   let* baker_alias =
     match baker_sk with

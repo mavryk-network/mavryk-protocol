@@ -103,8 +103,8 @@ module Client = struct
 
   (* Create dummy output, can be used to execute a z to t payment and still
      have two outputs: one is dummy and one is the change *)
-  let pay_dummy wallet memo tez chain_state key =
-    assert (Int64.add wallet.balance tez >= 0L) ;
+  let pay_dummy wallet memo mav chain_state key =
+    assert (Int64.add wallet.balance mav >= 0L) ;
     let rec gather_input to_pay balance inputs unspent_inputs =
       if to_pay > 0L then
         let input_to_add =
@@ -120,7 +120,7 @@ module Client = struct
       else (inputs, balance, unspent_inputs, Int64.abs to_pay)
     in
     let inputs, balance, unspent_inputs, change =
-      gather_input (Int64.sub 0L tez) wallet.balance [] wallet.unspent_inputs
+      gather_input (Int64.sub 0L mav) wallet.balance [] wallet.unspent_inputs
     in
     let payment_output =
       Forge.make_output (Core.Viewing_key.dummy_address ()) 0L memo
@@ -155,9 +155,9 @@ module Client = struct
     let new_state = {wallet with unspent_inputs; balance} in
     (transaction, new_state)
 
-  let pay wallet address_o amount ~memo ?(bound_data = "") tez chain_state key =
+  let pay wallet address_o amount ~memo ?(bound_data = "") mav chain_state key =
     let memo = Bytes.of_string memo in
-    assert (Int64.(add wallet.balance tez) >= amount) ;
+    assert (Int64.(add wallet.balance mav) >= amount) ;
     let rec gather_input to_pay balance inputs unspent_input =
       if to_pay > 0L then
         let input_to_add =
@@ -174,7 +174,7 @@ module Client = struct
     in
     let inputs, balance, unspent_inputs, change =
       gather_input
-        (Int64.sub amount tez)
+        (Int64.sub amount mav)
         wallet.balance
         []
         wallet.unspent_inputs

@@ -42,7 +42,7 @@ let some = unary "Some"
 
 let num n = Int (no_comment, Z.of_int n)
 
-let tez t = Int (no_comment, Z.of_int64 @@ Tez.mumav_int64 t)
+let mav t = Int (no_comment, Z.of_int64 @@ Tez.mumav_int64 t)
 
 let str s = String (no_comment, s)
 

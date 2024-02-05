@@ -416,11 +416,11 @@ module Wallet = struct
 end
 
 (* Tests involving sapling key management and shielded transactions
-   using the shielded tez example contract. *)
+   using the shielded mav example contract. *)
 let test_sapling_shielded_tez =
   Protocol.register_test
     ~__FILE__
-    ~title:"test sapling with shielded tez"
+    ~title:"test sapling with shielded mav"
     ~tags:["sapling"; "shield"]
   @@ fun protocol ->
   let burn_cap = Tez.of_int 3 in

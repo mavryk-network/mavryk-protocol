@@ -71,7 +71,7 @@ let assert_total_frozen_stake ~loc block expected =
 
 (* Assert that the current voting power of a delegate is the expected
    one. The expectation is computed based on the expected self-staked,
-   delegated, and staked tez. The delegate's own liquid balance is
+   delegated, and staked mav. The delegate's own liquid balance is
    measured. *)
 let assert_voting_power ~loc block delegate ~ai_enabled ~expected_staked
     ~expected_delegated ~expected_ext_staked =
@@ -322,7 +322,7 @@ let test_launch threshold expected_vote_duration () =
      planned to happen. *)
   let* () = assert_current_cycle ~loc:__LOC__ block launch_cycle in
   (* At this point, only the delegate has frozen any stake and its
-     frozen balance is about 2 million tez (it started with 4 million,
+     frozen balance is about 2 million mav (it started with 4 million,
      sent half to its delegate, and staked the rest). *)
   let* () =
     assert_total_frozen_stake

@@ -1497,7 +1497,7 @@ let parse_mumav ctxt : Script.node -> (Tez.t * context) tzresult = function
         let open Option in
         bind (catch (fun () -> Z.to_int64 v)) Tez.of_mumav
       with
-      | Some tez -> Ok (tez, ctxt)
+      | Some mav -> Ok (mav, ctxt)
       | None ->
           error
           @@ Invalid_syntactic_constant

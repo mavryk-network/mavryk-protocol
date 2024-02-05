@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Places where tez can be found in the ledger's state. *)
+(** Places where mav can be found in the ledger's state. *)
 type balance =
   | Contract of Contract_repr.t
   | Block_fees
@@ -53,7 +53,7 @@ type balance =
 (** Compares two balances. *)
 val compare_balance : balance -> balance -> int
 
-(** A credit or debit of tez to a balance. *)
+(** A credit or debit of mav to a balance. *)
 type balance_update = Debited of Tez_repr.t | Credited of Tez_repr.t
 
 (** An origin of a balance update *)

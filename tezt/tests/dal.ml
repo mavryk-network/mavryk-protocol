@@ -900,7 +900,7 @@ let test_slots_attestation_operation_dal_committee_membership_check _protocol
       []
       client
   in
-  (* Set up a new account that holds the right amount of tez and make sure it
+  (* Set up a new account that holds the right amount of mav and make sure it
      can be an attester. *)
   let* proto_params =
     Node.RPC.call node @@ RPC.get_chain_block_context_constants ()

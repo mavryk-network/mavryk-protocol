@@ -2043,7 +2043,7 @@ let test_deposit_and_withdraw =
     ~__FILE__
     ~tags:["evm"; "deposit"; "withdraw"]
     ~uses:(fun _protocol -> Constant.[octez_smart_rollup_node; octez_evm_node])
-    ~title:"Deposit and withdraw tez"
+    ~title:"Deposit and withdraw mav"
   @@ fun protocol ->
   let admin = Constant.bootstrap5 in
   let commitment_period = 5 and challenge_window = 5 in

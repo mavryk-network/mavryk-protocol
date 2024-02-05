@@ -72,7 +72,7 @@ let ( /! ) = Int64.div
 
 let parse_floating tez_string =
   let re = rex "(\\d+)\\.?(\\d*)" in
-  let fail () = Test.fail "Invalid tez value: '%s'." tez_string in
+  let fail () = Test.fail "Invalid mav value: '%s'." tez_string in
   let parse_int s =
     match int_of_string_opt s with None -> fail () | Some i -> i
   in

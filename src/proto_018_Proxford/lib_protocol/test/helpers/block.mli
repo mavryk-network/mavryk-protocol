@@ -404,7 +404,7 @@ val prepare_initial_context_params :
   result
   Lwt.t
 
-(** [autostaked_opt delegate metadata] returns [Some amount] if [amount] tez
+(** [autostaked_opt delegate metadata] returns [Some amount] if [amount] mav
     have been staked for the given [delegate]. [None] otherwise. *)
 val autostaked_opt : public_key_hash -> block_header_metadata -> Tez.t option
 

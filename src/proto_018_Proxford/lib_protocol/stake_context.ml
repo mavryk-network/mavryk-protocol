@@ -61,10 +61,10 @@ let apply_limits ctxt staking_parameters
         Tez_repr.min staked_frozen max_allowed_staked_frozen
     | Error _max_allowed_staked_frozen_overflows -> staked_frozen
   in
-  (* Overstaked tez count as delegated. *)
+  (* Overstaked mav count as delegated. *)
   let* overstaked = Tez_repr.(staked_frozen -? allowed_staked_frozen) in
   let* delegated = Tez_repr.(delegated +? overstaked) in
-  (* Overdelegated tez don't count. *)
+  (* Overdelegated mav don't count. *)
   let delegated =
     match Tez_repr.(own_frozen *? limit_of_delegation_over_baking) with
     | Ok max_allowed_delegated -> Tez_repr.min max_allowed_delegated delegated

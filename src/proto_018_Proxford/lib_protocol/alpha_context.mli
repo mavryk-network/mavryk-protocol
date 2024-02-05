@@ -114,37 +114,37 @@ module Tez : sig
 
   include BASIC_DATA with type t := t
 
-  type tez = t
+  type mav = t
 
-  val zero : tez
+  val zero : mav
 
-  val one_mumav : tez
+  val one_mumav : mav
 
-  val one_cent : tez
+  val one_cent : mav
 
-  val fifty_cents : tez
+  val fifty_cents : mav
 
-  val one : tez
+  val one : mav
 
-  val max_mumav : tez
+  val max_mumav : mav
 
-  val ( -? ) : tez -> tez -> tez tzresult
+  val ( -? ) : mav -> mav -> mav tzresult
 
-  val sub_opt : tez -> tez -> tez option
+  val sub_opt : mav -> mav -> mav option
 
-  val ( +? ) : tez -> tez -> tez tzresult
+  val ( +? ) : mav -> mav -> mav tzresult
 
-  val ( *? ) : tez -> int64 -> tez tzresult
+  val ( *? ) : mav -> int64 -> mav tzresult
 
-  val ( /? ) : tez -> int64 -> tez tzresult
+  val ( /? ) : mav -> int64 -> mav tzresult
 
-  val of_string : string -> tez option
+  val of_string : string -> mav option
 
-  val to_string : tez -> string
+  val to_string : mav -> string
 
-  val of_mumav : int64 -> tez option
+  val of_mumav : int64 -> mav option
 
-  val to_mumav : tez -> int64
+  val to_mumav : mav -> int64
 
   val of_mumav_exn : int64 -> t
 
@@ -4460,7 +4460,7 @@ and _ contents =
   | Failing_noop : string -> Kind.failing_noop contents
   | Manager_operation : {
       source : public_key_hash;
-      fee : Tez.tez;
+      fee : Tez.mav;
       counter : Manager_counter.t;
       operation : 'kind manager_operation;
       gas_limit : Gas.Arith.integral;
@@ -4471,7 +4471,7 @@ and _ contents =
 and _ manager_operation =
   | Reveal : public_key -> Kind.reveal manager_operation
   | Transaction : {
-      amount : Tez.tez;
+      amount : Tez.mav;
       parameters : Script.lazy_expr;
       entrypoint : Entrypoint.t;
       destination : Contract.t;
@@ -4480,7 +4480,7 @@ and _ manager_operation =
   | Origination : {
       delegate : public_key_hash option;
       script : Script.t;
-      credit : Tez.tez;
+      credit : Tez.mav;
     }
       -> Kind.origination manager_operation
   | Delegation : public_key_hash option -> Kind.delegation manager_operation
@@ -4879,7 +4879,7 @@ end
 module Commitment : sig
   type t = {
     blinded_public_key_hash : Blinded_public_key_hash.t;
-    amount : Tez.tez;
+    amount : Tez.mav;
   }
 
   (** See {!Commitment_storage.exists}. *)

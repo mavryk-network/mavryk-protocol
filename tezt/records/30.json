@@ -1237,7 +1237,7 @@
   },
   {
     "file": "encoding.ml",
-    "title": "Alpha: protocol encoding regression test: tez",
+    "title": "Alpha: protocol encoding regression test: mav",
     "tags": [
       "regression",
       "alpha",

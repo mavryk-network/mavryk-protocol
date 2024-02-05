@@ -81,7 +81,7 @@ let test_balances ~amount =
   in
   let* inc = Incremental.add_operation inc op in
   (* check that after the block has been baked, the source was debited of all
-     the burned tez *)
+     the burned mav *)
   let* {parametric = {cost_per_byte; _}; _} = Context.get_constants (I inc) in
   let burned_tez = Tez.mul_exn cost_per_byte (Z.to_int amount) in
   let* () =
@@ -133,7 +133,7 @@ let test_negative_amount () =
       | Fees_storage.Negative_storage_input -> true
       | _ -> false)
 
-(** We create an implicit account with not enough tez to pay for the
+(** We create an implicit account with not enough mav to pay for the
     storage increase. *)
 let test_no_tez_to_pay () =
   let open Lwt_result_syntax in
@@ -240,7 +240,7 @@ let tests =
     Tztest.tztest "balances simple" `Quick test_balances_simple;
     Tztest.tztest "null amount" `Quick test_null_amount;
     Tztest.tztest "negative amount" `Quick test_negative_amount;
-    Tztest.tztest "not enough tez to pay" `Quick test_no_tez_to_pay;
+    Tztest.tztest "not enough mav to pay" `Quick test_no_tez_to_pay;
     Tztest.tztest "no contract to bump its paid storage" `Quick test_no_contract;
     Tztest.tztest "effectiveness" `Quick test_effectiveness;
   ]

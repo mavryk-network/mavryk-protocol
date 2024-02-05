@@ -58,11 +58,11 @@ let test_mint_deposit_withdraw_implicit_transfer () =
                 ASSERT_SOME ;
                 # contract : nat %ct : nat %qty
                 PUSH mumav 0 ;
-                # tez : contract : nat %ct : nat %qty
+                # mav : contract : nat %ct : nat %qty
                 DIG 3 ;
-                # nat %qty : tez : contract : nat %ct
+                # nat %qty : mav : contract : nat %ct
                 DIG 3 ;
-                # nat %ct : nat %qty : tez : contract
+                # nat %ct : nat %qty : mav : contract
                 TICKET ;
                 ASSERT_SOME ;
                 TRANSFER_TOKENS ;
@@ -159,11 +159,11 @@ let test_contract_as_ticket_transfer_destination () =
                 UNPAIR 3 ;
                 # contract (ticket nat) : nat %ct : nat %qty
                 PUSH mumav 0 ;
-                # tez : contract (ticket nat) : nat %ct : nat %qty
+                # mav : contract (ticket nat) : nat %ct : nat %qty
                 DIG 3 ;
-                # nat %qty : tez : contract (ticket nat) : nat %ct
+                # nat %qty : mav : contract (ticket nat) : nat %ct
                 DIG 3 ;
-                # nat %ct : nat %qty : tez : contract (ticket nat)
+                # nat %ct : nat %qty : mav : contract (ticket nat)
                 TICKET ;
                 ASSERT_SOME ;
                 TRANSFER_TOKENS ;

@@ -121,7 +121,7 @@ let to_micheline storage =
         ];
       tuple
         [
-          tuple [tez storage.vested_balance; tez storage.vesting_increment];
+          tuple [mav storage.vested_balance; mav storage.vesting_increment];
           timestamp storage.next_payout;
           num @@ interval storage.payout_interval;
         ];

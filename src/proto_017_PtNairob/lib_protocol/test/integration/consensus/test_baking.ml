@@ -374,7 +374,7 @@ let test_committee_sampling () =
       "@[<hov>Testing with baker distribution [%a],@ committee size %d.@]@."
       (Format.pp_print_list
          ~pp_sep:(fun ppf () -> Format.fprintf ppf ",@ ")
-         (fun ppf (tez, _) -> Format.fprintf ppf "%Ld" tez))
+         (fun ppf (mav, _) -> Format.fprintf ppf "%Ld" mav))
       distribution
       max_round ;
 
@@ -441,11 +441,11 @@ let tests =
       `Quick
       test_rewards_block_and_payload_producer;
     Tztest.tztest
-      "a delegate with 8000 tez can bake"
+      "a delegate with 8000 mav can bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:true);
     Tztest.tztest
-      "a delegate with 7999 tez cannot bake"
+      "a delegate with 7999 mav cannot bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:false);
     Tztest.tztest "committee sampling" `Quick test_committee_sampling;

@@ -17,15 +17,15 @@ let get_signer cctxt pkh =
   let* alias, pk, sk = Client_keys.get_key cctxt pkh in
   return {alias; pkh; pk; sk}
 
-type tez = {mumav : int64}
+type mav = {mumav : int64}
 
 type fee_parameter = {
-  minimal_fees : tez;
+  minimal_fees : mav;
   minimal_nanomav_per_byte : Q.t;
   minimal_nanomav_per_gas_unit : Q.t;
   force_low_fee : bool;
-  fee_cap : tez;
-  burn_cap : tez;
+  fee_cap : mav;
+  burn_cap : mav;
 }
 
 (* Encoding for Tez amounts, replicated from mempool. *)
@@ -35,8 +35,8 @@ let tez_encoding =
   let encode = Json.wrap_error (fun i -> {mumav = Z.to_int64 i}) in
   Data_encoding.def
     "mumav"
-    ~title:"A millionth of a tez"
-    ~description:"One million mumav make a tez (1 tez = 1e6 mumav)"
+    ~title:"A millionth of a mav"
+    ~description:"One million mumav make a mav (1 mav = 1e6 mumav)"
     (conv decode encode n)
 
 (* Encoding for nano-Tez amounts, replicated from mempool. *)
@@ -45,7 +45,7 @@ let nanomav_encoding =
   def
     "nanomav"
     ~title:"A thousandth of a mumav"
-    ~description:"One thousand nanomav make a mumav (1 tez = 1e9 nanomav)"
+    ~description:"One thousand nanomav make a mumav (1 mav = 1e9 nanomav)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})

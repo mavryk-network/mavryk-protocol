@@ -58,7 +58,7 @@ let amount_param () =
            cctxt#error "invalid amount (must be a non-negative number)"))
 
 let tez_amount_arg =
-  tez_arg ~default:"0" ~parameter:"tez-amount" ~doc:"amount in \xEA\x9C\xA9"
+  tez_arg ~default:"0" ~parameter:"mav-amount" ~doc:"amount in \xEA\x9C\xA9"
 
 let as_arg =
   Client_proto_contracts.Contract_alias.destination_arg
@@ -610,7 +610,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
                    address or alias, \"destination\": address or alias, \
                    \"amount\": non-negative integer (, <field>: <val> ...) } \
                    (, ...) ]', where an optional <field> can either be \
-                   \"tez-amount\", \"fee\", \"gas-limit\" or \
+                   \"mav-amount\", \"fee\", \"gas-limit\" or \
                    \"storage-limit\". The complete schema can be inspected via \
                    `tezos-codec describe %s.fa1.2.token_transfer json schema`."
                   Protocol.name)

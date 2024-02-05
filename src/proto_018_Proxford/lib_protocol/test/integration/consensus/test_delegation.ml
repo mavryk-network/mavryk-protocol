@@ -540,7 +540,7 @@ let test_unregistered_delegate_key_init_origination ~fee () =
         | _ -> false)
 
 (** Delegation when delegate key is not assigned. Delegate account is
-    initialized. If fees are higher than initial credit (10 tez),
+    initialized. If fees are higher than initial credit (10 mav),
     [Balance_too_low] is raised. Otherwise, fees are still debited. The
     implicit contract has no delegate. *)
 let test_unregistered_delegate_key_init_delegation ~fee () =
@@ -594,7 +594,7 @@ let test_unregistered_delegate_key_init_delegation ~fee () =
         | _ -> false)
 
 (** Re-delegation when a delegate key was already assigned. If fees
-    are higher than initial credit (10 tez), [Balance_too_low] is
+    are higher than initial credit (10 mav), [Balance_too_low] is
     raised. Otherwise, fees are not debited and the implicit contract
     delegate remains unchanged. *)
 let test_unregistered_delegate_key_switch_delegation ~fee () =

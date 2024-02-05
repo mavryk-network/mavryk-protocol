@@ -66,7 +66,7 @@ let start_l1_node ~protocol ~account ?l1_bootstrap_peer ?dal_bootstrap_peer () =
         [(Constant.bootstrap1, None)]
       ~additional_bootstrap_accounts:
         (* [bootstrap2] will act as the slot producer
-           so we provide some tez for posting commitments. *)
+           so we provide some mav for posting commitments. *)
         [(Constant.bootstrap2, Some 1000000, false)]
       parameter_overrides
   in

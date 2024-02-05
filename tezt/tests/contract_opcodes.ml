@@ -452,7 +452,7 @@ let test_protocol_independent =
       (* Get the current level of the block *)
       (* Test the produced variable annotation *)
       ("level", "111", "Unit", "1");
-      (* Test addition and subtraction on tez *)
+      (* Test addition and subtraction on mav *)
       ( "tez_add_sub",
         "None",
         "(Pair 2000000 1000000)",

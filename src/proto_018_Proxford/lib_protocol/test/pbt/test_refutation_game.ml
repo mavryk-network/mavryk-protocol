@@ -220,7 +220,7 @@ let originate_rollup originator block =
   (block, sc_rollup, inbox, genesis_info)
 
 (** [create_ctxt ()] creates a context where an arith rollup was originated,
-    and both [account1] and [account2] owns enough tez to stake on a
+    and both [account1] and [account2] owns enough mav to stake on a
     commitment. *)
 let create_ctxt () =
   WithExceptions.Result.get_ok ~loc:__LOC__

@@ -153,7 +153,7 @@ module S = struct
   let expected_issuance =
     RPC_service.get_service
       ~description:
-        "Returns the expected issued tez for the provided block and the next \
+        "Returns the expected issued mav for the provided block and the next \
          five cycles"
       ~query:RPC_query.empty
       ~output:(Data_encoding.list expected_rewards_encoding)

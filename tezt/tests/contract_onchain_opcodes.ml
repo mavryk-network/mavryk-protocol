@@ -192,7 +192,7 @@ let test_transfer_tokens protocol client =
       ["opcodes"; "noop"]
       ~alias:"test_transfer_contract2"
   in
-  (* [transfer_tokens] transfers 100 tez to the contract in parameter *)
+  (* [transfer_tokens] transfers 100 mav to the contract in parameter *)
   let* contract =
     originate
       ~amount:(Tez.of_int 1000)

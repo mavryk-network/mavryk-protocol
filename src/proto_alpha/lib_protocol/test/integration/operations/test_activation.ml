@@ -108,7 +108,7 @@ let secrets () =
             (Blinded_public_key_hash.activation_code_of_hex secret);
         amount =
           WithExceptions.Option.to_exn
-            ~none:(Invalid_argument "tez conversion")
+            ~none:(Invalid_argument "mav conversion")
             (Tez.of_mumav (Int64.of_string amount));
       })
     [

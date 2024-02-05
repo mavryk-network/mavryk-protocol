@@ -107,11 +107,11 @@ module Test_tez_repr = struct
           ~loc:__LOC__
           (Tez_repr.to_mumav tz)
           Tez_repr.(to_mumav one)
-    | None -> failwith "should have successfully converted 1000000L to tez"
+    | None -> failwith "should have successfully converted 1000000L to mav"
 
   let test_of_mumav_negative () =
     match Tez_repr.of_mumav (-1000000L) with
-    | Some _ -> failwith "should have failed to converted -1000000L to tez"
+    | Some _ -> failwith "should have failed to converted -1000000L to mav"
     | None -> return_unit
 
   let test_of_mumav_exn () =
@@ -128,7 +128,7 @@ module Test_tez_repr = struct
   let test_of_mumav_exn_negative () =
     try
       let (_ : Tez_repr.t) = Tez_repr.of_mumav_exn (-1000000L) in
-      failwith "should have failed to converted -1000000L to tez"
+      failwith "should have failed to converted -1000000L to mav"
     with
     | Invalid_argument _ -> return_unit
     | e ->

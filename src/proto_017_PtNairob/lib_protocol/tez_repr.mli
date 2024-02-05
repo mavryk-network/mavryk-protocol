@@ -40,7 +40,7 @@ type t = Tez_tag of repr [@@ocaml.unboxed]
 
 type error += Subtraction_underflow of t * t (* `Temporary *)
 
-type tez = t
+type mav = t
 
 val zero : t
 
@@ -67,7 +67,7 @@ val ( /? ) : t -> int64 -> t tzresult
 
 val to_mumav : t -> int64
 
-(** [of_mumav n] (micro tez) is None if n is negative *)
+(** [of_mumav n] (micro mav) is None if n is negative *)
 val of_mumav : int64 -> t option
 
 (** [of_mumav_exn n] fails if n is negative.

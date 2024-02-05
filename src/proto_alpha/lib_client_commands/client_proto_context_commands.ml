@@ -1984,7 +1984,7 @@ let commands_rw () =
       ~group
       ~desc:
         "Unstake the given amount. If \"everything\" is given as amount, \
-         unstakes everything from the staking balance. Unstaked tez remains \
+         unstakes everything from the staking balance. Unstaked mav remains \
          frozen for a set amount of cycles (the slashing period) after the \
          operation. Once this period is over, the operation \"finalize \
          unstake\" must be called for the funds to appear in the liquid \

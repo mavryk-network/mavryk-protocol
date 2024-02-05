@@ -72,7 +72,7 @@ let sc_rollup_timeout_period_in_blocks = 40_320
        cost_per_byte]
 
     With the current values:
-    [maximum_cost_in_storage = 348.3 tez]
+    [maximum_cost_in_storage = 348.3 mav]
 *)
 let sc_rollup_max_lookahead_in_blocks = 172_800l
 
@@ -376,9 +376,9 @@ let constants_test =
     consensus_committee_size;
     consensus_threshold (* 17 slots *);
     max_slashing_period = 2;
-    baking_reward_fixed_portion (* 10 tez *);
-    baking_reward_bonus_per_slot (* 1.25 tez *);
-    endorsing_reward_per_slot (* 0.8 tez *);
+    baking_reward_fixed_portion (* 10 mav *);
+    baking_reward_bonus_per_slot (* 1.25 mav *);
+    endorsing_reward_per_slot (* 0.8 mav *);
     frozen_deposits_percentage =
       5
       (* not 10 so that multiplication and

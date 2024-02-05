@@ -96,11 +96,13 @@ let%expect_test "Basic tokenizing" =
   tokenize "\"abc\"" ;
   [%expect {| String "abc" |}] ;
   tokenize "\"abc\r\"" ;
-  [%expect {| Cannot tokenize "abc" |}] ;
+  [%expect {| Cannot tokenize "abc" |}] ;
   tokenize "abc\r" ;
-  [%expect {| Cannot tokenize abc |}] ;
+  [%expect {| Cannot tokenize abc
+ |}] ;
   tokenize "\"abc\"\r" ;
-  [%expect {| Cannot tokenize "abc" |}] ;
+  [%expect {| Cannot tokenize "abc"
+ |}] ;
   tokenize "\"abc" ;
   [%expect {| Cannot tokenize "abc |}] ;
   tokenize "abc\"" ;
@@ -478,10 +480,10 @@ let%expect_test "test_basic_parsing" =
 (* Parses a contract with conditional IF. *)
 let%expect_test "test_condition_contract_parsing" =
   toplevel_parsing
-    "parameter unit;return unit;storage tez; #How much you have to send me \n\
+    "parameter unit;return unit;storage mav; #How much you have to send me \n\
      code {CDR; DUP;AMOUNT; CMPLT;IF {FAIL}}" ;
   [%expect
-    {| (parameter unit); (return unit); (storage tez); (code { CDR ; DUP ; AMOUNT ; CMPLT ; IF { FAIL } }) |}]
+    {| (parameter unit); (return unit); (storage mav); (code { CDR ; DUP ; AMOUNT ; CMPLT ; IF { FAIL } }) |}]
 
 (* Parses a contract which appends two lists. *)
 let%expect_test "test_list_append_parsing" =

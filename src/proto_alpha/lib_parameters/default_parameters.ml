@@ -70,7 +70,7 @@ let sc_rollup_timeout_period_in_blocks = 40_320
        cost_per_byte]
 
     With the current values:
-    [maximum_cost_in_storage = 348.3 tez]
+    [maximum_cost_in_storage = 348.3 mav]
 *)
 let sc_rollup_max_lookahead_in_blocks = 172_800l
 
@@ -153,7 +153,7 @@ let constants_mainnet =
     issuance_weights =
       {
         base_total_issued_per_minute;
-        (* 85.007812 tez/minute *)
+        (* 85.007812 mav/minute *)
         baking_reward_fixed_portion_weight;
         (* 1/4th of total block rewards *)
         baking_reward_bonus_weight;

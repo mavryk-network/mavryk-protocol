@@ -55,7 +55,7 @@ let get_first_2_accounts_contracts (a1, a2) =
    - staking balance = full balance + delegated stake; obtained with
       Delegate.staking_balance
 
-   - active stake = the amount of tez with which a delegate participates in
+   - active stake = the amount of mav with which a delegate participates in
       consensus; it must be greater than [minimal_stake] and less or equal the staking
       balance; it is computed in [Delegate_sampler.select_distribution_for_cycle]
 

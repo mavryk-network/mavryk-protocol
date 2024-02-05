@@ -187,7 +187,7 @@ let test_transferring_to_receiver ctxt receiver amount expected_bupds =
   wrap (Token.balance ctxt' receiver) >>=? fun (ctxt', bal) ->
   let amount = Tez.of_mumav_exn Int64.max_int -! bal +! Tez.one_mumav in
   wrap (Token.transfer ctxt' `Minted receiver amount) >>= fun res ->
-  Assert.proto_error_with_info ~loc:__LOC__ res "Overflowing tez addition"
+  Assert.proto_error_with_info ~loc:__LOC__ res "Overflowing mav addition"
 
 let test_transferring_to_contract ctxt =
   let pkh, _pk, _sk = Signature.generate_key () in
@@ -351,7 +351,7 @@ let test_transferring_from_container ctxt giver amount expected_bupds =
     | `Contract _ -> "Balance too low"
     | `Delegate_balance _ | `Frozen_deposits _ | `Frozen_bonds _ ->
         "Storage error (fatal internal error)"
-    | _ -> "Underflowing tez subtraction"
+    | _ -> "Underflowing mav subtraction"
   in
   Assert.proto_error_with_info ~loc:__LOC__ res error_title >>=? fun () ->
   (* Transferring zero must be a noop, and must not return balance updates. *)
@@ -387,7 +387,7 @@ let test_transferring_from_container ctxt giver amount expected_bupds =
     match giver with
     | `Contract _ -> "Balance too low"
     | `Frozen_bonds _ -> "Partial spending of frozen bonds"
-    | _ -> "Underflowing tez subtraction"
+    | _ -> "Underflowing mav subtraction"
   in
   Assert.proto_error_with_info ~loc:__LOC__ res error_title
 

@@ -80,7 +80,7 @@ let test_proof_raw () =
 
 (* In this test 3 users 1,2,3 make several transactions. 1 gives 10 to himself
    out of thin air (i.e. from burnt tezos in real life). Then he gives 10 to B.
-   Then B gives 5 to C, and burns 5 (i.e. unburns the 5 tez in real life).
+   Then B gives 5 to C, and burns 5 (i.e. unburns the 5 mav in real life).
    We do it "by hand" and using the function verify_update that will be in the
    smart contract and forge_transaction that will be used in the wallet *)
 let test_full_transaction () =

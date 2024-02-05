@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* These functions return the amount of tez rewarded for each action *)
+(* These functions return the amount of mav rewarded for each action *)
 
 val baking_reward_fixed_portion : Raw_context.t -> Tez_repr.t
 

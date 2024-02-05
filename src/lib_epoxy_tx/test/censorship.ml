@@ -46,7 +46,7 @@ module Censorship (L : LIB) = struct
 
   open V (L)
 
-  let tez i =
+  let mav i =
     TP.
       {
         id = Epoxy_tx.Constants.tez_id;
@@ -65,7 +65,7 @@ module Censorship (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int @@ Constants.max_nb_tickets)
-        ~amount:(tez 50)
+        ~amount:(mav 50)
         ~fee:Z.zero
         ~valid:false
         ~unsafe:true

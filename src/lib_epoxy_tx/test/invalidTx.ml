@@ -45,7 +45,7 @@ module InvalidTx (L : LIB) = struct
 
   open V (L)
 
-  let tez i =
+  let mav i =
     TP.
       {
         id = Epoxy_tx.Constants.tez_id;
@@ -69,7 +69,7 @@ module InvalidTx (L : LIB) = struct
         ~unsafe:true
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 100)
+        ~amount:(mav 100)
         ~fee:Z.zero
         ~sks
         state
@@ -78,7 +78,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 80)
+        ~amount:(mav 80)
         ~fee:Z.(of_int 20)
         ~valid:false
         ~unsafe:true
@@ -103,7 +103,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 10)
+        ~amount:(mav 10)
         ~fee:Z.zero
         ~valid:false
         ~unsafe:true
@@ -120,7 +120,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.(of_int Constants.max_nb_tickets)
         ~dst_pos:Z.zero
-        ~amount:(tez 10)
+        ~amount:(mav 10)
         ~fee:Z.zero
         ~valid:false
         ~unsafe:true
@@ -138,7 +138,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 10)
+        ~amount:(mav 10)
         ~fee:Z.zero
         ~cnt:Z.zero
         ~valid:true
@@ -150,7 +150,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 10)
+        ~amount:(mav 10)
         ~fee:Z.zero
         ~cnt:Z.zero
         ~valid:false
@@ -174,7 +174,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 60)
+        ~amount:(mav 60)
         ~fee:Z.zero
         ~valid:false
         ~unsafe:true
@@ -195,7 +195,7 @@ module InvalidTx (L : LIB) = struct
       P.generate_transaction
         ~src_pos:Z.zero
         ~dst_pos:Z.(of_int Constants.max_nb_tickets)
-        ~amount:(tez 50)
+        ~amount:(mav 50)
         ~fee:Z.zero
         ~valid:false
         ~unsafe:true

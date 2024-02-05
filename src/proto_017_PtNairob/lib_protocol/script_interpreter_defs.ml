@@ -647,8 +647,8 @@ let make_transaction_to_zk_rollup (type t) ctxt ~destination ~amount
       {destination; parameters_ty; parameters; unparsed_parameters},
     ctxt )
 
-(* [transfer (ctxt, sc) gas tez parameters_ty parameters destination entrypoint]
-   creates an operation that transfers an amount of [tez] to a destination and
+(* [transfer (ctxt, sc) gas mav parameters_ty parameters destination entrypoint]
+   creates an operation that transfers an amount of [mav] to a destination and
    an entrypoint instantiated with argument [parameters] of type
    [parameters_ty]. *)
 let transfer (type t) (ctxt, sc) gas amount location

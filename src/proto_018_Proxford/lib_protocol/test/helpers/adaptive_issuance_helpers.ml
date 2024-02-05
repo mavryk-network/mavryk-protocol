@@ -64,8 +64,8 @@ module Tez = struct
   let ratio num den =
     Q.make (Z.of_int64 (to_mumav num)) (Z.of_int64 (to_mumav den))
 
-  let mul_q tez portion =
-    let tez_z = to_mumav tez |> Z.of_int64 in
+  let mul_q mav portion =
+    let tez_z = to_mumav mav |> Z.of_int64 in
     Q.(mul portion ~$$tez_z)
 end
 
@@ -76,24 +76,24 @@ module Partial_tez = struct
   let of_tez a = Tez.to_mumav a |> of_int64
 
   let to_tez_rem {num; den} =
-    let tez, rem = Z.div_rem num den in
-    (Tez.of_z tez, rem /// den)
+    let mav, rem = Z.div_rem num den in
+    (Tez.of_z mav, rem /// den)
 
   let to_tez ~round_up = Tez.of_q ~round_up
 
   let get_rem a = snd (to_tez_rem a)
 
   let pp fmt a =
-    let tez, rem = to_tez_rem a in
-    (* If rem = 0, we keep the (+ 0), to indicate that it's a partial tez *)
-    Format.fprintf fmt "%a ( +%aµꜩ )" Tez.pp tez Q.pp_print rem
+    let mav, rem = to_tez_rem a in
+    (* If rem = 0, we keep the (+ 0), to indicate that it's a partial mav *)
+    Format.fprintf fmt "%a ( +%aµꜩ )" Tez.pp mav Q.pp_print rem
 end
 
 module Cycle = Protocol.Alpha_context.Cycle
 
 (** [Frozen_tez] represents frozen stake and frozen unstaked funds.
     Properties:
-    - sum of all current partial tez is an integer
+    - sum of all current partial mav is an integer
     - Can only add integer amounts
     - Can always subtract integer amount (if lower than frozen amount)
     - If subtracting partial amount, must be the whole frozen amount (for given contract).
@@ -102,7 +102,7 @@ module Cycle = Protocol.Alpha_context.Cycle
 *)
 module Frozen_tez = struct
   (* The map in current maps the stakers' name with their staked value.
-     It contains only delegators of the delegate which owns the frozen tez *)
+     It contains only delegators of the delegate which owns the frozen mav *)
   type t = {
     delegate : string;
     initial : Tez.t;
@@ -163,9 +163,9 @@ module Frozen_tez = struct
 
   let total_current a =
     let r = total_co_current_q a.co_current in
-    let tez, rem = Partial_tez.to_tez_rem r in
+    let mav, rem = Partial_tez.to_tez_rem r in
     assert (Q.(equal rem zero)) ;
-    Tez.(tez +! a.self_current)
+    Tez.(mav +! a.self_current)
 
   let add_q_to_all_co_current quantity co_current =
     let s = total_co_current_q co_current in
@@ -176,24 +176,24 @@ module Frozen_tez = struct
     String.Map.map f co_current
 
   (* For rewards, distribute equally *)
-  let add_tez_to_all_current tez a =
+  let add_tez_to_all_current mav a =
     let self_portion = Tez.ratio a.self_current (total_current a) in
-    let self_quantity = Tez.mul_q tez self_portion |> Tez.of_q ~round_up:true in
-    let co_quantity = Partial_tez.of_tez Tez.(tez -! self_quantity) in
+    let self_quantity = Tez.mul_q mav self_portion |> Tez.of_q ~round_up:true in
+    let co_quantity = Partial_tez.of_tez Tez.(mav -! self_quantity) in
     let co_current = add_q_to_all_co_current co_quantity a.co_current in
     {a with co_current; self_current = Tez.(a.self_current +! self_quantity)}
 
   (* For slashing, slash equally *)
-  let sub_tez_from_all_current tez a =
+  let sub_tez_from_all_current mav a =
     let self_portion = Tez.ratio a.self_current (total_current a) in
     let self_quantity =
-      Tez.mul_q tez self_portion |> Tez.of_q ~round_up:false
+      Tez.mul_q mav self_portion |> Tez.of_q ~round_up:false
     in
     let self_current =
       if Tez.(self_quantity >= a.self_current) then Tez.zero
       else Tez.(a.self_current -! self_quantity)
     in
-    let co_quantity = Tez.(tez -! self_quantity) in
+    let co_quantity = Tez.(mav -! self_quantity) in
     let s = total_co_current_q a.co_current in
     if Partial_tez.(geq (of_tez co_quantity) s) then
       {a with self_current; co_current = String.Map.empty}
@@ -320,9 +320,9 @@ module Unstaked_frozen = struct
     |> List.split
 end
 
-(** Representation of unstaked finalizable tez *)
+(** Representation of unstaked finalizable mav *)
 module Unstaked_finalizable = struct
-  (* Slashing might put inaccessible tez in this container: they are represented in the remainder.
+  (* Slashing might put inaccessible mav in this container: they are represented in the remainder.
      They still count towards the total supply, but are currently owned by noone.
      At most one mumav per unstaking account per slashed cycle *)
   type t = {map : Tez.t String.Map.t; remainder : Tez.t}
@@ -408,7 +408,7 @@ let init_account ?delegate ~pkh ~contract ~parameters ?(liquid = Tez.zero)
 
 type account_map = account_state String.Map.t
 
-(** Balance returned by RPCs. Partial tez are rounded down *)
+(** Balance returned by RPCs. Partial mav are rounded down *)
 type balance = {
   liquid_b : Tez.t;
   bonds_b : Tez.t;

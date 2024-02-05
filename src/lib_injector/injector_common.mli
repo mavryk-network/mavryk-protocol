@@ -17,17 +17,17 @@ type signer = {
 val get_signer :
   #Client_context.wallet -> Signature.public_key_hash -> signer tzresult Lwt.t
 
-(** tez representation *)
-type tez = {mumav : int64}
+(** mav representation *)
+type mav = {mumav : int64}
 
 (** fee parameters for each operation type *)
 type fee_parameter = {
-  minimal_fees : tez;
+  minimal_fees : mav;
   minimal_nanomav_per_byte : Q.t;
   minimal_nanomav_per_gas_unit : Q.t;
   force_low_fee : bool;
-  fee_cap : tez;
-  burn_cap : tez;
+  fee_cap : mav;
+  burn_cap : mav;
 }
 
 (** [fee_parameter_encoding default_parameter_encoding] generates the

@@ -53,7 +53,7 @@ module type S = sig
 
   val bytes : bytes sampler
 
-  val tez : Alpha_context.Tez.tez sampler
+  val mav : Alpha_context.Tez.mav sampler
 
   val timestamp : Script_timestamp.t sampler
 end

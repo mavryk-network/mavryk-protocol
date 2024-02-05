@@ -131,7 +131,7 @@ let secrets =
         activation_code;
         amount =
           WithExceptions.Option.to_exn
-            ~none:(Invalid_argument "tez conversion")
+            ~none:(Invalid_argument "mav conversion")
             (Tez.of_mumav (Int64.of_string amount));
       })
     [

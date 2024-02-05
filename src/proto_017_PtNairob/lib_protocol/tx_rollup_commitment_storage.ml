@@ -33,7 +33,7 @@ open Tx_rollup_errors_repr
    {{Note}} The functions of this module ignore storage allocations on
    purposes. This is because any storage allocated here is done under
    the condition that a user has agreed to freeze a significant bond
-   of tez.
+   of mav.
 
    Not only this bond covers the maximum number of bytes a transaction
    rollup can allocate, but it can be recovered iff the storage

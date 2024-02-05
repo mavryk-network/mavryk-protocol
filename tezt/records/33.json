@@ -1448,7 +1448,7 @@
   },
   {
     "file": "sapling.ml",
-    "title": "Alpha: test sapling with shielded tez",
+    "title": "Alpha: test sapling with shielded mav",
     "tags": [
       "alpha",
       "sapling",

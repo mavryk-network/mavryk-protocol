@@ -47,18 +47,18 @@ type error +=
 
 let zero = Tez_tag 0L
 
-(* all other constant are defined from the value of one micro tez *)
+(* all other constant are defined from the value of one micro mav *)
 let one_mumav = Tez_tag 1L
 
 let max_mumav = Tez_tag Int64.max_int
 
-let mul_int (Tez_tag tez) i = Tez_tag (Int64.mul tez i)
+let mul_int (Tez_tag mav) i = Tez_tag (Int64.mul mav i)
 
 let one_cent = mul_int one_mumav 10_000L
 
 let fifty_cents = mul_int one_cent 50L
 
-(* 1 tez = 100 cents = 1_000_000 mumav *)
+(* 1 mav = 100 cents = 1_000_000 mumav *)
 let one = mul_int one_cent 100L
 
 let of_string s =
@@ -139,19 +139,19 @@ let ( +? ) tez1 tez2 =
   let t = Int64.add t1 t2 in
   if t < t1 then tzfail (Addition_overflow (tez1, tez2)) else return (Tez_tag t)
 
-let ( *? ) tez m =
+let ( *? ) mav m =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
-  if m < 0L then tzfail (Negative_multiplicator (tez, m))
+  let (Tez_tag t) = mav in
+  if m < 0L then tzfail (Negative_multiplicator (mav, m))
   else if m = 0L then return (Tez_tag 0L)
   else if t > Int64.(div max_int m) then
-    tzfail (Multiplication_overflow (tez, m))
+    tzfail (Multiplication_overflow (mav, m))
   else return (Tez_tag (Int64.mul t m))
 
-let ( /? ) tez d =
+let ( /? ) mav d =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
-  if d <= 0L then tzfail (Invalid_divisor (tez, d))
+  let (Tez_tag t) = mav in
+  if d <= 0L then tzfail (Invalid_divisor (mav, d))
   else return (Tez_tag (Int64.div t d))
 
 let div2 (Tez_tag t) = Tez_tag (Int64.div t 2L)
@@ -162,11 +162,11 @@ let mul_exn t m =
 let div_exn t d =
   match t /? Int64.of_int d with Ok v -> v | Error _ -> invalid_arg "div_exn"
 
-let mul_ratio ~rounding tez ~num ~den =
+let mul_ratio ~rounding mav ~num ~den =
   let open Result_syntax in
-  let (Tez_tag t) = tez in
-  if num < 0L then tzfail (Negative_multiplicator (tez, num))
-  else if den <= 0L then tzfail (Invalid_divisor (tez, den))
+  let (Tez_tag t) = mav in
+  if num < 0L then tzfail (Negative_multiplicator (mav, num))
+  else if den <= 0L then tzfail (Invalid_divisor (mav, den))
   else if num = 0L then return zero
   else
     let numerator = Z.(mul (of_int64 t) (of_int64 num)) in
@@ -177,7 +177,7 @@ let mul_ratio ~rounding tez ~num ~den =
       | `Up -> Z.cdiv numerator denominator
     in
     if Z.fits_int64 z then return (Tez_tag (Z.to_int64 z))
-    else tzfail (Multiplication_overflow (tez, num))
+    else tzfail (Multiplication_overflow (mav, num))
 
 let mul_percentage ~rounding =
   let z100 = Z.of_int 100 in

@@ -102,8 +102,8 @@ module Client_state : sig
     Contract_state.t tzresult Lwt.t
 end
 
-(** [shield ~message ~dst tez cstate anti-replay] returns a transaction
-    shielding [tez] tez to a sapling address [dst] using a sapling
+(** [shield ~message ~dst mav cstate anti-replay] returns a transaction
+    shielding [mav] mav to a sapling address [dst] using a sapling
     storage [cstate] and the anti-replay string. *)
 val shield :
   #Client_context.full ->
@@ -119,7 +119,7 @@ val shield :
     [src] to a transparent tezos address [dst], sending the change back to
     [backdst] and using a Sapling storage [cstate] and a anti-replay string.
     The transaction is refused if there is an insufficient amount of shielded
-    tez in the wallet [src], the error is raised with [src_name].
+    mav in the wallet [src], the error is raised with [src_name].
    *)
 val unshield :
   src:Spending_key.t ->
@@ -131,7 +131,7 @@ val unshield :
   UTXO.transaction tzresult
 
 (** [transfer ~message ~src ~dst ~backdst amount cstate anti-replay] creates a
-    Sapling transaction of [amount] shielded tez from Sapling wallet [src] to
+    Sapling transaction of [amount] shielded mav from Sapling wallet [src] to
     Sapling address [dst], sending the change to [backdst], using a Sapling
     storage [cstate] and a anti-replay string.
     [~message] is a message that will be uploaded encrypted on chain. *)
