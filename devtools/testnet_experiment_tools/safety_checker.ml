@@ -182,10 +182,6 @@ let protocol_hash_parameter =
   parameter (fun _cctxt p ->
       let open Lwt_result_syntax in
       match String.lowercase_ascii p with
-      | "nairobi" ->
-          return
-          @@ Protocol_hash.of_b58check_exn
-               "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
       | "oxford" ->
           return
           @@ Protocol_hash.of_b58check_exn
