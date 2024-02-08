@@ -28,7 +28,6 @@ open Wasm_pvm_state.Internal_state
 
 let version_for_protocol : Pvm_input_kind.protocol -> Wasm_pvm_state.version =
   function
-  | Nairobi -> V1
   | Oxford -> V2
   | Proto_alpha -> V3
 

@@ -2311,7 +2311,7 @@ module Tx_kernel_e2e = struct
     let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
-      ~supports:Protocol.(From_protocol (number Nairobi + 1))
+      ~supports:Protocol.(From_protocol (number Oxford))
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
       ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"

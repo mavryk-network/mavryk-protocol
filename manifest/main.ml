@@ -6888,8 +6888,6 @@ let hash = Protocol.hash
   let frozen = register_alpha_family Frozen
 
   let overridden = register_alpha_family Overridden
-  
-  let _017_PtNairob = active (Name.v "PtNairob" 017)
 
   let _018_Proxford = active (Name.v "Proxford" 018)
 

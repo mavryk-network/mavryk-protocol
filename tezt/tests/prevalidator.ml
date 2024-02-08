@@ -2454,7 +2454,7 @@ module Revamped = struct
       ~__FILE__
       ~title:"Ensure that future attestations are propagated"
       ~tags:["attestation"; "mempool"; "branch_delayed"]
-      ~supports:Protocol.(From_protocol (number Nairobi))
+      ~supports:Protocol.(From_protocol (number Oxford))
     @@ fun protocol ->
     log_step 1 "Initialize 3 nodes, connect them, and activate the protocol." ;
     let nodes_args = Node.[Synchronisation_threshold 0; Private_mode] in

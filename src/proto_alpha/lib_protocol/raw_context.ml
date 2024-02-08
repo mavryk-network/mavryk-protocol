@@ -891,7 +891,7 @@ let prepare ~level ~predecessor_timestamp ~timestamp ~adaptive_issuance_enable
       };
   }
 
-type previous_protocol = Genesis of Parameters_repr.t | Nairobi_017
+type previous_protocol = Genesis of Parameters_repr.t
 
 let check_and_update_protocol_version ctxt =
   let open Lwt_result_syntax in
@@ -907,8 +907,6 @@ let check_and_update_protocol_version ctxt =
         else if Compare.String.(s = "genesis") then
           let+ param, ctxt = get_proto_param ctxt in
           (Genesis param, ctxt)
-        else if Compare.String.(s = "nairobi_017") then
-          return (Nairobi_017, ctxt)
         else Lwt.return @@ storage_error (Incompatible_protocol_version s)
   in
   let*! ctxt =
@@ -947,7 +945,7 @@ let[@warning "-32"] get_previous_protocol_constants ctxt =
    encoding directly in a way which is compatible with the previous
    protocol. However, by doing so, you do not change the value of
    these constants inside the context. *)
-let prepare_first_block ~level ~timestamp chain_id ctxt =
+let prepare_first_block ~level ~timestamp _chain_id ctxt =
   let open Lwt_result_syntax in
   let* previous_proto, ctxt = check_and_update_protocol_version ctxt in
   let* ctxt =
@@ -966,204 +964,6 @@ let prepare_first_block ~level ~timestamp chain_id ctxt =
         let* ctxt = set_cycle_eras ctxt cycle_eras in
         let*! result = add_constants ctxt param.constants in
         return result
-    | Nairobi_017 ->
-        let*! c = get_previous_protocol_constants ctxt in
-
-        let cryptobox_parameters =
-          {
-            Dal.page_size = c.dal.cryptobox_parameters.page_size;
-            number_of_shards = c.dal.cryptobox_parameters.number_of_shards;
-            slot_size = c.dal.cryptobox_parameters.slot_size;
-            redundancy_factor = c.dal.cryptobox_parameters.redundancy_factor;
-          }
-        in
-        let dal =
-          Constants_parametric_repr.
-            {
-              feature_enable = c.dal.feature_enable;
-              number_of_slots = c.dal.number_of_slots;
-              attestation_lag = 4;
-              attestation_threshold = c.dal.attestation_threshold;
-              blocks_per_epoch = 1l;
-              cryptobox_parameters;
-            }
-        in
-        (* This test prevents the activation of the protocol if the
-           set of parameters given for the DAL is invalid. *)
-        let*? () =
-          if dal.feature_enable then
-            match Dal.make cryptobox_parameters with
-            | Ok _cryptobox -> ok ()
-            | Error (`Fail explanation) ->
-                error (Dal_errors_repr.Dal_cryptobox_error {explanation})
-          else ok ()
-        in
-        let dal_activation_level =
-          if c.dal.feature_enable then Raw_level_repr.root
-          else if dal.feature_enable then
-            (* First level of the protocol with dal activated. *)
-            Raw_level_repr.of_int32_exn (Int32.succ level)
-          else
-            (* Deactivate the reveal if the dal is not enabled.
-
-               assert (not (c.dal.feature_enable || dal.feature_enable))
-
-               We set the activation level to [pred max_int] to deactivate
-               the feature. The [pred] is needed to not trigger an encoding
-               exception with the value [Int32.int_min] (see
-               tezt/tests/mockup.ml). *)
-            Raw_level_repr.of_int32_exn Int32.(pred max_int)
-        in
-        (* When stitching from Oxford and after, [Raw_level_repr.root]
-           should be replaced by the previous value, that is
-           [c.reveal_activation_level.*]. *)
-        let reveal_activation_level :
-            Constants_parametric_repr.sc_rollup_reveal_activation_level =
-          {
-            raw_data = {blake2B = Raw_level_repr.root};
-            metadata = Raw_level_repr.root;
-            dal_page = dal_activation_level;
-            dal_parameters = dal_activation_level;
-          }
-        in
-        let sc_rollup =
-          Constants_parametric_repr.
-            {
-              arith_pvm_enable = c.sc_rollup.arith_pvm_enable;
-              origination_size = c.sc_rollup.origination_size;
-              challenge_window_in_blocks =
-                c.sc_rollup.challenge_window_in_blocks;
-              stake_amount = c.sc_rollup.stake_amount;
-              commitment_period_in_blocks =
-                c.sc_rollup.commitment_period_in_blocks;
-              max_lookahead_in_blocks = c.sc_rollup.max_lookahead_in_blocks;
-              max_active_outbox_levels = c.sc_rollup.max_active_outbox_levels;
-              max_outbox_messages_per_level =
-                c.sc_rollup.max_outbox_messages_per_level;
-              number_of_sections_in_dissection =
-                c.sc_rollup.number_of_sections_in_dissection;
-              timeout_period_in_blocks = c.sc_rollup.timeout_period_in_blocks;
-              max_number_of_stored_cemented_commitments =
-                c.sc_rollup.max_number_of_stored_cemented_commitments;
-              max_number_of_parallel_games =
-                c.sc_rollup.max_number_of_parallel_games;
-              reveal_activation_level;
-              private_enable = true;
-              riscv_pvm_enable = false;
-            }
-        in
-        let zk_rollup =
-          Constants_parametric_repr.
-            {
-              enable = c.zk_rollup.enable;
-              origination_size = c.zk_rollup.origination_size;
-              min_pending_to_process = c.zk_rollup.min_pending_to_process;
-              max_ticket_payload_size = c.tx_rollup.max_ticket_payload_size;
-            }
-        in
-
-        let adaptive_rewards_params =
-          Constants_parametric_repr.
-            {
-              issuance_ratio_min = Q.(5 // 10_000) (* 0.05% *);
-              issuance_ratio_max = Q.(5 // 100);
-              max_bonus =
-                Issuance_bonus_repr.max_bonus_parameter_of_Q_exn Q.(5 // 100);
-              growth_rate = Q.(1 // 100);
-              center_dz = Q.(50 // 100);
-              radius_dz = Q.(2 // 100);
-            }
-        in
-
-        let adaptive_issuance =
-          Constants_parametric_repr.
-            {
-              global_limit_of_staking_over_baking = 5;
-              edge_of_staking_over_delegation = 2;
-              launch_ema_threshold =
-                (if Chain_id.equal Constants_repr.mainnet_id chain_id then
-                 (* 80% of the max ema (which is 2 billion) *) 1_600_000_000l
-                else (* 5% for testnets *) 100_000_000l);
-              adaptive_rewards_params;
-              activation_vote_enable = false;
-              autostaking_enable = true;
-            }
-        in
-        let issuance_weights =
-          let c_gen =
-            Constants_repr.Generated.generate
-              ~consensus_committee_size:c.consensus_committee_size
-          in
-          c_gen.issuance_weights
-        in
-
-        let percentage_of_frozen_deposits_slashed_per_double_baking =
-          Int_percentage.p5
-        in
-        let percentage_of_frozen_deposits_slashed_per_double_attestation =
-          Int_percentage.of_ratio_bounded
-            c.ratio_of_frozen_deposits_slashed_per_double_attestation
-        in
-        let limit_of_delegation_over_baking =
-          (100 / c.frozen_deposits_percentage) - 1
-        in
-        let minimal_frozen_stake =
-          Tez_repr.(
-            div_exn c.minimal_stake (limit_of_delegation_over_baking + 1))
-        in
-
-        let direct_ticket_spending_enable = false in
-
-        let constants =
-          Constants_parametric_repr.
-            {
-              preserved_cycles = c.preserved_cycles;
-              blocks_per_cycle = c.blocks_per_cycle;
-              blocks_per_commitment = c.blocks_per_commitment;
-              nonce_revelation_threshold = c.nonce_revelation_threshold;
-              blocks_per_stake_snapshot = c.blocks_per_stake_snapshot;
-              cycles_per_voting_period = c.cycles_per_voting_period;
-              hard_gas_limit_per_operation = c.hard_gas_limit_per_operation;
-              hard_gas_limit_per_block = c.hard_gas_limit_per_block;
-              proof_of_work_threshold = c.proof_of_work_threshold;
-              minimal_stake = c.minimal_stake;
-              minimal_frozen_stake;
-              vdf_difficulty = c.vdf_difficulty;
-              origination_size = c.origination_size;
-              max_operations_time_to_live = c.max_operations_time_to_live;
-              issuance_weights;
-              cost_per_byte = c.cost_per_byte;
-              hard_storage_limit_per_operation =
-                c.hard_storage_limit_per_operation;
-              quorum_min = c.quorum_min;
-              quorum_max = c.quorum_max;
-              min_proposal_quorum = c.min_proposal_quorum;
-              liquidity_baking_toggle_ema_threshold =
-                c.liquidity_baking_toggle_ema_threshold;
-              minimal_block_delay = c.minimal_block_delay;
-              delay_increment_per_round = c.delay_increment_per_round;
-              consensus_committee_size = c.consensus_committee_size;
-              consensus_threshold = c.consensus_threshold;
-              minimal_participation_ratio = c.minimal_participation_ratio;
-              limit_of_delegation_over_baking;
-              percentage_of_frozen_deposits_slashed_per_double_baking;
-              percentage_of_frozen_deposits_slashed_per_double_attestation;
-              (* The `testnet_dictator` should absolutely be None on mainnet *)
-              testnet_dictator = c.testnet_dictator;
-              initial_seed = c.initial_seed;
-              cache_script_size = c.cache_script_size;
-              cache_stake_distribution_cycles =
-                c.cache_stake_distribution_cycles;
-              cache_sampler_state_cycles = c.cache_sampler_state_cycles;
-              dal;
-              sc_rollup;
-              zk_rollup;
-              adaptive_issuance;
-              direct_ticket_spending_enable;
-            }
-        in
-        let*! ctxt = add_constants ctxt constants in
-        return ctxt
   in
   let+ ctxt =
     prepare

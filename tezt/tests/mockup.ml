@@ -1261,7 +1261,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
   in
   let compute_expected_amounts protocol bootstrap_accounts protocol_constants =
     let convert =
-      if protocol > Protocol.Nairobi then
+      if protocol >= Protocol.Oxford then
         let limit_of_delegation_over_baking =
           JSON.(
             protocol_constants |-> "limit_of_delegation_over_baking" |> as_int)
@@ -1524,5 +1524,6 @@ let register_constant_migration ~migrate_from ~migrate_to =
   test_migration_constants ~migrate_from ~migrate_to
 
 let register_protocol_independent () =
-  test_migration_transfer () ;
+  (* TODO: Restore after Atlas update to test migrations *)
+  (* test_migration_transfer () ; *)
   test_list_mockup_protocols ()

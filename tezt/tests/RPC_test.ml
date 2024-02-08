@@ -707,7 +707,7 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     @@ RPC.get_chain_block_helper_current_level ()
   in
   let* () =
-    if Protocol.(number protocol >= number Nairobi + 1) then
+    if Protocol.(number protocol >= number Oxford) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_context_denunciations ()
@@ -716,7 +716,7 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     else unit
   in
   let* () =
-    if Protocol.(number protocol <= number Nairobi + 1) then
+    if Protocol.(number protocol <= number Oxford) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_helper_endorsing_rights ()
@@ -1674,7 +1674,7 @@ let register protocols =
       ~parameter_overrides:consensus_threshold ;
     check_rpc_regression
       "adaptive_issuance"
-      ~supports:Protocol.(From_protocol (number Nairobi + 1))
+      ~supports:Protocol.(From_protocol (number Oxford))
       ~test_function:test_adaptive_issuance ;
     check_rpc_regression
       "votes"

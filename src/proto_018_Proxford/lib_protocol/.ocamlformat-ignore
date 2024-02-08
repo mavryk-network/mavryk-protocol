@@ -227,7 +227,6 @@ raw_level_repr.ml
 raw_level_repr.mli
 receipt_repr.ml
 receipt_repr.mli
-remove_zero_amount_ticket_migration_for_o.ml
 round_repr.ml
 round_repr.mli
 sampler.ml
