@@ -79,5 +79,3 @@ to study and to maximize the throughput of the voting procedure.
 ## Community
 
 Links to community websites are gathered at <https://tezos.gitlab.io/introduction/tezos.html#the-community>.
-
----
