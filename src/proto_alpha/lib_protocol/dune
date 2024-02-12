@@ -206,6 +206,15 @@
   Liquidity_baking_cpmm
   Liquidity_baking_lqt
   Liquidity_baking_migration
+  Clocktower_storage
+  Clocktower_contract
+  Clocktower_migration
+  Liquidity_mining_treasury_storage
+  Liquidity_mining_treasury_contract
+  Liquidity_mining_treasury_migration
+  Gateway_storage
+  Gateway_contract
+  Gateway_migration
   Sc_rollup_errors
   Sc_rollup_inbox_storage
   Legacy_script_patches
@@ -503,6 +512,15 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  clocktower_storage.ml clocktower_storage.mli
+  clocktower_contract.ml
+  clocktower_migration.ml clocktower_migration.mli
+  liquidity_mining_treasury_storage.ml liquidity_mining_treasury_storage.mli
+  liquidity_mining_treasury_contract.ml
+  liquidity_mining_treasury_migration.ml liquidity_mining_treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -801,6 +819,15 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  clocktower_storage.ml clocktower_storage.mli
+  clocktower_contract.ml
+  clocktower_migration.ml clocktower_migration.mli
+  liquidity_mining_treasury_storage.ml liquidity_mining_treasury_storage.mli
+  liquidity_mining_treasury_contract.ml
+  liquidity_mining_treasury_migration.ml liquidity_mining_treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -1083,6 +1110,15 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  clocktower_storage.ml clocktower_storage.mli
+  clocktower_contract.ml
+  clocktower_migration.ml clocktower_migration.mli
+  liquidity_mining_treasury_storage.ml liquidity_mining_treasury_storage.mli
+  liquidity_mining_treasury_contract.ml
+  liquidity_mining_treasury_migration.ml liquidity_mining_treasury_migration.mli
+  gateway_storage.ml gateway_storage.mli
+  gateway_contract.ml
+  gateway_migration.ml gateway_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml

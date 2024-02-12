@@ -280,7 +280,15 @@ let get_liquidity_baking_subsidy ctxt =
     (Delegate.Rewards.For_RPC.reward_from_constants
        csts
        ~reward_kind:Liquidity_baking_subsidy)
+let get_gateway_contract_address ctxt =
+  Alpha_services.Gateway.get_gateway_address rpc_ctxt ctxt
 
+let get_clocktower_contract_address ctxt =
+  Alpha_services.Clocktower.get_clocktower_address rpc_ctxt ctxt
+
+let get_liquidity_mining_treasury_contract_address ctxt =
+  Alpha_services.Liquidity_mining_treasury.get_liquidity_mining_treasury_address rpc_ctxt ctxt
+       
 let get_liquidity_baking_cpmm_address ctxt =
   Alpha_services.Liquidity_baking.get_cpmm_address rpc_ctxt ctxt
 

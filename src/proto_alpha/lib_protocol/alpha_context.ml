@@ -701,6 +701,18 @@ module Adaptive_issuance = struct
   include Adaptive_issuance_storage
 end
 
+module Gateway = struct
+  include Gateway_storage
+end
+
+module Clocktower = struct
+  include Clocktower_storage
+end
+
+module Liquidity_mining_treasury = struct
+  include Liquidity_mining_treasury_storage
+end
+
 module Ticket_hash = struct
   include Ticket_hash_repr
   include Ticket_hash_builder

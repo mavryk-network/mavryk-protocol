@@ -124,6 +124,12 @@ val get_liquidity_baking_subsidy : t -> Tez.t tzresult Lwt.t
 
 val get_liquidity_baking_cpmm_address : t -> Contract_hash.t tzresult Lwt.t
 
+val get_gateway_contract_address : t -> Contract_hash.t tzresult Lwt.t
+
+val get_clocktower_contract_address : t -> Contract_hash.t tzresult Lwt.t
+
+val get_liquidity_mining_treasury_contract_address : t -> Contract_hash.t tzresult Lwt.t
+
 val get_adaptive_issuance_launch_cycle : t -> Cycle.t option tzresult Lwt.t
 
 val get_total_frozen_stake : t -> Tez.t tzresult Lwt.t

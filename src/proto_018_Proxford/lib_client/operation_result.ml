@@ -404,7 +404,7 @@ let pp_balance_updates ppf balance_updates =
         let balance =
           match balance with
           | Contract c -> Format.asprintf "%a" Contract.pp c
-          | Block_fees -> "payload fees(the block proposer)"
+          | Block_fees -> "total block fees"
           | Deposits staker ->
               Format.asprintf "deposits(%a)" pp_frozen_staker staker
           | Unstaked_deposits (staker, cycle) ->
@@ -916,9 +916,17 @@ let pp_manager_operation_result ppf
         {source; fee; operation; counter; gas_limit; storage_limit},
       Manager_operation_result
         {balance_updates; operation_result; internal_operation_results} ) =
+
+  (* Convert fee to int64 and then calculate divided fees *)
+  let fee_int64 = Tez.to_mumav fee in
+  let quarter_fee = Int64.div fee_int64 4L in
+  let burn_fee = Int64.sub fee_int64 (Int64.mul 2L quarter_fee) in
+  
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-  Format.fprintf ppf "@,Fee to the baker: %s%a" tez_sym Tez.pp fee ;
+  Format.fprintf ppf "@,Fee to the baker: %s%Ld" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the treasury (via gateway contract): %s%Ld" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the burn address: %s%Ld" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
   Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
   Format.fprintf ppf "@,Storage limit: %a bytes" Z.pp_print storage_limit ;

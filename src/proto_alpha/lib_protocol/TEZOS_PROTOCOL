@@ -187,6 +187,19 @@
 
         "Vote_storage",
         "Ticket_storage",
+        
+        "Clocktower_storage",
+        "Clocktower_contract",
+        "Clocktower_migration",
+
+        "Liquidity_mining_treasury_storage",
+        "Liquidity_mining_treasury_contract",
+        "Liquidity_mining_treasury_migration",
+
+        "Gateway_storage",
+        "Gateway_contract",
+        "Gateway_migration",
+
         "Liquidity_baking_storage",
         "Liquidity_baking_cpmm",
         "Liquidity_baking_lqt",

@@ -104,6 +104,8 @@ let record_attesting_participation ctxt ~delegate ~participation
                 ctxt
                 contract
                 {remaining_slots; missed_levels = 1}))
+let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"  
+let burn_address    = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"                 
 
 let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     ~block_producer ~baking_reward ~reward_bonus =
@@ -117,22 +119,33 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
   let pay_payload_producer ctxt delegate =
     let contract = Contract_repr.Implicit delegate in
     let* ctxt, block_fees = Token.balance ctxt `Block_fees in
-    let* ctxt, balance_updates_block_fees =
-      Token.transfer ctxt `Block_fees (`Contract contract) block_fees
-    in
-    let+ ctxt, balance_updates_baking_rewards =
-      Shared_stake.pay_rewards
-        ctxt
-        ~source:`Baking_rewards
-        ~delegate
-        baking_reward
-    in
-    (ctxt, balance_updates_block_fees @ balance_updates_baking_rewards)
+    (match Tez_repr.(block_fees /? 4L) with
+     | Error _ -> return (ctxt, [], [], [])
+     | Ok quarter_fees -> 
+        let gateway_contract = Contract_repr.Originated (Contract_hash.of_b58check_exn gateway_address) in
+        let* ctxt, balance_updates_gateway =
+          Token.transfer ctxt `Block_fees (`Contract gateway_contract) quarter_fees
+        in
+        let* ctxt, balance_updates_delegate =
+          Token.transfer_n ctxt [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)] (`Contract contract)
+        in
+        match Tez_repr.(quarter_fees *? 2L) with
+          | Error _ -> return (ctxt, [], [], [])
+          | Ok two_quarters ->
+              match Tez_repr.(block_fees -? two_quarters) with
+              | Error _ -> return (ctxt, [], [], [])
+              | Ok remainder_for_burning ->
+                  let burn_destination = Contract_repr.Implicit (Signature.Public_key_hash.of_b58check_exn burn_address) in
+                  let* ctxt, balance_updates_burn =
+                    Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
+                  in
+                  return (ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn)
+    )
   in
   let pay_block_producer ctxt delegate bonus =
     Shared_stake.pay_rewards ctxt ~source:`Baking_bonuses ~delegate bonus
   in
-  let* ctxt, balance_updates_payload_producer =
+  let* ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn =
     pay_payload_producer ctxt payload_producer
   in
   let* ctxt, balance_updates_block_producer =
@@ -141,7 +154,7 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     | None -> return (ctxt, [])
   in
   return
-    (ctxt, balance_updates_payload_producer @ balance_updates_block_producer)
+    (ctxt, balance_updates_gateway @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
 
 let check_and_reset_delegate_participation ctxt delegate =
   let open Lwt_result_syntax in

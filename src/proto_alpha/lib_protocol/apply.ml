@@ -2590,14 +2590,22 @@ let may_start_new_cycle ctxt =
       let+ ctxt = Bootstrap.cycle_end ctxt last_cycle in
       (ctxt, balance_updates, deactivated)
 
+(* let get_gateway_address = Storage.Gateway.Gateway_address.get *)
+let gateway_address = "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"  
+
 let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
   let open Lwt_result_syntax in
   Liquidity_baking.on_subsidy_allowed
     ctxt
     ~per_block_vote
     (fun ctxt liquidity_baking_cpmm_contract_hash ->
-      let liquidity_baking_cpmm_contract =
+      (* let liquidity_baking_cpmm_contract =
+        Contract.Originated liquidity_baking_cpmm_contract_hash *)
+      (* let gateway_contract =
         Contract.Originated liquidity_baking_cpmm_contract_hash
+      in *)
+      let gateway_contract = 
+        Contract.Originated (Contract_hash.of_b58check_exn gateway_address)
       in
       let ctxt =
         (* We set a gas limit of 1/20th the block limit, which is ~10x
@@ -2624,7 +2632,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             ~origin:Subsidy
             ctxt
             `Liquidity_baking_subsidies
-            (`Contract liquidity_baking_cpmm_contract)
+            (`Contract gateway_contract)
             liquidity_baking_subsidy
         in
         let* ctxt, cache_key, script =
@@ -2637,7 +2645,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             (* Token.transfer which is being called above already loads this
                value into the Irmin cache, so no need to burn gas for it. *)
             let* balance =
-              Contract.get_balance ctxt liquidity_baking_cpmm_contract
+              Contract.get_balance ctxt gateway_contract
             in
             let now = Script_timestamp.now ctxt in
             let level =
@@ -2650,7 +2658,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                  since they are not used within the CPMM default
                  entrypoint. *)
               {
-                sender = Destination.Contract liquidity_baking_cpmm_contract;
+                sender = Destination.Contract gateway_contract;
                 payer = Signature.Public_key_hash.zero;
                 self = liquidity_baking_cpmm_contract_hash;
                 amount = liquidity_baking_subsidy;

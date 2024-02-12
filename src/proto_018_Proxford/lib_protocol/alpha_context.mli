@@ -5075,6 +5075,18 @@ module Adaptive_issuance : sig
   val launch_cycle : context -> Cycle.t option tzresult Lwt.t
 end
 
+module Gateway : sig
+  val get_gateway_address : context -> Contract_hash.t tzresult Lwt.t
+end
+
+module Clocktower : sig
+  val get_clocktower_address : context -> Contract_hash.t tzresult Lwt.t
+end
+
+module Liquidity_mining_treasury : sig
+  val get_liquidity_mining_treasury_address : context -> Contract_hash.t tzresult Lwt.t
+end
+
 (** This module re-exports definitions from {!Ticket_storage}. *)
 module Ticket_balance : sig
   type error +=

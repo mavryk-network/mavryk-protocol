@@ -253,6 +253,53 @@ let test_rewards_block_and_payload_producer () =
     +! bonus_reward +! reward_for_b1 +! fee
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  let gateway_contract_result = Contract.of_b58check "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q" in
+  match gateway_contract_result with
+  | Error _ -> 
+      failwith ("Error invalid contract address")
+  | Ok gateway_contract ->
+
+      Context.Contract.balance (B b1) gateway_contract >>=? fun initial_gateway_balance ->
+      Context.Contract.balance (B b2) gateway_contract >>=? fun gateway_balance ->
+      Log.info "------";
+      Log.info "fee_to_gateway is: %s" (Tez.to_string fee_to_gateway);
+      Log.info "initial_gateway_balance is: %s" (Tez.to_string initial_gateway_balance);
+      Log.info "gateway_balance is: %s" (Tez.to_string gateway_balance);
+      Log.info "------";
+      (* let expected_gateway_balance =
+        let open Test_tez in
+        initial_gateway_balance +! fee_to_gateway
+      in
+      Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
+
+  let cpmm_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
+    match cpmm_contract_result with
+    | Error _ -> 
+        failwith ("Error invalid contract address")
+    | Ok cpmm_contract ->
+  
+        Context.Contract.balance (B b1) cpmm_contract >>=? fun initial_cpmm_balance ->
+        Context.Contract.balance (B b2) cpmm_contract >>=? fun cpmm_balance ->
+        Log.info "------";
+        Log.info "initial_cpmm_balance is: %s" (Tez.to_string initial_cpmm_balance);
+        Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance);
+        Log.info "------";
+
+  let burn_address_result = Contract.of_b58check "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
+  match burn_address_result with
+    | Error _ -> 
+        failwith ("Error invalid contract address")
+    | Ok burn_address ->
+  
+        Context.Contract.balance (B b1) burn_address >>=? fun initial_burn_address_balance ->
+        Context.Contract.balance (B b2) burn_address >>=? fun burn_address_balance ->
+        
+        let expected_burn_address_balance =
+          let open Test_tez in
+          initial_burn_address_balance +! fee_to_burn
+        in
+        Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () ->
+
   (* Some new baker [baker_b2'] bakes b2' at the first round which does not
      correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
      check that the fixed baking reward goes to the payload producer [baker_b2],

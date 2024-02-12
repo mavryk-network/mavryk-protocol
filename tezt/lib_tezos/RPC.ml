@@ -206,6 +206,51 @@ let get_chain_block_context_liquidity_baking_cpmm_address ?(chain = "main")
     ]
     JSON.as_string
 
+    let get_chain_block_context_gateway_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "gateway";
+      "gateway_address";
+    ]
+    JSON.as_string
+
+let get_chain_block_context_clocktower_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "clocktower";
+      "clocktower_address";
+    ]
+    JSON.as_string
+
+let get_chain_block_context_liquidity_mining_treasury_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "liquidity_mining_treasury";
+      "liquidity_mining_treasury_address";
+    ]
+    JSON.as_string
+
 let get_network_peer_untrust peer_id =
   make GET ["network"; "peers"; peer_id; "untrust"] Fun.id
 

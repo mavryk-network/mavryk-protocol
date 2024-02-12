@@ -27,7 +27,7 @@
 open Per_block_votes_repr
 
 let get_cpmm_address = Storage.Liquidity_baking.Cpmm_address.get
-
+let get_gateway_address = Storage.Gateway.Gateway_address.get
 let get_toggle_ema ctxt =
   let open Lwt_result_syntax in
   let* ema = Storage.Liquidity_baking.Toggle_ema.get ctxt in
@@ -35,15 +35,15 @@ let get_toggle_ema ctxt =
 
 let on_cpmm_exists ctxt f =
   let open Lwt_result_syntax in
-  let* cpmm_contract = get_cpmm_address ctxt in
+  let* gateway_contract = get_gateway_address ctxt in
   let*! exists =
-    Contract_storage.exists ctxt (Contract_repr.Originated cpmm_contract)
+    Contract_storage.exists ctxt (Contract_repr.Originated gateway_contract)
   in
   match exists with
   | false ->
       (* do nothing if the cpmm is not found *)
       return (ctxt, [])
-  | true -> f ctxt cpmm_contract
+  | true -> f ctxt gateway_contract
 
 let update_toggle_ema ctxt ~per_block_vote =
   let open Lwt_result_syntax in

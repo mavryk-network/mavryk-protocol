@@ -735,6 +735,28 @@ module Adaptive_issuance : sig
        and type value = Cycle_repr.t option
 end
 
+module Gateway : sig
+  (** Gateway contract **)
+  module Gateway_address :
+    Single_data_storage
+      with type t := Raw_context.t
+       and type value = Contract_hash.t
+end
+
+module Clocktower : sig
+  module Clocktower_address :
+    Single_data_storage
+      with type t := Raw_context.t
+      and type value = Contract_hash.t
+end
+
+module Liquidity_mining_treasury : sig
+  module Liquidity_mining_treasury_address :
+    Single_data_storage
+      with type t := Raw_context.t
+       and type value = Contract_hash.t
+end
+
 (** A map of [Script_repr.expr] values, indexed by their hash ([Script_expr_hash.t]).
     Values from this map can be incorporated by any contract via the primitive
     [Michelson_v1_primitives.H_constant]. *)
