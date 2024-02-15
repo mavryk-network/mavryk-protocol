@@ -2530,10 +2530,10 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
   Liquidity_baking.on_subsidy_allowed
     ctxt
     ~per_block_vote
-    (fun ctxt gateway_contract_hash ->
+    (fun ctxt cpmm_contract_hash ->
 
-      let gateway_contract = 
-        Contract.Originated gateway_contract_hash
+      let cpmm_contract = 
+        Contract.Originated cpmm_contract_hash
       in
       let ctxt =
         (* We set a gas limit of 1/20th the block limit, which is ~10x
@@ -2560,11 +2560,11 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             ~origin:Subsidy
             ctxt
             `Liquidity_baking_subsidies
-            (`Contract gateway_contract)
+            (`Contract cpmm_contract)
             liquidity_baking_subsidy
         in
         let* ctxt, cache_key, script =
-          Script_cache.find ctxt gateway_contract_hash
+          Script_cache.find ctxt cpmm_contract_hash
         in
         match script with
         | None ->
@@ -2573,7 +2573,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             (* Token.transfer which is being called above already loads this
                 value into the Irmin cache, so no need to burn gas for it. *)
             let* balance =
-              Contract.get_balance ctxt gateway_contract
+              Contract.get_balance ctxt cpmm_contract
             in
             let now = Script_timestamp.now ctxt in
             let level =
@@ -2586,9 +2586,9 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                   since they are not used within the CPMM default
                   entrypoint. *)
               {
-                sender = Destination.Contract gateway_contract;
+                sender = Destination.Contract cpmm_contract;
                 payer = Signature.Public_key_hash.zero;
-                self = gateway_contract_hash;
+                self = cpmm_contract_hash;
                 amount = liquidity_baking_subsidy;
                 balance;
                 chain_id = Chain_id.zero;
@@ -2638,7 +2638,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ticket_table_size_diff, ctxt =
                   update_script_storage_and_ticket_balances
                     ctxt
-                    ~self_contract:gateway_contract_hash
+                    ~self_contract:cpmm_contract_hash
                     storage
                     lazy_storage_diff
                     ticket_diffs
@@ -2647,7 +2647,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ctxt, new_size, paid_storage_size_diff =
                   Fees.record_paid_storage_space
                     ctxt
-                    gateway_contract_hash
+                    cpmm_contract_hash
                 in
                 let* ticket_paid_storage_diff, ctxt =
                   Ticket_balance.adjust_storage_space

@@ -19,6 +19,7 @@
         "Bounded_history_repr",
         "Context_binary_proof",
         "Misbehaviour",
+        "Protocol_treasury",
         "Ratio_repr",
         "Int_percentage",
 

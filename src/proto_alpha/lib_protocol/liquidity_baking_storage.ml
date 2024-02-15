@@ -33,7 +33,7 @@ let get_toggle_ema ctxt =
   let* ema = Storage.Liquidity_baking.Toggle_ema.get ctxt in
   Liquidity_baking_toggle_EMA.of_int32 ema
 
-(* let on_cpmm_exists ctxt f =
+let _on_cpmm_exists ctxt f =
   let open Lwt_result_syntax in
   let* cpmm_contract = get_cpmm_address ctxt in
   let*! exists =
@@ -43,20 +43,28 @@ let get_toggle_ema ctxt =
   | false ->
       (* do nothing if the cpmm is not found *)
       return (ctxt, [])
-  | true -> f ctxt cpmm_contract *)
+  | true -> f ctxt cpmm_contract
 
 let on_gateway_exists ctxt f =
   let open Lwt_result_syntax in
   let gateway_contract_hash = 
-    (Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q")
+    (Contract_hash.of_b58check_exn Protocol_treasury.gateway_address)
   in
-  let*! exists =
+  let*! gateway_exists =
     Contract_storage.exists ctxt (Contract_repr.Originated gateway_contract_hash)
   in
-  match exists with
+  match gateway_exists with
   | false ->
-      (* do nothing if the cpmm is not found *)
-      return (ctxt, [])
+    (* transfers to cpmm if gateway does not exists *)
+    (let* cpmm_contract = get_cpmm_address ctxt in
+    let*! cpmm_exists =
+      Contract_storage.exists ctxt (Contract_repr.Originated cpmm_contract)
+    in
+    match cpmm_exists with
+    | false ->
+        (* do nothing if the cpmm is not found *)
+        return (ctxt, [])
+    | true -> f ctxt cpmm_contract)
   | true -> f ctxt gateway_contract_hash
 
 let update_toggle_ema ctxt ~per_block_vote =

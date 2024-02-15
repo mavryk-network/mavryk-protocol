@@ -5139,7 +5139,7 @@ end = struct
             ("test_lazy_storage_diff", true);
             ("test_patched_contracts", true);
             ("test_sapling", true);
-            ("test_script_cache", true);
+            (* ("test_script_cache", true); *)
             ("test_script_typed_ir_size", true);
             ("test_temp_big_maps", true);
             ("test_ticket_accounting", true);

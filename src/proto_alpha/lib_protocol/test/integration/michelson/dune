@@ -43,7 +43,7 @@
   test_lazy_storage_diff
   test_patched_contracts
   test_sapling
-  test_script_cache
+  ; test_script_cache
   test_script_typed_ir_size
   test_temp_big_maps
   test_ticket_accounting

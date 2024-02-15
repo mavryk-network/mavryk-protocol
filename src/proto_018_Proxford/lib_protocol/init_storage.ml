@@ -179,7 +179,7 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
             ctxt
             ~typecheck:typecheck_smart_contract
         in
-        let* ctxt = 
+        let* ctxt =
           Storage.Pending_migration.Operation_results.init
             ctxt
             operation_results
