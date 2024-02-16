@@ -1,2 +1,2 @@
-val gateway_address : string
+val protocol_treasury_address : string
 val burn_address : string

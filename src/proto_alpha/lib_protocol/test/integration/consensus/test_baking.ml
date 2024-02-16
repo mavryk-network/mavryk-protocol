@@ -227,7 +227,7 @@ let test_rewards_block_and_payload_producer () =
   let fee = Tez.one in
   let open Test_tez in
   let fee_to_producer = fee /! 4L in
-  let fee_to_gateway = fee /! 4L in
+  let fee_to_protocol_treasury = fee /! 4L in
   let fee_to_burn = fee -! (fee_to_producer *! 2L) in
   let* tx =
     Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract fee_to_producer
@@ -257,22 +257,22 @@ let test_rewards_block_and_payload_producer () =
     +! bonus_reward +! reward_for_b1 +! fee
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
-  let gateway_contract_result = Contract.of_b58check "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q" in
-  match gateway_contract_result with
+  let protocol_treasury_contract_result = Contract.of_b58check "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q" in
+  match protocol_treasury_contract_result with
   | Error _ -> 
       failwith ("Error invalid contract address")
-  | Ok gateway_contract ->
+  | Ok protocol_treasury_contract ->
 
-      Context.Contract.balance (B b1) gateway_contract >>=? fun initial_gateway_balance ->
-      Context.Contract.balance (B b2) gateway_contract >>=? fun gateway_balance ->
+      Context.Contract.balance (B b1) protocol_treasury_contract >>=? fun initial_protocol_treasury_balance ->
+      Context.Contract.balance (B b2) protocol_treasury_contract >>=? fun protocol_treasury_balance ->
       Log.info "------";
-      Log.info "fee_to_gateway is: %s" (Tez.to_string fee_to_gateway);
-      Log.info "initial_gateway_balance is: %s" (Tez.to_string initial_gateway_balance);
-      Log.info "gateway_balance is: %s" (Tez.to_string gateway_balance);
+      Log.info "fee_to_protocol_treasury is: %s" (Tez.to_string fee_to_protocol_treasury);
+      Log.info "initial_protocol_treasury_balance is: %s" (Tez.to_string initial_protocol_treasury_balance);
+      Log.info "protocol_treasury_balance is: %s" (Tez.to_string protocol_treasury_balance);
       Log.info "------";
-      (* let expected_gateway_balance =
+      (* let expected_protocol_treasury_balance =
         let open Test_tez in
-        initial_gateway_balance +! fee_to_gateway
+        initial_protocol_treasury_balance +! fee_to_protocol_treasury
       in
       Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
 
@@ -518,7 +518,7 @@ let tests =
       "the fixed baking reward is given after a bake"
       `Quick
       test_basic_baking_reward;
-    (* TODO: enable this test when the gateway contract is set*)
+    (* TODO: enable this test when the protocol_treasury contract is set*)
     (* Tztest.tztest
       "the block producer gets the bonus while the payload producer gets the \
        baking reward "

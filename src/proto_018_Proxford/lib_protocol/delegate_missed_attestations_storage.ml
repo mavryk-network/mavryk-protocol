@@ -114,12 +114,12 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     then Stake_storage.set_active ctxt block_producer
     else return ctxt
   in
-  let gateway_contract_hash = (Contract_hash.of_b58check_exn Protocol_treasury.gateway_address) in
-  let gateway_contract = Contract_repr.Originated gateway_contract_hash in
-  let*! gateway_contract_exists =
-    Contract_storage.exists ctxt gateway_contract
+  let protocol_treasury_contract_hash = (Contract_hash.of_b58check_exn Protocol_treasury.protocol_treasury_address) in
+  let protocol_treasury_contract = Contract_repr.Originated protocol_treasury_contract_hash in
+  let*! protocol_treasury_contract_exists =
+    Contract_storage.exists ctxt protocol_treasury_contract
   in
-  if(gateway_contract_exists)
+  if(protocol_treasury_contract_exists)
   then (
     let pay_payload_producer ctxt delegate =
       let contract = Contract_repr.Implicit delegate in
@@ -127,8 +127,8 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
       (match Tez_repr.(block_fees /? 4L) with
       | Error _ -> return (ctxt, [], [], [])
       | Ok quarter_fees -> 
-          let* ctxt, balance_updates_gateway =
-            Token.transfer ctxt `Block_fees (`Contract gateway_contract) quarter_fees
+          let* ctxt, balance_updates_protocol_treasury =
+            Token.transfer ctxt `Block_fees (`Contract protocol_treasury_contract) quarter_fees
           in
           let* ctxt, balance_updates_delegate =
             Token.transfer_n ctxt [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)] (`Contract contract)
@@ -143,13 +143,13 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
                     let* ctxt, balance_updates_burn =
                       Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
                     in
-                    return (ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn)
+                    return (ctxt, balance_updates_protocol_treasury, balance_updates_delegate, balance_updates_burn)
       )
     in
     let pay_block_producer ctxt delegate bonus =
       Shared_stake.pay_rewards ctxt ~source:`Baking_bonuses ~delegate bonus
     in
-    let* ctxt, balance_updates_gateway, balance_updates_delegate, balance_updates_burn =
+    let* ctxt, balance_updates_protocol_treasury, balance_updates_delegate, balance_updates_burn =
       pay_payload_producer ctxt payload_producer
     in
     let* ctxt, balance_updates_block_producer =
@@ -158,7 +158,7 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
       | None -> return (ctxt, [])
     in
     return
-      (ctxt, balance_updates_gateway @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
+      (ctxt, balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
   )
   else(
     let pay_payload_producer ctxt delegate =

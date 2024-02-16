@@ -925,7 +925,7 @@ let pp_manager_operation_result ppf
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
   Format.fprintf ppf "@,Fee to the baker: %s%Ld" tez_sym quarter_fee ;
-  Format.fprintf ppf "@,Fee to the liquidity mining treasury: %s%Ld" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the protocol treasury: %s%Ld" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the burn address: %s%Ld" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
   Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
