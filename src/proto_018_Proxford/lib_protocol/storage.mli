@@ -720,6 +720,20 @@ module Liquidity_baking : sig
        and type value = Contract_hash.t
 end
 
+module Protocol_treasury : sig
+  (** Buffer contract that receives liquidity baking subsidy if the protocol treasury is not ready. **)
+  module Buffer_address :
+    Single_data_storage
+      with type t := Raw_context.t
+       and type value = Contract_hash.t
+
+  (** Buffer contract that receives liquidity baking subsidy. **)
+  val address : Contract_hash.t
+
+  (** Burn address. **)
+  val burn_address : Signature.Public_key_hash.t
+end
+
 module Adaptive_issuance : sig
   (** Exponential moving average (ema) of votes set in the block header
       protocol_data.contents. Once the feature is activated, it can no

@@ -33,7 +33,7 @@ let get_toggle_ema ctxt =
   let* ema = Storage.Liquidity_baking.Toggle_ema.get ctxt in
   Liquidity_baking_toggle_EMA.of_int32 ema
 
-let _on_cpmm_exists ctxt f =
+let on_cpmm_exists ctxt f =
   let open Lwt_result_syntax in
   let* cpmm_contract = get_cpmm_address ctxt in
   let*! exists =
@@ -44,28 +44,6 @@ let _on_cpmm_exists ctxt f =
       (* do nothing if the cpmm is not found *)
       return (ctxt, [])
   | true -> f ctxt cpmm_contract
-
-let on_protocol_treasury_exists ctxt f =
-  let open Lwt_result_syntax in
-  let protocol_treasury_contract_hash = 
-    (Contract_hash.of_b58check_exn Protocol_treasury.protocol_treasury_address)
-  in
-  let*! protocol_treasury_exists =
-    Contract_storage.exists ctxt (Contract_repr.Originated protocol_treasury_contract_hash)
-  in
-  match protocol_treasury_exists with
-  | false ->
-    (* transfers to cpmm if protocol_treasury does not exists *)
-    (let* cpmm_contract = get_cpmm_address ctxt in
-    let*! cpmm_exists =
-      Contract_storage.exists ctxt (Contract_repr.Originated cpmm_contract)
-    in
-    match cpmm_exists with
-    | false ->
-        (* do nothing if the cpmm is not found *)
-        return (ctxt, [])
-    | true -> f ctxt cpmm_contract)
-  | true -> f ctxt protocol_treasury_contract_hash
 
 let update_toggle_ema ctxt ~per_block_vote =
   let open Lwt_result_syntax in
@@ -86,6 +64,6 @@ let on_subsidy_allowed ctxt ~per_block_vote f =
   let open Lwt_result_syntax in
   let* ctxt, toggle_ema = update_toggle_ema ctxt ~per_block_vote in
   if check_ema_below_threshold ctxt toggle_ema then
-    let+ ctxt, operation_results = on_protocol_treasury_exists ctxt f in
+    let+ ctxt, operation_results = on_cpmm_exists ctxt f in
     (ctxt, operation_results, toggle_ema)
   else return (ctxt, [], toggle_ema)

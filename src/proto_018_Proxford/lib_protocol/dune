@@ -49,7 +49,6 @@
   Bounded_history_repr
   Context_binary_proof
   Misbehaviour
-  Protocol_treasury
   Ratio_repr
   Int_percentage
   Michelson_v1_primitives
@@ -207,6 +206,9 @@
   Liquidity_baking_cpmm
   Liquidity_baking_lqt
   Liquidity_baking_migration
+  Protocol_treasury_storage
+  Protocol_treasury_buffer
+  Protocol_treasury_migration
   Sc_rollup_errors
   Sc_rollup_inbox_storage
   Legacy_script_patches
@@ -343,7 +345,6 @@
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
   misbehaviour.ml misbehaviour.mli
-  protocol_treasury.ml protocol_treasury.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -505,6 +506,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -642,7 +646,6 @@
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
   misbehaviour.ml misbehaviour.mli
-  protocol_treasury.ml protocol_treasury.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -804,6 +807,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -925,7 +931,6 @@
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
   misbehaviour.ml misbehaviour.mli
-  protocol_treasury.ml protocol_treasury.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -1087,6 +1092,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml

@@ -243,6 +243,25 @@ module Liquidity_baking = struct
     RPC_context.make_call0 S.get_cpmm_address ctxt block () ()
 end
 
+module Protocol_treasury = struct
+  module S = struct
+    let get_buffer_address =
+      RPC_service.get_service
+        ~description:"Protocol treasury Buffer address"
+        ~query:RPC_query.empty
+        ~output:Alpha_context.Contract.originated_encoding
+        RPC_path.(custom_root / "context" / "protocol_treasury" / "buffer_address")
+  end
+
+  let register () =
+    let open Services_registration in
+    register0 ~chunked:false S.get_buffer_address (fun ctxt () () ->
+        Alpha_context.Protocol_treasury.get_buffer_address ctxt)
+
+  let get_buffer_address ctxt block =
+    RPC_context.make_call0 S.get_buffer_address ctxt block () ()
+end
+
 module Cache = struct
   module S = struct
     let cached_contracts =
@@ -345,6 +364,7 @@ let register () =
   Voting.register () ;
   Sapling.register () ;
   Liquidity_baking.register () ;
+  Protocol_treasury.register () ;
   Cache.register () ;
   Adaptive_issuance.register () ;
   Denunciations.register ()

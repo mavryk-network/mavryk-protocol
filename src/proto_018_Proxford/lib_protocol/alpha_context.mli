@@ -5063,6 +5063,18 @@ module Liquidity_baking : sig
     Lwt.t
 end
 
+(** This module re-exports definitions from {!Protocol_treasury_storage}. *)
+module Protocol_treasury : sig
+  val get_buffer_address : context -> Contract_hash.t tzresult Lwt.t
+
+  val on_subsidy_allowed :
+    context ->
+    per_block_vote:Per_block_votes.per_block_vote ->
+    (context -> Contract_hash.t -> (context * 'a list) tzresult Lwt.t) ->
+    (context * 'a list * Per_block_votes.Liquidity_baking_toggle_EMA.t) tzresult
+    Lwt.t
+end
+
 (** This module re-exports definitions from {!Adaptive_issuance_storage}. *)
 module Adaptive_issuance : sig
   val update_ema :
