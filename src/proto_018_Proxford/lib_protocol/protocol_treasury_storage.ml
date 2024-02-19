@@ -4,7 +4,7 @@ let get_buffer_address = Storage.Protocol_treasury.Buffer_address.get
 
 let get_toggle_ema ctxt =
   let open Lwt_result_syntax in
-  let* ema = Storage.Liquidity_baking.Toggle_ema.get ctxt in
+  let* ema = Storage.Protocol_treasury.Toggle_ema.get ctxt in
   Liquidity_baking_toggle_EMA.of_int32 ema
 
 let on_buffer_exists ctxt f =
@@ -36,7 +36,7 @@ let update_toggle_ema ctxt ~per_block_vote =
   let* old_ema = get_toggle_ema ctxt in
   let new_ema = compute_new_liquidity_baking_ema ~per_block_vote old_ema in
   let+ ctxt =
-    Storage.Liquidity_baking.Toggle_ema.update
+    Storage.Protocol_treasury.Toggle_ema.update
       ctxt
       (Liquidity_baking_toggle_EMA.to_int32 new_ema)
   in

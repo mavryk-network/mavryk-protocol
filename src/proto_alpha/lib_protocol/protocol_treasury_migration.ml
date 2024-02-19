@@ -59,7 +59,7 @@ let init ctxt ~typecheck =
   (* We use a custom origination nonce because it is unset when stitching from 009 *)
   let nonce = Operation_hash.hash_string ["buff, buff, buff."] in
   let ctxt = Raw_context.init_origination_nonce ctxt nonce in
-  let* ctxt = Storage.Liquidity_baking.Toggle_ema.init ctxt 0l in
+  let* ctxt = Storage.Protocol_treasury.Toggle_ema.init ctxt 0l in
   let*? ctxt, buffer_address =
     Contract_storage.fresh_contract_from_current_nonce ctxt
   in

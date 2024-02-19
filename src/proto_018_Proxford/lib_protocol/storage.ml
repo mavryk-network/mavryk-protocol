@@ -1673,6 +1673,13 @@ module Liquidity_baking = struct
 end
 
 module Protocol_treasury = struct
+  module Toggle_ema =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        (* The old "escape" name is kept here to avoid migrating this. *)
+        let name = ["protocol_treasury_escape_ema"]
+      end)
+      (Encoding.Int32)
 
   module Buffer_address =
     Make_single_data_storage (Registered) (Raw_context)

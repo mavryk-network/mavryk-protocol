@@ -130,31 +130,38 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     let contract = Contract_repr.Implicit delegate in
     let* ctxt, block_fees = Token.balance ctxt `Block_fees in
     (match Tez_repr.(block_fees /? 4L) with
-    | Error _ -> return (ctxt, [], [], [])
+    | Error _ -> return (ctxt, [])
     | Ok quarter_fees -> 
         let* ctxt, balance_updates_protocol_treasury =
           Token.transfer ctxt `Block_fees (`Contract protocol_treasury_contract) quarter_fees
         in
         let* ctxt, balance_updates_delegate =
-          Token.transfer_n ctxt [(`Block_fees, quarter_fees); (`Baking_rewards, baking_reward)] (`Contract contract)
+          Token.transfer ctxt `Block_fees (`Contract contract) quarter_fees
+        in
+        let* ctxt, balance_updates_baking_rewards =
+          Shared_stake.pay_rewards
+            ctxt
+            ~source:`Baking_rewards
+            ~delegate
+            baking_reward
         in
         match Tez_repr.(quarter_fees *? 2L) with
-          | Error _ -> return (ctxt, [], [], [])
+          | Error _ -> return (ctxt, [])
           | Ok two_quarters ->
               match Tez_repr.(block_fees -? two_quarters) with
-              | Error _ -> return (ctxt, [], [], [])
+              | Error _ -> return (ctxt, [])
               | Ok remainder_for_burning ->
                   let burn_destination = Contract_repr.Implicit (Storage.Protocol_treasury.burn_address) in
                   let* ctxt, balance_updates_burn =
                     Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
                   in
-                  return (ctxt, balance_updates_protocol_treasury, balance_updates_delegate, balance_updates_burn)
+                  return (ctxt, balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_baking_rewards @ balance_updates_burn)
     )
   in
   let pay_block_producer ctxt delegate bonus =
     Shared_stake.pay_rewards ctxt ~source:`Baking_bonuses ~delegate bonus
   in
-  let* ctxt, balance_updates_protocol_treasury, balance_updates_delegate, balance_updates_burn =
+  let* ctxt, balance_updates_payload_producer =
     pay_payload_producer ctxt payload_producer
   in
   let* ctxt, balance_updates_block_producer =
@@ -163,8 +170,8 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     | None -> return (ctxt, [])
   in
   return
-    (ctxt, balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_burn @ balance_updates_block_producer)
-
+    (ctxt, balance_updates_payload_producer @ balance_updates_block_producer)
+            
 let check_and_reset_delegate_participation ctxt delegate =
   let open Lwt_result_syntax in
   let contract = Contract_repr.Implicit delegate in
