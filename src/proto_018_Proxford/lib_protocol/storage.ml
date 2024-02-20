@@ -1694,7 +1694,7 @@ module Protocol_treasury = struct
       end)
   
   let address = Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"
-  let burn_address = Signature.Public_key_hash.of_b58check_exn "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
+  let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
 end
 
 module Adaptive_issuance = struct

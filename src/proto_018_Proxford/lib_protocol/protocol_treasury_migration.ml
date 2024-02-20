@@ -2,10 +2,18 @@ open Micheline
 
 let admin_address = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
 
+(* used for testing *)
+let mockup_admin = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
+
 let buffer_init_storage =
   Script_repr.lazy_expr
     (Micheline.strip_locations
        (String (0, admin_address)))
+
+let buffer_test_storage =
+  Script_repr.lazy_expr
+    (Micheline.strip_locations
+      (String (0, mockup_admin)))
 
 let originate ctxt address_hash ~balance script =
   let open Lwt_result_syntax in
@@ -64,11 +72,22 @@ let init ctxt ~typecheck =
     Contract_storage.fresh_contract_from_current_nonce ctxt
   in
   let* ctxt = Storage.Protocol_treasury.Buffer_address.init ctxt buffer_address in
+  (* If the update is applied before block level 5, we set a bootstrap account as the admin.
+      It's set in order to properly test the contract's entrypoints *)
+  let current_level =
+    Raw_level_repr.to_int32 (Level_storage.current ctxt).level
+  in
+  let buffer_storage = 
+    if Compare.Int32.(current_level < 5l) then
+      (buffer_test_storage)
+    else 
+      (buffer_init_storage)
+  in
   let buffer_script =
     Script_repr.
       {
         code = Script_repr.lazy_expr Protocol_treasury_buffer.script;
-        storage = buffer_init_storage;
+        storage = buffer_storage;
       }
   in
   let* buffer_script, ctxt = typecheck ctxt buffer_script in
@@ -78,3 +97,4 @@ let init ctxt ~typecheck =
   (* Unsets the origination nonce, which is okay because this is called after other originations in stitching. *)
   let ctxt = Raw_context.unset_origination_nonce ctxt in
   (ctxt, [buffer_result])
+  

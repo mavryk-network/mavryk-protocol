@@ -919,14 +919,22 @@ let pp_manager_operation_result ppf
 
   (* Convert fee to int64 and then calculate divided fees *)
   let fee_int64 = Tez.to_mumav fee in
-  let quarter_fee = Int64.div fee_int64 4L in
-  let burn_fee = Int64.sub fee_int64 (Int64.mul 2L quarter_fee) in
-
+  let quarter_fee_mumav = Int64.div fee_int64 4L in
+  let quarter_fee = match (Tez.of_mumav (quarter_fee_mumav)) with
+    | Some(mumav) -> Tez.to_string mumav
+    | None -> Tez.to_string Tez.zero
+  in
+  let burn_fee_mumav = Int64.sub fee_int64 (Int64.mul 2L quarter_fee_mumav) in
+  let burn_fee = match (Tez.of_mumav (burn_fee_mumav)) with
+    | Some(mumav) -> Tez.to_string mumav
+    | None -> Tez.to_string Tez.zero
+  in
+  
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-  Format.fprintf ppf "@,Fee to the baker: %s%Ld" tez_sym quarter_fee ;
-  Format.fprintf ppf "@,Fee to the protocol treasury: %s%Ld" tez_sym quarter_fee ;
-  Format.fprintf ppf "@,Fee to the burn address: %s%Ld" tez_sym burn_fee ;
+  Format.fprintf ppf "@,Fee to the baker: %s%s" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the protocol treasury: %s%s" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the burn address: %s%s" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
   Format.fprintf ppf "@,Gas limit: %a" Gas.Arith.pp_integral gas_limit ;
   Format.fprintf ppf "@,Storage limit: %a bytes" Z.pp_print storage_limit ;

@@ -12,9 +12,9 @@ let hooks =
     ~replace_variables:Fun.id
     ()
 
-let buf = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
+let buf = "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
 
-let adm = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
+let lb_subsidy = 83333
 
 let future = "2050-01-01T00:00:00Z"
 
@@ -34,10 +34,19 @@ let get_buf_storage ~hooks client contract =
   let* storage = Client.contract_storage ~hooks contract client in
   match split_storage storage with
   | [admin] ->
-      return admin = unquote admin;
+      return (unquote admin);
   | _ ->
-      Test.fail "Unparseable token contract storage in %S: %S," contract storage
+      Test.fail "Unparseable buffer contract storage in %S: %S," contract storage
 
+let check_balance ~__LOC__ client ~contract expected_balance =
+  let* balance = Client.get_balance_for client ~account:contract in
+  Check.(
+    (balance = expected_balance)
+      Tez.typ
+      ~__LOC__
+      ~error_msg:"Expected balance %R, got %L") ;
+  unit
+      
 let setup_transfer_funds ~__LOC__ client =
   let* buf_address =
     Client.RPC.call client ~hooks
@@ -55,28 +64,37 @@ let setup_transfer_funds ~__LOC__ client =
   let* buf_storage = get_buf_storage client ~hooks buf in
   let () =
     Check.(
-      (buf_storage.token_address = adm)
+      (buf_storage = Constant.bootstrap1.public_key_hash)
         string
         ~__LOC__
         ~error_msg:"Expected storage %R, got %L")
   in
+  (* Check initial balances *)
+  let* () =
+    check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0)
+  in
   (* transfer mav to the buffer *)
   Log.info "Call default" ;
-  let arg = sf "Unit" Constant.bootstrap1.public_key_hash in
-  let* () =
-    Client.call_contract
+  let* _test =
+    Client.transfer
       ~hooks
-      ~amount:(Tez.of_int 100)
-      ~src:Constant.bootstrap1.alias
-      ~destination:buf
-      ~entrypoint:"default"
-      ~arg:"Unit"
       ~burn_cap:(Tez.of_int 10)
+      ~amount:(Tez.of_int 100)
+      ~giver:"bootstrap1"
+      ~receiver:buf
+      ~arg:"Unit"
+      ~entrypoint:"default"
       client
+  in
+  let expected_balance = 
+    (Tez.of_mumav_int (100000000 + lb_subsidy))
+  in
+  let* () =
+    check_balance ~__LOC__ client ~contract:buf expected_balance
   in
   (* transfer funds to another address *)
   Log.info "Call transferFunds" ;
-  let arg = sf "(%S)" Constan.bootstrap2.public_key_hash in
+  let arg = sf "%S" Constant.bootstrap2.public_key_hash in
   let* () =
     Client.call_contract
       ~hooks
@@ -86,6 +104,9 @@ let setup_transfer_funds ~__LOC__ client =
       ~arg
       ~burn_cap:(Tez.of_int 10)
       client
+  in
+  let* () =
+    check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0)
   in
   unit
 

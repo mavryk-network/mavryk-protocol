@@ -289,7 +289,7 @@ let test_rewards_block_and_payload_producer () =
         Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance);
         Log.info "------";
 
-  let burn_address_result = Contract.of_b58check "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
+  let burn_address_result = Contract.of_b58check "mv2burnburnburnburnburnburnbur7hzNeg" in
   match burn_address_result with
     | Error _ -> 
         failwith ("Error invalid contract address")
