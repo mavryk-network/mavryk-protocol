@@ -5139,7 +5139,7 @@ end = struct
             ("test_lazy_storage_diff", true);
             ("test_patched_contracts", true);
             ("test_sapling", true);
-            (* ("test_script_cache", true); *)
+            ("test_script_cache", true);
             ("test_script_typed_ir_size", true);
             ("test_temp_big_maps", true);
             ("test_ticket_accounting", true);
@@ -5267,7 +5267,7 @@ end = struct
             ("test_frozen_bonds", true);
             ("test_adaptive_issuance_launch", N.(number >= 018));
             ("test_adaptive_issuance_roundtrip", N.(number >= 018));
-            (* ("test_liquidity_baking", true); *)
+            ("test_liquidity_baking", true);
             ("test_storage_functions", true);
             ("test_storage", true);
             ("test_token", true);
@@ -5298,7 +5298,7 @@ end = struct
       let _pbt =
         let list =
           [
-            (* ("liquidity_baking_pbt", true); *)
+            ("liquidity_baking_pbt", true);
             ("saturation_fuzzing", true);
             ("test_merkle_list", N.(number >= 013));
             ("test_gas_properties", true);

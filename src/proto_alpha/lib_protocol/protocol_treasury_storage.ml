@@ -1,5 +1,7 @@
 open Per_block_votes_repr
 
+let get_protocol_treasury_address = Storage.Protocol_treasury.address
+
 let get_buffer_address = Storage.Protocol_treasury.Buffer_address.get
 
 let get_toggle_ema ctxt =
@@ -21,15 +23,12 @@ let on_buffer_exists ctxt f =
 
 let on_protocol_treasury_exists ctxt f =
   let open Lwt_result_syntax in
-  let protocol_treasury_contract_hash = 
-    Storage.Protocol_treasury.address
-  in
   let*! protocol_treasury_exists =
-    Contract_storage.exists ctxt (Contract_repr.Originated protocol_treasury_contract_hash)
+    Contract_storage.exists ctxt (Contract_repr.Originated get_protocol_treasury_address)
   in
   match protocol_treasury_exists with
   | false -> on_buffer_exists ctxt f
-  | true -> f ctxt protocol_treasury_contract_hash
+  | true -> f ctxt get_protocol_treasury_address
 
 let update_toggle_ema ctxt ~per_block_vote =
   let open Lwt_result_syntax in

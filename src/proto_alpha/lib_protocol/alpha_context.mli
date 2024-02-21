@@ -5063,6 +5063,8 @@ end
 
 (** This module re-exports definitions from {!Protocol_treasury_storage}. *)
 module Protocol_treasury : sig
+  val get_protocol_treasury_address : Contract_hash.t
+
   val get_buffer_address : context -> Contract_hash.t tzresult Lwt.t
 
   val on_subsidy_allowed :

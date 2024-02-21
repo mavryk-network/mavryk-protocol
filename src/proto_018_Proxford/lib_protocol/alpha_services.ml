@@ -245,9 +245,16 @@ end
 
 module Protocol_treasury = struct
   module S = struct
+    let get_protocol_treasury_address =
+      RPC_service.get_service
+        ~description:"Protocol treasury address"
+        ~query:RPC_query.empty
+        ~output:Alpha_context.Contract.originated_encoding
+        RPC_path.(custom_root / "context" / "protocol_treasury" / "address")
+
     let get_buffer_address =
       RPC_service.get_service
-        ~description:"Protocol treasury Buffer address"
+        ~description:"Protocol treasury buffer address"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
         RPC_path.(custom_root / "context" / "protocol_treasury" / "buffer_address")
@@ -255,11 +262,16 @@ module Protocol_treasury = struct
 
   let register () =
     let open Services_registration in
+    register0 ~chunked:false S.get_protocol_treasury_address (fun _ctxt () () ->
+        return Alpha_context.Protocol_treasury.get_protocol_treasury_address) ;
     register0 ~chunked:false S.get_buffer_address (fun ctxt () () ->
         Alpha_context.Protocol_treasury.get_buffer_address ctxt)
 
   let get_buffer_address ctxt block =
     RPC_context.make_call0 S.get_buffer_address ctxt block () ()
+
+  let get_protocol_treasury_address ctxt block =
+    RPC_context.make_call0 S.get_protocol_treasury_address ctxt block () ()
 end
 
 module Cache = struct

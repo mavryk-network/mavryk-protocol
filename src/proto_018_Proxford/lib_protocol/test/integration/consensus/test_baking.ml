@@ -254,10 +254,11 @@ let test_rewards_block_and_payload_producer () =
   let expected_balance =
     let open Test_tez in
     Account.default_initial_balance -! frozen_deposit +! baking_reward
-    +! bonus_reward +! reward_for_b1 +! fee
+    +! bonus_reward +! reward_for_b1 +! fee_to_producer
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
-  let protocol_treasury_contract_result = Contract.of_b58check "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q" in
+  (* the protocol treasury is currently the buffer address *)
+  let protocol_treasury_contract_result = Contract.of_b58check "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH" in
   match protocol_treasury_contract_result with
   | Error _ -> 
       failwith ("Error invalid contract address")
@@ -343,7 +344,7 @@ let test_rewards_block_and_payload_producer () =
   let expected_balance =
     let open Test_tez in
     Account.default_initial_balance +! baking_reward -! frozen_deposit
-    +! reward_for_b1 +! fee
+    +! reward_for_b1 +! fee_to_producer
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
   (* [baker_b2'] gets the bonus because he is the one who included the
@@ -518,12 +519,11 @@ let tests =
       "the fixed baking reward is given after a bake"
       `Quick
       test_basic_baking_reward;
-    (* TODO: enable this test when the protocol_treasury contract is set*)
-    (* Tztest.tztest
+    Tztest.tztest
       "the block producer gets the bonus while the payload producer gets the \
        baking reward "
       `Quick
-      test_rewards_block_and_payload_producer; *)
+      test_rewards_block_and_payload_producer;
     Tztest.tztest
       "a delegate with 8000 mav can bake"
       `Quick

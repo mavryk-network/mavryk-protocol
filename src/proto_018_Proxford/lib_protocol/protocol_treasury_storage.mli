@@ -2,6 +2,10 @@
     Liquidity Baking subsidy *)
 val get_buffer_address : Raw_context.t -> Contract_hash.t tzresult Lwt.t
 
+(** Get the address of the Protocol Treasury Contract receiving the
+    Liquidity Baking subsidy *)
+val get_protocol_treasury_address : Contract_hash.t
+
 (** [on_subsidy_allowed ctxt ~per_block_vote f] updates the toggle EMA according to
     [toggle_vote]. Then the callback function [f] is called if the following
     conditions are met:
