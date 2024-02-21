@@ -12,7 +12,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000374
+    Fee to the validator: ꜩ0.000374
     Expected counter: 1
     Gas limit: 914
     Storage limit: 423 bytes
@@ -51,7 +51,7 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0
+    Fee to the validator: ꜩ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
@@ -78,7 +78,7 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0
+    Fee to the validator: ꜩ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
@@ -107,7 +107,7 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0
+    Fee to the validator: ꜩ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
@@ -129,7 +129,7 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0
+    Fee to the validator: ꜩ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes

@@ -12,7 +12,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000443
+    Fee to the validator: ꜩ0.000443
     Expected counter: 1
     Gas limit: 711
     Storage limit: 418 bytes
@@ -69,7 +69,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000453
+    Fee to the validator: ꜩ0.000453
     Expected counter: 1
     Gas limit: 1852
     Storage limit: 125 bytes
@@ -112,7 +112,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000466
+    Fee to the validator: ꜩ0.000466
     Expected counter: 2
     Gas limit: 2042
     Storage limit: 0 bytes
@@ -149,7 +149,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000453
+    Fee to the validator: ꜩ0.000453
     Expected counter: 3
     Gas limit: 1852
     Storage limit: 0 bytes
@@ -188,7 +188,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000521
+    Fee to the validator: ꜩ0.000521
     Expected counter: 4
     Gas limit: 2534
     Storage limit: 125 bytes

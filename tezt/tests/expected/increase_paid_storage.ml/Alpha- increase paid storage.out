@@ -10,7 +10,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
-    Fee to the baker: ꜩ0.000265
+    Fee to the validator: ꜩ0.000265
     Expected counter: 1
     Gas limit: 169
     Storage limit: 0 bytes

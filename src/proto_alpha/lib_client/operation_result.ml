@@ -932,7 +932,7 @@ let pp_manager_operation_result ppf
   
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-  Format.fprintf ppf "@,Fee to the baker: %s%s" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the validator: %s%s" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the protocol treasury: %s%s" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the burn address: %s%s" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
