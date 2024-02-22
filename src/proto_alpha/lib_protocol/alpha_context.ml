@@ -697,6 +697,10 @@ module Liquidity_baking = struct
   include Liquidity_baking_storage
 end
 
+module Protocol_treasury = struct
+  include Protocol_treasury_storage
+end
+
 module Adaptive_issuance = struct
   include Adaptive_issuance_storage
 end

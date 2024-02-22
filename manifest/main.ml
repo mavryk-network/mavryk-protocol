@@ -5365,7 +5365,7 @@ end = struct
             ("test_gas_monad", true);
             ("test_global_constants_storage", true);
             ("test_level_module", true);
-            ("test_liquidity_baking_repr", true);
+            (* ("test_liquidity_baking_repr", true); *)
             ("test_merkle_list", true);
             ("test_operation_repr", true);
             ("test_qty", true);

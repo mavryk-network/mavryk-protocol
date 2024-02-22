@@ -403,7 +403,7 @@ module Cli = struct
            sf
              " A JSON file containing a list of balances, in case we want to \
               read balance updates for delegates from an external file (e.g. \
-              minic mainnet bakers' stake)." );
+              minic mainnet validators' stake)." );
        ]
       @ gen_args_for_vars variables)
 

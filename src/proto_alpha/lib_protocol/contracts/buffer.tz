@@ -1,0 +1,23 @@
+{ parameter (or (unit %default) (address %transferFunds)) ;
+  storage address ;
+  code { UNPAIR ;
+         IF_LEFT
+           { DROP ; NIL operation }
+           { DUP 2 ;
+             SENDER ;
+             COMPARE ;
+             NEQ ;
+             IF { PUSH string "OnlyAdmin" ; FAILWITH } {} ;
+             BALANCE ;
+             SWAP ;
+             CONTRACT unit ;
+             IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+             SWAP ;
+             UNIT ;
+             TRANSFER_TOKENS ;
+             SWAP ;
+             NIL operation ;
+             DIG 2 ;
+             CONS } ;
+         PAIR } }
+

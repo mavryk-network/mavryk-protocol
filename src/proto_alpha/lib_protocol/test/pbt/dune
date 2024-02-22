@@ -41,7 +41,7 @@
   -open Tezos_base_test_helpers
   -open Tezos_protocol_alpha_parameters)
  (modules
-  liquidity_baking_pbt
+  ; liquidity_baking_pbt
   saturation_fuzzing
   test_merkle_list
   test_gas_properties

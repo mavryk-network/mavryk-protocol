@@ -1,0 +1,85 @@
+
+./octez-client --mode mockup rpc get /chains/main/blocks/head/context/protocol_treasury/buffer_address
+"KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
+
+./octez-client --mode mockup get contract storage for KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
+
+./octez-client --mode mockup --wait none transfer 100 from bootstrap1 to KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH --burn-cap 10 --entrypoint default --arg Unit
+Node is bootstrapped.
+Estimated gas: 1301.594 units (will add 100 for safety)
+Estimated storage: no bytes added
+Operation successfully injected in the node.
+Operation hash is 'oooGzLX6Qxt2rm2p31AivJTcZZjfWkm1CxDfiB9fPfL42ygXHsY'
+NOT waiting for the operation to be included.
+Use command
+  octez-client wait for oooGzLX6Qxt2rm2p31AivJTcZZjfWkm1CxDfiB9fPfL42ygXHsY to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+and/or an external block explorer to make sure that it has been included.
+This sequence of operations was run:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0.000098
+    Fee to the protocol treasury: ṁ0.000098
+    Fee to the burn address: ṁ0.000196
+    Expected counter: 1
+    Gas limit: 1402
+    Storage limit: 0 bytes
+    Balance updates:
+      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.000392
+      total block fees ....................... +ṁ0.000392
+    Transaction:
+      Amount: ṁ100
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      This transaction was successfully applied
+      Updated storage: 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78
+      Storage size: 223 bytes
+      Consumed gas: 372.167
+      Balance updates:
+        mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ100
+        KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH ... +ṁ100
+
+
+./octez-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint transferFunds --arg '"mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"' --burn-cap 10
+Node is bootstrapped.
+Estimated gas: 1408.505 units (will add 100 for safety)
+Estimated storage: no bytes added
+Operation successfully injected in the node.
+Operation hash is 'ookqYZfE2jeF3Dh4z8vxCg3iTWkiiPsEMFXQ6s4MWhdu6bimEdf'
+NOT waiting for the operation to be included.
+Use command
+  octez-client wait for ookqYZfE2jeF3Dh4z8vxCg3iTWkiiPsEMFXQ6s4MWhdu6bimEdf to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+and/or an external block explorer to make sure that it has been included.
+This sequence of operations was run:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0.000114
+    Fee to the protocol treasury: ṁ0.000114
+    Fee to the burn address: ṁ0.000231
+    Expected counter: 2
+    Gas limit: 1509
+    Storage limit: 0 bytes
+    Balance updates:
+      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.000459
+      total block fees ....................... +ṁ0.000459
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: transferFunds
+      Parameter: "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"
+      This transaction was successfully applied
+      Updated storage: 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78
+      Storage size: 223 bytes
+      Consumed gas: 379.079
+      Internal operations:
+        Internal Transaction:
+          Amount: ṁ100.166666
+          From: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+          To: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+          This transaction was successfully applied
+          Consumed gas: 100
+          Balance updates:
+            KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH ... -ṁ100.166666
+            mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... +ṁ100.166666
+

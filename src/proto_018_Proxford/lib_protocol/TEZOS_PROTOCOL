@@ -1,6 +1,6 @@
 {
     "expected_env_version": 11,
-    "hash": "ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH",
+    "hash": "PtAtLasLwUtff3BeBCKuHjM8poTu7pF6bhGmARfAW8YMr6mjozz",
     "modules": [
         "Misc",
         "Non_empty_string",
@@ -191,6 +191,10 @@
         "Liquidity_baking_cpmm",
         "Liquidity_baking_lqt",
         "Liquidity_baking_migration",
+
+        "Protocol_treasury_storage",
+        "Protocol_treasury_buffer",
+        "Protocol_treasury_migration",
 
         "Sc_rollup_errors",
         "Sc_rollup_inbox_storage",

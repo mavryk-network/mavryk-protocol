@@ -192,6 +192,10 @@
         "Liquidity_baking_lqt",
         "Liquidity_baking_migration",
 
+        "Protocol_treasury_storage",
+        "Protocol_treasury_buffer",
+        "Protocol_treasury_migration",
+
         "Sc_rollup_errors",
         "Sc_rollup_inbox_storage",
 

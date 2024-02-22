@@ -1673,6 +1673,31 @@ module Liquidity_baking = struct
       end)
 end
 
+module Protocol_treasury = struct
+  module Toggle_ema =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        (* The old "escape" name is kept here to avoid migrating this. *)
+        let name = ["protocol_treasury_escape_ema"]
+      end)
+      (Encoding.Int32)
+
+  module Buffer_address =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        let name = ["protocol_treasury_buffer_address"]
+      end)
+      (struct
+        type t = Contract_hash.t
+
+        (* Keeping contract-compatible encoding to avoid migrating this. *)
+        let encoding = Contract_repr.originated_encoding
+      end)
+  
+  let address = Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"
+  let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
+end
+
 module Adaptive_issuance = struct
   module Launch_ema =
     Make_single_data_storage (Registered) (Raw_context)

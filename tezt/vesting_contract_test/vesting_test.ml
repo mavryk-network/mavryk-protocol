@@ -236,7 +236,7 @@ module StateMonad = struct
     let add_fees total line =
       let open String in
       let line = trim line in
-      if length line >= 16 && sub line 0 16 = "Fee to the baker" then
+      if length line >= 16 && sub line 0 16 = "Fee to the validator" then
         let fee = Tez.parse_floating line in
         Tez.(fee + total)
       else total
