@@ -391,8 +391,7 @@ let baker_scenario ?baker_sk ~airdropper_alias client dal_node l1_node =
   (* No need to check if baker_alias is already delegate. Re-registering an
      already registered delegate doesn't fail. *)
   let* _s = Client.register_delegate ~delegate:baker_alias client in
-  (* TODO: manual staking has been disabled in Oxford-2 (after being enabled in
-      rejected Oxford-1) in favor of automatic staking. So, this command
+  (* TODO: manual staking has been disabled in Atlas in favor of automatic staking. So, this command
       currently fails. But, it might be reactivated in protocol P.
      let* () = _stake_or_unstake_half_balance client ~baker_alias in
   *)

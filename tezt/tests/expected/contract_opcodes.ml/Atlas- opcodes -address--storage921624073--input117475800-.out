@@ -1,0 +1,23 @@
+
+./octez-client --protocol PtAtLashVWYaEYWHPkHE29GqRkXgEycmPDS8RUVTiBwnK1x8Meb --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/address.tz on storage None and input '"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"' --level 1 --trace-stack
+storage
+  (Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx")
+emitted operations
+  
+big_map diff
+  
+trace
+  - location: 9 (just consumed gas: 8.984)
+    [ (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" None) ]
+  - location: 9 (just consumed gas: 0.010)
+    [ "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" ]
+  - location: 10 (just consumed gas: 0.010)
+    [ "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" ]
+  - location: 11 (just consumed gas: 0.010)
+    [ (Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx") ]
+  - location: 12 (just consumed gas: 0.010)
+    [ {}
+      (Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx") ]
+  - location: 14 (just consumed gas: 0.010)
+    [ (Pair {} (Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx")) ]
+

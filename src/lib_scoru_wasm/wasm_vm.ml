@@ -28,7 +28,7 @@ open Wasm_pvm_state.Internal_state
 
 let version_for_protocol : Pvm_input_kind.protocol -> Wasm_pvm_state.version =
   function
-  | Oxford -> V2
+  | Atlas -> V2
   | Proto_alpha -> V3
 
 let link_finished (ast : Wasm.Ast.module_) offset =

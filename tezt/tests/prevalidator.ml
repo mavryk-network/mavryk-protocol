@@ -2454,7 +2454,7 @@ module Revamped = struct
       ~__FILE__
       ~title:"Ensure that future attestations are propagated"
       ~tags:["attestation"; "mempool"; "branch_delayed"]
-      ~supports:Protocol.(From_protocol (number Oxford))
+      ~supports:Protocol.(From_protocol (number Atlas))
     @@ fun protocol ->
     log_step 1 "Initialize 3 nodes, connect them, and activate the protocol." ;
     let nodes_args = Node.[Synchronisation_threshold 0; Private_mode] in
@@ -2495,7 +2495,7 @@ module Revamped = struct
       let content = JSON.(op |-> "contents" |> as_list |> List.hd) in
       let kind = JSON.(content |-> "kind" |> as_string) in
       let expected_kind =
-        if Protocol.number protocol < 018 then "endorsement" else "attestation"
+        if Protocol.number protocol < 001 then "endorsement" else "attestation"
       in
       Check.(
         (expected_kind = kind)

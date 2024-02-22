@@ -108,11 +108,11 @@ let () =
     `Permanent
     ~id:"safety_checker.invalid_protocol_parameter"
     ~title:"Argument is not a valid protocol name"
-    ~description:"Argument must be either \"oxford\", \"nairobi\", or \"alpha\""
+    ~description:"Argument must be either \"atlas\" or \"alpha\""
     ~pp:(fun ppf reveal_data_path ->
       Format.fprintf
         ppf
-        "Expected one of these protocol names: \"oxford\", \"nairobi\", \
+        "Expected one of these protocol names: \"atlas\" or \
          \"alpha\". %s was provided instead"
         reveal_data_path)
     Data_encoding.(obj1 (req "arg" string))
@@ -182,10 +182,10 @@ let protocol_hash_parameter =
   parameter (fun _cctxt p ->
       let open Lwt_result_syntax in
       match String.lowercase_ascii p with
-      | "oxford" ->
+      | "atlas" ->
           return
           @@ Protocol_hash.of_b58check_exn
-               "ProxfordZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef"
+               "PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef"
       | "alpha" ->
           return
           @@ Protocol_hash.of_b58check_exn
@@ -196,8 +196,8 @@ let protocol_hash_arg =
   arg
     ~doc:
       "Protocol for the network. Once a block from a different protocol is \
-       encountered, the safety-checker ends. Options available are: oxford, \
-       nairobi, alpha. If this argument is not provided, the protocol will not \
+       encountered, the safety-checker ends. Options available are: atlas, \
+       alpha. If this argument is not provided, the protocol will not \
        be checked."
     ~long:"protocol"
     ~placeholder:"protocol"

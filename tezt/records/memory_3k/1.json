@@ -30,9 +30,9 @@
   },
   {
     "file": "tezt/tests/nonce_seed_revelation.ml",
-    "title": "Oxford: Nonce seed revelation",
+    "title": "Atlas: Nonce seed revelation",
     "tags": [
-      "oxford",
+      "atlas",
       "nonce",
       "seed",
       "revelation",
@@ -75,9 +75,9 @@
   },
   {
     "file": "tezt/tests/precheck.ml",
-    "title": "Oxford: forge fake block",
+    "title": "Atlas: forge fake block",
     "tags": [
-      "oxford",
+      "atlas",
       "precheck",
       "fake_block",
       "propagation",
@@ -121,9 +121,9 @@
   },
   {
     "file": "tezt/tests/precheck.ml",
-    "title": "Oxford: forge block with wrong payload",
+    "title": "Atlas: forge block with wrong payload",
     "tags": [
-      "oxford",
+      "atlas",
       "precheck",
       "fake_block",
       "propagation",
@@ -170,9 +170,9 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Oxford: check synchronization state",
+    "title": "Atlas: check synchronization state",
     "tags": [
-      "oxford",
+      "atlas",
       "ci_disabled",
       "synchronisation_threshold",
       "bootstrap",

@@ -25,11 +25,11 @@
 (*****************************************************************************)
 
 (* Declaration order must respect the version order. *)
-type t = Oxford | Alpha
+type t = Atlas | Alpha
 
 let encoding =
   Data_encoding.string_enum
-    [("oxford", Oxford); ("alpha", Alpha)]
+    [("atlas", Atlas); ("alpha", Alpha)]
 
 type constants =
   | Constants_sandbox
@@ -45,20 +45,20 @@ let constants_to_string = function
 
 let name = function
   | Alpha -> "Alpha"
-  | Oxford -> "Oxford"
+  | Atlas -> "Atlas"
 
-let number = function Oxford -> 018 | Alpha -> 019
+let number = function Atlas -> 001 | Alpha -> 019
 
 let directory = function
   | Alpha -> "proto_alpha"
-  | Oxford -> "proto_018_Proxford"
+  | Atlas -> "proto_001_PtAtLas"
 
 (* Test tags must be lowercase. *)
 let tag protocol = String.lowercase_ascii (name protocol)
 
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
-  | Oxford -> "ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH"
+  | Atlas -> "PtAtLashVWYaEYWHPkHE29GqRkXgEycmPDS8RUVTiBwnK1x8Meb"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -263,11 +263,11 @@ let write_parameter_file :
 
 let previous_protocol = function
   | Alpha -> None
-  | Oxford -> None
+  | Atlas -> None
 
 let has_predecessor p = previous_protocol p <> None
 
-let all = [Oxford; Alpha]
+let all = [Atlas; Alpha]
 
 type supported_protocols =
   | Any_protocol

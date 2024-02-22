@@ -16,9 +16,9 @@ tezos_node=./octez-node
 tezos_client=./octez-client
 
 # Protocol configuration.
-protocol_hash=ProxfordZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
-protocol_parameters=src/proto_018_Proxford/parameters/sandbox-parameters.json
-protocol_name=oxford
+protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
+protocol_parameters=src/proto_001_PtAtLas/parameters/sandbox-parameters.json
+protocol_name=atlas
 
 # Secret key to activate the protocol.
 activator_secret_key="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"

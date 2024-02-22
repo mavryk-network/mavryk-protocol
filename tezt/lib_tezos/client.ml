@@ -887,7 +887,7 @@ let spawn_tenderbake_action_for ~tenderbake_action ?endpoint ?protocol
   let use_legacy_attestation_name =
     match protocol with
     | None -> false
-    | Some protocol -> Protocol.(number protocol < 018)
+    | Some protocol -> Protocol.(number protocol < 001)
   in
   spawn_command
     ?endpoint
@@ -2564,7 +2564,7 @@ module Sc_rollup = struct
   let cement_commitment protocol ?hooks ?(wait = "none") ?burn_cap ~hash ~src
       ~dst client =
     let commitment_arg =
-      if Protocol.(number protocol >= 018) then
+      if Protocol.(number protocol >= 001) then
         (* Version after protocol 017 do not specify the commitment. *) []
       else [hash]
     in

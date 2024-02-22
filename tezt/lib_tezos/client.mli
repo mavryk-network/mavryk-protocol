@@ -634,7 +634,7 @@ val spawn_bake_for :
   Process.t
 
 (** Run [octez-client attest for]. Run [octez-client endorse for] for protocol
-    older than 018.
+    older than 001.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val attest_for :
@@ -655,7 +655,7 @@ val spawn_attest_for :
   Process.t
 
 (** Run [octez-client preattest for]. Run [octez-client preendorse for] for
-    protocol older than 018.
+    protocol older than 001.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val preattest_for :

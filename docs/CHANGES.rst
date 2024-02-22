@@ -251,7 +251,7 @@ Client
 
 - The ``typecheck script`` command can now be used to typecheck several scripts.
 
-- From protocol ``Oxford`` operation receipts output ``attestation`` instead of
+- From protocol ``Atlas`` operation receipts output ``attestation`` instead of
   ``endorsement``. For example ``double preendorsement evidence`` becomes
   ``double preattesation evidence``, ``lost endorsing rewards`` becomes ``lost
   attesting rewards``. (MR :gl:`!9232`)

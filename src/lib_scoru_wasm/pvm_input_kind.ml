@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type protocol = Oxford | Proto_alpha
+type protocol = Atlas | Proto_alpha
 
 (* This type mimics [Sc_rollup_inbox_repr.internal_inbox_messages], without
    fully deserializing the `Transfer`, and is produced by reading the first bytes
@@ -58,8 +58,8 @@ let protocol_from_raw payload =
     match Data_encoding.(Binary.of_string_exn string payload) with
     | payload when String.equal payload Constants.proto_alpha_name ->
         Some (Protocol_migration Proto_alpha)
-    | payload when String.equal payload Constants.oxford_name ->
-        Some (Protocol_migration Oxford)
+    | payload when String.equal payload Constants.atlas_name ->
+        Some (Protocol_migration Atlas)
     | _ -> None
 
 let internal_from_raw payload =
@@ -87,8 +87,8 @@ let from_raw_input payload =
 
 module Internal_for_tests = struct
   let proto_to_binary = function
-    | Oxford ->
-        Data_encoding.(Binary.to_string_exn string Constants.oxford_name)
+    | Atlas ->
+        Data_encoding.(Binary.to_string_exn string Constants.atlas_name)
     | Proto_alpha ->
         Data_encoding.(Binary.to_string_exn string Constants.proto_alpha_name)
 

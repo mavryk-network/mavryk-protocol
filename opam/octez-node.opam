@@ -22,8 +22,8 @@ depends: [
   "lwt-exit"
   "uri" { >= "3.1.0" }
   "tezos-protocol-000-Ps9mPmXa"
-  "tezos-protocol-018-Proxford"
-  "octez-protocol-018-Proxford-libs"
+  "tezos-protocol-001-PtAtLas"
+  "octez-protocol-001-PtAtLas-libs"
 ]
 depopts: [
   "tezos-protocol-genesis"

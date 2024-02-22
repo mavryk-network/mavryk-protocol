@@ -1,0 +1,12 @@
+
+./octez-codec encode 001-PtAtLas.contract from '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"'
+000002298c03ed7d454a101eb7022bc95f7e5f41ac78
+
+./octez-codec decode 001-PtAtLas.contract from 000002298c03ed7d454a101eb7022bc95f7e5f41ac78
+"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
+
+./octez-codec encode 001-PtAtLas.contract from '"KT1DieU51jzXLerQx5AqMCiLC1SsCeM8yRat"'
+0138560805b4c8d7b7fbbafad5c59dbfa3878ca70500
+
+./octez-codec decode 001-PtAtLas.contract from 0138560805b4c8d7b7fbbafad5c59dbfa3878ca70500
+"KT1DieU51jzXLerQx5AqMCiLC1SsCeM8yRat"

@@ -2,9 +2,9 @@ Protocol Alpha
 ==============
 
 This page documents the changes brought by protocol Alpha with respect
-to Oxford (see :ref:`naming_convention`).
+to Atlas (see :ref:`naming_convention`).
 
-For changes brought by the rejected Oxford proposal with respect to Nairobi, see :doc:`../protocols/018_oxford`.
+For changes brought by the rejected Atlas proposal with respect to Nairobi, see :doc:`../protocols/018_atlas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
 branch of Octez.
@@ -14,8 +14,8 @@ branch of Octez.
 Environment Version
 -------------------
 
-This protocol requires a different protocol environment version than Oxford.
-It requires protocol environment V11, compared to V10 for Oxford.
+This protocol requires a different protocol environment version than Atlas.
+It requires protocol environment V11, compared to V10 for Atlas.
 
 Smart Rollups
 -------------

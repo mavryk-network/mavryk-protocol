@@ -15,7 +15,7 @@ that may be breaking.
 Attestations
 ------------
 
-Starting with the Oxford protocol proposal and the Octez
+Starting with the Atlas protocol proposal and the Octez
 ``v18`` the legacy attestation name ``endorsement`` is now deprecated and
 ``attestation`` should be used everywhere. Then, ``preendorsement`` is renamed
 to ``preattestation``, ``double_preendorsement_evidence`` to
@@ -24,14 +24,14 @@ to ``preattestation``, ``double_preendorsement_evidence`` to
 ``lost endorsing rewards``, which are renamed to ``lost attesting rewards``.
 
 To allow a smooth transition we implemented a deprecation mechanism that will
-start with Oxford and Octez ``v18`` and should end in two protocols and two
+start with Atlas and Octez ``v18`` and should end in two protocols and two
 Octez releases. We were not able to version everything so some changes, detailed
 below, are breaking.
 
 Deprecation
 ~~~~~~~~~~~
 
-For the Oxford and Octez ``v18`` we introduced a new :doc:`version argument
+For the Atlas and Octez ``v18`` we introduced a new :doc:`version argument
 <../user/versioning>` ``?version=<n>`` for the following RPCs that can output
 ``attestation`` (and legacy ``endorsement``):
 
@@ -53,7 +53,7 @@ For protocol ``O`` and version ``v18``, using the version ``0``, which is the
 default value, will still output the legacy attestation name. Version ``1``
 allows the RPCs to output ``attestation`` instead of the legacy name.
 
-For a protocol upgrade proposal to succeed Oxford, i.e. for protocol ``P``, and
+For a protocol upgrade proposal to succeed Atlas, i.e. for protocol ``P``, and
 the next major release of Octez, v19.0, the default value of these RPCs will be
 ``1`` but the version ``0`` will still be usable.
 
@@ -69,7 +69,7 @@ version ``2`` to output ``attestation``.
 Breaking changes
 ~~~~~~~~~~~~~~~~
 
-Starting with protocol Oxford, the protocol
+Starting with protocol Atlas, the protocol
 parameters, storage fields and errors that were using the legacy attestation
 name now use ``attestation``. The baker and accuser will no longer use the
 legacy attestation name in their event messages and errors and will use
@@ -109,7 +109,7 @@ Specifically, all the sub-libraries prefixed with ``tezos-`` or ``octez-`` are n
 For instance, ``tezos-base``, which is now a sub-library of ``octez-libs``, is now ``octez-libs.base``.
 
 The protocol name suffixes of the protocol libraries have also been removed.
-For instance, ``Tezos-client-018-PtNairob`` is now the sub-library ``Client`` of the package ``Octez-018-PtNairob-libs``.
+For instance, ``Tezos-client-001-PtNairob`` is now the sub-library ``Client`` of the package ``Octez-001-PtNairob-libs``.
 
 
 Backward compatibility

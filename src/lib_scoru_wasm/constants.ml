@@ -69,6 +69,6 @@ let version_key = Durable.key_of_string_exn "/readonly/wasm_version"
 
 let stack_size_limit = 300
 
-let oxford_name = "oxford_018"
+let atlas_name = "atlas_001"
 
 let proto_alpha_name = "alpha_current"

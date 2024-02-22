@@ -292,12 +292,12 @@ let test_multi_protocols =
       @@ RPC.get_chain_block_helper_attestation_rights ?block ()
     in
     check proto_attestation_rights ;
-    if Protocol.(number proto <= number Oxford) then (
+    if Protocol.(number proto <= number Atlas) then (
       let* proto_endorsing_rights =
         Client.RPC.call client
         @@ RPC.get_chain_block_helper_endorsing_rights ?block ()
         (* TODO: https://gitlab.com/tezos/tezos/-/issues/6227
-           This RPC helper should be removed once Oxford will be frozen. *)
+           This RPC helper should be removed once Atlas will be frozen. *)
       in
       check proto_endorsing_rights ;
       unit)

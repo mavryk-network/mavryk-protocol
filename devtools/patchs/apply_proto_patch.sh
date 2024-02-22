@@ -4,7 +4,7 @@
 # directories of the protocols on which it should be applied as following args.
 
 #  Examples:
-#  devtools/patchs/apply_proto_patch.sh  scripts/yes-stresstest.patch src/proto_018_Proxford  src/proto_017_PtNairob
+#  devtools/patchs/apply_proto_patch.sh  scripts/yes-stresstest.patch src/proto_001_PtAtLas  src/proto_017_PtNairob
 #  devtools/patchs/apply_proto_patch.sh  scripts/yes-stresstest.patch src/proto_01[5-9]_*
 
 

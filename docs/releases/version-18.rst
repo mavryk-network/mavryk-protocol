@@ -3,11 +3,11 @@ Version 18.1
 
 Version 18.0 contains a new version (v10) of the protocol environment,
 which is the set of functions that a protocol can call.
-This new version is used by Oxford,
+This new version is used by Atlas,
 which is a proposal for the successor of Nairobi that has been rejected by vote on Oct 2, 2023.
-This release also contains Oxford itself as well as its associated protocol-specific executable binaries (baker, accuser, etc).
+This release also contains Atlas itself as well as its associated protocol-specific executable binaries (baker, accuser, etc).
 
-Starting from Oxford, Endorsements have been renamed to Attestations.
+Starting from Atlas, Endorsements have been renamed to Attestations.
 Thus, Octez now uses Attestations:
 
 - | RPCs now accept both endorsements and attestations as input and/or output. For now, these RPCs still output endorsement by default. For more information see the :doc:`OpenAPI specifications here <../api/openapi>`.
@@ -28,7 +28,7 @@ Octez version 18 improves performance, notably to the block validation process: 
 
 v18 also fixes a concurrency issue in the logging infrastructure which can cause the node to become temporarily unresponsive.
 
-As Oxford includes a new Staking mechanism, version 18 of Octez implements new client commands for stake funds management, and to allow delegates to configure their staking policies. See :ref:`Adaptive Issuance and Staking <new_staking_alpha>` for more details.
+As Atlas includes a new Staking mechanism, version 18 of Octez implements new client commands for stake funds management, and to allow delegates to configure their staking policies. See :ref:`Adaptive Issuance and Staking <new_staking_alpha>` for more details.
 
 Version 18.1 fixes an issue that would result in corrupted full and rollup snapshots being exported.
 Thus, the snapshots version is bumped from ``6`` to ``7``.
@@ -38,10 +38,10 @@ Note that snapshots exported by nodes running v18.1 are not retro-compatible. As
 
    Octez v18.0 nodes might export corrupted tar full and rolling snapshots. Consequently, we recommend that snapshots providers upgrade to Octez v18.1 as soon as possible, in order to ensure the availability of recent full and rolling snapshots.
 
-Oxford's feature activation vote
+Atlas's feature activation vote
 --------------------------------
 
-The Oxford protocol proposal includes 3 features (all part of Adaptive Issuance and the new Staking mechanism), which would not be immediately available upon the protocol's eventual activation:
+The Atlas protocol proposal includes 3 features (all part of Adaptive Issuance and the new Staking mechanism), which would not be immediately available upon the protocol's eventual activation:
 
 - Adaptive issuance;
 - the ability for *delegators* to become *stakers*; and,
@@ -49,7 +49,7 @@ The Oxford protocol proposal includes 3 features (all part of Adaptive Issuance 
 
 Instead, these are guarded behind a *single* per-block vote mechanism, where bakers signal their position **(On, Off, Pass)**.
 
-Specifically, the Octez v18.0 Oxford baker executable introduces a dedicated option ``--adaptive-issuance-vote``, to allow bakers to manifest their choice.
+Specifically, the Octez v18.0 Atlas baker executable introduces a dedicated option ``--adaptive-issuance-vote``, to allow bakers to manifest their choice.
 The use of this flag is *optional*, and defaults to **Pass** if not present.
 
 See :ref:`here <feature_activation_alpha>` for further details on this additional activation vote mechanism.

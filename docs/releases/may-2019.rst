@@ -328,7 +328,7 @@ BINS
     - ``cd1898a14``: ``Client: add --dry-run to submit proposals``
     - ``ca5b13057``: ``Client: add --dry-run to submit ballot``
     - ``187d24e64``: ``Client: improve voting error display``
-    - ``1aecd5ff0``: ``Client: mention “yea” and add Oxford comma in help``
+    - ``1aecd5ff0``: ``Client: mention “yea” and add Atlas comma in help``
     - ``c24b7e927``: ``Baker/Nonces: filter out nonces associated to blocks that cannot be found in the chain``
     - ``66638cac6``: ``Baker: enforce chain arguments through the API``
     - ``92f00dc93``: ``Baker/Nonces: do not remove orphan nonces anymore but warn users instead``
