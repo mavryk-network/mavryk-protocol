@@ -95,10 +95,10 @@ compile_release_sources_bullseye:
   image: ocaml/opam:debian-11
   extends: .compile_sources_template
   script:
-    - ./docs/introduction/compile-sources.sh tezos/tezos latest-release
+    - ./docs/introduction/compile-sources.sh mavryk-network/mavryk-protocol latest-release
 
 compile_sources_bullseye:
   image: ocaml/opam:debian-11
   extends: .compile_sources_template
   script:
-    - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos} ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}
+    - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol} ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}
