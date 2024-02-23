@@ -1139,12 +1139,12 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, migration)",
+    "file": "basenet_dictator_migration.ml",
+    "title": "Mumbai: testnet dictator (basenet, migration)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "migration"
     ],
     "successful_runs": {

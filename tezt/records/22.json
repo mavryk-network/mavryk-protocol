@@ -1675,11 +1675,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, cooldown)",
+    "title": "Mumbai: testnet dictator (basenet, cooldown)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "cooldown"
     ],
     "successful_runs": {

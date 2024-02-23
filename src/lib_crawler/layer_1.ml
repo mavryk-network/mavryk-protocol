@@ -205,7 +205,7 @@ let predecessors_of_blocks hashes =
   match hashes with [] -> [] | x :: xs -> aux x xs
 
 (** [get_predecessor block_hash] returns the predecessor block hash of
-    some [block_hash] through an RPC to the Tezos node. To limit the
+    some [block_hash] through an RPC to the Mavryk node. To limit the
     number of RPCs, this information is requested for a batch of hashes
     and cached locally. *)
 let get_predecessor =

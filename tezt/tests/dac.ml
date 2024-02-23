@@ -1122,7 +1122,7 @@ module Full_infrastructure = struct
     let wait_for_observer_stopped_tracking_l1 =
       wait_for_l1_tracking_ended observer
     in
-    Log.info "Terminating Tezos node" ;
+    Log.info "Terminating Mavryk node" ;
     let* () = Node.terminate node in
     let* () = wait_for_coordinator_stopped_tracking_l1 in
     let* () = wait_for_committee_member_stopped_tracking_l1 in
@@ -1135,7 +1135,7 @@ module Full_infrastructure = struct
     let wait_for_committee_member_connected_to_l1 =
       wait_for_layer1_new_head committee_member
     in
-    Log.info "Restarting Tezos node" ;
+    Log.info "Restarting Mavryk node" ;
     let* () = Node.run node [] in
     (* 4. We assert [3.] by waiting for "dac_node_layer_1_new_head" event from
        both [coordinator_node] and [committee_member] node. *)

@@ -27,7 +27,7 @@
 (** This module maintains information about the layer 1 chain.
 
    This module follows the evolution of the layer 1 chain by
-   subscribing to the head monitoring RPC offered by the Tezos node.
+   subscribing to the head monitoring RPC offered by the Mavryk node.
 *)
 
 type error += Cannot_find_block of Block_hash.t
@@ -62,7 +62,7 @@ type fetch_block_rpc =
   block tzresult Lwt.t
 
 (** [start ~name ~reconnection_delay ~l1_blocks_cache_size ?protocols cctxt]
-    connects to a Tezos node and starts monitoring new heads. One can iterate on
+    connects to a Mavryk node and starts monitoring new heads. One can iterate on
     the heads by calling {!iter_heads} on its result. [reconnection_delay] gives
     an initial delay for the reconnection which is used in an exponential
     backoff. The [name] is used to differentiate events. [l1_blocks_cache_size]

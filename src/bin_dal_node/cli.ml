@@ -109,7 +109,7 @@ module Term = struct
 
   let endpoint =
     let open Cmdliner in
-    let doc = "The Tezos node that the DAL node should connect to." in
+    let doc = "The Mavryk node that the DAL node should connect to." in
     Arg.(
       value
       & opt (some endpoint_arg) None

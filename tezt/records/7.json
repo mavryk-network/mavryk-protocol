@@ -1628,11 +1628,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, proposal)",
+    "title": "Alpha: testnet dictator (basenet, proposal)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "proposal"
     ],
     "successful_runs": {

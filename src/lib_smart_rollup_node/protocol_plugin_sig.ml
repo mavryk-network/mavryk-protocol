@@ -142,7 +142,7 @@ module type BATCHER = sig
 
   (** [new_head head] create batches of L2 messages from the queue and pack each
       batch in an L1 operation. The L1 operations (i.e. L2 batches) are queued
-      in the injector for injection on the Tezos node.  *)
+      in the injector for injection on the Mavryk node.  *)
   val new_head : Layer1.head -> unit tzresult Lwt.t
 
   (** [shutdown ()] stops the batcher, waiting for the ongoing request to be

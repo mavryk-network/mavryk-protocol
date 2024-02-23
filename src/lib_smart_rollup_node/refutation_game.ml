@@ -132,7 +132,7 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
         (* The game invariant states that the dissection from the
            opponent must contain a tick we disagree with. If the
            retrieved game does not respect this, we cannot trust the
-           Tezos node we are connected to and prefer to stop here. *)
+           Mavryk node we are connected to and prefer to stop here. *)
         tzfail
           Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
     | Octez_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection -> (

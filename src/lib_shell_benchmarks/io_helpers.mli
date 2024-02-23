@@ -125,7 +125,7 @@ val split_absolute_path : string -> string list option
 *)
 val purge_disk_cache : unit -> unit
 
-(** [load_head_block data_dir] takes the path of the Tezos node data directory
+(** [load_head_block data_dir] takes the path of the Mavryk node data directory
     (typically [$HOME/.tezos-node]) and returns the information of the current head.
 *)
 val load_head_block :

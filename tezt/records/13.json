@@ -1147,7 +1147,7 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
+    "file": "basenet_dictator_migration.ml",
     "title": "Lima: testnet dictator (mainnet, migration)",
     "tags": [
       "lima",

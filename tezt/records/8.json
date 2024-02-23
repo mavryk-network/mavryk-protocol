@@ -1236,12 +1236,12 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
-    "title": "Alpha: testnet dictator (ghostnet, migration)",
+    "file": "basenet_dictator_migration.ml",
+    "title": "Alpha: testnet dictator (basenet, migration)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "migration"
     ],
     "successful_runs": {

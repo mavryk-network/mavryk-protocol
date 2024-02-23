@@ -282,7 +282,7 @@ let term : unit Term.t =
      $ sym_block_caching_time $ data_dir))
 
 let info =
-  let doc = "Launches a server that is a readonly frontend to a Tezos node" in
+  let doc = "Launches a server that is a readonly frontend to a Mavryk node" in
   let man =
     [
       `S Manpage.s_bugs;

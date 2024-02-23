@@ -130,7 +130,7 @@ let () =
       Format.fprintf
         ppf
         "Cannot switch from history mode %a to %a. In order to change your \
-         history mode please refer to the Tezos node documentation. If you \
+         history mode please refer to the Mavryk node documentation. If you \
          really want to change your history mode, run this command again with \
          the `--force-history-mode-switch` option."
         History_mode.pp

@@ -528,7 +528,7 @@ let get_inbox_from_sc_rollup_node sc_rollup_node =
 (* Synchronizing the inbox in the rollup node
    ------------------------------------------
 
-   For each new head set by the Tezos node, the rollup node retrieves
+   For each new head set by the Mavryk node, the rollup node retrieves
    the messages of its rollup and maintains its internal inbox in a
    persistent state stored in its data directory. This process can
    handle Tezos chain reorganization and can also catch up to ensure a
@@ -602,11 +602,11 @@ let sc_rollup_node_disconnects_scenario sc_rollup_node _rollup_client sc_rollup
   let* () = send_messages num_messages client in
   let* level = wait_for_current_level node sc_rollup_node in
   let* () = Lwt_unix.sleep 1. in
-  Log.info "Terminating Tezos node" ;
+  Log.info "Terminating Mavryk node" ;
   let* () = Node.terminate node in
-  Log.info "Waiting before restarting Tezos node" ;
+  Log.info "Waiting before restarting Mavryk node" ;
   let* () = Lwt_unix.sleep 3. in
-  Log.info "Restarting Tezos node" ;
+  Log.info "Restarting Mavryk node" ;
   let* () = Node.run node Node.[Connections 0; Synchronisation_threshold 0] in
   let* () = Node.wait_for_ready node in
   let* () = send_messages num_messages client in

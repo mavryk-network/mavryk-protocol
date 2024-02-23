@@ -42,7 +42,7 @@ type current_protocol = {
       (** Protocol supported by this rollup node (represented as a protocol
           level). *)
   constants : Rollup_constants.protocol_constants;
-      (** Protocol constants retrieved from the Tezos node. *)
+      (** Protocol constants retrieved from the Mavryk node. *)
 }
 
 type last_whitelist_update = {message_index : int; outbox_level : Int32.t}

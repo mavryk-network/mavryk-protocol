@@ -805,10 +805,10 @@ module Connect_handler = struct
       Option.iter
         (fun name ->
           Node.Config_file.update node (fun json ->
-              (* Loads a full unsugared "ghostnet" configuration,
+              (* Loads a full unsugared "basenet" configuration,
                  so that we can update the chain_name separately
                  without depending on a network alias. *)
-              Node.Config_file.set_ghostnet_sandbox_network () json
+              Node.Config_file.set_basenet_sandbox_network () json
               |> JSON.update
                    "network"
                    (JSON.put

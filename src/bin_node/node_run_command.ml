@@ -126,7 +126,7 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_node"
-      ~msg:"starting the Tezos node v{version} ({git_info})"
+      ~msg:"starting the Mavryk node v{version} ({git_info})"
       ~level:Notice
       ("chain", Distributed_db_version.Name.encoding)
       ~pp2:Tezos_version.Version.pp
@@ -137,7 +137,7 @@ module Event = struct
     declare_0
       ~section
       ~name:"node_is_ready"
-      ~msg:"the Tezos node is now running"
+      ~msg:"the Mavryk node is now running"
       ~level:Notice
       ()
 
@@ -145,7 +145,7 @@ module Event = struct
     declare_0
       ~section
       ~name:"shutting_down_node"
-      ~msg:"shutting down the Tezos node"
+      ~msg:"shutting down the Mavryk node"
       ~level:Notice
       ()
 
@@ -789,7 +789,7 @@ module Term = struct
         "Forces the switch of history modes when a different history mode is \
          found between the written configuration and the given history mode.  \
          Warning: this option will modify the storage irremediably. Please \
-         refer to the Tezos node documentation for more details."
+         refer to the Mavryk node documentation for more details."
     in
     Arg.(
       value & flag
@@ -807,7 +807,7 @@ end
 
 module Manpage = struct
   let command_description =
-    "The $(b,run) command is meant to run the Tezos node. Most of its command \
+    "The $(b,run) command is meant to run the Mavryk node. Most of its command \
      line arguments corresponds to config file entries, and will have priority \
      over the latter if used."
 
@@ -849,7 +849,7 @@ module Manpage = struct
     description @ Shared_arg.Manpage.args @ debug @ examples
     @ Shared_arg.Manpage.bugs
 
-  let info = Cmdliner.Cmd.info ~doc:"Run the Tezos node" ~man "run"
+  let info = Cmdliner.Cmd.info ~doc:"Run the Mavryk node" ~man "run"
 end
 
 let cmd = Cmdliner.Cmd.v Manpage.info Term.term

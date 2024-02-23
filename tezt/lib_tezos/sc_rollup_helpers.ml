@@ -438,7 +438,7 @@ let format_title_scenario kind {variant; tags = _; description} =
    ----------------------------
 
    A message can be pushed to a smart-contract rollup inbox through
-   the Tezos node. Then we can observe that the messages are included in the
+   the Mavryk node. Then we can observe that the messages are included in the
    inbox.
 *)
 let send_message_client ?hooks ?(src = Constant.bootstrap2.alias) client msg =

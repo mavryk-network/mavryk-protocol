@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 (** This module allow to follow the layer 1 chain by subscribing to the head
-    monitoring RPC offered by the Tezos node, reconnecting, etc. *)
+    monitoring RPC offered by the Mavryk node, reconnecting, etc. *)
 
 type error += Cannot_find_predecessor of Block_hash.t
 
@@ -34,7 +34,7 @@ type t
 
 (** {2 Monitoring the Layer 1 chain} *)
 
-(** [start ~name ~reconnection_delay ?protocols cctxt] connects to a Tezos node
+(** [start ~name ~reconnection_delay ?protocols cctxt] connects to a Mavryk node
     and starts monitoring new heads. One can iterate on the heads by calling
     {!iter_heads} on its result. [reconnection_delay] gives an initial delay for
     the reconnection which is used in an exponential backoff. The [name] is used

@@ -117,7 +117,7 @@ let term =
 let description =
   [
     `S "DESCRIPTION";
-    `P "Entry point for initializing, configuring and running a Tezos node.";
+    `P "Entry point for initializing, configuring and running a Mavryk node.";
     `P Node_identity_command.Manpage.command_description;
     `P Node_run_command.Manpage.command_description;
     `P Node_replay_command.Manpage.command_description;
@@ -186,7 +186,7 @@ module Node_metrics_command = struct
   module Manpage = struct
     let command_description =
       "The $(b,dump-metrics) command is meant to dump openmetrics that are \
-       collected by the Tezos node on console."
+       collected by the Mavryk node on console."
 
     let description = [`S "DESCRIPTION"; `P command_description]
 
@@ -194,7 +194,7 @@ module Node_metrics_command = struct
 
     let info =
       Cmdliner.Cmd.info
-        ~doc:"Show all the openmetrics collected by the Tezos node"
+        ~doc:"Show all the openmetrics collected by the Mavryk node"
         ~man
         "dump-metrics"
   end

@@ -1593,11 +1593,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Lima: testnet dictator (ghostnet, promotion)",
+    "title": "Lima: testnet dictator (basenet, promotion)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "promotion"
     ],
     "successful_runs": {
