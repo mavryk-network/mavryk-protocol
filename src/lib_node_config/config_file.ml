@@ -199,7 +199,7 @@ let blockchain_network_basenet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
       [
-        (10l, "PtAtLashVWYaEYWHPkHE29GqRkXgEycmPDS8RUVTiBwnK1x8Meb");
+        (10l, "PtAtLasjh71tv2N8SDMtjajR42wTSAd9xFTvXvhDuYfRJPRLSL2");
       ]
     ~default_bootstrap_peers:
       [ "" ]
