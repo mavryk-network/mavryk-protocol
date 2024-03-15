@@ -560,7 +560,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
     ?cycles_per_voting_period ?sc_rollup_arith_pvm_enable
     ?sc_rollup_private_enable ?sc_rollup_riscv_pvm_enable ?dal_enable
     ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
-    ?adaptive_issuance () =
+    ?adaptive_issuance ?(initial_timestamp = Time.Protocol.epoch) () =
   let open Lwt_result_syntax in
   let open Mavryk_protocol_001_PtAtLas_parameters in
   let constants = Default_parameters.constants_test in
@@ -664,7 +664,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
     Forge.make_shell
       ~level
       ~predecessor:hash
-      ~timestamp:Time.Protocol.epoch
+      ~timestamp:initial_timestamp
       ~fitness
       ~operations_hash:Operation_list_list_hash.zero
   in
@@ -678,7 +678,7 @@ let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
     ?sc_rollup_arith_pvm_enable ?sc_rollup_private_enable
     ?sc_rollup_riscv_pvm_enable ?dal_enable ?zk_rollup_enable
     ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
-    ?adaptive_issuance (bootstrap_accounts : Parameters.bootstrap_account list)
+    ?adaptive_issuance ?initial_timestamp (bootstrap_accounts : Parameters.bootstrap_account list)
     =
   let open Lwt_result_syntax in
   let* constants, shell, hash =
@@ -700,6 +700,7 @@ let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
       ?nonce_revelation_threshold
       ?dal
       ?adaptive_issuance
+      ?initial_timestamp
       ()
   in
   let* () =
