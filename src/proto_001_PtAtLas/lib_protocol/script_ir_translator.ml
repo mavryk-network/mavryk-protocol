@@ -1024,7 +1024,7 @@ and parse_big_map_value_ty ctxt ~stack_depth ~legacy value_ty =
     ~legacy
     ~allow_lazy_storage:false
     ~allow_operation:false
-    ~allow_contract:false
+    ~allow_contract:legacy
     ~allow_ticket:true
     ~ret:Don't_parse_entrypoints
     value_ty
@@ -1036,7 +1036,7 @@ let parse_packable_ty ctxt ~stack_depth ~legacy node =
     ~legacy
     ~allow_lazy_storage:false
     ~allow_operation:false
-    ~allow_contract:false
+    ~allow_contract:legacy
       (* type contract is forbidden in UNPACK because of
          https://gitlab.com/tezos/tezos/-/issues/301 *)
     ~allow_ticket:false
@@ -1074,7 +1074,7 @@ let parse_storage_ty ctxt ~stack_depth ~legacy node =
     ~legacy
     ~allow_lazy_storage:true
     ~allow_operation:false
-    ~allow_contract:false
+    ~allow_contract:legacy
     ~allow_ticket:true
     ~ret:Don't_parse_entrypoints
     node
@@ -3664,7 +3664,7 @@ and parse_instr :
         ( capture,
           Item_t (Lambda_t (Pair_t (capture_ty, arg_ty, _, _), ret, _), rest) )
     ) ->
-      let*? () = check_packable ~allow_contract:false loc capture_ty in
+      let*? () = check_packable ~allow_contract:legacy loc capture_ty in
       let*? Eq, ctxt = check_item_ty ctxt capture capture_ty loc I_APPLY 1 2 in
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IApply (loc, capture_ty, k))} in
@@ -3734,7 +3734,7 @@ and parse_instr :
       tzfail (Invalid_arity (loc, I_DIP, 2, List.length l))
   | Prim (loc, I_FAILWITH, [], annot), Item_t (v, _rest) ->
       let*? () = error_unexpected_annot loc annot in
-      let*? () = check_packable ~allow_contract:false loc v in
+      let*? () = check_packable ~allow_contract:legacy loc v in
       let instr = {apply = (fun _k -> IFailwith (loc, v))} in
       let descr aft = {loc; instr; bef = stack_ty; aft} in
       log_stack loc stack_ty Bot_t ;
@@ -4543,7 +4543,7 @@ and parse_instr :
       typed ctxt loc instr (Item_t (option_bytes_t, rest))
   (* Events *)
   | Prim (loc, I_EMIT, [], annot), Item_t (data, rest) ->
-      let*? () = check_packable ~allow_contract:false loc data in
+      let*? () = check_packable ~allow_contract:legacy loc data in
       let*? tag = parse_entrypoint_annot_strict loc annot in
       let*? unparsed_ty, ctxt = unparse_ty ~loc:() ctxt data in
       let*? ctxt = Gas.consume ctxt (Script.strip_locations_cost unparsed_ty) in

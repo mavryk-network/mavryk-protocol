@@ -144,6 +144,7 @@ val genesis :
   ?nonce_revelation_threshold:int32 ->
   ?dal:Constants.Parametric.dal ->
   ?adaptive_issuance:Constants.Parametric.adaptive_issuance ->
+  ?initial_timestamp:Timestamp.time ->
   Parameters.bootstrap_account list ->
   block tzresult Lwt.t
 
