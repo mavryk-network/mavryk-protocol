@@ -6,12 +6,12 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.error-monad
-  octez-libs.stdlib-unix
-  octez-libs.event-logging
-  octez-libs.test-helpers
+  mavkit-libs.error-monad
+  mavkit-libs.stdlib-unix
+  mavkit-libs.event-logging
+  mavkit-libs.test-helpers
   qcheck-alcotest
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -22,7 +22,7 @@
   -open Tezos_stdlib_unix
   -open Tezos_event_logging
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_key_value_store_fuzzy test_log_config_rules))
 
 (executable
@@ -35,7 +35,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

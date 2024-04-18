@@ -6,14 +6,14 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.base-test-helpers
-  octez-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.base-test-helpers
+  mavkit-libs.test-helpers
   qcheck-alcotest
-  octez-alcotezt
-  octez-evm-node-libs.evm_node_lib_prod
-  octez-evm-node-libs.evm_node_lib_dev)
+  mavkit-alcotezt
+  mavkit-evm-node-libs.evm_node_lib_prod
+  mavkit-evm-node-libs.evm_node_lib_dev)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -22,7 +22,7 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base_test_helpers
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_rlp test_ethbloom))
 
 (executable
@@ -38,7 +38,7 @@
 
 (rule
  (alias runtest)
- (package octez-evm-node-tests)
+ (package mavkit-evm-node-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

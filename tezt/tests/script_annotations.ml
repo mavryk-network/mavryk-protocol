@@ -28,7 +28,7 @@
    -------
    Component:    Michelson
    Invocation:   dune exec tezt/tests/main.exe -- --file script_annotations.ml
-   Subject:      Runs Michelson annotation tests using [octez-client typecheck data ...].
+   Subject:      Runs Michelson annotation tests using [mavkit-client typecheck data ...].
 *)
 
 let typecheck_wrapper ?res (f : Client.t -> Process.t) client =

@@ -31,4 +31,4 @@ build_x86_64-exp-dev-extra:
     # BUILD_EXTRA contains dune targets that should be built in addition to EXECUTABLE_FILES above.
     # Typically, it will contain test runners (like tezt and octogram) and binaries to test that are
     # not part of any 'script-inputs/*-executables', such as `Unreleased` binaries.
-    BUILD_EXTRA: "src/bin_tps_evaluation/main_tps_evaluation.exe src/bin_octogram/octogram_main.exe tezt/tests/main.exe contrib/octez_injector_server/octez_injector_server.exe"
+    BUILD_EXTRA: "src/bin_tps_evaluation/main_tps_evaluation.exe src/bin_octogram/octogram_main.exe tezt/tests/main.exe contrib/mavkit_injector_server/mavkit_injector_server.exe"

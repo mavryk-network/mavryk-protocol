@@ -7,7 +7,7 @@
  (libraries
   tezt
   tezt-tezos.tezt-performance-regression
-  octez-libs.crypto
+  mavkit-libs.crypto
   tezt-tezos)
  (flags
   (:standard)

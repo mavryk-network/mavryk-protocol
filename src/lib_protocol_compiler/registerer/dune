@@ -3,11 +3,11 @@
 
 (library
  (name tezos_protocol_registerer)
- (public_name octez-protocol-compiler.registerer)
+ (public_name mavkit-protocol-compiler.registerer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -opaque

@@ -3,10 +3,10 @@
 
 (library
  (name test_parser)
- (package octez-libs)
+ (package mavkit-libs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.micheline)
+  mavkit-libs.micheline)
  (inline_tests (flags -verbose) (modes native js))
  (preprocess (pps ppx_expect))
  (js_of_ocaml)
@@ -17,10 +17,10 @@
 
 (library
  (name test_diff)
- (package octez-libs)
+ (package mavkit-libs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.micheline)
+  mavkit-libs.micheline)
  (inline_tests (flags -verbose) (modes native js))
  (preprocess (pps ppx_expect))
  (js_of_ocaml)

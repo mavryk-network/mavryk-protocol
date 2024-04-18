@@ -3,22 +3,22 @@
 
 (library
  (name tezos_client_alpha)
- (public_name octez-protocol-alpha-libs.client)
+ (public_name mavkit-protocol-alpha-libs.client)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
   tezos-protocol-alpha.protocol
   tezos-protocol-alpha.protocol.lifted
-  octez-shell-libs.mockup-registration
-  octez-shell-libs.proxy
-  octez-shell-libs.signer-backends
-  octez-protocol-alpha-libs.plugin
+  mavkit-shell-libs.mockup-registration
+  mavkit-shell-libs.proxy
+  mavkit-shell-libs.signer-backends
+  mavkit-protocol-alpha-libs.plugin
   tezos-protocol-alpha.parameters
-  octez-libs.rpc
-  octez-protocol-alpha-libs.smart-rollup
+  mavkit-libs.rpc
+  mavkit-protocol-alpha-libs.smart-rollup
   uri)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

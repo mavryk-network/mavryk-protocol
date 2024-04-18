@@ -27,13 +27,13 @@ let () = Additional_registrations.force_linking ()
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
    Remove backwards compatible Tezos symlinks. *)
-let warn_if_argv0_name_not_octez () =
+let warn_if_argv0_name_not_mavkit () =
   let executable_name = Filename.basename Sys.argv.(0) in
   let prefix = "tezos-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -124,7 +124,7 @@ let main commands =
           Format.std_formatter
           (if Unix.isatty Unix.stdout then Ansi else Plain)
           Short) ;
-    warn_if_argv0_name_not_octez () ;
+    warn_if_argv0_name_not_mavkit () ;
     ignore
       Tezos_clic.(
         setup_formatter

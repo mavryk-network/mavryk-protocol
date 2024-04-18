@@ -6,25 +6,25 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.crypto
-  octez-shell-libs.context-ops
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix
-  octez-shell-libs.store.unix-reconstruction
-  octez-shell-libs.store.unix-snapshots
-  octez-shell-libs.shell-services
-  octez-libs.stdlib-unix
-  octez-shell-libs.validation
-  octez-shell-libs.protocol-updater
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix
+  mavkit-shell-libs.store.unix-reconstruction
+  mavkit-shell-libs.store.unix-snapshots
+  mavkit-shell-libs.shell-services
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.protocol-updater
   tezos-protocol-demo-noops.embedded-protocol
   tezos-protocol-genesis.embedded-protocol
   tezos-protocol-alpha.embedded-protocol
   tezos-protocol-alpha.parameters
-  octez-protocol-alpha-libs.plugin
-  octez-alcotezt
+  mavkit-protocol-alpha-libs.plugin
+  mavkit-alcotezt
   tezt
-  octez-libs.test-helpers)
+  mavkit-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -43,7 +43,7 @@
   -open Tezos_protocol_updater
   -open Tezos_protocol_alpha_parameters
   -open Tezos_protocol_plugin_alpha
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_test_helpers)
  (modules
   test
@@ -75,7 +75,7 @@
 
 (rule
  (alias runtest)
- (package octez-store-tests)
+ (package mavkit-store-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

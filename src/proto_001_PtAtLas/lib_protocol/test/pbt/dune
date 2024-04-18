@@ -6,21 +6,21 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.micheline
-  octez-protocol-001-PtAtLas-libs.client
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-001-PtAtLas-libs.client
   tezos-protocol-001-PtAtLas.protocol
-  octez-libs.tezos-context.merkle_proof_encoding
-  octez-libs.test-helpers
-  octez-protocol-001-PtAtLas-libs.test-helpers
-  octez-alcotezt
+  mavkit-libs.tezos-context.merkle_proof_encoding
+  mavkit-libs.test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-alcotezt
   qcheck-alcotest
   tezos-benchmark
   tezos-benchmark-001-PtAtLas
   tezos-benchmark-type-inference-001-PtAtLas
-  octez-protocol-001-PtAtLas-libs.smart-rollup
-  octez-libs.crypto-dal
-  octez-libs.base-test-helpers
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
+  mavkit-libs.crypto-dal
+  mavkit-libs.base-test-helpers
   tezos-protocol-001-PtAtLas.parameters)
  (library_flags (:standard -linkall))
  (flags
@@ -33,7 +33,7 @@
   -open Tezos_protocol_001_PtAtLas
   -open Tezos_test_helpers
   -open Tezos_001_PtAtLas_test_helpers
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_benchmark_001_PtAtLas
   -open Tezos_benchmark_type_inference_001_PtAtLas
   -open Tezos_smart_rollup_001_PtAtLas

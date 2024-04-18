@@ -5,17 +5,17 @@
  (name get_git_info)
  (libraries
   dune-configurator
-  octez-libs.version.parser)
+  mavkit-libs.version.parser)
  (modules get_git_info))
 
 (executable
  (name tezos_print_version)
- (public_name octez-version)
- (package octez-version)
+ (public_name mavkit-version)
+ (package mavkit-version)
  (libraries
-  octez-version.value
-  octez-libs.version
-  octez-libs.base.unix)
+  mavkit-version.value
+  mavkit-libs.version
+  mavkit-libs.base.unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp))

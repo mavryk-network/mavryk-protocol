@@ -22,19 +22,19 @@ block without prechecking it first, when the active protocol is Lima.
   The nature of this bug would prevent the correct operation of the Lima protocol
   (due to activate on Tezos Mainnet on block
   `#2,981,889 <https://tzstats.com/2981889>`__)
-  with earlier Octez versions, including Octez v15.0.
+  with earlier Mavkit versions, including Mavkit v15.0.
 
-  As a result, we **strongly recommend** to upgrade to Octez v15.1 or later instead.
+  As a result, we **strongly recommend** to upgrade to Mavkit v15.1 or later instead.
 
 .. warning::
 
    All executables have been renamed.  The ``tezos-`` prefix
-   has been replaced by ``octez-`` and protocol numbers have been
-   removed. For instance, ``tezos-node`` is now named ``octez-node``
+   has been replaced by ``mavkit-`` and protocol numbers have been
+   removed. For instance, ``tezos-node`` is now named ``mavkit-node``
    and ``tezos-baker-014-PtKathma`` is now named
-   ``octez-baker-PtKathma``.  Same renaming occurred in the Docker
+   ``mavkit-baker-PtKathma``.  Same renaming occurred in the Docker
    entrypoint. For instance, ``tezos-node`` is now named
-   ``octez-node`` and ``tezos-baker`` is now named ``octez-baker``.
+   ``mavkit-node`` and ``tezos-baker`` is now named ``mavkit-baker``.
 
    Note that if you compile from source using ``make``, symbolic links
    from the old names to the new names are created, so you can still
@@ -64,16 +64,16 @@ Context Pruning Requirements and Optimizations
 ----------------------------------------------
 
 Context pruning is enabled automatically.
-However, data directories that have been created by Octez
+However, data directories that have been created by Mavkit
 versions 12.4 or earlier do not support context pruning. If you run a
 node on such a data directory you will get a warning. The solution is
-to import a fresh snapshot before running the Octez 15.0 node
+to import a fresh snapshot before running the Mavkit 15.0 node
 for the first time, to ensure that the context can be pruned.
 
 The first pruning operation for nodes that have been running for a
 long time can take a while and use a significant amount of memory. To
 avoid this, it is also recommended to import a fresh snapshot before
-running the Octez 15.0 node for the first time. You can refer to
+running the Mavkit 15.0 node for the first time. You can refer to
 :ref:`the snapshot documentation <importing_a_snapshot>` to get
 instructions regarding the snapshot import command.
 

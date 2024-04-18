@@ -13,7 +13,7 @@ Tezt is pronounced `/tɛzti/ <http://ipa-reader.xyz/?text=t%C9%9Bzti>`_
 
 The main benefits of using Tezt-Tezos are:
 
-- tests are written in the same language as Octez itself (OCaml),
+- tests are written in the same language as Mavkit itself (OCaml),
   which reduces context switch for developers;
 
 - tests do not actively poll the node
@@ -25,7 +25,7 @@ The main benefits of using Tezt-Tezos are:
 
 - it should be easy to use and extend.
 
-Therefore, Tezt and Tezt-Tezos have been leveraged to build a test suite for Octez. See :src:`tezt/README.md` for details on its implementation.
+Therefore, Tezt and Tezt-Tezos have been leveraged to build a test suite for Mavkit. See :src:`tezt/README.md` for details on its implementation.
 
 The rest of this page explains how to run the test suite and how to add new tests.
 
@@ -62,7 +62,7 @@ How to Write New Integration Tests
 ----------------------------------
 
 The best way to get started is to have a look at existing tests in directory
-``tezt/tests`` of the Octez repository.
+``tezt/tests`` of the Mavkit repository.
 
 Most integration tests are part of the same executable ``tezt/tests/main.exe``.
 The source of this module is :src:`tezt/tests/main.ml`.
@@ -240,12 +240,12 @@ Here is a minimal example::
 
 Then, declare those files in ``manifest/main.ml``::
 
-    let _octez_base_tezts =
+    let _mavkit_base_tezts =
       tezt
         ["example"; "other"]
         ~path:"src/lib_base/tezt"
         ~opam:"tezos-base"
-        ~deps:[octez_base]
+        ~deps:[mavkit_base]
 
 This causes the manifest to generate executable ``src/lib_base/tezt/main.exe`` for you.
 This executable calls ``Test.run``. It also declares a Dune alias ``runtest``
@@ -263,14 +263,14 @@ JavaScript
 If you want to be able to run your test with Node.js, declare them in the manifest
 with ``~js_compatible:true`` and with ``JS`` in ``~modes``. For instance::
 
-    let _octez_base_tezts =
+    let _mavkit_base_tezts =
       tezt
         ["example"; "other"]
         ~path:"src/lib_base/tezt"
         ~opam:"tezos-base"
         ~js_compatible:true
         ~modes:[Native; JS]
-        ~deps:[octez_base]
+        ~deps:[mavkit_base]
 
 Running ``dune build`` will generate not only a native executable
 (``src/lib_base/tezt/main.exe``) but also a JavaScript file

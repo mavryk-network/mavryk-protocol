@@ -1,25 +1,25 @@
 #!/bin/bash
-# Start/stop the Octez Remote Signer
+# Start/stop the Mavkit Remote Signer
 #
 ### BEGIN INIT INFO
-# Provides:          octez-signer
+# Provides:          mavkit-signer
 # Required-Start:
 # Required-Stop:
 # Should-Start:      $network $named
 # Should-Stop:       $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: The Octez Remote Signer
-# Description:       The Octez Remote Signer provides a layer between
+# Short-Description: The Mavkit Remote Signer
+# Description:       The Mavkit Remote Signer provides a layer between
 #		     the key and the Baker.
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-DESC="octez signer"
-NAME=octez-signer
-DAEMON=/usr/bin/octez-signer
+DESC="mavkit signer"
+NAME=mavkit-signer
+DAEMON=/usr/bin/mavkit-signer
 PIDDIR=/var/run/tzsigner
-PIDFILE=${PIDDIR}/octez-signer.pid
+PIDFILE=${PIDDIR}/mavkit-signer.pid
 SCRIPTNAME=/etc/init.d/"$NAME"
 
 if [ -f "/lib/lsb/init-functions" ]; then
@@ -41,11 +41,11 @@ socket_file=/var/tzsigner/sock
 
 othercliopts_signer=""
 
-httpsdir=/etc/octez-certs
+httpsdir=/etc/mavkit-certs
 https_cert=${httpsdir}/certificate
 https_key=${httpsdir}/key
 
-[ -r /etc/octez/signer.conf ] && . /etc/octez/signer.conf
+[ -r /etc/mavkit/signer.conf ] && . /etc/mavkit/signer.conf
 [ -z "$logfile" ] && logfile=${logdir}/signer.log
 
 logfile="${logdir}/signer.log"
@@ -67,7 +67,7 @@ initial_checks()
 	mkdir -p ${logdir} ${PIDDIR}
 	chown ${user}:${group} ${logdir} ${PIDDIR}
 	if [ -z "$type" ]; then
-		echo "type must be set in /etc/octez/signer.conf" >&2
+		echo "type must be set in /etc/mavkit/signer.conf" >&2
 		exit 3
 	fi
 

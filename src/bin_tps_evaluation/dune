@@ -7,15 +7,15 @@
  (package tezos-tps-evaluation)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   caqti
   caqti-dynload
   caqti-lwt
   data-encoding
   lwt
-  octez-protocol-alpha-libs.baking
-  octez-protocol-alpha-libs.client.commands
-  octez-shell-libs.client-base-unix
+  mavkit-protocol-alpha-libs.baking
+  mavkit-protocol-alpha-libs.client.commands
+  mavkit-shell-libs.client-base-unix
   tezos-protocol-alpha.protocol
   tezt
   tezt-tezos

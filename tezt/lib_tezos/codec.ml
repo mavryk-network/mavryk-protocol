@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let spawn_command ?(path = Uses.path Constant.octez_codec) ?hooks arguments =
+let spawn_command ?(path = Uses.path Constant.mavkit_codec) ?hooks arguments =
   Process.spawn path ?hooks arguments
 
 let spawn_encode ?path ?hooks ~name json =
@@ -43,10 +43,10 @@ let decode ?path ?hooks ~name binary =
     |> spawn_decode ?path ?hooks ~name
     |> Process.check_and_read_stdout
   in
-  return (JSON.parse ~origin:("octez-codec encode " ^ name) json)
+  return (JSON.parse ~origin:("mavkit-codec encode " ^ name) json)
 
 let spawn_dump_encodings ?path () = spawn_command ?path ["dump"; "encodings"]
 
 let dump_encodings ?path () =
   let* json = spawn_dump_encodings ?path () |> Process.check_and_read_stdout in
-  return (JSON.parse ~origin:"octez-codec dump encodings" json)
+  return (JSON.parse ~origin:"mavkit-codec dump encodings" json)

@@ -3,7 +3,7 @@
 
 (library
  (name mec)
- (public_name octez-libs.mec)
+ (public_name mavkit-libs.mec)
  (instrumentation (backend bisect_ppx))
  (libraries
   alcotest

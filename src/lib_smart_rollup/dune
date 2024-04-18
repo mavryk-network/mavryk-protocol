@@ -2,15 +2,15 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_smart_rollup)
- (public_name octez-l2-libs.smart-rollup)
+ (name mavkit_smart_rollup)
+ (public_name mavkit-l2-libs.smart-rollup)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.crypto
-  octez-libs.crypto-dal
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto
+  mavkit-libs.crypto-dal
   yaml)
  (flags
   (:standard)
@@ -19,4 +19,4 @@
   -open Tezos_stdlib_unix
   -open Tezos_crypto))
 
-(documentation (package octez-l2-libs))
+(documentation (package mavkit-l2-libs))

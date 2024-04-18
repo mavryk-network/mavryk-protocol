@@ -142,7 +142,7 @@ tezt:static-binaries:
   variables:
     TESTS: "cli"
   before_script:
-    - mv octez-binaries/x86_64/octez-* .
+    - mv mavkit-binaries/x86_64/mavkit-* .
   # Override script from .tezt_template to disable coverage reports.
   # Note that the set of tests that are run for static executables
   # is a subset, so this should not reduce apparent coverage.

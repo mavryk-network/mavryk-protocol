@@ -1,7 +1,7 @@
 Release System
 ==============
 
-Octez releases include all the software needed to run the distributed
+Mavkit releases include all the software needed to run the distributed
 consensus platform with its meta-consensus capability. This
 meta-consensus capability is supported by a protocol that is used to
 achieve consensus not only about the state of its ledger, but also about
@@ -16,7 +16,7 @@ software, see :doc:`../shell/the_big_picture`.
 
 Although a node is able to compile and upgrade to a new protocol
 on the fly, each release contains several embedded protocol versions.
-Consequently, Octez releases are created not only when new features are
+Consequently, Mavkit releases are created not only when new features are
 added or bugs are fixed, but also when new protocols are proposed or
 adopted.
 
@@ -51,7 +51,7 @@ suffixed by ``~rc<N>``, and beta versions suffixed by ``~beta<N>``.
 
 Releases are available in several forms:
 
--  in source form, from the Octez code repository
+-  in source form, from the Mavkit code repository
    (https://gitlab.com/tezos/tezos). Tags for each release are available
    prefixed by ``v``, and there is also a ``latest-release`` tag, pointing to
    the latest **stable release** (i.e., excluding release candidates).
@@ -86,5 +86,5 @@ The packaged forms are updated from the source form as follows:
    -  The process is currently performed manually by
       `Serokell <https://serokell.io>`_.
 
-For installing Octez from these different forms of releases, see
+For installing Mavkit from these different forms of releases, see
 :doc:`../introduction/howtoget`.

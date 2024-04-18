@@ -3,19 +3,19 @@
 
 (library
  (name tezos_client_sapling_alpha)
- (public_name octez-protocol-alpha-libs.client.sapling)
+ (public_name mavkit-protocol-alpha-libs.client.sapling)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-libs.crypto
-  octez-libs.stdlib-unix
-  octez-shell-libs.client-base
-  octez-shell-libs.signer-backends
-  octez-protocol-alpha-libs.client
-  octez-protocol-alpha-libs.client.commands
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-libs.crypto
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.signer-backends
+  mavkit-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.client.commands
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.plugin)
+  mavkit-protocol-alpha-libs.plugin)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

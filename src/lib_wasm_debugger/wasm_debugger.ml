@@ -55,7 +55,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
         Tezos_webassembly_interpreter.Import.link module_)
 
   let handle_installer_config_instr durable
-      Octez_smart_rollup.Installer_config.(Set {value; to_}) =
+      Mavkit_smart_rollup.Installer_config.(Set {value; to_}) =
     let open Tezos_scoru_wasm.Durable in
     let key = key_of_string_exn to_ in
     set_value_exn durable key value
@@ -361,7 +361,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
           try
             Ok
               (Data_encoding.Json.destruct
-                 Octez_smart_rollup.Installer_config.encoding
+                 Mavkit_smart_rollup.Installer_config.encoding
                  json)
           with exn ->
             error_with
@@ -374,7 +374,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       Option.map_e
         (function
           | `Yaml, content ->
-              Octez_smart_rollup.Installer_config.parse_yaml content
+              Mavkit_smart_rollup.Installer_config.parse_yaml content
           | `Json, content -> parse_json_config content)
         installer_config
     in

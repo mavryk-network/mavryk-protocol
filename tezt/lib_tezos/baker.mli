@@ -62,7 +62,7 @@ type event = {name : string; value : JSON.t; timestamp : float}
 (** See [Daemon.Make.on_event]. *)
 val on_event : t -> (event -> unit) -> unit
 
-(** Spawn [octez-baker run].
+(** Spawn [mavkit-baker run].
 
     The resulting promise is fulfilled as soon as the baker has been
     spawned. It continues running in the background. *)

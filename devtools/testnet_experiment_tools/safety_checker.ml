@@ -162,7 +162,7 @@ let () =
 let data_dir_arg =
   let open Lwt_result_syntax in
   default_arg
-    ~doc:"Octez data directory path"
+    ~doc:"Mavkit data directory path"
     ~short:'D'
     ~long:"data-dir"
     ~placeholder:"data-dir-path"

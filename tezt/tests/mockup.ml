@@ -32,7 +32,7 @@
 *)
 
 (* Test.
-   Call `octez-client rpc list` and check that return code is 0.
+   Call `mavkit-client rpc list` and check that return code is 0.
 *)
 let test_rpc_list =
   Protocol.register_test
@@ -45,7 +45,7 @@ let test_rpc_list =
   Lwt.return_unit
 
 (* Test.
-   Call `octez-client rpc /chains/<chain_id>/blocks/<block_id>/header/shell` and check that return code is 0.
+   Call `mavkit-client rpc /chains/<chain_id>/blocks/<block_id>/header/shell` and check that return code is 0.
 *)
 let test_rpc_header_shell =
   Protocol.register_test
@@ -618,7 +618,7 @@ let test_storage_from_file =
       in
       unit)
 
-(* Executes `octez-client list mockup protocols`. The call must
+(* Executes `mavkit-client list mockup protocols`. The call must
    succeed and return a non empty list. *)
 let test_list_mockup_protocols () =
   Test.register
@@ -631,7 +631,7 @@ let test_list_mockup_protocols () =
   if protocols = [] then Test.fail "List of mockup protocols must be non-empty" ;
   unit
 
-(* Executes [octez-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavkit-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] is a non empty directory which is NOT a mockup
    directory. The call must fail. *)
 let test_create_mockup_dir_exists_nonempty =
@@ -670,7 +670,7 @@ let test_retrieve_addresses =
       ~error_msg:"Expected addresses %R, got %L") ;
   unit
 
-(* Executes [octez-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavkit-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] is not fresh. The call must fail. *)
 let test_create_mockup_already_initialized =
   Protocol.register_test

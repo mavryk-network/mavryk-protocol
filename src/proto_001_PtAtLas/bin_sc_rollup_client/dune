@@ -3,15 +3,15 @@
 
 (executable
  (name main_sc_rollup_client_001_PtAtLas)
- (public_name octez-smart-rollup-client-PtAtLas)
- (package octez-smart-rollup-client-PtAtLas)
+ (public_name mavkit-smart-rollup-client-PtAtLas)
+ (package mavkit-smart-rollup-client-PtAtLas)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.clic
   tezos-protocol-001-PtAtLas.protocol
-  octez_smart_rollup_client_PtAtLas
-  octez-version.value)
+  mavkit_smart_rollup_client_PtAtLas
+  mavkit-version.value)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -21,4 +21,4 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_protocol_001_PtAtLas
-  -open Octez_smart_rollup_client_PtAtLas))
+  -open Mavkit_smart_rollup_client_PtAtLas))

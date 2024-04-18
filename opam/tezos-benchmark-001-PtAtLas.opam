@@ -10,13 +10,13 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "mavkit-libs"
   "tezos-micheline-rewriting"
   "tezos-benchmark"
   "tezos-benchmark-type-inference-001-PtAtLas"
   "tezos-protocol-001-PtAtLas"
   "hashcons"
-  "octez-protocol-001-PtAtLas-libs"
+  "mavkit-protocol-001-PtAtLas-libs"
   "prbnmcn-stats" { = "0.0.6" }
 ]
 build: [

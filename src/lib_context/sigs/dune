@@ -5,11 +5,11 @@
 
 (library
  (name tezos_context_sigs)
- (public_name octez-libs.context.sigs)
+ (public_name mavkit-libs.context.sigs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib)
+  mavkit-libs.base
+  mavkit-libs.stdlib)
  (js_of_ocaml)
  (flags
   (:standard)

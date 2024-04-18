@@ -6,12 +6,12 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.error-monad
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-shell-libs.client-base
-  octez-shell-libs.signer-backends.unix
-  octez-alcotezt)
+  mavkit-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.signer-backends.unix
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -21,7 +21,7 @@
   -open Tezos_stdlib
   -open Tezos_client_base
   -open Tezos_signer_backends_unix
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_crouching))
 
 (executable
@@ -37,7 +37,7 @@
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

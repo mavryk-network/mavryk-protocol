@@ -6,12 +6,12 @@
  (package tezos-scoru-wasm-regressions)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.scoru-wasm-helpers
-  octez-libs.test-helpers
+  mavkit-libs.base
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.scoru-wasm-helpers
+  mavkit-libs.test-helpers
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.smart-rollup
+  mavkit-protocol-alpha-libs.smart-rollup
   tezos-protocol-alpha.parameters
   tezt)
  (preprocess (staged_pps ppx_import ppx_deriving.show))

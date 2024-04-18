@@ -239,7 +239,7 @@ let missing_data_error trace =
       | Some _ -> acc
       | None -> (
           match error with
-          | Octez_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
+          | Mavkit_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
           | _ -> acc))
     None
     trace
@@ -497,7 +497,7 @@ let run ({node_ctxt; configuration; plugin; _} as state) =
     ~id:configuration.sc_rollup_address
     ~mode:configuration.mode
     ~genesis_level:node_ctxt.genesis_info.level
-    ~pvm_kind:(Octez_smart_rollup.Kind.to_string node_ctxt.kind) ;
+    ~pvm_kind:(Mavkit_smart_rollup.Kind.to_string node_ctxt.kind) ;
   let fatal_error_exit e =
     Format.eprintf "%!%a@.Exiting.@." pp_print_trace e ;
     let*! _ = Lwt_exit.exit_and_wait 1 in

@@ -135,8 +135,8 @@ let address ?(hostname = false) ?from peer =
   | Some endpoint ->
       Runner.address ~hostname ?from:(runner endpoint) (runner peer)
 
-let create_with_mode ?runner ?(path = Constant.octez_client)
-    ?(admin_path = Constant.octez_admin_client) ?name
+let create_with_mode ?runner ?(path = Constant.mavkit_client)
+    ?(admin_path = Constant.mavkit_admin_client) ?name
     ?(color = Log.Color.FG.blue) ?base_dir mode =
   let name = match name with None -> fresh_name () | Some name -> name in
   let base_dir =
@@ -512,7 +512,7 @@ module Admin = struct
     match output =~* rex "Injected protocol ([^ ]+) successfully" with
     | None ->
         Test.fail
-          "octez-admin-client inject protocol did not answer \"Injected \
+          "mavkit-admin-client inject protocol did not answer \"Injected \
            protocol ... successfully\""
     | Some hash -> return hash
 
@@ -536,7 +536,7 @@ module Admin = struct
     match output =~* rex "Protocol [^ ]+ uses environment (V\\d+)" with
     | None ->
         Test.fail
-          "octez-admin-client protocol environment did not answer \"Protocol \
+          "mavkit-admin-client protocol environment did not answer \"Protocol \
            ... uses environment V...\""
     | Some version -> return version
 end
@@ -2395,7 +2395,7 @@ let show_voting_period ?endpoint client =
   match output =~* rex "Current period: \"([a-z]+)\"" with
   | None ->
       Test.fail
-        "octez-client show voting period did not print the current period"
+        "mavkit-client show voting period did not print the current period"
   | Some period -> return period
 
 module Sc_rollup = struct
@@ -2640,7 +2640,7 @@ module Sc_rollup = struct
     let parse process = Process.check process in
     {value = process; run = parse}
 
-  (** Run [octez-client execute outbox message of sc rollup <rollup> from <src>
+  (** Run [mavkit-client execute outbox message of sc rollup <rollup> from <src>
       for commitment hash <hash> and output proof <proof>]. *)
   let execute_outbox_message ?(wait = "none") ?burn_cap ?storage_limit ?fee
       ?hooks ~rollup ~src ~commitment_hash ~proof client =

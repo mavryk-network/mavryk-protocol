@@ -113,7 +113,7 @@ in
 
     installPhase = ''
       mkdir -p $out/bin
-      find . -maxdepth 1 -iname 'octez-*' -type f -executable -exec cp {} $out/bin \;
+      find . -maxdepth 1 -iname 'mavkit-*' -type f -executable -exec cp {} $out/bin \;
     '';
 
     postFixup = ''

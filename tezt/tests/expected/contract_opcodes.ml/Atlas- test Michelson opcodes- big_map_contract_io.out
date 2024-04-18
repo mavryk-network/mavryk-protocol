@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "hello" "hi" } None)' and input '"hello"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "hello" "hi" } None)' and input '"hello"' --trace-stack
 storage
   (Pair 4 (Some "hi"))
 emitted operations
@@ -44,7 +44,7 @@ trace
     [ (Pair {} { Elt "hello" "hi" } (Some "hi")) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "hello" "hi" } None)' and input '""' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "hello" "hi" } None)' and input '""' --trace-stack
 storage
   (Pair 4 None)
 emitted operations
@@ -89,7 +89,7 @@ trace
     [ (Pair {} { Elt "hello" "hi" } None) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } None)' and input '"1"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_big_map_value.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } None)' and input '"1"' --trace-stack
 storage
   (Pair 4 (Some "one"))
 emitted operations
@@ -135,7 +135,7 @@ trace
     [ (Pair {} { Elt "1" "one" ; Elt "2" "two" } (Some "one")) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{}' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{}' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -171,7 +171,7 @@ trace
     [ (Pair {} { Elt "1" "one" ; Elt "2" "two" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "1" (Some "two") }' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "1" (Some "two") }' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -219,7 +219,7 @@ trace
     [ (Pair {} { Elt "1" "two" ; Elt "2" "two" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "3" (Some "three") }' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "3" (Some "three") }' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -268,7 +268,7 @@ trace
     [ (Pair {} { Elt "1" "one" ; Elt "2" "two" ; Elt "3" "three" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "3" None }' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "3" None }' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -317,7 +317,7 @@ trace
     [ (Pair {} { Elt "1" "one" ; Elt "2" "two" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "2" None }' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "2" None }' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -365,7 +365,7 @@ trace
     [ (Pair {} { Elt "1" "one" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "1" (Some "two") }' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/update_big_map.tz on storage '(Pair { Elt "1" "one" ; Elt "2" "two" } Unit)' and input '{ Elt "1" (Some "two") }' --trace-stack
 storage
   (Pair 4 Unit)
 emitted operations
@@ -413,7 +413,7 @@ trace
     [ (Pair {} { Elt "1" "two" ; Elt "2" "two" } Unit) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None {})' and input '"hello"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None {})' and input '"hello"' --trace-stack
 storage
   (Pair None 4)
 emitted operations
@@ -448,7 +448,7 @@ trace
     [ (Pair {} None {}) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 4) {})' and input '"hello"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 4) {})' and input '"hello"' --trace-stack
 storage
   (Pair None 4)
 emitted operations
@@ -483,7 +483,7 @@ trace
     [ (Pair {} None { Elt "hello" 4 }) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "hello" 4 })' and input '"hello"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "hello" 4 })' and input '"hello"' --trace-stack
 storage
   (Pair (Some 4) 4)
 emitted operations
@@ -518,7 +518,7 @@ trace
     [ (Pair {} (Some 4) {}) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 5) { Elt "hello" 4 })' and input '"hello"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 5) { Elt "hello" 4 })' and input '"hello"' --trace-stack
 storage
   (Pair (Some 4) 4)
 emitted operations
@@ -553,7 +553,7 @@ trace
     [ (Pair {} (Some 4) { Elt "hello" 5 }) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 5) { Elt "hello" 4 })' and input '"hi"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair (Some 5) { Elt "hello" 4 })' and input '"hi"' --trace-stack
 storage
   (Pair None 4)
 emitted operations
@@ -589,7 +589,7 @@ trace
     [ (Pair {} None { Elt "hello" 4 ; Elt "hi" 5 }) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "1" 1 ; Elt "2" 2 })' and input '"1"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "1" 1 ; Elt "2" 2 })' and input '"1"' --trace-stack
 storage
   (Pair (Some 1) 4)
 emitted operations
@@ -625,7 +625,7 @@ trace
     [ (Pair {} (Some 1) { Elt "2" 2 }) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "1" 1 ; Elt "2" 2 })' and input '"1"' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/get_and_update_big_map.tz on storage '(Pair None { Elt "1" 1 ; Elt "2" 2 })' and input '"1"' --trace-stack
 storage
   (Pair (Some 1) 4)
 emitted operations
@@ -661,7 +661,7 @@ trace
     [ (Pair {} (Some 1) { Elt "2" 2 }) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Left Unit)' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Left Unit)' --trace-stack
 storage
   (Left (Pair 4 5))
 emitted operations
@@ -705,7 +705,7 @@ trace
     [ (Pair {} (Left (Pair { Elt "2" "two" } { Elt "1" "one" }))) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Left (Left (Pair { Elt "3" "three" } { Elt "4" "four" }))))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Left (Left (Pair { Elt "3" "three" } { Elt "4" "four" }))))' --trace-stack
 storage
   (Left (Pair 4 5))
 emitted operations
@@ -744,7 +744,7 @@ trace
     [ (Pair {} (Left (Pair { Elt "3" "three" } { Elt "4" "four" }))) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Left (Right Unit)))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Left (Right Unit)))' --trace-stack
 storage
   (Right Unit)
 emitted operations
@@ -779,7 +779,7 @@ trace
     [ (Pair {} (Right Unit)) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Right Unit)' and input '(Right (Right (Left (Pair { Pair "foo" "bar" } { Pair "gaz" "baz" }) )))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Right Unit)' and input '(Right (Right (Left (Pair { Pair "foo" "bar" } { Pair "gaz" "baz" }) )))' --trace-stack
 storage
   (Left (Pair 4 5))
 emitted operations
@@ -914,7 +914,7 @@ trace
     [ (Pair {} (Left (Pair { Elt "foo" "bar" } { Elt "gaz" "baz" }))) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }) )' and input '(Right (Right (Right (Left { Pair "3" "three" }))))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }) )' and input '(Right (Right (Right (Left { Pair "3" "three" }))))' --trace-stack
 storage
   (Left (Pair 4 5))
 emitted operations
@@ -1004,7 +1004,7 @@ trace
     [ (Pair {} (Left (Pair { Elt "1" "one" ; Elt "3" "three" } { Elt "2" "two" }))) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Right (Right (Right { "1" }))))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/mini_scenarios/big_map_magic.tz on storage '(Left (Pair { Elt "1" "one" } { Elt "2" "two" }))' and input '(Right (Right (Right (Right { "1" }))))' --trace-stack
 storage
   (Left (Pair 4 5))
 emitted operations

@@ -84,11 +84,11 @@ slack_send_file() {
     fi
 }
 
-OCTEZ_DIR="/data/redbull/tezos"
+MAVKIT_DIR="/data/redbull/tezos"
 
 # Check if a directory more recent than the last known one exists on the bucket.
 # If not, we have nothing to do so we stop immediately.
-LAST_KNOWN_DIR="$(cat "$OCTEZ_DIR"/last_known_dir)"
+LAST_KNOWN_DIR="$(cat "$MAVKIT_DIR"/last_known_dir)"
 echo "Last known dir: $LAST_KNOWN_DIR"
 
 LAST_DIR="$(aws s3 ls s3://snoop-playground/mclaren/inference_csvs/snoop_results/ | grep PRE | tail -n 1 | sed 's/ *PRE //' | sed 's,/$,,')"
@@ -113,12 +113,12 @@ fi
 
 # We update the file content as soon as possible so that concurrent runs of this
 # script are unlikely to step on each other's feet.
-echo "$LAST_DIR" > "$OCTEZ_DIR"/last_known_dir
+echo "$LAST_DIR" > "$MAVKIT_DIR"/last_known_dir
 
 slack "New results have been uploaded to the S3 bucket in directory \`$LAST_DIR\`. I will look for regressions."
 
-INPUT_CSV_DIR="$OCTEZ_DIR/input_csvs"
-OUTPUT_CSV_DIR="$OCTEZ_DIR/output_csvs"
+INPUT_CSV_DIR="$MAVKIT_DIR/input_csvs"
+OUTPUT_CSV_DIR="$MAVKIT_DIR/output_csvs"
 
 rm -rf "$INPUT_CSV_DIR"
 mkdir -p "$INPUT_CSV_DIR"
@@ -175,7 +175,7 @@ fi
 
 DUNE="/data/redbull/tezos/_opam/bin/dune"
 
-GPD_DIR="$OCTEZ_DIR/devtools/gas_parameter_diff"
+GPD_DIR="$MAVKIT_DIR/devtools/gas_parameter_diff"
 
 cd "$GPD_DIR" || exit 1
 

@@ -1029,7 +1029,7 @@ module Make
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated
@@ -1120,7 +1120,7 @@ module Make
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated

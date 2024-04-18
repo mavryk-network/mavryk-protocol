@@ -1,5 +1,5 @@
 
-./octez-client --wait none originate smart rollup rollup from bootstrap1 of kind arith of type string with kernel  --burn-cap 9999999
+./mavkit-client --wait none originate smart rollup rollup from bootstrap1 of kind arith of type string with kernel  --burn-cap 9999999
 Node is bootstrapped.
 Estimated gas: 1930.030 units (will add 100 for safety)
 Estimated storage: 6552 bytes added (will add 20 for safety)
@@ -7,7 +7,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -34,7 +34,7 @@ This sequence of operations was run:
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "312d31",
   "312d32",
   "312d33",
@@ -47,7 +47,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg2SY3VZWZ8y8491xbXvn8tQtHRCAq3zPJWQ7n4K6Rusw2YKVyNx",
   "scmsg2zdjgY1tnuHMZqMavgPyc7qNj9MMvY4ywd38yauj3WfaiqDieE" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "322d31",
   "322d32",
   "322d33",
@@ -60,7 +60,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg2GAoC8FEUfHZfQAKotvjRMpmSknHRpn4w35Y1YWZ4uVZDYvzUL",
   "scmsg2sqy4npoYQq8iWJWQQgrdG126y3Btxn8ZzVPav8JmptWnVowGz" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "332d31",
   "332d32",
   "332d33",
@@ -73,7 +73,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3PVb7jXpE723XWdC1B8L34wVenMTi8r4b62Qja6owSMVo3h73C",
   "scmsg2BZBgg1AFG7Zsar6DD1ZKPK36UakNZNj78npg6SUBoR26FpBdQ" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "342d31",
   "342d32",
   "342d33",
@@ -86,7 +86,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3TMS4Q8jtUhr6YcgkMqwWAXKkXLJMhSRvJcMEgq61t8xftRMFv",
   "scmsg2AWA1jULPBJb7usha9gJg62T5PdiW9Uz1HdHLhaYDRx4qRvLTL" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "352d31",
   "352d32",
   "352d33",
@@ -99,7 +99,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3LQsvXBvj1qDWFRACbLuyAbZK6tHVTUeiYsPSU9KGxyf6ySxrY",
   "scmsg3oXBwG2rAT3cjgDbRNyBnTirrkqTAeVMxMSJ5KUno8daWpY2rL" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "362d31",
   "362d32",
   "362d33",
@@ -112,7 +112,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3MPjHQ6m6BPJaGnAan8kCnadyCbn37DKAZa7LTbTtz3N36JgtW",
   "scmsg2mUAHp9G2cJoqKwr4dpagFK6Wa4cNu7NGPXXB3zTfCpLmCP3Yr" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "372d31",
   "372d32",
   "372d33",
@@ -125,7 +125,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3YhsmhbfMXKmhsjGXej2ySwYFDYKQE1yUs7LcVkZ2ikaotWQKg",
   "scmsg28neefD54Wsf46QgPtv22mKT32oNFv5ToU95DDsufcWFCZoovM" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "382d31",
   "382d32",
   "382d33",
@@ -138,7 +138,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3RM54nLATBFqzCjvSwPybSbiiWJZey2ZiLbe1gjr9v9Vmoc9H3",
   "scmsg2NpFWt1MhyDGhacEUpaeEheC8XWzNC3LaNaECXwzpi39QqPX14" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "392d31",
   "392d32",
   "392d33",
@@ -151,7 +151,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg2DBhcJVTm8JRWQHLWDXxiCi2PvUZzixqxkqyYupDZW2XU3cdvJ",
   "scmsg2jKWtDbw5Jsdpc453XsgAVBKyYUzt3pKKsZtQNtvJvhPemp4WN" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31302d31",
   "31302d32",
   "31302d33",
@@ -164,7 +164,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3YFj784yYxTr4LbNfaLpHGpN5hKJgbBA8gUEJ4vief5KL8U5vS",
   "scmsg2GY9Q5VTRSrjCPewduDXtPtZZ9hhMshPe3zUToBvFHTD9AhKkB" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31312d31",
   "31312d32",
   "31312d33",
@@ -177,7 +177,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3KLGXHeokSBbJcfsrvRkoAjMt5Yi7nj67WFHh6nkW8Ce8Kd4yn",
   "scmsg2Eaop6LYBSnKMQXqPWijq9fBa4nPw5ZLndHRCH97kumZqLT7pn" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31322d31",
   "31322d32",
   "31322d33",
@@ -190,7 +190,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3HMVWn75kiJ4Lr3KquJNQTkkFtwg9pmiKMythhUJ5h74Nznjd3",
   "scmsg24y1317Sy46HnzTpvCLRe88LghadZ4eAjkb6EzvEsQVRhPbKzu" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31332d31",
   "31332d32",
   "31332d33",
@@ -203,7 +203,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg2Safqm8tXs1k51v1A7VMyALCDRn5DAgYCJ9kbUD38jwPqtob6B",
   "scmsg28V9X7iiXCDZM4mFCHKsMxuvc8wNopLGkcnZwo14sSs4dW1E73" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31342d31",
   "31342d32",
   "31342d33",
@@ -216,7 +216,7 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg29adqVUp1NnCAVSZVaKCVbrUdMth3C1yuUvBRZtmW9hsDtm8d1",
   "scmsg2cDM9bscYDvXwkeB6h7RmN82wFgmL3wv5jJmwJukS9ju5zgKWA" ]
 
-./octez-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
+./mavkit-smart-rollup-client-alpha rpc post /local/batcher/injection with '[
   "31352d31",
   "31352d32",
   "31352d33",
@@ -229,12 +229,12 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
   "scmsg3qHUB6rys7GmC8XGGKRDrcKX2veZGkT9SkScHyWqLUCjq9PLjx",
   "scmsg3ZVMYBmAPwFfLDNXFDcBGzRChdFzLJ8tUMW46mGPGumZ6aq79q" ]
 
-./octez-smart-rollup-client-alpha rpc get '/global/block/head/durable/wasm_2_0_0/value?key=/readonly/wasm_version'
+./mavkit-smart-rollup-client-alpha rpc get '/global/block/head/durable/wasm_2_0_0/value?key=/readonly/wasm_version'
 Error
   No service found at this URL
   
 
-./octez-smart-rollup-client-alpha rpc get '/global/block/head/durable/arith/value?key=/readonly/wasm_version'
+./mavkit-smart-rollup-client-alpha rpc get '/global/block/head/durable/arith/value?key=/readonly/wasm_version'
 Error
   No service found at this URL
   

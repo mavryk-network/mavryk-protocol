@@ -1197,7 +1197,7 @@
   },
   {
     "file": "encoding.ml",
-    "title": "octez-codec dump encodings",
+    "title": "mavkit-codec dump encodings",
     "tags": [
       "codec",
       "dump"

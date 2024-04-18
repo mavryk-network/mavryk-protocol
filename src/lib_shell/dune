@@ -3,31 +3,31 @@
 
 (library
  (name tezos_shell)
- (public_name octez-shell-libs.shell)
+ (public_name mavkit-shell-libs.shell)
  (instrumentation (backend bisect_ppx))
  (libraries
   lwt-watcher
   lwt-canceler
   prometheus
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.rpc
-  octez-libs.tezos-context
-  octez-shell-libs.store
-  octez-shell-libs.store.shared
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.p2p
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-services
-  octez-libs.tezos-p2p-services
-  octez-shell-libs.protocol-updater
-  octez-libs.requester
-  octez-libs.tezos-workers
-  octez-shell-libs.validation
-  octez-libs.version
-  octez-libs.crypto-dal.dal-config
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.rpc
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.store
+  mavkit-shell-libs.store.shared
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.p2p
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-services
+  mavkit-libs.tezos-p2p-services
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.requester
+  mavkit-libs.tezos-workers
+  mavkit-shell-libs.validation
+  mavkit-libs.version
+  mavkit-libs.crypto-dal.dal-config
   lwt-exit)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))
@@ -51,6 +51,6 @@
   -open Tezos_workers
   -open Tezos_validation
   -open Tezos_version
-  -open Tezos_crypto_dal_octez_dal_config))
+  -open Tezos_crypto_dal_mavkit_dal_config))
 
-(documentation (package octez-shell-libs) (mld_files octez_shell))
+(documentation (package mavkit-shell-libs) (mld_files mavkit_shell))

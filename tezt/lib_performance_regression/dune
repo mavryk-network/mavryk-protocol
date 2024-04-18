@@ -5,7 +5,7 @@
  (name tezt_tezos_tezt_performance_regression)
  (public_name tezt-tezos.tezt-performance-regression)
  (libraries
-  octez-libs.tezt-wrapper
+  mavkit-libs.tezt-wrapper
   uri
   cohttp-lwt-unix)
  (flags

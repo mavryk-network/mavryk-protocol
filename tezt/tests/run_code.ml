@@ -9,7 +9,7 @@
    -------
    Component:    Client
    Invocation:   dune exec tezt/tests/main.exe -- --file run_code.ml
-   Subject:      Check that run code command to octez-client behaves correctly
+   Subject:      Check that run code command to mavkit-client behaves correctly
 *)
 
 let test_balance_and_self_address =

@@ -129,7 +129,7 @@ let () =
   match Reference.get node_ctxt.lpc with
   | None -> return_none
   | Some commitment ->
-      let hash = Octez_smart_rollup.Commitment.hash commitment in
+      let hash = Mavkit_smart_rollup.Commitment.hash commitment in
       (* The corresponding level in Store.Commitments.published_at_level is
          available only when the commitment has been published and included
          in a block. *)
@@ -152,7 +152,7 @@ let () =
   match commitment with
   | None -> return_none
   | Some commitment ->
-      let hash = Octez_smart_rollup.Commitment.hash commitment in
+      let hash = Mavkit_smart_rollup.Commitment.hash commitment in
       (* The corresponding level in Store.Commitments.published_at_level is
          available only when the commitment has been published and included
          in a block. *)

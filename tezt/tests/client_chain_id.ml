@@ -27,7 +27,7 @@
    -------
    Component:    Client / Chain ids
    Invocation:   dune exec tezt/tests/main.exe -- --file client_without_node.ml
-   Subject:      Tests the [compute chain id] commands of octez-client
+   Subject:      Tests the [compute chain id] commands of mavkit-client
 *)
 
 let test_chain_id () =

@@ -6,26 +6,26 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base-test-helpers
-  octez-shell-libs.store
-  octez-shell-libs.store.shared
-  octez-libs.tezos-context
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.protocol-updater
-  octez-shell-libs.p2p
-  octez-libs.tezos-p2p-services
-  octez-libs.requester
-  octez-shell-libs.shell
-  octez-shell-libs.shell-services
+  mavkit-libs.base
+  mavkit-libs.base-test-helpers
+  mavkit-shell-libs.store
+  mavkit-shell-libs.store.shared
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.protocol-updater
+  mavkit-shell-libs.p2p
+  mavkit-libs.tezos-p2p-services
+  mavkit-libs.requester
+  mavkit-shell-libs.shell
+  mavkit-shell-libs.shell-services
   tezos-protocol-demo-noops.embedded-protocol
-  octez-libs.stdlib-unix
-  octez-shell-libs.validation
-  octez-libs.event-logging-test-helpers
-  octez-libs.test-helpers
-  octez-alcotezt
-  octez-version.value)
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.validation
+  mavkit-libs.event-logging-test-helpers
+  mavkit-libs.test-helpers
+  mavkit-alcotezt
+  mavkit-version.value)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -47,7 +47,7 @@
   -open Tezos_validation
   -open Tezos_event_logging_test_helpers
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules
   generators
   generators_tree
@@ -79,7 +79,7 @@
 
 (rule
  (alias runtest)
- (package octez-shell-tests)
+ (package mavkit-shell-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

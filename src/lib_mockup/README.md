@@ -1,7 +1,7 @@
 # Mockup mode
 
 Libraries for mockup mode, i.e., the implementation of
-`octez-client`'s `--mode mockup` flags.
+`mavkit-client`'s `--mode mockup` flags.
 
 ## Overview
 

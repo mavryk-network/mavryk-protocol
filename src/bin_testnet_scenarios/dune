@@ -3,8 +3,8 @@
 
 (executable
  (name main)
- (public_name octez-testnet-scenarios)
- (package octez-testnet-scenarios)
+ (public_name mavkit-testnet-scenarios)
+ (package mavkit-testnet-scenarios)
  (libraries
   tezt
   tezt-tezos

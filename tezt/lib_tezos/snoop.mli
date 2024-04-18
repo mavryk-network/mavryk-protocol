@@ -24,12 +24,12 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Run octez-snoop commands. *)
+(** Run mavkit-snoop commands. *)
 
-(** octez-snoop states. *)
+(** mavkit-snoop states. *)
 type t
 
-(** Create a octez-snoop state *)
+(** Create a mavkit-snoop state *)
 val create : ?path:string -> ?color:Log.Color.t -> unit -> t
 
 (** Runs the benchmark command.
@@ -39,7 +39,7 @@ val create : ?path:string -> ?color:Log.Color.t -> unit -> t
     The result of benchmarking is saved to [save_to].
 
     For the meaning of the other optional parameters, see the documentation
-    of [octez-snoop].
+    of [mavkit-snoop].
  *)
 val benchmark :
   bench_name:string ->
@@ -153,7 +153,7 @@ val write_config :
   benchmark:string -> bench_config:string -> file:string -> t -> unit Lwt.t
 
 (** Execute
-    [octez-snoop generate code for <solutions-dir>]
+    [mavkit-snoop generate code for <solutions-dir>]
     comamnd and returns its stdout output.
 
     If [fixed_point] is specified [--fixed-point <fixed_point>] option is added.
@@ -166,5 +166,5 @@ val generate_code_for_solutions :
   t ->
   string Lwt.t
 
-(** Execute octez-snoop check definitions of [files] *)
+(** Execute mavkit-snoop check definitions of [files] *)
 val check_definitions : files:string list -> t -> unit Lwt.t

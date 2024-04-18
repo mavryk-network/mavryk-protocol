@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Octez_smart_rollup_node.Layer1
+open Mavkit_smart_rollup_node.Layer1
 
 (** [fetch_tezos_block cctxt hash] returns a block info given a block hash.
     Looks for the block in the blocks cache first, and fetches it from the L1
@@ -54,7 +54,7 @@ val get_kind : #Client_context.full -> Address.t -> Kind.t tzresult Lwt.t
 val genesis_inbox :
   #Client_context.full ->
   genesis_level:int32 ->
-  Octez_smart_rollup.Inbox.t tzresult Lwt.t
+  Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
 (** Convert protocol constants to their protocol agnostic representation. *)
 val constants_of_parametric :

@@ -699,7 +699,7 @@ let generate_manager_operation batch_size =
 (** The default upper bound on the number of manager operations in a batch.
 
     As of December 2022, there is no batch maximal size enforced
-    anywhere in the protocol. However, the Octez Shell only accepts
+    anywhere in the protocol. However, the Mavkit Shell only accepts
     batches of at most [operations_batch_size] operations, which has a
     default value of [50] in [src/lib_shell_services/shell_limits.ml].
     The protocol tests do not necessarily have to align with this

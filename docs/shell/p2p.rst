@@ -17,7 +17,7 @@ The P2P layer is comprised of a pool of connections, a set of
 operations on those connections, and a set of workers following the
 worker pattern pervasively used in the codebase.
 
-The P2P layer is packaged in :package-api:`tezos-p2p <octez-shell-libs/Tezos_p2p/index.html>`, which has
+The P2P layer is packaged in :package-api:`tezos-p2p <mavkit-shell-libs/Tezos_p2p/index.html>`, which has
 documentation for all modules.
 
 General operation
@@ -83,7 +83,7 @@ handled.
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The welcome worker takes care of filtering all incoming connections using two
-static lists of addresses handled by ``octez-admin-client`` and a system
+static lists of addresses handled by ``mavkit-admin-client`` and a system
 table that is handled automatically by the P2P layer. The node administrator can
 block (blacklist) or enable (whitelist) individual IP addresses, while the P2P layer is in charge of
 temporarily banning (greylist) IP addresses and peers who misbehave. The delay to remove an
@@ -91,7 +91,7 @@ IP address from the greylist table is defined by the configuration variable
 ``greylist_timeout``, while peers that are greylisted are periodically removed.
 
 The node administrator can also flush greylist tables with the
-``octez-admin-client``.
+``mavkit-admin-client``.
 
 The node administrator can also choose to unban peers and addresses that
 were manually banned or accidentally greylisted.

@@ -36,10 +36,10 @@ TOP_DIR="$SCRIPT_DIR"/..
 cd "$TOP_DIR" || exit
 
 MOCKUP_DIR=$(mktemp -d)
-"$TOP_DIR"/octez-client --mode mockup --base-dir "$MOCKUP_DIR" create mockup \
+"$TOP_DIR"/mavkit-client --mode mockup --base-dir "$MOCKUP_DIR" create mockup \
                       1> /tmp/create-mockup.log 2>&1
 
-TEZOS_CLIENT="$TOP_DIR/octez-client --base-dir $MOCKUP_DIR \
+TEZOS_CLIENT="$TOP_DIR/mavkit-client --base-dir $MOCKUP_DIR \
                     --protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK \
                     --mode mockup"
 

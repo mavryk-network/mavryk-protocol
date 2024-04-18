@@ -3,25 +3,25 @@
 
 (library
  (name tezos_client_alpha_commands)
- (public_name octez-protocol-alpha-libs.client.commands)
+ (public_name mavkit-protocol-alpha-libs.client.commands)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.clic
   tezos-protocol-alpha.protocol
   tezos-protocol-alpha.parameters
-  octez-libs.stdlib-unix
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.mockup
-  octez-shell-libs.mockup-registration
-  octez-shell-libs.mockup-commands
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-libs.rpc
-  octez-shell-libs.client-base-unix
-  octez-protocol-alpha-libs.plugin
+  mavkit-libs.stdlib-unix
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.mockup
+  mavkit-shell-libs.mockup-registration
+  mavkit-shell-libs.mockup-commands
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-libs.rpc
+  mavkit-shell-libs.client-base-unix
+  mavkit-protocol-alpha-libs.plugin
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -40,22 +40,22 @@
 
 (library
  (name tezos_client_alpha_commands_registration)
- (public_name octez-protocol-alpha-libs.client.commands-registration)
+ (public_name mavkit-protocol-alpha-libs.client.commands-registration)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.clic
   tezos-protocol-alpha.protocol
   tezos-protocol-alpha.parameters
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-alpha-libs.client.commands
-  octez-protocol-alpha-libs.client.sapling
-  octez-libs.rpc
-  octez-protocol-alpha-libs.plugin)
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-alpha-libs.client.commands
+  mavkit-protocol-alpha-libs.client.sapling
+  mavkit-libs.rpc
+  mavkit-protocol-alpha-libs.plugin)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

@@ -3,16 +3,16 @@
 
 (library
  (name tezos_context_memory)
- (public_name octez-libs.tezos-context.memory)
+ (public_name mavkit-libs.tezos-context.memory)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.stdlib
   irmin-pack
   irmin-pack.mem
-  octez-libs.context.sigs
-  octez-libs.tezos-context.encoding
-  octez-libs.tezos-context.helpers)
+  mavkit-libs.context.sigs
+  mavkit-libs.tezos-context.encoding
+  mavkit-libs.tezos-context.helpers)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

@@ -759,7 +759,7 @@ type bisect_ppx = No | Yes | With_sigterm
       Clauses are omitted for empty strings.
       You usually do not want to specify those and keep default values,
       but there can be some exceptions for packages that are particularly useful
-      on their own outside of Octez.
+      on their own outside of Mavkit.
 
     - [opam_with_test]: whether to add the [dune runtest] command.
       Note that for a given package all targets must have the same value of [opam_with_test].

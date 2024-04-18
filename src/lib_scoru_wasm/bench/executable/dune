@@ -2,11 +2,11 @@
 ; Edit file manifest/main.ml instead.
 
 (executable
- (name octez_smart_rollup_wasm_benchmark)
+ (name mavkit_smart_rollup_wasm_benchmark)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-l2-libs.smart_rollup_wasm_benchmark_lib)
+  mavkit-libs.base
+  mavkit-l2-libs.smart_rollup_wasm_benchmark_lib)
  (preprocess (pps ppx_deriving.show))
  (flags
   (:standard)

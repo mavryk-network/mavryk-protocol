@@ -2,16 +2,16 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_rpc_process)
- (public_name octez-rpc-process)
+ (name mavkit_rpc_process)
+ (public_name mavkit-rpc-process)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-shell-libs.shell
-  octez-libs.base.unix
-  octez-node-config
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
+  mavkit-libs.base
+  mavkit-shell-libs.shell
+  mavkit-libs.base.unix
+  mavkit-node-config
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
   lwt.unix
   lwt-exit
   prometheus-app)
@@ -21,6 +21,6 @@
   -open Tezos_base
   -open Tezos_shell
   -open Tezos_base_unix
-  -open Octez_node_config
+  -open Mavkit_node_config
   -open Tezos_rpc_http
   -open Tezos_rpc_http_server))

@@ -3,19 +3,19 @@
 
 (library
  (name tezos_crypto_dal)
- (public_name octez-libs.crypto-dal)
+ (public_name mavkit-libs.crypto-dal)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
   data-encoding
-  octez-libs.crypto-dal.dal-config
-  octez-libs.bls12-381-polynomial
+  mavkit-libs.crypto-dal.dal-config
+  mavkit-libs.bls12-381-polynomial
   lwt.unix
-  octez-libs.kzg)
+  mavkit-libs.kzg)
  (flags
   (:standard)
   -open Tezos_stdlib
   -open Tezos_error_monad
   -open Data_encoding
-  -open Tezos_crypto_dal_octez_dal_config))
+  -open Tezos_crypto_dal_mavkit_dal_config))

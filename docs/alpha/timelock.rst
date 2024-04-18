@@ -70,7 +70,7 @@ their whole deposit by providing the decryption, but in a way that delays everyo
 Cryptographic design
 --------------------
 
-The time-lock features are supported by the Tezos_crypto.Timelock :package-api:`library <octez-libs/Tezos_crypto/Timelock/index.html>`.
+The time-lock features are supported by the Tezos_crypto.Timelock :package-api:`library <mavkit-libs/Tezos_crypto/Timelock/index.html>`.
 
 Users first generate a RSA modulus and a symmetric encryption key.
 They use authenticated encryption to encrypt a packed Michelson value (an array of bytes computed with ``PACK``)
@@ -113,7 +113,7 @@ Implementation of the time-lock puzzle
 The implementation of the time-lock puzzle
 and proof scheme is located in :src:`src/lib_crypto/timelock.ml`.
 
-To facilitate the use of time-locks,  commands have also been implemented in Octez client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
+To facilitate the use of time-locks,  commands have also been implemented in Mavkit client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
 
 For more information on the client commands, see :doc:`cli-commands<cli-commands>`.
 

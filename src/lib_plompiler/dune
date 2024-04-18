@@ -3,13 +3,13 @@
 
 (library
  (name plompiler)
- (public_name octez-libs.plompiler)
+ (public_name mavkit-libs.plompiler)
  (instrumentation (backend bisect_ppx))
  (libraries
   repr
   stdint
   hacl-star
-  octez-libs.bls12-381-hash
-  octez-libs.polynomial
-  octez-libs.mec)
+  mavkit-libs.bls12-381-hash
+  mavkit-libs.polynomial
+  mavkit-libs.mec)
  (preprocess (staged_pps ppx_repr ppx_deriving.show)))

@@ -1,6 +1,6 @@
 # Light Mode
 
-The light mode is an alternative mode of `octez-client`. It builds
+The light mode is an alternative mode of `mavkit-client`. It builds
 upon the proxy mode. The point of the light mode is
 to provide additional security to the proxy mode, by obtaining
 data from multiple (hopefully unrelated) endpoints and making sure
@@ -29,7 +29,7 @@ the light mode does the following:
   endpoints; and check that the hashes in these trees match the
   hashes obtained by hashing data obtained in the previous step.
 
-## `octez-client` CLI
+## `mavkit-client` CLI
 
 The light mode is requested by passing `--mode light` to the client. For
 this, `src/lib_client/client_config.ml` contains a `Mode_light` value.
@@ -79,16 +79,16 @@ it delegates to other files:
   that enough endpoints provide merkle trees that agree
   with the local data tree.
 
-## `octez-node` new RPC: `merkle_tree`
+## `mavkit-node` new RPC: `merkle_tree`
 
 For the light mode,
-`octez-node` is augmented with a new RPC whose syntax is
+`mavkit-node` is augmented with a new RPC whose syntax is
 `/chains/<chain_id>/blocks/<block_id>/context/merkle_tree/<path_in_context>?holey=[yes|no]`.
 For example, to retrieve the merkle tree of `contracts/global_counter`,
 one should do:
 
 ```
-octez-client rpc get /chains/main/blocks/head/context/merkle_tree/contracts/global_counter
+mavkit-client rpc get /chains/main/blocks/head/context/merkle_tree/contracts/global_counter
 ```
 
 Here's the RPC's output:

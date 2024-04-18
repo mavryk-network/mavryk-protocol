@@ -1,6 +1,6 @@
-{0 Octez-shell-libs: octez shell libraries}
+{0 Mavkit-shell-libs: mavkit shell libraries}
 
-This is a package containing some libraries used by the shell of Octez.
+This is a package containing some libraries used by the shell of Mavkit.
 
 It contains the following libraries:
 
@@ -15,13 +15,13 @@ It contains the following libraries:
 - {{!module-Tezos_mockup_registration}Tezos_mockup_registration}: Tezos: protocol registration for the mockup mode
 - {{!module-Tezos_p2p}Tezos_p2p}: Library for a pool of P2P connections
 - {{!module-Tezos_p2p_test_common}Tezos_p2p_test_common}
-- {{!module-Tezos_protocol_updater}Tezos_protocol_updater}: Economic-protocol dynamic loading for `octez-node`
+- {{!module-Tezos_protocol_updater}Tezos_protocol_updater}: Economic-protocol dynamic loading for `mavkit-node`
 - {{!module-Tezos_proxy}Tezos_proxy}: Tezos: proxy
-- {{!page-tezos_shell}Tezos_shell}: Core of `octez-node` (gossip, validation scheduling, mempool, ...)
+- {{!page-tezos_shell}Tezos_shell}: Core of `mavkit-node` (gossip, validation scheduling, mempool, ...)
 - {{!module-Tezos_shell_benchmarks}Tezos_shell_benchmarks}: Tezos: shell benchmarks
 - {{!module-Tezos_shell_context}Tezos_shell_context}
 - {{!module-Tezos_shell_services}Tezos_shell_services}: Descriptions of RPCs exported by [tezos-shell]
 - {{!module-Tezos_signer_backends}Tezos_signer_backends}: Tezos: remote-signature backends for `tezos-client`
 - {{!module-Tezos_signer_services}Tezos_signer_services}: Tezos: descriptions of RPCs exported by `tezos-signer`
-- {{!module-Tezos_store}Tezos_store}: Store for `octez-node`
+- {{!module-Tezos_store}Tezos_store}: Store for `mavkit-node`
 - {{!module-Tezos_validation}Tezos_validation}: Library for block validation

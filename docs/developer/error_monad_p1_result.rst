@@ -87,7 +87,7 @@ Consider, for example the following code.
 The nested ``match``-``with`` constructs lead to further and further
 indentation. The ``Error`` cases are all identical and simply add noise.
 
-To circumvent this, in Octez we use a `binding
+To circumvent this, in Mavkit we use a `binding
 operator <https://ocaml.org/manual/bindingops.html>`__: a user-defined
 ``let``-binding. Specifically, you can open the ``Result_syntax`` module
 which includes the binding operator ``let*`` dedicated to ``result``.
@@ -136,13 +136,13 @@ Exercises
       val map : ('a -> ('b, 'err) result) -> 'a list -> ('a list, 'err) result
 
    Note that this exercise is for learning only. You won’t need to write
-   this function in Octez. Indeed, a helper function which does exactly
-   that is provided in the extended standard library of Octez.
+   this function in Mavkit. Indeed, a helper function which does exactly
+   that is provided in the extended standard library of Mavkit.
 
 Aside: the ``Error_monad`` module is opened everywhere
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Octez, the ``Error_monad`` module provides types and values for error
+In Mavkit, the ``Error_monad`` module provides types and values for error
 management. It is part of the ``tezos-error-monad`` package. And it is
 opened in most of the source code. Apart from some specific libraries
 (discussed later), the content of this module is already in scope.
@@ -183,7 +183,7 @@ as if it hadn’t happened, etc.
 
 There is a correspondence between a ``match``-``with`` around a
 ``result`` and a ``try``-``with``. Both are for recovering from
-failures. However, in Octez, you will mostly use a ``match``-``with``
+failures. However, in Mavkit, you will mostly use a ``match``-``with``
 around a ``result``, because we favour ``result`` over exceptions. You
 may use the ``try``-``with`` construct when interfacing with an external
 library which uses exceptions.
@@ -216,7 +216,7 @@ inside a vanilla function which you can call inside the ``match``-``with``.
 
 You can also use the functions from `the standard library’s Result
 module <https://ocaml.org/api/Result.html>`__. Note however, that some
-of these functions are shadowed in the extended library of Octez, which
+of these functions are shadowed in the extended library of Mavkit, which
 you will learn more about later.
 
 Mixing different kinds of errors
@@ -335,7 +335,7 @@ useful for small performance gains or for shorter syntax.
 Lwt
 ~~~
 
-In Octez, I/O and concurrency are handled using the Lwt library. With
+In Mavkit, I/O and concurrency are handled using the Lwt library. With
 Lwt you use *promises* to handle I/O and concurrency. You can think of
 promises as data structures that are empty until they *resolve*, at
 which point they hold a value.
@@ -352,7 +352,7 @@ If you are not familiar with Lwt, you should check out `the official manual
 introduction <https://raphael-proust.gitlab.io/code/lwt-part-1.html>`__
 before continuing. This is important. Do it.
 
-Unlike is mentioned in those separate resources on Lwt, in Octez, we
+Unlike is mentioned in those separate resources on Lwt, in Mavkit, we
 do not in general use the success/failure mechanism of Lwt. Instead, we
 mostly rely on ``result`` (as mentioned above).
 
@@ -364,7 +364,7 @@ tutorial.
 The ``Lwt_syntax`` module
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Octez, because Lwt is pervasive, you need to bind promises often. To
+In Mavkit, because Lwt is pervasive, you need to bind promises often. To
 make it easier, you can use the ``Lwt_syntax`` module. The
 ``Lwt_syntax`` module is made available everywhere by the
 ``Error_monad`` module. The ``Lwt_syntax`` module is similar to the
@@ -462,7 +462,7 @@ useful for small performance gains or for shorter syntax.
 Promises of results: Lwt and ``result`` together
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Octez, we have functions that perform I/O and also may fail. In this
+In Mavkit, we have functions that perform I/O and also may fail. In this
 case, the function returns a promise of a ``result``. This is the topic
 of this section.
 
@@ -504,7 +504,7 @@ features of control-flow separately: wait for the promise to resolve,
 and check for errors. However, in practice, this becomes cumbersome even
 faster than when working with plain ``result`` values.
 
-To make this easier, in Octez we use a binding operator. Specifically,
+To make this easier, in Mavkit we use a binding operator. Specifically,
 you can open the ``Lwt_result_syntax`` (instead of the other syntax
 modules) which includes a binding operator dedicated to promises of
 ``result``.
@@ -547,7 +547,7 @@ Exercises
 The ``Lwt_result_syntax`` module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Octez provides the ``Lwt_result_syntax`` module to help handle promises
+Mavkit provides the ``Lwt_result_syntax`` module to help handle promises
 of results.
 
 -  ``let*``: a binding operator to wait for the promise to resolve
@@ -653,8 +653,8 @@ Exercises
    of this exercise?
 
    Note that this exercise is for learning only. You won’t need to write
-   this function in Octez. Indeed, a helper function which does exactly
-   that is provided in the extended standard library of Octez.
+   this function in Mavkit. Indeed, a helper function which does exactly
+   that is provided in the extended standard library of Mavkit.
 
 -  Make your ``map`` function tail-recursive.
 
@@ -969,7 +969,7 @@ functions introduced in previous sections.
 Wait! It was supposed to be “one single uniform way of dealing with errors”! What is this?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The error management in Octez is a unified way (syntax modules
+The error management in Mavkit is a unified way (syntax modules
 with regular, predictable interfaces) of handling different types of
 errors.
 
@@ -985,13 +985,13 @@ errors. And that’s for the next section to introduce.
 META COMMENTARY
 ~~~~~~~~~~~~~~~
 
-The previous sections are not Octez-specific. True, the syntax modules
-are defined within the Octez source tree, but they could be released
+The previous sections are not Mavkit-specific. True, the syntax modules
+are defined within the Mavkit source tree, but they could be released
 separately (and they will be) or they could easily be replicated in a
 separate project.
 
-The next sections are Octez-specific. They introduce types and values
-that are used within the whole of Octez.
+The next sections are Mavkit-specific. They introduce types and values
+that are used within the whole of Mavkit.
 
 | You should take this opportunity to take a break.
 | Come back in a few minutes.

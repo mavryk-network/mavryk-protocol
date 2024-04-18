@@ -32,7 +32,7 @@ let make_features () =
   let open Functions.Wasmer.Features in
   let features = new_ () in
   (* These features map to proposals in the WebAssembly spec. They must be kept
-     in sync with the features available through Octez' WebAssembly interpreter
+     in sync with the features available through Mavkit' WebAssembly interpreter
      (tezos-webassembly-interpreter). *)
   ignore (bulk_memory features false : bool) ;
   ignore (memory64 features false : bool) ;

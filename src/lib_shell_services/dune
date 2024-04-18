@@ -5,16 +5,16 @@
 
 (library
  (name tezos_shell_services)
- (public_name octez-shell-libs.shell-services)
+ (public_name mavkit-shell-libs.shell-services)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.rpc
-  octez-libs.tezos-p2p-services
-  octez-libs.version
-  octez-libs.context.sigs
-  octez-libs.tezos-context.merkle_proof_encoding
-  octez-libs.crypto-dal.dal-config)
+  mavkit-libs.base
+  mavkit-libs.rpc
+  mavkit-libs.tezos-p2p-services
+  mavkit-libs.version
+  mavkit-libs.context.sigs
+  mavkit-libs.tezos-context.merkle_proof_encoding
+  mavkit-libs.crypto-dal.dal-config)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
@@ -23,4 +23,4 @@
   -open Tezos_base
   -open Tezos_p2p_services
   -open Tezos_version
-  -open Tezos_crypto_dal_octez_dal_config))
+  -open Tezos_crypto_dal_mavkit_dal_config))

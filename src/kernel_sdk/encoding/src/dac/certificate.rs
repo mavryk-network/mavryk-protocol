@@ -248,7 +248,7 @@ mod tests {
     use tezos_data_encoding::enc::BinWriter;
     use tezos_data_encoding::nom::NomReader;
 
-    // taken from the output of octez-dac-client GET certificate
+    // taken from the output of mavkit-dac-client GET certificate
     // Committee member 0 - public key hash: mv4NbiJxLfRMXfmvcwK5DDJ1UNVuJDj7Acf7
     // Committee member 0 - public key: BLpk1tsVzqCokL6dZEiCQgEvwqQp4btiHYm3A1HoEUxKUwq5jCNZMJQ7bU71QE969KioUWCKtK9F
     // Committee member 1 - public key hash: mv4asArvsBc7Ui87433yiBDQqMtHT7KM4j27

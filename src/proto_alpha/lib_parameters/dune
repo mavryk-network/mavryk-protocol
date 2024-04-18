@@ -6,8 +6,8 @@
  (public_name tezos-protocol-alpha.parameters)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-proto-libs.protocol-environment
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment
   tezos-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags
@@ -19,7 +19,7 @@
 (executable
  (name gen)
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.parameters
   tezos-protocol-alpha.protocol)
  (link_flags

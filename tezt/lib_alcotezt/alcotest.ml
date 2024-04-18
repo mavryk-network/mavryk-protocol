@@ -279,7 +279,7 @@ let fail message = Test.fail "%s" message
 
 let failf x = Format.kasprintf fail x
 
-(* Some Octez tests use Format.eprintf directly.
+(* Some Mavkit tests use Format.eprintf directly.
    Not even in the tests but in the libraries themselves.
    We redirect the output to Tezt.Log.
 

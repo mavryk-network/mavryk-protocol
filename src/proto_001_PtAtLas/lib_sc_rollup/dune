@@ -3,10 +3,10 @@
 
 (library
  (name tezos_smart_rollup_001_PtAtLas)
- (public_name octez-protocol-001-PtAtLas-libs.smart-rollup)
+ (public_name mavkit-protocol-001-PtAtLas-libs.smart-rollup)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-001-PtAtLas.protocol)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

@@ -26,7 +26,7 @@
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/5565
 
-   Document these values (taken from octez-node), and chage them if needed.
+   Document these values (taken from mavkit-node), and chage them if needed.
 *)
 module P2p_limits = struct
   let connection_timeout = Time.System.Span.of_seconds_exn 10.
@@ -36,7 +36,7 @@ module P2p_limits = struct
   let greylist_timeout = Time.System.Span.of_seconds_exn 86400. (* one day *)
 
   (* Some of the default values below taken from L1 node instantiation of
-     Octez-p2p library. We amplify the value by this constant. *)
+     Mavkit-p2p library. We amplify the value by this constant. *)
   (* FIXME: https://gitlab.com/tezos/tezos/-/issues/6391
 
      Decide which default value we should choose for P2P parameters and wheter we
@@ -44,7 +44,7 @@ module P2p_limits = struct
   let dal_amplification_factor = 8
 
   (* [maintenance_idle_time] is set to [None] to disable the internal maintenance
-     mechanism of Octez-p2p. *)
+     mechanism of Mavkit-p2p. *)
   let maintenance_idle_time = None
 
   let min_connections = 10
@@ -89,7 +89,7 @@ module P2p_limits = struct
 
   let binary_chunks_size = None
 
-  (** Contraty to octez-node, [swap_linger] is disabled for Gossipsub. *)
+  (** Contraty to mavkit-node, [swap_linger] is disabled for Gossipsub. *)
   let swap_linger = None
 end
 

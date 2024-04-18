@@ -6,21 +6,21 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.micheline
-  octez-protocol-alpha-libs.client
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.client
   tezos-protocol-alpha.protocol
-  octez-libs.tezos-context.merkle_proof_encoding
-  octez-libs.test-helpers
-  octez-protocol-alpha-libs.test-helpers
-  octez-alcotezt
+  mavkit-libs.tezos-context.merkle_proof_encoding
+  mavkit-libs.test-helpers
+  mavkit-protocol-alpha-libs.test-helpers
+  mavkit-alcotezt
   qcheck-alcotest
   tezos-benchmark
   tezos-benchmark-alpha
   tezos-benchmark-type-inference-alpha
-  octez-protocol-alpha-libs.smart-rollup
-  octez-libs.crypto-dal
-  octez-libs.base-test-helpers
+  mavkit-protocol-alpha-libs.smart-rollup
+  mavkit-libs.crypto-dal
+  mavkit-libs.base-test-helpers
   tezos-protocol-alpha.parameters)
  (library_flags (:standard -linkall))
  (flags
@@ -33,7 +33,7 @@
   -open Tezos_protocol_alpha
   -open Tezos_test_helpers
   -open Tezos_alpha_test_helpers
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_benchmark_alpha
   -open Tezos_benchmark_type_inference_alpha
   -open Tezos_smart_rollup_alpha

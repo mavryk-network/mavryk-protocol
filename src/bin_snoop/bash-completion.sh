@@ -1,4 +1,4 @@
-_octez-snoop_complete()
+_mavkit-snoop_complete()
 {
     local cur_word prev_word prefix
 
@@ -37,4 +37,4 @@ _octez-snoop_complete()
 }
 
 # Register _pss_complete to provide completion for the following commands
-complete -F _octez-snoop_complete octez-snoop
+complete -F _mavkit-snoop_complete mavkit-snoop

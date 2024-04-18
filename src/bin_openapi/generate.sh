@@ -12,8 +12,8 @@
 cd "$(dirname "$0")"/../.. || exit
 
 # Tezos binaries.
-tezos_node=./octez-node
-tezos_client=./octez-client
+tezos_node=./mavkit-node
+tezos_client=./mavkit-client
 
 # Protocol configuration.
 protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
@@ -28,8 +28,8 @@ rpc_port=8732
 
 # Temporary files.
 tmp=openapi-tmp
-data_dir=$tmp/octez-sandbox
-client_dir=$tmp/octez-client
+data_dir=$tmp/mavkit-sandbox
+client_dir=$tmp/mavkit-client
 api_json=$tmp/rpc-api.json
 proto_api_json=$tmp/proto-api.json
 mempool_api_json=$tmp/mempool-api.json

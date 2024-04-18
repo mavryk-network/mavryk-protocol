@@ -86,15 +86,15 @@ module Inboxes =
     (struct
       let name = "inboxes"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Inbox.Hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Inbox.Hash))
     (struct
-      type t = Octez_smart_rollup.Inbox.t
+      type t = Mavkit_smart_rollup.Inbox.t
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Inbox.to_versioned
-          Octez_smart_rollup.Inbox.of_versioned
-          Octez_smart_rollup.Inbox.versioned_encoding
+          Mavkit_smart_rollup.Inbox.to_versioned
+          Mavkit_smart_rollup.Inbox.of_versioned
+          Mavkit_smart_rollup.Inbox.versioned_encoding
 
       let name = "inbox"
 
@@ -107,15 +107,15 @@ module Commitments =
     (struct
       let name = "commitments"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Commitment.Hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Commitment.Hash))
     (struct
-      type t = Octez_smart_rollup.Commitment.t
+      type t = Mavkit_smart_rollup.Commitment.t
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Commitment.to_versioned
-          Octez_smart_rollup.Commitment.of_versioned
-          Octez_smart_rollup.Commitment.versioned_encoding
+          Mavkit_smart_rollup.Commitment.to_versioned
+          Mavkit_smart_rollup.Commitment.of_versioned
+          Mavkit_smart_rollup.Commitment.versioned_encoding
 
       let name = "commitment"
 
@@ -137,20 +137,20 @@ module Lcc = struct
         (fun {commitment; level} -> (commitment, level))
         (fun (commitment, level) -> {commitment; level})
       @@ obj2
-           (req "commitment" Octez_smart_rollup.Commitment.Hash.encoding)
+           (req "commitment" Mavkit_smart_rollup.Commitment.Hash.encoding)
            (req "level" int32)
   end)
 end
 
 (** Single commitment for LPC. *)
 module Lpc = Indexed_store.Make_singleton (struct
-  type t = Octez_smart_rollup.Commitment.t
+  type t = Mavkit_smart_rollup.Commitment.t
 
   let encoding =
     Data_encoding.conv
-      Octez_smart_rollup.Commitment.to_versioned
-      Octez_smart_rollup.Commitment.of_versioned
-      Octez_smart_rollup.Commitment.versioned_encoding
+      Mavkit_smart_rollup.Commitment.to_versioned
+      Mavkit_smart_rollup.Commitment.of_versioned
+      Mavkit_smart_rollup.Commitment.versioned_encoding
 
   let name = "lpc"
 end)
@@ -167,24 +167,24 @@ module Dal_slots_headers =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type key = Octez_smart_rollup.Dal.Slot_index.t
+      type key = Mavkit_smart_rollup.Dal.Slot_index.t
 
-      let encoding = Octez_smart_rollup.Dal.Slot_index.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_index.encoding
 
       let compare = Compare.Int.compare
 
       let name = "slot_index"
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_header.t
+      type value = Mavkit_smart_rollup.Dal.Slot_header.t
 
       let name = "slot_header"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_header.to_versioned
-          Octez_smart_rollup.Dal.Slot_header.of_versioned
-          Octez_smart_rollup.Dal.Slot_header.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_header.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_header.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_header.versioned_encoding
     end)
 
 (** Versioned Confirmed DAL slots history *)
@@ -199,15 +199,15 @@ module Dal_confirmed_slots_history =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history.t
 
       let name = "dal_slot_histories"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_history.to_versioned
-          Octez_smart_rollup.Dal.Slot_history.of_versioned
-          Octez_smart_rollup.Dal.Slot_history.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_history.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_history.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_history.versioned_encoding
     end)
 
 (** Versioned Confirmed DAL slots histories cache. *)
@@ -224,15 +224,15 @@ module Dal_confirmed_slots_histories =
         let to_path_representation = Block_hash.to_b58check
       end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history_cache.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history_cache.t
 
       let name = "dal_slot_histories"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_history_cache.to_versioned
-          Octez_smart_rollup.Dal.Slot_history_cache.of_versioned
-          Octez_smart_rollup.Dal.Slot_history_cache.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_history_cache.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_history_cache.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_history_cache.versioned_encoding
     end)
 
 module Protocols = struct

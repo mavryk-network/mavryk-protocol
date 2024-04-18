@@ -20,7 +20,7 @@ if [ -z "$EXECUTABLE_FILES" ]; then
 fi
 
 # shellcheck disable=SC2086
-OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
+MAVKIT_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
 
 # Build minimal, bare and debug images
 ./scripts/create_docker_image.sh \
@@ -28,7 +28,7 @@ OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
   "${DOCKER_IMAGE_TAG}" \
   "${build_deps_image_name}" \
   "${build_deps_image_version}" \
-  "${OCTEZ_EXECUTABLES}" \
+  "${MAVKIT_EXECUTABLES}" \
   "${CI_COMMIT_SHORT_SHA}" \
   "${DOCKER_BUILD_TARGET}"
 

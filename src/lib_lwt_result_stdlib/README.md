@@ -14,7 +14,7 @@ If you are contributing to Lwtreslib, carefully read and be sure to adhere to th
 Lwtreslib provides a replacement for OCaml's Stdlib intended to be used in
 projects which rely on Lwt and Result.
 
-Lwtreslib is used heavily in Octez. It is instantiated in the Error-monad and
+Lwtreslib is used heavily in Mavkit. It is instantiated in the Error-monad and
 made available through lib-base's `TzPervasives`.
 
 ## Implementation Details

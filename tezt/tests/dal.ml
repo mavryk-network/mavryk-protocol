@@ -284,7 +284,7 @@ let scenario_with_layer1_and_dal_nodes ?(tags = ["layer1"]) ?custom_constants
   test
     ~__FILE__
     ~tags
-    ~uses:(fun _protocol -> [Constant.octez_dal_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dal_node])
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->
       with_layer1
@@ -311,7 +311,7 @@ let scenario_with_all_nodes ?custom_constants ?node_arguments ?slot_size
   regression_test
     ~__FILE__
     ~tags
-    ~uses:(fun _protocol -> Constant.[octez_smart_rollup_node; octez_dal_node])
+    ~uses:(fun _protocol -> Constant.[mavkit_smart_rollup_node; mavkit_dal_node])
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->
       with_layer1
@@ -1541,7 +1541,7 @@ let test_dal_node_startup =
     ~__FILE__
     ~title:"dal node startup"
     ~tags:["dal"]
-    ~uses:(fun _protocol -> [Constant.octez_dal_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dal_node])
   @@ fun protocol ->
   let run_dal = Dal_node.run ~wait_ready:false in
   let nodes_args = Node.[Synchronisation_threshold 0] in
@@ -3673,7 +3673,7 @@ let test_l1_migration_scenario ?(tags = []) ~migrate_from ~migrate_to
   Test.register
     ~__FILE__
     ~tags
-    ~uses:[Constant.octez_dal_node]
+    ~uses:[Constant.mavkit_dal_node]
     ~title:
       (sf
          "%s->%s: %s"

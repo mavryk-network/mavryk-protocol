@@ -3,14 +3,14 @@
 
 (library
  (name tezos_stdlib_unix)
- (public_name octez-libs.stdlib-unix)
+ (public_name mavkit-libs.stdlib-unix)
  (instrumentation (backend bisect_ppx))
  (libraries
   unix
-  octez-libs.error-monad
-  octez-libs.lwt-result-stdlib
-  octez-libs.event-logging
-  octez-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.lwt-result-stdlib
+  mavkit-libs.event-logging
+  mavkit-libs.stdlib
   data-encoding
   aches-lwt
   lwt.unix

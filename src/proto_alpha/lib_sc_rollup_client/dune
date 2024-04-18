@@ -2,19 +2,19 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_smart_rollup_client_alpha)
- (package octez-smart-rollup-client-alpha)
+ (name mavkit_smart_rollup_client_alpha)
+ (package mavkit-smart-rollup-client-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol
-  octez-shell-libs.client-commands
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-protocol-alpha-libs.client
-  octez-l2-libs.smart-rollup
-  octez-protocol-alpha-libs.smart-rollup
-  octez-protocol-alpha-libs.smart-rollup-layer2)
+  mavkit-shell-libs.client-commands
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-protocol-alpha-libs.client
+  mavkit-l2-libs.smart-rollup
+  mavkit-protocol-alpha-libs.smart-rollup
+  mavkit-protocol-alpha-libs.smart-rollup-layer2)
  (flags
   (:standard)
   -open Tezos_base
@@ -25,6 +25,6 @@
   -open Tezos_client_base
   -open Tezos_client_base_unix
   -open Tezos_client_alpha
-  -open Octez_smart_rollup
+  -open Mavkit_smart_rollup
   -open Tezos_smart_rollup_alpha
   -open Tezos_smart_rollup_layer2_alpha))

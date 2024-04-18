@@ -227,7 +227,7 @@ let scenario_with_full_dac_infrastructure ?supports ?(tags = ["dac"; "full"])
     ~__FILE__
     ~tags
     ~uses:(fun protocol ->
-      Constant.octez_dac_node :: Constant.octez_smart_rollup_node
+      Constant.mavkit_dac_node :: Constant.mavkit_smart_rollup_node
       :: uses protocol)
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->

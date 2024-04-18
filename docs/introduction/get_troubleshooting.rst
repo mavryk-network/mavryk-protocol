@@ -1,7 +1,7 @@
 Installation troubleshooting
 ============================
 
-This page groups information about known problems when installing Tezos (more precisely, the "Octez" implementation of Tezos software).
+This page groups information about known problems when installing Tezos (more precisely, the "Mavkit" implementation of Tezos software).
 The different issues and their solutions are grouped per installation method, except for generic issues concerning all installation scenarios.
 
 This page lists only the most frequent problems.

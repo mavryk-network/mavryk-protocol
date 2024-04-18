@@ -5,7 +5,7 @@
     (run
        bash
          %{dep:rejections.sh}
-         %{bin:octez-protocol-compiler}
+         %{bin:mavkit-protocol-compiler}
          %{lib:tezos-protocol-demo-noops.protocol:raw/TEZOS_PROTOCOL}
        )))
 

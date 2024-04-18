@@ -87,7 +87,7 @@ val register_simple_with_num :
     [destination] specifies the code generation destination.
     If [destination = "michelson_v1_gas"], the code will be generated to
     ["DIR/michelson_v1_gas_costs_generated.ml"] by
-    [octez-snoop generate code for solutions SOL --split-to DIR] command.
+    [mavkit-snoop generate code for solutions SOL --split-to DIR] command.
     The command will not generate the code under [DIR] if [destination] is not
     specified.
 *)

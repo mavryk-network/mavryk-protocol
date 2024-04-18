@@ -3,29 +3,29 @@
 
 (library
  (name tezos_baking_alpha)
- (public_name octez-protocol-alpha-libs.baking)
+ (public_name mavkit-protocol-alpha-libs.baking)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-version.value
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-version.value
   tezos-protocol-alpha.protocol
   tezos-protocol-alpha.protocol.lifted
-  octez-protocol-alpha-libs.plugin
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-context
-  octez-libs.tezos-context
-  octez-libs.tezos-context.memory
-  octez-libs.rpc-http-client-unix
-  octez-shell-libs.context-ops
-  octez-libs.rpc
-  octez-libs.rpc-http
+  mavkit-protocol-alpha-libs.plugin
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-context
+  mavkit-libs.tezos-context
+  mavkit-libs.tezos-context.memory
+  mavkit-libs.rpc-http-client-unix
+  mavkit-shell-libs.context-ops
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http
   tezos-dal-node-services
   lwt-canceler
   lwt-exit
@@ -52,20 +52,20 @@
 
 (library
  (name tezos_baking_alpha_commands)
- (public_name octez-protocol-alpha-libs.baking-commands)
+ (public_name mavkit-protocol-alpha-libs.baking-commands)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol
   tezos-protocol-alpha.parameters
-  octez-libs.stdlib-unix
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-alpha-libs.baking
-  octez-libs.rpc
+  mavkit-libs.stdlib-unix
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-alpha-libs.baking
+  mavkit-libs.rpc
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -84,19 +84,19 @@
 
 (library
  (name tezos_baking_alpha_commands_registration)
- (public_name octez-protocol-alpha-libs.baking-commands.registration)
+ (public_name mavkit-protocol-alpha-libs.baking-commands.registration)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-alpha-libs.baking
-  octez-protocol-alpha-libs.baking-commands
-  octez-libs.rpc)
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-alpha-libs.baking
+  mavkit-protocol-alpha-libs.baking-commands
+  mavkit-libs.rpc)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

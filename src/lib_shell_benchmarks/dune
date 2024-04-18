@@ -3,18 +3,18 @@
 
 (library
  (name tezos_shell_benchmarks)
- (public_name octez-shell-libs.shell-benchmarks)
+ (public_name mavkit-shell-libs.shell-benchmarks)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
   tezos-benchmark
-  octez-libs.crypto
-  octez-libs.tezos-context
-  octez-shell-libs.shell-context
-  octez-shell-libs.store
-  octez-libs.micheline)
+  mavkit-libs.crypto
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.store
+  mavkit-libs.micheline)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

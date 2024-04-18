@@ -32,12 +32,12 @@ OUT="scripts.out"
 
 rm -Rf "$BASE_DIR"
 rm -Rf "$OUT"
-./octez-client --mode mockup --base-dir "$BASE_DIR" create mockup
+./mavkit-client --mode mockup --base-dir "$BASE_DIR" create mockup
 
 echo "[" >> $OUT
 for i in $(seq -f "%04g" 0 1000)
 do
-  value=$(./octez-client --mode mockup --base-dir "$BASE_DIR" hash data "\"$i\"" of type string | grep ^Script-expr | sed 's/.*: \(.*\)/\1/g')
+  value=$(./mavkit-client --mode mockup --base-dir "$BASE_DIR" hash data "\"$i\"" of type string | grep ^Script-expr | sed 's/.*: \(.*\)/\1/g')
   echo "(\"$i\", \"$value\");" >> $OUT
 done
 echo "]" >> $OUT

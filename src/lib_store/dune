@@ -3,17 +3,17 @@
 
 (library
  (name tezos_store)
- (public_name octez-shell-libs.store)
+ (public_name mavkit-shell-libs.store)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.crypto
-  octez-libs.rpc
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-libs.rpc
   lwt-watcher
-  octez-shell-libs.shell-services
-  octez-shell-libs.validation
-  octez-shell-libs.context-ops
-  octez-shell-libs.store.shared)
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.store.shared)
  (flags
   (:standard)
   -open Tezos_base
@@ -24,4 +24,4 @@
   -open Tezos_context_ops
   -open Tezos_store_shared)
  (virtual_modules store)
- (default_implementation octez-shell-libs.store.real))
+ (default_implementation mavkit-shell-libs.store.real))

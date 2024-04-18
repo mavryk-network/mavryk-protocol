@@ -60,7 +60,7 @@ let test_encoding_retrocompatible name operation =
     ~__FILE__
     ~title:(sf "Test retro compatibility for format of %s" name)
     ~tags:["retro"; name]
-    ~uses:(fun _protocol -> [Constant.octez_codec])
+    ~uses:(fun _protocol -> [Constant.mavkit_codec])
     ~supports:Has_predecessor
   @@ Protocol.with_predecessor
   @@ fun ~previous_protocol ~protocol ->

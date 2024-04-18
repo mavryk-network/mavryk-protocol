@@ -26,8 +26,8 @@
 open Bls12_381
 module G1 = G1
 module G2 = G2
-module G1_carray = Octez_bls12_381_polynomial.G1_carray
-module G2_carray = Octez_bls12_381_polynomial.G2_carray
+module G1_carray = Mavkit_bls12_381_polynomial.G1_carray
+module G2_carray = Mavkit_bls12_381_polynomial.G2_carray
 
 module Checks = struct
   let equality (g1_elements : G1_carray.t) (g2_elements : G2_carray.t) =
@@ -163,7 +163,7 @@ module Powers_of_tau = struct
       let size = 1 lsl power in
       let points = Array.init size (fun _i -> read ic) |> of_array in
       close_in ic ;
-      let domain = Octez_bls12_381_polynomial.Domain.build_power_of_two power in
+      let domain = Mavkit_bls12_381_polynomial.Domain.build_power_of_two power in
       let points = evaluation_ecfft ~domain ~points in
       points
     with e ->

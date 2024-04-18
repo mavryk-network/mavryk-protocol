@@ -3,22 +3,22 @@
 
 (executable
  (name main_snoop)
- (public_name octez-snoop)
- (package octez-snoop)
+ (public_name mavkit-snoop)
+ (package mavkit-snoop)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.clic
   tezos-benchmark
   tezos-benchmark-examples
-  octez-shell-libs.shell-benchmarks
+  mavkit-shell-libs.shell-benchmarks
   tezos-benchmarks-proto-alpha
   str
   pyml
   prbnmcn-stats
-  octez-version.value)
+  mavkit-version.value)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -30,4 +30,4 @@
   -open Tezos_stdlib_unix
   -open Tezos_benchmark))
 
-(cram (deps main_snoop.exe) (package octez-snoop))
+(cram (deps main_snoop.exe) (package mavkit-snoop))

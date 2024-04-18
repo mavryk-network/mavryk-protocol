@@ -5,11 +5,11 @@
  (name main)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-l2-libs.webassembly-interpreter
-  octez-l2-libs.webassembly-interpreter-extra
+  mavkit-l2-libs.webassembly-interpreter
+  mavkit-l2-libs.webassembly-interpreter-extra
   lwt.unix
-  octez-libs.tree-encoding
-  octez-libs.lazy-containers)
+  mavkit-libs.tree-encoding
+  mavkit-libs.lazy-containers)
  (flags
   (:standard)
   -open Tezos_webassembly_interpreter

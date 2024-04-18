@@ -47,7 +47,7 @@ let () = Tezos_sapling.Core.Validator.init_params ()
 module Config = struct
   include Daemon_config
 
-  let default_daily_logs_path = Some ("octez-baker-" ^ Protocol.name)
+  let default_daily_logs_path = Some ("mavkit-baker-" ^ Protocol.name)
 end
 
 let () = Client_main_run.run (module Config) ~select_commands

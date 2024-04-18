@@ -1,7 +1,7 @@
 Protocol Plugins
 ================
 
-This document describes the protocol plugins implemented in Octez.
+This document describes the protocol plugins implemented in Mavkit.
 
 Protocol-specific shell plugins, simply called protocol plugins,
 implement extra APIs needed by the shell in order to interact with the
@@ -13,11 +13,11 @@ code base, so this is not subject to on-chain governance (see
 which means that it may vary with different protocols. For instance,
 the plugin code for protocol Alpha is located in file
 :src:`src/proto_001_PtAtLas/lib_plugin/plugin.ml`. Thus, a specific version
-is included in the Octez node for each protocol version (recall that a
-new release of Octez is usually delivered for each new protocol
+is included in the Mavkit node for each protocol version (recall that a
+new release of Mavkit is usually delivered for each new protocol
 proposal, see :doc:`../releases/releases`)
 
-In contrast to the Octez code, plugins are protocol-specific and as
+In contrast to the Mavkit code, plugins are protocol-specific and as
 such, know how to read the content of an operation.
 
 So what kind of features may a protocol plugin provide? For instance,
@@ -50,7 +50,7 @@ the filters of the previous protocol. Notice that prevalidator filters are not
 mandatory, their absence does not break the Tezos blockchain protocol.
 
 The interface of the prevalidator plugin is described at the :package-api:`mempool plugin API
-<octez-libs/Tezos_base/Mempool/index.html>`.
+<mavkit-libs/Tezos_base/Mempool/index.html>`.
 
 The different kinds of prevalidator filters are described below.
 
@@ -136,11 +136,11 @@ by a factor (currently fixed to 5%). In case of successful replacement, the old
 operation is re-classified as ``Outdated``.
 
 Concretely, a user can replace a successfully prechecked manager operation in the
-mempool, with the help of ``octez-client``, using two methods :
+mempool, with the help of ``mavkit-client``, using two methods :
 
 - manually provide a higher fee to bump the "fee/gas limit" ratio by at least 5% for the new
   operation,
-- via option ``--replace``: In this case, ``octez-client`` will automatically
+- via option ``--replace``: In this case, ``mavkit-client`` will automatically
   compute the minimal amount of fee for the second operation to be able to
   replace the one in the mempool.
 
@@ -174,7 +174,7 @@ applied/propagated operations.
 Starting with Ithaca protocol (see :doc:`../protocols/012_ithaca`), the plugin
 implements a lightweight classification function, called ``precheck``, that
 doesn't check the total gas consumption. So with this modication and those of
-Octez 12.0, the prevalidator, would propagate any succesfully prevalidated
+Mavkit 12.0, the prevalidator, would propagate any succesfully prevalidated
 operation. In order to protect nodes from potential DDoS, a new mechanism has
 been added in the plugin to bound the number of successfully prechecked
 operations. This mechanism works as follows:
@@ -225,9 +225,9 @@ The following parameters can be thus inspected and modified:
 For example, each command below modifies the provided parameter and resets all
 the others to their default values::
 
-   octez-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "42" }'
-   octez-client rpc post /chains/main/mempool/filter with '{ "replace_by_fee_factor": [ "23", "20" ] }'
-   octez-client rpc post /chains/main/mempool/filter with '{ "max_prechecked_manager_operations": 7500 }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "42" }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "replace_by_fee_factor": [ "23", "20" ] }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "max_prechecked_manager_operations": 7500 }'
 
 Changing filters default configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

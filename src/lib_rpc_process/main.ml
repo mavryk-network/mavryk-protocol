@@ -33,11 +33,11 @@ let () =
     ~id:"rpc_process.main.process_port_already_in_use"
     ~title:"Cannot start RPC process: RPC port already in use"
     ~description:
-      "Another octez RPC process is probably running on the same RPC port."
+      "Another mavkit RPC process is probably running on the same RPC port."
     ~pp:(fun ppf addrlist ->
       Format.fprintf
         ppf
-        "Another octez RPC process is probably running on one of these \
+        "Another mavkit RPC process is probably running on one of these \
          addresses (%a). Please choose another RPC port."
         (Format.pp_print_list P2p_point.Id.pp)
         addrlist)
@@ -217,16 +217,16 @@ end
 
 module Manpage = struct
   let command_description =
-    "The $(b, octez-rpc-process) starts the RPC process that aims to serve as \
+    "The $(b, mavkit-rpc-process) starts the RPC process that aims to serve as \
      the default endpoint for RPC queries. This server may communicate with an \
-     Octez node."
+     Mavkit node."
 
   let description = [`S "DESCRIPTION"; `P command_description]
 
   let man = description
 
   let info =
-    Cmdliner.Cmd.info ~doc:"Run the Octez rpc process" ~man "octez-rpc-process"
+    Cmdliner.Cmd.info ~doc:"Run the Mavkit rpc process" ~man "mavkit-rpc-process"
 end
 
 let cmd = Cmdliner.Cmd.v Manpage.info Term.term

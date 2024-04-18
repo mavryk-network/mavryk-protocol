@@ -29,7 +29,7 @@ module Wasmer = Tezos_wasmer
 
 include (Wasm_vm : Wasm_vm_sig.S)
 
-let compiler_env_variable = "OCTEZ_WASMER_COMPILER"
+let compiler_env_variable = "MAVKIT_WASMER_COMPILER"
 
 let get_compiler () =
   let compiler_choice =

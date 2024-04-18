@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let socket_forwarding_dns = "octez-node-unix-socket"
+let socket_forwarding_dns = "mavkit-node-unix-socket"
 
 let socket_forwarding_uri = Format.sprintf "http://%s" socket_forwarding_dns
 

@@ -6,12 +6,12 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol
-  octez-libs.test-helpers
-  octez-protocol-alpha-libs.smart-rollup-layer2
-  octez_smart_rollup_node_alpha
-  octez-alcotezt)
+  mavkit-libs.test-helpers
+  mavkit-protocol-alpha-libs.smart-rollup-layer2
+  mavkit_smart_rollup_node_alpha
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -22,9 +22,9 @@
   -open Tezos_protocol_alpha
   -open Tezos_test_helpers
   -open Tezos_smart_rollup_layer2_alpha
-  -open Octez_smart_rollup_node_alpha
-  -open Octez_alcotezt)
- (modules serialized_proofs test_octez_conversions))
+  -open Mavkit_smart_rollup_node_alpha
+  -open Mavkit_alcotezt)
+ (modules serialized_proofs test_mavkit_conversions))
 
 (executable
  (name main)

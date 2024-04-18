@@ -7,23 +7,23 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   str
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
   tezos-protocol-alpha.parameters
-  octez-libs.lazy-containers
+  mavkit-libs.lazy-containers
   tezos-benchmark
   tezos-benchmark-alpha
   tezos-benchmark-type-inference-alpha
   tezos-protocol-alpha.protocol
-  octez-libs.crypto
-  octez-shell-libs.shell-benchmarks
-  octez-libs.micheline
-  octez-protocol-alpha-libs.test-helpers
-  octez-libs.tezos-sapling
-  octez-protocol-alpha-libs.client
-  octez-protocol-alpha-libs.plugin
-  octez-proto-libs.protocol-environment)
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-benchmarks
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.test-helpers
+  mavkit-libs.tezos-sapling
+  mavkit-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.plugin
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

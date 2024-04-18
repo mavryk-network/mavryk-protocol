@@ -237,7 +237,7 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
     ?rpc_local
     ()
 
-(** This helper injects an SC rollup origination via octez-client. Then it
+(** This helper injects an SC rollup origination via mavkit-client. Then it
     bakes to include the origination in a block. It returns the address of the
     originated rollup *)
 let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist

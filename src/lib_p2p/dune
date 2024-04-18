@@ -3,21 +3,21 @@
 
 (library
  (name tezos_p2p)
- (public_name octez-shell-libs.p2p)
+ (public_name mavkit-shell-libs.p2p)
  (instrumentation (backend bisect_ppx))
  (libraries
   lwt-watcher
   lwt-canceler
   ringo
   aches
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-libs.tezos-p2p-services
-  octez-libs.version
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-libs.tezos-p2p-services
+  mavkit-libs.version
   prometheus
-  octez-libs.base.p2p-identity-file)
+  mavkit-libs.base.p2p-identity-file)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

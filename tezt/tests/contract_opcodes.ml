@@ -27,7 +27,7 @@
    -------
    Component:    Michelson
    Invocation:   dune exec tezt/tests/main.exe -- --file contract_opcodes.ml
-   Subject:      Runs Michelson opcode tests using [octez-client -mode mockup run script ...].
+   Subject:      Runs Michelson opcode tests using [mavkit-client -mode mockup run script ...].
 *)
 
 (* For these tests, the default hooks would scrub much output of
@@ -1107,7 +1107,7 @@ let test_balance protocol client =
 
 let quote s = sf "%S" s
 
-(* Test that the --now flag of 'octez-client run script' affects the value
+(* Test that the --now flag of 'mavkit-client run script' affects the value
    returned by the NOW instruction. See also contract_onchain_opcodes.ml
    for a complementary test of the NOW instruction. *)
 let test_now protocol client =
@@ -1121,7 +1121,7 @@ let test_now protocol client =
     protocol
     ~expected_storage:(quote now)
 
-(* Test that the --level flag of 'octez-client run script' affects the value
+(* Test that the --level flag of 'mavkit-client run script' affects the value
    returned by the LEVEL instruction. See also contract_onchain_opcodes.ml
    for a complementary test of the LEVEL instuction. *)
 let test_level protocol client =

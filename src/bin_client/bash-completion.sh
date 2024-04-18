@@ -1,4 +1,4 @@
-_octez-client_complete()
+_mavkit-client_complete()
 {
     local cur_word prev_word type_list
 
@@ -46,7 +46,7 @@ _tezos-alphanet_complete()
 }
 
 # Register _pss_complete to provide completion for the following commands
-complete -F _octez-client_complete octez-client
-complete -F _octez-client_complete octez-admin-client
-complete -F _octez-client_complete octez-baker-alpha
-complete -F _octez-client_complete octez-accuser-alpha
+complete -F _mavkit-client_complete mavkit-client
+complete -F _mavkit-client_complete mavkit-admin-client
+complete -F _mavkit-client_complete mavkit-baker-alpha
+complete -F _mavkit-client_complete mavkit-accuser-alpha

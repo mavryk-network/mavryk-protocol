@@ -6,16 +6,16 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.micheline
-  octez-protocol-alpha-libs.client
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.client
   tezos-protocol-alpha.protocol
-  octez-libs.base-test-helpers
-  octez-protocol-alpha-libs.bakings.mockup-simulator
-  octez-protocol-alpha-libs.baking
+  mavkit-libs.base-test-helpers
+  mavkit-protocol-alpha-libs.bakings.mockup-simulator
+  mavkit-protocol-alpha-libs.baking
   tezos-protocol-alpha.parameters
-  octez-libs.crypto
-  octez-alcotezt
+  mavkit-libs.crypto
+  mavkit-alcotezt
   uri)
  (library_flags (:standard -linkall))
  (flags
@@ -30,7 +30,7 @@
   -open Tezos_base_test_helpers
   -open Tezos_alpha_mockup_simulator
   -open Tezos_baking_alpha
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_scenario))
 
 (executable
@@ -46,7 +46,7 @@
 
 (rule
  (alias runtest)
- (package octez-protocol-alpha-libs)
+ (package mavkit-protocol-alpha-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

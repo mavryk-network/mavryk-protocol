@@ -38,7 +38,7 @@ end
 
 (* FIXME https://gitlab.com/tezos/tezos/-/issues/4837
 
-   This environment variable is problematic when the octez-node in not
+   This environment variable is problematic when the mavkit-node in not
    run with [Singleprocess]. *)
 let env_var_name = "TEZOS_EVENTS_CONFIG"
 

@@ -3,12 +3,12 @@
 
 (library
  (name tezos_protocol_plugin_001_PtAtLas)
- (public_name octez-protocol-001-PtAtLas-libs.plugin)
+ (public_name mavkit-protocol-001-PtAtLas-libs.plugin)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-001-PtAtLas.protocol
-  octez-protocol-001-PtAtLas-libs.smart-rollup)
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
@@ -17,17 +17,17 @@
   -open Tezos_smart_rollup_001_PtAtLas)
  (modules (:standard \ Plugin_registerer)))
 
-(documentation (package octez-protocol-001-PtAtLas-libs))
+(documentation (package mavkit-protocol-001-PtAtLas-libs))
 
 (library
  (name tezos_protocol_plugin_001_PtAtLas_registerer)
- (public_name octez-protocol-001-PtAtLas-libs.plugin-registerer)
+ (public_name mavkit-protocol-001-PtAtLas-libs.plugin-registerer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-001-PtAtLas.embedded-protocol
-  octez-protocol-001-PtAtLas-libs.plugin
-  octez-shell-libs.validation)
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavkit-shell-libs.validation)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

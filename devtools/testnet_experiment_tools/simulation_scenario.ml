@@ -42,7 +42,7 @@ let use_data_dir data_dir f =
 let data_dir_arg =
   let open Lwt_result_syntax in
   default_arg
-    ~doc:"Octez data directory path"
+    ~doc:"Mavkit data directory path"
     ~short:'D'
     ~long:"data-dir"
     ~placeholder:"data-dir-path"
@@ -55,7 +55,7 @@ let data_dir_param =
   let open Lwt_result_syntax in
   param
     ~name:"data-dir"
-    ~desc:"Octez data directory path"
+    ~desc:"Mavkit data directory path"
     ( parameter @@ fun _ dn ->
       if Sys.file_exists dn && Sys.is_directory dn then return dn
       else failwith "%s does not exists or is not a directory" dn )
@@ -440,9 +440,9 @@ let commands =
     command
       ~group
       ~desc:
-        "Patch the chain's state of an octez-node data directory with a user \
+        "Patch the chain's state of an mavkit-node data directory with a user \
          defined block time by overwriting protocol constants. This command \
-         cannot be run twice on a same octez-node data directory. Warning: all \
+         cannot be run twice on a same mavkit-node data directory. Warning: all \
          testnet nodes must apply this patch otherwise they will fail to agree \
          on the new resulting chain's state."
       no_options

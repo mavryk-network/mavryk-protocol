@@ -6,13 +6,13 @@
  (package tezos-dac-node-lib)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-libs.stdlib-unix
-  octez-l2-libs.layer2_store
-  octez-libs.rpc-http-server
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-libs.stdlib-unix
+  mavkit-l2-libs.layer2_store
+  mavkit-libs.rpc-http-server
   tezos-dac-lib
   tezos-dac-client-lib)
  (flags

@@ -8,9 +8,9 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.version
-  octez-libs.version.parser
-  octez-alcotezt)
+  mavkit-libs.version
+  mavkit-libs.version.parser
+  mavkit-alcotezt)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
@@ -18,7 +18,7 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Tezos_version
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_parser))
 
 (executable
@@ -32,7 +32,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 
@@ -52,7 +52,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))
 

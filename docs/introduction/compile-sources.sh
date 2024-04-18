@@ -36,7 +36,7 @@ sudo apt-get update
 sudo apt-get install -y sudo
 export OPAMYES=true
 # [install packages]
-# [Temporary fix: removes tezos folder from PATH if added with Octez <= v13 instructions]
+# [Temporary fix: removes tezos folder from PATH if added with Mavkit <= v13 instructions]
 PATH=${PATH##"$HOME"/tezos/:}
 sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 # [install rust]
@@ -49,21 +49,21 @@ chmod +x rustup-init.sh
 git clone https://gitlab.com/"$REPO".git tezos
 cd tezos
 git checkout $BRANCH
-# [install Octez dependencies]
+# [install Mavkit dependencies]
 opam init --bare
 make build-deps
 # [compile sources]
 eval $(opam env)
 make
 # [optional setup]
-# puts Octez binaries in PATH:
+# puts Mavkit binaries in PATH:
 # export PATH=$PWD/_build/install/default/bin/:$PATH
 # if using bash, enables autocompletion:
 # source ./src/bin_client/bash-completion.sh
 # removes Mainnet/testnet disclaimers:
 # export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 # [test executables]
-./octez-client --version
-./octez-node --version
-./octez-baker-alpha --version
-./octez-accuser-alpha --version
+./mavkit-client --version
+./mavkit-node --version
+./mavkit-baker-alpha --version
+./mavkit-accuser-alpha --version

@@ -3,24 +3,24 @@
 
 (library
  (name tezos_store_unix)
- (public_name octez-shell-libs.store.unix)
+ (public_name mavkit-shell-libs.store.unix)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-shell-libs.shell-services
-  octez-libs.base
-  octez-libs.version
+  mavkit-shell-libs.shell-services
+  mavkit-libs.base
+  mavkit-libs.version
   index
   irmin-pack
-  octez-shell-libs.store.shared
-  octez-proto-libs.protocol-environment
-  octez-libs.tezos-context
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.validation
-  octez-shell-libs.protocol-updater
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-libs.crypto
+  mavkit-shell-libs.store.shared
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
   lwt-watcher
   aches
   aches-lwt
@@ -55,18 +55,18 @@
 
 (library
  (name tezos_store_unix_reconstruction)
- (public_name octez-shell-libs.store.unix-reconstruction)
+ (public_name mavkit-shell-libs.store.unix-reconstruction)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.crypto
-  octez-shell-libs.shell-services
-  octez-shell-libs.protocol-updater
-  octez-shell-libs.validation
-  octez-shell-libs.context-ops
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.protocol-updater
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix)
  (flags
   (:standard)
   -open Tezos_base
@@ -83,17 +83,17 @@
 
 (library
  (name tezos_store_unix_snapshots)
- (public_name octez-shell-libs.store.unix-snapshots)
+ (public_name mavkit-shell-libs.store.unix-snapshots)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.crypto
-  octez-shell-libs.shell-services
-  octez-libs.tezos-context
-  octez-shell-libs.validation
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-services
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix)
  (flags
   (:standard)
   -open Tezos_base

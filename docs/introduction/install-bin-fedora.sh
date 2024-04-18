@@ -34,7 +34,7 @@ dnf install -y tezos-node
 dnf install -y tezos-baker-PtNairob
 dnf install -y tezos-accuser-PtNairob
 # [test executables]
-octez-client --version
-octez-node --version
-octez-baker-PtNairob --version
-octez-accuser-PtNairob --version
+mavkit-client --version
+mavkit-node --version
+mavkit-baker-PtNairob --version
+mavkit-accuser-PtNairob --version

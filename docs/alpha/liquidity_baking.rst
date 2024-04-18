@@ -69,13 +69,13 @@ non-abstaining blocks, about 1386 blocks if everyone signals, 1963
 blocks if 80% do, 3583 blocks if 60% do etc. Recall for comparison
 that assuming four blocks per minute there are 5760 blocks per day.
 
-When producing blocks using Octez baking daemon ``octez-baker``, there
+When producing blocks using Mavkit baking daemon ``mavkit-baker``, there
 are two command-line options affecting toggle vote. The
 ``--liquidity-baking-toggle-vote <on|off|pass>`` option sets a static
 value to be used in each block. Note that this option must be placed
 **after** ``run`` on the command-line. Moreover, the path of a JSON
 file can be given to the ``--votefile <path>`` option
-e.g. ``octez-baker-<protocol codename> run with local node
+e.g. ``mavkit-baker-<protocol codename> run with local node
 ~/.tezos-node alice --liquidity-baking-toggle-vote on --votefile
 "per_block_votes.json"``, or placed in a default location:
 ``per_block_votes.json`` in the current working directory **or** in

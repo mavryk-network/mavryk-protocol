@@ -3,10 +3,10 @@
 
 (library
  (name tezos_smart_rollup_alpha)
- (public_name octez-protocol-alpha-libs.smart-rollup)
+ (public_name mavkit-protocol-alpha-libs.smart-rollup)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

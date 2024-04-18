@@ -84,7 +84,7 @@ let find_encoding s =
   | None ->
       Option.map
         (fun f -> `Custom f)
-        (Octez_smart_rollup_wasm_debugger_plugin.Encodings.get s)
+        (Mavkit_smart_rollup_wasm_debugger_plugin.Encodings.get s)
 
 let integer_value_kind_to_string = function
   | `U16 -> "u16"

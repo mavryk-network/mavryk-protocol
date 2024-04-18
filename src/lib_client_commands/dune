@@ -3,19 +3,19 @@
 
 (library
  (name tezos_client_commands)
- (public_name octez-shell-libs.client-commands)
+ (public_name mavkit-shell-libs.client-commands)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.rpc
-  octez-libs.clic
-  octez-libs.clic.unix
-  octez-shell-libs.client-base
-  octez-shell-libs.shell-services
-  octez-libs.tezos-p2p-services
-  octez-libs.stdlib-unix
-  octez-libs.base.unix
-  octez-shell-libs.signer-backends
+  mavkit-libs.base
+  mavkit-libs.rpc
+  mavkit-libs.clic
+  mavkit-libs.clic.unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.shell-services
+  mavkit-libs.tezos-p2p-services
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base.unix
+  mavkit-shell-libs.signer-backends
   data-encoding
   uri)
  (library_flags (:standard -linkall))

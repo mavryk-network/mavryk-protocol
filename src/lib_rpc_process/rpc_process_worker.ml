@@ -150,7 +150,7 @@ let run_server t () =
   let open Lwt_result_syntax in
   let socket_dir = Tezos_base_unix.Socket.get_temporary_socket_dir () in
   let socket_dir_arg = ["--socket-dir"; socket_dir] in
-  let args = "octez-rpc-process" :: socket_dir_arg in
+  let args = "mavkit-rpc-process" :: socket_dir_arg in
   let process =
     Lwt_process.open_process_none
       ~stdout:(`FD_copy Unix.stdout)

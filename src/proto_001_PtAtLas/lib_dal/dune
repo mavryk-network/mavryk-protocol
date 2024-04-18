@@ -3,17 +3,17 @@
 
 (library
  (name tezos_dal_001_PtAtLas)
- (public_name octez-protocol-001-PtAtLas-libs.dal)
+ (public_name mavkit-protocol-001-PtAtLas-libs.dal)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-protocol-compiler.registerer
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-protocol-compiler.registerer
+  mavkit-libs.stdlib-unix
   tezos-dal-node-lib
-  octez-protocol-001-PtAtLas-libs.client
-  octez-protocol-001-PtAtLas-libs.plugin
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-protocol-001-PtAtLas-libs.plugin
   tezos-protocol-001-PtAtLas.embedded-protocol
-  octez-protocol-001-PtAtLas-libs.layer2-utils
+  mavkit-protocol-001-PtAtLas-libs.layer2-utils
   tezos-protocol-001-PtAtLas.protocol)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

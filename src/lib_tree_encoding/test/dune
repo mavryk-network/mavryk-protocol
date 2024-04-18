@@ -6,15 +6,15 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-libs.base.unix
-  octez-libs.tezos-context.disk
-  octez-libs.base-test-helpers
-  octez-libs.test-helpers
-  octez-l2-libs.webassembly-interpreter
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-libs.base.unix
+  mavkit-libs.tezos-context.disk
+  mavkit-libs.base-test-helpers
+  mavkit-libs.test-helpers
+  mavkit-l2-libs.webassembly-interpreter
   qcheck-alcotest
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -23,7 +23,7 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base_test_helpers
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_proofs test_encoding))
 
 (executable

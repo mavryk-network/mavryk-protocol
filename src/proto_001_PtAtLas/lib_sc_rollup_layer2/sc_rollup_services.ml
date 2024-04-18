@@ -293,7 +293,7 @@ module Block = struct
     Tezos_rpc.Service.get_service
       ~description:"Rollup inbox for block"
       ~query:Tezos_rpc.Query.empty
-      ~output:Octez_smart_rollup.Inbox.encoding
+      ~output:Mavkit_smart_rollup.Inbox.encoding
       (path / "inbox")
 
   let ticks =

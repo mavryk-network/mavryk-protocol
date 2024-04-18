@@ -39,7 +39,7 @@
 open Tezt
 open Tezt_tezos
 open Tezos_crypto
-module Node_config = Octez_node_config.Config_file
+module Node_config = Mavkit_node_config.Config_file
 
 let ensure_dir_exists dir =
   Lwt.catch

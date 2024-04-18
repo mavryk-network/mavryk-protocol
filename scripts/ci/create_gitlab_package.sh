@@ -13,15 +13,15 @@ set -eu
 
 # https://docs.gitlab.com/ee/user/packages/generic_packages/index.html#download-package-file
 # :gitlab_api_url/projects/:id/packages/generic/:package_name/:package_version/:file_name
-gitlab_octez_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_octez_package_name}/${gitlab_package_version}"
-gitlab_octez_deb_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_octez_deb_package_name}/${gitlab_package_version}"
-gitlab_octez_rpm_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_octez_rpm_package_name}/${gitlab_package_version}"
+gitlab_mavkit_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_package_name}/${gitlab_package_version}"
+gitlab_mavkit_deb_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_deb_package_name}/${gitlab_package_version}"
+gitlab_mavkit_rpm_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_rpm_package_name}/${gitlab_package_version}"
 
 gitlab_upload() {
   local_path="${1}"
   remote_file="${2}"
-  url="${3-${gitlab_octez_package_url}}"
-  echo "Upload to ${gitlab_octez_package_url}/${remote_file}"
+  url="${3-${gitlab_mavkit_package_url}}"
+  echo "Upload to ${gitlab_mavkit_package_url}/${remote_file}"
 
   i=0
   max_attempts=10
@@ -58,17 +58,17 @@ do
   # Loop over binaries
   for binary in ${binaries}
   do
-    gitlab_upload "octez-binaries/${architecture}/${binary}" "${architecture}-${binary}"
+    gitlab_upload "mavkit-binaries/${architecture}/${binary}" "${architecture}-${binary}"
   done
 
   echo "Upload tarball with all binaries (${architecture})"
 
-  mkdir -pv "octez-binaries/octez-${architecture}"
-  cp -a octez-binaries/"${architecture}"/* "octez-binaries/octez-${architecture}/"
+  mkdir -pv "mavkit-binaries/mavkit-${architecture}"
+  cp -a mavkit-binaries/"${architecture}"/* "mavkit-binaries/mavkit-${architecture}/"
 
-  cd octez-binaries/
-  tar -czf "octez-${architecture}.tar.gz" "octez-${architecture}/"
-  gitlab_upload "octez-${architecture}.tar.gz" "${gitlab_octez_package_name}-linux-${architecture}.tar.gz"
+  cd mavkit-binaries/
+  tar -czf "mavkit-${architecture}.tar.gz" "mavkit-${architecture}/"
+  gitlab_upload "mavkit-${architecture}.tar.gz" "${gitlab_mavkit_package_name}-linux-${architecture}.tar.gz"
   cd ..
 done
 
@@ -76,14 +76,14 @@ echo "Upload debian packages"
 
 # Loop over debian packages
 for package in ${deb_packages}; do
-  gitlab_upload "${package}" "${package}" "${gitlab_octez_deb_package_url}"
+  gitlab_upload "${package}" "${package}" "${gitlab_mavkit_deb_package_url}"
 done
 
 echo "Upload rpm packages"
 
 # Loop over rpm packages
 for package in ${rpm_packages}; do
-  gitlab_upload "./${package}" "${package}" "${gitlab_octez_rpm_package_url}"
+  gitlab_upload "./${package}" "${package}" "${gitlab_mavkit_rpm_package_url}"
 done
 
 # Source code archives automatically published in a GitLab release do not have a static checksum,
@@ -91,7 +91,7 @@ done
 # => create and upload manually
 echo 'Upload tarball of source code and its checksums'
 
-source_tarball="${gitlab_octez_package_name}.tar.bz2"
+source_tarball="${gitlab_mavkit_package_name}.tar.bz2"
 
 # We are using the export-subst feature of git onfigured in .gitattributes, requires git version >= 2.35
 # https://git-scm.com/docs/git-archive

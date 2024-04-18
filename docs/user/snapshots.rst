@@ -43,13 +43,13 @@ and predecessor, as well as the resulting chain state. The import
 process does the same checks, recomputing and checking all the hashes
 it encounters in the snapshot.
 
-To bootstrap an Octez node from a file to an empty Tezos
+To bootstrap an Mavkit node from a file to an empty Tezos
 node directory (running this command from an already synchronised node
 will not work), run:
 
 .. code-block:: console
 
-   octez-node snapshot import <FILE> --block <BLOCK_HASH> [--data-dir <NODE_DIR>]
+   mavkit-node snapshot import <FILE> --block <BLOCK_HASH> [--data-dir <NODE_DIR>]
 
 The ``--block <BLOCK_HASH>`` option argument aims to verify that the
 block contained in the snapshot is the one that you are expecting to
@@ -83,7 +83,7 @@ This information is displayed by the following command:
 
 .. code-block:: console
 
-   octez-node snapshot info <FILE>
+   mavkit-node snapshot info <FILE>
 
 As can be seen in the snapshot information, a snapshot contains
 historical data corresponding to a given history mode, which can be:
@@ -118,7 +118,7 @@ point. This kind of snapshot can only be created from a ``full`` or an
 
 .. code-block:: console
 
-   octez-node snapshot export --block <BLOCK>
+   mavkit-node snapshot export --block <BLOCK>
 
 The ``<BLOCK>`` hint can be given as a *block hash*, a *block level*,
 an alias (*head*, *savepoint* or *checkpoint*) and a relative block
@@ -134,19 +134,19 @@ snapshot file name can be given as an additional argument. For example:
 
 .. code-block:: console
 
-   octez-node snapshot export recent_head_snapshot.full --block head
+   mavkit-node snapshot export recent_head_snapshot.full --block head
 
 .. note::
 
-   If your node's current storage was created with Octez v13.0 (or
+   If your node's current storage was created with Mavkit v13.0 (or
    earlier versions), it is not compatible with the context pruning
    storage layout, and therefore it is no longer possible to export a
    storage snapshot.
 
    In order to benefit from recent storage features and optimizations,
    it is strongly recommended to restart your node with the latest
-   Octez version and with a fresh, up-to-date storage -- either by
-   importing a recent snapshot (that is, exported by an Octez node
+   Mavkit version and with a fresh, up-to-date storage -- either by
+   importing a recent snapshot (that is, exported by an Mavkit node
    version >= v13.0), or by bootstrapping from scratch if this is not
    possible.
 
@@ -162,7 +162,7 @@ history.
 
 .. code-block:: console
 
-   octez-node snapshot export <FILE>.rolling --block <BLOCK_HASH> --rolling
+   mavkit-node snapshot export <FILE>.rolling --block <BLOCK_HASH> --rolling
 
 Snapshot file format and IPFS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

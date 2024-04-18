@@ -73,7 +73,7 @@ module Term = struct
             Lwt_lock_file.try_with_lock
               ~when_locked:(fun () ->
                 failwith
-                  "Failed to lock the data directory '%s'. Is a `octez-node` \
+                  "Failed to lock the data directory '%s'. Is a `mavkit-node` \
                    running?"
                   data_dir)
               ~filename:(Data_version.lock_file data_dir)

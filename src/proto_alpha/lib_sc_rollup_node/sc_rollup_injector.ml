@@ -36,29 +36,29 @@ let injector_operation_to_manager :
     L1_operation.t -> Protocol.Alpha_context.packed_manager_operation = function
   | Add_messages {messages} -> Manager (Sc_rollup_add_messages {messages})
   | Cement {rollup; commitment = _} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
       Manager (Sc_rollup_cement {rollup})
   | Publish {rollup; commitment} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
-      let commitment = Sc_rollup_proto_types.Commitment.of_octez commitment in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
+      let commitment = Sc_rollup_proto_types.Commitment.of_mavkit commitment in
       Manager (Sc_rollup_publish {rollup; commitment})
   | Refute {rollup; opponent; refutation} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
       let refutation =
-        Sc_rollup_proto_types.Game.refutation_of_octez refutation
+        Sc_rollup_proto_types.Game.refutation_of_mavkit refutation
       in
       Manager (Sc_rollup_refute {rollup; opponent; refutation})
   | Timeout {rollup; stakers} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
-      let stakers = Sc_rollup_proto_types.Game.index_of_octez stakers in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
+      let stakers = Sc_rollup_proto_types.Game.index_of_mavkit stakers in
       Manager (Sc_rollup_timeout {rollup; stakers})
   | Recover_bond {rollup; staker} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
       Manager (Sc_rollup_recover_bond {sc_rollup = rollup; staker})
   | Execute_outbox_message {rollup; cemented_commitment; output_proof} ->
-      let rollup = Sc_rollup_proto_types.Address.of_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.of_mavkit rollup in
       let cemented_commitment =
-        Sc_rollup_proto_types.Commitment_hash.of_octez cemented_commitment
+        Sc_rollup_proto_types.Commitment_hash.of_mavkit cemented_commitment
       in
       Manager
         (Sc_rollup_execute_outbox_message
@@ -70,29 +70,29 @@ let injector_operation_of_manager :
   function
   | Sc_rollup_add_messages {messages} -> Some (Add_messages {messages})
   | Sc_rollup_cement {rollup} ->
-      let rollup = Sc_rollup_proto_types.Address.to_octez rollup in
-      let commitment = Octez_smart_rollup.Commitment.Hash.zero in
+      let rollup = Sc_rollup_proto_types.Address.to_mavkit rollup in
+      let commitment = Mavkit_smart_rollup.Commitment.Hash.zero in
       (* Just for printing *)
       Some (Cement {rollup; commitment})
   | Sc_rollup_publish {rollup; commitment} ->
-      let rollup = Sc_rollup_proto_types.Address.to_octez rollup in
-      let commitment = Sc_rollup_proto_types.Commitment.to_octez commitment in
+      let rollup = Sc_rollup_proto_types.Address.to_mavkit rollup in
+      let commitment = Sc_rollup_proto_types.Commitment.to_mavkit commitment in
       Some (Publish {rollup; commitment})
   | Sc_rollup_refute {rollup; opponent; refutation} ->
-      let rollup = Sc_rollup_proto_types.Address.to_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.to_mavkit rollup in
       let refutation =
-        Sc_rollup_proto_types.Game.refutation_to_octez refutation
+        Sc_rollup_proto_types.Game.refutation_to_mavkit refutation
       in
       Some (Refute {rollup; opponent; refutation})
   | Sc_rollup_timeout {rollup; stakers} ->
-      let rollup = Sc_rollup_proto_types.Address.to_octez rollup in
-      let stakers = Sc_rollup_proto_types.Game.index_to_octez stakers in
+      let rollup = Sc_rollup_proto_types.Address.to_mavkit rollup in
+      let stakers = Sc_rollup_proto_types.Game.index_to_mavkit stakers in
       Some (Timeout {rollup; stakers})
   | Sc_rollup_execute_outbox_message {rollup; cemented_commitment; output_proof}
     ->
-      let rollup = Sc_rollup_proto_types.Address.to_octez rollup in
+      let rollup = Sc_rollup_proto_types.Address.to_mavkit rollup in
       let cemented_commitment =
-        Sc_rollup_proto_types.Commitment_hash.to_octez cemented_commitment
+        Sc_rollup_proto_types.Commitment_hash.to_mavkit cemented_commitment
       in
       Some (Execute_outbox_message {rollup; cemented_commitment; output_proof})
   | _ -> None

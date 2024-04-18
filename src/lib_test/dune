@@ -3,7 +3,7 @@
 
 (library
  (name tezos_test_helpers)
- (public_name octez-libs.test-helpers)
+ (public_name mavkit-libs.test-helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
   uri

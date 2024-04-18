@@ -102,11 +102,11 @@ poetry --version # should output 1.2.2
 [ "$(poetry --version)" = "Poetry (version 1.2.2)" ]
 
 ##
-## Test installing Octez python development dependencies
+## Test installing Mavkit python development dependencies
 ##
 git clone --depth 1 --branch "$BRANCH" https://gitlab.com/"$REPO".git tezos
 
-# [install octez python dev-dependencies]
+# [install mavkit python dev-dependencies]
 cd tezos
 poetry install
 

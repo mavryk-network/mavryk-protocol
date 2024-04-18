@@ -131,7 +131,7 @@ module Event_looper = struct
     Node.wait_for_full ?where daemon name (Daemon.nth_event n filter)
 end
 
-(** Defines several features to handle an Octez node
+(** Defines several features to handle an Mavkit node
     and wait for specific events. *)
 module Node = struct
   (** Instantiates a [Tezt.Node] with no open connection. *)

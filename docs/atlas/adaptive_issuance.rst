@@ -396,11 +396,11 @@ parameters need to be supplied. The new parameters are then applied
 
 ::
 
-   octez-client transfer 0 from <delegate> to  <delegate> --entrypoint set_delegate_parameters --arg "Pair <limit as int value in millionth)> (Pair <edge as int value in billionth> Unit)"
+   mavkit-client transfer 0 from <delegate> to  <delegate> --entrypoint set_delegate_parameters --arg "Pair <limit as int value in millionth)> (Pair <edge as int value in billionth> Unit)"
 
 or more conveniently::
 
-   octez-client set delegate parameters for  <delegate> --limit-of-staking-over-baking <value> --edge-of-baking-over-staking <value>
+   mavkit-client set delegate parameters for  <delegate> --limit-of-staking-over-baking <value> --edge-of-baking-over-staking <value>
 
 **On overstaking and overdelegation.** Note that if a delegate’s
 ``limit_of_staking_over_baking`` is exceeded (that is, the delegate is
@@ -436,21 +436,21 @@ contribute to their chosen delegate’s staking balance. Note that the
 
 ::
 
-   octez-client transfer <amount> from <staker> to <staker> --entrypoint stake
+   mavkit-client transfer <amount> from <staker> to <staker> --entrypoint stake
 
 or more conveniently::
 
-   octez-client stake <amount> for <staker>
+   mavkit-client stake <amount> for <staker>
 
 To *unstake* funds, a staker first submits an unstake request with the
 ``unstake`` pseudo-operation. This is implemented by transferring the
 chosen amount in tez to their ``unstake`` entry-point::
 
-   octez-client transfer <amount> from <staker> to <staker> --entrypoint unstake
+   mavkit-client transfer <amount> from <staker> to <staker> --entrypoint unstake
 
 or more conveniently::
 
-   octez-client unstake <amount|"everything"> for <staker>
+   mavkit-client unstake <amount|"everything"> for <staker>
 
 The requested amount will be **unstaked** but will remain **frozen**.
 After 7 cycles, unstaked frozen tokens are no longer considered at stake
@@ -462,11 +462,11 @@ making them spendable again. This is done using the ``finalize_unstake``
 entrypoint -– that is, by transferring 0 tez to their
 ``finalize_unstake`` entry-point::
 
-   octez-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake
+   mavkit-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake
 
 or more conveniently::
 
-   octez-client finalize unstake for <staker>
+   mavkit-client finalize unstake for <staker>
 
  In some circumstances, unstake and finalize can be done implicitly: any call
  to ``stake`` or ``unstake`` will implicitly finalize all currently finalizable pending

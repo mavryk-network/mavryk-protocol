@@ -1,8 +1,8 @@
-Octez Software Architecture
+Mavkit Software Architecture
 ===========================
 
-This page presents the software architecture of the most important tool in a Tezos network: the Tezos node, implemented in our case as the Octez node executable (``octez-node``).
-The Octez software architecture faithfully implements the :doc:`Tezos software architecture <../global/architecture>` principles.
+This page presents the software architecture of the most important tool in a Tezos network: the Tezos node, implemented in our case as the Mavkit node executable (``mavkit-node``).
+The Mavkit software architecture faithfully implements the :doc:`Tezos software architecture <../global/architecture>` principles.
 
 This page contains two sections. The first section, which should be
 readable by anyone, describes the main elements of Tezos from a
@@ -80,7 +80,7 @@ interoperable, and auto descriptive, using JSON schema.
 Software Architecture and Packages Relationship
 ------------------------------------------------
 The diagram below shows the main OPAM packages present in the source
-code of Tezos, and their dependencies. The ``tezos-`` or ``octez-`` prefixes have been
+code of Tezos, and their dependencies. The ``tezos-`` or ``mavkit-`` prefixes have been
 dropped for clarity.
 
 |Tezos source packages diagram|
@@ -93,46 +93,46 @@ blue, contains modules that bear no dependency to Unix, and can thus
 be compiled to JavaScript. External dependencies are not shown in this
 illustration.
 
-Note that many packages described below are grouped in a single one: :package:`octez-libs`.
-This includes packages as diverse as :package-api:`tezos-stdlib <octez-libs/Tezos_stdlib/index.html>`, :package-api:`tezos-base <octez-libs/Tezos_base/index.html>`, :package-api:`tezos-shell-services <octez-shell-libs/Tezos_shell_services/index.html>`, :package-api:`tezos-context <octez-libs/Tezos_context/index.html>`, etc.)
+Note that many packages described below are grouped in a single one: :package:`mavkit-libs`.
+This includes packages as diverse as :package-api:`tezos-stdlib <mavkit-libs/Tezos_stdlib/index.html>`, :package-api:`tezos-base <mavkit-libs/Tezos_base/index.html>`, :package-api:`tezos-shell-services <mavkit-shell-libs/Tezos_shell_services/index.html>`, :package-api:`tezos-context <mavkit-libs/Tezos_context/index.html>`, etc.)
 
 Base and below
 ~~~~~~~~~~~~~~
 
-At the center, the :package-api:`tezos-base <octez-libs/Tezos_base/index.html>` package is where
+At the center, the :package-api:`tezos-base <mavkit-libs/Tezos_base/index.html>` package is where
 the blockchain specific code starts. Above it in the figure (but below
 in terms of abstraction level) is the set of libraries
 that are used everywhere for basic operations.
 
- - :package-api:`tezos-stdlib <octez-libs/Tezos_stdlib/index.html>` contains a few extensions over the
+ - :package-api:`tezos-stdlib <mavkit-libs/Tezos_stdlib/index.html>` contains a few extensions over the
    OCaml standard library (a few string primitives, an ``Option``
    module, etc.), a few ``Lwt`` utilities, and a ``Compare`` module
    that implements monomorphic comparison operators.
- - :package-api:`tezos-error-monad <octez-libs/Tezos_error_monad/index.html>` is an in-house monadic
+ - :package-api:`tezos-error-monad <mavkit-libs/Tezos_error_monad/index.html>` is an in-house monadic
    interface to the OCaml ``('a, 'b) result`` type, that fixes the
    ``'b`` to an extensible type ``error`` (actually a list, to hold an
    error trace). When extending the type, programmers must also call
    the ``register_error`` function that registers a pretty printer and
    an encoding for serialization.
    A :doc:`tutorial<../developer/error_monad>` is available for this library.
- - :package-api:`tezos-rpc <octez-libs/Tezos_rpc/index.html>` provides the basics of Tezos' RPC service
+ - :package-api:`tezos-rpc <mavkit-libs/Tezos_rpc/index.html>` provides the basics of Tezos' RPC service
    mechanism. It provides combinators for building service hierarchies
    à la Ocsigen/Eliom, registering, and calling services. This module
    is based on :opam:`resto`, that allows for automatic
    generation of machine and human-readable descriptions of the hierarchy of
    services, including: the structure of URLs and the expected formats for input
    and output bodies, via the use of ``data_encoding``.
- - :package-api:`tezos-crypto <octez-libs/Tezos_crypto/index.html>` wraps the external cryptography
+ - :package-api:`tezos-crypto <mavkit-libs/Tezos_crypto/index.html>` wraps the external cryptography
    libraries that we use. We try to use minimal reference
    implementations, with as thin as possible bindings, and
    rely on libraries from the
    `HACL* project <https://github.com/hacl-star/hacl-star>`_,
    written and verified in the F* programming language, and extracted
    to C.
- - :package-api:`tezos-micheline <octez-libs/Tezos_micheline/index.html>` is the concrete syntax used by
+ - :package-api:`tezos-micheline <mavkit-libs/Tezos_micheline/index.html>` is the concrete syntax used by
    Michelson, the language of smart contracts. It mostly contains the
    generic, untyped AST, a printer, and a parser.
- - :package-api:`tezos-base <octez-libs/Tezos_base/index.html>` wraps all these modules in a common foundation
+ - :package-api:`tezos-base <mavkit-libs/Tezos_base/index.html>` wraps all these modules in a common foundation
    for all the other components of Tezos, and introduces the data
    structures of the blockchain (e.g. ``Block_hash``,
    ``Block_header``, ``Block_locator``, ``Fitness``, ``P2p_identity``)
@@ -152,26 +152,26 @@ The shell is the part of the node responsible for all communications,
 peer-to-peer and RPC, acting as a cocoon around the economic
 protocols.
 
-  - :package-api:`tezos-shell-services <octez-shell-libs/Tezos_shell_services/index.html>` contains the definition of the
+  - :package-api:`tezos-shell-services <mavkit-shell-libs/Tezos_shell_services/index.html>` contains the definition of the
     node's service hierarchy, and calling functions to use in the
     client (or any third party software). As this library is linked
     into the client to call the services in a type-safe way, only the
     description of services is done here. The registration of handlers
     is done in the rest of the node's implementation.
-  - :package-api:`tezos-rpc-http-client <octez-libs/Tezos_rpc_http_client/index.html>` and :package-api:`tezos-rpc-http-server <octez-libs/Tezos_rpc_http_server/index.html>`
+  - :package-api:`tezos-rpc-http-client <mavkit-libs/Tezos_rpc_http_client/index.html>` and :package-api:`tezos-rpc-http-server <mavkit-libs/Tezos_rpc_http_server/index.html>`
     use :opam:`cohttp` to implement the RPC
     over HTTP server and client, allowing to make actual use of
-    services declared using :package-api:`tezos-rpc <octez-libs/Tezos_rpc/index.html>`.
-  - :package-api:`tezos-p2p <octez-shell-libs/Tezos_p2p/index.html>` is the in-house peer-to-peer layer.
-  - :package-api:`tezos-store <octez-shell-libs/Tezos_store/index.html>` is the chain-data store that handles
+    services declared using :package-api:`tezos-rpc <mavkit-libs/Tezos_rpc/index.html>`.
+  - :package-api:`tezos-p2p <mavkit-shell-libs/Tezos_p2p/index.html>` is the in-house peer-to-peer layer.
+  - :package-api:`tezos-store <mavkit-shell-libs/Tezos_store/index.html>` is the chain-data store that handles
     on-disk block storage, snapshots exporting/importing and chain
     reconstruction.
-  - :package-api:`tezos-context <octez-libs/Tezos_context/index.html>` contains the raw versioned key-value store
+  - :package-api:`tezos-context <mavkit-libs/Tezos_context/index.html>` contains the raw versioned key-value store
     used for storing the ledger's context (one version per
     block). This is implemented using :opam:`irmin`.
-  - :package-api:`tezos-protocol-updater <octez-shell-libs/Tezos_protocol_updater/index.html>` maintains the table of available
+  - :package-api:`tezos-protocol-updater <mavkit-shell-libs/Tezos_protocol_updater/index.html>` maintains the table of available
     protocol versions, embedded or dynamically linked.
-  - :package-api:`tezos-shell <octez-shell-libs/Tezos_shell/index.html>` implements the scheduling of block
+  - :package-api:`tezos-shell <mavkit-shell-libs/Tezos_shell/index.html>` implements the scheduling of block
     validations, the mempool management, and the distributed database.
     A description is available in :doc:`this document <../shell/validation>`.
 
@@ -184,7 +184,7 @@ economic protocol, as a form of static sandboxing. It also generates a
 functorized version of the protocol, to make the execution of the
 protocol in an alternative environment possible.
 
-  - :package-api:`tezos-protocol-environment <octez-proto-libs/Tezos_protocol_environment/index.html>` contains the protocol
+  - :package-api:`tezos-protocol-environment <mavkit-proto-libs/Tezos_protocol_environment/index.html>` contains the protocol
     generic environment, that is the API of the modules that are available to
     the economic protocol and the exported protocol API. A review of this
     sandbox is available :doc:`here <../shell/protocol_environment>`.
@@ -195,7 +195,7 @@ protocol in an alternative environment possible.
     are dummy ones which can be used when only the types and noncontextual
     functions of the protocol are needed.
 
-  - :package:`octez-protocol-compiler` is the compiler for economic
+  - :package:`mavkit-protocol-compiler` is the compiler for economic
     protocols: an alternative driver to the OCaml
     :opam:`ocaml-compiler-libs` that typechecks within the protocol
     environment, and performs some more checks on the protocol code.
@@ -205,7 +205,7 @@ protocol in an alternative environment possible.
     standard library as a parameter. This parameter can be filled with
     any of the implementations described in the two points below.
 
-  - :package-api:`tezos-shell-context <octez-shell-libs/Tezos_shell_context/index.html>` implements a context representation
+  - :package-api:`tezos-shell-context <mavkit-shell-libs/Tezos_shell_context/index.html>` implements a context representation
     that is accepted by the protocol environment. The node uses this
     instance to read and write data on disk.
 
@@ -220,7 +220,7 @@ protocol in an alternative environment possible.
 The Embedded Economic Protocols
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Three kinds of economic protocols are included in the main Octez repository.
+Three kinds of economic protocols are included in the main Mavkit repository.
 
   - The genesis protocol. :package:`tezos-protocol-genesis`
     (:package-api:`tezos-embedded-protocol-genesis <tezos-protocol-genesis/Tezos_embedded_protocol_genesis/index.html>`) is the protocol of
@@ -254,20 +254,20 @@ The client is split into many packages, to enforce three separation
 lines: shell vs economic protocol, Unix dependent vs JavaScript
 compatible, and library vs command-line interface.
 
-  - :package-api:`tezos-client-base <octez-shell-libs/Tezos_client_base/index.html>` defines the client context, which is
+  - :package-api:`tezos-client-base <mavkit-shell-libs/Tezos_client_base/index.html>` defines the client context, which is
     an object whose methods allow for: accessing a wallet of keys,
     interacting via the user, making RPC calls, and signing data using
     signer plug-ins. Most of them, including RPC calling functions from
-    :package-api:`tezos-shell-services <octez-shell-libs/Tezos_shell_services/index.html>` and
+    :package-api:`tezos-shell-services <mavkit-shell-libs/Tezos_shell_services/index.html>` and
     :package:`tezos-protocol-alpha`, are abstracted over this object
     type. That way, it is possible to use the same code for different
     platforms or toolkits.
-  - :package-api:`tezos-client-alpha <octez-protocol-alpha-libs/Tezos_client_alpha/index.html>` provides some functions to perform
+  - :package-api:`tezos-client-alpha <mavkit-protocol-alpha-libs/Tezos_client_alpha/index.html>` provides some functions to perform
     the operations of protocol Alpha using the wallet and signers from
     the client context.
   - :package:`tezos-client-genesis` contains the basic activator
     commands available on the genesis protocol.
-  - :package-api:`tezos-client-base-unix <octez-shell-libs/Tezos_client_base_unix/index.html>` implements configuration file
+  - :package-api:`tezos-client-base-unix <mavkit-shell-libs/Tezos_client_base_unix/index.html>` implements configuration file
     and wallet storage in Unix files, user interaction via the Unix
     console, and terminal based signer plug-ins.
 
@@ -281,53 +281,53 @@ run them.
  - :src:`tezt/`:
    end-to-end tests as Tezt tests that e.g. launch local sandboxed nodes
    and performs various tasks using the client
- - :package-api:`tezos-p2p <octez-shell-libs/Tezos_p2p/index.html>`
+ - :package-api:`tezos-p2p <mavkit-shell-libs/Tezos_p2p/index.html>`
    (in directory :src:`src/lib_p2p/test/`):
    tests of the peer-to-peer layer, independently of the Tezos gossip
    protocol (establishing connections, propagating peers, etc.)
- - :package-api:`tezos-protocol-environment <octez-proto-libs/Tezos_protocol_environment/index.html>`
+ - :package-api:`tezos-protocol-environment <mavkit-proto-libs/Tezos_protocol_environment/index.html>`
    (in directory :src:`src/lib_protocol_environment/test/`):
    tests for the in-memory context implementation.
- - :package-api:`tezos-shell <octez-shell-libs/Tezos_shell/index.html>`
+ - :package-api:`tezos-shell <mavkit-shell-libs/Tezos_shell/index.html>`
    (in directory :src:`src/lib_shell/test/`):
    tests for the chain data storage.
- - :package-api:`tezos-stdlib <octez-libs/Tezos_stdlib/index.html>`
+ - :package-api:`tezos-stdlib <mavkit-libs/Tezos_stdlib/index.html>`
    (in directory :src:`src/lib_stdlib/test/`):
    tests for the basic data structures.
- - :package-api:`tezos-context <octez-libs/Tezos_context/index.html>`
+ - :package-api:`tezos-context <mavkit-libs/Tezos_context/index.html>`
    (in directory :src:`src/lib_context/test/`):
    tests for the versioned key-value context.
- - :package-api:`tezos-store <octez-shell-libs/Tezos_store/index.html>`
+ - :package-api:`tezos-store <mavkit-shell-libs/Tezos_store/index.html>`
    (in directory :src:`src/lib_store/unix/test/`):
    tests for the on-disk store.
  - :package:`tezos-protocol-alpha`
    (in directory :src:`src/proto_alpha/lib_protocol/test/`):
    tests of the Alpha protocol (without launching a node).
- - :package-api:`tezos-crypto <octez-libs/Tezos_crypto/index.html>`
+ - :package-api:`tezos-crypto <mavkit-libs/Tezos_crypto/index.html>`
    (in directory :src:`src/lib_crypto/test/`):
    tests for the in-house merkle trees.
 
 The Final Executables
 ~~~~~~~~~~~~~~~~~~~~~
 
-The Octez executables are generated from packages such as the following ones (for the complete list of binaries, see :ref:`tezos_binaries`):
+The Mavkit executables are generated from packages such as the following ones (for the complete list of binaries, see :ref:`tezos_binaries`):
 
-  - :package:`octez-node` provides the node launcher binary
-    ``octez-node``. All the algorithmic being implemented in the
+  - :package:`mavkit-node` provides the node launcher binary
+    ``mavkit-node``. All the algorithmic being implemented in the
     shell, this package only implements the node's CLI. It also
     provides the sandboxed node shell script launcher (see the main
     readme).
-  - :package:`octez-client` provides the ``octez-client`` and
-    ``octez-admin-client`` binaries. The former contains a small
+  - :package:`mavkit-client` provides the ``mavkit-client`` and
+    ``mavkit-admin-client`` binaries. The former contains a small
     command line wallet, the latter an administration tool for the
     node. It also provides a shell script that configures a shell
     environment to interact with a sandboxed node.
-  - :package:`octez-baker-alpha` provides the ``octez-baker-alpha``
+  - :package:`mavkit-baker-alpha` provides the ``mavkit-baker-alpha``
     binary.
-  - :package:`octez-accuser-alpha` provides the ``octez-accuser-alpha``
+  - :package:`mavkit-accuser-alpha` provides the ``mavkit-accuser-alpha``
     binary.
-  - :package:`octez-protocol-compiler` provides the
-    ``octez-protocol-compiler`` binary that is used by the node to
+  - :package:`mavkit-protocol-compiler` provides the
+    ``mavkit-protocol-compiler`` binary that is used by the node to
     compile new protocols on the fly, and that can be used for
     developing new protocols.
 

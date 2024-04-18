@@ -262,7 +262,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->
@@ -278,7 +278,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; "internal"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->

@@ -164,7 +164,7 @@
   },
   {
     "file": "p2p.ml",
-    "title": "Test [octez-admin-client p2p stat]",
+    "title": "Test [mavkit-admin-client p2p stat]",
     "tags": [
       "p2p",
       "connections",

@@ -54,7 +54,7 @@ FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
 COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin /home/tezos/bin
 RUN rm /home/tezos/bin/*.sh && chmod +rw /home/tezos/bin/* && strip /home/tezos/bin/*
 # hadolint ignore=DL3003,DL4006,SC2046
-RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+RUN cd /home/tezos/bin && for b in $(ls mavkit*); do ln -s "$b" $(echo "$b" | sed 's/^mavkit/tezos/'); done
 
 
 FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare

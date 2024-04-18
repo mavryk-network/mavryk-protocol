@@ -3,23 +3,23 @@
 
 (library
  (name tezos_alpha_test_helpers)
- (public_name octez-protocol-alpha-libs.test-helpers)
+ (public_name mavkit-protocol-alpha-libs.test-helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
   qcheck-alcotest
-  octez-libs.test-helpers
-  octez-libs.base
-  octez-libs.micheline
-  octez-libs.stdlib-unix
+  mavkit-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-libs.stdlib-unix
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.client
   tezos-protocol-alpha.parameters
-  octez-proto-libs.protocol-environment
-  octez-protocol-alpha-libs.plugin
-  octez-shell-libs.shell-services
-  octez-libs.plompiler
-  octez-libs.crypto-dal
-  octez-protocol-alpha-libs.smart-rollup)
+  mavkit-proto-libs.protocol-environment
+  mavkit-protocol-alpha-libs.plugin
+  mavkit-shell-libs.shell-services
+  mavkit-libs.plompiler
+  mavkit-libs.crypto-dal
+  mavkit-protocol-alpha-libs.smart-rollup)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

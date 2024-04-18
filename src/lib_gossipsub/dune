@@ -3,18 +3,18 @@
 
 (library
  (name tezos_gossipsub)
- (public_name octez-libs.tezos-gossipsub)
+ (public_name mavkit-libs.tezos-gossipsub)
  (instrumentation (backend bisect_ppx))
  (libraries
   ringo
   aches
   fmt
-  octez-libs.error-monad
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-libs.version)
+  mavkit-libs.error-monad
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-libs.version)
  (flags
   (:standard)
   -open Tezos_error_monad

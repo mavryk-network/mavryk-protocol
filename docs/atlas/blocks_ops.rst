@@ -264,12 +264,12 @@ The ``Failing_noop`` operation is not executable in the protocol:
 Rather, the ``Failing_noop`` operation allows
 to sign an arbitrary string, without introducing an operation that could be misinterpreted in the protocol.
 
-The Octez client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
+The Mavkit client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
 operation from the message that is being signed or checked.
 
 ::
 
-   octez-client sign message "hello world" for <account>
+   mavkit-client sign message "hello world" for <account>
 
-   octez-client check that message "hello world" was signed by <account> to
+   mavkit-client check that message "hello world" was signed by <account> to
    produce <signature>

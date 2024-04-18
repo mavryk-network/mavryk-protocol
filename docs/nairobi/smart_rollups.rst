@@ -107,7 +107,7 @@ kernel.
 
 There are two ways for end-users to push an external message to the
 rollups inbox: first, they can inject the dedicated Layer 1 operation
-using the Octez client (see command ``send smart rollup message
+using the Mavkit client (see command ``send smart rollup message
 <messages> from <src>``); second, they can use the batcher
 of a smart rollup node. More details can be found in :doc:`../shell/smart_rollup_node`.
 
@@ -193,7 +193,7 @@ protocol. Notice that the PVM implementation is meant for
 verification, not performance: for this reason, a rollup node does not
 normally run a PVM to process inputs but a **fast execution engine**
 (e.g., based on the Wasmer runtime for the WASM PVM in the case of the
-rollup node distributed with Octez). This fast execution engine
+rollup node distributed with Mavkit). This fast execution engine
 implements the exact same semantics as the PVM. The PVM is only ever
 used by the rollup node when it needs to produce a proof during the
 last step of the refutation mechanism.

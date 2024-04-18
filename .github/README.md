@@ -1,6 +1,6 @@
-# Tezos Octez GitHub Mirror
+# Tezos Mavkit GitHub Mirror
 
-This is the GitHub mirror of the Octez Git repository.
+This is the GitHub mirror of the Mavkit Git repository.
 
 The master repository is here: https://gitlab.com/tezos/tezos
 

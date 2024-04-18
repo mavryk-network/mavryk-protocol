@@ -4,13 +4,13 @@
 (library
  (name get_contracts_lib)
  (libraries
-  octez-libs.micheline
-  octez-libs.base
-  octez-shell-libs.store
+  mavkit-libs.micheline
+  mavkit-libs.base
+  mavkit-shell-libs.store
   tezos-protocol-001-PtAtLas.protocol
-  octez-protocol-001-PtAtLas-libs.client
+  mavkit-protocol-001-PtAtLas-libs.client
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.client)
+  mavkit-protocol-alpha-libs.client)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -21,8 +21,8 @@
 (executable
  (name get_contracts)
  (libraries
-  octez-libs.micheline
-  octez-libs.base
+  mavkit-libs.micheline
+  mavkit-libs.base
   get_contracts_lib)
  (link_flags
   (:standard)

@@ -44,7 +44,7 @@ sudo apt-get install -y tezos-node
 sudo apt-get install -y tezos-baker-ptnairob
 sudo apt-get install -y tezos-accuser-ptnairob
 # [test executables]
-octez-client --version
-octez-node --version
-octez-baker-PtNairob --version
-octez-accuser-PtNairob --version
+mavkit-client --version
+mavkit-node --version
+mavkit-baker-PtNairob --version
+mavkit-accuser-PtNairob --version

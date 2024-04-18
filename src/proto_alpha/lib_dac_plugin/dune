@@ -3,15 +3,15 @@
 
 (library
  (name tezos_dac_alpha)
- (public_name octez-protocol-alpha-libs.dac)
+ (public_name mavkit-protocol-alpha-libs.dac)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-protocol-compiler.registerer
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-protocol-compiler.registerer
+  mavkit-libs.stdlib-unix
   tezos-dac-lib
   tezos-dac-client-lib
-  octez-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.client
   tezos-protocol-alpha.embedded-protocol
   tezos-protocol-alpha.protocol)
  (inline_tests (flags -verbose) (modes native))

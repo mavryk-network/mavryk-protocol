@@ -241,11 +241,11 @@ defined and how it reaches the scope of your code.
 
 **From your code, working back to the definitions.**
 
-In most of Octez, the ``Error_monad`` module is available. Specifically, it is
+In most of Mavkit, the ``Error_monad`` module is available. Specifically, it is
 available in all the packages that depend on ``tezos-base``. This covers
 everything except the protocols and a handful of low-level libraries.
 
-In those part of Octez, the build files include
+In those part of Mavkit, the build files include
 ``-open Tezos_base__TzPervasives``.
 
 The module ``Tezos_base__TzPervasives`` is defined by the compilation
@@ -340,7 +340,7 @@ You can treat values of type ``result`` as data of that data-type. In
 this case, you construct and match the values, you pass them around,
 etc.
 
-Note however that, in Octez, we also use the ``result`` type as a
+Note however that, in Mavkit, we also use the ``result`` type as a
 control-flow mechanism. Specifically, in conjunction with the ``let*``
 binding operator, the ``result`` type has a continue/abort meaning.
 
@@ -403,7 +403,7 @@ wraps any raised exception inside an ``Error`` constructor.
 In depth discussion: pros and cons of ``result`` compared to other error management techniques
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Octez, we use ``result`` and the specialised ``tzresult``. For this
+In Mavkit, we use ``result`` and the specialised ``tzresult``. For this
 reason, this tutorial is focused on ``result``/``tzresult``. However,
 there are other techniques for handling errors. This section compares
 them briefly.
@@ -489,7 +489,7 @@ following code fragment?
 | Cons: a single kind of errors means it cannot be very informative.
 
 Option is a common enough strategy that the ``Option_syntax`` and
-``Lwt_option_syntax`` modules are available in the Octez source.
+``Lwt_option_syntax`` modules are available in the Mavkit source.
 
 **fallback**
 

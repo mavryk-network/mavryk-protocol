@@ -1,7 +1,7 @@
 .bin_packages_common:
    variables:
      TARGET: ""
-     OCTEZ_PKGMAINTAINER: "nomadic-labs"
+     MAVKIT_PKGMAINTAINER: "nomadic-labs"
      BLST_PORTABLE: "yes"
      ARCH: "amd64"
    script:

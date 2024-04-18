@@ -3,23 +3,23 @@
 
 (executable
  (name main_signer)
- (public_name octez-signer)
- (package octez-signer)
+ (public_name mavkit-signer)
+ (package mavkit-signer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.clic
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.client-commands
-  octez-shell-libs.signer-services
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-libs.rpc-http-client-unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-shell-libs.signer-backends.unix)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.clic
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.client-commands
+  mavkit-shell-libs.signer-services
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-libs.rpc-http-client-unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-shell-libs.signer-backends.unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)

@@ -2,10 +2,10 @@
 
 .. _howtouse:
 
-Getting started with Octez
+Getting started with Mavkit
 ==========================
 
-This short tutorial illustrates the use of the various Octez binaries as well
+This short tutorial illustrates the use of the various Mavkit binaries as well
 as some concepts about the network.
 
 .. _tezos_binaries:
@@ -15,45 +15,45 @@ The Binaries
 
 After a successful compilation, you should have the following binaries:
 
-- ``octez-node``: the Octez daemon itself (see `Node`_);
-- ``octez-client``: a command-line client and basic wallet (see `Client`_);
-- ``octez-admin-client``: administration tool for the node (see :ref:`octez-admin-client`);
-- ``octez-{baker,accuser}-*``: daemons to bake and accuse on the Tezos network (see :doc:`howtorun`);
-- ``octez-signer``: a client to remotely sign operations or blocks
+- ``mavkit-node``: the Mavkit daemon itself (see `Node`_);
+- ``mavkit-client``: a command-line client and basic wallet (see `Client`_);
+- ``mavkit-admin-client``: administration tool for the node (see :ref:`mavkit-admin-client`);
+- ``mavkit-{baker,accuser}-*``: daemons to bake and accuse on the Tezos network (see :doc:`howtorun`);
+- ``mavkit-signer``: a client to remotely sign operations or blocks
   (see :ref:`signer`);
-- ``octez-smart-rollup-{client,node}-*``: executables for using and running a smart rollup as Layer 2 (see :doc:`../active/smart_rollups`)
-- ``octez-smart-rollup-wasm-debugger``: debugger for smart rollup kernels (see :doc:`../active/smart_rollups`)
-- ``octez-proxy-server``: a readonly frontend to ``octez-node`` designed to lower the load of full nodes (see :doc:`../user/proxy-server`)
-- ``octez-codec``: a utility for documenting the data encodings and for performing data encoding/decoding (see `Codec`_)
-- ``octez-protocol-compiler``: a domain-specific compiler for Tezos protocols (see `Protocol compiler`_)
-- ``octez-snoop``: a tool for modeling the performance of any piece of OCaml code, based on benchmarking (see :doc:`../developer/snoop`)
+- ``mavkit-smart-rollup-{client,node}-*``: executables for using and running a smart rollup as Layer 2 (see :doc:`../active/smart_rollups`)
+- ``mavkit-smart-rollup-wasm-debugger``: debugger for smart rollup kernels (see :doc:`../active/smart_rollups`)
+- ``mavkit-proxy-server``: a readonly frontend to ``mavkit-node`` designed to lower the load of full nodes (see :doc:`../user/proxy-server`)
+- ``mavkit-codec``: a utility for documenting the data encodings and for performing data encoding/decoding (see `Codec`_)
+- ``mavkit-protocol-compiler``: a domain-specific compiler for Tezos protocols (see `Protocol compiler`_)
+- ``mavkit-snoop``: a tool for modeling the performance of any piece of OCaml code, based on benchmarking (see :doc:`../developer/snoop`)
 
 The daemons other than the node are suffixed with the name of the protocol they are
 bound to.
 More precisely, the suffix consists of the first 8 characters of the protocol hash; except for protocol Alpha, for which the suffix is simply ``-alpha``.
-For instance, ``octez-baker-PtNairob`` is the baker
-for the Nairobi protocol, and ``octez-baker-alpha`` is the baker
+For instance, ``mavkit-baker-PtNairob`` is the baker
+for the Nairobi protocol, and ``mavkit-baker-alpha`` is the baker
 of the development protocol.
-The ``octez-node`` daemon is not suffixed by any protocol name, because it is independent of the economic protocol. See also the `Node's Protocol`_ section below.
+The ``mavkit-node`` daemon is not suffixed by any protocol name, because it is independent of the economic protocol. See also the `Node's Protocol`_ section below.
 
 
 Read The Manual
 ---------------
 
-All the Octez binaries provide the ``--help`` option to display information about their usage, including the available options and the possible parameters.
+All the Mavkit binaries provide the ``--help`` option to display information about their usage, including the available options and the possible parameters.
 
 Additionally, most of the above binaries (i.e., all but the node, the validator, and the compiler) provide a textual manual that can be obtained with the command ``man``,
 whose verbosity can be increased with ``-v``, for example::
 
-    octez-client man -v 3
+    mavkit-client man -v 3
 
 It is also possible to get information on a specific command in the manual with ``man <command>``::
 
-   octez-client man set
+   mavkit-client man set
 
 To see the usage of one specific command, you may also type the command without arguments, which display its possible completions and options::
 
-   octez-client transfer
+   mavkit-client transfer
 
 .. warning::
 
@@ -73,17 +73,17 @@ To see the usage of one specific command, you may also type the command without 
         Usage:
           [...]
 
-.. _octez_client_protocol:
+.. _mavkit_client_protocol:
 
 To make the client command behave as for a protocol other than that used by the node (or even when not connected to a node), use the option ``--protocol`` (or ``-p``), e.g.::
 
-    octez-client --protocol ProtoALphaAL man transfer
+    mavkit-client --protocol ProtoALphaAL man transfer
 
 Note that you can get the list of protocols known to the client with::
 
-    octez-client list understood protocols
+    mavkit-client list understood protocols
 
-The full command line documentation of the Octez binaries supporting the ``man`` command is also available
+The full command line documentation of the Mavkit binaries supporting the ``man`` command is also available
 online: :doc:`../shell/cli-commands`.
 
 Node
@@ -92,7 +92,7 @@ Node
 The node is the main actor of the Tezos blockchain and it has two main
 functions: running the gossip network and updating the context.
 The gossip network is where all Tezos nodes exchange blocks and
-operations with each other (see :ref:`octez-admin-client` to monitor
+operations with each other (see :ref:`mavkit-admin-client` to monitor
 p2p connections).
 Using this peer-to-peer network, an operation originated by a user can
 hop several times through other nodes until it finds its way in a
@@ -110,18 +110,18 @@ disseminating this information to build a consensus across the
 network.
 
 Other than passively observing the network, your node can also inject
-its own new operations when instructed by the ``octez-client`` and even
-send new blocks when guided by the ``octez-baker-*``.
+its own new operations when instructed by the ``mavkit-client`` and even
+send new blocks when guided by the ``mavkit-baker-*``.
 The node has also a view of the multiple chains that may exist
 concurrently and selects the best one based on its fitness (see
 :doc:`../active/consensus`).
 
 .. note::
 
-   The ``octez-node`` uses (unless the option ``--singleprocess`` is
+   The ``mavkit-node`` uses (unless the option ``--singleprocess`` is
    given) an auxiliary daemon in order to validate, apply and compute
    the resulting context of blocks, in parallel to its main
-   process. Thus, an ``octez-validator`` process can appear while
+   process. Thus, an ``mavkit-validator`` process can appear while
    monitoring the active processes of the machine.
 
 Node Identity
@@ -130,7 +130,7 @@ Node Identity
 First, we need to generate a new identity for the node to
 connect to the network::
 
-    octez-node identity generate
+    mavkit-node identity generate
 
 .. note::
 
@@ -206,7 +206,7 @@ internet. With the following command, it is available uniquely on the
 
 ::
 
-   octez-node run --rpc-addr 127.0.0.1
+   mavkit-node run --rpc-addr 127.0.0.1
 
 Node configuration
 ~~~~~~~~~~~~~~~~~~
@@ -221,7 +221,7 @@ Many options of the node can be configured when running the node:
 
 The list of configurable options can be obtained using the following command::
 
-    octez-node run --help
+    mavkit-node run --help
 
 You can read more about the :doc:`node configuration <../user/node-configuration>` and its :ref:`private mode <private-mode>`.
 
@@ -239,23 +239,23 @@ Putting together all the above instructions, you may want to run a node as follo
     # Download a snapshot for your target network, e.g. <test-net>:
     wget <snapshot-url> -O <snapshot-file>
     # Configure the node for running on <test-net>:
-    octez-node config init --data-dir ~/.tezos-node-<test-net> --network <test-net>
+    mavkit-node config init --data-dir ~/.tezos-node-<test-net> --network <test-net>
     # Import the snapshot into the node data directory:
-    octez-node snapshot import --data-dir ~/.tezos-node-<test-net> --block <block-hash> <snapshot-file>
+    mavkit-node snapshot import --data-dir ~/.tezos-node-<test-net> --block <block-hash> <snapshot-file>
     # Run the node:
-    octez-node run --data-dir ~/.tezos-node-<test-net> --rpc-addr 127.0.0.1
+    mavkit-node run --data-dir ~/.tezos-node-<test-net> --rpc-addr 127.0.0.1
 
 .. _howtouse_tezos_client:
 
 Client
 ------
 
-Octez client can be used to interact with the node, it can query its
+Mavkit client can be used to interact with the node, it can query its
 status or ask the node to perform some actions.
 For example, after starting your node you can check if it has finished
 synchronizing (see :doc:`../shell/sync`) using::
 
-   octez-client bootstrapped
+   mavkit-client bootstrapped
 
 This call will hang and return only when the node is synchronized
 (recall that this is much faster when starting a node from a snapshot).
@@ -263,7 +263,7 @@ Once the above command returns,
 we can check what is the current timestamp of the head of the
 chain (time is in UTC so it may differ from your local time)::
 
-   octez-client get timestamp
+   mavkit-client get timestamp
 
 You can also use the above command before the node is bootstrapped, from another terminal.
 However, recall that the commands available on the client depend on the specific
@@ -279,11 +279,11 @@ A Simple Wallet
 The client is also a basic wallet. We can, for example, generate a new pair of keys, which can be used locally
 with the alias *alice*::
 
-      $ octez-client gen keys alice
+      $ mavkit-client gen keys alice
 
 To check the account (also called a contract) for Alice has been created::
 
-      $ octez-client list known contracts
+      $ mavkit-client list known contracts
 
 You will notice that the client data directory (by default, ``~/.tezos-client``) has been populated with
 3 files ``public_key_hashs``, ``public_keys`` and ``secret_keys``.
@@ -299,7 +299,7 @@ contracts, which have the form *KT1…*.
 Notice that by default, the keys were stored unencrypted, which is fine in our test example.
 In more realistic scenarios, you should supply the option ``--encrypted`` when generating a new account::
 
-      $ octez-client gen keys bob --encrypted
+      $ mavkit-client gen keys bob --encrypted
 
 Tezos supports four different ECC (`Elliptic-Curve Cryptography <https://en.wikipedia.org/wiki/Elliptic-curve_cryptography>`_) schemes: *Ed25519*, *secp256k1* (the
 one used in Bitcoin), *P-256* (also called *secp256r1*), and *BLS* (variant
@@ -338,7 +338,7 @@ the network, so that we can inspect its receipt.
 
 Let's try::
 
-  octez-client transfer 1 from alice to bob --dry-run
+  mavkit-client transfer 1 from alice to bob --dry-run
 
   Fatal error:
     The operation will burn ṁ0.257 which is higher than the configured burn cap (ṁ0).
@@ -356,7 +356,7 @@ Because storing an address requires burning ṁ0.257 and the client has
 a default of 0, we need to explicitly set a cap on the amount that we
 allow to burn::
 
-  octez-client transfer 1 from alice to bob --dry-run --burn-cap 0.257
+  mavkit-client transfer 1 from alice to bob --dry-run --burn-cap 0.257
 
 This should do it and you should see a rather long receipt being
 produced, here's an excerpt::
@@ -410,7 +410,7 @@ more costs being added on top of the transfer and the burn: *fees*.
 To encourage a baker to include our operation, and in general
 to pay for the cost of running the blockchain, each operation usually
 includes a fee that goes to the baker.
-Fees are variable over time and depend on many factors but the Octez
+Fees are variable over time and depend on many factors but the Mavkit
 client selects a default for us.
 
 The last important bit of our receipt is the balance updates that
@@ -459,7 +459,7 @@ In Tezos there are two kinds of accounts: *implicit accounts* and *smart contrac
 
 Let's originate our first contract and call it *id*::
 
-    octez-client originate contract id transferring 1 from alice \
+    mavkit-client originate contract id transferring 1 from alice \
                  running ./michelson_test_scripts/attic/id.tz \
                  --init '"hello"' --burn-cap 0.4
 
@@ -509,7 +509,7 @@ abuse and encourage lean programs.
 Let's see what calling a program with a new argument would look like
 with the ``--dry-run`` option::
 
-   octez-client transfer 0 from alice to id --arg '"world"' --dry-run
+   mavkit-client transfer 0 from alice to id --arg '"world"' --dry-run
 
 The transaction would successfully update the storage but this time it
 wouldn't cost us anything more than the fee, the reason is that the
@@ -535,7 +535,7 @@ Note that the storage limit sets an upper bound to the storage size *difference*
 
 ::
 
-   octez-client transfer 0 from alice to id --arg '"world"' \
+   mavkit-client transfer 0 from alice to id --arg '"world"' \
                                             --gas-limit 11375 \
                                             --storage-limit 0
 
@@ -590,7 +590,7 @@ make sure that the node is listening on the right ports and that the ports are
 open.
 For example the ``get timestamp`` command above is a shortcut for::
 
-   octez-client rpc get /chains/main/blocks/head/header/shell
+   mavkit-client rpc get /chains/main/blocks/head/header/shell
 
 The client tries to simplify common tasks as much as possible, however
 if you want to query the node for more specific information you'll
@@ -602,7 +602,7 @@ For example to check the value of important
 :ref:`constants <protocol_constants>` in Tezos, which may differ between Mainnet and other
 :ref:`test networks<test-networks>`, you can use::
 
-   octez-client rpc get /chains/main/blocks/head/context/constants | jq
+   mavkit-client rpc get /chains/main/blocks/head/context/constants | jq
    {
      "proof_of_work_nonce_size": 8,
      "nonce_length": 32,
@@ -612,11 +612,11 @@ For example to check the value of important
 Another interesting use of RPCs is to inspect the receipts of the
 operations of a block::
 
-  octez-client rpc get /chains/main/blocks/head/operations
+  mavkit-client rpc get /chains/main/blocks/head/operations
 
 It is also possible to review the receipt of the whole block::
 
-  octez-client rpc get /chains/main/blocks/head/metadata
+  mavkit-client rpc get /chains/main/blocks/head/metadata
 
 An interesting block receipt is the one produced at the end of a
 cycle as many delegates receive back part of their unfrozen accounts.
@@ -632,9 +632,9 @@ In this short tutorial we will not use some other binaries, but let as briefly r
 Codec
 ~~~~~
 
-The Octez codec (``octez-codec``) is a utility that:
+The Mavkit codec (``mavkit-codec``) is a utility that:
 
-- provides documentation for all the encodings used in the ``octez-node`` (and other binaries), and
+- provides documentation for all the encodings used in the ``mavkit-node`` (and other binaries), and
 - allows to convert from JSON to binary and vice-versa for all these encodings.
 
 It is meant to be used by developers for tests, for generating documentation when writing libraries that share data with the node, for light scripting, etc.
@@ -643,22 +643,22 @@ For more details on its usage, refer to its :ref:`online manual <codec_manual>` 
 Protocol compiler
 ~~~~~~~~~~~~~~~~~
 
-The protocol compiler (``octez-protocol-compiler``) can compile protocols within the limited environment that the shell provides.
+The protocol compiler (``mavkit-protocol-compiler``) can compile protocols within the limited environment that the shell provides.
 This environment is limited to a restricted set of libraries in order to constrain the possible behavior of the protocols.
 
 It is meant to be used:
 
 - by developers to compile the protocol under development,
 - by the packaging process to compile protocols that are pre-linked in the binaries,
-- by the Octez node when there is an on-chain update to a protocol that is not pre-linked with the binary.
+- by the Mavkit node when there is an on-chain update to a protocol that is not pre-linked with the binary.
 
 Summary
 -------
 
 In this tutorial, you have learned:
 
-- to start an Octez node and set up its basic configuration;
-- to use the Octez client to create implicit accounts and do transfers between them;
+- to start an Mavkit node and set up its basic configuration;
+- to use the Mavkit client to create implicit accounts and do transfers between them;
 - to deploy and interact with a simple predefined smart contract;
 - to distinguish between the various costs associated to transactions such as burnt tez, fees, storage costs, and gas consumption;
 - some further concepts such as transaction validation and the RPC interface;

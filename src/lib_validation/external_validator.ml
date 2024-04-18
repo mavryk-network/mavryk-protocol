@@ -351,7 +351,7 @@ let run ~readonly ~using_std_channel input output =
               (* This is a special case added for Hangzhou that could
                  be removed once the successor of Hangzhou will be
                  activated. This behavior is here to keep the
-                 compatibility with the version Octez v11 which has a
+                 compatibility with the version Mavkit v11 which has a
                  buggy behavior with Hangzhou. *)
               (err, None)
           | Error _ as err -> (err, cache)

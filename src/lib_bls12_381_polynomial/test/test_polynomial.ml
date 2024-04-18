@@ -27,14 +27,14 @@ module Fr = Bls12_381.Fr
 module G1 = Bls12_381.G1
 module Poly = Polynomial.MakeUnivariate (Fr)
 
-module Fr_carray = Octez_bls12_381_polynomial.Internal_for_tests.Fr_carray
+module Fr_carray = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray
 
-module Domain = Octez_bls12_381_polynomial.Internal_for_tests.Domain_unsafe
+module Domain = Mavkit_bls12_381_polynomial.Internal_for_tests.Domain_unsafe
 
 module Evaluations =
-  Octez_bls12_381_polynomial.Internal_for_tests.Evaluations_unsafe
+  Mavkit_bls12_381_polynomial.Internal_for_tests.Evaluations_unsafe
 
-module Poly_c = Octez_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
+module Poly_c = Mavkit_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
 
 let p_of_c : Poly_c.t -> Poly.t =
  fun poly -> Poly_c.to_sparse_coefficients poly |> Poly.of_coefficients
@@ -62,9 +62,9 @@ let test_get_one () =
 
 let test_get_random () =
   let module Poly_c =
-    Octez_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
+    Mavkit_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
   in
-  let module C_array = Octez_bls12_381_polynomial.Internal_for_tests.Fr_carray
+  let module C_array = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray
   in
   let degree = 1 + Random.int 100 in
   let p = Poly_c.of_coefficients [(Fr.one, degree)] in
@@ -445,7 +445,7 @@ let test_vectors_fft_aux =
       in
       let expected_fft_results = Array.map Fr.of_string expected_fft_results in
       let polynomial =
-        Octez_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
+        Mavkit_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
         .of_coefficients
           points
       in
@@ -685,8 +685,8 @@ let test_big_vectors_fft () =
   |> test_vectors_fft_aux
 
 let test_fft_evaluate_common length inner =
-  let module Domain = Octez_bls12_381_polynomial.Domain in
-  let module Poly = Octez_bls12_381_polynomial.Polynomial in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
+  let module Poly = Mavkit_bls12_381_polynomial.Polynomial in
   let polynomial = Poly.generate_biased_random_polynomial length in
   let primitive_root = Fr_carray.primitive_root_of_unity length in
   let domain = Domain.build ~primitive_root length in
@@ -697,15 +697,15 @@ let test_fft_evaluate_common length inner =
   assert (Array.for_all2 Fr.eq result expected_result)
 
 let test_fft_evaluate () =
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
   test_fft_evaluate_common
     16
     (fun ~length:_ ~primitive_root:_ ~domain ~polynomial ->
       Evaluations.(evaluation_fft domain polynomial |> to_array))
 
 let test_fft_pfa_evaluate () =
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
-  let module Domain = Octez_bls12_381_polynomial.Domain in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
   test_fft_evaluate_common
     (128 * 11)
     (fun ~length:_ ~primitive_root ~domain:_ ~polynomial ->
@@ -718,18 +718,18 @@ let test_fft_pfa_evaluate () =
         |> to_array))
 
 let test_dft_evaluate () =
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
-  let module Domain = Octez_bls12_381_polynomial.Domain in
-  let module Poly = Octez_bls12_381_polynomial.Polynomial in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
+  let module Poly = Mavkit_bls12_381_polynomial.Polynomial in
   test_fft_evaluate_common
     (3 * 11 * 19)
     (fun ~length:_ ~primitive_root:_ ~domain ~polynomial ->
       Evaluations.(dft domain polynomial |> to_array))
 
 let test_fft_interpolate () =
-  let module Domain = Octez_bls12_381_polynomial.Domain in
-  let module Poly_c = Octez_bls12_381_polynomial.Polynomial in
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
+  let module Poly_c = Mavkit_bls12_381_polynomial.Polynomial in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
   let n = 16 in
   let log = Z.(log2up @@ of_int n) in
   let domain = Domain.build_power_of_two log in
@@ -741,23 +741,23 @@ let test_fft_interpolate () =
     scalars
 
 let test_fft_interpolate_common length inner =
-  let module Poly = Octez_bls12_381_polynomial.Polynomial in
+  let module Poly = Mavkit_bls12_381_polynomial.Polynomial in
   let primitive_root = Fr_carray.primitive_root_of_unity length in
   let polynomial = Poly.generate_biased_random_polynomial length in
   let result = inner ~length ~primitive_root ~polynomial in
   assert (Poly.equal polynomial result)
 
 let test_ifft_random () =
-  let module Domain = Octez_bls12_381_polynomial.Domain in
-  let module Poly_c = Octez_bls12_381_polynomial.Polynomial in
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
+  let module Poly_c = Mavkit_bls12_381_polynomial.Polynomial in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
   test_fft_interpolate_common 16 (fun ~length ~primitive_root ~polynomial ->
       let domain = Domain.build_power_of_two ~primitive_root length in
       Evaluations.(evaluation_fft domain polynomial |> interpolation_fft domain))
 
 let test_fft_pfa_interpolate () =
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
-  let module Domain = Octez_bls12_381_polynomial.Domain in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
   test_fft_interpolate_common
     (4 * 3)
     (fun ~length:_ ~primitive_root ~polynomial ->
@@ -770,9 +770,9 @@ let test_fft_pfa_interpolate () =
         |> interpolation_fft_prime_factor_algorithm ~domain1 ~domain2))
 
 let test_dft_interpolate () =
-  let module Evaluations = Octez_bls12_381_polynomial.Evaluations in
-  let module Domain = Octez_bls12_381_polynomial.Domain in
-  let module Poly = Octez_bls12_381_polynomial.Polynomial in
+  let module Evaluations = Mavkit_bls12_381_polynomial.Evaluations in
+  let module Domain = Mavkit_bls12_381_polynomial.Domain in
+  let module Poly = Mavkit_bls12_381_polynomial.Polynomial in
   test_fft_interpolate_common
     (11 * 19)
     (fun ~length ~primitive_root ~polynomial ->

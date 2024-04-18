@@ -100,7 +100,7 @@ type headers_cache = (Block_header.shell_header, tztrace) Blocks_cache.t
 
 type blocks_cache = (block, tztrace) Blocks_cache.t
 
-open Octez_crawler.Layer_1
+open Mavkit_crawler.Layer_1
 
 type nonrec t = {
   l1 : t;

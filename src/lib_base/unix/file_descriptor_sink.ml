@@ -505,7 +505,7 @@ end) : Internal_event.SINK with type t = t = struct
           in
           (* Syslog tag correspond to the event section, so it is added
              afterwards *)
-          let*! logger = Syslog.create ?path ~tag:"octez" facility in
+          let*! logger = Syslog.create ?path ~tag:"mavkit" facility in
           return (Syslog logger)
       | `Stdout -> return (Static Lwt_unix.stdout)
       | `Stderr -> return (Static Lwt_unix.stderr)

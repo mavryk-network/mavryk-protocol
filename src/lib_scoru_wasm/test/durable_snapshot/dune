@@ -3,12 +3,12 @@
 
 (library
  (name tezos_scoru_wasm_durable_snapshot)
- (public_name octez-l2-libs.scoru_wasm_durable_snapshot)
+ (public_name mavkit-l2-libs.scoru_wasm_durable_snapshot)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-l2-libs.webassembly-interpreter-extra)
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-l2-libs.webassembly-interpreter-extra)
  (preprocess (staged_pps ppx_import ppx_deriving.show))
  (flags
   (:standard)

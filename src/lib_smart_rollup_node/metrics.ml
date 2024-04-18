@@ -83,7 +83,7 @@ let metrics_serve metrics_addr =
   match metrics_addr with
   | Some metrics_addr ->
       let* addrs =
-        Octez_node_config.Config_file.resolve_metrics_addrs
+        Mavkit_node_config.Config_file.resolve_metrics_addrs
           ~default_metrics_port:Configuration.default_metrics_port
           metrics_addr
       in

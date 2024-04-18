@@ -2,7 +2,7 @@ Protocol Environment
 ====================
 
 The protocol environment is a restricted API that may be used by the economic protocol's code, on one hand,
-and the rest of the Octez code, on the other hand, to interact with each other. Firstly, this allows protocols
+and the rest of the Mavkit code, on the other hand, to interact with each other. Firstly, this allows protocols
 to only call authorized modules and functions. Secondly, it allows the node (i.e., the main binary built around the shell)
 as well as the other binaries (e.g., the baker) to call a subset of the protocol functions.
 
@@ -54,7 +54,7 @@ Here is a quick description of each file in this environment, all located under
    implementations are assembled into a single implementation file ``VX.ml`` by
    a helper program located in ``s_packer/``.
 
-The API can be found in :package-api:`tezos-protocol-environment <octez-proto-libs/Tezos_protocol_environment/index.html>`
+The API can be found in :package-api:`tezos-protocol-environment <mavkit-proto-libs/Tezos_protocol_environment/index.html>`
 
 
 Environment versions

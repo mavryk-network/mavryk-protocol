@@ -3,14 +3,14 @@
 
 (library
  (name tenderbrute_alpha)
- (public_name octez-protocol-alpha-libs.baking.tenderbrute)
+ (public_name mavkit-protocol-alpha-libs.baking.tenderbrute)
  (libraries
   data-encoding
-  octez-libs.base
-  octez-libs.base.unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
   tezos-protocol-alpha.protocol
-  octez-shell-libs.client-base
-  octez-protocol-alpha-libs.client)
+  mavkit-shell-libs.client-base
+  mavkit-protocol-alpha-libs.client)
  (flags
   (:standard)
   -open Data_encoding

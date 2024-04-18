@@ -1,23 +1,23 @@
-Octez Merge Team
+Mavkit Merge Team
 ================
 
-The Octez merge team is a `group of developers
+The Mavkit merge team is a `group of developers
 <https://gitlab.com/groups/tezos/-/group_members>`_
 from different teams of the
 Tezos ecosystem.
 They are automatically selected as approvers when you create a merge
 request.
 
-Octez Merge Team Scope
+Mavkit Merge Team Scope
 ----------------------
 
-The role of the Octez Merge Team is limited to ensuring the quality
-of what gets merged into Octez, i.e. all of `tezos/tezos
+The role of the Mavkit Merge Team is limited to ensuring the quality
+of what gets merged into Mavkit, i.e. all of `tezos/tezos
 <https://gitlab.com/tezos/tezos>`_ except :src:`src/proto_alpha/lib_protocol/`.
 By quality, we mean ensuring that the code is as good as it can be, be it
 at the implementation level or the architecture level.
 
-The Octez merge team does not decide what contributions are included in
+The Mavkit merge team does not decide what contributions are included in
 the next protocol (``src/proto_alpha/lib_protocol/``). Companies that contribute to
 `tezos/tezos <https://gitlab.com/tezos/tezos>`_
 reach a consensus to decide what gets in the Alpha protocol,
@@ -29,7 +29,7 @@ can fork this repository and do their own protocol proposals.
 Merge Coordinator
 -----------------
 
-The *merge coordinator* is a member of the Octez merge team whose role
+The *merge coordinator* is a member of the Mavkit merge team whose role
 is to make sure the merge request (MR) process is going smoothly. Duties
 of the merge coordinator include:
 
@@ -43,7 +43,7 @@ of the merge coordinator include:
   find MRs blocked on review and ask updates to the blocking reviewer,
   find another reviewer if relevant.
 * Actually perform MR reviews/approvals where appropriate, upgrade
-  approvals from outside the Octez merge team when relevant.
+  approvals from outside the Mavkit merge team when relevant.
 * Coordinate with and alert developers working on CI in the case of problems
   that affect the flow of MRs.
 * Help MR authors understand their responsibilities.
@@ -56,10 +56,10 @@ To make it easy to find out who the current merge coordinator is,
 Don't hesitate to contact the merge coordinator if you think you can
 benefit of their help to move your merge request forward.
 
-Getting into the Octez Merge Team
+Getting into the Mavkit Merge Team
 ---------------------------------
 
-The Octez merge team is always looking for software engineers with at least the following qualities:
+The Mavkit merge team is always looking for software engineers with at least the following qualities:
 
 - You are an active developer on the `tezos/tezos
   <https://gitlab.com/tezos/tezos>`_ repository.
@@ -79,20 +79,20 @@ The Octez merge team is always looking for software engineers with at least the 
 - You are relatively skilled in one of the technologies used in the ``tezos/tezos``
   repository, i.e. ``OCaml``, ``python``, ``CI``, building, packaging, etc.
 
-To apply for being included in the Octez merge team, contact the :ref:`merge coordinator <merge_coordinator>` or
+To apply for being included in the Mavkit merge team, contact the :ref:`merge coordinator <merge_coordinator>` or
 an existing member on the `tezos-dev <https://tezos-dev.slack.com/>`_ Slack. Your application
-will be discussed during the next weekly meeting of the Octez merge team.
+will be discussed during the next weekly meeting of the Mavkit merge team.
 
-Helping the Octez Merge Team
+Helping the Mavkit Merge Team
 ----------------------------
 
-Even if you are not in the Octez merge team, you can help it! If you review a merge
+Even if you are not in the Mavkit merge team, you can help it! If you review a merge
 request and you think it is ready to be merged, you should click the *Approve* button
 even if your approval "doesn't count".
 
 If the merge request is not critical,
 or if you are knowledgeable on the merge request topic; your approval
-will make it easier for an Octez merge team member to approve too.
+will make it easier for an Mavkit merge team member to approve too.
 This is also an excellent way to show your skills and willingness to move development
-forward, contributing to potentially making you an Octez merge team member in the future
-(see *Getting into the Octez Merge Team* above).
+forward, contributing to potentially making you an Mavkit merge team member in the future
+(see *Getting into the Mavkit Merge Team* above).

@@ -3,13 +3,13 @@
 
 (library
  (name tezos_event_logging)
- (public_name octez-libs.event-logging)
+ (public_name mavkit-libs.event-logging)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
+  mavkit-libs.stdlib
   data-encoding
-  octez-libs.error-monad
-  octez-libs.lwt-result-stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.lwt-result-stdlib
   uri)
  (js_of_ocaml)
  (flags

@@ -3,20 +3,20 @@
 
 (library
  (name tezos_alpha_mockup_simulator)
- (public_name octez-protocol-alpha-libs.bakings.mockup-simulator)
+ (public_name mavkit-protocol-alpha-libs.bakings.mockup-simulator)
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-alpha-libs.baking
-  octez-libs.stdlib-unix
-  octez-shell-libs.client-base-unix
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-alpha-libs.baking
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base-unix
   tezos-protocol-alpha.parameters
-  octez-shell-libs.mockup
-  octez-shell-libs.mockup-proxy
-  octez-shell-libs.mockup-commands
-  octez-protocol-alpha-libs.baking.tenderbrute)
+  mavkit-shell-libs.mockup
+  mavkit-shell-libs.mockup-proxy
+  mavkit-shell-libs.mockup-commands
+  mavkit-protocol-alpha-libs.baking.tenderbrute)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

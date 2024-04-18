@@ -6,7 +6,7 @@
  (public_name tezos-protocol-demo-counter.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment)
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (modules Tezos_protocol_environment_demo_counter))
 
@@ -47,8 +47,8 @@
  (public_name tezos-protocol-demo-counter.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
   tezos-protocol-demo-counter.protocol.raw)
  (flags
   (:standard)
@@ -87,15 +87,15 @@
   services.ml services.mli
   main.ml main.mli
   (:src_dir TEZOS_PROTOCOL))
- (action (run %{bin:octez-protocol-compiler} -no-hash-check -warn-error +a .)))
+ (action (run %{bin:mavkit-protocol-compiler} -no-hash-check -warn-error +a .)))
 
 (library
  (name tezos_protocol_demo_counter_lifted)
  (public_name tezos-protocol-demo-counter.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
   tezos-protocol-demo-counter.protocol)
  (flags
   (:standard)
@@ -113,8 +113,8 @@
 (library
  (name tezos_protocol_demo_counter_functor)
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -nopervasives)
@@ -137,7 +137,7 @@
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-protocol-compiler.octez-protocol-packer} %{src_dir})))))
+    (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
  (name tezos_embedded_protocol_demo_counter)
@@ -145,8 +145,8 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezos-protocol-demo-counter.protocol
-  octez-shell-libs.protocol-updater
-  octez-proto-libs.protocol-environment)
+  mavkit-shell-libs.protocol-updater
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (modules Registerer))
 
@@ -167,4 +167,4 @@
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-embedded-protocol-packer} %{src_dir} demo_counter)))))
+    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} demo_counter)))))

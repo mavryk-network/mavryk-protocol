@@ -154,7 +154,7 @@ module Manpage = struct
       `S "EXAMPLES";
       `I
         ( "$(b,Reconstruct the storage of a full mode node )",
-          "./octez-node reconstruct" );
+          "./mavkit-node reconstruct" );
     ]
 
   let man = description @ options @ examples @ Shared_arg.Manpage.bugs

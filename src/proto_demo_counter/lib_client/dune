@@ -6,10 +6,10 @@
  (public_name tezos-client-demo-counter)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-shell-libs.client-commands
+  mavkit-libs.base
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-commands
   tezos-protocol-demo-counter.protocol
   tezos-protocol-demo-counter.protocol.lifted)
  (library_flags (:standard -linkall))

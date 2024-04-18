@@ -5,12 +5,12 @@
 
 (library
  (name tezos_signer_services)
- (public_name octez-shell-libs.signer-services)
+ (public_name mavkit-shell-libs.signer-services)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.rpc
-  octez-shell-libs.client-base)
+  mavkit-libs.base
+  mavkit-libs.rpc
+  mavkit-shell-libs.client-base)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags

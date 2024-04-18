@@ -1509,12 +1509,12 @@ Interactive toplevel
 
 An interactive Michelson toplevel (also known as a `REPL
 <https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop>`__)
-built on the :doc:`../user/mockup` mode of Octez client is available in
+built on the :doc:`../user/mockup` mode of Mavkit client is available in
 ``scripts/michelson_repl.sh``, the typical usage is:
 
 ::
 
-   $ octez-client --mode mockup --base-dir /tmp/mockup create mockup
+   $ mavkit-client --mode mockup --base-dir /tmp/mockup create mockup
    $ rlwrap scripts/michelson_repl.sh
    > UNIT
      { Stack_elt unit Unit }
@@ -1626,7 +1626,7 @@ data include not only a description of the action to perform but also
 the address of the multisig contract and a counter that gets
 incremented at each successful call to the contract.
 
-The multisig commands of :ref:`Octez command line client <client_manual_alpha>`
+The multisig commands of :ref:`Mavkit command line client <client_manual_alpha>`
 use this
 smart contract. Moreover, `functional correctness of this contract has
 been verified

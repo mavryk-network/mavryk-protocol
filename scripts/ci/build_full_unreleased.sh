@@ -27,14 +27,14 @@ fi
 
 # EXECUTABLE_FILES may contain multiple paths and so must be split.
 # shellcheck disable=SC2086
-OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
-make build OCTEZ_EXECUTABLES="$OCTEZ_EXECUTABLES"
+MAVKIT_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
+make build MAVKIT_EXECUTABLES="$MAVKIT_EXECUTABLES"
 
-# 3. Strip the built binaries in OCTEZ_EXECUTABLES and in BUILD_EXTRA.
+# 3. Strip the built binaries in MAVKIT_EXECUTABLES and in BUILD_EXTRA.
 # shellcheck disable=SC2086
-chmod +w ${OCTEZ_EXECUTABLES}
+chmod +w ${MAVKIT_EXECUTABLES}
 # shellcheck disable=SC2086
-strip -s ${OCTEZ_EXECUTABLES}
+strip -s ${MAVKIT_EXECUTABLES}
 
 if [ -n "${BUILD_EXTRA:-}" ]; then
     paths=$(for executable in ${BUILD_EXTRA}; do echo _build/default/"$executable"; done)

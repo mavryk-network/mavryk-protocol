@@ -249,7 +249,7 @@ module NoUselessRpc = struct
 end
 
 (** Test.
-    Test that [octez-client --mode light --sources ... --protocol P] fails
+    Test that [mavkit-client --mode light --sources ... --protocol P] fails
     when the endpoint's protocol is not [P].
  *)
 let test_wrong_proto =

@@ -5,8 +5,8 @@
  (name main)
  (instrumentation (backend bisect_ppx --bisect-sigterm))
  (libraries
-  octez-libs.test-helpers
-  octez-libs.tezt-wrapper
+  mavkit-libs.test-helpers
+  mavkit-libs.tezt-wrapper
   str
   bls12-381
   tezt-tezos
@@ -14,9 +14,9 @@
   tezt_risc_v_sandbox
   tezt_tx_kernel
   data-encoding
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
   tezos-protocol-alpha.protocol
   tezos_scoru_wasm_regressions
   tezt_self_tests_tezt_lib

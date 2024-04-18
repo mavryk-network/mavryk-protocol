@@ -2,14 +2,14 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_protocol_compiler)
- (public_name octez-protocol-compiler)
+ (name mavkit_protocol_compiler)
+ (public_name mavkit-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-proto-libs.protocol-environment.sigs
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-proto-libs.protocol-environment.sigs
+  mavkit-libs.stdlib-unix
   compiler-libs.common
   lwt.unix
   ocplib-ocamlres
@@ -39,17 +39,17 @@
 
 (rule
  (targets embedded-interfaces-env)
- (deps (package octez-proto-libs))
+ (deps (package mavkit-proto-libs))
  (action
   (with-stdout-to
    %{targets}
    (run
     bin/cmis_of_cma.exe
-    %{lib:octez-proto-libs.protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}))))
+    %{lib:mavkit-proto-libs.protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}))))
 
 (rule
  (targets embedded_cmis_env.ml)
- (deps (package octez-proto-libs))
+ (deps (package mavkit-proto-libs))
  (action
   (run
    %{bin:ocp-ocamlres} -format variants -o %{targets}
@@ -70,20 +70,20 @@
    "let warnings = \"+a-4-40..42-44-45-48-58-60-67-69-70\"")))
 
 (library
- (name octez_protocol_compiler_native)
- (public_name octez-protocol-compiler.native)
+ (name mavkit_protocol_compiler_native)
+ (public_name mavkit-protocol-compiler.native)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-protocol-compiler
+  mavkit-libs.base
+  mavkit-protocol-compiler
   compiler-libs.optcomp)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives
-  -open Octez_protocol_compiler)
+  -open Mavkit_protocol_compiler)
  (modules Native))
 
 (install
- (package octez-protocol-compiler)
+ (package mavkit-protocol-compiler)
  (section libexec)
  (files final_protocol_versions))

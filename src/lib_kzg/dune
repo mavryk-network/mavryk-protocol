@@ -3,15 +3,15 @@
 
 (library
  (name kzg)
- (public_name octez-libs.kzg)
+ (public_name mavkit-libs.kzg)
  (instrumentation (backend bisect_ppx))
  (libraries
   repr
   data-encoding
-  octez-libs.bls12-381-polynomial
-  octez-libs.crypto)
+  mavkit-libs.bls12-381-polynomial
+  mavkit-libs.crypto)
  (preprocess (pps ppx_repr))
  (flags
   (:standard)
   -open Data_encoding
-  -open Octez_bls12_381_polynomial))
+  -open Mavkit_bls12_381_polynomial))

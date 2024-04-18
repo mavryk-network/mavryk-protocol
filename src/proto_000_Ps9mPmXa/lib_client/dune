@@ -3,17 +3,17 @@
 
 (library
  (name tezos_client_000_Ps9mPmXa)
- (public_name octez-protocol-000-Ps9mPmXa-libs.client)
+ (public_name mavkit-protocol-000-Ps9mPmXa-libs.client)
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
   tezos-protocol-000-Ps9mPmXa.protocol
   tezos-protocol-000-Ps9mPmXa.protocol.lifted
-  octez-libs.rpc
-  octez-shell-libs.client-commands
-  octez-libs.stdlib-unix)
+  mavkit-libs.rpc
+  mavkit-shell-libs.client-commands
+  mavkit-libs.stdlib-unix)
  (library_flags (:standard -linkall))
  (flags
   (:standard)

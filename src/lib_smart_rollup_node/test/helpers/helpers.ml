@@ -84,7 +84,7 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
   in
   let* inbox_hash = Node_context.save_inbox node_ctxt inbox in
   let inbox_witness = Inbox.current_witness inbox in
-  let ctxt = Octez_smart_rollup_node.Context.empty node_ctxt.context in
+  let ctxt = Mavkit_smart_rollup_node.Context.empty node_ctxt.context in
   let num_ticks = 0L in
   let initial_tick = Z.zero in
   let*! initial_state = Plugin.Pvm.initial_state node_ctxt.kind in
@@ -93,7 +93,7 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
   in
   let*! genesis_state_hash = Plugin.Pvm.state_hash node_ctxt.kind state in
   let*! ctxt = Context.PVMState.set ctxt state in
-  let*! context_hash = Octez_smart_rollup_node.Context.commit ctxt in
+  let*! context_hash = Mavkit_smart_rollup_node.Context.commit ctxt in
   let commitment =
     Commitment.genesis_commitment
       ~origination_level:node_ctxt.genesis_info.level
@@ -257,7 +257,7 @@ module Assert = struct
   module L2_block = Make_with_encoding (Sc_rollup_block)
   module Commitment = Make_with_encoding (Commitment)
   module Commitment_hash =
-    Make_with_encoding (Octez_smart_rollup.Commitment.Hash)
+    Make_with_encoding (Mavkit_smart_rollup.Commitment.Hash)
   module State_hash = Make_with_encoding (State_hash)
 end
 

@@ -3,14 +3,14 @@
 
 (library
  (name tezos_micheline)
- (public_name octez-libs.micheline)
+ (public_name mavkit-libs.micheline)
  (instrumentation (backend bisect_ppx))
  (libraries
   uutf
   zarith
   zarith_stubs_js
-  octez-libs.stdlib
-  octez-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
   data-encoding)
  (inline_tests (flags -verbose) (modes native js))
  (preprocess (pps ppx_expect))

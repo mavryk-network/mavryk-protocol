@@ -81,7 +81,7 @@ val to_string : t -> string
     [pp f x] prints [to_string x] in [f] *)
 val pp : Format.formatter -> t -> unit
 
-(* Parse an Octez version.
+(* Parse an Mavkit version.
 
    Returns None if the version cannot be parsed. *)
 val parse_version : string -> t option

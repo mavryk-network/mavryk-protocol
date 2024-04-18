@@ -10,13 +10,13 @@
 
 (executable
  (name main_native)
- (public_name octez-protocol-compiler)
- (package octez-protocol-compiler)
+ (public_name mavkit-protocol-compiler)
+ (package mavkit-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (modes native)
  (libraries
-  octez-protocol-compiler.native
-  octez-version.value)
+  mavkit-protocol-compiler.native
+  mavkit-version.value)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -25,13 +25,13 @@
 
 (executable
  (name main_packer)
- (public_name octez-protocol-compiler.octez-protocol-packer)
- (package octez-protocol-compiler)
+ (public_name mavkit-protocol-compiler.mavkit-protocol-packer)
+ (package mavkit-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-protocol-compiler)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-protocol-compiler)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp))
@@ -39,19 +39,19 @@
   (:standard)
   -open Tezos_base.TzPervasives
   -open Tezos_stdlib_unix
-  -open Octez_protocol_compiler)
+  -open Mavkit_protocol_compiler)
  (modules Main_packer))
 
 (executable
  (name main_embedded_packer)
- (public_name octez-embedded-protocol-packer)
- (package octez-protocol-compiler)
+ (public_name mavkit-embedded-protocol-packer)
+ (package mavkit-protocol-compiler)
  (instrumentation (backend bisect_ppx))
  (modes native)
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)

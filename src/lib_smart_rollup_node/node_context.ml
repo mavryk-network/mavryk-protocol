@@ -721,13 +721,13 @@ let get_inbox node_ctxt inbox_hash =
   | None ->
       failwith
         "Could not retrieve inbox %a"
-        Octez_smart_rollup.Inbox.Hash.pp
+        Mavkit_smart_rollup.Inbox.Hash.pp
         inbox_hash
   | Some i -> return i
 
 let save_inbox {store; _} inbox =
   let open Lwt_result_syntax in
-  let hash = Octez_smart_rollup.Inbox.hash inbox in
+  let hash = Mavkit_smart_rollup.Inbox.hash inbox in
   let+ () = Store.Inboxes.append store.inboxes ~key:hash ~value:inbox in
   hash
 

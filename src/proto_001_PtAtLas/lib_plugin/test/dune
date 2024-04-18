@@ -6,18 +6,18 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base-test-helpers
-  octez-libs.base.unix
-  octez-alcotezt
-  octez-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.base-test-helpers
+  mavkit-libs.base.unix
+  mavkit-alcotezt
+  mavkit-libs.test-helpers
   qcheck-alcotest
-  octez-libs.stdlib-unix
-  octez-libs.micheline
-  octez-protocol-001-PtAtLas-libs.plugin
+  mavkit-libs.stdlib-unix
+  mavkit-libs.micheline
+  mavkit-protocol-001-PtAtLas-libs.plugin
   tezos-protocol-001-PtAtLas.protocol
   tezos-protocol-001-PtAtLas.parameters
-  octez-protocol-001-PtAtLas-libs.test-helpers)
+  mavkit-protocol-001-PtAtLas-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -26,7 +26,7 @@
   -open Tezos_base.TzPervasives
   -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_base_test_helpers
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_test_helpers
   -open Tezos_micheline
   -open Tezos_protocol_plugin_001_PtAtLas
@@ -54,7 +54,7 @@
 
 (rule
  (alias runtest)
- (package octez-protocol-001-PtAtLas-libs)
+ (package mavkit-protocol-001-PtAtLas-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

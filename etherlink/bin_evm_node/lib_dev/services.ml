@@ -38,7 +38,7 @@ let version_service =
 let client_version =
   Format.sprintf
     "%s/%s-%s/%s/ocamlc.%s"
-    "octez-evm-node"
+    "mavkit-evm-node"
     (Tezos_version.Version.to_string
        Tezos_version_value.Current_git_info.version)
     Tezos_version_value.Current_git_info.abbreviated_commit_hash

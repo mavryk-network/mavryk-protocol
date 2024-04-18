@@ -6,18 +6,18 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.lazy-containers
+  mavkit-libs.lazy-containers
   qcheck-core
   qcheck-alcotest
   lwt.unix
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
   -open Tezos_lazy_containers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules chunked_byte_vector_tests lazy_vector_tests))
 
 (executable

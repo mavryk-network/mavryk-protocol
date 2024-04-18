@@ -377,7 +377,7 @@ let test_voting ~from_protocol ~(to_protocol : target_protocol) ~loser_protocols
   let* () = check_listings_not_empty client in
   let* period = Client.show_voting_period client in
   Check.((period = "proposal") string)
-    ~error_msg:"expected octez-client show voting period to return %R, got %L" ;
+    ~error_msg:"expected mavkit-client show voting period to return %R, got %L" ;
   (* Inject test protocol, or use known protocol. *)
   let* to_protocol_hash =
     match to_protocol with
@@ -706,7 +706,7 @@ let test_voting ~from_protocol ~(to_protocol : target_protocol) ~loser_protocols
          We use the "Singleprocess" option because this test relies on
          events which are emitted by the validator. The event mechanism
          of Tezt is currently not compatible with the validator events if it
-         is run as an external process by the octez-node (which is the
+         is run as an external process by the mavkit-node (which is the
          case by default). *)
       let* node2 = Node.init [Synchronisation_threshold 1; Singleprocess] in
       let check_event_fetching_protocol =

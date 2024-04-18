@@ -10,14 +10,14 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "mavkit-libs"
   "tezos-protocol-alpha"
   "tezos-benchmark"
   "tezos-benchmark-alpha"
   "tezos-benchmark-type-inference-alpha"
-  "octez-shell-libs"
-  "octez-protocol-alpha-libs"
-  "octez-proto-libs"
+  "mavkit-shell-libs"
+  "mavkit-protocol-alpha-libs"
+  "mavkit-proto-libs"
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

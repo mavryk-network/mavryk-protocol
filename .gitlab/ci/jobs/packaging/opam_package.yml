@@ -420,262 +420,262 @@ opam:bls12-381:
 
 # Ignoring unreleased package kaitai-of-data-encoding.
 
-opam:octez-accuser-PtAtLas:
+opam:mavkit-accuser-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-accuser-PtAtLas
+    package: mavkit-accuser-PtAtLas
 
-# Ignoring unreleased package octez-accuser-alpha.
+# Ignoring unreleased package mavkit-accuser-alpha.
 
-opam:octez-alcotezt:
+opam:mavkit-alcotezt:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: octez-alcotezt
+    package: mavkit-alcotezt
 
-opam:octez-baker-PtAtLas:
+opam:mavkit-baker-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-baker-PtAtLas
+    package: mavkit-baker-PtAtLas
 
-# Ignoring unreleased package octez-baker-alpha.
+# Ignoring unreleased package mavkit-baker-alpha.
 
-opam:octez-client:
+opam:mavkit-client:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-client
+    package: mavkit-client
 
-opam:octez-codec:
+opam:mavkit-codec:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-codec
+    package: mavkit-codec
 
-# Ignoring unreleased package octez-codec-kaitai.
+# Ignoring unreleased package mavkit-codec-kaitai.
 
-opam:octez-crawler:
+opam:mavkit-crawler:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: octez-crawler
+    package: mavkit-crawler
 
-opam:octez-dac-client:
+opam:mavkit-dac-client:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-dac-client
+    package: mavkit-dac-client
 
-opam:octez-dac-node:
+opam:mavkit-dac-node:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-dac-node
+    package: mavkit-dac-node
 
-# Ignoring unreleased package octez-dal-node.
+# Ignoring unreleased package mavkit-dal-node.
 
-opam:octez-distributed-internal:
+opam:mavkit-distributed-internal:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: octez-distributed-internal
+    package: mavkit-distributed-internal
 
-opam:octez-distributed-lwt-internal:
+opam:mavkit-distributed-lwt-internal:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: octez-distributed-lwt-internal
+    package: mavkit-distributed-lwt-internal
 
-# Ignoring unreleased package octez-evm-node.
+# Ignoring unreleased package mavkit-evm-node.
 
-# Ignoring unreleased package octez-evm-node-libs.
+# Ignoring unreleased package mavkit-evm-node-libs.
 
-# Ignoring unreleased package octez-evm-node-tests.
+# Ignoring unreleased package mavkit-evm-node-tests.
 
-opam:octez-injector:
+opam:mavkit-injector:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-injector
+    package: mavkit-injector
 
-# Ignoring unreleased package octez-injector-server.
+# Ignoring unreleased package mavkit-injector-server.
 
-opam:octez-l2-libs:
+opam:mavkit-l2-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: octez-l2-libs
+    package: mavkit-l2-libs
 
-opam:octez-libs:
+opam:mavkit-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: octez-libs
+    package: mavkit-libs
 
-opam:octez-node:
+opam:mavkit-node:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-node
+    package: mavkit-node
 
-opam:octez-node-config:
+opam:mavkit-node-config:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: octez-node-config
+    package: mavkit-node-config
 
-opam:octez-proto-libs:
+opam:mavkit-proto-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: octez-proto-libs
+    package: mavkit-proto-libs
 
-opam:octez-protocol-000-Ps9mPmXa-libs:
+opam:mavkit-protocol-000-Ps9mPmXa-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-protocol-000-Ps9mPmXa-libs
+    package: mavkit-protocol-000-Ps9mPmXa-libs
 
-opam:octez-protocol-001-PtAtLas-libs:
+opam:mavkit-protocol-001-PtAtLas-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-protocol-001-PtAtLas-libs
+    package: mavkit-protocol-001-PtAtLas-libs
 
-opam:octez-protocol-alpha-libs:
+opam:mavkit-protocol-alpha-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-protocol-alpha-libs
+    package: mavkit-protocol-alpha-libs
 
-opam:octez-protocol-compiler:
+opam:mavkit-protocol-compiler:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_6
   variables:
-    package: octez-protocol-compiler
+    package: mavkit-protocol-compiler
 
-opam:octez-proxy-server:
+opam:mavkit-proxy-server:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-proxy-server
+    package: mavkit-proxy-server
 
-# Ignoring unreleased package octez-risc-v-pvm.
+# Ignoring unreleased package mavkit-risc-v-pvm.
 
-# Ignoring unreleased package octez-risc-v-pvm-test.
+# Ignoring unreleased package mavkit-risc-v-pvm-test.
 
-opam:octez-rpc-process:
+opam:mavkit-rpc-process:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: octez-rpc-process
+    package: mavkit-rpc-process
 
-opam:octez-shell-libs:
+opam:mavkit-shell-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
     - .tags_template__no_gcp
   variables:
-    package: octez-shell-libs
+    package: mavkit-shell-libs
 
-# Ignoring unreleased package octez-shell-tests.
+# Ignoring unreleased package mavkit-shell-tests.
 
-opam:octez-signer:
+opam:mavkit-signer:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_4
   variables:
-    package: octez-signer
+    package: mavkit-signer
 
-# Ignoring unreleased package octez-smart-rollup-client-PtAtLas.
+# Ignoring unreleased package mavkit-smart-rollup-client-PtAtLas.
 
-# Ignoring unreleased package octez-smart-rollup-client-alpha.
+# Ignoring unreleased package mavkit-smart-rollup-client-alpha.
 
-opam:octez-smart-rollup-node:
+opam:mavkit-smart-rollup-node:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-smart-rollup-node
+    package: mavkit-smart-rollup-node
 
-opam:octez-smart-rollup-node-PtAtLas:
+opam:mavkit-smart-rollup-node-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_1
   variables:
-    package: octez-smart-rollup-node-PtAtLas
+    package: mavkit-smart-rollup-node-PtAtLas
 
-opam:octez-smart-rollup-node-alpha:
+opam:mavkit-smart-rollup-node-alpha:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-smart-rollup-node-alpha
+    package: mavkit-smart-rollup-node-alpha
 
-opam:octez-smart-rollup-node-lib:
+opam:mavkit-smart-rollup-node-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-smart-rollup-node-lib
+    package: mavkit-smart-rollup-node-lib
 
-opam:octez-smart-rollup-wasm-debugger:
+opam:mavkit-smart-rollup-wasm-debugger:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-smart-rollup-wasm-debugger
+    package: mavkit-smart-rollup-wasm-debugger
 
-opam:octez-smart-rollup-wasm-debugger-lib:
+opam:mavkit-smart-rollup-wasm-debugger-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-smart-rollup-wasm-debugger-lib
+    package: mavkit-smart-rollup-wasm-debugger-lib
 
-opam:octez-smart-rollup-wasm-debugger-plugin:
+opam:mavkit-smart-rollup-wasm-debugger-plugin:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: octez-smart-rollup-wasm-debugger-plugin
+    package: mavkit-smart-rollup-wasm-debugger-plugin
 
-# Ignoring unreleased package octez-snoop.
+# Ignoring unreleased package mavkit-snoop.
 
-# Ignoring unreleased package octez-store-tests.
+# Ignoring unreleased package mavkit-store-tests.
 
-# Ignoring unreleased package octez-testnet-scenarios.
+# Ignoring unreleased package mavkit-testnet-scenarios.
 
-opam:octez-version:
+opam:mavkit-version:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_6
   variables:
-    package: octez-version
+    package: mavkit-version
 
 # Ignoring unreleased package octogram.
 

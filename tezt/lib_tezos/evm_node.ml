@@ -106,7 +106,7 @@ let create ?runner ?(mode = Proxy) ?data_dir ~devmode ?rpc_addr ?rpc_port
   in
   let evm_node =
     create
-      ~path:(Uses.path Constant.octez_evm_node)
+      ~path:(Uses.path Constant.mavkit_evm_node)
       ~name
       {
         arguments;
@@ -164,7 +164,7 @@ let run evm_node =
 let spawn_command evm_node args =
   Process.spawn
     ?runner:evm_node.persistent_state.runner
-    (Uses.path Constant.octez_evm_node)
+    (Uses.path Constant.mavkit_evm_node)
   @@ args
 
 let spawn_run evm_node = spawn_command evm_node (run_args evm_node)

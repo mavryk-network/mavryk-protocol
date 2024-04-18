@@ -9,7 +9,7 @@ FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as without-evm-artifacts
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # Do not move the ARG below above the FROM or it gets erased.
 # More precisely: ARG above FROM can be used in the FROM itself, but nowhere else.
-ARG OCTEZ_EXECUTABLES
+ARG MAVKIT_EXECUTABLES
 ARG GIT_SHORTREF
 ARG GIT_DATETIME
 ARG GIT_VERSION
@@ -34,9 +34,9 @@ COPY --chown=tezos:nogroup devtools/testnet_experiment_tools tezos/devtools/test
 ENV GIT_SHORTREF=${GIT_SHORTREF}
 ENV GIT_DATETIME=${GIT_DATETIME}
 ENV GIT_VERSION=${GIT_VERSION}
-RUN opam exec -- make -j 20 -C tezos release OCTEZ_EXECUTABLES="${OCTEZ_EXECUTABLES}" OCTEZ_BIN_DIR=bin
+RUN opam exec -- make -j 20 -C tezos release MAVKIT_EXECUTABLES="${MAVKIT_EXECUTABLES}" MAVKIT_BIN_DIR=bin
 # Build the simulation-scenario tool
-RUN opam exec -- make -j 20 -C tezos build-simulation-scenario OCTEZ_BIN_DIR=bin
+RUN opam exec -- make -j 20 -C tezos build-simulation-scenario MAVKIT_BIN_DIR=bin
 # Gather the parameters of all active protocols in 1 place
 RUN while read -r protocol; do \
   mkdir -p tezos/parameters/"$protocol"-parameters && \

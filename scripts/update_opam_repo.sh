@@ -60,8 +60,8 @@ git fetch --depth 1 origin "$full_opam_repository_tag"
 
 ## Adding the various tezos packages
 
-mkdir -p "$tmp_dir"/packages/octez-deps/octez-deps.dev
-cp opam/virtual/octez-deps.opam "$tmp_dir"/packages/octez-deps/octez-deps.dev/opam
+mkdir -p "$tmp_dir"/packages/mavkit-deps/mavkit-deps.dev
+cp opam/virtual/mavkit-deps.opam "$tmp_dir"/packages/mavkit-deps/mavkit-deps.dev/opam
 
 ## Filtering unrequired packages
 cd "$tmp_dir"
@@ -105,7 +105,7 @@ case $(opam --version) in
 esac
 #shellcheck disable=SC2086
 OPAMSOLVERTIMEOUT=600 opam admin filter --yes --resolve \
-  octez-deps,ocaml,ocaml-base-compiler,odoc,${opam_depext_dep}ledgerwallet-tezos,caqti-driver-postgresql,js_of_ocaml-lwt,$dummy_pkg
+  mavkit-deps,ocaml,ocaml-base-compiler,odoc,${opam_depext_dep}ledgerwallet-tezos,caqti-driver-postgresql,js_of_ocaml-lwt,$dummy_pkg
 ## - ocaml-base-compiler has to be explicitely listed for the solver
 ##   to not prefer the "variant" `system` of the compiler
 ## - odoc is used by the CI to generate the doc
@@ -122,7 +122,7 @@ for variant in afl flambda fp ; do
 done
 
 ## Removing temporary hacks
-rm -r "$tmp_dir"/packages/octez-deps
+rm -r "$tmp_dir"/packages/mavkit-deps
 rm -r "$tmp_dir"/packages/$dummy_pkg
 
 ## Generating the diff!

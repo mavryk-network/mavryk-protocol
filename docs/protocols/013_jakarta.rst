@@ -63,7 +63,7 @@ Several changes are made to the Liquidity Baking Escape Vote (MR :gl:`!4201`):
   the block. Note to developers of baking software: we don't recommend to
   use this option as a default value; instead we recommend to force the user
   to explicitly choose one of the three options; this behavior has been
-  implemented in Octez' ``tezos-baker``.
+  implemented in Mavkit' ``tezos-baker``.
 
 - The escape hatch threshold is reset to 50% to account for the new
   symmetry in the escape vote introduced by ``Pass`` option.

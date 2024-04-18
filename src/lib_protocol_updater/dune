@@ -3,18 +3,18 @@
 
 (library
  (name tezos_protocol_updater)
- (public_name octez-shell-libs.protocol-updater)
+ (public_name mavkit-shell-libs.protocol-updater)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.micheline
-  octez-shell-libs.shell-services
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-context
-  octez-protocol-compiler.registerer
-  octez-protocol-compiler.native
-  octez-libs.tezos-context
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.micheline
+  mavkit-shell-libs.shell-services
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-context
+  mavkit-protocol-compiler.registerer
+  mavkit-protocol-compiler.native
+  mavkit-libs.tezos-context
   lwt-exit
   dynlink)
  (flags

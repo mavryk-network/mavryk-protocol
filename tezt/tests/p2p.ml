@@ -1214,11 +1214,11 @@ module P2p_stat = struct
     {connections; known_peers; known_points}
 
   (* This test sets up a clique. It compares the output of
-     [octez-admin-client p2p stat] with queries on the node RPC. *)
+     [mavkit-admin-client p2p stat] with queries on the node RPC. *)
   let register () =
     Test.register
       ~__FILE__
-      ~title:"Test [octez-admin-client p2p stat]"
+      ~title:"Test [mavkit-admin-client p2p stat]"
       ~tags:["p2p"; "connections"; "p2p_stat"; Tag.memory_3k]
     @@ fun () ->
     let num_nodes = 5 in
@@ -1226,7 +1226,7 @@ module P2p_stat = struct
     let nodes = Cluster.create num_nodes [] in
     Cluster.clique nodes ;
     let* () = Cluster.start ~wait_connections:true nodes in
-    Log.info "Compare RPC information with [octez-admin-client p2p stat]" ;
+    Log.info "Compare RPC information with [mavkit-admin-client p2p stat]" ;
     let* () =
       iter_p nodes @@ fun node ->
       let* client = Client.init ~endpoint:(Node node) () in

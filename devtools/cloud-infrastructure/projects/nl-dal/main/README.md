@@ -74,10 +74,10 @@ You can push files by running:
 scp -P 30000 <path-to-file> root@<ssh-address>:<file-name>
 ```
 
-For example, if you want to push your local `octez-node` you can run:
+For example, if you want to push your local `mavkit-node` you can run:
 
 ```shell
-scp -P 30000 <path-to-your-octez-node> root@<ssh-address>:octez-node
+scp -P 30000 <path-to-your-mavkit-node> root@<ssh-address>:mavkit-node
 ```
 
 ## How to Destroy

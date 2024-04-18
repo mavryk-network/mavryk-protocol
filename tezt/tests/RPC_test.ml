@@ -50,9 +50,9 @@ let hooks = Tezos_regression.hooks
 let metadata_of_test_mode = function
   | `Client -> (`Client, "client", [])
   | `Client_data_dir_proxy_server ->
-      (`Client, "proxy_server_data_dir", [Constant.octez_proxy_server])
+      (`Client, "proxy_server_data_dir", [Constant.mavkit_proxy_server])
   | `Client_rpc_proxy_server ->
-      (`Client, "proxy_server_rpc", [Constant.octez_proxy_server])
+      (`Client, "proxy_server_rpc", [Constant.mavkit_proxy_server])
   | `Light -> (`Light, "light", [])
   | `Proxy -> (`Proxy, "proxy", [])
 
@@ -1639,7 +1639,7 @@ let register protocols =
     ~__FILE__
     ~title:"Binary RPC regression tests"
     ~tags:["rpc"; "regression"; "binary"]
-    ~uses:[Constant.octez_codec]
+    ~uses:[Constant.mavkit_codec]
     binary_regression_test ;
   let register protocols test_mode_tag =
     let check_rpc_regression ?parameter_overrides ?supports ?nodes_args

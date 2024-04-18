@@ -3,11 +3,11 @@
 
 (library
  (name tezos_context_encoding)
- (public_name octez-libs.tezos-context.encoding)
+ (public_name mavkit-libs.tezos-context.encoding)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.stdlib
   irmin
   irmin-pack)
  (flags

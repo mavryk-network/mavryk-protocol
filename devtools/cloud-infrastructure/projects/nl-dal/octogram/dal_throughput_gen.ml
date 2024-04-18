@@ -394,7 +394,7 @@ module Cli = struct
          ( "--gcloud-binaries-bucket",
            Arg.Set_string Options.gcloud_binaries_bucket,
            sf
-             " A public Google Cloud storage bucket in which Octez binaries \
+             " A public Google Cloud storage bucket in which Mavkit binaries \
               can be downloaded. We use this method as it's faster than scp \
               from local machine. Default value is %S"
              !Options.gcloud_binaries_bucket );

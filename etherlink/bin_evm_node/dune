@@ -3,20 +3,20 @@
 
 (executable
  (name evm_node)
- (public_name octez-evm-node)
- (package octez-evm-node)
+ (public_name mavkit-evm-node)
+ (package mavkit-evm-node)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.clic
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-version.value
-  octez-evm-node-libs.evm_node_lib_prod
-  octez-evm-node-libs.evm_node_lib_dev
-  octez-evm-node-libs.evm_node_lib_dev_encoding
-  octez-evm-node-libs.evm_node_config)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.clic
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-version.value
+  mavkit-evm-node-libs.evm_node_lib_prod
+  mavkit-evm-node-libs.evm_node_lib_dev
+  mavkit-evm-node-libs.evm_node_lib_dev_encoding
+  mavkit-evm-node-libs.evm_node_config)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)

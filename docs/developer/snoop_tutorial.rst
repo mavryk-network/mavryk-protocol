@@ -1,7 +1,7 @@
 Snoop usage tutorial
 ====================
 
-We present a typical benchmark workflow using ``octez-snoop``.
+We present a typical benchmark workflow using ``mavkit-snoop``.
 We'll consider the case of the ``blake2b`` hashing function, which
 is used among other things to hash blocks, operations and contexts:
 
@@ -19,7 +19,7 @@ Step 1: Defining the benchmark
 Benchmarks correspond to OCaml modules implementing the ``Benchmark.S`` signature.
 These must then be registered via the ``Registration.register`` function.
 Of course, for this registration to happen, the file containing the benchmark
-and the call to ``Registration.register`` should be linked with ``octez-snoop``.
+and the call to ``Registration.register`` should be linked with ``mavkit-snoop``.
 See :doc:`snoop_arch` for complementary details.
 
 We'll define the benchmark module chunk by chunk and describe each part.
@@ -159,12 +159,12 @@ Step 2: Running the benchmark, inferring parameters, and generating code
 ------------------------------------------------------------------------
 
 Now, we are ready to run our benchmark. All we need is the full name of the
-benchmark, which involves namespaces. Fortunately, ``octez-snoop`` enjoys a few
+benchmark, which involves namespaces. Fortunately, ``mavkit-snoop`` enjoys a few
 commands to help us if we are not sure what the final name of the benchmark is.
 
 ::
 
-   octez-snoop list all benchmarks | grep blake2b
+   mavkit-snoop list all benchmarks | grep blake2b
 
 Which prints:
 
@@ -177,7 +177,7 @@ registration process.
 
 ::
 
-   octez-snoop display info for benchmark example/Blake2b_example
+   mavkit-snoop display info for benchmark example/Blake2b_example
 
 And here is what we get.
 
@@ -215,7 +215,7 @@ measurements and generate OCaml code that reflects the gas cost of running
 
 ::
 
-   octez-snoop generate code for benchmarks example/Blake2b_example --out-dir /tmp/snoop_results
+   mavkit-snoop generate code for benchmarks example/Blake2b_example --out-dir /tmp/snoop_results
 
 The tool is quite verbose, but we will not detail what it is telling us here;
 this is the purpose of the :doc:`Snoop in-depth example <snoop_example>` section
@@ -226,7 +226,7 @@ of the documentation. Two lines are worth noticing though.
    Adding solution example/blake2b_ns_p_byte := 0.976187
    Adding solution example/blake2b_const := 295.080202
 
-These are the values that ``octez-snoop`` has inferred for the parameters of the
+These are the values that ``mavkit-snoop`` has inferred for the parameters of the
 model we declared, and based on the measurements it performed. The obtained
 values are highly dependent on the architecture of the computer and the
 processes running in parallel while measuring the execution time.
@@ -244,7 +244,7 @@ What Snoop did was to:
 Step 3: checking the generated files
 ------------------------------------
 
-``octez-snoop`` created several files in ``/tmp/snoop_results`` (the argument of
+``mavkit-snoop`` created several files in ``/tmp/snoop_results`` (the argument of
 the ``out-dir`` option). Let's have a look at two of them.
 
 ``blake2b.ml`` contains the gas cost function: it estimates the computational
@@ -299,7 +299,7 @@ the more the two overlap, the more precise we are.
 Step 4: options
 ---------------
 
-Some of our benchmarks can take a long time to run. ``octez-snoop`` offers
+Some of our benchmarks can take a long time to run. ``mavkit-snoop`` offers
 options to vary the number of random values or the number of times they are
 measured, using options ``--nsamples`` and ``--bench-num`` (see
 :ref:`the manual <benchmark_tool_manual>`). The default values are 300 random

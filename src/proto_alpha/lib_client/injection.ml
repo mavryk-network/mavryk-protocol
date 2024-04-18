@@ -1102,7 +1102,7 @@ let inject_operation_internal (type kind) cctxt ~chain ~block ?confirmations
             cctxt#message
               "@[<v 0>NOT waiting for the operation to be included.@,\
                Use command@,\
-              \  octez-client wait for %a to be included --confirmations %d \
+              \  mavkit-client wait for %a to be included --confirmations %d \
                --branch %a@,\
                and/or an external block explorer to make sure that it has been \
                included.@]"
@@ -1175,7 +1175,7 @@ let inject_operation_internal (type kind) cctxt ~chain ~block ?confirmations
               "@[<v 0>The operation has only been included %d blocks ago.@,\
                We recommend to wait more.@,\
                Use command@,\
-              \  octez-client wait for %a to be included --confirmations %d \
+              \  mavkit-client wait for %a to be included --confirmations %d \
                --branch %a@,\
                and/or an external block explorer.@]"
               number

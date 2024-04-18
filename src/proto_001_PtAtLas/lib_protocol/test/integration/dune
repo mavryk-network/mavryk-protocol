@@ -7,20 +7,20 @@
  (libraries
   tezt.core
   tezt
-  octez-libs.tezos-context
-  octez-alcotezt
-  octez-libs.base
-  octez-protocol-001-PtAtLas-libs.client
+  mavkit-libs.tezos-context
+  mavkit-alcotezt
+  mavkit-libs.base
+  mavkit-protocol-001-PtAtLas-libs.client
   tezos-protocol-001-PtAtLas.protocol
   tezos-protocol-001-PtAtLas.parameters
-  octez-protocol-001-PtAtLas-libs.test-helpers
-  octez-libs.base-test-helpers)
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-libs.base-test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_base.TzPervasives
   -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Tezos_client_001_PtAtLas

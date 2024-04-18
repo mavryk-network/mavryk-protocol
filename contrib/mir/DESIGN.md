@@ -19,9 +19,9 @@ too hard to switch away from such a basic component later in the project.
 We used the Lalrpop library because we had some experience with it, and it seemed
 to work well in our initial trials.
 
-##### Known differences between Octez and MIR parsers
+##### Known differences between Mavkit and MIR parsers
 
-Currently, for the sake of simplicity, MIR parser is a bit more lenient wrt non-essential elements, specifically, unlike Octez parser, MIR parser allows:
+Currently, for the sake of simplicity, MIR parser is a bit more lenient wrt non-essential elements, specifically, unlike Mavkit parser, MIR parser allows:
 
 - Nested parentheses, i.e. `{ PUSH (((int))) (((((3))))) }` is accepted
 - Parentheses inside sequences, i.e. `{ (Unit) ; (Unit) }` is accepted

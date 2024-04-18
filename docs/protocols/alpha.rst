@@ -7,7 +7,7 @@ to Atlas (see :ref:`naming_convention`).
 For changes brought by the rejected Atlas proposal with respect to Nairobi, see :doc:`../protocols/018_atlas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
-branch of Octez.
+branch of Mavkit.
 
 .. contents::
 
@@ -36,7 +36,7 @@ Smart Rollups
 
 - Add private rollups: smart rollup with an updatable whitelist stakers. Only stakers on the whitelist can publish commitment and participate in a refutation game. (MRs :gl:`!9823`, :gl:`!10104`, :gl:`!9823`, :gl:`!9572`, :gl:`!9427`, :gl:`!9472`, :gl:`!9439`, :gl:`!9401`)
 
-- Register in ``octez-codec`` some of the smart rollup related encodings. (MR :gl:`!10174`)
+- Register in ``mavkit-codec`` some of the smart rollup related encodings. (MR :gl:`!10174`)
 
 Zero Knowledge Rollups (ongoing)
 --------------------------------

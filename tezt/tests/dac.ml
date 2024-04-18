@@ -2295,7 +2295,7 @@ module Tx_kernel_e2e = struct
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"
       ~committee_size:0
       ~observers:1
@@ -2313,7 +2313,7 @@ module Tx_kernel_e2e = struct
       ~__FILE__
       ~supports:Protocol.(From_protocol (number Atlas))
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"
       ~committee_size:0
       ~observers:1
@@ -2704,7 +2704,7 @@ let register ~protocols =
   scenario_with_layer1_node
     ~__FILE__
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_node])
     "dac_observer_times_out_when_page_cannot_be_fetched"
     test_observer_times_out_when_page_cannot_be_fetched
     protocols ;
@@ -2729,7 +2729,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test client commands (hex payload from CLI)"
     (Full_infrastructure.test_client ~send_payload_from_file:false)
     protocols ;
@@ -2738,7 +2738,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test client commands (binary payload from file)"
     (Full_infrastructure.test_client ~send_payload_from_file:true)
     protocols ;
@@ -2747,7 +2747,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test serialized certificate"
     Full_infrastructure.test_serialized_certificate
     protocols ;

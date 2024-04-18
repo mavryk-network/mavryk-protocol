@@ -60,8 +60,8 @@ module type INBOX = sig
     Node_context.rw ->
     predecessor:Layer1.header ->
     Layer1.header ->
-    (Octez_smart_rollup.Inbox.Hash.t
-    * Octez_smart_rollup.Inbox.t
+    (Mavkit_smart_rollup.Inbox.Hash.t
+    * Mavkit_smart_rollup.Inbox.t
     * Merkelized_payload_hashes_hash.t
     * string list)
     tzresult
@@ -72,7 +72,7 @@ module type INBOX = sig
   val same_as_layer_1 :
     _ Node_context.t ->
     Block_hash.t ->
-    Octez_smart_rollup.Inbox.t ->
+    Mavkit_smart_rollup.Inbox.t ->
     unit tzresult Lwt.t
 
   (** Serialize an external messages to the protocol representation. NOTE: so
@@ -86,7 +86,7 @@ module type INBOX = sig
     predecessor_timestamp:Time.Protocol.t ->
     predecessor:Block_hash.t ->
     level:int32 ->
-    Octez_smart_rollup.Inbox.t
+    Mavkit_smart_rollup.Inbox.t
 
   (**/**)
 
@@ -101,8 +101,8 @@ module type INBOX = sig
       predecessor:Layer1.header ->
       Layer1.header ->
       string list ->
-      (Octez_smart_rollup.Inbox.Hash.t
-      * Octez_smart_rollup.Inbox.t
+      (Mavkit_smart_rollup.Inbox.Hash.t
+      * Mavkit_smart_rollup.Inbox.t
       * Merkelized_payload_hashes_hash.t
       * string list)
       tzresult
@@ -188,7 +188,7 @@ module type LAYER1_HELPERS = sig
   val genesis_inbox :
     #Client_context.full ->
     genesis_level:int32 ->
-    Octez_smart_rollup.Inbox.t tzresult Lwt.t
+    Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
   (** Retrieve protocol agnotic constants for the head of the chain. *)
   val retrieve_constants :

@@ -313,13 +313,13 @@ let setup_client_config (cctxt : Tezos_client_base.Client_context.printer)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
    Remove backwards compatible Tezos symlinks. *)
-let warn_if_argv0_name_not_octez () =
+let warn_if_argv0_name_not_mavkit () =
   let executable_name =
     (* example: tezos-tx-rollup-client-015-PtKathma *)
     Filename.basename Sys.argv.(0)
   in
   let old_head = "tezos-" in
-  let new_head = "octez-" in
+  let new_head = "mavkit-" in
   match TzString.has_prefix executable_name ~prefix:old_head with
   | false -> ()
   | true ->
@@ -365,7 +365,7 @@ let warn_if_argv0_name_not_octez () =
           |> List.map name_without_version
           |> List.find Option.is_some |> Option.join
         in
-        (* example: octez-tx-rollup-client-PtKathma *)
+        (* example: mavkit-tx-rollup-client-PtKathma *)
         new_head
         ^
         match versionless_name with
@@ -414,7 +414,7 @@ let main (module C : M) ~select_commands =
         Format.err_formatter
         (if Unix.isatty Unix.stderr then Ansi else Plain)
         Short) ;
-  warn_if_argv0_name_not_octez () ;
+  warn_if_argv0_name_not_mavkit () ;
   let*! retcode =
     Lwt.catch
       (fun () ->

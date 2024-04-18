@@ -3,18 +3,18 @@
 
 (library
  (name mocked)
- (public_name octez-shell-libs.mocked)
- (implements octez-shell-libs.store)
+ (public_name mavkit-shell-libs.mocked)
+ (implements mavkit-shell-libs.store)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.crypto
-  octez-shell-libs.shell-services
-  octez-libs.tezos-context.memory
-  octez-shell-libs.context-ops
-  octez-shell-libs.validation
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.store.shared)
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-services
+  mavkit-libs.tezos-context.memory
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.validation
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.store.shared)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

@@ -6,18 +6,18 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-libs.base.unix
-  octez-libs.tezos-context.disk
-  octez-libs.base-test-helpers
-  octez-l2-libs.scoru-wasm-helpers
-  octez-l2-libs.scoru_wasm_test_helpers
-  octez-libs.test-helpers
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.scoru-wasm-fast
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-libs.base.unix
+  mavkit-libs.tezos-context.disk
+  mavkit-libs.base-test-helpers
+  mavkit-l2-libs.scoru-wasm-helpers
+  mavkit-l2-libs.scoru_wasm_test_helpers
+  mavkit-libs.test-helpers
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.scoru-wasm-fast
   qcheck-alcotest
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -28,7 +28,7 @@
   -open Tezos_scoru_wasm_helpers
   -open Tezos_scoru_wasm_test_helpers
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules
   gen
   partial_memory
@@ -48,7 +48,7 @@
 
 (rule
  (alias runtest)
- (package octez-l2-libs)
+ (package mavkit-l2-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

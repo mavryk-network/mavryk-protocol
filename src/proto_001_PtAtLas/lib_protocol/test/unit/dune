@@ -6,23 +6,23 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base-test-helpers
-  octez-libs.micheline
-  octez-protocol-001-PtAtLas-libs.client
-  octez-shell-libs.client-base
+  mavkit-libs.base
+  mavkit-libs.base-test-helpers
+  mavkit-libs.micheline
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-base
   tezos-protocol-001-PtAtLas.parameters
-  octez-proto-libs.protocol-environment
-  octez-libs.stdlib-unix
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.stdlib-unix
   tezos-protocol-001-PtAtLas.protocol
-  octez-libs.test-helpers
-  octez-protocol-001-PtAtLas-libs.test-helpers
-  octez-alcotezt
-  octez-l2-libs.scoru-wasm-helpers
-  octez-libs.stdlib
-  octez-libs.crypto-dal
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.webassembly-interpreter-extra)
+  mavkit-libs.test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-alcotezt
+  mavkit-l2-libs.scoru-wasm-helpers
+  mavkit-libs.stdlib
+  mavkit-libs.crypto-dal
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.webassembly-interpreter-extra)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -37,7 +37,7 @@
   -open Tezos_protocol_001_PtAtLas
   -open Tezos_test_helpers
   -open Tezos_001_PtAtLas_test_helpers
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_scoru_wasm_helpers
   -open Tezos_stdlib
   -open Tezos_crypto_dal

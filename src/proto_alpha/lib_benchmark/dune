@@ -5,18 +5,18 @@
  (name tezos_benchmark_alpha)
  (public_name tezos-benchmark-alpha)
  (libraries
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
-  octez-libs.micheline
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavkit-libs.micheline
   tezos-micheline-rewriting
   tezos-benchmark
   tezos-benchmark-type-inference-alpha
   tezos-protocol-alpha.protocol
-  octez-libs.crypto
+  mavkit-libs.crypto
   tezos-protocol-alpha.parameters
   hashcons
-  octez-protocol-alpha-libs.test-helpers
+  mavkit-protocol-alpha-libs.test-helpers
   prbnmcn-stats)
  (library_flags (:standard -linkall))
  (flags

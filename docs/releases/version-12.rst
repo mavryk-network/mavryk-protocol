@@ -21,14 +21,14 @@ It also updates RPC ``selected_snapshot`` by adding an optional parameter,
 useful in particular for indexers aiming to support Ithaca.
 Warning: using version 12.1 also automatically upgrades the version
 of the storage backend; as a consequence, your data directory will no longer be
-usable with older versions of Octez.
+usable with older versions of Mavkit.
 
 Version 12.2 increased the size limit for stored metadata and made
 it configurable.
 
 Version 12.3 fixed some remaining issues related to the storage of metadata.
 **Breaking change:** note that snapshots exported using v12.3 cannot be
-imported by nodes running previous versions of Octez.
+imported by nodes running previous versions of Mavkit.
 
 Version 12.4 fixed a memory leak in the accuser and the baker.
 

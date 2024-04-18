@@ -8,10 +8,10 @@
  (libraries
   zarith
   zarith_stubs_js
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-libs.error-monad
-  octez-libs.micheline)
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-libs.error-monad
+  mavkit-libs.micheline)
  (flags
   (:standard)
   -open Tezos_stdlib

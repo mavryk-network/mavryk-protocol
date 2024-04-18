@@ -195,7 +195,7 @@ let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
     ?regression
     ~__FILE__
     ~tags
-    ~uses:(fun protocol -> Constant.octez_smart_rollup_node :: uses protocol)
+    ~uses:(fun protocol -> Constant.mavkit_smart_rollup_node :: uses protocol)
     ~title:(format_title_scenario kind {variant; tags; description})
   @@ fun protocol ->
   let* tezos_node, tezos_client =
@@ -3037,7 +3037,7 @@ let bailout_mode_fail_to_start_without_operator ~kind =
       tags = ["rollup_node"; "mode"; "bailout"];
       description = "rollup node in bailout fails without operator";
     }
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
   @@ fun _protocol sc_rollup tezos_node tezos_client ->
   let sc_rollup_node =
     Sc_rollup_node.create
@@ -3089,7 +3089,7 @@ let bailout_mode_fail_operator_no_stake ~kind =
     - start an operator rollup and wait until it publish a commitment
     - stop the rollup node
     - bakes until refutation period is over
-    - using octez client cement the commitment
+    - using mavkit client cement the commitment
     - restart the rollup node in bailout mode
   check that it fails directly when the operator has no stake.
     *)
@@ -4665,7 +4665,7 @@ let test_rollup_node_missing_preimage_exit_at_initialisation =
     ~supports:(From_protocol 016)
     ~__FILE__
     ~tags:["node"; "preimage"; "boot_sector"]
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
     ~title:
       "Rollup node exit if at initialisation, there is one or multiple \
        preimage(s) missing."
@@ -5140,7 +5140,7 @@ let custom_mode_empty_operation_kinds ~kind =
       tags = ["mode"; "custom"];
       description = "custom mode has empty operation kinds";
     }
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
   @@ fun _protocol sc_rollup tezos_node tezos_client ->
   let sc_rollup_node =
     Sc_rollup_node.create

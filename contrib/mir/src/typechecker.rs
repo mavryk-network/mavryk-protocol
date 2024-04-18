@@ -2664,7 +2664,7 @@ mod typecheck_tests {
             }
         }
         use tezos_crypto_rs::hash::*;
-        // hex representations are obtained via `octez-client hash data`
+        // hex representations are obtained via `mavkit-client hash data`
         test_ok(
             r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef",

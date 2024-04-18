@@ -86,7 +86,7 @@ The new environment as it stands now is not activated. More precisely, it cannot
 When to activate
 ^^^^^^^^^^^^^^^^^
 
-This is on purpose: we do not want to release an unfinished environment because it interferes with the distributed nature of Tezos protocol development. Specifically, if an unfinished protocol was made available in a release of the Octez suite, then anyone could propose a protocol built upon this version. But then further work on the protocol (to finish it) would create multiple different environments that have the same name. To avoid this, we only activate the environment once it is safe.
+This is on purpose: we do not want to release an unfinished environment because it interferes with the distributed nature of Tezos protocol development. Specifically, if an unfinished protocol was made available in a release of the Mavkit suite, then anyone could propose a protocol built upon this version. But then further work on the protocol (to finish it) would create multiple different environments that have the same name. To avoid this, we only activate the environment once it is safe.
 
 The new environment should only be activated after the last release that precedes the injection of the protocol that uses it. Don't worry too much about this, simply reach out to a release manager and work with them on the schedule.
 

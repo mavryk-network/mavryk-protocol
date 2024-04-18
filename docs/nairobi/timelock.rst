@@ -70,7 +70,7 @@ their whole deposit by providing the decryption, but in a way that delays everyo
 Cryptographic design
 --------------------
 
-The time-lock features are supported by the Tezos_crypto.Timelock :package-api:`library <octez-libs/Tezos_crypto/Timelock/index.html>`.
+The time-lock features are supported by the Tezos_crypto.Timelock :package-api:`library <mavkit-libs/Tezos_crypto/Timelock/index.html>`.
 
 Users first generate a RSA modulus and a symmetric encryption key.
 They use authenticated encryption to encrypt a packed Michelson value (an array of bytes computed with ``PACK``)

@@ -288,7 +288,7 @@ type manager_state = {
 
           - In mempool mode, bounding the number of operations in this
             map is the responsability of the mempool. (E.g. the plugin used
-            by Octez has a [max_prechecked_manager_operations] parameter to
+            by Mavkit has a [max_prechecked_manager_operations] parameter to
             ensure this.) *)
 }
 

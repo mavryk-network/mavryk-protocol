@@ -26,7 +26,7 @@
 
 module Types = Tezos_dal_node_services.Types
 
-(** This module defines the data structures used to instantiate the Octez P2P
+(** This module defines the data structures used to instantiate the Mavkit P2P
     library. More exactly, it exposes:
 
     - the types {!p2p_message}, {!peer_metadata} and {!connection_metadata},

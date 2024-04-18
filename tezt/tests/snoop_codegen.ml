@@ -34,7 +34,7 @@ let generate_code_using_solution_test () =
   Test.register
     ~title:"snoop codegen"
     ~tags:["codegen"]
-    ~uses:[Constant.octez_snoop]
+    ~uses:[Constant.mavkit_snoop]
     ~__FILE__
   @@ fun () ->
   let open Lwt.Syntax in

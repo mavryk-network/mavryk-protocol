@@ -97,9 +97,9 @@ let same_as_layer_1 node_ctxt head_hash inbox =
   let* layer1_inbox =
     Plugin.RPC.Sc_rollup.inbox cctxt (cctxt#chain, head_block)
   in
-  let layer1_inbox = Sc_rollup_proto_types.Inbox.to_octez layer1_inbox in
+  let layer1_inbox = Sc_rollup_proto_types.Inbox.to_mavkit layer1_inbox in
   fail_unless
-    (Octez_smart_rollup.Inbox.equal layer1_inbox inbox)
+    (Mavkit_smart_rollup.Inbox.equal layer1_inbox inbox)
     (Sc_rollup_node_errors.Inconsistent_inbox {layer1_inbox; inbox})
 
 let add_messages ~is_first_block ~predecessor_timestamp ~predecessor inbox
@@ -139,7 +139,7 @@ let process_messages (node_ctxt : _ Node_context.t) ~is_first_block
   let predecessor_timestamp = predecessor.header.timestamp in
   let inbox_metrics = Metrics.Inbox.metrics in
   Prometheus.Gauge.set inbox_metrics.head_inbox_level @@ Int32.to_float level ;
-  let inbox = Sc_rollup_proto_types.Inbox.of_octez inbox in
+  let inbox = Sc_rollup_proto_types.Inbox.of_mavkit inbox in
   let*? messages =
     Environment.wrap_tzresult
     @@ List.map_e
@@ -179,10 +179,10 @@ let process_messages (node_ctxt : _ Node_context.t) ~is_first_block
       ~predecessor:predecessor.hash
       messages_with_protocol_internal_messages
   in
-  let inbox = Sc_rollup_proto_types.Inbox.to_octez inbox in
+  let inbox = Sc_rollup_proto_types.Inbox.to_mavkit inbox in
   let* inbox_hash = Node_context.save_inbox node_ctxt inbox in
   let witness_hash =
-    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.to_octez witness_hash
+    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.to_mavkit witness_hash
   in
   return
     (inbox_hash, inbox, witness_hash, messages_with_protocol_internal_messages)
@@ -216,8 +216,8 @@ let process_head (node_ctxt : _ Node_context.t) ~(predecessor : Layer1.header)
         node_ctxt.cctxt
         ~genesis_level:node_ctxt.genesis_info.level
     in
-    let Octez_smart_rollup.Inbox.{hash = witness; _} =
-      Octez_smart_rollup.Inbox.Skip_list.content inbox.old_levels_messages
+    let Mavkit_smart_rollup.Inbox.{hash = witness; _} =
+      Mavkit_smart_rollup.Inbox.Skip_list.content inbox.old_levels_messages
     in
     let* () =
       Node_context.save_messages
@@ -301,7 +301,7 @@ let init ~predecessor_timestamp ~predecessor ~level =
     ~predecessor_timestamp
     ~predecessor
     (Raw_level.of_int32_exn level)
-  |> Sc_rollup_proto_types.Inbox.to_octez
+  |> Sc_rollup_proto_types.Inbox.to_mavkit
 
 module Internal_for_tests = struct
   let process_messages = process_messages

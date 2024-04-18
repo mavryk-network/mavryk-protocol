@@ -57,7 +57,7 @@ type michelson_term_kind = Data | Code
 
 type list_mode = All | Any | Exactly
 
-let create ?(path = Uses.path Constant.octez_snoop) ?(color = Log.Color.FG.blue)
+let create ?(path = Uses.path Constant.mavkit_snoop) ?(color = Log.Color.FG.blue)
     () =
   {path; name = "snoop"; color}
 

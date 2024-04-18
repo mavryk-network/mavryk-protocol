@@ -245,12 +245,12 @@ quorum of the next vote.
 More details on the operations can be found in
 :src:`src/proto_017_PtNairob/lib_protocol/operation_repr.ml`.
 The binary format is described by
-``octez-client describe unsigned operation``.
+``mavkit-client describe unsigned operation``.
 
 Client Commands
 ---------------
 
-The Octez client, ``octez-client``, provides commands for basic exploration and
+The Mavkit client, ``mavkit-client``, provides commands for basic exploration and
 interaction with the amendment and voting process.
 
 
@@ -261,13 +261,13 @@ The client provides a command to show the status of a voting period.
 It displays different information for different kind of periods, as
 in the following samples::
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "proposal"
   Blocks remaining until end of period: 59
   Current proposals:
   PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp 2,400,000 ṁ
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "exploration"
   Blocks remaining until end of period: 63
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
@@ -278,7 +278,7 @@ in the following samples::
   Current participation 20.00%, necessary quorum 80.00%
   Current in favor 2,400,000 ṁ, needed supermajority 1,920,000 ṁ
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "cooldown"
   Blocks remaining until end of period: 64
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
@@ -295,7 +295,7 @@ Submit proposals
 
 During a proposal period, a list of proposals can be submitted with::
 
-    octez-client submit proposals for <delegate> <proposal1> <proposal2> ...
+    mavkit-client submit proposals for <delegate> <proposal1> <proposal2> ...
 
 Remember that each delegate can submit a maximum of 20 protocol
 hashes and that duplicates count towards this total.
@@ -310,7 +310,7 @@ following two conditions:
   its node which performs some checks, compiles and loads the
   protocol.
 
-These are protection measures that the Octez client takes to prevent the
+These are protection measures that the Mavkit client takes to prevent the
 accidental injection of invalid protocols. As mentioned above, it is still
 important to check the validity of the protocols that you vote for as they may
 have been injected via different means.
@@ -322,7 +322,7 @@ Submit ballots
 During either of the **exploration** or **promotion** periods,
 ballots can be submitted once with::
 
-    octez-client submit ballot for <delegate> <proposal> <yea|nay|pass>
+    mavkit-client submit ballot for <delegate> <proposal> <yea|nay|pass>
 
 Further External Resources
 --------------------------

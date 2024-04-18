@@ -210,7 +210,7 @@ let encoding : t Data_encoding.t =
        (obj1
           (dft
              "profiles"
-             ~description:"The Octez DAL node profiles"
+             ~description:"The Mavkit DAL node profiles"
              Types.profiles_encoding
              (Operator []))))
 

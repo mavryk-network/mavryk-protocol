@@ -5,14 +5,14 @@
 
 (library
  (name tezos_client_base)
- (public_name octez-shell-libs.client-base)
+ (public_name mavkit-shell-libs.client-base)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-libs.rpc
-  octez-shell-libs.shell-services
-  octez-libs.tezos-sapling
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-libs.rpc
+  mavkit-shell-libs.shell-services
+  mavkit-libs.tezos-sapling
   uri)
  (js_of_ocaml)
  (library_flags (:standard -linkall))

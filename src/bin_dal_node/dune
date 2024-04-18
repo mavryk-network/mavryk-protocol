@@ -3,45 +3,45 @@
 
 (executable
  (name main)
- (public_name octez-dal-node)
- (package octez-dal-node)
+ (public_name mavkit-dal-node)
+ (package mavkit-dal-node)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.version
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.version
   cmdliner
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.client-commands
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-shell-libs.protocol-updater
-  octez-libs.rpc-http-client-unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.client-commands
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.rpc-http-client-unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
   tezos-dal-node-lib
   tezos-dal-node-services
-  octez-l2-libs.layer2_store
-  octez-libs.crypto-dal
-  octez-shell-libs.store.unix
-  octez-shell-libs.store.shared
-  octez-libs.tezos-gossipsub
+  mavkit-l2-libs.layer2_store
+  mavkit-libs.crypto-dal
+  mavkit-shell-libs.store.unix
+  mavkit-shell-libs.store.shared
+  mavkit-libs.tezos-gossipsub
   tezos-dal-node-lib.gossipsub
-  octez-shell-libs.p2p
-  octez-libs.tezos-p2p-services
-  octez-libs.crypto
-  octez-libs.base.p2p-identity-file
-  octez-shell-libs.shell-services
+  mavkit-shell-libs.p2p
+  mavkit-libs.tezos-p2p-services
+  mavkit-libs.crypto
+  mavkit-libs.base.p2p-identity-file
+  mavkit-shell-libs.shell-services
   irmin-pack
   irmin-pack.unix
   irmin
   prometheus-app
   prometheus
-  octez-protocol-001-PtAtLas-libs.dal
-  (select void_for_linking-octez-protocol-alpha-libs-dal from
-   (octez-protocol-alpha-libs.dal -> void_for_linking-octez-protocol-alpha-libs-dal.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-dal.empty)))
+  mavkit-protocol-001-PtAtLas-libs.dal
+  (select void_for_linking-mavkit-protocol-alpha-libs-dal from
+   (mavkit-protocol-alpha-libs.dal -> void_for_linking-mavkit-protocol-alpha-libs-dal.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-dal.empty)))
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -70,4 +70,4 @@
 
 (rule
  (action
-  (progn (write-file void_for_linking-octez-protocol-alpha-libs-dal.empty ""))))
+  (progn (write-file void_for_linking-mavkit-protocol-alpha-libs-dal.empty ""))))

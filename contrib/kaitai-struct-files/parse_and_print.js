@@ -17,7 +17,7 @@ const input_path = process.argv[3]
 const valid = process.argv[4]
 
 const fs = require("fs");
-const OctezData = require(parser_path);
+const MavkitData = require(parser_path);
 const KaitaiStream = require('kaitai-struct/KaitaiStream');
 
 const fileContent = fs.readFileSync(input_path);
@@ -25,14 +25,14 @@ const fileContent = fs.readFileSync(input_path);
 const stream = new KaitaiStream(fileContent);
 if(valid == "false") {
   try {
-    new OctezData(stream);
+    new MavkitData(stream);
     process.exit(1);
   } catch (e) {
     console.log(e.message);
     process.exit(0);
   }
 } else {
-  const data = new OctezData(stream);
+  const data = new MavkitData(stream);
   delete data._io;
   delete data._parent;
   delete data._root;

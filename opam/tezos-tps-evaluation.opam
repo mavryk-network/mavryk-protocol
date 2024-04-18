@@ -10,14 +10,14 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-libs"
+  "mavkit-libs"
   "caqti"
   "caqti-dynload"
   "caqti-lwt"
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
   "lwt" { >= "5.7.0" }
-  "octez-protocol-alpha-libs"
-  "octez-shell-libs"
+  "mavkit-protocol-alpha-libs"
+  "mavkit-shell-libs"
   "tezos-protocol-alpha"
   "tezt" { >= "4.0.0" & < "5.0.0" }
   "tezt-tezos"

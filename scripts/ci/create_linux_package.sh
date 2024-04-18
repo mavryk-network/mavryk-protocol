@@ -22,11 +22,11 @@ cat <<DOC > meta.json
 DOC
 
 # NOTE: The package generator script relies on the binaries having the `tezos-` prefix instead of
-# `octez-*` which is currently in place.
-# This is a temporary fix until the upstream version supports the renamed `octez` binaries.
+# `mavkit-*` which is currently in place.
+# This is a temporary fix until the upstream version supports the renamed `mavkit` binaries.
 cd binaries
 # shellcheck disable=SC2001
-for f in octez*; do mv "$f" "$(echo "$f" | sed s/octez/tezos/g)"; done
+for f in mavkit*; do mv "$f" "$(echo "$f" | sed s/mavkit/tezos/g)"; done
 cd ../
 
 export DEB_BUILD_OPTIONS=nostrip

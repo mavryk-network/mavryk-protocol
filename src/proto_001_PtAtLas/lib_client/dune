@@ -3,22 +3,22 @@
 
 (library
  (name tezos_client_001_PtAtLas)
- (public_name octez-protocol-001-PtAtLas-libs.client)
+ (public_name mavkit-protocol-001-PtAtLas-libs.client)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
   tezos-protocol-001-PtAtLas.protocol
   tezos-protocol-001-PtAtLas.protocol.lifted
-  octez-shell-libs.mockup-registration
-  octez-shell-libs.proxy
-  octez-shell-libs.signer-backends
-  octez-protocol-001-PtAtLas-libs.plugin
+  mavkit-shell-libs.mockup-registration
+  mavkit-shell-libs.proxy
+  mavkit-shell-libs.signer-backends
+  mavkit-protocol-001-PtAtLas-libs.plugin
   tezos-protocol-001-PtAtLas.parameters
-  octez-libs.rpc
-  octez-protocol-001-PtAtLas-libs.smart-rollup
+  mavkit-libs.rpc
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
   uri)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))

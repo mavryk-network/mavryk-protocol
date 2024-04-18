@@ -29,13 +29,13 @@ module Proxy_server_config = Tezos_proxy_server_config.Proxy_server_config
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
    Remove backwards compatible Tezos symlinks. *)
 let () =
-  (* warn_if_argv0_name_not_octez *)
+  (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
   let prefix = "tezos-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -53,7 +53,7 @@ let () =
       executable_name
   else ()
 
-let name = "octez-proxy-server"
+let name = "mavkit-proxy-server"
 
 let config : string option Term.t =
   let doc =
@@ -90,7 +90,7 @@ let rpc_tls : string option Term.t =
 
 let data_dir : string option Term.t =
   let doc =
-    "Path to the data-dir of a running octez-node, for reading the `context` \
+    "Path to the data-dir of a running mavkit-node, for reading the `context` \
      subdirectory to obtain data instead of using the ../raw/bytes RPC (hereby \
      reducing the node's IO)."
   in
@@ -219,7 +219,7 @@ let main_promise (config_file : string option)
   (* Now we build the function that the proxy server can use to build a proxy
      delegate later, using [Tezos_shell_context.Proxy_delegate_maker.*] functions.
      This lets it not depend directly on [Tezos_shell_context]: if it did, it
-     would break compilation of octez-client to JavaScript. *)
+     would break compilation of mavkit-client to JavaScript. *)
   let on_disk_proxy_builder =
     Option.map
       (fun index ctx_hash ->

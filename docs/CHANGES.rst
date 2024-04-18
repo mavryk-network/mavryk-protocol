@@ -11,9 +11,9 @@ Node
 
 - **Breaking change** Bumped the snapshot version from ``6`` to ``7``, 
   in order to address an issue which resulted in the export of corrupted tar rolling and full
-  snapshots. Octez v18.1 nodes can still import previous version ``6`` (and earlier) snapshots.
+  snapshots. Mavkit v18.1 nodes can still import previous version ``6`` (and earlier) snapshots.
   but snapshots in version 7 are not retro-compatible with previous
-  octez versions (MR :gl:`!10785`).
+  mavkit versions (MR :gl:`!10785`).
 
 Version 18.0
 ============
@@ -21,8 +21,8 @@ Version 18.0
 Node
 ----
 
-- **Breaking change** Bumped Octez store version from ``5`` to
-  ``6`` to explicit the incompatibility with previous store (and hence Octez) versions. As a result snapshots exported from a v6 store are not compatible with earlier Octez versions. Also, improved the consistency of ``snapshot`` import errors
+- **Breaking change** Bumped Mavkit store version from ``5`` to
+  ``6`` to explicit the incompatibility with previous store (and hence Mavkit) versions. As a result snapshots exported from a v6 store are not compatible with earlier Mavkit versions. Also, improved the consistency of ``snapshot`` import errors
   messages (MR :gl:`!10138`)
 
 Smart Rollup node
@@ -168,9 +168,9 @@ Node
   Only operation that were in the mempool before the RPC call were filtered by
   validation passes. (MR :gl:`!9012`)
 
-- **Breaking change** Removed the ``octez_mempool_pending_applied``
-  metric, and renamed the ``octez_mempool_pending_prechecked`` one to
-  ``octez_mempool_pending_validated``. (MR :gl:`!9137`)
+- **Breaking change** Removed the ``mavkit_mempool_pending_applied``
+  metric, and renamed the ``mavkit_mempool_pending_prechecked`` one to
+  ``mavkit_mempool_pending_validated``. (MR :gl:`!9137`)
 
 - Added version ``1`` to RPC ``POST ../helpers/preapply/operations``. It can be
   used by calling the RPC with the parameter ``?version=1`` (default version is
@@ -303,7 +303,7 @@ Proxy Server
 ------------
 
 - Redirected not found replies (HTTP 404 answers) to the underlying
-  octez-node itself. Public visibility of the node is not required
+  mavkit-node itself. Public visibility of the node is not required
   anymore.
 
 Protocol Compiler And Environment
@@ -328,7 +328,7 @@ Smart Rollup node
 - Faster bootstrapping process. (MR :gl:`!8618`, MR :gl:`!8767`)
 
 - Single, protocol-agnostic, rollup node binary. The rollup node
-  ``octez-smart-rollup-node`` works with any protocol and supports protocol
+  ``mavkit-smart-rollup-node`` works with any protocol and supports protocol
   upgrades. The other protocol specific rollup nodes still exist but will be
   deprecated. (MR :gl:`!9105`)
 
@@ -348,7 +348,7 @@ Smart Rollup node
 Smart Rollup WASM Debugger
 --------------------------
 
-- Changed the syntax for the ``octez-smart-rollup-wasm-debugger`` to prefix the
+- Changed the syntax for the ``mavkit-smart-rollup-wasm-debugger`` to prefix the
   the kernel file by ``--kernel``. (MR :gl:`!9318`)
 
 - ``profile`` commands now profiles the time spent in each steps of a PVM
@@ -367,8 +367,8 @@ Smart Rollup WASM Debugger
 Data Availability Committee (DAC)
 ---------------------------------
 
-- Released experimental Data Availability Committee executables which include ``octez-dac-node``
-  and ``octez-dac-client``. Users can thus experiment
+- Released experimental Data Availability Committee executables which include ``mavkit-dac-node``
+  and ``mavkit-dac-client``. Users can thus experiment
   with operating and using DAC in their Smart Rollup workflow to achieve higher data
   throughput. It is not recommended to use DAC on Mainnet but instead on testnets
   and lower environments.
@@ -488,23 +488,23 @@ Client
 
   Smart rollup origination command::
 
-    ./octez-client originate smart rollup <alias> from <source contract> of kind <smart rollup kind> of type <michelson type> with kernel <kernel>
+    ./mavkit-client originate smart rollup <alias> from <source contract> of kind <smart rollup kind> of type <michelson type> with kernel <kernel>
 
   Other example command::
 
-    ./octez-client recover bond of <implicit contrat> for smart rollup <alias or address> from <source contract>
+    ./mavkit-client recover bond of <implicit contrat> for smart rollup <alias or address> from <source contract>
 
 - Similarly to smart contract, the client now has functions to manage the set of known smart rollups::
 
-    ./octez-client remember smart rollup <alias> <smart rollup address>
+    ./mavkit-client remember smart rollup <alias> <smart rollup address>
 
-    ./octez-client forget smart rollup <alias>
+    ./mavkit-client forget smart rollup <alias>
 
-    ./octez-client forget all smart rollups
+    ./mavkit-client forget all smart rollups
 
-    ./octez-client show known smart rollup <alias>
+    ./mavkit-client show known smart rollup <alias>
 
-    ./octez-client list smart rollups
+    ./mavkit-client list smart rollups
 
 - For the protocols that support it, added an ``operation_with_attestation`` and
   ``operation_with_attestation.unsigned`` registered encodings that support
@@ -522,8 +522,8 @@ Baker
 - Improved efficiency to solve the anti-spam Proof-of-Work challenge.
 
 - Made the baker capable of running in a RPC-only mode through a newly
-  introduced command: ``octez-baker-<protocol> run remotely
-  [delegates] [options]``. This mode does not require the octez node's
+  introduced command: ``mavkit-baker-<protocol> run remotely
+  [delegates] [options]``. This mode does not require the mavkit node's
   storage to be directly accessible by the baker and will reduce
   memory consumption. However, this mode is less performant and may
   result in noticable slower baking times. (MR :gl:`!8607`)
@@ -543,7 +543,7 @@ Accuser
 Signer
 ------
 
-- Reordered the display of ``octez-client list connected ledgers``
+- Reordered the display of ``mavkit-client list connected ledgers``
   command. It is now ``Ed25519``, ``Secp256k1``, ``Secp256r1`` and
   ``Bip32_ed25519``.
 
@@ -651,7 +651,7 @@ General
 
 - Fixed an issue that prevented building on MacOS.
 
-- Fixed an issue that caused the launch of Octez binaries to take several seconds (because of ``zcash`` initialization)
+- Fixed an issue that caused the launch of Mavkit binaries to take several seconds (because of ``zcash`` initialization)
 
 Node
 ----
@@ -720,10 +720,10 @@ Node
 ----
 
 - Fixed a bug raising an error when a context split was called on a
-  context that was created with Octez v13 (or earlier).
+  context that was created with Mavkit v13 (or earlier).
 
 - **Breaking Change**: disabled snapshot export support for storage
-  that was created with Octez v13 (or earlier).
+  that was created with Mavkit v13 (or earlier).
 
   After upgrading to v16, if you have the following warning message, you won't be able to restore an up-to-date storage, without using either a recent third-party snapshot or bootstrapping from scratch::
 
@@ -747,7 +747,7 @@ Version 16.0~rc1
 General
 -------
 
-- **Breaking change**: Symbolic links from old-names ``tezos-*`` to new-names ``octez-*``
+- **Breaking change**: Symbolic links from old-names ``tezos-*`` to new-names ``mavkit-*``
   have been removed.
   Old names are not supported anymore.
 
@@ -781,7 +781,7 @@ Node
   field. More details can be found by calling the
   ``describe/chains/main/mempool/pending_operations`` RPC. You can get back the
   previous encoding with ``?version=0`` but note that version 0 is now
-  deprecated and may be removed starting from the next major release of Octez.
+  deprecated and may be removed starting from the next major release of Mavkit.
   (MR :gl:`!6783`)
 
 - The ``pending_operations`` RPC can now be run in ``binary`` format when using
@@ -793,8 +793,8 @@ Node
 - Introduced a ``--json`` command line argument to the ``snapshot
   info`` allowing to print snapshot information as JSON.
 
-- Removed the ``octez-validator`` executable, which was already part
-  of ``octez-node`` and that was already used internally (and that was
+- Removed the ``mavkit-validator`` executable, which was already part
+  of ``mavkit-node`` and that was already used internally (and that was
   not usable on its own).
 
 - **Breaking change**: bumped the node's storage version to
@@ -808,7 +808,7 @@ Node
   version changes internal snapshot file representation to include
   more information required by the new protocol's semantics and to
   improve both import and export speed. Snapshots of version ``4``
-  exported with previous versions of Octez can still be
+  exported with previous versions of Mavkit can still be
   imported. Snapshots of version ``5`` are not backward compatible.
   (MR :gl:`!6835` and :gl:`!6961`)
 
@@ -832,7 +832,7 @@ Node
   operation. (MR :gl:`!6749`)
 
 - Removed the compatibility with storage snapshots of version ``2``
-  and ``3``. These snapshot versions from Octez 12 cannot be imported
+  and ``3``. These snapshot versions from Mavkit 12 cannot be imported
   anymore.
 
 - Added optional query parameter ``validation_pass`` to RPCs ``GET
@@ -861,10 +861,10 @@ Client
 ------
 
 - Added command to get contract's balance of ticket with specified ticketer, content type, and content. Can be used for both implicit and originated contracts.
-  ``octez-client get ticket balance for <contract> with ticketer '<ticketer>' and type <type> and content <content>``. (MR :gl:`!6491`)
+  ``mavkit-client get ticket balance for <contract> with ticketer '<ticketer>' and type <type> and content <content>``. (MR :gl:`!6491`)
 
 - Added command to get the complete list of tickets owned by a given contract by scanning the contract's storage. Can only be used for originated contracts.
-  ``octez-client get all ticket balances for <contract>``. (MR :gl:`!6804`)
+  ``mavkit-client get all ticket balances for <contract>``. (MR :gl:`!6804`)
 
 Baker
 -----
@@ -888,7 +888,7 @@ Signer
 - **Breaking change**: Versioning of signature module for protocol
   specific support and future extensibility. Signatures length became
   variable which changed their binary encoding. This breaks the
-  compatibility with octez-signer <= 15.1 in local and socket modes.
+  compatibility with mavkit-signer <= 15.1 in local and socket modes.
 
 Proxy Server
 ------------
@@ -907,9 +907,9 @@ Rollups
 -------
 
 - Added Smart Rollups executables.
-  This includes ``octez-smart-rollup-node-PtMumbai``, ``octez-smart-rollup-client-PtMumbai``.
+  This includes ``mavkit-smart-rollup-node-PtMumbai``, ``mavkit-smart-rollup-client-PtMumbai``.
 
-- Released ``octez-smart-rollup-wasm-debugger`` as part of the Octez distribution (MR :gl:`!7295`).
+- Released ``mavkit-smart-rollup-wasm-debugger`` as part of the Mavkit distribution (MR :gl:`!7295`).
   See the smart rollups documentation for its functionalities and how to use it to test and debug kernels.
 
 Miscellaneous
@@ -975,18 +975,18 @@ General
 -------
 
 - **Breaking change**: all executables have been renamed.
-  The ``tezos-`` prefix has been replaced by ``octez-`` and protocol numbers
-  have been removed. For instance, ``tezos-node`` is now named ``octez-node``
-  and ``tezos-baker-014-PtKathma`` is now named ``octez-baker-PtKathma``.
+  The ``tezos-`` prefix has been replaced by ``mavkit-`` and protocol numbers
+  have been removed. For instance, ``tezos-node`` is now named ``mavkit-node``
+  and ``tezos-baker-014-PtKathma`` is now named ``mavkit-baker-PtKathma``.
   If you compile using ``make``, symbolic links from the old names to the
   new names are created, so you can still use the old names.
   But those old names are deprecated and may stop being supported
   starting from version 16.0.
 
 - **Breaking change**: in the Docker entrypoint, all commands have been renamed.
-  The ``tezos-`` prefix has been replaced by ``octez-``.
-  For instance, ``tezos-node`` is now named ``octez-node`` and ``tezos-baker``
-  is now named ``octez-baker``. The old command names are still available but
+  The ``tezos-`` prefix has been replaced by ``mavkit-``.
+  For instance, ``tezos-node`` is now named ``mavkit-node`` and ``tezos-baker``
+  is now named ``mavkit-baker``. The old command names are still available but
   are deprecated and may stop being supported starting from version 16.0.
 
 - Added :doc:`Lima <protocols/015_lima>`, a protocol proposal for
@@ -1006,7 +1006,7 @@ Node
   (previously 1.0). Backward compatibility is preserved: upgrading
   from 1.0 to 2.0 is done automatically by the node the first time you
   run it. This upgrade is instantaneous. However, be careful that
-  there is no forward compatibility: previous versions of Octez will
+  there is no forward compatibility: previous versions of Mavkit will
   refuse to run on a data directory which was running with this
   storage version.
 
@@ -1030,7 +1030,7 @@ Node
 - Add a ``/chains/<chain>/blocks/<block>/merkle_tree_v2`` RPC. This is an
   evolution of the ``../merkle_tree`` RPC, using a simpler implementation of the
   Merkle tree/proof features that works with Irmin trees and proofs underneath
-  instead of proof code internal to Octez, and is planned to eventually replace
+  instead of proof code internal to Mavkit, and is planned to eventually replace
   the old one in a future release.
 
 - Add a field ``dal`` in the node's configuration file. This field is
@@ -1040,7 +1040,7 @@ Node
 - Fixed a bug in the p2p layer that prevented a fast regulation of the
   number of connections (when having too few or too many connections)
 
-- Improved the octez store merging mechanism performed on each new
+- Improved the mavkit store merging mechanism performed on each new
   cycle. The node's memory consumption should not differ from a normal
   usage, while, in the past, it could take up to several gigabytes of
   memory to perform a store merge. It also takes less time to perform
@@ -1200,7 +1200,7 @@ Node
 
 - Added a store metric to expose the number of blocks considered as invalid.
 
-- Fixed the ``octez-node config reset`` command which did not actually reset
+- Fixed the ``mavkit-node config reset`` command which did not actually reset
   the configuration file to its default values.
 
 - Added metrics to observe the bootstrapped and synchronisation status.
@@ -1234,10 +1234,10 @@ Node
 - **Breaking change**: The node context storage format was
   upgraded. To this end, a new storage version was introduced: 1.0
   (previously 0.8). Backward compatibility is preserved: upgrading
-  from 0.6, 0.7 (Octez 12.x) or 0.8 (Octez 13.0) is done through the
-  ``octez-node upgrade storage`` command. This upgrade is
+  from 0.6, 0.7 (Mavkit 12.x) or 0.8 (Mavkit 13.0) is done through the
+  ``mavkit-node upgrade storage`` command. This upgrade is
   instantaneous. However, be careful that there is no forward
-  compatibility: previous versions of Octez will refuse to run on an
+  compatibility: previous versions of Mavkit will refuse to run on an
   upgraded data directory.
 
 - **Breaking change**: the built-in network alias for Ithacanet
@@ -1255,7 +1255,7 @@ Client
 - Client now allows to simulate failing operations with ``--simulation
   --force``, and report errors without specifying limits.
 
-- Added ``--ignore-case`` option to the ``octez-client gen vanity keys`` command
+- Added ``--ignore-case`` option to the ``mavkit-client gen vanity keys`` command
   to allow case-insensitive search for the given pattern.
 
 Proxy Server
@@ -1278,16 +1278,16 @@ Docker Images
   since version 13.0. It is recommended to write your own docker-compose file instead.
   ``scripts/docker/docker-compose-generic.yml`` is an example of such file.
 
-- ``octez-codec`` is now included in Docker images.
+- ``mavkit-codec`` is now included in Docker images.
 
 Rollups
 -------
 
 - Included the Transaction Rollups (TORU) and Smart Contract Rollups
-  (SCORU) executables in the Docker images of Octez.  These executables are
+  (SCORU) executables in the Docker images of Mavkit.  These executables are
   **experimental**.  They are provided solely for testing,
   and should not be used in production.  Besides, they should not be
-  considered as being part of Octez, and as a consequence will not be
+  considered as being part of Mavkit, and as a consequence will not be
   provided with the same degree of maintenance.  However, developers
   interested in implementing their own rollup nodes and clients are
   more than welcome to leverage them.
@@ -1325,7 +1325,7 @@ Node
 
 - **Breaking change**:
   Restored the encoding of events corresponding to "completed
-  requests" (block validation, head switch, ...) to their format prior to Octez v11.
+  requests" (block validation, head switch, ...) to their format prior to Mavkit v11.
   They only contain absolute timestamps.
 
 - Add optional query parameters ``applied``, ``refused``, ``outdated``,
@@ -1341,10 +1341,10 @@ Node
   must be used for RPC requests to the node. The value can be ``json``,
   ``binary`` or ``any``. By default, the value is set to ``any``.
 
-- Added an option ``--metrics-addr <ADDR>:<PORT>`` to ``octez-node`` to
+- Added an option ``--metrics-addr <ADDR>:<PORT>`` to ``mavkit-node`` to
   expose some metrics using the Prometheus format.
 
-- Added command ``octez-node storage head-commmit`` which prints the commit hash
+- Added command ``mavkit-node storage head-commmit`` which prints the commit hash
   of the current context head.
 
 - Added a history mode check when importing a snapshot to ensure the consistency between the
@@ -1364,8 +1364,8 @@ Node
   preserved: upgrading from 0.0.7 to
   0.0.8 is done automatically by the node the first time you run it. This
   upgrade is instantaneous. However, be careful that there is no forward
-  compatibility: previous versions of Octez
-  will refuse to run on a data directory which was used with Octez 13.0.
+  compatibility: previous versions of Mavkit
+  will refuse to run on a data directory which was used with Mavkit 13.0.
 
 - **Breaking change**:
   Validation errors are flatter. Instead of ``economic_protocol_error``
@@ -1375,8 +1375,8 @@ Node
 - **Breaking change**:
   Exported snapshots now have version number 4 (previously 3).
   Snapshots of version 2 and 3 exported with previous versions of
-  Octez can still be imported. Snapshots of version 4 cannot be
-  imported with Octez prior to version 13.0.
+  Mavkit can still be imported. Snapshots of version 4 cannot be
+  imported with Mavkit prior to version 13.0.
 
 - Added an optional query parameter ``force_metadata`` to the
   ``GET /chains/<chain>/blocks/<block>/`` and
@@ -1386,7 +1386,7 @@ Node
   limit, and therefore not stored. The re-computed metadata are not
   stored on disk after this call, but rather just returned by the RPC call.
 
-- Added ``--progress-display-mode`` option to the ``octez-node`` commands
+- Added ``--progress-display-mode`` option to the ``mavkit-node`` commands
   that display progress animation. This option allows to redirect progress
   animation to non-TTY file descriptors.
 
@@ -1418,10 +1418,10 @@ Client
 Baker
 -----
 
-The following breaking changes affect the Octez v13.0~rc1 baker daemon
-for the Jakarta 2 protocol ``octez-baker-013-PtJakart``, but **not** the
+The following breaking changes affect the Mavkit v13.0~rc1 baker daemon
+for the Jakarta 2 protocol ``mavkit-baker-013-PtJakart``, but **not** the
 corresponding one for the the Ithaca 2 protocol,
-``octez-baker-012-Psithaca``.
+``mavkit-baker-012-Psithaca``.
 
 - **Breaking change**:
   The ``--liquidity-baking-escape-vote`` command-line option has been renamed
@@ -1482,7 +1482,7 @@ Docker Images
 
 - **Breaking change**:
   Script ``tezos_docker_manager.sh`` (also known as ``mainnet.sh``) is now deprecated.
-  It may be removed from Octez starting from version 14.0.
+  It may be removed from Mavkit starting from version 14.0.
   It is recommended to write your own Docker Compose files instead.
   To this end, you can take inspiration from ``scripts/docker/docker-compose-generic.yml``.
 
@@ -1511,22 +1511,22 @@ Version 12.3
 ============
 
 - Fixed a bug that prevented the store from
-  decoding metadata from previous versions of Octez.
+  decoding metadata from previous versions of Mavkit.
   This bug caused the store to systematically have to restore
   its consistency on startup.
 
 - **Breaking change**:
   Exported snapshots now have version number 3 (previously 2).
-  Snapshots exported by nodes running previous versions of Octez can still be
+  Snapshots exported by nodes running previous versions of Mavkit can still be
   imported by a v12.3 node, but snapshots exported by a v12.3 node cannot
   be imported by nodes running previous versions.
 
   Please note that snapshots exported with versions 12.1 and 12.2
-  of Octez cannot be imported with previous versions of Octez either,
+  of Mavkit cannot be imported with previous versions of Mavkit either,
   but their version number was not increased, leading to less clear
   error messages when trying to import them from previous versions.
   It is thus recommended to avoid exporting snapshots with versions
-  12.1 or 12.2 of Octez.
+  12.1 or 12.2 of Mavkit.
 
 - Increased the maximum size of requests to sign a block header with a
   Ledger in order to take into account Tenderbake block headers which
@@ -1557,8 +1557,8 @@ Node
   To this end, a new storage version was introduced: 0.0.7 (previously
   0.0.6). Upgrading from 0.0.6 to 0.0.7 is done automatically by the
   node the first time you run it. This upgrade is
-  instantaneous. However, be careful that previous versions of Octez
-  will refuse to run on a data directory which was used with Octez
+  instantaneous. However, be careful that previous versions of Mavkit
+  will refuse to run on a data directory which was used with Mavkit
   12.1 or later.
 
 - A new ``--force`` option was added to the ``transfer`` command. It
@@ -1579,14 +1579,14 @@ Version 12.0
 Node
 ----
 
-- The octez-node configuration file parameter
+- The mavkit-node configuration file parameter
   ``shell.prevalidator.limits.max_refused_operations`` is now
   deprecated and may be removed starting from version 13.0.
 
 - Fixed missing removal of replaced operation in the plugin when another better
   one takes its place (when the mempool is full).
 
-- The output of ``octez-client get ledger high watermark for <ledger>``
+- The output of ``mavkit-client get ledger high watermark for <ledger>``
   now also displays the high-water mark for the round, if available.
   Rounds are introduced in Tenderbake.
 
@@ -1694,7 +1694,7 @@ Baker / Endorser / Accuser
 - Fixed the Ithaca baker to allow it to fallback to an RPC (instead of
   relying on direct access to the local context) when baking the
   migration block to its successor. This necessary mechanism was
-  present in all bakers except for the Ithaca baker of Octez 12.0~rc1.
+  present in all bakers except for the Ithaca baker of Mavkit 12.0~rc1.
 
 Version 12.0~rc1
 ================
@@ -1708,7 +1708,7 @@ Node
   propagated over the network. This feature will be available from
   protocol ``I``, provided the latter is activated. The aim is to
   increase the throughput of transactions gossiped over the network,
-  while reducing the load on the Octez node's prevalidator
+  while reducing the load on the Mavkit node's prevalidator
   (aka the mempool).
 
 - The following RPCs output format changed:
@@ -1792,13 +1792,13 @@ Node
 - The prevalidator (which handles operations which have been received but not
   yet included in a block) was made more restrictive: it now accepts a single
   manager operation from a given manager for a given block. This limitation
-  was already present implicitly if you were using the ``octez-client`` commands.
+  was already present implicitly if you were using the ``mavkit-client`` commands.
   Batches of operations can be used to get around this restriction, see the
   ``multiple transfers`` command to learn more. In addition, operations
   rejected because of this limitation are solely delayed to a future block.
 
-- Removed support for store versions 0.0.4 (used by Octez 9.7) or below.
-  It is no longer possible to run ``octez-node upgrade storage`` to upgrade
+- Removed support for store versions 0.0.4 (used by Mavkit 9.7) or below.
+  It is no longer possible to run ``mavkit-node upgrade storage`` to upgrade
   from those older versions. It is also no longer possible to import
   snapshots that were exported using this version.
 
@@ -1874,7 +1874,7 @@ Miscellaneous
 Version 11.1
 ============
 
--  Octez can now be compiled using opam 2.1 instead of requiring opam 2.0.
+-  Mavkit can now be compiled using opam 2.1 instead of requiring opam 2.0.
 
 -  ADX instructions have been disabled in Docker images and static binaries.
    This makes it possible to use them on older CPUs.
@@ -1986,7 +1986,7 @@ Node
 
    - ``shell.block_validator.limits.worker_backlog_level``
 
--  The ``octez-admin-client show current checkpoint`` command now only
+-  The ``mavkit-admin-client show current checkpoint`` command now only
    outputs the current checkpoint. It no longer outputs the savepoint,
    caboose and history mode.
 
@@ -2071,9 +2071,9 @@ Node
 Client
 ------
 
--  Disabled indentation checking by default in the ``octez-client
-   convert script`` and ``octez-client hash script`` commands. In
-   particular, ``octez-client convert script <script> from Michelson
+-  Disabled indentation checking by default in the ``mavkit-client
+   convert script`` and ``mavkit-client hash script`` commands. In
+   particular, ``mavkit-client convert script <script> from Michelson
    to Michelson`` can now be used as a Michelson script formatter. To
    force the indentation check, the new ``--enforce-indentation``
    command line switch can be used.
@@ -2091,7 +2091,7 @@ Client
 -  Fix gas simulation for operation batches for Granada, Hangzhou and Alpha
 
 -  Added timestamp display of the snapshot's block target when running
-   the ``octez-node snapshot info`` command.
+   the ``mavkit-node snapshot info`` command.
 
 Baker / Endorser / Accuser
 --------------------------
@@ -2123,7 +2123,7 @@ Docker Images
    This means that ACLs are inactive in the Docker image on the default RPC port.
    Note that the Docker image does not expose this port by default.
    If you use ``tezos-docker-manager.sh``, it will expose this port only to
-   other Octez containers.
+   other Mavkit containers.
    In summary, you can now call all RPCs if you use Docker images, without
    compromising security as long as you do not explicitly expose the RPC port.
 
@@ -2155,7 +2155,7 @@ Docker Images
 -------------
 
 -  The ``--force-history-mode-switch`` option is now available for
-   ``octez-node`` entrypoint. It allows the user to switch the history
+   ``mavkit-node`` entrypoint. It allows the user to switch the history
    mode of the node's storage.
 
 Version 10.2
@@ -2190,16 +2190,16 @@ Node
    resulting in "block not found" errors.
 
 -  Store version is now 0.0.6.
-   If you were previously using Octez 10.0~rc1 or 10.0~rc2, you were using
-   store version 0.0.5. If you were previously using Octez 9.x, you were
+   If you were previously using Mavkit 10.0~rc1 or 10.0~rc2, you were using
+   store version 0.0.5. If you were previously using Mavkit 9.x, you were
    using store version 0.0.4. In both cases, use command
-   ``octez-node upgrade storage`` to upgrade to 0.0.6.
+   ``mavkit-node upgrade storage`` to upgrade to 0.0.6.
 
 -  Added an upgrade procedure to upgrade from ``v0.0.5`` to ``v0.0.6``. The
-   procedure is implemented through the ``octez-node upgrade storage``
+   procedure is implemented through the ``mavkit-node upgrade storage``
    command.
 
--  Added an ``integrity-check-index`` subcommand to ``octez-node
+-  Added an ``integrity-check-index`` subcommand to ``mavkit-node
    storage``, which can be used to check for corruptions (missing
    entries) in the index of the store. This command also accepts an
    optional flag ``--auto-repair`` to fix those specific corruptions
@@ -2266,7 +2266,7 @@ Node
 
 -  Added an upgrade procedure to upgrade from the previous store to the
    new one. The procedure is implemented through the
-   ``octez-node upgrade storage`` command. This command is
+   ``mavkit-node upgrade storage`` command. This command is
    non-destructive: the previous store is preserved at
    ``<data_dir>/lmdb_store_to_be_removed`` and needs to be manually
    removed when the user made sure the upgrade process went well.
@@ -2284,12 +2284,12 @@ Node
          suitable for IPFS sharing
 
    -  The argument ``[output_file]`` in
-      ``octez-node export snapshot [output_file]`` becomes optional and
+      ``mavkit-node export snapshot [output_file]`` becomes optional and
       defaults to a file whose name follows this pattern
       ``<NETWORK>-<BLOCK_HASH>-<BLOCK_LEVEL>.<SNAPSHOT_HISTORY_MODE>``
    -  Improved the metadata of snapshots which can be displayed using
-      ``octez-node snapshot info``
-   -  The ``octez-node snapshot import`` command is retro-compatible
+      ``mavkit-node snapshot info``
+   -  The ``mavkit-node snapshot import`` command is retro-compatible
       with the previous snapshot format (v1) but legacy snapshots cannot
       be exported anymore
 
@@ -2303,7 +2303,7 @@ Node
    two modes were maintaining a window of ``<preserved cycles>`` cycles
    of metadata (``5`` on mainnet). These modes may now be configured to
    keep a larger window of metadata. E.g.
-   ``octez-node run --history-mode full+2`` will maintain 2 extra cycles
+   ``mavkit-node run --history-mode full+2`` will maintain 2 extra cycles
    of metadata, in addition to the network’s preserved cycles. This may
    become useful for users that want to keep more data from the past:
    for instance, to compute rewards payouts. The default number of extra
@@ -2371,7 +2371,7 @@ Client
    it uses Merkle proofs to make the light mode super safe.
 
 -  Added commands to display the hash of Michelson script from files
-   (``octez-client hash script``) and from addresses (``octez-client
+   (``mavkit-client hash script``) and from addresses (``mavkit-client
    get contract script hash``).
 
 -  Added support for a new generic version of the multisig contract.
@@ -2402,7 +2402,7 @@ Baker / Endorser / Accuser
 Proxy server
 ------------
 
--  Added a new binary: ``octez-proxy-server``, a read-only frontend to a node.
+-  Added a new binary: ``mavkit-proxy-server``, a read-only frontend to a node.
    It is designed to lower the load of nodes, by being capable
    of serving `protocol RPCs <https://tezos.gitlab.io/alpha/rpc.html>`__.
    An instance of a proxy server is protocol-specific: it automatically picks
@@ -2880,7 +2880,7 @@ Node
    significance are detailed in `the user
    documentation <http://tezos.gitlab.io/user/various.html#tezos_binaries_signals_and_exit_codes>`__.
 
--  Command ``octez-node --version`` now exits with exit code 0 instead
+-  Command ``mavkit-node --version`` now exits with exit code 0 instead
    of 1.
 
 -  Fixed the synchronisation threshold which was wrongly capped with an
@@ -2956,8 +2956,8 @@ Node
 -  Fixed an issue which prevented using ports higher than 32767 in the
    client configuration file.
 
--  The ``octez-node run`` command now automatically generates an
-   identity file as if you had run ``octez-node identity generate`` if
+-  The ``mavkit-node run`` command now automatically generates an
+   identity file as if you had run ``mavkit-node identity generate`` if
    its data directory contains no identity file.
 
 -  Improved various log messages and errors.
@@ -3009,7 +3009,7 @@ Node
 -  Improved the performance of the progress indicator when importing
    snapshots.
 
--  Improved performance of ``octez-node snapshot export``.
+-  Improved performance of ``mavkit-node snapshot export``.
 
 -  Fixed the node which sent too many “get current branch” messages to
    its peers on testchain activation.
@@ -3018,11 +3018,11 @@ Node
 Client
 ------
 
--  The ``octez-client config show`` command now takes into account the
+-  The ``mavkit-client config show`` command now takes into account the
    command line arguments.
 
--  Fixed an issue which caused ``octez-client rpc get /errors`` as well
-   as ``octez-codec dump encodings`` to fail because of duplicate
+-  Fixed an issue which caused ``mavkit-client rpc get /errors`` as well
+   as ``mavkit-codec dump encodings`` to fail because of duplicate
    encodings. As a result, some protocol encodings whose name was not
    prefixed by the protocol name are now prefixed by it. If you have
    tools which rely on encoding names you may have to update them.
@@ -3041,8 +3041,8 @@ Client
    understand an error from the node.
 
 -  Added client commands
-   ``octez-client convert script <script> from <input> to <output>`` and
-   ``octez-client convert data <data> from <input> to <output>`` to
+   ``mavkit-client convert script <script> from <input> to <output>`` and
+   ``mavkit-client convert data <data> from <input> to <output>`` to
    convert to and from michelson, JSON, binary and OCaml with
    type-checking.
 
@@ -3120,7 +3120,7 @@ Protocol Compiler And Environment
 Codec
 -----
 
--  Fixed ``octez-codec dump encodings`` which failed due to two
+-  Fixed ``mavkit-codec dump encodings`` which failed due to two
    encodings having the same name.
 
 Version 7.5
@@ -3220,14 +3220,14 @@ Multinetwork
 -  Node and client now come with all current and past protocols that are
    still in use on Mainnet or some active test networks.
 
--  Added option ``--network`` to ``octez-node config init`` to select
+-  Added option ``--network`` to ``mavkit-node config init`` to select
    which network to connect to from a list of built-in networks (e.g.
    ``carthagenet``). If you do not run ``config init`` or run it without
    the ``--network`` option, the node will use the default network
    (Mainnet).
 
--  Added option ``--network`` to ``octez-node run`` and
-   ``octez-node snapshot import`` which causes the node to check that it
+-  Added option ``--network`` to ``mavkit-node run`` and
+   ``mavkit-node snapshot import`` which causes the node to check that it
    is configured to use the given network.
 
 -  Added ``network`` configuration field to select which network to
@@ -3344,7 +3344,7 @@ Client
 -  Added protocol command ``expand macros in`` to expand macros in
    Michelson code.
 
--  Added command ``octez-admin-client protocol environment`` which
+-  Added command ``mavkit-admin-client protocol environment`` which
    displays the version of the environment used by a given protocol.
 
 -  Greatly reduce the time the client takes to load.

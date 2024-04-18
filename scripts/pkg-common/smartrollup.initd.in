@@ -1,22 +1,22 @@
 #!/bin/bash
-# Start/stop the Octez Bakers and Accusers
+# Start/stop the Mavkit Bakers and Accusers
 #
 ### BEGIN INIT INFO
-# Provides:          octez-smartrollup
+# Provides:          mavkit-smartrollup
 # Required-Start:    
 # Required-Stop:     
 # Should-Start:      $network $named 
 # Should-Stop:       $network $named 
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: The Octez Smart Rollup daemons
-# Description:       The Octez Smart Rollup daemons manage a rollup on the
+# Short-Description: The Mavkit Smart Rollup daemons
+# Description:       The Mavkit Smart Rollup daemons manage a rollup on the
 #		     Tezos network.
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-DESC="octez smartrollup"
-NAME=octez-smartrollup
+DESC="mavkit smartrollup"
+NAME=mavkit-smartrollup
 PIDDIR=/var/run/tezos
 SCRIPTNAME=/etc/init.d/"$NAME"
 
@@ -38,13 +38,13 @@ nodeaddr=127.0.0.1
 rpcport=8732
 othercliopts_smartrollup=""
 
-[ -r /etc/octez/node.conf ] && . /etc/octez/node.conf
-[ -r /etc/octez/smartrollup.conf ] && . /etc/octez/smartrollup.conf
+[ -r /etc/mavkit/node.conf ] && . /etc/mavkit/node.conf
+[ -r /etc/mavkit/smartrollup.conf ] && . /etc/mavkit/smartrollup.conf
 
 [ -z "$nodeurl" ] && nodeurl="http://$nodeaddr:$rpcport"
 
 logfile="${logdir}/smartrollup.log"
-sr="/usr/bin/octez-smart-rollup-node"
+sr="/usr/bin/mavkit-smart-rollup-node"
 
 initial_checks()
 {
@@ -53,7 +53,7 @@ initial_checks()
 
 	mkdir -p ${logdir}
 	if [ -z "$rollupdatadir" ]; then
-		echo "rollupdatadir must be set in /etc/octez/smartrollup.conf" >&2
+		echo "rollupdatadir must be set in /etc/mavkit/smartrollup.conf" >&2
 		exit 3
 	fi
 	if [ -z "$clientdir" ]; then
@@ -73,7 +73,7 @@ wait_for_bootstrap()
 	echo "Waiting for node to be bootstrapped" >&2
 		
 	while [ 1 = 1 ]; do
-		/usr/bin/octez-client -E $nodeurl bootstrapped >/dev/null 2>&1
+		/usr/bin/mavkit-client -E $nodeurl bootstrapped >/dev/null 2>&1
 		[ "$?" = "0" ] && break
 		echo "Node not ready - sleeping for 30 seconds" >&2
 		sleep 30
@@ -97,7 +97,7 @@ start)	initial_checks
 	su $user -c "${sr} -d "$clientdir" -E $nodeurl run --data-dir "$rollupdatadir" ${othercliopts_smartrollup} >> ${logfile} 2>&1 &"
 	;;
 stop)	
-       	pkill octez-smart-rollup-node
+       	pkill mavkit-smart-rollup-node
         ;;
 restart) 
         $0 stop

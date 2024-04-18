@@ -101,7 +101,7 @@ module Messages =
     (struct
       let name = "messages"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Merkelized_payload_hashes_hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Merkelized_payload_hashes_hash))
     (struct
       type t = string list
 
@@ -133,13 +133,13 @@ module Inboxes =
     (struct
       let name = "inboxes"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Inbox_hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Inbox_hash))
     (struct
-      type t = Octez_smart_rollup.Inbox.V1.t
+      type t = Mavkit_smart_rollup.Inbox.V1.t
 
       let name = "inbox"
 
-      let encoding = Octez_smart_rollup.Inbox.V1.encoding
+      let encoding = Mavkit_smart_rollup.Inbox.V1.encoding
 
       include Add_empty_header
     end)
@@ -149,9 +149,9 @@ module Commitments =
     (struct
       let name = "commitments"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Commitment.Hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Commitment.Hash))
     (Indexed_store.Make_index_value (Indexed_store.Make_fixed_encodable (struct
-      include Octez_smart_rollup.Commitment.V1
+      include Mavkit_smart_rollup.Commitment.V1
 
       let name = "commitment"
     end)))
@@ -184,7 +184,7 @@ module Commitments_published_at_level = struct
       (struct
         let name = "commitments"
       end)
-      (Make_hash_index_key (Octez_smart_rollup.Commitment.Hash))
+      (Make_hash_index_key (Mavkit_smart_rollup.Commitment.Hash))
       (Indexed_store.Make_index_value (Indexed_store.Make_fixed_encodable (struct
         type t = element
 
@@ -245,8 +245,8 @@ module Dal_slot_pages =
     end)
     (struct
       type key =
-        Octez_smart_rollup.Dal.Slot_index.t
-        * Octez_smart_rollup.Dal.Page_index.t
+        Mavkit_smart_rollup.Dal.Slot_index.t
+        * Mavkit_smart_rollup.Dal.Page_index.t
 
       let encoding =
         Data_encoding.(tup2 Dal.Slot_index.encoding Dal.Page_index.encoding)
@@ -276,9 +276,9 @@ module Dal_processed_slots =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type key = Octez_smart_rollup.Dal.Slot_index.t
+      type key = Mavkit_smart_rollup.Dal.Slot_index.t
 
-      let encoding = Octez_smart_rollup.Dal.Slot_index.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_index.encoding
 
       let compare = Compare.Int.compare
 
@@ -318,20 +318,20 @@ module Dal_slots_headers =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type key = Octez_smart_rollup.Dal.Slot_index.t
+      type key = Mavkit_smart_rollup.Dal.Slot_index.t
 
-      let encoding = Octez_smart_rollup.Dal.Slot_index.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_index.encoding
 
       let compare = Compare.Int.compare
 
       let name = "slot_index"
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_header.t
+      type value = Mavkit_smart_rollup.Dal.Slot_header.t
 
       let name = "slot_header"
 
-      let encoding = Octez_smart_rollup.Dal.Slot_header.V1.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_header.V1.encoding
     end)
 
 (* Published slot headers per block hash, stored as a list of bindings from
@@ -354,11 +354,11 @@ module Dal_confirmed_slots_history =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history.t
 
       let name = "dal_slot_histories"
 
-      let encoding = Octez_smart_rollup.Dal.Slot_history.V1.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_history.V1.encoding
     end)
 
 (** Confirmed DAL slots histories cache. See documentation of
@@ -376,11 +376,11 @@ module Dal_confirmed_slots_histories =
         let to_path_representation = Block_hash.to_b58check
       end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history_cache.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history_cache.t
 
       let name = "dal_slot_histories"
 
-      let encoding = Octez_smart_rollup.Dal.Slot_history_cache.V1.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_history_cache.V1.encoding
     end)
 
 type 'a store = {

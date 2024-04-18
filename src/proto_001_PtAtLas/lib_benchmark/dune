@@ -5,18 +5,18 @@
  (name tezos_benchmark_001_PtAtLas)
  (public_name tezos-benchmark-001-PtAtLas)
  (libraries
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
-  octez-libs.micheline
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavkit-libs.micheline
   tezos-micheline-rewriting
   tezos-benchmark
   tezos-benchmark-type-inference-001-PtAtLas
   tezos-protocol-001-PtAtLas.protocol
-  octez-libs.crypto
+  mavkit-libs.crypto
   tezos-protocol-001-PtAtLas.parameters
   hashcons
-  octez-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
   prbnmcn-stats)
  (library_flags (:standard -linkall))
  (flags

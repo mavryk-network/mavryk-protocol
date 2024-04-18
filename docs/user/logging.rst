@@ -1,7 +1,7 @@
 Logging
 =======
 
-Logging features in Octez allow to monitor the execution of Octez binaries, informing in real
+Logging features in Mavkit allow to monitor the execution of Mavkit binaries, informing in real
 time about events of interest, such as errors, completion of certain steps,
 etc. This is why various software components emit *events* throughout the
 codebase (see :doc:`../developer/event_logging_framework`), the logging
@@ -9,7 +9,7 @@ framework dispatches them to an arbitrary number of (active) *sinks* which can
 filter print, store, or otherwise handle events.
 
 The logging framework can be configured with environment variables, which specify how events are mapped to sinks.
-Some Octez binaries provide additional configurations means.
+Some Mavkit binaries provide additional configurations means.
 
 Events
 ------
@@ -209,7 +209,7 @@ where ``<section-dirname>`` is either ``no-section`` or
 Global Defaults
 ---------------
 
-By default, the Octez binaries generate **user logs** as follows:
+By default, the Mavkit binaries generate **user logs** as follows:
 
 - ``file-descriptor-stdout://`` sink is activated by default and configured to
   output events of level at least ``Notice`` to stdout.
@@ -243,9 +243,9 @@ Environment Variables
 ---------------------
 
 The logging framework can be configured with environment variables
-before starting an Octez executable (e.g., the node). Those variables work on all the code using the
+before starting an Mavkit executable (e.g., the node). Those variables work on all the code using the
 ``tezos-stdlib-unix`` library as long as ``Internal_event_unix.init`` is
-called; this should include *all* the regular ``octez-*`` binaries.
+called; this should include *all* the regular ``mavkit-*`` binaries.
 
 -  ``TEZOS_EVENTS_CONFIG`` must be a whitespace-separated list of URIs:
 
@@ -284,7 +284,7 @@ The node supports some additional means to configure logging, besides environmen
 Configuration File
 ~~~~~~~~~~~~~~~~~~
 
-See ``octez-node config --help`` for the full schema of the node’s JSON
+See ``mavkit-node config --help`` for the full schema of the node’s JSON
 configuration file.
 
 In particular the fields:
@@ -302,7 +302,7 @@ Note that ``log`` is ignored if ``internal-events`` is present.
 Command Line Options
 ~~~~~~~~~~~~~~~~~~~~
 
-See ``octez-node run --help``, the default ``file-descriptor-stdout://`` sink
+See ``mavkit-node run --help``, the default ``file-descriptor-stdout://`` sink
 configuration can be also be changed with the following options:
 
 -  ``-v`` / ``-vv``: set the global log level to ``Info`` or ``Debug``
@@ -327,13 +327,13 @@ events) this call adds a sink to suddenly start pretty-printing all
 
 ::
 
-   octez-client rpc put /config/logging with \
+   mavkit-client rpc put /config/logging with \
      '{ "active_sinks": [ "file-descriptor-path:///tmp/rpclogs?section-prefix=rpc:debug&format=pp&fresh=true" ] }'
 
 Client and baker configuration
 ------------------------------
 
-Both ``octez-client`` and ``octez-{baker,accuser}-*`` can be configured either
+Both ``mavkit-client`` and ``mavkit-{baker,accuser}-*`` can be configured either
 using environment variables or using ``internal-events`` in the client configuration
 file, with the file-descriptor sinks described above.
 
@@ -351,12 +351,12 @@ Processing Structured Events
 
 This is work-in-progress, see:
 
--  ``octez-admin-client show event-logging`` outputs the configuration
-   currently understood by ``octez-admin-client`` (hence through the
+-  ``mavkit-admin-client show event-logging`` outputs the configuration
+   currently understood by ``mavkit-admin-client`` (hence through the
    ``TEZOS_EVENTS_CONFIG`` variable) and lists all the events it knows
    about.
--  ``octez-admin-client output schema of <Event-Name> to <File-path>``
+-  ``mavkit-admin-client output schema of <Event-Name> to <File-path>``
    get the JSON-Schema for an event.
 
 Example:
-``octez-admin-client output schema of block-seen-alpha to block-seen-alpha.json``
+``mavkit-admin-client output schema of block-seen-alpha to block-seen-alpha.json``

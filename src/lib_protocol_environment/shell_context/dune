@@ -3,12 +3,12 @@
 
 (library
  (name tezos_shell_context)
- (public_name octez-shell-libs.shell-context)
+ (public_name mavkit-shell-libs.shell-context)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-proto-libs.protocol-environment
-  octez-libs.tezos-context)
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.tezos-context)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives))

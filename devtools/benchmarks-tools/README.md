@@ -82,7 +82,7 @@ On the reference machine, the benchmarks directory looks like this:
           - sapling_data/
           - benchmark_results/
           - inference_results/
-      - everything else we have in the Octez git repo
+      - everything else we have in the Mavkit git repo
   - cron_res
   - cron_res_errors
   - current_run_dir

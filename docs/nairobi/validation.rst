@@ -67,7 +67,7 @@ operations included in newly received blocks, whose validation is
 triggered by the :ref:`block validator<block_validator>`, in order to
 localize validation rules as needed. The resulting concrete API is
 specified by the :package-api:`Protocol
-<octez-proto-libs/Tezos_protocol_environment/V8/module-type-T/Updater/module-type-PROTOCOL/index.html>`
+<mavkit-proto-libs/Tezos_protocol_environment/V8/module-type-T/Updater/module-type-PROTOCOL/index.html>`
 module in the :doc:`protocol
 environment<../shell/protocol_environment>` ``V8``, and it is
 implemented by this protocol in the
@@ -127,7 +127,7 @@ while it is being built, the signature check is disabled, and it will
 be left to the baker to correctly sign the resulting block after its
 construction is finalized.
 
-In Octez, this mode is mainly used by the baker daemon.
+In Mavkit, this mode is mainly used by the baker daemon.
 
 .. _partial_construction:
 .. _partial_construction_nairobi:
@@ -137,11 +137,11 @@ Partial Construction
 
 The ``Partial construction`` mode, also known as ``Mempool mode`` is
 used by the :doc:`prevalidator component<../shell/prevalidation>` of
-an Octez node to validate incoming operations -- that is, those
+an Mavkit node to validate incoming operations -- that is, those
 not-yet included into blocks. This mode's business-logic is very close
 to the ``Full construction`` mode, and the differences boil down to
 the intended usage. The partial construction mode does not try to
-fully bake a block, but rather to inform the Octez prevalidator on the
+fully bake a block, but rather to inform the Mavkit prevalidator on the
 potential validity of operations (and whether they can safely included
 into a block), so that the latter can **classify** incoming
 operations, and further decide how to process them accordingly.

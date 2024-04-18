@@ -10,8 +10,8 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "octez-shell-libs"
-  "octez-libs"
+  "mavkit-shell-libs"
+  "mavkit-libs"
   "tezt" { >= "4.0.0" & < "5.0.0" }
   "tezt-tezos"
   "jingoo"

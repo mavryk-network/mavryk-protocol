@@ -148,7 +148,7 @@ let cfg_encoding =
           "rules"
           ~description:
             "Fine-grained logging instructions. Same format as described in \
-             `octez-node run --help`, DEBUG section. In the example below, \
+             `mavkit-node run --help`, DEBUG section. In the example below, \
              sections 'p2p' and all sections starting by 'client' will have \
              their messages logged up to the debug level, whereas the rest of \
              log sections will be logged up to the notice level."

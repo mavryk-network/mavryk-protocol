@@ -51,8 +51,8 @@ type error +=
       expected_state_hash : State_hash.t;
     }
   | Inconsistent_inbox of {
-      layer1_inbox : Octez_smart_rollup.Inbox.t;
-      inbox : Octez_smart_rollup.Inbox.t;
+      layer1_inbox : Mavkit_smart_rollup.Inbox.t;
+      inbox : Mavkit_smart_rollup.Inbox.t;
     }
   | Missing_PVM_state of Block_hash.t * Int32.t
   | Cannot_checkout_context of Block_hash.t * Smart_rollup_context_hash.t option
@@ -89,8 +89,8 @@ type error +=
 
 type error +=
   | Unexpected_rollup of {
-      rollup_address : Octez_smart_rollup.Address.t;
-      saved_address : Octez_smart_rollup.Address.t;
+      rollup_address : Mavkit_smart_rollup.Address.t;
+      saved_address : Mavkit_smart_rollup.Address.t;
     }
 
 let () =
@@ -209,15 +209,15 @@ let () =
       Format.fprintf
         ppf
         "@[Rollup inbox:@;%a@]@;should be equal to @[Layer1 inbox:@;%a@]"
-        Octez_smart_rollup.Inbox.pp
+        Mavkit_smart_rollup.Inbox.pp
         inbox
-        Octez_smart_rollup.Inbox.pp
+        Mavkit_smart_rollup.Inbox.pp
         layer1_inbox)
     `Permanent
     Data_encoding.(
       obj2
-        (req "layer1_inbox" Octez_smart_rollup.Inbox.encoding)
-        (req "inbox" Octez_smart_rollup.Inbox.encoding))
+        (req "layer1_inbox" Mavkit_smart_rollup.Inbox.encoding)
+        (req "inbox" Mavkit_smart_rollup.Inbox.encoding))
     (function
       | Inconsistent_inbox {layer1_inbox; inbox} -> Some (layer1_inbox, inbox)
       | _ -> None)

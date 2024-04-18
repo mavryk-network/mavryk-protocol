@@ -78,7 +78,7 @@ let load_embedded_cmis cmis = List.iter load_embedded_cmi cmis
 
     [tezos_protocol_env] defines the list of [cmi] available while
     compiling the protocol version. The [cmi] are packed into the
-    [octez-node] binary by using [ocp-ocamlres], see the Makefile.
+    [mavkit-node] binary by using [ocp-ocamlres], see the Makefile.
 
     [register_env] defines a complementary list of [cmi] available
     while compiling the generated [register.ml] file (that register

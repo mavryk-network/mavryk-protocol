@@ -1527,7 +1527,7 @@ module Make (Proto : PROTO) (Next_proto : PROTO) = struct
                "(DEPRECATED use validated instead) Include validated operations"
                (* https://gitlab.com/tezos/tezos/-/issues/5891
                   applied is deprecated and should be removed in a future
-                  version of Octez *)
+                  version of Mavkit *)
              "applied"
              Tezos_rpc.Arg.bool
              (fun t -> t#applied)
@@ -1661,7 +1661,7 @@ module Make (Proto : PROTO) (Next_proto : PROTO) = struct
                "(DEPRECATED use validated instead) Include validated operations"
                (* https://gitlab.com/tezos/tezos/-/issues/5891
                   applied is deprecated and should be removed in a future
-                  version of Octez *)
+                  version of Mavkit *)
              "applied"
              Tezos_rpc.Arg.bool
              (fun t -> t#applied)
@@ -1759,7 +1759,7 @@ module Make (Proto : PROTO) (Next_proto : PROTO) = struct
       let set_filter path =
         Tezos_rpc.Service.post_service
           ~description:
-            {|Set the configuration of the mempool's filter and bounds. **If any of the fields is absent from the input JSON, then it is set to the default value for this field (i.e. its value in the default configuration), even if it previously had a different value.** If the input JSON does not describe a valid configuration, then the configuration is left unchanged. This RPC also returns the new configuration of the mempool (which may differ from the input if the latter omits fields or is invalid). You may call [octez-client rpc get '/chains/main/mempool/filter?include_default=true'] to see an example of JSON describing a valid configuration. See the description of that RPC for details on each configurable value.|}
+            {|Set the configuration of the mempool's filter and bounds. **If any of the fields is absent from the input JSON, then it is set to the default value for this field (i.e. its value in the default configuration), even if it previously had a different value.** If the input JSON does not describe a valid configuration, then the configuration is left unchanged. This RPC also returns the new configuration of the mempool (which may differ from the input if the latter omits fields or is invalid). You may call [mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'] to see an example of JSON describing a valid configuration. See the description of that RPC for details on each configurable value.|}
           ~query:Tezos_rpc.Query.empty
           ~input:json
           ~output:json

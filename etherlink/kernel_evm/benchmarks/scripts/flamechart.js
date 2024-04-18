@@ -40,7 +40,7 @@ if (commander.opts().tezosDir) {
     process.env['TEZOS_DIR'] = commander.opts().tezosDir // setup env variable, used by subprocess
 }
 
-const RUN_DEBUGGER_COMMAND = commander.opts().debugger ? commander.opts().debugger : external.bin('./octez-smart-rollup-wasm-debugger')
+const RUN_DEBUGGER_COMMAND = commander.opts().debugger ? commander.opts().debugger : external.bin('./mavkit-smart-rollup-wasm-debugger')
 console.log(`Debugger: ${RUN_DEBUGGER_COMMAND}`)
 
 const KERNEL_DIR = commander.opts().kernelDir

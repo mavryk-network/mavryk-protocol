@@ -24,40 +24,40 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let octez_client = "./octez-client"
+let mavkit_client = "./mavkit-client"
 
-let octez_admin_client = "./octez-admin-client"
+let mavkit_admin_client = "./mavkit-admin-client"
 
-let octez_node = "./octez-node"
+let mavkit_node = "./mavkit-node"
 
-let octez_proxy_server =
-  Uses.make ~tag:"proxy_server" ~path:"./octez-proxy-server"
+let mavkit_proxy_server =
+  Uses.make ~tag:"proxy_server" ~path:"./mavkit-proxy-server"
 
-let octez_codec = Uses.make ~tag:"codec" ~path:"./octez-codec"
+let mavkit_codec = Uses.make ~tag:"codec" ~path:"./mavkit-codec"
 
-let octez_snoop = Uses.make ~tag:"snoop" ~path:"./octez-snoop"
+let mavkit_snoop = Uses.make ~tag:"snoop" ~path:"./mavkit-snoop"
 
-let octez_protocol_compiler =
-  Uses.make ~tag:"protocol_compiler" ~path:"./octez-protocol-compiler"
+let mavkit_protocol_compiler =
+  Uses.make ~tag:"protocol_compiler" ~path:"./mavkit-protocol-compiler"
 
-let octez_dal_node = Uses.make ~tag:"dal_node" ~path:"./octez-dal-node"
+let mavkit_dal_node = Uses.make ~tag:"dal_node" ~path:"./mavkit-dal-node"
 
-let octez_dac_node = Uses.make ~tag:"dac_node" ~path:"./octez-dac-node"
+let mavkit_dac_node = Uses.make ~tag:"dac_node" ~path:"./mavkit-dac-node"
 
-let octez_dac_client = Uses.make ~tag:"dac_client" ~path:"./octez-dac-client"
+let mavkit_dac_client = Uses.make ~tag:"dac_client" ~path:"./mavkit-dac-client"
 
-let octez_smart_rollup_node =
-  Uses.make ~tag:"smart_rollup_node" ~path:"./octez-smart-rollup-node"
+let mavkit_smart_rollup_node =
+  Uses.make ~tag:"smart_rollup_node" ~path:"./mavkit-smart-rollup-node"
 
-let octez_evm_node = Uses.make ~tag:"evm_node" ~path:"./octez-evm-node"
+let mavkit_evm_node = Uses.make ~tag:"evm_node" ~path:"./mavkit-evm-node"
 
-let octez_signer = Uses.make ~tag:"signer" ~path:"./octez-signer"
+let mavkit_signer = Uses.make ~tag:"signer" ~path:"./mavkit-signer"
 
-let octez_injector_server =
+let mavkit_injector_server =
   Uses.make
     ~tag:"injector_server"
     ~path:
-      "./_build/default/contrib/octez_injector_server/octez_injector_server.exe"
+      "./_build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe"
 
 (* TODO: tezos/tezos#4803
    Can we do better than to depend on script-inputs?

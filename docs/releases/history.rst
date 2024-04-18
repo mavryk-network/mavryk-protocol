@@ -1,7 +1,7 @@
 Older Versions
 ==============
 
-The following pages describe the former Octez releases in reverse chronological order. The current release is described separately.
+The following pages describe the former Mavkit releases in reverse chronological order. The current release is described separately.
 
 .. note::
 

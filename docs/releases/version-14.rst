@@ -24,7 +24,7 @@ Update Instructions
 
 To update from sources::
 
-  # Removes tezos folder from PATH if added with Octez <= v13 instructions
+  # Removes tezos folder from PATH if added with Mavkit <= v13 instructions
   PATH=${PATH##"$HOME"/tezos/:}
   git fetch
   git checkout v14.1
@@ -37,15 +37,15 @@ To update from sources::
 .. note::
 
    Note that ``opam switch remove .`` is only needed if you are
-   updating an already compiled repository of Octez v13.0 or older,
+   updating an already compiled repository of Mavkit v13.0 or older,
    not if you are compiling from a freshly cloned repository or if you are
-   upgrading from Octez v14.0. This command is needed because
-   Octez now requires OCaml 4.14.0.
+   upgrading from Mavkit v14.0. This command is needed because
+   Mavkit now requires OCaml 4.14.0.
 
 .. warning::
 
-   If you are updating to Octez v14 using a development
-   environment which had been used to build Octez versions up to
+   If you are updating to Mavkit v14 using a development
+   environment which had been used to build Mavkit versions up to
    v13.x, and also you have previously exported the ``tezos``
    directory to the ``$PATH`` environment variable, the following
    stanza is necessary to avoid potential issues with opam in the
@@ -61,7 +61,7 @@ To update from sources::
 
 If you are using Docker instead, use the ``v14.1`` Docker images of Tezos.
 
-If you are using other forms of Octez distributions (e.g. binary packages), check the update instructions at the end of the corresponding section in :doc:`../introduction/howtoget`.
+If you are using other forms of Mavkit distributions (e.g. binary packages), check the update instructions at the end of the corresponding section in :doc:`../introduction/howtoget`.
 
 Changelog
 ---------

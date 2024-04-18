@@ -3,16 +3,16 @@
 
 (library
  (name tezos_scoru_wasm)
- (public_name octez-l2-libs.scoru-wasm)
+ (public_name mavkit-l2-libs.scoru-wasm)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-libs.lazy-containers
-  octez-l2-libs.webassembly-interpreter
-  octez-libs.context.sigs
-  octez-libs.tezos-context.memory
-  octez-libs.lwt-result-stdlib
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-libs.lazy-containers
+  mavkit-l2-libs.webassembly-interpreter
+  mavkit-libs.context.sigs
+  mavkit-libs.tezos-context.memory
+  mavkit-libs.lwt-result-stdlib
   data-encoding)
  (flags
   (:standard)

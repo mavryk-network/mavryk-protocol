@@ -6,8 +6,8 @@
  (public_name tezos-protocol-001-PtAtLas.parameters)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-proto-libs.protocol-environment
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment
   tezos-protocol-001-PtAtLas.protocol)
  (library_flags (:standard -linkall))
  (flags
@@ -19,7 +19,7 @@
 (executable
  (name gen)
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezos-protocol-001-PtAtLas.parameters
   tezos-protocol-001-PtAtLas.protocol)
  (link_flags

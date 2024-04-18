@@ -1,7 +1,7 @@
 Proxy mode
 ----------
 
-The ``octez-client``, described in
+The ``mavkit-client``, described in
 :ref:`a dedicated tutorial <howtouse_tezos_client>`, heavily relies on node RPCs to implement its features. Thus, when a client need to perform some computation which cannot be done entirely locally, but which is implemented by a node RPC, it will simply call the corresponding RPC.
 
 The current page describes the *proxy* mode, an execution mode where the client
@@ -20,11 +20,11 @@ Executing commands in proxy mode
 
 The CLI interface of the client in proxy mode (the *proxy client* in short)
 is the same as the default client. To turn proxy mode ON,
-simply pass option ``--mode proxy`` to ``octez-client``.
+simply pass option ``--mode proxy`` to ``mavkit-client``.
 
 Because some computations usually done by the node are protocol-dependent, the proxy mode has to be configured for a specific protocol.
 However, the proxy mode does not support all protocols.
-Execute ``octez-client list proxy protocols`` to see the supported protocols.
+Execute ``mavkit-client list proxy protocols`` to see the supported protocols.
 It is expected that, at any given time, the proxy mode supports ``Alpha``,
 the current protocol of Mainnet, and the current protocol proposal on Mainnet
 at the time of release, if any.
@@ -40,21 +40,21 @@ start a sandboxed node:
 
 ::
 
-    $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 1
+    $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 1
 
 Leave that terminal running and, in another terminal, prepare the appropriate
 environment for using the proxy client:
 
 ::
 
-    $ eval `./src/bin_client/octez-init-sandboxed-client.sh 1`
+    $ eval `./src/bin_client/mavkit-init-sandboxed-client.sh 1`
 
 Then upgrade the node to protocol alpha:
 
 ::
 
-    $ octez-activate-alpha
-    $ octez-client bake for bootstrap1
+    $ mavkit-activate-alpha
+    $ mavkit-client bake for bootstrap1
 
 To avoid warnings being printed in upcoming commands (optional):
 
@@ -66,7 +66,7 @@ You're now ready to use the proxy client. For example, request baking rights:
 
 ::
 
-    $ octez-client --mode proxy rpc get /chains/main/blocks/head/helpers/baking_rights
+    $ mavkit-client --mode proxy rpc get /chains/main/blocks/head/helpers/baking_rights
     [ { "level": 3, "delegate": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn",
         "round": 0, "estimated_time": "2022-11-17T14:20:17Z",
         "consensus_key": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" },
@@ -101,7 +101,7 @@ keystrokes and the ``protocol of proxy unspecified`` warning:
 
 ::
 
-    $ alias proxy-client="octez-client --mode proxy --protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
+    $ alias proxy-client="mavkit-client --mode proxy --protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
 
 Now configure ``proxy_rpc_ctxt`` to have more information:
 

@@ -3,20 +3,20 @@
 
 (library
  (name tezos_validation)
- (public_name octez-shell-libs.validation)
+ (public_name mavkit-shell-libs.validation)
  (instrumentation (backend bisect_ppx))
  (instrumentation (backend tezos-time-measurement))
  (libraries
-  octez-libs.base
-  octez-libs.crypto
-  octez-libs.rpc
-  octez-libs.tezos-context
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.shell-services
-  octez-shell-libs.protocol-updater
-  octez-libs.stdlib-unix
-  octez-version.value)
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-libs.rpc
+  mavkit-libs.tezos-context
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.stdlib-unix
+  mavkit-version.value)
  (flags
   (:standard)
   -open Tezos_base.TzPervasives

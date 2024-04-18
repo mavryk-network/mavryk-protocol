@@ -6,13 +6,13 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
-  octez-libs.base
-  octez-libs.test-helpers
-  octez-libs.base-test-helpers
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.test-helpers
+  mavkit-libs.base-test-helpers
   tezos_dac_node_lib
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -25,7 +25,7 @@
   -open Tezos_test_helpers
   -open Tezos_base_test_helpers
   -open Tezos_dac_node_lib
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_data_streamer))
 
 (executable

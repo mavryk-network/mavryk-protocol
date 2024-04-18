@@ -8,12 +8,12 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.error-monad
+  mavkit-libs.base
+  mavkit-libs.error-monad
   data-encoding
-  octez-libs.test-helpers
+  mavkit-libs.test-helpers
   qcheck-alcotest
-  octez-alcotezt)
+  mavkit-alcotezt)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
@@ -23,7 +23,7 @@
   -open Tezos_base
   -open Tezos_error_monad
   -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules
   test_bounded
   test_time
@@ -43,7 +43,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (deps points.ok points.ko)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
@@ -64,7 +64,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-libs)
+ (package mavkit-libs)
  (deps points.ok points.ko)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))

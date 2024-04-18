@@ -10,7 +10,7 @@ Example: $0 11.0 https://gitlab.com/tezos/tezos/-/archive/v11.0/tezos-v11.0.tar.
 
 This script clones ocaml/opam-repository into OPAM_REPOSITORY_CLONE_DIR
 (or uses the existing clone if it already exists) and generates opam packages
-in a new branch named octez-<VERSION_NUMBER> in it. This branch should be
+in a new branch named mavkit-<VERSION_NUMBER> in it. This branch should be
 ready to be made into a pull request.
 
 Default value for OPAM_REPOSITORY_CLONE_DIR is 'opam-repository'.
@@ -58,7 +58,7 @@ else
     git checkout master
 fi
 
-branch_name="octez-$(echo "$version" | tr '~' -)"
+branch_name="mavkit-$(echo "$version" | tr '~' -)"
 if git rev-parse "$branch_name" > /dev/null 2> /dev/null ; then
     log "Error: a branch named $branch_name already exists in $opam_dir."
     exit 1
@@ -72,6 +72,6 @@ cd "$opam_dir"
 log "Creating commit..."
 git checkout -b "$branch_name"
 git add packages
-git commit -am "Octez $version packages"
+git commit -am "Mavkit $version packages"
 
 log "A branch named $branch_name has been created in $opam_dir."

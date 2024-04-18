@@ -35,13 +35,13 @@ EXPERIMENTAL_EXECUTABLES := $(shell cat script-inputs/experimental-executables)
 
 # Executables that developers need at the root of the repository but that
 # are not useful for users.
-# - scripts/snapshot_alpha.sh expects octez-protocol-compiler to be at the root.
-# - Some tests expect octez-snoop to be at the root.
+# - scripts/snapshot_alpha.sh expects mavkit-protocol-compiler to be at the root.
+# - Some tests expect mavkit-snoop to be at the root.
 DEV_EXECUTABLES := $(shell cat script-inputs/dev-executables)
 
 ALL_EXECUTABLES := $(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES) $(DEV_EXECUTABLES)
 
-# Set of Dune targets to build, in addition to OCTEZ_EXECUTABLES, in
+# Set of Dune targets to build, in addition to MAVKIT_EXECUTABLES, in
 # the `build` target's Dune invocation. This is used in the CI to
 # build the TPS evaluation tool, Octogram and the Tezt test suite in the
 # 'build_x86_64-dev-exp-misc' job.
@@ -58,22 +58,22 @@ ifeq ($(filter ${VALID_PROFILES},${PROFILE}),)
 $(error Unexpected dune profile (got: ${PROFILE}, expecting one of: ${VALID_PROFILES}))
 endif
 
-# This check ensures that the `OCTEZ_EXECUTABLES` variable contains a subset of
-# the `ALL_EXECUTABLE` variable. The `OCTEZ_EXECUTABLES` variable is used
+# This check ensures that the `MAVKIT_EXECUTABLES` variable contains a subset of
+# the `ALL_EXECUTABLE` variable. The `MAVKIT_EXECUTABLES` variable is used
 # internally to select a subset of which executables to build.
 # The reason for the `foreach` is so that we support both newlines and spaces.
-ifneq ($(filter ${ALL_EXECUTABLES},${OCTEZ_EXECUTABLES}),$(foreach executable,${OCTEZ_EXECUTABLES},${executable}))
-$(error Unexpected list of executables to build, make sure environment variable OCTEZ_EXECUTABLES is unset)
+ifneq ($(filter ${ALL_EXECUTABLES},${MAVKIT_EXECUTABLES}),$(foreach executable,${MAVKIT_EXECUTABLES},${executable}))
+$(error Unexpected list of executables to build, make sure environment variable MAVKIT_EXECUTABLES is unset)
 endif
 
 # Where to copy executables.
 # Used when building Docker images to help with the COPY instruction.
-OCTEZ_BIN_DIR?=.
+MAVKIT_BIN_DIR?=.
 
-VALID_OCTEZ_BIN_DIRS=. bin
+VALID_MAVKIT_BIN_DIRS=. bin
 
-ifeq ($(filter ${VALID_OCTEZ_BIN_DIRS},${OCTEZ_BIN_DIR}),)
-$(error Unexpected value for OCTEZ_BIN_DIR (got: ${OCTEZ_BIN_DIR}, expecting one of: ${VALID_OCTEZ_BIN_DIRS}))
+ifeq ($(filter ${VALID_MAVKIT_BIN_DIRS},${MAVKIT_BIN_DIR}),)
+$(error Unexpected value for MAVKIT_BIN_DIR (got: ${MAVKIT_BIN_DIR}, expecting one of: ${VALID_MAVKIT_BIN_DIRS}))
 endif
 
 # See first mention of TEZOS_WITHOUT_OPAM.
@@ -87,9 +87,9 @@ endif
 #
 # Note that you can override the list of executables to build on the command-line, e.g.:
 #
-#     make OCTEZ_EXECUTABLES='octez-node octez-client'
+#     make MAVKIT_EXECUTABLES='mavkit-node mavkit-client'
 #
-# This is more efficient than 'make octez-node octez-client'
+# This is more efficient than 'make mavkit-node mavkit-client'
 # because it only calls 'dune' once.
 #
 # Targets 'all', 'release', 'experimental-release' and 'static' define
@@ -97,19 +97,19 @@ endif
 # overridden from the command-line.
 .PHONY: all
 all:
-	@$(MAKE) build OCTEZ_EXECUTABLES?="$(ALL_EXECUTABLES)"
+	@$(MAKE) build MAVKIT_EXECUTABLES?="$(ALL_EXECUTABLES)"
 
 .PHONY: release
 release:
-	@$(MAKE) build PROFILE=release OCTEZ_EXECUTABLES?="$(RELEASED_EXECUTABLES)"
+	@$(MAKE) build PROFILE=release MAVKIT_EXECUTABLES?="$(RELEASED_EXECUTABLES)"
 
 .PHONY: experimental-release
 experimental-release:
-	@$(MAKE) build PROFILE=release OCTEZ_EXECUTABLES?="$(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES)"
+	@$(MAKE) build PROFILE=release MAVKIT_EXECUTABLES?="$(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES)"
 
 .PHONY: build-additional-tezt-test-dependency-executables
 build-additional-tezt-test-dependency-executables:
-	@dune build contrib/octez_injector_server/octez_injector_server.exe
+	@dune build contrib/mavkit_injector_server/mavkit_injector_server.exe
 
 .PHONY: strip
 strip: all
@@ -119,7 +119,7 @@ strip: all
 
 .PHONY: static
 static:
-	@$(MAKE) build PROFILE=static OCTEZ_EXECUTABLES?="$(RELEASED_EXECUTABLES)"
+	@$(MAKE) build PROFILE=static MAVKIT_EXECUTABLES?="$(RELEASED_EXECUTABLES)"
 
 .PHONY: build-parameters
 build-parameters:
@@ -182,23 +182,23 @@ clean-old-names:
 	@rm -f tezos-smart-rollup-client-alpha
 	@rm -f tezos-snoop
 	@rm -f tezos-dal-node
-# octez-validator should stay in this list for Octez 16.0 because we
+# mavkit-validator should stay in this list for Mavkit 16.0 because we
 # removed the executable
-	@rm -f octez-validator
-	@rm -f octez-baker-012-Psithaca
-	@rm -f octez-accuser-012-Psithaca
-	@rm -f octez-baker-013-PtJakart
-	@rm -f octez-accuser-013-PtJakart
-	@rm -f octez-tx-rollup-node-013-PtJakart
-	@rm -f octez-tx-rollup-client-013-PtJakart
-	@rm -f octez-baker-015-PtLimaPt
-	@rm -f octez-accuser-015-PtLimaPt
-	@rm -f octez-tx-rollup-node-015-PtLimaPt
-	@rm -f octez-tx-rollup-client-015-PtLimaPt
-	@rm -f octez-smart-rollup-node-PtMumbai
-	@rm -f octez-smart-rollup-node-PtNairob
-	@rm -f octez-smart-rollup-node-PtAtLas
-	@rm -f octez-smart-rollup-node-alpha
+	@rm -f mavkit-validator
+	@rm -f mavkit-baker-012-Psithaca
+	@rm -f mavkit-accuser-012-Psithaca
+	@rm -f mavkit-baker-013-PtJakart
+	@rm -f mavkit-accuser-013-PtJakart
+	@rm -f mavkit-tx-rollup-node-013-PtJakart
+	@rm -f mavkit-tx-rollup-client-013-PtJakart
+	@rm -f mavkit-baker-015-PtLimaPt
+	@rm -f mavkit-accuser-015-PtLimaPt
+	@rm -f mavkit-tx-rollup-node-015-PtLimaPt
+	@rm -f mavkit-tx-rollup-client-015-PtLimaPt
+	@rm -f mavkit-smart-rollup-node-PtMumbai
+	@rm -f mavkit-smart-rollup-node-PtNairob
+	@rm -f mavkit-smart-rollup-node-PtAtLas
+	@rm -f mavkit-smart-rollup-node-alpha
 
 # See comment of clean-old-names for an explanation regarding why we do not try
 # to generate the symbolic links from *_EXECUTABLES.
@@ -207,19 +207,19 @@ build: clean-old-names
 ifneq (${current_ocaml_version},${ocaml_version})
 	$(error Unexpected ocaml version (found: ${current_ocaml_version}, expected: ${ocaml_version}))
 endif
-ifeq (${OCTEZ_EXECUTABLES},)
-	$(error The build target requires OCTEZ_EXECUTABLES to be specified. Please use another target (e.g. 'make' or 'make release') and make sure that environment variable OCTEZ_EXECUTABLES is unset)
+ifeq (${MAVKIT_EXECUTABLES},)
+	$(error The build target requires MAVKIT_EXECUTABLES to be specified. Please use another target (e.g. 'make' or 'make release') and make sure that environment variable MAVKIT_EXECUTABLES is unset)
 endif
 	@dune build --profile=$(PROFILE) $(COVERAGE_OPTIONS) \
-		$(foreach b, $(OCTEZ_EXECUTABLES), _build/install/default/bin/${b}) \
+		$(foreach b, $(MAVKIT_EXECUTABLES), _build/install/default/bin/${b}) \
 		$(BUILD_EXTRA) \
 		@copy-parameters
-	@mkdir -p $(OCTEZ_BIN_DIR)/
-	@cp -f $(foreach b, $(OCTEZ_EXECUTABLES), _build/install/default/bin/${b}) $(OCTEZ_BIN_DIR)/
-	@cd $(OCTEZ_BIN_DIR)/; \
-		ln -s octez-smart-rollup-node octez-smart-rollup-node-PtNairob; \
-		ln -s octez-smart-rollup-node octez-smart-rollup-node-PtAtLas; \
-		ln -s octez-smart-rollup-node octez-smart-rollup-node-alpha
+	@mkdir -p $(MAVKIT_BIN_DIR)/
+	@cp -f $(foreach b, $(MAVKIT_EXECUTABLES), _build/install/default/bin/${b}) $(MAVKIT_BIN_DIR)/
+	@cd $(MAVKIT_BIN_DIR)/; \
+		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-PtNairob; \
+		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-PtAtLas; \
+		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-alpha
 
 # List protocols, i.e. directories proto_* in src with a TEZOS_PROTOCOL file.
 TEZOS_PROTOCOL_FILES=$(wildcard src/proto_*/lib_protocol/TEZOS_PROTOCOL)
@@ -324,9 +324,9 @@ build-tezt:
 .PHONY: build-simulation-scenario
 build-simulation-scenario:
 	@dune build devtools/testnet_experiment_tools/
-	@mkdir -p $(OCTEZ_BIN_DIR)/
-	@cp -f _build/default/devtools/testnet_experiment_tools/simulation_scenario.exe $(OCTEZ_BIN_DIR)/simulation-scenario
-	@cp -f _build/default/devtools/testnet_experiment_tools/safety_checker.exe $(OCTEZ_BIN_DIR)/safety-checker
+	@mkdir -p $(MAVKIT_BIN_DIR)/
+	@cp -f _build/default/devtools/testnet_experiment_tools/simulation_scenario.exe $(MAVKIT_BIN_DIR)/simulation-scenario
+	@cp -f _build/default/devtools/testnet_experiment_tools/safety_checker.exe $(MAVKIT_BIN_DIR)/safety-checker
 
 .PHONY: test-tezt
 test-tezt: build-additional-tezt-test-dependency-executables
@@ -373,11 +373,11 @@ lint-opam-dune:
 	@dune build --profile=$(PROFILE) @runtest_dune_template
 
 # Ensure that all unit tests are restricted to their opam package
-# (change 'octez-distributed-internal' to one the most elementary packages of
-# the repo if you add "internal" dependencies to octez-distributed-internal)
+# (change 'mavkit-distributed-internal' to one the most elementary packages of
+# the repo if you add "internal" dependencies to mavkit-distributed-internal)
 .PHONY: lint-tests-pkg
 lint-tests-pkg:
-	@(dune build -p octez-distributed-internal @runtest @runtest_js) || \
+	@(dune build -p mavkit-distributed-internal @runtest @runtest_js) || \
 	{ echo "You have probably defined some tests in dune files without specifying to which 'package' they belong."; exit 1; }
 
 

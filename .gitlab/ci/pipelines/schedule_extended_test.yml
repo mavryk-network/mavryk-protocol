@@ -7,7 +7,7 @@ include:
   - .gitlab/ci/jobs/packaging/opam_package.yml
 
   # Stage: test
-  - .gitlab/ci/jobs/test/install_octez.yml
+  - .gitlab/ci/jobs/test/install_mavkit.yml
 
   # Stage: doc
   - .gitlab/ci/jobs/doc/linkcheck.yml

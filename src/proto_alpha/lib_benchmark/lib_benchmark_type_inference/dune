@@ -6,10 +6,10 @@
  (public_name tezos-benchmark-type-inference-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.error-monad
-  octez-libs.crypto
-  octez-libs.micheline
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
+  mavkit-libs.micheline
   tezos-micheline-rewriting
   tezos-protocol-alpha.protocol
   hashcons)

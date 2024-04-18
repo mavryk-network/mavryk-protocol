@@ -6,17 +6,17 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-libs.error-monad
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-libs.error-monad
   zarith
   zarith_stubs_js
-  octez-libs.hacl
+  mavkit-libs.hacl
   data-encoding
-  octez-alcotezt
+  mavkit-alcotezt
   lwt.unix
   qcheck-alcotest
-  octez-libs.test-helpers)
+  mavkit-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -26,7 +26,7 @@
   -open Tezos_crypto
   -open Tezos_error_monad.TzLwtreslib
   -open Data_encoding
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Tezos_test_helpers)
  (modules test_crypto_box))
 
@@ -40,7 +40,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

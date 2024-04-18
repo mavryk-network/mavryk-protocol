@@ -1,78 +1,78 @@
 
-./octez-client --mode mockup normalize stack '{}'
+./mavkit-client --mode mockup normalize stack '{}'
 {}
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}'
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}'
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 4 7 10) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}'
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 4 7 10) ;
   Stack_elt (pair nat nat nat nat) (Pair 2 5 8 11) }
 
-./octez-client --mode mockup normalize stack '{}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{}' --unparsing-mode Readable
 {}
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Readable
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Readable
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 4 7 10) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Readable
 { Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 4 7 10) ;
   Stack_elt (pair nat nat nat nat) (Pair 2 5 8 11) }
 
-./octez-client --mode mockup normalize stack '{}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{}' --unparsing-mode Optimized
 {}
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Optimized
 { Stack_elt (pair nat nat nat nat) { 0 ; 3 ; 6 ; 9 } }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Optimized
 { Stack_elt (pair nat nat nat nat) { 0 ; 3 ; 6 ; 9 } ;
   Stack_elt (pair nat nat nat nat) { 1 ; 4 ; 7 ; 10 } }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Optimized
 { Stack_elt (pair nat nat nat nat) { 0 ; 3 ; 6 ; 9 } ;
   Stack_elt (pair nat nat nat nat) { 1 ; 4 ; 7 ; 10 } ;
   Stack_elt (pair nat nat nat nat) { 2 ; 5 ; 8 ; 11 } }
 
-./octez-client --mode mockup normalize stack '{}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{}' --unparsing-mode Optimized_legacy
 {}
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9)}' --unparsing-mode Optimized_legacy
 { Stack_elt (pair nat nat nat nat) (Pair 0 (Pair 3 (Pair 6 9))) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10)))}' --unparsing-mode Optimized_legacy
 { Stack_elt (pair nat nat nat nat) (Pair 0 (Pair 3 (Pair 6 9))) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 (Pair 4 (Pair 7 10))) }
 
-./octez-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt (pair nat nat nat nat) (Pair 0 3 6 9); Stack_elt (pair nat (pair nat (pair nat nat))) (Pair 1 (Pair 4 (Pair 7 10))); Stack_elt (pair nat nat (pair nat nat)) {2; 5; 8; 11}}' --unparsing-mode Optimized_legacy
 { Stack_elt (pair nat nat nat nat) (Pair 0 (Pair 3 (Pair 6 9))) ;
   Stack_elt (pair nat nat nat nat) (Pair 1 (Pair 4 (Pair 7 10))) ;
   Stack_elt (pair nat nat nat nat) (Pair 2 (Pair 5 (Pair 8 11))) }
 
-./octez-client --mode mockup normalize stack 
+./mavkit-client --mode mockup normalize stack 
 Error:
   Erroneous command line argument 3 ().
   empty expression
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -80,7 +80,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -95,20 +95,20 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack '{'
+./mavkit-client --mode mockup normalize stack '{'
 Error:
   Erroneous command line argument 3 ({).
   At line 1 characters 0 to 1, unclosed curly brace
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -116,7 +116,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -131,53 +131,53 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack 0
+./mavkit-client --mode mockup normalize stack 0
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt}'
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat}'
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat.
 
-./octez-client --mode mockup normalize stack '{Stack_elt 0 nat}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt 0 nat}'
 At (unshown) location 0, unexpected int, only a primitive can be used here.
 Fatal error:
   ill-typed stack
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0 1}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0 1}'
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 1 }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat 0 1.
 
-./octez-client --mode mockup normalize stack 'Stack_elt nat 0'
+./mavkit-client --mode mockup normalize stack 'Stack_elt nat 0'
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got Stack_elt nat 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}'
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}'
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 ; Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack  --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack  --unparsing-mode Readable
 Error:
   Erroneous command line argument 3 ().
   empty expression
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -185,7 +185,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -200,20 +200,20 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack '{' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{' --unparsing-mode Readable
 Error:
   Erroneous command line argument 3 ({).
   At line 1 characters 0 to 1, unclosed curly brace
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -221,7 +221,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -236,53 +236,53 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack 0 --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack 0 --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat.
 
-./octez-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Readable
 At (unshown) location 0, unexpected int, only a primitive can be used here.
 Fatal error:
   ill-typed stack
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 1 }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat 0 1.
 
-./octez-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got Stack_elt nat 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Readable
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Readable
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 ; Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack  --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack  --unparsing-mode Optimized
 Error:
   Erroneous command line argument 3 ().
   empty expression
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -290,7 +290,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -305,20 +305,20 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack '{' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{' --unparsing-mode Optimized
 Error:
   Erroneous command line argument 3 ({).
   At line 1 characters 0 to 1, unclosed curly brace
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -326,7 +326,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -341,53 +341,53 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack 0 --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack 0 --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat.
 
-./octez-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Optimized
 At (unshown) location 0, unexpected int, only a primitive can be used here.
 Fatal error:
   ill-typed stack
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 1 }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat 0 1.
 
-./octez-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got Stack_elt nat 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Optimized
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Optimized
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 ; Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack  --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack  --unparsing-mode Optimized_legacy
 Error:
   Erroneous command line argument 3 ().
   empty expression
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -395,7 +395,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -410,20 +410,20 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack '{' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{' --unparsing-mode Optimized_legacy
 Error:
   Erroneous command line argument 3 ({).
   At line 1 characters 0 to 1, unclosed curly brace
 
 Usage:
-  octez-client [global options] command [command options]
-  octez-client --help (for global options)
-  octez-client [global options] command --help (for command options)
-  octez-client --version (for version information)
+  mavkit-client [global options] command [command options]
+  mavkit-client --help (for global options)
+  mavkit-client [global options] command --help (for command options)
+  mavkit-client --version (for version information)
 
 To browse the documentation:
-  octez-client [global options] man (for a list of commands)
-  octez-client [global options] man -v 3 (for the full manual)
+  mavkit-client [global options] man (for a list of commands)
+  mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
   -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
@@ -431,7 +431,7 @@ Global options (must come before the command):
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
   --chain <hash|tag>: chain on which to apply contextual commands (commands dependent on the context associated with the specified chain). Possible tags are 'main' and 'test'.
-  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "octez-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
+  -b --block <hash|level|tag>: block on which to apply contextual commands (commands dependent on the context associated with the specified block). Possible tags include 'head' and 'genesis' +/- an optional offset (e.g. "mavkit-client -b head-1 get timestamp"). Note that block queried must exist in node's storage.
   -w --wait <none|<int>>: how many confirmation blocks are needed before an operation is considered included
   -p --protocol <hash>: use commands of a specific protocol
   -l --log-requests: log all requests to the node
@@ -446,35 +446,35 @@ Global options (must come before the command):
   -f --password-filename <filename>: path to the password filename
   -M --mode <client|light|mockup|proxy>: how to interact with the node
 
-./octez-client --mode mockup normalize stack 0 --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack 0 --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt}' --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat}' --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat.
 
-./octez-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt 0 nat}' --unparsing-mode Optimized_legacy
 At (unshown) location 0, unexpected int, only a primitive can be used here.
 Fatal error:
   ill-typed stack
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0 1}' --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 1 }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt nat 0 1.
 
-./octez-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack 'Stack_elt nat 0' --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got Stack_elt nat 0.
 
-./octez-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Optimized_legacy
+./mavkit-client --mode mockup normalize stack '{Stack_elt nat 0; Stack_elt}' --unparsing-mode Optimized_legacy
 Error:
   Unexpected format for a typed stack. Expected a sequence of Stack_elt <ty> <value>; got { Stack_elt nat 0 ; Stack_elt }.
   Unexpected format for an item in a typed stack. Expected: Stack_elt <ty> <value>; got Stack_elt.

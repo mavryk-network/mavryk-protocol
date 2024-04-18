@@ -38,7 +38,7 @@ smart-rollup-installer get-reveal-installer \
 
 where `<preimages-dir>` is the directory to save the *preimages* of the kernel. The installer will request these through the *reveal data* channel.
 
-And you can now originate the rollup by supplying `installer.hex` to the `octez-client originate smart rollup` command, setting `KERNEL=$(cat installer.hex)`.
+And you can now originate the rollup by supplying `installer.hex` to the `mavkit-client originate smart rollup` command, setting `KERNEL=$(cat installer.hex)`.
 
 ## Running a rollup node
 
@@ -48,7 +48,7 @@ Once you've copied these across, you should then be able to run your rollup node
 
 For more information on originating the rollup & running a rollup node, see the [rollup docs](https://tezos.gitlab.io/alpha/smart_rollups.html).
 
-## Using the `octez-smart-rollup-wasm-debugger`
+## Using the `mavkit-smart-rollup-wasm-debugger`
 
 You can also try this out by using the debugger, which may be easier than running a rollup node. To do so you need to use the `.wasm` extension on the `--output` argument:
 
@@ -62,5 +62,5 @@ smart-rollup-installer get-reveal-installer \
 You can then run the installer in the [debugger](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel), using the `--preimage-dir` argument to point to the preimages generated previously:
 
 ```
-octez-smart-rollup-wasm-debugger --kernel installer.wasm --inputs inputs.json --preimage-dir <preimages-dir>
+mavkit-smart-rollup-wasm-debugger --kernel installer.wasm --inputs inputs.json --preimage-dir <preimages-dir>
 ```

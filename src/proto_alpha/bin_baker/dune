@@ -3,18 +3,18 @@
 
 (executable
  (name main_baker_alpha)
- (public_name octez-baker-alpha)
- (package octez-baker-alpha)
+ (public_name mavkit-baker-alpha)
+ (package mavkit-baker-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.clic
   tezos-protocol-alpha.protocol
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-alpha-libs.baking-commands
-  octez-libs.stdlib-unix
-  octez-shell-libs.client-base-unix)
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-alpha-libs.baking-commands
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
