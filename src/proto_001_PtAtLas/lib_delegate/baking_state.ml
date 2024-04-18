@@ -137,7 +137,7 @@ type global_state = {
   (* the delegates on behalf of which the baker is running *)
   delegates : consensus_key list;
   cache : cache;
-  dal_node_rpc_ctxt : Tezos_rpc.Context.generic option;
+  dal_node_rpc_ctxt : Mavryk_rpc.Context.generic option;
 }
 
 let prequorum_encoding =
@@ -224,7 +224,7 @@ let round_of_shell_header shell_header =
   let open Result_syntax in
   let* fitness =
     Environment.wrap_tzresult
-    @@ Fitness.from_raw shell_header.Tezos_base.Block_header.fitness
+    @@ Fitness.from_raw shell_header.Mavryk_base.Block_header.fitness
   in
   return (Fitness.round fitness)
 

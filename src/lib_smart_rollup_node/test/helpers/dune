@@ -21,11 +21,11 @@
    (-> void_for_linking-mavkit_smart_rollup_node_alpha.empty)))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt
-  -open Tezos_client_base_unix
+  -open Mavryk_client_base_unix
   -open Mavkit_smart_rollup
   -open Mavkit_smart_rollup_node))
 

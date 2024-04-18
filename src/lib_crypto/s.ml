@@ -111,7 +111,7 @@ module type ENCODER = sig
 
   val encoding : t Data_encoding.t
 
-  val rpc_arg : t Tezos_rpc.Arg.t
+  val rpc_arg : t Mavryk_rpc.Arg.t
 end
 
 module type PVSS = sig
@@ -232,7 +232,7 @@ module type INDEXES = sig
   end
 
   module Error_table : sig
-    include Tezos_error_monad.TzLwtreslib.Hashtbl.S_ES with type key = t
+    include Mavryk_error_monad.TzLwtreslib.Hashtbl.S_ES with type key = t
   end
 
   module WeakRingTable : sig

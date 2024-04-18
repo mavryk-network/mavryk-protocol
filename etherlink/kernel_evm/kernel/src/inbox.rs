@@ -18,13 +18,13 @@ use crate::Error;
 use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::rlp_helpers::{decode_array, decode_field, decode_tx_hash, next};
-use tezos_ethereum::transaction::{TransactionHash, TRANSACTION_HASH_SIZE};
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::rlp_helpers::{decode_array, decode_field, decode_tx_hash, next};
+use mavryk_ethereum::transaction::{TransactionHash, TRANSACTION_HASH_SIZE};
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Deposit {
@@ -360,15 +360,15 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use crate::parsing::RollupType;
     use crate::storage::*;
-    use tezos_crypto_rs::hash::SmartRollupHash;
-    use tezos_data_encoding::types::Bytes;
-    use tezos_ethereum::transaction::TRANSACTION_HASH_SIZE;
-    use tezos_smart_rollup_encoding::contract::Contract;
-    use tezos_smart_rollup_encoding::inbox::ExternalMessageFrame;
-    use tezos_smart_rollup_encoding::michelson::{MichelsonBytes, MichelsonOr};
-    use tezos_smart_rollup_encoding::public_key_hash::PublicKeyHash;
-    use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
-    use tezos_smart_rollup_mock::{MockHost, TransferMetadata};
+    use mavryk_crypto_rs::hash::SmartRollupHash;
+    use mavryk_data_encoding::types::Bytes;
+    use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_encoding::contract::Contract;
+    use mavryk_smart_rollup_encoding::inbox::ExternalMessageFrame;
+    use mavryk_smart_rollup_encoding::michelson::{MichelsonBytes, MichelsonOr};
+    use mavryk_smart_rollup_encoding::public_key_hash::PublicKeyHash;
+    use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+    use mavryk_smart_rollup_mock::{MockHost, TransferMetadata};
 
     const SMART_ROLLUP_ADDRESS: [u8; 20] = [
         20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,

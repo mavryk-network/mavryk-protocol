@@ -54,11 +54,11 @@ The main protocol-dependent functions are:
   of RPCs that is implemented in the protocol. This is the tree of RPCs that
   can be executed locally by the proxy's custom `RPC_context.generic`.
 * `Proxy_sig`'s `init_env_rpc_context` function: it provides the
-  instance of `Tezos_protocol_environment.rpc_context` to use when
+  instance of `Mavryk_protocol_environment.rpc_context` to use when
   doing an RPC call. This record's main field is an instance of
-  `Tezos_protocol_environment.Context.t`.
+  `Mavryk_protocol_environment.Context.t`.
 
-The value of `Tezos_protocol_environment.Context.t` built by the instances of
+The value of `Mavryk_protocol_environment.Context.t` built by the instances of
 `Proxy_sig` is where the proxy's core logic lies. The values returned
 are capable of filling themselves in the `get` method, by performing
 the `/chains/main/blocks/head/context/raw/bytes` RPC. By _filling themselves_,

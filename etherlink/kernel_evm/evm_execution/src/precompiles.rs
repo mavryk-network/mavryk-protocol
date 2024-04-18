@@ -23,8 +23,8 @@ use primitive_types::{H160, U256};
 use ripemd::Ripemd160;
 use sha2::{Digest, Sha256};
 use sha3::Keccak256;
-use tezos_ethereum::withdrawal::Withdrawal;
-use tezos_evm_logging::{log, Level::*};
+use mavryk_ethereum::withdrawal::Withdrawal;
+use mavryk_evm_logging::{log, Level::*};
 
 /// Outcome of executing a precompiled contract. Covers both successful
 /// return, stop and revert and additionally, it covers contract execution
@@ -479,9 +479,9 @@ mod tests {
     use crate::EthereumAccountStorage;
     use evm::Config;
     use primitive_types::{H160, U256};
-    use tezos_ethereum::block::BlockConstants;
-    use tezos_smart_rollup_encoding::contract::Contract;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::block::BlockConstants;
+    use mavryk_smart_rollup_encoding::contract::Contract;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const DUMMY_ALLOCATED_TICKS: u64 = 100_000_000;
 

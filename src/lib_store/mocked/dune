@@ -10,18 +10,18 @@
   mavkit-libs.base
   mavkit-libs.crypto
   mavkit-shell-libs.shell-services
-  mavkit-libs.tezos-context.memory
+  mavkit-libs.mavryk-context.memory
   mavkit-shell-libs.context-ops
   mavkit-shell-libs.validation
   mavkit-proto-libs.protocol-environment
   mavkit-shell-libs.store.shared)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_shell_services
-  -open Tezos_context_memory
-  -open Tezos_context_ops
-  -open Tezos_validation
-  -open Tezos_store_shared)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_shell_services
+  -open Mavryk_context_memory
+  -open Mavryk_context_ops
+  -open Mavryk_validation
+  -open Mavryk_store_shared)
  (private_modules block_store protocol_store stored_data))

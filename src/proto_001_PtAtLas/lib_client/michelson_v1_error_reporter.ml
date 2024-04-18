@@ -25,7 +25,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 open Script_tc_errors
 open Script_interpreter
 open Michelson_v1_printer

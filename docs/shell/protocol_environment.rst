@@ -54,7 +54,7 @@ Here is a quick description of each file in this environment, all located under
    implementations are assembled into a single implementation file ``VX.ml`` by
    a helper program located in ``s_packer/``.
 
-The API can be found in :package-api:`tezos-protocol-environment <mavkit-proto-libs/Tezos_protocol_environment/index.html>`
+The API can be found in :package-api:`mavryk-protocol-environment <mavkit-proto-libs/Mavryk_protocol_environment/index.html>`
 
 
 Environment versions
@@ -65,7 +65,7 @@ to the protocol. And so when a new protocol needs new functions, types, or value
 this protocol must use a new environment. This is why the environments are
 versioned.
 
-A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/TEZOS_PROTOCOL`)
+A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL`)
 includes a field named ``expected_env_version``. This field specifies the
 environment used to compile the protocol.
 

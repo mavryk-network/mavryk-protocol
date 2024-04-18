@@ -30,7 +30,7 @@
    from the last scanned state.
 *)
 
-open Tezos_sapling.Core.Client
+open Mavryk_sapling.Core.Client
 
 module Tez : module type of Protocol.Alpha_context.Tez
 

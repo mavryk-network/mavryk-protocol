@@ -10,7 +10,7 @@
 
 
 # Hack to get tezos directory
-TEZOS_DIR=$(dirname "$0")/../..
+MAVRYK_DIR=$(dirname "$0")/../..
 
 # Patch file, with absolute path 
 PATCH=$(pwd)/$1
@@ -32,7 +32,7 @@ for env in "$@" ; do
     if [[ $env =~ [1-9][0-9]* ]]; then
         echo "applying patch $PATCH replacing environment version $BASE_ENV_NUMBER by $env"
         sed "s/$BASE_ENV_NUMBER/$env/g" "$PATCH" > "$PATCHS_PATH/${env}_${PATCH_BASE}"
-        cd "$TEZOS_DIR" || exit 1;
+        cd "$MAVRYK_DIR" || exit 1;
         patch -p1 < "${PATCHS_PATH}/${env}_${PATCH_BASE}"
         cd - || exit 1
     else

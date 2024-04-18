@@ -296,7 +296,7 @@ let delegate_to_bootstrap_by_origination ~fee () =
     (* originated contract has not been created *)
     let*! err = Context.Contract.balance (I i) orig_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
   else
     (* bootstrap is delegate, fee + origination burn have been debited *)
@@ -536,7 +536,7 @@ let test_unregistered_delegate_key_init_origination ~fee () =
     (* originated contract has not been created *)
     let*! err = Context.Contract.balance (I i) orig_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Delegation when delegate key is not assigned. Delegate account is
@@ -590,7 +590,7 @@ let test_unregistered_delegate_key_init_delegation ~fee () =
     (* implicit contract has no delegate *)
     let*! err = Context.Contract.delegate (I i) impl_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Re-delegation when a delegate key was already assigned. If fees
@@ -692,7 +692,7 @@ let test_unregistered_delegate_key_init_origination_credit ~fee ~amount () =
     in
     let*! err = Context.Contract.balance (I i) orig_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Same as [unregistered_delegate_key_init_delegation] and credits
@@ -750,7 +750,7 @@ let test_unregistered_delegate_key_init_delegation_credit ~fee ~amount () =
     in
     let*! err = Context.Contract.delegate (I i) impl_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Same as in [unregistered_delegate_key_switch_delegation] and
@@ -866,7 +866,7 @@ let test_unregistered_delegate_key_init_origination_credit_debit ~fee ~amount ()
     in
     let*! err = Context.Contract.balance (I i) orig_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Same as in [unregistered_delegate_key_init_delegation] but credits
@@ -936,7 +936,7 @@ let test_unregistered_delegate_key_init_delegation_credit_debit ~amount ~fee ()
     in
     let*! err = Context.Contract.delegate (I i) impl_contract in
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
 
 (** Same as in [unregistered_delegate_key_switch_delegation] but
@@ -1134,7 +1134,7 @@ let test_valid_delegate_registration_init_delegation_credit amount () =
   let*! err = Context.Contract.delegate (B b) delegator in
   let* () =
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
   in
   (* delegation to the newly registered key *)
@@ -1241,7 +1241,7 @@ let test_valid_delegate_registration_init_delegation_credit_debit amount () =
   let*! err = Context.Contract.delegate (B b) delegator in
   let* () =
     Assert.error ~loc:__LOC__ err (function
-        | Tezos_rpc.Context.Not_found _ -> true
+        | Mavryk_rpc.Context.Not_found _ -> true
         | _ -> false)
   in
   (* delegation to the newly registered key *)

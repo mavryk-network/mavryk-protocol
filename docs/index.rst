@@ -14,7 +14,7 @@ To start browsing, either follow one of the guided paths below, or directly pick
 .. raw:: html
 
     <details>
-    <summary><img alt="Discover Tezos" class="normal" src="discover_tezos_1.png" style="width:min(95%,1000px); cursor: pointer;" />
+    <summary><img alt="Discover Tezos" class="normal" src="discover_mavryk_1.png" style="width:min(95%,1000px); cursor: pointer;" />
     </summary><div style="max-width:min(90%,1000px); margin-top:1em; margin-left:2em">
 
 **Never heard of Tezos?** Let's get acquainted!
@@ -89,7 +89,7 @@ If you want to know more about the Tezos *technology*, there are several section
     </div></details><br/>
 
     <details>
-    <summary><img alt="Building on Tezos" class="normal" src="building_on_tezos_5.png" style="width:min(95%,1000px); cursor: pointer;" />
+    <summary><img alt="Building on Tezos" class="normal" src="building_on_mavryk_5.png" style="width:min(95%,1000px); cursor: pointer;" />
     </summary><div style="max-width:min(90%,1000px); margin-top:1em; margin-left:2em">
 
 **Are you an application developer?** Find how to program with Tezos!

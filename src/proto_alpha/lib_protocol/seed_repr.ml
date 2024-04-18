@@ -230,9 +230,9 @@ let initial_seeds ?initial_seed n =
   in
   loop [] first_seed n
 
-let nonce_discriminant = Bytes.of_string "Tezos_generating_vdf_discriminant"
+let nonce_discriminant = Bytes.of_string "Mavryk_generating_vdf_discriminant"
 
-let nonce_challenge = Bytes.of_string "Tezos_generating_vdf_challenge"
+let nonce_challenge = Bytes.of_string "Mavryk_generating_vdf_challenge"
 
 let generate_vdf_setup ~seed_discriminant ~seed_challenge =
   let size = Vdf.discriminant_size_bytes in

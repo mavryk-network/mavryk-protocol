@@ -17,4 +17,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: Debugger for the smart rollups’ WASM kernels"
+synopsis: "Mavryk: Debugger for the smart rollups’ WASM kernels"

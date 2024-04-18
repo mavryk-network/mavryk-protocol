@@ -26,7 +26,7 @@
 
 (** Run Tezos client commands. *)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 (** Values that can be passed to the client's [--endpoint] argument *)
 type endpoint =
@@ -199,8 +199,8 @@ val rpc_path_query_to_string : ?query_string:query_string -> path -> string
     See the documentation of {!Process.spawn} for information about
     [log_*], [hooks] and [env] arguments.
 
-    In particular, [env] can be used to pass [TEZOS_LOG], e.g.
-    [("TEZOS_LOG", "proxy_rpc->debug")] to enable logging.
+    In particular, [env] can be used to pass [MAVRYK_LOG], e.g.
+    [("MAVRYK_LOG", "proxy_rpc->debug")] to enable logging.
 
     The [data] argument allows to add data to the RPC call either with JSON
     value or with a filename containing a JSON value.
@@ -1295,7 +1295,7 @@ val spawn_stresstest :
   t ->
   Process.t
 
-(** Run [tezos-client stresstest gen keys <nb_keys>].
+(** Run [mavryk-client stresstest gen keys <nb_keys>].
 
     [nb_keys] contains the number of new keys to be generated.
 
@@ -1513,7 +1513,7 @@ val spawn_register_global_constant :
 
     Given the output:
 {v
-    $ ./tezos-client hash data Unit of type unit
+    $ ./mavryk-client hash data Unit of type unit
     Raw packed data: 0x05030b
     Script-expression-ID-Hash: expruaDPoTWXcTR6fiQPy4KZSW72U6Swc1rVmMiP...
     Raw Script-expression-ID-Hash: 0x8b456a4530fb6d0fea9a0dcd0e9d6ff6b3...
@@ -1707,12 +1707,12 @@ val spawn_run_tzip4_view :
   t ->
   Process.t
 
-(** Run [tezos-client run tzip4 view .. on contract .. with input .. ]
+(** Run [mavryk-client run tzip4 view .. on contract .. with input .. ]
 
     Returns the value returned by a view as a string.
 
     Fails if the view or the contract does not exist. If [input] is [None],
-    it runs [tezos-client run tzip4 view .. on contract ..]. *)
+    it runs [mavryk-client run tzip4 view .. on contract ..]. *)
 val run_tzip4_view :
   ?hooks:Process.hooks ->
   ?source:string ->
@@ -2595,7 +2595,7 @@ val convert_data_to_json :
 (** Run [mavkit-client bootstrapped]. *)
 val bootstrapped : t -> unit Lwt.t
 
-(** Run [tezos-client config show]. *)
+(** Run [mavryk-client config show]. *)
 val config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> string Lwt.t
 
@@ -2603,7 +2603,7 @@ val config_show :
 val spawn_config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> Process.t
 
-(** Run [tezos-client config show]. *)
+(** Run [mavryk-client config show]. *)
 val config_init :
   ?config_file:string ->
   ?protocol:Protocol.t ->
@@ -2623,7 +2623,7 @@ val spawn_config_init :
   t ->
   Process.t
 
-(** Run [tezos-client compute chain id from block hash]. *)
+(** Run [mavryk-client compute chain id from block hash]. *)
 val compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2631,7 +2631,7 @@ val compute_chain_id_from_block_hash :
 val spawn_compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> Process.t
 
-(** Run [tezos-client compute chain id from seed]. *)
+(** Run [mavryk-client compute chain id from seed]. *)
 val compute_chain_id_from_seed :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2972,7 +2972,7 @@ val spawn_prepare_multisig_transaction_set_threshold_and_public_keys :
   t ->
   Process.t
 
-(** Run [tezos-client expand macros in <script>]. *)
+(** Run [mavryk-client expand macros in <script>]. *)
 val expand_macros :
   ?endpoint:endpoint ->
   ?hooks:Process_hooks.t ->
@@ -2992,7 +2992,7 @@ val spawn_expand_macros :
   string ->
   Process.t
 
-(** Run [tezos-client get timestamp]. *)
+(** Run [mavryk-client get timestamp]. *)
 val get_timestamp :
   ?endpoint:endpoint -> ?block:string -> ?seconds:bool -> t -> string Lwt.t
 

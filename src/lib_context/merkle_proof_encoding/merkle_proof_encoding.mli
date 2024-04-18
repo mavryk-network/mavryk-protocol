@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_context_sigs.Context
+open Mavryk_context_sigs.Context
 
 (** V1: using vanilla Data_encoding. Easier to parse by non-OCaml programs
     but less efficient *)

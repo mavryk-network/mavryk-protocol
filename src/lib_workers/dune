@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_workers)
+ (name mavryk_workers)
  (public_name mavkit-libs.tezos-workers)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -10,8 +10,8 @@
   mavkit-libs.stdlib-unix)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_stdlib_unix))
 
-(documentation (package mavkit-libs) (mld_files tezos_workers))
+(documentation (package mavkit-libs) (mld_files mavryk_workers))

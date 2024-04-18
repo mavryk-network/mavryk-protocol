@@ -21,15 +21,15 @@ depends: [
   "prometheus-app" { >= "1.2" }
   "lwt-exit"
   "uri" { >= "3.1.0" }
-  "tezos-protocol-000-Ps9mPmXa"
-  "tezos-protocol-001-PtAtLas"
+  "mavryk-protocol-000-Ps9mPmXa"
+  "mavryk-protocol-001-PtAtLas"
   "mavkit-protocol-001-PtAtLas-libs"
 ]
 depopts: [
-  "tezos-protocol-genesis"
-  "tezos-protocol-demo-noops"
-  "tezos-protocol-demo-counter"
-  "tezos-protocol-alpha"
+  "mavryk-protocol-genesis"
+  "mavryk-protocol-demo-noops"
+  "mavryk-protocol-demo-counter"
+  "mavryk-protocol-alpha"
   "mavkit-protocol-alpha-libs"
 ]
 build: [
@@ -37,4 +37,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-node` binary"
+synopsis: "Mavryk: `mavkit-node` binary"

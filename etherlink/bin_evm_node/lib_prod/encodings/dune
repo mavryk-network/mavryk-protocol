@@ -10,4 +10,4 @@
   mavkit-smart-rollup-wasm-debugger-plugin)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

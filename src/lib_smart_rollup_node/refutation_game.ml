@@ -134,7 +134,7 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
            retrieved game does not respect this, we cannot trust the
            Mavryk node we are connected to and prefer to stop here. *)
         tzfail
-          Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
+          Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
     | Mavkit_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection -> (
         let start_state =
           match ok with
@@ -184,7 +184,7 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
              A dissection always contains strictly more than one element.
           *)
       tzfail
-        Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
+        Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
 
 let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
     (game : Mavkit_smart_rollup.Game.t) =
@@ -200,7 +200,7 @@ let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
     match start_state with
     | None ->
         tzfail
-          Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
+          Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
     | Some {state = start_state; _} ->
         let* proof =
           Plugin.Refutation_game_helpers.generate_proof

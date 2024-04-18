@@ -2,18 +2,18 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_context_helpers)
- (public_name mavkit-libs.tezos-context.helpers)
+ (name mavryk_context_helpers)
+ (public_name mavkit-libs.mavryk-context.helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
   mavkit-libs.stdlib
-  mavkit-libs.tezos-context.encoding
+  mavkit-libs.mavryk-context.encoding
   mavkit-libs.context.sigs
-  mavkit-libs.tezos-context.merkle_proof_encoding
+  mavkit-libs.mavryk-context.merkle_proof_encoding
   irmin
   irmin-pack)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib))

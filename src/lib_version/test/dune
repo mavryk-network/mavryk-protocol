@@ -17,7 +17,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_version
+  -open Mavryk_version
   -open Mavkit_alcotezt)
  (modules test_parser))
 

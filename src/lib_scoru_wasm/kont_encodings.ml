@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter.Eval
-open Tezos_tree_encoding
+open Mavryk_webassembly_interpreter.Eval
+open Mavryk_tree_encoding
 
 let fold_right2_kont_encoding enc_a enc_b enc_acc =
   conv

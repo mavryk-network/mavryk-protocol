@@ -65,4 +65,4 @@ The rest of the implementation is structured in the following subdirectories:
 -->
 
 The main API of the protocol is:
-https://tezos.gitlab.io/api/odoc/_html/tezos-protocol-alpha
+https://tezos.gitlab.io/api/odoc/_html/mavryk-protocol-alpha

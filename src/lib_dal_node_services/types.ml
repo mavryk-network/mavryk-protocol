@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Cryptobox = Tezos_crypto_dal.Cryptobox
+module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
 type level = int32
 
@@ -277,7 +277,7 @@ type slot_header = {
 }
 
 type operator_profile =
-  | Attester of Tezos_crypto.Signature.public_key_hash
+  | Attester of Mavryk_crypto.Signature.public_key_hash
   | Producer of {slot_index : int}
 
 type operator_profiles = operator_profile list
@@ -385,7 +385,7 @@ let operator_profile_encoding =
            (req "kind" (constant "attester"))
            (req
               "public_key_hash"
-              Tezos_crypto.Signature.Public_key_hash.encoding))
+              Mavryk_crypto.Signature.Public_key_hash.encoding))
         (function Attester attest -> Some ((), attest) | _ -> None)
         (function (), attest -> Attester attest);
       case
@@ -434,10 +434,10 @@ let header_status_arg =
     with _ -> Error "Cannot parse header status value"
   in
   let construct = Data_encoding.Binary.to_string_exn header_status_encoding in
-  Tezos_rpc.Arg.make ~name:"header_status" ~destruct ~construct ()
+  Mavryk_rpc.Arg.make ~name:"header_status" ~destruct ~construct ()
 
 let wait_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun wait ->
       object
         method wait = wait
@@ -446,7 +446,7 @@ let wait_query =
   |> seal
 
 let connected_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun connected ->
       object
         method connected = connected
@@ -455,7 +455,7 @@ let connected_query =
   |> seal
 
 let subscribed_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun subscribed ->
       object
         method subscribed = subscribed
@@ -464,7 +464,7 @@ let subscribed_query =
   |> seal
 
 let slot_id_query =
-  let open Tezos_rpc in
+  let open Mavryk_rpc in
   let open Query in
   query (fun slot_level slot_index -> (slot_level, slot_index))
   |+ opt_field "slot_level" Arg.int32 fst
@@ -472,7 +472,7 @@ let slot_id_query =
   |> seal
 
 let opt_header_status_query =
-  let open Tezos_rpc in
+  let open Mavryk_rpc in
   let open Query in
   query (fun header_status -> header_status)
   |+ opt_field "status" header_status_arg (fun hs -> hs)

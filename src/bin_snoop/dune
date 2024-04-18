@@ -11,10 +11,10 @@
   mavkit-libs.base.unix
   mavkit-libs.stdlib-unix
   mavkit-libs.clic
-  tezos-benchmark
-  tezos-benchmark-examples
+  mavryk-benchmark
+  mavryk-benchmark-examples
   mavkit-shell-libs.shell-benchmarks
-  tezos-benchmarks-proto-alpha
+  mavryk-benchmarks-proto-alpha
   str
   pyml
   prbnmcn-stats
@@ -26,8 +26,8 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_benchmark))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_benchmark))
 
 (cram (deps main_snoop.exe) (package mavkit-snoop))

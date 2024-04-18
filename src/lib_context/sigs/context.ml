@@ -415,14 +415,14 @@ module Proof_types = struct
       [is_stream] discriminates between the stream proofs and the tree proofs.
 
       [is_binary] discriminates between proofs emitted from
-      [Tezos_context(_memory).Context_binary] and
-      [Tezos_context(_memory).Context].
+      [Mavryk_context(_memory).Context_binary] and
+      [Mavryk_context(_memory).Context].
 
       It will also help discriminate between the data encoding techniques used.
 
       The version is meant to be decoded and encoded using the
-      {!Tezos_context_helpers.Context.decode_proof_version} and
-      {!Tezos_context_helpers.Context.encode_proof_version}. *)
+      {!Mavryk_context_helpers.Context.decode_proof_version} and
+      {!Mavryk_context_helpers.Context.encode_proof_version}. *)
   type 'a t = {
     version : int;
     before : kinded_hash;
@@ -492,16 +492,16 @@ module type PROOF_ENCODING = sig
   val stream_proof_encoding : stream t Data_encoding.t
 end
 
-(** [TEZOS_CONTEXT] is the module type implemented by all storage
+(** [MAVRYK_CONTEXT] is the module type implemented by all storage
     implementations. This is the module type that the {e shell} expects for its
     operation. As such, it should be a strict superset of the interface exposed
     to the protocol (see module type {!S} above and
-    {!Tezos_protocol_environment.Environment_context_intf.S}).
+    {!Mavryk_protocol_environment.Environment_context_intf.S}).
 
     The main purpose of this module type is to keep the on-disk and in-memory
     implementations in sync.
 *)
-module type TEZOS_CONTEXT = sig
+module type MAVRYK_CONTEXT = sig
   (** {2 Generic interface} *)
 
   (** A block-indexed (key x value) store directory.  *)
@@ -652,7 +652,7 @@ module type TEZOS_CONTEXT = sig
 
   (** [memory_context_tree] is a forward declaration of the type of
       an in-memory Irmin tree. This type variable is to be substituted
-      by a concrete type wherever the {!TEZOS_CONTEXT} signature is used. *)
+      by a concrete type wherever the {!MAVRYK_CONTEXT} signature is used. *)
   type memory_context_tree
 
   val index : context -> index
@@ -693,8 +693,8 @@ module type TEZOS_CONTEXT = sig
   val commit_test_chain_genesis :
     context -> Block_header.t -> Block_header.t Lwt.t
 
-  (** Extract a subtree from the {!Tezos_context.Context.t} argument and returns
-      it as a {!Tezos_context_memory.Context.tree} (note the the type change!). **)
+  (** Extract a subtree from the {!Mavryk_context.Context.t} argument and returns
+      it as a {!Mavryk_context_memory.Context.tree} (note the the type change!). **)
   val to_memory_tree : t -> string list -> memory_context_tree option Lwt.t
 
   (** [merkle_tree t leaf_kind key] returns a Merkle proof for [key] (i.e.
@@ -791,7 +791,7 @@ module type TEZOS_CONTEXT = sig
   val export_snapshot : index -> Context_hash.t -> path:string -> unit Lwt.t
 
   val set_head :
-    index -> Tezos_crypto.Hashed.Chain_id.t -> Context_hash.t -> unit Lwt.t
+    index -> Mavryk_crypto.Hashed.Chain_id.t -> Context_hash.t -> unit Lwt.t
 
   val set_master : index -> Context_hash.t -> unit Lwt.t
 

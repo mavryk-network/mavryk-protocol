@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_micheline)
+ (name mavryk_micheline)
  (public_name mavkit-libs.micheline)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -17,6 +17,6 @@
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
   -open Data_encoding))

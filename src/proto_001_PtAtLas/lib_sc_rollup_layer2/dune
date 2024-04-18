@@ -2,12 +2,12 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_smart_rollup_layer2_001_PtAtLas)
+ (name mavryk_smart_rollup_layer2_001_PtAtLas)
  (public_name mavkit-protocol-001-PtAtLas-libs.smart-rollup-layer2)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-injector
   mavkit-l2-libs.smart-rollup)
  (inline_tests (flags -verbose) (modes native))
@@ -15,7 +15,7 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_001_PtAtLas
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
   -open Mavkit_injector
   -open Mavkit_smart_rollup))

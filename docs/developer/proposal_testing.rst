@@ -65,7 +65,7 @@ To test a new component, create a new file in this directory and add the module 
 To print the errors of the ``Error`` monad correctly, alcotests must be wrapped into
 the function ``tztest`` defined in the module ``Test`` defined at the same level.
 
-Some helpers are available in the module ``Tezos_alpha_test_helpers`` defined in
+Some helpers are available in the module ``Mavryk_alpha_test_helpers`` defined in
 the subdirectory ``helpers``. For instance, it contains context, operation and
 block fixtures that can be used in tests requiring these components.
 
@@ -198,7 +198,7 @@ convert the Alpha protocol to a format that could be injected into Mainnet,
 which is done by performing the following three steps:
 
 - specify the version and name of the current protocol in ``raw_context.ml``,
-- compute the protocol's hash in ``TEZOS_PROTOCOL``, and
+- compute the protocol's hash in ``MAVRYK_PROTOCOL``, and
 - replace names and protocol hashes in various places in the code base.
 
 If so wished, these three steps can be performed by the script
@@ -212,7 +212,7 @@ We can snapshot the protocol by invoking the following::
 
 The script creates a new directory ``src/proto_012_<short_hash>`` where
 ``<short_hash>`` is a short hash that coincides with the first eight characters
-of the hash computed by the script and written in the file ``TEZOS_PROTOCOL``.
+of the hash computed by the script and written in the file ``MAVRYK_PROTOCOL``.
 
 If the Alpha protocol has been snapshot, proceed to Section `2. Link the
 snapshot Alpha protocol in the build system`_ below, which details how to link
@@ -817,7 +817,7 @@ and the functions ``of_b58check`` and ``to_b58check`` of module
   # let's borrow some code from the protocol tests
   $ dune exec -- tztop src/proto_alpha/lib_protocol/test/
 
-  # open Tezos_protocol_alpha.Protocol ;;
+  # open Mavryk_protocol_alpha.Protocol ;;
 
   # let b58check_to_path c =
   Contract_repr.of_b58check c |> fun (Ok c) ->

@@ -41,7 +41,7 @@ let wrap
       Block_header.t ->
       Peer_validator.t ->
       unit tzresult Lwt.t) () =
-  Lwt_utils_unix.with_tempdir "tezos_test_" (fun test_dir ->
+  Lwt_utils_unix.with_tempdir "mavryk_test_" (fun test_dir ->
       let open Lwt_result_syntax in
       let*! store = Shell_test_helpers.init_chain test_dir in
       let* p2p =
@@ -92,7 +92,7 @@ let wrap
           Shell_limits.default_peer_validator_limits
           block_validator
           chain_db
-          Tezos_crypto.Crypto_box.Public_key_hash.zero
+          Mavryk_crypto.Crypto_box.Public_key_hash.zero
       in
       let* () =
         Lwt.finalize

@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_webassembly_interpreter)
+ (name mavryk_webassembly_interpreter)
  (public_name mavkit-l2-libs.webassembly-interpreter)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,6 +14,6 @@
  (preprocess (pps ppx_deriving.show))
  (flags
   (:standard)
-  -open Tezos_lazy_containers))
+  -open Mavryk_lazy_containers))
 
 (include_subdirs unqualified)

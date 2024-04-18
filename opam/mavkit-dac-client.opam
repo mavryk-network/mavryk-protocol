@@ -12,8 +12,8 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs"
   "mavkit-shell-libs"
-  "tezos-dac-lib"
-  "tezos-dac-client-lib"
+  "mavryk-dac-lib"
+  "mavryk-dac-client-lib"
   "mavkit-protocol-001-PtAtLas-libs"
 ]
 depopts: [
@@ -24,4 +24,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-dac-client` binary"
+synopsis: "Mavryk: `mavkit-dac-client` binary"

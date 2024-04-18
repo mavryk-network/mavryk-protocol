@@ -473,19 +473,19 @@ let test_evm_node_connection =
     ~uses:(fun _protocol -> Constant.[mavkit_smart_rollup_node; mavkit_evm_node])
     ~title:"EVM node server connection"
   @@ fun protocol ->
-  let* tezos_node, tezos_client = setup_l1 protocol in
+  let* mavryk_node, mavryk_client = setup_l1 protocol in
   let* sc_rollup =
     originate_sc_rollup
       ~kind:"wasm_2_0_0"
       ~parameters_ty:"string"
       ~src:Constant.bootstrap1.alias
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       Observer
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:Constant.bootstrap1.alias
   in
   let evm_node = Evm_node.create (Sc_rollup_node.endpoint sc_rollup_node) in
@@ -1012,7 +1012,7 @@ let test_l2_deploy_erc20 =
   in
   let transfer_event_topic =
     let h =
-      Tezos_crypto.Hacl.Hash.Keccak_256.digest
+      Mavryk_crypto.Hacl.Hash.Keccak_256.digest
         (Bytes.of_string "Transfer(address,address,uint256)")
     in
     "0x" ^ Hex.show (Hex.of_bytes h)
@@ -3000,7 +3000,7 @@ let test_reboot =
     @@ Sc_rollup_rpc.get_global_block_ticks ()
   in
   let max_tick =
-    Tezos_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
+    Mavryk_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
   in
   Check.((tick_number > Z.to_int max_tick) int)
     ~error_msg:
@@ -3612,7 +3612,7 @@ let test_rpc_getLogs =
   in
   let transfer_event_topic =
     let h =
-      Tezos_crypto.Hacl.Hash.Keccak_256.digest
+      Mavryk_crypto.Hacl.Hash.Keccak_256.digest
         (Bytes.of_string "Transfer(address,address,uint256)")
     in
     "0x" ^ Hex.show (Hex.of_bytes h)

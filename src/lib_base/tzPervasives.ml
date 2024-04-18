@@ -23,22 +23,22 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_stdlib
-module Error_monad = Tezos_error_monad.Error_monad
-include Tezos_micheline
+include Mavryk_stdlib
+module Error_monad = Mavryk_error_monad.Error_monad
+include Mavryk_micheline
 module Data_encoding = Data_encoding
-include Tezos_error_monad.TzLwtreslib
+include Mavryk_error_monad.TzLwtreslib
 
 module List = struct
-  include Tezos_stdlib.TzList
-  include Tezos_error_monad.TzLwtreslib.List
+  include Mavryk_stdlib.TzList
+  include Mavryk_error_monad.TzLwtreslib.List
 end
 
 module String = struct
   include String
-  include Tezos_stdlib.TzString
+  include Mavryk_stdlib.TzString
 
-  module Hashtbl = Tezos_error_monad.TzLwtreslib.Hashtbl.MakeSeeded (struct
+  module Hashtbl = Mavryk_error_monad.TzLwtreslib.Hashtbl.MakeSeeded (struct
     type t = string
 
     let equal = String.equal
@@ -61,13 +61,13 @@ module String = struct
     [@@@ocaml.warning "+32"]
   end)
 
-  module Map = Tezos_error_monad.TzLwtreslib.Map.Make (String)
-  module Set = Tezos_error_monad.TzLwtreslib.Set.Make (String)
+  module Map = Mavryk_error_monad.TzLwtreslib.Map.Make (String)
+  module Set = Mavryk_error_monad.TzLwtreslib.Set.Make (String)
 end
 
 module Bytes = struct
   include Bytes
-  include Tezos_stdlib.TzBytes
+  include Mavryk_stdlib.TzBytes
 end
 
 module Time = Time
@@ -91,22 +91,22 @@ module P2p_rejection = P2p_rejection
 module P2p_params = P2p_params
 module Distributed_db_version = Distributed_db_version
 module Network_version = Network_version
-include Tezos_crypto.Hashed
-module Signature = Tezos_crypto.Signature
+include Mavryk_crypto.Hashed
+module Signature = Mavryk_crypto.Signature
 include Utils.Infix
 include Error_monad
 
 module Option_syntax =
-  Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax
+  Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax
 
 module Lwt_option_syntax =
-  Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Lwt_option_syntax
+  Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Lwt_option_syntax
 
 module Internal_event = Internal_event
 
 module Filename = struct
   include Stdlib.Filename
-  include Tezos_stdlib.TzFilename
+  include Mavryk_stdlib.TzFilename
 end
 
 module Bounded = Bounded

@@ -335,7 +335,7 @@ module P = struct
      as the ill-formed circuits do not need any storage.
   *)
   let preprocess_operation :
-      state -> tx -> tezos_zkru -> state * tx * tx_storage option =
+      state -> tx -> mavryk_zkru -> state * tx * tx_storage option =
    fun s tx rollup_id ->
     match tx with
     | Transfer
@@ -1340,7 +1340,7 @@ module V (L : LIB) = struct
     let fee = Encodings.((fee_encoding ~safety).decode) fee in
     let* exit_validity = input ~kind:`Public @@ Input.bool exit_validity in
     let* _rollup_id =
-      input ~kind:`Public @@ Encodings.(tezos_zkru_encoding.input) rollup_id
+      input ~kind:`Public @@ Encodings.(mavryk_zkru_encoding.input) rollup_id
     in
     (* Assert that fee = 0 *)
     Bool.assert_false (unsafe_bool_of_scalar @@ coerce fee)
@@ -1584,7 +1584,7 @@ module V (L : LIB) = struct
     let fee = Encodings.((fee_encoding ~safety).decode) fee in
     let* exit_validity = input ~kind:`Public @@ Input.bool exit_validity in
     let* rollup_id =
-      input ~kind:`Public @@ Encodings.(tezos_zkru_encoding.input) rollup_id
+      input ~kind:`Public @@ Encodings.(mavryk_zkru_encoding.input) rollup_id
     in
     match (t, t_storage) with
     | Transfer tx, Transfer tx_s ->
@@ -1967,7 +1967,7 @@ module V (L : LIB) = struct
     in
     let fees = Encodings.((amount_encoding ~safety).decode) fees in
     let* rollup_id =
-      input ~kind:`Public @@ Encodings.(tezos_zkru_encoding.input) rollup_id
+      input ~kind:`Public @@ Encodings.(mavryk_zkru_encoding.input) rollup_id
     in
     let* ops =
       mapM

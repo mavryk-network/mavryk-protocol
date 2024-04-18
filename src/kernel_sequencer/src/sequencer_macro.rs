@@ -6,7 +6,7 @@
 /// Derive `kernel_run` entrypoint.
 ///
 /// ```no_run
-/// # use tezos_smart_rollup_host::runtime::Runtime;
+/// # use mavryk_smart_rollup_host::runtime::Runtime;
 /// use kernel_sequencer::sequencer_kernel_entry;
 ///
 /// fn run<Host: Runtime>(host: &mut Host) {
@@ -22,7 +22,7 @@ macro_rules! sequencer_kernel_entry {
         #[cfg(target_arch = "wasm32")]
         #[no_mangle]
         pub extern "C" fn kernel_run() {
-            use tezos_smart_rollup_core::rollup_host::RollupHost;
+            use mavryk_smart_rollup_core::rollup_host::RollupHost;
             let host = unsafe { RollupHost::new() }; // Runtime from the tezos sdk
             let mut host =
                 $crate::sequencer_runtime::SequencerRuntime::new(host, $filter_behavior, 100); // create a sequencer runtime that use the RollupHost runtime

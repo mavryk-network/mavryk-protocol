@@ -2,44 +2,44 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmarks_proto_alpha)
- (public_name tezos-benchmarks-proto-alpha)
+ (name mavryk_benchmarks_proto_alpha)
+ (public_name mavryk-benchmarks-proto-alpha)
  (instrumentation (backend bisect_ppx))
  (libraries
   str
   mavkit-libs.stdlib
   mavkit-libs.base
   mavkit-libs.error-monad
-  tezos-protocol-alpha.parameters
+  mavryk-protocol-alpha.parameters
   mavkit-libs.lazy-containers
-  tezos-benchmark
-  tezos-benchmark-alpha
-  tezos-benchmark-type-inference-alpha
-  tezos-protocol-alpha.protocol
+  mavryk-benchmark
+  mavryk-benchmark-alpha
+  mavryk-benchmark-type-inference-alpha
+  mavryk-protocol-alpha.protocol
   mavkit-libs.crypto
   mavkit-shell-libs.shell-benchmarks
   mavkit-libs.micheline
   mavkit-protocol-alpha-libs.test-helpers
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-protocol-alpha-libs.client
   mavkit-protocol-alpha-libs.plugin
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_error_monad
-  -open Tezos_protocol_alpha_parameters
-  -open Tezos_lazy_containers
-  -open Tezos_benchmark
-  -open Tezos_benchmark_alpha
-  -open Tezos_benchmark_type_inference_alpha
-  -open Tezos_protocol_alpha
-  -open Tezos_protocol_alpha.Protocol
-  -open Tezos_micheline
-  -open Tezos_alpha_test_helpers
-  -open Tezos_client_alpha
-  -open Tezos_protocol_plugin_alpha))
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_error_monad
+  -open Mavryk_protocol_alpha_parameters
+  -open Mavryk_lazy_containers
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_alpha
+  -open Mavryk_benchmark_type_inference_alpha
+  -open Mavryk_protocol_alpha
+  -open Mavryk_protocol_alpha.Protocol
+  -open Mavryk_micheline
+  -open Mavryk_alpha_test_helpers
+  -open Mavryk_client_alpha
+  -open Mavryk_protocol_plugin_alpha))

@@ -14,8 +14,8 @@
   mavkit-shell-libs.shell)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_rpc_http
-  -open Tezos_stdlib_unix
-  -open Tezos_client_base))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_rpc_http
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base))

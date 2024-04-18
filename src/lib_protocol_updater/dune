@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_updater)
+ (name mavryk_protocol_updater)
  (public_name mavkit-shell-libs.protocol-updater)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,13 +14,13 @@
   mavkit-shell-libs.shell-context
   mavkit-protocol-compiler.registerer
   mavkit-protocol-compiler.native
-  mavkit-libs.tezos-context
+  mavkit-libs.mavryk-context
   lwt-exit
   dynlink)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_micheline
-  -open Tezos_shell_services
-  -open Tezos_context))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_micheline
+  -open Mavryk_shell_services
+  -open Mavryk_context))

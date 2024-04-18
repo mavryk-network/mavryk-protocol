@@ -2,6 +2,6 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_expect_helper)
+ (name mavryk_expect_helper)
  (public_name mavkit-libs.expect-helper)
  (instrumentation (backend bisect_ppx)))

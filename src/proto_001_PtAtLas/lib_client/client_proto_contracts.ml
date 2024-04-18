@@ -76,7 +76,7 @@ module Originated_contract_alias = struct
             | Error c_errs -> Error (c_errs @ k_errs)))
 
   let destination_parameter () =
-    Tezos_clic.parameter
+    Mavryk_clic.parameter
       ~autocomplete:Raw_contract_alias.autocomplete
       find_destination
 
@@ -90,7 +90,7 @@ module Originated_contract_alias = struct
            Use 'text:literal' or 'alias:name' to force.";
         ]
     in
-    Tezos_clic.param ~name ~desc (destination_parameter ()) next
+    Mavryk_clic.param ~name ~desc (destination_parameter ()) next
 
   let destination_arg ?(name = "dst") ?(doc = "destination contract") () =
     let doc =
@@ -102,7 +102,7 @@ module Originated_contract_alias = struct
            Use 'text:literal' or 'alias:name' to force.";
         ]
     in
-    Tezos_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())
+    Mavryk_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())
 end
 
 module Contract_alias = struct
@@ -149,7 +149,7 @@ module Contract_alias = struct
       ^ "Can be a contract alias or a key alias (autodetected in order).\n\
          Use 'key:name' to force the later."
     in
-    Tezos_clic.(param ~name ~desc (parameter ~autocomplete get_contract) next)
+    Mavryk_clic.(param ~name ~desc (parameter ~autocomplete get_contract) next)
 
   let find_destination cctxt s =
     let open Lwt_result_syntax in
@@ -171,7 +171,7 @@ module Contract_alias = struct
 
   let destination_parameter () =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter
+    Mavryk_clic.parameter
       ~autocomplete:(fun cctxt ->
         let* list1 = autocomplete cctxt in
         let* list2 = Client_keys.Public_key_hash.autocomplete cctxt in
@@ -188,7 +188,7 @@ module Contract_alias = struct
            Use 'text:literal', 'alias:name', 'key:name' to force.";
         ]
     in
-    Tezos_clic.param ~name ~desc (destination_parameter ()) next
+    Mavryk_clic.param ~name ~desc (destination_parameter ()) next
 
   let destination_arg ?(name = "dst") ?(doc = "destination contract") () =
     let doc =
@@ -200,7 +200,7 @@ module Contract_alias = struct
            Use 'text:literal', 'alias:name', 'key:name' to force.";
         ]
     in
-    Tezos_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())
+    Mavryk_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())
 
   let name cctxt contract =
     let open Lwt_result_syntax in

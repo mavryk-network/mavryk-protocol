@@ -39,7 +39,7 @@ let tzassert b pos =
   let p (file, lnum, cnum, _) = (file, lnum, cnum) in
   if b then return_unit else fail_with_exn (Assert_failure (p pos))
 
-let high_pow_target = Tezos_crypto.Crypto_box.make_pow_target 100.
+let high_pow_target = Mavryk_crypto.Crypto_box.make_pow_target 100.
 
 let sync ch =
   let open Lwt_result_syntax in
@@ -64,14 +64,14 @@ let connect ?proof_of_work_target ?(target_id = id1) sched addr port id =
   return auth_fd
 
 let is_connection_closed = function
-  | Error (Tezos_p2p_services.P2p_errors.Connection_closed :: _) -> true
+  | Error (Mavryk_p2p_services.P2p_errors.Connection_closed :: _) -> true
   | Ok _ -> false
   | Error err ->
       Tezt.Log.info "Error: %a" pp_print_trace err ;
       false
 
 let is_decoding_error = function
-  | Error (Tezos_p2p_services.P2p_errors.Decoding_error _ :: _) -> true
+  | Error (Mavryk_p2p_services.P2p_errors.Decoding_error _ :: _) -> true
   | Ok _ -> false
   | Error err ->
       Tezt.Log.info "Error: %a" pp_print_trace err ;
@@ -87,7 +87,7 @@ module Crypto_test = struct
   let header_length = 2
 
   (* The size of extra data added by encryption. *)
-  let tag_length = Tezos_crypto.Crypto_box.tag_length
+  let tag_length = Mavryk_crypto.Crypto_box.tag_length
 
   (* The number of bytes added by encryption + header *)
   let extrabytes = header_length + tag_length
@@ -95,9 +95,9 @@ module Crypto_test = struct
   let max_content_length = bufsize - extrabytes
 
   type data = {
-    channel_key : Tezos_crypto.Crypto_box.channel_key;
-    mutable local_nonce : Tezos_crypto.Crypto_box.nonce;
-    mutable remote_nonce : Tezos_crypto.Crypto_box.nonce;
+    channel_key : Mavryk_crypto.Crypto_box.channel_key;
+    mutable local_nonce : Mavryk_crypto.Crypto_box.nonce;
+    mutable remote_nonce : Mavryk_crypto.Crypto_box.nonce;
   }
 
   let () = assert (tag_length >= header_length)
@@ -108,7 +108,7 @@ module Crypto_test = struct
     let* () =
       fail_unless
         (msg_length <= max_content_length)
-        Tezos_p2p_services.P2p_errors.Invalid_message_size
+        Mavryk_p2p_services.P2p_errors.Invalid_message_size
     in
     let encrypted_length = tag_length + msg_length in
     let payload_length = header_length + encrypted_length in
@@ -116,8 +116,8 @@ module Crypto_test = struct
     let cmsg = Bytes.copy msg in
     let local_nonce = cryptobox_data.local_nonce in
     cryptobox_data.local_nonce <-
-      Tezos_crypto.Crypto_box.increment_nonce local_nonce ;
-    Tezos_crypto.Crypto_box.fast_box_noalloc
+      Mavryk_crypto.Crypto_box.increment_nonce local_nonce ;
+    Mavryk_crypto.Crypto_box.fast_box_noalloc
       cryptobox_data.channel_key
       local_nonce
       tag
@@ -147,23 +147,23 @@ module Crypto_test = struct
     let* () = tzassert (msg_length = i) __POS__ in
     let remote_nonce = cryptobox_data.remote_nonce in
     cryptobox_data.remote_nonce <-
-      Tezos_crypto.Crypto_box.increment_nonce remote_nonce ;
+      Mavryk_crypto.Crypto_box.increment_nonce remote_nonce ;
     let*? () =
       error_unless
-        (Tezos_crypto.Crypto_box.fast_box_open_noalloc
+        (Mavryk_crypto.Crypto_box.fast_box_open_noalloc
            cryptobox_data.channel_key
            remote_nonce
            tag
            msg)
-        Tezos_p2p_services.P2p_errors.Decipher_error
+        Mavryk_p2p_services.P2p_errors.Decipher_error
     in
     return msg
 
-  let sk, pk, _pkh = Tezos_crypto.Crypto_box.random_keypair ()
+  let sk, pk, _pkh = Mavryk_crypto.Crypto_box.random_keypair ()
 
-  let zero_nonce = Tezos_crypto.Crypto_box.zero_nonce
+  let zero_nonce = Mavryk_crypto.Crypto_box.zero_nonce
 
-  let channel_key = Tezos_crypto.Crypto_box.precompute sk pk
+  let channel_key = Mavryk_crypto.Crypto_box.precompute sk pk
 
   let data = {channel_key; local_nonce = zero_nonce; remote_nonce = zero_nonce}
 
@@ -217,7 +217,7 @@ end
     and identical.
 *)
 module Low_level = struct
-  let simple_msg = Tezos_crypto.Rand.generate (1 lsl 4)
+  let simple_msg = Mavryk_crypto.Rand.generate (1 lsl 4)
 
   let client ch sched addr port =
     let open Lwt_result_syntax in
@@ -256,7 +256,7 @@ end
 *)
 module Nacked = struct
   let is_rejected = function
-    | Error (Tezos_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
+    | Error (Mavryk_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
     | Ok _ -> false
     | Error err ->
         Tezt.Log.info "Error: %a" pp_print_trace err ;
@@ -289,9 +289,9 @@ end
 module Simple_message = struct
   let encoding = Data_encoding.bytes
 
-  let simple_msg = Tezos_crypto.Rand.generate (1 lsl 4)
+  let simple_msg = Mavryk_crypto.Rand.generate (1 lsl 4)
 
-  let simple_msg2 = Tezos_crypto.Rand.generate (1 lsl 4)
+  let simple_msg2 = Mavryk_crypto.Rand.generate (1 lsl 4)
 
   let server ch sched socket =
     let open Lwt_result_syntax in
@@ -327,9 +327,9 @@ end
 module Chunked_message = struct
   let encoding = Data_encoding.bytes
 
-  let simple_msg = Tezos_crypto.Rand.generate (1 lsl 8)
+  let simple_msg = Mavryk_crypto.Rand.generate (1 lsl 8)
 
-  let simple_msg2 = Tezos_crypto.Rand.generate (1 lsl 8)
+  let simple_msg2 = Mavryk_crypto.Rand.generate (1 lsl 8)
 
   let server ch sched socket =
     let open Lwt_result_syntax in
@@ -368,7 +368,7 @@ module Oversized_message = struct
   let encoding = Data_encoding.bytes
 
   let rec rand_gen () =
-    try Tezos_crypto.Rand.generate (1 lsl 17)
+    try Mavryk_crypto.Rand.generate (1 lsl 17)
     with _ ->
       Tezt.Log.error "Not enough entropy, retrying to generate random data" ;
       rand_gen ()
@@ -439,7 +439,7 @@ end
 module Close_on_write = struct
   let encoding = Data_encoding.bytes
 
-  let simple_msg = Tezos_crypto.Rand.generate (1 lsl 4)
+  let simple_msg = Mavryk_crypto.Rand.generate (1 lsl 4)
 
   let server ch sched socket =
     let open Lwt_result_syntax in
@@ -510,14 +510,14 @@ end
 
 let init_logs =
   let log_cfg =
-    Tezos_base_unix.Logs_simple_config.create_cfg
+    Mavryk_base_unix.Logs_simple_config.create_cfg
       ~rules:"test.p2p.connection -> info; p2p.connection -> info"
       ()
   in
   let config =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
   in
-  lazy (Tezos_base_unix.Internal_event_unix.init ~config ())
+  lazy (Mavryk_base_unix.Internal_event_unix.init ~config ())
 
 let wrap n f =
   let addr = Node.default_ipv6_addr in
@@ -534,7 +534,7 @@ let main () =
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-p2p"
+       "mavryk-p2p"
        [
          ( "p2p-socket.",
            [

@@ -2,9 +2,9 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_context)
- (public_name mavkit-libs.tezos-context)
+ (name mavryk_context)
+ (public_name mavkit-libs.mavryk-context)
  (instrumentation (backend bisect_ppx))
  (libraries
-  mavkit-libs.tezos-context.disk
-  mavkit-libs.tezos-context.memory))
+  mavkit-libs.mavryk-context.disk
+  mavkit-libs.mavryk-context.memory))

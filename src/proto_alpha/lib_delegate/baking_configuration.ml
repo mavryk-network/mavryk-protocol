@@ -349,7 +349,7 @@ let encoding : t Data_encoding.t =
              (req "state_recorder" state_recorder_config_encoding))
           (obj2
              (opt "extra_operations" Operations_source.encoding)
-             (opt "dal_node_endpoint" Tezos_rpc.Encoding.uri_encoding)))
+             (opt "dal_node_endpoint" Mavryk_rpc.Encoding.uri_encoding)))
 
 let pp fmt t =
   let json = Data_encoding.Json.construct encoding t in

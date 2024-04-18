@@ -17,10 +17,10 @@
   mavkit-libs.stdlib-unix
   mavkit-shell-libs.validation
   mavkit-shell-libs.protocol-updater
-  tezos-protocol-demo-noops.embedded-protocol
-  tezos-protocol-genesis.embedded-protocol
-  tezos-protocol-alpha.embedded-protocol
-  tezos-protocol-alpha.parameters
+  mavryk-protocol-demo-noops.embedded-protocol
+  mavryk-protocol-genesis.embedded-protocol
+  mavryk-protocol-alpha.embedded-protocol
+  mavryk-protocol-alpha.parameters
   mavkit-protocol-alpha-libs.plugin
   mavkit-alcotezt
   tezt
@@ -30,21 +30,21 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_context_ops
-  -open Tezos_store_shared
-  -open Tezos_store_unix
-  -open Tezos_store_unix_reconstruction
-  -open Tezos_store_unix_snapshots
-  -open Tezos_shell_services
-  -open Tezos_stdlib_unix
-  -open Tezos_validation
-  -open Tezos_protocol_updater
-  -open Tezos_protocol_alpha_parameters
-  -open Tezos_protocol_plugin_alpha
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_context_ops
+  -open Mavryk_store_shared
+  -open Mavryk_store_unix
+  -open Mavryk_store_unix_reconstruction
+  -open Mavryk_store_unix_snapshots
+  -open Mavryk_shell_services
+  -open Mavryk_stdlib_unix
+  -open Mavryk_validation
+  -open Mavryk_protocol_updater
+  -open Mavryk_protocol_alpha_parameters
+  -open Mavryk_protocol_plugin_alpha
   -open Mavkit_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_test_helpers)
  (modules
   test
   test_snapshots

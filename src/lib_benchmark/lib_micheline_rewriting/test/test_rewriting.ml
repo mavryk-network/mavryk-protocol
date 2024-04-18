@@ -30,8 +30,8 @@
     Subject:      Rewriting
 *)
 
-open Tezos_micheline_rewriting
-open Tezos_protocol_alpha.Protocol
+open Mavryk_micheline_rewriting
+open Mavryk_protocol_alpha.Protocol
 
 let () =
   Test.register
@@ -190,11 +190,11 @@ let () =
     \                  DIP { SWAP ; CAR } ; SWAP ; PAIR ; SWAP }} ;\n\
     \    PAIR }\n"
   in
-  let open Tezos_client_alpha in
+  let open Mavryk_client_alpha in
   (* Client_proto_context.originate expects the contract script as a Script.expr *)
   let multisig_script : Script_repr.expr =
     match
-      Tezos_micheline.Micheline_parser.no_parsing_error
+      Mavryk_micheline.Micheline_parser.no_parsing_error
       @@ Michelson_v1_parser.parse_toplevel
            ?check:(Some true)
            multisig_script_string

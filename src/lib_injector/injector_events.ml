@@ -118,9 +118,9 @@ module Make
           ~pp1:Request.pp
           ~pp2:Worker_types.pp_status
 
-      let new_tezos_head =
+      let new_mavryk_head =
         declare_1
-          ~name:"new_tezos_head"
+          ~name:"new_mavryk_head"
           ~msg:"Processing new Tezos head {head}"
           ~level:Debug
           ("head", Block_hash.encoding)

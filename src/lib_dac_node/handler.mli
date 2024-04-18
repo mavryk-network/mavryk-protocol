@@ -26,8 +26,8 @@
 (** A value of type [t] represent a handler that specifies a procedure that is
     invoked by the DAC daemon. In most cases, it never resolves unless the DAC
     node terminates, in which case the underlying
-    [Tezos_rpc__RPC_context.stopper] is called. *)
-type t = unit tzresult Lwt.t * Tezos_rpc__RPC_context.stopper
+    [Mavryk_rpc__RPC_context.stopper] is called. *)
+type t = unit tzresult Lwt.t * Mavryk_rpc__RPC_context.stopper
 
 (** Monitor heads and try resolve the DAC protocol plugin corresponding to
      the protocol of the targeted node. *)

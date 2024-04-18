@@ -34,7 +34,7 @@ exception Rpc_dir_creation_failure of tztrace
 (** Whether using the light mode or the proxy mode (remember that
     the light mode is a different instance of the proxy mode
     (see srcs/lib_proxy/README_LIGHT.md for documentation)
-    and whether [mavkit-client] or [tezos-proxy-server] is running. *)
+    and whether [mavkit-client] or [mavryk-proxy-server] is running. *)
 type mode =
   | Light_client of Light.sources  (** [mavkit-client --mode light] is running *)
   | Proxy_client  (** [mavkit-client --mode proxy] is running *)
@@ -43,10 +43,10 @@ type mode =
       sym_block_caching_time : Ptime.span option;
       on_disk_proxy_builder :
         (Context_hash.t ->
-        Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
+        Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
         option;
     }
-      (** [tezos-proxy-server] is running. The [sleep] field is implemented
+      (** [mavryk-proxy-server] is running. The [sleep] field is implemented
           by {!Lwt_unix.sleep}. We don't want to depend on it directly
           (for compiling to Javascript), hence this field. The [Ptime.span option] field
           is the value of argument [--sym-block-caching-time]. The
@@ -62,11 +62,11 @@ type mode =
     - [printer] is used for logging.
     - [rpc_context] is used to perform RPCs to distant endpoints.
     - [mode] specifies whether [mavkit-client] (light or proxy mode)
-      or [tezos-proxy-server] is running.
+      or [mavryk-proxy-server] is running.
     - [env] is a protocol-specific module used to create the context passed when executing a RPC. *)
 val build_directory :
-  Tezos_client_base.Client_context.printer ->
-  Tezos_rpc.Context.generic ->
+  Mavryk_client_base.Client_context.printer ->
+  Mavryk_rpc.Context.generic ->
   mode ->
   Protocol_hash.t option ->
-  unit Tezos_rpc.Directory.t
+  unit Mavryk_rpc.Directory.t

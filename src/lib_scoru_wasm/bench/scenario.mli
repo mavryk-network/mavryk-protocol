@@ -55,12 +55,12 @@ val ignore_scenario : scenario -> scenario
 (** action corresponding to a top level call of PVM, in slow mode,
     including reboots if necessary. *)
 val exec_slow :
-  reveal_builtins:Tezos_scoru_wasm.Builtins.reveals -> Wasm.tree action
+  reveal_builtins:Mavryk_scoru_wasm.Builtins.reveals -> Wasm.tree action
 
 (** action corresponding to a top level call of PVM, using fast execution,
     including reboots if necessary. *)
 val exec_fast :
-  reveal_builtins:Tezos_scoru_wasm.Builtins.reveals -> Wasm.tree action
+  reveal_builtins:Mavryk_scoru_wasm.Builtins.reveals -> Wasm.tree action
 
 (** [load_messages level messages] returns the action corresponding to
       adding a list of [messages] in the inbox at a given [level]. *)

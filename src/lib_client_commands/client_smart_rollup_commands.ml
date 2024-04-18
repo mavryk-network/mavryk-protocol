@@ -26,12 +26,12 @@
 
 let group =
   {
-    Tezos_clic.name = "smart rollup";
+    Mavryk_clic.name = "smart rollup";
     title = "Commands for managing the record of known smart rollup";
   }
 
 let commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   [
     command
       ~group
@@ -65,7 +65,7 @@ let commands () =
               cctxt#message
                 "%s: %a"
                 alias
-                Tezos_crypto.Hashed.Smart_rollup_address.pp
+                Mavryk_crypto.Hashed.Smart_rollup_address.pp
                 rollup)
             smart_rollups
         in
@@ -94,7 +94,7 @@ let commands () =
         let*! () =
           cctxt#message
             "%a\n%!"
-            Tezos_crypto.Hashed.Smart_rollup_address.pp
+            Mavryk_crypto.Hashed.Smart_rollup_address.pp
             rollup
         in
         return_unit);

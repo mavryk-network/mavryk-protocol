@@ -1,4 +1,4 @@
-FROM tezos/tezos-debug:amd64_master
+FROM tezos/mavryk-debug:amd64_master
 
 WORKDIR /home/tezos
 

@@ -36,7 +36,7 @@ let () =
   Lwt_main.run
     (Alcotest_lwt.run
        ~__FILE__
-       "tezos-store-slow"
+       "mavryk-store-slow"
        [
          Test_snapshots.tests `Slow;
          Test_reconstruct.tests `Slow;

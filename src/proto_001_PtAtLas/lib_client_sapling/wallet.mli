@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE. *)
 
-open Tezos_sapling.Core.Client
+open Mavryk_sapling.Core.Client
 
 (** Add to the wallet a new spending key derived from a mnemonic and identified
     by an alias. The wallet is updated and the corresponding viewing key is

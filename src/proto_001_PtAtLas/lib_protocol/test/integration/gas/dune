@@ -8,7 +8,7 @@
   tezt.core
   mavkit-alcotezt
   mavkit-libs.base
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.test-helpers
   mavkit-libs.base-test-helpers)
  (library_flags (:standard -linkall))
@@ -17,11 +17,11 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavkit_alcotezt
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_001_PtAtLas_test_helpers
-  -open Tezos_base_test_helpers)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavryk_base_test_helpers)
  (modules test_gas_costs test_gas_levels))
 
 (executable
@@ -37,7 +37,7 @@
 
 (rule
  (alias runtest)
- (package tezos-protocol-001-PtAtLas-tests)
+ (package mavryk-protocol-001-PtAtLas-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

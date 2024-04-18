@@ -34,7 +34,7 @@ type t = {
   hash : Block_hash.t;
   header : Block_header.t;
   operations : Operation.packed list;
-  context : Tezos_protocol_environment.Context.t;
+  context : Mavryk_protocol_environment.Context.t;
   constants : Constants.Parametric.t;
 }
 
@@ -192,7 +192,7 @@ module Forge = struct
 
   let make_contents
       ?(proof_of_work_threshold =
-        Tezos_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) ~payload_hash ~payload_round
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)
@@ -214,7 +214,7 @@ module Forge = struct
         }
 
   let make_shell ~level ~predecessor ~timestamp ~fitness ~operations_hash =
-    Tezos_base.Block_header.
+    Mavryk_base.Block_header.
       {
         level;
         predecessor;
@@ -229,7 +229,7 @@ module Forge = struct
 
   let set_seed_nonce_hash
       ?(proof_of_work_threshold =
-        Tezos_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) seed_nonce_hash
       {baker; consensus_key; shell; contents} =
     let open Lwt_result_syntax in
@@ -339,7 +339,7 @@ module Forge = struct
   (* compatibility only, needed by incremental *)
   let contents
       ?(proof_of_work_threshold =
-        Tezos_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) ?seed_nonce_hash
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)
@@ -399,7 +399,7 @@ let check_constants_consistency constants =
 let prepare_main_init_params ?bootstrap_contracts commitments constants
     bootstrap_accounts =
   let open Lwt_syntax in
-  let open Tezos_protocol_001_PtAtLas_parameters in
+  let open Mavryk_protocol_001_PtAtLas_parameters in
   let parameters =
     Default_parameters.parameters_of_constants
       ~bootstrap_accounts
@@ -411,8 +411,8 @@ let prepare_main_init_params ?bootstrap_contracts commitments constants
   let proto_params =
     Data_encoding.Binary.to_bytes_exn Data_encoding.json json
   in
-  Tezos_protocol_environment.Context.(
-    let empty = Tezos_protocol_environment.Memory_context.empty in
+  Mavryk_protocol_environment.Context.(
+    let empty = Mavryk_protocol_environment.Memory_context.empty in
     let* ctxt = add empty ["version"] (Bytes.of_string "genesis") in
     add ctxt protocol_param_key proto_params)
 
@@ -512,14 +512,14 @@ let genesis_with_parameters parameters =
       ~seed_nonce_hash:None
       shell
   in
-  let open Tezos_protocol_001_PtAtLas_parameters in
+  let open Mavryk_protocol_001_PtAtLas_parameters in
   let json = Default_parameters.json_of_parameters parameters in
   let proto_params =
     Data_encoding.Binary.to_bytes_exn Data_encoding.json json
   in
   let*! ctxt =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in
@@ -562,7 +562,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
     ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
     ?adaptive_issuance () =
   let open Lwt_result_syntax in
-  let open Tezos_protocol_001_PtAtLas_parameters in
+  let open Mavryk_protocol_001_PtAtLas_parameters in
   let constants = Default_parameters.constants_test in
   let min_proposal_quorum =
     Option.value ~default:constants.min_proposal_quorum min_proposal_quorum

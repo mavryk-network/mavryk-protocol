@@ -431,7 +431,7 @@ struct
 end
 
 let tests =
-  let open Tezos_protocol_001_PtAtLas_parameters.Default_parameters in
+  let open Mavryk_protocol_001_PtAtLas_parameters.Default_parameters in
   let module Test = Make (struct
     let name = "test"
 

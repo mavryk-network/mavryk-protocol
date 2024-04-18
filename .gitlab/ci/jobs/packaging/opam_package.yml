@@ -679,282 +679,282 @@ opam:mavkit-version:
 
 # Ignoring unreleased package octogram.
 
-opam:tezos-benchmark:
+opam:mavryk-benchmark:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: tezos-benchmark
+    package: mavryk-benchmark
 
-# Ignoring unreleased package tezos-benchmark-001-PtAtLas.
+# Ignoring unreleased package mavryk-benchmark-001-PtAtLas.
 
-# Ignoring unreleased package tezos-benchmark-alpha.
+# Ignoring unreleased package mavryk-benchmark-alpha.
 
-# Ignoring unreleased package tezos-benchmark-examples.
+# Ignoring unreleased package mavryk-benchmark-examples.
 
-# Ignoring unreleased package tezos-benchmark-tests.
+# Ignoring unreleased package mavryk-benchmark-tests.
 
-# Ignoring unreleased package tezos-benchmark-type-inference-001-PtAtLas.
+# Ignoring unreleased package mavryk-benchmark-type-inference-001-PtAtLas.
 
-# Ignoring unreleased package tezos-benchmark-type-inference-alpha.
+# Ignoring unreleased package mavryk-benchmark-type-inference-alpha.
 
-# Ignoring unreleased package tezos-benchmarks-proto-001-PtAtLas.
+# Ignoring unreleased package mavryk-benchmarks-proto-001-PtAtLas.
 
-# Ignoring unreleased package tezos-benchmarks-proto-alpha.
+# Ignoring unreleased package mavryk-benchmarks-proto-alpha.
 
-opam:tezos-client-demo-counter:
+opam:mavryk-client-demo-counter:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-client-demo-counter
+    package: mavryk-client-demo-counter
 
-opam:tezos-client-genesis:
+opam:mavryk-client-genesis:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-client-genesis
+    package: mavryk-client-genesis
 
-opam:tezos-dac-client-lib:
+opam:mavryk-dac-client-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-dac-client-lib
+    package: mavryk-dac-client-lib
 
-opam:tezos-dac-lib:
+opam:mavryk-dac-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-dac-lib
+    package: mavryk-dac-lib
 
-# Ignoring unreleased package tezos-dac-lib-test.
+# Ignoring unreleased package mavryk-dac-lib-test.
 
-opam:tezos-dac-node-lib:
+opam:mavryk-dac-node-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: tezos-dac-node-lib
+    package: mavryk-dac-node-lib
 
-# Ignoring unreleased package tezos-dac-node-lib-test.
+# Ignoring unreleased package mavryk-dac-node-lib-test.
 
-opam:tezos-dal-node-lib:
+opam:mavryk-dal-node-lib:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-dal-node-lib
+    package: mavryk-dal-node-lib
 
-opam:tezos-dal-node-services:
+opam:mavryk-dal-node-services:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: tezos-dal-node-services
+    package: mavryk-dal-node-services
 
-# Ignoring unreleased package tezos-injector-001-PtAtLas.
+# Ignoring unreleased package mavryk-injector-001-PtAtLas.
 
-# Ignoring unreleased package tezos-injector-alpha.
+# Ignoring unreleased package mavryk-injector-alpha.
 
-# Ignoring unreleased package tezos-lazy-containers-tests.
+# Ignoring unreleased package mavryk-lazy-containers-tests.
 
-# Ignoring unreleased package tezos-micheline-rewriting.
+# Ignoring unreleased package mavryk-micheline-rewriting.
 
-# Ignoring unreleased package tezos-openapi.
+# Ignoring unreleased package mavryk-openapi.
 
-opam:tezos-protocol-000-Ps9mPmXa:
+opam:mavryk-protocol-000-Ps9mPmXa:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-protocol-000-Ps9mPmXa
+    package: mavryk-protocol-000-Ps9mPmXa
 
-opam:tezos-protocol-001-PtCJ7pwo:
+opam:mavryk-protocol-001-PtCJ7pwo:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-protocol-001-PtCJ7pwo
+    package: mavryk-protocol-001-PtCJ7pwo
 
-opam:tezos-protocol-002-PsYLVpVv:
+opam:mavryk-protocol-002-PsYLVpVv:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-protocol-002-PsYLVpVv
+    package: mavryk-protocol-002-PsYLVpVv
 
-opam:tezos-protocol-003-PsddFKi3:
+opam:mavryk-protocol-003-PsddFKi3:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_4
   variables:
-    package: tezos-protocol-003-PsddFKi3
+    package: mavryk-protocol-003-PsddFKi3
 
-opam:tezos-protocol-004-Pt24m4xi:
+opam:mavryk-protocol-004-Pt24m4xi:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-004-Pt24m4xi
+    package: mavryk-protocol-004-Pt24m4xi
 
-opam:tezos-protocol-005-PsBABY5H:
+opam:mavryk-protocol-005-PsBABY5H:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-005-PsBABY5H
+    package: mavryk-protocol-005-PsBABY5H
 
-opam:tezos-protocol-005-PsBabyM1:
+opam:mavryk-protocol-005-PsBabyM1:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-005-PsBabyM1
+    package: mavryk-protocol-005-PsBabyM1
 
-opam:tezos-protocol-006-PsCARTHA:
+opam:mavryk-protocol-006-PsCARTHA:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-006-PsCARTHA
+    package: mavryk-protocol-006-PsCARTHA
 
-opam:tezos-protocol-007-PsDELPH1:
+opam:mavryk-protocol-007-PsDELPH1:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-007-PsDELPH1
+    package: mavryk-protocol-007-PsDELPH1
 
-opam:tezos-protocol-008-PtEdo2Zk:
+opam:mavryk-protocol-008-PtEdo2Zk:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-008-PtEdo2Zk
+    package: mavryk-protocol-008-PtEdo2Zk
 
-opam:tezos-protocol-008-PtEdoTez:
+opam:mavryk-protocol-008-PtEdoTez:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-008-PtEdoTez
+    package: mavryk-protocol-008-PtEdoTez
 
-opam:tezos-protocol-009-PsFLoren:
+opam:mavryk-protocol-009-PsFLoren:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-009-PsFLoren
+    package: mavryk-protocol-009-PsFLoren
 
-opam:tezos-protocol-010-PtGRANAD:
+opam:mavryk-protocol-010-PtGRANAD:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-010-PtGRANAD
+    package: mavryk-protocol-010-PtGRANAD
 
-opam:tezos-protocol-011-PtHangz2:
+opam:mavryk-protocol-011-PtHangz2:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-011-PtHangz2
+    package: mavryk-protocol-011-PtHangz2
 
-opam:tezos-protocol-012-Psithaca:
+opam:mavryk-protocol-012-Psithaca:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-012-Psithaca
+    package: mavryk-protocol-012-Psithaca
 
-opam:tezos-protocol-013-PtJakart:
+opam:mavryk-protocol-013-PtJakart:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-013-PtJakart
+    package: mavryk-protocol-013-PtJakart
 
-opam:tezos-protocol-014-PtKathma:
+opam:mavryk-protocol-014-PtKathma:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_5
   variables:
-    package: tezos-protocol-014-PtKathma
+    package: mavryk-protocol-014-PtKathma
 
-opam:tezos-protocol-015-PtLimaPt:
+opam:mavryk-protocol-015-PtLimaPt:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-015-PtLimaPt
+    package: mavryk-protocol-015-PtLimaPt
 
-opam:tezos-protocol-016-PtMumbai:
+opam:mavryk-protocol-016-PtMumbai:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-016-PtMumbai
+    package: mavryk-protocol-016-PtMumbai
 
-opam:tezos-protocol-001-PtAtLas:
+opam:mavryk-protocol-001-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-001-PtAtLas
+    package: mavryk-protocol-001-PtAtLas
 
-# Ignoring unreleased package tezos-protocol-001-PtAtLas-tests.
+# Ignoring unreleased package mavryk-protocol-001-PtAtLas-tests.
 
-opam:tezos-protocol-alpha:
+opam:mavryk-protocol-alpha:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-alpha
+    package: mavryk-protocol-alpha
 
-# Ignoring unreleased package tezos-protocol-alpha-tests.
+# Ignoring unreleased package mavryk-protocol-alpha-tests.
 
-opam:tezos-protocol-demo-counter:
+opam:mavryk-protocol-demo-counter:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-demo-counter
+    package: mavryk-protocol-demo-counter
 
-opam:tezos-protocol-demo-noops:
+opam:mavryk-protocol-demo-noops:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-demo-noops
+    package: mavryk-protocol-demo-noops
 
-opam:tezos-protocol-genesis:
+opam:mavryk-protocol-genesis:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-genesis
+    package: mavryk-protocol-genesis
 
-opam:tezos-proxy-server-config:
+opam:mavryk-proxy-server-config:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_7
   variables:
-    package: tezos-proxy-server-config
+    package: mavryk-proxy-server-config
 
-# Ignoring unreleased package tezos-sc-rollup-node-test.
+# Ignoring unreleased package mavryk-sc-rollup-node-test.
 
-# Ignoring unreleased package tezos-scoru-wasm-regressions.
+# Ignoring unreleased package mavryk-scoru-wasm-regressions.
 
-# Ignoring unreleased package tezos-smart-rollup-node-lib-test.
+# Ignoring unreleased package mavryk-smart-rollup-node-lib-test.
 
-# Ignoring unreleased package tezos-tooling.
+# Ignoring unreleased package mavryk-tooling.
 
-# Ignoring unreleased package tezos-tps-evaluation.
+# Ignoring unreleased package mavryk-tps-evaluation.
 
-# Ignoring unreleased package tezos-tree-encoding-test.
+# Ignoring unreleased package mavryk-tree-encoding-test.
 
 # Ignoring unreleased package tezt-ethereum.
 

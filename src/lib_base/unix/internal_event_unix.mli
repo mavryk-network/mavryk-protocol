@@ -33,7 +33,7 @@ open Error_monad
 
 module Configuration : sig
   include module type of struct
-    include Tezos_base.Internal_event_config
+    include Mavryk_base.Internal_event_config
   end
 
   (** Parse a json file at [path] into a configuration. *)
@@ -62,7 +62,7 @@ val close : unit -> unit Lwt.t
     ["file-descriptor-path:///<daily_logs_path>/daily.log
     ?create-dirs=true&daily-logs=7&section-prefix=info&format=pp"]
 
-    This function handles [TEZOS_LOG] environment variables and rules
+    This function handles [MAVRYK_LOG] environment variables and rules
     provided through it.
 *)
 val make_with_defaults :
@@ -73,18 +73,18 @@ val make_with_defaults :
   Internal_event_config.t
 
 (** [init ?config ()] initializes the internal-event sinks using either
-  - ["TEZOS_EVENTS_CONFIG"] environment variable,
+  - ["MAVRYK_EVENTS_CONFIG"] environment variable,
   - [config], the value of configured sinks of command calling
     init, if provided,
 
   Note that if [config] is provided,the environment variable
-  [TEZOS_LOG] is ignored.
+  [MAVRYK_LOG] is ignored.
 
-  ["TEZOS_EVENTS_CONFIG"] is expected to be a (whitespace separated) list of
+  ["MAVRYK_EVENTS_CONFIG"] is expected to be a (whitespace separated) list of
   URIs. If an URI does not have a scheme it is expected to be a path to a
   configuration JSON file (cf. {!Configuration.of_file}), e.g.: [export
-  TEZOS_EVENTS_CONFIG="unix-files:///tmp/events-unix debug://"], or [export
-  TEZOS_EVENTS_CONFIG="debug:// /path/to/config.json"].
+  MAVRYK_EVENTS_CONFIG="unix-files:///tmp/events-unix debug://"], or [export
+  MAVRYK_EVENTS_CONFIG="debug:// /path/to/config.json"].
 *)
 val init : ?config:Internal_event_config.t -> unit -> unit Lwt.t
 

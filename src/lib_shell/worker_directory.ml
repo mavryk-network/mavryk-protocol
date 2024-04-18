@@ -26,16 +26,16 @@
 
 let build_rpc_directory state =
   let open Lwt_syntax in
-  let dir : unit Tezos_rpc.Directory.t ref = ref Tezos_rpc.Directory.empty in
+  let dir : unit Mavryk_rpc.Directory.t ref = ref Mavryk_rpc.Directory.empty in
   let register0 s f =
-    dir := Tezos_rpc.Directory.register !dir s (fun () p q -> f p q)
+    dir := Mavryk_rpc.Directory.register !dir s (fun () p q -> f p q)
   in
   let register1 s f =
-    dir := Tezos_rpc.Directory.register !dir s (fun ((), a) p q -> f a p q)
+    dir := Mavryk_rpc.Directory.register !dir s (fun ((), a) p q -> f a p q)
   in
   let register2 s f =
     dir :=
-      Tezos_rpc.Directory.register !dir s (fun (((), a), b) p q -> f a b p q)
+      Mavryk_rpc.Directory.register !dir s (fun (((), a), b) p q -> f a b p q)
   in
   (* Workers : Prevalidators *)
   register0 Worker_services.Prevalidators.S.list (fun () () ->

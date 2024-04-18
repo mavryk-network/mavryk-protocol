@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 use crate::error::StorageError;
-use tezos_evm_logging::log;
-use tezos_evm_logging::Level::Error;
-use tezos_smart_rollup_host::path::{concat, OwnedPath, RefPath};
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use mavryk_evm_logging::log;
+use mavryk_evm_logging::Level::Error;
+use mavryk_smart_rollup_host::path::{concat, OwnedPath, RefPath};
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
 
 const LENGTH: RefPath = RefPath::assert_from(b"/length");
 
@@ -83,8 +83,8 @@ impl IndexableStorage {
             Ok(l) => Ok(l),
             Err(
                 RuntimeError::PathNotFound
-                | RuntimeError::HostErr(tezos_smart_rollup_host::Error::StoreNotAValue)
-                | RuntimeError::HostErr(tezos_smart_rollup_host::Error::StoreInvalidAccess),
+                | RuntimeError::HostErr(mavryk_smart_rollup_host::Error::StoreNotAValue)
+                | RuntimeError::HostErr(mavryk_smart_rollup_host::Error::StoreInvalidAccess),
                 // An InvalidAccess implies that the path does not exist at all
                 // in the storage: store_read fails because reading is out of
                 // bounds since the value has never been allocated before
@@ -136,8 +136,8 @@ impl IndexableStorage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::path::RefPath;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[test]
     fn test_indexable_empty() {

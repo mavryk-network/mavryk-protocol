@@ -20,11 +20,11 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_error_monad
-  -open Tezos_test_helpers
+  -open Mavryk_base
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_error_monad
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
  (modules test_unix_error test_syslog))
 

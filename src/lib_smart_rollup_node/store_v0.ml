@@ -58,7 +58,7 @@ module Add_empty_header = struct
   let header _ = ()
 end
 
-module Make_hash_index_key (H : Tezos_crypto.Intfs.HASH) =
+module Make_hash_index_key (H : Mavryk_crypto.Intfs.HASH) =
 Indexed_store.Make_index_key (struct
   include Indexed_store.Make_fixed_encodable (H)
 
@@ -72,7 +72,7 @@ module L2_blocks =
       let name = "l2_blocks"
     end)
     (struct
-      include Tezos_store_shared.Block_key
+      include Mavryk_store_shared.Block_key
 
       let pp = Block_hash.pp
     end)
@@ -214,7 +214,7 @@ end)
 module Levels_to_hashes =
   Indexed_store.Make_indexable
     (struct
-      let name = "tezos_levels"
+      let name = "mavryk_levels"
     end)
     (Indexed_store.Make_index_key (struct
       type t = int32
@@ -227,7 +227,7 @@ module Levels_to_hashes =
 
       let equal = Int32.equal
     end))
-    (Tezos_store_shared.Block_key)
+    (Mavryk_store_shared.Block_key)
 
 (* Published slot headers per block hash,
    stored as a list of bindings from `Dal_slot_index.t`

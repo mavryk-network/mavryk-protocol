@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_micheline
+open Mavryk_micheline
 open Micheline
 
 let no_comment : Micheline_printer.location = {comment = None}

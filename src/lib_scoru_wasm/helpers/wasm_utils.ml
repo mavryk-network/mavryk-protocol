@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
-open Tezos_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
+open Mavryk_lazy_containers
 
 let parse_module code =
   let def = Parse.string_to_module code in
@@ -98,15 +98,15 @@ let read_test_messages names =
 (** Can be passed to be used as a host function
     [compute_step_many ~write_debug:write_debug_on_stdout ...] *)
 let write_debug_on_stdout =
-  Tezos_scoru_wasm.Builtins.Printer
+  Mavryk_scoru_wasm.Builtins.Printer
     (fun msg -> Lwt.return @@ Format.printf "%s\n%!" msg)
 
-module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
+module Make (Ctx : Mavryk_tree_encoding.Encodings_util.S) :
   Wasm_utils_intf.S with type t = Ctx.t and type tree = Ctx.Tree.tree = struct
   module Ctx = Ctx
   module Tree_encoding_runner = Ctx.Tree_encoding_runner
   module Wasm = Wasm_pvm.Make (Ctx.Tree)
-  module Wasm_fast = Tezos_scoru_wasm_fast.Pvm.Make (Ctx.Tree)
+  module Wasm_fast = Mavryk_scoru_wasm_fast.Pvm.Make (Ctx.Tree)
 
   type t = Ctx.t
 
@@ -207,7 +207,7 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
       {
         inbox_level =
           Option.value_f ~default:(fun () -> assert false)
-          @@ Tezos_base.Bounded.Non_negative_int32.of_value level;
+          @@ Mavryk_base.Bounded.Non_negative_int32.of_value level;
         message_counter;
       }
 
@@ -346,7 +346,7 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
               config =
                 {
                   step_kont =
-                    Tezos_webassembly_interpreter.Eval.(
+                    Mavryk_webassembly_interpreter.Eval.(
                       SK_Result _ | SK_Trapped _);
                   _;
                 };
@@ -371,7 +371,7 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
         {
           inbox_level =
             Option.value_f ~default:(fun () -> assert false)
-            @@ Tezos_base.Bounded.Non_negative_int32.of_value 0l;
+            @@ Mavryk_base.Bounded.Non_negative_int32.of_value 0l;
           message_counter = Z.of_int message_counter;
         }
     in
@@ -437,14 +437,14 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
     | Eval
         {
           config =
-            {step_kont = Tezos_webassembly_interpreter.Eval.(SK_Result _); _};
+            {step_kont = Mavryk_webassembly_interpreter.Eval.(SK_Result _); _};
           _;
         } ->
         pp_s "Evaluation succeeded"
     | Eval
         {
           config =
-            {step_kont = Tezos_webassembly_interpreter.Eval.(SK_Trapped msg); _};
+            {step_kont = Mavryk_webassembly_interpreter.Eval.(SK_Trapped msg); _};
           _;
         } ->
         Format.fprintf fmt "Evaluation failed (%s)" msg.it
@@ -503,10 +503,10 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
     let open Lwt.Syntax in
     let+ tree =
       Tree_encoding_runner.decode
-        Tezos_tree_encoding.(scope ["durable"] wrapped_tree)
+        Mavryk_tree_encoding.(scope ["durable"] wrapped_tree)
         tree
     in
-    Tezos_webassembly_interpreter.Durable_storage.of_tree tree
+    Mavryk_webassembly_interpreter.Durable_storage.of_tree tree
 
   let has_stuck_flag tree =
     let open Lwt_syntax in
@@ -520,7 +520,7 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
     let* tree = Ctx.empty_tree () in
     let* tree =
       Tree_encoding_runner.encode
-        (Tezos_tree_encoding.value
+        (Mavryk_tree_encoding.value
            ["durable"; "@"; "keep_me"]
            Data_encoding.bool)
         true
@@ -540,7 +540,7 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
 
   let make_module_inst ~version list_key_vals src =
     let module_inst =
-      Tezos_webassembly_interpreter.Instance.empty_module_inst
+      Mavryk_webassembly_interpreter.Instance.empty_module_inst
     in
     let memory =
       Memory.alloc (MemoryType Types.{min = 20l; max = Some 3600l})
@@ -572,5 +572,5 @@ module Make (Ctx : Tezos_tree_encoding.Encodings_util.S) :
 end
 
 module In_memory_context =
-  Tezos_tree_encoding.Encodings_util.Make (Tezos_context_memory.Context_binary)
+  Mavryk_tree_encoding.Encodings_util.Make (Mavryk_context_memory.Context_binary)
 include Make (In_memory_context)

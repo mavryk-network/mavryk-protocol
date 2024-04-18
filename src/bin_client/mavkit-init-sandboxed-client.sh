@@ -11,12 +11,12 @@ init_sandboxed_client() {
     shift 1
 
     rpc=$((18730 + id))
-    client_dir="$(mktemp -d -t tezos-tmp-client.XXXXXXXX)"
+    client_dir="$(mktemp -d -t mavryk-tmp-client.XXXXXXXX)"
     client_dirs+=("$client_dir")
     if [ -n "$SCORU_DATA_DIR" ]; then
         rollup_node_dir="$SCORU_DATA_DIR"
     else
-        rollup_node_dir="$(mktemp -d -t tezos-smart-rollup-node.XXXXXXXX)"
+        rollup_node_dir="$(mktemp -d -t mavryk-smart-rollup-node.XXXXXXXX)"
     fi
     signer="$local_signer -d $client_dir"
     if [ -n "$USE_TLS" ]; then

@@ -155,7 +155,7 @@ Let us originate this contract.
 
 ::
 
-   tezos-client -l originate contract mini transferring 0 from bootstrap1 running minimal.tz --burn-cap 0.07375 --init 'Unit'
+   mavryk-client -l originate contract mini transferring 0 from bootstrap1 running minimal.tz --burn-cap 0.07375 --init 'Unit'
 
 During simulation, the ``preapply`` RPC is given the following
 operation:
@@ -199,7 +199,7 @@ corresponding to the **exact** amount of gas consumed, labelled in
 **milligas**; - the field ``consumed_gas``, obtained by ceiling the
 milligas value as described above, labelled in **gas**.
 
-Note that the ``tezos-client`` binary prints gas, not milligas. However
+Note that the ``mavryk-client`` binary prints gas, not milligas. However
 it displays three decimals:
 
 ::
@@ -235,7 +235,7 @@ Patches:
 
 -  7868fa947b Proto/gas: introduce Fixed_point_repr module
 -  c436869c49 Proto/tests: unit tests for Fixed_point_repr
--  5a4f408582 Proto/gas: edit TEZOS_PROTOCOL for Fixed_point, move
+-  5a4f408582 Proto/gas: edit MAVRYK_PROTOCOL for Fixed_point, move
    Gas_limit_repr
 -  e939017844 Proto/gas: use fixed-point computations for gas (FIXME)
 -  6031a0dc8c Proto/client: use fixed-point computations for gas

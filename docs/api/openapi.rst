@@ -84,7 +84,7 @@ protocol_parameters=src/proto_alpha/parameters/sandbox-parameters.json
 protocol_name=alpha
 ```
 
-For ``protocol_hash``, use the value defined in ``TEZOS_PROTOCOL``.
+For ``protocol_hash``, use the value defined in ``MAVRYK_PROTOCOL``.
 
 
 How to Test

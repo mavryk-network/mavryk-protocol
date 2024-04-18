@@ -37,7 +37,7 @@ The DAC infrastructure is implemented by two executables: ``mavkit-dac-node`` an
  * ``mavkit-dac-node`` is used for setting up a new DAC Committee or track an existing one.
  * ``mavkit-dac-client`` is used for sending payloads to the DAC infrastructure for storage and for retrieving certificates signed by the DAC Members.
 
-There is support for DAC in the Rust `Smart Rollup Kernel SDK <https://crates.io/crates/tezos-smart-rollup>`_ for revealing the underlying data of a DAC Certificate and verifying DAC Member signatures.
+There is support for DAC in the Rust `Smart Rollup Kernel SDK <https://crates.io/crates/mavryk-smart-rollup>`_ for revealing the underlying data of a DAC Certificate and verifying DAC Member signatures.
 
 DAC Certificate
 ^^^^^^^^^^^^^^^

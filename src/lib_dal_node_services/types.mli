@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Cryptobox = Tezos_crypto_dal.Cryptobox
+module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
 (** A Tezos level. *)
 type level = int32
@@ -206,7 +206,7 @@ type header_status =
 
 (** Profiles that operate on shards/slots. *)
 type operator_profile =
-  | Attester of Tezos_crypto.Signature.public_key_hash
+  | Attester of Mavryk_crypto.Signature.public_key_hash
       (** [Attester pkh] downloads all shards assigned to [pkh].
             Used by bakers to attest availability of their assigned shards. *)
   | Producer of {slot_index : int}
@@ -325,7 +325,7 @@ module P2P : sig
 end
 
 module Gossipsub : sig
-  (** See {!Tezos_gossipsub.Introspection.connection}. Ideally we should reuse
+  (** See {!Mavryk_gossipsub.Introspection.connection}. Ideally we should reuse
       that type, but that would require a new dependency to be added. *)
   type connection = {topics : Topic.t list; direct : bool; outbound : bool}
 

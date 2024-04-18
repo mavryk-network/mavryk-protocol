@@ -96,7 +96,7 @@ let test_injection_and_activation () : unit =
     sf
       "V%d"
       JSON.(
-        parse_file (protocol_path ^ "/TEZOS_PROTOCOL")
+        parse_file (protocol_path ^ "/MAVRYK_PROTOCOL")
         |-> "expected_env_version" |> as_int)
   in
   let* env_version = Client.Admin.protocol_environment client1 protocol_hash in

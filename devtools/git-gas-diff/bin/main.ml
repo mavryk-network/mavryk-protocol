@@ -207,7 +207,7 @@ module Category = struct
       ("PUBLIC_KEY_HASH", no_payload);
       ("CONTRACT_HASH", no_payload);
       ("Operation hash", no_payload);
-      ("tezos-client", no_payload);
+      ("mavryk-client", no_payload);
       ("New contract", no_payload);
       ("To: ", no_payload);
       ("Parameter: ", no_payload);

@@ -91,27 +91,27 @@ module type Alias = sig
   val to_source : t -> string tzresult Lwt.t
 
   val alias_parameter :
-    unit -> (string * t, #Client_context.wallet) Tezos_clic.parameter
+    unit -> (string * t, #Client_context.wallet) Mavryk_clic.parameter
 
   val alias_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'b)) Tezos_clic.params ->
-    (string * t -> 'a, 'b) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'b)) Mavryk_clic.params ->
+    (string * t -> 'a, 'b) Mavryk_clic.params
 
   val aliases_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'b)) Tezos_clic.params ->
-    ((string * t) list -> 'a, 'b) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'b)) Mavryk_clic.params ->
+    ((string * t) list -> 'a, 'b) Mavryk_clic.params
 
   val fresh_alias_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (< .. > as 'obj)) Tezos_clic.params ->
-    (fresh_param -> 'a, 'obj) Tezos_clic.params
+    ('a, (< .. > as 'obj)) Mavryk_clic.params ->
+    (fresh_param -> 'a, 'obj) Mavryk_clic.params
 
-  val force_switch : unit -> (bool, _) Tezos_clic.arg
+  val force_switch : unit -> (bool, _) Mavryk_clic.arg
 
   val of_fresh :
     #Client_context.wallet -> bool -> fresh_param -> string tzresult Lwt.t
@@ -121,15 +121,15 @@ module type Alias = sig
   val source_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'obj)) Tezos_clic.params ->
-    (t -> 'a, 'obj) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'obj)) Mavryk_clic.params ->
+    (t -> 'a, 'obj) Mavryk_clic.params
 
   val source_arg :
     ?long:string ->
     ?placeholder:string ->
     ?doc:string ->
     unit ->
-    (t option, (#Client_context.wallet as 'obj)) Tezos_clic.arg
+    (t option, (#Client_context.wallet as 'obj)) Mavryk_clic.arg
 
   val autocomplete : #Client_context.wallet -> string list tzresult Lwt.t
 end
@@ -335,17 +335,17 @@ module Alias (Entity : Entity) = struct
 
   let alias_parameter () =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter ~autocomplete (fun cctxt s ->
+    Mavryk_clic.parameter ~autocomplete (fun cctxt s ->
         let* v = find cctxt s in
         return (s, v))
 
   let alias_param ?(name = "name")
       ?(desc = "existing " ^ Entity.name ^ " alias") next =
-    Tezos_clic.param ~name ~desc (alias_parameter ()) next
+    Mavryk_clic.param ~name ~desc (alias_parameter ()) next
 
   let aliases_parameter () =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter ~autocomplete (fun cctxt s ->
+    Mavryk_clic.parameter ~autocomplete (fun cctxt s ->
         String.split_no_empty ',' s
         |> List.map_es (fun s ->
                let* pkh = find cctxt s in
@@ -353,7 +353,7 @@ module Alias (Entity : Entity) = struct
 
   let aliases_param ?(name = "name")
       ?(desc = "existing " ^ Entity.name ^ " aliases") next =
-    Tezos_clic.param ~name ~desc (aliases_parameter ()) next
+    Mavryk_clic.param ~name ~desc (aliases_parameter ()) next
 
   type fresh_param = Fresh of string
 
@@ -381,10 +381,10 @@ module Alias (Entity : Entity) = struct
 
   let fresh_alias_param ?(name = "new")
       ?(desc = "new " ^ Entity.name ^ " alias") next =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name
       ~desc
-      (Tezos_clic.parameter (fun (_ : < .. >) s -> Lwt.return_ok (Fresh s)))
+      (Mavryk_clic.parameter (fun (_ : < .. >) s -> Lwt.return_ok (Fresh s)))
       next
 
   let parse_source_string cctxt s =
@@ -416,7 +416,7 @@ module Alias (Entity : Entity) = struct
         Entity.name
         Entity.name
     in
-    Tezos_clic.param ~name ~desc (Tezos_clic.parameter parse_source_string) next
+    Mavryk_clic.param ~name ~desc (Mavryk_clic.parameter parse_source_string) next
 
   let source_arg ?(long = "source " ^ Entity.name) ?(placeholder = "src")
       ?(doc = "") () =
@@ -435,14 +435,14 @@ module Alias (Entity : Entity) = struct
         Entity.name
         Entity.name
     in
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~long
       ~placeholder
       ~doc
-      (Tezos_clic.parameter parse_source_string)
+      (Mavryk_clic.parameter parse_source_string)
 
   let force_switch () =
-    Tezos_clic.switch
+    Mavryk_clic.switch
       ~long:"force"
       ~short:'f'
       ~doc:("overwrite existing " ^ Entity.name)

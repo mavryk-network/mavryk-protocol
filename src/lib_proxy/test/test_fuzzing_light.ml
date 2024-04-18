@@ -35,20 +35,20 @@
                   width and depth of structures is fine-tuned.
 *)
 
-module Store = Tezos_context_memory.Context
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Store = Mavryk_context_memory.Context
+module Proof = Mavryk_context_sigs.Context.Proof_types
 open Qcheck2_helpers
 
-open Tezos_proxy_test_helpers_shell_services.Test_helpers_shell_services
+open Mavryk_proxy_test_helpers_shell_services.Test_helpers_shell_services
 
 module Consensus = struct
   let chain, block = (`Main, `Head 0)
 
-  class mock_rpc_context : Tezos_rpc.Context.simple =
+  class mock_rpc_context : Mavryk_rpc.Context.simple =
     object
       method call_service
           : 'm 'p 'q 'i 'o.
-            (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+            (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
             'p ->
             'q ->
             'i ->
@@ -71,13 +71,13 @@ module Consensus = struct
     gen_rec ~rand 128
 
   (* [mock_light_rpc mproof [(endpoint1, true); (endpoint2, false)] seed]
-     returns an instance of [Tezos_proxy.Light_proto.PROTO_RPCS]
+     returns an instance of [Mavryk_proxy.Light_proto.PROTO_RPCS]
      that always returns a rogue (illegal) variant of [mproof] when querying [endpoint1],
      [mproof] when querying [endpoint2], and [None] otherwise *)
   let mock_light_rpc mproof endpoints_and_rogueness seed =
     (module struct
       (** Use physical equality on [rpc_context] because they are identical objects. *)
-      let merkle_tree (pgi : Tezos_proxy.Proxy.proxy_getter_input) _ _ =
+      let merkle_tree (pgi : Mavryk_proxy.Proxy.proxy_getter_input) _ _ =
         List.assq pgi.rpc_context endpoints_and_rogueness
         |> Option.map (fun is_rogue ->
                if is_rogue then
@@ -86,13 +86,13 @@ module Consensus = struct
                  | _ -> QCheck2.assume_fail ()
                else mproof)
         |> Lwt.return_ok
-    end : Tezos_proxy.Light_proto.PROTO_RPCS)
+    end : Mavryk_proxy.Light_proto.PROTO_RPCS)
 
   let mock_printer () =
     let rev_logs : string list ref = ref [] in
     object
       inherit
-        Tezos_client_base.Client_context.simple_printer
+        Mavryk_client_base.Client_context.simple_printer
           (fun _channel log ->
             rev_logs := log :: !rev_logs ;
             Lwt.return_unit)
@@ -124,11 +124,11 @@ module Consensus = struct
     let (module Light_proto) =
       mock_light_rpc mproof endpoints_and_rogueness randoms
     in
-    let module Consensus = Tezos_proxy.Light_consensus.Make (Light_proto) in
+    let module Consensus = Mavryk_proxy.Light_consensus.Make (Light_proto) in
     let printer = mock_printer () in
-    let input : Tezos_proxy.Light_consensus.input =
+    let input : Mavryk_proxy.Light_consensus.input =
       {
-        printer = (printer :> Tezos_client_base.Client_context.printer);
+        printer = (printer :> Mavryk_client_base.Client_context.printer);
         min_agreement;
         chain;
         block;
@@ -201,7 +201,7 @@ let test_consensus_spec =
     let honest = honest + 1 in
     let nb_endpoints = honest + rogue in
     honest
-    >= Tezos_proxy.Light_consensus.min_agreeing_endpoints
+    >= Mavryk_proxy.Light_consensus.min_agreeing_endpoints
          min_agreement
          nb_endpoints
   in

@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 module M = struct
-  include Tezos_context_memory.Context
+  include Mavryk_context_memory.Context
 
   let set_protocol = add_protocol
 
@@ -52,7 +52,7 @@ let project : Context.t -> t =
 let inject : t -> Context.t =
  fun ctxt -> Context.make ~ops ~ctxt ~kind:Context ~equality_witness ~impl_name
 
-let empty = inject (Tezos_context_memory.Context.make_empty_context ())
+let empty = inject (Mavryk_context_memory.Context.make_empty_context ())
 
 let encoding : Context.t Data_encoding.t =
   let open Data_encoding in

@@ -23,7 +23,7 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_rpc_http
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_rpc_http
   -open Evm_node_lib_dev_encoding
   -open Evm_node_config))

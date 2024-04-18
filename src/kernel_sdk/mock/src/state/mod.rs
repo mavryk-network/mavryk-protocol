@@ -7,10 +7,10 @@
 //! Mock runtime state & state transitions
 
 use crypto::hash::SmartRollupHash;
-use tezos_smart_rollup_core::{
+use mavryk_smart_rollup_core::{
     MAX_FILE_CHUNK_SIZE, MAX_INPUT_MESSAGE_SIZE, MAX_OUTPUT_SIZE, PREIMAGE_HASH_SIZE,
 };
-use tezos_smart_rollup_host::{
+use mavryk_smart_rollup_host::{
     metadata::RollupMetadata,
     path::{PathError, RefPath},
     Error,
@@ -145,10 +145,10 @@ impl HostState {
             > i64::from(has_value);
 
         let result = match (has_value, has_subvalue) {
-            (false, false) => tezos_smart_rollup_core::VALUE_TYPE_NONE,
-            (true, false) => tezos_smart_rollup_core::VALUE_TYPE_VALUE,
-            (false, true) => tezos_smart_rollup_core::VALUE_TYPE_SUBTREE,
-            (true, true) => tezos_smart_rollup_core::VALUE_TYPE_VALUE_WITH_SUBTREE,
+            (false, false) => mavryk_smart_rollup_core::VALUE_TYPE_NONE,
+            (true, false) => mavryk_smart_rollup_core::VALUE_TYPE_VALUE,
+            (false, true) => mavryk_smart_rollup_core::VALUE_TYPE_SUBTREE,
+            (true, true) => mavryk_smart_rollup_core::VALUE_TYPE_VALUE_WITH_SUBTREE,
         };
 
         Ok(result)
@@ -328,7 +328,7 @@ fn validate_path_maybe_readonly(s: &[u8]) -> Result<String, Error> {
 mod tests {
     use super::*;
 
-    use tezos_smart_rollup_core::{
+    use mavryk_smart_rollup_core::{
         VALUE_TYPE_NONE, VALUE_TYPE_SUBTREE, VALUE_TYPE_VALUE,
     };
 

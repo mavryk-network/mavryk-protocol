@@ -17,9 +17,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
+  -open Mavryk_stdlib
   -open Mavkit_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_test_helpers)
  (modules
   test_lwt_pipe
   test_circular_buffer

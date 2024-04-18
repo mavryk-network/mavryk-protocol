@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_wasmer)
+ (name mavryk_wasmer)
  (public_name mavkit-l2-libs.wasmer)
  (instrumentation (backend bisect_ppx))
  (libraries

@@ -4,7 +4,7 @@
 (env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
 
 (library
- (name tezos_crypto)
+ (name mavryk_crypto)
  (public_name mavkit-libs.crypto)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -24,7 +24,7 @@
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
+  -open Mavryk_stdlib
   -open Data_encoding
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib))
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib))

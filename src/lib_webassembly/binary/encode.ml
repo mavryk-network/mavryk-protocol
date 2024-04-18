@@ -3,7 +3,7 @@
    This module should never be part of the PVM since it assumes lazy vectors are
    fully loaded. *)
 
-module TzStdLib = Tezos_lwt_result_stdlib.Lwtreslib.Bare
+module TzStdLib = Mavryk_lwt_result_stdlib.Lwtreslib.Bare
 
 (* Version *)
 

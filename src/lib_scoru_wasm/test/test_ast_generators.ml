@@ -27,7 +27,7 @@
     -------
     Component:    Tree_encoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_ast_generators.ml
-    Subject:      Encoding tests for the tezos-scoru-wasm library
+    Subject:      Encoding tests for the mavryk-scoru-wasm library
 *)
 
 open Tztest

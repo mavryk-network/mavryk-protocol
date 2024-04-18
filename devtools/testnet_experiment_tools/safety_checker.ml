@@ -27,7 +27,7 @@
 *)
 
 open Filename.Infix
-open Tezos_clic
+open Mavryk_clic
 
 type block_kind = Safe | Maybe_unsafe | Unsafe
 
@@ -596,7 +596,7 @@ module Custom_client_config : Client_main_run.M = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     let open Client_config in
     return (default_parsed_config_args, remaining)
@@ -607,7 +607,7 @@ module Custom_client_config : Client_main_run.M = struct
 
   let default_daily_logs_path = None
 
-  let default_media_type = Tezos_rpc_http.Media_type.Command_line.Binary
+  let default_media_type = Mavryk_rpc_http.Media_type.Command_line.Binary
 
   let other_registrations = None
 

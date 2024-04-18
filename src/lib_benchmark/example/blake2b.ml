@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 
 (* A full example: benchmarking blake2b hashes *)
 
@@ -46,7 +46,7 @@ let model_blake2b =
 module Blake2b_bench : Benchmark.S = struct
   let name = name
 
-  let info = "Illustrating tezos-benchmark by benchmarking blake2b"
+  let info = "Illustrating mavryk-benchmark by benchmarking blake2b"
 
   let module_filename = __FILE__
 
@@ -60,7 +60,7 @@ module Blake2b_bench : Benchmark.S = struct
 
   let default_config = {max_bytes = 1 lsl 16}
 
-  (* The encoding is used by `tezos-snoop` to load the config from json
+  (* The encoding is used by `mavryk-snoop` to load the config from json
      files. *)
   let config_encoding =
     let open Data_encoding in
@@ -99,7 +99,7 @@ module Blake2b_bench : Benchmark.S = struct
     let bytes = Base_samplers.uniform_bytes rng_state ~nbytes in
     let workload = {nbytes} in
     (* The closure here is the piece of code to be benchmarked. *)
-    let closure () = ignore (Tezos_crypto.Blake2B.hash_bytes [bytes]) in
+    let closure () = ignore (Mavryk_crypto.Blake2B.hash_bytes [bytes]) in
     Generator.Plain {workload; closure}
 
   let create_benchmarks ~rng_state ~bench_num config =

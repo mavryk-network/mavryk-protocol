@@ -20,11 +20,11 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib
-  -open Tezos_client_base
-  -open Tezos_signer_backends
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib
+  -open Mavryk_client_base
+  -open Mavryk_signer_backends
   -open Mavkit_alcotezt)
  (modules test_encrypted))
 

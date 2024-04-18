@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 (** {2 Command-line options} *)
 

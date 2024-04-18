@@ -2,7 +2,7 @@ Light mode
 ----------
 
 The proxy mode, described in :doc:`a dedicated tutorial <./proxy>`,
-is an execution mode where the :ref:`Mavkit client <howtouse_tezos_client>`
+is an execution mode where the :ref:`Mavkit client <howtouse_mavryk_client>`
 avoids some RPC calls to the node, especially computation-intensive RPCs.
 It does so by requesting the data it needs from the node using RPCs (that are not computation-intensive), and uses
 this data locally to perform computations by itself, whenever possible.
@@ -110,7 +110,7 @@ To avoid warnings being printed in upcoming commands (optional):
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
 
 The last step before being able to use the light client is to prepare
 the JSON file passed to ``--sources``. In our scenario, this file
@@ -134,12 +134,12 @@ We will use this option for the next times.
 
 Well, that doesn't seem very different from what the default client would return.
 Indeed, it's the same; that was the point! To see what the light client
-is doing differently, you may use the environment variable ``TEZOS_LOG``.
+is doing differently, you may use the environment variable ``MAVRYK_LOG``.
 Set it as follows:
 
 ::
 
-    $ export TEZOS_LOG="light_mode->debug"
+    $ export MAVRYK_LOG="light_mode->debug"
 
 Variable ``light_mode`` shows how the light mode is obtaining data from
 the different endpoints.

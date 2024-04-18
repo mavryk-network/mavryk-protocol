@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_micheline
+open Mavryk_micheline
 open Protocol
 open Alpha_context
 

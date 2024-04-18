@@ -77,7 +77,7 @@ end)
 
 (* Note: This weight is also used by the plugin and the prevalidator to sort
    operations in the pending mempool.
-   See {!Tezos_protocol_plugin_alpha.Plugin.Mempool.weight_manager_operation}. *)
+   See {!Mavryk_protocol_plugin_alpha.Plugin.Mempool.weight_manager_operation}. *)
 let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
     ~minimal_nanomav_per_gas_unit ~minimal_nanomav_per_byte operation =
   let open Result_syntax in
@@ -166,7 +166,7 @@ let prioritize_managers ~hard_gas_limit_per_block ~minimal_fees
 (** Simulation *)
 
 type simulation_result = {
-  validation_result : Tezos_protocol_environment.validation_result option;
+  validation_result : Mavryk_protocol_environment.validation_result option;
   block_header_metadata : block_header_metadata option;
   operations : packed_operation list list;
   operations_hash : Operation_list_list_hash.t;
@@ -203,7 +203,7 @@ let validate_operation inc op =
 
 let filter_valid_operations_up_to_quota inc (ops, quota) =
   let open Lwt_syntax in
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let exception Full of (Baking_simulator.incremental * packed_operation list)
   in
   try
@@ -235,7 +235,7 @@ let filter_valid_operations_up_to_quota inc (ops, quota) =
 let filter_valid_managers_up_to_quota inc ~hard_gas_limit_per_block (ops, quota)
     =
   let open Lwt_syntax in
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let rec loop (inc, curr_size, nb_ops, remaining_gas, acc) = function
     | [] -> return (inc, List.rev acc)
     | {op; size = op_size; gas = op_gas; _} :: l -> (
@@ -341,7 +341,7 @@ let filter_operations_with_simulation initial_inc fees_config
         }
 
 let filter_valid_operations_up_to_quota_without_simulation (ops, quota) =
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let exception Full of packed_operation list in
   try
     List.fold_left

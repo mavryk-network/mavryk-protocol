@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type t = Tezos_rpc.Context.generic
+type t = Mavryk_rpc.Context.generic
 
 (** [make endpoint] constructs an rpc context out of an endpoint
     represented as an URI. *)

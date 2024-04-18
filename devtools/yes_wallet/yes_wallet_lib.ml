@@ -31,7 +31,7 @@
    Given a list of aliases and public key hashes:
    - encodes each public key as a fake secret key that can be used
      with the yes-node.patch
-   - creates a 'yes-wallet' directory to be passed to tezos-client -d option
+   - creates a 'yes-wallet' directory to be passed to mavryk-client -d option
  *)
 
 let pp_protocol ppf (module P : Sigs.PROTOCOL) = Protocol_hash.pp ppf P.hash
@@ -54,7 +54,7 @@ let pk_json (alias, _pkh, pk) =
 *)
 
 let sk_of_pk (pk_s : string) : string =
-  let open Tezos_crypto.Signature.V_latest in
+  let open Mavryk_crypto.Signature.V_latest in
   let pk = Public_key.of_b58check_exn pk_s in
   let pk_b = Data_encoding.Binary.to_bytes_exn Public_key.encoding pk in
   let sk_b = Bytes.sub pk_b 0 33 in
@@ -240,7 +240,7 @@ let protocol_of_hash protocol_hash =
 let load_mainnet_bakers_public_keys ?(staking_share_opt = None) base_dir
     ~active_bakers_only alias_pkh_pk_list =
   let open Lwt_result_syntax in
-  let open Tezos_store in
+  let open Mavryk_store in
   let mainnet_genesis =
     {
       Genesis.time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
@@ -253,7 +253,7 @@ let load_mainnet_bakers_public_keys ?(staking_share_opt = None) base_dir
     }
   in
   let* store =
-    Tezos_store.Store.init
+    Mavryk_store.Store.init
       ~store_dir:(Filename.concat base_dir "store")
       ~context_dir:(Filename.concat base_dir "context")
       ~allow_testchains:true
@@ -261,11 +261,11 @@ let load_mainnet_bakers_public_keys ?(staking_share_opt = None) base_dir
       mainnet_genesis
   in
   let main_chain_store = Store.main_chain_store store in
-  let*! block = Tezos_store.Store.Chain.current_head main_chain_store in
+  let*! block = Mavryk_store.Store.Chain.current_head main_chain_store in
   Format.printf
     "@[<h>Head block:@;<17 0>%a@]@."
     Block_hash.pp
-    (Tezos_store.Store.Block.hash block) ;
+    (Mavryk_store.Store.Block.hash block) ;
   let header = Store.Block.header block in
   let*! context =
     let*! r = Store.Block.context_exn main_chain_store block in
@@ -298,12 +298,12 @@ let load_mainnet_bakers_public_keys ?(staking_share_opt = None) base_dir
           active_bakers_only
           staking_share_opt
   in
-  let*! () = Tezos_store.Store.close_store store in
+  let*! () = Mavryk_store.Store.close_store store in
   return
   @@ List.mapi
        (fun i (pkh, pk, stake) ->
-         let pkh = Tezos_crypto.Signature.Public_key_hash.to_b58check pkh in
-         let pk = Tezos_crypto.Signature.Public_key.to_b58check pk in
+         let pkh = Mavryk_crypto.Signature.Public_key_hash.to_b58check pkh in
+         let pk = Mavryk_crypto.Signature.Public_key.to_b58check pk in
          let alias =
            List.find_map
              (fun (alias, pkh', _) ->

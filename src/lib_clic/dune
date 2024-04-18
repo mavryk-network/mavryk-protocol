@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_clic)
+ (name mavryk_clic)
  (public_name mavkit-libs.clic)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,6 +14,6 @@
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib))
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib))

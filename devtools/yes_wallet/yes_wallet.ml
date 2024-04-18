@@ -30,7 +30,7 @@ type error = Overwrite_forbiden of string | File_not_found of string
 let run_load_mainnet_bakers_public_keys ?staking_share_opt base_dir
     ~active_bakers_only alias_pkh_pk_list =
   let open Yes_wallet_lib in
-  let open Tezos_error_monad in
+  let open Mavryk_error_monad in
   match
     Lwt_main.run
       (load_mainnet_bakers_public_keys
@@ -47,7 +47,7 @@ let run_load_mainnet_bakers_public_keys ?staking_share_opt base_dir
 let run_build_yes_wallet ?staking_share_opt base_dir ~active_bakers_only
     ~aliases =
   let open Yes_wallet_lib in
-  let open Tezos_error_monad in
+  let open Mavryk_error_monad in
   match
     Lwt_main.run
       (build_yes_wallet

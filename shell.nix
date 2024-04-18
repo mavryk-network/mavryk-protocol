@@ -91,11 +91,11 @@ let
     else pkgs.clang;
 in
   pkgs.mkShell {
-    name = "tezos-shell";
+    name = "mavryk-shell";
 
     hardeningDisable = ["stackprotector"];
 
-    inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE TEZOS_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
+    inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE MAVRYK_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
 
     buildInputs = with pkgs;
       kernelPackageSet

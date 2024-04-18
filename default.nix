@@ -6,12 +6,12 @@ let
   pkgs = sources.pkgs;
 
   overlays = pkgs.callPackage ./nix/overlays.nix {};
-  tezos-opam-repository = pkgs.callPackage ./nix/tezos-opam-repo.nix {};
+  mavryk-opam-repository = pkgs.callPackage ./nix/mavryk-opam-repo.nix {};
 
   packageSet = pkgs.opamPackages.overrideScope' (pkgs.lib.composeManyExtensions [
     # Set the opam-repository which has the package descriptions.
     (final: prev: {
-      repository = prev.repository.override {src = tezos-opam-repository;};
+      repository = prev.repository.override {src = mavryk-opam-repository;};
     })
 
     # First overlay simply picks the package versions from Tezos'
@@ -49,8 +49,8 @@ let
     {}
     ''
       mkdir -p $out/share/zcash-params
-      cp ${tezos-opam-repository}/zcash-params/sapling-output.params $out/share/zcash-params
-      cp ${tezos-opam-repository}/zcash-params/sapling-spend.params $out/share/zcash-params
+      cp ${mavryk-opam-repository}/zcash-params/sapling-output.params $out/share/zcash-params
+      cp ${mavryk-opam-repository}/zcash-params/sapling-spend.params $out/share/zcash-params
     '';
 
   mkFrameworkFlags = frameworks:
@@ -91,7 +91,7 @@ in
     buildInputs = packages ++ [pkgs.makeWrapper];
 
     # Disable OPAM usage in Makefile.
-    TEZOS_WITHOUT_OPAM = true;
+    MAVRYK_WITHOUT_OPAM = true;
 
     # $OPAM_SWITCH_PREFIX is used to find the ZCash parameters.
     OPAM_SWITCH_PREFIX = fakeOpamSwitchPrefix;

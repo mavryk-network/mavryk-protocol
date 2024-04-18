@@ -24,22 +24,22 @@
 (*****************************************************************************)
 
 let protocol_constants_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"a JSON file that contains protocol constants to set."
     ~long:"protocol-constants"
     ~placeholder:"path"
-    (Tezos_clic.parameter (fun _ x -> Lwt_result_syntax.return x))
+    (Mavryk_clic.parameter (fun _ x -> Lwt_result_syntax.return x))
 
 let bootstrap_accounts_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:
       "a JSON file that contains definitions of bootstrap accounts to create."
     ~long:"bootstrap-accounts"
     ~placeholder:"path"
-    (Tezos_clic.parameter (fun _ x -> Lwt_result_syntax.return x))
+    (Mavryk_clic.parameter (fun _ x -> Lwt_result_syntax.return x))
 
 let asynchronous_flag =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"asynchronous"
     ~doc:"put operations in mempool and require baking to include in the chain"
     ()
@@ -61,19 +61,19 @@ let create_mockup_command_handler
   in
   let* bootstrap_accounts_json = load_json_file cctxt bootstrap_accounts_file in
   let* () =
-    Tezos_mockup.Persistence.create_mockup
-      ~cctxt:(cctxt :> Tezos_client_base.Client_context.full)
+    Mavryk_mockup.Persistence.create_mockup
+      ~cctxt:(cctxt :> Mavryk_client_base.Client_context.full)
       ~protocol_hash:Protocol.hash
       ~constants_overrides_json
       ~bootstrap_accounts_json
       ~asynchronous
   in
-  Tezos_mockup_commands.Mockup_wallet.populate cctxt bootstrap_accounts_file
+  Mavryk_mockup_commands.Mockup_wallet.populate cctxt bootstrap_accounts_file
 
-let create_mockup_command : Protocol_client_context.full Tezos_clic.command =
-  let open Tezos_clic in
+let create_mockup_command : Protocol_client_context.full Mavryk_clic.command =
+  let open Mavryk_clic in
   command
-    ~group:Tezos_mockup_commands.Mockup_commands.group
+    ~group:Mavryk_mockup_commands.Mockup_commands.group
     ~desc:"Create a mockup environment."
     (args3 protocol_constants_arg bootstrap_accounts_arg asynchronous_flag)
     (prefixes ["create"; "mockup"] @@ stop)

@@ -107,7 +107,7 @@ let gen_step =
       Mavkit_smart_rollup.Game.Proof proof
 
 let random_seed ~rng_state =
-  Bytes.init Tezos_crypto.Hacl.Ed25519.sk_size (fun _i ->
+  Bytes.init Mavryk_crypto.Hacl.Ed25519.sk_size (fun _i ->
       Char.chr (Random.State.int rng_state 256))
 
 let random_algo ~rng_state : Signature.algo =
@@ -205,7 +205,7 @@ let gen_slot_header_commitment =
   let open QCheck2.Gen in
   make_primitive
     ~gen:(fun state ->
-      Tezos_crypto_dal.Cryptobox.Internal_for_tests.dummy_commitment ~state ())
+      Mavryk_crypto_dal.Cryptobox.Internal_for_tests.dummy_commitment ~state ())
     ~shrink:(fun _ -> Seq.empty)
 
 let gen_slot_header =

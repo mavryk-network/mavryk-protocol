@@ -34,7 +34,7 @@ module Skip_list = Skip_list.Make (Skip_list_parameters)
 
 module V1 = struct
   type level_proof = {
-    hash : Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
+    hash : Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
     level : int32;
   }
 
@@ -46,12 +46,12 @@ module V1 = struct
       (obj2
          (req
             "hash"
-            Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
+            Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
             .encoding)
          (req "level" int32))
 
   let equal_level_proof {hash; level} level_proof_2 =
-    Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.equal
+    Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.equal
       hash
       level_proof_2.hash
     && Int32.equal level level_proof_2.level
@@ -61,7 +61,7 @@ module V1 = struct
   let hash_history_proof cell =
     let {hash; level} = Skip_list.content cell in
     let back_pointers_hashes = Skip_list.back_pointers cell in
-    Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.to_bytes
+    Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.to_bytes
       hash
     :: (level |> Int32.to_string |> Bytes.of_string)
     :: List.map Hash.to_bytes back_pointers_hashes
@@ -76,7 +76,7 @@ module V1 = struct
     Format.fprintf
       fmt
       "hash: %a@,level: %ld"
-      Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.pp
+      Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.pp
       hash
       level
 

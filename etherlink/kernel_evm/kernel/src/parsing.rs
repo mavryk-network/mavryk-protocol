@@ -11,16 +11,16 @@ use crate::{
 };
 use primitive_types::{H160, U256};
 use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::{
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
     tx_common::EthereumTransactionCommon,
     wei::eth_from_mumav,
 };
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_encoding::{
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_encoding::{
     contract::Contract,
     inbox::{
         ExternalMessageFrame, InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer,
@@ -29,8 +29,8 @@ use tezos_smart_rollup_encoding::{
         ticket::FA2_1Ticket, MichelsonBytes, MichelsonInt, MichelsonOr, MichelsonPair,
     },
 };
-use tezos_smart_rollup_host::input::Message;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::input::Message;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 /// On an option, either the value, or if `None`, interrupt and return the
 /// default value of the return type instead.
@@ -389,8 +389,8 @@ impl InputResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_smart_rollup_host::input::Message;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::input::Message;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const ZERO_SMART_ROLLUP_ADDRESS: [u8; 20] = [0; 20];
 

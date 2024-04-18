@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Filename.Infix
-open Tezos_clic
+open Mavryk_clic
 
 let group =
   {
@@ -46,7 +46,7 @@ let data_dir_arg =
     ~short:'D'
     ~long:"data-dir"
     ~placeholder:"data-dir-path"
-    ~default:(Sys.getenv "HOME" // ".tezos-node")
+    ~default:(Sys.getenv "HOME" // ".mavryk-node")
     ( parameter @@ fun _ dn ->
       if Sys.file_exists dn && Sys.is_directory dn then return dn
       else failwith "%s does not exists or is not a directory" dn )
@@ -272,7 +272,7 @@ let find_proto_tool protocol =
 let extract_yes_wallet (cctxt : Client_context.full) =
   let open Lwt_result_syntax in
   let* {current_protocol; _} =
-    Tezos_shell_services.Chain_services.Blocks.protocols cctxt ()
+    Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ()
   in
   let* (module Tool) = find_proto_tool current_protocol in
   let*! () = cctxt#message "Extracting yes-wallet with consensus keys." in
@@ -281,7 +281,7 @@ let extract_yes_wallet (cctxt : Client_context.full) =
 let sync_node (cctxt : Client_context.full) round_duration_target =
   let open Lwt_result_syntax in
   let* {current_protocol; _} =
-    Tezos_shell_services.Chain_services.Blocks.protocols cctxt ()
+    Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ()
   in
   let* (module Tool) = find_proto_tool current_protocol in
   let*! () = cctxt#message "Synchronizing the node to a low round time." in
@@ -291,7 +291,7 @@ let run_injector (cctxt : Client_context.full) ~op_per_mempool
     ~min_manager_queues ~operations_file_path =
   let open Lwt_result_syntax in
   let* {current_protocol; _} =
-    Tezos_shell_services.Chain_services.Blocks.protocols cctxt ()
+    Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ()
   in
   let* (module Tool) = find_proto_tool current_protocol in
   Tool.start_injector
@@ -302,7 +302,7 @@ let run_injector (cctxt : Client_context.full) ~op_per_mempool
 
 let patch_block_time ~data_dir ~block_time_target =
   let open Lwt_result_syntax in
-  let open Tezos_store_unix in
+  let open Mavryk_store_unix in
   use_data_dir data_dir @@ fun () ->
   (* 1. Initialize storage *)
   let* _, config = Shared_arg.resolve_data_dir_and_config_file ~data_dir () in
@@ -317,7 +317,7 @@ let patch_block_time ~data_dir ~block_time_target =
   (* 2. Read current chain's head and checkout its context *)
   let chain_store = Store.main_chain_store store in
   let*! head = Store.Chain.current_head chain_store in
-  let*! (resulting_head_ctxt : Tezos_protocol_environment.Context.t) =
+  let*! (resulting_head_ctxt : Mavryk_protocol_environment.Context.t) =
     Store.Block.context_exn chain_store head
   in
   let*! current_protocol = Store.Block.protocol_hash_exn chain_store head in
@@ -334,7 +334,7 @@ let patch_block_time ~data_dir ~block_time_target =
      modified one associated so that the new constants are now the one
      used. *)
   let*! patched_ctxt_hash =
-    Tezos_context_ops.Context_ops.commit
+    Mavryk_context_ops.Context_ops.commit
       ~time:(Store.Block.timestamp head)
       ~message:"patched_context"
       patched_ctxt
@@ -402,7 +402,7 @@ let commands =
       ~desc:
         "Extract a yes-wallet (including consensus keys) directory from a \
          running node using RPCs. The newly created yes-wallet uses the -d \
-         option as path. Defaults to $HOME/.tezos-client."
+         option as path. Defaults to $HOME/.mavryk-client."
       no_options
       (fixed ["extract"; "yes-wallet"])
       (fun () (cctxt : Client_context.full) -> extract_yes_wallet cctxt);
@@ -478,7 +478,7 @@ module Custom_client_config : Client_main_run.M = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (endpoint, base_dir), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     let open Client_config in
     let cfg : Cfg_file.t =
@@ -494,7 +494,7 @@ module Custom_client_config : Client_main_run.M = struct
 
   let default_daily_logs_path = None
 
-  let default_media_type = Tezos_rpc_http.Media_type.Command_line.Binary
+  let default_media_type = Mavryk_rpc_http.Media_type.Command_line.Binary
 
   let other_registrations = None
 

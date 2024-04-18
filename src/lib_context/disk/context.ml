@@ -27,7 +27,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 (* Errors *)
 
@@ -87,7 +87,7 @@ let () =
     (function Suspicious_file e -> Some e | _ -> None)
     (fun e -> Suspicious_file e)
 
-module type TEZOS_CONTEXT_UNIX = sig
+module type MAVRYK_CONTEXT_UNIX = sig
   type error +=
     | Cannot_create_file of string
     | Cannot_open_file of string
@@ -95,8 +95,8 @@ module type TEZOS_CONTEXT_UNIX = sig
     | Suspicious_file of int
 
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
-      with type memory_context_tree := Tezos_context_memory.Context.tree
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
+      with type memory_context_tree := Mavryk_context_memory.Context.tree
 
   (** Sync the context with disk. Only useful for read-only instances.
     Does not fail when the context is not in read-only mode. *)
@@ -147,7 +147,7 @@ let reporter () =
   {Logs.report}
 
 let () =
-  match Tezos_context_helpers.Env.(v.verbosity) with
+  match Mavryk_context_helpers.Env.(v.verbosity) with
   | `Info ->
       Logs.set_level (Some Logs.Info) ;
       Logs.set_reporter (reporter ())
@@ -223,7 +223,7 @@ module Events = struct
       ("error", Data_encoding.string)
 end
 
-module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
+module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
   type error +=
     | Cannot_create_file = Cannot_create_file
     | Cannot_open_file = Cannot_open_file
@@ -237,7 +237,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
   module Store = struct
     module Maker = Irmin_pack_unix.Maker (Conf)
     include Maker.Make (Schema)
-    module Schema = Tezos_context_encoding.Context.Schema
+    module Schema = Mavryk_context_encoding.Context.Schema
   end
 
   module Info = Store.Info
@@ -342,7 +342,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
     let open Lwt_result_syntax in
     if Context_hash.Version.(of_int 0 = v) then return c
     else
-      tzfail (Tezos_context_helpers.Context.Unsupported_context_hash_version v)
+      tzfail (Mavryk_context_helpers.Context.Unsupported_context_hash_version v)
 
   let raw_commit ~time ?(message = "") context =
     let open Lwt_syntax in
@@ -437,7 +437,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
 
   (*-- Generic Store Primitives ------------------------------------------------*)
 
-  let data_key = Tezos_context_sigs.Context.data_key
+  let data_key = Mavryk_context_sigs.Context.data_key
 
   type key = string list
 
@@ -451,9 +451,9 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
 
   type kinded_key = [`Node of node_key | `Value of value_key]
 
-  module Tree = Tezos_context_helpers.Context.Make_tree (Conf) (Store)
-  include Tezos_context_helpers.Context.Make_config (Conf)
-  include Tezos_context_helpers.Context.Make_proof (Store) (Conf)
+  module Tree = Mavryk_context_helpers.Context.Make_tree (Conf) (Store)
+  include Mavryk_context_helpers.Context.Make_config (Conf)
+  include Mavryk_context_helpers.Context.Make_proof (Store) (Conf)
 
   let mem ctxt key = Tree.mem ctxt.tree (data_key key)
 
@@ -497,7 +497,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
   let may_flush context =
     if
       (not context.index.readonly)
-      && context.ops >= Tezos_context_helpers.Env.(v.auto_flush)
+      && context.ops >= Mavryk_context_helpers.Env.(v.auto_flush)
     then flush context
     else Lwt.return context
 
@@ -534,9 +534,9 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
         Proof.Dir res
 
   let tree_to_memory_tree (tree : tree) :
-      Tezos_context_memory.Context.tree Lwt.t =
+      Mavryk_context_memory.Context.tree Lwt.t =
     let contents path bytes acc =
-      Tezos_context_memory.Context.Tree.add acc path bytes
+      Mavryk_context_memory.Context.Tree.add acc path bytes
     in
     Store.Tree.fold
       ~force:`True
@@ -545,10 +545,10 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
       ~uniq:`False
       ~contents
       tree
-      (Tezos_context_memory.Context.make_empty_tree ())
+      (Mavryk_context_memory.Context.make_empty_tree ())
 
   let to_memory_tree (ctxt : t) (key : string list) :
-      Tezos_context_memory.Context.tree option Lwt.t =
+      Mavryk_context_memory.Context.tree option Lwt.t =
     let open Lwt_option_syntax in
     let* ctxt_tree = find_tree ctxt key in
     let*! c = tree_to_memory_tree ctxt_tree in
@@ -651,8 +651,8 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
     let unshallow = Tree.unshallow
   end
 
-  module Get_data = Tezos_context_sigs.Context.With_get_data ((
-    Storelike : Tezos_context_sigs.Context.Storelike))
+  module Get_data = Mavryk_context_sigs.Context.With_get_data ((
+    Storelike : Mavryk_context_sigs.Context.Storelike))
 
   let merkle_tree_v2 ctx leaf_kind key =
     let open Lwt_syntax in
@@ -792,11 +792,11 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
     (* Forces the context to use the minimal indexing strategy. *)
     let indexing_strategy = Irmin_pack.Indexing_strategy.minimal in
     let+ repo =
-      let env = Tezos_context_helpers.Env.v in
+      let env = Mavryk_context_helpers.Env.v in
       let index_log_size =
         Option.value
           tbl_log_size
-          ~default:Tezos_context_helpers.Env.(env.index_log_size)
+          ~default:Mavryk_context_helpers.Env.(env.index_log_size)
       in
       let lru_size = env.lru_size in
       let* () =
@@ -1136,7 +1136,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
 
   (* Context dumper *)
 
-  open Tezos_context_dump
+  open Mavryk_context_dump
   module Context_dumper = Context_dump.Make (Dumpable_context)
 
   let restore_context idx ~expected_context_hash ~nb_context_elements ~fd

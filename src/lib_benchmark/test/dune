@@ -12,15 +12,15 @@
   mavkit-libs.stdlib-unix
   mavkit-libs.micheline
   mavkit-libs.crypto
-  tezos-benchmark
-  tezos-benchmark-examples)
+  mavryk-benchmark
+  mavryk-benchmark-examples)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavkit_alcotezt
-  -open Tezos_base.TzPervasives)
+  -open Mavryk_base.TzPervasives)
  (modules
   test
   test_sparse_vec
@@ -40,7 +40,7 @@
 
 (rule
  (alias runtest)
- (package tezos-benchmark-tests)
+ (package mavryk-benchmark-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

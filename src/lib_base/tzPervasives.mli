@@ -24,52 +24,52 @@
 (*****************************************************************************)
 
 include module type of struct
-  include Tezos_stdlib
+  include Mavryk_stdlib
 end
 
-module Error_monad = Tezos_error_monad.Error_monad
+module Error_monad = Mavryk_error_monad.Error_monad
 module Data_encoding = Data_encoding
 
 (** The following modules are part of [TzLwtreslib]. We just remove
     - the [Monad] module (already available, with some name simplifications,
       from [Error_monad]), and
     - the [List] module (exported just afterwards with a small addition). *)
-module Hashtbl = Tezos_error_monad.TzLwtreslib.Hashtbl
+module Hashtbl = Mavryk_error_monad.TzLwtreslib.Hashtbl
 
-module Map = Tezos_error_monad.TzLwtreslib.Map
-module Option = Tezos_error_monad.TzLwtreslib.Option
-module Result = Tezos_error_monad.TzLwtreslib.Result
-module Seq = Tezos_error_monad.TzLwtreslib.Seq
-module Seq_e = Tezos_error_monad.TzLwtreslib.Seq_e
-module Seq_s = Tezos_error_monad.TzLwtreslib.Seq_s
-module Seq_es = Tezos_error_monad.TzLwtreslib.Seq_es
-module Set = Tezos_error_monad.TzLwtreslib.Set
-module Unit = Tezos_error_monad.TzLwtreslib.Unit
-module WithExceptions = Tezos_error_monad.TzLwtreslib.WithExceptions
+module Map = Mavryk_error_monad.TzLwtreslib.Map
+module Option = Mavryk_error_monad.TzLwtreslib.Option
+module Result = Mavryk_error_monad.TzLwtreslib.Result
+module Seq = Mavryk_error_monad.TzLwtreslib.Seq
+module Seq_e = Mavryk_error_monad.TzLwtreslib.Seq_e
+module Seq_s = Mavryk_error_monad.TzLwtreslib.Seq_s
+module Seq_es = Mavryk_error_monad.TzLwtreslib.Seq_es
+module Set = Mavryk_error_monad.TzLwtreslib.Set
+module Unit = Mavryk_error_monad.TzLwtreslib.Unit
+module WithExceptions = Mavryk_error_monad.TzLwtreslib.WithExceptions
 
 module List : sig
-  include module type of Tezos_stdlib.TzList
+  include module type of Mavryk_stdlib.TzList
 
-  include module type of Tezos_error_monad.TzLwtreslib.List
+  include module type of Mavryk_error_monad.TzLwtreslib.List
 end
 
 module String : sig
   include module type of String
 
-  include module type of Tezos_stdlib.TzString
+  include module type of Mavryk_stdlib.TzString
 
   module Hashtbl :
-    Tezos_error_monad.TzLwtreslib.Hashtbl.SeededS with type key = t
+    Mavryk_error_monad.TzLwtreslib.Hashtbl.SeededS with type key = t
 
-  module Map : Tezos_error_monad.TzLwtreslib.Map.S with type key = t
+  module Map : Mavryk_error_monad.TzLwtreslib.Map.S with type key = t
 
-  module Set : Tezos_error_monad.TzLwtreslib.Set.S with type elt = t
+  module Set : Mavryk_error_monad.TzLwtreslib.Set.S with type elt = t
 end
 
 module Bytes : sig
   include module type of Bytes
 
-  include module type of Tezos_stdlib.TzBytes
+  include module type of Mavryk_stdlib.TzBytes
 end
 
 module Time = Time
@@ -93,31 +93,31 @@ module P2p_rejection = P2p_rejection
 module P2p_params = P2p_params
 module Distributed_db_version = Distributed_db_version
 module Network_version = Network_version
-module Block_hash = Tezos_crypto.Hashed.Block_hash
-module Block_metadata_hash = Tezos_crypto.Hashed.Block_metadata_hash
-module Chain_id = Tezos_crypto.Hashed.Chain_id
-module Context_hash = Tezos_crypto.Hashed.Context_hash
-module Operation_hash = Tezos_crypto.Hashed.Operation_hash
-module Operation_list_hash = Tezos_crypto.Hashed.Operation_list_hash
-module Operation_list_list_hash = Tezos_crypto.Hashed.Operation_list_list_hash
-module Operation_metadata_hash = Tezos_crypto.Hashed.Operation_metadata_hash
+module Block_hash = Mavryk_crypto.Hashed.Block_hash
+module Block_metadata_hash = Mavryk_crypto.Hashed.Block_metadata_hash
+module Chain_id = Mavryk_crypto.Hashed.Chain_id
+module Context_hash = Mavryk_crypto.Hashed.Context_hash
+module Operation_hash = Mavryk_crypto.Hashed.Operation_hash
+module Operation_list_hash = Mavryk_crypto.Hashed.Operation_list_hash
+module Operation_list_list_hash = Mavryk_crypto.Hashed.Operation_list_list_hash
+module Operation_metadata_hash = Mavryk_crypto.Hashed.Operation_metadata_hash
 module Operation_metadata_list_hash =
-  Tezos_crypto.Hashed.Operation_metadata_list_hash
+  Mavryk_crypto.Hashed.Operation_metadata_list_hash
 module Operation_metadata_list_list_hash =
-  Tezos_crypto.Hashed.Operation_metadata_list_list_hash
-module Protocol_hash = Tezos_crypto.Hashed.Protocol_hash
-module Signature = Tezos_crypto.Signature
+  Mavryk_crypto.Hashed.Operation_metadata_list_list_hash
+module Protocol_hash = Mavryk_crypto.Hashed.Protocol_hash
+module Signature = Mavryk_crypto.Signature
 module Skip_list = Skip_list
 
 include module type of Utils.Infix
 
-include module type of Tezos_error_monad.Error_monad
+include module type of Mavryk_error_monad.Error_monad
 
 module Option_syntax =
-  Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax
+  Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax
 
 module Lwt_option_syntax =
-  Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Lwt_option_syntax
+  Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Lwt_option_syntax
 
 module Internal_event = Internal_event
 

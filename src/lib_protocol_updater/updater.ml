@@ -56,7 +56,7 @@ let do_compile hash p =
     Dynlink.loadfile_private (plugin_file ^ ".cmxs") ;
     Lwt.return_true
   with Dynlink.Error _ -> (
-    let* r = Tezos_base_unix.Protocol_files.write_dir source_dir ~hash p in
+    let* r = Mavryk_base_unix.Protocol_files.write_dir source_dir ~hash p in
     match r with
     | Error err ->
         let* () = Events.(emit compiler_exit_error) err in
@@ -101,10 +101,10 @@ let do_compile hash p =
 
 let compile hash p =
   let open Lwt_syntax in
-  if Tezos_protocol_registerer.mem hash then Lwt.return_true
+  if Mavryk_protocol_registerer.mem hash then Lwt.return_true
   else
     let* success = do_compile hash p in
-    let loaded = Tezos_protocol_registerer.mem hash in
+    let loaded = Mavryk_protocol_registerer.mem hash in
     if success && not loaded then
       let* () = Events.(emit internal_error) hash in
       Lwt.return loaded

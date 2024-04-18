@@ -46,14 +46,14 @@ let no_check = false
 
 let init_logs =
   let log_cfg =
-    Tezos_base_unix.Logs_simple_config.create_cfg
+    Mavryk_base_unix.Logs_simple_config.create_cfg
       ~rules:"test.p2p.connection-pool -> info; p2p.connection-pool -> info"
       ()
   in
   let config =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
   in
-  lazy (Tezos_base_unix.Internal_event_unix.init ~config ())
+  lazy (Mavryk_base_unix.Internal_event_unix.init ~config ())
 
 (** Detaches [!client] nodes. Each of them will send a [BigPing] to each
     other node, then await for reading one from each other node.
@@ -87,16 +87,16 @@ module Simple = struct
     let () = Tezt.Log.debug "Connect to %a" P2p_point.Id.pp point in
     let* r = P2p_connect_handler.connect connect_handler point ~timeout in
     match r with
-    | Error (Tezos_p2p_services.P2p_errors.Connected :: _) -> (
+    | Error (Mavryk_p2p_services.P2p_errors.Connected :: _) -> (
         match P2p_pool.Connection.find_by_point pool point with
         | Some conn -> return_ok conn
         | None -> failwith "Woops...")
     | Error
-        ((( Tezos_p2p_services.P2p_errors.Connection_failed
-          | Tezos_p2p_services.P2p_errors.Pending_connection
-          | Tezos_p2p_services.P2p_errors.Rejected_socket_connection
-          | Tezos_p2p_services.P2p_errors.Rejected_by_nack _ | Canceled
-          | Timeout | Tezos_p2p_services.P2p_errors.Rejected _ ) as head_err)
+        ((( Mavryk_p2p_services.P2p_errors.Connection_failed
+          | Mavryk_p2p_services.P2p_errors.Pending_connection
+          | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection
+          | Mavryk_p2p_services.P2p_errors.Rejected_by_nack _ | Canceled
+          | Timeout | Mavryk_p2p_services.P2p_errors.Rejected _ ) as head_err)
         :: _) ->
         Tezt.Log.debug
           "Connection to %a failed (%a)@."
@@ -104,25 +104,25 @@ module Simple = struct
           point
           (fun ppf err ->
             match err with
-            | Tezos_p2p_services.P2p_errors.Connection_failed ->
+            | Mavryk_p2p_services.P2p_errors.Connection_failed ->
                 Format.fprintf ppf "connection refused"
-            | Tezos_p2p_services.P2p_errors.Pending_connection ->
+            | Mavryk_p2p_services.P2p_errors.Pending_connection ->
                 Format.fprintf ppf "pending connection"
-            | Tezos_p2p_services.P2p_errors.Rejected_socket_connection ->
+            | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection ->
                 Format.fprintf ppf "rejected"
-            | Tezos_p2p_services.P2p_errors.Rejected_by_nack
+            | Mavryk_p2p_services.P2p_errors.Rejected_by_nack
                 {alternative_points = Some alternative_points; _} ->
                 Format.fprintf
                   ppf
                   "rejected (nack_v1, peer list: @[<h>%a@])"
                   P2p_point.Id.pp_list
                   alternative_points
-            | Tezos_p2p_services.P2p_errors.Rejected_by_nack
+            | Mavryk_p2p_services.P2p_errors.Rejected_by_nack
                 {alternative_points = None; _} ->
                 Format.fprintf ppf "rejected (nack_v0)"
             | Canceled -> Format.fprintf ppf "canceled"
             | Timeout -> Format.fprintf ppf "timeout"
-            | Tezos_p2p_services.P2p_errors.Rejected {peer; motive} ->
+            | Mavryk_p2p_services.P2p_errors.Rejected {peer; motive} ->
                 Format.fprintf
                   ppf
                   "rejected (%a) motive:%a"
@@ -305,7 +305,7 @@ let main () =
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-p2p-broadcast"
+       "mavryk-p2p-broadcast"
        [("p2p-broadcast", [wrap addr "simple" Simple.run])]
 
 let () =

@@ -24,14 +24,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_context_encoding.Context
+open Mavryk_context_encoding.Context
 module Env = Env
 
 module type DB = Irmin.Generic_key.S with module Schema = Schema
 
 module Make_tree (Conf : Conf) (DB : DB) : sig
   include
-    Tezos_context_sigs.Context.TREE
+    Mavryk_context_sigs.Context.TREE
       with type t := DB.t
        and type key := DB.path
        and type value := DB.contents
@@ -68,10 +68,10 @@ module Make_tree (Conf : Conf) (DB : DB) : sig
   exception Context_dangling_hash of string
 end
 
-module Proof_encoding = Tezos_context_merkle_proof_encoding
+module Proof_encoding = Mavryk_context_merkle_proof_encoding
 
-module Make_proof (DB : DB) (Store_conf : Tezos_context_encoding.Context.Conf) : sig
-  module Proof : Tezos_context_sigs.Context.PROOF
+module Make_proof (DB : DB) (Store_conf : Mavryk_context_encoding.Context.Conf) : sig
+  module Proof : Mavryk_context_sigs.Context.PROOF
 
   type kinded_key := [`Value of DB.contents_key | `Node of DB.node_key]
 
@@ -106,14 +106,14 @@ end
 
 module Make_config (Conf : Irmin_pack.Conf.S) : sig
   val equal_config :
-    Tezos_context_sigs.Config.t -> Tezos_context_sigs.Config.t -> bool
+    Mavryk_context_sigs.Config.t -> Mavryk_context_sigs.Config.t -> bool
 
-  val config : 'a -> Tezos_context_sigs.Config.t
+  val config : 'a -> Mavryk_context_sigs.Config.t
 end
 
 type error += Unsupported_context_hash_version of Context_hash.Version.t
 
-(** See [Tezos_context_sigs.Context.Proof_types.t] *)
+(** See [Mavryk_context_sigs.Context.Proof_types.t] *)
 type proof_version_expanded = {is_stream : bool; is_binary : bool}
 
 val decode_proof_version :

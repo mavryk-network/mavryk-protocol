@@ -16,7 +16,7 @@ const in_prod = function () {
 
 /**
  * When in production, binaries are searched in the $PATH,
- * else in TEZOS_DIR,
+ * else in MAVRYK_DIR,
  * else the argument is used.
  * @param filepath
  * @returns
@@ -25,8 +25,8 @@ const bin = function (filepath) {
 
     if (in_prod()) {
         return path.basename(filepath)
-    } else if (process.env.TEZOS_DIR) {
-        return path.resolve(process.env.TEZOS_DIR, filepath)
+    } else if (process.env.MAVRYK_DIR) {
+        return path.resolve(process.env.MAVRYK_DIR, filepath)
     } else {
         return path.resolve(filepath)
     }
@@ -35,7 +35,7 @@ const bin = function (filepath) {
 /**
  * When in production, the ressources are searched for in directory
  * configurable using the env variable $EXTERNAL_RESSOURCES
- * else in TEZOS_DIR,
+ * else in MAVRYK_DIR,
  * else the argument is used.
  * @param filepath
  * @returns
@@ -46,9 +46,9 @@ const resource = function (filepath) {
             dir: process.env.EXTERNAL_RESSOURCES,
             base: path.basename(filepath)
         })
-    } else if (process.env.TEZOS_DIR) {
+    } else if (process.env.MAVRYK_DIR) {
         return path.format({
-            dir: process.env.TEZOS_DIR,
+            dir: process.env.MAVRYK_DIR,
             base: path.basename(filepath)
         })
     } else {

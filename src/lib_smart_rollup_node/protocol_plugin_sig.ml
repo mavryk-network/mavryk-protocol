@@ -30,7 +30,7 @@ module type RPC_DIRECTORY = sig
       node. *)
   val block_directory :
     Node_context.rw ->
-    (unit * Rollup_node_services.Arg.block_id) Tezos_rpc.Directory.t
+    (unit * Rollup_node_services.Arg.block_id) Mavryk_rpc.Directory.t
 end
 
 (** Protocol specific functions to track endorsed DAL slots of L1 blocks. *)
@@ -168,10 +168,10 @@ end
 
 (** Protocol specific functions to interact with the L1 node. *)
 module type LAYER1_HELPERS = sig
-  (** [prefetch_tezos_blocks l1_ctxt blocks] prefetches the blocks
+  (** [prefetch_mavryk_blocks l1_ctxt blocks] prefetches the blocks
       asynchronously. NOTE: the number of blocks to prefetch must not be greater
       than the size of the blocks cache otherwise they will be lost. *)
-  val prefetch_tezos_blocks : Layer1.t -> Layer1.head list -> unit
+  val prefetch_mavryk_blocks : Layer1.t -> Layer1.head list -> unit
 
   val get_last_cemented_commitment :
     #Client_context.full -> Address.t -> Node_context.lcc tzresult Lwt.t
@@ -192,7 +192,7 @@ module type LAYER1_HELPERS = sig
 
   (** Retrieve protocol agnotic constants for the head of the chain. *)
   val retrieve_constants :
-    ?block:Tezos_shell_services.Block_services.block ->
+    ?block:Mavryk_shell_services.Block_services.block ->
     #Client_context.full ->
     Rollup_constants.protocol_constants tzresult Lwt.t
 

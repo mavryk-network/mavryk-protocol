@@ -2,44 +2,44 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmarks_proto_001_PtAtLas)
- (public_name tezos-benchmarks-proto-001-PtAtLas)
+ (name mavryk_benchmarks_proto_001_PtAtLas)
+ (public_name mavryk-benchmarks-proto-001-PtAtLas)
  (instrumentation (backend bisect_ppx))
  (libraries
   str
   mavkit-libs.stdlib
   mavkit-libs.base
   mavkit-libs.error-monad
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-libs.lazy-containers
-  tezos-benchmark
-  tezos-benchmark-001-PtAtLas
-  tezos-benchmark-type-inference-001-PtAtLas
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-benchmark
+  mavryk-benchmark-001-PtAtLas
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-libs.crypto
   mavkit-shell-libs.shell-benchmarks
   mavkit-libs.micheline
   mavkit-protocol-001-PtAtLas-libs.test-helpers
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-protocol-001-PtAtLas-libs.client
   mavkit-protocol-001-PtAtLas-libs.plugin
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_error_monad
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_lazy_containers
-  -open Tezos_benchmark
-  -open Tezos_benchmark_001_PtAtLas
-  -open Tezos_benchmark_type_inference_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas.Protocol
-  -open Tezos_micheline
-  -open Tezos_001_PtAtLas_test_helpers
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_protocol_plugin_001_PtAtLas))
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_error_monad
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_lazy_containers
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_001_PtAtLas
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas.Protocol
+  -open Mavryk_micheline
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_plugin_001_PtAtLas))

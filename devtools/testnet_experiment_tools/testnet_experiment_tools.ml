@@ -38,7 +38,7 @@
 
 open Tezt
 open Tezt_tezos
-open Tezos_crypto
+open Mavryk_crypto
 module Node_config = Mavkit_node_config.Config_file
 
 let ensure_dir_exists dir =
@@ -75,7 +75,7 @@ let default_output_dir =
 let output_dir =
   Sys.getenv_opt output_dir_name |> Option.value ~default:default_output_dir
 
-let network_name_default = "TEZOS_EXPERIMENT_NET"
+let network_name_default = "MAVRYK_EXPERIMENT_NET"
 
 let network_name =
   Sys.getenv_opt "NETWORK" |> Option.value ~default:network_name_default
@@ -129,9 +129,9 @@ let rec genesis () =
       let p = String.sub p 0 (String.length p - 4) in
       let b58_block_hash = Base58.safe_encode p in
       let block =
-        Tezos_crypto.Hashed.Block_hash.of_b58check_exn b58_block_hash
+        Mavryk_crypto.Hashed.Block_hash.of_b58check_exn b58_block_hash
       in
-      return (block, Tezos_base.Time.Protocol.of_notation_exn time)
+      return (block, Mavryk_base.Time.Protocol.of_notation_exn time)
 
 let save_config (Node_config.{data_dir; _} as configuration) =
   let file = Filename.concat data_dir "config.json" in
@@ -230,16 +230,16 @@ module Local = struct
 
   let generate_network_configuration network_name data_dir () =
     let protocol =
-      Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn
+      Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn
         "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
     in
     let* block, time = genesis () in
-    let genesis = Tezos_base.Genesis.{block; time; protocol} in
+    let genesis = Mavryk_base.Genesis.{block; time; protocol} in
     let chain_name =
-      Tezos_base.Distributed_db_version.Name.of_string network_name
+      Mavryk_base.Distributed_db_version.Name.of_string network_name
     in
     let sandboxed_chain_name =
-      Tezos_base.Distributed_db_version.Name.of_string @@ network_name
+      Mavryk_base.Distributed_db_version.Name.of_string @@ network_name
       ^ "_SANDBOXED"
     in
     let client = Client.create ~base_dir:output_dir () in

@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_proxy_rpc)
+ (name mavryk_proxy_rpc)
  (public_name mavkit-shell-libs.proxy.rpc)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,4 +14,4 @@
   uri)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

@@ -14,7 +14,7 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_error_monad
+  -open Mavryk_base
+  -open Mavryk_error_monad
   -open Data_encoding
-  -open Tezos_client_alpha))
+  -open Mavryk_client_alpha))

@@ -173,7 +173,7 @@ end
 
 module Query = struct
   let outbox_proof_query =
-    let open Tezos_rpc.Query in
+    let open Mavryk_rpc.Query in
     let open Sc_rollup in
     let invalid_message e =
       raise
@@ -203,11 +203,11 @@ module Query = struct
         match message with
         | Error e -> invalid_message e
         | Ok message -> {outbox_level; message_index; message})
-    |+ opt_field "outbox_level" Tezos_rpc.Arg.int32 (fun o ->
+    |+ opt_field "outbox_level" Mavryk_rpc.Arg.int32 (fun o ->
            Some (Raw_level.to_int32 o.outbox_level))
-    |+ opt_field "message_index" Tezos_rpc.Arg.int64 (fun o ->
+    |+ opt_field "message_index" Mavryk_rpc.Arg.int64 (fun o ->
            Some (Z.to_int64 o.message_index))
-    |+ opt_field "serialized_outbox_message" Tezos_rpc.Arg.string (fun o ->
+    |+ opt_field "serialized_outbox_message" Mavryk_rpc.Arg.string (fun o ->
            match Outbox.Message.serialize o.message with
            | Ok message -> Some (Outbox.Message.unsafe_to_string message)
            | Error e -> invalid_message e)
@@ -215,14 +215,14 @@ module Query = struct
 
   type key_query = {key : string}
 
-  let key_query : key_query Tezos_rpc.Query.t =
-    let open Tezos_rpc.Query in
+  let key_query : key_query Mavryk_rpc.Query.t =
+    let open Mavryk_rpc.Query in
     query (fun key -> {key})
-    |+ field "key" Tezos_rpc.Arg.string "" (fun t -> t.key)
+    |+ field "key" Mavryk_rpc.Arg.string "" (fun t -> t.key)
     |> seal
 
   let outbox_level_query =
-    let open Tezos_rpc.Query in
+    let open Mavryk_rpc.Query in
     query (fun outbox_level ->
         let req name f = function
           | None ->
@@ -231,12 +231,12 @@ module Query = struct
           | Some arg -> f arg
         in
         req "outbox_level" Raw_level.of_int32_exn outbox_level)
-    |+ opt_field "outbox_level" Tezos_rpc.Arg.int32 (fun o ->
+    |+ opt_field "outbox_level" Mavryk_rpc.Arg.int32 (fun o ->
            Some (Raw_level.to_int32 o))
     |> seal
 
   let message_index_query =
-    let open Tezos_rpc.Query in
+    let open Mavryk_rpc.Query in
     query (fun message_index ->
         let req name f = function
           | None ->
@@ -245,101 +245,101 @@ module Query = struct
           | Some arg -> f arg
         in
         req "index" (fun o -> o) message_index)
-    |+ opt_field "index" Tezos_rpc.Arg.uint (fun o -> Some o)
+    |+ opt_field "index" Mavryk_rpc.Arg.uint (fun o -> Some o)
     |> seal
 end
 
 type simulate_query = {fuel : int64 option}
 
-let simulate_query : simulate_query Tezos_rpc.Query.t =
-  let open Tezos_rpc.Query in
+let simulate_query : simulate_query Mavryk_rpc.Query.t =
+  let open Mavryk_rpc.Query in
   query (fun fuel -> {fuel})
-  |+ opt_field "fuel" Tezos_rpc.Arg.int64 (fun t -> t.fuel)
+  |+ opt_field "fuel" Mavryk_rpc.Arg.int64 (fun t -> t.fuel)
   |> seal
 
 module Block = struct
-  open Tezos_rpc.Path
+  open Mavryk_rpc.Path
 
   type prefix = unit * Rollup_node_services.Arg.block_id
 
-  let path : prefix Tezos_rpc.Path.context = open_root
+  let path : prefix Mavryk_rpc.Path.context = open_root
 
   let prefix = root / "global" / "block" /: Rollup_node_services.Arg.block_id
 
   let block =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Layer-2 block of the layer-2 chain with respect to a Layer 1 block \
          identifier"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Sc_rollup_block.full_encoding
       path
 
   let hash =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Tezos block hash of block known to the smart rollup node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Block_hash.encoding
       (path / "hash")
 
   let level =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Level of Tezos block known to the smart rollup node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.int32
       (path / "level")
 
   let inbox =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Rollup inbox for block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Mavkit_smart_rollup.Inbox.encoding
       (path / "inbox")
 
   let ticks =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Number of ticks for specified level"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.z
       (path / "ticks")
 
   let total_ticks =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Total number of ticks at specified block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Sc_rollup.Tick.encoding
       (path / "total_ticks")
 
   let num_messages =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Number of messages for specified block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.z
       (path / "num_messages")
 
   let state_hash =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"State hash for this block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Sc_rollup.State_hash.encoding
       (path / "state_hash")
 
   let state_current_level =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Retrieve the current level of a PVM"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Raw_level.encoding)
       (path / "state_current_level")
 
   let state_value =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Retrieve value from key is PVM state of specified block"
       ~query:Query.key_query
       ~output:Data_encoding.bytes
       (path / "state")
 
   let durable_state_value (pvm_kind : Sc_rollup.Kind.t) =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Retrieve value by key from PVM durable storage. PVM state is taken \
          with respect to the specified block level. Value returned in hex \
@@ -350,7 +350,7 @@ module Block = struct
 
   let durable_state_length (pvm_kind : Protocol.Alpha_context.Sc_rollup.Kind.t)
       =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Retrieve number of bytes in raw representation of value by key from \
          PVM durable storage. PVM state is taken with respect to the specified \
@@ -360,7 +360,7 @@ module Block = struct
       (path / "durable" / Sc_rollup.Kind.to_string pvm_kind / "length")
 
   let durable_state_subkeys (pvm_kind : Sc_rollup.Kind.t) =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Retrieve subkeys of the specified key from PVM durable storage. PVM \
          state is taken with respect to the specified block level."
@@ -369,31 +369,31 @@ module Block = struct
       (path / "durable" / Sc_rollup.Kind.to_string pvm_kind / "subkeys")
 
   let status =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"PVM status at block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.string
       (path / "status")
 
   let outbox =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Outbox at block for a given outbox level"
       ~query:Query.outbox_level_query
       ~output:Data_encoding.(list Sc_rollup.output_encoding)
       (path / "outbox")
 
   let simulate =
-    Tezos_rpc.Service.post_service
+    Mavryk_rpc.Service.post_service
       ~description:"Simulate messages evaluation by the PVM"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~input:Encodings.simulate_input
       ~output:Encodings.eval_result
       (path / "simulate")
 
   let dal_slots =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Availability slots for a given block"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.list Dal.Slot.Header.encoding)
       (path / "dal" / "slot_headers")
 
@@ -402,9 +402,9 @@ module Block = struct
       [("confirmed", `Confirmed); ("unconfirmed", `Unconfirmed)]
 
   let dal_processed_slots =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Data availability processed slots and their statuses"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:
         Data_encoding.(
           list
@@ -421,12 +421,12 @@ module Block = struct
           | Ok l -> Ok l)
     in
     let construct = Format.asprintf "%a" Raw_level.pp in
-    Tezos_rpc.Arg.make ~name:"level" ~construct ~destruct ()
+    Mavryk_rpc.Arg.make ~name:"level" ~construct ~destruct ()
 
   let outbox_messages =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Outbox at block for a given outbox level"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.(list Sc_rollup.output_encoding)
       (path / "outbox" /: level_param / "messages")
 
@@ -436,7 +436,7 @@ module Block = struct
     let path = path / "helpers"
 
     let outbox_proof =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Generate serialized output proof for some outbox message"
         ~query:Query.outbox_proof_query
         ~output:
@@ -447,7 +447,7 @@ module Block = struct
         (path / "proofs" / "outbox")
 
     let outbox_proof_simple =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Generate serialized output proof for some outbox message at level \
            and index"

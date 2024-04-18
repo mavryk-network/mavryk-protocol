@@ -71,7 +71,7 @@ struct
       name:string ->
       generator:'a Base_samplers.sampler ->
       make_bench:
-        ((unit -> 'a) -> unit -> unit Tezos_benchmark.Generator.benchmark) ->
+        ((unit -> 'a) -> unit -> unit Mavryk_benchmark.Generator.benchmark) ->
       unit ->
       Benchmark.simple_with_num =
    fun ?(check = fun () -> ()) ~name ~generator ~make_bench () ->
@@ -226,7 +226,7 @@ struct
   let make_encode_variable_size :
       type a.
       ?check:(unit -> unit) ->
-      ?purpose:Tezos_benchmark.Benchmark.purpose ->
+      ?purpose:Mavryk_benchmark.Benchmark.purpose ->
       name:string ->
       encoding:a Data_encoding.t ->
       generator:(Random.State.t -> a * Shared_linear.workload) ->
@@ -266,7 +266,7 @@ struct
   let make_decode_variable_size :
       type a.
       ?check:(unit -> unit) ->
-      ?purpose:Tezos_benchmark.Benchmark.purpose ->
+      ?purpose:Mavryk_benchmark.Benchmark.purpose ->
       name:string ->
       encoding:a Data_encoding.t ->
       ?intercept:bool ->

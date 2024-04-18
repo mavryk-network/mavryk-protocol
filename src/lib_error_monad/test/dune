@@ -15,7 +15,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_error_monad
+  -open Mavryk_error_monad
   -open Mavkit_alcotezt)
  (modules test_registration test_splitted_error_encoding))
 

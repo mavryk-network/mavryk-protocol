@@ -29,8 +29,8 @@ open Protocol.Alpha_context
     {!Protocol.Alpha_context.Sc_rollup.Generic_pvm_context_sig} *)
 module In_memory :
   Sc_rollup.Generic_pvm_context_sig
-    with type Tree.tree = Tezos_context_memory.Context_binary.tree
-     and type Tree.t = Tezos_context_memory.Context_binary.t
+    with type Tree.tree = Mavryk_context_memory.Context_binary.tree
+     and type Tree.t = Mavryk_context_memory.Context_binary.t
      and type proof =
-      Tezos_context_memory.Context.Proof.tree
-      Tezos_context_memory.Context.Proof.t
+      Mavryk_context_memory.Context.Proof.tree
+      Mavryk_context_memory.Context.Proof.t

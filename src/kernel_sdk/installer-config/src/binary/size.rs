@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, PREIMAGE_HASH_SIZE};
-use tezos_smart_rollup_host::path::PATH_MAX_SIZE;
+use mavryk_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, PREIMAGE_HASH_SIZE};
+use mavryk_smart_rollup_host::path::PATH_MAX_SIZE;
 
 use super::{ConfigInstruction, MoveInstruction, RefBytes, RevealInstruction};
 

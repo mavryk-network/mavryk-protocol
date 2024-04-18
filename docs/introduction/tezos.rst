@@ -23,7 +23,7 @@ The current release of Mavkit is :doc:`../releases/version-18`.
 
 For installing instructions, see :doc:`./howtoget`.
 
-.. _tezos_community:
+.. _mavryk_community:
 
 The Community
 ~~~~~~~~~~~~~

@@ -2,18 +2,18 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_proxy_test_helpers_shell_services)
+ (name mavryk_proxy_test_helpers_shell_services)
  (libraries
   mavkit-libs.base
   mavkit-shell-libs.shell-services
   mavkit-libs.test-helpers
   qcheck-core
-  mavkit-libs.tezos-context.memory
+  mavkit-libs.mavryk-context.memory
   lwt.unix
   mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt))

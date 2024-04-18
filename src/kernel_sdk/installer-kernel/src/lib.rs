@@ -23,10 +23,10 @@ mod instr;
 use crate::instr::read_instruction_bytes;
 use core::panic::PanicInfo;
 use instr::read_config_program_size;
-use tezos_smart_rollup::host::Runtime;
-use tezos_smart_rollup::storage::path::RefPath;
-use tezos_smart_rollup_installer_config::binary::evaluation::eval_config_instr;
-use tezos_smart_rollup_installer_config::binary::{
+use mavryk_smart_rollup::host::Runtime;
+use mavryk_smart_rollup::storage::path::RefPath;
+use mavryk_smart_rollup_installer_config::binary::evaluation::eval_config_instr;
+use mavryk_smart_rollup_installer_config::binary::{
     completed, read_size, EncodingSize, NomReader, RefConfigInstruction,
 };
 
@@ -39,7 +39,7 @@ const AUXILIARY_CONFIG_INTERPRETATION_PATH: RefPath =
     RefPath::assert_from(b"/__installer_kernel/auxiliary/kernel/boot.wasm");
 
 #[cfg(all(feature = "entrypoint", target_arch = "wasm32"))]
-tezos_smart_rollup::kernel_entry!(installer);
+mavryk_smart_rollup::kernel_entry!(installer);
 
 /// Installer.
 pub fn installer<Host: Runtime>(host: &mut Host) {

@@ -192,8 +192,8 @@ A more flexible method is to only register a key as being remote, and separately
 
 Alternatively, the address of the signer can be recorded in environment variables::
 
-   vps~$ export TEZOS_SIGNER_TCP_HOST=home
-   vps~$ export TEZOS_SIGNER_TCP_PORT=7732
+   vps~$ export MAVRYK_SIGNER_TCP_HOST=home
+   vps~$ export MAVRYK_SIGNER_TCP_PORT=7732
    vps~$ mavkit-client import secret key alice remote:mv1abc...
    vps~$ mavkit-client sign bytes 0x03 for alice
 
@@ -207,21 +207,21 @@ All the above methods can also be used with the other signing schemes, for insta
    vps~$ mavkit-client -R 'http://home:7732' import secret key alice remote:mv1abc...
    vps~$ mavkit-client -R 'http://home:7732' sign bytes 0x03 for alice
 
-   vps~$ export TEZOS_SIGNER_HTTP_HOST=home
-   vps~$ export TEZOS_SIGNER_HTTP_PORT=7732
+   vps~$ export MAVRYK_SIGNER_HTTP_HOST=home
+   vps~$ export MAVRYK_SIGNER_HTTP_PORT=7732
    vps~$ mavkit-client import secret key alice remote:mv1abc...
    vps~$ mavkit-client sign bytes 0x03 for alice
 
 The complete list of environment variables for connecting to the remote signer is:
 
-+ ``TEZOS_SIGNER_TCP_HOST``
-+ ``TEZOS_SIGNER_TCP_PORT`` (default: 7732)
-+ ``TEZOS_SIGNER_HTTP_HOST``
-+ ``TEZOS_SIGNER_HTTP_PORT`` (default: 6732)
-+ ``TEZOS_SIGNER_HTTPS_HOST``
-+ ``TEZOS_SIGNER_HTTPS_PORT`` (default: 443)
-+ ``TEZOS_SIGNER_UNIX_PATH``
-+ ``TEZOS_SIGNER_HTTP_HEADERS``
++ ``MAVRYK_SIGNER_TCP_HOST``
++ ``MAVRYK_SIGNER_TCP_PORT`` (default: 7732)
++ ``MAVRYK_SIGNER_HTTP_HOST``
++ ``MAVRYK_SIGNER_HTTP_PORT`` (default: 6732)
++ ``MAVRYK_SIGNER_HTTPS_HOST``
++ ``MAVRYK_SIGNER_HTTPS_PORT`` (default: 443)
++ ``MAVRYK_SIGNER_UNIX_PATH``
++ ``MAVRYK_SIGNER_HTTP_HEADERS``
 
 Secure the connection
 ~~~~~~~~~~~~~~~~~~~~~
@@ -246,7 +246,7 @@ signer and it is not used as a Tezos account.
 ::
 
    vps~$ mavkit-client gen keys vps
-   vps~$ cat ~/.tezos-client/public_keys
+   vps~$ cat ~/.mavryk-client/public_keys
    [ { "name": "vps",
        "value":
           "unencrypted:edpk123456789" } ]
@@ -315,12 +315,12 @@ Baking With a Consensus Key
 
 In your baker's command, replace the delegate's manager key alias with the consenus key alias::
 
-   mavkit-baker-Ptxxxxxx run with local node ~/.tezos-node <consensus_key_alias> --liquidity-baking-toggle-vote pass
+   mavkit-baker-Ptxxxxxx run with local node ~/.mavryk-node <consensus_key_alias> --liquidity-baking-toggle-vote pass
 
 While transitioning from the delegate's manager key, it is possible to pass the alias for both delegate's manager key and consensus key.
 The delegate will seamlessly keep baking when the transition happens::
 
-   mavkit-baker-Ptxxxxxx run with local node ~/.tezos-node <consensus_key_alias> <delegate_key_alias> --liquidity-baking-toggle-vote pass
+   mavkit-baker-Ptxxxxxx run with local node ~/.mavryk-node <consensus_key_alias> <delegate_key_alias> --liquidity-baking-toggle-vote pass
 
 Draining a Manager's Account With its Consensus Key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,7 +383,7 @@ Check the balance with::
 
    mavkit-client get balance for alice
 
-As explained above, your keys are stored under ``~/.tezos-client``.
+As explained above, your keys are stored under ``~/.mavryk-client``.
 We strongly advise you to first **make a backup** and then
 transfer your tokens to a new pair of keys imported from a Ledger (see
 :ref:`ledger`).

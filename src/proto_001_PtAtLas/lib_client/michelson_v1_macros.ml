@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 open Protocol_client_context
-open Tezos_micheline
+open Mavryk_micheline
 open Micheline
 module IntMap = Map.Make (Compare.Int)
 

@@ -144,8 +144,8 @@
     }
   },
   {
-    "file": "tezos-stdlib",
-    "title": "tezos-stdlib: circular_buffer.constant-chunks.full",
+    "file": "mavryk-stdlib",
+    "title": "mavryk-stdlib: circular_buffer.constant-chunks.full",
     "tags": [
       "alcotest"
     ],

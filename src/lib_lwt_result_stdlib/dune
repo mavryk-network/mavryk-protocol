@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_lwt_result_stdlib)
+ (name mavryk_lwt_result_stdlib)
  (public_name mavkit-libs.lwt-result-stdlib)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -13,4 +13,4 @@
   mavkit-libs.lwt-result-stdlib.traced.structs)
  (js_of_ocaml))
 
-(documentation (package mavkit-libs) (mld_files tezos_lwt_result_stdlib))
+(documentation (package mavkit-libs) (mld_files mavryk_lwt_result_stdlib))

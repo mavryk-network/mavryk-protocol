@@ -576,9 +576,9 @@ module Swap = struct
        from the duration that it takes to have the thing to happen in
        a normal situation. Thus, we record the tezt_swap_raw_duration
        to calibrate that duration. *)
-    let start = Tezos_base.Time.System.now () in
+    let start = Mavryk_base.Time.System.now () in
     let* () = test_swap_raw () in
-    let stop = Tezos_base.Time.System.now () in
+    let stop = Mavryk_base.Time.System.now () in
     let tezt_swap_raw_duration =
       Ptime.Span.to_float_s
         (Ptime.Span.sub (Ptime.to_span stop) (Ptime.to_span start))

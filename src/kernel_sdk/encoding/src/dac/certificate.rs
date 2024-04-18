@@ -18,18 +18,18 @@ use super::SlicePageError;
 use super::V0SliceContentPage;
 use super::V0SliceHashPage;
 use super::MAX_PAGE_SIZE;
-use tezos_crypto_rs::hash::BlsSignature;
+use mavryk_crypto_rs::hash::BlsSignature;
 #[cfg(feature = "bls")]
-use tezos_crypto_rs::hash::PublicKeyBls;
-use tezos_crypto_rs::CryptoError;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
-use tezos_data_encoding::types::Zarith;
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::path::Path;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_crypto_rs::hash::PublicKeyBls;
+use mavryk_crypto_rs::CryptoError;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_data_encoding::types::Zarith;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::path::Path;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 use thiserror::Error;
 
 /// Errors that can be obtained when handling a certificate.
@@ -245,8 +245,8 @@ fn fetch_page<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
     // taken from the output of mavkit-dac-client GET certificate
     // Committee member 0 - public key hash: mv4NbiJxLfRMXfmvcwK5DDJ1UNVuJDj7Acf7

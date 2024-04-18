@@ -757,4 +757,4 @@ let tests =
   in
   ("store", test_cases @ test_tree_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

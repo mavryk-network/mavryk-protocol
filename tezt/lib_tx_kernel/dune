@@ -7,7 +7,7 @@
  (libraries
   tezt
   tezt-tezos
-  tezos-protocol-alpha.protocol
+  mavryk-protocol-alpha.protocol
   mavkit-libs.crypto)
  (flags
   (:standard)

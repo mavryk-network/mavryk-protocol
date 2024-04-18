@@ -37,7 +37,7 @@ let build_socket_redirection_ctx socket_path =
 
 let callback ~acl server socket_path =
   let callback (conn : Cohttp_lwt_unix.Server.conn) req body =
-    Tezos_rpc_http_server.RPC_server.resto_callback server conn req body
+    Mavryk_rpc_http_server.RPC_server.resto_callback server conn req body
   in
   let forwarding_endpoint = Uri.of_string socket_forwarding_uri in
   let on_forwarding req =

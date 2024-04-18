@@ -74,7 +74,7 @@ let make_bench ~name ~info ~model ~generator ~make_bench : Benchmark.simple =
 
 let make_bloomer () =
   Bloomer.create
-    ~hash:(fun x -> Tezos_crypto.Blake2B.(to_bytes (hash_string [x])))
+    ~hash:(fun x -> Mavryk_crypto.Blake2B.(to_bytes (hash_string [x])))
     ~hashes:5
     ~countdown_bits:4
     ~index_bits:(Bits.numbits (2 * 1024 * 8 * 1024 / 4))

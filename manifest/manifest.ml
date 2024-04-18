@@ -2724,7 +2724,7 @@ let generate_dune (internal : Target.internal) =
     in
     let time_measurement_ppx =
       if internal.time_measurement_ppx then
-        Some (Dune.backend "tezos-time-measurement")
+        Some (Dune.backend "mavryk-time-measurement")
       else None
     in
     List.filter_map (fun x -> x) [bisect_ppx; time_measurement_ppx]

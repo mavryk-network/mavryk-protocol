@@ -29,10 +29,10 @@ set -x
 dnf install -y dnf-plugins-core
 # [install tezos]
 dnf copr enable -y $REPO && dnf update -y
-dnf install -y tezos-client
-dnf install -y tezos-node
-dnf install -y tezos-baker-PtNairob
-dnf install -y tezos-accuser-PtNairob
+dnf install -y mavryk-client
+dnf install -y mavryk-node
+dnf install -y mavryk-baker-PtNairob
+dnf install -y mavryk-accuser-PtNairob
 # [test executables]
 mavkit-client --version
 mavkit-node --version

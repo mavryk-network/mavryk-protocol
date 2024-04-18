@@ -35,11 +35,11 @@ open Tezt_tezos
 (* Number of operations in each private batch *)
 let batch_size = 2
 
-module Operator = Tezos_alpha_test_helpers.Dummy_zk_rollup.Operator (struct
+module Operator = Mavryk_alpha_test_helpers.Dummy_zk_rollup.Operator (struct
   let batch_size = batch_size
 end)
 
-module Zk_rollup = Tezos_protocol_alpha.Protocol.Alpha_context.Zk_rollup
+module Zk_rollup = Mavryk_protocol_alpha.Protocol.Alpha_context.Zk_rollup
 
 module MakeHelpers () = struct
   (* Subdirectory for auxiliary files *)
@@ -54,7 +54,7 @@ module MakeHelpers () = struct
       let _prover_pp, public_parameters = Lazy.force Operator.lazy_pp in
       Data_encoding.Binary.(
         to_string_exn
-          Tezos_protocol_alpha.Environment.Plonk.public_parameters_encoding
+          Mavryk_protocol_alpha.Environment.Plonk.public_parameters_encoding
           public_parameters)
     in
     write_file public_parameters_file ~contents

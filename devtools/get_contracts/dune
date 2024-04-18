@@ -7,15 +7,15 @@
   mavkit-libs.micheline
   mavkit-libs.base
   mavkit-shell-libs.store
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.client
-  tezos-protocol-alpha.protocol
+  mavryk-protocol-alpha.protocol
   mavkit-protocol-alpha-libs.client)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_micheline
-  -open Tezos_base.TzPervasives)
+  -open Mavryk_micheline
+  -open Mavryk_base.TzPervasives)
  (modules (:standard \ get_contracts)))
 
 (executable
@@ -29,7 +29,7 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_micheline
-  -open Tezos_base.TzPervasives
+  -open Mavryk_micheline
+  -open Mavryk_base.TzPervasives
   -open Get_contracts_lib)
  (modules get_contracts))

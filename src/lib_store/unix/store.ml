@@ -79,7 +79,7 @@ and chain_store = {
   block_watcher : block Lwt_watcher.input;
   validated_block_watcher : block Lwt_watcher.input;
   block_rpc_directories :
-    (chain_store * block) Tezos_rpc.Directory.t Protocol_hash.Map.t
+    (chain_store * block) Mavryk_rpc.Directory.t Protocol_hash.Map.t
     Protocol_hash.Table.t;
   lockfile : Lwt_unix.file_descr;
 }
@@ -2517,7 +2517,7 @@ let init ?patch_context ?commit_genesis ?history_mode ?(readonly = false)
   let patch_context =
     Option.map
       (fun f ctxt ->
-        let open Tezos_shell_context in
+        let open Mavryk_shell_context in
         let ctxt = Shell_context.wrap_disk_context ctxt in
         let+ ctxt = f ctxt in
         Shell_context.unwrap_disk_context ctxt)

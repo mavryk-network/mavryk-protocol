@@ -10,9 +10,9 @@ Handling values within the Lwt, ``result``, and Lwt-``result`` monads is
 so common in Mavkit that you also have access to an extension of the
 Stdlib dedicated to these monads: the ``Lwtreslib`` library.
 
-The ``tezos-lwt-result-stdlib`` package exports an ``Lwtreslib`` module
-which is made available, through ``tezos-error-monad`` and
-``tezos-base``, to the whole of the codebase. Specifically, within the
+The ``mavryk-lwt-result-stdlib`` package exports an ``Lwtreslib`` module
+which is made available, through ``mavryk-error-monad`` and
+``mavryk-base``, to the whole of the codebase. Specifically, within the
 codebase of Mavkit the following modules of OCaml’s ``Stdlib`` are
 shadowed by Lwtreslib’s:
 
@@ -63,7 +63,7 @@ for ``List.map``
        ('b list, 'trace list) result Lwt.t
 
 Check out `the online documentation of
-Lwtreslib <../api/odoc/_html/tezos-lwt-result-stdlib/Tezos_lwt_result_stdlib/Lwtreslib/index.html>`__
+Lwtreslib <../api/odoc/_html/mavryk-lwt-result-stdlib/Mavryk_lwt_result_stdlib/Lwtreslib/index.html>`__
 for a description of the semantic and naming convention.
 
 In addition to shadowing existing modules, ``Lwtreslib`` also exports
@@ -303,7 +303,7 @@ Note that if you are calling an Lwt function, you have to use ``Lwt.catch`` or
        | exc -> Lwt_result_syntax.fail (Cannot_destruct_json_value exc))
 
 The error monad provides :package-api:`several helpers functions for catching exceptions
-<mavkit-libs/Tezos_error_monad/Error_monad/index.html#catching-exceptions>`.
+<mavkit-libs/Mavryk_error_monad/Error_monad/index.html#catching-exceptions>`.
 
 ::
 

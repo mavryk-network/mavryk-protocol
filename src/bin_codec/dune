@@ -31,11 +31,11 @@
  (flags
   (:standard)
   -open Data_encoding
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base_unix
-  -open Tezos_client_base
-  -open Tezos_stdlib_unix
-  -open Tezos_event_logging))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_base
+  -open Mavryk_stdlib_unix
+  -open Mavryk_event_logging))
 
 (rule
  (action

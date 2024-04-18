@@ -72,7 +72,7 @@ let max_verbosity a b =
   | _ -> `Default
 
 let v =
-  match Unix.getenv "TEZOS_CONTEXT" with
+  match Unix.getenv "MAVRYK_CONTEXT" with
   | exception Not_found -> default
   | v ->
       List.fold_left
@@ -126,13 +126,13 @@ let v =
               | unknown :: _ ->
                   Fmt.epr
                     "[WARNING] Unknow option %s detected in the environment \
-                     variable TEZOS_CONTEXT."
+                     variable MAVRYK_CONTEXT."
                     unknown ;
                   acc
               | [] ->
                   Fmt.epr
                     "[WARNING] Empty string detected in the environment \
-                     variable TEZOS_CONTEXT." ;
+                     variable MAVRYK_CONTEXT." ;
                   acc))
         default
         (String.split ',' v)

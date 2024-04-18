@@ -33,7 +33,7 @@ module Bip32_path = struct
 
   let is_hard n = Int32.logand 0x8000_0000l n <> 0l
 
-  let tezos_root = [hard 44l; hard 1729l]
+  let mavryk_root = [hard 44l; hard 1729l]
 
   let pp_node ppf node =
     match is_hard node with
@@ -88,10 +88,10 @@ let () =
 let () =
   let description ledger_hash computed_hash =
     let paren fmt hash_opt =
-      match Base.Option.bind ~f:Tezos_crypto.Blake2B.of_string_opt hash_opt with
+      match Base.Option.bind ~f:Mavryk_crypto.Blake2B.of_string_opt hash_opt with
       | None -> ()
       | Some hash ->
-          Format.fprintf fmt " (%a)" Tezos_crypto.Blake2B.pp_short hash
+          Format.fprintf fmt " (%a)" Mavryk_crypto.Blake2B.pp_short hash
     in
     Format.asprintf
       "The ledger returned a hash%a which doesn't match the independently \
@@ -186,7 +186,7 @@ module Ledger_commands = struct
   let public_key_returning_instruction which ?(prompt = false) hidapi curve path
       =
     let open Lwt_result_syntax in
-    let path = Bip32_path.tezos_root @ path in
+    let path = Bip32_path.mavryk_root @ path in
     let+ pk =
       match which with
       | `Get_public_key ->
@@ -222,7 +222,7 @@ module Ledger_commands = struct
           Signature.Public_key.encoding
           (Bigstring.to_bytes buf)
     | Secp256r1 -> (
-        let open Tezos_crypto.Hacl.P256 in
+        let open Mavryk_crypto.Hacl.P256 in
         let buf = Bytes.create (pk_size + 1) in
         match pk_of_bytes (Cstruct.to_bytes pk) with
         | None ->
@@ -288,7 +288,7 @@ module Ledger_commands = struct
       Option.fold watermark ~none:base_msg ~some:(fun watermark ->
           Bytes.cat (Signature.bytes_of_watermark watermark) base_msg)
     in
-    let path = Bip32_path.tezos_root @ path in
+    let path = Bip32_path.mavryk_root @ path in
     let* hash_opt, signature =
       wrap_ledger_cmd (fun pp ->
           let {Ledgerwallet_tezos.Version.major; minor; patch; _} = version in
@@ -313,16 +313,16 @@ module Ledger_commands = struct
       match hash_opt with
       | None -> return_unit
       | Some hsh ->
-          let hash_msg = Tezos_crypto.Blake2B.hash_bytes [msg] in
+          let hash_msg = Mavryk_crypto.Blake2B.hash_bytes [msg] in
           let ledger_one =
-            Tezos_crypto.Blake2B.of_bytes_exn (Cstruct.to_bytes hsh)
+            Mavryk_crypto.Blake2B.of_bytes_exn (Cstruct.to_bytes hsh)
           in
-          if Tezos_crypto.Blake2B.equal hash_msg ledger_one then return_unit
+          if Mavryk_crypto.Blake2B.equal hash_msg ledger_one then return_unit
           else
             tzfail
               (Ledger_signing_hash_mismatch
-                 ( Tezos_crypto.Blake2B.to_string ledger_one,
-                   Tezos_crypto.Blake2B.to_string hash_msg ))
+                 ( Mavryk_crypto.Blake2B.to_string ledger_one,
+                   Mavryk_crypto.Blake2B.to_string hash_msg ))
     in
     match curve with
     | Ed25519 | Bip32_ed25519 ->
@@ -354,7 +354,7 @@ module Ledger_commands = struct
 
   let get_deterministic_nonce hid curve path msg =
     let open Lwt_result_syntax in
-    let path = Bip32_path.tezos_root @ path in
+    let path = Bip32_path.mavryk_root @ path in
     let* nonce =
       wrap_ledger_cmd (fun pp ->
           Ledgerwallet_tezos.get_deterministic_nonce
@@ -492,7 +492,7 @@ module Ledger_uri = struct
       "An imported ledger alias or a ledger URI (e.g. \
        \"ledger://animal/curve/path\")."
     in
-    let open Tezos_clic in
+    let open Mavryk_clic in
     param
       ~name
       ~desc
@@ -786,7 +786,7 @@ module Signer_implementation : Client_keys.SIGNER = struct
        - <curve> is the signing curve, e.g. `ed1551`\n\
        - <path> is a BIP32 path anchored at m/%s. The ledger does not yet \
        support non-hardened paths, so each node of the path must be hardened."
-      Bip32_path.(string_of_path tezos_root)
+      Bip32_path.(string_of_path mavryk_root)
 
   include Client_keys.Signature_type
 
@@ -863,7 +863,7 @@ module Signer_implementation : Client_keys.SIGNER = struct
     let open Lwt_result_syntax in
     let* nonce = deterministic_nonce sk msg in
     return
-      (Tezos_crypto.Blake2B.to_bytes (Tezos_crypto.Blake2B.hash_bytes [nonce]))
+      (Mavryk_crypto.Blake2B.to_bytes (Mavryk_crypto.Blake2B.hash_bytes [nonce]))
 
   let supports_deterministic_nonces _ = Lwt_result_syntax.return_true
 end
@@ -877,7 +877,7 @@ let pp_ledger_chain_id fmt s =
 (** Commands for both ledger applications. *)
 let generic_commands group =
   let open Lwt_result_syntax in
-  Tezos_clic.
+  Mavryk_clic.
     [
       command
         ~group
@@ -952,7 +952,7 @@ let generic_commands group =
                 return_none)
           in
           return_unit);
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:"Display version/public-key/address information for a Ledger URI"
         (args1 (switch ~doc:"Test signing operation" ~long:"test-sign" ()))
@@ -1004,7 +1004,7 @@ let generic_commands group =
                         Ledgerwallet_tezos.pp_curve
                         curve
                     in
-                    let full_path = Bip32_path.tezos_root @ path in
+                    let full_path = Bip32_path.mavryk_root @ path in
                     let*! () =
                       cctxt#message
                         "* Path: `%s` [%s]"
@@ -1090,9 +1090,9 @@ let generic_commands group =
     which get a specific treatment in {!high_water_mark_commands}. *)
 let baking_commands group =
   let open Lwt_result_syntax in
-  Tezos_clic.
+  Mavryk_clic.
     [
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:"Query the path of the authorized key"
         no_options
@@ -1135,7 +1135,7 @@ let baking_commands group =
                   | `Ledger _ -> return_some ()
                   | `Ledger_account {curve; path; _}
                     when curve = ledger_curve
-                         && Bip32_path.tezos_root @ path = ledger_path ->
+                         && Bip32_path.mavryk_root @ path = ledger_path ->
                       let*! () =
                         cctxt#message
                           "@[<v 0>Authorized baking URI: %a@]"
@@ -1150,8 +1150,8 @@ let baking_commands group =
                         Ledgerwallet_tezos.pp_curve
                         curve
                         Bip32_path.pp_path
-                        (Bip32_path.tezos_root @ path))));
-      Tezos_clic.command
+                        (Bip32_path.mavryk_root @ path))));
+      Mavryk_clic.command
         ~group
         ~desc:
           "Authorize a Ledger to bake for a key (deprecated, use `setup ledger \
@@ -1210,7 +1210,7 @@ let baking_commands group =
                   pk
               in
               return_some ()));
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:"Setup a Ledger to bake for a key"
         (let hwm_arg kind =
@@ -1248,7 +1248,7 @@ let baking_commands group =
                        with _ ->
                          failwith
                            "Parameter %S should be a 32-bits integer or a \
-                            Tezos_crypto.Base58 chain-id"
+                            Mavryk_crypto.Base58 chain-id"
                            s)))))
            (hwm_arg "main")
            (hwm_arg "test"))
@@ -1345,7 +1345,7 @@ let baking_commands group =
                   pk
               in
               return_some ()));
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:"Deauthorize Ledger from baking"
         no_options
@@ -1375,9 +1375,9 @@ let high_water_mark_commands group watermark_spelling =
       desc ^ " (legacy/deprecated spelling)"
     else desc
   in
-  Tezos_clic.
+  Mavryk_clic.
     [
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:(make_desc "Get high water mark of a Ledger")
         (args1
@@ -1441,7 +1441,7 @@ let high_water_mark_commands group watermark_spelling =
                       tr
                   in
                   return_some ()));
-      Tezos_clic.command
+      Mavryk_clic.command
         ~group
         ~desc:(make_desc "Set high water mark of a Ledger")
         no_options
@@ -1486,7 +1486,7 @@ let high_water_mark_commands group watermark_spelling =
 let commands =
   let group =
     {
-      Tezos_clic.name = "ledger";
+      Mavryk_clic.name = "ledger";
       title = "Commands for managing the connected Ledger Nano devices";
     }
   in

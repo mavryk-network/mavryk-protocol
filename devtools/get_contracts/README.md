@@ -24,13 +24,13 @@ The protocol version is automatically detected.
 If you have no context to import contracts from, you need to import a snapshot
 (rolling is enough) with:
 ```
-$ dune exec tezos-node -- snapshot import <snapshot-file> --data-dir /path/to/the/context [--block <expected block hash>]
+$ dune exec mavryk-node -- snapshot import <snapshot-file> --data-dir /path/to/the/context [--block <expected block hash>]
 ```
 
 If you are trying to import a testnet snapshot, you need to configure your node
 with the appropriate network name, e.g. `ghostnet`, with
 ```
-$ dune exec tezos-node -- config init --network=ghostnet --data-dir /path/to/the/context
+$ dune exec mavryk-node -- config init --network=ghostnet --data-dir /path/to/the/context
 ```
 
 This script was originally developed as a protocol-specific binary on

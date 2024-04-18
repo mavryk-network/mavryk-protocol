@@ -231,7 +231,7 @@ E.g., Haskell relies heavily on monads and has the dedicated
 Monads can have additional operators beside the required core. E.g., you
 can add ``OptionMonad.join : 'a option option -> 'a option``.
 
-In depth discussion: ``Error_monad``, ``src/lib_error_monad/``, ``Tezos_base__TzPervasives``, etc.
+In depth discussion: ``Error_monad``, ``src/lib_error_monad/``, ``Mavryk_base__TzPervasives``, etc.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The different parts of the error monad (syntax modules, extended stdlib,
@@ -242,18 +242,18 @@ defined and how it reaches the scope of your code.
 **From your code, working back to the definitions.**
 
 In most of Mavkit, the ``Error_monad`` module is available. Specifically, it is
-available in all the packages that depend on ``tezos-base``. This covers
+available in all the packages that depend on ``mavryk-base``. This covers
 everything except the protocols and a handful of low-level libraries.
 
 In those part of Mavkit, the build files include
-``-open Tezos_base__TzPervasives``.
+``-open Mavryk_base__TzPervasives``.
 
-The module ``Tezos_base__TzPervasives`` is defined by the compilation
+The module ``Mavryk_base__TzPervasives`` is defined by the compilation
 unit ``src/lib_base/TzPervasives.ml``.
 
 This compilation unit gathers multiple low-level modules together. Of
-interest to us is ``include Tezos_error_monad.Error_monad`` (left
-untouched in the ``mli``) and ``include Tezos_error_monad.TzLwtreslib``
+interest to us is ``include Mavryk_error_monad.Error_monad`` (left
+untouched in the ``mli``) and ``include Mavryk_error_monad.TzLwtreslib``
 (not present in the ``mli``, used to shadow the Stdlib modules ``List``,
 ``Option``, ``Result``, etc.).
 
@@ -266,7 +266,7 @@ The ``Error_monad`` module exports:
    (from a different, more generic name),
 - and exports a few more functions.
 
-The rest of the ``tezos-error-monad`` package:
+The rest of the ``mavryk-error-monad`` package:
 
 -  defines the ``'a trace`` type (in ``TzTrace.ml``), and
 -  instantiates ``TzLwtreslib`` by applying ``Lwtreslib``\ ’s ``Traced``

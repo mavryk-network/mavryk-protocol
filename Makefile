@@ -6,8 +6,8 @@ src/proto_$(shell echo $1 | tr -- - _)
 endef
 
 # Opam is not present in some build environments. We don't strictly need it.
-# Those environments set TEZOS_WITHOUT_OPAM.
-ifndef TEZOS_WITHOUT_OPAM
+# Those environments set MAVRYK_WITHOUT_OPAM.
+ifndef MAVRYK_WITHOUT_OPAM
 current_opam_version := $(shell opam --version)
 endif
 
@@ -47,8 +47,8 @@ ALL_EXECUTABLES := $(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES) $(DEV_EXE
 # 'build_x86_64-dev-exp-misc' job.
 BUILD_EXTRA ?=
 
-# See first mention of TEZOS_WITHOUT_OPAM.
-ifndef TEZOS_WITHOUT_OPAM
+# See first mention of MAVRYK_WITHOUT_OPAM.
+ifndef MAVRYK_WITHOUT_OPAM
 ifeq ($(filter ${opam_version}.%,${current_opam_version}),)
 $(error Unexpected opam version (found: ${current_opam_version}, expected: ${opam_version}.*))
 endif
@@ -76,8 +76,8 @@ ifeq ($(filter ${VALID_MAVKIT_BIN_DIRS},${MAVKIT_BIN_DIR}),)
 $(error Unexpected value for MAVKIT_BIN_DIR (got: ${MAVKIT_BIN_DIR}, expecting one of: ${VALID_MAVKIT_BIN_DIRS}))
 endif
 
-# See first mention of TEZOS_WITHOUT_OPAM.
-ifdef TEZOS_WITHOUT_OPAM
+# See first mention of MAVRYK_WITHOUT_OPAM.
+ifdef MAVRYK_WITHOUT_OPAM
 current_ocaml_version := $(shell ocamlc -version)
 else
 current_ocaml_version := $(shell opam exec -- ocamlc -version)
@@ -158,30 +158,30 @@ validate-kaitai-struct-files:
 # before (e.g. old protocol daemons) but that are no longer built.
 .PHONY: clean-old-names
 clean-old-names:
-	@rm -f tezos-node
-	@rm -f tezos-validator
-	@rm -f tezos-client
-	@rm -f tezos-admin-client
-	@rm -f tezos-signer
-	@rm -f tezos-codec
-	@rm -f tezos-protocol-compiler
-	@rm -f tezos-proxy-server
-	@rm -f tezos-baker-012-Psithaca
-	@rm -f tezos-accuser-012-Psithaca
-	@rm -f tezos-baker-013-PtJakart
-	@rm -f tezos-accuser-013-PtJakart
-	@rm -f tezos-tx-rollup-node-013-PtJakart
-	@rm -f tezos-tx-rollup-client-013-PtJakart
-	@rm -f tezos-baker-015-PtLimaPt
-	@rm -f tezos-accuser-015-PtLimaPt
-	@rm -f tezos-tx-rollup-node-015-PtLimaPt
-	@rm -f tezos-tx-rollup-client-015-PtLimaPt
-	@rm -f tezos-baker-alpha
-	@rm -f tezos-accuser-alpha
-	@rm -f tezos-smart-rollup-node-alpha
-	@rm -f tezos-smart-rollup-client-alpha
-	@rm -f tezos-snoop
-	@rm -f tezos-dal-node
+	@rm -f mavryk-node
+	@rm -f mavryk-validator
+	@rm -f mavryk-client
+	@rm -f mavryk-admin-client
+	@rm -f mavryk-signer
+	@rm -f mavryk-codec
+	@rm -f mavryk-protocol-compiler
+	@rm -f mavryk-proxy-server
+	@rm -f mavryk-baker-012-Psithaca
+	@rm -f mavryk-accuser-012-Psithaca
+	@rm -f mavryk-baker-013-PtJakart
+	@rm -f mavryk-accuser-013-PtJakart
+	@rm -f mavryk-tx-rollup-node-013-PtJakart
+	@rm -f mavryk-tx-rollup-client-013-PtJakart
+	@rm -f mavryk-baker-015-PtLimaPt
+	@rm -f mavryk-accuser-015-PtLimaPt
+	@rm -f mavryk-tx-rollup-node-015-PtLimaPt
+	@rm -f mavryk-tx-rollup-client-015-PtLimaPt
+	@rm -f mavryk-baker-alpha
+	@rm -f mavryk-accuser-alpha
+	@rm -f mavryk-smart-rollup-node-alpha
+	@rm -f mavryk-smart-rollup-client-alpha
+	@rm -f mavryk-snoop
+	@rm -f mavryk-dal-node
 # mavkit-validator should stay in this list for Mavkit 16.0 because we
 # removed the executable
 	@rm -f mavkit-validator
@@ -221,9 +221,9 @@ endif
 		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-PtAtLas; \
 		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-alpha
 
-# List protocols, i.e. directories proto_* in src with a TEZOS_PROTOCOL file.
-TEZOS_PROTOCOL_FILES=$(wildcard src/proto_*/lib_protocol/TEZOS_PROTOCOL)
-PROTOCOLS=$(patsubst %/lib_protocol/TEZOS_PROTOCOL,%,${TEZOS_PROTOCOL_FILES})
+# List protocols, i.e. directories proto_* in src with a MAVRYK_PROTOCOL file.
+MAVRYK_PROTOCOL_FILES=$(wildcard src/proto_*/lib_protocol/MAVRYK_PROTOCOL)
+PROTOCOLS=$(patsubst %/lib_protocol/MAVRYK_PROTOCOL,%,${MAVRYK_PROTOCOL_FILES})
 
 .PHONY: all.pkg
 all.pkg:
@@ -260,7 +260,7 @@ coverage-report-cobertura:
 
 .PHONY: enable-time-measurement
 enable-time-measurement:
-	@$(MAKE) all DUNE_INSTRUMENT_WITH=tezos-time-measurement
+	@$(MAKE) all DUNE_INSTRUMENT_WITH=mavryk-time-measurement
 
 .PHONY: test-protocol-compile
 test-protocol-compile:
@@ -442,10 +442,10 @@ build-tps-deps:
 .PHONY: build-tps
 build-tps: lift-protocol-limits-patch all build-tezt
 	@dune build ./src/bin_tps_evaluation
-	@cp -f ./_build/default/src/bin_tps_evaluation/main_tps_evaluation.exe tezos-tps-evaluation
-	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-benchmark-tps .
-	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-estimate-average-block .
-	@cp -f ./src/bin_tps_evaluation/tezos-tps-evaluation-gas-tps .
+	@cp -f ./_build/default/src/bin_tps_evaluation/main_tps_evaluation.exe mavryk-tps-evaluation
+	@cp -f ./src/bin_tps_evaluation/mavryk-tps-evaluation-benchmark-tps .
+	@cp -f ./src/bin_tps_evaluation/mavryk-tps-evaluation-estimate-average-block .
+	@cp -f ./src/bin_tps_evaluation/mavryk-tps-evaluation-gas-tps .
 
 .PHONY: build-octogram
 build-octogram: all
@@ -532,7 +532,7 @@ clean: coverage-clean clean-old-names dpkg-clean rpm-clean
 	@-dune clean
 	@-rm -f ${ALL_EXECUTABLES}
 	@-${MAKE} -C docs clean
-	@-rm -f docs/api/tezos-{baker,endorser,accuser}-alpha.html docs/api/tezos-{admin-,}client.html docs/api/tezos-signer.html
+	@-rm -f docs/api/mavryk-{baker,endorser,accuser}-alpha.html docs/api/mavryk-{admin-,}client.html docs/api/mavryk-signer.html
 
 .PHONY: build-kernels-deps
 build-kernels-deps:

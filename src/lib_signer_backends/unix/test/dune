@@ -17,10 +17,10 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_error_monad
-  -open Tezos_stdlib
-  -open Tezos_client_base
-  -open Tezos_signer_backends_unix
+  -open Mavryk_error_monad
+  -open Mavryk_stdlib
+  -open Mavryk_client_base
+  -open Mavryk_signer_backends_unix
   -open Mavkit_alcotezt)
  (modules test_crouching))
 

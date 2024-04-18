@@ -24,12 +24,12 @@
 (*****************************************************************************)
 
 open Lwt_result_syntax
-module Base = Tezos_client_base
+module Base = Mavryk_client_base
 
 type t = {base_dir : string; endpoint : Uri.t}
 
 let default_base_dir =
-  Filename.concat (Sys.getenv "HOME") ".tezos-smart-rollup-client"
+  Filename.concat (Sys.getenv "HOME") ".mavryk-smart-rollup-client"
 
 let default_endpoint = "http://localhost:8932"
 
@@ -43,7 +43,7 @@ let valid_endpoint _configuration s =
   | _ -> failwith "Endpoint should be of the form http[s]://address:port"
 
 let endpoint_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"endpoint"
     ~short:'E'
     ~placeholder:"uri"
@@ -51,7 +51,7 @@ let endpoint_arg () =
       (Printf.sprintf
          "endpoint of the sc rollup node; e.g. '%s'"
          default_endpoint)
-  @@ Tezos_clic.parameter valid_endpoint
+  @@ Mavryk_clic.parameter valid_endpoint
 
 let valid_base_dir _configuration base_dir =
   if not (Sys.file_exists base_dir && Sys.is_directory base_dir) then
@@ -59,7 +59,7 @@ let valid_base_dir _configuration base_dir =
   else return base_dir
 
 let base_dir_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"base-dir"
     ~short:'d'
     ~placeholder:"path"
@@ -69,9 +69,9 @@ let base_dir_arg () =
           The directory where the Tezos smart rollup client stores its data.@,\
           If absent, its value defaults to %s@]@]@."
          default_base_dir)
-    (Tezos_clic.parameter valid_base_dir)
+    (Mavryk_clic.parameter valid_base_dir)
 
-let global_options () = Tezos_clic.args2 (base_dir_arg ()) (endpoint_arg ())
+let global_options () = Mavryk_clic.args2 (base_dir_arg ()) (endpoint_arg ())
 
 let make (base_dir, endpoint) =
   {
@@ -81,7 +81,7 @@ let make (base_dir, endpoint) =
 
 let parse argv =
   let* opts, argv =
-    Tezos_clic.parse_global_options (global_options ()) default argv
+    Mavryk_clic.parse_global_options (global_options ()) default argv
   in
   return (make opts, argv)
 
@@ -89,7 +89,7 @@ class type sc_client_context =
   object
     inherit Base.Client_context.io_wallet
 
-    inherit Tezos_rpc.Context.generic
+    inherit Mavryk_rpc.Context.generic
   end
 
 class unix_sc_client_context ~base_dir ~password_filename ~rpc_config :
@@ -98,14 +98,14 @@ class unix_sc_client_context ~base_dir ~password_filename ~rpc_config :
     inherit Client_context_unix.unix_io_wallet ~base_dir ~password_filename
 
     inherit
-      Tezos_rpc_http_client_unix.RPC_client_unix.http_ctxt
+      Mavryk_rpc_http_client_unix.RPC_client_unix.http_ctxt
         rpc_config
-        (Tezos_rpc_http.Media_type.Command_line.of_command_line
+        (Mavryk_rpc_http.Media_type.Command_line.of_command_line
            rpc_config.media_type)
   end
 
 let make_unix_client_context {base_dir; endpoint} =
   let rpc_config =
-    {Tezos_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
+    {Mavryk_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
   in
   new unix_sc_client_context ~base_dir ~rpc_config ~password_filename:None

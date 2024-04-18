@@ -26,7 +26,7 @@
 (** Utilities used to run the PVM *)
 
 open Pvm_instance
-open Tezos_scoru_wasm.Wasm_pvm_state
+open Mavryk_scoru_wasm.Wasm_pvm_state
 
 (** the different phases in a top level call *)
 type phase = Decoding | Initialising | Linking | Evaluating | Padding
@@ -56,14 +56,14 @@ val finish_top_level_call_on_state :
 (** [execute_on_state ~reveal_builtins phase state] Execute a given [phase] of
     the execution loop on the state. *)
 val execute_on_state :
-  reveal_builtins:Tezos_scoru_wasm.Builtins.reveals ->
+  reveal_builtins:Mavryk_scoru_wasm.Builtins.reveals ->
   phase ->
   Internal_state.pvm_state ->
   (Internal_state.pvm_state * int64) Lwt.t
 
 (** Execute one top level call using fast execution. *)
 val execute_fast :
-  reveal_builtins:Tezos_scoru_wasm.Builtins.reveals ->
+  reveal_builtins:Mavryk_scoru_wasm.Builtins.reveals ->
   Internal_state.pvm_state ->
   (Internal_state.pvm_state * int64) Lwt.t
 

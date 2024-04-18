@@ -3519,7 +3519,7 @@ let verify_whitelist ~__LOC__ block rollup expected_whitelist =
   verify_whitelist ~loc:__LOC__ rollup (B block) ~expected_whitelist
 
 let verify_can_publish_commit_accounts block rollup accounts =
-  Tezos_base.TzPervasives.List.iter_es
+  Mavryk_base.TzPervasives.List.iter_es
     (fun (account, succeed) ->
       verify_can_publish_commit ~__LOC__ ~succeed rollup account block)
     accounts

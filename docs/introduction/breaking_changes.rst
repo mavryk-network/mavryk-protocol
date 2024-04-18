@@ -97,7 +97,7 @@ Mavkit is now distributed as the following set of Opam packages:
   - :package-api:`mavkit-l2-libs <mavkit-l2-libs/index.html>`: Contains the libraries related to layer 2.
   - For each protocol ``P``:
     - :package-api:`mavkit-protocol-P-libs <mavkit-protocol-alpha-libs/index.html>`: The protocol ``P`` dependent libraries.
-    - ``tezos-protocol-P``: The Tezos protocol ``P`` itself.
+    - ``mavryk-protocol-P``: The Tezos protocol ``P`` itself.
 
 To have a better understanding of the packages and the complete description of them, you might want to follow the :doc:`OCaml API documentation <../api/api-inline>`.
 
@@ -105,8 +105,8 @@ Note on library renaming
 """"""""""""""""""""""""
 
 In aggregated packages, redundant suffixes and prefixes have been removed.
-Specifically, all the sub-libraries prefixed with ``tezos-`` or ``mavkit-`` are now renamed without the prefix.
-For instance, ``tezos-base``, which is now a sub-library of ``mavkit-libs``, is now ``mavkit-libs.base``.
+Specifically, all the sub-libraries prefixed with ``mavryk-`` or ``mavkit-`` are now renamed without the prefix.
+For instance, ``mavryk-base``, which is now a sub-library of ``mavkit-libs``, is now ``mavkit-libs.base``.
 
 The protocol name suffixes of the protocol libraries have also been removed.
 For instance, ``Tezos-client-001-PtNairob`` is now the sub-library ``Client`` of the package ``Mavkit-001-PtNairob-libs``.
@@ -143,10 +143,10 @@ For each dependency:
 - Update the ``dune`` files with the new name ``package.sub-library``.
 - Change the module name in the ``open`` in the code to ``Package.Sub-library``.
 
-For instance, if your software depends on ``tezos-rpc`` which is now a sub-library of  :package-api:`mavkit-libs <mavkit-libs/index.html>` and has been renamed to ``rpc``:
+For instance, if your software depends on ``mavryk-rpc`` which is now a sub-library of  :package-api:`mavkit-libs <mavkit-libs/index.html>` and has been renamed to ``rpc``:
 
-  - Update the opam file content to rename the ``tezos-rpc`` dependency to ``mavkit-libs``. If ``mavkit-libs`` is already present, only remove the dependency on ``tezos-rpc``.
-  - Update the dune file to rename occurences of ``tezos-rpc``, e.g. in ``libraries`` clauses of ``executable`` stanzas to ``mavkit-libs.rpc``.
-  - In your code, update all references to the ``Tezos_rpc`` module (e.g. ``open Tezos_rpc``) to ``Mavkit-libs.Rpc`` (e.g. ``open Mavkit-libs.Rpc``).
+  - Update the opam file content to rename the ``mavryk-rpc`` dependency to ``mavkit-libs``. If ``mavkit-libs`` is already present, only remove the dependency on ``mavryk-rpc``.
+  - Update the dune file to rename occurences of ``mavryk-rpc``, e.g. in ``libraries`` clauses of ``executable`` stanzas to ``mavkit-libs.rpc``.
+  - In your code, update all references to the ``Mavryk_rpc`` module (e.g. ``open Mavryk_rpc``) to ``Mavkit-libs.Rpc`` (e.g. ``open Mavkit-libs.Rpc``).
 
 The same method applies to each dependency that is now a sub-library of a new package. Check the :doc:`API <../api/api-inline>` to see the new packages.

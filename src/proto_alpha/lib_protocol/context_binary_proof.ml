@@ -36,7 +36,7 @@ let () =
     (fun () -> Expected_binary_proof)
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/4386 Extracted and
-   adapted from {!Tezos_context_memory}. Ideally, this function should
+   adapted from {!Mavryk_context_memory}. Ideally, this function should
    be exported there.
 
    In a nutshell, the context library exposed by the environment is

@@ -8,7 +8,7 @@ Getting started with Mavkit
 This short tutorial illustrates the use of the various Mavkit binaries as well
 as some concepts about the network.
 
-.. _tezos_binaries:
+.. _mavryk_binaries:
 
 The Binaries
 ------------
@@ -180,7 +180,7 @@ suites.
 Storage
 ~~~~~~~
 
-All blockchain data is stored by the node under a data directory, which by default is ``$HOME/.tezos-node/``.
+All blockchain data is stored by the node under a data directory, which by default is ``$HOME/.mavryk-node/``.
 
 If for some reason your node is misbehaving or there has been an
 upgrade of the network, it is safe to remove this directory, it just
@@ -239,13 +239,13 @@ Putting together all the above instructions, you may want to run a node as follo
     # Download a snapshot for your target network, e.g. <test-net>:
     wget <snapshot-url> -O <snapshot-file>
     # Configure the node for running on <test-net>:
-    mavkit-node config init --data-dir ~/.tezos-node-<test-net> --network <test-net>
+    mavkit-node config init --data-dir ~/.mavryk-node-<test-net> --network <test-net>
     # Import the snapshot into the node data directory:
-    mavkit-node snapshot import --data-dir ~/.tezos-node-<test-net> --block <block-hash> <snapshot-file>
+    mavkit-node snapshot import --data-dir ~/.mavryk-node-<test-net> --block <block-hash> <snapshot-file>
     # Run the node:
-    mavkit-node run --data-dir ~/.tezos-node-<test-net> --rpc-addr 127.0.0.1
+    mavkit-node run --data-dir ~/.mavryk-node-<test-net> --rpc-addr 127.0.0.1
 
-.. _howtouse_tezos_client:
+.. _howtouse_mavryk_client:
 
 Client
 ------
@@ -285,7 +285,7 @@ To check the account (also called a contract) for Alice has been created::
 
       $ mavkit-client list known contracts
 
-You will notice that the client data directory (by default, ``~/.tezos-client``) has been populated with
+You will notice that the client data directory (by default, ``~/.mavryk-client``) has been populated with
 3 files ``public_key_hashs``, ``public_keys`` and ``secret_keys``.
 The content of each file is in JSON and keeps the mapping between
 aliases (e.g., ``alice``) and the kind of keys indicated by the name

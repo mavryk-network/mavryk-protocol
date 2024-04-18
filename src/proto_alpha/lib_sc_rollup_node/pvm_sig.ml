@@ -58,8 +58,8 @@ module type S = sig
   (** [eval_many ~max_steps s0] returns a state [s1] resulting from the
       execution of up to [~max_steps] steps of the rollup at state [s0]. *)
   val eval_many :
-    reveal_builtins:Tezos_scoru_wasm.Builtins.reveals ->
-    write_debug:Tezos_scoru_wasm.Builtins.write_debug ->
+    reveal_builtins:Mavryk_scoru_wasm.Builtins.reveals ->
+    write_debug:Mavryk_scoru_wasm.Builtins.write_debug ->
     is_reveal_enabled:Sc_rollup.is_reveal_enabled ->
     ?stop_at_snapshot:bool ->
     max_steps:int64 ->

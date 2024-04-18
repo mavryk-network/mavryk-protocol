@@ -184,9 +184,9 @@ let head_of_level ~predecessor level =
       (* dummy values below *)
       proto_level = 0;
       validation_passes = 3;
-      operations_hash = Tezos_crypto.Hashed.Operation_list_list_hash.zero;
+      operations_hash = Mavryk_crypto.Hashed.Operation_list_list_hash.zero;
       fitness = [];
-      context = Tezos_crypto.Hashed.Context_hash.zero;
+      context = Mavryk_crypto.Hashed.Context_hash.zero;
     }
   in
   {Layer1.hash; level; header}

@@ -56,7 +56,7 @@ let run_templates_and_update_vars ~vars ~agent ~res ~re ~item
 let run_job_body ~state ~agent ~re ~item ~vars_updates job_name
     (body : Uri.global_uri Job.body) =
   let agent_name = Remote_agent.name agent in
-  let starting_time = Tezos_base.Time.System.now () in
+  let starting_time = Mavryk_base.Time.System.now () in
   Log.info
     ~color:(Remote_agent.color agent)
     "[%s] %s%a"
@@ -97,7 +97,7 @@ let run_job_body ~state ~agent ~re ~item ~vars_updates job_name
         return res
   in
 
-  let ending_time = Tezos_base.Time.System.now () in
+  let ending_time = Mavryk_base.Time.System.now () in
   Log.info
     ~color:(Remote_agent.color agent)
     "[%s] ✓ %s%a (%a)"

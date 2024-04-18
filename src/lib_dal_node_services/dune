@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_dal_node_services)
- (public_name tezos-dal-node-services)
+ (name mavryk_dal_node_services)
+ (public_name mavryk-dal-node-services)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
@@ -12,5 +12,5 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base))

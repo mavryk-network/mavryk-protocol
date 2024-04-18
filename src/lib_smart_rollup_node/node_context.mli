@@ -280,9 +280,9 @@ val get_predecessor_header_opt :
 val get_predecessor_header :
   _ t -> Layer1.header -> Layer1.header tzresult Lwt.t
 
-(** [get_tezos_reorg_for_new_head node_ctxt old_head new_head] returns the L1
+(** [get_mavryk_reorg_for_new_head node_ctxt old_head new_head] returns the L1
     reorganization between [old_head] and [new_head]. *)
-val get_tezos_reorg_for_new_head :
+val get_mavryk_reorg_for_new_head :
   _ t ->
   [`Head of Layer1.head | `Level of int32] ->
   Layer1.head ->

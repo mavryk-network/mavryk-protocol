@@ -8,8 +8,8 @@ These are the scripts used to run on a regular basis all the benchmarks for the 
 
 The actual script being run by Cron can be displayed with `crontab -l` from `mclaren`, and edited with `crontab -e`. Right now, it is:
 ```
-0 20 * * fri bash /data/tezos-benchmarks/cronjob.sh
-0 20 * * tue bash /data/tezos-benchmarks/cronjob.sh
+0 20 * * fri bash /data/mavryk-benchmarks/cronjob.sh
+0 20 * * tue bash /data/mavryk-benchmarks/cronjob.sh
 ```
 
 - Regressions are detected on another machine (`163.172.34.197`).
@@ -33,8 +33,8 @@ On `163.172.52.82`, `cronjob.sh` does the following:
 * it reports its activity to a dedicated Slack channel.
 
 Then, `run_all_benchmarks_on_latest_master.sh` operates as follows:
-* it pulls the current branch of its local copy of [Tezos](https://gitlab.com/tezos/tezos) at `/data/tezos-benchmarks/tezos`;
-* it creates the directory `/data/tezos-benchmarks/snoop_results/_snoop_<YYYYMMDD>_<HHMM>_<version-and-hash>` where Snoop result files will be stored;
+* it pulls the current branch of its local copy of [Tezos](https://gitlab.com/tezos/tezos) at `/data/mavryk-benchmarks/tezos`;
+* it creates the directory `/data/mavryk-benchmarks/snoop_results/_snoop_<YYYYMMDD>_<HHMM>_<version-and-hash>` where Snoop result files will be stored;
 * it `make`s, also building dependencies;
 * it runs all benchmarks by calling `dune exec tezt/snoop/main.exe`;
 * it moves Snoop result files to the directory created above;
@@ -63,7 +63,7 @@ On `163.172.34.197`, `watch_regressions.sh` does the following:
 
 On the reference machine, the benchmarks directory looks like this:
 ```
-/data/tezos-benchmarks/
+/data/mavryk-benchmarks/
   - cronjob.sh
   - run_all_benchmarks_on_latest_master.sh
   - rustup-init.sh

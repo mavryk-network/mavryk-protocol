@@ -24,13 +24,13 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_error_monad.TzLwtreslib
-  -open Tezos_lwt_result_stdlib
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad.TzLwtreslib
+  -open Mavryk_lwt_result_stdlib
   -open Data_encoding
-  -open Tezos_hacl
+  -open Mavryk_hacl
   -open Mavkit_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_test_helpers)
  (modules
   test_prop_signature_pk
   test_hacl

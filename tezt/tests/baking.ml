@@ -33,8 +33,8 @@
 (* ------------------------------------------------------------------------- *)
 (* Typedefs *)
 
-open Tezos_crypto
-open Tezos_crypto.Hashed
+open Mavryk_crypto
+open Mavryk_crypto.Hashed
 
 type operation = {shell_header : branch; protocol_data : protocol_data}
 
@@ -139,7 +139,7 @@ let unsigned_operation_encoding : operation Data_encoding.t =
 (* Mempool-related encodings *)
 
 (* This encoding is a protocol-independent version of
-   [Tezos_shell_services.Block_services.Mempool.encoding] *)
+   [Mavryk_shell_services.Block_services.Mempool.encoding] *)
 
 let mempool_operation_encoding : mempool_operation Data_encoding.t =
   let open Data_encoding in
@@ -237,11 +237,11 @@ let mempool_from_list_of_ops client protocol operations =
         in
         let shell_op =
           {
-            Tezos_base.Operation.shell = {branch = op.shell_header.branch};
+            Mavryk_base.Operation.shell = {branch = op.shell_header.branch};
             proto = binary_proto_data;
           }
         in
-        let hash = Tezos_base.Operation.hash shell_op in
+        let hash = Mavryk_base.Operation.hash shell_op in
         loop tl ((hash, mempool_op) :: acc)
   in
   loop operations []
@@ -384,7 +384,7 @@ let assert_block_is_well_baked block expected_number_manager_op =
 let random_permutation list =
   assert (list <> []) ;
   let rng = Random.State.make_self_init () in
-  Tezos_base.TzPervasives.List.shuffle ~rng list
+  Mavryk_base.TzPervasives.List.shuffle ~rng list
 
 let single_baker_increasing_fees state ~account =
   let* branch = get_current_head_hash state in
@@ -695,7 +695,7 @@ let test_operation_pool_ordering
   let check_hashes l1 l2 =
     let len = List.length l1 in
     let should_be_in =
-      Tezos_base__TzPervasives.List.take_n len l2 |> List.map JSON.encode
+      Mavryk_base__TzPervasives.List.take_n len l2 |> List.map JSON.encode
     in
     List.iter
       (fun oph ->
@@ -723,7 +723,7 @@ let baking_with_given_minimal_timestamp ~minimal_timestamp =
   @@ fun protocol ->
   let* _node, client =
     Client.init_with_protocol
-      ~timestamp:(Ago (Tezos_base.Time.System.Span.of_seconds_exn 60.))
+      ~timestamp:(Ago (Mavryk_base.Time.System.Span.of_seconds_exn 60.))
       ~nodes_args:[Synchronisation_threshold 0]
       ~protocol
       `Client

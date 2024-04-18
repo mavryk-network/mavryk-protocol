@@ -16,9 +16,9 @@
   unix)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix)
  (modules
   Embedded_cmis_env
   Embedded_cmis_register
@@ -45,7 +45,7 @@
    %{targets}
    (run
     bin/cmis_of_cma.exe
-    %{lib:mavkit-proto-libs.protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}))))
+    %{lib:mavkit-proto-libs.protocol-environment.sigs:mavryk_protocol_environment_sigs.cmxa}))))
 
 (rule
  (targets embedded_cmis_env.ml)
@@ -60,7 +60,7 @@
  (action
   (run
    %{bin:ocp-ocamlres} -format variants -o %{targets}
-   %{cmi:registerer/tezos_protocol_registerer})))
+   %{cmi:registerer/mavryk_protocol_registerer})))
 
 (rule
  (targets defaults.ml)
@@ -79,7 +79,7 @@
   compiler-libs.optcomp)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
+  -open Mavryk_base.TzPervasives
   -open Mavkit_protocol_compiler)
  (modules Native))
 

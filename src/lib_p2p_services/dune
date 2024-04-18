@@ -4,8 +4,8 @@
 (env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
 
 (library
- (name tezos_p2p_services)
- (public_name mavkit-libs.tezos-p2p-services)
+ (name mavryk_p2p_services)
+ (public_name mavkit-libs.mavryk-p2p-services)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
@@ -14,4 +14,4 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

@@ -76,7 +76,7 @@ and chain_store = {
   block_watcher : block Lwt_watcher.input;
   validated_block_watcher : block Lwt_watcher.input;
   block_rpc_directories :
-    (chain_store * block) Tezos_rpc.Directory.t Protocol_hash.Map.t
+    (chain_store * block) Mavryk_rpc.Directory.t Protocol_hash.Map.t
     Protocol_hash.Table.t;
 }
 
@@ -1812,16 +1812,16 @@ let init ?patch_context ?commit_genesis ?history_mode ?(readonly = false)
     Option.map
       (fun f ctxt ->
         let ctxt =
-          Tezos_protocol_environment.Memory_context.wrap_memory_context ctxt
+          Mavryk_protocol_environment.Memory_context.wrap_memory_context ctxt
         in
         let+ ctxt = f ctxt in
-        Tezos_protocol_environment.Memory_context.unwrap_memory_context ctxt)
+        Mavryk_protocol_environment.Memory_context.unwrap_memory_context ctxt)
       patch_context
   in
   let store_dir = Naming.store_dir ~dir_path:store_dir in
   let chain_id = Chain_id.of_block_hash genesis.Genesis.block in
   let*! context_index, commit_genesis =
-    let open Tezos_context_memory in
+    let open Mavryk_context_memory in
     match commit_genesis with
     | Some commit_genesis ->
         let*! context_index =

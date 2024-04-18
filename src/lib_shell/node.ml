@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_base
+open Mavryk_base
 
 type error += Non_recoverable_context
 
@@ -68,7 +68,7 @@ type t = {
   p2p : Distributed_db.p2p;
   user_activated_upgrades : User_activated.upgrades;
   user_activated_protocol_overrides : User_activated.protocol_overrides;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
   operation_metadata_size_limit : Shell_limits.operation_metadata_size_limit;
   (* For P2P RPCs *)
   shutdown : unit -> unit Lwt.t;
@@ -77,14 +77,14 @@ type t = {
 let get_version node =
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
-  let version = Tezos_version_value.Current_git_info.version in
+  let version = Mavryk_version_value.Current_git_info.version in
   let network_version = P2p.announced_version node.p2p in
-  Tezos_version.Node_version.
+  Mavryk_version.Node_version.
     {version; commit_info = Some commit_info; network_version}
 
 let peer_metadata_cfg : _ P2p_params.peer_meta_config =
@@ -143,19 +143,19 @@ type config = {
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   operation_metadata_size_limit : Shell_limits.operation_metadata_size_limit;
   data_dir : string;
-  internal_events : Tezos_base.Internal_event_config.t;
+  internal_events : Mavryk_base.Internal_event_config.t;
   store_root : string;
   context_root : string;
   protocol_root : string;
   patch_context :
-    (Tezos_protocol_environment.Context.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t)
+    (Mavryk_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t)
     option;
   p2p : (P2p.config * P2p_limits.t) option;
   target : (Block_hash.t * int32) option;
   disable_mempool : bool;
   enable_testchain : bool;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
 }
 
 (* These protocols are linked with the node and
@@ -365,10 +365,10 @@ let create ?(sandboxed = false) ?sandbox_parameters ~singleprocess ~version
 let shutdown node = node.shutdown ()
 
 let build_rpc_directory ~node_version ~commit_info node =
-  let dir : unit Tezos_rpc.Directory.t ref = ref Tezos_rpc.Directory.empty in
-  let merge d = dir := Tezos_rpc.Directory.merge !dir d in
+  let dir : unit Mavryk_rpc.Directory.t ref = ref Mavryk_rpc.Directory.empty in
+  let merge d = dir := Mavryk_rpc.Directory.merge !dir d in
   let register0 s f =
-    dir := Tezos_rpc.Directory.register !dir s (fun () p q -> f p q)
+    dir := Mavryk_rpc.Directory.register !dir s (fun () p q -> f p q)
   in
   merge
     (Protocol_directory.build_rpc_directory
@@ -392,6 +392,6 @@ let build_rpc_directory ~node_version ~commit_info node =
        ~mainchain_validator:node.mainchain_validator
        node.store) ;
   merge (Version_directory.rpc_directory node_version) ;
-  register0 Tezos_rpc.Service.error_service (fun () () ->
+  register0 Mavryk_rpc.Service.error_service (fun () () ->
       Lwt.return_ok (Data_encoding.Json.schema Error_monad.error_encoding)) ;
   !dir

@@ -75,7 +75,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -111,7 +111,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -190,7 +190,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -226,7 +226,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -305,7 +305,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -341,7 +341,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -420,7 +420,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times
@@ -456,7 +456,7 @@ To browse the documentation:
   mavkit-client [global options] man -v 3 (for the full manual)
 
 Global options (must come before the command):
-  -d --base-dir <path>: client data directory (absent: TEZOS_CLIENT_DIR env)
+  -d --base-dir <path>: client data directory (absent: MAVRYK_CLIENT_DIR env)
   -n --no-base-dir-warnings: silence warnings about client data directory
   -c --config-file <path>: configuration file
   -t --timings: show RPC request times

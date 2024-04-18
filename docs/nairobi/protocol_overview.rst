@@ -161,10 +161,10 @@ The *list* of protocol constants can be found in the OCaml APIs:
 
 - fixed protocol constants are defined in the module
   :package-api:`Constants_repr
-  <tezos-protocol-017-PtNairob/Tezos_raw_protocol_017_PtNairob/Constants_repr/index.html>`
+  <mavryk-protocol-017-PtNairob/Mavryk_raw_protocol_017_PtNairob/Constants_repr/index.html>`
 - parametric constants are defined in the module
   :package-api:`Constants_parametric_repr
-  <tezos-protocol-017-PtNairob/Tezos_raw_protocol_017_PtNairob/Constants_parametric_repr/index.html>`
+  <mavryk-protocol-017-PtNairob/Mavryk_raw_protocol_017_PtNairob/Constants_parametric_repr/index.html>`
 
 The *values* of protocol constants in any given protocol can be found using specific RPC calls:
 
@@ -183,4 +183,4 @@ See also
 
 An in-depth description of the internals of developing a new Tezos
 protocol can be found in the blog post: `How to write a Tezos protocol
-<https://research-development.nomadic-labs.com/how-to-write-a-tezos-protocol.html>`_.
+<https://research-development.nomadic-labs.com/how-to-write-a-mavryk-protocol.html>`_.

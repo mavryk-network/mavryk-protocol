@@ -39,7 +39,7 @@ MOCKUP_DIR=$(mktemp -d)
 "$TOP_DIR"/mavkit-client --mode mockup --base-dir "$MOCKUP_DIR" create mockup \
                       1> /tmp/create-mockup.log 2>&1
 
-TEZOS_CLIENT="$TOP_DIR/mavkit-client --base-dir $MOCKUP_DIR \
+MAVRYK_CLIENT="$TOP_DIR/mavkit-client --base-dir $MOCKUP_DIR \
                     --protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK \
                     --mode mockup"
 
@@ -78,7 +78,7 @@ echo "* Step 3: Compute the binary representations of the two Michelson scripts"
 
 serialize () {
   CONTRACT="$1"
-  $TEZOS_CLIENT convert script "$CONTRACT.tz" from michelson to binary --legacy > "$CONTRACT.bin"
+  $MAVRYK_CLIENT convert script "$CONTRACT.tz" from michelson to binary --legacy > "$CONTRACT.bin"
 }
 
 serialize cpmm

@@ -12,17 +12,17 @@ The code architecture of ``mavkit-snoop`` is itself divided in the following
 main packages:
 
 - ``bin_snoop`` is the main binary (you can have a look at the :ref:`manual<benchmark_tool_manual>`).
-- ``tezos-benchmark`` is a library for performing measurements, writing models
+- ``mavryk-benchmark`` is a library for performing measurements, writing models
   and infering parameters for these models.
-- ``tezos-micheline-rewriting`` is used to perform rewriting of Micheline terms
-  (documentation available :doc:`here <tezos_micheline_rewriting>`).
+- ``mavryk-micheline-rewriting`` is used to perform rewriting of Micheline terms
+  (documentation available :doc:`here <mavryk_micheline_rewriting>`).
   It is mainly used when writing protocol-specific benchmarks but is independent
   from the protocol.
 
 There are other packages containing shell-specific and protocol-specific benchmarks,
 these are not documented here.
 
-Here, we will focus on the ``tezos-benchmark`` library, which is the core of the
+Here, we will focus on the ``mavryk-benchmark`` library, which is the core of the
 tool.
 
 High-level description
@@ -41,13 +41,13 @@ The notion of workload is abstract here, and indeed, it is not necessarily a sca
 
 Once this notion of workload is clear, we can describe Snoop's user interface.
 
-Using ``tezos-benchmark`` requires to provide, for each benchmark, the following main items:
+Using ``mavryk-benchmark`` requires to provide, for each benchmark, the following main items:
 
 - a type of execution ``workload``;
 - a statistical model, corresponding to a function which to each ``workload`` associates an expression (possibly with free variables) denoting the predicted execution time for that workload. In simple cases, the model consists in *a single* expression computing a predicted execution time for any given workload.
 - A family of pieces of code (i.e. closures) to be benchmarked, each associated to its ``workload``. Thus, each closure contains the application of a piece of a code to arguments instantiating a specific workload. We assume that the execution time of each closure has a well-defined distribution. In most cases, these closures correspond to executing *a single* piece of code of interest with different inputs.
 
-From this input, ``tezos-benchmark`` can perform for you the following tasks:
+From this input, ``mavryk-benchmark`` can perform for you the following tasks:
 
 - perform the timing measurements;
 - infer the free parameters of the statistical model;
@@ -76,7 +76,7 @@ The library is meant to be used as follows:
 - exploit the results:
 
   - input back the result of inference in the model to make it predictive
-  - plot the data (``tezos-benchmark`` can generate CSV)
+  - plot the data (``mavryk-benchmark`` can generate CSV)
   - generate code from the model (``Codegen`` module)
 
 Modules implementing the ``Benchmark.S`` signature can also be registered
@@ -165,7 +165,7 @@ Defining a predictive model: the ``Model`` module
 
 As written above, the ``Benchmark.S`` signature also requires a list
 of *models* (note that users only interested in measures of execution
-time can leave this list empty). At the time of writing, ``tezos-benchmark``
+time can leave this list empty). At the time of writing, ``mavryk-benchmark``
 only handles *linear models*.
 
 .. _Linear models primer:
@@ -305,10 +305,10 @@ function.
 .. code-block:: ocaml
 
    val perform_benchmark :
-     Measure.options -> ('c, 't) Tezos_benchmark.Benchmark.poly -> 't workload_data
+     Measure.options -> ('c, 't) Mavryk_benchmark.Benchmark.poly -> 't workload_data
 
 Before delving into its implementation, let's examine its type.
-A value of type ``('c, 't) Tezos_benchmark.Benchmark.poly`` is a first
+A value of type ``('c, 't) Mavryk_benchmark.Benchmark.poly`` is a first
 class module where ``'c`` is a type variable corresponding to the configuration
 of the benchmark and ``'t`` is a variable corresponding to the type
 of workloads of the benchmark. Hence ``perform_benchmark`` is parametric

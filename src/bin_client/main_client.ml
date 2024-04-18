@@ -27,13 +27,13 @@
 open Client_config
 
 let disable_disclaimer =
-  match Sys.getenv_opt "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER" with
+  match Sys.getenv_opt "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER" with
   | Some ("yes" | "y" | "YES" | "Y") -> true
   | _ -> false
 
 let timeout_seconds () =
   let default_value = 10 in
-  let varname = "TEZOS_CLIENT_RPC_TIMEOUT_SECONDS" in
+  let varname = "MAVRYK_CLIENT_RPC_TIMEOUT_SECONDS" in
   match Sys.getenv_opt varname with
   | None -> default_value
   | Some s -> (
@@ -106,7 +106,7 @@ let rpc_timeout ~timeout ?canceler f ctxt =
   let canceler = Option.value_f ~default:Lwt_canceler.create canceler in
   let request = Error_monad.protect ~canceler (fun () -> f ctxt) in
   let alarm =
-    Tezos_stdlib_unix.Systime_os.sleep (Ptime.Span.of_int_s timeout)
+    Mavryk_stdlib_unix.Systime_os.sleep (Ptime.Span.of_int_s timeout)
   in
   Error_monad.with_timeout ~canceler alarm (fun _ -> request)
 
@@ -179,11 +179,11 @@ let select_commands ctxt {chain; block; protocol; _} =
   in
   Lwt.return_ok
     (Client_rpc_commands.commands
-    @ Tezos_signer_backends_unix.Ledger.commands ()
+    @ Mavryk_signer_backends_unix.Ledger.commands ()
     @ Client_keys_commands.commands network
     @ Client_helpers_commands.commands ()
     @ Mockup_commands.commands ()
-    @ Tezos_proxy.Proxy_commands.commands ()
+    @ Mavryk_proxy.Proxy_commands.commands ()
     @ Client_smart_rollup_commands.commands ()
     @ commands_for_version)
 

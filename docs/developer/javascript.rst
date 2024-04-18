@@ -114,7 +114,7 @@ Dealing with external JS dependencies
 
 Some OCaml libraries expect external JavaScript packages to be
 installed and loaded before any OCaml code runs. For example
-``tezos-hacl`` requires the npm package ``hacl-wasm`` to be
+``mavryk-hacl`` requires the npm package ``hacl-wasm`` to be
 initialized.
 
 Adding a JavaScript dependency

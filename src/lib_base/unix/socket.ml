@@ -140,7 +140,7 @@ let bind ?(backlog = 10) =
             Lwt_unix.listen sock backlog ;
             return_ok sock
           in
-          Tezos_error_monad.TzLwtreslib.List.map_es do_bind addrs)
+          Mavryk_error_monad.TzLwtreslib.List.map_es do_bind addrs)
 
 (* To get the encoding/decoding errors into scope. *)
 open Data_encoding_wrapper
@@ -188,7 +188,7 @@ let send fd encoding message =
           Unexpected_size_of_encoded_value
       in
       (* we set the beginning of the buf with the length of what is next *)
-      Tezos_stdlib.TzEndian.set_int16
+      Mavryk_stdlib.TzEndian.set_int16
         message_serialisation_buffer
         0
         length_of_message_payload ;
@@ -208,7 +208,7 @@ let recv ?timeout fd encoding =
              fd
              header_buf)
   in
-  let len = Tezos_stdlib.TzEndian.get_uint16 header_buf 0 in
+  let len = Mavryk_stdlib.TzEndian.get_uint16 header_buf 0 in
   let buf = Bytes.create len in
   let* () =
     protect (fun () ->

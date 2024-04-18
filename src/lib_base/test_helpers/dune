@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_base_test_helpers)
+ (name mavryk_base_test_helpers)
  (public_name mavkit-libs.base-test-helpers)
  (libraries
   mavkit-libs.base
@@ -15,6 +15,6 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt))

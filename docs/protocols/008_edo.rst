@@ -112,7 +112,7 @@ ones as the deprecated will be removed in a future protocol.
 If your software parses the entire encodings then it is not compatible with
 008 because of the new added fields.
 
-You can always use the binary ``tezos-codec`` for more details on each
+You can always use the binary ``mavryk-codec`` for more details on each
 encoding, binary or json.
 
 ``block_metadata``

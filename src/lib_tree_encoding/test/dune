@@ -9,7 +9,7 @@
   mavkit-libs.base
   mavkit-libs.tree-encoding
   mavkit-libs.base.unix
-  mavkit-libs.tezos-context.disk
+  mavkit-libs.mavryk-context.disk
   mavkit-libs.base-test-helpers
   mavkit-libs.test-helpers
   mavkit-l2-libs.webassembly-interpreter
@@ -20,9 +20,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_test_helpers
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_test_helpers
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
  (modules test_proofs test_encoding))
 
@@ -36,7 +36,7 @@
 
 (rule
  (alias runtest)
- (package tezos-tree-encoding-test)
+ (package mavryk-tree-encoding-test)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

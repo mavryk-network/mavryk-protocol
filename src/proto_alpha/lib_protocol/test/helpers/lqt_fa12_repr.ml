@@ -80,7 +80,7 @@ module Parameter = struct
   let to_expr_rooted :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc -> function
     | MintOrBurn {quantity; target} ->
         comb ~loc [int ~loc quantity; address_string ~loc target]
@@ -90,7 +90,7 @@ module Parameter = struct
   let to_expr :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc p ->
     let rooted = to_expr_rooted ~loc p in
     match p with
@@ -144,7 +144,7 @@ module Storage = struct
   let to_expr :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc {tokens; allowances; admin; totalSupply} ->
     comb
       ~loc
@@ -168,16 +168,16 @@ module Storage = struct
      e.g. returned by [Alpha_services.Contract.storage]), so that
      contracts are represented by strings.  *)
   let of_expr_exn :
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node -> t =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node -> t =
     function
-    | Tezos_micheline.Micheline.Prim
+    | Mavryk_micheline.Micheline.Prim
         ( _,
           Script.D_Pair,
           [
-            Tezos_micheline.Micheline.Int (_, tokens);
-            Tezos_micheline.Micheline.Int (_, allowances);
-            Tezos_micheline.Micheline.String (_, admin);
-            Tezos_micheline.Micheline.Int (_, totalSupply);
+            Mavryk_micheline.Micheline.Int (_, tokens);
+            Mavryk_micheline.Micheline.Int (_, allowances);
+            Mavryk_micheline.Micheline.String (_, admin);
+            Mavryk_micheline.Micheline.Int (_, totalSupply);
           ],
           [] ) ->
         let tokens = Big_map.Id.parse_z tokens in
@@ -232,8 +232,8 @@ module Storage = struct
     let*@ _, result = Big_map.get_opt ctxt tokens address_hash in
     match result with
     | Some canonical -> (
-        match Tezos_micheline.Micheline.root canonical with
-        | Tezos_micheline.Micheline.Int (_, amount) -> return_some amount
+        match Mavryk_micheline.Micheline.root canonical with
+        | Mavryk_micheline.Micheline.Int (_, amount) -> return_some amount
         | _ -> assert false)
     | None -> return_none
 

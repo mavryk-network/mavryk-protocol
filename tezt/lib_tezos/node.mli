@@ -283,10 +283,10 @@ val show_history_mode : history_mode -> string
 (** Run [mavkit-node config init]. *)
 val config_init : t -> argument list -> unit Lwt.t
 
-(** Run [tezos-node config update]. *)
+(** Run [mavryk-node config update]. *)
 val config_update : t -> argument list -> unit Lwt.t
 
-(** Run [tezos-node config reset]. *)
+(** Run [mavryk-node config reset]. *)
 val config_reset : t -> argument list -> unit Lwt.t
 
 (** Run [mavkit-node config show]. Returns the node configuration. *)
@@ -319,7 +319,7 @@ module Config_file : sig
 
   (** Set the network config to a sandbox with the given dal config. *)
   val set_sandbox_network_with_dal_config :
-    Tezos_crypto_dal.Cryptobox.Config.t -> JSON.t -> JSON.t
+    Mavryk_crypto_dal.Cryptobox.Config.t -> JSON.t -> JSON.t
 
   (** Update the network config with the given user
       activated upgrades. *)
@@ -414,7 +414,7 @@ val spawn_reconstruct : t -> Process.t
     [~event_sections_levels:[("prevalidator", `Debug); ("validator.block", `Debug)]]
     will activate the logs at debug level for events whose section starts with
     ["prevalidator"] or ["validator.block"].
-    See {!Tezos_stdlib_unix.File_descriptor_sink} and
+    See {!Mavryk_stdlib_unix.File_descriptor_sink} and
     {{:https://tezos.gitlab.io/user/logging.html#file-descriptor-sinks}the logging documentation}
     for a more precise semantic.
  *)

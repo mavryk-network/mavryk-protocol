@@ -118,29 +118,29 @@ let list_blocks chain_store ?(length = 1) ?min_date blocks =
 
 let rpc_directory validator =
   let open Lwt_result_syntax in
-  let dir : Store.chain_store Tezos_rpc.Directory.t ref =
-    ref Tezos_rpc.Directory.empty
+  let dir : Store.chain_store Mavryk_rpc.Directory.t ref =
+    ref Mavryk_rpc.Directory.empty
   in
   let register0 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst0 s)
+        (Mavryk_rpc.Service.subst0 s)
         (fun chain p q -> f chain p q)
   in
   let register1 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst1 s)
+        (Mavryk_rpc.Service.subst1 s)
         (fun (chain, a) p q -> f chain a p q)
   in
   let register_dynamic_directory2 ?descr s f =
     dir :=
-      Tezos_rpc.Directory.register_dynamic_directory
+      Mavryk_rpc.Directory.register_dynamic_directory
         !dir
         ?descr
-        (Tezos_rpc.Path.subst1 s)
+        (Mavryk_rpc.Path.subst1 s)
         (fun (chain, a) -> f chain a)
   in
   register0 S.chain_id (fun chain_store () () ->
@@ -201,16 +201,16 @@ let build_rpc_directory validator =
   let store = Distributed_db.store distributed_db in
   let dir = ref (rpc_directory validator) in
   (* Mempool *)
-  let merge d = dir := Tezos_rpc.Directory.merge !dir d in
+  let merge d = dir := Mavryk_rpc.Directory.merge !dir d in
   merge
-    (Tezos_rpc.Directory.map
+    (Mavryk_rpc.Directory.map
        (fun chain_store ->
          match Validator.get validator (Store.Chain.chain_id chain_store) with
          | Error _ -> Lwt.fail Not_found
          | Ok chain_validator ->
              Lwt.return (Chain_validator.prevalidator chain_validator))
        Prevalidator.rpc_directory) ;
-  Tezos_rpc.Directory.prefix Chain_services.path
-  @@ Tezos_rpc.Directory.map
+  Mavryk_rpc.Directory.prefix Chain_services.path
+  @@ Mavryk_rpc.Directory.map
        (fun ((), chain) -> get_chain_store_exn store chain)
        !dir

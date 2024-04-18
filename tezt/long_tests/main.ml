@@ -60,7 +60,7 @@ let default_executors = Long_test.[x86_executor1]
 
 let () =
   (* Register your tests here. *)
-  (* This test depends on [Tezos_protocol_alpha.*] Tezos libraries *)
+  (* This test depends on [Mavryk_protocol_alpha.*] Tezos libraries *)
   Qcheck_rpc.register_for_alpha ~executors:default_executors () ;
   Prt_client.register ~executors:default_executors ~protocols:[Alpha] ;
   Sc_rollup.register ~executors:default_executors ~protocols:[Alpha] ;

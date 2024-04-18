@@ -33,7 +33,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 (* In this test, a ticketer contract mints and transfers a ticket to an implicit account,
    who further transfers it to another implicit account.

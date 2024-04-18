@@ -730,7 +730,7 @@ let wrap_test ?(keep_dir = false) (name, g) =
             Lwt.fail Alcotest.Test_error)
   in
   let run _ _ =
-    let prefix_dir = "tezos_block_store_test_" in
+    let prefix_dir = "mavryk_block_store_test_" in
     if not keep_dir then Lwt_utils_unix.with_tempdir prefix_dir f
     else
       let base_dir = Filename.temp_file prefix_dir "" in
@@ -761,4 +761,4 @@ let tests : string * unit Alcotest_lwt.test_case list =
   in
   ("block store", test_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_event_logging)
+ (name mavryk_event_logging)
  (public_name mavkit-libs.event-logging)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,7 +14,7 @@
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
+  -open Mavryk_stdlib
   -open Data_encoding
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib))
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib))

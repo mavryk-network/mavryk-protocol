@@ -23,10 +23,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Directory = Tezos_rpc.Directory
-module Service = Tezos_rpc.Service
+module Directory = Mavryk_rpc.Directory
+module Service = Mavryk_rpc.Service
 
-let media_types = [Tezos_rpc_http.Media_type.json]
+let media_types = [Mavryk_rpc_http.Media_type.json]
 
 module NullLogger = struct
   let debug fmt = Format.kasprintf ignore fmt
@@ -52,15 +52,15 @@ end
 
 module Call =
   Resto_cohttp_self_serving_client.Self_serving_client.Make
-    (Tezos_rpc.Encoding)
+    (Mavryk_rpc.Encoding)
     (NullLogger)
 
-let local_ctxt (directory : unit Tezos_rpc.Directory.t) :
-    Tezos_rpc.Context.generic =
+let local_ctxt (directory : unit Mavryk_rpc.Directory.t) :
+    Mavryk_rpc.Context.generic =
   let local_client =
     Call.launch ?cors:None ?agent:None ~media_types directory
   in
-  let module C = Tezos_rpc_http_client.RPC_client.Make ((val local_client)) in
+  let module C = Mavryk_rpc_http_client.RPC_client.Make ((val local_client)) in
   let base = Uri.empty in
   object
     method base = base
@@ -70,7 +70,7 @@ let local_ctxt (directory : unit Tezos_rpc.Directory.t) :
 
     method call_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           'p ->
           'q ->
           'i ->
@@ -80,7 +80,7 @@ let local_ctxt (directory : unit Tezos_rpc.Directory.t) :
 
     method call_streamed_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           on_chunk:('o -> unit) ->
           on_close:(unit -> unit) ->
           'p ->

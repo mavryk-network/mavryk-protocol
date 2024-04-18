@@ -138,7 +138,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "test validator",
     "tags": [
       "alcotest"
@@ -149,8 +149,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: test_matching_with_name_resolving",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: test_matching_with_name_resolving",
     "tags": [
       "alcotest"
     ],
@@ -160,7 +160,7 @@
     }
   },
   {
-    "file": "tezos-requester",
+    "file": "mavryk-requester",
     "title": "all",
     "tags": [
       "alcotest"

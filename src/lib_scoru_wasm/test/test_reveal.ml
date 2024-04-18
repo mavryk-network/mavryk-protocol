@@ -27,11 +27,11 @@
     -------
     Component:    Lib_scoru_wasm reveal
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_reveal.ml
-    Subject:      Reveal tests for the tezos-scoru-wasm library
+    Subject:      Reveal tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 open Wasm_utils
 open Tztest_helper
 
@@ -82,14 +82,14 @@ let reveal_metadata_module metadata_addr =
       )
     |}
     metadata_addr
-    Tezos_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size
+    Mavryk_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size
 
 let reveal_returned_size tree =
   let open Lwt_syntax in
   let* tick_state = Wasm.Internal_for_tests.get_tick_state tree in
   match tick_state with
   | Eval
-      Tezos_webassembly_interpreter.Eval.
+      Mavryk_webassembly_interpreter.Eval.
         {
           config =
             {
@@ -99,7 +99,7 @@ let reveal_returned_size tree =
             };
           _;
         } -> (
-      let* hd = Tezos_lazy_containers.Lazy_vector.Int32Vector.get 0l vs in
+      let* hd = Mavryk_lazy_containers.Lazy_vector.Int32Vector.get 0l vs in
       match hd with
       | Num (I32 size) -> return size
       | _ -> Stdlib.failwith "Incorrect stack")
@@ -121,8 +121,8 @@ let test_reveal_preimage_gen ~version preimage max_bytes =
   let preimage_addr = 200l in
   (* The first byte corresponds to a tag which in the case of Blake2B hashes
      is set to zero. *)
-  let hash_size = Int32.of_int (1 + Tezos_crypto.Blake2B.size) in
-  let hash = Tezos_crypto.Blake2B.(to_string (hash_string [preimage])) in
+  let hash_size = Int32.of_int (1 + Mavryk_crypto.Blake2B.size) in
+  let hash = Mavryk_crypto.Blake2B.(to_string (hash_string [preimage])) in
   let modl =
     reveal_preimage_module
       (to_hex_string hash)
@@ -145,7 +145,7 @@ let test_reveal_preimage_gen ~version preimage max_bytes =
     Memory.load_bytes memory hash_addr (Int32.to_int hash_size)
   in
   assert (
-    String.equal (String.sub hash_in_memory 1 Tezos_crypto.Blake2B.size) hash) ;
+    String.equal (String.sub hash_in_memory 1 Mavryk_crypto.Blake2B.size) hash) ;
   let*! info = Wasm.get_info state in
   let* () =
     let open Wasm_pvm_state in
@@ -156,7 +156,7 @@ let test_reveal_preimage_gen ~version preimage max_bytes =
             (* The PVM has reached a point where it’s asking for some preimage. *)
             assert (
               String.equal
-                (String.sub reveal_hash 1 Tezos_crypto.Blake2B.size)
+                (String.sub reveal_hash 1 Mavryk_crypto.Blake2B.size)
                 hash) ;
 
             return_unit
@@ -232,7 +232,7 @@ let test_reveal_metadata ~version () =
      metadata definition in this compilation unit. *)
   let metadata =
     Bytes.init
-      Tezos_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size
+      Mavryk_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size
       Char.chr
   in
   let*! state = Wasm.reveal_step metadata state in
@@ -254,7 +254,7 @@ let test_reveal_metadata ~version () =
   let*! memory = Instance.Vector.get 0l module_instance.memories in
   assert (
     Int32.to_int returned_size
-    = Tezos_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
+    = Mavryk_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
   let*! preimage_in_memory =
     Memory.load_bytes memory metadata_addr (Int32.to_int returned_size)
   in
@@ -358,7 +358,7 @@ let test_fast_exec_reveal ~version () =
     Durable.(find_value_exn durable (key_of_string_exn "/foo"))
   in
   let* written_value =
-    Tezos_lazy_containers.Chunked_byte_vector.to_string written_value
+    Mavryk_lazy_containers.Chunked_byte_vector.to_string written_value
   in
   assert (String.equal written_value example_preimage) ;
 

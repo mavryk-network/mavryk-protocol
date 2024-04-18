@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 module Term = struct
   let p2p_point_arg ~default_port =
@@ -214,7 +214,7 @@ module Run = struct
   let man = description
 
   let info =
-    let version = Tezos_version_value.Bin_version.version_string in
+    let version = Mavryk_version_value.Bin_version.version_string in
     Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~man ~version "run"
 
   let cmd run = Cmdliner.Cmd.v info (Term.term run)
@@ -242,7 +242,7 @@ module Config = struct
       ]
 
     let info =
-      let version = Tezos_version_value.Bin_version.version_string in
+      let version = Mavryk_version_value.Bin_version.version_string in
       Cmdliner.Cmd.info ~doc:"Configuration initialisation" ~man ~version "init"
 
     let cmd run = Cmdliner.Cmd.v info (Term.term run)
@@ -251,7 +251,7 @@ module Config = struct
   let cmd run =
     let default = Cmdliner.Term.(ret (const (`Help (`Pager, None)))) in
     let info =
-      let version = Tezos_version_value.Bin_version.version_string in
+      let version = Mavryk_version_value.Bin_version.version_string in
       Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~man ~version "config"
     in
     Cmdliner.Cmd.group ~default info [Init.cmd run]
@@ -305,7 +305,7 @@ let make ~run =
         $ Term.endpoint))
   in
   let info =
-    let version = Tezos_version_value.Bin_version.version_string in
+    let version = Mavryk_version_value.Bin_version.version_string in
     Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~version "mavkit-dal-node"
   in
   Cmdliner.Cmd.group

@@ -9,7 +9,7 @@
   mavkit-libs.base
   mavkit-libs.tree-encoding
   mavkit-libs.base.unix
-  mavkit-libs.tezos-context.disk
+  mavkit-libs.mavryk-context.disk
   mavkit-libs.base-test-helpers
   mavkit-libs.test-helpers
   mavkit-l2-libs.scoru-wasm
@@ -23,13 +23,13 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_test_helpers
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_test_helpers
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt
-  -open Tezos_scoru_wasm_helpers
-  -open Tezos_scoru_wasm_test_helpers
-  -open Tezos_webassembly_interpreter_extra)
+  -open Mavryk_scoru_wasm_helpers
+  -open Mavryk_scoru_wasm_test_helpers
+  -open Mavryk_webassembly_interpreter_extra)
  (modules
   test_ast_generators
   test_debug

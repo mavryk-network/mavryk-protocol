@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_001_PtAtLas_test_helpers)
+ (name mavryk_001_PtAtLas_test_helpers)
  (public_name mavkit-protocol-001-PtAtLas-libs.test-helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -11,9 +11,9 @@
   mavkit-libs.base
   mavkit-libs.micheline
   mavkit-libs.stdlib-unix
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.client
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-proto-libs.protocol-environment
   mavkit-protocol-001-PtAtLas-libs.plugin
   mavkit-shell-libs.shell-services
@@ -22,14 +22,14 @@
   mavkit-protocol-001-PtAtLas-libs.smart-rollup)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_micheline
-  -open Tezos_stdlib_unix
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_protocol_plugin_001_PtAtLas
-  -open Tezos_shell_services
-  -open Tezos_crypto_dal
-  -open Tezos_smart_rollup_001_PtAtLas))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_micheline
+  -open Mavryk_stdlib_unix
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_protocol_plugin_001_PtAtLas
+  -open Mavryk_shell_services
+  -open Mavryk_crypto_dal
+  -open Mavryk_smart_rollup_001_PtAtLas))

@@ -35,7 +35,7 @@ The light mode is requested by passing `--mode light` to the client. For
 this, `src/lib_client/client_config.ml` contains a `Mode_light` value.
 
 This flag is inspected in `src/lib_client/client_main_run.ml` to
-pass a value of type `Tezos_proxy.Proxy_services.mode` to
+pass a value of type `Mavryk_proxy.Proxy_services.mode` to
 `Client_context.unix_proxy`. Ultimately, this value is
 used in `lib_proxy/proxy_services.ml` to create different
 instances of `Proxy_getter.M`, according to whether being in proxy mode

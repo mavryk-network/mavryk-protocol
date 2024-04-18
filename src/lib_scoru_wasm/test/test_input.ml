@@ -27,13 +27,13 @@
     -------
     Component:    Lib_scoru_wasm input
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_input.ml
-    Subject:      Input tests for the tezos-scoru-wasm library
+    Subject:      Input tests for the mavryk-scoru-wasm library
 *)
 
 open Tztest
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 
 let write_input () =
   let open Lwt.Syntax in
@@ -137,7 +137,7 @@ let test_host_fun ~version () =
         payload = Bytes.of_string "hello";
       }
   in
-  let module_inst = Tezos_webassembly_interpreter.Instance.empty_module_inst in
+  let module_inst = Mavryk_webassembly_interpreter.Instance.empty_module_inst in
   let memories =
     Lazy_vector.Int32Vector.cons
       (Memory.alloc (MemoryType Types.{min = 20l; max = Some 3600l}))

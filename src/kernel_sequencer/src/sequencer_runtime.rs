@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::{
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::{
     input::Message,
     metadata::RollupMetadata,
     path::Path,
@@ -195,9 +195,9 @@ where
 mod tests {
 
     use super::SequencerRuntime;
-    use tezos_data_encoding_derive::BinWriter;
-    use tezos_smart_rollup_host::{path::RefPath, runtime::Runtime};
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_data_encoding_derive::BinWriter;
+    use mavryk_smart_rollup_host::{path::RefPath, runtime::Runtime};
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[derive(BinWriter)]
     struct UserMessage {

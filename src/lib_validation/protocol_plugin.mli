@@ -50,8 +50,8 @@ module type T = sig
         for a new protocol. Subsequent {!info}s should be
         created using {!flush}. *)
     val init :
-      Tezos_protocol_environment.Context.t ->
-      head:Tezos_base.Block_header.shell_header ->
+      Mavryk_protocol_environment.Context.t ->
+      head:Mavryk_base.Block_header.shell_header ->
       info tzresult Lwt.t
 
     (** Create a new {!info} based on the [head] block.
@@ -59,9 +59,9 @@ module type T = sig
         Parts of the old {!info} (which may have been built on
         a different block) are recycled, so that this function is more
         efficient than {!init} and does not need a
-        {!Tezos_protocol_environment.Context.t} argument. *)
+        {!Mavryk_protocol_environment.Context.t} argument. *)
     val flush :
-      info -> head:Tezos_base.Block_header.shell_header -> info tzresult Lwt.t
+      info -> head:Mavryk_base.Block_header.shell_header -> info tzresult Lwt.t
 
     (** Perform some syntactic checks on the operation.
 
@@ -153,7 +153,7 @@ module type RPC = sig
   module Proto : Registered_protocol.T
 
   val rpc_services :
-    Tezos_protocol_environment.rpc_context Tezos_rpc.Directory.directory
+    Mavryk_protocol_environment.rpc_context Mavryk_rpc.Directory.directory
 end
 
 (** To use when no registered plugin is found. This module is

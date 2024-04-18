@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_scoru_wasm_fast)
+ (name mavryk_scoru_wasm_fast)
  (public_name mavkit-l2-libs.scoru-wasm-fast)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,4 +14,4 @@
   mavkit-l2-libs.wasmer)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

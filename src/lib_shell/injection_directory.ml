@@ -121,9 +121,9 @@ let build_rpc_directory validator =
   let open Lwt_result_syntax in
   let distributed_db = Validator.distributed_db validator in
   let state = Distributed_db.store distributed_db in
-  let dir : unit Tezos_rpc.Directory.t ref = ref Tezos_rpc.Directory.empty in
+  let dir : unit Mavryk_rpc.Directory.t ref = ref Mavryk_rpc.Directory.empty in
   let register0 s f =
-    dir := Tezos_rpc.Directory.register !dir s (fun () p q -> f p q)
+    dir := Mavryk_rpc.Directory.register !dir s (fun () p q -> f p q)
   in
   let inject_operation ~force q contents =
     let* hash, wait =

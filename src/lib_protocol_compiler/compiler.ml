@@ -76,7 +76,7 @@ let load_embedded_cmis cmis = List.iter load_embedded_cmi cmis
 
 (** Compilation environment.
 
-    [tezos_protocol_env] defines the list of [cmi] available while
+    [mavryk_protocol_env] defines the list of [cmi] available while
     compiling the protocol version. The [cmi] are packed into the
     [mavkit-node] binary by using [ocp-ocamlres], see the Makefile.
 
@@ -93,7 +93,7 @@ let all_files l =
       (String.capitalize_ascii (Filename.chop_suffix fname ".cmi"), content))
     l
 
-let tezos_protocol_env = all_files Embedded_cmis_env.root
+let mavryk_protocol_env = all_files Embedded_cmis_env.root
 
 let register_env = all_files Embedded_cmis_register.root
 
@@ -125,7 +125,7 @@ let debug fmt =
 
 let mktemp_dir () =
   Filename.get_temp_dir_name ()
-  // Printf.sprintf "tezos-protocol-build-%06X" (Random.int 0xFFFFFF)
+  // Printf.sprintf "mavryk-protocol-build-%06X" (Random.int 0xFFFFFF)
 
 (** Main *)
 
@@ -158,7 +158,7 @@ let main {compile_ml; pack_objects; link_shared} version =
         " Only display the hash of the protocol and don't compile" );
       ( "-no-hash-check",
         Arg.Clear check_protocol_hash,
-        " Don't check that TEZOS_PROTOCOL declares the expected protocol hash \
+        " Don't check that MAVRYK_PROTOCOL declares the expected protocol hash \
          (if existent)" );
       ("-static", Arg.Set static, " Only build the static library (no .cmxs)");
       ("-register", Arg.Set register, " Generate the `Registerer` module");
@@ -196,10 +196,10 @@ let main {compile_ml; pack_objects; link_shared} version =
         Stdlib.exit 1
   in
   let stored_hash_opt, protocol =
-    match Lwt_main.run (Tezos_base_unix.Protocol_files.read_dir source_dir) with
+    match Lwt_main.run (Mavryk_base_unix.Protocol_files.read_dir source_dir) with
     | Ok (hash, proto) -> (hash, proto)
     | Error err ->
-        Format.eprintf "Failed to read TEZOS_PROTOCOL: %a" pp_print_trace err ;
+        Format.eprintf "Failed to read MAVRYK_PROTOCOL: %a" pp_print_trace err ;
         exit 2
   in
   let computed_hash = Protocol.hash protocol in
@@ -213,9 +213,9 @@ let main {compile_ml; pack_objects; link_shared} version =
       when !check_protocol_hash
            && not (Protocol_hash.equal computed_hash stored_hash) ->
         Format.eprintf
-          "Inconsistent hash for protocol in TEZOS_PROTOCOL.@\n\
+          "Inconsistent hash for protocol in MAVRYK_PROTOCOL.@\n\
            Computed hash: %a@\n\
-           Stored in TEZOS_PROTOCOL: %a@."
+           Stored in MAVRYK_PROTOCOL: %a@."
           Protocol_hash.pp
           computed_hash
           Protocol_hash.pp
@@ -263,7 +263,7 @@ let main {compile_ml; pack_objects; link_shared} version =
   Clflags.nopervasives := true ;
   Clflags.no_std_include := true ;
   Clflags.include_dirs := [Filename.dirname functor_file] ;
-  load_embedded_cmis tezos_protocol_env ;
+  load_embedded_cmis mavryk_protocol_env ;
   let packed_protocol_object = compile_ml ~for_pack functor_file in
   let register_objects =
     if not !register then []
@@ -276,7 +276,7 @@ let main {compile_ml; pack_objects; link_shared} version =
         register_file
         (Printf.sprintf
            "module Name = struct let name = %S end\n\
-           \ let () = Tezos_protocol_registerer.register Name.name (%s (module \
+           \ let () = Mavryk_protocol_registerer.register Name.name (%s (module \
             %s.Make))"
            (Protocol_hash.to_b58check hash)
            (Protocol.module_name_of_env_version protocol.expected_env)

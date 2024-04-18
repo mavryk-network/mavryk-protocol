@@ -26,8 +26,8 @@
 
 type t = {
   root_hash : Dac_plugin.raw_hash;
-  signature : Tezos_crypto.Aggregate_signature.t;
-  signer_pkh : Tezos_crypto.Aggregate_signature.public_key_hash;
+  signature : Mavryk_crypto.Aggregate_signature.t;
+  signer_pkh : Mavryk_crypto.Aggregate_signature.public_key_hash;
 }
 
 let encoding =
@@ -39,10 +39,10 @@ let encoding =
         {root_hash; signature; signer_pkh})
       (obj3
          (req "root_hash" Dac_plugin.raw_hash_encoding)
-         (req "signature" Tezos_crypto.Aggregate_signature.encoding)
+         (req "signature" Mavryk_crypto.Aggregate_signature.encoding)
          (req
             "signer_pkh"
-            Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)))
+            Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)))
 
 (** [ensure_unknown_aggregate_sig_variant sig_rep] ensures that the underlying
     [Aggregate_signature.t] always corresponds to [Unknown] variant. 
@@ -57,7 +57,7 @@ let encoding =
     it will be read as [Unknown] variant and later served with "asig" prefix in
     JSON. This helper is used to guarantee consistent "asig" prefix. *)
 let ensure_unknown_sig_variant signature =
-  let open Tezos_crypto.Aggregate_signature in
+  let open Mavryk_crypto.Aggregate_signature in
   match signature with
   | Unknown _ as unknown -> unknown
   | Bls12_381 _ as bls -> Unknown (to_bytes bls)

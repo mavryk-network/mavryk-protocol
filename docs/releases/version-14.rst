@@ -12,7 +12,7 @@ purpose only: tx-rollup nodes and clients as well as sc-rollup nodes and
 clients.
 
 If you are updating from version 13.0, note that version 14.0 changes
-the storage format. Run ``tezos-node upgrade storage`` to update your
+the storage format. Run ``mavryk-node upgrade storage`` to update your
 storage. This upgrade is instantaneous but the data-directory can no
 longer be used with version 13.0 once upgraded.
 

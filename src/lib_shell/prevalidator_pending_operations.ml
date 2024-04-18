@@ -52,7 +52,7 @@ module Priority_map : Map.S with type key = priority = Map.Make (struct
 end)
 
 module Map = Operation_hash.Map
-module Sized_set = Tezos_base.Sized.MakeSizedSet (Operation_hash.Set)
+module Sized_set = Mavryk_base.Sized.MakeSizedSet (Operation_hash.Set)
 
 (*
    The type below is used for representing pending operations data of the

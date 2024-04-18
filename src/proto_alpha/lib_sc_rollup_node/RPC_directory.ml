@@ -303,8 +303,8 @@ let () =
 let block_directory (node_ctxt : _ Node_context.t) =
   let module PVM = (val Pvm_rpc.of_kind node_ctxt.kind) in
   List.fold_left
-    (fun dir f -> Tezos_rpc.Directory.merge dir (f node_ctxt))
-    Tezos_rpc.Directory.empty
+    (fun dir f -> Mavryk_rpc.Directory.merge dir (f node_ctxt))
+    Mavryk_rpc.Directory.empty
     [
       Block_directory.build_sub_directory;
       Block_helpers_directory.build_sub_directory;
@@ -312,8 +312,8 @@ let block_directory (node_ctxt : _ Node_context.t) =
     ]
 
 let directory (node_ctxt : _ Node_context.t) =
-  Tezos_rpc.Directory.merge
+  Mavryk_rpc.Directory.merge
     (Mavkit_smart_rollup_node.Rpc_directory.top_directory node_ctxt)
-    (Tezos_rpc.Directory.prefix
+    (Mavryk_rpc.Directory.prefix
        Sc_rollup_services.Block.prefix
        (block_directory node_ctxt))

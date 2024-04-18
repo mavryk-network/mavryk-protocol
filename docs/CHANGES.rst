@@ -455,7 +455,7 @@ Node
 
 - **Breaking Change**: Removed section in stdout logs lines
 
-- Removed the ``indexing-strategy`` option from the ``TEZOS_CONTEXT``
+- Removed the ``indexing-strategy`` option from the ``MAVRYK_CONTEXT``
   environment variable to prevent the usage of the ``always``
   indexing strategy. For now, only the ``minimal`` indexing strategy
   is allowed.
@@ -747,7 +747,7 @@ Version 16.0~rc1
 General
 -------
 
-- **Breaking change**: Symbolic links from old-names ``tezos-*`` to new-names ``mavkit-*``
+- **Breaking change**: Symbolic links from old-names ``mavryk-*`` to new-names ``mavkit-*``
   have been removed.
   Old names are not supported anymore.
 
@@ -935,7 +935,7 @@ General
 -------
 
 - Fixed the warning that was added in 15.0~rc1 about using deprecated
-  ``tezos-`` names. This warning gave the wrong new name for executables
+  ``mavryk-`` names. This warning gave the wrong new name for executables
   that contained the protocol number.
 
 Node
@@ -975,17 +975,17 @@ General
 -------
 
 - **Breaking change**: all executables have been renamed.
-  The ``tezos-`` prefix has been replaced by ``mavkit-`` and protocol numbers
-  have been removed. For instance, ``tezos-node`` is now named ``mavkit-node``
-  and ``tezos-baker-014-PtKathma`` is now named ``mavkit-baker-PtKathma``.
+  The ``mavryk-`` prefix has been replaced by ``mavkit-`` and protocol numbers
+  have been removed. For instance, ``mavryk-node`` is now named ``mavkit-node``
+  and ``mavryk-baker-014-PtKathma`` is now named ``mavkit-baker-PtKathma``.
   If you compile using ``make``, symbolic links from the old names to the
   new names are created, so you can still use the old names.
   But those old names are deprecated and may stop being supported
   starting from version 16.0.
 
 - **Breaking change**: in the Docker entrypoint, all commands have been renamed.
-  The ``tezos-`` prefix has been replaced by ``mavkit-``.
-  For instance, ``tezos-node`` is now named ``mavkit-node`` and ``tezos-baker``
+  The ``mavryk-`` prefix has been replaced by ``mavkit-``.
+  For instance, ``mavryk-node`` is now named ``mavkit-node`` and ``mavryk-baker``
   is now named ``mavkit-baker``. The old command names are still available but
   are deprecated and may stop being supported starting from version 16.0.
 
@@ -1068,7 +1068,7 @@ Node
 Client
 ------
 
-- The light client (``tezos-client --mode light``) now uses the
+- The light client (``mavryk-client --mode light``) now uses the
   ``../block/<block_id>/merkle_tree_v2`` RPC introduced in this version, removing
   a lot of delicate verification code and relying on Irmin instead. The client
   for this version will thus not work with older node versions that do not have
@@ -1082,8 +1082,8 @@ Client
   source.
 
 - Added commands to get the used and paid storage spaces of contracts:
-  ``tezos-client get used storage space for <contract>`` and
-  ``tezos-client get paid storage space for <contract>``.
+  ``mavryk-client get used storage space for <contract>`` and
+  ``mavryk-client get paid storage space for <contract>``.
 
 - Added RPCs to get the used and paid storage spaces of contracts:
   ``GET /chains/<chain_id>/blocks/<block_id>/context/contracts/<contract_id>/storage/used_space``
@@ -1094,13 +1094,13 @@ Client
 	Update the consensus key of a baker:
 
 ```shell
-tezos-client set consensus key for <mgr> to <key>
+mavryk-client set consensus key for <mgr> to <key>
 ```
 
   It is also possible to register as a delegate and immediately set the consensus key:
 
 ```shell
-tezos-client register key <mgr> as delegate with consensus key <key>
+mavryk-client register key <mgr> as delegate with consensus key <key>
 ```
 
   (The current registration command still works.)
@@ -1109,13 +1109,13 @@ tezos-client register key <mgr> as delegate with consensus key <key>
   Drain a baker's account:
 
 ```shell
-tezos-client drain delegate <mgr> to <key>
+mavryk-client drain delegate <mgr> to <key>
 ```
 
   or, if the destination account is different from the consensus key
 
 ```shell
-tezos-client drain delegate <mgr> to <dest_key> with <consensus_key>
+mavryk-client drain delegate <mgr> to <dest_key> with <consensus_key>
 ```
 
 
@@ -1273,7 +1273,7 @@ Protocol Compiler And Environment
 Docker Images
 -------------
 
-- **Breaking change**: script ``tezos-docker-manager.sh``, also known as
+- **Breaking change**: script ``mavryk-docker-manager.sh``, also known as
   ``alphanet.sh`` or ``mainnet.sh``, has been removed. It was deprecated
   since version 13.0. It is recommended to write your own docker-compose file instead.
   ``scripts/docker/docker-compose-generic.yml`` is an example of such file.
@@ -1481,16 +1481,16 @@ Docker Images
 -------------
 
 - **Breaking change**:
-  Script ``tezos_docker_manager.sh`` (also known as ``mainnet.sh``) is now deprecated.
+  Script ``mavryk_docker_manager.sh`` (also known as ``mainnet.sh``) is now deprecated.
   It may be removed from Mavkit starting from version 14.0.
   It is recommended to write your own Docker Compose files instead.
   To this end, you can take inspiration from ``scripts/docker/docker-compose-generic.yml``.
 
-- ``tezos_docker_manager.sh`` no longer starts the endorser.
+- ``mavryk_docker_manager.sh`` no longer starts the endorser.
   As a reminder, starting from Ithaca, which is the active protocol on Mainnet,
   there is no endorser: its role is played by the baker.
 
-- ``tezos_docker_manager.sh`` no longer supports Hangzhounet.
+- ``mavryk_docker_manager.sh`` no longer supports Hangzhounet.
 
 Miscellaneous
 -------------
@@ -1677,7 +1677,7 @@ Client
   of operations) to a single list of operations to be considered for inclusion.
 
 - ``--operations-pool`` option supports URL parameters to fetch remote mempools
-  through HTTP.  Environment variable ``TEZOS_CLIENT_REMOTE_OPERATIONS_POOL_HTTP_HEADERS``
+  through HTTP.  Environment variable ``MAVRYK_CLIENT_REMOTE_OPERATIONS_POOL_HTTP_HEADERS``
   may be set to specify custom HTTP headers. Only the Host header is supported
   as of now (see description in `rfc2616, section 14.23
   <https://datatracker.ietf.org/doc/html/rfc2616#section-14.23>`_)
@@ -1856,8 +1856,8 @@ Miscellaneous
 
 -  Made the ``file-descriptor-{path,stdout,stderr}://`` event-logging
    sink more configurable (e.g. filtering per level and per section). The
-   environment variable ``TEZOS_NODE_HOSTNAME`` used for the output of events
-   was renamed to the more appropriate ``TEZOS_EVENT_HOSTNAME``.
+   environment variable ``MAVRYK_NODE_HOSTNAME`` used for the output of events
+   was renamed to the more appropriate ``MAVRYK_EVENT_HOSTNAME``.
 
 -  Added specific documentation pages about logging for users and
    developers.
@@ -2019,7 +2019,7 @@ Node
 -  Updated RPC ``GET /workers/prevalidators``: field ``backlog`` now
    always returns an empty list. The events in this backlog can now be
    obtained either via stdout, or by configuring a new sink for events
-   via the environment variable ``TEZOS_EVENTS_CONFIG`` (to be set
+   via the environment variable ``MAVRYK_EVENTS_CONFIG`` (to be set
    before launching the node).
 
 -  Updated RPC ``GET /chains/<chain_id>/mempool/monitor_operation``:
@@ -2122,7 +2122,7 @@ Docker Images
 -  The entrypoint script now starts the node with ``--allow-all-rpc``.
    This means that ACLs are inactive in the Docker image on the default RPC port.
    Note that the Docker image does not expose this port by default.
-   If you use ``tezos-docker-manager.sh``, it will expose this port only to
+   If you use ``mavryk-docker-manager.sh``, it will expose this port only to
    other Mavkit containers.
    In summary, you can now call all RPCs if you use Docker images, without
    compromising security as long as you do not explicitly expose the RPC port.
@@ -2333,7 +2333,7 @@ Node
    ``"hostname"``. This field can be used to identify the node when
    aggregating events from multiple nodes. Its default value is the
    hostname of the device the node is running on, and it can be
-   customized with environment variable ``TEZOS_NODE_HOSTNAME``.
+   customized with environment variable ``MAVRYK_NODE_HOSTNAME``.
 
 -  Fixed a bug that caused the lack of connection in private network
    with ``--connections`` set to 1.
@@ -2342,12 +2342,12 @@ Node
    descriptor sink simultaneously.
 
 -  You can now control the verbosity of the logs of the context
-   storage backend using the ``TEZOS_CONTEXT`` environment
+   storage backend using the ``MAVRYK_CONTEXT`` environment
    variable. Set it to ``v`` to display log messages with level "info"
    or to ``vv`` to also display log messages with level "debug".
 
--  The ``TEZOS_STORAGE`` variable now has no effect. Use
-   ``TEZOS_CONTEXT`` instead (see previous item).
+-  The ``MAVRYK_STORAGE`` variable now has no effect. Use
+   ``MAVRYK_CONTEXT`` instead (see previous item).
 
 -  Added an RPC to run `TZIP-4
    views <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-4/tzip-4.md#view-entrypoints>`__
@@ -2486,9 +2486,9 @@ Docker Images
 -  File ``scripts/mainnet.sh`` is now deprecated and may be removed starting from
    version 10.0. If you have a script that downloads this file (with
    ``wget https://gitlab.com/tezos/tezos/raw/latest-release/scripts/mainnet.sh``
-   for instance), your script should now download ``scripts/tezos-docker-manager.sh``
+   for instance), your script should now download ``scripts/mavryk-docker-manager.sh``
    instead and rename it into ``mainnet.sh`` (with
-   ``wget -O mainnet.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh``
+   ``wget -O mainnet.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/mavryk-docker-manager.sh``
    for instance).
 
 -  File ``scripts/carthagenet.sh`` may also be removed starting from version 10.0.
@@ -2871,14 +2871,14 @@ Node
    will be useful for future optimizations.
 
 -  You can now specify the data directory using environment variable
-   ``TEZOS_NODE_DIR``. If you both set this environment variable and
+   ``MAVRYK_NODE_DIR``. If you both set this environment variable and
    specify ``--data-dir``, the latter will be used.
 
 -  Added new RPC ``/config`` to query the configuration of a node.
 
 -  Changed signal handling and exit codes for most binaries. The codes’
    significance are detailed in `the user
-   documentation <http://tezos.gitlab.io/user/various.html#tezos_binaries_signals_and_exit_codes>`__.
+   documentation <http://tezos.gitlab.io/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
 
 -  Command ``mavkit-node --version`` now exits with exit code 0 instead
    of 1.
@@ -2900,7 +2900,7 @@ Client
    in a script.
 
 -  You can now specify the base directory using environment variable
-   ``TEZOS_CLIENT_DIR``. If you both set this environment variable and
+   ``MAVRYK_CLIENT_DIR``. If you both set this environment variable and
    specify ``--base-dir``, the latter will be used.
 
 -  Fixed command ``set delegate for <SRC> to <DLGT>`` to accept public
@@ -3168,7 +3168,7 @@ Version 7.2
 -  Fixed an error that could cause baking to fail when validating some
    smart contracts.
 
--  Fixed an issue in ``tezos-docker-manager.sh`` which prevented to use
+-  Fixed an issue in ``mavryk-docker-manager.sh`` which prevented to use
    some options, such as ``--rpc-port``.
 
 Version 7.1
@@ -3178,9 +3178,9 @@ Source Compilation
 ------------------
 
 -  The ``Makefile`` now ignores directories with no
-   ``lib_protocol/TEZOS_PROTOCOL`` files when listing protocols to
+   ``lib_protocol/MAVRYK_PROTOCOL`` files when listing protocols to
    compile. This fixes an error where ``make`` complained that it had no
-   rule to build ``TEZOS_PROTOCOL`` for directories that Git does not
+   rule to build ``MAVRYK_PROTOCOL`` for directories that Git does not
    completely remove when switching branches.
 
 -  One can now use opam 2.0.0 again. In version 7.0, an error saying
@@ -3378,9 +3378,9 @@ Protocol
 Docker Script
 -------------
 
--  Renamed script ``alphanet.sh`` into ``tezos-docker-manager.sh``. You
+-  Renamed script ``alphanet.sh`` into ``mavryk-docker-manager.sh``. You
    should still use ``mainnet.sh`` and ``carthagenet.sh`` as they are
-   now symbolic links to ``tezos-docker-manager.sh`` instead of
+   now symbolic links to ``mavryk-docker-manager.sh`` instead of
    ``alphanet.sh``.
 
 -  Removed script ``zeronet.sh`` as Zeronet is using an older version of

@@ -141,7 +141,7 @@
     }
   },
   {
-    "file": "tezos-crypto-lwt",
+    "file": "mavryk-crypto-lwt",
     "title": "crypto_box",
     "tags": [
       "alcotest"
@@ -152,8 +152,8 @@
     }
   },
   {
-    "file": "tezos-crypto-prop-signature",
-    "title": "tezos-crypto-prop-signature: P256",
+    "file": "mavryk-crypto-prop-signature",
+    "title": "mavryk-crypto-prop-signature: P256",
     "tags": [
       "alcotest"
     ],

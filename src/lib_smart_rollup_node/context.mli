@@ -110,8 +110,8 @@ module Proof (Hash : sig
   val of_context_hash : Context_hash.t -> t
 end) (Proof_encoding : sig
   val proof_encoding :
-    Tezos_context_sigs.Context.Proof_types.tree
-    Tezos_context_sigs.Context.Proof_types.t
+    Mavryk_context_sigs.Context.Proof_types.tree
+    Mavryk_context_sigs.Context.Proof_types.t
     Data_encoding.t
 end) : sig
   (** Tree representation for proof generation.
@@ -121,7 +121,7 @@ end) : sig
       {!Inbox.produce_proof}, {!PVM.produce_proof}. or
       {!PVM.produce_output_proof}). *)
   module Tree :
-    Tezos_context_sigs.Context.TREE
+    Mavryk_context_sigs.Context.TREE
       with type key = string list
        and type value = bytes
        and type t = rw_index

@@ -7,8 +7,8 @@
  (libraries
   tezt.core
   mavkit-libs.micheline
-  tezos-micheline-rewriting
-  tezos-protocol-alpha.protocol
+  mavryk-micheline-rewriting
+  mavryk-protocol-alpha.protocol
   mavkit-libs.error-monad
   mavkit-protocol-alpha-libs.client)
  (library_flags (:standard -linkall))
@@ -16,7 +16,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_micheline)
+  -open Mavryk_micheline)
  (modules test_rewriting))
 
 (executable
@@ -32,7 +32,7 @@
 
 (rule
  (alias runtest)
- (package tezos-micheline-rewriting)
+ (package mavryk-micheline-rewriting)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

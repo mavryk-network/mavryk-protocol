@@ -65,7 +65,7 @@ let raw_hash_rpc_arg =
     | None -> Error "Impossible to parse raw_hash"
     | Some reveal_hash -> Ok reveal_hash
   in
-  Tezos_rpc.Arg.make
+  Mavryk_rpc.Arg.make
     ~descr:"A reveal hash"
     ~name:"reveal_hash"
     ~destruct

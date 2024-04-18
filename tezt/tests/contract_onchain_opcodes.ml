@@ -30,7 +30,7 @@
    Subject:      Tests for individual opcodes that require origination.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let quote s = sf "%S" s
 
@@ -139,11 +139,11 @@ let test_now protocol client =
   in
   let* () = transfer client ~contract in
   let parse_protocol_time timestamp =
-    match Tezos_base.Time.Protocol.of_notation timestamp with
+    match Mavryk_base.Time.Protocol.of_notation timestamp with
     | Some t -> t
     | None ->
         Test.fail
-          "Could not parse %S with [Tezos_base.Time.Protocol.of_notation]"
+          "Could not parse %S with [Mavryk_base.Time.Protocol.of_notation]"
           timestamp
   in
   let* expected_now =
@@ -160,7 +160,7 @@ let test_now protocol client =
       return (parse_protocol_time shell_timestamp_s)
     in
     return
-      (Tezos_base.Time.Protocol.add
+      (Mavryk_base.Time.Protocol.add
          shell_timestamp
          (Int64.of_int minimal_block_delay))
   in
@@ -170,7 +170,7 @@ let test_now protocol client =
   in
   Check.(
     is_true
-      (Tezos_base.Time.Protocol.equal now_in_storage expected_now)
+      (Mavryk_base.Time.Protocol.equal now_in_storage expected_now)
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;
   unit

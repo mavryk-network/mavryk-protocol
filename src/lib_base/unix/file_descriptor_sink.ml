@@ -56,7 +56,7 @@ type t = {
 
 let hostname =
   Option.value_f
-    (Sys.getenv_opt "TEZOS_EVENT_HOSTNAME")
+    (Sys.getenv_opt "MAVRYK_EVENT_HOSTNAME")
     ~default:Unix.gethostname
 
 type 'event wrapped = {

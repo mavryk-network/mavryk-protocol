@@ -244,7 +244,7 @@ Then, declare those files in ``manifest/main.ml``::
       tezt
         ["example"; "other"]
         ~path:"src/lib_base/tezt"
-        ~opam:"tezos-base"
+        ~opam:"mavryk-base"
         ~deps:[mavkit_base]
 
 This causes the manifest to generate executable ``src/lib_base/tezt/main.exe`` for you.
@@ -267,7 +267,7 @@ with ``~js_compatible:true`` and with ``JS`` in ``~modes``. For instance::
       tezt
         ["example"; "other"]
         ~path:"src/lib_base/tezt"
-        ~opam:"tezos-base"
+        ~opam:"mavryk-base"
         ~js_compatible:true
         ~modes:[Native; JS]
         ~deps:[mavkit_base]

@@ -8,7 +8,7 @@ The tests are exported in a library consumed by the Tezos Tezt-suite.
 You can run the tests with the following command:
 
 ```bash
-dune exec -- tezt/tests/main.exe --file tezos_scoru_wasm_regressions.ml
+dune exec -- tezt/tests/main.exe --file mavryk_scoru_wasm_regressions.ml
 ```
 
 Tags of interests are:

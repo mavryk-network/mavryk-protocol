@@ -37,7 +37,7 @@ type account = t
 let known_accounts = Signature.Public_key_hash.Table.create 17
 
 let random_seed ~rng_state =
-  Bytes.init Tezos_crypto.Hacl.Ed25519.sk_size (fun _i ->
+  Bytes.init Mavryk_crypto.Hacl.Ed25519.sk_size (fun _i ->
       Char.chr (Random.State.int rng_state 256))
 
 let random_algo ~rng_state : Signature.algo =

@@ -101,7 +101,7 @@ let test_spending ~direct_ticket_spending_enable () =
   let open Lwt_result_syntax in
   let constants =
     let default_constants =
-      Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+      Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
     in
     {
       default_constants with

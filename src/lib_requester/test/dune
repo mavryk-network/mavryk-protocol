@@ -20,11 +20,11 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
-  -open Tezos_base_test_helpers
-  -open Tezos_stdlib
-  -open Tezos_requester
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_stdlib
+  -open Mavryk_requester
   -open Mavkit_alcotezt)
  (modules test_requester test_fuzzing_requester shared))
 

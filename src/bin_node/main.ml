@@ -28,7 +28,7 @@
    Remove backwards compatible Tezos symlinks. *)
 let warn_if_argv0_name_not_mavkit () =
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
@@ -96,7 +96,7 @@ let () =
     try
       Mavkit_protocol_compiler.Compiler.main
         Mavkit_protocol_compiler_native.Native.driver
-        Tezos_version_value.Bin_version.version_string ;
+        Mavryk_version_value.Bin_version.version_string ;
       Stdlib.exit 0
     with exn ->
       Format.eprintf "%a\n%!" Opterrors.report_error exn ;
@@ -104,7 +104,7 @@ let () =
 
 let () =
   if Filename.basename Sys.argv.(0) = "mavkit-validator" then
-    Tezos_validation.Command_line.run ()
+    Mavryk_validation.Command_line.run ()
 
 let () =
   if Filename.basename Sys.argv.(0) = "mavkit-rpc-process" then
@@ -131,7 +131,7 @@ let description =
 let man = description @ Node_run_command.Manpage.examples
 
 let info =
-  let version = Tezos_version_value.Bin_version.version_string in
+  let version = Mavryk_version_value.Bin_version.version_string in
   Cmdliner.Cmd.info ~doc:"The Mavkit node" ~man ~version "mavkit-node"
 
 module Node_metrics_command = struct

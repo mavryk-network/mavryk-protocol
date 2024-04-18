@@ -26,47 +26,47 @@
 val sign :
   ( [`POST],
     unit,
-    unit * Tezos_crypto.Signature.Public_key_hash.t,
-    Tezos_crypto.Signature.t option,
+    unit * Mavryk_crypto.Signature.Public_key_hash.t,
+    Mavryk_crypto.Signature.t option,
     Bytes.t,
-    Tezos_crypto.Signature.t )
-  Tezos_rpc.Service.t
+    Mavryk_crypto.Signature.t )
+  Mavryk_rpc.Service.t
 
 val deterministic_nonce :
   ( [`POST],
     unit,
-    unit * Tezos_crypto.Signature.Public_key_hash.t,
-    Tezos_crypto.Signature.t option,
+    unit * Mavryk_crypto.Signature.Public_key_hash.t,
+    Mavryk_crypto.Signature.t option,
     Bytes.t,
     Bytes.t )
-  Tezos_rpc.Service.t
+  Mavryk_rpc.Service.t
 
 val deterministic_nonce_hash :
   ( [`POST],
     unit,
-    unit * Tezos_crypto.Signature.Public_key_hash.t,
-    Tezos_crypto.Signature.t option,
+    unit * Mavryk_crypto.Signature.Public_key_hash.t,
+    Mavryk_crypto.Signature.t option,
     Bytes.t,
     Bytes.t )
-  Tezos_rpc.Service.t
+  Mavryk_rpc.Service.t
 
 val supports_deterministic_nonces :
   ( [`GET],
     unit,
-    unit * Tezos_crypto.Signature.Public_key_hash.t,
+    unit * Mavryk_crypto.Signature.Public_key_hash.t,
     unit,
     unit,
     bool )
-  Tezos_rpc.Service.t
+  Mavryk_rpc.Service.t
 
 val public_key :
   ( [`GET],
     unit,
-    unit * Tezos_crypto.Signature.Public_key_hash.t,
+    unit * Mavryk_crypto.Signature.Public_key_hash.t,
     unit,
     unit,
-    Tezos_crypto.Signature.Public_key.t )
-  Tezos_rpc.Service.t
+    Mavryk_crypto.Signature.Public_key.t )
+  Mavryk_rpc.Service.t
 
 val authorized_keys :
   ( [`GET],
@@ -74,5 +74,5 @@ val authorized_keys :
     unit,
     unit,
     unit,
-    Tezos_crypto.Signature.Public_key_hash.t list option )
-  Tezos_rpc.Service.t
+    Mavryk_crypto.Signature.Public_key_hash.t list option )
+  Mavryk_rpc.Service.t

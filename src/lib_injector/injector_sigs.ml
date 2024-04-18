@@ -99,7 +99,7 @@ module type INJECTOR_OPERATION = sig
   type operation
 
   (** Hash with b58check encoding iop(53), for hashes of injector operations *)
-  module Hash : Tezos_crypto.Intfs.HASH
+  module Hash : Mavryk_crypto.Intfs.HASH
 
   (** Alias for L1 operations hashes *)
   type hash = Hash.t
@@ -231,7 +231,7 @@ module type PROTOCOL_CLIENT = sig
   (** [time_until_next_block state block_header] computes the time until the
       block following [block_header], with respect to the current time. *)
   val time_until_next_block :
-    state -> Tezos_base.Block_header.shell_header option -> Ptime.span
+    state -> Mavryk_base.Block_header.shell_header option -> Ptime.span
 
   (** Run protocol specific checks for injector configuration/state. *)
   val checks : state -> unit tzresult
@@ -324,7 +324,7 @@ module type S = sig
       compute the next block timestamp. *)
   val inject :
     ?tags:tag list ->
-    ?header:Tezos_base.Block_header.shell_header ->
+    ?header:Mavryk_base.Block_header.shell_header ->
     unit ->
     unit Lwt.t
 

@@ -1,12 +1,12 @@
 (rule
   (alias runtest_rejections)
-  (deps (package tezos-protocol-demo-noops))
+  (deps (package mavryk-protocol-demo-noops))
   (action
     (run
        bash
          %{dep:rejections.sh}
          %{bin:mavkit-protocol-compiler}
-         %{lib:tezos-protocol-demo-noops.protocol:raw/TEZOS_PROTOCOL}
+         %{lib:mavryk-protocol-demo-noops.protocol:raw/MAVRYK_PROTOCOL}
        )))
 
 (rule

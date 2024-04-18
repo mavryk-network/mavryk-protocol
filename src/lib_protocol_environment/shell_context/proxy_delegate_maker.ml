@@ -23,73 +23,73 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let of_memory_tree (t : Tezos_context_memory.Context.tree) :
-    Tezos_protocol_environment.Proxy_delegate.t =
+let of_memory_tree (t : Mavryk_context_memory.Context.tree) :
+    Mavryk_protocol_environment.Proxy_delegate.t =
   (module struct
     let proxy_dir_mem key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.Tree.mem_tree t key in
+      let* v = Mavryk_context_memory.Context.Tree.mem_tree t key in
       return_ok v
 
     let proxy_get key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.Tree.find_tree t key in
+      let* v = Mavryk_context_memory.Context.Tree.find_tree t key in
       return_ok v
 
     let proxy_mem key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.Tree.mem t key in
+      let* v = Mavryk_context_memory.Context.Tree.mem t key in
       return_ok v
-  end : Tezos_protocol_environment.Proxy_delegate.T)
+  end : Mavryk_protocol_environment.Proxy_delegate.T)
 
-let of_memory_context (m : Tezos_context_memory.Context.t) :
-    Tezos_protocol_environment.Proxy_delegate.t =
+let of_memory_context (m : Mavryk_context_memory.Context.t) :
+    Mavryk_protocol_environment.Proxy_delegate.t =
   (module struct
     let proxy_dir_mem key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.mem_tree m key in
+      let* v = Mavryk_context_memory.Context.mem_tree m key in
       return_ok v
 
     let proxy_get key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.find_tree m key in
+      let* v = Mavryk_context_memory.Context.find_tree m key in
       return_ok v
 
     let proxy_mem key =
       let open Lwt_syntax in
-      let* v = Tezos_context_memory.Context.mem m key in
+      let* v = Mavryk_context_memory.Context.mem m key in
       return_ok v
-  end : Tezos_protocol_environment.Proxy_delegate.T)
+  end : Mavryk_protocol_environment.Proxy_delegate.T)
 
-let make_index ~(context_path : string) : Tezos_context.Context.index Lwt.t =
-  Tezos_context.Context.init ~readonly:true context_path
+let make_index ~(context_path : string) : Mavryk_context.Context.index Lwt.t =
+  Mavryk_context.Context.init ~readonly:true context_path
 
-let of_index ~(index : Tezos_context.Context.index)
-    (hash : Tezos_crypto.Hashed.Context_hash.t) :
-    Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t =
+let of_index ~(index : Mavryk_context.Context.index)
+    (hash : Mavryk_crypto.Hashed.Context_hash.t) :
+    Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t =
   let open Lwt_syntax in
-  let* ctxt = Tezos_context.Context.checkout index hash in
+  let* ctxt = Mavryk_context.Context.checkout index hash in
   match ctxt with
   | None ->
       failwith
         "Couldn't check out the hash %s"
-        (Tezos_crypto.Hashed.Context_hash.to_string hash)
+        (Mavryk_crypto.Hashed.Context_hash.to_string hash)
   | Some ctxt ->
-      let proxy_data_dir : Tezos_protocol_environment.Proxy_delegate.t =
+      let proxy_data_dir : Mavryk_protocol_environment.Proxy_delegate.t =
         (module struct
-          let proxy_dir_mem (key : Tezos_context.Context.key) :
+          let proxy_dir_mem (key : Mavryk_context.Context.key) :
               bool tzresult Lwt.t =
-            let* (res : bool) = Tezos_context.Context.mem_tree ctxt key in
+            let* (res : bool) = Mavryk_context.Context.mem_tree ctxt key in
             return_ok res
 
-          let proxy_get (key : Tezos_context.Context.key) :
-              Tezos_context_memory.Context.tree option tzresult Lwt.t =
-            let* res = Tezos_context.Context.to_memory_tree ctxt key in
+          let proxy_get (key : Mavryk_context.Context.key) :
+              Mavryk_context_memory.Context.tree option tzresult Lwt.t =
+            let* res = Mavryk_context.Context.to_memory_tree ctxt key in
             return_ok res
 
-          let proxy_mem (key : Tezos_context.Context.key) : bool tzresult Lwt.t
+          let proxy_mem (key : Mavryk_context.Context.key) : bool tzresult Lwt.t
               =
-            let* res = Tezos_context.Context.mem ctxt key in
+            let* res = Mavryk_context.Context.mem ctxt key in
             return_ok res
         end)
       in

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 (** Run Tezos client with commands related to `demo_protocol`. *)
 

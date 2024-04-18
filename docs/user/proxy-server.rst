@@ -69,15 +69,15 @@ To avoid warnings being printed in upcoming commands (optional):
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
 
 You're now ready to run a proxy server, as shown below.
-We specify debug variables in ``TEZOS_LOG`` to see what the proxy server
+We specify debug variables in ``MAVRYK_LOG`` to see what the proxy server
 is doing (see the :doc:`proxy mode<proxy>` page for more details).
 
 ::
 
-    $ export TEZOS_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug; proxy_server_run->debug; proxy_getter->debug; proxy_services->debug"
+    $ export MAVRYK_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug; proxy_server_run->debug; proxy_getter->debug; proxy_services->debug"
     $ ./mavkit-proxy-server --endpoint http://127.0.0.1:18731 --rpc-addr http://127.0.0.1:18732
       Apr 21 11:09:22.092 - proxy_server_run: starting proxy RPC server on 127.0.0.1:18732
 
@@ -85,7 +85,7 @@ Now, start a third terminal, and ask the client to request data from the proxy s
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
     $ ./mavkit-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
       [ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
         "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx",

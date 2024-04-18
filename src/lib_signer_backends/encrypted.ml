@@ -24,20 +24,20 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type Tezos_crypto.Base58.data += Encrypted_ed25519 of Bytes.t
+type Mavryk_crypto.Base58.data += Encrypted_ed25519 of Bytes.t
 
-type Tezos_crypto.Base58.data += Encrypted_secp256k1 of Bytes.t
+type Mavryk_crypto.Base58.data += Encrypted_secp256k1 of Bytes.t
 
-type Tezos_crypto.Base58.data += Encrypted_p256 of Bytes.t
+type Mavryk_crypto.Base58.data += Encrypted_p256 of Bytes.t
 
-type Tezos_crypto.Base58.data += Encrypted_secp256k1_element of Bytes.t
+type Mavryk_crypto.Base58.data += Encrypted_secp256k1_element of Bytes.t
 
-type Tezos_crypto.Base58.data += Encrypted_bls12_381 of Bytes.t
+type Mavryk_crypto.Base58.data += Encrypted_bls12_381 of Bytes.t
 
 type encrypted_sk = Encrypted_aggregate_sk | Encrypted_sk of Signature.algo
 
 type decrypted_sk =
-  | Decrypted_aggregate_sk of Tezos_crypto.Aggregate_signature.Secret_key.t
+  | Decrypted_aggregate_sk of Mavryk_crypto.Aggregate_signature.Secret_key.t
   | Decrypted_sk of Signature.Secret_key.t
 
 open Client_keys
@@ -51,19 +51,19 @@ module Raw = struct
   let salt_len = 8
 
   (* Fixed zero nonce *)
-  let nonce = Tezos_crypto.Crypto_box.zero_nonce
+  let nonce = Mavryk_crypto.Crypto_box.zero_nonce
 
   (* Secret keys for Ed25519, secp256k1, P256 have the same size. *)
   let encrypted_size =
-    Tezos_crypto.Crypto_box.tag_length + Tezos_crypto.Hacl.Ed25519.sk_size
+    Mavryk_crypto.Crypto_box.tag_length + Mavryk_crypto.Hacl.Ed25519.sk_size
 
   let pbkdf ~salt ~password =
     Pbkdf.SHA512.pbkdf2 ~count:32768 ~dk_len:32l ~salt ~password
 
   let encrypt ~password sk =
-    let salt = Tezos_crypto.Hacl.Rand.gen salt_len in
+    let salt = Mavryk_crypto.Hacl.Rand.gen salt_len in
     let key =
-      Tezos_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
+      Mavryk_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
     in
     let msg =
       match (sk : decrypted_sk) with
@@ -82,17 +82,17 @@ module Raw = struct
       | Decrypted_sk (Bls sk) | Decrypted_aggregate_sk (Bls12_381 sk) ->
           Data_encoding.Binary.to_bytes_exn Signature.Bls.Secret_key.encoding sk
     in
-    Bytes.cat salt (Tezos_crypto.Crypto_box.Secretbox.secretbox key msg nonce)
+    Bytes.cat salt (Mavryk_crypto.Crypto_box.Secretbox.secretbox key msg nonce)
 
   let decrypt algo ~password ~encrypted_sk =
     let open Lwt_result_syntax in
     let salt = Bytes.sub encrypted_sk 0 salt_len in
     let encrypted_sk = Bytes.sub encrypted_sk salt_len encrypted_size in
     let key =
-      Tezos_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
+      Mavryk_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
     in
     match
-      ( Tezos_crypto.Crypto_box.Secretbox.secretbox_open key encrypted_sk nonce,
+      ( Mavryk_crypto.Crypto_box.Secretbox.secretbox_open key encrypted_sk nonce,
         algo )
     with
     | None, _ -> return_none
@@ -140,7 +140,7 @@ module Raw = struct
         | Some sk ->
             return_some
               (Decrypted_aggregate_sk
-                 (Bls12_381 sk : Tezos_crypto.Aggregate_signature.Secret_key.t))
+                 (Bls12_381 sk : Mavryk_crypto.Aggregate_signature.Secret_key.t))
         | None ->
             failwith
               "Corrupted wallet, deciphered key is not a valid BLS12_381 \
@@ -150,11 +150,11 @@ end
 module Encodings = struct
   let ed25519 =
     let length =
-      Tezos_crypto.Hacl.Ed25519.sk_size + Tezos_crypto.Crypto_box.tag_length
+      Mavryk_crypto.Hacl.Ed25519.sk_size + Mavryk_crypto.Crypto_box.tag_length
       + Raw.salt_len
     in
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.ed25519_encrypted_seed
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.ed25519_encrypted_seed
       ~length
       ~to_raw:(fun sk -> Bytes.to_string sk)
       ~of_raw:(fun buf ->
@@ -164,10 +164,10 @@ module Encodings = struct
   let secp256k1 =
     let open Libsecp256k1.External in
     let length =
-      Key.secret_bytes + Tezos_crypto.Crypto_box.tag_length + Raw.salt_len
+      Key.secret_bytes + Mavryk_crypto.Crypto_box.tag_length + Raw.salt_len
     in
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.secp256k1_encrypted_secret_key
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.secp256k1_encrypted_secret_key
       ~length
       ~to_raw:(fun sk -> Bytes.to_string sk)
       ~of_raw:(fun buf ->
@@ -176,11 +176,11 @@ module Encodings = struct
 
   let p256 =
     let length =
-      Tezos_crypto.Hacl.P256.sk_size + Tezos_crypto.Crypto_box.tag_length
+      Mavryk_crypto.Hacl.P256.sk_size + Mavryk_crypto.Crypto_box.tag_length
       + Raw.salt_len
     in
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.p256_encrypted_secret_key
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.p256_encrypted_secret_key
       ~length
       ~to_raw:(fun sk -> Bytes.to_string sk)
       ~of_raw:(fun buf ->
@@ -190,11 +190,11 @@ module Encodings = struct
   let bls12_381 =
     let length =
       (* 32 + 16 + 8 = 56 *)
-      Bls12_381_signature.sk_size_in_bytes + Tezos_crypto.Crypto_box.tag_length
+      Bls12_381_signature.sk_size_in_bytes + Mavryk_crypto.Crypto_box.tag_length
       + Raw.salt_len
     in
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.bls12_381_encrypted_secret_key
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.bls12_381_encrypted_secret_key
       ~length
       ~to_raw:(fun sk -> Bytes.to_string sk)
       ~of_raw:(fun buf ->
@@ -202,9 +202,9 @@ module Encodings = struct
       ~wrap:(fun sk -> Encrypted_bls12_381 sk)
 
   let secp256k1_scalar =
-    let length = 36 + Tezos_crypto.Crypto_box.tag_length + Raw.salt_len in
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.secp256k1_encrypted_scalar
+    let length = 36 + Mavryk_crypto.Crypto_box.tag_length + Raw.salt_len in
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.secp256k1_encrypted_scalar
       ~length
       ~to_raw:(fun sk -> Bytes.to_string sk)
       ~of_raw:(fun buf ->
@@ -212,11 +212,11 @@ module Encodings = struct
       ~wrap:(fun sk -> Encrypted_secp256k1_element sk)
 
   let () =
-    Tezos_crypto.Base58.check_encoded_prefix ed25519 "edesk" 88 ;
-    Tezos_crypto.Base58.check_encoded_prefix secp256k1 "spesk" 88 ;
-    Tezos_crypto.Base58.check_encoded_prefix p256 "p2esk" 88 ;
-    Tezos_crypto.Base58.check_encoded_prefix bls12_381 "BLesk" 88 ;
-    Tezos_crypto.Base58.check_encoded_prefix secp256k1_scalar "seesk" 93
+    Mavryk_crypto.Base58.check_encoded_prefix ed25519 "edesk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix secp256k1 "spesk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix p256 "p2esk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix bls12_381 "BLesk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix secp256k1_scalar "seesk" 93
 end
 
 (* we cache the password in this list to avoid
@@ -292,7 +292,7 @@ let rec noninteractive_decrypt_loop algo ~encrypted_sk =
 let decrypt_payload cctxt ?name encrypted_sk =
   let open Lwt_result_syntax in
   let* algo, encrypted_sk =
-    match Tezos_crypto.Base58.decode encrypted_sk with
+    match Mavryk_crypto.Base58.decode encrypted_sk with
     | Some (Encrypted_ed25519 encrypted_sk) ->
         return (Encrypted_sk Signature.Ed25519, encrypted_sk)
     | Some (Encrypted_secp256k1 encrypted_sk) ->
@@ -393,7 +393,7 @@ let common_encrypt sk password =
     | Decrypted_sk (Bls _) | Decrypted_aggregate_sk (Bls12_381 _) ->
         Encodings.bls12_381
   in
-  Tezos_crypto.Base58.simple_encode encoding payload
+  Mavryk_crypto.Base58.simple_encode encoding payload
 
 let internal_encrypt_simple sk password =
   let open Lwt_result_syntax in
@@ -429,40 +429,40 @@ module Sapling_raw = struct
   let salt_len = 8
 
   (* 193 *)
-  let encrypted_size = Tezos_crypto.Crypto_box.tag_length + salt_len + 169
+  let encrypted_size = Mavryk_crypto.Crypto_box.tag_length + salt_len + 169
 
-  let nonce = Tezos_crypto.Crypto_box.zero_nonce
+  let nonce = Mavryk_crypto.Crypto_box.zero_nonce
 
   let pbkdf ~salt ~password =
     Pbkdf.SHA512.pbkdf2 ~count:32768 ~dk_len:32l ~salt ~password
 
   let encrypt ~password msg =
-    let msg = Tezos_sapling.Core.Wallet.Spending_key.to_bytes msg in
-    let salt = Tezos_crypto.Hacl.Rand.gen salt_len in
+    let msg = Mavryk_sapling.Core.Wallet.Spending_key.to_bytes msg in
+    let salt = Mavryk_crypto.Hacl.Rand.gen salt_len in
     let key =
-      Tezos_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
+      Mavryk_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
     in
     Bytes.(
       to_string
-        (cat salt (Tezos_crypto.Crypto_box.Secretbox.secretbox key msg nonce)))
+        (cat salt (Mavryk_crypto.Crypto_box.Secretbox.secretbox key msg nonce)))
 
   let decrypt ~password payload =
     let ebytes = Bytes.of_string payload in
     let salt = Bytes.sub ebytes 0 salt_len in
     let encrypted_sk = Bytes.sub ebytes salt_len (encrypted_size - salt_len) in
     let key =
-      Tezos_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
+      Mavryk_crypto.Crypto_box.Secretbox.unsafe_of_bytes (pbkdf ~salt ~password)
     in
     Option.bind
-      (Tezos_crypto.Crypto_box.Secretbox.secretbox_open key encrypted_sk nonce)
-      Tezos_sapling.Core.Wallet.Spending_key.of_bytes
+      (Mavryk_crypto.Crypto_box.Secretbox.secretbox_open key encrypted_sk nonce)
+      Mavryk_sapling.Core.Wallet.Spending_key.of_bytes
 
-  type Tezos_crypto.Base58.data +=
-    | Data of Tezos_sapling.Core.Wallet.Spending_key.t
+  type Mavryk_crypto.Base58.data +=
+    | Data of Mavryk_sapling.Core.Wallet.Spending_key.t
 
   let encrypted_b58_encoding password =
-    Tezos_crypto.Base58.register_encoding
-      ~prefix:Tezos_crypto.Base58.Prefix.sapling_spending_key
+    Mavryk_crypto.Base58.register_encoding
+      ~prefix:Mavryk_crypto.Base58.Prefix.sapling_spending_key
       ~length:encrypted_size
       ~to_raw:(encrypt ~password)
       ~of_raw:(decrypt ~password)
@@ -473,7 +473,7 @@ let encrypt_sapling_key cctxt sk =
   let open Lwt_result_syntax in
   let* password = read_password cctxt in
   let path =
-    Tezos_crypto.Base58.simple_encode
+    Mavryk_crypto.Base58.simple_encode
       (Sapling_raw.encrypted_b58_encoding password)
       sk
   in
@@ -489,7 +489,7 @@ let decrypt_sapling_key (cctxt : #Client_context.io) (sk_uri : sapling_uri) =
       cctxt#prompt_password "Enter password to decrypt your key: "
     in
     match
-      Tezos_crypto.Base58.simple_decode
+      Mavryk_crypto.Base58.simple_decode
         (Sapling_raw.encrypted_b58_encoding password)
         payload
     with
@@ -500,8 +500,8 @@ let decrypt_sapling_key (cctxt : #Client_context.io) (sk_uri : sapling_uri) =
     | Some sapling_key -> return sapling_key
   else
     match
-      Tezos_crypto.Base58.simple_decode
-        Tezos_sapling.Core.Wallet.Spending_key.b58check_encoding
+      Mavryk_crypto.Base58.simple_decode
+        Mavryk_sapling.Core.Wallet.Spending_key.b58check_encoding
         payload
     with
     | None ->
@@ -522,10 +522,10 @@ struct
     \ - encrypted:<encrypted_key>\n\
      where <encrypted_key> is the encrypted (password protected using Nacl's \
      cryptobox and pbkdf) secret key, formatted in unprefixed \
-     Tezos_crypto.Base58.\n\
+     Mavryk_crypto.Base58.\n\
      Valid public key URIs are of the form\n\
     \ - encrypted:<public_key>\n\
-     where <public_key> is the public key in Tezos_crypto.Base58."
+     where <public_key> is the public key in Mavryk_crypto.Base58."
 
   include Client_keys.Signature_type
 
@@ -572,10 +572,10 @@ struct
     \ - aggregate_encrypted:<encrypted_aggregate_key>\n\
      where <encrypted_key> is the encrypted (password protected using Nacl's \
      cryptobox and pbkdf) secret key, formatted in unprefixed \
-     Tezos_crypto.Base58.\n\
+     Mavryk_crypto.Base58.\n\
      Valid aggregate public key URIs are of the form\n\
     \ - aggregate_encrypted:<public_aggregate_key>\n\
-     where <public_aggregate_key> is the public key in Tezos_crypto.Base58."
+     where <public_aggregate_key> is the public key in Mavryk_crypto.Base58."
 
   include Client_keys.Aggregate_type
 
@@ -590,12 +590,12 @@ struct
     let* sk = decrypt_aggregate C.cctxt sk_uri in
     let*? v =
       Unencrypted.Aggregate.make_pk
-        (Tezos_crypto.Aggregate_signature.Secret_key.to_public_key sk)
+        (Mavryk_crypto.Aggregate_signature.Secret_key.to_public_key sk)
     in
     return v
 
   let sign sk_uri buf =
     let open Lwt_result_syntax in
     let* sk = decrypt_aggregate C.cctxt sk_uri in
-    return (Tezos_crypto.Aggregate_signature.sign sk buf)
+    return (Mavryk_crypto.Aggregate_signature.sign sk buf)
 end

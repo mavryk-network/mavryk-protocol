@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_p2p)
+ (name mavryk_p2p)
  (public_name mavkit-shell-libs.p2p)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -14,15 +14,15 @@
   mavkit-libs.base.unix
   mavkit-libs.stdlib-unix
   mavkit-libs.stdlib
-  mavkit-libs.tezos-p2p-services
+  mavkit-libs.mavryk-p2p-services
   mavkit-libs.version
   prometheus
   mavkit-libs.base.p2p-identity-file)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_p2p_services
-  -open Tezos_base_p2p_identity_file))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_p2p_services
+  -open Mavryk_base_p2p_identity_file))

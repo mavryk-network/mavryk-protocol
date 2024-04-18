@@ -54,7 +54,7 @@ let test_safe_decode () =
       (actual = Result_syntax.tzfail Validation_errors.Parse_error)
       true)
 
-open Tezos_requester
+open Mavryk_requester
 module Classification = Prevalidator_classification
 
 module Parameters :

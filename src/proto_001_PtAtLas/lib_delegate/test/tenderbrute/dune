@@ -7,7 +7,7 @@
   mavkit-libs.base
   mavkit-shell-libs.client-base
   mavkit-protocol-001-PtAtLas-libs.client
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.baking.tenderbrute)
  (link_flags
   (:standard)
@@ -15,10 +15,10 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_base
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
   -open Tenderbrute_001_PtAtLas))

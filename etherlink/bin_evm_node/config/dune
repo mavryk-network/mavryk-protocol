@@ -11,5 +11,5 @@
   mavkit-libs.stdlib-unix)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

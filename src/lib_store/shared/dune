@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_store_shared)
+ (name mavryk_store_shared)
  (public_name mavkit-shell-libs.store.shared)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -15,10 +15,10 @@
   mavkit-shell-libs.validation)
  (flags
   (:standard)
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_shell_services
-  -open Tezos_validation)
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_shell_services
+  -open Mavryk_validation)
  (modules naming block_repr store_types store_events block_key block_level))

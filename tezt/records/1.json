@@ -174,8 +174,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: p256-encodings",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: p256-encodings",
     "tags": [
       "alcotest"
     ],

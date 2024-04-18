@@ -24,13 +24,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
-module type TEZOS_CONTEXT_MEMORY = sig
+module type MAVRYK_CONTEXT_MEMORY = sig
   type tree
 
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
       with type memory_context_tree := tree
        and type tree := tree
        and type value_key = Context_hash.t
@@ -44,13 +44,13 @@ module type TEZOS_CONTEXT_MEMORY = sig
   val encoding : t Data_encoding.t
 end
 
-module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
+module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
   open Encoding
 
   module Store = struct
     module Maker = Irmin_pack_mem.Maker (Conf)
     include Maker.Make (Schema)
-    module Schema = Tezos_context_encoding.Context.Schema
+    module Schema = Mavryk_context_encoding.Context.Schema
   end
 
   module Info = Store.Info
@@ -63,7 +63,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
   type kinded_key = [`Value of value_key | `Node of node_key]
 
   module Tree = struct
-    include Tezos_context_helpers.Context.Make_tree (Conf) (Store)
+    include Mavryk_context_helpers.Context.Make_tree (Conf) (Store)
 
     let kinded_key tree =
       match Store.Tree.key tree with
@@ -160,7 +160,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
     let open Lwt_result_syntax in
     if Context_hash.Version.(of_int 0 = v) then return c
     else
-      tzfail (Tezos_context_helpers.Context.Unsupported_context_hash_version v)
+      tzfail (Mavryk_context_helpers.Context.Unsupported_context_hash_version v)
 
   let raw_commit ~time ?(message = "") context =
     let open Lwt_syntax in
@@ -206,7 +206,7 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
 
   (*-- Generic Store Primitives ------------------------------------------------*)
 
-  let data_key = Tezos_context_sigs.Context.data_key
+  let data_key = Mavryk_context_sigs.Context.data_key
 
   let mem : t -> key -> bool Lwt.t =
    fun ctxt key -> Tree.mem ctxt.tree (data_key key)
@@ -350,8 +350,8 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
 
   exception Context_dangling_hash = Tree.Context_dangling_hash
 
-  include Tezos_context_helpers.Context.Make_proof (Store) (Conf)
-  include Tezos_context_helpers.Context.Make_config (Conf)
+  include Mavryk_context_helpers.Context.Make_proof (Store) (Conf)
+  include Mavryk_context_helpers.Context.Make_config (Conf)
 
   let produce_tree_proof (t : index) key =
     produce_tree_proof
@@ -381,8 +381,8 @@ module Make (Encoding : module type of Tezos_context_encoding.Context) = struct
     let unshallow = Tree.unshallow
   end
 
-  module Get_data = Tezos_context_sigs.Context.With_get_data ((
-    Storelike : Tezos_context_sigs.Context.Storelike))
+  module Get_data = Mavryk_context_sigs.Context.With_get_data ((
+    Storelike : Mavryk_context_sigs.Context.Storelike))
 
   let merkle_tree_v2 ctx leaf_kind key =
     let open Lwt_syntax in

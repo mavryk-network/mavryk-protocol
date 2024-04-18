@@ -23,10 +23,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Crypto_box.Public_key_hash
+include Mavryk_crypto.Crypto_box.Public_key_hash
 
 let rpc_arg =
-  Tezos_rpc.Arg.like
+  Mavryk_rpc.Arg.like
     rpc_arg
     ~descr:"A cryptographic node identity (Base58Check-encoded)"
     "peer_id"

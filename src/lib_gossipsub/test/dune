@@ -7,15 +7,15 @@
   fmt
   mavkit-libs.base
   mavkit-libs.base.unix
-  mavkit-libs.tezos-gossipsub
+  mavkit-libs.mavryk-gossipsub
   tezt
   qcheck-core
   mavkit-libs.test-helpers)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_gossipsub
-  -open Tezos_test_helpers))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_gossipsub
+  -open Mavryk_test_helpers))
 
 (rule
  (alias runtest)

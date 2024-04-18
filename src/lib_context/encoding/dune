@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_context_encoding)
- (public_name mavkit-libs.tezos-context.encoding)
+ (name mavryk_context_encoding)
+ (public_name mavkit-libs.mavryk-context.encoding)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
@@ -12,5 +12,5 @@
   irmin-pack)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib))

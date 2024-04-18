@@ -23,91 +23,91 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
+open Mavryk_webassembly_interpreter
 
 exception Uninitialized_current_module
 
-val var_list_encoding : Ast.var list Tezos_tree_encoding.t
+val var_list_encoding : Ast.var list Mavryk_tree_encoding.t
 
-val instruction_encoding : Ast.instr Tezos_tree_encoding.t
+val instruction_encoding : Ast.instr Mavryk_tree_encoding.t
 
-val func'_encoding : Ast.func' Tezos_tree_encoding.t
+val func'_encoding : Ast.func' Mavryk_tree_encoding.t
 
-val func_encoding : Ast.func Tezos_tree_encoding.t
+val func_encoding : Ast.func Mavryk_tree_encoding.t
 
-val module_key_encoding : Instance.module_key Tezos_tree_encoding.t
+val module_key_encoding : Instance.module_key Mavryk_tree_encoding.t
 
-val function_encoding : Instance.func_inst Tezos_tree_encoding.t
+val function_encoding : Instance.func_inst Mavryk_tree_encoding.t
 
-val value_ref_encoding : Values.ref_ Tezos_tree_encoding.t
+val value_ref_encoding : Values.ref_ Mavryk_tree_encoding.t
 
-val value_encoding : Values.value Tezos_tree_encoding.t
+val value_encoding : Values.value Mavryk_tree_encoding.t
 
-val values_encoding : Values.value Instance.Vector.t Tezos_tree_encoding.t
+val values_encoding : Values.value Instance.Vector.t Mavryk_tree_encoding.t
 
-val memory_encoding : Partial_memory.memory Tezos_tree_encoding.t
+val memory_encoding : Partial_memory.memory Mavryk_tree_encoding.t
 
-val table_encoding : Partial_table.table Tezos_tree_encoding.t
+val table_encoding : Partial_table.table Mavryk_tree_encoding.t
 
-val global_encoding : Global.global Tezos_tree_encoding.t
+val global_encoding : Global.global Mavryk_tree_encoding.t
 
-val export_instance_encoding : Instance.export_inst Tezos_tree_encoding.t
+val export_instance_encoding : Instance.export_inst Mavryk_tree_encoding.t
 
 val memory_instance_encoding :
-  Partial_memory.memory Instance.Vector.t Tezos_tree_encoding.t
+  Partial_memory.memory Instance.Vector.t Mavryk_tree_encoding.t
 
 val table_vector_encoding :
-  Partial_table.table Instance.Vector.t Tezos_tree_encoding.t
+  Partial_table.table Instance.Vector.t Mavryk_tree_encoding.t
 
 val global_vector_encoding :
-  Global.global Instance.Vector.t Tezos_tree_encoding.t
+  Global.global Instance.Vector.t Mavryk_tree_encoding.t
 
-val data_label_ref_encoding : Ast.data_label ref Tezos_tree_encoding.t
+val data_label_ref_encoding : Ast.data_label ref Mavryk_tree_encoding.t
 
 val function_vector_encoding :
-  Instance.func_inst Instance.Vector.t Tezos_tree_encoding.t
+  Instance.func_inst Instance.Vector.t Mavryk_tree_encoding.t
 
-val func_type_encoding : Types.func_type Tezos_tree_encoding.t
+val func_type_encoding : Types.func_type Mavryk_tree_encoding.t
 
 val function_type_vector_encoding :
-  Types.func_type Instance.Vector.t Tezos_tree_encoding.t
+  Types.func_type Instance.Vector.t Mavryk_tree_encoding.t
 
 val value_ref_vector_encoding :
-  Values.ref_ Instance.Vector.t Tezos_tree_encoding.t
+  Values.ref_ Instance.Vector.t Mavryk_tree_encoding.t
 
-val extern_encoding : Instance.extern Tezos_tree_encoding.t
+val extern_encoding : Instance.extern Mavryk_tree_encoding.t
 
 val extern_map_encoding :
-  Instance.extern Instance.NameMap.t Tezos_tree_encoding.t
+  Instance.extern Instance.NameMap.t Mavryk_tree_encoding.t
 
 val value_ref_vector_vector_encoding :
-  Values.ref_ Instance.Vector.t ref Instance.Vector.t Tezos_tree_encoding.t
+  Values.ref_ Instance.Vector.t ref Instance.Vector.t Mavryk_tree_encoding.t
 
-val block_table_encoding : Ast.block_table Tezos_tree_encoding.t
+val block_table_encoding : Ast.block_table Mavryk_tree_encoding.t
 
-val datas_table_encoding : Ast.datas_table Tezos_tree_encoding.t
+val datas_table_encoding : Ast.datas_table Mavryk_tree_encoding.t
 
-val allocations_encoding : Ast.allocations Tezos_tree_encoding.t
+val allocations_encoding : Ast.allocations Mavryk_tree_encoding.t
 
-val module_instance_encoding : Instance.module_inst Tezos_tree_encoding.t
+val module_instance_encoding : Instance.module_inst Mavryk_tree_encoding.t
 
-val module_instances_encoding : Instance.module_reg Tezos_tree_encoding.t
+val module_instances_encoding : Instance.module_reg Mavryk_tree_encoding.t
 
-val input_buffer_encoding : Input_buffer.t Tezos_tree_encoding.t
+val input_buffer_encoding : Input_buffer.t Mavryk_tree_encoding.t
 
-val output_buffer_encoding : Output_buffer.t Tezos_tree_encoding.t
+val output_buffer_encoding : Output_buffer.t Mavryk_tree_encoding.t
 
-val admin_instr_encoding : Eval.admin_instr Tezos_tree_encoding.t
+val admin_instr_encoding : Eval.admin_instr Mavryk_tree_encoding.t
 
-val frame_encoding : Eval.frame Tezos_tree_encoding.t
+val frame_encoding : Eval.frame Mavryk_tree_encoding.t
 
-val config_encoding : Eval.config Tezos_tree_encoding.t
+val config_encoding : Eval.config Mavryk_tree_encoding.t
 
-val buffers_encoding : Eval.buffers Tezos_tree_encoding.t
+val buffers_encoding : Eval.buffers Mavryk_tree_encoding.t
 
 module Internal_for_tests : sig
-  val reveal_encoding : Wasm_pvm_state.reveal Tezos_tree_encoding.t
+  val reveal_encoding : Wasm_pvm_state.reveal Mavryk_tree_encoding.t
 
   val compatibility_reveal_encoding :
-    Wasm_pvm_state.Compatibility.reveal Tezos_tree_encoding.t
+    Wasm_pvm_state.Compatibility.reveal Mavryk_tree_encoding.t
 end

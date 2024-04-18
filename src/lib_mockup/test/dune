@@ -20,9 +20,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_test_helpers
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_test_helpers
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
  (modules test_mockup_args test_fuzzing_mockup_args test_persistence))
 

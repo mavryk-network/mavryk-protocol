@@ -178,7 +178,7 @@ let make_aggregate_sk_uri (x : Uri.t) : aggregate_sk_uri tzresult =
   | Some _ -> return x
 
 let pk_uri_parameter () =
-  Tezos_clic.parameter (fun _ s -> Lwt.return @@ make_pk_uri (Uri.of_string s))
+  Mavryk_clic.parameter (fun _ s -> Lwt.return @@ make_pk_uri (Uri.of_string s))
 
 let pk_uri_param ?name ?desc params =
   let name = Option.value ~default:"uri" name in
@@ -190,10 +190,10 @@ let pk_uri_param ?name ?desc params =
          Use command `list signing schemes` for more information."
       desc
   in
-  Tezos_clic.param ~name ~desc (pk_uri_parameter ()) params
+  Mavryk_clic.param ~name ~desc (pk_uri_parameter ()) params
 
 let sk_uri_parameter () =
-  Tezos_clic.parameter (fun _ s -> Lwt.return (make_sk_uri @@ Uri.of_string s))
+  Mavryk_clic.parameter (fun _ s -> Lwt.return (make_sk_uri @@ Uri.of_string s))
 
 let sk_uri_param ?name ?desc params =
   let name = Option.value ~default:"uri" name in
@@ -205,10 +205,10 @@ let sk_uri_param ?name ?desc params =
          Use command `list signing schemes` for more information."
       desc
   in
-  Tezos_clic.param ~name ~desc (sk_uri_parameter ()) params
+  Mavryk_clic.param ~name ~desc (sk_uri_parameter ()) params
 
 let aggregate_sk_uri_parameter () =
-  Tezos_clic.parameter (fun _ s ->
+  Mavryk_clic.parameter (fun _ s ->
       make_aggregate_sk_uri @@ Uri.of_string s |> Lwt.return)
 
 let aggregate_sk_uri_param ?name ?desc params =
@@ -221,18 +221,18 @@ let aggregate_sk_uri_param ?name ?desc params =
          Use command `list signing schemes` for more information."
       desc
   in
-  Tezos_clic.param ~name ~desc (aggregate_sk_uri_parameter ()) params
+  Mavryk_clic.param ~name ~desc (aggregate_sk_uri_parameter ()) params
 
 type sapling_key = {
   sk : sapling_uri;
   (* zip32 derivation path *)
   path : int32 list;
   (* index of the next address to generate *)
-  address_index : Tezos_sapling.Core.Client.Viewing_key.index;
+  address_index : Mavryk_sapling.Core.Client.Viewing_key.index;
 }
 
 module Sapling_key = Client_aliases.Alias (struct
-  module S = Tezos_sapling.Core.Client
+  module S = Mavryk_sapling.Core.Client
 
   let name = "sapling_key"
 
@@ -244,7 +244,7 @@ module Sapling_key = Client_aliases.Alias (struct
     let compare a b =
       Compare.or_else (CompareUri.compare a.sk b.sk) (fun () ->
           Compare.or_else (Stdlib.compare a.path b.path) (fun () ->
-              Tezos_sapling.Core.Client.Viewing_key.compare_index
+              Mavryk_sapling.Core.Client.Viewing_key.compare_index
                 a.address_index
                 b.address_index))
   end)
@@ -275,7 +275,7 @@ module Aggregate_alias = struct
   module Public_key_hash = struct
     include Client_aliases.Alias (struct
       (* includes t, Compare, encoding, of/to_b58check *)
-      include Tezos_crypto.Aggregate_signature.Public_key_hash
+      include Mavryk_crypto.Aggregate_signature.Public_key_hash
 
       let of_source s = Lwt.return (of_b58check s)
 
@@ -299,7 +299,7 @@ module Aggregate_alias = struct
   module Public_key = Client_aliases.Alias (struct
     let name = "Aggregate_public_key"
 
-    type t = pk_uri * Tezos_crypto.Aggregate_signature.Public_key.t option
+    type t = pk_uri * Mavryk_crypto.Aggregate_signature.Public_key.t option
 
     include Compare.Make (struct
       type nonrec t = t
@@ -307,7 +307,7 @@ module Aggregate_alias = struct
       let compare (apk, aso) (bpk, bso) =
         Compare.or_else (CompareUri.compare apk bpk) (fun () ->
             Option.compare
-              Tezos_crypto.Aggregate_signature.Public_key.compare
+              Mavryk_crypto.Aggregate_signature.Public_key.compare
               aso
               bso)
     end)
@@ -334,7 +334,7 @@ module Aggregate_alias = struct
             ~title:"Locator_and_full_key"
             (obj2
                (req "locator" uri_encoding)
-               (req "key" Tezos_crypto.Aggregate_signature.Public_key.encoding))
+               (req "key" Mavryk_crypto.Aggregate_signature.Public_key.encoding))
             (function uri, Some key -> Some (uri, key) | _, None -> None)
             (fun (uri, key) -> (uri, Some key));
         ]
@@ -400,20 +400,20 @@ module type AGGREGATE_SIGNER = sig
   include
     COMMON_SIGNER
       with type public_key_hash =
-        Tezos_crypto.Aggregate_signature.Public_key_hash.t
-       and type public_key = Tezos_crypto.Aggregate_signature.Public_key.t
-       and type secret_key = Tezos_crypto.Aggregate_signature.Secret_key.t
+        Mavryk_crypto.Aggregate_signature.Public_key_hash.t
+       and type public_key = Mavryk_crypto.Aggregate_signature.Public_key.t
+       and type secret_key = Mavryk_crypto.Aggregate_signature.Secret_key.t
        and type pk_uri = aggregate_pk_uri
        and type sk_uri = aggregate_sk_uri
 
   val sign :
     aggregate_sk_uri ->
     Bytes.t ->
-    Tezos_crypto.Aggregate_signature.t tzresult Lwt.t
+    Mavryk_crypto.Aggregate_signature.t tzresult Lwt.t
 end
 
 module Make_common_type (S : sig
-  include Tezos_crypto.Intfs.COMMON_SIGNATURE
+  include Mavryk_crypto.Intfs.COMMON_SIGNATURE
 
   type pk_uri
 
@@ -434,7 +434,7 @@ struct
 end
 
 module Aggregate_type = Make_common_type (struct
-  include Tezos_crypto.Aggregate_signature
+  include Mavryk_crypto.Aggregate_signature
 
   type pk_uri = aggregate_pk_uri
 
@@ -443,19 +443,19 @@ end)
 
 module type Signature_S = sig
   include
-    Tezos_crypto.Intfs.SIGNATURE
-      with type watermark = Tezos_crypto.Signature.watermark
+    Mavryk_crypto.Intfs.SIGNATURE
+      with type watermark = Mavryk_crypto.Signature.watermark
 
   val concat : Bytes.t -> t -> Bytes.t
 
   module Adapter : sig
     val public_key_hash :
-      Tezos_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult
+      Mavryk_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult
 
     val public_key :
-      Tezos_crypto.Signature.Public_key.t -> Public_key.t tzresult
+      Mavryk_crypto.Signature.Public_key.t -> Public_key.t tzresult
 
-    val signature : Tezos_crypto.Signature.t -> t tzresult
+    val signature : Mavryk_crypto.Signature.t -> t tzresult
   end
 end
 
@@ -463,7 +463,7 @@ module type SIMPLE_SIGNER = sig
   include COMMON_SIGNER with type pk_uri = pk_uri and type sk_uri = sk_uri
 
   val sign :
-    ?watermark:Tezos_crypto.Signature.watermark ->
+    ?watermark:Mavryk_crypto.Signature.watermark ->
     sk_uri ->
     Bytes.t ->
     signature tzresult Lwt.t
@@ -583,15 +583,15 @@ module type S = sig
     #Client_context.wallet ->
     (string * public_key_hash * public_key * sk_uri) list tzresult Lwt.t
 
-  val force_switch : unit -> (bool, 'ctx) Tezos_clic.arg
+  val force_switch : unit -> (bool, 'ctx) Mavryk_clic.arg
 end
 
 module type SIGNER =
   SIMPLE_SIGNER
-    with type public_key_hash = Tezos_crypto.Signature.Public_key_hash.t
-     and type public_key = Tezos_crypto.Signature.Public_key.t
-     and type secret_key = Tezos_crypto.Signature.Secret_key.t
-     and type signature = Tezos_crypto.Signature.t
+    with type public_key_hash = Mavryk_crypto.Signature.Public_key_hash.t
+     and type public_key = Mavryk_crypto.Signature.Public_key.t
+     and type secret_key = Mavryk_crypto.Signature.Secret_key.t
+     and type signature = Mavryk_crypto.Signature.t
 
 type signer =
   | Simple of (module SIGNER)
@@ -669,7 +669,7 @@ let raw_get_aggregate_key_aux (cctxt : #Client_context.wallet) pkhs pks sks pkh
   let rev_find_all list pkh =
     List.filter_map
       (fun (name, pkh') ->
-        if Tezos_crypto.Aggregate_signature.Public_key_hash.equal pkh pkh' then
+        if Mavryk_crypto.Aggregate_signature.Public_key_hash.equal pkh pkh' then
           Some name
         else None)
       list
@@ -698,7 +698,7 @@ let raw_get_aggregate_key_aux (cctxt : #Client_context.wallet) pkhs pks sks pkh
   | None ->
       failwith
         "no keys for the source contract %a"
-        Tezos_crypto.Aggregate_signature.Public_key_hash.pp
+        Mavryk_crypto.Aggregate_signature.Public_key_hash.pp
         pkh
   | Some keys -> return keys
 
@@ -756,7 +756,7 @@ let aggregate_sign cctxt sk_uri buf =
       in
       let* () =
         fail_unless
-          (Tezos_crypto.Aggregate_signature.check pubkey signature buf)
+          (Mavryk_crypto.Aggregate_signature.check pubkey signature buf)
           (Signature_mismatch sk_uri)
       in
       return signature)
@@ -1162,17 +1162,17 @@ module Make (Signature : Signature_S) :
     | Error _ -> return_none
 
   let force_switch () =
-    Tezos_clic.switch ~long:"force" ~short:'f' ~doc:"overwrite existing keys" ()
+    Mavryk_clic.switch ~long:"force" ~short:'f' ~doc:"overwrite existing keys" ()
 end
 
 module V0 = Make (struct
-  include Tezos_crypto.Signature.V0
+  include Mavryk_crypto.Signature.V0
 
   let generate_key = generate_key ?algo:None
 
   module Adapter = struct
     let public_key_hash :
-        Tezos_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult =
+        Mavryk_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult =
       let open Result_syntax in
       function
       | Bls _ ->
@@ -1182,7 +1182,7 @@ module V0 = Make (struct
       | P256 k -> return (P256 k : Public_key_hash.t)
 
     let public_key :
-        Tezos_crypto.Signature.Public_key.t -> Public_key.t tzresult =
+        Mavryk_crypto.Signature.Public_key.t -> Public_key.t tzresult =
       let open Result_syntax in
       function
       | Bls _ -> tzfail (Exn (Failure "BLS public key not supported by V0"))
@@ -1190,7 +1190,7 @@ module V0 = Make (struct
       | Secp256k1 k -> return (Secp256k1 k : Public_key.t)
       | P256 k -> return (P256 k : Public_key.t)
 
-    let signature : Tezos_crypto.Signature.t -> t tzresult =
+    let signature : Mavryk_crypto.Signature.t -> t tzresult =
       let open Result_syntax in
       function
       | Bls _ -> tzfail (Exn (Failure "BLS signature not supported by V0"))
@@ -1202,7 +1202,7 @@ module V0 = Make (struct
 end)
 
 module V1 = Make (struct
-  include Tezos_crypto.Signature.V1
+  include Mavryk_crypto.Signature.V1
 
   let generate_key = generate_key ?algo:None
 
@@ -1218,7 +1218,7 @@ module V1 = Make (struct
 end)
 
 module V_latest = Make (struct
-  include Tezos_crypto.Signature.V_latest
+  include Mavryk_crypto.Signature.V_latest
 
   let generate_key = generate_key ?algo:None
 
@@ -1236,7 +1236,7 @@ end)
 include V_latest
 
 module Mnemonic = struct
-  let new_random = Bip39.of_entropy (Tezos_crypto.Hacl.Rand.gen 32)
+  let new_random = Bip39.of_entropy (Mavryk_crypto.Hacl.Rand.gen 32)
 
   let to_32_bytes mnemonic =
     let seed_64_to_seed_32 (seed_64 : bytes) : bytes =

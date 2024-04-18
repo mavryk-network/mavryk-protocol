@@ -20,10 +20,10 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_crypto_dal
-  -open Tezos_crypto_dal_mavkit_dal_config
-  -open Tezos_error_monad
+  -open Mavryk_stdlib
+  -open Mavryk_crypto_dal
+  -open Mavryk_crypto_dal_mavkit_dal_config
+  -open Mavryk_error_monad
   -open Data_encoding
   -open Mavkit_alcotezt)
  (modules test_dal_cryptobox))

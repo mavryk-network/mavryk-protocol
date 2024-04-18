@@ -23,6 +23,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Lifted_protocol = Tezos_protocol_genesis_lifted.Lifted_protocol
+module Lifted_protocol = Mavryk_protocol_genesis_lifted.Lifted_protocol
 module Genesis_block_services =
   Block_services.Make (Lifted_protocol) (Lifted_protocol)

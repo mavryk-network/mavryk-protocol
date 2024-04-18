@@ -105,7 +105,7 @@ module Proto_client = struct
   type state = Injector.state
 
   type unsigned_operation =
-    Tezos_base.Operation.shell_header * packed_contents_list
+    Mavryk_base.Operation.shell_header * packed_contents_list
 
   let max_operation_data_length = Constants.max_operation_data_length
 
@@ -256,7 +256,7 @@ module Proto_client = struct
 
   let dummy_sk_uri =
     WithExceptions.Result.get_ok ~loc:__LOC__
-    @@ Tezos_signer_backends.Unencrypted.make_sk
+    @@ Mavryk_signer_backends.Unencrypted.make_sk
     @@ Signature.Secret_key.of_b58check_exn
          "edsk3UqeiQWXX7NFEY1wUs6J1t2ez5aQ3hEWdqX5Jr5edZiGLW8nZr"
 
@@ -379,7 +379,7 @@ module Proto_client = struct
 
   let time_until_next_block
       {Injector.minimal_block_delay; delay_increment_per_round; _}
-      (header : Tezos_base.Block_header.shell_header option) =
+      (header : Mavryk_base.Block_header.shell_header option) =
     let open Result_syntax in
     match header with
     | None -> minimal_block_delay |> Int64.to_int |> Ptime.Span.of_int_s

@@ -28,11 +28,11 @@ open Protocol.Alpha_context
 module type S = sig
   include
     Sc_rollup.PVM.S
-      with type context = Tezos_context_memory.Context_binary.t
-       and type state = Tezos_context_memory.Context_binary.tree
+      with type context = Mavryk_context_memory.Context_binary.t
+       and type state = Mavryk_context_memory.Context_binary.tree
        and type proof =
-        Tezos_context_memory.Context_binary.Proof.tree
-        Tezos_context_memory.Context_binary.Proof.t
+        Mavryk_context_memory.Context_binary.Proof.tree
+        Mavryk_context_memory.Context_binary.Proof.t
 
   (** [make_empty_context  ()] create a new in memory context for
       a PVM. *)
@@ -43,8 +43,8 @@ module type S = sig
   val make_empty_state : unit -> state
 end
 
-(** [Arith]: Arith PVM with an in memory context {!Tezos_context_memory}. *)
+(** [Arith]: Arith PVM with an in memory context {!Mavryk_context_memory}. *)
 module Arith : S
 
-(** [Wasm] Wasm PVM with an in memory context {!Tezos_context_memory}. *)
+(** [Wasm] Wasm PVM with an in memory context {!Mavryk_context_memory}. *)
 module Wasm : S

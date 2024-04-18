@@ -15,7 +15,7 @@ Note that the Mavkit v16.0 uses the ``PtMumbai2`` variant of the Mumbai protocol
 
 .. warning::
 
-   Mavkit version 15.0 renamed all executables. The ``tezos-`` prefix
+   Mavkit version 15.0 renamed all executables. The ``mavryk-`` prefix
    has been replaced by ``mavkit-`` and protocol numbers have been removed.
    However, the old naming convention was still available via symbolic links.
    Starting from version 16.0, the symbolic links from old names to new names are no longer created when compiling from source.

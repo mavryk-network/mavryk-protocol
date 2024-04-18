@@ -17,7 +17,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_client_base
+  -open Mavryk_client_base
   -open Mavkit_alcotezt)
  (modules bip39_tests pbkdf_tests))
 

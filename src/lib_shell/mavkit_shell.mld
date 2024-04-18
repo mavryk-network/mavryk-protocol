@@ -1,8 +1,8 @@
-{0 tezos-shell index}
+{0 mavryk-shell index}
 
-{1 Library tezos-shell}
+{1 Library mavryk-shell}
 
-The entry point of this library is the module: {!Tezos_shell}.
+The entry point of this library is the module: {!Mavryk_shell}.
 
 {1 Prevalidator implementation overview}
 

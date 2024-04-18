@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_requester)
+ (name mavryk_requester)
  (public_name mavkit-libs.requester)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -11,5 +11,5 @@
   lwt-watcher)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

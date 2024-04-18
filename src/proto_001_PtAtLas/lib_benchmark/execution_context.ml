@@ -59,7 +59,7 @@ let make ?dal ~rng_state () =
   let open Lwt_result_wrap_syntax in
   let* context = context_init_memory ?dal ~rng_state () in
   let amount = Alpha_context.Tez.one in
-  let chain_id = Tezos_crypto.Hashed.Chain_id.zero in
+  let chain_id = Mavryk_crypto.Hashed.Chain_id.zero in
   let now = Script_timestamp.of_zint Z.zero in
   let level = Script_int.zero_n in
   let open Script_interpreter in
@@ -98,6 +98,6 @@ let make ?dal ~rng_state () =
     (* Required for eg Create_contract *)
     Protocol.Alpha_context.Origination_nonce.init
       ctxt
-      Tezos_crypto.Hashed.Operation_hash.zero
+      Mavryk_crypto.Hashed.Operation_hash.zero
   in
   return (ctxt, step_constants)

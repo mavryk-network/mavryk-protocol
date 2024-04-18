@@ -155,7 +155,7 @@ let get_init_socket_path socket_dir pid =
   Filename.concat socket_dir filename
 
 (* Magic bytes used for the external RPC process handshake. *)
-let socket_magic = Bytes.of_string "TEZOS_RPC_SERVER_MAGIC_0"
+let socket_magic = Bytes.of_string "MAVRYK_RPC_SERVER_MAGIC_0"
 
 let create_init_socket socket_dir =
   let open Lwt_result_syntax in
@@ -177,7 +177,7 @@ let run socket_dir =
   let* init_socket_fd = create_init_socket socket_dir in
   let* parameters = Socket.recv init_socket_fd Parameters.parameters_encoding in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init
+    Mavryk_base_unix.Internal_event_unix.init
       ~config:parameters.Parameters.internal_events
       ()
   in

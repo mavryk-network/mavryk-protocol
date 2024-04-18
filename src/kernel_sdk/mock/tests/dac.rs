@@ -1,18 +1,18 @@
 //! Test of reveal preimage mechanism from [encoding::dac].
 
-use tezos_crypto_rs::hash::BlsSignature;
-use tezos_smart_rollup_encoding::dac::certificate::CertificateError;
-use tezos_smart_rollup_encoding::dac::certificate::*;
-use tezos_smart_rollup_encoding::dac::pages::*;
-use tezos_smart_rollup_host::path::RefPath;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_crypto_rs::hash::BlsSignature;
+use mavryk_smart_rollup_encoding::dac::certificate::CertificateError;
+use mavryk_smart_rollup_encoding::dac::certificate::*;
+use mavryk_smart_rollup_encoding::dac::pages::*;
+use mavryk_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 const MAX_DAC_ONE_SHOT_SIZE: usize = 10063860;
 
 #[test]
 fn certificate_reveal_to_store_small() {
     let data = vec![7];
-    let mut host = tezos_smart_rollup_mock::MockHost::default();
+    let mut host = mavryk_smart_rollup_mock::MockHost::default();
     let root_hash = prepare_preimages(&data, |_hash, page| {
         host.set_preimage(page);
     })
@@ -24,7 +24,7 @@ fn certificate_reveal_to_store_small() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: tezos_data_encoding::types::Zarith(0.into()),
+        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -42,7 +42,7 @@ fn certificate_reveal_to_store_med() {
         .map(u32::to_le_bytes)
         .for_each(|bytes| data.extend_from_slice(&bytes));
 
-    let mut host = tezos_smart_rollup_mock::MockHost::default();
+    let mut host = mavryk_smart_rollup_mock::MockHost::default();
     let root_hash = prepare_preimages(&data, |_hash, page| {
         host.set_preimage(page);
     })
@@ -54,7 +54,7 @@ fn certificate_reveal_to_store_med() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: tezos_data_encoding::types::Zarith(0.into()),
+        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -71,7 +71,7 @@ fn certificate_reveal_to_store_max() {
         .take(MAX_DAC_ONE_SHOT_SIZE / 4)
         .map(u32::to_le_bytes)
         .for_each(|bytes| data.extend_from_slice(&bytes));
-    let mut host = tezos_smart_rollup_mock::MockHost::default();
+    let mut host = mavryk_smart_rollup_mock::MockHost::default();
     let root_hash = prepare_preimages(&data, |_hash, page| {
         host.set_preimage(page);
     })
@@ -83,7 +83,7 @@ fn certificate_reveal_to_store_max() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: tezos_data_encoding::types::Zarith(0.into()),
+        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -95,7 +95,7 @@ fn certificate_reveal_to_store_max() {
 #[test]
 fn certificate_reveal_to_store_too_large() {
     let data = vec![0; MAX_DAC_ONE_SHOT_SIZE + 1];
-    let mut host = tezos_smart_rollup_mock::MockHost::default();
+    let mut host = mavryk_smart_rollup_mock::MockHost::default();
     let root_hash = prepare_preimages(&data, |_hash, page| {
         host.set_preimage(page);
     })
@@ -107,7 +107,7 @@ fn certificate_reveal_to_store_too_large() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: tezos_data_encoding::types::Zarith(0.into()),
+        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
     });
 
     assert!(matches!(
@@ -128,7 +128,7 @@ fn encode_decode_preimages() {
         .map(usize::to_le_bytes)
         .for_each(|b| data.extend_from_slice(&b));
 
-    let mut host = tezos_smart_rollup_mock::MockHost::default();
+    let mut host = mavryk_smart_rollup_mock::MockHost::default();
     let root_hash = prepare_preimages(&data, |_hash, page| {
         host.set_preimage(page);
     })

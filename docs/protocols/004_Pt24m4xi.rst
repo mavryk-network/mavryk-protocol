@@ -62,7 +62,7 @@ larger.
 
 In all cases, it is recommended to simulate an operation before
 injecting it on the chain.
-Using ``tezos-client``, it is possible to run only a simulation using
+Using ``mavryk-client``, it is possible to run only a simulation using
 the ``--dry-run`` option.
 
 

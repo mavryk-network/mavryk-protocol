@@ -39,7 +39,7 @@ module Info : sig
   (** Initializes the metric for rollup info
       with a the given arguments as label values *)
   val init_rollup_node_info :
-    id:Tezos_crypto.Hashed.Smart_rollup_address.t ->
+    id:Mavryk_crypto.Hashed.Smart_rollup_address.t ->
     mode:Configuration.mode ->
     genesis_level:int32 ->
     pvm_kind:string ->

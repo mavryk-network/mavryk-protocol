@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* For documentation please refer to the [Tezos_wasmer] module. *)
+(* For documentation please refer to the [Mavryk_wasmer] module. *)
 
 open Utils
 open Api
@@ -33,7 +33,7 @@ let make_features () =
   let features = new_ () in
   (* These features map to proposals in the WebAssembly spec. They must be kept
      in sync with the features available through Mavkit' WebAssembly interpreter
-     (tezos-webassembly-interpreter). *)
+     (mavryk-webassembly-interpreter). *)
   ignore (bulk_memory features false : bool) ;
   ignore (memory64 features false : bool) ;
   ignore (module_linking features false : bool) ;

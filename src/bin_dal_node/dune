@@ -20,16 +20,16 @@
   mavkit-libs.rpc-http-client-unix
   mavkit-libs.stdlib-unix
   mavkit-libs.stdlib
-  tezos-dal-node-lib
-  tezos-dal-node-services
+  mavryk-dal-node-lib
+  mavryk-dal-node-services
   mavkit-l2-libs.layer2_store
   mavkit-libs.crypto-dal
   mavkit-shell-libs.store.unix
   mavkit-shell-libs.store.shared
-  mavkit-libs.tezos-gossipsub
-  tezos-dal-node-lib.gossipsub
+  mavkit-libs.mavryk-gossipsub
+  mavryk-dal-node-lib.gossipsub
   mavkit-shell-libs.p2p
-  mavkit-libs.tezos-p2p-services
+  mavkit-libs.mavryk-p2p-services
   mavkit-libs.crypto
   mavkit-libs.base.p2p-identity-file
   mavkit-shell-libs.shell-services
@@ -48,25 +48,25 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_client_commands
-  -open Tezos_rpc_http
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_dal_node_lib
-  -open Tezos_dal_node_services
-  -open Tezos_layer2_store
-  -open Tezos_crypto_dal
-  -open Tezos_store_shared
-  -open Tezos_gossipsub
-  -open Tezos_dal_node_lib_gossipsub
-  -open Tezos_p2p
-  -open Tezos_p2p_services
-  -open Tezos_crypto
-  -open Tezos_base_p2p_identity_file
-  -open Tezos_shell_services))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_commands
+  -open Mavryk_rpc_http
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_dal_node_lib
+  -open Mavryk_dal_node_services
+  -open Mavryk_layer2_store
+  -open Mavryk_crypto_dal
+  -open Mavryk_store_shared
+  -open Mavryk_gossipsub
+  -open Mavryk_dal_node_lib_gossipsub
+  -open Mavryk_p2p
+  -open Mavryk_p2p_services
+  -open Mavryk_crypto
+  -open Mavryk_base_p2p_identity_file
+  -open Mavryk_shell_services))
 
 (rule
  (action

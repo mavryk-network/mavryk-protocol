@@ -27,12 +27,12 @@
     -------
     Component:    Tree_encoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_wasm_encoding.ml
-    Subject:      Encoding tests for the tezos-scoru-wasm library
+    Subject:      Encoding tests for the mavryk-scoru-wasm library
 *)
 
 open Tztest
-open Tezos_scoru_wasm
-open Tezos_webassembly_interpreter
+open Mavryk_scoru_wasm
+open Mavryk_webassembly_interpreter
 open Encodings_util
 open Test_encodings_util
 
@@ -163,7 +163,7 @@ let test_values_tree =
     ~gen:(fun ~module_reg:_ ->
       QCheck2.Gen.(
         map
-          Tezos_lazy_containers.Lazy_vector.Int32Vector.of_list
+          Mavryk_lazy_containers.Lazy_vector.Int32Vector.of_list
           (list Ast_generators.value_gen)))
     ~encoding:Wasm_encoding.values_encoding
     "Values tree"

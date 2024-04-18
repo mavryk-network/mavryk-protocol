@@ -6,7 +6,7 @@
 
 //! Types & encodings for the *inbox-half* of the *L1/L2 communication protocol*
 //!
-//! In *general*, this module is a re-implementation of the tezos-protocol
+//! In *general*, this module is a re-implementation of the mavryk-protocol
 //! [inbox message repr].
 //!
 //! [inbox message repr]: <https://gitlab.com/tezos/tezos/-/blob/9028b797894a5d9db38bc61a20abb793c3778316/src/proto_alpha/lib_protocol/sc_rollup_inbox_message_repr.mli>
@@ -22,10 +22,10 @@ use nom::sequence::pair;
 use nom::sequence::preceded;
 use nom::Finish;
 use std::fmt::Display;
-use tezos_data_encoding::enc;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::enc;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 
 #[derive(Debug, PartialEq, Eq, NomReader, HasEncoding, BinWriter)]
 enum InboxMessageRepr<Expr: Michelson> {
@@ -35,7 +35,7 @@ enum InboxMessageRepr<Expr: Michelson> {
     External,
 }
 
-/// Inbox message, received by the kernel as tezos-encoded bytes.
+/// Inbox message, received by the kernel as mavryk-encoded bytes.
 #[derive(Debug, PartialEq, Eq)]
 pub enum InboxMessage<'a, Expr: Michelson> {
     /// Message sent from an L1 smart-contract.
@@ -56,7 +56,7 @@ impl<'a, Expr: Michelson> InboxMessage<'a, Expr> {
     /// the input.
     ///
     /// In our case, we want to avoid copies if possible - which require additional ticks.
-    pub fn parse(input: &'a [u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    pub fn parse(input: &'a [u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         let (remaining, repr): (&'a [u8], _) = InboxMessageRepr::nom_read(input)?;
 
         match repr {
@@ -68,7 +68,7 @@ impl<'a, Expr: Michelson> InboxMessage<'a, Expr> {
     /// Replacement for `bin_write` for [InboxMessage].
     ///
     /// [BinWriter] does not allow consumption of the input.
-    pub fn serialize(self, output: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+    pub fn serialize(self, output: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
         match self {
             InboxMessage::Internal(m) => {
                 InboxMessageRepr::Internal(m).bin_write(output)?;
@@ -181,7 +181,7 @@ impl<'a> ExternalMessageFrame<&'a [u8]> {
     /// the input.
     ///
     /// In our case, we want to avoid copies if possible - which require additional ticks.
-    pub fn parse(input: &'a [u8]) -> Result<Self, tezos_data_encoding::nom::NomError> {
+    pub fn parse(input: &'a [u8]) -> Result<Self, mavryk_data_encoding::nom::NomError> {
         let (_remaining, message) = map(
             preceded(
                 tag([Self::TARGETTED_TAG]),
@@ -236,7 +236,7 @@ mod test {
     use crate::michelson::Michelson;
     use crate::michelson::MichelsonUnit;
     use crate::smart_rollup::SmartRollupAddress;
-    use tezos_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::enc::BinWriter;
 
     #[test]
     fn test_encode_decode_sol() {

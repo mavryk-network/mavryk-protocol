@@ -20,9 +20,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base
-  -open Tezos_error_monad
-  -open Tezos_test_helpers
+  -open Mavryk_base
+  -open Mavryk_error_monad
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
  (modules
   test_bounded

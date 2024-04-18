@@ -1,5 +1,5 @@
-open Tezos_scoru_wasm
-open Tezos_webassembly_interpreter
+open Mavryk_scoru_wasm
+open Mavryk_webassembly_interpreter
 
 type error_kind =
   [ `Decode
@@ -164,12 +164,12 @@ module type S = sig
     Instance.module_inst Instance.ModuleMap.t -> Partial_memory.memory Lwt.t
 
   module Ctx :
-    Tezos_tree_encoding.Encodings_util.S
+    Mavryk_tree_encoding.Encodings_util.S
       with type Tree.tree = tree
       with type t = t
 
   module Tree_encoding_runner :
-    Tezos_tree_encoding.Runner.S with type tree = tree
+    Mavryk_tree_encoding.Runner.S with type tree = tree
 
   module Wasm : Wasm_pvm_sig.S with type tree = tree
 

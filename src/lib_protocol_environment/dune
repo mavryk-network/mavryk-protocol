@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment)
+ (name mavryk_protocol_environment)
  (public_name mavkit-proto-libs.protocol-environment)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -15,17 +15,17 @@
   aches
   aches-lwt
   mavkit-libs.base
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-proto-libs.protocol-environment.sigs
   mavkit-proto-libs.protocol-environment.structs
   mavkit-libs.micheline
-  mavkit-libs.tezos-context.memory
+  mavkit-libs.mavryk-context.memory
   mavkit-l2-libs.scoru-wasm
   mavkit-libs.event-logging)
  (flags
   (:standard)
   -open Plonk
-  -open Tezos_base.TzPervasives
-  -open Tezos_micheline))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_micheline))
 
 (documentation (package mavkit-proto-libs))

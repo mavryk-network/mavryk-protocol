@@ -49,13 +49,13 @@ module type PROTOCOL = sig
 
     module To_latest : sig
       val public_key_hash :
-        public_key_hash -> Tezos_crypto.Signature.V_latest.public_key_hash
+        public_key_hash -> Mavryk_crypto.Signature.V_latest.public_key_hash
 
-      val public_key : public_key -> Tezos_crypto.Signature.V_latest.public_key
+      val public_key : public_key -> Mavryk_crypto.Signature.V_latest.public_key
 
-      val secret_key : secret_key -> Tezos_crypto.Signature.V_latest.secret_key
+      val secret_key : secret_key -> Mavryk_crypto.Signature.V_latest.secret_key
 
-      val signature : signature -> Tezos_crypto.Signature.V_latest.signature
+      val signature : signature -> Mavryk_crypto.Signature.V_latest.signature
     end
   end
 
@@ -82,7 +82,7 @@ module type PROTOCOL = sig
   val hash : Protocol_hash.t
 
   val prepare_context :
-    Tezos_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t ->
     level:int32 ->
     predecessor_timestamp:Time.Protocol.t ->
     timestamp:Time.Protocol.t ->

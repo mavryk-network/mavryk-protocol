@@ -427,7 +427,7 @@ let test_ivk_to_pkd () =
       let ivk = `Hex ivk_hex in
       let diversifier = `Hex diversifier_hex in
       let result =
-        Tezos_sapling.Rustzcash.(
+        Mavryk_sapling.Rustzcash.(
           of_pkd
             (ivk_to_pkd
                (to_ivk (Hex.to_bytes_exn ivk))
@@ -454,7 +454,7 @@ let test_failing_ivk_to_pkd () =
       let diversifier = `Hex diversifier_hex in
       try
         (ignore
-        @@ Tezos_sapling.Rustzcash.(
+        @@ Mavryk_sapling.Rustzcash.(
              ivk_to_pkd
                (to_ivk (Hex.to_bytes_exn ivk))
                (Option.get (to_diversifier (Hex.to_bytes_exn diversifier))))) ;

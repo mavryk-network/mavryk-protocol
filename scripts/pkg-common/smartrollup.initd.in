@@ -30,7 +30,7 @@ fi
 user=tezos
 group=tezos
 nodedir=/var/tezos/node
-clientdir=~tezos/.tezos-client
+clientdir=~tezos/.mavryk-client
 logdir=/var/log/tezos
 rotateonstart=yes
 waitfornode=yes

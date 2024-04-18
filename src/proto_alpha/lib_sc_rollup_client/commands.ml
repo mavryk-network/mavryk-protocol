@@ -11,7 +11,7 @@ open Protocol.Alpha_context
 let possible_block_ids = ["head"; "finalized"; "cemented"; "<hash>"; "<level>"]
 
 let block_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"block"
     ~short:'B'
     ~placeholder:"block"
@@ -21,7 +21,7 @@ let block_arg =
          "The block identifier for which the command applies (possible values: \
           %s)."
          (String.concat ", " possible_block_ids))
-    (Tezos_clic.parameter
+    (Mavryk_clic.parameter
        (fun _ s ->
          match Rollup_node_services.Arg.destruct_block_id s with
          | Ok b -> return b
@@ -30,10 +30,10 @@ let block_arg =
 
 let get_sc_rollup_addresses_command () =
   let open Lwt_result_syntax in
-  Tezos_clic.command
+  Mavryk_clic.command
     ~desc:"Retrieve the smart rollup address the node is interacting with."
-    Tezos_clic.no_options
-    (Tezos_clic.fixed ["get"; "smart"; "rollup"; "address"])
+    Mavryk_clic.no_options
+    (Mavryk_clic.fixed ["get"; "smart"; "rollup"; "address"])
     (fun () (cctxt : #Configuration.sc_client_context) ->
       let* addr = RPC.get_sc_rollup_addresses_command cctxt in
       let*! () = cctxt#message "@[%a@]" Sc_rollup.Address.pp addr in
@@ -41,12 +41,12 @@ let get_sc_rollup_addresses_command () =
 
 let get_state_value_command () =
   let open Lwt_result_syntax in
-  Tezos_clic.command
+  Mavryk_clic.command
     ~desc:"Observe a key in the PVM state."
-    (Tezos_clic.args1 block_arg)
-    (Tezos_clic.prefixes ["get"; "state"; "value"; "for"]
-    @@ Tezos_clic.string ~name:"key" ~desc:"The key of the state value"
-    @@ Tezos_clic.stop)
+    (Mavryk_clic.args1 block_arg)
+    (Mavryk_clic.prefixes ["get"; "state"; "value"; "for"]
+    @@ Mavryk_clic.string ~name:"key" ~desc:"The key of the state value"
+    @@ Mavryk_clic.stop)
     (fun block key (cctxt : #Configuration.sc_client_context) ->
       let* bytes = RPC.get_state_value_command cctxt block key in
       let*! () = cctxt#message "@[%S@]" (String.of_bytes bytes) in
@@ -54,7 +54,7 @@ let get_state_value_command () =
 
 (** [display_answer cctxt answer] prints an RPC answer. *)
 let display_answer (cctxt : #Configuration.sc_client_context) :
-    Tezos_rpc.Context.generic_call_result -> unit Lwt.t = function
+    Mavryk_rpc.Context.generic_call_result -> unit Lwt.t = function
   | `Json (`Ok json) -> cctxt#answer "%a" Json_repr.(pp (module Ezjsonm)) json
   | `Binary (`Ok binary) -> cctxt#answer "%a" Hex.pp (Hex.of_string binary)
   | `Json (`Error (Some error)) ->
@@ -143,7 +143,7 @@ let expand_expr expr =
   let open Result_syntax in
   let* expr =
     Michelson_v1_parser.parse_expression expr
-    |> Tezos_micheline.Micheline_parser.no_parsing_error
+    |> Mavryk_micheline.Micheline_parser.no_parsing_error
   in
   return expr.expanded
 
@@ -189,30 +189,30 @@ let parse_unparsed_batch json =
       return (Sc_rollup.Outbox.Message.Whitelist_update whitelist)
 
 let outbox_message_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Configuration.sc_client_context) str ->
+  Mavryk_clic.parameter (fun (cctxt : #Configuration.sc_client_context) str ->
       match Data_encoding.Json.from_string str with
       | Ok json -> parse_unparsed_batch json
       | Error reason -> cctxt#error "Invalid transaction json: %s" reason)
 
 let get_output_proof () =
   let open Lwt_result_syntax in
-  Tezos_clic.command
+  Mavryk_clic.command
     ~desc:"Ask the rollup node for an output proof."
-    Tezos_clic.no_options
-    (Tezos_clic.prefixes ["get"; "proof"; "for"; "message"]
+    Mavryk_clic.no_options
+    (Mavryk_clic.prefixes ["get"; "proof"; "for"; "message"]
     @@ Client_proto_args.non_negative_z_param
          ~name:"index"
          ~desc:"The index of the message in the outbox"
-    @@ Tezos_clic.prefixes ["of"; "outbox"; "at"; "level"]
+    @@ Mavryk_clic.prefixes ["of"; "outbox"; "at"; "level"]
     @@ Client_proto_args.raw_level_param
          ~name:"level"
          ~desc:"The level of the rollup outbox where the message is available"
-    @@ Tezos_clic.prefixes ["transferring"]
-    @@ Tezos_clic.param
+    @@ Mavryk_clic.prefixes ["transferring"]
+    @@ Mavryk_clic.param
          ~name:"transactions"
          ~desc:"A JSON description of the transactions"
          outbox_message_parameter
-    @@ Tezos_clic.stop)
+    @@ Mavryk_clic.stop)
     (fun ()
          message_index
          outbox_level
@@ -233,20 +233,20 @@ let get_output_proof () =
       return_unit)
 
 let get_output_proof_simpler () =
-  Tezos_clic.command
+  Mavryk_clic.command
     ~desc:
       "Ask the rollup node for an output proof fetching the output \
        transactions from the outbox."
-    Tezos_clic.no_options
-    (Tezos_clic.prefixes ["get"; "proof"; "for"; "message"]
+    Mavryk_clic.no_options
+    (Mavryk_clic.prefixes ["get"; "proof"; "for"; "message"]
     @@ Client_proto_args.non_negative_param
          ~name:"index"
          ~desc:"The index of the message in the outbox"
-    @@ Tezos_clic.prefixes ["of"; "outbox"; "at"; "level"]
+    @@ Mavryk_clic.prefixes ["of"; "outbox"; "at"; "level"]
     @@ Client_proto_args.raw_level_param
          ~name:"level"
          ~desc:"The level of the rollup outbox where the message is available"
-    @@ Tezos_clic.stop)
+    @@ Mavryk_clic.stop)
     (fun ()
          message_index
          outbox_level
@@ -267,15 +267,15 @@ let get_output_proof_simpler () =
 
 let get_output_message_encoding () =
   let open Lwt_result_syntax in
-  Tezos_clic.command
+  Mavryk_clic.command
     ~desc:"Get output message encoding."
-    Tezos_clic.no_options
-    (Tezos_clic.prefixes ["encode"; "outbox"; "message"]
-    @@ Tezos_clic.param
+    Mavryk_clic.no_options
+    (Mavryk_clic.prefixes ["encode"; "outbox"; "message"]
+    @@ Mavryk_clic.param
          ~name:"transactions"
          ~desc:"A JSON description of the transactions"
          outbox_message_parameter
-    @@ Tezos_clic.stop)
+    @@ Mavryk_clic.stop)
     (fun () message (cctxt : #Configuration.sc_client_context) ->
       let open Protocol.Alpha_context.Sc_rollup.Outbox.Message in
       let encoded_message = serialize message in
@@ -329,7 +329,7 @@ let call_with_file_or_json meth url maybe_file
   call_with_json meth url json cctxt
 
 let rpc_commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let group = {name = "rpc"; title = "Commands for the low level RPC layer"} in
   [
     command
@@ -366,14 +366,14 @@ let rpc_commands () =
   ]
 
 module Keys = struct
-  open Tezos_client_base.Client_keys
+  open Mavryk_client_base.Client_keys
 
   let generate_keys () =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Generate a pair of keys."
-      (Tezos_clic.args1 (Secret_key.force_switch ()))
-      (Tezos_clic.prefixes ["gen"; "unencrypted"; "keys"]
-      @@ Aggregate_alias.Secret_key.fresh_alias_param @@ Tezos_clic.stop)
+      (Mavryk_clic.args1 (Secret_key.force_switch ()))
+      (Mavryk_clic.prefixes ["gen"; "unencrypted"; "keys"]
+      @@ Aggregate_alias.Secret_key.fresh_alias_param @@ Mavryk_clic.stop)
       (fun force name (cctxt : #Configuration.sc_client_context) ->
         Client_keys_commands.Bls_commands.generate_keys
           ~force
@@ -382,19 +382,19 @@ module Keys = struct
           cctxt)
 
   let list_keys () =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"List keys."
-      Tezos_clic.no_options
-      (Tezos_clic.prefixes ["list"; "keys"] @@ Tezos_clic.stop)
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefixes ["list"; "keys"] @@ Mavryk_clic.stop)
       (fun () (cctxt : #Configuration.sc_client_context) ->
         Client_keys_commands.Bls_commands.list_keys cctxt)
 
   let show_address () =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Show the keys associated with an account."
-      Tezos_clic.no_options
-      (Tezos_clic.prefixes ["show"; "address"]
-      @@ Aggregate_alias.Public_key_hash.alias_param @@ Tezos_clic.stop)
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefixes ["show"; "address"]
+      @@ Aggregate_alias.Public_key_hash.alias_param @@ Mavryk_clic.stop)
       (fun () (name, _pkh) (cctxt : #Configuration.sc_client_context) ->
         Client_keys_commands.Bls_commands.show_address
           ~show_private:true
@@ -402,12 +402,12 @@ module Keys = struct
           cctxt)
 
   let import_secret_key () =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Add a secret key to the wallet."
-      (Tezos_clic.args1 (Aggregate_alias.Secret_key.force_switch ()))
-      (Tezos_clic.prefixes ["import"; "secret"; "key"]
+      (Mavryk_clic.args1 (Aggregate_alias.Secret_key.force_switch ()))
+      (Mavryk_clic.prefixes ["import"; "secret"; "key"]
       @@ Aggregate_alias.Secret_key.fresh_alias_param @@ aggregate_sk_uri_param
-      @@ Tezos_clic.stop)
+      @@ Mavryk_clic.stop)
       (fun force name sk_uri (cctxt : #Configuration.sc_client_context) ->
         Client_keys_commands.Bls_commands.import_secret_key
           ~force

@@ -47,7 +47,7 @@ dated_log "Starting benchmarks processes"
 
 # Clean _opam to have a fresh dependencies environment and fetch the latest
 # commit.
-cd /data/tezos-benchmarks/tezos
+cd /data/mavryk-benchmarks/tezos
 rm -rf _opam
 dated_log "Pulling repository."
 git pull

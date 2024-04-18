@@ -34,7 +34,7 @@
    interest. We use a lighter hook that only scrubs the clients
    [--base-dir], since it varies between executions. *)
 let hooks =
-  Tezos_regression.hooks_custom
+  Mavryk_regression.hooks_custom
     ~scrubbed_global_options:["--base-dir"; "-d"]
     ~replace_variables:Fun.id
     ()

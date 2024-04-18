@@ -45,7 +45,7 @@ type error +=
       ours : Commitment.Hash.t option;
       on_l1 : Commitment.Hash.t;
     }
-  | Unreliable_tezos_node_returning_inconsistent_game
+  | Unreliable_mavryk_node_returning_inconsistent_game
   | Wrong_initial_pvm_state of {
       initial_state_hash : State_hash.t;
       expected_state_hash : State_hash.t;
@@ -143,15 +143,15 @@ let () =
   in
   register_error_kind
     `Permanent
-    ~id:"internal.unreliable_tezos_node"
+    ~id:"internal.unreliable_mavryk_node"
     ~title:"Internal error: Mavryk node seems unreliable"
     ~description
     ~pp:(fun ppf () ->
       Format.fprintf ppf "Unreliable Mavryk node. %s" description)
     Data_encoding.unit
     (function
-      | Unreliable_tezos_node_returning_inconsistent_game -> Some () | _ -> None)
-    (fun () -> Unreliable_tezos_node_returning_inconsistent_game) ;
+      | Unreliable_mavryk_node_returning_inconsistent_game -> Some () | _ -> None)
+    (fun () -> Unreliable_mavryk_node_returning_inconsistent_game) ;
 
   register_error_kind
     `Permanent

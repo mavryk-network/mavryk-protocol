@@ -2,10 +2,10 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_version_parser)
+ (name mavryk_version_parser)
  (public_name mavkit-libs.version.parser)
  (instrumentation (backend bisect_ppx))
  (preprocess (pps ppx_deriving.show))
  (js_of_ocaml))
 
-(ocamllex tezos_version_parser)
+(ocamllex mavryk_version_parser)

@@ -29,7 +29,7 @@ open Injector_sigs
 module Request (L1_operation : INJECTOR_OPERATION) = struct
   type ('a, 'b) t =
     | Add_pending : L1_operation.t -> (unit, error trace) t
-    | New_tezos_head : (Block_hash.t * int32) -> (unit, error trace) t
+    | New_mavryk_head : (Block_hash.t * int32) -> (unit, error trace) t
     | Inject : (unit, error trace) t
 
   type view = View : _ t -> view
@@ -50,15 +50,15 @@ module Request (L1_operation : INJECTOR_OPERATION) = struct
           (fun ((), op) -> View (Add_pending op));
         case
           (Tag 1)
-          ~title:"New_tezos_head"
+          ~title:"New_mavryk_head"
           (let block_level =
              obj2 (req "block" Block_hash.encoding) (req "level" int32)
            in
            obj2
-             (req "request" (constant "new_tezos_head"))
+             (req "request" (constant "new_mavryk_head"))
              (req "head" block_level))
-          (function View (New_tezos_head b) -> Some ((), b) | _ -> None)
-          (fun ((), b) -> View (New_tezos_head b));
+          (function View (New_mavryk_head b) -> Some ((), b) | _ -> None)
+          (fun ((), b) -> View (New_mavryk_head b));
         case
           (Tag 2)
           ~title:"Inject"
@@ -71,7 +71,7 @@ module Request (L1_operation : INJECTOR_OPERATION) = struct
     match r with
     | Add_pending op ->
         Format.fprintf ppf "request add %a to pending queue" L1_operation.pp op
-    | New_tezos_head (block, level) ->
+    | New_mavryk_head (block, level) ->
         Format.fprintf
           ppf
           "switching to new Tezos head %a at level %ld"

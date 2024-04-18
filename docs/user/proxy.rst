@@ -2,7 +2,7 @@ Proxy mode
 ----------
 
 The ``mavkit-client``, described in
-:ref:`a dedicated tutorial <howtouse_tezos_client>`, heavily relies on node RPCs to implement its features. Thus, when a client need to perform some computation which cannot be done entirely locally, but which is implemented by a node RPC, it will simply call the corresponding RPC.
+:ref:`a dedicated tutorial <howtouse_mavryk_client>`, heavily relies on node RPCs to implement its features. Thus, when a client need to perform some computation which cannot be done entirely locally, but which is implemented by a node RPC, it will simply call the corresponding RPC.
 
 The current page describes the *proxy* mode, an execution mode where the client
 avoids some RPC calls to the node, especially computation-intensive RPCs.
@@ -60,7 +60,7 @@ To avoid warnings being printed in upcoming commands (optional):
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
 
 You're now ready to use the proxy client. For example, request baking rights:
 
@@ -107,7 +107,7 @@ Now configure ``proxy_rpc_ctxt`` to have more information:
 
 ::
 
-    $ export TEZOS_LOG="proxy_rpc_ctxt->debug"
+    $ export MAVRYK_LOG="proxy_rpc_ctxt->debug"
 
 And redo the same RPC as before:
 
@@ -139,7 +139,7 @@ In this case, the bulk of the computation is done locally.
 
 If you also want to see the data requests to the node, do the following before running your commands::
 
-    $ export TEZOS_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug"
+    $ export MAVRYK_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug"
 
 How to deploy to relieve nodes from some RPCs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

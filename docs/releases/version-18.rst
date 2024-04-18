@@ -86,11 +86,11 @@ You can also install Mavkit using Opam by running ``opam install mavkit``.
      - :package-api:`mavkit-l2-libs <mavkit-l2-libs/index.html>`: Contains the layer 2 related libraries.
      - For each protocol ``P``
          - :package-api:`mavkit-protocol-P-libs <mavkit-protocol-alpha-libs/index.html>`: The protocol ``P`` dependent libraries.
-	 - ``tezos-protocol-P``: The Tezos protocol ``P`` itself.
+	 - ``mavryk-protocol-P``: The Tezos protocol ``P`` itself.
 
    The other packages have not (yet) been packed into aggregated packages: some of them may be refactored in future versions; some other are meant to remain standalone. In particular, each Mavkit binary is contained for now in a separate standalone package.
 
-   Finally, be aware that the old packages, that are now sub-libraries of the packages mentioned above, have been renamed by removing the ``tezos-`` and ``mavkit-`` prefixes.
+   Finally, be aware that the old packages, that are now sub-libraries of the packages mentioned above, have been renamed by removing the ``mavryk-`` and ``mavkit-`` prefixes.
    For protocol dependent sub-libraries, the redundant protocol name suffixes have also been removed.
    For instance, ``Tezos-client-017-PtNairob`` is now the sub-library ``Client`` of the package ``Mavkit-017-PtNairob-libs``.
 

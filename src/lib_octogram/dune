@@ -14,8 +14,8 @@
   dmap)
  (flags
   (:standard)
-  -open Tezos_shell_services
-  -open Tezos_rpc_http_client_unix
+  -open Mavryk_shell_services
+  -open Mavryk_rpc_http_client_unix
   -open Tezt
   -open Tezt.Base
   -open Tezt_tezos

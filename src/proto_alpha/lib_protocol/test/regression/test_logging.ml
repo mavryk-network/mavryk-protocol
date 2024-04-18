@@ -186,7 +186,7 @@ let with_logger f =
   let get_log, logger = logger () in
   let* () = f logger in
   let* log = get_log () in
-  let capture s = Tezos_regression.replace_variables s |> Regression.capture in
+  let capture s = Mavryk_regression.replace_variables s |> Regression.capture in
   Format.kasprintf
     capture
     "@,@[<v 2>trace@,%a@]"

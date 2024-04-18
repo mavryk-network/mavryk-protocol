@@ -66,7 +66,7 @@ let local_model_table : local_model_benchmark_names String.Hashtbl.t =
 (* A parameter name maps to the list of abstract models that contain it *)
 let parameter_table : parameter_info Name_table.t = Name_table.create 51
 
-let clic_table : unit Tezos_clic.command list ref = ref []
+let clic_table : unit Mavryk_clic.command list ref = ref []
 
 (*---------------------------------------------------------------------------*)
 (* Registration functions *)

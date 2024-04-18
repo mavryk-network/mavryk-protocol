@@ -148,7 +148,7 @@ module Call_endpoint : sig
       Dac_node.t ->
       hex_root_hash:Hex.t ->
       dac_member_pkh:string ->
-      signature:Tezos_crypto.Aggregate_signature.signature ->
+      signature:Mavryk_crypto.Aggregate_signature.signature ->
       unit Lwt.t
 
     (** Call GET /v0/missing_page for the provided [hex_root_hash]. *)

@@ -57,7 +57,7 @@ let check_dump_encodings () =
   unit
 
 let check_sample ~name ~file =
-  let* json_string = Tezos_stdlib_unix.Lwt_utils_unix.read_file file in
+  let* json_string = Mavryk_stdlib_unix.Lwt_utils_unix.read_file file in
   let original_json = JSON.parse ~origin:json_string json_string in
   let* binary =
     Codec.encode ~hooks:Regression.hooks ~name (JSON.unannotate original_json)

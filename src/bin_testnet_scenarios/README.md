@@ -47,7 +47,7 @@ can provide the path with:
 {
   "protocol": "alpha",
   "network": "https://teztnets.com/weeklynet-2023-MM-DD",
-  "client-dir": /home/.tezos-client-testnet"
+  "client-dir": /home/.mavryk-client-testnet"
 }
 ```
 Any keys and addresses known to the client will be accessible.

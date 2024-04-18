@@ -11,20 +11,20 @@
   mavkit-libs.base
   mavkit-libs.test-helpers
   mavkit-libs.base-test-helpers
-  tezos-dac-lib
+  mavryk-dac-lib
   mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
-  -open Tezos_base_test_helpers
-  -open Tezos_dac_lib
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_dac_lib
   -open Mavkit_alcotezt)
  (modules test_certificate test_dac_plugin test_dac_clic_helpers))
 
@@ -41,7 +41,7 @@
 
 (rule
  (alias runtest)
- (package tezos-dac-lib-test)
+ (package mavryk-dac-lib-test)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

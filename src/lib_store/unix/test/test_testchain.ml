@@ -40,7 +40,7 @@ let fork_testchain chain_store (blocks, forked_block) =
   in
   let testchain_id = Chain_id.of_block_hash genesis_hash in
   let head_header = Store.Block.header forked_block in
-  let test_protocol = Tezos_protocol_alpha.Protocol.hash in
+  let test_protocol = Mavryk_protocol_alpha.Protocol.hash in
   let expiration = Time.Protocol.epoch in
   let global_store = Store.Chain.global_store chain_store in
   let context_index = Store.context_index global_store in
@@ -158,4 +158,4 @@ let tests =
   in
   ("test chain", test_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

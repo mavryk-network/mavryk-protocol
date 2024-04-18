@@ -13,7 +13,7 @@ depends: [
   "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
   "mavkit-libs" {with-test}
   "mavkit-shell-libs" {with-test}
-  "tezos-protocol-demo-noops" {with-test}
+  "mavryk-protocol-demo-noops" {with-test}
   "mavkit-alcotezt" {with-test}
   "mavkit-version" {with-test}
 ]

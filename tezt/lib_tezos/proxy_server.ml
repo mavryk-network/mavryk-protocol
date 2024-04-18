@@ -79,7 +79,7 @@ let connection_arguments_and_port ?rpc_port node =
       (* "-l"; <- to debug RPC delegations to the node
 
          Note that if you want to debug the proxy server's RPC server,
-         set TEZOS_LOG to "rpc->debug", just like you would do with a node.
+         set MAVRYK_LOG to "rpc->debug", just like you would do with a node.
       *)
       "--rpc-addr";
       Format.sprintf "%s://%s:%d" rpc_scheme rpc_host rpc_port;

@@ -22,4 +22,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: economic-protocol compiler"
+synopsis: "Mavryk: economic-protocol compiler"

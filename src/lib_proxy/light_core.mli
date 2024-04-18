@@ -27,6 +27,6 @@
     are checked with other endpoints from [Light.sources]). *)
 val get_core :
   (module Light_proto.PROTO_RPCS) ->
-  Tezos_client_base.Client_context.printer ->
+  Mavryk_client_base.Client_context.printer ->
   Light.sources ->
   (module Proxy.CORE)

@@ -79,7 +79,7 @@ module RPC_logging = struct
   let lwt_log_error f = emit_lwt rpc_http_event_error f
 end
 
-include Resto_cohttp_server.Server.Make (Tezos_rpc.Encoding) (RPC_logging)
+include Resto_cohttp_server.Server.Make (Mavryk_rpc.Encoding) (RPC_logging)
 
 module Acl = struct
   include Resto_acl.Acl

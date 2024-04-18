@@ -25,10 +25,10 @@
 
 open Legacy_monad_globals
 open Lwt_result_syntax
-open Tezos_shell_services
-open Tezos_client_alpha
-open Tezos_baking_alpha
-open Tezos_protocol_alpha
+open Mavryk_shell_services
+open Mavryk_client_alpha
+open Mavryk_baking_alpha
+open Mavryk_protocol_alpha
 open Protocol
 open Alpha_context
 
@@ -80,13 +80,13 @@ let load_client_context (cctxt : ctxt_kind) =
   in
   let open Lwt_result_syntax in
   let open Protocol_client_context in
-  let* (b : Tezos_shell_services.Block_services.Proof.raw_context) =
+  let* (b : Mavryk_shell_services.Block_services.Proof.raw_context) =
     Alpha_block_services.Context.read
       cctxt
       ["active_delegate_with_one_roll"; "current"]
   in
   let rec get_pkhs (p : string -> Signature.Public_key_hash.t)
-      (d : Tezos_shell_services.Block_services.Proof.raw_context) acc =
+      (d : Mavryk_shell_services.Block_services.Proof.raw_context) acc =
     match d with
     | Key _b -> assert false
     | Dir m ->
@@ -218,7 +218,7 @@ let get_delegates (cctxt : Protocol_client_context.full) =
   let delegates = List.map proj_delegate keys in
 
   let* () =
-    Tezos_signer_backends.Encrypted.decrypt_list
+    Mavryk_signer_backends.Encrypted.decrypt_list
       cctxt
       (List.filter_map
          (function
@@ -338,7 +338,7 @@ let check_round_duration cctxt ?round_duration_target () =
 
 let sync_node (cctxt : Client_context.full) ?round_duration_target () =
   let open Lwt_result_syntax in
-  let*! () = Tezos_base_unix.Internal_event_unix.close () in
+  let*! () = Mavryk_base_unix.Internal_event_unix.close () in
   let cctxt = new wrap_silent_memory_client cctxt in
   let* round_duration_target =
     check_round_duration cctxt ?round_duration_target ()
@@ -426,7 +426,7 @@ let sync_node (cctxt : Client_context.full) ?round_duration_target () =
   let* () = loop current_proposal in
   stopper () ;
   let*! () =
-    Tezos_base_unix.Internal_event_unix.(
+    Mavryk_base_unix.Internal_event_unix.(
       init ~config:(make_with_defaults ()) ())
   in
   return_unit

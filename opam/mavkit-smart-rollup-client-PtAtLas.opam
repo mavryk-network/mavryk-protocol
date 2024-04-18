@@ -11,7 +11,7 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "mavkit-libs"
-  "tezos-protocol-001-PtAtLas"
+  "mavryk-protocol-001-PtAtLas"
   "mavkit-shell-libs"
   "mavkit-protocol-001-PtAtLas-libs"
   "mavkit-l2-libs"
@@ -22,4 +22,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos/Protocol: Smart rollup client"
+synopsis: "Mavryk/Protocol: Smart rollup client"

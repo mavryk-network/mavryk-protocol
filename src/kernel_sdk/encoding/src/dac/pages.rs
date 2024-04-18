@@ -51,7 +51,7 @@ pub(crate) const MAX_USABLE_PAGE_SIZE: usize = MAX_PAGE_SIZE - PAGE_PREFIX_SIZE;
 
 #[cfg(feature = "alloc")]
 pub use encoding::{prepare_preimages, Page, V0ContentPage, V0HashPage};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
 /// Hashes `content` into a preimage hash.
 ///
@@ -78,10 +78,10 @@ mod encoding {
 
     use super::*;
     use crate::dac::PreimageHash;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::encoding::HasEncoding;
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::encoding::HasEncoding;
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
     /// A Dac page: either a leaf node of contents, or node of hashes.
     #[derive(Debug, HasEncoding, NomReader, BinWriter)]
@@ -360,8 +360,8 @@ pub fn reveal_loop<Host: Runtime>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
     // taken from DAC test example in tezos
     const EXAMPLE_CONTENT_PAGE: &[u8] = &[

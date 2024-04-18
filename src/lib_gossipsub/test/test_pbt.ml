@@ -950,7 +950,7 @@ module Test_peers_below_degree_high = struct
     @% add_distinct_peers_and_graft peer_count ~count_outbound topic
     @% heartbeat
 
-  (* A generator that should satisfy [Tezos_gossipsub.check_limits]. *)
+  (* A generator that should satisfy [Mavryk_gossipsub.check_limits]. *)
   let limit_generator (default_limits : (_, _, _, _) limits) =
     let open M in
     let* degree_optimal = M.int_range 1 20 in
@@ -1608,7 +1608,7 @@ module Test_opportunistic_grafting = struct
 
   let pp_output fmtr (O o) = GS.pp_output fmtr o
 
-  (* A generator that should satisfy [Tezos_gossipsub.check_limits]. *)
+  (* A generator that should satisfy [Mavryk_gossipsub.check_limits]. *)
   let limit_generator (default_limits : (_, _, _, _) limits) =
     let open M in
     let* degree_optimal = M.int_range 2 20 in

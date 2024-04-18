@@ -9,7 +9,7 @@
   mavkit-libs.stdlib
   mavkit-libs.test-helpers
   mavkit-libs.micheline
-  tezos-protocol-alpha.protocol
+  mavryk-protocol-alpha.protocol
   ptime)
  (link_flags
   (:standard)

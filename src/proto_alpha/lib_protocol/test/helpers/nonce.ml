@@ -22,7 +22,7 @@ let known_nonces = Table.create 17
 let generate () =
   match
     Alpha_context.Nonce.of_bytes
-    @@ Tezos_crypto.Rand.generate Alpha_context.Constants.nonce_length
+    @@ Mavryk_crypto.Rand.generate Alpha_context.Constants.nonce_length
   with
   | Ok nonce ->
       let hash = Alpha_context.Nonce.hash nonce in

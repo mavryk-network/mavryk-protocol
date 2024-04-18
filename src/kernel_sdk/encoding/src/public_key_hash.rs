@@ -5,9 +5,9 @@
 //! Hash of Layer1 contract ids.
 
 use std::fmt::Display;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 
 use crypto::base58::{FromBase58Check, FromBase58CheckError};
 use crypto::hash::{

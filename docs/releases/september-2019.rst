@@ -5,7 +5,7 @@ Mainnet September 2019
 
 During the testing phase of protocol 005_PsBABY5H, a bug was
 identified (more details in the :ref:`005-bigmap-bug`).
-The tezos-node in this release contains a corrected version of
+The mavryk-node in this release contains a corrected version of
 Babylon, protocol 005_PsBabyM1, that will be activated in place of
 005_PsBABY5H if the promotion vote is successful.
 
@@ -15,7 +15,7 @@ affecting bigmaps in smart contracts.
 
 **We advise users to update to this release so that the corrected protocol 005_PsBabyM1 will be activated.**
 
-In case of a negative promotion vote, any release of the tezos-node
+In case of a negative promotion vote, any release of the mavryk-node
 will simply proceed to a new proposal phase.
 
 Changelog
@@ -38,11 +38,11 @@ Baker
 
 - Include version number at the beginning of the proof-of-work nonce
 - Commits:
-    - ``0c7fb2add``: ``Build: update tezos-version.opam``
+    - ``0c7fb2add``: ``Build: update mavryk-version.opam``
     - ``e9846ab85``: ``Baker: preserve the commit hash hexadecimal form if possible``
     - ``5ece2883a``: ``Baker: include commit hash in pow nonce``
     - ``5e9fdb77e``: ``Version: refresh Git commit hash if a file changes``
-    - ``66c2660e0``: ``Base: move Git info into new lib tezos-version``
+    - ``66c2660e0``: ``Base: move Git info into new lib mavryk-version``
 
 Client
 ~~~~~~

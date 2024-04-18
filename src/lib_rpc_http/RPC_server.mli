@@ -30,7 +30,7 @@ type cors = {allowed_headers : string list; allowed_origins : string list}
 module RPC_logging : Resto_cohttp_server.Server.LOGGING
 
 include module type of
-    Resto_cohttp_server.Server.Make (Tezos_rpc.Encoding) (RPC_logging)
+    Resto_cohttp_server.Server.Make (Mavryk_rpc.Encoding) (RPC_logging)
 
 module Acl : sig
   include module type of Resto_acl.Acl

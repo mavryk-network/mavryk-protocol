@@ -31,7 +31,7 @@
    Subject:      Test merkle proof.
 *)
 
-open Tezos_context_disk
+open Mavryk_context_disk
 open Context.Proof
 open Qcheck2_helpers
 open QCheck2
@@ -63,7 +63,7 @@ module Gen = struct
         else comb n xs
 end
 
-module Proof32 (Encoding : Tezos_context_sigs.Context.PROOF_ENCODING) = struct
+module Proof32 (Encoding : Mavryk_context_sigs.Context.PROOF_ENCODING) = struct
   module Encoding = Encoding
 
   module Gen = struct
@@ -280,7 +280,7 @@ module Proof32 (Encoding : Tezos_context_sigs.Context.PROOF_ENCODING) = struct
   let tests_random = [test_random_tree_proof; test_random_stream_proof]
 end
 
-module Proof2 (Encoding : Tezos_context_sigs.Context.PROOF_ENCODING) = struct
+module Proof2 (Encoding : Mavryk_context_sigs.Context.PROOF_ENCODING) = struct
   module Encoding = Encoding
 
   module Gen = struct
@@ -492,10 +492,10 @@ end
 
 module Proof32_V1 = struct
   include
-    Proof32 (Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree32)
+    Proof32 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree32)
 
   let expected_encoding_size :
-      tree Tezos_context_sigs.Context.Proof_types.t -> int =
+      tree Mavryk_context_sigs.Context.Proof_types.t -> int =
     let map_sum f l = List.fold_left (fun s e -> s + f e) 0 l in
     let tag_len = 1 in
     let int_len = 4 in
@@ -532,7 +532,7 @@ module Proof32_V1 = struct
       length_len + segment_len segment + inode_tree_len proof
     and inode_len : inode_tree inode -> int =
      fun {length = _; proofs} ->
-      let entries = Tezos_context_encoding.Context.Conf.entries in
+      let entries = Mavryk_context_encoding.Context.Conf.entries in
       if List.length proofs < entries / 2 then
         (* length + sparse tag + length of proofs + proofs *)
         length_len + tag_len + int_len
@@ -579,11 +579,11 @@ end
 
 let () =
   let module Proof2_V1 =
-    Proof2 (Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree2) in
+    Proof2 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree2) in
   let module Proof32_V2 =
-    Proof32 (Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree32) in
+    Proof32 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree32) in
   let module Proof2_V2 =
-    Proof2 (Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2) in
+    Proof2 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2) in
   Alcotest.run
     ~__FILE__
     "test_merkle_proof"

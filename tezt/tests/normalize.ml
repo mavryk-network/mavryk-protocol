@@ -31,7 +31,7 @@
    Subject:      Regression tests for Michelson normalization commands.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let modes = Client.[None; Some Readable; Some Optimized; Some Optimized_legacy]
 

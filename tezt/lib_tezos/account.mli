@@ -77,10 +77,10 @@ type aggregate_key = {
 
     Used for regular accounts. *)
 val sign_bytes :
-  watermark:Tezos_crypto.Signature.watermark ->
+  watermark:Mavryk_crypto.Signature.watermark ->
   signer:key ->
   bytes ->
-  Tezos_crypto.Signature.t
+  Mavryk_crypto.Signature.t
 
 (** [require_unencrypted_secret_key ~__LOC__ key] returns [sk] if [key] is [Unencrypted sk], or fails. *)
 val require_unencrypted_secret_key : __LOC__:string -> secret_key -> string

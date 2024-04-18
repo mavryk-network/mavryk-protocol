@@ -5,8 +5,8 @@
 /*                                                                            */
 /******************************************************************************/
 
-use tezos_crypto_rs::base58::FromBase58CheckError;
-use tezos_crypto_rs::hash::FromBytesError;
+use mavryk_crypto_rs::base58::FromBase58CheckError;
+use mavryk_crypto_rs::hash::FromBytesError;
 
 #[derive(Debug, PartialEq, Eq, Clone, thiserror::Error)]
 pub enum AddressError {

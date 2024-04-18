@@ -11,7 +11,7 @@ use clap::Parser;
 use commands::Cli;
 use commands::Commands;
 use std::path::Path;
-use tezos_smart_rollup_installer::config::{create_installer_config, ConfigurationError};
+use mavryk_smart_rollup_installer::config::{create_installer_config, ConfigurationError};
 use thiserror::Error;
 
 fn main() -> Result<(), ClientError> {

@@ -203,7 +203,7 @@ Changes to RPCs
 This section lists the changes in RPCs to put the spotlight on them.
 To stay readable, it cannot provide detailed recipes to adapt to every
 one of them. Affected users can get the new formats by using the
-command ``tezos-client rpc list <url>`` and ``tezos-client rpc format
+command ``mavryk-client rpc list <url>`` and ``mavryk-client rpc format
 <url>``.
 
 
@@ -401,15 +401,15 @@ This section explains how to interact with the manager.tz contract that all exis
 will have after the migration. Wallets can either urge their users to migrate to use implicit
 accounts or can support implicit accounts as well as scriptful KT1s.
 
-The ``tezos-client`` has been updated to be mostly backwards compatible, and the below explanations
-are mostly directed at RPC users and the invocation of the ``tezos-client`` are given as
+The ``mavryk-client`` has been updated to be mostly backwards compatible, and the below explanations
+are mostly directed at RPC users and the invocation of the ``mavryk-client`` are given as
 examples.
 
 To set delegate using the manager.tz script, one can use:
 
 .. code-block:: bash
 
-   tezos-client transfer 0 from <src> to <dst> \
+   mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
                --arg '{ DROP ; NIL operation ; PUSH key_hash "<dlgt>" ; SOME ; SET_DELEGATE ; CONS }'
 
@@ -422,7 +422,7 @@ To remove delegate, use:
 
 .. code-block:: bash
 
-   tezos-client transfer 0 from <src> to <dst> \
+   mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
                --arg '{ DROP ; NIL operation ; NONE key_hash ; SET_DELEGATE ; CONS }'
 
@@ -434,7 +434,7 @@ To transfer (spend) tezos from originated contract to an implicit account, use:
 
 .. code-block:: bash
 
-   tezos-client transfer 0 from <src> to <dst> \
+   mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
                --arg '{ DROP ; NIL operation ; PUSH key_hash "<adr>" ; IMPLICIT_ACCOUNT ; PUSH mumav <val> ; UNIT ; TRANSFER_TOKENS ; CONS }'
 
@@ -448,7 +448,7 @@ To transfer tezos from originated contract to another originated contract, use:
 
 .. code-block:: bash
 
-   tezos-client transfer 0 from <src> to <dst> \
+   mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'do' \
                --arg '{ DROP ; NIL operation ; PUSH address <adr> ; CONTRACT %<ent> <par> ; ASSERT_SOME ; PUSH mumav <val> ; <ppar> ; TRANSFER_TOKENS ; CONS }'
 
@@ -521,7 +521,7 @@ To set delegate using the added entrypoint, one can use:
 
 .. code-block:: bash
 
-  tezos-client transfer 0 from <src> to <dst> \
+  mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'set_delegate' \
                --arg '"<dlgt>"'
 
@@ -534,7 +534,7 @@ To remove delegate, use:
 
 .. code-block:: bash
 
-  tezos-client transfer 0 from <src> to <dst> \
+  mavryk-client transfer 0 from <src> to <dst> \
                --entrypoint 'remove_delegate' \
                --arg 'Unit' # arg is optional, it defaults to Unit when omitted
 
@@ -544,7 +544,7 @@ To remove delegate, use:
 
 Please note, that you are not allowed to transfer tokens on ``%do``,
 ``%set_delegate``, or ``%remove_delegate`` entrypoints calls. Invoke these
-entrypoints with ``tezos-client transfer 0``.
+entrypoints with ``mavryk-client transfer 0``.
 
 Gas cost changes
 ^^^^^^^^^^^^^^^^
@@ -1189,9 +1189,9 @@ Migration
     the newly introduced `CHAIN_ID` instruction in order to add extra
     replay protection between the main chain and the test chain.
 
-    Smart contract users that do not use the `tezos-client` but a custom
+    Smart contract users that do not use the `mavryk-client` but a custom
     tool to interact with multi-signature contracts deployed with the
-    `tezos-client` should also include the `CHAIN_ID` in the commands they
+    `mavryk-client` should also include the `CHAIN_ID` in the commands they
     sign.
 
 - Proto/Migration: migrate KT1s with and without script
@@ -1207,23 +1207,23 @@ Migration
     with `%set_delegate` and `%remove_delegate` entrypoints.
 
     Interacting with converted contracts must now be done via smart
-    contract calls. As an example, here is how `tezos-client` handles
+    contract calls. As an example, here is how `mavryk-client` handles
     retro-compatibility for the `transfer` and `set delegate` commands.
 
     When crafting a transaction, if the source is a KT1, if checks that
     its storage is either of type `key_hash` or `pair key_hash _`, and
     retrieve this `key_hash`. Let's name this `key_hash` <manager>.
 
-    To implement `tezos-client set delegate for <contract> to <delegate>`,
+    To implement `mavryk-client set delegate for <contract> to <delegate>`,
     it starts by looking for entrypoints.
 
     If `%set_delegate` is present, it does the equivalent of
-      'tezos-client transfer 0 from <manager> to <contract> \
+      'mavryk-client transfer 0 from <manager> to <contract> \
                       --entrypoint 'set_delegate' --arg '<delegate>'
     where <manager> is the key_hash found in the contract's storage
 
     If `%do` is present, it does the equivalent of
-       'tezos-client transfer 0 from <manager> to <contract> \
+       'mavryk-client transfer 0 from <manager> to <contract> \
                      --entrypoint 'do' \
                      --arg '{ NIL operation ; \
                               PUSH key_hash <delegate> ; \
@@ -1232,11 +1232,11 @@ Migration
                               CONS }'
        where <manager> is the key_hash found in the contract's storage
 
-    To implement `tezos-client transfer <amount> from <contract> to <destination>`,
+    To implement `mavryk-client transfer <amount> from <contract> to <destination>`,
     when the destination is a simple address or a contract of type `unit`,
     it does the equivalent of
     ```
-    tezos-client transfer 0 from <manager> to <contract> \
+    mavryk-client transfer 0 from <manager> to <contract> \
                  --entrypoint "do" \
                  --arg '{ NIL operation ; \
                           PUSH address <destination> ; \
@@ -1248,7 +1248,7 @@ Migration
                           PAIR }'
     ```
 
-    To implement `tezos-client transfer <amount> from <contract> to <destination> \
+    To implement `mavryk-client transfer <amount> from <contract> to <destination> \
                     [--arg <value>] [--entrypoint <entrypoint>]`,
     it starts by checking that the contract has a `%do` entrypoint.
 
@@ -1256,7 +1256,7 @@ Migration
 
     And it does the equivalent of
     ```
-    tezos-client transfer 0 from <manager> to <contract> \
+    mavryk-client transfer 0 from <manager> to <contract> \
                  --entrypoint "do" \
                  --arg '{ NIL operation ; \
                           PUSH address <destination> ; \

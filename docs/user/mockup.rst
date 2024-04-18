@@ -525,5 +525,5 @@ This is mostly useful for protocol developers, but also for other developers, e.
 See also
 ========
 
-This tutorial has also served as a base for `a nice blog post <https://research-development.nomadic-labs.com/introducing-mockup-mode-for-tezos-client.html>`__, written in a more casual way and intended for a larger audience of application developers.
+This tutorial has also served as a base for `a nice blog post <https://research-development.nomadic-labs.com/introducing-mockup-mode-for-mavryk-client.html>`__, written in a more casual way and intended for a larger audience of application developers.
 Of course, some aspects may gradually become outdated in the blog version.

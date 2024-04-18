@@ -143,7 +143,7 @@ Aside: the ``Error_monad`` module is opened everywhere
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Mavkit, the ``Error_monad`` module provides types and values for error
-management. It is part of the ``tezos-error-monad`` package. And it is
+management. It is part of the ``mavryk-error-monad`` package. And it is
 opened in most of the source code. Apart from some specific libraries
 (discussed later), the content of this module is already in scope.
 

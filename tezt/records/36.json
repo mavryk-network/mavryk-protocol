@@ -141,8 +141,8 @@
     }
   },
   {
-    "file": "tezos-stdlib",
-    "title": "tezos-stdlib: circular_buffer.constant-chunks.partial-read-write-interleaving",
+    "file": "mavryk-stdlib",
+    "title": "mavryk-stdlib: circular_buffer.constant-chunks.partial-read-write-interleaving",
     "tags": [
       "alcotest"
     ],

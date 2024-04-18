@@ -10,7 +10,7 @@
   mavkit-libs.base.unix
   mavkit-libs.test-helpers
   mavkit-shell-libs.shell-services
-  tezos_proxy_test_helpers_shell_services
+  mavryk_proxy_test_helpers_shell_services
   qcheck-alcotest
   mavkit-alcotezt)
  (library_flags (:standard -linkall))
@@ -18,8 +18,8 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
  (modules test_block_services))
 

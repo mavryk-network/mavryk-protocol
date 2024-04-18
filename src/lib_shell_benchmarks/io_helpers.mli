@@ -28,21 +28,21 @@
     Also contains the [Key_map] module, heavily used for preparing benchmarks
     and computing statistics. *)
 
-(* For Tezos_protocol_environment.Context *)
-open Tezos_protocol_environment
+(* For Mavryk_protocol_environment.Context *)
+open Mavryk_protocol_environment
 
 val assert_ok : msg:string -> 'a tzresult -> 'a
 
 val commit : Context.t -> Context_hash.t Lwt.t
 
 val flush :
-  Tezos_protocol_environment.Context.t ->
-  Tezos_protocol_environment.Context.t Lwt.t
+  Mavryk_protocol_environment.Context.t ->
+  Mavryk_protocol_environment.Context.t Lwt.t
 
 val prepare_empty_context : string -> (Context_hash.t, tztrace) result Lwt.t
 
 val load_context_from_disk :
-  string -> Context_hash.t -> Context.t * Tezos_context.Context.index
+  string -> Context_hash.t -> Context.t * Mavryk_context.Context.index
 
 val with_context :
   base_dir:string ->
@@ -58,9 +58,9 @@ val initialize_key :
 
 val commit_and_reload :
   string ->
-  Tezos_context.Context.index ->
+  Mavryk_context.Context.index ->
   Context.t ->
-  (Context.t * Tezos_context.Context.index) Lwt.t
+  (Context.t * Mavryk_context.Context.index) Lwt.t
 
 (** Maps from string lists to bytes. No balancing. A key cannot be a prefix
     or a suffix to another key. *)
@@ -126,7 +126,7 @@ val split_absolute_path : string -> string list option
 val purge_disk_cache : unit -> unit
 
 (** [load_head_block data_dir] takes the path of the Mavryk node data directory
-    (typically [$HOME/.tezos-node]) and returns the information of the current head.
+    (typically [$HOME/.mavryk-node]) and returns the information of the current head.
 *)
 val load_head_block :
   string -> (int32 * Block_hash.t * Context_hash.t) tzresult Lwt.t
@@ -167,6 +167,6 @@ val with_memory_restriction : float -> ((unit -> unit) -> 'a) -> 'a
 val fill_disk_cache :
   rng:Random.State.t ->
   restrict_memory:(unit -> unit) ->
-  Tezos_protocol_environment.Context.t ->
-  (Tezos_protocol_environment.Context.key * _) array list ->
+  Mavryk_protocol_environment.Context.t ->
+  (Mavryk_protocol_environment.Context.key * _) array list ->
   unit Lwt.t

@@ -276,8 +276,8 @@ let pp_manager_operation_content (type kind) source ppf
         kind
         pp_micheline_from_lazy_expr
         parameters_ty
-        Tezos_crypto.Blake2B.pp
-        (Tezos_crypto.Blake2B.hash_string [boot_sector])
+        Mavryk_crypto.Blake2B.pp
+        (Mavryk_crypto.Blake2B.hash_string [boot_sector])
         Format.(
           pp_print_option (fun ppf ->
               fprintf ppf "@,Whitelist: %a" Sc_rollup.Whitelist.pp))

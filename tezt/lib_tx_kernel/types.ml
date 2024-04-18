@@ -24,8 +24,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_protocol_alpha.Protocol
-open Tezos_crypto
+open Mavryk_protocol_alpha.Protocol
+open Mavryk_crypto
 
 type operation_transfer = {
   destination : Signature.Ed25519.Public_key_hash.t;
@@ -104,7 +104,7 @@ let operation_transfer_encoding =
 
 let ticket_encoding =
   let open Data_encoding in
-  let open Tezos_micheline in
+  let open Mavryk_micheline in
   let open Micheline in
   let open Michelson_v1_primitives in
   let node_encoding =
@@ -250,7 +250,7 @@ let external_message_frame_encoding =
 
 let ticket_hash ~ticketer ~content =
   let open Data_encoding in
-  let open Tezos_micheline in
+  let open Mavryk_micheline in
   let open Micheline in
   let node_encoding =
     Micheline_encoding.erased_encoding

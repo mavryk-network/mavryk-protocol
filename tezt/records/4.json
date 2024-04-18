@@ -171,8 +171,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: crypto_box",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: crypto_box",
     "tags": [
       "alcotest"
     ],

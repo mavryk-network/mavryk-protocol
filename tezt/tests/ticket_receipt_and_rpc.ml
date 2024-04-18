@@ -30,7 +30,7 @@
    Subject:      Regression tests for ticket receipt/RPC/CLI
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let rpc_check_ticket_balance client ~contract ~ticketer ~content_type ~content
     ~expected =

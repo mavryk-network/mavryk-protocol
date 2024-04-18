@@ -22177,7 +22177,7 @@ Full description
              "newest": integer ∈ [-2^31-1, 2^31],
              "oldest": integer ∈ [-2^31-1, 2^31] },
       "commitment_newest_hash": $Commitment_hash /* Some */ || null /* None */,
-      "tezos_head_level":
+      "mavryk_head_level":
         integer ∈ [-2^31-1, 2^31] /* Some */ || null /* None */,
       "burn_per_byte": $017-PtNairob.mumav,
       "allocated_storage": $positive_bignum,
@@ -22217,7 +22217,7 @@ Full description
     +--------------------------------+----------------------+--------------------------------------------------------------+
     | commitment_newest_hash         | Determined from data | $X_4                                                         |
     +--------------------------------+----------------------+--------------------------------------------------------------+
-    | tezos_head_level               | Determined from data | $X_5                                                         |
+    | mavryk_head_level               | Determined from data | $X_5                                                         |
     +--------------------------------+----------------------+--------------------------------------------------------------+
     | burn_per_byte                  | Determined from data | $N.t                                                         |
     +--------------------------------+----------------------+--------------------------------------------------------------+

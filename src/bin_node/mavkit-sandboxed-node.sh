@@ -18,7 +18,7 @@ start_sandboxed_node() {
     if [ -n "$DATA_DIR" ]; then
         node_dir="$DATA_DIR"
     else
-        node_dir="$(mktemp -d -t tezos-node.XXXXXXXX)"
+        node_dir="$(mktemp -d -t mavryk-node.XXXXXXXX)"
         node_dirs+=("$node_dir")
     fi
     peers=("--no-bootstrap-peers")
@@ -201,7 +201,7 @@ main() {
         local_node="${local_node:-$bin_dir/../../_build/default/src/bin_node/main.exe}"
         sandbox_file="${sandbox_file:-$bin_dir/../../scripts/sandbox.json}"
     else
-        local_node="${local_node:-tezos-node}"
+        local_node="${local_node:-mavryk-node}"
         sandbox_file="${sandbox_file:-sandbox.json}"
     fi
 

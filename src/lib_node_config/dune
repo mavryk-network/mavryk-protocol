@@ -12,18 +12,18 @@
   mavkit-shell-libs.shell-services
   mavkit-libs.rpc-http
   mavkit-libs.rpc-http-server
-  mavkit-libs.tezos-context
+  mavkit-libs.mavryk-context
   mavkit-shell-libs.store
   mavkit-shell-libs.validation)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_rpc_http
-  -open Tezos_rpc_http_server
-  -open Tezos_context
-  -open Tezos_store
-  -open Tezos_validation))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_rpc_http
+  -open Mavryk_rpc_http_server
+  -open Mavryk_context
+  -open Mavryk_store
+  -open Mavryk_validation))

@@ -9,6 +9,6 @@
     the rpc process. RPCs handled here are not forwarded to the node.
 *)
 val build_rpc_directory :
-  Tezos_version.Node_version.t ->
+  Mavryk_version.Node_version.t ->
   Mavkit_node_config.Config_file.t ->
-  unit Tezos_rpc.Directory.t
+  unit Mavryk_rpc.Directory.t

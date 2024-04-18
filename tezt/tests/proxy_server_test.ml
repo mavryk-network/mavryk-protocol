@@ -52,9 +52,9 @@ let init ?nodes_args ?parameter_file ~protocol () =
    server will perform multiple requests of the form [/big_maps/index/4/...]
    in a sequence, and this handler will fail, because it checks
    that normalized requests occur only once. To see this in action,
-   execute this test in a terminal with TEZOS_LOG set as follows:
+   execute this test in a terminal with MAVRYK_LOG set as follows:
 
-   export TEZOS_LOG="*proxy_rpc*->debug; proxy_getter->debug; proxy_services->debug"
+   export MAVRYK_LOG="*proxy_rpc*->debug; proxy_getter->debug; proxy_services->debug"
 
    and look for log lines like these ones:
 

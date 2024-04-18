@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Contracts = Tezos_client_alpha_commands.Client_proto_stresstest_contracts
+module Contracts = Mavryk_client_alpha_commands.Client_proto_stresstest_contracts
 
 let weighted_average (xs : (float * float) list) =
   let total_weight, total_sum =
@@ -88,7 +88,7 @@ let deduce_fee_and_gas_limit gas_estimation =
       (Q.to_int
          (Q.mul
             (Q.of_int gas_estimation)
-            Tezos_baking_alpha.Baking_configuration.default_config.fees
+            Mavryk_baking_alpha.Baking_configuration.default_config.fees
               .minimal_nanomav_per_gas_unit)
       / 100)
   in

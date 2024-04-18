@@ -27,12 +27,12 @@
     -------
     Component:    Lib_scoru_wasm execution
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_hash_consistency.ml
-    Subject:      Tests execution for the tezos-scoru-wasm library
+    Subject:      Tests execution for the mavryk-scoru-wasm library
 *)
 
 open Wasm_utils
 open Tztest_helper
-module Context = Tezos_context_memory.Context_binary
+module Context = Mavryk_context_memory.Context_binary
 
 (* Test that one N-ticks executions(^1) and N one-tick executions(^2)
    are equivalent.

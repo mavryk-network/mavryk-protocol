@@ -16,7 +16,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_lazy_containers
+  -open Mavryk_lazy_containers
   -open Mavkit_alcotezt)
  (modules chunked_byte_vector_tests lazy_vector_tests))
 
@@ -30,7 +30,7 @@
 
 (rule
  (alias runtest)
- (package tezos-lazy-containers-tests)
+ (package mavryk-lazy-containers-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

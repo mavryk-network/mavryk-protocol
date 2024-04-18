@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_entrypoint::kernel_entry;
-use tezos_smart_rollup_host::dal_parameters::RollupDalParameters;
-use tezos_smart_rollup_host::path::OwnedPath;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_entrypoint::kernel_entry;
+use mavryk_smart_rollup_host::dal_parameters::RollupDalParameters;
+use mavryk_smart_rollup_host::path::OwnedPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 fn process_slot(
     host: &mut impl Runtime,

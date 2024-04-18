@@ -24,8 +24,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
+open Mavryk_scoru_wasm
+module Wasmer = Mavryk_wasmer
 
 include (Wasm_vm : Wasm_vm_sig.S)
 

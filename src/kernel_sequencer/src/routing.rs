@@ -34,8 +34,8 @@ impl FilterBehavior {
 
 #[cfg(test)]
 mod tests {
-    use tezos_crypto_rs::hash::{BlockHash, ContractKt1Hash, HashTrait};
-    use tezos_smart_rollup_encoding::{
+    use mavryk_crypto_rs::hash::{BlockHash, ContractKt1Hash, HashTrait};
+    use mavryk_smart_rollup_encoding::{
         inbox::{InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer},
         michelson::MichelsonUnit,
         public_key_hash::PublicKeyHash,

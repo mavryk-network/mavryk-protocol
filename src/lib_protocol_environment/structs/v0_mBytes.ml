@@ -50,7 +50,7 @@ let get_char = Bytes.get
 
 let set_char = Bytes.set
 
-include Tezos_stdlib.TzEndian
+include Mavryk_stdlib.TzEndian
 
 module LE = struct
   let get_uint16 = Bytes.get_uint16_le

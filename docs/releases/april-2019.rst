@@ -13,7 +13,7 @@ When the node is started with the new option ``--enable-testchain``,
 it follows both the mainchain and the testchain, once the latter is
 started.
 Once a node knows about the testchain it will also accept rpc calls
-starting with ``/chains/test/`` and as a consequence ``tezos-client``
+starting with ``/chains/test/`` and as a consequence ``mavryk-client``
 can be used with the option ``--chain test``.
 
 Peers randomization
@@ -53,7 +53,7 @@ Furthermore a ``mainnet-snapshots`` node will start the testchain by
 default.
 
 Note that the branch ``mainnet-snapshots`` produces and requires a
-``tezos-node`` directory with version 0.0.2 while a node from the branch
+``mavryk-node`` directory with version 0.0.2 while a node from the branch
 ``mainnet`` requires version 0.0.1.
 The two are incompatible and a node will refuse to start if given the
 wrong one.
@@ -67,11 +67,11 @@ ports.
 For the ``mainnet`` node, the updated 003 daemons can be started as usual.
 For the ``mainnet-snapshots`` node, the 004 daemons should be started
 with right port and the option ``--chain test``.
-Note that both sets of daemons need access to the same ``tezos-client``
+Note that both sets of daemons need access to the same ``mavryk-client``
 directory and it is important that this directory is not duplicated.
 There are several precautions in place to avoid double baking and
 replaying of operations between networks but all daemons should use
-the same ``tezos-client`` to work properly.
+the same ``mavryk-client`` to work properly.
 An example of this setup is described later.
 
 Two machine setup
@@ -83,7 +83,7 @@ of daemons for the main and test chain access the same keys from the
 same source.
 Duplicating keys in never advisable.
 This setup can be chosen if you use the Ledge baking app from
-Obsidian Systems or a remote signer, such as ``tezos-remote-signer``.
+Obsidian Systems or a remote signer, such as ``mavryk-remote-signer``.
 They both support the testchain and implement mechanisms to prevent
 double baking.
 
@@ -102,45 +102,45 @@ machine, running on different ports, built from sources.
      git reset --hard origin/mainnet
      make
      mkdir ~/bin-main
-     cp tezos-* ~/bin-main/
+     cp mavryk-* ~/bin-main/
      git checkout mainnet-snapshots
      git reset --hard origin/mainnet-snapshots
      make
      mkdir ~/bin-test
-     cp tezos-* ~/bin-test/
+     cp mavryk-* ~/bin-test/
 
 
 2. Gracefully stop your old node and using the new node from ``mainnet``, export a
    snapshot in the history mode you prefer, default is ``full``::
 
-     ~/bin-main/tezos-node snapshot export mainnet-$(date +%F).full --data-dir ~/.tezos-node
+     ~/bin-main/mavryk-node snapshot export mainnet-$(date +%F).full --data-dir ~/.mavryk-node
 
 
 3. Restart the node and daemons for the main chain with default ports::
 
-     ~/bin-main/tezos-node run --net-addr [::]:9732 --rpc-addr localhost:8732 --data-dir ~/.tezos-node
-     ~/bin-main/tezos-baker-003-PsddFKi3    -P 8732 -d ~/.tezos-client run with local node ~/.tezos-node <account>
-     ~/bin-main/tezos-endorser-003-PsddFKi3 -P 8732 -d ~/.tezos-client run <account>
-     ~/bin-main/tezos-accuser-003-PsddFKi3  -P 8732 -d ~/.tezos-client run
+     ~/bin-main/mavryk-node run --net-addr [::]:9732 --rpc-addr localhost:8732 --data-dir ~/.mavryk-node
+     ~/bin-main/mavryk-baker-003-PsddFKi3    -P 8732 -d ~/.mavryk-client run with local node ~/.mavryk-node <account>
+     ~/bin-main/mavryk-endorser-003-PsddFKi3 -P 8732 -d ~/.mavryk-client run <account>
+     ~/bin-main/mavryk-accuser-003-PsddFKi3  -P 8732 -d ~/.mavryk-client run
 
 
 4. Import the snapshot with the node from ``mainnet-snapshots`` to populate the
-   new directory ``~/tezos-node-testchain``::
+   new directory ``~/mavryk-node-testchain``::
 
-     ~/bin-test/tezos-node snapshot import mainnet-$(date +%F).full --data-dir ~/tezos-node-testchain
+     ~/bin-test/mavryk-node snapshot import mainnet-$(date +%F).full --data-dir ~/mavryk-node-testchain
 
 
 5. Generate a fresh network identity::
 
-     ~/bin-test/tezos-node identity generate --data-dir ~/tezos-node-testchain
+     ~/bin-test/mavryk-node identity generate --data-dir ~/mavryk-node-testchain
 
 
 6. Restart the node and daemons for the test chain on different ports::
 
-     ~/bin-test/tezos-node run --net-addr [::]:9733 --rpc-addr localhost:8733 --data-dir ~/tezos-node-testchain
-     ~/bin-test/tezos-baker-004-Pt24m4xi    --chain test -P 8733 -d ~/.tezos-client run with local node ~/tezos-node-testchain <account>
-     ~/bin-test/tezos-endorser-004-Pt24m4xi --chain test -P 8733 -d ~/.tezos-client run <account>
-     ~/bin-test/tezos-accuser-004-Pt24m4xi  --chain test -P 8733 -d ~/.tezos-client run
+     ~/bin-test/mavryk-node run --net-addr [::]:9733 --rpc-addr localhost:8733 --data-dir ~/mavryk-node-testchain
+     ~/bin-test/mavryk-baker-004-Pt24m4xi    --chain test -P 8733 -d ~/.mavryk-client run with local node ~/mavryk-node-testchain <account>
+     ~/bin-test/mavryk-endorser-004-Pt24m4xi --chain test -P 8733 -d ~/.mavryk-client run <account>
+     ~/bin-test/mavryk-accuser-004-Pt24m4xi  --chain test -P 8733 -d ~/.mavryk-client run
 
 
 Once the testchain starts the 004 daemons will automatically wake up

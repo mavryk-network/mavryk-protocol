@@ -29,23 +29,23 @@ let time f =
   (stop -. start, res)
 
 let keys =
-  let keys_p = Tezos_crypto.Signature.generate_key ~algo:P256 () in
-  let keys_e = Tezos_crypto.Signature.generate_key ~algo:Ed25519 () in
-  let keys_s = Tezos_crypto.Signature.generate_key ~algo:Secp256k1 () in
-  let keys_b = Tezos_crypto.Signature.generate_key ~algo:Bls () in
+  let keys_p = Mavryk_crypto.Signature.generate_key ~algo:P256 () in
+  let keys_e = Mavryk_crypto.Signature.generate_key ~algo:Ed25519 () in
+  let keys_s = Mavryk_crypto.Signature.generate_key ~algo:Secp256k1 () in
+  let keys_b = Mavryk_crypto.Signature.generate_key ~algo:Bls () in
   function
-  | Tezos_crypto.Signature.P256 -> keys_p
+  | Mavryk_crypto.Signature.P256 -> keys_p
   | Ed25519 -> keys_e
   | Secp256k1 -> keys_s
   | Bls -> keys_b
 
 let wrong_keys =
-  let keys_p = Tezos_crypto.Signature.generate_key ~algo:P256 () in
-  let keys_e = Tezos_crypto.Signature.generate_key ~algo:Ed25519 () in
-  let keys_s = Tezos_crypto.Signature.generate_key ~algo:Secp256k1 () in
-  let keys_b = Tezos_crypto.Signature.generate_key ~algo:Bls () in
+  let keys_p = Mavryk_crypto.Signature.generate_key ~algo:P256 () in
+  let keys_e = Mavryk_crypto.Signature.generate_key ~algo:Ed25519 () in
+  let keys_s = Mavryk_crypto.Signature.generate_key ~algo:Secp256k1 () in
+  let keys_b = Mavryk_crypto.Signature.generate_key ~algo:Bls () in
   function
-  | Tezos_crypto.Signature.P256 -> keys_p
+  | Mavryk_crypto.Signature.P256 -> keys_p
   | Ed25519 -> keys_e
   | Secp256k1 -> keys_s
   | Bls -> keys_b
@@ -64,7 +64,7 @@ let sk algo =
 
 let fake_sk algo =
   let pk = pk algo in
-  let open Tezos_crypto.Signature in
+  let open Mavryk_crypto.Signature in
   let pk_b = Data_encoding.Binary.to_bytes_exn Public_key.encoding pk in
   let sk_b = Bytes.sub pk_b 0 33 in
   Data_encoding.Binary.of_bytes_exn Secret_key.encoding sk_b
@@ -80,7 +80,7 @@ let check signed datas key f =
       combine
         acc
         (time (fun () ->
-             let b = Tezos_crypto.Signature.check key l r in
+             let b = Mavryk_crypto.Signature.check key l r in
              assert (f b) ;
              b)))
     (0., true)
@@ -103,15 +103,15 @@ module Ko = struct
 end
 
 let str_of_algo = function
-  | Tezos_crypto.Signature.Ed25519 -> "Ed25519"
-  | Tezos_crypto.Signature.Secp256k1 -> "Secp256k1"
-  | Tezos_crypto.Signature.P256 -> "P256"
-  | Tezos_crypto.Signature.Bls -> "Bls"
+  | Mavryk_crypto.Signature.Ed25519 -> "Ed25519"
+  | Mavryk_crypto.Signature.Secp256k1 -> "Secp256k1"
+  | Mavryk_crypto.Signature.P256 -> "P256"
+  | Mavryk_crypto.Signature.Bls -> "Bls"
 
 let time ~yes_crypto ~algo size datas =
   Format.eprintf "generating signatures...@?" ;
   let sign msg =
-    Tezos_crypto.Signature.sign
+    Mavryk_crypto.Signature.sign
       (if yes_crypto then fake_sk algo else sk algo)
       msg
   in

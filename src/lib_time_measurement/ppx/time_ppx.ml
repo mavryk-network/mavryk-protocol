@@ -33,7 +33,7 @@
     this last one will be wrapped in a thunk that will be given
     respectively to [duration], [duration_lwt], [timestamp_pre]
     or [flush] functions from
-    [Tezos_time_measurement_runtime.Default.Time_measurement]
+    [Mavryk_time_measurement_runtime.Default.Time_measurement]
     module along with the label extracted from the attribute
     payload if needed.
 
@@ -45,7 +45,7 @@
       (* ==> *)
 
       let x =
-        Tezos_time_measurement_runtime.Default.Time_measurement.duration
+        Mavryk_time_measurement_runtime.Default.Time_measurement.duration
           "label42"
           (fun () -> 40 + 2)
     ]}
@@ -212,7 +212,7 @@ let key_of_payload loc = function
 
        (* ==> *)
 
-       Tezos_time_measurement_runtime.Default.Time_measurement.duration
+       Mavryk_time_measurement_runtime.Default.Time_measurement.duration
          ("fun_app", [])
          (fun () -> x)
      ]}
@@ -236,7 +236,7 @@ let key_of_payload loc = function
 
        (* ==> *)
 
-       Tezos_time_measurement_runtime.Default.Time_measurement.duration
+       Mavryk_time_measurement_runtime.Default.Time_measurement.duration
          ("fun_app", ["123"])
          (fun () -> x)
      ]}
@@ -304,7 +304,7 @@ let ldot_of_non_empty_list (x, xs) =
 
 let time_measurement_longident name =
   ldot_of_non_empty_list
-    ("Tezos_time_measurement_runtime", ["Default"; "Time_measurement"; name])
+    ("Mavryk_time_measurement_runtime", ["Default"; "Time_measurement"; name])
 
 (** [wrap_with_labelled_call expr loc key fn] wraps the given
     [expr]ession into a thunk and gives it as an argument to a
@@ -332,7 +332,7 @@ let bind_with_flush_call expr loc =
     Lwt.bind [%e expr] (fun [%p id_pattern] ->
         Lwt.map
           (fun () -> [%e id_expr])
-          (Tezos_time_measurement_runtime.Default.Time_measurement.flush ()))]
+          (Mavryk_time_measurement_runtime.Default.Time_measurement.flush ()))]
 
 (** [rewrite rewriters initial_expr] sequentially interpretes
     the given rewriters in order to rewrite the given expression

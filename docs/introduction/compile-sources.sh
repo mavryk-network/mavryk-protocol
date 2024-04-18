@@ -61,7 +61,7 @@ make
 # if using bash, enables autocompletion:
 # source ./src/bin_client/bash-completion.sh
 # removes Mainnet/testnet disclaimers:
-# export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
+# export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 # [test executables]
 ./mavkit-client --version
 ./mavkit-node --version

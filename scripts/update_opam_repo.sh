@@ -34,7 +34,7 @@
 
 set -e
 
-target="$(pwd)"/opam_repo.patch tmp_dir=$(mktemp -dt tezos_deps_opam.XXXXXXXX)
+target="$(pwd)"/opam_repo.patch tmp_dir=$(mktemp -dt mavryk_deps_opam.XXXXXXXX)
 
 cleanup () {
     set +e
@@ -112,7 +112,7 @@ OPAMSOLVERTIMEOUT=600 opam admin filter --yes --resolve \
 ## - ledgerwallet-tezos is an optional dependency of signer-services
 ##   we want to have when building released binaries
 ## - caqti-driver-postgresq is needed by tps measurement software to
-##   read tezos-indexer databases
+##   read mavryk-indexer databases
 ## - js_of_ocaml-lwt is an optional dependency of tezt which is needed
 ##   to build tezt.js, and we do want to run some tests using nodejs
 

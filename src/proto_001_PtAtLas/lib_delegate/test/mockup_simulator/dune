@@ -2,31 +2,31 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_001_PtAtLas_mockup_simulator)
+ (name mavryk_001_PtAtLas_mockup_simulator)
  (public_name mavkit-protocol-001-PtAtLas-libs.bakings.mockup-simulator)
  (libraries
   mavkit-libs.base
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.client
   mavkit-shell-libs.client-commands
   mavkit-protocol-001-PtAtLas-libs.baking
   mavkit-libs.stdlib-unix
   mavkit-shell-libs.client-base-unix
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-shell-libs.mockup
   mavkit-shell-libs.mockup-proxy
   mavkit-shell-libs.mockup-commands
   mavkit-protocol-001-PtAtLas-libs.baking.tenderbrute)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas.Protocol
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_baking_001_PtAtLas
-  -open Tezos_stdlib_unix
-  -open Tezos_client_base_unix
-  -open Tezos_protocol_001_PtAtLas_parameters
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas.Protocol
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_001_PtAtLas
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base_unix
+  -open Mavryk_protocol_001_PtAtLas_parameters
   -open Tenderbrute_001_PtAtLas))

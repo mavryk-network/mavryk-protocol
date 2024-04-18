@@ -25,7 +25,7 @@
 open Protocol
 open Alpha_context
 open Protocol_client_context
-open Tezos_micheline
+open Mavryk_micheline
 
 let return_single_manager_result (oph, _, op, result) =
   match Apply_results.pack_contents_list op result with

@@ -37,8 +37,8 @@
   (:include %{workspace_root}/static-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
   -open Mavkit_protocol_compiler)
  (modules Main_packer))
 
@@ -58,7 +58,7 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix)
  (modules Main_embedded_packer))

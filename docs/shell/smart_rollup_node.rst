@@ -43,7 +43,7 @@ an Mavkit node has been launched locally, typically by issuing:
 
 in a terminal where ``${NETWORK}`` is of the
 form ``https://teztnets.com/dailynet-YYYY-MM-DD``
-and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.tezos-node``.
+and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.mavryk-node``.
 
 The commands will only work when the node is completely boostrapped, and therefore the current protocol on the target network is activated.
 This can be checked by:
@@ -158,7 +158,7 @@ rollup node.
 
 First, we need to decide on a directory where the rollup node stores
 its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path, by default
-``~/.tezos-smart-rollup-node``.
+``~/.mavryk-smart-rollup-node``.
 
 
 The rollup node can then be run with:
@@ -170,7 +170,7 @@ The rollup node can then be run with:
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
 
-where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by default  ``~/.tezos-client``.
+where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by default  ``~/.mavryk-client``.
 
 The log should show that the rollup node follows the Layer 1 chain and
 processes the inbox of each level.
@@ -298,7 +298,7 @@ The node can also be tested locally with a sandbox environment. (See :doc:`sandb
 
 Once you initialized the "sandboxed" client data with ``./src/bin_client/mavkit-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``mavkit-smart-rollup-node run``.
 
-A temporary directory ``/tmp/tezos-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
+A temporary directory ``/tmp/mavryk-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
 
 
 History modes
@@ -441,7 +441,7 @@ Finally, the execution of the outbox message is done as follows:
 
 .. code:: sh
 
-   "${TEZOS_PATH}/mavkit-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+   "${MAVRYK_PATH}/mavkit-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
            execute outbox message of smart rollup "${SR_ALIAS_OR_ADDR}" \
            from "${OPERATOR_ADDR}" for commitment hash "${LCC}" \
            and output proof "${PROOF}"

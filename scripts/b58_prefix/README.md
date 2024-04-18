@@ -13,8 +13,8 @@ In reality, when you have the address `mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE`, it
 
 ```
 # Run dune utop in src/lib_crypto
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
 # From bytes
 let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes (Bytes.of_string "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K");;
 Secp256k1.Public_key_hash.to_b58check pkh;;
@@ -31,8 +31,8 @@ derived from a secret key!!**. For instance, let's change the first byte
 (here `r`) into a `a`.
 
 ```
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
 let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes
 (*                 "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K" *)
 (*                  |                                                            *)
@@ -52,8 +52,8 @@ gives an invalid address.
 
 ```
 # Let's change the 4th characters (J) in t.
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
 #                                                        mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE
 #                                                           |
 let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "mv2at3vMScpdZ7gK7NbgAQCQJp6njxdkVNwg";;

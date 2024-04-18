@@ -463,7 +463,7 @@ As mentioned previously, it is the responsibility of authors to find reviewers.
 To find reviewers, either:
 
   - Advertize your merge request on the ``#mr-advertizing`` channel of
-    the `tezos-dev <https://tezos-dev.slack.com/>`_ Slack. Good advertisement
+    the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack. Good advertisement
     consists of a link to the MR and a one sentence summary.
   - Look at authors of the code you are modifying using
     `git blame <https://git-scm.com/docs/git-blame>`_.
@@ -556,7 +556,7 @@ dependency, additional steps must also be followed.
 * the Rust dependencies are located in the GitLab repository `tezos-rust-libs <https://gitlab.com/tezos/tezos-rust-libs>`_ and the instructions are listed there.
 
 For others, there is currently no dedicated guide. Do not hesitate to ask for
-help on the ``#devteam`` channel on the `tezos-dev <https://tezos-dev.slack.com/>`_ Slack.
+help on the ``#devteam`` channel on the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack.
 
 .. _protocol_mr:
 

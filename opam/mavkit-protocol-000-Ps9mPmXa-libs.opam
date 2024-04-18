@@ -12,7 +12,7 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs"
   "mavkit-shell-libs"
-  "tezos-protocol-000-Ps9mPmXa"
+  "mavryk-protocol-000-Ps9mPmXa"
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

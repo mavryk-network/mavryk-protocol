@@ -10,11 +10,11 @@
  (libraries
   mavkit-libs.base
   mavkit-libs.micheline
-  tezos-micheline-rewriting
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-benchmark
-  tezos-benchmark-type-inference-001-PtAtLas
-  tezos-benchmark-001-PtAtLas
+  mavryk-micheline-rewriting
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-benchmark
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavryk-benchmark-001-PtAtLas
   mavkit-protocol-001-PtAtLas-libs.test-helpers
   mavkit-libs.error-monad
   prbnmcn-stats)
@@ -23,13 +23,13 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_micheline
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_benchmark
-  -open Tezos_benchmark_type_inference_001_PtAtLas
-  -open Tezos_benchmark_001_PtAtLas
-  -open Tezos_001_PtAtLas_test_helpers))
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_micheline
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_benchmark_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers))
 
 (rule
  (alias runtest_micheline_rewriting_data)

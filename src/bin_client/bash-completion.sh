@@ -15,7 +15,7 @@ _mavkit-client_complete()
     return 0
 }
 
-_tezos-alphanet_complete()
+_mavryk-alphanet_complete()
 {
     script="${COMP_WORDS[0]}"
     second="${COMP_WORDS[1]}"

@@ -25,11 +25,11 @@
 
 exception Rpc_dir_creation_failure of tztrace
 
-module Directory = Resto_directory.Make (Tezos_rpc.Encoding)
+module Directory = Resto_directory.Make (Mavryk_rpc.Encoding)
 
-let hash_of_block ?cache (rpc_context : #Tezos_rpc.Context.simple)
-    (chain : Tezos_shell_services.Shell_services.chain)
-    (block : Tezos_shell_services.Block_services.block) =
+let hash_of_block ?cache (rpc_context : #Mavryk_rpc.Context.simple)
+    (chain : Mavryk_shell_services.Shell_services.chain)
+    (block : Mavryk_shell_services.Block_services.block) =
   let open Lwt_result_syntax in
   match
     Option.bind cache (fun table ->
@@ -40,7 +40,7 @@ let hash_of_block ?cache (rpc_context : #Tezos_rpc.Context.simple)
       return hash
   | None ->
       let* hash =
-        Tezos_shell_services.Block_services.Empty.hash
+        Mavryk_shell_services.Block_services.Empty.hash
           rpc_context
           ~chain
           ~block
@@ -60,7 +60,7 @@ type mode =
       sym_block_caching_time : Ptime.span option;
       on_disk_proxy_builder :
         (Context_hash.t ->
-        Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
+        Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
         option;
     }
 
@@ -71,7 +71,7 @@ let to_client_server_mode = function
 let get_protocols ?expected_protocol rpc_context chain block =
   let open Lwt_result_syntax in
   let* ({next_protocol; _} as protocols) =
-    Tezos_shell_services.Block_services.protocols rpc_context ~chain ~block ()
+    Mavryk_shell_services.Block_services.protocols rpc_context ~chain ~block ()
   in
   match expected_protocol with
   | None -> return protocols
@@ -86,7 +86,7 @@ let get_protocols ?expected_protocol rpc_context chain block =
           Protocol_hash.pp
           next_protocol
 
-type env_cache_key = Tezos_shell_services.Chain_services.chain * Block_hash.t
+type env_cache_key = Mavryk_shell_services.Chain_services.chain * Block_hash.t
 
 module Env_cache_key_hashed_type :
   Stdlib.Hashtbl.HashedType with type t = env_cache_key = struct
@@ -113,9 +113,9 @@ module Env_cache =
     Aches.Rache.Transfer (Aches.Rache.LRU) (Env_cache_key_hashed_type)
 module Env_cache_lwt = Aches_lwt.Lache.Make_result (Env_cache)
 
-let build_directory (printer : Tezos_client_base.Client_context.printer)
-    (rpc_context : Tezos_rpc.Context.generic) (mode : mode) expected_protocol :
-    unit Tezos_rpc.Directory.t =
+let build_directory (printer : Mavryk_client_base.Client_context.printer)
+    (rpc_context : Mavryk_rpc.Context.generic) (mode : mode) expected_protocol :
+    unit Mavryk_rpc.Directory.t =
   let block_hash_cache =
     (* We consider that the duration of a run of a client command is
        below the time between blocks so that aliases (`head`, levels,
@@ -133,7 +133,7 @@ let build_directory (printer : Tezos_client_base.Client_context.printer)
             let open Lwt_syntax in
             let (module C) = Light_core.get_core proxy_env printer sources in
             let chain_string, block_string =
-              Tezos_shell_services.Block_services.
+              Mavryk_shell_services.Block_services.
                 (chain_to_string chain, to_string block)
             in
             let* () =
@@ -171,14 +171,14 @@ let build_directory (printer : Tezos_client_base.Client_context.printer)
     let compute_value (chain, block_hash) =
       let block_key = `Hash (block_hash, 0) in
       let* block_header =
-        Tezos_shell_services.Block_services.Empty.Header.shell_header
+        Mavryk_shell_services.Block_services.Empty.Header.shell_header
           rpc_context
           ~chain
           ~block:block_key
           ()
       in
       let* resulting_context_hash =
-        Tezos_shell_services.Block_services.Empty.resulting_context_hash
+        Mavryk_shell_services.Block_services.Empty.resulting_context_hash
           rpc_context
           ~chain
           ~block:block_key
@@ -205,17 +205,17 @@ let build_directory (printer : Tezos_client_base.Client_context.printer)
         Proxy_environment.initial_context ctx resulting_context_hash
       in
       let mapped_directory =
-        Tezos_rpc.Directory.map
+        Mavryk_rpc.Directory.map
           (fun (_chain, _block) ->
             Lwt.return
-              Tezos_protocol_environment.
+              Mavryk_protocol_environment.
                 {block_hash; block_header; context = initial_context})
           Proxy_environment.directory
       in
       return
-        (Tezos_rpc.Directory.register
+        (Mavryk_rpc.Directory.register
            mapped_directory
-           Tezos_shell_services.Block_services.Empty.S.protocols
+           Mavryk_shell_services.Block_services.Empty.S.protocols
            (fun _ctxt () () -> return protocols))
     in
     Env_cache_lwt.bind_or_put envs_cache key compute_value Lwt.return
@@ -238,7 +238,7 @@ let build_directory (printer : Tezos_client_base.Client_context.printer)
            instead of a 500. Luckily, Resto handles the [Not_found]
            exception specially and returns a 404, which our
            query-forwarding middleware (see
-           Tezos_rpc_http.RPC_middleware) can then turn into a redirect
+           Mavryk_rpc_http.RPC_middleware) can then turn into a redirect
            to the node.
 
            In the client cases, we throw an exception (which Resto
@@ -258,19 +258,19 @@ let build_directory (printer : Tezos_client_base.Client_context.printer)
   in
   let proto_directory =
     (* register protocol-specific RPCs *)
-    Tezos_rpc.Directory.register_dynamic_directory
-      Tezos_rpc.Directory.empty
-      (Tezos_rpc.Path.prefix
-         Tezos_shell_services.Chain_services.path
-         Tezos_shell_services.Block_services.path)
+    Mavryk_rpc.Directory.register_dynamic_directory
+      Mavryk_rpc.Directory.empty
+      (Mavryk_rpc.Path.prefix
+         Mavryk_shell_services.Chain_services.path
+         Mavryk_shell_services.Block_services.path)
       (fun ((_, chain), block) ->
-        (* The Tezos_protocol_environment.rpc_context values returned
+        (* The Mavryk_protocol_environment.rpc_context values returned
            by init_env_rpc_context contain proxy_getter's RPC
            cache. We wanna keep it in between RPC calls, hence
            the use of get_env_rpc_context' to cache init_env_rpc_context
            values. *)
         get_env_rpc_context' chain block)
   in
-  Tezos_rpc.Directory.register_describe_directory_service
+  Mavryk_rpc.Directory.register_describe_directory_service
     proto_directory
-    Tezos_rpc.Service.description_service
+    Mavryk_rpc.Service.description_service

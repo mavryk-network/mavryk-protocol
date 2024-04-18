@@ -56,8 +56,8 @@ type block = ..
 type fetch_block_rpc =
   Client_context.full ->
   ?metadata:[`Always | `Never] ->
-  ?chain:Tezos_shell_services.Block_services.chain ->
-  ?block:Tezos_shell_services.Block_services.block ->
+  ?chain:Mavryk_shell_services.Block_services.chain ->
+  ?block:Mavryk_shell_services.Block_services.block ->
   unit ->
   block tzresult Lwt.t
 
@@ -102,7 +102,7 @@ val get_predecessor :
   Block_hash.t * int32 ->
   (Block_hash.t * int32) tzresult Lwt.t
 
-val get_tezos_reorg_for_new_head :
+val get_mavryk_reorg_for_new_head :
   t ->
   ?get_old_predecessor:
     (Block_hash.t * int32 -> (Block_hash.t * int32) tzresult Lwt.t) ->
@@ -118,16 +118,16 @@ val cache_shell_header : t -> Block_hash.t -> Block_header.shell_header -> unit
 (** Returns the client context used by the L1 monitor. *)
 val client_context : t -> Client_context.full
 
-(** [fetch_tezos_shell_header cctxt hash] returns the block shell header of
+(** [fetch_mavryk_shell_header cctxt hash] returns the block shell header of
     [hash]. Looks for the block in the blocks cache first, and fetches it from
     the L1 node otherwise. *)
-val fetch_tezos_shell_header :
+val fetch_mavryk_shell_header :
   t -> Block_hash.t -> Block_header.shell_header tzresult Lwt.t
 
-(** [fetch_tezos_block fetch extract_header cctxt hash] returns a block info
+(** [fetch_mavryk_block fetch extract_header cctxt hash] returns a block info
     given a block hash. Looks for the block in the blocks cache first, and
     fetches it from the L1 node otherwise. *)
-val fetch_tezos_block :
+val fetch_mavryk_block :
   fetch_block_rpc ->
   (block -> Block_header.shell_header) ->
   t ->
@@ -141,10 +141,10 @@ val fetch_tezos_block :
     [b4;b5;b6]); ...]. *)
 val make_prefetching_schedule : t -> 'block trace -> ('block * 'block list) list
 
-(** [prefetch_tezos_blocks fetch extract_header l1_ctxt  blocks] prefetches the
+(** [prefetch_mavryk_blocks fetch extract_header l1_ctxt  blocks] prefetches the
     blocks asynchronously. NOTE: the number of blocks to prefetch must not be
     greater than the size of the blocks cache otherwise they will be lost. *)
-val prefetch_tezos_blocks :
+val prefetch_mavryk_blocks :
   fetch_block_rpc ->
   (block -> Block_header.shell_header) ->
   t ->

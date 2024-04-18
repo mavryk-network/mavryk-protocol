@@ -30,7 +30,7 @@ let () = Lwt.Exception_filter.(set handle_all_except_runtime)
 let () =
   (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
@@ -57,18 +57,18 @@ let srcdir = Sys.argv.(1)
 let version = Sys.argv.(2)
 
 let srcdir =
-  if Filename.basename srcdir = "TEZOS_PROTOCOL" then Filename.dirname srcdir
+  if Filename.basename srcdir = "MAVRYK_PROTOCOL" then Filename.dirname srcdir
   else srcdir
 
 let hash, sources =
   Lwt.Exception_filter.(set handle_all_except_runtime) ;
-  match Lwt_main.run (Tezos_base_unix.Protocol_files.read_dir srcdir) with
+  match Lwt_main.run (Mavryk_base_unix.Protocol_files.read_dir srcdir) with
   | Ok (None, proto) -> (Protocol.hash proto, proto)
   | Ok (Some hash, proto) -> (hash, proto)
   | Error err ->
       Format.kasprintf
         Stdlib.failwith
-        "Failed to read TEZOS_PROTOCOL: %a"
+        "Failed to read MAVRYK_PROTOCOL: %a"
         pp_print_trace
         err
 
@@ -77,8 +77,8 @@ let () =
     {|
 module Source = struct
   let hash =
-    Some (Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn %S)
-  let sources = Tezos_base.Protocol.%a
+    Some (Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn %S)
+  let sources = Mavryk_base.Protocol.%a
 end
 @.|}
     (Protocol_hash.to_b58check hash)
@@ -89,9 +89,9 @@ let () =
   Format.printf
     {|
 module Registered =
-  Tezos_protocol_updater.Registered_protocol.Register_embedded_%s
-    (Tezos_protocol_%s.Environment)
-    (Tezos_protocol_%s.Protocol.Main)
+  Mavryk_protocol_updater.Registered_protocol.Register_embedded_%s
+    (Mavryk_protocol_%s.Environment)
+    (Mavryk_protocol_%s.Protocol.Main)
     (Source)
 @.|}
     (Protocol.module_name_of_env_version sources.expected_env)

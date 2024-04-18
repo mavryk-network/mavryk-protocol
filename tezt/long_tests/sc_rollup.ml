@@ -32,7 +32,7 @@
 
 open Base
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (*
 
@@ -50,7 +50,7 @@ let hex_encode (input : string) : string =
 
    See also [wasm_incomplete_kernel_boot_sector].
 
-   Note that this uses [Tezos_scoru_wasm.Gather_floppies.Complete_kernel], so
+   Note that this uses [Mavryk_scoru_wasm.Gather_floppies.Complete_kernel], so
    the kernel must fit into a single Tezos operation.
 *)
 let read_kernel name : string =
@@ -113,20 +113,20 @@ let send_message client msg =
   in
   Client.bake_for_and_wait client
 
-let with_fresh_rollup ?(kind = "arith") ~boot_sector f tezos_node tezos_client
+let with_fresh_rollup ?(kind = "arith") ~boot_sector f mavryk_node mavryk_client
     operator =
   let* sc_rollup =
     Sc_rollup_helpers.originate_sc_rollup
       ~kind
       ~boot_sector
       ~src:operator
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       Operator
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:operator
   in
   let* configuration_filename =

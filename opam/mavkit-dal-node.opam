@@ -13,8 +13,8 @@ depends: [
   "mavkit-libs"
   "cmdliner" { >= "1.1.0" }
   "mavkit-shell-libs"
-  "tezos-dal-node-lib"
-  "tezos-dal-node-services"
+  "mavryk-dal-node-lib"
+  "mavryk-dal-node-services"
   "mavkit-l2-libs"
   "irmin-pack" { >= "3.7.2" & < "3.8.0" }
   "irmin" { >= "3.7.2" & < "3.8.0" }
@@ -33,4 +33,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-dal-node` binary"
+synopsis: "Mavryk: `mavkit-dal-node` binary"

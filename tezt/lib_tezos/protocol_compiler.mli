@@ -26,7 +26,7 @@
 (** Run mavkit-protocol-compiler commands. *)
 
 (** In all functions below, [path] can be used to override the path
-    to [mavkit-protocol-compiler], which is [Constant.tezos_protocol_compiler]
+    to [mavkit-protocol-compiler], which is [Constant.mavryk_protocol_compiler]
     by default. *)
 
 (** Run [mavkit-protocol-compiler <protocol_dir>] and return the hash

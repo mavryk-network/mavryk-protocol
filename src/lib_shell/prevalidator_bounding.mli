@@ -72,7 +72,7 @@ module type T = sig
   (** Empty state containing no operations. *)
   val empty : state
 
-  (** Type [Tezos_protocol_environment.PROTOCOL.operation]. *)
+  (** Type [Mavryk_protocol_environment.PROTOCOL.operation]. *)
   type protocol_operation
 
   (** Try and add an operation to the state.
@@ -119,7 +119,7 @@ module type T = sig
 end
 
 (** Build a mempool bounding module. *)
-module Make (Proto : Tezos_protocol_environment.PROTOCOL) :
+module Make (Proto : Mavryk_protocol_environment.PROTOCOL) :
   T with type protocol_operation = Proto.operation
 
 module Internal_for_tests : sig
@@ -147,6 +147,6 @@ module Internal_for_tests : sig
          and type state := state
   end
 
-  module Make (Proto : Tezos_protocol_environment.PROTOCOL) :
+  module Make (Proto : Mavryk_protocol_environment.PROTOCOL) :
     T with type protocol_operation = Proto.operation
 end

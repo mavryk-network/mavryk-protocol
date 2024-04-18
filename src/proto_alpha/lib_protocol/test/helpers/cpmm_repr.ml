@@ -68,7 +68,7 @@ module Storage = struct
   let to_expr :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc {tokenPool; xtzPool; lqtTotal; tokenAddress; lqtAddress} ->
     comb
       ~loc
@@ -93,17 +93,17 @@ module Storage = struct
      e.g. returned by [Alpha_services.Contract.storage]), so that
      contracts are represented by strings.  *)
   let of_expr_exn :
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node -> t =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node -> t =
     function
-    | Tezos_micheline.Micheline.Prim
+    | Mavryk_micheline.Micheline.Prim
         ( _,
           Script.D_Pair,
           [
-            Tezos_micheline.Micheline.Int (_, tokenPool);
-            Tezos_micheline.Micheline.Int (_, xtzPool);
-            Tezos_micheline.Micheline.Int (_, lqtTotal);
-            Tezos_micheline.Micheline.String (_, tokenAddress);
-            Tezos_micheline.Micheline.String (_, lqtAddress);
+            Mavryk_micheline.Micheline.Int (_, tokenPool);
+            Mavryk_micheline.Micheline.Int (_, xtzPool);
+            Mavryk_micheline.Micheline.Int (_, lqtTotal);
+            Mavryk_micheline.Micheline.String (_, tokenAddress);
+            Mavryk_micheline.Micheline.String (_, lqtAddress);
           ],
           [] ) ->
         let xtzPool = Tez.of_mumav_exn (Z.to_int64 xtzPool) in
@@ -295,7 +295,7 @@ module Parameter = struct
   let to_expr_rooted :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc -> function
     | AddLiquidity {owner; minLqtMinted; maxTokensDeposited; deadline} ->
         comb
@@ -350,7 +350,7 @@ module Parameter = struct
   let to_expr :
       loc:'a ->
       t ->
-      ('a, Michelson_v1_primitives.prim) Tezos_micheline.Micheline.node =
+      ('a, Michelson_v1_primitives.prim) Mavryk_micheline.Micheline.node =
    fun ~loc p ->
     let rooted = to_expr_rooted ~loc p in
     match p with

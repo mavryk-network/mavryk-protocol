@@ -14,7 +14,7 @@ those available to end-users on Tezos Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<tezos-protocol-001-PtAtLas/Tezos_raw_protocol_001_PtAtLas/Operation_repr/index.html>`.
+<mavryk-protocol-001-PtAtLas/Mavryk_raw_protocol_001_PtAtLas/Operation_repr/index.html>`.
 
 .. _validation_passes_atlas:
 

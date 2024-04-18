@@ -14,7 +14,7 @@ partially complement it:
 - https://opentezos.com/smart-contracts/avoiding-flaws/
 - https://ligolang.org/docs/tutorials/security/
 - https://github.com/InferenceAG/TezosSmartContractDetails
-- https://medium.com/protofire-blog/recommendations-to-enhance-security-of-tezos-smart-contracts-d14c0e53a6d3
+- https://medium.com/protofire-blog/recommendations-to-enhance-security-of-mavryk-smart-contracts-d14c0e53a6d3
 
 Storing unbounded data
 ----------------------

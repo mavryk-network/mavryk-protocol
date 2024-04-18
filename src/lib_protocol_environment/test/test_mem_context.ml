@@ -69,7 +69,7 @@ type t = {
 
 let wrap_context_init f _ () =
   let open Lwt_syntax in
-  let genesis = Tezos_protocol_environment.Memory_context.empty in
+  let genesis = Mavryk_protocol_environment.Memory_context.empty in
   let* block2 = create_block2 genesis in
   let* block3a = create_block3a block2 in
   let* block3b = create_block3b block2 in
@@ -406,7 +406,7 @@ let test_domain0 () =
   let k1 = ["a"] in
   let k2 = ["b"] in
   let k3 = ["c"] in
-  let ctxt = Tezos_protocol_environment.Memory_context.empty in
+  let ctxt = Mavryk_protocol_environment.Memory_context.empty in
   let* ctxt = Context.add ctxt k1 b0 in
   let* ctxt = Context.add ctxt k2 b0 in
   let* ctxt = Context.add ctxt k3 b0 in
@@ -421,7 +421,7 @@ let test_domain1 () =
   let b0 = Bytes.of_string "0" in
   let k1 = ["a"; "b"] in
   let k2 = ["a"; "c"; "d"] in
-  let ctxt = Tezos_protocol_environment.Memory_context.empty in
+  let ctxt = Mavryk_protocol_environment.Memory_context.empty in
   let* ctxt = Context.add ctxt k1 b0 in
   let* ctxt = Context.add ctxt k2 b0 in
   let expected_domain = [k1; k2] |> StringListSet.of_list in
@@ -437,7 +437,7 @@ let test_domain2 () =
   let k2 = ["a"; "c"; "d"] in
   let k3 = ["a"; "c"; "e"] in
   let k4 = ["x"] in
-  let ctxt = Tezos_protocol_environment.Memory_context.empty in
+  let ctxt = Mavryk_protocol_environment.Memory_context.empty in
   let* ctxt = Context.add ctxt k1 b0 in
   let* ctxt = Context.add ctxt k2 b0 in
   let* ctxt = Context.add ctxt k3 b0 in
@@ -478,5 +478,5 @@ let tests =
       domain_tests
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-shell-context" [("mem_context", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-shell-context" [("mem_context", tests)]
   |> Lwt_main.run

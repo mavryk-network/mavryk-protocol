@@ -45,7 +45,7 @@ type 'a state = {
   cctxt : Protocol_client_context.full;
   constants : Constants.t;
   mutable block_stream : (block_info, 'a) result Lwt_stream.t;
-  mutable stream_stopper : Tezos_rpc.Context.stopper option;
+  mutable stream_stopper : Mavryk_rpc.Context.stopper option;
   mutable cycle : Cycle.t option;
   mutable computation_status : status;
 }
@@ -147,7 +147,7 @@ let inject_vdf_revelation cctxt state setup solution chain_id hash
             ~solution
             ()
         in
-        let op_bytes = Tezos_crypto.Signature.V_latest.(concat op_bytes zero) in
+        let op_bytes = Mavryk_crypto.Signature.V_latest.(concat op_bytes zero) in
         let* op_hash =
           Shell_services.Injection.operation cctxt ~chain op_bytes
         in

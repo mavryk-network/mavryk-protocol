@@ -215,4 +215,4 @@ Miscellaneous
 
 - Beta Debian and Redhat packages are now linked in gitlab releases.
 
-- Renamed package registries for releases from ``tezos-x.y`` to ``mavkit-x.y``.
+- Renamed package registries for releases from ``mavryk-x.y`` to ``mavkit-x.y``.

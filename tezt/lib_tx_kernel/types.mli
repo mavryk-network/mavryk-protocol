@@ -26,8 +26,8 @@
 (** Types and their encodings of transactions.
     Ported from the Rust implementation of the tx-kernel. *)
 
-open Tezos_protocol_alpha.Protocol
-open Tezos_crypto
+open Mavryk_protocol_alpha.Protocol
+open Mavryk_crypto
 
 (** Corresponds to
     inbox::external::external::v1::OperationTransfer *)

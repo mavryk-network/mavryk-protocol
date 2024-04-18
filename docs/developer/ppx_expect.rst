@@ -101,7 +101,7 @@ Exception raised::
     +|     Please change this test to not include a backtrace. *)
     +|
     +|  "Assert_failure src/lib_stdlib/bloomer.ml:287:4"
-    +|  Raised at Tezos_stdlib__Bloomer.(fun) in file "src/lib_stdlib/bloomer.ml", line 287, characters 4-18
+    +|  Raised at Mavryk_stdlib__Bloomer.(fun) in file "src/lib_stdlib/bloomer.ml", line 287, characters 4-18
     +|  Called from Expect_test_collector.Make.Instance_io.exec in file "collector/expect_test_collector.ml", line 262, characters 12-19 |}]
 
 

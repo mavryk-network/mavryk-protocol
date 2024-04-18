@@ -44,7 +44,7 @@ let genesis_protocol =
     "ProtoDemoNoopsDemoNoopsDemoNoopsDemoNoopsDemo6XBoYp"
 
 let proto =
-  match Tezos_protocol_updater.Registered_protocol.get genesis_protocol with
+  match Mavryk_protocol_updater.Registered_protocol.get genesis_protocol with
   | None -> assert false
   | Some proto -> proto
 
@@ -544,7 +544,7 @@ let test_protocol_locator base_dir =
 
 let wrap n f =
   Alcotest_lwt.test_case n `Quick (fun _ () ->
-      Lwt_utils_unix.with_tempdir "tezos_test_" (fun dir ->
+      Lwt_utils_unix.with_tempdir "mavryk_test_" (fun dir ->
           let open Lwt_syntax in
           let* r = f dir in
           match r with
@@ -559,4 +559,4 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-store" [("locator", tests)] |> Lwt_main.run
+  Alcotest_lwt.run ~__FILE__ "mavryk-store" [("locator", tests)] |> Lwt_main.run

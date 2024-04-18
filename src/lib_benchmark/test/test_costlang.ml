@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Costlang
 
 let fv_const = Free_variable.of_string "const"
@@ -188,5 +188,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("costlang", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("costlang", tests)]
   |> Lwt_main.run

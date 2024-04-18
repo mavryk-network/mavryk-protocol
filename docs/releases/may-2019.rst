@@ -26,12 +26,12 @@ use the old Tezos node.
 
 Here is an example migration from Mainnet April 2019 to a node in mode
 ``full``. Assuming a running node from Mainnet April 2019 with default
-storage directory ``~/.tezos-node``, begin by gracefully stopping the
+storage directory ``~/.mavryk-node``, begin by gracefully stopping the
 node.
 Back up your storage and upgrade it, it will only take a few seconds::
 
-  cp -r ~/.tezos-node tezos-node-$(date +%Y%m%d)
-  tezos-node upgrade storage
+  cp -r ~/.mavryk-node mavryk-node-$(date +%Y%m%d)
+  mavryk-node upgrade storage
 
 We now have the option to restart the node and it will automatically
 run in ``archive`` mode.
@@ -40,7 +40,7 @@ This mode is useful only in specific cases and most users should run a
 
 We can proceed to export a snapshot::
 
-  tezos-node snapshot export mainnet-$(date +%Y%m%d).full
+  mavryk-node snapshot export mainnet-$(date +%Y%m%d).full
 
 The default is to snapshot the chain at the position of our last
 checkpoint, which is usually 5 cycles in the past.
@@ -50,18 +50,18 @@ However it requires to synchronize from the network the last 5 cycles.
 
 Alternatively we can also specify the block to snapshot::
 
-  tezos-node snapshot export mainnet-$HASH.full --block $HASH
+  mavryk-node snapshot export mainnet-$HASH.full --block $HASH
 
 We can now delete our upgraded archive storage and import the snapshot
 (without forgetting, if you need, to save ``{identity,peers,config}.json``)::
 
-    rm -r ~/.tezos-node
-    tezos-node snapshot import ./mainnet-*.full
+    rm -r ~/.mavryk-node
+    mavryk-node snapshot import ./mainnet-*.full
 
-There should be a rather smaller ``~/.tezos-node`` directory populated
+There should be a rather smaller ``~/.mavryk-node`` directory populated
 from which we can start our node::
 
-    tezos-node run
+    mavryk-node run
 
 It is good practice to snapshot regularly our own node, for example
 with a cron job, once compressed the files are rather small.
@@ -288,7 +288,7 @@ BINS
     - ``ef202674b``: ``Alpha/Baker: allow baking on different chain ids``
     - ``ed22cae07``: ``Alpha/Daemons: lift the chain id selection to the Delegate_commands``
     - ``12f6b9838``: ``Client/Base: add a chain argument to the client``
-    - ``333782792``: ``Alpha/Daemons: use the tezos-client context to select the chain``
+    - ``333782792``: ``Alpha/Daemons: use the mavryk-client context to select the chain``
     - ``98bdbbedb``: ``Baking/Alpha: fix block listing rpc call``
     - ``46bd72176``: ``Baker: handle test chain forking cases``
     - ``e15250809``: ``Daemons/State: replace the daemon state functor with a highwatermark system``
@@ -383,7 +383,7 @@ MISC
 
 - Fixes
 - Commits:
-    - ``d7ba8bb07``: ``Resto: Fix #480: Keep the host: set by the user with TEZOS_SIGNER_HTTP_HEADERS``
+    - ``d7ba8bb07``: ``Resto: Fix #480: Keep the host: set by the user with MAVRYK_SIGNER_HTTP_HEADERS``
     - ``35727d4ac``: ``Clic: stop being colorless.``
     - ``0034c8df9``: ``Resto: log exception and continue when catching an unexpected exception in resto``
     - ``c2b2f2002``: ``Resto: client: Remove parameters (as 'charset') after 'type/subtype' in Content-Type header before matching against expected media type``
@@ -449,7 +449,7 @@ TOOLING/DOC/TESTS/BUILD/CI/ETC.
     - ``1577b71cb``: ``Stdlib-unix: Fix concurrency bug in create_dir``
     - ``19b925db8``: ``Data-encoding: Add the With_version module``
     - ``db0bbfa5f``: ``Clic: Add Scriptable (for --for-script)``
-    - ``30816ed09``: ``Build,CI: Add the tezos-event-logging library``
+    - ``30816ed09``: ``Build,CI: Add the mavryk-event-logging library``
     - ``3c53dbc7d``: ``Event-logging: Add module Internal_event_unix``
     - ``b425a3e9d``: ``Stdlib-unix: Add module File_event_sink``
     - ``622b7312b``: ``Baker: Use structured logging in Client_baking_blocks``
@@ -469,7 +469,7 @@ TOOLING/DOC/TESTS/BUILD/CI/ETC.
     - ``1ee47493b``: ``Use POSIX compliant flags with sed``
     - ``49055d897``: ``Delete CREATE_CONTRACT without literal from docs``
     - ``1f4c074c3``: ``Doc: add contributing.md, improve contributing doc``
-    - ``e5c396997``: ``[bin client]: remove wrong dependency to tezos-shell``
+    - ``e5c396997``: ``[bin client]: remove wrong dependency to mavryk-shell``
     - ``af5ed9cd9``: ``Opam: update dependencies``
     - ``1491675ea``: ``Account for ocaml.4.07.1 changes in Tezos``
     - ``38a3e629a``: ``Opam: force external dependencies on react and reactiveData``
@@ -477,10 +477,10 @@ TOOLING/DOC/TESTS/BUILD/CI/ETC.
     - ``e7940dae2``: ``Vendor/ledger-wallet: depend on hidapi 1.0``
     - ``c3f0fbfb1``: ``Opam repository: put git final git hashes``
     - ``b80790013``: ``CI: Add "opam lint" on all opam files in CI``
-    - ``b1afd8078``: ``[Opam]: add synopsis to tezos-event-logging``
+    - ``b1afd8078``: ``[Opam]: add synopsis to mavryk-event-logging``
     - ``be5ce3cc4``: ``[opam]: fix opam-version in event-logging``
     - ``11e6c05e0``: ``[dune files] Various changes to compile packages via opam``
-    - ``b1cc7b331``: ``Fix tezos-client-demo.opam``
+    - ``b1cc7b331``: ``Fix mavryk-client-demo.opam``
     - ``0365eb175``: ``CI: quotes in lint command``
     - ``b5782b875``: ``vendors/*.opam: use [[ ]] in run-test``
     - ``9535096ff``: ``Docs: fix ASSERT macros in Michelson specification``
@@ -516,10 +516,10 @@ TOOLING/DOC/TESTS/BUILD/CI/ETC.
     - ``a99612569``: ``build: remove merge artifact in src/lib_shell/dune``
     - ``a711ac1fc``: ``CI: update opam test``
     - ``18eeec0b4``: ``Alpha/Client: update opam``
-    - ``d6a3b46f1``: ``Opam packaging: install TEZOS_PROTOCOL as part of tezos-embedded-protocol-%.raw``
-    - ``4511710d4``: ``Flextesa: voting command takes the TEZOS_PROTOCOL file as argument``
+    - ``d6a3b46f1``: ``Opam packaging: install MAVRYK_PROTOCOL as part of mavryk-embedded-protocol-%.raw``
+    - ``4511710d4``: ``Flextesa: voting command takes the MAVRYK_PROTOCOL file as argument``
     - ``b6619de3a``: ``lib_network_sandbox: Make it 32bits arch compatible``
-    - ``6e91d5ec2``: ``Opam packaging: fix tezos-client-alpha-commands deps``
+    - ``6e91d5ec2``: ``Opam packaging: fix mavryk-client-alpha-commands deps``
     - ``38e4ae8ed``: ``Opam packaging: fix flextesa build``
     - ``772907364``: ``Tests/Flextesa: remove .opam``
     - ``e648fc42e``: ``Test/Python: correct time between blocks - multiple bakers``

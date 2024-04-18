@@ -14,7 +14,7 @@ pub mod overloads;
 
 pub use micheline::Micheline;
 use std::collections::BTreeMap;
-pub use tezos_crypto_rs::hash::ChainId;
+pub use mavryk_crypto_rs::hash::ChainId;
 use typed_arena::Arena;
 
 use crate::lexer::Prim;

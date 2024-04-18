@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_event_logging_test_helpers
+open Mavryk_event_logging_test_helpers
 
 (** [tztest] contains the definition of [tztest]: a wrapper for tests
    cases running in the error monad. It also adds helpers for working
@@ -41,7 +41,7 @@ let tztest (name : string) (speed : Alcotest.speed_level) (f : unit -> 'a Lwt.t)
       match r with
       | Ok () -> Lwt.return_unit
       | Error err ->
-          let* () = Tezos_base_unix.Internal_event_unix.close () in
+          let* () = Mavryk_base_unix.Internal_event_unix.close () in
           let msg = Format.asprintf "@\n%a@." pp_print_trace err in
           Lwt.fail (Alcotest.fail msg))
 

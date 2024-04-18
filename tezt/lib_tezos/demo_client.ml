@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
 

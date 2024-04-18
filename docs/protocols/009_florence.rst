@@ -79,7 +79,7 @@ New ``failing_noop`` Operation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A new operation has been added to the protocol that is guaranteed to
-fail. This feature can be used by tooling (such as ``tezos-client``) to
+fail. This feature can be used by tooling (such as ``mavryk-client``) to
 sign arbitrary data securely, without fear of malicious injection into
 future protocols.
 

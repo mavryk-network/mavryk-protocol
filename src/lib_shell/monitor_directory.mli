@@ -27,4 +27,4 @@ val build_rpc_directory :
   commit_info:Node_version.commit_info ->
   Validator.t ->
   Chain_validator.t ->
-  unit Tezos_rpc.Directory.t
+  unit Mavryk_rpc.Directory.t

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* For documentation please refer to the [Tezos_wasmer] module. *)
+(* For documentation please refer to the [Mavryk_wasmer] module. *)
 
 open Api
 

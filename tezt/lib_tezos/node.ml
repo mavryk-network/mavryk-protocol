@@ -429,7 +429,7 @@ module Config_file = struct
     JSON.put ("network", network) old_config
 
   let set_sandbox_network_with_dal_config
-      (dal_config : Tezos_crypto_dal.Cryptobox.Config.t) old_config =
+      (dal_config : Mavryk_crypto_dal.Cryptobox.Config.t) old_config =
     let dal_config_json =
       let parameters =
         match dal_config.use_mock_srs_for_testing with

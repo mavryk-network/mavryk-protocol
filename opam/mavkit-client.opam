@@ -16,8 +16,8 @@ depends: [
   "mavkit-protocol-001-PtAtLas-libs"
 ]
 depopts: [
-  "tezos-client-genesis"
-  "tezos-client-demo-counter"
+  "mavryk-client-genesis"
+  "mavryk-client-demo-counter"
   "mavkit-protocol-alpha-libs"
 ]
 build: [
@@ -25,4 +25,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-client` binary"
+synopsis: "Mavryk: `mavkit-client` binary"

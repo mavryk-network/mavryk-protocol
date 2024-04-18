@@ -19,5 +19,5 @@ to find answers.
   technical discussions and is always very active.
 - There is a matrix channel *Tezos* that you can join `here <https://riot.im/app/#/room/#tezos:matrix.org>`_.
 
-For anything baking related, there is a dedicated Slack channel, https://tezos-baking.slack.com.
-If you don't have access to the Tezos Baking Slack, send an e-mail to `joinslack@tezos-kiln.org <mailto:joinslack@tezos-kiln.org>`_ to join this channel.
+For anything baking related, there is a dedicated Slack channel, https://mavryk-baking.slack.com.
+If you don't have access to the Tezos Baking Slack, send an e-mail to `joinslack@mavryk-kiln.org <mailto:joinslack@mavryk-kiln.org>`_ to join this channel.

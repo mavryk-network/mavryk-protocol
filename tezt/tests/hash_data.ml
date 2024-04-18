@@ -43,7 +43,7 @@
 (* These hooks must be attached to every process that should be captured for
    regression testing. Not plugged for negative tests, since mavkit-client
    shows its manpage, which will change overtime. *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (** Test.
     Call `mavkit-client hash data ... of type ...` with data on which

@@ -11,10 +11,10 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "mavkit-libs"
-  "tezos-benchmark"
-  "tezos-benchmark-examples"
+  "mavryk-benchmark"
+  "mavryk-benchmark-examples"
   "mavkit-shell-libs"
-  "tezos-benchmarks-proto-alpha"
+  "mavryk-benchmarks-proto-alpha"
   "pyml" { >= "20220905" }
   "prbnmcn-stats" { = "0.0.6" }
   "mavkit-version"
@@ -24,4 +24,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-snoop` binary"
+synopsis: "Mavryk: `mavkit-snoop` binary"

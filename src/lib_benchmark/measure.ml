@@ -223,7 +223,7 @@ let save :
     | Ok res -> res
   in
   let _nwritten =
-    Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.create_file filename str
+    Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.create_file filename str
   in
   Measurement (bench, measurement)
 
@@ -258,7 +258,7 @@ let load : filename:string -> packed_measurement =
     exit 1
   in
   let str =
-    Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.read_file filename
+    Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.read_file filename
   in
   Format.eprintf "Measure.load: loaded %s@." filename ;
   match Data_encoding.Binary.of_string serialized_workload_encoding str with
@@ -497,7 +497,7 @@ let perform_benchmark (type c t) (options : options)
                 in
                 {workload; measures} :: workload_data)
         | Generator.With_probe {workload; probe; closure} ->
-            Tezos_stdlib.Utils.do_n_times options.nsamples (fun () ->
+            Mavryk_stdlib.Utils.do_n_times options.nsamples (fun () ->
                 closure probe) ;
             let aspects = probe.Generator.aspects () in
             List.fold_left

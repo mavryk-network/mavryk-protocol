@@ -23,11 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_protocol_environment
+open Mavryk_protocol_environment
 open Context
 
 module C = struct
-  include Tezos_context.Context
+  include Mavryk_context.Context
 
   let set_protocol = add_protocol
 end
@@ -38,7 +38,7 @@ let impl_name = "shell"
 
 let checkout index context_hash =
   let open Lwt_syntax in
-  let+ oc = Tezos_context.Context.checkout index context_hash in
+  let+ oc = Mavryk_context.Context.checkout index context_hash in
   Option.map
     (fun ctxt ->
       Context.make ~ops ~ctxt ~kind:Context ~equality_witness ~impl_name)
@@ -46,13 +46,13 @@ let checkout index context_hash =
 
 let checkout_exn index context_hash =
   let open Lwt_syntax in
-  let+ ctxt = Tezos_context.Context.checkout_exn index context_hash in
+  let+ ctxt = Mavryk_context.Context.checkout_exn index context_hash in
   Context.make ~ops ~ctxt ~kind:Context ~equality_witness ~impl_name
 
 let wrap_disk_context ctxt =
   Context.make ~ops ~ctxt ~kind:Context ~equality_witness ~impl_name
 
-let unwrap_disk_context : t -> Tezos_context.Context.t = function
+let unwrap_disk_context : t -> Mavryk_context.Context.t = function
   | Context.Context {ctxt; kind = Context; _} -> ctxt
   | Context.Context t ->
       err_implementation_mismatch ~expected:impl_name ~got:t.impl_name

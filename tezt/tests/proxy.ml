@@ -62,7 +62,7 @@ let test_cache_at_most_once ?supports ?query_string path =
   @@ fun protocol ->
   let* _, client = init ~protocol () in
   let env =
-    [("TEZOS_LOG", "proxy_rpc->debug")] |> List.to_seq |> String_map.of_seq
+    [("MAVRYK_LOG", "proxy_rpc->debug")] |> List.to_seq |> String_map.of_seq
   in
   let* stderr =
     Client.spawn_rpc ~env ?query_string Client.GET path client
@@ -179,7 +179,7 @@ let starts_with ~(prefix : string) (s : string) : bool =
     In this scenario, the proxy client should look directly in the data within the tree received by the first request.
 
     For this, this test inspects the debug output produced by
-    setting TEZOS_LOG to proxy_rpc->debug. This causes the client
+    setting MAVRYK_LOG to proxy_rpc->debug. This causes the client
     to print the RPCs done to get pieces of the context:
 
     proxy_rpc: P/v1/constants
@@ -205,7 +205,7 @@ let test_context_suffix_no_rpc ?query_string path =
     ~tags:["proxy"; "rpc"; "get"]
   @@ fun protocol ->
   let* _, client = init ~protocol () in
-  let env = String_map.singleton "TEZOS_LOG" "proxy_rpc->debug" in
+  let env = String_map.singleton "MAVRYK_LOG" "proxy_rpc->debug" in
   let* stderr =
     Client.spawn_rpc ~env ?query_string Client.GET path client
     |> Process.check_and_read_stderr
@@ -439,7 +439,7 @@ module Location = struct
 
   (** Calls [rpc get] on the given [client] but specifies an alternative
       environment to make sure the location where the RPC executes is
-      printed to output. [tz_log] can be used to augment TEZOS_LOG
+      printed to output. [tz_log] can be used to augment MAVRYK_LOG
       (useful for debugging). *)
   let rpc_get ?(tz_log = []) ?query_string client rpc_path =
     let proxy_key, proxy_value = ("proxy_rpc_ctxt", "debug") in
@@ -447,7 +447,7 @@ module Location = struct
       (fun (k, v) ->
         if k = proxy_key && v = proxy_value then
           Test.fail
-            "TEZOS_LOG key %s bound both to '%s' and '%s': impossible to honor \
+            "MAVRYK_LOG key %s bound both to '%s' and '%s': impossible to honor \
              both"
             proxy_key
             proxy_value
@@ -459,13 +459,13 @@ module Location = struct
       |> List.map (fun (k, v) -> Printf.sprintf "%s->%s" k v)
       |> String.concat "; "
     in
-    let env = String_map.singleton "TEZOS_LOG" value in
+    let env = String_map.singleton "MAVRYK_LOG" value in
     Client.spawn_rpc ~env ?query_string Client.GET rpc_path client
     |> Process.check_and_read_both
 
   (** Check that executing [rpc get rpc_path] on client causes the RPC
       to be executed on the given location ([expected_loc]).
-      [tz_log] can be used to augment TEZOS_LOG (useful for debugging). *)
+      [tz_log] can be used to augment MAVRYK_LOG (useful for debugging). *)
   let check_location ?tz_log alt_mode client rpc_path expected_loc =
     let* _, stderr = rpc_get ?tz_log client rpc_path in
     let actual_loc = parse_rpc_exec_location stderr rpc_path in
@@ -478,7 +478,7 @@ module Location = struct
         (location_to_string actual_loc) ;
     Lwt.return_unit
 
-  (* [tz_log] can be used to augment TEZOS_LOG (useful for debugging). *)
+  (* [tz_log] can be used to augment MAVRYK_LOG (useful for debugging). *)
   let check_locations ?tz_log alt_mode client =
     let paths_n_locations =
       [
@@ -692,7 +692,7 @@ let normalize = function
 
 let test_split_key_heuristic =
   let rpc_path_regexp = rex {|.*proxy_getter: Cache miss \(get\): \((.*)\)|} in
-  let env = String_map.singleton "TEZOS_LOG" "proxy_getter->debug" in
+  let env = String_map.singleton "MAVRYK_LOG" "proxy_getter->debug" in
   Protocol.register_test
     ~__FILE__
     ~title:"(Proxy) split_key heuristic"

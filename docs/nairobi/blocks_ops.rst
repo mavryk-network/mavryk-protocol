@@ -14,7 +14,7 @@ those available to end-users on Tezos Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<tezos-protocol-017-PtNairob/Tezos_raw_protocol_017_PtNairob/Operation_repr/index.html>`.
+<mavryk-protocol-017-PtNairob/Mavryk_raw_protocol_017_PtNairob/Operation_repr/index.html>`.
 
 .. _validation_passes:
 .. _validation_passes_nairobi:

@@ -12,8 +12,8 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs"
   "mavkit-shell-libs"
-  "tezos-dac-lib"
-  "tezos-dac-node-lib"
+  "mavryk-dac-lib"
+  "mavryk-dac-node-lib"
   "mavkit-l2-libs"
   "irmin-pack" { >= "3.7.2" & < "3.8.0" }
   "irmin" { >= "3.7.2" & < "3.8.0" }
@@ -30,4 +30,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-dac-node` binary"
+synopsis: "Mavryk: `mavkit-dac-node` binary"

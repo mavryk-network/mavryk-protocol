@@ -29,7 +29,7 @@ about ACLs.
 
 This version also notably introduces a new *light* mode for the
 client, and a new executable
-:doc:`tezos-proxy-server<../user/proxy-server>`.  See full
+:doc:`mavryk-proxy-server<../user/proxy-server>`.  See full
 `Changelog`_ for more details.
 
 Version 10.1 restores the broadcasting of endorsements received before
@@ -89,21 +89,21 @@ Upgrade Using the Upgrade Command
 
 - Make sure your have at least 10GB of available disk space, as the
   upgrade command will automatically create a backup of the former
-  storage (in ``~/.tezos-node/lmdb_store_to_remove``) to restore
+  storage (in ``~/.mavryk-node/lmdb_store_to_remove``) to restore
   it if the upgrade fails.
 
 - Stop your node.
 
 - Compile the new version of the node (see the `Update Instructions`_).
 
-- Run: ``./tezos-node upgrade storage`` This takes between about 40
+- Run: ``./mavryk-node upgrade storage`` This takes between about 40
   minutes and few hours depending on your hardware. (Docker users can
   refer to `Guide for Docker Users`_.)
 
-- You are now ready to start your upgraded node with: ``./tezos-node run``
+- You are now ready to start your upgraded node with: ``./mavryk-node run``
 
 - If your node is running well, you can now safely remove the backup with:
-  ``rm -rf ~/.tezos-node/lmdb_store_to_remove``
+  ``rm -rf ~/.mavryk-node/lmdb_store_to_remove``
 
 Upgrade Using a Snapshot
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,19 +117,19 @@ Upgrade Using a Snapshot
 - Compile the new version of the node (see the `Update Instructions`_).
 
 - Remove the ``context`` and ``store`` folders in your data directory,
-  or simply move them away with: ``mv ~/.tezos-node/context
-  ~/tezos-context-backup`` and: ``mv ~/.tezos-node/store
-  ~/tezos-store-backup``
+  or simply move them away with: ``mv ~/.mavryk-node/context
+  ~/mavryk-context-backup`` and: ``mv ~/.mavryk-node/store
+  ~/mavryk-store-backup``
 
-- Import your snapshot using: ``./tezos-node snapshot import
+- Import your snapshot using: ``./mavryk-node snapshot import
   snapshot.full`` This takes between about 20 minutes and one hour
   depending on your hardware.
 
-- You are now ready to start your upgraded node with: ``./tezos-node run``
+- You are now ready to start your upgraded node with: ``./mavryk-node run``
 
 If your node is running well and you made backups of your ``context``
 and ``store`` directories, you can now safely remove them with: ``rm -rf
-~/tezos-context-backup ~/tezos-store-backup``
+~/mavryk-context-backup ~/mavryk-store-backup``
 
 How to Export a Snapshot
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,11 +138,11 @@ Some of the previous instructions require you to export a snapshot.
 Here is how to do so. You may also just download a recent snapshot
 instead.
 
-- Get the hash of the current block using: ``./tezos-client rpc get
+- Get the hash of the current block using: ``./mavryk-client rpc get
   /chains/main/blocks/head | grep 'hash\": \"BL'`` (or simply find the
   hash in the logs of your running node).
 
-- Export the snapshot with: ``./tezos-node snapshot --block <BLOCK>
+- Export the snapshot with: ``./mavryk-node snapshot --block <BLOCK>
   export snapshot.full`` (replace ``<BLOCK>`` with the hash of the
   current block).
 
@@ -153,10 +153,10 @@ Guide for Docker Users
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Docker users can run the upgrade procedure using the
-``tezos-upgrade-storage`` command as follows (replace ``docker-node`` by
+``mavryk-upgrade-storage`` command as follows (replace ``docker-node`` by
 the name of your Docker volume)::
 
-    docker run -v docker-node:/var/run/tezos/node -it registry.gitlab.com/tezos/tezos:amd64-v10.3 tezos-upgrade-storage
+    docker run -v docker-node:/var/run/tezos/node -it registry.gitlab.com/tezos/tezos:amd64-v10.3 mavryk-upgrade-storage
 
 Users who use ``storage-docker-manager.sh`` can simply execute the built-in
 upgrade command, such as (for Mainnet): ``./mainnet.sh node upgrade``

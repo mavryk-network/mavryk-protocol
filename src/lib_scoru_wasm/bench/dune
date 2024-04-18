@@ -9,11 +9,11 @@
   mavkit-libs.base
   tezt
   mavkit-l2-libs.webassembly-interpreter
-  mavkit-libs.tezos-context.memory
+  mavkit-libs.mavryk-context.memory
   mavkit-l2-libs.scoru-wasm
   mavkit-l2-libs.scoru-wasm-helpers
   lwt.unix)
  (preprocess (pps ppx_deriving.show))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

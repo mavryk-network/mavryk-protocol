@@ -184,4 +184,4 @@ found in the `whitepaper
 
 Other presentation of the Tezos' proof-of-stake mechanism can be
 found in the
-`Open Tezos entry <https://opentezos.com/tezos-basics/liquid-proof-of-stake/>`_.
+`Open Tezos entry <https://opentezos.com/mavryk-basics/liquid-proof-of-stake/>`_.

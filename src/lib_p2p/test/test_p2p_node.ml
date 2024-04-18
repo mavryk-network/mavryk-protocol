@@ -102,18 +102,18 @@ let main () =
     | Quiet | Error | Warn | Report -> None
     | Info | Debug -> Some "test.p2p.node -> info;"
   in
-  let log_cfg = Tezos_base_unix.Logs_simple_config.create_cfg ?rules () in
+  let log_cfg = Mavryk_base_unix.Logs_simple_config.create_cfg ?rules () in
   let config =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults ~log_cfg ()
   in
   let () =
-    Tezos_base_unix.Internal_event_unix.init ~config () |> Lwt_main.run
+    Mavryk_base_unix.Internal_event_unix.init ~config () |> Lwt_main.run
   in
   let addr = Node.default_ipv6_addr in
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-p2p"
+       "mavryk-p2p"
        [
          ( "p2p-node",
            [

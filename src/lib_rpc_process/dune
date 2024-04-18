@@ -17,10 +17,10 @@
   prometheus-app)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_shell
-  -open Tezos_base_unix
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_shell
+  -open Mavryk_base_unix
   -open Mavkit_node_config
-  -open Tezos_rpc_http
-  -open Tezos_rpc_http_server))
+  -open Mavryk_rpc_http
+  -open Mavryk_rpc_http_server))

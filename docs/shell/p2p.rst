@@ -17,7 +17,7 @@ The P2P layer is comprised of a pool of connections, a set of
 operations on those connections, and a set of workers following the
 worker pattern pervasively used in the codebase.
 
-The P2P layer is packaged in :package-api:`tezos-p2p <mavkit-shell-libs/Tezos_p2p/index.html>`, which has
+The P2P layer is packaged in :package-api:`mavryk-p2p <mavkit-shell-libs/Mavryk_p2p/index.html>`, which has
 documentation for all modules.
 
 General operation
@@ -50,7 +50,7 @@ peer. This further restricts the speed at which communication is
 possible with a peer; when a queue is full, it is not possible to read
 (resp. write) an additional message. The high-level
 `P2p_socket.t
-<../api/odoc/_html/tezos-p2p/Tezos_p2p/P2p_socket/index.html#type-t>`__
+<../api/odoc/_html/mavryk-p2p/Mavryk_p2p/P2p_socket/index.html#type-t>`__
 type defined by the P2P layer is basically a UNIX socket upgraded with I/O
 scheduling, peer metadata, cryptographic keys, and two message queues
 operated by dedicated workers which operate on those queues.
@@ -59,7 +59,7 @@ Pool of connections
 ~~~~~~~~~~~~~~~~~~~
 
 All the above modules are used in `P2p_pool
-<../api/api-inline.html#tezos-p2p/Tezos_p2p/P2p_pool/index.html>`__, which
+<../api/api-inline.html#mavryk-p2p/Mavryk_p2p/P2p_pool/index.html>`__, which
 constitutes the core of the P2P layer, together with the worker
 processes described below. It comprises various tables of connections
 as well as methods to query them, also connections are extended with
@@ -67,7 +67,7 @@ another message queue where lower-level messages (like responses to
 ping) are filtered out and only application-level messages are kept.
 
 The main entry point of the P2P layer is in module `P2p
-<../api/api-inline.html#tezos-p2p/Tezos_p2p/P2p/index.html>`__. See below
+<../api/api-inline.html#mavryk-p2p/Mavryk_p2p/P2p/index.html>`__. See below
 for a description of workers acting onto the P2P layer.
 
 Welcome worker & connect handler

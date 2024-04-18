@@ -12,8 +12,8 @@
 cd "$(dirname "$0")"/../.. || exit
 
 # Tezos binaries.
-tezos_node=./mavkit-node
-tezos_client=./mavkit-client
+mavryk_node=./mavkit-node
+mavryk_client=./mavkit-client
 
 # Protocol configuration.
 protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
@@ -40,17 +40,17 @@ proto_openapi_json=docs/api/$protocol_name-openapi-dev.json
 mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-dev.json
 
 # Get version number.
-version=$(dune exec tezos-version)
+version=$(dune exec mavryk-version)
 
 # Start a sandbox node.
-$tezos_node config init --data-dir $data_dir \
+$mavryk_node config init --data-dir $data_dir \
     --network sandbox \
     --expected-pow 0 \
     --rpc-addr localhost:$rpc_port \
     --no-bootstrap-peer \
     --synchronisation-threshold 0
-$tezos_node identity generate --data-dir $data_dir
-$tezos_node run --data-dir $data_dir &
+$mavryk_node identity generate --data-dir $data_dir
+$mavryk_node run --data-dir $data_dir &
 node_pid="$!"
 
 # Wait for the node to be ready (sorry for the hackish way...)
@@ -58,8 +58,8 @@ sleep 1
 
 # Activate the protocol.
 mkdir $client_dir
-$tezos_client --base-dir $client_dir import secret key activator $activator_secret_key
-$tezos_client --base-dir $client_dir activate protocol $protocol_hash \
+$mavryk_client --base-dir $client_dir import secret key activator $activator_secret_key
+$mavryk_client --base-dir $client_dir activate protocol $protocol_hash \
     with fitness 1 \
     and key activator \
     and parameters $protocol_parameters \

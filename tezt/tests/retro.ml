@@ -52,7 +52,7 @@ let encode_and_sign_operation protocol client op =
     encode protocol "operation.unsigned" (Operation_core.json op)
   in
   let* signature = Operation_core.sign op client in
-  let (`Hex signature) = Tezos_crypto.Signature.to_hex signature in
+  let (`Hex signature) = Mavryk_crypto.Signature.to_hex signature in
   return (hex_unsigned ^ signature)
 
 let test_encoding_retrocompatible name operation =

@@ -18,10 +18,10 @@ pub use self::alloc::PreimageHash;
 #[cfg(feature = "alloc")]
 mod alloc {
 
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::encoding::HasEncoding;
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::encoding::HasEncoding;
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
     /// A 33-byte hash corresponding to a preimage.
     #[derive(Eq, PartialEq, Debug, HasEncoding, NomReader, BinWriter, Clone, Hash)]
     pub struct PreimageHash {

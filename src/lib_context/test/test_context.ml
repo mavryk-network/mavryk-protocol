@@ -32,7 +32,7 @@
 *)
 
 (** Module concerning assertions about raw trees i.e. values of type
-    [[< `Tree of 'a Tezos_base.TzPervasives.String.Map.t | `Value of bytes] as 'a] *)
+    [[< `Tree of 'a Mavryk_base.TzPervasives.String.Map.t | `Value of bytes] as 'a] *)
 module Raw_Tree = struct
   (** [equal loc msg rt0 rt1] checks that the raw tree [rt0] and [rt1] are equal.
       Will fail with the message [msg] displaying the location [loc] otherwise *)
@@ -43,7 +43,7 @@ module Raw_Tree = struct
           Assert.Bytes.equal ?loc ?msg v1 v2 ;
           true
       | `Tree t1, `Tree t2 ->
-          if not (Tezos_base.TzPervasives.String.Map.equal aux t1 t2) then
+          if not (Mavryk_base.TzPervasives.String.Map.equal aux t1 t2) then
             Assert.String.fail "<tree>" "<tree>" ?msg ?loc
           else true
       | `Tree _, `Value v ->
@@ -97,7 +97,7 @@ module Make_generic (Tag : sig
 end) (Type_parameters : sig
   type memory_context_tree
 end)
-(Context : Tezos_context_sigs.Context.TEZOS_CONTEXT
+(Context : Mavryk_context_sigs.Context.MAVRYK_CONTEXT
              with type memory_context_tree :=
                Type_parameters.memory_context_tree) =
 struct
@@ -144,7 +144,7 @@ struct
   }
 
   let wrap_context_init f _ () =
-    Lwt_utils_unix.with_tempdir "tezos_test_" (fun base_dir ->
+    Lwt_utils_unix.with_tempdir "mavryk_test_" (fun base_dir ->
         let root = base_dir // "context" in
         let* idx = Context.init root in
         let*!! genesis =
@@ -703,9 +703,9 @@ module Generic_disk =
       let tag = "disk"
     end)
     (struct
-      type memory_context_tree = Tezos_context_memory.Context.tree
+      type memory_context_tree = Mavryk_context_memory.Context.tree
     end)
-    (Tezos_context_disk.Context)
+    (Mavryk_context_disk.Context)
 
 module Generic_memory =
   Make_generic
@@ -713,13 +713,13 @@ module Generic_memory =
       let tag = "memory"
     end)
     (struct
-      type memory_context_tree = Tezos_context_memory.Context.tree
+      type memory_context_tree = Mavryk_context_memory.Context.tree
     end)
-    (Tezos_context_memory.Context)
+    (Mavryk_context_memory.Context)
 
 let () =
   Lwt_main.run
     (Alcotest_lwt.run
        ~__FILE__
-       "tezos-context"
+       "mavryk-context"
        [("context", List.concat [Generic_disk.tests; Generic_memory.tests])])

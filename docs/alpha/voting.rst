@@ -168,7 +168,7 @@ fails.
 .. sidebar:: Checking a hash is of a valid protocol
 
    When a hash is proposed by a delegate, it is usually accompanied by some
-   blogposts and forum threads on :ref:`community websites <tezos_community>`.
+   blogposts and forum threads on :ref:`community websites <mavryk_community>`.
    These should include directions for testing the proposed protocols. If you
    cannot find such directions, do not hesitate to ask.
 
@@ -329,8 +329,8 @@ Further External Resources
 
 Further details and explanations on the voting procedure can be found at:
 
-- `Governance on-chain <https://opentezos.com/tezos-basics/governance-on-chain>`_ on Open Tezos
-- `Tezos Governance <https://www.tezosagora.org/learn#an-introduction-to-tezos-governance>`_ on Tezos Agora.
+- `Governance on-chain <https://opentezos.com/mavryk-basics/governance-on-chain>`_ on Open Tezos
+- `Tezos Governance <https://www.tezosagora.org/learn#an-introduction-to-mavryk-governance>`_ on Tezos Agora.
 
 For more details on the client commands refer to the manual at
 :ref:`client_manual_alpha`.

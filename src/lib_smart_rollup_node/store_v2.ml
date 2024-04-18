@@ -30,7 +30,7 @@ include Store_v1
 
 let version = Store_version.V2
 
-module Make_hash_index_key (H : Tezos_crypto.Intfs.HASH) =
+module Make_hash_index_key (H : Mavryk_crypto.Intfs.HASH) =
 Indexed_store.Make_index_key (struct
   include Indexed_store.Make_fixed_encodable (H)
 

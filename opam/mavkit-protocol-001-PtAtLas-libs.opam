@@ -12,25 +12,25 @@ depends: [
   "ocaml" { >= "4.14" }
   "ppx_expect"
   "mavkit-libs"
-  "tezos-protocol-001-PtAtLas"
+  "mavryk-protocol-001-PtAtLas"
   "mavkit-shell-libs"
   "uri" { >= "3.1.0" }
   "qcheck-alcotest" { >= "0.20" }
   "mavkit-proto-libs"
   "mavkit-version"
-  "tezos-dal-node-services"
+  "mavryk-dal-node-services"
   "lwt-canceler" { >= "0.3" & < "0.4" }
   "lwt-exit"
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
   "mavkit-protocol-compiler"
-  "tezos-dal-node-lib"
-  "tezos-dac-lib"
-  "tezos-dac-client-lib"
+  "mavryk-dal-node-lib"
+  "mavryk-dac-lib"
+  "mavryk-dac-client-lib"
   "mavkit-injector"
   "mavkit-l2-libs"
   "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
   "mavkit-alcotezt" {with-test}
-  "tezos-dac-node-lib" {with-test}
+  "mavryk-dac-node-lib" {with-test}
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

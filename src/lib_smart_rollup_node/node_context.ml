@@ -374,7 +374,7 @@ let hash_of_level_opt {store; cctxt; _} level =
   | Some hash -> return_some hash
   | None ->
       let*! hash =
-        Tezos_shell_services.Shell_services.Blocks.hash
+        Mavryk_shell_services.Shell_services.Blocks.hash
           cctxt
           ~chain:cctxt#chain
           ~block:(`Level level)
@@ -395,7 +395,7 @@ let level_of_hash {l1_ctxt; store; _} hash =
   match l2_header with
   | Some {level; _} -> return level
   | None ->
-      let+ {level; _} = Layer1.fetch_tezos_shell_header l1_ctxt hash in
+      let+ {level; _} = Layer1.fetch_mavryk_shell_header l1_ctxt hash in
       level
 
 let save_level {store; _} Layer1.{hash; level} =
@@ -491,13 +491,13 @@ let get_predecessor node_ctxt (hash, level) =
 
 let header_of_hash node_ctxt hash =
   let open Lwt_result_syntax in
-  let+ header = Layer1.fetch_tezos_shell_header node_ctxt.l1_ctxt hash in
+  let+ header = Layer1.fetch_mavryk_shell_header node_ctxt.l1_ctxt hash in
   {Layer1.hash; level = header.level; header}
 
 let header_of_head node_ctxt Layer1.{hash; level = _} =
   header_of_hash node_ctxt hash
 
-let get_tezos_reorg_for_new_head node_ctxt old_head new_head =
+let get_mavryk_reorg_for_new_head node_ctxt old_head new_head =
   let open Lwt_result_syntax in
   let old_head =
     match old_head with
@@ -505,7 +505,7 @@ let get_tezos_reorg_for_new_head node_ctxt old_head new_head =
     | `Head Layer1.{hash; level} -> `Head (hash, level)
   in
   let+ reorg =
-    Layer1.get_tezos_reorg_for_new_head
+    Layer1.get_mavryk_reorg_for_new_head
       node_ctxt.l1_ctxt
       ~get_old_predecessor:(get_predecessor node_ctxt)
       old_head
@@ -893,7 +893,7 @@ let save_protocol_info node_ctxt (block : Layer1.header)
          We need to figure out if a protocol upgrade happened in one of these two blocks.
       *)
       let* {current_protocol; next_protocol} =
-        Tezos_shell_services.Shell_services.Blocks.protocols
+        Mavryk_shell_services.Shell_services.Blocks.protocols
           node_ctxt.cctxt
           ~block:(`Hash (block.hash, 0))
           ()
@@ -901,7 +901,7 @@ let save_protocol_info node_ctxt (block : Layer1.header)
              current_protocol = pred_current_protocol;
              next_protocol = pred_next_protocol;
            } =
-        Tezos_shell_services.Shell_services.Blocks.protocols
+        Mavryk_shell_services.Shell_services.Blocks.protocols
           node_ctxt.cctxt
           ~block:(`Hash (predecessor.hash, 0))
           ()
@@ -948,7 +948,7 @@ let save_protocol_info node_ctxt (block : Layer1.header)
       in
       let* proto_info =
         let+ {next_protocol = protocol; _} =
-          Tezos_shell_services.Shell_services.Blocks.protocols
+          Mavryk_shell_services.Shell_services.Blocks.protocols
             node_ctxt.cctxt
             ~block:(`Hash (block.hash, 0))
             ()

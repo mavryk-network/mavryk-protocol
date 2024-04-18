@@ -31,7 +31,7 @@ fi
 # Defaults
 user=tzsigner
 group=tzsigner
-datadir=~${user}/.tezos-signer
+datadir=~${user}/.mavryk-signer
 logdir=/var/log/tzsigner
 rotateonstart=yes
 port=6732

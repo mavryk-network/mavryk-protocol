@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_mockup_proxy)
+ (name mavryk_mockup_proxy)
  (public_name mavkit-shell-libs.mockup-proxy)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -16,4 +16,4 @@
   uri)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

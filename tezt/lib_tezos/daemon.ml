@@ -318,7 +318,7 @@ module Make (X : PARAMETERS) = struct
       in
       let args_str = "?" ^ String.concat "&" (List.rev args) in
       String_map.add
-        "TEZOS_EVENTS_CONFIG"
+        "MAVRYK_EVENTS_CONFIG"
         ("file-descriptor-path://" ^ daemon.event_pipe ^ args_str)
         env
     in

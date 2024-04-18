@@ -36,7 +36,7 @@ val inject_block :
   ?force:bool ->
   chain:Shell_services.chain ->
   Block_header.t ->
-  Tezos_base.Operation.t list list ->
+  Mavryk_base.Operation.t list list ->
   Block_hash.t tzresult Lwt.t
 
 (** Inject an operation.
@@ -57,7 +57,7 @@ val preapply_block :
   timestamp:Time.Protocol.t ->
   protocol_data:Protocol.block_header_data ->
   packed_operation list list ->
-  (Tezos_base.Block_header.shell_header * error Preapply_result.t list) tzresult
+  (Mavryk_base.Block_header.shell_header * error Preapply_result.t list) tzresult
   Lwt.t
 
 (** Monitor validated blocks/proposals from the node. *)
@@ -86,15 +86,15 @@ val await_protocol_activation :
 (** [get_attestable_slots ctxt pkh ~level] calls the DAL node RPC
     GET /profiles/<pkh>/attested_levels/<level>/attestable_slots *)
 val get_attestable_slots :
-  Tezos_rpc.Context.generic ->
+  Mavryk_rpc.Context.generic ->
   public_key_hash ->
   attested_level:int32 ->
-  Tezos_dal_node_services.Types.attestable_slots tzresult Lwt.t
+  Mavryk_dal_node_services.Types.attestable_slots tzresult Lwt.t
 
 (** [register_dal_profiles ctxt delegates] calls the DAL node RPC PATCH
     /profiles/ to register each profile corresponding to a delegate in
     [delegates]. *)
 val register_dal_profiles :
-  Tezos_rpc.Context.generic ->
+  Mavryk_rpc.Context.generic ->
   Baking_state.consensus_key list ->
   unit tzresult Lwt.t

@@ -10,10 +10,10 @@
   mavkit-libs.lwt-result-stdlib
   mavkit-protocol-alpha-libs.test-helpers
   mavkit-libs.micheline
-  tezos-openapi
-  tezos-protocol-alpha.protocol
+  mavryk-openapi
+  mavryk-protocol-alpha.protocol
   qcheck-core
-  tezos-time-measurement
+  mavryk-time-measurement
   data-encoding
   mavkit-libs.event-logging
   mavkit-libs.test-helpers)
@@ -26,7 +26,7 @@
   -open Tezt.Base
   -open Tezt_tezos
   -open Tezt_tezos.Runnable.Syntax
-  -open Tezt_tezos_tezt_performance_regression
-  -open Tezos_lwt_result_stdlib
-  -open Tezos_event_logging
-  -open Tezos_test_helpers))
+  -open Tezt_mavryk_tezt_performance_regression
+  -open Mavryk_lwt_result_stdlib
+  -open Mavryk_event_logging
+  -open Mavryk_test_helpers))

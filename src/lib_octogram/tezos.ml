@@ -141,7 +141,7 @@ let () = Agent_state.register_key (module Dal_node_key)
 let mk_rpc_config endpoint =
   let open RPC_client_unix in
   let rpc_config = {default_config with endpoint = Endpoint.to_uri endpoint} in
-  new http_ctxt rpc_config Tezos_rpc_http.Media_type.all_media_types
+  new http_ctxt rpc_config Mavryk_rpc_http.Media_type.all_media_types
 
 (* Returns the current level of the node whose endpoint is given. We use
    {!Monitor_services.heads} because {!Block_services.Empty.header} doesn't work
@@ -475,7 +475,7 @@ module Start_mavkit_node = struct
 
   let config_dal_srs node dal_cryptobox_parameters =
     let p = dal_cryptobox_parameters in
-    let dal_cryptobox : Tezos_crypto_dal.Cryptobox.parameters =
+    let dal_cryptobox : Mavryk_crypto_dal.Cryptobox.parameters =
       {
         slot_size = int_of_string p.slot_size;
         page_size = int_of_string p.page_size;
@@ -483,7 +483,7 @@ module Start_mavkit_node = struct
         number_of_shards = int_of_string p.number_of_shards;
       }
     in
-    let config : Tezos_crypto_dal_mavkit_dal_config.Dal_config.t =
+    let config : Mavryk_crypto_dal_mavkit_dal_config.Dal_config.t =
       {
         activated = true;
         use_mock_srs_for_testing = Some dal_cryptobox;
@@ -1056,7 +1056,7 @@ module Activate_protocol = struct
     let client = Client.create ~path:path_client ~endpoint () in
     Account.write Constant.all_secret_keys ~base_dir:(Client.base_dir client) ;
     (* The protocol is activated few seconds in the past. *)
-    let timestamp = Tezos_base.Time.System.Span.of_seconds_exn 5. in
+    let timestamp = Mavryk_base.Time.System.Span.of_seconds_exn 5. in
     Client.activate_protocol
       ~protocol
       ~parameter_file
@@ -1267,7 +1267,7 @@ module Originate_smart_rollup = struct
     in
     Log.info "Rollup %s originated" address ;
     let (`Hex hex_address) =
-      Tezos_crypto.Hashed.Smart_rollup_address.(
+      Mavryk_crypto.Hashed.Smart_rollup_address.(
         of_b58check_exn address |> to_string |> Hex.of_string)
     in
     return {address; hex_address}
@@ -1302,8 +1302,8 @@ module Originate_smart_contract = struct
   let contract_hash = "\002\090\121" (* KT1(36) *)
 
   module H =
-    Tezos_crypto.Blake2B.Make
-      (Tezos_crypto.Base58)
+    Mavryk_crypto.Blake2B.Make
+      (Mavryk_crypto.Base58)
       (struct
         let name = "Contract_hash"
 
@@ -2856,7 +2856,7 @@ module Start_mavkit_dal_node = struct
       Lwt_list.map_s
         (fun attester ->
           match
-            ( Tezos_crypto.Signature.Public_key_hash.of_b58check_opt attester,
+            ( Mavryk_crypto.Signature.Public_key_hash.of_b58check_opt attester,
               client_opt )
           with
           | Some _, _ -> return attester (* a valid tz address is given *)

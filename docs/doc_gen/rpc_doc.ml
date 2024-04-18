@@ -102,11 +102,11 @@ end
 module Description = struct
   module Query = struct
     let pp_arg fmt =
-      let open Tezos_rpc.Arg in
+      let open Mavryk_rpc.Arg in
       function {name; _} -> Format.fprintf fmt "<%s>" name
 
     let pp_title_item ppf =
-      let open Tezos_rpc.Description in
+      let open Mavryk_rpc.Description in
       function
       | {name; kind; _} -> (
           match kind with
@@ -126,11 +126,11 @@ module Description = struct
         query
 
     let pp_html_arg fmt =
-      let open Tezos_rpc.Arg in
+      let open Mavryk_rpc.Arg in
       function {name; _} -> Format.fprintf fmt "&lt;%s&gt;" name
 
     let pp_item ppf =
-      let open Tezos_rpc.Description in
+      let open Mavryk_rpc.Description in
       function
       | {name; description; kind} -> (
           (match kind with
@@ -194,8 +194,8 @@ module Description = struct
         (fun ppf ->
           Format.fprintf ppf "<%s>@ %a</%s>" tag pp_content content tag)
 
-    let pp_description ppf (service : _ Tezos_rpc.Description.service) =
-      let open Tezos_rpc.Description in
+    let pp_description ppf (service : _ Mavryk_rpc.Description.service) =
+      let open Mavryk_rpc.Description in
       (* TODO collect and display arg description (in path and in query) *)
       Format.fprintf
         ppf
@@ -206,7 +206,7 @@ module Description = struct
         service.query
 
     let pp ppf prefix service =
-      let open Tezos_rpc.Description in
+      let open Mavryk_rpc.Description in
       let target_ref = ref_of_service (prefix, service.meth) in
       Rst.pp_html ppf (fun ppf ->
           pp_tab_div ppf (fun ppf ->
@@ -355,20 +355,20 @@ let make_index_shell ?introduction_path node =
   let* shell_dir =
     let commit_info =
       ({
-         commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-         commit_date = Tezos_version_value.Current_git_info.committer_date;
+         commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+         commit_date = Mavryk_version_value.Current_git_info.committer_date;
        }
-        : Tezos_version.Node_version.commit_info)
+        : Mavryk_version.Node_version.commit_info)
     in
     let node_version = Node.get_version node in
     let shell_dir = Node.build_rpc_directory ~node_version ~commit_info node in
     let shell_dir =
-      Tezos_rpc.Directory.register0
+      Mavryk_rpc.Directory.register0
         shell_dir
         Node_services.S.config
         (fun () () -> Lwt.return_ok Config_file.default_config)
     in
-    Tezos_rpc.Directory.describe_directory ~recurse:true ~arg:() shell_dir
+    Mavryk_rpc.Directory.describe_directory ~recurse:true ~arg:() shell_dir
   in
   let ppf = Format.std_formatter in
   pp_document ppf "Shell" introduction_path [""] shell_dir "shell" ;
@@ -391,10 +391,10 @@ let make_index ?introduction_path ~required_version ~hash () =
             assert false
         | Some proto -> proto
       in
-      Tezos_rpc.Directory.map (fun () -> assert false)
+      Mavryk_rpc.Directory.map (fun () -> assert false)
       @@ Block_directory.build_raw_rpc_directory (module Proto) (module Proto)
     in
-    Tezos_rpc.Directory.describe_directory ~recurse:true ~arg:() dir
+    Mavryk_rpc.Directory.describe_directory ~recurse:true ~arg:() dir
   in
   let ppf = Format.std_formatter in
   pp_document ppf name introduction_path path dir required_version ;
@@ -403,7 +403,7 @@ let make_index ?introduction_path ~required_version ~hash () =
 let make_default_acl _node =
   let addr_of_string addr = P2p_point.Id.{addr; port = None; peer_id = None} in
   let policy =
-    let open Tezos_rpc_http_server.RPC_server.Acl in
+    let open Mavryk_rpc_http_server.RPC_server.Acl in
     put_policy (addr_of_string "127.0.0.1", allow_all) empty_policy
     |> put_policy (addr_of_string "any.public.address", secure)
     |> Data_encoding.Json.construct policy_encoding

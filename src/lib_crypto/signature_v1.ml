@@ -259,7 +259,7 @@ module Public_key_hash = struct
   end)
 
   let rpc_arg =
-    Tezos_rpc.Arg.like
+    Mavryk_rpc.Arg.like
       rpc_arg
       ~descr:"A Secp256k1 of a Ed25519 public key hash (Base58Check-encoded)"
       "pkh"
@@ -824,7 +824,7 @@ module type ENDORSEMENT_CACHE_MAKER = functor (H : Stdlib.Hashtbl.HashedType) ->
   Aches.Vache.MAP with type key = H.t
 
 let make_endorsement_cache : (module ENDORSEMENT_CACHE_MAKER) =
-  match Sys.getenv_opt "TEZOS_DISABLE_ENDORSEMENT_SIGNATURE_CACHE" with
+  match Sys.getenv_opt "MAVRYK_DISABLE_ENDORSEMENT_SIGNATURE_CACHE" with
   | Some _ -> (module Aches.Vache.EmptyMap)
   | None ->
       (module Aches.Vache.Map (Aches.Vache.FIFO_Sloppy) (Aches.Vache.Strong))

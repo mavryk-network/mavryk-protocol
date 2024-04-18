@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_scoru_wasm.Wasm_vm_sig.S
+include Mavryk_scoru_wasm.Wasm_vm_sig.S

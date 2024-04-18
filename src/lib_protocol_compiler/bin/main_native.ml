@@ -30,7 +30,7 @@ let () = Lwt.Exception_filter.(set handle_all_except_runtime)
 let () =
   (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if String.equal (String.sub executable_name 0 (String.length prefix)) prefix
   then
     let expected_name =
@@ -57,7 +57,7 @@ let () =
   try
     Mavkit_protocol_compiler.Compiler.main
       Mavkit_protocol_compiler_native.Native.driver
-      Tezos_version_value.Bin_version.version_string ;
+      Mavryk_version_value.Bin_version.version_string ;
     Stdlib.exit 0
   with exn ->
     Format.eprintf "%a\n%!" Opterrors.report_error exn ;

@@ -41,7 +41,7 @@
 
 (* These hooks must be attached to every process that should be captured for
    regression testing *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (* From a test mode, return:
    - the client mode to use;
@@ -769,7 +769,7 @@ let mempool_hooks =
       replacements
   in
   {
-    Tezos_regression.hooks with
+    Mavryk_regression.hooks with
     on_log = (fun output -> replace_variable output |> hooks.on_log);
   }
 

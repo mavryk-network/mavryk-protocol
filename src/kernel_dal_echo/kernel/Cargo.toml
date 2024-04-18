@@ -12,13 +12,13 @@ license = "MIT"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-tezos-smart-rollup-core.workspace = true
-tezos-smart-rollup-host.workspace = true
-tezos-smart-rollup-debug.workspace = true
-tezos-smart-rollup-entrypoint.workspace = true
-tezos-smart-rollup-storage.workspace = true
-tezos-smart-rollup-encoding.workspace = true
-tezos-smart-rollup-mock.workspace = true
+mavryk-smart-rollup-core.workspace = true
+mavryk-smart-rollup-host.workspace = true
+mavryk-smart-rollup-debug.workspace = true
+mavryk-smart-rollup-entrypoint.workspace = true
+mavryk-smart-rollup-storage.workspace = true
+mavryk-smart-rollup-encoding.workspace = true
+mavryk-smart-rollup-mock.workspace = true
 
 [features]
 default = []

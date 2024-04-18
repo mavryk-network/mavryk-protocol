@@ -9,16 +9,16 @@ use nom::{
     sequence::preceded,
 };
 #[cfg(test)]
-use tezos_crypto_rs::hash::SecretKeyEd25519;
-use tezos_crypto_rs::PublicKeySignatureVerifier;
-use tezos_crypto_rs::{blake2b, hash::Signature};
-use tezos_data_encoding::{
+use mavryk_crypto_rs::hash::SecretKeyEd25519;
+use mavryk_crypto_rs::PublicKeySignatureVerifier;
+use mavryk_crypto_rs::{blake2b, hash::Signature};
+use mavryk_data_encoding::{
     enc::{self, BinResult, BinWriter},
     nom::{NomReader, NomResult},
 };
-use tezos_smart_rollup_encoding::public_key::PublicKey;
-use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 
 #[derive(Debug, Clone, PartialEq, Eq, BinWriter, NomReader)]
 pub struct UnverifiedSigned<A>
@@ -64,7 +64,7 @@ where
     /// Return a signed body
     #[cfg(test)]
     fn sign_ed25519(body: A, secret: &SecretKeyEd25519) -> Result<Self, RuntimeError> {
-        use tezos_smart_rollup_host::Error;
+        use mavryk_smart_rollup_host::Error;
 
         let hash = UnverifiedSigned::hash_body(&body)?;
         let signature = secret
@@ -215,12 +215,12 @@ mod tests {
 
     use super::{KernelMessage, Sequence};
     use crate::message::SetSequencer;
-    use tezos_crypto_rs::hash::{PublicKeyEd25519, SecretKeyEd25519, SeedEd25519, Signature};
-    use tezos_crypto_rs::PublicKeySignatureVerifier;
-    use tezos_data_encoding::enc::{self, BinWriter};
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_encoding::public_key::PublicKey;
-    use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+    use mavryk_crypto_rs::hash::{PublicKeyEd25519, SecretKeyEd25519, SeedEd25519, Signature};
+    use mavryk_crypto_rs::PublicKeySignatureVerifier;
+    use mavryk_data_encoding::enc::{self, BinWriter};
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_encoding::public_key::PublicKey;
+    use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 
     /// Generate a public key and a secret key
     fn key_pair(seed: &str) -> (PublicKey, SecretKeyEd25519) {

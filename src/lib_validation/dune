@@ -2,15 +2,15 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_validation)
+ (name mavryk_validation)
  (public_name mavkit-shell-libs.validation)
  (instrumentation (backend bisect_ppx))
- (instrumentation (backend tezos-time-measurement))
+ (instrumentation (backend mavryk-time-measurement))
  (libraries
   mavkit-libs.base
   mavkit-libs.crypto
   mavkit-libs.rpc
-  mavkit-libs.tezos-context
+  mavkit-libs.mavryk-context
   mavkit-shell-libs.context-ops
   mavkit-shell-libs.shell-context
   mavkit-shell-libs.shell-services
@@ -19,11 +19,11 @@
   mavkit-version.value)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_context
-  -open Tezos_context_ops
-  -open Tezos_shell_context
-  -open Tezos_shell_services
-  -open Tezos_protocol_updater
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_context
+  -open Mavryk_context_ops
+  -open Mavryk_shell_context
+  -open Mavryk_shell_services
+  -open Mavryk_protocol_updater
+  -open Mavryk_stdlib_unix))

@@ -8,7 +8,7 @@
   tezt.core
   mavkit-libs.base
   mavkit-protocol-001-PtAtLas-libs.dal
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-libs.base-test-helpers
   mavkit-protocol-001-PtAtLas-libs.test-helpers
   mavkit-alcotezt)
@@ -17,12 +17,12 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_dal_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_base_test_helpers
-  -open Tezos_001_PtAtLas_test_helpers
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_dal_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_base_test_helpers
+  -open Mavryk_001_PtAtLas_test_helpers
   -open Mavkit_alcotezt)
  (modules test_dal_slot_frame_encoding test_helpers))
 

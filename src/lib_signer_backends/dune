@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_signer_backends)
+ (name mavryk_signer_backends)
  (public_name mavkit-shell-libs.signer-backends)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -16,10 +16,10 @@
   uri)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib
-  -open Tezos_client_base
-  -open Tezos_rpc_http
-  -open Tezos_rpc_http_client
-  -open Tezos_signer_services
-  -open Tezos_shell_services))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib
+  -open Mavryk_client_base
+  -open Mavryk_rpc_http
+  -open Mavryk_rpc_http_client
+  -open Mavryk_signer_services
+  -open Mavryk_shell_services))

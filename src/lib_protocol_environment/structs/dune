@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_structs)
+ (name mavryk_protocol_environment_structs)
  (public_name mavkit-proto-libs.protocol-environment.structs)
  (instrumentation (backend bisect_ppx))
  (libraries

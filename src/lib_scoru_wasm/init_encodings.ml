@@ -23,11 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter.Eval
+open Mavryk_webassembly_interpreter.Eval
 module Parser = Binary_parser_encodings
-open Tezos_tree_encoding
+open Mavryk_tree_encoding
 open Kont_encodings
-open Tezos_lazy_containers
+open Mavryk_lazy_containers
 
 let tag_encoding = value [] Data_encoding.string
 

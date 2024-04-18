@@ -42,8 +42,8 @@ let send_message ?(src = Constant.bootstrap2.alias) client msg =
 
 (* TX Kernel external messages and their encodings *)
 module Tx_kernel = struct
-  open Tezos_protocol_alpha.Protocol
-  open Tezos_crypto.Signature
+  open Mavryk_protocol_alpha.Protocol
+  open Mavryk_crypto.Signature
 
   type ticket = {
     ticketer : Alpha_context.Contract.t;
@@ -70,7 +70,7 @@ module Tx_kernel = struct
       }
     | Transfer of {
         (* mv4 address *)
-        destination : Tezos_crypto.Signature.Bls.Public_key_hash.t;
+        destination : Mavryk_crypto.Signature.Bls.Public_key_hash.t;
         ticket : ticket;
       }
 
@@ -123,7 +123,7 @@ module Tx_kernel = struct
     (* String ticket encoding for tx kernel.
        Corresponds to kernel_core::encoding::string_ticket::StringTicketRepr *)
     let ticket_repr {ticketer; content; amount} : string =
-      let open Tezos_protocol_alpha.Protocol.Alpha_context in
+      let open Mavryk_protocol_alpha.Protocol.Alpha_context in
       Printf.sprintf
         "\007\007\n\000\000\000\022%s\007\007\001%s\000%s"
         Data_encoding.(Binary.to_string_exn Contract.encoding ticketer)
@@ -151,7 +151,7 @@ module Tx_kernel = struct
           let mv4address =
             Data_encoding.(
               Binary.to_string_exn
-                Tezos_crypto.Signature.Bls.Public_key_hash.encoding
+                Mavryk_crypto.Signature.Bls.Public_key_hash.encoding
                 destination)
           in
           transfer_prefix ^ mv4address ^ ticket_repr ticket
@@ -230,7 +230,7 @@ module Tx_kernel = struct
   let external_message_of_batch (batch : transactions_batch) =
     let v1_batch_prefix = "\000" in
     let signature =
-      batch.aggregated_signature |> Tezos_crypto.Signature.Bls.to_bytes
+      batch.aggregated_signature |> Mavryk_crypto.Signature.Bls.to_bytes
       |> Bytes.to_string
     in
     hex_encode @@ v1_batch_prefix ^ batch.encoded_transactions ^ signature
@@ -368,11 +368,11 @@ let tx_kernel_e2e setup protocol =
   let level = init_level + 1 in
 
   (* gen two mv1 accounts *)
-  let pkh1, pk1, sk1 = Tezos_crypto.Signature.Ed25519.generate_key () in
-  let pkh2, pk2, sk2 = Tezos_crypto.Signature.Ed25519.generate_key () in
+  let pkh1, pk1, sk1 = Mavryk_crypto.Signature.Ed25519.generate_key () in
+  let pkh2, pk2, sk2 = Mavryk_crypto.Signature.Ed25519.generate_key () in
   let ticket_content = "Hello, Ticket!" in
   let ticketer =
-    Tezos_protocol_alpha.Protocol.Contract_hash.to_b58check
+    Mavryk_protocol_alpha.Protocol.Contract_hash.to_b58check
       mint_and_deposit_contract
   in
 
@@ -384,7 +384,7 @@ let tx_kernel_e2e setup protocol =
       ~mint_and_deposit_contract:ticketer
       ~sc_rollup_address
       ~destination_l2_addr:
-        (Tezos_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
+        (Mavryk_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
       ~ticket_content
       ~amount:450
   in
@@ -392,7 +392,7 @@ let tx_kernel_e2e setup protocol =
 
   (* Construct transfer *)
   let sc_rollup_hash =
-    Tezos_crypto.Hashed.Smart_rollup_address.of_b58check_exn sc_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_exn sc_rollup_address
   in
   let transfer_message =
     Transaction_batch.(

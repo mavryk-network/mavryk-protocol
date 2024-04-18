@@ -316,7 +316,7 @@ let test_merkle3 () =
 let test_batch_insertion () =
   let open Storage.Tree in
   let random_cm () =
-    Core.Commitment.of_bytes_exn (Tezos_crypto.Hacl.Rand.gen 32)
+    Core.Commitment.of_bytes_exn (Mavryk_crypto.Hacl.Rand.gen 32)
   in
   let random_cms = List.init 33 (fun _ -> random_cm ()) in
   (* List of trees with tree i having the first i commitments
@@ -369,7 +369,7 @@ let test_batch_insertion () =
 let bench_batch_insertion () =
   let open Storage.Tree in
   let random_cm () =
-    Core.Commitment.of_bytes_exn (Tezos_crypto.Hacl.Rand.gen 32)
+    Core.Commitment.of_bytes_exn (Mavryk_crypto.Hacl.Rand.gen 32)
   in
   let random_cms = List.init 33 (fun _ -> random_cm ()) in
   let start = Unix.gettimeofday () in

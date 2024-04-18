@@ -25,48 +25,48 @@
 (*****************************************************************************)
 
 let default_tcp_host =
-  match Sys.getenv_opt "TEZOS_SIGNER_TCP_HOST" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_TCP_HOST" with
   | None -> "localhost"
   | Some host -> host
 
 let default_tcp_port =
-  match Sys.getenv_opt "TEZOS_SIGNER_TCP_PORT" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_TCP_PORT" with
   | None -> "7732"
   | Some port -> port
 
 let default_https_host =
-  match Sys.getenv_opt "TEZOS_SIGNER_HTTPS_HOST" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_HTTPS_HOST" with
   | None -> "localhost"
   | Some host -> host
 
 let default_https_port =
-  match Sys.getenv_opt "TEZOS_SIGNER_HTTPS_PORT" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_HTTPS_PORT" with
   | None -> "443"
   | Some port -> port
 
 let default_http_host =
-  match Sys.getenv_opt "TEZOS_SIGNER_HTTP_HOST" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_HTTP_HOST" with
   | None -> "localhost"
   | Some host -> host
 
 let default_http_port =
-  match Sys.getenv_opt "TEZOS_SIGNER_HTTP_PORT" with
+  match Sys.getenv_opt "MAVRYK_SIGNER_HTTP_PORT" with
   | None -> "6732"
   | Some port -> port
 
 let group =
   {
-    Tezos_clic.name = "signer";
+    Mavryk_clic.name = "signer";
     title = "Commands specific to the signing daemon";
   }
 
 let magic_bytes_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"values allowed for the magic bytes, defaults to any"
     ~short:'M'
     ~long:"magic-bytes"
     ~placeholder:"0xHH,0xHH,..."
-    (Tezos_clic.parameter (fun _ s ->
+    (Mavryk_clic.parameter (fun _ s ->
          Lwt.return
            (List.map_e
               (fun s ->
@@ -79,7 +79,7 @@ let magic_bytes_arg =
               (String.split_no_empty ',' s))))
 
 let high_watermark_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~doc:
       "high watermark restriction\n\
        Stores the highest level signed for blocks and attestations for each \
@@ -90,12 +90,12 @@ let high_watermark_switch =
     ()
 
 let pidfile_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"write process id in file"
     ~short:'P'
     ~long:"pidfile"
     ~placeholder:"filename"
-    (Tezos_clic.parameter (fun _ s -> Lwt.return_ok s))
+    (Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s))
 
 let may_setup_pidfile pidfile_opt f =
   match pidfile_opt with
@@ -107,11 +107,11 @@ let may_setup_pidfile pidfile_opt f =
         ~filename:pidfile
         f
 
-let commands base_dir require_auth : Client_context.full Tezos_clic.command list
+let commands base_dir require_auth : Client_context.full Mavryk_clic.command list
     =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
-  Tezos_signer_backends_unix.Ledger.commands ()
+  Mavryk_signer_backends_unix.Ledger.commands ()
   @ Client_keys_commands.commands None
   @ [
       command
@@ -152,7 +152,7 @@ let commands base_dir require_auth : Client_context.full Tezos_clic.command list
         (fun (pidfile, magic_bytes, check_high_watermark, host, port, timeout)
              cctxt ->
           may_setup_pidfile pidfile @@ fun () ->
-          let* () = Tezos_signer_backends.Encrypted.decrypt_all cctxt in
+          let* () = Mavryk_signer_backends.Encrypted.decrypt_all cctxt in
           let* _ =
             Socket_daemon.run
               cctxt
@@ -180,7 +180,7 @@ let commands base_dir require_auth : Client_context.full Tezos_clic.command list
         (prefixes ["launch"; "local"; "signer"] @@ stop)
         (fun (pidfile, magic_bytes, check_high_watermark, path) cctxt ->
           may_setup_pidfile pidfile @@ fun () ->
-          let* () = Tezos_signer_backends.Encrypted.decrypt_all cctxt in
+          let* () = Mavryk_signer_backends.Encrypted.decrypt_all cctxt in
           let* _ =
             Socket_daemon.run
               cctxt
@@ -216,7 +216,7 @@ let commands base_dir require_auth : Client_context.full Tezos_clic.command list
         (prefixes ["launch"; "http"; "signer"] @@ stop)
         (fun (pidfile, magic_bytes, check_high_watermark, host, port) cctxt ->
           may_setup_pidfile pidfile @@ fun () ->
-          let* () = Tezos_signer_backends.Encrypted.decrypt_all cctxt in
+          let* () = Mavryk_signer_backends.Encrypted.decrypt_all cctxt in
           Http_daemon.run_http
             cctxt
             ~host
@@ -268,7 +268,7 @@ let commands base_dir require_auth : Client_context.full Tezos_clic.command list
              key
              cctxt ->
           may_setup_pidfile pidfile @@ fun () ->
-          let* () = Tezos_signer_backends.Encrypted.decrypt_all cctxt in
+          let* () = Mavryk_signer_backends.Encrypted.decrypt_all cctxt in
           Http_daemon.run_https
             cctxt
             ~host
@@ -293,27 +293,27 @@ let commands base_dir require_auth : Client_context.full Tezos_clic.command list
              ~name:"pk"
              ~desc:"full public key (Base58 encoded)"
              (parameter (fun _ s ->
-                  Lwt.return (Tezos_crypto.Signature.Public_key.of_b58check s)))
+                  Lwt.return (Mavryk_crypto.Signature.Public_key.of_b58check s)))
         @@ stop)
         (fun name key cctxt ->
-          let pkh = Tezos_crypto.Signature.Public_key.hash key in
+          let pkh = Mavryk_crypto.Signature.Public_key.hash key in
           let name =
             match name with
             | Some name -> name
-            | None -> Tezos_crypto.Signature.Public_key_hash.to_b58check pkh
+            | None -> Mavryk_crypto.Signature.Public_key_hash.to_b58check pkh
           in
           Handler.Authorized_key.add ~force:false cctxt name key);
     ]
 
 let home = try Sys.getenv "HOME" with Not_found -> "/root"
 
-let default_base_dir = Filename.concat home ".tezos-signer"
+let default_base_dir = Filename.concat home ".mavryk-signer"
 
-let string_parameter () : (string, _) Tezos_clic.parameter =
-  Tezos_clic.parameter (fun _ x -> Lwt.return_ok x)
+let string_parameter () : (string, _) Mavryk_clic.parameter =
+  Mavryk_clic.parameter (fun _ x -> Lwt.return_ok x)
 
 let base_dir_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"base-dir"
     ~short:'d'
     ~placeholder:"path"
@@ -324,14 +324,14 @@ let base_dir_arg () =
     (string_parameter ())
 
 let require_auth_arg () =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"require-authentication"
     ~short:'A'
     ~doc:"Require a signature from the caller to sign."
     ()
 
 let password_filename_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"password-filename"
     ~short:'f'
     ~placeholder:"filename"
@@ -339,7 +339,7 @@ let password_filename_arg () =
     (string_parameter ())
 
 let global_options () =
-  Tezos_clic.args3
+  Mavryk_clic.args3
     (base_dir_arg ())
     (require_auth_arg ())
     (password_filename_arg ())
@@ -352,7 +352,7 @@ module Signer_config = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (base_dir, require_auth, password_filename), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     return
       ( {

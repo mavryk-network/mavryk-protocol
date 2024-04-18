@@ -18,9 +18,9 @@ depends: [
   "camlzip" { >= "1.11" & < "1.12" }
   "tar"
   "tar-unix" { >= "2.0.1" & < "3.0.0" }
-  "tezos-dal-node-lib"
-  "tezos-dac-lib"
-  "tezos-dac-client-lib"
+  "mavryk-dal-node-lib"
+  "mavryk-dac-lib"
+  "mavryk-dac-client-lib"
   "mavkit-injector"
   "mavkit-version"
   "mavkit-l2-libs"

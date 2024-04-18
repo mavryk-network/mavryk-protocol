@@ -50,8 +50,8 @@ If you are using Docker instead, use the ``v12.4`` Docker images of Tezos.
 the new `Tenderbake <../protocols/tenderbake.html#daemons>`_ consensus
 algorithm, which no longer requires a separate *endorser* daemon. This
 functionality is now integrated into the *baker* daemons:
-``tezos-baker-012-Psithaca`` for Ithaca2 and, respectively,
-``tezos-baker-alpha`` for `protocol Alpha <../protocols/alpha.html>`_.
+``mavryk-baker-012-Psithaca`` for Ithaca2 and, respectively,
+``mavryk-baker-alpha`` for `protocol Alpha <../protocols/alpha.html>`_.
 
 Changelog
 ---------

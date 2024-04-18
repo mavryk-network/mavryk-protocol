@@ -15,7 +15,7 @@
     name: "build-$ARCH-$CI_COMMIT_REF_SLUG"
     paths:
       - mavkit-*
-      - tezos-*
+      - mavryk-*
       - src/proto_*/parameters/*.json
       - _build/default/src/lib_protocol_compiler/bin/main_native.exe
       - _build/default/tezt/tests/main.exe

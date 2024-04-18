@@ -1220,9 +1220,9 @@ val optional : target -> target
     When such targets appear in [?deps] of a target [maker], they are
     converted into [-open] in the order of declaration in [?deps].
     If you use [open_] on an [open_], the innermost [open_]s is opened first;
-    For instance, [tezos_base |> open_ |> open_ ~m: "TzPervasives"]
-    is target [tezos_base], but when used in [?deps], this automatically opens
-    ["Tezos_base"], followed by ["Tezos_base.TzPervasives"].
+    For instance, [mavryk_base |> open_ |> open_ ~m: "TzPervasives"]
+    is target [mavryk_base], but when used in [?deps], this automatically opens
+    ["Mavryk_base"], followed by ["Mavryk_base.TzPervasives"].
 
     Can only be used on internal libraries and on external or vendored
     libraries for which a [main_module] was specified. *)
@@ -1230,7 +1230,7 @@ val open_ : ?m:string -> target -> target
 
 (** Same as [open_], but only open if a condition holds.
 
-    Example: [tezos_base |> open_if protocol_is_recent_enough] *)
+    Example: [mavryk_base |> open_if protocol_is_recent_enough] *)
 val open_if : ?m:string -> bool -> target -> target
 
 (** Selectively makes a dependency available to the library's users:

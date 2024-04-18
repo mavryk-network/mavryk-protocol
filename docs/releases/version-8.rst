@@ -12,7 +12,7 @@ We have also spawned a test network for Edo, named Edonet, that
 replaces Ebetanet, which was a test network for a beta version of
 Edo. The release candidate contains the necessary configuration to
 join Edonet: just configure your node with
-``tezos-node config init --network edonet`` (but see `Known Issues`_ below).
+``mavryk-node config init --network edonet`` (but see `Known Issues`_ below).
 
 Version 8.1 fixes a performance regression related to operations
 involving ``mv3`` addresses and several compilation problems in
@@ -65,7 +65,7 @@ The Tezos node of version 8.3 does not recognize as a builtin network ``edo2net`
             "genesis_pubkey": "edpkugeDwmwuwyyD3Q5enapgEYDxZLtEUFFSrvVwXASQMVEqsvTqWu"
           }
         },
-        "chain_name": "TEZOS_EDO2NET_2021-02-11T14:00:00Z",
+        "chain_name": "MAVRYK_EDO2NET_2021-02-11T14:00:00Z",
         "sandboxed_chain_name": "SANDBOXED_TEZOS",
         "default_bootstrap_peers": [
           "edonet.tezos.co.il",

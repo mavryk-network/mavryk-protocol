@@ -29,10 +29,10 @@
    migration is done. *)
 include module type of Services_legacy
 
-open Tezos_crypto_dal
+open Mavryk_crypto_dal
 
 type 'rpc service =
-  ('meth, 'prefix, 'params, 'query, 'input, 'output) Tezos_rpc.Service.service
+  ('meth, 'prefix, 'params, 'query, 'input, 'output) Mavryk_rpc.Service.service
   constraint
     'rpc =
     < meth : 'meth
@@ -156,7 +156,7 @@ val get_assigned_shard_indices :
   ; input : unit
   ; output : Types.shard_index list
   ; prefix : unit
-  ; params : (unit * Tezos_crypto.Signature.public_key_hash) * Types.level
+  ; params : (unit * Mavryk_crypto.Signature.public_key_hash) * Types.level
   ; query : unit >
   service
 
@@ -169,7 +169,7 @@ val get_attestable_slots :
   ; input : unit
   ; output : Types.attestable_slots
   ; prefix : unit
-  ; params : (unit * Tezos_crypto.Signature.public_key_hash) * Types.level
+  ; params : (unit * Mavryk_crypto.Signature.public_key_hash) * Types.level
   ; query : unit >
   service
 

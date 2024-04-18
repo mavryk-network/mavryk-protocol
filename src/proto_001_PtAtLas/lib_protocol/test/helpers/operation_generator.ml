@@ -139,7 +139,7 @@ let gen_algo = QCheck2.Gen.oneofl Signature.algos
 
 let random_seed =
   let open QCheck2.Gen in
-  let+ str = string_size (pure Tezos_crypto.Hacl.Ed25519.sk_size) in
+  let+ str = string_size (pure Mavryk_crypto.Hacl.Ed25519.sk_size) in
   Bytes.unsafe_of_string str
 
 let random_keys =
@@ -260,10 +260,10 @@ let random_code =
 
 (** {2 Operations parameters generators} *)
 
-let random_shell : Tezos_base.Operation.shell_header QCheck2.Gen.t =
+let random_shell : Mavryk_base.Operation.shell_header QCheck2.Gen.t =
   let open QCheck2.Gen in
   let+ branch = gen_block_hash in
-  Tezos_base.Operation.{branch}
+  Mavryk_base.Operation.{branch}
 
 let gen_slot =
   let open QCheck2.Gen in

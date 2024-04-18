@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 let patch_env_loading () =
-  let open Tezos_base.TzPervasives in
+  let open Mavryk_base.TzPervasives in
   let preloaded_cmis : Persistent_env.Persistent_signature.t String.Hashtbl.t =
     Mavkit_protocol_compiler.Compiler.preloaded_cmis
   in

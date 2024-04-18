@@ -86,17 +86,17 @@ type sapling_transition = {
 }
 
 type forge_info = {
-  rcm : Tezos_sapling.Core.Client.Rcm.t;
+  rcm : Mavryk_sapling.Core.Client.Rcm.t;
   position : int64;
   amount : int64;
-  address : Tezos_sapling.Core.Client.Viewing_key.address;
-  nf : Tezos_sapling.Core.Client.Nullifier.t;
+  address : Mavryk_sapling.Core.Client.Viewing_key.address;
+  nf : Mavryk_sapling.Core.Client.Nullifier.t;
 }
 
 let random_amount state sum =
   Random.State.int64
     state
-    (Int64.sub Tezos_sapling.Core.Validator.UTXO.max_amount sum)
+    (Int64.sub Mavryk_sapling.Core.Validator.UTXO.max_amount sum)
 
 let reverse diff =
   Protocol.Sapling_repr.
@@ -117,11 +117,11 @@ let random_bytes state size =
 let rec gen_rcm state =
   let rcm =
     Data_encoding.Binary.of_bytes_exn
-      Tezos_sapling.Core.Client.Rcm.encoding
+      Mavryk_sapling.Core.Client.Rcm.encoding
       (random_bytes state 32)
   in
   try
-    Tezos_sapling.Core.Client.Rcm.assert_valid rcm ;
+    Mavryk_sapling.Core.Client.Rcm.assert_valid rcm ;
     rcm
   with _ -> gen_rcm state
 
@@ -130,23 +130,23 @@ let add_input diff vk index position sum state =
   let rcm = gen_rcm state in
   let amount = random_amount state sum in
   let new_idx, address =
-    Tezos_sapling.Core.Client.Viewing_key.new_address vk index
+    Mavryk_sapling.Core.Client.Viewing_key.new_address vk index
   in
   let cv =
-    Tezos_sapling.Core.Client.CV.of_bytes (random_bytes state 32)
+    Mavryk_sapling.Core.Client.CV.of_bytes (random_bytes state 32)
     |> WithExceptions.Option.get ~loc:__LOC__
   in
   let ciphertext, cm =
-    Tezos_sapling.Core.Client.Forge.Output.to_ciphertext
-      Tezos_sapling.Core.Client.Forge.Output.
+    Mavryk_sapling.Core.Client.Forge.Output.to_ciphertext
+      Mavryk_sapling.Core.Client.Forge.Output.
         {address; amount; memo = Bytes.empty}
       cv
       vk
       rcm
-      (Tezos_sapling.Core.Client.DH.esk_random ())
+      (Mavryk_sapling.Core.Client.DH.esk_random ())
   in
   let nf =
-    Tezos_sapling.Core.Client.Nullifier.compute address vk ~amount rcm ~position
+    Mavryk_sapling.Core.Client.Nullifier.compute address vk ~amount rcm ~position
   in
   let diff =
     Protocol.Sapling_repr.
@@ -219,18 +219,18 @@ let rec add_root nb_root ctxt id vk index size diff state =
 
 (* Compute a state as an OCaml object to compute the witness *)
 let state_from_rpc_diff rpc_diff =
-  Tezos_sapling.Storage.add
-    (Tezos_sapling.Storage.empty ~memo_size:0)
+  Mavryk_sapling.Storage.add
+    (Mavryk_sapling.Storage.empty ~memo_size:0)
     rpc_diff.Protocol.Sapling_repr.commitments_and_ciphertexts
 
 (* Create an (unspendable) output from a proving context and a vk *)
 let output proving_ctx vk sum state =
-  let address = Tezos_sapling.Core.Client.Viewing_key.dummy_address () in
+  let address = Mavryk_sapling.Core.Client.Viewing_key.dummy_address () in
   let amount = random_amount state sum in
-  let rcm = Tezos_sapling.Core.Client.Rcm.random () in
-  let esk = Tezos_sapling.Core.Client.DH.esk_random () in
+  let rcm = Mavryk_sapling.Core.Client.Rcm.random () in
+  let esk = Mavryk_sapling.Core.Client.DH.esk_random () in
   let cv_o, proof_o =
-    Tezos_sapling.Core.Client.Proving.output_proof
+    Mavryk_sapling.Core.Client.Proving.output_proof
       proving_ctx
       esk
       address
@@ -238,15 +238,15 @@ let output proving_ctx vk sum state =
       ~amount
   in
   let ciphertext, cm =
-    Tezos_sapling.Core.Client.Forge.Output.to_ciphertext
-      Tezos_sapling.Core.Client.Forge.Output.
+    Mavryk_sapling.Core.Client.Forge.Output.to_ciphertext
+      Mavryk_sapling.Core.Client.Forge.Output.
         {address; amount; memo = Bytes.empty}
       cv_o
       vk
       rcm
       esk
   in
-  (Tezos_sapling.Core.Validator.UTXO.{cm; proof_o; ciphertext}, amount)
+  (Mavryk_sapling.Core.Validator.UTXO.{cm; proof_o; ciphertext}, amount)
 
 (* Returns a list of outputs and the sum of their amount *)
 let outputs nb_output proving_ctx vk state =
@@ -260,7 +260,7 @@ let outputs nb_output proving_ctx vk state =
             amount
             (Int64.sub
                Int64.max_int
-               Tezos_sapling.Core.Validator.UTXO.max_amount)
+               Mavryk_sapling.Core.Validator.UTXO.max_amount)
           < 0) ;
         aux
           (Int64.add output_amount amount)
@@ -274,10 +274,10 @@ let outputs nb_output proving_ctx vk state =
 let make_inputs to_forge local_state proving_ctx sk vk root anti_replay =
   List.map_ep
     (fun {rcm; position; amount; address; nf} ->
-      let witness = Tezos_sapling.Storage.get_witness local_state position in
-      let ar = Tezos_sapling.Core.Client.Proving.ar_random () in
+      let witness = Mavryk_sapling.Storage.get_witness local_state position in
+      let ar = Mavryk_sapling.Core.Client.Proving.ar_random () in
       let cv, rk, proof =
-        Tezos_sapling.Core.Client.Proving.spend_proof
+        Mavryk_sapling.Core.Client.Proving.spend_proof
           proving_ctx
           vk
           sk
@@ -289,7 +289,7 @@ let make_inputs to_forge local_state proving_ctx sk vk root anti_replay =
           ~witness
       in
       let signature =
-        Tezos_sapling.Core.Client.Proving.spend_sig
+        Mavryk_sapling.Core.Client.Proving.spend_sig
           sk
           ar
           cv
@@ -299,7 +299,7 @@ let make_inputs to_forge local_state proving_ctx sk vk root anti_replay =
           anti_replay
       in
       return
-        Tezos_sapling.Core.Validator.UTXO.
+        Mavryk_sapling.Core.Validator.UTXO.
           {cv; nf; rk; proof_i = proof; signature})
     to_forge
 
@@ -319,17 +319,17 @@ let init_fresh_sapling_state ctxt =
 
 let generate_spending_and_viewing_keys state =
   let sk =
-    Tezos_sapling.Core.Client.Spending_key.of_seed (random_bytes state 32)
+    Mavryk_sapling.Core.Client.Spending_key.of_seed (random_bytes state 32)
   in
-  let vk = Tezos_sapling.Core.Client.Viewing_key.of_sk sk in
+  let vk = Mavryk_sapling.Core.Client.Viewing_key.of_sk sk in
   (sk, vk)
 
 let prepare_seeded_state_internal ~(nb_input : int) ~(nb_nf : int)
     ~(nb_cm : int) (ctxt : Raw_context.t) (state : Random.State.t) :
     (Sapling_repr.diff
     * forge_info list
-    * Tezos_sapling.Core.Client.Spending_key.t
-    * Tezos_sapling.Core.Client.Viewing_key.t
+    * Mavryk_sapling.Core.Client.Spending_key.t
+    * Mavryk_sapling.Core.Client.Viewing_key.t
     * Raw_context.t
     * Protocol.Lazy_storage_kind.Sapling_state.Id.t)
     tzresult
@@ -339,7 +339,7 @@ let prepare_seeded_state_internal ~(nb_input : int) ~(nb_nf : int)
     let*! result = init_fresh_sapling_state ctxt in
     Lwt.return (Environment.wrap_tzresult result)
   in
-  let index_start = Tezos_sapling.Core.Client.Viewing_key.default_index in
+  let index_start = Mavryk_sapling.Core.Client.Viewing_key.default_index in
   let sk, vk = generate_spending_and_viewing_keys state in
   let* diff, to_forge =
     generate_commitments
@@ -381,9 +381,9 @@ let generate ~(nb_input : int) ~(nb_output : int) ~(nb_nf : int) ~(nb_cm : int)
     prepare_seeded_state_internal ~nb_input ~nb_nf ~nb_cm ctxt state
   in
   let local_state = state_from_rpc_diff diff in
-  let root = Tezos_sapling.Storage.get_root local_state in
+  let root = Mavryk_sapling.Storage.get_root local_state in
   let* transaction =
-    Tezos_sapling.Core.Client.Proving.with_proving_ctx (fun proving_ctx ->
+    Mavryk_sapling.Core.Client.Proving.with_proving_ctx (fun proving_ctx ->
         let* inputs =
           make_inputs to_forge local_state proving_ctx sk vk root anti_replay
         in
@@ -396,7 +396,7 @@ let generate ~(nb_input : int) ~(nb_output : int) ~(nb_nf : int) ~(nb_cm : int)
                   sum
                   (Int64.sub
                      Int64.max_int
-                     Tezos_sapling.Core.Validator.UTXO.max_amount)
+                     Mavryk_sapling.Core.Validator.UTXO.max_amount)
                 < 0) ;
               Int64.add sum amount)
             0L
@@ -409,7 +409,7 @@ let generate ~(nb_input : int) ~(nb_output : int) ~(nb_nf : int) ~(nb_cm : int)
           ""
         in
         let binding_sig =
-          Tezos_sapling.Core.Client.Proving.make_binding_sig
+          Mavryk_sapling.Core.Client.Proving.make_binding_sig
             proving_ctx
             inputs
             outputs
@@ -418,7 +418,7 @@ let generate ~(nb_input : int) ~(nb_output : int) ~(nb_nf : int) ~(nb_cm : int)
             anti_replay
         in
         let transaction =
-          Tezos_sapling.Core.Validator.UTXO.
+          Mavryk_sapling.Core.Validator.UTXO.
             {inputs; outputs; binding_sig; balance; root; bound_data}
         in
         return transaction)
@@ -457,12 +457,12 @@ let save ~filename ~txs =
     | Ok res -> res
   in
   ignore (* TODO handle error *)
-    (Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.create_file filename str)
+    (Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.create_file filename str)
 
 let load_file filename =
   let open Lwt_syntax in
   Lwt_main.run
-  @@ let* str = Tezos_stdlib_unix.Lwt_utils_unix.read_file filename in
+  @@ let* str = Mavryk_stdlib_unix.Lwt_utils_unix.read_file filename in
      Format.eprintf "Sapling_generation.load: loaded %s@." filename ;
      match Data_encoding.Binary.of_string sapling_dataset_encoding str with
      | Ok result ->

@@ -6,7 +6,7 @@
 use crate::error::Error;
 use crate::error::UpgradeProcessError::Fallback;
 use crate::storage::{read_storage_version, store_storage_version, STORAGE_VERSION};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 pub enum MigrationStatus {
     None,

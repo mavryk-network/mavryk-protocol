@@ -9,7 +9,7 @@ daemons (baker, endorser and accuser).
 
 This release also contains the necessary configuration to join the
 Florencenet test network, which runs Florence. To join Florencenet,
-simply configure your node with ``tezos-node config init --network
+simply configure your node with ``mavryk-node config init --network
 florencenet``.
 
 Version 9.1 fixes a performance and memory usage regression issue

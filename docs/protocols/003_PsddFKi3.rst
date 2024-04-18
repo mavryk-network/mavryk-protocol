@@ -171,7 +171,7 @@ Hence an operation without fee won't even propagate through
 the network. The constant can be changed with the following RPC
 call::
 
-   ./tezos-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "0", "minimal_nanomav_per_gas_unit": "0", "minimal_nanomav_per_byte": "0" }'
+   ./mavryk-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "0", "minimal_nanomav_per_gas_unit": "0", "minimal_nanomav_per_byte": "0" }'
 
 The constants used by the node and the baker do not need to be equal,
 but the node needs to be less restrictive than the baker, otherwise

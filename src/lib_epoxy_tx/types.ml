@@ -39,9 +39,9 @@ module P = struct
 
   type 'a ticket = {id : S.t; amount : 'a Bounded.t}
 
-  type tezos_pkh = bytes
+  type mavryk_pkh = bytes
 
-  type tezos_zkru = bytes
+  type mavryk_zkru = bytes
 
   type account = {
     pk : Schnorr.pk;
@@ -73,8 +73,8 @@ module P = struct
   type header = {
     op_code : op_code Bounded.t;
     price : balance ticket;
-    l1_dst : tezos_pkh;
-    rollup_id : tezos_zkru;
+    l1_dst : mavryk_pkh;
+    rollup_id : mavryk_zkru;
   }
 
   type unsigned_transfer_payload = {
@@ -180,9 +180,9 @@ module P = struct
 
     let pk = Schnorr.neuterize sk
 
-    let tezos_pkh = Bytes.init 21 (fun i -> char_of_int i)
+    let mavryk_pkh = Bytes.init 21 (fun i -> char_of_int i)
 
-    let tezos_zkru = Bytes.init 20 (fun _i -> char_of_int 0)
+    let mavryk_zkru = Bytes.init 20 (fun _i -> char_of_int 0)
 
     let signature =
       let rand = Curve.Scalar.random () in
@@ -212,8 +212,8 @@ module P = struct
       {
         op_code;
         price = ticket_balance;
-        l1_dst = tezos_pkh;
-        rollup_id = tezos_zkru;
+        l1_dst = mavryk_pkh;
+        rollup_id = mavryk_zkru;
       }
 
     let unsigned_transfer_payload =
@@ -268,9 +268,9 @@ module V (L : LIB) = struct
 
   type 'a ticket_u = {id : scalar repr; amount : 'a Bounded_u.t}
 
-  type tezos_pkh_u = scalar repr
+  type mavryk_pkh_u = scalar repr
 
-  type tezos_zkru_u = scalar repr
+  type mavryk_zkru_u = scalar repr
 
   type account_u = {
     pk : Schnorr.pk repr;
@@ -296,8 +296,8 @@ module V (L : LIB) = struct
   type header_u = {
     op_code : op_code Bounded_u.t;
     price : balance ticket_u;
-    l1_dst : tezos_pkh_u;
-    rollup_id : tezos_zkru_u;
+    l1_dst : mavryk_pkh_u;
+    rollup_id : mavryk_zkru_u;
   }
 
   type unsigned_transfer_payload_u = {
@@ -424,7 +424,7 @@ module Encodings (L : LIB) = struct
   let op_code_encoding ~safety =
     Bounded_e.encoding ~safety Constants.Bound.max_op_code
 
-  let tezos_pkh_encoding : (tezos_pkh, tezos_pkh_u, _) encoding =
+  let mavryk_pkh_encoding : (mavryk_pkh, mavryk_pkh_u, _) encoding =
     conv
       (fun pkhu -> pkhu)
       (fun w -> w)
@@ -432,7 +432,7 @@ module Encodings (L : LIB) = struct
       U.scalar_to_bytes
       scalar_encoding
 
-  let tezos_zkru_encoding : (tezos_zkru, tezos_zkru_u, _) encoding =
+  let mavryk_zkru_encoding : (mavryk_zkru, mavryk_zkru_u, _) encoding =
     conv
       (fun zkru -> zkru)
       (fun w -> w)
@@ -528,8 +528,8 @@ module Encodings (L : LIB) = struct
       (obj4_encoding
          (op_code_encoding ~safety)
          (ticket_balance_encoding ~safety)
-         tezos_pkh_encoding
-         tezos_zkru_encoding)
+         mavryk_pkh_encoding
+         mavryk_zkru_encoding)
 
   let unsigned_transfer_payload_encoding ~safety :
       (unsigned_transfer_payload, unsigned_transfer_payload_u, _) encoding =

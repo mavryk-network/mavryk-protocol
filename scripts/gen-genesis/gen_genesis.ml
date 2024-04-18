@@ -1,4 +1,4 @@
-open Tezos_crypto
+open Mavryk_crypto
 
 let () =
   if Array.length Sys.argv <= 3 then (

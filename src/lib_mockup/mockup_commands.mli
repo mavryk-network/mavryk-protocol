@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val group : Tezos_clic.group
+val group : Mavryk_clic.group
 
 val commands :
-  unit -> Tezos_client_base.Client_context.full Tezos_clic.command list
+  unit -> Mavryk_client_base.Client_context.full Mavryk_clic.command list

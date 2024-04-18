@@ -68,7 +68,7 @@ val hash_to_raw : hash -> raw_hash
 val raw_hash_of_bytes : bytes -> raw_hash
 
 (** [raw_hash] argument definition for RPC. *)
-val raw_hash_rpc_arg : raw_hash Tezos_rpc.Arg.arg
+val raw_hash_rpc_arg : raw_hash Mavryk_rpc.Arg.arg
 
 (** [pp_raw_hash] is a pretty printer for [raw_hash] values. *)
 val pp_raw_hash : Format.formatter -> raw_hash -> unit

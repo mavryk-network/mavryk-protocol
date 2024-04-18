@@ -36,25 +36,25 @@
 
 TODAY=$(date +"%Y%m%d_%H%M")
 
-# /data/tezos-benchmarks/slack_token contains the token that authorizes to send
+# /data/mavryk-benchmarks/slack_token contains the token that authorizes to send
 # messages using the gas-benchmarks-reports Slack application.
 # The file can only be read by mclaren, its owner. This is to prevent anybody to
 # use the application to send messages.
 # C04HZHR11DW is the identifier for the #gas-benchmarks-reports channel (it can
 # be found in its URL).
 slack() {
-    curl -X POST -H 'Authorization: Bearer '"$(cat /data/tezos-benchmarks/slack_token)" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"C04HZHR11DW\",\"text\":\"$1\"}" https://tezos-dev.slack.com/api/chat.postMessage
+    curl -X POST -H 'Authorization: Bearer '"$(cat /data/mavryk-benchmarks/slack_token)" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"C04HZHR11DW\",\"text\":\"$1\"}" https://mavryk-dev.slack.com/api/chat.postMessage
 }
 
 anomaly() {
   date +"[%Y-%m-%d %T] $1." >> anomalies;
-  slack "Something went wrong with \`$TODAY\`'s run :cry:\nThe message below was returned; the referred files can be found at \`163.172.52.82:/data/tezos-benchmarks\`. Remember to clean up for the next run when you're done (see the cleaning procedure in the <https://gitlab.com/tezos/tezos/-/blob/master/devtools/benchmarks-tools/README.md#cleaning-up-after-a-failure|README>).\n** $1."
+  slack "Something went wrong with \`$TODAY\`'s run :cry:\nThe message below was returned; the referred files can be found at \`163.172.52.82:/data/mavryk-benchmarks\`. Remember to clean up for the next run when you're done (see the cleaning procedure in the <https://gitlab.com/tezos/tezos/-/blob/master/devtools/benchmarks-tools/README.md#cleaning-up-after-a-failure|README>).\n** $1."
   exit 1
 }
 
 slack "Hi everyone!\nA new run of the benchmarks has started for \`$TODAY\` :alarm_clock:\nIf you don't hear back from me by tomorrow, this probably means that something went very wrong."
 
-cd /data/tezos-benchmarks || (anomaly "Unknown benchmarks directory for \`$TODAY\`")
+cd /data/mavryk-benchmarks || (anomaly "Unknown benchmarks directory for \`$TODAY\`")
 
 # Check that the previous process is over.
 if [ -f "cron_res" ]; then

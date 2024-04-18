@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_gossipsub
+open Mavryk_gossipsub
 open Gossipsub_intf
 module Milliseconds = Test_gossipsub_shared.Milliseconds
 

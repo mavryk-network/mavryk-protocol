@@ -63,7 +63,7 @@ let output_stanzas prefix =
 ; Compares preprocessed output with expected output
 (rule
  (alias runtest)
- (package tezos-time-measurement)
+ (package mavryk-time-measurement)
  (action (diff %s %s)))
 |}
     output
@@ -74,7 +74,7 @@ let output_stanzas prefix =
 (library
  (name %s)
  (modules %s)
- (preprocess (pps tezos-time-measurement.ppx))
+ (preprocess (pps mavryk-time-measurement.ppx))
  (libraries lwt)
  (flags (:standard -open Lwt)))
 |}
@@ -87,7 +87,7 @@ let output_stanzas prefix =
 (library
  (name %s)
  (modules %s)
- (libraries lwt tezos-time-measurement)
+ (libraries lwt mavryk-time-measurement)
  (flags (:standard -open Lwt)))
 |}
     output

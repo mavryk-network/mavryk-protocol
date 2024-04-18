@@ -36,7 +36,7 @@ depends: [
   "fmt" { >= "0.8.7" }
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
   "resto-cohttp-self-serving-client" { >= "1.2" }
-  "tezos-benchmark"
+  "mavryk-benchmark"
   "qcheck-alcotest" { with-test & >= "0.20" }
   "qcheck-core" {with-test}
   "lwt" { with-test & >= "5.7.0" }

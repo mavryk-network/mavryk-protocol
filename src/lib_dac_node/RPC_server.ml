@@ -25,8 +25,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc_http
-open Tezos_rpc_http_server
+open Mavryk_rpc_http
+open Mavryk_rpc_http_server
 
 let add_service registerer service handler directory =
   registerer directory service handler
@@ -34,21 +34,21 @@ let add_service registerer service handler directory =
 let register_get_health_live cctxt directory =
   directory
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        RPC_services.get_health_live
        (fun () () -> RPC_handlers.handle_get_health_live cctxt)
 
 let register_get_health_ready cctxt directory =
   directory
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        RPC_services.get_health_ready
        (fun () () -> RPC_handlers.handle_get_health_ready cctxt)
 
 module V0 = struct
   let register_get_preimage dac_plugin page_store =
     add_service
-      Tezos_rpc.Directory.register1
+      Mavryk_rpc.Directory.register1
       RPC_services.V0.get_preimage
       (fun hash () () ->
         RPC_handlers.Shared_by_V0_and_V1.handle_get_page
@@ -57,21 +57,21 @@ module V0 = struct
           hash)
 
   let register_monitor_root_hashes hash_streamer dir =
-    Tezos_rpc.Directory.gen_register
+    Mavryk_rpc.Directory.gen_register
       dir
       Monitor_services.V0.S.root_hashes
       (fun () () () -> RPC_handlers.V0.handle_monitor_root_hashes hash_streamer)
 
   let register_get_certificate node_store =
     add_service
-      Tezos_rpc.Directory.register1
+      Mavryk_rpc.Directory.register1
       RPC_services.V0.get_certificate
       (fun root_hash () () ->
         RPC_handlers.V0.handle_get_certificate node_store root_hash)
 
   let register_get_serialized_certificate node_store dac_plugin =
     add_service
-      Tezos_rpc.Directory.register1
+      Mavryk_rpc.Directory.register1
       RPC_services.V0.get_serialized_certificate
       (fun root_hash () () ->
         RPC_handlers.V0.handle_get_serialized_certificate
@@ -82,7 +82,7 @@ module V0 = struct
   module Coordinator = struct
     let register_monitor_certificate dac_plugin ro_node_store
         certificate_streamers committee_members dir =
-      Tezos_rpc.Directory.gen_register
+      Mavryk_rpc.Directory.gen_register
         dir
         Monitor_services.V0.S.certificate
         (fun ((), root_hash) () () ->
@@ -97,12 +97,12 @@ module V0 = struct
           in
           match handler with
           | Ok (next, shutdown) ->
-              Tezos_rpc.Answer.return_stream {next; shutdown}
-          | Error e -> Tezos_rpc.Answer.fail e)
+              Mavryk_rpc.Answer.return_stream {next; shutdown}
+          | Error e -> Mavryk_rpc.Answer.fail e)
 
     let register_post_preimage dac_plugin hash_streamer page_store =
       add_service
-        Tezos_rpc.Directory.register0
+        Mavryk_rpc.Directory.register0
         RPC_services.V0.Coordinator.post_preimage
         (fun () payload ->
           RPC_handlers.V0.Coordinator.handle_post_preimage
@@ -114,7 +114,7 @@ module V0 = struct
     let register_put_dac_member_signature ctx dac_plugin rw_node_store
         page_store =
       add_service
-        Tezos_rpc.Directory.register0
+        Mavryk_rpc.Directory.register0
         RPC_services.V0.put_dac_member_signature
         (fun () dac_member_signature ->
           Signature_manager.Coordinator.handle_put_dac_member_signature
@@ -130,7 +130,7 @@ module V0 = struct
       in
       let certificate_streamers = coordinator_node_ctxt.certificate_streamers in
       let committee_members = coordinator_node_ctxt.committee_members in
-      Tezos_rpc.Directory.empty
+      Mavryk_rpc.Directory.empty
       |> register_post_preimage dac_plugin hash_streamer page_store
       |> register_get_preimage dac_plugin page_store
       |> register_monitor_root_hashes hash_streamer
@@ -150,13 +150,13 @@ module V0 = struct
 
   module Committee_member = struct
     let dynamic_rpc_dir dac_plugin page_store =
-      Tezos_rpc.Directory.empty |> register_get_preimage dac_plugin page_store
+      Mavryk_rpc.Directory.empty |> register_get_preimage dac_plugin page_store
   end
 
   module Observer = struct
     let register_get_missing_page dac_plugin page_store cctxts timeout =
       add_service
-        Tezos_rpc.Directory.register1
+        Mavryk_rpc.Directory.register1
         RPC_services.V0.get_missing_page
         (fun root_hash () () ->
           RPC_handlers.V0.Observer.handle_get_missing_page
@@ -167,7 +167,7 @@ module V0 = struct
             root_hash)
 
     let dynamic_rpc_dir dac_plugin committee_member_cctxts timeout page_store =
-      Tezos_rpc.Directory.empty
+      Mavryk_rpc.Directory.empty
       |> register_get_preimage dac_plugin page_store
       |> register_get_missing_page
            dac_plugin
@@ -180,7 +180,7 @@ end
 module V1 = struct
   let register_get_pages dac_plugin page_store =
     add_service
-      Tezos_rpc.Directory.register1
+      Mavryk_rpc.Directory.register1
       RPC_services.V1.get_pages
       (fun hash () () ->
         RPC_handlers.Shared_by_V0_and_V1.handle_get_page
@@ -190,17 +190,17 @@ module V1 = struct
 
   module Coordinator = struct
     let dynamic_rpc_dir dac_plugin page_store =
-      Tezos_rpc.Directory.empty |> register_get_pages dac_plugin page_store
+      Mavryk_rpc.Directory.empty |> register_get_pages dac_plugin page_store
   end
 
   module Committee_member = struct
     let dynamic_rpc_dir dac_plugin page_store =
-      Tezos_rpc.Directory.empty |> register_get_pages dac_plugin page_store
+      Mavryk_rpc.Directory.empty |> register_get_pages dac_plugin page_store
   end
 
   module Observer = struct
     let dynamic_rpc_dir dac_plugin page_store =
-      Tezos_rpc.Directory.empty |> register_get_pages dac_plugin page_store
+      Mavryk_rpc.Directory.empty |> register_get_pages dac_plugin page_store
   end
 end
 
@@ -240,21 +240,21 @@ let start ~rpc_address ~rpc_port ~allow_v1_api node_ctxt =
     |> register_get_health_live node_ctxt
   in
   let dir =
-    Tezos_rpc.Directory.register_dynamic_directory
-      Tezos_rpc.Directory.empty
-      Tezos_rpc.Path.open_root
+    Mavryk_rpc.Directory.register_dynamic_directory
+      Mavryk_rpc.Directory.empty
+      Mavryk_rpc.Path.open_root
       (fun () ->
         match Node_context.get_status node_ctxt with
         | Ready {dac_plugin = (module Dac_plugin)} ->
             Lwt.return
-              (Tezos_rpc.Directory.merge
+              (Mavryk_rpc.Directory.merge
                  (register_v0_dynamic_rpc (module Dac_plugin))
                  (if allow_v1_api then
                   register_v1_dynamic_rpc (module Dac_plugin)
-                 else Tezos_rpc.Directory.empty)
+                 else Mavryk_rpc.Directory.empty)
               |> register_health_endpoints)
         | Starting ->
-            Lwt.return (Tezos_rpc.Directory.empty |> register_health_endpoints))
+            Lwt.return (Mavryk_rpc.Directory.empty |> register_health_endpoints))
   in
   let rpc_address = P2p_addr.of_string_exn rpc_address in
   let host = Ipaddr.V6.to_string rpc_address in
@@ -285,4 +285,4 @@ let install_finalizer rpc_server =
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
   let* () = shutdown rpc_server in
   let* () = Event.(emit shutdown_node exit_status) in
-  Tezos_base_unix.Internal_event_unix.close ()
+  Mavryk_base_unix.Internal_event_unix.close ()

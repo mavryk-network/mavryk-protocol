@@ -79,7 +79,7 @@ let contract_entrypoint_type cctxt ~(chain : Chain_services.chain) ~block
   in
   match ty_opt with
   | Ok ty -> return_some ty
-  | Error (Tezos_rpc.Context.Not_found _ :: _) -> return_none
+  | Error (Mavryk_rpc.Context.Not_found _ :: _) -> return_none
   | Error _ as err -> Lwt.return err
 
 let print_entrypoint_type (cctxt : #Client_context.printer)

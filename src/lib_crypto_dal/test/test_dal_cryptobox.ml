@@ -610,7 +610,7 @@ module Test = struct
              (Cryptobox.make (get_cryptobox_parameters params))
          in
          let precomputation = Cryptobox.precompute_shards_proofs t in
-         let dummy_hash = Tezos_crypto.Blake2B.hash_bytes [] in
+         let dummy_hash = Mavryk_crypto.Blake2B.hash_bytes [] in
          let* _ =
            Lwt_main.run
              (let open Error_monad.Lwt_result_syntax in
@@ -1019,7 +1019,7 @@ let () =
     [
       ("Unit tests", test);
       ( "PBT",
-        Tezos_test_helpers.Qcheck2_helpers.qcheck_wrap
+        Mavryk_test_helpers.Qcheck2_helpers.qcheck_wrap
           Test.
             [
               test_erasure_code;

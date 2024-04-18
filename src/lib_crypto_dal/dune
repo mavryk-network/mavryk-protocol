@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_crypto_dal)
+ (name mavryk_crypto_dal)
  (public_name mavkit-libs.crypto-dal)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -15,7 +15,7 @@
   mavkit-libs.kzg)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
   -open Data_encoding
-  -open Tezos_crypto_dal_mavkit_dal_config))
+  -open Mavryk_crypto_dal_mavkit_dal_config))

@@ -10,13 +10,13 @@
   ezjsonm
   mavkit-shell-libs.store
   mavkit-shell-libs.shell-context
-  mavkit-libs.tezos-context
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-alpha.protocol)
+  mavkit-libs.mavryk-context
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives)
+  -open Mavryk_base.TzPervasives)
  (modules (:standard \ yes_wallet)))
 
 (executable

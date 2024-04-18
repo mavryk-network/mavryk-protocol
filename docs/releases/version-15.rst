@@ -28,13 +28,13 @@ block without prechecking it first, when the active protocol is Lima.
 
 .. warning::
 
-   All executables have been renamed.  The ``tezos-`` prefix
+   All executables have been renamed.  The ``mavryk-`` prefix
    has been replaced by ``mavkit-`` and protocol numbers have been
-   removed. For instance, ``tezos-node`` is now named ``mavkit-node``
-   and ``tezos-baker-014-PtKathma`` is now named
+   removed. For instance, ``mavryk-node`` is now named ``mavkit-node``
+   and ``mavryk-baker-014-PtKathma`` is now named
    ``mavkit-baker-PtKathma``.  Same renaming occurred in the Docker
-   entrypoint. For instance, ``tezos-node`` is now named
-   ``mavkit-node`` and ``tezos-baker`` is now named ``mavkit-baker``.
+   entrypoint. For instance, ``mavryk-node`` is now named
+   ``mavkit-node`` and ``mavryk-baker`` is now named ``mavkit-baker``.
 
    Note that if you compile from source using ``make``, symbolic links
    from the old names to the new names are created, so you can still

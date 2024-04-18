@@ -26,7 +26,7 @@
 (** Run mavkit-codec commands. *)
 
 (** In all functions below, [path] can be used to override the path
-    to [mavkit-codec], which is [Constant.tezos_codec] by default. *)
+    to [mavkit-codec], which is [Constant.mavryk_codec] by default. *)
 
 (** Run [mavkit-codec encode <name> from <json>]. *)
 val encode :

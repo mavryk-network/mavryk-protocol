@@ -7,7 +7,7 @@ is used among other things to hash blocks, operations and contexts:
 
 .. code-block:: ocaml
 
-   Tezos_crypto.Blake2B.hash_bytes : ?key:bytes -> bytes list -> Tezos_crypto.Blake2B.t
+   Mavryk_crypto.Blake2B.hash_bytes : ?key:bytes -> bytes list -> Mavryk_crypto.Blake2B.t
 
 At the time of writing, this function is a thin wrapper which
 concatenates the list of bytes and passes it to the ``blake2b``
@@ -28,7 +28,7 @@ to help organize them.
 
 .. code-block:: ocaml
 
-   open Tezos_benchmark
+   open Mavryk_benchmark
 
    let ns = Namespace.(make root "example")
 
@@ -43,7 +43,7 @@ kind.
 
    module Blake2b_bench : Benchmark.S = struct
      let name = ns "Blake2b_example"
-     let info = "Illustrating tezos-benchmark by benchmarking blake2b"
+     let info = "Illustrating mavryk-benchmark by benchmarking blake2b"
      let module_filename = __FILE__
      let generated_code_destination = None
      let tags = ["example"]
@@ -143,7 +143,7 @@ an explicit ``rng_state`` of type ``Random.State.t``.
        let bytes = Base_samplers.uniform_bytes rng_state ~nbytes in
        let workload = {nbytes} in
        (* The closure here is the piece of code to be benchmarked. *)
-       let closure () = ignore (Tezos_crypto.Blake2B.hash_bytes [bytes]) in
+       let closure () = ignore (Mavryk_crypto.Blake2B.hash_bytes [bytes]) in
        Generator.Plain {workload; closure}
      let create_benchmarks ~rng_state ~bench_num config =
        List.repeat bench_num (blake2b_benchmark rng_state config)
@@ -170,7 +170,7 @@ Which prints:
 
 ::
 
-   example/Blake2b_example: Illustrating tezos-benchmark by benchmarking blake2b
+   example/Blake2b_example: Illustrating mavryk-benchmark by benchmarking blake2b
 
 We can also query more information about the benchmark, resulting from the
 registration process.
@@ -190,7 +190,7 @@ And here is what we get.
    Generated code destination:
        Destination not specified
    Info:
-       Illustrating tezos-benchmark by benchmarking blake2b
+       Illustrating mavryk-benchmark by benchmarking blake2b
    Tags:
        example
    Models:

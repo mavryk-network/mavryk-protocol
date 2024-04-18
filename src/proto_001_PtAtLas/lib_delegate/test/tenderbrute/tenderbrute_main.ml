@@ -106,7 +106,7 @@ let selection_to_pkhs bootstrap_accounts_json selection =
 
 let parse_json_or_file s =
   let open Lwt_syntax in
-  let+ json_opt = Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file s in
+  let+ json_opt = Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file s in
   match json_opt with
   | Ok json -> Ok json
   | Error errs -> (

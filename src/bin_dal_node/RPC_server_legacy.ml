@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_dal_node_services
+open Mavryk_dal_node_services
 
 let handle_slot_pages ctxt (_, commitment) () () =
   let open Lwt_result_syntax in
@@ -47,7 +47,7 @@ let handle_shards ctxt (_, commitment) () shards =
     shards
 
 let register_show_slot_pages ctxt dir =
-  Tezos_rpc.Directory.register dir Services.slot_pages (handle_slot_pages ctxt)
+  Mavryk_rpc.Directory.register dir Services.slot_pages (handle_slot_pages ctxt)
 
 let shards_service :
     ( [`POST],
@@ -56,20 +56,20 @@ let shards_service :
       unit,
       int list,
       Cryptobox.shard list )
-    Tezos_rpc.Service.service =
+    Mavryk_rpc.Service.service =
   Services.shards
 
 let register_shards ctxt dir =
-  Tezos_rpc.Directory.register dir shards_service (handle_shards ctxt)
+  Mavryk_rpc.Directory.register dir shards_service (handle_shards ctxt)
 
 let register_shard ctxt dir =
-  Tezos_rpc.Directory.register dir Services.shard (handle_shard ctxt)
+  Mavryk_rpc.Directory.register dir Services.shard (handle_shard ctxt)
 
 let shards_rpc ctxt commitment shards =
-  Tezos_rpc.Context.make_call shards_service ctxt ((), commitment) () shards
+  Mavryk_rpc.Context.make_call shards_service ctxt ((), commitment) () shards
 
 let shard_rpc ctxt commitment shard =
-  Tezos_rpc.Context.make_call
+  Mavryk_rpc.Context.make_call
     Services.shard
     ctxt
     (((), commitment), shard)

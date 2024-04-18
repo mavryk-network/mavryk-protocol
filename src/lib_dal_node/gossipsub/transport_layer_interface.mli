@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 (** This module defines the data structures used to instantiate the Mavkit P2P
     library. More exactly, it exposes:

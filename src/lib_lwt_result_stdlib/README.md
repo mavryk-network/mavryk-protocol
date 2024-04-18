@@ -5,7 +5,7 @@ and Result-friendly additions.
 
 ## API Documentation
 
-See the [online API documentation](https://tezos.gitlab.io/api/odoc/_html/tezos-lwt-result-stdlib/index.html).
+See the [online API documentation](https://tezos.gitlab.io/api/odoc/_html/mavryk-lwt-result-stdlib/index.html).
 
 If you are contributing to Lwtreslib, carefully read and be sure to adhere to the *Design Principles* mentioned in the documentation.
 

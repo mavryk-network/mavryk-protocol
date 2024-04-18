@@ -147,7 +147,7 @@ type info = {
 let init_state_prototzresult ~head round_durations hard_gas_limit_per_block =
   let open Lwt_result_syntax in
   let*? head_round =
-    Alpha_context.Fitness.round_from_raw head.Tezos_base.Block_header.fitness
+    Alpha_context.Fitness.round_from_raw head.Mavryk_base.Block_header.fitness
   in
   let round_zero_duration = Round.round_duration round_durations Round.zero in
   let*? grandparent_round =
@@ -180,7 +180,7 @@ let init_state ~head round_durations hard_gas_limit_per_block =
     Environment.wrap_tzresult
     (init_state_prototzresult ~head round_durations hard_gas_limit_per_block)
 
-let init context ~(head : Tezos_base.Block_header.shell_header) =
+let init context ~(head : Mavryk_base.Block_header.shell_header) =
   let open Lwt_result_syntax in
   let* ( ctxt,
          (_ : Receipt.balance_updates),
@@ -245,7 +245,7 @@ let () =
 let size_of_operation op =
   (WithExceptions.Option.get ~loc:__LOC__
   @@ Data_encoding.Binary.fixed_length
-       Tezos_base.Operation.shell_header_encoding)
+       Mavryk_base.Operation.shell_header_encoding)
   + Data_encoding.Binary.length
       Operation.protocol_data_encoding_with_legacy_attestation_name
       op
@@ -253,7 +253,7 @@ let size_of_operation op =
 (** Returns the weight and resources consumption of an operation. The weight
       corresponds to the one implemented by the baker, to decide which operations
       to put in a block first (the code is largely duplicated).
-      See {!Tezos_baking_alpha.Operation_selection.weight_manager} *)
+      See {!Mavryk_baking_alpha.Operation_selection.weight_manager} *)
 let weight_and_resources_manager_operation ~hard_gas_limit_per_block ?size ~fee
     ~gas op =
   let max_size = managers_quota.max_size in

@@ -27,4 +27,4 @@ let version_string =
     "%s (%s) (%s)"
     Current_git_info.abbreviated_commit_hash
     Current_git_info.committer_date
-    (Tezos_version.Version.to_string Current_git_info.version)
+    (Mavryk_version.Version.to_string Current_git_info.version)

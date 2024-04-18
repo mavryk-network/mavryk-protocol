@@ -262,12 +262,12 @@ let combine_operations ?public_key ?counter ?spurious_operation ~source ctxt
   let open Lwt_result_wrap_syntax in
   assert (match packed_operations with [] -> false | _ :: _ -> true) ;
   (* Hypothesis : each operation must have the same branch (is this really true?) *)
-  let {Tezos_base.Operation.branch} =
+  let {Mavryk_base.Operation.branch} =
     (WithExceptions.Option.get ~loc:__LOC__ @@ List.hd packed_operations).shell
   in
   assert (
     List.for_all
-      (fun {shell = {Tezos_base.Operation.branch = b; _}; _} ->
+      (fun {shell = {Mavryk_base.Operation.branch = b; _}; _} ->
         Block_hash.(branch = b))
       packed_operations) ;
   (* TODO? : check signatures consistency *)

@@ -1,6 +1,6 @@
 open Error_monad
 
-let name = "TEZOS_PROTOCOL"
+let name = "MAVRYK_PROTOCOL"
 
 open Protocol
 open TzFilename.Infix

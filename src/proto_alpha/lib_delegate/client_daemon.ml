@@ -83,9 +83,9 @@ module Baker = struct
       let*! () =
         cctxt#message
           "Baker v%a (%s) for %a started."
-          Tezos_version.Version.pp
-          Tezos_version_value.Current_git_info.version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp
+          Mavryk_version_value.Current_git_info.version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in
@@ -115,9 +115,9 @@ module Accuser = struct
       let*! () =
         cctxt#message
           "Accuser v%a (%s) for %a started."
-          Tezos_version.Version.pp
-          Tezos_version_value.Current_git_info.version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp
+          Mavryk_version_value.Current_git_info.version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in
@@ -157,9 +157,9 @@ module VDF = struct
       let*! () =
         cctxt#message
           "VDF daemon v%a (%s) for %a started."
-          Tezos_version.Version.pp
-          Tezos_version_value.Current_git_info.version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp
+          Mavryk_version_value.Current_git_info.version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in

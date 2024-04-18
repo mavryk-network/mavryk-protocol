@@ -15,19 +15,19 @@
   lwt-exit
   lwt.unix
   mavkit-shell-libs.proxy
-  tezos-proxy-server-config
+  mavryk-proxy-server-config
   mavkit-libs.rpc-http-client-unix
   mavkit-libs.rpc-http-server
   mavkit-shell-libs.shell-services
   mavkit-shell-libs.shell-context
   mavkit-version.value
   uri
-  (select void_for_linking-tezos-client-genesis from
-   (tezos-client-genesis -> void_for_linking-tezos-client-genesis.empty)
-   (-> void_for_linking-tezos-client-genesis.empty))
-  (select void_for_linking-tezos-client-demo-counter from
-   (tezos-client-demo-counter -> void_for_linking-tezos-client-demo-counter.empty)
-   (-> void_for_linking-tezos-client-demo-counter.empty))
+  (select void_for_linking-mavryk-client-genesis from
+   (mavryk-client-genesis -> void_for_linking-mavryk-client-genesis.empty)
+   (-> void_for_linking-mavryk-client-genesis.empty))
+  (select void_for_linking-mavryk-client-demo-counter from
+   (mavryk-client-demo-counter -> void_for_linking-mavryk-client-demo-counter.empty)
+   (-> void_for_linking-mavryk-client-demo-counter.empty))
   (select void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client from
    (mavkit-protocol-000-Ps9mPmXa-libs.client -> void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty)
    (-> void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty))
@@ -50,15 +50,15 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_stdlib_unix))
 
 (rule
  (action
   (progn
-   (write-file void_for_linking-tezos-client-genesis.empty "")
-   (write-file void_for_linking-tezos-client-demo-counter.empty "")
+   (write-file void_for_linking-mavryk-client-genesis.empty "")
+   (write-file void_for_linking-mavryk-client-demo-counter.empty "")
    (write-file void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty "")
    (write-file void_for_linking-mavkit-protocol-001-PtAtLas-libs-client.empty "")
    (write-file void_for_linking-mavkit-protocol-001-PtAtLas-libs-plugin.empty "")

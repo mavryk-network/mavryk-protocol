@@ -644,12 +644,12 @@ let create_round_durations constants =
     (Round.Durations.create ~first_round_duration ~delay_increment_per_round)
 
 let create_dal_node_rpc_ctxt endpoint =
-  let open Tezos_rpc_http_client_unix in
+  let open Mavryk_rpc_http_client_unix in
   let rpc_config =
-    {Tezos_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
+    {Mavryk_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
   in
   let media_types =
-    Tezos_rpc_http.Media_type.Command_line.of_command_line rpc_config.media_type
+    Mavryk_rpc_http.Media_type.Command_line.of_command_line rpc_config.media_type
   in
   new RPC_client_unix.http_ctxt rpc_config media_types
 

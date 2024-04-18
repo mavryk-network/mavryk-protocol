@@ -33,8 +33,8 @@
     it requires only a tree of data; not a context. This constructor
     is typically useful for tests. *)
 val of_memory_tree :
-  Tezos_context_memory.Context.tree ->
-  Tezos_protocol_environment.Proxy_delegate.t
+  Mavryk_context_memory.Context.tree ->
+  Mavryk_protocol_environment.Proxy_delegate.t
 
 (** [of_memory_context m] creates a delegate that is backed by the tree underlying [m].
     This is an alternative to delegating to a distant endpoint by doing RPCs
@@ -46,11 +46,11 @@ val of_memory_tree :
     it requires a full-fledged context instead of a tree (a context contains
     a tree, so a context is harder to obtain). *)
 val of_memory_context :
-  Tezos_context_memory.Context.t -> Tezos_protocol_environment.Proxy_delegate.t
+  Mavryk_context_memory.Context.t -> Mavryk_protocol_environment.Proxy_delegate.t
 
 (** [make_index context_path] creates an index that is suitable for being
     passed to {!of_index}. *)
-val make_index : context_path:string -> Tezos_context.Context.index Lwt.t
+val make_index : context_path:string -> Mavryk_context.Context.index Lwt.t
 
 (** [of_index index ctxt_hash] creates a delegate that checkouts the given
     index at the given [ctxt_hash]. It fails in the error monad if the hash is unknown.
@@ -59,6 +59,6 @@ val make_index : context_path:string -> Tezos_context.Context.index Lwt.t
     This constructor is the hardest to use of all of this file, because
     to obtain an [index], you need a full-fledged context on disk. *)
 val of_index :
-  index:Tezos_context.Context.index ->
-  Tezos_crypto.Hashed.Context_hash.t ->
-  Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t
+  index:Mavryk_context.Context.index ->
+  Mavryk_crypto.Hashed.Context_hash.t ->
+  Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t

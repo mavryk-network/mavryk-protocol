@@ -1,4 +1,4 @@
-module TzStdLib = Tezos_lwt_result_stdlib.Lwtreslib.Bare
+module TzStdLib = Mavryk_lwt_result_stdlib.Lwtreslib.Bare
 open Source
 open Ast
 

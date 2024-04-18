@@ -5,7 +5,7 @@
 
 //! Types & encodings for the *outbox-half* of the *L1/L2 communication protocol*
 //!
-//! In *general*, this module is a re-implementation of the tezos-protocol
+//! In *general*, this module is a re-implementation of the mavryk-protocol
 //! [outbox message repr].
 //!
 //! We have, however, a *specialised* [OutboxMessageTransaction::parameters]. The
@@ -13,9 +13,9 @@
 //!
 //! [outbox message repr]: <https://gitlab.com/tezos/tezos/-/blob/80b2cccb9c663dde2d86a6c94806fc149b7d1ef3/src/proto_alpha/lib_protocol/sc_rollup_outbox_message_repr.ml>
 
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 
 use crate::contract::Contract;
 use crate::entrypoint::Entrypoint;
@@ -23,7 +23,7 @@ use crate::michelson::Michelson;
 #[cfg(feature = "proto-alpha")]
 use crate::public_key_hash::PublicKeyHash;
 
-/// Outbox message, sent by the kernel as tezos-encoded bytes.
+/// Outbox message, sent by the kernel as mavryk-encoded bytes.
 ///
 /// Encoded as a dynamic list of [OutboxMessageTransaction], with **no** case tag.
 #[derive(Debug, PartialEq, Eq, HasEncoding, NomReader, BinWriter)]
@@ -210,7 +210,7 @@ mod test {
     // To display the encoding from OCaml:
     // Format.asprintf "%a"
     // Binary_schema.pp
-    // (Binary.describe (list Tezos_crypto.Signature.Public_key_hash.encoding))
+    // (Binary.describe (list Mavryk_crypto.Signature.Public_key_hash.encoding))
     #[cfg(feature = "proto-alpha")]
     const ENCODED_WHITELIST_UPDATE: [u8; 47] = [
         0xff, // provide whitelist (0x0 for none)

@@ -69,7 +69,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "016-PtMumbai: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -135,7 +135,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "test node",
     "tags": [
       "alcotest"
@@ -146,8 +146,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: find_policy_matching_rules",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: find_policy_matching_rules",
     "tags": [
       "alcotest"
     ],
@@ -157,7 +157,7 @@
     }
   },
   {
-    "file": "tezos-mockup",
+    "file": "mavryk-mockup",
     "title": "persistence",
     "tags": [
       "alcotest"

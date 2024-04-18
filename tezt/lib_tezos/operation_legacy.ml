@@ -249,7 +249,7 @@ let sign_manager_op_bytes ~(signer : Account.key) (op_bytes : Bytes.t) =
 let sign_manager_op_hex ~signer op_hex =
   let op_bytes = Hex.to_bytes op_hex in
   let signature = sign_manager_op_bytes ~signer op_bytes in
-  Tezos_crypto.Signature.to_hex signature
+  Mavryk_crypto.Signature.to_hex signature
 
 let inject_operation ?(async = false) ?(force = false) ?wait_for_injection
     ~unsigned_op ~signature client =

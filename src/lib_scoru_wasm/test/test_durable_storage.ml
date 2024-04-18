@@ -27,13 +27,13 @@
     -------
     Component:    Lib_scoru_wasm durable
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_durable_storage.ml
-    Subject:      Durable storage tests for the tezos-scoru-wasm library
+    Subject:      Durable storage tests for the mavryk-scoru-wasm library
 *)
 
 open Tztest
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 open Wasm_utils
 
 let value_store_key_too_large =
@@ -1210,7 +1210,7 @@ let test_store_create ~version =
      this test relies a lot on the encoding of values and chunked byte
      vectors, and will fail if one or both fails. *)
   let wrapped_tree =
-    Tezos_webassembly_interpreter.Durable_storage.to_tree_exn durable
+    Mavryk_webassembly_interpreter.Durable_storage.to_tree_exn durable
   in
   (* The value is located under the "@" subkey. *)
   let value_key =
@@ -1220,20 +1220,20 @@ let test_store_create ~version =
       ["@"]
   in
   let* encoded_value_tree =
-    Tezos_tree_encoding.Wrapped.find_tree wrapped_tree value_key
+    Mavryk_tree_encoding.Wrapped.find_tree wrapped_tree value_key
   in
   let encoded_value_tree =
     match encoded_value_tree with
     | None -> Stdlib.failwith "The value has not been encoded"
     | Some tree -> tree
   in
-  let* encoded_value = Tezos_tree_encoding.Wrapped.list encoded_value_tree [] in
+  let* encoded_value = Mavryk_tree_encoding.Wrapped.list encoded_value_tree [] in
   assert (
     List.for_all (fun (key, _) -> key = "length") encoded_value
     && encoded_value <> []) ;
   (* Chunks are encoded under the subkey "contents" *)
   let* encoded_chunks =
-    Tezos_tree_encoding.Wrapped.list wrapped_tree (value_key @ ["contents"])
+    Mavryk_tree_encoding.Wrapped.list wrapped_tree (value_key @ ["contents"])
   in
   assert (encoded_chunks = []) ;
 

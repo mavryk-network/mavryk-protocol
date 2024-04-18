@@ -480,8 +480,8 @@ let test_baker_state_recorder protocol state_recorder =
   (* Obtain the "record_state" file name *)
   let* chain_id = Client.RPC.call client (RPC.get_chain_chain_id ()) in
   let chain_id =
-    Tezos_crypto.Hashed.Chain_id.to_short_b58check
-      (Tezos_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
+    Mavryk_crypto.Hashed.Chain_id.to_short_b58check
+      (Mavryk_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
   in
   let state_recorder_file = chain_id ^ "_baker_state" in
   let base_dir = Client.base_dir client in

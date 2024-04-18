@@ -69,7 +69,7 @@ let spawn_command ?(env = String_map.empty) ?hooks signer command =
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in

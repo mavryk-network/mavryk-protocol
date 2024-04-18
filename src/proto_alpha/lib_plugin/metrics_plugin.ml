@@ -26,7 +26,7 @@
 open Protocol
 open Alpha_context
 
-let update_metrics ~protocol_metadata (fitness : Tezos_base.Fitness.t)
+let update_metrics ~protocol_metadata (fitness : Mavryk_base.Fitness.t)
     update_metrics_callback =
   let open Lwt_result_syntax in
   let*! _ =

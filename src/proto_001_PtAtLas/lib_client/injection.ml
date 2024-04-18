@@ -188,8 +188,8 @@ let print_for_verbose_signing ppf ~watermark ~bytes ~branch ~contents =
     fprintf
       ppf
       "%s"
-      (Tezos_crypto.Base58.raw_encode
-         Tezos_crypto.Blake2B.(hash_bytes l |> to_string))
+      (Mavryk_crypto.Base58.raw_encode
+         Mavryk_crypto.Blake2B.(hash_bytes l |> to_string))
   in
   item (fun ppf () ->
       pp_print_text ppf "Branch: " ;
@@ -657,7 +657,7 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
     kind Kind.manager contents_list tzresult Lwt.t =
   let open Lwt_result_syntax in
   let* () =
-    Tezos_client_base.Client_confirmations.wait_for_bootstrapped cctxt
+    Mavryk_client_base.Client_confirmations.wait_for_bootstrapped cctxt
   in
   let* {
          parametric =
@@ -796,7 +796,7 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
           if first then
             (WithExceptions.Option.get ~loc:__LOC__
             @@ Data_encoding.Binary.fixed_length
-                 Tezos_base.Operation.shell_header_encoding)
+                 Mavryk_base.Operation.shell_header_encoding)
             + Data_encoding.Binary.length
                 Operation.contents_encoding_with_legacy_attestation_name
                 (Contents op)
@@ -1192,7 +1192,7 @@ let inject_operation (type kind) cctxt ~chain ~block ?confirmations
     ?verbose_signing ?fee_parameter (contents : kind contents_list) =
   let open Lwt_result_syntax in
   let* () =
-    Tezos_client_base.Client_confirmations.wait_for_bootstrapped cctxt
+    Mavryk_client_base.Client_confirmations.wait_for_bootstrapped cctxt
   in
   let* oph, op, result =
     inject_operation_internal

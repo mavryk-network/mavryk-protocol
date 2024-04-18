@@ -52,7 +52,7 @@ impl Ord for TypedValue {
 
 #[cfg(test)]
 mod tests {
-    use tezos_crypto_rs::hash::HashTrait;
+    use mavryk_crypto_rs::hash::HashTrait;
 
     use super::*;
 
@@ -169,7 +169,7 @@ mod tests {
         ]
         .map(|x| {
             TypedValue::ChainId(
-                tezos_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
+                mavryk_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
             )
         });
 

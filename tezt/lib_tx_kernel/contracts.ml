@@ -6,7 +6,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_protocol_alpha.Protocol
+open Mavryk_protocol_alpha.Protocol
 
 let prepare_mint_and_deposit_contract ?hooks client protocol =
   let* _, mint_and_deposit_contract =

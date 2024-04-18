@@ -2,25 +2,25 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_client_genesis)
- (public_name tezos-client-genesis)
+ (name mavryk_client_genesis)
+ (public_name mavryk-client-genesis)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
   mavkit-shell-libs.shell-services
   mavkit-shell-libs.client-base
   mavkit-proto-libs.protocol-environment
-  tezos-protocol-genesis.protocol
-  tezos-protocol-genesis.protocol.lifted
+  mavryk-protocol-genesis.protocol
+  mavryk-protocol-genesis.protocol.lifted
   mavkit-shell-libs.client-commands
   mavkit-shell-libs.proxy
   mavkit-libs.stdlib-unix)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_protocol_genesis
-  -open Tezos_client_commands))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_protocol_genesis
+  -open Mavryk_client_commands))

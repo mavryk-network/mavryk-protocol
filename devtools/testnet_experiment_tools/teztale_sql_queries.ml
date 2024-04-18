@@ -9,21 +9,21 @@
 let decode_error x =
   Result.map_error
     (fun e ->
-      Format.asprintf "%a@." Tezos_error_monad.Error_monad.pp_print_trace e)
+      Format.asprintf "%a@." Mavryk_error_monad.Error_monad.pp_print_trace e)
     x
 
 let public_key_hash =
   Caqti_type.custom
     ~encode:(fun t ->
-      Result.Ok (Tezos_crypto.Signature.Public_key_hash.to_string t))
+      Result.Ok (Mavryk_crypto.Signature.Public_key_hash.to_string t))
     ~decode:(fun s ->
-      decode_error (Tezos_crypto.Signature.Public_key_hash.of_string s))
+      decode_error (Mavryk_crypto.Signature.Public_key_hash.of_string s))
     Caqti_type.octets
 
 let block_hash =
   Caqti_type.custom
-    ~encode:(fun t -> Result.Ok (Tezos_crypto.Hashed.Block_hash.to_string t))
-    ~decode:(fun s -> decode_error (Tezos_crypto.Hashed.Block_hash.of_string s))
+    ~encode:(fun t -> Result.Ok (Mavryk_crypto.Hashed.Block_hash.to_string t))
+    ~decode:(fun s -> decode_error (Mavryk_crypto.Hashed.Block_hash.of_string s))
     Caqti_type.octets
 
 (* Create tables queries *)

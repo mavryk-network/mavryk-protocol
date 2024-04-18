@@ -7,7 +7,7 @@ involve Micheline right now because it was not required within the current
 scope.
 
 There are some libraries that we could have used to parse Michelson, the most
-complete being `airgap-it/tezos-rust-sdk`. However, we ended up not using it, since
+complete being `airgap-it/mavryk-rust-sdk`. However, we ended up not using it, since
 we thought that the layout of its data structures did not match well with
 our plan.
 

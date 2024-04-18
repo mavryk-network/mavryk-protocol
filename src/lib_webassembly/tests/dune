@@ -13,7 +13,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_webassembly_interpreter
+  -open Mavryk_webassembly_interpreter
   -open Mavkit_alcotezt)
  (modules smallint))
 

@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_base_p2p_identity_file)
+ (name mavryk_base_p2p_identity_file)
  (public_name mavkit-libs.base.p2p-identity-file)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -10,5 +10,5 @@
   mavkit-libs.stdlib-unix)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

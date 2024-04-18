@@ -97,7 +97,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "015-PtLimaPt: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -174,8 +174,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: deterministic_nonce",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: deterministic_nonce",
     "tags": [
       "alcotest"
     ],

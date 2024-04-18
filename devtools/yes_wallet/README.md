@@ -2,7 +2,7 @@ Yes_wallet script
 =================
 
 The purpose of this tool is to extract baker addresses from a node's
-context and generate tezos-client's wallet containing these addresses.
+context and generate mavryk-client's wallet containing these addresses.
 In combination with the yes-node patch it can be used to perform a test
 protocol migration (see the relevant documentation page for more details)
 or to reproduce contexts where trouble occurred in the past in order to
@@ -32,7 +32,7 @@ easily using git.
 For instance to revive support for Ithaca:
 
 * `git checkout <commit-or-tag> -- devtools/yes_wallet/get_delegates_012_PsIthaca.ml`
-* modify the `dune` file to import `tezos-protocol-012-Psithaca`
+* modify the `dune` file to import `mavryk-protocol-012-Psithaca`
 * `dune build`
 
 The `<commit-or-tag>` refers to some git revision, where the support

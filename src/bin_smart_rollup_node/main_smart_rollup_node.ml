@@ -31,13 +31,13 @@ end)
 
 let group =
   {
-    Tezos_clic.name = "sc_rollup.node";
+    Mavryk_clic.name = "sc_rollup.node";
     title = "Commands related to the smart rollup node.";
   }
 
 let config_init_command =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Cli in
   command
     ~group
@@ -131,7 +131,7 @@ let config_init_command =
       return_unit)
 
 let legacy_run_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   let open Cli in
   command
@@ -224,7 +224,7 @@ let legacy_run_command =
         cctxt)
 
 let run_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   let open Cli in
   command
@@ -321,7 +321,7 @@ let run_command =
         cctxt)
 
 let protocols_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~group
@@ -343,7 +343,7 @@ let protocols_command =
 
 (** Command to dump the rollup node metrics. *)
 let dump_metrics =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~group
@@ -358,11 +358,11 @@ let dump_metrics =
       return_unit)
 
 let dump_durable_storage =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"dump the durable_storage."
-    (args2 data_dir_arg (Tezos_client_base_unix.Client_config.block_arg ()))
+    (args2 data_dir_arg (Mavryk_client_base_unix.Client_config.block_arg ()))
     (prefixes ["dump"; "durable"; "storage"; "into"]
     @@ Cli.wasm_dump_file_param @@ stop)
     (fun (data_dir, block) file cctxt ->
@@ -375,7 +375,7 @@ let dump_durable_storage =
       | Error errs -> cctxt#error "%a" pp_print_trace errs)
 
 let export_snapshot =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Export a snapshot of the rollup node state."
@@ -402,7 +402,7 @@ let select_commands _ctxt _ = Lwt_result_syntax.return (sc_rollup_commands ())
 
 let global_options () =
   let open Client_config in
-  Tezos_clic.args11
+  Mavryk_clic.args11
     (base_dir_arg ())
     (no_base_dir_warnings_switch ())
     (timings_switch ())

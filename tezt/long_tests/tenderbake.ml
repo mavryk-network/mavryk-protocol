@@ -30,7 +30,7 @@
    Subject: Checking performance for Tenderbake bakers
 *)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 let lwt_ignore p =
   let* _ = p in

@@ -177,7 +177,7 @@ let apply_context context_index chain_id ~user_activated_upgrades
   let predecessor_resulting_context_hash =
     if
       expected_context_hash
-      = Tezos_protocol_environment__Environment_context.Resulting_context
+      = Mavryk_protocol_environment__Environment_context.Resulting_context
     then Store.Block.context_hash predecessor_block
     else Store.Block.context_hash block
   in

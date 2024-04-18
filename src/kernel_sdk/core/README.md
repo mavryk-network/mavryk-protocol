@@ -16,7 +16,7 @@ In addition, various constants (such as error codes) used when interacting with 
 # Safety
 
 This crate exposes the host functions through the `SmartRollupCore` trait, which is unsafe to use - as it makes no effort
-to provide a *safe rust* API. A safe API is defined in the `tezos-smart-rollup-host` crate, as the `Runtime` trait.
+to provide a *safe rust* API. A safe API is defined in the `mavryk-smart-rollup-host` crate, as the `Runtime` trait.
 
-It's therefore recommended to use the `Runtime` trait directly from the `tezos-smart-rollup-host` crate, or
-alternatively directly through the `tezos-smart-rollup` top-level SDK crate.
+It's therefore recommended to use the `Runtime` trait directly from the `mavryk-smart-rollup-host` crate, or
+alternatively directly through the `mavryk-smart-rollup` top-level SDK crate.

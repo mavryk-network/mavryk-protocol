@@ -15,10 +15,10 @@ use core::{
     ptr,
     slice::{from_raw_parts, from_raw_parts_mut},
 };
-use tezos_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::metadata::METADATA_SIZE;
-use tezos_smart_rollup_host::Error;
+use mavryk_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::metadata::METADATA_SIZE;
+use mavryk_smart_rollup_host::Error;
 
 impl From<HostState> for MockHost {
     fn from(state: HostState) -> Self {
@@ -258,9 +258,9 @@ mod tests {
     use super::MockHost;
 
     use crate::state::HostState;
-    use tezos_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, MAX_INPUT_MESSAGE_SIZE};
-    use tezos_smart_rollup_host::input::Message;
-    use tezos_smart_rollup_host::{
+    use mavryk_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, MAX_INPUT_MESSAGE_SIZE};
+    use mavryk_smart_rollup_host::input::Message;
+    use mavryk_smart_rollup_host::{
         metadata::RollupMetadata,
         path::RefPath,
         runtime::{Runtime, RuntimeError},
@@ -339,7 +339,7 @@ mod tests {
         assert_eq!(
             mock.store_read_slice(&PATH, 0, &mut buffer),
             Err(RuntimeError::HostErr(
-                tezos_smart_rollup_host::Error::StoreNotAValue
+                mavryk_smart_rollup_host::Error::StoreNotAValue
             ))
         );
     }

@@ -41,8 +41,8 @@ type validator_kind =
       protocol_root : string;
       process_path : string;
       sandbox_parameters : Data_encoding.json option;
-      dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
-      internal_events : Tezos_base.Internal_event_config.t;
+      dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
+      internal_events : Mavryk_base.Internal_event_config.t;
     }
       -> validator_kind
 
@@ -176,9 +176,9 @@ module Internal_validator_process = struct
        validator process. For this reason, we maintain the collection
        of caches passed from one block to the next one here.
     *)
-    mutable cache : Tezos_protocol_environment.Context.block_cache option;
+    mutable cache : Mavryk_protocol_environment.Context.block_cache option;
     mutable preapply_result :
-      (Block_validation.apply_result * Tezos_protocol_environment.Context.t)
+      (Block_validation.apply_result * Mavryk_protocol_environment.Context.t)
       option;
   }
 
@@ -576,8 +576,8 @@ module External_validator_process = struct
     mutable validator_process : process_status;
     lock : Lwt_mutex.t;
     sandbox_parameters : Data_encoding.json option;
-    dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
-    internal_events : Tezos_base.Internal_event_config.t;
+    dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
+    internal_events : Mavryk_base.Internal_event_config.t;
   }
 
   let kind = External_process
@@ -695,7 +695,7 @@ module External_validator_process = struct
              match String.split_on_char '=' binding with
              | env_var_name :: _
                when env_var_name
-                    = Tezos_base_unix.Internal_event_unix.env_var_name ->
+                    = Mavryk_base_unix.Internal_event_unix.env_var_name ->
                  false
              | _ -> true)
       |> Array.of_seq

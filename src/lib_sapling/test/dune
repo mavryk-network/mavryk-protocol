@@ -8,7 +8,7 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-libs.crypto
   str
   mavkit-libs.base
@@ -23,10 +23,10 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_sapling
-  -open Tezos_stdlib
+  -open Mavryk_sapling
+  -open Mavryk_stdlib
   -open Data_encoding
-  -open Tezos_base_test_helpers
+  -open Mavryk_base_test_helpers
   -open Mavkit_alcotezt)
  (modules
   test_rustzcash
@@ -41,7 +41,7 @@
  (name test_js)
  (modes js)
  (libraries
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-libs.hacl)
  (js_of_ocaml)
  (link_flags

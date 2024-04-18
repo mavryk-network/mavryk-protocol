@@ -28,7 +28,7 @@ open Alpha_context
 
 type unsigned_block = {
   unsigned_block_header : Block_header.t;
-  operations : Tezos_base.Operation.t list list;
+  operations : Mavryk_base.Operation.t list list;
 }
 
 type simulation_kind =

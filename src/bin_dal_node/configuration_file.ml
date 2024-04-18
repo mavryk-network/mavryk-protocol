@@ -39,7 +39,7 @@ type t = {
   profiles : Types.profiles;
 }
 
-let default_data_dir = Filename.concat (Sys.getenv "HOME") ".tezos-dal-node"
+let default_data_dir = Filename.concat (Sys.getenv "HOME") ".mavryk-dal-node"
 
 let store_path {data_dir; _} = Filename.concat data_dir "store"
 

@@ -36,7 +36,7 @@ for blockchains.
 
 Tenderbake adapts Tendermint to the Tezos blockchain, but the adjustments
 required are
-`substantive <https://research-development.nomadic-labs.com/a-look-ahead-to-tenderbake.html#the-tezos-architecture>`_:
+`substantive <https://research-development.nomadic-labs.com/a-look-ahead-to-tenderbake.html#the-mavryk-architecture>`_:
 
 * Tenderbake is tailored to match the Tezos architecture by using only
   communication primitives and network assumptions which Tezos supports.

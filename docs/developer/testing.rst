@@ -132,7 +132,7 @@ Typical use cases:
    randomized inputs.
 
 Example test:
- - QCheck is used in :src:`src/lib_base/test/test_time.ml` to test the :package-api:`Tezos_base.Time <mavkit-libs/Tezos_base/Time/index.html>` module. For instance, subtracting and then adding a random amount of seconds to a random time should give back the original time: this tests that ``add`` and ``diff`` are consistent (and the inverse of each other). To run this test, you need to run ``dune exec src/lib_base/test/test_time.exe``.
+ - QCheck is used in :src:`src/lib_base/test/test_time.ml` to test the :package-api:`Mavryk_base.Time <mavkit-libs/Mavryk_base/Time/index.html>` module. For instance, subtracting and then adding a random amount of seconds to a random time should give back the original time: this tests that ``add`` and ``diff`` are consistent (and the inverse of each other). To run this test, you need to run ``dune exec src/lib_base/test/test_time.exe``.
 
 References:
  - `QCheck README <https://github.com/c-cube/qcheck>`_
@@ -198,7 +198,7 @@ Typical use cases:
  - Conversion of pre-existing Alcotests to Tezt
 
 Example tests:
- - Unit tests for :package-api:`tezos-clic <mavkit-libs/Tezos_clic/index.html>`. To execute them locally, run ``dune build @src/lib_clic/runtest``.
+ - Unit tests for :package-api:`mavryk-clic <mavkit-libs/Mavryk_clic/index.html>`. To execute them locally, run ``dune build @src/lib_clic/runtest``.
  - Unit tests for :package:`mavkit-version`. To execute them locally, run ``dune build @src/lib_version/runtest``.
 
 See :doc:`alcotezt` for more information on how to convert tests to

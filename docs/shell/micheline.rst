@@ -307,4 +307,4 @@ languages:
 - An online converter between Micheline files and their JSON encoding
   (improperly called "Michelson")
   developed as part of Cryptonomic hackathon and documented here:
-  https://scalac.io/blog/we-hakked-tezos-and-created-a-micheline-michelson-translator/
+  https://scalac.io/blog/we-hakked-mavryk-and-created-a-micheline-michelson-translator/

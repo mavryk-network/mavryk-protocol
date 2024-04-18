@@ -18,14 +18,14 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.Worker_types
-  -open Tezos_workers
-  -open Tezos_test_helpers
-  -open Tezos_base_test_helpers
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.Worker_types
+  -open Mavryk_workers
+  -open Mavryk_test_helpers
+  -open Mavryk_base_test_helpers
   -open Mavkit_alcotezt)
  (modules mocked_worker test_workers_unit))
 

@@ -7,7 +7,7 @@ use evm_execution::account_storage::{init_account_storage, EthereumAccount};
 use evm_execution::precompiles::precompile_set;
 use evm_execution::{run_transaction, Config};
 
-use tezos_ethereum::block::BlockConstants;
+use mavryk_ethereum::block::BlockConstants;
 
 use hex_literal::hex;
 use primitive_types::{H160, H256, U256};

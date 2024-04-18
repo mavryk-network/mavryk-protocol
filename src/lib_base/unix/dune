@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_base_unix)
+ (name mavryk_base_unix)
  (public_name mavkit-libs.base.unix)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -19,10 +19,10 @@
  (preprocess (pps ppx_expect))
  (flags
   (:standard)
-  -open Tezos_error_monad
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
+  -open Mavryk_error_monad
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
   -open Data_encoding
-  -open Tezos_event_logging))
+  -open Mavryk_event_logging))

@@ -62,7 +62,7 @@ type t = {
   reconnection_delay : float;
   heads : (Block_hash.t * Block_header.t) Lwt_stream.t;
   cctxt : Client_context.full;
-  stopper : Tezos_rpc.Context.stopper;
+  stopper : Mavryk_rpc.Context.stopper;
   mutable running : bool;
 }
 
@@ -85,14 +85,14 @@ let rec connect ~name ?(count = 0) ~delay ~protocols cctxt =
       Lwt_unix.sleep delay
   in
   let* res =
-    Tezos_shell_services.Monitor_services.heads ?protocols cctxt cctxt#chain
+    Mavryk_shell_services.Monitor_services.heads ?protocols cctxt cctxt#chain
   in
   match res with
   | Ok (heads, stopper) ->
       let heads =
         Lwt_stream.map_s
           (fun ( hash,
-                 (Tezos_base.Block_header.{shell = {level; _}; _} as header) ) ->
+                 (Mavryk_base.Block_header.{shell = {level; _}; _} as header) ) ->
             let+ () = Layer1_event.switched_new_head ~name hash level in
             (hash, header))
           heads
@@ -218,7 +218,7 @@ let get_predecessor =
   let cache = HM.create max_cached in
   fun ~max_read
       cctxt
-      (chain : Tezos_shell_services.Chain_services.chain)
+      (chain : Mavryk_shell_services.Chain_services.chain)
       ancestor ->
     let open Lwt_result_syntax in
     (* Don't read more than the hard limit in one RPC call. *)
@@ -229,7 +229,7 @@ let get_predecessor =
     | Some pred -> return_some pred
     | None -> (
         let* blocks =
-          Tezos_shell_services.Chain_services.Blocks.list
+          Mavryk_shell_services.Chain_services.Blocks.list
             cctxt
             ~chain
             ~heads:[ancestor]
@@ -274,7 +274,7 @@ let nth_predecessor ~get_predecessor n block =
   in
   aux [] n block
 
-let get_tezos_reorg_for_new_head l1_state
+let get_mavryk_reorg_for_new_head l1_state
     ?(get_old_predecessor = get_predecessor l1_state) old_head new_head =
   let open Lwt_result_syntax in
   (* old_head and new_head must have the same level when calling aux *)
@@ -321,7 +321,7 @@ let get_tezos_reorg_for_new_head l1_state
   aux reorg old_head new_head
 
 (** Returns the reorganization of L1 blocks (if any) for [new_head]. *)
-let get_tezos_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
+let get_mavryk_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
     =
   let open Lwt_result_syntax in
   match old_head with
@@ -340,7 +340,7 @@ let get_tezos_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
         in
         return Reorg.{old_chain = []; new_chain}
   | `Head old_head ->
-      get_tezos_reorg_for_new_head
+      get_mavryk_reorg_for_new_head
         l1_state
         ?get_old_predecessor
         old_head

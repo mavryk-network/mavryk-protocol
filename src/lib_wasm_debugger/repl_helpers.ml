@@ -33,8 +33,8 @@ let error at category msg =
    exception. *)
 let trap_exn f =
   let open Lwt_result_syntax in
-  let open Tezos_webassembly_interpreter in
-  let open Tezos_webassembly_interpreter_extra in
+  let open Mavryk_webassembly_interpreter in
+  let open Mavryk_webassembly_interpreter_extra in
   let print_unknown ppf e =
     Format.fprintf ppf "Unknown exception: %s" (Printexc.to_string e)
   in

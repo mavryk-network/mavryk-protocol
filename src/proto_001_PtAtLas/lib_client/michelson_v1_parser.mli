@@ -25,7 +25,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 (** The result of parsing and expanding a Michelson V1 script or data. *)
 type parsed = {

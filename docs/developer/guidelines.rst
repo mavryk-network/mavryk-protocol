@@ -791,7 +791,7 @@ Lwt-, Result-, and Lwt-Result-specific variants of all the traversal functions
 (``map``, ``iter``, ``for_all``, ``exists``, etc.)
 
 Check the
-:package-api:`online documentation <mavkit-libs/Tezos_base/TzPervasives/List/index.html>` for a full list of the content of the ``List`` module.
+:package-api:`online documentation <mavkit-libs/Mavryk_base/TzPervasives/List/index.html>` for a full list of the content of the ``List`` module.
 
 .. _chaining_concat_map:
 
@@ -809,7 +809,7 @@ Lwtreslib provides additional combinators ``List.concat_map_s``,
 ``List.concat_map_e``, and ``List.concat_map_es`` to replace the non-vanilla
 compositions.
 
-Check the :package-api:`online documentation <mavkit-libs/Tezos_lwt_result_stdlib/Lwtreslib/Bare/List/index.html#val-concat_map>`.
+Check the :package-api:`online documentation <mavkit-libs/Mavryk_lwt_result_stdlib/Lwtreslib/Bare/List/index.html#val-concat_map>`.
 
 Naming
 ------

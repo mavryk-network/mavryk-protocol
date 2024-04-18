@@ -6,7 +6,7 @@ How to get Tezos
 In this how-to we explain how to get up-to-date binaries to run Tezos
 (more precisely, the "Mavkit" implementation of Tezos software)
 on any network (either on the mainnet or on one of the test networks).
-Mavkit consists of :ref:`several binaries <tezos_binaries>` (i.e., executable files), including: a client, a node, and a baker.
+Mavkit consists of :ref:`several binaries <mavryk_binaries>` (i.e., executable files), including: a client, a node, and a baker.
 
 There are several options for getting the binaries, depending on how you plan to use Mavkit:
 
@@ -51,7 +51,7 @@ Getting static binaries
 -----------------------
 
 You can get static Linux binaries from the
-`latest release in the tezos-packaging repository <https://github.com/serokell/tezos-packaging/releases/latest>`__.
+`latest release in the mavryk-packaging repository <https://github.com/serokell/mavryk-packaging/releases/latest>`__.
 
 This repository provides static binaries for x86_64 and arm64 architectures. Since these binaries
 are static, they can be used on any Linux distribution without any additional prerequisites.
@@ -574,7 +574,7 @@ refer to the new switch and compile the project:
 Lastly, you can also add the Mavkit binaries to your ``PATH`` variable,
 and after reading the Disclaimer a few
 hundred times you are allowed to disable it with
-``TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y``.
+``MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y``.
 
 You may also activate Bash autocompletion by executing::
 

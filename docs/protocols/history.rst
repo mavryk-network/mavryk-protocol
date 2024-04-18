@@ -83,6 +83,6 @@ See Also
 
 More details on the history of Tezos protocols, including their activation dates or the salient features they brought, can be found in the following places:
 
-- https://tzstats.com/protocols (or on other block explores in :ref:`Tezos community <tezos_community>`)
-- https://opentezos.com/tezos-basics/history-of-amendments/
+- https://tzstats.com/protocols (or on other block explores in :ref:`Tezos community <mavryk_community>`)
+- https://opentezos.com/mavryk-basics/history-of-amendments/
 - https://docs.tezos.com/architecture/governance/amendment-history

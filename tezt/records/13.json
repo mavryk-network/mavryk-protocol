@@ -160,8 +160,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: context_hash",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: context_hash",
     "tags": [
       "alcotest"
     ],

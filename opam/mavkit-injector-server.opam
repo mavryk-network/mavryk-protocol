@@ -16,8 +16,8 @@ depends: [
   "data-encoding" { >= "0.7.1" & < "1.0.0" }
 ]
 depopts: [
-  "tezos-injector-001-PtAtLas"
-  "tezos-injector-alpha"
+  "mavryk-injector-001-PtAtLas"
+  "mavryk-injector-alpha"
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

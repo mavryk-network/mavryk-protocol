@@ -15,8 +15,8 @@
   mavkit-shell-libs.client-commands
   mavkit-libs.stdlib-unix
   mavkit-libs.stdlib
-  tezos-dac-lib
-  tezos-dac-client-lib
+  mavryk-dac-lib
+  mavryk-dac-client-lib
   mavkit-protocol-001-PtAtLas-libs.dac
   (select void_for_linking-mavkit-protocol-alpha-libs-dac from
    (mavkit-protocol-alpha-libs.dac -> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)
@@ -27,14 +27,14 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_client_commands
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_dac_lib
-  -open Tezos_dac_client_lib))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_commands
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_client_lib))
 
 (rule
  (action

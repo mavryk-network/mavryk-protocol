@@ -16,18 +16,18 @@
   lwt-exit
   mavkit-evm-node-libs.evm_node_config
   mavkit-libs.context.sigs
-  mavkit-libs.tezos-context.disk
-  mavkit-libs.tezos-context.encoding
+  mavkit-libs.mavryk-context.disk
+  mavkit-libs.mavryk-context.encoding
   mavkit-l2-libs.scoru-wasm
   mavkit-l2-libs.scoru-wasm-helpers
   mavkit-smart-rollup-wasm-debugger-lib)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_rpc_http
-  -open Tezos_workers
-  -open Tezos_stdlib_unix
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_rpc_http
+  -open Mavryk_workers
+  -open Mavryk_stdlib_unix
   -open Evm_node_lib_dev_encoding
   -open Evm_node_config
-  -open Tezos_scoru_wasm_helpers
+  -open Mavryk_scoru_wasm_helpers
   -open Mavkit_smart_rollup_wasm_debugger_lib))

@@ -15,8 +15,8 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_clic
+  -open Mavryk_stdlib
+  -open Mavryk_clic
   -open Mavkit_alcotezt)
  (modules test_clic))
 

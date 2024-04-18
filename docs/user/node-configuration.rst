@@ -46,7 +46,7 @@ The config command
    ./mavkit-node config init
 
 This will initialize a configuration file for the node in
-``$HOME/.tezos-node/config.json``, using default values. It only
+``$HOME/.mavryk-node/config.json``, using default values. It only
 specifies that the node will listen to incoming connections on socket
 address ``[::]:9732``.
 
@@ -77,12 +77,12 @@ For example, the following script initializes and fills a configuration file usi
 Editing the configuration file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All blockchain data is stored under ``$HOME/.tezos-node/`` by default.
+All blockchain data is stored under ``$HOME/.mavryk-node/`` by default.
 You can
 change this by doing ``./mavkit-node config update --data-dir </somewhere/in/your/disk>``.
 
 To run multiple nodes on the same machine, you can duplicate and edit
-``$HOME/.tezos-node/config.json`` while making sure they don't share
+``$HOME/.mavryk-node/config.json`` while making sure they don't share
 the same ``data-dir``. Then run your node with ``./mavkit-node run --config-file=</path/to/alternate_cfg>``.
 
 Here is an example configuration file with several parameters specified.

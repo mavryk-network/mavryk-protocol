@@ -26,7 +26,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 module Program :
   Client_aliases.Alias
@@ -82,7 +82,7 @@ type run_instr_params = {
   legacy : bool;
 }
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.run_tzip4_view} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.run_tzip4_view} *)
 val run_view :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -91,7 +91,7 @@ val run_view :
   Script.expr tzresult Lwt.t
 
 (** [run_script_view cctxt ~chain ~block params]
-    executes {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.run_script_view},
+    executes {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.run_script_view},
     the RPC to run a Michelson view offchain and returns its value.
  *)
 val run_script_view :
@@ -101,7 +101,7 @@ val run_script_view :
   run_script_view_params ->
   Script.expr tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.run_code} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.run_code} *)
 val run :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -113,7 +113,7 @@ val run :
   tzresult
   Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.trace_code} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.trace_code} *)
 val trace :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -126,7 +126,7 @@ val trace :
   tzresult
   Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.run_instr} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.run_instr} *)
 val run_instr :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -167,7 +167,7 @@ val print_run_instr_result :
   ((Script.expr * Script.expr) list * Gas.t) tzresult ->
   unit tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.typecheck_data} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.typecheck_data} *)
 val typecheck_data :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -179,7 +179,7 @@ val typecheck_data :
   unit ->
   Gas.t tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.typecheck_code} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.typecheck_code} *)
 val typecheck_program :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -201,7 +201,7 @@ val print_typecheck_result :
   #Client_context.printer ->
   unit tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Scripts.script_size} *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Scripts.script_size} *)
 val script_size :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->

@@ -157,7 +157,7 @@ The format of the events is (usually minified):
 
 
 Additionally, the ``"hostname"`` field can be customized with environment
-variable ``TEZOS_EVENT_HOSTNAME``; Its default value is the hostname of the
+variable ``MAVRYK_EVENT_HOSTNAME``; Its default value is the hostname of the
 device the node is running on.
 
 To store rotated logs, there is the ``daily-logs`` option to create logs files on
@@ -244,17 +244,17 @@ Environment Variables
 
 The logging framework can be configured with environment variables
 before starting an Mavkit executable (e.g., the node). Those variables work on all the code using the
-``tezos-stdlib-unix`` library as long as ``Internal_event_unix.init`` is
+``mavryk-stdlib-unix`` library as long as ``Internal_event_unix.init`` is
 called; this should include *all* the regular ``mavkit-*`` binaries.
 
--  ``TEZOS_EVENTS_CONFIG`` must be a whitespace-separated list of URIs:
+-  ``MAVRYK_EVENTS_CONFIG`` must be a whitespace-separated list of URIs:
 
    -  URIs that have a schema are activated.
    -  URIs without a schema, i.e. simple paths, are understood as paths
       to configuration JSON files (format above) to load (which
       themselves activate sinks).
 
--  ``TEZOS_LOG`` and ``LWT_LOG`` (deprecated and has a lower priority) contain
+-  ``MAVRYK_LOG`` and ``LWT_LOG`` (deprecated and has a lower priority) contain
    “rules” to configure the default ``file-descriptor-stdout`` sink. The rules
    are expressed with a DSL:
 
@@ -266,11 +266,11 @@ called; this should include *all* the regular ``mavkit-*`` binaries.
    -  rules are ordered, i.e., the first pattern that matches, from left to
       right, fires the corresponding rule.
 
--  ``TEZOS_EVENT_HOSTNAME`` is used by the file-descriptor-sink to tweak the JSON
+-  ``MAVRYK_EVENT_HOSTNAME`` is used by the file-descriptor-sink to tweak the JSON
    output (see above).
 
 As the Irmin context backend uses an internal and specific logging
-system, it is possible to configure it through the ``TEZOS_CONTEXT``
+system, it is possible to configure it through the ``MAVRYK_CONTEXT``
 environment variable, see :ref:`context_component`.
 
 
@@ -353,7 +353,7 @@ This is work-in-progress, see:
 
 -  ``mavkit-admin-client show event-logging`` outputs the configuration
    currently understood by ``mavkit-admin-client`` (hence through the
-   ``TEZOS_EVENTS_CONFIG`` variable) and lists all the events it knows
+   ``MAVRYK_EVENTS_CONFIG`` variable) and lists all the events it knows
    about.
 -  ``mavkit-admin-client output schema of <Event-Name> to <File-path>``
    get the JSON-Schema for an event.

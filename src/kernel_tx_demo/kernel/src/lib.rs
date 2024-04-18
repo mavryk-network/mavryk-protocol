@@ -12,7 +12,7 @@
 #![cfg_attr(feature = "debug", forbid(unsafe_code))]
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 
 #[cfg(feature = "dal")]
 pub mod dal;
@@ -25,17 +25,17 @@ pub(crate) mod fake_hash;
 
 use crypto::hash::{ContractTz1Hash, HashTrait, HashType, SmartRollupHash};
 use inbox::DepositFromInternalPayloadError;
-use tezos_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
-use tezos_smart_rollup_encoding::inbox::ExternalMessageFrame;
-use tezos_smart_rollup_encoding::michelson::ticket::{StringTicket, Ticket};
-use tezos_smart_rollup_encoding::michelson::{MichelsonPair, MichelsonString};
-use tezos_smart_rollup_host::path::PathError;
+use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
+use mavryk_smart_rollup_encoding::inbox::ExternalMessageFrame;
+use mavryk_smart_rollup_encoding::michelson::ticket::{StringTicket, Ticket};
+use mavryk_smart_rollup_encoding::michelson::{MichelsonPair, MichelsonString};
+use mavryk_smart_rollup_host::path::PathError;
 use thiserror::Error;
 
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_encoding::inbox::{InboxMessage, InternalInboxMessage, Transfer};
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError, ValueType};
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_encoding::inbox::{InboxMessage, InternalInboxMessage, Transfer};
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError, ValueType};
 use transactions::external_inbox::ProcessExtMsgError;
 use transactions::process::execute_one_operation;
 use transactions::store::{CACHED_MESSAGES_STORE_PREFIX, DAL_PAYLOAD_PATH};
@@ -169,7 +169,7 @@ where
 #[derive(Error, Debug)]
 enum TransactionError<'a> {
     #[error("Unable to parse header inbox message {0:?}")]
-    MalformedInboxMessage(nom::Err<tezos_data_encoding::nom::NomError<'a>>),
+    MalformedInboxMessage(nom::Err<mavryk_data_encoding::nom::NomError<'a>>),
     #[error("Invalid internal inbox message, expected deposit: {0}")]
     InvalidInternalInbox(#[from] DepositFromInternalPayloadError),
     #[error("Error storing ticket on rollup")]
@@ -312,13 +312,13 @@ const MAX_ENVELOPE_CONTENT_SIZE: usize =
 /// Define the `kernel_run` for the transactions kernel.
 #[cfg(feature = "tx-kernel")]
 pub mod tx_kernel {
-    use tezos_smart_rollup_entrypoint::kernel_entry;
+    use mavryk_smart_rollup_entrypoint::kernel_entry;
     kernel_entry!(crate::transactions_run);
 }
 
 #[cfg(test)]
 mod test {
-    use tezos_smart_rollup_encoding::{
+    use mavryk_smart_rollup_encoding::{
         contract::Contract,
         michelson::ticket::StringTicket,
         michelson::{MichelsonPair, MichelsonString},
@@ -329,11 +329,11 @@ mod test {
     use crate::inbox::external::testing::gen_ed25519_keys;
     use crypto::hash::{ContractKt1Hash, ContractTz1Hash, HashTrait};
     use crypto::PublicKeyWithHash;
-    use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-    use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
-    use tezos_smart_rollup_host::path::OwnedPath;
-    use tezos_smart_rollup_mock::MockHost;
-    use tezos_smart_rollup_mock::TransferMetadata;
+    use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+    use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+    use mavryk_smart_rollup_host::path::OwnedPath;
+    use mavryk_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::TransferMetadata;
 
     #[test]
     fn deposit_ticket() {

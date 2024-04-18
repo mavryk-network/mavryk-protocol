@@ -2,76 +2,76 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_000_Ps9mPmXa)
- (public_name tezos-protocol-000-Ps9mPmXa.protocol.environment)
+ (name mavryk_protocol_environment_000_Ps9mPmXa)
+ (public_name mavryk-protocol-000-Ps9mPmXa.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
- (modules Tezos_protocol_environment_000_Ps9mPmXa))
+ (modules Mavryk_protocol_environment_000_Ps9mPmXa))
 
 (rule
- (targets tezos_protocol_environment_000_Ps9mPmXa.ml)
+ (targets mavryk_protocol_environment_000_Ps9mPmXa.ml)
  (action
   (write-file
    %{targets}
-   "module Name = struct let name = \"000-Ps9mPmXa\" end\ninclude Tezos_protocol_environment.V0.Make(Name)()\n")))
+   "module Name = struct let name = \"000-Ps9mPmXa\" end\ninclude Mavryk_protocol_environment.V0.Make(Name)()\n")))
 
 (library
- (name tezos_raw_protocol_000_Ps9mPmXa)
- (public_name tezos-protocol-000-Ps9mPmXa.protocol.raw)
+ (name mavryk_raw_protocol_000_Ps9mPmXa)
+ (public_name mavryk-protocol-000-Ps9mPmXa.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-000-Ps9mPmXa.protocol.environment)
+  mavryk-protocol-000-Ps9mPmXa.protocol.environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nostdlib
   -nopervasives
-  -open Tezos_protocol_environment_000_Ps9mPmXa
-  -open Tezos_protocol_environment_000_Ps9mPmXa.Pervasives
-  -open Tezos_protocol_environment_000_Ps9mPmXa.Error_monad)
+  -open Mavryk_protocol_environment_000_Ps9mPmXa
+  -open Mavryk_protocol_environment_000_Ps9mPmXa.Pervasives
+  -open Mavryk_protocol_environment_000_Ps9mPmXa.Error_monad)
  (modules Data Services Main))
 
 (library
- (name tezos_protocol_000_Ps9mPmXa)
- (public_name tezos-protocol-000-Ps9mPmXa.protocol)
+ (name mavryk_protocol_000_Ps9mPmXa)
+ (public_name mavryk-protocol-000-Ps9mPmXa.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs
-  tezos-protocol-000-Ps9mPmXa.protocol.raw)
+  mavryk-protocol-000-Ps9mPmXa.protocol.raw)
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nopervasives)
- (modules Protocol Tezos_protocol_000_Ps9mPmXa))
+ (modules Protocol Mavryk_protocol_000_Ps9mPmXa))
 
 (install
- (package tezos-protocol-000-Ps9mPmXa)
+ (package mavryk-protocol-000-Ps9mPmXa)
  (section lib)
- (files (TEZOS_PROTOCOL as protocol/raw/TEZOS_PROTOCOL)))
+ (files (MAVRYK_PROTOCOL as protocol/raw/MAVRYK_PROTOCOL)))
 
 (rule
  (targets protocol.ml)
  (action
   (write-file
    %{targets}
-   "\nlet hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn \"Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P\"\nlet name = Tezos_protocol_environment_000_Ps9mPmXa.Name.name\ninclude Tezos_raw_protocol_000_Ps9mPmXa\ninclude Tezos_raw_protocol_000_Ps9mPmXa.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P\"\nlet name = Mavryk_protocol_environment_000_Ps9mPmXa.Name.name\ninclude Mavryk_raw_protocol_000_Ps9mPmXa\ninclude Mavryk_raw_protocol_000_Ps9mPmXa.Main\n")))
 
 (rule
- (targets tezos_protocol_000_Ps9mPmXa.ml)
+ (targets mavryk_protocol_000_Ps9mPmXa.ml)
  (action
   (write-file
    %{targets}
-   "\nmodule Environment = Tezos_protocol_environment_000_Ps9mPmXa\nmodule Protocol = Protocol\n")))
+   "\nmodule Environment = Mavryk_protocol_environment_000_Ps9mPmXa\nmodule Protocol = Protocol\n")))
 
 (rule
  (alias runtest_compile_protocol)
  (deps data.ml
        services.ml
-       main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+       main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (run
    %{bin:mavkit-protocol-compiler}
@@ -80,18 +80,18 @@
    .)))
 
 (library
- (name tezos_protocol_000_Ps9mPmXa_lifted)
- (public_name tezos-protocol-000-Ps9mPmXa.protocol.lifted)
+ (name mavryk_protocol_000_Ps9mPmXa_lifted)
+ (public_name mavryk-protocol-000-Ps9mPmXa.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs
-  tezos-protocol-000-Ps9mPmXa.protocol)
+  mavryk-protocol-000-Ps9mPmXa.protocol)
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nopervasives
-  -open Tezos_protocol_000_Ps9mPmXa)
+  -open Mavryk_protocol_000_Ps9mPmXa)
  (modules Lifted_protocol))
 
 (rule
@@ -102,7 +102,7 @@
    "\ninclude Environment.Lift (Protocol)\nlet hash = Protocol.hash\n")))
 
 (library
- (name tezos_protocol_000_Ps9mPmXa_functor)
+ (name mavryk_protocol_000_Ps9mPmXa_functor)
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs)
@@ -116,7 +116,7 @@
  (targets functor.ml)
  (deps data.ml
        services.ml
-       main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+       main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
@@ -125,11 +125,11 @@
     (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
- (name tezos_embedded_protocol_000_Ps9mPmXa)
- (public_name tezos-protocol-000-Ps9mPmXa.embedded-protocol)
+ (name mavryk_embedded_protocol_000_Ps9mPmXa)
+ (public_name mavryk-protocol-000-Ps9mPmXa.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-000-Ps9mPmXa.protocol
+  mavryk-protocol-000-Ps9mPmXa.protocol
   mavkit-shell-libs.protocol-updater
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
@@ -142,7 +142,7 @@
  (targets registerer.ml)
  (deps data.ml
        services.ml
-       main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+       main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}

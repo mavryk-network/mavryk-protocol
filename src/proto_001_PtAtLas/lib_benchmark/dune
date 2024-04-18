@@ -2,33 +2,33 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmark_001_PtAtLas)
- (public_name tezos-benchmark-001-PtAtLas)
+ (name mavryk_benchmark_001_PtAtLas)
+ (public_name mavryk-benchmark-001-PtAtLas)
  (libraries
   mavkit-libs.stdlib
   mavkit-libs.base
   mavkit-libs.error-monad
   mavkit-libs.micheline
-  tezos-micheline-rewriting
-  tezos-benchmark
-  tezos-benchmark-type-inference-001-PtAtLas
-  tezos-protocol-001-PtAtLas.protocol
+  mavryk-micheline-rewriting
+  mavryk-benchmark
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavryk-protocol-001-PtAtLas.protocol
   mavkit-libs.crypto
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.parameters
   hashcons
   mavkit-protocol-001-PtAtLas-libs.test-helpers
   prbnmcn-stats)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_error_monad
-  -open Tezos_micheline
-  -open Tezos_micheline_rewriting
-  -open Tezos_benchmark
-  -open Tezos_benchmark_type_inference_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_001_PtAtLas_test_helpers)
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_error_monad
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers)
  (private_modules kernel rules state_space))

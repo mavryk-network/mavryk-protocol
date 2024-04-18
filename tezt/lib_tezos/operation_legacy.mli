@@ -143,7 +143,7 @@ val get_injection_branch : ?branch:string -> Client.t -> string Lwt.t
 (** [sign_manager_op_bytes ~signer op_bytes] signs [op_bytes] with
     [signer]'s secret key and the watermark [Generic_operation]. *)
 val sign_manager_op_bytes :
-  signer:Account.key -> bytes -> Tezos_crypto.Signature.t
+  signer:Account.key -> bytes -> Mavryk_crypto.Signature.t
 
 (** Same as [sign_manager_op_bytes], but the input operation is given
    in hexadecimal representation and returns a signature in

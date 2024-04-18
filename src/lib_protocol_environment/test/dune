@@ -18,10 +18,10 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_environment
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_environment
   -open Mavkit_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_test_helpers)
  (modules
   test_mem_context
   test_mem_context_array_theory

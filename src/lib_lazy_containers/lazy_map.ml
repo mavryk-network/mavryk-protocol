@@ -38,7 +38,7 @@ module type S = sig
 
   type 'a t
 
-  val origin : 'a t -> Tezos_tree_encoding.wrapped_tree option
+  val origin : 'a t -> Mavryk_tree_encoding.wrapped_tree option
 
   val string_of_key : key -> string
 
@@ -49,7 +49,7 @@ module type S = sig
   val create :
     ?values:'a Map.t ->
     ?produce_value:'a producer ->
-    ?origin:Tezos_tree_encoding.wrapped_tree ->
+    ?origin:Mavryk_tree_encoding.wrapped_tree ->
     unit ->
     'a t
 
@@ -74,7 +74,7 @@ module Make (Key : KeyS) : S with type key = Key.t = struct
   type 'a producer = key -> 'a Lwt.t
 
   type 'a t = {
-    origin : Tezos_tree_encoding.wrapped_tree option;
+    origin : Mavryk_tree_encoding.wrapped_tree option;
     produce_value : 'a producer;
     mutable values : 'a option Map.t;
   }
@@ -155,7 +155,7 @@ module Mutable = struct
     val create :
       ?values:'a Map.Map.t ->
       ?produce_value:'a Map.producer ->
-      ?origin:Tezos_tree_encoding.wrapped_tree ->
+      ?origin:Mavryk_tree_encoding.wrapped_tree ->
       unit ->
       'a t
 

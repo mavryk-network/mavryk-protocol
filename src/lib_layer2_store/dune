@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_layer2_store)
+ (name mavryk_layer2_store)
  (public_name mavkit-l2-libs.layer2_store)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -13,9 +13,9 @@
   irmin
   aches-lwt
   mavkit-libs.stdlib-unix
-  mavkit-libs.tezos-context.encoding)
+  mavkit-libs.mavryk-context.encoding)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

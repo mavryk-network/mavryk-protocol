@@ -138,7 +138,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "consensus heuristic",
     "tags": [
       "alcotest"

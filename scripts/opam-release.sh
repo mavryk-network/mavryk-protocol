@@ -6,7 +6,7 @@ script_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 
 usage="Usage: $0 <VERSION_NUMBER> <TARBALL_URL> [OPAM_REPOSITORY_CLONE_DIR]
 
-Example: $0 11.0 https://gitlab.com/tezos/tezos/-/archive/v11.0/tezos-v11.0.tar.bz2
+Example: $0 11.0 https://gitlab.com/tezos/tezos/-/archive/v11.0/mavryk-v11.0.tar.bz2
 
 This script clones ocaml/opam-repository into OPAM_REPOSITORY_CLONE_DIR
 (or uses the existing clone if it already exists) and generates opam packages

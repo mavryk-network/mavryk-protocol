@@ -94,8 +94,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: 016-PtMumbai: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: 016-PtMumbai: proxy",
     "tags": [
       "alcotest"
     ],
@@ -127,7 +127,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "012-Psithaca: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -160,7 +160,7 @@
     }
   },
   {
-    "file": "tezos-shell-context",
+    "file": "mavryk-shell-context",
     "title": "mem_context",
     "tags": [
       "alcotest"

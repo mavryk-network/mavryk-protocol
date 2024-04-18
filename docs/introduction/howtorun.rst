@@ -153,7 +153,7 @@ operations during 5 cycles to remain active.
 If for some reason your delegate is marked inactive you can reactivate
 it simply by re-registering again like above.
 
-To avoid your Tezos delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Tezos community <tezos_community>`.
+To avoid your Tezos delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Tezos community <mavryk_community>`.
 Alternatively, you may use the baking rights RPC and the attesting rights RPC (see :doc:`../api/openapi`), which is able to return a list of baking/attesting slots for a given delegate (see :ref:`example <DelegateRegistration>`).
 
 .. _baker_run:
@@ -173,7 +173,7 @@ accounts have the necessary rights.
 Let's launch the daemon pointing to the standard node directory and
 baking for user *bob*::
 
-   mavkit-baker-<PROTO_HASH> run with local node ~/.tezos-node bob --liquidity-baking-toggle-vote pass
+   mavkit-baker-<PROTO_HASH> run with local node ~/.mavryk-node bob --liquidity-baking-toggle-vote pass
 
 where ``PROTO_HASH`` is the short hash of the current protocol of the network you want to bake on.
 

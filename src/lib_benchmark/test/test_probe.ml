@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 
 let ns = Namespace.make Namespace.root "test_probe"
 
@@ -64,7 +64,7 @@ module Probing_bench = struct
       "Checks that benchmarks with a probe succeed. Actual measure results are \
        discarded, so there is no need for a complexity model."
 
-  (* The encoding is used by `tezos-snoop` to load the config from json
+  (* The encoding is used by `mavryk-snoop` to load the config from json
      files. *)
   let config_encoding =
     let open Data_encoding in
@@ -116,11 +116,11 @@ module Probing_bench = struct
     let closure (probe : 'a Generator.probe) =
       let _res_blake2b =
         probe.apply Aspect.Hashing_Blake2b (fun () ->
-            Tezos_crypto.Blake2B.hash_bytes [arbitrary_data])
+            Mavryk_crypto.Blake2B.hash_bytes [arbitrary_data])
       in
       let _res_sha256 =
         probe.apply Hashing_Sha256 (fun () ->
-            Tezos_crypto.Hacl.Hash.SHA256.digest arbitrary_data)
+            Mavryk_crypto.Hacl.Hash.SHA256.digest arbitrary_data)
       in
       ()
     in
@@ -158,5 +158,5 @@ let do_bench () =
 let tests = [Test.tztest_assert "probing bench" `Quick do_bench]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("probe", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("probe", tests)]
   |> Lwt_main.run

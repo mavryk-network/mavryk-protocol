@@ -119,8 +119,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: 014-PtKathma: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: 014-PtKathma: proxy",
     "tags": [
       "alcotest"
     ],
@@ -130,7 +130,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "011-PtHangz2: micheline v1 macros",
     "tags": [
       "alcotest"

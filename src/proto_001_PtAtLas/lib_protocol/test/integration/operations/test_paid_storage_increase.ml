@@ -184,7 +184,7 @@ let test_effectiveness () =
      operation ; PAIR }}"
   in
   let storage =
-    Tezos_micheline.Micheline.strip_locations (Expr_common.int Z.one)
+    Mavryk_micheline.Micheline.strip_locations (Expr_common.int Z.one)
   in
   let* b, destination = contract_originate ~script ~storage b source in
   let* inc = Incremental.begin_construction b in

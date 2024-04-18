@@ -52,7 +52,7 @@ val wait_pred_s :
    connections are actives in [~pool]. *)
 val wait_conns :
   ?timeout:float ->
-  pool:('a, 'b, 'c) Tezos_p2p.P2p_pool.t ->
+  pool:('a, 'b, 'c) Mavryk_p2p.P2p_pool.t ->
   int ->
   unit tzresult Lwt.t
 
@@ -68,15 +68,15 @@ val connect_all :
 
 (** [close_active_conns pool@] closes all actives connections of the pool. This
     function waits until the connections are effectively closed. *)
-val close_active_conns : ('a, 'b, 'c) Tezos_p2p.P2p_pool.t -> unit Lwt.t
+val close_active_conns : ('a, 'b, 'c) Mavryk_p2p.P2p_pool.t -> unit Lwt.t
 
-val version : Tezos_base.Network_version.t
+val version : Mavryk_base.Network_version.t
 
 val conn_meta_config : unit P2p_params.conn_meta_config
 
 val canceler : Lwt_canceler.t
 
-val proof_of_work_target : Tezos_crypto.Crypto_box.pow_target
+val proof_of_work_target : Mavryk_crypto.Crypto_box.pow_target
 
 val id1 : P2p_identity.t Lwt.t
 
@@ -116,7 +116,7 @@ val raw_accept :
 
 val accept :
   ?id:P2p_identity.t Lwt.t ->
-  ?proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+  ?proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
   P2p_io_scheduler.t ->
   Lwt_unix.file_descr ->
   ( unit P2p_connection.Info.t * unit P2p_socket.authenticated_connection,
@@ -131,7 +131,7 @@ val raw_connect :
   (P2p_io_scheduler.connection, P2p_fd.connect_error) result Lwt.t
 
 val connect :
-  ?proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+  ?proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
   P2p_io_scheduler.t ->
   P2p_addr.t ->
   int ->

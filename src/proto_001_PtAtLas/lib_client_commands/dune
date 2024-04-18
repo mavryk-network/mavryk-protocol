@@ -2,14 +2,14 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_client_001_PtAtLas_commands)
+ (name mavryk_client_001_PtAtLas_commands)
  (public_name mavkit-protocol-001-PtAtLas-libs.client.commands)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
   mavkit-libs.clic
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-libs.stdlib-unix
   mavkit-proto-libs.protocol-environment
   mavkit-shell-libs.shell-services
@@ -26,27 +26,27 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_client_base_unix
-  -open Tezos_protocol_plugin_001_PtAtLas)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_client_base_unix
+  -open Mavryk_protocol_plugin_001_PtAtLas)
  (modules (:standard \ alpha_commands_registration)))
 
 (library
- (name tezos_client_001_PtAtLas_commands_registration)
+ (name mavryk_client_001_PtAtLas_commands_registration)
  (public_name mavkit-protocol-001-PtAtLas-libs.client.commands-registration)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
   mavkit-libs.clic
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-001-PtAtLas.parameters
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-proto-libs.protocol-environment
   mavkit-shell-libs.shell-services
   mavkit-shell-libs.client-base
@@ -59,14 +59,14 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_client_001_PtAtLas_commands
-  -open Tezos_client_sapling_001_PtAtLas
-  -open Tezos_protocol_plugin_001_PtAtLas)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_client_001_PtAtLas_commands
+  -open Mavryk_client_sapling_001_PtAtLas
+  -open Mavryk_protocol_plugin_001_PtAtLas)
  (modules alpha_commands_registration))

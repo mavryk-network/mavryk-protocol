@@ -3864,8 +3864,8 @@ module type Snapshot_importer = sig
   val import :
     snapshot_path:string ->
     ?patch_context:
-      (Tezos_protocol_environment.Context.t ->
-      Tezos_protocol_environment.Context.t tzresult Lwt.t) ->
+      (Mavryk_protocol_environment.Context.t ->
+      Mavryk_protocol_environment.Context.t tzresult Lwt.t) ->
     ?block:Block_hash.t ->
     ?check_consistency:bool ->
     dst_store_dir:[`Store_dir] Naming.directory ->
@@ -4040,7 +4040,7 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
       | None -> tzfail (Inconsistent_context imported_context_hash)
     in
     let predecessor_context =
-      Tezos_shell_context.Shell_context.wrap_disk_context predecessor_context
+      Mavryk_shell_context.Shell_context.wrap_disk_context predecessor_context
     in
     let apply_environment =
       {
@@ -4322,7 +4322,7 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
     let patch_context =
       Option.map
         (fun f ctxt ->
-          let open Tezos_shell_context in
+          let open Mavryk_shell_context in
           let ctxt = Shell_context.wrap_disk_context ctxt in
           let+ ctxt = f ctxt in
           Shell_context.unwrap_disk_context ctxt)

@@ -29,13 +29,13 @@ open Configuration
 let install_finalizer_prod server =
   let open Lwt_syntax in
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
-  let+ () = Tezos_rpc_http_server.RPC_server.shutdown server in
+  let+ () = Mavryk_rpc_http_server.RPC_server.shutdown server in
   Format.printf "Server exited with code %d\n%!" exit_status
 
 let install_finalizer_dev server =
   let open Lwt_syntax in
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
-  let* () = Tezos_rpc_http_server.RPC_server.shutdown server in
+  let* () = Mavryk_rpc_http_server.RPC_server.shutdown server in
   Format.printf "Server exited with code %d\n%!" exit_status ;
   let+ () = Evm_node_lib_dev.Tx_pool.shutdown () in
   Format.printf "Shutting down Tx-Pool\n%!"
@@ -47,7 +47,7 @@ let callback_log server conn req body =
   let meth = req |> Request.meth |> Code.string_of_method in
   let* body_str = body |> Cohttp_lwt.Body.to_string in
   Format.printf "Uri: %s\nMethod: %s\nBody: %s\n%!" uri meth body_str ;
-  Tezos_rpc_http_server.RPC_server.resto_callback
+  Mavryk_rpc_http_server.RPC_server.resto_callback
     server
     conn
     req
@@ -108,7 +108,7 @@ let dev_directory config rollup_node_config =
 let start {rpc_addr; rpc_port; debug; cors_origins; cors_headers; _} ~directory
     =
   let open Lwt_result_syntax in
-  let open Tezos_rpc_http_server in
+  let open Mavryk_rpc_http_server in
   let p2p_addr = P2p_addr.of_string_exn rpc_addr in
   let host = Ipaddr.V6.to_string p2p_addr in
   let node = `TCP (`Port rpc_port) in
@@ -142,52 +142,52 @@ let start {rpc_addr; rpc_port; debug; cors_origins; cors_headers; _} ~directory
     (fun _ -> return server)
 
 module Params = struct
-  let string = Tezos_clic.parameter (fun _ s -> Lwt.return_ok s)
+  let string = Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s)
 
-  let int = Tezos_clic.parameter (fun _ s -> Lwt.return_ok (int_of_string s))
+  let int = Mavryk_clic.parameter (fun _ s -> Lwt.return_ok (int_of_string s))
 
   let rollup_node_endpoint =
-    Tezos_clic.parameter (fun _ uri -> Lwt.return_ok (Uri.of_string uri))
+    Mavryk_clic.parameter (fun _ uri -> Lwt.return_ok (Uri.of_string uri))
 
   let string_list =
-    Tezos_clic.parameter (fun _ s ->
+    Mavryk_clic.parameter (fun _ s ->
         let list = String.split ',' s in
         Lwt.return_ok list)
 end
 
 let rpc_addr_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"rpc-addr"
     ~placeholder:"ADDR"
     ~doc:"The EVM node server rpc address."
     Params.string
 
 let rpc_port_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"rpc-port"
     ~placeholder:"PORT"
     ~doc:"The EVM node server rpc port."
     Params.int
 
 let cors_allowed_headers_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"cors-headers"
     ~placeholder:"ALLOWED_HEADERS"
     ~doc:"List of accepted cors headers."
     Params.string_list
 
 let cors_allowed_origins_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"cors-origins"
     ~placeholder:"ALLOWED_ORIGINS"
     ~doc:"List of accepted cors origins."
     Params.string_list
 
 let devmode_arg =
-  Tezos_clic.switch ~long:"devmode" ~doc:"The EVM node in development mode." ()
+  Mavryk_clic.switch ~long:"devmode" ~doc:"The EVM node in development mode." ()
 
 let verbose_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~short:'v'
     ~long:"verbose"
     ~doc:"If verbose is set, the node will display the responses to RPCs."
@@ -195,7 +195,7 @@ let verbose_arg =
 
 let data_dir_arg =
   let default = Configuration.default_data_dir in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"data-dir"
     ~placeholder:"data-dir"
     ~doc:
@@ -206,7 +206,7 @@ let data_dir_arg =
     Params.string
 
 let rollup_node_endpoint_param =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name:"rollup-node-endpoint"
     ~desc:
       "The smart rollup node endpoint address (as ADDR:PORT) the node will \
@@ -215,10 +215,10 @@ let rollup_node_endpoint_param =
 
 let rollup_address_arg =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   parameter (fun _ hash ->
       let hash_opt =
-        Tezos_crypto.Hashed.Smart_rollup_address.of_b58check_opt hash
+        Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_opt hash
       in
       match hash_opt with
       | Some hash -> return hash
@@ -232,31 +232,31 @@ let rollup_address_arg =
        ~doc:
          "The smart rollup address in Base58 encoding used to produce the \
           chunked messages"
-       ~default:Tezos_crypto.Hashed.Smart_rollup_address.(to_b58check zero)
+       ~default:Mavryk_crypto.Hashed.Smart_rollup_address.(to_b58check zero)
        ~placeholder:"sr1..."
 
 let data_parameter =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name:"data"
     ~desc:"Data to prepare and chunk with the EVM rollup format"
     Params.string
 
 let kernel_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"kernel"
     ~placeholder:"evm_installer.wasm"
     ~doc:"Path to the EVM kernel"
     Params.string
 
 let preimages_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"preimage-dir"
     ~doc:"Path to the preimages directory"
     ~placeholder:"_evm_installer_preimages"
     Params.string
 
 let proxy_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Start the EVM node in proxy mode"
@@ -279,7 +279,7 @@ let proxy_command =
            verbose )
          rollup_node_endpoint
          () ->
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let*! () = Internal_event.Simple.emit Event.event_starting "proxy" in
       let* config =
         Cli.create_or_read_proxy_config
@@ -324,7 +324,7 @@ let proxy_command =
       return_unit)
 
 let sequencer_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Start the EVM node in sequencer mode"
@@ -349,7 +349,7 @@ let sequencer_command =
            preimages )
          rollup_node_endpoint
          () ->
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let*! () = Internal_event.Simple.emit Event.event_starting "sequencer" in
       let* config =
         Cli.create_or_read_sequencer_config
@@ -424,7 +424,7 @@ let make_dev_messages ~smart_rollup_address s =
   return messages
 
 let chunker_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:
@@ -443,14 +443,14 @@ let chunker_command =
         return_unit
       in
       let rollup_address =
-        Tezos_crypto.Hashed.Smart_rollup_address.to_string rollup_address
+        Mavryk_crypto.Hashed.Smart_rollup_address.to_string rollup_address
       in
       print_chunks rollup_address data)
 
 (* List of program commands *)
 let commands = [proxy_command; sequencer_command; chunker_command]
 
-let global_options = Tezos_clic.no_options
+let global_options = Mavryk_clic.no_options
 
 let executable_name = Filename.basename Sys.executable_name
 
@@ -459,33 +459,33 @@ let argv () = Array.to_list Sys.argv |> List.tl |> Stdlib.Option.get
 let dispatch initial_ctx args =
   let open Lwt_result_syntax in
   let commands =
-    Tezos_clic.add_manual
+    Mavryk_clic.add_manual
       ~executable_name
       ~global_options
-      (if Unix.isatty Unix.stdout then Tezos_clic.Ansi else Tezos_clic.Plain)
+      (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi else Mavryk_clic.Plain)
       Format.std_formatter
       commands
   in
   let* ctx, remaining_args =
-    Tezos_clic.parse_global_options global_options initial_ctx args
+    Mavryk_clic.parse_global_options global_options initial_ctx args
   in
-  Tezos_clic.dispatch commands ctx remaining_args
+  Mavryk_clic.dispatch commands ctx remaining_args
 
 let handle_error = function
   | Ok _ -> ()
-  | Error [Tezos_clic.Version] ->
-      let devmode = Tezos_version_value.Bin_version.version_string in
+  | Error [Mavryk_clic.Version] ->
+      let devmode = Mavryk_version_value.Bin_version.version_string in
       Format.printf "%s\n" devmode ;
       exit 0
-  | Error [Tezos_clic.Help command] ->
-      Tezos_clic.usage
+  | Error [Mavryk_clic.Help command] ->
+      Mavryk_clic.usage
         Format.std_formatter
         ~executable_name
         ~global_options
         (match command with None -> [] | Some c -> [c]) ;
       Stdlib.exit 0
   | Error errs ->
-      Tezos_clic.pp_cli_errors
+      Mavryk_clic.pp_cli_errors
         Format.err_formatter
         ~executable_name
         ~global_options
@@ -495,7 +495,7 @@ let handle_error = function
 
 let () =
   let _ =
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.std_formatter
         (if Unix.isatty Unix.stdout then Ansi else Plain)

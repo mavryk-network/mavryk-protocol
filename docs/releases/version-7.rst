@@ -7,7 +7,7 @@ Version 7.1 fixes a few compilation issues that users encountered with version 7
 and fixes a few client commands.
 
 Version 7.2 fixes an issue that could cause baking to fail when validating some
-smart contracts, and fixes how arguments are passed by the tezos-docker-manager.sh
+smart contracts, and fixes how arguments are passed by the mavryk-docker-manager.sh
 script when using Docker images.
 
 Version 7.3 fixes a couple of security issues.
@@ -58,9 +58,9 @@ branch.
 Note for Remote Signer Users
 ----------------------------
 
-Note for users of ``tezos-signer``: the 7.0 (or above) client, baker, endorser
+Note for users of ``mavryk-signer``: the 7.0 (or above) client, baker, endorser
 and accuser need the 7.0 signer (or above) to work. They are in particular not
-compatible with the ``mainnet`` version of ``tezos-signer``. So remember to
+compatible with the ``mainnet`` version of ``mavryk-signer``. So remember to
 update your remote signer too!
 
 Multinetwork Node
@@ -77,7 +77,7 @@ If you are following the ``mainnet`` branch, you should instead follow the
 ``latest-release`` branch.
 
 If you are using the Docker script (``alphanet.sh``), note that
-this script has been renamed ``tezos-docker-manager.sh``. The ``alphanet.sh``
+this script has been renamed ``mavryk-docker-manager.sh``. The ``alphanet.sh``
 script is still available in the Docker image for the auto-update mechanism.
 See :ref:`howtoget` for more information.
 

@@ -31,9 +31,9 @@
     Subject:      Unit tests of the Persistence library
 *)
 
-open Tezos_mockup
-open Tezos_stdlib_unix
-open Tezos_mockup_registration
+open Mavryk_mockup
+open Mavryk_stdlib_unix
+open Mavryk_mockup_registration
 
 let base_dir_class_testable =
   Alcotest.(testable Persistence.pp_base_dir_class ( = ))
@@ -89,7 +89,7 @@ let test_classify_is_empty =
           check_base_dir "An empty directory" Base_dir_is_empty bd))
 
 module Mock_protocol : Registration.PROTOCOL = struct
-  open Tezos_protocol_environment.Internal_for_tests
+  open Mavryk_protocol_environment.Internal_for_tests
   include Environment_protocol_T_test.Mock_all_unit
 
   let hash = Protocol_hash.hash_string [""]
@@ -114,9 +114,9 @@ module Mock_mockup : Registration.MOCKUP = struct
 
   module Protocol = Mock_protocol
   module Block_services =
-    Tezos_shell_services.Block_services.Make (Mock_protocol) (Mock_protocol)
+    Mavryk_shell_services.Block_services.Make (Mock_protocol) (Mock_protocol)
 
-  let directory = Tezos_rpc.Directory.empty
+  let directory = Mavryk_rpc.Directory.empty
 
   let init ~cctxt:_ ~parameters:_ ~constants_overrides_json:_
       ~bootstrap_accounts_json:_ =
@@ -137,7 +137,7 @@ let mock_printer () =
   let rev_logs : string list ref = ref [] in
   object
     inherit
-      Tezos_client_base.Client_context.simple_printer
+      Mavryk_client_base.Client_context.simple_printer
         (fun _channel log ->
           rev_logs := log :: !rev_logs ;
           Lwt.return_unit)
@@ -271,7 +271,7 @@ let test_get_registered_mockup_take_requested =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-mockup"
+    "mavryk-mockup"
     [
       ( "persistence",
         [

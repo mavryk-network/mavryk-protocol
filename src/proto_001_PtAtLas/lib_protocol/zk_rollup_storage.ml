@@ -205,7 +205,7 @@ let get_pending_length ctxt rollup =
   let* ctxt, pl = pending_list ctxt rollup in
   return (ctxt, pending_length pl)
 
-(** Same as [Tezos_stdlib.Utils.fold_n_times] but with Lwt and Error monad *)
+(** Same as [Mavryk_stdlib.Utils.fold_n_times] but with Lwt and Error monad *)
 let fold_n_times_es ~when_negative n f e =
   let open Lwt_result_syntax in
   if Compare.Int.(n < 0) then tzfail when_negative

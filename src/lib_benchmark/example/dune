@@ -2,14 +2,14 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmark_examples)
- (public_name tezos-benchmark-examples)
+ (name mavryk_benchmark_examples)
+ (public_name mavryk-benchmark-examples)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base
   mavkit-libs.stdlib-unix
   mavkit-libs.crypto
-  tezos-benchmark)
+  mavryk-benchmark)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

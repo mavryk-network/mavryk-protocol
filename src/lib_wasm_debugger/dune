@@ -22,7 +22,7 @@
   lambda-term)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_scoru_wasm_helpers
-  -open Tezos_webassembly_interpreter
-  -open Tezos_webassembly_interpreter_extra))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_scoru_wasm_helpers
+  -open Mavryk_webassembly_interpreter
+  -open Mavryk_webassembly_interpreter_extra))

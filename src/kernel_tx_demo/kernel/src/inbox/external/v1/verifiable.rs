@@ -18,14 +18,14 @@ use crypto::PublicKeySignatureVerifier;
 use nom::combinator::{consumed, map};
 use nom::sequence::pair;
 use num_bigint::{BigInt, TryFromBigIntError};
-use tezos_crypto_rs::blake2b::digest_256;
-use tezos_crypto_rs::blake2b::Blake2bError;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_crypto_rs::blake2b::digest_256;
+use mavryk_crypto_rs::blake2b::Blake2bError;
+use mavryk_data_encoding::nom::NomReader;
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_encoding::michelson::ticket::TicketHashError;
-use tezos_smart_rollup_host::path::OwnedPath;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_encoding::michelson::ticket::TicketHashError;
+use mavryk_smart_rollup_host::path::OwnedPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
 use thiserror::Error;
 
 /// Errors that may occur when verifying and executing transactions.
@@ -69,7 +69,7 @@ pub enum TransactionError {
     StorageError(AccountStorageError),
     /// Error when using the account storage API (getting and creating accounts).
     #[error("Error when using the transaction storage API {0}")]
-    StorageAPIError(tezos_smart_rollup_storage::StorageError),
+    StorageAPIError(mavryk_smart_rollup_storage::StorageError),
 }
 
 impl From<AccountStorageError> for TransactionError {
@@ -78,8 +78,8 @@ impl From<AccountStorageError> for TransactionError {
     }
 }
 
-impl From<tezos_smart_rollup_storage::StorageError> for TransactionError {
-    fn from(error: tezos_smart_rollup_storage::StorageError) -> Self {
+impl From<mavryk_smart_rollup_storage::StorageError> for TransactionError {
+    fn from(error: mavryk_smart_rollup_storage::StorageError) -> Self {
         TransactionError::StorageAPIError(error)
     }
 }
@@ -221,7 +221,7 @@ impl<'a> VerifiableOperation<'a> {
     }
 
     /// Parse an operation, remembering the parsed slice.
-    pub fn parse(input: &'a [u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    pub fn parse(input: &'a [u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         map(
             pair(consumed(Operation::nom_read), Signature::nom_read),
             |((parsed, operation), signature)| Self {
@@ -287,7 +287,7 @@ pub struct VerifiedOperation {
 #[cfg(test)]
 mod test {
     use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::enc::BinWriter;
 
     use crate::inbox::v1::Operation;
 

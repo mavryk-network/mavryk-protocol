@@ -41,7 +41,7 @@ import_snapshot () {
     context_dir="${f_snapshot_path%.rolling}"
     context_dir="${context_dir%.full}"
     context_dir="${context_dir%.archive}"
-    context_dir="$tmp_dir/tezos-node-${context_dir##*/}"
+    context_dir="$tmp_dir/mavryk-node-${context_dir##*/}"
     if [ -d "$context_dir" ]
     then
         echo "
@@ -201,7 +201,7 @@ fi
 
 user_activated_upgrade $proto_dir "$mig_level"
 
-pred_full_hash=$(first_hash src/proto_"${pred_proto_version}"_*/lib_protocol/TEZOS_PROTOCOL)
+pred_full_hash=$(first_hash src/proto_"${pred_proto_version}"_*/lib_protocol/MAVRYK_PROTOCOL)
 pred_short_hash=$(echo "$pred_full_hash" | head -c 8)
 
 # now calls correct scripts and renaming
@@ -238,7 +238,7 @@ else # \$mig_level > 28082
         ! [ -f "$context_dir/identity.json" ] && generate_identities "$context_dir"
         create_yes_wallet
     else
-        context_dir="path/to/tezos-node-context"
+        context_dir="path/to/mavryk-node-context"
         echo "
 No snapshot file provided. Please use the following commands to import a context
 manually:

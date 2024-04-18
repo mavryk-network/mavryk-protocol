@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-evm-logging"
+name = "mavryk-evm-logging"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-tezos-smart-rollup-debug.workspace = true
+mavryk-smart-rollup-debug.workspace = true
 
 [features]
 default = ["alloc"]

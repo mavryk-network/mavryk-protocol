@@ -16,9 +16,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib
-  -open Tezos_layer2_store
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib
+  -open Mavryk_layer2_store
   -open Mavkit_alcotezt)
  (modules test_indexed_store))
 

@@ -28,7 +28,7 @@ open Alpha_context
 
 type unsigned_block = {
   unsigned_block_header : Block_header.t;
-  operations : Tezos_base.Operation.t list list;
+  operations : Mavryk_base.Operation.t list list;
 }
 
 type simulation_kind =
@@ -65,7 +65,7 @@ let forge_faked_protocol_data ?(payload_hash = Block_payload_hash.zero)
       signature = Signature.zero;
     }
 
-let convert_operation (op : packed_operation) : Tezos_base.Operation.t =
+let convert_operation (op : packed_operation) : Mavryk_base.Operation.t =
   {
     shell = op.shell;
     proto =
@@ -91,11 +91,11 @@ let finalize_block_header ~shell_header ~validation_result ~operations_hash
   let open Lwt_result_syntax in
   let* fitness =
     match validation_result with
-    | Some {Tezos_protocol_environment.fitness; _} -> return fitness
+    | Some {Mavryk_protocol_environment.fitness; _} -> return fitness
     | None ->
         let*? level =
           Environment.wrap_tzresult @@ Raw_level.of_int32
-          @@ Int32.succ shell_header.Tezos_base.Block_header.level
+          @@ Int32.succ shell_header.Mavryk_base.Block_header.level
         in
         let*? fitness =
           Environment.wrap_tzresult
@@ -109,7 +109,7 @@ let finalize_block_header ~shell_header ~validation_result ~operations_hash
   in
   let validation_passes = List.length Main.validation_passes in
   let header =
-    Tezos_base.Block_header.
+    Mavryk_base.Block_header.
       {
         shell_header with
         level = Int32.succ shell_header.level;
@@ -131,11 +131,11 @@ let retain_live_operations_only ~live_blocks operation_pool =
    block. This function returns true if the block is the last of an [adoption]
    period. It can also return true if an [user_activated_upgrades] is given. *)
 let check_protocol_changed ~user_activated_upgrades ~level
-    ~(validation_result : Tezos_protocol_environment.validation_result option)
+    ~(validation_result : Mavryk_protocol_environment.validation_result option)
     ~(incremental : Baking_simulator.incremental) =
   let open Lwt_result_syntax in
   match
-    Tezos_base.Block_header.get_forced_protocol_upgrade
+    Mavryk_base.Block_header.get_forced_protocol_upgrade
       ~user_activated_upgrades
       ~level
   with
@@ -194,7 +194,7 @@ let filter_via_node ~chain_id ~fees_config ~hard_gas_limit_per_block
   let payload_hash =
     let operation_hashes =
       Stdlib.List.tl operations |> List.flatten
-      |> List.map Tezos_base.Operation.hash
+      |> List.map Mavryk_base.Operation.hash
     in
     Block_payload.hash
       ~predecessor_hash:shell_header.predecessor
@@ -265,7 +265,7 @@ let filter_with_context ~chain_id ~fees_config ~hard_gas_limit_per_block
     let payload_hash =
       let operation_hashes =
         Stdlib.List.tl operations |> List.flatten
-        |> List.map Tezos_base.Operation.hash
+        |> List.map Mavryk_base.Operation.hash
       in
       Block_payload.hash
         ~predecessor_hash:shell_header.predecessor
