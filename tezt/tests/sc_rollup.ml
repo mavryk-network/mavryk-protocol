@@ -44,7 +44,7 @@ open Sc_rollup_helpers
 
 let default_wasm_pvm_revision = function
   | Protocol.Alpha -> "2.0.0-r3"
-  | Protocol.Oxford -> "2.0.0-r3"
+  | Protocol.Atlas -> "2.0.0-r3"
 
 let assert_some_client_command cmd ~__LOC__ sc_rollup_node =
   let* v_opt = Sc_rollup_node.RPC.call sc_rollup_node @@ cmd in
@@ -528,7 +528,7 @@ let get_inbox_from_sc_rollup_node sc_rollup_node =
 (* Synchronizing the inbox in the rollup node
    ------------------------------------------
 
-   For each new head set by the Tezos node, the rollup node retrieves
+   For each new head set by the Mavryk node, the rollup node retrieves
    the messages of its rollup and maintains its internal inbox in a
    persistent state stored in its data directory. This process can
    handle Tezos chain reorganization and can also catch up to ensure a
@@ -602,11 +602,11 @@ let sc_rollup_node_disconnects_scenario sc_rollup_node _rollup_client sc_rollup
   let* () = send_messages num_messages client in
   let* level = wait_for_current_level node sc_rollup_node in
   let* () = Lwt_unix.sleep 1. in
-  Log.info "Terminating Tezos node" ;
+  Log.info "Terminating Mavryk node" ;
   let* () = Node.terminate node in
-  Log.info "Waiting before restarting Tezos node" ;
+  Log.info "Waiting before restarting Mavryk node" ;
   let* () = Lwt_unix.sleep 3. in
-  Log.info "Restarting Tezos node" ;
+  Log.info "Restarting Mavryk node" ;
   let* () = Node.run node Node.[Connections 0; Synchronisation_threshold 0] in
   let* () = Node.wait_for_ready node in
   let* () = send_messages num_messages client in
@@ -4335,7 +4335,7 @@ let test_rpcs ~kind
   let l2_block_hash' = JSON.(l2_block |-> "block_hash" |> as_string) in
   Check.((l2_block_hash' = l2_block_hash) string)
     ~error_msg:"L2 head is from full block is %L but should be %R" ;
-  if Protocol.number protocol >= 018 then (
+  if Protocol.number protocol >= 001 then (
     let whitelist = [Constant.bootstrap1.public_key_hash] in
     let* _, _, sc_rollup =
       setup_rollup ~protocol ~alias:"rollup2" ~kind ~whitelist node client
@@ -4543,7 +4543,7 @@ let test_arg_boot_sector_file ~kind =
     hex_if_wasm "Nantes aurait été un meilleur nom de protocol"
   in
   test_full_scenario
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
     ~kind
     ~boot_sector
     {
@@ -4591,7 +4591,7 @@ let test_arg_boot_sector_file ~kind =
 
 let test_bootstrap_smart_rollup_originated =
   register_test
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~__FILE__
     ~tags:["bootstrap"; "parameter"]
     ~title:"Bootstrap smart rollups are listed"
@@ -4630,7 +4630,7 @@ let test_bootstrap_smart_rollup_originated =
 
 let test_bootstrap_private_smart_rollup_originated =
   register_test
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~__FILE__
     ~tags:["bootstrap"; "parameter"; "private"]
     ~title:"Bootstrap private smart rollups are private"
@@ -4706,7 +4706,7 @@ let test_private_rollup_whitelist ?check_error ~regression ~description
     ~commit_publisher ~whitelist =
   test_l1_scenario
     ~regression
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~whitelist_enable:true
     ~whitelist
     ~src:Constant.bootstrap1.public_key_hash
@@ -4753,7 +4753,7 @@ let test_private_rollup_non_whitelisted_staker =
 let test_private_rollup_node_publish_in_whitelist =
   let commitment_period = 3 in
   test_full_scenario
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~whitelist_enable:true
     ~whitelist:[Constant.bootstrap1.public_key_hash]
     ~operator:Constant.bootstrap1.alias
@@ -4778,7 +4778,7 @@ let test_private_rollup_node_publish_in_whitelist =
 let test_private_rollup_node_publish_not_in_whitelist =
   let operator = Constant.bootstrap1.alias in
   test_full_scenario
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~whitelist_enable:true
     ~whitelist:[Constant.bootstrap2.public_key_hash]
     ~operator
@@ -4812,7 +4812,7 @@ let test_rollup_whitelist_update ~kind =
     ~kind
     ~whitelist_enable:true
     ~whitelist
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~commitment_period
     ~challenge_window
     ~operator:Constant.bootstrap1.public_key_hash
@@ -4945,7 +4945,7 @@ let test_rollup_whitelist_outdated_update ~kind =
     ~kind
     ~whitelist_enable:true
     ~whitelist
-    ~supports:(From_protocol 018)
+    ~supports:(From_protocol 001)
     ~commitment_period
     ~challenge_window
   @@ fun _protocol rollup_node rollup_client rollup_addr _node client ->

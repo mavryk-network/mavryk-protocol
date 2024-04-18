@@ -1562,11 +1562,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Lima: testnet dictator (ghostnet, cooldown)",
+    "title": "Lima: testnet dictator (basenet, cooldown)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "cooldown"
     ],
     "successful_runs": {
@@ -1576,11 +1576,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, adoption)",
+    "title": "Mumbai: testnet dictator (basenet, adoption)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "adoption"
     ],
     "successful_runs": {

@@ -106,7 +106,7 @@ let register =
   let* () =
     typecheck_script
       ?res:
-        (if Protocol.(number protocol >= number Oxford) then
+        (if Protocol.(number protocol >= number Atlas) then
          Some (rex "unexpected annotation")
         else None)
       ~legacy:true
@@ -117,7 +117,7 @@ let register =
   let* () =
     typecheck_script
       ?res:
-        (if Protocol.(number protocol >= number Oxford) then
+        (if Protocol.(number protocol >= number Atlas) then
          Some (rex "unexpected annotation")
         else None)
       ~legacy:true

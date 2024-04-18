@@ -44,9 +44,9 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Oxford: bootstrap: many nodes bootstrap",
+    "title": "Atlas: bootstrap: many nodes bootstrap",
     "tags": [
-      "oxford",
+      "atlas",
       "synchronisation_threshold",
       "bootstrap",
       "threshold",

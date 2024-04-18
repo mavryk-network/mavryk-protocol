@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Spawn Tezos nodes and control them. *)
+(** Spawn Mavryk nodes and control them. *)
 
 (** Convention: in this module, some functions implement node commands;
     those functions are named after those commands.
@@ -58,7 +58,7 @@ type history_mode = Archive | Full of int option | Rolling of int option
 (** Values that can be passed to the node's [--media-type] argument *)
 type media_type = Json | Binary | Any
 
-(** Tezos node command-line arguments.
+(** Mavryk node command-line arguments.
 
     Not all arguments are available here.
     Some are simply not implemented, and some are handled separately
@@ -92,7 +92,7 @@ type argument =
     Passed to [run] like commands through the [--rpc-tls] argument. *)
 type tls_config = {certificate_path : string; key_path : string}
 
-(** Tezos node states. *)
+(** Mavryk node states. *)
 type t
 
 (** Create a node.
@@ -337,10 +337,10 @@ module Config_file : sig
   (** Set the peer_validator configuration in the given configuration. *)
   val set_peer_validator : ?new_head_request_timeout:float -> JSON.t -> JSON.t
 
-  (** Set the network config to a sandbox with the same chain_id than Ghostnet.
+  (** Set the network config to a sandbox with the same chain_id than Basenet.
 
       [user_activated_upgrades] can be given to add user-activated upgrades. *)
-  val set_ghostnet_sandbox_network :
+  val set_basenet_sandbox_network :
     ?user_activated_upgrades:(int * Protocol.t) list -> unit -> JSON.t -> JSON.t
 end
 

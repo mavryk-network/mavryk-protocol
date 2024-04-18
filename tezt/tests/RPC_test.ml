@@ -413,7 +413,7 @@ let test_delegates_on_registered_alpha ~contracts ?endpoint client =
   in
   unit
 
-let test_adaptive_issuance_on_oxford ~contracts ?endpoint client =
+let test_adaptive_issuance_on_atlas ~contracts ?endpoint client =
   Log.info "Test adaptive issuance parameters retrieval" ;
 
   let* _ =
@@ -649,7 +649,7 @@ let test_delegates _test_mode_tag _protocol ?endpoint client =
 (* Test the adaptive issuance RPC. *)
 let test_adaptive_issuance _test_mode_tag (_ : Protocol.t) ?endpoint client =
   let* contracts = get_contracts ?endpoint client in
-  test_adaptive_issuance_on_oxford ~contracts ?endpoint client
+  test_adaptive_issuance_on_atlas ~contracts ?endpoint client
 
 (* Test the votes RPC. *)
 let test_votes _test_mode_tag _protocol ?endpoint client =
@@ -707,7 +707,7 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     @@ RPC.get_chain_block_helper_current_level ()
   in
   let* () =
-    if Protocol.(number protocol >= number Oxford) then
+    if Protocol.(number protocol >= number Atlas) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_context_denunciations ()
@@ -716,12 +716,12 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     else unit
   in
   let* () =
-    if Protocol.(number protocol <= number Oxford) then
+    if Protocol.(number protocol <= number Atlas) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_helper_endorsing_rights ()
         (* TODO: https://gitlab.com/tezos/tezos/-/issues/6227
-           This RPC helper should be removed once Oxford will be frozen. *)
+           This RPC helper should be removed once Atlas will be frozen. *)
       in
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
@@ -1674,7 +1674,7 @@ let register protocols =
       ~parameter_overrides:consensus_threshold ;
     check_rpc_regression
       "adaptive_issuance"
-      ~supports:Protocol.(From_protocol (number Oxford))
+      ~supports:Protocol.(From_protocol (number Atlas))
       ~test_function:test_adaptive_issuance ;
     check_rpc_regression
       "votes"

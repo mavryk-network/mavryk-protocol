@@ -1617,11 +1617,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, cooldown)",
+    "title": "Alpha: testnet dictator (basenet, cooldown)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "cooldown"
     ],
     "successful_runs": {

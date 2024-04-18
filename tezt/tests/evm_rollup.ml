@@ -2530,7 +2530,7 @@ type storage_migration_results = {
 (* This is the test generator that will trigger the sanity checks for migration
    tests.
    Note that:
-   - it uses the latest version of the ghostnet EVM rollup as a starter kernel.
+   - it uses the latest version of the basenet EVM rollup as a starter kernel.
    - the upgrade of the kernel during the test will always target the latest one
      on master.
    - everytime a new path/rpc/object is stored in the kernel, a new sanity check
@@ -2540,7 +2540,7 @@ let gen_kernel_migration_test ?config ?(admin = Constant.bootstrap5)
   let current_kernel_base_installee =
     "etherlink/kernel_evm/kernel/tests/resources"
   in
-  let current_kernel_installee = "ghostnet_evm_kernel" in
+  let current_kernel_installee = "basenet_evm_kernel" in
   let* evm_setup =
     setup_past_genesis
       ?config

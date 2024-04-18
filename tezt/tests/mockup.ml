@@ -1261,7 +1261,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
   in
   let compute_expected_amounts protocol bootstrap_accounts protocol_constants =
     let convert =
-      if protocol >= Protocol.Oxford then
+      if protocol >= Protocol.Atlas then
         let limit_of_delegation_over_baking =
           JSON.(
             protocol_constants |-> "limit_of_delegation_over_baking" |> as_int)

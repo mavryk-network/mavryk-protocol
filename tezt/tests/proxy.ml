@@ -148,12 +148,12 @@ let test_cache_at_most_once ~protocols =
   List.iter
     (fun (sub_path, query_string) ->
       test_cache_at_most_once
-        ~supports:Protocol.(Until_protocol (number Oxford))
+        ~supports:Protocol.(Until_protocol (number Atlas))
         ~query_string
         ("chains" :: "main" :: "blocks" :: "head" :: sub_path)
         protocols)
     ((["helpers"; "endorsing_rights"], []) :: paths)
-(* Re-enable me once we start the protocol after Oxford. *)
+(* Re-enable me once we start the protocol after Atlas. *)
 (* ;
    List.iter
      (fun (sub_path, query_string) ->
@@ -274,7 +274,7 @@ let test_context_suffix_no_rpc ~protocols =
   let iter l f = List.iter f l in
   iter protocols @@ fun protocol ->
   let paths =
-    if Protocol.(number protocol <= number Oxford) then
+    if Protocol.(number protocol <= number Atlas) then
       (["helpers"; "endorsing_rights"], []) :: paths
     else paths
   in
@@ -542,7 +542,7 @@ module Location = struct
           (add_rpc_path_prefix ["votes"; "proposals"], []);
         ]
       in
-      if Protocol.(number protocol <= number Oxford) then
+      if Protocol.(number protocol <= number Atlas) then
         (add_rpc_path_prefix ["helpers"; "endorsing_rights"], []) :: compared
       else compared
     in

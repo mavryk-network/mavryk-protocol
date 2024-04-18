@@ -1143,12 +1143,12 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
-    "title": "Lima: testnet dictator (ghostnet, migration)",
+    "file": "basenet_dictator_migration.ml",
+    "title": "Lima: testnet dictator (basenet, migration)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "migration"
     ],
     "successful_runs": {

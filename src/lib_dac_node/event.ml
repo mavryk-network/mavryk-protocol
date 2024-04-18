@@ -290,23 +290,23 @@ let fetched_missing_page =
     ("hash", Data_encoding.(string' Hex))
 
 (** [layer1_node_tracking_ended] is emitted when client loses connection
-    to Tezos node. *)
+    to Mavryk node. *)
 let layer1_node_tracking_ended =
   declare_0
     ~section
     ~name:"new_head_daemon_connection_lost"
-    ~msg:"Daemon for monitoring new L1 heads lost connection to Tezos node"
+    ~msg:"Daemon for monitoring new L1 heads lost connection to Mavryk node"
     ~level:Warning
     ()
 
 (** [cannot_connect_to_tezos_node] event is emitted when client tries to
-    track Tezos node L1 heads, but fails. *)
+    track Mavryk node L1 heads, but fails. *)
 let cannot_connect_to_tezos_node =
   declare_3
     ~section
     ~name:"new_head_daemon_cannot_connect"
     ~msg:
-      "Cannot connect to Tezos node. Tried {count}-times already, will retry \
+      "Cannot connect to Mavryk node. Tried {count}-times already, will retry \
        in {delay}s. Error: {error}"
     ~level:Warning
     ("count", Data_encoding.int31)

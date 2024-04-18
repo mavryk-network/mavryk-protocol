@@ -13,7 +13,7 @@ depends: [
   "octez-libs"
   "octez-shell-libs"
   "uri" { >= "3.1.0" }
-  "octez-protocol-018-Proxford-libs"
+  "octez-protocol-001-PtAtLas-libs"
 ]
 depopts: [
   "tezos-client-genesis"

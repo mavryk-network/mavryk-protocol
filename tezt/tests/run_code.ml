@@ -17,7 +17,7 @@ let test_balance_and_self_address =
     ~__FILE__
     ~title:"Run code with balance and self address"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   (* With no parameters, the default BALANCE is 4 000 000 ꜩ. *)
@@ -79,7 +79,7 @@ let test_source_and_sender =
     ~__FILE__
     ~title:"Run code with source and sender"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* bootstrap1 = Client.show_address ~alias:"bootstrap1" client in
@@ -143,7 +143,7 @@ let test_other_contracts =
     ~__FILE__
     ~title:"Run code with other_contracts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let unused_address = "KT1Q36KWPSba7dHsH5E4ZsQHehrChc51e19d" in
@@ -166,7 +166,7 @@ let test_extra_big_maps =
     ~__FILE__
     ~title:"Run code with extra_big_maps"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack =
@@ -184,7 +184,7 @@ let test_amount =
     ~__FILE__
     ~title:"Run code with amount"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack = Client.run_code ~src:"AMOUNT" ~stack:"{}" client in
@@ -200,7 +200,7 @@ let test_level =
     ~__FILE__
     ~title:"Run code with level"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack = Client.run_code ~src:"LEVEL" ~stack:"{}" client in
@@ -214,7 +214,7 @@ let test_now =
     ~__FILE__
     ~title:"Run code with now"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack = Client.run_code ~src:"NOW" ~stack:"{}" client in
@@ -229,7 +229,7 @@ let test_long_output =
     ~__FILE__
     ~title:"Run code outputing a long stack"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* stack =

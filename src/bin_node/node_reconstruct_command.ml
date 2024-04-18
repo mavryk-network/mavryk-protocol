@@ -101,7 +101,7 @@ module Term = struct
       "Run the storage reconstruction in sandbox mode. P2P to non-localhost \
        addresses are disabled, and constants of the economic protocol can be \
        altered with an optional JSON file. $(b,IMPORTANT): Using sandbox mode \
-       affects the node state and subsequent runs of Tezos node must also use \
+       affects the node state and subsequent runs of Mavryk node must also use \
        sandbox mode. In order to run the node in normal mode afterwards, a \
        full reset must be performed (by removing the node's data directory)."
     in

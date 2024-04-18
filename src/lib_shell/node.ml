@@ -50,12 +50,12 @@ let () =
     ~id:"main.run.failed_to_init_p2p"
     ~title:"Cannot start node: P2P initialization failed"
     ~description:
-      "Tezos node could not be started because of a network problem while \
+      "Mavryk node could not be started because of a network problem while \
        initializing P2P."
     ~pp:(fun ppf () ->
       Format.fprintf
         ppf
-        "Tezos node could not be started because of a network problem.")
+        "Mavryk node could not be started because of a network problem.")
     Data_encoding.(obj1 @@ req "error" @@ constant "Failed_to_init_P2P")
     (function Failed_to_init_P2P -> Some () | _ -> None)
     (fun () -> Failed_to_init_P2P)

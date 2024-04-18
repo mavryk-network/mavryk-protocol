@@ -47,11 +47,11 @@ let (genesis, date) = genesis ()
 
 let echo x = Printf.ksprintf print_endline x
 
-let chain_name_prefix = "TEZOS_" ^ String.uppercase_ascii network_name ^ "_"
+let chain_name_prefix = "MAVRYK_" ^ String.uppercase_ascii network_name ^ "_"
 
 let chain_name = chain_name_prefix ^ date
 
-let sandboxed_chain_name = "SANDBOXED_TEZOS"
+let sandboxed_chain_name = "SANDBOXED_MAVRYK"
 
 let () =
   echo

@@ -212,7 +212,7 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
     make_parameter "smart_rollup_commitment_period_in_blocks" commitment_period
     @ make_parameter "smart_rollup_challenge_window_in_blocks" challenge_window
     @ make_parameter "smart_rollup_timeout_period_in_blocks" timeout
-    @ (if Protocol.number protocol >= 018 then
+    @ (if Protocol.number protocol >= 001 then
        make_bool_parameter "smart_rollup_private_enable" whitelist_enable
       else [])
     @ [(["smart_rollup_arith_pvm_enable"], `Bool true)]
@@ -438,7 +438,7 @@ let format_title_scenario kind {variant; tags = _; description} =
    ----------------------------
 
    A message can be pushed to a smart-contract rollup inbox through
-   the Tezos node. Then we can observe that the messages are included in the
+   the Mavryk node. Then we can observe that the messages are included in the
    inbox.
 *)
 let send_message_client ?hooks ?(src = Constant.bootstrap2.alias) client msg =

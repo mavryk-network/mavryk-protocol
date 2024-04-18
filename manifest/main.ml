@@ -5082,18 +5082,18 @@ end = struct
             "test_deactivation";
             "test_delegation";
             "test_double_baking";
-            (if N.(number >= 018) then "test_double_attestation"
+            (if N.(number >= 001) then "test_double_attestation"
             else "test_double_endorsement");
-            (if N.(number >= 018) then "test_double_preattestation"
+            (if N.(number >= 001) then "test_double_preattestation"
             else "test_double_preendorsement");
-            (if N.(number >= 018) then "test_attestation"
+            (if N.(number >= 001) then "test_attestation"
             else "test_endorsement");
             "test_frozen_deposits";
             "test_helpers_rpcs";
             "test_participation";
-            (if N.(number >= 018) then "test_preattestation_functor"
+            (if N.(number >= 001) then "test_preattestation_functor"
             else "test_preendorsement_functor");
-            (if N.(number >= 018) then "test_preattestation"
+            (if N.(number >= 001) then "test_preattestation"
             else "test_preendorsement");
             "test_seed";
           ]
@@ -5265,8 +5265,8 @@ end = struct
           [
             ("test_constants", true);
             ("test_frozen_bonds", true);
-            ("test_adaptive_issuance_launch", N.(number >= 018));
-            ("test_adaptive_issuance_roundtrip", N.(number >= 018));
+            ("test_adaptive_issuance_launch", N.(number >= 001));
+            ("test_adaptive_issuance_roundtrip", N.(number >= 001));
             ("test_liquidity_baking", true);
             ("test_storage_functions", true);
             ("test_storage", true);
@@ -5317,7 +5317,7 @@ end = struct
             ("test_dal_slot_proof", N.(number >= 016));
             ("test_compare_operations", N.(number >= 015));
             ("test_operation_encoding", N.(number >= 016));
-            ("test_balance_updates_encoding", N.(number >= 018));
+            ("test_balance_updates_encoding", N.(number >= 001));
             ("test_bytes_conversion", N.(number >= 016));
           ]
           |> conditional_list
@@ -5385,8 +5385,8 @@ end = struct
             ("test_sc_rollup_wasm", N.(number >= 016));
             ("test_local_contexts", N.(number >= 016));
             ("test_dal_slot_proof", N.(number >= 016));
-            ("test_adaptive_issuance", N.(number >= 018));
-            ("test_adaptive_issuance_ema", N.(number >= 018));
+            ("test_adaptive_issuance", N.(number >= 001));
+            ("test_adaptive_issuance_ema", N.(number >= 001));
             ("test_percentage", N.(number >= 019));
           ]
           |> conditional_list
@@ -6018,7 +6018,7 @@ let hash = Protocol.hash
             octez_shell_services |> open_;
             octez_client_base |> open_;
             main |> open_;
-            lifted |> open_if N.(number >= 018);
+            lifted |> open_if N.(number >= 001);
             octez_mockup_registration |> if_ N.(number >= 011);
             octez_proxy |> if_ N.(number >= 011);
             octez_signer_backends |> if_ N.(number >= 001);
@@ -6060,7 +6060,7 @@ let hash = Protocol.hash
             octez_shell_services |> open_;
             octez_plompiler |> if_ N.(number >= 015);
             octez_crypto_dal |> if_ N.(number >= 016) |> open_;
-            octez_sc_rollup |> if_some |> if_ N.(number >= 018) |> open_;
+            octez_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
           ]
     in
     let _plugin_tests =
@@ -6223,7 +6223,7 @@ let hash = Protocol.hash
             octez_clic;
             octez_version_value;
             main |> open_;
-            lifted |> if_ N.(number >= 018) |> open_;
+            lifted |> if_ N.(number >= 001) |> open_;
             plugin |> if_some |> open_;
             octez_protocol_environment;
             octez_shell_services |> open_;
@@ -6605,9 +6605,9 @@ let hash = Protocol.hash
             octez_dal_node_lib |> open_;
             (* [dac] is needed for the DAC observer client which is not
                available in Nairobi and earlier. *)
-            dac |> if_some |> if_ N.(number >= 018) |> open_;
+            dac |> if_some |> if_ N.(number >= 001) |> open_;
             octez_dac_lib |> open_;
-            octez_dac_client_lib |> if_ N.(number >= 018) |> open_;
+            octez_dac_client_lib |> if_ N.(number >= 001) |> open_;
             octez_shell_services |> open_;
             octez_smart_rollup_lib |> open_;
             octez_sc_rollup |> if_some |> open_;
@@ -6889,7 +6889,7 @@ let hash = Protocol.hash
 
   let overridden = register_alpha_family Overridden
 
-  let _018_Proxford = active (Name.v "Proxford" 018)
+  let _001_PtAtLas = active (Name.v "PtAtLas" 001)
 
   let alpha = active Name.alpha
 

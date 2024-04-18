@@ -134,7 +134,7 @@ val get_status : t -> status
     [Node_context.t]. *)
 val get_mode : t -> mode
 
-(** [get_tezos_node_cctxt ctxt] returns the Tezos node's client context. *)
+(** [get_tezos_node_cctxt ctxt] returns the Mavryk node's client context. *)
 val get_tezos_node_cctxt : t -> Client_context.full
 
 (** [get_dac_plugin ctxt] returns the [Dac_plugin.t] used in the node context.

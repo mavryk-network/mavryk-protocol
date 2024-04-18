@@ -7,8 +7,8 @@
   octez-libs.micheline
   octez-libs.base
   octez-shell-libs.store
-  tezos-protocol-018-Proxford.protocol
-  octez-protocol-018-Proxford-libs.client
+  tezos-protocol-001-PtAtLas.protocol
+  octez-protocol-001-PtAtLas-libs.client
   tezos-protocol-alpha.protocol
   octez-protocol-alpha-libs.client)
  (library_flags (:standard -linkall))

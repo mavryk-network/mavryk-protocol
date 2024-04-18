@@ -1637,11 +1637,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, proposal)",
+    "title": "Mumbai: testnet dictator (basenet, proposal)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "proposal"
     ],
     "successful_runs": {

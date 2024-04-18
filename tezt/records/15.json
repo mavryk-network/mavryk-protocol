@@ -1520,11 +1520,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, exploration)",
+    "title": "Alpha: testnet dictator (basenet, exploration)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "exploration"
     ],
     "successful_runs": {

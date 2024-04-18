@@ -420,12 +420,12 @@ opam:bls12-381:
 
 # Ignoring unreleased package kaitai-of-data-encoding.
 
-opam:octez-accuser-Proxford:
+opam:octez-accuser-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-accuser-Proxford
+    package: octez-accuser-PtAtLas
 
 # Ignoring unreleased package octez-accuser-alpha.
 
@@ -436,12 +436,12 @@ opam:octez-alcotezt:
   variables:
     package: octez-alcotezt
 
-opam:octez-baker-Proxford:
+opam:octez-baker-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_exec_opam_batch_1
   variables:
-    package: octez-baker-Proxford
+    package: octez-baker-PtAtLas
 
 # Ignoring unreleased package octez-baker-alpha.
 
@@ -555,12 +555,12 @@ opam:octez-protocol-000-Ps9mPmXa-libs:
   variables:
     package: octez-protocol-000-Ps9mPmXa-libs
 
-opam:octez-protocol-018-Proxford-libs:
+opam:octez-protocol-001-PtAtLas-libs:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_2
   variables:
-    package: octez-protocol-018-Proxford-libs
+    package: octez-protocol-001-PtAtLas-libs
 
 opam:octez-protocol-alpha-libs:
   extends:
@@ -611,7 +611,7 @@ opam:octez-signer:
   variables:
     package: octez-signer
 
-# Ignoring unreleased package octez-smart-rollup-client-Proxford.
+# Ignoring unreleased package octez-smart-rollup-client-PtAtLas.
 
 # Ignoring unreleased package octez-smart-rollup-client-alpha.
 
@@ -622,12 +622,12 @@ opam:octez-smart-rollup-node:
   variables:
     package: octez-smart-rollup-node
 
-opam:octez-smart-rollup-node-Proxford:
+opam:octez-smart-rollup-node-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_1
   variables:
-    package: octez-smart-rollup-node-Proxford
+    package: octez-smart-rollup-node-PtAtLas
 
 opam:octez-smart-rollup-node-alpha:
   extends:
@@ -686,7 +686,7 @@ opam:tezos-benchmark:
   variables:
     package: tezos-benchmark
 
-# Ignoring unreleased package tezos-benchmark-018-Proxford.
+# Ignoring unreleased package tezos-benchmark-001-PtAtLas.
 
 # Ignoring unreleased package tezos-benchmark-alpha.
 
@@ -694,11 +694,11 @@ opam:tezos-benchmark:
 
 # Ignoring unreleased package tezos-benchmark-tests.
 
-# Ignoring unreleased package tezos-benchmark-type-inference-018-Proxford.
+# Ignoring unreleased package tezos-benchmark-type-inference-001-PtAtLas.
 
 # Ignoring unreleased package tezos-benchmark-type-inference-alpha.
 
-# Ignoring unreleased package tezos-benchmarks-proto-018-Proxford.
+# Ignoring unreleased package tezos-benchmarks-proto-001-PtAtLas.
 
 # Ignoring unreleased package tezos-benchmarks-proto-alpha.
 
@@ -755,7 +755,7 @@ opam:tezos-dal-node-services:
   variables:
     package: tezos-dal-node-services
 
-# Ignoring unreleased package tezos-injector-018-Proxford.
+# Ignoring unreleased package tezos-injector-001-PtAtLas.
 
 # Ignoring unreleased package tezos-injector-alpha.
 
@@ -898,14 +898,14 @@ opam:tezos-protocol-016-PtMumbai:
   variables:
     package: tezos-protocol-016-PtMumbai
 
-opam:tezos-protocol-018-Proxford:
+opam:tezos-protocol-001-PtAtLas:
   extends:
     - .opam_template
     - .rules_template__trigger_all_opam_batch_6
   variables:
-    package: tezos-protocol-018-Proxford
+    package: tezos-protocol-001-PtAtLas
 
-# Ignoring unreleased package tezos-protocol-018-Proxford-tests.
+# Ignoring unreleased package tezos-protocol-001-PtAtLas-tests.
 
 opam:tezos-protocol-alpha:
   extends:

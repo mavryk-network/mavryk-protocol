@@ -181,7 +181,7 @@ end
 module Manpage = struct
   let command_description =
     "The $(b,config) command is meant to inspect and amend the configuration \
-     of the Tezos node. This command is complementary to manually editing the \
+     of the Mavryk node. This command is complementary to manually editing the \
      tezos node configuration file. Its arguments are a subset of the $(i,run) \
      command ones."
 

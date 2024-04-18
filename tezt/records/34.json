@@ -1786,7 +1786,7 @@
   },
   {
     "file": "tx_rollup_l2_node.ml",
-    "title": "Lima: TX_rollup: test that the rollup node exits when it cannot connect to a Tezos node on startup",
+    "title": "Lima: TX_rollup: test that the rollup node exits when it cannot connect to a Mavryk node on startup",
     "tags": [
       "lima",
       "tx_rollup",

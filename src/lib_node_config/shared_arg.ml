@@ -390,7 +390,7 @@ module Term = struct
 
   let data_dir =
     let doc =
-      "The directory where the Tezos node will store all its data. Parent \
+      "The directory where the Mavryk node will store all its data. Parent \
        directories are created if necessary."
     in
     let env = Cmd.Env.info ~doc Config_file.data_dir_env_name in

@@ -1206,7 +1206,7 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
+    "file": "basenet_dictator_migration.ml",
     "title": "Mumbai: testnet dictator (mainnet, migration)",
     "tags": [
       "mumbai",

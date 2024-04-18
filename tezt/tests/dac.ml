@@ -1122,7 +1122,7 @@ module Full_infrastructure = struct
     let wait_for_observer_stopped_tracking_l1 =
       wait_for_l1_tracking_ended observer
     in
-    Log.info "Terminating Tezos node" ;
+    Log.info "Terminating Mavryk node" ;
     let* () = Node.terminate node in
     let* () = wait_for_coordinator_stopped_tracking_l1 in
     let* () = wait_for_committee_member_stopped_tracking_l1 in
@@ -1135,7 +1135,7 @@ module Full_infrastructure = struct
     let wait_for_committee_member_connected_to_l1 =
       wait_for_layer1_new_head committee_member
     in
-    Log.info "Restarting Tezos node" ;
+    Log.info "Restarting Mavryk node" ;
     let* () = Node.run node [] in
     (* 4. We assert [3.] by waiting for "dac_node_layer_1_new_head" event from
        both [coordinator_node] and [committee_member] node. *)
@@ -2311,7 +2311,7 @@ module Tx_kernel_e2e = struct
     let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
-      ~supports:Protocol.(From_protocol (number Oxford))
+      ~supports:Protocol.(From_protocol (number Atlas))
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
       ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"

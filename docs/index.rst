@@ -179,13 +179,13 @@ Platform developers are also provided reference materials for internal APIs of O
 
 .. toctree::
    :maxdepth: 2
-   :caption: Oxford Protocol doc
+   :caption: Atlas Protocol doc
    :hidden:
 
-   oxford/protocol
-   oxford/glossary
-   oxford/cli-commands
-   oxford/rpc
+   atlas/protocol
+   atlas/glossary
+   atlas/cli-commands
+   atlas/rpc
 
 .. toctree::
    :maxdepth: 2
@@ -227,7 +227,7 @@ Platform developers are also provided reference materials for internal APIs of O
    :hidden:
 
    protocols/naming
-   protocols/018_oxford
+   protocols/001_atlas
    protocols/alpha
    protocols/history
 

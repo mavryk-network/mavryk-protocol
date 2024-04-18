@@ -199,7 +199,7 @@ let encoding : t Data_encoding.t =
              default_network_name)
           (dft
              "endpoint"
-             ~description:"The Tezos node endpoint"
+             ~description:"The Mavryk node endpoint"
              endpoint_encoding
              default_endpoint)
           (dft

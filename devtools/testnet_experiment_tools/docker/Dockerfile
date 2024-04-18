@@ -38,15 +38,15 @@ ARG GIT_HISTORY_FILE
 
 # Open Container Initiative
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
-LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+LABEL org.opencontainers.image.authors="info@mavryk.io" \
       org.opencontainers.image.base.name="alpine:3.14" \
-      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.description="Mavryk node" \
       org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
-      org.opencontainers.image.title="tezos-bare" \
-      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
-      org.opencontainers.image.vendor="Nomadic Labs"
+      org.opencontainers.image.source="https://gitlab.com/mavryk-network/mavryk-protocol" \
+      org.opencontainers.image.title="mavryk-debug" \
+      org.opencontainers.image.url="https://gitlab.com/mavryk-network/mavryk-protocol" \
+      org.opencontainers.image.vendor="Mavryk Dynamics"
 
 COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
 COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos

@@ -251,7 +251,7 @@ let reconnection_delay_arg =
   let doc =
     Format.asprintf
       "The first reconnection delay, in seconds, to wait before reconnecting \
-       to the Tezos node. The default delay is %s.\n\
+       to the Mavryk node. The default delay is %s.\n\
        The actual delay varies to follow a randomized exponential backoff \
        (capped to 1.5h): [1.5^reconnection_attempt * delay ± 50%%]."
       default
