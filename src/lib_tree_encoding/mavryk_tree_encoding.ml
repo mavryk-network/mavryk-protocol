@@ -502,7 +502,7 @@ module Encodings_util = struct
     val empty_tree : unit -> Tree.tree Lwt.t
   end
 
-  (* TREE instance for Tezos context *)
+  (* TREE instance for Mavryk context *)
   module Make (Ctx : Bare_mavryk_context_sig) :
     S with type t = Ctx.t and type Tree.tree = Ctx.tree = struct
     type Tree.tree_instance += Tree of Ctx.tree

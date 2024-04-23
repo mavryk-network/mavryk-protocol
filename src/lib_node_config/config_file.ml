@@ -199,7 +199,7 @@ let blockchain_network_basenet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
       [
-        (10l, "PtNnAP2RzdsQXoWgDQXjk5mjz2nsV4NThkrLaTHhJ5aGrwVjEe4");
+        (10l, "PsSyLBNKaGQtFkaocDA5p2zqrTpHY87WDtENjMJXYSaF25W8W7n");
       ]
     ~default_bootstrap_peers:
       [ "" ]
@@ -501,7 +501,7 @@ let p2p =
           (opt
              "bootstrap-peers"
              ~description:
-               "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. \
+               "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. \
                 If the port is not specified, default port 9732 will be \
                 assumed."
              (list string))

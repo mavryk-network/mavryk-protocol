@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** The different kinds of Tezos operations we're analyzing. *)
+(** The different kinds of Mavryk operations we're analyzing. *)
 type transaction_kind = Contract | Regular | Origination
 
 (** The rows returned by the summary query. *)
@@ -126,7 +126,7 @@ module Db = struct
     in
     Caqti_lwt.Pool.use main' (mk_pool conn_str)
 
-  (** The main analysis query that categorizes the Tezos operations within a given time frame. *)
+  (** The main analysis query that categorizes the Mavryk operations within a given time frame. *)
   let summary_query =
     let query =
       Printf.sprintf

@@ -29,7 +29,7 @@
     Invocation: dune exec src/proto_alpha/lib_protocol/test/integration/consensus/main.exe \
                   -- --file test_attestation.ml
     Subject:    Attesting a block adds an extra layer of confidence
-                to the Tezos' PoS algorithm. The block attesting
+                to the Mavryk' PoS algorithm. The block attesting
                 operation must be included in the following block.
 *)
 

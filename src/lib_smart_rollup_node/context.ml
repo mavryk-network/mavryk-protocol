@@ -96,7 +96,7 @@ let close ctxt =
 let readonly (index : [> `Read] index) = (index :> [`Read] index)
 
 let raw_commit ?(message = "") index tree =
-  let info = IStore.Info.v ~author:"Tezos" 0L ~message in
+  let info = IStore.Info.v ~author:"Mavryk" 0L ~message in
   IStore.Commit.v index.repo ~info ~parents:[] tree
 
 let commit ?message ctxt =

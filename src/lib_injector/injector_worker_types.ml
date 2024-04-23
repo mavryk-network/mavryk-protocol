@@ -74,7 +74,7 @@ module Request (L1_operation : INJECTOR_OPERATION) = struct
     | New_mavryk_head (block, level) ->
         Format.fprintf
           ppf
-          "switching to new Tezos head %a at level %ld"
+          "switching to new Mavryk head %a at level %ld"
           Block_hash.pp
           block
           level

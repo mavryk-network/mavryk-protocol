@@ -52,11 +52,11 @@ let () =
     `Permanent
     ~id:"main.run.port_already_in_use"
     ~title:"Cannot start node: RPC port already in use"
-    ~description:"Another tezos node is probably running on the same RPC port."
+    ~description:"Another mavryk node is probably running on the same RPC port."
     ~pp:(fun ppf addrlist ->
       Format.fprintf
         ppf
-        "Another tezos node is probably running on one of these addresses \
+        "Another mavryk node is probably running on one of these addresses \
          (%a). Please choose another RPC port."
         (Format.pp_print_list P2p_point.Id.pp)
         addrlist)
@@ -742,7 +742,7 @@ module Term = struct
        disabled, and constants of the economic protocol can be altered with a \
        JSON file which overrides the $(b,genesis_parameters) field of the \
        network configuration (e.g. scripts/sandbox.json). $(b,IMPORTANT): \
-       Using sandbox mode affects the node state and subsequent runs of Tezos \
+       Using sandbox mode affects the node state and subsequent runs of Mavryk \
        node must also use sandbox mode. In order to run the node in normal \
        mode afterwards, a full reset must be performed (by removing the node's \
        data directory)."

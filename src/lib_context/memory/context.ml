@@ -165,7 +165,7 @@ module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
   let raw_commit ~time ?(message = "") context =
     let open Lwt_syntax in
     let info =
-      Store.Info.v (Time.Protocol.to_seconds time) ~author:"Tezos" ~message
+      Store.Info.v (Time.Protocol.to_seconds time) ~author:"Mavryk" ~message
     in
     let parents = List.map Store.Commit.key context.parents in
     let* () = unshallow context in
@@ -177,7 +177,7 @@ module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
 
   let hash ~time ?(message = "") context =
     let info =
-      Store.Info.v (Time.Protocol.to_seconds time) ~author:"Tezos" ~message
+      Store.Info.v (Time.Protocol.to_seconds time) ~author:"Mavryk" ~message
     in
     let parents = List.map (fun c -> Store.Commit.key c) context.parents in
     let node = Store.Tree.hash context.tree in

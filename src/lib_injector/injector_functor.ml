@@ -368,7 +368,7 @@ module Make (Parameters : PARAMETERS) = struct
       {level = injection_level; inj_ops = List.map fst infos; signer_pkh}
 
   (** [add_included_operations state oph l1_block l1_level operations] marks the
-    [operations] as included (in the L1 batch [oph]) in the Tezos block
+    [operations] as included (in the L1 batch [oph]) in the Mavryk block
     [l1_block] of level [l1_level]. *)
   let add_included_operations state l1_block l1_level
       (operations : injected_info list) =
@@ -1052,7 +1052,7 @@ module Make (Parameters : PARAMETERS) = struct
         | Forget -> return_unit)
       (List.rev expired_infos)
 
-  (** [on_new_mavryk_head state head] is called when there is a new Tezos
+  (** [on_new_mavryk_head state head] is called when there is a new Mavryk
       head. It first reverts any blocks that are in the alternative branch of
       the reorganization and then registers the effect of the new branch (the
       newly included operation and confirmed operations).  *)
@@ -1344,7 +1344,7 @@ module Make (Parameters : PARAMETERS) = struct
         next_protocol_of_block (cctxt :> Client_context.full) (head_hash, header)
       in
       update_protocol ~next_protocol ;
-      (* Notify all workers of a new Tezos head *)
+      (* Notify all workers of a new Mavryk head *)
       let*! () = notify_new_mavryk_head head in
       return_unit
     in

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Generic JSON RPC interface *)
+(* Mavryk Command line interface - Generic JSON RPC interface *)
 
 open Mavryk_clic
 open Json_schema

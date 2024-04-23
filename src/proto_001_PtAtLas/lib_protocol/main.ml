@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Protocol Implementation - Protocol Signature Instance *)
+(* Mavryk Protocol Implementation - Protocol Signature Instance *)
 
 type block_header_data = Alpha_context.Block_header.protocol_data
 

@@ -26,7 +26,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Main Entry Points *)
+(** Mavryk Protocol Implementation - Main Entry Points *)
 
 open Alpha_context
 

@@ -818,7 +818,7 @@ let check ?watermark public_key signature message =
   | _ -> false
 
 (* The following cache is a hack to work around a quadratic algorithm
-   in Tezos Mainnet protocols up to Edo. *)
+   in Mavryk Mainnet protocols up to Edo. *)
 
 module type ENDORSEMENT_CACHE_MAKER = functor (H : Stdlib.Hashtbl.HashedType) ->
   Aches.Vache.MAP with type key = H.t

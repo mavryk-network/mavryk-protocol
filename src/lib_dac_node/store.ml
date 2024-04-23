@@ -25,7 +25,7 @@
 
 module Irmin_store = struct
   module IStore = Irmin_store.Make (struct
-    let name = "Tezos DAC (Data Availability Committee) Node"
+    let name = "Mavryk DAC (Data Availability Committee) Node"
   end)
 
   include IStore

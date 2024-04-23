@@ -531,7 +531,7 @@ let get_inbox_from_sc_rollup_node sc_rollup_node =
    For each new head set by the Mavryk node, the rollup node retrieves
    the messages of its rollup and maintains its internal inbox in a
    persistent state stored in its data directory. This process can
-   handle Tezos chain reorganization and can also catch up to ensure a
+   handle Mavryk chain reorganization and can also catch up to ensure a
    tight synchronization between the rollup and the layer 1 chain.
 
    In addition, this maintenance includes the computation of a Merkle
@@ -5169,7 +5169,7 @@ let test_multiple_batcher_key ~kind =
     }
   @@ fun protocol sc_rollup mavryk_node client ->
   (* nb_of_batcher * msg_per_batch * msg_size = expected_block_size
-     16 * 32 * 1000 = 512_000 = maximum size of Tezos L1 block *)
+     16 * 32 * 1000 = 512_000 = maximum size of Mavryk L1 block *)
   let nb_of_batcher = 16 in
   let msg_per_batch = 32 in
   let msg_size = 1000 in
@@ -5366,7 +5366,7 @@ let test_injector_uses_available_keys ~kind =
         ~error_msg:"%L found where %R was expected)")
   in
   (* nb_of_keys * msg_per_batch * msg_size = expected_block_size
-     16 * 8 * 4000 = 512_000 = maximum size of Tezos L1 block *)
+     16 * 8 * 4000 = 512_000 = maximum size of Mavryk L1 block *)
   let nb_of_keys = 16 and msg_per_batch = 8 and msg_size = 4000 in
   let* keys = gen_keys_then_transfer_tez client nb_of_keys in
   let keys_pkh = List.map (fun k -> k.Account.public_key_hash) keys in

@@ -54,5 +54,5 @@ module type MAVRYK_CONTEXT_UNIX = Context.MAVRYK_CONTEXT_UNIX
 
 module Context_binary = Context.Make (Mavryk_context_encoding.Context_binary)
 
-(** The context of a tezos node. Persisted to disk. *)
+(** The context of a mavryk node. Persisted to disk. *)
 module Context = Context.Make (Mavryk_context_encoding.Context)

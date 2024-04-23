@@ -121,7 +121,7 @@ let id2 = P2p_identity.generate proof_of_work_target
 let version =
   {
     Network_version.chain_name =
-      Distributed_db_version.Name.of_string "SANDBOXED_TEZOS";
+      Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK";
     distributed_db_version = Distributed_db_version.one;
     p2p_version = P2p_version.zero;
   }

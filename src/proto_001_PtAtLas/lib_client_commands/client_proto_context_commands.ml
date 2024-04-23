@@ -1097,7 +1097,7 @@ let commands_network network () =
                     with
                     | Some c -> Lwt_result_syntax.return c
                     | None -> cctxt#error "Hexadecimal parsing failure"))
-               ~desc:"Activation code obtained from the Tezos foundation."
+               ~desc:"Activation code obtained from the Mavryk foundation."
           @@ stop)
           (fun dry_run (name, _pkh) code cctxt ->
             let open Lwt_result_syntax in
@@ -2528,7 +2528,7 @@ let commands_rw () =
         (* for a proposal to be valid it must either a protocol that was already
            proposed by somebody else or a protocol known by the node, because
            the user is the first proposer and just injected it with
-           tezos-admin-client *)
+           mavryk-admin-client *)
         let check_proposals proposals : bool tzresult Lwt.t =
           let errors = ref [] in
           let error ppf =

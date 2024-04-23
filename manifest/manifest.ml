@@ -3310,7 +3310,7 @@ let generate_opam ?release for_package (internals : Target.internal list) :
   in
   {
     maintainer = "contact@tezos.com";
-    authors = "Tezos devteam" :: extra_authors;
+    authors = "Mavryk devteam" :: extra_authors;
     homepage =
       get_consistent_value
         ~name:"opam_homepage"
@@ -3370,7 +3370,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
   in
   {
     maintainer = "contact@tezos.com";
-    authors = ["Tezos devteam"];
+    authors = ["Mavryk devteam"];
     homepage = "https://www.tezos.com/";
     doc = "https://tezos.gitlab.io";
     bug_reports = "https://gitlab.com/tezos/tezos/issues";
@@ -3380,7 +3380,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
     conflicts = [];
     build = [];
     available = Always;
-    synopsis = "Main virtual package for Mavkit, an implementation of Tezos";
+    synopsis = "Main virtual package for Mavkit, an implementation of Mavryk";
     url = None;
     description = None;
     x_opam_monorepo_opam_provided = [];
@@ -4024,7 +4024,7 @@ let generate_profiles ~default_profile =
     let opam : Opam.t =
       {
         maintainer = "contact@tezos.com";
-        authors = ["Tezos devteam"];
+        authors = ["Mavryk devteam"];
         homepage = "https://www.tezos.com/";
         doc = "";
         bug_reports = "https://gitlab.com/tezos/tezos/issues";

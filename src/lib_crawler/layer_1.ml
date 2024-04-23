@@ -327,7 +327,7 @@ let get_mavryk_reorg_for_new_head l1_state ?get_old_predecessor old_head new_hea
   match old_head with
   | `Level l ->
       let _, new_head_level = new_head in
-      (* No known tezos head, we want all blocks from l. *)
+      (* No known mavryk head, we want all blocks from l. *)
       if new_head_level < l then return Reorg.no_reorg
       else
         let distance = Int32.sub new_head_level l |> Int32.to_int in

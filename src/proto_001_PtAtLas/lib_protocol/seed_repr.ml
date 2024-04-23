@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Protocol Implementation - Random number generation *)
+(* Mavryk Protocol Implementation - Random number generation *)
 
 type seed = B of State_hash.t
 

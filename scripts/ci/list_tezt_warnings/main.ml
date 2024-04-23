@@ -22,7 +22,7 @@ let project =
     ~section
     ~long:"project"
     ~description:"GitLab project name."
-    "tezos/tezos"
+    "mavryk-network/mavryk-protocol"
 
 let pipeline =
   Clap.mandatory_int

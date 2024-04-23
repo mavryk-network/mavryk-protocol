@@ -358,14 +358,14 @@ module Global = struct
 
   let current_mavryk_head =
     Mavryk_rpc.Service.get_service
-      ~description:"Tezos head known to the smart rollup node"
+      ~description:"Mavryk head known to the smart rollup node"
       ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Block_hash.encoding)
       (path / "mavryk_head")
 
   let current_mavryk_level =
     Mavryk_rpc.Service.get_service
-      ~description:"Tezos level known to the smart rollup node"
+      ~description:"Mavryk level known to the smart rollup node"
       ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Data_encoding.int32)
       (path / "mavryk_level")
@@ -396,7 +396,7 @@ module Local = struct
 
   (* commitments are published only if their inbox level is above the last
      cemented commitment level inbox level. Because this information is
-     fetched from the head of the tezos node to which the rollup node is
+     fetched from the head of the mavryk node to which the rollup node is
      connected, it is possible that two rollup nodes that have processed
      the same set of heads, but whose corresponding layer1 node has
      different information about the last cemented commitment, will

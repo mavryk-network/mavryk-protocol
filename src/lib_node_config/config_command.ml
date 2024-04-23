@@ -137,8 +137,8 @@ module Term = struct
       Cmd.v
         (Cmd.info
            ~doc:
-             "reads, parses and displays Tezos current config file. Use this \
-              command to see exactly what config file will be used by Tezos. \
+             "reads, parses and displays Mavryk current config file. Use this \
+              command to see exactly what config file will be used by Mavryk. \
               If additional command-line arguments are provided, the displayed \
               configuration will be amended accordingly. This is the default \
               operation"
@@ -163,9 +163,9 @@ module Term = struct
       Cmd.v
         (Cmd.info
            ~doc:
-             "is the main option to edit the configuration file of Tezos. It \
+             "is the main option to edit the configuration file of Mavryk. It \
               will parse command line arguments and add or replace \
-              corresponding entries in the Tezos configuration file"
+              corresponding entries in the Mavryk configuration file"
            "update")
         Term.(ret (const update $ Shared_arg.Term.args));
       Cmd.v
@@ -182,7 +182,7 @@ module Manpage = struct
   let command_description =
     "The $(b,config) command is meant to inspect and amend the configuration \
      of the Mavryk node. This command is complementary to manually editing the \
-     tezos node configuration file. Its arguments are a subset of the $(i,run) \
+     mavryk node configuration file. Its arguments are a subset of the $(i,run) \
      command ones."
 
   let options =

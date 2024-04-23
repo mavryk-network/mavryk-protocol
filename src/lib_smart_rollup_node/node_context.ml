@@ -744,7 +744,7 @@ let inbox_of_head node_ctxt Layer1.{hash = block_hash; level = block_level} =
   (* Pre-condition: forall l. (l >= genesis_level) => inbox[l] <> None. *)
   match possible_inbox with
   | None ->
-      (* The inbox exists for each tezos block the rollup should care about.
+      (* The inbox exists for each mavryk block the rollup should care about.
          That is, every block at or after the origination level. We then join
          the bandwagon and build the inbox on top of the protocol's inbox
          at the end of the origination level. *)

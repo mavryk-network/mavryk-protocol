@@ -263,7 +263,7 @@ let scenario_with_full_dac_infrastructure ?supports ?(tags = ["dac"; "full"])
       let committee_members =
         List.append committee_members custom_committee_members
       in
-      (* Use a fresh tezos client for the coordinator. This is needed to make
+      (* Use a fresh mavryk client for the coordinator. This is needed to make
          sure that the coordinator does not have access to the secret keys of
          the coordinator stored in the wallet directory of [client]. *)
       let* coordinator_wallet_client = Client.init () in

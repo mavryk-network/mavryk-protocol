@@ -44,7 +44,7 @@ let size_modulus = 2048
 
 (* Creates a symmetric key using hash based key derivation from the time locked value*)
 let unlocked_value_to_symmetric_key unlocked_value =
-  let kdf_key = "Tezoskdftimelockv0" in
+  let kdf_key = "Mavrykkdftimelockv0" in
   let to_hash = Z.to_string unlocked_value in
   let hash = Blake2B.(to_bytes @@ hash_string ~key:kdf_key [to_hash]) in
   Crypto_box.Secretbox.unsafe_of_bytes hash

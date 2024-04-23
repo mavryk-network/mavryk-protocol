@@ -232,7 +232,7 @@ module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
 
   open Encoding
 
-  (** Tezos - Versioned (key x value) store (over Irmin) *)
+  (** Mavryk - Versioned (key x value) store (over Irmin) *)
 
   module Store = struct
     module Maker = Irmin_pack_unix.Maker (Conf)
@@ -347,7 +347,7 @@ module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
   let raw_commit ~time ?(message = "") context =
     let open Lwt_syntax in
     let info =
-      Info.v ~author:"Tezos" (Time.Protocol.to_seconds time) ~message
+      Info.v ~author:"Mavryk" (Time.Protocol.to_seconds time) ~message
     in
     let parents = List.map Store.Commit.key context.parents in
     let* () = unshallow context in
@@ -359,7 +359,7 @@ module Make (Encoding : module type of Mavryk_context_encoding.Context) = struct
 
   let hash ~time ?(message = "") context =
     let info =
-      Info.v ~author:"Tezos" (Time.Protocol.to_seconds time) ~message
+      Info.v ~author:"Mavryk" (Time.Protocol.to_seconds time) ~message
     in
     let parents = List.map (fun c -> Store.Commit.hash c) context.parents in
     let node = Store.Tree.hash context.tree in

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Local Storage for Configuration *)
+(* Mavryk Command line interface - Local Storage for Configuration *)
 
 let rec try_alternatives input = function
   | [] -> failwith "Could not parse input."

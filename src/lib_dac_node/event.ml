@@ -164,7 +164,7 @@ let committee_member_not_in_wallet =
     ~section
     ~name:"committee_member_not_in_wallet"
     ~msg:
-      "There is no account with public key {mv4_account} in the Tezos client \
+      "There is no account with public key {mv4_account} in the Mavryk client \
        wallet. This account won't be used for signing DAC root hash pages."
     ~level:Warning
     ("mv4_account", Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)
@@ -174,7 +174,7 @@ let committee_member_cannot_sign =
     ~section
     ~name:"committee_member_cannot_sign"
     ~msg:
-      "There is an account with public key {mv4_account} in the Tezos client \
+      "There is an account with public key {mv4_account} in the Mavryk client \
        wallet, but its secret key URI is not available. This account won't be \
        used for signing DAC root hash pages."
     ~level:Warning
@@ -185,7 +185,7 @@ let commit_member_no_public_key =
     ~section
     ~name:"committee_member_no_public_key"
     ~msg:
-      "There is an account with public key hash {mv4_account} in the Tezos \
+      "There is an account with public key hash {mv4_account} in the Mavryk \
        client wallet, but its public key is not available. Signatures from \
        this account cannot be verified and will be ignored."
     ~level:Warning

@@ -8,7 +8,7 @@ type ed25519_speccheck_case = {
 (* Test vectors from
  * https://github.com/novifinancial/ed25519-speccheck/blob/65519336fda78a3d016e947df6d82848aca0c9da/cases.json
  * The comment and `expected` field in each case refers to the requirements of
- * any Ed25519 implementation used in Tezos, not a an expectation for Ed25519
+ * any Ed25519 implementation used in Mavryk, not a an expectation for Ed25519
  * implementations in general.
  *)
 let cases =

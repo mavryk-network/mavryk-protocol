@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Functor for the common parts of all Tezos daemons: node, baker,
+(** Functor for the common parts of all Mavryk daemons: node, baker,
     endorser and accuser. Handles event handling in particular. *)
 
 module type PARAMETERS = sig

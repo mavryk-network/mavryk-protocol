@@ -300,7 +300,7 @@ type (_, _) Remote_procedure.t +=
       -> (start_mavkit_node_r, 'uri) Remote_procedure.t
 
 module Start_mavkit_node = struct
-  let name = "tezos.start_node"
+  let name = "mavryk.start_node"
 
   type 'uri t = 'uri start_mavkit_node
 
@@ -674,7 +674,7 @@ type (_, _) Remote_procedure.t +=
       -> (generate_protocol_parameters_r, 'uri) Remote_procedure.t
 
 module Generate_protocol_parameters_file = struct
-  let name = "tezos.generate_protocol_parameters_file"
+  let name = "mavryk.generate_protocol_parameters_file"
 
   type 'uri t = 'uri generate_protocol_parameters_file
 
@@ -984,7 +984,7 @@ type (_, _) Remote_procedure.t +=
   | Active_protocol : 'uri activate_protocol -> (unit, 'uri) Remote_procedure.t
 
 module Activate_protocol = struct
-  let name = "tezos.activate_protocol"
+  let name = "mavryk.activate_protocol"
 
   type 'uri t = 'uri activate_protocol
 
@@ -1099,7 +1099,7 @@ type (_, _) Remote_procedure.t +=
       -> (unit, 'uri) Remote_procedure.t
 
 module Wait_for_bootstrapped = struct
-  let name = "tezos.wait_for_bootstrapped"
+  let name = "mavryk.wait_for_bootstrapped"
 
   type 'uri t = 'uri wait_for_bootstrapped
 
@@ -1159,7 +1159,7 @@ type (_, _) Remote_procedure.t +=
       -> (originate_smart_rollup_r, 'uri) Remote_procedure.t
 
 module Originate_smart_rollup = struct
-  let name = "tezos.operations.originate_smart_rollup"
+  let name = "mavryk.operations.originate_smart_rollup"
 
   type 'uri t = 'uri originate_smart_rollup
 
@@ -1314,7 +1314,7 @@ module Originate_smart_contract = struct
         let size = Some 20
       end)
 
-  let name = "tezos.operations.originate_smart_contract"
+  let name = "mavryk.operations.originate_smart_contract"
 
   type 'uri t = 'uri originate_smart_contract
 
@@ -1448,7 +1448,7 @@ type (_, _) Remote_procedure.t +=
   | Transfer : 'uri transfer -> (unit, 'uri) Remote_procedure.t
 
 module Transfer = struct
-  let name = "tezos.operations.transfer"
+  let name = "mavryk.operations.transfer"
 
   type 'uri t = 'uri transfer
 
@@ -1994,7 +1994,7 @@ type (_, _) Remote_procedure.t +=
       -> (unit, 'uri) Remote_procedure.t
 
 module Smart_rollups_add_messages = struct
-  let name = "tezos.operations.add_messages"
+  let name = "mavryk.operations.add_messages"
 
   type 'uri t = 'uri smart_rollups_add_messages
 
@@ -2497,7 +2497,7 @@ type (_, _) Remote_procedure.t +=
       -> (generate_keys_r, 'uri) Remote_procedure.t
 
 module Generate_keys = struct
-  let name = "tezos.generate_keys"
+  let name = "mavryk.generate_keys"
 
   type 'uri t = 'uri generate_keys
 
@@ -2641,7 +2641,7 @@ type (_, _) Remote_procedure.t +=
       -> (start_dal_node_r, 'uri) Remote_procedure.t
 
 module Start_mavkit_dal_node = struct
-  let name = "tezos.start_dal_node"
+  let name = "mavryk.start_dal_node"
 
   type 'uri t = 'uri start_dal_node
 
@@ -2937,7 +2937,7 @@ type (_, _) Remote_procedure.t +=
       -> (start_mavkit_baker_r, 'uri) Remote_procedure.t
 
 module Start_mavkit_baker = struct
-  let name = "tezos.start_baker"
+  let name = "mavryk.start_baker"
 
   type 'uri t = 'uri start_mavkit_baker
 
@@ -3165,7 +3165,7 @@ type (_, _) Remote_procedure.t +=
       -> (publish_dal_slot_r, 'uri) Remote_procedure.t
 
 module Publish_dal_slot : Remote_procedure.S = struct
-  let name = "tezos.publish_dal_slot"
+  let name = "mavryk.publish_dal_slot"
 
   type 'uri t = 'uri publish_dal_slot
 

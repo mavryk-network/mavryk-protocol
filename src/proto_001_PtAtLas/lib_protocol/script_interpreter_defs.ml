@@ -46,7 +46,7 @@ let () =
     ~id:"operation.rollup_invalid_transaction_amount"
     ~title:"Transaction amount to a rollup must be zero"
     ~description:
-      "Because rollups are outside of the delegation mechanism of Tezos, they \
+      "Because rollups are outside of the delegation mechanism of Mavryk, they \
        cannot own Tez, and therefore transactions targeting a rollup must have \
        its amount field set to zero."
     ~pp:(fun ppf () ->

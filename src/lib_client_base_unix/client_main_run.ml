@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Main Program *)
+(* Mavryk Command line interface - Main Program *)
 
 open Client_context_unix
 
@@ -312,7 +312,7 @@ let setup_client_config (cctxt : Mavryk_client_base.Client_context.printer)
       | `Mode_mockup -> setup_mockup_rpc_client_config cctxt args base_dir)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let warn_if_argv0_name_not_mavkit () =
   let executable_name =
     (* example: mavryk-tx-rollup-client-015-PtKathma *)

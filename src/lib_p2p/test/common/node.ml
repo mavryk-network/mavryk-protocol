@@ -93,7 +93,7 @@ let msg_config : message P2p_params.message_config =
           (function BigPing l -> Some l | _ -> None)
           (fun l -> BigPing l);
       ];
-    chain_name = Distributed_db_version.Name.of_string "SANDBOXED_TEZOS";
+    chain_name = Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK";
     distributed_db_versions = Distributed_db_version.[zero; one];
   }
 

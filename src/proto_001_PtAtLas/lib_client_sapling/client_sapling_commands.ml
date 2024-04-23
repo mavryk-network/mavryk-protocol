@@ -54,7 +54,7 @@ let viewing_key_of_string s =
     (Mavryk_crypto.Base58.simple_decode encoding s)
 
 (** All signatures are done with an anti-replay string.
-    In Tezos' protocol this string is set to be chain_id + KT1. **)
+    In Mavryk' protocol this string is set to be chain_id + KT1. **)
 let anti_replay cctxt contract =
   let open Lwt_result_syntax in
   let* chain_id =

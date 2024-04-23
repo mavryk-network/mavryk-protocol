@@ -214,7 +214,7 @@ let fetch_mavryk_block (fetch_rpc : fetch_block_rpc) extract_header
   in
   let*! block = Blocks_cache.bind_or_put blocks_cache hash fetch Lwt.return in
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/6292
-     Consider cleaner ways to "prefetch" tezos blocks:
+     Consider cleaner ways to "prefetch" mavryk blocks:
      - know before where are protocol boundaries
      - prefetch blocks in binary form *)
   let is_of_expected_protocol =

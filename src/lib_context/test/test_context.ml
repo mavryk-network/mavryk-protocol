@@ -506,14 +506,14 @@ struct
         equal_context_hash
           ~loc:__LOC__
           (Context_hash.of_b58check_exn
-             "CoWJsL2ehZ39seTr8inBCJb5tVjW8KGNweJ5cvuVq51mAASrRmim")
+             "CoVwQPhBPJKh51L8mzC33C7d8TGx1tfaiRtRppZxkgfXdtJwksPL")
           h ;
         let* ctxt = add ctxt [string 255] foo2 in
         let* h = commit ctxt in
         equal_context_hash
           ~loc:__LOC__
           (Context_hash.of_b58check_exn
-             "CoVexcEHMXmSA2k42aNc5MCDtVJFRs3CC6vcQWYwFoj7EFsBPw1c")
+             "CoUm3ytTHXNykbFKxzAxjmm9GQ776iQ9pQdPp3A3ZAtLP4yfxUBw")
           h ;
         Lwt.return_unit
 

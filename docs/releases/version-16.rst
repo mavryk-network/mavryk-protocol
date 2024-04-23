@@ -61,7 +61,7 @@ If you are using Docker instead, use the ``v16.1`` Docker images of Mavkit.
 
 If you are installing Mavkit using Opam, note that the minimal required
 OCaml version is now 4.14.1. This means that you might need to create a
-new switch with ``opam switch create 4.14.1`` before you run ``opam install tezos``.
+new switch with ``opam switch create 4.14.1`` before you run ``opam install mavryk``.
 
 
 Changelog

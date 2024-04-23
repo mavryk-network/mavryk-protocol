@@ -27,7 +27,7 @@
    -------
    Component:    Client commands
    Invocation:   dune exec tezt/tests/main.exe -- --file client_commands.ml
-   Subject:      Tests for the Tezos client
+   Subject:      Tests for the Mavryk client
 *)
 
 module Helpers = struct

@@ -202,7 +202,7 @@ module S = struct
 
     let delete =
       Mavryk_rpc.Service.delete_service
-        ~description:"Remove an invalid block for the tezos storage"
+        ~description:"Remove an invalid block for the mavryk storage"
         ~query:Mavryk_rpc.Query.empty
         ~output:Data_encoding.empty
         Mavryk_rpc.Path.(path /: Block_hash.rpc_arg)

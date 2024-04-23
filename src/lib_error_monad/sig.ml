@@ -218,7 +218,7 @@ module type TRACE = sig
   val fold : ('a -> 'error -> 'a) -> 'a -> 'error trace -> 'a
 end
 
-(** [MONAD_EXTENSION] is the Tezos-specific extension to the generic monad
+(** [MONAD_EXTENSION] is the Mavryk-specific extension to the generic monad
     provided by Lwtreslib. It sets some defaults (e.g., it defaults traced
     failures), it brings some qualified identifiers into the main unqualified
     part (e.g., [return_unit]), it provides some tracing helpers and some

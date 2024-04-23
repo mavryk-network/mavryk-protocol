@@ -927,7 +927,7 @@ let generic_commands group =
                         pp_print_text
                           ppf
                           "To use keys at BIP32 path m/44'/1729'/0'/0' \
-                           (default Tezos key path), use one of:" ;
+                           (default Mavryk key path), use one of:" ;
                         pp_close_box ppf () ;
                         pp_print_cut ppf () ;
                         List.iter
@@ -1065,14 +1065,14 @@ let generic_commands group =
                         | true ->
                             let*! () =
                               cctxt#message
-                                "Tezos Wallet successfully signed:@ %a."
+                                "Mavryk Wallet successfully signed:@ %a."
                                 Signature.pp
                                 signature
                             in
                             return_unit)
                     | true, TezBake ->
                         failwith
-                          "Option --test-sign only works for the Tezos Wallet \
+                          "Option --test-sign only works for the Mavryk Wallet \
                            app."
                     | false, _ -> return_unit)
                 | `Ledger _ when test_sign ->
@@ -1169,7 +1169,7 @@ let baking_commands group =
                 | {Ledgerwallet_tezos.Version.app_class = Tezos; _} ->
                     failwith
                       "This command (`authorize ledger ...`) only works with \
-                       the Tezos Baking app"
+                       the Mavryk Baking app"
                 | {Ledgerwallet_tezos.Version.app_class = TezBake; major; _}
                   when major >= 2 ->
                     failwith
@@ -1267,7 +1267,7 @@ let baking_commands group =
                 | {app_class = Tezos; _} ->
                     failwith
                       "This command (`setup ledger ...`) only works with the \
-                       Tezos Baking app"
+                       Mavryk Baking app"
                 | {app_class = TezBake; major; _} when major < 2 ->
                     failwith
                       "This command (`setup ledger ...`)@ is not@ compatible@ \
@@ -1397,7 +1397,7 @@ let high_water_mark_commands group watermark_spelling =
               match version.app_class with
               | Tezos ->
                   failwith
-                    "Fatal: this operation is only valid with the Tezos Baking \
+                    "Fatal: this operation is only valid with the Mavryk Baking \
                      application"
               | TezBake when (not no_legacy_apdu) && version.major < 2 ->
                   let* hwm, hwm_round_opt =

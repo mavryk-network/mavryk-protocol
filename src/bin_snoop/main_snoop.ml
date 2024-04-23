@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let () =
   (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
@@ -935,7 +935,7 @@ module Auto_build = struct
           "Error: %a@."
           Mavryk_error_monad.Error_monad.pp_print_trace
           e ;
-        Format.eprintf "Failed to find a Tezos context at %s@." data_dir ;
+        Format.eprintf "Failed to find a Mavryk context at %s@." data_dir ;
         exit 1
     | Ok res -> res
 

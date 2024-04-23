@@ -426,7 +426,7 @@ let start_protocol ?consensus_threshold ?round_duration
    from Emmy* to Tenderbake.
 
    Revisit this test, as it may start to fail, whenever a new (family of)
-   consensus protocol is put into place in Tezos. **)
+   consensus protocol is put into place in Mavryk. **)
 let test_migration_with_bakers ?(migration_level = 4)
     ?(num_blocks_post_migration = 5) ~migrate_from ~migrate_to () =
   Test.register

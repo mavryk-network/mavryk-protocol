@@ -1,5 +1,5 @@
 
-./mavkit-client --protocol PtNnAP2RzdsQXoWgDQXjk5mjz2nsV4NThkrLaTHhJ5aGrwVjEe4 --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/reverse.tz on storage '{""}' and input '{ "c" ; "b" ; "a" }' --level 1 --trace-stack
+./mavkit-client --protocol PsSyLBNKaGQtFkaocDA5p2zqrTpHY87WDtENjMJXYSaF25W8W7n --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/reverse.tz on storage '{""}' and input '{ "c" ; "b" ; "a" }' --level 1 --trace-stack
 storage
   { "a" ; "b" ; "c" }
 emitted operations

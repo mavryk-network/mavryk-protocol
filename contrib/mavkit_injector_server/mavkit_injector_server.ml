@@ -49,7 +49,7 @@ module Config_init = struct
   let address_parameter =
     param
       ~name:"signer-address"
-      ~desc:"A Tezos address"
+      ~desc:"A Mavryk address"
       (parameter (fun _cctxt s ->
            let open Lwt_result_syntax in
            return s))

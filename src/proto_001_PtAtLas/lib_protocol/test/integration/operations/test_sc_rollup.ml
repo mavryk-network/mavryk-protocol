@@ -2673,7 +2673,7 @@ let input_included ~snapshot ~full_history_inbox (l, n) =
        inbox_message_verified
 
 (** Test that the protocol adds a [SOL], [Info_per_level] and [EOL] for each
-    Tezos level, even if no messages are added to the inbox. *)
+    Mavryk level, even if no messages are added to the inbox. *)
 let test_automatically_added_internal_messages () =
   let open Lwt_result_syntax in
   let assert_input_included ~__LOC__ ~snapshot ~full_history_inbox (l, n) input

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Daemon configuration *)
+(* Mavryk Daemon configuration *)
 
 include Client_config
 

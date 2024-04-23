@@ -172,7 +172,7 @@ let commands () =
   [
     command
       ~group
-      ~desc:"List the registered encoding in Tezos."
+      ~desc:"List the registered encoding in Mavryk."
       no_options
       (fixed ["list"; "encodings"])
       (fun () (cctxt : #Client_context.printer) ->

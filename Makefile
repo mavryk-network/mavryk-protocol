@@ -13,7 +13,7 @@ endif
 
 include scripts/version.sh
 
-DOCKER_IMAGE_NAME := tezos
+DOCKER_IMAGE_NAME := mavryk
 DOCKER_IMAGE_VERSION := latest
 DOCKER_BUILD_IMAGE_NAME := $(DOCKER_IMAGE_NAME)_build
 DOCKER_BUILD_IMAGE_VERSION := latest
@@ -217,7 +217,6 @@ endif
 	@mkdir -p $(MAVKIT_BIN_DIR)/
 	@cp -f $(foreach b, $(MAVKIT_EXECUTABLES), _build/install/default/bin/${b}) $(MAVKIT_BIN_DIR)/
 	@cd $(MAVKIT_BIN_DIR)/; \
-		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-PtNairob; \
 		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-PtAtLas; \
 		ln -s mavkit-smart-rollup-node mavkit-smart-rollup-node-alpha
 

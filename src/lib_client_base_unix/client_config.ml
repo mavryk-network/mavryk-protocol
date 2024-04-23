@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Configuration and Arguments Parsing *)
+(* Mavryk Command line interface - Configuration and Arguments Parsing *)
 
 type cli_args = {
   chain : Chain_services.chain;
@@ -434,7 +434,7 @@ let base_dir_arg () =
     ~doc:
       (Format.asprintf
          "@[<v>@[<2>client data directory (absent: %s env)@,\
-          The directory where the Tezos client will store all its data.@,\
+          The directory where the Mavryk client will store all its data.@,\
           If absent, its value is the value of the %s@,\
           environment variable. If %s is itself not specified,@,\
           defaults to %s@]@]@."

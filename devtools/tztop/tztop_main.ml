@@ -43,7 +43,7 @@ module Arg : sig
 end = struct
   type t = string array
 
-  (* First argument has to be a path to tezos library under development *)
+  (* First argument has to be a path to mavryk library under development *)
   let of_sys_argv argv = if Array.length argv < 2 then None else Some Sys.argv
 
   let[@inline] get_working_directory arg = arg.(1)

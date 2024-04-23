@@ -191,7 +191,7 @@ module type HASH_VERSION = sig
   val set_hash_version : t -> Context_hash.Version.t -> t Lwt.t
 end
 
-(** Tezos-specific proof types, as opposed to proofs provided by Irmin.
+(** Mavryk-specific proof types, as opposed to proofs provided by Irmin.
     These types are used only by the light mode and it is recommended
     to avoid extending their usage: only the light mode should use them. *)
 module Proof_types = struct

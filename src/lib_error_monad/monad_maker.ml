@@ -240,7 +240,7 @@ struct
        We do the bulk of this by including [Lwt_traced_result_syntax] directly. *)
     include Monad.Lwt_traced_result_syntax
 
-    (* Some globals that Lwtreslib does not expose but that the Tezos code uses a
+    (* Some globals that Lwtreslib does not expose but that the Mavryk code uses a
        lot. *)
     let ( >>= ) = Monad.Lwt_syntax.( let* )
 

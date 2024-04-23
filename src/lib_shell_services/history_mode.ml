@@ -95,7 +95,7 @@ let encoding =
   def
     "history_mode"
     ~title:"history mode"
-    ~description:"Storage mode for the Tezos shell."
+    ~description:"Storage mode for the Mavryk shell."
     (union
        ~tag_size:`Uint8
        [
