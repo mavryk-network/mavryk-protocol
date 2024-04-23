@@ -7,7 +7,7 @@ declare -r github="https://github.com/koalaman/shellcheck"
 declare -r expected_version="0.8.0"  # This version is the one used
 # by the CI's test Docker image. This version hence needs to be updated
 # when the image is updated and pulls a newer version of shellcheck.
-# When this happens, the CI of tezos/tezos will start failing; so we will
+# When this happens, the CI of mavrykdynamics/mavryk will start failing; so we will
 # be notified that a change here is required.
 
 command -v shellcheck &> /dev/null || { echo "shellcheck $expected_version must be installed. See $github for instructions."; exit 1; }

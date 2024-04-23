@@ -86,7 +86,7 @@ Available commands:
 The following are wrappers around the mavkit binaries.
 To call the mavkit binaries directly you must override the
 entrypoint using --entrypoint . All binaries are in
-$BIN_DIR and the tezos data in $DATA_DIR
+$BIN_DIR and the mavryk data in $DATA_DIR
 
 You can specify the network with argument --network, for instance:
   --network carthagenet
@@ -114,7 +114,7 @@ Commands:
   - mavkit-snapshot-import [args]
     Import a snapshot. The snapshot must be available in the file /snapshot
     Using docker run, you can make it available using the command :
-       docker run -v <yourfilename>:/snapshot tezos/tezos mavkit-snapshot-import
+       docker run -v <yourfilename>:/snapshot mavrykdynamics/mavryk mavkit-snapshot-import
     <yourfilename> must be an absolute path.
 EOF
         ;;

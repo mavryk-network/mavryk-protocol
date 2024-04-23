@@ -9,7 +9,7 @@
 #  devtools/patchs/apply_env_patch.sh  devtools/protocol-print/add-hack-module.patch 3 9 10
 
 
-# Hack to get tezos directory
+# Hack to get mavryk directory
 MAVRYK_DIR=$(dirname "$0")/../..
 
 # Patch file, with absolute path 

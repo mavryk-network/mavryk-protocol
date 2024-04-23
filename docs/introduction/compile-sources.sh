@@ -20,7 +20,7 @@ then
 elif [ $# -eq 0 ]  # don't remove this branch used for an example in the doc!
 then
   # [select branch]
-  REPO="tezos/tezos"
+  REPO="mavrykdynamics/mavryk"
   BRANCH="latest-release"
   # [end]
 else
@@ -36,7 +36,7 @@ sudo apt-get update
 sudo apt-get install -y sudo
 export OPAMYES=true
 # [install packages]
-# [Temporary fix: removes tezos folder from PATH if added with Mavkit <= v13 instructions]
+# [Temporary fix: removes mavryk folder from PATH if added with Mavkit <= v13 instructions]
 PATH=${PATH##"$HOME"/tezos/:}
 sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 # [install rust]
@@ -46,8 +46,8 @@ chmod +x rustup-init.sh
 # [source cargo]
 . $HOME/.cargo/env
 # [get sources]
-git clone https://gitlab.com/"$REPO".git tezos
-cd tezos
+git clone https://gitlab.com/"$REPO".git mavryk
+cd mavryk
 git checkout $BRANCH
 # [install Mavkit dependencies]
 opam init --bare

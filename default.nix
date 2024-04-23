@@ -66,7 +66,7 @@ let
     );
 in
   pkgs.stdenv.mkDerivation {
-    name = "tezos";
+    name = "mavryk";
 
     NIX_LDFLAGS = pkgs.lib.optional pkgs.stdenv.isDarwin (
       mkFrameworkFlags [

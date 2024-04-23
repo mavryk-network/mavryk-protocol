@@ -5,7 +5,7 @@ _mavkit-snoop_complete()
     cur_word="${COMP_WORDS[COMP_CWORD]}"
     prev_word="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Tezos script
+    # Mavryk script
     script=${COMP_WORDS[0]}
 
     test_empty=$($script bash_autocomplete "$prev_word" "" ${COMP_WORDS[@]} 2>/dev/null)

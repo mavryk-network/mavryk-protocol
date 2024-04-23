@@ -5,7 +5,7 @@ _mavkit-client_complete()
     cur_word="${COMP_WORDS[COMP_CWORD]}"
     prev_word="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Tezos script
+    # Mavryk script
     script=${COMP_WORDS[0]}
 
     reply=$($script bash_autocomplete "$prev_word" "$cur_word" ${COMP_WORDS[@]} 2>/dev/null)

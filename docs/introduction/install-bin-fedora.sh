@@ -27,7 +27,7 @@ set -e
 set -x
 # [install prerequisites]
 dnf install -y dnf-plugins-core
-# [install tezos]
+# [install mavryk]
 dnf copr enable -y $REPO && dnf update -y
 dnf install -y mavryk-client
 dnf install -y mavryk-node

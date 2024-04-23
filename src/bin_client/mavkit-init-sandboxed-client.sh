@@ -229,7 +229,7 @@ EOF
 
 The client is now properly initialized. In the rest of this shell
 session, you might now run \`mavkit-client\` to communicate with a
-tezos node launched with \`launch-sandboxed-node $1\`. For instance:
+mavryk node launched with \`launch-sandboxed-node $1\`. For instance:
 
   mavkit-client rpc get /chains/main/blocks/head/metadata
 

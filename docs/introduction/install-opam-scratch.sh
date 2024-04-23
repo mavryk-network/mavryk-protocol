@@ -32,7 +32,7 @@ eval $(opam env)
 # [get system dependencies]
 # depext handling is done directly by opam 2.1 and later
 opam depext mavkit
-# [install tezos]
+# [install mavryk]
 opam install -y mavkit
 # [test executables]
 mavkit-client --version

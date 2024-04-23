@@ -60,7 +60,7 @@ Certificate:
         Validity
             Not Before: Mar 30 13:07:24 2018 GMT
             Not After : Mar 27 13:07:24 2028 GMT
-        Subject: CN=tezos
+        Subject: CN=mavryk
         Subject Public Key Info:
             Public Key Algorithm: rsaEncryption
                 Public-Key: (2048 bit)
@@ -99,7 +99,7 @@ Certificate:
             X509v3 Key Usage:
                 Digital Signature, Key Encipherment
             X509v3 Subject Alternative Name:
-                DNS:tezos
+                DNS:mavryk
     Signature Algorithm: sha256WithRSAEncryption
          2f:23:1a:9e:42:72:2b:57:ec:26:04:a2:a0:22:f3:31:0e:12:
          c4:46:92:95:b6:c7:44:bf:ab:5b:5b:15:c3:69:a3:48:79:be:

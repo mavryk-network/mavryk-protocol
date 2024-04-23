@@ -8,10 +8,10 @@
 # should be removed and replaced by a python script calling the test's core
 # logic.
 
-# Ensure we are running from the root directory of the Tezos repository.
+# Ensure we are running from the root directory of the Mavryk repository.
 cd "$(dirname "$0")"/../.. || exit
 
-# Tezos binaries.
+# Mavryk binaries.
 mavryk_node=./mavkit-node
 mavryk_client=./mavkit-client
 

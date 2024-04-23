@@ -43,7 +43,7 @@
 # * and the previous run (as read in the last_known_dir file).
 
 # The comparison is done using the gas_parameter_diff OCaml script from the
-# Tezos codebase.
+# Mavryk codebase.
 
 # If regressions are detected during the diffs, they are sent to a Slack
 # channel.

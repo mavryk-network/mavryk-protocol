@@ -31,7 +31,7 @@ for executable in $executables; do
     echo "- $executable"
 done
 
-echo "### Building tezos..."
+echo "### Building mavryk..."
 
 docker build \
   -t "$build_image_name:$image_version" \

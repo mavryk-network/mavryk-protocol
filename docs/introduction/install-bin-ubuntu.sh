@@ -23,7 +23,7 @@ else
 fi
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6552
-# Tezos ubuntu packages cannot be installed in a k8s pod.
+# Mavryk ubuntu packages cannot be installed in a k8s pod.
 if [ -n "${FF_KUBERNETES_HONOR_ENTRYPOINT}" ]; then
   echo "Container orchestrated by Kubernetes detected, need to create the file /.dockerenv."
   echo "See https://github.com/serokell/mavryk-packaging/issues/734 for further explanation."
@@ -37,7 +37,7 @@ set -x
 apt-get update
 apt-get install sudo
 apt-get install -y software-properties-common </dev/null
-# [install tezos]
+# [install mavryk]
 sudo add-apt-repository -y $REPO && sudo apt-get update
 sudo apt-get install -y mavryk-client
 sudo apt-get install -y mavryk-node

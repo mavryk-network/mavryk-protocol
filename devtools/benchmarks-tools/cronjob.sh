@@ -25,7 +25,7 @@
 #                                                                           #
 #############################################################################
 
-# This is the top-level script run by a Cron job to benchmark the Tezos gas
+# This is the top-level script run by a Cron job to benchmark the Mavryk gas
 # parameters.
 
 # It simply logs the execution of run_all_benchmarks_on_latest_master.sh, and
