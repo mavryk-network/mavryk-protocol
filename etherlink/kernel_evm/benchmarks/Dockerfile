@@ -1,6 +1,6 @@
 FROM tezos/tezos-debug:amd64_master
 
-WORKDIR /home/mavryk
+WORKDIR /home/tezos
 
 RUN mkdir -p scripts
 RUN mkdir -p output
@@ -8,7 +8,7 @@ RUN mkdir -p output
 # environment variables
 ENV NODE_ENV=production
 ENV EXTERNAL_RESSOURCES=/usr/local/share/tezos/evm_kernel
-ENV OUTPUT=/home/mavryk/output
+ENV OUTPUT=/home/tezos/output
 
 # install node dependencies
 USER root

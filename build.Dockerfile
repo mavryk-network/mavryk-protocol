@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=registry.gitlab.com/mavryk/opam-repository
+ARG BASE_IMAGE=registry.gitlab.com/tezos/opam-repository
 ARG BASE_IMAGE_VERSION
 ARG RUST_TOOLCHAIN_IMAGE
 ARG RUST_TOOLCHAIN_IMAGE_VERSION
@@ -13,8 +13,8 @@ ARG MAVKIT_EXECUTABLES
 ARG GIT_SHORTREF
 ARG GIT_DATETIME
 ARG GIT_VERSION
-WORKDIR /home/mavryk
-RUN mkdir -p /home/mavryk/mavryk/scripts /home/mavryk/mavryk/script-inputs /home/mavryk/mavryk/parameters /home/mavryk/evm_kernel
+WORKDIR /home/tezos
+RUN mkdir -p /home/tezos/mavryk/scripts /home/tezos/mavryk/script-inputs /home/tezos/mavryk/parameters /home/tezos/evm_kernel
 COPY --chown=tezos:nogroup Makefile mavryk
 COPY --chown=tezos:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
 COPY --chown=tezos:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
@@ -42,8 +42,8 @@ RUN while read -r protocol; do \
     done < mavryk/script-inputs/active_protocol_versions
 
 FROM ${RUST_TOOLCHAIN_IMAGE}:${RUST_TOOLCHAIN_IMAGE_VERSION} AS layer2-builder
-WORKDIR /home/mavryk/
-RUN mkdir -p /home/mavryk/evm_kernel
+WORKDIR /home/tezos/
+RUN mkdir -p /home/tezos/evm_kernel
 COPY --chown=tezos:nogroup kernels.mk evm_kernel
 COPY --chown=tezos:nogroup src evm_kernel/src
 COPY --chown=tezos:nogroup etherlink evm_kernel/etherlink
@@ -54,7 +54,7 @@ RUN make -C evm_kernel -f kernels.mk build-deps \
 # We move the EVM kernel in the final image in a dedicated stage to parallelize
 # the two builder stages.
 FROM without-evm-artifacts as with-evm-artifacts
-COPY --from=layer2-builder --chown=tezos:nogroup /home/mavryk/evm_kernel/evm_installer.wasm evm_kernel
-COPY --from=layer2-builder --chown=tezos:nogroup /home/mavryk/evm_kernel/_evm_installer_preimages/ evm_kernel/_evm_installer_preimages
-COPY --from=layer2-builder --chown=tezos:nogroup /home/mavryk/evm_kernel/_evm_unstripped_installer_preimages/ evm_kernel/_evm_unstripped_installer_preimages
-COPY --from=layer2-builder --chown=tezos:nogroup /home/mavryk/evm_kernel/evm_benchmark_installer.wasm evm_kernel
+COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/evm_installer.wasm evm_kernel
+COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/_evm_installer_preimages/ evm_kernel/_evm_installer_preimages
+COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/_evm_unstripped_installer_preimages/ evm_kernel/_evm_unstripped_installer_preimages
+COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/evm_benchmark_installer.wasm evm_kernel

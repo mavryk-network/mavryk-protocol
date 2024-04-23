@@ -13,8 +13,8 @@ ARG MAVKIT_EXECUTABLES
 ARG GIT_SHORTREF
 ARG GIT_DATETIME
 ARG GIT_VERSION
-WORKDIR /home/mavryk
-RUN mkdir -p /home/mavryk/mavryk/scripts /home/mavryk/mavryk/script-inputs /home/mavryk/mavryk/parameters /home/mavryk/evm_kernel
+WORKDIR /home/tezos
+RUN mkdir -p /home/tezos/mavryk/scripts /home/tezos/mavryk/script-inputs /home/tezos/mavryk/parameters /home/tezos/evm_kernel
 COPY --chown=tezos:nogroup Makefile mavryk
 COPY --chown=tezos:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
 COPY --chown=tezos:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
@@ -43,4 +43,4 @@ RUN while read -r protocol; do \
   cp mavryk/src/proto_"$(echo "$protocol" | tr - _)"/parameters/*.json mavryk/parameters/"$protocol"-parameters; \
   done < mavryk/script-inputs/active_protocol_versions
 
-WORKDIR /home/mavryk/
+WORKDIR /home/tezos/
