@@ -1,4 +1,4 @@
-# Tezos Mavkit implementation
+# Mavryk Mavkit implementation
 
 ## Introduction
 

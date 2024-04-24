@@ -1,4 +1,4 @@
-# Tezos Mavkit GitHub Mirror
+# Mavryk Mavkit GitHub Mirror
 
 This is the GitHub mirror of the Mavkit Git repository.
 
