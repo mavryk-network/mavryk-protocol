@@ -4,9 +4,9 @@
 # which does not exist.
 documentation:build_all:
   extends:
-    - .default_settings_template
+    # - .default_settings_template
     - .image_template__runtime_build_test_dependencies
-    - .tags_template__build
+    # - .tags_template__build
   stage: build
   needs: [trigger]
   before_script:
