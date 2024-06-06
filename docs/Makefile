@@ -20,11 +20,9 @@ PROTOCOLS     = $(NAMED_PROTOS) alpha
 
 # The following variables names are lowercase, so their names can be computed
 # from the names of the corresponding protocol directories
-nairobi_long  = PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf
 atlas_long    = PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
 alpha_long    = ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK
 
-nairobi_short = PtNairob
 atlas_short   = PtAtLas
 alpha_short   = alpha
 
@@ -115,7 +113,6 @@ redirectcheck: html
 # - on the active protocol using its numeric name (not the "active" symlink)
 # - on each other protocol including alpha, also checking label defs (option -l)
 xrefscheck:
-	$(CHECKXREFS) nairobi
 	$(CHECKXREFS) -l atlas
 	$(CHECKXREFS) -l alpha
 
@@ -178,7 +175,8 @@ html: api/errors.rst developer/metrics.csv user/node-config.json \
 		rpc p2p manuals install-dependencies
 	(echo ':orphan:'; echo ''; cat ../CHANGES.rst) > CHANGES-dev.rst
 	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
-	@ln -s active "$(BUILDDIR)/nairobi" || true
+	@true
+# @ln -s active "$(BUILDDIR)/nairobi" || true
 
 # pylint does not support pyproject.toml configuration for now
 # It is configured by ./.pylint.rc
@@ -238,4 +236,4 @@ clean:
 	@-rm -Rf "$(BUILDDIR)" linkcheck odoc.log
 	@-rm -f $(ERRDOCEXE) $(RPCDOCEXE) $(P2PDOCEXE)
 	@-rm -Rf api/errors.rst developer/metrics.csv user/node-config.json alpha/rpc.rst shell/rpc.rst shell/p2p_api.rst user/default-acl.json CHANGES-dev.rst
-	@-rm -Rf api/mavkit-*.html api/mavkit-*.txt nairobi/mavkit-*.html atlas/mavkit-*.html alpha/mavkit-*.html
+	@-rm -Rf api/mavkit-*.html api/mavkit-*.txt atlas/mavkit-*.html alpha/mavkit-*.html
