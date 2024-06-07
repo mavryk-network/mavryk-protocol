@@ -4,7 +4,7 @@ Protocol Alpha
 This page documents the changes brought by protocol Alpha with respect
 to Atlas (see :ref:`naming_convention`).
 
-For changes brought by the rejected Atlas proposal with respect to Nairobi, see :doc:`../protocols/018_atlas`.
+For changes brought by the rejected Atlas proposal with respect to Nairobi, see :doc:`../protocols/001_atlas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
 branch of Mavkit.
