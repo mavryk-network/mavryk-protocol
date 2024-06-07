@@ -54,9 +54,7 @@ origination using the ``--delegate`` option:
 
 
 Once the contract is originated, the only way to stop or modify its
-delegation is by using the ``SET_DELEGATE`` Michelson instruction (see
-:ref:`the Michelson documentation<MichelsonSetDelegate>` for more
-details).
+delegation is by using the ``SET_DELEGATE`` Michelson instruction.
 
 
 Notice that only implicit accounts can be delegates, so your delegate

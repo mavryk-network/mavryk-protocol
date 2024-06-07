@@ -165,14 +165,7 @@ in the next block.
 Bounding the number of propagated manager operations
 .....................................................
 
-Up to Hangzhou protocol (see :doc:`../protocols/011_hangzhou`), the protocol plugin
-did not implement ``precheck``, so the prevalidator exclusively relies on ``apply_operation``
-to classify manager operations. As a consequence, it could also check their
-total gas consumption, and thus, naturally limit the number of successfully
-applied/propagated operations.
-
-Starting with Ithaca protocol (see :doc:`../protocols/012_ithaca`), the plugin
-implements a lightweight classification function, called ``precheck``, that
+The plugin implements a lightweight classification function, called ``precheck``, that
 doesn't check the total gas consumption. So with this modication and those of
 Mavkit 12.0, the prevalidator, would propagate any succesfully prevalidated
 operation. In order to protect nodes from potential DDoS, a new mechanism has

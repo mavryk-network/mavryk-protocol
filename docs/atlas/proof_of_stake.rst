@@ -158,6 +158,7 @@ simple procedure which has as its initial state: the level, the
 level belongs, and the slot.
 
 
+.. _ps_constants:
 .. _ps_constants_atlas:
 
 Proof-of-stake parameters

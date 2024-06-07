@@ -3,7 +3,7 @@
 Changelog
 '''''''''
 
-Version 18.1
+Version 1.1
 ============
 
 Node
@@ -15,7 +15,7 @@ Node
   but snapshots in version 7 are not retro-compatible with previous
   mavkit versions (MR :gl:`!10785`).
 
-Version 18.0
+Version 1.0
 ============
 
 Node
@@ -35,7 +35,7 @@ Smart Rollup node
   not catch problematic transaction. Batcher configuration now has a
   one less field ``simulate``. (MR :gl:`!10842`)
 
-Version 18.0-rc1
+Version 1.0-rc1
 ================
 
 Node
@@ -989,10 +989,6 @@ General
   is now named ``mavkit-baker``. The old command names are still available but
   are deprecated and may stop being supported starting from version 16.0.
 
-- Added :doc:`Lima <protocols/015_lima>`, a protocol proposal for
-  Mainnet featuring, among others, Pipelining, Consensus Key,
-  improvements to Tickets, and Ghostnet fixes.
-
 Node
 ----
 
@@ -1549,8 +1545,6 @@ Node
 ----
 
 - Added optional argument ``cycle`` to RPC ``selected_snapshot``.
-  See more information in the changelog of the protocol:
-  :doc:`../protocols/012_ithaca`
 
 - **Breaking change**: The node no longer stores large metadata.
   RPC requesting this kind of metadata will return ``"too large"``.

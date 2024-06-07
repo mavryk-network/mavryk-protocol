@@ -92,7 +92,7 @@ Then, to install the binaries, run the following commands:
 
 .. literalinclude:: install-bin-ubuntu.sh
    :language: shell
-   :start-after: [install tezos]
+   :start-after: [install mavryk]
    :end-before: [test executables]
 
 Upgrading to a newer release is made easy by the APT package manager, using
@@ -126,7 +126,7 @@ Then, to install the binaries, run the following commands:
 
 .. literalinclude:: install-bin-fedora.sh
    :language: shell
-   :start-after: [install tezos]
+   :start-after: [install mavryk]
    :end-before: [test executables]
 
 Upgrading to a newer release is made easy by the DNF package manager, using
@@ -316,7 +316,7 @@ In order to get the system dependencies of the binaries, do:
 .. literalinclude:: install-opam.sh
   :language: shell
   :start-after: [get system dependencies]
-  :end-before: [install tezos]
+  :end-before: [install mavryk]
 
 .. note::
 
@@ -329,7 +329,7 @@ Now, install all the binaries by:
 
 .. literalinclude:: install-opam.sh
   :language: shell
-  :start-after: [install tezos]
+  :start-after: [install mavryk]
   :end-before: [test executables]
 
 You can be more specific and only ``opam install mavkit-node``, ``opam

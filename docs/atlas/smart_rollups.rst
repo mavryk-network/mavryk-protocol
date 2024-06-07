@@ -137,6 +137,7 @@ the Layer 1 pushes one final internal message “End of
 level”. Similarly to “Start of level“, these internal messages does not
 come with any payload.
 
+.. _reveal_data_channel_smart_rollups:
 .. _reveal_data_channel_smart_rollups_atlas:
 
 Reveal data channel

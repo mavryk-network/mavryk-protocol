@@ -307,6 +307,7 @@ The concrete language also has some syntax sugar to group some common
 sequences of operations as one. This is described in this specification
 using a simple regular expression style recursive instruction rewriting.
 
+.. _michelson_type_system:
 .. _michelson_type_system_atlas:
 
 Introduction to the type system and notations
@@ -459,55 +460,6 @@ The complete sets of Michelson types and instructions are detailed in the
   and for `instructions <https://tezos.gitlab.io/michelson-reference/#instructions>`_.
 - Instructions are also organized by `categories <https://tezos.gitlab.io/michelson-reference/#instructions-by-category>`__.
 - Each instruction is precisely defined using typing and semantic inference rules.
-
-Removed instructions and types
-------------------------------
-
-:doc:`../protocols/005_babylon` deprecated the following instructions. Because no smart
-contract used these on Mainnet before they got deprecated, they have been
-removed. The Michelson type-checker will reject any contract using them.
-
--  ``CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }``:
-   Forge a new contract from a literal.
-
-   ::
-
-      Γ ⊢ CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }
-      :: key_hash : option key_hash : bool : bool : mumav : 'g : 'S
-      ⇒ operation : address : 'S
-
-   There is a new version of this instruction, see its `documentation <https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__.
-
--  ``CREATE_ACCOUNT``: Forge an account creation operation.
-
-   ::
-
-      Γ ⊢ CREATE_ACCOUNT :: key_hash : option key_hash : bool : mumav : 'S
-      ⇒ operation : address : 'S
-
-   Takes as argument the manager, optional delegate, the delegatable flag
-   and finally the initial amount taken from the currently executed
-   contract. This instruction originates a contract with two entrypoints;
-   ``%default`` of type ``unit`` that does nothing and ``%do`` of type
-   ``lambda unit (list operation)`` that executes and returns the
-   parameter if the sender is the contract's manager.
-
--  ``STEPS_TO_QUOTA``: Push the remaining steps before the contract
-   execution must terminate.
-
-   ::
-
-      Γ ⊢ STEPS_TO_QUOTA :: 'S ⇒ nat : 'S
-
-:doc:`../protocols/016_mumbai` deprecated the following
-type. Because no smart contract used it on Mainnet before it got
-deprecated, it has been removed. The Michelson type-checker will
-reject any contract using it.
-
--  ``tx_rollup_l2_address``: An address used to identify an account in
-   a transaction rollup ledger. It is the hash of a BLS public key,
-   used to authenticate layer-2 operations to transfer tickets from
-   this account.
 
 Macros
 ------

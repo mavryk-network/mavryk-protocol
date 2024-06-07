@@ -237,7 +237,7 @@ Platform developers are also provided reference materials for internal APIs of M
    :hidden:
 
    releases/releases
-   releases/version-18
+   releases/version-1
    releases/history
 
 .. toctree::

@@ -265,10 +265,6 @@ In order to avoid that, you can use the ``https`` scheme or a tunnel to encrypt 
 Consensus Key
 -------------
 
-.. note::
-
-   The "consensus key" feature is available starting with the Tezos :doc:`Lima<../protocols/015_lima>` protocol.
-
 By default, the baker's key, also called manager key, is used to sign in the consensus protocol, i.e. signing blocks while baking,
 and signing consensus operations (preattestations and attestations).
 

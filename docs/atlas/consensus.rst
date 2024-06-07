@@ -50,6 +50,7 @@ length in the `technical report <https://arxiv.org/abs/2001.11965>`_ and in a
 post <https://research-development.nomadic-labs.com/a-look-ahead-to-tenderbake.html>`_. Here we
 only provide a user/developer perspective.
 
+.. _tb_validator:
 .. _tb_validator_atlas:
 
 Tenderbake is executed for each new block level by a "committee" whose members
@@ -80,11 +81,13 @@ Round durations thus increase linearly with ``DELAY_INCREMENT_PER_ROUND``.
 Schematically, a round consists in the following steps:
 
 .. _candidate_block_atlas:
+.. _candidate_block:
 
 * a validator designated for that round injects a *candidate block* (representing a proposal) and consensus operations (representing votes) into the node to which it is attached, which then
 * diffuses those blocks and consensus operations to other nodes of the network, and thus
 * communicates them to the validators attached to those nodes, to carry out voting on which block to accept.
 
+.. _quorum:
 .. _quorum_atlas:
 
 Unlike Emmy*, Tenderbake has `two types of
@@ -137,7 +140,7 @@ normal network conditions, and with active and compliant validators, decisions
 should be taken at round 0, meaning that the time between blocks would be
 :math:`round\_duration(0)` seconds i.e., parameter ``MINIMAL_BLOCK_DELAY``.
 
-
+.. _active_stake:
 .. _active_stake_atlas:
 
 Validator selection: staking balance, active stake, and frozen deposits
@@ -370,6 +373,7 @@ included during that cycle has been ``2,123,456`` slots. Given that this number 
 bigger than the minimum required (``2,867,200 * 2 / 3``), it receives an attesting
 reward of ``2,867,200 * 0.001428 = 4094.3616`` tez for that cycle.
 
+.. _slashing:
 .. _slashing_atlas:
 
 Slashing

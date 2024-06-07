@@ -68,6 +68,7 @@ detail into the validation and application process for
 :ref:`blocks<block_validation_overview_atlas>` and their
 :ref:`operations<operation_validity_atlas>`.
 
+.. _shell_proto_interact:
 .. _shell_proto_interact_atlas:
 
 Shell-protocol interaction
@@ -136,6 +137,7 @@ safely included in the Tezos blockchain -- and *application* --
 that is, how the effects of operations and blocks are taken into
 account -- for this economic protocol.
 
+.. _protocol_constants:
 .. _protocol_constants_atlas:
 
 Protocol constants

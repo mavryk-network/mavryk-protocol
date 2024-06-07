@@ -1,7 +1,7 @@
-Version 18.1
+Version 1.1
 ============
 
-Version 18.0 contains a new version (v10) of the protocol environment,
+Version 1.0 contains a new version (v10) of the protocol environment,
 which is the set of functions that a protocol can call.
 This new version is used by Atlas,
 which is a proposal for the successor of Nairobi that has been rejected by vote on Oct 2, 2023.
@@ -30,7 +30,7 @@ v18 also fixes a concurrency issue in the logging infrastructure which can cause
 
 As Atlas includes a new Staking mechanism, version 18 of Mavkit implements new client commands for stake funds management, and to allow delegates to configure their staking policies. See :ref:`Adaptive Issuance and Staking <new_staking_alpha>` for more details.
 
-Version 18.1 fixes an issue that would result in corrupted full and rollup snapshots being exported.
+Version 1.1 fixes an issue that would result in corrupted full and rollup snapshots being exported.
 Thus, the snapshots version is bumped from ``6`` to ``7``.
 Note that snapshots exported by nodes running v18.1 are not retro-compatible. As a result, these cannot be imported by a node running earlier versions of Mavkit. However, a node running Mavkit v18.1 can still import v6 (and earlier) snapshots.
 
@@ -102,6 +102,6 @@ You can now download experimental Debian and Redhat packages on the `release pag
 Changelog
 ---------
 
-- `Version 18.1 <../CHANGES.html#version-18-1>`_
-- `Version 18.0 <../CHANGES.html#version-18-0>`_
-- `Version 18.0~rc1 <../CHANGES.html#version-18-0-rc1>`_
+- `Version 1.1 <../CHANGES.html#version-1-1>`_
+- `Version 1.0 <../CHANGES.html#version-1-0>`_
+- `Version 1.0~rc1 <../CHANGES.html#version-1-0-rc1>`_

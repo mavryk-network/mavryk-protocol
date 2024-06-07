@@ -19,7 +19,7 @@ Mavkit is an implementation of Tezos software, including a node, a client, a bak
 The source code is placed under the MIT Open Source License, and
 is available at https://gitlab.com/tezos/tezos.
 
-The current release of Mavkit is :doc:`../releases/version-18`.
+The current release of Mavkit is :doc:`../releases/version-1`.
 
 For installing instructions, see :doc:`./howtoget`.
 

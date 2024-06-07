@@ -51,6 +51,7 @@ _`Level` (a.k.a. block height)
 _`Mempool`
    A pool (set) of operation_\ s maintained by a node_ and not yet included in a block_.
 
+.. _def_metadata:
 .. _def_metadata_atlas:
 
 _`Metadata`
@@ -258,6 +259,7 @@ _`Layer 2`
 _`Michelson`
     The built-in language used by a `smart contract`_.
 
+.. _def_minimal_stake:
 .. _def_minimal_stake_atlas:
 
 _`Minimal stake`
