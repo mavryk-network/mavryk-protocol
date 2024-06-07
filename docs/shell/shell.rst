@@ -1,5 +1,5 @@
 The Mavkit Shell
-===============
+================
 
 As explained in the :doc:`./the_big_picture`, the *shell* is the rest of an Mavkit node when excluding the protocol; in other terms, the "blue octopus".
 

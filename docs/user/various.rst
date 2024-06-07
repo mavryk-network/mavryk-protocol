@@ -24,7 +24,7 @@ The admin client uses the same format of configuration file as the client (see :
 .. _mavryk_binaries_signals_and_exit_codes:
 
 Mavkit binaries: signals and exit codes
---------------------------------------
+---------------------------------------
 
 Signals:
 Upon receiving ``SIGINT`` (e.g., via Ctrl+C in an interactive session) or

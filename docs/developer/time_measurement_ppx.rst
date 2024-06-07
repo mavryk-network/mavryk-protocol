@@ -190,7 +190,7 @@ The PPX provides the handling of three attributes:
 Some of these attributes are used, for instance, in the implementation of the :ref:`performance regression test framework <performance_regression_test_fw>`.
 
 Instrumenting the mavkit-node executable
----------------------------------------
+----------------------------------------
 
 A helper has been added in the ``Makefile``, so you just need to run the following
 command to instrument the node during the compilation:

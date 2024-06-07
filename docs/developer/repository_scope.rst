@@ -1,5 +1,5 @@
 Scope of the Mavkit repository
-=============================
+==============================
 
 The `Gitlab repository tezos/tezos <https://gitlab.com/tezos/tezos>`_
 contains the source code for Mavkit, as well as :ref:`the embedded

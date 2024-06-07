@@ -4,7 +4,7 @@ Versions
 Versioning concerns several components of Mavkit. This page explains the various corresponding versioning schemes, which are mostly independent of each other. Though, some relations do exist (e.g. when a new protocol is proposed, a new Mavkit release is usually delivered embedding the new proposal, for convenience); this is explained in some versioning schemes.
 
 Mavkit versions
---------------
+---------------
 
 The whole Mavkit software is versioned by releases, see :doc:`../releases/releases`.
 

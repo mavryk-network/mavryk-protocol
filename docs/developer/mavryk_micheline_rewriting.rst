@@ -1,5 +1,5 @@
 Rewriting Micheline with ``mavryk-micheline-rewriting``
-======================================================
+=======================================================
 
 ``mavryk-micheline-rewriting`` allows to construct rewriting rules
 on Micheline, enumerate matches and perform rewritings. It is

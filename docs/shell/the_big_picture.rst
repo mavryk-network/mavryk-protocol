@@ -1,5 +1,5 @@
 Mavkit Software Architecture
-===========================
+============================
 
 This page presents the software architecture of the most important tool in a Tezos network: the Tezos node, implemented in our case as the Mavkit node executable (``mavkit-node``).
 The Mavkit software architecture faithfully implements the :doc:`Tezos software architecture <../global/architecture>` principles.

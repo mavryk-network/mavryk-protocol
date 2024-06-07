@@ -1,5 +1,5 @@
 Profiling the Mavkit node
-========================
+=========================
 
 Memory profiling the OCaml heap
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

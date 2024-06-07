@@ -232,7 +232,7 @@ Monads can have additional operators beside the required core. E.g., you
 can add ``OptionMonad.join : 'a option option -> 'a option``.
 
 In depth discussion: ``Error_monad``, ``src/lib_error_monad/``, ``Mavryk_base__TzPervasives``, etc.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The different parts of the error monad (syntax modules, extended stdlib,
 tracing primitives, etc.) are defined in separate files. Yet, they are

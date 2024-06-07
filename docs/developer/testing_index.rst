@@ -1,5 +1,5 @@
 Testing in Mavkit
-================
+=================
 
 Testing is important to ensure the quality of the Mavkit codebase by
 detecting bugs and avoiding regressions. Mavkit and its

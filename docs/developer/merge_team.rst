@@ -1,5 +1,5 @@
 Mavkit Merge Team
-================
+=================
 
 The Mavkit merge team is a `group of developers
 <https://gitlab.com/groups/tezos/-/group_members>`_
@@ -9,7 +9,7 @@ They are automatically selected as approvers when you create a merge
 request.
 
 Mavkit Merge Team Scope
-----------------------
+-----------------------
 
 The role of the Mavkit Merge Team is limited to ensuring the quality
 of what gets merged into Mavkit, i.e. all of `tezos/tezos
@@ -57,7 +57,7 @@ Don't hesitate to contact the merge coordinator if you think you can
 benefit of their help to move your merge request forward.
 
 Getting into the Mavkit Merge Team
----------------------------------
+----------------------------------
 
 The Mavkit merge team is always looking for software engineers with at least the following qualities:
 
@@ -84,7 +84,7 @@ an existing member on the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack. Y
 will be discussed during the next weekly meeting of the Mavkit merge team.
 
 Helping the Mavkit Merge Team
-----------------------------
+-----------------------------
 
 Even if you are not in the Mavkit merge team, you can help it! If you review a merge
 request and you think it is ready to be merged, you should click the *Approve* button

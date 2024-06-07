@@ -1,7 +1,7 @@
 :orphan:
 
 Compiling (part of) the Mavkit codebase to JavaScript
-====================================================
+=====================================================
 
 We want to expose a JavaScript API while staying in sync with the
 OCaml codebase. A way to achieve this is to compile OCaml code to

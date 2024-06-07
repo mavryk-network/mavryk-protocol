@@ -1,5 +1,5 @@
 How to contribute to Mavkit
-==========================
+===========================
 
 The purpose of this document is to help developers contribute to
 Mavkit.

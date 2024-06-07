@@ -69,7 +69,7 @@ Depending on your operating system, you may install Mavkit (dynamically-linked)
 binaries and their dependencies using a package manager, as follows.
 
 Ubuntu Launchpad PPA with Mavkit packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're using Ubuntu, you can install packages with Mavkit binaries from a Launchpad PPA.
 Currently it supports Focal and Bionic versions.
@@ -103,7 +103,7 @@ You may take a look at the available packages in the Mavkit PPA repository liste
 by ``apt-get update``.
 
 Fedora Copr repository with Mavkit packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're using Fedora, you can install packages with Mavkit binaries from a Copr repository.
 Currently it supports Fedora 35.
@@ -274,7 +274,7 @@ the next step.
 .. _install_opam_packages:
 
 Install Mavkit OPAM packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The latest Mavkit release is available (as soon as possible after the
 release) directly as OPAM packages.
@@ -409,23 +409,6 @@ and then do:
   :start-after: [install packages]
   :end-before: [test executables]
 
-.. warning::
-
-   If you are updating to :doc:`Mavkit v14<../releases/version-14>`
-   using a development environment which had been used to build Mavkit
-   versions up to v13.x, and also you have previously exported the
-   ``tezos`` directory to the ``$PATH`` environment variable, the
-   following stanza is necessary to avoid potential issues with opam
-   in the ``make build-deps`` step::
-
-     PATH=${PATH##"$HOME"/tezos/:}
-
-   Otherwise, it is possible for ``make build-deps`` to fail with the
-   following (or a similar) error::
-
-     make: opam: Permission denied
-     Makefile:53: *** Unexpected opam version (found: , expected: 2.*).  Stop.
-
 The following sections describe the individual steps above in more detail.
 
 .. note::
@@ -524,7 +507,7 @@ Checkout the ``latest-release`` branch to use the latest release.
 Alternatively, you can checkout a specific version based on its tag.
 
 Install Mavkit dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install the OCaml compiler and the libraries that Mavkit depends on::
 

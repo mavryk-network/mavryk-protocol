@@ -3,7 +3,7 @@
 .. _howtouse:
 
 Getting started with Mavkit
-==========================
+===========================
 
 This short tutorial illustrates the use of the various Mavkit binaries as well
 as some concepts about the network.

@@ -1,5 +1,5 @@
 Overview of Testing in Mavkit
-============================
+=============================
 
 The goal of this document is to give an overview on how testing is done in
 Mavkit, and to help Mavkit contributors use the test suite and

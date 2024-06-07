@@ -1,5 +1,5 @@
 Monitoring an Mavkit Node
-========================
+=========================
 
 Monitoring the behavior of an Mavkit node can be partially achieved by exploring the logs or,
 more efficiently, through the RPC server. The use of RPCs is detailed in :doc:`the RPC documentation <../developer/rpc>`
@@ -53,7 +53,7 @@ Gathering data
 --------------
 
 Scraping Mavkit Metrics
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Once your node is correctly set up to export metrics, you can scrape them by querying the metrics server of your node with the request ``/metrics``.
 

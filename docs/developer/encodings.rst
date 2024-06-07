@@ -25,7 +25,7 @@ Note that for the particular case of Micheline expressions, the ``mavkit-client`
 .. _codec_describe:
 
 How to read the output of ``mavkit-codec``
------------------------------------------
+------------------------------------------
 
 The list of data structures that can be encoded/decoded may be obtained as follows::
 
@@ -384,7 +384,7 @@ As usual, ``mavkit-codec`` can be used the other way around, to encode the same 
 .. _client_convert:
 
 How to convert Micheline with ``mavkit-client``
-----------------------------------------------
+-----------------------------------------------
 
 The ``mavkit-client`` can be used to convert Micheline expressions between the following forms: binary, JSON, Michelson, and OCaml.
 

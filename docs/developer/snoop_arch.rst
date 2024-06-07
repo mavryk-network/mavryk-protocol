@@ -1,5 +1,5 @@
 Architecture of ``mavkit-snoop``
-===============================
+================================
 
 The following figure describes the main functionalities and data
 processed by ``mavkit-snoop``, to be read from top to bottom. The boxed

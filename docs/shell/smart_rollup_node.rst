@@ -1138,11 +1138,6 @@ WASM memory.
 Testing your Kernel
 """""""""""""""""""
 
-.. note::
-
-   ``mavkit-smart-rollup-wasm-debugger`` is available in the Mavkit
-   distribution starting with :doc:`/releases/version-16`.
-
 Testing a kernel without having to start a rollup node on a test
 network is very convenient. We provide a debugger as a means to
 evaluate the WASM PVM without relying on any node and network:

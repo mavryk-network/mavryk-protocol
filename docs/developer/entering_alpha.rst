@@ -13,7 +13,7 @@ As all protocols, Alpha is made of a series of OCaml interface and
 implementation files, accompanied by a ``MAVRYK_PROTOCOL`` file.
 
 The ``MAVRYK_PROTOCOL`` structure
---------------------------------
+---------------------------------
 
 If you look at file ``MAVRYK_PROTOCOL`` in the repository, you will see that it is
 composed of the hash of the sources, and the list of its modules, in

@@ -13,7 +13,7 @@ protocol and the nodes should adapt and upgrade.
 .. _mavkit:
 
 Mavkit
-~~~~~
+~~~~~~
 
 Mavkit is an implementation of Tezos software, including a node, a client, a baker, an accuser, and other tools, distributed with the Tezos economic protocols of Mainnet for convenience.
 The source code is placed under the MIT Open Source License, and
