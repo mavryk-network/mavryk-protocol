@@ -175,7 +175,7 @@ html: api/errors.rst developer/metrics.csv user/node-config.json \
 		rpc p2p manuals install-dependencies
 	(echo ':orphan:'; echo ''; cat ../CHANGES.rst) > CHANGES-dev.rst
 	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
-	@ln -s active "$(BUILDDIR)/atlas" || true
+# @ln -s active "$(BUILDDIR)/nairobi" || true
 
 # pylint does not support pyproject.toml configuration for now
 # It is configured by ./.pylint.rc
