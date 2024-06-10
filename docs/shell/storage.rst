@@ -75,8 +75,6 @@ Older metadata is pruned.
 Starting with Mavkit v15.0, the store also triggers *context pruning* when a cycle is completed, after finishing the store trimming and cementing.
 Thus, whenever pruning the metadata of a block, its context (ledger state associated to that block) is pruned as well.
 
-For the operational details of pruning, see :ref:`first_pruning`.
-
 Other features
 **************
 
