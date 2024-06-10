@@ -16,13 +16,13 @@ use storage::{
     read_ticketer, store_base_fee_per_gas, store_chain_id, store_kernel_version,
     store_storage_version, STORAGE_VERSION, STORAGE_VERSION_PATH,
 };
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_entrypoint::kernel_entry;
-use tezos_smart_rollup_host::path::{concat, OwnedPath, RefPath};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_entrypoint::kernel_entry;
+use mavryk_smart_rollup_host::path::{concat, OwnedPath, RefPath};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
-use tezos_evm_logging::{log, Level::*};
+use mavryk_evm_logging::{log, Level::*};
 
 use crate::inbox::KernelUpgrade;
 use crate::migration::storage_migration;
@@ -352,13 +352,13 @@ mod tests {
     };
     use evm_execution::account_storage::{self, EthereumAccountStorage};
     use primitive_types::{H160, U256};
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         transaction::{TransactionHash, TransactionType},
         tx_common::EthereumTransactionCommon,
     };
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const DUMMY_CHAIN_ID: U256 = U256::one();
     const DUMMY_BASE_FEE_PER_GAS: u64 = 21000u64;

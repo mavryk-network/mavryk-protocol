@@ -82,14 +82,14 @@ val protocol_zero_hash : string
     directory of the protocol, relative to the root of the repository. *)
 val parameter_file : ?constants:constants -> t -> string
 
-(** Get the path of the accuser of a protocol, such as ["./octez-accuser-alpha"]. *)
+(** Get the path of the accuser of a protocol, such as ["./mavkit-accuser-alpha"]. *)
 val accuser : t -> Uses.t
 
-(** Get the path of the baker of a protocol, such as ["./octez-baker-alpha"]. *)
+(** Get the path of the baker of a protocol, such as ["./mavkit-baker-alpha"]. *)
 val baker : t -> string
 
 (** Get the path of the smart rollup client of a protocol, such as
-    ["./octez-smart-rollup-client-alpha"]. *)
+    ["./mavkit-smart-rollup-client-alpha"]. *)
 val sc_rollup_client : t -> string
 
 (** Get the part of the daemon name that is specific to a protocol (e.g. ["PtEdo2Zk"]).

@@ -7,15 +7,15 @@
  (libraries
   tezt.core
   bls12-381
-  octez-libs.bls12-381-signature
-  octez-alcotezt
+  mavkit-libs.bls12-381-signature
+  mavkit-alcotezt
   integers_stubs_js)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_aggregated_signature test_signature utils))
 
 (executable
@@ -29,7 +29,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (deps (glob_files_rec test_vectors/*))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))

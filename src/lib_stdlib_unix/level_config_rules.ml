@@ -34,16 +34,16 @@ exception Incorrect_log_rules_missing_pattern
 type rules = (string * Internal_event.Level.t) list
 
 let find_log_rules default =
-  match Sys.(getenv_opt "TEZOS_LOG", getenv_opt "LWT_LOG") with
-  | Some rules, None -> ("environment variable TEZOS_LOG", Some rules)
+  match Sys.(getenv_opt "MAVRYK_LOG", getenv_opt "LWT_LOG") with
+  | Some rules, None -> ("environment variable MAVRYK_LOG", Some rules)
   | None, Some rules -> ("environment variable LWT_LOG", Some rules)
   | None, None -> ("configuration file", default)
   | Some rules, Some _ ->
       Format.eprintf
         "@[<v 2>@{<warning>@{<title>Warning@}@} Both environment variables \
-         TEZOS_LOG and LWT_LOG defined, using TEZOS_LOG.@]@\n\
+         MAVRYK_LOG and LWT_LOG defined, using MAVRYK_LOG.@]@\n\
          @." ;
-      ("environment variable TEZOS_LOG", Some rules)
+      ("environment variable MAVRYK_LOG", Some rules)
 
 let parse_rules s =
   let rules = String.split_on_char ';' s in

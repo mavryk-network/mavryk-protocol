@@ -87,15 +87,15 @@ val register_simple_with_num :
     [destination] specifies the code generation destination.
     If [destination = "michelson_v1_gas"], the code will be generated to
     ["DIR/michelson_v1_gas_costs_generated.ml"] by
-    [octez-snoop generate code for solutions SOL --split-to DIR] command.
+    [mavkit-snoop generate code for solutions SOL --split-to DIR] command.
     The command will not generate the code under [DIR] if [destination] is not
     specified.
 *)
 val register_model_for_code_generation :
   ?destination:string -> string -> 'a Model.t -> unit
 
-(** Register a {!type:Tezos_clic.command} for the command line *)
-val add_command : unit Tezos_clic.command -> unit
+(** Register a {!type:Mavryk_clic.command} for the command line *)
+val add_command : unit Mavryk_clic.command -> unit
 
 (* -------------------------------------------------------------------------- *)
 (* Listing functions *)
@@ -110,7 +110,7 @@ val all_models : unit -> (Namespace.t * model_info) list
 val all_parameters : unit -> (Free_variable.t * parameter_info) list
 
 (** Returns the list of all registered commands *)
-val all_custom_commands : unit -> unit Tezos_clic.command list
+val all_custom_commands : unit -> unit Mavryk_clic.command list
 
 (** Returns the list of all the tags from registered benchmarks *)
 val all_tags : unit -> string list

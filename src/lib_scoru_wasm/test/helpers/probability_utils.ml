@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_test_helpers
+open Mavryk_test_helpers
 
 (* Probability is in range between 0 and 1 *)
 module type Probability_sig = sig

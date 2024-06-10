@@ -6,10 +6,10 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-alcotezt
+  mavkit-libs.stdlib
+  mavkit-alcotezt
   bigstring
-  octez-libs.test-helpers
+  mavkit-libs.test-helpers
   qcheck-alcotest)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
@@ -17,9 +17,9 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Octez_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_stdlib
+  -open Mavkit_alcotezt
+  -open Mavryk_test_helpers)
  (modules
   test_bits
   test_tzList
@@ -45,7 +45,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 
@@ -68,7 +68,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))
 

@@ -23,7 +23,7 @@ const path = require('node:path')
 const { timestamp } = require("./lib/timestamp")
 const csv = require('csv-stringify/sync');
 
-const RUN_DEBUGGER_COMMAND = external.bin('./octez-smart-rollup-wasm-debugger');
+const RUN_DEBUGGER_COMMAND = external.bin('./mavkit-smart-rollup-wasm-debugger');
 const EVM_INSTALLER_KERNEL_PATH = external.resource('evm_benchmark_installer.wasm');
 const PREIMAGE_DIR = external.ressource_dir('_evm_unstripped_installer_preimages');
 const OUTPUT_DIRECTORY = external.output()

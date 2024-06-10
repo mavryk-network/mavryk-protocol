@@ -466,8 +466,8 @@ struct
     return_unit
 
   let run scenario =
-    Tezos_stdlib_unix.Lwt_utils_unix.with_tempdir
-      "tezos-layer2-indexed-store-test-"
+    Mavryk_stdlib_unix.Lwt_utils_unix.with_tempdir
+      "mavryk-layer2-indexed-store-test-"
       (run_in_dir scenario)
 
   let check_run scenario =
@@ -824,7 +824,7 @@ let test_read_gc_store () =
   R.run scenario
 
 let test_load () =
-  let path = Tezt.Temp.dir "tezos-layer2-indexed-store-test-load" in
+  let path = Tezt.Temp.dir "mavryk-layer2-indexed-store-test-load" in
   let open Lwt_result_syntax in
   let* store =
     Indexed_file_for_test.S.load
@@ -915,7 +915,7 @@ let unit_tests =
 let () =
   Alcotest.run
     ~__FILE__
-    "tezos-layer2-store"
+    "mavryk-layer2-store"
     [
       ( "indexed-store-pbt",
         List.map QCheck_alcotest.to_alcotest (List.rev !tests) );

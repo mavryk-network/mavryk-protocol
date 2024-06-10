@@ -4,19 +4,19 @@
 (library
  (name yes_wallet_lib)
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
   lwt.unix
   ezjsonm
-  octez-shell-libs.store
-  octez-shell-libs.shell-context
-  octez-libs.tezos-context
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-alpha.protocol)
+  mavkit-shell-libs.store
+  mavkit-shell-libs.shell-context
+  mavkit-libs.mavryk-context
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives)
+  -open Mavryk_base.TzPervasives)
  (modules (:standard \ yes_wallet)))
 
 (executable

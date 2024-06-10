@@ -10,20 +10,20 @@ protocol and the nodes should adapt and upgrade.
 
 `Tezos.com <https://tezos.com/>`_ contains more information on Tezos overall.
 
-.. _octez:
+.. _mavkit:
 
-Octez
-~~~~~
+Mavkit
+~~~~~~
 
-Octez is an implementation of Tezos software, including a node, a client, a baker, an accuser, and other tools, distributed with the Tezos economic protocols of Mainnet for convenience.
+Mavkit is an implementation of Tezos software, including a node, a client, a baker, an accuser, and other tools, distributed with the Tezos economic protocols of Mainnet for convenience.
 The source code is placed under the MIT Open Source License, and
 is available at https://gitlab.com/tezos/tezos.
 
-The current release of Octez is :doc:`../releases/version-18`.
+The current release of Mavkit is :doc:`../releases/version-1`.
 
 For installing instructions, see :doc:`./howtoget`.
 
-.. _tezos_community:
+.. _mavryk_community:
 
 The Community
 ~~~~~~~~~~~~~
@@ -74,6 +74,6 @@ themselves with Tezos before using their real tez.
 This website
 ~~~~~~~~~~~~
 
-This website (https://tezos.gitlab.io/) provides online technical documentation. This documentation is about :ref:`octez`, although it also documents Tezos in general.
+This website (https://tezos.gitlab.io/) provides online technical documentation. This documentation is about :ref:`mavkit`, although it also documents Tezos in general.
 
-The technical documentation is an integral part of the :ref:`Octez <octez>` repository, and is automatically generated from the master branch, following `Docs as Code <https://www.writethedocs.org/guide/docs-as-code/>`_ best practices.
+The technical documentation is an integral part of the :ref:`Mavkit <mavkit>` repository, and is automatically generated from the master branch, following `Docs as Code <https://www.writethedocs.org/guide/docs-as-code/>`_ best practices.

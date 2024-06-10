@@ -8,7 +8,7 @@ let runtest l =
   let _ =
     Alcotest.run
       ~__FILE__
-      "tezos-crypto"
+      "mavryk-crypto"
       (List.fold_left
          (fun acc (e : t) ->
            let module M : T = (val e) in

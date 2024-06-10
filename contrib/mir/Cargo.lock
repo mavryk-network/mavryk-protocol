@@ -689,7 +689,7 @@ dependencies = [
  "lalrpop",
  "lalrpop-util",
  "logos",
- "tezos_crypto_rs",
+ "mavryk_crypto_rs",
  "thiserror",
  "typed-arena",
 ]
@@ -1228,7 +1228,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tezos_crypto_rs"
+name = "mavryk_crypto_rs"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "576b69129eabf1edca392ff5e763610d448275fd2724d05464bb3542829c6d64"

@@ -149,8 +149,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: timelock",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: timelock",
     "tags": [
       "alcotest"
     ],
@@ -160,7 +160,7 @@
     }
   },
   {
-    "file": "tezos-benchmark",
+    "file": "mavryk-benchmark",
     "title": "sparse_vec",
     "tags": [
       "alcotest"

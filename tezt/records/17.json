@@ -119,7 +119,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "015-PtLimaPt: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -152,8 +152,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: test_media_type_pp_parse",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: test_media_type_pp_parse",
     "tags": [
       "alcotest"
     ],
@@ -163,7 +163,7 @@
     }
   },
   {
-    "file": "Tezos_clic",
+    "file": "Mavryk_clic",
     "title": "auto-completion-parameters",
     "tags": [
       "alcotest"

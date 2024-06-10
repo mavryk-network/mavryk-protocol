@@ -5,4 +5,4 @@
  (name rpc_openapi)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-openapi))
+  mavryk-openapi))

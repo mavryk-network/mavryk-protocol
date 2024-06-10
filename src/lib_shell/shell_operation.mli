@@ -58,7 +58,7 @@ val record_successful_signature_check :
     function, whose return type depends on the protocol. *)
 module type PARSER = sig
   (** Similar to the same type in the protocol,
-      see {!Tezos_protocol_environment.PROTOCOL.operation} *)
+      see {!Mavryk_protocol_environment.PROTOCOL.operation} *)
   type protocol_operation
 
   (** [parse hash op] reads a usual {!Operation.t} and lifts it to the
@@ -73,7 +73,7 @@ module type PARSER = sig
 end
 
 (** Create a {!PARSER} tailored to a given protocol. *)
-module MakeParser : functor (Proto : Tezos_protocol_environment.PROTOCOL) ->
+module MakeParser : functor (Proto : Mavryk_protocol_environment.PROTOCOL) ->
   PARSER with type protocol_operation = Proto.operation
 
 (**/**)

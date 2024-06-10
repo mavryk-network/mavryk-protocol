@@ -1054,7 +1054,7 @@ module Memo_size = struct
 end
 
 (* Roundtrip of shield, transfer and unshield. At each step we check the
-   balances of the Tezos account that submits the operations, the two Sapling
+   balances of the Mavryk account that submits the operations, the two Sapling
    accounts and the smart contract. *)
 let successful_roundtrip =
   Protocol.register_test

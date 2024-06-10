@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
-open Tezos_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_lazy_containers
 open Kont_encodings
 
 exception Uninitialized_current_module
@@ -32,7 +32,7 @@ exception Uninitialized_current_module
 module V = Instance.Vector
 module M = Instance.NameMap
 module C = Chunked_byte_vector
-open Tezos_tree_encoding
+open Mavryk_tree_encoding
 module NameMap = Lazy_map_encoding.Make (Instance.NameMap)
 module ModuleMap = Lazy_map_encoding.Make (Instance.ModuleMap.Map)
 module Outboxes = Lazy_map_encoding.Make (Output_buffer.Outboxes.Map)

@@ -10,7 +10,7 @@ use host::path::{concat, OwnedPath, Path, RefPath};
 use host::runtime::{Runtime, RuntimeError, ValueType};
 use primitive_types::{H160, H256, U256};
 use sha3::{Digest, Keccak256};
-use tezos_smart_rollup_storage::storage::Storage;
+use mavryk_smart_rollup_storage::storage::Storage;
 use thiserror::Error;
 
 use crate::DurableStorageError;
@@ -29,7 +29,7 @@ pub enum AccountStorageError {
     /// Some error occurred while using the transaction storage
     /// API.
     #[error("Transaction storage API error: {0:?}")]
-    StorageError(tezos_smart_rollup_storage::StorageError),
+    StorageError(mavryk_smart_rollup_storage::StorageError),
     /// Some account balance became greater than what can be
     /// stored in an unsigned 256 bit integer.
     #[error("Account balance overflow")]
@@ -40,8 +40,8 @@ pub enum AccountStorageError {
     NonceOverflow,
 }
 
-impl From<tezos_smart_rollup_storage::StorageError> for AccountStorageError {
-    fn from(error: tezos_smart_rollup_storage::StorageError) -> Self {
+impl From<mavryk_smart_rollup_storage::StorageError> for AccountStorageError {
+    fn from(error: mavryk_smart_rollup_storage::StorageError) -> Self {
         AccountStorageError::StorageError(error)
     }
 }
@@ -513,7 +513,7 @@ mod test {
     use super::*;
     use host::path::RefPath;
     use primitive_types::U256;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[test]
     fn test_account_nonce_update() {

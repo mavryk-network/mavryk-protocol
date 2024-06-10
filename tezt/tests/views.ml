@@ -30,7 +30,7 @@
    Subject:      Call smart contract views to catch performance regressions.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_regression =
   Protocol.register_regression_test

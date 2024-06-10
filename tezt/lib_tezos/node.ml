@@ -429,7 +429,7 @@ module Config_file = struct
     JSON.put ("network", network) old_config
 
   let set_sandbox_network_with_dal_config
-      (dal_config : Tezos_crypto_dal.Cryptobox.Config.t) old_config =
+      (dal_config : Mavryk_crypto_dal.Cryptobox.Config.t) old_config =
     let dal_config_json =
       let parameters =
         match dal_config.use_mock_srs_for_testing with
@@ -693,7 +693,7 @@ let wait_for_disconnections node disconnections =
   let* () = wait_for_ready node in
   waiter
 
-let create ?runner ?(path = Constant.octez_node) ?name ?color ?data_dir
+let create ?runner ?(path = Constant.mavkit_node) ?name ?color ?data_dir
     ?event_pipe ?net_addr ?net_port ?advertised_net_port ?metrics_addr
     ?metrics_port ?(rpc_local = false) ?(rpc_host = "localhost") ?rpc_port
     ?rpc_tls ?(allow_all_rpc = true) arguments =

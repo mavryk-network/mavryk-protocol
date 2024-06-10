@@ -44,7 +44,7 @@ opam exec -- dune exec -- tztop src/proto_alpha/
 For instance, for stdin redirection:
 
 ```
-echo "#show_module Tezos_protocol_alpha.Protocol" | dune exec -- tztop src/proto_alpha -stdin
+echo "#show_module Mavryk_protocol_alpha.Protocol" | dune exec -- tztop src/proto_alpha -stdin
 ```
 
 Or, for editor integrations:

@@ -26,7 +26,7 @@
 (**
 
    A Merkelized inbox represents a list of messages. This list
-   is decomposed into sublists of messages, one for each Tezos level greater
+   is decomposed into sublists of messages, one for each Mavryk level greater
    than the level where SCORU is activated.
 
    This module is designed to:

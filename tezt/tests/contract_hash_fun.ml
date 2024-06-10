@@ -79,6 +79,6 @@ let test_contract_hash_fun hash_fun_name (hash_fun : bytes -> bytes) =
 let register ~protocols =
   test_contract_hash_fun
     "keccak"
-    Tezos_hacl.Hacl.Hash.Keccak_256.digest
+    Mavryk_hacl.Hacl.Hash.Keccak_256.digest
     protocols ;
-  test_contract_hash_fun "sha3" Tezos_hacl.Hacl.Hash.SHA3_256.digest protocols
+  test_contract_hash_fun "sha3" Mavryk_hacl.Hacl.Hash.SHA3_256.digest protocols

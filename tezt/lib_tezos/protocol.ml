@@ -58,7 +58,7 @@ let tag protocol = String.lowercase_ascii (name protocol)
 
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
-  | Atlas -> "PtAtLasjh71tv2N8SDMtjajR42wTSAd9xFTvXvhDuYfRJPRLSL2"
+  | Atlas -> "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -80,11 +80,11 @@ let protocol_dependent_uses ~tag ~path protocol =
   let protocol = daemon_name protocol in
   Uses.make ~tag:(tag ^ String.lowercase_ascii protocol) ~path:(path ^ protocol)
 
-let accuser = protocol_dependent_uses ~tag:"accuser_" ~path:"./octez-accuser-"
+let accuser = protocol_dependent_uses ~tag:"accuser_" ~path:"./mavkit-accuser-"
 
-let baker proto = "./octez-baker-" ^ daemon_name proto
+let baker proto = "./mavkit-baker-" ^ daemon_name proto
 
-let sc_rollup_client proto = "./octez-smart-rollup-client-" ^ daemon_name proto
+let sc_rollup_client proto = "./mavkit-smart-rollup-client-" ^ daemon_name proto
 
 let encoding_prefix = function
   | Alpha -> "alpha"

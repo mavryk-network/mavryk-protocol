@@ -33,7 +33,7 @@ module Level_map =
 
 type shard_indices = {start_index : int; offset : int}
 
-type committee = shard_indices Tezos_crypto.Signature.Public_key_hash.Map.t
+type committee = shard_indices Mavryk_crypto.Signature.Public_key_hash.Map.t
 
 type t = committee Level_map.t
 

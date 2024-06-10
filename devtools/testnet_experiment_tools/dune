@@ -6,13 +6,13 @@
  (libraries
   tezt
   tezt-tezos
-  octez-shell-libs.client-base-unix
-  octez-node-config
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-protocol-alpha-libs.client
-  tezos-protocol-alpha.protocol)
+  mavkit-shell-libs.client-base-unix
+  mavkit-node-config
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-protocol-alpha-libs.client
+  mavryk-protocol-alpha.protocol)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
@@ -20,56 +20,56 @@
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezos_client_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_protocol_alpha)
+  -open Mavryk_client_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_protocol_alpha)
  (modules testnet_experiment_tools format_baker_accounts))
 
 (library
  (name simulation_scenario_lib)
  (libraries
-  octez-libs.stdlib-unix
-  octez-libs.base
-  octez-libs.base.unix
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.store
-  octez-shell-libs.store.shared
-  octez-libs.tezos-context
-  octez-protocol-001-PtAtLas-libs.baking
-  octez-protocol-001-PtAtLas-libs.client
-  octez-protocol-001-PtAtLas-libs.client.commands
-  tezos-protocol-001-PtAtLas.protocol
-  octez-protocol-alpha-libs.baking
-  octez-protocol-alpha-libs.client
-  octez-protocol-alpha-libs.client.commands
-  tezos-protocol-alpha.protocol)
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.store
+  mavkit-shell-libs.store.shared
+  mavkit-libs.mavryk-context
+  mavkit-protocol-001-PtAtLas-libs.baking
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-protocol-001-PtAtLas-libs.client.commands
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-protocol-alpha-libs.baking
+  mavkit-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.client.commands
+  mavryk-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_store
-  -open Tezos_store_shared
-  -open Tezos_context)
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_store
+  -open Mavryk_store_shared
+  -open Mavryk_context)
  (modules sigs tool_001_PtAtLas tool_alpha))
 
 (executable
  (name simulation_scenario)
  (libraries
-  octez-libs.stdlib-unix
-  octez-libs.base
-  octez-libs.base.unix
-  octez-shell-libs.store
-  octez-libs.clic
-  octez-shell-libs.store.unix-snapshots
-  octez-shell-libs.store.shared
-  octez-node-config
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-shell-libs.store
+  mavkit-libs.clic
+  mavkit-shell-libs.store.unix-snapshots
+  mavkit-shell-libs.store.shared
+  mavkit-node-config
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
   simulation_scenario_lib)
  (link_flags
   (:standard)
@@ -77,77 +77,77 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_store
-  -open Tezos_store_unix_snapshots
-  -open Tezos_store_shared
-  -open Octez_node_config
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_store
+  -open Mavryk_store_unix_snapshots
+  -open Mavryk_store_shared
+  -open Mavkit_node_config
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
   -open Simulation_scenario_lib)
  (modules simulation_scenario))
 
 (executable
  (name extract_data)
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-shell-libs.store
-  octez-libs.clic
-  octez-shell-libs.client-base-unix)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-shell-libs.store
+  mavkit-libs.clic
+  mavkit-shell-libs.client-base-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp)
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_store
-  -open Tezos_client_base_unix)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_store
+  -open Mavryk_client_base_unix)
  (modules extract_data))
 
 (executable
  (name safety_checker)
  (libraries
-  octez-libs.base
-  octez-shell-libs.store
-  octez-libs.clic
-  octez-node-config
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix)
+  mavkit-libs.base
+  mavkit-shell-libs.store
+  mavkit-libs.clic
+  mavkit-node-config
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp)
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_store
-  -open Octez_node_config
-  -open Tezos_client_base
-  -open Tezos_client_base_unix)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_store
+  -open Mavkit_node_config
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix)
  (modules safety_checker))
 
 (executable
  (name get_teztale_data)
  (libraries
-  octez-libs.base
-  octez-libs.clic
+  mavkit-libs.base
+  mavkit-libs.clic
   caqti-lwt
   caqti-dynload
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix)
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix)
  (modules get_teztale_data teztale_sql_queries))

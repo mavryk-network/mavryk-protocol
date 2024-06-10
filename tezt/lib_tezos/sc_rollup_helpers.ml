@@ -40,9 +40,9 @@ let replace_variables string =
        ~all:true
        (rex "hex\\:\\[\".*?\"\\]")
        ~by:"[SMART_ROLLUP_EXTERNAL_MESSAGES]"
-  |> Tezos_regression.replace_variables
+  |> Mavryk_regression.replace_variables
 
-let hooks = Tezos_regression.hooks_custom ~replace_variables ()
+let hooks = Mavryk_regression.hooks_custom ~replace_variables ()
 
 let hex_encode (input : string) : string =
   match Hex.of_string input with `Hex s -> s
@@ -237,7 +237,7 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
     ?rpc_local
     ()
 
-(** This helper injects an SC rollup origination via octez-client. Then it
+(** This helper injects an SC rollup origination via mavkit-client. Then it
     bakes to include the origination in a block. It returns the address of the
     originated rollup *)
 let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist
@@ -268,7 +268,7 @@ let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist
 let setup_rollup ~protocol ~kind ?hooks ?alias ?(mode = Sc_rollup_node.Operator)
     ?boot_sector ?(parameters_ty = "string") ?(src = Constant.bootstrap1.alias)
     ?operator ?operators ?data_dir ?rollup_node_name ?whitelist ?sc_rollup
-    tezos_node tezos_client =
+    mavryk_node mavryk_client =
   let* sc_rollup =
     match sc_rollup with
     | Some sc_rollup -> return sc_rollup
@@ -281,14 +281,14 @@ let setup_rollup ~protocol ~kind ?hooks ?alias ?(mode = Sc_rollup_node.Operator)
           ?alias
           ?whitelist
           ~src
-          tezos_client
+          mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       mode
-      tezos_node
+      mavryk_node
       ?data_dir
-      ~base_dir:(Client.base_dir tezos_client)
+      ~base_dir:(Client.base_dir mavryk_client)
       ?default_operator:operator
       ?operators
       ?name:rollup_node_name
@@ -327,9 +327,9 @@ let last_cemented_commitment_hash_with_level ~sc_rollup client =
   let level = JSON.(json |-> "level" |> as_int) in
   return (hash, level)
 
-let genesis_commitment ~sc_rollup tezos_client =
+let genesis_commitment ~sc_rollup mavryk_client =
   let* genesis_info =
-    Client.RPC.call ~hooks tezos_client
+    Client.RPC.call ~hooks mavryk_client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
          sc_rollup
   in
@@ -337,7 +337,7 @@ let genesis_commitment ~sc_rollup tezos_client =
     JSON.(genesis_info |-> "commitment_hash" |> as_string)
   in
   let* commitment_opt =
-    Client.RPC.call ~hooks tezos_client
+    Client.RPC.call ~hooks mavryk_client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
          ~sc_rollup
          ~hash:genesis_commitment_hash
@@ -807,7 +807,7 @@ let send_text_messages ?(format = `Raw) ?hooks ?src client msgs =
 
 let reveal_hash_hex data =
   let hash =
-    Tezos_crypto.Blake2B.(hash_string [data] |> to_string) |> hex_encode
+    Mavryk_crypto.Blake2B.(hash_string [data] |> to_string) |> hex_encode
   in
   "00" ^ hash
 
@@ -1158,6 +1158,6 @@ let wait_for_injecting_event ?(tags = []) ?count node =
         Some event_count
       else None
 
-let injecting_refute_event _tezos_node rollup_node =
+let injecting_refute_event _mavryk_node rollup_node =
   let* _injected = wait_for_injecting_event ~tags:["refute"] rollup_node in
   unit

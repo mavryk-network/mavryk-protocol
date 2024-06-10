@@ -81,7 +81,7 @@ let slots_info constants node_ctxt (Layer1.{hash; _} as head) =
       return_none
   | Some published_block_hash ->
       let* {metadata; _} =
-        Layer1_helpers.fetch_tezos_block node_ctxt.Node_context.l1_ctxt hash
+        Layer1_helpers.fetch_mavryk_block node_ctxt.Node_context.l1_ctxt hash
       in
       let*? metadata =
         Option.to_result
@@ -168,7 +168,7 @@ let download_and_save_slots constants (node_context : _ Node_context.t)
       in
       let*! () =
         Dal_slots_tracker_event.slot_has_been_confirmed
-          (Sc_rollup_proto_types.Dal.Slot_index.of_octez
+          (Sc_rollup_proto_types.Dal.Slot_index.of_mavkit
              ~number_of_slots:constants.dal.number_of_slots
              s_slot)
           published_block_hash
@@ -196,7 +196,7 @@ module Confirmed_slots_history = struct
             ~published_in_block_hash:published_block_hash
             slot_index
         in
-        Sc_rollup_proto_types.Dal.Slot_header.of_octez
+        Sc_rollup_proto_types.Dal.Slot_header.of_mavkit
           ~number_of_slots:constants.dal.number_of_slots
           h)
       relevant_slots_indexes
@@ -261,7 +261,7 @@ module Confirmed_slots_history = struct
     let find node_ctxt block =
       let open Lwt_result_syntax in
       let+ hist = Node_context.find_confirmed_slots_history node_ctxt block in
-      Option.map Sc_rollup_proto_types.Dal.Slot_history.of_octez hist
+      Option.map Sc_rollup_proto_types.Dal.Slot_history.of_mavkit hist
     in
     dal_entry_of_block_hash
       node_ctxt
@@ -274,7 +274,7 @@ module Confirmed_slots_history = struct
     let find node_ctxt block =
       let open Lwt_result_syntax in
       let+ hist = Node_context.find_confirmed_slots_histories node_ctxt block in
-      Option.map Sc_rollup_proto_types.Dal.Slot_history_cache.of_octez hist
+      Option.map Sc_rollup_proto_types.Dal.Slot_history_cache.of_mavkit hist
     in
     dal_entry_of_block_hash
       node_ctxt
@@ -329,13 +329,13 @@ module Confirmed_slots_history = struct
       Node_context.save_confirmed_slots_history
         node_ctxt
         head_hash
-        (Sc_rollup_proto_types.Dal.Slot_history.to_octez slots_history)
+        (Sc_rollup_proto_types.Dal.Slot_history.to_mavkit slots_history)
     in
     let* () =
       Node_context.save_confirmed_slots_histories
         node_ctxt
         head_hash
-        (Sc_rollup_proto_types.Dal.Slot_history_cache.to_octez slots_cache)
+        (Sc_rollup_proto_types.Dal.Slot_history_cache.to_mavkit slots_cache)
     in
     return ()
 end

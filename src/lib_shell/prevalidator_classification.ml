@@ -48,7 +48,7 @@ type error_classification =
 type classification = [`Validated | error_classification]
 
 module Map = Operation_hash.Map
-module Sized_map = Tezos_base.Sized.MakeSizedMap (Map)
+module Sized_map = Mavryk_base.Sized.MakeSizedMap (Map)
 
 (** This type wraps together:
 

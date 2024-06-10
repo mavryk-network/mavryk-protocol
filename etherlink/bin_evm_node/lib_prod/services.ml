@@ -25,7 +25,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc
+open Mavryk_rpc
 open Rpc_encodings
 
 let version_service =
@@ -38,10 +38,10 @@ let version_service =
 let client_version =
   Format.sprintf
     "%s/%s-%s/%s/ocamlc.%s"
-    "octez-evm-node"
-    (Tezos_version.Version.to_string
-       Tezos_version_value.Current_git_info.version)
-    Tezos_version_value.Current_git_info.abbreviated_commit_hash
+    "mavkit-evm-node"
+    (Mavryk_version.Version.to_string
+       Mavryk_version_value.Current_git_info.version)
+    Mavryk_version_value.Current_git_info.abbreviated_commit_hash
     Stdlib.Sys.os_type
     Stdlib.Sys.ocaml_version
 
@@ -246,7 +246,7 @@ let dispatch_input (config : 'a Configuration.t)
         let open Ethereum_types in
         let (Hex h) = data in
         let bytes = Hex.to_bytes_exn (`Hex h) in
-        let hash_bytes = Tezos_crypto.Hacl.Hash.Keccak_256.digest bytes in
+        let hash_bytes = Mavryk_crypto.Hacl.Hash.Keccak_256.digest bytes in
         let hash = Hex.of_bytes hash_bytes |> Hex.show in
         return (Web3_sha3.Output (Ok (Hash (Hex hash))))
     | Get_logs.Input (Some filter) ->

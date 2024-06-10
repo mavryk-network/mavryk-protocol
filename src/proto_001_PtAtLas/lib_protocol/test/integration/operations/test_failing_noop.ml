@@ -41,7 +41,7 @@ let failing_noop_must_fail_when_injected () =
   let open Lwt_result_syntax in
   let* blk, contract = Context.init1 () in
   let source = Context.Contract.pkh contract in
-  let* operation = Op.failing_noop (B blk) source "tezos" in
+  let* operation = Op.failing_noop (B blk) source "mavryk" in
   let*! res = Block.bake ~operation blk in
   Assert.proto_error ~loc:__LOC__ res (function
       | Protocol.Validate_errors.Failing_noop_error -> true

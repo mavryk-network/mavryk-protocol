@@ -27,7 +27,7 @@ open Michelson_generation
 
 let group =
   {
-    Tezos_clic.name = "Michelson generation";
+    Mavryk_clic.name = "Michelson generation";
     title = "Command for generating random Michelson code and data";
   }
 
@@ -49,7 +49,7 @@ module Michelson_concat_cmd = struct
     return_unit
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes [Protocol.name; "michelson"; "concat"; "files"]
       @@ string ~name:"FILENAME" ~desc:"First file"
       @@ prefixes ["and"]
@@ -59,10 +59,10 @@ module Michelson_concat_cmd = struct
       @@ stop)
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Michelson generation"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params
       handler
 end
@@ -133,13 +133,13 @@ module Michelson_gen_cmd = struct
 
   let min_size_arg =
     let min_size =
-      Tezos_clic.parameter (fun (_ : unit) parsed ->
+      Mavryk_clic.parameter (fun (_ : unit) parsed ->
           try return (int_of_string parsed)
           with _ ->
             Format.eprintf "Error while parsing --min-size argument.@." ;
             exit 1)
     in
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Lower bound for target size of terms"
       ~long:"min-size"
       ~placeholder:"int"
@@ -147,13 +147,13 @@ module Michelson_gen_cmd = struct
 
   let max_size_arg =
     let max_size =
-      Tezos_clic.parameter (fun (_ : unit) parsed ->
+      Mavryk_clic.parameter (fun (_ : unit) parsed ->
           try return (int_of_string parsed)
           with _ ->
             Format.eprintf "Error while parsing --max-size argument.@." ;
             exit 1)
     in
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Lower bound for target size of terms"
       ~long:"max-size"
       ~placeholder:"int"
@@ -161,13 +161,13 @@ module Michelson_gen_cmd = struct
 
   let burn_in_arg =
     let target_size =
-      Tezos_clic.parameter (fun (_ : unit) parsed ->
+      Mavryk_clic.parameter (fun (_ : unit) parsed ->
           try return (int_of_string parsed)
           with _ ->
             Format.eprintf "Error while parsing --burn-in argument.@." ;
             exit 1)
     in
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Burn-in multiplier"
       ~long:"burn-in"
       ~placeholder:"int"
@@ -175,18 +175,18 @@ module Michelson_gen_cmd = struct
 
   let seed_arg =
     let seed =
-      Tezos_clic.parameter (fun (_ : unit) parsed ->
+      Mavryk_clic.parameter (fun (_ : unit) parsed ->
           try return (int_of_string parsed)
           with _ ->
             Format.eprintf "Error while parsing --seed argument.@." ;
             exit 1)
     in
-    Tezos_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
+    Mavryk_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
 
-  let options = Tezos_clic.args4 min_size_arg max_size_arg burn_in_arg seed_arg
+  let options = Mavryk_clic.args4 min_size_arg max_size_arg burn_in_arg seed_arg
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes [Protocol.name; "michelson"; "generate"]
       @@ string ~name:"TERMS-COUNT" ~desc:"Number of terms to generate"
       @@ prefixes ["terms"; "of"; "kind"]
@@ -196,7 +196,7 @@ module Michelson_gen_cmd = struct
       @@ stop)
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Michelson generation"
       options

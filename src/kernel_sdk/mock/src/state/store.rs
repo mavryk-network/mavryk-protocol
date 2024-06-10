@@ -6,7 +6,7 @@
 
 //! Mock runtime store - the container for host state.
 use std::collections::HashMap;
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub(crate) struct Store {
@@ -164,7 +164,7 @@ impl Store {
 
     pub fn add_preimage(&mut self, preimage: Vec<u8>) -> [u8; PREIMAGE_HASH_SIZE] {
         let hash_with_prefix =
-            tezos_smart_rollup_encoding::dac::pages::make_preimage_hash(&preimage)
+            mavryk_smart_rollup_encoding::dac::pages::make_preimage_hash(&preimage)
                 .unwrap();
 
         self.preimages.insert(hash_with_prefix, preimage);

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_ethereum::transaction::IndexedLog;
+use mavryk_ethereum::transaction::IndexedLog;
 
 use crate::inbox::Transaction;
 

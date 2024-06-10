@@ -4,15 +4,15 @@
 (executable
  (name afl)
  (libraries
-  octez-libs.plompiler
-  octez-libs.plonk
+  mavkit-libs.plompiler
+  mavkit-libs.plonk
   bls12-381)
  (modules afl))
 
 (executable
  (name main)
  (libraries
-  octez-libs.plonk.plonk-test)
+  mavkit-libs.plonk.plonk-test)
  (modules
   bench_poseidon
   benchmark
@@ -42,19 +42,19 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (action
   (setenv RANDOM_SEED 42
    (progn (run %{exe:main.exe} -q) (diff? test-quick.expected test.output)))))
 
 (rule
  (alias runtest_slow)
- (package octez-libs)
+ (package mavkit-libs)
  (action (run %{exe:main.exe})))
 
 (rule
  (alias runtest_slow_with_regression)
- (package octez-libs)
+ (package mavkit-libs)
  (action
   (setenv RANDOM_SEED 42
    (progn (run %{exe:main.exe}) (diff? test-slow.expected test.output)))))

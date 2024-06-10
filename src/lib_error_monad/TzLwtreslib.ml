@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_lwt_result_stdlib.Lwtreslib.Traced (TzTrace)
+include Mavryk_lwt_result_stdlib.Lwtreslib.Traced (TzTrace)

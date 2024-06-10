@@ -37,7 +37,7 @@ module Crypto = struct
   let header_length = 2
 
   (* The size of extra data added by encryption. *)
-  let tag_length = Tezos_crypto.Crypto_box.tag_length
+  let tag_length = Mavryk_crypto.Crypto_box.tag_length
 
   (* The number of bytes added by encryption + header *)
   let extrabytes = header_length + tag_length
@@ -45,9 +45,9 @@ module Crypto = struct
   let max_content_length = bufsize - extrabytes
 
   type data = {
-    channel_key : Tezos_crypto.Crypto_box.channel_key;
-    mutable local_nonce : Tezos_crypto.Crypto_box.nonce;
-    mutable remote_nonce : Tezos_crypto.Crypto_box.nonce;
+    channel_key : Mavryk_crypto.Crypto_box.channel_key;
+    mutable local_nonce : Mavryk_crypto.Crypto_box.nonce;
+    mutable remote_nonce : Mavryk_crypto.Crypto_box.nonce;
   }
 
   (* We do the following assumptions on the NaCl library.  Note that
@@ -57,9 +57,9 @@ module Crypto = struct
   let () = assert (tag_length >= header_length)
 
   let create_data ~incoming ~sent_msg ~recv_msg ~sk ~pk =
-    let channel_key = Tezos_crypto.Crypto_box.precompute sk pk in
+    let channel_key = Mavryk_crypto.Crypto_box.precompute sk pk in
     let local_nonce, remote_nonce =
-      Tezos_crypto.Crypto_box.generate_nonces ~incoming ~sent_msg ~recv_msg
+      Mavryk_crypto.Crypto_box.generate_nonces ~incoming ~sent_msg ~recv_msg
     in
     {channel_key; local_nonce; remote_nonce}
 
@@ -77,8 +77,8 @@ module Crypto = struct
     let tag = Bytes.create tag_length in
     let local_nonce = cryptobox_data.local_nonce in
     cryptobox_data.local_nonce <-
-      Tezos_crypto.Crypto_box.increment_nonce local_nonce ;
-    Tezos_crypto.Crypto_box.fast_box_noalloc
+      Mavryk_crypto.Crypto_box.increment_nonce local_nonce ;
+    Mavryk_crypto.Crypto_box.fast_box_noalloc
       cryptobox_data.channel_key
       local_nonce
       tag
@@ -112,9 +112,9 @@ module Crypto = struct
     let* () = read_full ?canceler fd @@ mk_buffer_safe msg in
     let remote_nonce = cryptobox_data.remote_nonce in
     cryptobox_data.remote_nonce <-
-      Tezos_crypto.Crypto_box.increment_nonce remote_nonce ;
+      Mavryk_crypto.Crypto_box.increment_nonce remote_nonce ;
     match
-      Tezos_crypto.Crypto_box.fast_box_open_noalloc
+      Mavryk_crypto.Crypto_box.fast_box_open_noalloc
         cryptobox_data.channel_key
         remote_nonce
         tag
@@ -138,9 +138,9 @@ let check_binary_chunks_size size =
 module Connection_message = struct
   type t = {
     port : int option;
-    public_key : Tezos_crypto.Crypto_box.public_key;
-    proof_of_work_stamp : Tezos_crypto.Crypto_box.nonce;
-    message_nonce : Tezos_crypto.Crypto_box.nonce;
+    public_key : Mavryk_crypto.Crypto_box.public_key;
+    proof_of_work_stamp : Mavryk_crypto.Crypto_box.nonce;
+    message_nonce : Mavryk_crypto.Crypto_box.nonce;
     version : Network_version.t;
   }
 
@@ -155,13 +155,13 @@ module Connection_message = struct
         {port; public_key; proof_of_work_stamp; message_nonce; version})
       (obj5
          (req "port" uint16)
-         (req "pubkey" Tezos_crypto.Crypto_box.public_key_encoding)
-         (req "proof_of_work_stamp" Tezos_crypto.Crypto_box.nonce_encoding)
-         (req "message_nonce" Tezos_crypto.Crypto_box.nonce_encoding)
+         (req "pubkey" Mavryk_crypto.Crypto_box.public_key_encoding)
+         (req "proof_of_work_stamp" Mavryk_crypto.Crypto_box.nonce_encoding)
+         (req "message_nonce" Mavryk_crypto.Crypto_box.nonce_encoding)
          (req "version" Network_version.encoding))
 
   let create identity advertised_port announced_version =
-    let local_nonce_seed = Tezos_crypto.Crypto_box.random_nonce () in
+    let local_nonce_seed = Mavryk_crypto.Crypto_box.random_nonce () in
     {
       public_key = identity.P2p_identity.public_key;
       proof_of_work_stamp = identity.proof_of_work_stamp;
@@ -176,7 +176,7 @@ module Connection_message = struct
     let* () =
       fail_unless
         (encoded_message_len < 1 lsl (Crypto.header_length * 8))
-        Tezos_base.Data_encoding_wrapper.Unexpected_size_of_decoded_buffer
+        Mavryk_base.Data_encoding_wrapper.Unexpected_size_of_decoded_buffer
     in
     let len = Crypto.header_length + encoded_message_len in
     let buf = Bytes.create len in
@@ -188,12 +188,12 @@ module Connection_message = struct
            ~allowed_bytes:encoded_message_len
     in
     match Data_encoding.Binary.write encoding message state with
-    | Error we -> tzfail (Tezos_base.Data_encoding_wrapper.Encoding_error we)
+    | Error we -> tzfail (Mavryk_base.Data_encoding_wrapper.Encoding_error we)
     | Ok last ->
         let* () =
           fail_unless
             (last = len)
-            Tezos_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
+            Mavryk_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
         in
         TzEndian.set_int16 buf 0 encoded_message_len ;
         let* () = P2p_io_scheduler.write ~canceler fd buf in
@@ -259,12 +259,12 @@ module Metadata = struct
         message
         state
     with
-    | Error we -> tzfail (Tezos_base.Data_encoding_wrapper.Encoding_error we)
+    | Error we -> tzfail (Mavryk_base.Data_encoding_wrapper.Encoding_error we)
     | Ok last ->
         let* () =
           fail_unless
             (last = encoded_message_len)
-            Tezos_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
+            Mavryk_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
         in
         Crypto.write_chunk ~canceler fd cryptobox_data buf
 
@@ -343,12 +343,12 @@ module Ack = struct
            ~allowed_bytes:encoded_message_len
     in
     match Data_encoding.Binary.write encoding message state with
-    | Error we -> tzfail (Tezos_base.Data_encoding_wrapper.Encoding_error we)
+    | Error we -> tzfail (Mavryk_base.Data_encoding_wrapper.Encoding_error we)
     | Ok last ->
         let* () =
           fail_unless
             (last = encoded_message_len)
-            Tezos_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
+            Mavryk_base.Data_encoding_wrapper.Unexpected_size_of_encoded_value
         in
         Crypto.write_chunk ?canceler fd cryptobox_data buf
 
@@ -415,10 +415,10 @@ let authenticate ~canceler ~proof_of_work_target ~incoming scheduled_conn
     if incoming then msg.port else Some remote_socket_port
   in
   let id_point = (remote_addr, remote_listening_port) in
-  let remote_peer_id = Tezos_crypto.Crypto_box.hash msg.public_key in
+  let remote_peer_id = Mavryk_crypto.Crypto_box.hash msg.public_key in
   let* () =
     fail_unless
-      (Tezos_crypto.Crypto_box.check_proof_of_work
+      (Mavryk_crypto.Crypto_box.check_proof_of_work
          msg.public_key
          msg.proof_of_work_stamp
          proof_of_work_target)
@@ -594,7 +594,7 @@ module Writer = struct
     match Data_encoding.Binary.to_bytes st.encoding msg with
     | Error we ->
         Result_syntax.tzfail
-          (Tezos_base.Data_encoding_wrapper.Encoding_error we)
+          (Mavryk_base.Data_encoding_wrapper.Encoding_error we)
     | Ok bytes -> Ok (Utils.cut st.binary_chunks_size bytes)
 
   let rec worker_loop st =
@@ -888,14 +888,14 @@ module Internal_for_tests = struct
 
   let mock_authenticated_connection default_metadata =
     let secret_key, public_key, _pkh =
-      Tezos_crypto.Crypto_box.random_keypair ()
+      Mavryk_crypto.Crypto_box.random_keypair ()
     in
     let cryptobox_data =
       Crypto.
         {
-          channel_key = Tezos_crypto.Crypto_box.precompute secret_key public_key;
-          local_nonce = Tezos_crypto.Crypto_box.zero_nonce;
-          remote_nonce = Tezos_crypto.Crypto_box.zero_nonce;
+          channel_key = Mavryk_crypto.Crypto_box.precompute secret_key public_key;
+          local_nonce = Mavryk_crypto.Crypto_box.zero_nonce;
+          remote_nonce = Mavryk_crypto.Crypto_box.zero_nonce;
         }
     in
     let scheduled_conn =

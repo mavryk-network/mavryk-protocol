@@ -38,14 +38,14 @@ let test_protocol_store _ store =
   let open Lwt_syntax in
   let protocols_to_register =
     [
-      ( Tezos_embedded_protocol_alpha.Registerer.Registered.hash,
-        Tezos_embedded_protocol_alpha.Registerer.Source.sources );
-      ( Tezos_embedded_protocol_genesis.Registerer.Registered.hash,
-        Tezos_embedded_protocol_genesis.Registerer.Source.sources );
+      ( Mavryk_embedded_protocol_alpha.Registerer.Registered.hash,
+        Mavryk_embedded_protocol_alpha.Registerer.Source.sources );
+      ( Mavryk_embedded_protocol_genesis.Registerer.Registered.hash,
+        Mavryk_embedded_protocol_genesis.Registerer.Source.sources );
     ]
   in
   let non_stored_protocol_hash =
-    Tezos_embedded_protocol_demo_noops.Registerer.Registered.hash
+    Mavryk_embedded_protocol_demo_noops.Registerer.Registered.hash
   in
   let* () =
     List.iter_s
@@ -79,4 +79,4 @@ let tests =
   in
   ("protocol store", test_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

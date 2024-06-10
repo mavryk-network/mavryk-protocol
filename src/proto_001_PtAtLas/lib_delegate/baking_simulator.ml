@@ -53,10 +53,10 @@ let () =
 
 type incremental = {
   predecessor : Baking_state.block_info;
-  context : Tezos_protocol_environment.Context.t;
+  context : Mavryk_protocol_environment.Context.t;
   state : Protocol.validation_state * Protocol.application_state option;
   rev_operations : Operation.packed list;
-  header : Tezos_base.Block_header.shell_header;
+  header : Mavryk_base.Block_header.shell_header;
 }
 
 let load_context ~context_path =
@@ -92,8 +92,8 @@ let begin_construction ~timestamp ~protocol_data ~force_apply
       match context_opt with
       | None -> tzfail Failed_to_checkout_context
       | Some context ->
-          let header : Tezos_base.Block_header.shell_header =
-            Tezos_base.Block_header.
+          let header : Mavryk_base.Block_header.shell_header =
+            Mavryk_base.Block_header.
               {
                 predecessor = pred_hash;
                 proto_level = pred_shell.proto_level;

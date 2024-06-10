@@ -40,7 +40,7 @@ module Arith_proof_format =
     end)
     (struct
       let proof_encoding =
-        Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+        Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
         .tree_proof_encoding
     end)
 
@@ -71,8 +71,8 @@ module Impl : Pvm_sig.S = struct
     | Evaluating -> "Evaluating"
 
   (* It is safe to pass the [is_reveal_enabled_predicate]:
-     [eval_many] always stops at the beginning of a new Tezos block,
-     so no execution of several Tezos block inboxes is possible. *)
+     [eval_many] always stops at the beginning of a new Mavryk block,
+     so no execution of several Mavryk block inboxes is possible. *)
   let eval_many ~reveal_builtins:_ ~write_debug:_ ~is_reveal_enabled
       ?stop_at_snapshot ~max_steps initial_state =
     ignore stop_at_snapshot ;

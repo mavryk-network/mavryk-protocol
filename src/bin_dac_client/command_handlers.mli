@@ -36,7 +36,7 @@ val wait_for_certificate :
   #Dac_node_client.cctxt ->
   Dac_plugin.raw_hash ->
   int ->
-  (Tezos_stdlib.Hex.t option, tztrace) result Lwt.t
+  (Mavryk_stdlib.Hex.t option, tztrace) result Lwt.t
 
 (** [get_certificate coordinator_cctxt root_hash] returns the most up-to-date
     certificate available for [root_hash] from the coordinator of
@@ -44,4 +44,4 @@ val wait_for_certificate :
 val get_certificate :
   #Dac_node_client.cctxt ->
   Dac_plugin.raw_hash ->
-  (Tezos_stdlib.Hex.t option, tztrace) result Lwt.t
+  (Mavryk_stdlib.Hex.t option, tztrace) result Lwt.t

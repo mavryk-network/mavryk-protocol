@@ -214,7 +214,7 @@ let floating_blocks_file dir = mk_file dir "blocks"
 
 let snapshot_dir ?snapshot_path () =
   let snapshot_path =
-    match snapshot_path with Some path -> path | None -> "tezos-snapshot"
+    match snapshot_path with Some path -> path | None -> "mavryk-snapshot"
   in
   {dir_path = snapshot_path}
 

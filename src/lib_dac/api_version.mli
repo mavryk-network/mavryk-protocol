@@ -34,7 +34,7 @@ type t =
           [V1] API is work in progress. Do not use! *)
 
 (** [v0_prefix] is [V0] API RPC prefix. *)
-val v0_prefix : (unit, unit) Tezos_rpc.Path.t
+val v0_prefix : (unit, unit) Mavryk_rpc.Path.t
 
 (** [v1_prefix] is [V1] API RPC prefix. *)
-val v1_prefix : (unit, unit) Tezos_rpc.Path.t
+val v1_prefix : (unit, unit) Mavryk_rpc.Path.t

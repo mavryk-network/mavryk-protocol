@@ -80,16 +80,16 @@ module Common = struct
     Data_encoding.Binary.(of_bytes_exn encoding bytes)
 
   type wallet = {
-    sk : Tezos_sapling.Core.Wallet.Spending_key.t;
-    vk : Tezos_sapling.Core.Wallet.Viewing_key.t;
+    sk : Mavryk_sapling.Core.Wallet.Spending_key.t;
+    vk : Mavryk_sapling.Core.Wallet.Viewing_key.t;
   }
 
   let wallet_gen () =
     let sk =
-      Tezos_sapling.Core.Wallet.Spending_key.of_seed
-        (Tezos_crypto.Hacl.Rand.gen 32)
+      Mavryk_sapling.Core.Wallet.Spending_key.of_seed
+        (Mavryk_crypto.Hacl.Rand.gen 32)
     in
-    let vk = Tezos_sapling.Core.Wallet.Viewing_key.of_sk sk in
+    let vk = Mavryk_sapling.Core.Wallet.Viewing_key.of_sk sk in
     {sk; vk}
 
   let gen_addr n vk =
@@ -97,38 +97,38 @@ module Common = struct
       if Compare.Int.( <= ) n 0 then res
       else
         let new_index, new_addr =
-          Tezos_sapling.Core.Client.Viewing_key.new_address vk index
+          Mavryk_sapling.Core.Client.Viewing_key.new_address vk index
         in
         aux (n - 1) new_index (new_addr :: res)
     in
-    aux n Tezos_sapling.Core.Client.Viewing_key.default_index []
+    aux n Mavryk_sapling.Core.Client.Viewing_key.default_index []
 
   let gen_nf () =
     let {vk; _} = wallet_gen () in
     let addr =
       snd
-      @@ Tezos_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
+      @@ Mavryk_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
     in
     let amount = 10L in
-    let rcm = Tezos_sapling.Core.Client.Rcm.random () in
+    let rcm = Mavryk_sapling.Core.Client.Rcm.random () in
     let position = 10L in
-    Tezos_sapling.Core.Client.Nullifier.compute addr vk ~amount rcm ~position
+    Mavryk_sapling.Core.Client.Nullifier.compute addr vk ~amount rcm ~position
 
   let gen_cm_cipher ~memo_size () =
-    let open Tezos_sapling.Core.Client in
+    let open Mavryk_sapling.Core.Client in
     let {vk; _} = wallet_gen () in
     let addr =
       snd
-      @@ Tezos_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
+      @@ Mavryk_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
     in
     let amount = 10L in
-    let rcm = Tezos_sapling.Core.Client.Rcm.random () in
+    let rcm = Mavryk_sapling.Core.Client.Rcm.random () in
     let cm = Commitment.compute addr ~amount rcm in
     let cipher =
       let payload_enc =
         Data_encoding.Binary.to_bytes_exn
           Data_encoding.bytes
-          (Tezos_crypto.Hacl.Rand.gen (memo_size + 4 + 16 + 11 + 32 + 8))
+          (Mavryk_crypto.Hacl.Rand.gen (memo_size + 4 + 16 + 11 + 32 + 8))
       in
       Data_encoding.Binary.of_bytes_exn
         Ciphertext.encoding
@@ -146,13 +146,13 @@ module Common = struct
   let client_state_of_diff ~memo_size (root, diff) =
     let open Alpha_context.Sapling in
     let cs =
-      Tezos_sapling.Storage.add
-        (Tezos_sapling.Storage.empty ~memo_size)
+      Mavryk_sapling.Storage.add
+        (Mavryk_sapling.Storage.empty ~memo_size)
         diff.commitments_and_ciphertexts
     in
-    assert (Tezos_sapling.Storage.get_root cs = root) ;
+    assert (Mavryk_sapling.Storage.get_root cs = root) ;
     List.fold_left
-      (fun s nf -> Tezos_sapling.Storage.add_nullifier s nf)
+      (fun s nf -> Mavryk_sapling.Storage.add_nullifier s nf)
       cs
       diff.nullifiers
 end
@@ -317,24 +317,24 @@ module Alpha_context_helpers = struct
         Some (ctx, id)
 
   let transfer_inputs_outputs w cs is =
-    (* Tezos_sapling.Storage.size cs *)
+    (* Mavryk_sapling.Storage.size cs *)
     (*   |> fun (a, b) -> *)
     (*   Printf.printf "%Ld %Ld" a b ; *)
     let inputs =
       List.map
         (fun i ->
-          Tezos_sapling.Forge.Input.get cs (Int64.of_int i) w.vk
+          Mavryk_sapling.Forge.Input.get cs (Int64.of_int i) w.vk
           |> WithExceptions.Option.get ~loc:__LOC__
           |> snd)
         is
     in
     let addr =
       snd
-      @@ Tezos_sapling.Core.Wallet.Viewing_key.(new_address w.vk default_index)
+      @@ Mavryk_sapling.Core.Wallet.Viewing_key.(new_address w.vk default_index)
     in
-    let memo_size = Tezos_sapling.Storage.get_memo_size cs in
+    let memo_size = Mavryk_sapling.Storage.get_memo_size cs in
     let o =
-      Tezos_sapling.Forge.make_output addr 1000000L (Bytes.create memo_size)
+      Mavryk_sapling.Forge.make_output addr 1000000L (Bytes.create memo_size)
     in
     (inputs, [o])
 
@@ -342,7 +342,7 @@ module Alpha_context_helpers = struct
     let anti_replay = "anti-replay" in
     let ins, outs = transfer_inputs_outputs w cs is in
     (* change the wallet of this last line *)
-    Tezos_sapling.Forge.forge_transaction
+    Mavryk_sapling.Forge.forge_transaction
       ins
       outs
       w.sk
@@ -354,7 +354,7 @@ module Alpha_context_helpers = struct
     let anti_replay = "anti-replay" in
     let ins, outs = transfer_inputs_outputs w cs is in
     (* change the wallet of this last line *)
-    Tezos_sapling.Forge.forge_transaction_legacy ins outs w.sk anti_replay cs
+    Mavryk_sapling.Forge.forge_transaction_legacy ins outs w.sk anti_replay cs
 
   let client_state_alpha ctx id =
     let open Lwt_result_wrap_syntax in
@@ -383,17 +383,17 @@ module Interpreter_helpers = struct
     (dst, b, anti_replay)
 
   let hex_shield ~memo_size wallet anti_replay =
-    let ps = Tezos_sapling.Storage.empty ~memo_size in
+    let ps = Mavryk_sapling.Storage.empty ~memo_size in
     let addr =
       snd
-      @@ Tezos_sapling.Core.Wallet.Viewing_key.(
+      @@ Mavryk_sapling.Core.Wallet.Viewing_key.(
            new_address wallet.vk default_index)
     in
     let output =
-      Tezos_sapling.Forge.make_output addr 15L (Bytes.create memo_size)
+      Mavryk_sapling.Forge.make_output addr 15L (Bytes.create memo_size)
     in
     let pt =
-      Tezos_sapling.Forge.forge_transaction
+      Mavryk_sapling.Forge.forge_transaction
         []
         [output]
         wallet.sk
@@ -407,7 +407,7 @@ module Interpreter_helpers = struct
           (Hex.of_bytes
              Data_encoding.Binary.(
                to_bytes_exn
-                 Tezos_sapling.Core.Client.UTXO.transaction_encoding
+                 Mavryk_sapling.Core.Client.UTXO.transaction_encoding
                  pt))
     in
     hex_string
@@ -449,23 +449,23 @@ module Interpreter_helpers = struct
 
   (* Returns a list of printed shield transactions and their total amount. *)
   let shield ~memo_size sk number_transac vk printer anti_replay =
-    let state = Tezos_sapling.Storage.empty ~memo_size in
+    let state = Mavryk_sapling.Storage.empty ~memo_size in
     let rec aux number_transac number_outputs index amount_output total res =
       if Compare.Int.(number_transac <= 0) then (res, total)
       else
         let new_index, new_addr =
-          Tezos_sapling.Core.Wallet.Viewing_key.(new_address vk index)
+          Mavryk_sapling.Core.Wallet.Viewing_key.(new_address vk index)
         in
         let outputs =
           WithExceptions.List.init ~loc:__LOC__ number_outputs (fun _ ->
-              Tezos_sapling.Forge.make_output
+              Mavryk_sapling.Forge.make_output
                 new_addr
                 amount_output
                 (Bytes.create memo_size))
         in
         let tr_hex =
           to_hex
-            (Tezos_sapling.Forge.forge_transaction
+            (Mavryk_sapling.Forge.forge_transaction
                ~number_dummy_inputs:0
                ~number_dummy_outputs:0
                []
@@ -474,7 +474,7 @@ module Interpreter_helpers = struct
                anti_replay
                ~bound_data:""
                state)
-            Tezos_sapling.Core.Client.UTXO.transaction_encoding
+            Mavryk_sapling.Core.Client.UTXO.transaction_encoding
         in
         aux
           (number_transac - 1)
@@ -487,7 +487,7 @@ module Interpreter_helpers = struct
     aux
       number_transac
       2
-      Tezos_sapling.Core.Wallet.Viewing_key.default_index
+      Mavryk_sapling.Core.Wallet.Viewing_key.default_index
       20L
       0
       []

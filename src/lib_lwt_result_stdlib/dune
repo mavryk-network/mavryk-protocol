@@ -2,15 +2,15 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_lwt_result_stdlib)
- (public_name octez-libs.lwt-result-stdlib)
+ (name mavryk_lwt_result_stdlib)
+ (public_name mavkit-libs.lwt-result-stdlib)
  (instrumentation (backend bisect_ppx))
  (libraries
   lwt
-  octez-libs.lwt-result-stdlib.bare.sigs
-  octez-libs.lwt-result-stdlib.bare.structs
-  octez-libs.lwt-result-stdlib.traced.sigs
-  octez-libs.lwt-result-stdlib.traced.structs)
+  mavkit-libs.lwt-result-stdlib.bare.sigs
+  mavkit-libs.lwt-result-stdlib.bare.structs
+  mavkit-libs.lwt-result-stdlib.traced.sigs
+  mavkit-libs.lwt-result-stdlib.traced.structs)
  (js_of_ocaml))
 
-(documentation (package octez-libs) (mld_files tezos_lwt_result_stdlib))
+(documentation (package mavkit-libs) (mld_files mavryk_lwt_result_stdlib))

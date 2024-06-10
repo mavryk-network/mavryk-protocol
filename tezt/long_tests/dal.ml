@@ -191,7 +191,7 @@ let test_produce_and_propagate_shards ~executors ~protocol =
     ~__FILE__
     ~title:"DAL node produce and propagate shards"
     ~tags:["dal"]
-    ~uses:[Constant.octez_dal_node]
+    ~uses:[Constant.mavkit_dal_node]
     ~executors
     ~timeout
   @@ fun () ->

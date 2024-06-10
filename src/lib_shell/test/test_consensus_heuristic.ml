@@ -379,6 +379,6 @@ let tests_lwt =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-shell"
+    "mavryk-shell"
     [("consensus heuristic sync", tests); ("consensus heuristic", tests_lwt)]
   |> Lwt_main.run

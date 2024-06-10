@@ -72,7 +72,7 @@ The packaged forms are updated from the source form as follows:
 
    -  release images: at each release, including release candidates
 
-   -  master images: at each merge commit (i.e. after each merge request is merged)
+   -  master images: at each merge commit (i.e. after each merge request is merged)
 
 -  OPAM packages:
 

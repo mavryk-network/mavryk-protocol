@@ -77,7 +77,7 @@ let extract_prequorum preattestations =
 
 let info_of_header_and_ops ~in_protocol block_hash block_header operations =
   let open Result_syntax in
-  let shell = block_header.Tezos_base.Block_header.shell in
+  let shell = block_header.Mavryk_base.Block_header.shell in
   let dummy_payload_hash = Block_payload_hash.zero in
   let* round =
     Environment.wrap_tzresult @@ Fitness.round_from_raw shell.fitness
@@ -154,7 +154,7 @@ let compute_block_info cctxt ~in_protocol ?operations ~chain block_hash
         in
         return packed_operations
     | Some operations ->
-        let parse_op (raw_op : Tezos_base.Operation.t) =
+        let parse_op (raw_op : Mavryk_base.Operation.t) =
           let protocol_data =
             Data_encoding.Binary.of_bytes_exn
               Operation.protocol_data_encoding_with_legacy_attestation_name
@@ -170,7 +170,7 @@ let compute_block_info cctxt ~in_protocol ?operations ~chain block_hash
   return block_info
 
 let proposal cctxt ?(cache : block_info Block_cache.t option) ?operations ~chain
-    block_hash (block_header : Tezos_base.Block_header.t) =
+    block_hash (block_header : Mavryk_base.Block_header.t) =
   let open Lwt_result_syntax in
   let predecessor_hash = block_header.shell.predecessor in
   let pred_block = `Hash (predecessor_hash, 0) in
@@ -202,7 +202,7 @@ let proposal cctxt ?(cache : block_info Block_cache.t option) ?operations ~chain
           in
           let predecessor_header =
             Data_encoding.Binary.of_bytes_exn
-              Tezos_base.Block_header.encoding
+              Mavryk_base.Block_header.encoding
               raw_header_b
           in
           compute_block_info
@@ -292,8 +292,8 @@ let await_protocol_activation cctxt ~chain () =
   return_unit
 
 let get_attestable_slots dal_node_rpc_ctxt pkh ~attested_level =
-  Tezos_rpc.Context.make_call
-    Tezos_dal_node_services.Services.get_attestable_slots
+  Mavryk_rpc.Context.make_call
+    Mavryk_dal_node_services.Services.get_attestable_slots
     dal_node_rpc_ctxt
     (((), pkh), attested_level)
     ()
@@ -303,11 +303,11 @@ let register_dal_profiles dal_node_rpc_ctxt delegates =
   let profiles =
     List.map
       (fun consensus_key ->
-        Tezos_dal_node_services.Types.Attester consensus_key.public_key_hash)
+        Mavryk_dal_node_services.Types.Attester consensus_key.public_key_hash)
       delegates
   in
-  Tezos_rpc.Context.make_call
-    Tezos_dal_node_services.Services.patch_profiles
+  Mavryk_rpc.Context.make_call
+    Mavryk_dal_node_services.Services.patch_profiles
     dal_node_rpc_ctxt
     ()
     ()

@@ -30,7 +30,7 @@
     Subject:      Tests cryptobox primitives
 *)
 
-open Tezos_hacl
+open Mavryk_hacl
 
 let init_bytes len = Bytes.make len '\x00'
 

@@ -7,7 +7,7 @@ involve Micheline right now because it was not required within the current
 scope.
 
 There are some libraries that we could have used to parse Michelson, the most
-complete being `airgap-it/tezos-rust-sdk`. However, we ended up not using it, since
+complete being `airgap-it/mavryk-rust-sdk`. However, we ended up not using it, since
 we thought that the layout of its data structures did not match well with
 our plan.
 
@@ -19,9 +19,9 @@ too hard to switch away from such a basic component later in the project.
 We used the Lalrpop library because we had some experience with it, and it seemed
 to work well in our initial trials.
 
-##### Known differences between Octez and MIR parsers
+##### Known differences between Mavkit and MIR parsers
 
-Currently, for the sake of simplicity, MIR parser is a bit more lenient wrt non-essential elements, specifically, unlike Octez parser, MIR parser allows:
+Currently, for the sake of simplicity, MIR parser is a bit more lenient wrt non-essential elements, specifically, unlike Mavkit parser, MIR parser allows:
 
 - Nested parentheses, i.e. `{ PUSH (((int))) (((((3))))) }` is accepted
 - Parentheses inside sequences, i.e. `{ (Unit) ; (Unit) }` is accepted

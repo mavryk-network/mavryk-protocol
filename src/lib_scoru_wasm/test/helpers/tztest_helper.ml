@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 
 let version_to_string version =
   Data_encoding.Binary.to_string_exn Wasm_pvm_state.version_encoding version
@@ -40,6 +40,6 @@ let tztests_with_pvm ~versions l =
       List.map (fun (title, sort, k) -> tztest ~version title sort k) l)
     versions
 
-let all_versions = List.map snd Tezos_scoru_wasm.Wasm_pvm_state.versions
+let all_versions = List.map snd Mavryk_scoru_wasm.Wasm_pvm_state.versions
 
 let tztests_with_all_pvms = tztests_with_pvm ~versions:all_versions

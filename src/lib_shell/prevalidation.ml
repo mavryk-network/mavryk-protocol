@@ -33,7 +33,7 @@ module type CHAIN_STORE = sig
   val context :
     chain_store ->
     Store.Block.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
   val chain_id : chain_store -> Chain_id.t
 end

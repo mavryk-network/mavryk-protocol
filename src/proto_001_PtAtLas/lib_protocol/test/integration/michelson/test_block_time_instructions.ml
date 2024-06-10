@@ -31,7 +31,7 @@
     Subject:    This module tests that Michelson instructions related to block time are correct.
 *)
 
-open Tezos_protocol_001_PtAtLas_parameters
+open Mavryk_protocol_001_PtAtLas_parameters
 open Protocol
 open Alpha_context
 

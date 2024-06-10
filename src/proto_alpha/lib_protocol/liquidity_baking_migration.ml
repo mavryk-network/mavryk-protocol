@@ -43,7 +43,7 @@
 
     All contracts were generated from Ligo at revision
     4d10d07ca05abe0f8a5fb97d15267bf5d339d9f4 and converted to OCaml using
-    `octez-client convert`.
+    `mavkit-client convert`.
 *)
 
 open Michelson_v1_primitives

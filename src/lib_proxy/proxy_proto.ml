@@ -55,9 +55,9 @@ module type PROTO_RPC = sig
   *)
   val split_key :
     Proxy.mode ->
-    Tezos_protocol_environment.Proxy_context.M.key ->
-    (Tezos_protocol_environment.Proxy_context.M.key
-    * Tezos_protocol_environment.Proxy_context.M.key)
+    Mavryk_protocol_environment.Proxy_context.M.key ->
+    (Mavryk_protocol_environment.Proxy_context.M.key
+    * Mavryk_protocol_environment.Proxy_context.M.key)
     option
 
   (** [failure_is_permanent key] means that, if the request 
@@ -66,12 +66,12 @@ module type PROTO_RPC = sig
       to be missing all the time. It is safe to return always [false].
       Returning [true] for some keys will reduce the number of RPC calls. *)
   val failure_is_permanent :
-    Tezos_protocol_environment.Proxy_context.M.key -> bool
+    Mavryk_protocol_environment.Proxy_context.M.key -> bool
 
   val do_rpc :
     Proxy.proxy_getter_input ->
-    Tezos_protocol_environment.Proxy_context.M.key ->
-    Tezos_context_sigs.Context.Proof_types.raw_context tzresult Lwt.t
+    Mavryk_protocol_environment.Proxy_context.M.key ->
+    Mavryk_context_sigs.Context.Proof_types.raw_context tzresult Lwt.t
 end
 
 type proto_rpc = (module PROTO_RPC)

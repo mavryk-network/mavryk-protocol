@@ -170,7 +170,7 @@ let test_l1_scenario ?supports ?regression ?hooks ~kind ?boot_sector
     ?uses
     ~title:(format_title_scenario kind {variant; tags; description})
   @@ fun protocol ->
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     setup_l1
       ?commitment_period
       ?challenge_window
@@ -180,9 +180,9 @@ let test_l1_scenario ?supports ?regression ?hooks ~kind ?boot_sector
       protocol
   in
   let* sc_rollup =
-    originate_sc_rollup ?hooks ~kind ?boot_sector ?whitelist ~src tezos_client
+    originate_sc_rollup ?hooks ~kind ?boot_sector ?whitelist ~src mavryk_client
   in
-  scenario protocol sc_rollup tezos_node tezos_client
+  scenario protocol sc_rollup mavryk_node mavryk_client
 
 let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
     ?commitment_period ?(parameters_ty = "string") ?challenge_window ?timeout
@@ -195,10 +195,10 @@ let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
     ?regression
     ~__FILE__
     ~tags
-    ~uses:(fun protocol -> Constant.octez_smart_rollup_node :: uses protocol)
+    ~uses:(fun protocol -> Constant.mavkit_smart_rollup_node :: uses protocol)
     ~title:(format_title_scenario kind {variant; tags; description})
   @@ fun protocol ->
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     setup_l1
       ?rpc_local
       ?commitment_period
@@ -224,10 +224,10 @@ let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
       ?whitelist
       ?operator
       ?operators
-      tezos_node
-      tezos_client
+      mavryk_node
+      mavryk_client
   in
-  scenario protocol rollup_node rollup_client sc_rollup tezos_node tezos_client
+  scenario protocol rollup_node rollup_client sc_rollup mavryk_node mavryk_client
 
 let commitment_info_inbox_level
     (commitment_info : Sc_rollup_rpc.commitment_info) =
@@ -285,7 +285,7 @@ let test_rollup_node_configuration ~kind =
       description = "configuration of a smart rollup node is robust";
     }
     ~kind
-  @@ fun protocol rollup_node _rollup_client sc_rollup tezos_node tezos_client
+  @@ fun protocol rollup_node _rollup_client sc_rollup mavryk_node mavryk_client
     ->
   let* _filename = Sc_rollup_node.config_init rollup_node sc_rollup in
   let config = Sc_rollup_node.Config_file.read rollup_node in
@@ -325,8 +325,8 @@ let test_rollup_node_configuration ~kind =
       ~alias:"rollup2"
       ~protocol
       ~kind
-      tezos_node
-      tezos_client
+      mavryk_node
+      mavryk_client
       ~data_dir
   in
   let expect_failure () =
@@ -362,8 +362,8 @@ let test_rollup_node_running ~kind =
              rollup_node
              _rollup_client
              sc_rollup
-             _tezos_node
-             _tezos_client ->
+             _mavryk_node
+             _mavryk_client ->
   let metrics_port = string_of_int (Port.fresh ()) in
   let metrics_addr = "localhost:" ^ metrics_port in
   let* () =
@@ -402,16 +402,16 @@ let test_rollup_get_genesis_info ~kind =
       description = "genesis info and last cemented are equal at origination";
     }
     ~kind
-  @@ fun _protocol sc_rollup tezos_node tezos_client ->
-  let* origination_level = Node.get_level tezos_node in
+  @@ fun _protocol sc_rollup mavryk_node mavryk_client ->
+  let* origination_level = Node.get_level mavryk_node in
   (* Bake 10 blocks to be sure that the origination_level of rollup is different
      from the level of the head node. *)
-  let* () = repeat 10 (fun () -> Client.bake_for_and_wait tezos_client) in
+  let* () = repeat 10 (fun () -> Client.bake_for_and_wait mavryk_client) in
   let* hash, level =
-    last_cemented_commitment_hash_with_level ~sc_rollup tezos_client
+    last_cemented_commitment_hash_with_level ~sc_rollup mavryk_client
   in
   let* genesis_info =
-    Client.RPC.call tezos_client
+    Client.RPC.call mavryk_client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
          sc_rollup
   in
@@ -511,7 +511,7 @@ let parse_inbox json =
        (JSON.encode json)
        (Printexc.to_string exn))
 
-let get_inbox_from_tezos_node client =
+let get_inbox_from_mavryk_node client =
   let* inbox =
     Client.RPC.call client
     @@ RPC.get_chain_block_context_smart_rollups_all_inbox ()
@@ -531,7 +531,7 @@ let get_inbox_from_sc_rollup_node sc_rollup_node =
    For each new head set by the Mavryk node, the rollup node retrieves
    the messages of its rollup and maintains its internal inbox in a
    persistent state stored in its data directory. This process can
-   handle Tezos chain reorganization and can also catch up to ensure a
+   handle Mavryk chain reorganization and can also catch up to ensure a
    tight synchronization between the rollup and the layer 1 chain.
 
    In addition, this maintenance includes the computation of a Merkle
@@ -552,10 +552,10 @@ let test_rollup_inbox_of_rollup_node ?(extra_tags = []) ~variant scenario ~kind
   let* inbox_from_sc_rollup_node =
     get_inbox_from_sc_rollup_node sc_rollup_node
   in
-  let* inbox_from_tezos_node = get_inbox_from_tezos_node client in
+  let* inbox_from_mavryk_node = get_inbox_from_mavryk_node client in
   return
   @@ Check.(
-       (inbox_from_sc_rollup_node = inbox_from_tezos_node)
+       (inbox_from_sc_rollup_node = inbox_from_mavryk_node)
          (tuple2 json int)
          ~error_msg:"expected value %R, got %L")
 
@@ -1204,7 +1204,7 @@ let test_rollup_node_advances_pvm_state ?regression ~title ?boot_sector
     ?boot_sector
     ~parameters_ty:"bytes"
     ~kind
-  @@ fun protocol sc_rollup_node _sc_rollup_client sc_rollup _tezos_node client
+  @@ fun protocol sc_rollup_node _sc_rollup_client sc_rollup _mavryk_node client
     ->
   let* genesis_info =
     Client.RPC.call ~hooks client
@@ -1266,7 +1266,7 @@ let test_rollup_node_advances_pvm_state ?regression ~title ?boot_sector
           let* encoded_value =
             Sc_rollup_node.RPC.call
               sc_rollup_node
-              ~rpc_hooks:Tezos_regression.rpc_hooks
+              ~rpc_hooks:Mavryk_regression.rpc_hooks
             @@ Sc_rollup_rpc.get_global_block_state ~key:"vars/value" ()
           in
           let value =
@@ -1384,7 +1384,7 @@ let check_commitment_eq (commitment, name) (expected_commitment, exp_name) =
          (String.capitalize_ascii name)
          (String.capitalize_ascii exp_name))
 
-let tezos_client_get_commitment client sc_rollup commitment_hash =
+let mavryk_client_get_commitment client sc_rollup commitment_hash =
   let* commitment_opt =
     Client.RPC.call client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
@@ -1409,7 +1409,7 @@ let check_published_commitment_in_l1 ?(allow_non_published = false)
           Test.fail "No commitment has been published" ;
         Lwt.return_none
     | Some Sc_rollup_rpc.{commitment_and_hash = {hash; _}; _} ->
-        tezos_client_get_commitment client sc_rollup hash
+        mavryk_client_get_commitment client sc_rollup hash
   in
   let published_commitment =
     Option.map commitment_info_commitment published_commitment
@@ -2495,10 +2495,10 @@ let test_rollup_origination_boot_sector ~boot_sector ~kind =
       tags = ["boot_sector"];
       description = "boot_sector is correctly set";
     }
-  @@ fun _protocol rollup_node _rollup_client sc_rollup _tezos_node tezos_client
+  @@ fun _protocol rollup_node _rollup_client sc_rollup _mavryk_node mavryk_client
     ->
   let* genesis_info =
-    Client.RPC.call ~hooks tezos_client
+    Client.RPC.call ~hooks mavryk_client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
          sc_rollup
   in
@@ -2507,7 +2507,7 @@ let test_rollup_origination_boot_sector ~boot_sector ~kind =
     JSON.(genesis_info |-> "commitment_hash" |> as_string)
   in
   let* init_commitment =
-    Client.RPC.call ~hooks tezos_client
+    Client.RPC.call ~hooks mavryk_client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
          ~sc_rollup
          ~hash:genesis_commitment_hash
@@ -2549,7 +2549,7 @@ let test_boot_sector_is_evaluated ~boot_sector1 ~boot_sector2 ~kind =
       tags = ["boot_sector"];
       description = "boot sector is evaluated";
     }
-  @@ fun _protocol sc_rollup1 _tezos_node tezos_client ->
+  @@ fun _protocol sc_rollup1 _mavryk_node mavryk_client ->
   let* sc_rollup2 =
     originate_sc_rollup
       ~alias:"rollup2"
@@ -2557,11 +2557,11 @@ let test_boot_sector_is_evaluated ~boot_sector1 ~boot_sector2 ~kind =
       ~kind
       ~boot_sector:boot_sector2
       ~src:Constant.bootstrap2.alias
-      tezos_client
+      mavryk_client
   in
-  let genesis_state_hash ~sc_rollup tezos_client =
+  let genesis_state_hash ~sc_rollup mavryk_client =
     let* genesis_info =
-      Client.RPC.call ~hooks tezos_client
+      Client.RPC.call ~hooks mavryk_client
       @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
            sc_rollup
     in
@@ -2569,7 +2569,7 @@ let test_boot_sector_is_evaluated ~boot_sector1 ~boot_sector2 ~kind =
       JSON.(genesis_info |-> "commitment_hash" |> as_string)
     in
     let* commitment =
-      Client.RPC.call ~hooks tezos_client
+      Client.RPC.call ~hooks mavryk_client
       @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
            ~sc_rollup
            ~hash:commitment_hash
@@ -2579,8 +2579,8 @@ let test_boot_sector_is_evaluated ~boot_sector1 ~boot_sector2 ~kind =
     return state_hash
   in
 
-  let* state_hash_1 = genesis_state_hash ~sc_rollup:sc_rollup1 tezos_client in
-  let* state_hash_2 = genesis_state_hash ~sc_rollup:sc_rollup2 tezos_client in
+  let* state_hash_1 = genesis_state_hash ~sc_rollup:sc_rollup1 mavryk_client in
+  let* state_hash_2 = genesis_state_hash ~sc_rollup:sc_rollup2 mavryk_client in
   Check.(
     (state_hash_1 <> state_hash_2)
       string
@@ -2731,15 +2731,15 @@ let test_reveals_above_4k =
   Lwt.choose [error_promise; should_not_sync]
 
 let test_consecutive_commitments _protocol _rollup_node _rollup_client sc_rollup
-    _tezos_node tezos_client =
-  let* inbox_level = Client.level tezos_client in
+    _mavryk_node mavryk_client =
+  let* inbox_level = Client.level mavryk_client in
   let operator = Constant.bootstrap1.public_key_hash in
   let* {commitment_period_in_blocks; _} =
-    get_sc_rollup_constants tezos_client
+    get_sc_rollup_constants mavryk_client
   in
   (* As we did no publish any commitment yet, this is supposed to fail. *)
   let*? process =
-    Client.RPC.spawn tezos_client
+    Client.RPC.spawn mavryk_client
     @@ RPC
        .get_chain_block_context_smart_rollups_smart_rollup_staker_staked_on_commitment
          ~sc_rollup
@@ -2751,11 +2751,11 @@ let test_consecutive_commitments _protocol _rollup_node _rollup_client sc_rollup
       process
   in
   let* _commit, commit_hash =
-    bake_period_then_publish_commitment ~sc_rollup ~src:operator tezos_client
+    bake_period_then_publish_commitment ~sc_rollup ~src:operator mavryk_client
   in
   let* () =
     repeat (commitment_period_in_blocks + 2) (fun () ->
-        Client.bake_for_and_wait tezos_client)
+        Client.bake_for_and_wait mavryk_client)
   in
   let* _commit, _commit_hash =
     forge_and_publish_commitment
@@ -2763,7 +2763,7 @@ let test_consecutive_commitments _protocol _rollup_node _rollup_client sc_rollup
       ~predecessor:commit_hash
       ~sc_rollup
       ~src:operator
-      tezos_client
+      mavryk_client
   in
   unit
 
@@ -3037,13 +3037,13 @@ let bailout_mode_fail_to_start_without_operator ~kind =
       tags = ["rollup_node"; "mode"; "bailout"];
       description = "rollup node in bailout fails without operator";
     }
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
-  @@ fun _protocol sc_rollup tezos_node tezos_client ->
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
+  @@ fun _protocol sc_rollup mavryk_node mavryk_client ->
   let sc_rollup_node =
     Sc_rollup_node.create
       Bailout
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~operators:
         [
           (Sc_rollup_node.Cementing, Constant.bootstrap1.alias);
@@ -3074,8 +3074,8 @@ let bailout_mode_fail_operator_no_stake ~kind =
              sc_rollup_node
              _rollup_client
              sc_rollup
-             _tezos_node
-             _tezos_client ->
+             _mavryk_node
+             _mavryk_client ->
   let process = Sc_rollup_node.spawn_run sc_rollup_node sc_rollup [] in
   let* () =
     Process.check_error
@@ -3089,7 +3089,7 @@ let bailout_mode_fail_operator_no_stake ~kind =
     - start an operator rollup and wait until it publish a commitment
     - stop the rollup node
     - bakes until refutation period is over
-    - using octez client cement the commitment
+    - using mavkit client cement the commitment
     - restart the rollup node in bailout mode
   check that it fails directly when the operator has no stake.
     *)
@@ -3112,8 +3112,8 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
              sc_rollup_node
              _sc_rollup_client
              sc_rollup
-             tezos_node
-             tezos_client ->
+             mavryk_node
+             mavryk_client ->
   let () = Log.info "Start the rollup in Operator mode" in
   let* () =
     Sc_rollup_node.run ~event_level:`Debug sc_rollup_node sc_rollup []
@@ -3122,7 +3122,7 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
   let* _level =
     bake_until_lpc_updated
       ~at_least:commitment_period
-      tezos_client
+      mavryk_client
       sc_rollup_node
   in
   let* published_commitment =
@@ -3131,20 +3131,20 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
   Log.info "Terminate the node" ;
   let* () = Sc_rollup_node.kill sc_rollup_node in
   Log.info "Bake until refutation period is over" ;
-  let* () = bake_levels challenge_window tezos_client in
+  let* () = bake_levels challenge_window mavryk_client in
   (* manually cement the commitment *)
   let to_cement_commitment_hash = commitment_info_hash published_commitment in
   let* () =
     cement_commitment
       protocol
-      tezos_client
+      mavryk_client
       ~sc_rollup
       ~hash:to_cement_commitment_hash
   in
-  let* () = Client.bake_for_and_wait tezos_client in
+  let* () = Client.bake_for_and_wait mavryk_client in
   Log.info "Check that there is still tezt in frozen balance" ;
   let* frozen_balance =
-    Client.RPC.call tezos_client
+    Client.RPC.call mavryk_client
     @@ RPC.get_chain_block_context_contract_frozen_bonds ~id:operator ()
   in
   let () =
@@ -3155,7 +3155,7 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
           "The operator should have a stake nor holds a frozen balance.")
   in
   let* staked_on =
-    Client.RPC.call tezos_client
+    Client.RPC.call mavryk_client
     @@ RPC
        .get_chain_block_context_smart_rollups_smart_rollup_staker_staked_on_commitment
          ~sc_rollup
@@ -3178,19 +3178,19 @@ let bailout_mode_recover_bond_starting_no_commitment_staked ~kind =
   let sc_rollup_node' =
     Sc_rollup_node.create
       Bailout
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:operator
   in
   let* () = Sc_rollup_node.run sc_rollup_node' sc_rollup []
   and* () =
     let event_name = "smart_rollup_node_daemon_exit_bailout_mode.v0" in
-    bake_until_event tezos_client ~event_name
+    bake_until_event mavryk_client ~event_name
     @@ Sc_rollup_node.wait_for sc_rollup_node' event_name (Fun.const (Some ()))
   in
   Log.info "Check that the bond have been recovered by the rollup node" ;
   let* frozen_balance =
-    Client.RPC.call tezos_client
+    Client.RPC.call mavryk_client
     @@ RPC.get_chain_block_context_contract_frozen_bonds ~id:operator ()
   in
   let () =
@@ -3267,7 +3267,7 @@ let test_forking_scenario ~kind ~variant scenario =
       variant = Some variant;
       description = "rollup with a commitment dispute";
     }
-  @@ fun protocol sc_rollup tezos_node tezos_client ->
+  @@ fun protocol sc_rollup mavryk_node mavryk_client ->
   (* Choosing challenge_windows to be quite longer than commitment_period
      to avoid being in a situation where the first commitment in the result
      of [mk_forking_commitments] is cementable without further bakes. *)
@@ -3277,19 +3277,19 @@ let test_forking_scenario ~kind ~variant scenario =
   (* Building a forking commitments tree. *)
   let operator1 = Constant.bootstrap1 in
   let operator2 = Constant.bootstrap2 in
-  let* level0 = Node.get_level tezos_node in
+  let* level0 = Node.get_level mavryk_node in
   let* commits =
     mk_forking_commitments
-      tezos_node
-      tezos_client
+      mavryk_node
+      mavryk_client
       ~sc_rollup
       ~operator1:operator1.public_key_hash
       ~operator2:operator2.public_key_hash
   in
-  let* level1 = Node.get_level tezos_node in
+  let* level1 = Node.get_level mavryk_node in
   scenario
-    tezos_client
-    tezos_node
+    mavryk_client
+    mavryk_node
     protocol
     ~sc_rollup
     ~operator1
@@ -4321,12 +4321,12 @@ let test_rpcs ~kind
   (* TODO: add ~hook, https://gitlab.com/tezos/tezos/-/issues/6612 *)
   let* _head =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_global_tezos_head ()
+    @@ Sc_rollup_rpc.get_global_mavryk_head ()
   in
   (* TODO: add ~hook, https://gitlab.com/tezos/tezos/-/issues/6612 *)
   let* _level =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_global_tezos_level ()
+    @@ Sc_rollup_rpc.get_global_mavryk_level ()
   in
   (* TODO: add ~hook, https://gitlab.com/tezos/tezos/-/issues/6612 *)
   let* l2_block =
@@ -4414,24 +4414,24 @@ let test_recover_bond_of_stakers =
       tags = ["commitment"; "staker"; "recover"];
       description = "recover bond of stakers";
     }
-  @@ fun protocol sc_rollup _tezos_node tezos_client ->
+  @@ fun protocol sc_rollup _mavryk_node mavryk_client ->
   let* {
          commitment_period_in_blocks;
          challenge_window_in_blocks;
          stake_amount;
          _;
        } =
-    get_sc_rollup_constants tezos_client
+    get_sc_rollup_constants mavryk_client
   in
   let* predecessor, level =
-    last_cemented_commitment_hash_with_level ~sc_rollup tezos_client
+    last_cemented_commitment_hash_with_level ~sc_rollup mavryk_client
   in
   let staker1 = Constant.bootstrap1 in
   let staker2 = Constant.bootstrap2 in
   (* Bake enough to publish. *)
   let* () =
     repeat (commitment_period_in_blocks + 1) (fun () ->
-        Client.bake_for_and_wait tezos_client)
+        Client.bake_for_and_wait mavryk_client)
   in
   (* Both accounts stakes on a commitment. *)
   let* _, commitment1 =
@@ -4440,7 +4440,7 @@ let test_recover_bond_of_stakers =
       ~predecessor
       ~sc_rollup
       ~src:staker1.public_key_hash
-      tezos_client
+      mavryk_client
   in
   let* _, commitment2 =
     forge_and_publish_commitment
@@ -4448,17 +4448,17 @@ let test_recover_bond_of_stakers =
       ~predecessor
       ~sc_rollup
       ~src:staker2.public_key_hash
-      tezos_client
+      mavryk_client
   in
   assert (commitment1 = commitment2) ;
   (* Bake enough to cement. *)
   let* () =
     repeat challenge_window_in_blocks (fun () ->
-        Client.bake_for_and_wait tezos_client)
+        Client.bake_for_and_wait mavryk_client)
   in
   (* Cement. *)
   let* () =
-    cement_commitment protocol tezos_client ~sc_rollup ~hash:commitment1
+    cement_commitment protocol mavryk_client ~sc_rollup ~hash:commitment1
   in
 
   (* Staker1 withdraw its stake. *)
@@ -4469,7 +4469,7 @@ let test_recover_bond_of_stakers =
       ~sc_rollup_stake_amount:(Tez.to_mumav stake_amount)
       ~src:staker1.public_key_hash
       ~staker:staker1.public_key_hash
-      tezos_client
+      mavryk_client
   in
   (* Staker1 withdraw the stake of staker2. *)
   let* () =
@@ -4479,7 +4479,7 @@ let test_recover_bond_of_stakers =
       ~sc_rollup_stake_amount:(Tez.to_mumav stake_amount)
       ~src:staker1.public_key_hash
       ~staker:staker2.public_key_hash
-      tezos_client
+      mavryk_client
   in
   unit
 
@@ -4491,14 +4491,14 @@ let test_injector_auto_discard =
       description = "Injector discards repeatedly failing operations";
     }
     ~kind:"arith"
-  @@ fun protocol _sc_rollup_node _sc_rollup_client sc_rollup tezos_node client
+  @@ fun protocol _sc_rollup_node _sc_rollup_client sc_rollup mavryk_node client
     ->
   let* operator = Client.gen_and_show_keys client in
   (* Change operator and only batch messages *)
   let sc_rollup_node =
     Sc_rollup_node.create
       Batcher
-      tezos_node
+      mavryk_node
       ~base_dir:(Client.base_dir client)
       ~operators:[(Sc_rollup_node.Batching, operator.alias)]
   in
@@ -4665,7 +4665,7 @@ let test_rollup_node_missing_preimage_exit_at_initialisation =
     ~supports:(From_protocol 016)
     ~__FILE__
     ~tags:["node"; "preimage"; "boot_sector"]
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
     ~title:
       "Rollup node exit if at initialisation, there is one or multiple \
        preimage(s) missing."
@@ -4765,15 +4765,15 @@ let test_private_rollup_node_publish_in_whitelist =
         "Rollup node publishes commitment if the operator is in the whitelist";
     }
     ~kind:"arith"
-  @@ fun _protocol rollup_node _rollup_client sc_rollup _tezos_node tezos_client
+  @@ fun _protocol rollup_node _rollup_client sc_rollup _mavryk_node mavryk_client
     ->
   let* () = Sc_rollup_node.run ~event_level:`Debug rollup_node sc_rollup [] in
   let levels = commitment_period in
   Log.info "Baking at least %d blocks for commitment of first message" levels ;
   let* _new_level =
-    bake_until_lpc_updated ~at_least:levels ~timeout:5. tezos_client rollup_node
+    bake_until_lpc_updated ~at_least:levels ~timeout:5. mavryk_client rollup_node
   in
-  bake_levels levels tezos_client
+  bake_levels levels mavryk_client
 
 let test_private_rollup_node_publish_not_in_whitelist =
   let operator = Constant.bootstrap1.alias in
@@ -4790,7 +4790,7 @@ let test_private_rollup_node_publish_not_in_whitelist =
         "Rollup node fails to start if the operator is not in the whitelist";
     }
     ~kind:"arith"
-  @@ fun _protocol rollup_node _rollup_client sc_rollup _tezos_node _client ->
+  @@ fun _protocol rollup_node _rollup_client sc_rollup _mavryk_node _client ->
   let node_process = Sc_rollup_node.spawn_run rollup_node sc_rollup [] in
   let* () =
     Process.check_error
@@ -5047,8 +5047,8 @@ let bailout_mode_not_publish ~kind =
              sc_rollup_node
              _sc_rollup_client
              sc_rollup
-             _tezos_node
-             tezos_client ->
+             _mavryk_node
+             mavryk_client ->
   (* Run the rollup node in Operator mode, bake some blocks until
      a commitment is published *)
   let* () =
@@ -5057,14 +5057,14 @@ let bailout_mode_not_publish ~kind =
   let* _level =
     bake_until_lpc_updated
       ~at_least:commitment_period
-      tezos_client
+      mavryk_client
       sc_rollup_node
   in
   let* published_commitment_before =
     get_last_published_commitment ~__LOC__ sc_rollup_node
   in
   let* staked_on_commitment =
-    get_staked_on_commitment ~sc_rollup ~staker:operator tezos_client
+    get_staked_on_commitment ~sc_rollup ~staker:operator mavryk_client
   in
   Log.info "Check that the LPC is equal to the staked commitment onchain." ;
   let () =
@@ -5090,7 +5090,7 @@ let bailout_mode_not_publish ~kind =
   let* () =
     repeat
       ((2 * commitment_period) + challenge_window)
-      (fun () -> Client.bake_for_and_wait tezos_client)
+      (fun () -> Client.bake_for_and_wait mavryk_client)
   and* () =
     Sc_rollup_node.wait_for
       sc_rollup_node
@@ -5105,7 +5105,7 @@ let bailout_mode_not_publish ~kind =
   let* lcc_hash, _level =
     Sc_rollup_helpers.last_cemented_commitment_hash_with_level
       ~sc_rollup
-      tezos_client
+      mavryk_client
   in
   Log.info "Check the LCC is the same." ;
   let () =
@@ -5118,7 +5118,7 @@ let bailout_mode_not_publish ~kind =
     "The node has submitted the recover_bond operation, and the operator is no \
      longer staked." ;
   let* frozen_balance =
-    Client.RPC.call tezos_client
+    Client.RPC.call mavryk_client
     @@ RPC.get_chain_block_context_contract_frozen_bonds ~id:operator ()
   in
   let () =
@@ -5140,13 +5140,13 @@ let custom_mode_empty_operation_kinds ~kind =
       tags = ["mode"; "custom"];
       description = "custom mode has empty operation kinds";
     }
-    ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
-  @@ fun _protocol sc_rollup tezos_node tezos_client ->
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
+  @@ fun _protocol sc_rollup mavryk_node mavryk_client ->
   let sc_rollup_node =
     Sc_rollup_node.create
       (Custom [])
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:Constant.bootstrap1.alias
   in
   let process = Sc_rollup_node.spawn_run sc_rollup_node sc_rollup [] in
@@ -5167,9 +5167,9 @@ let test_multiple_batcher_key ~kind =
       tags = ["node"; "mode"; "batcher"];
       description = "multiple keys set for batcher";
     }
-  @@ fun protocol sc_rollup tezos_node client ->
+  @@ fun protocol sc_rollup mavryk_node client ->
   (* nb_of_batcher * msg_per_batch * msg_size = expected_block_size
-     16 * 32 * 1000 = 512_000 = maximum size of Tezos L1 block *)
+     16 * 32 * 1000 = 512_000 = maximum size of Mavryk L1 block *)
   let nb_of_batcher = 16 in
   let msg_per_batch = 32 in
   let msg_size = 1000 in
@@ -5187,7 +5187,7 @@ let test_multiple_batcher_key ~kind =
       ~mode:Batcher
       ~operators
       ~sc_rollup
-      tezos_node
+      mavryk_node
       client
   in
   let* () =
@@ -5225,7 +5225,7 @@ let test_multiple_batcher_key ~kind =
     in
     wait_for_included_and_map_ops_content
       sc_rollup_node
-      tezos_node
+      mavryk_node
       ~find_map_op_content
   in
   let check_against_operators_pkhs =
@@ -5366,7 +5366,7 @@ let test_injector_uses_available_keys ~kind =
         ~error_msg:"%L found where %R was expected)")
   in
   (* nb_of_keys * msg_per_batch * msg_size = expected_block_size
-     16 * 8 * 4000 = 512_000 = maximum size of Tezos L1 block *)
+     16 * 8 * 4000 = 512_000 = maximum size of Mavryk L1 block *)
   let nb_of_keys = 16 and msg_per_batch = 8 and msg_size = 4000 in
   let* keys = gen_keys_then_transfer_tez client nb_of_keys in
   let keys_pkh = List.map (fun k -> k.Account.public_key_hash) keys in

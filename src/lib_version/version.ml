@@ -23,19 +23,19 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type additional_info = Tezos_version_parser.additional_info =
+type additional_info = Mavryk_version_parser.additional_info =
   | Dev
   | RC of int
   | RC_dev of int
   | Release
 
-type t = Tezos_version_parser.t = {
+type t = Mavryk_version_parser.t = {
   major : int;
   minor : int;
   additional_info : additional_info;
 }
 
-let parse_version s = Tezos_version_parser.version_tag (Lexing.from_string s)
+let parse_version s = Mavryk_version_parser.version_tag (Lexing.from_string s)
 
 let string_of_additional_info = function
   | Dev -> "+dev"

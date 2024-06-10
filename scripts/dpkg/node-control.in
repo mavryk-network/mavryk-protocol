@@ -2,5 +2,5 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
-Description: The Octez node server
+Description: The Mavkit node server
 Depends: bash, adduser, @DPKG@-client (>=@VERSION@), @DEPENDS@

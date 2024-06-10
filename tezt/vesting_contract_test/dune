@@ -6,10 +6,10 @@
  (libraries
   tezt
   tezt-tezos
-  octez-libs.stdlib
-  octez-libs.test-helpers
-  octez-libs.micheline
-  tezos-protocol-alpha.protocol
+  mavkit-libs.stdlib
+  mavkit-libs.test-helpers
+  mavkit-libs.micheline
+  mavryk-protocol-alpha.protocol
   ptime)
  (link_flags
   (:standard)

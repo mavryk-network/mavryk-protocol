@@ -1,27 +1,27 @@
-{0 Octez-shell-libs: octez shell libraries}
+{0 Mavkit-shell-libs: mavkit shell libraries}
 
-This is a package containing some libraries used by the shell of Octez.
+This is a package containing some libraries used by the shell of Mavkit.
 
 It contains the following libraries:
 
 - {{!module-Mocked}Mocked}
-- {{!module-Tezos_client_base}Tezos_client_base}: Tezos: common helpers for `tezos-client`
-- {{!module-Tezos_client_base_unix}Tezos_client_base_unix}: Tezos: common helpers for `tezos-client` (unix-specific fragment)
-- {{!module-Tezos_client_commands}Tezos_client_commands}: Tezos: protocol agnostic commands for `tezos-client`
-- {{!module-Tezos_context_ops}Tezos_context_ops}: Backend-agnostic operations on contexts
-- {{!module-Tezos_mockup}Tezos_mockup}: Tezos: library of auto-documented RPCs (mockup mode)
-- {{!module-Tezos_mockup_commands}Tezos_mockup_commands}: Tezos: library of auto-documented RPCs (commands)
-- {{!module-Tezos_mockup_proxy}Tezos_mockup_proxy}: Tezos: local RPCs
-- {{!module-Tezos_mockup_registration}Tezos_mockup_registration}: Tezos: protocol registration for the mockup mode
-- {{!module-Tezos_p2p}Tezos_p2p}: Library for a pool of P2P connections
-- {{!module-Tezos_p2p_test_common}Tezos_p2p_test_common}
-- {{!module-Tezos_protocol_updater}Tezos_protocol_updater}: Economic-protocol dynamic loading for `octez-node`
-- {{!module-Tezos_proxy}Tezos_proxy}: Tezos: proxy
-- {{!page-tezos_shell}Tezos_shell}: Core of `octez-node` (gossip, validation scheduling, mempool, ...)
-- {{!module-Tezos_shell_benchmarks}Tezos_shell_benchmarks}: Tezos: shell benchmarks
-- {{!module-Tezos_shell_context}Tezos_shell_context}
-- {{!module-Tezos_shell_services}Tezos_shell_services}: Descriptions of RPCs exported by [tezos-shell]
-- {{!module-Tezos_signer_backends}Tezos_signer_backends}: Tezos: remote-signature backends for `tezos-client`
-- {{!module-Tezos_signer_services}Tezos_signer_services}: Tezos: descriptions of RPCs exported by `tezos-signer`
-- {{!module-Tezos_store}Tezos_store}: Store for `octez-node`
-- {{!module-Tezos_validation}Tezos_validation}: Library for block validation
+- {{!module-Mavryk_client_base}Mavryk_client_base}: Tezos: common helpers for `mavryk-client`
+- {{!module-Mavryk_client_base_unix}Mavryk_client_base_unix}: Tezos: common helpers for `mavryk-client` (unix-specific fragment)
+- {{!module-Mavryk_client_commands}Mavryk_client_commands}: Tezos: protocol agnostic commands for `mavryk-client`
+- {{!module-Mavryk_context_ops}Mavryk_context_ops}: Backend-agnostic operations on contexts
+- {{!module-Mavryk_mockup}Mavryk_mockup}: Tezos: library of auto-documented RPCs (mockup mode)
+- {{!module-Mavryk_mockup_commands}Mavryk_mockup_commands}: Tezos: library of auto-documented RPCs (commands)
+- {{!module-Mavryk_mockup_proxy}Mavryk_mockup_proxy}: Tezos: local RPCs
+- {{!module-Mavryk_mockup_registration}Mavryk_mockup_registration}: Tezos: protocol registration for the mockup mode
+- {{!module-Mavryk_p2p}Mavryk_p2p}: Library for a pool of P2P connections
+- {{!module-Mavryk_p2p_test_common}Mavryk_p2p_test_common}
+- {{!module-Mavryk_protocol_updater}Mavryk_protocol_updater}: Economic-protocol dynamic loading for `mavkit-node`
+- {{!module-Mavryk_proxy}Mavryk_proxy}: Tezos: proxy
+- {{!page-mavryk_shell}Mavryk_shell}: Core of `mavkit-node` (gossip, validation scheduling, mempool, ...)
+- {{!module-Mavryk_shell_benchmarks}Mavryk_shell_benchmarks}: Tezos: shell benchmarks
+- {{!module-Mavryk_shell_context}Mavryk_shell_context}
+- {{!module-Mavryk_shell_services}Mavryk_shell_services}: Descriptions of RPCs exported by [mavryk-shell]
+- {{!module-Mavryk_signer_backends}Mavryk_signer_backends}: Tezos: remote-signature backends for `mavryk-client`
+- {{!module-Mavryk_signer_services}Mavryk_signer_services}: Tezos: descriptions of RPCs exported by `mavryk-signer`
+- {{!module-Mavryk_store}Mavryk_store}: Store for `mavkit-node`
+- {{!module-Mavryk_validation}Mavryk_validation}: Library for block validation

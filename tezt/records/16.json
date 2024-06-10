@@ -152,7 +152,7 @@
     }
   },
   {
-    "file": "tezos-context",
+    "file": "mavryk-context",
     "title": "context",
     "tags": [
       "alcotest"

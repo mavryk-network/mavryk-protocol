@@ -7,7 +7,7 @@
 
 use std::collections::BTreeMap;
 use std::num::TryFromIntError;
-use tezos_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
+use mavryk_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
 
 pub mod type_props;
 
@@ -986,7 +986,7 @@ pub(crate) fn typecheck_value(
             )
         }
         (T::ChainId, V::Bytes(bs)) => {
-            use tezos_crypto_rs::hash::HashTrait;
+            use mavryk_crypto_rs::hash::HashTrait;
             ctx.gas.consume(gas::tc_cost::CHAIN_ID_OPTIMIZED)?;
             TV::ChainId(ChainId::try_from_bytes(bs).map_err(|x| TcError::ChainIdError(x.into()))?)
         }
@@ -2663,8 +2663,8 @@ mod typecheck_tests {
                 entrypoint: Entrypoint::try_from(ep).unwrap(),
             }
         }
-        use tezos_crypto_rs::hash::*;
-        // hex representations are obtained via `octez-client hash data`
+        use mavryk_crypto_rs::hash::*;
+        // hex representations are obtained via `mavkit-client hash data`
         test_ok(
             r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef",
@@ -2888,7 +2888,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
+                mavryk_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
             ))
         );
         assert_eq!(
@@ -2898,7 +2898,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::hash::FromBytesError::InvalidSize.into()
+                mavryk_crypto_rs::hash::FromBytesError::InvalidSize.into()
             ))
         );
     }

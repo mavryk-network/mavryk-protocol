@@ -28,37 +28,37 @@ open Alpha_context
 
 (* From OCaml values to Micheline expressions *)
 
-let seq ?(loc = 0) l = Tezos_micheline.Micheline.Seq (loc, l)
+let seq ?(loc = 0) l = Mavryk_micheline.Micheline.Seq (loc, l)
 
 let pair ?(loc = 0) a b =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Pair, [a; b], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Pair, [a; b], [])
 
 let pair_n ?(loc = 0) els =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Pair, els, [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Pair, els, [])
 
 let comb ?(loc = 0) es =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Pair, es, [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Pair, es, [])
 
 let none ?(loc = 0) () =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_None, [], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_None, [], [])
 
 let some ?(loc = 0) a =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Some, [a], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Some, [a], [])
 
 let left ?(loc = 0) a =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Left, [a], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Left, [a], [])
 
 let right ?(loc = 0) b =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Right, [b], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Right, [b], [])
 
 let unit ?(loc = 0) () =
-  Tezos_micheline.Micheline.Prim (loc, Script.D_Unit, [], [])
+  Mavryk_micheline.Micheline.Prim (loc, Script.D_Unit, [], [])
 
-let int ?(loc = 0) i = Tezos_micheline.Micheline.Int (loc, i)
+let int ?(loc = 0) i = Mavryk_micheline.Micheline.Int (loc, i)
 
-let bytes ?(loc = 0) s = Tezos_micheline.Micheline.Bytes (loc, s)
+let bytes ?(loc = 0) s = Mavryk_micheline.Micheline.Bytes (loc, s)
 
-let string ?(loc = 0) s = Tezos_micheline.Micheline.String (loc, s)
+let string ?(loc = 0) s = Mavryk_micheline.Micheline.String (loc, s)
 
 let mumav ?(loc = 0) m = int ~loc (Z.of_int64 (Tez.to_mumav m))
 

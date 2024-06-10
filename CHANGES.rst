@@ -4,8 +4,8 @@ Development Changelog
 **NB:** The changelog for releases can be found at: https://tezos.gitlab.io/CHANGES.html
 
 
-This file lists the changes added to each version of octez-node,
-octez-client, and the other Octez executables. The changes to the economic
+This file lists the changes added to each version of mavkit-node,
+mavkit-client, and the other Mavkit executables. The changes to the economic
 protocol are documented in the ``docs/protocols/`` directory; in
 particular in ``docs/protocols/alpha.rst``.
 
@@ -39,7 +39,7 @@ Node
   of the configuration file. They already had no effect on the node
   anymore. (MR :gl:`!10030`)
 
-- **Breaking change** Bumped the Octez snapshot version from ``5`` to
+- **Breaking change** Bumped the Mavkit snapshot version from ``5`` to
   ``6`` to explicit the incompatibility with previous version
   nodes. Also, improved the consistency of ``snapshot`` import errors
   messages (MR :gl:`!10138`)
@@ -127,8 +127,8 @@ Smart Rollup node
   by symbolic links to the protocol agnostic rollup node. In the future, the
   symbolic links will be removed. (MR :gl:`!10086`)
 
-- Released the protocol agnostic rollup node ``octez-smart-rollup-node`` as part
-  of the Octez distribution. (MR :gl:`!10086`)
+- Released the protocol agnostic rollup node ``mavkit-smart-rollup-node`` as part
+  of the Mavkit distribution. (MR :gl:`!10086`)
 
 - Added the rollup node command inside the docker entrypoint (MR :gl:`!10253`)
 
@@ -152,7 +152,7 @@ Smart Rollup client
 -------------------
 
 - **Breaking change** smart rollup client have been deprecated and
-  no longer exist, most commands have equivalents RPCs and ``octez-codec`` (MR :gl:`!11046`).
+  no longer exist, most commands have equivalents RPCs and ``mavkit-codec`` (MR :gl:`!11046`).
 
 - The following table outlines the deprecated of smart rollup client commands and
   their corresponding replacements with new RPCs:
@@ -176,11 +176,11 @@ Smart Rollup client
     ==========================================  ====================================================
 
 - The result of ``encode outbox message <transactions>`` can be achieved:
-  ``octez-codec encode alpha.smart_rollup.outbox.message from <transactions>``.
+  ``mavkit-codec encode alpha.smart_rollup.outbox.message from <transactions>``.
 
-- The keys in the smart rollup client use the same format as the ``octez-client``.
-  They can be imported with ``octez-client import secret key <sk_uri>``, or by merging the key files
-  between the ``octez-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
+- The keys in the smart rollup client use the same format as the ``mavkit-client``.
+  They can be imported with ``mavkit-client import secret key <sk_uri>``, or by merging the key files
+  between the ``mavkit-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
 
 Smart Rollup WASM Debugger
 --------------------------
@@ -215,4 +215,4 @@ Miscellaneous
 
 - Beta Debian and Redhat packages are now linked in gitlab releases.
 
-- Renamed package registries for releases from ``tezos-x.y`` to ``octez-x.y``.
+- Renamed package registries for releases from ``mavryk-x.y`` to ``mavkit-x.y``.

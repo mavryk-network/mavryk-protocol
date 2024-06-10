@@ -151,7 +151,7 @@ let shards_to_attesters committee =
   let rec do_n ~n f acc = if n <= 0 then acc else do_n ~n:(n - 1) f (f acc) in
   let to_array committee =
     (* We transform the map to a list *)
-    Tezos_crypto.Signature.Public_key_hash.Map.bindings committee
+    Mavryk_crypto.Signature.Public_key_hash.Map.bindings committee
     (* We sort the list in decreasing order w.r.t. to start_indices. *)
     |> List.fast_sort (fun (_pkh1, shard_indices1) (_pkh2, shard_indices2) ->
            shard_indices2.Committee_cache.start_index

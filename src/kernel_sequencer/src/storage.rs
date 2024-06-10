@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 use crate::state::State;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::nom::NomReader;
-use tezos_smart_rollup_host::{
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_smart_rollup_host::{
     path::{concat, OwnedPath, Path, RefPath, PATH_SEPARATOR},
     runtime::{Runtime, RuntimeError},
     Error,
@@ -73,9 +73,9 @@ pub fn read_state<H: Runtime>(host: &mut H) -> Result<State, RuntimeError> {
 mod tests {
     use super::{map_user_path, sequencer_prefix, write_state, USER_PREFIX_PATH};
     use crate::state::State;
-    use tezos_smart_rollup_host::path::{concat, OwnedPath, RefPath};
-    use tezos_smart_rollup_host::runtime::Runtime;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::path::{concat, OwnedPath, RefPath};
+    use mavryk_smart_rollup_host::runtime::Runtime;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[test]
     fn test_sequencer_prefixed() {

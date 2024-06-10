@@ -32,7 +32,7 @@
     character symbolizes the {!e wrapping} of the internal error monad type in a
     shell error.  *)
 
-include module type of Tezos_base.TzPervasives.Lwt_result_syntax
+include module type of Mavryk_base.TzPervasives.Lwt_result_syntax
 
 (** [wrap res] maps the result type contained in [res] to a tzresult
     value. *)

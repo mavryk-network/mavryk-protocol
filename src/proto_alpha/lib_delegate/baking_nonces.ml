@@ -172,7 +172,7 @@ let blocks_from_previous_cycle {cctxt; chain; _} =
     Plugin.RPC.levels_in_current_cycle cctxt ~offset:(-1l) (chain, block)
   in
   match result with
-  | Error (Tezos_rpc.Context.Not_found _ :: _) -> return_nil
+  | Error (Mavryk_rpc.Context.Not_found _ :: _) -> return_nil
   | Error _ as err -> Lwt.return err
   | Ok (first, last) -> (
       let* hash = Shell_services.Blocks.hash cctxt ~chain ~block () in
@@ -275,7 +275,7 @@ let generate_seed_nonce (nonce_config : Baking_configuration.nonce_config)
         return (Data_encoding.Binary.of_bytes_exn Nonce.encoding nonce)
     | Random -> (
         match
-          Nonce.of_bytes (Tezos_crypto.Rand.generate Constants.nonce_length)
+          Nonce.of_bytes (Mavryk_crypto.Rand.generate Constants.nonce_length)
         with
         | Error _errs -> assert false
         | Ok nonce -> return nonce)

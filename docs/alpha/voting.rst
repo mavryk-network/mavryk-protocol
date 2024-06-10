@@ -32,7 +32,7 @@ The five periods are as follows:
   this total.
 
   At the end of a **proposal period**, if participation reaches a
-  :ref:`proposal quorum <proposal_quorum>`, the proposal with most support is
+  proposal quorum, the proposal with most support is
   selected and we move to an **exploration period**. Note that support is
   measured in the cumulated staking power (expressed in mumav) that delegates supporting the
   proposal have. E.g., a proposal supported by a single delegate with 600,000 tz of staking power
@@ -136,7 +136,7 @@ with the following formula::
 
 This formula avoids establishing quorums close to 100% that would be
 very difficult to attain, or, conversely, low quorums close to 0% making
-little participation chronic, ensuring that the quorums are lower- and upper-bounded by :ref:`quorum_caps` (0.2 and 0.7, respectively).
+little participation chronic, ensuring that the quorums are lower- and upper-bounded by quorum caps (0.2 and 0.7, respectively).
 
 The *super-majority* is reached if the cumulated stake of Yea ballots is
 greater than 8/10 of the cumulated stake of Yea and Nay ballots.
@@ -168,7 +168,7 @@ fails.
 .. sidebar:: Checking a hash is of a valid protocol
 
    When a hash is proposed by a delegate, it is usually accompanied by some
-   blogposts and forum threads on :ref:`community websites <tezos_community>`.
+   blogposts and forum threads on :ref:`community websites <mavryk_community>`.
    These should include directions for testing the proposed protocols. If you
    cannot find such directions, do not hesitate to ask.
 
@@ -245,12 +245,12 @@ quorum of the next vote.
 More details on the operations can be found in
 :src:`src/proto_alpha/lib_protocol/operation_repr.ml`.
 The binary format is described by
-``octez-client describe unsigned operation``.
+``mavkit-client describe unsigned operation``.
 
 Client Commands
 ---------------
 
-The Octez client, ``octez-client``, provides commands for basic exploration and
+The Mavkit client, ``mavkit-client``, provides commands for basic exploration and
 interaction with the amendment and voting process.
 
 
@@ -261,13 +261,13 @@ The client provides a command to show the status of a voting period.
 It displays different information for different kind of periods, as
 in the following samples::
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "proposal"
   Blocks remaining until end of period: 59
   Current proposals:
   PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp 2,400,000 ṁ
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "exploration"
   Blocks remaining until end of period: 63
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
@@ -278,7 +278,7 @@ in the following samples::
   Current participation 20.00%, necessary quorum 80.00%
   Current in favor 2,400,000 ṁ, needed supermajority 1,920,000 ṁ
 
-  $ octez-client show voting period
+  $ mavkit-client show voting period
   Current period: "cooldown"
   Blocks remaining until end of period: 64
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
@@ -295,7 +295,7 @@ Submit proposals
 
 During a proposal period, a list of proposals can be submitted with::
 
-    octez-client submit proposals for <delegate> <proposal1> <proposal2> ...
+    mavkit-client submit proposals for <delegate> <proposal1> <proposal2> ...
 
 Remember that each delegate can submit a maximum of 20 protocol
 hashes and that duplicates count towards this total.
@@ -310,7 +310,7 @@ following two conditions:
   its node which performs some checks, compiles and loads the
   protocol.
 
-These are protection measures that the Octez client takes to prevent the
+These are protection measures that the Mavkit client takes to prevent the
 accidental injection of invalid protocols. As mentioned above, it is still
 important to check the validity of the protocols that you vote for as they may
 have been injected via different means.
@@ -322,15 +322,15 @@ Submit ballots
 During either of the **exploration** or **promotion** periods,
 ballots can be submitted once with::
 
-    octez-client submit ballot for <delegate> <proposal> <yea|nay|pass>
+    mavkit-client submit ballot for <delegate> <proposal> <yea|nay|pass>
 
 Further External Resources
 --------------------------
 
 Further details and explanations on the voting procedure can be found at:
 
-- `Governance on-chain <https://opentezos.com/tezos-basics/governance-on-chain>`_ on Open Tezos
-- `Tezos Governance <https://www.tezosagora.org/learn#an-introduction-to-tezos-governance>`_ on Tezos Agora.
+- `Governance on-chain <https://opentezos.com/mavryk-basics/governance-on-chain>`_ on Open Tezos
+- `Tezos Governance <https://www.tezosagora.org/learn#an-introduction-to-mavryk-governance>`_ on Tezos Agora.
 
 For more details on the client commands refer to the manual at
 :ref:`client_manual_alpha`.

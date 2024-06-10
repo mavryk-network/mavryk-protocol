@@ -17,17 +17,17 @@ use evm_execution::account_storage::EVM_ACCOUNTS_PATH;
 use primitive_types::{H256, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use std::collections::VecDeque;
-use tezos_ethereum::block::{BlockConstants, L2Block};
-use tezos_ethereum::rlp_helpers::*;
-use tezos_ethereum::transaction::{
+use mavryk_ethereum::block::{BlockConstants, L2Block};
+use mavryk_ethereum::rlp_helpers::*;
+use mavryk_ethereum::transaction::{
     IndexedLog, TransactionObject, TransactionReceipt, TransactionStatus,
     TransactionType, TRANSACTION_HASH_SIZE,
 };
-use tezos_ethereum::Bloom;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::path::RefPath;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::Bloom;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 #[derive(Debug, PartialEq, Clone)]
 /// Container for all data needed during block computation
@@ -426,13 +426,13 @@ mod tests {
     use crate::inbox::{Deposit, Transaction, TransactionContent};
     use primitive_types::{H160, H256, U256};
     use rlp::{Decodable, Encodable, Rlp};
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         transaction::{TransactionType, TRANSACTION_HASH_SIZE},
         tx_common::EthereumTransactionCommon,
         tx_signature::TxSignature,
         Bloom,
     };
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
     fn new_sig_unsafe(v: u64, r: H256, s: H256) -> TxSignature {
         TxSignature::new(U256::from(v), r, s).unwrap()

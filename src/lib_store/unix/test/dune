@@ -6,45 +6,45 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.crypto
-  octez-shell-libs.context-ops
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix
-  octez-shell-libs.store.unix-reconstruction
-  octez-shell-libs.store.unix-snapshots
-  octez-shell-libs.shell-services
-  octez-libs.stdlib-unix
-  octez-shell-libs.validation
-  octez-shell-libs.protocol-updater
-  tezos-protocol-demo-noops.embedded-protocol
-  tezos-protocol-genesis.embedded-protocol
-  tezos-protocol-alpha.embedded-protocol
-  tezos-protocol-alpha.parameters
-  octez-protocol-alpha-libs.plugin
-  octez-alcotezt
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix
+  mavkit-shell-libs.store.unix-reconstruction
+  mavkit-shell-libs.store.unix-snapshots
+  mavkit-shell-libs.shell-services
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.protocol-updater
+  mavryk-protocol-demo-noops.embedded-protocol
+  mavryk-protocol-genesis.embedded-protocol
+  mavryk-protocol-alpha.embedded-protocol
+  mavryk-protocol-alpha.parameters
+  mavkit-protocol-alpha-libs.plugin
+  mavkit-alcotezt
   tezt
-  octez-libs.test-helpers)
+  mavkit-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_context_ops
-  -open Tezos_store_shared
-  -open Tezos_store_unix
-  -open Tezos_store_unix_reconstruction
-  -open Tezos_store_unix_snapshots
-  -open Tezos_shell_services
-  -open Tezos_stdlib_unix
-  -open Tezos_validation
-  -open Tezos_protocol_updater
-  -open Tezos_protocol_alpha_parameters
-  -open Tezos_protocol_plugin_alpha
-  -open Octez_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_context_ops
+  -open Mavryk_store_shared
+  -open Mavryk_store_unix
+  -open Mavryk_store_unix_reconstruction
+  -open Mavryk_store_unix_snapshots
+  -open Mavryk_shell_services
+  -open Mavryk_stdlib_unix
+  -open Mavryk_validation
+  -open Mavryk_protocol_updater
+  -open Mavryk_protocol_alpha_parameters
+  -open Mavryk_protocol_plugin_alpha
+  -open Mavkit_alcotezt
+  -open Mavryk_test_helpers)
  (modules
   test
   test_snapshots
@@ -75,7 +75,7 @@
 
 (rule
  (alias runtest)
- (package octez-store-tests)
+ (package mavkit-store-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

@@ -52,7 +52,7 @@ let encode_and_sign_operation protocol client op =
     encode protocol "operation.unsigned" (Operation_core.json op)
   in
   let* signature = Operation_core.sign op client in
-  let (`Hex signature) = Tezos_crypto.Signature.to_hex signature in
+  let (`Hex signature) = Mavryk_crypto.Signature.to_hex signature in
   return (hex_unsigned ^ signature)
 
 let test_encoding_retrocompatible name operation =
@@ -60,7 +60,7 @@ let test_encoding_retrocompatible name operation =
     ~__FILE__
     ~title:(sf "Test retro compatibility for format of %s" name)
     ~tags:["retro"; name]
-    ~uses:(fun _protocol -> [Constant.octez_codec])
+    ~uses:(fun _protocol -> [Constant.mavkit_codec])
     ~supports:Has_predecessor
   @@ Protocol.with_predecessor
   @@ fun ~previous_protocol ~protocol ->

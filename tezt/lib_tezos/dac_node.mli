@@ -205,7 +205,7 @@ val is_running_not_ready : t -> bool
     running, make the test fail. *)
 val wait : t -> Unix.process_status Lwt.t
 
-(** Run [octez-dac-node init-config]. Returns the name of the resulting
+(** Run [mavkit-dac-node init-config]. Returns the name of the resulting
     configuration file.
 *)
 val init_config : t -> string Lwt.t

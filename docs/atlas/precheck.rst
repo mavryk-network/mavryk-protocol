@@ -8,7 +8,7 @@ Prechecking of manager operations
    section be integrated into plugin.rst, and the relevant definitions
    should point to the validation entry.
 
-The prevalidator of Octez prevents the propagation of non-valid
+The prevalidator of Mavkit prevents the propagation of non-valid
 operations by trying to apply (or execute) them.
 However, executing
 manager operations (like complex smart contract calls) can be

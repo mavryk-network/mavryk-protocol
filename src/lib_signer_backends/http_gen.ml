@@ -32,9 +32,9 @@ struct
   module Make
       (RPC_client : RPC_client.S) (P : sig
         val authenticate :
-          Tezos_crypto.Signature.Public_key_hash.t list ->
+          Mavryk_crypto.Signature.Public_key_hash.t list ->
           Bytes.t ->
-          Tezos_crypto.Signature.t tzresult Lwt.t
+          Mavryk_crypto.Signature.t tzresult Lwt.t
 
         val logger : RPC_client.logger
       end) =
@@ -44,18 +44,18 @@ struct
     let scheme = scheme
 
     let title =
-      "Built-in tezos-signer using remote signer through hardcoded " ^ scheme
+      "Built-in mavryk-signer using remote signer through hardcoded " ^ scheme
       ^ " requests."
 
     let description =
       "Valid locators are of this form:\n" ^ " - " ^ scheme ^ "://host/mv1...\n"
       ^ " - " ^ scheme ^ "://host:port/path/to/service/mv1...\n"
-      ^ "Environment variable TEZOS_SIGNER_HTTP_HEADERS can be specified to \
+      ^ "Environment variable MAVRYK_SIGNER_HTTP_HEADERS can be specified to \
          add headers to the requests (only 'host' and custom 'x-...' headers \
          are supported)."
 
     let headers =
-      match Sys.getenv_opt "TEZOS_SIGNER_HTTP_HEADERS" with
+      match Sys.getenv_opt "MAVRYK_SIGNER_HTTP_HEADERS" with
       | None -> None
       | Some contents ->
           let lines = String.split_on_char '\n' contents in
@@ -65,7 +65,7 @@ struct
                  match String.index_opt line ':' with
                  | None ->
                      Stdlib.failwith
-                       "Http signer: invalid TEZOS_SIGNER_HTTP_HEADERS \
+                       "Http signer: invalid MAVRYK_SIGNER_HTTP_HEADERS \
                         environment variable, missing colon"
                  | Some pos ->
                      let header = String.trim (String.sub line 0 pos) in
@@ -76,7 +76,7 @@ struct
                           || String.sub header 0 2 <> "x-")
                      then
                        Stdlib.failwith
-                         "Http signer: invalid TEZOS_SIGNER_HTTP_HEADERS \
+                         "Http signer: invalid MAVRYK_SIGNER_HTTP_HEADERS \
                           environment variable, only 'host' or 'x-' headers \
                           are supported" ;
                      let value =
@@ -107,7 +107,7 @@ struct
             return (Uri.with_path uri path, pkh)
       in
       let* pkh =
-        Lwt.return (Tezos_crypto.Signature.Public_key_hash.of_b58check pkh)
+        Lwt.return (Mavryk_crypto.Signature.Public_key_hash.of_b58check pkh)
       in
       return (base, pkh)
 
@@ -132,7 +132,7 @@ struct
     let public_key_hash uri =
       let open Lwt_result_syntax in
       let* pk = public_key uri in
-      return (Tezos_crypto.Signature.Public_key.hash pk, Some pk)
+      return (Mavryk_crypto.Signature.Public_key.hash pk, Some pk)
 
     let import_secret_key ~io:_ = public_key_hash
 
@@ -166,7 +166,7 @@ struct
         match watermark with
         | None -> msg
         | Some watermark ->
-            Bytes.cat (Tezos_crypto.Signature.bytes_of_watermark watermark) msg
+            Bytes.cat (Mavryk_crypto.Signature.bytes_of_watermark watermark) msg
       in
       let* signature = get_signature base pkh msg in
       RPC_client.call_service
@@ -223,7 +223,7 @@ struct
       in
       match r with
       | Ok ans -> return ans
-      | Error (Tezos_rpc.Context.Not_found _ :: _) -> return_false
+      | Error (Mavryk_rpc.Context.Not_found _ :: _) -> return_false
       | Error _ as res -> Lwt.return res
   end
 

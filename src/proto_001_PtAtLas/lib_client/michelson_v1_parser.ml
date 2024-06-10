@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Protocol
-open Tezos_micheline
+open Mavryk_micheline
 open Micheline_parser
 open Micheline
 

@@ -25,6 +25,6 @@
 
 (* This test is used to make sure we can link against sapling
    without failing at runtime in JS *)
-include Tezos_sapling
+include Mavryk_sapling
 
 let () = Printf.printf "%s loaded successfully\n" Sys.executable_name

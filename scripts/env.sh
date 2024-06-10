@@ -20,7 +20,7 @@ add_ld_path () {
 
 opam env
 
-## this list should contain all the known shared libraries on Tezos
+## this list should contain all the known shared libraries on Mavryk
 ## to update it the following command may be used
 ## $ make; find _build/default | grep -e "dll.*\.so\|dylib$"
 

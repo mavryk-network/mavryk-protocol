@@ -165,7 +165,7 @@ Lines with the following strings were not changed:
   `PUBLIC_KEY_HASH`
   `Parameter: `
   `To: `
-  `tezos-client`
+  `mavryk-client`
 
 -- LINE NUMBERS REFER TO TEMPORARY FILE /tmp/tmp.j8YRu0Y9kY. --
 ```

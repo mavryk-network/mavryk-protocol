@@ -91,7 +91,7 @@ let init_validator
     validator. It passes the validator to the test function [f] *)
 let wrap f _switch () =
   Tztest.with_empty_mock_sink (fun _ ->
-      Lwt_utils_unix.with_tempdir "tezos_test_" (fun test_dir ->
+      Lwt_utils_unix.with_tempdir "mavryk_test_" (fun test_dir ->
           init_validator f test_dir _switch ()))
 
 (** Start tests *)
@@ -151,5 +151,5 @@ let tests =
   [Alcotest_lwt.test_case "validator_events" `Quick (wrap validator_events)]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-shell" [("test validator", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-shell" [("test validator", tests)]
   |> Lwt_main.run

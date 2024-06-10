@@ -76,7 +76,7 @@ type history_mode =
           (i.e. after the LCC only) *)
 
 type t = {
-  sc_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  sc_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   boot_sector_file : string option;
   operators : Purpose.operators;
   rpc_addr : string;

@@ -27,11 +27,11 @@ open Protocol.Alpha_context
 
 module type PVM =
   Sc_rollup.PVM.S
-    with type context = Tezos_context_memory.Context_binary.t
-     and type state = Tezos_context_memory.Context_binary.tree
+    with type context = Mavryk_context_memory.Context_binary.t
+     and type state = Mavryk_context_memory.Context_binary.tree
      and type proof =
-      Tezos_context_memory.Context_binary.Proof.tree
-      Tezos_context_memory.Context_binary.Proof.t
+      Mavryk_context_memory.Context_binary.Proof.tree
+      Mavryk_context_memory.Context_binary.Proof.t
 
 module type S = sig
   include PVM
@@ -45,9 +45,9 @@ module Extend (Pvm : PVM) = struct
   include Pvm
 
   let make_empty_context =
-    Tezos_context_memory.Context_binary.make_empty_context ~root:"dummy"
+    Mavryk_context_memory.Context_binary.make_empty_context ~root:"dummy"
 
-  let make_empty_state = Tezos_context_memory.Context_binary.make_empty_tree
+  let make_empty_state = Mavryk_context_memory.Context_binary.make_empty_tree
 end
 
 module Arith : S = Extend (Sc_rollup.ArithPVM.Make (Context_helpers.In_memory))

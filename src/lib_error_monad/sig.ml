@@ -191,7 +191,7 @@ end
 
 module type TRACE = sig
   (** The [trace] type (included as part of the
-      [Tezos_lwt_result_stdlib.Lwtreslib.TRACE] module is abstract in this
+      [Mavryk_lwt_result_stdlib.Lwtreslib.TRACE] module is abstract in this
       interface but it is made concrete in the instantiated error monad (see
       [error_monad.mli]).
 
@@ -199,7 +199,7 @@ module type TRACE = sig
       Eventually, we can make the trace abstract in the instantiated error
       monad, we can have different notions of traces for the protocol and the
       shell, etc. *)
-  include Tezos_lwt_result_stdlib.Lwtreslib.TRACE
+  include Mavryk_lwt_result_stdlib.Lwtreslib.TRACE
 
   (** [pp_print] pretty-prints a trace of errors *)
   val pp_print :
@@ -218,7 +218,7 @@ module type TRACE = sig
   val fold : ('a -> 'error -> 'a) -> 'a -> 'error trace -> 'a
 end
 
-(** [MONAD_EXTENSION] is the Tezos-specific extension to the generic monad
+(** [MONAD_EXTENSION] is the Mavryk-specific extension to the generic monad
     provided by Lwtreslib. It sets some defaults (e.g., it defaults traced
     failures), it brings some qualified identifiers into the main unqualified
     part (e.g., [return_unit]), it provides some tracing helpers and some

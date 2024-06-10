@@ -155,8 +155,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: base58",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: base58",
     "tags": [
       "alcotest"
     ],

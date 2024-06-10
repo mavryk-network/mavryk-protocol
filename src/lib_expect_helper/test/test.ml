@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_expect_helper
+open Mavryk_expect_helper
 
 let%expect_test "require_does_not_raise_err" =
   require_does_not_raise ~loc:__LOC__ (fun () -> assert false) ;

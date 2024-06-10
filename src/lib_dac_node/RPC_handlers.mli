@@ -56,7 +56,7 @@ module V0 : sig
       streaming of root hashes via "GET v0/monitor/root_hashes" RPC call. *)
   val handle_monitor_root_hashes :
     Dac_plugin.raw_hash Data_streamer.t ->
-    Dac_plugin.raw_hash Tezos_rpc__RPC_answer.t Lwt.t
+    Dac_plugin.raw_hash Mavryk_rpc__RPC_answer.t Lwt.t
 
   (** [handle_get_certificate] is a handler for "GET v0/certificate". *)
   val handle_get_certificate :

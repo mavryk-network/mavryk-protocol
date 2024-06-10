@@ -2,27 +2,27 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_dal_node_lib)
- (public_name tezos-dal-node-lib)
+ (name mavryk_dal_node_lib)
+ (public_name mavryk-dal-node-lib)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  tezos-dal-node-services
-  octez-shell-libs.client-base
-  octez-shell-libs.protocol-updater
-  octez-shell-libs.client-base-unix
-  octez-libs.stdlib-unix
-  octez-libs.crypto-dal
-  octez-shell-libs.p2p
-  octez-libs.tezos-p2p-services)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavryk-dal-node-services
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.protocol-updater
+  mavkit-shell-libs.client-base-unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto-dal
+  mavkit-shell-libs.p2p
+  mavkit-libs.mavryk-p2p-services)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_protocol_updater
-  -open Tezos_client_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_crypto_dal
-  -open Tezos_p2p
-  -open Tezos_p2p_services))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_protocol_updater
+  -open Mavryk_client_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_crypto_dal
+  -open Mavryk_p2p
+  -open Mavryk_p2p_services))

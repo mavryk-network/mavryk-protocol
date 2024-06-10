@@ -2,18 +2,18 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_micheline_rewriting)
- (public_name tezos-micheline-rewriting)
+ (name mavryk_micheline_rewriting)
+ (public_name mavryk-micheline-rewriting)
  (instrumentation (backend bisect_ppx))
  (libraries
   zarith
   zarith_stubs_js
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-libs.error-monad
-  octez-libs.micheline)
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-libs.error-monad
+  mavkit-libs.micheline)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_micheline))
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_micheline))

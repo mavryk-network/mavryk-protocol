@@ -7,7 +7,7 @@
 
 module TreeEncoding =
   Wasm_utils.Make
-    (Tezos_tree_encoding.Encodings_util.Make (Sequencer_context.Context))
+    (Mavryk_tree_encoding.Encodings_util.Make (Sequencer_context.Context))
 module Wasm = Wasm_debugger.Make (TreeEncoding)
 
 let execute ?(commit = false) ctxt inbox =
@@ -30,7 +30,7 @@ let init ~smart_rollup_address ctxt =
   let* evm_state =
     Wasm.start
       ~tree:ctxt.Sequencer_context.evm_state
-      Tezos_scoru_wasm.Wasm_pvm_state.V3
+      Mavryk_scoru_wasm.Wasm_pvm_state.V3
       ctxt.kernel
   in
   let ctxt = {ctxt with evm_state} in
@@ -42,9 +42,9 @@ let init ~smart_rollup_address ctxt =
 
 let inspect evm_state key =
   let open Lwt_syntax in
-  let key = Tezos_scoru_wasm.Durable.key_of_string_exn key in
+  let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key in
   let* value = Wasm.Commands.find_key_in_durable evm_state key in
-  Option.map_s Tezos_lazy_containers.Chunked_byte_vector.to_bytes value
+  Option.map_s Mavryk_lazy_containers.Chunked_byte_vector.to_bytes value
 
 let execute_and_inspect ctxt
     ~input:Simulation.Encodings.{messages; insight_requests; _} =

@@ -56,16 +56,16 @@ exception Readonly_value
 (** Cannot read from or write to more than 2,048 bytes *)
 exception IO_too_large
 
-(** [encoding] is a [Tezos_tree_encoding] for [t]. *)
-val encoding : t Tezos_tree_encoding.t
+(** [encoding] is a [Mavryk_tree_encoding] for [t]. *)
+val encoding : t Mavryk_tree_encoding.t
 
 val of_storage :
-  default:t -> Tezos_webassembly_interpreter.Durable_storage.t -> t
+  default:t -> Mavryk_webassembly_interpreter.Durable_storage.t -> t
 
 (** @raise Durable_empty *)
-val of_storage_exn : Tezos_webassembly_interpreter.Durable_storage.t -> t
+val of_storage_exn : Mavryk_webassembly_interpreter.Durable_storage.t -> t
 
-val to_storage : t -> Tezos_webassembly_interpreter.Durable_storage.t
+val to_storage : t -> Mavryk_webassembly_interpreter.Durable_storage.t
 
 (** [key] is the type that indexes [t]. It enforces several constraints:
     - a key's length is bounded.
@@ -85,11 +85,11 @@ val key_of_string_opt : string -> key option
 (** [find_value durable key] optionally looks for the value encoded at [key]
     in [durable]. *)
 val find_value :
-  t -> key -> Tezos_lazy_containers.Chunked_byte_vector.t option Lwt.t
+  t -> key -> Mavryk_lazy_containers.Chunked_byte_vector.t option Lwt.t
 
 (** @raise Value_not_found *)
 val find_value_exn :
-  t -> key -> Tezos_lazy_containers.Chunked_byte_vector.t Lwt.t
+  t -> key -> Mavryk_lazy_containers.Chunked_byte_vector.t Lwt.t
 
 (** [copy_tree_exn tree ?edit_readonly from_key to_key] produces a new tree in which a copy of
     the entire subtree at from_key is copied to to_key.

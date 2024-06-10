@@ -119,8 +119,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: 015-PtLimaPt: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: 015-PtLimaPt: proxy",
     "tags": [
       "alcotest"
     ],
@@ -130,7 +130,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "012-Psithaca: client_proto_contracts 012",
     "tags": [
       "alcotest"
@@ -174,7 +174,7 @@
     }
   },
   {
-    "file": "tezos-benchmark",
+    "file": "mavryk-benchmark",
     "title": "measure",
     "tags": [
       "alcotest"

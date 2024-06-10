@@ -38,12 +38,12 @@ module V0 : sig
       unit,
       unit,
       Bytes.t )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 
   (** "PUT v0/member_signature" endpoint stores the [signature] 
     generated from signing [hex_root_hash] by [dac_member_pkh]. *)
   val put_dac_member_signature :
-    ([`PUT], unit, unit, unit, Signature_repr.t, unit) Tezos_rpc.Service.service
+    ([`PUT], unit, unit, unit, Signature_repr.t, unit) Mavryk_rpc.Service.service
 
   (** "GET v0/certificate" endpoint returns the DAC certificate for the
     provided [root_page_hash]. *)
@@ -54,7 +54,7 @@ module V0 : sig
       unit,
       unit,
       Certificate_repr.t )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 
   (** "GET v0/serialized_certificates" endpoint returns the binary encoded DAC 
     certificate for the provided [root_page_hash] where contained [root_hash]
@@ -66,7 +66,7 @@ module V0 : sig
       unit,
       unit,
       String.t option )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 
   (** "GET v0/missing_page/[page_hash]" Observer fetches the missing page 
     from a Coordinator node. The missing page is then saved to a 
@@ -78,7 +78,7 @@ module V0 : sig
       unit,
       unit,
       Bytes.t )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 
   module Coordinator : sig
     (** "POST v0/preimage" sends a [payload] to the DAC
@@ -93,20 +93,20 @@ module V0 : sig
         unit,
         Bytes.t,
         Dac_plugin.raw_hash )
-      Tezos_rpc.Service.service
+      Mavryk_rpc.Service.service
   end
 end
 
 (** GET dac/health/live returns [true] if 
     [Node_context.get_status cctxt] is [Starting] or [Ready]. *)
 val get_health_live :
-  ([`GET], unit, unit, unit, unit, bool) Tezos_rpc.Service.service
+  ([`GET], unit, unit, unit, unit, bool) Mavryk_rpc.Service.service
 
 (** GET dac/health/ready returns [true] if 
     [Node_context.get_status cctxt] is [Ready]
     and fail with [tzfail Dac_node_not_ready] otherwise. *)
 val get_health_ready :
-  ([`GET], unit, unit, unit, unit, bool) Tezos_rpc.Service.service
+  ([`GET], unit, unit, unit, unit, bool) Mavryk_rpc.Service.service
 
 (** [V1] is a second major DAC API release. 
     [V1] API is work in progress. Do not use! *)
@@ -121,5 +121,5 @@ module V1 : sig
       unit,
       unit,
       Bytes.t )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 end

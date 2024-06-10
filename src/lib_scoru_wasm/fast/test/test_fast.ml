@@ -27,7 +27,7 @@
     -------
     Component:    Lib_scoru_wasm_fast
     Invocation:   dune exec src/lib_scoru_wasm/fast/test/main.exe -- --file test_fast.ml
-    Subject:      Tests for the tezos-scoru-wasm library
+    Subject:      Tests for the mavryk-scoru-wasm library
 *)
 
 module Preimage_map = Map.Make (String)
@@ -44,7 +44,7 @@ let apply_fast ?write_debug ?(fast_should_run = true)
   let open Lwt.Syntax in
   let run_counter = ref 0l in
   let reveal_builtins req =
-    match Tezos_scoru_wasm.Wasm_pvm_state.Compatibility.of_current_opt req with
+    match Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.of_current_opt req with
     | Some (Reveal_raw_data hash) -> (
         match Preimage_map.find hash images with
         | None -> Stdlib.failwith "Failed to find preimage"
@@ -93,7 +93,7 @@ and check_reveal ?write_debug ?(images = Preimage_map.empty) ?metadata
   match info.input_request with
   | Reveal_required req -> (
       match
-        Tezos_scoru_wasm.Wasm_pvm_state.Compatibility.of_current_opt req
+        Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.of_current_opt req
       with
       | Some (Reveal_raw_data hash) -> (
           match Preimage_map.find hash images with
@@ -139,11 +139,11 @@ let test_against_both ~version ?write_debug ?(fast_should_run = true)
     assert (info.input_request = Input_required) ;
 
     let* tree = set_input [message] counter tree in
-    let hash2 = Tezos_context_memory.Context_binary.Tree.hash tree in
+    let hash2 = Mavryk_context_memory.Context_binary.Tree.hash tree in
 
     (* kernel_run (including reboots) *)
     let* tree = apply counter tree in
-    let hash3 = Tezos_context_memory.Context_binary.Tree.hash tree in
+    let hash3 = Mavryk_context_memory.Context_binary.Tree.hash tree in
 
     let+ stuck = Wasm_utils.Wasm.Internal_for_tests.is_stuck tree in
     assert (Option.is_none stuck) ;
@@ -819,8 +819,8 @@ let test_compute_step_many_pauses_at_snapshot_when_flag_set ~version () =
       tree
   in
   (* getting to first snapshot is ok (FE probably uses slow mode for that) *)
-  let hash_fast = Tezos_context_memory.Context_binary.Tree.hash fast_tree in
-  let hash_slow = Tezos_context_memory.Context_binary.Tree.hash slow_tree in
+  let hash_fast = Mavryk_context_memory.Context_binary.Tree.hash fast_tree in
+  let hash_slow = Mavryk_context_memory.Context_binary.Tree.hash slow_tree in
   assert (Context_hash.equal hash_fast hash_slow) ;
   assert (Int64.equal fast_ticks slow_ticks) ;
 
@@ -841,8 +841,8 @@ let test_compute_step_many_pauses_at_snapshot_when_flag_set ~version () =
       slow_tree
   in
   (* getting to second snapshot is ok too (FE should have run) *)
-  let hash_fast = Tezos_context_memory.Context_binary.Tree.hash fast_tree in
-  let hash_slow = Tezos_context_memory.Context_binary.Tree.hash slow_tree in
+  let hash_fast = Mavryk_context_memory.Context_binary.Tree.hash fast_tree in
+  let hash_slow = Mavryk_context_memory.Context_binary.Tree.hash slow_tree in
   assert (Context_hash.equal hash_fast hash_slow) ;
   assert (Int64.equal fast_ticks slow_ticks) ;
 

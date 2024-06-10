@@ -4,8 +4,8 @@
 
 use crate::safe_storage::InternalRuntime;
 use sha3::{Digest, Keccak256};
-use tezos_smart_rollup_host::path::Path;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_smart_rollup_host::path::Path;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 pub struct MockInternal();
 impl InternalRuntime for MockInternal {
     fn __internal_store_get_hash<T: Path>(

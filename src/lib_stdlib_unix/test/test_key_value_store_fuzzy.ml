@@ -387,7 +387,7 @@ let run_scenario
   (* To avoid any conflict with previous runs of this test. *)
   let dir_path =
     Format.asprintf "key-value-store-test-key-%d-%d" pid !uid
-    |> Filename.concat "tezos-pbt-tests"
+    |> Filename.concat "mavryk-pbt-tests"
     |> Filename.concat tmp_dir
   in
   let*! () = Lwt_utils_unix.create_dir dir_path in

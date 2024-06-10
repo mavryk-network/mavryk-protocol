@@ -59,10 +59,10 @@ export CC=clang
 | `alloc`         | ✅       |                                     | Enables methods/types requiring `alloc` crate |
 | `panic-hook`    | ✅       |                                     | Print panics to debug log and abort           |
 | `dlmalloc`      | ✅       |                                     | Enables `dlmalloc` as default allocator       |
-| `crypto`        | ✅       | `tezos_crypto_rs`                   | Integration with `tezos_crypto_rs` types      |
-| `bls`           | ✅       | `tezos_crypto_rs/bls`               | Dac Certificate signature verification        |
-| `data-encoding` | ✅       | `tezos_data_encoding`               | Integration with `tezos_data_encoding` traits |
-| `testing`       | ❌       | `crypto`, `tezos_smart_rollup_mock` | Enables `MockHost` for writing tests          |
+| `crypto`        | ✅       | `mavryk_crypto_rs`                   | Integration with `mavryk_crypto_rs` types      |
+| `bls`           | ✅       | `mavryk_crypto_rs/bls`               | Dac Certificate signature verification        |
+| `data-encoding` | ✅       | `mavryk_data_encoding`               | Integration with `mavryk_data_encoding` traits |
+| `testing`       | ❌       | `crypto`, `mavryk_smart_rollup_mock` | Enables `MockHost` for writing tests          |
 
 ## Usage
 
@@ -79,13 +79,13 @@ rust-version = "1.71.1"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-tezos-smart-rollup = "0.2.2"
-tezos_data_encoding = "0.5"
-tezos_crypto_rs = { version = "0.5", default-features = false }
+mavryk-smart-rollup = "0.2.2"
+mavryk_data_encoding = "0.5"
+mavryk_crypto_rs = { version = "0.5", default-features = false }
 nom = "7.1"
 
 [dev-dependencies]
-tezos-smart-rollup = { version = "0.2.0", features = ["testing"] }
+mavryk-smart-rollup = { version = "0.2.0", features = ["testing"] }
 ```
 
 Note that the `cdylib` crate type is required to enable compilation to wasm.
@@ -94,8 +94,8 @@ The following `lib.rs` file could then be used to get started with a 'hello kern
 This kernel will run once per inbox level.
 
 ```rust
-use tezos_smart_rollup::prelude::*;
-use tezos_smart_rollup::kernel_entry;
+use mavryk_smart_rollup::prelude::*;
+use mavryk_smart_rollup::kernel_entry;
 
 kernel_entry!(hello_kernel);
 
@@ -117,14 +117,14 @@ Often, large `.wasm` files are produced. The size of these can be significantly 
 wasm-strip kernel.wasm
 ```
 
-You can test this kernel by using the [`octez-smart-rollup-wasm-debugger`](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel).
+You can test this kernel by using the [`mavkit-smart-rollup-wasm-debugger`](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel).
 
 ```shell
 # Create an empty inputs.json file - the 'hello world' kernel does not read inputs.
 echo '[[], []]' > inputs.json
 
 # Run the kernel:
-octez-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
+mavkit-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
 ```
 
 Once in the debugger, you can run the following commands to test the kernel:

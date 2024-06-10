@@ -26,9 +26,9 @@
 module Make
     (RPC_client : RPC_client.S) (P : sig
       val authenticate :
-        Tezos_crypto.Signature.Public_key_hash.t list ->
+        Mavryk_crypto.Signature.Public_key_hash.t list ->
         Bytes.t ->
-        Tezos_crypto.Signature.t tzresult Lwt.t
+        Mavryk_crypto.Signature.t tzresult Lwt.t
 
       val logger : RPC_client.logger
     end) : Client_keys.SIGNER

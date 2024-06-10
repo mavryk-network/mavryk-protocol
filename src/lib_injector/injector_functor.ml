@@ -145,7 +145,7 @@ module Make (Parameters : PARAMETERS) = struct
     included_in_blocks : included_l1_op_content Included_in_blocks.t;
   }
 
-  type protocols = Tezos_shell_services.Chain_services.Blocks.protocols = {
+  type protocols = Mavryk_shell_services.Chain_services.Blocks.protocols = {
     current_protocol : Protocol_hash.t;
     next_protocol : Protocol_hash.t;
   }
@@ -239,7 +239,7 @@ module Make (Parameters : PARAMETERS) = struct
     let open Lwt_result_syntax in
     let* signers = List.map_ep (get_signer cctxt) signers in
     let* () =
-      Tezos_signer_backends.Encrypted.decrypt_list
+      Mavryk_signer_backends.Encrypted.decrypt_list
         cctxt
         (List.map (fun k -> k.alias) signers)
     in
@@ -368,7 +368,7 @@ module Make (Parameters : PARAMETERS) = struct
       {level = injection_level; inj_ops = List.map fst infos; signer_pkh}
 
   (** [add_included_operations state oph l1_block l1_level operations] marks the
-    [operations] as included (in the L1 batch [oph]) in the Tezos block
+    [operations] as included (in the L1 batch [oph]) in the Mavryk block
     [l1_block] of level [l1_level]. *)
   let add_included_operations state l1_block l1_level
       (operations : injected_info list) =
@@ -595,7 +595,7 @@ module Make (Parameters : PARAMETERS) = struct
         Unsigned_op.value
     in
     let* oph =
-      Tezos_shell_services.Shell_services.Injection.operation
+      Mavryk_shell_services.Shell_services.Injection.operation
         state.cctxt
         ~chain:state.cctxt#chain
         signed_op_bytes
@@ -746,7 +746,7 @@ module Make (Parameters : PARAMETERS) = struct
       | None ->
           (* Should not happen as head monitoring fills in values *)
           let+ header =
-            Tezos_shell_services.Shell_services.Blocks.Header.shell_header
+            Mavryk_shell_services.Shell_services.Blocks.Header.shell_header
               state.cctxt
               ~chain:`Main
               ~block:(`Head 0)
@@ -860,7 +860,7 @@ module Make (Parameters : PARAMETERS) = struct
         protos_cache
         block_hash
         (fun block_hash ->
-          Tezos_shell_services.Shell_services.Blocks.protocols
+          Mavryk_shell_services.Shell_services.Blocks.protocols
             state.cctxt
             ~chain:state.cctxt#chain
             ~block:(`Hash (block_hash, 0))
@@ -944,7 +944,7 @@ module Make (Parameters : PARAMETERS) = struct
         blocks_ops_cache
         block_hash
         (fun block_hash ->
-          Tezos_shell_services.Shell_services.Blocks.Operation_hashes
+          Mavryk_shell_services.Shell_services.Blocks.Operation_hashes
           .operation_hashes_in_pass
             state.cctxt
             ~chain:state.cctxt#chain
@@ -1052,20 +1052,20 @@ module Make (Parameters : PARAMETERS) = struct
         | Forget -> return_unit)
       (List.rev expired_infos)
 
-  (** [on_new_tezos_head state head] is called when there is a new Tezos
+  (** [on_new_mavryk_head state head] is called when there is a new Mavryk
       head. It first reverts any blocks that are in the alternative branch of
       the reorganization and then registers the effect of the new branch (the
       newly included operation and confirmed operations).  *)
-  let on_new_tezos_head state
+  let on_new_mavryk_head state
       ({block_hash = head_hash; level = head_level} as head) =
     let open Lwt_result_syntax in
-    let*! () = Event.(emit1 new_tezos_head) state head_hash in
+    let*! () = Event.(emit1 new_mavryk_head) state head_hash in
     let*! reorg =
       match state.last_seen_head with
       | None ->
           return {Reorg.no_reorg with new_chain = [(head_hash, head_level)]}
       | Some last_head ->
-          Layer_1.get_tezos_reorg_for_new_head
+          Layer_1.get_mavryk_reorg_for_new_head
             state.l1_ctxt
             (`Head (last_head.block_hash, last_head.level))
             (head_hash, head_level)
@@ -1180,8 +1180,8 @@ module Make (Parameters : PARAMETERS) = struct
           (* The execution of the request handler is protected to avoid stopping the
              worker in case of an exception. *)
           protect @@ fun () -> add_pending_operation state op
-      | Request.New_tezos_head (block_hash, level) ->
-          protect @@ fun () -> on_new_tezos_head state {block_hash; level}
+      | Request.New_mavryk_head (block_hash, level) ->
+          protect @@ fun () -> on_new_mavryk_head state {block_hash; level}
       | Request.Inject -> protect @@ fun () -> on_inject state
 
     type launch_error = error trace
@@ -1226,7 +1226,7 @@ module Make (Parameters : PARAMETERS) = struct
       in
       match r with
       | Request.Add_pending _ -> emit_and_return_errors errs
-      | Request.New_tezos_head _ -> emit_and_return_errors errs
+      | Request.New_mavryk_head _ -> emit_and_return_errors errs
       | Request.Inject -> emit_and_return_errors errs
 
     let on_completion w r _ st =
@@ -1283,19 +1283,19 @@ module Make (Parameters : PARAMETERS) = struct
         else Lwt.return_unit)
       workers
 
-  let notify_new_tezos_head h =
+  let notify_new_mavryk_head h =
     let open Lwt_syntax in
     let workers = Worker.list table in
     List.iter_p
       (fun (_signer, w) ->
         let* (_pushed : bool) =
-          Worker.Queue.push_request w (Request.New_tezos_head h)
+          Worker.Queue.push_request w (Request.New_mavryk_head h)
         in
         return_unit)
       workers
 
   let protocols_of_head cctxt =
-    Tezos_shell_services.Shell_services.Blocks.protocols
+    Mavryk_shell_services.Shell_services.Blocks.protocols
       cctxt
       ~chain:cctxt#chain
       ~block:(`Head 0)
@@ -1326,7 +1326,7 @@ module Make (Parameters : PARAMETERS) = struct
         proto_level
         (fun _proto_level ->
           let+ protos =
-            Tezos_shell_services.Shell_services.Blocks.protocols
+            Mavryk_shell_services.Shell_services.Blocks.protocols
               cctxt
               ~chain:cctxt#chain
               ~block:(`Hash (block_hash, 0))
@@ -1344,8 +1344,8 @@ module Make (Parameters : PARAMETERS) = struct
         next_protocol_of_block (cctxt :> Client_context.full) (head_hash, header)
       in
       update_protocol ~next_protocol ;
-      (* Notify all workers of a new Tezos head *)
-      let*! () = notify_new_tezos_head head in
+      (* Notify all workers of a new Mavryk head *)
+      let*! () = notify_new_mavryk_head head in
       return_unit
     in
     (* Ignore errors *)

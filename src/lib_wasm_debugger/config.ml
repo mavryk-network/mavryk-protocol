@@ -23,11 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_protocol_alpha
+open Mavryk_protocol_alpha
 
 let default_sender = Protocol.Contract_hash.zero
 
-let default_source = Tezos_crypto.Signature.Public_key_hash.zero
+let default_source = Mavryk_crypto.Signature.Public_key_hash.zero
 
 let default_destination = Protocol.Alpha_context.Sc_rollup.Address.zero
 
@@ -39,7 +39,7 @@ let default_kernel_debug = false
 
 type config = {
   sender : Protocol.Contract_hash.t;
-  source : Tezos_crypto.Signature.public_key_hash;
+  source : Mavryk_crypto.Signature.public_key_hash;
   destination : Protocol.Alpha_context.Sc_rollup.t;
   preimage_directory : string;
   dal_pages_directory : string;

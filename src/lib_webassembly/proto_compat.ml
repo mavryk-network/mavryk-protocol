@@ -23,5 +23,5 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Compare = Tezos_stdlib.Compare
-module Error_monad = Tezos_error_monad.TzLwtreslib.Monad
+module Compare = Mavryk_stdlib.Compare
+module Error_monad = Mavryk_error_monad.TzLwtreslib.Monad

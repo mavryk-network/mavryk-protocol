@@ -31,7 +31,7 @@
     Subject:      Lexing and parsing functions for Micheline terms.
 *)
 
-open Tezos_micheline
+open Mavryk_micheline
 
 (****************************************************************************)
 (* Token value   *)

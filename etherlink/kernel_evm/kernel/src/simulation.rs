@@ -18,11 +18,11 @@ use crate::{
 use evm_execution::{account_storage, handler::ExecutionOutcome, precompiles};
 use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Rlp};
-use tezos_ethereum::block::BlockConstants;
-use tezos_ethereum::rlp_helpers::{decode_field, decode_option, next};
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_ethereum::rlp_helpers::{decode_field, decode_option, next};
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 // SIMULATION/SIMPLE/RLP_ENCODED_SIMULATION
 pub const SIMULATION_SIMPLE_TAG: u8 = 1;
@@ -418,10 +418,10 @@ pub fn start_simulation_mode<Host: Runtime>(
 mod tests {
 
     use primitive_types::H256;
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         block::BlockConstants, transaction::TransactionType, tx_signature::TxSignature,
     };
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use crate::{current_timestamp, retrieve_base_fee_per_gas, retrieve_chain_id};
 

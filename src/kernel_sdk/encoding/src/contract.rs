@@ -11,10 +11,10 @@ use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::sequence::delimited;
 use nom::sequence::preceded;
-use tezos_data_encoding::enc::{self, BinResult, BinWriter};
-use tezos_data_encoding::encoding::{Encoding, HasEncoding};
-use tezos_data_encoding::has_encoding;
-use tezos_data_encoding::nom::{NomReader, NomResult};
+use mavryk_data_encoding::enc::{self, BinResult, BinWriter};
+use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+use mavryk_data_encoding::has_encoding;
+use mavryk_data_encoding::nom::{NomReader, NomResult};
 
 use super::public_key_hash::PublicKeyHash;
 

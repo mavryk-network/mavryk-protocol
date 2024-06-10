@@ -23,25 +23,25 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_dal_node_services
+open Mavryk_dal_node_services
 
 class type cctxt =
   object
-    inherit Tezos_rpc.Context.generic
+    inherit Mavryk_rpc.Context.generic
   end
 
 class unix_cctxt ~rpc_config : cctxt =
   object
     inherit
-      Tezos_rpc_http_client_unix.RPC_client_unix.http_ctxt
+      Mavryk_rpc_http_client_unix.RPC_client_unix.http_ctxt
         rpc_config
-        (Tezos_rpc_http.Media_type.Command_line.of_command_line
+        (Mavryk_rpc_http.Media_type.Command_line.of_command_line
            rpc_config.media_type)
   end
 
 let make_unix_cctxt endpoint =
   let rpc_config =
-    {Tezos_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
+    {Mavryk_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
   in
   new unix_cctxt ~rpc_config
 

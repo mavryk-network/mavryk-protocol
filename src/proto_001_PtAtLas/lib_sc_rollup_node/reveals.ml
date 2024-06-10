@@ -74,7 +74,7 @@ let get ~dac_client ~data_dir ~pvm_kind hash =
   let open Lwt_result_syntax in
   let* contents =
     let filename =
-      path data_dir (Octez_smart_rollup.Kind.to_string pvm_kind) hash
+      path data_dir (Mavkit_smart_rollup.Kind.to_string pvm_kind) hash
     in
     let* file_contents = file_contents filename in
     match file_contents with

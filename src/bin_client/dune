@@ -3,44 +3,44 @@
 
 (executables
  (names main_client main_admin)
- (public_names octez-client octez-admin-client)
- (package octez-client)
+ (public_names mavkit-client mavkit-admin-client)
+ (package mavkit-client)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.clic
-  octez-libs.rpc-http-client
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-shell-libs.client-commands
-  octez-shell-libs.mockup-commands
-  octez-shell-libs.proxy
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.signer-backends.unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.clic
+  mavkit-libs.rpc-http-client
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-commands
+  mavkit-shell-libs.mockup-commands
+  mavkit-shell-libs.proxy
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.signer-backends.unix
   uri
-  (select void_for_linking-tezos-client-genesis from
-   (tezos-client-genesis -> void_for_linking-tezos-client-genesis.empty)
-   (-> void_for_linking-tezos-client-genesis.empty))
-  (select void_for_linking-tezos-client-demo-counter from
-   (tezos-client-demo-counter -> void_for_linking-tezos-client-demo-counter.empty)
-   (-> void_for_linking-tezos-client-demo-counter.empty))
-  (select void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client from
-   (octez-protocol-000-Ps9mPmXa-libs.client -> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty)
-   (-> void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty))
-  octez-protocol-001-PtAtLas-libs.client.commands-registration
-  octez-protocol-001-PtAtLas-libs.baking-commands.registration
-  octez-protocol-001-PtAtLas-libs.plugin
-  (select void_for_linking-octez-protocol-alpha-libs-client-commands-registration from
-   (octez-protocol-alpha-libs.client.commands-registration -> void_for_linking-octez-protocol-alpha-libs-client-commands-registration.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-client-commands-registration.empty))
-  (select void_for_linking-octez-protocol-alpha-libs-baking-commands-registration from
-   (octez-protocol-alpha-libs.baking-commands.registration -> void_for_linking-octez-protocol-alpha-libs-baking-commands-registration.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-baking-commands-registration.empty))
-  (select void_for_linking-octez-protocol-alpha-libs-plugin from
-   (octez-protocol-alpha-libs.plugin -> void_for_linking-octez-protocol-alpha-libs-plugin.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-plugin.empty)))
+  (select void_for_linking-mavryk-client-genesis from
+   (mavryk-client-genesis -> void_for_linking-mavryk-client-genesis.empty)
+   (-> void_for_linking-mavryk-client-genesis.empty))
+  (select void_for_linking-mavryk-client-demo-counter from
+   (mavryk-client-demo-counter -> void_for_linking-mavryk-client-demo-counter.empty)
+   (-> void_for_linking-mavryk-client-demo-counter.empty))
+  (select void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client from
+   (mavkit-protocol-000-Ps9mPmXa-libs.client -> void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty)
+   (-> void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty))
+  mavkit-protocol-001-PtAtLas-libs.client.commands-registration
+  mavkit-protocol-001-PtAtLas-libs.baking-commands.registration
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  (select void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration from
+   (mavkit-protocol-alpha-libs.client.commands-registration -> void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration.empty))
+  (select void_for_linking-mavkit-protocol-alpha-libs-baking-commands-registration from
+   (mavkit-protocol-alpha-libs.baking-commands.registration -> void_for_linking-mavkit-protocol-alpha-libs-baking-commands-registration.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-baking-commands-registration.empty))
+  (select void_for_linking-mavkit-protocol-alpha-libs-plugin from
+   (mavkit-protocol-alpha-libs.plugin -> void_for_linking-mavkit-protocol-alpha-libs-plugin.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-plugin.empty)))
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -48,36 +48,36 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_rpc_http_client
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_commands
-  -open Tezos_mockup_commands
-  -open Tezos_client_base_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_rpc_http_client
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_commands
+  -open Mavryk_mockup_commands
+  -open Mavryk_client_base_unix))
 
 (rule
  (action
   (progn
-   (write-file void_for_linking-tezos-client-genesis.empty "")
-   (write-file void_for_linking-tezos-client-demo-counter.empty "")
-   (write-file void_for_linking-octez-protocol-000-Ps9mPmXa-libs-client.empty "")
-   (write-file void_for_linking-octez-protocol-alpha-libs-client-commands-registration.empty "")
-   (write-file void_for_linking-octez-protocol-alpha-libs-baking-commands-registration.empty "")
-   (write-file void_for_linking-octez-protocol-alpha-libs-plugin.empty ""))))
+   (write-file void_for_linking-mavryk-client-genesis.empty "")
+   (write-file void_for_linking-mavryk-client-demo-counter.empty "")
+   (write-file void_for_linking-mavkit-protocol-000-Ps9mPmXa-libs-client.empty "")
+   (write-file void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration.empty "")
+   (write-file void_for_linking-mavkit-protocol-alpha-libs-baking-commands-registration.empty "")
+   (write-file void_for_linking-mavkit-protocol-alpha-libs-plugin.empty ""))))
 
 (install
- (package octez-client)
+ (package mavkit-client)
  (section bin)
- (files (octez-init-sandboxed-client.sh as octez-init-sandboxed-client.sh)))
+ (files (mavkit-init-sandboxed-client.sh as mavkit-init-sandboxed-client.sh)))
 
 (rule
  (alias runtest_compile_protocol)
  (deps (source_tree test/proto_test_injection))
  (action
   (run
-   %{bin:octez-protocol-compiler}
+   %{bin:mavkit-protocol-compiler}
    -no-hash-check
    -warn-error +a
    test/proto_test_injection/)))

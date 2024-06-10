@@ -9,9 +9,9 @@ FROM ${BUILD_IMAGE}:${BUILD_IMAGE_VERSION} as builder
 
 FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as intermediate
 # Pull in built binaries
-COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/bin /home/tezos/bin
+COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/bin /home/tezos/bin
 # Add parameters for active protocols
-COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/parameters /home/tezos/scripts/
+COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/parameters /home/tezos/scripts/
 # Add EVM kernel artifacts
 RUN mkdir -p /home/tezos/scripts/evm_kernel
 COPY --chown=tezos:nogroup --from=builder /home/tezos/evm_kernel/evm_installer.wasm* /home/tezos/evm_kernel/_evm_installer_preimages* /home/tezos/scripts/evm_kernel/
@@ -25,10 +25,10 @@ COPY --chown=tezos:nogroup scripts/alphanet_version src/bin_client/bash-completi
 FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
 COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin /home/tezos/bin
 # Remove scripts and symlinks pointing to potentially non-existing smart-rollup-node
-RUN rm /home/tezos/bin/*.sh && rm /home/tezos/bin/octez-smart-rollup-node-*
+RUN rm /home/tezos/bin/*.sh && rm /home/tezos/bin/mavkit-smart-rollup-node-*
 RUN chmod +rw /home/tezos/bin/* && strip /home/tezos/bin/*
 # hadolint ignore=DL3003,DL4006,SC2046
-RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+RUN cd /home/tezos/bin && for b in $(ls mavkit*); do ln -s "$b" $(echo "$b" | sed 's/^mavkit/mavryk/'); done
 
 FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare
 ARG BUILD_IMAGE

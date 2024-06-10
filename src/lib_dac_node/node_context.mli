@@ -49,10 +49,10 @@ module Coordinator : sig
   (** [public_keys_opt t] returns the list of public keys associated with the
       data availability committee of [t]. *)
   val public_keys_opt :
-    t -> Tezos_crypto.Aggregate_signature.public_key option list
+    t -> Mavryk_crypto.Aggregate_signature.public_key option list
 
   val committee_members :
-    t -> Tezos_crypto.Aggregate_signature.public_key_hash list
+    t -> Mavryk_crypto.Aggregate_signature.public_key_hash list
 end
 
 (** [Committee_member] defines a partial [Node_context.t] that is available
@@ -134,8 +134,8 @@ val get_status : t -> status
     [Node_context.t]. *)
 val get_mode : t -> mode
 
-(** [get_tezos_node_cctxt ctxt] returns the Mavryk node's client context. *)
-val get_tezos_node_cctxt : t -> Client_context.full
+(** [get_mavryk_node_cctxt ctxt] returns the Mavryk node's client context. *)
+val get_mavryk_node_cctxt : t -> Client_context.full
 
 (** [get_dac_plugin ctxt] returns the [Dac_plugin.t] used in the node context.
     Fails with [Node_not_ready] when [Node_context.status] is not [Ready]. *)

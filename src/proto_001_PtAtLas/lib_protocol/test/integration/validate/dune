@@ -6,29 +6,29 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-alcotezt
-  octez-libs.base
-  tezos-protocol-001-PtAtLas.protocol
+  mavkit-alcotezt
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
   qcheck-alcotest
-  octez-protocol-001-PtAtLas-libs.client
-  octez-libs.test-helpers
-  octez-protocol-001-PtAtLas-libs.test-helpers
-  octez-libs.base-test-helpers
-  octez-protocol-001-PtAtLas-libs.plugin)
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-libs.test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-libs.base-test-helpers
+  mavkit-protocol-001-PtAtLas-libs.plugin)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_test_helpers
-  -open Tezos_001_PtAtLas_test_helpers
-  -open Tezos_base_test_helpers
-  -open Tezos_protocol_plugin_001_PtAtLas)
+  -open Mavkit_alcotezt
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_test_helpers
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_protocol_plugin_001_PtAtLas)
  (modules
   generator_descriptors
   generators
@@ -55,7 +55,7 @@
 
 (rule
  (alias runtest)
- (package tezos-protocol-001-PtAtLas-tests)
+ (package mavryk-protocol-001-PtAtLas-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

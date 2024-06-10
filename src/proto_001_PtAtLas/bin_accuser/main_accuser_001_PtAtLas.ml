@@ -26,13 +26,13 @@
 
 let () =
   Client_commands.register Protocol.hash @@ fun _network ->
-  List.map (Tezos_clic.map_command (new Protocol_client_context.wrap_full))
+  List.map (Mavryk_clic.map_command (new Protocol_client_context.wrap_full))
   @@ Baking_commands.accuser_commands ()
 
 let select_commands _ _ =
   return
     (List.map
-       (Tezos_clic.map_command (new Protocol_client_context.wrap_full))
+       (Mavryk_clic.map_command (new Protocol_client_context.wrap_full))
        (Baking_commands.accuser_commands ()))
 
 let () = Client_main_run.run (module Daemon_config) ~select_commands

@@ -11,6 +11,6 @@ let block_to_string bytes =
     construct Ethereum_types.block_encoding decoded |> to_string)
 
 let () =
-  Octez_smart_rollup_wasm_debugger_plugin.Encodings.register
+  Mavkit_smart_rollup_wasm_debugger_plugin.Encodings.register
     "evm.block"
     block_to_string

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** An implementation of {!Tezos_protocol_environment.PROTOCOL} used
+(** An implementation of {!Mavryk_protocol_environment.PROTOCOL} used
     in tests. It sets all types to [unit] and implement all functions
     as [assert false]. Users of this module should [include] it
     and override the functions they need. *)
@@ -39,7 +39,7 @@ module Mock_all_unit :
   type block_header_data = unit
 
   type operation = {
-    shell : Tezos_base.Operation.shell_header;
+    shell : Mavryk_base.Operation.shell_header;
     protocol_data : block_header_data;
   }
 
@@ -50,7 +50,7 @@ module Mock_all_unit :
   type block_header_metadata = unit
 
   type block_header = {
-    shell : Tezos_base.Block_header.shell_header;
+    shell : Mavryk_base.Block_header.shell_header;
     protocol_data : block_header_data;
   }
 
@@ -68,12 +68,12 @@ module Mock_all_unit :
     | Application of block_header
     | Partial_validation of block_header
     | Construction of {
-        predecessor_hash : Tezos_crypto.Hashed.Block_hash.t;
+        predecessor_hash : Mavryk_crypto.Hashed.Block_hash.t;
         timestamp : Time.Protocol.t;
         block_header_data : block_header_data;
       }
     | Partial_construction of {
-        predecessor_hash : Tezos_crypto.Hashed.Block_hash.t;
+        predecessor_hash : Mavryk_crypto.Hashed.Block_hash.t;
         timestamp : Time.Protocol.t;
       }
 
@@ -89,7 +89,7 @@ module Mock_all_unit :
 
   let finalize_application _ = assert false
 
-  let rpc_services = Tezos_rpc.Directory.empty
+  let rpc_services = Mavryk_rpc.Directory.empty
 
   let compare_operations _ = assert false
 
@@ -138,19 +138,19 @@ module Mock_all_unit :
     type validation_info = unit
 
     type conflict_handler =
-      existing_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
-      new_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
+      existing_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
+      new_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
       [`Keep | `Replace]
 
     type operation_conflict =
       | Operation_conflict of {
-          existing : Tezos_crypto.Hashed.Operation_hash.t;
-          new_operation : Tezos_crypto.Hashed.Operation_hash.t;
+          existing : Mavryk_crypto.Hashed.Operation_hash.t;
+          new_operation : Mavryk_crypto.Hashed.Operation_hash.t;
         }
 
     type add_result =
       | Added
-      | Replaced of {removed : Tezos_crypto.Hashed.Operation_hash.t}
+      | Replaced of {removed : Mavryk_crypto.Hashed.Operation_hash.t}
       | Unchanged
 
     type add_error =

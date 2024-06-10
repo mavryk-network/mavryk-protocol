@@ -28,17 +28,17 @@ open Protocol
 
 let group =
   {
-    Tezos_clic.name = "scripts";
+    Mavryk_clic.name = "scripts";
     title = "Commands for managing the library of known scripts";
   }
 
-open Tezos_micheline
+open Mavryk_micheline
 open Client_proto_programs
 open Client_proto_args
 open Client_proto_contracts
 
 let commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let show_types_switch =
     switch
       ~long:"details"
@@ -588,7 +588,7 @@ let commands () =
          would have produced.\n\
          Also displays the result of hashing this packed data with `BLAKE2B`, \
          `SHA256` or `SHA512` instruction."
-      (args2 run_gas_limit_arg (Tezos_clic_unix.Scriptable.clic_arg ()))
+      (args2 run_gas_limit_arg (Mavryk_clic_unix.Scriptable.clic_arg ()))
       (prefixes ["hash"; "data"]
       @@ param ~name:"data" ~desc:"the data to hash" data_parameter
       @@ prefixes ["of"; "type"]
@@ -621,8 +621,8 @@ let commands () =
                       Hex.pp
                       (Hex.of_bytes (Script_expr_hash.to_bytes hash)) );
                   ( "Ledger Blake2b hash",
-                    Tezos_crypto.Base58.raw_encode
-                      Tezos_crypto.Blake2B.(hash_bytes [bytes] |> to_string) );
+                    Mavryk_crypto.Base58.raw_encode
+                      Mavryk_crypto.Blake2B.(hash_bytes [bytes] |> to_string) );
                   ( "Raw Sha256 hash",
                     asprintf
                       "0x%a"
@@ -637,7 +637,7 @@ let commands () =
                     asprintf "%a" Alpha_context.Gas.pp remaining_gas );
                 ]
             in
-            Tezos_clic_unix.Scriptable.output
+            Mavryk_clic_unix.Scriptable.output
               scriptable
               ~for_human:(fun () ->
                 let*! () =
@@ -665,7 +665,7 @@ let commands () =
       (args3
          enforce_indentation_flag
          display_names_flag
-         (Tezos_clic_unix.Scriptable.clic_arg ()))
+         (Mavryk_clic_unix.Scriptable.clic_arg ()))
       (prefixes ["hash"; "script"]
       @@ seq_of_param
       @@ file_or_literal_with_origin_param ())
@@ -715,7 +715,7 @@ let commands () =
                 expr_strings
             in
             let hash_name_rows = List.rev hash_name_rows_rev in
-            Tezos_clic_unix.Scriptable.output
+            Mavryk_clic_unix.Scriptable.output
               scriptable
               ~for_human:(fun () ->
                 let*! () =

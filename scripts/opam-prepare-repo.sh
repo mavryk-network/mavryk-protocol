@@ -6,9 +6,9 @@ script_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 
 usage="Usage: $0 <VERSION_NUMBER> <TARBALL_URL_OR_PATH> [OPAM_REPOSITORY_CLONE_DIR]
 
-Example: $0 11.0 https://gitlab.com/tezos/tezos/-/archive/v11.0/tezos-v11.0.tar.bz2
+Example: $0 11.0 https://gitlab.com/tezos/tezos/-/archive/v11.0/mavryk-v11.0.tar.bz2
 
-This script creates an opam-repository with all tezos opam packages.
+This script creates an opam-repository with all mavryk opam packages.
 
 Default value for OPAM_REPOSITORY_CLONE_DIR is 'opam-repository'.
 
@@ -41,7 +41,7 @@ else
     exit 1
 fi
 
-tarball_copy=$(mktemp tezos_tarball.XXXXXXXX --tmpdir)
+tarball_copy=$(mktemp mavryk_tarball.XXXXXXXX --tmpdir)
 
 clean_tarball() {
     log "Cleaning up..."

@@ -2,22 +2,22 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmark_type_inference_001_PtAtLas)
- (public_name tezos-benchmark-type-inference-001-PtAtLas)
+ (name mavryk_benchmark_type_inference_001_PtAtLas)
+ (public_name mavryk-benchmark-type-inference-001-PtAtLas)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.error-monad
-  octez-libs.crypto
-  octez-libs.micheline
-  tezos-micheline-rewriting
-  tezos-protocol-001-PtAtLas.protocol
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
+  mavkit-libs.micheline
+  mavryk-micheline-rewriting
+  mavryk-protocol-001-PtAtLas.protocol
   hashcons)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_crypto
-  -open Tezos_micheline
-  -open Tezos_micheline_rewriting
-  -open Tezos_protocol_001_PtAtLas))
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_crypto
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_protocol_001_PtAtLas))

@@ -37,12 +37,12 @@ module type T = sig
     type info
 
     val init :
-      Tezos_protocol_environment.Context.t ->
-      head:Tezos_base.Block_header.shell_header ->
+      Mavryk_protocol_environment.Context.t ->
+      head:Mavryk_base.Block_header.shell_header ->
       info tzresult Lwt.t
 
     val flush :
-      info -> head:Tezos_base.Block_header.shell_header -> info tzresult Lwt.t
+      info -> head:Mavryk_base.Block_header.shell_header -> info tzresult Lwt.t
 
     val syntactic_check : operation -> [`Well_formed | `Ill_formed] Lwt.t
 
@@ -80,7 +80,7 @@ module type RPC = sig
   module Proto : Registered_protocol.T
 
   val rpc_services :
-    Tezos_protocol_environment.rpc_context Tezos_rpc.Directory.directory
+    Mavryk_protocol_environment.rpc_context Mavryk_rpc.Directory.directory
 end
 
 module No_plugin (Proto : Registered_protocol.T) :

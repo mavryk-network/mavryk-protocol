@@ -5,7 +5,7 @@
 
 //! Types & encodings for the *inbox-half* of the *L1/L2 communication protocol*
 //!
-//! In *general*, this module is a re-implementation of the tezos-protocol
+//! In *general*, this module is a re-implementation of the mavryk-protocol
 //! [inbox message repr].
 //!
 //! [inbox message repr]: <https://gitlab.com/tezos/tezos/-/blob/9028b797894a5d9db38bc61a20abb793c3778316/src/proto_alpha/lib_protocol/sc_rollup_inbox_message_repr.mli>
@@ -15,7 +15,7 @@ use crypto::hash::ContractTz1Hash;
 use num_bigint::{BigInt, TryFromBigIntError};
 use thiserror::Error;
 
-use tezos_smart_rollup_encoding::michelson::ticket::StringTicket;
+use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
 
 pub mod external;
 pub mod sendable;
@@ -47,7 +47,7 @@ mod test {
     use crypto::hash::ContractKt1Hash;
     use crypto::hash::HashTrait;
 
-    use tezos_smart_rollup_encoding::{
+    use mavryk_smart_rollup_encoding::{
         contract::Contract,
         inbox::InboxMessage,
         inbox::InternalInboxMessage,

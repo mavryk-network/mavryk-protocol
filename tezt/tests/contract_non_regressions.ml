@@ -34,7 +34,7 @@
 (* Normally "--base-dir" would appear in regression logs. However, since
    it is a different dir on every run, we need to mask it in regression
    logs so that it doesn't cause false differences. *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let register262 =
   Protocol.register_test

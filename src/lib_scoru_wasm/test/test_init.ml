@@ -27,10 +27,10 @@
     -------
     Component:    Lib_scoru_wasm
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_init.ml
-    Subject:      Init tests for the tezos-scoru-wasm library
+    Subject:      Init tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Wasm_utils
 open Tztest_helper
 

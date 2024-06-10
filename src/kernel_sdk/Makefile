@@ -36,34 +36,34 @@ check: installer-template publish-check doc riscv-check
 # on all.
 .PHONY: publish-check
 publish-check: installer-template
-	@cargo check -p tezos-smart-rollup-core
-	@cargo check -p tezos-smart-rollup-host
-	@cargo check -p tezos-smart-rollup-debug
-	@cargo check -p tezos-smart-rollup-panic-hook
-	@cargo check -p tezos-smart-rollup-entrypoint
-	@cargo check -p tezos-smart-rollup-encoding
-	@cargo check -p tezos-smart-rollup-storage
-	@cargo check -p tezos-smart-rollup-mock
-	@cargo check -p tezos-smart-rollup-installer-config
-	@cargo check -p tezos-smart-rollup-installer
-	@cargo check -p tezos-smart-rollup
+	@cargo check -p mavryk-smart-rollup-core
+	@cargo check -p mavryk-smart-rollup-host
+	@cargo check -p mavryk-smart-rollup-debug
+	@cargo check -p mavryk-smart-rollup-panic-hook
+	@cargo check -p mavryk-smart-rollup-entrypoint
+	@cargo check -p mavryk-smart-rollup-encoding
+	@cargo check -p mavryk-smart-rollup-storage
+	@cargo check -p mavryk-smart-rollup-mock
+	@cargo check -p mavryk-smart-rollup-installer-config
+	@cargo check -p mavryk-smart-rollup-installer
+	@cargo check -p mavryk-smart-rollup
 
 .PHONY: riscv-check
 riscv-check:
-	@cargo check -p tezos-smart-rollup-core $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup-host $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup-debug $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup-panic-hook $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup-entrypoint $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup-encoding $(RISCV_OPTS)
-	# @cargo check -p tezos-smart-rollup-storage $(RISCV_OPTS)
-	# @cargo check -p tezos-smart-rollup-mock $(RISCV_OPTS)
-	@cargo check -p tezos-smart-rollup --target riscv64gc-unknown-none-elf --no-default-features --features proto-alpha-no-mock
+	@cargo check -p mavryk-smart-rollup-core $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-host $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-debug $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-panic-hook $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-entrypoint $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-encoding $(RISCV_OPTS)
+	# @cargo check -p mavryk-smart-rollup-storage $(RISCV_OPTS)
+	# @cargo check -p mavryk-smart-rollup-mock $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup --target riscv64gc-unknown-none-elf --no-default-features --features proto-alpha-no-mock
 
 
 .PHONY: build
 build: installer-template
-	@cargo build -p tezos-smart-rollup-installer \
+	@cargo build -p mavryk-smart-rollup-installer \
                 --release \
                 $(NATIVE_OPT)
 
@@ -107,7 +107,7 @@ publish-deps: build-deps
 # and README copied to sdk/, which are not checked in
 .PHONY: publish
 publish: installer-template
-	@cargo publish-workspace -p 'tezos-smart-rollup-' \
+	@cargo publish-workspace -p 'mavryk-smart-rollup-' \
 	       --exclude installer-kernel \
 	       --target-version $(SDK_VERSION) \
 	       --aligned-versions-only \

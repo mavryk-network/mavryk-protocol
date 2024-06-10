@@ -72,11 +72,11 @@ let () =
   @@ fun node_ctxt () () -> Lwt_result.return node_ctxt.config.sc_rollup_address
 
 let () =
-  Global_directory.register0 Rollup_node_services.Global.current_tezos_head
+  Global_directory.register0 Rollup_node_services.Global.current_mavryk_head
   @@ fun node_ctxt () () -> get_head_hash_opt node_ctxt
 
 let () =
-  Global_directory.register0 Rollup_node_services.Global.current_tezos_level
+  Global_directory.register0 Rollup_node_services.Global.current_mavryk_level
   @@ fun node_ctxt () () -> get_head_level_opt node_ctxt
 
 let () =
@@ -115,7 +115,7 @@ let create_block_watcher_service (node_ctxt : _ Node_context.t) =
         return (Result.to_option head |> Option.join))
       else Lwt_stream.get block_stream
   in
-  Tezos_rpc.Answer.return_stream {next; shutdown}
+  Mavryk_rpc.Answer.return_stream {next; shutdown}
 
 let () =
   Global_directory.gen_register0
@@ -129,7 +129,7 @@ let () =
   match Reference.get node_ctxt.lpc with
   | None -> return_none
   | Some commitment ->
-      let hash = Octez_smart_rollup.Commitment.hash commitment in
+      let hash = Mavkit_smart_rollup.Commitment.hash commitment in
       (* The corresponding level in Store.Commitments.published_at_level is
          available only when the commitment has been published and included
          in a block. *)
@@ -152,7 +152,7 @@ let () =
   match commitment with
   | None -> return_none
   | Some commitment ->
-      let hash = Octez_smart_rollup.Commitment.hash commitment in
+      let hash = Mavkit_smart_rollup.Commitment.hash commitment in
       (* The corresponding level in Store.Commitments.published_at_level is
          available only when the commitment has been published and included
          in a block. *)
@@ -345,16 +345,16 @@ let () =
 
 let top_directory (node_ctxt : _ Node_context.t) =
   List.fold_left
-    (fun dir f -> Tezos_rpc.Directory.merge dir (f node_ctxt))
-    Tezos_rpc.Directory.empty
+    (fun dir f -> Mavryk_rpc.Directory.merge dir (f node_ctxt))
+    Mavryk_rpc.Directory.empty
     [Global_directory.build_directory; Local_directory.build_directory]
 
 let directory node_ctxt =
   let path =
-    Tezos_rpc.Path.(
+    Mavryk_rpc.Path.(
       open_root / "global" / "block" /: Rollup_node_services.Arg.block_id)
   in
-  Tezos_rpc.Directory.register_dynamic_directory
+  Mavryk_rpc.Directory.register_dynamic_directory
     ~descr:"Dynamic protocol specific RPC directory for the rollup node"
     (top_directory node_ctxt)
     path

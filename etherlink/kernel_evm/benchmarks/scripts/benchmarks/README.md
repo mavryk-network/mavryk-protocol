@@ -38,7 +38,7 @@ for the wasm debugger.
 - execute the debugger on the kernel_benchmark using the inbox.
 
 ```
-$ ./octez-smart-rollup-wasm-debugger --kernel kernel_benchmark.wasm --inputs inbox_bench_storage_1.json
+$ ./mavkit-smart-rollup-wasm-debugger --kernel kernel_benchmark.wasm --inputs inbox_bench_storage_1.json
 > load inputs
 Loaded 11 inputs at level 0
 > bench

@@ -1749,7 +1749,7 @@ let () =
   Alcotest_lwt.run "mockup_baking" ~__FILE__
   @@ List.map
        (fun (title, body) ->
-         let open Tezos_base_test_helpers.Tztest in
+         let open Mavryk_base_test_helpers.Tztest in
          (title, [tztest title `Quick body]))
        [
          (Protocol.name ^ ": reaches level 5", test_level_5);

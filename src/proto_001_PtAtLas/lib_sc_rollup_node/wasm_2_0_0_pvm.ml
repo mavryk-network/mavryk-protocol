@@ -40,30 +40,30 @@ module Wasm_2_0_0_proof_format =
     end)
     (struct
       let proof_encoding =
-        Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+        Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
         .tree_proof_encoding
     end)
 
 module type TreeS =
-  Tezos_context_sigs.Context.TREE
+  Mavryk_context_sigs.Context.TREE
     with type key = string list
      and type value = bytes
 
 module Make_wrapped_tree (Tree : TreeS) :
-  Tezos_tree_encoding.TREE with type tree = Tree.tree = struct
-  type Tezos_tree_encoding.tree_instance += PVM_tree of Tree.tree
+  Mavryk_tree_encoding.TREE with type tree = Tree.tree = struct
+  type Mavryk_tree_encoding.tree_instance += PVM_tree of Tree.tree
 
   include Tree
 
   let select = function
     | PVM_tree t -> t
-    | _ -> raise Tezos_tree_encoding.Incorrect_tree_type
+    | _ -> raise Mavryk_tree_encoding.Incorrect_tree_type
 
   let wrap t = PVM_tree t
 end
 
 module Make_backend (Tree : TreeS) =
-  Tezos_scoru_wasm_fast.Pvm.Make (Make_wrapped_tree (Tree))
+  Mavryk_scoru_wasm_fast.Pvm.Make (Make_wrapped_tree (Tree))
 
 (** Durable part of the storage of this PVM. *)
 module type Durable_state = sig
@@ -83,44 +83,44 @@ module type Durable_state = sig
   val list : state -> string -> string list Lwt.t
 
   module Tree_encoding_runner :
-    Tezos_tree_encoding.Runner.S with type tree = state
+    Mavryk_tree_encoding.Runner.S with type tree = state
 end
 
 module Make_durable_state
-    (T : Tezos_tree_encoding.TREE with type tree = Context.tree) :
+    (T : Mavryk_tree_encoding.TREE with type tree = Context.tree) :
   Durable_state with type state = T.tree = struct
-  module Tree_encoding_runner = Tezos_tree_encoding.Runner.Make (T)
+  module Tree_encoding_runner = Mavryk_tree_encoding.Runner.Make (T)
 
   type state = T.tree
 
   let decode_durable tree =
     Tree_encoding_runner.decode
-      Tezos_scoru_wasm.Wasm_pvm.durable_storage_encoding
+      Mavryk_scoru_wasm.Wasm_pvm.durable_storage_encoding
       tree
 
   let value_length tree key_str =
     let open Lwt_syntax in
-    let key = Tezos_scoru_wasm.Durable.key_of_string_exn key_str in
+    let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key_str in
     let* durable = decode_durable tree in
-    let+ res_opt = Tezos_scoru_wasm.Durable.find_value durable key in
-    Option.map Tezos_lazy_containers.Chunked_byte_vector.length res_opt
+    let+ res_opt = Mavryk_scoru_wasm.Durable.find_value durable key in
+    Option.map Mavryk_lazy_containers.Chunked_byte_vector.length res_opt
 
   let lookup tree key_str =
     let open Lwt_syntax in
-    let key = Tezos_scoru_wasm.Durable.key_of_string_exn key_str in
+    let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key_str in
     let* durable = decode_durable tree in
-    let* res_opt = Tezos_scoru_wasm.Durable.find_value durable key in
+    let* res_opt = Mavryk_scoru_wasm.Durable.find_value durable key in
     match res_opt with
     | None -> return_none
     | Some v ->
-        let+ bts = Tezos_lazy_containers.Chunked_byte_vector.to_bytes v in
+        let+ bts = Mavryk_lazy_containers.Chunked_byte_vector.to_bytes v in
         Some bts
 
   let list tree key_str =
     let open Lwt_syntax in
-    let key = Tezos_scoru_wasm.Durable.key_of_string_exn key_str in
+    let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key_str in
     let* durable = decode_durable tree in
-    Tezos_scoru_wasm.Durable.list durable key
+    Mavryk_scoru_wasm.Durable.list durable key
 end
 
 module Durable_state =

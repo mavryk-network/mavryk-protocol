@@ -100,7 +100,7 @@ val format_message :
   tag:string ->
   facility:facility ->
   with_pid:bool ->
-  Tezos_event_logging.Internal_event.level ->
+  Mavryk_event_logging.Internal_event.level ->
   string ->
   string
 
@@ -111,7 +111,7 @@ val syslog :
   ?max_buflen:int ->
   ?timestamp:float ->
   t ->
-  Tezos_event_logging.Internal_event.level ->
+  Mavryk_event_logging.Internal_event.level ->
   string ->
   unit Lwt.t
 

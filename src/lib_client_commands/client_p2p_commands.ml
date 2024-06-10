@@ -25,7 +25,7 @@
 
 let group =
   {
-    Tezos_clic.name = "p2p";
+    Mavryk_clic.name = "p2p";
     title = "Commands for monitoring and controlling p2p-layer state";
   }
 
@@ -33,7 +33,7 @@ let pp_connection_info ppf conn =
   P2p_connection.Info.pp (fun _ _ -> ()) ppf conn
 
 let addr_parameter =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   param
     ~name:"address"
     ~desc:"<IPv4>:PORT or <IPV6>:PORT address (PORT defaults to 9732)."
@@ -41,16 +41,16 @@ let addr_parameter =
          Lwt.return_ok (P2p_point.Id.of_string_exn ~default_port:9732 x)))
 
 let p2p_peer_id_param ~name ~desc t =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc
-    (Tezos_clic.parameter (fun _ str ->
+    (Mavryk_clic.parameter (fun _ str ->
          Lwt.return (P2p_peer.Id.of_b58check str)))
     t
 
 let commands () =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   [
     command
       ~group

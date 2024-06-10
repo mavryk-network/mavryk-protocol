@@ -34,7 +34,7 @@ let equal_metadata ?msg m1 m2 =
     | Some m1, Some m2 -> m1 = m2
     | _ -> false
   in
-  let pp ppf (md : Tezos_store_unix.Store.Block.metadata option) =
+  let pp ppf (md : Mavryk_store_unix.Store.Block.metadata option) =
     let none ppf () = Format.pp_print_string ppf "none" in
     Format.fprintf
       ppf
@@ -72,7 +72,7 @@ let genesis =
   {
     Genesis.block = genesis_hash;
     time = Time.Protocol.epoch;
-    protocol = Tezos_protocol_alpha.Protocol.hash;
+    protocol = Mavryk_protocol_alpha.Protocol.hash;
   }
 
 let default_protocol_constants = Default_parameters.constants_test
@@ -152,9 +152,9 @@ let check_invariants ?(expected_checkpoint = None) ?(expected_savepoint = None)
 
 let dummy_patch_context ctxt =
   let open Lwt_result_syntax in
-  let open Tezos_protocol_alpha in
+  let open Mavryk_protocol_alpha in
   let*! ctxt = Context_ops.add ctxt ["version"] (Bytes.of_string "genesis") in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let proto_params =
     let json =
       Default_parameters.json_of_parameters
@@ -216,7 +216,7 @@ let wrap_store_init ?(patch_context = dummy_patch_context)
     ?(keep_dir = false) ?(with_gc = true) ?block_cache_limit
     ?(manual_close = false) k _ () : unit Lwt.t =
   let open Lwt_result_syntax in
-  let prefix_dir = "tezos_indexed_store_test_" in
+  let prefix_dir = "mavryk_indexed_store_test_" in
   let run f =
     if not keep_dir then Lwt_utils_unix.with_tempdir prefix_dir f
     else
@@ -303,7 +303,7 @@ let wrap_simple_store_init ?(patch_context = dummy_patch_context)
     ?(history_mode = History_mode.default) ?(allow_testchains = true)
     ?(keep_dir = false) ?(with_gc = true) k _ () : unit Lwt.t =
   let open Lwt_result_syntax in
-  let prefix_dir = "tezos_indexed_store_test_" in
+  let prefix_dir = "mavryk_indexed_store_test_" in
   let run f =
     if not keep_dir then Lwt_utils_unix.with_tempdir prefix_dir f
     else
@@ -374,7 +374,7 @@ let make_raw_block ?min_lafl ?(max_operations_ttl = default_max_operations_ttl)
           predecessor = pred_block_hash;
           timestamp = Time.Protocol.(add epoch (Int64.of_int32 level));
           validation_passes =
-            List.length Tezos_protocol_alpha.Protocol.Main.validation_passes;
+            List.length Mavryk_protocol_alpha.Protocol.Main.validation_passes;
           operations_hash = Operation_list_list_hash.zero;
           fitness = [Bytes.create 8];
           context;
@@ -410,7 +410,7 @@ let make_raw_block ?min_lafl ?(max_operations_ttl = default_max_operations_ttl)
                   Data_encoding.(
                     Binary.to_bytes_exn int31 Random.(int (bits ())));
               }))
-      Tezos_protocol_alpha.Protocol.Main.validation_passes
+      Mavryk_protocol_alpha.Protocol.Main.validation_passes
   in
   let metadata =
     Some
@@ -485,7 +485,7 @@ let store_raw_block chain_store ?resulting_context (raw_block : Block_repr.t) =
   in
   let validation_result =
     {
-      Tezos_validation.Block_validation.validation_store =
+      Mavryk_validation.Block_validation.validation_store =
         {
           resulting_context_hash =
             Option.value

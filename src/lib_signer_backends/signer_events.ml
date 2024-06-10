@@ -44,7 +44,7 @@ module Ledger = struct
     declare_2
       ~section
       ~name:"ledger_not_tezos"
-      ~msg:"The device at [{position}] is not a Tezos application {error}"
+      ~msg:"The device at [{position}] is not a Mavryk application {error}"
       ~level:Warning
       ~pp2:Format.pp_print_text
       ("position", Data_encoding.string)

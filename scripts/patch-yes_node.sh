@@ -6,7 +6,7 @@ set -e
 # Patch the node sources:
 # - the cryptographic library to use fake secret keys,
 # - the stresstest command of each protocol that is not frozen to make it work
-#   on Tezos Mainnet
+#   on Mavryk Mainnet
 
 for arg in "$@"
 do

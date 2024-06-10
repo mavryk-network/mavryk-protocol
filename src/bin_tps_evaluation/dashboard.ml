@@ -24,11 +24,11 @@
 (*****************************************************************************)
 
 module Test = struct
-  let benchmark_tps = "tezos_tps_benchmark"
+  let benchmark_tps = "mavryk_tps_benchmark"
 
-  let gas_tps = "tezos_gas_tps"
+  let gas_tps = "mavryk_gas_tps"
 
-  let estimate_average_block = "tezos_tps_estimate_avearage"
+  let estimate_average_block = "mavryk_tps_estimate_avearage"
 end
 
 module Measurement = struct

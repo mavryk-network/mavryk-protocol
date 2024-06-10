@@ -37,7 +37,7 @@ val process_head :
   'a Context.t ->
   predecessor:Layer1.header ->
   Layer1.header ->
-  Octez_smart_rollup.Inbox.t * string list ->
+  Mavkit_smart_rollup.Inbox.t * string list ->
   ('a Context.t * int * int64 * Z.t) tzresult Lwt.t
 
 (** [state_of_tick plugin node_ctxt ?start_state ~tick level] returns [Some

@@ -126,13 +126,13 @@ module Types = struct
 
     type 'a ticket = {id : S.t; amount : 'a Bounded.t}
 
-    type tezos_pkh = Environment.Signature.Public_key_hash.t
+    type mavryk_pkh = Environment.Signature.Public_key_hash.t
 
     type header = {
       op_code : op_code Bounded.t;
       price : balance ticket;
-      l1_dst : tezos_pkh;
-      rollup_id : tezos_pkh;
+      l1_dst : mavryk_pkh;
+      rollup_id : mavryk_pkh;
     }
 
     type op = {header : header; payload : bool}
@@ -144,7 +144,7 @@ module Types = struct
 
       let balance = Bounded.make ~bound:Bound.bound_balance Z.zero
 
-      let tezos_pkh = Environment.Signature.Public_key_hash.zero
+      let mavryk_pkh = Environment.Signature.Public_key_hash.zero
 
       let ticket_balance = {id = S.zero; amount = balance}
 
@@ -152,8 +152,8 @@ module Types = struct
         {
           op_code;
           price = ticket_balance;
-          l1_dst = tezos_pkh;
-          rollup_id = tezos_pkh;
+          l1_dst = mavryk_pkh;
+          rollup_id = mavryk_pkh;
         }
     end
   end
@@ -164,13 +164,13 @@ module Types = struct
 
     type 'a ticket_u = {id : scalar repr; amount : 'a Bounded_u.t}
 
-    type tezos_pkh_u = scalar repr
+    type mavryk_pkh_u = scalar repr
 
     type header_u = {
       op_code : op_code Bounded_u.t;
       price : balance ticket_u;
-      l1_dst : tezos_pkh_u;
-      rollup_id : tezos_pkh_u;
+      l1_dst : mavryk_pkh_u;
+      rollup_id : mavryk_pkh_u;
     }
 
     type op_u = {header : header_u; payload : bool repr}
@@ -197,7 +197,7 @@ module Types = struct
       let bs = Bytes.of_string @@ Z.to_bits z in
       Data_encoding.Binary.of_bytes_exn e bs
 
-    let tezos_pkh_encoding : (tezos_pkh, tezos_pkh_u, _) encoding =
+    let mavryk_pkh_encoding : (mavryk_pkh, mavryk_pkh_u, _) encoding =
       conv
         (fun pkhu -> pkhu)
         (fun w -> w)
@@ -242,8 +242,8 @@ module Types = struct
               the dummy circuit small.
            *)
            (ticket_balance_encoding ~safety:Unsafe)
-           tezos_pkh_encoding
-           tezos_pkh_encoding)
+           mavryk_pkh_encoding
+           mavryk_pkh_encoding)
 
     let op_encoding : (op, op_u, _) encoding =
       conv
@@ -290,7 +290,7 @@ module V (L : LIB) = struct
       input ~kind:`Public @@ Input.bool exit_validity
     in
     let* rollup_id =
-      input ~kind:`Public @@ E.(tezos_pkh_encoding.input) rollup_id
+      input ~kind:`Public @@ E.(mavryk_pkh_encoding.input) rollup_id
     in
     let* op = input ~kind @@ E.op_encoding.input op in
     let op = E.op_encoding.decode op in
@@ -306,7 +306,7 @@ module V (L : LIB) = struct
       @@ E.((amount_encoding ~safety:Bounded_e.Unsafe).input) fees
     in
     let* rollup_id =
-      input ~kind:`Public @@ E.(tezos_pkh_encoding.input) rollup_id
+      input ~kind:`Public @@ E.(mavryk_pkh_encoding.input) rollup_id
     in
     let* ops = input @@ (Encodings.list_encoding E.op_encoding).input ops in
     let ops = (Encodings.list_encoding E.op_encoding).decode ops in
@@ -379,7 +379,7 @@ end = struct
 
   let lazy_srs =
     lazy
-      (let open Octez_bls12_381_polynomial in
+      (let open Mavkit_bls12_381_polynomial in
       (Srs.generate_insecure 9 1, Srs.generate_insecure 1 1))
 
   let dummy_l1_dst =
@@ -420,14 +420,14 @@ end = struct
                ~new_state:true
                ~fee:(T.Bounded.make ~bound:Bound.bound_fee Z.zero)
                ~exit_validity:false
-               ~rollup_id:Dummy.tezos_pkh
+               ~rollup_id:Dummy.mavryk_pkh
                dummy_op );
            ( batch_name,
              VC.predicate_batch
                ~old_state:false
                ~new_state:true
                ~fees:(T.Bounded.make ~bound:Bound.bound_amount Z.zero)
-               ~rollup_id:Dummy.tezos_pkh
+               ~rollup_id:Dummy.mavryk_pkh
                (Stdlib.List.init Params.batch_size (Fun.const dummy_op)) );
            ( "fee",
              VC.predicate_fees

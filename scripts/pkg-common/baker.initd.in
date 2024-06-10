@@ -1,25 +1,25 @@
 #!/bin/bash
-# Start/stop the Octez Bakers and Accusers
+# Start/stop the Mavkit Bakers and Accusers
 #
 ### BEGIN INIT INFO
-# Provides:          octez-baker
-# Required-Start:    octez-node
+# Provides:          mavkit-baker
+# Required-Start:    mavkit-node
 # Required-Stop:
 # Should-Start:      $network $named
 # Should-Stop:       $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: The Octez Baking daemons
-# Description:       The Octez Bakers bake new blocks on the Tezos blockchain
+# Short-Description: The Mavkit Baking daemons
+# Description:       The Mavkit Bakers bake new blocks on the Tezos blockchain
 #		     and the Accusers look for bad behaviour
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-export DESC="octez baker"
-NAME=octez-baker
+export DESC="mavkit baker"
+NAME=mavkit-baker
 PIDDIR=/var/run/tezos
-PIDFILEA=$PIDDIR/octez-accuser.pid
-PIDFILEB=$PIDDIR/octez-baker.pid
+PIDFILEA=$PIDDIR/mavkit-accuser.pid
+PIDFILEB=$PIDDIR/mavkit-baker.pid
 export SCRIPTNAME=/etc/init.d/"$NAME"
 
 if [ -f "/lib/lsb/init-functions" ]; then
@@ -41,14 +41,14 @@ keepalive=yes
 keepalive_opt="-K"
 
 #shellcheck disable=SC1091
-[ -r /etc/octez/node.conf ] && . /etc/octez/node.conf
+[ -r /etc/mavkit/node.conf ] && . /etc/mavkit/node.conf
 #shellcheck disable=SC1091
-[ -r /etc/octez/baker.conf ] && . /etc/octez/baker.conf
+[ -r /etc/mavkit/baker.conf ] && . /etc/mavkit/baker.conf
 
 logfile_basea="${logdir}/accuser_"
 logfile_baseb="${logdir}/baker_"
-baker="/usr/bin/octez-baker"
-accuser="/usr/bin/octez-accuser"
+baker="/usr/bin/mavkit-baker"
+accuser="/usr/bin/mavkit-accuser"
 
 [ "${keepalive}" != "yes" ] && keepalive_opt=""
 
@@ -59,11 +59,11 @@ initial_checks()
 
 	mkdir -p ${logdir}
 	if [ -z "$lq_vote" ]; then
-		echo "lq_vote must be set in /etc/octez/baker.conf" >&2
+		echo "lq_vote must be set in /etc/mavkit/baker.conf" >&2
 		exit 3
 	fi
 	if [ -z "$baking_key" ]; then
-		echo "baking_key must be set in /etc/octez/baker.conf" >&2
+		echo "baking_key must be set in /etc/mavkit/baker.conf" >&2
 		exit 3
 	fi
 
@@ -74,7 +74,7 @@ wait_for_bootstrap()
 	echo "Waiting for node to be bootstrapped" >&2
 
 	while :; do
-		/usr/bin/octez-client bootstrapped >/dev/null 2>&1 && break
+		/usr/bin/mavkit-client bootstrapped >/dev/null 2>&1 && break
 		echo "Node not ready - sleeping for 30 seconds" >&2
 		sleep 30
 

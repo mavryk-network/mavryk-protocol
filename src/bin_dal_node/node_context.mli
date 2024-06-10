@@ -61,7 +61,7 @@ val init :
   Store.node_store ->
   Gossipsub.Worker.t ->
   Gossipsub.Transport_layer.t ->
-  Tezos_rpc.Context.generic ->
+  Mavryk_rpc.Context.generic ->
   Metrics.t ->
   t
 
@@ -75,7 +75,7 @@ exception Status_already_ready
     @raise Status_already_ready when the status is already [Ready _] *)
 val set_ready :
   t ->
-  (module Tezos_dal_node_lib.Dal_plugin.T) ->
+  (module Mavryk_dal_node_lib.Dal_plugin.T) ->
   Cryptobox.t ->
   Dal_plugin.proto_parameters ->
   int ->
@@ -83,7 +83,7 @@ val set_ready :
 
 (** Updates the plugin and the protocol level. *)
 val update_plugin_in_ready :
-  t -> (module Tezos_dal_node_lib.Dal_plugin.T) -> int -> unit
+  t -> (module Mavryk_dal_node_lib.Dal_plugin.T) -> int -> unit
 
 type error += Node_not_ready
 
@@ -115,8 +115,8 @@ val get_store : t -> Store.node_store
 (** [get_gs_worker ctxt] returns the Gossipsub worker state. *)
 val get_gs_worker : t -> Gossipsub.Worker.t
 
-(** [get_tezos_node_cctxt ctxt] returns the Mavryk node's client context *)
-val get_tezos_node_cctxt : t -> Tezos_rpc.Context.generic
+(** [get_mavryk_node_cctxt ctxt] returns the Mavryk node's client context *)
+val get_mavryk_node_cctxt : t -> Mavryk_rpc.Context.generic
 
 (** [get_neighbors_cctxts ctxt] returns the dal node neighbors client contexts *)
 val get_neighbors_cctxts : t -> Dal_node_client.cctxt list
@@ -127,7 +127,7 @@ val get_neighbors_cctxts : t -> Dal_node_client.cctxt list
 val fetch_assigned_shard_indices :
   t ->
   level:int32 ->
-  pkh:Tezos_crypto.Signature.Public_key_hash.t ->
+  pkh:Mavryk_crypto.Signature.Public_key_hash.t ->
   int list tzresult Lwt.t
 
 (** [fetch_committee ctxt ~level] fetches from L1 the shard indices assigned

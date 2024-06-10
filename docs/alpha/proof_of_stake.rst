@@ -193,4 +193,4 @@ The adaptive issuance experimental feature :ref:`documentation <adaptive_issuanc
 
 Other presentations of the Tezos' proof-of-stake mechanism can be
 found in the
-`Open Tezos entry <https://opentezos.com/tezos-basics/liquid-proof-of-stake/>`_.
+`Open Tezos entry <https://opentezos.com/mavryk-basics/liquid-proof-of-stake/>`_.

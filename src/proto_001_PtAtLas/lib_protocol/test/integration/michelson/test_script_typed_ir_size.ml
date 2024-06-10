@@ -94,10 +94,10 @@ let show_address fmt Script_typed_ir.{destination; entrypoint} =
 
 let dont_show _fmt _ = ()
 
-let size = {Tezos_benchmark.Base_samplers.min = 4; max = 32}
+let size = {Mavryk_benchmark.Base_samplers.min = 4; max = 32}
 
 module Crypto_samplers =
-Tezos_benchmark.Crypto_samplers.Make_finite_key_pool (struct
+Mavryk_benchmark.Crypto_samplers.Make_finite_key_pool (struct
   let size = 10
 
   let algo = `Default
@@ -744,7 +744,7 @@ let check_kinstr_size () =
       Kinstr ("IDrop", drop ());
       Kinstr ("IDup", IDup (loc, halt ()));
       Kinstr ("ISwap", ISwap (loc, halt ()));
-      Kinstr ("IPush", push String_t @@ str "tezos");
+      Kinstr ("IPush", push String_t @@ str "mavryk");
       Kinstr ("ICons_pair", ICons_pair (loc, halt ()));
       Kinstr ("ICar", ICar (loc, halt ()));
       Kinstr ("ICdr", cdr);
@@ -1023,8 +1023,8 @@ let check_micheline_sizes () =
       ("empty micheline", seq []);
       ("a single number", int 1024);
       ("a large number", big_int Z.(of_int 3 * of_int max_int));
-      ("a short string", str "tezostezostezos");
-      ("a short bytestring", bytes "tezostezostezos");
+      ("a short string", str "mavrykmavrykmavryk");
+      ("a short bytestring", bytes "mavrykmavrykmavryk");
       ("a prim with no args", prim I_UNIT []);
       ("a seq of prims", seq [prim I_DUP []; prim I_DROP []]);
       ("a prim with arg", prim I_DIG [int 2]);
@@ -1034,7 +1034,7 @@ let check_micheline_sizes () =
             prim I_UNIT [];
             prim I_DUG [int 3] ~annot:[String.lowercase_ascii "@number"];
             prim I_DIP [seq [prim I_DROP [int 2]]];
-            prim I_PUSH [prim T_string []; str "tezos"];
+            prim I_PUSH [prim T_string []; str "mavryk"];
           ] );
     ]
 

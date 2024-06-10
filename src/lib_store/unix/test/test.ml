@@ -38,7 +38,7 @@ let () =
     (let* () = Tezt_sink.activate () in
      Alcotest_lwt.run
        ~__FILE__
-       "tezos-store"
+       "mavryk-store"
        [
          Test_snapshots.tests `Quick;
          Test_reconstruct.tests `Quick;

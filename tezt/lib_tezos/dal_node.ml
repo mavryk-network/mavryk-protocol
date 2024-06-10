@@ -38,7 +38,7 @@ module Parameters = struct
 
   type session_state = {mutable ready : bool}
 
-  let base_default_name = "octez-dal-node"
+  let base_default_name = "mavkit-dal-node"
 
   let default_colors = Log.Color.[|FG.gray; FG.magenta; FG.yellow; FG.green|]
 end
@@ -177,7 +177,7 @@ let wait_for_ready dal_node =
 let handle_event dal_node {name; value = _; timestamp = _} =
   match name with "dal_node_is_ready.v0" -> set_ready dal_node | _ -> ()
 
-let create_from_endpoint ?(path = Uses.path Constant.octez_dal_node) ?name
+let create_from_endpoint ?(path = Uses.path Constant.mavkit_dal_node) ?name
     ?color ?data_dir ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port
     ?listen_addr ?public_addr ?metrics_addr ~l1_node_endpoint () =
   let name = match name with None -> fresh_name () | Some name -> name in
@@ -221,7 +221,7 @@ let create_from_endpoint ?(path = Uses.path Constant.octez_dal_node) ?name
   dal_node
 
 (* TODO: have rpc_addr here, like for others. *)
-let create ?(path = Uses.path Constant.octez_dal_node) ?name ?color ?data_dir
+let create ?(path = Uses.path Constant.mavkit_dal_node) ?name ?color ?data_dir
     ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port ?listen_addr ?public_addr
     ?metrics_addr ~node () =
   create_from_endpoint

@@ -10,12 +10,12 @@ This page describes the RPCs specific to the particular version of the Tezos pro
 
 Note that the RPCs served under a given prefix can also be listed using the client, e.g.::
 
-    octez-client rpc list /chains/main/blocks/head/context/constants
+    mavkit-client rpc list /chains/main/blocks/head/context/constants
 
 Any RPC endpoint may also be described, using the ``describe`` RPC to
 retrieve all JSON and binary schemas, e.g.::
 
-    octez-client rpc get /describe/chains/main/blocks/head/context/constants
+    mavkit-client rpc get /describe/chains/main/blocks/head/context/constants
 
 .. note::
 

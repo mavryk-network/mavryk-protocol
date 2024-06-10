@@ -51,23 +51,23 @@ module L2_blocks :
 (** Storage for persisting messages downloaded from the L1 node. *)
 module Messages :
   INDEXED_FILE
-    with type key := Octez_smart_rollup.Merkelized_payload_hashes_hash.t
+    with type key := Mavkit_smart_rollup.Merkelized_payload_hashes_hash.t
      and type value := string list
      and type header := Block_hash.t * Time.Protocol.t * int
 
 (** Aggregated collection of messages from the L1 inbox *)
 module Inboxes :
   SIMPLE_INDEXED_FILE
-    with type key := Octez_smart_rollup.Inbox.Hash.t
-     and type value := Octez_smart_rollup.Inbox.V1.t
+    with type key := Mavkit_smart_rollup.Inbox.Hash.t
+     and type value := Mavkit_smart_rollup.Inbox.V1.t
      and type header := unit
 
 (** Storage containing commitments and corresponding commitment hashes that the
     rollup node has knowledge of. *)
 module Commitments :
   INDEXABLE_STORE
-    with type key := Octez_smart_rollup.Commitment.Hash.t
-     and type value := Octez_smart_rollup.Commitment.t
+    with type key := Mavkit_smart_rollup.Commitment.Hash.t
+     and type value := Mavkit_smart_rollup.Commitment.t
 
 (** Storage mapping commitment hashes to the level when they were published by
     the rollup node. It only contains hashes of commitments published by this
@@ -84,7 +84,7 @@ module Commitments_published_at_level : sig
 
   include
     INDEXABLE_STORE
-      with type key := Octez_smart_rollup.Commitment.Hash.t
+      with type key := Mavkit_smart_rollup.Commitment.Hash.t
        and type value := element
 end
 

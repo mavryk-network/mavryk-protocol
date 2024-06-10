@@ -47,7 +47,7 @@ module Term = struct
   let process data_dir config_file sandbox_file progress_display_mode =
     let run =
       let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* data_dir, node_config =
         Shared_arg.resolve_data_dir_and_config_file ?data_dir ?config_file ()
       in
@@ -154,7 +154,7 @@ module Manpage = struct
       `S "EXAMPLES";
       `I
         ( "$(b,Reconstruct the storage of a full mode node )",
-          "./octez-node reconstruct" );
+          "./mavkit-node reconstruct" );
     ]
 
   let man = description @ options @ examples @ Shared_arg.Manpage.bugs

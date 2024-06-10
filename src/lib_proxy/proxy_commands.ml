@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let group : Tezos_clic.group =
+let group : Mavryk_clic.group =
   {
-    Tezos_clic.name = "proxy";
+    Mavryk_clic.name = "proxy";
     title = "Commands querying proxy and light mode support";
   }
 
@@ -35,8 +35,8 @@ let list_proxy_command_handler _ _ =
   @@ Registration.get_all_registered () ;
   Lwt_result_syntax.return_unit
 
-let list_env_command (flag : string) : _ Tezos_clic.command =
-  let open Tezos_clic in
+let list_env_command (flag : string) : _ Mavryk_clic.command =
+  let open Mavryk_clic in
   command
     ~group
     ~desc:(Printf.sprintf "List protocols supported by %s mode" flag)

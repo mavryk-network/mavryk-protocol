@@ -25,4 +25,4 @@
 
 (** [init_kont_encoding] tree-encoder for [init_kont] values. *)
 val init_kont_encoding :
-  Tezos_webassembly_interpreter.Eval.init_kont Tezos_tree_encoding.t
+  Mavryk_webassembly_interpreter.Eval.init_kont Mavryk_tree_encoding.t

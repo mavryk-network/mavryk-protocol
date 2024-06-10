@@ -78,6 +78,6 @@ module Enc_intf = struct
   let create = create
 end
 
-module Encoding = Tezos_tree_encoding.CBV_encoding.Make (Enc_intf)
+module Encoding = Mavryk_tree_encoding.CBV_encoding.Make (Enc_intf)
 
 let encoding = Encoding.cbv Chunk.encoding

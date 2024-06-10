@@ -16,17 +16,17 @@ echo "Query GitLab to get generic package URL"
 # :gitlab_api_url/projects/:id/packages
 web_path=$(curl -fsSL -X GET \
                 -H "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-                "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_octez_package_name}" \
+                "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_mavkit_package_name}" \
            | jq -r ".[] | select(.version==\"${gitlab_package_version}\") | ._links.web_path")
 
 deb_web_path=$(curl -fsSL -X GET \
                     -H "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-                    "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_octez_deb_package_name}" \
+                    "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_mavkit_deb_package_name}" \
            | jq -r ".[] | select(.version==\"${gitlab_package_version}\") | ._links.web_path")
 
 rpm_web_path=$(curl -fsSL -X GET \
                     -H "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-                    "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_octez_rpm_package_name}" \
+                    "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?sort=desc&package_name=${gitlab_mavkit_rpm_package_name}" \
            | jq -r ".[] | select(.version==\"${gitlab_package_version}\") | ._links.web_path")
 
 if [ -z "${web_path}" ]
@@ -53,10 +53,10 @@ else
   gitlab_rpm_packages_url="https://${CI_SERVER_HOST}${rpm_web_path}"
 fi
 
-if [ "${CI_PROJECT_NAMESPACE}" = "tezos" ]
+if [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ]
 then
   ## Production => Docker Hub
-  docker_hub_path='tezos/tezos'
+  docker_hub_path='mavrykdynamics/mavryk'
   echo "Query Docker Hub repository to get image URL at https://hub.docker.com/r/${docker_hub_path}"
 
   token=$(curl -fsSL "https://auth.docker.io/token?scope=repository:${docker_hub_path}:pull&service=registry.docker.io"  | jq -r '.token')

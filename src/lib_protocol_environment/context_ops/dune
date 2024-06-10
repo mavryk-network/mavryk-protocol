@@ -2,18 +2,18 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_context_ops)
- (public_name octez-shell-libs.context-ops)
+ (name mavryk_context_ops)
+ (public_name mavkit-shell-libs.context-ops)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.error-monad
-  octez-proto-libs.protocol-environment
-  octez-libs.tezos-context
-  octez-shell-libs.shell-context)
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.shell-context)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_error_monad
-  -open Tezos_context
-  -open Tezos_shell_context))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_error_monad
+  -open Mavryk_context
+  -open Mavryk_shell_context))

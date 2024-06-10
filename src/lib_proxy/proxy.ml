@@ -30,23 +30,23 @@
     it would create a cyclic dependency between proxy_proto.ml
     and proxy_getter.ml *)
 
-module Local = Tezos_context_memory.Context
+module Local = Mavryk_context_memory.Context
 
-(** Whether [octez-client] or [tezos-proxy-server] is running. *)
+(** Whether [mavkit-client] or [mavryk-proxy-server] is running. *)
 type mode =
-  | Client  (** Mode when [octez-client] executes *)
-  | Server  (** Mode when [tezos-proxy-server] executes *)
+  | Client  (** Mode when [mavkit-client] executes *)
+  | Server  (** Mode when [mavryk-proxy-server] executes *)
 
 (** A dumb container, used to perform RPC calls concerning a specific
     chain and block. In other words this container is used to perform
     RPC calls of the form [/chains/<chain>/blocks/<block>] where the <...>
     received the value of the corresponding field of this record. *)
 type proxy_getter_input = {
-  rpc_context : Tezos_rpc.Context.simple;  (** How to perform RPC calls *)
-  mode : mode;  (** Whether [octez-client] or [tezos-proxy-server] is running *)
-  chain : Tezos_shell_services.Block_services.chain;
+  rpc_context : Mavryk_rpc.Context.simple;  (** How to perform RPC calls *)
+  mode : mode;  (** Whether [mavkit-client] or [mavryk-proxy-server] is running *)
+  chain : Mavryk_shell_services.Block_services.chain;
       (** The chain involved in the RPC call *)
-  block : Tezos_shell_services.Block_services.block;
+  block : Mavryk_shell_services.Block_services.block;
       (** The block involved in the RPC call *)
 }
 
@@ -60,7 +60,7 @@ type 'a update = Mutation | Value of 'a
     when it uses the [../raw/bytes] RPC to query its distant endpoint.
     It is ad-hoc because its [get] function has the concrete {!Proxy_context.M.tree}
     as a return type and because [add_leaf] has the concrete
-    {!Tezos_context_sigs.Context.Proof_types.raw_context} as a parameter
+    {!Mavryk_context_sigs.Context.Proof_types.raw_context} as a parameter
     (this type is inherited from the return type of the [../raw/bytes] RPC). *)
 module type TREE = sig
   (** The abstract type that implementors of this module type provide.
@@ -75,7 +75,7 @@ module type TREE = sig
 
   (** [get t key] returns the tree of data mapped by [key], if any. *)
   val get :
-    t -> key -> Tezos_protocol_environment.Proxy_context.M.tree option Lwt.t
+    t -> key -> Mavryk_protocol_environment.Proxy_context.M.tree option Lwt.t
 
   (** [add_leaf t key raw_ctxt] returns a variant of [t] where [key] is
       mapped to [raw_ctxt]. When this function is called, it transforms
@@ -90,7 +90,7 @@ module type TREE = sig
   val add_leaf :
     t ->
     key ->
-    Tezos_context_sigs.Context.Proof_types.raw_context ->
+    Mavryk_context_sigs.Context.Proof_types.raw_context ->
     t update Lwt.t
 end
 

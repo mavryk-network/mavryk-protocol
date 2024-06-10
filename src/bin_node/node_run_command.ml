@@ -52,11 +52,11 @@ let () =
     `Permanent
     ~id:"main.run.port_already_in_use"
     ~title:"Cannot start node: RPC port already in use"
-    ~description:"Another tezos node is probably running on the same RPC port."
+    ~description:"Another mavryk node is probably running on the same RPC port."
     ~pp:(fun ppf addrlist ->
       Format.fprintf
         ppf
-        "Another tezos node is probably running on one of these addresses \
+        "Another mavryk node is probably running on one of these addresses \
          (%a). Please choose another RPC port."
         (Format.pp_print_list P2p_point.Id.pp)
         addrlist)
@@ -129,8 +129,8 @@ module Event = struct
       ~msg:"starting the Mavryk node v{version} ({git_info})"
       ~level:Notice
       ("chain", Distributed_db_version.Name.encoding)
-      ~pp2:Tezos_version.Version.pp
-      ("version", Tezos_version.Node_version.version_encoding)
+      ~pp2:Mavryk_version.Version.pp
+      ("version", Mavryk_version.Node_version.version_encoding)
       ("git_info", Data_encoding.string)
 
   let node_is_ready =
@@ -270,7 +270,7 @@ let init_node ?sandbox ?target ~identity ~singleprocess ~internal_events
             reconnection_config = config.p2p.reconnection_config;
             identity;
             proof_of_work_target =
-              Tezos_crypto.Crypto_box.make_pow_target config.p2p.expected_pow;
+              Mavryk_crypto.Crypto_box.make_pow_target config.p2p.expected_pow;
             trust_discovered_peers = sandbox <> None;
             disable_peer_discovery = config.p2p.disable_peer_discovery;
           }
@@ -328,14 +328,14 @@ let init_node ?sandbox ?target ~identity ~singleprocess ~internal_events
     | _ -> return_unit
   in
   let version =
-    Tezos_version.Version.to_string Tezos_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
   in
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   Node.create
     ~sandboxed:(sandbox <> None)
@@ -354,7 +354,7 @@ let rpc_metrics =
   Prometheus.Summary.v_labels
     ~label_names:["endpoint"; "method"]
     ~help:"RPC endpoint call counts and sum of execution times."
-    ~namespace:Tezos_version.Node_version.namespace
+    ~namespace:Mavryk_version.Node_version.namespace
     ~subsystem:"rpc"
     "calls"
 
@@ -420,7 +420,7 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
     if path = "/metrics" then
       let*! response = Metrics_server.callback conn req body in
       Lwt.return (`Response response)
-    else Tezos_rpc_http_server.RPC_server.resto_callback server conn req body
+    else Mavryk_rpc_http_server.RPC_server.resto_callback server conn req body
   in
   let update_metrics uri meth =
     Prometheus.Summary.(time (labels rpc_metrics [uri; meth]) Sys.time)
@@ -505,7 +505,7 @@ let metrics_serve metrics_addrs =
    validation will not be more expensive. *)
 let init_zcash () =
   try
-    Tezos_sapling.Core.Validator.init_params () ;
+    Mavryk_sapling.Core.Validator.init_params () ;
     Lwt.return_unit
   with exn ->
     Lwt.fail_with
@@ -519,19 +519,19 @@ let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
      when at least one local listen addr is given. *)
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   let node_version = Node.get_version node in
 
   let dir = Node.build_rpc_directory ~node_version ~commit_info node in
   let dir = Node_directory.build_node_directory config dir in
   let dir =
-    Tezos_rpc.Directory.register_describe_directory_service
+    Mavryk_rpc.Directory.register_describe_directory_service
       dir
-      Tezos_rpc.Service.description_service
+      Mavryk_rpc.Service.description_service
   in
 
   (* Start RPC process only when at least one listen addr is given. *)
@@ -550,7 +550,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
     match config.internal_events with
     | Some ie -> ie
     | None ->
-        Tezos_base_unix.Internal_event_unix.make_with_defaults
+        Mavryk_base_unix.Internal_event_unix.make_with_defaults
           ~enable_default_daily_logs_at:
             Filename.Infix.(config.data_dir // "daily_logs")
           ?verbosity
@@ -558,7 +558,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
           ()
   in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   let*! () =
     Lwt_list.iter_s (fun evt -> Internal_event.Simple.emit evt ()) cli_warnings
@@ -575,13 +575,13 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
   let*! () =
     Event.(emit starting_node)
       ( config.blockchain_network.chain_name,
-        Tezos_version_value.Current_git_info.version,
-        Tezos_version_value.Current_git_info.abbreviated_commit_hash )
+        Mavryk_version_value.Current_git_info.version,
+        Mavryk_version_value.Current_git_info.abbreviated_commit_hash )
   in
   let*! () = init_zcash () in
   let* () =
-    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
-    Tezos_crypto_dal.Cryptobox.Config.init_dal
+    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
+    Mavryk_crypto_dal.Cryptobox.Config.init_dal
       ~find_srs_files
       config.blockchain_network.dal_config
   in
@@ -636,7 +636,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
       ~after:[node_downer]
       (fun exit_status ->
         let*! () = Event.(emit bye) exit_status in
-        Tezos_base_unix.Internal_event_unix.close ())
+        Mavryk_base_unix.Internal_event_unix.close ())
   in
   Lwt.dont_wait
     (fun () ->
@@ -729,8 +729,8 @@ module Term = struct
     let open Cmdliner in
     let doc =
       "Increase log level. Using $(b,-v) is equivalent to using \
-       $(b,TEZOS_LOG='* -> info'), and $(b,-vv) is equivalent to using \
-       $(b,TEZOS_LOG='* -> debug')."
+       $(b,MAVRYK_LOG='* -> info'), and $(b,-vv) is equivalent to using \
+       $(b,MAVRYK_LOG='* -> debug')."
     in
     Arg.(
       value & flag_all & info ~docs:Shared_arg.Manpage.misc_section ~doc ["v"])
@@ -742,7 +742,7 @@ module Term = struct
        disabled, and constants of the economic protocol can be altered with a \
        JSON file which overrides the $(b,genesis_parameters) field of the \
        network configuration (e.g. scripts/sandbox.json). $(b,IMPORTANT): \
-       Using sandbox mode affects the node state and subsequent runs of Tezos \
+       Using sandbox mode affects the node state and subsequent runs of Mavryk \
        node must also use sandbox mode. In order to run the node in normal \
        mode afterwards, a full reset must be performed (by removing the node's \
        data directory)."
@@ -822,9 +822,9 @@ module Manpage = struct
     [
       `S "DEBUG";
       `P
-        ("The environment variable $(b,TEZOS_LOG) is used to fine-tune what is \
+        ("The environment variable $(b,MAVRYK_LOG) is used to fine-tune what is \
           going to be logged. The syntax is \
-          $(b,TEZOS_LOG='<section> -> <level> [ ; ...]') where section is one \
+          $(b,MAVRYK_LOG='<section> -> <level> [ ; ...]') where section is one \
           of $(i," ^ log_sections
        ^ ") and level is one of $(i,fatal), $(i,error), $(i,warn), \
           $(i,notice), $(i,info) or $(i,debug). A $(b,*) can be used as a \

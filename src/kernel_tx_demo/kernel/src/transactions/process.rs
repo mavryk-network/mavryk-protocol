@@ -17,9 +17,9 @@ use crate::transactions::withdrawal::process_withdrawals;
 use crate::CachedTransactionError;
 use crate::MAX_ENVELOPE_CONTENT_SIZE;
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_host::path::Path;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_host::path::Path;
+use mavryk_smart_rollup_host::runtime::Runtime;
 use thiserror::Error;
 
 use super::external_inbox::reveal_and_store_dac_message;
@@ -192,7 +192,7 @@ fn process_at_start<Host: Runtime>(
             let dac_committee = external_inbox::get_dac_committee(host)
                 .map_err(CachedTransactionError::ProcessExternalMessage)?;
             #[cfg(feature = "debug")]
-            tezos_smart_rollup_debug::debug_msg!(
+            mavryk_smart_rollup_debug::debug_msg!(
                 host,
                 "Verifying dac certificate {parsed_dac_message:?}. Have committee: {dac_committee:?}"
             );

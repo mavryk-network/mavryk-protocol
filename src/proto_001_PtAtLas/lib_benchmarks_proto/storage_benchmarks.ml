@@ -31,7 +31,7 @@
     defined in [Storage_costs].
   *)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Benchmarks_proto
 open Storage_functors
 open Protocol
@@ -62,8 +62,8 @@ let default_raw_context () =
   in
   let protocol_param_key = ["protocol_parameters"] in
   let*! context =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in

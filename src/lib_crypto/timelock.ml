@@ -307,11 +307,11 @@ let proof_of_vdf_tuple ~time vdf_tuple = proof_of_vdf_tuple_aux ~time vdf_tuple
 (* Creates a symmetric key using hash based key derivation from the time locked value*)
 let timelock_proof_to_symmetric_key proof =
   let updated = Z.powm proof.vdf_tuple.unlocked_value proof.nonce rsa2048 in
-  let kdf_key = "Tezoskdftimelockv1" in
+  let kdf_key = "Mavrykkdftimelockv1" in
   let hash = blake ~key:kdf_key (Z.to_string updated) in
   Crypto_box.Secretbox.unsafe_of_bytes hash
 
-(* -------- Timelock high level functions (used in Tezos) -------- *)
+(* -------- Timelock high level functions (used in Mavryk) -------- *)
 type chest = {locked_value : locked_value; ciphertext : ciphertext}
 
 let chest_encoding =

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test the different Octez installation scenarios documented in howtoget.rst.
+# Test the different Mavkit installation scenarios documented in howtoget.rst.
 #
 # The scenarios are implemented by separate scripts, which are both:
 # - called by this script within the appropriate Docker containers, and
@@ -83,10 +83,10 @@ for test_case in "$@"; do
             docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts ocaml/opam:ubuntu-20.04 /Scripts/install-opam.sh
             ;;
         "compile-release-sources-bullseye" )
-            docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts ocaml/opam:debian-11 /Scripts/compile-sources.sh tezos/tezos latest-release
+            docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts ocaml/opam:debian-11 /Scripts/compile-sources.sh mavrykdynamics/mavryk latest-release
             ;;
         "compile-sources-bullseye" )
-            docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts ocaml/opam:debian-11 /Scripts/compile-sources.sh tezos/tezos master
+            docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts ocaml/opam:debian-11 /Scripts/compile-sources.sh mavrykdynamics/mavryk master
             ;;
         "install-python-focal" )
             docker run --rm -i -v "$DOCS_DIR/developer":/Scripts "$UBUNTU_FOCAL" /Scripts/install-python-debian-ubuntu.sh

@@ -23,10 +23,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
-module M : Tezos_proxy.Light_proto.PROTO_RPCS = struct
-  let merkle_tree (pgi : Tezos_proxy.Proxy.proxy_getter_input) key leaf_kind =
+module M : Mavryk_proxy.Light_proto.PROTO_RPCS = struct
+  let merkle_tree (pgi : Mavryk_proxy.Proxy.proxy_getter_input) key leaf_kind =
     Protocol_client_context.Alpha_block_services.Context.merkle_tree
       pgi.rpc_context
       ~chain:pgi.chain

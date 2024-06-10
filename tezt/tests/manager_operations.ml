@@ -757,7 +757,7 @@ module Illtyped_originations = struct
       ~__FILE__
       ~title:"Contract's body illtyped 1"
       ~tags:["precheck"; "illtyped"; "origination"; "typing"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* _oph =
@@ -781,7 +781,7 @@ module Illtyped_originations = struct
       ~__FILE__
       ~title:"Contract's body illtyped 2"
       ~tags:["precheck"; "illtyped"; "origination"; "typing"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* _oph =
@@ -805,7 +805,7 @@ module Illtyped_originations = struct
       ~__FILE__
       ~title:"Contract's initial storage illtyped"
       ~tags:["precheck"; "illtyped"; "origination"; "typing"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* _oph =
@@ -889,7 +889,7 @@ module Deserialisation = struct
       ~title:
         "Smart contract call that should succeeds with the provided gas limit"
       ~tags:["precheck"; "gas"; "deserialization"; "canary"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract = originate_noop_contract protocol nodes.main in
@@ -919,7 +919,7 @@ module Deserialisation = struct
       ~title:"Contract call with not enough gas to deserialize argument"
       ~supports:(Protocol.From_protocol 14)
       ~tags:["precheck"; "gas"; "deserialization"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract = originate_noop_contract protocol nodes.main in
@@ -946,7 +946,7 @@ module Deserialisation = struct
         "Smart contract call that would succeed if we did not account \
          deserialization gas correctly"
       ~tags:["precheck"; "gas"; "deserialization"; "lazy_expr"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract = originate_noop_contract protocol nodes.main in
@@ -1084,7 +1084,7 @@ module Reveal = struct
       ~__FILE__
       ~title:"Simple revelation with a wrong public key"
       ~tags:["reveal"; "revelation"; "batch"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1108,7 +1108,7 @@ module Reveal = struct
       ~__FILE__
       ~title:"Simple revelation with something that is not a public key"
       ~tags:["reveal"; "revelation"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1134,7 +1134,7 @@ module Reveal = struct
       ~__FILE__
       ~title:"Correct public key revealed twice in a batch"
       ~tags:["reveal"; "revelation"; "batch"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
       ~supports:(Protocol.From_protocol 14)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
@@ -1156,7 +1156,7 @@ module Reveal = struct
       ~__FILE__
       ~title:"Two reveals in a batch. First key is wrong"
       ~tags:["reveal"; "revelation"; "batch"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1177,7 +1177,7 @@ module Reveal = struct
       ~__FILE__
       ~title:"Two reveals in a batch. Second key is wrong"
       ~tags:["reveal"; "revelation"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
       ~supports:(Protocol.From_protocol 14)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
@@ -1208,7 +1208,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer applied"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1220,7 +1220,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer not enough balance to pay fees"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* bal =
@@ -1254,7 +1254,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer not enough balance to make transfer"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* bal =
@@ -1293,7 +1293,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer counter in the past"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* counter =
@@ -1331,7 +1331,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer counter in the future"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* counter =
@@ -1370,7 +1370,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer with wrong signature"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* bal =
@@ -1405,7 +1405,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer with not enough gas"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
       ~supports:(Protocol.From_protocol 14)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
@@ -1437,7 +1437,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Simple transfer with not enough fees to cover gas"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* _ =
@@ -1462,7 +1462,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Test simple transfer with low balance to pay allocation (1)"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key1 =
@@ -1503,7 +1503,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Test simple transfer with low balance to pay allocation (2)"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key1 =
@@ -1544,7 +1544,7 @@ module Simple_transfers = struct
       ~__FILE__
       ~title:"Test simple transfer of the whole balance"
       ~tags:["transaction"; "transfer"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key1 =
@@ -1580,7 +1580,7 @@ module Simple_transfers = struct
       ~title:"Test succesive injections with same manager"
       ~supports:(Protocol.From_protocol 14)
       ~tags:["transaction"; "transfer"; "counters"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* counter =
@@ -1718,7 +1718,7 @@ module Simple_contract_calls = struct
       ~__FILE__
       ~title:"Successful smart contract call"
       ~tags:["simple_contract_calls"; "smart"; "contract"; "call"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract =
@@ -1748,7 +1748,7 @@ module Simple_contract_calls = struct
       ~__FILE__
       ~title:"Smart contract call with illtyped argument"
       ~tags:["simple_contract_calls"; "smart"; "contract"; "call"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract =
@@ -1779,7 +1779,7 @@ module Simple_contract_calls = struct
       ~__FILE__
       ~title:"Smart contract call that throws a failwith"
       ~tags:["simple_contract_calls"; "smart"; "contract"; "call"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract =
@@ -1811,7 +1811,7 @@ module Simple_contract_calls = struct
       ~title:
         "Smart contract call that loops/fails with 'not enough gas' at exec"
       ~tags:["simple_contract_calls"; "smart"; "contract"; "call"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* contract =

@@ -43,21 +43,21 @@ let () =
     (fun s -> Invalid_positive_int_parameter s)
 
 let mv4_address_parameter =
-  Tezos_clic.parameter (fun _cctxt s ->
+  Mavryk_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
       let*? bls_pkh = Signature.Bls.Public_key_hash.of_b58check s in
-      let pkh : Tezos_crypto.Aggregate_signature.public_key_hash =
-        Tezos_crypto.Aggregate_signature.Bls12_381 bls_pkh
+      let pkh : Mavryk_crypto.Aggregate_signature.public_key_hash =
+        Mavryk_crypto.Aggregate_signature.Bls12_381 bls_pkh
       in
       return pkh)
 
 let _mv4_address_param ?(name = "public key hash")
     ?(desc = "bls public key hash to use") =
   let desc = String.concat "\n" [desc; "A mv4 address"] in
-  Tezos_clic.param ~name ~desc mv4_address_parameter
+  Mavryk_clic.param ~name ~desc mv4_address_parameter
 
 let positive_int_parameter =
-  Tezos_clic.parameter (fun _cctxt p ->
+  Mavryk_clic.parameter (fun _cctxt p ->
       let open Lwt_result_syntax in
       let* i =
         try Lwt.return_ok (int_of_string p)
@@ -66,7 +66,7 @@ let positive_int_parameter =
       if i < 0 then tzfail @@ Invalid_positive_int_parameter p else return i)
 
 let wait_for_threshold_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"wait-for-threshold"
     ~placeholder:"wait-for-threshold"
     ~doc:
@@ -77,7 +77,7 @@ let wait_for_threshold_arg =
 
 let coordinator_rpc_parameter =
   let open Dac_clic_helpers in
-  Tezos_clic.parameter (fun _cctxt rpc ->
+  Mavryk_clic.parameter (fun _cctxt rpc ->
       let open Lwt_result_syntax in
       let parsed_rpc_result = Parsed_rpc.of_string rpc in
       match parsed_rpc_result with
@@ -87,7 +87,7 @@ let coordinator_rpc_parameter =
           failwith "Parse Coordinator rpc address failed: %s" msg)
 
 let hex_parameter =
-  Tezos_clic.parameter (fun _cctxt h ->
+  Mavryk_clic.parameter (fun _cctxt h ->
       let open Lwt_result_syntax in
       match Hex.to_bytes (`Hex h) with
       | None -> failwith "Parameter is not a valid hex-encoded string"
@@ -100,28 +100,28 @@ let coordinator_rpc_param ?(name = "DAC coordinator rpc address parameter")
       "\n"
       [desc; "A http/https url or an address in the form of <ip_addr>:<port>."]
   in
-  Tezos_clic.param ~name ~desc coordinator_rpc_parameter
+  Mavryk_clic.param ~name ~desc coordinator_rpc_parameter
 
 let hex_payload_param ?(name = "hex payload") ?(desc = "A hex encoded payload")
     =
   let desc = String.concat "\n" [desc; "A hex encoded string"] in
-  Tezos_clic.param ~name ~desc hex_parameter
+  Mavryk_clic.param ~name ~desc hex_parameter
 
 let hex_root_hash_param ?(name = "hex root hash")
     ?(desc = "A hex encoded root hash") =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc
-    (Tezos_clic.map_parameter ~f:Dac_plugin.raw_hash_of_bytes hex_parameter)
+    (Mavryk_clic.map_parameter ~f:Dac_plugin.raw_hash_of_bytes hex_parameter)
 
 let content_filename_param ?(name = "payload filename")
     ?(desc = "A filename containing a payload") =
   let desc = String.concat "\n" [desc; "Payload must be in binary format"] in
-  Tezos_clic.param ~name ~desc (Client_config.string_parameter ())
+  Mavryk_clic.param ~name ~desc (Client_config.string_parameter ())
 
 let group =
   {
-    Tezos_clic.name = "dac-client";
+    Mavryk_clic.name = "dac-client";
     title = "Dac client commands for interacting with a Dac node";
   }
 
@@ -155,7 +155,7 @@ let send_raw_payload threshold coordinator_cctxt payload =
           @@ Format.printf "Certificate received: %a\n" Hex.pp certificate)
 
 let send_dac_payload_input_from_command_line =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Send a list of strings to the DAC coordinator"
@@ -168,7 +168,7 @@ let send_dac_payload_input_from_command_line =
       send_raw_payload threshold coordinator_cctxt payload)
 
 let send_dac_payload_input_from_file =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Send the contents of a file as payload to the DAC coordinator."
@@ -192,7 +192,7 @@ let send_dac_payload_input_from_file =
       send_raw_payload threshold coordinator_cctxt payload)
 
 let get_dac_certificate =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Get a certificate from the coordinator"

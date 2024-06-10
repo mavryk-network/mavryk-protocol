@@ -2,15 +2,15 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_stdlib_unix)
- (public_name octez-libs.stdlib-unix)
+ (name mavryk_stdlib_unix)
+ (public_name mavkit-libs.stdlib-unix)
  (instrumentation (backend bisect_ppx))
  (libraries
   unix
-  octez-libs.error-monad
-  octez-libs.lwt-result-stdlib
-  octez-libs.event-logging
-  octez-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.lwt-result-stdlib
+  mavkit-libs.event-logging
+  mavkit-libs.stdlib
   data-encoding
   aches-lwt
   lwt.unix
@@ -24,8 +24,8 @@
   uri)
  (flags
   (:standard)
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib
-  -open Tezos_event_logging
-  -open Tezos_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib
+  -open Mavryk_event_logging
+  -open Mavryk_stdlib
   -open Data_encoding))

@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
+open Mavryk_scoru_wasm
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
 module Vector = Lazy_vector.Int32Vector
 
 (** Call stack representation and construction. *)

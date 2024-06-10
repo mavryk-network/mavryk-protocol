@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 module Get_delegates = struct
-  open Tezos_protocol_001_PtAtLas
+  open Mavryk_protocol_001_PtAtLas
   open Protocol
 
   type context = Alpha_context.t
@@ -38,8 +38,8 @@ module Get_delegates = struct
   end
 
   module Signature = struct
-    include Tezos_crypto.Signature.V1
-    module To_latest = Tezos_crypto.Signature.Of_V1
+    include Mavryk_crypto.Signature.V1
+    module To_latest = Mavryk_crypto.Signature.Of_V1
   end
 
   module Delegate = struct

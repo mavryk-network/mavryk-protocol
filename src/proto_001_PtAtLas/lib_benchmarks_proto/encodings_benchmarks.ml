@@ -26,7 +26,7 @@
 open Protocol
 
 module Encodings =
-Tezos_shell_benchmarks.Encoding_benchmarks_helpers.Make (struct
+Mavryk_shell_benchmarks.Encoding_benchmarks_helpers.Make (struct
   let file = __FILE__
 
   let purpose = Benchmark.Generate_code "michelson_v1_gas"
@@ -442,7 +442,7 @@ module Timelock = struct
       Base_samplers.sample_in_interval ~range:{min = 1; max = 10000} rng_state
     in
     let chest, chest_key =
-      Tezos_crypto.Timelock.chest_sampler ~plaintext_size ~time ~rng_state
+      Mavryk_crypto.Timelock.chest_sampler ~plaintext_size ~time ~rng_state
     in
     ((chest, chest_key), plaintext_size)
 
@@ -452,7 +452,7 @@ module Timelock = struct
          ~name:"ENCODING_Chest"
          ~to_string:
            (Data_encoding.Binary.to_string_exn
-              Tezos_crypto.Timelock.chest_encoding)
+              Mavryk_crypto.Timelock.chest_encoding)
          ~generator:(fun rng_state ->
            let (chest, _), plaintext_size = generator rng_state in
            (chest, {bytes = plaintext_size}))
@@ -464,7 +464,7 @@ module Timelock = struct
          ~name:"ENCODING_Chest_key"
          ~to_string:
            (Data_encoding.Binary.to_string_exn
-              Tezos_crypto.Timelock.chest_key_encoding)
+              Mavryk_crypto.Timelock.chest_key_encoding)
          ~generator:(fun rng_state ->
            let (_, chest_key), _w = generator rng_state in
            chest_key)
@@ -476,15 +476,15 @@ module Timelock = struct
          ~name:"DECODING_Chest"
          ~to_bytes:
            (Data_encoding.Binary.to_bytes_exn
-              Tezos_crypto.Timelock.chest_encoding)
+              Mavryk_crypto.Timelock.chest_encoding)
          ~from_bytes:
            (Data_encoding.Binary.of_bytes_exn
-              Tezos_crypto.Timelock.chest_encoding)
+              Mavryk_crypto.Timelock.chest_encoding)
          ~generator:(fun rng_state ->
            let (chest, _), _ = generator rng_state in
            let b =
              Data_encoding.Binary.to_bytes_exn
-               Tezos_crypto.Timelock.chest_encoding
+               Mavryk_crypto.Timelock.chest_encoding
                chest
            in
            (chest, {bytes = Bytes.length b}))
@@ -496,10 +496,10 @@ module Timelock = struct
          ~name:"DECODING_Chest_key"
          ~to_bytes:
            (Data_encoding.Binary.to_bytes_exn
-              Tezos_crypto.Timelock.chest_key_encoding)
+              Mavryk_crypto.Timelock.chest_key_encoding)
          ~from_bytes:
            (Data_encoding.Binary.of_bytes_exn
-              Tezos_crypto.Timelock.chest_key_encoding)
+              Mavryk_crypto.Timelock.chest_key_encoding)
          ~generator:(fun rng_state ->
            let (_, chest_key), _w = generator rng_state in
            chest_key)

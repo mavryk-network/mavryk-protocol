@@ -27,24 +27,24 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
   module Commands = Commands.Make (Wasm)
 
   let parse_binary_module name module_ =
-    let bytes = Tezos_lazy_containers.Chunked_byte_vector.of_string module_ in
-    Tezos_webassembly_interpreter.Decode.decode ~allow_floats:false ~name ~bytes
+    let bytes = Mavryk_lazy_containers.Chunked_byte_vector.of_string module_ in
+    Mavryk_webassembly_interpreter.Decode.decode ~allow_floats:false ~name ~bytes
 
   (* [typecheck_module module_ast] runs the typechecker on the module, which is
      not done by the PVM. *)
   let typecheck_module module_ =
     Repl_helpers.trap_exn (fun () ->
-        Tezos_webassembly_interpreter.Valid.check_module module_)
+        Mavryk_webassembly_interpreter.Valid.check_module module_)
 
   (* [import_pvm_host_functions ~version ()] registers the host
      functions of the PVM. *)
   let import_pvm_host_functions ~version () =
     let lookup name =
-      Lwt.return (Tezos_scoru_wasm.Host_funcs.lookup ~version name)
+      Lwt.return (Mavryk_scoru_wasm.Host_funcs.lookup ~version name)
     in
     Repl_helpers.trap_exn (fun () ->
         Lwt.return
-          (Tezos_webassembly_interpreter.Import.register
+          (Mavryk_webassembly_interpreter.Import.register
              ~module_name:"smart_rollup_core"
              lookup))
 
@@ -52,25 +52,25 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
      correct type, outside of the PVM. *)
   let link module_ =
     Repl_helpers.trap_exn (fun () ->
-        Tezos_webassembly_interpreter.Import.link module_)
+        Mavryk_webassembly_interpreter.Import.link module_)
 
   let handle_installer_config_instr durable
-      Octez_smart_rollup.Installer_config.(Set {value; to_}) =
-    let open Tezos_scoru_wasm.Durable in
+      Mavkit_smart_rollup.Installer_config.(Set {value; to_}) =
+    let open Mavryk_scoru_wasm.Durable in
     let key = key_of_string_exn to_ in
     set_value_exn durable key value
 
   let handle_installer_config installer_config tree =
     let open Lwt_syntax in
     let* durable_storage = Wasm.wrap_as_durable_storage tree in
-    let durable = Tezos_scoru_wasm.Durable.of_storage_exn durable_storage in
+    let durable = Mavryk_scoru_wasm.Durable.of_storage_exn durable_storage in
     let* durable =
       List.fold_left_s handle_installer_config_instr durable installer_config
     in
-    let durable_storage = Tezos_scoru_wasm.Durable.to_storage durable in
+    let durable_storage = Mavryk_scoru_wasm.Durable.to_storage durable in
     let wrapped_tree = Durable_storage.to_tree_exn durable_storage in
     Wasm.Tree_encoding_runner.encode
-      Tezos_tree_encoding.(scope ["durable"] wrapped_tree)
+      Mavryk_tree_encoding.(scope ["durable"] wrapped_tree)
       wrapped_tree
       tree
 
@@ -79,7 +79,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
      installation into a tree for the PVM interpreter. *)
   let handle_module ?installer_config ?tree version binary name module_ =
     let open Lwt_result_syntax in
-    let open Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
+    let open Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
     let* ast =
       Repl_helpers.trap_exn (fun () ->
           if binary then parse_binary_module name module_
@@ -149,22 +149,22 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     loop tree (List.to_seq inboxes) level
 
   let file_parameter =
-    Tezos_clic.parameter (fun _ filename ->
+    Mavryk_clic.parameter (fun _ filename ->
         Repl_helpers.(trap_exn (fun () -> read_file filename)))
 
   let dir_parameter =
-    Tezos_clic.parameter (fun _ dirpath ->
+    Mavryk_clic.parameter (fun _ dirpath ->
         if Sys.file_exists dirpath && Sys.is_directory dirpath then
           Lwt.return_ok dirpath
         else Error_monad.failwith "%s is not a valid directory" dirpath)
 
   let wasm_parameter =
-    Tezos_clic.parameter (fun _ filename ->
+    Mavryk_clic.parameter (fun _ filename ->
         if Sys.file_exists filename then Lwt_result.return filename
         else Error_monad.failwith "%s is not a valid file" filename)
 
   let wasm_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:"kernel file"
       ~long:"kernel"
@@ -172,7 +172,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       wasm_parameter
 
   let input_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:"input file"
       ~long:"inputs"
@@ -181,7 +181,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
 
   let installer_config_parameter =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter (fun _ filename ->
+    Mavryk_clic.parameter (fun _ filename ->
         let* kind =
           if Filename.check_suffix filename ".yaml" then return `Yaml
           else if Filename.check_suffix filename ".json" then return `Json
@@ -191,7 +191,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
         (kind, content))
 
   let installer_config_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:"installer configuration file"
       ~long:"installer-config"
@@ -200,10 +200,10 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
 
   let rollup_parameter =
     let open Lwt_result_syntax in
-    Tezos_clic.(
+    Mavryk_clic.(
       parameter (fun _ hash ->
           let hash_opt =
-            Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Address
+            Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Address
             .of_b58check_opt
               hash
           in
@@ -216,21 +216,21 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
                 hash))
 
   let rollup_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:
         (Format.asprintf
            "The rollup address representing the current kernel. It is used on \
             the reveal metadata channel and as the default destination for \
             internal messages. If absent, it defaults to `%a`."
-           Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Address.pp
+           Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Address.pp
            Config.default_destination)
       ~long:"rollup"
       ~placeholder:"rollup address"
       rollup_parameter
 
   let preimage_directory_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:
         (Format.sprintf
@@ -242,7 +242,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       dir_parameter
 
   let dal_pages_directory_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:
         (Format.sprintf
@@ -254,8 +254,8 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       dir_parameter
 
   let version_parameter =
-    Tezos_clic.parameter (fun _ v ->
-        let open Tezos_scoru_wasm.Wasm_pvm_state in
+    Mavryk_clic.parameter (fun _ v ->
+        let open Mavryk_scoru_wasm.Wasm_pvm_state in
         match Data_encoding.Binary.of_string_opt version_encoding v with
         | Some v -> Lwt_result_syntax.return v
         | None ->
@@ -269,7 +269,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
               (List.map fst versions))
 
   let version_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:"The initial version of the WASM PVM"
       ~short:'p'
@@ -278,11 +278,11 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       version_parameter
 
   let no_kernel_debug_flag =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     switch ~doc:"Hides the kernel debug messages." ~long:"no-kernel-debug" ()
 
   let plugins_parameter =
-    Tezos_clic.parameter (fun _ filenames ->
+    Mavryk_clic.parameter (fun _ filenames ->
         let filenames = String.split_on_char ',' filenames in
         List.map_es
           (fun filename ->
@@ -291,7 +291,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
           filenames)
 
   let plugins_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:"The list of plugins separated by commas"
       ~long:"plugins"
@@ -299,7 +299,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       plugins_parameter
 
   let global_options =
-    Tezos_clic.(
+    Mavryk_clic.(
       args9
         wasm_arg
         input_arg
@@ -334,12 +334,12 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
              plugins,
              installer_config ),
            _ ) =
-      Tezos_clic.parse_global_options global_options () args
+      Mavryk_clic.parse_global_options global_options () args
     in
     let version =
       Option.value
         ~default:
-          Tezos_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.current_version
+          Mavryk_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.current_version
         version
     in
     let config =
@@ -361,7 +361,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
           try
             Ok
               (Data_encoding.Json.destruct
-                 Octez_smart_rollup.Installer_config.encoding
+                 Mavkit_smart_rollup.Installer_config.encoding
                  json)
           with exn ->
             error_with
@@ -374,7 +374,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
       Option.map_e
         (function
           | `Yaml, content ->
-              Octez_smart_rollup.Installer_config.parse_yaml content
+              Mavkit_smart_rollup.Installer_config.parse_yaml content
           | `Json, content -> parse_json_config content)
         installer_config
     in
@@ -390,7 +390,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
 
   let main () =
     ignore
-      Tezos_clic.(
+      Mavryk_clic.(
         setup_formatter
           Format.std_formatter
           (if Unix.isatty Unix.stdout then Ansi else Plain)
@@ -399,12 +399,12 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     let result = Lwt_main.run (dispatch args) in
     match result with
     | Ok _ -> ()
-    | Error [Tezos_clic.Version] ->
-        let version = Tezos_version_value.Bin_version.version_string in
+    | Error [Mavryk_clic.Version] ->
+        let version = Mavryk_version_value.Bin_version.version_string in
         Format.printf "%s\n" version ;
         exit 0
-    | Error [Tezos_clic.Help command] ->
-        Tezos_clic.usage
+    | Error [Mavryk_clic.Help command] ->
+        Mavryk_clic.usage
           Format.std_formatter
           ~executable_name:(Filename.basename Sys.executable_name)
           ~global_options
@@ -413,7 +413,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     | Error e ->
         Format.eprintf
           "%a\n%!"
-          Tezos_clic.(
+          Mavryk_clic.(
             fun ppf errs ->
               pp_cli_errors
                 ppf

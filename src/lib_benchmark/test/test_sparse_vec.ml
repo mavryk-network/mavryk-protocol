@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 module V = Sparse_vec.String
 
 let ( =:= ) = V.equal
@@ -73,5 +73,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("sparse_vec", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("sparse_vec", tests)]
   |> Lwt_main.run

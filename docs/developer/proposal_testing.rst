@@ -36,14 +36,14 @@ latest code and run unit tests::
 
 We can run a node and a client in sandboxed mode by invoking::
 
-  $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
-  $ eval $(./src/bin_client/octez-init-sandboxed-client.sh 1)
+  $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
+  $ eval $(./src/bin_client/mavkit-init-sandboxed-client.sh 1)
 
 By default, the sandbox starts from the ``genesis`` block at level 0, and the
 sandbox's active protocol is the ``Genesis protocol``. Once the sandbox is
 started, the Alpha protocol can be activated by invoking the command::
 
-  $ octez-activate-alpha
+  $ mavkit-activate-alpha
 
 This command inserts a new block after which the active protocol is the Alpha
 protocol. From this point on, making the chain progress is straightforward
@@ -51,7 +51,7 @@ because the sandbox contains accounts ``bootstrap1`` to ``bootstrap5`` with
 implicit credentials that allow them to bake blocks by using the usual RPCs in
 the shell (see :doc:`../user/sandbox`)::
 
-  $ octez-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
 
 Adding New Protocol Tests in OCaml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ To test a new component, create a new file in this directory and add the module 
 To print the errors of the ``Error`` monad correctly, alcotests must be wrapped into
 the function ``tztest`` defined in the module ``Test`` defined at the same level.
 
-Some helpers are available in the module ``Tezos_alpha_test_helpers`` defined in
+Some helpers are available in the module ``Mavryk_alpha_test_helpers`` defined in
 the subdirectory ``helpers``. For instance, it contains context, operation and
 block fixtures that can be used in tests requiring these components.
 
@@ -198,7 +198,7 @@ convert the Alpha protocol to a format that could be injected into Mainnet,
 which is done by performing the following three steps:
 
 - specify the version and name of the current protocol in ``raw_context.ml``,
-- compute the protocol's hash in ``TEZOS_PROTOCOL``, and
+- compute the protocol's hash in ``MAVRYK_PROTOCOL``, and
 - replace names and protocol hashes in various places in the code base.
 
 If so wished, these three steps can be performed by the script
@@ -212,7 +212,7 @@ We can snapshot the protocol by invoking the following::
 
 The script creates a new directory ``src/proto_012_<short_hash>`` where
 ``<short_hash>`` is a short hash that coincides with the first eight characters
-of the hash computed by the script and written in the file ``TEZOS_PROTOCOL``.
+of the hash computed by the script and written in the file ``MAVRYK_PROTOCOL``.
 
 If the Alpha protocol has been snapshot, proceed to Section `2. Link the
 snapshot Alpha protocol in the build system`_ below, which details how to link
@@ -360,13 +360,13 @@ fresh test folder every time we want to perform the migration.
 
 For instance, the following commands import a context from the snapshot file
 ``~/snapshot-mainnet.rolling``
-into the folder ``/tmp/octez-node-mainnet``,
+into the folder ``/tmp/mavkit-node-mainnet``,
 and generate an identity in the same folder::
 
-  $ ./octez-node snapshot import ~/snapshot-mainnet.rolling --data-dir /tmp/octez-node-mainnet
-  $ ./octez-node identity generate --data-dir /tmp/octez-node-mainnet
+  $ ./mavkit-node snapshot import ~/snapshot-mainnet.rolling --data-dir /tmp/mavkit-node-mainnet
+  $ ./mavkit-node identity generate --data-dir /tmp/mavkit-node-mainnet
 
-The ``./octez-node snapshot import`` command accepts an option
+The ``./mavkit-node snapshot import`` command accepts an option
 ``--block <block_hash>`` that instructs the command to check that the hash of
 the last block in the imported chain is ``<block_hash>``. This mechanism helps
 the developer to check that the imported chain contains blocks that are part of
@@ -387,7 +387,7 @@ keys actually encode the same bytes as their corresponding public keys. By
 adding to the yes-wallet the existing accounts of Mainnet bakers, we would have
 enough rights to bake blocks at will. We can do so by running::
 
-  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/octez-node-mainnet in /tmp/yes-wallet --active-bakers-only
+  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/mavkit-node-mainnet in /tmp/yes-wallet --active-bakers-only
 
 This command creates a yes-wallet and places its folder in the
 system's temp directory (in our example, ``/tmp``) as given by the path argument
@@ -401,7 +401,7 @@ power), you can also use the ``--staking-share`` option to provide a
 limit. For instance, the first largest bakers with an accumulated
 stake of at least 75 percent can be kept with::
 
-  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/octez-node-mainnet in /tmp/yes-wallet --active-bakers-only --staking-share 75
+  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/mavkit-node-mainnet in /tmp/yes-wallet --active-bakers-only --staking-share 75
 
 .. note::
    Prior to switching to the Tenderbake consensus algorithm it was
@@ -412,7 +412,7 @@ stake of at least 75 percent can be kept with::
 
 By restricting the accumulated stake to 75% as in the command above,
 the wallet is both "lighter" (it may contain around 30-40 keys and
-therefore some commands like ``octez-client bake for`` will execute
+therefore some commands like ``mavkit-client bake for`` will execute
 faster) and its keys will represent more than the 2/3rds of the
 attesting power for any given level.
 
@@ -447,14 +447,14 @@ was taken, we can use::
 In the latter case both the context and the yes-wallet folder will be placed in
 the system's temp directory. In our example the temp directory is ``/tmp``, and
 the context and yes-wallet would be placed in paths
-``/tmp/octez-node-mainnet`` and ``/tmp/yes-wallet``
+``/tmp/mavkit-node-mainnet`` and ``/tmp/yes-wallet``
 respectively.
 
 If the script detects that the yes-wallet folder already exists int ``/tmp``,
 then it will clean it by removing spurious files ``/tmp/yes-wallet/blocks`` and
 ``/tmp/yes-wallet/wallet_locks``, and it will not create a new yes-wallet
 folder. If the script detects that the folder
-``/tmp/octez-node-mainnet`` already exists, or if the developer
+``/tmp/mavkit-node-mainnet`` already exists, or if the developer
 passes the path of a folder instead of the path of a snapshot file, then the
 script will use the corresponding folder as the original folder, and will not
 import a new context.
@@ -465,7 +465,7 @@ In case we opted for not snapshotting the Alpha protocol, we could batch steps
 
 The script ``scripts/prepare_migration_test.sh`` receives an optional
 ``<block_hash>`` as the last argument which, if passed, will be used for the
-option ``--block <block_hash>`` to the ``./octez-node snapshot import`` command
+option ``--block <block_hash>`` to the ``./mavkit-node snapshot import`` command
 when importing the context form Mainnet.
 
 After performing the steps 1--7, the migration will be ready to be tested. The
@@ -480,22 +480,22 @@ If we run the migration on an empty context, then we would start a sandboxed
 node as usual after having prepared the migration test (see previous section).
 In our example we can run the following::
 
-  $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
+  $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
 
 We can also start the client::
 
-  $ eval $(./src/bin_client/octez-init-sandboxed-client.sh 1)
+  $ eval $(./src/bin_client/mavkit-init-sandboxed-client.sh 1)
 
-Instead of command ``octez-activate-alpha``, the sandboxed client script
-``src/bin_client/octez-init-sandboxed-client.sh`` now accepts a command
-``octez-activate-XXX-<short_hash>`` that activates the predecessor protocol with
+Instead of command ``mavkit-activate-alpha``, the sandboxed client script
+``src/bin_client/mavkit-init-sandboxed-client.sh`` now accepts a command
+``mavkit-activate-XXX-<short_hash>`` that activates the predecessor protocol with
 version number ``XXX`` and short hash ``<short_hash>``. In our example, the
 predecessor protocol is ``011`` with short hash ``PtHangz2``. (Check the folder
 ``src`` for the version number and short hash of the predecessor protocol for
 migrations to versions different from ``012``.) We can activate this protocol by
 invoking::
 
-  $ octez-activate-011-PtHangz2
+  $ mavkit-activate-011-PtHangz2
 
 Activation of the predecessor protocol produces one block and increases the
 level by one. This unavoidable increase of the level has to be taken into
@@ -506,15 +506,15 @@ which migration will be triggered, which in our example is ``3``. Since
 activating the predecessor protocol increases the level by one, we need to bake
 two more blocks::
 
-  $ octez-client bake for --minimal-timestamp
-  $ octez-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
 
 .. note::
    Prior to Tenderbake activation (i.e. to the Protocol I) the command above
    requires a specific account to bake for. Any of ``bootstrap[0-9]`` accounts
    can be used to do it:
 
-   ``$ octez-client bake for bootstrap1 --minimal-timestamp``
+   ``$ mavkit-client bake for bootstrap1 --minimal-timestamp``
 
 At this moment migration will be triggered and the protocol
 ``proto_012_<short_hash>`` will become active, and we will see the log message
@@ -534,21 +534,21 @@ unchanged, and every time we want to run the test, we will copy its contents to
 a fresh test folder. In our example, we can do this by taking advantage of an
 environment variable ``test_directory`` and the tool ``mktemp`` as follows::
 
-  $ test_directory=$(mktemp -d -t "octez-node-mainnet-XXXX") && cp -r "/tmp/octez-node-mainnet/." "$test_directory"
+  $ test_directory=$(mktemp -d -t "mavkit-node-mainnet-XXXX") && cp -r "/tmp/mavkit-node-mainnet/." "$test_directory"
 
 This command creates a fresh test folder in the system's temp directory (in our
-example ``/tmp``) whose name is ``octez-node-mainnet-XXXX``,
+example ``/tmp``) whose name is ``mavkit-node-mainnet-XXXX``,
 where the ``XXXX`` are four random alphanumerical characters, and sets the
 environment variable ``test_directory`` to the path of the test folder, such
 that we can run the node in the test folder later. Then it copies the contents
 of the original context folder into the test folder.
 
-Now, we can run the ``octez-node`` command by specifying the test folder
+Now, we can run the ``mavkit-node`` command by specifying the test folder
 ``$test_directory`` as the data directory. We will also specify the RPC address
 ``localhost``, such that the RPCs will be available at the url
 ``localhost:8732``. In our example, by invoking the following::
 
-  $ ./octez-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
+  $ ./mavkit-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
 
 We will now trigger the migration by baking blocks until the level reaches the
 one specified when setting the user-activated upgrades. The blocks can be baked
@@ -556,14 +556,14 @@ with the yes-wallet created in step 5 above, and with any of the accounts
 ``foundation1`` to ``foundation8``. In our example, we can bake one block by
 running the following command::
 
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
 
 .. note::
    Prior to Tenderbake activation (i.e. to the Protocol I) this command requires
    a specific account to bake for. Any of ``foundation[1-8]`` accounts can be
    used to do it.
 
-   ``$ octez-client bake for foundation1 --minimal-timestamp``
+   ``$ mavkit-client bake for foundation1 --minimal-timestamp``
 
    If the chosen account ``foundation1`` ceases to have the priority to bake, we
    can switch to any of the remaining accounts ``foundation2`` to
@@ -584,16 +584,16 @@ can do this with the following command::
 Then we repeat the commands above in order to create a fresh test folder, and to
 copy the context of the original folder into the test folder. In our example::
 
-  $ test_directory=$(mktemp -d -t "octez-node-mainnet-XXXX") && cp -r "/tmp/octez-node-mainnet/." "$test_directory"
+  $ test_directory=$(mktemp -d -t "mavkit-node-mainnet-XXXX") && cp -r "/tmp/mavkit-node-mainnet/." "$test_directory"
 
 Now we run the node in the test folder by invoking::
 
-  $ ./octez-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
+  $ ./mavkit-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
 
 And finally, we bake the numbers of blocks specified by the user-activated
 upgrade, with the command::
 
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
 
 
 Wrap up the Migration Procedure
@@ -635,36 +635,36 @@ the following fur commands)::
 
 Run sandboxed node and client::
 
-  $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
-  $ eval $(./src/bin_client/octez-init-sandboxed-client.sh 1)
+  $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
+  $ eval $(./src/bin_client/mavkit-init-sandboxed-client.sh 1)
 
 Activate predecessor of the Alpha protocol and move chain one level forward::
 
-  $ octez-activate-011-PtHangz2
+  $ mavkit-activate-011-PtHangz2
 
 Bake two more blocks::
 
-  $ octez-client bake for --minimal-timestamp
-  $ octez-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
 
 You should see the ``STITCHING!`` message!
 
 To test again, restart the sandboxed node and client::
 
   $ fg
-  ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0
+  ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0
   ^C
-  $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
-  $ eval $(./src/bin_client/octez-init-sandboxed-client.sh 1)
+  $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
+  $ eval $(./src/bin_client/mavkit-init-sandboxed-client.sh 1)
 
 Activate predecessor of the Alpha protocol::
 
-  $ octez-activate-011-PtHangz2
+  $ mavkit-activate-011-PtHangz2
 
 Bake two blocks::
 
-  $ octez-client bake for --minimal-timestamp
-  $ octez-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
+  $ mavkit-client bake for --minimal-timestamp
 
 You should see the ``STITCHING!`` message again!
 
@@ -704,23 +704,23 @@ invoking the following eight commands)::
   $ ./scripts/user_activated_upgrade.sh src/proto_012_* 1617344
   $ ./scripts/patch-yes_node.sh
   $ make
-  $ ./octez-node snapshot import ~/mainnet.rolling --data-dir /tmp/octez-node-mainnet
-  $ ./octez-node identity generate --data-dir /tmp/octez-node-mainnet
-  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/octez-node-mainnet in /tmp/yes-wallet --active-bakers-only
+  $ ./mavkit-node snapshot import ~/mainnet.rolling --data-dir /tmp/mavkit-node-mainnet
+  $ ./mavkit-node identity generate --data-dir /tmp/mavkit-node-mainnet
+  $ dune exec devtools/yes_wallet/yes_wallet.exe -- create from context /tmp/mavkit-node-mainnet in /tmp/yes-wallet --active-bakers-only
 
 Copy original folder into test folder::
 
-  $ test_directory=$(mktemp -d -t "octez-node-mainnet-XXXX") && cp -r "/tmp/octez-node-mainnet/." "$test_directory"
+  $ test_directory=$(mktemp -d -t "mavkit-node-mainnet-XXXX") && cp -r "/tmp/mavkit-node-mainnet/." "$test_directory"
 
 Run the node`::
 
-  $ ./octez-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
+  $ ./mavkit-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
 
 Bake three blocks::
 
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
 
 .. note::
    Prior to Tenderbake activation (i.e. to the Protocol I) this command requires
@@ -732,7 +732,7 @@ You should see the ``STITCHING!`` message!
 To test again, kill the node::
 
   $ fg
-  ./octez-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost
+  ./mavkit-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost
   ^C
 
 Clean up by removing test folder and copying original folder into fresh
@@ -740,17 +740,17 @@ test folder, and by removing files ``/tmp/yes-wallet/wallet_lock`` and
 ``/tmp/yes-wallet/blocks``::
 
   $ rm -rf "$test_directory" && rm -f /tmp/yes-wallet/{blocks,wallet_lock};
-  $ test_directory=$(mktemp -d -t "octez-node-mainnet-XXXX") && cp -r "/tmp/octez-node-mainnet/." "$test_directory"
+  $ test_directory=$(mktemp -d -t "mavkit-node-mainnet-XXXX") && cp -r "/tmp/mavkit-node-mainnet/." "$test_directory"
 
 Run the node::
 
-  ./octez-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
+  ./mavkit-node run --synchronisation-threshold 0 --connections 0 --data-dir "$test_directory" --rpc-addr localhost &
 
 And bake three blocks::
 
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
-  $ ./octez-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
+  $ ./mavkit-client -d /tmp/yes-wallet bake for --minimal-timestamp
 
 You should see the ``STITCHING!`` message again!
 
@@ -817,7 +817,7 @@ and the functions ``of_b58check`` and ``to_b58check`` of module
   # let's borrow some code from the protocol tests
   $ dune exec -- tztop src/proto_alpha/lib_protocol/test/
 
-  # open Tezos_protocol_alpha.Protocol ;;
+  # open Mavryk_protocol_alpha.Protocol ;;
 
   # let b58check_to_path c =
   Contract_repr.of_b58check c |> fun (Ok c) ->

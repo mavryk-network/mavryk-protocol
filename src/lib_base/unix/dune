@@ -2,27 +2,27 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_base_unix)
- (public_name octez-libs.base.unix)
+ (name mavryk_base_unix)
+ (public_name mavkit-libs.base.unix)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.error-monad
-  octez-libs.crypto
-  octez-libs.base
-  octez-libs.hacl
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
+  mavkit-libs.base
+  mavkit-libs.hacl
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
   data-encoding
   uri
-  octez-libs.event-logging)
+  mavkit-libs.event-logging)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))
  (flags
   (:standard)
-  -open Tezos_error_monad
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
+  -open Mavryk_error_monad
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
   -open Data_encoding
-  -open Tezos_event_logging))
+  -open Mavryk_event_logging))

@@ -38,9 +38,9 @@ let extract_header = function
   | _ ->
       invalid_arg ("Internal error: Block is not of protocol " ^ Protocol.name)
 
-let fetch_tezos_block l1_ctxt hash =
+let fetch_mavryk_block l1_ctxt hash =
   let open Lwt_result_syntax in
-  let+ block = Layer1.fetch_tezos_block fetch extract_header l1_ctxt hash in
+  let+ block = Layer1.fetch_mavryk_block fetch extract_header l1_ctxt hash in
   match block with
   | Block block -> block
   | _ ->
@@ -51,7 +51,7 @@ let fetch_tezos_block l1_ctxt hash =
         hash
         Protocol.name
 
-let prefetch_tezos_blocks = Layer1.prefetch_tezos_blocks fetch extract_header
+let prefetch_mavryk_blocks = Layer1.prefetch_mavryk_blocks fetch extract_header
 
 let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
     Node_context.lcc tzresult Lwt.t =
@@ -59,7 +59,7 @@ let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let+ commitment, level =
     Plugin.RPC.Sc_rollup.last_cemented_commitment_hash_with_level
       cctxt
@@ -68,7 +68,7 @@ let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
   in
   {
     Node_context.commitment =
-      Sc_rollup_proto_types.Commitment_hash.to_octez commitment;
+      Sc_rollup_proto_types.Commitment_hash.to_mavkit commitment;
     level = Protocol.Alpha_context.Raw_level.to_int32 level;
   }
 
@@ -78,7 +78,7 @@ let get_last_published_commitment ?(allow_unstake = true)
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let*! res =
     Plugin.RPC.Sc_rollup.staked_on_commitment
       cctxt
@@ -101,18 +101,18 @@ let get_last_published_commitment ?(allow_unstake = true)
   | Error trace -> fail trace
   | Ok None -> return_none
   | Ok (Some (_staked_hash, staked_commitment)) ->
-      return_some (Sc_rollup_proto_types.Commitment.to_octez staked_commitment)
+      return_some (Sc_rollup_proto_types.Commitment.to_mavkit staked_commitment)
 
 let get_kind cctxt rollup_address =
   let open Lwt_result_syntax in
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let+ kind =
     RPC.Sc_rollup.kind cctxt (cctxt#chain, cctxt#block) rollup_address ()
   in
-  Sc_rollup_proto_types.Kind.to_octez kind
+  Sc_rollup_proto_types.Kind.to_mavkit kind
 
 let genesis_inbox cctxt ~genesis_level =
   let open Lwt_result_syntax in
@@ -122,7 +122,7 @@ let genesis_inbox cctxt ~genesis_level =
   let+ inbox =
     Plugin.RPC.Sc_rollup.inbox cctxt (cctxt#chain, `Level genesis_level)
   in
-  Sc_rollup_proto_types.Inbox.to_octez inbox
+  Sc_rollup_proto_types.Inbox.to_mavkit inbox
 
 let constants_of_parametric
     Protocol.Alpha_context.Constants.Parametric.
@@ -158,7 +158,7 @@ let constants_of_parametric
           commitment_period_in_blocks;
           reveal_activation_level =
             Some
-              (Sc_rollup_proto_types.Constants.reveal_activation_level_to_octez
+              (Sc_rollup_proto_types.Constants.reveal_activation_level_to_mavkit
                  reveal_activation_level);
           max_number_of_stored_cemented_commitments;
         };
@@ -167,7 +167,7 @@ let constants_of_parametric
     }
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/2901
-   The constants are retrieved from the latest tezos block. These constants can
+   The constants are retrieved from the latest mavryk block. These constants can
    be different from the ones used at the creation at the rollup because of a
    protocol amendment that modifies some of them. This need to be fixed when the
    rollup nodes will be able to handle the migration of protocol.
@@ -195,7 +195,7 @@ let retrieve_genesis_info cctxt rollup_address =
     {
       level = Raw_level.to_int32 level;
       commitment_hash =
-        Sc_rollup_proto_types.Commitment_hash.to_octez commitment_hash;
+        Sc_rollup_proto_types.Commitment_hash.to_mavkit commitment_hash;
     }
 
 let get_boot_sector block_hash (node_ctxt : _ Node_context.t) =
@@ -203,9 +203,9 @@ let get_boot_sector block_hash (node_ctxt : _ Node_context.t) =
   let open Alpha_context in
   let open Lwt_result_syntax in
   let exception Found_boot_sector of string in
-  let* block = fetch_tezos_block node_ctxt.l1_ctxt block_hash in
+  let* block = fetch_mavryk_block node_ctxt.l1_ctxt block_hash in
   let missing_boot_sector () =
-    failwith "Boot sector not found in Tezos block %a" Block_hash.pp block_hash
+    failwith "Boot sector not found in Mavryk block %a" Block_hash.pp block_hash
   in
   Lwt.catch
     (fun () ->

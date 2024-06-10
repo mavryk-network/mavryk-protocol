@@ -29,15 +29,15 @@
     Used to plug host function wrappers in the WASN interpreter linker. *)
 val lookup :
   version:Wasm_pvm_state.version ->
-  Tezos_webassembly_interpreter.Ast.name ->
-  Tezos_webassembly_interpreter.Instance.extern
+  Mavryk_webassembly_interpreter.Ast.name ->
+  Mavryk_webassembly_interpreter.Instance.extern
 
 (** [lookup_opt ~version name] is exactly [lookup name] but returns an option instead of
       raising `Not_found`. *)
 val lookup_opt :
   version:Wasm_pvm_state.version ->
-  Tezos_webassembly_interpreter.Ast.name ->
-  Tezos_webassembly_interpreter.Instance.extern option
+  Mavryk_webassembly_interpreter.Ast.name ->
+  Mavryk_webassembly_interpreter.Instance.extern option
 
 (** [registry ~version ~write_debug] returns the host functions registry for
     the expected PVM [version], and with the expected implementation for the
@@ -45,7 +45,7 @@ val lookup_opt :
 val registry :
   version:Wasm_pvm_state.version ->
   write_debug:Builtins.write_debug ->
-  Tezos_webassembly_interpreter.Host_funcs.registry
+  Mavryk_webassembly_interpreter.Host_funcs.registry
 
 exception Bad_input
 
@@ -104,7 +104,7 @@ module type Memory_access = sig
   val load_bytes : t -> addr -> size -> string Lwt.t
 
   val store_num :
-    t -> addr -> addr -> Tezos_webassembly_interpreter.Values.num -> unit Lwt.t
+    t -> addr -> addr -> Mavryk_webassembly_interpreter.Values.num -> unit Lwt.t
 
   val bound : t -> int64
 
@@ -113,7 +113,7 @@ end
 
 module Memory_access_interpreter :
   Memory_access
-    with type t := Tezos_webassembly_interpreter.Instance.memory_inst
+    with type t := Mavryk_webassembly_interpreter.Instance.memory_inst
 
 module Aux : sig
   module type S = sig
@@ -133,7 +133,7 @@ module Aux : sig
      the input payload is no larger than `max_output`. It returns 0 for Ok and
     1 for `output too large`.*)
     val write_output :
-      output_buffer:Tezos_webassembly_interpreter.Output_buffer.t ->
+      output_buffer:Mavryk_webassembly_interpreter.Output_buffer.t ->
       memory:memory ->
       src:int32 ->
       num_bytes:int32 ->
@@ -148,7 +148,7 @@ module Aux : sig
      also that, if the level increases this function also updates
      the level of the output buffer and resets its id to zero. *)
     val read_input :
-      input_buffer:Tezos_webassembly_interpreter.Input_buffer.t ->
+      input_buffer:Mavryk_webassembly_interpreter.Input_buffer.t ->
       memory:memory ->
       info_addr:int32 ->
       dst:int32 ->
@@ -312,12 +312,12 @@ module Aux : sig
     S with type memory = Memory_access.t
 
   include
-    S with type memory = Tezos_webassembly_interpreter.Instance.memory_inst
+    S with type memory = Mavryk_webassembly_interpreter.Instance.memory_inst
 end
 
 (** Defines the tick consumption of memory access for the host functions. *)
 module Tick_model : sig
-  include module type of Tezos_webassembly_interpreter.Tick_model
+  include module type of Mavryk_webassembly_interpreter.Tick_model
 
   (* [read_key_in_memory length] returns the tick consumption of reading a
      key of [length] bytes from the memory. *)
@@ -359,11 +359,11 @@ module Internal_for_tests : sig
   (** The number of bytes used to store the metadata of a rollup in memory *)
   val metadata_size : int
 
-  val write_output : Tezos_webassembly_interpreter.Instance.func_inst
+  val write_output : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val read_input : Tezos_webassembly_interpreter.Instance.func_inst
+  val read_input : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_exists : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_exists : Mavryk_webassembly_interpreter.Instance.func_inst
 
   (** [store_has] returns whether a key corresponds to a value and/or subtrees.
         Namely, it returns the following enum:
@@ -372,29 +372,29 @@ module Internal_for_tests : sig
         - [2]: There is no value at [key], but there are subtrees under [key].
         - [3]: There is a value at [key], and subtrees under [key].
     *)
-  val store_has : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_has : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_delete : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_delete : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_delete_value : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_delete_value : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_copy : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_copy : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_move : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_move : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_value_size : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_value_size : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_create : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_create : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_read : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_read : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_write : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_write : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_list_size : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_list_size : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_get_nth_key : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_get_nth_key : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val store_get_hash : Tezos_webassembly_interpreter.Instance.func_inst
+  val store_get_hash : Mavryk_webassembly_interpreter.Instance.func_inst
 
-  val write_debug : Tezos_webassembly_interpreter.Instance.func_inst
+  val write_debug : Mavryk_webassembly_interpreter.Instance.func_inst
 end

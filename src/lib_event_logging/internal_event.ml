@@ -28,13 +28,13 @@ open Error_monad
 
 module List = struct
   include List
-  include Tezos_stdlib.TzList
+  include Mavryk_stdlib.TzList
 end
 
 module String = struct
   include String
-  include Tezos_stdlib.TzString
-  module Set = Tezos_error_monad.TzLwtreslib.Set.Make (String)
+  include Mavryk_stdlib.TzString
+  module Set = Mavryk_error_monad.TzLwtreslib.Set.Make (String)
 end
 
 let valid_char c =

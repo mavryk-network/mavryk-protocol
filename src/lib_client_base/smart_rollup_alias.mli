@@ -27,19 +27,19 @@
 module Address : sig
   include
     Client_aliases.Alias
-      with type t = Tezos_crypto.Hashed.Smart_rollup_address.t
+      with type t = Mavryk_crypto.Hashed.Smart_rollup_address.t
 
   module Entity :
     Client_aliases.Entity
-      with type t = Tezos_crypto.Hashed.Smart_rollup_address.t
+      with type t = Mavryk_crypto.Hashed.Smart_rollup_address.t
 
   (** Argument parser for rollup address literals or aliases. *)
-  val parameter : unit -> (t, #Client_context.wallet) Tezos_clic.parameter
+  val parameter : unit -> (t, #Client_context.wallet) Mavryk_clic.parameter
 
   (** Command line parameter for rollup address literals or aliases. *)
   val param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'obj)) Tezos_clic.params ->
-    (t -> 'a, 'obj) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'obj)) Mavryk_clic.params ->
+    (t -> 'a, 'obj) Mavryk_clic.params
 end

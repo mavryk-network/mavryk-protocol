@@ -1,18 +1,18 @@
 Smart rollup node
 =================
 
-:doc:`../active/smart_rollups` come with two executable programs: the Octez
-rollup node and the Octez rollup client.
+:doc:`../active/smart_rollups` come with two executable programs: the Mavkit
+rollup node and the Mavkit rollup client.
 
 This page describes the rollup node, but also uses the rollup client when needed to interact with the rollup node.
 
-The Octez rollup node is used by a rollup operator to deploy a
+The Mavkit rollup node is used by a rollup operator to deploy a
 rollup. The rollup node is responsible for making the rollup progress
 by publishing commitments and by playing refutation games.
 
-Just like the Octez node, the Octez rollup node provides an :doc:`RPC
+Just like the Mavkit node, the Mavkit rollup node provides an :doc:`RPC
 interface<../api/openapi>`. The services of this interface can be
-called directly with HTTP requests or indirectly using the Octez
+called directly with HTTP requests or indirectly using the Mavkit
 rollup client.
 
 We first cover the operation of the rollup node and the corresponding workflow,
@@ -27,38 +27,38 @@ the `Dailynet <https://teztnets.com/dailynet-about>`_.
 In this section, we assume that ``${OPERATOR_ADDR}`` is a valid
 implicit account on Dailynet owned by the reader.
 
-Notice that you need a specific development version of Octez to
+Notice that you need a specific development version of Mavkit to
 participate to Dailynet. This version is either available from
 docker images or can be compiled from sources. Please refer to the
 `Dailynet <https://teztnets.com/dailynet-about>`_ website
 for installation details.
 
-An Octez rollup node needs an Octez node to run. We assume that
-an Octez node has been launched locally, typically by issuing:
+An Mavkit rollup node needs an Mavkit node to run. We assume that
+an Mavkit node has been launched locally, typically by issuing:
 
 .. code:: sh
 
-   octez-node config init --data-dir "${ONODE_DIR}" --network "${NETWORK}"
-   octez-node run --data-dir "${ONODE_DIR}" --network "${NETWORK}" --rpc-addr 127.0.0.1
+   mavkit-node config init --data-dir "${ONODE_DIR}" --network "${NETWORK}"
+   mavkit-node run --data-dir "${ONODE_DIR}" --network "${NETWORK}" --rpc-addr 127.0.0.1
 
 in a terminal where ``${NETWORK}`` is of the
 form ``https://teztnets.com/dailynet-YYYY-MM-DD``
-and ``${ONODE_DIR}`` is a path for the Octez node store, by default ``~/.tezos-node``.
+and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.mavryk-node``.
 
 The commands will only work when the node is completely boostrapped, and therefore the current protocol on the target network is activated.
 This can be checked by:
 
 .. code:: sh
 
-   octez-client bootstrapped
-   octez-client rpc get /chains/main/blocks/head/protocols
+   mavkit-client bootstrapped
+   mavkit-client rpc get /chains/main/blocks/head/protocols
 
 In case you do not already have an implicit account, you can generate one with:
 
 .. code:: sh
 
-   octez-client gen keys "${ACCOUNT_NAME}"
-   octez-client show address "${ACCOUNT_NAME}"
+   mavkit-client gen keys "${ACCOUNT_NAME}"
+   mavkit-client show address "${ACCOUNT_NAME}"
 
 Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
@@ -70,17 +70,17 @@ after your node gets synchronized with Dailynet.
 
 .. code:: sh
 
-   octez-client get balance for "${OPERATOR_ADDR}"
+   mavkit-client get balance for "${OPERATOR_ADDR}"
 
 Origination
 -----------
 
 Anyone can originate a smart rollup with the following invocation of
-the Octez client:
+the Mavkit client:
 
 .. code:: sh
 
-    octez-client originate smart rollup "${SR_ALIAS}" \
+    mavkit-client originate smart rollup "${SR_ALIAS}" \
       from "${OPERATOR_ADDR}" \
       of kind wasm_2_0_0 \
       of type bytes \
@@ -158,19 +158,19 @@ rollup node.
 
 First, we need to decide on a directory where the rollup node stores
 its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path, by default
-``~/.tezos-smart-rollup-node``.
+``~/.mavryk-smart-rollup-node``.
 
 
 The rollup node can then be run with:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
                     run operator for "${SR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
 
-where ``${OCLIENT_DIR}`` is the data directory of the Octez client, by default  ``~/.tezos-client``.
+where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by default  ``~/.mavryk-client``.
 
 The log should show that the rollup node follows the Layer 1 chain and
 processes the inbox of each level.
@@ -253,7 +253,7 @@ uses the same arguments as the ``run`` command:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
                     init operator config for "${SR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
@@ -287,7 +287,7 @@ The rollup node can now be run with just:
 
 .. code:: sh
 
-   octez-smart-rollup-node -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
+   mavkit-smart-rollup-node -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
 
 The configuration will be read from ``${ROLLUP_NODE_DIR}/config.json``.
 
@@ -296,9 +296,9 @@ Rollup node in a sandbox
 
 The node can also be tested locally with a sandbox environment. (See :doc:`sandbox documentation <../user/sandbox>`.)
 
-Once you initialized the "sandboxed" client data with ``./src/bin_client/octez-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``octez-smart-rollup-node run``.
+Once you initialized the "sandboxed" client data with ``./src/bin_client/mavkit-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``mavkit-smart-rollup-node run``.
 
-A temporary directory ``/tmp/tezos-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
+A temporary directory ``/tmp/mavryk-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
 
 
 History modes
@@ -352,18 +352,18 @@ Workflows
 Sending an external inbox message
 """""""""""""""""""""""""""""""""
 
-The Octez client can be used to send an external message into the
+The Mavkit client can be used to send an external message into the
 rollup inbox. Assuming that ``${EMESSAGE}`` is the hexadecimal
 representation of the message payload, one can do:
 
 .. code:: sh
 
-    octez-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+    mavkit-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
      send smart rollup message "hex:[ \"${EMESSAGE}\" ]" \
      from "${OPERATOR_ADDR}"
 
 to inject such an external message,  where ``${PROTO_HASH}`` is the hash of your
-protocol (e.g. ``ProtoALphaAL`` for Alpha; see :ref:`how to obtain it <octez_client_protocol>`).
+protocol (e.g. ``ProtoALphaAL`` for Alpha; see :ref:`how to obtain it <mavkit_client_protocol>`).
 So let us focus now on producing a viable content for ``${EMESSAGE}``.
 
 The kernel used previously in our running example is a simple "echo"
@@ -374,14 +374,14 @@ originated a Layer 1 smart contract as follows:
 
 .. code:: sh
 
-   octez-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+   mavkit-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
      originate contract go transferring 1 from "${OPERATOR_ADDR}" \
      running 'parameter string; storage string; code {CAR; NIL operation; PAIR};' \
      --init '""' --burn-cap 0.4
 
 and that this contract is identified by an address ``${CONTRACT}``
 (a ``KT1...`` address), then one can encode an
-outbox transaction using the Octez rollup client as follows:
+outbox transaction using the Mavkit rollup client as follows:
 
 .. code:: sh
 
@@ -391,7 +391,7 @@ outbox transaction using the Octez rollup client as follows:
       "entrypoint" : "%default" } ]'
 
 
-    EMESSAGE=$(octez-smart-rollup-client-${PROTO} encode outbox message "${MESSAGE}")
+    EMESSAGE=$(mavkit-smart-rollup-client-${PROTO} encode outbox message "${MESSAGE}")
 
 where ``${PROTO}`` is the suffix of the executables corresponding to your protocol
 (e.g., ``-alpha``).
@@ -412,7 +412,7 @@ populated as follows:
 
 .. code:: sh
 
-   octez-smart-rollup-client-${PROTO} rpc get \
+   mavkit-smart-rollup-client-${PROTO} rpc get \
      /global/block/cemented/outbox/${L}/messages
 
 Here is the output for this command:
@@ -434,14 +434,14 @@ proof is retrieved as follows:
 
 .. code:: sh
 
-   PROOF=$(octez-smart-rollup-client-${PROTO} get proof for message 0 \
+   PROOF=$(mavkit-smart-rollup-client-${PROTO} get proof for message 0 \
      of outbox at level "${L}")
 
 Finally, the execution of the outbox message is done as follows:
 
 .. code:: sh
 
-   "${TEZOS_PATH}/octez-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+   "${MAVRYK_PATH}/mavkit-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
            execute outbox message of smart rollup "${SR_ALIAS_OR_ADDR}" \
            from "${OPERATOR_ADDR}" for commitment hash "${LCC}" \
            and output proof "${PROOF}"
@@ -471,7 +471,7 @@ Remember that our running example rollup has been originated with:
 
 .. code:: sh
 
-    octez-client originate smart rollup "${SR_ALIAS}" \
+    mavkit-client originate smart rollup "${SR_ALIAS}" \
       from "${OPERATOR_ADDR}" \
       of kind wasm_2_0_0 \
       of type bytes \
@@ -535,7 +535,7 @@ When the rollup node advances its internal rollup state under normal
 operation, it does so using the fast execution engine.
 
 This engine uses Wasmer for running WebAssembly code. You may configure the compiler used for compiling
-WebAssembly code, via the ``OCTEZ_WASMER_COMPILER`` environment variable.
+WebAssembly code, via the ``MAVKIT_WASMER_COMPILER`` environment variable.
 
 The choice of a compiler primarily affects the performance of the
 WebAssembly code execution *vs* the compilation time. Some compilers offer certain security
@@ -548,7 +548,7 @@ The available options are:
    :header-rows: 1
 
    * - Compiler
-     - ``OCTEZ_WASMER_COMPILER`` value
+     - ``MAVKIT_WASMER_COMPILER`` value
      - Description
    * - Singlepass
      - ``singlepass``
@@ -558,7 +558,7 @@ The available options are:
      - `When to use Cranelift <https://github.com/wasmerio/wasmer/tree/master/lib/compiler-cranelift#when-to-use-cranelift>`_
 
 Note that while the rollup node is generally capable of using Wasmer's
-LLVM-based compiler, Octez does not currently ship with it.
+LLVM-based compiler, Mavkit does not currently ship with it.
 
 When the environment variable is undefined, Cranelift is used by default.
 
@@ -755,7 +755,7 @@ it is the responsibility of the kernel developer to implement a ``kernel_run`` w
 
 
 The current bound is set to 11,000,000,000 ticks.
-``octez-smart-rollup-wasm-debugger`` is probably the best tool available to
+``mavkit-smart-rollup-wasm-debugger`` is probably the best tool available to
 verify the ``kernel_run`` function does not take more ticks than authorized.
 
 The direct consequence of this setup is that it might be necessary for
@@ -1138,21 +1138,16 @@ WASM memory.
 Testing your Kernel
 """""""""""""""""""
 
-.. note::
-
-   ``octez-smart-rollup-wasm-debugger`` is available in the Octez
-   distribution starting with :doc:`/releases/version-16`.
-
 Testing a kernel without having to start a rollup node on a test
 network is very convenient. We provide a debugger as a means to
 evaluate the WASM PVM without relying on any node and network:
-``octez-smart-rollup-wasm-debugger``.
+``mavkit-smart-rollup-wasm-debugger``.
 
 .. code:: sh
 
-  octez-smart-rollup-wasm-debugger --kernel "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SR_ADDR}"
+  mavkit-smart-rollup-wasm-debugger --kernel "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SR_ADDR}"
 
-``octez-smart-rollup-wasm-debugger`` takes the target WASM kernel to be debugged as argument, either as a ``.wasm`` file (the binary
+``mavkit-smart-rollup-wasm-debugger`` takes the target WASM kernel to be debugged as argument, either as a ``.wasm`` file (the binary
 representation of WebAssembly modules) or as a ``.wast`` file (its textual
 representation), and actually parses and typechecks the kernel before
 giving it to the PVM.
@@ -1211,7 +1206,7 @@ and will be given default values by the debugger, respectively
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.
 
-``octez-smart-rollup-wasm-debugger`` is a debugger, as such it waits for user
+``mavkit-smart-rollup-wasm-debugger`` is a debugger, as such it waits for user
 inputs to continue its execution. Its initial state is exactly the same as right
 after its origination. Its current state can be inspected with the command
 ``show status``:

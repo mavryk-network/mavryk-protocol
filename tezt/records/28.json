@@ -99,7 +99,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "013-PtJakart: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -121,8 +121,8 @@
     }
   },
   {
-    "file": "tezos-lib-shell-services",
-    "title": "tezos-lib-shell-services: block-services",
+    "file": "mavryk-lib-shell-services",
+    "title": "mavryk-lib-shell-services: block-services",
     "tags": [
       "alcotest"
     ],
@@ -132,7 +132,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "synchronisation heuristic",
     "tags": [
       "alcotest"

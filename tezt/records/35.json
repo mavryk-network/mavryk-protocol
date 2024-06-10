@@ -33,8 +33,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: alpha: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: alpha: proxy",
     "tags": [
       "alcotest"
     ],
@@ -110,7 +110,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "013-PtJakart: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -154,7 +154,7 @@
     }
   },
   {
-    "file": "tezos-mockup-commands",
+    "file": "mavryk-mockup-commands",
     "title": "mockup_wallet",
     "tags": [
       "alcotest"

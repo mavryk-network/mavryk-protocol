@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_sapling.Core.Client
+open Mavryk_sapling.Core.Client
 
 let _ = Random.self_init ()
 
@@ -62,7 +62,7 @@ end
 
 let sapling_transaction_as_arg t =
   let pp_michelson ppf t =
-    let open Tezos_micheline in
+    let open Mavryk_micheline in
     let list_of_transactions_expr =
       let transaction_expr =
         Micheline.Bytes
@@ -128,8 +128,8 @@ let () =
       | Balance_too_low (balance, amount) -> Some (balance, amount) | _ -> None)
     (fun (balance, amount) -> Balance_too_low (balance, amount))
 
-module Storage = Tezos_sapling.Storage
-module F = Tezos_sapling.Forge
+module Storage = Mavryk_sapling.Storage
+module F = Mavryk_sapling.Forge
 
 module Input_set = struct
   include Set.Make (F.Input)
@@ -140,7 +140,7 @@ module Input_set = struct
     Format.fprintf
       pp
       "@[<h>%s %Ld@]"
-      (Tezos_crypto.Base58.simple_encode
+      (Mavryk_crypto.Base58.simple_encode
          Viewing_key.address_b58check_encoding
          (F.Input.address i))
       (F.Input.amount i)
@@ -309,7 +309,7 @@ module Contract_state = struct
   let update_storage contract_state (root, diff) =
     let open Protocol.Alpha_context.Sapling in
     let storage =
-      Tezos_sapling.Storage.add
+      Mavryk_sapling.Storage.add
         contract_state.storage
         diff.commitments_and_ciphertexts
     in

@@ -32,7 +32,7 @@
 
 let random_iterations = 10
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let check_contract protocol client ~contract ~input ~expected_storage =
   let* {storage; _} =

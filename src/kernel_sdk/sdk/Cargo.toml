@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-smart-rollup"
+name = "mavryk-smart-rollup"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
@@ -16,62 +16,62 @@ categories = ["wasm", "encoding", "development-tools"]
 [package.metadata.docs.rs]
 features = ["testing"]
 
-[dependencies.tezos-smart-rollup-core]
+[dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-host]
+[dependencies.mavryk-smart-rollup-host]
 path = "../host"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-debug]
+[dependencies.mavryk-smart-rollup-debug]
 path = "../debug"
 version = "0.2.2"
 
-[dependencies.tezos-smart-rollup-encoding]
+[dependencies.mavryk-smart-rollup-encoding]
 path = "../encoding"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-storage]
+[dependencies.mavryk-smart-rollup-storage]
 path = "../storage"
 version = "0.2.2"
 optional = true
 
-[dependencies.tezos-smart-rollup-entrypoint]
+[dependencies.mavryk-smart-rollup-entrypoint]
 path = "../entrypoint"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-mock]
+[dependencies.mavryk-smart-rollup-mock]
 path = "../mock"
 version = "0.2.2"
 optional = true
 
-[dependencies.tezos_crypto_rs]
+[dependencies.mavryk_crypto_rs]
 version = "=0.5.2"
 default-features = false
 optional = true
 
-[dependencies.tezos_data_encoding]
+[dependencies.mavryk_data_encoding]
 version = "=0.5.2"
 optional = true
 
 [features]
 default = ["std", "crypto", "dlmalloc", "panic-hook", "data-encoding", "storage", "bls"]
-crypto = ["tezos_crypto_rs"]
-bls = ["tezos-smart-rollup-encoding/bls"]
-debug_alloc = ["tezos-smart-rollup-debug/alloc"]
-alloc = ["tezos-smart-rollup-entrypoint/alloc"]
-dlmalloc = ["tezos-smart-rollup-entrypoint/dlmalloc"]
-panic-hook = ["tezos-smart-rollup-entrypoint/default"]
-data-encoding = ["tezos_data_encoding", "tezos-smart-rollup-encoding/default"]
-storage = ["tezos-smart-rollup-storage"]
-std = ["alloc", "debug_alloc", "tezos-smart-rollup-entrypoint/std"]
-testing = ["crypto", "tezos-smart-rollup-mock"]
-proto-nairobi = ["tezos-smart-rollup-core/proto-nairobi", "tezos-smart-rollup-host/proto-nairobi", "tezos-smart-rollup-mock/proto-nairobi"]
-proto-alpha = ["proto-alpha-no-mock", "tezos-smart-rollup-mock/proto-alpha"]
+crypto = ["mavryk_crypto_rs"]
+bls = ["mavryk-smart-rollup-encoding/bls"]
+debug_alloc = ["mavryk-smart-rollup-debug/alloc"]
+alloc = ["mavryk-smart-rollup-entrypoint/alloc"]
+dlmalloc = ["mavryk-smart-rollup-entrypoint/dlmalloc"]
+panic-hook = ["mavryk-smart-rollup-entrypoint/default"]
+data-encoding = ["mavryk_data_encoding", "mavryk-smart-rollup-encoding/default"]
+storage = ["mavryk-smart-rollup-storage"]
+std = ["alloc", "debug_alloc", "mavryk-smart-rollup-entrypoint/std"]
+testing = ["crypto", "mavryk-smart-rollup-mock"]
+proto-nairobi = ["mavryk-smart-rollup-core/proto-nairobi", "mavryk-smart-rollup-host/proto-nairobi", "mavryk-smart-rollup-mock/proto-nairobi"]
+proto-alpha = ["proto-alpha-no-mock", "mavryk-smart-rollup-mock/proto-alpha"]
 # TODO: remove `proto-alpha-no-mock` once `mock` can compile on RISC-V
-proto-alpha-no-mock = ["tezos-smart-rollup-core/proto-alpha", "tezos-smart-rollup-host/proto-alpha"]
+proto-alpha-no-mock = ["mavryk-smart-rollup-core/proto-alpha", "mavryk-smart-rollup-host/proto-alpha"]

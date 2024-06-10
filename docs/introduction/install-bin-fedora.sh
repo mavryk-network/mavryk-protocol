@@ -27,14 +27,14 @@ set -e
 set -x
 # [install prerequisites]
 dnf install -y dnf-plugins-core
-# [install tezos]
+# [install mavryk]
 dnf copr enable -y $REPO && dnf update -y
-dnf install -y tezos-client
-dnf install -y tezos-node
-dnf install -y tezos-baker-PtNairob
-dnf install -y tezos-accuser-PtNairob
+dnf install -y mavryk-client
+dnf install -y mavryk-node
+dnf install -y mavryk-baker-PtNairob
+dnf install -y mavryk-accuser-PtNairob
 # [test executables]
-octez-client --version
-octez-node --version
-octez-baker-PtNairob --version
-octez-accuser-PtNairob --version
+mavkit-client --version
+mavkit-node --version
+mavkit-baker-PtNairob --version
+mavkit-accuser-PtNairob --version

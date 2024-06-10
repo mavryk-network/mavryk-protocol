@@ -50,18 +50,18 @@ fi
 # create a temporary directory until the hash is known
 # this is equivalent to `cp src/proto_alpha/ src/proto_${version}` but only for versioned files
 echo "Copying src/proto_alpha to src/proto_${version}"
-mkdir /tmp/tezos_proto_snapshot
-git archive HEAD src/proto_alpha/ | tar -x -C /tmp/tezos_proto_snapshot
+mkdir /tmp/mavryk_proto_snapshot
+git archive HEAD src/proto_alpha/ | tar -x -C /tmp/mavryk_proto_snapshot
 # remove the README because it is specific to Alpha
-rm /tmp/tezos_proto_snapshot/src/proto_alpha/README.md
-mv /tmp/tezos_proto_snapshot/src/proto_alpha "src/proto_${version}"
-rm -rf /tmp/tezos_proto_snapshot
+rm /tmp/mavryk_proto_snapshot/src/proto_alpha/README.md
+mv /tmp/mavryk_proto_snapshot/src/proto_alpha "src/proto_${version}"
+rm -rf /tmp/mavryk_proto_snapshot
 
 echo "Copying docs/alpha to docs/${label}"
-mkdir /tmp/tezos_proto_doc_snapshot
-git archive HEAD docs/alpha/ | tar -x -C /tmp/tezos_proto_doc_snapshot
-mv /tmp/tezos_proto_doc_snapshot/docs/alpha "docs/${label}"
-rm -rf /tmp/tezos_proto_doc_snapshot
+mkdir /tmp/mavryk_proto_doc_snapshot
+git archive HEAD docs/alpha/ | tar -x -C /tmp/mavryk_proto_doc_snapshot
+mv /tmp/mavryk_proto_doc_snapshot/docs/alpha "docs/${label}"
+rm -rf /tmp/mavryk_proto_doc_snapshot
 
 # set current version
 # Starting from 001 the version value moved to `constants_repr`. To be
@@ -73,7 +73,7 @@ sed -i.old.old -e "s/let version_value = \"alpha_current\"/let version_value = \
     "src/proto_${version}/lib_protocol/raw_context.ml" \
     "src/proto_${version}/lib_client/proxy.ml"
 
-long_hash=$(./octez-protocol-compiler -hash-only "src/proto_${version}/lib_protocol")
+long_hash=$(./mavkit-protocol-compiler -hash-only "src/proto_${version}/lib_protocol")
 short_hash=$(echo "$long_hash" | head -c 8)
 
 if [ -d "src/proto_${version}_${short_hash}" ] ; then
@@ -89,7 +89,7 @@ cd "docs/${label}"
 find . -name \*.rst -exec \
      sed -i.old \
        -e "s,src/proto_alpha,src/proto_${version}_${short_hash},g" \
-       -e "s,tezos-protocol-alpha/,tezos-protocol-${version}-${short_hash}/,g" \
+       -e "s,mavryk-protocol-alpha/,mavryk-protocol-${version}-${short_hash}/,g" \
        -e "s,raw_protocol_alpha/,raw_protocol_${version}_${short_hash}/,g" \
        -e "s/_alpha:/_${label}:/g" \
        -e "s/_alpha>/_${label}>/g" \
@@ -152,7 +152,7 @@ cd lib_protocol
 
 # replace fake hash with real hash, this file doesn't influence the hash
 sed -i.old -e 's/"hash": "[^"]*",/"hash": "'"$long_hash"'",/' \
-    TEZOS_PROTOCOL
+    MAVRYK_PROTOCOL
 
 # We use `--print0` and `xargs -0` instead of just passing the result
 # of find to sed in order to support spaces in filenames.

@@ -124,7 +124,7 @@ module Make_queue (N : sig
       to store the persistent information for this queue. *)
   val name : string
 end)
-(K : Tezos_crypto.Intfs.HASH) (V : sig
+(K : Mavryk_crypto.Intfs.HASH) (V : sig
   type t
 
   val encoding : t Data_encoding.t

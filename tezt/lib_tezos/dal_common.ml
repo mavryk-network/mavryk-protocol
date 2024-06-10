@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Cryptobox = Tezos_crypto_dal.Cryptobox
+module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
 module Parameters = struct
   type t = {
@@ -465,7 +465,7 @@ module Commitment = struct
       if padding_length > 0 then Helpers.pad padding_length message else message
     in
     let slot = String.to_bytes padded_message in
-    let open Tezos_error_monad.Error_monad.Result_syntax in
+    let open Mavryk_error_monad.Error_monad.Result_syntax in
     (let* p = Cryptobox.polynomial_from_slot cryptobox slot in
      let* cm = Cryptobox.commit cryptobox p in
      let* proof = Cryptobox.prove_commitment cryptobox p in

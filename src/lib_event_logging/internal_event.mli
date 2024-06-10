@@ -34,7 +34,7 @@
    forward) the events emitted within the code-base.
 *)
 
-open Tezos_error_monad
+open Mavryk_error_monad
 open Error_monad
 
 (** {3 Events Definitions and Registration } *)

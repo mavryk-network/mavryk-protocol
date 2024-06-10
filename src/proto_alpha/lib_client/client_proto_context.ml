@@ -26,7 +26,7 @@
 open Protocol
 open Alpha_context
 open Protocol_client_context
-open Tezos_micheline
+open Mavryk_micheline
 open Client_proto_contracts
 open Client_keys
 
@@ -806,12 +806,12 @@ let activate_account (cctxt : #full) ~chain ~block ?confirmations ?dry_run
   in
   let pk = Signature.Of_V1.public_key pk in
   let sk = Signature.Of_V1.secret_key sk in
-  let*? pk_uri = Tezos_signer_backends.Unencrypted.make_pk pk in
+  let*? pk_uri = Mavryk_signer_backends.Unencrypted.make_pk pk in
   let* sk_uri =
     if encrypted then
-      Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
+      Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
     else
-      let*? sk_uri = Tezos_signer_backends.Unencrypted.make_sk sk in
+      let*? sk_uri = Mavryk_signer_backends.Unencrypted.make_sk sk in
       return sk_uri
   in
   let* () = Client_keys.register_key cctxt ?force (pkh, pk_uri, sk_uri) name in

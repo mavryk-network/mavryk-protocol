@@ -10,7 +10,7 @@ use crate::transaction::{
 };
 use primitive_types::{H256, U256};
 use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpIterator, RlpStream};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
 pub fn next<'a, 'v>(decoder: &mut RlpIterator<'a, 'v>) -> Result<Rlp<'a>, DecoderError> {
     decoder.next().ok_or(DecoderError::RlpIncorrectListLen)

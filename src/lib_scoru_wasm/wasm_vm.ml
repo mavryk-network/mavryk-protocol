@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Wasm = Tezos_webassembly_interpreter
+module Wasm = Mavryk_webassembly_interpreter
 open Wasm_pvm_state.Internal_state
 
 let version_for_protocol : Pvm_input_kind.protocol -> Wasm_pvm_state.version =
@@ -71,7 +71,7 @@ let has_upgrade_error_flag durable =
 let get_wasm_version {durable; _} =
   let open Lwt_syntax in
   let* cbv = Durable.find_value_exn durable Constants.version_key in
-  let+ bytes = Tezos_lazy_containers.Chunked_byte_vector.to_bytes cbv in
+  let+ bytes = Mavryk_lazy_containers.Chunked_byte_vector.to_bytes cbv in
   Data_encoding.Binary.of_bytes_exn Wasm_pvm_state.version_encoding bytes
 
 let stack_size_limit = function
@@ -139,7 +139,7 @@ let has_fallback_kernel durable =
 
 let initial_boot_state () =
   Decode
-    (Tezos_webassembly_interpreter.Decode.initial_decode_kont
+    (Mavryk_webassembly_interpreter.Decode.initial_decode_kont
        ~name:Constants.wasm_main_module_name)
 
 let save_fallback_kernel durable =
@@ -215,7 +215,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
   | Decode m ->
       let* kernel = Durable.find_value_exn durable Constants.kernel_key in
       let* m =
-        Tezos_webassembly_interpreter.Decode.module_step
+        Mavryk_webassembly_interpreter.Decode.module_step
           ~allow_floats:false
           kernel
           m
@@ -265,7 +265,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
             in
             Some extern)
           (function
-            | Tezos_lazy_containers.Lazy_map.UnexpectedAccess -> return_none
+            | Mavryk_lazy_containers.Lazy_map.UnexpectedAccess -> return_none
             | exn -> Lwt.reraise exn)
       in
       match extern with
@@ -277,8 +277,8 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
             Wasm.Eval.config
               ~stack_size_limit
               self
-              (Tezos_lazy_containers.Lazy_vector.Int32Vector.empty ())
-              (Tezos_lazy_containers.Lazy_vector.Int32Vector.singleton
+              (Mavryk_lazy_containers.Lazy_vector.Int32Vector.empty ())
+              (Mavryk_lazy_containers.Lazy_vector.Int32Vector.singleton
                  admin_instr)
           in
           (* Set kernel - now known to be valid - as fallback kernel,
@@ -445,7 +445,7 @@ let patch_reboot_counter durable reboot_counter =
 
 (** Every time the kernel yields, we reset the input buffer. *)
 let clean_up_input_buffer buffers =
-  let open Tezos_webassembly_interpreter in
+  let open Mavryk_webassembly_interpreter in
   function
   | Forcing_yield | Yielding -> Input_buffer.reset buffers.Eval.input | _ -> ()
 
@@ -507,7 +507,7 @@ let input_request pvm_state =
   | Snapshot -> Wasm_pvm_state.No_input_required
   | Collect -> Wasm_pvm_state.Input_required
   | Eval {config; _} -> (
-      match Tezos_webassembly_interpreter.Eval.is_reveal_tick config with
+      match Mavryk_webassembly_interpreter.Eval.is_reveal_tick config with
       | Some reveal -> Wasm_pvm_state.Reveal_required reveal
       | None -> Wasm_pvm_state.No_input_required)
   | _ -> Wasm_pvm_state.No_input_required
@@ -534,7 +534,7 @@ let reveal_step payload pvm_state =
   match pvm_state.tick_state with
   | Eval {config; module_reg} ->
       let* config =
-        Tezos_webassembly_interpreter.Eval.reveal_step
+        Mavryk_webassembly_interpreter.Eval.reveal_step
           Host_funcs.Aux.reveal
           module_reg
           payload

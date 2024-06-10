@@ -99,7 +99,7 @@ module type INJECTOR_OPERATION = sig
   type operation
 
   (** Hash with b58check encoding iop(53), for hashes of injector operations *)
-  module Hash : Tezos_crypto.Intfs.HASH
+  module Hash : Mavryk_crypto.Intfs.HASH
 
   (** Alias for L1 operations hashes *)
   type hash = Hash.t
@@ -107,7 +107,7 @@ module type INJECTOR_OPERATION = sig
   (** Structure to keep track of injection errors. *)
   type errors = {count : int; last_error : tztrace option}
 
-  (** The type of L1 operations that are injected on Tezos. These have a hash
+  (** The type of L1 operations that are injected on Mavryk. These have a hash
       attached to them that allows tracking and retrieving their status. *)
   type t = private {hash : hash; operation : operation; mutable errors : errors}
 
@@ -205,7 +205,7 @@ module type PROTOCOL_CLIENT = sig
   (** Simulating a batch of operations. This function returns the simulation
       result for each of these operations (with its associated index in the
       batch, in case there is a revelation operation added) together with a
-      Tezos raw unsigned operation that can be directly injected on a node if
+      Mavryk raw unsigned operation that can be directly injected on a node if
       one wishes to. *)
   val simulate_operations :
     #Client_context.full ->
@@ -231,7 +231,7 @@ module type PROTOCOL_CLIENT = sig
   (** [time_until_next_block state block_header] computes the time until the
       block following [block_header], with respect to the current time. *)
   val time_until_next_block :
-    state -> Tezos_base.Block_header.shell_header option -> Ptime.span
+    state -> Mavryk_base.Block_header.shell_header option -> Ptime.span
 
   (** Run protocol specific checks for injector configuration/state. *)
   val checks : state -> unit tzresult
@@ -247,7 +247,7 @@ module type S = sig
 
   module Inj_operation : INJECTOR_OPERATION with type operation = operation
 
-  (** Information stored about an L1 operation that was injected on a Tezos
+  (** Information stored about an L1 operation that was injected on a Mavryk
     node. *)
   type injected_info = {
     op : Inj_operation.t;  (** The injector operation. *)
@@ -258,7 +258,7 @@ module type S = sig
         (** The index of the operation [op] in the L1 batch corresponding to [oph]. *)
   }
 
-  (** Information stored about an L1 operation that was included in a Tezos
+  (** Information stored about an L1 operation that was included in a Mavryk
     block. *)
   type included_info = {
     op : Inj_operation.t;  (** The injector operation. *)
@@ -324,7 +324,7 @@ module type S = sig
       compute the next block timestamp. *)
   val inject :
     ?tags:tag list ->
-    ?header:Tezos_base.Block_header.shell_header ->
+    ?header:Mavryk_base.Block_header.shell_header ->
     unit ->
     unit Lwt.t
 

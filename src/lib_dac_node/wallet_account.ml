@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Aggregate_signature = Tezos_crypto.Aggregate_signature
+module Aggregate_signature = Mavryk_crypto.Aggregate_signature
 
 module Coordinator = struct
   type t = {

@@ -114,8 +114,8 @@ let with_layer1 ?additional_bootstrap_accounts ?commitment_period
   f node client bootstrap1_key
 
 let with_coordinator_node ?name ?sc_rollup_node ?(pvm_name = "arith")
-    ?(wait_ready = true) ?(allow_v1_api = false) ~committee_members tezos_node
-    tezos_client f =
+    ?(wait_ready = true) ?(allow_v1_api = false) ~committee_members mavryk_node
+    mavryk_client f =
   let reveal_data_dir =
     Option.map
       (fun sc_rollup_node ->
@@ -125,8 +125,8 @@ let with_coordinator_node ?name ?sc_rollup_node ?(pvm_name = "arith")
   let dac_node =
     Dac_node.create_coordinator
       ?name
-      ~node:tezos_node
-      ~client:tezos_client
+      ~node:mavryk_node
+      ~client:mavryk_client
       ?reveal_data_dir
       ~allow_v1_api
       ~committee_members:
@@ -140,8 +140,8 @@ let with_coordinator_node ?name ?sc_rollup_node ?(pvm_name = "arith")
   f dac_node committee_members
 
 let with_committee_member ?name ?sc_rollup_node ?(pvm_name = "arith")
-    ?(wait_ready = true) ?(allow_v1_api = false) ~committee_member tezos_node
-    coordinator_node tezos_client f =
+    ?(wait_ready = true) ?(allow_v1_api = false) ~committee_member mavryk_node
+    coordinator_node mavryk_client f =
   let reveal_data_dir =
     Option.map
       (fun sc_rollup_node ->
@@ -152,8 +152,8 @@ let with_committee_member ?name ?sc_rollup_node ?(pvm_name = "arith")
   let dac_node =
     Dac_node.create_committee_member
       ?name
-      ~node:tezos_node
-      ~client:tezos_client
+      ~node:mavryk_node
+      ~client:mavryk_client
       ?reveal_data_dir
       ~coordinator_rpc_host:(Dac_node.rpc_host coordinator_node)
       ~coordinator_rpc_port:(Dac_node.rpc_port coordinator_node)
@@ -167,7 +167,7 @@ let with_committee_member ?name ?sc_rollup_node ?(pvm_name = "arith")
 
 let with_observer ?name ?sc_rollup_node ?(pvm_name = "arith")
     ?(wait_ready = true) ?(allow_v1_api = false) ~committee_member_rpcs
-    tezos_node coordinator_node tezos_client f =
+    mavryk_node coordinator_node mavryk_client f =
   let reveal_data_dir =
     Option.map
       (fun sc_rollup_node ->
@@ -177,8 +177,8 @@ let with_observer ?name ?sc_rollup_node ?(pvm_name = "arith")
   let dac_node =
     Dac_node.create_observer
       ?name
-      ~node:tezos_node
-      ~client:tezos_client
+      ~node:mavryk_node
+      ~client:mavryk_client
       ?reveal_data_dir
       ~coordinator_rpc_host:(Dac_node.rpc_host coordinator_node)
       ~coordinator_rpc_port:(Dac_node.rpc_port coordinator_node)
@@ -192,13 +192,13 @@ let with_observer ?name ?sc_rollup_node ?(pvm_name = "arith")
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/4706
    Keep pvm name value in Sc_rollup.t. *)
-let with_fresh_rollup ?(pvm_name = "arith") ?hooks tezos_node tezos_client
+let with_fresh_rollup ?(pvm_name = "arith") ?hooks mavryk_node mavryk_client
     bootstrap1_key f =
   let sc_rollup_node =
     Sc_rollup_node.create
       Operator
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:bootstrap1_key
   in
   let* rollup_address =
@@ -210,9 +210,9 @@ let with_fresh_rollup ?(pvm_name = "arith") ?hooks tezos_node tezos_client
       ~kind:pvm_name
       ~boot_sector:""
       ~parameters_ty:"string"
-      tezos_client
+      mavryk_client
   in
-  let* () = Client.bake_for_and_wait tezos_client in
+  let* () = Client.bake_for_and_wait mavryk_client in
   f rollup_address sc_rollup_node
 
 let scenario_with_full_dac_infrastructure ?supports ?(tags = ["dac"; "full"])
@@ -227,7 +227,7 @@ let scenario_with_full_dac_infrastructure ?supports ?(tags = ["dac"; "full"])
     ~__FILE__
     ~tags
     ~uses:(fun protocol ->
-      Constant.octez_dac_node :: Constant.octez_smart_rollup_node
+      Constant.mavkit_dac_node :: Constant.mavkit_smart_rollup_node
       :: uses protocol)
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->
@@ -263,7 +263,7 @@ let scenario_with_full_dac_infrastructure ?supports ?(tags = ["dac"; "full"])
       let committee_members =
         List.append committee_members custom_committee_members
       in
-      (* Use a fresh tezos client for the coordinator. This is needed to make
+      (* Use a fresh mavryk client for the coordinator. This is needed to make
          sure that the coordinator does not have access to the secret keys of
          the coordinator stored in the wallet directory of [client]. *)
       let* coordinator_wallet_client = Client.init () in

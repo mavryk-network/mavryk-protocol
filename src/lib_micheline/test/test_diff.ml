@@ -61,9 +61,9 @@ let%expect_test "For ints the comment contains changed value." =
     /* -> 32 */ |}]
 
 let%expect_test "For strings the comment contains changed value." =
-  print_diff (diff ~prev:(str "tezos") ~current:(str "texos") ()) ;
+  print_diff (diff ~prev:(str "mavryk") ~current:(str "texos") ()) ;
   [%expect {|
-    "tezos"
+    "mavryk"
     /* -> "texos" */ |}]
 
 let%expect_test "For prims the comment contains changed prim name." =

@@ -28,10 +28,10 @@
     Component:    Test
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_host_functions_ticks.ml
     Subject:      Tickification of host functions tests for the \
-                  tezos-scoru-wasm library
+                  mavryk-scoru-wasm library
 *)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Wasm_utils
 open Tztest_helper
 
@@ -42,26 +42,26 @@ let register_new_write_debug ~version added_ticks =
   let open Lwt_syntax in
   let name =
     match Host_funcs.Internal_for_tests.write_debug with
-    | Tezos_webassembly_interpreter.Func.HostFunc (_, name) -> name
+    | Mavryk_webassembly_interpreter.Func.HostFunc (_, name) -> name
     | _ -> Stdlib.failwith "write_debug is not an host function"
   in
   let current_write_debug =
-    Tezos_webassembly_interpreter.Host_funcs.lookup
+    Mavryk_webassembly_interpreter.Host_funcs.lookup
       ~global_name:name
       (Host_funcs.registry ~version ~write_debug:Noop)
   in
   let alternative_write_debug =
     match current_write_debug with
-    | Tezos_webassembly_interpreter.Host_funcs.Host_func f ->
+    | Mavryk_webassembly_interpreter.Host_funcs.Host_func f ->
         let write_debug input output durable mem args =
           let* durable, res, ticks = f input output durable mem args in
           return (durable, res, Z.add ticks (Z.of_int added_ticks))
         in
-        Tezos_webassembly_interpreter.Host_funcs.Host_func write_debug
+        Mavryk_webassembly_interpreter.Host_funcs.Host_func write_debug
     | Reveal_func _ -> Stdlib.failwith "write_debug is not a reveal function"
   in
   let register impl () =
-    Tezos_webassembly_interpreter.Host_funcs.register
+    Mavryk_webassembly_interpreter.Host_funcs.register
       ~global_name:name
       impl
       (Host_funcs.registry ~version ~write_debug:Noop)

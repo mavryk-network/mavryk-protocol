@@ -2,110 +2,110 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_baking_001_PtAtLas)
- (public_name octez-protocol-001-PtAtLas-libs.baking)
+ (name mavryk_baking_001_PtAtLas)
+ (public_name mavkit-protocol-001-PtAtLas-libs.baking)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-version.value
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-001-PtAtLas.protocol.lifted
-  octez-protocol-001-PtAtLas-libs.plugin
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-001-PtAtLas-libs.client
-  octez-shell-libs.client-commands
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-context
-  octez-libs.tezos-context
-  octez-libs.tezos-context.memory
-  octez-libs.rpc-http-client-unix
-  octez-shell-libs.context-ops
-  octez-libs.rpc
-  octez-libs.rpc-http
-  tezos-dal-node-services
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-version.value
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol.lifted
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-context
+  mavkit-libs.mavryk-context
+  mavkit-libs.mavryk-context.memory
+  mavkit-libs.rpc-http-client-unix
+  mavkit-shell-libs.context-ops
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http
+  mavryk-dal-node-services
   lwt-canceler
   lwt-exit
   uri)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_lifted
-  -open Tezos_protocol_plugin_001_PtAtLas
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_context
-  -open Tezos_context
-  -open Tezos_context_ops
-  -open Tezos_rpc_http)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_lifted
+  -open Mavryk_protocol_plugin_001_PtAtLas
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_context
+  -open Mavryk_context
+  -open Mavryk_context_ops
+  -open Mavryk_rpc_http)
  (modules (:standard \ Baking_commands Baking_commands_registration)))
 
 (library
- (name tezos_baking_001_PtAtLas_commands)
- (public_name octez-protocol-001-PtAtLas-libs.baking-commands)
+ (name mavryk_baking_001_PtAtLas_commands)
+ (public_name mavkit-protocol-001-PtAtLas-libs.baking-commands)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  tezos-protocol-001-PtAtLas.protocol
-  tezos-protocol-001-PtAtLas.parameters
-  octez-libs.stdlib-unix
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-001-PtAtLas-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-001-PtAtLas-libs.baking
-  octez-libs.rpc
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.parameters
+  mavkit-libs.stdlib-unix
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-001-PtAtLas-libs.baking
+  mavkit-libs.rpc
   uri)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_baking_001_PtAtLas)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_001_PtAtLas)
  (modules Baking_commands))
 
 (library
- (name tezos_baking_001_PtAtLas_commands_registration)
- (public_name octez-protocol-001-PtAtLas-libs.baking-commands.registration)
+ (name mavryk_baking_001_PtAtLas_commands_registration)
+ (public_name mavkit-protocol-001-PtAtLas-libs.baking-commands.registration)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  tezos-protocol-001-PtAtLas.protocol
-  octez-proto-libs.protocol-environment
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-protocol-001-PtAtLas-libs.client
-  octez-shell-libs.client-commands
-  octez-protocol-001-PtAtLas-libs.baking
-  octez-protocol-001-PtAtLas-libs.baking-commands
-  octez-libs.rpc)
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-001-PtAtLas-libs.baking
+  mavkit-protocol-001-PtAtLas-libs.baking-commands
+  mavkit-libs.rpc)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_commands
-  -open Tezos_baking_001_PtAtLas
-  -open Tezos_baking_001_PtAtLas_commands)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_001_PtAtLas
+  -open Mavryk_baking_001_PtAtLas_commands)
  (modules Baking_commands_registration))

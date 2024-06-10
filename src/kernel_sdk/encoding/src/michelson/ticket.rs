@@ -23,7 +23,7 @@ use nom::combinator::map;
 use num_bigint::BigInt;
 use num_traits::Signed;
 use std::fmt::Debug;
-use tezos_data_encoding::{
+use mavryk_data_encoding::{
     enc::{BinError, BinResult, BinWriter},
     encoding::HasEncoding,
     nom::{NomReader, NomResult},
@@ -133,7 +133,7 @@ impl<Expr: Michelson> BinWriter for Ticket<Expr> {
 }
 
 impl<Expr: Michelson> HasEncoding for Ticket<Expr> {
-    fn encoding() -> tezos_data_encoding::encoding::Encoding {
+    fn encoding() -> mavryk_data_encoding::encoding::Encoding {
         <TicketRepr<Expr>>::encoding()
     }
 }
@@ -158,7 +158,7 @@ impl<Expr: Michelson> Ticket<Expr> {
 
     /// Return an identifying hash of the ticket creator and contents.
     ///
-    /// Calculated as the `blake2b` hash of a tezos-encoded `obj2`:
+    /// Calculated as the `blake2b` hash of a mavryk-encoded `obj2`:
     /// - creator contract
     /// - string contents
     pub fn hash(&self) -> Result<TicketHash, TicketHashError> {
@@ -226,8 +226,8 @@ pub type FA2_1Ticket =
 #[cfg(test)]
 mod test {
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
     #[test]
     fn content_bytes() {

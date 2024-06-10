@@ -66,7 +66,7 @@ module Operations_source = struct
         | Baking_configuration.Operations_source.Local {filename} ->
             if Sys.file_exists filename then
               let*! result =
-                Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file filename
+                Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file filename
               in
               match result with
               | Error _ ->
@@ -88,7 +88,7 @@ module Operations_source = struct
                 with_timeout
                   (Systime_os.sleep (Time.System.Span.of_seconds_exn 5.))
                   (fun _ ->
-                    Tezos_rpc_http_client_unix.RPC_client_unix
+                    Mavryk_rpc_http_client_unix.RPC_client_unix
                     .generic_media_type_call
                       ~accept:[Media_type.json]
                       ?headers:http_headers
@@ -510,7 +510,7 @@ let sign_consensus_votes state operations kind =
         let shell =
           (* The branch is the latest finalized block. *)
           {
-            Tezos_base.Operation.branch =
+            Mavryk_base.Operation.branch =
               state.level_state.latest_proposal.predecessor.shell.predecessor;
           }
         in
@@ -606,7 +606,7 @@ let sign_dal_attestations state attestations =
      handle concurrent requests *)
   let shell =
     {
-      Tezos_base.Operation.branch =
+      Mavryk_base.Operation.branch =
         state.level_state.latest_proposal.predecessor.hash;
     }
   in
@@ -725,7 +725,7 @@ let get_dal_attestations state =
                 return acc
             | Ok res -> (
                 match res with
-                | Tezos_dal_node_services.Types.Not_in_committee -> return acc
+                | Mavryk_dal_node_services.Types.Not_in_committee -> return acc
                 | Attestable_slots {slots = attestation; published_level} ->
                     if List.exists Fun.id attestation then
                       return

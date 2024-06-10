@@ -46,7 +46,7 @@ type sources = private {
           the minimum ratio of endpoints that must agree on data
           for said data to be accepted. 1 means "require all enpoints
           to agree" (the default). *)
-  endpoints : (Uri.t * Tezos_rpc.Context.simple) list;
+  endpoints : (Uri.t * Mavryk_rpc.Context.simple) list;
       (** The list of endpoint URIs used for Light mode consensus.
           This list must contain at least 2 endpoints
           (one for data retrieval, one for check). *)
@@ -68,8 +68,8 @@ val sources_config_to_uris : sources_config -> Uri.t list
     (which was obtained by parsing the CLI) into a value used
     by core algorithms of the light mode. *)
 val sources_config_to_sources :
-  (Uri.t -> Tezos_rpc.Context.simple) -> sources_config -> sources
+  (Uri.t -> Mavryk_rpc.Context.simple) -> sources_config -> sources
 
 (** [None] if the given block is symbolic, otherwise its concrete hash. *)
 val hash_of_block :
-  Tezos_shell_services.Block_services.block -> Block_hash.t option
+  Mavryk_shell_services.Block_services.block -> Block_hash.t option

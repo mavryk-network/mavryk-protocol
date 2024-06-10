@@ -9,7 +9,7 @@ module Storage = Storage.Make_Storage (Core)
 let test_add_mem () =
   let open Storage.Roots in
   let random_hashes () =
-    Core.Hash.of_bytes_exn (Tezos_crypto.Hacl.Rand.gen 32)
+    Core.Hash.of_bytes_exn (Mavryk_crypto.Hacl.Rand.gen 32)
   in
   (* List of 10 random hashes *)
   let first_10_hashes = List.init 10 (fun _ -> random_hashes ()) in

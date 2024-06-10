@@ -262,7 +262,7 @@ module StateMonad = struct
   (* Assert that the actual storage is identical to the one maintained
      by the test state. *)
   let assert_storage account =
-    let open Tezos_micheline in
+    let open Mavryk_micheline in
     let* StateRecord.{client; storage; _} = get in
     let expected = Contract_storage.to_micheline storage in
     let* storage_code = lift @@ Client.contract_storage account client in

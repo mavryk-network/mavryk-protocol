@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Partial_memory = Tezos_webassembly_interpreter.Partial_memory
-module Chunked_byte_vector = Tezos_lazy_containers.Chunked_byte_vector
+module Partial_memory = Mavryk_webassembly_interpreter.Partial_memory
+module Chunked_byte_vector = Mavryk_lazy_containers.Chunked_byte_vector
 
 let char_to_uint8 chr = Char.code chr |> Unsigned.UInt8.of_int
 

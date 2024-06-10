@@ -25,7 +25,7 @@
 
 module Irmin_store = struct
   module IStore = Irmin_store.Make (struct
-    let name = "Tezos DAC (Data Availability Committee) Node"
+    let name = "Mavryk DAC (Data Availability Committee) Node"
   end)
 
   include IStore
@@ -43,20 +43,20 @@ module Signature_store =
       let to_path_representation key = Hex.show @@ Dac_plugin.hash_to_hex key
     end)
     (struct
-      type key = Tezos_crypto.Aggregate_signature.public_key_hash
+      type key = Mavryk_crypto.Aggregate_signature.public_key_hash
 
       let name = "Committee member public key hash"
 
-      let compare = Tezos_crypto.Aggregate_signature.Public_key_hash.compare
+      let compare = Mavryk_crypto.Aggregate_signature.Public_key_hash.compare
 
-      let encoding = Tezos_crypto.Aggregate_signature.Public_key_hash.encoding
+      let encoding = Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding
     end)
     (struct
-      type value = Tezos_crypto.Aggregate_signature.signature
+      type value = Mavryk_crypto.Aggregate_signature.signature
 
       let name = "Committee member signature of root hash"
 
-      let encoding = Tezos_crypto.Aggregate_signature.encoding
+      let encoding = Mavryk_crypto.Aggregate_signature.encoding
     end)
 
 module Certificate_store =

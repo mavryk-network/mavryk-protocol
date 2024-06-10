@@ -25,14 +25,14 @@
 (*****************************************************************************)
 
 open Wasm_pvm_state.Internal_state
-module Wasm = Tezos_webassembly_interpreter
+module Wasm = Mavryk_webassembly_interpreter
 module Parsing = Binary_parser_encodings
-open Tezos_lazy_containers
+open Mavryk_lazy_containers
 
 let durable_scope = ["durable"]
 
 let tick_state_encoding =
-  let open Tezos_tree_encoding in
+  let open Mavryk_tree_encoding in
   tagged_union
     ~default:(fun () -> Collect)
     (value [] Data_encoding.string)
@@ -107,24 +107,24 @@ let tick_state_encoding =
     ]
 
 let durable_buffers_encoding =
-  Tezos_tree_encoding.(scope ["pvm"; "buffers"] Wasm_encoding.buffers_encoding)
+  Mavryk_tree_encoding.(scope ["pvm"; "buffers"] Wasm_encoding.buffers_encoding)
 
 let durable_storage_encoding =
-  Tezos_tree_encoding.(scope durable_scope Durable.encoding)
+  Mavryk_tree_encoding.(scope durable_scope Durable.encoding)
 
 let default_buffers validity_period message_limit () =
-  Tezos_webassembly_interpreter.Eval.
+  Mavryk_webassembly_interpreter.Eval.
     {
-      input = Tezos_webassembly_interpreter.Input_buffer.alloc ();
+      input = Mavryk_webassembly_interpreter.Input_buffer.alloc ();
       output =
-        Tezos_webassembly_interpreter.Output_buffer.alloc
+        Mavryk_webassembly_interpreter.Output_buffer.alloc
           ~validity_period
           ~message_limit
           ~last_level:None;
     }
 
 let output_buffer_parameters_encoding =
-  Tezos_tree_encoding.(
+  Mavryk_tree_encoding.(
     conv
       (fun (validity_period, message_limit) -> {validity_period; message_limit})
       (fun {validity_period; message_limit} -> (validity_period, message_limit))
@@ -134,7 +134,7 @@ let output_buffer_parameters_encoding =
          (value ["pvm"; "outbox_message_limit"] Data_encoding.z)))
 
 let pvm_state_encoding =
-  let open Tezos_tree_encoding in
+  let open Mavryk_tree_encoding in
   conv
     (fun ( last_input_info,
            current_tick,
@@ -208,11 +208,11 @@ let pvm_state_encoding =
           Data_encoding.n)
        output_buffer_parameters_encoding)
 
-module Make_pvm (Wasm_vm : Wasm_vm_sig.S) (T : Tezos_tree_encoding.TREE) :
+module Make_pvm (Wasm_vm : Wasm_vm_sig.S) (T : Mavryk_tree_encoding.TREE) :
   Wasm_pvm_sig.S with type tree = T.tree = struct
   type tree = T.tree
 
-  module Tree_encoding_runner = Tezos_tree_encoding.Runner.Make (T)
+  module Tree_encoding_runner = Mavryk_tree_encoding.Runner.Make (T)
 
   let decode tree = Tree_encoding_runner.decode pvm_state_encoding tree
 
@@ -256,7 +256,7 @@ module Make_pvm (Wasm_vm : Wasm_vm_sig.S) (T : Tezos_tree_encoding.TREE) :
   let install_boot_sector ~ticks_per_snapshot ~outbox_validity_period
       ~outbox_message_limit bs tree =
     let open Lwt_syntax in
-    let open Tezos_tree_encoding in
+    let open Mavryk_tree_encoding in
     let* durable =
       Tree_encoding_runner.decode (scope durable_scope Durable.encoding) tree
     in
@@ -313,7 +313,7 @@ module Make_pvm (Wasm_vm : Wasm_vm_sig.S) (T : Tezos_tree_encoding.TREE) :
     let open Lwt_syntax in
     let* candidate =
       Tree_encoding_runner.decode
-        (Tezos_tree_encoding.option durable_buffers_encoding)
+        (Mavryk_tree_encoding.option durable_buffers_encoding)
         tree
     in
     Lwt.catch

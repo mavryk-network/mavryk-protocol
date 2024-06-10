@@ -6,20 +6,20 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.lwt-result-stdlib
-  octez-libs.lwt-result-stdlib.examples.traces
+  mavkit-libs.lwt-result-stdlib
+  mavkit-libs.lwt-result-stdlib.examples.traces
   lwt.unix
-  octez-alcotezt
+  mavkit-alcotezt
   qcheck-alcotest
-  octez-libs.test-helpers)
+  mavkit-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_lwt_result_stdlib
-  -open Octez_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_lwt_result_stdlib
+  -open Mavkit_alcotezt
+  -open Mavryk_test_helpers)
  (modules
   support
   traits_tiered
@@ -43,7 +43,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (and %{arch_sixtyfour} (<> false %{env:RUNTEZTALIAS=true})))
  (action (run %{dep:./main.exe})))
 

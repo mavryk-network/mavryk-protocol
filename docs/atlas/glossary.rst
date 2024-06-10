@@ -51,6 +51,7 @@ _`Level` (a.k.a. block height)
 _`Mempool`
    A pool (set) of operation_\ s maintained by a node_ and not yet included in a block_.
 
+.. _def_metadata:
 .. _def_metadata_atlas:
 
 _`Metadata`
@@ -99,7 +100,7 @@ _`Accuser`
 
     The accuser is awarded some funds from the security deposit of the accused.
 
-    When using :ref:`Octez <octez>`, accusation operations are emitted by the
+    When using :ref:`Mavkit <mavkit>`, accusation operations are emitted by the
     accuser daemon. Note that this daemon is not associated to a delegate: accusation operations are anonymous, and any delegate can include them in a block.
 
 .. _def_account_atlas:
@@ -118,7 +119,7 @@ _`Baker`
     is allowed to bake.
     The baker selects transactions from the mempool_ to be included in the block it bakes.
 
-    When using :ref:`Octez <octez>`, baking and other consensus actions are handled by the baker
+    When using :ref:`Mavkit <mavkit>`, baking and other consensus actions are handled by the baker
     daemon, on behalf of one or more delegate_ accounts.
     By extension, a baker designates the owner of such a delegate account, typically running the baker daemon on its behalf.
 
@@ -258,6 +259,7 @@ _`Layer 2`
 _`Michelson`
     The built-in language used by a `smart contract`_.
 
+.. _def_minimal_stake:
 .. _def_minimal_stake_atlas:
 
 _`Minimal stake`

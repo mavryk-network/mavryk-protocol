@@ -589,7 +589,7 @@ let operation_and_block_validation protocol manager_kind tag =
     Client.spawn_command
       ~env:
         (String_map.singleton
-           "TEZOS_EVENTS_CONFIG"
+           "MAVRYK_EVENTS_CONFIG"
            "file-descriptor-stdout://?section-prefix=:debug")
       client
       [

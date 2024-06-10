@@ -62,7 +62,7 @@ end
 exception
   Ticket_benchmark_error of {
     benchmark_name : Namespace.t;
-    trace : Tezos_base.TzPervasives.tztrace;
+    trace : Mavryk_base.TzPervasives.tztrace;
   }
 
 (** A benchmark for {!Ticket_costs.Constants.cost_compare_ticket_hash}. *)

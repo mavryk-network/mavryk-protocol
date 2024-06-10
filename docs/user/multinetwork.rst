@@ -19,7 +19,7 @@ their own networks for various reasons. Networks differ in various ways:
 
 - some networks may change the protocol without going through the regular voting process, via user-activated upgrades or user-activated protocol overrides.
 
-The Octez node can be configured to connect to a given network when it is started.
+The Mavkit node can be configured to connect to a given network when it is started.
 By default, the node connects to Mainnet.
 To connect to other networks, you can either use one of the
 `Built-In Networks`_ or configure the node to connect to `Custom Networks`_.
@@ -36,9 +36,9 @@ option for selecting a :ref:`test network<test-networks>` when you initialize yo
 
 For instance, to run on Ghostnet::
 
-  octez-node config init --data-dir ~/tezos-ghostnet --network ghostnet
-  octez-node identity generate --data-dir ~/tezos-ghostnet
-  octez-node run --data-dir ~/tezos-ghostnet
+  mavkit-node config init --data-dir ~/mavryk-ghostnet --network ghostnet
+  mavkit-node identity generate --data-dir ~/mavryk-ghostnet
+  mavkit-node run --data-dir ~/mavryk-ghostnet
 
 .. note::
    Once initialized, the node remembers its network settings on subsequent runs
@@ -46,7 +46,7 @@ For instance, to run on Ghostnet::
    different network when running the node again, it will refuse to start. In
    order to switch to a different network you need to either reinitialize it
    with a different data directory using the ``--data-dir`` option or remove
-   everything from the existing data directory, which defaults to ``~/.tezos-node``
+   everything from the existing data directory, which defaults to ``~/.mavryk-node``
    (and also initialize again).
 
 The ``--network`` option is not case-sensitive and can be used with
@@ -60,18 +60,18 @@ the following built-in networks:
 
 If you did not initialize your node configuration, or if your configuration
 file contains no ``network`` field, the node assumes you want to run Mainnet.
-You can use the ``--network`` option with ``octez-node run`` to make sure
+You can use the ``--network`` option with ``mavkit-node run`` to make sure
 your node runs on the expected network. For instance, to make sure that
 it runs on Ghostnet::
 
-  octez-node run --data-dir ~/tezos-ghostnet --network ghostnet
+  mavkit-node run --data-dir ~/mavryk-ghostnet --network ghostnet
 
 This command will fail with an error if the configured network is not Ghostnet.
-The node also displays the chain name (such as ``TEZOS_MAINNET``) when it starts.
+The node also displays the chain name (such as ``MAVRYK_MAINNET``) when it starts.
 Also mind opening the :doc:`RPC interface <../developer/rpc>` as appropriate.
 
 The list of built-in networks is in :src:`src/lib_node_config/config_file.ml`.
-Octez developers edit the ``builtin_blockchain_networks_with_tags`` variable in this file to
+Mavkit developers edit the ``builtin_blockchain_networks_with_tags`` variable in this file to
 add or remove built-in networks.
 
 Custom Networks
@@ -102,10 +102,10 @@ Here is an example configuration file for Mainnet::
         "block": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
         "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
       },
-      "chain_name": "TEZOS_MAINNET",
-      "old_chain_name": "TEZOS_BETANET_2018-06-30T16:07:32Z",
+      "chain_name": "MAVRYK_MAINNET",
+      "old_chain_name": "MAVRYK_BETANET_2018-06-30T16:07:32Z",
       "incompatible_chain_name": "INCOMPATIBLE",
-      "sandboxed_chain_name": "SANDBOXED_TEZOS_MAINNET",
+      "sandboxed_chain_name": "SANDBOXED_MAVRYK_MAINNET",
       "user_activated_upgrades": [
         {
           "level": 28082,
@@ -145,7 +145,7 @@ that you will not automatically get updates to the list of bootstrap peers and
 user-activated upgrades (see `Alias Versus Explicit Configuration`_).
 
 - ``genesis`` is the description of the genesis block, i.e. the first block of the chain.
-  Inspect the genesis block using ``octez-client rpc get /chains/main/blocks/0``
+  Inspect the genesis block using ``mavkit-client rpc get /chains/main/blocks/0``
   to find these values.
 
 - ``chain_name`` is the name of the network (nodes only talk to other nodes which use

@@ -501,4 +501,4 @@ let tests =
     ("p256", p256);
   ]
 
-let () = Alcotest.run ~__FILE__ "tezos-crypto" tests
+let () = Alcotest.run ~__FILE__ "mavryk-crypto" tests

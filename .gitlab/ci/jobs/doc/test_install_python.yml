@@ -1,6 +1,6 @@
 .install_python_debian_ubuntu_template:
   extends:
-    - .default_settings_template
+    # - .default_settings_template
   stage: doc
   needs: [trigger]
   rules:

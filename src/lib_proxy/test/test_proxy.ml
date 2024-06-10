@@ -35,8 +35,8 @@
     a mock of [PROTO_RPC]. It tests the basic behavior of the API. *)
 
 module StringMap = String.Map
-module Local = Tezos_context_memory.Context
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Local = Mavryk_context_memory.Context
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 (** Alias to make "empty list" intention more explicit *)
 let tree_root = []
@@ -50,7 +50,7 @@ let nb_nodes = function
           Lwt.return (acc + 1))
 
 module type MOCKED_PROTO_RPC = sig
-  include Tezos_proxy.Proxy_proto.PROTO_RPC
+  include Mavryk_proxy.Proxy_proto.PROTO_RPC
 
   val calls : Local.key Stack.t
 end
@@ -80,11 +80,11 @@ let mock_proto_rpc () =
       Lwt_result_syntax.return @@ mock_raw_context k
   end : MOCKED_PROTO_RPC)
 
-class mock_rpc_context : Tezos_rpc.Context.simple =
+class mock_rpc_context : Mavryk_rpc.Context.simple =
   object
     method call_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           'p ->
           'q ->
           'i ->
@@ -96,7 +96,7 @@ let mock_chain = `Main
 
 let mock_block = `Head 0
 
-let mock_input : Tezos_proxy.Proxy.proxy_getter_input =
+let mock_input : Mavryk_proxy.Proxy.proxy_getter_input =
   {
     rpc_context = new mock_rpc_context;
     mode = Client;
@@ -108,7 +108,7 @@ open Assert
 open Lwt_assert
 
 let test_tree _ () =
-  let open Tezos_proxy.Proxy_getter.RequestsTree in
+  let open Mavryk_proxy.Proxy_getter.RequestsTree in
   let is_all = function Some All -> true | _ -> false in
   let is_partial = function Some (Partial _) -> true | _ -> false in
   assert_true
@@ -152,7 +152,7 @@ let test_tree _ () =
 let test_do_rpc_no_longer_key () =
   let open Lwt_result_syntax in
   let (module MockedProtoRPC) = mock_proto_rpc () in
-  let module MockedGetter = Tezos_proxy.Proxy_getter.MakeProxy (MockedProtoRPC) in
+  let module MockedGetter = Mavryk_proxy.Proxy_getter.MakeProxy (MockedProtoRPC) in
   let* a_b_1_tree_opt = MockedGetter.proxy_get mock_input ["A"; "b"; "1"] in
   let*! nb_nodes_a_b_1_tree_opt = nb_nodes a_b_1_tree_opt in
   let*! () =
@@ -213,7 +213,7 @@ let test_do_rpc_no_longer_key () =
 let test_split_key_triggers () =
   let open Lwt_result_syntax in
   let (module MockedProtoRPC) = mock_proto_rpc () in
-  let module MockedGetter = Tezos_proxy.Proxy_getter.MakeProxy (MockedProtoRPC) in
+  let module MockedGetter = Mavryk_proxy.Proxy_getter.MakeProxy (MockedProtoRPC) in
   let*! _ =
     MockedGetter.proxy_get
       mock_input
@@ -234,7 +234,7 @@ let test_split_key_triggers () =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-proxy"
+    "mavryk-proxy"
     [
       ( "all tests",
         [

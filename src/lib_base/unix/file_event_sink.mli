@@ -23,13 +23,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** An implementation of {!Tezos_base.Internal_event.SINK} which
+(** An implementation of {!Mavryk_base.Internal_event.SINK} which
     writes the events as JSON files in a given directory structure.
 
     It is registered with the URI scheme ["unix-files"], one can activate it
     with an URI containing the top-level directory in which the JSON
     files will be written, e.g.
-    ["export TEZOS_EVENTS_CONFIG=unix-files:///the/path/to/write"]
+    ["export MAVRYK_EVENTS_CONFIG=unix-files:///the/path/to/write"]
     (the path should be inexistent or already a directory).
 
     The directory structure is as follows:
@@ -85,7 +85,7 @@ module Query : sig
         emission dates (cf. {!Time_constraint}).
 
       See also an example of use in {!Client_event_logging_commands}
-      (command ["octez-client-admin query events from
+      (command ["mavkit-client-admin query events from
       unix-files:///..."]).
   *)
   val fold :

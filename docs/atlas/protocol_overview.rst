@@ -68,6 +68,7 @@ detail into the validation and application process for
 :ref:`blocks<block_validation_overview_atlas>` and their
 :ref:`operations<operation_validity_atlas>`.
 
+.. _shell_proto_interact:
 .. _shell_proto_interact_atlas:
 
 Shell-protocol interaction
@@ -136,6 +137,7 @@ safely included in the Tezos blockchain -- and *application* --
 that is, how the effects of operations and blocks are taken into
 account -- for this economic protocol.
 
+.. _protocol_constants:
 .. _protocol_constants_atlas:
 
 Protocol constants
@@ -158,10 +160,10 @@ The *list* of protocol constants can be found in the OCaml APIs:
 
 - fixed protocol constants are defined in the module
   :package-api:`Constants_repr
-  <tezos-protocol-001-PtAtLas/Tezos_raw_protocol_001_PtAtLas/Constants_repr/index.html>`
+  <mavryk-protocol-001-PtAtLas/Mavryk_raw_protocol_001_PtAtLas/Constants_repr/index.html>`
 - parametric constants are defined in the module
   :package-api:`Constants_parametric_repr
-  <tezos-protocol-001-PtAtLas/Tezos_raw_protocol_001_PtAtLas/Constants_parametric_repr/index.html>`
+  <mavryk-protocol-001-PtAtLas/Mavryk_raw_protocol_001_PtAtLas/Constants_parametric_repr/index.html>`
 
 The *values* of protocol constants in any given protocol can be found using specific RPC calls:
 
@@ -180,4 +182,4 @@ See also
 
 An in-depth description of the internals of developing a new Tezos
 protocol can be found in the blog post: `How to write a Tezos protocol
-<https://research-development.nomadic-labs.com/how-to-write-a-tezos-protocol.html>`_.
+<https://research-development.nomadic-labs.com/how-to-write-a-mavryk-protocol.html>`_.

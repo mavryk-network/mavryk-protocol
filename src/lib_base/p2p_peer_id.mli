@@ -24,5 +24,5 @@
 (*****************************************************************************)
 
 include
-  Tezos_crypto.Intfs.HASH
-    with type t = Tezos_crypto.Crypto_box.Public_key_hash.t
+  Mavryk_crypto.Intfs.HASH
+    with type t = Mavryk_crypto.Crypto_box.Public_key_hash.t

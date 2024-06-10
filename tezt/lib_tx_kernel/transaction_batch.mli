@@ -35,8 +35,8 @@
     kernel_sdk::encoding::src::inbox::ExternalMessageFrame
 *)
 
-open Tezos_protocol_alpha.Protocol
-open Tezos_crypto
+open Mavryk_protocol_alpha.Protocol
+open Mavryk_crypto
 
 (** A batch of transactions. *)
 type t

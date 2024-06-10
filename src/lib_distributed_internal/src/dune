@@ -3,7 +3,7 @@
 
 (library
  (name distributed)
- (public_name octez-distributed-internal)
+ (public_name mavkit-distributed-internal)
  (instrumentation (backend bisect_ppx))
  (libraries
   unix))

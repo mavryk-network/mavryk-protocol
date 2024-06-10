@@ -23,32 +23,32 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Hashed.Chain_id
+include Mavryk_crypto.Hashed.Chain_id
 
 module Set = struct
-  include Stdlib.Set.Make (Tezos_crypto.Hashed.Chain_id)
+  include Stdlib.Set.Make (Mavryk_crypto.Hashed.Chain_id)
 
   let encoding =
     Data_encoding.conv
       elements
       (fun l -> List.fold_left (fun m x -> add x m) empty l)
-      Data_encoding.(list Tezos_crypto.Hashed.Chain_id.encoding)
+      Data_encoding.(list Mavryk_crypto.Hashed.Chain_id.encoding)
 end
 
 module Map = struct
-  include Stdlib.Map.Make (Tezos_crypto.Hashed.Chain_id)
+  include Stdlib.Map.Make (Mavryk_crypto.Hashed.Chain_id)
 
   let encoding arg_encoding =
     Data_encoding.conv
       bindings
       (fun l -> List.fold_left (fun m (k, v) -> add k v m) empty l)
       Data_encoding.(
-        list (tup2 Tezos_crypto.Hashed.Chain_id.encoding arg_encoding))
+        list (tup2 Mavryk_crypto.Hashed.Chain_id.encoding arg_encoding))
 end
 
 module Table = struct
   include Stdlib.Hashtbl.MakeSeeded (struct
-    include Tezos_crypto.Hashed.Chain_id
+    include Mavryk_crypto.Hashed.Chain_id
 
     (* See [src/lib_base/tzPervasives.ml] for an explanation *)
     [@@@ocaml.warning "-32"]
@@ -68,5 +68,5 @@ module Table = struct
         List.iter (fun (k, v) -> add h k v) l ;
         h)
       Data_encoding.(
-        list (tup2 Tezos_crypto.Hashed.Chain_id.encoding arg_encoding))
+        list (tup2 Mavryk_crypto.Hashed.Chain_id.encoding arg_encoding))
 end

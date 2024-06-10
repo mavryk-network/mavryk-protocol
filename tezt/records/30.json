@@ -152,8 +152,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: signature",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: signature",
     "tags": [
       "alcotest"
     ],

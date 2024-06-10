@@ -4,27 +4,27 @@
 (env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
 
 (library
- (name tezos_crypto)
- (public_name octez-libs.crypto)
+ (name mavryk_crypto)
+ (public_name mavkit-libs.crypto)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
+  mavkit-libs.stdlib
   data-encoding
-  octez-libs.lwt-result-stdlib
+  mavkit-libs.lwt-result-stdlib
   lwt
-  octez-libs.hacl
+  mavkit-libs.hacl
   secp256k1-internal
-  octez-libs.error-monad
-  octez-libs.rpc
+  mavkit-libs.error-monad
+  mavkit-libs.rpc
   aches
   zarith
   zarith_stubs_js
   bls12-381
-  octez-libs.bls12-381-signature)
+  mavkit-libs.bls12-381-signature)
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
+  -open Mavryk_stdlib
   -open Data_encoding
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib))
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib))

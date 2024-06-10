@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_data_encoding::{enc::BinWriter, nom::NomReader};
-use tezos_smart_rollup_host::{
+use mavryk_data_encoding::{enc::BinWriter, nom::NomReader};
+use mavryk_smart_rollup_host::{
     path::{concat, OwnedPath, Path, RefPath},
     runtime::{Runtime, RuntimeError},
     Error,
@@ -281,12 +281,12 @@ mod tests2 {
     use crate::storage::DELAYED_INBOX_PATH;
 
     use super::{Pointer, Queue};
-    use tezos_data_encoding_derive::{BinWriter, NomReader};
-    use tezos_smart_rollup_host::{
+    use mavryk_data_encoding_derive::{BinWriter, NomReader};
+    use mavryk_smart_rollup_host::{
         path::RefPath,
         runtime::{Runtime, RuntimeError},
     };
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[derive(BinWriter, NomReader, Eq, PartialEq, Debug)]
     struct Element {

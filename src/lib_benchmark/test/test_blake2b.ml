@@ -23,19 +23,19 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 
 (*
   First step: defining the benchmark. This is done in
   the following library.
 *)
 
-open Tezos_benchmark_examples
+open Mavryk_benchmark_examples
 
 (*
   Second step: performing measurements. Above, we kept the type of workloads
   abstract so we need to work under an existential quantifier. We proceed
-  this way to mimick what `tezos-snoop`
+  this way to mimick what `mavryk-snoop`
 *)
 
 let bench_opts =

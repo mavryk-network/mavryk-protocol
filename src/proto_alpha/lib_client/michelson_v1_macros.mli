@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_micheline
+open Mavryk_micheline
 
 type 'l node = ('l, string) Micheline.node
 

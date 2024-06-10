@@ -3,7 +3,7 @@ The storage layer
 *****************
 
 This document explains the inner workings of the storage layer of the
-Octez shell. The storage layer is responsible for aggregating blocks
+Mavkit shell. The storage layer is responsible for aggregating blocks
 (along with their respective ledger state and :ref:`metadata <def_metadata>`) and operations within blocks. It is composed of two
 main components: a :ref:`store component <store_component>`
 providing storage abstractions for blockchain data such as blocks and operations; and the :ref:`context component <context_component>` providing storage abstractions for ledger states (also called contexts).
@@ -13,7 +13,7 @@ providing storage abstractions for blockchain data such as blocks and operations
 Store
 #####
 
-The store component is the :package-api:`Tezos_store <octez-shell-libs/Tezos_store/index.html>` module implemented in the :src:`src/lib_store` directory. It handles the on-disk storage of static objects such as
+The store component is the :package-api:`Mavryk_store <mavkit-shell-libs/Mavryk_store/index.html>` module implemented in the :src:`src/lib_store` directory. It handles the on-disk storage of static objects such as
 blocks, operations, block's metadata, protocols and chain data. The
 store also handles the chain's current state: current head, invalid
 blocks, active test chains, etc. The store component is designed to
@@ -72,10 +72,8 @@ present but only the 10 most recent cemented cycles will have some
 metadata kept (see details at :ref:`History_mode_additional_cycles`).
 Older metadata is pruned.
 
-Starting with Octez v15.0, the store also triggers *context pruning* when a cycle is completed, after finishing the store trimming and cementing.
+Starting with Mavkit v15.0, the store also triggers *context pruning* when a cycle is completed, after finishing the store trimming and cementing.
 Thus, whenever pruning the metadata of a block, its context (ledger state associated to that block) is pruned as well.
-
-For the operational details of pruning, see :ref:`first_pruning`.
 
 Other features
 **************
@@ -166,9 +164,9 @@ The Store maintains data on disk in the
 Context
 #######
 
-The context component is the the :package-api:`tezos-context <octez-libs/Tezos_context/index.html>` package, implemented in the :src:`src/lib_context`
+The context component is the the :package-api:`mavryk-context <mavkit-libs/Mavryk_context/index.html>` package, implemented in the :src:`src/lib_context`
 library. It is a versioned key/value store that associates to each
-block a view of its ledger state. The :package-api:`on-disk context API <octez-libs/Tezos_context_disk/index.html>` exports versioning concepts similar
+block a view of its ledger state. The :package-api:`on-disk context API <mavkit-libs/Mavryk_context_disk/index.html>` exports versioning concepts similar
 to `Git <https://git-scm.com/>`_. The current implementation is using
 `Irmin <https://github.com/mirage/irmin>`_ as a backend.
 
@@ -195,13 +193,13 @@ this ledger state that may be incorporated in a :doc:`snapshot <../user/snapshot
 minimal storage state.
 
 Note that it is possible to enable :doc:`logging <../user/logging>` for the context backend
-using the ``TEZOS_CONTEXT`` environment variable. There are two
+using the ``MAVRYK_CONTEXT`` environment variable. There are two
 possible values for this variable: ``v`` for ``Info`` logging and
 ``vv`` for ``Debug`` logging (warning: the ``Debug`` mode is very
 talkative). Additionally, this environment variable allows to tweak,
 with care, the following context parameters (using the standard
-``TEZOS_CONTEXT="variable=value"`` pattern, separating the items with
-commas such as ``TEZOS_CONTEXT="v, variable=value"``):
+``MAVRYK_CONTEXT="variable=value"`` pattern, separating the items with
+commas such as ``MAVRYK_CONTEXT="v, variable=value"``):
 
 - ``index-log-size``: number of entries stored in the Irmin's index
   (default ``2_500_000``)

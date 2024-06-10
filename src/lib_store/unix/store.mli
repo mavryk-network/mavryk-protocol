@@ -51,7 +51,7 @@
    {2 History mode handling}
 
    This store handles the three different
-   {!Tezos_base.History_mode.t}:
+   {!Mavryk_base.History_mode.t}:
 
    - Archive: maintains every block that is part of the chain
      including their metadata.
@@ -210,8 +210,8 @@ type chain_store
 *)
 val init :
   ?patch_context:
-    (Tezos_protocol_environment.Context.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t) ->
+    (Mavryk_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t) ->
   ?commit_genesis:(chain_id:Chain_id.t -> Context_hash.t tzresult Lwt.t) ->
   ?history_mode:History_mode.t ->
   ?readonly:bool ->
@@ -457,17 +457,17 @@ module Block : sig
       context of the [block] which may differ from its block header's
       one depending on the block's associated protocol semantics. *)
   val context_exn :
-    chain_store -> block -> Tezos_protocol_environment.Context.t Lwt.t
+    chain_store -> block -> Mavryk_protocol_environment.Context.t Lwt.t
 
   (** [context_opt chain_store block] optional version of
       [context_exn]. *)
   val context_opt :
-    chain_store -> block -> Tezos_protocol_environment.Context.t option Lwt.t
+    chain_store -> block -> Mavryk_protocol_environment.Context.t option Lwt.t
 
   (** [context chain_store block] error monad version of
       [context_exn]. *)
   val context :
-    chain_store -> block -> Tezos_protocol_environment.Context.t tzresult Lwt.t
+    chain_store -> block -> Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
   (** [context_exists chain_store block] tests the existence of the
       [block]'s commit in the context. *)
@@ -919,7 +919,7 @@ module Chain : sig
   val get_rpc_directory :
     chain_store ->
     Block.t ->
-    (chain_store * Block.t) Tezos_rpc.Directory.t option Lwt.t
+    (chain_store * Block.t) Mavryk_rpc.Directory.t option Lwt.t
 
   (** [set_rpc_directory chain_store ph next_ph rpc_directory] sets a
       [rpc_directory] for the protocol [ph] and next protocol [next_ph]
@@ -928,7 +928,7 @@ module Chain : sig
     chain_store ->
     protocol_hash:Protocol_hash.t ->
     next_protocol_hash:Protocol_hash.t ->
-    (chain_store * Block.t) Tezos_rpc.Directory.t ->
+    (chain_store * Block.t) Mavryk_rpc.Directory.t ->
     unit Lwt.t
 
   (** [register_gc_callback chain_store callback] installs a
@@ -1025,7 +1025,7 @@ val v_3_0_upgrade : store_dir:string -> Genesis.t -> unit tzresult Lwt.t
 
 (** Unsafe set of functions intended for internal store manipulation
    (e.g. snapshot, reconstruct, testing). Must not be used outside of
-   the [Tezos_store]. *)
+   the [Mavryk_store]. *)
 module Unsafe : sig
   val repr_of_block : Block.t -> Block_repr.t
 

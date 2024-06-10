@@ -43,16 +43,16 @@ module Messages :
 (** Storage for persisting inboxes. *)
 module Inboxes :
   SIMPLE_INDEXED_FILE
-    with type key := Octez_smart_rollup.Inbox.Hash.t
-     and type value := Octez_smart_rollup.Inbox.t
+    with type key := Mavkit_smart_rollup.Inbox.Hash.t
+     and type value := Mavkit_smart_rollup.Inbox.t
      and type header := unit
 
 (** Storage containing commitments and corresponding commitment hashes that the
     rollup node has knowledge of. *)
 module Commitments :
   SIMPLE_INDEXED_FILE
-    with type key := Octez_smart_rollup.Commitment.Hash.t
-     and type value := Octez_smart_rollup.Commitment.t
+    with type key := Mavkit_smart_rollup.Commitment.Hash.t
+     and type value := Mavkit_smart_rollup.Commitment.t
      and type header := unit
 
 (** Storage containing the last cemented commitment. *)
@@ -63,7 +63,7 @@ module Lcc : sig
 end
 
 (** Storage containing a single commitment for the last published commitment. *)
-module Lpc : SINGLETON_STORE with type value := Octez_smart_rollup.Commitment.t
+module Lpc : SINGLETON_STORE with type value := Mavkit_smart_rollup.Commitment.t
 
 (** Published slot headers per block hash,
     stored as a list of bindings from [Dal_slot_index.t]

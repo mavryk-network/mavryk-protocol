@@ -71,7 +71,7 @@ let input_config_files : JSON.t option list =
   ]
 
 let write_config_file client (config : JSON.t) =
-  let output_file = Temp.file "octez-client.config_file.json" in
+  let output_file = Temp.file "mavkit-client.config_file.json" in
   let config =
     JSON.put
       ( "base_dir",
@@ -91,7 +91,7 @@ let test_config_init () =
   let* client = Client.init () in
   iteri input_config_files @@ fun index input_config_opt ->
   let output =
-    Temp.file (string_of_int index ^ "-octez-client.ouput_config_file.json")
+    Temp.file (string_of_int index ^ "-mavkit-client.ouput_config_file.json")
   in
   let in_file =
     Option.map
@@ -105,8 +105,8 @@ let test_config_init () =
   unit
 
 (* Tests that calling `config init -o tmp_file` and
-   feeding its result to `octez-client --config-file` works
-   and yields the same result (i.e. calling `octez-client
+   feeding its result to `mavkit-client --config-file` works
+   and yields the same result (i.e. calling `mavkit-client
    --config-file tmp_file config init -o tmp_file2 yields
    a `tmp_file2` that is similar to `tmp_file`).
    `config_dict` specifies the content of the initial config file
@@ -125,7 +125,7 @@ let test_config_init_roundtrip () =
     | None ->
         let in_file =
           Temp.file
-            (string_of_int index ^ "-octez-client.input_config_file.json")
+            (string_of_int index ^ "-mavkit-client.input_config_file.json")
         in
         let* () = Client.config_init ~output:in_file client in
         (* Execute an arbitrary effectless command to verify
@@ -137,7 +137,7 @@ let test_config_init_roundtrip () =
     | Some input_config -> return (write_config_file client input_config)
   in
   let output =
-    Temp.file (string_of_int index ^ "-octez-client.ouput_config_file.json")
+    Temp.file (string_of_int index ^ "-mavkit-client.ouput_config_file.json")
   in
   let* () = Client.config_init ~config_file:in_file client ~output in
   (* Try loading the file as json, to check it is valid  *)
@@ -145,7 +145,7 @@ let test_config_init_roundtrip () =
   Check.((json1 = json2) json ~__LOC__ ~error_msg:"Expected %R, got %L") ;
   unit
 
-(* Tests of `octez-client config show` *)
+(* Tests of `mavkit-client config show` *)
 let test_config_show () =
   Test.register ~__FILE__ ~title:"Config show" ~tags:["config"; "show"]
   @@ fun () ->
@@ -247,7 +247,7 @@ let test_config_show_roundtrip () =
   (* Write output of first call to `config show` to disk, to pass it
      to second call below *)
   let in_file2 =
-    Temp.file (string_of_int index ^ "-octez-client.input_config_file2.json")
+    Temp.file (string_of_int index ^ "-mavkit-client.input_config_file2.json")
   in
   JSON.encode_to_file in_file2 output_json1 ;
   (* Use previous ouput file as input now *)

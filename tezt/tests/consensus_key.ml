@@ -32,7 +32,7 @@
                  on the baker.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let blocks_per_cycle = 4
 

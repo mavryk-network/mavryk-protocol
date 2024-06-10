@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Contracts = Tezos_client_alpha_commands.Client_proto_stresstest_contracts
+module Contracts = Mavryk_client_alpha_commands.Client_proto_stresstest_contracts
 
 type t = {regular : int; origination : int; contract : (string * int) list}
 

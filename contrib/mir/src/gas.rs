@@ -15,7 +15,7 @@ pub struct Gas {
 pub struct OutOfGas;
 
 // Default gas limit per transaction, according to
-// https://opentezos.com/tezos-basics/economics-and-rewards/#transaction-cost
+// https://opentezos.com/mavryk-basics/economics-and-rewards/#transaction-cost
 const DEFAULT_GAS_AMOUNT: u32 = 1_040_000;
 
 impl Default for Gas {

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type start_octez_node_r = {
+type start_mavkit_node_r = {
   name : string;
   rpc_port : int;
   metrics_port : int;
@@ -37,7 +37,7 @@ type dal_cryptobox_parameters = {
   redundancy_factor : string;
 }
 
-type 'uri start_octez_node = {
+type 'uri start_mavkit_node = {
   name : string option;
   path_node : 'uri;
   network : string;
@@ -113,9 +113,9 @@ type 'uri smart_rollups_add_messages = {
 }
 
 type (_, _) Remote_procedure.t +=
-  | Start_octez_node :
-      'uri start_octez_node
-      -> (start_octez_node_r, 'uri) Remote_procedure.t
+  | Start_mavkit_node :
+      'uri start_mavkit_node
+      -> (start_mavkit_node_r, 'uri) Remote_procedure.t
   | Wait_for_bootstrapped :
       'uri wait_for_bootstrapped
       -> (unit, 'uri) Remote_procedure.t

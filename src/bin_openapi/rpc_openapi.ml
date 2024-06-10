@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_openapi
+open Mavryk_openapi
 
 let main () =
   (* Parse command line arguments. *)

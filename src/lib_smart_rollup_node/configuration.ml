@@ -48,7 +48,7 @@ type gc_parameters = {frequency_in_blocks : int32}
 type history_mode = Archive | Full
 
 type t = {
-  sc_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  sc_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   boot_sector_file : string option;
   operators : Purpose.operators;
   rpc_addr : string;
@@ -92,7 +92,7 @@ let () =
     (fun () -> Empty_operation_kinds_for_custom_mode)
 
 let default_data_dir =
-  Filename.concat (Sys.getenv "HOME") ".tezos-smart-rollup-node"
+  Filename.concat (Sys.getenv "HOME") ".mavryk-smart-rollup-node"
 
 let storage_dir = "storage"
 
@@ -505,7 +505,7 @@ let encoding : t Data_encoding.t =
           (req
              "smart-rollup-address"
              ~description:"Smart rollup address"
-             Tezos_crypto.Hashed.Smart_rollup_address.encoding)
+             Mavryk_crypto.Hashed.Smart_rollup_address.encoding)
           (opt "boot-sector" ~description:"Boot sector" string)
           (req
              "smart-rollup-node-operator"
@@ -518,7 +518,7 @@ let encoding : t Data_encoding.t =
           (dft
              "reconnection_delay"
              ~description:
-               "The reconnection (to the tezos node) delay in seconds"
+               "The reconnection (to the mavryk node) delay in seconds"
              float
              default_reconnection_delay)
           (dft
@@ -541,8 +541,8 @@ let encoding : t Data_encoding.t =
              Loser_mode.no_failures))
        (merge_objs
           (obj8
-             (opt "DAL node endpoint" Tezos_rpc.Encoding.uri_encoding)
-             (opt "dac-observer-client" Tezos_rpc.Encoding.uri_encoding)
+             (opt "DAL node endpoint" Mavryk_rpc.Encoding.uri_encoding)
+             (opt "dac-observer-client" Mavryk_rpc.Encoding.uri_encoding)
              (opt "dac-timeout" Data_encoding.z)
              (dft "batcher" batcher_encoding default_batcher)
              (dft "injector" injector_encoding default_injector)
@@ -809,14 +809,14 @@ module Cli = struct
       ~history_mode ~allowed_origins ~allowed_headers =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the smart rollup node is not the one of Octez node *)
+    (* Check if the data directory of the smart rollup node is not the one of Mavkit node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
         Lwt_unix.file_exists (data_dir // "identity.json")
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the smart rollup node data."
       else return_unit
     in

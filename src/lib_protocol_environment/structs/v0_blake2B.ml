@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Blake2B
+include Mavryk_crypto.Blake2B
 
 module Make (Register : sig
   val register_encoding :
@@ -31,12 +31,12 @@ module Make (Register : sig
     length:int ->
     to_raw:('a -> string) ->
     of_raw:(string -> 'a option) ->
-    wrap:('a -> Tezos_crypto.Base58.data) ->
-    'a Tezos_crypto.Base58.encoding
+    wrap:('a -> Mavryk_crypto.Base58.data) ->
+    'a Mavryk_crypto.Base58.encoding
 end)
 (Name : PrefixedName) =
 struct
-  include Tezos_crypto.Blake2B.Make (Register) (Name)
+  include Mavryk_crypto.Blake2B.Make (Register) (Name)
 
   module Set = struct
     include Stdlib.Set.Make (struct

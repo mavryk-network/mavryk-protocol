@@ -33,13 +33,13 @@ type host_and_port = {host : string; port : int}
 module Coordinator : sig
   (** The type of a coordinator specific configuration mode. *)
   type t = {
-    committee_members : Tezos_crypto.Aggregate_signature.public_key list;
+    committee_members : Mavryk_crypto.Aggregate_signature.public_key list;
   }
 
   (** [committee_members_addresses t] retrieves the addresses of the committee
      members from the coordinator configuration [t].*)
   val committee_members_addresses :
-    t -> Tezos_crypto.Aggregate_signature.public_key_hash list
+    t -> Mavryk_crypto.Aggregate_signature.public_key_hash list
 end
 
 (** Committee_member specific configuration. *)
@@ -47,7 +47,7 @@ module Committee_member : sig
   (** The type of a Committee_member specific configuration mode. *)
   type t = {
     coordinator_rpc_address : Uri.t;
-    address : Tezos_crypto.Aggregate_signature.public_key_hash;
+    address : Mavryk_crypto.Aggregate_signature.public_key_hash;
   }
 end
 
@@ -89,14 +89,14 @@ val mode_name : t -> string
 (** [make_coordinator committee_members] creates a new coordinator
     configuration mode using the given [committee_members] public keys.
 *)
-val make_coordinator : Tezos_crypto.Aggregate_signature.public_key list -> mode
+val make_coordinator : Mavryk_crypto.Aggregate_signature.public_key list -> mode
 
 (** [make_committee_member ~coordinator_rpc_address committee_member_address] 
     creates a new committee member configuration with [committee_member_address]
     as the signer and [coordinator_rpc_address] as the coordinator. *)
 val make_committee_member :
   coordinator_rpc_address:Uri.t ->
-  Tezos_crypto.Aggregate_signature.public_key_hash ->
+  Mavryk_crypto.Aggregate_signature.public_key_hash ->
   mode
 
 (** [make_observer ~committee_rpc_addresses ?timeout coordinator_rpc_address]
@@ -130,12 +130,12 @@ val reveal_data_dir : t -> string
 
 (** [default_data_dir] is the data directory that the DAC node
     will use, when one is not specified in the configuration:
-    currently set to [${HOME}/.tezos-dac-node]. *)
+    currently set to [${HOME}/.mavryk-dac-node]. *)
 val default_data_dir : string
 
 (** [default_reveal_data_dir] is the directory that the DAC node
     will use to store pages on disk. Currently set to
-    [${HOME}/.tezos_rollup_node/wasm_2_0_0]. *)
+    [${HOME}/.mavryk_rollup_node/wasm_2_0_0]. *)
 val default_reveal_data_dir : string
 
 (** [default_rpc_address] is the default address of the RPC server

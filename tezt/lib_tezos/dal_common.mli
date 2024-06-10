@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Cryptobox = Tezos_crypto_dal.Cryptobox
+module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
 module Parameters : sig
   type t = {

@@ -27,7 +27,7 @@
    -------
    Component:    Client
    Invocation:   dune exec tezt/tests/main.exe -- --file client_run_view.ml
-   Subject:      Check that run view command to octez-client behaves correctly
+   Subject:      Check that run view command to mavkit-client behaves correctly
 *)
 
 let viewable_script = ["mini_scenarios"; "viewable"]

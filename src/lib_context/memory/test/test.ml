@@ -25,7 +25,7 @@
 
 (* shell context *)
 module C = struct
-  include Tezos_context_disk.Context
+  include Mavryk_context_disk.Context
 
   (** Basic blocks *)
 
@@ -43,7 +43,7 @@ module C = struct
 
   let make_context () =
     (* there is no simple way to build a context *)
-    Lwt_utils_unix.with_tempdir "tezos_test_" (fun base_dir ->
+    Lwt_utils_unix.with_tempdir "mavryk_test_" (fun base_dir ->
         let open Lwt_syntax in
         let open Filename.Infix in
         let root = base_dir // "context" in
@@ -64,16 +64,16 @@ end
 
 (* memory context *)
 module M = struct
-  include Tezos_context_memory.Context
+  include Mavryk_context_memory.Context
 
   let make_context () =
-    Lwt.return (Tezos_context_memory.Context.make_empty_context ())
+    Lwt.return (Mavryk_context_memory.Context.make_empty_context ())
 end
 
 module Make (A : sig
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
-      with type memory_context_tree := Tezos_context_memory.Context.tree
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
+      with type memory_context_tree := Mavryk_context_memory.Context.tree
 
   val make_context : unit -> t Lwt.t
 end) =
@@ -116,4 +116,4 @@ let test_hash =
 
 let () =
   Lwt_main.run
-    (Alcotest_lwt.run ~__FILE__ "tezos-context-memory" [("hash", test_hash)])
+    (Alcotest_lwt.run ~__FILE__ "mavryk-context-memory" [("hash", test_hash)])

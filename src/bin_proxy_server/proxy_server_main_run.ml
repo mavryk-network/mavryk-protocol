@@ -64,21 +64,21 @@ let launch_rpc_server dir {address; port; tls_cert_and_key; forwarding_endpoint}
         `TLS (`Crt_file_path cert, `Key_file_path key, `No_password, `Port port)
   in
   let server =
-    Tezos_rpc_http_server.RPC_server.init_server
+    Mavryk_rpc_http_server.RPC_server.init_server
       dir
-      ~media_types:Tezos_rpc_http.Media_type.all_media_types
+      ~media_types:Mavryk_rpc_http.Media_type.all_media_types
   in
   let middleware =
-    Tezos_rpc_http_server.RPC_middleware.proxy_server_query_forwarder
+    Mavryk_rpc_http_server.RPC_middleware.proxy_server_query_forwarder
       forwarding_endpoint
   in
   let callback =
-    Tezos_rpc_http_server.RPC_server.resto_callback server |> middleware
+    Mavryk_rpc_http_server.RPC_server.resto_callback server |> middleware
   in
   Lwt.catch
     (fun () ->
       let*! () =
-        Tezos_rpc_http_server.RPC_server.launch ~host server ~callback mode
+        Mavryk_rpc_http_server.RPC_server.launch ~host server ~callback mode
       in
       Lwt.return_ok server)
     (function
@@ -88,7 +88,7 @@ let launch_rpc_server dir {address; port; tls_cert_and_key; forwarding_endpoint}
 
 let run dir ({address; port; _} as args) =
   let open Lwt_result_syntax in
-  let*! () = Tezos_base_unix.Internal_event_unix.init () in
+  let*! () = Mavryk_base_unix.Internal_event_unix.init () in
   let node_downer =
     Lwt_exit.register_clean_up_callback ~loc:__LOC__ (fun _ ->
         Events.(emit shutting_down_proxy_server) ())
@@ -100,7 +100,7 @@ let run dir ({address; port; _} as args) =
       ~after:[node_downer]
       (fun _ ->
         let*! () = Events.(emit shutting_down_rpc_server) () in
-        Tezos_rpc_http_server.RPC_server.shutdown rpc)
+        Mavryk_rpc_http_server.RPC_server.shutdown rpc)
   in
   let*! () =
     Events.(emit starting_rpc_server) (P2p_addr.to_string address, port)
@@ -109,6 +109,6 @@ let run dir ({address; port; _} as args) =
     Lwt_exit.register_clean_up_callback
       ~loc:__LOC__
       ~after:[rpc_downer]
-      (fun _exit_status -> Tezos_base_unix.Internal_event_unix.close ())
+      (fun _exit_status -> Mavryk_base_unix.Internal_event_unix.close ())
   in
   Lwt_utils.never_ending ()

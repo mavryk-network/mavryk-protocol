@@ -11,7 +11,7 @@ pub use encoding::Timestamp;
 
 #[cfg(feature = "alloc")]
 mod encoding {
-    use tezos_data_encoding::{
+    use mavryk_data_encoding::{
         enc::BinWriter,
         encoding::{Encoding, HasEncoding},
         nom::NomReader,
@@ -47,7 +47,7 @@ mod encoding {
     }
 
     impl NomReader for Timestamp {
-        fn nom_read(input: &[u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+        fn nom_read(input: &[u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
             nom::combinator::map(
                 nom::number::complete::i64(nom::number::Endianness::Big),
                 Timestamp,
@@ -56,8 +56,8 @@ mod encoding {
     }
 
     impl BinWriter for Timestamp {
-        fn bin_write(&self, output: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
-            tezos_data_encoding::enc::i64(&self.0, output)
+        fn bin_write(&self, output: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
+            mavryk_data_encoding::enc::i64(&self.0, output)
         }
     }
 

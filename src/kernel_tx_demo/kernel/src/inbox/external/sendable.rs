@@ -4,8 +4,8 @@
 
 //! Constructing external inbox messages for sending to the kernel.
 
-use tezos_data_encoding::{enc::BinWriter, encoding::HasEncoding};
-use tezos_smart_rollup_encoding::dac::certificate::V0Certificate;
+use mavryk_data_encoding::{enc::BinWriter, encoding::HasEncoding};
+use mavryk_smart_rollup_encoding::dac::certificate::V0Certificate;
 
 use super::v1;
 

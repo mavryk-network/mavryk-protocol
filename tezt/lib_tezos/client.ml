@@ -135,8 +135,8 @@ let address ?(hostname = false) ?from peer =
   | Some endpoint ->
       Runner.address ~hostname ?from:(runner endpoint) (runner peer)
 
-let create_with_mode ?runner ?(path = Constant.octez_client)
-    ?(admin_path = Constant.octez_admin_client) ?name
+let create_with_mode ?runner ?(path = Constant.mavkit_client)
+    ?(admin_path = Constant.mavkit_admin_client) ?name
     ?(color = Log.Color.FG.blue) ?base_dir mode =
   let name = match name with None -> fresh_name () | Some name -> name in
   let base_dir =
@@ -208,7 +208,7 @@ let spawn_command ?log_command ?log_status_on_exit ?log_output
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in
@@ -239,7 +239,7 @@ let spawn_command_with_stdin ?log_command ?log_status_on_exit ?log_output
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in
@@ -512,7 +512,7 @@ module Admin = struct
     match output =~* rex "Injected protocol ([^ ]+) successfully" with
     | None ->
         Test.fail
-          "octez-admin-client inject protocol did not answer \"Injected \
+          "mavkit-admin-client inject protocol did not answer \"Injected \
            protocol ... successfully\""
     | Some hash -> return hash
 
@@ -536,7 +536,7 @@ module Admin = struct
     match output =~* rex "Protocol [^ ]+ uses environment (V\\d+)" with
     | None ->
         Test.fail
-          "octez-admin-client protocol environment did not answer \"Protocol \
+          "mavkit-admin-client protocol environment did not answer \"Protocol \
            ... uses environment V...\""
     | Some version -> return version
 end
@@ -648,7 +648,7 @@ let import_keys_from_mnemonic ?endpoint ?force ?passphrase ?encryption_password
   let* () = Lwt_io.close output_channel in
   Process.check process
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
 
@@ -2395,7 +2395,7 @@ let show_voting_period ?endpoint client =
   match output =~* rex "Current period: \"([a-z]+)\"" with
   | None ->
       Test.fail
-        "octez-client show voting period did not print the current period"
+        "mavkit-client show voting period did not print the current period"
   | Some period -> return period
 
 module Sc_rollup = struct
@@ -2640,7 +2640,7 @@ module Sc_rollup = struct
     let parse process = Process.check process in
     {value = process; run = parse}
 
-  (** Run [octez-client execute outbox message of sc rollup <rollup> from <src>
+  (** Run [mavkit-client execute outbox message of sc rollup <rollup> from <src>
       for commitment hash <hash> and output proof <proof>]. *)
   let execute_outbox_message ?(wait = "none") ?burn_cap ?storage_limit ?fee
       ?hooks ~rollup ~src ~commitment_hash ~proof client =
@@ -3586,7 +3586,7 @@ let spawn_compute_chain_id_from_block_hash ?endpoint client block_hash =
   spawn_command ?endpoint client
   @@ ["compute"; "chain"; "id"; "from"; "block"; "hash"; block_hash]
 
-(** Run [tezos-client compute chain id from block hash]. *)
+(** Run [mavryk-client compute chain id from block hash]. *)
 let compute_chain_id_from_block_hash ?endpoint client block_hash =
   let* output =
     spawn_compute_chain_id_from_block_hash ?endpoint client block_hash
@@ -3598,7 +3598,7 @@ let spawn_compute_chain_id_from_seed ?endpoint client seed =
   spawn_command ?endpoint client
   @@ ["compute"; "chain"; "id"; "from"; "seed"; seed]
 
-(** Run [tezos-client compute chain id from seed]. *)
+(** Run [mavryk-client compute chain id from seed]. *)
 let compute_chain_id_from_seed ?endpoint client seed =
   let* output =
     spawn_compute_chain_id_from_seed ?endpoint client seed

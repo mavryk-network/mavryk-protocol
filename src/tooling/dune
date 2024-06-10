@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_tooling)
- (public_name tezos-tooling)
+ (name mavryk_tooling)
+ (public_name mavryk-tooling)
  (instrumentation (backend bisect_ppx))
  (modules))
 

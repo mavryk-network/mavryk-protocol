@@ -29,7 +29,7 @@ include
     (struct
       let name = "Protocol_hash"
 
-      let title = "A Tezos protocol ID"
+      let title = "A Mavryk protocol ID"
 
       let b58check_prefix = Base58.Prefix.protocol_hash
 

@@ -25,23 +25,23 @@
 
 (* Backend-agnostic operations on the context *)
 
-module Environment_context = Tezos_protocol_environment.Context
-module Memory_context = Tezos_protocol_environment.Memory_context
+module Environment_context = Mavryk_protocol_environment.Context
+module Memory_context = Mavryk_protocol_environment.Memory_context
 
 let err_implementation_mismatch =
-  Tezos_protocol_environment.err_implementation_mismatch
+  Mavryk_protocol_environment.err_implementation_mismatch
 
 (** Values of type [index] are used to [checkout] contexts specified by their hash. *)
 type index =
   | Disk_index of Context.index
-  | Memory_index of Tezos_context_memory.Context.index
+  | Memory_index of Mavryk_context_memory.Context.index
 
 let index (context : Environment_context.t) =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Disk_index (Context.index ctxt)
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Memory_index (Tezos_context_memory.Context.index ctxt)
+      Memory_index (Mavryk_context_memory.Context.index ctxt)
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -49,7 +49,7 @@ let mem (context : Environment_context.t) key =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} -> Context.mem ctxt key
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.mem ctxt key
+      Mavryk_context_memory.Context.mem ctxt key
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -57,7 +57,7 @@ let mem_tree (context : Environment_context.t) key =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} -> Context.mem_tree ctxt key
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.mem_tree ctxt key
+      Mavryk_context_memory.Context.mem_tree ctxt key
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -65,7 +65,7 @@ let find (context : Environment_context.t) key =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} -> Context.find ctxt key
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.find ctxt key
+      Mavryk_context_memory.Context.find ctxt key
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -76,7 +76,7 @@ let add (context : Environment_context.t) key data =
       let+ ctxt = Context.add ctxt key data in
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      let+ ctxt = Tezos_context_memory.Context.add ctxt key data in
+      let+ ctxt = Mavryk_context_memory.Context.add ctxt key data in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
@@ -88,7 +88,7 @@ let fold_value ?depth (context : Environment_context.t) key ~order ~init ~f =
           let v () = Context.Tree.to_value tree in
           f k v acc)
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      let open Tezos_context_memory in
+      let open Mavryk_context_memory in
       Context.fold ?depth ctxt key ~order ~init ~f:(fun k tree acc ->
           let v () = Context.Tree.to_value tree in
           f k v acc)
@@ -102,7 +102,7 @@ let add_protocol (context : Environment_context.t) proto_hash =
       let+ ctxt = Context.add_protocol ctxt proto_hash in
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      let+ ctxt = Tezos_context_memory.Context.add_protocol ctxt proto_hash in
+      let+ ctxt = Mavryk_context_memory.Context.add_protocol ctxt proto_hash in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
@@ -111,7 +111,7 @@ let get_protocol (context : Environment_context.t) =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} -> Context.get_protocol ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.get_protocol ctxt
+      Mavryk_context_memory.Context.get_protocol ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -123,7 +123,7 @@ let add_predecessor_block_metadata_hash (context : Environment_context.t) hash =
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
       let+ ctxt =
-        Tezos_context_memory.Context.add_predecessor_block_metadata_hash
+        Mavryk_context_memory.Context.add_predecessor_block_metadata_hash
           ctxt
           hash
       in
@@ -139,7 +139,7 @@ let add_predecessor_ops_metadata_hash (context : Environment_context.t) hash =
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
       let+ ctxt =
-        Tezos_context_memory.Context.add_predecessor_ops_metadata_hash ctxt hash
+        Mavryk_context_memory.Context.add_predecessor_ops_metadata_hash ctxt hash
       in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
@@ -150,7 +150,7 @@ let hash ~time ?message (context : Environment_context.t) =
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Context.hash ~time ?message ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.hash ~time ?message ctxt
+      Mavryk_context_memory.Context.hash ~time ?message ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -170,7 +170,7 @@ let add_test_chain (context : Environment_context.t) status =
       let+ ctxt = Context.add_test_chain ctxt status in
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      let+ ctxt = Tezos_context_memory.Context.add_test_chain ctxt status in
+      let+ ctxt = Mavryk_context_memory.Context.add_test_chain ctxt status in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
@@ -183,7 +183,7 @@ let fork_test_chain (context : Environment_context.t) ~protocol ~expiration =
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
       let+ ctxt =
-        Tezos_context_memory.Context.fork_test_chain ctxt ~protocol ~expiration
+        Mavryk_context_memory.Context.fork_test_chain ctxt ~protocol ~expiration
       in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
@@ -194,40 +194,40 @@ let commit ~time ?message (context : Environment_context.t) =
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Context.commit ~time ?message ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.commit ~time ?message ctxt
+      Mavryk_context_memory.Context.commit ~time ?message ctxt
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
 let gc context_index context_hash =
   match context_index with
   | Disk_index index -> Context.gc index context_hash
-  | Memory_index index -> Tezos_context_memory.Context.gc index context_hash
+  | Memory_index index -> Mavryk_context_memory.Context.gc index context_hash
 
 let wait_gc_completion context_index =
   match context_index with
   | Disk_index index -> Context.wait_gc_completion index
-  | Memory_index index -> Tezos_context_memory.Context.wait_gc_completion index
+  | Memory_index index -> Mavryk_context_memory.Context.wait_gc_completion index
 
 let is_gc_allowed context_index =
   match context_index with
   | Disk_index index -> Context.is_gc_allowed index
-  | Memory_index index -> Tezos_context_memory.Context.is_gc_allowed index
+  | Memory_index index -> Mavryk_context_memory.Context.is_gc_allowed index
 
 let split context_index =
   match context_index with
   | Disk_index index -> Context.split index
-  | Memory_index index -> Tezos_context_memory.Context.split index
+  | Memory_index index -> Mavryk_context_memory.Context.split index
 
 let sync = function
   | Disk_index index -> Context.sync index
-  | Memory_index index -> Tezos_context_memory.Context.sync index
+  | Memory_index index -> Mavryk_context_memory.Context.sync index
 
 let commit_test_chain_genesis (context : Environment_context.t) block_header =
   match context with
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Context.commit_test_chain_genesis ctxt block_header
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.commit_test_chain_genesis ctxt block_header
+      Mavryk_context_memory.Context.commit_test_chain_genesis ctxt block_header
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -236,7 +236,7 @@ let compute_testchain_genesis (context : Environment_context.t) block_hash =
   | Context {kind = Shell_context.Context; _} ->
       Context.compute_testchain_genesis block_hash
   | Context {kind = Memory_context.Context; _} ->
-      Tezos_context_memory.Context.compute_testchain_genesis block_hash
+      Mavryk_context_memory.Context.compute_testchain_genesis block_hash
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -245,7 +245,7 @@ let merkle_tree (context : Environment_context.t) leaf_kind path =
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Context.merkle_tree ctxt leaf_kind path
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.merkle_tree ctxt leaf_kind path
+      Mavryk_context_memory.Context.merkle_tree ctxt leaf_kind path
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -254,7 +254,7 @@ let merkle_tree_v2 (context : Environment_context.t) leaf_kind path =
   | Context {kind = Shell_context.Context; ctxt; _} ->
       Context.merkle_tree_v2 ctxt leaf_kind path
   | Context {kind = Memory_context.Context; ctxt; _} ->
-      Tezos_context_memory.Context.merkle_tree_v2 ctxt leaf_kind path
+      Mavryk_context_memory.Context.merkle_tree_v2 ctxt leaf_kind path
   | Context t ->
       err_implementation_mismatch ~expected:"shell or memory" ~got:t.impl_name
 
@@ -262,7 +262,7 @@ let commit_genesis context_index ~chain_id ~time ~protocol =
   match context_index with
   | Disk_index index -> Context.commit_genesis index ~chain_id ~time ~protocol
   | Memory_index index ->
-      Tezos_context_memory.Context.commit_genesis
+      Mavryk_context_memory.Context.commit_genesis
         index
         ~chain_id
         ~time
@@ -275,7 +275,7 @@ let checkout context_index context_hash =
       let+ ctxt = Context.checkout index context_hash in
       Option.map Shell_context.wrap_disk_context ctxt
   | Memory_index index ->
-      let+ ctxt = Tezos_context_memory.Context.checkout index context_hash in
+      let+ ctxt = Mavryk_context_memory.Context.checkout index context_hash in
       Option.map Memory_context.wrap_memory_context ctxt
 
 let checkout_exn context_index context_hash =
@@ -286,16 +286,16 @@ let checkout_exn context_index context_hash =
       Shell_context.wrap_disk_context ctxt
   | Memory_index index ->
       let+ ctxt =
-        Tezos_context_memory.Context.checkout_exn index context_hash
+        Mavryk_context_memory.Context.checkout_exn index context_hash
       in
       Memory_context.wrap_memory_context ctxt
 
 let exists context_index context_hash =
   match context_index with
   | Disk_index index -> Context.exists index context_hash
-  | Memory_index index -> Tezos_context_memory.Context.exists index context_hash
+  | Memory_index index -> Mavryk_context_memory.Context.exists index context_hash
 
 let close context_index =
   match context_index with
   | Disk_index index -> Context.close index
-  | Memory_index index -> Tezos_context_memory.Context.close index
+  | Memory_index index -> Mavryk_context_memory.Context.close index

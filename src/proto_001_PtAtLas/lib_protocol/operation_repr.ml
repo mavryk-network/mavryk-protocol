@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Protocol Implementation - Low level Repr. of Operations *)
+(* Mavryk Protocol Implementation - Low level Repr. of Operations *)
 
 module Kind = struct
   type preattestation_consensus_kind = Preattestation_consensus_kind

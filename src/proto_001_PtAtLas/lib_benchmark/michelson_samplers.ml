@@ -505,7 +505,7 @@ end)
 
     let originated rng_state =
       (* For a description of the format, see
-         tezos-codec describe alpha.contract binary encoding *)
+         mavryk-codec describe alpha.contract binary encoding *)
       let string =
         "\001" ^ Base_samplers.uniform_string ~nbytes:20 rng_state ^ "\000"
       in

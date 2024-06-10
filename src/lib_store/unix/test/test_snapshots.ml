@@ -29,7 +29,7 @@
     _______
 
     Component: Store
-    Invocation: dune exec src/lib_store/unix/test/main.exe -- --match "tezos-store: snapshots"
+    Invocation: dune exec src/lib_store/unix/test/main.exe -- --match "mavryk-store: snapshots"
     Subject: Store tests ( snapshots )
 *)
 
@@ -195,7 +195,7 @@ let export_import ~test_descr ~previously_baked_blocks ?exported_block_hash
 let check_baking_continuity ~test_descr ~exported_chain_store
     ~imported_chain_store =
   let open Lwt_result_syntax in
-  let open Tezos_protocol_alpha.Protocol.Alpha_context in
+  let open Mavryk_protocol_alpha.Protocol.Alpha_context in
   let*! imported_head = Store.Chain.current_head imported_chain_store in
   let* {Constants.parametric = {blocks_per_cycle; preserved_cycles; _}; _} =
     Alpha_utils.get_constants imported_chain_store imported_head
@@ -384,7 +384,7 @@ let test store_path ~test_descr ?exported_block_level
           Lwt.return_unit)
 
 let make_tests speed genesis_parameters =
-  let open Tezos_protocol_alpha.Protocol.Alpha_context in
+  let open Mavryk_protocol_alpha.Protocol.Alpha_context in
   let {
     Parameters.constants =
       {Constants.Parametric.blocks_per_cycle; preserved_cycles; _};
@@ -609,7 +609,7 @@ let test_drag_after_import speed export_mode =
   in
   let patch_context ctxt =
     let test_parameters =
-      let open Tezos_protocol_alpha_parameters in
+      let open Mavryk_protocol_alpha_parameters in
       {
         Default_parameters.(parameters_of_constants constants) with
         bootstrap_accounts = Alpha_utils.default_accounts;
@@ -751,7 +751,7 @@ let tests speed =
     let generated_tests =
       make_tests
         speed
-        Tezos_protocol_alpha_parameters.Default_parameters.(
+        Mavryk_protocol_alpha_parameters.Default_parameters.(
           parameters_of_constants
             {constants_sandbox with consensus_threshold = 0})
     in

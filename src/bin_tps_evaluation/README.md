@@ -35,13 +35,13 @@ from the root of the repository.
 
 The CLI tool can be used to extract information about different kinds of
 transactions that constitute the average block by using [the Tezos
-indexer](https://gitlab.com/nomadic-labs/tezos-indexer) snapshots. Please
+indexer](https://gitlab.com/nomadic-labs/mavryk-indexer) snapshots. Please
 refer to the Tezos indexer's [SQL
-schema](https://gitlab.com/nomadic-labs/tezos-indexer/-/tree/master/src/db-schema)
+schema](https://gitlab.com/nomadic-labs/mavryk-indexer/-/tree/master/src/db-schema)
 for more information about the stored data.
 
 In order to estimate contents of the average block you will need Docker and
-`bunzip`. The TPS benchmark should be built and the `tezos-tps-evaluation`
+`bunzip`. The TPS benchmark should be built and the `mavryk-tps-evaluation`
 executable should exist in the root of the Tezos project.
 
 Go to the directory of the TPS benchmark `src/bin_tps_evaluation` and run:
@@ -74,26 +74,26 @@ It is possible to get an estimation of the maximal possible TPS by using the
 protocol parameters.
 
 ```
-./tezos-tps-evaluation-gas-tps -a average-block=src/bin_tps_evaluation/average-block.json
-[14:26:25.243] Starting test: tezos_tps_gas
+./mavryk-tps-evaluation-gas-tps -a average-block=src/bin_tps_evaluation/average-block.json
+[14:26:25.243] Starting test: mavryk_tps_gas
 [14:26:27.956] Reading description of the average block from src/bin_tps_evaluation/average-block.json
 [14:26:28.061] Originating smart contracts
 [14:26:28.285] Waiting to reach the next level
 [14:26:57.514] Average transaction cost: 2900
 [14:26:57.514] Gas TPS: 60
-[14:26:57.536] [SUCCESS] (1/1) tezos_tps_gas
+[14:26:57.536] [SUCCESS] (1/1) mavryk_tps_gas
 ```
 
 This estimation is obtained by dividing the hard gas limit per block by the
 average transaction cost.
 
-The `tezos-tps-evaluation-gas-tps` command will also register its result in
+The `mavryk-tps-evaluation-gas-tps` command will also register its result in
 a database if `tezt_config.json` exists (see [these
 instructions][long-tezts-locally]).
 
 ## Running the TPS benchmark
 
-The TPS benchmark is run with the `tezos-tps-evaluation-benchmark-tps`
+The TPS benchmark is run with the `mavryk-tps-evaluation-benchmark-tps`
 command. It spawns a network comprising a node, a baker, and a client. The
 network will use the same constants and parameters as the Mainnet. It will
 wait till level 3 is reached and after that it will run the stress test
@@ -115,7 +115,7 @@ the resulting value will be presented as the **empirical TPS**. The
 benchmark is also capable of calculating **de facto TPS of injection** which
 is useful in judging the results.
 
-The `tezos-tps-evaluation-benchmark-tps` command will also register its
+The `mavryk-tps-evaluation-benchmark-tps` command will also register its
 result in a database if `tezt_config.json` exists (see [these
 instructions][long-tezts-locally]).
 
@@ -147,8 +147,8 @@ trustworthy:
 ### Example usage
 
 ```
-./tezos-tps-evaluation-benchmark-tps -a average-block=src/bin_tps_evaluation/average-block.json -a lift-protocol-limits
-[20:42:19.167] Starting test: tezos_tps_benchmark
+./mavryk-tps-evaluation-benchmark-tps -a average-block=src/bin_tps_evaluation/average-block.json -a lift-protocol-limits
+[20:42:19.167] Starting test: mavryk_tps_benchmark
 [20:42:19.167] Gas TPS estimation
 [20:42:21.761] Reading description of the average block from src/bin_tps_evaluation/average-block.json
 [20:42:21.858] Originating smart contracts
@@ -181,7 +181,7 @@ trustworthy:
 [20:49:06.918] TPS of injection (target): 1000
 [20:49:06.918] TPS of injection (de facto): 180.96
 [20:49:06.918] Empirical TPS: 180.07
-[20:49:06.962] [SUCCESS] (1/1) tezos_tps_benchmark
+[20:49:06.962] [SUCCESS] (1/1) mavryk_tps_benchmark
 ```
 
 ## Automatic daily runs of the TPS benchmark

@@ -75,7 +75,7 @@ type config = {
       (** Maximum time allowed to the establishment of a connection. *)
   reconnection_config : Point_reconnection_config.t;
       (** Delay granted to a peer to perform authentication. *)
-  proof_of_work_target : Tezos_crypto.Crypto_box.pow_target;
+  proof_of_work_target : Mavryk_crypto.Crypto_box.pow_target;
       (** The proof of work target we require from peers. *)
   listening_port : P2p_addr.port option;
       (** The TCP port on which the peer can be reached. *)
@@ -170,7 +170,7 @@ module Internal_for_tests : sig
         (** [P2p_fd.connect] *)
     socket_authenticate :
       canceler:Lwt_canceler.t ->
-      proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+      proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
       incoming:bool ->
       P2p_io_scheduler.connection ->
       P2p_point.Id.t ->

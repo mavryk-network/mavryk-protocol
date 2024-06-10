@@ -11,10 +11,10 @@ members = [
 ]
 
 [workspace.dependencies]
-tezos-smart-rollup-core = { path = "../kernel_sdk/core" }
-tezos-smart-rollup-host = { path = "../kernel_sdk/host" }
-tezos-smart-rollup-debug = { path = "../kernel_sdk/debug" }
-tezos-smart-rollup-entrypoint = { path = "../kernel_sdk/entrypoint" }
-tezos-smart-rollup-storage = { path = "../kernel_sdk/storage" }
-tezos-smart-rollup-encoding = { path = "../kernel_sdk/encoding" }
-tezos-smart-rollup-mock = { path = "../kernel_sdk/mock" }
+mavryk-smart-rollup-core = { path = "../kernel_sdk/core" }
+mavryk-smart-rollup-host = { path = "../kernel_sdk/host" }
+mavryk-smart-rollup-debug = { path = "../kernel_sdk/debug" }
+mavryk-smart-rollup-entrypoint = { path = "../kernel_sdk/entrypoint" }
+mavryk-smart-rollup-storage = { path = "../kernel_sdk/storage" }
+mavryk-smart-rollup-encoding = { path = "../kernel_sdk/encoding" }
+mavryk-smart-rollup-mock = { path = "../kernel_sdk/mock" }

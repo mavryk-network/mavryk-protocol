@@ -71,7 +71,7 @@ let filter = Some section
     validator. It passes the validator to the test function [f]. *)
 let wrap f _switch () =
   Tztest.with_empty_mock_sink (fun _ ->
-      Lwt_utils_unix.with_tempdir "tezos_test_" (fun test_dir ->
+      Lwt_utils_unix.with_tempdir "mavryk_test_" (fun test_dir ->
           let open Lwt_syntax in
           let* store = init_chain test_dir in
           let* r = init_mock_p2p Distributed_db_version.Name.zero in
@@ -185,5 +185,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-shell" [("test validator", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-shell" [("test validator", tests)]
   |> Lwt_main.run

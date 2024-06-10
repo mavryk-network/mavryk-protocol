@@ -68,7 +68,7 @@ val other_lwt_result : 'a tzresult Lwt.t -> ('a, [> other]) result Lwt.t
     payload is [Ok (Some w)].
 
     - If it yields a value [Error `Not_found], the function returns an Lwt monad
-    whose payload is [Ok (None)] so that {!Tezos_rpc_http} returns 404 HTTP code.
+    whose payload is [Ok (None)] so that {!Mavryk_rpc_http} returns 404 HTTP code.
 
     - If it yields a value [Error `Decoding_failed], the function returns an Lwt
     monad whose payload is the tzresult of [Decoding_failed] concatenated to the

@@ -25,13 +25,13 @@
 
 module S = struct
   let config =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Return the runtime node configuration (this takes into account the \
          command-line arguments and the on-disk configuration file)"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Config_file.encoding
-      Tezos_rpc.Path.(root / "config")
+      Mavryk_rpc.Path.(root / "config")
 end
 
-let config ctxt = Tezos_rpc.Context.make_call S.config ctxt () ()
+let config ctxt = Mavryk_rpc.Context.make_call S.config ctxt () ()

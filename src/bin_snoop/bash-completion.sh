@@ -1,11 +1,11 @@
-_octez-snoop_complete()
+_mavkit-snoop_complete()
 {
     local cur_word prev_word prefix
 
     cur_word="${COMP_WORDS[COMP_CWORD]}"
     prev_word="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Tezos script
+    # Mavryk script
     script=${COMP_WORDS[0]}
 
     test_empty=$($script bash_autocomplete "$prev_word" "" ${COMP_WORDS[@]} 2>/dev/null)
@@ -37,4 +37,4 @@ _octez-snoop_complete()
 }
 
 # Register _pss_complete to provide completion for the following commands
-complete -F _octez-snoop_complete octez-snoop
+complete -F _mavkit-snoop_complete mavkit-snoop

@@ -25,7 +25,7 @@
 
 (* Generic Michelson building functions *)
 
-open Tezos_micheline.Micheline
+open Mavryk_micheline.Micheline
 open Protocol.Alpha_context.Script
 
 let seq ~loc l = Seq (loc, l)
@@ -51,7 +51,7 @@ let unit ~loc = Prim (loc, D_Unit, [], [])
 let lambda_from_string code =
   let open Result_syntax in
   let* parsed =
-    Tezos_micheline.Micheline_parser.no_parsing_error
+    Mavryk_micheline.Micheline_parser.no_parsing_error
     @@ Michelson_v1_parser.parse_expression code
   in
   return @@ root Michelson_v1_parser.(parsed.expanded)

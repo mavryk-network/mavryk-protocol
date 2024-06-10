@@ -2,74 +2,74 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_smart_rollup_node_PtAtLas)
- (package octez-smart-rollup-node-PtAtLas)
+ (name mavkit_smart_rollup_node_PtAtLas)
+ (package mavkit-smart-rollup-node-PtAtLas)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-protocol-001-PtAtLas-libs.client
-  octez-libs.tezos-context.encoding
-  octez-libs.tezos-context.helpers
-  tezos-protocol-001-PtAtLas.protocol
-  octez-protocol-001-PtAtLas-libs.plugin
-  tezos-protocol-001-PtAtLas.parameters
-  octez-libs.rpc
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-libs.tezos-workers
-  tezos-dal-node-services
-  tezos-dal-node-lib
-  octez-protocol-001-PtAtLas-libs.dac
-  tezos-dac-lib
-  tezos-dac-client-lib
-  octez-shell-libs.shell-services
-  octez-l2-libs.smart-rollup
-  octez-protocol-001-PtAtLas-libs.smart-rollup
-  octez-protocol-001-PtAtLas-libs.smart-rollup-layer2
-  octez-protocol-001-PtAtLas-libs.layer2-utils
-  octez-l2-libs.layer2_store
-  octez-crawler
-  octez-libs.tree-encoding
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-libs.mavryk-context.encoding
+  mavkit-libs.mavryk-context.helpers
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavryk-protocol-001-PtAtLas.parameters
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-libs.tezos-workers
+  mavryk-dal-node-services
+  mavryk-dal-node-lib
+  mavkit-protocol-001-PtAtLas-libs.dac
+  mavryk-dac-lib
+  mavryk-dac-client-lib
+  mavkit-shell-libs.shell-services
+  mavkit-l2-libs.smart-rollup
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup-layer2
+  mavkit-protocol-001-PtAtLas-libs.layer2-utils
+  mavkit-l2-libs.layer2_store
+  mavkit-crawler
+  mavkit-libs.tree-encoding
   data-encoding
   irmin-pack
   irmin-pack.unix
   irmin
   aches
   aches-lwt
-  octez-injector
-  octez-smart-rollup-node-lib
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.scoru-wasm-fast
-  octez-libs.crypto-dal
-  octez-version.value)
+  mavkit-injector
+  mavkit-smart-rollup-node-lib
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.scoru-wasm-fast
+  mavkit-libs.crypto-dal
+  mavkit-version.value)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_stdlib_unix
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas
-  -open Tezos_protocol_plugin_001_PtAtLas
-  -open Tezos_protocol_001_PtAtLas_parameters
-  -open Tezos_workers
-  -open Tezos_dal_node_lib
-  -open Tezos_dac_001_PtAtLas
-  -open Tezos_dac_lib
-  -open Tezos_dac_client_lib
-  -open Tezos_shell_services
-  -open Octez_smart_rollup
-  -open Tezos_smart_rollup_001_PtAtLas
-  -open Tezos_smart_rollup_layer2_001_PtAtLas
-  -open Tezos_layer2_utils_001_PtAtLas
-  -open Tezos_layer2_store
-  -open Octez_crawler
-  -open Octez_injector
-  -open Octez_smart_rollup_node
-  -open Tezos_crypto_dal))
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_plugin_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_workers
+  -open Mavryk_dal_node_lib
+  -open Mavryk_dac_001_PtAtLas
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_client_lib
+  -open Mavryk_shell_services
+  -open Mavkit_smart_rollup
+  -open Mavryk_smart_rollup_001_PtAtLas
+  -open Mavryk_smart_rollup_layer2_001_PtAtLas
+  -open Mavryk_layer2_utils_001_PtAtLas
+  -open Mavryk_layer2_store
+  -open Mavkit_crawler
+  -open Mavkit_injector
+  -open Mavkit_smart_rollup_node
+  -open Mavryk_crypto_dal))

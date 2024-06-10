@@ -52,9 +52,9 @@ let sign_bytes ~watermark ~(signer : key) (message : Bytes.t) =
     require_unencrypted_secret_key ~__LOC__ signer.secret_key
   in
   let secret_key =
-    Tezos_crypto.Signature.Secret_key.of_b58check_exn b58_secret_key
+    Mavryk_crypto.Signature.Secret_key.of_b58check_exn b58_secret_key
   in
-  Tezos_crypto.Signature.sign ~watermark secret_key message
+  Mavryk_crypto.Signature.sign ~watermark secret_key message
 
 let uri_of_secret_key = function
   | Unencrypted secret_key -> "unencrypted:" ^ secret_key

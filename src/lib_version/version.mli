@@ -42,7 +42,7 @@
     [Release] means "no additional information".
     This is an actual released version.
     No additional info is printed. *)
-type additional_info = Tezos_version_parser.additional_info =
+type additional_info = Mavryk_version_parser.additional_info =
   | Dev
   | RC of int
   | RC_dev of int
@@ -61,7 +61,7 @@ val string_of_additional_info : additional_info -> string
     Minor versions include mostly bug fixes and are usually released in
     branches which start from the previous release.
     When the major version is incremented, the minor version is reset to 0. *)
-type t = Tezos_version_parser.t = {
+type t = Mavryk_version_parser.t = {
   major : int;
   minor : int;
   additional_info : additional_info;
@@ -81,7 +81,7 @@ val to_string : t -> string
     [pp f x] prints [to_string x] in [f] *)
 val pp : Format.formatter -> t -> unit
 
-(* Parse an Octez version.
+(* Parse an Mavkit version.
 
    Returns None if the version cannot be parsed. *)
 val parse_version : string -> t option

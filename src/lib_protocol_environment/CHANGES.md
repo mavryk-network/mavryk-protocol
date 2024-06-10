@@ -45,10 +45,10 @@ https://gitlab.com/tezos/tezos/-/merge_requests/2546
 Add trees to the env v2
 https://gitlab.com/tezos/tezos/-/merge_requests/2457
 
-Storage: abstract the type of Tezos_storage_memory.Context.t
+Storage: abstract the type of Mavryk_storage_memory.Context.t
 https://gitlab.com/tezos/tezos/-/merge_requests/2550
 
-Env: use tezos-storage.context instead of implementing a new memory context
+Env: use mavryk-storage.context instead of implementing a new memory context
 https://gitlab.com/tezos/tezos/-/merge_requests/2466
 
 introduce Lwtreslib.Option and Lwtreslib.Result
@@ -69,7 +69,7 @@ https://gitlab.com/tezos/tezos/-/merge_requests/2461
 Add new client mode: proxy
 https://gitlab.com/tezos/tezos/-/merge_requests/1943
 
-Sapling: rename sapling in tezos-sapling
+Sapling: rename sapling in mavryk-sapling
 https://gitlab.com/tezos/tezos/-/merge_requests/2417
 
 Tests: quickcheck that memory_context is an array theory

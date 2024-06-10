@@ -16,7 +16,7 @@ rust_version=${RUST_VERSION:-$recommended_rust_version}
 
 if [ "$recommended_rust_version" != "$rust_version" ]; then
   echo "\
-WARNING: you selected a different version of rust. Tezos is tested only
+WARNING: you selected a different version of rust. Mavryk is tested only
 with Rust $recommended_rust_version. Do this at your own peril."
   sleep 3
 fi

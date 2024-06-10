@@ -50,7 +50,7 @@ module type P_Finite_key_pool_S = sig
 end
 
 module type Signature_S = sig
-  include Tezos_crypto.Intfs.SIGNATURE
+  include Mavryk_crypto.Intfs.SIGNATURE
 
   type algo
 
@@ -72,7 +72,7 @@ module Make_p_finite_key_pool
      and type secret_key := Signature.Secret_key.t = struct
   let () = if Arg.size < 1 then invalid_arg "Make_finite_key_pool" else ()
 
-  (* Hardcoded bc not directly accessible through the Tezos_crypto API. *)
+  (* Hardcoded bc not directly accessible through the Mavryk_crypto API. *)
   let minimal_seed_length = 32
 
   let key_pool = Queue.create ()
@@ -123,35 +123,35 @@ end
 module V0 = struct
   module type Finite_key_pool_S =
     P_Finite_key_pool_S
-      with type public_key_hash := Tezos_crypto.Signature.V0.Public_key_hash.t
-       and type public_key := Tezos_crypto.Signature.V0.Public_key.t
-       and type secret_key := Tezos_crypto.Signature.V0.Secret_key.t
+      with type public_key_hash := Mavryk_crypto.Signature.V0.Public_key_hash.t
+       and type public_key := Mavryk_crypto.Signature.V0.Public_key.t
+       and type secret_key := Mavryk_crypto.Signature.V0.Secret_key.t
 
   module Make_finite_key_pool =
-    Make_p_finite_key_pool (Tezos_crypto.Signature.V0)
+    Make_p_finite_key_pool (Mavryk_crypto.Signature.V0)
 end
 
 module V1 = struct
   module type Finite_key_pool_S =
     P_Finite_key_pool_S
-      with type public_key_hash := Tezos_crypto.Signature.V1.Public_key_hash.t
-       and type public_key := Tezos_crypto.Signature.V1.Public_key.t
-       and type secret_key := Tezos_crypto.Signature.V1.Secret_key.t
+      with type public_key_hash := Mavryk_crypto.Signature.V1.Public_key_hash.t
+       and type public_key := Mavryk_crypto.Signature.V1.Public_key.t
+       and type secret_key := Mavryk_crypto.Signature.V1.Secret_key.t
 
   module Make_finite_key_pool =
-    Make_p_finite_key_pool (Tezos_crypto.Signature.V1)
+    Make_p_finite_key_pool (Mavryk_crypto.Signature.V1)
 end
 
 module V_latest = struct
   module type Finite_key_pool_S =
     P_Finite_key_pool_S
       with type public_key_hash :=
-        Tezos_crypto.Signature.V_latest.Public_key_hash.t
-       and type public_key := Tezos_crypto.Signature.V_latest.Public_key.t
-       and type secret_key := Tezos_crypto.Signature.V_latest.Secret_key.t
+        Mavryk_crypto.Signature.V_latest.Public_key_hash.t
+       and type public_key := Mavryk_crypto.Signature.V_latest.Public_key.t
+       and type secret_key := Mavryk_crypto.Signature.V_latest.Secret_key.t
 
   module Make_finite_key_pool =
-    Make_p_finite_key_pool (Tezos_crypto.Signature.V_latest)
+    Make_p_finite_key_pool (Mavryk_crypto.Signature.V_latest)
 end
 
 include V_latest

@@ -273,12 +273,12 @@ module Context = struct
   let config (Context {ops = (module Ops); ctxt; _}) = Ops.config ctxt
 
   (* Proof *)
-  module Proof = Tezos_context_sigs.Context.Proof_types
+  module Proof = Mavryk_context_sigs.Context.Proof_types
 
   (* In-memory context for proof *)
   module Proof_context = struct
     module M = struct
-      include Tezos_context_memory.Context
+      include Mavryk_context_memory.Context
 
       let set_protocol = add_protocol
 
@@ -305,7 +305,7 @@ module Context = struct
      compact Merkle proofs. *)
   module Proof_context_binary = struct
     module M = struct
-      include Tezos_context_memory.Context_binary
+      include Mavryk_context_memory.Context_binary
 
       let set_protocol = add_protocol
 
@@ -337,9 +337,9 @@ module Context = struct
   end
 
   type proof_version_expanded =
-    Tezos_context_helpers.Context.proof_version_expanded
+    Mavryk_context_helpers.Context.proof_version_expanded
 
-  let decode_proof_version = Tezos_context_helpers.Context.decode_proof_version
+  let decode_proof_version = Mavryk_context_helpers.Context.decode_proof_version
 
   let proof_context_of_proof_version_expanded :
       proof_version_expanded -> (module Proof_context) = function
@@ -381,12 +381,12 @@ module Context = struct
     in
     return (Proof_context.inject tree, r)
 
-  let equal_config = Tezos_context_sigs.Config.equal
+  let equal_config = Mavryk_context_sigs.Config.equal
 
   type cache_key = Environment_cache.key
 
   type block_cache = {
-    context_hash : Tezos_crypto.Hashed.Context_hash.t;
+    context_hash : Mavryk_crypto.Hashed.Context_hash.t;
     cache : cache;
   }
 
@@ -394,7 +394,7 @@ module Context = struct
     [ `Force_load
     | `Load
     | `Lazy
-    | `Inherited of block_cache * Tezos_crypto.Hashed.Context_hash.t ]
+    | `Inherited of block_cache * Mavryk_crypto.Hashed.Context_hash.t ]
 
   type builder = Environment_cache.key -> cache_value tzresult Lwt.t
 
@@ -661,7 +661,7 @@ module Context = struct
     match mode with
     | `Inherited ({context_hash; cache}, predecessor_context_hash) ->
         if
-          Tezos_crypto.Hashed.Context_hash.equal
+          Mavryk_crypto.Hashed.Context_hash.equal
             context_hash
             predecessor_context_hash
         then
@@ -780,7 +780,7 @@ type validation_result = {
 type quota = {max_size : int; max_op : int option}
 
 type rpc_context = {
-  block_hash : Tezos_crypto.Hashed.Block_hash.t;
+  block_hash : Mavryk_crypto.Hashed.Block_hash.t;
   block_header : Block_header.shell_header;
   context : Context.t;
 }

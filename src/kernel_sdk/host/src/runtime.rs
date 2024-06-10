@@ -10,7 +10,7 @@
 
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
-use tezos_smart_rollup_core::{SmartRollupCore, PREIMAGE_HASH_SIZE};
+use mavryk_smart_rollup_core::{SmartRollupCore, PREIMAGE_HASH_SIZE};
 
 #[cfg(feature = "proto-alpha")]
 use crate::dal_parameters::RollupDalParameters;
@@ -25,7 +25,7 @@ use crate::path::{Path, RefPath};
 use crate::DAL_PARAMETERS_SIZE;
 use crate::{Error, METADATA_SIZE};
 #[cfg(feature = "alloc")]
-use tezos_smart_rollup_core::smart_rollup_core::ReadInputMessageInfo;
+use mavryk_smart_rollup_core::smart_rollup_core::ReadInputMessageInfo;
 
 #[cfg(feature = "alloc")]
 use alloc::string::String;
@@ -268,7 +268,7 @@ where
     #[cfg(feature = "alloc")]
     fn read_input(&mut self) -> Result<Option<Message>, RuntimeError> {
         use core::mem::MaybeUninit;
-        use tezos_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
+        use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
 
         let mut buffer = Vec::with_capacity(MAX_INPUT_MESSAGE_SIZE);
 
@@ -307,10 +307,10 @@ where
         let value_type = Error::wrap(result).map_err(RuntimeError::HostErr)? as i32;
 
         match value_type {
-            tezos_smart_rollup_core::VALUE_TYPE_NONE => Ok(None),
-            tezos_smart_rollup_core::VALUE_TYPE_VALUE => Ok(Some(ValueType::Value)),
-            tezos_smart_rollup_core::VALUE_TYPE_SUBTREE => Ok(Some(ValueType::Subtree)),
-            tezos_smart_rollup_core::VALUE_TYPE_VALUE_WITH_SUBTREE => {
+            mavryk_smart_rollup_core::VALUE_TYPE_NONE => Ok(None),
+            mavryk_smart_rollup_core::VALUE_TYPE_VALUE => Ok(Some(ValueType::Value)),
+            mavryk_smart_rollup_core::VALUE_TYPE_SUBTREE => Ok(Some(ValueType::Subtree)),
+            mavryk_smart_rollup_core::VALUE_TYPE_VALUE_WITH_SUBTREE => {
                 Ok(Some(ValueType::ValueWithSubtree))
             }
             _ => Err(RuntimeError::HostErr(Error::GenericInvalidAccess)),
@@ -324,7 +324,7 @@ where
         from_offset: usize,
         max_bytes: usize,
     ) -> Result<Vec<u8>, RuntimeError> {
-        use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+        use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 
         check_path_has_value(self, path)?;
 
@@ -377,7 +377,7 @@ where
 
     #[cfg(feature = "alloc")]
     fn store_read_all(&self, path: &impl Path) -> Result<Vec<u8>, RuntimeError> {
-        use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+        use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 
         let length = Runtime::store_value_size(self, path)?;
         let mut buffer: Vec<u8> = Vec::with_capacity(length);
@@ -425,7 +425,7 @@ where
         mut src: &[u8],
         mut at_offset: usize,
     ) -> Result<(), RuntimeError> {
-        use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+        use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 
         let write = |bytes: &[u8], offset| {
             let result_code = unsafe {
@@ -764,7 +764,7 @@ mod tests {
     };
     use std::slice::{from_raw_parts, from_raw_parts_mut};
     use test_helpers::*;
-    use tezos_smart_rollup_core::{
+    use mavryk_smart_rollup_core::{
         smart_rollup_core::MockSmartRollupCore, MAX_FILE_CHUNK_SIZE,
         MAX_INPUT_MESSAGE_SIZE, MAX_OUTPUT_SIZE,
     };
@@ -865,7 +865,7 @@ mod tests {
                 let bytes = unsafe { from_raw_parts(*ptr, *size) };
                 existing_path.as_bytes() == bytes
             })
-            .return_const(tezos_smart_rollup_core::VALUE_TYPE_VALUE);
+            .return_const(mavryk_smart_rollup_core::VALUE_TYPE_VALUE);
 
         // Act
         let result = mock.store_has(&existing_path);
@@ -881,7 +881,7 @@ mod tests {
                 let bytes = unsafe { from_raw_parts(*ptr, *size) };
                 path_bytes == bytes
             })
-            .return_const(tezos_smart_rollup_core::VALUE_TYPE_NONE);
+            .return_const(mavryk_smart_rollup_core::VALUE_TYPE_NONE);
 
         mock
     }
@@ -1230,7 +1230,7 @@ mod tests {
                 let bytes = unsafe { from_raw_parts(*ptr, *size) };
                 REMAINING_PATH.as_bytes() == bytes
             })
-            .return_const(tezos_smart_rollup_core::VALUE_TYPE_VALUE);
+            .return_const(mavryk_smart_rollup_core::VALUE_TYPE_VALUE);
 
         // Act
         let result = mock.store_delete(&PATH);
@@ -1298,7 +1298,7 @@ mod tests {
         const PATH: RefPath<'static> = RefPath::assert_from(b"/prefix/of/other/paths");
         let size = 256_usize;
         mock.expect_store_has()
-            .return_const(tezos_smart_rollup_core::VALUE_TYPE_VALUE);
+            .return_const(mavryk_smart_rollup_core::VALUE_TYPE_VALUE);
         mock.expect_store_value_size()
             .return_const(i32::try_from(size).unwrap());
         let value_size = mock.store_value_size(&PATH);
@@ -1310,7 +1310,7 @@ mod tests {
         let mut mock = MockSmartRollupCore::new();
         const PATH: RefPath<'static> = RefPath::assert_from(b"/prefix/of/other/paths");
         mock.expect_store_has()
-            .return_const(tezos_smart_rollup_core::VALUE_TYPE_NONE);
+            .return_const(mavryk_smart_rollup_core::VALUE_TYPE_NONE);
 
         assert_eq!(
             Err(RuntimeError::PathNotFound),
@@ -1376,8 +1376,8 @@ mod tests {
     }
 
     mod test_helpers {
-        use tezos_smart_rollup_core::smart_rollup_core::ReadInputMessageInfo;
-        use tezos_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
+        use mavryk_smart_rollup_core::smart_rollup_core::ReadInputMessageInfo;
+        use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
 
         use super::MockSmartRollupCore;
         use std::slice::{from_raw_parts, from_raw_parts_mut};
@@ -1390,7 +1390,7 @@ mod tests {
                     let bytes = unsafe { from_raw_parts(*ptr, *size) };
                     path_bytes == bytes
                 })
-                .return_const(tezos_smart_rollup_core::VALUE_TYPE_VALUE);
+                .return_const(mavryk_smart_rollup_core::VALUE_TYPE_VALUE);
 
             mock
         }

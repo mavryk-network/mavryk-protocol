@@ -25,14 +25,14 @@
 (*****************************************************************************)
 
 val pvm_state_encoding :
-  Wasm_pvm_state.Internal_state.pvm_state Tezos_tree_encoding.t
+  Wasm_pvm_state.Internal_state.pvm_state Mavryk_tree_encoding.t
 
 val durable_buffers_encoding :
-  Tezos_webassembly_interpreter.Eval.buffers Tezos_tree_encoding.t
+  Mavryk_webassembly_interpreter.Eval.buffers Mavryk_tree_encoding.t
 
-val durable_storage_encoding : Durable.t Tezos_tree_encoding.t
+val durable_storage_encoding : Durable.t Mavryk_tree_encoding.t
 
-module Make (T : Tezos_tree_encoding.TREE) :
+module Make (T : Mavryk_tree_encoding.TREE) :
   Wasm_pvm_sig.S with type tree = T.tree
 
 module Make_pvm (Wasm_vm : Wasm_vm_sig.S) : module type of Make

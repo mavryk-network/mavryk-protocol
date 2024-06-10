@@ -27,7 +27,7 @@
 open Protocol
 
 module Encodings =
-Tezos_shell_benchmarks.Encoding_benchmarks_helpers.Make (struct
+Mavryk_shell_benchmarks.Encoding_benchmarks_helpers.Make (struct
   let file = __FILE__
 
   let purpose = Benchmark.Generate_code "michelson_v1_gas"
@@ -91,7 +91,7 @@ type phase = Workload_production | In_protocol | Global
 type error_kind =
   | Global_error of {
       benchmark_name : Namespace.t;
-      workload : Tezos_base.TzPervasives.tztrace;
+      workload : Mavryk_base.TzPervasives.tztrace;
     }
   | Bad_data of {
       benchmark_name : Namespace.t;
@@ -548,7 +548,7 @@ let rec check_printable_ascii v i =
     | _ -> false
 
 let check_printable_benchmark =
-  let open Tezos_shell_benchmarks.Encoding_benchmarks_helpers in
+  let open Mavryk_shell_benchmarks.Encoding_benchmarks_helpers in
   let open Encodings in
   linear_shared
     ~name:"CHECK_PRINTABLE"

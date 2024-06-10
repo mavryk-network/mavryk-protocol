@@ -11,8 +11,8 @@ src_dir=$(dirname "$scripts_dir")
 script_inputs_dir="$src_dir/script-inputs"
 
 binaries="$(cat "$script_inputs_dir/released-executables")"
-deb_packages="$(ls ./octez-*.deb)"
-rpm_packages="$(ls ./octez-*.rpm)"
+deb_packages="$(ls ./mavkit-*.deb)"
+rpm_packages="$(ls ./mavkit-*.rpm)"
 
 ### Compute GitLab release names
 
@@ -48,9 +48,9 @@ fi
 
 ### Compute GitLab generic package names
 
-gitlab_octez_package_name="octez-${gitlab_release_no_v}"
-gitlab_octez_deb_package_name="octez-debian-${gitlab_release_no_v}"
-gitlab_octez_rpm_package_name="octez-redhat-${gitlab_release_no_v}"
+gitlab_mavkit_package_name="mavkit-${gitlab_release_no_v}"
+gitlab_mavkit_deb_package_name="mavkit-debian-${gitlab_release_no_v}"
+gitlab_mavkit_rpm_package_name="mavkit-redhat-${gitlab_release_no_v}"
 
 # X.Y or X.Y-rcZ
 gitlab_package_version="${gitlab_release_no_v}"

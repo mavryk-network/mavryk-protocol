@@ -24,22 +24,22 @@
 (*****************************************************************************)
 
 open Client_keys
-open Tezos_sapling.Core.Client
+open Mavryk_sapling.Core.Client
 
 (* Transform a spending key to an uri, encrypted or not. *)
 let to_uri unencrypted cctxt sapling_key =
   let open Lwt_result_syntax in
   if unencrypted then
     let*? sapling_uri =
-      Tezos_signer_backends.Unencrypted.make_sapling_key sapling_key
+      Mavryk_signer_backends.Unencrypted.make_sapling_key sapling_key
     in
     return sapling_uri
-  else Tezos_signer_backends.Encrypted.encrypt_sapling_key cctxt sapling_key
+  else Mavryk_signer_backends.Encrypted.encrypt_sapling_key cctxt sapling_key
 
 (** Transform an uri into a spending key, asking for a password if the uri was
     encrypted. *)
 let from_uri (cctxt : #Client_context.full) uri =
-  Tezos_signer_backends.Encrypted.decrypt_sapling_key cctxt uri
+  Mavryk_signer_backends.Encrypted.decrypt_sapling_key cctxt uri
 
 let register (cctxt : #Client_context.full) ?(force = false)
     ?(unencrypted = false) mnemonic name =

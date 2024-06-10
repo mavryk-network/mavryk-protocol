@@ -37,10 +37,10 @@
                [tezt/_regressions/encoding] first to remove unused files in case
                some paths change.
    Subject: Encoding regression tests capture the output of encoding/decoding
-            using the [octez-codec] and compare it with the output from the
+            using the [mavkit-codec] and compare it with the output from the
             previous run. The test passes only if the outputs match exactly.
 
-            The other test checks that the [octez-codec] can successfully dump
+            The other test checks that the [mavkit-codec] can successfully dump
             the list of encodings.
 *)
 
@@ -49,15 +49,15 @@ let sample_as_tags sample = String.split_on_char '.' sample
 let check_dump_encodings () =
   Test.register
     ~__FILE__
-    ~title:"octez-codec dump encodings"
+    ~title:"mavkit-codec dump encodings"
     ~tags:["dump"]
-    ~uses:[Constant.octez_codec]
+    ~uses:[Constant.mavkit_codec]
   @@ fun () ->
   let* (_ : JSON.t) = Codec.dump_encodings () in
   unit
 
 let check_sample ~name ~file =
-  let* json_string = Tezos_stdlib_unix.Lwt_utils_unix.read_file file in
+  let* json_string = Mavryk_stdlib_unix.Lwt_utils_unix.read_file file in
   let original_json = JSON.parse ~origin:json_string json_string in
   let* binary =
     Codec.encode ~hooks:Regression.hooks ~name (JSON.unannotate original_json)
@@ -78,13 +78,13 @@ let iter_sample_s base_path func =
   |> Lwt_list.iter_s (fun file -> func (base_path // file))
 
 (** The given sample must be included in registered encodings. These can be
-    found with [octez-codec list encodings]. *)
+    found with [mavkit-codec list encodings]. *)
 let check_protocol_sample_encoding ?supports sample =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "protocol encoding regression test: %s" sample)
     ~tags:(["encoding"; "protocol"] @ sample_as_tags sample)
-    ~uses:(fun _protocol -> [Constant.octez_codec])
+    ~uses:(fun _protocol -> [Constant.mavkit_codec])
     ?supports
   @@ fun protocol ->
   let base_path =
@@ -94,13 +94,13 @@ let check_protocol_sample_encoding ?supports sample =
   check_sample ~name:(Protocol.encoding_prefix protocol ^ "." ^ sample) ~file
 
 (** The given sample must be included in registered encodings. These can be
-    found with [octez-codec list encodings]. *)
+    found with [mavkit-codec list encodings]. *)
 let check_shell_sample_encoding sample =
   Regression.register
     ~__FILE__
     ~title:(sf "shell encoding regression test: %s" sample)
     ~tags:(["encoding"; "shell"] @ sample_as_tags sample)
-    ~uses:[Constant.octez_codec]
+    ~uses:[Constant.mavkit_codec]
   @@ fun () ->
   let base_path =
     "tezt" // "tests" // "encoding_samples" // "shell" // sample

@@ -24,8 +24,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc_http
-open Tezos_rpc_http_server
+open Mavryk_rpc_http
+open Mavryk_rpc_http_server
 
 let call_handler1 ctxt handler = handler (Node_context.get_store ctxt)
 
@@ -130,7 +130,7 @@ module Slots_handlers = struct
         let stream, stopper = Store.open_shards_stream store in
         let shutdown () = Lwt_watcher.shutdown stopper in
         let next () = Lwt_stream.get stream in
-        Tezos_rpc.Answer.return_stream {next; shutdown})
+        Mavryk_rpc.Answer.return_stream {next; shutdown})
 end
 
 module Profile_handlers = struct
@@ -246,140 +246,140 @@ let add_service registerer service handler directory =
   registerer directory service handler
 
 let register_new :
-    Node_context.t -> unit Tezos_rpc.Directory.t -> unit Tezos_rpc.Directory.t =
+    Node_context.t -> unit Mavryk_rpc.Directory.t -> unit Mavryk_rpc.Directory.t =
  fun ctxt directory ->
   directory
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.post_commitment
        (Slots_handlers.post_commitment ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.patch_commitment
        (Slots_handlers.patch_commitment ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.get_commitment_slot
        (Slots_handlers.get_commitment_slot ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.get_commitment_proof
        (Slots_handlers.get_commitment_proof ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.put_commitment_shards
        (Slots_handlers.put_commitment_shards ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register2
+       Mavryk_rpc.Directory.opt_register2
        Services.get_commitment_by_published_level_and_index
        (Slots_handlers.get_commitment_by_published_level_and_index ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.patch_profiles
        (Profile_handlers.patch_profiles ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.get_profiles
        (Profile_handlers.get_profiles ctxt)
   |> add_service
-       Tezos_rpc.Directory.register1
+       Mavryk_rpc.Directory.register1
        Services.get_commitment_headers
        (Slots_handlers.get_commitment_headers ctxt)
   |> add_service
-       Tezos_rpc.Directory.register2
+       Mavryk_rpc.Directory.register2
        Services.get_assigned_shard_indices
        (Profile_handlers.get_assigned_shard_indices ctxt)
   |> add_service
-       Tezos_rpc.Directory.register1
+       Mavryk_rpc.Directory.register1
        Services.get_published_level_headers
        (Slots_handlers.get_published_level_headers ctxt)
   |> add_service
-       Tezos_rpc.Directory.register2
+       Mavryk_rpc.Directory.register2
        Services.get_attestable_slots
        (Profile_handlers.get_attestable_slots ctxt)
   |> add_service
-       Tezos_rpc.Directory.gen_register
+       Mavryk_rpc.Directory.gen_register
        Services.monitor_shards
        (Slots_handlers.monitor_shards ctxt)
-  |> add_service Tezos_rpc.Directory.register0 Services.version (version ctxt)
+  |> add_service Mavryk_rpc.Directory.register0 Services.version (version ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_topics
        (P2P.Gossipsub.get_topics ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_topics_peers
        (P2P.Gossipsub.get_topics_peers ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_connections
        (P2P.Gossipsub.get_connections ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_scores
        (P2P.Gossipsub.get_scores ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_backoffs
        (P2P.Gossipsub.get_backoffs ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.Gossipsub.get_message_cache
        (P2P.Gossipsub.get_message_cache ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.post_connect
        (P2P.connect ctxt)
   |> add_service
-       Tezos_rpc.Directory.register1
+       Mavryk_rpc.Directory.register1
        Services.P2P.delete_disconnect_point
        (P2P.disconnect_point ctxt)
   |> add_service
-       Tezos_rpc.Directory.register1
+       Mavryk_rpc.Directory.register1
        Services.P2P.delete_disconnect_peer
        (P2P.disconnect_peer ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.get_points
        (P2P.get_points ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.get_points_info
        (P2P.get_points_info ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.P2P.Points.get_point_info
        (P2P.get_point_info ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.get_peers
        (P2P.get_peers ctxt)
   |> add_service
-       Tezos_rpc.Directory.register0
+       Mavryk_rpc.Directory.register0
        Services.P2P.get_peers_info
        (P2P.get_peers_info ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.P2P.Peers.get_peer_info
        (P2P.get_peer_info ctxt)
 
 let register_legacy ctxt =
   let open RPC_server_legacy in
-  Tezos_rpc.Directory.empty |> register_shard ctxt |> register_shards ctxt
+  Mavryk_rpc.Directory.empty |> register_shard ctxt |> register_shards ctxt
   |> register_show_slot_pages ctxt
 
 let register ctxt = register_new ctxt (register_legacy ctxt)
 
-let merge dir plugin_dir = Tezos_rpc.Directory.merge dir plugin_dir
+let merge dir plugin_dir = Mavryk_rpc.Directory.merge dir plugin_dir
 
 let start configuration ctxt =
   let open Lwt_syntax in
   let Configuration_file.{rpc_addr; _} = configuration in
   let dir = register ctxt in
   let dir =
-    Tezos_rpc.Directory.register_describe_directory_service
+    Mavryk_rpc.Directory.register_describe_directory_service
       dir
-      Tezos_rpc.Service.description_service
+      Mavryk_rpc.Service.description_service
   in
   let rpc_port = snd rpc_addr in
   let rpc_addr = fst rpc_addr in
@@ -412,7 +412,7 @@ let install_finalizer rpc_server =
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
   let* () = shutdown rpc_server in
   let* () = Event.(emit shutdown_node exit_status) in
-  Tezos_base_unix.Internal_event_unix.close ()
+  Mavryk_base_unix.Internal_event_unix.close ()
 
 let monitor_shards_rpc ctxt =
-  Tezos_rpc.Context.make_streamed_call Services.monitor_shards ctxt () () ()
+  Mavryk_rpc.Context.make_streamed_call Services.monitor_shards ctxt () () ()

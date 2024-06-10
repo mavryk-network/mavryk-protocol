@@ -25,7 +25,7 @@
 
 type bootstrap_secret = {
   name : string;
-  sk_uri : Tezos_client_base.Client_keys.sk_uri;
+  sk_uri : Mavryk_client_base.Client_keys.sk_uri;
 }
 
 val default_bootstrap_accounts : bootstrap_secret list tzresult Lwt.t
@@ -38,6 +38,6 @@ val default_bootstrap_accounts : bootstrap_secret list tzresult Lwt.t
     scheme must be registered already.
     *)
 val populate :
-  #Tezos_client_base.Client_context.io_wallet ->
+  #Mavryk_client_base.Client_context.io_wallet ->
   string option ->
   unit tzresult Lwt.t

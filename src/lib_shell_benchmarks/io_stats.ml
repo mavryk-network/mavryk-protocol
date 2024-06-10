@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Context = Tezos_protocol_environment.Context
+module Context = Mavryk_protocol_environment.Context
 
 type t = {
   total : int;
@@ -106,7 +106,7 @@ let context_statistics base_dir context_hash =
     Io_helpers.load_context_from_disk base_dir context_hash
   in
   let* tree = load_tree context [] in
-  let* () = Tezos_context.Context.close index in
+  let* () = Mavryk_context.Context.close index in
   Lwt.return (tree_statistics tree)
 
 let array_of_int_list (l : int list) = Array.map float_of_int (Array.of_list l)

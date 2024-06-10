@@ -53,7 +53,7 @@ val pp_ocaml : Format.formatter -> t -> unit
 include
   S.HASHABLE
     with type t := t
-     and type hash := Tezos_crypto.Hashed.Protocol_hash.t
+     and type hash := Mavryk_crypto.Hashed.Protocol_hash.t
 
 val of_bytes_exn : Bytes.t -> t
 
@@ -67,7 +67,7 @@ val module_name_of_env_version : env_version -> string
 
 module Meta : sig
   type t = {
-    hash : Tezos_crypto.Hashed.Protocol_hash.t option;
+    hash : Mavryk_crypto.Hashed.Protocol_hash.t option;
     expected_env_version : env_version option;
     modules : string list;
   }

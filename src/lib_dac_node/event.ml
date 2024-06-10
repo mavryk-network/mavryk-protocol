@@ -164,32 +164,32 @@ let committee_member_not_in_wallet =
     ~section
     ~name:"committee_member_not_in_wallet"
     ~msg:
-      "There is no account with public key {mv4_account} in the Tezos client \
+      "There is no account with public key {mv4_account} in the Mavryk client \
        wallet. This account won't be used for signing DAC root hash pages."
     ~level:Warning
-    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let committee_member_cannot_sign =
   declare_1
     ~section
     ~name:"committee_member_cannot_sign"
     ~msg:
-      "There is an account with public key {mv4_account} in the Tezos client \
+      "There is an account with public key {mv4_account} in the Mavryk client \
        wallet, but its secret key URI is not available. This account won't be \
        used for signing DAC root hash pages."
     ~level:Warning
-    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let commit_member_no_public_key =
   declare_1
     ~section
     ~name:"committee_member_no_public_key"
     ~msg:
-      "There is an account with public key hash {mv4_account} in the Tezos \
+      "There is an account with public key hash {mv4_account} in the Mavryk \
        client wallet, but its public key is not available. Signatures from \
        this account cannot be verified and will be ignored."
     ~level:Warning
-    ("mv4_account", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("mv4_account", Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let handle_new_subscription_to_hash_streamer =
   declare_0
@@ -259,7 +259,7 @@ let new_signature_pushed_to_coordinator =
     ~name:"new_signature_pushed_to_coordinator"
     ~msg:"New signature from member pushed to the coordinator: {signature}"
     ~level:Notice
-    ("signature", Tezos_crypto.Aggregate_signature.encoding)
+    ("signature", Mavryk_crypto.Aggregate_signature.encoding)
 
 let no_committee_member_address =
   declare_0
@@ -279,7 +279,7 @@ let cannot_retrieve_keys_from_address =
       "Cannot retrieve keys from address: {address}, node is not a Committee \
        Member"
     ~level:Notice
-    ("address", Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)
+    ("address", Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)
 
 let fetched_missing_page =
   declare_1
@@ -299,9 +299,9 @@ let layer1_node_tracking_ended =
     ~level:Warning
     ()
 
-(** [cannot_connect_to_tezos_node] event is emitted when client tries to
+(** [cannot_connect_to_mavryk_node] event is emitted when client tries to
     track Mavryk node L1 heads, but fails. *)
-let cannot_connect_to_tezos_node =
+let cannot_connect_to_mavryk_node =
   declare_3
     ~section
     ~name:"new_head_daemon_cannot_connect"
@@ -396,7 +396,7 @@ let emit_cannot_connect_to_coordinator ~count ~delay error =
 (** [emit_l1_tracking_ended ()] emits [layer1_node_tracking_ended] event. *)
 let emit_l1_tracking_ended () = emit layer1_node_tracking_ended ()
 
-(** [emit_cannot_connect_to_tezos_node ~count ~delay error] emits
+(** [emit_cannot_connect_to_mavryk_node ~count ~delay error] emits
     [cannot_connect] event. *)
-let cannot_connect_to_tezos_node ~count ~delay error =
-  (emit cannot_connect_to_tezos_node) (count, delay, error)
+let cannot_connect_to_mavryk_node ~count ~delay error =
+  (emit cannot_connect_to_mavryk_node) (count, delay, error)

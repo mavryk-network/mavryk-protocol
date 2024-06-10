@@ -54,13 +54,13 @@ let rpc_ctxt =
   object
     method call_proto_service0
         : 'm 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             Environment.RPC_context.t,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'q ->
           'i ->
@@ -72,13 +72,13 @@ let rpc_ctxt =
 
     method call_proto_service1
         : 'm 'a 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             Environment.RPC_context.t * 'a,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'q ->
@@ -91,13 +91,13 @@ let rpc_ctxt =
 
     method call_proto_service2
         : 'm 'a 'b 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             (Environment.RPC_context.t * 'a) * 'b,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'b ->
@@ -111,13 +111,13 @@ let rpc_ctxt =
 
     method call_proto_service3
         : 'm 'a 'b 'c 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             ((Environment.RPC_context.t * 'a) * 'b) * 'c,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'b ->
@@ -234,7 +234,7 @@ let get_seed_computation ctxt =
 let get_constants ctxt = Alpha_services.Constants.all rpc_ctxt ctxt
 
 let default_test_constants =
-  Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+  Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
 
 let get_issuance_per_minute ctxt =
   Adaptive_issuance_services.current_issuance_per_minute rpc_ctxt ctxt
@@ -342,7 +342,7 @@ module Vote = struct
     Alpha_services.Voting.current_proposal rpc_ctxt ctxt
 
   let get_protocol (b : Block.t) =
-    Tezos_protocol_environment.Context.get_protocol b.context
+    Mavryk_protocol_environment.Context.get_protocol b.context
 
   let get_delegate_proposal_count ctxt pkh =
     Alpha_services.Voting.delegate_proposal_count rpc_ctxt ctxt pkh
@@ -688,7 +688,7 @@ let init_with_constants_gen tup constants =
   let n = tup_n tup in
   let*? bootstrap_accounts, contracts = create_bootstrap_accounts n in
   let parameters =
-    Tezos_protocol_alpha_parameters.Default_parameters.parameters_of_constants
+    Mavryk_protocol_alpha_parameters.Default_parameters.parameters_of_constants
       ~bootstrap_accounts
       constants
   in
@@ -718,7 +718,7 @@ let init_with_parameters2 = init_with_parameters_gen T2
 
 let default_raw_context () =
   let open Lwt_result_wrap_syntax in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let initial_account = Account.new_account () in
   let bootstrap_accounts =
     Account.make_bootstrap_account
@@ -738,8 +738,8 @@ let default_raw_context () =
   in
   let protocol_param_key = ["protocol_parameters"] in
   let*! context =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in

@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_test_helpers
-open Tezos_scoru_wasm_helpers.Encodings_util
-module Context_binary_tree = Tezos_context_memory.Context_binary.Tree
+open Mavryk_test_helpers
+open Mavryk_scoru_wasm_helpers.Encodings_util
+module Context_binary_tree = Mavryk_context_memory.Context_binary.Tree
 
 (* This is a generalised projection of
    durable_snapshot/durable.mli methods,
@@ -36,7 +36,7 @@ module type Testable_durable_sig = sig
 
   type key
 
-  val encoding : t Tezos_tree_encoding.t
+  val encoding : t Mavryk_tree_encoding.t
 
   val max_key_length : int
 
@@ -76,12 +76,12 @@ module type Testable_durable_sig = sig
   end
 end
 
-module CBV = Tezos_lazy_containers.Chunked_byte_vector
+module CBV = Mavryk_lazy_containers.Chunked_byte_vector
 
 (* Adapter of snapshotted durable interface
    with additional cbv type, which it doesn't have *)
 module Snapshot : Testable_durable_sig = struct
-  include Tezos_scoru_wasm_durable_snapshot.Durable
+  include Mavryk_scoru_wasm_durable_snapshot.Durable
 
   let find_value tree key =
     let open Lwt_syntax in
@@ -99,7 +99,7 @@ end
 (* Adapter of current durable interface,
    tweaking find_value/find_value_exn signatures *)
 module Current : Testable_durable_sig = struct
-  include Tezos_scoru_wasm.Durable
+  include Mavryk_scoru_wasm.Durable
 
   let hash tree key = hash ~kind:Value tree key
 
@@ -174,21 +174,21 @@ end) : Testable_durable_sig with type t = Snapshot.t * Current.t = struct
 
      Without this function there are two different sets of
      exceptions:
-       Tezos_scoru_wasm_durable_snapshot.Durable.Value_not_found
-       Tezos_scoru_wasm.Durable.Value_not_found
+       Mavryk_scoru_wasm_durable_snapshot.Durable.Value_not_found
+       Mavryk_scoru_wasm.Durable.Value_not_found
      even though essentially it's the same exception.
   *)
   let convert_to_snapshot_durable_exception (e : exn) =
-    Tezos_scoru_wasm_durable_snapshot.Durable.(
+    Mavryk_scoru_wasm_durable_snapshot.Durable.(
       match e with
-      | Tezos_scoru_wasm.Durable.Invalid_key k -> Invalid_key k
-      | Tezos_scoru_wasm.Durable.Index_too_large i -> Index_too_large i
-      | Tezos_scoru_wasm.Durable.Value_not_found -> Value_not_found
-      | Tezos_scoru_wasm.Durable.Tree_not_found -> Tree_not_found
-      | Tezos_scoru_wasm.Durable.Out_of_bounds b -> Out_of_bounds b
-      | Tezos_scoru_wasm.Durable.Durable_empty -> Durable_empty
-      | Tezos_scoru_wasm.Durable.Readonly_value -> Readonly_value
-      | Tezos_scoru_wasm.Durable.IO_too_large -> IO_too_large
+      | Mavryk_scoru_wasm.Durable.Invalid_key k -> Invalid_key k
+      | Mavryk_scoru_wasm.Durable.Index_too_large i -> Index_too_large i
+      | Mavryk_scoru_wasm.Durable.Value_not_found -> Value_not_found
+      | Mavryk_scoru_wasm.Durable.Tree_not_found -> Tree_not_found
+      | Mavryk_scoru_wasm.Durable.Out_of_bounds b -> Out_of_bounds b
+      | Mavryk_scoru_wasm.Durable.Durable_empty -> Durable_empty
+      | Mavryk_scoru_wasm.Durable.Readonly_value -> Readonly_value
+      | Mavryk_scoru_wasm.Durable.IO_too_large -> IO_too_large
       | e -> e)
 
   let ensure_same_outcome (type a) ~(pp : Format.formatter -> a -> unit)
@@ -259,7 +259,7 @@ end) : Testable_durable_sig with type t = Snapshot.t * Current.t = struct
   (* Actual methods implementation starts here *)
 
   let encoding =
-    let open Tezos_tree_encoding in
+    let open Mavryk_tree_encoding in
     let paired = tup2 ~flatten:true Snapshot.encoding Current.encoding in
     (* Make sure that trees are the same when decoded.
        Check for encoding can be omitted as we anyway support equality invariant.

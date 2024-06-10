@@ -2,14 +2,14 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_tree_encoding)
- (public_name octez-libs.tree-encoding)
+ (name mavryk_tree_encoding)
+ (public_name mavkit-libs.tree-encoding)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.context.sigs
-  octez-libs.lwt-result-stdlib
+  mavkit-libs.base
+  mavkit-libs.context.sigs
+  mavkit-libs.lwt-result-stdlib
   data-encoding)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

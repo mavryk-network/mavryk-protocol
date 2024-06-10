@@ -96,12 +96,12 @@ type secret_account = {
 let secrets =
   (* Exported from proto_alpha client - TODO : remove when relocated to lib_crypto *)
   let read_key mnemonic email password =
-    match Tezos_client_base.Bip39.of_words mnemonic with
+    match Mavryk_client_base.Bip39.of_words mnemonic with
     | None -> assert false
     | Some t ->
         (* TODO: unicode normalization (NFKD)... *)
         let passphrase = Bytes.(cat (of_string email) (of_string password)) in
-        let sk = Tezos_client_base.Bip39.to_seed ~passphrase t in
+        let sk = Mavryk_client_base.Bip39.to_seed ~passphrase t in
         let sk = Bytes.sub sk 0 32 in
         let sk : Signature.Secret_key.t =
           Ed25519
@@ -374,7 +374,7 @@ let pick_addr_attester ctxt =
   match attesters with a :: _ -> return a.V.consensus_key | _ -> assert false
 
 let init_params =
-  Tezos_protocol_001_PtAtLas_parameters.Default_parameters
+  Mavryk_protocol_001_PtAtLas_parameters.Default_parameters
   .parameters_of_constants
     {Context.default_test_constants with consensus_threshold = 0}
 

@@ -36,7 +36,7 @@ module Int32 = struct
 
     include BOUNDS
 
-    include Tezos_base.TzPervasives.Compare.S with type t := t
+    include Mavryk_base.TzPervasives.Compare.S with type t := t
 
     val encoding : t Data_encoding.t
 
@@ -46,7 +46,7 @@ module Int32 = struct
   end
 
   module Make (B : BOUNDS) = struct
-    include Tezos_base.TzPervasives.Compare.Int32
+    include Mavryk_base.TzPervasives.Compare.Int32
     (* This includes [type t = int32] *)
 
     include B
@@ -54,8 +54,8 @@ module Int32 = struct
     let to_int32 x = x
 
     let of_int32 n =
-      if Tezos_base.TzPervasives.Compare.Int32.(n < B.min_int) then None
-      else if Tezos_base.TzPervasives.Compare.Int32.(n > B.max_int) then None
+      if Mavryk_base.TzPervasives.Compare.Int32.(n < B.min_int) then None
+      else if Mavryk_base.TzPervasives.Compare.Int32.(n > B.max_int) then None
       else Some n
 
     let encoding =
@@ -70,7 +70,7 @@ module Int32 = struct
   end
 
   module NonNegative = struct
-    include Tezos_base.Bounded.Non_negative_int32
+    include Mavryk_base.Bounded.Non_negative_int32
 
     let to_int32 = to_value
 

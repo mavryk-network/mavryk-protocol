@@ -67,7 +67,7 @@ type t = (contract_parameters * Contract.t * smart_contract) list
 let no_contracts = []
 
 let parse_michelson_expr_exn expr =
-  let open Tezos_micheline in
+  let open Mavryk_micheline in
   match
     Micheline_parser.no_parsing_error
       (Michelson_v1_parser.parse_expression expr)
@@ -76,7 +76,7 @@ let parse_michelson_expr_exn expr =
   | Error _ -> Stdlib.failwith "parse_michelson_expr_exn"
 
 let parse_michelson_toplevel_exn expr =
-  let open Tezos_micheline in
+  let open Mavryk_micheline in
   match
     Micheline_parser.no_parsing_error
       (Michelson_v1_parser.parse_toplevel ?check:(Some true) expr)
@@ -166,7 +166,7 @@ let select (smart_contracts : t) (q : float) : invocation_parameters option =
   go smart_contracts q
 
 let originate_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Client_proto_context in
   let open Client_proto_context_commands in
   command

@@ -33,10 +33,10 @@ let ( -- ) min max : Base_samplers.range = {min; max}
 (** This section contains preliminary definitions for building a pvm state from
     scratch. *)
 module Pvm_state_generator = struct
-  module Context = Tezos_context_memory.Context_binary
+  module Context = Mavryk_context_memory.Context_binary
 
   module Wasm_context = struct
-    type Tezos_tree_encoding.tree_instance += Tree of Context.tree
+    type Mavryk_tree_encoding.tree_instance += Tree of Context.tree
 
     module Tree = struct
       include Context.Tree
@@ -51,7 +51,7 @@ module Pvm_state_generator = struct
 
       let select = function
         | Tree t -> t
-        | _ -> raise Tezos_tree_encoding.Incorrect_tree_type
+        | _ -> raise Mavryk_tree_encoding.Incorrect_tree_type
 
       let wrap t = Tree t
     end
@@ -85,7 +85,7 @@ module Pvm_state_generator = struct
 
     let proof_encoding =
       let module Proof_encoding =
-        Tezos_context_merkle_proof_encoding.Merkle_proof_encoding
+        Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding
       in
       Proof_encoding.V2.Tree2.tree_proof_encoding
   end
@@ -95,7 +95,7 @@ module Pvm_state_generator = struct
     let destination : Contract_hash.t =
       Contract_hash.of_bytes_exn @@ Bytes.of_string contract
     in
-    let open Tezos_micheline.Micheline in
+    let open Mavryk_micheline.Micheline in
     let open Michelson_v1_primitives in
     let unparsed_parameters =
       strip_locations
@@ -182,8 +182,8 @@ module Pvm_state_generator = struct
     let*! tree = Context.Tree.add_tree tree ["wasm"] wasm_junk_tree in
     (* Create an output buffers and fill it with random batches of
        transactions. *)
-    let open Tezos_webassembly_interpreter in
-    let open Tezos_scoru_wasm in
+    let open Mavryk_webassembly_interpreter in
+    let open Mavryk_scoru_wasm in
     let module Index_Vector = Lazy_vector.Mutable.ZVector in
     let module Level_Map = Lazy_map.Mutable.LwtInt32Map in
     let output =
@@ -232,10 +232,10 @@ module Pvm_state_generator = struct
     let buffers = Eval.{input; output} in
     let buffers_encoding = Wasm_pvm.durable_buffers_encoding in
     let module Tree_encoding_runner =
-      Tezos_tree_encoding.Runner.Make (Wasm_context.Tree) in
+      Mavryk_tree_encoding.Runner.Make (Wasm_context.Tree) in
     let*! tree =
       Tree_encoding_runner.encode
-        (Tezos_tree_encoding.option buffers_encoding)
+        (Mavryk_tree_encoding.option buffers_encoding)
         (Some buffers)
         tree
     in
@@ -258,7 +258,7 @@ module Pvm_state_generator = struct
       @@ sample_in_interval ~range:(0 -- (output_buffer_size - 1)) rng_state
     in
     let*! bytes_output_message =
-      Tezos_webassembly_interpreter.Output_buffer.get_message
+      Mavryk_webassembly_interpreter.Output_buffer.get_message
         output_buffer
         {outbox_level; message_index}
     in

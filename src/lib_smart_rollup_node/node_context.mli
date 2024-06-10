@@ -280,9 +280,9 @@ val get_predecessor_header_opt :
 val get_predecessor_header :
   _ t -> Layer1.header -> Layer1.header tzresult Lwt.t
 
-(** [get_tezos_reorg_for_new_head node_ctxt old_head new_head] returns the L1
+(** [get_mavryk_reorg_for_new_head node_ctxt old_head new_head] returns the L1
     reorganization between [old_head] and [new_head]. *)
-val get_tezos_reorg_for_new_head :
+val get_mavryk_reorg_for_new_head :
   _ t ->
   [`Head of Layer1.head | `Level of int32] ->
   Layer1.head ->
@@ -362,32 +362,32 @@ val register_published_commitment :
     the rollup node's storage. *)
 val get_inbox :
   _ t ->
-  Octez_smart_rollup.Inbox.Hash.t ->
-  Octez_smart_rollup.Inbox.t tzresult Lwt.t
+  Mavkit_smart_rollup.Inbox.Hash.t ->
+  Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
 (** Same as {!get_inbox} but returns [None] if this inbox is not known. *)
 val find_inbox :
   _ t ->
-  Octez_smart_rollup.Inbox.Hash.t ->
-  Octez_smart_rollup.Inbox.t option tzresult Lwt.t
+  Mavkit_smart_rollup.Inbox.Hash.t ->
+  Mavkit_smart_rollup.Inbox.t option tzresult Lwt.t
 
 (** [save_inbox t inbox] remembers the [inbox] in the storage. It is associated
     to its hash which is returned. *)
 val save_inbox :
   rw ->
-  Octez_smart_rollup.Inbox.t ->
-  Octez_smart_rollup.Inbox.Hash.t tzresult Lwt.t
+  Mavkit_smart_rollup.Inbox.t ->
+  Mavkit_smart_rollup.Inbox.Hash.t tzresult Lwt.t
 
 (** [inbox_of_head node_ctxt block] returns the latest inbox at the given
     [block]. This function always returns [inbox] for all levels at and
     after the rollup genesis. NOTE: It requires the L2 block for [block.hash] to
     have been saved. *)
 val inbox_of_head :
-  _ t -> Layer1.head -> Octez_smart_rollup.Inbox.t tzresult Lwt.t
+  _ t -> Layer1.head -> Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
 (** Same as {!get_inbox} but uses the Layer 1 block hash for this inbox instead. *)
 val get_inbox_by_block_hash :
-  _ t -> Block_hash.t -> Octez_smart_rollup.Inbox.t tzresult Lwt.t
+  _ t -> Block_hash.t -> Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
 (** Returns messages as they are stored in the store, unsafe to use because all
     messages may not be present. Use {!Messages.get} instead.  *)

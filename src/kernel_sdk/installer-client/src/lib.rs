@@ -6,7 +6,7 @@ pub mod config;
 pub mod installer;
 pub mod preimages;
 
-use tezos_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_host::path::RefPath;
 
 // Path that we write the kernel to, before upgrading.
 pub const PREPARE_KERNEL_PATH: RefPath =

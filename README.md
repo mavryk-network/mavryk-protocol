@@ -1,4 +1,4 @@
-# Tezos Octez implementation
+# Mavryk Mavkit implementation
 
 ## Introduction
 
@@ -17,8 +17,8 @@ available at https://tezos.gitlab.io/.
 
 ## The Tezos software
 
-This repository hosts **Octez**, an implementation of the Tezos blockchain.
-Octez provides a node, a client, a baker, an accuser, and other tools, distributed with the Tezos economic protocols of Mainnet for convenience.
+This repository hosts **Mavkit**, an implementation of the Tezos blockchain.
+Mavkit provides a node, a client, a baker, an accuser, and other tools, distributed with the Tezos economic protocols of Mainnet for convenience.
 
 In more detail, this git repository contains:
 - the source code, in directory src/
@@ -36,7 +36,7 @@ online at https://tezos.gitlab.io/. This documentation is always in
 sync with the master branch which may however be slightly
 desynchronized with the code running on the live networks.
 
-The source code of Octez is placed under the [MIT Open Source
+The source code of Mavkit is placed under the [MIT Open Source
 License](https://opensource.org/licenses/MIT).
 
 ## Contributing

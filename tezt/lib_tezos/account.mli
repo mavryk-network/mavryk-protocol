@@ -77,10 +77,10 @@ type aggregate_key = {
 
     Used for regular accounts. *)
 val sign_bytes :
-  watermark:Tezos_crypto.Signature.watermark ->
+  watermark:Mavryk_crypto.Signature.watermark ->
   signer:key ->
   bytes ->
-  Tezos_crypto.Signature.t
+  Mavryk_crypto.Signature.t
 
 (** [require_unencrypted_secret_key ~__LOC__ key] returns [sk] if [key] is [Unencrypted sk], or fails. *)
 val require_unencrypted_secret_key : __LOC__:string -> secret_key -> string
@@ -94,9 +94,9 @@ val uri_of_secret_key : secret_key -> string
 (** A [Check.typ] for [secret_key] *)
 val secret_key_typ : secret_key Check.typ
 
-(** [write keys ~base_dir] writes the keys into the [octez-client]'s data
+(** [write keys ~base_dir] writes the keys into the [mavkit-client]'s data
    directory [base_dir]. This function has the same effect
-   as importing all the keys manually  via [octez-client] but is
+   as importing all the keys manually  via [mavkit-client] but is
    faster. *)
 val write : key list -> base_dir:string -> unit
 

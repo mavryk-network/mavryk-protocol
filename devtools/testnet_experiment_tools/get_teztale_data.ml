@@ -40,7 +40,7 @@
 *)
 
 open Filename.Infix
-open Tezos_clic
+open Mavryk_clic
 open Teztale_sql_queries
 module Query_map = Map.Make (Int)
 module Delegates_map = Map.Make (String)
@@ -263,7 +263,7 @@ let print_baker_nodes map =
       List.iter
         (fun delegate_address ->
           Format.printf "%s @,"
-          @@ Tezos_crypto.Signature.Public_key_hash.to_b58check delegate_address)
+          @@ Mavryk_crypto.Signature.Public_key_hash.to_b58check delegate_address)
         delegate_addresses ;
       Format.printf "@.")
     map
@@ -401,7 +401,7 @@ let baker_nodes_command db_path exp_dir path_to_delegates print_result =
     close_in in_channel ;
     return
     @@ List.map
-         Tezos_crypto.Signature.Public_key_hash.of_b58check_exn
+         Mavryk_crypto.Signature.Public_key_hash.of_b58check_exn
          Str.(split (regexp "\n") baker_addresses)
   in
   (* 5. Construct the map between baker nodes and delegate addresses *)
@@ -468,7 +468,7 @@ let experiment_dir_arg =
       else tzfail (Experiment_dir experiment_dir) )
 
 let print_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~short:'p'
     ~long:"print"
     ~doc:"If print flag is set, the result of the query will be printed."
@@ -527,7 +527,7 @@ module Custom_client_config : Client_main_run.M = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     let open Client_config in
     return (default_parsed_config_args, remaining)
@@ -538,7 +538,7 @@ module Custom_client_config : Client_main_run.M = struct
 
   let default_daily_logs_path = None
 
-  let default_media_type = Tezos_rpc_http.Media_type.Command_line.Binary
+  let default_media_type = Mavryk_rpc_http.Media_type.Command_line.Binary
 
   let other_registrations = None
 

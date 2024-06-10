@@ -64,7 +64,7 @@ open Alpha_context
           blank state, and the [MachineBuilder.Make] functor that we
           can use to derive a machine with a [build] function.
        5. We construct the [ConcreteMachine], that allows to
-          asynchronously execute scenarios against the Tezos
+          asynchronously execute scenarios against the Mavryk
           blockchain.
        6. We implement the [AbstractMachine.Make] functor, which we
           can use to construct machines that can simulate the
@@ -375,10 +375,10 @@ module type MACHINE = sig
   val reveal : Account.t -> t -> operation m
 end
 
-(** {2 Tezos Constants} *)
+(** {2 Mavryk Constants} *)
 
 let default_subsidy =
-  let open Tezos_protocol_001_PtAtLas_parameters in
+  let open Mavryk_protocol_001_PtAtLas_parameters in
   let c = Default_parameters.constants_test in
   Tez.to_mumav
   @@ Delegate.Rewards.For_RPC.reward_from_constants
@@ -881,7 +881,7 @@ module ConcreteBaseMachine :
     in
     let block_delay =
       Period.to_seconds
-        Tezos_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_001_PtAtLas_parameters.Default_parameters.constants_test
           .minimal_block_delay
       |> Int64.to_int
     in

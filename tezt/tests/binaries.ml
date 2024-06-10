@@ -44,14 +44,14 @@ let spawn_command path =
 
 let test_versions path =
   let node = Node.create [] in
-  (* We remove octez-node as it will be checked separately. It is the
+  (* We remove mavkit-node as it will be checked separately. It is the
      binary whose version we assume to be canonical. *)
   let* node_version = Node.get_version node in
   let commands =
     Base.read_file path |> String.split_on_char '\n'
     |> List.filter @@ fun str ->
        (not (String.equal str String.empty))
-       && not (String.equal str "octez-node")
+       && not (String.equal str "mavkit-node")
   in
   let loop cmd =
     Log.info
@@ -67,7 +67,7 @@ let test_versions path =
   Lwt_list.iter_s loop commands
 
 (* Test that all released binaries support the --version flag, and
-   that they report the same version value as the Octez node. *)
+   that they report the same version value as the Mavkit node. *)
 let test_released_versions () =
   Test.register
     ~__FILE__
@@ -76,7 +76,7 @@ let test_released_versions () =
   @@ fun () -> test_versions Constant.released_executables
 
 (* Test that all experimental binaries support the --version flag, and
-   that they report the same version value as the Octez node. *)
+   that they report the same version value as the Mavkit node. *)
 let test_experimental_versions () =
   Test.register
     ~__FILE__

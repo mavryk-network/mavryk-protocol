@@ -1,12 +1,12 @@
 (library
- (name tezos_time_measurement_runtime)
- (public_name tezos-time-measurement)
+ (name mavryk_time_measurement_runtime)
+ (public_name mavryk-time-measurement)
  (libraries unix
             data-encoding
-            octez-libs.event-logging
+            mavkit-libs.event-logging
             lwt)
- (instrumentation.backend (ppx tezos-time-measurement.ppx))
+ (instrumentation.backend (ppx mavryk-time-measurement.ppx))
  (flags (:standard
-          -open Tezos_event_logging
+          -open Mavryk_event_logging
           -open Data_encoding
           -open Lwt)))

@@ -13,23 +13,23 @@ use evm_execution::handler::ExecutionOutcome;
 use evm_execution::precompiles::PrecompileBTreeMap;
 use evm_execution::run_transaction;
 use primitive_types::{H160, U256};
-use tezos_data_encoding::enc::BinWriter;
-use tezos_ethereum::block::BlockConstants;
-use tezos_ethereum::transaction::TransactionHash;
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_ethereum::tx_signature::TxSignature;
-use tezos_ethereum::withdrawal::Withdrawal;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::MAX_OUTPUT_SIZE;
-use tezos_smart_rollup_encoding::contract::Contract;
-use tezos_smart_rollup_encoding::entrypoint::Entrypoint;
-use tezos_smart_rollup_encoding::michelson::ticket::{FA2_1Ticket, Ticket};
-use tezos_smart_rollup_encoding::michelson::{
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_ethereum::transaction::TransactionHash;
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_ethereum::tx_signature::TxSignature;
+use mavryk_ethereum::withdrawal::Withdrawal;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::MAX_OUTPUT_SIZE;
+use mavryk_smart_rollup_encoding::contract::Contract;
+use mavryk_smart_rollup_encoding::entrypoint::Entrypoint;
+use mavryk_smart_rollup_encoding::michelson::ticket::{FA2_1Ticket, Ticket};
+use mavryk_smart_rollup_encoding::michelson::{
     MichelsonContract, MichelsonOption, MichelsonPair,
 };
-use tezos_smart_rollup_encoding::outbox::OutboxMessage;
-use tezos_smart_rollup_encoding::outbox::OutboxMessageTransaction;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_encoding::outbox::OutboxMessage;
+use mavryk_smart_rollup_encoding::outbox::OutboxMessageTransaction;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 use crate::error::Error;
 use crate::inbox::{Deposit, Transaction, TransactionContent};
@@ -541,13 +541,13 @@ mod tests {
     use crate::{apply::Validity, tick_model::constants::MAX_TRANSACTION_GAS_LIMIT};
     use evm_execution::account_storage::{account_path, EthereumAccountStorage};
     use primitive_types::{H160, U256};
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         block::BlockConstants,
         transaction::{TransactionType, TRANSACTION_HASH_SIZE},
         tx_common::EthereumTransactionCommon,
     };
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use crate::inbox::{Transaction, TransactionContent};
 

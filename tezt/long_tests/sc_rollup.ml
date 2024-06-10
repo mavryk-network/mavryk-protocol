@@ -32,7 +32,7 @@
 
 open Base
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (*
 
@@ -50,8 +50,8 @@ let hex_encode (input : string) : string =
 
    See also [wasm_incomplete_kernel_boot_sector].
 
-   Note that this uses [Tezos_scoru_wasm.Gather_floppies.Complete_kernel], so
-   the kernel must fit into a single Tezos operation.
+   Note that this uses [Mavryk_scoru_wasm.Gather_floppies.Complete_kernel], so
+   the kernel must fit into a single Mavryk operation.
 *)
 let read_kernel name : string =
   let open Tezt.Base in
@@ -113,20 +113,20 @@ let send_message client msg =
   in
   Client.bake_for_and_wait client
 
-let with_fresh_rollup ?(kind = "arith") ~boot_sector f tezos_node tezos_client
+let with_fresh_rollup ?(kind = "arith") ~boot_sector f mavryk_node mavryk_client
     operator =
   let* sc_rollup =
     Sc_rollup_helpers.originate_sc_rollup
       ~kind
       ~boot_sector
       ~src:operator
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       Operator
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:operator
   in
   let* configuration_filename =
@@ -262,7 +262,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->
@@ -278,7 +278,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; "internal"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->

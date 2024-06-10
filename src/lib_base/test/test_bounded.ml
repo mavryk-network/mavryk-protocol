@@ -114,7 +114,7 @@ end = struct
       ty Bounded.Internal_for_tests.t -> (module S) QCheck2.Gen.t =
     let open QCheck2.Gen in
     fun (type a) (ty : a Bounded.Internal_for_tests.t) ->
-      let (module Compare : Tezos_stdlib.Compare.S with type t = a) =
+      let (module Compare : Mavryk_stdlib.Compare.S with type t = a) =
         Bounded.Internal_for_tests.compare ty
       in
       let min_value = Bounded.Internal_for_tests.min_value ty in

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_context_sigs.Context.Proof_types
+open Mavryk_context_sigs.Context.Proof_types
 
 (** [raw_context_gen] is a {!QCheck2.Gen.t} for [raw_context]. *)
 val raw_context_gen : raw_context QCheck2.Gen.t
@@ -32,7 +32,7 @@ val print_raw_context : raw_context -> string
 
 (** [merkle_proof_gen] is a {!QCheck2.Gen.t} for [Proof.tree Proof.t]. *)
 val merkle_proof_gen :
-  (tree t * Tezos_context_memory.Context.tree * string list) QCheck2.Gen.t
+  (tree t * Mavryk_context_memory.Context.tree * string list) QCheck2.Gen.t
 
 val print_merkle_proof :
-  tree t * Tezos_context_memory.Context.tree * string list -> string
+  tree t * Mavryk_context_memory.Context.tree * string list -> string

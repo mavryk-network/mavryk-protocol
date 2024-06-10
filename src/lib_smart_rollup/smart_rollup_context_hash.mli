@@ -24,4 +24,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Intfs.HASH
+include Mavryk_crypto.Intfs.HASH

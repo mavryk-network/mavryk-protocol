@@ -83,7 +83,7 @@ type global_state = {
   validation_mode : validation_mode;
   delegates : consensus_key list;
   cache : cache;
-  dal_node_rpc_ctxt : Tezos_rpc.Context.generic option;
+  dal_node_rpc_ctxt : Mavryk_rpc.Context.generic option;
 }
 
 val block_info_encoding : block_info Data_encoding.t

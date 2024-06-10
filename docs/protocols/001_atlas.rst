@@ -5,7 +5,7 @@ This page documents the changes brought by protocol Atlas with respect
 to Nairobi (see :ref:`naming_convention`).
 
 The code can be found in directory :src:`src/proto_001_PtAtLas` of the ``master``
-branch of Octez.
+branch of Mavkit.
 
 .. contents::
 
@@ -34,10 +34,10 @@ Smart Rollups
   commitment does not need to be provided in the client command. (MR :gl:`!8850`)
 
   Before::
-    ./octez-client cement commitment <commitment hash> from <src> for smart rollup <smart rollup address>
+    ./mavkit-client cement commitment <commitment hash> from <src> for smart rollup <smart rollup address>
 
   Now::
-    ./octez-client cement commitment from <src> for smart rollup <smart rollup address>
+    ./mavkit-client cement commitment from <src> for smart rollup <smart rollup address>
 
 - Enable the latest version of the WASM PVM (``2.0.0-r2``). Existing smart
   rollups will see their PVM automatically upgrade, and newly originated smart

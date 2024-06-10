@@ -46,9 +46,9 @@ let get_global_block_level = get_global_block_aux ~path:["level"]
 
 let get_global_block_num_messages = get_global_block_aux ~path:["num_messages"]
 
-let get_global_tezos_head () = make GET ["global"; "tezos_head"] Fun.id
+let get_global_mavryk_head () = make GET ["global"; "mavryk_head"] Fun.id
 
-let get_global_tezos_level () = make GET ["global"; "tezos_level"] Fun.id
+let get_global_mavryk_level () = make GET ["global"; "mavryk_level"] Fun.id
 
 type slot_header = {level : int; commitment : string; index : int}
 

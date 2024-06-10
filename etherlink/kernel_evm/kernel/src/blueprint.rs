@@ -9,11 +9,11 @@ use crate::block_in_progress::BlockInProgress;
 use crate::current_timestamp;
 use crate::inbox::{read_inbox, KernelUpgrade, Transaction};
 use rlp::{Decodable, DecoderError, Encodable};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::rlp_helpers::{self, append_timestamp, decode_timestamp};
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::rlp_helpers::{self, append_timestamp, decode_timestamp};
 
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 /// The blueprint of a block is a list of transactions.
 #[derive(PartialEq, Debug, Clone)]
@@ -207,10 +207,10 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use primitive_types::{H160, H256, U256};
     use rlp::Rlp;
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
     };
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
     fn address_from_str(s: &str) -> Option<H160> {
         let data = &hex::decode(s).unwrap();
@@ -218,7 +218,7 @@ mod tests {
     }
     fn tx_(i: u64) -> EthereumTransactionCommon {
         EthereumTransactionCommon {
-            type_: tezos_ethereum::transaction::TransactionType::Legacy,
+            type_: mavryk_ethereum::transaction::TransactionType::Legacy,
             chain_id: U256::one(),
             nonce: U256::from(i),
             max_priority_fee_per_gas: U256::from(40000000u64),

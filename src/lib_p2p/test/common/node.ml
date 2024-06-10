@@ -93,7 +93,7 @@ let msg_config : message P2p_params.message_config =
           (function BigPing l -> Some l | _ -> None)
           (fun l -> BigPing l);
       ];
-    chain_name = Distributed_db_version.Name.of_string "SANDBOXED_TEZOS";
+    chain_name = Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK";
     distributed_db_versions = Distributed_db_version.[zero; one];
   }
 
@@ -120,7 +120,7 @@ type t = {
   iteration : int ref;
   channel : (unit, unit) Process.Channel.t;
   connect_handler : (message, metadata, metadata) P2p_connect_handler.t;
-  pool : (message, metadata, metadata) Tezos_p2p.P2p_pool.t;
+  pool : (message, metadata, metadata) Mavryk_p2p.P2p_pool.t;
   watcher : P2p_connection.P2p_event.t Lwt_watcher.input;
   trigger : P2p_trigger.t;
   points : P2p_point.Id.t list;
@@ -159,7 +159,7 @@ let detach_node ?(prefix = "") ?timeout ?(min_connections : int option)
       (fun p -> not (P2p_point.Id.equal (addr, port) p))
       trusted_points
   in
-  let proof_of_work_target = Tezos_crypto.Crypto_box.make_pow_target 0. in
+  let proof_of_work_target = Mavryk_crypto.Crypto_box.make_pow_target 0. in
   let identity = P2p_identity.generate_with_pow_target_0 () in
   let private_mode = false in
   let nb_points = List.length trusted_points in

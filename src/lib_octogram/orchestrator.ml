@@ -56,7 +56,7 @@ let run_templates_and_update_vars ~vars ~agent ~res ~re ~item
 let run_job_body ~state ~agent ~re ~item ~vars_updates job_name
     (body : Uri.global_uri Job.body) =
   let agent_name = Remote_agent.name agent in
-  let starting_time = Tezos_base.Time.System.now () in
+  let starting_time = Mavryk_base.Time.System.now () in
   Log.info
     ~color:(Remote_agent.color agent)
     "[%s] %s%a"
@@ -97,7 +97,7 @@ let run_job_body ~state ~agent ~re ~item ~vars_updates job_name
         return res
   in
 
-  let ending_time = Tezos_base.Time.System.now () in
+  let ending_time = Mavryk_base.Time.System.now () in
   Log.info
     ~color:(Remote_agent.color agent)
     "[%s] ✓ %s%a (%a)"
@@ -238,7 +238,7 @@ let initialize_agent ~octogram_binary ~state agent =
       ~name:agent.name
       ~on_new_metrics_source:(fun agent_name node_name node_kind port ->
         match node_kind with
-        | Octez_node | Rollup_node ->
+        | Mavkit_node | Rollup_node ->
             let agent = Orchestrator_state.get_agent state agent_name in
             let runner = Remote_agent.runner agent in
             let addr = sf "http://%s:%d" runner.address port in

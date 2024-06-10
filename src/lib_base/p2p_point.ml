@@ -114,7 +114,7 @@ module Id = struct
     conv addr_port_id_to_string addr_port_id_of_string_exn string
 
   let rpc_arg =
-    Tezos_rpc.Arg.make
+    Mavryk_rpc.Arg.make
       ~name:"point"
       ~descr:"A network point (ipv4:port or [ipv6]:port)."
       ~destruct:of_string
@@ -146,7 +146,7 @@ module Filter = struct
   type t = Requested | Accepted | Running | Disconnected
 
   let rpc_arg =
-    Tezos_rpc.Arg.make
+    Mavryk_rpc.Arg.make
       ~name:"p2p.point.state_filter"
       ~destruct:(function
         | "requested" -> Ok Requested

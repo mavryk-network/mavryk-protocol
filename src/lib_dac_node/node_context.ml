@@ -118,7 +118,7 @@ type status = Ready of ready_ctxt | Starting
 type t = {
   mutable status : status;
   reveal_data_dir : string;
-  tezos_node_cctxt : Client_context.full;
+  mavryk_node_cctxt : Client_context.full;
   page_store : Page_store.Filesystem.t;
   node_store : Store_sigs.rw Store.Irmin_store.t;
   mode : mode;
@@ -148,7 +148,7 @@ let init config cctxt =
   {
     status = Starting;
     reveal_data_dir = Configuration.reveal_data_dir config;
-    tezos_node_cctxt = cctxt;
+    mavryk_node_cctxt = cctxt;
     page_store =
       Page_store.Filesystem.init (Configuration.reveal_data_dir config);
     node_store;
@@ -191,7 +191,7 @@ let get_ready ctxt =
 
 let get_status ctxt = ctxt.status
 
-let get_tezos_node_cctxt ctxt = ctxt.tezos_node_cctxt
+let get_mavryk_node_cctxt ctxt = ctxt.mavryk_node_cctxt
 
 let get_dac_plugin ctxt =
   let open Result_syntax in

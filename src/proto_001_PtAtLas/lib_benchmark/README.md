@@ -1,4 +1,4 @@
-# `Tezos_benchmark_alpha`
+# `Mavryk_benchmark_alpha`
 
 This library is dedicated to sampling Michelson values and in particular
 Michelson programs.

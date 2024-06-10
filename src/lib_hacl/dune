@@ -4,8 +4,8 @@
 (env (_ (env-vars (NODE_PRELOAD hacl-wasm))))
 
 (library
- (name tezos_hacl)
- (public_name octez-libs.hacl)
+ (name mavryk_hacl)
+ (public_name mavkit-libs.hacl)
  (instrumentation (backend bisect_ppx))
  (libraries
   hacl-star

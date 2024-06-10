@@ -3,13 +3,13 @@
 
 (library
  (name distributed_plonk)
- (public_name octez-libs.distributed-plonk)
+ (public_name mavkit-libs.distributed-plonk)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.aplonk
-  octez-libs.plonk.communication
-  octez-libs.plonk
-  octez-libs.plonk.plonk-test)
+  mavkit-libs.aplonk
+  mavkit-libs.plonk.communication
+  mavkit-libs.plonk
+  mavkit-libs.plonk.plonk-test)
  (preprocess (pps ppx_repr))
  (flags
   (:standard)
@@ -24,14 +24,14 @@
 (executable
  (name worker_runner)
  (libraries
-  octez-libs.distributed-plonk
-  octez-libs.plonk.distribution)
+  mavkit-libs.distributed-plonk
+  mavkit-libs.plonk.distribution)
  (modules worker_runner))
 
 (executable
  (name distribution)
  (libraries
-  octez-libs.distributed-plonk)
+  mavkit-libs.distributed-plonk)
  (flags
   (:standard)
   -open Distributed_plonk)
@@ -40,7 +40,7 @@
 (executable
  (name distribution_meta)
  (libraries
-  octez-libs.distributed-plonk)
+  mavkit-libs.distributed-plonk)
  (flags
   (:standard)
   -open Distributed_plonk)

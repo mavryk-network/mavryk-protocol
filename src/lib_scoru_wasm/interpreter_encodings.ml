@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
+open Mavryk_webassembly_interpreter
 open Data_encoding_utils
 
 let string_enum cases =

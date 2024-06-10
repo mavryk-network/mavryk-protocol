@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_error_monad.Error_monad
-open Tezos_error_monad.TzLwtreslib
+open Mavryk_error_monad.Error_monad
+open Mavryk_error_monad.TzLwtreslib
 
 module Client = struct
   module Core = Core.Client

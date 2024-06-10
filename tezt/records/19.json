@@ -141,8 +141,8 @@
     }
   },
   {
-    "file": "tezos-crypto-prop-signature",
-    "title": "tezos-crypto-prop-signature: Ed25519",
+    "file": "mavryk-crypto-prop-signature",
+    "title": "mavryk-crypto-prop-signature: Ed25519",
     "tags": [
       "alcotest"
     ],

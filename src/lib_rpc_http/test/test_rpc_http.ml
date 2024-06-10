@@ -365,7 +365,7 @@ let test_matching_with_name_resolving =
         return_unit))
 
 let test_media_type_pp_parse =
-  let open Tezos_rpc_http.Media_type.Command_line in
+  let open Mavryk_rpc_http.Media_type.Command_line in
   let inputs = [Any; Json; Binary] in
   let to_string = function
     | Any -> "Any"
@@ -398,7 +398,7 @@ let () =
   let open Qcheck2_helpers in
   Alcotest.run
     ~__FILE__
-    "tezos-rpc-http"
+    "mavryk-rpc-http"
     [
       ( "qcheck",
         qcheck_wrap

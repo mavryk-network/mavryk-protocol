@@ -14,7 +14,7 @@ In particular, this includes scripts for:
 * generate configuration code (in OCaml) to bootstrap a new network (`gen-genesis/`)
 * running quick checks as a git hook before commiting (`pre_commit/`)
 * preparing the environment for migration tests (`prepare_migration_test.ml`)
-* releasing static Octez binaries (`release/`)
+* releasing static Mavkit binaries (`release/`)
 * snapshotting protocols, linking them to the build system (`snapshot_alpha.sh`, `link_protocol.sh`, `snapshot_alpha_and_link.sh`)
 * getting baker version stats from a range of blocks (`baker-version-stats.sh`)
 * printing a dependency tree based on ocamldep output (`ocamldot.py`)
@@ -24,7 +24,7 @@ In particular, this includes scripts for:
 
 This directory also includes an example docker-compose file to run a
 node with a baker and an accuser (`docker/docker-compose-generic.yml`)
-and a minimalistic Michelson REPL built on top of `octez-client`
+and a minimalistic Michelson REPL built on top of `mavkit-client`
 (`michelson_repl.sh`).
 
 ## API

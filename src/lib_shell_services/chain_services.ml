@@ -57,7 +57,7 @@ let invalid_block_encoding =
     (obj3
        (req "block" Block_hash.encoding)
        (req "level" int32)
-       (req "errors" Tezos_rpc.Error.encoding))
+       (req "errors" Mavryk_rpc.Error.encoding))
 
 let bootstrap_encoding =
   obj2
@@ -65,73 +65,73 @@ let bootstrap_encoding =
     (req "sync_state" Chain_validator_worker_state.sync_status_encoding)
 
 module S = struct
-  let path : prefix Tezos_rpc.Path.context = Tezos_rpc.Path.open_root
+  let path : prefix Mavryk_rpc.Path.context = Mavryk_rpc.Path.open_root
 
   let chain_id =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"The chain unique identifier."
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Chain_id.encoding
-      Tezos_rpc.Path.(path / "chain_id")
+      Mavryk_rpc.Path.(path / "chain_id")
 
   (* DEPRECATED: use `chains/<CHAIN_ID>/levels/{checkpoint, savepoint,
      caboose, history_mode}` instead. *)
   let checkpoint =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "DEPRECATED: use `../levels/{checkpoint, savepoint, caboose, \
          history_mode}` instead. The current checkpoint for this chain."
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:checkpoint_encoding
-      Tezos_rpc.Path.(path / "checkpoint")
+      Mavryk_rpc.Path.(path / "checkpoint")
 
   let is_bootstrapped =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"The bootstrap status of a chain"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:bootstrap_encoding
-      Tezos_rpc.Path.(path / "is_bootstrapped")
+      Mavryk_rpc.Path.(path / "is_bootstrapped")
 
   let bootstrapped_flag_encoding =
     let open Data_encoding in
     obj1 (req "bootstrapped" bool)
 
   let force_bootstrapped =
-    Tezos_rpc.Service.patch_service
+    Mavryk_rpc.Service.patch_service
       ~description:"Forcefully set the bootstrapped flag of the node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~input:bootstrapped_flag_encoding
       ~output:unit
       path
 
   module Levels = struct
-    let path = Tezos_rpc.Path.(path / "levels")
+    let path = Mavryk_rpc.Path.(path / "levels")
 
     let checkpoint =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"The current checkpoint for this chain."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:block_descriptor_encoding
-        Tezos_rpc.Path.(path / "checkpoint")
+        Mavryk_rpc.Path.(path / "checkpoint")
 
     let savepoint =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"The current savepoint for this chain."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:block_descriptor_encoding
-        Tezos_rpc.Path.(path / "savepoint")
+        Mavryk_rpc.Path.(path / "savepoint")
 
     let caboose =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"The current caboose for this chain."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:block_descriptor_encoding
-        Tezos_rpc.Path.(path / "caboose")
+        Mavryk_rpc.Path.(path / "caboose")
   end
 
   module Blocks = struct
     let list_query =
-      let open Tezos_rpc.Query in
+      let open Mavryk_rpc.Query in
       query (fun length heads min_date ->
           object
             method length = length
@@ -145,7 +145,7 @@ module S = struct
            ~descr:
              "The requested number of predecessors to return (per request; see \
               next argument)."
-           Tezos_rpc.Arg.uint
+           Mavryk_rpc.Arg.uint
            (fun x -> x#length)
       |+ multi_field
            "head"
@@ -166,11 +166,11 @@ module S = struct
            (fun x -> x#min_date)
       |> seal
 
-    let path = Tezos_rpc.Path.(path / "blocks")
+    let path = Mavryk_rpc.Path.(path / "blocks")
 
     let list =
       let open Data_encoding in
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Lists block hashes from '<chain>', up to the last checkpoint, \
            sorted with decreasing fitness. Without arguments it returns the \
@@ -182,40 +182,40 @@ module S = struct
   end
 
   module Invalid_blocks = struct
-    let path = Tezos_rpc.Path.(path / "invalid_blocks")
+    let path = Mavryk_rpc.Path.(path / "invalid_blocks")
 
     let list =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Lists blocks that have been declared invalid along with the errors \
            that led to them being declared invalid."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:(list invalid_block_encoding)
         path
 
     let get =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"The errors that appears during the block (in)validation."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:invalid_block_encoding
-        Tezos_rpc.Path.(path /: Block_hash.rpc_arg)
+        Mavryk_rpc.Path.(path /: Block_hash.rpc_arg)
 
     let delete =
-      Tezos_rpc.Service.delete_service
-        ~description:"Remove an invalid block for the tezos storage"
-        ~query:Tezos_rpc.Query.empty
+      Mavryk_rpc.Service.delete_service
+        ~description:"Remove an invalid block for the mavryk storage"
+        ~query:Mavryk_rpc.Query.empty
         ~output:Data_encoding.empty
-        Tezos_rpc.Path.(path /: Block_hash.rpc_arg)
+        Mavryk_rpc.Path.(path /: Block_hash.rpc_arg)
   end
 end
 
 let make_call0 s ctxt chain q p =
-  let s = Tezos_rpc.Service.prefix path s in
-  Tezos_rpc.Context.make_call1 s ctxt chain q p
+  let s = Mavryk_rpc.Service.prefix path s in
+  Mavryk_rpc.Context.make_call1 s ctxt chain q p
 
 let make_call1 s ctxt chain a q p =
-  let s = Tezos_rpc.Service.prefix path s in
-  Tezos_rpc.Context.make_call2 s ctxt chain a q p
+  let s = Mavryk_rpc.Service.prefix path s in
+  Mavryk_rpc.Context.make_call2 s ctxt chain a q p
 
 let chain_id ctxt =
   let f = make_call0 S.chain_id ctxt in

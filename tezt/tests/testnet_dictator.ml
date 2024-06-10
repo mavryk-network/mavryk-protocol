@@ -89,7 +89,7 @@ let init_with_dictator ~chain_id ~protocol =
                default timestamp is one year ago. This ad-hoc case could
                be removed after 2023-01-25. *)
             (Client.At
-               (Tezos_base.Time.System.of_notation_exn "2022-01-26T15:00:00Z"))
+               (Mavryk_base.Time.System.of_notation_exn "2022-01-26T15:00:00Z"))
         )
   in
   let* node = Node.init ?patch_config [Synchronisation_threshold 0] in

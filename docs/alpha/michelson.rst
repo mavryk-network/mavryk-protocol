@@ -460,55 +460,6 @@ The complete sets of Michelson types and instructions are detailed in the
 - Instructions are also organized by `categories <https://tezos.gitlab.io/michelson-reference/#instructions-by-category>`__.
 - Each instruction is precisely defined using typing and semantic inference rules.
 
-Removed instructions and types
-------------------------------
-
-:doc:`../protocols/005_babylon` deprecated the following instructions. Because no smart
-contract used these on Mainnet before they got deprecated, they have been
-removed. The Michelson type-checker will reject any contract using them.
-
--  ``CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }``:
-   Forge a new contract from a literal.
-
-   ::
-
-      Γ ⊢ CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }
-      :: key_hash : option key_hash : bool : bool : mumav : 'g : 'S
-      ⇒ operation : address : 'S
-
-   There is a new version of this instruction, see its `documentation <https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__.
-
--  ``CREATE_ACCOUNT``: Forge an account creation operation.
-
-   ::
-
-      Γ ⊢ CREATE_ACCOUNT :: key_hash : option key_hash : bool : mumav : 'S
-      ⇒ operation : address : 'S
-
-   Takes as argument the manager, optional delegate, the delegatable flag
-   and finally the initial amount taken from the currently executed
-   contract. This instruction originates a contract with two entrypoints;
-   ``%default`` of type ``unit`` that does nothing and ``%do`` of type
-   ``lambda unit (list operation)`` that executes and returns the
-   parameter if the sender is the contract's manager.
-
--  ``STEPS_TO_QUOTA``: Push the remaining steps before the contract
-   execution must terminate.
-
-   ::
-
-      Γ ⊢ STEPS_TO_QUOTA :: 'S ⇒ nat : 'S
-
-:doc:`../protocols/016_mumbai` deprecated the following
-type. Because no smart contract used it on Mainnet before it got
-deprecated, it has been removed. The Michelson type-checker will
-reject any contract using it.
-
--  ``tx_rollup_l2_address``: An address used to identify an account in
-   a transaction rollup ledger. It is the hash of a BLS public key,
-   used to authenticate layer-2 operations to transfer tickets from
-   this account.
-
 Macros
 ------
 
@@ -1509,12 +1460,12 @@ Interactive toplevel
 
 An interactive Michelson toplevel (also known as a `REPL
 <https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop>`__)
-built on the :doc:`../user/mockup` mode of Octez client is available in
+built on the :doc:`../user/mockup` mode of Mavkit client is available in
 ``scripts/michelson_repl.sh``, the typical usage is:
 
 ::
 
-   $ octez-client --mode mockup --base-dir /tmp/mockup create mockup
+   $ mavkit-client --mode mockup --base-dir /tmp/mockup create mockup
    $ rlwrap scripts/michelson_repl.sh
    > UNIT
      { Stack_elt unit Unit }
@@ -1626,7 +1577,7 @@ data include not only a description of the action to perform but also
 the address of the multisig contract and a counter that gets
 incremented at each successful call to the contract.
 
-The multisig commands of :ref:`Octez command line client <client_manual_alpha>`
+The multisig commands of :ref:`Mavkit command line client <client_manual_alpha>`
 use this
 smart contract. Moreover, `functional correctness of this contract has
 been verified

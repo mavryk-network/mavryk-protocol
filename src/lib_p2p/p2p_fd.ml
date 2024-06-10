@@ -50,7 +50,7 @@ let () =
         | Unix.EADDRINUSE ->
             Format.fprintf
               ppf
-              "Another tezos node is probably running on this address.@;\
+              "Another mavryk node is probably running on this address.@;\
                Please choose another P2P port using --net-addr."
         | _ -> Format.fprintf ppf ""
       in

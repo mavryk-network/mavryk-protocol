@@ -72,7 +72,7 @@ let signer_simple_test =
     ~__FILE__
     ~title:"signer test"
     ~tags:["node"; "baker"; "mv1"]
-    ~uses:(fun _ -> [Constant.octez_signer])
+    ~uses:(fun _ -> [Constant.mavkit_signer])
   @@ fun protocol ->
   let* _ =
     signer_test protocol ~keys:(Account.Bootstrap.keys |> Array.to_list)
@@ -84,7 +84,7 @@ let signer_bls_test =
     ~__FILE__
     ~title:"BLS signer test"
     ~tags:["node"; "baker"; "bls"]
-    ~uses:(fun _ -> [Constant.octez_signer])
+    ~uses:(fun _ -> [Constant.mavkit_signer])
   @@ fun protocol ->
   let* _node, client = Client.init_with_protocol `Client ~protocol () in
   let* signer = Signer.init ~keys:[Constant.mv4_account] () in

@@ -29,7 +29,7 @@
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4097
    Add an interface to this module *)
 
-module StoreMaker = Irmin_pack_unix.KV (Tezos_context_encoding.Context.Conf)
+module StoreMaker = Irmin_pack_unix.KV (Mavryk_context_encoding.Context.Conf)
 include StoreMaker.Make (Irmin.Contents.String)
 
 let shard_store_dir = "shard_store"
@@ -43,7 +43,7 @@ let set ~msg store path v = set_exn store path v ~info:(fun () -> info msg)
 let remove ~msg store path = remove_exn store path ~info:(fun () -> info msg)
 
 module Value_size_hooks = struct
-  (* The [value_size] required by [Tezos_key_value_store.directory] is known when
+  (* The [value_size] required by [Mavryk_key_value_store.directory] is known when
      the daemon loads a protocol, after the store is activated. We use the closure
      [value_size_fun] to perform delayed protocol-specific parameter passing.
 

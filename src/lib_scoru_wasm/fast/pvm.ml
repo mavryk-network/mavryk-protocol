@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Make = Tezos_scoru_wasm.Wasm_pvm.Make_pvm (Vm)
+module Make = Mavryk_scoru_wasm.Wasm_pvm.Make_pvm (Vm)

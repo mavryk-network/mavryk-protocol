@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc
+open Mavryk_rpc
 
 (** This module defines subcontext type of the subdirectory and
     the way to project it from Node_context and a path prefix. *)
@@ -43,7 +43,7 @@ end
 module type PARAM_PREFIX = sig
   include PARAM
 
-  val prefix : (unit, prefix) Tezos_rpc.Path.t
+  val prefix : (unit, prefix) Mavryk_rpc.Path.t
 end
 
 (** This module is a helper to register your endpoints and
@@ -71,12 +71,12 @@ module Make_sub_directory (S : PARAM) : sig
       this function is intended for handling asynchronous contexts. *)
   val gen_register0 :
     ([< Resto.meth], 'prefix, 'prefix, 'query, 'input, 'output) Service.t ->
-    (S.subcontext -> 'query -> 'input -> 'output Tezos_rpc.Answer.t Lwt.t) ->
+    (S.subcontext -> 'query -> 'input -> 'output Mavryk_rpc.Answer.t Lwt.t) ->
     unit
 
   (** Build sub-directory with registered endpoints with respect to
       Node_context. *)
-  val build_sub_directory : S.context -> S.prefix Tezos_rpc.Directory.t
+  val build_sub_directory : S.context -> S.prefix Mavryk_rpc.Directory.t
 end
 
 (** This module is a helper to register your endpoints and
@@ -87,9 +87,9 @@ module Make_directory (S : PARAM_PREFIX) : sig
   (** Build a top-level directory from a sub-directory by prefixing it with
       {!val:prefix}. *)
   val of_subdirectory :
-    S.prefix Tezos_rpc.Directory.t -> unit Tezos_rpc.Directory.t
+    S.prefix Mavryk_rpc.Directory.t -> unit Mavryk_rpc.Directory.t
 
   (** Build top-level directory with registered endpoints with respect to
       Node_context. *)
-  val build_directory : S.context -> unit Tezos_rpc.Directory.t
+  val build_directory : S.context -> unit Mavryk_rpc.Directory.t
 end

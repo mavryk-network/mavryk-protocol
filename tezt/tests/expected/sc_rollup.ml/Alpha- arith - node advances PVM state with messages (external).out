@@ -1,5 +1,5 @@
 
-./octez-client --wait none originate smart rollup rollup from bootstrap1 of kind arith of type bytes with kernel  --burn-cap 9999999
+./mavkit-client --wait none originate smart rollup rollup from bootstrap1 of kind arith of type bytes with kernel  --burn-cap 9999999
 Node is bootstrapped.
 Estimated gas: 1930.030 units (will add 100 for safety)
 Estimated storage: 6552 bytes added (will add 20 for safety)
@@ -7,7 +7,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -34,11 +34,11 @@ This sequence of operations was run:
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 
-./octez-client rpc get '/chains/main/blocks/head/context/smart_rollups/smart_rollup/[SMART_ROLLUP_HASH]/genesis_info'
+./mavkit-client rpc get '/chains/main/blocks/head/context/smart_rollups/smart_rollup/[SMART_ROLLUP_HASH]/genesis_info'
 { "level": 2,
   "commitment_hash": "[SC_ROLLUP_COMMITMENT_HASH]" }
 
-./octez-client --wait none send smart rollup message '["1 6 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["1 6 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.597 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -46,7 +46,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -66,7 +66,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "00000007"
 
 
-./octez-client --wait none send smart rollup message '["2 8 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["2 8 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.597 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -74,7 +74,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -94,7 +94,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "0000000a"
 
 
-./octez-client --wait none send smart rollup message '["3 10 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["3 10 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -102,7 +102,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -122,7 +122,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "0000000d"
 
 
-./octez-client --wait none send smart rollup message '["4 12 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["4 12 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -130,7 +130,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -150,7 +150,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "00000010"
 
 
-./octez-client --wait none send smart rollup message '["5 14 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["5 14 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -158,7 +158,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -178,7 +178,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "00000013"
 
 
-./octez-client --wait none send smart rollup message '["6 16 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["6 16 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -186,7 +186,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -206,7 +206,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "00000016"
 
 
-./octez-client --wait none send smart rollup message '["7 18 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["7 18 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -214,7 +214,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -234,7 +234,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "00000019"
 
 
-./octez-client --wait none send smart rollup message '["8 20 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["8 20 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -242,7 +242,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -262,7 +262,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "0000001c"
 
 
-./octez-client --wait none send smart rollup message '["9 22 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["9 22 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.635 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -270,7 +270,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -290,7 +290,7 @@ GET http://127.0.0.1:[PORT]/global/block/head/state?key=vars/value
 "0000001f"
 
 
-./octez-client --wait none send smart rollup message '["10 24 + value"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["10 24 + value"]' from bootstrap2
 Node is bootstrapped.
 Estimated gas: 170.673 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -298,7 +298,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:

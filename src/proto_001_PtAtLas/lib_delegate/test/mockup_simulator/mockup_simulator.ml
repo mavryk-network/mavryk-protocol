@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 type block = {
-  rpc_context : Tezos_protocol_environment.rpc_context;
+  rpc_context : Mavryk_protocol_environment.rpc_context;
   protocol_data : Protocol.Alpha_context.Block_header.protocol_data;
   raw_protocol_data : Bytes.t;
   operations : Mockup.M.Block_services.operation list list;
@@ -58,7 +58,7 @@ type state = {
      is used to find unknown predecessors. The real node can ask about an
      unknown block and receive it on request, this is supposed to emulate
      that functionality. *)
-  ctxt_table : Tezos_protocol_environment.rpc_context Context_hash.Table.t;
+  ctxt_table : Mavryk_protocol_environment.rpc_context Context_hash.Table.t;
       (** The context table allows us to look up rpc_context by its hash. *)
   validated_blocks_pipe :
     (Block_hash.t * Block_header.t * Operation.t list list) Lwt_pipe.Unbounded.t;
@@ -159,7 +159,7 @@ end
 (** Return a series of blocks starting from the block with the given
     identifier. *)
 let locate_blocks (state : state)
-    (block : Tezos_shell_services.Block_services.block) :
+    (block : Mavryk_shell_services.Block_services.block) :
     block list tzresult Lwt.t =
   match block with
   | `Hash (hash, rel) -> (
@@ -178,7 +178,7 @@ let locate_blocks (state : state)
 
 (** Similar to [locate_blocks], but only returns the first block. *)
 let locate_block (state : state)
-    (block : Tezos_shell_services.Block_services.block) : block tzresult Lwt.t =
+    (block : Mavryk_shell_services.Block_services.block) : block tzresult Lwt.t =
   let open Lwt_result_syntax in
   let* blocks = locate_blocks state block in
   match blocks with
@@ -193,7 +193,7 @@ let live_blocks (state : state) block =
   return
     (List.fold_left
        (fun set ({rpc_context; _} : block) ->
-         let hash = rpc_context.Tezos_protocol_environment.block_hash in
+         let hash = rpc_context.Mavryk_protocol_environment.block_hash in
          Block_hash.Set.add hash set)
        (Block_hash.Set.of_list
           [state.genesis_block_true_hash; genesis_predecessor_block_hash])
@@ -279,7 +279,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         pop_until_ok ()
       in
       let shutdown () = () in
-      Tezos_rpc.Answer.{next; shutdown}
+      Mavryk_rpc.Answer.{next; shutdown}
 
     let monitor_heads () =
       let next () =
@@ -297,7 +297,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         pop_until_ok ()
       in
       let shutdown () = () in
-      Tezos_rpc.Answer.{next; shutdown}
+      Mavryk_rpc.Answer.{next; shutdown}
 
     let monitor_bootstrapped () =
       let first_run = ref true in
@@ -311,9 +311,9 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         else Lwt.return_none
       in
       let shutdown () = () in
-      Tezos_rpc.Answer.{next; shutdown}
+      Mavryk_rpc.Answer.{next; shutdown}
 
-    let protocols (block : Tezos_shell_services.Block_services.block) =
+    let protocols (block : Mavryk_shell_services.Block_services.block) =
       let* x = locate_block state block in
       let hash = x.rpc_context.block_hash in
       let is_predecessor_of_genesis =
@@ -329,7 +329,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
          it as final in that Protocol_hash.zero protocol. The same for
          predecessor of genesis, it should be in Protocol_hash.zero. *)
       return
-        Tezos_shell_services.Block_services.
+        Mavryk_shell_services.Block_services.
           {
             current_protocol =
               (if
@@ -368,7 +368,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         }
       else x.rpc_context.block_header
 
-    let raw_header (block : Tezos_shell_services.Block_services.block) :
+    let raw_header (block : Mavryk_shell_services.Block_services.block) :
         bytes tzresult Lwt.t =
       let* x = locate_block state block in
       let shell = may_lie_on_proto_level block x in
@@ -379,10 +379,10 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
       in
       return
         (Data_encoding.Binary.to_bytes_exn
-           Tezos_base.Block_header.encoding
+           Mavryk_base.Block_header.encoding
            {shell; protocol_data})
 
-    let header (block : Tezos_shell_services.Block_services.block) :
+    let header (block : Mavryk_shell_services.Block_services.block) :
         Mockup.M.Block_services.block_header tzresult Lwt.t =
       let* x = locate_block state block in
       let shell = may_lie_on_proto_level block x in
@@ -395,7 +395,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         }
 
     let resulting_context_hash
-        (block : Tezos_shell_services.Block_services.block) :
+        (block : Mavryk_shell_services.Block_services.block) :
         Context_hash.t tzresult Lwt.t =
       let* x = locate_block state block in
       return x.resulting_context_hash
@@ -525,7 +525,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
         loop ()
       in
       let shutdown () = () in
-      Tezos_rpc.Answer.{next; shutdown}
+      Mavryk_rpc.Answer.{next; shutdown}
 
     let rpc_context_callback block =
       let* x = locate_block state block in
@@ -615,7 +615,7 @@ let finalize_validation_and_application (validation_state, application_state)
   Mockup.M.Protocol.finalize_application application_state shell_header
 
 (** Apply a block to the given [rpc_context]. *)
-let reconstruct_context (rpc_context : Tezos_protocol_environment.rpc_context)
+let reconstruct_context (rpc_context : Mavryk_protocol_environment.rpc_context)
     (operations : Operation.t list list) (block_header : Block_header.t) =
   let open Lwt_result_syntax in
   let predecessor = rpc_context.block_header in
@@ -726,13 +726,13 @@ let rec process_block state block_hash (block_header : Block_header.t)
         reconstruct_context predecessor.rpc_context operations block_header
       in
       let resulting_context_hash =
-        Tezos_context_ops.Context_ops.hash
+        Mavryk_context_ops.Context_ops.hash
           ~time:block_header.shell.timestamp
           ?message
           context
       in
       let rpc_context =
-        Tezos_protocol_environment.
+        Mavryk_protocol_environment.
           {context; block_hash; block_header = block_header.shell}
       in
       let operations =
@@ -841,7 +841,7 @@ let rec listener ~(user_hooks : (module Hooks)) ~state ~broadcast_pipe =
 
 (** Create a fake node state. *)
 let create_fake_node_state ~i ~live_depth
-    ~(genesis_block : Block_header.t * Tezos_protocol_environment.rpc_context)
+    ~(genesis_block : Block_header.t * Mavryk_protocol_environment.rpc_context)
     ~global_chain_table ~broadcast_pipes =
   let open Lwt_result_syntax in
   let block_header0, rpc_context0 = genesis_block in
@@ -888,7 +888,7 @@ let create_fake_node_state ~i ~live_depth
         Context_hash.Table.of_seq
           (List.to_seq
              [
-               ( rpc_context0.Tezos_protocol_environment.block_header
+               ( rpc_context0.Mavryk_protocol_environment.block_header
                    .Block_header.context,
                  rpc_context0 );
              ]);
@@ -903,7 +903,7 @@ let create_fake_node_state ~i ~live_depth
 
 (** Start baker process. *)
 let baker_process ~(delegates : Baking_state.consensus_key list) ~base_dir
-    ~(genesis_block : Block_header.t * Tezos_protocol_environment.rpc_context)
+    ~(genesis_block : Block_header.t * Mavryk_protocol_environment.rpc_context)
     ~i ~global_chain_table ~broadcast_pipes ~(user_hooks : (module Hooks)) =
   let open Lwt_result_syntax in
   let broadcast_pipe =
@@ -934,7 +934,7 @@ let baker_process ~(delegates : Baking_state.consensus_key list) ~base_dir
     List.iter_es
       (fun ({alias; public_key; public_key_hash; secret_key_uri} :
              Baking_state.consensus_key) ->
-        let open Tezos_client_base in
+        let open Mavryk_client_base in
         let name = alias |> WithExceptions.Option.get ~loc:__LOC__ in
         let* public_key_uri = Client_keys.neuterize secret_key_uri in
         Client_keys.register_key
@@ -952,7 +952,7 @@ let baker_process ~(delegates : Baking_state.consensus_key list) ~base_dir
       checkout_fun =
         (fun hash ->
           Context_hash.Table.find state.ctxt_table hash
-          |> Option.map (fun Tezos_protocol_environment.{context; _} -> context)
+          |> Option.map (fun Mavryk_protocol_environment.{context; _} -> context)
           |> Lwt.return);
       finalize_fun = Lwt.return;
     }
@@ -1023,7 +1023,7 @@ let genesis_protocol_data (baker_sk : Signature.secret_key)
 let deduce_baker_sk
     (accounts_with_secrets :
       (Protocol.Alpha_context.Parameters.bootstrap_account
-      * Tezos_mockup_commands.Mockup_wallet.bootstrap_secret)
+      * Mavryk_mockup_commands.Mockup_wallet.bootstrap_secret)
       list) (total_accounts : int) (level : int) :
     Signature.secret_key tzresult Lwt.t =
   let open Lwt_result_syntax in
@@ -1073,7 +1073,7 @@ let make_genesis_context ~delegate_selection ~initial_seed ~round0 ~round1
   in
   let from_bootstrap_account i
       ( (account : Protocol.Alpha_context.Parameters.bootstrap_account),
-        (secret : Tezos_mockup_commands.Mockup_wallet.bootstrap_secret) ) :
+        (secret : Mavryk_mockup_commands.Mockup_wallet.bootstrap_secret) ) :
       Mockup.Parsed_account.t =
     {
       name = Format.sprintf "bootstrap%d" (i + 1);
@@ -1257,7 +1257,7 @@ let default_config =
 
 let make_baking_delegate
     ( (account : Alpha_context.Parameters.bootstrap_account),
-      (secret : Tezos_mockup_commands.Mockup_wallet.bootstrap_secret) ) :
+      (secret : Mavryk_mockup_commands.Mockup_wallet.bootstrap_secret) ) :
     Baking_state.consensus_key =
   Baking_state.
     {
@@ -1269,8 +1269,8 @@ let make_baking_delegate
 
 let run ?(config = default_config) bakers_spec =
   let open Lwt_result_syntax in
-  Tezos_client_base.Client_keys.register_signer
-    (module Tezos_signer_backends.Unencrypted) ;
+  Mavryk_client_base.Client_keys.register_signer
+    (module Mavryk_signer_backends.Unencrypted) ;
   let total_accounts =
     List.fold_left (fun acc (n, _) -> acc + n) 0 bakers_spec
   in
@@ -1286,7 +1286,7 @@ let run ?(config = default_config) bakers_spec =
        In particular, it seems that when logging is enabled the baker
        process can get cancelled without executing its Lwt finalizer. *)
     let*! () =
-      if config.debug then Tezos_base_unix.Internal_event_unix.init ()
+      if config.debug then Mavryk_base_unix.Internal_event_unix.init ()
       else Lwt.return_unit
     in
     let total_bakers = List.length bakers_spec in
@@ -1299,7 +1299,7 @@ let run ?(config = default_config) bakers_spec =
     in
     let global_chain_table = Block_hash.Table.create 10 in
     let* bootstrap_secrets =
-      Tezos_mockup_commands.Mockup_wallet.default_bootstrap_accounts
+      Mavryk_mockup_commands.Mockup_wallet.default_bootstrap_accounts
     in
     let accounts_with_secrets =
       List.combine_drop (List.take_n total_accounts accounts) bootstrap_secrets

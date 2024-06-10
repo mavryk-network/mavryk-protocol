@@ -108,7 +108,7 @@ let test_metadata_retrieval cemented_store =
 let wrap_cemented_store_test (name, f) =
   let open Lwt_result_syntax in
   let cemented_store_init f _ () =
-    let prefix_dir = "tezos_indexed_store_test_" in
+    let prefix_dir = "mavryk_indexed_store_test_" in
     Lwt_utils_unix.with_tempdir prefix_dir (fun base_dir ->
         let run f = f base_dir in
         let*! r =
@@ -147,4 +147,4 @@ let tests =
   in
   ("cemented store", test_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

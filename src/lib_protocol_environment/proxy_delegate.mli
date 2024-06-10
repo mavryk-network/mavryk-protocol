@@ -25,7 +25,7 @@
 
 (** The module that needs to be implemented for providing the delegation
     feature to {!Proxy_context}. Implementors willing to add a new backend
-    to the client's [--mode proxy] and [tezos-proxy-server] should likely
+    to the client's [--mode proxy] and [mavryk-proxy-server] should likely
     add a new implementation of this module type. *)
 module type T = sig
   (** [proxy_dir_mem key] returns whether {!proxy_get} would return a non-leaf tree. *)
@@ -33,7 +33,7 @@ module type T = sig
 
   (** [proxy_get key] returns the tree associated to [key]. *)
   val proxy_get :
-    string list -> Tezos_context_memory.Context.tree option tzresult Lwt.t
+    string list -> Mavryk_context_memory.Context.tree option tzresult Lwt.t
 
   (** [proxy_mem key] returns whether [proxy_get key] would return a leaf tree. *)
   val proxy_mem : string list -> bool tzresult Lwt.t

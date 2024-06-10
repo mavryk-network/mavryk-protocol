@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 use kernel_sequencer::sequencer_kernel_entry;
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 pub fn kernel_loop<Host: Runtime>(host: &mut Host) {
     while let Ok(Some(message)) = host.read_input() {

@@ -102,7 +102,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "014-PtKathma: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -146,8 +146,8 @@
     }
   },
   {
-    "file": "tezos-mockup",
-    "title": "tezos-mockup: mockup_args",
+    "file": "mavryk-mockup",
+    "title": "mavryk-mockup: mockup_args",
     "tags": [
       "alcotest"
     ],

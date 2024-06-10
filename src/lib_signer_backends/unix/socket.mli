@@ -25,9 +25,9 @@
 
 module Make (P : sig
   val authenticate :
-    Tezos_crypto.Signature.Public_key_hash.t list ->
+    Mavryk_crypto.Signature.Public_key_hash.t list ->
     Bytes.t ->
-    Tezos_crypto.Signature.t tzresult Lwt.t
+    Mavryk_crypto.Signature.t tzresult Lwt.t
 end) : sig
   module Unix : Client_keys.SIGNER
 

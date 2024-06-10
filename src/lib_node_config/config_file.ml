@@ -28,9 +28,9 @@ open Filename.Infix
 
 let home = try Sys.getenv "HOME" with Not_found -> "/root"
 
-let data_dir_env_name = "TEZOS_NODE_DIR"
+let data_dir_env_name = "MAVRYK_NODE_DIR"
 
-let default_data_dir = home // ".tezos-node"
+let default_data_dir = home // ".mavryk-node"
 
 let default_rpc_port = 8732
 
@@ -53,14 +53,14 @@ type blockchain_network = {
   user_activated_upgrades : User_activated.upgrades;
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   default_bootstrap_peers : string list;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
 }
 
 let make_blockchain_network ~alias ~chain_name ?old_chain_name
     ?incompatible_chain_name ~sandboxed_chain_name
     ?(user_activated_upgrades = []) ?(user_activated_protocol_overrides = [])
     ?(default_bootstrap_peers = []) ?genesis_parameters
-    ?(dal_config = Tezos_crypto_dal.Cryptobox.Config.default) genesis =
+    ?(dal_config = Mavryk_crypto_dal.Cryptobox.Config.default) genesis =
   let of_string = Distributed_db_version.Name.of_string in
   {
     alias = Some alias;
@@ -111,10 +111,10 @@ let sandbox_user_activated_upgrades = []
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
-    ~chain_name:"TEZOS_MAINNET"
-    ~old_chain_name:"TEZOS_BETANET_2018-06-30T16:07:32Z"
+    ~chain_name:"MAVRYK_MAINNET"
+    ~old_chain_name:"MAVRYK_BETANET_2018-06-30T16:07:32Z"
     ~incompatible_chain_name:"INCOMPATIBLE"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS_MAINNET"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:
       [
@@ -153,7 +153,7 @@ let sandbox_user_activated_upgrades = []
               );
             ];
       }
-    ~chain_name:"TEZOS_ITHACANET_2022-01-25T15:00:00Z"
+    ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
     ~sandboxed_chain_name:"SANDBOXED_TEZOS"
     ~user_activated_upgrades:
       [
@@ -199,7 +199,7 @@ let blockchain_network_basenet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
       [
-        (10l, "PtAtLasjh71tv2N8SDMtjajR42wTSAd9xFTvXvhDuYfRJPRLSL2");
+        (10l, "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp");
       ]
     ~default_bootstrap_peers:
       [ "" ]
@@ -306,10 +306,10 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
           ~description:
             "USE FOR TESTING PURPOSE ONLY. Configuration for the \
              data-availibility layer"
-          Tezos_crypto_dal.Cryptobox.Config.encoding
+          Mavryk_crypto_dal.Cryptobox.Config.encoding
           (* We use default config unless explicitly overridden via the config file.
              Note that such override is expected to only be used in test networks. *)
-          Tezos_crypto_dal.Cryptobox.Config.default))
+          Mavryk_crypto_dal.Cryptobox.Config.default))
 
 let builtin_blockchain_networks_with_tags =
   [
@@ -378,10 +378,10 @@ and p2p = {
   advertised_net_port : int option;
   discovery_addr : string option;
   private_mode : bool;
-  limits : Tezos_p2p_services.P2p_limits.t;
+  limits : Mavryk_p2p_services.P2p_limits.t;
   disable_mempool : bool;
   enable_testchain : bool;
-  reconnection_config : Tezos_p2p_services.Point_reconnection_config.t;
+  reconnection_config : Mavryk_p2p_services.Point_reconnection_config.t;
   disable_peer_discovery : bool;
 }
 
@@ -404,10 +404,10 @@ let default_p2p =
     advertised_net_port = None;
     discovery_addr = None;
     private_mode = false;
-    limits = Tezos_p2p_services.P2p_limits.default;
+    limits = Mavryk_p2p_services.P2p_limits.default;
     disable_mempool = false;
     enable_testchain = false;
-    reconnection_config = Tezos_p2p_services.Point_reconnection_config.default;
+    reconnection_config = Mavryk_p2p_services.Point_reconnection_config.default;
     disable_peer_discovery = false;
   }
 
@@ -501,7 +501,7 @@ let p2p =
           (opt
              "bootstrap-peers"
              ~description:
-               "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. \
+               "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. \
                 If the port is not specified, default port 9732 will be \
                 assumed."
              (list string))
@@ -540,8 +540,8 @@ let p2p =
           (dft
              "limits"
              ~description:"Network limits"
-             Tezos_p2p_services.P2p_limits.encoding
-             Tezos_p2p_services.P2p_limits.default)
+             Mavryk_p2p_services.P2p_limits.encoding
+             Mavryk_p2p_services.P2p_limits.default)
           (dft
              "disable_mempool"
              ~description:
@@ -561,7 +561,7 @@ let p2p =
                 blocks."
              bool
              default_p2p.enable_testchain)
-          (let open Tezos_p2p_services.Point_reconnection_config in
+          (let open Mavryk_p2p_services.Point_reconnection_config in
           dft
             "greylisting_config"
             ~description:
@@ -876,7 +876,7 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   in
   let peer_table_size = Option.map (fun i -> (i, i / 4 * 3)) peer_table_size in
   let unopt_list ~default = function [] -> default | l -> l in
-  let limits : Tezos_p2p_services.P2p_limits.t =
+  let limits : Mavryk_p2p_services.P2p_limits.t =
     {
       cfg.p2p.limits with
       min_connections =

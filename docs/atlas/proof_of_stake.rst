@@ -158,6 +158,7 @@ simple procedure which has as its initial state: the level, the
 level belongs, and the slot.
 
 
+.. _ps_constants:
 .. _ps_constants_atlas:
 
 Proof-of-stake parameters
@@ -193,4 +194,4 @@ The adaptive issuance experimental feature :ref:`documentation <adaptive_issuanc
 
 Other presentation of the Tezos' proof-of-stake mechanism can be
 found in the
-`Open Tezos entry <https://opentezos.com/tezos-basics/liquid-proof-of-stake/>`_.
+`Open Tezos entry <https://opentezos.com/mavryk-basics/liquid-proof-of-stake/>`_.

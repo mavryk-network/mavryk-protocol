@@ -27,7 +27,7 @@ include Services_legacy
 open Types
 
 type 'rpc service =
-  ('meth, 'prefix, 'params, 'query, 'input, 'output) Tezos_rpc.Service.service
+  ('meth, 'prefix, 'params, 'query, 'input, 'output) Mavryk_rpc.Service.service
   constraint
     'rpc =
     < meth : 'meth
@@ -45,14 +45,14 @@ let post_commitment :
     ; params : unit
     ; query : unit >
     service =
-  Tezos_rpc.Service.post_service
+  Mavryk_rpc.Service.post_service
     ~description:
       "Add a slot in the node's context if not already present. The \
        corresponding commitment is returned."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:slot_encoding
     ~output:Cryptobox.Commitment.encoding
-    Tezos_rpc.Path.(open_root / "commitments")
+    Mavryk_rpc.Path.(open_root / "commitments")
 
 let patch_commitment :
     < meth : [`PATCH]
@@ -62,12 +62,12 @@ let patch_commitment :
     ; params : unit * Cryptobox.commitment
     ; query : unit >
     service =
-  Tezos_rpc.Service.patch_service
+  Mavryk_rpc.Service.patch_service
     ~description:"Associate a commitment to a level and a slot index."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:slot_id_encoding
     ~output:Data_encoding.unit
-    Tezos_rpc.Path.(open_root / "commitments" /: Cryptobox.Commitment.rpc_arg)
+    Mavryk_rpc.Path.(open_root / "commitments" /: Cryptobox.Commitment.rpc_arg)
 
 let get_commitment_slot :
     < meth : [`GET]
@@ -77,12 +77,12 @@ let get_commitment_slot :
     ; params : unit * Cryptobox.commitment
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Retrieve the content of the slot associated with the given commitment."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:slot_encoding
-    Tezos_rpc.Path.(
+    Mavryk_rpc.Path.(
       open_root / "commitments" /: Cryptobox.Commitment.rpc_arg / "slot")
 
 let get_commitment_proof :
@@ -93,11 +93,11 @@ let get_commitment_proof :
     ; params : unit * Cryptobox.commitment
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"Compute the proof associated with a commitment."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Cryptobox.Commitment_proof.encoding
-    Tezos_rpc.Path.(
+    Mavryk_rpc.Path.(
       open_root / "commitments" /: Cryptobox.Commitment.rpc_arg / "proof")
 
 let put_commitment_shards :
@@ -108,15 +108,15 @@ let put_commitment_shards :
     ; params : unit * Cryptobox.commitment
     ; query : unit >
     service =
-  Tezos_rpc.Service.put_service
+  Mavryk_rpc.Service.put_service
     ~description:
       "Compute and save the shards of the slot associated to the given \
        commitment. If the input's flag is true, the shard proofs are also \
        computed."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:with_proof_encoding
     ~output:Data_encoding.unit
-    Tezos_rpc.Path.(
+    Mavryk_rpc.Path.(
       open_root / "commitments" /: Cryptobox.Commitment.rpc_arg / "shards")
 
 let get_commitment_by_published_level_and_index :
@@ -127,15 +127,15 @@ let get_commitment_by_published_level_and_index :
     ; params : (unit * level) * slot_index
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Return the accepted commitment associated to the given slot index and \
        published at the given level."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Cryptobox.Commitment.encoding
-    Tezos_rpc.Path.(
-      open_root / "levels" /: Tezos_rpc.Arg.int32 / "slot_indices"
-      /: Tezos_rpc.Arg.int / "commitment")
+    Mavryk_rpc.Path.(
+      open_root / "levels" /: Mavryk_rpc.Arg.int32 / "slot_indices"
+      /: Mavryk_rpc.Arg.int / "commitment")
 
 let get_commitment_headers :
     < meth : [`GET]
@@ -145,12 +145,12 @@ let get_commitment_headers :
     ; params : unit * Cryptobox.commitment
     ; query : level option * slot_index option >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Return the known headers for the slot whose commitment is given."
     ~query:slot_id_query
     ~output:(Data_encoding.list slot_header_encoding)
-    Tezos_rpc.Path.(
+    Mavryk_rpc.Path.(
       open_root / "commitments" /: Cryptobox.Commitment.rpc_arg / "headers")
 
 let get_published_level_headers :
@@ -161,11 +161,11 @@ let get_published_level_headers :
     ; params : unit * level
     ; query : header_status option >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"Return the known headers for the given published level."
     ~query:opt_header_status_query
     ~output:(Data_encoding.list slot_header_encoding)
-    Tezos_rpc.Path.(open_root / "levels" /: Tezos_rpc.Arg.int32 / "headers")
+    Mavryk_rpc.Path.(open_root / "levels" /: Mavryk_rpc.Arg.int32 / "headers")
 
 let patch_profiles :
     < meth : [`PATCH]
@@ -175,15 +175,15 @@ let patch_profiles :
     ; params : unit
     ; query : unit >
     service =
-  Tezos_rpc.Service.patch_service
+  Mavryk_rpc.Service.patch_service
     ~description:
       "Update the list of profiles tracked by the DAL node. Note that it does \
        not take the bootstrap profile as it is incompatible with other \
        profiles."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:(Data_encoding.list operator_profile_encoding)
     ~output:Data_encoding.unit
-    Tezos_rpc.Path.(open_root / "profiles")
+    Mavryk_rpc.Path.(open_root / "profiles")
 
 let get_profiles :
     < meth : [`GET]
@@ -193,50 +193,50 @@ let get_profiles :
     ; params : unit
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"Return the list of current profiles tracked by the DAL node."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:profiles_encoding
-    Tezos_rpc.Path.(open_root / "profiles")
+    Mavryk_rpc.Path.(open_root / "profiles")
 
 let get_assigned_shard_indices :
     < meth : [`GET]
     ; input : unit
     ; output : shard_index list
     ; prefix : unit
-    ; params : (unit * Tezos_crypto.Signature.public_key_hash) * level
+    ; params : (unit * Mavryk_crypto.Signature.public_key_hash) * level
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Return the shard indexes assigned to the given public key hash at the \
        given level."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Data_encoding.(list int16)
-    Tezos_rpc.Path.(
-      open_root / "profiles" /: Tezos_crypto.Signature.Public_key_hash.rpc_arg
-      / "attested_levels" /: Tezos_rpc.Arg.int32 / "assigned_shard_indices")
+    Mavryk_rpc.Path.(
+      open_root / "profiles" /: Mavryk_crypto.Signature.Public_key_hash.rpc_arg
+      / "attested_levels" /: Mavryk_rpc.Arg.int32 / "assigned_shard_indices")
 
 let get_attestable_slots :
     < meth : [`GET]
     ; input : unit
     ; output : attestable_slots
     ; prefix : unit
-    ; params : (unit * Tezos_crypto.Signature.public_key_hash) * level
+    ; params : (unit * Mavryk_crypto.Signature.public_key_hash) * level
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Return the currently attestable slots at the given attested level by \
        the given public key hash. A slot is attestable at level [l] if it is \
        published at level [l - attestation_lag] and *all* the shards assigned \
        at level [l] to the given public key hash are available in the DAL \
        node's store."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:attestable_slots_encoding
-    Tezos_rpc.Path.(
-      open_root / "profiles" /: Tezos_crypto.Signature.Public_key_hash.rpc_arg
-      / "attested_levels" /: Tezos_rpc.Arg.int32 / "attestable_slots")
+    Mavryk_rpc.Path.(
+      open_root / "profiles" /: Mavryk_crypto.Signature.Public_key_hash.rpc_arg
+      / "attested_levels" /: Mavryk_rpc.Arg.int32 / "attestable_slots")
 
 let monitor_shards :
     < meth : [`GET]
@@ -246,11 +246,11 @@ let monitor_shards :
     ; params : unit
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"Monitor put shards."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Cryptobox.Commitment.encoding
-    Tezos_rpc.Path.(open_root / "monitor_shards")
+    Mavryk_rpc.Path.(open_root / "monitor_shards")
 
 let version :
     < meth : [`GET]
@@ -260,14 +260,14 @@ let version :
     ; params : unit
     ; query : unit >
     service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"version"
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Types.Version.encoding
-    Tezos_rpc.Path.(open_root / "version")
+    Mavryk_rpc.Path.(open_root / "version")
 
 module P2P = struct
-  open Tezos_rpc.Path
+  open Mavryk_rpc.Path
 
   let open_root = open_root / "p2p"
 
@@ -279,15 +279,15 @@ module P2P = struct
       ; params : unit
       ; query : < timeout : Ptime.Span.t option > >
       service =
-    Tezos_rpc.Service.post_service
+    Mavryk_rpc.Service.post_service
       ~description:"Connect to a new peer."
       ~query:
-        (let open Tezos_rpc.Query in
+        (let open Mavryk_rpc.Query in
         query (fun timeout ->
             object
               method timeout = timeout
             end)
-        |+ opt_field "timeout" Tezos_base.Time.System.Span.rpc_arg (fun t ->
+        |+ opt_field "timeout" Mavryk_base.Time.System.Span.rpc_arg (fun t ->
                t#timeout)
         |> seal)
       ~input:P2p_point.Id.encoding
@@ -302,7 +302,7 @@ module P2P = struct
       ; params : unit * P2p_point.Id.t
       ; query : < wait : bool > >
       service =
-    Tezos_rpc.Service.delete_service
+    Mavryk_rpc.Service.delete_service
       ~description:"Disconnect from a point."
       ~query:wait_query
       ~output:Data_encoding.unit
@@ -316,7 +316,7 @@ module P2P = struct
       ; params : unit * P2p_peer.Id.t
       ; query : < wait : bool > >
       service =
-    Tezos_rpc.Service.delete_service
+    Mavryk_rpc.Service.delete_service
       ~description:"Disconnect from a peer."
       ~query:wait_query
       ~output:Data_encoding.unit
@@ -330,7 +330,7 @@ module P2P = struct
       ; params : unit
       ; query : < connected : bool > >
       service =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "By default, get the list of known points. When the 'connected' flag \
          is given, only get the connected points."
@@ -346,7 +346,7 @@ module P2P = struct
       ; params : unit
       ; query : < connected : bool > >
       service =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "By default, get the list of known points and their corresponding \
          info. When the 'connected' flag is given, then only get the connected \
@@ -371,9 +371,9 @@ module P2P = struct
         ; params : unit * P2p_point.Id.t
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get info of the requested point"
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:Data_encoding.(obj1 (req "info" P2p_point.Info.encoding))
         (open_root / "by-id" /: P2p_point.Id.rpc_arg)
   end
@@ -386,7 +386,7 @@ module P2P = struct
       ; params : unit
       ; query : < connected : bool > >
       service =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "By default, get the list of known peers. When the 'connected' flag is \
          given, then only get the connected peers."
@@ -402,7 +402,7 @@ module P2P = struct
       ; params : unit
       ; query : < connected : bool > >
       service =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Get list of known peers and their corresponding info."
       ~query:connected_query
       ~output:
@@ -424,9 +424,9 @@ module P2P = struct
         ; params : unit * P2p_peer.Id.t
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get info of the requested peer"
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:Data_encoding.(obj1 (req "info" Types.P2P.Peer.Info.encoding))
         (open_root / "by-id" /: P2p_peer.Id.rpc_arg)
   end
@@ -442,9 +442,9 @@ module P2P = struct
         ; params : unit
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get the topics this node is currently subscribed to."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:(Data_encoding.list Topic.encoding)
         (open_root / "topics")
 
@@ -456,7 +456,7 @@ module P2P = struct
         ; params : unit
         ; query : < subscribed : bool > >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Get an association list between each topic subscribed to by the \
            connected peers and the remote peers subscribed to that topic. If \
@@ -479,9 +479,9 @@ module P2P = struct
         ; params : unit
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get this node's currently active connections."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:
           Data_encoding.(
             list
@@ -498,9 +498,9 @@ module P2P = struct
         ; params : unit
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get the scores of the peers with a known score."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:
           Data_encoding.(
             list (obj2 (req "peer" Peer.encoding) (req "score" Score.encoding)))
@@ -514,9 +514,9 @@ module P2P = struct
         ; params : unit
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:"Get the backoffs of the peers with a backoff, per topic."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:
           Data_encoding.(
             list
@@ -527,7 +527,7 @@ module P2P = struct
                     (list
                        (obj2
                           (req "peer" Peer.encoding)
-                          (req "backoff" Tezos_base.Time.System.encoding))))))
+                          (req "backoff" Mavryk_base.Time.System.encoding))))))
         (open_root / "backoffs")
 
     let get_message_cache :
@@ -538,11 +538,11 @@ module P2P = struct
         ; params : unit
         ; query : unit >
         service =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Get the number of message ids in the message cache, grouped by \
            heartbeat tick and topic."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:
           Data_encoding.(
             list

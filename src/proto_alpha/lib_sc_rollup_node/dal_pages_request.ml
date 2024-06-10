@@ -142,7 +142,7 @@ let slot_pages ~dal_attestation_lag ~inbox_level node_ctxt
         ~published_level
         node_ctxt
     in
-    let index = Sc_rollup_proto_types.Dal.Slot_index.to_octez index in
+    let index = Sc_rollup_proto_types.Dal.Slot_index.to_mavkit index in
     let* processed =
       Node_context.find_slot_status node_ctxt ~confirmed_in_block_hash index
     in
@@ -177,7 +177,7 @@ let page_content ~dal_attestation_lag ~inbox_level node_ctxt page_id =
         ~published_level
         node_ctxt
     in
-    let index = Sc_rollup_proto_types.Dal.Slot_index.to_octez index in
+    let index = Sc_rollup_proto_types.Dal.Slot_index.to_mavkit index in
     let* processed =
       Node_context.find_slot_status node_ctxt ~confirmed_in_block_hash index
     in

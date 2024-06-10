@@ -44,7 +44,7 @@
    their outputs.
 
   In addition, the machine has access to effectful primitives to
-  interact with the execution environment (e.g. the Tezos
+  interact with the execution environment (e.g. the Mavryk
   node). These primitives live in the [Lwt+State+Error] monad. Hence,
   this interpreter produces a computation in the [Lwt+State+Error]
   monad.

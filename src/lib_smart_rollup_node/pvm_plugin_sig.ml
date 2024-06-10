@@ -116,7 +116,7 @@ module type S = sig
     (** [decode_durable_state enc tree] decodes a value using the encoder
         [enc] from the provided [tree] *)
     val decode_durable_state :
-      'a Tezos_tree_encoding.t -> Context.tree -> 'a Lwt.t
+      'a Mavryk_tree_encoding.t -> Context.tree -> 'a Lwt.t
 
     (** [proof_mem_tree t k] is false iff [find_tree k = None].*)
     val proof_mem_tree : Context.tree -> string list -> bool Lwt.t
@@ -137,7 +137,7 @@ module type S = sig
         If order is [`Sorted] (the default), the elements are traversed in lexicographic
         order of their keys. *)
     val proof_fold_tree :
-      ?depth:Tezos_context_sigs.Context.depth ->
+      ?depth:Mavryk_context_sigs.Context.depth ->
       Context.tree ->
       string list ->
       order:[`Sorted | `Undefined] ->

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let spawn_command ?(path = Uses.path Constant.octez_protocol_compiler) ?hooks
+let spawn_command ?(path = Uses.path Constant.mavkit_protocol_compiler) ?hooks
     arguments =
   Process.spawn path ?hooks arguments
 

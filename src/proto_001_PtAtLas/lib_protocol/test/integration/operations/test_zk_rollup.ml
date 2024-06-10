@@ -367,8 +367,8 @@ struct
   let ticket_hash ctxt ~ticketer ~zk_rollup =
     make_ticket_key
       ctxt
-      ~ty:(Tezos_micheline.Micheline.root ty)
-      ~contents:(Tezos_micheline.Micheline.root contents_expr)
+      ~ty:(Mavryk_micheline.Micheline.root ty)
+      ~contents:(Mavryk_micheline.Micheline.root contents_expr)
       ~ticketer
       zk_rollup
 

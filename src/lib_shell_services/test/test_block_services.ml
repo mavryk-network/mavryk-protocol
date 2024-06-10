@@ -31,7 +31,7 @@
     Subject:      Unit tests for [Block_services]
 *)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 let make_directory n f =
   let rec aux acc n =
@@ -55,4 +55,4 @@ let tests : (string * _) list =
 let tests = List.map (fun (s, f) -> Alcotest.test_case s `Quick f) tests
 
 let () =
-  Alcotest.run ~__FILE__ "tezos-lib-shell-services" [("block-services", tests)]
+  Alcotest.run ~__FILE__ "mavryk-lib-shell-services" [("block-services", tests)]

@@ -33,9 +33,9 @@ let unix_scheme = "unix"
 
 module Make (P : sig
   val authenticate :
-    Tezos_crypto.Signature.Public_key_hash.t list ->
+    Mavryk_crypto.Signature.Public_key_hash.t list ->
     Bytes.t ->
-    Tezos_crypto.Signature.t tzresult Lwt.t
+    Mavryk_crypto.Signature.t tzresult Lwt.t
 end) =
 struct
   open P
@@ -57,10 +57,10 @@ struct
   let maybe_authenticate pkh msg conn =
     let open Lwt_result_syntax in
     let* () =
-      Tezos_base_unix.Socket.send conn Request.encoding Request.Authorized_keys
+      Mavryk_base_unix.Socket.send conn Request.encoding Request.Authorized_keys
     in
     let* authorized_keys =
-      Tezos_base_unix.Socket.recv
+      Mavryk_base_unix.Socket.recv
         conn
         (result_encoding Authorized_keys.Response.encoding)
     in
@@ -76,11 +76,11 @@ struct
   let with_signer_operation path pkh msg request_type enc =
     let open Lwt_result_syntax in
     let f () =
-      Tezos_base_unix.Socket.with_connection path (fun conn ->
+      Mavryk_base_unix.Socket.with_connection path (fun conn ->
           let* signature = maybe_authenticate pkh msg conn in
           let req = build_request pkh msg signature request_type in
-          let* () = Tezos_base_unix.Socket.send conn Request.encoding req in
-          Tezos_base_unix.Socket.recv conn (result_encoding enc))
+          let* () = Mavryk_base_unix.Socket.send conn Request.encoding req in
+          Mavryk_base_unix.Socket.recv conn (result_encoding enc))
     in
     let rec loop n =
       let*! r = protect (fun () -> f ()) in
@@ -103,7 +103,7 @@ struct
       match watermark with
       | None -> msg
       | Some watermark ->
-          Bytes.cat (Tezos_crypto.Signature.bytes_of_watermark watermark) msg
+          Bytes.cat (Mavryk_crypto.Signature.bytes_of_watermark watermark) msg
     in
     with_signer_operation path pkh msg Sign_request Sign.Response.encoding
 
@@ -125,15 +125,15 @@ struct
 
   let supports_deterministic_nonces path pkh =
     let open Lwt_result_syntax in
-    Tezos_base_unix.Socket.with_connection path (fun conn ->
+    Mavryk_base_unix.Socket.with_connection path (fun conn ->
         let* () =
-          Tezos_base_unix.Socket.send
+          Mavryk_base_unix.Socket.send
             conn
             Request.encoding
             (Request.Supports_deterministic_nonces pkh)
         in
         let* supported =
-          Tezos_base_unix.Socket.recv
+          Mavryk_base_unix.Socket.recv
             conn
             (result_encoding Supports_deterministic_nonces.Response.encoding)
         in
@@ -141,22 +141,22 @@ struct
 
   let public_key path pkh =
     let open Lwt_result_syntax in
-    Tezos_base_unix.Socket.with_connection path (fun conn ->
+    Mavryk_base_unix.Socket.with_connection path (fun conn ->
         let* () =
-          Tezos_base_unix.Socket.send
+          Mavryk_base_unix.Socket.send
             conn
             Request.encoding
             (Request.Public_key pkh)
         in
         let encoding = result_encoding Public_key.Response.encoding in
-        let* pk = Tezos_base_unix.Socket.recv conn encoding in
+        let* pk = Mavryk_base_unix.Socket.recv conn encoding in
         Lwt.return pk)
 
   module Unix = struct
     let scheme = unix_scheme
 
     let title =
-      "Built-in tezos-signer using remote signer through hardcoded unix socket."
+      "Built-in mavryk-signer using remote signer through hardcoded unix socket."
 
     let description =
       "Valid locators are of the form\n - unix:/path/to/socket?pkh=mv1..."
@@ -169,8 +169,8 @@ struct
       match Uri.get_query_param uri "pkh" with
       | None -> error_with "Missing the query parameter: 'pkh=mv1...'"
       | Some key ->
-          let+ key = Tezos_crypto.Signature.Public_key_hash.of_b58check key in
-          (Tezos_base_unix.Socket.Unix (Uri.path uri), key)
+          let+ key = Mavryk_crypto.Signature.Public_key_hash.of_b58check key in
+          (Mavryk_base_unix.Socket.Unix (Uri.path uri), key)
 
     let parse uri = parse uri |> record_trace (Invalid_uri uri) |> Lwt.return
 
@@ -187,7 +187,7 @@ struct
     let public_key_hash uri =
       let open Lwt_result_syntax in
       let* pk = public_key uri in
-      return (Tezos_crypto.Signature.Public_key.hash pk, Some pk)
+      return (Mavryk_crypto.Signature.Public_key.hash pk, Some pk)
 
     let import_secret_key ~io:_ = public_key_hash
 
@@ -216,7 +216,7 @@ struct
     let scheme = tcp_scheme
 
     let title =
-      "Built-in tezos-signer using remote signer through hardcoded tcp socket."
+      "Built-in mavryk-signer using remote signer through hardcoded tcp socket."
 
     let description =
       "Valid locators are of the form\n - tcp://host:port/mv1..."
@@ -232,9 +232,9 @@ struct
       | Some path, Some port ->
           let pkh = Uri.path uri in
           let pkh = try String.(sub pkh 1 (length pkh - 1)) with _ -> "" in
-          let+ pkh = Tezos_crypto.Signature.Public_key_hash.of_b58check pkh in
+          let+ pkh = Mavryk_crypto.Signature.Public_key_hash.of_b58check pkh in
           let tcp_socket =
-            Tezos_base_unix.Socket.Tcp
+            Mavryk_base_unix.Socket.Tcp
               (path, string_of_int port, [Lwt_unix.AI_SOCKTYPE SOCK_STREAM])
           in
           (tcp_socket, pkh)
@@ -254,7 +254,7 @@ struct
     let public_key_hash uri =
       let open Lwt_result_syntax in
       let* pk = public_key uri in
-      return (Tezos_crypto.Signature.Public_key.hash pk, Some pk)
+      return (Mavryk_crypto.Signature.Public_key.hash pk, Some pk)
 
     let import_secret_key ~io:_ = public_key_hash
 

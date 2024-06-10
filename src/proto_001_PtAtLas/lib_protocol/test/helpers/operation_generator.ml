@@ -139,7 +139,7 @@ let gen_algo = QCheck2.Gen.oneofl Signature.algos
 
 let random_seed =
   let open QCheck2.Gen in
-  let+ str = string_size (pure Tezos_crypto.Hacl.Ed25519.sk_size) in
+  let+ str = string_size (pure Mavryk_crypto.Hacl.Ed25519.sk_size) in
   Bytes.unsafe_of_string str
 
 let random_keys =
@@ -260,10 +260,10 @@ let random_code =
 
 (** {2 Operations parameters generators} *)
 
-let random_shell : Tezos_base.Operation.shell_header QCheck2.Gen.t =
+let random_shell : Mavryk_base.Operation.shell_header QCheck2.Gen.t =
   let open QCheck2.Gen in
   let+ branch = gen_block_hash in
-  Tezos_base.Operation.{branch}
+  Mavryk_base.Operation.{branch}
 
 let gen_slot =
   let open QCheck2.Gen in
@@ -699,7 +699,7 @@ let generate_manager_operation batch_size =
 (** The default upper bound on the number of manager operations in a batch.
 
     As of December 2022, there is no batch maximal size enforced
-    anywhere in the protocol. However, the Octez Shell only accepts
+    anywhere in the protocol. However, the Mavkit Shell only accepts
     batches of at most [operations_batch_size] operations, which has a
     default value of [50] in [src/lib_shell_services/shell_limits.ml].
     The protocol tests do not necessarily have to align with this

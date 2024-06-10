@@ -2,22 +2,22 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_injector_PtAtLas)
- (package tezos-injector-001-PtAtLas)
+ (name mavkit_injector_PtAtLas)
+ (package mavryk-injector-001-PtAtLas)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  tezos-protocol-001-PtAtLas.protocol
-  octez-injector
-  octez-protocol-001-PtAtLas-libs.client
-  octez-shell-libs.client-base
-  octez-protocol-001-PtAtLas-libs.plugin)
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-injector
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.plugin)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_001_PtAtLas
-  -open Octez_injector
-  -open Tezos_client_001_PtAtLas
-  -open Tezos_client_base
-  -open Tezos_protocol_plugin_001_PtAtLas))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavkit_injector
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_base
+  -open Mavryk_protocol_plugin_001_PtAtLas))

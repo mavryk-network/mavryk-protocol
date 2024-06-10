@@ -6,21 +6,21 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.test-helpers
-  octez-shell-libs.shell-services
-  tezos_proxy_test_helpers_shell_services
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.test-helpers
+  mavkit-shell-libs.shell-services
+  mavryk_proxy_test_helpers_shell_services
   qcheck-alcotest
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
+  -open Mavkit_alcotezt)
  (modules test_block_services))
 
 (executable
@@ -33,7 +33,7 @@
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

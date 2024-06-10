@@ -118,7 +118,7 @@ let raw_encode ?(alphabet = Alphabet.default) s =
   String.make zeros zero ^ ress
 
 let raw_decode ?(alphabet = Alphabet.default) s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let slen = String.length s in
   let rec decode acc index =
     if index >= slen then return acc
@@ -147,7 +147,7 @@ let checksum s =
 let safe_encode ?alphabet s = raw_encode ?alphabet (s ^ checksum s)
 
 let safe_decode ?alphabet s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let* s = raw_decode ?alphabet s in
   let len = String.length s in
   if len < 4 then fail
@@ -172,7 +172,7 @@ type 'a encoding = {
 let prefix {prefix; _} = prefix
 
 let simple_decode ?alphabet {prefix; of_raw; _} s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let* s = safe_decode ?alphabet s in
   let* s = TzString.remove_prefix ~prefix s in
   of_raw s
@@ -252,7 +252,7 @@ struct
         enc.encoded_length
 
   let decode ?alphabet s =
-    let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+    let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
     let* s = safe_decode ?alphabet s in
     List.find_map
       (fun (Encoding {prefix; of_raw; wrap; _}) ->
@@ -350,7 +350,7 @@ module Prefix = struct
      $ ./scripts/base58_prefix.py mv1 20
      36 434591 [6L, 161L, 159L]
      $ dune utop src/lib_crypto
-     utop # Tezos_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
+     utop # Mavryk_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
      - : string * int = ("mv1", 36)
   *)
 

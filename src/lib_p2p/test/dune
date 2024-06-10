@@ -15,89 +15,89 @@
   test_p2p_maintenance)
  (instrumentation (backend bisect_ppx --bisect-sigterm))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-shell-libs.p2p
-  octez-libs.test-helpers
-  octez-libs.base-test-helpers
-  octez-libs.event-logging-test-helpers
-  octez-shell-libs.p2p_test_common
-  octez-libs.tezos-p2p-services
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-shell-libs.p2p
+  mavkit-libs.test-helpers
+  mavkit-libs.base-test-helpers
+  mavkit-libs.event-logging-test-helpers
+  mavkit-shell-libs.p2p_test_common
+  mavkit-libs.mavryk-p2p-services
   tezt-tezos
   tezt
-  octez-alcotezt
+  mavkit-alcotezt
   astring)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_p2p
-  -open Tezos_test_helpers
-  -open Tezos_base_test_helpers
-  -open Tezos_event_logging_test_helpers
-  -open Tezos_p2p_test_common
-  -open Tezos_p2p_services
-  -open Octez_alcotezt))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_p2p
+  -open Mavryk_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_event_logging_test_helpers
+  -open Mavryk_p2p_test_common
+  -open Mavryk_p2p_services
+  -open Mavkit_alcotezt))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_socket.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_pool.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_broadcast.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_io_scheduler.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_peerset.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_buffer_reader.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_banned_peers.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_node.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_connect_handler.exe})))
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (locks /locks/p2p)
  (action (run %{dep:./test_p2p_maintenance.exe})))

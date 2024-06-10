@@ -30,8 +30,8 @@ module Make_durable_program_runner
     (Durable : Durable_snapshot_util.Testable_durable_sig) =
 struct
   open Lwt_syntax
-  open Tezos_scoru_wasm_helpers.Encodings_util
-  open Tezos_scoru_wasm_helpers.Wasm_utils
+  open Mavryk_scoru_wasm_helpers.Encodings_util
+  open Mavryk_scoru_wasm_helpers.Wasm_utils
 
   let durable_exn_handler (act : unit -> 'a Lwt.t)
       (cont : ('a, exn) result -> 'b Lwt.t) =
@@ -39,13 +39,13 @@ struct
       act
       (fun res -> cont @@ Ok res)
       (fun e ->
-        Tezos_scoru_wasm_durable_snapshot.Durable.(
+        Mavryk_scoru_wasm_durable_snapshot.Durable.(
           match e with
           | Invalid_key _ | Index_too_large _ | Value_not_found | Tree_not_found
           | Out_of_bounds _ | Durable_empty | Readonly_value | IO_too_large
-          | Tezos_lazy_containers.Chunked_byte_vector.Bounds
+          | Mavryk_lazy_containers.Chunked_byte_vector.Bounds
           (* TODO: https://gitlab.com/tezos/tezos/-/issues/4958 *)
-          | Tezos_tree_encoding.Key_not_found _ ->
+          | Mavryk_tree_encoding.Key_not_found _ ->
               cont @@ Error e
           (* If it's another kind of exn:
              something went wrong, re-throw it*)
@@ -71,7 +71,7 @@ struct
   (* Create new tree with passed list of key values *)
   let initialize_tree (kvs : (key * string) list) =
     let open Lwt_syntax in
-    let open Tezos_scoru_wasm_durable_snapshot in
+    let open Mavryk_scoru_wasm_durable_snapshot in
     let ro, wo =
       List.partition
         (fun (k, _) -> Option.equal String.equal (List.hd k) (Some "readonly"))
@@ -84,7 +84,7 @@ struct
     *)
     let* init_wo = Lwt.map Durable.of_storage_exn @@ make_durable wo in
     (* Add RO keys in the tree *)
-    let* init_tezos_durable =
+    let* init_mavryk_durable =
       Lwt_list.fold_left_s
         (fun dur (k, v) ->
           Durable.set_value_exn
@@ -98,8 +98,8 @@ struct
     (* Encode tree to the irmin one *)
     let* init_tree = empty_tree () in
     Tree_encoding_runner.encode
-      Tezos_scoru_wasm_durable_snapshot.Durable.encoding
-      init_tezos_durable
+      Mavryk_scoru_wasm_durable_snapshot.Durable.encoding
+      init_mavryk_durable
       init_tree
 
   let run_testcase {inital_state; operations} =

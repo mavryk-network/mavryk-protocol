@@ -127,7 +127,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "011-PtHangz2: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -149,8 +149,8 @@
     }
   },
   {
-    "file": "tezos-stdlib",
-    "title": "tezos-stdlib: circular_buffer.fail_cases",
+    "file": "mavryk-stdlib",
+    "title": "mavryk-stdlib: circular_buffer.fail_cases",
     "tags": [
       "alcotest"
     ],

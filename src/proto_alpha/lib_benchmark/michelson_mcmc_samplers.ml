@@ -72,7 +72,7 @@ let save ~filename ~terms =
         exit 1
     | Ok res -> res
   in
-  try Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.create_file filename str
+  try Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.create_file filename str
   with exn ->
     Format.eprintf
       "Michelson_mcmc_samplers.save: create_file %s failed (%s); exiting@."
@@ -83,7 +83,7 @@ let save ~filename ~terms =
 let load ~filename =
   let open TzPervasives in
   let string =
-    try Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.read_file filename
+    try Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.read_file filename
     with exn ->
       Format.eprintf
         "Michelson_mcmc_samplers.load: read_file %s failed (%s); exiting@."

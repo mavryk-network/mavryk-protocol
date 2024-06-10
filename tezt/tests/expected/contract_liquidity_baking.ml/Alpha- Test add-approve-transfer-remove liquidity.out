@@ -1,15 +1,15 @@
 
-./octez-client --mode mockup rpc get /chains/main/blocks/head/context/liquidity_baking/cpmm_address
+./mavkit-client --mode mockup rpc get /chains/main/blocks/head/context/liquidity_baking/cpmm_address
 "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
 
-./octez-client --mode mockup get contract storage for KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5
+./mavkit-client --mode mockup get contract storage for KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5
 Pair 1
      100
      100
      "KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN"
      "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
 
-./octez-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap1 --entrypoint mintOrBurn --arg '(Pair 100000000 "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe")' --burn-cap 10
+./mavkit-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap1 --entrypoint mintOrBurn --arg '(Pair 100000000 "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe")' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 2375.517 units (will add 100 for safety)
 Estimated storage: 71 bytes added (will add 20 for safety)
@@ -17,7 +17,7 @@ Operation successfully injected in the node.
 Operation hash is 'opZSKtjf9AhrR1Vh2BowDymYPbnvLp9oDS5wA4zVECqPJXvB4tM'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for opZSKtjf9AhrR1Vh2BowDymYPbnvLp9oDS5wA4zVECqPJXvB4tM to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for opZSKtjf9AhrR1Vh2BowDymYPbnvLp9oDS5wA4zVECqPJXvB4tM to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -50,7 +50,7 @@ This sequence of operations was run:
         storage fees ........................... +ṁ0.01775
 
 
-./octez-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap1 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
+./mavkit-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap1 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 2377.220 units (will add 100 for safety)
 Estimated storage: 71 bytes added (will add 20 for safety)
@@ -58,7 +58,7 @@ Operation successfully injected in the node.
 Operation hash is 'op968yui6vHCCztECXMB24FEWbMUHed9jQkXbhL5WGM8wXJw96Q'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for op968yui6vHCCztECXMB24FEWbMUHed9jQkXbhL5WGM8wXJw96Q to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for op968yui6vHCCztECXMB24FEWbMUHed9jQkXbhL5WGM8wXJw96Q to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -92,7 +92,7 @@ This sequence of operations was run:
         storage fees ........................... +ṁ0.01775
 
 
-./octez-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap2 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
+./mavkit-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap2 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 2377.220 units (will add 100 for safety)
 Estimated storage: 71 bytes added (will add 20 for safety)
@@ -100,7 +100,7 @@ Operation successfully injected in the node.
 Operation hash is 'op8vSFsuf9xDtpELfAXrAD31oBWvx4kvW2QWoEBUKqsiADKYgZB'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for op8vSFsuf9xDtpELfAXrAD31oBWvx4kvW2QWoEBUKqsiADKYgZB to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for op8vSFsuf9xDtpELfAXrAD31oBWvx4kvW2QWoEBUKqsiADKYgZB to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -134,7 +134,7 @@ This sequence of operations was run:
         storage fees ........................... +ṁ0.01775
 
 
-./octez-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap3 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
+./mavkit-client --mode mockup call KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN from bootstrap3 --entrypoint approve --arg '(Pair "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 1000000000)' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 2377.220 units (will add 100 for safety)
 Estimated storage: 71 bytes added (will add 20 for safety)
@@ -142,7 +142,7 @@ Operation successfully injected in the node.
 Operation hash is 'opG2xrHRo7XfsfQ6ury6ArfyEJ7SbyhGtpuMS5nTuqjV78pJbh8'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for opG2xrHRo7XfsfQ6ury6ArfyEJ7SbyhGtpuMS5nTuqjV78pJbh8 to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for opG2xrHRo7XfsfQ6ury6ArfyEJ7SbyhGtpuMS5nTuqjV78pJbh8 to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -176,7 +176,7 @@ This sequence of operations was run:
         storage fees ........................... +ṁ0.01775
 
 
-./octez-client --mode mockup --wait none transfer 9001 from bootstrap1 to KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 --burn-cap 10 --entrypoint addLiquidity --arg '(Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 0 1000000000 "2050-01-01T00:00:00Z")'
+./mavkit-client --mode mockup --wait none transfer 9001 from bootstrap1 to KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 --burn-cap 10 --entrypoint addLiquidity --arg '(Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 0 1000000000 "2050-01-01T00:00:00Z")'
 Node is bootstrapped.
 Estimated gas: 9123.388 units (will add 100 for safety)
 Estimated storage: 153 bytes added (will add 20 for safety)
@@ -184,7 +184,7 @@ Operation successfully injected in the node.
 Operation hash is 'oo31zaJMpgxXBLLHcyc8B1HAr7ZWAEX5ccfw7p2aLvA4WVLfHCb'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for oo31zaJMpgxXBLLHcyc8B1HAr7ZWAEX5ccfw7p2aLvA4WVLfHCb to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for oo31zaJMpgxXBLLHcyc8B1HAr7ZWAEX5ccfw7p2aLvA4WVLfHCb to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -260,7 +260,7 @@ This sequence of operations was run:
             storage fees ........................... +ṁ0.0185
 
 
-./octez-client --mode mockup call KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo from bootstrap1 --entrypoint approve --arg '(Pair "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000)' --burn-cap 10
+./mavkit-client --mode mockup call KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo from bootstrap1 --entrypoint approve --arg '(Pair "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000)' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 2377.145 units (will add 100 for safety)
 Estimated storage: 68 bytes added (will add 20 for safety)
@@ -268,7 +268,7 @@ Operation successfully injected in the node.
 Operation hash is 'ooYXHyPzevaDEUzbyAK2oambyZUARPevhLsqjER1sbeLYaVNqK7'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for ooYXHyPzevaDEUzbyAK2oambyZUARPevhLsqjER1sbeLYaVNqK7 to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for ooYXHyPzevaDEUzbyAK2oambyZUARPevhLsqjER1sbeLYaVNqK7 to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -302,7 +302,7 @@ This sequence of operations was run:
         storage fees ........................... +ṁ0.017
 
 
-./octez-client --mode mockup call KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo from bootstrap2 --entrypoint transfer --arg '(Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000)' --burn-cap 10
+./mavkit-client --mode mockup call KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo from bootstrap2 --entrypoint transfer --arg '(Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000)' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 3742.075 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -310,7 +310,7 @@ Operation successfully injected in the node.
 Operation hash is 'opFDCmyFY1dqmtU3mhczNqHTS2sa7JCPMWVzgBm2LFUWDd4WyyR'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for opFDCmyFY1dqmtU3mhczNqHTS2sa7JCPMWVzgBm2LFUWDd4WyyR to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for opFDCmyFY1dqmtU3mhczNqHTS2sa7JCPMWVzgBm2LFUWDd4WyyR to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -344,7 +344,7 @@ This sequence of operations was run:
       Consumed gas: 3742.095
 
 
-./octez-client --mode mockup call KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 from bootstrap2 --entrypoint removeLiquidity --arg '(Pair "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000 0 0 "2050-01-01T00:00:00Z")' --burn-cap 10
+./mavkit-client --mode mockup call KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5 from bootstrap2 --entrypoint removeLiquidity --arg '(Pair "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" 1000 0 0 "2050-01-01T00:00:00Z")' --burn-cap 10
 Node is bootstrapped.
 Estimated gas: 8727.872 units (will add 100 for safety)
 Estimated storage: 67 bytes added (will add 20 for safety)
@@ -352,7 +352,7 @@ Operation successfully injected in the node.
 Operation hash is 'onghwBbFGRPSbrXPRxFFWwKU8dwG3Kvn21GmyvumDvYxAZvuwow'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for onghwBbFGRPSbrXPRxFFWwKU8dwG3Kvn21GmyvumDvYxAZvuwow to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+  mavkit-client wait for onghwBbFGRPSbrXPRxFFWwKU8dwG3Kvn21GmyvumDvYxAZvuwow to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -425,8 +425,8 @@ This sequence of operations was run:
             mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... +ṁ0.001
 
 
-./octez-client --mode mockup get contract storage for KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo
+./mavkit-client --mode mockup get contract storage for KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo
 Pair 2 3 "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" 9000999100
 
-./octez-client --mode mockup get contract storage for KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN
+./mavkit-client --mode mockup get contract storage for KT1VqarPDicMFn1ejmQqqshUkUXTCTXwmkCN
 Pair 0 1 "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" 100010000

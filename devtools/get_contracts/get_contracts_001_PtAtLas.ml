@@ -22,8 +22,8 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-open Tezos_protocol_001_PtAtLas
-open Tezos_client_001_PtAtLas
+open Mavryk_protocol_001_PtAtLas
+open Mavryk_client_001_PtAtLas
 open Protocol
 
 module Proto = struct

@@ -145,7 +145,7 @@ let test_fork =
   (* Check that the fitness of the first branch (node1) is higher than
      that of the second branch (node2) *)
   let () =
-    let open Tezos_base in
+    let open Mavryk_base in
     let fitness_typ = Check.comparable Fitness.pp Fitness.compare in
     let json_1 = JSON.(head_1 |-> "fitness") in
     let json_2 = JSON.(head_2 |-> "fitness") in

@@ -110,4 +110,4 @@ val information : t -> Worker_types.worker_information
 
 val pipeline_length : t -> int
 
-val rpc_directory : t option Tezos_rpc.Directory.t
+val rpc_directory : t option Mavryk_rpc.Directory.t

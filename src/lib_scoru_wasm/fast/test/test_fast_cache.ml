@@ -25,7 +25,7 @@
 
 (** Testing
     -------
-    Component:    Tezos_scoru_wasm_fast.Module_cache
+    Component:    Mavryk_scoru_wasm_fast.Module_cache
     Invocation:   dune exec src/lib_scoru_wasm/fast/test/main.exe -- --file test_fast_cache.ml
     Subject:      Test the cache used for Wasmer modules
 *)
@@ -48,7 +48,7 @@ module Minimal_test_input = struct
   let delete _ = ()
 end
 
-module Simple_cache = Tezos_scoru_wasm_fast.Cache.Make (Minimal_test_input)
+module Simple_cache = Mavryk_scoru_wasm_fast.Cache.Make (Minimal_test_input)
 
 (* Tests *)
 let test_add_to_empty () =
@@ -78,7 +78,7 @@ let test_replace () =
 
     let delete v = removed := v :: !removed
   end in
-  let module Cache = Tezos_scoru_wasm_fast.Cache.Make (Test_input) in
+  let module Cache = Mavryk_scoru_wasm_fast.Cache.Make (Test_input) in
   let cache = Cache.create 2 in
   Cache.replace cache 0 "zero" ;
   Assert.String.Option.equal ~loc:__LOC__ (Some "zero") (Cache.find_opt cache 0) ;
@@ -106,7 +106,7 @@ let test_add_more_than_max () =
 
     let delete v = removed := v :: !removed
   end in
-  let module Cache = Tezos_scoru_wasm_fast.Cache.Make (Test_input) in
+  let module Cache = Mavryk_scoru_wasm_fast.Cache.Make (Test_input) in
   let cache = Cache.create 2 in
   Assert.assert_false
     "value zero should not be marked as deleted"

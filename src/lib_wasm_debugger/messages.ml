@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_protocol_alpha
+open Mavryk_protocol_alpha
 open Protocol
 open Alpha_context
 
@@ -34,9 +34,9 @@ let parsed_string_encoding =
     (fun _ -> Stdlib.failwith "This value is not supposed to be encoded")
     (fun s ->
       let parsed, _ =
-        Tezos_client_alpha.Michelson_v1_parser.parse_expression s
+        Mavryk_client_alpha.Michelson_v1_parser.parse_expression s
       in
-      parsed.Tezos_client_alpha.Michelson_v1_parser.expanded)
+      parsed.Mavryk_client_alpha.Michelson_v1_parser.expanded)
     Data_encoding.string
 
 (* [input_encoding default_sender default_source default_destination] is an
@@ -62,7 +62,7 @@ let input_encoding default_sender default_source default_destination :
            (dft "sender" Contract_hash.encoding default_sender)
            (dft
               "source"
-              Tezos_crypto.Signature.Public_key_hash.encoding
+              Mavryk_crypto.Signature.Public_key_hash.encoding
               default_source)
            (dft
               "destination"
@@ -173,8 +173,8 @@ let pp_input ppf bytes =
 let compare_input_buffer_messages i1 i2 =
   let cmp_lvl =
     Int32.compare
-      i1.Tezos_webassembly_interpreter.Input_buffer.raw_level
-      i2.Tezos_webassembly_interpreter.Input_buffer.raw_level
+      i1.Mavryk_webassembly_interpreter.Input_buffer.raw_level
+      i2.Mavryk_webassembly_interpreter.Input_buffer.raw_level
   in
   if cmp_lvl = 0 then Z.compare i1.message_counter i2.message_counter
   else cmp_lvl

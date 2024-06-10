@@ -23,17 +23,17 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Instance of [Tezos_client_base.Client_context] that only handles IOs and
+(** Instance of [Mavryk_client_base.Client_context] that only handles IOs and
     RPCs. Can be used for keys and RPCs related commands. *)
 class type cctxt =
   object
-    inherit Tezos_rpc.Context.generic
+    inherit Mavryk_rpc.Context.generic
   end
 
 (** Instance of [cctxt] for linux systems. Relies on
-    [Tezos_rpc_http_client_unix]. *)
+    [Mavryk_rpc_http_client_unix]. *)
 class unix_cctxt :
-  rpc_config:Tezos_rpc_http_client_unix.RPC_client_unix.config -> cctxt
+  rpc_config:Mavryk_rpc_http_client_unix.RPC_client_unix.config -> cctxt
 
 (** [make_unix_client_context scheme host port] generates a cctxt from
     the client configuration parameters. *)
@@ -43,7 +43,7 @@ val make_unix_cctxt : scheme:string -> host:string -> port:int -> cctxt
 val of_uri : Uri.t -> cctxt
 
 (** [V0] is a module that provides a client specification for interacting with
-    experimental [Tezos_lib_dac.Rpc_services.Api.V0] API. Note that even though
+    experimental [Mavryk_lib_dac.Rpc_services.Api.V0] API. Note that even though
     [V0] api is binding, it is already deprecated. Use it at your own risk! *)
 module V0 : sig
   (** [get_preimage cctxt ~hash] requests the preimage of hash, consisting of a
@@ -77,7 +77,7 @@ module V0 : sig
   val monitor_certificate :
     #cctxt ->
     root_hash:Dac_plugin.raw_hash ->
-    (Certificate_repr.t Lwt_stream.t * Tezos_rpc.Context.stopper) tzresult Lwt.t
+    (Certificate_repr.t Lwt_stream.t * Mavryk_rpc.Context.stopper) tzresult Lwt.t
 
   module Coordinator : sig
     (** [post_preimage cctxt ~payload] sends a [payload] to the DAC

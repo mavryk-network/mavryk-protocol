@@ -14,7 +14,7 @@ those available to end-users on Tezos Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<tezos-protocol-001-PtAtLas/Tezos_raw_protocol_001_PtAtLas/Operation_repr/index.html>`.
+<mavryk-protocol-001-PtAtLas/Mavryk_raw_protocol_001_PtAtLas/Operation_repr/index.html>`.
 
 .. _validation_passes_atlas:
 
@@ -264,12 +264,12 @@ The ``Failing_noop`` operation is not executable in the protocol:
 Rather, the ``Failing_noop`` operation allows
 to sign an arbitrary string, without introducing an operation that could be misinterpreted in the protocol.
 
-The Octez client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
+The Mavkit client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
 operation from the message that is being signed or checked.
 
 ::
 
-   octez-client sign message "hello world" for <account>
+   mavkit-client sign message "hello world" for <account>
 
-   octez-client check that message "hello world" was signed by <account> to
+   mavkit-client check that message "hello world" was signed by <account> to
    produce <signature>

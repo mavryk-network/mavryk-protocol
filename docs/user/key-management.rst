@@ -3,12 +3,12 @@ Key Management
 
 Securely managing keys is of utmost importance in any blockchain, including Tezos, because keys are used to sign sensitive operations such as transfers of valuable assets (tez, FA tokens, tickets, ...) or baking operations.
 
-The Octez tool suite offers several solutions to store your private keys safely and use them securely for signing operations.
+The Mavkit tool suite offers several solutions to store your private keys safely and use them securely for signing operations.
 However, these solutions are **not** enabled by default, so you have to turn them on, as explained in this tutorial.
 
 Indeed, by default:
 
-- Private keys are stored unencrypted in file ``$OCTEZ_CLIENT_DIR/secret_keys``.
+- Private keys are stored unencrypted in file ``$MAVKIT_CLIENT_DIR/secret_keys``.
 - The client uses these keys to sign user operations (e.g. transfers) by itself.
 - The baker daemon uses these keys to automatically sign its operations (e.g. (pre-)attestations).
 
@@ -36,7 +36,7 @@ Ledger support
 --------------
 
 It is possible and advised to use a hardware wallet to securely store and manage your
-keys. The Octez client supports Ledger Nano devices provided that they have
+keys. The Mavkit client supports Ledger Nano devices provided that they have
 a Tezos app installed.
 The apps were developed by `Obsidian Systems <https://obsidian.systems>`_ and they provide a comprehensive
 `tutorial on how to install it.
@@ -58,22 +58,22 @@ device.
 Tezos Wallet app
 ~~~~~~~~~~~~~~~~
 
-Now on the Octez client we can import the keys (make sure the device is
+Now on the Mavkit client we can import the keys (make sure the device is
 in the Tezos Wallet app)::
 
-   ./octez-client list connected ledgers
+   ./mavkit-client list connected ledgers
 
 This will display some instructions to import the Ledger encrypted private key, and
 you can choose between the root or a derived address.
 We can follow the instructions and then confirm the addition by listing known addresses::
 
-   ./octez-client import secret key my_ledger ledger://XXXXXXXXXX
-   ./octez-client list known addresses
+   ./mavkit-client import secret key my_ledger ledger://XXXXXXXXXX
+   ./mavkit-client list known addresses
 
 Optional: we can check that our Ledger signs correctly using the
 following command and confirming on the device::
 
-   octez-client show ledger ledger://XXXXXXXXXX --test-sign
+   mavkit-client show ledger ledger://XXXXXXXXXX --test-sign
 
 The address can now be used as any other with the exception that
 during an operation the device will prompt you to confirm when it's
@@ -95,7 +95,7 @@ block signed.
 If you have tried the app on some network and want to
 use it on another network you might need to reset this level with the command::
 
-   octez-client setup ledger to bake for my_ledger
+   mavkit-client setup ledger to bake for my_ledger
 
 More details can be found on the `Tezos Ledger app
 <https://github.com/obsidiansystems/ledger-app-tezos>`_.
@@ -109,20 +109,20 @@ A solution to decouple the client and the baker from the signing process is to
 use a *remote signer*.
 
 In this configuration, the client sends signing requests over a
-communication channel towards ``octez-signer``, which can run on a
+communication channel towards ``mavkit-signer``, which can run on a
 different machine that stores the secret key.
 
 There are several *signing schemes* supported by the client, corresponding to different communication channels, such as ``unix``,
 ``tcp``, ``http`` and ``https``. We can list the available schemes with::
 
-   octez-client list signing schemes
+   mavkit-client list signing schemes
 
 We now explain how this remote signer configuration works based on signing requests, how can it be set up, and how the connection to the signer can be secured (as by default it is not secure).
 
 Signer requests
 ~~~~~~~~~~~~~~~
 
-The ``octez-signer`` handles signing requests with the following format::
+The ``mavkit-signer`` handles signing requests with the following format::
 
     <magic_byte><data>
 
@@ -130,7 +130,7 @@ In the case of blocks or consensus operations for example, this format is instan
 
     <magic_byte><chain_id><block|consensus_operation>
 
-Starting with Octez v12 (supporting the Ithaca protocol), consensus operations also include :ref:`preattestations <quorum>`. The magic byte distinguishes pre-Ithaca messages from (post-)Ithaca messages, as follows:
+Starting with Mavkit v12 (supporting the Ithaca protocol), consensus operations also include :ref:`preattestations <quorum>`. The magic byte distinguishes pre-Ithaca messages from (post-)Ithaca messages, as follows:
 
 .. list-table::
    :widths: 55 25
@@ -163,21 +163,21 @@ Signer configuration
 In our home server we can generate a new key pair (or import one from a
 :ref:`Ledger<ledger>`) and launch a signer that signs operations using these
 keys.
-To select the ``tcp`` signing scheme, one has to launch ``octez-signer`` with the ``socket`` argument, as shown below.
-The new keys are stored by the signer in ``$HOME/.octez-signer`` in the same format
-as ``octez-client``.
+To select the ``tcp`` signing scheme, one has to launch ``mavkit-signer`` with the ``socket`` argument, as shown below.
+The new keys are stored by the signer in ``$HOME/.mavkit-signer`` in the same format
+as ``mavkit-client``.
 On our internet-facing virtual private server, called "vps" here, we can then import a key with the address
 of the signer.
 
 ::
 
-   home~$ octez-signer gen keys alice
-   home~$ cat ~/.octez-signer/public_key_hashs
+   home~$ mavkit-signer gen keys alice
+   home~$ cat ~/.mavkit-signer/public_key_hashs
    [ { "name": "alice", "value": "mv1abc..." } ]
-   home~$ octez-signer launch socket signer -a home
+   home~$ mavkit-signer launch socket signer -a home
 
-   vps~$ octez-client import secret key alice tcp://home:7732/mv1abc...
-   vps~$ octez-client sign bytes 0x03 for alice
+   vps~$ mavkit-client import secret key alice tcp://home:7732/mv1abc...
+   vps~$ mavkit-client sign bytes 0x03 for alice
 
 Every time the client on *vps* needs to sign an operation for
 *alice*, it sends a signature request to the remote signer on
@@ -187,41 +187,41 @@ However, with the above method, the address of the signer is hard-coded into the
 Consequently, if we ever have to move the signer to another machine or access it using another protocol, we will have to change all the remote keys.
 A more flexible method is to only register a key as being remote, and separately supply the address of the signer using the ``-R`` option::
 
-   vps~$ octez-client -R 'tcp://home:7732' import secret key alice remote:mv1abc...
-   vps~$ octez-client -R 'tcp://home:7732' sign bytes 0x03 for alice
+   vps~$ mavkit-client -R 'tcp://home:7732' import secret key alice remote:mv1abc...
+   vps~$ mavkit-client -R 'tcp://home:7732' sign bytes 0x03 for alice
 
 Alternatively, the address of the signer can be recorded in environment variables::
 
-   vps~$ export TEZOS_SIGNER_TCP_HOST=home
-   vps~$ export TEZOS_SIGNER_TCP_PORT=7732
-   vps~$ octez-client import secret key alice remote:mv1abc...
-   vps~$ octez-client sign bytes 0x03 for alice
+   vps~$ export MAVRYK_SIGNER_TCP_HOST=home
+   vps~$ export MAVRYK_SIGNER_TCP_PORT=7732
+   vps~$ mavkit-client import secret key alice remote:mv1abc...
+   vps~$ mavkit-client sign bytes 0x03 for alice
 
 All the above methods can also be used with the other signing schemes, for instance, ``http``::
 
-   home~$ octez-signer launch http signer -a home
+   home~$ mavkit-signer launch http signer -a home
 
-   vps~$ octez-client import secret key alice http://home:7732/mv1abc...
-   vps~$ octez-client sign bytes 0x03 for alice
+   vps~$ mavkit-client import secret key alice http://home:7732/mv1abc...
+   vps~$ mavkit-client sign bytes 0x03 for alice
 
-   vps~$ octez-client -R 'http://home:7732' import secret key alice remote:mv1abc...
-   vps~$ octez-client -R 'http://home:7732' sign bytes 0x03 for alice
+   vps~$ mavkit-client -R 'http://home:7732' import secret key alice remote:mv1abc...
+   vps~$ mavkit-client -R 'http://home:7732' sign bytes 0x03 for alice
 
-   vps~$ export TEZOS_SIGNER_HTTP_HOST=home
-   vps~$ export TEZOS_SIGNER_HTTP_PORT=7732
-   vps~$ octez-client import secret key alice remote:mv1abc...
-   vps~$ octez-client sign bytes 0x03 for alice
+   vps~$ export MAVRYK_SIGNER_HTTP_HOST=home
+   vps~$ export MAVRYK_SIGNER_HTTP_PORT=7732
+   vps~$ mavkit-client import secret key alice remote:mv1abc...
+   vps~$ mavkit-client sign bytes 0x03 for alice
 
 The complete list of environment variables for connecting to the remote signer is:
 
-+ ``TEZOS_SIGNER_TCP_HOST``
-+ ``TEZOS_SIGNER_TCP_PORT`` (default: 7732)
-+ ``TEZOS_SIGNER_HTTP_HOST``
-+ ``TEZOS_SIGNER_HTTP_PORT`` (default: 6732)
-+ ``TEZOS_SIGNER_HTTPS_HOST``
-+ ``TEZOS_SIGNER_HTTPS_PORT`` (default: 443)
-+ ``TEZOS_SIGNER_UNIX_PATH``
-+ ``TEZOS_SIGNER_HTTP_HEADERS``
++ ``MAVRYK_SIGNER_TCP_HOST``
++ ``MAVRYK_SIGNER_TCP_PORT`` (default: 7732)
++ ``MAVRYK_SIGNER_HTTP_HOST``
++ ``MAVRYK_SIGNER_HTTP_PORT`` (default: 6732)
++ ``MAVRYK_SIGNER_HTTPS_HOST``
++ ``MAVRYK_SIGNER_HTTPS_PORT`` (default: 443)
++ ``MAVRYK_SIGNER_UNIX_PATH``
++ ``MAVRYK_SIGNER_HTTP_HEADERS``
 
 Secure the connection
 ~~~~~~~~~~~~~~~~~~~~~
@@ -239,20 +239,20 @@ client to authenticate before signing any operation.
 
 First we create a new key on the *vps* and then import it as an
 authorized key on *home* where it is stored under
-``.octez-signer/authorized_keys`` (similarly to ``ssh``).
+``.mavkit-signer/authorized_keys`` (similarly to ``ssh``).
 Note that this key is only used to authenticate the client to the
 signer and it is not used as a Tezos account.
 
 ::
 
-   vps~$ octez-client gen keys vps
-   vps~$ cat ~/.tezos-client/public_keys
+   vps~$ mavkit-client gen keys vps
+   vps~$ cat ~/.mavryk-client/public_keys
    [ { "name": "vps",
        "value":
           "unencrypted:edpk123456789" } ]
 
-   home~$ octez-signer add authorized key edpk123456789 --name vps
-   home~$ octez-signer --require-authentication launch socket signer -a home-ip
+   home~$ mavkit-signer add authorized key edpk123456789 --name vps
+   home~$ mavkit-signer --require-authentication launch socket signer -a home-ip
 
 All request are now signed with the *vps* key, guaranteeing
 their authenticity and integrity.
@@ -264,10 +264,6 @@ In order to avoid that, you can use the ``https`` scheme or a tunnel to encrypt 
 
 Consensus Key
 -------------
-
-.. note::
-
-   The "consensus key" feature is available starting with the Tezos :doc:`Lima<../protocols/015_lima>` protocol.
 
 By default, the baker's key, also called manager key, is used to sign in the consensus protocol, i.e. signing blocks while baking,
 and signing consensus operations (preattestations and attestations).
@@ -293,11 +289,11 @@ The operation is signed by the manager key and does not require the consensus pr
 
 However the public key must be known by the client. It can be imported with the command::
 
-   octez-client import public key consensus unencrypted:edpk...
+   mavkit-client import public key consensus unencrypted:edpk...
 
 The command to update the consensus key is::
 
-   octez-client set consensus key for <mgr> to consensus
+   mavkit-client set consensus key for <mgr> to consensus
 
 The update becomes active after ``PRESERVED_CYCLES + 1`` cycles. We therefore distinguish
 the active consensus key and the pending consensus keys.
@@ -305,7 +301,7 @@ The active consensus key is by default the delegate’s manager key, which canno
 
 However, it is also possible to register as a delegate and immediately set the consensus key::
 
-   octez-client register key <mgr> as delegate with consensus key <key>
+   mavkit-client register key <mgr> as delegate with consensus key <key>
 
 There can be multiple pending updates: it is possible to have multiple pending consensus keys for multiple future cycles.
 A subsequent update within the same cycle takes precedences over the initial one.
@@ -315,23 +311,23 @@ Baking With a Consensus Key
 
 In your baker's command, replace the delegate's manager key alias with the consenus key alias::
 
-   octez-baker-Ptxxxxxx run with local node ~/.tezos-node <consensus_key_alias> --liquidity-baking-toggle-vote pass
+   mavkit-baker-Ptxxxxxx run with local node ~/.mavryk-node <consensus_key_alias> --liquidity-baking-toggle-vote pass
 
 While transitioning from the delegate's manager key, it is possible to pass the alias for both delegate's manager key and consensus key.
 The delegate will seamlessly keep baking when the transition happens::
 
-   octez-baker-Ptxxxxxx run with local node ~/.tezos-node <consensus_key_alias> <delegate_key_alias> --liquidity-baking-toggle-vote pass
+   mavkit-baker-Ptxxxxxx run with local node ~/.mavryk-node <consensus_key_alias> <delegate_key_alias> --liquidity-baking-toggle-vote pass
 
 Draining a Manager's Account With its Consensus Key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This operation immediately transfers all the spendable balance of the ``baker_pkh``’s implicit account into the ``destination_pkh`` implicit account::
 
-   octez-client drain delegate <baker_pkh> to <destination_pkh> with <consensus_pkh>
+   mavkit-client drain delegate <baker_pkh> to <destination_pkh> with <consensus_pkh>
 
 If the destination is the consensus key account, this can be simplified to::
 
-   octez-client drain delegate <baker_pkh> to <consensus_pkh>
+   mavkit-client drain delegate <baker_pkh> to <consensus_pkh>
 
 The active consensus key is the signer for this operation, therefore the private key associated to the consensus key must be available
 in the wallet of the client typing the command. The delegate's private key does not need to be present.
@@ -352,7 +348,7 @@ This feature is also included in some wallets.
 If you have any questions or issues, refer to that page or to the `Tezos
 Foundation <https://tezos.foundation/>`_ for support.
 
-You may also use ``octez-client`` to activate your account, but **be
+You may also use ``mavkit-client`` to activate your account, but **be
 warned that you should have
 a very good understanding of key management in Tezos and be familiar
 with the command-line.**
@@ -365,7 +361,7 @@ command which will ask for:
 
 ::
 
-   octez-client import fundraiser key alice
+   mavkit-client import fundraiser key alice
 
 Once you insert all the required information, the client computes
 your secret key and it asks you to create a new password in order to store your
@@ -377,13 +373,13 @@ foundation.
 
 ::
 
-   octez-client activate fundraiser account alice with <code>
+   mavkit-client activate fundraiser account alice with <code>
 
 Check the balance with::
 
-   octez-client get balance for alice
+   mavkit-client get balance for alice
 
-As explained above, your keys are stored under ``~/.tezos-client``.
+As explained above, your keys are stored under ``~/.mavryk-client``.
 We strongly advise you to first **make a backup** and then
 transfer your tokens to a new pair of keys imported from a Ledger (see
 :ref:`ledger`).

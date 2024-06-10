@@ -3,30 +3,30 @@
 
 (executable
  (name main)
- (public_name octez-node)
- (package octez-node)
+ (public_name mavkit-node)
+ (package mavkit-node)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.version
-  octez-version.value
-  octez-node-config
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-services
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-rpc-process
-  octez-shell-libs.p2p
-  octez-shell-libs.shell
-  octez-shell-libs.store
-  octez-shell-libs.store.unix-reconstruction
-  octez-shell-libs.store.unix-snapshots
-  octez-libs.tezos-context
-  octez-shell-libs.validation
-  octez-shell-libs.shell-context
-  octez-libs.tezos-workers
-  octez-shell-libs.protocol-updater
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.version
+  mavkit-version.value
+  mavkit-node-config
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-services
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-rpc-process
+  mavkit-shell-libs.p2p
+  mavkit-shell-libs.shell
+  mavkit-shell-libs.store
+  mavkit-shell-libs.store.unix-reconstruction
+  mavkit-shell-libs.store.unix-snapshots
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.shell-context
+  mavkit-libs.tezos-workers
+  mavkit-shell-libs.protocol-updater
   cmdliner
   fmt.cli
   fmt.tty
@@ -34,25 +34,25 @@
   prometheus-app.unix
   lwt-exit
   uri
-  octez-libs.base.p2p-identity-file
-  (select void_for_linking-tezos-protocol-genesis-embedded-protocol from
-   (tezos-protocol-genesis.embedded-protocol -> void_for_linking-tezos-protocol-genesis-embedded-protocol.empty)
-   (-> void_for_linking-tezos-protocol-genesis-embedded-protocol.empty))
-  (select void_for_linking-tezos-protocol-demo-noops-embedded-protocol from
-   (tezos-protocol-demo-noops.embedded-protocol -> void_for_linking-tezos-protocol-demo-noops-embedded-protocol.empty)
-   (-> void_for_linking-tezos-protocol-demo-noops-embedded-protocol.empty))
-  (select void_for_linking-tezos-protocol-demo-counter-embedded-protocol from
-   (tezos-protocol-demo-counter.embedded-protocol -> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty)
-   (-> void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty))
-  tezos-protocol-000-Ps9mPmXa.embedded-protocol
-  tezos-protocol-001-PtAtLas.embedded-protocol
-  octez-protocol-001-PtAtLas-libs.plugin-registerer
-  (select void_for_linking-tezos-protocol-alpha-embedded-protocol from
-   (tezos-protocol-alpha.embedded-protocol -> void_for_linking-tezos-protocol-alpha-embedded-protocol.empty)
-   (-> void_for_linking-tezos-protocol-alpha-embedded-protocol.empty))
-  (select void_for_linking-octez-protocol-alpha-libs-plugin-registerer from
-   (octez-protocol-alpha-libs.plugin-registerer -> void_for_linking-octez-protocol-alpha-libs-plugin-registerer.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-plugin-registerer.empty)))
+  mavkit-libs.base.p2p-identity-file
+  (select void_for_linking-mavryk-protocol-genesis-embedded-protocol from
+   (mavryk-protocol-genesis.embedded-protocol -> void_for_linking-mavryk-protocol-genesis-embedded-protocol.empty)
+   (-> void_for_linking-mavryk-protocol-genesis-embedded-protocol.empty))
+  (select void_for_linking-mavryk-protocol-demo-noops-embedded-protocol from
+   (mavryk-protocol-demo-noops.embedded-protocol -> void_for_linking-mavryk-protocol-demo-noops-embedded-protocol.empty)
+   (-> void_for_linking-mavryk-protocol-demo-noops-embedded-protocol.empty))
+  (select void_for_linking-mavryk-protocol-demo-counter-embedded-protocol from
+   (mavryk-protocol-demo-counter.embedded-protocol -> void_for_linking-mavryk-protocol-demo-counter-embedded-protocol.empty)
+   (-> void_for_linking-mavryk-protocol-demo-counter-embedded-protocol.empty))
+  mavryk-protocol-000-Ps9mPmXa.embedded-protocol
+  mavryk-protocol-001-PtAtLas.embedded-protocol
+  mavkit-protocol-001-PtAtLas-libs.plugin-registerer
+  (select void_for_linking-mavryk-protocol-alpha-embedded-protocol from
+   (mavryk-protocol-alpha.embedded-protocol -> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty)
+   (-> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty))
+  (select void_for_linking-mavkit-protocol-alpha-libs-plugin-registerer from
+   (mavkit-protocol-alpha-libs.plugin-registerer -> void_for_linking-mavkit-protocol-alpha-libs-plugin-registerer.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-plugin-registerer.empty)))
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -60,36 +60,36 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_base_unix
-  -open Octez_node_config
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_rpc_http
-  -open Tezos_rpc_http_server
-  -open Octez_rpc_process
-  -open Tezos_p2p
-  -open Tezos_shell
-  -open Tezos_store
-  -open Tezos_store_unix_reconstruction
-  -open Tezos_store_unix_snapshots
-  -open Tezos_validation
-  -open Tezos_shell_context
-  -open Tezos_workers
-  -open Tezos_protocol_updater
-  -open Tezos_base_p2p_identity_file))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_base_unix
+  -open Mavkit_node_config
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_rpc_http
+  -open Mavryk_rpc_http_server
+  -open Mavkit_rpc_process
+  -open Mavryk_p2p
+  -open Mavryk_shell
+  -open Mavryk_store
+  -open Mavryk_store_unix_reconstruction
+  -open Mavryk_store_unix_snapshots
+  -open Mavryk_validation
+  -open Mavryk_shell_context
+  -open Mavryk_workers
+  -open Mavryk_protocol_updater
+  -open Mavryk_base_p2p_identity_file))
 
 (rule
  (action
   (progn
-   (write-file void_for_linking-tezos-protocol-genesis-embedded-protocol.empty "")
-   (write-file void_for_linking-tezos-protocol-demo-noops-embedded-protocol.empty "")
-   (write-file void_for_linking-tezos-protocol-demo-counter-embedded-protocol.empty "")
-   (write-file void_for_linking-tezos-protocol-alpha-embedded-protocol.empty "")
-   (write-file void_for_linking-octez-protocol-alpha-libs-plugin-registerer.empty ""))))
+   (write-file void_for_linking-mavryk-protocol-genesis-embedded-protocol.empty "")
+   (write-file void_for_linking-mavryk-protocol-demo-noops-embedded-protocol.empty "")
+   (write-file void_for_linking-mavryk-protocol-demo-counter-embedded-protocol.empty "")
+   (write-file void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty "")
+   (write-file void_for_linking-mavkit-protocol-alpha-libs-plugin-registerer.empty ""))))
 
 (install
- (package octez-node)
+ (package mavkit-node)
  (section bin)
- (files (octez-sandboxed-node.sh as octez-sandboxed-node.sh)))
+ (files (mavkit-sandboxed-node.sh as mavkit-sandboxed-node.sh)))

@@ -22,7 +22,7 @@ commander
     .usage('[OPTIONS] file')
     .option('-b, --bench', 'Build inbox from [file].')
     .option('-d, --directory <path>', 'Output directory', path.resolve(process.cwd(), './flamechart'))
-    .option('-t, --tezos-dir <path>', 'tezos repo directory')
+    .option('-t, --mavryk-dir <path>', 'tezos repo directory')
     .option('-i, --inbox-directory <path>', 'Directory to store the inbox if building from bench script', '/tmp')
     .option('-k, --skip <n>', 'Number of levels to process before profiling', '0')
     .option('--flamegraph-bin <path>', 'Flamegraph utility', 'flamegraph.pl')
@@ -37,10 +37,10 @@ if (commander.args.length < 1) {
 }
 
 if (commander.opts().tezosDir) {
-    process.env['TEZOS_DIR'] = commander.opts().tezosDir // setup env variable, used by subprocess
+    process.env['MAVRYK_DIR'] = commander.opts().tezosDir // setup env variable, used by subprocess
 }
 
-const RUN_DEBUGGER_COMMAND = commander.opts().debugger ? commander.opts().debugger : external.bin('./octez-smart-rollup-wasm-debugger')
+const RUN_DEBUGGER_COMMAND = commander.opts().debugger ? commander.opts().debugger : external.bin('./mavkit-smart-rollup-wasm-debugger')
 console.log(`Debugger: ${RUN_DEBUGGER_COMMAND}`)
 
 const KERNEL_DIR = commander.opts().kernelDir

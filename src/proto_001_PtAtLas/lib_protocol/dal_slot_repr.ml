@@ -564,7 +564,7 @@ module History = struct
       union [case_page_confirmed; case_page_unconfirmed]
 
     (** Proof's type is set to bytes and not a structural datatype because
-        when a proof appears in a tezos operation or in an rpc, a user can not
+        when a proof appears in a mavryk operation or in an rpc, a user can not
         reasonably understand the proof, thus it eases the work of people decoding
         the proof by only supporting bytes and not the whole structured proof. *)
 

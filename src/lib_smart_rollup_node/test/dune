@@ -6,28 +6,28 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.test-helpers
-  octez-l2-libs.layer2_store
-  octez-l2-libs.smart-rollup
-  octez-smart-rollup-node-lib
-  octez_smart_rollup_node_test_helpers
-  octez-alcotezt)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.test-helpers
+  mavkit-l2-libs.layer2_store
+  mavkit-l2-libs.smart-rollup
+  mavkit-smart-rollup-node-lib
+  mavkit_smart_rollup_node_test_helpers
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_stdlib_unix
-  -open Tezos_test_helpers
-  -open Tezos_layer2_store
-  -open Octez_smart_rollup
-  -open Octez_smart_rollup_node
-  -open Octez_smart_rollup_node_test_helpers
-  -open Octez_alcotezt)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_stdlib_unix
+  -open Mavryk_test_helpers
+  -open Mavryk_layer2_store
+  -open Mavkit_smart_rollup
+  -open Mavkit_smart_rollup_node
+  -open Mavkit_smart_rollup_node_test_helpers
+  -open Mavkit_alcotezt)
  (modules canary test_context_gc test_store_gc))
 
 (executable
@@ -43,7 +43,7 @@
 
 (rule
  (alias runtest)
- (package tezos-smart-rollup-node-lib-test)
+ (package mavryk-smart-rollup-node-lib-test)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

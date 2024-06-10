@@ -8,7 +8,7 @@ let _ =
       Lwt.bind (Lwt.return 3)
         (fun __flush__id__0 ->
            Lwt.map (fun () -> __flush__id__0)
-             (Tezos_time_measurement_runtime.Default.Time_measurement.flush
+             (Mavryk_time_measurement_runtime.Default.Time_measurement.flush
                 ()))
      in
     let* x4 = Lwt.return 4

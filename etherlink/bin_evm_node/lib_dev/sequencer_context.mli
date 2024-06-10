@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Context : Tezos_tree_encoding.Encodings_util.Bare_tezos_context_sig
+module Context : Mavryk_tree_encoding.Encodings_util.Bare_mavryk_context_sig
 
 type index
 
@@ -20,7 +20,7 @@ type t = {
   evm_state : evm_state;  (** EVM local state of the sequencer. *)
   kernel : string;  (** Path to the kernel to execute. *)
   preimages : string;  (** Path to the preimages directory. *)
-  smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
 }
 
 (** [init ~data_dir ~kernel ~preimages ~smart_rollup_address] creates

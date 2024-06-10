@@ -45,7 +45,7 @@ type event = {name : string; value : JSON.t; timestamp : float}
     events can be received.
 
     [base_dir] corresponds to the (useless) "--base-dir" argument of
-    the octez-accuser command.
+    the mavkit-accuser command.
 
     The [Node.t] parameter is the accuser's node target. The accuser
     will be configured to be synchronised with the given node, and
@@ -83,7 +83,7 @@ val kill : t -> unit Lwt.t
 
 (** {2 Commands} *)
 
-(** Spawn [octez-accuser run].
+(** Spawn [mavkit-accuser run].
 
     The resulting promise is fulfilled as soon as the accuser has been spawned.
     It continues running in the background. *)
@@ -145,7 +145,7 @@ val log_events : t -> unit
     The default value is [`Info].
 
     [base_dir] corresponds to the (useless) "--base-dir" argument of
-    the octez-accuser command.
+    the mavkit-accuser command.
 
     The [Node.t] parameter is the accuser's node target. The accuser
     will be configured to be synchronised with the given node, and

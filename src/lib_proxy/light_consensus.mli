@@ -23,15 +23,15 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 (** A container of input data needed to process a consensus. *)
 type input = {
-  printer : Tezos_client_base.Client_context.printer;
+  printer : Mavryk_client_base.Client_context.printer;
   min_agreement : float;  (** The same value as [Light.sources.min_agreement] *)
-  chain : Tezos_shell_services.Block_services.chain;
+  chain : Mavryk_shell_services.Block_services.chain;
       (** The chain considered *)
-  block : Tezos_shell_services.Block_services.block;
+  block : Mavryk_shell_services.Block_services.block;
       (** The block considered *)
   key : string list;
       (** The key of the context for which data is being requested *)
@@ -57,5 +57,5 @@ module Make (Light_proto : Light_proto.PROTO_RPCS) : sig
 
       Returns: whether consensus was attained or an error message.
     *)
-  val consensus : input -> (Uri.t * Tezos_rpc.Context.simple) list -> bool Lwt.t
+  val consensus : input -> (Uri.t * Mavryk_rpc.Context.simple) list -> bool Lwt.t
 end

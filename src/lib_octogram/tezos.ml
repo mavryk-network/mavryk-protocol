@@ -46,37 +46,37 @@ let parse_endpoint str =
           {host; scheme = "http"; port = int_of_string port_str}
       | None -> raise (Invalid_argument "parse_endpoint"))
 
-type _ key += Octez_node_k : string -> Node.t key
+type _ key += Mavkit_node_k : string -> Node.t key
 
-module Octez_node_key = struct
+module Mavkit_node_key = struct
   type t = string
 
   type r = Node.t
 
   let proj : type a. a key -> (t * (a, r) eq) option = function
-    | Octez_node_k name -> Some (name, Eq)
+    | Mavkit_node_k name -> Some (name, Eq)
     | _ -> None
 
   let compare = String.compare
 end
 
-let () = Agent_state.register_key (module Octez_node_key)
+let () = Agent_state.register_key (module Mavkit_node_key)
 
-type _ key += Octez_baker_k : string -> Baker.t key
+type _ key += Mavkit_baker_k : string -> Baker.t key
 
-module Octez_baker_key = struct
+module Mavkit_baker_key = struct
   type t = string
 
   type r = Baker.t
 
   let proj : type a. a key -> (t * (a, r) eq) option = function
-    | Octez_baker_k name -> Some (name, Eq)
+    | Mavkit_baker_k name -> Some (name, Eq)
     | _ -> None
 
   let compare = String.compare
 end
 
-let () = Agent_state.register_key (module Octez_baker_key)
+let () = Agent_state.register_key (module Mavkit_baker_key)
 
 type _ key += Rollup_node_k : string -> Sc_rollup_node.t key
 
@@ -141,7 +141,7 @@ let () = Agent_state.register_key (module Dal_node_key)
 let mk_rpc_config endpoint =
   let open RPC_client_unix in
   let rpc_config = {default_config with endpoint = Endpoint.to_uri endpoint} in
-  new http_ctxt rpc_config Tezos_rpc_http.Media_type.all_media_types
+  new http_ctxt rpc_config Mavryk_rpc_http.Media_type.all_media_types
 
 (* Returns the current level of the node whose endpoint is given. We use
    {!Monitor_services.heads} because {!Block_services.Empty.header} doesn't work
@@ -206,10 +206,10 @@ let wait_for_l1_level cli_endpoint level =
   | Client.Foreign_endpoint endpoint ->
       wait_for_l1_level_on_endpoint level endpoint
 
-let octez_endpoint state endpoint =
+let mavkit_endpoint state endpoint =
   match endpoint with
   | Uri.Owned {name = node} ->
-      Client.Node (Agent_state.find (Octez_node_k node) state)
+      Client.Node (Agent_state.find (Mavkit_node_k node) state)
   | Remote {endpoint} -> Foreign_endpoint (parse_endpoint endpoint)
 
 let dal_foreign_endpoint state endpoint =
@@ -236,8 +236,8 @@ let dac_endpoint state mode endpoint =
       let foreign = parse_endpoint endpoint in
       Foreign_endpoint foreign
 
-let resolve_octez_rpc_global_uri ~self ~resolver =
-  Uri.agent_uri_of_global_uri ~self ~services:(resolver Octez_node Rpc)
+let resolve_mavkit_rpc_global_uri ~self ~resolver =
+  Uri.agent_uri_of_global_uri ~self ~services:(resolver Mavkit_node Rpc)
 
 let resolve_dac_rpc_global_uri ~self ~resolver =
   Uri.agent_uri_of_global_uri ~self ~services:(resolver Dac_node Rpc)
@@ -245,7 +245,7 @@ let resolve_dac_rpc_global_uri ~self ~resolver =
 let resolve_dal_rpc_global_uri ~self ~resolver =
   Uri.agent_uri_of_global_uri ~self ~services:(resolver Dal_node Rpc)
 
-type start_octez_node_r = {
+type start_mavkit_node_r = {
   name : string;
   rpc_port : int;
   metrics_port : int;
@@ -281,7 +281,7 @@ let map_dal_cryptobox_parameters f p =
     number_of_shards = f p.number_of_shards;
   }
 
-type 'uri start_octez_node = {
+type 'uri start_mavkit_node = {
   name : string option;
   path_node : 'uri;
   network : string;
@@ -295,27 +295,27 @@ type 'uri start_octez_node = {
 }
 
 type (_, _) Remote_procedure.t +=
-  | Start_octez_node :
-      'uri start_octez_node
-      -> (start_octez_node_r, 'uri) Remote_procedure.t
+  | Start_mavkit_node :
+      'uri start_mavkit_node
+      -> (start_mavkit_node_r, 'uri) Remote_procedure.t
 
-module Start_octez_node = struct
-  let name = "tezos.start_node"
+module Start_mavkit_node = struct
+  let name = "mavryk.start_node"
 
-  type 'uri t = 'uri start_octez_node
+  type 'uri t = 'uri start_mavkit_node
 
-  type r = start_octez_node_r
+  type r = start_mavkit_node_r
 
   let of_remote_procedure :
       type a. (a, 'uri) Remote_procedure.t -> 'uri t option = function
-    | Start_octez_node args -> Some args
+    | Start_mavkit_node args -> Some args
     | _ -> None
 
-  let to_remote_procedure args = Start_octez_node args
+  let to_remote_procedure args = Start_mavkit_node args
 
   let unify : type a. (a, 'uri) Remote_procedure.t -> (a, r) Remote_procedure.eq
       = function
-    | Start_octez_node _ -> Eq
+    | Start_mavkit_node _ -> Eq
     | _ -> Neq
 
   let encoding uri_encoding =
@@ -381,7 +381,7 @@ module Start_octez_node = struct
   let r_encoding =
     Data_encoding.(
       conv
-        (fun ({rpc_port; metrics_port; net_port; name} : start_octez_node_r) ->
+        (fun ({rpc_port; metrics_port; net_port; name} : start_mavkit_node_r) ->
           (rpc_port, metrics_port, net_port, name))
         (fun (rpc_port, metrics_port, net_port, name) ->
           {rpc_port; metrics_port; net_port; name})
@@ -475,7 +475,7 @@ module Start_octez_node = struct
 
   let config_dal_srs node dal_cryptobox_parameters =
     let p = dal_cryptobox_parameters in
-    let dal_cryptobox : Tezos_crypto_dal.Cryptobox.parameters =
+    let dal_cryptobox : Mavryk_crypto_dal.Cryptobox.parameters =
       {
         slot_size = int_of_string p.slot_size;
         page_size = int_of_string p.page_size;
@@ -483,7 +483,7 @@ module Start_octez_node = struct
         number_of_shards = int_of_string p.number_of_shards;
       }
     in
-    let config : Tezos_crypto_dal_octez_dal_config.Dal_config.t =
+    let config : Mavryk_crypto_dal_mavkit_dal_config.Dal_config.t =
       {
         activated = true;
         use_mock_srs_for_testing = Some dal_cryptobox;
@@ -494,13 +494,13 @@ module Start_octez_node = struct
       node
       (Node.Config_file.set_sandbox_network_with_dal_config config)
 
-  let setup_octez_node ~network ~sync_threshold ~path_node ~metrics_port
+  let setup_mavkit_node ~network ~sync_threshold ~path_node ~metrics_port
       ~rpc_port ~net_port ~peers ?name ?snapshot ?dal_cryptobox_parameters () =
     let l1_node_args =
       Node.
         [
           (* By default, Tezt set the difficulty to generate the identity file
-             of the Octez node to 0 (`--expected-pow 0`). The default value
+             of the Mavkit node to 0 (`--expected-pow 0`). The default value
              used in network like mainnet, Weeklynet etc. is 26 (see
              `lib_node_config/config_file.ml`). *)
           Expected_pow 0;
@@ -570,8 +570,8 @@ module Start_octez_node = struct
       | Some port -> int_of_string port
       | None -> Port.fresh ()
     in
-    let* octez_node =
-      setup_octez_node
+    let* mavkit_node =
+      setup_mavkit_node
         ?name:args.name
         ~rpc_port
         ~path_node
@@ -584,21 +584,21 @@ module Start_octez_node = struct
         ?dal_cryptobox_parameters:args.dal_cryptobox_parameters
         ()
     in
-    Agent_state.add (Octez_node_k (Node.name octez_node)) octez_node state ;
+    Agent_state.add (Mavkit_node_k (Node.name mavkit_node)) mavkit_node state ;
     return
       {
-        rpc_port = Node.rpc_port octez_node;
+        rpc_port = Node.rpc_port mavkit_node;
         metrics_port;
-        net_port = Node.net_port octez_node;
-        name = Node.name octez_node;
+        net_port = Node.net_port mavkit_node;
+        name = Node.name mavkit_node;
       }
 
   let on_completion ~on_new_service ~on_new_metrics_source (res : r) =
     let open Services_cache in
-    on_new_service res.name Octez_node Rpc res.rpc_port ;
-    on_new_service res.name Octez_node Metrics res.metrics_port ;
-    on_new_service res.name Octez_node P2p res.net_port ;
-    on_new_metrics_source res.name Octez_node res.metrics_port
+    on_new_service res.name Mavkit_node Rpc res.rpc_port ;
+    on_new_service res.name Mavkit_node Metrics res.metrics_port ;
+    on_new_service res.name Mavkit_node P2p res.net_port ;
+    on_new_metrics_source res.name Mavkit_node res.metrics_port
 end
 
 type dal_parameters = {
@@ -674,7 +674,7 @@ type (_, _) Remote_procedure.t +=
       -> (generate_protocol_parameters_r, 'uri) Remote_procedure.t
 
 module Generate_protocol_parameters_file = struct
-  let name = "tezos.generate_protocol_parameters_file"
+  let name = "mavryk.generate_protocol_parameters_file"
 
   type 'uri t = 'uri generate_protocol_parameters_file
 
@@ -820,7 +820,7 @@ module Generate_protocol_parameters_file = struct
         base.path_client
     in
     let wallet =
-      base.wallet |> Option.map (resolve_octez_rpc_global_uri ~self ~resolver)
+      base.wallet |> Option.map (resolve_mavkit_rpc_global_uri ~self ~resolver)
     in
     {base with base_file; wallet; path_client}
 
@@ -984,7 +984,7 @@ type (_, _) Remote_procedure.t +=
   | Active_protocol : 'uri activate_protocol -> (unit, 'uri) Remote_procedure.t
 
 module Activate_protocol = struct
-  let name = "tezos.activate_protocol"
+  let name = "mavryk.activate_protocol"
 
   type 'uri t = 'uri activate_protocol
 
@@ -1035,9 +1035,9 @@ module Activate_protocol = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver base.path_client
     in
-    let endpoint = resolve_octez_rpc_global_uri ~self ~resolver base.endpoint in
+    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver base.endpoint in
     let parameter_file =
-      resolve_octez_rpc_global_uri ~self ~resolver base.parameter_file
+      resolve_mavkit_rpc_global_uri ~self ~resolver base.parameter_file
     in
     {base with path_client; endpoint; parameter_file}
 
@@ -1052,11 +1052,11 @@ module Activate_protocol = struct
         (Agent_state.http_client state)
         parameter_file
     in
-    let endpoint = octez_endpoint state endpoint in
+    let endpoint = mavkit_endpoint state endpoint in
     let client = Client.create ~path:path_client ~endpoint () in
     Account.write Constant.all_secret_keys ~base_dir:(Client.base_dir client) ;
     (* The protocol is activated few seconds in the past. *)
-    let timestamp = Tezos_base.Time.System.Span.of_seconds_exn 5. in
+    let timestamp = Mavryk_base.Time.System.Span.of_seconds_exn 5. in
     Client.activate_protocol
       ~protocol
       ~parameter_file
@@ -1088,7 +1088,7 @@ let resolve_client_args_base ~self resolver base =
   let path_client =
     Remote_procedure.file_agent_uri ~self ~resolver base.path_client
   in
-  let endpoint = resolve_octez_rpc_global_uri ~self ~resolver base.endpoint in
+  let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver base.endpoint in
   {path_client; endpoint}
 
 type 'uri wait_for_bootstrapped = 'uri client_base_args
@@ -1099,7 +1099,7 @@ type (_, _) Remote_procedure.t +=
       -> (unit, 'uri) Remote_procedure.t
 
 module Wait_for_bootstrapped = struct
-  let name = "tezos.wait_for_bootstrapped"
+  let name = "mavryk.wait_for_bootstrapped"
 
   type 'uri t = 'uri wait_for_bootstrapped
 
@@ -1133,7 +1133,7 @@ module Wait_for_bootstrapped = struct
         (Agent_state.http_client state)
         args.path_client
     in
-    let endpoint = octez_endpoint state args.endpoint in
+    let endpoint = mavkit_endpoint state args.endpoint in
     let client = Client.create ~path:path_client ~endpoint () in
     let* () = Client.bootstrapped client in
     unit
@@ -1159,7 +1159,7 @@ type (_, _) Remote_procedure.t +=
       -> (originate_smart_rollup_r, 'uri) Remote_procedure.t
 
 module Originate_smart_rollup = struct
-  let name = "tezos.operations.originate_smart_rollup"
+  let name = "mavryk.operations.originate_smart_rollup"
 
   type 'uri t = 'uri originate_smart_rollup
 
@@ -1240,7 +1240,7 @@ module Originate_smart_rollup = struct
         (Agent_state.http_client state)
         args.client_base.path_client
     in
-    let endpoint = octez_endpoint state args.client_base.endpoint in
+    let endpoint = mavkit_endpoint state args.client_base.endpoint in
 
     let client =
       Client.create ~path:path_client ~endpoint ~base_dir:args.wallet ()
@@ -1267,7 +1267,7 @@ module Originate_smart_rollup = struct
     in
     Log.info "Rollup %s originated" address ;
     let (`Hex hex_address) =
-      Tezos_crypto.Hashed.Smart_rollup_address.(
+      Mavryk_crypto.Hashed.Smart_rollup_address.(
         of_b58check_exn address |> to_string |> Hex.of_string)
     in
     return {address; hex_address}
@@ -1302,8 +1302,8 @@ module Originate_smart_contract = struct
   let contract_hash = "\002\090\121" (* KT1(36) *)
 
   module H =
-    Tezos_crypto.Blake2B.Make
-      (Tezos_crypto.Base58)
+    Mavryk_crypto.Blake2B.Make
+      (Mavryk_crypto.Base58)
       (struct
         let name = "Contract_hash"
 
@@ -1314,7 +1314,7 @@ module Originate_smart_contract = struct
         let size = Some 20
       end)
 
-  let name = "tezos.operations.originate_smart_contract"
+  let name = "mavryk.operations.originate_smart_contract"
 
   type 'uri t = 'uri originate_smart_contract
 
@@ -1397,7 +1397,7 @@ module Originate_smart_contract = struct
         (Agent_state.http_client state)
         args.client_base.path_client
     in
-    let endpoint = octez_endpoint state args.client_base.endpoint in
+    let endpoint = mavkit_endpoint state args.client_base.endpoint in
 
     let client =
       Client.create ~path:path_client ~endpoint ~base_dir:args.wallet ()
@@ -1448,7 +1448,7 @@ type (_, _) Remote_procedure.t +=
   | Transfer : 'uri transfer -> (unit, 'uri) Remote_procedure.t
 
 module Transfer = struct
-  let name = "tezos.operations.transfer"
+  let name = "mavryk.operations.transfer"
 
   type 'uri t = 'uri transfer
 
@@ -1510,7 +1510,7 @@ module Transfer = struct
         (Agent_state.http_client state)
         args.client_base.path_client
     in
-    let endpoint = octez_endpoint state args.client_base.endpoint in
+    let endpoint = mavkit_endpoint state args.client_base.endpoint in
 
     let client =
       Client.create ~path:path_client ~endpoint ~base_dir:args.wallet ()
@@ -1703,7 +1703,7 @@ module Start_rollup_node = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver args.path_client
     in
-    let endpoint = resolve_octez_rpc_global_uri ~self ~resolver args.endpoint in
+    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint in
     {args with path_rollup_node; path_client; endpoint}
 
   let run state args =
@@ -1717,7 +1717,7 @@ module Start_rollup_node = struct
         (Agent_state.http_client state)
         args.path_client
     in
-    let l1_endpoint = octez_endpoint state args.endpoint in
+    let l1_endpoint = mavkit_endpoint state args.endpoint in
     let metrics_port =
       match args.metrics_port with
       | Some x -> int_of_string x
@@ -1763,7 +1763,7 @@ module Start_rollup_node = struct
     let open Services_cache in
     on_new_service res.name Rollup_node Rpc res.rpc_port ;
     on_new_service res.name Rollup_node Metrics res.metrics_port ;
-    on_new_metrics_source res.name Octez_node res.metrics_port
+    on_new_metrics_source res.name Mavkit_node res.metrics_port
 end
 
 type 'uri prepare_kernel_installer = {
@@ -1961,7 +1961,7 @@ let resolve_message ~self resolver = function
   | Hex str -> Hex str
   | File uri -> File (Remote_procedure.file_agent_uri ~self ~resolver uri)
 
-let octez_client_arg_of_message state = function
+let mavkit_client_arg_of_message state = function
   | Text str ->
       let (`Hex str) = Hex.of_string str in
       assert (String.length str <= message_maximum_size * 2) ;
@@ -1994,7 +1994,7 @@ type (_, _) Remote_procedure.t +=
       -> (unit, 'uri) Remote_procedure.t
 
 module Smart_rollups_add_messages = struct
-  let name = "tezos.operations.add_messages"
+  let name = "mavryk.operations.add_messages"
 
   type 'uri t = 'uri smart_rollups_add_messages
 
@@ -2050,7 +2050,7 @@ module Smart_rollups_add_messages = struct
     let* messages =
       Lwt_list.map_p
         (fun m ->
-          let* str = octez_client_arg_of_message state m in
+          let* str = mavkit_client_arg_of_message state m in
           return (`String str))
         args.messages
     in
@@ -2061,7 +2061,7 @@ module Smart_rollups_add_messages = struct
         (Agent_state.http_client state)
         args.client_base.path_client
     in
-    let endpoint = octez_endpoint state args.client_base.endpoint in
+    let endpoint = mavkit_endpoint state args.client_base.endpoint in
 
     let client =
       Client.create ~path:path_client ~base_dir:args.wallet ~endpoint ()
@@ -2257,7 +2257,7 @@ module Start_dac_node = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver args.path_client
     in
-    let endpoint = resolve_octez_rpc_global_uri ~self ~resolver args.endpoint in
+    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint in
     let mode = resolve_dac_mode ~self resolver args.mode in
     {args with path_dac_node; path_client; endpoint; mode}
 
@@ -2277,7 +2277,7 @@ module Start_dac_node = struct
       | Some port_str -> int_of_string port_str
       | None -> Port.fresh ()
     in
-    let endpoint = octez_endpoint state args.endpoint in
+    let endpoint = mavkit_endpoint state args.endpoint in
     let client =
       Client.create ~path:path_client ~base_dir:args.wallet ~endpoint ()
     in
@@ -2480,7 +2480,7 @@ type 'uri kind =
   | Default (* Generate default Tezt bootstrap keys (from 0 to 5). *)
   | Fresh of {
       count : int; (* Generate [n] fresh keys *)
-      path_client : 'uri; (* Path to octez-client binary. *)
+      path_client : 'uri; (* Path to mavkit-client binary. *)
       alias_prefix : string; (* A prefix for generated keys aliases. *)
     }
 
@@ -2497,7 +2497,7 @@ type (_, _) Remote_procedure.t +=
       -> (generate_keys_r, 'uri) Remote_procedure.t
 
 module Generate_keys = struct
-  let name = "tezos.generate_keys"
+  let name = "mavryk.generate_keys"
 
   type 'uri t = 'uri generate_keys
 
@@ -2636,12 +2636,12 @@ type 'uri start_dal_node = {
 }
 
 type (_, _) Remote_procedure.t +=
-  | Start_octez_dal_node :
+  | Start_mavkit_dal_node :
       'uri start_dal_node
       -> (start_dal_node_r, 'uri) Remote_procedure.t
 
-module Start_octez_dal_node = struct
-  let name = "tezos.start_dal_node"
+module Start_mavkit_dal_node = struct
+  let name = "mavryk.start_dal_node"
 
   type 'uri t = 'uri start_dal_node
 
@@ -2649,14 +2649,14 @@ module Start_octez_dal_node = struct
 
   let of_remote_procedure :
       type a. (a, 'uri) Remote_procedure.t -> 'uri t option = function
-    | Start_octez_dal_node args -> Some args
+    | Start_mavkit_dal_node args -> Some args
     | _ -> None
 
-  let to_remote_procedure args = Start_octez_dal_node args
+  let to_remote_procedure args = Start_mavkit_dal_node args
 
   let unify : type a. (a, 'uri) Remote_procedure.t -> (a, r) Remote_procedure.eq
       = function
-    | Start_octez_dal_node _ -> Eq
+    | Start_mavkit_dal_node _ -> Eq
     | _ -> Neq
 
   let encoding uri_encoding =
@@ -2801,7 +2801,7 @@ module Start_octez_dal_node = struct
       rpc_port;
       metrics_port;
       net_port;
-      l1_node_uri = resolve_octez_rpc_global_uri ~self ~resolver l1_node_uri;
+      l1_node_uri = resolve_mavkit_rpc_global_uri ~self ~resolver l1_node_uri;
       peers;
       bootstrap_profile;
       attester_profiles;
@@ -2856,7 +2856,7 @@ module Start_octez_dal_node = struct
       Lwt_list.map_s
         (fun attester ->
           match
-            ( Tezos_crypto.Signature.Public_key_hash.of_b58check_opt attester,
+            ( Mavryk_crypto.Signature.Public_key_hash.of_b58check_opt attester,
               client_opt )
           with
           | Some _, _ -> return attester (* a valid tz address is given *)
@@ -2881,7 +2881,7 @@ module Start_octez_dal_node = struct
         ~rpc_port
         ~listen_addr:(mk_addr net_port)
         ~metrics_addr:(mk_addr metrics_port)
-        ~l1_node_endpoint:(octez_endpoint state l1_node_uri)
+        ~l1_node_endpoint:(mavkit_endpoint state l1_node_uri)
         ()
     in
     (* TODO: https://gitlab.com/tezos/tezos/-/issues/6283
@@ -2909,7 +2909,7 @@ module Start_octez_dal_node = struct
     on_new_metrics_source res.name Dal_node res.metrics_port
 end
 
-type 'uri start_octez_baker = {
+type 'uri start_mavkit_baker = {
   name : string option;
       (** A name for this agent. It will be generated if no name is given. *)
   protocol : Protocol.t;
@@ -2929,30 +2929,30 @@ type 'uri start_octez_baker = {
   baker_path : 'uri option;
 }
 
-type start_octez_baker_r = {name : string}
+type start_mavkit_baker_r = {name : string}
 
 type (_, _) Remote_procedure.t +=
-  | Start_octez_baker :
-      'uri start_octez_baker
-      -> (start_octez_baker_r, 'uri) Remote_procedure.t
+  | Start_mavkit_baker :
+      'uri start_mavkit_baker
+      -> (start_mavkit_baker_r, 'uri) Remote_procedure.t
 
-module Start_octez_baker = struct
-  let name = "tezos.start_baker"
+module Start_mavkit_baker = struct
+  let name = "mavryk.start_baker"
 
-  type 'uri t = 'uri start_octez_baker
+  type 'uri t = 'uri start_mavkit_baker
 
-  type r = start_octez_baker_r
+  type r = start_mavkit_baker_r
 
   let of_remote_procedure :
       type a. (a, 'uri) Remote_procedure.t -> 'uri t option = function
-    | Start_octez_baker args -> Some args
+    | Start_mavkit_baker args -> Some args
     | _ -> None
 
-  let to_remote_procedure args = Start_octez_baker args
+  let to_remote_procedure args = Start_mavkit_baker args
 
   let unify : type a. (a, 'uri) Remote_procedure.t -> (a, r) Remote_procedure.eq
       = function
-    | Start_octez_baker _ -> Eq
+    | Start_mavkit_baker _ -> Eq
     | _ -> Neq
 
   let encoding uri_encoding =
@@ -3050,7 +3050,7 @@ module Start_octez_baker = struct
       protocol;
       base_dir = file_agent_uri ~self ~resolver base_dir;
       node_data_dir = Option.map (file_agent_uri ~self ~resolver) node_data_dir;
-      node_uri = resolve_octez_rpc_global_uri ~self ~resolver node_uri;
+      node_uri = resolve_mavkit_rpc_global_uri ~self ~resolver node_uri;
       dal_node_uri =
         Option.map (resolve_dal_rpc_global_uri ~self ~resolver) dal_node_uri;
       delegates;
@@ -3072,7 +3072,7 @@ module Start_octez_baker = struct
     let client = Agent_state.http_client state in
     (* Get the L1 node's data-dir and RPC endpoint. *)
     let* node_data_dir, node_rpc_endpoint =
-      match (node_data_dir, octez_endpoint state node_uri) with
+      match (node_data_dir, mavkit_endpoint state node_uri) with
       | Some node_data_dir, Client.Foreign_endpoint fe ->
           let* node_data_dir =
             Http_client.local_path_from_agent_uri client node_data_dir
@@ -3106,7 +3106,7 @@ module Start_octez_baker = struct
       Option.map (dal_foreign_endpoint state) dal_node_uri
     in
     (* Create a baker state. *)
-    let octez_baker =
+    let mavkit_baker =
       Baker.create_from_uris
         ?name
         ?path:baker_path
@@ -3119,10 +3119,10 @@ module Start_octez_baker = struct
         ()
     in
     (* Register the baker state. *)
-    let name = Baker.name octez_baker in
-    Agent_state.add (Octez_baker_k name) octez_baker state ;
+    let name = Baker.name mavkit_baker in
+    Agent_state.add (Mavkit_baker_k name) mavkit_baker state ;
     (* Start the baker. *)
-    let* () = Baker.run octez_baker in
+    let* () = Baker.run mavkit_baker in
     return {name}
 
   let on_completion ~on_new_service:_ ~on_new_metrics_source:_ (_ : r) = ()
@@ -3165,7 +3165,7 @@ type (_, _) Remote_procedure.t +=
       -> (publish_dal_slot_r, 'uri) Remote_procedure.t
 
 module Publish_dal_slot : Remote_procedure.S = struct
-  let name = "tezos.publish_dal_slot"
+  let name = "mavryk.publish_dal_slot"
 
   type 'uri t = 'uri publish_dal_slot
 
@@ -3277,7 +3277,7 @@ module Publish_dal_slot : Remote_procedure.S = struct
     {
       slot_info;
       target_published_level;
-      l1_node_uri = resolve_octez_rpc_global_uri ~self ~resolver l1_node_uri;
+      l1_node_uri = resolve_mavkit_rpc_global_uri ~self ~resolver l1_node_uri;
       dal_node_uri = resolve_dal_rpc_global_uri ~self ~resolver dal_node_uri;
       base_dir = Remote_procedure.file_agent_uri ~self ~resolver base_dir;
       source;
@@ -3299,7 +3299,7 @@ module Publish_dal_slot : Remote_procedure.S = struct
     in
     let* path_client = mk_path path_client in
     let* base_dir = mk_path base_dir in
-    let endpoint = octez_endpoint state l1_node_uri in
+    let endpoint = mavkit_endpoint state l1_node_uri in
     let dal_endpoint = dal_foreign_endpoint state dal_node_uri in
     let client = Client.create ~path:path_client ~endpoint ~base_dir () in
 
@@ -3356,7 +3356,7 @@ end
 
 let register_procedures () =
   Remote_procedure.register (module Generate_keys) ;
-  Remote_procedure.register (module Start_octez_node) ;
+  Remote_procedure.register (module Start_mavkit_node) ;
   Remote_procedure.register (module Generate_protocol_parameters_file) ;
   Remote_procedure.register (module Activate_protocol) ;
   Remote_procedure.register (module Wait_for_bootstrapped) ;
@@ -3367,6 +3367,6 @@ let register_procedures () =
   Remote_procedure.register (module Smart_rollups_add_messages) ;
   Remote_procedure.register (module Start_dac_node) ;
   Remote_procedure.register (module Dac_post_file) ;
-  Remote_procedure.register (module Start_octez_dal_node) ;
-  Remote_procedure.register (module Start_octez_baker) ;
+  Remote_procedure.register (module Start_mavkit_dal_node) ;
+  Remote_procedure.register (module Start_mavkit_baker) ;
   Remote_procedure.register (module Publish_dal_slot)

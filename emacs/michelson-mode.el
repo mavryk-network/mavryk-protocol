@@ -56,8 +56,8 @@
   :prefix "michelson-"
   :group 'michelson)
 
-(defcustom michelson-client-command "tezos-client"
-  "Path to the `tezos-client' binary."
+(defcustom michelson-client-command "mavryk-client"
+  "Path to the `mavryk-client' binary."
   :type 'string
   :group 'michelson-options)
 
@@ -89,7 +89,7 @@ Overrides `michelson-print-errors' and `michelson-highlight-errors'"
   :group 'michelson-options)
 
 (defcustom michelson-extra-flags nil
-  "Additional flags to pass to tezos-client when type checking."
+  "Additional flags to pass to mavryk-client when type checking."
   :type '(list string)
   :group 'michelson-options)
 
@@ -915,9 +915,9 @@ Enables or disables stack and error display."
   (setq buffer-file-coding-system 'utf-8-unix)
   (add-hook 'completion-at-point-functions 'michelson-completion-at-point nil 'local)
   (setq-local process-environment
-              (cons "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y"
+              (cons "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y"
                     (cons "ALPHANET_EMACS=true"
-                          (cons "TEZOS_ALPHANET_DO_NOT_PULL=yes"
+                          (cons "MAVRYK_ALPHANET_DO_NOT_PULL=yes"
                                 process-environment)))))
 
 ;;;###autoload

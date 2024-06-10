@@ -1,4 +1,4 @@
-open Tezos_error_monad.Error_monad
+open Mavryk_error_monad.Error_monad
 module R = Rustzcash
 
 let test_get_memo_size () =
@@ -9,8 +9,8 @@ let test_get_memo_size () =
   let rcm = Rcm.random () in
   let memo = Bytes.empty in
   let esk = DH.esk_random () in
-  let cv = Stdlib.Option.get (CV.of_bytes (Tezos_crypto.Hacl.Rand.gen 32)) in
-  let cm = Commitment.of_bytes_exn (Tezos_crypto.Hacl.Rand.gen 32) in
+  let cv = Stdlib.Option.get (CV.of_bytes (Mavryk_crypto.Hacl.Rand.gen 32)) in
+  let cm = Commitment.of_bytes_exn (Mavryk_crypto.Hacl.Rand.gen 32) in
   let epk = DH.derive_ephemeral address esk in
   let cipher = Ciphertext.encrypt 0L address vk rcm memo (cv, cm, epk) esk in
   assert (Ciphertext.get_memo_size cipher = 0)
@@ -35,7 +35,7 @@ let test_proof_raw () =
   let witness = Stdlib.Option.get @@ T.get_witness tree 0L in
   let tohash = Bytes.make 32 '1' in
   let hash =
-    Tezos_crypto.Blake2B.(
+    Mavryk_crypto.Blake2B.(
       to_bytes (hash_bytes ~key:(Bytes.of_string "Sighash_Tezos") [tohash]))
   in
   let sighash = R.to_sighash hash in
@@ -79,7 +79,7 @@ let test_proof_raw () =
   ()
 
 (* In this test 3 users 1,2,3 make several transactions. 1 gives 10 to himself
-   out of thin air (i.e. from burnt tezos in real life). Then he gives 10 to B.
+   out of thin air (i.e. from burnt mavryk in real life). Then he gives 10 to B.
    Then B gives 5 to C, and burns 5 (i.e. unburns the 5 mav in real life).
    We do it "by hand" and using the function verify_update that will be in the
    smart contract and forge_transaction that will be used in the wallet *)
@@ -150,7 +150,7 @@ let test_full_transaction () =
   (* Signature of the input *)
   let signature_1 = R.spend_sig xsk1.expsk.ask ar_1 sighash_2 in
   (* encryption of the ciphertext *)
-  let nonce_1 = Tezos_crypto.Crypto_box.random_nonce () in
+  let nonce_1 = Mavryk_crypto.Crypto_box.random_nonce () in
   let plaintext =
     Data_encoding.Binary.to_bytes_exn
       Ciphertext.plaintext_encoding
@@ -163,7 +163,7 @@ let test_full_transaction () =
   in
   let key_agreed = DH.symkey_sender esk_1 addr1.pkd in
   let ciphertext_1 =
-    Tezos_crypto.Crypto_box.Secretbox.secretbox key_agreed plaintext nonce_1
+    Mavryk_crypto.Crypto_box.Secretbox.secretbox key_agreed plaintext nonce_1
   in
   (* Hash of the whole transaction *)
   let tohash_all =
@@ -184,7 +184,7 @@ let test_full_transaction () =
   in
   let sighash_1 =
     R.to_sighash
-      Tezos_crypto.Blake2B.(
+      Mavryk_crypto.Blake2B.(
         to_bytes
           (hash_bytes ~key:(Bytes.of_string "SaplingForTezosV1") [tohash_all]))
   in

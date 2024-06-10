@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Octez RPC",
-    "description": "The RPC API served by the Octez node.",
+    "title": "Mavkit RPC",
+    "description": "The RPC API served by the Mavkit node.",
     "version": "18.1"
   },
   "paths": {
@@ -5904,7 +5904,7 @@
                         }
                       ]
                     },
-                    "tezos_head_level": {
+                    "mavryk_head_level": {
                       "nullable": true,
                       "oneOf": [
                         {
@@ -5947,7 +5947,7 @@
                     "unfinalized_commitments",
                     "uncommitted_inboxes",
                     "commitment_newest_hash",
-                    "tezos_head_level",
+                    "mavryk_head_level",
                     "burn_per_byte",
                     "allocated_storage",
                     "occupied_storage",

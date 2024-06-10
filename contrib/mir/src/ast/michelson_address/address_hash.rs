@@ -7,7 +7,7 @@
 
 use super::AddressError;
 
-use tezos_crypto_rs::hash::{
+use mavryk_crypto_rs::hash::{
     ContractKt1Hash, ContractTz1Hash, ContractTz2Hash, ContractTz3Hash, ContractTz4Hash, Hash,
     HashTrait, SmartRollupHash,
 };

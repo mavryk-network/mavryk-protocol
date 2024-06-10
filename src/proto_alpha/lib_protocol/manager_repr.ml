@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Protocol Implementation - Low level Repr. of Managers' keys *)
+(* Mavryk Protocol Implementation - Low level Repr. of Managers' keys *)
 
 type manager_key =
   | Hash of Signature.Public_key_hash.t

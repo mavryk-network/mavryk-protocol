@@ -7,7 +7,7 @@
  (package internal-devtools)
  (modes byte)
  (libraries
-  octez-protocol-compiler
-  octez-libs.base
+  mavkit-protocol-compiler
+  mavkit-libs.base
   compiler-libs.toplevel
   (select tztop.ml from (utop -> tztop.utop.ml) (-> tztop.vanilla.ml))))

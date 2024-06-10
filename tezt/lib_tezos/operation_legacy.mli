@@ -143,7 +143,7 @@ val get_injection_branch : ?branch:string -> Client.t -> string Lwt.t
 (** [sign_manager_op_bytes ~signer op_bytes] signs [op_bytes] with
     [signer]'s secret key and the watermark [Generic_operation]. *)
 val sign_manager_op_bytes :
-  signer:Account.key -> bytes -> Tezos_crypto.Signature.t
+  signer:Account.key -> bytes -> Mavryk_crypto.Signature.t
 
 (** Same as [sign_manager_op_bytes], but the input operation is given
    in hexadecimal representation and returns a signature in
@@ -153,7 +153,7 @@ val sign_manager_op_hex : signer:Account.key -> Hex.t -> Hex.t
 (** Forge an operation and returns the hexadecimal binary representation.
 
     If the [protocol] argument is supplied, the operation is forged locally
-    (using [octez-codec]), otherwise we call an RPC
+    (using [mavkit-codec]), otherwise we call an RPC
     ([.../helpers/forge/operations]).
  *)
 val forge_operation :
@@ -189,7 +189,7 @@ val inject_operation :
     Default [branch] is the one returned by [RPC.get_branch client].
 
     If the [protocol] argument is supplied, the operation is forged locally
-    (using [octez-codec]), otherwise we call an RPC
+    (using [mavkit-codec]), otherwise we call an RPC
     ([.../helpers/forge/operations]).
 
     If the [force] argument (by default [false]) is [true], then Tezt

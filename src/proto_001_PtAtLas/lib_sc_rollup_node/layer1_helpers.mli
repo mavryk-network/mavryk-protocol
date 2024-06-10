@@ -24,20 +24,20 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Octez_smart_rollup_node.Layer1
+open Mavkit_smart_rollup_node.Layer1
 
-(** [fetch_tezos_block cctxt hash] returns a block info given a block hash.
+(** [fetch_mavryk_block cctxt hash] returns a block info given a block hash.
     Looks for the block in the blocks cache first, and fetches it from the L1
     node otherwise. *)
-val fetch_tezos_block :
+val fetch_mavryk_block :
   t ->
   Block_hash.t ->
   Protocol_client_context.Alpha_block_services.block_info tzresult Lwt.t
 
-(** [prefetch_tezos_blocks l1_ctxt blocks] prefetches the blocks
+(** [prefetch_mavryk_blocks l1_ctxt blocks] prefetches the blocks
     asynchronously. NOTE: the number of blocks to prefetch must not be greater
     than the size of the blocks cache otherwise they will be lost. *)
-val prefetch_tezos_blocks : t -> head list -> unit
+val prefetch_mavryk_blocks : t -> head list -> unit
 
 val get_last_cemented_commitment :
   #Client_context.full -> Address.t -> Node_context.lcc tzresult Lwt.t
@@ -54,7 +54,7 @@ val get_kind : #Client_context.full -> Address.t -> Kind.t tzresult Lwt.t
 val genesis_inbox :
   #Client_context.full ->
   genesis_level:int32 ->
-  Octez_smart_rollup.Inbox.t tzresult Lwt.t
+  Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
 (** Convert protocol constants to their protocol agnostic representation. *)
 val constants_of_parametric :

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type shell_header = {branch : Tezos_crypto.Hashed.Block_hash.t}
+type shell_header = {branch : Mavryk_crypto.Hashed.Block_hash.t}
 
 val equal_shell_header : shell_header -> shell_header -> bool
 
@@ -34,7 +34,7 @@ type t = {shell : shell_header; proto : Bytes.t}
 include
   S.HASHABLE
     with type t := t
-     and type hash := Tezos_crypto.Hashed.Operation_hash.t
+     and type hash := Mavryk_crypto.Hashed.Operation_hash.t
 
 val of_bytes_exn : Bytes.t -> t
 
@@ -46,12 +46,12 @@ val bounded_list_encoding :
   ?max_operation_size:int ->
   ?max_pass:int ->
   unit ->
-  (Tezos_crypto.Hashed.Operation_list_list_hash.path * t list) Data_encoding.t
+  (Mavryk_crypto.Hashed.Operation_list_list_hash.path * t list) Data_encoding.t
 
 val bounded_hash_list_encoding :
   ?max_length:int ->
   ?max_pass:int ->
   unit ->
-  (Tezos_crypto.Hashed.Operation_list_list_hash.path
-  * Tezos_crypto.Hashed.Operation_hash.t list)
+  (Mavryk_crypto.Hashed.Operation_list_list_hash.path
+  * Mavryk_crypto.Hashed.Operation_hash.t list)
   Data_encoding.t

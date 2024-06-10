@@ -1,6 +1,6 @@
 #! /bin/bash
 
-CLIENT='octez-client --mode mockup --base-dir /tmp/mockup'
+CLIENT='mavkit-client --mode mockup --base-dir /tmp/mockup'
 STACK='{}'
 
 while :

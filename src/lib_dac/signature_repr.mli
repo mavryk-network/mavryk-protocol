@@ -40,8 +40,8 @@ val encoding : t Data_encoding.t
     exchanged accross the DAC network we use [Unknown] variant only. *)
 val make :
   Dac_plugin.raw_hash ->
-  Tezos_crypto.Aggregate_signature.signature ->
-  Tezos_crypto.Aggregate_signature.public_key_hash ->
+  Mavryk_crypto.Aggregate_signature.signature ->
+  Mavryk_crypto.Aggregate_signature.public_key_hash ->
   t
 
 (** [get_root_hash signature] returns a root hash of a given signature
@@ -50,8 +50,8 @@ val get_root_hash : t -> Dac_plugin.raw_hash
 
 (** [get_signature signature] returns an aggregated signature of a given
     signature representation. *)
-val get_signature : t -> Tezos_crypto.Aggregate_signature.signature
+val get_signature : t -> Mavryk_crypto.Aggregate_signature.signature
 
 (** [get_signer_pkh signature] returns a signer public key hash of a given
     signature representation. *)
-val get_signer_pkh : t -> Tezos_crypto.Aggregate_signature.public_key_hash
+val get_signer_pkh : t -> Mavryk_crypto.Aggregate_signature.public_key_hash

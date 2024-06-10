@@ -29,7 +29,7 @@ open Client_proto_args
 
 let group =
   {
-    Tezos_clic.name = "tokens";
+    Mavryk_clic.name = "tokens";
     title = "Commands for managing FA1.2-compatible smart contracts";
   }
 
@@ -51,10 +51,10 @@ let from_param () =
 let to_param () = alias_param ~name:"to" ~desc:"name or address of the receiver"
 
 let amount_param () =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name:"amount"
     ~desc:"number of tokens"
-    (Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+    (Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
          try
            let v = Z.of_string s in
            assert (Compare.Z.(v >= Z.zero)) ;
@@ -78,14 +78,14 @@ let payer_arg =
     ()
 
 let callback_entrypoint_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"Entrypoint the view should use to callback to"
     ~long:"callback-entrypoint"
     ~placeholder:"name"
     string_parameter
 
 let contract_call_options =
-  Tezos_clic.args9
+  Mavryk_clic.args9
     tez_amount_arg
     fee_arg
     Client_proto_context_commands.dry_run_switch
@@ -97,7 +97,7 @@ let contract_call_options =
     fee_parameter_args
 
 let contract_view_options =
-  Tezos_clic.args10
+  Mavryk_clic.args10
     callback_entrypoint_arg
     tez_amount_arg
     fee_arg
@@ -110,7 +110,7 @@ let contract_view_options =
     fee_parameter_args
 
 let view_options =
-  Tezos_clic.args3
+  Mavryk_clic.args3
     run_gas_limit_arg
     payer_arg
     (unparsing_mode_arg ~default:"Readable")
@@ -122,8 +122,8 @@ let get_contract_caller_keys (cctxt : #Client_context.full) source =
   let* _, caller_pk, caller_sk = Client_keys.get_key cctxt source in
   return (source, caller_pk, caller_sk)
 
-let commands_ro () : #Protocol_client_context.full Tezos_clic.command list =
-  Tezos_clic.
+let commands_ro () : #Protocol_client_context.full Mavryk_clic.command list =
+  Mavryk_clic.
     [
       command
         ~group
@@ -452,14 +452,14 @@ let commands_ro () : #Protocol_client_context.full Tezos_clic.command list =
           return_unit);
     ]
 
-let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
+let commands_rw () : #Protocol_client_context.full Mavryk_clic.command list =
   let open Client_proto_args in
-  Tezos_clic.
+  Mavryk_clic.
     [
       command
         ~group
         ~desc:"Transfer tokens between two given accounts"
-        (Tezos_clic.args10
+        (Mavryk_clic.args10
            implicit_as_arg
            tez_amount_arg
            fee_arg
@@ -614,7 +614,7 @@ let commands_rw () : #Protocol_client_context.full Tezos_clic.command list =
                    (, ...) ]', where an optional <field> can either be \
                    \"mav-amount\", \"fee\", \"gas-limit\" or \
                    \"storage-limit\". The complete schema can be inspected via \
-                   `tezos-codec describe %s.fa1.2.token_transfer json schema`."
+                   `mavryk-codec describe %s.fa1.2.token_transfer json schema`."
                   Protocol.name)
              ~pp_error:(fun json fmt exn ->
                match (json, exn) with

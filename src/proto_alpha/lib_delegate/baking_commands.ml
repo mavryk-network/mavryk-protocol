@@ -26,12 +26,12 @@
 open Client_proto_args
 
 let pidfile_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"write process id in file"
     ~short:'P'
     ~long:"pidfile"
     ~placeholder:"filename"
-    (Tezos_clic.parameter (fun _ s -> return s))
+    (Mavryk_clic.parameter (fun _ s -> return s))
 
 let may_lock_pidfile pidfile_opt f =
   match pidfile_opt with
@@ -44,7 +44,7 @@ let may_lock_pidfile pidfile_opt f =
         f
 
 let http_headers_env_variable =
-  "TEZOS_CLIENT_REMOTE_OPERATIONS_POOL_HTTP_HEADERS"
+  "MAVRYK_CLIENT_REMOTE_OPERATIONS_POOL_HTTP_HEADERS"
 
 let http_headers =
   match Sys.getenv_opt http_headers_env_variable with
@@ -79,7 +79,7 @@ let http_headers =
            lines)
 
 let operations_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"operations-pool"
     ~placeholder:"file|uri"
     ~doc:
@@ -93,7 +93,7 @@ let operations_arg =
           unreadable, or the web service returns a 404 error, the resource is \
           simply ignored."
          http_headers_env_variable)
-    (Tezos_clic.map_parameter
+    (Mavryk_clic.map_parameter
        ~f:(fun uri ->
          let open Baking_configuration in
          match Uri.scheme uri with
@@ -105,7 +105,7 @@ let operations_arg =
        uri_parameter)
 
 let context_path_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"context"
     ~placeholder:"path"
     ~doc:
@@ -115,13 +115,13 @@ let context_path_arg =
     string_parameter
 
 let force_apply_switch_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"force-apply"
     ~doc:"Force the baker to not only validate but also apply operations."
     ()
 
 let attestation_force_switch_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"force"
     ~short:'f'
     ~doc:
@@ -130,7 +130,7 @@ let attestation_force_switch_arg =
     ()
 
 let do_not_monitor_node_mempool_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"ignore-node-mempool"
     ~doc:
       "Ignore mempool operations from the node and do not subsequently monitor \
@@ -139,7 +139,7 @@ let do_not_monitor_node_mempool_arg =
     ()
 
 let keep_alive_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~doc:
       "Keep the daemon process alive: when the connection with the node is \
        lost, the daemon periodically tries to reach it."
@@ -148,7 +148,7 @@ let keep_alive_arg =
     ()
 
 let per_block_vote_parameter =
-  Tezos_clic.parameter
+  Mavryk_clic.parameter
     ~autocomplete:(fun _ctxt -> return ["on"; "off"; "pass"])
     (let open Protocol.Alpha_context.Per_block_votes in
     fun _ctxt -> function
@@ -161,7 +161,7 @@ let per_block_vote_parameter =
             s)
 
 let liquidity_baking_toggle_vote_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:
       "Vote to continue or end the liquidity baking subsidy. The possible \
        values for this option are: \"off\" to request ending the subsidy, \
@@ -172,7 +172,7 @@ let liquidity_baking_toggle_vote_arg =
     per_block_vote_parameter
 
 let adaptive_issuance_vote_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:
       "Vote to adopt or not the adaptive issuance feature. The possible values \
        for this option are: \"off\" to request not activating it, \"on\" to \
@@ -184,9 +184,9 @@ let adaptive_issuance_vote_arg =
 
 let state_recorder_switch_arg =
   let open Baking_configuration in
-  Tezos_clic.map_arg
+  Mavryk_clic.map_arg
     ~f:(fun _cctxt flag -> if flag then return Filesystem else return Memory)
-    (Tezos_clic.switch
+    (Mavryk_clic.switch
        ~long:"record-state"
        ~doc:
          "If record-state flag is set, the baker saves all its internal \
@@ -217,7 +217,7 @@ let get_delegates (cctxt : Protocol_client_context.full)
         pkhs
   in
   let* () =
-    Tezos_signer_backends.Encrypted.decrypt_list
+    Mavryk_signer_backends.Encrypted.decrypt_list
       cctxt
       (List.filter_map
          (function
@@ -235,7 +235,7 @@ let get_delegates (cctxt : Protocol_client_context.full)
   return delegates_no_duplicates
 
 let sources_param =
-  Tezos_clic.seq_of_param
+  Mavryk_clic.seq_of_param
     (Client_keys.Public_key_hash.source_param
        ~name:"baker"
        ~desc:
@@ -243,14 +243,14 @@ let sources_param =
           the consensus key signing on the delegate's behalf")
 
 let endpoint_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"dal-node"
     ~placeholder:"uri"
     ~doc:"endpoint of the DAL node, e.g. 'http://localhost:8933'"
-    (Tezos_clic.parameter (fun _ s -> return @@ Uri.of_string s))
+    (Mavryk_clic.parameter (fun _ s -> return @@ Uri.of_string s))
 
 let block_count_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"count"
     ~short:'n'
     ~placeholder:"block count"
@@ -258,10 +258,10 @@ let block_count_arg =
     ~default:"1"
   @@ Client_proto_args.positive_int_parameter ()
 
-let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
+let delegate_commands () : Protocol_client_context.full Mavryk_clic.command list
     =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let group =
     {name = "delegate.client"; title = "Tenderbake client commands"}
   in
@@ -314,19 +314,19 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
             (fun i ->
               let level = Int32.of_int (Random.State.int rstate (1 lsl 29)) in
               let shell_header =
-                Tezos_base.Block_header.
+                Mavryk_base.Block_header.
                   {
                     level;
                     proto_level = 1;
                     (* uint8 *)
-                    predecessor = Tezos_crypto.Hashed.Block_hash.zero;
+                    predecessor = Mavryk_crypto.Hashed.Block_hash.zero;
                     timestamp = Time.Protocol.epoch;
                     validation_passes = 3;
                     (* uint8 *)
                     operations_hash =
-                      Tezos_crypto.Hashed.Operation_list_list_hash.zero;
+                      Mavryk_crypto.Hashed.Operation_list_list_hash.zero;
                     fitness = [];
-                    context = Tezos_crypto.Hashed.Context_hash.zero;
+                    context = Mavryk_crypto.Hashed.Context_hash.zero;
                   }
               in
               let now = Time.System.now () in
@@ -517,18 +517,18 @@ let delegate_commands () : Protocol_client_context.full Tezos_clic.command list
 
 let directory_parameter =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ p ->
+  Mavryk_clic.parameter (fun _ p ->
       let*! exists = Lwt_utils_unix.dir_exists p in
       if not exists then failwith "Directory doesn't exist: '%s'" p
       else return p)
 
 let per_block_vote_file_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:"read per block votes as json file"
     ~short:'V'
     ~long:"votefile"
     ~placeholder:"filename"
-    (Tezos_clic.parameter (fun (_cctxt : Protocol_client_context.full) file ->
+    (Mavryk_clic.parameter (fun (_cctxt : Protocol_client_context.full) file ->
          let open Lwt_result_syntax in
          let* file_exists =
            protect
@@ -560,7 +560,7 @@ let lookup_default_vote_file_path (cctxt : Protocol_client_context.full) =
 type baking_mode = Local of {local_data_dir_path : string} | Remote
 
 let baker_args =
-  Tezos_clic.args12
+  Mavryk_clic.args12
     pidfile_arg
     minimal_fees_arg
     minimal_nanomav_per_gas_unit_arg
@@ -627,11 +627,11 @@ let run_baker
     ~state_recorder
     delegates
 
-let baker_commands () : Protocol_client_context.full Tezos_clic.command list =
-  let open Tezos_clic in
+let baker_commands () : Protocol_client_context.full Mavryk_clic.command list =
+  let open Mavryk_clic in
   let group =
     {
-      Tezos_clic.name = "delegate.baker";
+      Mavryk_clic.name = "delegate.baker";
       title = "Commands related to the baker daemon.";
     }
   in
@@ -643,7 +643,7 @@ let baker_commands () : Protocol_client_context.full Tezos_clic.command list =
       (prefixes ["run"; "with"; "local"; "node"]
       @@ param
            ~name:"node_data_path"
-           ~desc:"Path to the node data directory (e.g. $HOME/.tezos-node)"
+           ~desc:"Path to the node data directory (e.g. $HOME/.mavryk-node)"
            directory_parameter
       @@ sources_param)
       (fun args local_data_dir_path sources cctxt ->
@@ -668,10 +668,10 @@ let baker_commands () : Protocol_client_context.full Tezos_clic.command list =
   ]
 
 let accuser_commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let group =
     {
-      Tezos_clic.name = "delegate.accuser";
+      Mavryk_clic.name = "delegate.accuser";
       title = "Commands related to the accuser daemon.";
     }
   in

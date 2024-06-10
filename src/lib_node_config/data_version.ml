@@ -258,7 +258,7 @@ let () =
         ppf
         "The data directory version is too old.@,\
          Found '%a', expected '%a'.@,\
-         It needs to be upgraded with `octez-node upgrade storage`."
+         It needs to be upgraded with `mavkit-node upgrade storage`."
         Version.pp
         got
         Version.pp

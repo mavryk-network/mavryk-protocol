@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup::host::Runtime;
-use tezos_smart_rollup::storage::path::{Path, RefPath};
-use tezos_smart_rollup_installer_config::binary::read_size;
+use mavryk_smart_rollup::host::Runtime;
+use mavryk_smart_rollup::storage::path::{Path, RefPath};
+use mavryk_smart_rollup_installer_config::binary::read_size;
 
 pub fn read_config_program_size(
     host: &impl Runtime,

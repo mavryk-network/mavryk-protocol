@@ -5,7 +5,7 @@
 
 //! Rollup Metadata: `sr1..` address & origination level.
 #[cfg(feature = "crypto")]
-use tezos_crypto_rs::hash::SmartRollupHash;
+use mavryk_crypto_rs::hash::SmartRollupHash;
 
 /// Size of raw rollup address - [`SmartRollupHash`].
 pub const RAW_ROLLUP_ADDRESS_SIZE: usize = 20;
@@ -18,7 +18,7 @@ pub const METADATA_SIZE: usize = RAW_ROLLUP_ADDRESS_SIZE + core::mem::size_of::<
 /// The raw structure is 24 bytes (20-byte rollup address followed
 /// by 4-byte origination level (i32 big-endian) )
 ///
-/// [`reveal_metadata`]: tezos_smart_rollup_host::runtime::Runtime::reveal_metadata.
+/// [`reveal_metadata`]: mavryk_smart_rollup_host::runtime::Runtime::reveal_metadata.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct RollupMetadata {
     /// Rollup address

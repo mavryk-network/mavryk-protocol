@@ -9,7 +9,7 @@ fi
 
 
 os="${1}"
-docker_image="$os-tezos"
+docker_image="$os-mavryk"
 ssh_public_key_file="${2}"
 # Set this argument when pushing the Docker image for the first time.
 # This will reinitialize the authorized_keys file

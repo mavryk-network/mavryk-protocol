@@ -17,10 +17,10 @@ should follow these guidelines:
 To use this crate, create the wanted value struct and storage object like so:
 
 ```
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::path::{concat, RefPath, OwnedPath};
-use tezos_smart_rollup_storage::storage::Storage;
-use tezos_smart_rollup_mock::MockHost;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::path::{concat, RefPath, OwnedPath};
+use mavryk_smart_rollup_storage::storage::Storage;
+use mavryk_smart_rollup_mock::MockHost;
 
 struct MyValue {
   path: OwnedPath,

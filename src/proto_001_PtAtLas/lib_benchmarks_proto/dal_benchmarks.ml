@@ -44,7 +44,7 @@ module Publish_slot_header : Benchmark.S = struct
   let default_config =
     Default_parameters.constants_mainnet.dal.cryptobox_parameters
 
-  let config_encoding = Tezos_crypto_dal.Cryptobox.parameters_encoding
+  let config_encoding = Mavryk_crypto_dal.Cryptobox.parameters_encoding
 
   type workload = unit
 
@@ -62,7 +62,7 @@ module Publish_slot_header : Benchmark.S = struct
   let operation_generator cryptobox rng_state =
     let open Result_syntax in
     let open Alpha_context in
-    let module Crypto = Tezos_crypto_dal.Cryptobox in
+    let module Crypto = Mavryk_crypto_dal.Cryptobox in
     let config = Crypto.parameters cryptobox in
     let slot_index = Dal.Slot_index.zero in
     let slot = Base_samplers.uniform_bytes ~nbytes:config.slot_size rng_state in
@@ -85,7 +85,7 @@ module Publish_slot_header : Benchmark.S = struct
       in
       let* ctxt, _ = Execution_context.make ~dal ~rng_state () in
       let* cryptobox =
-        match Tezos_crypto_dal.Cryptobox.make config with
+        match Mavryk_crypto_dal.Cryptobox.make config with
         | Ok cryptobox -> return cryptobox
         | Error (`Fail msg) ->
             failwith "Dal_benchmarks: failed to initialize cryptobox (%s)" msg
@@ -128,7 +128,7 @@ module Publish_slot_header : Benchmark.S = struct
   let create_benchmarks ~rng_state ~bench_num config =
     let () =
       Lwt_main.run
-      @@ Tezos_crypto_dal.Cryptobox.Config.init_dal
+      @@ Mavryk_crypto_dal.Cryptobox.Config.init_dal
            ~find_srs_files:(Fun.const (Ok ("", "")))
            {
              activated = true;

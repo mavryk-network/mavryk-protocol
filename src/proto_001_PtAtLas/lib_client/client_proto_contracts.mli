@@ -36,14 +36,14 @@ module Originated_contract_alias : sig
   val destination_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'wallet)) Tezos_clic.params ->
-    (Contract_hash.t -> 'a, 'wallet) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'wallet)) Mavryk_clic.params ->
+    (Contract_hash.t -> 'a, 'wallet) Mavryk_clic.params
 
   val destination_arg :
     ?name:string ->
     ?doc:string ->
     unit ->
-    (Contract_hash.t option, #Client_context.wallet) Tezos_clic.arg
+    (Contract_hash.t option, #Client_context.wallet) Mavryk_clic.arg
 end
 
 module Contract_alias : sig
@@ -53,8 +53,8 @@ module Contract_alias : sig
   val alias_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'wallet)) Tezos_clic.params ->
-    (Contract.t -> 'a, 'wallet) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'wallet)) Mavryk_clic.params ->
+    (Contract.t -> 'a, 'wallet) Mavryk_clic.params
 
   val find_destination :
     #Client_context.wallet -> string -> Contract.t tzresult Lwt.t
@@ -62,14 +62,14 @@ module Contract_alias : sig
   val destination_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'wallet)) Tezos_clic.params ->
-    (Contract.t -> 'a, 'wallet) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'wallet)) Mavryk_clic.params ->
+    (Contract.t -> 'a, 'wallet) Mavryk_clic.params
 
   val destination_arg :
     ?name:string ->
     ?doc:string ->
     unit ->
-    (Contract.t option, #Client_context.wallet) Tezos_clic.arg
+    (Contract.t option, #Client_context.wallet) Mavryk_clic.arg
 
   val rev_find :
     #Client_context.wallet -> Contract.t -> string option tzresult Lwt.t

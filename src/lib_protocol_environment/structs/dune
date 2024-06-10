@@ -2,17 +2,17 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_structs)
- (public_name octez-proto-libs.protocol-environment.structs)
+ (name mavryk_protocol_environment_structs)
+ (public_name mavkit-proto-libs.protocol-environment.structs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-libs.lwt-result-stdlib
-  octez-l2-libs.scoru-wasm
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-libs.lwt-result-stdlib
+  mavkit-l2-libs.scoru-wasm
   data-encoding
   bls12-381
-  octez-libs.plonk)
+  mavkit-libs.plonk)
  (flags
   (:standard)
   -open Plonk))

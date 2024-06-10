@@ -8,12 +8,12 @@
 # should be removed and replaced by a python script calling the test's core
 # logic.
 
-# Ensure we are running from the root directory of the Tezos repository.
+# Ensure we are running from the root directory of the Mavryk repository.
 cd "$(dirname "$0")"/../.. || exit
 
-# Tezos binaries.
-tezos_node=./octez-node
-tezos_client=./octez-client
+# Mavryk binaries.
+mavryk_node=./mavkit-node
+mavryk_client=./mavkit-client
 
 # Protocol configuration.
 protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
@@ -28,8 +28,8 @@ rpc_port=8732
 
 # Temporary files.
 tmp=openapi-tmp
-data_dir=$tmp/octez-sandbox
-client_dir=$tmp/octez-client
+data_dir=$tmp/mavkit-sandbox
+client_dir=$tmp/mavkit-client
 api_json=$tmp/rpc-api.json
 proto_api_json=$tmp/proto-api.json
 mempool_api_json=$tmp/mempool-api.json
@@ -40,17 +40,17 @@ proto_openapi_json=docs/api/$protocol_name-openapi-dev.json
 mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-dev.json
 
 # Get version number.
-version=$(dune exec tezos-version)
+version=$(dune exec mavryk-version)
 
 # Start a sandbox node.
-$tezos_node config init --data-dir $data_dir \
+$mavryk_node config init --data-dir $data_dir \
     --network sandbox \
     --expected-pow 0 \
     --rpc-addr localhost:$rpc_port \
     --no-bootstrap-peer \
     --synchronisation-threshold 0
-$tezos_node identity generate --data-dir $data_dir
-$tezos_node run --data-dir $data_dir &
+$mavryk_node identity generate --data-dir $data_dir
+$mavryk_node run --data-dir $data_dir &
 node_pid="$!"
 
 # Wait for the node to be ready (sorry for the hackish way...)
@@ -58,8 +58,8 @@ sleep 1
 
 # Activate the protocol.
 mkdir $client_dir
-$tezos_client --base-dir $client_dir import secret key activator $activator_secret_key
-$tezos_client --base-dir $client_dir activate protocol $protocol_hash \
+$mavryk_client --base-dir $client_dir import secret key activator $activator_secret_key
+$mavryk_client --base-dir $client_dir activate protocol $protocol_hash \
     with fitness 1 \
     and key activator \
     and parameters $protocol_parameters \

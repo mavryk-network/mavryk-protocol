@@ -1,7 +1,7 @@
 Name:		@PKG@
 Version:	@VERSION@
 Release:	@REVISION@
-Summary:	The Octez Signer
+Summary:	The Mavkit Signer
 
 Packager:   @MAINT@
 License:	MIT
@@ -16,12 +16,12 @@ Source0:	@FAKESRC@
 tar cpf - . | (cd $RPM_BUILD_ROOT && tar xpf -)
 
 %description
-The Octez Signer
+The Mavkit Signer
 
 %files
-%{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-signer
-%config /etc/octez/signer.conf
+%{_bindir}/mavkit-*
+%{_sysconfdir}/init.d/mavkit-signer
+%config /etc/mavkit/signer.conf
 
 %post
 getent group tzsigner >/dev/null 2>&1 || groupadd tzsigner

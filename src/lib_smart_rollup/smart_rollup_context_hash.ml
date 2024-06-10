@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_crypto
+open Mavryk_crypto
 
 include
   Blake2B.Make

@@ -2,5 +2,5 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
-Description: The Octez Smart Rollup daemons
+Description: The Mavkit Smart Rollup daemons
 Depends: @DPKG@-client (>=@VERSION@), @DEPENDS@

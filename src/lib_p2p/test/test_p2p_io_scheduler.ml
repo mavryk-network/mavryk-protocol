@@ -99,7 +99,7 @@ let receive conn =
     let* r = read conn (mk_buffer_safe buf) in
     match r with
     | Ok _ -> loop ()
-    | Error (Tezos_p2p_services.P2p_errors.Connection_closed :: _) ->
+    | Error (Mavryk_p2p_services.P2p_errors.Connection_closed :: _) ->
         return_unit
     | Error err -> Lwt.fail (Error err)
   in
@@ -194,7 +194,7 @@ let client ?max_upload_speed ?write_queue_size addr port time _n =
 let run ?display_client_stat ?max_download_speed ?max_upload_speed
     ~read_buffer_size ?read_queue_size ?write_queue_size addr port time n =
   let open Lwt_result_syntax in
-  let*! () = Tezos_base_unix.Internal_event_unix.init () in
+  let*! () = Mavryk_base_unix.Internal_event_unix.init () in
   let* main_socket, port = listen ?port addr in
   let* server_node =
     Process.detach
@@ -229,7 +229,7 @@ let run ?display_client_stat ?max_download_speed ?max_upload_speed
 
 let () = Random.self_init ()
 
-let init_logs = lazy (Tezos_base_unix.Internal_event_unix.init ())
+let init_logs = lazy (Mavryk_base_unix.Internal_event_unix.init ())
 
 let wrap n f =
   Alcotest_lwt.test_case n `Quick (fun _lwt_switch () ->
@@ -255,7 +255,7 @@ let () =
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-p2p"
+       "mavryk-p2p"
        [
          ( "p2p.io-scheduler",
            [

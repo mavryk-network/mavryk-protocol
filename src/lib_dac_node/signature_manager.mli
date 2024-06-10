@@ -30,13 +30,13 @@ type error +=
   | Cannot_compute_aggregate_signature of string
   | Public_key_for_witness_not_available of int * string
   | Public_key_is_non_committee_member of
-      Tezos_crypto.Aggregate_signature.public_key_hash
+      Mavryk_crypto.Aggregate_signature.public_key_hash
   | Signature_verification_failed of
-      (Tezos_crypto.Aggregate_signature.public_key
-      * Tezos_crypto.Aggregate_signature.t
+      (Mavryk_crypto.Aggregate_signature.public_key
+      * Mavryk_crypto.Aggregate_signature.t
       * string)
   | Public_key_for_committee_member_not_available of
-      Tezos_crypto.Aggregate_signature.public_key_hash
+      Mavryk_crypto.Aggregate_signature.public_key_hash
 
 (** Module that exposes signature operations necsesary when running in
     [Configuration.Coordinator] mode.*)

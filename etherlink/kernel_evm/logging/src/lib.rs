@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #[doc(hidden)]
-pub use tezos_smart_rollup_debug::debug_msg;
+pub use mavryk_smart_rollup_debug::debug_msg;
 
 #[derive(PartialEq)]
 pub enum Level {

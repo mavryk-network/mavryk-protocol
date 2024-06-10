@@ -39,7 +39,7 @@ type config = {
   connection_timeout : Time.System.Span.t;
   authentication_timeout : Time.System.Span.t;
   reconnection_config : Point_reconnection_config.t;
-  proof_of_work_target : Tezos_crypto.Crypto_box.pow_target;
+  proof_of_work_target : Mavryk_crypto.Crypto_box.pow_target;
   listening_port : P2p_addr.port option;
   advertised_port : P2p_addr.port option;
   disable_peer_discovery : bool;
@@ -64,7 +64,7 @@ type ('msg, 'peer_meta, 'conn_meta) dependencies = {
       (** [P2p_fd.connect] *)
   socket_authenticate :
     canceler:Lwt_canceler.t ->
-    proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+    proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
     incoming:bool ->
     P2p_io_scheduler.connection ->
     P2p_point.Id.t ->
@@ -348,8 +348,8 @@ let raw_authenticate t ?point_info canceler scheduled_conn point =
                   | P2p_errors.Not_enough_proof_of_work _
                   | P2p_errors.Invalid_auth | P2p_errors.Decipher_error
                   | P2p_errors.Invalid_message_size
-                  | Tezos_base.Data_encoding_wrapper.Encoding_error _
-                  | Tezos_base.Data_encoding_wrapper
+                  | Mavryk_base.Data_encoding_wrapper.Encoding_error _
+                  | Mavryk_base.Data_encoding_wrapper
                     .Unexpected_size_of_encoded_value
                   | P2p_errors.Decoding_error _
                   | P2p_errors.Invalid_chunks_size _ ->
@@ -736,7 +736,7 @@ module Internal_for_tests = struct
       P2p_fd.t -> Unix.sockaddr -> (unit, P2p_fd.connect_error) result Lwt.t;
     socket_authenticate :
       canceler:Lwt_canceler.t ->
-      proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+      proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
       incoming:bool ->
       P2p_io_scheduler.connection ->
       P2p_point.Id.t ->
@@ -806,7 +806,7 @@ module Internal_for_tests = struct
     let connection_timeout = Time.System.Span.of_seconds_exn 10. in
     let authentication_timeout = Time.System.Span.of_seconds_exn 5. in
     let reconnection_config = Point_reconnection_config.default in
-    let proof_of_work_target = Tezos_crypto.Crypto_box.make_pow_target 0. in
+    let proof_of_work_target = Mavryk_crypto.Crypto_box.make_pow_target 0. in
     let listening_port = Some 9732 in
     let advertised_port = None in
     let disable_peer_discovery = false in

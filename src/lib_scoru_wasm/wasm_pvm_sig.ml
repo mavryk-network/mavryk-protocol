@@ -33,7 +33,7 @@ module type Internal_for_tests = sig
   val get_tick_state : tree -> tick_state Lwt.t
 
   val get_module_instance_exn :
-    tree -> Tezos_webassembly_interpreter.Instance.module_inst Lwt.t
+    tree -> Mavryk_webassembly_interpreter.Instance.module_inst Lwt.t
 
   val is_stuck : tree -> Wasm_pvm_errors.t option Lwt.t
 
@@ -46,10 +46,10 @@ module type Internal_for_tests = sig
   val reset_reboot_counter : tree -> tree Lwt.t
 
   val get_input_buffer :
-    tree -> Tezos_webassembly_interpreter.Input_buffer.t Lwt.t
+    tree -> Mavryk_webassembly_interpreter.Input_buffer.t Lwt.t
 
   val get_output_buffer :
-    tree -> Tezos_webassembly_interpreter.Output_buffer.t Lwt.t
+    tree -> Mavryk_webassembly_interpreter.Output_buffer.t Lwt.t
 
   val compute_step_many_until :
     ?max_steps:int64 ->
@@ -101,5 +101,5 @@ let input_info_encoding =
     (fun {inbox_level; message_counter} -> (inbox_level, message_counter))
     (fun (inbox_level, message_counter) -> {inbox_level; message_counter})
     (obj2
-       (req "inbox_level" Tezos_base.Bounded.Non_negative_int32.encoding)
+       (req "inbox_level" Mavryk_base.Bounded.Non_negative_int32.encoding)
        (req "message_counter" n))

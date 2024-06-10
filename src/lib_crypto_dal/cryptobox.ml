@@ -29,7 +29,7 @@ open Kzg.Bls
 module FFT = Kzg.Utils.FFT
 module Degree_check = Kzg.Degree_check
 module Kate_amortized = Kzg.Kate_amortized
-module Base58 = Tezos_crypto.Base58
+module Base58 = Mavryk_crypto.Base58
 
 type error += Failed_to_load_trusted_setup of string
 
@@ -138,11 +138,11 @@ module Inner = struct
   module Commitment = struct
     include Kzg.Commitment.Single
 
-    type Tezos_crypto.Base58.data += Data of t
+    type Mavryk_crypto.Base58.data += Data of t
 
     let b58check_encoding =
-      Tezos_crypto.Base58.register_encoding
-        ~prefix:Tezos_crypto.Base58.Prefix.slot_header
+      Mavryk_crypto.Base58.register_encoding
+        ~prefix:Mavryk_crypto.Base58.Prefix.slot_header
         ~length:size
         ~to_raw:to_string
         ~of_raw:of_string_opt
@@ -151,7 +151,7 @@ module Inner = struct
 
     let raw_encoding = encoding [@@coverage off]
 
-    include Tezos_crypto.Helpers.Make (struct
+    include Mavryk_crypto.Helpers.Make (struct
       type t = Kzg.Commitment.Single.t
 
       let name = "DAL_commitment"
@@ -1074,7 +1074,7 @@ module Inner = struct
         Encoding.shards_proofs_precomputation_encoding
         precomputation
     in
-    Tezos_crypto.Blake2B.hash_bytes [encoding]
+    Mavryk_crypto.Blake2B.hash_bytes [encoding]
 
   let load_precompute_shards_proofs ~hash ~filename () =
     protect (fun () ->
@@ -1090,13 +1090,13 @@ module Inner = struct
               match hash with
               | Some given ->
                   let expected = hash_precomputation precomputation in
-                  if Tezos_crypto.Blake2B.equal given expected then return_unit
+                  if Mavryk_crypto.Blake2B.equal given expected then return_unit
                   else
                     tzfail
                       (Invalid_precomputation_hash
                          {
-                           given = Tezos_crypto.Blake2B.to_string given;
-                           expected = Tezos_crypto.Blake2B.to_string expected;
+                           given = Mavryk_crypto.Blake2B.to_string given;
+                           expected = Mavryk_crypto.Blake2B.to_string expected;
                          })
               | None -> return_unit
             in

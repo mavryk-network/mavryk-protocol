@@ -99,7 +99,7 @@ let strip_0x s =
   else s
 
 let rec retrieve_signature () =
-  (* NB: you can use the octez-evm-upgrade-signer binary to provide the signature *)
+  (* NB: you can use the mavkit-evm-upgrade-signer binary to provide the signature *)
   let signature = strip_0x @@ read_line () in
   if String.length signature != 128 then (
     Log.info "Provided signature must be 128 characters long, please try again." ;
@@ -166,7 +166,7 @@ let upgrade_kernel ~configuration_path ~testnet () =
     get_upgrade_config (JSON.parse_file configuration_path)
   in
   let testnet = testnet () in
-  let* client, node = Helpers.setup_octez_node ~testnet () in
+  let* client, node = Helpers.setup_mavkit_node ~testnet () in
   let* operator = Client.gen_and_show_keys client in
   let* () =
     Evm_rollup.check_operator_balance

@@ -32,30 +32,30 @@ let assert_ok ~msg = function
 
 let prepare_genesis base_dir =
   let open Lwt_result_syntax in
-  let*! index = Tezos_context.Context.init ~readonly:false base_dir in
+  let*! index = Mavryk_context.Context.init ~readonly:false base_dir in
   let genesis_block =
     Block_hash.of_b58check_exn
       "BLockGenesisGenesisGenesisGenesisGenesisGeneskvg68z"
   in
   let* context_hash =
-    Tezos_context.Context.commit_genesis
+    Mavryk_context.Context.commit_genesis
       index
       ~chain_id:(Chain_id.of_block_hash genesis_block)
       ~time:(Time.Protocol.of_seconds 0L)
       ~protocol:Protocol_hash.zero
   in
-  let*! o = Tezos_context.Context.checkout index context_hash in
+  let*! o = Mavryk_context.Context.checkout index context_hash in
   match o with
   | None -> assert false
   | Some context ->
       let context =
-        Tezos_shell_context.Shell_context.wrap_disk_context context
+        Mavryk_shell_context.Shell_context.wrap_disk_context context
       in
       return (index, context, context_hash)
 
 let commit context =
-  let context = Tezos_shell_context.Shell_context.unwrap_disk_context context in
-  Tezos_context.Context.commit
+  let context = Mavryk_shell_context.Shell_context.unwrap_disk_context context in
+  Mavryk_context.Context.commit
     ~time:
       (Time.Protocol.of_seconds
          (Int64.of_int (int_of_float @@ Unix.gettimeofday ())))
@@ -63,15 +63,15 @@ let commit context =
 
 let flush context =
   let open Lwt.Syntax in
-  let context = Tezos_shell_context.Shell_context.unwrap_disk_context context in
-  let+ context = Tezos_context.Context.flush context in
-  Tezos_shell_context.Shell_context.wrap_disk_context context
+  let context = Mavryk_shell_context.Shell_context.unwrap_disk_context context in
+  let+ context = Mavryk_context.Context.flush context in
+  Mavryk_shell_context.Shell_context.wrap_disk_context context
 
 let prepare_empty_context base_dir =
   let open Lwt_result_syntax in
   let* index, context, _context_hash = prepare_genesis base_dir in
   let*! context_hash = commit context in
-  let*! () = Tezos_context.Context.close index in
+  let*! () = Mavryk_context.Context.close index in
   return context_hash
 
 let purge_disk_cache () =
@@ -83,13 +83,13 @@ let purge_disk_cache () =
 
 let load_context_from_disk_lwt base_dir context_hash =
   let open Lwt_syntax in
-  let* index = Tezos_context.Context.init ~readonly:false base_dir in
-  let* o = Tezos_context.Context.checkout index context_hash in
+  let* index = Mavryk_context.Context.init ~readonly:false base_dir in
+  let* o = Mavryk_context.Context.checkout index context_hash in
   match o with
   | None -> assert false
   | Some context ->
       Lwt.return
-        (Tezos_shell_context.Shell_context.wrap_disk_context context, index)
+        (Mavryk_shell_context.Shell_context.wrap_disk_context context, index)
 
 let load_context_from_disk base_dir context_hash =
   Lwt_main.run (load_context_from_disk_lwt base_dir context_hash)
@@ -99,19 +99,19 @@ let with_context ~base_dir ~context_hash f =
   Lwt_main.run
     (let open Lwt_syntax in
     let* res = f context in
-    let* () = Tezos_context.Context.close index in
+    let* () = Mavryk_context.Context.close index in
     Lwt.return res)
 
 let prepare_base_dir base_dir = Unix.unlink base_dir
 
 let initialize_key rng_state context path storage_size =
   let bytes = Base_samplers.uniform_bytes rng_state ~nbytes:storage_size in
-  Tezos_protocol_environment.Context.add context path bytes
+  Mavryk_protocol_environment.Context.add context path bytes
 
 let commit_and_reload base_dir index context =
   let open Lwt_syntax in
   let* context_hash = commit context in
-  let* () = Tezos_context.Context.close index in
+  let* () = Mavryk_context.Context.close index in
   load_context_from_disk_lwt base_dir context_hash
 
 module Key_map = struct
@@ -324,19 +324,19 @@ let load_head_block data_dir =
         Printf.sprintf "%s/store/chain_%s/config.json" data_dir chain_id
       in
       let config =
-        Lwt_main.run @@ Tezos_stdlib_unix.Lwt_utils_unix.read_file fn_config
+        Lwt_main.run @@ Mavryk_stdlib_unix.Lwt_utils_unix.read_file fn_config
       in
       match Data_encoding.Json.from_string config with
       | Error s -> Stdlib.failwith s
       | Ok config ->
           Data_encoding.Json.destruct
-            Tezos_store_shared.Store_types.chain_config_encoding
+            Mavryk_store_shared.Store_types.chain_config_encoding
             config
     in
     config.genesis
   in
   let open Lwt_result_syntax in
-  let open Tezos_store.Store in
+  let open Mavryk_store.Store in
   let* store =
     init
       ~store_dir:(Filename.concat data_dir "store")
@@ -483,7 +483,7 @@ let fill_disk_cache ~rng ~restrict_memory context keys_list =
               if len <= i then get_ith (i - len) keys_list else keys.(i)
         in
         let* _ =
-          Tezos_protocol_environment.Context.find
+          Mavryk_protocol_environment.Context.find
             context
             (fst @@ get_ith i keys_list)
         in

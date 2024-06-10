@@ -64,7 +64,7 @@ module Size_benchmarks_shared_config = struct
       (Model.affine ~intercept:intercept_variable ~coeff:coeff_variable)
 end
 
-module Value_size_benchmark : Tezos_benchmark.Benchmark.S = struct
+module Value_size_benchmark : Mavryk_benchmark.Benchmark.S = struct
   include Size_benchmarks_shared_config
 
   let name = ns "VALUE_SIZE"
@@ -183,7 +183,7 @@ let () = Registration.register (module Type_size_benchmark)
 
 (** Benchmarking {!Script_typed_ir_size.kinstr_size}. *)
 
-module Kinstr_size_benchmark : Tezos_benchmark.Benchmark.S = struct
+module Kinstr_size_benchmark : Mavryk_benchmark.Benchmark.S = struct
   include Size_benchmarks_shared_config
 
   let name = ns "KINSTR_SIZE"

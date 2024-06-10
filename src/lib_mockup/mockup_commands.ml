@@ -25,7 +25,7 @@
 
 let group =
   {
-    Tezos_clic.name = "mockup";
+    Mavryk_clic.name = "mockup";
     title = "Commands for creating mockup environments";
   }
 
@@ -39,8 +39,8 @@ let list_mockup_command_handler _ _ =
   Lwt_result_syntax.return_unit
 
 let list_mockup_command :
-    Tezos_client_base.Client_context.full Tezos_clic.command =
-  let open Tezos_clic in
+    Mavryk_client_base.Client_context.full Mavryk_clic.command =
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"List available protocols available for mockup construction."
@@ -49,15 +49,15 @@ let list_mockup_command :
     list_mockup_command_handler
 
 let migrate_mockup_command_handler () next_protococol_hash
-    (cctxt : Tezos_client_base.Client_context.full) =
+    (cctxt : Mavryk_client_base.Client_context.full) =
   match Protocol_hash.of_b58check next_protococol_hash with
   | Error _ as result -> Lwt.return result
   | Ok next_protocol_hash ->
       Migration.migrate_mockup ~cctxt ~protocol_hash:None ~next_protocol_hash
 
 let migrate_mockup_command :
-    Tezos_client_base.Client_context.full Tezos_clic.command =
-  let open Tezos_clic in
+    Mavryk_client_base.Client_context.full Mavryk_clic.command =
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Migrates an on-disk mockup context from a protocol to another."
