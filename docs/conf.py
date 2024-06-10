@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.abspath('.') + '/_extensions')
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.extlinks', 'mavryk_custom_roles', 'michelsonlexer']
+extensions = ['sphinx.ext.extlinks', 'tezos_custom_roles', 'michelsonlexer']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -88,7 +88,7 @@ exclude_patterns = [
     'Thumbs.db',
     '.DS_Store',
     'doc_gen',
-    'nairobi',
+    'atlas',
 ]
 # TODO tezos/tezos#2170: exclude the active protocol 'NNN' above
 
@@ -130,9 +130,9 @@ html_extra_path = [
     '404.html',
     '_redirects',
     # manually copy images that are only included in raw HTML directives:
-    'images/building_on_tezos_5.png',
+    'images/building_on_mavryk_5.png',
     'images/contributing_to_mavkit_6.png',
-    'images/discover_tezos_1.png',
+    'images/discover_mavryk_1.png',
     'images/getting_started_2.png',
     'images/understanding_mavkit_4.png',
     'images/using_mavkit_3.png',
