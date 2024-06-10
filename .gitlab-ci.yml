@@ -26,7 +26,7 @@ workflow:
       variables:
         PIPELINE_TYPE: 'latest_release_test'
     # Allow 'Master branch' pipelines
-    - if: '$CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "atlas-update-full-refactor")'
+    - if: '$CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
       variables:
         PIPELINE_TYPE: 'master_branch'
     # Allow 'Release tag' pipelines
@@ -184,7 +184,7 @@ include:
   # Master branch
   - local: .gitlab/ci/pipelines/master_branch.yml
     rules:
-      - if: '$CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "atlas-update-full-refactor")'
+      - if: '$CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
 
   # Release tag
   - local: .gitlab/ci/pipelines/release_tag.yml
