@@ -6,34 +6,34 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base-test-helpers
-  octez-libs.base.unix
-  octez-alcotezt
-  octez-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.base-test-helpers
+  mavkit-libs.base.unix
+  mavkit-alcotezt
+  mavkit-libs.test-helpers
   qcheck-alcotest
-  octez-libs.stdlib-unix
-  octez-libs.micheline
-  octez-protocol-alpha-libs.plugin
-  tezos-protocol-alpha.protocol
-  tezos-protocol-alpha.parameters
-  octez-protocol-alpha-libs.test-helpers)
+  mavkit-libs.stdlib-unix
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.plugin
+  mavryk-protocol-alpha.protocol
+  mavryk-protocol-alpha.parameters
+  mavkit-protocol-alpha-libs.test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_base_test_helpers
-  -open Octez_alcotezt
-  -open Tezos_test_helpers
-  -open Tezos_micheline
-  -open Tezos_protocol_plugin_alpha
-  -open Tezos_protocol_alpha
-  -open Tezos_protocol_alpha.Protocol
-  -open Tezos_protocol_alpha_parameters
-  -open Tezos_alpha_test_helpers)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_test_helpers
+  -open Mavryk_micheline
+  -open Mavryk_protocol_plugin_alpha
+  -open Mavryk_protocol_alpha
+  -open Mavryk_protocol_alpha.Protocol
+  -open Mavryk_protocol_alpha_parameters
+  -open Mavryk_alpha_test_helpers)
  (modules
   helpers
   test_conflict_handler
@@ -54,7 +54,7 @@
 
 (rule
  (alias runtest)
- (package octez-protocol-alpha-libs)
+ (package mavkit-protocol-alpha-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

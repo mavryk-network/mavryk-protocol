@@ -26,7 +26,7 @@
 
 (** Run Tezos client commands. *)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 (** Values that can be passed to the client's [--endpoint] argument *)
 type endpoint =
@@ -34,11 +34,8 @@ type endpoint =
   | Proxy_server of Proxy_server.t  (** A proxy server *)
   | Foreign_endpoint of Endpoint.t  (** A service not managed by Tezt *)
 
-(** Values that can be passed to the client's [--adaptive-issuance-vote] argument *)
-type ai_vote = On | Off | Pass
-
 (** A string representation of an endpoint suitable to be used as a CLI
-    argument (e.g., [http://127.0.0.1:5893]). *)
+    argument (e.g., [http://localhost:5893]). *)
 val string_of_endpoint : ?hostname:bool -> endpoint -> string
 
 (** Values that can be passed to the client's [--media-type] argument *)
@@ -202,8 +199,8 @@ val rpc_path_query_to_string : ?query_string:query_string -> path -> string
     See the documentation of {!Process.spawn} for information about
     [log_*], [hooks] and [env] arguments.
 
-    In particular, [env] can be used to pass [TEZOS_LOG], e.g.
-    [("TEZOS_LOG", "proxy_rpc->debug")] to enable logging.
+    In particular, [env] can be used to pass [MAVRYK_LOG], e.g.
+    [("MAVRYK_LOG", "proxy_rpc->debug")] to enable logging.
 
     The [data] argument allows to add data to the RPC call either with JSON
     value or with a filename containing a JSON value.
@@ -261,13 +258,13 @@ module Spawn : sig
     JSON.t Runnable.process
 end
 
-(** Run [octez-client rpc list]. *)
+(** Run [mavkit-client rpc list]. *)
 val rpc_list : ?endpoint:endpoint -> t -> string Lwt.t
 
 (** Same as [rpc_list], but do not wait for the process to exit. *)
 val spawn_rpc_list : ?endpoint:endpoint -> t -> Process.t
 
-(** Run [octez-client rpc schema]. *)
+(** Run [mavkit-client rpc schema]. *)
 val rpc_schema :
   ?log_command:bool ->
   ?log_status_on_exit:bool ->
@@ -297,7 +294,7 @@ val spawn_rpc_schema :
   t ->
   Process.t
 
-(** Run [octez-client rpc /chains/<chain>/blocks/<block>/header/shell]. *)
+(** Run [mavkit-client rpc /chains/<chain>/blocks/<block>/header/shell]. *)
 val shell_header :
   ?endpoint:endpoint -> ?chain:string -> ?block:string -> t -> string Lwt.t
 
@@ -312,7 +309,7 @@ val level :
 (** {2 Admin Client Commands} *)
 
 module Admin : sig
-  (** Run octez-admin-client commands. *)
+  (** Run mavkit-admin-client commands. *)
 
   (** Ask a node to trust the address and port of another node. *)
   val trust_address : ?endpoint:endpoint -> peer:Node.t -> t -> unit Lwt.t
@@ -352,13 +349,13 @@ module Admin : sig
   (** Same as [ban_peer], but do not wait for the process to exit. *)
   val spawn_ban_peer : ?endpoint:endpoint -> peer:string -> t -> Process.t
 
-  (** Run [octez-admin-client p2p stat]. *)
+  (** Run [mavkit-admin-client p2p stat]. *)
   val p2p_stat : ?endpoint:endpoint -> t -> string Lwt.t
 
   (** Same as [p2p_stat], but do not wait for the process to exit. *)
   val spawn_p2p_stat : ?endpoint:endpoint -> t -> Process.t
 
-  (** Run [octez-admin-client inject protocol <protocol_path>].
+  (** Run [mavkit-admin-client inject protocol <protocol_path>].
 
       Returns the hash of the injected protocol. *)
   val inject_protocol :
@@ -368,13 +365,13 @@ module Admin : sig
   val spawn_inject_protocol :
     ?endpoint:endpoint -> protocol_path:string -> t -> Process.t
 
-  (** Run [octez-admin-client list protocols] and return the list of protocol hashes. *)
+  (** Run [mavkit-admin-client list protocols] and return the list of protocol hashes. *)
   val list_protocols : ?endpoint:endpoint -> t -> string list Lwt.t
 
   (** Same as [list_protocols], but do not wait for the process to exit. *)
   val spawn_list_protocols : ?endpoint:endpoint -> t -> Process.t
 
-  (** Run [octez-admin-client protocol environment] on a protocol hash.
+  (** Run [mavkit-admin-client protocol environment] on a protocol hash.
 
       Return its environment version as a string such as ["V1"]. *)
   val protocol_environment : ?endpoint:endpoint -> t -> string -> string Lwt.t
@@ -386,13 +383,13 @@ end
 
 (** {2 Regular Client Commands} *)
 
-(** Run [octez-client --version]. *)
+(** Run [mavkit-client --version]. *)
 val version : t -> unit Lwt.t
 
 (** Same as [version], but do not wait for the process to exit. *)
 val spawn_version : t -> Process.t
 
-(** Run [octez-client import secret keys from mnemonic]. *)
+(** Run [mavkit-client import secret keys from mnemonic]. *)
 val import_keys_from_mnemonic :
   ?endpoint:endpoint ->
   ?force:bool ->
@@ -414,7 +411,7 @@ val spawn_import_keys_from_mnemonic :
   alias:string ->
   Process.t * Lwt_io.output_channel
 
-(** Run [octez-client import secret key] for an encrypted key. *)
+(** Run [mavkit-client import secret key] for an encrypted key. *)
 val import_encrypted_secret_key :
   ?hooks:Process_hooks.t ->
   ?force:bool ->
@@ -435,7 +432,7 @@ val spawn_import_encrypted_secret_key :
   alias:string ->
   Process.t * Lwt_io.output_channel
 
-(** Run [octez-client import secret key]. *)
+(** Run [mavkit-client import secret key]. *)
 val import_secret_key :
   ?force:bool ->
   ?endpoint:endpoint ->
@@ -444,7 +441,7 @@ val import_secret_key :
   alias:string ->
   unit Lwt.t
 
-(** Run [octez-client import secret key] for remote signer. *)
+(** Run [mavkit-client import secret key] for remote signer. *)
 val import_signer_key :
   ?endpoint:endpoint ->
   ?force:bool ->
@@ -474,7 +471,7 @@ val spawn_import_secret_key :
   alias:string ->
   Process.t
 
-(** Run [octez-client activate protocol].
+(** Run [mavkit-client activate protocol].
 
     If [timestamp] is not specified explicitely, it is set to [Ago
     timestamp_delay], where [timestamp_delay] is 365 days, which
@@ -541,7 +538,7 @@ val spawn_activate_protocol :
    will contain no operations. *)
 val empty_mempool_file : ?filename:string -> unit -> string
 
-(** Run [octez-client bake for].
+(** Run [mavkit-client bake for].
 
     Default [key] is {!Constant.bootstrap1.alias}.
 
@@ -552,8 +549,8 @@ val bake_for :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -561,7 +558,6 @@ val bake_for :
   ?force:bool ->
   ?context_path:string ->
   ?dal_node_endpoint:string ->
-  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   ?expect_failure:bool ->
   t ->
@@ -583,8 +579,8 @@ val bake_for_and_wait :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -594,7 +590,6 @@ val bake_for_and_wait :
   ?level_before:int ->
   ?node:Node.t ->
   ?dal_node_endpoint:string ->
-  ?ai_vote:ai_vote ->
   t ->
   unit Lwt.t
 
@@ -604,8 +599,8 @@ val bake_for_and_wait_level :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -615,7 +610,6 @@ val bake_for_and_wait_level :
   ?level_before:int ->
   ?node:Node.t ->
   ?dal_node_endpoint:string ->
-  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   t ->
   int Lwt.t
@@ -626,8 +620,8 @@ val spawn_bake_for :
   ?protocol:Protocol.t ->
   ?keys:string list ->
   ?minimal_fees:int ->
-  ?minimal_nanotez_per_gas_unit:int ->
-  ?minimal_nanotez_per_byte:int ->
+  ?minimal_nanomav_per_gas_unit:int ->
+  ?minimal_nanomav_per_byte:int ->
   ?minimal_timestamp:bool ->
   ?mempool:string ->
   ?ignore_node_mempool:bool ->
@@ -635,13 +629,12 @@ val spawn_bake_for :
   ?force:bool ->
   ?context_path:string ->
   ?dal_node_endpoint:string ->
-  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   t ->
   Process.t
 
-(** Run [octez-client attest for]. Run [octez-client endorse for] for protocol
-    older than 018.
+(** Run [mavkit-client attest for]. Run [mavkit-client endorse for] for protocol
+    older than 001.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val attest_for :
@@ -661,8 +654,8 @@ val spawn_attest_for :
   t ->
   Process.t
 
-(** Run [octez-client preattest for]. Run [octez-client preendorse for] for
-    protocol older than 018.
+(** Run [mavkit-client preattest for]. Run [mavkit-client preendorse for] for
+    protocol older than 001.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val preattest_for :
@@ -682,7 +675,7 @@ val spawn_preattest_for :
   t ->
   Process.t
 
-(** Run [octez-client propose for].
+(** Run [mavkit-client propose for].
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val spawn_propose_for :
@@ -707,18 +700,18 @@ val propose_for :
   t ->
   unit Lwt.t
 
-(** Run [octez-client show address <alias> --show-secret] and parse
+(** Run [mavkit-client show address <alias> --show-secret] and parse
     the output into an [Account.key].
     E.g. for [~alias:"bootstrap1"] the command yields:
 {v
-      Hash: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+      Hash: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
       Public Key: edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav
       Secret Key: unencrypted:edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh
 v}
     which becomes:
 {[
      { alias = "bootstrap1";
-       public_key_hash = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+       public_key_hash = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
        public_key = "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
        secret_key =
          Unencrypted "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh"; }
@@ -729,7 +722,7 @@ val show_address : alias:string -> t -> Account.key Lwt.t
     (which also implies that there is no output key to parse). *)
 val spawn_show_address : alias:string -> t -> Process.t
 
-(** Run [octez-client list known addresses] and parse the output into
+(** Run [mavkit-client list known addresses] and parse the output into
     a association list from aliases to public key hashes. *)
 val list_known_addresses : t -> (string * string) list Lwt.t
 
@@ -737,18 +730,18 @@ val list_known_addresses : t -> (string * string) list Lwt.t
     exit. *)
 val spawn_list_known_addresses : t -> Process.t
 
-(** Run [octez-client gen keys] and return the key alias.
+(** Run [mavkit-client gen keys] and return the key alias.
 
     The default value for [alias] is a fresh alias of the form [tezt_<n>]. *)
 val gen_keys :
   ?force:bool -> ?alias:string -> ?sig_alg:string -> t -> string Lwt.t
 
-(** A helper to run [octez-client gen keys] followed by
-    [octez-client show address] to get the generated key. *)
+(** A helper to run [mavkit-client gen keys] followed by
+    [mavkit-client show address] to get the generated key. *)
 val gen_and_show_keys :
   ?alias:string -> ?sig_alg:string -> t -> Account.key Lwt.t
 
-(** Run [octez-client add address <alias> <src>]. *)
+(** Run [mavkit-client add address <alias> <src>]. *)
 val add_address : ?force:bool -> t -> alias:string -> src:string -> unit Lwt.t
 
 (** Same as [add_address] but do not wait for the process to
@@ -756,11 +749,11 @@ val add_address : ?force:bool -> t -> alias:string -> src:string -> unit Lwt.t
 val spawn_add_address :
   ?force:bool -> t -> alias:string -> src:string -> Process.t
 
-(** Run [octez-client bls gen keys <alias>]. *)
+(** Run [mavkit-client bls gen keys <alias>]. *)
 val bls_gen_keys :
   ?hooks:Process.hooks -> ?force:bool -> ?alias:string -> t -> string Lwt.t
 
-(** Run [octez-client activate accoung <alias> with <activation_key>]. *)
+(** Run [mavkit-client activate accoung <alias> with <activation_key>]. *)
 val activate_account :
   ?wait:string -> t -> alias:string -> activation_key:string -> unit Lwt.t
 
@@ -768,18 +761,18 @@ val activate_account :
 val spawn_activate_account :
   ?wait:string -> t -> alias:string -> activation_key:string -> Process.t
 
-(** Run [octez-client bls list keys].
+(** Run [mavkit-client bls list keys].
 
     Returns the known BLS aliases associated to their public key hash.
 
     Fails if the format is not of the form [<alias>: <public key hash>]. *)
 val bls_list_keys : ?hooks:Process.hooks -> t -> (string * string) list Lwt.t
 
-(** Run [octez-client bls show address <alias>] and parse
+(** Run [mavkit-client bls show address <alias>] and parse
     the output into an [Account.aggregate_key].
     E.g. for [~alias:"bls_account"] the command yields:
 {v
-      Hash: tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn
+      Hash: mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3
       Public Key: BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV
       Secret Key: aggregate_unencrypted:BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq
 v}
@@ -787,7 +780,7 @@ v}
 {[
     {
       aggregate_alias = "bls_account";
-      aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+      aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
       aggregate_public_key =
         "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
       aggregate_secret_key =
@@ -797,11 +790,11 @@ v}
 val bls_show_address :
   ?hooks:Process.hooks -> alias:string -> t -> Account.aggregate_key Lwt.t
 
-(** A helper to run [octez-client bls gen keys] followed by
-    [octez-client bls show address] to get the generated key. *)
+(** A helper to run [mavkit-client bls gen keys] followed by
+    [mavkit-client bls show address] to get the generated key. *)
 val bls_gen_and_show_keys : ?alias:string -> t -> Account.aggregate_key Lwt.t
 
-(** Run [octez-client bls import secret key <account.aggregate_alias>
+(** Run [mavkit-client bls import secret key <account.aggregate_alias>
     <account.aggregate_secret_key>]. *)
 val bls_import_secret_key :
   ?hooks:Process.hooks ->
@@ -810,7 +803,7 @@ val bls_import_secret_key :
   t ->
   unit Lwt.t
 
-(** Run [octez-client transfer amount from giver to receiver]. *)
+(** Run [mavkit-client transfer amount from giver to receiver]. *)
 val transfer :
   ?hooks:Process.hooks ->
   ?log_output:bool ->
@@ -853,7 +846,7 @@ val spawn_transfer :
   t ->
   Process.t
 
-(** Run [octez-client call <destination> from <source>]. *)
+(** Run [mavkit-client call <destination> from <source>]. *)
 val call :
   ?hooks:Process.hooks ->
   ?log_output:bool ->
@@ -881,7 +874,7 @@ val spawn_call :
   t ->
   Process.t
 
-(** Run [octez-client multiple transfers from giver using json_batch]. *)
+(** Run [mavkit-client multiple transfers from giver using json_batch]. *)
 val multiple_transfers :
   ?log_output:bool ->
   ?endpoint:endpoint ->
@@ -898,15 +891,15 @@ val multiple_transfers :
   t ->
   unit Runnable.process
 
-(** Run octez-client register key <delegate> as delegate. *)
+(** Run mavkit-client register key <delegate> as delegate. *)
 val register_delegate :
   ?endpoint:endpoint -> ?wait:string -> delegate:string -> t -> string Lwt.t
 
-(** Run octez-client get delegate for <src>. Returns [Some address] if delegate
+(** Run mavkit-client get delegate for <src>. Returns [Some address] if delegate
     is set or [None] otherwise. *)
 val get_delegate : ?endpoint:endpoint -> src:string -> t -> string option Lwt.t
 
-(** Run [octez-client set delegate for <src> to <delegate>]. *)
+(** Run [mavkit-client set delegate for <src> to <delegate>]. *)
 val set_delegate :
   ?endpoint:endpoint ->
   ?wait:string ->
@@ -920,7 +913,7 @@ val set_delegate :
   t ->
   unit Runnable.process
 
-(** Run [octez-client call <destination> from <src>] *)
+(** Run [mavkit-client call <destination> from <src>] *)
 val call_contract :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -944,7 +937,7 @@ val spawn_call_contract :
   t ->
   Process.t
 
-(** Run [octez-client reveal key for <src>]. *)
+(** Run [mavkit-client reveal key for <src>]. *)
 val reveal :
   ?endpoint:endpoint ->
   ?wait:string ->
@@ -955,7 +948,7 @@ val reveal :
   t ->
   unit Runnable.process
 
-(** Run [octez-client withdraw delegate from <src>]. *)
+(** Run [mavkit-client withdraw delegate from <src>]. *)
 val withdraw_delegate :
   ?endpoint:endpoint ->
   ?wait:string ->
@@ -968,14 +961,14 @@ val withdraw_delegate :
 val spawn_withdraw_delegate :
   ?endpoint:endpoint -> ?wait:string -> src:string -> t -> Process.t
 
-(** Run [octez-client get balance for]. *)
+(** Run [mavkit-client get balance for]. *)
 val get_balance_for : ?endpoint:endpoint -> account:string -> t -> Tez.t Lwt.t
 
 (** Same as [get_balance_for], but do not wait for the process to exit. *)
 val spawn_get_balance_for :
   ?endpoint:endpoint -> account:string -> t -> Process.t
 
-(** Run [octez-client get ticket balance for contract with ticketer and type and content ]. *)
+(** Run [mavkit-client get ticket balance for contract with ticketer and type and content ]. *)
 val ticket_balance :
   ?hooks:Process.hooks ->
   contract:string ->
@@ -995,11 +988,11 @@ val spawn_ticket_balance :
   t ->
   Process.t
 
-(** Run [octez-client get all ticket balances for contract]. *)
+(** Run [mavkit-client get all ticket balances for contract]. *)
 val all_ticket_balances :
   ?hooks:Process.hooks -> contract:string -> t -> string Runnable.process
 
-(** Run [octez-client create mockup]. *)
+(** Run [mavkit-client create mockup]. *)
 val create_mockup :
   ?sync_mode:mockup_sync_mode ->
   ?parameter_file:string ->
@@ -1017,7 +1010,7 @@ val spawn_create_mockup :
   t ->
   Process.t
 
-(** Run [octez-client submit proposals for].
+(** Run [mavkit-client submit proposals for].
 
     If both [proto_hash] and [proto_hashes] are specified,
     the list of protocols which are proposed is [proto_hash :: proto_hashes].
@@ -1045,7 +1038,7 @@ val spawn_submit_proposals :
 
 type ballot = Nay | Pass | Yay
 
-(** Run [octez-client submit ballot for].
+(** Run [mavkit-client submit ballot for].
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val submit_ballot :
@@ -1055,7 +1048,7 @@ val submit_ballot :
 val spawn_submit_ballot :
   ?key:string -> ?wait:string -> proto_hash:string -> ballot -> t -> Process.t
 
-(** Run [octez-client set deposits limit for <src> to <limit>]. *)
+(** Run [mavkit-client set deposits limit for <src> to <limit>]. *)
 val set_deposits_limit :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1065,7 +1058,7 @@ val set_deposits_limit :
   t ->
   string Lwt.t
 
-(** Run [octez-client unset deposits limit for <src>]. *)
+(** Run [mavkit-client unset deposits limit for <src>]. *)
 val unset_deposits_limit :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1074,7 +1067,7 @@ val unset_deposits_limit :
   t ->
   string Lwt.t
 
-(** Run [octez-client increase the paid storage of <contract> by <amount> bytes from <payer>]. *)
+(** Run [mavkit-client increase the paid storage of <contract> by <amount> bytes from <payer>]. *)
 val increase_paid_storage :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1085,7 +1078,7 @@ val increase_paid_storage :
   t ->
   string Lwt.t
 
-(** Run [octez-client get contract used storage space for <contract>]. *)
+(** Run [mavkit-client get contract used storage space for <contract>]. *)
 val used_storage_space :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1094,7 +1087,7 @@ val used_storage_space :
   t ->
   string Lwt.t
 
-(** Run [octez-client get contract paid storage space for <contract>]. *)
+(** Run [mavkit-client get contract paid storage space for <contract>]. *)
 val paid_storage_space :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1103,7 +1096,7 @@ val paid_storage_space :
   t ->
   string Lwt.t
 
-(** Run [octez-client use <pk> as consensus key for delegate <src>] *)
+(** Run [mavkit-client use <pk> as consensus key for delegate <src>] *)
 val update_consensus_key :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1115,7 +1108,7 @@ val update_consensus_key :
   t ->
   unit Lwt.t
 
-(** Run [octez-client drain delegate with consensus key <src>] *)
+(** Run [mavkit-client drain delegate with consensus key <src>] *)
 val drain_delegate :
   ?hooks:Process.hooks ->
   ?endpoint:endpoint ->
@@ -1132,7 +1125,7 @@ val drain_delegate :
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/2336
    [src] should be named [from] and probably have type [Account.t] *)
 
-(** Run [octez-client originate contract alias transferring amount from src
+(** Run [mavkit-client originate contract alias transferring amount from src
     running prg]. Returns the originated contract hash.
 
     Avoid this function when using [originate_contract_at] is possible. *)
@@ -1220,7 +1213,7 @@ val spawn_originate_contract_at :
   Protocol.t ->
   string * Process.t
 
-(** Run [octez-client remember contract <alias> <address>]. *)
+(** Run [mavkit-client remember contract <alias> <address>]. *)
 val remember_contract :
   ?force:bool -> alias:string -> address:string -> t -> unit Lwt.t
 
@@ -1228,7 +1221,7 @@ val remember_contract :
 val spawn_remember_contract :
   ?force:bool -> alias:string -> address:string -> t -> Process.t
 
-(** Run [octez-client remember script <alias> <src>]. *)
+(** Run [mavkit-client remember script <alias> <src>]. *)
 val remember_script : alias:string -> src:string -> t -> unit Lwt.t
 
 (** Same as [remember_script], but do not wait for the process to exit. *)
@@ -1244,7 +1237,7 @@ type stresstest_contract_parameters = {
       (** Gas limit to use for invocations during the stress test *)
 }
 
-(** Run [octez-client stresstest transfer using <sources>].
+(** Run [mavkit-client stresstest transfer using <sources>].
 
     [sources] is a string containing all the [source_aliases],
     [source_pkhs], and [source_accounts] in JSON format as expected by
@@ -1302,7 +1295,7 @@ val spawn_stresstest :
   t ->
   Process.t
 
-(** Run [tezos-client stresstest gen keys <nb_keys>].
+(** Run [mavryk-client stresstest gen keys <nb_keys>].
 
     [nb_keys] contains the number of new keys to be generated.
 
@@ -1332,7 +1325,7 @@ val stresstest_estimate_gas :
 val stresstest_originate_smart_contracts :
   ?endpoint:endpoint -> Account.key -> t -> unit Lwt.t
 
-(** Run [octez-client stresstest fund accounts from <source_key_pkh>].
+(** Run [mavkit-client stresstest fund accounts from <source_key_pkh>].
 
     [source_key_pkh] is the address from which the funds will be withdraw.
 
@@ -1354,10 +1347,10 @@ val stresstest_fund_accounts_from_source :
   t ->
   unit Lwt.t
 
-(** The result of a [octez-client run script .. on storage .. and input ..] call. *)
+(** The result of a [mavkit-client run script .. on storage .. and input ..] call. *)
 type run_script_result = {storage : string; big_map_diff : string list}
 
-(** Run [octez-client run script .. on storage .. and input ..].
+(** Run [mavkit-client run script .. on storage .. and input ..].
 
     Returns the new storage as a string.
 
@@ -1405,7 +1398,7 @@ val spawn_run_script :
   t ->
   Process.t
 
-(** Run [octez-client run script .. on storage .. and input ..] on the script
+(** Run [mavkit-client run script .. on storage .. and input ..] on the script
     name [n] for a given protocol [p].
 
     This function passes [n] and [p] to [Contract.find]. See the documentation
@@ -1455,7 +1448,7 @@ val spawn_run_script_at :
   Protocol.t ->
   Process.t
 
-(** Run [octez-client run michelson code .. on stack ..]. *)
+(** Run [mavkit-client run michelson code .. on stack ..]. *)
 val run_code :
   ?hooks:Process.hooks ->
   ?protocol_hash:string ->
@@ -1497,7 +1490,7 @@ val spawn_run_code :
   t ->
   Process.t
 
-(** Run [octez-client register global constant value from src].
+(** Run [mavkit-client register global constant value from src].
     Returns the address hash of the new constant. *)
 val register_global_constant :
   ?wait:string ->
@@ -1516,11 +1509,11 @@ val spawn_register_global_constant :
   t ->
   Process.t
 
-(** Represents the result of a [octez-client hash data .. of type ...] call.
+(** Represents the result of a [mavkit-client hash data .. of type ...] call.
 
     Given the output:
 {v
-    $ ./tezos-client hash data Unit of type unit
+    $ ./mavryk-client hash data Unit of type unit
     Raw packed data: 0x05030b
     Script-expression-ID-Hash: expruaDPoTWXcTR6fiQPy4KZSW72U6Swc1rVmMiP...
     Raw Script-expression-ID-Hash: 0x8b456a4530fb6d0fea9a0dcd0e9d6ff6b3...
@@ -1542,7 +1535,7 @@ type hash_data_result = {
   raw_sha512_hash : string;
 }
 
-(** Run [octez-client hash data .. of type ...] *)
+(** Run [mavkit-client hash data .. of type ...] *)
 val hash_data :
   ?hooks:Process.hooks ->
   data:string ->
@@ -1557,7 +1550,7 @@ val spawn_hash_data :
 (** Arguments to the [hash_script]'s and [hash_data]'s [?for_script] *)
 type hash_script_format = TSV | CSV
 
-(** Run [octez-client hash script ..]*)
+(** Run [mavkit-client hash script ..]*)
 val hash_script :
   ?hooks:Process_hooks.t ->
   ?for_script:hash_script_format ->
@@ -1573,7 +1566,7 @@ val spawn_hash_script :
   t ->
   Process.t
 
-(** Run [octez-client get contract script hash for ..]*)
+(** Run [mavkit-client get contract script hash for ..]*)
 val get_contract_hash :
   ?hooks:Process_hooks.t -> contract:string -> t -> string Lwt.t
 
@@ -1581,7 +1574,7 @@ val get_contract_hash :
 val spawn_get_contract_hash :
   ?hooks:Process_hooks.t -> contract:string -> t -> Process.t
 
-(** Run [octez-client hash script ..] with a list of scripts to hash *)
+(** Run [mavkit-client hash script ..] with a list of scripts to hash *)
 val hash_scripts :
   ?hooks:Process_hooks.t ->
   ?display_names:bool ->
@@ -1599,7 +1592,7 @@ val spawn_hash_scripts :
   t ->
   Process.t
 
-(** Run [octez-client normalize data .. of type ...]*)
+(** Run [mavkit-client normalize data .. of type ...]*)
 val normalize_data :
   ?hooks:Process_hooks.t ->
   ?mode:normalize_mode ->
@@ -1619,7 +1612,7 @@ val spawn_normalize_data :
   t ->
   Process.t
 
-(** Run [octez-client normalize stack ...]*)
+(** Run [mavkit-client normalize stack ...]*)
 val normalize_stack :
   ?hooks:Process_hooks.t ->
   ?mode:normalize_mode ->
@@ -1637,7 +1630,7 @@ val spawn_normalize_stack :
   t ->
   Process.t
 
-(** Run [octez-client normalize script ..]*)
+(** Run [mavkit-client normalize script ..]*)
 val normalize_script :
   ?hooks:Process_hooks.t ->
   ?mode:normalize_mode ->
@@ -1653,14 +1646,14 @@ val spawn_normalize_script :
   t ->
   Process.t
 
-(** Run [octez-client normalize type ..]*)
+(** Run [mavkit-client normalize type ..]*)
 val normalize_type : ?hooks:Process_hooks.t -> typ:string -> t -> string Lwt.t
 
 (** Same as [normalize_type], but do not wait for the process to exit. *)
 val spawn_normalize_type :
   ?hooks:Process_hooks.t -> typ:string -> t -> Process.t
 
-(** Run [octez-client typecheck data ..]*)
+(** Run [mavkit-client typecheck data ..]*)
 val typecheck_data :
   data:string -> typ:string -> ?gas:int -> ?legacy:bool -> t -> unit Lwt.t
 
@@ -1668,7 +1661,7 @@ val typecheck_data :
 val spawn_typecheck_data :
   data:string -> typ:string -> ?gas:int -> ?legacy:bool -> t -> Process.t
 
-(** Run [octez-client typecheck script ..]*)
+(** Run [mavkit-client typecheck script ..]*)
 val typecheck_script :
   ?hooks:Process.hooks ->
   ?protocol_hash:string ->
@@ -1698,24 +1691,6 @@ val spawn_typecheck_script :
   t ->
   Process.t
 
-(** Run [octez-client run unit tests from ..]*)
-val run_tzt_unit_tests :
-  ?hooks:Process.hooks ->
-  ?protocol_hash:string ->
-  tests:string list ->
-  ?no_base_dir_warnings:bool ->
-  t ->
-  unit Lwt.t
-
-(** Same as [run_tzt_unit_tests], but do not wait for the process to exit. *)
-val spawn_run_tzt_unit_tests :
-  ?hooks:Process.hooks ->
-  ?protocol_hash:string ->
-  tests:string list ->
-  ?no_base_dir_warnings:bool ->
-  t ->
-  Process.t
-
 (** Same as [run_tzip4_view] but does not wait for the process to exit. *)
 val spawn_run_tzip4_view :
   ?hooks:Process.hooks ->
@@ -1732,12 +1707,12 @@ val spawn_run_tzip4_view :
   t ->
   Process.t
 
-(** Run [tezos-client run tzip4 view .. on contract .. with input .. ]
+(** Run [mavryk-client run tzip4 view .. on contract .. with input .. ]
 
     Returns the value returned by a view as a string.
 
     Fails if the view or the contract does not exist. If [input] is [None],
-    it runs [tezos-client run tzip4 view .. on contract ..]. *)
+    it runs [mavryk-client run tzip4 view .. on contract ..]. *)
 val run_tzip4_view :
   ?hooks:Process.hooks ->
   ?source:string ->
@@ -1769,12 +1744,12 @@ val spawn_run_view :
   t ->
   Process.t
 
-(** Run [octez-client run view .. on contract .. with input ..].
+(** Run [mavkit-client run view .. on contract .. with input ..].
 
     Returns the value returned by a view as a string.
 
     Fails if the view or the contract does not exist. If [input] is [None], it
-    runs [octez-client run view .. on contract ..]. *)
+    runs [mavkit-client run view .. on contract ..]. *)
 val run_view :
   ?hooks:Process.hooks ->
   ?source:string ->
@@ -1790,7 +1765,7 @@ val run_view :
   t ->
   string Lwt.t
 
-(** Run [octez-client list mode protocols].
+(** Run [mavkit-client list mode protocols].
 
     Note: the [list protocols] command (without mode) is an admin command
     (see {!Admin.list_protocols}). *)
@@ -1800,39 +1775,33 @@ val list_protocols : [< `Light | `Mockup | `Proxy] -> t -> string list Lwt.t
     and do not process stdout. *)
 val spawn_list_protocols : [< `Light | `Mockup | `Proxy] -> t -> Process.t
 
-(** Run [octez-client list understood protocols]. *)
+(** Run [mavkit-client list understood protocols]. *)
 val list_understood_protocols : ?config_file:string -> t -> string list Lwt.t
 
 (** Same as [list_understood_protocols], but do not wait for the process to exit
     and do not process stdout. *)
 val spawn_list_understood_protocols : ?config_file:string -> t -> Process.t
 
-(** Run [octez-client migrate mockup to]. *)
+(** Run [mavkit-client migrate mockup to]. *)
 val migrate_mockup : next_protocol:Protocol.t -> t -> unit Lwt.t
 
 (** Same as [migrate_mockup], but do not wait for the process to exit. *)
 val spawn_migrate_mockup : next_protocol:Protocol.t -> t -> Process.t
 
-(** Run [octez-client sign block <hexdata> for <delegate>]. *)
+(** Run [mavkit-client sign block <hexdata> for <delegate>]. *)
 val sign_block : t -> string -> delegate:string -> string Lwt.t
 
 (** Same as [sign_block], but do not wait for the process to exit. *)
 val spawn_sign_block : t -> string -> delegate:string -> Process.t
 
-(** Run [octez-client sign bytes <bytes> for <signer>]. *)
-val sign_bytes : signer:string -> data:string -> t -> string Lwt.t
-
-(** Same as [sign_bytes], but do not wait for the process to exit. *)
-val spawn_sign_bytes : signer:string -> data:string -> t -> Process.t
-
-(** Run [octez-client sign message <message> for <src>]. *)
+(** Run [mavkit-client sign message <message> for <src>]. *)
 val sign_message : ?branch:string -> t -> string -> src:string -> string Lwt.t
 
 (** Same as [sign_message], but do not wait for the process to exit. *)
 val spawn_sign_message :
   ?branch:string -> t -> string -> src:string -> Process.t
 
-(** Run [octez-client check that message <message> was signed by <src> to produce <signature>]. *)
+(** Run [mavkit-client check that message <message> was signed by <src> to produce <signature>]. *)
 val check_message :
   ?branch:string -> t -> src:string -> signature:string -> string -> unit Lwt.t
 
@@ -1855,14 +1824,14 @@ val transfer_tickets :
   t ->
   unit Runnable.process
 
-(** Run [octez-client show voting period] and return the period name. *)
+(** Run [mavkit-client show voting period] and return the period name. *)
 val show_voting_period : ?endpoint:endpoint -> t -> string Lwt.t
 
 (** Same as [show_voting_period], but do not wait for the process to exit. *)
 val spawn_show_voting_period : ?endpoint:endpoint -> t -> Process.t
 
 module Sc_rollup : sig
-  (** Run [octez-client remember smart rollup <alias> <address>]. *)
+  (** Run [mavkit-client remember smart rollup <alias> <address>]. *)
   val remember_smart_rollup :
     ?hooks:Process.hooks ->
     ?force:bool ->
@@ -1871,19 +1840,19 @@ module Sc_rollup : sig
     address:string ->
     unit Runnable.process
 
-  (** Run [octez-client list known smart rollups]. *)
+  (** Run [mavkit-client list known smart rollups]. *)
   val list_known_smart_rollups :
     ?hooks:Process.hooks -> t -> (string * string) list Runnable.process
 
-  (** Run [octez-client forget all smart rollups]. *)
+  (** Run [mavkit-client forget all smart rollups]. *)
   val forget_all_smart_rollups :
     ?hooks:Process.hooks -> ?force:bool -> t -> unit Runnable.process
 
-  (** Run [octez-client show known smart rollup <alias>]. *)
+  (** Run [mavkit-client show known smart rollup <alias>]. *)
   val show_known_smart_rollup :
     ?hooks:Process.hooks -> t -> alias:string -> string Runnable.process
 
-  (** Run [octez-client originate sc rollup <alias> from <src> of kind <kind> booting with <boot_sector>]. *)
+  (** Run [mavkit-client originate sc rollup <alias> from <src> of kind <kind> booting with <boot_sector>]. *)
   val originate :
     ?hooks:Process.hooks ->
     ?wait:string ->
@@ -1913,7 +1882,7 @@ module Sc_rollup : sig
     t ->
     Process.t
 
-  (** Run [octez-client send rollup message <msg> from <src>]. *)
+  (** Run [mavkit-client send rollup message <msg> from <src>]. *)
   val send_message :
     ?hooks:Process.hooks ->
     ?wait:string ->
@@ -1937,7 +1906,7 @@ module Sc_rollup : sig
     t ->
     Process.t
 
-  (** Run [octez-client publish commitment from <src> for sc rollup <sc_rollup>
+  (** Run [mavkit-client publish commitment from <src> for sc rollup <sc_rollup>
       with compressed state <compressed_state> at inbox level <inbox_level>
       and predecessor <predecessor> and number of ticks <number_of_ticks>]. *)
   val publish_commitment :
@@ -1953,7 +1922,7 @@ module Sc_rollup : sig
     t ->
     unit Runnable.process
 
-  (** Run [octez-client cement commitment <hash> from <src> for sc rollup <rollup>]. *)
+  (** Run [mavkit-client cement commitment <hash> from <src> for sc rollup <rollup>]. *)
   val cement_commitment :
     Protocol.t ->
     ?hooks:Process.hooks ->
@@ -1965,7 +1934,7 @@ module Sc_rollup : sig
     t ->
     unit Runnable.process
 
-  (** Run [octez-client timeout dispute on sc rollup <dst> with
+  (** Run [mavkit-client timeout dispute on sc rollup <dst> with
      <staker1> against <staker2> from <src>]. *)
   val timeout :
     ?expect_failure:bool ->
@@ -1979,7 +1948,7 @@ module Sc_rollup : sig
     t ->
     unit Runnable.process
 
-  (** Run [octez-client submit sc rollup recover bond of <staker> for <sc_rollup> from <src>]. *)
+  (** Run [mavkit-client submit sc rollup recover bond of <staker> for <sc_rollup> from <src>]. *)
   val submit_recover_bond :
     ?wait:string ->
     ?burn_cap:Tez.t ->
@@ -1992,7 +1961,7 @@ module Sc_rollup : sig
     t ->
     unit Runnable.process
 
-  (** Run [octez-client execute outbox message of sc rollup <rollup> from <src>
+  (** Run [mavkit-client execute outbox message of sc rollup <rollup> from <src>
       for commitment hash <hash> and output proof <proof>]. *)
   val execute_outbox_message :
     ?wait:string ->
@@ -2010,13 +1979,13 @@ end
 
 (** {2 Commands for managing FA1.2-compatible smart contracts} *)
 
-(** Run [octez-client check contract <contract> implements fa1.2]. *)
+(** Run [mavkit-client check contract <contract> implements fa1.2]. *)
 val check_contract_implements_fa1_2 : contract:string -> t -> unit Lwt.t
 
 (** Same as [check_contract_implements_fa1_2], but do not wait for the process to exit. *)
 val spawn_check_contract_implements_fa1_2 : contract:string -> t -> Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get balance for <from>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get balance for <from>]. *)
 val from_fa1_2_contract_get_balance :
   contract:string -> from:string -> t -> int Lwt.t
 
@@ -2024,7 +1993,7 @@ val from_fa1_2_contract_get_balance :
 val spawn_from_fa1_2_contract_get_balance :
   contract:string -> from:string -> t -> Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get allowance on <owner> as <operator>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get allowance on <owner> as <operator>]. *)
 val from_fa1_2_contract_get_allowance :
   contract:string -> owner:string -> operator:string -> t -> int Lwt.t
 
@@ -2032,14 +2001,14 @@ val from_fa1_2_contract_get_allowance :
 val spawn_from_fa1_2_contract_get_allowance :
   contract:string -> owner:string -> operator:string -> t -> Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get total supply]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get total supply]. *)
 val from_fa1_2_contract_get_total_supply : contract:string -> t -> int Lwt.t
 
 (** Same as [from_fa1_2_contract_get_total_supply], but do not wait for the process to exit. *)
 val spawn_from_fa1_2_contract_get_total_supply :
   contract:string -> t -> Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get balance for <from> callback on <callback>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get balance for <from> callback on <callback>]. *)
 val from_fa1_2_contract_get_balance_callback :
   ?burn_cap:Tez.t ->
   contract:string ->
@@ -2057,7 +2026,7 @@ val spawn_from_fa1_2_contract_get_balance_callback :
   t ->
   Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get allowance on <from> as <to> callback on <callback>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get allowance on <from> as <to> callback on <callback>]. *)
 val from_fa1_2_contract_get_allowance_callback :
   ?burn_cap:Tez.t ->
   contract:string ->
@@ -2077,7 +2046,7 @@ val spawn_from_fa1_2_contract_get_allowance_callback :
   t ->
   Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> get total supply as <from> callback on <callback>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> get total supply as <from> callback on <callback>]. *)
 val from_fa1_2_contract_get_total_supply_callback :
   ?burn_cap:Tez.t ->
   contract:string ->
@@ -2095,7 +2064,7 @@ val spawn_from_fa1_2_contract_get_total_supply_callback :
   t ->
   Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> transfer <amount> from <from> to <to>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> transfer <amount> from <from> to <to>]. *)
 val from_fa1_2_contract_transfer :
   ?wait:string ->
   ?burn_cap:Tez.t ->
@@ -2119,7 +2088,7 @@ val spawn_from_fa1_2_contract_transfer :
   t ->
   Process.t
 
-(** Run [octez-client from fa1.2 contract <contract> as <as> approve <amount> from <from>]. *)
+(** Run [mavkit-client from fa1.2 contract <contract> as <as> approve <amount> from <from>]. *)
 val from_fa1_2_contract_approve :
   ?wait:string ->
   ?burn_cap:Tez.t ->
@@ -2141,7 +2110,7 @@ val spawn_from_fa1_2_contract_approve :
   t ->
   Process.t
 
-(** Run [octez-client multiple fa1.2 transfers from <src> using <transfers.json>]. *)
+(** Run [mavkit-client multiple fa1.2 transfers from <src> using <transfers.json>]. *)
 val multiple_fa1_2_transfers :
   ?burn_cap:Tez.t ->
   src:string ->
@@ -2161,7 +2130,7 @@ val spawn_multiple_fa1_2_transfers :
 
 module Zk_rollup : sig
   (** Run
-      [octez-client originate epoxy <alias> from <src>
+      [mavkit-client originate epoxy <alias> from <src>
         public_parameters file:<public_parameters_file>
         init_state file:<init_state_file>
         circuits_info file:<circuits_info_file>
@@ -2183,7 +2152,7 @@ module Zk_rollup : sig
     string option Lwt.t
 
   (** Run
-      [octez-client epoxy publish from <src>
+      [mavkit-client epoxy publish from <src>
         rollup <zk_rollup>
         ops file:<ops_file>
         -G <gas_cap> --burn_cap <burn_cap>]. *)
@@ -2198,7 +2167,7 @@ module Zk_rollup : sig
     unit Lwt.t
 
   (** Run
-      [octez-client epoxy update from <src>
+      [mavkit-client epoxy update from <src>
         rollup <zk_rollup>
         update file:<update_files>
         -G <gas_cap> --burn_cap <burn_cap>]. *)
@@ -2215,7 +2184,7 @@ end
 
 (** {2 Commands for working with Sapling transactions} *)
 
-(** Run [octez-client sapling gen key <name>].
+(** Run [mavkit-client sapling gen key <name>].
 
     Returns mnemonic of the generated key. *)
 val sapling_gen_key :
@@ -2225,7 +2194,7 @@ val sapling_gen_key :
 val spawn_sapling_gen_key :
   name:string -> ?force:bool -> ?unencrypted:bool -> t -> Process.t
 
-(** Run [octez-client sapling use key <sapling-key> for contract <contract>]. *)
+(** Run [mavkit-client sapling use key <sapling-key> for contract <contract>]. *)
 val sapling_use_key :
   sapling_key:string -> contract:string -> ?memo_size:int -> t -> unit Lwt.t
 
@@ -2233,7 +2202,7 @@ val sapling_use_key :
 val spawn_sapling_use_key :
   sapling_key:string -> contract:string -> ?memo_size:int -> t -> Process.t
 
-(** Run [octez-client sapling import key <new>]. *)
+(** Run [mavkit-client sapling import key <new>]. *)
 val sapling_import_key :
   new_:string ->
   ?force:bool ->
@@ -2251,7 +2220,7 @@ val spawn_sapling_import_key :
   t ->
   Process.t
 
-(** Run [octez-client sapling derive key <new> from <name> at index <child-index>]. *)
+(** Run [mavkit-client sapling derive key <new> from <name> at index <child-index>]. *)
 val sapling_derive_key :
   new_:string ->
   name:string ->
@@ -2275,7 +2244,7 @@ val spawn_sapling_derive_key :
   t ->
   Process.t
 
-(** Run [octez-client sapling gen address <name>].
+(** Run [mavkit-client sapling gen address <name>].
 
     Returns the generated address and its index. *)
 val sapling_gen_address :
@@ -2285,13 +2254,13 @@ val sapling_gen_address :
 val spawn_sapling_gen_address :
   name:string -> ?address_index:int -> t -> Process.t
 
-(** Run [octez-client sapling export key <name> in <file>]. *)
+(** Run [mavkit-client sapling export key <name> in <file>]. *)
 val sapling_export_key : name:string -> file:string -> t -> unit Lwt.t
 
 (** Same as [sapling_export_key], but do not wait for the process to exit. *)
 val spawn_sapling_export_key : name:string -> file:string -> t -> Process.t
 
-(** Run [octez-client sapling get balance for <sapling-key> in contract <contract>]. *)
+(** Run [mavkit-client sapling get balance for <sapling-key> in contract <contract>]. *)
 val sapling_get_balance :
   sapling_key:string -> contract:string -> ?verbose:bool -> t -> Tez.t Lwt.t
 
@@ -2299,13 +2268,13 @@ val sapling_get_balance :
 val spawn_sapling_get_balance :
   sapling_key:string -> contract:string -> ?verbose:bool -> t -> Process.t
 
-(** Run [octez-client sapling list keys]. *)
+(** Run [mavkit-client sapling list keys]. *)
 val sapling_list_keys : t -> string list Lwt.t
 
 (** Same as [sapling_list_keys], but do not wait for the process to exit. *)
 val spawn_sapling_list_keys : t -> Process.t
 
-(** Run [octez-client sapling shield <qty> from <src-tz> to <dst-sap> using <sapling contract>].
+(** Run [mavkit-client sapling shield <qty> from <src-tz> to <dst-sap> using <sapling contract>].
 
     Returns [(balance_diff, fees)] where [balance_diff] is [sapling_contract]'s diff in balance and
     [fees] is the amount of fees paid. *)
@@ -2332,7 +2301,7 @@ val spawn_sapling_shield :
   t ->
   Process.t
 
-(** Run [octez-client sapling unshield <qty> from <src-sap> to <dst-tz> using <sapling_contract>].
+(** Run [mavkit-client sapling unshield <qty> from <src-sap> to <dst-tz> using <sapling_contract>].
 
     Returns [(balance_diff, fees)] where [balance_diff] is [sapling_contract]'s diff in balance and
     [fees] is the amount of fees payed.
@@ -2358,7 +2327,7 @@ val spawn_sapling_unshield :
   t ->
   Process.t
 
-(** Run [octez-client sapling forge transaction <qty> from <src-sap> to <dst-sap> using <sapling contract>]. *)
+(** Run [mavkit-client sapling forge transaction <qty> from <src-sap> to <dst-sap> using <sapling contract>]. *)
 val sapling_forge_transaction :
   ?wait:string ->
   ?burn_cap:Tez.t ->
@@ -2384,7 +2353,7 @@ val spawn_sapling_forge_transaction :
   t ->
   Process.t
 
-(** Run [octez-client sapling submit <file> from <alias-tz> using <sapling contract>]. *)
+(** Run [mavkit-client sapling submit <file> from <alias-tz> using <sapling contract>]. *)
 val sapling_submit :
   ?wait:string ->
   ?burn_cap:Tez.t ->
@@ -2482,7 +2451,7 @@ val init_with_protocol :
 (** Create a client with mode [Mockup] and run [create mockup].
 
     Contrary to [init], this does not import any secret key, because
-   [octez-client create mockup] already initializes the mockup with bootstrap
+   [mavkit-client create mockup] already initializes the mockup with bootstrap
    keys.
 *)
 val init_mockup :
@@ -2589,12 +2558,15 @@ val contract_entrypoint_type :
 val spawn_contract_entrypoint_type :
   entrypoint:string -> contract:string -> t -> Process.t
 
+(** Sign a string of bytes with secret key of the given account. *)
+val sign_bytes : signer:string -> data:string -> t -> string Lwt.t
+
 (** Show a conversion format as used for the [convert*] function
     family *)
 val conversion_format_to_string :
   [< `Binary | `Json | `Michelson | `OCaml] -> string
 
-(** Use octez-client to convert a script between given forms. *)
+(** Use mavkit-client to convert a script between given forms. *)
 val convert_script :
   script:string ->
   src_format:[`Michelson | `Json | `Binary] ->
@@ -2603,7 +2575,7 @@ val convert_script :
   t ->
   string Lwt.t
 
-(** Use octez-client to convert a script between given forms. *)
+(** Use mavkit-client to convert a script between given forms. *)
 val convert_data :
   data:string ->
   src_format:[`Michelson | `Json | `Binary] ->
@@ -2620,10 +2592,10 @@ val convert_script_to_json :
 val convert_data_to_json :
   ?endpoint:endpoint -> data:string -> ?typecheck:string -> t -> JSON.u Lwt.t
 
-(** Run [octez-client bootstrapped]. *)
+(** Run [mavkit-client bootstrapped]. *)
 val bootstrapped : t -> unit Lwt.t
 
-(** Run [tezos-client config show]. *)
+(** Run [mavryk-client config show]. *)
 val config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> string Lwt.t
 
@@ -2631,7 +2603,7 @@ val config_show :
 val spawn_config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> Process.t
 
-(** Run [tezos-client config show]. *)
+(** Run [mavryk-client config show]. *)
 val config_init :
   ?config_file:string ->
   ?protocol:Protocol.t ->
@@ -2651,7 +2623,7 @@ val spawn_config_init :
   t ->
   Process.t
 
-(** Run [tezos-client compute chain id from block hash]. *)
+(** Run [mavryk-client compute chain id from block hash]. *)
 val compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2659,7 +2631,7 @@ val compute_chain_id_from_block_hash :
 val spawn_compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> Process.t
 
-(** Run [tezos-client compute chain id from seed]. *)
+(** Run [mavryk-client compute chain id from seed]. *)
 val compute_chain_id_from_seed :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2669,21 +2641,21 @@ val spawn_compute_chain_id_from_seed :
 
 (** {2 Commands for managing a multisig smart contract} *)
 
-(** Run [octez-client show supported multisig hashes]. *)
+(** Run [mavkit-client show supported multisig hashes]. *)
 val show_supported_multisig_hashes : t -> unit Lwt.t
 
 (** Same as [show_supported_multisig_hashes], but do not wait for the
     process to exit. *)
 val spawn_show_supported_multisig_hashes : t -> Process.t
 
-(** Run [octez-client show multisig script]. *)
+(** Run [mavkit-client show multisig script]. *)
 val show_multisig_script : t -> unit Lwt.t
 
 (** Same as [show_multisig_script], but do not wait for the process to
     exit. *)
 val spawn_show_multisig_script : t -> Process.t
 
-(** Run [octez-client deploy multisig <new_multisig> transferring
+(** Run [mavkit-client deploy multisig <new_multisig> transferring
     <qty> from <src> with threshold <threshold> on public keys
     <key>]. *)
 val deploy_multisig :
@@ -2711,7 +2683,7 @@ val spawn_deploy_multisig :
   t ->
   Process.t
 
-(** Run [octez-client sign multisig transaction on <multisig>
+(** Run [mavkit-client sign multisig transaction on <multisig>
     transferring <qty> to <dst> using secret key <key>]. *)
 val sign_multisig_transaction_transfer :
   multisig:string ->
@@ -2735,7 +2707,7 @@ val spawn_sign_multisig_transaction_transfer :
   t ->
   Process.t
 
-(** Run [octez-client sign multisig transaction on <multisig> running
+(** Run [mavkit-client sign multisig transaction on <multisig> running
     lambda <lambda> using secret key <key>]. *)
 val sign_multisig_transaction_run_lambda :
   multisig:string -> lambda:string -> key:string -> t -> string Lwt.t
@@ -2745,7 +2717,7 @@ val sign_multisig_transaction_run_lambda :
 val spawn_sign_multisig_transaction_run_lambda :
   multisig:string -> lambda:string -> key:string -> t -> Process.t
 
-(** Run [octez-client sign multisig transaction on <multisig> setting
+(** Run [mavkit-client sign multisig transaction on <multisig> setting
     delegate to <dlgt> using secret key <key>]. *)
 val sign_multisig_transaction_set_delegate :
   multisig:string -> dlgt:string -> key:string -> t -> string Lwt.t
@@ -2755,7 +2727,7 @@ val sign_multisig_transaction_set_delegate :
 val spawn_sign_multisig_transaction_set_delegate :
   multisig:string -> dlgt:string -> key:string -> t -> Process.t
 
-(** Run [octez-client sign multisig transaction on <multisig>
+(** Run [mavkit-client sign multisig transaction on <multisig>
     withdrawing delegate using secret key <key>]. *)
 val sign_multisig_transaction_withdraw_delegate :
   multisig:string -> key:string -> t -> string Lwt.t
@@ -2765,7 +2737,7 @@ val sign_multisig_transaction_withdraw_delegate :
 val spawn_sign_multisig_transaction_withdraw_delegate :
   multisig:string -> key:string -> t -> Process.t
 
-(** Run [octez-client sign multisig transaction on <multisig> using
+(** Run [mavkit-client sign multisig transaction on <multisig> using
     secret key <key> setting threshold to <threshold> and public keys
     to <key>]. *)
 val sign_multisig_transaction_set_threshold_and_public_keys :
@@ -2786,7 +2758,7 @@ val spawn_sign_multisig_transaction_set_threshold_and_public_keys :
   t ->
   Process.t
 
-(** Run [octez-client from multisig contract <multisig> transfer <qty>
+(** Run [mavkit-client from multisig contract <multisig> transfer <qty>
     to <dst> on behalf of <src> with signatures <signature>]. *)
 val from_multisig_transfer :
   multisig:string ->
@@ -2814,7 +2786,7 @@ val spawn_from_multisig_transfer :
   t ->
   Process.t
 
-(** Run [octez-client from multisig contract <multisig> run lambda
+(** Run [mavkit-client from multisig contract <multisig> run lambda
     <lambda> on behalf of <src> with signatures <signature>]. *)
 val from_multisig_run_lambda :
   multisig:string ->
@@ -2836,7 +2808,7 @@ val spawn_from_multisig_run_lambda :
   t ->
   Process.t
 
-(** Run [octez-client set delegate of multisig contract <multisig> to
+(** Run [mavkit-client set delegate of multisig contract <multisig> to
     <dlgt> on behalf of <src> with signatures <signature>]. *)
 val set_delegate_of_multisig :
   multisig:string ->
@@ -2858,7 +2830,7 @@ val spawn_set_delegate_of_multisig :
   t ->
   Process.t
 
-(** Run [octez-client withdraw delegate of multisig contract
+(** Run [mavkit-client withdraw delegate of multisig contract
     <multisig> on behalf of <src> with signatures <signature>]. *)
 val withdraw_delegate_of_multisig :
   multisig:string ->
@@ -2878,7 +2850,7 @@ val spawn_withdraw_delegate_of_multisig :
   t ->
   Process.t
 
-(** Run [octez-client set threshold of multisig contract <multisig> to
+(** Run [mavkit-client set threshold of multisig contract <multisig> to
     <threshold> and public keys to <public_keys> on behalf of <src> with
     signatures <signature>]. *)
 val set_threshold_of_multisig :
@@ -2903,7 +2875,7 @@ val spawn_set_threshold_of_multisig :
   t ->
   Process.t
 
-(** Run [octez-client run transaction <bytes> on multisig contract
+(** Run [mavkit-client run transaction <bytes> on multisig contract
     <multisig> on behalf of <src> with signatures <signature>]. *)
 val run_transaction_on_multisig :
   bytes:string ->
@@ -2925,7 +2897,7 @@ val spawn_run_transaction_on_multisig :
   t ->
   Process.t
 
-(** Run [octez-client prepare multisig transaction on <multisig>
+(** Run [mavkit-client prepare multisig transaction on <multisig>
     transferring <qty> to <dst>]. *)
 val prepare_multisig_transaction :
   multisig:string ->
@@ -2949,7 +2921,7 @@ val spawn_prepare_multisig_transaction :
   t ->
   Process.t
 
-(** Run [octez-client prepare multisig transaction on <multisig>
+(** Run [mavkit-client prepare multisig transaction on <multisig>
     running lambda <lambda>]. *)
 val prepare_multisig_transaction_run_lambda :
   multisig:string -> lambda:string -> ?bytes_only:bool -> t -> string Lwt.t
@@ -2959,7 +2931,7 @@ val prepare_multisig_transaction_run_lambda :
 val spawn_prepare_multisig_transaction_run_lambda :
   multisig:string -> lambda:string -> ?bytes_only:bool -> t -> Process.t
 
-(** Run [octez-client prepare multisig transaction on <multisig>
+(** Run [mavkit-client prepare multisig transaction on <multisig>
     setting delegate to <dlgt>]. *)
 val prepare_multisig_transaction_set_delegate :
   multisig:string -> dlgt:string -> ?bytes_only:bool -> t -> string Lwt.t
@@ -2969,7 +2941,7 @@ val prepare_multisig_transaction_set_delegate :
 val spawn_prepare_multisig_transaction_set_delegate :
   multisig:string -> dlgt:string -> ?bytes_only:bool -> t -> Process.t
 
-(** Run [octez-client prepare multisig transaction on <multisig>
+(** Run [mavkit-client prepare multisig transaction on <multisig>
     withdrawing delegate]. *)
 val prepare_multisig_transaction_withdraw_delegate :
   multisig:string -> ?bytes_only:bool -> t -> string Lwt.t
@@ -2979,7 +2951,7 @@ val prepare_multisig_transaction_withdraw_delegate :
 val spawn_prepare_multisig_transaction_withdraw_delegate :
   multisig:string -> ?bytes_only:bool -> t -> Process.t
 
-(** Run [octez-client prepare multisig transaction on <multisig>
+(** Run [mavkit-client prepare multisig transaction on <multisig>
     setting threshold to <threshold> and public keys to <public_keys>]. *)
 val prepare_multisig_transaction_set_threshold_and_public_keys :
   multisig:string ->
@@ -3000,7 +2972,7 @@ val spawn_prepare_multisig_transaction_set_threshold_and_public_keys :
   t ->
   Process.t
 
-(** Run [tezos-client expand macros in <script>]. *)
+(** Run [mavryk-client expand macros in <script>]. *)
 val expand_macros :
   ?endpoint:endpoint ->
   ?hooks:Process_hooks.t ->
@@ -3020,7 +2992,7 @@ val spawn_expand_macros :
   string ->
   Process.t
 
-(** Run [tezos-client get timestamp]. *)
+(** Run [mavryk-client get timestamp]. *)
 val get_timestamp :
   ?endpoint:endpoint -> ?block:string -> ?seconds:bool -> t -> string Lwt.t
 
@@ -3028,7 +3000,7 @@ val get_timestamp :
 val spawn_get_timestamp :
   ?endpoint:endpoint -> ?block:string -> ?seconds:bool -> t -> Process.t
 
-(** Run [octez-client publish dal commitment <commitment> from <src> for slot
+(** Run [mavkit-client publish dal commitment <commitment> from <src> for slot
     <slot_index> with proof <proof>]. *)
 val publish_dal_commitment :
   ?hooks:Process_hooks.t ->
@@ -3045,25 +3017,13 @@ val publish_dal_commitment :
     endpoint. *)
 val as_foreign_endpoint : endpoint -> Endpoint.t
 
-(** Run [octez-client stake <amount> for <staker>]. *)
-val stake : ?wait:string -> Tez.t -> string -> t -> unit Lwt.t
-
-(** Same as [stake], but do not wait for the process to exit. *)
-val spawn_stake : ?wait:string -> Tez.t -> string -> t -> Process.t
-
-(** Run [octez-client set delegate parameters for <delegate> --limit-of-staking-over-baking <value> --edge-of-baking-over-staking <value>]. *)
-val set_delegate_parameters : string -> string -> string -> t -> unit Lwt.t
-
-(** Same as [set_delegate_parameters], but do not wait for the process to exit. *)
-val spawn_set_delegate_parameters : string -> string -> string -> t -> Process.t
-
 module RPC : sig
-  (** Perform RPC calls using [octez-client]. *)
+  (** Perform RPC calls using [mavkit-client]. *)
 
   (** RPC calls performed this way are slower and should only be used to test
       the [rpc] command of the client. *)
 
-  (** Call an RPC using [octez-client rpc].
+  (** Call an RPC using [mavkit-client rpc].
 
       The response body is parsed as JSON, then decoded using the decode function
       of the RPC description.

@@ -27,7 +27,7 @@ let () =
   Octogram.Helpers.change_tmp_directory_if_necessary
     (Cli.get_string_opt "agent_name") ;
 
-  Octogram.Tezos.register_procedures () ;
+  Octogram.Mavryk.register_procedures () ;
 
   Agent.register () ;
   Orchestrator.register () ;

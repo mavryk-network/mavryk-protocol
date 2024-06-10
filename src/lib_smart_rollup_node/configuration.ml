@@ -43,15 +43,12 @@ type batcher = {
 
 type injector = {retention_period : int; attempts : int; injection_ttl : int}
 
-type gc_parameters = {
-  frequency_in_blocks : int32;
-  context_splitting_period : int option;
-}
+type gc_parameters = {frequency_in_blocks : int32}
 
 type history_mode = Archive | Full
 
 type t = {
-  sc_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  sc_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   boot_sector_file : string option;
   operators : Purpose.operators;
   rpc_addr : string;
@@ -64,19 +61,17 @@ type t = {
   dal_node_endpoint : Uri.t option;
   dac_observer_endpoint : Uri.t option;
   dac_timeout : Z.t option;
-  pre_images_endpoint : Uri.t option;
   batcher : batcher;
   injector : injector;
   l1_blocks_cache_size : int;
   l2_blocks_cache_size : int;
   prefetch_blocks : int option;
-  l1_rpc_timeout : float;
   index_buffer_size : int option;
   irmin_cache_size : int option;
   log_kernel_debug : bool;
   no_degraded : bool;
   gc_parameters : gc_parameters;
-  history_mode : history_mode option;
+  history_mode : history_mode;
   cors : Resto_cohttp.Cors.t;
 }
 
@@ -97,7 +92,7 @@ let () =
     (fun () -> Empty_operation_kinds_for_custom_mode)
 
 let default_data_dir =
-  Filename.concat (Sys.getenv "HOME") ".tezos-smart-rollup-node"
+  Filename.concat (Sys.getenv "HOME") ".mavryk-smart-rollup-node"
 
 let storage_dir = "storage"
 
@@ -117,14 +112,14 @@ let default_metrics_port = 9933
 
 let default_reconnection_delay = 2.0 (* seconds *)
 
-let mutez mutez = {Injector_common.mutez}
+let mumav mumav = {Injector_common.mumav}
 
-let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
+let mav t = mumav Int64.(mul (of_int t) 1_000_000L)
 
 (* The below default fee and burn limits are computed by taking into account
    the worst fee found in the tests for the rollup node.
 
-   We take as base the cost of commitment cementation, which is 719 mutez in fees:
+   We take as base the cost of commitment cementation, which is 719 mumav in fees:
    - Commitment publishing is 1.37 times more expensive.
    - Message submission is 0.7 times more expensive, so cheaper but it depends on
      the size of the message.
@@ -134,46 +129,46 @@ let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
      - Proof move is 1.47 times more expensive but depends on the size of the proof.
      - Timeout move is 1.34 times more expensive.
 
-   We set a fee limit of 1 tz for cementation (instead of 719 mutez) which
+   We set a fee limit of 1 tz for cementation (instead of 719 mumav) which
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
-let default_fee : Operation_kind.t -> Injector_common.tez = function
-  | Cement -> tez 1
-  | Recover -> tez 1
-  | Publish -> tez 2
+let default_fee : Operation_kind.t -> Injector_common.mav = function
+  | Cement -> mav 1
+  | Recover -> mav 1
+  | Publish -> mav 2
   | Add_messages ->
       (* We keep this limit even though it depends on the size of the message
          because the rollup node pays the fees for messages submitted by the
          **users**. *)
-      tez 1
-  | Timeout -> tez 2
+      mav 1
+  | Timeout -> mav 2
   | Refute ->
       (* Should be 3 based on comment above but we want to make sure we inject
          refutation moves even if the proof is large. The stake is high (we can
          lose the 10k deposit or we can get the reward). *)
-      tez 5
-  | Execute_outbox_message -> tez 1
+      mav 5
+  | Execute_outbox_message -> mav 1
 
-let default_burn : Operation_kind.t -> Injector_common.tez = function
+let default_burn : Operation_kind.t -> Injector_common.mav = function
   | Publish ->
       (* The first commitment can store data. *)
-      tez 1
-  | Add_messages -> tez 0
-  | Cement -> tez 0
-  | Recover -> tez 0
-  | Timeout -> tez 0
+      mav 1
+  | Add_messages -> mav 0
+  | Cement -> mav 0
+  | Recover -> mav 0
+  | Timeout -> mav 0
   | Refute ->
       (* A refutation move can store data, e.g. opening a game. *)
-      tez 1
-  | Execute_outbox_message -> tez 1
+      mav 1
+  | Execute_outbox_message -> mav 1
 
 (* Copied from src/proto_alpha/lib_plugin/mempool.ml *)
 let default_fee_parameter operation_kind =
   {
-    Injector_common.minimal_fees = mutez 100L;
-    minimal_nanotez_per_byte = Q.of_int 1000;
-    minimal_nanotez_per_gas_unit = Q.of_int 100;
+    Injector_common.minimal_fees = mumav 100L;
+    minimal_nanomav_per_byte = Q.of_int 1000;
+    minimal_nanomav_per_gas_unit = Q.of_int 100;
     force_low_fee = false;
     fee_cap = default_fee operation_kind;
     burn_cap = default_burn operation_kind;
@@ -213,14 +208,11 @@ let default_l1_blocks_cache_size = 64
 
 let default_l2_blocks_cache_size = 64
 
-let default_l1_rpc_timeout = 60. (* seconds *)
-
 let default_gc_parameters =
   {
     (* TODO: https://gitlab.com/tezos/tezos/-/issues/6415
      * Refine the default GC frequency parameter *)
     frequency_in_blocks = 100l;
-    context_splitting_period = None;
   }
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/6576
@@ -252,7 +244,11 @@ let string_of_mode = function
   | Batcher -> "batcher"
   | Maintenance -> "maintenance"
   | Operator -> "operator"
-  | Custom _op_kinds -> "custom"
+  | Custom op_kinds ->
+      if op_kinds = [] then "custom"
+      else
+        "custom:"
+        ^ String.concat "," (List.map Operation_kind.to_string op_kinds)
 
 let mode_of_string s =
   match s with
@@ -286,8 +282,8 @@ let description_of_mode = function
         List.map Operation_kind.to_string op_kinds |> String.concat ", "
       in
       Printf.sprintf
-        "In this mode, the system handles only the specific operation kinds: \
-         [%s]. This allows for tailored control and flexibility."
+        "In this mode, the system handles only the specific operation \
+         kinds:[%s]. This allows for tailored control and flexibility."
         op_kinds_desc
 
 let mode_encoding =
@@ -311,10 +307,10 @@ let mode_encoding =
       (fun operation_kinds -> Custom operation_kinds)
   in
   let all_cases =
-    custom_case
-    :: List.map
-         constant_case
-         [Observer; Accuser; Bailout; Batcher; Maintenance; Operator]
+    List.map
+      constant_case
+      [Observer; Accuser; Bailout; Batcher; Maintenance; Operator]
+    @ [custom_case]
   in
   def "sc_rollup_node_mode" @@ union all_cases
 
@@ -378,13 +374,9 @@ let injector_encoding : injector Data_encoding.t =
 let gc_parameters_encoding : gc_parameters Data_encoding.t =
   let open Data_encoding in
   conv
-    (fun {frequency_in_blocks; context_splitting_period} ->
-      (frequency_in_blocks, context_splitting_period))
-    (fun (frequency_in_blocks, context_splitting_period) ->
-      {frequency_in_blocks; context_splitting_period})
-  @@ obj2
-       (dft "frequency" int32 default_gc_parameters.frequency_in_blocks)
-       (opt "context_splitting_period" int31)
+    (fun {frequency_in_blocks} -> frequency_in_blocks)
+    (fun frequency_in_blocks -> {frequency_in_blocks})
+  @@ obj1 (dft "frequency" int32 default_gc_parameters.frequency_in_blocks)
 
 let history_mode_encoding : history_mode Data_encoding.t =
   Data_encoding.string_enum [("archive", Archive); ("full", Full)]
@@ -418,13 +410,11 @@ let encoding : t Data_encoding.t =
            dal_node_endpoint;
            dac_observer_endpoint;
            dac_timeout;
-           pre_images_endpoint;
            batcher;
            injector;
            l1_blocks_cache_size;
            l2_blocks_cache_size;
            prefetch_blocks;
-           l1_rpc_timeout;
            index_buffer_size;
            irmin_cache_size;
            log_kernel_debug;
@@ -446,14 +436,12 @@ let encoding : t Data_encoding.t =
         ( ( dal_node_endpoint,
             dac_observer_endpoint,
             dac_timeout,
-            pre_images_endpoint,
             batcher,
             injector,
             l1_blocks_cache_size,
             l2_blocks_cache_size,
             prefetch_blocks ),
-          ( l1_rpc_timeout,
-            index_buffer_size,
+          ( index_buffer_size,
             irmin_cache_size,
             log_kernel_debug,
             no_degraded,
@@ -473,14 +461,12 @@ let encoding : t Data_encoding.t =
            ( ( dal_node_endpoint,
                dac_observer_endpoint,
                dac_timeout,
-               pre_images_endpoint,
                batcher,
                injector,
                l1_blocks_cache_size,
                l2_blocks_cache_size,
                prefetch_blocks ),
-             ( l1_rpc_timeout,
-               index_buffer_size,
+             ( index_buffer_size,
                irmin_cache_size,
                log_kernel_debug,
                no_degraded,
@@ -501,13 +487,11 @@ let encoding : t Data_encoding.t =
         dal_node_endpoint;
         dac_observer_endpoint;
         dac_timeout;
-        pre_images_endpoint;
         batcher;
         injector;
         l1_blocks_cache_size;
         l2_blocks_cache_size;
         prefetch_blocks;
-        l1_rpc_timeout;
         index_buffer_size;
         irmin_cache_size;
         log_kernel_debug;
@@ -521,7 +505,7 @@ let encoding : t Data_encoding.t =
           (req
              "smart-rollup-address"
              ~description:"Smart rollup address"
-             Tezos_crypto.Hashed.Smart_rollup_address.encoding)
+             Mavryk_crypto.Hashed.Smart_rollup_address.encoding)
           (opt "boot-sector" ~description:"Boot sector" string)
           (req
              "smart-rollup-node-operator"
@@ -534,7 +518,7 @@ let encoding : t Data_encoding.t =
           (dft
              "reconnection_delay"
              ~description:
-               "The reconnection (to the tezos node) delay in seconds"
+               "The reconnection (to the mavryk node) delay in seconds"
              float
              default_reconnection_delay)
           (dft
@@ -556,24 +540,22 @@ let encoding : t Data_encoding.t =
              Loser_mode.encoding
              Loser_mode.no_failures))
        (merge_objs
-          (obj9
-             (opt "DAL node endpoint" Tezos_rpc.Encoding.uri_encoding)
-             (opt "dac-observer-client" Tezos_rpc.Encoding.uri_encoding)
+          (obj8
+             (opt "DAL node endpoint" Mavryk_rpc.Encoding.uri_encoding)
+             (opt "dac-observer-client" Mavryk_rpc.Encoding.uri_encoding)
              (opt "dac-timeout" Data_encoding.z)
-             (opt "pre-images-endpoint" Tezos_rpc.Encoding.uri_encoding)
              (dft "batcher" batcher_encoding default_batcher)
              (dft "injector" injector_encoding default_injector)
              (dft "l1_blocks_cache_size" int31 default_l1_blocks_cache_size)
              (dft "l2_blocks_cache_size" int31 default_l2_blocks_cache_size)
              (opt "prefetch_blocks" int31))
-          (obj8
-             (dft "l1_rpc_timeout" Data_encoding.float default_l1_rpc_timeout)
+          (obj7
              (opt "index_buffer_size" int31)
              (opt "irmin_cache_size" int31)
              (dft "log-kernel-debug" Data_encoding.bool false)
              (dft "no-degraded" Data_encoding.bool false)
              (dft "gc-parameters" gc_parameters_encoding default_gc_parameters)
-             (opt "history-mode" history_mode_encoding)
+             (dft "history-mode" history_mode_encoding default_history_mode)
              (dft "cors" cors_encoding Resto_cohttp.Cors.default))))
 
 (** Maps a mode to their corresponding purposes. The Custom mode
@@ -617,7 +599,7 @@ let refutation_player_buffer_levels = 5
 
 let default_index_buffer_size = 10_000
 
-let default_irmin_cache_size = 300_000
+let default_irmin_cache_size = 100_000
 
 let loser_warning_message config =
   if config.loser_mode <> Loser_mode.no_failures then
@@ -666,10 +648,10 @@ module Cli = struct
 
   let configuration_from_args ~rpc_addr ~rpc_port ~metrics_addr ~loser_mode
       ~reconnection_delay ~dal_node_endpoint ~dac_observer_endpoint ~dac_timeout
-      ~pre_images_endpoint ~injector_retention_period ~injector_attempts
-      ~injection_ttl ~mode ~sc_rollup_address ~boot_sector_file ~operators
-      ~index_buffer_size ~irmin_cache_size ~log_kernel_debug ~no_degraded
-      ~gc_frequency ~history_mode ~allowed_origins ~allowed_headers =
+      ~injector_retention_period ~injector_attempts ~injection_ttl ~mode
+      ~sc_rollup_address ~boot_sector_file ~operators ~index_buffer_size
+      ~irmin_cache_size ~log_kernel_debug ~no_degraded ~gc_frequency
+      ~history_mode ~allowed_origins ~allowed_headers =
     let open Result_syntax in
     let* purposed_operator, default_operator =
       get_purposed_and_default_operators operators
@@ -692,7 +674,6 @@ module Cli = struct
       dal_node_endpoint;
       dac_observer_endpoint;
       dac_timeout;
-      pre_images_endpoint;
       metrics_addr;
       fee_parameters = Operation_kind.Map.empty;
       mode;
@@ -712,7 +693,6 @@ module Cli = struct
       l1_blocks_cache_size = default_l1_blocks_cache_size;
       l2_blocks_cache_size = default_l2_blocks_cache_size;
       prefetch_blocks = None;
-      l1_rpc_timeout = default_l1_rpc_timeout;
       index_buffer_size;
       irmin_cache_size;
       log_kernel_debug;
@@ -723,9 +703,8 @@ module Cli = struct
             Option.value
               ~default:default_gc_parameters.frequency_in_blocks
               gc_frequency;
-          context_splitting_period = None;
         };
-      history_mode;
+      history_mode = Option.value ~default:default_history_mode history_mode;
       cors =
         Resto_cohttp.Cors.
           {
@@ -738,11 +717,11 @@ module Cli = struct
 
   let patch_configuration_from_args configuration ~rpc_addr ~rpc_port
       ~metrics_addr ~loser_mode ~reconnection_delay ~dal_node_endpoint
-      ~dac_observer_endpoint ~dac_timeout ~pre_images_endpoint
-      ~injector_retention_period ~injector_attempts ~injection_ttl ~mode
-      ~sc_rollup_address ~boot_sector_file ~operators ~index_buffer_size
-      ~irmin_cache_size ~log_kernel_debug ~no_degraded ~gc_frequency
-      ~history_mode ~allowed_origins ~allowed_headers =
+      ~dac_observer_endpoint ~dac_timeout ~injector_retention_period
+      ~injector_attempts ~injection_ttl ~mode ~sc_rollup_address
+      ~boot_sector_file ~operators ~index_buffer_size ~irmin_cache_size
+      ~log_kernel_debug ~no_degraded ~gc_frequency ~history_mode
+      ~allowed_origins ~allowed_headers =
     let open Result_syntax in
     let mode = Option.value ~default:configuration.mode mode in
     let* () = check_custom_mode mode in
@@ -776,8 +755,6 @@ module Cli = struct
             dac_observer_endpoint
             configuration.dac_observer_endpoint;
         dac_timeout = Option.either dac_timeout configuration.dac_timeout;
-        pre_images_endpoint =
-          Option.either pre_images_endpoint configuration.pre_images_endpoint;
         reconnection_delay =
           Option.value
             ~default:configuration.reconnection_delay
@@ -807,10 +784,9 @@ module Cli = struct
               Option.value
                 ~default:configuration.gc_parameters.frequency_in_blocks
                 gc_frequency;
-            context_splitting_period =
-              configuration.gc_parameters.context_splitting_period;
           };
-        history_mode = Option.either history_mode configuration.history_mode;
+        history_mode =
+          Option.value ~default:configuration.history_mode history_mode;
         cors =
           Resto_cohttp.Cors.
             {
@@ -827,21 +803,20 @@ module Cli = struct
 
   let create_or_read_config ~data_dir ~rpc_addr ~rpc_port ~metrics_addr
       ~loser_mode ~reconnection_delay ~dal_node_endpoint ~dac_observer_endpoint
-      ~dac_timeout ~pre_images_endpoint ~injector_retention_period
-      ~injector_attempts ~injection_ttl ~mode ~sc_rollup_address
-      ~boot_sector_file ~operators ~index_buffer_size ~irmin_cache_size
-      ~log_kernel_debug ~no_degraded ~gc_frequency ~history_mode
-      ~allowed_origins ~allowed_headers =
+      ~dac_timeout ~injector_retention_period ~injector_attempts ~injection_ttl
+      ~mode ~sc_rollup_address ~boot_sector_file ~operators ~index_buffer_size
+      ~irmin_cache_size ~log_kernel_debug ~no_degraded ~gc_frequency
+      ~history_mode ~allowed_origins ~allowed_headers =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the smart rollup node is not the one of Octez node *)
+    (* Check if the data directory of the smart rollup node is not the one of Mavkit node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
         Lwt_unix.file_exists (data_dir // "identity.json")
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the smart rollup node data."
       else return_unit
     in
@@ -862,7 +837,6 @@ module Cli = struct
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
-          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -910,7 +884,6 @@ module Cli = struct
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
-          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl

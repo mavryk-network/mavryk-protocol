@@ -17,7 +17,7 @@
              TICKET ;
              IF_NONE { PUSH string "option is None" ; FAILWITH } {} ;
              SWAP ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              DIG 2 ;
              TRANSFER_TOKENS ;
              SWAP ;

@@ -76,10 +76,6 @@ type stresstest_contract_parameters = {
   invocation_gas_limit : int;
 }
 
-type ai_vote = On | Off | Pass
-
-let ai_vote_to_string = function On -> "on" | Off -> "off" | Pass -> "pass"
-
 let name t = t.name
 
 let base_dir t = t.base_dir
@@ -139,8 +135,8 @@ let address ?(hostname = false) ?from peer =
   | Some endpoint ->
       Runner.address ~hostname ?from:(runner endpoint) (runner peer)
 
-let create_with_mode ?runner ?(path = Uses.path Constant.octez_client)
-    ?(admin_path = Uses.path Constant.octez_admin_client) ?name
+let create_with_mode ?runner ?(path = Constant.mavkit_client)
+    ?(admin_path = Constant.mavkit_admin_client) ?name
     ?(color = Log.Color.FG.blue) ?base_dir mode =
   let name = match name with None -> fresh_name () | Some name -> name in
   let base_dir =
@@ -188,7 +184,7 @@ let endpoint_arg ?(endpoint : endpoint option) client =
   (* pass [?endpoint] first: it has precedence over client.mode *)
   match either endpoint (mode_to_endpoint client.mode) with
   | None -> []
-  | Some e -> ["--endpoint"; string_of_endpoint e]
+  | Some e -> ["--endpoint"; string_of_endpoint ~hostname:true e]
 
 let media_type_arg client =
   match client with
@@ -212,7 +208,7 @@ let spawn_command ?log_command ?log_status_on_exit ?log_output
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in
@@ -243,7 +239,7 @@ let spawn_command_with_stdin ?log_command ?log_status_on_exit ?log_output
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in
@@ -516,7 +512,7 @@ module Admin = struct
     match output =~* rex "Injected protocol ([^ ]+) successfully" with
     | None ->
         Test.fail
-          "octez-admin-client inject protocol did not answer \"Injected \
+          "mavkit-admin-client inject protocol did not answer \"Injected \
            protocol ... successfully\""
     | Some hash -> return hash
 
@@ -540,7 +536,7 @@ module Admin = struct
     match output =~* rex "Protocol [^ ]+ uses environment (V\\d+)" with
     | None ->
         Test.fail
-          "octez-admin-client protocol environment did not answer \"Protocol \
+          "mavkit-admin-client protocol environment did not answer \"Protocol \
            ... uses environment V...\""
     | Some version -> return version
 end
@@ -652,7 +648,7 @@ let import_keys_from_mnemonic ?endpoint ?force ?passphrase ?encryption_password
   let* () = Lwt_io.close output_channel in
   Process.check process
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
 
@@ -764,10 +760,9 @@ let empty_mempool_file ?(filename = "mempool.json") () =
   mempool
 
 let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
-    ?minimal_fees ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte
+    ?minimal_fees ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte
     ?(minimal_timestamp = true) ?mempool ?(ignore_node_mempool = false) ?count
-    ?force ?context_path ?dal_node_endpoint ?ai_vote ?(state_recorder = false)
-    client =
+    ?force ?context_path ?dal_node_endpoint ?(state_recorder = false) client =
   spawn_command
     ?endpoint
     client
@@ -775,13 +770,13 @@ let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     @ ["bake"; "for"] @ keys
     @ optional_arg "minimal-fees" string_of_int minimal_fees
     @ optional_arg
-        "minimal-nanotez-per-gas-unit"
+        "minimal-nanomav-per-gas-unit"
         string_of_int
-        minimal_nanotez_per_gas_unit
+        minimal_nanomav_per_gas_unit
     @ optional_arg
-        "minimal-nanotez-per-byte"
+        "minimal-nanomav-per-byte"
         string_of_int
-        minimal_nanotez_per_byte
+        minimal_nanomav_per_byte
     @ optional_arg "operations-pool" Fun.id mempool
     @ (if ignore_node_mempool then ["--ignore-node-mempool"] else [])
     @ (if minimal_timestamp then ["--minimal-timestamp"] else [])
@@ -789,19 +784,18 @@ let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     @ (match force with None | Some false -> [] | Some true -> ["--force"])
     @ optional_arg "context" Fun.id context_path
     @ optional_arg "dal-node" Fun.id dal_node_endpoint
-    @ optional_arg "adaptive-issuance-vote" ai_vote_to_string ai_vote
     @ optional_switch "record_state" state_recorder)
 
 let bake_for ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?dal_node_endpoint
-    ?ai_vote ?state_recorder ?expect_failure client =
+    ?state_recorder ?expect_failure client =
   spawn_bake_for
     ?endpoint
     ?keys
     ?minimal_fees
-    ?minimal_nanotez_per_gas_unit
-    ?minimal_nanotez_per_byte
+    ?minimal_nanomav_per_gas_unit
+    ?minimal_nanomav_per_byte
     ?minimal_timestamp
     ?mempool
     ?ignore_node_mempool
@@ -810,15 +804,14 @@ let bake_for ?endpoint ?protocol ?keys ?minimal_fees
     ?context_path
     ?protocol
     ?dal_node_endpoint
-    ?ai_vote
     ?state_recorder
     client
   |> Process.check ?expect_failure
 
 let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
-    ?node ?dal_node_endpoint ?ai_vote ?state_recorder client =
+    ?node ?dal_node_endpoint ?state_recorder client =
   let node =
     match node with
     | Some n -> n
@@ -840,8 +833,8 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
       ?protocol
       ?keys
       ?minimal_fees
-      ?minimal_nanotez_per_gas_unit
-      ?minimal_nanotez_per_byte
+      ?minimal_nanomav_per_gas_unit
+      ?minimal_nanomav_per_byte
       ?minimal_timestamp
       ?mempool
       ?ignore_node_mempool
@@ -849,24 +842,23 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
       ?force
       ?context_path
       ?dal_node_endpoint
-      ?ai_vote
       ?state_recorder
       client
   in
   Node.wait_for_level node (actual_level_before + 1)
 
 let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
-    ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?minimal_timestamp
+    ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
-    ?node ?dal_node_endpoint ?ai_vote client =
+    ?node ?dal_node_endpoint client =
   let* (_level : int) =
     bake_for_and_wait_level
       ?endpoint
       ?protocol
       ?keys
       ?minimal_fees
-      ?minimal_nanotez_per_gas_unit
-      ?minimal_nanotez_per_byte
+      ?minimal_nanomav_per_gas_unit
+      ?minimal_nanomav_per_byte
       ?minimal_timestamp
       ?mempool
       ?ignore_node_mempool
@@ -876,7 +868,6 @@ let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
       ?level_before
       ?node
       ?dal_node_endpoint
-      ?ai_vote
       client
   in
   unit
@@ -896,7 +887,7 @@ let spawn_tenderbake_action_for ~tenderbake_action ?endpoint ?protocol
   let use_legacy_attestation_name =
     match protocol with
     | None -> false
-    | Some protocol -> Protocol.(number protocol < 018)
+    | Some protocol -> Protocol.(number protocol < 001)
   in
   spawn_command
     ?endpoint
@@ -1716,7 +1707,7 @@ let spawn_stresstest ?endpoint ?(source_aliases = []) ?(source_pkhs = [])
                          ("probability", Ezjsonm.float probability);
                          ( "invocation_fee",
                            Ezjsonm.string
-                             (Int.to_string (Tez.to_mutez invocation_fee)) );
+                             (Int.to_string (Tez.to_mumav invocation_fee)) );
                          ( "invocation_gas_limit",
                            Ezjsonm.string (Int.to_string invocation_gas_limit)
                          );
@@ -1845,7 +1836,7 @@ let stresstest_fund_accounts_from_source ?endpoint ~source_key_pkh ?batch_size
     @ optional_arg "batches-per-block" string_of_int batches_per_block
     @ optional_arg
         "initial-amount"
-        (fun v -> string_of_int (Tez.to_mutez v))
+        (fun v -> string_of_int (Tez.to_mumav v))
         initial_amount)
   |> Process.check
 
@@ -2212,22 +2203,6 @@ let typecheck_script ?hooks ?protocol_hash ~scripts ?no_base_dir_warnings
     client
   |> Process.check
 
-let spawn_run_tzt_unit_tests ?hooks ?protocol_hash ~tests ?no_base_dir_warnings
-    client =
-  spawn_command ?hooks ?protocol_hash ?no_base_dir_warnings client
-  @@ ["run"; "unit"; "tests"; "from"]
-  @ tests
-
-let run_tzt_unit_tests ?hooks ?protocol_hash ~tests ?no_base_dir_warnings client
-    =
-  spawn_run_tzt_unit_tests
-    ?hooks
-    ?protocol_hash
-    ~tests
-    ?no_base_dir_warnings
-    client
-  |> Process.check
-
 let spawn_run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode
     ?other_contracts ?extra_big_maps ~entrypoint ~contract ?input
     ?(unlimited_gas = false) client =
@@ -2420,7 +2395,7 @@ let show_voting_period ?endpoint client =
   match output =~* rex "Current period: \"([a-z]+)\"" with
   | None ->
       Test.fail
-        "octez-client show voting period did not print the current period"
+        "mavkit-client show voting period did not print the current period"
   | Some period -> return period
 
 module Sc_rollup = struct
@@ -2589,7 +2564,7 @@ module Sc_rollup = struct
   let cement_commitment protocol ?hooks ?(wait = "none") ?burn_cap ~hash ~src
       ~dst client =
     let commitment_arg =
-      if Protocol.(number protocol >= 018) then
+      if Protocol.(number protocol >= 001) then
         (* Version after protocol 017 do not specify the commitment. *) []
       else [hash]
     in
@@ -2665,7 +2640,7 @@ module Sc_rollup = struct
     let parse process = Process.check process in
     {value = process; run = parse}
 
-  (** Run [octez-client execute outbox message of sc rollup <rollup> from <src>
+  (** Run [mavkit-client execute outbox message of sc rollup <rollup> from <src>
       for commitment hash <hash> and output proof <proof>]. *)
   let execute_outbox_message ?(wait = "none") ?burn_cap ?storage_limit ?fee
       ?hooks ~rollup ~src ~commitment_hash ~proof client =
@@ -3042,12 +3017,10 @@ let contract_entrypoint_type ~entrypoint ~contract client =
   spawn_contract_entrypoint_type ~entrypoint ~contract client
   |> Process.check_and_read_stdout
 
-let spawn_sign_bytes ~signer ~data client =
-  spawn_command client ["sign"; "bytes"; data; "for"; signer]
-
 let sign_bytes ~signer ~data client =
   let* output =
-    spawn_sign_bytes ~signer ~data client |> Process.check_and_read_stdout
+    spawn_command client ["sign"; "bytes"; data; "for"; signer]
+    |> Process.check_and_read_stdout
   in
   match output =~* rex "Signature: ([a-zA-Z0-9]+)" with
   | Some signature -> Lwt.return signature
@@ -3439,7 +3412,7 @@ let sapling_get_balance ~sapling_key ~contract ?verbose client =
     spawn_sapling_get_balance ~sapling_key ~contract ?verbose client
     |> Process.check_and_read_stdout
   in
-  match client_output =~* rex "Total Sapling funds ?(\\d*)ꜩ" with
+  match client_output =~* rex "Total Sapling funds ?(\\d*)ṁ" with
   | Some balance -> return (Tez.parse_floating balance)
   | None ->
       Test.fail
@@ -3459,18 +3432,18 @@ let sapling_list_keys client =
    `storage fees`. *)
 let sapling_extract_balance_diff_and_fees ~sapling_contract client_output =
   let fees =
-    let re = ".*fees.* \\.* \\+ꜩ?(\\d*[.\\d*]*)" in
+    let re = ".*fees.* \\.* \\+ṁ?(\\d*[.\\d*]*)" in
     let res = matches client_output (rex re) in
     List.map Tez.parse_floating res |> List.fold_left Tez.( + ) Tez.zero
   in
   let amount_pos =
-    let re = sapling_contract ^ ".*\\+ꜩ?(\\d*[.\\d*]*)" in
+    let re = sapling_contract ^ ".*\\+ṁ?(\\d*[.\\d*]*)" in
     match matches client_output (rex re) with
     | [s] -> Tez.parse_floating s
     | _ -> Tez.zero
   in
   let amount_neg =
-    let re = sapling_contract ^ ".*\\-ꜩ?(\\d*[.\\d*]*)" in
+    let re = sapling_contract ^ ".*\\-ṁ?(\\d*[.\\d*]*)" in
     match matches client_output (rex re) with
     | [s] -> Tez.parse_floating s
     | _ -> Tez.zero
@@ -3613,7 +3586,7 @@ let spawn_compute_chain_id_from_block_hash ?endpoint client block_hash =
   spawn_command ?endpoint client
   @@ ["compute"; "chain"; "id"; "from"; "block"; "hash"; block_hash]
 
-(** Run [tezos-client compute chain id from block hash]. *)
+(** Run [mavryk-client compute chain id from block hash]. *)
 let compute_chain_id_from_block_hash ?endpoint client block_hash =
   let* output =
     spawn_compute_chain_id_from_block_hash ?endpoint client block_hash
@@ -3625,7 +3598,7 @@ let spawn_compute_chain_id_from_seed ?endpoint client seed =
   spawn_command ?endpoint client
   @@ ["compute"; "chain"; "id"; "from"; "seed"; seed]
 
-(** Run [tezos-client compute chain id from seed]. *)
+(** Run [mavryk-client compute chain id from seed]. *)
 let compute_chain_id_from_seed ?endpoint client seed =
   let* output =
     spawn_compute_chain_id_from_seed ?endpoint client seed
@@ -4235,30 +4208,6 @@ let as_foreign_endpoint = function
           host = Proxy_server.rpc_host;
           port = Proxy_server.rpc_port ps;
         }
-
-let spawn_stake ?(wait = "none") amount dlgt client =
-  spawn_command client
-  @@ ["--wait"; wait; "stake"; Tez.to_string amount; "for"; dlgt]
-
-let stake ?wait amount dlgt client =
-  spawn_stake ?wait amount dlgt client |> Process.check
-
-let spawn_set_delegate_parameters dlgt limit edge client =
-  spawn_command client
-  @@ [
-       "set";
-       "delegate";
-       "parameters";
-       "for";
-       dlgt;
-       "--limit-of-staking-over-baking";
-       limit;
-       "--edge-of-baking-over-staking";
-       edge;
-     ]
-
-let set_delegate_parameters dlgt limit edge client =
-  spawn_set_delegate_parameters dlgt limit edge client |> Process.check
 
 module RPC = struct
   let call_raw ?log_command ?log_status_on_exit ?log_output ?better_errors

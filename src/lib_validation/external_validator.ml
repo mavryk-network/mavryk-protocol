@@ -202,8 +202,8 @@ let init ~readonly input output =
     External_validation.recv input External_validation.parameters_encoding
   in
   let* () =
-    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
-    Tezos_crypto_dal.Cryptobox.Config.init_dal ~find_srs_files dal_config
+    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
+    Mavryk_crypto_dal.Cryptobox.Config.init_dal ~find_srs_files dal_config
   in
   let sandbox_parameters =
     Option.map (fun p -> ("sandbox_parameter", p)) sandbox_parameters
@@ -255,13 +255,13 @@ let run ~readonly ~using_std_channel input output =
     (* if the external validator is spawned in a standalone way and communicates
        with the node through stdin/stdoud, we do no start the logging system. *)
     if using_std_channel then Lwt.return_unit
-    else Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    else Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   (* Main loop waiting for request to be processed, forever, until the
      [Terminate] request is received.
      TODO: https://gitlab.com/tezos/tezos/-/issues/5177
   *)
-  let rec loop (cache : Tezos_protocol_environment.Context.block_cache option)
+  let rec loop (cache : Mavryk_protocol_environment.Context.block_cache option)
       cached_result =
     let*! recved =
       External_validation.recv input External_validation.request_encoding
@@ -351,7 +351,7 @@ let run ~readonly ~using_std_channel input output =
               (* This is a special case added for Hangzhou that could
                  be removed once the successor of Hangzhou will be
                  activated. This behavior is here to keep the
-                 compatibility with the version Octez v11 which has a
+                 compatibility with the version Mavkit v11 which has a
                  buggy behavior with Hangzhou. *)
               (err, None)
           | Error _ as err -> (err, cache)
@@ -570,7 +570,7 @@ let run ~readonly ~using_std_channel input output =
         Events.(emit termination_request ())
     | External_validation.Reconfigure_event_logging config ->
         let*! res =
-          Tezos_base_unix.Internal_event_unix.Configuration.reapply config
+          Mavryk_base_unix.Internal_event_unix.Configuration.reapply config
         in
         let*! () =
           External_validation.send

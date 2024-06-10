@@ -33,14 +33,14 @@
 *)
 
 open Protocol
-open Tezos_micheline.Micheline
+open Mavryk_micheline.Micheline
 open Michelson_v1_primitives
-open Tezos_webassembly_interpreter
-module Context = Tezos_context_memory.Context_binary
+open Mavryk_webassembly_interpreter
+module Context = Mavryk_context_memory.Context_binary
 open Wasm_utils
 
 module Proof_encoding =
-  Tezos_context_merkle_proof_encoding.Merkle_proof_encoding
+  Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding
 
 module Wasm_context = struct
   module Tree = struct
@@ -89,6 +89,37 @@ end
 module Full_Wasm =
   Sc_rollup_wasm.V2_0_0.Make (Environment.Wasm_2_0_0.Make) (Wasm_context)
 
+let test_initial_state_hash_wasm_pvm () =
+  let open Alpha_context in
+  let open Lwt_result_syntax in
+  let empty = Sc_rollup_helpers.Wasm_pvm.make_empty_state () in
+  let*! state = Sc_rollup_helpers.Wasm_pvm.initial_state ~empty in
+  let*! hash = Sc_rollup_helpers.Wasm_pvm.state_hash state in
+  let expected = Sc_rollup.Wasm_2_0_0PVM.reference_initial_state_hash in
+  if Sc_rollup.State_hash.(hash = expected) then return_unit
+  else
+    failwith
+      "incorrect hash, expected %a, got %a"
+      Sc_rollup.State_hash.pp
+      expected
+      Sc_rollup.State_hash.pp
+      hash
+
+let test_initial_state_hash_wasm_machine () =
+  let open Lwt_result_syntax in
+  let open Sc_rollup_machine_no_proofs in
+  let*! state = Wasm.initial_state ~empty:(empty_tree ()) in
+  let*! hash = Wasm.state_hash state in
+  let expected = Sc_rollup_wasm.V2_0_0.reference_initial_state_hash in
+  if Sc_rollup_repr.State_hash.(hash = expected) then return_unit
+  else
+    failwith
+      "incorrect hash, expected %a, got %a"
+      Sc_rollup_repr.State_hash.pp
+      expected
+      Sc_rollup_repr.State_hash.pp
+      hash
+
 let test_metadata_size () =
   let address = Sc_rollup_repr.Address.of_bytes_exn (Bytes.make 20 '\000') in
   let metadata =
@@ -99,13 +130,13 @@ let test_metadata_size () =
   in
   assert (
     Bytes.length bytes
-    = Tezos_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
+    = Mavryk_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
   Lwt_result_syntax.return_unit
 
 let test_l1_input_kind () =
   let open Lwt_result_wrap_syntax in
   let open Sc_rollup_inbox_message_repr in
-  let open Tezos_scoru_wasm in
+  let open Mavryk_scoru_wasm in
   let check_msg msg expected =
     let*?@ msg = serialize msg in
     let msg = unsafe_to_string msg |> Pvm_input_kind.from_raw_input in
@@ -246,12 +277,12 @@ let test_output () =
   let*! final_tree = eval_until_input_requested tree in
   let*! output = Wasm.Internal_for_tests.get_output_buffer final_tree in
   let* last_outbox_level =
-    match output.Tezos_webassembly_interpreter.Output_buffer.last_level with
+    match output.Mavryk_webassembly_interpreter.Output_buffer.last_level with
     | Some level -> return level
     | None -> failwith "The PVM output buffer does not contain any outbox."
   in
   let*! last_outbox =
-    Tezos_webassembly_interpreter.Output_buffer.Internal_for_tests.get_outbox
+    Mavryk_webassembly_interpreter.Output_buffer.Internal_for_tests.get_outbox
       output
       last_outbox_level
   in
@@ -267,7 +298,7 @@ let test_output () =
   let message_index = Z.pred end_of_level_message_index in
 
   let*! bytes_output_message =
-    Tezos_webassembly_interpreter.Output_buffer.(
+    Mavryk_webassembly_interpreter.Output_buffer.(
       get_message output {outbox_level = last_outbox_level; message_index})
   in
   assert (string_input_message = Bytes.to_string bytes_output_message) ;
@@ -292,7 +323,7 @@ let test_output () =
 
 let test_reveal_compat_metadata () =
   let open Alpha_context.Sc_rollup in
-  let open Tezos_scoru_wasm.Wasm_pvm_state in
+  let open Mavryk_scoru_wasm.Wasm_pvm_state in
   let (Reveal_raw metadata_scoru_wasm) = reveal_metadata in
   let metadata_protocol =
     Data_encoding.Binary.to_string_exn reveal_encoding Reveal_metadata
@@ -301,7 +332,7 @@ let test_reveal_compat_metadata () =
 
 let test_reveal_compat_raw_data () =
   let open Alpha_context.Sc_rollup in
-  let open Tezos_scoru_wasm.Wasm_pvm_state in
+  let open Mavryk_scoru_wasm.Wasm_pvm_state in
   let hash = Wasm_2_0_0PVM.well_known_reveal_hash in
   let hash_string =
     Data_encoding.Binary.to_string_exn Sc_rollup_reveal_hash.encoding hash
@@ -335,13 +366,13 @@ let test_protocol_names () =
       (Internal protocol_migration_internal_message)
   in
   let kind =
-    Tezos_scoru_wasm.Pvm_input_kind.from_raw_input
+    Mavryk_scoru_wasm.Pvm_input_kind.from_raw_input
       protocol_migration_message_str
   in
   assert (kind = Internal (Protocol_migration Proto_alpha)) ;
   assert (
     protocol_migration_internal_message
-    = Protocol_migration Tezos_scoru_wasm.Constants.proto_alpha_name) ;
+    = Protocol_migration Mavryk_scoru_wasm.Constants.proto_alpha_name) ;
   Lwt_result_syntax.return_unit
 
 let test_reveal_host_function_can_request_dal_pages () =
@@ -412,6 +443,14 @@ let test_reveal_host_function_can_request_dal_pages () =
 
 let tests =
   [
+    Tztest.tztest
+      "initial state hash for Wasm"
+      `Quick
+      test_initial_state_hash_wasm_pvm;
+    Tztest.tztest
+      "initial state hash for Wasm machine"
+      `Quick
+      test_initial_state_hash_wasm_machine;
     Tztest.tztest "size of a rollup metadata" `Quick test_metadata_size;
     Tztest.tztest "l1 input kind" `Quick test_l1_input_kind;
     Tztest.tztest "output proofs" `Quick test_output;

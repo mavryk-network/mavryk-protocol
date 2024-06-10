@@ -11,9 +11,9 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "num"
-  "re" { >= "1.10.0" }
-  "octez-protocol-compiler"
-  "octez-libs"
+  "re" { >= "1.9.0" }
+  "mavkit-protocol-compiler"
+  "mavkit-libs"
 ]
 depopts: [
   "utop"

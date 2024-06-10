@@ -39,8 +39,8 @@ let parse_args () =
               else socket_dir := Some s),
           {|<dir>
       When provided, the validator will communicate through a socket located
-      at '<dir>/tezos-validation-socket-<pid>' where <pid> is the
-      tezos-validator's process identifier. By default, the validator will
+      at '<dir>/mavryk-validation-socket-<pid>' where <pid> is the
+      mavryk-validator's process identifier. By default, the validator will
       communicate through its standard input and output.|}
         );
         ( "--readonly",
@@ -54,14 +54,14 @@ let parse_args () =
             (fun () ->
               Format.printf
                 "%s\n"
-                Tezos_version_value.Bin_version.version_string ;
+                Mavryk_version_value.Bin_version.version_string ;
               Stdlib.exit 0),
           " Display version information" );
       ]
   in
   let usage_msg =
     Format.sprintf
-      "tezos-validator [--version] [--socket-dir <dir>] [--readonly]"
+      "mavryk-validator [--version] [--socket-dir <dir>] [--readonly]"
   in
   Arg.parse
     args

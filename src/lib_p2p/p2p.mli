@@ -101,7 +101,7 @@ type config = {
       these peers that the identity of this node should not be revealed to
       the rest of the network. *)
   identity : P2p_identity.t;  (** Cryptographic identity of the peer. *)
-  proof_of_work_target : Tezos_crypto.Crypto_box.pow_target;
+  proof_of_work_target : Mavryk_crypto.Crypto_box.pow_target;
       (** Expected level of proof of work of peers' identity. *)
   trust_discovered_peers : bool;
       (** If [true], peers discovered on the local network will be trusted. *)
@@ -151,7 +151,7 @@ val faked_network :
     *)
 val create :
   config:config ->
-  limits:Tezos_p2p_services.P2p_limits.t ->
+  limits:Mavryk_p2p_services.P2p_limits.t ->
   ?received_msg_hook:(('msg, 'peer_meta, 'conn_meta) connection -> 'msg -> unit) ->
   ?sent_msg_hook:(('msg, 'peer_meta, 'conn_meta) connection -> 'msg -> unit) ->
   ?broadcasted_msg_hook:

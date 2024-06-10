@@ -1,9 +1,9 @@
 # Contributed Software
 
 This directory is meant to host the source code of tools which can be
-useful for users and developers of Octez and the Tezos protocol but
+useful for users and developers of Mavkit and the Tezos protocol but
 which don't deserve as much care as the components which are critical
-for the security of Tezos and Octez users.
+for the security of Tezos and Mavkit users.
 
 Putting these non-critical pieces of code in a distinct directory
 serves the following purposes:

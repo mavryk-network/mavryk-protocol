@@ -1,58 +1,41 @@
-# check that ksy files are still up-to-date with octez
+misc_checks:
+  extends:
+    - .default_settings_template
+    - .image_template__runtime_build_test_dependencies
+  stage: "test"
+  needs: [trigger]
+  before_script:
+    - . ./scripts/version.sh
+    # Load the environment poetry previously created in the docker image.
+    # Give access to the Python dependencies/executables
+    - . $HOME/.venv/bin/activate
+    - eval $(opam env)
+  script:
+    - ./scripts/ci/take_ownership.sh
+    - ./scripts/ci/lint_misc_check.sh
+    - scripts/check_wasm_pvm_regressions.sh check
+
 kaitai_checks:
   extends:
     - .test_template
+  # These tests are not flaky at all so we overwrite the retry value
+  retry: 0
+  needs: [trigger]
   needs:
-    - "oc.build_x86_64-released"
-  rules:
-    - changes:
-        - src/**/*
-        - contrib/*kaitai*/**/*
-        - .gitlab/**/*
-        - .gitlab-ci.yml
-      when: on_success
-  needs:
-    - "oc.build_x86_64-released"
+    - "build_x86_64-released"
   script:
-    - make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Octez encodings and Kaitai files seem to be out of sync. You might need to run `make check-kaitai-struct-files` and commit the resulting diff.' ; false)
+    - make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Mavkit encodings and Kaitai files seem to be out of sync. You might need to run `make check-kaitai-struct-files` and commit the resulting diff.' ; false)
 
-kaitai_e2e_checks:
-  extends:
-    - .default_settings_template
-    - .image_template__runtime_client_libs_dependencies
-  needs: [kaitai_checks]
-  rules:
-    - changes:
-        - src/**/*
-        - contrib/*kaitai*/**/*
-        - .gitlab/**/*
-        - .gitlab-ci.yml
-      when: on_success
-  before_script:
-    - . ./scripts/version.sh
-    # TODO: https://gitlab.com/tezos/tezos/-/issues/5026
-    #       As observed for the `unit:js_components` running `npm i`
-    #       everytime we run a job is inefficient.
-    #
-    #       The benefit of this approach is that we specify node version
-    #       and npm dependencies (package.json) in one place, and that the local
-    #       environment is then the same as CI environment.
-    - . ./scripts/install_build_deps.js.sh
-  script:
-    - ./contrib/kaitai-struct-files/scripts/kaitai_e2e.sh
-      contrib/kaitai-struct-files/files
-      contrib/kaitai-struct-files/input
-
-oc.check_lift_limits_patch:
+check_lift_limits_patch:
   extends:
     - .test_template
-    - .needs__trigger
+  # These tests are not flaky at all so we overwrite the retry value
+  retry: 0
+  needs: [trigger]
   rules:
     - changes:
         - src/bin_tps_evaluation/lift_limits.patch
         - src/proto_alpha/lib_protocol/main.ml
-        - .gitlab/**/*
-        - .gitlab-ci.yml
       when: on_success
   script:
     # Check that the patch only modifies the
@@ -61,3 +44,18 @@ oc.check_lift_limits_patch:
     - '[ $(git apply --numstat src/bin_tps_evaluation/lift_limits.patch | cut -f3) = "src/proto_alpha/lib_protocol/main.ml" ]'
     - git apply src/bin_tps_evaluation/lift_limits.patch
     - dune build @src/proto_alpha/lib_protocol/check
+
+commit_titles:
+  extends:
+    - .default_settings_template
+    - .image_template__runtime_prebuild_dependencies
+  stage: "test"
+  needs: [trigger]
+  script:
+    # Check commit messages
+    - ./scripts/ci/check_commit_messages.sh || exit $?
+  allow_failure:
+    # ./scripts/ci/check_commit_messages.sh exits with code 65 when a
+    # git history contains invalid commits titles in situations where
+    # that is allowed.
+    exit_codes: [65]

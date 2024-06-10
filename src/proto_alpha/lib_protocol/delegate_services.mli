@@ -176,7 +176,7 @@ val participation :
   'a #RPC_context.simple ->
   'a ->
   public_key_hash ->
-  Delegate.For_RPC.participation_info shell_tzresult Lwt.t
+  Delegate.participation_info shell_tzresult Lwt.t
 
 val active_staking_parameters :
   'a #RPC_context.simple ->

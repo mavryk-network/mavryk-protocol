@@ -26,7 +26,7 @@
 
 type t
 
-val get_version : t -> Tezos_version.Node_version.t
+val get_version : t -> Mavryk_version.Node_version.t
 
 type config = {
   genesis : Genesis.t;
@@ -36,13 +36,13 @@ type config = {
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   operation_metadata_size_limit : Shell_limits.operation_metadata_size_limit;
   data_dir : string;
-  internal_events : Tezos_base.Internal_event_config.t;
+  internal_events : Mavryk_base.Internal_event_config.t;
   store_root : string;
   context_root : string;
   protocol_root : string;
   patch_context :
-    (Tezos_protocol_environment.Context.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t)
+    (Mavryk_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t)
     option;
   p2p : (P2p.config * P2p_limits.t) option;
   target : (Block_hash.t * int32) option;
@@ -50,7 +50,7 @@ type config = {
       (** If [true], all non-empty mempools will be ignored. *)
   enable_testchain : bool;
       (** If [false], testchain related messages will be ignored. *)
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
 }
 
 val create :
@@ -74,7 +74,7 @@ val shutdown : t -> unit Lwt.t
     [commit_info] and [node] contain all informations required to build such a
     directory. *)
 val build_rpc_directory :
-  node_version:Tezos_version.Node_version.t ->
+  node_version:Mavryk_version.Node_version.t ->
   commit_info:Node_version.commit_info ->
   t ->
-  unit Tezos_rpc.Directory.t
+  unit Mavryk_rpc.Directory.t

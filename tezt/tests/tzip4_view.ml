@@ -81,7 +81,6 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "tzip4_view"]
-        ~uses_node:false
         (fun protocol -> test_function ~protocol ())
         protocols)
     [

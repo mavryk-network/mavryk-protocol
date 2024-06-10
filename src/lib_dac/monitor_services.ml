@@ -28,17 +28,17 @@ module V0 = struct
     let v0_prefix = Api_version.v0_prefix
 
     let root_hashes =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Monitor a stream of root hashes that are produced by another dac \
            node responsible for the serialization of the dac payload \
            (coordinator).  "
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:Dac_plugin.raw_hash_encoding
-        Tezos_rpc.Path.(v0_prefix / "monitor" / "root_hashes")
+        Mavryk_rpc.Path.(v0_prefix / "monitor" / "root_hashes")
 
     let certificate =
-      Tezos_rpc.Service.get_service
+      Mavryk_rpc.Service.get_service
         ~description:
           "Monitor a stream of updates to certificates for a given root hash. \
            Every time a new signature for the root hash is received by the \
@@ -46,17 +46,17 @@ module V0 = struct
            streamed via this endpoint. This monitor endpoint guarantees at \
            least once delivery, i.e. a certificate update could be streamed \
            multiple times."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~output:Certificate_repr.encoding
-        Tezos_rpc.Path.(
+        Mavryk_rpc.Path.(
           v0_prefix / "monitor" / "certificate" /: Dac_plugin.raw_hash_rpc_arg)
   end
 
   let root_hashes dac_node_cctxt =
-    Tezos_rpc.Context.make_streamed_call S.root_hashes dac_node_cctxt () () ()
+    Mavryk_rpc.Context.make_streamed_call S.root_hashes dac_node_cctxt () () ()
 
   let certificate dac_node_cctxt root_hash =
-    Tezos_rpc.Context.make_streamed_call
+    Mavryk_rpc.Context.make_streamed_call
       S.certificate
       dac_node_cctxt
       ((), root_hash)

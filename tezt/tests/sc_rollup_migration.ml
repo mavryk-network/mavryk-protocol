@@ -19,8 +19,8 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
     ?variant ?(tags = []) ?(timeout = 10) ?(commitment_period = 10) ~kind
     ~migrate_from ~migrate_to ~scenario_prior ~scenario_after ~description () =
   let tags =
-    Tag.etherlink :: Protocol.tag migrate_from :: Protocol.tag migrate_to
-    :: kind :: "migration" :: tags
+    Protocol.tag migrate_from :: Protocol.tag migrate_to :: kind :: "migration"
+    :: tags
   in
   Test.register
     ~__FILE__
@@ -34,7 +34,7 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
             kind
             {variant; tags; description}))
   @@ fun () ->
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     Sc_rollup_helpers.setup_l1
       ~commitment_period
       ~challenge_window:10
@@ -42,12 +42,12 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
       migrate_from
   in
   let* sc_rollup =
-    Sc_rollup_helpers.originate_sc_rollup ?parameters_ty ~kind ~src tezos_client
+    Sc_rollup_helpers.originate_sc_rollup ?parameters_ty ~kind ~src mavryk_client
   in
-  let* prior_res = scenario_prior tezos_client ~sc_rollup in
-  let* current_level = Node.get_level tezos_node in
+  let* prior_res = scenario_prior mavryk_client ~sc_rollup in
+  let* current_level = Node.get_level mavryk_node in
   let migration_level = current_level + 1 in
-  let* () = Node.terminate tezos_node in
+  let* () = Node.terminate mavryk_node in
   let patch_config =
     Node.Config_file.set_sandbox_network_with_user_activated_upgrades
       [(migration_level, migrate_to)]
@@ -55,12 +55,12 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
   let nodes_args =
     Node.[Synchronisation_threshold 0; History_mode Archive; No_bootstrap_peers]
   in
-  let* () = Node.run ~patch_config tezos_node nodes_args in
-  let* () = Node.wait_for_ready tezos_node in
+  let* () = Node.run ~patch_config mavryk_node nodes_args in
+  let* () = Node.wait_for_ready mavryk_node in
   let* () =
-    repeat migration_level (fun () -> Client.bake_for_and_wait tezos_client)
+    repeat migration_level (fun () -> Client.bake_for_and_wait mavryk_client)
   in
-  let* () = scenario_after tezos_client ~sc_rollup prior_res in
+  let* () = scenario_after mavryk_client ~sc_rollup prior_res in
   unit
 
 (** Test that it is still possible to send message after a migration
@@ -68,13 +68,13 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
 let test_migration_inbox ~kind ~migrate_from ~migrate_to =
   let tags = ["internal"; "external"; "message"; "inbox"]
   and description = "testing to send inbox operation post migration."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     let* minter_address =
       Sc_rollup_helpers.originate_forward_smart_contract
-        tezos_client
+        mavryk_client
         migrate_from
     in
-    let* () = Sc_rollup_helpers.send_messages 2 tezos_client in
+    let* () = Sc_rollup_helpers.send_messages 2 mavryk_client in
     let* () =
       Client.transfer
         ~amount:Tez.(of_int 100)
@@ -87,11 +87,11 @@ let test_migration_inbox ~kind ~migrate_from ~migrate_to =
              "Pair 0x%s %S "
              (Sc_rollup_helpers.hex_encode "pred_message")
              sc_rollup)
-        tezos_client
+        mavryk_client
     in
     return minter_address
-  and scenario_after tezos_client ~sc_rollup minter_address =
-    let* () = Sc_rollup_helpers.send_messages 2 tezos_client in
+  and scenario_after mavryk_client ~sc_rollup minter_address =
+    let* () = Sc_rollup_helpers.send_messages 2 mavryk_client in
     (* TODO: https://gitlab.com/tezos/tezos/-/issues/5286
        Check messages are correctly added in the inbox. *)
     Client.transfer
@@ -105,7 +105,7 @@ let test_migration_inbox ~kind ~migrate_from ~migrate_to =
            "Pair 0x%s %S "
            (Sc_rollup_helpers.hex_encode "next_message")
            sc_rollup)
-      tezos_client
+      mavryk_client
   in
   test_l1_migration_scenario
     ~parameters_ty:"bytes"
@@ -123,7 +123,7 @@ let test_migration_ticket_inbox ~kind ~migrate_from ~migrate_to =
   let tags = ["internal"; "inbox"; "ticket"]
   and description =
     "testing to send internal message with ticket post migration."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     (* Originate forwarder contract to send internal messages to rollup *)
     let* alias, minter_address =
       Client.originate_contract_at
@@ -131,11 +131,11 @@ let test_migration_ticket_inbox ~kind ~migrate_from ~migrate_to =
         ~src:Constant.bootstrap1.alias
         ~init:"Unit"
         ~burn_cap:Tez.(of_int 1)
-        tezos_client
+        mavryk_client
         ["mini_scenarios"; "sc_rollup_mint_and_forward"]
         migrate_from
     in
-    let* () = Client.bake_for_and_wait tezos_client in
+    let* () = Client.bake_for_and_wait mavryk_client in
     Log.info
       "The minter-forwarder %s (%s) contract was successfully originated"
       alias
@@ -152,10 +152,10 @@ let test_migration_ticket_inbox ~kind ~migrate_from ~migrate_to =
              "Pair (Pair 0x%s 10) %S "
              (Sc_rollup_helpers.hex_encode "pred_message")
              sc_rollup)
-        tezos_client
+        mavryk_client
     in
     return minter_address
-  and scenario_after tezos_client ~sc_rollup minter_address =
+  and scenario_after mavryk_client ~sc_rollup minter_address =
     (* TODO: https://gitlab.com/tezos/tezos/-/issues/5286
        Check messages are correctly added in the inbox. *)
     Client.transfer
@@ -169,7 +169,7 @@ let test_migration_ticket_inbox ~kind ~migrate_from ~migrate_to =
            "Pair (Pair 0x%s 10) %S "
            (Sc_rollup_helpers.hex_encode "pred_message")
            sc_rollup)
-      tezos_client
+      mavryk_client
   in
   test_l1_migration_scenario
     ~parameters_ty:"ticket bytes"
@@ -188,24 +188,24 @@ let test_migration_cement ~kind ~migrate_from ~migrate_to =
   and description =
     "Test to cement a commitment made pre migration then publish a new \
      commitment."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     Sc_rollup_helpers.bake_period_then_publish_commitment
       ~sc_rollup
       ~src:Constant.bootstrap1.public_key_hash
-      tezos_client
-  and scenario_after tezos_client ~sc_rollup
-      ((commitment : RPC.smart_rollup_commitment), hash) =
+      mavryk_client
+  and scenario_after mavryk_client ~sc_rollup
+      ((commitment : Sc_rollup_rpc.commitment), hash) =
     let* {commitment_period_in_blocks = commitment_period; _} =
-      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+      Sc_rollup_helpers.get_sc_rollup_constants mavryk_client
     in
     let last_inbox_level = commitment.inbox_level in
-    let* current_level = Client.level tezos_client in
+    let* current_level = Client.level mavryk_client in
     let missing_blocks_to_commit =
       last_inbox_level + commitment_period - current_level + 1
     in
     let* () =
       repeat missing_blocks_to_commit (fun () ->
-          Client.bake_for_and_wait tezos_client)
+          Client.bake_for_and_wait mavryk_client)
     in
     let* _commitment, _next_hash =
       Sc_rollup_helpers.forge_and_publish_commitment
@@ -214,12 +214,12 @@ let test_migration_cement ~kind ~migrate_from ~migrate_to =
         ~predecessor:hash
         ~sc_rollup
         ~src:Constant.bootstrap1.public_key_hash
-        tezos_client
+        mavryk_client
     in
     (* no need to bake more to have the correct level for the
        cementation because commitment_period = challenge_period and we
        baked to be able to published a commit. *)
-    Sc_rollup_helpers.cement_commitment migrate_to ~sc_rollup ~hash tezos_client
+    Sc_rollup_helpers.cement_commitment migrate_to ~sc_rollup ~hash mavryk_client
   in
   test_l1_migration_scenario
     ~kind
@@ -236,41 +236,41 @@ let test_migration_cement ~kind ~migrate_from ~migrate_to =
 let test_migration_recover ~kind ~migrate_from ~migrate_to =
   let tags = ["commitment"; "cement"; "recover"]
   and description = "Test recover bond with cementation made pre-migration."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     let* commitment, hash =
       Sc_rollup_helpers.bake_period_then_publish_commitment
         ~sc_rollup
         ~src:Constant.bootstrap1.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* {challenge_window_in_blocks = challenge_window; _} =
-      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+      Sc_rollup_helpers.get_sc_rollup_constants mavryk_client
     in
-    let* current_level = Client.level tezos_client in
+    let* current_level = Client.level mavryk_client in
     let missing_blocks_to_cement =
       commitment.inbox_level + challenge_window - current_level + 2
     in
     let* () =
       repeat missing_blocks_to_cement (fun () ->
-          Client.bake_for_and_wait tezos_client)
+          Client.bake_for_and_wait mavryk_client)
     in
     Sc_rollup_helpers.cement_commitment
       migrate_from
       ~sc_rollup
       ~hash
-      tezos_client
-  and scenario_after tezos_client ~sc_rollup () =
+      mavryk_client
+  and scenario_after mavryk_client ~sc_rollup () =
     let*! () =
       let recover_bond_fee = 1_000_000 in
       Client.Sc_rollup.submit_recover_bond
         ~hooks:Sc_rollup_helpers.hooks
         ~rollup:sc_rollup
         ~src:Constant.bootstrap2.alias
-        ~fee:(Tez.of_mutez_int recover_bond_fee)
+        ~fee:(Tez.of_mumav_int recover_bond_fee)
         ~staker:Constant.bootstrap1.alias
-        tezos_client
+        mavryk_client
     in
-    Client.bake_for_and_wait tezos_client
+    Client.bake_for_and_wait mavryk_client
   in
   test_l1_migration_scenario
     ~kind
@@ -286,13 +286,13 @@ let test_migration_recover ~kind ~migrate_from ~migrate_to =
 let test_migration_refute ~kind ~migrate_from ~migrate_to =
   let tags = ["refutation"]
   and description = "Refuting a pre-migration commitment."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     let* commitment1, hash1 =
       Sc_rollup_helpers.bake_period_then_publish_commitment
         ~sc_rollup
         ~number_of_ticks:1
         ~src:Constant.bootstrap1.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* _commitment2, hash2 =
       Sc_rollup_helpers.forge_and_publish_commitment
@@ -301,30 +301,30 @@ let test_migration_refute ~kind ~migrate_from ~migrate_to =
         ~sc_rollup
         ~number_of_ticks:2
         ~src:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     return (hash1, hash2)
-  and scenario_after tezos_client ~sc_rollup
+  and scenario_after mavryk_client ~sc_rollup
       (player_commitment_hash, opponent_commitment_hash) =
     let* {timeout_period_in_blocks = timeout_period; _} =
-      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+      Sc_rollup_helpers.get_sc_rollup_constants mavryk_client
     in
     let* () =
       Sc_rollup_helpers.start_refute
-        tezos_client
+        mavryk_client
         ~sc_rollup
         ~source:Constant.bootstrap1
         ~opponent:Constant.bootstrap2.public_key_hash
         ~player_commitment_hash
         ~opponent_commitment_hash
     in
-    let* RPC.{compressed_state = state_hash; _} =
-      Sc_rollup_helpers.genesis_commitment ~sc_rollup tezos_client
+    let* Sc_rollup_rpc.{compressed_state = state_hash; _} =
+      Sc_rollup_helpers.genesis_commitment ~sc_rollup mavryk_client
     in
     let* () =
       Sc_rollup_helpers.move_refute_with_unique_state_hash
         ~number_of_sections_in_dissection:3
-        tezos_client
+        mavryk_client
         ~source:Constant.bootstrap1
         ~opponent:Constant.bootstrap2.public_key_hash
         ~sc_rollup
@@ -332,14 +332,14 @@ let test_migration_refute ~kind ~migrate_from ~migrate_to =
     in
     let* () =
       repeat (timeout_period + 1) (fun () ->
-          Client.bake_for_and_wait tezos_client)
+          Client.bake_for_and_wait mavryk_client)
     in
     let* () =
       Sc_rollup_helpers.timeout
         ~sc_rollup
         ~staker1:Constant.bootstrap1.public_key_hash
         ~staker2:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     unit
   in
@@ -358,13 +358,13 @@ let test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to =
   let tags = ["refutation"]
   and description =
     "Refuting a commitment pre-migration when the game started pre-migration."
-  and scenario_prior tezos_client ~sc_rollup =
+  and scenario_prior mavryk_client ~sc_rollup =
     let* commitment1, player_commitment_hash =
       Sc_rollup_helpers.bake_period_then_publish_commitment
         ~sc_rollup
         ~number_of_ticks:1
         ~src:Constant.bootstrap1.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* _commitment2, opponent_commitment_hash =
       Sc_rollup_helpers.forge_and_publish_commitment
@@ -373,11 +373,11 @@ let test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to =
         ~sc_rollup
         ~number_of_ticks:2
         ~src:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* () =
       Sc_rollup_helpers.start_refute
-        tezos_client
+        mavryk_client
         ~sc_rollup
         ~source:Constant.bootstrap1
         ~opponent:Constant.bootstrap2.public_key_hash
@@ -385,17 +385,17 @@ let test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to =
         ~opponent_commitment_hash
     in
     unit
-  and scenario_after tezos_client ~sc_rollup () =
+  and scenario_after mavryk_client ~sc_rollup () =
     let* {timeout_period_in_blocks = timeout_period; _} =
-      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+      Sc_rollup_helpers.get_sc_rollup_constants mavryk_client
     in
-    let* RPC.{compressed_state = state_hash; _} =
-      Sc_rollup_helpers.genesis_commitment ~sc_rollup tezos_client
+    let* Sc_rollup_rpc.{compressed_state = state_hash; _} =
+      Sc_rollup_helpers.genesis_commitment ~sc_rollup mavryk_client
     in
     let* () =
       Sc_rollup_helpers.move_refute_with_unique_state_hash
         ~number_of_sections_in_dissection:3
-        tezos_client
+        mavryk_client
         ~source:Constant.bootstrap1
         ~opponent:Constant.bootstrap2.public_key_hash
         ~sc_rollup
@@ -403,14 +403,14 @@ let test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to =
     in
     let* () =
       repeat (timeout_period + 1) (fun () ->
-          Client.bake_for_and_wait tezos_client)
+          Client.bake_for_and_wait mavryk_client)
     in
     let* () =
       Sc_rollup_helpers.timeout
         ~sc_rollup
         ~staker1:Constant.bootstrap1.public_key_hash
         ~staker2:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     unit
   in
@@ -429,13 +429,13 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
     ?challenge_window ?timeout ?variant ?(tags = []) ~kind ~migrate_from
     ~migrate_to ~scenario_prior ~scenario_after ~description () =
   let tags =
-    Tag.etherlink :: Protocol.tag migrate_from :: Protocol.tag migrate_to
-    :: kind :: "l2" :: "migration" :: tags
+    Protocol.tag migrate_from :: Protocol.tag migrate_to :: kind :: "l2"
+    :: "migration" :: tags
   in
   Test.register
     ~__FILE__
     ~tags
-    ~uses:[Constant.octez_smart_rollup_node]
+    ~uses:[Constant.mavkit_smart_rollup_node]
     ~title:
       (sf
          "%s->%s: %s"
@@ -443,24 +443,30 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
          (Protocol.name migrate_to)
          (format_title_scenario kind {variant; tags; description}))
   @@ fun () ->
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     setup_l1 ?commitment_period ?challenge_window ?timeout migrate_from
   in
-  let* rollup_node, sc_rollup =
+  let* rollup_node, rollup_client, sc_rollup =
     setup_rollup
+      ~protocol:migrate_from
       ?parameters_ty
       ~kind
       ~mode
       ?boot_sector
       ~operator
-      tezos_node
-      tezos_client
+      mavryk_node
+      mavryk_client
   in
   let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
   let* prior_res =
-    scenario_prior ~sc_rollup ~rollup_node tezos_node tezos_client
+    scenario_prior
+      ~sc_rollup
+      ~rollup_node
+      ~rollup_client
+      mavryk_node
+      mavryk_client
   in
-  let* current_level = Node.get_level tezos_node in
+  let* current_level = Node.get_level mavryk_node in
   let migration_level = current_level + 1 in
   let patch_config =
     Node.Config_file.set_sandbox_network_with_user_activated_upgrades
@@ -470,29 +476,30 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
     "Migrating L1 from %s to %s"
     (Protocol.name migrate_from)
     (Protocol.name migrate_to) ;
-  let* () = Node.terminate tezos_node in
+  let* () = Node.terminate mavryk_node in
   let nodes_args =
     Node.[Synchronisation_threshold 0; History_mode Archive; No_bootstrap_peers]
   in
-  let* () = Node.run ~patch_config tezos_node nodes_args in
-  let* () = Node.wait_for_ready tezos_node in
-  let* () = Client.bake_for_and_wait tezos_client in
-  scenario_after ~sc_rollup ~rollup_node tezos_node tezos_client prior_res
+  let* () = Node.run ~patch_config mavryk_node nodes_args in
+  let* () = Node.wait_for_ready mavryk_node in
+  let* () = Client.bake_for_and_wait mavryk_client in
+  scenario_after ~sc_rollup ~rollup_node mavryk_node mavryk_client prior_res
 
 let test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to =
   let tags = ["store"] in
   let description = "node can read data after store migration" in
   let commitment_period = 5 in
   let challenge_window = 5 in
-  let scenario_prior ~sc_rollup:_ ~rollup_node _tezos_node tezos_client =
-    let* () = Sc_rollup_helpers.send_messages commitment_period tezos_client in
+  let scenario_prior ~sc_rollup:_ ~rollup_node ~rollup_client:_ _mavryk_node
+      mavryk_client =
+    let* () = Sc_rollup_helpers.send_messages commitment_period mavryk_client in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     unit
   in
-  let scenario_after ~sc_rollup ~rollup_node tezos_node tezos_client () =
-    let* migration_level = Node.get_level tezos_node in
+  let scenario_after ~sc_rollup ~rollup_node mavryk_node mavryk_client () =
+    let* migration_level = Node.get_level mavryk_node in
     let* () =
-      Sc_rollup_helpers.send_messages (commitment_period + 3) tezos_client
+      Sc_rollup_helpers.send_messages (commitment_period + 3) mavryk_client
     in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     let* _l2_block =
@@ -510,7 +517,7 @@ let test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to =
     Log.info
       "Checking that last commitment in the new protocol was published on L1" ;
     let* _commitment_on_l1 =
-      Client.RPC.call tezos_client
+      Client.RPC.call mavryk_client
       @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
            ~sc_rollup
            ~hash:last_l2_commitment
@@ -535,17 +542,18 @@ let test_rollup_node_catchup_migration ~kind ~migrate_from ~migrate_to =
   let description = "node can catch up on protocol migration" in
   let commitment_period = 10 in
   let challenge_window = 10 in
-  let scenario_prior ~sc_rollup:_ ~rollup_node _tezos_node tezos_client =
-    let* () = Sc_rollup_helpers.send_messages 1 tezos_client in
+  let scenario_prior ~sc_rollup:_ ~rollup_node ~rollup_client:_ _mavryk_node
+      mavryk_client =
+    let* () = Sc_rollup_helpers.send_messages 1 mavryk_client in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     Log.info "Stopping rollup node before protocol migration." ;
     let* () = Sc_rollup_node.terminate rollup_node in
     Log.info "Sending more messages on L1." ;
-    Sc_rollup_helpers.send_messages (commitment_period - 1) tezos_client
+    Sc_rollup_helpers.send_messages (commitment_period - 1) mavryk_client
   in
-  let scenario_after ~sc_rollup ~rollup_node tezos_node tezos_client () =
-    let* migration_level = Node.get_level tezos_node in
-    let* () = Sc_rollup_helpers.send_messages 1 tezos_client in
+  let scenario_after ~sc_rollup ~rollup_node mavryk_node mavryk_client () =
+    let* migration_level = Node.get_level mavryk_node in
+    let* () = Sc_rollup_helpers.send_messages 1 mavryk_client in
     Log.info "Restarting rollup node after migration." ;
     let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
     Log.info "Waiting for rollup node to catch up." ;
@@ -574,11 +582,11 @@ let test_rollup_node_catchup_migration ~kind ~migrate_from ~migrate_to =
     ~description
     ()
 
-let l1_level_event level tezos_node _rollup_node =
-  let* _ = Node.wait_for_level tezos_node level in
+let l1_level_event level mavryk_node _rollup_node =
+  let* _ = Node.wait_for_level mavryk_node level in
   unit
 
-let published_commitment_event ~inbox_level _tezos_node rollup_node =
+let published_commitment_event ~inbox_level _mavryk_node rollup_node =
   Sc_rollup_node.wait_for
     rollup_node
     "smart_rollup_node_commitment_lpc_updated.v0"
@@ -586,7 +594,7 @@ let published_commitment_event ~inbox_level _tezos_node rollup_node =
   let level = JSON.(json |-> "level" |> as_int) in
   if level >= inbox_level then Some () else None
 
-let commitment_computed_event ~inbox_level _tezos_node rollup_node =
+let commitment_computed_event ~inbox_level _mavryk_node rollup_node =
   Sc_rollup_node.wait_for rollup_node "smart_rollup_node_commitment_compute.v0"
   @@ fun json ->
   let level = JSON.as_int json in
@@ -595,7 +603,7 @@ let commitment_computed_event ~inbox_level _tezos_node rollup_node =
 let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
   let tags = ["refutation"; "clean"] in
   let description = "dead games are cleaned during migration" in
-  let scenario_prior tezos_client ~sc_rollup =
+  let scenario_prior mavryk_client ~sc_rollup =
     (* 3 stakers are in conflict: A, B and C.
 
        A vs B, A vs C and B vs C.
@@ -607,7 +615,7 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
         ~sc_rollup
         ~number_of_ticks:1
         ~src:Constant.bootstrap1.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* _commitment2, hash2 =
       Sc_rollup_helpers.forge_and_publish_commitment
@@ -616,7 +624,7 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
         ~sc_rollup
         ~number_of_ticks:2
         ~src:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* _commitment3, hash3 =
       Sc_rollup_helpers.forge_and_publish_commitment
@@ -625,11 +633,11 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
         ~sc_rollup
         ~number_of_ticks:3
         ~src:Constant.bootstrap3.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* () =
       Sc_rollup_helpers.start_refute
-        tezos_client
+        mavryk_client
         ~sc_rollup
         ~source:Constant.bootstrap2
         ~opponent:Constant.bootstrap1.public_key_hash
@@ -638,7 +646,7 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
     in
     let* () =
       Sc_rollup_helpers.start_refute
-        tezos_client
+        mavryk_client
         ~sc_rollup
         ~source:Constant.bootstrap3
         ~opponent:Constant.bootstrap1.public_key_hash
@@ -647,7 +655,7 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
     in
     let* () =
       Sc_rollup_helpers.start_refute
-        tezos_client
+        mavryk_client
         ~sc_rollup
         ~source:Constant.bootstrap2
         ~opponent:Constant.bootstrap3.public_key_hash
@@ -656,31 +664,31 @@ let test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to =
     in
 
     let* {timeout_period_in_blocks = timeout_period; _} =
-      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+      Sc_rollup_helpers.get_sc_rollup_constants mavryk_client
     in
     let* () =
       repeat (timeout_period + 1) (fun () ->
-          Client.bake_for_and_wait tezos_client)
+          Client.bake_for_and_wait mavryk_client)
     in
     let* () =
       Sc_rollup_helpers.timeout
         ~sc_rollup
         ~staker1:Constant.bootstrap1.public_key_hash
         ~staker2:Constant.bootstrap2.public_key_hash
-        tezos_client
+        mavryk_client
     in
     let* () =
       Sc_rollup_helpers.timeout
         ~sc_rollup
         ~staker1:Constant.bootstrap1.public_key_hash
         ~staker2:Constant.bootstrap3.public_key_hash
-        tezos_client
+        mavryk_client
     in
     return (Constant.bootstrap2, Constant.bootstrap3)
   in
-  let scenario_after tezos_client ~sc_rollup (playerB, playerC) =
+  let scenario_after mavryk_client ~sc_rollup (playerB, playerC) =
     let* opponents =
-      Client.RPC.call tezos_client
+      Client.RPC.call mavryk_client
       @@ RPC.get_chain_block_context_raw_json
            ~path:
              [
@@ -725,13 +733,13 @@ let test_l2_migration_scenario_event ?parameters_ty
     ?variant ?(tags = []) ~kind ~migrate_from ~migrate_to ~migration_on_event
     ~description scenario =
   let tags =
-    Tag.etherlink :: Protocol.tag migrate_from :: Protocol.tag migrate_to
-    :: kind :: "l2" :: "migration" :: tags
+    Protocol.tag migrate_from :: Protocol.tag migrate_to :: kind :: "l2"
+    :: "migration" :: tags
   in
   Test.register
     ~__FILE__
     ~tags
-    ~uses:[Constant.octez_smart_rollup_node]
+    ~uses:[Constant.mavkit_smart_rollup_node]
     ~title:
       (sf
          "%s->%s: %s"
@@ -739,27 +747,28 @@ let test_l2_migration_scenario_event ?parameters_ty
          (Protocol.name migrate_to)
          (format_title_scenario kind {variant; tags; description}))
   @@ fun () ->
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     Sc_rollup_helpers.setup_l1
       ?commitment_period
       ?challenge_window
       ?timeout
       migrate_from
   in
-  let* rollup_node, sc_rollup =
+  let* rollup_node, rollup_client, sc_rollup =
     setup_rollup
+      ~protocol:migrate_from
       ?parameters_ty
       ~kind
       ~mode
       ?boot_sector
       ~operator
       ?rollup_node_name
-      tezos_node
-      tezos_client
+      mavryk_node
+      mavryk_client
   in
   let (_migration : unit Lwt.t) =
-    let* () = migration_on_event tezos_node rollup_node in
-    let migration_level = Node.get_last_seen_level tezos_node + 1 in
+    let* () = migration_on_event mavryk_node rollup_node in
+    let migration_level = Node.get_last_seen_level mavryk_node + 1 in
     let patch_config =
       Node.Config_file.set_sandbox_network_with_user_activated_upgrades
         [(migration_level, migrate_to)]
@@ -768,16 +777,22 @@ let test_l2_migration_scenario_event ?parameters_ty
       "Migrating L1 from %s to %s"
       (Protocol.name migrate_from)
       (Protocol.name migrate_to) ;
-    let* () = Node.terminate tezos_node in
+    let* () = Node.terminate mavryk_node in
     let nodes_args =
       Node.
         [Synchronisation_threshold 0; History_mode Archive; No_bootstrap_peers]
     in
-    let* () = Node.run ~patch_config tezos_node nodes_args in
-    let* () = Node.wait_for_ready tezos_node in
-    Client.bake_for_and_wait tezos_client
+    let* () = Node.run ~patch_config mavryk_node nodes_args in
+    let* () = Node.wait_for_ready mavryk_node in
+    Client.bake_for_and_wait mavryk_client
   in
-  scenario migrate_from rollup_node sc_rollup tezos_node tezos_client
+  scenario
+    migrate_from
+    rollup_node
+    rollup_client
+    sc_rollup
+    mavryk_node
+    mavryk_client
 
 let test_refutation_migration_scenario ?(flaky = false) ?commitment_period
     ?challenge_window ~variant ~mode ~kind scenario ~migrate_from ~migrate_to
@@ -819,7 +834,7 @@ let test_refutation_migration ~migrate_from ~migrate_to =
           ~priority:`Priority_loser );
       ( "pvm_proof_2",
         7,
-        true,
+        false,
         refutation_scenario_parameters
           ~loser_modes:["7 7 22_000_002_000"]
           (inputs_for 10)
@@ -854,7 +869,7 @@ let test_refutation_migration ~migrate_from ~migrate_to =
             false );
           ( "at_published_commitment",
             published_commitment_event ~inbox_level:fault_level,
-            true );
+            false );
         ])
     tests
 

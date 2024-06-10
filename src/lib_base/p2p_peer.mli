@@ -29,12 +29,12 @@ module Set = Id.Set
 module Table = Id.Table
 
 module Error_table :
-  Tezos_error_monad.TzLwtreslib.Hashtbl.S_ES with type key = Table.key
+  Mavryk_error_monad.TzLwtreslib.Hashtbl.S_ES with type key = Table.key
 
 module Filter : sig
   type t = Accepted | Running | Disconnected
 
-  val rpc_arg : t Tezos_rpc.Arg.t
+  val rpc_arg : t Mavryk_rpc.Arg.t
 end
 
 module State : sig

@@ -2,28 +2,28 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_node_config)
- (public_name octez-node-config)
+ (name mavkit_node_config)
+ (public_name mavkit-node-config)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell-services
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-libs.tezos-context
-  octez-shell-libs.store
-  octez-shell-libs.validation)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-services
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.store
+  mavkit-shell-libs.validation)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_shell_services
-  -open Tezos_rpc_http
-  -open Tezos_rpc_http_server
-  -open Tezos_context
-  -open Tezos_store
-  -open Tezos_validation))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_rpc_http
+  -open Mavryk_rpc_http_server
+  -open Mavryk_context
+  -open Mavryk_store
+  -open Mavryk_validation))

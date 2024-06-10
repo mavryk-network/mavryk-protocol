@@ -25,17 +25,11 @@
 
 let uid = ref 0
 
-(* Create a block hash that depends deterministically on the level and messages
-   content. *)
-let make_block_hash level messages =
-  let h_msgs = Hashtbl.hash messages in
-  (* Rudimentary hash for level and messages. *)
-  let hash_string = Z.of_int (Int32.to_int level + (7 * h_msgs)) |> Z.to_bits in
-  let len = String.length hash_string in
-  (* Left pad hash_string with null bytes *)
+let block_hash_of_level level =
+  let s = Z.of_int32 level |> Z.to_bits in
+  let len = String.length s in
   let s =
-    String.init Block_hash.size (fun i ->
-        if i >= len then '\000' else hash_string.[i])
+    String.init Block_hash.size (fun i -> if i >= len then '\000' else s.[i])
   in
   Block_hash.of_string_exn s
 
@@ -90,7 +84,7 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
   in
   let* inbox_hash = Node_context.save_inbox node_ctxt inbox in
   let inbox_witness = Inbox.current_witness inbox in
-  let ctxt = Context.empty node_ctxt.context in
+  let ctxt = Mavkit_smart_rollup_node.Context.empty node_ctxt.context in
   let num_ticks = 0L in
   let initial_tick = Z.zero in
   let*! initial_state = Plugin.Pvm.initial_state node_ctxt.kind in
@@ -99,7 +93,7 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
   in
   let*! genesis_state_hash = Plugin.Pvm.state_hash node_ctxt.kind state in
   let*! ctxt = Context.PVMState.set ctxt state in
-  let*! context_hash = Context.commit ctxt in
+  let*! context_hash = Mavkit_smart_rollup_node.Context.commit ctxt in
   let commitment =
     Commitment.genesis_commitment
       ~origination_level:node_ctxt.genesis_info.level
@@ -115,7 +109,7 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
         predecessor = predecessor.hash;
         commitment_hash = Some commitment_hash;
         previous_commitment_hash;
-        context = Smart_rollup_context_hash.of_context_hash context_hash;
+        context = context_hash;
         inbox_witness;
         inbox_hash;
       }
@@ -154,7 +148,7 @@ let initialize_node_context protocol ?(constants = default_constants) kind
     {Node_context.hash = protocol; proto_level = 0; constants}
   in
   let* ctxt =
-    Node_context_loader.Internal_for_tests.create_node_context
+    Node_context.Internal_for_tests.create_node_context
       cctxt
       current_protocol
       ~data_dir
@@ -176,11 +170,11 @@ let with_node_context ?constants kind protocol ~boot_sector f =
   in
   Lwt.finalize (fun () -> f node_ctxt ~genesis) @@ fun () ->
   let open Lwt_syntax in
-  let* _ = Node_context_loader.close node_ctxt in
+  let* _ = Node_context.close node_ctxt in
   return_unit
 
-let make_header ~predecessor level messages =
-  let hash = make_block_hash level messages in
+let head_of_level ~predecessor level =
+  let hash = block_hash_of_level level in
   let timestamp = Time.Protocol.of_seconds (Int64.of_int32 level) in
   let header : Block_header.shell_header =
     {
@@ -190,62 +184,12 @@ let make_header ~predecessor level messages =
       (* dummy values below *)
       proto_level = 0;
       validation_passes = 3;
-      operations_hash = Tezos_crypto.Hashed.Operation_list_list_hash.zero;
+      operations_hash = Mavryk_crypto.Hashed.Operation_list_list_hash.zero;
       fitness = [];
-      context = Tezos_crypto.Hashed.Context_hash.zero;
+      context = Mavryk_crypto.Hashed.Context_hash.zero;
     }
   in
   {Layer1.hash; level; header}
-
-let header_of_block (block : Sc_rollup_block.t) =
-  let hash = block.header.block_hash in
-  let level = block.header.level in
-  let timestamp = Time.Protocol.of_seconds (Int64.of_int32 level) in
-  let header : Block_header.shell_header =
-    {
-      level;
-      predecessor = block.header.predecessor;
-      timestamp;
-      (* dummy values below *)
-      proto_level = 0;
-      validation_passes = 3;
-      operations_hash = Tezos_crypto.Hashed.Operation_list_list_hash.zero;
-      fitness = [];
-      context = Tezos_crypto.Hashed.Context_hash.zero;
-    }
-  in
-  {Layer1.hash; level; header}
-
-let add_l2_block (node_ctxt : _ Node_context.t) ?(is_first_block = false)
-    ~(predecessor_l2_block : Sc_rollup_block.t) messages =
-  let open Lwt_result_syntax in
-  let* () =
-    Node_context.save_level
-      node_ctxt
-      {
-        Layer1.hash = predecessor_l2_block.header.block_hash;
-        level = predecessor_l2_block.header.level;
-      }
-  in
-  let* () = Node_context.set_l2_head node_ctxt predecessor_l2_block in
-  let pred_level = predecessor_l2_block.header.level in
-  let head =
-    make_header
-      ~predecessor:predecessor_l2_block.header.block_hash
-      (Int32.succ pred_level)
-      messages
-  in
-  let predecessor = header_of_block predecessor_l2_block in
-  let*? plugin =
-    Protocol_plugins.proto_plugin_for_protocol node_ctxt.current_protocol.hash
-  in
-  Rollup_node_daemon.Internal_for_tests.process_messages
-    plugin
-    node_ctxt
-    ~is_first_block
-    ~predecessor
-    head
-    messages
 
 let append_l2_block (node_ctxt : _ Node_context.t) ?(is_first_block = false)
     messages =
@@ -257,7 +201,25 @@ let append_l2_block (node_ctxt : _ Node_context.t) ?(is_first_block = false)
     | None ->
         failwith "No genesis block, please add one with add_l2_genesis_block"
   in
-  add_l2_block node_ctxt ~is_first_block ~predecessor_l2_block messages
+  let pred_level = predecessor_l2_block.header.level in
+  let predecessor =
+    head_of_level
+      ~predecessor:predecessor_l2_block.header.predecessor
+      pred_level
+  in
+  let head =
+    head_of_level ~predecessor:predecessor.hash (Int32.succ pred_level)
+  in
+  let*? plugin =
+    Protocol_plugins.proto_plugin_for_protocol node_ctxt.current_protocol.hash
+  in
+  Rollup_node_daemon.Internal_for_tests.process_messages
+    plugin
+    node_ctxt
+    ~is_first_block
+    ~predecessor
+    head
+    messages
 
 let append_l2_blocks node_ctxt message_batches =
   List.map_es (append_l2_block node_ctxt) message_batches
@@ -295,7 +257,7 @@ module Assert = struct
   module L2_block = Make_with_encoding (Sc_rollup_block)
   module Commitment = Make_with_encoding (Commitment)
   module Commitment_hash =
-    Make_with_encoding (Octez_smart_rollup.Commitment.Hash)
+    Make_with_encoding (Mavkit_smart_rollup.Commitment.Hash)
   module State_hash = Make_with_encoding (State_hash)
 end
 

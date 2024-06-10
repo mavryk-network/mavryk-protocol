@@ -9,7 +9,7 @@ parameter (or (ticket %burn unit) (pair %mint (contract %destination (ticket uni
 storage address;
 code
   {
-    AMOUNT; PUSH mutez 0; ASSERT_CMPEQ;
+    AMOUNT; PUSH mumav 0; ASSERT_CMPEQ;
 
     UNPAIR;
     IF_LEFT
@@ -33,7 +33,7 @@ code
 
         UNPAIR;
         SWAP; UNIT; TICKET; ASSERT_SOME;
-        PUSH mutez 0; SWAP; TRANSFER_TOKENS;
+        PUSH mumav 0; SWAP; TRANSFER_TOKENS;
         NIL operation; SWAP; CONS
       };
     PAIR

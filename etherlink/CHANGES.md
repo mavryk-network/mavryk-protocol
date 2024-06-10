@@ -1,12 +1,8 @@
 # Changelog
 
-Note that the release for the kernel and the node are now separated, and both
-have their respective changelogs (see [CHANGES_KERNEL.md](CHANGES_KERNEL.md) and
-[CHANGES_NODE.md](CHANGES_NODE.md)).
 ## Version Next
 
 ### EVM Kernel
-- Refund unused gas for reverted transactions. (!10288)
 
 - Fix the memory limit of the runtime, which is now of the maximum size
   addressable considering the limits of the WASM PVM (32bits, which means `2^32`
@@ -144,7 +140,7 @@ have their respective changelogs (see [CHANGES_KERNEL.md](CHANGES_KERNEL.md) and
 ### Breaking changes
 
 - External Messages must now be framed using `ExternalMessageFrame` (adds an additional prefix byte). (!9687)
-- The EVM rollup accepts tickets wrapping tez instead of ctez. (!9982)
+- The EVM rollup accepts tickets wrapping mav instead of ctez. (!9982)
 - L2 blocks are now stored using their RLP encoding. (!9759)
 
 ### Internal

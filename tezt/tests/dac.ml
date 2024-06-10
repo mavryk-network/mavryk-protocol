@@ -34,7 +34,7 @@
 *)
 open Dac_helper
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let assert_lwt_failure ?__LOC__ msg lwt_under_inspection =
   let* passed =
@@ -61,15 +61,15 @@ let assert_verify_aggregate_signature members_keys hex_root_hash agg_sig_b58 =
       List.map
         (fun (member : Account.aggregate_key) ->
           let pk =
-            Tezos_crypto.Aggregate_signature.Public_key.of_b58check_exn
+            Mavryk_crypto.Aggregate_signature.Public_key.of_b58check_exn
               member.aggregate_public_key
           in
           (pk, None, root_hash))
         members_keys
     in
-    Tezos_crypto.Aggregate_signature.aggregate_check
+    Mavryk_crypto.Aggregate_signature.aggregate_check
       data
-      (Tezos_crypto.Aggregate_signature.of_b58check_exn agg_sig_b58)
+      (Mavryk_crypto.Aggregate_signature.of_b58check_exn agg_sig_b58)
   in
   Check.(
     (true = verified)
@@ -164,8 +164,8 @@ let bls_sign_hex_hash (signer : Account.aggregate_key) hex_root_hash =
     | Encrypted encsk -> raise (Invalid_argument encsk)
   in
   let bytes_root_hash = Hex.to_bytes hex_root_hash in
-  let sk = Tezos_crypto.Aggregate_signature.Secret_key.of_b58check_exn sk in
-  Tezos_crypto.Aggregate_signature.sign sk bytes_root_hash
+  let sk = Mavryk_crypto.Aggregate_signature.Secret_key.of_b58check_exn sk in
+  Mavryk_crypto.Aggregate_signature.sign sk bytes_root_hash
 
 type status = Applied | Failed of {error_id : string}
 
@@ -277,8 +277,8 @@ let check_certificate
      presence of two variants `Bls12_381` and `Unknown), the actual byte
      representation needs to be checked.*)
   let raw_signature s =
-    Data_encoding.Binary.to_string_exn Tezos_crypto.Aggregate_signature.encoding
-    @@ Tezos_crypto.Aggregate_signature.of_b58check_exn s
+    Data_encoding.Binary.to_string_exn Mavryk_crypto.Aggregate_signature.encoding
+    @@ Mavryk_crypto.Aggregate_signature.of_b58check_exn s
   in
   Check.(
     (actual_witnesses = expected_witnesses)
@@ -474,7 +474,7 @@ module Full_infrastructure = struct
     let* () =
       wait_for_signature_pushed_to_coordinator
         member
-        (Tezos_crypto.Aggregate_signature.to_b58check expected_signature)
+        (Mavryk_crypto.Aggregate_signature.to_b58check expected_signature)
     in
     unit
 
@@ -736,7 +736,7 @@ module Full_infrastructure = struct
       Data_encoding.(
         obj3
           (req "root_hash" (Fixed.bytes 33))
-          (req "aggregate_signature" Tezos_crypto.Aggregate_signature.encoding)
+          (req "aggregate_signature" Mavryk_crypto.Aggregate_signature.encoding)
           (req "witnesses" z))
     in
     Data_encoding.(
@@ -773,11 +773,11 @@ module Full_infrastructure = struct
                      aggregate keys are supported in DAC tests"
               | Unencrypted b58_secret_key ->
                   let secret_key =
-                    Tezos_crypto.Aggregate_signature.Secret_key.of_b58check_exn
+                    Mavryk_crypto.Aggregate_signature.Secret_key.of_b58check_exn
                       b58_secret_key
                   in
                   let signature =
-                    Tezos_crypto.Aggregate_signature.sign secret_key root_hash
+                    Mavryk_crypto.Aggregate_signature.sign secret_key root_hash
                   in
                   (signature :: rev_signatures, Z.succ witnesses)))
         ([], Z.zero)
@@ -785,7 +785,7 @@ module Full_infrastructure = struct
     in
     let signatures = List.rev rev_signatures in
     let aggregate_signature =
-      Tezos_crypto.Aggregate_signature.aggregate_signature_opt signatures
+      Mavryk_crypto.Aggregate_signature.aggregate_signature_opt signatures
     in
     match aggregate_signature with
     | None ->
@@ -1088,11 +1088,11 @@ module Full_infrastructure = struct
           to the serialized payload in [5].*)
     committee_member_receives_root_hash_promise
 
-  (** [test_tezos_node_disconnects_scenario] checks that upon L1 disconnection,
+  (** [test_mavryk_node_disconnects_scenario] checks that upon L1 disconnection,
       DAC actors automatically restart L1 tracking. In addition, we also test
       that upon reconnection, DAC network works as expected when serializing a
       random payload.  *)
-  let test_tezos_node_disconnects_scenario
+  let test_mavryk_node_disconnects_scenario
       Scenarios.
         {node; coordinator_node; committee_members_nodes; observer_nodes; _} =
     (* We assert DAC network of only one committee member and one observer node.
@@ -1111,7 +1111,7 @@ module Full_infrastructure = struct
         coordinator_node
         (committee_members_nodes @ observer_nodes)
     in
-    (* 2. We terminate the Tezos [node], which cause a L1 disconnection of the
+    (* 2. We terminate the Mavryk [node], which cause a L1 disconnection of the
           DAC network. *)
     let wait_for_coordinator_stopped_tracking_l1 =
       wait_for_l1_tracking_ended coordinator_node
@@ -1122,12 +1122,12 @@ module Full_infrastructure = struct
     let wait_for_observer_stopped_tracking_l1 =
       wait_for_l1_tracking_ended observer
     in
-    Log.info "Terminating Tezos node" ;
+    Log.info "Terminating Mavryk node" ;
     let* () = Node.terminate node in
     let* () = wait_for_coordinator_stopped_tracking_l1 in
     let* () = wait_for_committee_member_stopped_tracking_l1 in
     let* () = wait_for_observer_stopped_tracking_l1 in
-    (* 3. We restart Tezos [node] and expect the DAC network to restart tracking
+    (* 3. We restart Mavryk [node] and expect the DAC network to restart tracking
          L1 heads. *)
     let wait_for_coordinator_connected_to_l1 =
       wait_for_layer1_new_head coordinator_node
@@ -1135,7 +1135,7 @@ module Full_infrastructure = struct
     let wait_for_committee_member_connected_to_l1 =
       wait_for_layer1_new_head committee_member
     in
-    Log.info "Restarting Tezos node" ;
+    Log.info "Restarting Mavryk node" ;
     let* () = Node.run node [] in
     (* 4. We assert [3.] by waiting for "dac_node_layer_1_new_head" event from
        both [coordinator_node] and [committee_member] node. *)
@@ -1408,7 +1408,7 @@ let test_observer_times_out_when_page_cannot_be_fetched _protocol node client
 (* Modified from tezt/tests/tx_sc_rollup.ml *)
 module Tx_kernel_e2e = struct
   open Sc_rollup_helpers
-  module Bls = Tezos_crypto.Signature.Bls
+  module Bls = Mavryk_crypto.Signature.Bls
 
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/5577
      Once we introduce DAC API ("v1"), [Tx_kernel_e2e] test suite should
@@ -1420,8 +1420,8 @@ module Tx_kernel_e2e = struct
 
   (* TX Kernel external messages and their encodings *)
   module Tx_kernel = struct
-    open Tezos_protocol_alpha.Protocol
-    open Tezos_crypto.Signature
+    open Mavryk_protocol_alpha.Protocol
+    open Mavryk_crypto.Signature
 
     type ticket = {
       ticketer : Alpha_context.Contract.t;
@@ -1447,8 +1447,8 @@ module Tx_kernel_e2e = struct
           entrypoint : string;
         }
       | Transfer of {
-          (* tz4 address *)
-          destination : Tezos_crypto.Signature.Bls.Public_key_hash.t;
+          (* mv4 address *)
+          destination : Mavryk_crypto.Signature.Bls.Public_key_hash.t;
           ticket : ticket;
         }
 
@@ -1501,7 +1501,7 @@ module Tx_kernel_e2e = struct
       (* String ticket encoding for tx kernel.
          Corresponds to kernel_core::encoding::string_ticket::StringTicketRepr *)
       let ticket_repr {ticketer; content; amount} : string =
-        let open Tezos_protocol_alpha.Protocol.Alpha_context in
+        let open Mavryk_protocol_alpha.Protocol.Alpha_context in
         Printf.sprintf
           "\007\007\n\000\000\000\022%s\007\007\001%s\000%s"
           Data_encoding.(Binary.to_string_exn Contract.encoding ticketer)
@@ -1526,13 +1526,13 @@ module Tx_kernel_e2e = struct
             ^ entrypoint_bytes
         | Transfer {destination; ticket} ->
             let transfer_prefix = "\001" in
-            let tz4address =
+            let mv4address =
               Data_encoding.(
                 Binary.to_string_exn
-                  Tezos_crypto.Signature.Bls.Public_key_hash.encoding
+                  Mavryk_crypto.Signature.Bls.Public_key_hash.encoding
                   destination)
             in
-            transfer_prefix ^ tz4address ^ ticket_repr ticket
+            transfer_prefix ^ mv4address ^ ticket_repr ticket
 
       let account_operations_repr {signer; counter; operations} : string =
         let signer_bytes =
@@ -1542,7 +1542,7 @@ module Tx_kernel_e2e = struct
                 Bls.Secret_key.to_public_key signer
                 |> Binary.to_string_exn Bls.Public_key.encoding)
           else
-            "\001" (* tz4address signer tag *)
+            "\001" (* mv4address signer tag *)
             ^ Data_encoding.(
                 Bls.Secret_key.to_public_key signer
                 |> Bls.Public_key.hash
@@ -1610,7 +1610,7 @@ module Tx_kernel_e2e = struct
         (batch : transactions_batch) =
       let v1_batch_prefix = "\000" in
       let signature =
-        batch.aggregated_signature |> Tezos_crypto.Signature.Bls.to_bytes
+        batch.aggregated_signature |> Mavryk_crypto.Signature.Bls.to_bytes
         |> Bytes.to_string
       in
       let raw = v1_batch_prefix ^ batch.encoded_transactions ^ signature in
@@ -1625,7 +1625,7 @@ module Tx_kernel_e2e = struct
 
   let assert_ticks_advanced ?block sc_rollup_node prev_ticks =
     let* ticks =
-      Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+      Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_total_ticks ?block ()
     in
     Check.(ticks > prev_ticks)
@@ -1635,7 +1635,7 @@ module Tx_kernel_e2e = struct
 
   (* Send a deposit into the rollup. *)
   let test_deposit ~client ~sc_rollup_node ~sc_rollup_address
-      ~mint_and_deposit_contract level tz4_address =
+      ~mint_and_deposit_contract level mv4_address =
     let* prev_state_hash =
       Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_state_hash ()
@@ -1646,7 +1646,7 @@ module Tx_kernel_e2e = struct
         sf
           {|Pair (Pair %S "%s") (Pair 450 "Hello, Ticket!")|}
           sc_rollup_address
-          tz4_address
+          mv4_address
       in
       Client.transfer
         client
@@ -1701,8 +1701,8 @@ module Tx_kernel_e2e = struct
 
   let prepare_contracts_and_messages
       ?(transfer_message_should_hex_encode = true) ~client ~level protocol =
-    let pkh1, _pk, sk1 = Tezos_crypto.Signature.Bls.generate_key () in
-    let pkh2, _pk2, sk2 = Tezos_crypto.Signature.Bls.generate_key () in
+    let pkh1, _pk, sk1 = Mavryk_crypto.Signature.Bls.generate_key () in
+    let pkh2, _pk2, sk2 = Mavryk_crypto.Signature.Bls.generate_key () in
 
     (* Originate a contract that will mint and transfer tickets to the tx kernel. *)
     (* Originate forwarder contract to send internal messages to rollup. *)
@@ -1792,7 +1792,7 @@ module Tx_kernel_e2e = struct
       Tx_kernel.Withdrawal
         {
           receiver_contract =
-            Tezos_protocol_alpha.Protocol.Contract_hash.of_b58check_exn
+            Mavryk_protocol_alpha.Protocol.Contract_hash.of_b58check_exn
               receive_tickets_contract;
           ticket = ticket mint_and_deposit_contract amount;
           entrypoint = "receive_tickets";
@@ -1832,7 +1832,7 @@ module Tx_kernel_e2e = struct
       @@ Sc_rollup_rpc.get_global_block_state_hash ()
     in
     let* prev_ticks =
-      Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+      Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_total_ticks ()
     in
     let* () = send_message client (sf "hex:[%S]" hex_encoded_message) in
@@ -1841,19 +1841,20 @@ module Tx_kernel_e2e = struct
     let* () = assert_state_changed sc_rollup_node prev_state_hash in
     return {prev_state_hash; prev_ticks; level}
 
-  let verify_outbox_answer ~withdrawal_level ~sc_rollup_node ~sc_rollup_address
-      ~client =
+  let verify_outbox_answer ~withdrawal_level ~sc_rollup_node ~sc_rollup_client
+      ~sc_rollup_address ~client =
     let* outbox =
       Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_outbox ~outbox_level:withdrawal_level ()
     in
     Log.info "Outbox is %s" @@ JSON.encode outbox ;
     let* answer =
-      Sc_rollup_node.RPC.call sc_rollup_node
-      @@ Sc_rollup_rpc.outbox_proof_simple
-           ~message_index:0
-           ~outbox_level:withdrawal_level
-           ()
+      let message_index = 0 in
+      let outbox_level = withdrawal_level in
+      Sc_rollup_client.outbox_proof
+        sc_rollup_client
+        ~message_index
+        ~outbox_level
     in
     match answer with
     | Some {commitment_hash; proof} ->
@@ -1915,8 +1916,8 @@ module Tx_kernel_e2e = struct
     let root_hash = `Hex root_hash |> Hex.to_string |> String.to_bytes in
     let signature =
       Data_encoding.Binary.to_bytes_exn
-        Tezos_crypto.Aggregate_signature.encoding
-      @@ Tezos_crypto.Aggregate_signature.of_b58check_exn signature
+        Mavryk_crypto.Aggregate_signature.encoding
+      @@ Mavryk_crypto.Aggregate_signature.of_b58check_exn signature
     in
     let witnesses =
       Data_encoding.Binary.to_bytes_exn Data_encoding.z (Z.of_int witnesses)
@@ -1962,7 +1963,7 @@ module Tx_kernel_e2e = struct
           (Filename.concat
              (Sc_rollup_node.data_dir sc_rollup_node)
              "wasm_2_0_0")
-        Constant.WASM.tx_kernel_fixed_dac
+        "tx-kernel-fixed-dac"
     in
     let* sc_rollup_address =
       Client.Sc_rollup.originate
@@ -1983,6 +1984,7 @@ module Tx_kernel_e2e = struct
     in
     let init_level = JSON.(genesis_info |-> "level" |> as_int) in
     let* () = Sc_rollup_node.run sc_rollup_node sc_rollup_address [] in
+    let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
     let* level =
       Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
     in
@@ -2012,7 +2014,7 @@ module Tx_kernel_e2e = struct
         ~sc_rollup_address
         ~mint_and_deposit_contract
         level
-      @@ Tezos_crypto.Signature.Bls.Public_key_hash.to_b58check pkh1
+      @@ Mavryk_crypto.Signature.Bls.Public_key_hash.to_b58check pkh1
     in
 
     let payload = transfer_message in
@@ -2087,6 +2089,7 @@ module Tx_kernel_e2e = struct
       verify_outbox_answer
         ~client
         ~sc_rollup_node
+        ~sc_rollup_client
         ~sc_rollup_address
         ~withdrawal_level
     in
@@ -2122,7 +2125,7 @@ module Tx_kernel_e2e = struct
           (Filename.concat
              (Sc_rollup_node.data_dir sc_rollup_node)
              "wasm_2_0_0")
-        Constant.WASM.tx_kernel_fixed_dac
+        "tx-kernel-fixed-dac"
     in
     let* sc_rollup_address =
       Client.Sc_rollup.originate
@@ -2149,8 +2152,9 @@ module Tx_kernel_e2e = struct
       Sc_rollup_node.run
         sc_rollup_node
         sc_rollup_address
-        [Dac_observer observer_node]
+        ["--dac-observer"; Dac_node.endpoint observer_node]
     in
+    let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
     let* level =
       Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
     in
@@ -2180,7 +2184,7 @@ module Tx_kernel_e2e = struct
         ~sc_rollup_address
         ~mint_and_deposit_contract
         level
-      @@ Tezos_crypto.Signature.Bls.Public_key_hash.to_b58check pkh1
+      @@ Mavryk_crypto.Signature.Bls.Public_key_hash.to_b58check pkh1
     in
     let payload = transfer_message in
 
@@ -2278,6 +2282,7 @@ module Tx_kernel_e2e = struct
       verify_outbox_answer
         ~client
         ~sc_rollup_node
+        ~sc_rollup_client
         ~sc_rollup_address
         ~withdrawal_level
     in
@@ -2286,16 +2291,11 @@ module Tx_kernel_e2e = struct
   let test_tx_kernel_e2e_with_dac_observer_synced_with_dac =
     let commitment_period = 10 in
     let challenge_window = 10 in
-    let custom_committee_members = [Constant.aggregate_tz4_account] in
+    let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
-      ~uses:(fun _protocol ->
-        [
-          Constant.octez_smart_rollup_node;
-          Constant.smart_rollup_installer;
-          Constant.WASM.tx_kernel_fixed_dac;
-        ])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"
       ~committee_size:0
       ~observers:1
@@ -2308,17 +2308,12 @@ module Tx_kernel_e2e = struct
   let test_tx_kernel_e2e_with_dac_observer_missing_pages =
     let commitment_period = 10 in
     let challenge_window = 10 in
-    let custom_committee_members = [Constant.aggregate_tz4_account] in
+    let custom_committee_members = [Constant.aggregate_mv4_account] in
     Dac_helper.scenario_with_full_dac_infrastructure
       ~__FILE__
-      ~supports:Protocol.(From_protocol (number Nairobi + 1))
+      ~supports:Protocol.(From_protocol (number Atlas))
       ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "dac"; "full"]
-      ~uses:(fun _protocol ->
-        [
-          Constant.octez_smart_rollup_node;
-          Constant.smart_rollup_installer;
-          Constant.WASM.tx_kernel_fixed_dac;
-        ])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       ~pvm_name:"wasm_2_0_0"
       ~committee_size:0
       ~observers:1
@@ -2394,9 +2389,7 @@ module Api_regression = struct
       [
         ("tz[1234]\\w{33}\\b", "[PUBLIC_KEY_HASH]");
         ("(BLsig|asig)\\w{137}\\b", "[AGGREGATED_SIG]");
-        ("http://localhost:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
         ("http://127.0.0.1:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
-        ("http://\\[::1\\]:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
       ]
     in
     List.fold_left
@@ -2711,7 +2704,7 @@ let register ~protocols =
   scenario_with_layer1_node
     ~__FILE__
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_node])
     "dac_observer_times_out_when_page_cannot_be_fetched"
     test_observer_times_out_when_page_cannot_be_fetched
     protocols ;
@@ -2736,7 +2729,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test client commands (hex payload from CLI)"
     (Full_infrastructure.test_client ~send_payload_from_file:false)
     protocols ;
@@ -2745,7 +2738,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test client commands (binary payload from file)"
     (Full_infrastructure.test_client ~send_payload_from_file:true)
     protocols ;
@@ -2754,7 +2747,7 @@ let register ~protocols =
     ~observers:0
     ~committee_size:2
     ~tags:["dac"]
-    ~uses:(fun _protocol -> [Constant.octez_dac_client])
+    ~uses:(fun _protocol -> [Constant.mavkit_dac_client])
     "test serialized certificate"
     Full_infrastructure.test_serialized_certificate
     protocols ;
@@ -2772,7 +2765,7 @@ let register ~protocols =
     ~committee_size:1
     ~tags:["dac"]
     "test DAC disconnects from L1"
-    Full_infrastructure.test_tezos_node_disconnects_scenario
+    Full_infrastructure.test_mavryk_node_disconnects_scenario
     protocols ;
   Tx_kernel_e2e.test_tx_kernel_e2e_with_dac_observer_synced_with_dac protocols ;
   Tx_kernel_e2e.test_tx_kernel_e2e_with_dac_observer_missing_pages protocols ;

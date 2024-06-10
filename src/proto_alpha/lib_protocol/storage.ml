@@ -123,6 +123,13 @@ module Tenderbake = struct
           (req "predecessor_payload" Block_payload_hash.encoding))
   end
 
+  module Endorsement_branch =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        let name = ["endorsement_branch"]
+      end)
+      (Branch)
+
   module Attestation_branch =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
@@ -1271,6 +1278,7 @@ module Pending_consensus_keys = Cycle.Pending_consensus_keys
 module Pending_staking_parameters = Cycle.Pending_staking_parameters
 
 module Stake = struct
+
   module Staking_balance =
     Make_indexed_data_snapshotable_storage
       (Make_subcontext (Registered) (Raw_context)
@@ -1311,7 +1319,7 @@ module Stake = struct
      That is, the increment is done every [blocks_per_stake_snaphot]
      blocks and reset at the end of cycles. So, it goes up to
      [blocks_per_cycle / blocks_per_stake_snaphot], which is currently
-     16 (= 24576/1536 -- the concrete values can be found in
+     16 (= 8192/512 -- the concrete values can be found in
      {!val:Default_parameters.constants_mainnet}), then comes back to
      0, so that a UInt16 is big enough.
 
@@ -1663,6 +1671,31 @@ module Liquidity_baking = struct
         (* Keeping contract-compatible encoding to avoid migrating this. *)
         let encoding = Contract_repr.originated_encoding
       end)
+end
+
+module Protocol_treasury = struct
+  module Toggle_ema =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        (* The old "escape" name is kept here to avoid migrating this. *)
+        let name = ["protocol_treasury_escape_ema"]
+      end)
+      (Encoding.Int32)
+
+  module Buffer_address =
+    Make_single_data_storage (Registered) (Raw_context)
+      (struct
+        let name = ["protocol_treasury_buffer_address"]
+      end)
+      (struct
+        type t = Contract_hash.t
+
+        (* Keeping contract-compatible encoding to avoid migrating this. *)
+        let encoding = Contract_repr.originated_encoding
+      end)
+  
+  let address = Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"
+  let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
 end
 
 module Adaptive_issuance = struct

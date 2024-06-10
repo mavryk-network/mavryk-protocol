@@ -23,19 +23,19 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_crypto_dal
+open Mavryk_crypto_dal
 
-(** Instance of [Tezos_client_base.Client_context] that only handles IOs and
+(** Instance of [Mavryk_client_base.Client_context] that only handles IOs and
     RPCs. Can be used for keys and RPCs related commands. *)
 class type cctxt =
   object
-    inherit Tezos_rpc.Context.generic
+    inherit Mavryk_rpc.Context.generic
   end
 
 (** Instance of [cctxt] for linux systems. Relies on
-    [Tezos_rpc_http_client_unix]. *)
+    [Mavryk_rpc_http_client_unix]. *)
 class unix_cctxt :
-  rpc_config:Tezos_rpc_http_client_unix.RPC_client_unix.config -> cctxt
+  rpc_config:Mavryk_rpc_http_client_unix.RPC_client_unix.config -> cctxt
 
 (** [make_unix_context endpoint] generates a cctxt with the provided
     [endpoint]. *)

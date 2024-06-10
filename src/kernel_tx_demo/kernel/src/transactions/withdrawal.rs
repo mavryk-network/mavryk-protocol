@@ -6,14 +6,14 @@
 //! Withdrawals
 
 use crypto::hash::ContractKt1Hash;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_smart_rollup_core::MAX_OUTPUT_SIZE;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_smart_rollup_core::MAX_OUTPUT_SIZE;
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_encoding::michelson::ticket::StringTicket;
-use tezos_smart_rollup_encoding::outbox::{OutboxMessage, OutboxMessageTransaction};
-use tezos_smart_rollup_encoding::{contract::Contract, entrypoint::Entrypoint};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
+use mavryk_smart_rollup_encoding::outbox::{OutboxMessage, OutboxMessageTransaction};
+use mavryk_smart_rollup_encoding::{contract::Contract, entrypoint::Entrypoint};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 /// Withdrawal to be sent to L1.
 #[derive(Debug, PartialEq, Eq)]

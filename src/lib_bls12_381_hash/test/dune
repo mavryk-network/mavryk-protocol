@@ -6,16 +6,16 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-alcotezt
+  mavkit-alcotezt
   bls12-381
-  octez-libs.bls12-381-hash)
+  mavkit-libs.bls12-381-hash)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -w -3
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_poseidon test_rescue test_anemoi test_griffin test_jive))
 
 (executable
@@ -31,7 +31,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

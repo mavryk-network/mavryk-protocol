@@ -2,12 +2,12 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_rpc)
- (public_name octez-libs.rpc)
+ (name mavryk_rpc)
+ (public_name mavkit-libs.rpc)
  (instrumentation (backend bisect_ppx))
  (libraries
   data-encoding
-  octez-libs.error-monad
+  mavkit-libs.error-monad
   resto
   resto-directory
   uri)
@@ -15,4 +15,4 @@
  (flags
   (:standard)
   -open Data_encoding
-  -open Tezos_error_monad))
+  -open Mavryk_error_monad))

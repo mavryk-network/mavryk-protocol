@@ -201,7 +201,6 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "gas_bound"]
-        ~uses_node:false
         (fun protocol ->
           let* client = Client.init_mockup ~protocol () in
           test_function client protocol ())

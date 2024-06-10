@@ -37,7 +37,7 @@ module V0 : sig
         unit,
         unit,
         Dac_plugin.raw_hash )
-      Tezos_rpc.Service.service
+      Mavryk_rpc.Service.service
 
     (** Define RPC "GET v0/monitor/certificate/hex_root_hash". *)
     val certificate :
@@ -47,7 +47,7 @@ module V0 : sig
         unit,
         unit,
         Certificate_repr.t )
-      Tezos_rpc.Service.service
+      Mavryk_rpc.Service.service
   end
 
   (** [root_hashes streamed_cctxt raw_hash] returns a stream
@@ -56,8 +56,8 @@ module V0 : sig
     Stream is produced by calling RPC "GET v0/monitor/root_hashes".
 *)
   val root_hashes :
-    #Tezos_rpc.Context.streamed ->
-    (Dac_plugin.raw_hash Lwt_stream.t * Tezos_rpc.Context.stopper)
+    #Mavryk_rpc.Context.streamed ->
+    (Dac_plugin.raw_hash Lwt_stream.t * Mavryk_rpc.Context.stopper)
     Error_monad.tzresult
     Lwt.t
 
@@ -67,9 +67,9 @@ module V0 : sig
     Stream is produced by calling RPC "GET v0/monitor/certificate".
 *)
   val certificate :
-    #Tezos_rpc.Context.streamed ->
+    #Mavryk_rpc.Context.streamed ->
     Dac_plugin.raw_hash ->
-    (Certificate_repr.t Lwt_stream.t * Tezos_rpc.Context.stopper)
+    (Certificate_repr.t Lwt_stream.t * Mavryk_rpc.Context.stopper)
     Error_monad.tzresult
     Lwt.t
 end

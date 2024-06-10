@@ -30,7 +30,7 @@ module Address : S.HASH
 module Commitment_hash : S.HASH
 
 (** Smart rollup PVM state hashes. Refer to
-    {!Tezos_crypto.Hashed.Smart_rollup_state_hash} in
+    {!Mavryk_crypto.Hashed.Smart_rollup_state_hash} in
     [src/lib_crypto/smart_rollup_state_hash.mli] for documentation. *)
 module State_hash : sig
   include S.HASH

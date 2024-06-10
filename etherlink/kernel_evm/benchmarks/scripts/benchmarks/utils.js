@@ -18,7 +18,7 @@ const external = require("../lib/external")
 
 const transfer_prototype_json = require('./transfer_prototype.json');
 const create_prototype_json = require('./create_prototype.json');
-const CHUNKER = external.bin("./octez-evm-node")
+const CHUNKER = external.bin("./mavkit-evm-node")
 
 const print_full = function (rawTx) {
 
@@ -74,19 +74,18 @@ exports.send = function (player, contract_addr, amount, data, options = {}) {
     return rawTx.rawTx;
 }
 
-const print_list = function (src, blueprint, blueprint_number) {
+const print_list = function (src) {
     const txs = src.slice();
     console.log("[")
     for (var i = 0; i < txs.length; i++) {
         transaction = txs[i];
-        messages = blueprint ? chunk_data_into_blueprint(transaction, i + blueprint_number) : chunk_data(transaction);
+        messages = chunk_data(transaction);
         for (var j = 0; j < messages.length; j++) {
             seperator = (i < txs.length - 1 || j < messages.length - 1) ? "," : "";
             console.log(`{"external": "${messages[j]}"}${seperator}`);
         }
     }
-    console.log("]");
-    return txs.length
+    console.log("]")
 }
 
 const chunk_data = function (src) {
@@ -95,25 +94,16 @@ const chunk_data = function (src) {
     return chunked_message.split("\n").slice(1, -1);
 }
 
-const chunk_data_into_blueprint = function (src, number) {
-    run_chunker_command = `${CHUNKER} chunk data "${src}" --devmode --as-blueprint --number ${number} --timestamp ${number}`
-    chunked_message = new Buffer.from(execSync(run_chunker_command)).toString();
-    return chunked_message.split("\n").slice(1, -1);
-}
-
-exports.print_bench = function (src, options = {}) {
-    let number = 0;
+exports.print_bench = function (src) {
     const inputs = src.slice();
     console.log("[")
     while (inputs.length > 1) {
-        let txs_length = print_list(inputs.shift(), options.blueprint, number)
-        console.log(",");
-        number += txs_length;
+        print_list(inputs.shift())
+        console.log(",")
     }
-    print_list(inputs.shift(), options.blueprint, number)
+    print_list(inputs.shift())
     console.log("]")
 }
-
 exports.print_raw_txs = function (src) {
     const txs = src.slice();
     txs.forEach(element => {

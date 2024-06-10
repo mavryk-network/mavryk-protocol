@@ -19,15 +19,13 @@ OPAMASSUMEDEPEXTS=true opam install conf-rust conf-rust-2021
 # Opam < 2.1 uses opam-depext as a plugin, later versions provide the option
 # `--depext-only`:
 case $(opam --version) in
-2.0.*)
-  opam pin add -n -y octez-deps opam/virtual/ && opam depext octez-deps
-  opam pin remove octez-deps
-  ;;
-*) opam install --depext-only opam/virtual/octez-deps.opam ;;
+    2.0.* ) opam pin add -n -y mavkit-deps opam/virtual/ && opam depext mavkit-deps
+            opam pin remove mavkit-deps ;;
+    * ) opam install --depext-only opam/virtual/mavkit-deps.opam ;;
 esac
 
-opam install opam/virtual/octez-deps.opam --deps-only --criteria="-notuptodate,-changed,-removed"
+opam install opam/virtual/mavkit-deps.opam --deps-only --criteria="-notuptodate,-changed,-removed"
 
 if [ "$1" = "--tps" ]; then
-  opam install caqti-driver-postgresql
+    opam install caqti-driver-postgresql
 fi

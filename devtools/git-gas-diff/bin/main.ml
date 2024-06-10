@@ -200,14 +200,14 @@ module Category = struct
       ("Gas limit: ", decreasing_payload);
       ("Storage limit: ", decreasing_payload);
       ("just consumed gas: ", decreasing_payload);
-      ("Fee to the baker: ꜩ", decreasing_payload);
-      ("payload fees(the block proposer) ....... +ꜩ", decreasing_payload);
-      ("storage fees ........................... +ꜩ", decreasing_payload);
+      ("Fee to the validator: ṁ", decreasing_payload);
+      ("payload fees(the block proposer) ....... +ṁ", decreasing_payload);
+      ("storage fees ........................... +ṁ", decreasing_payload);
       ("fee = ", decreasing_payload);
       ("PUBLIC_KEY_HASH", no_payload);
       ("CONTRACT_HASH", no_payload);
       ("Operation hash", no_payload);
-      ("tezos-client", no_payload);
+      ("mavryk-client", no_payload);
       ("New contract", no_payload);
       ("To: ", no_payload);
       ("Parameter: ", no_payload);

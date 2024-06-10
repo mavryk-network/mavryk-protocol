@@ -6,14 +6,14 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-alcotezt
-  octez-libs.mec)
+  mavkit-alcotezt
+  mavkit-libs.mec)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt
+  -open Mavkit_alcotezt
   -open Mec)
  (modules
   ark_poseidon128
@@ -82,7 +82,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

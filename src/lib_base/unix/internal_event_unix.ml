@@ -23,12 +23,12 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_error_monad.TzLwtreslib
-open Tezos_event_logging
+open Mavryk_error_monad.TzLwtreslib
+open Mavryk_event_logging
 open Error_monad
 
 module Configuration = struct
-  include Tezos_base.Internal_event_config
+  include Mavryk_base.Internal_event_config
 
   let of_file path =
     let open Lwt_result_syntax in
@@ -38,9 +38,9 @@ end
 
 (* FIXME https://gitlab.com/tezos/tezos/-/issues/4837
 
-   This environment variable is problematic when the octez-node in not
+   This environment variable is problematic when the mavkit-node in not
    run with [Singleprocess]. *)
-let env_var_name = "TEZOS_EVENTS_CONFIG"
+let env_var_name = "MAVRYK_EVENTS_CONFIG"
 
 module Event = struct
   include Internal_event.Simple

@@ -48,7 +48,7 @@ module Int32 : sig
 
     include BOUNDS
 
-    include Tezos_base.TzPervasives.Compare.S with type t := t
+    include Mavryk_base.TzPervasives.Compare.S with type t := t
 
     val encoding : t Data_encoding.t
 
@@ -72,8 +72,8 @@ module Int32 : sig
   module NonNegative : S
 
   val non_negative_of_legacy_non_negative :
-    NonNegative.t -> Tezos_base.Bounded.Non_negative_int32.t
+    NonNegative.t -> Mavryk_base.Bounded.Non_negative_int32.t
 
   val legacy_non_negative_of_non_negative :
-    Tezos_base.Bounded.Non_negative_int32.t -> NonNegative.t
+    Mavryk_base.Bounded.Non_negative_int32.t -> NonNegative.t
 end

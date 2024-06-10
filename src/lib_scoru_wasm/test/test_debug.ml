@@ -27,16 +27,16 @@
     -------
     Component:    Tree_encoding_decoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_debug.ml
-    Subject:      Debug facilities tests for the tezos-scoru-wasm library
+    Subject:      Debug facilities tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 
 let write_debug ~version ~debug ~init ~values memories =
   let input = Input_buffer.alloc () in
-  let module_inst = Tezos_webassembly_interpreter.Instance.empty_module_inst in
+  let module_inst = Mavryk_webassembly_interpreter.Instance.empty_module_inst in
   let memories =
     List.fold_left
       (fun memories memory -> Lazy_vector.Int32Vector.cons memory memories)

@@ -26,20 +26,16 @@
 
 (** Time management
 
-    This module supports three distinct notions of time. The first notion of time
+    This module supports two distinct notions of time. The first notion of time
     is the time as handled by the protocol. This is the time that appears in the
     header of blocks, the time that baking slots are specified on, etc. It only
     has second-level precision.
 
     The second notion of time is the time as handled by the system. This is the
     time as returned by the processor clock, the time that network timeouts are
-    specified on, etc. It has sub-second precision.
+    specified on, etc. In has sub-second precision.
 
-    As based on the system clock, this second notion of time is affected by
-    system clock adjustments. If you need monotonous time, you can use
-    the third notion introduced here.
-
-    The distinction between the notions of time is important for multiple
+    The distinction between the two notions of time is important for multiple
     reasons:
     - Protocol time and system time may evolve independently. E.g., if a
     protocol update changes the notion of time.
@@ -47,8 +43,6 @@
     - Protocol time and system time have different end-of-times. Respectively
     that's int64 end-of-time (some time in the year 292277026596) and RFC3339
     end-of-time (end of the year 9999).
-    - Monotonic time is important if you want timeouts to be independant of
-    calendar time adjustements.
 
     Note that while Protocol time has the int64 range, many of its functions
     do not work outside of the RFC3339 range, namely:
@@ -139,7 +133,7 @@ module Protocol : sig
      [rfc_encoding] for human-readable format. *)
   val rfc_encoding : t Data_encoding.t
 
-  val rpc_arg : t Tezos_rpc.Arg.t
+  val rpc_arg : t Mavryk_rpc.Arg.t
 
   (** {2 Pretty-printing functions} *)
 
@@ -161,7 +155,11 @@ module System : sig
   (** A representation of timestamps.
 
       NOTE: This representation is limited to times between
-      0000-01-01 00:00:00 UTC and 9999-12-31 23:59:59.999999999999 UTC *)
+      0000-01-01 00:00:00 UTC and 9999-12-31 23:59:59.999999999999 UTC
+
+      NOTE: This is based on the system clock. As a result, it is affected by
+      system clock adjustments. IF you need monotonous time, you can use
+      [Mtime]. *)
 
   type t = Ptime.t
 
@@ -185,7 +183,7 @@ module System : sig
 
     (** {2 Serialization functions} *)
 
-    val rpc_arg : t Tezos_rpc.Arg.t
+    val rpc_arg : t Mavryk_rpc.Arg.t
 
     val pp_hum : Format.formatter -> t -> unit
 
@@ -234,7 +232,7 @@ module System : sig
 
   val rfc_encoding : t Data_encoding.t
 
-  val rpc_arg : t Tezos_rpc.Arg.t
+  val rpc_arg : t Mavryk_rpc.Arg.t
 
   (** {2 Pretty-printing} *)
 
@@ -268,18 +266,4 @@ module System : sig
   module Map : Map.S with type key = t
 
   module Table : Hashtbl.S with type key = t
-end
-
-module Monotonic : sig
-  (** {1 Monotonic time} *)
-
-  module Span : sig
-    type t = Mtime.Span.t
-
-    val to_ms : t -> int
-
-    val to_float_us : t -> float
-
-    val to_float_s : t -> float
-  end
 end

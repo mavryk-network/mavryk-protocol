@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-module Memory = Tezos_wasmer.Memory
-module I32 = Tezos_webassembly_interpreter.I32
+open Mavryk_scoru_wasm
+module Memory = Mavryk_wasmer.Memory
+module I32 = Mavryk_webassembly_interpreter.I32
 
 module Wasmer : Host_funcs.Memory_access with type t = Memory.t = struct
   type t = Memory.t
@@ -41,8 +41,8 @@ module Wasmer : Host_funcs.Memory_access with type t = Memory.t = struct
     Memory.set_string memory ~address ~data ;
     Lwt.return_unit
 
-  let to_bits (num : Tezos_webassembly_interpreter.Values.num) : int * int64 =
-    let open Tezos_webassembly_interpreter in
+  let to_bits (num : Mavryk_webassembly_interpreter.Values.num) : int * int64 =
+    let open Mavryk_webassembly_interpreter in
     let size = Types.num_size @@ Values.type_of_num num in
     let bits =
       match num with

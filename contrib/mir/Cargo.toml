@@ -9,28 +9,11 @@ lalrpop = "0.20.0"
 [dependencies]
 lalrpop-util = "0.20.0"
 checked = "0.5"
-tezos_data_encoding = "0.5.1"
 thiserror = "1.0"
 logos = "0.13"
 hex = "0.4"
-tezos_crypto_rs = { version = "0.5", default-features = false, features = [
-  "bls",
-] }
+mavryk_crypto_rs = "0.5"
 typed-arena = "2"
-base58 = "0.2"
-cryptoxide = "0.4"
-num-bigint = "0.3"
-num-traits = "0.2"
-chrono = "0.4"
-integer-sqrt = "0.1"
-blst = "0.3"
-bitvec = "1.0"
-strum = "0.25"
-strum_macros = "0.25"
-smallvec = { version = "1.11", features = [ "const_new" ] }
-
-[dev-dependencies]
-proptest = "1.3.1"
 
 [[bin]]
 name = "tzt_runner"

@@ -43,7 +43,7 @@ def get_wallets(path):
     wallets = {}
     for fn in os.listdir(path):
         # ignore misc files
-        if not fn.startswith("tz1"):
+        if not fn.startswith("mv1"):
             continue
         w = json.load(open(os.path.join(path, fn), "r"))
         # if not u'allocated_tezzies' in w.keys():

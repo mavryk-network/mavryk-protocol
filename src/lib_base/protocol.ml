@@ -31,20 +31,7 @@ and component = {
   implementation : string;
 }
 
-and env_version =
-  | V0
-  | V1
-  | V2
-  | V3
-  | V4
-  | V5
-  | V6
-  | V7
-  | V8
-  | V9
-  | V10
-  | V11
-  | V12
+and env_version = V0 | V1 | V2 | V3 | V4 | V5 | V6 | V7 | V8 | V9 | V10 | V11
 
 let compare_version = Stdlib.compare
 
@@ -77,7 +64,6 @@ let module_name_of_env_version = function
   | V9 -> "V9"
   | V10 -> "V10"
   | V11 -> "V11"
-  | V12 -> "V12"
 
 let env_version_encoding =
   let open Data_encoding in
@@ -95,8 +81,7 @@ let env_version_encoding =
          | V8 -> 8
          | V9 -> 9
          | V10 -> 10
-         | V11 -> 11
-         | V12 -> 12)
+         | V11 -> 11)
        (function
          | 0 -> V0
          | 1 -> V1
@@ -110,7 +95,6 @@ let env_version_encoding =
          | 9 -> V9
          | 10 -> V10
          | 11 -> V11
-         | 12 -> V12
          | _ -> failwith "unexpected environment version")
        uint16
 
@@ -167,13 +151,13 @@ let of_bytes_exn b = Data_encoding.Binary.of_bytes_exn encoding b
 
 let of_string_exn b = Data_encoding.Binary.of_string_exn encoding b
 
-let hash proto = Tezos_crypto.Hashed.Protocol_hash.hash_bytes [to_bytes proto]
+let hash proto = Mavryk_crypto.Hashed.Protocol_hash.hash_bytes [to_bytes proto]
 
-let hash_raw proto = Tezos_crypto.Hashed.Protocol_hash.hash_bytes [proto]
+let hash_raw proto = Mavryk_crypto.Hashed.Protocol_hash.hash_bytes [proto]
 
 module Meta = struct
   type t = {
-    hash : Tezos_crypto.Hashed.Protocol_hash.t option;
+    hash : Mavryk_crypto.Hashed.Protocol_hash.t option;
     expected_env_version : env_version option;
     modules : string list;
   }
@@ -194,7 +178,7 @@ module Meta = struct
          (opt
             "hash"
             ~description:"Used to force the hash of the protocol"
-            Tezos_crypto.Hashed.Protocol_hash.encoding)
+            Mavryk_crypto.Hashed.Protocol_hash.encoding)
          (opt "expected_env_version" env_version_encoding)
          (req
             "modules"

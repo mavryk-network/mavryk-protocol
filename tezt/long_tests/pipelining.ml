@@ -41,11 +41,11 @@ let manager_kind_to_string = function
 
 (* These operations numbers are computed to consume the maximum number of gas
    unit in a block without exceeding the `hard_gas_limit_per_block` from the
-   protocol (1.73M gas unit since P). *)
+   protocol (2.6M gas unit since Mumbai). *)
 let number_of_operation_from_manager_kind = function
-  | `Transfer -> 1666 (* x1040 gas units *)
-  | `Origination -> 17 (* x100_000 gas units *)
-  | `Call -> 2 (* x850_000 gas units *)
+  | `Transfer -> 2500 (* x1040 gas units *)
+  | `Origination -> 26 (* x100_000 gas units *)
+  | `Call -> 3 (* x850_000 gas units *)
 
 let protocols = Protocol.all
 
@@ -186,7 +186,7 @@ let init_node_client_with_protocol number_of_additional_bootstrap protocol =
     List.map
       (fun x -> (x, Some 500_000_000, false))
       additional_bootstrap_account
-    (* Starting with Oxford, bootstrap delegates have part of their balance
+    (* Starting with Atlas, bootstrap delegates have part of their balance
        frozen. To avoid having account with none available balance we don't use
        revealed bootstrap account and we reveal them later on. *)
   in
@@ -589,7 +589,7 @@ let operation_and_block_validation protocol manager_kind tag =
     Client.spawn_command
       ~env:
         (String_map.singleton
-           "TEZOS_EVENTS_CONFIG"
+           "MAVRYK_EVENTS_CONFIG"
            "file-descriptor-stdout://?section-prefix=:debug")
       client
       [

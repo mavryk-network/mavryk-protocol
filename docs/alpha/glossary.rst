@@ -99,7 +99,7 @@ _`Accuser`
 
     The accuser is awarded some funds from the security deposit of the accused.
 
-    When using :ref:`Octez <octez>`, accusation operations are emitted by the
+    When using :ref:`Mavkit <mavkit>`, accusation operations are emitted by the
     accuser daemon. Note that this daemon is not associated to a delegate: accusation operations are anonymous, and any delegate can include them in a block.
 
 .. _def_account_alpha:
@@ -118,7 +118,7 @@ _`Baker`
     is allowed to bake.
     The baker selects transactions from the mempool_ to be included in the block it bakes.
 
-    When using :ref:`Octez <octez>`, baking and other consensus actions are handled by the baker
+    When using :ref:`Mavkit <mavkit>`, baking and other consensus actions are handled by the baker
     daemon, on behalf of one or more delegate_ accounts.
     By extension, a baker designates the owner of such a delegate account, typically running the baker daemon on its behalf.
 
@@ -171,7 +171,7 @@ _`Delegate`
     An implicit account becomes a delegate by registering as such.
     Through delegation_, other accounts can delegate their rights to a delegate account.
     The delegate's rights are calculated based on its stake_.
-    Note that ``tz4`` accounts cannot be delegates.
+    Note that ``mv4`` accounts cannot be delegates.
 
 _`Delegation`
     An operation_ in which an account_ designates a
@@ -261,7 +261,7 @@ _`Michelson`
 .. _def_minimal_stake_alpha:
 
 _`Minimal stake`
-    An amount of tez (e.g., 6000ꜩ) serving as a minimal amount for a
+    An amount of tez (e.g., 6000ṁ) serving as a minimal amount for a
     delegate to have `baking rights`_ and voting rights in a cycle_.
 
 _`Operation kinds`
@@ -330,7 +330,7 @@ _`Voting period`
 
 _`Voting listings`
     The list calculated at the beginning of each `voting period`_ that contains
-    the staking balance (in number of mutez) of each delegate_ that owns more
+    the staking balance (in number of mumav) of each delegate_ that owns more
     than the `minimal stake`_ at that moment. For each delegate_, the voting listings
     reflect the weight of the vote emitted by the delegate_ when amending the
     `economic protocol`_.

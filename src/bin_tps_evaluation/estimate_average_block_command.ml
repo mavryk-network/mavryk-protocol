@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** The different kinds of Tezos operations we're analyzing. *)
+(** The different kinds of Mavryk operations we're analyzing. *)
 type transaction_kind = Contract | Regular | Origination
 
 (** The rows returned by the summary query. *)
@@ -57,7 +57,7 @@ module Encoding = struct
     let decode (transaction_kind, operation_count) =
       Ok {transaction_kind; operation_count}
     in
-    let rep = Caqti_type.(t2 transaction_kind int) in
+    let rep = Caqti_type.(tup2 transaction_kind int) in
     Caqti_type.custom ~encode ~decode rep
 
   let contract_row =
@@ -67,18 +67,14 @@ module Encoding = struct
     let decode (contract_address, total_contract_operations) =
       Ok {contract_address; total_contract_operations}
     in
-    let rep = Caqti_type.(t2 string int) in
+    let rep = Caqti_type.(tup2 string int) in
     Caqti_type.custom ~encode ~decode rep
 end
 
 module Db = struct
   (** Establish a connection pool that will be used to make the database queries. *)
   let mk_pool conn_str =
-    match
-      Caqti_lwt_unix.connect_pool
-        ~pool_config:(Caqti_pool_config.create ~max_size:10 ())
-        (Uri.of_string conn_str)
-    with
+    match Caqti_lwt.connect_pool ~max_size:10 (Uri.of_string conn_str) with
     | Ok pool -> pool
     | Error err -> Stdlib.failwith (Caqti_error.show err)
 
@@ -112,7 +108,7 @@ module Db = struct
         Sql.get_all_operations_sql
     in
     Caqti_request.Infix.(
-      Caqti_type.(t3 string string float) ->! Encoding.contract_row)
+      Caqti_type.(tup3 string string float) ->! Encoding.contract_row)
       query
 
   let get_top_contracts conn_str start_date end_date limit () =
@@ -128,9 +124,9 @@ module Db = struct
         (start_date, end_date, limit)
         []
     in
-    Caqti_lwt_unix.Pool.use main' (mk_pool conn_str)
+    Caqti_lwt.Pool.use main' (mk_pool conn_str)
 
-  (** The main analysis query that categorizes the Tezos operations within a given time frame. *)
+  (** The main analysis query that categorizes the Mavryk operations within a given time frame. *)
   let summary_query =
     let query =
       Printf.sprintf
@@ -148,7 +144,8 @@ module Db = struct
     |}
         Sql.get_all_operations_sql
     in
-    Caqti_request.Infix.(Caqti_type.(t2 string string) ->! Encoding.summary_row)
+    Caqti_request.Infix.(
+      Caqti_type.(tup2 string string) ->! Encoding.summary_row)
       query
 
   let get_operation_summary conn_str start_date end_date () =
@@ -164,7 +161,7 @@ module Db = struct
         (start_date, end_date)
         []
     in
-    Caqti_lwt_unix.Pool.use main' (mk_pool conn_str)
+    Caqti_lwt.Pool.use main' (mk_pool conn_str)
 end
 
 module Json = struct

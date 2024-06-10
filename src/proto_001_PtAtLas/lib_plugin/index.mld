@@ -1,0 +1,17 @@
+{0 Mavkit-protocol-001-PtAtLas-libs: mavkit protocol 001-PtAtLas libraries}
+
+This is a package containing some libraries related to the Tezos 001-PtAtLas protocol.
+
+It contains the following libraries:
+
+- {{!module-Mavryk_001_PtAtLas_test_helpers}Mavryk_001_PtAtLas_test_helpers}: Protocol testing framework
+- {{!module-Mavryk_baking_001_PtAtLas}Mavryk_baking_001_PtAtLas}: Base library for `mavryk-baker/accuser`
+- {{!module-Mavryk_baking_001_PtAtLas_commands}Mavryk_baking_001_PtAtLas_commands}: Protocol-specific commands for baking
+- {{!module-Mavryk_client_001_PtAtLas}Mavryk_client_001_PtAtLas}: Protocol specific library for `mavryk-client`
+- {{!module-Mavryk_dac_001_PtAtLas}Mavryk_dac_001_PtAtLas}: Protocol specific library for the Data availability Committee
+- {{!module-Mavryk_dal_001_PtAtLas}Mavryk_dal_001_PtAtLas}: Protocol specific library for the Data availability Layer
+- {{!module-Mavryk_layer2_utils_001_PtAtLas}Mavryk_layer2_utils_001_PtAtLas}: Protocol specific library for Layer 2 utils
+- {{!module-Mavryk_protocol_plugin_001_PtAtLas}Mavryk_protocol_plugin_001_PtAtLas}: Protocol plugin
+- {{!module-Mavryk_protocol_plugin_001_PtAtLas_registerer}Mavryk_protocol_plugin_001_PtAtLas_registerer}: Protocol plugin registerer
+- {{!module-Mavryk_smart_rollup_001_PtAtLas}Mavryk_smart_rollup_001_PtAtLas}: Protocol specific library of helpers for `mavryk-smart-rollup`
+- {{!module-Mavryk_smart_rollup_layer2_001_PtAtLas}Mavryk_smart_rollup_layer2_001_PtAtLas}: Protocol specific library for `mavryk-smart-rollup`

@@ -88,7 +88,6 @@ let register_create_contract_rootname protocols =
        ~__FILE__
        ~title:(sf "test %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_create_contract_rootname_originate ~contract)
        protocols
 
@@ -307,7 +306,6 @@ let register_simple_entrypoints protocols =
     ~__FILE__
     ~title:"simple entrypoints"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
       let* client, contract = originate_simple_entrypoints client ~protocol in

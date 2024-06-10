@@ -1,14 +1,14 @@
 :orphan:
 
-Compiling (part of) the Octez codebase to JavaScript
-====================================================
+Compiling (part of) the Mavkit codebase to JavaScript
+=====================================================
 
 We want to expose a JavaScript API while staying in sync with the
 OCaml codebase. A way to achieve this is to compile OCaml code to
 JavaScript using the ``js_of_ocaml`` compiler.
 
 The goal of this document is to collect information regarding the
-JavaScript compilation story inside the Octez codebase.
+JavaScript compilation story inside the Mavkit codebase.
 
 Current status
 --------------
@@ -25,7 +25,7 @@ JS-compatible library are JS-compatible.  A library is JS-compatible if it
 has ``~js_compile:true`` or ``~js_of_ocaml``.
 
 In the first phase, the focus is restricted to testing libraries
-needed to expose an Octez client API.
+needed to expose an Mavkit client API.
 
 Installing node (nodejs)
 ------------------------
@@ -114,7 +114,7 @@ Dealing with external JS dependencies
 
 Some OCaml libraries expect external JavaScript packages to be
 installed and loaded before any OCaml code runs. For example
-``tezos-hacl`` requires the npm package ``hacl-wasm`` to be
+``mavryk-hacl`` requires the npm package ``hacl-wasm`` to be
 initialized.
 
 Adding a JavaScript dependency

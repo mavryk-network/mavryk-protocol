@@ -35,13 +35,13 @@ val decrypt :
   #Client_context.io_wallet ->
   ?name:string ->
   Client_keys.sk_uri ->
-  Tezos_crypto.Signature.secret_key tzresult Lwt.t
+  Mavryk_crypto.Signature.secret_key tzresult Lwt.t
 
 val decrypt_aggregate :
   #Client_context.io_wallet ->
   ?name:string ->
   Client_keys.aggregate_sk_uri ->
-  Tezos_crypto.Aggregate_signature.secret_key tzresult Lwt.t
+  Mavryk_crypto.Aggregate_signature.secret_key tzresult Lwt.t
 
 val decrypt_all : #Client_context.io_wallet -> unit tzresult Lwt.t
 
@@ -50,7 +50,7 @@ val decrypt_list :
 
 (** Encrypts a secret key using the given password *)
 val encrypt :
-  Tezos_crypto.Signature.secret_key ->
+  Mavryk_crypto.Signature.secret_key ->
   bytes ->
   Client_keys.sk_uri tzresult Lwt.t
 
@@ -58,7 +58,7 @@ val encrypt :
     the corresponding encrypted secret key *)
 val prompt_twice_and_encrypt :
   #Client_context.io ->
-  Tezos_crypto.Signature.secret_key ->
+  Mavryk_crypto.Signature.secret_key ->
   Client_keys.sk_uri tzresult Lwt.t
 
 (** [prompt_twice_and_encrypt_aggregate cctxt sk] Prompts password twice to user
@@ -66,15 +66,15 @@ val prompt_twice_and_encrypt :
     key *)
 val prompt_twice_and_encrypt_aggregate :
   #Client_context.io ->
-  Tezos_crypto.Aggregate_signature.secret_key ->
+  Mavryk_crypto.Aggregate_signature.secret_key ->
   Client_keys.aggregate_sk_uri tzresult Lwt.t
 
 val encrypt_sapling_key :
   #Client_context.io ->
-  Tezos_sapling.Core.Wallet.Spending_key.t ->
+  Mavryk_sapling.Core.Wallet.Spending_key.t ->
   Client_keys.sapling_uri tzresult Lwt.t
 
 val decrypt_sapling_key :
   #Client_context.io ->
   Client_keys.sapling_uri ->
-  Tezos_sapling.Core.Wallet.Spending_key.t tzresult Lwt.t
+  Mavryk_sapling.Core.Wallet.Spending_key.t tzresult Lwt.t

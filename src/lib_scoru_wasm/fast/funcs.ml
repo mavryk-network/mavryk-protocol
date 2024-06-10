@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
-module Lazy_containers = Tezos_lazy_containers
+open Mavryk_scoru_wasm
+module Wasmer = Mavryk_wasmer
+module Lazy_containers = Mavryk_lazy_containers
 
 module Host_funcs = struct
   module Aux : Host_funcs.Aux.S with type memory = Wasmer.Memory.t =
@@ -34,7 +34,7 @@ end
 
 type host_state = {
   retrieve_mem : unit -> Wasmer.Memory.t;
-  buffers : Tezos_webassembly_interpreter.Eval.buffers;
+  buffers : Mavryk_webassembly_interpreter.Eval.buffers;
   mutable durable : Durable.t;
 }
 
@@ -336,14 +336,12 @@ let make ~version ~reveal_builtins ~write_debug state =
   in
   let v2 = v1 @ [("store_exists", store_exists)] in
   let v3 = v2 @ [("reveal", reveal_raw)] in
-  let v4 = v3 in
   let extra =
     match version with
     | Wasm_pvm_state.V0 -> []
     | V1 -> v1
     | V2 -> v2
     | V3 -> v3
-    | V4 -> v4
   in
   List.map
     (fun (name, impl) -> (Constants.wasm_host_funcs_virual_module, name, impl))

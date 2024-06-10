@@ -27,10 +27,10 @@
    -------
    Component:    Client/Multisig
    Invocation:   dune exec tezt/tests/main.exe -- --file multisig.ml
-   Subject:      Tests octez-client multisig interaction
+   Subject:      Tests mavkit-client multisig interaction
 *)
 
-(* octez-client has builtin support for multisig smart contracts. See
+(* mavkit-client has builtin support for multisig smart contracts. See
    docs/user/multisig.rst for more details about it.
 
    This file tests the client multisig support; more precisely it tests
@@ -190,7 +190,6 @@ let test_multisig ~sig_algs ~supports protocols =
         (if by_address then "by_address" else "by_alias");
         show_msig_version version;
       ]
-    ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
       let bootstrap1 = Constant.bootstrap1.alias in
@@ -526,7 +525,7 @@ let test_multisig ~sig_algs ~supports protocols =
       let bootstrap3_address = Constant.bootstrap3.public_key_hash in
       let lambda =
         sf
-          {|{ DROP; NIL operation; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mutez 1000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mutez 2000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; SOME; SET_DELEGATE; CONS }|}
+          {|{ DROP; NIL operation; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mumav 1000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; IMPLICIT_ACCOUNT; PUSH mumav 2000000; UNIT; TRANSFER_TOKENS; CONS; PUSH key_hash "%s"; SOME; SET_DELEGATE; CONS }|}
           bootstrap1_address
           bootstrap2_address
           bootstrap3_address
@@ -737,7 +736,6 @@ let test_unsupported_multisig =
     ~__FILE__
     ~title:"Unsupported multisig"
     ~tags:["unsupported"; "multisig"]
-    ~uses_node:false
   @@ fun protocol ->
   Log.info "Deploy nonmultisig" ;
   let* client = Client.init_mockup ~protocol () in

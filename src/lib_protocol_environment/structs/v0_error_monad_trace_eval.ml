@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_error_monad.Error_monad
+open Mavryk_error_monad.Error_monad
 
 type t =
   [ `Branch  (** Errors that may not happen in another context *)
@@ -38,7 +38,7 @@ let string_of_category = function
   | `Branch -> "branch"
 
 let classify = function
-  | `Permanent -> Tezos_error_monad.Error_classification.Permanent
+  | `Permanent -> Mavryk_error_monad.Error_classification.Permanent
   | `Temporary -> Temporary
   | `Branch -> Branch
 

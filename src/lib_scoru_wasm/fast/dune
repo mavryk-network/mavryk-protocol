@@ -2,16 +2,16 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_scoru_wasm_fast)
- (public_name octez-l2-libs.scoru-wasm-fast)
+ (name mavryk_scoru_wasm_fast)
+ (public_name mavkit-l2-libs.scoru-wasm-fast)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-l2-libs.webassembly-interpreter
-  octez-libs.lazy-containers
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.wasmer)
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-l2-libs.webassembly-interpreter
+  mavkit-libs.lazy-containers
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.wasmer)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

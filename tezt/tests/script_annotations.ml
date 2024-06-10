@@ -28,7 +28,7 @@
    -------
    Component:    Michelson
    Invocation:   dune exec tezt/tests/main.exe -- --file script_annotations.ml
-   Subject:      Runs Michelson annotation tests using [octez-client typecheck data ...].
+   Subject:      Runs Michelson annotation tests using [mavkit-client typecheck data ...].
 *)
 
 let typecheck_wrapper ?res (f : Client.t -> Process.t) client =
@@ -50,7 +50,6 @@ let register =
     ~__FILE__
     ~title:"Tests of Michelson annotations"
     ~tags:["client"; "michelson"; "annotations"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   (* annotation length limit positive case *)
@@ -103,24 +102,22 @@ let register =
       ~typ:"lambda (pair (nat %.) (int %.)) nat"
       client
   in
-  (* LEGACY: until Nairobi alphabetic field annotation in parameter
-     root was allowed in legacy mode *)
+
   let* () =
     typecheck_script
       ?res:
-        (if Protocol.(number protocol > number Nairobi) then
+        (if Protocol.(number protocol >= number Atlas) then
          Some (rex "unexpected annotation")
         else None)
       ~legacy:true
       ~script:"parameter %r unit; storage unit; code { FAILWITH }"
       client
   in
-  (* LEGACY: until Nairobi numeric field annotation in parameter root
-     was allowed in legacy mode *)
+
   let* () =
     typecheck_script
       ?res:
-        (if Protocol.(number protocol > number Nairobi) then
+        (if Protocol.(number protocol >= number Atlas) then
          Some (rex "unexpected annotation")
         else None)
       ~legacy:true

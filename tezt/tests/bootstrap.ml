@@ -63,7 +63,7 @@ let bootstrapped_event =
    b) Otherwise, we check that both nodes synchronize. In full mode, we also check
    that the savepoint is higher than when Node 2 was killed. *)
 let check_bootstrap_with_history_modes hmode1 hmode2 =
-  (* Number of calls to [octez-client bake for] once the protocol is activated,
+  (* Number of calls to [mavkit-client bake for] once the protocol is activated,
      before we kill [node_2]. *)
   let bakes_before_kill = 9 in
 
@@ -72,7 +72,7 @@ let check_bootstrap_with_history_modes hmode1 hmode2 =
   (* TODO-TB: update the doc strings below, written for
      max_operations_ttl = 0. *)
 
-  (* Number of calls to [octez-client bake for] while [node_2] is not
+  (* Number of calls to [mavkit-client bake for] while [node_2] is not
      running. This number is high enough so that it is bigger than the
      Last-Allowed-Fork-Level or the caboose.
 
@@ -93,7 +93,7 @@ let check_bootstrap_with_history_modes hmode1 hmode2 =
      starts.
 
      - When the checkpoint is set, its level is [preserved_blocks =
-     blocks_preservation_cycles * blocks_per_cycle] behind the current level of
+     preserved_cycles * blocks_per_cycle] behind the current level of
      the head
 
      - When the [caboose] is set, its level is [max(0, (checkpoint -
@@ -106,7 +106,7 @@ let check_bootstrap_with_history_modes hmode1 hmode2 =
      mod blocks_per_cycle] (the modulo 1 comes from the activation
      block).
 
-     In sandbox mode, we have [blocks_preservation_cycles = 2] and
+     In sandbox mode, we have [preserved_cycles = 2] and
      [blocks_per_cycle = 8].
 
      Hence, when [node_1] has baked [49] blocks, the checkpoint should

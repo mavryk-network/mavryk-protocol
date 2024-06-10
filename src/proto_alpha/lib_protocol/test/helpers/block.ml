@@ -34,7 +34,7 @@ type t = {
   hash : Block_hash.t;
   header : Block_header.t;
   operations : Operation.packed list;
-  context : Tezos_protocol_environment.Context.t;
+  context : Mavryk_protocol_environment.Context.t;
   constants : Constants.Parametric.t;
 }
 
@@ -175,7 +175,6 @@ module Forge = struct
     Bytes.create Constants.proof_of_work_nonce_size
 
   let rec naive_pow_miner ~proof_of_work_threshold shell header =
-    let open Lwt_result_syntax in
     match
       Hacl_star.Hacl.RandomBuffer.randombytes
         ~size:Constants.proof_of_work_nonce_size
@@ -193,7 +192,7 @@ module Forge = struct
 
   let make_contents
       ?(proof_of_work_threshold =
-        Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+        Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) ~payload_hash ~payload_round
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)
@@ -215,7 +214,7 @@ module Forge = struct
         }
 
   let make_shell ~level ~predecessor ~timestamp ~fitness ~operations_hash =
-    Tezos_base.Block_header.
+    Mavryk_base.Block_header.
       {
         level;
         predecessor;
@@ -230,7 +229,7 @@ module Forge = struct
 
   let set_seed_nonce_hash
       ?(proof_of_work_threshold =
-        Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+        Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) seed_nonce_hash
       {baker; consensus_key; shell; contents} =
     let open Lwt_result_syntax in
@@ -340,7 +339,7 @@ module Forge = struct
   (* compatibility only, needed by incremental *)
   let contents
       ?(proof_of_work_threshold =
-        Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+        Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
           .proof_of_work_threshold) ?seed_nonce_hash
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)
@@ -400,7 +399,7 @@ let check_constants_consistency constants =
 let prepare_main_init_params ?bootstrap_contracts commitments constants
     bootstrap_accounts =
   let open Lwt_syntax in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let parameters =
     Default_parameters.parameters_of_constants
       ~bootstrap_accounts
@@ -412,8 +411,8 @@ let prepare_main_init_params ?bootstrap_contracts commitments constants
   let proto_params =
     Data_encoding.Binary.to_bytes_exn Data_encoding.json json
   in
-  Tezos_protocol_environment.Context.(
-    let empty = Tezos_protocol_environment.Memory_context.empty in
+  Mavryk_protocol_environment.Context.(
+    let empty = Mavryk_protocol_environment.Memory_context.empty in
     let* ctxt = add empty ["version"] (Bytes.of_string "genesis") in
     add ctxt protocol_param_key proto_params)
 
@@ -513,14 +512,14 @@ let genesis_with_parameters parameters =
       ~seed_nonce_hash:None
       shell
   in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let json = Default_parameters.json_of_parameters parameters in
   let proto_params =
     Data_encoding.Binary.to_bytes_exn Data_encoding.json json
   in
   let*! ctxt =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in
@@ -563,7 +562,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
     ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
     ?adaptive_issuance () =
   let open Lwt_result_syntax in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let constants = Default_parameters.constants_test in
   let min_proposal_quorum =
     Option.value ~default:constants.min_proposal_quorum min_proposal_quorum
@@ -999,8 +998,7 @@ let bake_n ?baking_mode ?policy ?liquidity_baking_toggle_vote
 
 let rec bake_while_with_metadata ?baking_mode ?policy
     ?liquidity_baking_toggle_vote ?adaptive_issuance_vote
-    ?(invariant = fun _ -> Lwt_result_syntax.return_unit) ?previous_metadata
-    predicate b =
+    ?(invariant = fun _ -> return_unit) ?previous_metadata predicate b =
   let open Lwt_result_syntax in
   let* () = invariant b in
   let* new_block, (metadata, _) =
@@ -1287,7 +1285,7 @@ let debited_of_balance_update_item (it : Receipt.balance_update_item) :
     Tez.t option =
   let open Receipt in
   match it with
-  | Balance_update_item (Contract _, Debited tez, _) -> Some tez
+  | Balance_update_item (Contract _, Debited mav, _) -> Some mav
   | _ -> None
 
 let autostaked_opt baker (metadata : block_header_metadata) =
@@ -1300,8 +1298,8 @@ let autostaked_opt baker (metadata : block_header_metadata) =
             List.exists
               (function
                 | Receipt.Balance_update_item
-                    (Deposits _staker, Receipt.Credited tez, _origin) ->
-                    Tez.(tez = debited_tez)
+                    (Deposits _staker, Receipt.Credited mav, _origin) ->
+                    Tez.(mav = debited_tez)
                 | _ -> false)
               metadata.balance_updates
         | _ -> false)
@@ -1311,10 +1309,10 @@ let autostaked_opt baker (metadata : block_header_metadata) =
     (fun receipt ->
       match debited_of_balance_update_item receipt with
       | None -> assert false
-      | Some tez -> tez)
+      | Some mav -> mav)
     autostaked_bal_up_opt
 
 let autostaked ?(loc = __LOC__) baker metadata =
   match autostaked_opt baker metadata with
   | None -> raise (Failure (loc ^ ":No autostake found"))
-  | Some tez -> tez
+  | Some mav -> mav

@@ -26,7 +26,7 @@
 (** Type of a mockup environment *)
 type t = {
   chain : Chain_id.t;
-  rpc_context : Tezos_protocol_environment.rpc_context;
+  rpc_context : Mavryk_protocol_environment.rpc_context;
   protocol_data : bytes;
 }
 
@@ -35,7 +35,7 @@ type mockup_context = t
 module type PROTOCOL = sig
   val hash : Protocol_hash.t
 
-  include Tezos_protocol_environment.PROTOCOL
+  include Mavryk_protocol_environment.PROTOCOL
 end
 
 (** The module type of a mockup environment. Modules of this type should be
@@ -54,11 +54,11 @@ module type MOCKUP = sig
 
   (** The content equivalent to the default value of [--protocol-constants] *)
   val default_protocol_constants :
-    Tezos_client_base.Client_context.full -> protocol_constants tzresult Lwt.t
+    Mavryk_client_base.Client_context.full -> protocol_constants tzresult Lwt.t
 
   (** The content equivalent to the default value of [--bootstrap-accounts] *)
   val default_bootstrap_accounts :
-    Tezos_client_base.Client_context.full -> string tzresult Lwt.t
+    Mavryk_client_base.Client_context.full -> string tzresult Lwt.t
 
   val protocol_hash : Protocol_hash.t
 
@@ -66,12 +66,12 @@ module type MOCKUP = sig
 
   module Block_services :
       module type of
-        Tezos_shell_services.Block_services.Make (Protocol) (Protocol)
+        Mavryk_shell_services.Block_services.Make (Protocol) (Protocol)
 
-  val directory : Tezos_protocol_environment.rpc_context Tezos_rpc.Directory.t
+  val directory : Mavryk_protocol_environment.rpc_context Mavryk_rpc.Directory.t
 
   val init :
-    cctxt:Tezos_client_base.Client_context.printer ->
+    cctxt:Mavryk_client_base.Client_context.printer ->
     parameters:parameters ->
     constants_overrides_json:Data_encoding.json option ->
     bootstrap_accounts_json:Data_encoding.json option ->

@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_crypto
+open Mavryk_crypto
 
 include
   Blake2B.Make
@@ -40,7 +40,3 @@ include
     end)
 
 let () = Base58.check_encoded_prefix b58check_encoding "SRCo" 54
-
-let to_context_hash hash = to_bytes hash |> Context_hash.of_bytes_exn
-
-let of_context_hash hash = Context_hash.to_bytes hash |> of_bytes_exn

@@ -456,20 +456,6 @@ module Dune = struct
       [S "target"; S target]
       ~action
 
-  let protobuf_rule filename_without_extension =
-    let proto_filename = filename_without_extension ^ ".proto" in
-    let compiled_filename = filename_without_extension ^ ".ml" in
-    target_rule
-      compiled_filename
-      ~deps:[[S ":proto"; S proto_filename]]
-      ~action:
-        [
-          S "run";
-          H [S "protoc"; S "-I"; S "."];
-          S "--ocaml_out=annot=[@@deriving show { with_path = false }]:.";
-          S "%{proto}";
-        ]
-
   let install ?package files ~section =
     [
       S "install";
@@ -1850,9 +1836,10 @@ module Target = struct
       | Experimental | Released | Auto_opam -> true
     then
       if
-        let prefixes = ["src/"; "tezt/"; "etherlink/"; "irmin/"] in
         not
-          (List.exists (fun prefix -> String.starts_with ~prefix path) prefixes)
+          (String.starts_with ~prefix:"src/" path
+          || String.starts_with ~prefix:"tezt/" path
+          || String.starts_with ~prefix:"etherlink/" path)
       then
         invalid_argf
           "A target has the release status %s but is located at %s which is \
@@ -2443,7 +2430,7 @@ module Sub_lib = struct
         (function
           | '-' | '.' -> '_'
           | '/' ->
-              invalid_arg ("octez library " ^ s ^ " name cannot contain \"/\"")
+              invalid_arg ("mavkit library " ^ s ^ " name cannot contain \"/\"")
           | c -> c)
         s
     in
@@ -2737,7 +2724,7 @@ let generate_dune (internal : Target.internal) =
     in
     let time_measurement_ppx =
       if internal.time_measurement_ppx then
-        Some (Dune.backend "tezos-time-measurement")
+        Some (Dune.backend "mavryk-time-measurement")
       else None
     in
     List.filter_map (fun x -> x) [bisect_ppx; time_measurement_ppx]
@@ -3323,7 +3310,7 @@ let generate_opam ?release for_package (internals : Target.internal list) :
   in
   {
     maintainer = "contact@tezos.com";
-    authors = "Tezos devteam" :: extra_authors;
+    authors = "Mavryk devteam" :: extra_authors;
     homepage =
       get_consistent_value
         ~name:"opam_homepage"
@@ -3357,7 +3344,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
         as_opam_dependency
           ~for_release:true
           ~for_conflicts:false
-          ~for_package:"octez"
+          ~for_package:"mavkit"
           ~with_test:Never
           ~optional:false
           target
@@ -3383,7 +3370,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
   in
   {
     maintainer = "contact@tezos.com";
-    authors = ["Tezos devteam"];
+    authors = ["Mavryk devteam"];
     homepage = "https://www.tezos.com/";
     doc = "https://tezos.gitlab.io";
     bug_reports = "https://gitlab.com/tezos/tezos/issues";
@@ -3393,7 +3380,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
     conflicts = [];
     build = [];
     available = Always;
-    synopsis = "Main virtual package for Octez, an implementation of Tezos";
+    synopsis = "Main virtual package for Mavkit, an implementation of Mavryk";
     url = None;
     description = None;
     x_opam_monorepo_opam_provided = [];
@@ -3430,7 +3417,7 @@ let generate_opam_files_for_release packages_dir opam_release_graph
             write_opam package (generate_opam ~release package internal_pkgs))
   ) ;
   write_opam
-    "octez"
+    "mavkit"
     (generate_opam_meta_package opam_release_graph add_to_meta_package)
 
 (* Bumping the dune lang version can result in different dune stanza
@@ -3780,16 +3767,14 @@ let check_opam_with_test_consistency () =
 
 let usage_msg = "Usage: " ^ Sys.executable_name ^ " [OPTIONS]"
 
-let packages_dir, release, remove_extra_files, manifezt =
+let packages_dir, release, remove_extra_files =
   let packages_dir = ref "packages" in
   let url = ref "" in
   let sha256 = ref "" in
   let sha512 = ref "" in
   let remove_extra_files = ref false in
   let version = ref "" in
-  let manifezt = ref false in
-  let anonymous_args = ref [] in
-  let anon_fun arg = anonymous_args := arg :: !anonymous_args in
+  let anon_fun _args = () in
   let spec =
     Arg.align
       [
@@ -3806,14 +3791,6 @@ let packages_dir, release, remove_extra_files, manifezt =
         ( "--remove-extra-files",
           Arg.Set remove_extra_files,
           " Remove files that are neither generated nor excluded" );
-        ( "--manifezt",
-          Arg.Set manifezt,
-          " Expect a list of modified files on the command-line. Output a TSL \
-           expression to select Tezt tests that are impacted by those changes, \
-           then exit without generating any file." );
-        ( "--",
-          Arg.Rest anon_fun,
-          " Assume the remaining arguments are anonymous arguments." );
       ]
   in
   Arg.parse spec anon_fun usage_msg ;
@@ -3840,15 +3817,7 @@ let packages_dir, release, remove_extra_files, manifezt =
         in
         Some {version; url = {url; sha256; sha512}}
   in
-  let manifezt =
-    match (!manifezt, !anonymous_args) with
-    | false, [] -> None
-    | false, head :: _ ->
-        prerr_endline ("Error: don't know what to do with: " ^ head) ;
-        exit 1
-    | true, files -> Some files
-  in
-  (!packages_dir, release, !remove_extra_files, manifezt)
+  (!packages_dir, release, !remove_extra_files)
 
 let print_opam_job_rules fmt batch_index pipeline_type marge_restriction =
   Format.fprintf
@@ -3872,7 +3841,7 @@ let print_opam_job_rules fmt batch_index pipeline_type marge_restriction =
         - "**/dune-project"
         - "**/dune-workspace"
         - "**/*.opam"
-        - .gitlab/ci/jobs/packaging/opam:prepare.yml
+        - .gitlab/ci/jobs/packaging/opam_prepare.yml
         - .gitlab/ci/jobs/packaging/opam_package.yml
         - manifest/manifest.ml
         - manifest/main.ml
@@ -3949,11 +3918,9 @@ let generate_opam_ci opam_release_graph =
   write ".gitlab/ci/jobs/packaging/opam_package.yml" @@ fun fmt ->
   pp_do_not_edit ~comment_start:"#" fmt () ;
   (* Output one template per batch. *)
-  let marge_restriction_exec =
-    "$CI_PIPELINE_SOURCE == \"merge_request_event\""
-  in
+  let marge_restriction_exec = "$CI_MERGE_REQUEST_ID" in
   let marge_restriction_all =
-    marge_restriction_exec ^ " && $GITLAB_USER_LOGIN == \"nomadic-margebot\""
+    "$CI_MERGE_REQUEST_ID && $GITLAB_USER_LOGIN == \"nomadic-margebot\""
   in
   for batch_index = 1 to batch_count do
     print_opam_job_rules fmt batch_index "exec" marge_restriction_exec ;
@@ -3968,13 +3935,19 @@ let generate_opam_ci opam_release_graph =
         {|@.opam:%s:
   extends:
     - .opam_template
-    - .rules_template__trigger_%s_opam_batch_%d
+    - .rules_template__trigger_%s_opam_batch_%d%s
   variables:
     package: %s
 |}
         package_name
         (if is_executable then "exec" else "all")
         batch_index
+        (* Tag below is added because the job in question does not work as is on
+           Gitlab Runner CI GCP. To remove once https://gitlab.com/tezos/tezos/-/issues/6584
+           is fixed. *)
+        (if package_name = "mavkit-shell-libs" then
+         "\n    - .tags_template__no_gcp"
+        else "")
         package_name
     else Format.fprintf fmt "@.# Ignoring unreleased package %s.\n" package_name
   in
@@ -4051,7 +4024,7 @@ let generate_profiles ~default_profile =
     let opam : Opam.t =
       {
         maintainer = "contact@tezos.com";
-        authors = ["Tezos devteam"];
+        authors = ["Mavryk devteam"];
         homepage = "https://www.tezos.com/";
         doc = "";
         bug_reports = "https://gitlab.com/tezos/tezos/issues";
@@ -4063,14 +4036,14 @@ let generate_profiles ~default_profile =
         available = Always;
         synopsis =
           Printf.sprintf
-            "Virtual package depending on Octez dependencies (profile: %s)"
+            "Virtual package depending on Mavkit dependencies (profile: %s)"
             profile;
         url = None;
         description =
           Some
             (Printf.sprintf
                "Install this package to install all dependencies needed to \
-                build the subset of Octez denoted by profile %s."
+                build the subset of Mavkit denoted by profile %s."
                profile);
         x_opam_monorepo_opam_provided = [];
       }
@@ -4091,352 +4064,17 @@ let generate_profiles ~default_profile =
   in
   String_map.iter generate_profile merged
 
-(* File generated by the regression test in Tezt_wrapper. *)
-let tezt_runtime_dependency_tags_path =
-  "tezt/lib_wrapper/expected/tezt_wrapper.ml/runtime-dependency-tags.out"
-
-let read_lines_from_file path =
-  let ch = open_in path in
-  Fun.protect ~finally:(fun () -> close_in ch) @@ fun () ->
-  let rec loop acc =
-    match input_line ch with
-    | exception End_of_file -> List.rev acc
-    | line -> loop (line :: acc)
-  in
-  loop []
-
-let read_tezt_runtime_dependencies () =
-  Fun.flip
-    List.filter_map
-    (read_lines_from_file tezt_runtime_dependency_tags_path)
-  @@ fun line ->
-  if line = "" then None
-  else
-    (* Lines are of the form "tag: path" *)
-    match String.index_opt line ':' with
-    | None ->
-        failwith
-          (Printf.sprintf
-             "failed to parse %S: invalid line: %S"
-             tezt_runtime_dependency_tags_path
-             line)
-    | Some colon ->
-        let tag = String.sub line 0 colon in
-        let path =
-          String.sub line (colon + 1) (String.length line - colon - 1)
-          |> String.trim
-        in
-        Some (tag, path)
-
-(* Copied from [tezt/lib_wrapper/tezt_wrapper.ml] and adapted to remove ".." as well. *)
-let canonicalize_path path =
-  let rec simplify_parents acc = function
-    | [] -> List.rev acc
-    | ".." :: tail ->
-        let acc =
-          match acc with
-          | [] -> failwith ("cannot remove '..' from path: " ^ path)
-          | _ :: acc_tail -> acc_tail
-        in
-        simplify_parents acc tail
-    | head :: tail -> simplify_parents (head :: acc) tail
-  in
-  String.split_on_char '/' path
-  |> List.filter (function "" | "." -> false | _ -> true)
-  |> simplify_parents [] |> String.concat "/"
-
-(* Compute and print a Tezt TSL expression representing the set of tests
-   to run after [changed_files] changed.
-   [changed_files] is supposed to only contain files, not directories. *)
-let list_tests_to_run_after_changes ~(tezt_exe : target)
-    ~(tezt_exe_deps : target list) (changed_files : string list) =
-  (* Verbose mode can be activated for debugging this function
-     by setting the MANIFEZT_DEBUG environment variable to "true". *)
-  let debug = Sys.getenv_opt "MANIFEZT_DEBUG" = Some "true" in
-  if debug then List.iter (Printf.eprintf "changed file: %s\n%!") changed_files ;
-  (* [directory_has_directly_changed] tests whether a [dir],
-     that is supposed to be a directory, is considered to have been modified
-     without considering reverse dependencies.
-     I.e. it returns whether [changed_files] contains a file that is directly in [dir]. *)
-  let directory_has_directly_changed =
-    let changed_dirs =
-      String_set.of_list (List.map Filename.dirname changed_files)
-    in
-    fun (dir : string) -> String_set.mem dir changed_dirs
-  in
-  (* Same as [directory_has_directly_changed] but also consider changes
-     in subdirectories, recursively. *)
-  let directory_has_changed_recursively =
-    let changed_dirs =
-      let rec add acc path =
-        let dir = Filename.dirname path in
-        (* Stop when removing a prefix no longer reduces the size of the path.
-           Termination is thus guaranteed since the size strictly reduces towards 0.
-           Note that [Filename.dirname "" = "."] so the size can in fact grow. *)
-        if String.length dir >= String.length path then
-          (* Avoid infinite loops. *)
-          acc
-        else if String_set.mem dir acc then
-          (* No need to add recursively again. *)
-          acc
-        else
-          let acc = String_set.add dir acc in
-          (* Recursively add parents. *)
-          add acc dir
-      in
-      List.fold_left add String_set.empty changed_files
-    in
-    fun (dir : string) -> String_set.mem dir changed_dirs
-  in
-  (* [internal_has_changed] tells whether an internal [target]
-     is considered to have changed, directly or indirectly.
-     A target is considered to have changed:
-     - if [changed_files] contains a file in the directory of the target
-       (only directly: modifying a file in a subdirectory, such as "example/test/",
-       does not cause "example/" to be considered to have changed);
-     - if one of its dependencies is considered to have changed. *)
-  let rec internal_has_changed =
-    (* [id] associates a unique identifier to each target,
-       so that we can quickly know whether we already traversed it. *)
-    let id (target : Target.internal) =
-      target.path ^ ": "
-      ^
-      match target.kind with
-      | Public_library {internal_name; _} -> internal_name
-      | Private_library name -> name
-      | Public_executable ({internal_name; _}, _) -> internal_name
-      | Private_executable (name, _) -> name
-      | Test_executable {names = name, _; _} -> name
-    in
-    (* [cache] stores whether a target (identified by its [id]) was already traversed,
-       and if so, whether it is considered to have changed. This allows multiple calls
-       of [internal_has_changed] on the same [target] to not have to re-traverse the
-       whole dependency subtree. *)
-    let cache : bool String_map.t ref = ref String_map.empty in
-    fun (target : Target.internal) ->
-      let id = id target in
-      match String_map.find_opt id !cache with
-      | Some result -> result
-      | None ->
-          let result =
-            directory_has_directly_changed target.path
-            ||
-            let internal_deps =
-              List.filter_map
-                Target.get_internal
-                (Target.all_internal_deps target)
-            in
-            List.exists internal_has_changed internal_deps
-          in
-          cache := String_map.add id result !cache ;
-          result
-  in
-  (* Variant that works with non-internal targets too, by assuming they never change. *)
-  let target_has_changed (target : Target.t) =
-    match Target.get_internal target with
-    | Some internal -> internal_has_changed internal
-    | None -> false
-  in
-  (* Variant for optional targets. *)
-  let target_option_has_changed (target : target) =
-    match target with None -> false | Some target -> target_has_changed target
-  in
-  (* Variant for preprocessors. *)
-  let preprocessor_has_changed (preprocessor : Target.preprocessor) =
-    match preprocessor with
-    | PPS {targets; args = _} | Staged_PPS targets ->
-        List.exists target_has_changed targets
-  in
-  (* If a dependency of [tezt/tests/main.exe] is modified, all tests should be run.
-     But those dependencies include the libraries that define tests
-     (those that end in [_tezt_lib]). We assume that those only contain
-     test definitions, i.e. if they are modified, only their tests need to be run.
-     This leaves only [tezt_exe_deps] as the list of dependencies
-     that should trigger all tests. *)
-  let tezt_exe_dep_changed =
-    List.exists target_option_has_changed tezt_exe_deps
-  in
-  (* We will need the list of (tag, path) from Tezt [~uses] to deduce tags. *)
-  let runtime_dependencies = read_tezt_runtime_dependencies () in
-  (* [add_tag_for_path] will be called on each changed path.
-     It checks if there is an associated tag. *)
-  let tags = ref String_set.empty in
-  let add_tag_for_path path =
-    if debug then Printf.eprintf "- path has changed: %s\n%!" path ;
-    (* Search for a tag [tag] with path [tag_path] such that [tag_path] is equal to [path]
-       or to a parent directory of [path]. For instance, if tag ["michelson"]
-       corresponds to path ["michelson_test_scripts"] and if ["path"] is
-       ["michelson_test_scripts/opcodes/xor.tz"], tag ["michelson"] must be added. *)
-    let rec find_tag path =
-      ( Fun.flip List.iter runtime_dependencies @@ fun (tag, tag_path) ->
-        (* We are comparing paths that are canonical:
-           - Tezt_wrapper writes canonical paths in the list of runtime dependencies;
-           - the code below calls [add_tag_for_path] on canonical path. *)
-        if tag_path = path then tags := String_set.add tag !tags ) ;
-      let parent = Filename.dirname path in
-      (* See remark on comparing path lengths in [directory_has_changed_recursively]. *)
-      if String.length parent < String.length path then find_tag parent
-    in
-    find_tag path
-  in
-  (* If a file that changed directly matches a tag, add this tag.
-     This allows [~uses] to refer to static files or directories. *)
-  List.iter add_tag_for_path changed_files ;
-  (* Iterate over all internal targets to find the ones that changed
-     and see if they have an associated tag. *)
-  ( Fun.flip List.iter !Target.registered @@ fun (target : Target.internal) ->
-    if internal_has_changed target then (
-      if debug then Printf.eprintf "target changed: %s\n%!" target.path ;
-      match target.kind with
-      | Public_library _ | Private_library _ -> ()
-      | Public_executable names ->
-          Fun.flip List.iter (Ne_list.to_list names)
-          @@ fun {internal_name; public_name} ->
-          (* Assume the executable may be copied to the project root.
-             If [~release_status] is [Released] or [Experimental],
-             we know it will be copied by the Makefile; but dev executables
-             (as defined in the [Makefile] variable [DEV_EXECUTABLES]) are also copied,
-             and [~release_status] doesn't tell which executables are dev executables. *)
-          add_tag_for_path public_name ;
-          add_tag_for_path ("_build/install/default/bin" // public_name) ;
-          add_tag_for_path
-            ("_build/default" // target.path // (internal_name ^ ".exe"))
-      | Private_executable names | Test_executable {names; _} ->
-          Fun.flip List.iter (Ne_list.to_list names) @@ fun internal_name ->
-          add_tag_for_path
-            ("_build/default" // target.path // (internal_name ^ ".exe"))) ) ;
-  (* [file_has_changed] just checks if a [path] is in [changed_files].
-     It does not assume that [path] is canonical, so it has to make it canonical. *)
-  let file_has_changed path = List.mem (canonicalize_path path) changed_files in
-  (* [glob_has_changed] tests if, in a given directory [dir],
-     a [glob] matches files in [changed_files].
-     For now, this is an overapproximation because we do not want to implement
-     the whole glob syntax. Special characters are only special after the last "/",
-     so we can ignore what is after "/" and just check if something changed in
-     the directory. *)
-  let glob_has_changed ~rec_ dir glob =
-    let dir = canonicalize_path (dir // Filename.dirname glob) in
-    if rec_ then directory_has_changed_recursively dir
-    else directory_has_directly_changed dir
-  in
-  (* Iterate over all Tezt targets to find test files
-     that are directly or indirectly changed.
-     This does not find test files from tezt/tests,
-     because those do not result in a [tezt_target];
-     this is the special case of [make_tezt_exe]. *)
-  let test_files = ref String_set.empty in
-  ( Fun.flip String_map.iter !tezt_targets_by_path
-  @@ fun tezt_target_dir
-             {
-               opam = _;
-               lib_deps;
-               exe_deps;
-               js_deps;
-               dep_globs;
-               dep_globs_rec;
-               dep_files;
-               modules;
-               js_compatible = _;
-               modes = _;
-               synopsis = _;
-               opam_with_test = _;
-               dune_with_test = _;
-               with_macos_security_framework = _;
-               flags = _;
-               dune = _;
-               tezt_local_test_lib;
-               preprocess;
-               preprocessor_deps;
-             } ->
-    if
-      List.exists target_option_has_changed lib_deps
-      || List.exists target_option_has_changed exe_deps
-      || List.exists target_option_has_changed js_deps
-      || target_option_has_changed tezt_local_test_lib
-      || List.exists preprocessor_has_changed preprocess
-      || List.exists
-           file_has_changed
-           (List.map (fun file -> tezt_target_dir // file) dep_files)
-      || List.exists
-           file_has_changed
-           (List.map
-              (fun (File file : Target.preprocessor_dep) ->
-                tezt_target_dir // file)
-              preprocessor_deps)
-      || List.exists (glob_has_changed ~rec_:false tezt_target_dir) dep_globs
-      || List.exists (glob_has_changed ~rec_:true tezt_target_dir) dep_globs_rec
-    then (
-      let path =
-        match tezt_local_test_lib with
-        | None ->
-            (* Function [tezt] always puts [Some] in [tezt_local_test_lib]. *)
-            assert false
-        | Some lib -> (
-            match Target.get_internal lib with
-            | None ->
-                (* Function [tezt] only puts internal targets in [tezt_local_test_lib]. *)
-                assert false
-            | Some internal -> internal.path)
-      in
-      if debug then Printf.eprintf "tezt target changed: %s\n%!" path ;
-      Fun.flip List.iter modules @@ fun module_name ->
-      let test_file = path // (module_name ^ ".ml") in
-      test_files := String_set.add test_file !test_files) ) ;
-  (* If a test in [tezt/tests] changes, it needs to be run.
-     The above analysis does not detect this because tezt/tests/main.exe is not a
-     [tezt_target], it has the special status of "the executable that gathers all tests".
-     Note that if a file in [tezt/tests] changes, it could be a helper for other tests,
-     so if one wants a safe overapproximation one needs to run all tests.
-     But it would mean that changing any file in [tezt/tests] would cause all tests to run,
-     which is unnecessary in most cases. The current implementation is thus a heuristic
-     where we assume that most files in [tezt/tests] are not helpers but files that register
-     tests. In other words, helpers should be put in [tezt/lib_tezos]. *)
-  (match tezt_exe with
-  | None -> failwith "make_tezt_exe returned no target"
-  | Some target -> (
-      match Target.get_internal target with
-      | None -> failwith "make_tezt_exe did not return an internal target"
-      | Some {path; _} ->
-          (* Filter [changed_files] to keep those that are in [path].
-             Add them to the list of files for which to run tests. *)
-          Fun.flip List.iter changed_files @@ fun file ->
-          if Filename.dirname file = path then
-            test_files := String_set.add file !test_files)) ;
-  let tsl =
-    if tezt_exe_dep_changed then "true"
-    else if String_set.is_empty !tags && String_set.is_empty !test_files then
-      "false"
-    else
-      let tags = String_set.elements !tags in
-      let files =
-        String_set.elements !test_files
-        |> List.map @@ fun file ->
-           if String.contains file '"' then
-             failwith ("not supported: path with \" character: " ^ file) ;
-           Printf.sprintf "file = \"%s\"" file
-      in
-      String.concat " || " (tags @ files)
-  in
-  print_string tsl ;
-  flush stdout
-
 let precheck () =
   check_circular_opam_deps () ;
   check_js_of_ocaml () ;
   check_opam_with_test_consistency () ;
   if !has_error then exit 1
 
-let generate ~make_tezt_exe ~tezt_exe_deps ~default_profile ~add_to_meta_package
-    =
+let generate ~make_tezt_exe ~default_profile ~add_to_meta_package =
   Printexc.record_backtrace true ;
   try
-    let tezt_exe = register_tezt_targets ~make_tezt_exe in
+    register_tezt_targets ~make_tezt_exe ;
     precheck () ;
-    (match manifezt with
-    | None -> ()
-    | Some changes ->
-        list_tests_to_run_after_changes ~tezt_exe ~tezt_exe_deps changes ;
-        exit 0) ;
     Target.can_register := false ;
     generate_dune_files () ;
     generate_opam_files () ;

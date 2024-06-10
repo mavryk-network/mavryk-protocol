@@ -49,12 +49,9 @@ let legal_versions =
     ("10.93-rc1", {Version.major = 10; minor = 93; additional_info = RC 1});
     ( "10.93-rc1+dev",
       {Version.major = 10; minor = 93; additional_info = RC_dev 1} );
-    ("10.93-beta1", {Version.major = 10; minor = 93; additional_info = Beta 1});
-    ( "10.93-beta1+dev",
-      {Version.major = 10; minor = 93; additional_info = Beta_dev 1} );
   ]
 
-let parse_version s = Tezos_version_parser.version_tag (Lexing.from_string s)
+let parse_version s = Mavryk_version_parser.version_tag (Lexing.from_string s)
 
 let eq v1 v2 =
   let open Version in
@@ -62,8 +59,6 @@ let eq v1 v2 =
     match (a1, a2) with
     | Dev, Dev -> true
     | Dev, _ -> false
-    | Beta n1, Beta n2 | Beta_dev n1, Beta_dev n2 -> n1 = n2
-    | Beta _, _ | Beta_dev _, _ -> false
     | RC n1, RC n2 | RC_dev n1, RC_dev n2 -> n1 = n2
     | RC _, _ | RC_dev _, _ -> false
     | Release, Release -> true
@@ -77,8 +72,8 @@ let eq v1 v2 =
 
 let prn = function
   | None ->
-      Format.asprintf "%a" Tezos_version_parser.pp Tezos_version_parser.default
-  | Some v -> Format.asprintf "%a" Tezos_version_parser.pp v
+      Format.asprintf "%a" Mavryk_version_parser.pp Mavryk_version_parser.default
+  | Some v -> Format.asprintf "%a" Mavryk_version_parser.pp v
 
 let test_parser _ =
   ListLabels.iter legal_versions ~f:(fun (x, e) ->

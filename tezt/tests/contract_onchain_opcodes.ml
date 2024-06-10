@@ -30,7 +30,7 @@
    Subject:      Tests for individual opcodes that require origination.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let quote s = sf "%S" s
 
@@ -124,7 +124,7 @@ let test_transfer_amount protocol client =
     originate client protocol ["opcodes"; "transfer_amount"] ~storage:"0"
   in
   let amount = Tez.of_int 500 in
-  let amount_s = Tez.to_mutez amount |> string_of_int in
+  let amount_s = Tez.to_mumav amount |> string_of_int in
   let* () = transfer client ~contract ~amount in
   let* () = check_storage ~__LOC__ client ~contract amount_s in
   unit
@@ -139,11 +139,11 @@ let test_now protocol client =
   in
   let* () = transfer client ~contract in
   let parse_protocol_time timestamp =
-    match Tezos_base.Time.Protocol.of_notation timestamp with
+    match Mavryk_base.Time.Protocol.of_notation timestamp with
     | Some t -> t
     | None ->
         Test.fail
-          "Could not parse %S with [Tezos_base.Time.Protocol.of_notation]"
+          "Could not parse %S with [Mavryk_base.Time.Protocol.of_notation]"
           timestamp
   in
   let* expected_now =
@@ -160,7 +160,7 @@ let test_now protocol client =
       return (parse_protocol_time shell_timestamp_s)
     in
     return
-      (Tezos_base.Time.Protocol.add
+      (Mavryk_base.Time.Protocol.add
          shell_timestamp
          (Int64.of_int minimal_block_delay))
   in
@@ -170,7 +170,7 @@ let test_now protocol client =
   in
   Check.(
     is_true
-      (Tezos_base.Time.Protocol.equal now_in_storage expected_now)
+      (Mavryk_base.Time.Protocol.equal now_in_storage expected_now)
       ~__LOC__
       ~error_msg:"Expected %R, got %L") ;
   unit
@@ -192,7 +192,7 @@ let test_transfer_tokens protocol client =
       ["opcodes"; "noop"]
       ~alias:"test_transfer_contract2"
   in
-  (* [transfer_tokens] transfers 100 tez to the contract in parameter *)
+  (* [transfer_tokens] transfers 100 mav to the contract in parameter *)
   let* contract =
     originate
       ~amount:(Tez.of_int 1000)
@@ -225,7 +225,7 @@ let test_self protocol client =
       client
       protocol
       ["opcodes"; "self"]
-      ~storage:{|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|}
+      ~storage:{|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|}
   in
   let* () = transfer client ~contract in
   let* () = check_storage ~__LOC__ client ~contract (quote contract) in
@@ -835,7 +835,6 @@ module Tickets = struct
           ~__FILE__
           ~title:("Contract onchain opcodes: " ^ title)
           ~tags:["contract"; "onchain"; "opcodes"]
-          ~uses_node:false
           (fun protocol ->
             let* client = Client.init_mockup ~protocol () in
             body protocol client)
@@ -860,7 +859,6 @@ let register ~protocols =
         ~__FILE__
         ~title:("Contract onchain opcodes: " ^ title)
         ~tags:["contract"; "onchain"; "opcodes"]
-        ~uses_node:false
         (fun protocol ->
           let* client = Client.init_mockup ~protocol () in
           body protocol client)

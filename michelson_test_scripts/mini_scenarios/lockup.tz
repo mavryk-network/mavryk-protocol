@@ -1,5 +1,5 @@
 parameter unit;
-storage (pair timestamp (pair mutez address));
+storage (pair timestamp (pair mumav address));
 code { CDR;                      # Ignore the parameter
        DUP;                      # Duplicate the storage
        CAR;                      # Get the timestamp

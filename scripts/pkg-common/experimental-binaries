@@ -1,6 +1,8 @@
-octez-dac-node
-octez-dac-client
-octez-dal-node
-octez-smart-rollup-node-alpha
-octez-accuser-alpha
-octez-baker-alpha
+mavkit-evm-node
+mavkit-dac-node
+mavkit-dac-client
+mavkit-dal-node
+mavkit-smart-rollup-node-alpha
+mavkit-smart-rollup-client-alpha
+mavkit-accuser-alpha
+mavkit-baker-alpha

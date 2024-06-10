@@ -25,13 +25,11 @@
 (*****************************************************************************)
 
 (* Declaration order must respect the version order. *)
-type t = Nairobi | Oxford | Alpha
-
-let all = [Nairobi; Oxford; Alpha]
+type t = Atlas | Alpha
 
 let encoding =
   Data_encoding.string_enum
-    [("nairobi", Nairobi); ("oxford", Oxford); ("alpha", Alpha)]
+    [("atlas", Atlas); ("alpha", Alpha)]
 
 type constants =
   | Constants_sandbox
@@ -47,23 +45,20 @@ let constants_to_string = function
 
 let name = function
   | Alpha -> "Alpha"
-  | Oxford -> "Oxford"
-  | Nairobi -> "Nairobi"
+  | Atlas -> "Atlas"
 
-let number = function Nairobi -> 017 | Oxford -> 018 | Alpha -> 019
+let number = function Atlas -> 001 | Alpha -> 019
 
 let directory = function
   | Alpha -> "proto_alpha"
-  | Oxford -> "proto_018_Proxford"
-  | Nairobi -> "proto_017_PtNairob"
+  | Atlas -> "proto_001_PtAtLas"
 
 (* Test tags must be lowercase. *)
 let tag protocol = String.lowercase_ascii (name protocol)
 
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
-  | Oxford -> "ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH"
-  | Nairobi -> "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
+  | Atlas -> "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -81,21 +76,15 @@ let parameter_file ?(constants = default_constants) protocol =
 
 let daemon_name = function Alpha -> "alpha" | p -> String.sub (hash p) 0 8
 
-let protocol_dependent_uses ~tag ~path =
-  let make protocol =
-    let protocol = daemon_name protocol in
-    Uses.make
-      ~tag:(tag ^ String.lowercase_ascii protocol)
-      ~path:(path ^ protocol)
-  in
-  (* Make sure [Uses.lookup] knows about all executables even before tests
-     actually registers themselves. *)
-  let _ = List.map make all in
-  make
+let protocol_dependent_uses ~tag ~path protocol =
+  let protocol = daemon_name protocol in
+  Uses.make ~tag:(tag ^ String.lowercase_ascii protocol) ~path:(path ^ protocol)
 
-let accuser = protocol_dependent_uses ~tag:"accuser_" ~path:"./octez-accuser-"
+let accuser = protocol_dependent_uses ~tag:"accuser_" ~path:"./mavkit-accuser-"
 
-let baker = protocol_dependent_uses ~tag:"baker_" ~path:"./octez-baker-"
+let baker proto = "./mavkit-baker-" ^ daemon_name proto
+
+let sc_rollup_client proto = "./mavkit-smart-rollup-client-" ^ daemon_name proto
 
 let encoding_prefix = function
   | Alpha -> "alpha"
@@ -273,11 +262,12 @@ let write_parameter_file :
   Lwt.return output_file
 
 let previous_protocol = function
-  | Alpha -> Some Oxford
-  | Oxford -> Some Nairobi
-  | Nairobi -> None
+  | Alpha -> None
+  | Atlas -> None
 
 let has_predecessor p = previous_protocol p <> None
+
+let all = [Atlas; Alpha]
 
 type supported_protocols =
   | Any_protocol
@@ -332,22 +322,13 @@ let add_to_test_parameters protocol title tags uses =
   let uses = match uses with None -> [] | Some uses -> uses protocol in
   (name protocol ^ ": " ^ title, tag protocol :: tags, uses)
 
-let register_test ~__FILE__ ~title ~tags ?uses ?uses_node ?uses_client
-    ?uses_admin_client ?supports body protocols =
+let register_test ~__FILE__ ~title ~tags ?uses ?supports body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
-  Test.register
-    ~__FILE__
-    ~title
-    ~tags
-    ~uses
-    ?uses_node
-    ?uses_client
-    ?uses_admin_client
-    (fun () -> body protocol)
+  Test.register ~__FILE__ ~title ~tags ~uses (fun () -> body protocol)
 
-let register_long_test ~__FILE__ ~title ~tags ?uses ?uses_node ?uses_client
-    ?uses_admin_client ?supports ?team ~executors ~timeout body protocols =
+let register_long_test ~__FILE__ ~title ~tags ?uses ?supports ?team ~executors
+    ~timeout body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
   Long_test.register
@@ -355,27 +336,16 @@ let register_long_test ~__FILE__ ~title ~tags ?uses ?uses_node ?uses_client
     ~title
     ~tags
     ~uses
-    ?uses_node
-    ?uses_client
-    ?uses_admin_client
     ?team
     ~executors
     ~timeout
     (fun () -> body protocol)
 
-let register_regression_test ~__FILE__ ~title ~tags ?uses ?uses_node
-    ?uses_client ?uses_admin_client ?supports body protocols =
+let register_regression_test ~__FILE__ ~title ~tags ?uses ?supports body
+    protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
-  Regression.register
-    ~__FILE__
-    ~title
-    ~tags
-    ~uses
-    ?uses_node
-    ?uses_client
-    ?uses_admin_client
-    (fun () -> body protocol)
+  Regression.register ~__FILE__ ~title ~tags ~uses (fun () -> body protocol)
 
 let with_predecessor f protocol =
   match previous_protocol protocol with

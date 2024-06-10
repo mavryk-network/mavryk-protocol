@@ -40,8 +40,8 @@ module Signature_store :
   Store_sigs.Nested_map
     with type 'a store = 'a Irmin_store.t
      and type primary_key = Dac_plugin.hash
-     and type secondary_key = Tezos_crypto.Aggregate_signature.public_key_hash
-     and type value = Tezos_crypto.Aggregate_signature.signature
+     and type secondary_key = Mavryk_crypto.Aggregate_signature.public_key_hash
+     and type value = Mavryk_crypto.Aggregate_signature.signature
 
 (** Key-value store for Dac certificates where keys are hexified [Dac_hash.t]
     and values are [Certificate_repr.t]. *)

@@ -8,19 +8,19 @@ The one used in Tezos is
 `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz` (other DLT project
 uses different encoding, like Ripple).
 
-In reality, when you have the address `tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E`, it is the Base58CheckEncoding of the bytes
+In reality, when you have the address `mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE`, it is the Base58CheckEncoding of the bytes
 `b"r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K"`.
 
 ```
 # Run dune utop in src/lib_crypto
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
 # From bytes
 let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes (Bytes.of_string "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K");;
 Secp256k1.Public_key_hash.to_b58check pkh;;
-# - : string = "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E"
+# - : string = "mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE"
 # From the encoded address
-let (Ok pkh) = Secp256k1.Public_key_hash.of_b58check "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";;
+let (Ok pkh) = Secp256k1.Public_key_hash.of_b58check "mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE";;
 # - : bytes = Bytes.of_string "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K"
 ```
 
@@ -31,18 +31,18 @@ derived from a secret key!!**. For instance, let's change the first byte
 (here `r`) into a `a`.
 
 ```
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
 let (Ok pkh) = Secp256k1.Public_key_hash.of_bytes
 (*                 "r\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K" *)
 (*                  |                                                            *)
   (Bytes.of_string "a\185\224.sx\154\215\182\216\226\172\230\252\156p1\138\231K");;
 Secp256k1.Public_key_hash.to_b58check pkh;;
-(* - : string = "tz2HDxspCVakXgHwNfNqngKZxChJsSpJ7wvg" *)
+(* - : string = "mv2MGkta3D2Qjzyu1FFPxySQHxorVv7aLzN8" *)
 ```
 
 Also notice that
-- the Base58Check encoding does still start with `tz2`.
+- the Base58Check encoding does still start with `mv2`.
 - the resulting string is completely different, even if we change only one byte.
 - the result is a 36-long string.
 
@@ -52,22 +52,22 @@ gives an invalid address.
 
 ```
 # Let's change the 4th characters (J) in t.
-open Tezos_crypto;;
-open Tezos_error_monad.Error_monad;;
-#                                                        tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E
+open Mavryk_crypto;;
+open Mavryk_error_monad.Error_monad;;
+#                                                        mv2UZs8D3gej5Ncq96X8ab5sSSHDdZkz5kQE
 #                                                           |
-let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "tz2tmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";;
+let (Error pkh) = Secp256k1.Public_key_hash.of_b58check "mv2at3vMScpdZ7gK7NbgAQCQJp6njxdkVNwg";;
 ```
 
 In addition to that, the result of the Base58CheckEncoding algorithm must give a
-36 characters long Base58 encoded string starting with `tz2` (called the version bytes
+36 characters long Base58 encoded string starting with `mv2` (called the version bytes
 sometimes). The initial bytes are called the payload.
 
 `b58_prefix.py` computes the additional bytes to add to the class of payloads of a certain
 length to get a base58 string starting with a certain prefix.
 It is important to understand that there may exist multiple solutions!
 
-Executing the script gives for `tz2` the bytes `\006\161\161`.
+Executing the script gives for `mv2` the bytes `\006\161\161`.
 Let's see how the Base58CheckEncoding algorithm works for an secp256k1 address (20 bytes):
 1. Prefix the version byte (`\006\161\161`) with the payload (20 bytes)
 ```
@@ -98,8 +98,8 @@ poetry install
 ```
 
 ```
-# A tz1 address is generated from a fixed size hash of 20 characters.
-poetry run python b58_prefix.py --prefix tz1 --length 20
+# A mv1 address is generated from a fixed size hash of 20 characters.
+poetry run python b58_prefix.py --prefix mv1 --length 20
 # Output: Base58 size: 36. Version bytes: [6, 161, 159]
 # A block is generated from a fixed size hash of 32 characters.
 poetry run python b58_prefix.py --prefix B --length 32

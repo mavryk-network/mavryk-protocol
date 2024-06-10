@@ -29,18 +29,16 @@
     Invocation: dune exec src/proto_alpha/lib_protocol/test/integration/consensus/main.exe \
                   -- --file test_attestation.ml
     Subject:    Attesting a block adds an extra layer of confidence
-                to the Tezos' PoS algorithm. The block attesting
+                to the Mavryk' PoS algorithm. The block attesting
                 operation must be included in the following block.
 *)
 
 open Protocol
 open Alpha_context
 
-let init_genesis ?policy ?dal_enable () =
+let init_genesis ?policy () =
   let open Lwt_result_syntax in
-  let* genesis, _contracts =
-    Context.init_n ?dal_enable ~consensus_threshold:0 5 ()
-  in
+  let* genesis, _contracts = Context.init_n ~consensus_threshold:0 5 () in
   let* b = Block.bake ?policy genesis in
   return (genesis, b)
 
@@ -588,7 +586,7 @@ let test_no_conflict_various_levels_and_rounds () =
     let (Operation_data protocol_data) = op.protocol_data in
     let content =
       match protocol_data.contents with
-      | Single (Attestation {consensus_content = content; _}) -> content
+      | Single (Attestation content) -> content
       | _ -> assert false
     in
     Format.eprintf
@@ -648,35 +646,6 @@ let test_attestation_threshold ~sufficient_threshold () =
         | Validate_errors.Block.Not_enough_attestations _ -> true
         | _ -> false)
 
-let test_two_dal_attestations_with_same_attester () =
-  let open Lwt_result_syntax in
-  let* _genesis, attested_block = init_genesis ~dal_enable:true () in
-  let* op1 = Op.raw_dal_attestation attested_block in
-  let op1 = Stdlib.Option.get op1 in
-  let attestation =
-    Dal.Attestation.commit Dal.Attestation.empty Dal.Slot_index.zero
-  in
-  let* op2 = Op.raw_dal_attestation ~attestation attested_block in
-  let op2 = Stdlib.Option.get op2 in
-  let*! res =
-    Block.bake
-      ~baking_mode:Application
-      ~operations:[Operation.pack op1; Operation.pack op2]
-      attested_block
-  in
-  let error = function
-    | Validate_errors.(
-        Consensus.Conflicting_consensus_operation
-          {
-            kind = Dal_attestation;
-            conflict = Operation_conflict {existing; new_operation};
-          }) ->
-        Operation_hash.equal existing (Operation.hash op1)
-        && Operation_hash.equal new_operation (Operation.hash op2)
-    | _ -> false
-  in
-  Assert.proto_error ~loc:__LOC__ res error
-
 let tests =
   [
     (* Positive tests *)
@@ -728,10 +697,6 @@ let tests =
       "insufficient attestation threshold"
       `Quick
       (test_attestation_threshold ~sufficient_threshold:false);
-    Tztest.tztest
-      "two DAL attestations with same attester in a block"
-      `Quick
-      test_two_dal_attestations_with_same_attester;
   ]
 
 let () =

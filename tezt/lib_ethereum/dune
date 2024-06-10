@@ -1,0 +1,17 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tezt_ethereum)
+ (package tezt-ethereum)
+ (libraries
+  tezt
+  tezt-tezos.tezt-performance-regression
+  mavkit-libs.crypto
+  tezt-tezos)
+ (flags
+  (:standard)
+  -open Tezt
+  -open Tezt.Base
+  -open Tezt_mavryk_tezt_performance_regression
+  -open Tezt_tezos))

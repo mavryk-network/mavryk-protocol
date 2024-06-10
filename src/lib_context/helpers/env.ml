@@ -47,7 +47,7 @@ let index_log_size = 2_500_000
 (* Caps the number of entries stored in the Irmin's LRU cache. As a
    trade-off, increasing this value will increase the memory
    consumption.*)
-let lru_size = 15_000
+let lru_size = 5_000
 
 (* This limit ensures that no trees with more than [auto_flush]
    mutations can exist in memory, bounding the memory usage of a
@@ -72,7 +72,7 @@ let max_verbosity a b =
   | _ -> `Default
 
 let v =
-  match Unix.getenv "TEZOS_CONTEXT" with
+  match Unix.getenv "MAVRYK_CONTEXT" with
   | exception Not_found -> default
   | v ->
       List.fold_left
@@ -126,13 +126,13 @@ let v =
               | unknown :: _ ->
                   Fmt.epr
                     "[WARNING] Unknow option %s detected in the environment \
-                     variable TEZOS_CONTEXT."
+                     variable MAVRYK_CONTEXT."
                     unknown ;
                   acc
               | [] ->
                   Fmt.epr
                     "[WARNING] Empty string detected in the environment \
-                     variable TEZOS_CONTEXT." ;
+                     variable MAVRYK_CONTEXT." ;
                   acc))
         default
         (String.split ',' v)

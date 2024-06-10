@@ -31,7 +31,7 @@ type t = {
 and commit_info = {commit_hash : string; commit_date : string}
 
 (** the namespace used for the node metrics *)
-let namespace = "octez"
+let namespace = "mavkit"
 
 let commit_info_encoding =
   let open Data_encoding in

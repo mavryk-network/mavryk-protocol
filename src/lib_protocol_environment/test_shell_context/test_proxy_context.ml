@@ -34,20 +34,20 @@
 module Assert = Assert
 
 (* Generates data inside the context of the block *)
-let create_block (ctxt : Tezos_context_memory.Context.t) :
-    Tezos_context_memory.Context.t Lwt.t =
+let create_block (ctxt : Mavryk_context_memory.Context.t) :
+    Mavryk_context_memory.Context.t Lwt.t =
   let open Lwt_syntax in
   let* ctxt =
-    Tezos_context_memory.Context.add
+    Mavryk_context_memory.Context.add
       ctxt
       ["a"; "b"]
       (Bytes.of_string "November")
   in
   let* ctxt =
-    Tezos_context_memory.Context.add ctxt ["a"; "c"] (Bytes.of_string "June")
+    Mavryk_context_memory.Context.add ctxt ["a"; "c"] (Bytes.of_string "June")
   in
   let* ctxt =
-    Tezos_context_memory.Context.add ctxt ["version"] (Bytes.of_string "0.0")
+    Mavryk_context_memory.Context.add ctxt ["version"] (Bytes.of_string "0.0")
   in
   Lwt.return ctxt
 
@@ -56,11 +56,11 @@ let key_to_string : String.t list -> String.t = String.concat ";"
 (* Initialize the Context before starting the tests *)
 let init_contexts (f : Context.t -> unit Lwt.t) _ () : 'a Lwt.t =
   let open Lwt_syntax in
-  let ctxt = Tezos_context_memory.Context.make_empty_context () in
+  let ctxt = Mavryk_context_memory.Context.make_empty_context () in
   let* ctxt = create_block ctxt in
   let proxy : Context.t =
-    Tezos_protocol_environment.Proxy_context.empty
-      (Some (Tezos_shell_context.Proxy_delegate_maker.of_memory_context ctxt))
+    Mavryk_protocol_environment.Proxy_context.empty
+      (Some (Mavryk_shell_context.Proxy_delegate_maker.of_memory_context ctxt))
   in
   f proxy
 
@@ -212,6 +212,6 @@ let tests : unit Alcotest_lwt.test_case list =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-shell-proxy-context"
+    "mavryk-shell-proxy-context"
     [("proxy_context", tests)]
   |> Lwt_main.run

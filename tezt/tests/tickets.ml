@@ -31,9 +31,9 @@
    Subject:      Regression tests for tickets
 *)
 
-open Tezos_protocol_alpha.Protocol
+open Mavryk_protocol_alpha.Protocol
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let setup_node protocol ~direct_ticket_spending_enable =
   let base = Either.right (protocol, None) in
@@ -68,7 +68,6 @@ let test_create_and_remove_tickets =
     ~__FILE__
     ~title:"Create and remove tickets"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract_id =
@@ -142,7 +141,6 @@ let test_send_tickets_in_big_map =
     ~__FILE__
     ~title:"Send tickets in bigmap"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _receive_contract_alias, receive_contract_hash =
@@ -204,7 +202,6 @@ let test_send_tickets_to_implicit_account =
     ~__FILE__
     ~title:"Send tickets from contracts to implicit accounts"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -489,7 +486,6 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
     ~title:
       "Send tickets from contracts to implicit accounts with some Tez along"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -526,7 +522,7 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
       client
   in
   let* tez_after = Client.get_balance_for ~account:ticketer client in
-  let balance_drop = Tez.(to_mutez @@ (tez_before - tez_after)) in
+  let balance_drop = Tez.(to_mumav @@ (tez_before - tez_after)) in
   Check.((balance_drop = 1) int ~__LOC__) ~error_msg:"expected %R, got %L" ;
   unit
 
@@ -538,7 +534,6 @@ let test_send_tickets_to_implicit_with_wrong_type =
       "Send tickets from contracts to implicit accounts with the wrong type \
        must fail"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -592,7 +587,6 @@ let test_ticket_transfer_commutative =
     ~__FILE__
     ~title:"Send tickets between originated contracts and implicit accounts"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -756,7 +750,6 @@ let test_ticket_transfer_from_storage_to_implicit =
     ~__FILE__
     ~title:"Sending ticket from contract storage to implicit accounts"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -878,7 +871,6 @@ let test_zero_ticket_rejection =
     ~__FILE__
     ~title:"Sending zero ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -959,7 +951,6 @@ let test_ticket_overdraft_rejection =
     ~__FILE__
     ~title:"Overdrafting ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1032,7 +1023,6 @@ let test_ticket_of_wrong_type_rejection =
     ~title:
       "Sending ticket of wrong type from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1080,7 +1070,6 @@ let test_originated_implicit_can_be_equipotent =
       "Sending tickets to either implicit accounts or originated contracts \
        accepting tickets with default entrypoint should equally work"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 16)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1134,7 +1123,7 @@ let setup_sc_enabled_node protocol ~parameters_ty =
   let nodes_args =
     Node.[Synchronisation_threshold 0; History_mode Archive; No_bootstrap_peers]
   in
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     Client.init_with_protocol ~parameter_file `Client ~protocol ~nodes_args ()
   in
   let* sc_rollup =
@@ -1146,10 +1135,10 @@ let setup_sc_enabled_node protocol ~parameters_ty =
         ~kind:"wasm_2_0_0"
         ~parameters_ty
         ~boot_sector:Constant.wasm_echo_kernel_boot_sector
-        tezos_client)
+        mavryk_client)
   in
-  let* () = Client.bake_for_and_wait tezos_client in
-  return (tezos_node, tezos_client, sc_rollup)
+  let* () = Client.bake_for_and_wait mavryk_client in
+  return (mavryk_node, mavryk_client, sc_rollup)
 
 let assert_sc_rollup_ticket_balance client ~sc_rollup ~ticketer ~content_type
     ~content ~expected =

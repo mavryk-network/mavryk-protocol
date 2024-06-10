@@ -83,19 +83,10 @@ module Simple = struct
       ~level:Warning
       ()
 
-  let connection_timeout =
-    declare_1
-      ~name:"lib_crawler_connection_timeout"
-      ~msg:
-        "Connection to the node has timeout after {timeout}s waiting for a new \
-         head"
-      ~level:Warning
-      ("timeout", Data_encoding.float)
-
   let cannot_connect =
     declare_2
       ~name:"lib_crawler_cannot_connect"
-      ~msg:"cannot connect to Tezos node ({count}) {error}"
+      ~msg:"cannot connect to Mavryk node ({count}) {error}"
       ~level:Warning
       ("count", Data_encoding.int31)
       ("error", trace_encoding)
@@ -122,9 +113,6 @@ let starting ~name = Simple.(emit starting) name
 let stopping ~name = Simple.(emit stopping) name
 
 let connection_lost ~name = Simple.(emit connection_lost) name
-
-let connection_timeout ~name ~timeout =
-  Simple.(emit connection_timeout) (name, timeout)
 
 let cannot_connect ~name ~count error =
   Simple.(emit cannot_connect) (name, count, error)

@@ -33,7 +33,7 @@
 
 (* Using the lighter hook that only scrubs the clients [--base-dir] *)
 let hooks =
-  Tezos_regression.hooks_custom
+  Mavryk_regression.hooks_custom
     ~scrubbed_global_options:["--base-dir"; "-d"]
     ~replace_variables:Fun.id
     ()
@@ -186,7 +186,6 @@ let register_add_approve_transfer_remove =
     ~__FILE__
     ~title:"Test add/approve/transfer/remove liquidity"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* () = setup_mint_and_approve ~__LOC__ client in
@@ -259,7 +258,6 @@ let register_trades =
     ~__FILE__
     ~title:"Test trades"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* () = setup_mint_and_approve ~__LOC__ client in

@@ -1,50 +1,14 @@
 include:
-  # Stage: sanity
-  - .gitlab/ci/jobs/sanity/sanity_ci.yml
-  - .gitlab/ci/jobs/sanity/docker:hadolint-schedule_extended_test.yml
-
   # Stage: build
-  - .gitlab/ci/jobs/build/oc.build_arm64-exp-dev-extra.yml
-  - .gitlab/ci/jobs/build/oc.build_arm64-released.yml
-  # Check that binary packages build
-  - .gitlab/ci/jobs/build/bin_packages.yml
-
-  # These jobs are necessary to run flaky tezts
-  - .gitlab/ci/jobs/build/oc.docker:rust-toolchain-other.yml
-  - .gitlab/ci/jobs/build/oc.build_x86_64-exp-dev-extra.yml
-  - .gitlab/ci/jobs/build/oc.build_x86_64-released.yml
-  - .gitlab/ci/jobs/build/oc.build_kernels.yml
-  - .gitlab/ci/jobs/build/oc.tezt:fetch-records.yml
-
-  # These jobs may not have been run in before_merging pipeline
-  # because of absence of certain changes
-  - .gitlab/ci/jobs/build/ocaml-check.yml
-  - .gitlab/ci/jobs/build/oc.build:static-x86_64-linux-binaries-experimental.yml
-  - .gitlab/ci/jobs/build/build_get_contracts.yml
-  - .gitlab/ci/jobs/doc/documentation:build_all.yml
+  - .gitlab/ci/jobs/build/arm64.yml
 
   # Stage: packaging
-  - .gitlab/ci/jobs/packaging/opam:prepare.yml
+  - .gitlab/ci/jobs/packaging/opam_prepare.yml
   - .gitlab/ci/jobs/packaging/opam_package.yml
 
   # Stage: test
-  - .gitlab/ci/jobs/test/install_octez.yml
-  # Flaky tezts
-  - .gitlab/ci/jobs/test/tezt-flaky.yml
-  # Tests that may not have been run in before_merging pipeline
-  # because of absence of certain changes
-  - .gitlab/ci/jobs/test/misc_checks.yml
-  - .gitlab/ci/jobs/test/oc.misc_checks-schedule_extended_test.yml
-  - .gitlab/ci/jobs/test/misc_opam_checks.yml
-  - .gitlab/ci/jobs/test/oc.semgrep.yml
-  - .gitlab/ci/jobs/test/oc.unit.yml
-  - .gitlab/ci/jobs/test/oc.integration:compiler-rejections.yml
-  - .gitlab/ci/jobs/test/oc.script.yml
-  - .gitlab/ci/jobs/test/oc.test-liquidity-baking-scripts.yml
-  - .gitlab/ci/jobs/test/tezt.yml
-  - .gitlab/ci/jobs/test/tezt:build-long.yml
-  - .gitlab/ci/jobs/test/test_kernels.yml
+  - .gitlab/ci/jobs/test/install_mavkit.yml
 
   # Stage: doc
-  - .gitlab/ci/jobs/doc/documentation:linkcheck.yml
-  - .gitlab/ci/jobs/doc/oc.install_python.yml
+  - .gitlab/ci/jobs/doc/linkcheck.yml
+  - .gitlab/ci/jobs/doc/test_install_python.yml

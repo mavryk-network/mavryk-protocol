@@ -91,9 +91,10 @@ details.
 History modes use some markers which are used to describe the state
 of the storage:
 
-- *checkpoint*: the most recently finalized block of the chain,
-- *savepoint*: the lowest level block that contains metadata,
-- *caboose*: the lowest level known block.
+- *checkpoint*: the last allowed fork level of the chain (as defined
+  in the Tezos position paper),
+- *savepoint*: the last known block which contains metadata,
+- *caboose*: the last known block.
 
 For more details about what data are stored in each mode, refer to :doc:`../shell/storage`.
 
@@ -106,7 +107,7 @@ To run a ``full`` node you can either use the command line arguments:
 
 .. code-block:: console
 
-   octez-node run --history-mode full
+   mavkit-node run --history-mode full
 
 or use your configuration file as described in :doc:`here <node-configuration>`:
 
@@ -122,7 +123,7 @@ You can then verify that your history mode is set to full by using the checkpoin
 
 .. code-block:: console
 
-   octez-client rpc get /chains/main/checkpoint
+   mavkit-client rpc get /chains/main/checkpoint
 
 .. code-block:: json
 
@@ -142,7 +143,7 @@ To run a ``rolling`` node you can either use the command line arguments:
 
 .. code-block:: console
 
-   octez-node run --history-mode rolling
+   mavkit-node run --history-mode rolling
 
 or use your configuration file as described in :doc:`here <node-configuration>`:
 
@@ -166,7 +167,7 @@ Setting up a node in archive mode
 ---------------------------------
 
 To run an ``archive`` node you can use the command line arguments:
-``$ octez-node run --history-mode archive``
+``$ mavkit-node run --history-mode archive``
 
 Or the configuration file:
 ``{ "shell": {"history_mode": "archive"} }``
@@ -189,10 +190,13 @@ history. Indeed, at each new cycle, a garbage collection phase removes
 the ledger state and the block metadata (operation receipts, rewards
 updates, etc.) of blocks outside the offset of this sliding
 window. Depending on the network, a minimum number of cycles are
-kept. This number of cycles corresponds to the
-:ref:`preserved_cycles<ps_constants>` protocol parameter, which on
-mainnet is set to 5 cycles. However, the node is able to keep an
-additional number of cycles that is configurable.
+kept. These cycles correspond to the ones above the last
+allowed fork level, containing blocks subjects to a potential chain
+reorganization (this minimal number of cycles is currently given by
+the :ref:`preserved_cycles<ps_constants>` protocol parameter, which
+on mainnet is currently set to 5 cycles). However, the
+node is able to keep an additional number of cycles that is
+configurable.
 
 By default, 1 additional cycle is kept for both ``full`` and
 ``rolling`` nodes. It is possible to increase this parameter to keep
@@ -253,7 +257,7 @@ there are some restrictions when switching from one mode to another.
 +---------+---------+------+---------+
 
 (*) Switching from a ``full`` node to an ``archive`` one is possible
-using the ``reconstruct`` feature. To do so, run ``octez-node
+using the ``reconstruct`` feature. To do so, run ``mavkit-node
 reconstruct`` on your node. Note that the storage reconstruction is a
 long process that, on the main network, may require more than a week to
 complete. Reconstruction also requires a machine with at least 16GB of

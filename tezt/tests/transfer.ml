@@ -35,7 +35,6 @@ let test_zero_transfer_to_implicit_contract =
     ~__FILE__
     ~title:"Test Zero Transfer to Implicit Contract"
     ~tags:["client"; "transfer"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let pubkey = Account.Bootstrap.keys.(2).public_key_hash in
@@ -57,7 +56,6 @@ let test_zero_transfer_to_nonexistent_contract =
     ~__FILE__
     ~title:"Test Zero Transfer to Nonexistent Contract"
     ~tags:["client"; "transfer"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let nonexistent = "KT1Fcq4inD44aMhmUiTEHR1QMQwJT7p2u641" in
@@ -76,9 +74,8 @@ let test_encrypted_source_stop_loop_password =
     ~__FILE__
     ~title:"Test invalid inputs when transferring from encrypted source account"
     ~tags:["client"; "transfer"; "stop"; "loop"; "password"]
-    ~uses_node:false
   @@ fun protocol ->
-  Log.info "Import an encrypted account with some tez" ;
+  Log.info "Import an encrypted account with some mav" ;
   let* client = Client.init_mockup ~protocol () in
   let encrypted_account =
     {

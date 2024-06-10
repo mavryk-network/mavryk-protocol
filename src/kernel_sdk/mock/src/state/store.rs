@@ -6,12 +6,11 @@
 
 //! Mock runtime store - the container for host state.
 use std::collections::HashMap;
-use std::rc::Rc;
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub(crate) struct Store {
-    pub(crate) durable: Rc<Node>,
+    pub(crate) durable: Node,
     preimages: HashMap<[u8; PREIMAGE_HASH_SIZE], Vec<u8>>,
     outbox: HashMap<u32, Vec<Vec<u8>>>,
     inbox: HashMap<u32, Vec<Vec<u8>>>,
@@ -19,8 +18,8 @@ pub(crate) struct Store {
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub(crate) struct Node {
-    pub(crate) value: Option<Rc<Vec<u8>>>,
-    pub(crate) inner: Rc<HashMap<String, Rc<Self>>>,
+    pub(crate) value: Option<Vec<u8>>,
+    pub(crate) inner: HashMap<String, Box<Self>>,
 }
 
 pub(crate) const VALUE_NAME: &str = "@";
@@ -28,7 +27,7 @@ pub(crate) const VALUE_NAME: &str = "@";
 impl Node {
     fn print(&self, prefix: &str, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(v) = &self.value {
-            writeln!(f, "{} {}", prefix, hex::encode(v.as_ref()))?;
+            writeln!(f, "{} {}", prefix, hex::encode(v))?;
         }
 
         let mut keys: Vec<_> = self.inner.iter().collect();
@@ -62,7 +61,7 @@ impl Store {
         }
     }
 
-    pub fn node_from_path(&self, path: &str) -> Option<&Rc<Node>> {
+    pub fn node_from_path(&self, path: &str) -> Option<&Node> {
         let steps = path_steps(path);
         let mut node = &self.durable;
 
@@ -75,30 +74,25 @@ impl Store {
 
     pub fn node_from_path_mut(&mut self, path: &str) -> Option<&mut Node> {
         let steps = path_steps(path);
-        let mut node = Rc::make_mut(&mut self.durable);
+        let mut node = &mut self.durable;
 
         for next in steps {
-            let inner = Rc::make_mut(&mut node.inner);
-            let inner = inner.get_mut(next)?;
-            node = Rc::make_mut(inner);
+            node = node.inner.get_mut(next)?;
         }
 
         Some(node)
     }
 
-    pub fn node_insert(&mut self, path: &str, mut insertee: Rc<Node>) {
+    pub fn node_insert(&mut self, path: &str, mut insertee: Node) {
         let steps = path_steps(path);
         let mut node = &mut self.durable;
 
         for next in steps {
             if !node.inner.contains_key(next) {
-                Rc::make_mut(&mut Rc::make_mut(node).inner)
-                    .insert(next.to_string(), Default::default());
+                node.inner.insert(next.to_string(), Box::default());
             }
 
-            node = Rc::make_mut(&mut Rc::make_mut(node).inner)
-                .get_mut(next)
-                .unwrap();
+            node = node.inner.get_mut(next).unwrap();
         }
 
         std::mem::swap(node, &mut insertee);
@@ -117,14 +111,12 @@ impl Store {
                     return;
                 }
 
-                node = Rc::make_mut(&mut Rc::make_mut(node).inner)
-                    .get_mut(*next)
-                    .unwrap();
+                node = node.inner.get_mut(*next).unwrap();
             }
 
-            Rc::make_mut(&mut Rc::make_mut(node).inner).remove(*steps.last().unwrap());
+            node.inner.remove(*steps.last().unwrap());
 
-            if node.as_ref() != &Node::default() {
+            if node != &Node::default() {
                 return;
             }
 
@@ -134,35 +126,33 @@ impl Store {
         }
     }
 
-    pub fn get_value(&self, path: &str) -> &Vec<u8> {
+    pub fn get_value(&self, path: &str) -> Vec<u8> {
         self.maybe_get_value(path)
             .unwrap_or_else(|| panic!("MockRuntime: value not found at {}", path))
     }
 
-    pub fn maybe_get_value(&self, path: &str) -> Option<&Rc<Vec<u8>>> {
-        self.node_from_path(path).and_then(|n| n.value.as_ref())
+    pub fn maybe_get_value(&self, path: &str) -> Option<Vec<u8>> {
+        self.node_from_path(path).and_then(|n| n.value.clone())
     }
 
     pub fn set_value(&mut self, path: &str, value: Vec<u8>) {
         if let Some(node) = self.node_from_path_mut(path) {
-            node.value = Some(Rc::new(value));
-            Rc::make_mut(&mut node.inner)
-                .insert(VALUE_NAME.to_string(), Default::default());
+            node.value = Some(value);
+            node.inner.insert(VALUE_NAME.to_string(), Box::default());
         } else {
             let mut node = Node {
-                inner: Default::default(),
-                value: Some(Rc::new(value)),
+                inner: HashMap::default(),
+                value: Some(value),
             };
-            Rc::make_mut(&mut node.inner)
-                .insert(VALUE_NAME.to_string(), Default::default());
-            self.node_insert(path, Rc::new(node));
+            node.inner.insert(VALUE_NAME.to_string(), Box::default());
+            self.node_insert(path, node);
         }
     }
 
     pub fn delete_value(&mut self, path: &str) {
         if let Some(node) = self.node_from_path_mut(path) {
             node.value = None;
-            Rc::make_mut(&mut node.inner).remove(VALUE_NAME);
+            node.inner.remove(VALUE_NAME);
         };
     }
 
@@ -174,7 +164,7 @@ impl Store {
 
     pub fn add_preimage(&mut self, preimage: Vec<u8>) -> [u8; PREIMAGE_HASH_SIZE] {
         let hash_with_prefix =
-            tezos_smart_rollup_encoding::dac::pages::make_preimage_hash(&preimage)
+            mavryk_smart_rollup_encoding::dac::pages::make_preimage_hash(&preimage)
                 .unwrap();
 
         self.preimages.insert(hash_with_prefix, preimage);

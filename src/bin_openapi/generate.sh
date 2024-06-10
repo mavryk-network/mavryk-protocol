@@ -8,18 +8,17 @@
 # should be removed and replaced by a python script calling the test's core
 # logic.
 
-# Ensure we are running from the root directory of the Tezos repository.
+# Ensure we are running from the root directory of the Mavryk repository.
 cd "$(dirname "$0")"/../.. || exit
 
-# Tezos binaries.
-tezos_node=./octez-node
-tezos_client=./octez-client
-smart_rollup_node=./octez-smart-rollup-node
+# Mavryk binaries.
+mavryk_node=./mavkit-node
+mavryk_client=./mavkit-client
 
 # Protocol configuration.
-protocol_hash=ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH
-protocol_parameters=src/proto_018_Proxford/parameters/sandbox-parameters.json
-protocol_name=oxford
+protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
+protocol_parameters=src/proto_001_PtAtLas/parameters/sandbox-parameters.json
+protocol_name=atlas
 
 # Secret key to activate the protocol.
 activator_secret_key="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"
@@ -29,30 +28,29 @@ rpc_port=8732
 
 # Temporary files.
 tmp=openapi-tmp
-data_dir=$tmp/octez-sandbox
-client_dir=$tmp/octez-client
+data_dir=$tmp/mavkit-sandbox
+client_dir=$tmp/mavkit-client
 api_json=$tmp/rpc-api.json
 proto_api_json=$tmp/proto-api.json
 mempool_api_json=$tmp/mempool-api.json
 
 # Generated files.
-openapi_json=docs/api/rpc-openapi.json
-proto_openapi_json=docs/api/$protocol_name-openapi.json
-mempool_openapi_json=docs/api/$protocol_name-mempool-openapi.json
-smart_rollup_node_openapi_json=docs/api/$protocol_name-smart-rollup-node-openapi.json
+openapi_json=docs/api/rpc-openapi-dev.json
+proto_openapi_json=docs/api/$protocol_name-openapi-dev.json
+mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-dev.json
 
 # Get version number.
-version=$(dune exec octez-version -- --full-with-commit)
+version=$(dune exec mavryk-version)
 
 # Start a sandbox node.
-$tezos_node config init --data-dir $data_dir \
-  --network sandbox \
-  --expected-pow 0 \
-  --local-rpc-addr localhost:$rpc_port \
-  --no-bootstrap-peer \
-  --synchronisation-threshold 0
-$tezos_node identity generate --data-dir $data_dir
-$tezos_node run --data-dir $data_dir --connections 0 &
+$mavryk_node config init --data-dir $data_dir \
+    --network sandbox \
+    --expected-pow 0 \
+    --rpc-addr localhost:$rpc_port \
+    --no-bootstrap-peer \
+    --synchronisation-threshold 0
+$mavryk_node identity generate --data-dir $data_dir
+$mavryk_node run --data-dir $data_dir &
 node_pid="$!"
 
 # Wait for the node to be ready (sorry for the hackish way...)
@@ -60,12 +58,12 @@ sleep 1
 
 # Activate the protocol.
 mkdir $client_dir
-$tezos_client --base-dir $client_dir import secret key activator $activator_secret_key
-$tezos_client --base-dir $client_dir activate protocol $protocol_hash \
-  with fitness 1 \
-  and key activator \
-  and parameters $protocol_parameters \
-  --timestamp "$(TZ='AAA+1' date +%FT%TZ)"
+$mavryk_client --base-dir $client_dir import secret key activator $activator_secret_key
+$mavryk_client --base-dir $client_dir activate protocol $protocol_hash \
+    with fitness 1 \
+    and key activator \
+    and parameters $protocol_parameters \
+    --timestamp "$(TZ='AAA+1' date +%FT%TZ)"
 
 # Wait a bit again...
 sleep 1
@@ -79,34 +77,15 @@ curl "http://localhost:$rpc_port/describe/chains/main/mempool?recurse=yes" > $me
 kill -9 "$node_pid"
 
 # Remove RPC starting with "/private/"
-clean_private_rpc() {
+clean_private_rpc () {
   jq 'delpaths([paths | select(.[-1] | strings | startswith("/private/"))])'
 }
 
 # Convert the RPC descriptions.
-dune exec src/bin_openapi/rpc_openapi.exe -- \
-  "$version" \
-  "Octez RPC" \
-  "The RPC API served by the Octez node." \
-  $api_json |
-  clean_private_rpc "$@" > $openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $api_json | clean_private_rpc "$@" > $openapi_json
 echo "Generated OpenAPI specification: $openapi_json"
-dune exec src/bin_openapi/rpc_openapi.exe -- \
-  "$version" \
-  "Octez Protocol $protocol_name RPC" \
-  "The RPC API for protocol $protocol_name served by the Octez node." \
-  $proto_api_json |
-  clean_private_rpc "$@" > $proto_openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $proto_api_json | clean_private_rpc "$@" > $proto_openapi_json
 echo "Generated OpenAPI specification: $proto_openapi_json"
-dune exec src/bin_openapi/rpc_openapi.exe -- \
-  "$version" \
-  "Octez Mempool RPC" "The RPC API for the mempool served by the Octez node." \
-  $mempool_api_json |
-  clean_private_rpc "$@" > $mempool_openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $mempool_api_json | clean_private_rpc "$@" > $mempool_openapi_json
 echo "Generated OpenAPI specification: $mempool_openapi_json"
-
-# Gernerate openapi file for rollup node
-$smart_rollup_node generate openapi -P $protocol_hash > $smart_rollup_node_openapi_json
-echo "Generated OpenAPI specification: $smart_rollup_node_openapi_json"
-
 echo "You can now clean up with: rm -rf $tmp"

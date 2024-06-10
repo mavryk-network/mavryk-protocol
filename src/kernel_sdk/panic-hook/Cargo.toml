@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-smart-rollup-panic-hook"
+name = "mavryk-smart-rollup-panic-hook"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
@@ -14,13 +14,13 @@ description = "Hook for capturing kernel panics & printing to debug log."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "api-bindings", "wasm"]
 
-[dependencies.tezos-smart-rollup-core]
+[dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 
 [features]
 default = ["abort", "debug", "std"]
-abort = ["std"]
+abort = []
 debug = []
 std = []
-proto-alpha=["tezos-smart-rollup-core/proto-alpha"]
+proto-alpha=["mavryk-smart-rollup-core/proto-alpha"]

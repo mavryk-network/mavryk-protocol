@@ -4,14 +4,14 @@
 
 //! Iterator-like structure for iterating through the contents of a dac message.
 
-use tezos_data_encoding::{
+use mavryk_data_encoding::{
     enc::{BinError, BinWriter},
     nom::NomReader,
 };
-use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-use tezos_smart_rollup_host::path::OwnedPath;
-use tezos_smart_rollup_host::path::PathError;
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+use mavryk_smart_rollup_host::path::OwnedPath;
+use mavryk_smart_rollup_host::path::PathError;
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
 
 use super::v1::verifiable::VerifiableOperation;
 
@@ -271,10 +271,10 @@ mod tests {
     use proptest::collection;
 
     use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_host::runtime::Runtime;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_host::runtime::Runtime;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use crate::inbox::dac_iterator::IteratorState;
     use crate::inbox::v1::sendable::Batch;

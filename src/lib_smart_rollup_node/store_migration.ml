@@ -265,14 +265,14 @@ module V1_migrations = struct
     let open Store_v1 in
     let info () =
       let date =
-        Tezos_base.Time.(
+        Mavryk_base.Time.(
           System.now () |> System.to_protocol |> Protocol.to_seconds)
       in
       let author =
         Format.asprintf
           "Rollup node %a"
-          Tezos_version_parser.pp
-          Tezos_version_value.Current_git_info.version
+          Mavryk_version_parser.pp
+          Mavryk_version_value.Current_git_info.version
       in
       let message = "Migration store from v0 to v1" in
       Irmin_store.Raw_irmin.Info.v ~author ~message date

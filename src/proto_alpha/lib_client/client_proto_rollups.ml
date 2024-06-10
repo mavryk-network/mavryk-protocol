@@ -38,9 +38,7 @@ module EpoxyEntity = struct
     in
     return rollup
 
-  let to_source rollup =
-    let open Lwt_result_syntax in
-    return (Zk_rollup.Address.to_b58check rollup)
+  let to_source rollup = return (Zk_rollup.Address.to_b58check rollup)
 
   let name = "epoxy"
 end

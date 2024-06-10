@@ -43,9 +43,8 @@ type t =
 
 (* The default_offset value defines a window of stored cycles which is
    suitable for baking services. It currently corresponds to 6 as we
-   store 1 cycle below the last preserved block level of the current
-   head, which is set to [blocks_preservation_cycles] cycles in the
-   past.
+   store 1 cycle below the last allowed fork level of the current
+   head, which is set to [preserved_cycles] cycles in the past.
    TODO: https://gitlab.com/tezos/tezos/-/issues/1406
    As this value is potentially both network and protocol specific, it
    could be lifted as a protocol value or an hardcoded node
@@ -96,7 +95,7 @@ let encoding =
   def
     "history_mode"
     ~title:"history mode"
-    ~description:"Storage mode for the Tezos shell."
+    ~description:"Storage mode for the Mavryk shell."
     (union
        ~tag_size:`Uint8
        [

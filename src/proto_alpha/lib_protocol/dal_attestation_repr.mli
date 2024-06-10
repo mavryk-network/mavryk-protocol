@@ -58,16 +58,11 @@ type operation = {
           level" for the level of the block. We have:
           - [attestation_level + 1 = attested_level]
           - [published_level + attestation_lag = attested_level] *)
-  round : Round_repr.t;
-      (** Similar to {!Operation_repr.consensus_content.round}. *)
   slot : Slot_repr.t;
       (** Similar to {!Operation_repr.consensus_content.slot}. It is the
           attester's first consensus slot at [level]. *)
 }
 
-(** The size of the encoding is not bounded. However, the size of a DAL
-    attestation bitset is checked during validation of an attestation; and there
-    is a bound on the size of a generic operation. *)
 val encoding : t Data_encoding.t
 
 (** [empty] returns an empty [slot_attestation] which commits that

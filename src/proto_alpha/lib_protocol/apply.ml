@@ -26,7 +26,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Main Entry Points *)
+(** Mavryk Protocol Implementation - Main Entry Points *)
 
 open Alpha_context
 
@@ -113,11 +113,11 @@ let () =
     `Branch
     ~id:"contract.empty_transaction"
     ~title:"Empty transaction"
-    ~description:"Forbidden to credit 0ꜩ to a contract without code."
+    ~description:"Forbidden to credit 0ṁ to a contract without code."
     ~pp:(fun ppf contract ->
       Format.fprintf
         ppf
-        "Transactions of 0ꜩ towards a contract without code are forbidden (%a)."
+        "Transactions of 0ṁ towards a contract without code are forbidden (%a)."
         Contract.pp
         contract)
     Data_encoding.(obj1 (req "contract" Contract.encoding))
@@ -322,7 +322,7 @@ let apply_delegation ~ctxt ~(sender : Contract.t) ~delegate ~before_operation =
               ctxt
               ~sender_contract:sender
               ~delegate
-              Tez.max_mutez)
+              Tez.max_mumav)
   in
   let+ ctxt = Contract.Delegate.set ctxt sender delegate in
   (ctxt, Gas.consumed ~since:before_operation ~until:ctxt, balance_updates, [])
@@ -518,7 +518,7 @@ let transfer_from_any_address ctxt sender destination amount =
   | Destination.Contract sender ->
       Token.transfer ctxt (`Contract sender) (`Contract destination) amount
   | Destination.Sc_rollup _ | Destination.Zk_rollup _ ->
-      (* We do not allow transferring tez from rollups to other contracts. *)
+      (* We do not allow transferring mav from rollups to other contracts. *)
       let*? () =
         error_unless Tez.(amount = zero) (Non_empty_transaction_from sender)
       in
@@ -2265,8 +2265,7 @@ let record_preattestation ctxt (mode : mode) (content : consensus_content) :
       in
       return (ctxt, mk_preattestation_result consensus_key 0 (* Fake power. *))
 
-let record_attestation ctxt (mode : mode) (consensus : consensus_content)
-    (dal : dal_content option) :
+let record_attestation ctxt (mode : mode) (content : consensus_content) :
     (context * Kind.attestation contents_result_list) tzresult Lwt.t =
   let open Lwt_result_syntax in
   let mk_attestation_result ({delegate; consensus_pkh; _} : Consensus_key.pk)
@@ -2283,21 +2282,10 @@ let record_attestation ctxt (mode : mode) (consensus : consensus_content)
   match mode with
   | Application _ | Full_construction _ ->
       let*? consensus_key, power =
-        find_in_slot_map consensus.slot (Consensus.allowed_attestations ctxt)
+        find_in_slot_map content.slot (Consensus.allowed_attestations ctxt)
       in
       let*? ctxt =
-        Consensus.record_attestation ctxt ~initial_slot:consensus.slot ~power
-      in
-      let*? ctxt =
-        Option.fold
-          ~none:(Result_syntax.return ctxt)
-          ~some:(fun dal ->
-            Dal_apply.apply_attestation
-              ctxt
-              consensus_key
-              consensus.level
-              dal.attestation)
-          dal
+        Consensus.record_attestation ctxt ~initial_slot:content.slot ~power
       in
       return (ctxt, mk_attestation_result consensus_key power)
   | Partial_construction _ ->
@@ -2309,8 +2297,8 @@ let record_attestation ctxt (mode : mode) (consensus : consensus_content)
          attestations), but we don't need to, because there is no block
          to finalize anyway in this mode. *)
       let* ctxt, consensus_key =
-        let level = Level.from_raw ctxt consensus.level in
-        Stake_distribution.slot_owner ctxt level consensus.slot
+        let level = Level.from_raw ctxt content.level in
+        Stake_distribution.slot_owner ctxt level content.slot
       in
       return (ctxt, mk_attestation_result consensus_key 0 (* Fake power. *))
 
@@ -2386,26 +2374,17 @@ let punish_double_attestation_or_preattestation (type kind) ctxt ~operation_hash
         Double_attestation_evidence_result {forbidden_delegate; balance_updates}
   in
   match op1.protocol_data.contents with
-  | Single (Preattestation e1)
-  | Single (Attestation {consensus_content = e1; dal_content = _}) ->
+  | Single (Preattestation e1) | Single (Attestation e1) ->
       let level = Level.from_raw ctxt e1.level in
       let* ctxt, consensus_pk1 =
         Stake_distribution.slot_owner ctxt level e1.slot
-      in
-      let misbehaviour =
-        {
-          Misbehaviour.kind = Double_attesting;
-          level = e1.level;
-          round = e1.round;
-          slot = e1.slot;
-        }
       in
       punish_delegate
         ctxt
         ~operation_hash
         consensus_pk1.delegate
         level
-        misbehaviour
+        Double_attesting
         mk_result
         ~payload_producer
 
@@ -2419,20 +2398,12 @@ let punish_double_baking ctxt ~operation_hash (bh1 : Block_header.t)
   let committee_size = Constants.consensus_committee_size ctxt in
   let*? slot1 = Round.to_slot round1 ~committee_size in
   let* ctxt, consensus_pk1 = Stake_distribution.slot_owner ctxt level slot1 in
-  let misbehaviour =
-    {
-      Misbehaviour.kind = Double_baking;
-      level = raw_level;
-      round = round1;
-      slot = slot1;
-    }
-  in
   punish_delegate
     ctxt
     ~operation_hash
     consensus_pk1.delegate
     level
-    misbehaviour
+    Double_baking
     ~payload_producer
     (fun forbidden_delegate balance_updates ->
       Double_baking_evidence_result {forbidden_delegate; balance_updates})
@@ -2450,9 +2421,9 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
   match contents_list with
   | Single (Preattestation consensus_content) ->
       record_preattestation ctxt mode consensus_content
-  | Single (Attestation {consensus_content; dal_content}) ->
-      record_attestation ctxt mode consensus_content dal_content
-  | Single (Dal_attestation {level; attestation; slot; _}) ->
+  | Single (Attestation consensus_content) ->
+      record_attestation ctxt mode consensus_content
+  | Single (Dal_attestation op) ->
       (* DAL/FIXME https://gitlab.com/tezos/tezos/-/issues/3115
 
          This is a temporary operation. This is done in order to avoid modifying
@@ -2463,19 +2434,14 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
         match mode with
         | Application _ | Full_construction _ ->
             let*? consensus_key, _power =
-              find_in_slot_map slot (Consensus.allowed_attestations ctxt)
-            in
-            let*? ctxt =
-              Dal_apply.apply_attestation ctxt consensus_key level attestation
+              find_in_slot_map op.slot (Consensus.allowed_attestations ctxt)
             in
             return (ctxt, consensus_key)
         | Partial_construction _ ->
-            (* We do not record the DAL attestation for the same reason, we do
-               not record the consensus attestation; see reasoning in
-               {record_attestation}. *)
-            let level = Level.from_raw ctxt level in
-            Stake_distribution.slot_owner ctxt level slot
+            let level = Level.from_raw ctxt op.level in
+            Stake_distribution.slot_owner ctxt level op.slot
       in
+      let*? ctxt = Dal_apply.apply_attestation ctxt consensus_key op in
       return
         ( ctxt,
           Single_result
@@ -2483,7 +2449,7 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
   | Single (Seed_nonce_revelation {level; nonce}) ->
       let level = Level.from_raw ctxt level in
       let* ctxt = Nonce.reveal ctxt level nonce in
-      let*? tip = Delegate.Rewards.seed_nonce_revelation_tip ctxt in
+      let tip = Delegate.Rewards.seed_nonce_revelation_tip ctxt in
       let delegate = payload_producer.Consensus_key.delegate in
       let+ ctxt, balance_updates =
         Delegate.Shared_stake.pay_rewards
@@ -2495,7 +2461,7 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
       (ctxt, Single_result (Seed_nonce_revelation_result balance_updates))
   | Single (Vdf_revelation {solution}) ->
       let* ctxt = Seed.update_seed ctxt solution in
-      let*? tip = Delegate.Rewards.vdf_revelation_tip ctxt in
+      let tip = Delegate.Rewards.vdf_revelation_tip ctxt in
       let delegate = payload_producer.Consensus_key.delegate in
       let+ ctxt, balance_updates =
         Delegate.Shared_stake.pay_rewards
@@ -2626,30 +2592,31 @@ let may_start_new_cycle ctxt =
 
 let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
   let open Lwt_result_syntax in
-  Liquidity_baking.on_subsidy_allowed
+  Protocol_treasury.on_subsidy_allowed
     ctxt
     ~per_block_vote
-    (fun ctxt liquidity_baking_cpmm_contract_hash ->
-      let liquidity_baking_cpmm_contract =
-        Contract.Originated liquidity_baking_cpmm_contract_hash
+    (fun ctxt protocol_treasury_contract_hash ->
+
+      let protocol_treasury_contract = 
+        Contract.Originated protocol_treasury_contract_hash
       in
       let ctxt =
         (* We set a gas limit of 1/20th the block limit, which is ~10x
-           actual usage here in Granada. Gas consumed is reported in
-           the Transaction receipt, but not counted towards the block
-           limit. The gas limit is reset to unlimited at the end of
-           this function.*)
+            actual usage here in Granada. Gas consumed is reported in
+            the Transaction receipt, but not counted towards the block
+            limit. The gas limit is reset to unlimited at the end of
+            this function.*)
         Gas.set_limit
           ctxt
           (Gas.Arith.integral_exn
-             (Z.div
+              (Z.div
                 (Gas.Arith.integral_to_z
-                   (Constants.hard_gas_limit_per_block ctxt))
+                    (Constants.hard_gas_limit_per_block ctxt))
                 (Z.of_int 20)))
       in
       let backtracking_ctxt = ctxt in
       let*! result =
-        let*? liquidity_baking_subsidy =
+        let liquidity_baking_subsidy =
           Delegate.Rewards.liquidity_baking_subsidy ctxt
         in
         (* credit liquidity baking subsidy to CPMM contract *)
@@ -2658,20 +2625,20 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             ~origin:Subsidy
             ctxt
             `Liquidity_baking_subsidies
-            (`Contract liquidity_baking_cpmm_contract)
+            (`Contract protocol_treasury_contract)
             liquidity_baking_subsidy
         in
         let* ctxt, cache_key, script =
-          Script_cache.find ctxt liquidity_baking_cpmm_contract_hash
+          Script_cache.find ctxt protocol_treasury_contract_hash
         in
         match script with
         | None ->
             tzfail (Script_tc_errors.No_such_entrypoint Entrypoint.default)
         | Some (script, script_ir) -> (
             (* Token.transfer which is being called above already loads this
-               value into the Irmin cache, so no need to burn gas for it. *)
+                value into the Irmin cache, so no need to burn gas for it. *)
             let* balance =
-              Contract.get_balance ctxt liquidity_baking_cpmm_contract
+              Contract.get_balance ctxt protocol_treasury_contract
             in
             let now = Script_timestamp.now ctxt in
             let level =
@@ -2681,12 +2648,12 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             let step_constants =
               let open Script_interpreter in
               (* Using dummy values for source, payer, and chain_id
-                 since they are not used within the CPMM default
-                 entrypoint. *)
+                  since they are not used within the CPMM default
+                  entrypoint. *)
               {
-                sender = Destination.Contract liquidity_baking_cpmm_contract;
+                sender = Destination.Contract protocol_treasury_contract;
                 payer = Signature.Public_key_hash.zero;
-                self = liquidity_baking_cpmm_contract_hash;
+                self = protocol_treasury_contract_hash;
                 amount = liquidity_baking_subsidy;
                 balance;
                 chain_id = Chain_id.zero;
@@ -2695,26 +2662,26 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
               }
             in
             (*
-                 Call CPPM default entrypoint with parameter Unit.
-                 This is necessary for the CPMM's xtz_pool in storage to
-                 increase since it cannot use BALANCE due to a transfer attack.
+                  Call CPPM default entrypoint with parameter Unit.
+                  This is necessary for the CPMM's xtz_pool in storage to
+                  increase since it cannot use BALANCE due to a transfer attack.
 
-                 Mimicks a transaction.
+                  Mimicks a transaction.
 
-                 There is no:
-                 - storage burn (extra storage is free)
-                 - fees (the operation is mandatory)
+                  There is no:
+                  - storage burn (extra storage is free)
+                  - fees (the operation is mandatory)
           *)
             let* ( {
-                     script = updated_cached_script;
-                     code_size = updated_size;
-                     storage;
-                     lazy_storage_diff;
-                     operations;
-                     ticket_diffs;
-                     ticket_receipt;
-                   },
-                   ctxt ) =
+                      script = updated_cached_script;
+                      code_size = updated_size;
+                      storage;
+                      lazy_storage_diff;
+                      operations;
+                      ticket_diffs;
+                      ticket_receipt;
+                    },
+                    ctxt ) =
               Script_interpreter.execute_with_typed_parameter
                 ctxt
                 Optimized
@@ -2736,7 +2703,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ticket_table_size_diff, ctxt =
                   update_script_storage_and_ticket_balances
                     ctxt
-                    ~self_contract:liquidity_baking_cpmm_contract_hash
+                    ~self_contract:protocol_treasury_contract_hash
                     storage
                     lazy_storage_diff
                     ticket_diffs
@@ -2745,7 +2712,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ctxt, new_size, paid_storage_size_diff =
                   Fees.record_paid_storage_space
                     ctxt
-                    liquidity_baking_cpmm_contract_hash
+                    protocol_treasury_contract_hash
                 in
                 let* ticket_paid_storage_diff, ctxt =
                   Ticket_balance.adjust_storage_space
@@ -2766,23 +2733,23 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let result =
                   Transaction_result
                     (Transaction_to_contract_result
-                       {
-                         storage = Some storage;
-                         lazy_storage_diff;
-                         balance_updates;
-                         ticket_receipt;
-                         (* At this point in application the
+                        {
+                          storage = Some storage;
+                          lazy_storage_diff;
+                          balance_updates;
+                          ticket_receipt;
+                          (* At this point in application the
                             origination nonce has not been initialized
                             so it's not possible to originate new
                             contracts. We've checked above that none
                             were originated. *)
-                         originated_contracts = [];
-                         consumed_gas;
-                         storage_size = new_size;
-                         paid_storage_size_diff =
-                           Z.add paid_storage_size_diff ticket_paid_storage_diff;
-                         allocated_destination_contract = false;
-                       })
+                          originated_contracts = [];
+                          consumed_gas;
+                          storage_size = new_size;
+                          paid_storage_size_diff =
+                            Z.add paid_storage_size_diff ticket_paid_storage_diff;
+                          allocated_destination_contract = false;
+                        })
                 in
                 let ctxt = Gas.set_unlimited ctxt in
                 return (ctxt, [Successful_manager_result result]))
@@ -3047,7 +3014,7 @@ let finalize_application ctxt block_data_contents ~round ~predecessor_hash
       return (ctxt, Some rewards_bonus)
     else return (ctxt, None)
   in
-  let*? baking_reward = Delegate.Rewards.baking_reward_fixed_portion ctxt in
+  let baking_reward = Delegate.Rewards.baking_reward_fixed_portion ctxt in
   let* ctxt, baking_receipts =
     Delegate.record_baking_activity_and_pay_rewards_and_fees
       ctxt

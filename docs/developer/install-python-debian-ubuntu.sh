@@ -1,17 +1,19 @@
 #!/bin/bash
 
-usage() {
-  cat >&2 << !EOF
+usage () {
+    cat >&2 <<!EOF
 usage:
   $0 [<repo> <branch>]
 !EOF
 }
 
-if [ $# -eq 2 ]; then
+if [ $# -eq 2 ];
+then
   REPO=$1
   BRANCH=$2
-elif [ $# -eq 0 ]; then
-  REPO="tezos/tezos"
+elif [ $# -eq 0 ]
+then
+  REPO="mavrykdynamics/mavryk"
   BRANCH="latest-release"
 else
   usage
@@ -41,17 +43,17 @@ sudo apt-get install curl git --yes
 
 # [install python build dependencies]
 sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev --yes
+    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev --yes
 
 # [install pyenv]
 curl https://pyenv.run | bash
 
 # [setup shell for pyenv]
 export PATH="$HOME/.pyenv/bin:$PATH" # add pyenv to path
-eval "$(pyenv init --path)"          # adds pyenv plugins to path
-eval "$(pyenv init -)"               # adds pyenv setup to environment
-eval "$(pyenv virtualenv-init -)"    # adds virtualenv setup to environment
+eval "$(pyenv init --path)" # adds pyenv plugins to path
+eval "$(pyenv init -)" # adds pyenv setup to environment
+eval "$(pyenv virtualenv-init -)" # adds virtualenv setup to environment
 
 # [print pyenv version]
 pyenv --version
@@ -100,12 +102,12 @@ poetry --version # should output 1.2.2
 [ "$(poetry --version)" = "Poetry (version 1.2.2)" ]
 
 ##
-## Test installing Octez python development dependencies
+## Test installing Mavkit python development dependencies
 ##
-git clone --depth 1 --branch "$BRANCH" https://gitlab.com/"$REPO".git tezos
+git clone --depth 1 --branch "$BRANCH" https://gitlab.com/"$REPO".git mavryk
 
-# [install octez python dev-dependencies]
-cd tezos
+# [install mavkit python dev-dependencies]
+cd mavryk
 poetry install
 
 # [print sphinx-build versions]

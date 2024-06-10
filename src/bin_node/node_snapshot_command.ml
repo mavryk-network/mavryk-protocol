@@ -123,7 +123,7 @@ module Term = struct
       progress_display_mode =
     let run =
       let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* data_dir, node_config =
         Shared_arg.resolve_data_dir_and_config_file ?data_dir ?config_file ()
       in
@@ -160,7 +160,7 @@ module Term = struct
       block disable_check reconstruct sandbox_file progress_display_mode =
     let run =
       let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* data_dir, node_config =
         Shared_arg.resolve_data_dir_and_config_file ?data_dir ?config_file ()
       in
@@ -205,14 +205,6 @@ module Term = struct
             | Error _err ->
                 tzfail (Node_run_command.Invalid_sandbox_file filename)
             | Ok json -> return_some ("sandbox_parameter", json))
-      in
-      let* () =
-        let find_srs_files () =
-          Tezos_base.Dal_srs.find_trusted_setup_files ()
-        in
-        Tezos_crypto_dal.Cryptobox.Config.init_dal
-          ~find_srs_files
-          node_config.blockchain_network.dal_config
       in
       let context_root = Data_version.context_dir data_dir in
       let store_root = Data_version.store_dir data_dir in
@@ -280,7 +272,7 @@ module Term = struct
   let get_info snapshot_path format_json =
     let run =
       let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* snapshot_path = check_snapshot_path snapshot_path in
       let* snapshot_header = Snapshots.read_snapshot_header ~snapshot_path in
       if format_json then
@@ -371,7 +363,7 @@ module Term = struct
       "Run the snapshot import in sandbox mode. P2P to non-localhost addresses \
        are disabled, and constants of the economic protocol can be altered \
        with an optional JSON file. $(b,IMPORTANT): Using sandbox mode affects \
-       the node state and subsequent runs of Tezos node must also use sandbox \
+       the node state and subsequent runs of Mavryk node must also use sandbox \
        mode. In order to run the node in normal mode afterwards, a full reset \
        must be performed (by removing the node's data directory)."
     in

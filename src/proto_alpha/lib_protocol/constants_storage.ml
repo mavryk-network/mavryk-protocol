@@ -28,18 +28,6 @@ let preserved_cycles c =
   let constants = Raw_context.constants c in
   constants.preserved_cycles
 
-let consensus_rights_delay c =
-  let constants = Raw_context.constants c in
-  constants.consensus_rights_delay
-
-let blocks_preservation_cycles c =
-  let constants = Raw_context.constants c in
-  constants.blocks_preservation_cycles
-
-let delegate_parameters_activation_delay c =
-  let constants = Raw_context.constants c in
-  constants.delegate_parameters_activation_delay
-
 let blocks_per_cycle c =
   let constants = Raw_context.constants c in
   constants.blocks_per_cycle
@@ -212,10 +200,6 @@ let sc_rollup_private_enable c =
   let sc_rollup = Raw_context.sc_rollup c in
   sc_rollup.private_enable
 
-let sc_rollup_riscv_pvm_enable c =
-  let sc_rollup = Raw_context.sc_rollup c in
-  sc_rollup.riscv_pvm_enable
-
 let dal_number_of_slots c =
   let constants = Raw_context.constants c in
   constants.dal.number_of_slots
@@ -261,11 +245,6 @@ let adaptive_issuance_activation_vote_enable c =
 
 let adaptive_issuance_autostaking_enable c =
   (adaptive_issuance c).autostaking_enable
-
-let adaptive_issuance_force_activation c =
-  (adaptive_issuance c).force_activation
-
-let adaptive_issuance_ns_enable c = (adaptive_issuance c).ns_enable
 
 let direct_ticket_spending_enable c =
   (Raw_context.constants c).direct_ticket_spending_enable

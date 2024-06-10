@@ -9,14 +9,14 @@
 #![cfg(feature = "dal")]
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 
-use tezos_smart_rollup_host::path::OwnedPath;
+use mavryk_smart_rollup_host::path::OwnedPath;
 
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_debug::debug_msg;
 
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 #[allow(dead_code)]
 pub(crate) fn store_dal_slot(

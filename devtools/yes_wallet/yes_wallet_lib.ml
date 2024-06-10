@@ -31,7 +31,7 @@
    Given a list of aliases and public key hashes:
    - encodes each public key as a fake secret key that can be used
      with the yes-node.patch
-   - creates a 'yes-wallet' directory to be passed to tezos-client -d option
+   - creates a 'yes-wallet' directory to be passed to mavryk-client -d option
  *)
 
 let pp_protocol ppf (module P : Sigs.PROTOCOL) = Protocol_hash.pp ppf P.hash
@@ -54,7 +54,7 @@ let pk_json (alias, _pkh, pk) =
 *)
 
 let sk_of_pk (pk_s : string) : string =
-  let open Tezos_crypto.Signature.V_latest in
+  let open Mavryk_crypto.Signature.V_latest in
   let pk = Public_key.of_b58check_exn pk_s in
   let pk_b = Data_encoding.Binary.to_bytes_exn Public_key.encoding pk in
   let sk_b = Bytes.sub pk_b 0 33 in
@@ -148,19 +148,19 @@ let write_yes_wallet dest alias_pkh_pk_list =
 (** Assuming that the [keys_list] is sorted in descending order, the
     function extracts the first keys until reaching the limit of
     [total_stake] by a percentage of [share]. *)
-let filter_up_to_staking_share share total_stake to_mutez keys_list =
-  let total_stake = to_mutez total_stake in
+let filter_up_to_staking_share share total_stake to_mumav keys_list =
+  let total_stake = to_mumav total_stake in
   match share with
-  | None -> List.map (fun (pkh, pk, stb) -> (pkh, pk, to_mutez stb)) keys_list
+  | None -> List.map (fun (pkh, pk, stb) -> (pkh, pk, to_mumav stb)) keys_list
   | Some share ->
       let staking_amount_limit =
         Int64.add (Int64.mul (Int64.div total_stake 100L) share) 100L
       in
       Format.printf
-        "@[<v>@[<h>Total staking amount:@;<7 0>%Ld mutez@]@,"
+        "@[<v>@[<h>Total staking amount:@;<7 0>%Ld mumav@]@,"
         total_stake ;
       Format.printf
-        "@[Staking amount limit (%Ld%%): ~%Ld mutez@]@]@."
+        "@[Staking amount limit (%Ld%%): ~%Ld mumav@]@]@."
         share
         staking_amount_limit ;
       let rec loop ((keys_acc, stb_acc) as acc) = function
@@ -170,8 +170,8 @@ let filter_up_to_staking_share share total_stake to_mutez keys_list =
               (* Stop whenever the limit is exceeded. *)
             else
               loop
-                ( (pkh, pk, to_mutez stb) :: keys_acc,
-                  Int64.add (to_mutez stb) stb_acc )
+                ( (pkh, pk, to_mumav stb) :: keys_acc,
+                  Int64.add (to_mumav stb) stb_acc )
                 l
       in
       loop ([], 0L) keys_list |> fst |> List.rev
@@ -219,7 +219,7 @@ let get_delegates (module P : Sigs.PROTOCOL) context
             (staking_balance_info :: key_list_acc, updated_staking_balance_acc))
   in
   return
-  @@ filter_up_to_staking_share staking_share_opt total_stake P.Tez.to_mutez
+  @@ filter_up_to_staking_share staking_share_opt total_stake P.Tez.to_mumav
   @@ (* By swapping x and y we do a descending sort *)
   List.sort (fun (_, _, x) (_, _, y) -> P.Tez.compare y x) delegates
 
@@ -227,24 +227,6 @@ let protocol_of_hash protocol_hash =
   List.find
     (fun (module P : Sigs.PROTOCOL) -> Protocol_hash.equal P.hash protocol_hash)
     (Known_protocols.get_all ())
-
-(** load mainnet store from [base_dir]
-*)
-let genesis ~network =
-  (Option.value_f ~default:(fun () ->
-       Stdlib.failwith
-       @@ Format.asprintf
-            "@[Unkown network alias %s.@,Known networks are @[%a@]@]"
-            network
-            Format.(pp_print_list pp_print_string)
-            (List.map
-               (fun (alias, _) -> alias)
-               Octez_node_config.Config_file.builtin_blockchain_networks))
-  @@ List.assoc
-       ~equal:String.equal
-       network
-       Octez_node_config.Config_file.builtin_blockchain_networks)
-    .genesis
 
 (** [load_mainnet_bakers_public_keys base_dir active_backers_only
     alias_phk_pk_list] checkouts the head context at the given
@@ -255,34 +237,35 @@ let genesis ~network =
     if [active_bakers_only] then the deactivated delegates are filtered out of
     the list.
 *)
-let load_bakers_public_keys ?(staking_share_opt = None)
-    ?(network_opt = "mainnet") base_dir ~active_bakers_only alias_pkh_pk_list =
+let load_mainnet_bakers_public_keys ?(staking_share_opt = None) base_dir
+    ~active_bakers_only alias_pkh_pk_list =
   let open Lwt_result_syntax in
-  let open Tezos_store in
-  let genesis = genesis ~network:network_opt in
+  let open Mavryk_store in
+  let mainnet_genesis =
+    {
+      Genesis.time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
+      block =
+        Block_hash.of_b58check_exn
+          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
+      protocol =
+        Protocol_hash.of_b58check_exn
+          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+    }
+  in
   let* store =
-    Lwt.catch
-      (fun () ->
-        Tezos_store.Store.init
-          ~store_dir:(Filename.concat base_dir "store")
-          ~context_dir:(Filename.concat base_dir "context")
-          ~allow_testchains:true
-          ~readonly:true
-          genesis)
-      (fun exn ->
-        Format.eprintf
-          "An error occured while initialising the store. It usually happens \
-           when using the wrong network alias.\n\
-           Network alias used was \"%s\".@."
-          network_opt ;
-        tzfail (Exn exn))
+    Mavryk_store.Store.init
+      ~store_dir:(Filename.concat base_dir "store")
+      ~context_dir:(Filename.concat base_dir "context")
+      ~allow_testchains:true
+      ~readonly:true
+      mainnet_genesis
   in
   let main_chain_store = Store.main_chain_store store in
-  let*! block = Tezos_store.Store.Chain.current_head main_chain_store in
+  let*! block = Mavryk_store.Store.Chain.current_head main_chain_store in
   Format.printf
     "@[<h>Head block:@;<17 0>%a@]@."
     Block_hash.pp
-    (Tezos_store.Store.Block.hash block) ;
+    (Mavryk_store.Store.Block.hash block) ;
   let header = Store.Block.header block in
   let*! context =
     let*! r = Store.Block.context_exn main_chain_store block in
@@ -293,31 +276,16 @@ let load_bakers_public_keys ?(staking_share_opt = None)
   let* delegates =
     match protocol_of_hash protocol_hash with
     | None ->
-        if
+        Error_monad.failwith
+          "Unknown protocol hash: %a.@;Known protocols are: %a"
+          Protocol_hash.pp
           protocol_hash
-          = Protocol_hash.of_b58check_exn
-              "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
-        then
-          Error_monad.failwith
-            "Context was probably ill loaded, found Genesis protocol.@;\
-             Known protocols are: %a"
-            Format.(
-              pp_print_list
-                ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
-                Protocol_hash.pp)
-            (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
-            @@ Known_protocols.get_all ())
-        else
-          Error_monad.failwith
-            "Unknown protocol hash: %a.@;Known protocols are: %a"
-            Protocol_hash.pp
-            protocol_hash
-            Format.(
-              pp_print_list
-                ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
-                Protocol_hash.pp)
-            (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
-            @@ Known_protocols.get_all ())
+          Format.(
+            pp_print_list
+              ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
+              Protocol_hash.pp)
+          (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
+          @@ Known_protocols.get_all ())
     | Some protocol ->
         Format.printf
           "@[<h>Detected protocol:@;<10 0>%a@]@."
@@ -330,12 +298,12 @@ let load_bakers_public_keys ?(staking_share_opt = None)
           active_bakers_only
           staking_share_opt
   in
-  let*! () = Tezos_store.Store.close_store store in
+  let*! () = Mavryk_store.Store.close_store store in
   return
   @@ List.mapi
        (fun i (pkh, pk, stake) ->
-         let pkh = Tezos_crypto.Signature.Public_key_hash.to_b58check pkh in
-         let pk = Tezos_crypto.Signature.Public_key.to_b58check pk in
+         let pkh = Mavryk_crypto.Signature.Public_key_hash.to_b58check pkh in
+         let pk = Mavryk_crypto.Signature.Public_key.to_b58check pk in
          let alias =
            List.find_map
              (fun (alias, pkh', _) ->
@@ -349,13 +317,11 @@ let load_bakers_public_keys ?(staking_share_opt = None)
          (alias, pkh, pk, stake))
        delegates
 
-let build_yes_wallet ?staking_share_opt ?network_opt base_dir
-    ~active_bakers_only ~aliases =
+let build_yes_wallet ?staking_share_opt base_dir ~active_bakers_only ~aliases =
   let open Lwt_result_syntax in
   let+ mainnet_bakers =
-    load_bakers_public_keys
+    load_mainnet_bakers_public_keys
       ?staking_share_opt
-      ?network_opt
       base_dir
       ~active_bakers_only
       aliases

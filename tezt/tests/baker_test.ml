@@ -30,38 +30,6 @@
    Subject:      Run the baker while performing a lot of transfers
 *)
 
-let hooks = Tezos_regression.hooks
-
-let baker_reward_test =
-  Protocol.register_regression_test
-    ~__FILE__
-    ~title:"Baker rewards"
-    ~tags:["baker"; "rewards"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
-    (fun protocol ->
-      let* parameter_file =
-        Protocol.write_parameter_file
-          ~base:(Either.Right (protocol, Some Constants_mainnet))
-          []
-      in
-      let* node, client =
-        Client.init_with_protocol
-          `Client
-          ~protocol
-          ~timestamp:Now
-          ~parameter_file
-          ()
-      in
-      let level_2_promise = Node.wait_for_level node 2 in
-      let* baker = Baker.init ~protocol node client in
-      Log.info "Wait for new head." ;
-      Baker.log_events baker ;
-      let* _ = level_2_promise in
-      let* _ =
-        Client.RPC.call ~hooks client @@ RPC.get_chain_block_metadata ()
-      in
-      unit)
-
 let baker_test ?force_apply protocol ~keys =
   let* parameter_file =
     Protocol.write_parameter_file
@@ -90,11 +58,7 @@ let baker_test ?force_apply protocol ~keys =
   Lwt.return client
 
 let baker_simple_test =
-  Protocol.register_test
-    ~__FILE__
-    ~title:"baker test"
-    ~tags:["node"; "baker"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
+  Protocol.register_test ~__FILE__ ~title:"baker test" ~tags:["node"; "baker"]
   @@ fun protocol ->
   let* _ =
     baker_test protocol ~keys:(Account.Bootstrap.keys |> Array.to_list)
@@ -106,7 +70,6 @@ let baker_stresstest =
     ~__FILE__
     ~title:"baker stresstest"
     ~tags:["node"; "baker"; "stresstest"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
   @@ fun protocol ->
   let* node, client =
     Client.init_with_protocol `Client ~protocol () ~timestamp:Now
@@ -123,7 +86,6 @@ let baker_stresstest_apply =
     ~__FILE__
     ~title:"baker stresstest with forced application"
     ~tags:["node"; "baker"; "stresstest"; "apply"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
   @@ fun protocol ->
   let* node, client =
     Client.init_with_protocol `Client ~protocol () ~timestamp:Now
@@ -168,7 +130,7 @@ let baker_bls_test =
       client
   in
   let msg =
-    rex "The delegate tz4.*\\w is forbidden as it is a BLS public key hash"
+    rex "The delegate mv4.*\\w is forbidden as it is a BLS public key hash"
   in
   Process.check_error activate_process ~exit_code:1 ~msg
 
@@ -177,7 +139,6 @@ let baker_remote_test =
     ~__FILE__
     ~title:"Baker in RPC-only mode"
     ~tags:["baker"; "remote"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
   @@ fun protocol ->
   let* node, client =
     Client.init_with_protocol `Client ~protocol () ~timestamp:Now
@@ -188,7 +149,6 @@ let baker_remote_test =
 
 let register ~protocols =
   baker_simple_test protocols ;
-  baker_reward_test protocols ;
   baker_stresstest protocols ;
   baker_stresstest_apply protocols ;
   baker_bls_test protocols ;

@@ -15,10 +15,10 @@ use core::{
     ptr,
     slice::{from_raw_parts, from_raw_parts_mut},
 };
-use tezos_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::metadata::METADATA_SIZE;
-use tezos_smart_rollup_host::Error;
+use mavryk_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::metadata::METADATA_SIZE;
+use mavryk_smart_rollup_host::Error;
 
 impl From<HostState> for MockHost {
     fn from(state: HostState) -> Self {
@@ -80,7 +80,11 @@ unsafe impl SmartRollupCore for MockHost {
     }
 
     unsafe fn store_has(&self, path: *const u8, len: usize) -> i32 {
-        self.state.borrow().store.store_has(path, len)
+        let path = from_raw_parts(path, len);
+        self.state
+            .borrow()
+            .handle_store_has(path)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn store_read(
@@ -91,10 +95,24 @@ unsafe impl SmartRollupCore for MockHost {
         dst: *mut u8,
         max_bytes: usize,
     ) -> i32 {
-        self.state
+        let path = from_raw_parts(path, len);
+
+        let bytes = self
+            .state
             .borrow()
-            .store
-            .store_read(path, len, offset, dst, max_bytes)
+            .handle_store_read(path, offset, max_bytes);
+
+        match bytes {
+            Ok(bytes) => {
+                assert!(bytes.len() <= max_bytes);
+
+                let slice = from_raw_parts_mut(dst, bytes.len());
+                slice.copy_from_slice(bytes.as_slice());
+
+                bytes.len().try_into().unwrap()
+            }
+            Err(e) => e.code(),
+        }
     }
 
     unsafe fn store_write(
@@ -105,22 +123,43 @@ unsafe impl SmartRollupCore for MockHost {
         src: *const u8,
         num_bytes: usize,
     ) -> i32 {
+        let path = from_raw_parts(path, len);
+        let bytes = from_raw_parts(src, num_bytes);
+
         self.state
             .borrow_mut()
-            .store
-            .store_write(path, len, offset, src, num_bytes)
+            .handle_store_write(path, offset, bytes)
+            .map(|_| 0)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn store_delete(&self, path: *const u8, len: usize) -> i32 {
-        self.state.borrow_mut().store.store_delete(path, len)
+        let path = from_raw_parts(path, len);
+
+        self.state
+            .borrow_mut()
+            .handle_store_delete(path)
+            .map(|_| 0)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn store_delete_value(&self, path: *const u8, len: usize) -> i32 {
-        self.state.borrow_mut().store.store_delete_value(path, len)
+        let path = from_raw_parts(path, len);
+
+        self.state
+            .borrow_mut()
+            .handle_store_delete_value(path)
+            .map(|_| 0)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn store_list_size(&self, path: *const u8, len: usize) -> i64 {
-        self.state.borrow().store.store_list_size(path, len)
+        let path = from_raw_parts(path, len);
+
+        self.state
+            .borrow()
+            .handle_store_list_size(path)
+            .unwrap_or_else(|e| e.code() as i64)
     }
 
     unsafe fn store_move(
@@ -130,12 +169,14 @@ unsafe impl SmartRollupCore for MockHost {
         to_path: *const u8,
         to_path_len: usize,
     ) -> i32 {
-        self.state.borrow_mut().store.store_move(
-            from_path,
-            from_path_len,
-            to_path,
-            to_path_len,
-        )
+        let from_path = from_raw_parts(from_path, from_path_len);
+        let to_path = from_raw_parts(to_path, to_path_len);
+
+        self.state
+            .borrow_mut()
+            .handle_store_move(from_path, to_path)
+            .map(|_| 0)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn store_copy(
@@ -145,12 +186,14 @@ unsafe impl SmartRollupCore for MockHost {
         to_path: *const u8,
         to_path_len: usize,
     ) -> i32 {
-        self.state.borrow_mut().store.store_copy(
-            from_path,
-            from_path_len,
-            to_path,
-            to_path_len,
-        )
+        let from_path = from_raw_parts(from_path, from_path_len);
+        let to_path = from_raw_parts(to_path, to_path_len);
+
+        self.state
+            .borrow_mut()
+            .handle_store_copy(from_path, to_path)
+            .map(|_| 0)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn reveal_preimage(
@@ -180,7 +223,11 @@ unsafe impl SmartRollupCore for MockHost {
     }
 
     unsafe fn store_value_size(&self, path: *const u8, path_len: usize) -> i32 {
-        self.state.borrow().store.store_value_size(path, path_len)
+        let path = from_raw_parts(path, path_len);
+        self.state
+            .borrow()
+            .handle_store_value_size(path)
+            .unwrap_or_else(Error::code)
     }
 
     unsafe fn reveal_metadata(&self, destination_addr: *mut u8, max_bytes: usize) -> i32 {
@@ -211,9 +258,9 @@ mod tests {
     use super::MockHost;
 
     use crate::state::HostState;
-    use tezos_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, MAX_INPUT_MESSAGE_SIZE};
-    use tezos_smart_rollup_host::input::Message;
-    use tezos_smart_rollup_host::{
+    use mavryk_smart_rollup_core::{MAX_FILE_CHUNK_SIZE, MAX_INPUT_MESSAGE_SIZE};
+    use mavryk_smart_rollup_host::input::Message;
+    use mavryk_smart_rollup_host::{
         metadata::RollupMetadata,
         path::RefPath,
         runtime::{Runtime, RuntimeError},
@@ -292,7 +339,7 @@ mod tests {
         assert_eq!(
             mock.store_read_slice(&PATH, 0, &mut buffer),
             Err(RuntimeError::HostErr(
-                tezos_smart_rollup_host::Error::StoreNotAValue
+                mavryk_smart_rollup_host::Error::StoreNotAValue
             ))
         );
     }
@@ -334,8 +381,8 @@ mod tests {
         let data = vec![b'a'; size as usize];
         let path = b"/a/b";
 
-        state.store.handle_store_write(path, 0, &data).unwrap();
-        let value_size = state.store.handle_store_value_size(path).unwrap();
+        state.handle_store_write(path, 0, &data).unwrap();
+        let value_size = state.handle_store_value_size(path).unwrap();
 
         assert_eq!(size, value_size)
     }

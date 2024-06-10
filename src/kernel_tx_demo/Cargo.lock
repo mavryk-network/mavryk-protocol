@@ -2066,27 +2066,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
-name = "tezos-smart-rollup-constants"
-version = "0.2.2"
-
-[[package]]
-name = "tezos-smart-rollup-core"
+name = "mavryk-smart-rollup-core"
 version = "0.2.2"
 dependencies = [
  "mockall",
- "tezos-smart-rollup-constants",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-debug"
+name = "mavryk-smart-rollup-debug"
 version = "0.2.2"
 dependencies = [
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-host",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-encoding"
+name = "mavryk-smart-rollup-encoding"
 version = "0.2.2"
 dependencies = [
  "hex",
@@ -2095,69 +2090,69 @@ dependencies = [
  "num-traits",
  "proptest",
  "regex",
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-host",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "tezos_data_encoding_derive",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "mavryk_data_encoding_derive",
  "thiserror",
  "time 0.3.23",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-entrypoint"
+name = "mavryk-smart-rollup-entrypoint"
 version = "0.2.2"
 dependencies = [
  "dlmalloc",
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-debug",
- "tezos-smart-rollup-host",
- "tezos-smart-rollup-panic-hook",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-panic-hook",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-host"
+name = "mavryk-smart-rollup-host"
 version = "0.2.2"
 dependencies = [
  "mockall",
- "tezos-smart-rollup-core",
- "tezos_crypto_rs",
- "tezos_data_encoding",
+ "mavryk-smart-rollup-core",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
  "thiserror",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-mock"
+name = "mavryk-smart-rollup-mock"
 version = "0.2.2"
 dependencies = [
  "hex",
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-encoding",
- "tezos-smart-rollup-host",
- "tezos_crypto_rs",
- "tezos_data_encoding",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-panic-hook"
+name = "mavryk-smart-rollup-panic-hook"
 version = "0.2.2"
 dependencies = [
- "tezos-smart-rollup-core",
+ "mavryk-smart-rollup-core",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-storage"
+name = "mavryk-smart-rollup-storage"
 version = "0.2.2"
 dependencies = [
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-debug",
- "tezos-smart-rollup-encoding",
- "tezos-smart-rollup-host",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
  "thiserror",
 ]
 
 [[package]]
-name = "tezos_crypto_rs"
+name = "mavryk_crypto_rs"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "284fa6f4be10eff67ca5b2f9e8ec9544be81a07223f6a4c8d3a49a13aecce768"
@@ -2183,7 +2178,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tezos_data_encoding"
+name = "mavryk_data_encoding"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "66c34be797025fcab7a9e417a4cc374925ee796af21f8d7df5e2330cdc2595af"
@@ -2196,13 +2191,13 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "serde",
- "tezos_crypto_rs",
- "tezos_data_encoding_derive",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding_derive",
  "thiserror",
 ]
 
 [[package]]
-name = "tezos_data_encoding_derive"
+name = "mavryk_data_encoding_derive"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "82e0c104555ce4d8c790567d725dc49f519d721e114202e38e851c1ac5769f08"
@@ -2410,15 +2405,15 @@ dependencies = [
  "num-traits",
  "proptest",
  "rand 0.8.5",
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-debug",
- "tezos-smart-rollup-encoding",
- "tezos-smart-rollup-entrypoint",
- "tezos-smart-rollup-host",
- "tezos-smart-rollup-mock",
- "tezos-smart-rollup-storage",
- "tezos_crypto_rs",
- "tezos_data_encoding",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-entrypoint",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-mock",
+ "mavryk-smart-rollup-storage",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
  "thiserror",
 ]
 

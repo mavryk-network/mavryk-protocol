@@ -12,7 +12,7 @@ pub fn from_eth(eth: u64) -> Wei {
     Wei::from(eth) * Wei::from(ETH_AS_WEI)
 }
 
-pub fn eth_from_mutez(mutez: u64) -> Wei {
-    // Mutez is 10^6, Wei is 10^18
-    U256::from(mutez) * U256::exp10(12)
+pub fn eth_from_mumav(mumav: u64) -> Wei {
+    // Mumav is 10^6, Wei is 10^18
+    U256::from(mumav) * U256::exp10(12)
 }

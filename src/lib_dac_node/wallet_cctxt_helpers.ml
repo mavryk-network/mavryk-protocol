@@ -23,11 +23,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Aggregate_signature = Tezos_crypto.Aggregate_signature
+module Aggregate_signature = Mavryk_crypto.Aggregate_signature
 
 let get_keys cctxt pkh =
   let open Lwt_result_syntax in
-  let open Tezos_client_base.Client_keys in
+  let open Mavryk_client_base.Client_keys in
   let* alias = Aggregate_alias.Public_key_hash.rev_find cctxt pkh in
   match alias with
   | None -> return (pkh, None, None)

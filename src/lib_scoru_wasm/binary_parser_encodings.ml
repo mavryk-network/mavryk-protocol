@@ -23,12 +23,12 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
-open Tezos_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_lazy_containers
 module V = Instance.Vector
 module M = Instance.NameMap
 module C = Chunked_byte_vector
-open Tezos_tree_encoding
+open Mavryk_tree_encoding
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/3566
 

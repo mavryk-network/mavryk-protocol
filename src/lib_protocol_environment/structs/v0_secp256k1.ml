@@ -23,24 +23,24 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Signature.Secp256k1
+include Mavryk_crypto.Signature.Secp256k1
 
 module Public_key_hash = struct
-  include Tezos_crypto.Signature.Secp256k1.Public_key_hash
+  include Mavryk_crypto.Signature.Secp256k1.Public_key_hash
 
   module Set = struct
-    include Stdlib.Set.Make (Tezos_crypto.Signature.Secp256k1.Public_key_hash)
+    include Stdlib.Set.Make (Mavryk_crypto.Signature.Secp256k1.Public_key_hash)
 
     let encoding =
       Data_encoding.conv
         elements
         (fun l -> List.fold_left (fun m x -> add x m) empty l)
         Data_encoding.(
-          list Tezos_crypto.Signature.Secp256k1.Public_key_hash.encoding)
+          list Mavryk_crypto.Signature.Secp256k1.Public_key_hash.encoding)
   end
 
   module Map = struct
-    include Stdlib.Map.Make (Tezos_crypto.Signature.Secp256k1.Public_key_hash)
+    include Stdlib.Map.Make (Mavryk_crypto.Signature.Secp256k1.Public_key_hash)
 
     let encoding arg_encoding =
       Data_encoding.conv
@@ -49,13 +49,13 @@ module Public_key_hash = struct
         Data_encoding.(
           list
             (tup2
-               Tezos_crypto.Signature.Secp256k1.Public_key_hash.encoding
+               Mavryk_crypto.Signature.Secp256k1.Public_key_hash.encoding
                arg_encoding))
   end
 
   module Table = struct
     include Stdlib.Hashtbl.MakeSeeded (struct
-      include Tezos_crypto.Signature.Secp256k1.Public_key_hash
+      include Mavryk_crypto.Signature.Secp256k1.Public_key_hash
 
       (* See [src/lib_base/tzPervasives.ml] for an explanation *)
       [@@@ocaml.warning "-32"]
@@ -77,7 +77,7 @@ module Public_key_hash = struct
         Data_encoding.(
           list
             (tup2
-               Tezos_crypto.Signature.Secp256k1.Public_key_hash.encoding
+               Mavryk_crypto.Signature.Secp256k1.Public_key_hash.encoding
                arg_encoding))
   end
 end

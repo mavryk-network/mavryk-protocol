@@ -2,9 +2,9 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_lazy_containers)
- (public_name octez-libs.lazy-containers)
+ (name mavryk_lazy_containers)
+ (public_name mavkit-libs.lazy-containers)
  (instrumentation (backend bisect_ppx))
  (libraries
   zarith
-  octez-libs.tree-encoding))
+  mavkit-libs.tree-encoding))

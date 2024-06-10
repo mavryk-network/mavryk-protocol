@@ -18,7 +18,7 @@
              CONS ;
              NIL operation ;
              PAIR }
-           { PUSH mutez 0 ;
+           { PUSH mumav 0 ;
              DIG 2 ;
              TRANSFER_TOKENS ;
              NIL (ticket string) ;

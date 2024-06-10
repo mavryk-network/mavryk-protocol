@@ -32,7 +32,7 @@ This document describes Adaptive Issuance and Staking, two new features experime
 
 .. note::
 
-  For operational details about the new staking mechanism and its configuration, see `a new staking mechanism tutorial <https://medium.com/the-aleph/a-walkthrough-of-tezos-new-staking-mechanism-4ff0c50a57a8>`__.
+  For operational details about the new staking mechanism and its configuration, see `a new staking mechanism tutorial <https://medium.com/the-aleph/a-walkthrough-of-mavryk-new-staking-mechanism-4ff0c50a57a8>`__.
 
 .. _adaptive_issuance_alpha:
 
@@ -162,10 +162,10 @@ In this formula:
    :math:`\IL{\F{f}{c}}` and the interval
    :math:`\IL{\left[ \tc - \tr, \tc + \tr \right]}`.
 
--  :math:`\IL{\DTF = \frac{24576 \tmult 10}{86400} = 2.8\overline{444}}`,
+-  :math:`\IL{\DTF = \frac{16384 \tmult 15}{86400} = 2.8\overline{444}}`,
    denotes the minimal duration (in days) of a Tezos cycle, assuming all
-   24576 blocks in the cycle are produced at the minimal allowed time –
-   that is, every 10 seconds.
+   16384 blocks in the cycle are produced at the minimal allowed time –
+   that is, every 15 seconds.
 
 -  :math:`\IL{\sgn{\tc - \F{f}{c}} = 1}` if
    :math:`\IL{\F{f}{c} \leq \tc}` and :math:`-1` otherwise, denotes the
@@ -273,11 +273,11 @@ being subject to the existing participation conditions.
 **Nonce and VDF revelation tips.** The rewards allocated to delegates
 for contributing to :ref:`random seed generation <randomness_generation_alpha>`
 (that is for, revealing nonce seeds and posting VDF proofs) are not paid
-each block, but rather every 192 blocks. The adjusted formulas result:
+each block, but rather every 128 blocks. The adjusted formulas result:
 
 .. math::
 
-  \tip{\vdf}{c} = \tip{nr}{c} = 192 \tmult \frac{1}{\tw} \tmult \isb{c}
+  \tip{\vdf}{c} = \tip{nr}{c} = 128 \tmult \frac{1}{\tw} \tmult \isb{c}
 
 **Liquidity baking subsidy.** The :doc:`LB
 subsidy <liquidity_baking>` per block is determined by the following formula:
@@ -396,11 +396,11 @@ parameters need to be supplied. The new parameters are then applied
 
 ::
 
-   octez-client transfer 0 from <delegate> to  <delegate> --entrypoint set_delegate_parameters --arg "Pair <limit as int value in millionth)> (Pair <edge as int value in billionth> Unit)"
+   mavkit-client transfer 0 from <delegate> to  <delegate> --entrypoint set_delegate_parameters --arg "Pair <limit as int value in millionth)> (Pair <edge as int value in billionth> Unit)"
 
 or more conveniently::
 
-   octez-client set delegate parameters for  <delegate> --limit-of-staking-over-baking <value> --edge-of-baking-over-staking <value>
+   mavkit-client set delegate parameters for  <delegate> --limit-of-staking-over-baking <value> --edge-of-baking-over-staking <value>
 
 **On overstaking and overdelegation.** Note that if a delegate’s
 ``limit_of_staking_over_baking`` is exceeded (that is, the delegate is
@@ -436,21 +436,21 @@ contribute to their chosen delegate’s staking balance. Note that the
 
 ::
 
-   octez-client transfer <amount> from <staker> to <staker> --entrypoint stake
+   mavkit-client transfer <amount> from <staker> to <staker> --entrypoint stake
 
 or more conveniently::
 
-   octez-client stake <amount> for <staker>
+   mavkit-client stake <amount> for <staker>
 
 To *unstake* funds, a staker first submits an unstake request with the
 ``unstake`` pseudo-operation. This is implemented by transferring the
 chosen amount in tez to their ``unstake`` entry-point::
 
-   octez-client transfer <amount> from <staker> to <staker> --entrypoint unstake
+   mavkit-client transfer <amount> from <staker> to <staker> --entrypoint unstake
 
 or more conveniently::
 
-   octez-client unstake <amount|"everything"> for <staker>
+   mavkit-client unstake <amount|"everything"> for <staker>
 
 The requested amount will be **unstaked** but will remain **frozen**.
 After 7 cycles, unstaked frozen tokens are no longer considered at stake
@@ -462,11 +462,11 @@ making them spendable again. This is done using the ``finalize_unstake``
 entrypoint -– that is, by transferring 0 tez to their
 ``finalize_unstake`` entry-point::
 
-   octez-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake
+   mavkit-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake
 
 or more conveniently::
 
-   octez-client finalize unstake for <staker>
+   mavkit-client finalize unstake for <staker>
 
  In some circumstances, unstake and finalize can be done implicitly: any call
  to ``stake`` or ``unstake`` will implicitly finalize all currently finalizable pending

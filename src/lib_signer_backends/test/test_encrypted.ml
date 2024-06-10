@@ -88,7 +88,7 @@ let fake_ctx () : Client_context.io_wallet =
           string ->
           default:'a ->
           'a Data_encoding.t ->
-          'a Tezos_base.TzPervasives.tzresult Lwt.t =
+          'a Mavryk_base.TzPervasives.tzresult Lwt.t =
       fun _ ~default _ -> Lwt.return_ok default
 
     method load_passwords = None
@@ -102,7 +102,7 @@ let fake_ctx () : Client_context.io_wallet =
           string ->
           'a ->
           'a Data_encoding.t ->
-          unit Tezos_base.TzPervasives.tzresult Lwt.t =
+          unit Mavryk_base.TzPervasives.tzresult Lwt.t =
       fun _ _ _ -> Lwt.return_ok ()
 
     method last_modification_time : string -> float option tzresult Lwt.t =
@@ -180,13 +180,13 @@ let bls12_381_sks_encrypted =
 
 let sk_testable =
   Alcotest.testable
-    Tezos_crypto.Signature.Secret_key.pp
-    Tezos_crypto.Signature.Secret_key.equal
+    Mavryk_crypto.Signature.Secret_key.pp
+    Mavryk_crypto.Signature.Secret_key.equal
 
 let aggregate_sk_testable =
   Alcotest.testable
-    Tezos_crypto.Aggregate_signature.Secret_key.pp
-    Tezos_crypto.Aggregate_signature.Secret_key.equal
+    Mavryk_crypto.Aggregate_signature.Secret_key.pp
+    Mavryk_crypto.Aggregate_signature.Secret_key.equal
 
 let test_vectors () =
   let open Encrypted in
@@ -195,7 +195,7 @@ let test_vectors () =
       let open Lwt_result_syntax in
       let ctx = fake_ctx () in
       let sks =
-        List.map Tezos_crypto.Signature.Secret_key.of_b58check_exn sks
+        List.map Mavryk_crypto.Signature.Secret_key.of_b58check_exn sks
       in
       let*? l = encrypted_sks in
       let* decs = List.map_es (decrypt ctx) l in
@@ -214,12 +214,12 @@ let test_vectors_aggregate () =
       let open Lwt_result_syntax in
       let ctx = fake_ctx () in
       let sks =
-        List.map Tezos_crypto.Aggregate_signature.Secret_key.of_b58check_exn sks
+        List.map Mavryk_crypto.Aggregate_signature.Secret_key.of_b58check_exn sks
       in
       let*? l = encrypted_sks in
       let* decs = List.map_es (decrypt_aggregate ctx) l in
       assert (
-        List.equal Tezos_crypto.Aggregate_signature.Secret_key.equal decs sks) ;
+        List.equal Mavryk_crypto.Aggregate_signature.Secret_key.equal decs sks) ;
       return_unit)
     [(bls12_381_sks, bls12_381_sks_encrypted)]
 
@@ -231,9 +231,9 @@ let test_random algo =
     let open Lwt_result_syntax in
     if i >= loops then return_unit
     else
-      let _, _, sk = Tezos_crypto.Signature.generate_key ~algo () in
+      let _, _, sk = Mavryk_crypto.Signature.generate_key ~algo () in
       let* sk_uri =
-        Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt ctx sk
+        Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt ctx sk
       in
       let* decrypted_sk = decrypt decrypt_ctx sk_uri in
       Alcotest.check sk_testable "test_encrypt: decrypt" sk decrypted_sk ;
@@ -249,9 +249,9 @@ let test_random_aggregate () =
     let open Lwt_result_syntax in
     if i >= loops then return_unit
     else
-      let _, _, sk = Tezos_crypto.Aggregate_signature.generate_key () in
+      let _, _, sk = Mavryk_crypto.Aggregate_signature.generate_key () in
       let* sk_uri =
-        Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt_aggregate
+        Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt_aggregate
           ctx
           sk
       in
@@ -274,7 +274,7 @@ let test_random_aggregate () =
 let test_random _switch () =
   let open Lwt_syntax in
   let* r =
-    List.iter_es test_random Tezos_crypto.Signature.[Ed25519; Secp256k1; P256]
+    List.iter_es test_random Mavryk_crypto.Signature.[Ed25519; Secp256k1; P256]
   in
   match r with
   | Ok _ -> Lwt.return_unit
@@ -330,5 +330,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-signer-backends" [("encrypted", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-signer-backends" [("encrypted", tests)]
   |> Lwt_main.run

@@ -27,7 +27,6 @@
 
 type dal = {
   feature_enable : bool;
-  incentives_enable : bool;
   number_of_slots : int;
   attestation_lag : int;
   attestation_threshold : int;
@@ -40,7 +39,6 @@ let dal_encoding =
   conv
     (fun {
            feature_enable;
-           incentives_enable;
            number_of_slots;
            attestation_lag;
            attestation_threshold;
@@ -48,14 +46,12 @@ let dal_encoding =
            blocks_per_epoch;
          } ->
       ( ( feature_enable,
-          incentives_enable,
           number_of_slots,
           attestation_lag,
           attestation_threshold,
           blocks_per_epoch ),
         cryptobox_parameters ))
     (fun ( ( feature_enable,
-             incentives_enable,
              number_of_slots,
              attestation_lag,
              attestation_threshold,
@@ -63,7 +59,6 @@ let dal_encoding =
            cryptobox_parameters ) ->
       {
         feature_enable;
-        incentives_enable;
         number_of_slots;
         attestation_lag;
         attestation_threshold;
@@ -71,9 +66,8 @@ let dal_encoding =
         cryptobox_parameters;
       })
     (merge_objs
-       (obj6
+       (obj5
           (req "feature_enable" bool)
-          (req "incentives_enable" bool)
           (req "number_of_slots" int16)
           (req "attestation_lag" int16)
           (req "attestation_threshold" int16)
@@ -144,12 +138,8 @@ type zk_rollup = {
 }
 
 type adaptive_rewards_params = {
-  issuance_ratio_final_min : Q.t;
-  issuance_ratio_final_max : Q.t;
-  issuance_ratio_initial_min : Q.t;
-  issuance_ratio_initial_max : Q.t;
-  initial_period : int;
-  transition_period : int;
+  issuance_ratio_min : Q.t;
+  issuance_ratio_max : Q.t;
   max_bonus : Issuance_bonus_repr.max_bonus;
   growth_rate : Q.t;
   center_dz : Q.t;
@@ -163,8 +153,6 @@ type adaptive_issuance = {
   adaptive_rewards_params : adaptive_rewards_params;
   activation_vote_enable : bool;
   autostaking_enable : bool;
-  force_activation : bool;
-  ns_enable : bool;
 }
 
 type issuance_weights = {
@@ -179,9 +167,6 @@ type issuance_weights = {
 
 type t = {
   preserved_cycles : int;
-  consensus_rights_delay : int;
-  blocks_preservation_cycles : int;
-  delegate_parameters_activation_delay : int;
   blocks_per_cycle : int32;
   blocks_per_commitment : int32;
   nonce_revelation_threshold : int32;
@@ -374,56 +359,36 @@ let adaptive_rewards_params_encoding =
   let open Data_encoding in
   conv
     (fun {
-           issuance_ratio_final_min;
-           issuance_ratio_final_max;
-           issuance_ratio_initial_min;
-           issuance_ratio_initial_max;
-           initial_period;
-           transition_period;
+           issuance_ratio_min;
+           issuance_ratio_max;
            max_bonus;
            growth_rate;
            center_dz;
            radius_dz;
          } ->
-      ( issuance_ratio_final_min,
-        issuance_ratio_final_max,
-        issuance_ratio_initial_min,
-        issuance_ratio_initial_max,
-        initial_period,
-        transition_period,
+      ( issuance_ratio_min,
+        issuance_ratio_max,
         max_bonus,
         growth_rate,
         center_dz,
         radius_dz ))
-    (fun ( issuance_ratio_final_min,
-           issuance_ratio_final_max,
-           issuance_ratio_initial_min,
-           issuance_ratio_initial_max,
-           initial_period,
-           transition_period,
+    (fun ( issuance_ratio_min,
+           issuance_ratio_max,
            max_bonus,
            growth_rate,
            center_dz,
            radius_dz ) ->
       {
-        issuance_ratio_final_min;
-        issuance_ratio_final_max;
-        issuance_ratio_initial_min;
-        issuance_ratio_initial_max;
-        initial_period;
-        transition_period;
+        issuance_ratio_min;
+        issuance_ratio_max;
         max_bonus;
         growth_rate;
         center_dz;
         radius_dz;
       })
-    (obj10
-       (req "issuance_ratio_final_min" extremum_encoding)
-       (req "issuance_ratio_final_max" extremum_encoding)
-       (req "issuance_ratio_initial_min" extremum_encoding)
-       (req "issuance_ratio_initial_max" extremum_encoding)
-       (req "initial_period" uint8)
-       (req "transition_period" uint8)
+    (obj6
+       (req "issuance_ratio_min" extremum_encoding)
+       (req "issuance_ratio_max" extremum_encoding)
        (req "max_bonus" Issuance_bonus_repr.max_bonus_encoding)
        (req "growth_rate" growth_rate_encoding)
        (req "center_dz" center_encoding)
@@ -439,25 +404,19 @@ let adaptive_issuance_encoding =
            adaptive_rewards_params;
            activation_vote_enable;
            autostaking_enable;
-           force_activation;
-           ns_enable;
          } ->
       ( global_limit_of_staking_over_baking,
         edge_of_staking_over_delegation,
         launch_ema_threshold,
         adaptive_rewards_params,
         activation_vote_enable,
-        autostaking_enable,
-        force_activation,
-        ns_enable ))
+        autostaking_enable ))
     (fun ( global_limit_of_staking_over_baking,
            edge_of_staking_over_delegation,
            launch_ema_threshold,
            adaptive_rewards_params,
            activation_vote_enable,
-           autostaking_enable,
-           force_activation,
-           ns_enable ) ->
+           autostaking_enable ) ->
       {
         global_limit_of_staking_over_baking;
         edge_of_staking_over_delegation;
@@ -465,18 +424,14 @@ let adaptive_issuance_encoding =
         adaptive_rewards_params;
         activation_vote_enable;
         autostaking_enable;
-        force_activation;
-        ns_enable;
       })
-    (obj8
+    (obj6
        (req "global_limit_of_staking_over_baking" uint8)
        (req "edge_of_staking_over_delegation" uint8)
        (req "adaptive_issuance_launch_ema_threshold" int32)
        (req "adaptive_rewards_params" adaptive_rewards_params_encoding)
        (req "adaptive_issuance_activation_vote_enable" bool)
-       (req "autostaking_enable" bool)
-       (req "adaptive_issuance_force_activation" bool)
-       (req "ns_enable" bool))
+       (req "autostaking_enable" bool))
 
 let issuance_weights_encoding =
   let open Data_encoding in
@@ -527,19 +482,16 @@ let encoding =
   let open Data_encoding in
   conv
     (fun c ->
-      ( ( ( c.preserved_cycles,
-            c.consensus_rights_delay,
-            c.blocks_preservation_cycles,
-            c.delegate_parameters_activation_delay ),
-          ( c.blocks_per_cycle,
-            c.blocks_per_commitment,
-            c.nonce_revelation_threshold,
-            c.blocks_per_stake_snapshot,
-            c.cycles_per_voting_period,
-            c.hard_gas_limit_per_operation,
-            c.hard_gas_limit_per_block,
-            c.proof_of_work_threshold,
-            c.minimal_stake ) ),
+      ( ( c.preserved_cycles,
+          c.blocks_per_cycle,
+          c.blocks_per_commitment,
+          c.nonce_revelation_threshold,
+          c.blocks_per_stake_snapshot,
+          c.cycles_per_voting_period,
+          c.hard_gas_limit_per_operation,
+          c.hard_gas_limit_per_block,
+          c.proof_of_work_threshold,
+          c.minimal_stake ),
         ( ( c.minimal_frozen_stake,
             c.vdf_difficulty,
             c.origination_size,
@@ -568,19 +520,16 @@ let encoding =
                   ( (c.sc_rollup, c.zk_rollup),
                     (c.adaptive_issuance, c.direct_ticket_spending_enable) ) )
               ) ) ) ) ))
-    (fun ( ( ( preserved_cycles,
-               consensus_rights_delay,
-               blocks_preservation_cycles,
-               delegate_parameters_activation_delay ),
-             ( blocks_per_cycle,
-               blocks_per_commitment,
-               nonce_revelation_threshold,
-               blocks_per_stake_snapshot,
-               cycles_per_voting_period,
-               hard_gas_limit_per_operation,
-               hard_gas_limit_per_block,
-               proof_of_work_threshold,
-               minimal_stake ) ),
+    (fun ( ( preserved_cycles,
+             blocks_per_cycle,
+             blocks_per_commitment,
+             nonce_revelation_threshold,
+             blocks_per_stake_snapshot,
+             cycles_per_voting_period,
+             hard_gas_limit_per_operation,
+             hard_gas_limit_per_block,
+             proof_of_work_threshold,
+             minimal_stake ),
            ( ( minimal_frozen_stake,
                vdf_difficulty,
                origination_size,
@@ -611,9 +560,6 @@ let encoding =
                ) ) ) ) ->
       {
         preserved_cycles;
-        consensus_rights_delay;
-        blocks_preservation_cycles;
-        delegate_parameters_activation_delay;
         blocks_per_cycle;
         blocks_per_commitment;
         nonce_revelation_threshold;
@@ -654,26 +600,21 @@ let encoding =
         direct_ticket_spending_enable;
       })
     (merge_objs
-       (merge_objs
-          (obj4
-             (req "preserved_cycles" uint8)
-             (req "consensus_rights_delay" uint8)
-             (req "blocks_preservation_cycles" uint8)
-             (req "delegate_parameters_activation_delay" uint8))
-          (obj9
-             (req "blocks_per_cycle" int32)
-             (req "blocks_per_commitment" int32)
-             (req "nonce_revelation_threshold" int32)
-             (req "blocks_per_stake_snapshot" int32)
-             (req "cycles_per_voting_period" int32)
-             (req
-                "hard_gas_limit_per_operation"
-                Gas_limit_repr.Arith.z_integral_encoding)
-             (req
-                "hard_gas_limit_per_block"
-                Gas_limit_repr.Arith.z_integral_encoding)
-             (req "proof_of_work_threshold" int64)
-             (req "minimal_stake" Tez_repr.encoding)))
+       (obj10
+          (req "preserved_cycles" uint8)
+          (req "blocks_per_cycle" int32)
+          (req "blocks_per_commitment" int32)
+          (req "nonce_revelation_threshold" int32)
+          (req "blocks_per_stake_snapshot" int32)
+          (req "cycles_per_voting_period" int32)
+          (req
+             "hard_gas_limit_per_operation"
+             Gas_limit_repr.Arith.z_integral_encoding)
+          (req
+             "hard_gas_limit_per_block"
+             Gas_limit_repr.Arith.z_integral_encoding)
+          (req "proof_of_work_threshold" int64)
+          (req "minimal_stake" Tez_repr.encoding))
        (merge_objs
           (obj7
              (req "minimal_frozen_stake" Tez_repr.encoding)
@@ -717,20 +658,3 @@ let encoding =
                          (merge_objs
                             adaptive_issuance_encoding
                             (obj1 (req "direct_ticket_spending_enable" bool))))))))))
-
-let update_sc_rollup_parameter ~block_time c =
-  let seconds_in_a_day = 60 * 60 * 24 in
-  let seconds_in_a_week = seconds_in_a_day * 7 in
-  {
-    c with
-    challenge_window_in_blocks = seconds_in_a_week * 2 / block_time;
-    (* Same as challenge_window_in_blocks *)
-    max_active_outbox_levels = Int32.of_int (seconds_in_a_week * 2 / block_time);
-    commitment_period_in_blocks = 60 * 15 / block_time;
-    max_lookahead_in_blocks = Int32.of_int (seconds_in_a_day * 30 / block_time);
-    timeout_period_in_blocks = seconds_in_a_week / block_time;
-  }
-
-module Internal_for_tests = struct
-  let sc_rollup_encoding = sc_rollup_encoding
-end

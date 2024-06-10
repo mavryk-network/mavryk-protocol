@@ -253,7 +253,7 @@ let same_gas_and_fees_but_different_ops =
 let replacement_fees_below_threshold =
   replacement_test_helper
     ~__LOC__
-    ~title:"Second op's fees are below threshold by 1 mutez"
+    ~title:"Second op's fees are below threshold by 1 mumav"
     ~op1:default_op
     ~op2:{replacement_op with fee = replacement_op.fee - 1}
     ~incheck1:check_validated
@@ -277,7 +277,7 @@ let replacement_fees_equal_to_threshold =
 let replacement_fees_above_threshold =
   replacement_test_helper
     ~__LOC__
-    ~title:"Second op's fees are above replacement fees threshold by 1 mutez"
+    ~title:"Second op's fees are above replacement fees threshold by 1 mumav"
     ~op1:default_op
     ~op2:{replacement_op with fee = replacement_op.fee + 1}
     ~incheck1:check_validated

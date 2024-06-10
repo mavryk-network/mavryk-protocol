@@ -28,11 +28,11 @@
     -------
     Component:    Tree_encoding_decoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_wasm_pvm.ml
-    Subject:      WASM PVM evaluation tests for the tezos-scoru-wasm library
+    Subject:      WASM PVM evaluation tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_scoru_wasm
-open Tezos_scoru_wasm_helpers.Encodings_util
+open Mavryk_scoru_wasm
+open Mavryk_scoru_wasm_helpers.Encodings_util
 open Wasm_utils
 open Tztest_helper
 
@@ -111,10 +111,10 @@ let should_run_debug_kernel ~version () =
   return_ok_unit
 
 let add_value ?(content = "a very long value") tree key_steps =
-  let open Tezos_lazy_containers in
+  let open Mavryk_lazy_containers in
   let value = Chunked_byte_vector.of_string content in
   Tree_encoding_runner.encode
-    Tezos_tree_encoding.(
+    Mavryk_tree_encoding.(
       scope
         ("durable" :: List.append key_steps ["@"])
         Chunked_byte_vector.encoding)
@@ -318,7 +318,7 @@ let should_run_store_delete_kernel ~version () =
 
 let assert_store_value tree path expected_value =
   let open Lwt_syntax in
-  let open Tezos_lazy_containers in
+  let open Mavryk_lazy_containers in
   let* durable = wrap_as_durable_storage tree in
   let durable = Durable.of_storage_exn durable in
   let* value = Durable.find_value durable (Durable.key_of_string_exn path) in
@@ -481,7 +481,7 @@ let try_availability_above_v1_only ~version import_name import_params
   let predicate state =
     match version with
     | Wasm_pvm_state.V0 -> is_stuck state
-    | V1 | V2 | V3 | V4 -> not (is_stuck state)
+    | V1 | V2 | V3 -> not (is_stuck state)
   in
   assert (predicate state) ;
   Lwt_result_syntax.return_unit
@@ -600,7 +600,7 @@ let build_snapshot_wasm_state_from_set_input
   let open Wasm_pvm_state.Internal_state in
   (* Only serves to encode the `Snapshot` state. *)
   let state_encoding =
-    Tezos_tree_encoding.(
+    Mavryk_tree_encoding.(
       tagged_union
         (value [] Data_encoding.string)
         [
@@ -614,14 +614,14 @@ let build_snapshot_wasm_state_from_set_input
   (* Serves to encode the `Input_requested` status. *)
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.scope ["wasm"] state_encoding)
+      (Mavryk_tree_encoding.scope ["wasm"] state_encoding)
       Collect
       tree
   in
   (* Since we start directly after reading an inbox. *)
   let* previous_top_level_call =
     Encodings_util.Tree_encoding_runner.decode
-      (Tezos_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
+      (Mavryk_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
       tree
   in
 
@@ -629,26 +629,26 @@ let build_snapshot_wasm_state_from_set_input
 
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value ["wasm"; "current_tick"] Data_encoding.n)
+      (Mavryk_tree_encoding.value ["wasm"; "current_tick"] Data_encoding.n)
       new_last_top_level_call
       tree
   in
   let* tree = Wasm.Internal_for_tests.reset_reboot_counter tree in
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
+      (Mavryk_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
       new_last_top_level_call
       tree
   in
   (* The kernel had read three inputs (SOL, Info_per_level and EOL). *)
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value
+      (Mavryk_tree_encoding.value
          ["wasm"; "input"]
          Wasm_pvm_sig.input_info_encoding)
       {
         inbox_level =
-          Stdlib.Option.get (Tezos_base.Bounded.Non_negative_int32.of_value 0l);
+          Stdlib.Option.get (Mavryk_base.Bounded.Non_negative_int32.of_value 0l);
         message_counter = Z.(succ one);
       }
       tree
@@ -660,7 +660,7 @@ let build_snapshot_wasm_state_from_set_input
   in
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value
+      (Mavryk_tree_encoding.value
          ["value"; "pvm"; "buffers"; "input"; "length"]
          Data_encoding.n)
       Z.zero
@@ -668,7 +668,7 @@ let build_snapshot_wasm_state_from_set_input
   in
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value
+      (Mavryk_tree_encoding.value
          ["value"; "pvm"; "buffers"; "input"; "head"]
          Data_encoding.n)
       Z.zero
@@ -678,7 +678,7 @@ let build_snapshot_wasm_state_from_set_input
   (* The kernel will have been set as the fallback kernel. *)
   let* durable =
     Encodings_util.Tree_encoding_runner.decode
-      (Tezos_tree_encoding.scope ["durable"] Durable.encoding)
+      (Mavryk_tree_encoding.scope ["durable"] Durable.encoding)
       tree
   in
   let* durable =
@@ -711,7 +711,7 @@ let build_snapshot_wasm_state_from_set_input
           Int32.(succ (Z.to_int32 Constants.maximum_reboots_per_input)))
   in
   Encodings_util.Tree_encoding_runner.encode
-    (Tezos_tree_encoding.scope ["durable"] Durable.encoding)
+    (Mavryk_tree_encoding.scope ["durable"] Durable.encoding)
     durable
     tree
 
@@ -977,7 +977,7 @@ let test_durable_store_io ~version () =
   let*! value =
     Durable.find_value_exn durable (Durable.key_of_string_exn "/to/value")
   in
-  let*! value = Tezos_lazy_containers.Chunked_byte_vector.to_string value in
+  let*! value = Mavryk_lazy_containers.Chunked_byte_vector.to_string value in
   let expected = String.sub content read_offset 1 in
   assert (expected = value) ;
   return_unit
@@ -1047,7 +1047,7 @@ let assert_fallback_kernel tree expected_kernel =
   let durable = Durable.of_storage_exn durable in
   let* value = Durable.find_value durable Constants.kernel_fallback_key in
   let+ value =
-    Option.map_s Tezos_lazy_containers.Chunked_byte_vector.to_string value
+    Option.map_s Mavryk_lazy_containers.Chunked_byte_vector.to_string value
   in
   assert (Option.equal String.equal value expected_kernel)
 
@@ -1057,7 +1057,7 @@ let assert_kernel tree expected_kernel =
   let durable = Durable.of_storage_exn durable in
   let* value = Durable.find_value durable Constants.kernel_key in
   let+ value =
-    Option.map_s Tezos_lazy_containers.Chunked_byte_vector.to_string value
+    Option.map_s Mavryk_lazy_containers.Chunked_byte_vector.to_string value
   in
   assert (Option.equal String.equal value expected_kernel)
 
@@ -1247,7 +1247,7 @@ let test_pvm_reboot_counter ~version ~pvm_max_reboots () =
            storage"
     | Some value ->
         let*! value =
-          Tezos_lazy_containers.Chunked_byte_vector.to_bytes value
+          Mavryk_lazy_containers.Chunked_byte_vector.to_bytes value
         in
         (* WASM Values in memories are encoded in little-endian order. *)
         return @@ Bytes.get_int32_le value 0
@@ -1304,7 +1304,7 @@ let test_kernel_reboot_gen ~version ~reboots ~expected_reboots ~pvm_max_reboots
   in
   let reboot_counter_in_memory_offset =
     reboot_flag_in_memory_offset
-    + Tezos_webassembly_interpreter.Types.(num_size I32Type)
+    + Mavryk_webassembly_interpreter.Types.(num_size I32Type)
     (* Number of bytes taken by the flag in memory *)
   in
 
@@ -1461,7 +1461,7 @@ let test_kernel_reboot_gen ~version ~reboots ~expected_reboots ~pvm_max_reboots
         "Evaluation error: couldn't find the reboot counter in the durable \
          storage"
   | Some value ->
-      let*! value = Tezos_lazy_containers.Chunked_byte_vector.to_bytes value in
+      let*! value = Mavryk_lazy_containers.Chunked_byte_vector.to_bytes value in
       (* WASM Values in memories are encoded in little-endian order. *)
       let value = Bytes.get_int32_le value 0 in
       assert (value = expected_reboots) ;
@@ -1539,7 +1539,7 @@ let test_inbox_cleanup ~version () =
   let check_messages_count tree count =
     let+ buffer = Wasm.Internal_for_tests.get_input_buffer tree in
     let inputs_before_exec =
-      Tezos_lazy_containers.Lazy_vector.Mutable.ZVector.num_elements buffer
+      Mavryk_lazy_containers.Lazy_vector.Mutable.ZVector.num_elements buffer
     in
     assert (inputs_before_exec = Z.of_int count)
   in
@@ -1663,7 +1663,7 @@ let eval_and_test_outboxes_gen test_outbox max_level tree =
 
 let test_outboxes_at_each_level ~version () =
   let open Lwt_syntax in
-  let open Tezos_webassembly_interpreter.Output_buffer in
+  let open Mavryk_webassembly_interpreter.Output_buffer in
   let output_message = "output_message" in
 
   (* Checks that each outbox exists for levels 0 to [outbox_level] *)
@@ -1686,8 +1686,8 @@ let test_outboxes_at_each_level ~version () =
 
 let test_outbox_validity_period ~version () =
   let open Lwt_syntax in
-  let open Tezos_webassembly_interpreter.Output_buffer in
-  let open Tezos_webassembly_interpreter.Output_buffer.Internal_for_tests in
+  let open Mavryk_webassembly_interpreter.Output_buffer in
+  let open Mavryk_webassembly_interpreter.Output_buffer.Internal_for_tests in
   let output_message = "output_message" in
 
   let outbox_validity_period = 2l in

@@ -1,17 +1,8 @@
-use kernel_loader::Memory;
-use rvemu::{emulator::Emulator, exception::Exception};
-use std::{error::Error, fs};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_smart_rollup_encoding::{
-    michelson::MichelsonUnit, public_key_hash::PublicKeyHash, smart_rollup::SmartRollupAddress,
-};
+use rvemu::{cpu::Mode, emulator::Emulator, exception::Exception};
+use std::error::Error;
 
-mod boot;
 mod cli;
-mod devicetree;
-mod inbox;
 mod input;
-mod rv;
 mod syscall;
 
 /// Convert a RISC-V exception into an error.
@@ -23,75 +14,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cli = cli::parse();
 
     let mut emu = Emulator::new();
+    emu.cpu.mode = Mode::User;
 
     // Load the ELF binary into the emulator.
-    let contents = std::fs::read(&cli.input)?;
-    let initrd_addr = input::configure_emulator(&contents, &mut emu)?;
-
-    // Load the initial ramdisk to memory.
-    let initrd_info = cli
-        .initrd
-        .map(|initrd_path| -> Result<_, Box<dyn Error>> {
-            let initrd = fs::read(initrd_path)?;
-            emu.cpu.bus.write_bytes(initrd_addr, initrd.as_slice())?;
-            Ok(devicetree::InitialRamDisk {
-                start: initrd_addr,
-                length: initrd.len() as u64,
-            })
-        })
-        .transpose()?;
-
-    // Generate and load the flattened device tree.
-    let dtb_addr = initrd_info
-        .as_ref()
-        .map(|info| info.start + info.length)
-        .unwrap_or(initrd_addr);
-    let dtb = devicetree::generate(initrd_info)?;
-    emu.cpu.bus.write_bytes(dtb_addr, dtb.as_slice())?;
-
-    // Prepare the boot procedure
-    boot::configure(&mut emu, dtb_addr);
-
-    // Rollup metadata
-    let meta = syscall::RollupMetadata {
-        origination_level: cli.origination_level,
-        address: SmartRollupAddress::from_b58check(cli.address.as_str()).unwrap(),
-    };
-
-    // Prepare inbox
-    let mut inbox = inbox::InboxBuilder::new();
-    inbox
-        .insert_external(vec![1, 2, 3, 4])
-        .insert_external(vec![1, 4, 3, 2])
-        .next_level()
-        .insert_external(vec![1, 1])
-        .next_level()
-        .insert_external(vec![1, 2])
-        .next_level()
-        .insert_transfer(
-            ContractKt1Hash::from_base58_check("KT1EfTusMLoeCAAGd9MZJn5yKzFr6kJU5U91").unwrap(),
-            PublicKeyHash::from_b58check("tz1dJ21ejKD17t7HKcKkTPuwQphgcSiehTYi").unwrap(),
-            meta.address.clone(),
-            MichelsonUnit,
-        );
-    let mut inbox = inbox.build();
-
-    let handle_syscall = if cli.posix {
-        fn dummy(
-            emu: &mut Emulator,
-            _: &syscall::RollupMetadata,
-            _: &mut inbox::Inbox,
-        ) -> Result<(), Box<dyn Error>> {
-            syscall::handle_posix(emu)
-        }
-        dummy
-    } else {
-        syscall::handle_sbi
-    };
+    input::Input::load_file(&cli.input)?
+        .configure_emulator(&mut emu)
+        .map_err(exception_to_error)?;
 
     let mut prev_pc = emu.cpu.pc;
-
-    while inbox.none_count() < 2 || cli.keep_going {
+    loop {
         emu.cpu.devices_increment();
 
         if let Some(interrupt) = emu.cpu.check_pending_interrupt() {
@@ -105,31 +36,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         emu.cpu
             .execute()
             .map(|_| ())
-            .or_else(|exception| -> Result<(), Box<dyn Error>> {
-                match exception {
-                    Exception::EnvironmentCallFromSMode | Exception::EnvironmentCallFromUMode => {
-                        handle_syscall(&mut emu, &meta, &mut inbox).map_err(
-                            |err| -> Box<dyn Error> {
-                                format!("Failed to handle environment call at {prev_pc:x}: {}", err)
-                                    .as_str()
-                                    .into()
-                            },
-                        )?;
+            .or_else(|exception| match exception {
+                Exception::EnvironmentCallFromUMode => syscall::handle(&mut emu),
 
-                        // We need to update the program counter ourselves now.
-                        // This is a recent change in behaviour in RVEmu.
-                        emu.cpu.pc += 4;
+                _ => {
+                    let trap = exception.take_trap(&mut emu.cpu);
 
-                        Ok(())
-                    }
-
-                    _ => {
-                        let trap = exception.take_trap(&mut emu.cpu);
-
-                        // Don't bother handling other exceptions. For now they're
-                        // all fatal.
-                        panic!("Exception {:?} at {:#x}: {:?}", exception, prev_pc, trap)
-                    }
+                    // Don't bother handling other exceptions. For now they're
+                    // all fatal.
+                    panic!("Exception {:?} at {:#x}: {:?}", exception, prev_pc, trap)
                 }
             })?;
 
@@ -140,6 +55,4 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         prev_pc = emu.cpu.pc;
     }
-
-    Ok(())
 }

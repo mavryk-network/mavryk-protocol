@@ -29,9 +29,9 @@
     given public key hash [pkh] in the wallet context [cctxt]. *)
 val get_keys :
   #Client_context.wallet ->
-  Tezos_crypto.Aggregate_signature.public_key_hash ->
-  (Tezos_crypto.Aggregate_signature.public_key_hash
-  * Tezos_crypto.Aggregate_signature.public_key option
+  Mavryk_crypto.Aggregate_signature.public_key_hash ->
+  (Mavryk_crypto.Aggregate_signature.public_key_hash
+  * Mavryk_crypto.Aggregate_signature.public_key option
   * Client_keys.aggregate_sk_uri option)
   tzresult
   Lwt.t
@@ -41,21 +41,21 @@ val get_keys :
   *)
 val get_public_key :
   #Client_context.wallet ->
-  Tezos_crypto.Aggregate_signature.public_key_hash ->
-  Tezos_crypto.Aggregate_signature.public_key option tzresult Lwt.t
+  Mavryk_crypto.Aggregate_signature.public_key_hash ->
+  Mavryk_crypto.Aggregate_signature.public_key option tzresult Lwt.t
 
 (** [can_verify (pkh, pk_opt, sk_uri_opt)] checks whether the public key
     [pk_opt] of an account is defined. *)
 val can_verify :
-  Tezos_crypto.Aggregate_signature.public_key_hash
-  * Tezos_crypto.Aggregate_signature.public_key option
+  Mavryk_crypto.Aggregate_signature.public_key_hash
+  * Mavryk_crypto.Aggregate_signature.public_key option
   * Client_keys.aggregate_sk_uri option ->
   bool
 
 (** [can_sign (pkh, pk_opt, sk_uri_opt)] checks whether the secret key URI
     [sk_uri_opt] of an account is defined. *)
 val can_sign :
-  Tezos_crypto.Aggregate_signature.public_key_hash
-  * Tezos_crypto.Aggregate_signature.public_key option tzresult
+  Mavryk_crypto.Aggregate_signature.public_key_hash
+  * Mavryk_crypto.Aggregate_signature.public_key option tzresult
   * Client_keys.aggregate_sk_uri option ->
   bool

@@ -3,7 +3,7 @@ The storage layer
 *****************
 
 This document explains the inner workings of the storage layer of the
-Octez shell. The storage layer is responsible for aggregating blocks
+Mavkit shell. The storage layer is responsible for aggregating blocks
 (along with their respective ledger state and :ref:`metadata <def_metadata>`) and operations within blocks. It is composed of two
 main components: a :ref:`store component <store_component>`
 providing storage abstractions for blockchain data such as blocks and operations; and the :ref:`context component <context_component>` providing storage abstractions for ledger states (also called contexts).
@@ -13,7 +13,7 @@ providing storage abstractions for blockchain data such as blocks and operations
 Store
 #####
 
-The store component is the :package-api:`Tezos_store <octez-shell-libs/Tezos_store/index.html>` module implemented in the :src:`src/lib_store` directory. It handles the on-disk storage of static objects such as
+The store component is the :package-api:`Mavryk_store <mavkit-shell-libs/Mavryk_store/index.html>` module implemented in the :src:`src/lib_store` directory. It handles the on-disk storage of static objects such as
 blocks, operations, block's metadata, protocols and chain data. The
 store also handles the chain's current state: current head, invalid
 blocks, active test chains, etc. The store component is designed to
@@ -45,14 +45,17 @@ Both operations are explained next.
 Trimming
 ********
 
-The protocol indicates to the shell, through some metadata present in
-the block application result, how much history is relevant to keep in
-order to preserve useful informations. If too much history is present,
-the storage layer triggers a clean-up mechanism which trims the
-chain's outdated history. Only the linear history that is part of the
-finalized chain will remain, discarding all the unreachable forks in
-the process. The resulting sequential interval of blocks that is
-returned represents a *cycle*.
+.. _lafl:
+
+To notice when a cycle has completed, the store uses the
+latest head's metadata that contains the **last allowed fork
+level**. This specifies the point under which the local chain cannot be
+reorganized. When a protocol validation operation returns a changed
+value for this point, it means that a cycle has completed. Then, the store
+retrieves all the blocks from ``(head-1).last_allowed_fork_level + 1``
+to ``head.last_allowed_fork_level``, which contain all the blocks of the
+completed cycle, that cannot be reorganized anymore, and trims the
+potential branches to yield a linear history.
 
 Pruning
 *******
@@ -69,10 +72,8 @@ present but only the 10 most recent cemented cycles will have some
 metadata kept (see details at :ref:`History_mode_additional_cycles`).
 Older metadata is pruned.
 
-Starting with Octez v15.0, the store also triggers *context pruning* when a cycle is completed, after finishing the store trimming and cementing.
+Starting with Mavkit v15.0, the store also triggers *context pruning* when a cycle is completed, after finishing the store trimming and cementing.
 Thus, whenever pruning the metadata of a block, its context (ledger state associated to that block) is pruned as well.
-
-For the operational details of pruning, see :ref:`first_pruning`.
 
 Other features
 **************
@@ -100,25 +101,23 @@ history mode:
 - The *savepoint* which indicates the lowest block known by the store
   that possesses metadata and context.
 
-.. _checkpoint:
-
-The *checkpoint* is another variable maintained by the store, that
-indicates one block that must be part of the chain. This special block
-may be in the future. Setting a future checkpoint on a fresh node
-before bootstrapping adds protection in case of eclipse attacks where
-a set of malicious peers will advertise a wrong chain. When the store
-reaches the level of a manually defined checkpoint, it will make sure
-that this is indeed the expected block or it will stop the
-bootstrap. When the checkpoint is unspecified by the user, the store
-sets it to the value provided by the protocol consensus.
+The *checkpoint* is another variable maintained by the store, that indicates one block that
+must be part of the chain. This special block may be in the future.
+Setting a future checkpoint on a fresh node before bootstrapping adds
+protection in case of eclipse attacks where a set of malicious peers
+will advertise a wrong chain. When the store reaches the level of a
+manually defined checkpoint, it will make sure that this is indeed the
+expected block or will stop the bootstrap. When the checkpoint is
+unspecified by the user, the store sets it to the :ref:`last allowed fork level <lafl>`, each time this latter is updated. In any case, the store will maintain the following invariant:
+``checkpoint ≥ head.last_allowed_fork_level``.
 
 While the node is running, it is possible to
 call the following RPCs to access the values of all these variables:
 
-- the checkpoint: `GET /chains/<chain_id>/levels/checkpoint <https://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-checkpoint>`__
-- the savepoint `GET /chains/<chain_id>/levels/savepoint <https://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-savepoint>`__
-- the caboose: `GET /chains/<chain_id>/levels/caboose <https://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-caboose>`__
-- the history mode: `GET /config/history_mode <https://tezos.gitlab.io/shell/rpc.html#get-config-history-mode>`__
+- the checkpoint: `GET /chains/<chain_id>/levels/checkpoint <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-checkpoint>`__
+- the savepoint `GET /chains/<chain_id>/levels/savepoint <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-savepoint>`__
+- the caboose: `GET /chains/<chain_id>/levels/caboose <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-caboose>`__
+- the history mode: `GET /config/history_mode <http://tezos.gitlab.io/shell/rpc.html#get-config-history-mode>`__
 
 Files hierarchy
 ***************
@@ -165,9 +164,9 @@ The Store maintains data on disk in the
 Context
 #######
 
-The context component is the the :package-api:`tezos-context <octez-libs/Tezos_context/index.html>` package, implemented in the :src:`src/lib_context`
+The context component is the the :package-api:`mavryk-context <mavkit-libs/Mavryk_context/index.html>` package, implemented in the :src:`src/lib_context`
 library. It is a versioned key/value store that associates to each
-block a view of its ledger state. The :package-api:`on-disk context API <octez-libs/Tezos_context_disk/index.html>` exports versioning concepts similar
+block a view of its ledger state. The :package-api:`on-disk context API <mavkit-libs/Mavryk_context_disk/index.html>` exports versioning concepts similar
 to `Git <https://git-scm.com/>`_. The current implementation is using
 `Irmin <https://github.com/mirage/irmin>`_ as a backend.
 
@@ -194,13 +193,13 @@ this ledger state that may be incorporated in a :doc:`snapshot <../user/snapshot
 minimal storage state.
 
 Note that it is possible to enable :doc:`logging <../user/logging>` for the context backend
-using the ``TEZOS_CONTEXT`` environment variable. There are two
+using the ``MAVRYK_CONTEXT`` environment variable. There are two
 possible values for this variable: ``v`` for ``Info`` logging and
 ``vv`` for ``Debug`` logging (warning: the ``Debug`` mode is very
 talkative). Additionally, this environment variable allows to tweak,
 with care, the following context parameters (using the standard
-``TEZOS_CONTEXT="variable=value"`` pattern, separating the items with
-commas such as ``TEZOS_CONTEXT="v, variable=value"``):
+``MAVRYK_CONTEXT="variable=value"`` pattern, separating the items with
+commas such as ``MAVRYK_CONTEXT="v, variable=value"``):
 
 - ``index-log-size``: number of entries stored in the Irmin's index
   (default ``2_500_000``)

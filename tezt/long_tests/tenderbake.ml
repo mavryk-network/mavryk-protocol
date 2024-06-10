@@ -30,7 +30,7 @@
    Subject: Checking performance for Tenderbake bakers
 *)
 
-module Time = Tezos_base.Time.System
+module Time = Mavryk_base.Time.System
 
 let lwt_ignore p =
   let* _ = p in
@@ -311,7 +311,6 @@ module Rounds = struct
       ~__FILE__
       ~title:test
       ~tags:["tenderbake"; "basic"]
-      ~uses:[Protocol.baker protocol]
       ~executors
       ~timeout:(Long_test.Seconds (repeat * 8 * timeout))
     @@ fun () ->
@@ -462,7 +461,6 @@ module Long_dynamic_bake = struct
       ~__FILE__
       ~title:(test topology)
       ~tags:["tenderbake"; "dynamic"; string_of_topology topology]
-      ~uses:[Protocol.baker protocol]
       ~executors
       ~timeout:(Long_test.Seconds (repeat * 8 * timeout))
     @@ fun () ->

@@ -35,12 +35,11 @@ let test_script_hash_regression =
     ~__FILE__
     ~title:"Test script hash regression"
     ~tags:["script"; "michelson"; "hash"]
-    ~uses_node:false
   @@ fun protocol ->
   let hooks =
     (* We don't care about the actual command invoked, only script hashes. *)
     let on_spawn _cmd _args = () in
-    {Tezos_regression.hooks with on_spawn}
+    {Mavryk_regression.hooks with on_spawn}
   in
   let all_scripts = Michelson_script.(find_all protocol |> List.map path) in
   (* Sort scripts for more legible output *)

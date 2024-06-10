@@ -47,23 +47,22 @@ type validation_store = {
   timestamp : Time.Protocol.t;
   message : string option;
   max_operations_ttl : int;
-  last_finalized_block_level : Int32.t;
+  last_allowed_fork_level : Int32.t;
       (** Oldest block for which reorganizations can happen *)
-  last_preserved_block_level : Int32.t;
 }
 
 val may_patch_protocol :
   user_activated_upgrades:User_activated.upgrades ->
   user_activated_protocol_overrides:User_activated.protocol_overrides ->
   level:Int32.t ->
-  Tezos_protocol_environment.validation_result ->
-  Tezos_protocol_environment.validation_result Lwt.t
+  Mavryk_protocol_environment.validation_result ->
+  Mavryk_protocol_environment.validation_result Lwt.t
 
 val update_testchain_status :
-  Tezos_protocol_environment.Context.t ->
+  Mavryk_protocol_environment.Context.t ->
   predecessor_hash:Block_hash.t ->
   Time.Protocol.t ->
-  Tezos_protocol_environment.Context.t Lwt.t
+  Mavryk_protocol_environment.Context.t Lwt.t
 
 (** [check_proto_environment_version_increasing hash before after]
     returns successfully if the environment version stays the same or
@@ -75,7 +74,7 @@ val check_proto_environment_version_increasing :
 (** [init_test_chain] must only be called on a forking block. *)
 val init_test_chain :
   Chain_id.t ->
-  Tezos_protocol_environment.Context.t ->
+  Mavryk_protocol_environment.Context.t ->
   Block_header.t ->
   Block_header.t tzresult Lwt.t
 
@@ -89,7 +88,7 @@ type ops_metadata =
   | No_metadata_hash of operation_metadata list list
   | Metadata_hash of (operation_metadata * Operation_metadata_hash.t) list list
 
-module Shell_header_hash : Tezos_crypto.Intfs.HASH
+module Shell_header_hash : Mavryk_crypto.Intfs.HASH
 
 type result = {
   shell_header_hash : Shell_header_hash.t;
@@ -102,7 +101,7 @@ type result = {
 
 type apply_result = {
   result : result;
-  cache : Tezos_protocol_environment.Context.cache;
+  cache : Mavryk_protocol_environment.Context.cache;
 }
 
 val result_encoding : result Data_encoding.t
@@ -124,7 +123,7 @@ type apply_environment = {
   chain_id : Chain_id.t;  (** chain_id of the current branch *)
   predecessor_block_header : Block_header.t;
       (** header of the predecessor block being validated *)
-  predecessor_context : Tezos_protocol_environment.Context.t;
+  predecessor_context : Mavryk_protocol_environment.Context.t;
       (** context associated to the predecessor block *)
   predecessor_resulting_context_hash : Context_hash.t;
       (** predecessor block resulting context hash *)
@@ -155,10 +154,10 @@ type apply_environment = {
     hash is computed, using `Context.hash`. Set to false by default. *)
 val apply :
   ?simulate:bool ->
-  ?cached_result:apply_result * Tezos_protocol_environment.Context.t ->
+  ?cached_result:apply_result * Mavryk_protocol_environment.Context.t ->
   ?should_precheck:bool ->
   apply_environment ->
-  cache:Tezos_protocol_environment.Context.source_of_cache ->
+  cache:Mavryk_protocol_environment.Context.source_of_cache ->
   Block_header.t ->
   operation list list ->
   apply_result tzresult Lwt.t
@@ -175,23 +174,23 @@ val precheck :
   chain_id:Chain_id.t ->
   predecessor_block_header:Block_header.t ->
   predecessor_block_hash:Block_hash.t ->
-  predecessor_context:Tezos_protocol_environment.Context.t ->
+  predecessor_context:Mavryk_protocol_environment.Context.t ->
   predecessor_resulting_context_hash:Context_hash.t ->
-  cache:Tezos_protocol_environment.Context.source_of_cache ->
+  cache:Mavryk_protocol_environment.Context.source_of_cache ->
   Block_header.t ->
   operation list list ->
   unit tzresult Lwt.t
 
 val preapply :
   chain_id:Chain_id.t ->
-  user_activated_upgrades:Tezos_base.User_activated.upgrades ->
-  user_activated_protocol_overrides:Tezos_base.User_activated.protocol_overrides ->
+  user_activated_upgrades:Mavryk_base.User_activated.upgrades ->
+  user_activated_protocol_overrides:Mavryk_base.User_activated.protocol_overrides ->
   operation_metadata_size_limit:Shell_limits.operation_metadata_size_limit ->
   timestamp:Time.Protocol.t ->
   protocol_data:bytes ->
   live_blocks:Block_hash.Set.t ->
   live_operations:Operation_hash.Set.t ->
-  predecessor_context:Tezos_protocol_environment.Context.t ->
+  predecessor_context:Mavryk_protocol_environment.Context.t ->
   predecessor_resulting_context_hash:Context_hash.t ->
   predecessor_shell_header:Block_header.shell_header ->
   predecessor_hash:Block_hash.t ->
@@ -200,7 +199,7 @@ val preapply :
   predecessor_ops_metadata_hash:Operation_metadata_list_list_hash.t option ->
   operation list list ->
   ((Block_header.shell_header * error Preapply_result.t list)
-  * (apply_result * Tezos_protocol_environment.Context.t))
+  * (apply_result * Mavryk_protocol_environment.Context.t))
   tzresult
   Lwt.t
 
@@ -209,10 +208,10 @@ val preapply :
 val recompute_metadata :
   chain_id:Chain_id.t ->
   predecessor_block_header:Block_header.t ->
-  predecessor_context:Tezos_protocol_environment.Context.t ->
+  predecessor_context:Mavryk_protocol_environment.Context.t ->
   predecessor_block_metadata_hash:Block_metadata_hash.t option ->
   predecessor_ops_metadata_hash:Operation_metadata_list_list_hash.t option ->
   block_header:Block_header.t ->
   operations:operation trace trace ->
-  cache:Tezos_protocol_environment.Context.source_of_cache ->
+  cache:Mavryk_protocol_environment.Context.source_of_cache ->
   ((bytes * Block_metadata_hash.t option) * ops_metadata) tzresult Lwt.t

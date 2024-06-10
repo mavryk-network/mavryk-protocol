@@ -43,7 +43,7 @@
 
 *)
 
-(* Adapted from {Tezos_lib_webassembly.Decode} *)
+(* Adapted from {Mavryk_lib_webassembly.Decode} *)
 let rec vuN n bytes index =
   let b, next_index = (String.get bytes index |> Char.code, succ index) in
   assert (n >= 7 || b land 0x7f < 1 lsl n) ;
@@ -139,9 +139,9 @@ let pp_function_subsection ppf map =
 
 let parse_custom_sections name module_ =
   let open Lwt_syntax in
-  let bytes = Tezos_lazy_containers.Chunked_byte_vector.of_string module_ in
+  let bytes = Mavryk_lazy_containers.Chunked_byte_vector.of_string module_ in
   let+ custom =
-    Tezos_webassembly_interpreter.Decode.decode_custom "name" ~name ~bytes
+    Mavryk_webassembly_interpreter.Decode.decode_custom "name" ~name ~bytes
   in
   let functions_section =
     List.map parse_function_subsection custom

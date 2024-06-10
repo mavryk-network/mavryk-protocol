@@ -116,7 +116,7 @@ module Tez : sig
 
   val zero : t
 
-  val one_mutez : t
+  val one_mumav : t
 
   val one_cent : t
 
@@ -124,7 +124,7 @@ module Tez : sig
 
   val one : t
 
-  val max_mutez : t
+  val max_mumav : t
 
   val ( -? ) : t -> t -> t tzresult
 
@@ -140,11 +140,11 @@ module Tez : sig
 
   val to_string : t -> string
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
-  val of_mutez_exn : int64 -> t
+  val of_mumav_exn : int64 -> t
 
   val mul_exn : t -> int -> t
 
@@ -632,7 +632,7 @@ module Script : sig
     | I_SLICE
     | I_STEPS_TO_QUOTA
     | I_SUB
-    | I_SUB_MUTEZ
+    | I_SUB_MUMAV
     | I_SWAP
     | I_TRANSFER_TOKENS
     | I_SET_DELEGATE
@@ -682,7 +682,7 @@ module Script : sig
     | T_signature
     | T_string
     | T_bytes
-    | T_mutez
+    | T_mumav
     | T_timestamp
     | T_unit
     | T_operation
@@ -810,7 +810,6 @@ module Constants : sig
   module Parametric : sig
     type dal = {
       feature_enable : bool;
-      incentives_enable : bool;
       number_of_slots : int;
       attestation_lag : int;
       attestation_threshold : int;
@@ -855,12 +854,8 @@ module Constants : sig
     }
 
     type adaptive_rewards_params = {
-      issuance_ratio_final_min : Q.t;
-      issuance_ratio_final_max : Q.t;
-      issuance_ratio_initial_min : Q.t;
-      issuance_ratio_initial_max : Q.t;
-      initial_period : int;
-      transition_period : int;
+      issuance_ratio_min : Q.t;
+      issuance_ratio_max : Q.t;
       max_bonus : Issuance_bonus_repr.max_bonus;
       growth_rate : Q.t;
       center_dz : Q.t;
@@ -874,8 +869,6 @@ module Constants : sig
       adaptive_rewards_params : adaptive_rewards_params;
       activation_vote_enable : bool;
       autostaking_enable : bool;
-      force_activation : bool;
-      ns_enable : bool;
     }
 
     type issuance_weights = {
@@ -890,9 +883,6 @@ module Constants : sig
 
     type t = {
       preserved_cycles : int;
-      consensus_rights_delay : int;
-      blocks_preservation_cycles : int;
-      delegate_parameters_activation_delay : int;
       blocks_per_cycle : int32;
       blocks_per_commitment : int32;
       nonce_revelation_threshold : int32;
@@ -936,12 +926,6 @@ module Constants : sig
     }
 
     val encoding : t Data_encoding.t
-
-    val update_sc_rollup_parameter : block_time:int -> sc_rollup -> sc_rollup
-
-    module Internal_for_tests : sig
-      val sc_rollup_encoding : sc_rollup Data_encoding.t
-    end
   end
 
   module Generated : sig
@@ -958,12 +942,6 @@ module Constants : sig
   val sc_rollup : context -> Parametric.sc_rollup
 
   val preserved_cycles : context -> int
-
-  val consensus_rights_delay : context -> int
-
-  val blocks_preservation_cycles : context -> int
-
-  val delegate_parameters_activation_delay : context -> int
 
   val blocks_per_cycle : context -> int32
 
@@ -1027,8 +1005,6 @@ module Constants : sig
   val testnet_dictator : context -> public_key_hash option
 
   val sc_rollup_arith_pvm_enable : context -> bool
-
-  val sc_rollup_riscv_pvm_enable : context -> bool
 
   val dal_enable : context -> bool
 
@@ -1222,7 +1198,7 @@ module Level : sig
 
   val levels_in_current_cycle : context -> ?offset:int32 -> unit -> level list
 
-  val last_preserved_block_level : context -> Raw_level.t
+  val last_allowed_fork_level : context -> Raw_level.t
 
   val dawn_of_a_new_cycle : context -> Cycle.t option
 
@@ -2192,13 +2168,6 @@ module Consensus_key : sig
   val pkh : pk -> t
 end
 
-(** This module re-exports definitions from {!Misbehaviour_repr}. *)
-module Misbehaviour : sig
-  type kind = Double_baking | Double_attesting
-
-  type t = {kind : kind; level : Raw_level.t; round : Round.t; slot : Slot.t}
-end
-
 (** This module re-exports definitions from {!Delegate_storage},
    {!Delegate_consensus_key}, {!Delegate_missed_attestations_storage},
    {!Delegate_slashed_deposits_storage}, {!Delegate_cycles},
@@ -2226,6 +2195,18 @@ module Delegate : sig
     delegate:public_key_hash ->
     destination:public_key_hash ->
     (context * bool * Tez.t * Receipt.balance_updates) tzresult Lwt.t
+
+  type participation_info = {
+    expected_cycle_activity : int;
+    minimal_cycle_activity : int;
+    missed_slots : int;
+    missed_levels : int;
+    remaining_allowed_missed_slots : int;
+    expected_attesting_rewards : Tez.t;
+  }
+
+  val participation_info :
+    context -> public_key_hash -> participation_info tzresult Lwt.t
 
   val cycle_end :
     context ->
@@ -2310,17 +2291,17 @@ module Delegate : sig
   val prepare_stake_distribution : context -> context tzresult Lwt.t
 
   module Rewards : sig
-    val baking_reward_fixed_portion : t -> Tez.t tzresult
+    val baking_reward_fixed_portion : t -> Tez.t
 
-    val baking_reward_bonus_per_slot : t -> Tez.t tzresult
+    val baking_reward_bonus_per_slot : t -> Tez.t
 
-    val attesting_reward_per_slot : t -> Tez.t tzresult
+    val attesting_reward_per_slot : t -> Tez.t
 
-    val liquidity_baking_subsidy : t -> Tez.t tzresult
+    val liquidity_baking_subsidy : t -> Tez.t
 
-    val seed_nonce_revelation_tip : t -> Tez.t tzresult
+    val seed_nonce_revelation_tip : t -> Tez.t
 
-    val vdf_revelation_tip : t -> Tez.t tzresult
+    val vdf_revelation_tip : t -> Tez.t
 
     module For_RPC : sig
       type reward_kind =
@@ -2338,10 +2319,7 @@ module Delegate : sig
           It verifies [reward_from_constants ~coeff csts ~reward_kind =
           coeff * reward_from_constants csts ~reward_kind]. *)
       val reward_from_constants :
-        ?coeff:Q.t ->
-        Constants.Parametric.t ->
-        reward_kind:reward_kind ->
-        Tez.t tzresult
+        ?coeff:Q.t -> Constants.Parametric.t -> reward_kind:reward_kind -> Tez.t
 
       (** [get_reward_coeff ctxt cycle] reads the reward coeff for the given cycle
           from the storage.
@@ -2369,41 +2347,20 @@ module Delegate : sig
 
     module Internal_for_tests : sig
       (** Reward computation functions *)
-      val compute_reward_coeff_ratio_without_bonus :
+      val compute_reward_coeff_ratio :
         stake_ratio:Q.t ->
+        bonus:Issuance_bonus_repr.t ->
         issuance_ratio_max:Q.t ->
         issuance_ratio_min:Q.t ->
         Q.t
 
       val compute_bonus :
-        issuance_ratio_max:Q.t ->
         seconds_per_cycle:int64 ->
-        stake_ratio:Q.t ->
-        base_reward_coeff_ratio:Q.t ->
+        total_supply:Tez_repr.t ->
+        total_frozen_stake:Tez_repr.t ->
         previous_bonus:Issuance_bonus_repr.t ->
         reward_params:Constants.Parametric.adaptive_rewards_params ->
         Issuance_bonus_repr.t tzresult
-
-      val compute_coeff :
-        issuance_ratio_max:Q.t ->
-        issuance_ratio_min:Q.t ->
-        base_total_issued_per_minute:Tez_repr.t ->
-        base_reward_coeff_ratio:Q.t ->
-        q_total_supply:Q.t ->
-        bonus:Issuance_bonus_repr.t ->
-        Q.t
-
-      val compute_min :
-        reward_params:Constants.Parametric.adaptive_rewards_params ->
-        launch_cycle:Cycle_repr.t option ->
-        new_cycle:Cycle_repr.t ->
-        Q.t
-
-      val compute_max :
-        reward_params:Constants.Parametric.adaptive_rewards_params ->
-        launch_cycle:Cycle_repr.t option ->
-        new_cycle:Cycle_repr.t ->
-        Q.t
     end
   end
 
@@ -2439,18 +2396,6 @@ module Delegate : sig
   the protocol.
       They are meant to be used only to answer RPC calls.  *)
   module For_RPC : sig
-    type participation_info = {
-      expected_cycle_activity : int;
-      minimal_cycle_activity : int;
-      missed_slots : int;
-      missed_levels : int;
-      remaining_allowed_missed_slots : int;
-      expected_attesting_rewards : Tez.t;
-    }
-
-    val participation_info :
-      context -> public_key_hash -> participation_info tzresult Lwt.t
-
     (** Returns the full 'balance' of the implicit contract associated to a
         given key, i.e. the sum of the spendable balance (given by [balance] or
         [Contract_storage.get_balance]) and of the frozen balance of the
@@ -2682,7 +2627,7 @@ module Dal : sig
 
   type cryptobox
 
-  val make : context -> (context * cryptobox) tzresult
+  val make : context -> cryptobox tzresult
 
   val number_of_slots : context -> int
 
@@ -2720,12 +2665,7 @@ module Dal : sig
   module Attestation : sig
     type t = private Bitset.t
 
-    type operation = {
-      attestation : t;
-      level : Raw_level.t;
-      round : Round.t;
-      slot : Slot.t;
-    }
+    type operation = {attestation : t; level : Raw_level.t; slot : Slot.t}
 
     type shard_index = int
 
@@ -2930,7 +2870,6 @@ module Dal_errors : sig
         expected : Raw_level.t;
         given : Raw_level.t;
       }
-    | Dal_attestation_for_wrong_round of {expected : Round.t; given : Round.t}
     | Dal_cryptobox_error of {explanation : string}
     | Dal_unexpected_attestation_at_root_level
 end
@@ -3631,6 +3570,8 @@ module Sc_rollup : sig
       val get_outbox : Raw_level.t -> state -> output list Lwt.t
     end
 
+    val reference_initial_state_hash : State_hash.t
+
     module Protocol_implementation :
       PVM.S
         with type context = Context.t
@@ -3685,9 +3626,13 @@ module Sc_rollup : sig
         with type context = Context.t
          and type state = Context.tree
          and type proof = Context.Proof.tree Context.Proof.t
+
+    val reference_initial_state_hash : State_hash.t
   end
 
   module Riscv_PVM : sig
+    val reference_initial_state_hash : State_hash.t
+
     module Protocol_implementation :
       PVM.S
         with type context = unit
@@ -3852,15 +3797,6 @@ module Sc_rollup : sig
       Raw_level.t ->
       is_reveal_enabled:is_reveal_enabled ->
       serialized t tzresult Lwt.t
-
-    module Dal_helpers : sig
-      val valid_published_level :
-        dal_attestation_lag:int ->
-        origination_level:Raw_level.t ->
-        commit_inbox_level:Raw_level.t ->
-        published_level:Raw_level.t ->
-        bool
-    end
   end
 
   module Game : sig
@@ -4454,8 +4390,6 @@ val consensus_content_encoding : consensus_content Data_encoding.t
 
 val pp_consensus_content : Format.formatter -> consensus_content -> unit
 
-type dal_content = {attestation : Dal.Attestation.t}
-
 type 'kind operation = {
   shell : Operation.shell_header;
   protocol_data : 'kind protocol_data;
@@ -4474,11 +4408,7 @@ and _ contents_list =
 
 and _ contents =
   | Preattestation : consensus_content -> Kind.preattestation contents
-  | Attestation : {
-      consensus_content : consensus_content;
-      dal_content : dal_content option;
-    }
-      -> Kind.attestation contents
+  | Attestation : consensus_content -> Kind.attestation contents
   | Dal_attestation : Dal.Attestation.operation -> Kind.dal_attestation contents
   | Seed_nonce_revelation : {
       level : Raw_level.t;
@@ -4766,10 +4696,6 @@ module Operation : sig
 
     val attestation_case : Kind.attestation case
 
-    val endorsement_with_dal_case : Kind.attestation case
-
-    val attestation_with_dal_case : Kind.attestation case
-
     val dal_attestation_case : Kind.dal_attestation case
 
     val seed_nonce_revelation_case : Kind.seed_nonce_revelation case
@@ -4934,6 +4860,9 @@ module Stake_distribution : sig
   val get_total_frozen_stake : context -> Cycle.t -> Tez.t tzresult Lwt.t
 
   module For_RPC : sig
+    val delegate_baking_power_for_cycle :
+      context -> Cycle.t -> Signature.public_key_hash -> int64 tzresult Lwt.t
+
     val delegate_current_baking_power :
       context -> Signature.public_key_hash -> int64 tzresult Lwt.t
   end
@@ -5123,6 +5052,20 @@ end
 (** This module re-exports definitions from {!Liquidity_baking_storage}. *)
 module Liquidity_baking : sig
   val get_cpmm_address : context -> Contract_hash.t tzresult Lwt.t
+
+  val on_subsidy_allowed :
+    context ->
+    per_block_vote:Per_block_votes.per_block_vote ->
+    (context -> Contract_hash.t -> (context * 'a list) tzresult Lwt.t) ->
+    (context * 'a list * Per_block_votes.Liquidity_baking_toggle_EMA.t) tzresult
+    Lwt.t
+end
+
+(** This module re-exports definitions from {!Protocol_treasury_storage}. *)
+module Protocol_treasury : sig
+  val get_protocol_treasury_address : Contract_hash.t
+
+  val get_buffer_address : context -> Contract_hash.t tzresult Lwt.t
 
   val on_subsidy_allowed :
     context ->

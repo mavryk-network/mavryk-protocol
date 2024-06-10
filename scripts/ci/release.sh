@@ -11,8 +11,8 @@ src_dir=$(dirname "$scripts_dir")
 script_inputs_dir="$src_dir/script-inputs"
 
 binaries="$(cat "$script_inputs_dir/released-executables")"
-deb_packages="$(find . -maxdepth 1 -name octez-\*.deb)"
-rpm_packages="$(find . -maxdepth 1 -name octez-\*.rpm)"
+deb_packages="$(ls ./mavkit-*.deb)"
+rpm_packages="$(ls ./mavkit-*.rpm)"
 
 ### Compute GitLab release names
 
@@ -33,7 +33,8 @@ gitlab_release_minor_version=$(echo "${CI_COMMIT_TAG}" | sed -nE 's/^v([0-9]+)\.
 gitlab_release_rc_version=$(echo "${CI_COMMIT_TAG}" | sed -nE 's/^v([0-9]+)\.([0-9]+)(-rc)?([0-9]+)?$/\4/p')
 
 # Is this a release candidate?
-if [ -n "${gitlab_release_rc_version}" ]; then
+if [ -n "${gitlab_release_rc_version}" ]
+then
   # Yes, release name: X.Y~rcZ
   # shellcheck disable=SC2034
   gitlab_release_name="${gitlab_release_major_version}.${gitlab_release_minor_version}~rc${gitlab_release_rc_version}"
@@ -47,9 +48,9 @@ fi
 
 ### Compute GitLab generic package names
 
-gitlab_octez_package_name="octez-${gitlab_release_no_v}"
-gitlab_octez_deb_package_name="octez-debian-${gitlab_release_no_v}"
-gitlab_octez_rpm_package_name="octez-redhat-${gitlab_release_no_v}"
+gitlab_mavkit_package_name="mavkit-${gitlab_release_no_v}"
+gitlab_mavkit_deb_package_name="mavkit-debian-${gitlab_release_no_v}"
+gitlab_mavkit_rpm_package_name="mavkit-redhat-${gitlab_release_no_v}"
 
 # X.Y or X.Y-rcZ
 gitlab_package_version="${gitlab_release_no_v}"

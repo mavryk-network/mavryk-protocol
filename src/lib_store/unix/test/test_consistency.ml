@@ -39,9 +39,9 @@ let nb_protocols = 5
 let register_protocol ~hash ~sources =
   let module M = struct
     include
-      Registered_protocol.Register_embedded_V12
-        (Tezos_protocol_environment_demo_noops)
-        (Tezos_protocol_demo_noops.Protocol)
+      Registered_protocol.Register_embedded_V11
+        (Mavryk_protocol_environment_demo_noops)
+        (Mavryk_protocol_demo_noops.Protocol)
         (struct
           let hash = Some hash
 
@@ -86,7 +86,7 @@ let init_protocols store history_mode =
     {
       Test_utils.default_protocol_constants with
       blocks_per_cycle = Int32.of_int nb_blocks_per_cycle;
-      blocks_preservation_cycles = 1;
+      preserved_cycles = 1;
     }
   in
   let* () =
@@ -315,7 +315,7 @@ let () =
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-store"
+       "mavryk-store"
        [
          ( "consistency",
            List.map

@@ -43,16 +43,16 @@ module Messages :
 (** Storage for persisting inboxes. *)
 module Inboxes :
   SIMPLE_INDEXED_FILE
-    with type key := Octez_smart_rollup.Inbox.Hash.t
-     and type value := Octez_smart_rollup.Inbox.t
+    with type key := Mavkit_smart_rollup.Inbox.Hash.t
+     and type value := Mavkit_smart_rollup.Inbox.t
      and type header := unit
 
 (** Storage containing commitments and corresponding commitment hashes that the
     rollup node has knowledge of. *)
 module Commitments :
   SIMPLE_INDEXED_FILE
-    with type key := Octez_smart_rollup.Commitment.Hash.t
-     and type value := Octez_smart_rollup.Commitment.t
+    with type key := Mavkit_smart_rollup.Commitment.Hash.t
+     and type value := Mavkit_smart_rollup.Commitment.t
      and type header := unit
 
 (** Storage containing the last cemented commitment. *)
@@ -63,7 +63,7 @@ module Lcc : sig
 end
 
 (** Storage containing a single commitment for the last published commitment. *)
-module Lpc : SINGLETON_STORE with type value := Octez_smart_rollup.Commitment.t
+module Lpc : SINGLETON_STORE with type value := Mavkit_smart_rollup.Commitment.t
 
 (** Published slot headers per block hash,
     stored as a list of bindings from [Dal_slot_index.t]
@@ -124,9 +124,6 @@ module Gc_levels : sig
   include SINGLETON_STORE with type value = levels
 end
 
-(** Level at which context was last split. *)
-module Last_context_split : SINGLETON_STORE with type value := int32
-
 (** History mode of the rollup node. *)
 module History_mode :
   SINGLETON_STORE with type value := Configuration.history_mode
@@ -145,7 +142,6 @@ type +'a store = {
   protocols : 'a Protocols.t;
   irmin_store : 'a Irmin_store.t;
   gc_levels : 'a Gc_levels.t;
-  last_context_split_level : 'a Last_context_split.t;
   history_mode : 'a History_mode.t;
 }
 

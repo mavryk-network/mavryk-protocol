@@ -34,14 +34,13 @@
 (* Normally "--base-dir" would appear in regression logs. However, since
    it is a different dir on every run, we need to mask it in regression
    logs so that it doesn't cause false differences. *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let register262 =
   Protocol.register_test
     ~__FILE__
     ~title:"Contract-related non-regressions, Issue 262"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract =
@@ -67,7 +66,6 @@ let register843 =
     ~__FILE__
     ~title:"Contract-related non-regressions, Issue 843"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
     ~supports:(Protocol.From_protocol 015)
   @@ fun protocol ->
   (* https://gitlab.com/tezos/tezos/-/issues/843
@@ -79,7 +77,7 @@ let register843 =
      are used directly and when they are first normalized to optimized
      format before origination. *)
   let* client = Client.init_mockup ~protocol () in
-  let addr = {|"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"|} in
+  let addr = {|"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"|} in
   let bug843 =
     Michelson_script.(find ["non_regression"; "843_bug"] protocol |> path)
   in

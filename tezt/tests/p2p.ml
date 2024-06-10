@@ -208,8 +208,6 @@ module Maintenance = struct
       ~__FILE__
       ~title:"p2p-maintenance-disabled"
       ~tags:["p2p"; "node"; "maintenance"]
-      ~uses_client:false
-      ~uses_admin_client:false
     @@ fun () ->
     (* We set the maintenance idle time to 5 seconds to make the test
        shorter. *)
@@ -347,21 +345,11 @@ module Maintenance = struct
       max_target
       max_threshold
       max_connections ;
-    (* TODO: https://gitlab.com/tezos/tezos/-/issues/6442
-       This test launches 10 nodes and consumes a large amount of memory.
-       To reduce memory consumption each node launches its RPC server locally.
-       A better way to reduce memory consumption would be to use nodes that
-       only have the p2p layer. *)
-    let* target_node =
-      Node.init ~rpc_local:true [Connections expected_connections]
-    in
+    let* target_node = Node.init [Connections expected_connections] in
     let* target_client = Client.init ~endpoint:(Node target_node) () in
     Log.info "Target created." ;
     let nodes =
-      Cluster.create
-        max_connections
-        ~rpc_local:true
-        [Connections (max_connections - 1)]
+      Cluster.create max_connections [Connections (max_connections - 1)]
     in
     Cluster.clique nodes ;
     let* () = Cluster.start ~public:true nodes in
@@ -571,12 +559,7 @@ module Swap = struct
 
   (* Same as [test_swap_raw] with default parameters. *)
   let test_swap () =
-    Test.register
-      ~__FILE__
-      ~title:"p2p-swap"
-      ~tags:["p2p"; "node"; "swap"]
-      ~uses_client:false
-      ~uses_admin_client:false
+    Test.register ~__FILE__ ~title:"p2p-swap" ~tags:["p2p"; "node"; "swap"]
     @@ fun () -> test_swap_raw ()
 
   (* Checks that nodes with swap disabled neither respond to swap request nor
@@ -586,8 +569,6 @@ module Swap = struct
       ~__FILE__
       ~title:"p2p-swap-disable"
       ~tags:["p2p"; "node"; "swap"; Tag.memory_4k]
-      ~uses_client:false
-      ~uses_admin_client:false
     @@ fun () ->
     (* Since we try to verify that something does not happen, we need
        to find when we consider having waited enough time to consider
@@ -595,9 +576,9 @@ module Swap = struct
        from the duration that it takes to have the thing to happen in
        a normal situation. Thus, we record the tezt_swap_raw_duration
        to calibrate that duration. *)
-    let start = Tezos_base.Time.System.now () in
+    let start = Mavryk_base.Time.System.now () in
     let* () = test_swap_raw () in
-    let stop = Tezos_base.Time.System.now () in
+    let stop = Mavryk_base.Time.System.now () in
     let tezt_swap_raw_duration =
       Ptime.Span.to_float_s
         (Ptime.Span.sub (Ptime.to_span stop) (Ptime.to_span start))
@@ -646,8 +627,6 @@ let test_advertised_port () =
     ~__FILE__
     ~title:"check --advertised-net-port=PORT option"
     ~tags:["p2p"; "cli"; "connections"]
-    ~uses_client:false
-    ~uses_admin_client:false
   @@ fun () ->
   let* node_1 = Node.init [Connections 1] in
   let maintenance_p =
@@ -813,10 +792,8 @@ module Connect_handler = struct
       ~__FILE__
       ~title:"peers with different chain name"
       ~tags:["p2p"; "connect_handler"]
-      ~uses_client:false
-      ~uses_admin_client:false
     @@ fun () ->
-    let addr_of_port port = sf "%s:%d" Constant.default_host port in
+    let addr_of_port port = "127.0.0.1:" ^ string_of_int port in
     let create_node ?chain_name ?peer_port port =
       let peer_arg =
         Option.map (fun p -> Node.Peer (addr_of_port p)) peer_port
@@ -828,10 +805,10 @@ module Connect_handler = struct
       Option.iter
         (fun name ->
           Node.Config_file.update node (fun json ->
-              (* Loads a full unsugared "ghostnet" configuration,
+              (* Loads a full unsugared "basenet" configuration,
                  so that we can update the chain_name separately
                  without depending on a network alias. *)
-              Node.Config_file.set_ghostnet_sandbox_network () json
+              Node.Config_file.set_basenet_sandbox_network () json
               |> JSON.update
                    "network"
                    (JSON.put
@@ -890,8 +867,6 @@ let trusted_ring () =
     ~__FILE__
     ~title:"p2p - set a trusted ring"
     ~tags:["p2p"; "connection"; "trusted"; "ring"]
-    ~uses_client:false
-    ~uses_admin_client:false
   @@ fun () ->
   let num_nodes = 5 in
   Log.info "Initialize nodes" ;
@@ -1002,8 +977,6 @@ let expected_peer_id () =
     ~__FILE__
     ~title:"Test expected_peer_id"
     ~tags:["p2p"; "connections"; "expected_peer_id"]
-    ~uses_client:false
-    ~uses_admin_client:false
   @@ fun () ->
   let num_nodes = 5 in
   Log.info "Start a clique of %d nodes" num_nodes ;
@@ -1241,11 +1214,11 @@ module P2p_stat = struct
     {connections; known_peers; known_points}
 
   (* This test sets up a clique. It compares the output of
-     [octez-admin-client p2p stat] with queries on the node RPC. *)
+     [mavkit-admin-client p2p stat] with queries on the node RPC. *)
   let register () =
     Test.register
       ~__FILE__
-      ~title:"Test [octez-admin-client p2p stat]"
+      ~title:"Test [mavkit-admin-client p2p stat]"
       ~tags:["p2p"; "connections"; "p2p_stat"; Tag.memory_3k]
     @@ fun () ->
     let num_nodes = 5 in
@@ -1253,7 +1226,7 @@ module P2p_stat = struct
     let nodes = Cluster.create num_nodes [] in
     Cluster.clique nodes ;
     let* () = Cluster.start ~wait_connections:true nodes in
-    Log.info "Compare RPC information with [octez-admin-client p2p stat]" ;
+    Log.info "Compare RPC information with [mavkit-admin-client p2p stat]" ;
     let* () =
       iter_p nodes @@ fun node ->
       let* client = Client.init ~endpoint:(Node node) () in
@@ -1374,8 +1347,6 @@ module Peer_discovery = struct
       ~__FILE__
       ~title:"p2p-peer-discovery"
       ~tags:["p2p"; "node"; "peer_discovery"]
-      ~uses_client:false
-      ~uses_admin_client:false
     @@ fun () ->
     let maintenance_idle_time = 5. in
     peer_discovery_test_raw ~maintenance_idle_time ()
@@ -1391,8 +1362,6 @@ module Peer_discovery = struct
       ~__FILE__
       ~title:"p2p-peer-discovery-disable"
       ~tags:["p2p"; "node"; "peer_discovery"]
-      ~uses_client:false
-      ~uses_admin_client:false
     @@ fun () ->
     let maintenance_idle_time = 5. in
     let create_node = create_node ~maintenance_idle_time in

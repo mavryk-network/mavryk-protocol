@@ -48,7 +48,7 @@ module type S = sig
 
       {b Note:} The sole consumer of this function is expected to be
       the tree-encoding library. *)
-  val origin : 'a t -> Tezos_tree_encoding.wrapped_tree option
+  val origin : 'a t -> Mavryk_tree_encoding.wrapped_tree option
 
   (** [string_of_key key] turns the given [key] into a string. *)
   val string_of_key : key -> string
@@ -74,7 +74,7 @@ module type S = sig
   val create :
     ?values:'a Map.t ->
     ?produce_value:'a producer ->
-    ?origin:Tezos_tree_encoding.wrapped_tree ->
+    ?origin:Mavryk_tree_encoding.wrapped_tree ->
     unit ->
     'a t
 
@@ -136,7 +136,7 @@ module Mutable : sig
     val create :
       ?values:'a Map.Map.t ->
       ?produce_value:'a Map.producer ->
-      ?origin:Tezos_tree_encoding.wrapped_tree ->
+      ?origin:Mavryk_tree_encoding.wrapped_tree ->
       unit ->
       'a t
 

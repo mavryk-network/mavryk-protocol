@@ -3,16 +3,16 @@
 
 (executable
  (name main)
- (public_name octez-testnet-scenarios)
- (package octez-testnet-scenarios)
+ (public_name mavkit-testnet-scenarios)
+ (package mavkit-testnet-scenarios)
  (libraries
-  octez-libs.tezt-wrapper
+  tezt
   tezt-tezos
-  tezt_etherlink)
+  tezt_ethereum)
  (flags
   (:standard)
-  -open Tezt_wrapper
-  -open Tezt_wrapper.Base
+  -open Tezt
+  -open Tezt.Base
   -open Tezt_tezos
   -open Tezt_tezos.Runnable.Syntax
-  -open Tezt_etherlink))
+  -open Tezt_ethereum))

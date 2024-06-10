@@ -30,7 +30,7 @@ let lift_opt f opt_arg state =
   match opt_arg with None -> state | Some arg -> f arg state
 
 let parse_parameter f m =
-  Tezos_clic.parameter (fun (_ : unit) p ->
+  Mavryk_clic.parameter (fun (_ : unit) p ->
       Lwt.return
       @@
       match f p with
@@ -85,7 +85,7 @@ module Benchmark_cmd = struct
     in
     {
       options;
-      save_file = "<This field /will/ be set by Tezos_clic>";
+      save_file = "<This field /will/ be set by Mavryk_clic>";
       storage = Memory;
       csv_export = None;
     }
@@ -100,7 +100,7 @@ module Benchmark_cmd = struct
           let pp_src =
             Format.asprintf
               "%a"
-              Tezos_crypto.Signature.Public_key_hash.pp
+              Mavryk_crypto.Signature.Public_key_hash.pp
               source
           in
           sprintf
@@ -148,7 +148,7 @@ module Benchmark_cmd = struct
           int_of_string_opt
           "Error while parsing --nsamples argument."
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Number of samples per benchmark"
         ~long:"nsamples"
         ~placeholder:"strictly positive int"
@@ -159,15 +159,15 @@ module Benchmark_cmd = struct
       let seed =
         parse_parameter int_of_string_opt "Error while parsing --seed argument."
       in
-      Tezos_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
+      Mavryk_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
 
     (* String argument --dump-csv
        Parameter: filename of the file where to write the csv data. *)
     let dump_csv_arg =
       let dump_csv_arg_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Dumps raw benchmark results to CSV"
         ~long:"dump-csv"
         ~placeholder:"filename"
@@ -181,7 +181,7 @@ module Benchmark_cmd = struct
           int_of_string_opt
           "Error while parsing --bench-num argument."
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Number of benchmarks (i.e. random stacks)"
         ~long:"bench-num"
         ~placeholder:"strictly positive int"
@@ -195,7 +195,7 @@ module Benchmark_cmd = struct
           (fun s -> Option.map (fun p -> `words p) (int_of_string_opt s))
           "Error while parsing --minor-heap-size argument."
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Size of minor heap in words"
         ~long:"minor-heap-size"
         ~placeholder:"strictly positive int"
@@ -203,9 +203,9 @@ module Benchmark_cmd = struct
 
     let config_file_arg =
       let config_file_arg_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Specify a benchmark configuration file"
         ~short:'c'
         ~long:"config-file"
@@ -215,7 +215,7 @@ module Benchmark_cmd = struct
 
   let options =
     let open Options in
-    Tezos_clic.args6
+    Mavryk_clic.args6
       nsamples_arg
       seed_arg
       bench_number_arg
@@ -224,10 +224,10 @@ module Benchmark_cmd = struct
       dump_csv_arg
 
   let benchmark_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"BENCH-NAME"
       ~desc:"Name of the benchmark"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
              List.map
@@ -238,7 +238,7 @@ module Benchmark_cmd = struct
          (fun _ str -> Lwt.return_ok str))
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefix "benchmark" @@ benchmark_param ()
       @@ prefixes ["and"; "save"; "to"]
       @@ string
@@ -248,12 +248,12 @@ module Benchmark_cmd = struct
 
   let group =
     {
-      Tezos_clic.name = "benchmark";
+      Mavryk_clic.name = "benchmark";
       title = "Commands for benchmarking parts of the protocol";
     }
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Runs benchmarks"
       options
@@ -373,14 +373,14 @@ module Infer_cmd = struct
   module Options = struct
     (* Boolean argument --print-problem *)
     let print_problem =
-      Tezos_clic.switch
+      Mavryk_clic.switch
         ~doc:"Prints problem as obtained after applying model to workload data"
         ~long:"print-problem"
         ()
 
     (* Boolean argument --plot *)
     let plot_arg =
-      Tezos_clic.switch
+      Mavryk_clic.switch
         ~doc:"Plot results of parameter inference"
         ~long:"plot"
         ()
@@ -392,7 +392,7 @@ module Infer_cmd = struct
           float_of_string_opt
           "Error while parsing --ridge-alpha argument."
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Regularization parameter for ridge regression"
         ~long:"ridge-alpha"
         ~placeholder:"positive float"
@@ -405,7 +405,7 @@ module Infer_cmd = struct
           float_of_string_opt
           "Error while parsing --lasso-alpha argument."
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Regularization parameter for lasso regression"
         ~long:"lasso-alpha"
         ~placeholder:"positive float"
@@ -413,16 +413,16 @@ module Infer_cmd = struct
 
     (* Boolean argument --lasso-positive *)
     let lasso_positive_arg =
-      Tezos_clic.switch
+      Mavryk_clic.switch
         ~doc:"Constrains solution of lasso regression to be positive"
         ~long:"lasso-positive"
         ()
 
     let dump_csv_arg =
       let dump_csv_arg_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Dumps solution of inference to a CSV file"
         ~long:"dump-csv"
         ~placeholder:"filename"
@@ -430,9 +430,9 @@ module Infer_cmd = struct
 
     let report_arg =
       let dump_report_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Produces a detailed report"
         ~long:"report"
         ~placeholder:"filename"
@@ -440,11 +440,11 @@ module Infer_cmd = struct
 
     let override_arg =
       let override_file_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed ->
+        Mavryk_clic.parameter (fun (_ : unit) parsed ->
             let files = String.split_no_empty ',' parsed in
             Lwt.return_ok files)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Specify CSV file containing overrided variables for inference"
         ~long:"override-csv"
         ~placeholder:"filename"
@@ -452,9 +452,9 @@ module Infer_cmd = struct
 
     let save_solution_arg =
       let override_file_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:
           "Specify file to which inference solution will be saved for code \
            generation"
@@ -464,9 +464,9 @@ module Infer_cmd = struct
 
     let dot_file_arg =
       let override_file_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:
           "Specify file to which dependency graph will be saved in graphviz \
            format"
@@ -475,16 +475,16 @@ module Infer_cmd = struct
         override_file_param
 
     let full_plot_verbosity_arg =
-      Tezos_clic.switch
+      Mavryk_clic.switch
         ~doc:"Produces all (possibly redundant) plots"
         ~long:"full-plot-verbosity"
         ()
 
     let plot_raw_workload_arg =
       let raw_workload_directory_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
+        Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:
           "For each workload, produces a file containing the plot of the raw \
            data, in the specified directory"
@@ -494,7 +494,7 @@ module Infer_cmd = struct
 
     let empirical_plot_arg =
       let empirical_plot_param =
-        Tezos_clic.parameter (fun (_ : unit) parsed ->
+        Mavryk_clic.parameter (fun (_ : unit) parsed ->
             match parsed with
             | "full" -> Lwt.return_ok Display.Empirical_plot_full
             | _ -> (
@@ -508,7 +508,7 @@ module Infer_cmd = struct
                     else Lwt.return_ok (Display.Empirical_plot_quantiles floats)
                 ))
       in
-      Tezos_clic.arg
+      Mavryk_clic.arg
         ~doc:"Options for plotting empirical data quantiles"
         ~long:"empirical-plot"
         ~placeholder:"full|q1,...,qn"
@@ -517,7 +517,7 @@ module Infer_cmd = struct
 
   let options =
     let open Options in
-    Tezos_clic.args13
+    Mavryk_clic.args13
       print_problem
       dump_csv_arg
       plot_arg
@@ -533,24 +533,24 @@ module Infer_cmd = struct
       empirical_plot_arg
 
   let local_model_param =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"LOCAL-MODEL-NAME"
       ~desc:"Name of the local model for which to infer parameter"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            Lwt.return_ok (Registration.all_local_model_names ()))
          (fun _ str -> Lwt.return_ok str))
 
   let regression_param =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"REGRESSION-METHOD"
       ~desc:"Regression method used"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ -> Lwt.return_ok ["lasso"; "ridge"; "nnls"])
          (fun _ str -> Lwt.return_ok str))
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["infer"; "parameters"; "for"; "model"]
       @@ local_model_param
       @@ prefixes ["on"; "data"]
@@ -561,12 +561,12 @@ module Infer_cmd = struct
 
   let group =
     {
-      Tezos_clic.name = "inference";
+      Mavryk_clic.name = "inference";
       title = "Command for infering parameters of cost models";
     }
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Perform parameter inference"
       ~group
       options
@@ -578,7 +578,7 @@ module Infer_all_cmd = struct
   include Infer_cmd
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["infer"; "parameters"]
       @@ prefixes ["on"; "data"]
       @@ string ~name:"WORKLOAD-DATA" ~desc:"Directory containing workload data"
@@ -591,7 +591,7 @@ module Infer_all_cmd = struct
     Lwt.return_ok ()
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Perform parameter inference on data set"
       ~group
       options
@@ -634,26 +634,26 @@ module Codegen_cmd = struct
     Lwt.return_ok ()
 
   let fixed_point_arg =
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Apply fixed-point transform to the model"
       ~long:"fixed-point"
       ~placeholder:"json-config-file"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
+      (Mavryk_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
   let save_to_arg =
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Save the output to a file"
       ~long:"save-to"
       ~placeholder:"file"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
+      (Mavryk_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
-  let options = Tezos_clic.args2 fixed_point_arg save_to_arg
+  let options = Mavryk_clic.args2 fixed_point_arg save_to_arg
 
   let codegen_model_param =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"CODEGEN-MODEL-NAME"
       ~desc:"Name of the codegen model for which to generate code"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
              List.map
@@ -664,7 +664,7 @@ module Codegen_cmd = struct
          (fun _ str -> Lwt.return_ok str))
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "using"; "solution"]
       @@ string
            ~name:"SOLUTION-FILE"
@@ -675,10 +675,10 @@ module Codegen_cmd = struct
       @@ codegen_model_param @@ stop)
 
   let group =
-    {Tezos_clic.name = "codegen"; title = "Command for generating code"}
+    {Mavryk_clic.name = "codegen"; title = "Command for generating code"}
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Generate code for a specific model"
       options
@@ -697,7 +697,7 @@ module Codegen_all_cmd = struct
     Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "using"; "solution"]
       @@ string
            ~name:"SOLUTION-FILE"
@@ -709,7 +709,7 @@ module Codegen_all_cmd = struct
       @@ stop)
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Generate code for all models matching regexp"
       options
@@ -729,7 +729,7 @@ module Codegen_inferred_cmd = struct
     Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "using"; "solution"]
       @@ string
            ~name:"SOLUTION-FILE"
@@ -738,10 +738,10 @@ module Codegen_inferred_cmd = struct
               switch"
       @@ fixed ["for"; "inferred"; "models"])
 
-  let options = Tezos_clic.args2 Codegen_cmd.fixed_point_arg save_to_arg
+  let options = Mavryk_clic.args2 Codegen_cmd.fixed_point_arg save_to_arg
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Generate code for models inferred from the solution file"
       options
@@ -755,10 +755,10 @@ module Solution_print_cmd = struct
     Lwt.return_ok ()
 
   let group =
-    {Tezos_clic.name = "solution"; title = "Command for solution file"}
+    {Mavryk_clic.name = "solution"; title = "Command for solution file"}
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["solution"; "print"]
       @@ seq_of_param
            (string
@@ -768,10 +768,10 @@ module Solution_print_cmd = struct
                  --save-solution switch"))
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Print out the given solution file(s)"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params
       solution_print_handler
 end
@@ -780,26 +780,26 @@ module Codegen_for_solutions_cmd = struct
   include Codegen_cmd
 
   let split_to_dir =
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:
         "Generated code is saved to \
          DIR/<generated_code_destination>_costs_generated.ml (and \
          __non_fp.ml)."
       ~long:"split-to"
       ~placeholder:"DIR"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
+      (Mavryk_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
   let save_to_arg =
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:
         "Generated code is saved to FILE-NAME. Will also save code for models \
          that dont have a codegen destination"
       ~long:"save-to"
       ~placeholder:"FILE-NAME"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
+      (Mavryk_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
   let options =
-    Tezos_clic.args3 Codegen_cmd.fixed_point_arg save_to_arg split_to_dir
+    Mavryk_clic.args3 Codegen_cmd.fixed_point_arg save_to_arg split_to_dir
 
   let codegen_for_solutions_handler (json, save_to, split_to_dir) solutions () =
     if Option.is_some save_to && Option.is_some split_to_dir then (
@@ -817,7 +817,7 @@ module Codegen_for_solutions_cmd = struct
       Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "for"; "solutions"]
       @@ seq_of_param
            (string
@@ -827,7 +827,7 @@ module Codegen_for_solutions_cmd = struct
                  --save-solution switch"))
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Generate code for the models inferred from the solution files"
       options
@@ -843,7 +843,7 @@ module Codegen_check_definitions_cmd = struct
   let group = Codegen_cmd.group
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["check"; "definitions"; "of"]
       @@ seq_of_param
            (string
@@ -851,7 +851,7 @@ module Codegen_check_definitions_cmd = struct
               ~desc:"File containing cost function definitions"))
 
   let command =
-    Tezos_clic.(
+    Mavryk_clic.(
       command
         ~group
         ~desc:"Check cost functions defined in the given .ml files"
@@ -911,20 +911,20 @@ module Auto_build_cmd = struct
     Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "for"; "benchmarks"]
       @@ seq_of_param
       @@ Benchmark_cmd.benchmark_param ())
 
   let destination_directory_arg =
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:"Destination directory of the auto-build result"
       ~long:"out-dir"
       ~placeholder:"directory"
-      (Tezos_clic.parameter (fun () filename -> Lwt.return_ok filename))
+      (Mavryk_clic.parameter (fun () filename -> Lwt.return_ok filename))
 
   let switch =
-    Tezos_clic.switch
+    Mavryk_clic.switch
       ~doc:
         "Switch indicating that generated code should be split into submodules \
          defined by Benchmark's generated code destination "
@@ -932,7 +932,7 @@ module Auto_build_cmd = struct
       ()
 
   let options =
-    Tezos_clic.args10
+    Mavryk_clic.args10
       switch
       destination_directory_arg
       Benchmark_cmd.Options.nsamples_arg
@@ -945,7 +945,7 @@ module Auto_build_cmd = struct
       Infer_cmd.Options.empirical_plot_arg
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group:Codegen_cmd.group
       ~desc:
         "Auto-perform the benchmarks, inference and codegen for the given \
@@ -974,13 +974,13 @@ module Auto_build_for_models_cmd = struct
     Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "for"; "models"]
       @@ seq_of_param
       @@ Benchmark_cmd.benchmark_param ())
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group:Codegen_cmd.group
       ~desc:
         "Auto-perform the benchmarks, inference and codegen for the given \
@@ -1010,13 +1010,13 @@ module Auto_build_for_parameters_cmd = struct
     Lwt.return_ok ()
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["generate"; "code"; "for"; "parameters"]
       @@ seq_of_param
       @@ Benchmark_cmd.benchmark_param ())
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group:Codegen_cmd.group
       ~desc:
         "Auto-perform the benchmarks, inference and codegen for the given \
@@ -1030,18 +1030,18 @@ module List_cmd = struct
   (* ------------------------------------------------------------------------- *)
 
   let tag_param =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"TAG"
       ~desc:"Tag of a benchmark"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ -> Lwt.return_ok (Registration.all_tags ()))
          (fun _ s -> Lwt.return_ok s))
 
   let benchmark_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"BENCH-NAME"
       ~desc:"Name of the benchmark"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
              List.map
@@ -1052,10 +1052,10 @@ module List_cmd = struct
          (fun _ str -> Lwt.return_ok str))
 
   let model_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"MODEL-NAME"
       ~desc:"Name of the model"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
              List.map Namespace.to_string (Registration.all_model_names ())
@@ -1064,19 +1064,19 @@ module List_cmd = struct
          (fun _ str -> Lwt.return_ok str))
 
   let local_model_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"LOCAL-MODEL-NAME"
       ~desc:"Name of the local model"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            Registration.all_local_model_names () |> Lwt.return_ok)
          (fun _ str -> Lwt.return_ok str))
 
   let parameter_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"PARAM-NAME"
       ~desc:"Name of the parameter"
-      (Tezos_clic.parameter
+      (Mavryk_clic.parameter
          ~autocomplete:(fun _ ->
            let res =
              List.map
@@ -1086,11 +1086,11 @@ module List_cmd = struct
            Lwt.return_ok res)
          (fun _ str -> Lwt.return_ok str))
 
-  let params_all_bench = Tezos_clic.fixed ["list"; "all"; "benchmarks"]
+  let params_all_bench = Mavryk_clic.fixed ["list"; "all"; "benchmarks"]
 
   let options =
-    Tezos_clic.args1
-      (Tezos_clic.switch
+    Mavryk_clic.args1
+      (Mavryk_clic.switch
          ~long:"show-tags"
          ~short:'t'
          ~doc:"Show the tags of the benchmarks"
@@ -1112,7 +1112,7 @@ module List_cmd = struct
       (Registration.all_benchmarks () |> List.map snd)
       show_tags
 
-  let params_all_tags = Tezos_clic.fixed ["list"; "all"; "tags"]
+  let params_all_tags = Mavryk_clic.fixed ["list"; "all"; "tags"]
 
   let handler_all_tags () () =
     List.iter
@@ -1121,7 +1121,7 @@ module List_cmd = struct
     Lwt_result_syntax.return_unit
 
   let params_bench_tags_any =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["list"; "benchmarks"; "with"; "tags"; "any"; "of"]
       @@ seq_of_param tag_param)
 
@@ -1131,7 +1131,7 @@ module List_cmd = struct
       show_tags
 
   let params_bench_tags_all =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["list"; "benchmarks"; "with"; "tags"; "all"; "of"]
       @@ seq_of_param tag_param)
 
@@ -1141,7 +1141,7 @@ module List_cmd = struct
       show_tags
 
   let params_bench_tags_exact =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["list"; "benchmarks"; "with"; "tags"; "exactly"]
       @@ seq_of_param tag_param)
 
@@ -1151,7 +1151,7 @@ module List_cmd = struct
       show_tags
 
   let params_bench_match =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["list"; "benchmarks"; "in"] @@ benchmark_param () @@ stop)
 
   let handler_bench_match show_tags pattern () =
@@ -1160,7 +1160,7 @@ module List_cmd = struct
       |> List.map snd)
       show_tags
 
-  let params_all_param = Tezos_clic.fixed ["list"; "all"; "parameters"]
+  let params_all_param = Mavryk_clic.fixed ["list"; "all"; "parameters"]
 
   let handler_all_param () () =
     Format.printf
@@ -1178,7 +1178,7 @@ module List_cmd = struct
       (Registration.all_parameters ()) ;
     Lwt_result_syntax.return_unit
 
-  let params_all_models = Tezos_clic.fixed ["list"; "all"; "models"]
+  let params_all_models = Mavryk_clic.fixed ["list"; "all"; "models"]
 
   let handler_all_models () () =
     Format.printf
@@ -1192,7 +1192,7 @@ module List_cmd = struct
     Lwt_result_syntax.return_unit
 
   let params_all_local_models =
-    Tezos_clic.fixed ["list"; "all"; "local"; "models"]
+    Mavryk_clic.fixed ["list"; "all"; "local"; "models"]
 
   let handler_all_local_models () () =
     let module S = String.Set in
@@ -1202,10 +1202,10 @@ module List_cmd = struct
     Lwt_result_syntax.return_unit
 
   let group =
-    {Tezos_clic.name = "list"; title = "Commands for displaying lists"}
+    {Mavryk_clic.name = "list"; title = "Commands for displaying lists"}
 
   let command_all_bench =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all implemented benchmarks"
       options
@@ -1213,15 +1213,15 @@ module List_cmd = struct
       handler_all_bench
 
   let command_all_tags =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all available tags"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_all_tags
       handler_all_tags
 
   let command_bench_tags_any =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all implemented benchmarks containing any of the given tags"
       options
@@ -1229,7 +1229,7 @@ module List_cmd = struct
       handler_bench_tags_any
 
   let command_bench_tags_all =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all implemented benchmarks containing all of the given tags"
       options
@@ -1237,7 +1237,7 @@ module List_cmd = struct
       handler_bench_tags_all
 
   let command_bench_tags_exact =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all implemented benchmarks containing exactly the given tags"
       options
@@ -1245,7 +1245,7 @@ module List_cmd = struct
       handler_bench_tags_exact
 
   let command_bench_match =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all benchmarks in the given namespace"
       options
@@ -1253,26 +1253,26 @@ module List_cmd = struct
       handler_bench_match
 
   let command_all_param =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all parameters"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_all_param
       handler_all_param
 
   let command_all_models =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all models"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_all_models
       handler_all_models
 
   let command_all_local_models =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"List all local models"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_all_local_models
       handler_all_local_models
 
@@ -1292,51 +1292,51 @@ end
 
 module Config_cmd = struct
   let config_file_param () =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"CONFIG-FILE"
       ~desc:"Configuration file name"
-      (Tezos_clic.parameter (fun _ s -> Lwt.return_ok s))
+      (Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s))
 
   let benchmark_param = List_cmd.benchmark_param
 
   let options_merge =
-    Tezos_clic.args1
-      (Tezos_clic.switch
+    Mavryk_clic.args1
+      (Mavryk_clic.switch
          ~long:"delete-source"
          ~short:'d'
          ~doc:"Deletes the source config file given as argument for merging"
          ())
 
   let options_edit =
-    Tezos_clic.args4
-      (Tezos_clic.arg
+    Mavryk_clic.args4
+      (Mavryk_clic.arg
          ~long:"use-editor"
          ~short:'e'
          ~placeholder:"EDITOR"
          ~doc:
            "Specify the prefered text editor used for editing the config file"
-         (Tezos_clic.parameter (fun _ str -> Lwt.return_ok str)))
-      (Tezos_clic.switch
+         (Mavryk_clic.parameter (fun _ str -> Lwt.return_ok str)))
+      (Mavryk_clic.switch
          ~long:"read-stdin"
          ~short:'i'
          ~doc:
            "Read the standard input for a Json document to edit the config file"
          ())
-      (Tezos_clic.arg
+      (Mavryk_clic.arg
          ~long:"read-file"
          ~short:'f'
          ~placeholder:"FILE"
          ~doc:"Use the given Json document to edit the config file"
-         (Tezos_clic.parameter (fun _ str -> Lwt.return_ok str)))
-      (Tezos_clic.arg
+         (Mavryk_clic.parameter (fun _ str -> Lwt.return_ok str)))
+      (Mavryk_clic.arg
          ~long:"read-json"
          ~short:'j'
          ~placeholder:"JSON"
          ~doc:"Use inlined Json to edit the config file"
-         (Tezos_clic.parameter (fun _ str -> Lwt.return_ok str)))
+         (Mavryk_clic.parameter (fun _ str -> Lwt.return_ok str)))
 
   let params_check =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["config"; "check"]
       @@ config_file_param () @@ prefix "for" @@ benchmark_param () @@ stop)
 
@@ -1351,7 +1351,7 @@ module Config_cmd = struct
         Lwt_result_syntax.return_unit
 
   let params_generate_default =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["config"; "generate"; "default"; "in"]
       @@ config_file_param () @@ prefix "for"
       @@ seq_of_param (benchmark_param ()))
@@ -1368,11 +1368,11 @@ module Config_cmd = struct
       |> Data_encoding.Json.to_string
     in
     let open Lwt.Infix in
-    Tezos_stdlib_unix.Lwt_utils_unix.create_file config_file str >|= fun r ->
+    Mavryk_stdlib_unix.Lwt_utils_unix.create_file config_file str >|= fun r ->
     Error_monad.catch (fun () -> r)
 
   let params_generate_empty =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["config"; "generate"; "empty"; "in"]
       @@ config_file_param () @@ stop)
 
@@ -1383,23 +1383,23 @@ module Config_cmd = struct
       |> Data_encoding.Json.to_string
     in
     let open Lwt.Infix in
-    Tezos_stdlib_unix.Lwt_utils_unix.create_file config_file str >|= fun r ->
+    Mavryk_stdlib_unix.Lwt_utils_unix.create_file config_file str >|= fun r ->
     Error_monad.catch (fun () -> r)
 
   let config_file_param_dst =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"DST"
       ~desc:"Configuration file path destination"
-      (Tezos_clic.parameter (fun _ s -> Lwt.return_ok s))
+      (Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s))
 
   let config_file_param_src =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"SRC"
       ~desc:"Configuration file path source"
-      (Tezos_clic.parameter (fun _ s -> Lwt.return_ok s))
+      (Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s))
 
   let params_merge =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["config"; "merge"]
       @@ config_file_param_src @@ prefix "in" @@ config_file_param_dst @@ stop)
 
@@ -1408,7 +1408,7 @@ module Config_cmd = struct
     Lwt_result_syntax.return_unit
 
   let params_edit =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["config"; "edit"]
       @@ config_file_param () @@ prefix "for" @@ benchmark_param () @@ stop)
 
@@ -1431,40 +1431,40 @@ module Config_cmd = struct
 
   let group =
     {
-      Tezos_clic.name = "config";
+      Mavryk_clic.name = "config";
       title = "Commands for manipulating config files";
     }
 
   let command_check =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:
         "Prints the configuration that would be used for a given benchmark, \
          given a configuration file"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_check
       handler_check
 
   let command_generate_default =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:
         "Generates a configuration file for the given benchmarks using their \
          default configuration"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_generate_default
       handler_generate_default
 
   let command_generate_empty =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Generates an empty configuration file for the given benchmarks"
-      Tezos_clic.no_options
+      Mavryk_clic.no_options
       params_generate_empty
       handler_generate_empty
 
   let command_merge =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Merges multiple configuration files. Fails in case of conflict"
       options_merge
@@ -1472,7 +1472,7 @@ module Config_cmd = struct
       handler_merge
 
   let command_edit =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Edit configuration file at the given point"
       options_edit
@@ -1490,15 +1490,15 @@ module Config_cmd = struct
 end
 
 module Generate_config_cmd = struct
-  let params = Tezos_clic.fixed ["generate"; "default-config"]
+  let params = Mavryk_clic.fixed ["generate"; "default-config"]
 
   let options =
-    Tezos_clic.args1
-      (Tezos_clic.arg
+    Mavryk_clic.args1
+      (Mavryk_clic.arg
          ~doc:"save default config to file"
          ~long:"save-to"
          ~placeholder:"filename"
-         (Tezos_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)))
+         (Mavryk_clic.parameter (fun (_ : unit) parsed -> Lwt.return_ok parsed)))
 
   let show_config_handler filename () =
     let json =
@@ -1517,7 +1517,7 @@ module Generate_config_cmd = struct
     Lwt.return_ok ()
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:
         "Show the default configurations for fixed-point code generation as \
          json"
@@ -1528,13 +1528,13 @@ end
 
 module Workload_cmd = struct
   let options_dump =
-    Tezos_clic.args1
-      (Tezos_clic.arg
+    Mavryk_clic.args1
+      (Mavryk_clic.arg
          ~doc:"JSON file name to write the content"
          ~short:'o'
          ~long:"out-file"
          ~placeholder:"OUTPUT-FILE"
-         (Tezos_clic.parameter (fun () parsed -> Lwt.return_ok parsed)))
+         (Mavryk_clic.parameter (fun () parsed -> Lwt.return_ok parsed)))
 
   let handler_dump output_path workload_data () =
     let packed_measurement = Measure.load ~filename:workload_data in
@@ -1542,19 +1542,19 @@ module Workload_cmd = struct
     Lwt.return_ok ()
 
   let params_dump =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes ["workload"; "dump"]
       @@ string ~name:"WORKLOAD-FILE" ~desc:"Workload file name"
       @@ stop)
 
   let group =
     {
-      Tezos_clic.name = "workload";
+      Mavryk_clic.name = "workload";
       title = "Commands for manipulating workload files";
     }
 
   let command_dump =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"Dump the content of a workload file in JSON format"
       ~group
       options_dump
@@ -1567,14 +1567,14 @@ end
 module Display_info_cmd = struct
   let group =
     {
-      Tezos_clic.name = "display";
+      Mavryk_clic.name = "display";
       title =
         "Commands for displaying detailed information for Snoop components";
     }
 
-  let params_prefix = Tezos_clic.prefixes ["display"; "info"; "for"]
+  let params_prefix = Mavryk_clic.prefixes ["display"; "info"; "for"]
 
-  let options = Tezos_clic.no_options
+  let options = Mavryk_clic.no_options
 
   let normal_block fmt title pp obj =
     Format.fprintf fmt "%s:@;    @[<v>%a@]@." title pp obj
@@ -1675,28 +1675,28 @@ module Display_info_cmd = struct
     Lwt.return_ok ()
 
   let display_benchmark_params =
-    Tezos_clic.(
+    Mavryk_clic.(
       params_prefix @@ prefix "benchmark" @@ List_cmd.benchmark_param () @@ stop)
 
   let display_all_benchmarks_params =
-    Tezos_clic.fixed ["display"; "info"; "for"; "all"; "benchmarks"]
+    Mavryk_clic.fixed ["display"; "info"; "for"; "all"; "benchmarks"]
 
   let display_model_params =
-    Tezos_clic.(
+    Mavryk_clic.(
       params_prefix @@ prefix "model" @@ List_cmd.model_param () @@ stop)
 
   let display_local_model_params =
-    Tezos_clic.(
+    Mavryk_clic.(
       params_prefix @@ prefix "local" @@ prefix "model"
       @@ List_cmd.local_model_param ()
       @@ stop)
 
   let display_parameter_params =
-    Tezos_clic.(
+    Mavryk_clic.(
       params_prefix @@ prefix "parameter" @@ List_cmd.parameter_param () @@ stop)
 
   let command_benchmark =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Display detailed information on the given benchmark"
       options
@@ -1704,7 +1704,7 @@ module Display_info_cmd = struct
       display_benchmark_handler
 
   let command_all_benchmarks =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Display detailed information on all the benchmarks"
       options
@@ -1712,7 +1712,7 @@ module Display_info_cmd = struct
       display_all_benchmarks_handler
 
   let command_model =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Display detailed information on the given model"
       options
@@ -1720,7 +1720,7 @@ module Display_info_cmd = struct
       display_model_handler
 
   let command_local_model =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Display detailed information on the given local model"
       options
@@ -1728,7 +1728,7 @@ module Display_info_cmd = struct
       display_local_model_handler
 
   let command_parameter =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Display detailed information on the given parameter"
       options
@@ -1768,25 +1768,25 @@ let all_commands =
 module Global_options = struct
   (* --list-solvers *)
   let list_solvers =
-    Tezos_clic.switch ~doc:"List all available solvers" ~long:"list-solvers" ()
+    Mavryk_clic.switch ~doc:"List all available solvers" ~long:"list-solvers" ()
 
   (* --list-models *)
   let list_models =
-    Tezos_clic.switch ~doc:"List all models" ~long:"list-models" ()
+    Mavryk_clic.switch ~doc:"List all models" ~long:"list-models" ()
 
-  let options = Tezos_clic.args2 list_solvers list_models
+  let options = Mavryk_clic.args2 list_solvers list_models
 end
 
 let commands_with_man =
-  Tezos_clic.add_manual
+  Mavryk_clic.add_manual
     ~executable_name:(Filename.basename Sys.executable_name)
     ~global_options:Global_options.options
-    (if Unix.isatty Unix.stdout then Tezos_clic.Ansi else Tezos_clic.Plain)
+    (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi else Mavryk_clic.Plain)
     Format.std_formatter
     all_commands
 
 let usage () =
-  Tezos_clic.usage
+  Mavryk_clic.usage
     Format.std_formatter
     ~executable_name:(Filename.basename Sys.executable_name)
     ~global_options:Global_options.options
@@ -1807,7 +1807,7 @@ let original_args, autocomplete =
 
 let list_solvers, list_models =
   ignore
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.std_formatter
         (if Unix.isatty Unix.stdout then Ansi else Plain)
@@ -1816,12 +1816,12 @@ let list_solvers, list_models =
     Lwt_main.run
       (let open Lwt_result_syntax in
       let* list_flags, args =
-        Tezos_clic.parse_global_options Global_options.options () original_args
+        Mavryk_clic.parse_global_options Global_options.options () original_args
       in
       match autocomplete with
       | Some (prev_arg, cur_arg, script) ->
           let* completions =
-            Tezos_clic.autocompletion
+            Mavryk_clic.autocompletion
               ~script
               ~cur_arg
               ~prev_arg
@@ -1836,24 +1836,24 @@ let list_solvers, list_models =
           match args with
           | [] -> return list_flags
           | _ ->
-              let* () = Tezos_clic.dispatch commands_with_man () args in
+              let* () = Mavryk_clic.dispatch commands_with_man () args in
               return list_flags))
   in
   match result with
   | Ok global_options -> global_options
-  | Error [Tezos_clic.Version] ->
-      let version = Tezos_version_value.Bin_version.version_string in
+  | Error [Mavryk_clic.Version] ->
+      let version = Mavryk_version_value.Bin_version.version_string in
       Format.printf "%s\n" version ;
       exit 0
-  | Error [Tezos_clic.Help command] ->
-      Tezos_clic.usage
+  | Error [Mavryk_clic.Help command] ->
+      Mavryk_clic.usage
         Format.std_formatter
         ~executable_name:(Filename.basename Sys.executable_name)
         ~global_options:Global_options.options
         (match command with None -> [] | Some c -> [c]) ;
       exit 0
   | Error errors ->
-      Tezos_clic.pp_cli_errors
+      Mavryk_clic.pp_cli_errors
         Format.err_formatter
         ~executable_name:(Filename.basename Sys.executable_name)
         ~global_options:Global_options.options

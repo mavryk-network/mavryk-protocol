@@ -25,22 +25,19 @@
 
 type error += Bad_amount_param of (string * string)
 
-let msg_parameter _param =
-  let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ s -> return s)
+let msg_parameter _param = Mavryk_clic.parameter (fun _ s -> return s)
 
 let amount_parameter param =
-  let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ s ->
+  Mavryk_clic.parameter (fun _ s ->
       match Int32.of_string_opt s with
       | Some amount -> return amount
-      | None -> tzfail (Bad_amount_param (param, s)))
+      | None -> fail (Bad_amount_param (param, s)))
 
 let amount_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (amount_parameter name) next
+  Mavryk_clic.param ~name ~desc (amount_parameter name) next
 
 let msg_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (msg_parameter name) next
+  Mavryk_clic.param ~name ~desc (msg_parameter name) next
 
 let () =
   register_error_kind

@@ -35,7 +35,6 @@ let test_chain_id_opcode =
     ~__FILE__
     ~title:"Chain ID Opcode"
     ~tags:["client"; "contract"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* chain_id_alias, _contract =
@@ -59,7 +58,6 @@ let test_chain_id_authentication =
     ~__FILE__
     ~title:"Chain ID Authentication"
     ~tags:["client"; "contract"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   Log.info "Originate contract" ;
@@ -78,7 +76,7 @@ let test_chain_id_authentication =
   let destination = Account.Bootstrap.keys.(1).public_key_hash in
   let operation =
     sf
-      {|{DROP; NIL operation; PUSH address "%s"; CONTRACT unit; ASSERT_SOME; PUSH mutez 1000; UNIT; TRANSFER_TOKENS; CONS}|}
+      {|{DROP; NIL operation; PUSH address "%s"; CONTRACT unit; ASSERT_SOME; PUSH mumav 1000; UNIT; TRANSFER_TOKENS; CONS}|}
       destination
   in
   let* chain_id = Client.RPC.call client @@ RPC.get_chain_chain_id () in

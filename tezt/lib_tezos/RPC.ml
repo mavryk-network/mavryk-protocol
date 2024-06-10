@@ -34,7 +34,7 @@ module Query_arg = struct
 end
 
 module Decode = struct
-  let mutez json = json |> JSON.as_int |> Tez.of_mutez_int
+  let mumav json = json |> JSON.as_int |> Tez.of_mumav_int
 end
 
 type 'result t = 'result RPC_core.t
@@ -203,6 +203,21 @@ let get_chain_block_context_liquidity_baking_cpmm_address ?(chain = "main")
       "context";
       "liquidity_baking";
       "cpmm_address";
+    ]
+    JSON.as_string
+
+let get_chain_block_context_protocol_treasury_buffer_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "protocol_treasury";
+      "buffer_address";
     ]
     JSON.as_string
 
@@ -832,7 +847,7 @@ let get_chain_block_context_contract_balance ?(chain = "main") ?(block = "head")
   make
     GET
     ["chains"; chain; "blocks"; block; "context"; "contracts"; id; "balance"]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_contract_frozen_bonds ?(chain = "main")
     ?(block = "head") ~id () =
@@ -848,7 +863,7 @@ let get_chain_block_context_contract_frozen_bonds ?(chain = "main")
       id;
       "frozen_bonds";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_contract_balance_and_frozen_bonds ?(chain = "main")
     ?(block = "head") ~id () =
@@ -864,7 +879,7 @@ let get_chain_block_context_contract_balance_and_frozen_bonds ?(chain = "main")
       id;
       "balance_and_frozen_bonds";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let post_chain_block_context_contract_big_map_get ?(chain = "main")
     ?(block = "head") ~id ~data () =
@@ -981,23 +996,6 @@ let get_chain_block_context_smart_rollups_smart_rollup_staker_games
     ]
     Fun.id
 
-type smart_rollup_inbox = {
-  old_levels_messages : string;
-  level : int;
-  current_messages_hash : string option;
-}
-
-let smart_rollup_inbox_from_json json =
-  let open JSON in
-  let old_levels_messages =
-    json |-> "old_levels_messages" |-> "content" |-> "hash" |> as_string
-  in
-  let level = json |-> "level" |> as_int in
-  let current_messages_hash =
-    json |-> "current_messages_hash" |> as_string_opt
-  in
-  {old_levels_messages; level; current_messages_hash}
-
 let get_chain_block_context_smart_rollups_all_inbox ?(chain = "main")
     ?(block = "head") () =
   make
@@ -1012,7 +1010,7 @@ let get_chain_block_context_smart_rollups_all_inbox ?(chain = "main")
       "all";
       "inbox";
     ]
-    smart_rollup_inbox_from_json
+    Fun.id
 
 let get_chain_block_context_smart_rollups_smart_rollup_genesis_info
     ?(chain = "main") ?(block = "head") sc_rollup =
@@ -1048,20 +1046,6 @@ let get_chain_block_context_smart_rollups_smart_rollup_last_cemented_commitment_
     ]
     Fun.id
 
-type smart_rollup_commitment = {
-  compressed_state : string;
-  inbox_level : int;
-  predecessor : string;
-  number_of_ticks : int;
-}
-
-let smart_rollup_commitment_from_json json =
-  let compressed_state = JSON.as_string @@ JSON.get "compressed_state" json in
-  let inbox_level = JSON.as_int @@ JSON.get "inbox_level" json in
-  let predecessor = JSON.as_string @@ JSON.get "predecessor" json in
-  let number_of_ticks = JSON.as_int @@ JSON.get "number_of_ticks" json in
-  {compressed_state; inbox_level; predecessor; number_of_ticks}
-
 let get_chain_block_context_smart_rollups_smart_rollup_commitment
     ?(chain = "main") ?(block = "head") ~sc_rollup ~hash () =
   make
@@ -1078,7 +1062,7 @@ let get_chain_block_context_smart_rollups_smart_rollup_commitment
       "commitment";
       hash;
     ]
-    (fun json -> smart_rollup_commitment_from_json json)
+    (fun json -> Sc_rollup_rpc.commitment_from_json json)
 
 let get_chain_block_context_smart_rollups_smart_rollup_staker_staked_on_commitment
     ?(chain = "main") ?(block = "head") ~sc_rollup staker =
@@ -1163,7 +1147,7 @@ let get_chain_block_context_delegate_current_frozen_deposits ?(chain = "main")
       pkh;
       "current_frozen_deposits";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_deactivated ?(chain = "main")
     ?(block = "head") pkh =
@@ -1195,7 +1179,7 @@ let get_chain_block_context_delegate_delegated_balance ?(chain = "main")
       pkh;
       "delegated_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_delegated_contracts ?(chain = "main")
     ?(block = "head") pkh =
@@ -1266,7 +1250,7 @@ let get_chain_block_context_delegate_frozen_deposits ?(chain = "main")
       pkh;
       "frozen_deposits";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_frozen_deposits_limit ?(chain = "main")
     ?(block = "head") pkh =
@@ -1282,7 +1266,7 @@ let get_chain_block_context_delegate_frozen_deposits_limit ?(chain = "main")
       pkh;
       "frozen_deposits_limit";
     ]
-    (fun json -> json |> JSON.as_opt |> Option.map Decode.mutez)
+    (fun json -> json |> JSON.as_opt |> Option.map Decode.mumav)
 
 let get_chain_block_context_delegate_full_balance ?(chain = "main")
     ?(block = "head") pkh =
@@ -1298,7 +1282,7 @@ let get_chain_block_context_delegate_full_balance ?(chain = "main")
       pkh;
       "full_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_grace_period ?(chain = "main")
     ?(block = "head") pkh =
@@ -1346,7 +1330,7 @@ let get_chain_block_context_delegate_frozen_balance ?(chain = "main")
       pkh;
       "frozen_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_frozen_balance_by_cycle ?(chain = "main")
     ?(block = "head") pkh =
@@ -1378,14 +1362,14 @@ let get_chain_block_context_delegate_staking_balance ?(chain = "main")
       pkh;
       "staking_balance";
     ]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_balance ?(chain = "main") ?(block = "head")
     pkh =
   make
     GET
     ["chains"; chain; "blocks"; block; "context"; "delegates"; pkh; "balance"]
-    Decode.mutez
+    Decode.mumav
 
 let get_chain_block_context_delegate_voting_info ?(chain = "main")
     ?(block = "head") pkh =

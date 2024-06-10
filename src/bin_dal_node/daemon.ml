@@ -28,7 +28,7 @@
     returned plugin to process the block at the next level, the block at the
     previous level being processed by the previous plugin (if any). *)
 let resolve_plugin
-    (protocols : Tezos_shell_services.Chain_services.Blocks.protocols) =
+    (protocols : Mavryk_shell_services.Chain_services.Blocks.protocols) =
   let open Lwt_syntax in
   let plugin_opt = Dal_plugin.get protocols.next_protocol in
   let* () =
@@ -67,7 +67,7 @@ let fetch_dal_config cctxt =
 let init_cryptobox dal_config (proto_parameters : Dal_plugin.proto_parameters) =
   let open Lwt_result_syntax in
   let* () =
-    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
+    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
     Cryptobox.Config.init_dal ~find_srs_files dal_config
   in
   match Cryptobox.make proto_parameters.cryptobox_parameters with
@@ -132,7 +132,6 @@ module Handler = struct
           | `Shard_index_out_of_range s ->
               Format.sprintf "Shard_index_out_of_range(%s)" s
           | `Shard_length_mismatch -> "Shard_length_mismatch"
-          | `Prover_SRS_not_loaded -> "Prover_SRS_not_loaded"
         in
         Event.(
           emit__dont_wait__use_with_care
@@ -219,7 +218,7 @@ module Handler = struct
     let handler stopper (block_hash, block_header) =
       let block = `Hash (block_hash, 0) in
       let* protocols =
-        Tezos_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
+        Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
       in
       let*! plugin_opt = resolve_plugin protocols in
       match plugin_opt with
@@ -234,19 +233,6 @@ module Handler = struct
               let pctxt = Node_context.get_profile_ctxt ctxt in
               match config.Configuration_file.profiles with
               | Bootstrap -> return @@ Profile_manager.bootstrap_profile
-              | Random_observer -> (
-                  let slot_index =
-                    Random.int proto_parameters.number_of_slots
-                  in
-                  match
-                    Profile_manager.add_operator_profiles
-                      pctxt
-                      proto_parameters
-                      (Node_context.get_gs_worker ctxt)
-                      [Observer {slot_index}]
-                  with
-                  | None -> fail Errors.[Profile_incompatibility]
-                  | Some pctxt -> return pctxt)
               | Operator operator_profiles -> (
                   match
                     Profile_manager.add_operator_profiles
@@ -284,13 +270,13 @@ module Handler = struct
     let*! () = Event.(emit layer1_node_tracking_started_for_plugin ()) in
     make_stream_daemon
       handler
-      (Tezos_shell_services.Monitor_services.heads cctxt `Main)
+      (Mavryk_shell_services.Monitor_services.heads cctxt `Main)
 
   let may_update_plugin cctxt ctxt ~block ~current_proto ~block_proto =
     let open Lwt_result_syntax in
     if current_proto <> block_proto then
       let* protocols =
-        Tezos_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
+        Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
       in
       let*! plugin_opt = resolve_plugin protocols in
       match plugin_opt with
@@ -309,10 +295,15 @@ module Handler = struct
      the publication level of the corresponding slot header. *)
   let new_head ctxt cctxt =
     let open Lwt_result_syntax in
-    let handler _stopper (head_hash, (header : Tezos_base.Block_header.t)) =
+    let handler _stopper (head_hash, (header : Mavryk_base.Block_header.t)) =
       match Node_context.get_status ctxt with
       | Starting -> return_unit
       | Ready ready_ctxt ->
+          let head_level = header.shell.level in
+          Dal_metrics.new_layer1_head ~head_level ;
+          let*! () =
+            Event.(emit layer1_node_new_head (head_hash, head_level))
+          in
           let Node_context.
                 {
                   plugin = (module Plugin);
@@ -323,14 +314,6 @@ module Handler = struct
                   last_seen_head;
                 } =
             ready_ctxt
-          in
-          let head_level = header.shell.level in
-          let*? head_round = Plugin.get_round header.shell.fitness in
-          Dal_metrics.new_layer1_head ~head_level ;
-          Dal_metrics.new_layer1_head_round ~head_round ;
-          let*! () =
-            Event.(
-              emit layer1_node_new_head (head_hash, head_level, head_round))
           in
           Gossipsub.Worker.Validate_message_hook.set
             (gossipsub_app_messages_validation
@@ -343,10 +326,6 @@ module Handler = struct
             let block = `Level block_level in
             let* block_info =
               Plugin.block_info cctxt ~block ~metadata:`Always
-            in
-            let*? block_round =
-              let shell_header = Plugin.block_shell_header block_info in
-              Plugin.get_round shell_header.fitness
             in
             let* slot_headers = Plugin.get_published_slot_headers block_info in
             let* () =
@@ -407,10 +386,7 @@ module Handler = struct
                 committee
             in
             Dal_metrics.layer1_block_finalized ~block_level ;
-            Dal_metrics.layer1_block_finalized_round ~block_round ;
-            let*! () =
-              Event.(emit layer1_node_final_block (block_level, block_round))
-            in
+            let*! () = Event.(emit layer1_node_final_block block_level) in
             may_update_plugin
               cctxt
               ctxt
@@ -445,7 +421,7 @@ module Handler = struct
         If the layer1 node reboots, the rpc stream breaks.*)
     make_stream_daemon
       handler
-      (Tezos_shell_services.Monitor_services.heads cctxt `Main)
+      (Mavryk_shell_services.Monitor_services.heads cctxt `Main)
 
   let new_slot_header ctxt =
     (* Monitor neighbor DAL nodes and download published slots as shards. *)
@@ -519,12 +495,12 @@ let connect_gossipsub_with_p2p gs_worker transport_layer node_store =
       ^ Printexc.to_string exn
       |> Stdlib.failwith)
 
-let resolve points =
+let resolve peers =
   List.concat_map_es
-    (Tezos_base_unix.P2p_resolve.resolve_addr
+    (Mavryk_base_unix.P2p_resolve.resolve_addr
        ~default_addr:"::"
        ~default_port:(Configuration_file.default.listen_addr |> snd))
-    points
+    peers
 
 (* This function ensures the persistence of attester profiles
    to the configuration file at shutdown.
@@ -556,24 +532,21 @@ let store_profiles_finalizer ctxt data_dir =
 *)
 let run ~data_dir configuration_override =
   let open Lwt_result_syntax in
-  let log_cfg = Tezos_base_unix.Logs_simple_config.default_cfg in
+  let log_cfg = Mavryk_base_unix.Logs_simple_config.default_cfg in
   let internal_events =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults
       ~enable_default_daily_logs_at:Filename.Infix.(data_dir // "daily_logs")
       ~log_cfg
       ()
   in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   let*! () = Event.(emit starting_node) () in
   let* ({
           network_name;
           rpc_addr;
-          (* These are not the cryptographic identities of peers, but the points
-             (IP addresses + ports) of the nodes we want to connect to at
-             startup. *)
-          peers = points;
+          peers;
           endpoint;
           profiles;
           listen_addr;
@@ -591,12 +564,6 @@ let run ~data_dir configuration_override =
         return configuration
   in
   let*! () = Event.(emit configuration_loaded) () in
-  let cctxt = Rpc_context.make endpoint in
-  let* dal_config = fetch_dal_config cctxt in
-  (* Resolve:
-     - [points] from DAL node config file and CLI.
-     - [dal_config.bootstrap_peers] from the L1 network config. *)
-  let* points = resolve (points @ dal_config.bootstrap_peers) in
   (* Create and start a GS worker *)
   let gs_worker =
     let rng =
@@ -616,15 +583,7 @@ let run ~data_dir configuration_override =
 
              Additionally, we set [max_sent_iwant_per_heartbeat = 0]
              so bootstrap nodes do not download any shards via IHave/IWant
-             transfers.
-
-             Also, we set [prune_backoff = 10] so that bootstrap nodes send PX
-             peers quicker. In particular, we want to avoid the following
-             scenario: a peer receives a Prune from the bootstrap node, then
-             disconnects for some reason and reconnects within the backoff
-             period; with a large backoff, its first Graft will be answered with
-             a no PX Prune, and therefore the peer will have to wait for the new
-             backoff timeout to be able to obtain PX peers. *)
+             transfers. *)
           {
             limits with
             max_sent_iwant_per_heartbeat = 0;
@@ -633,18 +592,12 @@ let run ~data_dir configuration_override =
             degree_out = 0;
             degree_optimal = 0;
             degree_score = 0;
-            prune_backoff = Ptime.Span.of_int_s 10;
           }
-      | Random_observer | Operator _ -> limits
+      | Operator _ -> limits
     in
     let gs_worker =
       Gossipsub.Worker.(
-        make
-          ~bootstrap_points:points
-          ~events_logging:Logging.event
-          rng
-          limits
-          peer_filter_parameters)
+        make ~events_logging:Logging.event rng limits peer_filter_parameters)
     in
     Gossipsub.Worker.start [] gs_worker ;
     gs_worker
@@ -661,6 +614,7 @@ let run ~data_dir configuration_override =
       ~network_name
   in
   let* store = Store.init config in
+  let cctxt = Rpc_context.make endpoint in
   let*! metrics_server = Metrics.launch config.metrics_addr in
   let ctxt =
     Node_context.init
@@ -676,6 +630,11 @@ let run ~data_dir configuration_override =
   in
   let* rpc_server = RPC_server.(start config ctxt) in
   connect_gossipsub_with_p2p gs_worker transport_layer store ;
+  let* dal_config = fetch_dal_config cctxt in
+  (* Resolve:
+     - [peers] from DAL node config file and CLI.
+     - [dal_config.bootstrap_peers] from the L1 network config. *)
+  let* points = resolve (peers @ dal_config.bootstrap_peers) in
   (* activate the p2p instance. *)
   let*! () =
     Gossipsub.Transport_layer.activate ~additional_points:points transport_layer

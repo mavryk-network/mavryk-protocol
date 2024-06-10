@@ -119,8 +119,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: 012-Psithaca: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: 012-Psithaca: proxy",
     "tags": [
       "alcotest"
     ],
@@ -782,7 +782,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Alpha: Tc opcodes/ediv_mutez",
+    "title": "Alpha: Tc opcodes/ediv_mumav",
     "tags": [
       "regression",
       "alpha",
@@ -1037,7 +1037,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Mumbai: Tc opcodes/bls12_381_fr_to_mutez",
+    "title": "Mumbai: Tc opcodes/bls12_381_fr_to_mumav",
     "tags": [
       "regression",
       "mumbai",
@@ -1553,7 +1553,7 @@
   },
   {
     "file": "sapling.ml",
-    "title": "Mumbai: test sapling with shielded tez",
+    "title": "Mumbai: test sapling with shielded mav",
     "tags": [
       "mumbai",
       "sapling",
@@ -1637,11 +1637,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, proposal)",
+    "title": "Mumbai: testnet dictator (basenet, proposal)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "proposal"
     ],
     "successful_runs": {

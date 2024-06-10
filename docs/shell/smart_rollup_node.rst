@@ -1,17 +1,19 @@
 Smart rollup node
 =================
 
-This page describes the Octez rollup node, the main executable supporting
-:doc:`../active/smart_rollups`.
+:doc:`../active/smart_rollups` come with two executable programs: the Mavkit
+rollup node and the Mavkit rollup client.
 
+This page describes the rollup node, but also uses the rollup client when needed to interact with the rollup node.
 
-The Octez rollup node is used by a rollup operator to deploy a
+The Mavkit rollup node is used by a rollup operator to deploy a
 rollup. The rollup node is responsible for making the rollup progress
 by publishing commitments and by playing refutation games.
 
-Just like the Octez node, the Octez rollup node provides an :doc:`RPC
+Just like the Mavkit node, the Mavkit rollup node provides an :doc:`RPC
 interface<../api/openapi>`. The services of this interface can be
-called directly with HTTP requests.
+called directly with HTTP requests or indirectly using the Mavkit
+rollup client.
 
 We first cover the operation of the rollup node and the corresponding workflow,
 using some predefined rollup logic (called kernel), and then we explain how the
@@ -25,60 +27,60 @@ the `Dailynet <https://teztnets.com/dailynet-about>`_.
 In this section, we assume that ``${OPERATOR_ADDR}`` is a valid
 implicit account on Dailynet owned by the reader.
 
-Notice that you need a specific development version of Octez to
+Notice that you need a specific development version of Mavkit to
 participate to Dailynet. This version is either available from
 docker images or can be compiled from sources. Please refer to the
 `Dailynet <https://teztnets.com/dailynet-about>`_ website
 for installation details.
 
-An Octez rollup node needs an Octez node to run. We assume that
-an Octez node has been launched locally, typically by issuing:
+An Mavkit rollup node needs an Mavkit node to run. We assume that
+an Mavkit node has been launched locally, typically by issuing:
 
 .. code:: sh
 
-   octez-node config init --data-dir "${ONODE_DIR}" --network "${NETWORK}"
-   octez-node run --data-dir "${ONODE_DIR}" --network "${NETWORK}" --rpc-addr 127.0.0.1
+   mavkit-node config init --data-dir "${ONODE_DIR}" --network "${NETWORK}"
+   mavkit-node run --data-dir "${ONODE_DIR}" --network "${NETWORK}" --rpc-addr 127.0.0.1
 
 in a terminal where ``${NETWORK}`` is of the
 form ``https://teztnets.com/dailynet-YYYY-MM-DD``
-and ``${ONODE_DIR}`` is a path for the Octez node store, by default ``~/.tezos-node``.
+and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.mavryk-node``.
 
-The commands will only work when the node is completely bootstrapped, and therefore the current protocol on the target network is activated.
+The commands will only work when the node is completely boostrapped, and therefore the current protocol on the target network is activated.
 This can be checked by:
 
 .. code:: sh
 
-   octez-client bootstrapped
-   octez-client rpc get /chains/main/blocks/head/protocols
+   mavkit-client bootstrapped
+   mavkit-client rpc get /chains/main/blocks/head/protocols
 
 In case you do not already have an implicit account, you can generate one with:
 
 .. code:: sh
 
-   octez-client gen keys "${ACCOUNT_NAME}"
-   octez-client show address "${ACCOUNT_NAME}"
+   mavkit-client gen keys "${ACCOUNT_NAME}"
+   mavkit-client show address "${ACCOUNT_NAME}"
 
-Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``tz1...``) returned.
+Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
 tez to make sure that staking is possible. In case your balance is not
-sufficient, you can get test tokens for the ``tz1`` address from :ref:`a faucet <faucet>`,
+sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Dailynet.
 
 
 .. code:: sh
 
-   octez-client get balance for "${OPERATOR_ADDR}"
+   mavkit-client get balance for "${OPERATOR_ADDR}"
 
 Origination
 -----------
 
 Anyone can originate a smart rollup with the following invocation of
-the Octez client:
+the Mavkit client:
 
 .. code:: sh
 
-    octez-client originate smart rollup "${SR_ALIAS}" \
+    mavkit-client originate smart rollup "${SR_ALIAS}" \
       from "${OPERATOR_ADDR}" \
       of kind wasm_2_0_0 \
       of type bytes \
@@ -109,28 +111,28 @@ If everything went well, the origination command results in:
 
    This sequence of operations was run:
      Manager signed operations:
-       From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
-       Fee to the baker: ꜩ0.000357
+       From: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
+       Fee to the baker: ṁ0.000357
        Expected counter: 36
        Gas limit: 1000
        Storage limit: 0 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ0.000357
-         payload fees(the block proposer) ....... +ꜩ0.000357
+         mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ0.000357
+         payload fees(the block proposer) ....... +ṁ0.000357
        Revelation of manager public key:
-         Contract: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
+         Contract: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
          Key: edpkukxtw4fHmffj4wtZohVKwNwUZvYm6HMog5QMe9EyYK3QwRwBjp
          This revelation was successfully applied
          Consumed gas: 1000
      Manager signed operations:
-       From: tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX
-       Fee to the baker: ꜩ0.000956
+       From: mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy
+       Fee to the baker: ṁ0.000956
        Expected counter: 37
        Gas limit: 2849
        Storage limit: 6572 bytes
        Balance updates:
-         tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ0.000956
-         payload fees(the block proposer) ....... +ꜩ0.000956
+         mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ0.000956
+         payload fees(the block proposer) ....... +ṁ0.000956
        Smart rollup origination:
          Kind: wasm_2_0_0
          Parameter type: bytes
@@ -141,8 +143,8 @@ If everything went well, the origination command results in:
          Address: sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf
          Genesis commitment hash: src13wCGc2nMVfN7rD1rgeG3g1q7oXYX2m5MJY5ZRooVhLt7JwKXwX
          Balance updates:
-           tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX ... -ꜩ1.638
-           storage fees ........................... +ꜩ1.638
+           mv1M2LPj9s9EZo3et3r5HXD7Y6MH2LXYa8Jy ... -ṁ1.638
+           storage fees ........................... +ṁ1.638
 
 
 The address ``sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf`` is the smart rollup address.
@@ -154,7 +156,32 @@ Deploying a rollup node
 Now that the rollup is originated, anyone can make it progress by deploying a
 rollup node.
 
-First, we need to decide on a mode the rollup node will run:
+First, we need to decide on a directory where the rollup node stores
+its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path, by default
+``~/.mavryk-smart-rollup-node``.
+
+
+The rollup node can then be run with:
+
+.. code:: sh
+
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+                    run operator for "${SR_ALIAS_OR_ADDR}" \
+                    with operators "${OPERATOR_ADDR}" \
+                    --data-dir "${ROLLUP_NODE_DIR}"
+
+where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by default  ``~/.mavryk-client``.
+
+The log should show that the rollup node follows the Layer 1 chain and
+processes the inbox of each level.
+
+
+Notice that distinct Layer 1 addresses could be used for the Layer 1
+operations issued by the rollup node simply by editing the
+:ref:`configuration file <rollup_node_config_file>` to set different addresses for ``publish``,
+``add_messages``, ``cement``, and ``refute``.
+
+In addition, a rollup node can run under different modes:
 
 #. ``operator`` activates a full-fledged rollup node. This means that
    the rollup node will do everything needed to make the rollup
@@ -163,8 +190,6 @@ First, we need to decide on a mode the rollup node will run:
    regularly, and playing the refutation games. In this mode, the
    rollup node will accept transactions in its queue and batch them on
    the Layer 1.
-
-.. _rollup_batcher:
 
 #. ``batcher`` means that the rollup node will accept transactions in
    its queue and batch them on the Layer 1. In this mode, the rollup
@@ -192,107 +217,31 @@ First, we need to decide on a mode the rollup node will run:
    operation when the operator is no longer staked on any commitment. If the node detects that this
    operation has been successful, it can gratefully exit.
 
-#. ``custom`` mode refers to a mode where the users individually select which
+#. ``custom`` mode refers to a mode where the users individually selects which
    kinds of operations the rollup node injects. It provides tailored control and
    flexibility customized to specific requirements, and is mostly used for tests.
 
-To each mode corresponds a set of purposes where each purpose is a set
-of L1 operations which are injected by the rollup node.
+The following table summarizes the operation modes, focusing on the L1
+operations which are injected by the rollup node in each mode.
 
-The following table links each purpose to its corresponding L1 operations.
++-------------+--------------+-----------+------------+------------+
+|             | Add messages | Publish   | Cement     | Refute     |
++=============+==============+===========+============+============+
+| Operator    | Yes          | Yes       | Yes        | Yes        |
++-------------+--------------+-----------+------------+------------+
+| Batcher     | Yes          | No        | No         | No         |
++-------------+--------------+-----------+------------+------------+
+| Observer    | No           | No        | No         | No         |
++-------------+--------------+-----------+------------+------------+
+| Maintenance | No           | Yes       | Yes        | Yes        |
++-------------+--------------+-----------+------------+------------+
+| Accuser     | No           | Yes [*]_  | No         | Yes        |
++-------------+--------------+-----------+------------+------------+
+| Bailout     | No           | No        | Yes        | Yes        |
++-------------+--------------+-----------+------------+------------+
 
-+-------------------+-----------------------------------------------------------------+
-| Operating         | smart_rollup_publish, smart_rollup_refute, smart_rollup_timeout |
-+-------------------+-----------------------------------------------------------------+
-| Batching          | smart_rollup_add_messages                                       |
-+-------------------+-----------------------------------------------------------------+
-| Cementing         | smart_rollup_cement                                             |
-+-------------------+-----------------------------------------------------------------+
-| Recovering        | smart_rollup_recover                                            |
-+-------------------+-----------------------------------------------------------------+
-| Executing_outbox  | smart_rollup_execute_outbox_message                             |
-+-------------------+-----------------------------------------------------------------+
-
-The table below summarises the modes and their associated purposes:
-
-+-------------+------------+----------+------------+------------+------------------+
-|             | Operating  | Batching | Cementing  | Recovering | Executing_outbox |
-+=============+============+==========+============+============+==================+
-| Operator    | Yes        | Yes      | Yes        | No         | Yes[^1]_         |
-+-------------+------------+----------+------------+------------+------------------+
-| Maintenance | Yes        | No       | Yes        | No         | Yes[^1]_         |
-+-------------+------------+----------+------------+------------+------------------+
-| Bailout     | Yes[^2]_   | No       | Yes        | Yes        | No               |
-+-------------+------------+----------+------------+------------+------------------+
-| Accuser     | Yes [^3]_  | No       | No         | No         | No               |
-+-------------+------------+----------+------------+------------+------------------+
-| Batcher     | No         | Yes      | No         | No         | No               |
-+-------------+------------+----------+------------+------------+------------------+
-| Observer    | No         | No       | No         | No         | No               |
-+-------------+------------+----------+------------+------------+------------------+
-
-.. [^1] If and only it's a private rollup. In that case, only the
-       whitelist update outbox message are injected.
-.. [^2] A rollup node in bailout mode won't publish any new commitments but only
-       defends the one published by the operator if they are refuted.
-.. [^3] An accuser node will publish commitments only when it detects
+.. [*] An accuser node will publish commitments only when it detects
        conflicts; for such cases it must make a deposit of 10,000 tez.
-
-
-Then to run the rollup node, use the following command:
-
-.. code:: sh
-
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
-                    run "${ROLLUP_NODE_MODE}" \
-                    for "${SR_ALIAS_OR_ADDR}" \
-                    with operators "${OPERATOR_ADDR}" \
-                    --data-dir "${ROLLUP_NODE_DIR}"
-
-where ``${OCLIENT_DIR}`` is the data directory of the Octez client, by
-default ``~/.tezos-client``, and ``${ROLLUP_NODE_DIR}`` is the data
-directory of the Octez smart rollup node, by default
-``~/.tezos-smart-rollup-node``.
-
-The log should show that the rollup node follows the Layer 1 chain and
-processes the inbox of each level.
-
-Distinct Layer 1 signers can be used for each purpose of the mode by
-either editing the :ref:`configuration file <rollup_node_config_file>`
-or by listing multiple operators on the command line.
-
-For example for the ``operator`` mode we can replace
-``${OPERATOR_ADDR}`` by ``default:${OPERATOR_ADDR1}
-batching:${OPERATOR_ADDR2}``.  Where the rollup node will use
-``${OPERATOR_ADDR2}`` for the batching purpose and
-``${OPERATOR_ADDR1}`` for everything else.
-
-The L1 chain has a limitation of one manager operation per key per
-block (see :doc:`../active/precheck`). In the case of a high
-throughput rollup, this limitation could slow down the rollup by
-capping the number of L2 messages that the rollup node's batcher
-purpose can inject per block to the maximum size of one L1 operation's
-maximal size (e.g., 32kb on mainnet).
-
-To bypass that limitation and inject multiple
-``smart_rollup_add_messages`` L1 operations within a single L1 block,
-it is possible to provide multiple keys for the batcher purpose of a
-rollup node. At each block, the rollup node will use as many keys as
-possible to inject a corresponding number of queued L2 messages into
-the L1 rollup inbox[^1].
-
-[^1]: The order of the batches of L2 messages is not guaranteed to be
-preserved by the rollup node nor by the octez node mempool.
-
-The way to provide multiple batcher keys on the command line is:
-
-.. code:: sh
-
-   octez-smart-rollup-node run ${ROLLUP_NODE_MODE} for "${SR_ALIAS_OR_ADDR}" \
-                    with operators default:${DEFAULT_ADDR} \
-                    batching:${BATCHER_ADDR1} \
-                    batching:${BATCHER_ADDR2} ...
-
 
 .. _rollup_node_config_file:
 
@@ -304,9 +253,8 @@ uses the same arguments as the ``run`` command:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
-                    init "${ROLLUP_NODE_MODE}" config \
-                    for "${SR_ALIAS_OR_ADDR}" \
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+                    init operator config for "${SR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
 
@@ -323,13 +271,13 @@ Here is the content of the file:
 ::
 
   {
-    "smart-rollup-address": "${SR_ALIAS_OR_ADDR}",
-    "smart-rollup-node-operator":
-    {
-      "operating": "${OPERATOR_ADDR}",
-      "batching": [ "${OPERATOR_ADDR}" ],
-      "cementing": "${OPERATOR_ADDR}",
-      "executing_outbox": "${OPERATOR_ADDR}"
+    "data-dir": "${ROLLUP_NODE_DIR}",
+    "smart-rollup-address": "${SR_ADDR}",
+    "smart-rollup-node-operator": {
+      "publish": "${OPERATOR_ADDR}",
+      "add_messages": "${OPERATOR_ADDR}",
+      "cement": "${OPERATOR_ADDR}",
+      "refute": "${OPERATOR_ADDR}"
     },
     "fee-parameters": {},
     "mode": "operator"
@@ -339,7 +287,7 @@ The rollup node can now be run with just:
 
 .. code:: sh
 
-   octez-smart-rollup-node --base-dir "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
+   mavkit-smart-rollup-node -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
 
 The configuration will be read from ``${ROLLUP_NODE_DIR}/config.json``.
 
@@ -348,11 +296,10 @@ Rollup node in a sandbox
 
 The node can also be tested locally with a sandbox environment. (See :doc:`sandbox documentation <../user/sandbox>`.)
 
-Once you initialized the "sandboxed" client data with ``./src/bin_client/octez-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``octez-smart-rollup-node run``.
+Once you initialized the "sandboxed" client data with ``./src/bin_client/mavkit-init-sandboxed-client.sh``, you can run a sandboxed rollup node with ``mavkit-smart-rollup-node run``.
 
-A temporary directory ``/tmp/tezos-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
+A temporary directory ``/tmp/mavryk-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
 
-.. _rollup_history_mode:
 
 History modes
 -------------
@@ -386,7 +333,7 @@ Archive mode
 When configured in *archive* mode, a rollup node will keep all history since the
 origination of the rollup. This mode can be useful for
 applications that require to regularly access historical data before the LCC,
-i.e. for applications that need more than two weeks of history.
+i.e. for application that need more than two weeks of history.
 
 This mode can be chosen e.g. on the command line with ``--history-mode
 archive``.
@@ -397,186 +344,6 @@ in the configuration file or command line.
 
 This is the default history mode.
 
-
-.. _rollup_snapshots:
-
-Snapshots
----------
-
-Smart rollup node snapshots are a way to bootstrap a rollup node without having
-to replay the whole L2 chain since the rollup genesis. Without this snapshot mechanism, one would need
-an archive L1 node to bootstrap a rollup node or to catch up (if the rollup node
-data is more than a few days old) because it needs access to metadata about L1
-operations on the chain.
-
-Snapshots for a particular rollup must be obtained from an off-chain source (for
-instance a rollup snapshot provider service which regularly publishes snapshots
-online) and imported into an existing, or empty, rollup node to get started
-quickly.
-
-.. _format_rollup_snapshot:
-
-Format of snapshots
-"""""""""""""""""""
-
-A smart rollup node snapshot is a binary file which contains a header part and a
-data part. The data part is a tar archive of the non-local storage files of the
-rollup node while the metadata header exposes information to quickly validate or
-discard a snapshot.
-
-.. list-table:: Snapshot format
-   :widths: 25 25 50
-   :header-rows: 1
-
-   * - Name
-     - Size
-     - Contents
-   * - Snapshot version
-     - 1 byte
-     - ``0`` (the only version so far)
-   * - :ref:`History mode <rollup_history_mode>`
-     - 1 byte
-     - ``0`` for archive, ``1`` for full
-   * - Address
-     - 20 bytes
-     - Address of the smart rollup
-   * - Head level
-     - 4 bytes
-     - Level of the last seen L1 block of the rollup (int32)
-   * - Last commitment hash
-     - 32 bytes
-     - Hash of last commitment in the L2 chain
-   * - Data
-     - Variable
-     - Tar archive of rollup node data
-
-
-The snapshots can be imported (and exported) as either compressed (with gzip) or
-uncompressed files.
-
-.. _importing_a_rollup_snapshot:
-
-Importing a snapshot
-""""""""""""""""""""
-
-A snapshot ``${SNAPSHOT_FILE}`` can be imported by issuing the following command:
-
-.. code-block:: console
-
-   octez-smart-rollup-node -E ${L1_NODE_ENDPOINT} \
-     snapshot import ${SNAPSHOT_FILE} \
-     [--data-dir ${ROLLUP_NODE_DIR}] \
-     [--force]
-
-
-where ``${ROLLUP_NODE_DIR}`` is the data directory of the rollup node in which
-we want to import the snapshot, and ``${L1_NODE_ENDPOINT}`` is the RPC endpoint
-of an L1 node, needed to verify the snapshot.
-
-Option ``--force`` allows to import a snapshot in an already
-populated data directory of a rollup node.
-
-.. warning::
-
-   When using the ``--force`` option, it is recommended to run the
-   :ref:`snapshot info command <rollup_snapshot_info>` and to first import the
-   snapshot in an empty directory to run all the checks.
-
-While importing a snapshot, many checks are performed to ensure the consistency
-of the imported data. In order to speed up the process, but only if the
-snapshot's source is highly trusted (or exported by yourself), it is possible to
-disable some checks. Some rudimentary checks will still be performed. However,
-most of the data will be copied directly, without additional consistency
-checks. To do so, use the ``--no-check`` option.
-
-.. warning::
-
-   The snapshot importing mechanism checks that the chain of commitments from
-   the LCC (last cemented commitment) to the last commitment is published on the
-   L1 chain but this does not prevent a malicious provider of snapshots from
-   providing snapshots with inaccurate data about the L2 state, as soon as she or
-   he is willing to also forfeit her/his deposit (these commitments were exposed
-   on L1 to eventual refutation games). The check described above gives some
-   acceptable level of assurance without having to recompute the whole chain
-   from the LCC (which can be costly depending on the rollup).
-
-List of checks performed for import
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- Metadata checks:
-
-  - Rollup address matches (*)
-  - History mode matches (*)
-  - Snapshot head is fresher than the one on disk (*)
-  - Last commitment is published on L1
-- Metadata commitment matches the snapshot one
-- LCC on L1 is a valid commitment in the snapshot
-- Ensure the chain of commitments goes back to LCC
-- For each L2 block:
-
-  - The commitment, if any, must be for the PVM state of this block
-  - Hashes are for the correct content (for state hash, commitment hash, inbox
-    hash)
-
-(*) Marks the rudimentary checks that are performed on import with option
-``--no-checks``.
-
-.. _rollup_snapshot_info:
-
-Snapshot information
-""""""""""""""""""""
-
-When retrieving a snapshot, it can be useful to check its actual content, such
-as:
-
-- snapshot format
-- history mode
-- smart rollup address
-- head level
-- last commitment
-
-This information is displayed by the following command:
-
-.. code-block:: console
-
-   octez-smart-rollup-node snapshot info ${SNAPSHOT_FILE}
-
-which will essentially decode and display the metadata header of the snapshot
-file.
-
-.. _exporting_a_rollup_snapshot:
-
-Exporting a snapshot
-""""""""""""""""""""
-
-Exporting a snapshot for a currently running rollup node will temporarily stop
-its progression (during the time the data is initially copied). The export
-creates a file with a chosen name ``${SNAPSHOT_FILE}`` or one which is
-automatically generated of the form
-``snapshot-<address>-<level>.<history_mode>`` and is achieved by running the
-following command (the rollup node does not need to be stopped):
-
-.. code-block:: console
-
-   octez-smart-rollup-node snapshot export [${SNAPSHOT_FILE}] \
-     [--data-dir ${ROLLUP_NODE_DIR}] \
-     [--dest ${DEST_DIR}]
-
-The export has three phases:
-
-1. Initial export of the data (blocking)
-2. Compression of snapshot (non-blocking)
-3. Integrity check of snapshot (non-blocking)
-
-The checks for the export are less thorough than the ones for an import but
-ensure that the snapshot is not corrupted and can be imported by other users.
-
-.. note::
-
-   It is also possible to use the ``--no-check`` option to disable the integrity
-   checks during the export (i.e., phase 3), which will speed up the process.
-
-
 Workflows
 ---------
 
@@ -585,19 +352,19 @@ Workflows
 Sending an external inbox message
 """""""""""""""""""""""""""""""""
 
-The Octez client can be used to send an external message into the
+The Mavkit client can be used to send an external message into the
 rollup inbox. Assuming that ``${EMESSAGE}`` is the hexadecimal
 representation of the message payload, one can do:
 
 .. code:: sh
 
-    octez-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+    mavkit-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
      send smart rollup message "hex:[ \"${EMESSAGE}\" ]" \
      from "${OPERATOR_ADDR}"
 
 to inject such an external message,  where ``${PROTO_HASH}`` is the hash of your
-protocol (e.g. ``ProtoALphaAL`` for Alpha; see :ref:`how to obtain it <octez_client_protocol>`).
-So let us focus now on producing viable content for ``${EMESSAGE}``.
+protocol (e.g. ``ProtoALphaAL`` for Alpha; see :ref:`how to obtain it <mavkit_client_protocol>`).
+So let us focus now on producing a viable content for ``${EMESSAGE}``.
 
 The kernel used previously in our running example is a simple "echo"
 kernel that copies its input as a new message to its outbox.
@@ -607,29 +374,27 @@ originated a Layer 1 smart contract as follows:
 
 .. code:: sh
 
-   octez-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+   mavkit-client -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
      originate contract go transferring 1 from "${OPERATOR_ADDR}" \
      running 'parameter string; storage string; code {CAR; NIL operation; PAIR};' \
      --init '""' --burn-cap 0.4
 
 and that this contract is identified by an address ``${CONTRACT}``
 (a ``KT1...`` address), then one can encode an
-outbox transaction using the ``octez-codec`` as follows:
+outbox transaction using the Mavkit rollup client as follows:
 
 .. code:: sh
 
-    MESSAGE='{
-        "transactions": [
-          {
-            "parameters": {"int": "37"},
-            "destination": "KT1VD4SdQF2ruNNTCE1aTWErmGz9tN4Mg8F5",
-            "entrypoint": "%default"
-          }
-        ],
-        "kind": "untyped"
-      }'
+    MESSAGE='[ { \
+      "destination" : "KT1...", \
+      "parameters" : "\"Hello world\"", \
+      "entrypoint" : "%default" } ]'
 
-    EMESSAGE=$(octez-codec encode alpha.smart_rollup.outbox.message from "${MESSAGE}")
+
+    EMESSAGE=$(mavkit-smart-rollup-client-${PROTO} encode outbox message "${MESSAGE}")
+
+where ``${PROTO}`` is the suffix of the executables corresponding to your protocol
+(e.g., ``-alpha``).
 
 .. _triggering_execution_outbox_message:
 
@@ -647,14 +412,8 @@ populated as follows:
 
 .. code:: sh
 
-    curl -i "${ROLLUP_NODE_ENDPOINT}/global/block/cemented/outbox/${L}/messages"
-
-where:
-
-- ${ROLLUP_NODE_ENDPOINT} represents the address of the Rollup node server.
-  It can be set to a specific server address such as "http://localhost:36149".
-- ${L} denotes the block level for which one wants to retrieve information
-  from the Rollup node.
+   mavkit-smart-rollup-client-${PROTO} rpc get \
+     /global/block/cemented/outbox/${L}/messages
 
 Here is the output for this command:
 
@@ -663,9 +422,10 @@ Here is the output for this command:
    [ { "outbox_level": ${L}, "message_index": "0",
     "message":
       { "transactions":
-          [ { "parameters": { "int": "37" },
+          [ { "parameters": { "string": "Hello world" },
               "destination": "${CONTRACT}",
               "entrypoint": "%default" } ] } } ]
+
 
 At this point, the actual execution of a given outbox message can be
 triggered. This requires precomputing a proof that this outbox message
@@ -674,14 +434,14 @@ proof is retrieved as follows:
 
 .. code:: sh
 
-  PROOF=$(curl -i "${ROLLUP_NODE_ENDPOINT}/global/block/head/helpers/\
-             proofs/outbox/${L}/messages?index=0)"
+   PROOF=$(mavkit-smart-rollup-client-${PROTO} get proof for message 0 \
+     of outbox at level "${L}")
 
 Finally, the execution of the outbox message is done as follows:
 
 .. code:: sh
 
-   "${TEZOS_PATH}/octez-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
+   "${MAVRYK_PATH}/mavkit-client" -d "${OCLIENT_DIR}" -p ${PROTO_HASH} \
            execute outbox message of smart rollup "${SR_ALIAS_OR_ADDR}" \
            from "${OPERATOR_ADDR}" for commitment hash "${LCC}" \
            and output proof "${PROOF}"
@@ -691,10 +451,10 @@ Notice that anyone can trigger the execution of an outbox message
 (not only an operator as in this example).
 
 One can check in the receipt that the contract has indeed been called
-with the parameter ``"37"`` through an internal operation. More complex
-parameters, typically containing assets represented as tickets, can be
-used as long as they match the type of the entrypoint of the destination
-smart contract.
+with the parameter ``"Hello world"`` through an internal
+operation. More complex parameters, typically containing assets
+represented as tickets, can be used as long as they match the type of
+the entrypoint of the destination smart contract.
 
 .. _sending_internal_inbox_message:
 
@@ -711,7 +471,7 @@ Remember that our running example rollup has been originated with:
 
 .. code:: sh
 
-    octez-client originate smart rollup "${SR_ALIAS}" \
+    mavkit-client originate smart rollup "${SR_ALIAS}" \
       from "${OPERATOR_ADDR}" \
       of kind wasm_2_0_0 \
       of type bytes \
@@ -738,7 +498,7 @@ to the rollup.
             PUSH address "${SR_ADDR}";
             CONTRACT bytes;
             IF_NONE { PUSH string "Invalid address"; FAILWITH } {};
-            PUSH mutez 0;
+            PUSH mumav 0;
             DIG 2;
             TRANSFER_TOKENS;
             NIL operation;
@@ -753,7 +513,7 @@ Populating the reveal channel
 """""""""""""""""""""""""""""
 
 It is the responsibility of rollup node operators to get the data
-passed through the reveal data channel when the rollup requests it.
+passed through the reveal data channel when the rollup requested it.
 
 To answer a request for a page of hash ``H``, the rollup node tries to
 read the content of a file ``H`` named
@@ -766,29 +526,6 @@ this. For instance, one can classify pages into two categories: index
 pages that are hashes for other pages and leaf pages that contain
 actual payloads.
 
-In addition to data stored locally on disk in the data directory, the rollup
-node can also fetch missing pages to be revealed from an external source.
-Data fetched from a remote pre-images service will be cached on disk (in the
-``${ROLLUP_NODE_DIR}/wasm_2_0_0``).
-
-To configure a remote source (whose server can be contacted over HTTP at
-``${PRE_IMAGES_URL}``) for pre-images, one can either pass the option
-``--pre-images-endpoint ${PRE_IMAGES_URL}``
-to the ``run`` command or add the following in the configuration file
-``${ROLLUP_NODE_DIR}/config.json``:
-
-.. code:: json
-
-   {
-     "pre-images-endpoint" : "${PRE_IMAGES_URL}"
-   }
-
-.. note::
-
-   One does not need to trust the provider service for pre-images because the
-   rollup node will ensure that the content matches the requested hash before using
-   it.
-
 .. _configure_fast_exec:
 
 Configure WebAssembly fast execution
@@ -798,7 +535,7 @@ When the rollup node advances its internal rollup state under normal
 operation, it does so using the fast execution engine.
 
 This engine uses Wasmer for running WebAssembly code. You may configure the compiler used for compiling
-WebAssembly code, via the ``OCTEZ_WASMER_COMPILER`` environment variable.
+WebAssembly code, via the ``MAVKIT_WASMER_COMPILER`` environment variable.
 
 The choice of a compiler primarily affects the performance of the
 WebAssembly code execution *vs* the compilation time. Some compilers offer certain security
@@ -811,7 +548,7 @@ The available options are:
    :header-rows: 1
 
    * - Compiler
-     - ``OCTEZ_WASMER_COMPILER`` value
+     - ``MAVKIT_WASMER_COMPILER`` value
      - Description
    * - Singlepass
      - ``singlepass``
@@ -821,7 +558,7 @@ The available options are:
      - `When to use Cranelift <https://github.com/wasmerio/wasmer/tree/master/lib/compiler-cranelift#when-to-use-cranelift>`_
 
 Note that while the rollup node is generally capable of using Wasmer's
-LLVM-based compiler, Octez does not currently ship with it.
+LLVM-based compiler, Mavkit does not currently ship with it.
 
 When the environment variable is undefined, Cranelift is used by default.
 
@@ -901,7 +638,7 @@ The rest of the section proceeds as follows.
 
 #. First, we explain the execution environment of a WASM kernel: when
    it is parsed, executed, etc.
-#. Then, we explain in more detail the API at the disposal of WASM
+#. Then, we explain in more details the API at the disposal of WASM
    kernel developers.
 #. Finally, we demonstrate how Rust in particular can be used to
    implement a WASM kernel.
@@ -985,7 +722,7 @@ When a new block is published on Tezos, the inbox exposed to the smart
 rollup is populated with all the inputs published on Tezos in this
 block. It is important to keep in mind that all the smart rollups
 which are originated on Tezos share the same inbox. As a consequence,
-a WASM kernel has to filter the inputs that are relevant to its
+a WASM kernel has to filter the inputs that are relevant for its
 purpose from the ones it does not need to process.
 
 Once the inbox has been populated with the inputs of the Tezos block,
@@ -1018,7 +755,7 @@ it is the responsibility of the kernel developer to implement a ``kernel_run`` w
 
 
 The current bound is set to 11,000,000,000 ticks.
-``octez-smart-rollup-wasm-debugger`` is probably the best tool available to
+``mavkit-smart-rollup-wasm-debugger`` is probably the best tool available to
 verify the ``kernel_run`` function does not take more ticks than authorized.
 
 The direct consequence of this setup is that it might be necessary for
@@ -1139,7 +876,7 @@ conveying errors, as shown in the next table.
 ======= =======================================================================================================
 
 Implementing a WASM Kernel in Rust
-""""""""""""""""""""""""""""""""""
+----------------------------------
 
 Though WASM is a good fit for efficiently executing computation-intensive, arbitrary
 programs, it is a low-level, stack-based, memory unsafe language.
@@ -1152,10 +889,8 @@ WASM as a first class citizen when it comes to compilation targets,
 but its approach to memory safety eliminates large classes of bugs and
 vulnerabilities that arbitrary WASM programs may suffer from.
 
-Additionally there is support for implementing kernels in Rust, in the form of the `Smart Rollup Kernel SDK <https://crates.io/crates/tezos-smart-rollup>`__.
-
 Setting-up Rust
-~~~~~~~~~~~~~~~
+"""""""""""""""
 
 `rustup <https://rustup.rs>`_ is the standard way to get Rust. Once
 ``rustup`` is installed, enabling WASM as a compilation target is as
@@ -1167,7 +902,7 @@ simple as running the following command.
 
 Rust also proposes the ``wasm64-unknown-unknown`` compilation
 target. This target is **not** compatible with Tezos smart rollups,
-which only provide a 32bit address space.
+which only provides a 32bit address space.
 
 .. note::
 
@@ -1250,7 +985,7 @@ deploy in our rollup. For instance, our “noop” kernel weighs
 kernel (down to 115 bytes in our case).
 
 Host Functions in Rust
-~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""""
 
 The host functions exported by the WASM runtime to Rust programs
 are exposed by the following API. The ``link`` pragma is used to specify the
@@ -1403,21 +1138,16 @@ WASM memory.
 Testing your Kernel
 """""""""""""""""""
 
-.. note::
-
-   ``octez-smart-rollup-wasm-debugger`` is available in the Octez
-   distribution starting with :doc:`/releases/version-16`.
-
 Testing a kernel without having to start a rollup node on a test
 network is very convenient. We provide a debugger as a means to
 evaluate the WASM PVM without relying on any node and network:
-``octez-smart-rollup-wasm-debugger``.
+``mavkit-smart-rollup-wasm-debugger``.
 
 .. code:: sh
 
-  octez-smart-rollup-wasm-debugger --kernel "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SR_ADDR}"
+  mavkit-smart-rollup-wasm-debugger --kernel "${WASM_FILE}" --inputs "${JSON_INPUTS}" --rollup "${SR_ADDR}"
 
-``octez-smart-rollup-wasm-debugger`` takes the target WASM kernel to be debugged as argument, either as a ``.wasm`` file (the binary
+``mavkit-smart-rollup-wasm-debugger`` takes the target WASM kernel to be debugged as argument, either as a ``.wasm`` file (the binary
 representation of WebAssembly modules) or as a ``.wast`` file (its textual
 representation), and actually parses and typechecks the kernel before
 giving it to the PVM.
@@ -1461,7 +1191,7 @@ two messages:
       {
         "payload" : "0",
         "sender" : "KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq",
-        "source" : "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w",
+        "source" : "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe",
         "destination" : "sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf"
       },
       { "payload" : "Pair Unit False" }
@@ -1471,12 +1201,12 @@ two messages:
 Note that the ``sender``, ``source`` and ``destination`` fields are optional
 and will be given default values by the debugger, respectively
 ``KT18amZmM5W7qDWVt2pH6uj7sCEd3kbzLrHT``,
-``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
+``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` and
 ``sr163Lv22CdE8QagCwf48PWDTquk6isQwv57``. If no input file is given, the
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.
 
-``octez-smart-rollup-wasm-debugger`` is a debugger, as such it waits for user
+``mavkit-smart-rollup-wasm-debugger`` is a debugger, as such it waits for user
 inputs to continue its execution. Its initial state is exactly the same as right
 after its origination. Its current state can be inspected with the command
 ``show status``:
@@ -1591,7 +1321,7 @@ take care of the possible reboots asked by the kernel (through the usage of the
   Internal state: Collect
 
 To obtain more information on the execution, the command ``profile`` will also run
-the kernel on a full inbox, consume all inputs, run until more inputs are
+the kernel on a full inbox, consumed all inputs, run until more inputs are
 required, and output some information about the run.
 
 .. code::
@@ -1655,7 +1385,7 @@ Metadata are automatically filled with level ``0`` as origination level
 and the configured smart rollup address (or the default one).
 
 Note that when stepping tick by tick (using the ``step tick`` command), it is
-possible to end up in a situation where the evaluation stops on ``Waiting for
+possible to end up in a situation were the evaluation stops on ``Waiting for
 reveal``. If the expected value is a metadata, the command ``reveal metadata``
 will give the default metadata to the kernel. If the value expected is the
 preimage of a given hash, there are two possible solutions:

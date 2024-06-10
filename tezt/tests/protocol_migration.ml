@@ -426,7 +426,7 @@ let start_protocol ?consensus_threshold ?round_duration
    from Emmy* to Tenderbake.
 
    Revisit this test, as it may start to fail, whenever a new (family of)
-   consensus protocol is put into place in Tezos. **)
+   consensus protocol is put into place in Mavryk. **)
 let test_migration_with_bakers ?(migration_level = 4)
     ?(num_blocks_post_migration = 5) ~migrate_from ~migrate_to () =
   Test.register
@@ -447,7 +447,6 @@ let test_migration_with_bakers ?(migration_level = 4)
         "from_" ^ Protocol.tag migrate_from;
         "to_" ^ Protocol.tag migrate_to;
       ]
-    ~uses:[Protocol.baker migrate_from; Protocol.baker migrate_to]
   @@ fun () ->
   let* client, node =
     user_migratable_node_init ~migration_level ~migrate_to ()
@@ -546,7 +545,6 @@ let test_forked_migration_manual ?(migration_level = 4)
         "from_" ^ Protocol.tag migrate_from;
         "to_" ^ Protocol.tag migrate_to;
       ]
-    ~uses:[Protocol.baker migrate_to]
     ~title:
       (Printf.sprintf
          "manually forked migration blocks from %s to %s"
@@ -747,7 +745,6 @@ let test_forked_migration_bakers ~migrate_from ~migrate_to =
         "from_" ^ Protocol.tag migrate_from;
         "to_" ^ Protocol.tag migrate_to;
       ]
-    ~uses:[Protocol.baker migrate_from; Protocol.baker migrate_to]
     ~title:
       (Printf.sprintf
          "baker forked migration blocks from %s to %s"

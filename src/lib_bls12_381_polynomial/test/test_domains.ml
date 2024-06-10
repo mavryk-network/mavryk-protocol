@@ -25,9 +25,9 @@
 
 module Fr = Bls12_381.Fr
 
-module Fr_carray = Octez_bls12_381_polynomial.Internal_for_tests.Fr_carray
+module Fr_carray = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray
 
-module Domain = Octez_bls12_381_polynomial.Internal_for_tests.Domain_unsafe
+module Domain = Mavkit_bls12_381_polynomial.Internal_for_tests.Domain_unsafe
 
 let factors_naive n =
   let rec factors_aux n factor result =

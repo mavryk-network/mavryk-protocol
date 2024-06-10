@@ -4,12 +4,12 @@ code { CAR ;
        IF_LEFT
          {
            PUSH nat 922337203685477580700 ;
-           PUSH mutez 10 ;
+           PUSH mumav 10 ;
            MUL ; # FAILURE
            DROP
          }
          {
-           PUSH mutez 10 ;
+           PUSH mumav 10 ;
            PUSH nat 922337203685477580700 ;
            MUL ; # FAILURE
            DROP

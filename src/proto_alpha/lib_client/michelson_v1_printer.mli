@@ -25,16 +25,11 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 val print_expr : Format.formatter -> Script_repr.expr -> unit
 
 val print_expr_unwrapped : Format.formatter -> Script_repr.expr -> unit
-
-val unparse_stack :
-  'location ->
-  (Script_repr.expr * Script_repr.expr) list ->
-  ('location, string) Micheline.node
 
 val print_typed_stack :
   Format.formatter -> (Script_repr.expr * Script_repr.expr) list -> unit

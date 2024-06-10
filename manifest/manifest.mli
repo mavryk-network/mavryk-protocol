@@ -256,9 +256,6 @@ module Dune : sig
     action:s_expr ->
     s_expr
 
-  (** Makes a rule for compiling protobuf files (.proto) into OCaml files (.ml). *)
-  val protobuf_rule : string -> s_expr
-
   (** Makes an [install] stanza.
 
       Example: [install files ~package ~section] creates a stanza of the form:
@@ -762,7 +759,7 @@ type bisect_ppx = No | Yes | With_sigterm
       Clauses are omitted for empty strings.
       You usually do not want to specify those and keep default values,
       but there can be some exceptions for packages that are particularly useful
-      on their own outside of Octez.
+      on their own outside of Mavkit.
 
     - [opam_with_test]: whether to add the [dune runtest] command.
       Note that for a given package all targets must have the same value of [opam_with_test].
@@ -1223,9 +1220,9 @@ val optional : target -> target
     When such targets appear in [?deps] of a target [maker], they are
     converted into [-open] in the order of declaration in [?deps].
     If you use [open_] on an [open_], the innermost [open_]s is opened first;
-    For instance, [tezos_base |> open_ |> open_ ~m: "TzPervasives"]
-    is target [tezos_base], but when used in [?deps], this automatically opens
-    ["Tezos_base"], followed by ["Tezos_base.TzPervasives"].
+    For instance, [mavryk_base |> open_ |> open_ ~m: "TzPervasives"]
+    is target [mavryk_base], but when used in [?deps], this automatically opens
+    ["Mavryk_base"], followed by ["Mavryk_base.TzPervasives"].
 
     Can only be used on internal libraries and on external or vendored
     libraries for which a [main_module] was specified. *)
@@ -1233,7 +1230,7 @@ val open_ : ?m:string -> target -> target
 
 (** Same as [open_], but only open if a condition holds.
 
-    Example: [tezos_base |> open_if protocol_is_recent_enough] *)
+    Example: [mavryk_base |> open_if protocol_is_recent_enough] *)
 val open_if : ?m:string -> bool -> target -> target
 
 (** Selectively makes a dependency available to the library's users:
@@ -1303,11 +1300,6 @@ val name_for_errors : target -> string
     [make_tezt_exe] is given the list of libraries that register Tezt tests
     and shall create a test executable that links all of them.
 
-    [tezt_exe_deps] is the list of dependencies linked with the executable
-    registered by [make_tezt_exe], not including the libraries that were passed
-    to [make_tezt_exe]. It is the list of dependencies that should trigger
-    all tests to run when they are modified.
-
     [default_profile] is the name of the profile to use for targets that
     were declared without [?profile]. See the documentation of the [?profile]
     argument of type ['a maker].
@@ -1325,7 +1317,6 @@ val name_for_errors : target -> string
       [~opam_with_test]. *)
 val generate :
   make_tezt_exe:(target list -> target) ->
-  tezt_exe_deps:target list ->
   default_profile:string ->
   add_to_meta_package:target list ->
   unit

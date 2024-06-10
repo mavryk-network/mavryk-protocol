@@ -38,7 +38,7 @@ type blockchain_network = {
   user_activated_upgrades : User_activated.upgrades;
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   default_bootstrap_peers : string list;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
 }
 
 (** List of built-in networks with their alias. *)
@@ -53,7 +53,7 @@ type t = {
   p2p : p2p;
   rpc : rpc;
   log : Logs_simple_config.cfg;
-  internal_events : Tezos_base.Internal_event_config.t option;
+  internal_events : Mavryk_base.Internal_event_config.t option;
   shell : Shell_limits.limits;
   blockchain_network : blockchain_network;
   metrics_addr : string list;
@@ -66,16 +66,15 @@ and p2p = {
   advertised_net_port : int option;
   discovery_addr : string option;
   private_mode : bool;
-  limits : Tezos_p2p_services.P2p_limits.t;
+  limits : Mavryk_p2p_services.P2p_limits.t;
   disable_mempool : bool;
   enable_testchain : bool;
-  reconnection_config : Tezos_p2p_services.Point_reconnection_config.t;
+  reconnection_config : Mavryk_p2p_services.Point_reconnection_config.t;
   disable_peer_discovery : bool;
 }
 
 and rpc = {
   listen_addrs : string list;
-  local_listen_addrs : string list;
   cors_origins : string list;
   cors_headers : string list;
   tls : tls option;
@@ -117,7 +116,6 @@ val update :
   ?advertised_net_port:int ->
   ?discovery_addr:string ->
   ?rpc_listen_addrs:string list ->
-  ?local_rpc_listen_addrs:string list ->
   ?allow_all_rpc:P2p_point.Id.addr_port_id list ->
   ?media_type:Media_type.Command_line.t ->
   ?metrics_addr:string list ->

@@ -36,7 +36,7 @@ let register_test ~title ?(additionnal_tags = []) ?uses f =
     ~__FILE__
     ~title
     ~supports:(Protocol.From_protocol 18)
-    ~tags:([Tag.layer1; "rpc"; "versioning"] @ additionnal_tags)
+    ~tags:(["rpc"; "versioning"] @ additionnal_tags)
     ?uses
     f
 
@@ -388,7 +388,7 @@ module Parse = struct
     let* signature = Operation.sign op client in
     let* (`Hex h1) = Operation.hex ~signature op client in
     Log.info
-      "Use octez-codec to retrieve the raw representation of the operation \
+      "Use mavkit-codec to retrieve the raw representation of the operation \
        from its hexadecimal representation" ;
     Codec.decode
       ~name:(Protocol.encoding_prefix protocol ^ "." ^ "operation.raw")
@@ -414,14 +414,14 @@ module Parse = struct
     register_test
       ~title:"Parse raw consensus operations"
       ~additionnal_tags:["parse"; "raw"; "operations"; "consensus"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol -> test_parse Operation.Attestation protocol
 
   let test_parse_preconsensus =
     register_test
       ~title:"Parse raw pre-consensus operations"
       ~additionnal_tags:["parse"; "raw"; "operations"; "consensus"; "pre"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol -> test_parse Operation.Preattestation protocol
 
   let test_parse_double_evidence double_evidence_kind protocol =
@@ -451,7 +451,7 @@ module Parse = struct
       ~title:"Parse raw double consensus evidence operations"
       ~additionnal_tags:
         ["parse"; "raw"; "operations"; "double"; "consensus"; "evidence"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     test_parse_double_evidence
       Operation.Anonymous.Double_attestation_evidence
@@ -462,7 +462,7 @@ module Parse = struct
       ~title:"Parse raw double pre-consensus evidence operations"
       ~additionnal_tags:
         ["parse"; "raw"; "operations"; "double"; "consensus"; "pre"; "evidence"]
-      ~uses:(fun _protocol -> [Constant.octez_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     test_parse_double_evidence
       Operation.Anonymous.Double_preattestation_evidence

@@ -99,7 +99,7 @@ let strip_0x s =
   else s
 
 let rec retrieve_signature () =
-  (* NB: you can use the octez-evm-upgrade-signer binary to provide the signature *)
+  (* NB: you can use the mavkit-evm-upgrade-signer binary to provide the signature *)
   let signature = strip_0x @@ read_line () in
   if String.length signature != 128 then (
     Log.info "Provided signature must be 128 characters long, please try again." ;
@@ -149,12 +149,15 @@ let get_upgrade_message ~smart_rollup_node ~preimage_root_hash
   return @@ hex_smart_rollup_address ^ upgrade_kernel_tag ^ kernel_upgrade_nonce
   ^ preimage_root_hash ^ signature
 
-let replace_preimages ~smart_rollup_node ~new_kernel =
+let replace_preimages ~smart_rollup_node ~kernel_dir ~new_kernel =
   let preimages_dir =
     Sc_rollup_node.data_dir smart_rollup_node // "wasm_2_0_0"
   in
   let* {root_hash; _} =
-    Sc_rollup_helpers.prepare_installer_kernel ~preimages_dir new_kernel
+    Sc_rollup_helpers.prepare_installer_kernel
+      ~preimages_dir
+      ~base_installee:kernel_dir
+      new_kernel
   in
   return root_hash
 
@@ -163,7 +166,7 @@ let upgrade_kernel ~configuration_path ~testnet () =
     get_upgrade_config (JSON.parse_file configuration_path)
   in
   let testnet = testnet () in
-  let* client, node = Helpers.setup_octez_node ~testnet () in
+  let* client, node = Helpers.setup_mavkit_node ~testnet () in
   let* operator = Client.gen_and_show_keys client in
   let* () =
     Evm_rollup.check_operator_balance
@@ -190,15 +193,10 @@ let upgrade_kernel ~configuration_path ~testnet () =
     // (upgrade_config.new_kernel ^ ".wasm")
   in
   let* preimage_root_hash =
-    let new_kernel =
-      (* [bin_testnet_scenarios] disables warnings from [~uses], so all we care about here
-         is to build the correct path from the configuration. *)
-      Tezt_wrapper.Uses.make
-        ~tag:"new_kernel"
-        ~path:
-          (upgrade_config.kernel_dir // (upgrade_config.new_kernel ^ ".wasm"))
-    in
-    replace_preimages ~smart_rollup_node ~new_kernel
+    replace_preimages
+      ~smart_rollup_node
+      ~kernel_dir:upgrade_config.kernel_dir
+      ~new_kernel:upgrade_config.new_kernel
   in
   let* upgrade_message =
     get_upgrade_message

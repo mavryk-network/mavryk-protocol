@@ -34,33 +34,6 @@
 
 open Test_tez
 
-let test_sc_rollup_constants_consistency () =
-  let open Protocol.Alpha_context in
-  let to_string c =
-    Data_encoding.Json.(
-      to_string ~minify:true
-      @@ construct Constants.Parametric.Internal_for_tests.sc_rollup_encoding c)
-  in
-  (* We do not necessarily need to update this value when the block time
-     changes. The goal is to witness the consistency of the “symbolic”
-     computations in [Default_parameters] and [Raw_context].. *)
-  let block_time = 10 in
-  let sc_rollup =
-    Default_parameters.Internal_for_tests.make_sc_rollup_parameter
-      ~dal_activation_level:Raw_level.root
-      block_time
-  in
-  let sc_rollup' =
-    Constants.Parametric.update_sc_rollup_parameter sc_rollup ~block_time
-  in
-  Assert.equal
-    ~loc:__LOC__
-    (fun s1 s2 -> String.equal (to_string s1) (to_string s2))
-    "sc_rollup_parameter update"
-    (fun fmt sc_rollup -> Format.pp_print_string fmt @@ to_string sc_rollup)
-    sc_rollup
-    sc_rollup'
-
 let test_constants_consistency () =
   let open Default_parameters in
   List.iter_es
@@ -112,8 +85,8 @@ let test_sc_rollup_challenge_window_lt_max_lookahead () =
 let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
   let constants = Default_parameters.constants_mainnet in
   let open Protocol in
-  let cost_per_byte_mutez =
-    Alpha_context.Tez.to_mutez constants.cost_per_byte
+  let cost_per_byte_mumav =
+    Alpha_context.Tez.to_mumav constants.cost_per_byte
   in
   let commitment_storage_size =
     Int64.of_int
@@ -121,7 +94,7 @@ let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
       .max_commitment_storage_size_in_bytes
   in
   let commitment_storage_cost =
-    Int64.mul cost_per_byte_mutez commitment_storage_size
+    Int64.mul cost_per_byte_mumav commitment_storage_size
   in
   let max_lookahead =
     Int64.of_int32 constants.sc_rollup.max_lookahead_in_blocks
@@ -130,7 +103,7 @@ let test_sc_rollup_max_commitment_storage_cost_lt_deposit () =
     Int64.of_int constants.sc_rollup.commitment_period_in_blocks
   in
   let stake_amount =
-    Alpha_context.Tez.to_mutez constants.sc_rollup.stake_amount
+    Alpha_context.Tez.to_mumav constants.sc_rollup.stake_amount
   in
   Assert.leq_int64
     ~loc:__LOC__
@@ -207,24 +180,24 @@ let test_sc_rollup_max_commitment_storage_size () =
 (** Test that the amount of the liquidity baking subsidy is epsilon smaller than
    1/16th of the maximum reward. *)
 let liquidity_baking_subsidy_param () =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let constants = Default_parameters.constants_mainnet in
   let get_reward =
     Protocol.Alpha_context.Delegate.Rewards.For_RPC.reward_from_constants
       constants
   in
-  let*?@ baking_reward_bonus_per_slot =
+  let baking_reward_bonus_per_slot =
     get_reward ~reward_kind:Baking_reward_bonus_per_slot
   in
   let*? baking_reward_bonus =
     baking_reward_bonus_per_slot
     *? Int64.of_int (constants.consensus_committee_size / 3)
   in
-  let*?@ baking_reward_fixed_portion =
+  let baking_reward_fixed_portion =
     get_reward ~reward_kind:Baking_reward_fixed_portion
   in
   let*? baking_rewards = baking_reward_fixed_portion +? baking_reward_bonus in
-  let*?@ attesting_reward_per_slot =
+  let attesting_reward_per_slot =
     get_reward ~reward_kind:Attesting_reward_per_slot
   in
   let*? validators_rewards =
@@ -232,19 +205,15 @@ let liquidity_baking_subsidy_param () =
   in
   let*? total_rewards = baking_rewards +? validators_rewards in
   let expected_subsidy = total_rewards /! 16L in
-  let*?@ liquidity_baking_subsidy =
+  let liquidity_baking_subsidy =
     get_reward ~reward_kind:Liquidity_baking_subsidy
   in
   let*? diff = liquidity_baking_subsidy -? expected_subsidy in
-  let max_diff = 1000 (* mutez *) in
-  Assert.leq_int ~loc:__LOC__ (Int64.to_int (to_mutez diff)) max_diff
+  let max_diff = 1000 (* mumav *) in
+  Assert.leq_int ~loc:__LOC__ (Int64.to_int (to_mumav diff)) max_diff
 
 let tests =
   [
-    Tztest.tztest
-      "sc_rollup constants consistency"
-      `Quick
-      test_sc_rollup_constants_consistency;
     Tztest.tztest "constants consistency" `Quick test_constants_consistency;
     Tztest.tztest "max_operations_ttl" `Quick test_max_operations_ttl;
     Tztest.tztest

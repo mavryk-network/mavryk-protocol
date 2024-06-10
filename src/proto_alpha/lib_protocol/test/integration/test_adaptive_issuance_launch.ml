@@ -71,13 +71,13 @@ let assert_total_frozen_stake ~loc block expected =
 
 (* Assert that the current voting power of a delegate is the expected
    one. The expectation is computed based on the expected self-staked,
-   delegated, and staked tez. The delegate's own liquid balance is
+   delegated, and staked mav. The delegate's own liquid balance is
    measured. *)
 let assert_voting_power ~loc block delegate ~ai_enabled ~expected_staked
     ~expected_delegated ~expected_ext_staked =
   let open Lwt_result_syntax in
   let* balance = Context.Contract.balance (B block) (Implicit delegate) in
-  let balance = Protocol.Alpha_context.Tez.to_mutez balance in
+  let balance = Protocol.Alpha_context.Tez.to_mumav balance in
   let expected_liquid = Int64.add balance expected_delegated in
   let expected_frozen = Int64.add expected_staked expected_ext_staked in
   let* constants = Context.get_constants (B block) in
@@ -155,7 +155,7 @@ let test_launch threshold expected_vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 200_000_000_000L)
   in
 
   (* To test that adaptive issuance is active, we test that
@@ -205,7 +205,7 @@ let test_launch threshold expected_vote_duration () =
         (B block)
         delegate
         wannabe_staker
-        (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L)
     in
     Block.bake ~operation ~adaptive_issuance_vote:Per_block_vote_on block
   in
@@ -234,7 +234,7 @@ let test_launch threshold expected_vote_duration () =
       stake
         (B block)
         delegate
-        (Protocol.Alpha_context.Tez.of_mutez_exn 1_800_000_000_000L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 1_800_000_000_000L)
     in
     Block.bake ~operation ~adaptive_issuance_vote:Per_block_vote_on block
   in
@@ -281,7 +281,7 @@ let test_launch threshold expected_vote_duration () =
       stake
         (B block)
         wannabe_staker
-        (Protocol.Alpha_context.Tez.of_mutez_exn 10L)
+        (Protocol.Alpha_context.Tez.of_mumav_exn 10L)
     in
     let* i = Incremental.begin_construction block in
     let*! i = Incremental.add_operation i operation in
@@ -322,13 +322,13 @@ let test_launch threshold expected_vote_duration () =
      planned to happen. *)
   let* () = assert_current_cycle ~loc:__LOC__ block launch_cycle in
   (* At this point, only the delegate has frozen any stake and its
-     frozen balance is about 2 million tez (it started with 4 million,
+     frozen balance is about 2 million mav (it started with 4 million,
      sent half to its delegate, and staked the rest). *)
   let* () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L)
   in
   let* () =
     assert_voting_power
@@ -359,7 +359,7 @@ let test_launch threshold expected_vote_duration () =
         assert_total_frozen_stake
           ~loc:__LOC__
           block
-          (Protocol.Alpha_context.Tez.of_mutez_exn 2_000_000_000_000L))
+          (Protocol.Alpha_context.Tez.of_mumav_exn 2_000_000_000_000L))
       (fun block ->
         let current_cycle = Block.current_cycle block in
         Protocol.Alpha_context.Cycle.(
@@ -371,7 +371,7 @@ let test_launch threshold expected_vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 3_999_999_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 3_999_999_000_000L)
   in
   let* () =
     assert_voting_power
@@ -419,7 +419,7 @@ let test_does_not_launch_without_feature_flag threshold vote_duration () =
     assert_total_frozen_stake
       ~loc:__LOC__
       block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L)
+      (Protocol.Alpha_context.Tez.of_mumav_exn 200_000_000_000L)
   in
   (* Bake many more blocks voting in favor of the activation until the
      EMA threshold is reached. *)
@@ -461,118 +461,15 @@ let test_does_not_launch_without_feature_flag threshold vote_duration () =
   in
   return_unit
 
-(* Test that with force_activation feature flag set, the feature activates
-   without waiting for the activation vote *)
-let test_launch_without_vote () =
-  let open Lwt_result_wrap_syntax in
-  (* Initialize the state with a single delegate. *)
-  let constants =
-    let default_constants = Default_parameters.constants_test in
-    let issuance_weights =
-      {
-        Default_parameters.constants_test.issuance_weights with
-        base_total_issued_per_minute = Tez.zero;
-      }
-    in
-    let adaptive_issuance =
-      {default_constants.adaptive_issuance with force_activation = true}
-    in
-    let consensus_threshold = 0 in
-    {
-      default_constants with
-      consensus_threshold;
-      issuance_weights;
-      adaptive_issuance;
-    }
-  in
-  let* block, delegate = Context.init_with_constants1 constants in
-  let delegate_pkh = Context.Contract.pkh delegate in
-  let* block = Block.bake block in
-
-  (* AI should be activated and launch cycle is current cycle (0) *)
-  let* launch_cycle_opt =
-    Context.get_adaptive_issuance_launch_cycle (B block)
-  in
-  let* launch_cycle = Assert.get_some ~loc:__LOC__ launch_cycle_opt in
-  let* () = Assert.equal_int32 ~loc:__LOC__ (Cycle.to_int32 launch_cycle) 0l in
-
-  let* () =
-    assert_total_frozen_stake
-      ~loc:__LOC__
-      block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L)
-  in
-  (* feature flag is set, AI should be active, let's use the stake function to check *)
-  let* operation =
-    stake
-      (B block)
-      delegate
-      (Protocol.Alpha_context.Tez.of_mutez_exn 180_000_000_000L)
-  in
-  let* block = Block.bake ~operation block in
-  (* Wait until total frozen stake is updated *)
-  let start_cycle = Block.current_cycle block in
-  let* block =
-    Block.bake_while
-      ~invariant:(fun block ->
-        assert_total_frozen_stake
-          ~loc:__LOC__
-          block
-          (Protocol.Alpha_context.Tez.of_mutez_exn 200_000_000_000L))
-      (fun block ->
-        let current_cycle = Block.current_cycle block in
-        Protocol.Alpha_context.Cycle.(
-          current_cycle <= add start_cycle constants.preserved_cycles))
-      block
-  in
-  let* block = Block.bake block in
-
-  let* () =
-    assert_total_frozen_stake
-      ~loc:__LOC__
-      block
-      (Protocol.Alpha_context.Tez.of_mutez_exn 380_000_000_000L)
-  in
-  let* () =
-    assert_voting_power
-      ~loc:__LOC__
-      block
-      delegate_pkh
-      ~ai_enabled:true
-      ~expected_staked:380_000_000_000L
-      ~expected_delegated:0L
-      ~expected_ext_staked:0L
-  in
-  return_unit
-
 let tests =
   [
     Tztest.tztest
-      "Launch with force_activation feature flag set activates AI immediately"
-      `Quick
-      test_launch_without_vote;
-    Tztest.tztest
       "the EMA reaches the vote threshold at the expected level and adaptive \
-       issuance launches (vote enabled)"
+       issuance launches (very low threshold, vote enabled)"
       `Quick
       (test_launch
          1000000l (* This means that the threshold is set at 0.05% *)
-         88l);
-    Tztest.tztest
-      "the EMA reaches the vote threshold at the expected level and adaptive \
-       issuance does not launch (vote disabled)"
-      `Quick
-      (test_does_not_launch_without_feature_flag
-         1000000l (* This means that the threshold is set at 0.05% *)
-         88l);
-  ]
-
-(* These tests have been unplugged because they are too long for the
-   CI (more than 3 minutes). For unit tests of the fact that the 80%
-   threshold can be reached by iteration of the EMA update function,
-   see ../unit/test_adaptive_issuance_ema.ml *)
-let _unplugged_tests =
-  [
+         59l);
     Tztest.tztest
       "the EMA reaches the vote threshold at the expected level and adaptive \
        issuance launches (realistic threshold, vote enabled)"
@@ -580,10 +477,17 @@ let _unplugged_tests =
       (test_launch
          Default_parameters.constants_test.adaptive_issuance
            .launch_ema_threshold
-         280894l
+         187259l
          (* This vote duration is consistent with the result of the
             unit test for this EMA in
             ../unit/test_adaptive_issuance_ema.ml*));
+    Tztest.tztest
+      "the EMA reaches the vote threshold at the expected level and adaptive \
+       issuance does not launch (very low threshold, vote disabled)"
+      `Quick
+      (test_does_not_launch_without_feature_flag
+         1000000l (* This means that the threshold is set at 0.05% *)
+         59l);
     Tztest.tztest
       "the EMA reaches the vote threshold at the expected level and adaptive \
        issuance does not launch (realistic threshold, vote disabled)"
@@ -591,7 +495,7 @@ let _unplugged_tests =
       (test_does_not_launch_without_feature_flag
          Default_parameters.constants_test.adaptive_issuance
            .launch_ema_threshold
-         280894l
+         187259l
          (* This vote duration is consistent with the result of the
             unit test for this EMA in
             ../unit/test_adaptive_issuance_ema.ml*));

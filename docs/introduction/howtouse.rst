@@ -2,58 +2,58 @@
 
 .. _howtouse:
 
-Getting started with Octez
-==========================
+Getting started with Mavkit
+===========================
 
-This short tutorial illustrates the use of the various Octez binaries as well
+This short tutorial illustrates the use of the various Mavkit binaries as well
 as some concepts about the network.
 
-.. _tezos_binaries:
+.. _mavryk_binaries:
 
 The Binaries
 ------------
 
 After a successful compilation, you should have the following binaries:
 
-- ``octez-node``: the Octez daemon itself (see `Node`_);
-- ``octez-client``: a command-line client and basic wallet (see `Client`_);
-- ``octez-admin-client``: administration tool for the node (see :ref:`octez-admin-client`);
-- ``octez-{baker,accuser}-*``: daemons to bake and accuse on the Tezos network (see :doc:`howtorun`);
-- ``octez-signer``: a client to remotely sign operations or blocks
+- ``mavkit-node``: the Mavkit daemon itself (see `Node`_);
+- ``mavkit-client``: a command-line client and basic wallet (see `Client`_);
+- ``mavkit-admin-client``: administration tool for the node (see :ref:`mavkit-admin-client`);
+- ``mavkit-{baker,accuser}-*``: daemons to bake and accuse on the Tezos network (see :doc:`howtorun`);
+- ``mavkit-signer``: a client to remotely sign operations or blocks
   (see :ref:`signer`);
-- ``octez-smart-rollup-node``: executable for using and running a smart rollup node as Layer 2 (see :doc:`../shell/smart_rollup_node`);
-- ``octez-smart-rollup-wasm-debugger``: debugger for smart rollup kernels (see :doc:`../shell/smart_rollup_node`)
-- ``octez-proxy-server``: a readonly frontend to ``octez-node`` designed to lower the load of full nodes (see :doc:`../user/proxy-server`)
-- ``octez-codec``: a utility for documenting the data encodings and for performing data encoding/decoding (see `Codec`_)
-- ``octez-protocol-compiler``: a domain-specific compiler for Tezos protocols (see `Protocol compiler`_)
-- ``octez-snoop``: a tool for modeling the performance of any piece of OCaml code, based on benchmarking (see :doc:`../developer/snoop`)
+- ``mavkit-smart-rollup-{client,node}-*``: executables for using and running a smart rollup as Layer 2 (see :doc:`../active/smart_rollups`)
+- ``mavkit-smart-rollup-wasm-debugger``: debugger for smart rollup kernels (see :doc:`../active/smart_rollups`)
+- ``mavkit-proxy-server``: a readonly frontend to ``mavkit-node`` designed to lower the load of full nodes (see :doc:`../user/proxy-server`)
+- ``mavkit-codec``: a utility for documenting the data encodings and for performing data encoding/decoding (see `Codec`_)
+- ``mavkit-protocol-compiler``: a domain-specific compiler for Tezos protocols (see `Protocol compiler`_)
+- ``mavkit-snoop``: a tool for modeling the performance of any piece of OCaml code, based on benchmarking (see :doc:`../developer/snoop`)
 
 The daemons other than the node are suffixed with the name of the protocol they are
 bound to.
 More precisely, the suffix consists of the first 8 characters of the protocol hash; except for protocol Alpha, for which the suffix is simply ``-alpha``.
-For instance, ``octez-baker-PtNairob`` is the baker
-for the Nairobi protocol, and ``octez-baker-alpha`` is the baker
+For instance, ``mavkit-baker-PtNairob`` is the baker
+for the Nairobi protocol, and ``mavkit-baker-alpha`` is the baker
 of the development protocol.
-The ``octez-node`` daemon is not suffixed by any protocol name, because it is independent of the economic protocol. See also the `Node's Protocol`_ section below.
+The ``mavkit-node`` daemon is not suffixed by any protocol name, because it is independent of the economic protocol. See also the `Node's Protocol`_ section below.
 
 
-Read the Manual
+Read The Manual
 ---------------
 
-All the Octez binaries provide the ``--help`` option to display information about their usage, including the available options and the possible parameters.
+All the Mavkit binaries provide the ``--help`` option to display information about their usage, including the available options and the possible parameters.
 
 Additionally, most of the above binaries (i.e., all but the node, the validator, and the compiler) provide a textual manual that can be obtained with the command ``man``,
 whose verbosity can be increased with ``-v``, for example::
 
-    octez-client man -v 3
+    mavkit-client man -v 3
 
 It is also possible to get information on a specific command in the manual with ``man <command>``::
 
-   octez-client man set
+   mavkit-client man set
 
-To see the usage of one specific command, you may also type the command without arguments, which displays its possible completions and options::
+To see the usage of one specific command, you may also type the command without arguments, which display its possible completions and options::
 
-   octez-client transfer
+   mavkit-client transfer
 
 .. warning::
 
@@ -73,17 +73,17 @@ To see the usage of one specific command, you may also type the command without 
         Usage:
           [...]
 
-.. _octez_client_protocol:
+.. _mavkit_client_protocol:
 
 To make the client command behave as for a protocol other than that used by the node (or even when not connected to a node), use the option ``--protocol`` (or ``-p``), e.g.::
 
-    octez-client --protocol ProtoALphaAL man transfer
+    mavkit-client --protocol ProtoALphaAL man transfer
 
 Note that you can get the list of protocols known to the client with::
 
-    octez-client list understood protocols
+    mavkit-client list understood protocols
 
-The full command line documentation of the Octez binaries supporting the ``man`` command is also available
+The full command line documentation of the Mavkit binaries supporting the ``man`` command is also available
 online: :doc:`../shell/cli-commands`.
 
 Node
@@ -92,15 +92,15 @@ Node
 The node is the main actor of the Tezos blockchain and it has two main
 functions: running the gossip network and updating the context.
 The gossip network is where all Tezos nodes exchange blocks and
-operations with each other (see :ref:`octez-admin-client` to monitor
+operations with each other (see :ref:`mavkit-admin-client` to monitor
 p2p connections).
 Using this peer-to-peer network, an operation originated by a user can
-hop several times through other nodes until it finds its way into a
+hop several times through other nodes until it finds its way in a
 block baked by a baker.
 Using the blocks it receives on the gossip network the node also
 keeps up to date the current *context*, that is the full state of
 the blockchain shared by all peers.
-Approximately every 15 seconds a new block is created and, when the node
+Approximately every 30 seconds a new block is created and, when the node
 receives it, it applies each operation in the block to its current
 context and computes a new context.
 The last block received on a chain is also called the *head* of that
@@ -110,18 +110,18 @@ disseminating this information to build a consensus across the
 network.
 
 Other than passively observing the network, your node can also inject
-its own new operations when instructed by the ``octez-client`` and even
-send new blocks when guided by the ``octez-baker-*``.
+its own new operations when instructed by the ``mavkit-client`` and even
+send new blocks when guided by the ``mavkit-baker-*``.
 The node has also a view of the multiple chains that may exist
 concurrently and selects the best one based on its fitness (see
 :doc:`../active/consensus`).
 
 .. note::
 
-   The ``octez-node`` uses (unless the option ``--singleprocess`` is
+   The ``mavkit-node`` uses (unless the option ``--singleprocess`` is
    given) an auxiliary daemon in order to validate, apply and compute
    the resulting context of blocks, in parallel to its main
-   process. Thus, an ``octez-validator`` process can appear while
+   process. Thus, an ``mavkit-validator`` process can appear while
    monitoring the active processes of the machine.
 
 Node Identity
@@ -130,7 +130,7 @@ Node Identity
 First, we need to generate a new identity for the node to
 connect to the network::
 
-    octez-node identity generate
+    mavkit-node identity generate
 
 .. note::
 
@@ -180,7 +180,7 @@ suites.
 Storage
 ~~~~~~~
 
-All blockchain data is stored by the node under a data directory, which by default is ``$HOME/.tezos-node/``.
+All blockchain data is stored by the node under a data directory, which by default is ``$HOME/.mavryk-node/``.
 
 If for some reason your node is misbehaving or there has been an
 upgrade of the network, it is safe to remove this directory, it just
@@ -206,7 +206,7 @@ internet. With the following command, it is available uniquely on the
 
 ::
 
-   octez-node run --rpc-addr 127.0.0.1
+   mavkit-node run --rpc-addr 127.0.0.1
 
 Node configuration
 ~~~~~~~~~~~~~~~~~~
@@ -221,11 +221,11 @@ Many options of the node can be configured when running the node:
 
 The list of configurable options can be obtained using the following command::
 
-    octez-node run --help
+    mavkit-node run --help
 
 You can read more about the :doc:`node configuration <../user/node-configuration>` and its :ref:`private mode <private-mode>`.
 
-Besides listening to requests from the client,
+Besides listening from requests from the client,
 the node listens to connections from peers, by default on port ``9732`` (this can be changed using option ``--net-addr``), so it's advisable to
 open incoming connections to that port.
 
@@ -239,28 +239,23 @@ Putting together all the above instructions, you may want to run a node as follo
     # Download a snapshot for your target network, e.g. <test-net>:
     wget <snapshot-url> -O <snapshot-file>
     # Configure the node for running on <test-net>:
-    octez-node config init --data-dir ~/.tezos-node-<test-net> --network <test-net>
+    mavkit-node config init --data-dir ~/.mavryk-node-<test-net> --network <test-net>
     # Import the snapshot into the node data directory:
-    octez-node snapshot import --data-dir ~/.tezos-node-<test-net> --block <block-hash> <snapshot-file>
+    mavkit-node snapshot import --data-dir ~/.mavryk-node-<test-net> --block <block-hash> <snapshot-file>
     # Run the node:
-    octez-node run --data-dir ~/.tezos-node-<test-net> --rpc-addr 127.0.0.1
+    mavkit-node run --data-dir ~/.mavryk-node-<test-net> --rpc-addr 127.0.0.1
 
-.. _howtouse_tezos_client:
+.. _howtouse_mavryk_client:
 
 Client
 ------
 
-Octez client can be used to interact with the node, it can query its
+Mavkit client can be used to interact with the node, it can query its
 status or ask the node to perform some actions.
-
-.. note::
-
-  The rest of this page assumes that you have launched a local node, as explained in the previous section. But it is useful to know that the client can be configured to interact with a public node instead, either using :doc:`the configuration file <../user/client-configuration>` or by supplying option ``-E <node-url>`` with `a public RPC node <https://docs.tezos.com/architecture/rpc#public-and-private-rpc-nodes>`__.
-
-After starting your local node you can check if it has finished
+For example, after starting your node you can check if it has finished
 synchronizing (see :doc:`../shell/sync`) using::
 
-   octez-client bootstrapped
+   mavkit-client bootstrapped
 
 This call will hang and return only when the node is synchronized
 (recall that this is much faster when starting a node from a snapshot).
@@ -268,7 +263,7 @@ Once the above command returns,
 we can check what is the current timestamp of the head of the
 chain (time is in UTC so it may differ from your local time)::
 
-   octez-client get timestamp
+   mavkit-client get timestamp
 
 You can also use the above command before the node is bootstrapped, from another terminal.
 However, recall that the commands available on the client depend on the specific
@@ -276,7 +271,7 @@ protocol run by the node. For instance, ``get timestamp`` isn't available when
 the node runs the genesis protocol, which may happen for a few minutes when
 launching a node for the first time.
 
-The behaviour of the client can be customized using various mechanisms, including command-line options, a configuration file, and environment variables. For details, refer to :doc:`../user/setup-client`.
+The behaviour of the client can be customized using various mechanims, including command-line options, a configuration file, and environment variables. For details, refer to :doc:`../user/setup-client`.
 
 A Simple Wallet
 ~~~~~~~~~~~~~~~
@@ -284,13 +279,13 @@ A Simple Wallet
 The client is also a basic wallet. We can, for example, generate a new pair of keys, which can be used locally
 with the alias *alice*::
 
-      $ octez-client gen keys alice
+      $ mavkit-client gen keys alice
 
 To check the account (also called a contract) for Alice has been created::
 
-      $ octez-client list known contracts
+      $ mavkit-client list known contracts
 
-You will notice that the client data directory (by default, ``~/.tezos-client``) has been populated with
+You will notice that the client data directory (by default, ``~/.mavryk-client``) has been populated with
 3 files ``public_key_hashs``, ``public_keys`` and ``secret_keys``.
 The content of each file is in JSON and keeps the mapping between
 aliases (e.g., ``alice``) and the kind of keys indicated by the name
@@ -304,7 +299,7 @@ contracts, which have the form *KT1…*.
 Notice that by default, the keys were stored unencrypted, which is fine in our test example.
 In more realistic scenarios, you should supply the option ``--encrypted`` when generating a new account::
 
-      $ octez-client gen keys bob --encrypted
+      $ mavkit-client gen keys bob --encrypted
 
 Tezos supports four different ECC (`Elliptic-Curve Cryptography <https://en.wikipedia.org/wiki/Elliptic-curve_cryptography>`_) schemes: *Ed25519*, *secp256k1* (the
 one used in Bitcoin), *P-256* (also called *secp256r1*), and *BLS* (variant
@@ -327,7 +322,7 @@ Get Free Test Tokens
 ~~~~~~~~~~~~~~~~~~~~
 
 To test the networks and help users get familiar with the system, on
-:doc:`test networks<../global/test_networks>` you can obtain free tokens from
+:doc:`test networks<test_networks>` you can obtain free tokens from
 :ref:`a faucet <faucet>`. Transfer some to Alice's address.
 
 Transfers and Receipts
@@ -343,10 +338,10 @@ the network, so that we can inspect its receipt.
 
 Let's try::
 
-  octez-client transfer 1 from alice to bob --dry-run
+  mavkit-client transfer 1 from alice to bob --dry-run
 
   Fatal error:
-    The operation will burn ꜩ0.257 which is higher than the configured burn cap (ꜩ0).
+    The operation will burn ṁ0.257 which is higher than the configured burn cap (ṁ0).
      Use `--burn-cap 0.257` to emit this operation.
 
 The client asks the node to validate the operation (without sending
@@ -357,11 +352,11 @@ Any storage on chain has a cost associated to it which should be
 accounted for either by paying a fee to a baker or by destroying
 (``burning``) some tez.
 This is particularly important to protect the system from spam.
-Because storing an address requires burning ꜩ0.257 and the client has
+Because storing an address requires burning ṁ0.257 and the client has
 a default of 0, we need to explicitly set a cap on the amount that we
 allow to burn::
 
-  octez-client transfer 1 from alice to bob --dry-run --burn-cap 0.257
+  mavkit-client transfer 1 from alice to bob --dry-run --burn-cap 0.257
 
 This should do it and you should see a rather long receipt being
 produced, here's an excerpt::
@@ -369,32 +364,32 @@ produced, here's an excerpt::
   ...
   Simulation result:
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
-      Fee to the baker: ꜩ0.001259
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
+      Fee to the baker: ṁ0.001259
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001259
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001259
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ṁ0.001259
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ṁ0.001259
       Revelation of manager public key:
-        Contract: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
+        Contract: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
         Key: edpkuK4o4ZGyNHKrQqAox7hELeKEceg5isH18CCYUaQ3tF7xZ8HW3X
         ...
     Manager signed operations:
-      From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
-      Fee to the baker: ꜩ0.001179
+      From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
+      Fee to the baker: ṁ0.001179
       ...
       Balance updates:
-        tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ............ -ꜩ0.001179
-        fees(tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU,72) ... +ꜩ0.001179
+        mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ............ -ṁ0.001179
+        fees(mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5,72) ... +ṁ0.001179
       Transaction:
-        Amount: ꜩ1
-        From: tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w
-        To: tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph
+        Amount: ṁ1
+        From: mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe
+        To: mv1MbxANFAMxSHb5K1q9ZA9mynzYrZfJ7mHt
         ...
         Balance updates:
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ1
-          tz1Rk5HA9SANn3bjo4qMXTZettPjjKMG14Ph ... +ꜩ1
-          tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w ... -ꜩ0.257
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ1
+          mv1MbxANFAMxSHb5K1q9ZA9mynzYrZfJ7mHt ... +ṁ1
+          mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe ... -ṁ0.257
 
 The client does a bit of magic to simplify our life and here we see
 that many details were automatically set for us.
@@ -402,7 +397,7 @@ Surprisingly, our transfer operation resulted in **two** operations,
 first a *revelation*, and then a transfer.
 Alice's address, obtained from the faucet, is already present on the
 blockchain, but only in the form of a *public key hash*
-``tz1Rj...5w``.
+``mv1Rj...5w``.
 To sign operations, Alice needs to first reveal the *public
 key* ``edpkuk...3X`` behind the hash, so that other users can verify
 her signatures.
@@ -415,13 +410,13 @@ more costs being added on top of the transfer and the burn: *fees*.
 To encourage a baker to include our operation, and in general
 to pay for the cost of running the blockchain, each operation usually
 includes a fee that goes to the baker.
-Fees are variable over time and depend on many factors but the Octez
+Fees are variable over time and depend on many factors but the Mavkit
 client selects a default for us.
 
 The last important bit of our receipt is the balance updates that
-resume which address is being debited or credited a certain amount.
-We see in this case that baker ``tz1Ke...yU`` is being credited one
-fee for each operation, that Bob's address ``tz1Rk...Ph`` gets 1 tez
+resume which address is being debited or credited of a certain amount.
+We see in this case that baker ``mv1Ke...yU`` is being credited one
+fee for each operation, that Bob's address ``mv1Rk...Ph`` gets 1 tez
 and that Alice pays the transfer, the burn, and the two fees.
 
 Now that we have a clear picture of what we are going to pay we can
@@ -453,9 +448,9 @@ Implicit Accounts and Smart Contracts
 
 In Tezos there are two kinds of accounts: *implicit accounts* and *smart contracts*.
 
-- The implicit accounts are the addresses starting with *tz1*, *tz2*,
-  and *tz3* we have used up to now. They are created with a transfer
-  operation to the account's public key hash.
+- The implicit accounts are the addresses starting with *mv1*, *mv2*,
+  and *mv3* we have used up to now. They are created with a transfer
+  operation to the account public key hash.
 
 - Smart contracts have addresses starting with *KT1* and are created
   with an origination operation. They don't have a corresponding
@@ -464,17 +459,17 @@ In Tezos there are two kinds of accounts: *implicit accounts* and *smart contrac
 
 Let's originate our first contract and call it *id*::
 
-    octez-client originate contract id transferring 1 from alice \
+    mavkit-client originate contract id transferring 1 from alice \
                  running ./michelson_test_scripts/attic/id.tz \
                  --init '"hello"' --burn-cap 0.4
 
-The initial balance is ꜩ1, generously provided by implicit account
+The initial balance is ṁ1, generously provided by implicit account
 *alice*. The contract stores a Michelson program ``id.tz``
 (found in file :src:`michelson_test_scripts/attic/id.tz`), with
 Michelson value ``"hello"`` as initial storage (the extra quotes are
 needed to avoid shell expansion). The parameter ``--burn-cap``
 specifies the maximal fee the user is willing to pay for this
-operation, while the actual fee is determined by the system.
+operation, the actual fee being determined by the system.
 
 A Michelson contract is expressed as a pure function, mapping a pair
 ``(parameter, storage)`` to a pair ``(list_of_operations, storage)``.
@@ -502,7 +497,7 @@ Gas and Storage Costs
 ~~~~~~~~~~~~~~~~~~~~~
 
 A quick look at the balance updates on the receipt shows that on top of
-funding the contract with ꜩ1, *alice* was also charged an extra cost
+funding the contract with ṁ1, *alice* was also charged an extra cost
 that is burnt.
 This cost comes from the *storage* and is shown in the line
 ``Paid storage size diff: 46 bytes``, 41 for the contract and 5 for
@@ -514,7 +509,7 @@ abuse and encourage lean programs.
 Let's see what calling a program with a new argument would look like
 with the ``--dry-run`` option::
 
-   octez-client transfer 0 from alice to id --arg '"world"' --dry-run
+   mavkit-client transfer 0 from alice to id --arg '"world"' --dry-run
 
 The transaction would successfully update the storage but this time it
 wouldn't cost us anything more than the fee, the reason is that the
@@ -524,7 +519,7 @@ To store more we'll need to pay more, you can try by passing a longer
 string.
 
 The other cost associated with running contracts is the *gas*, which
-measures *how long* a program takes to compute.
+measures *how long* does a program take to compute.
 Contrary to storage there is no cost per gas unit, a transfer can
 require as much gas as it wants, however a baker that has to choose
 among several transactions is much more likely to include a low gas
@@ -540,7 +535,7 @@ Note that the storage limit sets an upper bound to the storage size *difference*
 
 ::
 
-   octez-client transfer 0 from alice to id --arg '"world"' \
+   mavkit-client transfer 0 from alice to id --arg '"world"' \
                                             --gas-limit 11375 \
                                             --storage-limit 0
 
@@ -595,7 +590,7 @@ make sure that the node is listening on the right ports and that the ports are
 open.
 For example the ``get timestamp`` command above is a shortcut for::
 
-   octez-client rpc get /chains/main/blocks/head/header/shell
+   mavkit-client rpc get /chains/main/blocks/head/header/shell
 
 The client tries to simplify common tasks as much as possible, however
 if you want to query the node for more specific information you'll
@@ -607,7 +602,7 @@ For example to check the value of important
 :ref:`constants <protocol_constants>` in Tezos, which may differ between Mainnet and other
 :ref:`test networks<test-networks>`, you can use::
 
-   octez-client rpc get /chains/main/blocks/head/context/constants | jq
+   mavkit-client rpc get /chains/main/blocks/head/context/constants | jq
    {
      "proof_of_work_nonce_size": 8,
      "nonce_length": 32,
@@ -617,49 +612,29 @@ For example to check the value of important
 Another interesting use of RPCs is to inspect the receipts of the
 operations of a block::
 
-  octez-client rpc get /chains/main/blocks/head/operations
+  mavkit-client rpc get /chains/main/blocks/head/operations
 
 It is also possible to review the receipt of the whole block::
 
-  octez-client rpc get /chains/main/blocks/head/metadata
+  mavkit-client rpc get /chains/main/blocks/head/metadata
 
 An interesting block receipt is the one produced at the end of a
 cycle as many delegates receive back part of their unfrozen accounts.
 
 
-You can find more info on RPCs in the :doc:`RPCs' page <../active/rpc>`.
+You can find more info in the :doc:`RPCs' page <../active/rpc>`.
 
 Other binaries
 --------------
 
-In this short tutorial we will not use some other binaries, but let's briefly review their roles.
-
-.. _octez-admin-client:
-
-Admin Client
-~~~~~~~~~~~~
-
-The admin client enables you to interact with the peer-to-peer layer in order
-to:
-
-- check the status of the connections
-- force connections to known peers
-- ban/unban peers
-
-A useful command to debug a node that is not syncing is:
-
-::
-
-   octez-admin-client p2p stat
-
-The admin client uses the same format of configuration file as the client (see :ref:`client_conf_file`).
+In this short tutorial we will not use some other binaries, but let as briefly review their roles.
 
 Codec
 ~~~~~
 
-The Octez codec (``octez-codec``) is a utility that:
+The Mavkit codec (``mavkit-codec``) is a utility that:
 
-- provides documentation for all the encodings used in the ``octez-node`` (and other binaries), and
+- provides documentation for all the encodings used in the ``mavkit-node`` (and other binaries), and
 - allows to convert from JSON to binary and vice-versa for all these encodings.
 
 It is meant to be used by developers for tests, for generating documentation when writing libraries that share data with the node, for light scripting, etc.
@@ -668,22 +643,22 @@ For more details on its usage, refer to its :ref:`online manual <codec_manual>` 
 Protocol compiler
 ~~~~~~~~~~~~~~~~~
 
-The protocol compiler (``octez-protocol-compiler``) can compile protocols within the limited environment that the shell provides.
+The protocol compiler (``mavkit-protocol-compiler``) can compile protocols within the limited environment that the shell provides.
 This environment is limited to a restricted set of libraries in order to constrain the possible behavior of the protocols.
 
 It is meant to be used:
 
 - by developers to compile the protocol under development,
 - by the packaging process to compile protocols that are pre-linked in the binaries,
-- by the Octez node when there is an on-chain update to a protocol that is not pre-linked with the binary.
+- by the Mavkit node when there is an on-chain update to a protocol that is not pre-linked with the binary.
 
 Summary
 -------
 
 In this tutorial, you have learned:
 
-- to start an Octez node and set up its basic configuration;
-- to use the Octez client to create implicit accounts and do transfers between them;
+- to start an Mavkit node and set up its basic configuration;
+- to use the Mavkit client to create implicit accounts and do transfers between them;
 - to deploy and interact with a simple predefined smart contract;
 - to distinguish between the various costs associated to transactions such as burnt tez, fees, storage costs, and gas consumption;
 - some further concepts such as transaction validation and the RPC interface;

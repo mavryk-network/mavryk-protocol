@@ -30,7 +30,7 @@
    Subject:      Regression tests for ticket receipt/RPC/CLI
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let rpc_check_ticket_balance client ~contract ~ticketer ~content_type ~content
     ~expected =
@@ -99,7 +99,6 @@ let test_ticket_receipt_and_rpc =
     ~__FILE__
     ~title:"Ticket updates in receipt"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, kt_a =

@@ -8,9 +8,9 @@
 
 use std::fmt::Display;
 
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 
 use crypto::base58::{FromBase58Check, FromBase58CheckError};
 use crypto::hash::{HashType, SmartRollupHash};
@@ -67,7 +67,7 @@ mod test {
 
         let smart_rollup_address = SmartRollupAddress::from_b58check(sr1);
 
-        assert!(smart_rollup_address.is_ok());
+        assert!(matches!(smart_rollup_address, Ok(_)));
 
         let sr1_from_smart_rollup_address = smart_rollup_address.unwrap().to_b58check();
 

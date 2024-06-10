@@ -31,7 +31,7 @@ let starting_node =
   declare_0
     ~section
     ~name:"starting_dal_node"
-    ~msg:"starting the DAL node"
+    ~msg:"Starting the DAL node"
     ~level:Notice
     ()
 
@@ -64,7 +64,7 @@ let data_dir_not_found =
     ~section
     ~name:"dal_node_no_data_dir"
     ~msg:
-      "the DAL node configuration file does not exist in {path}, creating one"
+      "the DAL node data directory {path} doesn't exist. Creating one in {path}"
     ~level:Warning
     ("path", Data_encoding.(string))
 
@@ -87,24 +87,21 @@ let fetched_slot =
     ("shards", Data_encoding.int31)
 
 let layer1_node_new_head =
-  declare_3
+  declare_2
     ~section
     ~name:"dal_node_layer_1_new_head"
-    ~msg:
-      "head of Layer 1 node updated to {hash} at level {level}, round {round}"
+    ~msg:"head of Layer 1 node updated to {hash} at level {level}"
     ~level:Info
     ("hash", Block_hash.encoding)
     ("level", Data_encoding.int32)
-    ("round", Data_encoding.int32)
 
 let layer1_node_final_block =
-  declare_2
+  declare_1
     ~section
     ~name:"dal_node_layer_1_new_final_block"
-    ~msg:"layer 1 node's block at level {level}, round {round} is final"
+    ~msg:"layer 1 node's block at level {level} is final"
     ~level:Notice
     ("level", Data_encoding.int32)
-    ("round", Data_encoding.int32)
 
 let layer1_node_tracking_started =
   declare_0

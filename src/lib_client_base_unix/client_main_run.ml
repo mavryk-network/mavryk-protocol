@@ -24,13 +24,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Main Program *)
+(* Mavryk Command line interface - Main Program *)
 
 open Client_context_unix
 
 let builtin_commands =
   let open Lwt_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   [
     command
       ~desc:"List the protocol versions that this client understands."
@@ -49,10 +49,10 @@ module type M = sig
   type t
 
   val global_options :
-    unit -> (t, Client_context_unix.unix_full) Tezos_clic.options
+    unit -> (t, Client_context_unix.unix_full) Mavryk_clic.options
 
   val parse_config_args :
-    #Tezos_client_base.Client_context.full ->
+    #Mavryk_client_base.Client_context.full ->
     string list ->
     (Client_config.parsed_config_args * string list) tzresult Lwt.t
 
@@ -73,12 +73,12 @@ module type M = sig
   val clic_commands :
     base_dir:string ->
     config_commands:
-      Tezos_client_base.Client_context.full Tezos_clic.command list ->
+      Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     builtin_commands:
-      Tezos_client_base.Client_context.full Tezos_clic.command list ->
-    other_commands:Tezos_client_base.Client_context.full Tezos_clic.command list ->
+      Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
+    other_commands:Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     require_auth:bool ->
-    Tezos_client_base.Client_context.full Tezos_clic.command list
+    Mavryk_client_base.Client_context.full Mavryk_clic.command list
 
   val logger : RPC_client_unix.logger option
 end
@@ -95,7 +95,7 @@ let setup_remote_signer (module C : M) client_config
             | _, known_pkh, _, Some known_sk_uri
               when List.exists
                      (fun pkh ->
-                       Tezos_crypto.Signature.Public_key_hash.equal
+                       Mavryk_crypto.Signature.Public_key_hash.equal
                          pkh
                          known_pkh)
                      pkhs ->
@@ -115,25 +115,25 @@ let setup_remote_signer (module C : M) client_config
       match C.logger with Some logger -> logger | None -> rpc_config.logger
   end in
   let module Http =
-    Tezos_signer_backends.Http.Make (RPC_client_unix) (Remote_params)
+    Mavryk_signer_backends.Http.Make (RPC_client_unix) (Remote_params)
   in
   let module Https =
-    Tezos_signer_backends.Https.Make (RPC_client_unix) (Remote_params)
+    Mavryk_signer_backends.Https.Make (RPC_client_unix) (Remote_params)
   in
-  let module Socket = Tezos_signer_backends_unix.Socket.Make (Remote_params) in
+  let module Socket = Mavryk_signer_backends_unix.Socket.Make (Remote_params) in
   Client_keys.register_signer
-    (module Tezos_signer_backends.Encrypted.Make (struct
+    (module Mavryk_signer_backends.Encrypted.Make (struct
       let cctxt = (client_config :> Client_context.io_wallet)
     end)) ;
   Client_keys.register_aggregate_signer
-    (module Tezos_signer_backends.Encrypted.Make_aggregate (struct
+    (module Mavryk_signer_backends.Encrypted.Make_aggregate (struct
       let cctxt = (client_config :> Client_context.io_wallet)
     end)) ;
-  Client_keys.register_signer (module Tezos_signer_backends.Unencrypted) ;
+  Client_keys.register_signer (module Mavryk_signer_backends.Unencrypted) ;
   Client_keys.register_aggregate_signer
-    (module Tezos_signer_backends.Unencrypted.Aggregate) ;
+    (module Mavryk_signer_backends.Unencrypted.Aggregate) ;
   Client_keys.register_signer
-    (module Tezos_signer_backends_unix.Ledger.Signer_implementation) ;
+    (module Mavryk_signer_backends_unix.Ledger.Signer_implementation) ;
   Client_keys.register_signer (module Socket.Unix) ;
   Client_keys.register_signer (module Socket.Tcp) ;
   Client_keys.register_signer (module Http) ;
@@ -176,7 +176,7 @@ let setup_default_proxy_client_config parsed_args base_dir rpc_config mode =
   let open Lwt_result_syntax in
   (* Make sure that base_dir is not a mockup. *)
   let* () =
-    let* b = Tezos_mockup.Persistence.classify_base_dir base_dir in
+    let* b = Mavryk_mockup.Persistence.classify_base_dir base_dir in
     match b with
     | Base_dir_is_mockup ->
         failwith
@@ -221,7 +221,7 @@ let setup_default_proxy_client_config parsed_args base_dir rpc_config mode =
       let printer = new unix_logger ~base_dir in
       let get_mode () =
         match (mode, sources) with
-        | `Mode_proxy, _ -> return Tezos_proxy.Proxy_services.Proxy_client
+        | `Mode_proxy, _ -> return Mavryk_proxy.Proxy_services.Proxy_client
         | `Mode_light, None ->
             failwith
               "--sources MUST be specified when --mode light is specified"
@@ -230,17 +230,17 @@ let setup_default_proxy_client_config parsed_args base_dir rpc_config mode =
               warn_if_duplicates_light_sources printer sources_config.uris
             in
             let rpc_builder endpoint =
-              (new Tezos_rpc_http_client_unix.RPC_client_unix.http_ctxt
+              (new Mavryk_rpc_http_client_unix.RPC_client_unix.http_ctxt
                  {rpc_config with endpoint}
                  (Media_type.Command_line.of_command_line rpc_config.media_type)
-                :> Tezos_rpc.Context.simple)
+                :> Mavryk_rpc.Context.simple)
             in
             let sources =
-              Tezos_proxy.Light.sources_config_to_sources
+              Mavryk_proxy.Light.sources_config_to_sources
                 rpc_builder
                 sources_config
             in
-            return (Tezos_proxy.Proxy_services.Light_client sources)
+            return (Mavryk_proxy.Proxy_services.Light_client sources)
       in
       let* mode = get_mode () in
       return
@@ -256,33 +256,33 @@ let setup_default_proxy_client_config parsed_args base_dir rpc_config mode =
            ()
 
 let setup_mockup_rpc_client_config
-    (cctxt : Tezos_client_base.Client_context.printer)
+    (cctxt : Mavryk_client_base.Client_context.printer)
     (args : Client_config.cli_args) base_dir =
   let open Lwt_result_syntax in
   let in_memory_mockup (args : Client_config.cli_args) =
     match args.protocol with
-    | None -> Tezos_mockup.Persistence.default_mockup_context cctxt
+    | None -> Mavryk_mockup.Persistence.default_mockup_context cctxt
     | Some protocol_hash ->
-        Tezos_mockup.Persistence.init_mockup_context_by_protocol_hash
+        Mavryk_mockup.Persistence.init_mockup_context_by_protocol_hash
           ~cctxt
           ~protocol_hash
           ~constants_overrides_json:None
           ~bootstrap_accounts_json:None
   in
-  let* b = Tezos_mockup.Persistence.classify_base_dir base_dir in
+  let* b = Mavryk_mockup.Persistence.classify_base_dir base_dir in
   let* (mockup_env, {chain = chain_id; rpc_context; protocol_data}), mem_only =
     match b with
-    | Tezos_mockup.Persistence.Base_dir_is_empty
-    | Tezos_mockup.Persistence.Base_dir_is_file
-    | Tezos_mockup.Persistence.Base_dir_is_nonempty
-    | Tezos_mockup.Persistence.Base_dir_does_not_exist ->
+    | Mavryk_mockup.Persistence.Base_dir_is_empty
+    | Mavryk_mockup.Persistence.Base_dir_is_file
+    | Mavryk_mockup.Persistence.Base_dir_is_nonempty
+    | Mavryk_mockup.Persistence.Base_dir_does_not_exist ->
         let mem_only = true in
         let* res = in_memory_mockup args in
         return (res, mem_only)
-    | Tezos_mockup.Persistence.Base_dir_is_mockup ->
+    | Mavryk_mockup.Persistence.Base_dir_is_mockup ->
         let mem_only = false in
         let* res =
-          Tezos_mockup.Persistence.get_mockup_context_from_disk
+          Mavryk_mockup.Persistence.get_mockup_context_from_disk
             ~base_dir
             ~protocol_hash:args.protocol
             cctxt
@@ -298,7 +298,7 @@ let setup_mockup_rpc_client_config
        ~rpc_context
        ~protocol_data)
 
-let setup_client_config (cctxt : Tezos_client_base.Client_context.printer)
+let setup_client_config (cctxt : Mavryk_client_base.Client_context.printer)
     (parsed_args : Client_config.cli_args option) base_dir rpc_config =
   let setup_non_mockup_rpc_client_config =
     setup_default_proxy_client_config parsed_args base_dir rpc_config
@@ -312,14 +312,14 @@ let setup_client_config (cctxt : Tezos_client_base.Client_context.printer)
       | `Mode_mockup -> setup_mockup_rpc_client_config cctxt args base_dir)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
-let warn_if_argv0_name_not_octez () =
+   Remove backwards compatible Mavryk symlinks. *)
+let warn_if_argv0_name_not_mavkit () =
   let executable_name =
-    (* example: tezos-tx-rollup-client-015-PtKathma *)
+    (* example: mavryk-tx-rollup-client-015-PtKathma *)
     Filename.basename Sys.argv.(0)
   in
-  let old_head = "tezos-" in
-  let new_head = "octez-" in
+  let old_head = "mavryk-" in
+  let new_head = "mavkit-" in
   match TzString.has_prefix executable_name ~prefix:old_head with
   | false -> ()
   | true ->
@@ -365,7 +365,7 @@ let warn_if_argv0_name_not_octez () =
           |> List.map name_without_version
           |> List.find Option.is_some |> Option.join
         in
-        (* example: octez-tx-rollup-client-PtKathma *)
+        (* example: mavkit-tx-rollup-client-PtKathma *)
         new_head
         ^
         match versionless_name with
@@ -403,18 +403,18 @@ let main (module C : M) ~select_commands =
   in
   Random.self_init () ;
   ignore
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.std_formatter
         (if Unix.isatty Unix.stdout then Ansi else Plain)
         Short) ;
   ignore
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.err_formatter
         (if Unix.isatty Unix.stderr then Ansi else Plain)
         Short) ;
-  warn_if_argv0_name_not_octez () ;
+  warn_if_argv0_name_not_mavkit () ;
   let*! retcode =
     Lwt.catch
       (fun () ->
@@ -448,7 +448,7 @@ let main (module C : M) ~select_commands =
           in
           let require_auth = parsed.Client_config.require_auth in
           let*! () =
-            let open Tezos_base_unix.Internal_event_unix in
+            let open Mavryk_base_unix.Internal_event_unix in
             let config =
               make_with_defaults
                 ?enable_default_daily_logs_at:daily_logs_path
@@ -516,11 +516,11 @@ let main (module C : M) ~select_commands =
             | None -> return_nil
           in
           let commands =
-            Tezos_clic.add_manual
+            Mavryk_clic.add_manual
               ~executable_name
               ~global_options
-              (if Unix.isatty Unix.stdout then Tezos_clic.Ansi
-              else Tezos_clic.Plain)
+              (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi
+              else Mavryk_clic.Plain)
               Format.std_formatter
               (C.clic_commands
                  ~base_dir
@@ -532,7 +532,7 @@ let main (module C : M) ~select_commands =
           match autocomplete with
           | Some (prev_arg, cur_arg, script) ->
               let* completions =
-                Tezos_clic.autocompletion
+                Mavryk_clic.autocompletion
                   ~script
                   ~cur_arg
                   ~prev_arg
@@ -543,23 +543,23 @@ let main (module C : M) ~select_commands =
               in
               List.iter print_endline completions ;
               return_unit
-          | None -> Tezos_clic.dispatch commands client_config remaining
+          | None -> Mavryk_clic.dispatch commands client_config remaining
         in
         match r with
         | Ok () -> Lwt.return 0
-        | Error [Tezos_clic.Version] ->
-            let version = Tezos_version_value.Bin_version.version_string in
+        | Error [Mavryk_clic.Version] ->
+            let version = Mavryk_version_value.Bin_version.version_string in
             Format.printf "%s\n" version ;
             Lwt.return 0
-        | Error [Tezos_clic.Help command] ->
-            Tezos_clic.usage
+        | Error [Mavryk_clic.Help command] ->
+            Mavryk_clic.usage
               Format.std_formatter
               ~executable_name
               ~global_options
               (match command with None -> [] | Some c -> [c]) ;
             Lwt.return 0
         | Error errs ->
-            Tezos_clic.pp_cli_errors
+            Mavryk_clic.pp_cli_errors
               Format.err_formatter
               ~executable_name
               ~global_options
@@ -586,7 +586,7 @@ let main (module C : M) ~select_commands =
   in
   Format.pp_print_flush Format.err_formatter () ;
   Format.pp_print_flush Format.std_formatter () ;
-  let*! () = Tezos_base_unix.Internal_event_unix.close () in
+  let*! () = Mavryk_base_unix.Internal_event_unix.close () in
   Lwt.return retcode
 
 (* Where all the user friendliness starts *)
@@ -594,7 +594,7 @@ let run (module M : M)
     ~(select_commands :
        RPC_client_unix.http_ctxt ->
        Client_config.cli_args ->
-       Client_context.full Tezos_clic.command list tzresult Lwt.t) =
+       Client_context.full Mavryk_clic.command list tzresult Lwt.t) =
   Lwt.Exception_filter.(set handle_all_except_runtime) ;
   Stdlib.exit @@ Lwt_main.run @@ Lwt_exit.wrap_and_forward
   @@ main (module M) ~select_commands

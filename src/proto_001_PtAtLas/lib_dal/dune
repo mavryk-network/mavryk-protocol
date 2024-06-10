@@ -1,0 +1,32 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_dal_001_PtAtLas)
+ (public_name mavkit-protocol-001-PtAtLas-libs.dal)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-protocol-compiler.registerer
+  mavkit-libs.stdlib-unix
+  mavryk-dal-node-lib
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavryk-protocol-001-PtAtLas.embedded-protocol
+  mavkit-protocol-001-PtAtLas-libs.layer2-utils
+  mavryk-protocol-001-PtAtLas.protocol)
+ (inline_tests (flags -verbose) (modes native))
+ (preprocess (pps ppx_expect))
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_registerer
+  -open Mavryk_stdlib_unix
+  -open Mavryk_dal_node_lib
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_plugin_001_PtAtLas
+  -open Mavryk_embedded_protocol_001_PtAtLas
+  -open Mavryk_layer2_utils_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas))

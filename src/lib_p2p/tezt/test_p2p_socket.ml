@@ -63,9 +63,9 @@ let nack_test () =
     ~tags:
       [
         (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5903
-           The tests using forked processes are ci_disabled, EBADF error is raised.
+           The tests using forked processes are flaky, EBADF error is raised.
         *)
-        Tag.ci_disabled;
+        Tag.flaky;
         "p2p";
         "socket";
         "nack";
@@ -75,7 +75,7 @@ let nack_test () =
   let encoding = Data_encoding.bytes in
 
   let is_rejected = function
-    | Error (Tezos_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
+    | Error (Mavryk_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
     | Ok _ -> false
     | Error err ->
         Tezt.Log.info "Error: %a" pp_print_trace err ;
@@ -117,9 +117,9 @@ module Self_identification = struct
       ~tags:
         [
           (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5903
-             The tests using forked processes are ci_disabled, EBADF error is raised.
+             The tests using forked processes are flaky, EBADF error is raised.
           *)
-          Tag.ci_disabled;
+          Tag.flaky;
           "p2p";
           "socket";
           "self_identification";
@@ -174,9 +174,9 @@ module Self_identification = struct
       ~tags:
         [
           (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5903
-             The tests using forked processes are ci_disabled, EBADF error is raised.
+             The tests using forked processes are flaky, EBADF error is raised.
           *)
-          Tag.ci_disabled;
+          Tag.flaky;
           "p2p";
           "socket";
           "self_identification";

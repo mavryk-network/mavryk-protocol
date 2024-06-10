@@ -6,19 +6,19 @@
 use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
-use tezos_smart_rollup::core_unsafe::MAX_FILE_CHUNK_SIZE;
-use tezos_smart_rollup::dac::pages::prepare_preimages;
-use tezos_smart_rollup::dac::PreimageHash;
-use tezos_smart_rollup::host::Runtime;
-use tezos_smart_rollup_host::path::{OwnedPath, RefPath};
-use tezos_smart_rollup_host::runtime::RuntimeError;
-use tezos_smart_rollup_installer::config::create_installer_config;
-use tezos_smart_rollup_installer::installer::with_config_program;
-use tezos_smart_rollup_installer::KERNEL_BOOT_PATH;
-use tezos_smart_rollup_installer_config::binary::owned::{
+use mavryk_smart_rollup::core_unsafe::MAX_FILE_CHUNK_SIZE;
+use mavryk_smart_rollup::dac::pages::prepare_preimages;
+use mavryk_smart_rollup::dac::PreimageHash;
+use mavryk_smart_rollup::host::Runtime;
+use mavryk_smart_rollup_host::path::{OwnedPath, RefPath};
+use mavryk_smart_rollup_host::runtime::RuntimeError;
+use mavryk_smart_rollup_installer::config::create_installer_config;
+use mavryk_smart_rollup_installer::installer::with_config_program;
+use mavryk_smart_rollup_installer::KERNEL_BOOT_PATH;
+use mavryk_smart_rollup_installer_config::binary::owned::{
     OwnedBytes, OwnedConfigInstruction, OwnedConfigProgram,
 };
-use tezos_smart_rollup_mock::MockHost;
+use mavryk_smart_rollup_mock::MockHost;
 
 fn write_kernel_to_boot_path(host: &mut MockHost, kernel: Vec<u8>) {
     host.store_write_all(&KERNEL_BOOT_PATH, &kernel)

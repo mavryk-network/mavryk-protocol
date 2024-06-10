@@ -31,14 +31,13 @@
    Subject: Regression tests for the Michelson [SELF_ADDRESS] instruction
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_self_address_transfer =
   Protocol.register_regression_test
     ~__FILE__
     ~title:"Self address transfer"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, send_contract_hash =

@@ -1,0 +1,4 @@
+integration:compiler-rejections:
+  extends: .test_template
+  script:
+    - dune build @runtest_rejections

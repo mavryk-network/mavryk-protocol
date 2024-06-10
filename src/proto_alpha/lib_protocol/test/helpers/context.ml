@@ -54,13 +54,13 @@ let rpc_ctxt =
   object
     method call_proto_service0
         : 'm 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             Environment.RPC_context.t,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'q ->
           'i ->
@@ -72,13 +72,13 @@ let rpc_ctxt =
 
     method call_proto_service1
         : 'm 'a 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             Environment.RPC_context.t * 'a,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'q ->
@@ -91,13 +91,13 @@ let rpc_ctxt =
 
     method call_proto_service2
         : 'm 'a 'b 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             (Environment.RPC_context.t * 'a) * 'b,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'b ->
@@ -111,13 +111,13 @@ let rpc_ctxt =
 
     method call_proto_service3
         : 'm 'a 'b 'c 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             Environment.RPC_context.t,
             ((Environment.RPC_context.t * 'a) * 'b) * 'c,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           t ->
           'a ->
           'b ->
@@ -219,7 +219,6 @@ let get_first_different_bakers ctxt =
       (baker_1, get_first_different_baker baker_1 other_bakers)
 
 let get_seed_nonce_hash ctxt =
-  let open Lwt_result_syntax in
   let header =
     match ctxt with B {header; _} -> header | I i -> Incremental.header i
   in
@@ -235,27 +234,25 @@ let get_seed_computation ctxt =
 let get_constants ctxt = Alpha_services.Constants.all rpc_ctxt ctxt
 
 let default_test_constants =
-  Tezos_protocol_alpha_parameters.Default_parameters.constants_test
+  Mavryk_protocol_alpha_parameters.Default_parameters.constants_test
 
 let get_issuance_per_minute ctxt =
   Adaptive_issuance_services.current_issuance_per_minute rpc_ctxt ctxt
 
 let get_baking_reward_fixed_portion ctxt =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let*?@ reward =
-    Delegate.Rewards.For_RPC.reward_from_constants
-      csts
-      ~reward_kind:Baking_reward_fixed_portion
-  in
-  return reward
+  return
+    (Delegate.Rewards.For_RPC.reward_from_constants
+       csts
+       ~reward_kind:Baking_reward_fixed_portion)
 
 let get_bonus_reward ctxt ~attesting_power =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let* {Constants.parametric = {consensus_threshold; _} as csts; _} =
     get_constants ctxt
   in
-  let*?@ baking_reward_bonus_per_slot =
+  let baking_reward_bonus_per_slot =
     Delegate.Rewards.For_RPC.reward_from_constants
       csts
       ~reward_kind:Baking_reward_bonus_per_slot
@@ -266,7 +263,7 @@ let get_bonus_reward ctxt ~attesting_power =
 let get_attesting_reward ctxt ~expected_attesting_power =
   let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let*?@ attesting_reward_per_slot =
+  let attesting_reward_per_slot =
     Delegate.Rewards.For_RPC.reward_from_constants
       csts
       ~reward_kind:Attesting_reward_per_slot
@@ -277,14 +274,12 @@ let get_attesting_reward ctxt ~expected_attesting_power =
   return t
 
 let get_liquidity_baking_subsidy ctxt =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let*?@ reward =
-    Delegate.Rewards.For_RPC.reward_from_constants
-      csts
-      ~reward_kind:Liquidity_baking_subsidy
-  in
-  return reward
+  return
+    (Delegate.Rewards.For_RPC.reward_from_constants
+       csts
+       ~reward_kind:Liquidity_baking_subsidy)
 
 let get_liquidity_baking_cpmm_address ctxt =
   Alpha_services.Liquidity_baking.get_cpmm_address rpc_ctxt ctxt
@@ -299,24 +294,20 @@ let get_total_supply ctxt =
   Adaptive_issuance_services.total_supply rpc_ctxt ctxt
 
 let get_seed_nonce_revelation_tip ctxt =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let*?@ reward =
-    Delegate.Rewards.For_RPC.reward_from_constants
-      csts
-      ~reward_kind:Seed_nonce_revelation_tip
-  in
-  return reward
+  return
+    (Delegate.Rewards.For_RPC.reward_from_constants
+       csts
+       ~reward_kind:Seed_nonce_revelation_tip)
 
 let get_vdf_revelation_tip ctxt =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let*?@ reward =
-    Delegate.Rewards.For_RPC.reward_from_constants
-      csts
-      ~reward_kind:Vdf_revelation_tip
-  in
-  return reward
+  return
+    (Delegate.Rewards.For_RPC.reward_from_constants
+       csts
+       ~reward_kind:Vdf_revelation_tip)
 
 let get_ai_current_yearly_rate ctxt =
   Adaptive_issuance_services.current_yearly_rate rpc_ctxt ctxt
@@ -329,10 +320,6 @@ let get_ai_expected_issuance ctxt =
 
 let get_denunciations ctxt =
   Alpha_services.Denunciations.denunciations rpc_ctxt ctxt
-
-module Dal = struct
-  let shards ctxt = Plugin.RPC.Dal.dal_shards rpc_ctxt ctxt
-end
 
 (* Voting *)
 
@@ -355,7 +342,7 @@ module Vote = struct
     Alpha_services.Voting.current_proposal rpc_ctxt ctxt
 
   let get_protocol (b : Block.t) =
-    Tezos_protocol_environment.Context.get_protocol b.context
+    Mavryk_protocol_environment.Context.get_protocol b.context
 
   let get_delegate_proposal_count ctxt pkh =
     Alpha_services.Voting.delegate_proposal_count rpc_ctxt ctxt pkh
@@ -537,9 +524,9 @@ module Delegate = struct
     let Protocol.Stake_repr.{frozen; weighted_delegated} =
       Option.value ~default:Protocol.Stake_repr.zero stake_opt
     in
-    let frozen = Protocol.Tez_repr.to_mutez frozen |> Tez.of_mutez_exn in
+    let frozen = Protocol.Tez_repr.to_mumav frozen |> Tez.of_mumav_exn in
     let weighted_delegated =
-      Protocol.Tez_repr.to_mutez weighted_delegated |> Tez.of_mutez_exn
+      Protocol.Tez_repr.to_mumav weighted_delegated |> Tez.of_mumav_exn
     in
     return {frozen; weighted_delegated}
 end
@@ -701,7 +688,7 @@ let init_with_constants_gen tup constants =
   let n = tup_n tup in
   let*? bootstrap_accounts, contracts = create_bootstrap_accounts n in
   let parameters =
-    Tezos_protocol_alpha_parameters.Default_parameters.parameters_of_constants
+    Mavryk_protocol_alpha_parameters.Default_parameters.parameters_of_constants
       ~bootstrap_accounts
       constants
   in
@@ -731,11 +718,11 @@ let init_with_parameters2 = init_with_parameters_gen T2
 
 let default_raw_context () =
   let open Lwt_result_wrap_syntax in
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   let initial_account = Account.new_account () in
   let bootstrap_accounts =
     Account.make_bootstrap_account
-      ~balance:(Tez.of_mutez_exn 100_000_000_000L)
+      ~balance:(Tez.of_mumav_exn 100_000_000_000L)
       initial_account
   in
   let* constants, _, _ = Block.prepare_initial_context_params () in
@@ -751,8 +738,8 @@ let default_raw_context () =
   in
   let protocol_param_key = ["protocol_parameters"] in
   let*! context =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt protocol_param_key proto_params)
   in

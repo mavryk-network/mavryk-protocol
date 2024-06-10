@@ -1,0 +1,21 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_smart_rollup_layer2_001_PtAtLas)
+ (public_name mavkit-protocol-001-PtAtLas-libs.smart-rollup-layer2)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-injector
+  mavkit-l2-libs.smart-rollup)
+ (inline_tests (flags -verbose) (modes native))
+ (preprocess (pps ppx_expect))
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavkit_injector
+  -open Mavkit_smart_rollup))

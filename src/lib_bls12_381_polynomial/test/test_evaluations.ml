@@ -24,11 +24,11 @@
 (*****************************************************************************)
 
 module Fr = Bls12_381.Fr
-module Domain = Octez_bls12_381_polynomial.Domain
-module Poly_c = Octez_bls12_381_polynomial.Polynomial
-module Eval = Octez_bls12_381_polynomial.Evaluations
+module Domain = Mavkit_bls12_381_polynomial.Domain
+module Poly_c = Mavkit_bls12_381_polynomial.Polynomial
+module Eval = Mavkit_bls12_381_polynomial.Evaluations
 
-let powers = Octez_bls12_381_polynomial.Internal_for_tests.Fr_carray.powers
+let powers = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray.powers
 
 (* computes p(g·x) *)
 let make_composition_gx g p_c =

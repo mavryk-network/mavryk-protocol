@@ -2,35 +2,35 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_alpha)
- (public_name tezos-protocol-alpha.protocol.environment)
+ (name mavryk_protocol_environment_alpha)
+ (public_name mavryk-protocol-alpha.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment)
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
- (modules Tezos_protocol_environment_alpha))
+ (modules Mavryk_protocol_environment_alpha))
 
 (rule
- (targets tezos_protocol_environment_alpha.ml)
+ (targets mavryk_protocol_environment_alpha.ml)
  (action
   (write-file
    %{targets}
-   "module Name = struct let name = \"alpha\" end\ninclude Tezos_protocol_environment.V12.Make(Name)()\n")))
+   "module Name = struct let name = \"alpha\" end\ninclude Mavryk_protocol_environment.V11.Make(Name)()\n")))
 
 (library
- (name tezos_raw_protocol_alpha)
- (public_name tezos-protocol-alpha.protocol.raw)
+ (name mavryk_raw_protocol_alpha)
+ (public_name mavryk-protocol-alpha.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-alpha.protocol.environment)
+  mavryk-protocol-alpha.protocol.environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -nostdlib
   -nopervasives
-  -open Tezos_protocol_environment_alpha
-  -open Tezos_protocol_environment_alpha.Pervasives
-  -open Tezos_protocol_environment_alpha.Error_monad)
+  -open Mavryk_protocol_environment_alpha
+  -open Mavryk_protocol_environment_alpha.Pervasives
+  -open Mavryk_protocol_environment_alpha.Error_monad)
  (modules
   Misc
   Non_empty_string
@@ -48,6 +48,7 @@
   Bitset
   Bounded_history_repr
   Context_binary_proof
+  Misbehaviour
   Ratio_repr
   Int_percentage
   Michelson_v1_primitives
@@ -150,7 +151,6 @@
   Carbonated_map_costs
   Carbonated_map
   Staking_parameters_repr
-  Misbehaviour_repr
   Denunciations_repr
   Raw_context_intf
   Raw_context
@@ -206,6 +206,9 @@
   Liquidity_baking_cpmm
   Liquidity_baking_lqt
   Liquidity_baking_migration
+  Protocol_treasury_storage
+  Protocol_treasury_buffer
+  Protocol_treasury_migration
   Sc_rollup_errors
   Sc_rollup_inbox_storage
   Legacy_script_patches
@@ -291,36 +294,36 @@
   Main))
 
 (library
- (name tezos_protocol_alpha)
- (public_name tezos-protocol-alpha.protocol)
+ (name mavryk_protocol_alpha)
+ (public_name mavryk-protocol-alpha.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-alpha.protocol.raw)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-alpha.protocol.raw)
  (flags
   (:standard)
   -nopervasives)
- (modules Protocol Tezos_protocol_alpha))
+ (modules Protocol Mavryk_protocol_alpha))
 
 (install
- (package tezos-protocol-alpha)
+ (package mavryk-protocol-alpha)
  (section lib)
- (files (TEZOS_PROTOCOL as protocol/raw/TEZOS_PROTOCOL)))
+ (files (MAVRYK_PROTOCOL as protocol/raw/MAVRYK_PROTOCOL)))
 
 (rule
  (targets protocol.ml)
  (action
   (write-file
    %{targets}
-   "\nlet hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn \"ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK\"\nlet name = Tezos_protocol_environment_alpha.Name.name\ninclude Tezos_raw_protocol_alpha\ninclude Tezos_raw_protocol_alpha.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK\"\nlet name = Mavryk_protocol_environment_alpha.Name.name\ninclude Mavryk_raw_protocol_alpha\ninclude Mavryk_raw_protocol_alpha.Main\n")))
 
 (rule
- (targets tezos_protocol_alpha.ml)
+ (targets mavryk_protocol_alpha.ml)
  (action
   (write-file
    %{targets}
-   "\nmodule Environment = Tezos_protocol_environment_alpha\nmodule Protocol = Protocol\n")))
+   "\nmodule Environment = Mavryk_protocol_environment_alpha\nmodule Protocol = Protocol\n")))
 
 (rule
  (alias runtest_compile_protocol)
@@ -341,6 +344,7 @@
   bitset.ml bitset.mli
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
+  misbehaviour.ml misbehaviour.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -446,7 +450,6 @@
   carbonated_map_costs.ml carbonated_map_costs.mli
   carbonated_map.ml carbonated_map.mli
   staking_parameters_repr.ml staking_parameters_repr.mli
-  misbehaviour_repr.ml misbehaviour_repr.mli
   denunciations_repr.ml denunciations_repr.mli
   raw_context_intf.ml
   raw_context.ml raw_context.mli
@@ -503,6 +506,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -586,21 +592,21 @@
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
   main.ml main.mli
-  (:src_dir TEZOS_PROTOCOL))
- (action (run %{bin:octez-protocol-compiler} -no-hash-check -warn-error +a .)))
+  (:src_dir MAVRYK_PROTOCOL))
+ (action (run %{bin:mavkit-protocol-compiler} -no-hash-check -warn-error +a .)))
 
 (library
- (name tezos_protocol_alpha_lifted)
- (public_name tezos-protocol-alpha.protocol.lifted)
+ (name mavryk_protocol_alpha_lifted)
+ (public_name mavryk-protocol-alpha.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-alpha.protocol)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-alpha.protocol)
  (flags
   (:standard)
   -nopervasives
-  -open Tezos_protocol_alpha)
+  -open Mavryk_protocol_alpha)
  (modules Lifted_protocol))
 
 (rule
@@ -611,10 +617,10 @@
    "\ninclude Environment.Lift (Protocol)\nlet hash = Protocol.hash\n")))
 
 (library
- (name tezos_protocol_alpha_functor)
+ (name mavryk_protocol_alpha_functor)
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -nopervasives)
@@ -639,6 +645,7 @@
   bitset.ml bitset.mli
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
+  misbehaviour.ml misbehaviour.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -744,7 +751,6 @@
   carbonated_map_costs.ml carbonated_map_costs.mli
   carbonated_map.ml carbonated_map.mli
   staking_parameters_repr.ml staking_parameters_repr.mli
-  misbehaviour_repr.ml misbehaviour_repr.mli
   denunciations_repr.ml denunciations_repr.mli
   raw_context_intf.ml
   raw_context.ml raw_context.mli
@@ -801,6 +807,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -883,22 +892,22 @@
   dal_services.ml dal_services.mli
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
-  main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+  main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-protocol-compiler.octez-protocol-packer} %{src_dir})))))
+    (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
- (name tezos_embedded_protocol_alpha)
- (public_name tezos-protocol-alpha.embedded-protocol)
+ (name mavryk_embedded_protocol_alpha)
+ (public_name mavryk-protocol-alpha.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-alpha.protocol
-  octez-shell-libs.protocol-updater
-  octez-proto-libs.protocol-environment)
+  mavryk-protocol-alpha.protocol
+  mavkit-shell-libs.protocol-updater
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (modules Registerer))
 
@@ -921,6 +930,7 @@
   bitset.ml bitset.mli
   bounded_history_repr.ml bounded_history_repr.mli
   context_binary_proof.ml context_binary_proof.mli
+  misbehaviour.ml misbehaviour.mli
   ratio_repr.ml ratio_repr.mli
   int_percentage.ml int_percentage.mli
   michelson_v1_primitives.ml michelson_v1_primitives.mli
@@ -1026,7 +1036,6 @@
   carbonated_map_costs.ml carbonated_map_costs.mli
   carbonated_map.ml carbonated_map.mli
   staking_parameters_repr.ml staking_parameters_repr.mli
-  misbehaviour_repr.ml misbehaviour_repr.mli
   denunciations_repr.ml denunciations_repr.mli
   raw_context_intf.ml
   raw_context.ml raw_context.mli
@@ -1083,6 +1092,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -1165,10 +1177,10 @@
   dal_services.ml dal_services.mli
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
-  main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+  main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-embedded-protocol-packer} %{src_dir} alpha)))))
+    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} alpha)))))

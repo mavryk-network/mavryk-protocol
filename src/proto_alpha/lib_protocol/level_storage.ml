@@ -100,20 +100,12 @@ let levels_with_commitments_in_cycle ctxt c =
   in
   loop first []
 
-let last_preserved_block_level c =
+let last_allowed_fork_level c =
   let level = Raw_context.current_level c in
-  let block_conservation_cycles =
-    Constants_storage.blocks_preservation_cycles c
-  in
-  match Cycle_repr.sub level.cycle block_conservation_cycles with
+  let preserved_cycles = Constants_storage.preserved_cycles c in
+  match Cycle_repr.sub level.cycle preserved_cycles with
   | None -> Raw_level_repr.root
   | Some cycle -> (first_level_in_cycle c cycle).level
-
-let last_finalized_block_level c =
-  let current = Raw_context.current_level c in
-  let current_raw = current.level in
-  let finalized_level = Raw_level_repr.sub current_raw 2 in
-  match finalized_level with None -> Raw_level_repr.root | Some l -> l
 
 let last_of_a_cycle ctxt level =
   let cycle_eras = Raw_context.cycle_eras ctxt in

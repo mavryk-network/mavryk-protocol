@@ -61,11 +61,11 @@ let dal_parameters () =
   let parameters =
     {number_of_shards; redundancy_factor; page_size; slot_size}
   in
-  match Internal_for_tests.ensure_validity_without_srs parameters with
+  Internal_for_tests.parameters_initialisation parameters
+  |> Internal_for_tests.load_parameters ;
+  match make parameters with
   | Ok _ ->
-      Internal_for_tests.parameters_initialisation parameters
-      |> Internal_for_tests.load_parameters ;
-      let _ = make parameters in
+      Log.report "Set of parameters is valid" ;
       unit
   | Error (`Fail s) ->
       Test.fail "The set of parameters is invalid. Reason:@.%s@." s
@@ -101,7 +101,7 @@ let start_dal_node ~peers ?data_dir ?net_addr ?net_port ?rpc_addr ?rpc_port
     match (net_addr, net_port) with
     | None, None -> None
     | Some addr, None -> Some (sf "%s:%d" addr @@ Port.fresh ())
-    | None, Some port -> Some (sf "%s:%d" Constant.default_host port)
+    | None, Some port -> Some (sf "127.0.0.1:%d" port)
     | Some addr, Some port -> Some (sf "%s:%d" addr port)
   in
   let public_addr =
@@ -113,7 +113,7 @@ let start_dal_node ~peers ?data_dir ?net_addr ?net_port ?rpc_addr ?rpc_port
     match (metrics_addr, metrics_port) with
     | None, None -> None
     | Some addr, None -> Some (sf "%s:%d" addr @@ Port.fresh ())
-    | None, Some port -> Some (sf "%s:%d" Constant.default_host port)
+    | None, Some port -> Some (sf "127.0.0.1:%d" port)
     | Some addr, Some port -> Some (sf "%s:%d" addr port)
   in
 
@@ -267,7 +267,7 @@ let scenario_on_teztnet =
         l1_node
     in
     (* Prepare airdropper account. Secret key of
-       tz1PEhbjTyVvjQ2Zz8g4bYU2XPTbhvG8JMFh, a funded key on periodic testnets. *)
+       mv1BcAuKnLoHJfoo8TEuqNA3gQKaGJiad6vh, a funded key on periodic testnets. *)
     let airdropper_sk =
       "edsk3AWajGUgzzGi3UrQiNWeRZR1YMRYVxfe642AFSKBTFXaoJp5hu"
     in
@@ -302,13 +302,13 @@ let slots_injector_scenario ?publisher_sk ~airdropper_alias client dal_node
   (* Airdrop publisher if needed *)
   let* balance_publisher = Client.get_balance_for ~account:alias client in
   let* () =
-    if Tez.to_mutez balance_publisher > 5_000_000 then unit
+    if Tez.to_mumav balance_publisher > 5_000_000 then unit
     else
       Client.transfer
-        ~amount:(Tez.of_mutez_int 50_000_000)
+        ~amount:(Tez.of_mumav_int 50_000_000)
         ~giver:airdropper_alias
         ~receiver:alias
-        ~burn_cap:(Tez.of_mutez_int 70_000)
+        ~burn_cap:(Tez.of_mumav_int 70_000)
         ~wait:"1"
         client
   in
@@ -353,17 +353,17 @@ let _stake_or_unstake_half_balance client ~baker_alias =
   (* Stake half of the baker's balance *)
   let frozen_balance = Tez.(full_balance - available_balance) in
   let entrypoint, amount =
-    if Tez.to_mutez available_balance > Tez.to_mutez frozen_balance then
+    if Tez.to_mumav available_balance > Tez.to_mumav frozen_balance then
       ("stake", Tez.((available_balance - frozen_balance) /! 2L))
     else ("unstake", Tez.((frozen_balance - available_balance) /! 2L))
   in
-  if Tez.to_mutez amount = 0 then unit
+  if Tez.to_mumav amount = 0 then unit
   else
     Client.transfer
       ~amount
       ~giver:baker_alias
       ~receiver:baker_alias
-      ~burn_cap:(Tez.of_mutez_int 140_000)
+      ~burn_cap:(Tez.of_mumav_int 140_000)
       ~entrypoint
       ~wait:"1"
       client
@@ -372,7 +372,7 @@ let _stake_or_unstake_half_balance client ~baker_alias =
     given network. *)
 let baker_scenario ?baker_sk ~airdropper_alias client dal_node l1_node =
   (* We'll not airdrop baker account to avoid emptying airdropper. The user
-     should either provide a baker secret key with enough tez, or we use
+     should either provide a baker secret key with enough mav, or we use
      airdropper as a baker directly. *)
   let* baker_alias =
     match baker_sk with
@@ -391,8 +391,7 @@ let baker_scenario ?baker_sk ~airdropper_alias client dal_node l1_node =
   (* No need to check if baker_alias is already delegate. Re-registering an
      already registered delegate doesn't fail. *)
   let* _s = Client.register_delegate ~delegate:baker_alias client in
-  (* TODO: manual staking has been disabled in Oxford-2 (after being enabled in
-      rejected Oxford-1) in favor of automatic staking. So, this command
+  (* TODO: manual staking has been disabled in Atlas in favor of automatic staking. So, this command
       currently fails. But, it might be reactivated in protocol P.
      let* () = _stake_or_unstake_half_balance client ~baker_alias in
   *)
@@ -452,7 +451,6 @@ let baker_test ~network =
     ~__FILE__
     ~title:(sf "Join %s and bake" network)
     ~tags:["dal"; "baker"; network]
-    ~uses:[Protocol.baker Alpha]
   @@ fun () ->
   let baker_sk = Cli.get_string_opt "baker-sk" in
   let dal_bootstrap_peers =

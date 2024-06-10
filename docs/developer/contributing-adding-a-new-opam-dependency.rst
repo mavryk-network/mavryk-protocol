@@ -12,8 +12,8 @@ If you have already read this guide and only need a refresher, skip to the
 Background
 ----------
 
-The Octez project is built under a system that is somewhat stricter than
-the default for OCaml project. Specifically, the Octez project maintains
+The Mavkit project is built under a system that is somewhat stricter than
+the default for OCaml project. Specifically, the Mavkit project maintains
 a dedicated opam package repository that is a strict subset of the opam
 default one; all binaries are built with dependencies from this subset
 only.
@@ -35,10 +35,10 @@ Local work
 ----------
 
 The simplest way of working locally (i.e., on your own machine) on the
-Octez codebase, using a new dependency is to install it using ``opam``.
+Mavkit codebase, using a new dependency is to install it using ``opam``.
 
 Because you have used ``make build-dev-deps`` in order to install the
-Octez dependencies, you have access to the default opam repository in
+Mavkit dependencies, you have access to the default opam repository in
 addition to the dedicated one.
 
 **Install your dependency:** ``opam install foo``
@@ -48,9 +48,9 @@ then use ``make -C manifest`` to update the opam and dune files accordingly.
 
 For example, if you are modifying the Shell using the new
 dependency, you must add an entry in the ``~deps`` list of the
-``let octez_shell =`` entry of the :src:`manifest/main.ml` and then run
+``let mavkit_shell =`` entry of the :src:`manifest/main.ml` and then run
 ``make -C manifest``. You should see the changes propagated onto
-:src:`opam/octez-libs.opam` and :src:`src/lib_shell/dune`.
+:src:`opam/mavkit-libs.opam` and :src:`src/lib_shell/dune`.
 
 **Add dependencies to build files:** both opam files and dune files must
 be updated.
@@ -70,7 +70,7 @@ the CI of the dedicated ``opam-repository``.
 You must follow the steps below in order to produce the necessary Docker images,
 allowing your work to eventually be merged.
 
-First, in your local copy of Octez, **update the**
+First, in your local copy of Mavkit, **update the**
 ``full_opam_repository_tag`` **variable in the** :src:`scripts/version.sh`
 **file**. You
 should set this variable to the hash of the ``HEAD`` commit on
@@ -78,7 +78,7 @@ should set this variable to the hash of the ``HEAD`` commit on
 (Note: this is not always necessary, but it is simpler for you to do so
 than to check whether it is necessary to do so.)
 
-Second, still in your local copy of Octez, **execute the**
+Second, still in your local copy of Mavkit, **execute the**
 :src:`scripts/update_opam_repo.sh` **script**. This script uses the content of
 your :src:`opam/` directory to create a file
 called ``opam_repo.patch``. This file represents the diff between the current
@@ -92,7 +92,7 @@ work.
 
 Third, **create an MR on the dedicated opam repository that includes
 your patch.** This is the *opam repository MR*, its role is to prepare
-the environment for your existing *Octez MR*.
+the environment for your existing *Mavkit MR*.
 
 In order to create the opam repository MR:
 
@@ -107,7 +107,7 @@ You can test the MR locally using the command
 ``OPAM_REPOSITORY_TAG=<commit-id> make build-deps``. This will rebuild the
 dependencies locally using the ``<commit_id>`` of the opam-repository.
 
-Fourth, back in your local copy of Octez, **update the variables in the**
+Fourth, back in your local copy of Mavkit, **update the variables in the**
 :src:`.gitlab-ci.yml` **and** :src:`scripts/version.sh` **files**. Specifically, set
 the ``build_deps_image_version`` and the ``opam_repository_tag`` variables
 to the hash of the ``HEAD`` commit of the opam repository MR. Commit
@@ -116,29 +116,29 @@ this change with a title along the lines of “CI: use dependency
 
 This commit will point the build scripts and CI to the modified
 opam-repository and the associated Docker images. Do note that the CI on your
-branch of Octez will only be able to run after the CI on your branch of
+branch of Mavkit will only be able to run after the CI on your branch of
 opam-repository has completed.
 
-Fifth, still in your local copy of Octez, **push these changes and open or
+Fifth, still in your local copy of Mavkit, **push these changes and open or
 update the MR**. Make sure you add links referencing the opam-repository MR from
-the Octez MR and vice-versa. This gives the reviewers the necessary context to
+the Mavkit MR and vice-versa. This gives the reviewers the necessary context to
 review.
 
 That’s it. You now have two MRs:
 
-- The *opam-repository MR* from ``tezos/opam-repository:<your-branch>`` onto ``tezos/opam-repository:master`` updates the environment in which the Octez libraries and binaries are built.
-- The *Octez MR* from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` uses this new environment.
+- The *opam-repository MR* from ``tezos/opam-repository:<your-branch>`` onto ``tezos/opam-repository:master`` updates the environment in which the Mavkit libraries and binaries are built.
+- The *Mavkit MR* from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` uses this new environment.
 
 Merging the MR
 --------------
 
-This section is for the :doc:`Octez merge team <merge_team>`. It is the last
+This section is for the :doc:`Mavkit merge team <merge_team>`. It is the last
 step in the lifetime
 of the MRs you have opened. Understanding the basics of this process may
 help you when communicating with the reviewers and the mergers of your
 MR. Understanding all the minutiae and details is not necessary. For
 this reason, this final section is addressed to whichever member of the
-Octez merge team takes care of this MR (you).
+Mavkit merge team takes care of this MR (you).
 
 After the iterative review-comment-edit process has reached a satisfying
 fixpoint, you can merge the two MRs opened by the developer. To avoid
@@ -153,7 +153,7 @@ introduce a merge commit. After the merge, **the HEAD commit of master should be
 the HEAD of the branch you just merged**. This is important because it ensures
 the Docker images have the same name.
 
-Second, **assign the Octez MR to margebot** for merging.
+Second, **assign the Mavkit MR to margebot** for merging.
 
 .. _tldr:
 
@@ -162,14 +162,14 @@ TL;DR
 
 As a developer:
 
-- You have an Octez MR from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` introducing a dependency to ``foo``.
+- You have an Mavkit MR from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` introducing a dependency to ``foo``.
 - You amend the :src:`manifest/main.ml` file to declare the dependency.
 - You propagate the changes to ``opam`` and ``dune`` files by running ``make -C manifest``
 - You update the ``full_opam_repository_tag`` to the HEAD commit hash from the public default opam repository.
 - You execute :src:`scripts/update_opam_repo.sh`.
 - You open an opam repository MR from ``tezos/opam-repository:<your-branch>`` onto ``tezos/opam-repository:master`` that includes the generated patch.
 - You update ``build_deps_image_version`` and ``opam_repository_tag`` to the hash of the ``HEAD`` commit of your opam repository MR.
-- You push the changes to your Octez MR.
+- You push the changes to your Mavkit MR.
 - You update the description of your MRs to include links.
 
 As a merger:
@@ -177,4 +177,4 @@ As a merger:
 - You test, review, etc. the code.
 - You merge the opam repository MR.
 - You make sure the commit hash has been preserved by merging (no squashing, no merge-commits)
-- You assign the Octez MR to margebot.
+- You assign the Mavkit MR to margebot.

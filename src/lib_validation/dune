@@ -2,28 +2,28 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_validation)
- (public_name octez-shell-libs.validation)
+ (name mavryk_validation)
+ (public_name mavkit-shell-libs.validation)
  (instrumentation (backend bisect_ppx))
- (instrumentation (backend tezos-time-measurement))
+ (instrumentation (backend mavryk-time-measurement))
  (libraries
-  octez-libs.base
-  octez-libs.crypto
-  octez-libs.rpc
-  octez-libs.tezos-context
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.shell-services
-  octez-shell-libs.protocol-updater
-  octez-libs.stdlib-unix
-  octez-version.value)
+  mavkit-libs.base
+  mavkit-libs.crypto
+  mavkit-libs.rpc
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.stdlib-unix
+  mavkit-version.value)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_crypto
-  -open Tezos_context
-  -open Tezos_context_ops
-  -open Tezos_shell_context
-  -open Tezos_shell_services
-  -open Tezos_protocol_updater
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_crypto
+  -open Mavryk_context
+  -open Mavryk_context_ops
+  -open Mavryk_shell_context
+  -open Mavryk_shell_services
+  -open Mavryk_protocol_updater
+  -open Mavryk_stdlib_unix))

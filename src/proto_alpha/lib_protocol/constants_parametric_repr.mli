@@ -27,7 +27,6 @@
 
 type dal = {
   feature_enable : bool;
-  incentives_enable : bool;
   number_of_slots : int;
   attestation_lag : int;
   attestation_threshold : int;
@@ -108,20 +107,8 @@ type zk_rollup = {
 }
 
 type adaptive_rewards_params = {
-  issuance_ratio_final_min : (* Minimum yearly issuance rate *) Q.t;
-  issuance_ratio_final_max : (* Maximum yearly issuance rate *) Q.t;
-  issuance_ratio_initial_min :
-    (* Minimum yearly issuance rate at adaptive issuance activation *) Q.t;
-  issuance_ratio_initial_max :
-    (* Maximum yearly issuance rate at adaptive issuance activation *) Q.t;
-  initial_period :
-    (* Period in cycles during which the minimum and maximum yearly
-       issuance rate values stay at their initial values *)
-    int;
-  transition_period :
-    (* Period in cycles during which the minimum and maximum yearly
-       issuance rate values decrease/increase until they reach their global values *)
-    int;
+  issuance_ratio_min : (* Maximum yearly issuance rate *) Q.t;
+  issuance_ratio_max : (* Minimum yearly issuance rate *) Q.t;
   max_bonus : (* Maximum issuance bonus value *) Issuance_bonus_repr.max_bonus;
   growth_rate : (* Bonus value's growth rate *) Q.t;
   center_dz : (* Center for bonus *) Q.t;
@@ -147,12 +134,6 @@ type adaptive_issuance = {
     (* If set to true, a stake/unstake/finalize operation will be triggered for
        all delegate at end of cycle. *)
     bool;
-  force_activation :
-    (* For testing purposes. If set to true, the adaptive issuance feature is
-       enabled without waiting to reach the launch_ema_threshold.*)
-    bool;
-  ns_enable : (* If set to true, enables the NS feature *)
-              bool;
 }
 
 type issuance_weights = {
@@ -173,15 +154,6 @@ type issuance_weights = {
 
 type t = {
   preserved_cycles : int;
-  (* Number of cycles after which computed consensus rights are used to actually
-     participate in the consensus *)
-  consensus_rights_delay : int;
-  (* Number of past cycles about which the protocol hints the shell that it should
-     keep them in its history. *)
-  blocks_preservation_cycles : int;
-  (* Number of cycles after which submitted delegate parameters are being
-     used. *)
-  delegate_parameters_activation_delay : int;
   blocks_per_cycle : int32;
   blocks_per_commitment : int32;
   nonce_revelation_threshold : int32;
@@ -231,9 +203,3 @@ type t = {
 }
 
 val encoding : t Data_encoding.encoding
-
-val update_sc_rollup_parameter : block_time:int -> sc_rollup -> sc_rollup
-
-module Internal_for_tests : sig
-  val sc_rollup_encoding : sc_rollup Data_encoding.t
-end

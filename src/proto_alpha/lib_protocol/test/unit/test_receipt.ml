@@ -36,13 +36,12 @@ open Alpha_context
 open Data_encoding
 
 let random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
+  match Tez.of_mumav (Int64.add 1L (Random.int64 100L)) with
   | None -> assert false
   | Some x -> x
 
 (** Test that [decode (encode balance_updates) = balance_updates]. *)
 let test_encodings balance =
-  let open Lwt_result_syntax in
   Random.init 0 ;
   let am = random_amount () in
   let r1 = Receipt.item balance (Debited am) Protocol_migration in

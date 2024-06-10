@@ -30,13 +30,13 @@ type error += Insufficient_proof_of_work of {expected : float}
 type error +=
   | Identity_mismatch of {
       filename : string;
-      peer_id : Tezos_crypto.Crypto_box.Public_key_hash.t;
+      peer_id : Mavryk_crypto.Crypto_box.Public_key_hash.t;
     }
 
 type error +=
   | Identity_keys_mismatch of {
       filename : string;
-      expected_key : Tezos_crypto.Crypto_box.public_key;
+      expected_key : Mavryk_crypto.Crypto_box.public_key;
     }
 
 let () =
@@ -89,12 +89,12 @@ let () =
         "The current identity (public key hash) does not match the keys in %s.\n\
         \           Expected identity %a."
         file
-        Tezos_crypto.Crypto_box.Public_key_hash.pp
+        Mavryk_crypto.Crypto_box.Public_key_hash.pp
         public_key_hash)
     Data_encoding.(
       obj2
         (req "file" string)
-        (req "public_key_hash" Tezos_crypto.Crypto_box.Public_key_hash.encoding))
+        (req "public_key_hash" Mavryk_crypto.Crypto_box.Public_key_hash.encoding))
     (function
       | Identity_mismatch {filename; peer_id} -> Some (filename, peer_id)
       | _ -> None)
@@ -115,12 +115,12 @@ let () =
          public key pair is not valid).\n\
         \           Expected public key %a."
         file
-        Tezos_crypto.Crypto_box.pp_pk
+        Mavryk_crypto.Crypto_box.pp_pk
         public_key)
     Data_encoding.(
       obj2
         (req "file" string)
-        (req "public_key" Tezos_crypto.Crypto_box.public_key_encoding))
+        (req "public_key" Mavryk_crypto.Crypto_box.public_key_encoding))
     (function
       | Identity_keys_mismatch {filename; expected_key} ->
           Some (filename, expected_key)
@@ -135,14 +135,14 @@ let read ?expected_pow filename =
   else
     let* json = Lwt_utils_unix.Json.read_file filename in
     let id = Data_encoding.Json.destruct P2p_identity.encoding json in
-    let pkh = Tezos_crypto.Crypto_box.hash id.public_key in
+    let pkh = Mavryk_crypto.Crypto_box.hash id.public_key in
     (* check public_key hash *)
-    if not (Tezos_crypto.Crypto_box.Public_key_hash.equal pkh id.peer_id) then
+    if not (Mavryk_crypto.Crypto_box.Public_key_hash.equal pkh id.peer_id) then
       tzfail (Identity_mismatch {filename; peer_id = pkh})
       (* check public/private keys correspondence *)
     else if
       not
-        Tezos_crypto.Crypto_box.(equal (neuterize id.secret_key) id.public_key)
+        Mavryk_crypto.Crypto_box.(equal (neuterize id.secret_key) id.public_key)
     then
       tzfail (Identity_keys_mismatch {filename; expected_key = id.public_key})
     else
@@ -150,10 +150,10 @@ let read ?expected_pow filename =
       match expected_pow with
       | None -> return id
       | Some expected ->
-          let target = Tezos_crypto.Crypto_box.make_pow_target expected in
+          let target = Mavryk_crypto.Crypto_box.make_pow_target expected in
           if
             not
-              (Tezos_crypto.Crypto_box.check_proof_of_work
+              (Mavryk_crypto.Crypto_box.check_proof_of_work
                  id.public_key
                  id.proof_of_work_stamp
                  target)
@@ -201,7 +201,7 @@ let generate_with_animation ppf target =
         (function
           | Not_found -> Lwt.return @@ Error count | exc -> Lwt.reraise exc))
     ~on_retry:(fun time count ->
-      let ms = Time.Monotonic.Span.to_ms time in
+      let ms = int_of_float (Mtime.Span.to_ms time) in
       let count =
         if ms <= 1 then max 10 (count * 10) else count * duration / ms
       in
@@ -214,7 +214,7 @@ let generate ~check_data_dir identity_file expected_pow =
   if Sys.file_exists identity_file then
     tzfail (Existent_identity_file identity_file)
   else
-    let target = Tezos_crypto.Crypto_box.make_pow_target expected_pow in
+    let target = Mavryk_crypto.Crypto_box.make_pow_target expected_pow in
     Format.eprintf "Generating a new identity... (level: %.2f) " expected_pow ;
     let*! id = generate_with_animation Format.err_formatter target in
     let* () = write ~check_data_dir identity_file id in

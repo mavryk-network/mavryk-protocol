@@ -76,5 +76,5 @@ module P256_Props =
 let () =
   Alcotest.run
     ~__FILE__
-    "tezos-crypto-signature-pk"
+    "mavryk-crypto-signature-pk"
     [("P256_Pros", qcheck_wrap P256_Props.tests)]

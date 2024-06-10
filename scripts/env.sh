@@ -14,13 +14,13 @@ src_dir="$(dirname "$script_dir")"
 ## this ensures that opam env hook will not overwrite this script
 echo "_opam_env_hook() { :; };"
 
-add_ld_path() {
+add_ld_path () {
   echo "CAML_LD_LIBRARY_PATH=\"$src_dir/$1:\$CAML_LD_LIBRARY_PATH\""
 }
 
 opam env
 
-## this list should contain all the known shared libraries on Tezos
+## this list should contain all the known shared libraries on Mavryk
 ## to update it the following command may be used
 ## $ make; find _build/default | grep -e "dll.*\.so\|dylib$"
 

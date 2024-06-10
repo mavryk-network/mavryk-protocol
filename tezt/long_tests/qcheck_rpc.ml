@@ -40,9 +40,9 @@
    This is repeated for each RPC with a fresh node and client. The list of RPCs
    is generated from starting a node and getting JSON descriptions from the
    following URLs:
-     - ["$rpc_host:$rpc_port/describe/?recurse=yes"]
-     - ["$rpc_host:$rpc_port/describe/chains/main/blocks/head?recurse=yes"]
-     - ["$rpc_host:$rpc_port/describe/chains/main/mempool?recurse=yes"]
+     - ["localhost:$rpc_port/describe/?recurse=yes"]
+     - ["localhost:$rpc_port/describe/chains/main/blocks/head?recurse=yes"]
+     - ["localhost:$rpc_port/describe/chains/main/mempool?recurse=yes"]
 
    To see a log of all RPC calls, pass [--log-file] when running.
  *)
@@ -126,8 +126,8 @@ let show_rpc_instance {meth; full_path; input; _} : string =
 (* Dynamically get the list of all RPCs *)
 (* ------------------------------------------------------------------------- *)
 module RPC_Index = struct
-  open Tezos_openapi
-  open Tezos_openapi.Openapi
+  open Mavryk_openapi
+  open Mavryk_openapi.Openapi
   module String_map = Map.Make (String)
 
   (* Parsing into [rpc_description]s *)
@@ -286,7 +286,7 @@ module RPC_Index = struct
   let get_index () : rpc_description list Lwt.t =
     (* Define urls to query JSON descriptions from *)
     let port = 8732 in
-    let url_prefix = sf "http://%s:%d/describe/" Constant.default_host port in
+    let url_prefix = sf "http://localhost:%d/describe/" port in
     let shell_url = url_prefix ^ "?recurse=yes" in
     let proto_url = url_prefix ^ "chains/main/blocks/head?recurse=yes" in
     let mempool_url = url_prefix ^ "chains/main/mempool?recurse=yes" in
@@ -306,7 +306,7 @@ module Gen = struct
 
   let chain_id_gen : string t =
     let open QCheck2.Gen in
-    let open Tezos_crypto.Hashed in
+    let open Mavryk_crypto.Hashed in
     let non_alias =
       list string >|= Chain_id.hash_string >|= Chain_id.to_string
     in
@@ -314,7 +314,7 @@ module Gen = struct
 
   let block_hash_gen : string t =
     let open QCheck2.Gen in
-    let open Tezos_crypto.Hashed in
+    let open Mavryk_crypto.Hashed in
     let non_alias =
       list string >|= Block_hash.hash_string >|= Block_hash.to_string
     in
@@ -322,7 +322,7 @@ module Gen = struct
 
   let protocol_hash_gen : string t =
     let open QCheck2.Gen in
-    let open Tezos_crypto.Hashed in
+    let open Mavryk_crypto.Hashed in
     list string >|= Protocol_hash.hash_string >|= Protocol_hash.to_string
 
   let path_int_gen : string t = QCheck2.Gen.(map Int.to_string small_nat)
@@ -354,9 +354,9 @@ module Gen = struct
     map (fun (ys, n) -> take n ys) shuffle_gen
 
   let micheline_exp_gen =
-    let open Tezos_alpha_test_helpers.Test_global_constants in
-    let open Tezos_protocol_alpha.Protocol.Michelson_v1_primitives in
-    let open Tezos_micheline in
+    let open Mavryk_alpha_test_helpers.Test_global_constants in
+    let open Mavryk_protocol_alpha.Protocol.Michelson_v1_primitives in
+    let open Mavryk_micheline in
     let open Micheline_encoding in
     let open QCheck2.Gen in
     let l_gen = return (-1) in

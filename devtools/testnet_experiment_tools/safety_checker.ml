@@ -27,7 +27,7 @@
 *)
 
 open Filename.Infix
-open Tezos_clic
+open Mavryk_clic
 
 type block_kind = Safe | Maybe_unsafe | Unsafe
 
@@ -108,11 +108,11 @@ let () =
     `Permanent
     ~id:"safety_checker.invalid_protocol_parameter"
     ~title:"Argument is not a valid protocol name"
-    ~description:"Argument must be either \"oxford\", \"nairobi\", or \"alpha\""
+    ~description:"Argument must be either \"atlas\" or \"alpha\""
     ~pp:(fun ppf reveal_data_path ->
       Format.fprintf
         ppf
-        "Expected one of these protocol names: \"oxford\", \"nairobi\", \
+        "Expected one of these protocol names: \"atlas\" or \
          \"alpha\". %s was provided instead"
         reveal_data_path)
     Data_encoding.(obj1 (req "arg" string))
@@ -162,7 +162,7 @@ let () =
 let data_dir_arg =
   let open Lwt_result_syntax in
   default_arg
-    ~doc:"Octez data directory path"
+    ~doc:"Mavkit data directory path"
     ~short:'D'
     ~long:"data-dir"
     ~placeholder:"data-dir-path"
@@ -182,14 +182,10 @@ let protocol_hash_parameter =
   parameter (fun _cctxt p ->
       let open Lwt_result_syntax in
       match String.lowercase_ascii p with
-      | "nairobi" ->
+      | "atlas" ->
           return
           @@ Protocol_hash.of_b58check_exn
-               "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
-      | "oxford" ->
-          return
-          @@ Protocol_hash.of_b58check_exn
-               "ProxfordZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef"
+               "PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef"
       | "alpha" ->
           return
           @@ Protocol_hash.of_b58check_exn
@@ -200,8 +196,8 @@ let protocol_hash_arg =
   arg
     ~doc:
       "Protocol for the network. Once a block from a different protocol is \
-       encountered, the safety-checker ends. Options available are: oxford, \
-       nairobi, alpha. If this argument is not provided, the protocol will not \
+       encountered, the safety-checker ends. Options available are: atlas, \
+       alpha. If this argument is not provided, the protocol will not \
        be checked."
     ~long:"protocol"
     ~placeholder:"protocol"
@@ -600,7 +596,7 @@ module Custom_client_config : Client_main_run.M = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     let open Client_config in
     return (default_parsed_config_args, remaining)
@@ -611,7 +607,7 @@ module Custom_client_config : Client_main_run.M = struct
 
   let default_daily_logs_path = None
 
-  let default_media_type = Tezos_rpc_http.Media_type.Command_line.Binary
+  let default_media_type = Mavryk_rpc_http.Media_type.Command_line.Binary
 
   let other_registrations = None
 

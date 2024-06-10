@@ -97,36 +97,18 @@ end
 
 module Internal_for_tests : sig
   (** Reward computation functions *)
-  val compute_reward_coeff_ratio_without_bonus :
-    stake_ratio:Q.t -> issuance_ratio_max:Q.t -> issuance_ratio_min:Q.t -> Q.t
+  val compute_reward_coeff_ratio :
+    stake_ratio:Q.t ->
+    bonus:Issuance_bonus_repr.t ->
+    issuance_ratio_max:Q.t ->
+    issuance_ratio_min:Q.t ->
+    Q.t
 
   val compute_bonus :
-    issuance_ratio_max:Q.t ->
     seconds_per_cycle:int64 ->
-    stake_ratio:Q.t ->
-    base_reward_coeff_ratio:Q.t ->
+    total_supply:Tez_repr.t ->
+    total_frozen_stake:Tez_repr.t ->
     previous_bonus:Issuance_bonus_repr.t ->
     reward_params:Constants_parametric_repr.adaptive_rewards_params ->
     Issuance_bonus_repr.t tzresult
-
-  val compute_coeff :
-    issuance_ratio_max:Q.t ->
-    issuance_ratio_min:Q.t ->
-    base_total_issued_per_minute:Tez_repr.t ->
-    base_reward_coeff_ratio:Q.t ->
-    q_total_supply:Q.t ->
-    bonus:Issuance_bonus_repr.t ->
-    Q.t
-
-  val compute_min :
-    reward_params:Constants_parametric_repr.adaptive_rewards_params ->
-    launch_cycle:Cycle_repr.t option ->
-    new_cycle:Cycle_repr.t ->
-    Q.t
-
-  val compute_max :
-    reward_params:Constants_parametric_repr.adaptive_rewards_params ->
-    launch_cycle:Cycle_repr.t option ->
-    new_cycle:Cycle_repr.t ->
-    Q.t
 end

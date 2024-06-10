@@ -16,7 +16,7 @@ from Ansible. As of now, Octogram supports the following features:
   - Stages are defined as a collection of jobs which can either be run
     concurrently or sequentially. These jobs consists in executing a specific
     command. As of now, three commands are executed: (1) copy a file from the
-    orchestrator to the agent, start a new Octez node on the agent, and (2)
+    orchestrator to the agent, start a new Mavkit node on the agent, and (2)
     originate a new smart rollup from within the agent.
 
     Jobs have access to global variables. They get a copy of them when they are
@@ -34,9 +34,9 @@ from Ansible. As of now, Octogram supports the following features:
     useful to transfer information over one job to the subsequent ones.
 
   - Allow cross-agent requests thanks to a global scheme of URI. As of now, it
-    is possible to prefix the name of an Octez node chosen by Tezt by the name
+    is possible to prefix the name of an Mavkit node chosen by Tezt by the name
     of the agent which manages them. So for instance, if the agent `node' has
-    spawn an Octez node whose assigned name is `node1', then `node://node1' can
+    spawn an Mavkit node whose assigned name is `node1', then `node://node1' can
     be used whenever a node’s endpoint is expected.
 
 ## Syntax

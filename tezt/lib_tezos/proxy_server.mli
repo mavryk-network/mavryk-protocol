@@ -26,7 +26,7 @@
 (** A proxy server instance *)
 type t
 
-(** Command-line arguments of [octez-proxy-server].
+(** Command-line arguments of [mavkit-proxy-server].
 
     Not all arguments are available here, because it was not needed so far. *)
 type argument =
@@ -35,7 +35,7 @@ type argument =
           instead of using a RPC. This case doesn't need a parameter, because it is computed
           automatically from the {!Node.t} value in {!init}. Think
           of this argument as a Boolean flag (not an argument) whether to pass
-          [--data-dir] to [octez-proxy-server]. *)
+          [--data-dir] to [mavkit-proxy-server]. *)
   | Symbolic_block_caching_time of int
       (** Time interval (in seconds) during which data for a symbolic block
           identifier (like HEAD) is kept. A symbolic identifier
@@ -47,7 +47,7 @@ type argument =
 val rpc_port : t -> int
 
 (** Get the RPC host of a proxy server. It's the host to
-    do requests to. Its value is [Constant.default_host]. *)
+    do requests to. Its value is ["127.0.0.1"]. *)
 val rpc_host : string
 
 (** Get the RPC scheme of a proxy server. Its value is ["http"]. *)

@@ -160,8 +160,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: context_hash",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: context_hash",
     "tags": [
       "alcotest"
     ],
@@ -1147,7 +1147,7 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
+    "file": "basenet_dictator_migration.ml",
     "title": "Lima: testnet dictator (mainnet, migration)",
     "tags": [
       "lima",

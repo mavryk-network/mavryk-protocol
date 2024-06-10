@@ -27,7 +27,7 @@
    -------
    Component:    Client
    Invocation:   dune exec tezt/tests/main.exe -- --file client_run_view.ml
-   Subject:      Check that run view command to octez-client behaves correctly
+   Subject:      Check that run view command to mavkit-client behaves correctly
 *)
 
 let viewable_script = ["mini_scenarios"; "viewable"]
@@ -141,7 +141,7 @@ let test_run_view_fail_generic ~protocol ~view ~contract ~input ~msg () =
 
 (* Runs view `add_v` on an implicit account and fails *)
 let test_run_view_implicit_account ~protocol () =
-  let msg = rex "Erroneous command line argument 6 \\(tz1" in
+  let msg = rex "Erroneous command line argument 6 \\(mv1" in
   test_run_view_fail_generic
     ~protocol
     ~view:"add_v"
@@ -197,7 +197,6 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "view"]
-        ~uses_node:false
         (fun protocol -> test_function ~protocol ())
         protocols)
     [

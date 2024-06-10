@@ -1,0 +1,30 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavkit_smart_rollup_client_PtAtLas)
+ (package mavkit-smart-rollup-client-PtAtLas)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-shell-libs.client-commands
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-l2-libs.smart-rollup
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup-layer2)
+ (flags
+  (:standard)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_client_commands
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_001_PtAtLas
+  -open Mavkit_smart_rollup
+  -open Mavryk_smart_rollup_001_PtAtLas
+  -open Mavryk_smart_rollup_layer2_001_PtAtLas))

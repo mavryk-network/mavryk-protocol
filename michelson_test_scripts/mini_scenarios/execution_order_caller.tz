@@ -1,7 +1,7 @@
 # Given storage [adr1; ...; adrn], emits operations
-#  [ TRANSFER_TOKENS Unit (Mutez 0) adr1 ;
+#  [ TRANSFER_TOKENS Unit (Mumav 0) adr1 ;
 #    ... ;
-#    TRANSFER_TOKENS Unit (Mutez 0) adrn ]
+#    TRANSFER_TOKENS Unit (Mumav 0) adrn ]
 parameter unit;
 storage (list address);
 code {
@@ -10,7 +10,7 @@ code {
        MAP {
              CONTRACT unit;
              ASSERT_SOME;
-             PUSH mutez 0;
+             PUSH mumav 0;
              UNIT;
              TRANSFER_TOKENS;
            };

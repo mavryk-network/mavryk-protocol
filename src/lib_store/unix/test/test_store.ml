@@ -246,36 +246,21 @@ let test_mem chain_store tbl =
   let*! () = test_not_mem "B6" in
   let*! () = test_not_mem "B8" in
   let* () =
-    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "B7") in
+    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "A6") in
     Assert.equal ~loc:__LOC__ prev_head (vblock tbl "A8") ;
-    return_unit
-  in
-  let*! () = test_mem "A2" in
-  let*! () = test_not_mem "A3" in
-  let*! () = test_not_mem "A6" in
-  let*! () = test_not_mem "A7" in
-  let*! () = test_not_mem "A8" in
-  let*! () = test_mem "B1" in
-  let*! () = test_mem "B6" in
-  let*! () = test_mem "B7" in
-  let*! () = test_not_mem "B8" in
-  let* () =
-    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "A8") in
-    Assert.equal ~loc:__LOC__ prev_head (vblock tbl "B7") ;
     return_unit
   in
   let*! () = test_mem "A2" in
   let*! () = test_mem "A3" in
-  let*! () = test_mem "A4" in
   let*! () = test_mem "A6" in
-  let*! () = test_mem "A8" in
+  let*! () = test_not_mem "A7" in
+  let*! () = test_not_mem "A8" in
   let*! () = test_not_mem "B1" in
   let*! () = test_not_mem "B6" in
-  let*! () = test_not_mem "B7" in
   let*! () = test_not_mem "B8" in
   let* () =
-    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "B8") in
-    Assert.equal ~loc:__LOC__ prev_head (vblock tbl "A8") ;
+    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "B6") in
+    Assert.equal ~loc:__LOC__ prev_head (vblock tbl "A6") ;
     return_unit
   in
   let*! () = test_mem "A2" in
@@ -285,7 +270,19 @@ let test_mem chain_store tbl =
   let*! () = test_not_mem "A8" in
   let*! () = test_mem "B1" in
   let*! () = test_mem "B6" in
-  let*! () = test_mem "B7" in
+  let*! () = test_not_mem "B8" in
+  let* () =
+    let* prev_head = Store.Chain.set_head chain_store (vblock tbl "B8") in
+    Assert.equal ~loc:__LOC__ prev_head (vblock tbl "B6") ;
+    return_unit
+  in
+  let*! () = test_mem "A2" in
+  let*! () = test_not_mem "A3" in
+  let*! () = test_not_mem "A4" in
+  let*! () = test_not_mem "A6" in
+  let*! () = test_not_mem "A8" in
+  let*! () = test_mem "B1" in
+  let*! () = test_mem "B6" in
   let*! () = test_mem "B8" in
   return_unit
 
@@ -760,4 +757,4 @@ let tests =
   in
   ("store", test_cases @ test_tree_cases)
 
-let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "tezos-store" [tests])
+let () = Lwt_main.run (Alcotest_lwt.run ~__FILE__ "mavryk-store" [tests])

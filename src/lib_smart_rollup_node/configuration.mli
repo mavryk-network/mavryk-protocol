@@ -66,11 +66,7 @@ type injector = {
           never included is retried. *)
 }
 
-type gc_parameters = {
-  frequency_in_blocks : int32;  (** Frequency at which the GC is triggered. *)
-  context_splitting_period : int option;
-      (** Number of blocks before splitting the context. *)
-}
+type gc_parameters = {frequency_in_blocks : int32}
 
 type history_mode =
   | Archive
@@ -80,7 +76,7 @@ type history_mode =
           (i.e. after the LCC only) *)
 
 type t = {
-  sc_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  sc_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   boot_sector_file : string option;
   operators : Purpose.operators;
   rpc_addr : string;
@@ -97,19 +93,17 @@ type t = {
   dal_node_endpoint : Uri.t option;
   dac_observer_endpoint : Uri.t option;
   dac_timeout : Z.t option;
-  pre_images_endpoint : Uri.t option;
   batcher : batcher;
   injector : injector;
   l1_blocks_cache_size : int;
   l2_blocks_cache_size : int;
   prefetch_blocks : int option;
-  l1_rpc_timeout : float;
   index_buffer_size : int option;
   irmin_cache_size : int option;
   log_kernel_debug : bool;
   no_degraded : bool;
   gc_parameters : gc_parameters;
-  history_mode : history_mode option;
+  history_mode : history_mode;
   cors : Resto_cohttp.Cors.t;
 }
 
@@ -170,9 +164,6 @@ val default_l1_blocks_cache_size : int
     cached by the rollup node *)
 val default_l2_blocks_cache_size : int
 
-(** Default timeout for RPCs to the L1 node. *)
-val default_l1_rpc_timeout : float
-
 val default_gc_parameters : gc_parameters
 
 (** [default_history_mode] is the default history mode for the rollup node
@@ -188,8 +179,7 @@ val max_injector_retention_period : int
 (** This is the list of available modes. *)
 val modes : mode list
 
-(** [string_of_mode mode] returns a string representation of the mode
-    specified by the argument [mode]. *)
+(** [string_of_mode mode] returns a string representation of the mode [mode]. *)
 val string_of_mode : mode -> string
 
 (** [mode_of_string s] returns the mode represented by string [s] if it exists. *)
@@ -252,7 +242,6 @@ module Cli : sig
     dal_node_endpoint:Uri.t option ->
     dac_observer_endpoint:Uri.t option ->
     dac_timeout:Z.t option ->
-    pre_images_endpoint:Uri.t option ->
     injector_retention_period:int option ->
     injector_attempts:int option ->
     injection_ttl:int option ->
@@ -283,7 +272,6 @@ module Cli : sig
     dal_node_endpoint:Uri.t option ->
     dac_observer_endpoint:Uri.t option ->
     dac_timeout:Z.t option ->
-    pre_images_endpoint:Uri.t option ->
     injector_retention_period:int option ->
     injector_attempts:int option ->
     injection_ttl:int option ->

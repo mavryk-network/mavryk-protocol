@@ -30,14 +30,13 @@
    Subject:      Call smart contract views to catch performance regressions.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_regression =
   Protocol.register_regression_test
     ~__FILE__
     ~title:"Run views"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, register_callers =
@@ -156,7 +155,6 @@ let test_all_view_runs protocols =
        ~__FILE__
        ~title:(sf "Test view runtimes - %s - %s" contract init)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (fun protocol -> test_run_view ~contract ~init ~expected protocol)
        protocols
 
@@ -165,7 +163,6 @@ let test_create_contract =
     ~__FILE__
     ~title:"Create contract with view"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract =
@@ -227,12 +224,11 @@ let test_view_step_constant =
     ~__FILE__
     ~title:"Step constants in view"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let amount = 999000000 in
   let* lib_contract =
-    deploy_lib_contract ~protocol ~amount:(Tez.of_mutez_int amount) client
+    deploy_lib_contract ~protocol ~amount:(Tez.of_mumav_int amount) client
   in
   let* _alias, contract =
     Client.originate_contract_at
@@ -316,7 +312,6 @@ let test_self_after_view_suite protocols =
        ~__FILE__
        ~title:(sf "self after view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_consts_after_view ~contract ~expected:`Contract)
        protocols
 
@@ -331,7 +326,6 @@ let test_self_address_after_view_suite protocols =
        ~__FILE__
        ~title:(sf "self address after view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_consts_after_view ~contract ~expected:`Contract)
        protocols
 
@@ -344,7 +338,6 @@ let test_sender_after_view_suite protocols =
        ~__FILE__
        ~title:(sf "sender after view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_consts_after_view ~contract ~expected:`Sender)
        protocols
 
@@ -378,7 +371,7 @@ let test_balance_after_view ~contract protocol =
     Client.contract_storage ~unparsing_mode:Readable contract client
   in
   let expected =
-    Tez.(contract_amount + transfer_amount |> to_mutez) |> sf "%d\n"
+    Tez.(contract_amount + transfer_amount |> to_mumav) |> sf "%d\n"
   in
   Check.((actual = expected) string ~__LOC__)
     ~error_msg:"expected storage %R, got %L" ;
@@ -395,7 +388,6 @@ let test_balance_after_view_suite protocols =
        ~__FILE__
        ~title:(sf "balance after view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_balance_after_view ~contract)
        protocols
 
@@ -427,7 +419,7 @@ let test_amount_after_view ~contract protocol =
   let* actual =
     Client.contract_storage ~unparsing_mode:Readable contract client
   in
-  let expected = amount |> Tez.to_mutez |> sf "%d\n" in
+  let expected = amount |> Tez.to_mumav |> sf "%d\n" in
   Check.((actual = expected) string ~__LOC__)
     ~error_msg:"expected storage %R, got %L" ;
   unit
@@ -441,7 +433,6 @@ let test_amount_after_view_suite protocols =
        ~__FILE__
        ~title:(sf "amount after view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_amount_after_view ~contract)
        protocols
 
@@ -450,7 +441,6 @@ let test_recursive_view =
     ~__FILE__
     ~title:"Recursive view"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract =
@@ -529,7 +519,6 @@ let test_typecheck_suite protocols =
        ~__FILE__
        ~title:(sf "Typecheck view - %s" contract)
        ~tags:["client"; "michelson"]
-       ~uses_node:false
        (test_typecheck ~contract ~error)
        protocols
 

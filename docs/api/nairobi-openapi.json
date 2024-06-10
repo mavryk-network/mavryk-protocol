@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Octez RPC",
-    "description": "The RPC API served by the Octez node.",
-    "version": "19.0 (10b119feab)"
+    "title": "Mavkit RPC",
+    "description": "The RPC API served by the Mavkit node.",
+    "version": "18.1"
   },
   "paths": {
     "/": {
@@ -13,7 +13,6 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
             "required": true,
             "schema": {
               "type": "string"
@@ -46,7 +45,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "block_info_encoding_v1",
+                      "title": "block_info_encoding",
                       "type": "object",
                       "properties": {
                         "protocol": {
@@ -86,7 +85,7 @@
                       ]
                     },
                     {
-                      "title": "block_info_encoding_v0",
+                      "title": "block_info_encoding_with_legacy_attestation_name",
                       "type": "object",
                       "properties": {
                         "protocol": {
@@ -105,7 +104,7 @@
                           "$ref": "#/components/schemas/raw_block_header"
                         },
                         "metadata": {
-                          "$ref": "#/components/schemas/block_header_metadata_with_legacy_attestation_name"
+                          "$ref": "#/components/schemas/block_header_metadata"
                         },
                         "operations": {
                           "type": "array",
@@ -599,13 +598,13 @@
                       "$ref": "#/components/schemas/int64"
                     },
                     "minimal_stake": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "vdf_difficulty": {
                       "$ref": "#/components/schemas/int64"
                     },
                     "seed_nonce_revelation_tip": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "origination_size": {
                       "type": "integer",
@@ -613,16 +612,16 @@
                       "maximum": 1073741823
                     },
                     "baking_reward_fixed_portion": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "baking_reward_bonus_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "endorsing_reward_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "cost_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "hard_storage_limit_per_operation": {
                       "$ref": "#/components/schemas/bignum"
@@ -643,7 +642,7 @@
                       "maximum": 2147483647
                     },
                     "liquidity_baking_subsidy": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "liquidity_baking_toggle_ema_threshold": {
                       "type": "integer",
@@ -701,7 +700,7 @@
                       "maximum": 1073741823
                     },
                     "double_baking_punishment": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "ratio_of_frozen_deposits_slashed_per_double_endorsement": {
                       "type": "object",
@@ -767,7 +766,7 @@
                       "maximum": 1073741823
                     },
                     "tx_rollup_commitment_bond": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "tx_rollup_finality_period": {
                       "type": "integer",
@@ -890,7 +889,7 @@
                       "maximum": 1073741823
                     },
                     "smart_rollup_stake_amount": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "smart_rollup_commitment_period_in_blocks": {
                       "type": "integer",
@@ -1122,13 +1121,13 @@
                       "$ref": "#/components/schemas/int64"
                     },
                     "minimal_stake": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "vdf_difficulty": {
                       "$ref": "#/components/schemas/int64"
                     },
                     "seed_nonce_revelation_tip": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "origination_size": {
                       "type": "integer",
@@ -1136,16 +1135,16 @@
                       "maximum": 1073741823
                     },
                     "baking_reward_fixed_portion": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "baking_reward_bonus_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "endorsing_reward_per_slot": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "cost_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "hard_storage_limit_per_operation": {
                       "$ref": "#/components/schemas/bignum"
@@ -1166,7 +1165,7 @@
                       "maximum": 2147483647
                     },
                     "liquidity_baking_subsidy": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "liquidity_baking_toggle_ema_threshold": {
                       "type": "integer",
@@ -1224,7 +1223,7 @@
                       "maximum": 1073741823
                     },
                     "double_baking_punishment": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "ratio_of_frozen_deposits_slashed_per_double_endorsement": {
                       "type": "object",
@@ -1290,7 +1289,7 @@
                       "maximum": 1073741823
                     },
                     "tx_rollup_commitment_bond": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "tx_rollup_finality_period": {
                       "type": "integer",
@@ -1413,7 +1412,7 @@
                       "maximum": 1073741823
                     },
                     "smart_rollup_stake_amount": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "smart_rollup_commitment_period_in_blocks": {
                       "type": "integer",
@@ -1618,7 +1617,7 @@
                   "type": "object",
                   "properties": {
                     "balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "delegate": {
                       "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -2891,19 +2890,19 @@
                   "type": "object",
                   "properties": {
                     "full_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "current_frozen_deposits": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "frozen_deposits": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "staking_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "frozen_deposits_limit": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "delegated_contracts": {
                       "type": "array",
@@ -2912,7 +2911,7 @@
                       }
                     },
                     "delegated_balance": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "deactivated": {
                       "type": "boolean"
@@ -3064,7 +3063,7 @@
     },
     "/context/delegates/{pkh}/current_frozen_deposits": {
       "get": {
-        "description": "Returns the current amount of the frozen deposits (in mutez).",
+        "description": "Returns the current amount of the frozen deposits (in mumav).",
         "parameters": [
           {
             "name": "pkh",
@@ -3140,7 +3139,7 @@
     },
     "/context/delegates/{pkh}/delegated_balance": {
       "get": {
-        "description": "Returns the sum (in mutez) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.",
+        "description": "Returns the sum (in mumav) of all balances of all the contracts that delegate to a given delegate. This excludes the delegate's own balance, its frozen deposits and its frozen bonds.",
         "parameters": [
           {
             "name": "pkh",
@@ -3219,7 +3218,7 @@
     },
     "/context/delegates/{pkh}/frozen_deposits": {
       "get": {
-        "description": "Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mutez). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.",
+        "description": "Returns the initial amount (that is, at the beginning of a cycle) of the frozen deposits (in mumav). This amount is the same as the current amount of the frozen deposits, unless the delegate has been punished.",
         "parameters": [
           {
             "name": "pkh",
@@ -3281,7 +3280,7 @@
                       "title": "Some",
                       "oneOf": [
                         {
-                          "$ref": "#/components/schemas/017-PtNairob.mutez"
+                          "$ref": "#/components/schemas/017-PtNairob.mumav"
                         }
                       ]
                     }
@@ -3305,7 +3304,7 @@
     },
     "/context/delegates/{pkh}/full_balance": {
       "get": {
-        "description": "Returns the full balance (in mutez) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.",
+        "description": "Returns the full balance (in mumav) of a given delegate, including the frozen deposits and the frozen bonds. It does not include its delegated balance.",
         "parameters": [
           {
             "name": "pkh",
@@ -3429,7 +3428,7 @@
                       "maximum": 1073741823
                     },
                     "expected_endorsing_rewards": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     }
                   },
                   "required": [
@@ -3459,7 +3458,7 @@
     },
     "/context/delegates/{pkh}/staking_balance": {
       "get": {
-        "description": "Returns the total amount of tokens (in mutez) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.",
+        "description": "Returns the total amount of tokens (in mumav) delegated to a given delegate. This includes the balances of all the contracts that delegate to it, but also the balance of the delegate itself, its frozen deposits, and its frozen bonds.",
         "parameters": [
           {
             "name": "pkh",
@@ -5436,71 +5435,6 @@
         }
       }
     },
-    "/context/smart_rollups/smart_rollup/{Smart_rollup_hash}/ticket_balance": {
-      "post": {
-        "description": "Access the smart rollup's balance of ticket with specified ticketer, content type, and content.",
-        "parameters": [
-          {
-            "name": "Smart_rollup_hash",
-            "in": "path",
-            "description": "Smart_rollup_hash (Base58Check-encoded)",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "ticketer": {
-                    "$ref": "#/components/schemas/017-PtNairob.contract_id"
-                  },
-                  "content_type": {
-                    "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
-                  },
-                  "content": {
-                    "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
-                  }
-                },
-                "required": [
-                  "ticketer",
-                  "content_type",
-                  "content"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "Positive big number",
-                  "description": "Decimal representation of a positive big number",
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "description": "The full list of errors is available with the global RPC `GET errors`"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/context/tx_rollup/{tx_rollup_id}/commitment/{block_level}": {
       "get": {
         "description": "Return the commitment for a level, if any",
@@ -5970,7 +5904,7 @@
                         }
                       ]
                     },
-                    "tezos_head_level": {
+                    "mavryk_head_level": {
                       "nullable": true,
                       "oneOf": [
                         {
@@ -5982,7 +5916,7 @@
                       ]
                     },
                     "burn_per_byte": {
-                      "$ref": "#/components/schemas/017-PtNairob.mutez"
+                      "$ref": "#/components/schemas/017-PtNairob.mumav"
                     },
                     "allocated_storage": {
                       "$ref": "#/components/schemas/positive_bignum"
@@ -6013,7 +5947,7 @@
                     "unfinalized_commitments",
                     "uncommitted_inboxes",
                     "commitment_newest_hash",
-                    "tezos_head_level",
+                    "mavryk_head_level",
                     "burn_per_byte",
                     "allocated_storage",
                     "occupied_storage",
@@ -8120,7 +8054,6 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
             "required": true,
             "schema": {
               "type": "string"
@@ -8164,14 +8097,14 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "preapplied_operations_encoding_v1",
+                      "title": "preapplied_operations_encoding",
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/017-PtNairob.operation.alpha.operation_with_metadata"
                       }
                     },
                     {
-                      "title": "preapplied_operations_encoding_v0",
+                      "title": "preapplied_operations_encoding_with_legacy_attestation_name",
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/017-PtNairob.operation.alpha.operation_with_metadata"
@@ -8777,10 +8710,10 @@
                     "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
                   },
                   "amount": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "balance": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "chain_id": {
                     "$ref": "#/components/schemas/Chain_id"
@@ -9410,10 +9343,10 @@
                     "$ref": "#/components/schemas/micheline.017-PtNairob.michelson_v1.expression"
                   },
                   "amount": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "balance": {
-                    "$ref": "#/components/schemas/017-PtNairob.mutez"
+                    "$ref": "#/components/schemas/017-PtNairob.mumav"
                   },
                   "chain_id": {
                     "$ref": "#/components/schemas/Chain_id"
@@ -9825,41 +9758,76 @@
     "/metadata": {
       "get": {
         "description": "All the metadata associated to the block.",
-        "parameters": [
-          {
-            "name": "version",
-            "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "oneOf": [
-                    {
-                      "title": "block_metadata_encoding_encoding_v1",
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/block_header_metadata"
-                        }
+                  "type": "object",
+                  "properties": {
+                    "protocol": {
+                      "type": "string",
+                      "enum": [
+                        "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
                       ]
                     },
-                    {
-                      "title": "block_metadata_encoding_encoding_v0",
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/block_header_metadata_with_legacy_attestation_name"
-                        }
+                    "next_protocol": {
+                      "type": "string",
+                      "enum": [
+                        "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
                       ]
+                    },
+                    "test_chain_status": {
+                      "$ref": "#/components/schemas/test_chain_status"
+                    },
+                    "max_operations_ttl": {
+                      "type": "integer",
+                      "minimum": -1073741824,
+                      "maximum": 1073741823
+                    },
+                    "max_operation_data_length": {
+                      "type": "integer",
+                      "minimum": -1073741824,
+                      "maximum": 1073741823
+                    },
+                    "max_block_header_length": {
+                      "type": "integer",
+                      "minimum": -1073741824,
+                      "maximum": 1073741823
+                    },
+                    "max_operation_list_length": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "max_size": {
+                            "type": "integer",
+                            "minimum": -1073741824,
+                            "maximum": 1073741823
+                          },
+                          "max_op": {
+                            "type": "integer",
+                            "minimum": -1073741824,
+                            "maximum": 1073741823
+                          }
+                        },
+                        "required": [
+                          "max_size"
+                        ]
+                      }
                     }
-                  ]
+                  },
+                  "required": [
+                    "protocol",
+                    "next_protocol",
+                    "test_chain_status",
+                    "max_operations_ttl",
+                    "max_operation_data_length",
+                    "max_block_header_length",
+                    "max_operation_list_length"
+                  ],
+                  "additionalProperties": {}
                 }
               }
             }
@@ -10168,7 +10136,6 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
             "required": true,
             "schema": {
               "type": "string"
@@ -10201,7 +10168,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "operations_encoding_v1",
+                      "title": "operations_encoding",
                       "type": "array",
                       "items": {
                         "type": "array",
@@ -10211,7 +10178,7 @@
                       }
                     },
                     {
-                      "title": "operations_encoding_v0",
+                      "title": "operations_encoding_with_legacy_attestation_name",
                       "type": "array",
                       "items": {
                         "type": "array",
@@ -10254,7 +10221,6 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
             "required": true,
             "schema": {
               "type": "string"
@@ -10287,14 +10253,14 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "operations_in_pass_encoding_v1",
+                      "title": "operations_in_pass_encoding",
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/operation"
                       }
                     },
                     {
-                      "title": "operations_in_pass_encoding_v0",
+                      "title": "operations_in_pass_encoding_with_legacy_attestation_name",
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/operation_with_legacy_attestation_name"
@@ -10343,7 +10309,6 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Supported RPC versions are version \"0\" (default but deprecated) that will output attestation operations as \"endorsement\" in the \"kind\" field, version \"1\"  that will output \"attestation\" in the \"kind\" field",
             "required": true,
             "schema": {
               "type": "string"
@@ -10376,7 +10341,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "operation_encoding_v1",
+                      "title": "operation_encoding",
                       "oneOf": [
                         {
                           "$ref": "#/components/schemas/operation"
@@ -10384,7 +10349,7 @@
                       ]
                     },
                     {
-                      "title": "operation_encoding_v0",
+                      "title": "operation_encoding_with_legacy_attestation_name",
                       "oneOf": [
                         {
                           "$ref": "#/components/schemas/operation_with_legacy_attestation_name"
@@ -11061,7 +11026,7 @@
                 "maximum": 65535
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.transaction_destination"
@@ -11111,7 +11076,7 @@
                 "maximum": 65535
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -11963,7 +11928,7 @@
           "SHA3",
           "SOURCE",
           "or",
-          "SUB_MUTEZ",
+          "SUB_MUMAV",
           "LAMBDA",
           "RIGHT",
           "CREATE_ACCOUNT",
@@ -12014,7 +11979,7 @@
           "OR",
           "contract",
           "GET_AND_UPDATE",
-          "mutez",
+          "mumav",
           "sapling_state",
           "NONE",
           "IF_LEFT",
@@ -12040,7 +12005,7 @@
           "code"
         ]
       },
-      "017-PtNairob.mutez": {
+      "017-PtNairob.mumav": {
         "$ref": "#/components/schemas/positive_bignum"
       },
       "017-PtNairob.operation.alpha.contents": {
@@ -12382,7 +12347,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12421,7 +12386,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12433,7 +12398,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.contract_id"
@@ -12477,7 +12442,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12489,7 +12454,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -12523,7 +12488,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12561,7 +12526,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12573,7 +12538,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "limit": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               }
             },
             "required": [
@@ -12599,7 +12564,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12642,7 +12607,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12728,7 +12693,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12765,7 +12730,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12820,7 +12785,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12884,7 +12849,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12939,7 +12904,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -12982,7 +12947,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13030,7 +12995,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13095,7 +13060,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13371,7 +13336,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13426,7 +13391,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13474,7 +13439,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13517,7 +13482,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13619,7 +13584,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -13739,7 +13704,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15062,7 +15027,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15122,7 +15087,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15134,7 +15099,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "amount": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "destination": {
                 "$ref": "#/components/schemas/017-PtNairob.contract_id"
@@ -15199,7 +15164,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15211,7 +15176,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "balance": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "delegate": {
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
@@ -15266,7 +15231,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15325,7 +15290,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15383,7 +15348,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15395,7 +15360,7 @@
                 "$ref": "#/components/schemas/positive_bignum"
               },
               "limit": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "metadata": {
                 "type": "object",
@@ -15442,7 +15407,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15506,7 +15471,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15605,7 +15570,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15681,7 +15646,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15766,7 +15731,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15842,7 +15807,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15906,7 +15871,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -15975,7 +15940,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16061,7 +16026,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16358,7 +16323,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16434,7 +16399,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16503,7 +16468,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16567,7 +16532,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16690,7 +16655,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -16831,7 +16796,7 @@
                 "$ref": "#/components/schemas/Signature.Public_key_hash"
               },
               "fee": {
-                "$ref": "#/components/schemas/017-PtNairob.mutez"
+                "$ref": "#/components/schemas/017-PtNairob.mumav"
               },
               "counter": {
                 "$ref": "#/components/schemas/positive_bignum"
@@ -21671,72 +21636,6 @@
         ]
       },
       "block_header_metadata": {
-        "type": "object",
-        "properties": {
-          "protocol": {
-            "type": "string",
-            "enum": [
-              "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
-            ]
-          },
-          "next_protocol": {
-            "type": "string",
-            "enum": [
-              "PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf"
-            ]
-          },
-          "test_chain_status": {
-            "$ref": "#/components/schemas/test_chain_status"
-          },
-          "max_operations_ttl": {
-            "type": "integer",
-            "minimum": -1073741824,
-            "maximum": 1073741823
-          },
-          "max_operation_data_length": {
-            "type": "integer",
-            "minimum": -1073741824,
-            "maximum": 1073741823
-          },
-          "max_block_header_length": {
-            "type": "integer",
-            "minimum": -1073741824,
-            "maximum": 1073741823
-          },
-          "max_operation_list_length": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "max_size": {
-                  "type": "integer",
-                  "minimum": -1073741824,
-                  "maximum": 1073741823
-                },
-                "max_op": {
-                  "type": "integer",
-                  "minimum": -1073741824,
-                  "maximum": 1073741823
-                }
-              },
-              "required": [
-                "max_size"
-              ]
-            }
-          }
-        },
-        "required": [
-          "protocol",
-          "next_protocol",
-          "test_chain_status",
-          "max_operations_ttl",
-          "max_operation_data_length",
-          "max_block_header_length",
-          "max_operation_list_length"
-        ],
-        "additionalProperties": {}
-      },
-      "block_header_metadata_with_legacy_attestation_name": {
         "type": "object",
         "properties": {
           "protocol": {

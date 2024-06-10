@@ -53,8 +53,8 @@ type validator_kind =
       protocol_root : string;
       process_path : string;
       sandbox_parameters : Data_encoding.json option;
-      dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
-      internal_events : Tezos_base.Internal_event_config.t;
+      dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
+      internal_events : Mavryk_base.Internal_event_config.t;
     }
       -> validator_kind
 

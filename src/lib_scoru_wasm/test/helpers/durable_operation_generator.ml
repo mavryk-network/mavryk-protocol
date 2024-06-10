@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_test_helpers
+open Mavryk_test_helpers
 open QCheck2
 open Probability_utils
 

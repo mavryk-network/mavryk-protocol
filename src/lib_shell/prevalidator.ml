@@ -57,7 +57,7 @@ module type T = sig
   type types_state
 
   val get_rpc_directory :
-    types_state -> types_state Tezos_rpc.Directory.t lazy_t
+    types_state -> types_state Mavryk_rpc.Directory.t lazy_t
 
   val name : Name.t
 
@@ -106,13 +106,20 @@ module Tools = struct
   (** Functions provided by {!Distributed_db} and {!Store.chain_store}
       that are used in various places of the mempool. Gathered here so that we can test
       the mempool without requiring a full-fledged [Distributed_db]/[Store.Chain_store]. *)
-  type tools = {
+  type 'prevalidation_t tools = {
     advertise_current_head : mempool:Mempool.t -> Store.Block.t -> unit;
         (** [advertise_current_head mempool head] sends a
             [Current_head (chain_id, head_header, mempool)] message to all known
             active peers for the chain being considered. *)
     chain_tools : Store.Block.t Classification.chain_tools;
         (** Lower-level tools provided by {!Prevalidator_classification} *)
+    flush :
+      head:Store.Block.t ->
+      timestamp:Time.Protocol.t ->
+      'prevalidation_t ->
+      'prevalidation_t tzresult Lwt.t;
+        (** Create a new empty prevalidation state, recycling some elements
+            of the provided previous prevalidation state. *)
     fetch :
       ?peer:P2p_peer.Id.t ->
       ?timeout:Time.System.Span.t ->
@@ -149,16 +156,9 @@ module Tools = struct
   }
 end
 
-type 'prevalidation_t parameters = {
+type 'a parameters = {
   limits : Shell_limits.prevalidator_limits;
-  tools : Tools.tools;
-  flush :
-    head:Store.Block.t ->
-    timestamp:Time.Protocol.t ->
-    'prevalidation_t ->
-    'prevalidation_t tzresult Lwt.t;
-      (** Create a new empty prevalidation state, recycling some elements
-            of the provided previous prevalidation state. *)
+  tools : 'a Tools.tools;
 }
 
 (** The type needed for the implementation of [Make] below, but
@@ -220,7 +220,7 @@ module type S = sig
   type config
 
   (** Similar to the type [operation] from the protocol,
-      see {!Tezos_protocol_environment.PROTOCOL} *)
+      see {!Mavryk_protocol_environment.PROTOCOL} *)
   type protocol_operation
 
   (** Type instantiated by {!Prevalidation.t} *)
@@ -234,7 +234,7 @@ module type S = sig
     mutable operation_stream :
       (Classification.classification * protocol_operation operation)
       Lwt_watcher.input;
-    mutable rpc_directory : types_state Tezos_rpc.Directory.t lazy_t;
+    mutable rpc_directory : types_state Mavryk_rpc.Directory.t lazy_t;
     mutable config : config;
     lock : Lwt_mutex.t;
   }
@@ -315,7 +315,7 @@ module Make_s
     mutable operation_stream :
       (Classification.classification * protocol_operation operation)
       Lwt_watcher.input;
-    mutable rpc_directory : types_state Tezos_rpc.Directory.t lazy_t;
+    mutable rpc_directory : types_state Mavryk_rpc.Directory.t lazy_t;
     mutable config : config;
     lock : Lwt_mutex.t;
   }
@@ -370,9 +370,7 @@ module Make_s
        on an "harmless" field of [types_state_shell]: [operation_stream] *)
     Lwt_watcher.notify operation_stream (classification, op)
 
-  type pre_filter_result = Drop | Priority of Pending_ops.priority
-
-  let pre_filter pv ~notifier parsed_op : pre_filter_result Lwt.t =
+  let pre_filter pv ~notifier parsed_op : [Pending_ops.priority | `Drop] Lwt.t =
     let open Lwt_syntax in
     let+ v =
       Prevalidation_t.pre_filter pv.validation_state pv.config parsed_op
@@ -381,8 +379,8 @@ module Make_s
     | (`Branch_delayed _ | `Branch_refused _ | `Refused _ | `Outdated _) as errs
       ->
         handle_classification ~notifier pv.shell (parsed_op, errs) ;
-        Drop
-    | `Passed_prefilter priority -> Priority priority
+        `Drop
+    | `Passed_prefilter priority -> (priority :> [Pending_ops.priority | `Drop])
 
   let set_mempool shell mempool =
     shell.mempool <- mempool ;
@@ -420,21 +418,16 @@ module Make_s
      operation is accumulated in the given [mempool].
 
      The function returns a tuple
-     [(validation_state, validated_operation, to_handle)],
-     where:
+     [(validation_state, mempool, to_handle)], where:
      - [validation_state] is the (possibly) updated validation_state,
-     - [validated_operation] is an (operation * bool) option set to [None] if
-     the operation has not been validated. If the operation has been validated
-     the function return [Some (operation,is_advertisable)]. [is_advertisable]
-     is true if the operation must be advertise.
+     - [mempool] is the (possibly) updated mempool,
      - [to_handle] contains the given operation and its classification, and all
        operations whose classes are changed/impacted by this classification
        (eg. in case of operation replacement).
   *)
-  let classify_operation shell ~config ~validation_state
-      (status_and_priority : Pending_ops.status_and_priority) op :
+  let classify_operation shell ~config ~validation_state mempool op :
       (prevalidation_t
-      * (Operation_hash.t * bool) option
+      * Mempool.t
       * (protocol_operation operation * Classification.classification) trace)
       Lwt.t =
     let open Lwt_syntax in
@@ -448,23 +441,13 @@ module Make_s
         replacements
     in
     let to_handle = (op, classification) :: to_replace in
-    let validated_operation =
+    let mempool =
       match classification with
-      | `Validated ->
-          let is_advertisable =
-            match
-              (status_and_priority.status, status_and_priority.priority)
-            with
-            | Fresh, _ | Reclassified, High -> true
-            | Reclassified, Medium | Reclassified, Low _ ->
-                (* Reclassified operations with medium and low priority are not
-                   reclassified *)
-                false
-          in
-          Some (op.hash, is_advertisable)
-      | `Branch_refused _ | `Branch_delayed _ | `Refused _ | `Outdated _ -> None
+      | `Validated -> Mempool.cons_valid op.hash mempool
+      | `Branch_refused _ | `Branch_delayed _ | `Refused _ | `Outdated _ ->
+          mempool
     in
-    return (v_state, validated_operation, to_handle)
+    return (v_state, mempool, to_handle)
 
   (* Classify pending operations into either:
      [Refused | Outdated | Branch_delayed | Branch_refused | Validated].
@@ -487,75 +470,55 @@ module Make_s
     let open Lwt_syntax in
     let* r =
       Pending_ops.fold_es
-        (fun status_and_priority
-             oph
-             op
-             ( acc_validation_state,
-               advertisable_mempool,
-               validated_mempool,
-               limit ) ->
+        (fun _prio oph op (acc_validation_state, acc_mempool, limit) ->
           if limit <= 0 then
             (* Using Error as an early-return mechanism *)
-            Lwt.return_error
-              (acc_validation_state, advertisable_mempool, validated_mempool)
+            Lwt.return_error (acc_validation_state, acc_mempool)
           else (
             shell.pending <- Pending_ops.remove oph shell.pending ;
-            let* new_validation_state, validated_operation, to_handle =
+            let* new_validation_state, new_mempool, to_handle =
               classify_operation
                 shell
                 ~config
                 ~validation_state:acc_validation_state
-                status_and_priority
+                acc_mempool
                 op
             in
             let+ () = Events.(emit operation_reclassified) oph in
             List.iter (handle_classification ~notifier shell) to_handle ;
-            let advertisable_mempool, validated_mempool =
-              match validated_operation with
-              | None -> (advertisable_mempool, validated_mempool)
-              | Some (oph, true) ->
-                  ( Mempool.cons_valid oph advertisable_mempool,
-                    Mempool.cons_valid oph validated_mempool )
-              | Some (oph, false) ->
-                  ( advertisable_mempool,
-                    Mempool.cons_valid oph validated_mempool )
-            in
-            Ok
-              ( new_validation_state,
-                advertisable_mempool,
-                validated_mempool,
-                limit - 1 )))
+            Ok (new_validation_state, new_mempool, limit - 1)))
         shell.pending
-        ( state,
-          Mempool.empty,
-          Mempool.empty,
-          shell.parameters.limits.operations_batch_size )
+        (state, Mempool.empty, shell.parameters.limits.operations_batch_size)
     in
     match r with
-    | Error (state, advertisable_mempool, validated_mempool) ->
+    | Error (state, advertised_mempool) ->
         (* Early return after iteration limit was reached *)
         let* (_was_pushed : bool) =
           shell.worker.push_request Request.Leftover
         in
-        Lwt.return (state, advertisable_mempool, validated_mempool)
-    | Ok (state, advertisable_mempool, validated_mempool, _) ->
-        Lwt.return (state, advertisable_mempool, validated_mempool)
+        Lwt.return (state, advertised_mempool)
+    | Ok (state, advertised_mempool, _) -> Lwt.return (state, advertised_mempool)
 
-  let update_advertised_mempool_fields pv_shell advertisable_mempool
-      validated_mempool =
+  let update_advertised_mempool_fields pv_shell delta_mempool =
     let open Lwt_syntax in
-    if not (Mempool.is_empty advertisable_mempool) then
-      (* We only advertise newly classified operations. *)
-      advertise pv_shell advertisable_mempool ;
-    if Mempool.is_empty validated_mempool then Lwt.return_unit
+    if Mempool.is_empty delta_mempool then Lwt.return_unit
     else
+      (* We only advertise newly classified operations. *)
+      let mempool_to_advertise =
+        Mempool.{delta_mempool with known_valid = delta_mempool.known_valid}
+      in
+      advertise pv_shell mempool_to_advertise ;
       let our_mempool =
-        let known_valid =
-          Operation_hash.Set.union
-            validated_mempool.known_valid
-            pv_shell.mempool.known_valid
+        let validated_hashes =
+          Classification.Sized_map.fold
+            (fun x _ acc -> Operation_hash.Set.add x acc)
+            pv_shell.classification.validated
+            Operation_hash.Set.empty
         in
-        {Mempool.known_valid; pending = Pending_ops.hashes pv_shell.pending}
+        {
+          Mempool.known_valid = validated_hashes;
+          pending = Pending_ops.hashes pv_shell.pending;
+        }
       in
       let* _res = set_mempool pv_shell our_mempool in
       Lwt.pause ()
@@ -566,7 +529,7 @@ module Make_s
     if Pending_ops.is_empty pv.shell.pending then Lwt.return_unit
     else
       let* () = Events.(emit processing_operations) () in
-      let* validation_state, advertisable_mempool, validated_mempool =
+      let* validation_state, delta_mempool =
         classify_pending_operations
           ~notifier
           pv.shell
@@ -574,10 +537,7 @@ module Make_s
           pv.validation_state
       in
       pv.validation_state <- validation_state ;
-      update_advertised_mempool_fields
-        pv.shell
-        advertisable_mempool
-        validated_mempool
+      update_advertised_mempool_fields pv.shell delta_mempool
 
   (* This function fetches one operation through the
      [distributed_db]. On errors, we emit an event and proceed as
@@ -666,8 +626,8 @@ module Make_s
                 parsed_op
             in
             match v with
-            | Drop -> return_ok_unit
-            | Priority ((High | Medium | Low _) as priority) ->
+            | `Drop -> return_ok_unit
+            | (`High | `Medium | `Low _) as prio ->
                 if
                   not
                     (Block_hash.Set.mem
@@ -679,12 +639,8 @@ module Make_s
                 else (
                   (* TODO: https://gitlab.com/tezos/tezos/-/issues/1723
                      Should this have an influence on the peer's score ? *)
-                  (* The operation has never been handled by the prevalidator,
-                     we add it with a Fresh status in the pending
-                     data-strutcure to be handled with higher priority *)
                   pv.shell.pending <-
-                    Pending_ops.(
-                      add parsed_op {status = Fresh; priority} pv.shell.pending) ;
+                    Pending_ops.add parsed_op prio pv.shell.pending ;
                   return_ok_unit))
 
     let on_inject (pv : types_state) ~force op =
@@ -695,7 +651,7 @@ module Make_s
          - We don't want to call prefilter to get the priority.
          But, this may change in the future
       *)
-      let status_and_priority = Pending_ops.{status = Fresh; priority = High} in
+      let prio = `High in
       if already_handled ~origin:Events.Injected pv.shell oph then
         (* FIXME: https://gitlab.com/tezos/tezos/-/issues/1722
            Is this an error? *)
@@ -715,7 +671,7 @@ module Make_s
                 pv.shell.parameters.tools.chain_tools.inject_operation oph op
               in
               pv.shell.pending <-
-                Pending_ops.add parsed_op status_and_priority pv.shell.pending ;
+                Pending_ops.add parsed_op prio pv.shell.pending ;
               let*! () = Events.(emit operation_injected) oph in
               return_unit)
             else if
@@ -732,12 +688,12 @@ module Make_s
                 op.Operation.shell.branch
             else
               let notifier = mk_notifier pv.operation_stream in
-              let*! validation_state, validated_operation, to_handle =
+              let*! validation_state, delta_mempool, to_handle =
                 classify_operation
                   pv.shell
                   ~config:pv.config
                   ~validation_state:pv.validation_state
-                  status_and_priority
+                  Mempool.empty
                   parsed_op
               in
               let op_status =
@@ -766,19 +722,11 @@ module Make_s
                   pv.validation_state <- validation_state ;
                   (* Note that in this case, we may advertise an operation and bypass
                      the prioritirization strategy. *)
-                  let*! () =
-                    match validated_operation with
-                    | None -> Lwt.return_unit
-                    | Some (oph, is_advertisable) ->
-                        update_advertised_mempool_fields
-                          pv.shell
-                          (if is_advertisable then
-                           Mempool.cons_valid oph Mempool.empty
-                          else Mempool.empty)
-                          (Mempool.cons_valid oph Mempool.empty)
+                  let*! v =
+                    update_advertised_mempool_fields pv.shell delta_mempool
                   in
                   let*! () = Events.(emit operation_injected) oph in
-                  return_unit
+                  return v
               | Some
                   ( _h,
                     ( `Branch_delayed e
@@ -819,11 +767,11 @@ module Make_s
       pv.shell.live_operations <- new_live_operations ;
       Lwt_watcher.shutdown_input pv.operation_stream ;
       pv.operation_stream <- Lwt_watcher.create_input () ;
-      let timestamp_system = Tezos_base.Time.System.now () in
+      let timestamp_system = Mavryk_base.Time.System.now () in
       pv.shell.timestamp <- timestamp_system ;
       let timestamp = Time.System.to_protocol timestamp_system in
       let* validation_state =
-        pv.shell.parameters.flush
+        pv.shell.parameters.tools.flush
           ~head:new_predecessor
           ~timestamp
           pv.validation_state
@@ -845,23 +793,16 @@ module Make_s
          does not exist for the moment. *)
       let*! new_pending_operations, nb_pending =
         Operation_hash.Map.fold_s
-          (fun oph op (pending, nb_pending) ->
+          (fun _oph op (pending, nb_pending) ->
             let*! v =
               pre_filter pv ~notifier:(mk_notifier pv.operation_stream) op
             in
             match v with
-            | Drop -> Lwt.return (pending, nb_pending)
-            | Priority ((High | Medium | Low _) as priority) ->
-                (* Here, an operation injected in this node with High priority will
+            | `Drop -> Lwt.return (pending, nb_pending)
+            | (`High | `Medium | `Low _) as prio ->
+                (* Here, an operation injected in this node with `High priority will
                    now get its approriate priority. *)
-                let status =
-                  (* If the operation has not yet been classified we set its
-                     status to Fresh *)
-                  if Pending_ops.mem oph pv.shell.pending then Pending_ops.Fresh
-                  else Reclassified
-                in
-                Lwt.return
-                  (Pending_ops.add op {status; priority} pending, nb_pending + 1))
+                Lwt.return (Pending_ops.add op prio pending, nb_pending + 1))
           new_pending_operations
           (Pending_ops.empty, 0)
       in
@@ -937,8 +878,6 @@ module type ARG = sig
   val chain_db : Distributed_db.chain_db
 
   val chain_id : Chain_id.t
-
-  val tools : Tools.tools
 end
 
 module WorkerGroup = Worker.MakeGroup (Name) (Prevalidator_worker_state.Request)
@@ -1010,20 +949,20 @@ module Make
   let build_rpc_directory w =
     lazy
       (let open Lwt_result_syntax in
-      let dir : state Tezos_rpc.Directory.t ref =
-        ref Tezos_rpc.Directory.empty
+      let dir : state Mavryk_rpc.Directory.t ref =
+        ref Mavryk_rpc.Directory.empty
       in
       let module Proto_services = Block_services.Make (Proto) (Proto) in
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.get_filter Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.get_filter Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             return (get_config_json ~include_default:params#include_default pv)) ;
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.set_filter Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.set_filter Mavryk_rpc.Path.open_root)
           (fun pv () obj ->
             let open Lwt_syntax in
             let* () =
@@ -1049,9 +988,9 @@ module Make
          it's necessary to restart it manually to flush the operation
          from it. *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.ban_operation Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.ban_operation Mavryk_rpc.Path.open_root)
           (fun _pv () oph ->
             let open Lwt_result_syntax in
             let*! r = Worker.Queue.push_request_and_wait w (Request.Ban oph) in
@@ -1064,33 +1003,33 @@ module Make
       (* Unban an operation (from its given hash): remove it from the
          set pv.banned_operations (nothing happens if it was not banned). *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.unban_operation Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.unban_operation Mavryk_rpc.Path.open_root)
           (fun pv () oph ->
             pv.shell.banned_operations <-
               Operation_hash.Set.remove oph pv.shell.banned_operations ;
             return_unit) ;
       (* Unban all operations: clear the set pv.banned_operations. *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
           (Proto_services.S.Mempool.unban_all_operations
-             Tezos_rpc.Path.open_root)
+             Mavryk_rpc.Path.open_root)
           (fun pv () () ->
             pv.shell.banned_operations <- Operation_hash.Set.empty ;
             return_unit) ;
       dir :=
-        Tezos_rpc.Directory.gen_register
+        Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.pending_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             let validated =
               if
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated
@@ -1158,18 +1097,18 @@ module Make
                 unprocessed;
               }
             in
-            Tezos_rpc.Answer.return (params#version, pending_operations)) ;
+            Mavryk_rpc.Answer.return (params#version, pending_operations)) ;
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.request_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.request_operations Mavryk_rpc.Path.open_root)
           (fun pv t () ->
             pv.shell.parameters.tools.send_get_current_head ?peer:t#peer_id () ;
             return_unit) ;
       dir :=
-        Tezos_rpc.Directory.gen_register
+        Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.monitor_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.monitor_operations Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             Lwt_mutex.with_lock pv.lock @@ fun () ->
             let op_stream, stopper =
@@ -1181,7 +1120,7 @@ module Make
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated
@@ -1267,7 +1206,7 @@ module Make
                   | None -> Lwt.return_none)
             in
             let shutdown () = Lwt_watcher.shutdown stopper in
-            Tezos_rpc.Answer.return_stream {next; shutdown}) ;
+            Mavryk_rpc.Answer.return_stream {next; shutdown}) ;
       !dir)
 
   (** Module implementing the events at the {!Worker} level. Contrary
@@ -1334,6 +1273,39 @@ module Make
         pv.shell.fetching ;
       Lwt.return_unit
 
+    let mk_tools (chain_db : Distributed_db.chain_db) : _ Tools.tools =
+      let advertise_current_head ~mempool bh =
+        Distributed_db.Advertise.current_head chain_db ~mempool bh
+      in
+      let chain_tools = mk_chain_tools chain_db in
+      let flush = Prevalidation_t.flush (Distributed_db.chain_store chain_db) in
+      let fetch ?peer ?timeout oph =
+        Distributed_db.Operation.fetch chain_db ?timeout ?peer oph ()
+      in
+      let read_block bh =
+        let chain_store = Distributed_db.chain_store chain_db in
+        Store.Block.read_block chain_store bh
+      in
+      let send_get_current_head ?peer () =
+        match peer with
+        | None -> Distributed_db.Request.current_head_from_all chain_db
+        | Some peer ->
+            Distributed_db.Request.current_head_from_peer chain_db peer
+      in
+      let set_mempool ~head mempool =
+        let chain_store = Distributed_db.chain_store chain_db in
+        Store.Chain.set_mempool chain_store ~head mempool
+      in
+      {
+        advertise_current_head;
+        chain_tools;
+        flush;
+        fetch;
+        read_block;
+        send_get_current_head;
+        set_mempool;
+      }
+
     let mk_worker_tools w : Tools.worker_tools =
       let push_request r = Worker.Queue.push_request w r in
       let push_request_now r = Worker.Queue.push_request_now w r in
@@ -1344,13 +1316,12 @@ module Make
     let on_launch w _ (limits, chain_db) : (state, launch_error) result Lwt.t =
       let open Lwt_result_syntax in
       let chain_store = Distributed_db.chain_store chain_db in
-      let flush = Prevalidation_t.flush (Distributed_db.chain_store chain_db) in
       let*! head = Store.Chain.current_head chain_store in
       let*! mempool = Store.Chain.mempool chain_store in
       let*! live_blocks, live_operations =
         Store.Chain.live_blocks chain_store
       in
-      let timestamp_system = Tezos_base.Time.System.now () in
+      let timestamp_system = Mavryk_base.Time.System.now () in
       let timestamp = Time.System.to_protocol timestamp_system in
       let* validation_state =
         Prevalidation_t.create chain_store ~head ~timestamp
@@ -1365,7 +1336,7 @@ module Make
           }
       in
       let classification = Classification.create classification_parameters in
-      let parameters = {limits; tools = Arg.tools; flush} in
+      let parameters = {limits; tools = mk_tools chain_db} in
       let shell =
         {
           classification;
@@ -1469,37 +1440,7 @@ module Make
       | Lwt.Return (Error _) | Lwt.Fail _ | Lwt.Sleep -> assert false)
 end
 
-let mk_tools chain_db : Tools.tools =
-  let advertise_current_head ~mempool bh =
-    Distributed_db.Advertise.current_head chain_db ~mempool bh
-  in
-  let chain_tools = mk_chain_tools chain_db in
-  let fetch ?peer ?timeout oph =
-    Distributed_db.Operation.fetch chain_db ?timeout ?peer oph ()
-  in
-  let read_block bh =
-    let chain_store = Distributed_db.chain_store chain_db in
-    Store.Block.read_block chain_store bh
-  in
-  let send_get_current_head ?peer () =
-    match peer with
-    | None -> Distributed_db.Request.current_head_from_all chain_db
-    | Some peer -> Distributed_db.Request.current_head_from_peer chain_db peer
-  in
-  let set_mempool ~head mempool =
-    let chain_store = Distributed_db.chain_store chain_db in
-    Store.Chain.set_mempool chain_store ~head mempool
-  in
-  {
-    advertise_current_head;
-    chain_tools;
-    fetch;
-    read_block;
-    send_get_current_head;
-    set_mempool;
-  }
-
-let make limits chain_db chain_id tools (module Proto : Protocol_plugin.T) =
+let make limits chain_db chain_id (module Proto : Protocol_plugin.T) =
   let module Prevalidation_t = Prevalidation.Make (Proto) in
   let module Prevalidator =
     Make
@@ -1510,8 +1451,6 @@ let make limits chain_db chain_id tools (module Proto : Protocol_plugin.T) =
         let chain_db = chain_db
 
         let chain_id = chain_id
-
-        let tools = tools
       end)
       (Prevalidation_t)
   in
@@ -1540,9 +1479,7 @@ let create limits (module Proto : Protocol_plugin.T) chain_db =
     ChainProto_registry.find (chain_id, Proto.hash) !chain_proto_registry
   with
   | None ->
-      let prevalidator =
-        make limits chain_db chain_id (mk_tools chain_db) (module Proto)
-      in
+      let prevalidator = make limits chain_db chain_id (module Proto) in
       let (module Prevalidator : T) = prevalidator in
       chain_proto_registry :=
         ChainProto_registry.add
@@ -1629,10 +1566,10 @@ let pipeline_length (t : t) =
   let w = Lazy.force Prevalidator.worker in
   Prevalidator.Worker.Queue.pending_requests_length w
 
-let empty_rpc_directory : unit Tezos_rpc.Directory.t =
-  Tezos_rpc.Directory.gen_register
-    Tezos_rpc.Directory.empty
-    (Block_services.Empty.S.Mempool.pending_operations Tezos_rpc.Path.open_root)
+let empty_rpc_directory : unit Mavryk_rpc.Directory.t =
+  Mavryk_rpc.Directory.gen_register
+    Mavryk_rpc.Directory.empty
+    (Block_services.Empty.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
     (fun _pv params () ->
       let pending_operations =
         {
@@ -1644,16 +1581,16 @@ let empty_rpc_directory : unit Tezos_rpc.Directory.t =
           unprocessed = Operation_hash.Map.empty;
         }
       in
-      Tezos_rpc.Answer.return (params#version, pending_operations))
+      Mavryk_rpc.Answer.return (params#version, pending_operations))
 
-let rpc_directory : t option Tezos_rpc.Directory.t =
-  Tezos_rpc.Directory.register_dynamic_directory
-    Tezos_rpc.Directory.empty
-    (Block_services.mempool_path Tezos_rpc.Path.open_root)
+let rpc_directory : t option Mavryk_rpc.Directory.t =
+  Mavryk_rpc.Directory.register_dynamic_directory
+    Mavryk_rpc.Directory.empty
+    (Block_services.mempool_path Mavryk_rpc.Path.open_root)
     (function
       | None ->
           Lwt.return
-            (Tezos_rpc.Directory.map
+            (Mavryk_rpc.Directory.map
                (fun _ -> Lwt.return_unit)
                empty_rpc_directory)
       | Some t ->
@@ -1662,37 +1599,4 @@ let rpc_directory : t option Tezos_rpc.Directory.t =
           let pv = Prevalidator.Worker.state w in
           let pv_rpc_dir = Lazy.force (Prevalidator.get_rpc_directory pv) in
           Lwt.return
-            (Tezos_rpc.Directory.map (fun _ -> Lwt.return pv) pv_rpc_dir))
-
-module Internal_for_tests = struct
-  module Tools = Tools
-
-  let mk_chain_tools = mk_chain_tools
-
-  let create tools limits (module Proto : Protocol_plugin.T) chain_db =
-    let open Lwt_result_syntax in
-    let chain_store = Distributed_db.chain_store chain_db in
-    let chain_id = Store.Chain.chain_id chain_store in
-    match
-      ChainProto_registry.find (chain_id, Proto.hash) !chain_proto_registry
-    with
-    | None ->
-        let prevalidator = make limits chain_db chain_id tools (module Proto) in
-        let (module Prevalidator : T) = prevalidator in
-        chain_proto_registry :=
-          ChainProto_registry.add
-            Prevalidator.name
-            prevalidator
-            !chain_proto_registry ;
-        return prevalidator
-    | Some p -> return p
-
-  let advertise_mempool (t : t) =
-    let module Prevalidator : T = (val t) in
-    let w = Lazy.force Prevalidator.worker in
-    let open Lwt_result_syntax in
-    let*! (_was_pushed : bool) =
-      Prevalidator.Worker.Queue.push_request w Request.Advertise
-    in
-    Lwt.return_unit
-end
+            (Mavryk_rpc.Directory.map (fun _ -> Lwt.return pv) pv_rpc_dir))

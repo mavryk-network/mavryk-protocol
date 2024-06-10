@@ -41,7 +41,7 @@
 
 (* These hooks must be attached to every process that should be captured for
    regression testing *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (* From a test mode, return:
    - the client mode to use;
@@ -50,9 +50,9 @@ let hooks = Tezos_regression.hooks
 let metadata_of_test_mode = function
   | `Client -> (`Client, "client", [])
   | `Client_data_dir_proxy_server ->
-      (`Client, "proxy_server_data_dir", [Constant.octez_proxy_server])
+      (`Client, "proxy_server_data_dir", [Constant.mavkit_proxy_server])
   | `Client_rpc_proxy_server ->
-      (`Client, "proxy_server_rpc", [Constant.octez_proxy_server])
+      (`Client, "proxy_server_rpc", [Constant.mavkit_proxy_server])
   | `Light -> (`Light, "light", [])
   | `Proxy -> (`Proxy, "proxy", [])
 
@@ -190,7 +190,7 @@ let test_contracts _test_mode_tag protocol ?endpoint client =
     @@ RPC.get_chain_block_context_contract_delegate ~id:bootstrap ()
   in
   Log.info "Test un-allocated implicit contract" ;
-  let unallocated_implicit = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unallocated_implicit = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unallocated_implicit contracts) ;
   let* _ =
     Client.RPC.call ?endpoint ~hooks client
@@ -413,7 +413,7 @@ let test_delegates_on_registered_alpha ~contracts ?endpoint client =
   in
   unit
 
-let test_adaptive_issuance_on_oxford ~contracts ?endpoint client =
+let test_adaptive_issuance_on_atlas ~contracts ?endpoint client =
   Log.info "Test adaptive issuance parameters retrieval" ;
 
   let* _ =
@@ -528,7 +528,7 @@ let test_delegates_on_registered_hangzhou ~contracts ?endpoint client =
 let test_delegates_on_unregistered_alpha ~contracts ?endpoint client =
   Log.info "Test with a PKH that is not a registered baker contract" ;
 
-  let unregistered_baker = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unregistered_baker = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unregistered_baker contracts) ;
   let check_failure rpc =
     let*? process = Client.RPC.spawn ?endpoint ~hooks client @@ rpc in
@@ -576,7 +576,7 @@ let test_delegates_on_unregistered_alpha ~contracts ?endpoint client =
 let test_delegates_on_unregistered_hangzhou ~contracts ?endpoint client =
   Log.info "Test with a PKH that is not a registered baker contract" ;
 
-  let unregistered_baker = "tz1c5BVkpwCiaPHJBzyjg7UHpJEMPTYA1bHG" in
+  let unregistered_baker = "mv1C61rTyX6W6N32vJXLxPbG1ThfH7DRSqa4" in
   assert (not @@ List.mem unregistered_baker contracts) ;
 
   let check_failure rpc =
@@ -649,7 +649,7 @@ let test_delegates _test_mode_tag _protocol ?endpoint client =
 (* Test the adaptive issuance RPC. *)
 let test_adaptive_issuance _test_mode_tag (_ : Protocol.t) ?endpoint client =
   let* contracts = get_contracts ?endpoint client in
-  test_adaptive_issuance_on_oxford ~contracts ?endpoint client
+  test_adaptive_issuance_on_atlas ~contracts ?endpoint client
 
 (* Test the votes RPC. *)
 let test_votes _test_mode_tag _protocol ?endpoint client =
@@ -707,7 +707,7 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     @@ RPC.get_chain_block_helper_current_level ()
   in
   let* () =
-    if Protocol.(number protocol >= number Nairobi + 1) then
+    if Protocol.(number protocol >= number Atlas) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_context_denunciations ()
@@ -716,12 +716,12 @@ let test_misc_protocol _test_mode_tag protocol ?endpoint client =
     else unit
   in
   let* () =
-    if Protocol.(number protocol <= number Nairobi + 1) then
+    if Protocol.(number protocol <= number Atlas) then
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
         @@ RPC.get_chain_block_helper_endorsing_rights ()
         (* TODO: https://gitlab.com/tezos/tezos/-/issues/6227
-           This RPC helper should be removed once Oxford will be frozen. *)
+           This RPC helper should be removed once Atlas will be frozen. *)
       in
       let* _ =
         Client.RPC.call ?endpoint ~hooks client
@@ -769,7 +769,7 @@ let mempool_hooks =
       replacements
   in
   {
-    Tezos_regression.hooks with
+    Mavryk_regression.hooks with
     on_log = (fun output -> replace_variable output |> hooks.on_log);
   }
 
@@ -867,8 +867,7 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
     (* To test the monitor_operations rpc we use curl since the client does
        not support streaming RPCs yet. *)
     sf
-      "http://%s:%d/chains/main/mempool/monitor_operations?applied=true&outdated=true&branch_delayed=true&refused=true&branch_refused=true"
-      Constant.default_host
+      "http://localhost:%d/chains/main/mempool/monitor_operations?applied=true&outdated=true&branch_delayed=true&refused=true&branch_refused=true"
       (get_client_port client)
   in
   let proc_monitor =
@@ -1076,8 +1075,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 1: all fields provided and distinct from default."
       {
         minimal_fees = Some 1;
-        minimal_nanotez_per_gas_unit = Some (2, 3);
-        minimal_nanotez_per_byte = Some (4, 5);
+        minimal_nanomav_per_gas_unit = Some (2, 3);
+        minimal_nanomav_per_byte = Some (4, 5);
         replace_by_fee_factor = Some (6, 7);
         max_operations = Some 8;
         max_total_bytes = Some 9;
@@ -1088,8 +1087,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 2: omitted fields (which should be set to default)."
       {
         minimal_fees = Some 25;
-        minimal_nanotez_per_gas_unit = None;
-        minimal_nanotez_per_byte = Some (1050, 1);
+        minimal_nanomav_per_gas_unit = None;
+        minimal_nanomav_per_byte = Some (1050, 1);
         replace_by_fee_factor = None;
         max_operations = Some 2000;
         max_total_bytes = None;
@@ -1100,8 +1099,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 3: {} (ie. all fields should be set to default)."
       {
         minimal_fees = None;
-        minimal_nanotez_per_gas_unit = None;
-        minimal_nanotez_per_byte = None;
+        minimal_nanomav_per_gas_unit = None;
+        minimal_nanomav_per_byte = None;
         replace_by_fee_factor = None;
         max_operations = None;
         max_total_bytes = None;
@@ -1112,8 +1111,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
       "Config 4: divide by zero. (Should this config be invalid?)"
       {
         minimal_fees = None;
-        minimal_nanotez_per_gas_unit = Some (100, 0);
-        minimal_nanotez_per_byte = None;
+        minimal_nanomav_per_gas_unit = Some (100, 0);
+        minimal_nanomav_per_byte = None;
         replace_by_fee_factor = None;
         max_operations = None;
         max_total_bytes = None;
@@ -1122,8 +1121,8 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let config5 =
     {
       minimal_fees = None;
-      minimal_nanotez_per_gas_unit = Some default_minimal_nanotez_per_gas_unit;
-      minimal_nanotez_per_byte = Some (max_int, 1);
+      minimal_nanomav_per_gas_unit = Some default_minimal_nanomav_per_gas_unit;
+      minimal_nanomav_per_byte = Some (max_int, 1);
       replace_by_fee_factor = None;
       max_operations = Some default_max_operations;
       max_total_bytes = Some 0;
@@ -1164,7 +1163,7 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let* () =
     test_invalid_config
       "Invalid config 1: invalid field name"
-      {|{ "minimal_fees": "100", "minimal_nanotez_per_gas_unit": [ "1050", "1" ], "minimal_nanotez_per_byte": [ "7", "5" ], "replace_by_fee_factor": ["21", "20"], "max_operations": 10, "max_total_bytes": 10_000_000, "invalid_field_name": 100 }|}
+      {|{ "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "1050", "1" ], "minimal_nanomav_per_byte": [ "7", "5" ], "replace_by_fee_factor": ["21", "20"], "max_operations": 10, "max_total_bytes": 10_000_000, "invalid_field_name": 100 }|}
   in
   let* () =
     test_invalid_config
@@ -1179,12 +1178,12 @@ let test_mempool _test_mode_tag protocol ?endpoint client =
   let* () =
     test_invalid_config
       "Invalid config 4: not enough elements in fraction"
-      {|{ "minimal_nanotez_per_gas_unit": [ "100" ] }|}
+      {|{ "minimal_nanomav_per_gas_unit": [ "100" ] }|}
   in
   let* () =
     test_invalid_config
       "Invalid config 5: too many elements in fraction"
-      {|{ "minimal_nanotez_per_gas_unit": [ "100", "1", "10" ] }|}
+      {|{ "minimal_nanomav_per_gas_unit": [ "100", "1", "10" ] }|}
   in
   let* () =
     test_invalid_config
@@ -1579,7 +1578,7 @@ let test_blacklist address () =
   unit
 
 let binary_regression_test () =
-  let node = Node.create [] in
+  let node = Node.create ~rpc_host:"127.0.0.1" [] in
   let endpoint = Client.(Node node) in
   let* () = Node.config_init node [] in
   let* () = Node.identity_generate node in
@@ -1640,7 +1639,7 @@ let register protocols =
     ~__FILE__
     ~title:"Binary RPC regression tests"
     ~tags:["rpc"; "regression"; "binary"]
-    ~uses:[Constant.octez_codec]
+    ~uses:[Constant.mavkit_codec]
     binary_regression_test ;
   let register protocols test_mode_tag =
     let check_rpc_regression ?parameter_overrides ?supports ?nodes_args
@@ -1675,7 +1674,7 @@ let register protocols =
       ~parameter_overrides:consensus_threshold ;
     check_rpc_regression
       "adaptive_issuance"
-      ~supports:Protocol.(From_protocol (number Nairobi + 1))
+      ~supports:Protocol.(From_protocol (number Atlas))
       ~test_function:test_adaptive_issuance ;
     check_rpc_regression
       "votes"

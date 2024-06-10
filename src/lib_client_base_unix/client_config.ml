@@ -24,13 +24,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Tezos Command line interface - Configuration and Arguments Parsing *)
+(* Mavryk Command line interface - Configuration and Arguments Parsing *)
 
 type cli_args = {
   chain : Chain_services.chain;
   block : Shell_services.block;
   confirmations : int option;
-  sources : Tezos_proxy.Light.sources_config option;
+  sources : Mavryk_proxy.Light.sources_config option;
   password_filename : string option;
   protocol : Protocol_hash.t option;
   print_timings : bool;
@@ -189,11 +189,11 @@ let () =
 
 let home = try Sys.getenv "HOME" with Not_found -> "/root"
 
-let base_dir_env_name = "TEZOS_CLIENT_DIR"
+let base_dir_env_name = "MAVRYK_CLIENT_DIR"
 
 let default_base_dir =
   try Sys.getenv base_dir_env_name
-  with Not_found -> Filename.concat home ".tezos-client"
+  with Not_found -> Filename.concat home ".mavryk-client"
 
 let default_chain = `Main
 
@@ -222,7 +222,7 @@ module Cfg_file = struct
     remote_signer : Uri.t option;
     confirmations : int option;
     password_filename : string option;
-    internal_events : Tezos_base.Internal_event_config.t option;
+    internal_events : Mavryk_base.Internal_event_config.t option;
   }
 
   let default =
@@ -300,13 +300,13 @@ module Cfg_file = struct
             (opt "node_port" uint16)
             (opt "tls" bool)
             (opt "media_type" Media_type.Command_line.encoding)
-            (opt "endpoint" Tezos_rpc.Encoding.uri_encoding)
+            (opt "endpoint" Mavryk_rpc.Encoding.uri_encoding)
             (opt "web_port" uint16)
-            (opt "remote_signer" Tezos_rpc.Encoding.uri_encoding)
+            (opt "remote_signer" Mavryk_rpc.Encoding.uri_encoding)
             (opt "confirmations" int8)
             (opt "password_filename" string))
          (obj1
-            (opt "internal_events" Tezos_base.Internal_event_config.encoding)))
+            (opt "internal_events" Mavryk_base.Internal_event_config.encoding)))
 
   let from_json json = Data_encoding.Json.destruct encoding json
 
@@ -335,20 +335,20 @@ let default_cli_args =
     client_mode = `Mode_client;
   }
 
-let string_parameter () : (string, #Client_context.full) Tezos_clic.parameter =
-  Tezos_clic.parameter (fun _ x -> Lwt.return_ok x)
+let string_parameter () : (string, #Client_context.full) Mavryk_clic.parameter =
+  Mavryk_clic.parameter (fun _ x -> Lwt.return_ok x)
 
 let media_type_parameter () :
-    (Media_type.Command_line.t, #Client_context.full) Tezos_clic.parameter =
+    (Media_type.Command_line.t, #Client_context.full) Mavryk_clic.parameter =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ x ->
+  Mavryk_clic.parameter (fun _ x ->
       match Media_type.Command_line.parse_cli_parameter x with
       | Some v -> return v
       | None -> tzfail (Invalid_media_type_arg x))
 
 let endpoint_parameter () =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ x ->
+  Mavryk_clic.parameter (fun _ x ->
       let parsed = Uri.of_string x in
       let* _ =
         match Uri.scheme parsed with
@@ -367,7 +367,7 @@ let endpoint_parameter () =
 
 let sources_parameter () =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ path ->
+  Mavryk_clic.parameter (fun _ path ->
       let*! r = Lwt_utils_unix.Json.read_file path in
       match r with
       | Error errs ->
@@ -378,7 +378,7 @@ let sources_parameter () =
             errs
       | Ok json -> (
           try
-            match Tezos_proxy.Light.destruct_sources_config json with
+            match Mavryk_proxy.Light.destruct_sources_config json with
             | Ok sources_cfg -> return sources_cfg
             | Error msg -> failwith "%s" msg
           with exn ->
@@ -389,21 +389,21 @@ let sources_parameter () =
               exn))
 
 let chain_parameter () =
-  Tezos_clic.parameter (fun _ chain ->
+  Mavryk_clic.parameter (fun _ chain ->
       let open Lwt_result_syntax in
       match Chain_services.parse_chain chain with
       | Error _ -> tzfail (Invalid_chain_argument chain)
       | Ok chain -> return chain)
 
 let block_parameter () =
-  Tezos_clic.parameter (fun _ block ->
+  Mavryk_clic.parameter (fun _ block ->
       let open Lwt_result_syntax in
       match Block_services.parse_block block with
       | Error _ -> tzfail (Invalid_block_argument block)
       | Ok block -> return block)
 
 let wait_parameter () =
-  Tezos_clic.parameter (fun _ wait ->
+  Mavryk_clic.parameter (fun _ wait ->
       let open Lwt_result_syntax in
       match wait with
       | "no" | "none" -> return_none
@@ -413,7 +413,7 @@ let wait_parameter () =
           | None | Some _ -> tzfail (Invalid_wait_arg wait)))
 
 let protocol_parameter () =
-  Tezos_clic.parameter (fun _ arg ->
+  Mavryk_clic.parameter (fun _ arg ->
       let open Lwt_result_syntax in
       match
         Seq.filter
@@ -427,14 +427,14 @@ let protocol_parameter () =
 
 (* Command-line only args (not in config file) *)
 let base_dir_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"base-dir"
     ~short:'d'
     ~placeholder:"path"
     ~doc:
       (Format.asprintf
          "@[<v>@[<2>client data directory (absent: %s env)@,\
-          The directory where the Tezos client will store all its data.@,\
+          The directory where the Mavryk client will store all its data.@,\
           If absent, its value is the value of the %s@,\
           environment variable. If %s is itself not specified,@,\
           defaults to %s@]@]@."
@@ -445,14 +445,14 @@ let base_dir_arg () =
     (string_parameter ())
 
 let no_base_dir_warnings_switch () =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"no-base-dir-warnings"
     ~short:'n'
     ~doc:"silence warnings about client data directory"
     ()
 
 let config_file_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"config-file"
     ~short:'c'
     ~placeholder:"path"
@@ -460,10 +460,10 @@ let config_file_arg () =
     (string_parameter ())
 
 let timings_switch () =
-  Tezos_clic.switch ~long:"timings" ~short:'t' ~doc:"show RPC request times" ()
+  Mavryk_clic.switch ~long:"timings" ~short:'t' ~doc:"show RPC request times" ()
 
 let chain_arg () =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"chain"
     ~placeholder:"hash|tag"
     ~doc:
@@ -474,21 +474,21 @@ let chain_arg () =
     (chain_parameter ())
 
 let block_arg () =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"block"
     ~short:'b'
     ~placeholder:"hash|level|tag"
     ~doc:
       "block on which to apply contextual commands (commands dependent on the \
        context associated with the specified block). Possible tags include \
-       'head' and 'genesis' +/- an optional offset (e.g. \"octez-client -b \
+       'head' and 'genesis' +/- an optional offset (e.g. \"mavkit-client -b \
        head-1 get timestamp\"). Note that block queried must exist in node's \
        storage."
     ~default:(Block_services.to_string default_cli_args.block)
     (block_parameter ())
 
 let wait_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"wait"
     ~short:'w'
     ~placeholder:"none|<int>"
@@ -498,7 +498,7 @@ let wait_arg () =
     (wait_parameter ())
 
 let protocol_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"protocol"
     ~short:'p'
     ~placeholder:"hash"
@@ -506,14 +506,14 @@ let protocol_arg () =
     (protocol_parameter ())
 
 let log_requests_switch () =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"log-requests"
     ~short:'l'
     ~doc:"log all requests to the node"
     ()
 
 let better_errors () =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"better-errors"
     ~doc:
       "Error reporting is more detailed. Can be used if a call to an RPC fails \
@@ -525,7 +525,7 @@ let better_errors () =
 let addr_confdesc = "-A/--addr ('node_addr' in config file)"
 
 let addr_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"addr"
     ~short:'A'
     ~placeholder:"IP addr|host"
@@ -535,12 +535,12 @@ let addr_arg () =
 let port_confdesc = "-P/--port ('node_port' in config file)"
 
 let port_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"port"
     ~short:'P'
     ~placeholder:"number"
     ~doc:"[DEPRECATED: use --endpoint instead] RPC port of the node"
-    (Tezos_clic.parameter (fun _ x ->
+    (Mavryk_clic.parameter (fun _ x ->
          let open Lwt_result_syntax in
          match int_of_string_opt x with
          | Some i -> return i
@@ -549,7 +549,7 @@ let port_arg () =
 let tls_confdesc = "-S/--tls ('tls' in config file)"
 
 let tls_switch () =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"tls"
     ~short:'S'
     ~doc:"[DEPRECATED: use --endpoint instead] use TLS to connect to node."
@@ -558,7 +558,7 @@ let tls_switch () =
 let media_type_confdesc = "-m/--media-type"
 
 let media_type_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"media-type"
     ~short:'m'
     ~placeholder:"json, binary, any or default"
@@ -574,7 +574,7 @@ let media_type_arg () =
 let endpoint_confdesc = "-E/--endpoint ('endpoint' in config file)"
 
 let endpoint_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"endpoint"
     ~short:'E'
     ~placeholder:"uri"
@@ -583,26 +583,26 @@ let endpoint_arg () =
     (endpoint_parameter ())
 
 let sources_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"sources"
     ~short:'s'
     ~placeholder:"path"
     ~doc:
       ("path to JSON file containing sources for --mode light. Example file \
-        content: " ^ Tezos_proxy.Light.example_sources)
+        content: " ^ Mavryk_proxy.Light.example_sources)
     (sources_parameter ())
 
 let remote_signer_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"remote-signer"
     ~short:'R'
     ~placeholder:"uri"
     ~doc:"URI of the remote signer"
-    (Tezos_clic.parameter (fun _ x ->
-         Tezos_signer_backends_unix.Remote.parse_base_uri x))
+    (Mavryk_clic.parameter (fun _ x ->
+         Mavryk_signer_backends_unix.Remote.parse_base_uri x))
 
 let password_filename_arg () =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"password-filename"
     ~short:'f'
     ~placeholder:"filename"
@@ -623,13 +623,13 @@ let client_mode_arg () =
     | None -> tzfail (Invalid_mode_arg str)
     | Some mode -> return mode
   in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~short:'M'
     ~long:"mode"
     ~placeholder:(String.concat "|" mode_strings)
     ~doc:"how to interact with the node"
     ~default:(client_mode_to_string `Mode_client)
-    (Tezos_clic.parameter
+    (Mavryk_clic.parameter
        ~autocomplete:(fun _ -> Lwt.return_ok mode_strings)
        (fun _ param -> Lwt.return (parse_client_mode param)))
 
@@ -655,7 +655,7 @@ let read_config_file config_file =
 let fail_on_non_mockup_dir (cctxt : #Client_context.full) =
   let open Lwt_result_syntax in
   let base_dir = cctxt#get_base_dir in
-  let open Tezos_mockup.Persistence in
+  let open Mavryk_mockup.Persistence in
   let* b = classify_base_dir base_dir in
   match b with
   | Base_dir_does_not_exist | Base_dir_is_file | Base_dir_is_nonempty
@@ -663,7 +663,7 @@ let fail_on_non_mockup_dir (cctxt : #Client_context.full) =
       failwith
         "base directory at %s should be a mockup directory for this operation \
          to be allowed (it may contain sensitive data otherwise). What you \
-         likely want is calling `octez-client --mode mockup --base-dir \
+         likely want is calling `mavkit-client --mode mockup --base-dir \
          /some/dir create mockup` where `/some/dir` is **fresh** and **empty** \
          and redo this operation, specifying `--base-dir /some/dir` this time."
         base_dir
@@ -701,7 +701,7 @@ let config_show_mockup (cctxt : #Client_context.full)
   let open Lwt_result_syntax in
   let* () = fail_on_non_mockup_dir cctxt in
   let* mockup, _ =
-    Tezos_mockup.Persistence.get_mockup_context_from_disk
+    Mavryk_mockup.Persistence.get_mockup_context_from_disk
       ~base_dir
       ~protocol_hash:protocol_hash_opt
       cctxt
@@ -755,7 +755,7 @@ let config_init_mockup cctxt protocol_hash_opt bootstrap_accounts_file
          protocol_constants_file)
   in
   let* mockup, _ =
-    Tezos_mockup.Persistence.get_mockup_context_from_disk
+    Mavryk_mockup.Persistence.get_mockup_context_from_disk
       ~base_dir
       ~protocol_hash:protocol_hash_opt
       cctxt
@@ -790,7 +790,7 @@ let config_init_mockup cctxt protocol_hash_opt bootstrap_accounts_file
 
 let commands config_file cfg (client_mode : client_mode)
     (protocol_hash_opt : Protocol_hash.t option) (base_dir : string) =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let group =
     {
       name = "config";
@@ -877,7 +877,7 @@ let commands config_file cfg (client_mode : client_mode)
   ]
 
 let global_options () =
-  Tezos_clic.args19
+  Mavryk_clic.args19
     (base_dir_arg ())
     (no_base_dir_warnings_switch ())
     (config_file_arg ())
@@ -901,7 +901,7 @@ let global_options () =
 type parsed_config_args = {
   parsed_config_file : Cfg_file.t option;
   parsed_args : cli_args option;
-  config_commands : Client_context.full Tezos_clic.command list;
+  config_commands : Client_context.full Mavryk_clic.command list;
   base_dir : string option;
   require_auth : bool;
 }
@@ -925,7 +925,7 @@ let default_parsed_config_args =
 let check_base_dir_for_mode (ctx : #Client_context.full) client_mode
     no_base_dir_warnings base_dir =
   let open Lwt_result_syntax in
-  let open Tezos_mockup.Persistence in
+  let open Mavryk_mockup.Persistence in
   let* base_dir_class = classify_base_dir base_dir in
   match client_mode with
   | `Mode_client | `Mode_light | `Mode_proxy -> (
@@ -962,7 +962,7 @@ let check_base_dir_for_mode (ctx : #Client_context.full) client_mode
       let show_cmd ppf () =
         Format.fprintf
           ppf
-          "./octez-client --mode mockup --base-dir %s create mockup"
+          "./mavkit-client --mode mockup --base-dir %s create mockup"
           base_dir
       in
       match base_dir_class with
@@ -1028,9 +1028,9 @@ let light_mode_checks mode endpoint sources =
       (* --mode light without --sources: wrong *)
       failwith
         "--mode light requires passing --sources. Example --sources file: %s"
-        Tezos_proxy.Light.example_sources
+        Mavryk_proxy.Light.example_sources
   | `Mode_light, Some sources ->
-      let sources_uris = Tezos_proxy.Light.sources_config_to_uris sources in
+      let sources_uris = Mavryk_proxy.Light.sources_config_to_uris sources in
       if List.mem ~equal:Uri.equal endpoint sources_uris then return_unit
       else
         let uri_to_json_string uri =
@@ -1072,7 +1072,7 @@ let parse_config_args (ctx : #Client_context.full) argv =
            password_filename,
            client_mode ),
          remaining ) =
-    Tezos_clic.parse_global_options (global_options ()) ctx argv
+    Mavryk_clic.parse_global_options (global_options ()) ctx argv
   in
   let* base_dir =
     match base_dir with
@@ -1181,7 +1181,7 @@ let parse_config_args (ctx : #Client_context.full) argv =
        pp_print_flush err_formatter ()))) ;
   let* () = light_mode_checks client_mode endpoint sources in
   let* remote_signer_env =
-    Tezos_signer_backends_unix.Remote.read_base_uri_from_env ()
+    Mavryk_signer_backends_unix.Remote.read_base_uri_from_env ()
   in
   let remote_signer =
     Option.either remote_signer
@@ -1258,18 +1258,18 @@ type t =
   * bool
   * Media_type.Command_line.t option
   * Uri.t option
-  * Tezos_proxy.Light.sources_config option
+  * Mavryk_proxy.Light.sources_config option
   * Uri.t option
   * string option
   * client_mode
 
 module type Remote_params = sig
   val authenticate :
-    Tezos_crypto.Signature.public_key_hash list ->
+    Mavryk_crypto.Signature.public_key_hash list ->
     Bytes.t ->
-    Tezos_crypto.Signature.t tzresult Lwt.t
+    Mavryk_crypto.Signature.t tzresult Lwt.t
 
-  val logger : Tezos_rpc_http_client_unix.RPC_client_unix.logger
+  val logger : Mavryk_rpc_http_client_unix.RPC_client_unix.logger
 end
 
 let other_registrations : (_ -> (module Remote_params) -> _) option =
@@ -1278,8 +1278,8 @@ let other_registrations : (_ -> (module Remote_params) -> _) option =
       parsed_config_file.Cfg_file.remote_signer
       |> Option.iter (fun signer ->
              Client_keys.register_signer
-               (module Tezos_signer_backends_unix.Remote.Make
-                         (Tezos_rpc_http_client_unix.RPC_client_unix)
+               (module Mavryk_signer_backends_unix.Remote.Make
+                         (Mavryk_rpc_http_client_unix.RPC_client_unix)
                          (struct
                            let default = signer
 

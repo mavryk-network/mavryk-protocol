@@ -31,9 +31,7 @@
 
 *)
 
-type error +=
-  | Cannot_find_predecessor of Block_hash.t
-  | Http_connection_error of (Cohttp.Code.status_code * string)
+type error += Cannot_find_predecessor of Block_hash.t
 
 let () =
   register_error_kind
@@ -51,43 +49,6 @@ let () =
     (function Cannot_find_predecessor hash -> Some hash | _ -> None)
     (fun hash -> Cannot_find_predecessor hash)
 
-let () =
-  let http_status_enc =
-    let open Data_encoding in
-    let open Cohttp.Code in
-    conv code_of_status status_of_code int31
-  in
-  register_error_kind
-    `Permanent
-    ~id:"lib_crawler.http_error"
-    ~title:"HTTP error when fetching data"
-    ~description:"The node encountered an HTTP error when fetching data."
-    ~pp:(fun ppf (status, body) ->
-      Format.fprintf
-        ppf
-        "Downloading data resulted in: %s (%s)."
-        (Cohttp.Code.string_of_status status)
-        body)
-    Data_encoding.(
-      obj2 (req "status" http_status_enc) (req "body" Data_encoding.string))
-    (function
-      | Http_connection_error (status, body) -> Some (status, body) | _ -> None)
-    (fun (status, body) -> Http_connection_error (status, body))
-
-type error += RPC_timeout of {path : string; timeout : float}
-
-let () =
-  register_error_kind
-    ~id:"lib_crawler.rpc_timeout"
-    ~title:"Timeout in RPC"
-    ~description:"An RPC did not respond after the timeout"
-    ~pp:(fun ppf (path, timeout) ->
-      Format.fprintf ppf "Call %s timeouted after %fs." path timeout)
-    `Temporary
-    Data_encoding.(obj2 (req "path" string) (req "timeout" float))
-    (function RPC_timeout {path; timeout} -> Some (path, timeout) | _ -> None)
-    (fun (path, timeout) -> RPC_timeout {path; timeout})
-
 (**
 
    State
@@ -101,7 +62,7 @@ type t = {
   reconnection_delay : float;
   heads : (Block_hash.t * Block_header.t) Lwt_stream.t;
   cctxt : Client_context.full;
-  stopper : Tezos_rpc.Context.stopper;
+  stopper : Mavryk_rpc.Context.stopper;
   mutable running : bool;
 }
 
@@ -124,14 +85,14 @@ let rec connect ~name ?(count = 0) ~delay ~protocols cctxt =
       Lwt_unix.sleep delay
   in
   let* res =
-    Tezos_shell_services.Monitor_services.heads ?protocols cctxt cctxt#chain
+    Mavryk_shell_services.Monitor_services.heads ?protocols cctxt cctxt#chain
   in
   match res with
   | Ok (heads, stopper) ->
       let heads =
         Lwt_stream.map_s
           (fun ( hash,
-                 (Tezos_base.Block_header.{shell = {level; _}; _} as header) ) ->
+                 (Mavryk_base.Block_header.{shell = {level; _}; _} as header) ) ->
             let+ () = Layer1_event.switched_new_head ~name hash level in
             (hash, header))
           heads
@@ -188,85 +149,41 @@ let is_connection_error trace =
           (* This error can surface if the external RPC servers of the L1 node are
              shutdown but the request is still in the RPC worker. *)
           Re.Str.string_match regexp_ocaml_exception_connection_error s 0
-      | RPC_timeout _ -> true
-      | Http_connection_error _ -> true
       | _ -> false)
     false
     trace
 
-type 'a lwt_stream_get_result =
-  | Get_none
-  | Get_timeout of float
-  | Get_elt of 'a
-
-type lwt_stream_iter_with_timeout_ended =
-  | Closed
-  | Timeout of float
-  | Connection_error of tztrace
-
-let timeout_factor = 10.
-
-(** This function is similar to {!Lwt_stream.iter_s} excepted that it resolves
-    with {!Get_timeout} if waiting for the next element takes more than some
-    time (10x last elapsed time). [init_timeout] is used for the initial timeout
-    value (so it should be large enough) and [min_timeout] is the minimal timeout
-    considered. *)
-let lwt_stream_iter_with_timeout ~min_timeout ~init_timeout f stream =
-  let open Lwt_syntax in
-  let rec loop timeout =
-    let get_promise =
-      let+ res = Lwt_stream.get stream in
-      match res with None -> Get_none | Some e -> Get_elt e
-    in
-    let timeout_promise =
-      let+ () = Lwt_unix.sleep timeout in
-      Get_timeout timeout
-    in
-    let start_time = Unix.gettimeofday () in
-    let* res = Lwt.pick [get_promise; timeout_promise] in
-    match res with
-    | Get_none -> return_ok Closed
-    | Get_timeout t -> return_ok (Timeout t)
-    | Get_elt e -> (
-        let elapsed = Unix.gettimeofday () -. start_time in
-        let new_timeout = elapsed *. timeout_factor in
-        let timeout =
-          if new_timeout < min_timeout then timeout else new_timeout
-        in
-        let* res = protect @@ fun () -> f e in
-        match res with
-        | Ok () -> (loop [@ocaml.tailcall]) timeout
-        | Error trace when is_connection_error trace ->
-            return_ok (Connection_error trace)
-        | Error trace -> return_error trace)
-  in
-  loop init_timeout
-
+(* TODO: https://gitlab.com/tezos/tezos/-/issues/2895
+   Use Lwt_stream.iter_es once it is exposed. *)
 let iter_heads l1_ctxt f =
+  let exception Iter_error of tztrace in
   let rec loop l1_ctxt =
     let open Lwt_result_syntax in
-    let* stopping_reason =
-      lwt_stream_iter_with_timeout
-        ~min_timeout:10.
-        ~init_timeout:300.
-        f
+    let*! () =
+      Lwt_stream.iter_s
+        (fun head ->
+          let open Lwt_syntax in
+          let* res = f head in
+          match res with
+          | Ok () -> return_unit
+          | Error trace when is_connection_error trace ->
+              Format.eprintf
+                "@[<v 2>Connection error:@ %a@]@."
+                pp_print_trace
+                trace ;
+              l1_ctxt.stopper () ;
+              return_unit
+          | Error e -> raise (Iter_error e))
         l1_ctxt.heads
     in
     when_ l1_ctxt.running @@ fun () ->
-    l1_ctxt.stopper () ;
-    let*! () =
-      match stopping_reason with
-      | Closed -> Layer1_event.connection_lost ~name:l1_ctxt.name
-      | Timeout timeout ->
-          Layer1_event.connection_timeout ~name:l1_ctxt.name ~timeout
-      | Connection_error trace ->
-          Format.eprintf "@[<v 2>Connection error:@ %a@]@." pp_print_trace trace ;
-          Lwt.return_unit
-    in
+    let*! () = Layer1_event.connection_lost ~name:l1_ctxt.name in
     let*! l1_ctxt = reconnect l1_ctxt in
     loop l1_ctxt
   in
-  loop l1_ctxt
+  Lwt.catch
+    (fun () -> Lwt.no_cancel @@ loop l1_ctxt)
+    (function Iter_error e -> Lwt.return_error e | exn -> fail_with_exn exn)
 
 let wait_first l1_ctxt =
   let rec loop l1_ctxt =
@@ -288,7 +205,7 @@ let predecessors_of_blocks hashes =
   match hashes with [] -> [] | x :: xs -> aux x xs
 
 (** [get_predecessor block_hash] returns the predecessor block hash of
-    some [block_hash] through an RPC to the Tezos node. To limit the
+    some [block_hash] through an RPC to the Mavryk node. To limit the
     number of RPCs, this information is requested for a batch of hashes
     and cached locally. *)
 let get_predecessor =
@@ -301,7 +218,7 @@ let get_predecessor =
   let cache = HM.create max_cached in
   fun ~max_read
       cctxt
-      (chain : Tezos_shell_services.Chain_services.chain)
+      (chain : Mavryk_shell_services.Chain_services.chain)
       ancestor ->
     let open Lwt_result_syntax in
     (* Don't read more than the hard limit in one RPC call. *)
@@ -312,7 +229,7 @@ let get_predecessor =
     | Some pred -> return_some pred
     | None -> (
         let* blocks =
-          Tezos_shell_services.Chain_services.Blocks.list
+          Mavryk_shell_services.Chain_services.Blocks.list
             cctxt
             ~chain
             ~heads:[ancestor]
@@ -357,7 +274,7 @@ let nth_predecessor ~get_predecessor n block =
   in
   aux [] n block
 
-let get_tezos_reorg_for_new_head l1_state
+let get_mavryk_reorg_for_new_head l1_state
     ?(get_old_predecessor = get_predecessor l1_state) old_head new_head =
   let open Lwt_result_syntax in
   (* old_head and new_head must have the same level when calling aux *)
@@ -404,13 +321,13 @@ let get_tezos_reorg_for_new_head l1_state
   aux reorg old_head new_head
 
 (** Returns the reorganization of L1 blocks (if any) for [new_head]. *)
-let get_tezos_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
+let get_mavryk_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
     =
   let open Lwt_result_syntax in
   match old_head with
   | `Level l ->
       let _, new_head_level = new_head in
-      (* No known tezos head, we want all blocks from l. *)
+      (* No known mavryk head, we want all blocks from l. *)
       if new_head_level < l then return Reorg.no_reorg
       else
         let distance = Int32.sub new_head_level l |> Int32.to_int in
@@ -423,7 +340,7 @@ let get_tezos_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
         in
         return Reorg.{old_chain = []; new_chain}
   | `Head old_head ->
-      get_tezos_reorg_for_new_head
+      get_mavryk_reorg_for_new_head
         l1_state
         ?get_old_predecessor
         old_head
@@ -442,37 +359,3 @@ module Internal_for_tests = struct
       running = false;
     }
 end
-
-let client_context_with_timeout (obj : #Client_context.full) timeout :
-    Client_context.full =
-  let open Lwt_syntax in
-  object
-    inherit Client_context.proxy_context (obj :> Client_context.full)
-
-    method! call_service
-        : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), 'pr, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
-          'p ->
-          'q ->
-          'i ->
-          'o tzresult Lwt.t =
-      fun service params query body ->
-        let timeout_promise =
-          let* () = Lwt_unix.sleep timeout in
-          let path = Tezos_rpc.(Service.Internal.to_service service).path in
-          let path =
-            Tezos_rpc.Service.Internal.from_path path
-            |> Tezos_rpc.Path.to_string
-          in
-          Lwt_result_syntax.tzfail (RPC_timeout {path; timeout})
-        in
-        Lwt.pick [obj#call_service service params query body; timeout_promise]
-
-    method! generic_media_type_call meth ?body uri =
-      let timeout_promise =
-        let* () = Lwt_unix.sleep timeout in
-        Lwt_result_syntax.tzfail
-          (RPC_timeout {path = Uri.to_string uri; timeout})
-      in
-      Lwt.pick [obj#generic_media_type_call meth ?body uri; timeout_promise]
-  end

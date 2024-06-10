@@ -7,7 +7,6 @@
 
 members = [
   # Kernel Dev
-  "constants",
   "core",
   "host",
   "debug",

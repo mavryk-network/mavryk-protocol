@@ -96,7 +96,6 @@ let test_from_to_raw_fitness tuple =
   | Error _x -> assert false
 
 let test_from_to_raw_fitness_all () =
-  let open Lwt_result_syntax in
   List.iter test_from_to_raw_fitness test_cases ;
   return_unit
 

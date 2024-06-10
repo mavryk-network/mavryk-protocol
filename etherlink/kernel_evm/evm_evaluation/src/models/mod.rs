@@ -9,10 +9,7 @@ pub mod spec;
 use bytes::Bytes;
 use primitive_types::{H160, H256, U256};
 use serde::Deserialize;
-use std::{
-    collections::{BTreeMap, HashMap},
-    fmt,
-};
+use std::collections::{BTreeMap, HashMap};
 
 use crate::models::deserializer::*;
 
@@ -40,7 +37,6 @@ impl SpecName {
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountInfo {
-    #[serde(deserialize_with = "deserialize_str_as_u256")]
     pub balance: U256,
     #[serde(deserialize_with = "deserialize_str_as_bytes")]
     pub code: Bytes,
@@ -70,39 +66,15 @@ pub struct Fillers {
     pub expect: Vec<FillerResult>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Default)]
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize)]
 pub struct FillerResult {
-    #[serde(default)]
-    pub indexes: FillerResultIndexes,
     pub network: Vec<String>,
     pub result: HashMap<String, AccountInfoFiller>,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum IndexKind {
-    Label(String),
-    Range(i64, i64),
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Default)]
-pub struct FillerResultIndexes {
-    #[serde(default)]
-    #[serde(deserialize_with = "deserialize_indices")]
-    pub data: Vec<IndexKind>,
-    #[serde(default)]
-    #[serde(deserialize_with = "deserialize_indices")]
-    pub gas: Vec<IndexKind>,
-    #[serde(default)]
-    #[serde(deserialize_with = "deserialize_indices")]
-    pub value: Vec<IndexKind>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountInfoFiller {
-    #[serde(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(deserialize_with = "deserialize_opt_str_as_u256")]
     pub balance: Option<U256>,
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -122,8 +94,6 @@ pub struct AccountInfoFiller {
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct Info {
     pub source: String,
-    #[serde(default)]
-    pub labels: HashMap<usize, String>,
 }
 
 /// State test indexed state result deserialization.
@@ -147,16 +117,6 @@ pub struct TxPartIndices {
     pub data: usize,
     pub gas: usize,
     pub value: usize,
-}
-
-impl fmt::Display for TxPartIndices {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "data_index: {}, gas_index: {}, value_index: {}",
-            self.data, self.gas, self.value
-        )
-    }
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]

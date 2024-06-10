@@ -27,13 +27,13 @@ open Client_keys
 
 let group =
   {
-    Tezos_clic.name = "keys";
+    Mavryk_clic.name = "keys";
     title = "Commands for managing the wallet of cryptographic keys";
   }
 
 let algo_param () =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter
+  Mavryk_clic.parameter
     ~autocomplete:(fun _ -> return ["ed25519"; "secp256k1"; "p256"; "bls"])
     (fun _ name ->
       match name with
@@ -48,7 +48,7 @@ let algo_param () =
             name)
 
 let sig_algo_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~doc:"use custom signature algorithm"
     ~long:"sig"
     ~short:'s'
@@ -64,9 +64,9 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
     List.filter
       (fun s ->
         not
-        @@ Tezos_crypto.Base58.Alphabet.all_in_alphabet
+        @@ Mavryk_crypto.Base58.Alphabet.all_in_alphabet
              ~ignore_case
-             Tezos_crypto.Base58.Alphabet.bitcoin
+             Mavryk_crypto.Base58.Alphabet.bitcoin
              s)
       containing
   in
@@ -88,8 +88,8 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
            ~pp_sep:(fun ppf () -> Format.fprintf ppf ", ")
            (fun ppf s -> Format.fprintf ppf "'%s'" s))
         unrepresentable
-        Tezos_crypto.Base58.Alphabet.pp
-        Tezos_crypto.Base58.Alphabet.bitcoin
+        Mavryk_crypto.Base58.Alphabet.pp
+        Mavryk_crypto.Base58.Alphabet.bitcoin
         good_initial_char
   | [] -> (
       let unrepresentable =
@@ -108,8 +108,8 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
                ~pp_sep:(fun ppf () -> Format.fprintf ppf ", ")
                (fun ppf s -> Format.fprintf ppf "'%s'" s))
             unrepresentable
-            Tezos_crypto.Base58.Alphabet.pp
-            Tezos_crypto.Base58.Alphabet.bitcoin
+            Mavryk_crypto.Base58.Alphabet.pp
+            Mavryk_crypto.Base58.Alphabet.bitcoin
             good_initial_char
       | [] ->
           let* name_exists = Public_key_hash.mem cctxt name in
@@ -131,13 +131,13 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
             in
             let matches =
               if prefix then
-                let containing_tz1 = List.map (( ^ ) "tz1") containing in
+                let containing_mv1 = List.map (( ^ ) "mv1") containing in
                 fun key ->
                   List.exists
                     (fun containing ->
                       String.sub (adjust_case key) 0 (String.length containing)
                       = containing)
-                    containing_tz1
+                    containing_mv1
               else
                 let re = Re.Str.regexp (String.concat "\\|" containing) in
                 fun key ->
@@ -156,16 +156,16 @@ let gen_keys_containing ?(encrypted = false) ?(prefix = false)
               in
               if matches hash then
                 let*? pk_uri =
-                  Tezos_signer_backends.Unencrypted.make_pk public_key
+                  Mavryk_signer_backends.Unencrypted.make_pk public_key
                 in
                 let* sk_uri =
                   if encrypted then
-                    Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt
+                    Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt
                       cctxt
                       secret_key
                   else
                     Lwt.return
-                      (Tezos_signer_backends.Unencrypted.make_sk secret_key)
+                      (Mavryk_signer_backends.Unencrypted.make_sk secret_key)
                 in
                 let* () =
                   register_key
@@ -235,7 +235,7 @@ let rec input_fundraiser_params (cctxt : #Client_context.io_wallet) =
       let pkh = Signature.Public_key.hash pk in
       let msg =
         Format.asprintf
-          "Your public Tezos address is %a is that correct?"
+          "Your public Mavryk address is %a is that correct?"
           Signature.Public_key_hash.pp
           pkh
       in
@@ -256,7 +256,7 @@ let fail_if_already_registered cctxt force pk_uri name =
            name)
 
 let keys_count_param =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   param
     ~name:"keys_count"
     ~desc:"How many keys to generate"
@@ -316,7 +316,7 @@ end
     protocol-specific code because it should be available before a
     protocol is activated. *)
 let generate_test_keys =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let alias_prefix_param =
     arg
       ~long:"alias-prefix"
@@ -346,8 +346,8 @@ let generate_test_keys =
             let pkh, pk, sk =
               Signature.generate_key ~algo:Signature.Ed25519 ()
             in
-            let*? pk_uri = Tezos_signer_backends.Unencrypted.make_pk pk in
-            let*? sk_uri = Tezos_signer_backends.Unencrypted.make_sk sk in
+            let*? pk_uri = Mavryk_signer_backends.Unencrypted.make_pk pk in
+            let*? sk_uri = Mavryk_signer_backends.Unencrypted.make_sk sk in
             return ({pkh; pk; sk}, pk_uri, sk_uri, alias))
       in
       (* All keys are registered into a single wallet. *)
@@ -406,14 +406,14 @@ module Bls_commands = struct
         (Bip39.to_words mnemonic)
     in
     let seed = Mnemonic.to_32_bytes mnemonic in
-    let pkh, pk, sk = Tezos_crypto.Aggregate_signature.generate_key ~seed () in
-    let*? pk_uri = Tezos_signer_backends.Unencrypted.Aggregate.make_pk pk in
+    let pkh, pk, sk = Mavryk_crypto.Aggregate_signature.generate_key ~seed () in
+    let*? pk_uri = Mavryk_signer_backends.Unencrypted.Aggregate.make_pk pk in
     let* sk_uri =
       if encrypted then
-        Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt_aggregate
+        Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt_aggregate
           cctxt
           sk
-      else Tezos_signer_backends.Unencrypted.Aggregate.make_sk sk |> Lwt.return
+      else Mavryk_signer_backends.Unencrypted.Aggregate.make_sk sk |> Lwt.return
     in
     register_aggregate_key
       cctxt
@@ -451,7 +451,7 @@ module Bls_commands = struct
         let*! () =
           cctxt#message
             "Hash: %a"
-            Tezos_crypto.Aggregate_signature.Public_key_hash.pp
+            Mavryk_crypto.Aggregate_signature.Public_key_hash.pp
             pkh
         in
         match pk with
@@ -460,7 +460,7 @@ module Bls_commands = struct
             let*! () =
               cctxt#message
                 "Public Key: %a"
-                Tezos_crypto.Aggregate_signature.Public_key.pp
+                Mavryk_crypto.Aggregate_signature.Public_key.pp
                 pk
             in
             if show_private then
@@ -482,22 +482,22 @@ module Bls_commands = struct
     let*! () =
       cctxt#message
         "Bls address added: %a"
-        Tezos_crypto.Aggregate_signature.Public_key_hash.pp
+        Mavryk_crypto.Aggregate_signature.Public_key_hash.pp
         pkh
     in
     register_aggregate_key cctxt (pkh, pk_uri, sk_uri) ?public_key name
 end
 
-let commands network : Client_context.full Tezos_clic.command list =
+let commands network : Client_context.full Mavryk_clic.command list =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let encrypted_switch () =
     if
       List.exists
-        (fun (scheme, _) -> scheme = Tezos_signer_backends.Unencrypted.scheme)
+        (fun (scheme, _) -> scheme = Mavryk_signer_backends.Unencrypted.scheme)
         (Client_keys.registered_signers ())
-    then Tezos_clic.switch ~long:"encrypted" ~doc:"Encrypt the key on-disk" ()
-    else Tezos_clic.constant true
+    then Mavryk_clic.switch ~long:"encrypted" ~doc:"Encrypt the key on-disk" ()
+    else Mavryk_clic.constant true
   in
   let show_private_switch =
     switch ~long:"show-secret" ~short:'S' ~doc:"show the private key" ()
@@ -514,7 +514,7 @@ let commands network : Client_context.full Tezos_clic.command list =
          secret key for the default `unencrypted` scheme, the path on a \
          hardware security module, an alias for an external agent, etc.\n\
          This command gives the list of signer modules that this version of \
-         the tezos client supports."
+         the mavryk client supports."
       no_options
       (fixed ["list"; "signing"; "schemes"])
       (fun () (cctxt : Client_context.full) ->
@@ -554,9 +554,9 @@ let commands network : Client_context.full Tezos_clic.command list =
           (fun (force, algo) name (cctxt : Client_context.full) ->
             let* name = Secret_key.of_fresh cctxt force name in
             let pkh, pk, sk = Signature.generate_key ~algo () in
-            let*? pk_uri = Tezos_signer_backends.Unencrypted.make_pk pk in
+            let*? pk_uri = Mavryk_signer_backends.Unencrypted.make_pk pk in
             let* sk_uri =
-              Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
+              Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
             in
             register_key cctxt ~force (pkh, pk_uri, sk_uri) name)
     | Some `Testnet | None ->
@@ -571,13 +571,13 @@ let commands network : Client_context.full Tezos_clic.command list =
           (fun (force, algo, encrypted) name (cctxt : Client_context.full) ->
             let* name = Secret_key.of_fresh cctxt force name in
             let pkh, pk, sk = Signature.generate_key ~algo () in
-            let*? pk_uri = Tezos_signer_backends.Unencrypted.make_pk pk in
+            let*? pk_uri = Mavryk_signer_backends.Unencrypted.make_pk pk in
             let* sk_uri =
               if encrypted then
-                Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt
+                Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt
                   cctxt
                   sk
-              else Lwt.return (Tezos_signer_backends.Unencrypted.make_sk sk)
+              else Lwt.return (Mavryk_signer_backends.Unencrypted.make_sk sk)
             in
             register_key cctxt ~force (pkh, pk_uri, sk_uri) name));
     (match network with
@@ -589,7 +589,7 @@ let commands network : Client_context.full Tezos_clic.command list =
              (switch
                 ~long:"prefix"
                 ~short:'P'
-                ~doc:"the key must begin with tz1[word]"
+                ~doc:"the key must begin with mv1[word]"
                 ())
              (switch
                 ~long:"ignore-case"
@@ -624,7 +624,7 @@ let commands network : Client_context.full Tezos_clic.command list =
              (switch
                 ~long:"prefix"
                 ~short:'P'
-                ~doc:"the key must begin with tz1[word]"
+                ~doc:"the key must begin with mv1[word]"
                 ())
              (switch
                 ~long:"ignore-case"
@@ -671,7 +671,7 @@ let commands network : Client_context.full Tezos_clic.command list =
           Lwt.return (Signature.Secret_key.of_b58check (Uri.path sk_uri))
         in
         let* sk_uri =
-          Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
+          Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
         in
         let*! () =
           cctxt#message "Encrypted secret key %a" Uri.pp_hum (sk_uri :> Uri.t)
@@ -695,7 +695,7 @@ let commands network : Client_context.full Tezos_clic.command list =
         in
         let*! () =
           cctxt#message
-            "Tezos address added: %a"
+            "Mavryk address added: %a"
             Signature.Public_key_hash.pp
             pkh
         in
@@ -715,7 +715,7 @@ let commands network : Client_context.full Tezos_clic.command list =
             let* name = Secret_key.of_fresh cctxt force name in
             let* sk = input_fundraiser_params cctxt in
             let* sk_uri =
-              Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
+              Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt cctxt sk
             in
             let* pk_uri = Client_keys.neuterize sk_uri in
             let* () = fail_if_already_registered cctxt force pk_uri name in
@@ -736,7 +736,7 @@ let commands network : Client_context.full Tezos_clic.command list =
           let* () = Public_key_hash.add ~force cctxt name pkh in
           let*! () =
             cctxt#message
-              "Tezos address added: %a"
+              "Mavryk address added: %a"
               Signature.Public_key_hash.pp
               pkh
           in
@@ -807,7 +807,7 @@ let commands network : Client_context.full Tezos_clic.command list =
         ~group
         ~desc:"Forget one address."
         (args1
-           (Tezos_clic.switch
+           (Mavryk_clic.switch
               ~long:"force"
               ~short:'f'
               ~doc:"delete associated keys when present"
@@ -830,7 +830,7 @@ let commands network : Client_context.full Tezos_clic.command list =
         ~group
         ~desc:"Forget the entire wallet of keys."
         (args1
-           (Tezos_clic.switch
+           (Mavryk_clic.switch
               ~long:"force"
               ~short:'f'
               ~doc:"you got to use the force for that"
@@ -898,7 +898,7 @@ let commands network : Client_context.full Tezos_clic.command list =
            public/secret keys that may be different from a Ledger application, \
            depending on the BIP32 derivation path used in the Ledger. This \
            command also uses the Ed25519 algorithm, which means it generates \
-           tz1 public key hashes."
+           mv1 public key hashes."
         (args2
            (Secret_key.force_switch ())
            (switch ~doc:"encrypt the secret key" ~long:"encrypt" ()))
@@ -932,12 +932,12 @@ let commands network : Client_context.full Tezos_clic.command list =
                      sk)
               in
               let*? unencrypted_sk_uri =
-                Tezos_signer_backends.Unencrypted.make_sk sk
+                Mavryk_signer_backends.Unencrypted.make_sk sk
               in
               let* sk_uri =
                 match encrypt with
                 | true ->
-                    Tezos_signer_backends.Encrypted.prompt_twice_and_encrypt
+                    Mavryk_signer_backends.Encrypted.prompt_twice_and_encrypt
                       cctxt
                       sk
                 | false -> return unencrypted_sk_uri
@@ -952,7 +952,7 @@ let commands network : Client_context.full Tezos_clic.command list =
               in
               let*! () =
                 cctxt#message
-                  "Tezos address added: %a"
+                  "Mavryk address added: %a"
                   Signature.Public_key_hash.pp
                   pkh
               in

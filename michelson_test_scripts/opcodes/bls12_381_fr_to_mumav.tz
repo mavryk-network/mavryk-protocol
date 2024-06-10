@@ -1,0 +1,12 @@
+parameter bls12_381_fr;
+storage mumav;
+code {
+       CAR;
+       INT;
+       ISNAT;
+       ASSERT_SOME;
+       PUSH mumav 1;
+       MUL;
+       NIL operation;
+       PAIR;
+     };

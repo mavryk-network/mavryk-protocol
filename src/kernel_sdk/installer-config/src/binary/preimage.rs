@@ -3,12 +3,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_encoding::dac::pages::reveal_loop;
-use tezos_smart_rollup_encoding::dac::pages::V0SliceContentPage;
-use tezos_smart_rollup_encoding::dac::pages::MAX_PAGE_SIZE;
-use tezos_smart_rollup_host::path::Path;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_encoding::dac::pages::reveal_loop;
+use mavryk_smart_rollup_encoding::dac::pages::V0SliceContentPage;
+use mavryk_smart_rollup_encoding::dac::pages::MAX_PAGE_SIZE;
+use mavryk_smart_rollup_host::path::Path;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 // Support 3 levels of hashes pages, and then bottom layer of content.
 const MAX_DAC_LEVELS: usize = 4;
@@ -64,10 +64,10 @@ fn append_content<Host: Runtime>(
 #[cfg(test)]
 mod test {
     use super::reveal_root_hash_to_store;
-    use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-    use tezos_smart_rollup_encoding::dac::{prepare_preimages, PreimageHash};
-    use tezos_smart_rollup_host::{path::RefPath, runtime::Runtime};
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+    use mavryk_smart_rollup_encoding::dac::{prepare_preimages, PreimageHash};
+    use mavryk_smart_rollup_host::{path::RefPath, runtime::Runtime};
+    use mavryk_smart_rollup_mock::MockHost;
 
     const TMP_REVEAL_PATH: RefPath = RefPath::assert_from(b"/__sdk/installer/reveal");
 

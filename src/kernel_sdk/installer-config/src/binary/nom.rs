@@ -8,15 +8,15 @@ use nom::multi::length_data;
 use nom::number::complete::{u32, u8};
 use nom::sequence::tuple;
 use nom::{error::ErrorKind, number::Endianness};
-use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-use tezos_smart_rollup_host::path::{Path, RefPath, PATH_MAX_SIZE};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+use mavryk_smart_rollup_host::path::{Path, RefPath, PATH_MAX_SIZE};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 use super::{
     ConfigInstruction, MoveInstruction, RefBytes, RevealInstruction, SetInstruction,
 };
 
-// Those types and helpers copy paseted from tezos_data_encoding.
+// Those types and helpers copy paseted from mavryk_data_encoding.
 // As it's required to parse refs, lifetime 'a added to NomReader
 pub type NomInput<'a> = &'a [u8];
 
@@ -24,7 +24,7 @@ pub type NomError<'a> = nom::error::Error<NomInput<'a>>;
 
 pub type NomResult<'a, T> = nom::IResult<NomInput<'a>, T>;
 
-// NomReader is like tezos_data_encoding::enc::NomReader,
+// NomReader is like mavryk_data_encoding::enc::NomReader,
 // but tweaked with lifetime 'a
 pub trait NomReader<'a>: Sized {
     fn nom_read(input: &'a [u8]) -> NomResult<Self>;
@@ -38,7 +38,7 @@ pub fn short_size(input: NomInput) -> NomResult<u8> {
     u8(input)
 }
 
-// Copy-pasted from tezos_data_encoding and returning error tweaked
+// Copy-pasted from mavryk_data_encoding and returning error tweaked
 fn bounded_size(max: usize) -> impl FnMut(NomInput) -> NomResult<u32> {
     move |input| {
         let (input, size) = size(input)?;

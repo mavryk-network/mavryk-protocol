@@ -1,0 +1,83 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_proto_001_PtAtLas_lib_protocol_test_pbt_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-libs.mavryk-context.merkle_proof_encoding
+  mavkit-libs.test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-alcotezt
+  qcheck-alcotest
+  mavryk-benchmark
+  mavryk-benchmark-001-PtAtLas
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
+  mavkit-libs.crypto-dal
+  mavkit-libs.base-test-helpers
+  mavryk-protocol-001-PtAtLas.parameters)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_micheline
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_test_helpers
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_benchmark_001_PtAtLas
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_smart_rollup_001_PtAtLas
+  -open Mavryk_crypto_dal
+  -open Mavryk_base_test_helpers
+  -open Mavryk_protocol_001_PtAtLas_parameters)
+ (modules
+  ; liquidity_baking_pbt
+  saturation_fuzzing
+  test_merkle_list
+  test_gas_properties
+  test_sampler
+  test_script_comparison
+  test_tez_repr
+  test_bitset
+  test_sc_rollup_tick_repr
+  test_sc_rollup_encoding
+  test_sc_rollup_inbox
+  test_refutation_game
+  test_carbonated_map
+  test_zk_rollup_encoding
+  test_dal_slot_proof
+  test_compare_operations
+  test_operation_encoding
+  test_balance_updates_encoding
+  test_bytes_conversion))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_proto_001_PtAtLas_lib_protocol_test_pbt_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavryk-protocol-001-PtAtLas-tests)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

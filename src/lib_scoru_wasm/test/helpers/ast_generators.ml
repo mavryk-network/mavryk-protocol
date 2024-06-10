@@ -23,10 +23,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
-open Tezos_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_lazy_containers
 open QCheck2.Gen
-module Vector = Tezos_lazy_containers.Lazy_vector.Int32Vector
+module Vector = Mavryk_lazy_containers.Lazy_vector.Int32Vector
 
 let small_vector_gen gen = Vector.of_list <$> list_size (int_range 0 10) gen
 

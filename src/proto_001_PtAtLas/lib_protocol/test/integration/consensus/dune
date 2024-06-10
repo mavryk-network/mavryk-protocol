@@ -1,0 +1,65 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name
+  src_proto_001_PtAtLas_lib_protocol_test_integration_consensus_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-alcotezt
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-libs.base-test-helpers
+  mavryk-protocol-001-PtAtLas.parameters
+  mavkit-protocol-001-PtAtLas-libs.plugin)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavkit_alcotezt
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_protocol_plugin_001_PtAtLas)
+ (modules
+  test_baking
+  test_consensus_key
+  test_deactivation
+  test_delegation
+  test_double_baking
+  test_double_attestation
+  test_double_preattestation
+  test_attestation
+  test_frozen_deposits
+  test_helpers_rpcs
+  test_participation
+  test_preattestation_functor
+  test_preattestation
+  test_seed))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_proto_001_PtAtLas_lib_protocol_test_integration_consensus_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavryk-protocol-001-PtAtLas-tests)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

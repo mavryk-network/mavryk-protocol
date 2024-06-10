@@ -1,4 +1,0 @@
-include: .gitlab/ci/jobs/build/common.yml
-
-oc.docker:rust-toolchain:
-  extends: .oc.docker:rust-toolchain_template

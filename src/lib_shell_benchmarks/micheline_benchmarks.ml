@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 open Benchmarks_shell
-open Tezos_micheline
+open Mavryk_micheline
 
 let ns = Namespace.make Shell_namespace.ns "micheline"
 

@@ -140,7 +140,7 @@ struct
   let of_b58check = H.of_b58check
 
   let rpc_arg =
-    Tezos_rpc.Arg.make
+    Mavryk_rpc.Arg.make
       ~name:H.name
       ~descr:(Format.asprintf "%s (Base58Check-encoded)" H.name)
       ~destruct:(fun s ->
@@ -243,7 +243,7 @@ struct
   end
 
   module Error_table = struct
-    include Tezos_error_monad.TzLwtreslib.Hashtbl.Make_es (H)
+    include Mavryk_error_monad.TzLwtreslib.Hashtbl.Make_es (H)
   end
 
   module WeakRingTable = struct

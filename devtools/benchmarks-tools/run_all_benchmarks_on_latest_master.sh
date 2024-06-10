@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Using bash so that we are able to use the time program.
 
 #############################################################################
@@ -26,7 +26,7 @@
 #                                                                           #
 #############################################################################
 
-# This is a script to benchmark the Tezos gas parameters from a clone of
+# This is a script to benchmark the Mavryk gas parameters from a clone of
 # https://gitlab.com/tezos/tezos.
 
 # -x: echo run commands to stderr.
@@ -47,7 +47,7 @@ dated_log "Starting benchmarks processes"
 
 # Clean _opam to have a fresh dependencies environment and fetch the latest
 # commit.
-cd /data/tezos-benchmarks/tezos
+cd /data/mavryk-benchmarks/tezos
 rm -rf _opam
 dated_log "Pulling repository."
 git pull
@@ -65,7 +65,7 @@ mkdir "$SNOOP_RESULT_DIR"
 echo $$ > "$SNOOP_RESULT_DIR"/STARTED
 
 # Build dependencies.
-cd tezos
+cd mavryk
 dated_log "Compiling dependencies"
 # shellcheck disable=SC1091
 . "/home/mclaren/.cargo/env"
@@ -73,7 +73,7 @@ dated_log "Compiling dependencies"
 make OPAMSOLVERTIMEOUT=0 build-dev-deps
 eval "$(opam env)"
 
-# Build Tezos
+# Build Mavryk
 dated_log "Make"
 # BLST_PORTABLE=y is needed to benchmark BLS instructions
 BLST_PORTABLE=y make
@@ -83,7 +83,7 @@ dated_log "Running benchmarks"
 time dune exec tezt/snoop/main.exe -- --verbose
 dated_log "End of benchmarks run"
 
-# Move results from tezos to their dedicated directory.
+# Move results from mavryk to their dedicated directory.
 cd ..
 mv tezos/_snoop/*_results "$SNOOP_RESULT_DIR"/
 chmod +rx "$SNOOP_RESULT_DIR"/*_results

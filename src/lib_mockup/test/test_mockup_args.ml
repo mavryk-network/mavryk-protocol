@@ -31,12 +31,12 @@
     Subject:      Unit tests of the Mockup args library
 *)
 
-open Tezos_mockup_registration.Mockup_args
+open Mavryk_mockup_registration.Mockup_args
 
 let testable_chain_id =
   Alcotest.testable
-    Tezos_crypto.Hashed.Chain_id.pp
-    Tezos_crypto.Hashed.Chain_id.( = )
+    Mavryk_crypto.Hashed.Chain_id.pp
+    Mavryk_crypto.Hashed.Chain_id.( = )
 
 (** {!val:Chain_id.choose} uses the dummy value if no config file
     is specified *)
@@ -52,4 +52,4 @@ let tests =
       test_no_config_file_dummy );
   ]
 
-let () = Alcotest.run ~__FILE__ "tezos-mockup" [("mockup_args", tests)]
+let () = Alcotest.run ~__FILE__ "mavryk-mockup" [("mockup_args", tests)]

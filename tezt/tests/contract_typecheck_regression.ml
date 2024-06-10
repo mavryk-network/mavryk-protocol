@@ -33,7 +33,7 @@
 
 (* Using the lighter hook that only scrubs the clients [--base-dir] *)
 let hooks =
-  Tezos_regression.hooks_custom
+  Mavryk_regression.hooks_custom
     ~scrubbed_global_options:["--base-dir"; "-d"]
     ~replace_variables:Fun.id
     ()
@@ -43,7 +43,6 @@ let test_typecheck_contract protocol scripts =
     ~__FILE__
     ~title:(sf "Tc scripts")
     ~tags:["client"; "michelson"; "typechecking"]
-    ~uses_node:false
     (fun _protocol ->
       let* client = Client.init_mockup ~protocol () in
       (* Register constants because some scripts require them. *)

@@ -59,8 +59,8 @@ let check_stake ~loc (b : Block.t) (account : Account.t) =
   let*@ stake = Stake_storage.Internal_for_tests.get ctxt account.pkh in
   Assert.equal_int64
     ~loc
-    (Tez_repr.to_mutez stake)
-    (Tez.to_mutez staking_balance)
+    (Tez_repr.to_mumav stake)
+    (Tez.to_mumav staking_balance)
 
 (** Check that [Stake_storage.Internal_for_tests.get] returns 0 (following a
    deactivation). Note that in case of deactivation [Delegate.staking_balance]
@@ -80,7 +80,7 @@ let check_no_stake ~loc (b : Block.t) (account : Account.t) =
       ~adaptive_issuance_enable:false
   in
   let*@ stake = Stake_storage.Internal_for_tests.get ctxt account.pkh in
-  Assert.equal_int64 ~loc (Tez_repr.to_mutez stake) 0L
+  Assert.equal_int64 ~loc (Tez_repr.to_mumav stake) 0L
 
 (** Create a block with two initialized contracts/accounts. Assert
     that the first account has a staking balance that is equal to its
@@ -336,7 +336,7 @@ let test_deactivation_then_empty_then_self_delegation_then_recredit () =
 
 (** Initialize a block with two contracts/accounts. A third new account is also
    created. The first account is self-delegated. First account sends to third
-   one minimal_stake tez (so that, once it is active, it can appear in
+   one minimal_stake mav (so that, once it is active, it can appear in
    [Active_delegate_with_minimal_stake]. The third account has no delegate and is
    consistent for baking rights. Then, it is self-delegated and is supposed to
    be activated. Again, consistency for baking rights are preserved for the

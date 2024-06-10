@@ -109,7 +109,7 @@ let unix_error_testable =
   Alcotest.testable
     (fun ppf error ->
       let error_name =
-        Tezos_stdlib_unix.Unix_error.Internal_for_tests.get_constructor_name
+        Mavryk_stdlib_unix.Unix_error.Internal_for_tests.get_constructor_name
           error
       in
       match error with
@@ -119,12 +119,12 @@ let unix_error_testable =
 
 let json_encode_and_decode error =
   let open Data_encoding.Json in
-  let encoding = Tezos_stdlib_unix.Unix_error.encoding in
+  let encoding = Mavryk_stdlib_unix.Unix_error.encoding in
   destruct encoding @@ construct encoding error
 
 let binary_encode_and_decode error =
   let open Data_encoding.Binary in
-  let encoding = Tezos_stdlib_unix.Unix_error.encoding in
+  let encoding = Mavryk_stdlib_unix.Unix_error.encoding in
   of_bytes_exn encoding @@ to_bytes_exn encoding error
 
 let test_json () =

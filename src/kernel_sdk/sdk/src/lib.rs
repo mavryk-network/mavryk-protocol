@@ -10,10 +10,7 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-#[cfg(all(target_arch = "riscv64", target_os = "hermit", feature = "proto-alpha"))]
-extern crate hermit;
-
-pub use tezos_smart_rollup_entrypoint::kernel_entry;
+pub use mavryk_smart_rollup_entrypoint::kernel_entry;
 
 pub mod host {
     //! A low level, but safe, wrapper over the Smart Rollup host functions.
@@ -25,15 +22,15 @@ pub mod host {
     //!
     //! [core_unsafe]: crate::core_unsafe
 
-    pub use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+    pub use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
     #[doc(inline)]
-    pub use tezos_smart_rollup_host::Error as HostError;
+    pub use mavryk_smart_rollup_host::Error as HostError;
 }
 
 /// Lowest level definitions of host functions & associated constants.
 ///
 /// In general, you should prefer using the [`host`] module.
-pub use tezos_smart_rollup_core as core_unsafe;
+pub use mavryk_smart_rollup_core as core_unsafe;
 
 pub mod prelude {
     //! Tezos smart rollup prelude - used by every kernel.
@@ -45,8 +42,8 @@ pub mod prelude {
     //! The prelude can be used to write a simple **Hello, world!** kernel:
     //!
     //! ```
-    //! use tezos_smart_rollup::prelude::*;
-    //! use tezos_smart_rollup::kernel_entry;
+    //! use mavryk_smart_rollup::prelude::*;
+    //! use mavryk_smart_rollup::kernel_entry;
     //!
     //! fn kernel_run(host: &mut impl Runtime) {
     //!   debug_msg!(host, "Hello, world!");
@@ -54,51 +51,51 @@ pub mod prelude {
     //!
     //! kernel_entry!(kernel_run);
     //!
-    //! # use tezos_smart_rollup::testing::prelude::MockHost;
+    //! # use mavryk_smart_rollup::testing::prelude::MockHost;
     //! # let mut host = MockHost::default();
     //! # host.run_level(kernel_run);
     //! ```
     #[cfg(feature = "debug_alloc")]
-    pub use tezos_smart_rollup_debug::debug_msg;
+    pub use mavryk_smart_rollup_debug::debug_msg;
     #[cfg(not(feature = "debug_alloc"))]
-    pub use tezos_smart_rollup_debug::debug_str;
-    pub use tezos_smart_rollup_host::runtime::Runtime;
+    pub use mavryk_smart_rollup_debug::debug_str;
+    pub use mavryk_smart_rollup_host::runtime::Runtime;
 }
 
 #[cfg(feature = "alloc")]
 pub mod types {
     //! Types used/returned elsewhere in the SDK.
 
-    pub use tezos_smart_rollup_encoding::{
+    pub use mavryk_smart_rollup_encoding::{
         contract::Contract, entrypoint::Entrypoint, entrypoint::EntrypointError,
         public_key::PublicKey, public_key_hash::PublicKeyHash,
         smart_rollup::SmartRollupAddress, timestamp::Timestamp,
     };
-    pub use tezos_smart_rollup_host::input::Message;
-    pub use tezos_smart_rollup_host::metadata::RollupMetadata;
+    pub use mavryk_smart_rollup_host::input::Message;
+    pub use mavryk_smart_rollup_host::metadata::RollupMetadata;
 }
 
 #[doc(inline)]
-pub use tezos_smart_rollup_encoding::dac;
+pub use mavryk_smart_rollup_encoding::dac;
 #[cfg(feature = "data-encoding")]
 #[doc(inline)]
-pub use tezos_smart_rollup_encoding::inbox;
+pub use mavryk_smart_rollup_encoding::inbox;
 #[cfg(feature = "data-encoding")]
 #[doc(inline)]
-pub use tezos_smart_rollup_encoding::michelson;
+pub use mavryk_smart_rollup_encoding::michelson;
 #[cfg(feature = "data-encoding")]
 #[doc(inline)]
-pub use tezos_smart_rollup_encoding::outbox;
+pub use mavryk_smart_rollup_encoding::outbox;
 
 pub mod storage {
     //! Durable Storage allows state to be persisted between
     //! multiple calls to the kernel.
 
     #[doc(inline)]
-    pub use tezos_smart_rollup_host::path;
+    pub use mavryk_smart_rollup_host::path;
 
     #[cfg(feature = "storage")]
-    pub use tezos_smart_rollup_storage as accounts;
+    pub use mavryk_smart_rollup_storage as accounts;
 }
 
 #[cfg(all(feature = "testing", not(target_arch = "wasm32")))]
@@ -112,5 +109,5 @@ pub mod testing {
     //! [`MockHost`]: prelude::MockHost
 
     #[doc(inline)]
-    pub use tezos_smart_rollup_mock as prelude;
+    pub use mavryk_smart_rollup_mock as prelude;
 }

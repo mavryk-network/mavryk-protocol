@@ -46,7 +46,7 @@ solely. So, it relies on filters defined in a :doc:`protocol-specific
 plugin <../active/plugins>`.
 
 The prevalidator implements three filtering mechanisms: a
-``prefilter``, the ``precheck`` filter (starting from Octez version
+``prefilter``, the ``precheck`` filter (starting from Mavkit version
 12.0), and a ``postfilter``.
 
 The ``prefilter`` is executed for each operation received from the
@@ -56,7 +56,7 @@ execute and static: rejection is done solely based on the content of
 the operation and already accepted operations, not taking into account
 the state of the ledger.
 
-Starting from Octez version 12.0, the ``precheck`` filter can be used
+Starting from Mavkit version 12.0, the ``precheck`` filter can be used
 instead of ``apply_operation`` to classify operations, as follows:
 If ``precheck`` cannot decide the classification
 of an operation, the prevalidator uses ``apply_operation`` instead.
@@ -80,7 +80,7 @@ page for the corresponding economic protocol (e.g., :doc:`../active/plugins` for
 Operations classification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Octez prevalidator classifies an operation depending on the outcome
+The Mavkit prevalidator classifies an operation depending on the outcome
 of its validity in the prevalidator's current context:
 
 - ``Applied``: the operation was successfully applied on the current
@@ -109,7 +109,7 @@ Pending operations ordering and prioritization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Instead of just sorting the set of its pending operations by hash as done prior to
-version 12 of Octez, the prevalidator can now take advantage of extra
+version 12 of Mavkit, the prevalidator can now take advantage of extra
 information returned by the prevalidator filters in the protocol plugins,
 sorting by information returned by the plugin, and then by hash. This results in
 a finer-grained ordering, and thus prioritizes operations following the

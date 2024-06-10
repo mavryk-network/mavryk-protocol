@@ -31,9 +31,9 @@ let bake cctxt ?timestamp block command sk =
   let timestamp =
     match timestamp with
     | Some t -> t
-    | None -> Time.System.(to_protocol (Tezos_base.Time.System.now ()))
+    | None -> Time.System.(to_protocol (Mavryk_base.Time.System.now ()))
   in
-  let protocol_data = {command; signature = Tezos_crypto.Signature.V0.zero} in
+  let protocol_data = {command; signature = Mavryk_crypto.Signature.V0.zero} in
   let* shell_header, _ =
     Genesis_block_services.Helpers.Preapply.block
       cctxt
@@ -50,8 +50,7 @@ let bake cctxt ?timestamp block command sk =
   Shell_services.Injection.block cctxt signed_blk []
 
 let int32_parameter =
-  let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ p ->
+  Mavryk_clic.parameter (fun _ p ->
       match Int32.of_string p with
       | i32 ->
           if Compare.Int32.(i32 < 0l) then
@@ -60,8 +59,7 @@ let int32_parameter =
       | exception _ -> failwith "Cannot read int32")
 
 let file_parameter =
-  let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ p ->
+  Mavryk_clic.parameter (fun _ p ->
       if not (Sys.file_exists p) then failwith "File doesn't exist: '%s'" p
       else return p)
 
@@ -99,40 +97,38 @@ let fitness_from_uint32 fitness =
   ]
 
 let timestamp_arg =
-  let open Lwt_result_syntax in
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"timestamp"
     ~placeholder:"date"
     ~doc:"Set the timestamp of the block (and initial time of the chain)"
-    (Tezos_clic.parameter (fun _ t ->
+    (Mavryk_clic.parameter (fun _ t ->
          match Time.System.of_notation_opt t with
          | None ->
              failwith "Could not parse value provided to -timestamp option"
          | Some t -> return t))
 
 let test_delay_arg =
-  let open Lwt_result_syntax in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"delay"
     ~placeholder:"time"
     ~doc:"Set the life span of the test chain (in seconds)"
     ~default:(Int64.to_string (Int64.mul 24L 3600L))
-    (Tezos_clic.parameter (fun _ t ->
+    (Mavryk_clic.parameter (fun _ t ->
          match Int64.of_string_opt t with
          | None -> failwith "Could not parse value provided to -delay option"
          | Some t -> return t))
 
 let proto_param ~name ~desc t =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc
-    (Tezos_clic.parameter (fun _ str ->
+    (Mavryk_clic.parameter (fun _ str ->
          Lwt.return (Protocol_hash.of_b58check str)))
     t
 
 let commands () =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let args =
     args1
       (arg
@@ -174,7 +170,7 @@ let commands () =
            (cctxt : Client_context.full) ->
         let fitness = fitness_from_uint32 fitness in
         let* json =
-          Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file param_json_file
+          Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file param_json_file
         in
         let protocol_parameters =
           Data_encoding.Binary.to_bytes_exn Data_encoding.json json
@@ -213,7 +209,7 @@ let commands () =
       (fun (timestamp, delay) hash fitness sk param_json_file cctxt ->
         let fitness = fitness_from_uint32 fitness in
         let* json =
-          Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file param_json_file
+          Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file param_json_file
         in
         let protocol_parameters =
           Data_encoding.Binary.to_bytes_exn Data_encoding.json json

@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
-// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
@@ -18,17 +17,17 @@ use evm_execution::account_storage::EVM_ACCOUNTS_PATH;
 use primitive_types::{H256, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use std::collections::VecDeque;
-use tezos_ethereum::block::{BlockConstants, L2Block};
-use tezos_ethereum::rlp_helpers::*;
-use tezos_ethereum::transaction::{
+use mavryk_ethereum::block::{BlockConstants, L2Block};
+use mavryk_ethereum::rlp_helpers::*;
+use mavryk_ethereum::transaction::{
     IndexedLog, TransactionObject, TransactionReceipt, TransactionStatus,
     TransactionType, TRANSACTION_HASH_SIZE,
 };
-use tezos_ethereum::Bloom;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::path::RefPath;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::Bloom;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 #[derive(Debug, PartialEq, Clone)]
 /// Container for all data needed during block computation
@@ -44,10 +43,6 @@ pub struct BlockInProgress {
     /// index for next transaction
     pub index: u32,
     /// gas price for transactions in the block being created
-    // TODO: https://gitlab.com/tezos/tezos/-/issues/6810
-    //       this seems like dead code, can we remove it?
-    //       (ensure that BlockInProgress encoding doesn't need
-    //        backwards compatibility).
     pub gas_price: U256,
     /// hash of the parent
     pub parent_hash: H256,
@@ -201,23 +196,31 @@ impl BlockInProgress {
         )
     }
 
-    pub fn from_blueprint(
-        blueprint: crate::blueprint::Blueprint,
+    pub fn from_queue_element(
+        proposal: crate::blueprint::QueueElement,
         current_block_number: U256,
         parent_hash: H256,
         constants: &BlockConstants,
         tick_counter: u64,
     ) -> BlockInProgress {
-        // blueprint is turn into a ring to allow popping from the front
-        let ring = blueprint.transactions.into();
-        BlockInProgress::new_with_ticks(
-            current_block_number,
-            parent_hash,
-            constants.base_fee_per_gas(),
-            ring,
-            tick_counter,
-            blueprint.timestamp,
-        )
+        match proposal {
+            crate::blueprint::QueueElement::Blueprint(proposal) => {
+                // proposal is turn into a ring to allow poping from the front
+                let ring = proposal.transactions.into();
+                BlockInProgress::new_with_ticks(
+                    current_block_number,
+                    parent_hash,
+                    constants.gas_price,
+                    ring,
+                    tick_counter,
+                    proposal.timestamp,
+                )
+            }
+            crate::blueprint::QueueElement::BlockInProgress(mut bip) => {
+                bip.estimated_ticks = tick_counter;
+                *bip
+            }
+        }
     }
 
     fn add_gas(&mut self, gas: U256) -> Result<(), Error> {
@@ -316,12 +319,17 @@ impl BlockInProgress {
         self.tx_queue.pop_front()
     }
 
-    pub fn repush_tx(&mut self, tx: Transaction) {
-        self.tx_queue.push_front(tx)
-    }
-
     pub fn has_tx(&self) -> bool {
         !self.tx_queue.is_empty()
+    }
+
+    pub fn would_overflow(&self) -> bool {
+        match self.tx_queue.front() {
+            Some(transaction) => {
+                tick_model::estimate_would_overflow(self.estimated_ticks, transaction)
+            }
+            None => false, // should not happen, but false is a safe value anyway
+        }
     }
 
     pub fn make_receipt(
@@ -334,12 +342,12 @@ impl BlockInProgress {
             caller: from,
             to,
             execution_outcome,
-            effective_gas_price,
             ..
         } = receipt_info;
 
         let &mut Self {
             number: block_number,
+            gas_price: effective_gas_price,
             cumulative_gas,
             logs_offset,
             ..
@@ -418,36 +426,36 @@ mod tests {
     use crate::inbox::{Deposit, Transaction, TransactionContent};
     use primitive_types::{H160, H256, U256};
     use rlp::{Decodable, Encodable, Rlp};
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         transaction::{TransactionType, TRANSACTION_HASH_SIZE},
         tx_common::EthereumTransactionCommon,
         tx_signature::TxSignature,
         Bloom,
     };
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
     fn new_sig_unsafe(v: u64, r: H256, s: H256) -> TxSignature {
         TxSignature::new(U256::from(v), r, s).unwrap()
     }
 
     fn dummy_etc(i: u8) -> EthereumTransactionCommon {
-        EthereumTransactionCommon::new(
-            TransactionType::Legacy,
-            Some(U256::from(i)),
-            U256::from(i),
-            U256::from(i),
-            U256::from(i),
-            i.into(),
-            None,
-            U256::from(i),
-            Vec::new(),
-            vec![],
-            Some(new_sig_unsafe(
+        EthereumTransactionCommon {
+            type_: TransactionType::Legacy,
+            chain_id: U256::from(i),
+            nonce: U256::from(i),
+            max_fee_per_gas: U256::from(i),
+            max_priority_fee_per_gas: U256::from(i),
+            gas_limit: i.into(),
+            to: None,
+            value: U256::from(i),
+            data: Vec::new(),
+            access_list: vec![],
+            signature: Some(new_sig_unsafe(
                 (36 + i * 2).into(), // need to be consistent with chain_id
                 H256::from([i; 32]),
                 H256::from([i; 32]),
             )),
-        )
+        }
     }
 
     fn dummy_tx_eth(i: u8) -> Transaction {
@@ -460,6 +468,7 @@ mod tests {
     fn dummy_tx_deposit(i: u8) -> Transaction {
         let deposit = Deposit {
             amount: U256::from(i),
+            gas_price: U256::from(i),
             receiver: H160::from([i; 20]),
         };
         Transaction {
@@ -519,7 +528,7 @@ mod tests {
         };
 
         let encoded = bip.rlp_bytes();
-        let expected = "f901f02af878f83aa00101010101010101010101010101010101010101010101010101010101010101d802d601940101010101010101010101010101010101010101f83aa00808080808080808080808080808080808080808080808080808080808080808d802d608940808080808080808080808080808080808080808f842a00202020202020202020202020202020202020202020202020202020202020202a00909090909090909090909090909090909090909090909090909090909090909030405a00505050505050505050505050505050505050505050505050505050505050505b901000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080880000000000000000";
+        let expected = "f901f22af87af83ba00101010101010101010101010101010101010101010101010101010101010101d902d70101940101010101010101010101010101010101010101f83ba00808080808080808080808080808080808080808080808080808080808080808d902d70808940808080808080808080808080808080808080808f842a00202020202020202020202020202020202020202020202020202020202020202a00909090909090909090909090909090909090909090909090909090909090909030405a00505050505050505050505050505050505050505050505050505050505050505b901000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080880000000000000000";
 
         assert_eq!(hex::encode(encoded), expected);
 
@@ -553,7 +562,7 @@ mod tests {
         };
 
         let encoded = bip.rlp_bytes();
-        let expected = "f902272af8aff871a00101010101010101010101010101010101010101010101010101010101010101f84e01b84bf84901010180018026a00101010101010101010101010101010101010101010101010101010101010101a00101010101010101010101010101010101010101010101010101010101010101f83aa00808080808080808080808080808080808080808080808080808080808080808d802d608940808080808080808080808080808080808080808f842a00202020202020202020202020202020202020202020202020202020202020202a00909090909090909090909090909090909090909090909090909090909090909030405a00505050505050505050505050505050505050505050505050505050505050505b901000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004880000000000000000";
+        let expected = "f902282af8b0f871a00101010101010101010101010101010101010101010101010101010101010101f84e01b84bf84901010180018026a00101010101010101010101010101010101010101010101010101010101010101a00101010101010101010101010101010101010101010101010101010101010101f83ba00808080808080808080808080808080808080808080808080808080808080808d902d70808940808080808080808080808080808080808080808f842a00202020202020202020202020202020202020202020202020202020202020202a00909090909090909090909090909090909090909090909090909090909090909030405a00505050505050505050505050505050505050505050505050505050505050505b901000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004880000000000000000";
 
         assert_eq!(hex::encode(encoded), expected);
 

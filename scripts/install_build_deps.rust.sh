@@ -16,23 +16,23 @@ rust_version=${RUST_VERSION:-$recommended_rust_version}
 
 if [ "$recommended_rust_version" != "$rust_version" ]; then
   echo "\
-WARNING: you selected a different version of rust. Tezos is tested only
+WARNING: you selected a different version of rust. Mavryk is tested only
 with Rust $recommended_rust_version. Do this at your own peril."
   sleep 3
 fi
 
-if [ ! -x "$(command -v rustup)" ] &&
-  [[ ! -x "$(command -v rustc)" || ! -x "$(command -v cargo)" ]]; then
-  echo "The Rust compiler is not installed. Please install Rust $recommended_rust_version."
-  echo "See instructions at: https://tezos.gitlab.io/introduction/howtoget.html#setup-rust"
-  exit 1
+if [ ! -x "$(command -v rustup)" ] && \
+   [[ ! -x "$(command -v rustc)" || ! -x "$(command -v cargo)" ]]; then
+    echo "The Rust compiler is not installed. Please install Rust $recommended_rust_version."
+    echo "See instructions at: https://tezos.gitlab.io/introduction/howtoget.html#setup-rust"
+    exit 1
 fi
 
 if ! [[ "$(rustc --version | cut -d' ' -f2)" == *"$rust_version"* ]]; then
-  echo "\
+    echo "\
 Wrong Rust version. This is probably because you have used 'rustup
 override' in the past. Run the following command from your
 favorite shell, and retry to install the dependencies:
 $ rustup override unset"
-  exit 1
+    exit 1
 fi

@@ -197,7 +197,7 @@ module Make (Error : sig
   include Sig.CORE with type error := error
 end)
 (Trace : Sig.TRACE)
-(Monad : Tezos_lwt_result_stdlib.Lwtreslib.TRACED_MONAD
+(Monad : Mavryk_lwt_result_stdlib.Lwtreslib.TRACED_MONAD
            with type 'error trace := 'error Trace.trace) :
   S with type error := Error.error and type 'error trace := 'error Trace.trace =
 struct
@@ -240,7 +240,7 @@ struct
        We do the bulk of this by including [Lwt_traced_result_syntax] directly. *)
     include Monad.Lwt_traced_result_syntax
 
-    (* Some globals that Lwtreslib does not expose but that the Tezos code uses a
+    (* Some globals that Lwtreslib does not expose but that the Mavryk code uses a
        lot. *)
     let ( >>= ) = Monad.Lwt_syntax.( let* )
 

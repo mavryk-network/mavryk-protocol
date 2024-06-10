@@ -55,7 +55,7 @@ let init ?(overrides = default_overrides) protocol =
   in
   Log.info "Activated protocol." ;
   return
-  @@ ( Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn (Protocol.hash protocol),
+  @@ ( Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn (Protocol.hash protocol),
        sandbox_endpoint,
        sandbox_client,
        sandbox_node )
@@ -254,7 +254,7 @@ let test_manual_bake =
   let giver = "bootstrap1" in
   Log.info "Transfer from giver %s to recipient %s" giver recipient.alias ;
   let transfer_amount = Tez.of_int 500 in
-  let fee = Tez.of_mutez_int 100_000 in
+  let fee = Tez.of_mumav_int 100_000 in
   let process =
     Client.spawn_transfer
       ~amount:transfer_amount

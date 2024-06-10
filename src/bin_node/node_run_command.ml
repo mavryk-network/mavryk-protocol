@@ -52,11 +52,11 @@ let () =
     `Permanent
     ~id:"main.run.port_already_in_use"
     ~title:"Cannot start node: RPC port already in use"
-    ~description:"Another tezos node is probably running on the same RPC port."
+    ~description:"Another mavryk node is probably running on the same RPC port."
     ~pp:(fun ppf addrlist ->
       Format.fprintf
         ppf
-        "Another tezos node is probably running on one of these addresses \
+        "Another mavryk node is probably running on one of these addresses \
          (%a). Please choose another RPC port."
         (Format.pp_print_list P2p_point.Id.pp)
         addrlist)
@@ -107,19 +107,11 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_local_rpc_server"
-      ~msg:"starting local RPC server on {host}:{port} (acl = {acl_policy})"
+      ~msg:"starting RPC server on {host}:{port} (acl = {acl_policy})"
       ~level:Notice
       ("host", Data_encoding.string)
       ("port", Data_encoding.uint16)
       ("acl_policy", Data_encoding.string)
-
-  let starting_internal_rpc_server =
-    declare_0
-      ~section
-      ~name:"starting_internal_rpc_server"
-      ~msg:"starting internal RPC server"
-      ~level:Info
-      ()
 
   let starting_metrics_server =
     declare_2
@@ -134,18 +126,18 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_node"
-      ~msg:"starting the Tezos node v{version} ({git_info})"
+      ~msg:"starting the Mavryk node v{version} ({git_info})"
       ~level:Notice
       ("chain", Distributed_db_version.Name.encoding)
-      ~pp2:Tezos_version.Version.pp
-      ("version", Tezos_version.Node_version.version_encoding)
+      ~pp2:Mavryk_version.Version.pp
+      ("version", Mavryk_version.Node_version.version_encoding)
       ("git_info", Data_encoding.string)
 
   let node_is_ready =
     declare_0
       ~section
       ~name:"node_is_ready"
-      ~msg:"the Tezos node is now running"
+      ~msg:"the Mavryk node is now running"
       ~level:Notice
       ()
 
@@ -153,7 +145,7 @@ module Event = struct
     declare_0
       ~section
       ~name:"shutting_down_node"
-      ~msg:"shutting down the Tezos node"
+      ~msg:"shutting down the Mavryk node"
       ~level:Notice
       ()
 
@@ -278,7 +270,7 @@ let init_node ?sandbox ?target ~identity ~singleprocess ~internal_events
             reconnection_config = config.p2p.reconnection_config;
             identity;
             proof_of_work_target =
-              Tezos_crypto.Crypto_box.make_pow_target config.p2p.expected_pow;
+              Mavryk_crypto.Crypto_box.make_pow_target config.p2p.expected_pow;
             trust_discovered_peers = sandbox <> None;
             disable_peer_discovery = config.p2p.disable_peer_discovery;
           }
@@ -336,14 +328,14 @@ let init_node ?sandbox ?target ~identity ~singleprocess ~internal_events
     | _ -> return_unit
   in
   let version =
-    Tezos_version.Version.to_string Tezos_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
   in
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   Node.create
     ~sandboxed:(sandbox <> None)
@@ -362,7 +354,7 @@ let rpc_metrics =
   Prometheus.Summary.v_labels
     ~label_names:["endpoint"; "method"]
     ~help:"RPC endpoint call counts and sum of execution times."
-    ~namespace:Tezos_version.Node_version.namespace
+    ~namespace:Mavryk_version.Node_version.namespace
     ~subsystem:"rpc"
     "calls"
 
@@ -370,15 +362,9 @@ module Metrics_server = Prometheus_app.Cohttp (Cohttp_lwt_unix.Server)
 
 type port = int
 
-type socket_file = string
+type single_server_kind = Local of Conduit_lwt_unix.server * port
 
-type single_server_kind =
-  | Process of socket_file
-  | Local of Conduit_lwt_unix.server * port
-
-let extract_mode = function
-  | Process socket_file -> `Unix_domain_socket (`File socket_file)
-  | Local (mode, _) -> mode
+let extract_mode = function Local (mode, _) -> mode
 
 (* Add default accepted CORS headers *)
 let sanitize_cors_headers ~default headers =
@@ -396,9 +382,6 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
   let* acl =
     (* Also emits events depending on server kind *)
     match rpc_server_kind with
-    | Process _ ->
-        let*! () = Event.(emit starting_internal_rpc_server) () in
-        return_none
     | Local (mode, port) ->
         let*! acl_policy = RPC_server.Acl.resolve_domain_names rpc_config.acl in
         let acl =
@@ -437,7 +420,7 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
     if path = "/metrics" then
       let*! response = Metrics_server.callback conn req body in
       Lwt.return (`Response response)
-    else Tezos_rpc_http_server.RPC_server.resto_callback server conn req body
+    else Mavryk_rpc_http_server.RPC_server.resto_callback server conn req body
   in
   let update_metrics uri meth =
     Prometheus.Summary.(time (labels rpc_metrics [uri; meth]) Sys.time)
@@ -454,22 +437,16 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
       (* FIXME: https://gitlab.com/tezos/tezos/-/issues/1312
          This exception seems to be unreachable.
       *)
-      | Unix.Unix_error (Unix.EADDRINUSE, "bind", "") as exn -> (
+      | Unix.Unix_error (Unix.EADDRINUSE, "bind", "") -> (
           match rpc_server_kind with
-          | Process _ -> fail_with_exn exn
           | Local (_, port) -> tzfail (RPC_Port_already_in_use [(addr, port)]))
       | exn -> fail_with_exn exn)
 
 (* Describes the kind of servers that can be handled by the node.
    - Local_rpc_server: RPC server is run by the node itself
      (this may block the node in case of heavy RPC load),
-   - External_rpc_server: RPC server is spawned as an external
-     process,
    - No_server: the node is not responding to any RPC. *)
-type rpc_server_kind =
-  | Local_rpc_server of RPC_server.server list
-  | External_rpc_server of (RPC_server.server * Rpc_process_worker.t) list
-  | No_server
+type rpc_server_kind = Local_rpc_server of RPC_server.server list | No_server
 
 (* Initializes an RPC server handled by the node main process. *)
 let init_local_rpc_server (config : Config_file.t) dir =
@@ -495,83 +472,9 @@ let init_local_rpc_server (config : Config_file.t) dir =
                 in
                 launch_rpc_server config dir (Local (mode, port)) addr)
               addrs)
-      config.rpc.local_listen_addrs
-  in
-  return (Local_rpc_server servers)
-
-let rpc_socket_path ~socket_dir ~id ~pid =
-  let filename = Format.sprintf "octez-external-rpc-socket-%d-%d" pid id in
-  Filename.concat socket_dir filename
-
-(* Initializes an RPC server handled by the node process. It will be
-   used by an external RPC process, identified by [id], to forward
-   RPCs to the node through a Unix socket. *)
-let init_local_rpc_server_for_external_process id (config : Config_file.t) dir
-    addr =
-  let open Lwt_result_syntax in
-  let socket_dir = Tezos_base_unix.Socket.get_temporary_socket_dir () in
-  let pid = Unix.getpid () in
-  let comm_socket_path = rpc_socket_path ~id ~socket_dir ~pid in
-  (* Register a clean up callback to clean the comm_socket_path when
-     shutting down. Indeed, the socket file is created by the
-     Conduit-lwt-unix.Conduit_lwt_server.listen function, but the
-     resource is not cleaned. *)
-  let _ =
-    Lwt_exit.register_clean_up_callback ~loc:__LOC__ (fun _ ->
-        Lwt_unix.unlink comm_socket_path)
-  in
-  let* rpc_server =
-    launch_rpc_server config dir (Process comm_socket_path) addr
-  in
-  return (rpc_server, comm_socket_path)
-
-let init_external_rpc_server config node_version dir internal_events =
-  let open Lwt_result_syntax in
-  (* Start one rpc_process for each rpc endpoint. *)
-  let id = ref 0 in
-  let* rpc_servers =
-    List.concat_map_ep
-      (fun addr ->
-        let* addrs = Config_file.resolve_rpc_listening_addrs addr in
-        match addrs with
-        | [] -> failwith "Cannot resolve listening address: %S" addr
-        | addrs ->
-            List.map_ep
-              (fun (p2p_point : P2p_point.Id.t) ->
-                let id =
-                  let curid = !id in
-                  incr id ;
-                  curid
-                in
-                let* local_rpc_server, comm_socket_path =
-                  init_local_rpc_server_for_external_process
-                    id
-                    config
-                    dir
-                    (fst p2p_point)
-                in
-                let addr = P2p_point.Id.to_string p2p_point in
-                (* Update the config sent to the rpc_process to
-                   start so that it contains a single listen
-                   address. *)
-                let config =
-                  {config with rpc = {config.rpc with listen_addrs = [addr]}}
-                in
-                let rpc_process =
-                  Octez_rpc_process.Rpc_process_worker.create
-                    ~comm_socket_path
-                    config
-                    node_version
-                    internal_events
-                in
-                let* () =
-                  Octez_rpc_process.Rpc_process_worker.start rpc_process
-                in
-                return (local_rpc_server, rpc_process))
-              addrs)
       config.rpc.listen_addrs
   in
-  return (External_rpc_server rpc_servers)
+  return (Local_rpc_server servers)
 
 let metrics_serve metrics_addrs =
   let open Lwt_result_syntax in
@@ -602,7 +505,7 @@ let metrics_serve metrics_addrs =
    validation will not be more expensive. *)
 let init_zcash () =
   try
-    Tezos_sapling.Core.Validator.init_params () ;
+    Mavryk_sapling.Core.Validator.init_params () ;
     Lwt.return_unit
   with exn ->
     Lwt.fail_with
@@ -610,41 +513,33 @@ let init_zcash () =
          "Failed to initialize Zcash parameters: %s"
          (Printexc.to_string exn))
 
-let init_rpc (config : Config_file.t) (node : Node.t) internal_events =
+let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
   let open Lwt_result_syntax in
   (* Start local RPC server (handled by the node main process) only
      when at least one local listen addr is given. *)
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   let node_version = Node.get_version node in
 
   let dir = Node.build_rpc_directory ~node_version ~commit_info node in
   let dir = Node_directory.build_node_directory config dir in
   let dir =
-    Tezos_rpc.Directory.register_describe_directory_service
+    Mavryk_rpc.Directory.register_describe_directory_service
       dir
-      Tezos_rpc.Service.description_service
+      Mavryk_rpc.Service.description_service
   in
 
-  let* local_rpc_server =
-    if config.rpc.local_listen_addrs = [] then return No_server
-    else init_local_rpc_server config dir
-  in
   (* Start RPC process only when at least one listen addr is given. *)
   let* rpc_server =
     if config.rpc.listen_addrs = [] then return No_server
-    else
-      (* Starts the node's local RPC server that aims to handle the
-         RPCs forwarded by the rpc_process, if they cannot be
-         processed by the rpc_process itself. *)
-      init_external_rpc_server config node_version dir internal_events
+    else init_local_rpc_server config dir
   in
-  return (local_rpc_server :: [rpc_server])
+  return [rpc_server]
 
 let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
     ?ignore_testchain_warning ~singleprocess ~force_history_mode_switch
@@ -655,7 +550,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
     match config.internal_events with
     | Some ie -> ie
     | None ->
-        Tezos_base_unix.Internal_event_unix.make_with_defaults
+        Mavryk_base_unix.Internal_event_unix.make_with_defaults
           ~enable_default_daily_logs_at:
             Filename.Infix.(config.data_dir // "daily_logs")
           ?verbosity
@@ -663,7 +558,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
           ()
   in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   let*! () =
     Lwt_list.iter_s (fun evt -> Internal_event.Simple.emit evt ()) cli_warnings
@@ -680,13 +575,13 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
   let*! () =
     Event.(emit starting_node)
       ( config.blockchain_network.chain_name,
-        Tezos_version_value.Current_git_info.version,
-        Tezos_version_value.Current_git_info.abbreviated_commit_hash )
+        Mavryk_version_value.Current_git_info.version,
+        Mavryk_version_value.Current_git_info.abbreviated_commit_hash )
   in
   let*! () = init_zcash () in
   let* () =
-    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
-    Tezos_crypto_dal.Cryptobox.Config.init_dal
+    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
+    Mavryk_crypto_dal.Cryptobox.Config.init_dal
       ~find_srs_files
       config.blockchain_network.dal_config
   in
@@ -724,18 +619,6 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
         List.iter_s
           (function
             | No_server -> Lwt.return_unit
-            | External_rpc_server rpc_servers ->
-                List.iter_p
-                  (fun (local_server, rpc_process) ->
-                    (* Stop the RPC_process first to avoid requests to
-                       be forwarded to the note with a RPC_server that
-                       is down. *)
-                    let*! () =
-                      Octez_rpc_process.Rpc_process_worker.stop rpc_process
-                    in
-                    let*! () = RPC_server.shutdown local_server in
-                    Lwt.return_unit)
-                  rpc_servers
             | Local_rpc_server rpc_server ->
                 List.iter_p RPC_server.shutdown rpc_server)
           rpc_servers)
@@ -753,7 +636,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
       ~after:[node_downer]
       (fun exit_status ->
         let*! () = Event.(emit bye) exit_status in
-        Tezos_base_unix.Internal_event_unix.close ())
+        Mavryk_base_unix.Internal_event_unix.close ())
   in
   Lwt.dont_wait
     (fun () ->
@@ -846,8 +729,8 @@ module Term = struct
     let open Cmdliner in
     let doc =
       "Increase log level. Using $(b,-v) is equivalent to using \
-       $(b,TEZOS_LOG='* -> info'), and $(b,-vv) is equivalent to using \
-       $(b,TEZOS_LOG='* -> debug')."
+       $(b,MAVRYK_LOG='* -> info'), and $(b,-vv) is equivalent to using \
+       $(b,MAVRYK_LOG='* -> debug')."
     in
     Arg.(
       value & flag_all & info ~docs:Shared_arg.Manpage.misc_section ~doc ["v"])
@@ -859,7 +742,7 @@ module Term = struct
        disabled, and constants of the economic protocol can be altered with a \
        JSON file which overrides the $(b,genesis_parameters) field of the \
        network configuration (e.g. scripts/sandbox.json). $(b,IMPORTANT): \
-       Using sandbox mode affects the node state and subsequent runs of Tezos \
+       Using sandbox mode affects the node state and subsequent runs of Mavryk \
        node must also use sandbox mode. In order to run the node in normal \
        mode afterwards, a full reset must be performed (by removing the node's \
        data directory)."
@@ -906,7 +789,7 @@ module Term = struct
         "Forces the switch of history modes when a different history mode is \
          found between the written configuration and the given history mode.  \
          Warning: this option will modify the storage irremediably. Please \
-         refer to the Tezos node documentation for more details."
+         refer to the Mavryk node documentation for more details."
     in
     Arg.(
       value & flag
@@ -924,7 +807,7 @@ end
 
 module Manpage = struct
   let command_description =
-    "The $(b,run) command is meant to run the Tezos node. Most of its command \
+    "The $(b,run) command is meant to run the Mavryk node. Most of its command \
      line arguments corresponds to config file entries, and will have priority \
      over the latter if used."
 
@@ -939,9 +822,9 @@ module Manpage = struct
     [
       `S "DEBUG";
       `P
-        ("The environment variable $(b,TEZOS_LOG) is used to fine-tune what is \
+        ("The environment variable $(b,MAVRYK_LOG) is used to fine-tune what is \
           going to be logged. The syntax is \
-          $(b,TEZOS_LOG='<section> -> <level> [ ; ...]') where section is one \
+          $(b,MAVRYK_LOG='<section> -> <level> [ ; ...]') where section is one \
           of $(i," ^ log_sections
        ^ ") and level is one of $(i,fatal), $(i,error), $(i,warn), \
           $(i,notice), $(i,info) or $(i,debug). A $(b,*) can be used as a \
@@ -966,7 +849,7 @@ module Manpage = struct
     description @ Shared_arg.Manpage.args @ debug @ examples
     @ Shared_arg.Manpage.bugs
 
-  let info = Cmdliner.Cmd.info ~doc:"Run the Tezos node" ~man "run"
+  let info = Cmdliner.Cmd.info ~doc:"Run the Mavryk node" ~man "run"
 end
 
 let cmd = Cmdliner.Cmd.v Manpage.info Term.term

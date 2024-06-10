@@ -233,17 +233,32 @@ let check_inbox_proof snapshot serialized_inbox_proof (level, counter) =
   | Some inbox_proof ->
       Sc_rollup_inbox_repr.verify_proof (level, counter) snapshot inbox_proof
 
-module Dal_helpers = struct
+module Dal_proofs = struct
   (* FIXME/DAL: https://gitlab.com/tezos/tezos/-/issues/3997
      The current DAL refutation integration is not resilient to DAL parameters
      changes when upgrading the protocol. The code needs to be adapted. *)
-  let valid_published_level ~dal_attestation_lag ~origination_level
-      ~commit_inbox_level ~published_level =
+  (** Given a page, identified by its ID, we accept to produce or verify a
+      proof for it if, and only if, the page's level [page_published_level]
+      is in the following boundaries:
+      - page_published_level > origination_level: this means that the slot
+        of the page was published after the rollup origination ;
+      - page_published_level + dal_attestation_lag <= commit_level: this
+        means that the slot of the page has been confirmed before or at the
+        [commit_level]. According to the definition in
+        {!Sc_rollup_commitment_repr}, [commit_level] (aka inbox_level
+        in that module) is the level (included) up to which the PVM consumed
+        all messages and DAL/DAC inputs before producing the related commitment.
+  *)
+  let page_level_is_valid ~dal_attestation_lag ~origination_level
+      ~commit_inbox_level page_id =
     (* [dal_attestation_lag] is supposed to be positive. *)
+    let page_published_level =
+      Dal_slot_repr.(page_id.Page.slot_id.Header.published_level)
+    in
     let open Raw_level_repr in
-    let not_too_old = published_level > origination_level in
+    let not_too_old = page_published_level > origination_level in
     let not_too_recent =
-      add published_level dal_attestation_lag <= commit_inbox_level
+      add page_published_level dal_attestation_lag <= commit_inbox_level
     in
     not_too_old && not_too_recent
 
@@ -251,12 +266,11 @@ module Dal_helpers = struct
       page_id dal_snapshot proof =
     let open Result_syntax in
     if
-      valid_published_level
+      page_level_is_valid
         ~origination_level:metadata.Sc_rollup_metadata_repr.origination_level
         ~dal_attestation_lag
         ~commit_inbox_level
-        ~published_level:
-          Dal_slot_repr.(page_id.Page.slot_id.Header.published_level)
+        page_id
     then
       let* input =
         Dal_slot_repr.History.verify_proof
@@ -272,12 +286,11 @@ module Dal_helpers = struct
       page_id ~page_info ~get_history confirmed_slots_history =
     let open Lwt_result_syntax in
     if
-      valid_published_level
+      page_level_is_valid
         ~origination_level:metadata.Sc_rollup_metadata_repr.origination_level
         ~dal_attestation_lag
         ~commit_inbox_level
-        ~published_level:
-          Dal_slot_repr.(page_id.Page.slot_id.Header.published_level)
+        page_id
     then
       let* proof, content_opt =
         Dal_slot_repr.History.produce_proof
@@ -323,7 +336,7 @@ let valid (type state proof output)
     | Some (Reveal_proof Metadata_proof) ->
         return_some (Sc_rollup_PVM_sig.Reveal (Metadata metadata))
     | Some (Reveal_proof (Dal_page_proof {proof; page_id})) ->
-        Dal_helpers.verify
+        Dal_proofs.verify
           ~metadata
           dal_parameters
           ~dal_attestation_lag
@@ -495,7 +508,7 @@ let produce ~metadata pvm_and_state commit_inbox_level ~is_reveal_enabled =
             Some Sc_rollup_PVM_sig.(Reveal (Metadata metadata)) )
     | Needs_reveal (Request_dal_page page_id) ->
         let open Dal_with_history in
-        Dal_helpers.produce
+        Dal_proofs.produce
           ~metadata
           dal_parameters
           ~dal_attestation_lag

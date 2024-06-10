@@ -53,29 +53,12 @@ let slot_of_int_e ~number_of_slots n =
 let pkh_of_consensus_key (consensus_key : Consensus_key.pk) =
   consensus_key.delegate
 
-let validate_attestation ctxt level consensus_key attestation =
-  let open Lwt_result_syntax in
-  let*? () = assert_dal_feature_enabled ctxt in
-  let number_of_slots = Dal.number_of_slots ctxt in
-  let*? max_index = number_of_slots - 1 |> slot_of_int_e ~number_of_slots in
-  let maximum_size = Dal.Attestation.expected_size_in_bits ~max_index in
-  let size = Dal.Attestation.occupied_size_in_bits attestation in
-  let*? () =
-    error_unless
-      Compare.Int.(size <= maximum_size)
-      (Dal_attestation_size_limit_exceeded {maximum_size; got = size})
-  in
-  let attester = pkh_of_consensus_key consensus_key in
-  fail_when
-    (Option.is_none @@ Dal.Attestation.shards_of_attester ctxt ~attester)
-    (Dal_data_availibility_attester_not_in_committee {attester; level})
-
-let validate_dal_attestation ctxt get_consensus_key_and_round_opt op =
+let validate_attestation ctxt get_consensus_key op =
   let open Lwt_result_syntax in
   let*? () = assert_dal_feature_enabled ctxt in
   (* DAL/TODO: https://gitlab.com/tezos/tezos/-/issues/4462
      Reconsider the ordering of checks. *)
-  let Dal.Attestation.{attestation; level = given; round; slot = _} = op in
+  let Dal.Attestation.{attestation; level = given; slot = _} = op in
   let number_of_slots = Dal.number_of_slots ctxt in
   let*? max_index = number_of_slots - 1 |> slot_of_int_e ~number_of_slots in
   let maximum_size = Dal.Attestation.expected_size_in_bits ~max_index in
@@ -102,15 +85,7 @@ let validate_dal_attestation ctxt get_consensus_key_and_round_opt op =
       Compare.Int32.(delta_levels < 0l)
       (Dal_operation_for_future_level {expected; given})
   in
-  let* consensus_key, round_opt = get_consensus_key_and_round_opt () in
-  let* () =
-    match round_opt with
-    | Some expected ->
-        fail_when
-          (not (Round.equal expected round))
-          (Dal_attestation_for_wrong_round {expected; given = round})
-    | None -> return_unit
-  in
+  let* consensus_key = get_consensus_key () in
   let attester = pkh_of_consensus_key consensus_key in
   let*? () =
     error_when
@@ -120,9 +95,10 @@ let validate_dal_attestation ctxt get_consensus_key_and_round_opt op =
   in
   return consensus_key
 
-let apply_attestation ctxt consensus_key level attestation =
+let apply_attestation ctxt consensus_key op =
   let open Result_syntax in
   let* () = assert_dal_feature_enabled ctxt in
+  let Dal.Attestation.{attestation; level; _} = op in
   let attester = pkh_of_consensus_key consensus_key in
   match Dal.Attestation.shards_of_attester ctxt ~attester with
   | None ->
@@ -145,7 +121,7 @@ let apply_publish_slot_header ctxt operation =
   let open Result_syntax in
   let* ctxt = Gas.consume ctxt Dal_costs.cost_Dal_publish_slot_header in
   let number_of_slots = Dal.number_of_slots ctxt in
-  let* ctxt, cryptobox = Dal.make ctxt in
+  let* cryptobox = Dal.make ctxt in
   let current_level = (Level.current ctxt).level in
   let* slot_header =
     Dal.Operations.Publish_slot_header.slot_header

@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
-  (** Split done only when the mode is [Tezos_proxy.Proxy.server]. Getting
+module ProtoRpc : Mavryk_proxy.Proxy_proto.PROTO_RPC = struct
+  (** Split done only when the mode is [Mavryk_proxy.Proxy.server]. Getting
       an entire big map at once is useful for dapp developers that
       iterate a lot on big maps and that use proxy servers in their
       internal infra. *)
@@ -51,10 +51,10 @@ module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
     | "v1" :: tail -> Some (["v1"], tail)
     | _ -> None
 
-  let split_key (mode : Tezos_proxy.Proxy.mode)
-      (key : Tezos_protocol_environment.Proxy_context.M.key) :
-      (Tezos_protocol_environment.Proxy_context.M.key
-      * Tezos_protocol_environment.Proxy_context.M.key)
+  let split_key (mode : Mavryk_proxy.Proxy.mode)
+      (key : Mavryk_protocol_environment.Proxy_context.M.key) :
+      (Mavryk_protocol_environment.Proxy_context.M.key
+      * Mavryk_protocol_environment.Proxy_context.M.key)
       option =
     match split_always key with
     | Some _ as res ->
@@ -72,19 +72,19 @@ module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
         true
     | _ -> false
 
-  let do_rpc (pgi : Tezos_proxy.Proxy.proxy_getter_input)
-      (key : Tezos_protocol_environment.Proxy_context.M.key) =
+  let do_rpc (pgi : Mavryk_proxy.Proxy.proxy_getter_input)
+      (key : Mavryk_protocol_environment.Proxy_context.M.key) =
     let open Lwt_result_syntax in
     let chain = pgi.chain in
     let block = pgi.block in
     let*! () =
-      Tezos_proxy.Logger.emit
-        Tezos_proxy.Logger.proxy_block_rpc
-        ( Tezos_shell_services.Block_services.chain_to_string chain,
-          Tezos_shell_services.Block_services.to_string block,
+      Mavryk_proxy.Logger.emit
+        Mavryk_proxy.Logger.proxy_block_rpc
+        ( Mavryk_shell_services.Block_services.chain_to_string chain,
+          Mavryk_shell_services.Block_services.to_string block,
           key )
     in
-    let* (raw_context : Tezos_context_sigs.Context.Proof_types.raw_context) =
+    let* (raw_context : Mavryk_context_sigs.Context.Proof_types.raw_context) =
       Protocol_client_context.Alpha_block_services.Context.read
         pgi.rpc_context
         ~chain
@@ -92,33 +92,33 @@ module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
         key
     in
     let*! () =
-      Tezos_proxy.Logger.emit Tezos_proxy.Logger.tree_received
-      @@ Int64.of_int (Tezos_proxy.Proxy_getter.raw_context_size raw_context)
+      Mavryk_proxy.Logger.emit Mavryk_proxy.Logger.tree_received
+      @@ Int64.of_int (Mavryk_proxy.Proxy_getter.raw_context_size raw_context)
     in
     return raw_context
 end
 
-let initial_context (ctx : Tezos_proxy.Proxy_getter.rpc_context_args)
+let initial_context (ctx : Mavryk_proxy.Proxy_getter.rpc_context_args)
     (hash : Context_hash.t) :
-    Tezos_protocol_environment.Context.t tzresult Lwt.t =
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t =
   let open Lwt_result_syntax in
   let*! () =
-    Tezos_proxy.Logger.emit
-      Tezos_proxy.Logger.proxy_getter_created
-      ( Tezos_shell_services.Block_services.chain_to_string ctx.chain,
-        Tezos_shell_services.Block_services.to_string ctx.block )
+    Mavryk_proxy.Logger.emit
+      Mavryk_proxy.Logger.proxy_getter_created
+      ( Mavryk_shell_services.Block_services.chain_to_string ctx.chain,
+        Mavryk_shell_services.Block_services.to_string ctx.block )
   in
-  let p_rpc = (module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC) in
+  let p_rpc = (module ProtoRpc : Mavryk_proxy.Proxy_proto.PROTO_RPC) in
   let* (module ProxyDelegation) =
-    Tezos_proxy.Proxy_getter.make_delegate ctx p_rpc hash
+    Mavryk_proxy.Proxy_getter.make_delegate ctx p_rpc hash
   in
   let empty =
-    Tezos_protocol_environment.Proxy_context.empty
+    Mavryk_protocol_environment.Proxy_context.empty
     @@ Some (module ProxyDelegation)
   in
   let version_value = "alpha_current" in
   let*! ctxt =
-    Tezos_protocol_environment.Context.add
+    Mavryk_protocol_environment.Context.add
       empty
       ["version"]
       (Bytes.of_string version_value)
@@ -146,13 +146,13 @@ let initial_context (ctx : Tezos_proxy.Proxy_getter.rpc_context_args)
       ]
   in
   Lwt_result.ok
-    (Tezos_protocol_environment.Context.Cache.set_cache_layout
+    (Mavryk_protocol_environment.Context.Cache.set_cache_layout
        ctxt
        cache_layout)
 
-let round_durations (rpc_context : Tezos_rpc.Context.generic)
-    (chain : Tezos_shell_services.Block_services.chain)
-    (block : Tezos_shell_services.Block_services.block) =
+let round_durations (rpc_context : Mavryk_rpc.Context.generic)
+    (chain : Mavryk_shell_services.Block_services.chain)
+    (block : Mavryk_shell_services.Block_services.block) =
   let open Protocol in
   let open Lwt_result_syntax in
   let rpc_context = new Protocol_client_context.wrap_rpc_context rpc_context in
@@ -164,7 +164,7 @@ let round_durations (rpc_context : Tezos_rpc.Context.generic)
           constants.parametric.minimal_block_delay)
 
 let () =
-  let open Tezos_proxy.Registration in
+  let open Mavryk_proxy.Registration in
   let module M : Proxy_sig = struct
     module Protocol = Lifted_protocol
 

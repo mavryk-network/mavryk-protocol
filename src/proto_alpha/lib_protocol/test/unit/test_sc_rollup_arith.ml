@@ -32,7 +32,7 @@
 *)
 
 open Protocol
-module Context_binary = Tezos_context_memory.Context_binary
+module Context_binary = Mavryk_context_memory.Context_binary
 
 (* We first instantiate an arithmetic PVM capable of generating proofs. *)
 module Tree :
@@ -63,7 +63,7 @@ module Arith_Context = struct
   type proof = Context_binary.Proof.tree Context_binary.Proof.t
 
   let proof_encoding =
-    Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+    Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
     .tree_proof_encoding
 
   let kinded_hash_to_state_hash = function
@@ -120,7 +120,6 @@ let pre_boot boot_sector f =
   | Some boot_sector -> setup boot_sector @@ f
 
 let test_preboot () =
-  let open Lwt_result_syntax in
   [""; "1"; "1 2 +"]
   |> List.iter_es (fun boot_sector ->
          pre_boot boot_sector @@ fun _ctxt _state -> return_unit)
@@ -551,6 +550,22 @@ let test_invalid_outbox_level () =
   ]
   |> List.iter_es (test_output_messages_proofs ~valid:false ~inbox_level)
 
+let test_initial_state_hash_arith_pvm () =
+  let open Alpha_context in
+  let open Lwt_result_syntax in
+  let empty = Sc_rollup_helpers.Arith_pvm.make_empty_state () in
+  let*! state = Sc_rollup_helpers.Arith_pvm.initial_state ~empty in
+  let*! hash = Sc_rollup_helpers.Arith_pvm.state_hash state in
+  let expected = Sc_rollup.ArithPVM.reference_initial_state_hash in
+  if Sc_rollup.State_hash.(hash = expected) then return_unit
+  else
+    failwith
+      "incorrect hash, expected %a, got %a"
+      Sc_rollup.State_hash.pp
+      expected
+      Sc_rollup.State_hash.pp
+      hash
+
 let dummy_internal_transfer address =
   let open Lwt_result_wrap_syntax in
   let open Alpha_context.Sc_rollup in
@@ -566,7 +581,7 @@ let dummy_internal_transfer address =
     WithExceptions.Result.get_ok
       ~loc:__LOC__
       (Signature.Public_key_hash.of_b58check
-         "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
+         "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
   in
   let payload = Bytes.of_string "foo" in
   let*! result =
@@ -764,6 +779,10 @@ let tests =
     Tztest.tztest "Valid output messages" `Quick test_valid_output_messages;
     Tztest.tztest "Invalid output messages" `Quick test_invalid_output_messages;
     Tztest.tztest "Invalid outbox level" `Quick test_invalid_outbox_level;
+    Tztest.tztest
+      "Initial state hash for Arith"
+      `Quick
+      test_initial_state_hash_arith_pvm;
     Tztest.tztest "Filter internal message" `Quick test_filter_internal_message;
     Tztest.tztest
       "Reveal below threshold"

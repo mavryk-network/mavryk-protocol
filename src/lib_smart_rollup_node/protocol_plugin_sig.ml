@@ -30,7 +30,7 @@ module type RPC_DIRECTORY = sig
       node. *)
   val block_directory :
     Node_context.rw ->
-    (unit * Rollup_node_services.Arg.block_id) Tezos_rpc.Directory.t
+    (unit * Rollup_node_services.Arg.block_id) Mavryk_rpc.Directory.t
 end
 
 (** Protocol specific functions to track endorsed DAL slots of L1 blocks. *)
@@ -60,8 +60,8 @@ module type INBOX = sig
     Node_context.rw ->
     predecessor:Layer1.header ->
     Layer1.header ->
-    (Octez_smart_rollup.Inbox.Hash.t
-    * Octez_smart_rollup.Inbox.t
+    (Mavkit_smart_rollup.Inbox.Hash.t
+    * Mavkit_smart_rollup.Inbox.t
     * Merkelized_payload_hashes_hash.t
     * string list)
     tzresult
@@ -72,7 +72,7 @@ module type INBOX = sig
   val same_as_layer_1 :
     _ Node_context.t ->
     Block_hash.t ->
-    Octez_smart_rollup.Inbox.t ->
+    Mavkit_smart_rollup.Inbox.t ->
     unit tzresult Lwt.t
 
   (** Serialize an external messages to the protocol representation. NOTE: so
@@ -86,7 +86,7 @@ module type INBOX = sig
     predecessor_timestamp:Time.Protocol.t ->
     predecessor:Block_hash.t ->
     level:int32 ->
-    Octez_smart_rollup.Inbox.t
+    Mavkit_smart_rollup.Inbox.t
 
   (**/**)
 
@@ -101,8 +101,8 @@ module type INBOX = sig
       predecessor:Layer1.header ->
       Layer1.header ->
       string list ->
-      (Octez_smart_rollup.Inbox.Hash.t
-      * Octez_smart_rollup.Inbox.t
+      (Mavkit_smart_rollup.Inbox.Hash.t
+      * Mavkit_smart_rollup.Inbox.t
       * Merkelized_payload_hashes_hash.t
       * string list)
       tzresult
@@ -142,7 +142,7 @@ module type BATCHER = sig
 
   (** [new_head head] create batches of L2 messages from the queue and pack each
       batch in an L1 operation. The L1 operations (i.e. L2 batches) are queued
-      in the injector for injection on the Tezos node.  *)
+      in the injector for injection on the Mavryk node.  *)
   val new_head : Layer1.head -> unit tzresult Lwt.t
 
   (** [shutdown ()] stops the batcher, waiting for the ongoing request to be
@@ -168,10 +168,10 @@ end
 
 (** Protocol specific functions to interact with the L1 node. *)
 module type LAYER1_HELPERS = sig
-  (** [prefetch_tezos_blocks l1_ctxt blocks] prefetches the blocks
+  (** [prefetch_mavryk_blocks l1_ctxt blocks] prefetches the blocks
       asynchronously. NOTE: the number of blocks to prefetch must not be greater
       than the size of the blocks cache otherwise they will be lost. *)
-  val prefetch_tezos_blocks : Layer1.t -> Layer1.head list -> unit
+  val prefetch_mavryk_blocks : Layer1.t -> Layer1.head list -> unit
 
   val get_last_cemented_commitment :
     #Client_context.full -> Address.t -> Node_context.lcc tzresult Lwt.t
@@ -188,11 +188,11 @@ module type LAYER1_HELPERS = sig
   val genesis_inbox :
     #Client_context.full ->
     genesis_level:int32 ->
-    Octez_smart_rollup.Inbox.t tzresult Lwt.t
+    Mavkit_smart_rollup.Inbox.t tzresult Lwt.t
 
   (** Retrieve protocol agnotic constants for the head of the chain. *)
   val retrieve_constants :
-    ?block:Tezos_shell_services.Block_services.block ->
+    ?block:Mavryk_shell_services.Block_services.block ->
     #Client_context.full ->
     Rollup_constants.protocol_constants tzresult Lwt.t
 
@@ -212,17 +212,14 @@ module type LAYER1_HELPERS = sig
   (** Retrieve information about the last whitelist update on L1. *)
   val find_last_whitelist_update :
     #Client_context.full -> Address.t -> (Z.t * Int32.t) option tzresult Lwt.t
-
-  (** Retrieve a commitment published on L1. *)
-  val get_commitment :
-    #Client_context.full ->
-    Address.t ->
-    Commitment.Hash.t ->
-    Commitment.t tzresult Lwt.t
 end
 
 (** Protocol specific functions for processing L1 blocks. *)
 module type L1_PROCESSING = sig
+  (** Ensure that the initial state hash of the PVM as defined by the rollup
+      node matches the one of the PVM on the L1 node.  *)
+  val check_pvm_initial_state_hash : _ Node_context.t -> unit tzresult Lwt.t
+
   (** React to L1 operations included in a block of the chain. When
       [catching_up] is true, the process block is in the past and the
       failure condition of the process differs (e.g. if it detects a
@@ -250,7 +247,7 @@ module type REFUTATION_GAME_HELPERS = sig
     for the current [game] for the execution step starting with
     [start_state]. *)
   val generate_proof :
-    Node_context.rw -> Game.t -> Context.pvmstate -> string tzresult Lwt.t
+    Node_context.rw -> Game.t -> Context.tree -> string tzresult Lwt.t
 
   (** [make_dissection plugin node_ctxt ~start_state ~start_chunk ~our_stop_chunk
     ~default_number_of_sections ~last_level] computes a dissection from between

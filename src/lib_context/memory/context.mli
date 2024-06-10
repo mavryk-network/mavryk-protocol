@@ -24,11 +24,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module type TEZOS_CONTEXT_MEMORY = sig
+module type MAVRYK_CONTEXT_MEMORY = sig
   type tree
 
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
       with type memory_context_tree := tree
        and type tree := tree
        and type value_key = Context_hash.t
@@ -43,5 +43,5 @@ module type TEZOS_CONTEXT_MEMORY = sig
 end
 
 (** Implementation of Tezos context fully in memory. *)
-module Make (Encoding : module type of Tezos_context_encoding.Context) :
-  TEZOS_CONTEXT_MEMORY
+module Make (Encoding : module type of Mavryk_context_encoding.Context) :
+  MAVRYK_CONTEXT_MEMORY

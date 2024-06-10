@@ -24,16 +24,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type version = V0 | V1 | V2 | V3 | V4
+type version = V0 | V1 | V2 | V3
 
 let versions =
-  [
-    ("2.0.0", V0);
-    ("2.0.0-r1", V1);
-    ("2.0.0-r2", V2);
-    ("2.0.0-r3", V3);
-    ("2.0.0-r4", V4);
-  ]
+  [("2.0.0", V0); ("2.0.0-r1", V1); ("2.0.0-r2", V2); ("2.0.0-r3", V3)]
 
 let versions_flip = List.map (fun (x, y) -> (y, x)) versions
 
@@ -55,19 +49,19 @@ let version_encoding =
 
 (** Represents the location of an input message. *)
 type input_info = {
-  inbox_level : Tezos_base.Bounded.Non_negative_int32.t;
+  inbox_level : Mavryk_base.Bounded.Non_negative_int32.t;
       (** The inbox level at which the message exists.*)
   message_counter : Z.t;  (** The index of the message in the inbox. *)
 }
 
 (** Represents the location of an output message. *)
 type output_info = {
-  outbox_level : Tezos_base.Bounded.Non_negative_int32.t;
+  outbox_level : Mavryk_base.Bounded.Non_negative_int32.t;
       (** The outbox level at which the message exists.*)
   message_index : Z.t;  (** The index of the message in the outbox. *)
 }
 
-type reveal = Tezos_webassembly_interpreter.Host_funcs.reveal =
+type reveal = Mavryk_webassembly_interpreter.Host_funcs.reveal =
   | Reveal_raw of string
 
 let reveal_raw_data_tag = '\x00'
@@ -137,23 +131,23 @@ module Internal_state = struct
   *)
   type tick_state =
     | Snapshot
-    | Decode of Tezos_webassembly_interpreter.Decode.decode_kont
+    | Decode of Mavryk_webassembly_interpreter.Decode.decode_kont
     | Link of {
-        ast_module : Tezos_webassembly_interpreter.Ast.module_;
+        ast_module : Mavryk_webassembly_interpreter.Ast.module_;
         externs :
-          Tezos_webassembly_interpreter.Instance.extern
-          Tezos_webassembly_interpreter.Instance.Vector.t;
+          Mavryk_webassembly_interpreter.Instance.extern
+          Mavryk_webassembly_interpreter.Instance.Vector.t;
         imports_offset : int32;
       }
     | Init of {
-        self : Tezos_webassembly_interpreter.Instance.module_key;
-        ast_module : Tezos_webassembly_interpreter.Ast.module_;
-        init_kont : Tezos_webassembly_interpreter.Eval.init_kont;
-        module_reg : Tezos_webassembly_interpreter.Instance.module_reg;
+        self : Mavryk_webassembly_interpreter.Instance.module_key;
+        ast_module : Mavryk_webassembly_interpreter.Ast.module_;
+        init_kont : Mavryk_webassembly_interpreter.Eval.init_kont;
+        module_reg : Mavryk_webassembly_interpreter.Instance.module_reg;
       }
     | Eval of {
-        config : Tezos_webassembly_interpreter.Eval.config;
-        module_reg : Tezos_webassembly_interpreter.Instance.module_reg;
+        config : Mavryk_webassembly_interpreter.Eval.config;
+        module_reg : Mavryk_webassembly_interpreter.Instance.module_reg;
       }
     | Collect
     | Stuck of Wasm_pvm_errors.t
@@ -170,7 +164,7 @@ module Internal_state = struct
     current_tick : Z.t;  (** Current tick of the PVM. *)
     reboot_counter : Z.t;  (** Number of reboots for the current input. *)
     durable : Durable.t;  (** The durable storage of the PVM. *)
-    buffers : Tezos_webassembly_interpreter.Eval.buffers;
+    buffers : Mavryk_webassembly_interpreter.Eval.buffers;
         (** Input and outut buffers used by the PVM host functions. *)
     tick_state : tick_state;  (** The current tick state. *)
     last_top_level_call : Z.t;

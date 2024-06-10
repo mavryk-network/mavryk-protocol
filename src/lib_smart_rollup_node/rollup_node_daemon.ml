@@ -82,27 +82,6 @@ let handle_protocol_migration ~catching_up state (head : Layer1.header) =
   state.node_ctxt.current_protocol <- new_protocol ;
   return_unit
 
-let maybe_split_context node_ctxt commitment_hash head_level =
-  let open Lwt_result_syntax in
-  let* history_mode = Node_context.get_history_mode node_ctxt in
-  let commit_is_gc_candidate =
-    history_mode <> Archive && Option.is_some commitment_hash
-  in
-  when_ commit_is_gc_candidate @@ fun () ->
-  let* last = Node_context.get_last_context_split_level node_ctxt in
-  let last = Option.value last ~default:node_ctxt.genesis_info.level in
-  let splitting_period =
-    Option.value
-      node_ctxt.config.gc_parameters.context_splitting_period
-      ~default:
-        node_ctxt.current_protocol.constants.sc_rollup
-          .challenge_window_in_blocks
-  in
-  if Int32.(to_int @@ sub head_level last) >= splitting_period then (
-    Context.split node_ctxt.context ;
-    Node_context.save_context_split_level node_ctxt head_level)
-  else return_unit
-
 (* Process a L1 that we have never seen and for which we have processed the
    predecessor. *)
 let process_unseen_head ({node_ctxt; _} as state) ~catching_up ~predecessor
@@ -144,7 +123,6 @@ let process_unseen_head ({node_ctxt; _} as state) ~catching_up ~predecessor
       head
       ctxt
   in
-  let* () = maybe_split_context node_ctxt commitment_hash head.level in
   let* () =
     unless (catching_up && Option.is_none commitment_hash) @@ fun () ->
     Plugin.Inbox.same_as_layer_1 node_ctxt head.hash inbox
@@ -165,7 +143,7 @@ let process_unseen_head ({node_ctxt; _} as state) ~catching_up ~predecessor
         predecessor = predecessor.hash;
         commitment_hash;
         previous_commitment_hash;
-        context = Smart_rollup_context_hash.of_context_hash context_hash;
+        context = context_hash;
         inbox_witness;
         inbox_hash;
       }
@@ -261,7 +239,7 @@ let missing_data_error trace =
       | Some _ -> acc
       | None -> (
           match error with
-          | Octez_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
+          | Mavkit_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
           | _ -> acc))
     None
     trace
@@ -300,7 +278,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
   in
   let stripped_head = Layer1.head_of_header head in
   let*! reorg =
-    Node_context.get_tezos_reorg_for_new_head node_ctxt old_head stripped_head
+    Node_context.get_mavryk_reorg_for_new_head node_ctxt old_head stripped_head
   in
   let*? reorg = report_missing_data reorg in
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/3348
@@ -310,7 +288,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
   let get_header Layer1.{hash; level} =
     if Block_hash.equal hash head.hash then return head
     else
-      let+ header = Layer1.fetch_tezos_shell_header node_ctxt.l1_ctxt hash in
+      let+ header = Layer1.fetch_mavryk_shell_header node_ctxt.l1_ctxt hash in
       {Layer1.hash; level; header}
   in
   let new_chain_prefetching =
@@ -320,7 +298,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
     List.iter_es
       (fun (block, to_prefetch) ->
         let module Plugin = (val state.plugin) in
-        Plugin.Layer1_helpers.prefetch_tezos_blocks
+        Plugin.Layer1_helpers.prefetch_mavryk_blocks
           node_ctxt.l1_ctxt
           to_prefetch ;
         let* header = get_header block in
@@ -348,7 +326,6 @@ let degraded_refutation_mode state =
   let*! () = message "Shutting down Commitment Publisher@." in
   let*! () = Publisher.shutdown () in
   Layer1.iter_heads state.node_ctxt.l1_ctxt @@ fun head ->
-  let*! () = Daemon_event.new_head_degraded head.hash head.level in
   let* predecessor = Node_context.get_predecessor_header state.node_ctxt head in
   let* () = Node_context.save_protocol_info state.node_ctxt head ~predecessor in
   let* () = handle_protocol_migration ~catching_up:false state head in
@@ -370,9 +347,9 @@ let install_finalizer state =
   let* () = Publisher.shutdown () in
   let* () = message "Shutting down Refutation Coordinator@." in
   let* () = Refutation_coordinator.shutdown () in
-  let* (_ : unit tzresult) = Node_context_loader.close state.node_ctxt in
+  let* (_ : unit tzresult) = Node_context.close state.node_ctxt in
   let* () = Event.shutdown_node exit_status in
-  Tezos_base_unix.Internal_event_unix.close ()
+  Mavryk_base_unix.Internal_event_unix.close ()
 
 let maybe_recover_bond ({node_ctxt; configuration; _} as state) =
   let open Lwt_result_syntax in
@@ -520,7 +497,7 @@ let run ({node_ctxt; configuration; plugin; _} as state) =
     ~id:configuration.sc_rollup_address
     ~mode:configuration.mode
     ~genesis_level:node_ctxt.genesis_info.level
-    ~pvm_kind:(Octez_smart_rollup.Kind.to_string node_ctxt.kind) ;
+    ~pvm_kind:(Mavkit_smart_rollup.Kind.to_string node_ctxt.kind) ;
   let fatal_error_exit e =
     Format.eprintf "%!%a@.Exiting.@." pp_print_trace e ;
     let*! _ = Lwt_exit.exit_and_wait 1 in
@@ -623,7 +600,7 @@ module Internal_for_tests = struct
           predecessor = predecessor.hash;
           commitment_hash;
           previous_commitment_hash;
-          context = Smart_rollup_context_hash.of_context_hash context_hash;
+          context = context_hash;
           inbox_witness;
           inbox_hash;
         }
@@ -640,7 +617,7 @@ end
 let plugin_of_first_block cctxt (block : Layer1.header) =
   let open Lwt_result_syntax in
   let* {current_protocol; _} =
-    Tezos_shell_services.Shell_services.Blocks.protocols
+    Mavryk_shell_services.Shell_services.Blocks.protocols
       cctxt
       ~block:(`Hash (block.hash, 0))
       ()
@@ -652,11 +629,8 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
     (configuration : Configuration.t) (cctxt : Client_context.full) =
   let open Lwt_result_syntax in
   let* () =
-    Tezos_base_unix.Internal_event_unix.enable_default_daily_logs_at
+    Mavryk_base_unix.Internal_event_unix.enable_default_daily_logs_at
       ~daily_logs_path:Filename.Infix.(data_dir // "daily_logs")
-  in
-  let cctxt =
-    Layer_1.client_context_with_timeout cctxt configuration.l1_rpc_timeout
   in
   Random.self_init () (* Initialize random state (for reconnection delays) *) ;
   let*! () = Event.starting_node () in
@@ -687,7 +661,7 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
   in
   let*! head = Layer1.wait_first l1_ctxt in
   let* predecessor =
-    Layer1.fetch_tezos_shell_header l1_ctxt head.header.predecessor
+    Layer1.fetch_mavryk_shell_header l1_ctxt head.header.predecessor
   in
   let publisher = Purpose.find_operator Operating configuration.operators in
 
@@ -727,7 +701,7 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
     }
   in
   let* node_ctxt =
-    Node_context_loader.init
+    Node_context.init
       cctxt
       ~data_dir
       ~irmin_cache_size
@@ -743,8 +717,10 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
       current_protocol
       configuration
   in
-  let dir = Rpc_directory.directory node_ctxt in
-  let* rpc_server = Rpc_server.start configuration dir in
+  let* () = Plugin.L1_processing.check_pvm_initial_state_hash node_ctxt in
+  let* rpc_server =
+    Rpc_server.start configuration (Rpc_directory.directory node_ctxt)
+  in
   let state = {node_ctxt; rpc_server; configuration; plugin} in
   let (_ : Lwt_exit.clean_up_callback_id) = install_finalizer state in
   run state

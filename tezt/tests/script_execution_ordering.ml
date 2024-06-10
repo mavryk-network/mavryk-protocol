@@ -57,7 +57,6 @@ let test_execution_ordering =
     ~__FILE__
     ~title:"Test contract execution order."
     ~tags:["client"; "script"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let originate_storer () =

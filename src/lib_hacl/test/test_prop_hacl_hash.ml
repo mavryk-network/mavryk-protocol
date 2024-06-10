@@ -101,7 +101,7 @@ let () =
   | Other _ | Native | Bytecode ->
       Alcotest.run
         ~__FILE__
-        "tezos-crypto-shaX-props"
+        "mavryk-crypto-shaX-props"
         [
           ("SHA256_Props", qcheck_wrap SHA256_Props.tests);
           ("SHA512_Props", qcheck_wrap SHA512_Props.tests);

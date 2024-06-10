@@ -15,7 +15,7 @@ with few agents to debug it).
 
 ## What it does
 
-The scenario templates assume that the Octez node binaries are provided via some
+The scenario templates assume that the Mavkit node binaries are provided via some
 Google Cloud bucket (this could be easily adapted if needed). Agents can be
 categorized into an `http_server`, a `boot_` agent, attesters (named
 `delegate_<i>` by default), and slots producers (called 0, 1, ... <max> for
@@ -23,7 +23,7 @@ convenience).
 
 - `http_server` and `boot_` agents: these two agents are run on the same VM in
   our experiment. The `http_server` will serve an archive containing fresh TZ
-  keys generated with `octez-client stresstest` command. On the `boot_` agent,
+  keys generated with `mavkit-client stresstest` command. On the `boot_` agent,
   we will spawn an L1 and a DAL node what will play the role of bootstrap nodes;
 
 - Attesters: each agent of this kind (agent = VM in our scenario) is dedicated
@@ -38,7 +38,7 @@ convenience).
   DAL nodes and the corresponding slots headers to L1 nodes;
 
 Once Octogram initializes the different agents, the first stage copies various
-Octez binaries (client, node, DAL node, and baker) to all agents. Then, fresh
+Mavkit binaries (client, node, DAL node, and baker) to all agents. Then, fresh
 keys are generated and compressed into an archive on `http_server`. On this
 agent, a custom protocol file is also generated depending on the chosen network
 (mainnet, sandbox, test) and some parameterizable options (number of slots, time
@@ -46,13 +46,13 @@ between blocks, attestation lag, etc.). At the end of this stage, an HTTP server
 is started to be able to download the generated artifacts.
 
 The third stage just downloads and uncompresses the generated keys. Then, in the
-fourth stage, we start a bootstrap Octez and DAL node and activate the alpha
-protocol with previously generated custom protocol parameters. Once the Octez
-node is bootstrapped, we start the Octez and DAL nodes for attesters (bakers)
+fourth stage, we start a bootstrap Mavkit and DAL node and activate the alpha
+protocol with previously generated custom protocol parameters. Once the Mavkit
+node is bootstrapped, we start the Mavkit and DAL nodes for attesters (bakers)
 and slot producers in the next stages, respectively.
 
 
-Finally, once the Octez nodes of the attesters and slots producers are
+Finally, once the Mavkit nodes of the attesters and slots producers are
 bootstrapped, we start the bakers' binaries in the seventh stage and the slots
 producers' jobs in the last one. The slots producers are configured to publish a
 DAL slot for every level between 10 and 109. Depending on the value of the

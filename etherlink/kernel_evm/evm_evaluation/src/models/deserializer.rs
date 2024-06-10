@@ -4,17 +4,14 @@
 // SPDX-License-Identifier: MIT
 
 use bytes::Bytes;
-use primitive_types::{H160, H256, U256};
+use primitive_types::{H160, H256};
 use serde::{
     de::{self, Error},
     Deserialize,
 };
-use serde_yaml::Value;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::str::FromStr;
-
-use super::IndexKind;
 
 const H256_RAW_SIZE: usize = 64;
 
@@ -49,37 +46,6 @@ where
     )
 }
 
-pub fn deserialize_str_as_u256<'de, D>(deserializer: D) -> Result<U256, D::Error>
-where
-    D: de::Deserializer<'de>,
-{
-    let string = String::deserialize(deserializer)?;
-
-    let output = if let Some(stripped) = string.strip_prefix("0x") {
-        U256::from_str_radix(stripped, 16).unwrap()
-    } else {
-        U256::from_dec_str(&string).unwrap()
-    };
-
-    Ok(output)
-}
-
-pub fn deserialize_opt_str_as_u256<'de, D>(
-    deserializer: D,
-) -> Result<Option<U256>, D::Error>
-where
-    D: de::Deserializer<'de>,
-{
-    #[derive(Debug, Deserialize)]
-    struct WrappedValue(#[serde(deserialize_with = "deserialize_str_as_u256")] U256);
-
-    Option::<WrappedValue>::deserialize(deserializer).map(
-        |opt_wrapped: Option<WrappedValue>| {
-            opt_wrapped.map(|wrapped: WrappedValue| wrapped.0)
-        },
-    )
-}
-
 pub fn deserialize_vec_as_vec_bytes<'de, D>(
     deserializer: D,
 ) -> Result<Vec<Bytes>, D::Error>
@@ -90,10 +56,11 @@ where
 
     let mut out = Vec::new();
     for string in strings {
-        let decoded = hex::decode(string.strip_prefix("0x").unwrap_or(&string))
-            .map_err(D::Error::custom)?
-            .into();
-        out.push(decoded)
+        out.push(
+            hex::decode(string.strip_prefix("0x").unwrap_or(&string))
+                .map_err(D::Error::custom)?
+                .into(),
+        )
     }
     Ok(out)
 }
@@ -200,70 +167,4 @@ where
             opt_wrapped.map(|wrapped: WrappedValue| wrapped.0)
         },
     )
-}
-
-enum Either {
-    Constraint(IndexKind),
-    Wildcard,
-}
-
-fn deserialize_index(v: &Value) -> Option<Either> {
-    match v {
-        Value::Number(n) => {
-            if let Some(n) = n.as_i64() {
-                if n == -1 {
-                    Some(Either::Wildcard)
-                } else {
-                    Some(Either::Constraint(IndexKind::Range(n, n)))
-                }
-            } else {
-                None
-            }
-        }
-        Value::String(string) => {
-            if let Some(label) = regex::Regex::new(r":label ([\w-]+)")
-                .unwrap()
-                .captures(string)
-            {
-                Some(Either::Constraint(IndexKind::Label(String::from(
-                    label.get(1).unwrap().as_str(),
-                ))))
-            } else if let Some(range) = regex::Regex::new(r"([0-9]+)-([0-9]+)")
-                .unwrap()
-                .captures(string)
-            {
-                let start: i64 = i64::from_str(range.get(1)?.as_str()).unwrap();
-                let end: i64 = i64::from_str(range.get(2)?.as_str()).unwrap();
-                Some(Either::Constraint(IndexKind::Range(start, end)))
-            } else {
-                None
-            }
-        }
-        _ => None,
-    }
-}
-
-pub fn deserialize_indices<'de, D>(deserializer: D) -> Result<Vec<IndexKind>, D::Error>
-where
-    D: de::Deserializer<'de>,
-{
-    let err = |v| D::Error::custom(format!("Unexpected index {:?}", v));
-    match Value::deserialize(deserializer)? {
-        Value::Sequence(values) => {
-            let mut out = Vec::new();
-            for value in values {
-                if let Either::Constraint(c) =
-                    deserialize_index(&value).ok_or_else(|| err(value))?
-                {
-                    out.push(c)
-                }
-            }
-            Ok(out)
-        }
-        v => match deserialize_index(&v) {
-            Some(Either::Constraint(c)) => Ok(vec![c]),
-            Some(Either::Wildcard) => Ok(vec![]),
-            None => Err(err(v)),
-        },
-    }
 }

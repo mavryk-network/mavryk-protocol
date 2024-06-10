@@ -43,7 +43,7 @@ module V0 = struct
         ("root_hash", `String root_hash);
         ("signer_pkh", `String dac_member_pkh);
         ( "signature",
-          `String (Tezos_crypto.Aggregate_signature.to_b58check signature) );
+          `String (Mavryk_crypto.Aggregate_signature.to_b58check signature) );
       ]
 
   let put_dac_member_signature ~hex_root_hash ~dac_member_pkh ~signature =

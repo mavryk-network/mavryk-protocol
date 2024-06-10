@@ -58,7 +58,8 @@ let check_denunciations ~(cycle : Denunciations_repr.misbehaviour_cycle) b
   let* denunciations = Context.get_denunciations (B b) in
   match denunciations with
   | [(d, item)] when Signature.Public_key_hash.equal d delegate ->
-      assert (item.Denunciations_repr.misbehaviour.kind = Double_attesting) ;
+      assert (
+        item.Denunciations_repr.misbehaviour = Misbehaviour.Double_attesting) ;
       assert (item.Denunciations_repr.misbehaviour_cycle = cycle) ;
       return_unit
   | _ -> assert false
@@ -98,7 +99,7 @@ let double_preattestation ctxt ?(correct_order = true) op1 op2 =
     delegate and exposed by a double_attestation operation. Also verify
     that punishment is operated. *)
 let test_valid_double_attestation_evidence () =
-  let open Lwt_result_wrap_syntax in
+  let open Lwt_result_syntax in
   let constants =
     {
       Default_parameters.constants_test with
@@ -179,7 +180,7 @@ let test_valid_double_attestation_evidence () =
   (* Check that [baker] is rewarded with:
      - baking_reward_fixed_portion for baking and,
      - half of the frozen_deposits for including the evidence *)
-  let*?@ baking_reward =
+  let baking_reward =
     Delegate.Rewards.For_RPC.reward_from_constants
       constants
       ~reward_kind:Baking_reward_fixed_portion
@@ -396,7 +397,7 @@ let test_two_double_attestation_evidences_staggered () =
     Adaptive_issuance_helpers.stake
       (B blk_with_evidence1)
       (Protocol.Alpha_context.Contract.Implicit delegate)
-      (Tez.of_mutez_exn 1_000_000_000L)
+      (Tez.of_mumav_exn 1_000_000_000L)
   in
   let* blk_with_stake =
     Block.bake ~policy:(By_account baker) ~operation blk_with_evidence1
@@ -469,7 +470,7 @@ let test_two_double_attestation_evidences_consecutive_cycles () =
     Adaptive_issuance_helpers.stake
       (B blk_with_evidence1)
       (Protocol.Alpha_context.Contract.Implicit delegate)
-      (Tez.of_mutez_exn 1_000_000_000L)
+      (Tez.of_mumav_exn 1_000_000_000L)
   in
   let* blk_with_stake =
     Block.bake ~policy:(By_account baker) ~operation blk_with_evidence1

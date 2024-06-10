@@ -91,8 +91,8 @@ type block = ..
 type fetch_block_rpc =
   Client_context.full ->
   ?metadata:[`Always | `Never] ->
-  ?chain:Tezos_shell_services.Block_services.chain ->
-  ?block:Tezos_shell_services.Block_services.block ->
+  ?chain:Mavryk_shell_services.Block_services.chain ->
+  ?block:Mavryk_shell_services.Block_services.block ->
   unit ->
   block tzresult Lwt.t
 
@@ -100,7 +100,7 @@ type headers_cache = (Block_header.shell_header, tztrace) Blocks_cache.t
 
 type blocks_cache = (block, tztrace) Blocks_cache.t
 
-open Octez_crawler.Layer_1
+open Mavkit_crawler.Layer_1
 
 type nonrec t = {
   l1 : t;
@@ -149,9 +149,9 @@ let get_predecessor_opt ?max_read {l1; _} = get_predecessor_opt ?max_read l1
 
 let get_predecessor ?max_read {l1; _} = get_predecessor ?max_read l1
 
-let get_tezos_reorg_for_new_head {l1; _} ?get_old_predecessor old_head new_head
+let get_mavryk_reorg_for_new_head {l1; _} ?get_old_predecessor old_head new_head
     =
-  get_tezos_reorg_for_new_head l1 ?get_old_predecessor old_head new_head
+  get_mavryk_reorg_for_new_head l1 ?get_old_predecessor old_head new_head
 
 module Internal_for_tests = struct
   let dummy cctxt =
@@ -171,14 +171,14 @@ end
 
 *)
 
-(** [fetch_tezos_block cctxt hash] returns a block shell header of
+(** [fetch_mavryk_block cctxt hash] returns a block shell header of
     [hash]. Looks for the block in the blocks cache first, and fetches it from
     the L1 node otherwise. *)
-let fetch_tezos_shell_header {cctxt; headers_cache; _} hash =
+let fetch_mavryk_shell_header {cctxt; headers_cache; _} hash =
   trace (Cannot_find_block hash)
   @@
   let fetch hash =
-    Tezos_shell_services.Shell_services.Blocks.Header.shell_header
+    Mavryk_shell_services.Shell_services.Blocks.Header.shell_header
       cctxt
       ~chain:`Main
       ~block:(`Hash (hash, 0))
@@ -197,10 +197,10 @@ let fetch_block_no_cache (fetch : fetch_block_rpc) extract_header
      cache_shell_header l1_ctxt hash (extract_header block) ;
      return block
 
-(** [fetch_tezos_block cctxt fetch extract_header hash] returns a block info
+(** [fetch_mavryk_block cctxt fetch extract_header hash] returns a block info
     given a block hash. Looks for the block in the blocks cache first, and
     fetches it from the L1 node otherwise. *)
-let fetch_tezos_block (fetch_rpc : fetch_block_rpc) extract_header
+let fetch_mavryk_block (fetch_rpc : fetch_block_rpc) extract_header
     ({cctxt; blocks_cache; _} as l1_ctxt) hash =
   trace (Cannot_find_block hash)
   @@
@@ -214,13 +214,13 @@ let fetch_tezos_block (fetch_rpc : fetch_block_rpc) extract_header
   in
   let*! block = Blocks_cache.bind_or_put blocks_cache hash fetch Lwt.return in
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/6292
-     Consider cleaner ways to "prefetch" tezos blocks:
+     Consider cleaner ways to "prefetch" mavryk blocks:
      - know before where are protocol boundaries
      - prefetch blocks in binary form *)
   let is_of_expected_protocol =
     match block with
     | Error
-        (Tezos_rpc_http.RPC_client_errors.(
+        (Mavryk_rpc_http.RPC_client_errors.(
            Request_failed {error = Unexpected_content _; _})
         :: _) ->
         (* The promise cached failed to parse the block because it was for the
@@ -267,7 +267,7 @@ let make_prefetching_schedule {prefetch_blocks; _} blocks =
   | [], _ | _, [] -> blocks_with_prefetching
   | (first, _) :: rest, _ -> (first, first_prefetch) :: rest
 
-let prefetch_tezos_blocks fetch extract_header l1_ctxt = function
+let prefetch_mavryk_blocks fetch extract_header l1_ctxt = function
   | [] -> ()
   | blocks ->
       Lwt.async @@ fun () ->
@@ -275,7 +275,7 @@ let prefetch_tezos_blocks fetch extract_header l1_ctxt = function
         (fun {hash; _} ->
           let open Lwt_syntax in
           let+ _maybe_block =
-            fetch_tezos_block fetch extract_header l1_ctxt hash
+            fetch_mavryk_block fetch extract_header l1_ctxt hash
           in
           ())
         blocks

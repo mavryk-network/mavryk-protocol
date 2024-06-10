@@ -42,8 +42,8 @@ let send_message ?(src = Constant.bootstrap2.alias) client msg =
 
 (* TX Kernel external messages and their encodings *)
 module Tx_kernel = struct
-  open Tezos_protocol_alpha.Protocol
-  open Tezos_crypto.Signature
+  open Mavryk_protocol_alpha.Protocol
+  open Mavryk_crypto.Signature
 
   type ticket = {
     ticketer : Alpha_context.Contract.t;
@@ -69,8 +69,8 @@ module Tx_kernel = struct
         entrypoint : string;
       }
     | Transfer of {
-        (* tz4 address *)
-        destination : Tezos_crypto.Signature.Bls.Public_key_hash.t;
+        (* mv4 address *)
+        destination : Mavryk_crypto.Signature.Bls.Public_key_hash.t;
         ticket : ticket;
       }
 
@@ -123,7 +123,7 @@ module Tx_kernel = struct
     (* String ticket encoding for tx kernel.
        Corresponds to kernel_core::encoding::string_ticket::StringTicketRepr *)
     let ticket_repr {ticketer; content; amount} : string =
-      let open Tezos_protocol_alpha.Protocol.Alpha_context in
+      let open Mavryk_protocol_alpha.Protocol.Alpha_context in
       Printf.sprintf
         "\007\007\n\000\000\000\022%s\007\007\001%s\000%s"
         Data_encoding.(Binary.to_string_exn Contract.encoding ticketer)
@@ -148,13 +148,13 @@ module Tx_kernel = struct
           ^ entrypoint_bytes
       | Transfer {destination; ticket} ->
           let transfer_prefix = "\001" in
-          let tz4address =
+          let mv4address =
             Data_encoding.(
               Binary.to_string_exn
-                Tezos_crypto.Signature.Bls.Public_key_hash.encoding
+                Mavryk_crypto.Signature.Bls.Public_key_hash.encoding
                 destination)
           in
-          transfer_prefix ^ tz4address ^ ticket_repr ticket
+          transfer_prefix ^ mv4address ^ ticket_repr ticket
 
     let account_operations_repr {signer; counter; operations} : string =
       let signer_bytes =
@@ -164,7 +164,7 @@ module Tx_kernel = struct
               Bls.Secret_key.to_public_key signer
               |> Binary.to_string_exn Bls.Public_key.encoding)
         else
-          "\001" (* tz4address signer tag *)
+          "\001" (* mv4address signer tag *)
           ^ Data_encoding.(
               Bls.Secret_key.to_public_key signer
               |> Bls.Public_key.hash
@@ -230,7 +230,7 @@ module Tx_kernel = struct
   let external_message_of_batch (batch : transactions_batch) =
     let v1_batch_prefix = "\000" in
     let signature =
-      batch.aggregated_signature |> Tezos_crypto.Signature.Bls.to_bytes
+      batch.aggregated_signature |> Mavryk_crypto.Signature.Bls.to_bytes
       |> Bytes.to_string
     in
     hex_encode @@ v1_batch_prefix ^ batch.encoded_transactions ^ signature
@@ -253,7 +253,7 @@ let assert_state_changed ?block sc_rollup_node prev_state_hash =
 
 let assert_ticks_advanced ?block sc_rollup_node prev_ticks =
   let* ticks =
-    Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+    Sc_rollup_node.RPC.call sc_rollup_node
     @@ Sc_rollup_rpc.get_global_block_total_ticks ?block ()
   in
   Check.(ticks > prev_ticks)
@@ -284,9 +284,10 @@ let setup_classic ~commitment_period ~challenge_window protocol =
   in
   let* {boot_sector; _} =
     prepare_installer_kernel
+      ~base_installee:"./"
       ~preimages_dir:
         (Filename.concat (Sc_rollup_node.data_dir sc_rollup_node) "wasm_2_0_0")
-      Constant.WASM.tx_kernel
+      "tx_kernel"
   in
   (* Initialise the sc rollup *)
   let* sc_rollup_address =
@@ -310,10 +311,11 @@ let setup_bootstrap ~commitment_period ~challenge_window protocol =
          smart_rollup_node_extra_args;
        } =
     setup_bootstrap_smart_rollup
+      ~base_installee:"./"
       ~name:"tx_kernel"
       ~address:sc_rollup_address
       ~parameters_ty:"pair string (ticket string)"
-      ~installee:Constant.WASM.tx_kernel
+      ~installee:"tx_kernel"
       ()
   in
   let bootstrap1_key = Constant.bootstrap1.alias in
@@ -344,20 +346,33 @@ let tx_kernel_e2e setup protocol =
   in
 
   (* Run the rollup node, ensure origination succeeds. *)
+  let* genesis_info =
+    Client.RPC.call ~hooks client
+    @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
+         sc_rollup_address
+  in
+  let init_level = JSON.(genesis_info |-> "level" |> as_int) in
   let* () = Sc_rollup_node.run sc_rollup_node sc_rollup_address node_args in
-  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
+  let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
+  let* level =
+    Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
+  in
+  Check.(level = init_level)
+    Check.int
+    ~error_msg:"Current level has moved past origination level (%L = %R)" ;
+
   (* Originate a contract that will mint and transfer tickets to the tx kernel. *)
   let* mint_and_deposit_contract =
     Tezt_tx_kernel.Contracts.prepare_mint_and_deposit_contract client protocol
   in
-  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
+  let level = init_level + 1 in
 
-  (* gen two tz1 accounts *)
-  let pkh1, pk1, sk1 = Tezos_crypto.Signature.Ed25519.generate_key () in
-  let pkh2, pk2, sk2 = Tezos_crypto.Signature.Ed25519.generate_key () in
+  (* gen two mv1 accounts *)
+  let pkh1, pk1, sk1 = Mavryk_crypto.Signature.Ed25519.generate_key () in
+  let pkh2, pk2, sk2 = Mavryk_crypto.Signature.Ed25519.generate_key () in
   let ticket_content = "Hello, Ticket!" in
   let ticketer =
-    Tezos_protocol_alpha.Protocol.Contract_hash.to_b58check
+    Mavryk_protocol_alpha.Protocol.Contract_hash.to_b58check
       mint_and_deposit_contract
   in
 
@@ -369,15 +384,15 @@ let tx_kernel_e2e setup protocol =
       ~mint_and_deposit_contract:ticketer
       ~sc_rollup_address
       ~destination_l2_addr:
-        (Tezos_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
+        (Mavryk_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
       ~ticket_content
       ~amount:450
   in
-  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
+  let level = level + 1 in
 
   (* Construct transfer *)
   let sc_rollup_hash =
-    Tezos_crypto.Hashed.Smart_rollup_address.of_b58check_exn sc_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_exn sc_rollup_address
   in
   let transfer_message =
     Transaction_batch.(
@@ -408,8 +423,9 @@ let tx_kernel_e2e setup protocol =
     @@ Sc_rollup_rpc.get_global_block_state_hash ()
   in
   let* () = send_message client (sf "hex:[%S]" transfer_message) in
+  let level = level + 1 in
 
-  let* _ = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
+  let* _ = Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node level in
   let* () = assert_state_changed sc_rollup_node prev_state_hash in
 
   (* After that pkh1 has 400 tickets, pkh2 has 50 tickets *)
@@ -421,7 +437,7 @@ let tx_kernel_e2e setup protocol =
       client
       protocol
   in
-  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
+  let level = level + 1 in
   (* pk withdraws part of his tickets, pk2 withdraws all of his tickets *)
   let withdraw_message =
     Transaction_batch.(
@@ -453,12 +469,14 @@ let tx_kernel_e2e setup protocol =
     @@ Sc_rollup_rpc.get_global_block_state_hash ()
   in
   let* prev_ticks =
-    Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+    Sc_rollup_node.RPC.call sc_rollup_node
     @@ Sc_rollup_rpc.get_global_block_total_ticks ()
   in
   let* () = send_message client (sf "hex:[%S]" withdraw_message) in
-  let* withdrawal_level =
-    Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node
+  let level = level + 1 in
+  let withdrawal_level = level in
+  let* _ =
+    Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node withdrawal_level
   in
 
   let* _, last_lcc_level =
@@ -496,8 +514,10 @@ let tx_kernel_e2e setup protocol =
   let execute_outbox_proof ~message_index =
     let outbox_level = withdrawal_level in
     let* proof =
-      Sc_rollup_node.RPC.call sc_rollup_node
-      @@ Sc_rollup_rpc.outbox_proof_simple ~message_index ~outbox_level ()
+      Sc_rollup_client.outbox_proof
+        sc_rollup_client
+        ~message_index
+        ~outbox_level
     in
     match proof with
     | Some {commitment_hash; proof} ->
@@ -530,26 +550,16 @@ let test_tx_kernel_e2e =
     ~regression:true
     ~__FILE__
     ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"]
-    ~uses:(fun _protocol ->
-      [
-        Constant.octez_smart_rollup_node;
-        Constant.smart_rollup_installer;
-        Constant.WASM.tx_kernel;
-      ])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
     ~title:(Printf.sprintf "wasm_2_0_0 - tx kernel should run e2e (kernel_e2e)")
     (tx_kernel_e2e setup_classic)
 
 let test_bootstrapped_tx_kernel_e2e =
   register_test
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
     ~__FILE__
     ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "bootstrap"]
-    ~uses:(fun _protocol ->
-      [
-        Constant.octez_smart_rollup_node;
-        Constant.smart_rollup_installer;
-        Constant.WASM.tx_kernel;
-      ])
+    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
     ~title:
       (Printf.sprintf
          "wasm_2_0_0 - bootstrapped tx kernel should run e2e (kernel_e2e)")

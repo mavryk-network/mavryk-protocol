@@ -41,7 +41,7 @@ let export_mode = Snapshots.Tar
 
 let equal_history_mode ?loc ?msg hm1 hm2 =
   let eq = ( = ) in
-  let pp = Tezos_shell_services.History_mode.pp in
+  let pp = Mavryk_shell_services.History_mode.pp in
   Assert.equal ?loc ?msg ~pp ~eq hm1 hm2
 
 let check_flags descr store expected_head =
@@ -59,7 +59,7 @@ let check_flags descr store expected_head =
     History_mode.Archive ;
   let*! checkpoint = Store.Chain.checkpoint chain_store in
   let* metadata = Store.Block.get_block_metadata chain_store expected_head in
-  let expected_checkpoint = Store.Block.last_preserved_block_level metadata in
+  let expected_checkpoint = Store.Block.last_allowed_fork_level metadata in
   Assert.Int32.equal
     ~msg:("checkpoint consistency: " ^ descr)
     expected_checkpoint
@@ -197,10 +197,10 @@ let test_from_snapshot ~descr:_ (store_dir, context_dir) store
   let* baked_blocks, last =
     Alpha_utils.bake_n chain_store nb_blocks_to_bake genesis_block
   in
-  let*! lpbl =
+  let*! lafl =
     let*! o = Store.Block.get_block_metadata_opt chain_store last in
     match o with
-    | Some m -> Lwt.return (Store.Block.last_preserved_block_level m)
+    | Some m -> Lwt.return (Store.Block.last_allowed_fork_level m)
     | None -> assert false
   in
   let*! savepoint = Store.Chain.savepoint chain_store in
@@ -257,7 +257,7 @@ let test_from_snapshot ~descr:_ (store_dir, context_dir) store
       ~on_error:(function
         | [Reconstruction.(Reconstruction_failure Nothing_to_reconstruct)] as e
           ->
-            if Compare.Int32.(lpbl = 0l) || snd savepoint = 0l then
+            if Compare.Int32.(lafl = 0l) || snd savepoint = 0l then
               (* It is expected as nothing was pruned *)
               return_true
             else (

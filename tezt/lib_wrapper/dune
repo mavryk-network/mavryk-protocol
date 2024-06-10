@@ -3,7 +3,7 @@
 
 (library
  (name tezt_wrapper)
- (public_name octez-libs.tezt-wrapper)
+ (public_name mavkit-libs.tezt-wrapper)
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt))

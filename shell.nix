@@ -24,9 +24,6 @@ let
 
       # Cross-compilation for RISC-V
       sources.riscv64Pkgs.clangStdenv.cc
-
-      # Formatter/LSP for Cargo manifests (and TOML in general)
-      pkgs.taplo
     ]
     ++ (pkgs.lib.optional pkgs.stdenv.isDarwin sources.riscv64Pkgs.libiconvReal);
 
@@ -94,11 +91,11 @@ let
     else pkgs.clang;
 in
   pkgs.mkShell {
-    name = "tezos-shell";
+    name = "mavryk-shell";
 
     hardeningDisable = ["stackprotector"];
 
-    inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE TEZOS_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
+    inherit (mainPackage) NIX_LDFLAGS NIX_CFLAGS_COMPILE MAVRYK_WITHOUT_OPAM OPAM_SWITCH_PREFIX;
 
     buildInputs = with pkgs;
       kernelPackageSet

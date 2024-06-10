@@ -1,0 +1,15 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name evm_node_config)
+ (public_name mavkit-evm-node-libs.evm_node_config)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix)
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

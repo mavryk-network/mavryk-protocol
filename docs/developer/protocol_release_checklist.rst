@@ -65,7 +65,7 @@ This is done by adding and removing the respective protocols to
 ``active_protocol_versions``, :src:`scripts/remove-old-protocols.sh` will ``rm`` the appropriate older protocol.
 
 Additionally, the ``unit:NNN_PROTONAME`` unit test jobs in
-:src:`.gitlab/ci/jobs/test/oc.unit.yml` must be updated to test the new protocols and stop
+:src:`.gitlab/ci/jobs/test/unit.yml` must be updated to test the new protocols and stop
 testing the old ones, in the same manner as above.
 
 **Final Tests and sign-off:**
@@ -88,7 +88,7 @@ In the below, “Protocol Shepherd” is abbreviated “Shepherd”.
 -  **Developer Meeting Agrees to Freeze the Code** (up to bug fixes)
 
 -  **Shepherd compiles the doc page with the changelog**
-   (e.g. :doc:`../protocols/006_carthage`),
+   (e.g. :doc:`../protocols/001_atlas`),
    and resets the :doc:`Alpha changelog <../protocols/alpha>`,
    as the diff between protocol Alpha and the proposed
    protocol restarts at zero (e.g. :gl:`!3123`)

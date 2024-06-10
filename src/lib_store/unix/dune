@@ -2,25 +2,25 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_store_unix)
- (public_name octez-shell-libs.store.unix)
+ (name mavryk_store_unix)
+ (public_name mavkit-shell-libs.store.unix)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-shell-libs.shell-services
-  octez-libs.base
-  octez-libs.version
+  mavkit-shell-libs.shell-services
+  mavkit-libs.base
+  mavkit-libs.version
   index
-  octez-internal-libs.irmin_pack
-  octez-shell-libs.store.shared
-  octez-proto-libs.protocol-environment
-  octez-libs.tezos-context
-  octez-shell-libs.context-ops
-  octez-shell-libs.shell-context
-  octez-shell-libs.validation
-  octez-shell-libs.protocol-updater
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-libs.crypto
+  irmin-pack
+  mavkit-shell-libs.store.shared
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.shell-context
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
   lwt-watcher
   aches
   aches-lwt
@@ -30,18 +30,18 @@
   prometheus)
  (flags
   (:standard)
-  -open Tezos_shell_services
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_store_shared
-  -open Tezos_protocol_environment
-  -open Tezos_context
-  -open Tezos_context_ops
-  -open Tezos_validation
-  -open Tezos_protocol_updater
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_crypto)
+  -open Mavryk_shell_services
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_store_shared
+  -open Mavryk_protocol_environment
+  -open Mavryk_context
+  -open Mavryk_context_ops
+  -open Mavryk_validation
+  -open Mavryk_protocol_updater
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_crypto)
  (modules
   block_repr_unix
   block_store
@@ -54,55 +54,55 @@
   store))
 
 (library
- (name tezos_store_unix_reconstruction)
- (public_name octez-shell-libs.store.unix-reconstruction)
+ (name mavryk_store_unix_reconstruction)
+ (public_name mavkit-shell-libs.store.unix-reconstruction)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.crypto
-  octez-shell-libs.shell-services
-  octez-shell-libs.protocol-updater
-  octez-shell-libs.validation
-  octez-shell-libs.context-ops
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.protocol-updater
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.context-ops
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix)
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_crypto
-  -open Tezos_shell_services
-  -open Tezos_protocol_updater
-  -open Tezos_validation
-  -open Tezos_context_ops
-  -open Tezos_store_shared
-  -open Tezos_store_unix)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_crypto
+  -open Mavryk_shell_services
+  -open Mavryk_protocol_updater
+  -open Mavryk_validation
+  -open Mavryk_context_ops
+  -open Mavryk_store_shared
+  -open Mavryk_store_unix)
  (modules reconstruction reconstruction_events))
 
 (library
- (name tezos_store_unix_snapshots)
- (public_name octez-shell-libs.store.unix-snapshots)
+ (name mavryk_store_unix_snapshots)
+ (public_name mavkit-shell-libs.store.unix-snapshots)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
-  octez-libs.crypto
-  octez-shell-libs.shell-services
-  octez-libs.tezos-context
-  octez-shell-libs.validation
-  octez-shell-libs.store.shared
-  octez-shell-libs.store.unix)
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-services
+  mavkit-libs.mavryk-context
+  mavkit-shell-libs.validation
+  mavkit-shell-libs.store.shared
+  mavkit-shell-libs.store.unix)
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_crypto
-  -open Tezos_shell_services
-  -open Tezos_context
-  -open Tezos_validation
-  -open Tezos_store_shared
-  -open Tezos_store_unix)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_crypto
+  -open Mavryk_shell_services
+  -open Mavryk_context
+  -open Mavryk_validation
+  -open Mavryk_store_shared
+  -open Mavryk_store_unix)
  (modules snapshots snapshots_events))

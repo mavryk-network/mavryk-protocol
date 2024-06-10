@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2024 TriliTech <contact@trili.tech>
+// SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 //
@@ -7,22 +7,22 @@
 // Module containing most Simulation related code, in one place, to be deleted
 // when the proxy node simulates directly
 
+use crate::tick_model::constants::MAX_TRANSACTION_GAS_LIMIT;
 use crate::{error::Error, error::StorageError, storage};
 
 use crate::{
-    current_timestamp, parsable, parsing, retrieve_block_fees, retrieve_chain_id,
+    current_timestamp, parsable, parsing, retrieve_base_fee_per_gas, retrieve_chain_id,
     tick_model, CONFIG,
 };
 
-use evm_execution::run_transaction;
 use evm_execution::{account_storage, handler::ExecutionOutcome, precompiles};
 use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Rlp};
-use tezos_ethereum::block::BlockConstants;
-use tezos_ethereum::rlp_helpers::{decode_field, decode_option, next};
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_ethereum::rlp_helpers::{decode_field, decode_option, next};
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 // SIMULATION/SIMPLE/RLP_ENCODED_SIMULATION
 pub const SIMULATION_SIMPLE_TAG: u8 = 1;
@@ -30,6 +30,9 @@ pub const SIMULATION_SIMPLE_TAG: u8 = 1;
 pub const SIMULATION_CREATE_TAG: u8 = 2;
 // SIMULATION/CHUNK/NUM 2B/CHUNK
 pub const SIMULATION_CHUNK_TAG: u8 = 3;
+/// Maximum gas used by the evaluation. Bounded to limit DOS on the rollup node
+/// Is used as default value if no gas is set.
+pub const MAX_EVALUATION_GAS: u64 = MAX_TRANSACTION_GAS_LIMIT;
 /// Tag indicating simulation is an evaluation.
 pub const EVALUATION_TAG: u8 = 0x00;
 /// Tag indicating simulation is a validation.
@@ -86,18 +89,12 @@ impl Evaluation {
         &self,
         host: &mut Host,
     ) -> Result<Option<ExecutionOutcome>, Error> {
+        let timestamp = current_timestamp(host);
+        let timestamp = U256::from(timestamp.as_u64());
         let chain_id = retrieve_chain_id(host)?;
-        let block_fees = retrieve_block_fees(host)?;
-
-        let current_constants = match storage::read_current_block(host) {
-            Ok(block) => block.constants(chain_id, block_fees),
-            Err(_) => {
-                let timestamp = current_timestamp(host);
-                let timestamp = U256::from(timestamp.as_u64());
-                BlockConstants::first_block(timestamp, chain_id, block_fees)
-            }
-        };
-
+        let base_fee_per_gas = retrieve_base_fee_per_gas(host)?;
+        let block_constants =
+            BlockConstants::first_block(timestamp, chain_id, base_fee_per_gas);
         let mut evm_account_storage = account_storage::init_account_storage()
             .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?;
         let precompiles = precompiles::precompile_set::<Host>();
@@ -108,24 +105,18 @@ impl Evaluation {
                 0,
                 tx_data_size,
             );
-
-        let gas_price = if let Some(gas_price) = self.gas_price {
-            U256::from(gas_price)
-        } else {
-            block_fees.base_fee_per_gas()
-        };
-
-        let outcome = run_transaction(
+        let outcome = evm_execution::run_transaction(
             host,
-            &current_constants,
+            &block_constants,
             &mut evm_account_storage,
             &precompiles,
             CONFIG,
             self.to,
             self.from.unwrap_or(default_caller),
             self.data.clone(),
-            self.gas.or(Some(u64::MAX)),
-            gas_price,
+            self.gas
+                .map(|gas| u64::max(gas, MAX_EVALUATION_GAS))
+                .or(Some(MAX_EVALUATION_GAS)), // gas could be omitted
             self.value,
             false,
             allocated_ticks,
@@ -188,67 +179,11 @@ enum TxValidationOutcome {
     NonceTooLow,
     NotCorrectSignature,
     InvalidChainId,
+    GasLimitTooHigh,
     MaxGasFeeTooLow,
-    OutOfTicks,
 }
 
 impl TxValidation {
-    // Run the transaction and checks if it fails with "OutOfTicks". It might
-    // fail for other reasons, but in that case it is still correct.
-    pub fn would_exhaust_ticks<Host: Runtime>(
-        host: &mut Host,
-        transaction: &EthereumTransactionCommon,
-        caller: &H160,
-    ) -> Result<bool, anyhow::Error> {
-        let chain_id = retrieve_chain_id(host)?;
-        let block_fees = retrieve_block_fees(host)?;
-
-        let current_constants = match storage::read_current_block(host) {
-            Ok(block) => block.constants(chain_id, block_fees),
-            Err(_) => {
-                let timestamp = current_timestamp(host);
-                let timestamp = U256::from(timestamp.as_u64());
-                BlockConstants::first_block(timestamp, chain_id, block_fees)
-            }
-        };
-
-        let mut evm_account_storage = account_storage::init_account_storage()
-            .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?;
-        let precompiles = precompiles::precompile_set::<Host>();
-        let tx_data_size = transaction.data.len() as u64;
-        let allocated_ticks =
-            tick_model::estimate_remaining_ticks_for_transaction_execution(
-                0,
-                tx_data_size,
-            );
-
-        let gas_price = if let Ok(gas_price) = transaction.overall_gas_price(&block_fees)
-        {
-            gas_price
-        } else {
-            block_fees.base_fee_per_gas()
-        };
-
-        match run_transaction(
-            host,
-            &current_constants,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            transaction.to,
-            *caller,
-            transaction.data.clone(),
-            Some(transaction.execution_gas_limit()), // gas could be omitted
-            gas_price,
-            Some(transaction.value),
-            false,
-            allocated_ticks,
-        ) {
-            Err(evm_execution::EthereumError::OutOfTicks) => Ok(true),
-            _ => Ok(false),
-        }
-    }
-
     /// Execute the simulation
     pub fn run<Host: Runtime>(
         &self,
@@ -266,7 +201,7 @@ impl TxValidation {
             Some(account) => account.nonce(host)?,
             None => U256::zero(),
         };
-        let block_fees = retrieve_block_fees(host)?;
+        let base_fee_per_gas = retrieve_base_fee_per_gas(host)?;
         // Get the chain_id
         let chain_id = storage::read_chain_id(host)?;
         // Check if nonce is too low
@@ -274,16 +209,17 @@ impl TxValidation {
             return Ok(TxValidationOutcome::NonceTooLow);
         }
         // Check if the chain id is correct
-        if tx.chain_id.is_some() && tx.chain_id != Some(chain_id) {
+        if tx.chain_id != chain_id {
             return Ok(TxValidationOutcome::InvalidChainId);
         }
-        // Check if running the transaction (assuming it is valid) would run out
-        // of ticks.
-        if let Ok(true) = Self::would_exhaust_ticks(host, tx, &caller) {
-            return Ok(TxValidationOutcome::OutOfTicks);
+        // Check if the gas limit is not too high
+        if tx.gas_limit > MAX_TRANSACTION_GAS_LIMIT {
+            return Ok(TxValidationOutcome::GasLimitTooHigh);
         }
         // Check if the gas price is high enough
-        if tx.max_fee_per_gas < block_fees.base_fee_per_gas() {
+        if tx.max_fee_per_gas < base_fee_per_gas
+            || tx.max_fee_per_gas < tx.max_priority_fee_per_gas
+        {
             return Ok(TxValidationOutcome::MaxGasFeeTooLow);
         }
         // TODO: #6498
@@ -304,7 +240,7 @@ impl TryFrom<&[u8]> for TxValidation {
 #[derive(Debug, PartialEq)]
 enum Message {
     Evaluation(Evaluation),
-    TxValidation(Box<TxValidation>),
+    TxValidation(TxValidation),
 }
 
 impl TryFrom<&[u8]> for Message {
@@ -316,8 +252,7 @@ impl TryFrom<&[u8]> for Message {
 
         match tag {
             EVALUATION_TAG => Evaluation::try_from(bytes).map(Message::Evaluation),
-            VALIDATION_TAG => TxValidation::try_from(bytes)
-                .map(|tx| Message::TxValidation(Box::new(tx))),
+            VALIDATION_TAG => TxValidation::try_from(bytes).map(Message::TxValidation),
             _ => Err(DecoderError::Custom("Unknown message to simulate")),
         }
     }
@@ -451,21 +386,13 @@ fn store_tx_validation_outcome<Host: Runtime>(
             storage::store_simulation_status(host, false)?;
             storage::store_simulation_result(host, Some(b"Invalid chain id.".to_vec()))
         }
+        TxValidationOutcome::GasLimitTooHigh => {
+            storage::store_simulation_status(host, false)?;
+            storage::store_simulation_result(host, Some(b"Gas limit too high.".to_vec()))
+        }
         TxValidationOutcome::MaxGasFeeTooLow => {
             storage::store_simulation_status(host, false)?;
             storage::store_simulation_result(host, Some(b"Max gas fee too low.".to_vec()))
-        }
-        TxValidationOutcome::OutOfTicks => {
-            storage::store_simulation_status(host, false)?;
-            storage::store_simulation_result(
-                host,
-                Some(
-                    b"The transaction would exhaust all the ticks it is allocated. \
-                      Try reducing its gas consumption or splitting the call in \
-                      multiple steps, if possible."
-                        .to_vec(),
-                ),
-            )
         }
     }
 }
@@ -491,12 +418,12 @@ pub fn start_simulation_mode<Host: Runtime>(
 mod tests {
 
     use primitive_types::H256;
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         block::BlockConstants, transaction::TransactionType, tx_signature::TxSignature,
     };
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
-    use crate::{current_timestamp, retrieve_block_fees, retrieve_chain_id};
+    use crate::{current_timestamp, retrieve_base_fee_per_gas, retrieve_chain_id};
 
     use super::*;
 
@@ -582,13 +509,16 @@ mod tests {
         let timestamp = U256::from(timestamp.as_u64());
         let chain_id = retrieve_chain_id(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        let block_fees = retrieve_block_fees(host);
+        let base_fee_per_gas = retrieve_base_fee_per_gas(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        assert!(block_fees.is_ok(), "block_fees should be defined");
+        assert!(
+            base_fee_per_gas.is_ok(),
+            "base_fee_per_gas should be defined"
+        );
         let block = BlockConstants::first_block(
             timestamp,
             chain_id.unwrap(),
-            block_fees.unwrap(),
+            base_fee_per_gas.unwrap(),
         );
         let precompiles = precompiles::precompile_set::<Host>();
         let mut evm_account_storage = account_storage::init_account_storage().unwrap();
@@ -598,10 +528,6 @@ mod tests {
         let transaction_value = U256::from(0);
         let call_data: Vec<u8> = hex::decode(STORAGE_CONTRACT_INITIALIZATION).unwrap();
 
-        // gas limit was estimated using Remix on Shanghai network (256,842)
-        // plus a safety margin for gas accounting discrepancies
-        let gas_limit = 300_000;
-        let gas_price = U256::from(21000);
         // create contract
         let outcome = evm_execution::run_transaction(
             host,
@@ -612,8 +538,7 @@ mod tests {
             callee,
             caller,
             call_data,
-            Some(gas_limit),
-            gas_price,
+            Some(31000),
             Some(transaction_value),
             false,
             DUMMY_ALLOCATED_TICKS,
@@ -639,7 +564,7 @@ mod tests {
             gas_price: None,
             to: Some(new_address),
             data: hex::decode(STORAGE_CONTRACT_CALL_NUM).unwrap(),
-            gas: Some(100000),
+            gas: Some(10000),
             value: None,
         };
         let outcome = evaluation.run(&mut host);
@@ -663,7 +588,7 @@ mod tests {
             gas_price: None,
             to: Some(new_address),
             data: hex::decode(STORAGE_CONTRACT_CALL_GET).unwrap(),
-            gas: Some(111111),
+            gas: Some(10000),
             value: None,
         };
         let outcome = evaluation.run(&mut host);
@@ -774,6 +699,19 @@ mod tests {
             parsed,
             "should have been parsed as complete simulation"
         );
+
+        if let Input::Simple(box_simple) = parsed {
+            if let Message::Evaluation(s) = *box_simple {
+                let res = s.run(&mut host).expect("simulation should run");
+                assert!(
+                    res.is_some(),
+                    "Simulation should have produced some outcome"
+                );
+                let res = res.unwrap();
+                return assert!(res.is_success, "simulation should have succeeded");
+            }
+        }
+        panic!("Parsing failed")
     }
 
     #[test]
@@ -829,19 +767,19 @@ mod tests {
 
             let signature = TxSignature::new(v, r, s).unwrap();
 
-            EthereumTransactionCommon::new(
-                TransactionType::Legacy,
-                Some(1337.into()),
-                0.into(),
-                U256::default(),
-                U256::default(),
-                2000000,
-                Some(H160::default()),
-                U256::default(),
-                vec![],
-                Vec::default(),
-                Some(signature),
-            )
+            EthereumTransactionCommon {
+                type_: TransactionType::Legacy,
+                chain_id: 1337.into(),
+                nonce: 0.into(),
+                max_priority_fee_per_gas: U256::default(),
+                max_fee_per_gas: U256::default(),
+                gas_limit: 2000000,
+                to: Some(H160::default()),
+                value: U256::default(),
+                data: vec![],
+                signature: Some(signature),
+                access_list: Vec::default(),
+            }
         };
 
         let hex = "f8628080831e84809400000000000000000000000000000000000000008080820a96a00c4604516693aafd2e74a993c280455fcad144a414f5aa580d96f3c51d4428e5a0630fb7fc1af4c1c1a82cabb4ef9d12f8fc2e54a047eb3e3bdffc9d23cd07a94e";
@@ -861,9 +799,9 @@ mod tests {
         let parsed = Input::parse(&input);
 
         assert_eq!(
-            Input::Simple(Box::new(Message::TxValidation(Box::new(TxValidation {
+            Input::Simple(Box::new(Message::TxValidation(TxValidation {
                 transaction: expected
-            })))),
+            }))),
             parsed,
             "should have been parsed as complete tx validation"
         );
@@ -878,19 +816,19 @@ mod tests {
     fn test_tx_validation_gas_price() {
         let mut host = MockHost::default();
 
-        let transaction = EthereumTransactionCommon::new(
-            TransactionType::Eip1559,
-            Some(U256::from(1)),
-            U256::from(0),
-            U256::zero(),
-            U256::from(1),
-            21000,
-            Some(H160::zero()),
-            U256::zero(),
-            vec![],
-            vec![],
-            None,
-        );
+        let transaction = EthereumTransactionCommon {
+            type_: TransactionType::Eip1559,
+            chain_id: U256::from(1),
+            nonce: U256::from(0),
+            max_priority_fee_per_gas: U256::zero(),
+            max_fee_per_gas: U256::from(1),
+            gas_limit: 21000,
+            to: Some(H160::zero()),
+            value: U256::zero(),
+            data: vec![],
+            access_list: vec![],
+            signature: None,
+        };
         let signed = transaction
             .sign_transaction(
                 "e922354a3e5902b5ac474f3ff08a79cff43533826b8f451ae2190b65a9d26158"

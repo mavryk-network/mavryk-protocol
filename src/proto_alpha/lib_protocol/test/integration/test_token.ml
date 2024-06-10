@@ -45,7 +45,7 @@ let create_context () =
   return (ctxt, pkh)
 
 let random_amount () =
-  match Tez.of_mutez (Int64.add 1L (Random.int64 100L)) with
+  match Tez.of_mumav (Int64.add 1L (Random.int64 100L)) with
   | None -> assert false
   | Some x -> x
 
@@ -179,9 +179,9 @@ let test_transferring_to_receiver ctxt receiver amount expected_bupds =
     check bool "Balance updates do not match." (bupds = expected_bupds) true) ;
   (* Test transferring to go beyond capacity. *)
   let*@ ctxt', bal = Token.Internal_for_tests.balance ctxt' receiver in
-  let amount = Tez.of_mutez_exn Int64.max_int -! bal +! Tez.one_mutez in
+  let amount = Tez.of_mumav_exn Int64.max_int -! bal +! Tez.one_mumav in
   let*!@ res = Token.transfer ctxt' `Minted receiver amount in
-  Assert.proto_error_with_info ~loc:__LOC__ res "Overflowing tez addition"
+  Assert.proto_error_with_info ~loc:__LOC__ res "Overflowing mav addition"
 
 let test_transferring_to_contract ctxt =
   let pkh, _pk, _sk = Signature.generate_key () in
@@ -350,7 +350,7 @@ let test_transferring_from_container ctxt giver amount expected_bupds =
     match giver with
     | `Contract _ -> "Balance too low"
     | `Frozen_bonds _ -> "Storage error (fatal internal error)"
-    | _ -> "Underflowing tez subtraction"
+    | _ -> "Underflowing mav subtraction"
   in
   let* () = Assert.proto_error_with_info ~loc:__LOC__ res error_title in
   (* Transferring zero must be a noop, and must not return balance updates. *)
@@ -384,7 +384,7 @@ let test_transferring_from_container ctxt giver amount expected_bupds =
     match giver with
     | `Contract _ -> "Balance too low"
     | `Frozen_bonds _ -> "Partial spending of frozen bonds"
-    | _ -> "Underflowing tez subtraction"
+    | _ -> "Underflowing mav subtraction"
   in
   Assert.proto_error_with_info ~loc:__LOC__ res error_title
 
@@ -562,13 +562,11 @@ let build_test_cases () =
   return (ctxt, List.product giver_list receiver_list)
 
 let check_giver_balances ctxt ctxt' giver amount =
-  let open Lwt_result_syntax in
   match cast_to_container_type giver with
   | None -> return_unit
   | Some giver -> check_giver_balances ctxt ctxt' giver amount
 
 let check_receiver_balances ctxt ctxt' receiver amount =
-  let open Lwt_result_syntax in
   match cast_to_container_type receiver with
   | None -> return_unit
   | Some receiver -> check_receiver_balances ctxt ctxt' receiver amount
@@ -737,7 +735,7 @@ let test_transfer_n_with_several_givers () =
   let user4c = `Contract (Contract.Implicit user4) in
   (* Allocate contracts for user1, user2, user3, and user4. *)
   let amount =
-    match Tez.of_mutez 1000L with None -> assert false | Some x -> x
+    match Tez.of_mumav 1000L with None -> assert false | Some x -> x
   in
   let*@ ctxt, _ = Token.transfer ctxt origin user1c amount in
   let*@ ctxt, _ = Token.transfer ctxt origin user2c amount in

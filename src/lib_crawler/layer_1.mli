@@ -25,18 +25,16 @@
 (*****************************************************************************)
 
 (** This module allow to follow the layer 1 chain by subscribing to the head
-    monitoring RPC offered by the Tezos node, reconnecting, etc. *)
+    monitoring RPC offered by the Mavryk node, reconnecting, etc. *)
 
-type error +=
-  | Cannot_find_predecessor of Block_hash.t
-  | Http_connection_error of (Cohttp.Code.status_code * string)
+type error += Cannot_find_predecessor of Block_hash.t
 
 (** The type of layer 1 followers. *)
 type t
 
 (** {2 Monitoring the Layer 1 chain} *)
 
-(** [start ~name ~reconnection_delay ?protocols cctxt] connects to a Tezos node
+(** [start ~name ~reconnection_delay ?protocols cctxt] connects to a Mavryk node
     and starts monitoring new heads. One can iterate on the heads by calling
     {!iter_heads} on its result. [reconnection_delay] gives an initial delay for
     the reconnection which is used in an exponential backoff. The [name] is used
@@ -94,7 +92,7 @@ val nth_predecessor :
   'a ->
   ('a * 'a trace) tzresult Lwt.t
 
-(** [get_tezos_reorg_for_new_head l1_ctxt ?get_old_predecessor old_head
+(** [get_mavryk_reorg_for_new_head l1_ctxt ?get_old_predecessor old_head
     new_head] returns the reorganization of L1 blocks between [old_head] and
     [new_head]. If [old_head] is [`Level l], then it returns the reorganization
     between [new_head] and level [l] on the same chain. [get_old_predecessor]
@@ -102,20 +100,13 @@ val nth_predecessor :
     {!get_predecessor}) to retrieve the predecessors of the old head. This is
     necessary when the old head is not in the L1 chain anymore and forgotten by
     the L1 node. *)
-val get_tezos_reorg_for_new_head :
+val get_mavryk_reorg_for_new_head :
   t ->
   ?get_old_predecessor:
     (Block_hash.t * int32 -> (Block_hash.t * int32) tzresult Lwt.t) ->
   [`Head of Block_hash.t * int32 | `Level of int32] ->
   Block_hash.t * int32 ->
   (Block_hash.t * int32) Reorg.t tzresult Lwt.t
-
-(** [client_context_with_timeout ctxt timeout] creates a client context where
-    RPCs will be made with timeout [timeout] seconds. Calls that timeout will
-    resolve with an error [RPC_timeout] which will trigger a reconnection in
-    {!iter_heads}.  *)
-val client_context_with_timeout :
-  #Client_context.full -> float -> Client_context.full
 
 (**/**)
 

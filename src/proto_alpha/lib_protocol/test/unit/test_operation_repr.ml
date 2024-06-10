@@ -90,7 +90,6 @@ module Test_operation_repr = struct
     | _ -> failwith "Unexpected value"
 
   let test_of_list_empty_case () =
-    let open Lwt_result_syntax in
     match of_list [] with
     | Ok _ -> failwith "of_list of an empty list was expected to fail"
     | Error _ -> return_unit
@@ -105,7 +104,6 @@ module Test_operation_repr = struct
         (Bytes.cat (Bytes.of_string "\255") prefix, suffix)
 
   let test_split_signatures error assemble =
-    let open Lwt_result_syntax in
     let op_bytes =
       Data_encoding.Binary.to_bytes_exn
         Operation_repr.contents_encoding_with_legacy_attestation_name

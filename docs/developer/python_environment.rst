@@ -1,7 +1,7 @@
 Python Environment
 ==================
 
-Octez uses Python to build this documentation website (:doc:`https://tezos.gitlab.io <../index>`) and for a limited set of
+Mavkit uses Python to build this documentation website (https://tezos.gitlab.io) and for a limited set of
 utility scripts (although this latter usage of Python is deprecated).
 This page contains installation instructions for the Python environment.
 
@@ -43,7 +43,7 @@ A typical installation of the above prerequisites (including their own prerequis
   pyenv global 3.11.6
   # 4. install poetry
   # 5. restart shell, to activate the poetry setup
-  # 6. then install dependencies for Octez using poetry:
+  # 6. then install dependencies for Mavkit using poetry:
   cd tezos/
   poetry install
 
@@ -128,15 +128,15 @@ when running ``poetry``:
    :end-before: [verify poetry version]
 
 Finally, let's use ``poetry`` to install the python dependencies of
-Octez. This command needs to run in the root of the Octez checkout:
+Mavkit. This command needs to run in the root of the Mavkit checkout:
 
 .. literalinclude:: install-python-debian-ubuntu.sh
    :language: shell
-   :start-after: [install octez python dev-dependencies]
+   :start-after: [install mavkit python dev-dependencies]
    :end-before: [print sphinx-build versions]
 
 If the installation went well, you should now have the correct version
-when executing poetry in the Octez checkout for our main dependency
+when executing poetry in the Mavkit checkout for our main dependency
 (``sphinx-build`` for documentation):
 
 .. literalinclude:: install-python-debian-ubuntu.sh

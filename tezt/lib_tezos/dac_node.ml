@@ -59,7 +59,7 @@ module Parameters = struct
 
   type session_state = {mutable ready : bool}
 
-  let base_default_name = "octez-dac-node"
+  let base_default_name = "mavkit-dac-node"
 
   let default_colors = Log.Color.[|FG.gray; FG.magenta; FG.yellow; FG.green|]
 end
@@ -111,6 +111,8 @@ let spawn_command dac_node =
   Process.spawn ~name:dac_node.name ~color:dac_node.color dac_node.path
 
 let raw_rpc (host, port) = Printf.sprintf "%s:%d" host port
+
+let localhost = "127.0.0.1"
 
 let spawn_config_init dac_node =
   let arg_command =
@@ -260,8 +262,8 @@ let wait_for_ready dac_node =
 let handle_event dac_node {name; value = _; timestamp = _} =
   match name with "dac_node_is_ready.v0" -> set_ready dac_node | _ -> ()
 
-let create_with_endpoint ?(path = Uses.path Constant.octez_dac_node) ?name
-    ?color ?data_dir ?event_pipe ?(rpc_host = Constant.default_host) ?rpc_port
+let create_with_endpoint ?(path = Uses.path Constant.mavkit_dac_node) ?name
+    ?color ?data_dir ?event_pipe ?(rpc_host = "127.0.0.1") ?rpc_port
     ?reveal_data_dir ~mode ~endpoint ~client ?(allow_v1_api = false) () =
   let name = match name with None -> fresh_name () | Some name -> name in
   let data_dir =
@@ -335,8 +337,8 @@ let create_coordinator ?path ?name ?color ?data_dir ?event_pipe ?rpc_host
 
 let create_committee_member_with_endpoint ?path ?name ?color ?data_dir
     ?event_pipe ?rpc_host ?rpc_port ?reveal_data_dir
-    ?(coordinator_rpc_host = Constant.default_host) ?coordinator_rpc_port
-    ?allow_v1_api ~address ~endpoint ~client () =
+    ?(coordinator_rpc_host = localhost) ?coordinator_rpc_port ?allow_v1_api
+    ~address ~endpoint ~client () =
   let coordinator_rpc_port =
     match coordinator_rpc_port with None -> Port.fresh () | Some port -> port
   in
@@ -379,9 +381,9 @@ let create_committee_member ?path ?name ?color ?data_dir ?event_pipe ?rpc_host
     ()
 
 let create_observer_with_endpoint ?path ?name ?color ?data_dir ?event_pipe
-    ?rpc_host ?rpc_port ?reveal_data_dir
-    ?(coordinator_rpc_host = Constant.default_host) ?coordinator_rpc_port
-    ?timeout ?allow_v1_api ~committee_member_rpcs ~endpoint ~client () =
+    ?rpc_host ?rpc_port ?reveal_data_dir ?(coordinator_rpc_host = localhost)
+    ?coordinator_rpc_port ?timeout ?allow_v1_api ~committee_member_rpcs
+    ~endpoint ~client () =
   let coordinator_rpc_port =
     match coordinator_rpc_port with None -> Port.fresh () | Some port -> port
   in
@@ -467,8 +469,7 @@ let run ?(wait_ready = true) ?env node =
   let* () = if wait_ready then wait_for_ready node else Lwt.return_unit in
   return ()
 
-let with_sleeping_node ?rpc_port ?(rpc_address = Constant.default_host) ~timeout
-    f =
+let with_sleeping_node ?rpc_port ?(rpc_address = localhost) ~timeout f =
   let make_host str =
     match Ipaddr.of_string str with
     | Ok (Ipaddr.V4 addr) -> Ipaddr.v6_of_v4 addr

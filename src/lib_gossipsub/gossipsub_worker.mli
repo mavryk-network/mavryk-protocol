@@ -31,4 +31,3 @@ module Make (C : Gossipsub_intf.WORKER_CONFIGURATION) :
      and module GS.Topic = C.GS.Topic
      and module Monad = C.Monad
      and module Stream = C.Stream
-     and module Point = C.Point

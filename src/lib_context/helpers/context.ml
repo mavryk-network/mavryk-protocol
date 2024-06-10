@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_context_encoding.Context
+open Mavryk_context_encoding.Context
 module Env = Env
 
 module type DB = Irmin.Generic_key.S with module Schema = Schema
@@ -56,10 +56,10 @@ let encode_proof_version ~is_stream ~is_binary =
   lor if is_binary then binary_mask else 0
 
 module Make_config (Conf : Conf) = struct
-  let equal_config = Tezos_context_sigs.Config.equal
+  let equal_config = Mavryk_context_sigs.Config.equal
 
   let config _ =
-    Tezos_context_sigs.Config.v
+    Mavryk_context_sigs.Config.v
       ~entries:Conf.entries
       ~stable_hash:Conf.stable_hash
       ~inode_child_order:Conf.inode_child_order
@@ -253,16 +253,16 @@ module Make_tree (Conf : Conf) (Store : DB) = struct
         | exn -> Lwt.reraise exn)
 end
 
-module Proof_encoding = Tezos_context_merkle_proof_encoding
+module Proof_encoding = Mavryk_context_merkle_proof_encoding
 
 module Make_proof
     (Store : DB)
-    (Store_conf : Tezos_context_encoding.Context.Conf) =
+    (Store_conf : Mavryk_context_encoding.Context.Conf) =
 struct
   module DB_proof = Store.Tree.Proof
 
   module Proof = struct
-    include Tezos_context_sigs.Context.Proof_types
+    include Mavryk_context_sigs.Context.Proof_types
 
     module State = struct
       let rec to_inode : type a b. (a -> b) -> a DB_proof.inode -> b inode =

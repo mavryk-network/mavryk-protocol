@@ -54,7 +54,7 @@ val sign :
 (** Create an unpacked attestation that is expected for given [Block.t].
 
     Optional parameters allow to specify the attested values: [level],
-    [round], [block_payload_hash], and/or [dal_content].
+    [round] and/or [block_payload_hash].
 
     They also allow to specify the attester ([delegate]), and/or the
     [slot]. These default to the first slot and its delegate.
@@ -67,7 +67,6 @@ val raw_attestation :
   ?level:Raw_level.t ->
   ?round:Round.t ->
   ?block_payload_hash:Block_payload_hash.t ->
-  ?dal_content:dal_content ->
   ?branch:Block_hash.t ->
   Block.t ->
   Kind.attestation Operation.t tzresult Lwt.t
@@ -94,31 +93,9 @@ val attestation :
   ?level:Raw_level.t ->
   ?round:Round.t ->
   ?block_payload_hash:Block_payload_hash.t ->
-  ?dal_content:dal_content ->
   ?branch:Block_hash.t ->
   Block.t ->
   Operation.packed tzresult Lwt.t
-
-(** Build a DAL attestation for the given [delegate] and the given [block]'s
-    level (to be included in the block at the next level), if
-    possible. Otherwise returns [None]. It is possible to build one if:
-    [delegate] is part of the DAL committee for the current epoch, and
-    [delegate] is part of the TB committee for the current level. Recall that
-    the slot to be included in the attestation is the delegate's first TB slot
-    at the current level. *)
-val raw_dal_attestation :
-  ?delegate:public_key_hash ->
-  ?attestation:Dal.Attestation.t ->
-  Block.t ->
-  Kind.dal_attestation Operation.t option tzresult Lwt.t
-
-(** Create a packed DAL attestation that is expected for a given
-    [Block.t] by packing the result of {!raw_dal_attestation}. *)
-val dal_attestation :
-  ?delegate:public_key_hash ->
-  ?attestation:Dal.Attestation.t ->
-  Block.t ->
-  Operation.packed option tzresult Lwt.t
 
 (** Create a packed preattestation that is expected for a given
     [Block.t] by packing the result of {!raw_preattestation}. *)

@@ -5,13 +5,9 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 pub mod backend;
-pub mod bus;
 pub mod csregisters;
 pub mod memory_backend;
-mod mode;
 pub mod registers;
-
-use bus::{main_memory, Bus};
 
 /// RISC-V hart state
 pub struct HartState<M: backend::Manager> {
@@ -23,9 +19,6 @@ pub struct HartState<M: backend::Manager> {
 
     /// Control and state registers
     pub csregisters: csregisters::CSRegisters<M>,
-
-    /// Current running mode of hart
-    mode: mode::ModeCell<M>,
 }
 
 impl<M: backend::Manager> HartState<M> {
@@ -36,9 +29,9 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         rs1: registers::XRegister,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
+    ) {
         let value = self.xregisters.read(rs1);
-        self.csr_replace(csr, value, rd)
+        self.csr_replace(csr, value, rd);
     }
 
     /// Execute a CSRRWI instruction.
@@ -48,8 +41,8 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         imm: registers::XValue,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
-        self.csr_replace(csr, imm & 0b11111, rd)
+    ) {
+        self.csr_replace(csr, imm & 0b11111, rd);
     }
 
     /// Replace the value in `csr` with `value` and write the previous value to `rd`.
@@ -60,11 +53,7 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         value: registers::XValue,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
-        let mode = self.mode.read();
-        csregisters::check_privilege(csr, mode)?;
-        csregisters::check_write(csr)?;
-
+    ) {
         // When `rd = x0`, we don't want to trigger any CSR read effects.
         if rd.is_zero() {
             self.csregisters.write(csr, value);
@@ -72,7 +61,6 @@ impl<M: backend::Manager> HartState<M> {
             let old = self.csregisters.replace(csr, value);
             self.xregisters.write(rd, old);
         }
-        Ok(())
     }
 
     /// Execute the CSRRS instruction.
@@ -82,22 +70,16 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         rs1: registers::XRegister,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
-        let mode = self.mode.read();
-        csregisters::check_privilege(csr, mode)?;
-
+    ) {
         // When `rs1 = x0`, we don't want to trigger any CSR write effects.
         let old = if rs1.is_zero() {
             self.csregisters.read(csr)
         } else {
-            csregisters::check_write(csr)?;
-
             let value = self.xregisters.read(rs1);
             self.csregisters.set_bits(csr, value)
         };
 
         self.xregisters.write(rd, old);
-        Ok(())
     }
 
     /// Execute the CSRRSI instruction.
@@ -107,22 +89,17 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         imm: registers::XValue,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
+    ) {
         let imm = imm & 0b11111;
-        let mode = self.mode.read();
-        csregisters::check_privilege(csr, mode)?;
 
         // When `imm = 0`, we don't want to trigger any CSR write effects.
         let old = if imm == 0 {
             self.csregisters.read(csr)
         } else {
-            csregisters::check_write(csr)?;
-
             self.csregisters.set_bits(csr, imm)
         };
 
         self.xregisters.write(rd, old);
-        Ok(())
     }
 
     /// Execute the CSRRC instruction.
@@ -132,22 +109,16 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         rs1: registers::XRegister,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
-        let mode = self.mode.read();
-        csregisters::check_privilege(csr, mode)?;
-
+    ) {
         // When `rs1 = x0`, we don't want to trigger any CSR write effects.
         let old = if rs1.is_zero() {
             self.csregisters.read(csr)
         } else {
-            csregisters::check_write(csr)?;
-
             let value = self.xregisters.read(rs1);
             self.csregisters.clear_bits(csr, value)
         };
 
         self.xregisters.write(rd, old);
-        Ok(())
     }
 
     /// Execute the CSRRCI instruction.
@@ -157,22 +128,17 @@ impl<M: backend::Manager> HartState<M> {
         csr: csregisters::CSRegister,
         imm: registers::XValue,
         rd: registers::XRegister,
-    ) -> csregisters::Result<()> {
+    ) {
         let imm = imm & 0b11111;
-        let mode = self.mode.read();
-        csregisters::check_privilege(csr, mode)?;
 
         // When `imm = 0`, we don't want to trigger any CSR write effects.
         let old = if imm == 0 {
             self.csregisters.read(csr)
         } else {
-            csregisters::check_write(csr)?;
-
             self.csregisters.clear_bits(csr, imm)
         };
 
         self.xregisters.write(rd, old);
-        Ok(())
     }
 }
 
@@ -181,7 +147,6 @@ pub type HartStateLayout = (
     registers::XRegistersLayout,
     registers::FRegistersLayout,
     csregisters::CSRegistersLayout,
-    mode::ModeLayout,
 );
 
 impl<M: backend::Manager> HartState<M> {
@@ -191,26 +156,6 @@ impl<M: backend::Manager> HartState<M> {
             xregisters: registers::XRegisters::new_in(space.0),
             fregisters: registers::FRegisters::new_in(space.1),
             csregisters: csregisters::CSRegisters::new_in(space.2),
-            mode: mode::ModeCell::new_in(space.3),
-        }
-    }
-}
-
-/// Layout for the machine state
-pub type MachineStateLayout<ML> = (HartStateLayout, bus::BusLayout<ML>);
-
-/// Machine state
-pub struct MachineState<ML: main_memory::MainMemoryLayout, M: backend::Manager> {
-    pub hart: HartState<M>,
-    pub bus: Bus<ML, M>,
-}
-
-impl<ML: main_memory::MainMemoryLayout, M: backend::Manager> MachineState<ML, M> {
-    /// Bind the machine state to the given allocated space.
-    pub fn new_in(space: backend::AllocatedOf<MachineStateLayout<ML>, M>) -> Self {
-        Self {
-            hart: HartState::new_in(space.0),
-            bus: Bus::new_in(space.1),
         }
     }
 }

@@ -28,9 +28,9 @@ open Filename.Infix
 
 let home = try Sys.getenv "HOME" with Not_found -> "/root"
 
-let data_dir_env_name = "TEZOS_NODE_DIR"
+let data_dir_env_name = "MAVRYK_NODE_DIR"
 
-let default_data_dir = home // ".tezos-node"
+let default_data_dir = home // ".mavryk-node"
 
 let default_rpc_port = 8732
 
@@ -53,14 +53,14 @@ type blockchain_network = {
   user_activated_upgrades : User_activated.upgrades;
   user_activated_protocol_overrides : User_activated.protocol_overrides;
   default_bootstrap_peers : string list;
-  dal_config : Tezos_crypto_dal.Cryptobox.Config.t;
+  dal_config : Mavryk_crypto_dal.Cryptobox.Config.t;
 }
 
 let make_blockchain_network ~alias ~chain_name ?old_chain_name
     ?incompatible_chain_name ~sandboxed_chain_name
     ?(user_activated_upgrades = []) ?(user_activated_protocol_overrides = [])
     ?(default_bootstrap_peers = []) ?genesis_parameters
-    ?(dal_config = Tezos_crypto_dal.Cryptobox.Config.default) genesis =
+    ?(dal_config = Mavryk_crypto_dal.Cryptobox.Config.default) genesis =
   let of_string = Distributed_db_version.Name.of_string in
   {
     alias = Some alias;
@@ -86,7 +86,7 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 (* The script in scripts/user_activated_upgrade.sh patches the following lines
    when it needs to set the user activated upgrade levels for Mainnet. *)
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
-let mainnet_user_activated_upgrades =
+let _mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
@@ -99,7 +99,7 @@ let mainnet_user_activated_upgrades =
 let sandbox_user_activated_upgrades = []
 (* END_PATCHING_ZONE_FOR_SANDBOX_USER_ACTIVATED_UPGRADES *)
 
-let blockchain_network_mainnet =
+(* let blockchain_network_mainnet =
   make_blockchain_network
     ~alias:"mainnet"
     {
@@ -111,10 +111,10 @@ let blockchain_network_mainnet =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
-    ~chain_name:"TEZOS_MAINNET"
-    ~old_chain_name:"TEZOS_BETANET_2018-06-30T16:07:32Z"
+    ~chain_name:"MAVRYK_MAINNET"
+    ~old_chain_name:"MAVRYK_BETANET_2018-06-30T16:07:32Z"
     ~incompatible_chain_name:"INCOMPATIBLE"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS_MAINNET"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:
       [
@@ -128,9 +128,9 @@ let blockchain_network_mainnet =
           "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1" );
       ]
     ~default_bootstrap_peers:
-      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
+      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"] *)
 
-let blockchain_network_ghostnet =
+(* let blockchain_network_ghostnet =
   make_blockchain_network
     ~alias:"ghostnet"
     {
@@ -153,7 +153,7 @@ let blockchain_network_ghostnet =
               );
             ];
       }
-    ~chain_name:"TEZOS_ITHACANET_2022-01-25T15:00:00Z"
+    ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
     ~sandboxed_chain_name:"SANDBOXED_TEZOS"
     ~user_activated_upgrades:
       [
@@ -170,16 +170,48 @@ let blockchain_network_ghostnet =
         "ghostnet.boot.ecadinfra.com";
         "ghostnet.kaml.fr";
         "ghostnet.stakenow.de:9733";
+      ] *)
+
+let blockchain_network_basenet =
+  make_blockchain_network
+    ~alias:"basenet"
+    {
+      time = Time.Protocol.of_notation_exn "2024-02-23T09:40:24Z";
+      block =
+        Block_hash.of_b58check_exn
+          "BLockGenesisGenesisGenesisGenesisGenesisad134b8W1qK";
+      protocol =
+        Protocol_hash.of_b58check_exn
+          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+    }
+    ~genesis_parameters:
+      {
+        context_key = "sandbox_parameter";
+        values =
+          `O
+            [
+              ( "genesis_pubkey",
+                `String "edpkuYLienS3Xdt5c1vfRX1ibMxQuvfM67ByhJ9nmRYYKGAAoTq1UC"
+              );
+            ];
+      }
+    ~chain_name:"MAVRYK_BASENET_2024-02-23T09:40:24Z"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
+    ~user_activated_upgrades:
+      [
+        (10l, "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp");
       ]
+    ~default_bootstrap_peers:
+      [ "" ]
 
 let blockchain_network_sandbox =
   make_blockchain_network
     ~alias:"sandbox"
     {
-      time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
+      time = Time.Protocol.of_notation_exn "2024-02-23T09:42:53Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
+          "BLockGenesisGenesisGenesisGenesisGenesis1c2acaRqr7Z";
       protocol =
         Protocol_hash.of_b58check_exn
           "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im";
@@ -197,8 +229,8 @@ let blockchain_network_sandbox =
               );
             ];
       }
-    ~chain_name:"TEZOS"
-    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
+    ~chain_name:"MAVRYK"
+    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:sandbox_user_activated_upgrades
 
 let blockchain_network_encoding : blockchain_network Data_encoding.t =
@@ -274,16 +306,16 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
           ~description:
             "USE FOR TESTING PURPOSE ONLY. Configuration for the \
              data-availibility layer"
-          Tezos_crypto_dal.Cryptobox.Config.encoding
+          Mavryk_crypto_dal.Cryptobox.Config.encoding
           (* We use default config unless explicitly overridden via the config file.
              Note that such override is expected to only be used in test networks. *)
-          Tezos_crypto_dal.Cryptobox.Config.default))
+          Mavryk_crypto_dal.Cryptobox.Config.default))
 
 let builtin_blockchain_networks_with_tags =
   [
     (1, blockchain_network_sandbox);
-    (4, blockchain_network_mainnet);
-    (19, blockchain_network_ghostnet);
+    (* (4, blockchain_network_mainnet); *)
+    (19, blockchain_network_basenet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with
@@ -346,16 +378,15 @@ and p2p = {
   advertised_net_port : int option;
   discovery_addr : string option;
   private_mode : bool;
-  limits : Tezos_p2p_services.P2p_limits.t;
+  limits : Mavryk_p2p_services.P2p_limits.t;
   disable_mempool : bool;
   enable_testchain : bool;
-  reconnection_config : Tezos_p2p_services.Point_reconnection_config.t;
+  reconnection_config : Mavryk_p2p_services.Point_reconnection_config.t;
   disable_peer_discovery : bool;
 }
 
 and rpc = {
   listen_addrs : string list;
-  local_listen_addrs : string list;
   cors_origins : string list;
   cors_headers : string list;
   tls : tls option;
@@ -373,17 +404,16 @@ let default_p2p =
     advertised_net_port = None;
     discovery_addr = None;
     private_mode = false;
-    limits = Tezos_p2p_services.P2p_limits.default;
+    limits = Mavryk_p2p_services.P2p_limits.default;
     disable_mempool = false;
     enable_testchain = false;
-    reconnection_config = Tezos_p2p_services.Point_reconnection_config.default;
+    reconnection_config = Mavryk_p2p_services.Point_reconnection_config.default;
     disable_peer_discovery = false;
   }
 
 let default_rpc =
   {
     listen_addrs = [];
-    local_listen_addrs = [];
     cors_origins = [];
     cors_headers = [];
     tls = None;
@@ -401,7 +431,8 @@ let default_config =
     log = Logs_simple_config.default_cfg;
     internal_events = None;
     shell = Shell_limits.default_limits;
-    blockchain_network = blockchain_network_mainnet;
+    (* blockchain_network = blockchain_network_mainnet; *)
+    blockchain_network = blockchain_network_basenet;
     disable_config_validation = default_disable_config_validation;
     metrics_addr = [];
   }
@@ -470,7 +501,7 @@ let p2p =
           (opt
              "bootstrap-peers"
              ~description:
-               "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. \
+               "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. \
                 If the port is not specified, default port 9732 will be \
                 assumed."
              (list string))
@@ -509,8 +540,8 @@ let p2p =
           (dft
              "limits"
              ~description:"Network limits"
-             Tezos_p2p_services.P2p_limits.encoding
-             Tezos_p2p_services.P2p_limits.default)
+             Mavryk_p2p_services.P2p_limits.encoding
+             Mavryk_p2p_services.P2p_limits.default)
           (dft
              "disable_mempool"
              ~description:
@@ -530,7 +561,7 @@ let p2p =
                 blocks."
              bool
              default_p2p.enable_testchain)
-          (let open Tezos_p2p_services.Point_reconnection_config in
+          (let open Mavryk_p2p_services.Point_reconnection_config in
           dft
             "greylisting_config"
             ~description:
@@ -551,22 +582,13 @@ let p2p =
 let rpc : rpc Data_encoding.t =
   let open Data_encoding in
   conv
-    (fun {
-           cors_origins;
-           cors_headers;
-           listen_addrs;
-           local_listen_addrs;
-           tls;
-           acl;
-           media_type;
-         } ->
+    (fun {cors_origins; cors_headers; listen_addrs; tls; acl; media_type} ->
       let cert, key =
         match tls with
         | None -> (None, None)
         | Some {cert; key} -> (Some cert, Some key)
       in
       ( Some listen_addrs,
-        Some local_listen_addrs,
         None,
         cors_origins,
         cors_headers,
@@ -575,7 +597,6 @@ let rpc : rpc Data_encoding.t =
         acl,
         media_type ))
     (fun ( listen_addrs,
-           local_listen_addrs,
            legacy_listen_addr,
            cors_origins,
            cors_headers,
@@ -598,27 +619,10 @@ let rpc : rpc Data_encoding.t =
               "Config file: Use only \"listen-addrs\" and not (legacy) \
                \"listen-addr\"."
       in
-      let local_listen_addrs =
-        Option.value local_listen_addrs ~default:default_rpc.local_listen_addrs
-      in
-      {
-        listen_addrs;
-        local_listen_addrs;
-        cors_origins;
-        cors_headers;
-        tls;
-        acl;
-        media_type;
-      })
-    (obj9
+      {listen_addrs; cors_origins; cors_headers; tls; acl; media_type})
+    (obj8
        (opt
           "listen-addrs"
-          ~description:
-            "Hosts to listen to. If the port is not specified, the default \
-             port 8732 will be assumed."
-          (list string))
-       (opt
-          "local-listen-addrs"
           ~description:
             "Hosts to listen to. If the port is not specified, the default \
              port 8732 will be assumed."
@@ -735,11 +739,16 @@ let encoding =
           ~description:"Configuration of network parameters"
           Shell_limits.limits_encoding
           Shell_limits.default_limits)
-       (dft
+        (dft
+            "network"
+            ~description:"Configuration of which network/blockchain to connect to"
+            sugared_blockchain_network_encoding
+            blockchain_network_basenet)
+        (* (dft
           "network"
           ~description:"Configuration of which network/blockchain to connect to"
           sugared_blockchain_network_encoding
-          blockchain_network_mainnet)
+          blockchain_network_mainnet) *)
        (dft
           "metrics_addr"
           ~description:"Configuration of the Prometheus metrics endpoint"
@@ -839,9 +848,9 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
     ?expected_connections ?max_connections ?max_download_speed ?max_upload_speed
     ?binary_chunks_size ?peer_table_size ?expected_pow ?bootstrap_peers
     ?listen_addr ?advertised_net_port ?discovery_addr ?(rpc_listen_addrs = [])
-    ?(local_rpc_listen_addrs = []) ?(allow_all_rpc = [])
-    ?(media_type = Media_type.Command_line.Any) ?(metrics_addr = [])
-    ?operation_metadata_size_limit ?(private_mode = default_p2p.private_mode)
+    ?(allow_all_rpc = []) ?(media_type = Media_type.Command_line.Any)
+    ?(metrics_addr = []) ?operation_metadata_size_limit
+    ?(private_mode = default_p2p.private_mode)
     ?(disable_p2p_maintenance =
       Option.is_none default_p2p.limits.maintenance_idle_time)
     ?(disable_p2p_swap = Option.is_none default_p2p.limits.swap_linger)
@@ -867,7 +876,7 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   in
   let peer_table_size = Option.map (fun i -> (i, i / 4 * 3)) peer_table_size in
   let unopt_list ~default = function [] -> default | l -> l in
-  let limits : Tezos_p2p_services.P2p_limits.t =
+  let limits : Mavryk_p2p_services.P2p_limits.t =
     {
       cfg.p2p.limits with
       min_connections =
@@ -921,8 +930,6 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   and rpc : rpc =
     {
       listen_addrs = unopt_list ~default:cfg.rpc.listen_addrs rpc_listen_addrs;
-      local_listen_addrs =
-        unopt_list ~default:cfg.rpc.local_listen_addrs local_rpc_listen_addrs;
       cors_origins = unopt_list ~default:cfg.rpc.cors_origins cors_origins;
       cors_headers = unopt_list ~default:cfg.rpc.cors_headers cors_headers;
       tls = Option.either rpc_tls cfg.rpc.tls;

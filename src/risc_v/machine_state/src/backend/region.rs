@@ -6,7 +6,7 @@ use super::{Elem, Manager};
 use std::mem;
 
 /// Dedicated region in a [`super::Backend`]
-pub trait Region<E: Elem> {
+pub trait Region<E> {
     /// Read an element in the region.
     fn read(&self, index: usize) -> E;
 
@@ -105,7 +105,7 @@ impl<E: Elem, const LEN: usize> Region<E> for [E; LEN] {
     }
 }
 
-impl<E: Elem, T: Region<E>> Region<E> for &mut T {
+impl<E, T: Region<E>> Region<E> for &mut T {
     #[inline(always)]
     fn read(&self, index: usize) -> E {
         (self as &T).read(index)
@@ -161,15 +161,6 @@ impl<E: Elem, M: Manager + ?Sized> Cell<E, M> {
     }
 }
 
-/// Like [`Region<E>`] but accesses are treated as if the entire region is volatile
-pub trait VolatileRegion<E: Elem> {
-    /// Read an element at the given index.
-    fn read(&self, index: usize) -> E;
-
-    /// Write an element at the given index.
-    fn write(&mut self, index: usize, value: E);
-}
-
 #[cfg(test)]
 pub(crate) mod tests {
     use crate::backend::{
@@ -195,7 +186,7 @@ pub(crate) mod tests {
         // let mut array1 = manager.allocate_region(array1_place);
         let mut array1_mirror = [0; LEN];
 
-        for (i, item) in array1_mirror.iter_mut().enumerate() {
+        for i in 0..LEN {
             // Ensure the array is zero-initialised.
             assert_eq!(array1.read(i), 0);
 
@@ -205,7 +196,7 @@ pub(crate) mod tests {
             assert_eq!(array1.read(i), value);
 
             // Retain the value for later.
-            *item = value;
+            array1_mirror[i] = value;
         }
 
         let array1_vec = array1.read_all();
@@ -222,10 +213,10 @@ pub(crate) mod tests {
             assert_eq!(array2.read(i), value);
         }
 
-        for (i, item) in array1_mirror.into_iter().enumerate() {
+        for i in 0..LEN {
             // Ensure that writing to the second array didn't mess with the
             // first array.
-            assert_eq!(item, array1.read(i));
+            assert_eq!(array1_mirror[i], array1.read(i));
         }
     }
 
@@ -271,11 +262,15 @@ pub(crate) mod tests {
             }
 
             fn to_stored_in_place(&mut self) {
-                std::mem::swap(&mut self.a, &mut self.b);
+                let a = self.a;
+                self.a = self.b;
+                self.b = a;
             }
 
             fn from_stored_in_place(&mut self) {
-                std::mem::swap(&mut self.b, &mut self.a);
+                let b = self.b;
+                self.b = self.a;
+                self.a = b;
             }
 
             fn from_stored(source: &Self) -> Self {

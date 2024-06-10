@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_client_base
+open Mavryk_client_base
 
 type bootstrap_secret = {name : string; sk_uri : Client_keys.sk_uri}
 
@@ -69,8 +69,8 @@ let add_bootstrap_secret cctxt {name; sk_uri} =
   in
   let*! () =
     cctxt#message
-      "Tezos address added: %a"
-      Tezos_crypto.Signature.Public_key_hash.pp
+      "Mavryk address added: %a"
+      Mavryk_crypto.Signature.Public_key_hash.pp
       pkh
   in
   Client_keys.register_key cctxt ~force (pkh, pk_uri, sk_uri) ?public_key name
@@ -87,7 +87,7 @@ let bootstrap_secret_encoding =
 
 let bootstrap_secrets_encoding = Data_encoding.list bootstrap_secret_encoding
 
-let populate (cctxt : #Tezos_client_base.Client_context.io_wallet)
+let populate (cctxt : #Mavryk_client_base.Client_context.io_wallet)
     bootstrap_accounts_file =
   let open Lwt_result_syntax in
   let* accounts =
@@ -95,7 +95,7 @@ let populate (cctxt : #Tezos_client_base.Client_context.io_wallet)
     | None -> default_bootstrap_accounts
     | Some accounts_file -> (
         let* json =
-          Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file accounts_file
+          Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file accounts_file
         in
         match Data_encoding.Json.destruct bootstrap_secrets_encoding json with
         | accounts -> return accounts

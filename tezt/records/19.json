@@ -141,8 +141,8 @@
     }
   },
   {
-    "file": "tezos-crypto-prop-signature",
-    "title": "tezos-crypto-prop-signature: Ed25519",
+    "file": "mavryk-crypto-prop-signature",
+    "title": "mavryk-crypto-prop-signature: Ed25519",
     "tags": [
       "alcotest"
     ],
@@ -947,7 +947,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Lima: Tc opcodes/mutez_to_bls12_381_fr",
+    "title": "Lima: Tc opcodes/mumav_to_bls12_381_fr",
     "tags": [
       "regression",
       "lima",
@@ -1616,11 +1616,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, exploration)",
+    "title": "Mumbai: testnet dictator (basenet, exploration)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "exploration"
     ],
     "successful_runs": {
@@ -1644,11 +1644,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, promotion)",
+    "title": "Alpha: testnet dictator (basenet, promotion)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "promotion"
     ],
     "successful_runs": {
@@ -1784,7 +1784,7 @@
   },
   {
     "file": "tx_rollup_l2_node.ml",
-    "title": "Lima: TX_rollup: test that the we recover when disconnecting from Tezos node",
+    "title": "Lima: TX_rollup: test that the we recover when disconnecting from Mavryk node",
     "tags": [
       "lima",
       "tx_rollup",

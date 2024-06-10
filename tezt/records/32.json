@@ -171,8 +171,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: merkle",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: merkle",
     "tags": [
       "alcotest"
     ],
@@ -577,7 +577,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input44513000]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input44513000]",
     "tags": [
       "regression",
       "mumbai",
@@ -1562,11 +1562,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Lima: testnet dictator (ghostnet, cooldown)",
+    "title": "Lima: testnet dictator (basenet, cooldown)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "cooldown"
     ],
     "successful_runs": {
@@ -1576,11 +1576,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, adoption)",
+    "title": "Mumbai: testnet dictator (basenet, adoption)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "adoption"
     ],
     "successful_runs": {

@@ -39,11 +39,11 @@ build-dev-deps: build-deps
 
 .PHONY: test
 test:
-	@cargo test --features testing ${TESTNAME}
+	@cargo test
 
 .PHONY: check
 check:
-	@cargo clippy --all-targets --features testing -- --deny warnings
+	@cargo clippy --all-targets -- --deny warnings
 
 .PHONY: check-all
 check-all: check

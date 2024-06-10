@@ -5,12 +5,12 @@
 use std::{ffi::OsString, path::Path};
 
 use std::fs::File;
-use tezos_smart_rollup_encoding::dac::PreimageHash;
-use tezos_smart_rollup_host::path::{OwnedPath, RefPath};
-use tezos_smart_rollup_installer_config::binary::owned::{
+use mavryk_smart_rollup_encoding::dac::PreimageHash;
+use mavryk_smart_rollup_host::path::{OwnedPath, RefPath};
+use mavryk_smart_rollup_installer_config::binary::owned::{
     OwnedConfigInstruction, OwnedConfigProgram,
 };
-use tezos_smart_rollup_installer_config::yaml::{ConfigConversionError, YamlConfig};
+use mavryk_smart_rollup_installer_config::yaml::{ConfigConversionError, YamlConfig};
 use thiserror::Error;
 
 #[derive(Debug, Error)]

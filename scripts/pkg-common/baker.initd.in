@@ -1,25 +1,25 @@
 #!/bin/bash
-# Start/stop the Octez Bakers and Accusers
+# Start/stop the Mavkit Bakers and Accusers
 #
 ### BEGIN INIT INFO
-# Provides:          octez-baker
-# Required-Start:    octez-node
+# Provides:          mavkit-baker
+# Required-Start:    mavkit-node
 # Required-Stop:
 # Should-Start:      $network $named
 # Should-Stop:       $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: The Octez Baking daemons
-# Description:       The Octez Bakers bake new blocks on the Tezos blockchain
+# Short-Description: The Mavkit Baking daemons
+# Description:       The Mavkit Bakers bake new blocks on the Tezos blockchain
 #		     and the Accusers look for bad behaviour
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-export DESC="octez baker"
-NAME=octez-baker
+export DESC="mavkit baker"
+NAME=mavkit-baker
 PIDDIR=/var/run/tezos
-PIDFILEA=$PIDDIR/octez-accuser.pid
-PIDFILEB=$PIDDIR/octez-baker.pid
+PIDFILEA=$PIDDIR/mavkit-accuser.pid
+PIDFILEB=$PIDDIR/mavkit-baker.pid
 export SCRIPTNAME=/etc/init.d/"$NAME"
 
 if [ -f "/lib/lsb/init-functions" ]; then
@@ -31,41 +31,26 @@ fi
 # Defaults
 user=tezos
 group=tezos
-nodedir=/var/tezos/.tezos-node
+nodedir=/var/tezos/node
 logdir=/var/log/tezos
 rotateonstart=yes
 protocols="@PROTOCOLS@"
 waitfornode=yes
 othercliopts_baker_@PROTOCOL@=""
-
-nodesetup=local 
-
 keepalive=yes
 keepalive_opt="-K"
 
 #shellcheck disable=SC1091
-[ -r /etc/octez/node.conf ] && . /etc/octez/node.conf
+[ -r /etc/mavkit/node.conf ] && . /etc/mavkit/node.conf
 #shellcheck disable=SC1091
-[ -r /etc/octez/baker.conf ] && . /etc/octez/baker.conf
+[ -r /etc/mavkit/baker.conf ] && . /etc/mavkit/baker.conf
 
 logfile_basea="${logdir}/accuser_"
 logfile_baseb="${logdir}/baker_"
-baker="/usr/bin/octez-baker"
-accuser="/usr/bin/octez-accuser"
+baker="/usr/bin/mavkit-baker"
+accuser="/usr/bin/mavkit-accuser"
 
 [ "${keepalive}" != "yes" ] && keepalive_opt=""
-
-
-wait_for_bootstrap()
-{
-	echo "Waiting for node to be bootstrapped" >&2
-
-	while :; do
-		/usr/bin/octez-client bootstrapped >/dev/null 2>&1 && break
-		echo "Node not ready - sleeping for 30 seconds" >&2
-		sleep 30
-	done
-}
 
 initial_checks()
 {
@@ -73,28 +58,27 @@ initial_checks()
 	chown $user:$group ${PIDDIR}
 
 	mkdir -p ${logdir}
-	chown $user:$group ${logdir}
-
 	if [ -z "$lq_vote" ]; then
-		echo "lq_vote must be set in /etc/octez/baker.conf" >&2
+		echo "lq_vote must be set in /etc/mavkit/baker.conf" >&2
 		exit 3
 	fi
 	if [ -z "$baking_key" ]; then
-		echo "baking_key must be set in /etc/octez/baker.conf" >&2
+		echo "baking_key must be set in /etc/mavkit/baker.conf" >&2
 		exit 3
 	fi
 
-	if [ "$nodesetup" != "local" ]; then
-		echo "Only local nodes currently supported by the package" >&2
-		exit 3
-	fi
+}
 
-	if [ ! -d "$nodedir" ] && [ "$nodesetup" = "local" ]; then
-		echo "$nodedir must be set up with a local running node" >&2
-		exit 3
-	fi
+wait_for_bootstrap()
+{
+	echo "Waiting for node to be bootstrapped" >&2
 
-	[ "$waitfornode" = "yes" ] &&  wait_for_bootstrap
+	while :; do
+		/usr/bin/mavkit-client bootstrapped >/dev/null 2>&1 && break
+		echo "Node not ready - sleeping for 30 seconds" >&2
+		sleep 30
+
+	done
 
 }
 
@@ -102,10 +86,8 @@ rotate_logs ()
 {
 	if [ ${rotateonstart} = "yes" ]; then
 		for p in ${protocols}; do
-			[ -f "${logfile_baseb}${p}.log" ] && \
-				mv -f "${logfile_baseb}${p}.log" "${logfile_baseb}${p}.log.1"
-			[ -f "${logfile_basea}${p}.log" ] && \
-				mv -f "${logfile_basea}${p}.log" "${logfile_basea}${p}.log.1"
+			mv -f "${logfile_baseb}${p}.log" "${logfile_baseb}${p}.log.1"
+			mv -f "${logfile_basea}${p}.log" "${logfile_basea}${p}.log.1"
 		done
 	fi
 }
@@ -113,6 +95,7 @@ rotate_logs ()
 case "$1" in
 start)	initial_checks
 	rotate_logs
+	[ "$waitfornode" = "yes" ] &&  wait_for_bootstrap
 	for p in ${protocols}; do
 		[ ! -x "${baker}-$p" ] && continue
 
@@ -123,8 +106,9 @@ start)	initial_checks
 	;;
 stop)
 	for p in ${protocols}; do
-		[ -f "${PIDFILEB}-$p" ] && kill  "$(cat ${PIDFILEB}-$p)"
-		[ -f "${PIDFILEA}-$p" ] && kill  "$(cat ${PIDFILEA}-$p)"
+		[ ! -x "${baker}-$p" ] && continue
+    kill  "$(cat ${PIDFILEB}-$p)"
+    kill  "$(cat ${PIDFILEA}-$p)"
 		rm -f ${PIDFILEB}-$p ${PIDFILEA}-$p
 	done
         ;;

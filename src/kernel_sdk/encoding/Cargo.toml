@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-smart-rollup-encoding"
+name = "mavryk-smart-rollup-encoding"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
@@ -15,10 +15,10 @@ keywords = ["tezos", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "encoding", "wasm"]
 
 [dependencies]
-tezos_data_encoding = { version = "=0.5.2", optional = true }
-tezos_data_encoding_derive = { version = "=0.5.2", optional = true }
+mavryk_data_encoding = { version = "=0.5.2", optional = true }
+mavryk_data_encoding_derive = { version = "=0.5.2", optional = true }
 nom = { version = "7.1", default-features = false }
-tezos_crypto_rs = { version = "=0.5.2", default-features = false, optional = true }
+mavryk_crypto_rs = { version = "=0.5.2", default-features = false, optional = true }
 
 num-bigint = { version = "0.3", optional = true }
 num-traits = { version = "0.2.8", optional = true }
@@ -31,21 +31,21 @@ hex = { version = "0.4.3", optional = true }
 thiserror = { version = "1.0", optional = true }
 regex = { version = "1.4.6", optional = true }
 
-[dependencies.tezos-smart-rollup-core]
+[dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-host]
+[dependencies.mavryk-smart-rollup-host]
 path = "../host"
 version = "0.2.2"
 default-features = false
 
 [features]
-default = ["alloc", "tezos-encoding", "crypto", "bls" ]
+default = ["alloc", "mavryk-encoding", "crypto", "bls" ]
 testing = ["crypto", "num-bigint", "num-traits", "proptest"]
-crypto = ["tezos_crypto_rs"]
-bls = ["tezos_crypto_rs/bls"]
+crypto = ["mavryk_crypto_rs"]
+bls = ["mavryk_crypto_rs/bls"]
 alloc = ["crypto", "thiserror", "hex", "num-traits", "num-bigint", "regex"]
-tezos-encoding = ["tezos_data_encoding", "tezos_data_encoding_derive", "time"]
-proto-alpha = ["tezos-smart-rollup-core/proto-alpha", "tezos-smart-rollup-host/proto-alpha"]
+mavryk-encoding = ["mavryk_data_encoding", "mavryk_data_encoding_derive", "time"]
+proto-alpha = ["mavryk-smart-rollup-core/proto-alpha", "mavryk-smart-rollup-host/proto-alpha"]

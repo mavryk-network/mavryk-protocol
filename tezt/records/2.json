@@ -138,8 +138,8 @@
     }
   },
   {
-    "file": "tezos-signer-backends",
-    "title": "tezos-signer-backends: ledger-names",
+    "file": "mavryk-signer-backends",
+    "title": "mavryk-signer-backends: ledger-names",
     "tags": [
       "alcotest"
     ],
@@ -160,7 +160,7 @@
     }
   },
   {
-    "file": "tezos-benchmark",
+    "file": "mavryk-benchmark",
     "title": "benchmark_helpers",
     "tags": [
       "alcotest"
@@ -311,7 +311,7 @@
       "batch",
       "transfer",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "40689424",
@@ -1567,7 +1567,7 @@
   },
   {
     "file": "sapling.ml",
-    "title": "Lima: test sapling with shielded tez",
+    "title": "Lima: test sapling with shielded mav",
     "tags": [
       "lima",
       "sapling",

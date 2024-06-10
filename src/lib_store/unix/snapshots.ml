@@ -571,7 +571,7 @@ let () =
     ~pp:(fun ppf () ->
       Format.fprintf
         ppf
-        "Cannot export snapshot with a storage that was created with Octez v13 \
+        "Cannot export snapshot with a storage that was created with Mavkit v13 \
          (or earlier). Please refer to the documentation and consider \
          switching to the default minimal indexing strategy to enable snapshot \
          exports. ")
@@ -2400,10 +2400,10 @@ module Make_snapshot_exporter (Exporter : EXPORTER) : Snapshot_exporter = struct
     return (pred_block, minimum_level_needed)
 
   (* Retrieves the block to export based on given block "as hint". As
-     the checkpoint is provided as a default value, we must ensure
-     that it is valid. It may be not the case when the checkpoint was
-     set in the future. In this particular case, the last preserved
-     block level of the current head is chosen. *)
+     the checkpoint is provided as a default value, we must ensure that
+     it is valid. It may be not the case when the checkpoint was set in
+     the future. In this particular case, the last allowed fork level of
+     the current head is chosen. *)
   let retrieve_export_block chain_store block =
     let open Lwt_result_syntax in
     let* export_block =
@@ -3864,8 +3864,8 @@ module type Snapshot_importer = sig
   val import :
     snapshot_path:string ->
     ?patch_context:
-      (Tezos_protocol_environment.Context.t ->
-      Tezos_protocol_environment.Context.t tzresult Lwt.t) ->
+      (Mavryk_protocol_environment.Context.t ->
+      Mavryk_protocol_environment.Context.t tzresult Lwt.t) ->
     ?block:Block_hash.t ->
     ?check_consistency:bool ->
     dst_store_dir:[`Store_dir] Naming.directory ->
@@ -4040,7 +4040,7 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
       | None -> tzfail (Inconsistent_context imported_context_hash)
     in
     let predecessor_context =
-      Tezos_shell_context.Shell_context.wrap_disk_context predecessor_context
+      Mavryk_shell_context.Shell_context.wrap_disk_context predecessor_context
     in
     let apply_environment =
       {
@@ -4322,7 +4322,7 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
     let patch_context =
       Option.map
         (fun f ctxt ->
-          let open Tezos_shell_context in
+          let open Mavryk_shell_context in
           let ctxt = Shell_context.wrap_disk_context ctxt in
           let+ ctxt = f ctxt in
           Shell_context.unwrap_disk_context ctxt)
@@ -4389,8 +4389,7 @@ module Make_snapshot_importer (Importer : IMPORTER) : Snapshot_importer = struct
         ({
            message = validation_store.message;
            max_operations_ttl = validation_store.max_operations_ttl;
-           last_preserved_block_level =
-             validation_store.last_preserved_block_level;
+           last_allowed_fork_level = validation_store.last_allowed_fork_level;
            block_metadata = fst block_metadata;
            operations_metadata =
              (match ops_metadata with

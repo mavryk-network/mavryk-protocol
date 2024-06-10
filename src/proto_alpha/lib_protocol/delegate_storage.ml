@@ -25,25 +25,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(*
-  Some invariants:
-
-  A contract is a delegate <=>
-    - it is registered (i.e. in the set {!Storage.Delegates.mem}), and
-    - its full staking balance is initialized.
-
-  If a contract is a delegate then :
-    - it has no stake in another account, though it may (still) have unstake
-        requests from another contract.
-
-  If a contract is not a delegate then:
-    - it has no *own* frozen stake (a.k.a. frozen deposits),
-    - it has no consensus key.
-
-  Once a contract has become a delegate, it is so forever. There are no ways
-  to unregister.
-*)
-
 type error +=
   | (* `Permanent *) Unregistered_delegate of Signature.Public_key_hash.t
 
@@ -148,11 +129,7 @@ module Contract = struct
       in
       let* c = Contract_delegate_storage.set c contract delegate in
       let* c =
-        (* Initializes the full staking balance of [delegate]. *)
-        Stake_storage.initialize_delegate
-          c
-          delegate
-          ~delegated:balance_and_frozen_bonds
+        Stake_storage.add_delegated_stake c delegate balance_and_frozen_bonds
       in
       let*! c = Storage.Delegates.add c delegate in
       let* c = Delegate_consensus_key.init c delegate pk in
@@ -286,10 +263,11 @@ let initial_frozen_deposits_of_previous_cycle ctxt delegate =
 
 let current_frozen_deposits ctxt delegate =
   let open Lwt_result_syntax in
-  let* full_staking_balance =
+  let* {own_frozen; staked_frozen; delegated = _} =
     Stake_storage.get_full_staking_balance ctxt delegate
   in
-  Lwt.return (Full_staking_balance_repr.total_frozen full_staking_balance)
+  let*? total = Tez_repr.(own_frozen +? staked_frozen) in
+  return total
 
 let frozen_deposits_limit ctxt delegate =
   Storage.Contract.Frozen_deposits_limit.find

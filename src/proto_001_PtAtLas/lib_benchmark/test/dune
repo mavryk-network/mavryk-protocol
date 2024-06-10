@@ -1,0 +1,40 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(executables
+ (names
+  test_sampling_data
+  test_sampling_code
+  test_autocompletion
+  test_distribution)
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavryk-micheline-rewriting
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-benchmark
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavryk-benchmark-001-PtAtLas
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-libs.error-monad
+  prbnmcn-stats)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_micheline
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_benchmark_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers))
+
+(rule
+ (alias runtest_micheline_rewriting_data)
+ (action (run %{exe:test_sampling_data.exe} 1234)))
+
+(rule
+ (alias runtest_micheline_rewriting_code)
+ (action (run %{exe:test_sampling_code.exe} 1234)))

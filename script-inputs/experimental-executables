@@ -1,4 +1,6 @@
-octez-evm-node
-octez-dal-node
-octez-accuser-alpha
-octez-baker-alpha
+mavkit-evm-node
+mavkit-dal-node
+mavkit-smart-rollup-client-alpha
+mavkit-accuser-alpha
+mavkit-baker-alpha
+mavkit-smart-rollup-client-PtAtLas

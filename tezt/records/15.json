@@ -160,8 +160,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: blake2b-encodings",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: blake2b-encodings",
     "tags": [
       "alcotest"
     ],
@@ -1520,11 +1520,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, exploration)",
+    "title": "Alpha: testnet dictator (basenet, exploration)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "exploration"
     ],
     "successful_runs": {

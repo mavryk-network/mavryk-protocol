@@ -26,23 +26,23 @@
 module type T = sig
   val hash : Protocol_hash.t
 
-  include Tezos_protocol_environment.PROTOCOL
+  include Mavryk_protocol_environment.PROTOCOL
 
   val complete_b58prefix :
-    Tezos_protocol_environment.Context.t -> string -> string list Lwt.t
+    Mavryk_protocol_environment.Context.t -> string -> string list Lwt.t
 end
 
 type t = (module T)
 
 let build hash =
-  match Tezos_protocol_registerer.get hash with
+  match Mavryk_protocol_registerer.get hash with
   | None -> None
   | Some (V0 protocol) ->
       let (module F) = protocol in
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V0.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V0.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -62,7 +62,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V1.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V1.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -82,7 +82,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V2.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V2.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -102,7 +102,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V3.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V3.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -122,7 +122,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V4.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V4.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -142,7 +142,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V5.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V5.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -162,7 +162,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V6.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V6.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -182,7 +182,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V7.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V7.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -202,7 +202,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V8.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V8.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -222,7 +222,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V9.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V9.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -242,7 +242,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V10.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V10.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -262,27 +262,7 @@ let build hash =
       let module Name = struct
         let name = Protocol_hash.to_b58check hash
       end in
-      let module Env = Tezos_protocol_environment.V11.Make (Name) () in
-      Some
-        (module struct
-          module Raw = F (Env)
-
-          module P = struct
-            let hash = hash
-
-            include Env.Lift (Raw)
-          end
-
-          include P
-
-          let complete_b58prefix = Env.Context.complete
-        end : T)
-  | Some (V12 protocol) ->
-      let (module F) = protocol in
-      let module Name = struct
-        let name = Protocol_hash.to_b58check hash
-      end in
-      let module Env = Tezos_protocol_environment.V12.Make (Name) () in
+      let module Env = Mavryk_protocol_environment.V11.Make (Name) () in
       Some
         (module struct
           module Raw = F (Env)
@@ -305,7 +285,7 @@ let versions : (module T) VersionTable.t = VersionTable.create 20
 let sources : Protocol.t VersionTable.t = VersionTable.create 20
 
 let mem hash =
-  VersionTable.mem versions hash || Tezos_protocol_registerer.mem hash
+  VersionTable.mem versions hash || Mavryk_protocol_registerer.mem hash
 
 let get hash =
   let set_logger proto =
@@ -362,7 +342,7 @@ module type Source_sig = sig
 end
 
 module Register_embedded_V0
-    (Env : Tezos_protocol_environment.V0.T)
+    (Env : Mavryk_protocol_environment.V0.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -391,7 +371,7 @@ struct
 end
 
 module Register_embedded_V1
-    (Env : Tezos_protocol_environment.V1.T)
+    (Env : Mavryk_protocol_environment.V1.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -420,7 +400,7 @@ struct
 end
 
 module Register_embedded_V2
-    (Env : Tezos_protocol_environment.V2.T)
+    (Env : Mavryk_protocol_environment.V2.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -449,7 +429,7 @@ struct
 end
 
 module Register_embedded_V3
-    (Env : Tezos_protocol_environment.V3.T)
+    (Env : Mavryk_protocol_environment.V3.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -478,7 +458,7 @@ struct
 end
 
 module Register_embedded_V4
-    (Env : Tezos_protocol_environment.V4.T)
+    (Env : Mavryk_protocol_environment.V4.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -507,7 +487,7 @@ struct
 end
 
 module Register_embedded_V5
-    (Env : Tezos_protocol_environment.V5.T)
+    (Env : Mavryk_protocol_environment.V5.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -536,7 +516,7 @@ struct
 end
 
 module Register_embedded_V6
-    (Env : Tezos_protocol_environment.V6.T)
+    (Env : Mavryk_protocol_environment.V6.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -565,7 +545,7 @@ struct
 end
 
 module Register_embedded_V7
-    (Env : Tezos_protocol_environment.V7.T)
+    (Env : Mavryk_protocol_environment.V7.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -594,7 +574,7 @@ struct
 end
 
 module Register_embedded_V8
-    (Env : Tezos_protocol_environment.V8.T)
+    (Env : Mavryk_protocol_environment.V8.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -623,7 +603,7 @@ struct
 end
 
 module Register_embedded_V9
-    (Env : Tezos_protocol_environment.V9.T)
+    (Env : Mavryk_protocol_environment.V9.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -652,7 +632,7 @@ struct
 end
 
 module Register_embedded_V10
-    (Env : Tezos_protocol_environment.V10.T)
+    (Env : Mavryk_protocol_environment.V10.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct
@@ -681,36 +661,7 @@ struct
 end
 
 module Register_embedded_V11
-    (Env : Tezos_protocol_environment.V11.T)
-    (Proto : Env.Updater.PROTOCOL)
-    (Source : Source_sig) =
-struct
-  let hash =
-    match Source.hash with
-    | None -> Protocol.hash Source.sources
-    | Some hash -> hash
-
-  module Self = struct
-    module P = struct
-      let hash = hash
-
-      include Env.Lift (Proto)
-    end
-
-    include P
-
-    let complete_b58prefix = Env.Context.complete
-  end
-
-  let () =
-    VersionTable.add sources hash Source.sources ;
-    VersionTable.add versions hash (module Self : T)
-
-  include Self
-end
-
-module Register_embedded_V12
-    (Env : Tezos_protocol_environment.V12.T)
+    (Env : Mavryk_protocol_environment.V11.T)
     (Proto : Env.Updater.PROTOCOL)
     (Source : Source_sig) =
 struct

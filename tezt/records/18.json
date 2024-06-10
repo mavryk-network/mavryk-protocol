@@ -72,7 +72,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "016-PtMumbai: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -141,7 +141,7 @@
     }
   },
   {
-    "file": "tezos-shell-proxy-context",
+    "file": "mavryk-shell-proxy-context",
     "title": "proxy_context",
     "tags": [
       "alcotest"
@@ -152,8 +152,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: bls12_381-encodings",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: bls12_381-encodings",
     "tags": [
       "alcotest"
     ],
@@ -163,7 +163,7 @@
     }
   },
   {
-    "file": "tezos-context-memory",
+    "file": "mavryk-context-memory",
     "title": "hash",
     "tags": [
       "alcotest"
@@ -1143,12 +1143,12 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
-    "title": "Lima: testnet dictator (ghostnet, migration)",
+    "file": "basenet_dictator_migration.ml",
+    "title": "Lima: testnet dictator (basenet, migration)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "migration"
     ],
     "successful_runs": {

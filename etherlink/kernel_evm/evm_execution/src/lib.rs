@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2024 TriliTech <contact@trili.tech>
+// SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
 //
 // SPDX-License-Identifier: MIT
@@ -11,30 +11,27 @@ use account_storage::{AccountStorageError, EthereumAccountStorage};
 use alloc::borrow::Cow;
 use alloc::collections::TryReserveError;
 use evm::executor::stack::PrecompileFailure;
-use evm::ExitReason;
 use host::runtime::Runtime;
 use primitive_types::{H160, U256};
-use tezos_ethereum::block::BlockConstants;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_storage::StorageError;
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_storage::StorageError;
 use thiserror::Error;
 
 pub mod abi;
 pub mod account_storage;
 pub mod handler;
-pub mod modexp;
 pub mod precompiles;
 pub mod storage;
 pub mod tick_model_opcodes;
 pub mod transaction;
-pub mod utilities;
 
 pub use evm::Config;
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
-extern crate tezos_smart_rollup_debug as debug;
-extern crate tezos_smart_rollup_host as host;
+extern crate mavryk_crypto_rs as crypto;
+extern crate mavryk_smart_rollup_debug as debug;
+extern crate mavryk_smart_rollup_host as host;
 
 use precompiles::PrecompileSet;
 
@@ -47,11 +44,6 @@ pub enum DurableStorageError {
     /// resource.
     #[error("Path error: {0:?}")]
     PathError(#[from] host::path::PathError),
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum ArithmeticErrorKind {
-    FeeOverflow,
 }
 
 /// Errors when processing Ethereum transactions
@@ -108,9 +100,6 @@ pub enum EthereumError {
     /// result of a bug in the EvmHandler.
     #[error("Inconsistent EvmHandler state: {0}")]
     InconsistentState(Cow<'static, str>),
-    /// The execution failed because there was an arithmetic overflow or underflow.
-    #[error("A computation provoked an arithmetic error: {0:?}")]
-    ArithmeticError(ArithmeticErrorKind),
     /// The execution failed because it spent more ticks than the one currently
     /// available for the current run.
     #[error("The transaction took more ticks than expected")]
@@ -138,7 +127,6 @@ pub fn run_transaction<'a, Host>(
     caller: H160,
     call_data: Vec<u8>,
     gas_limit: Option<u64>,
-    effective_gas_price: U256,
     value: Option<U256>,
     pay_for_gas: bool,
     allocated_ticks: u64,
@@ -146,13 +134,6 @@ pub fn run_transaction<'a, Host>(
 where
     Host: Runtime,
 {
-    fn do_refund(outcome: &handler::ExecutionOutcome, pay_for_gas: bool) -> bool {
-        match outcome.reason {
-            ExitReason::Revert(_) => pay_for_gas,
-            _ => pay_for_gas && outcome.is_success,
-        }
-    }
-
     log!(host, Info, "Going to run an Ethereum transaction\n  - from address: {}\n  - to address: {:?}", caller, address);
 
     let mut handler = handler::EvmHandler::<'_, Host>::new(
@@ -163,40 +144,36 @@ where
         &config,
         precompiles,
         allocated_ticks,
-        effective_gas_price,
     );
 
-    if (!pay_for_gas)
-        || handler.pre_pay_transactions(caller, gas_limit, effective_gas_price)?
-    {
+    if (!pay_for_gas) || handler.pre_pay_transactions(caller, gas_limit)? {
         let result = if let Some(address) = address {
-            handler.call_contract(caller, address, value, call_data, gas_limit, false)
+            if call_data.is_empty() {
+                // This is a transfer transaction
+                handler.transfer(
+                    caller,
+                    address,
+                    value.unwrap_or(U256::zero()),
+                    gas_limit,
+                )?
+            } else {
+                // This must be a contract-call transaction
+                handler
+                    .call_contract(caller, address, value, call_data, gas_limit, false)?
+            }
         } else {
             // This is a create-contract transaction
-            handler.create_contract(caller, value, call_data, gas_limit)
+            handler.create_contract(caller, value, call_data, gas_limit)?
         };
 
-        match result {
-            Ok(result) => {
-                handler.increment_nonce(caller)?;
+        handler.increment_nonce(caller)?;
 
-                if do_refund(&result, pay_for_gas) {
-                    let unused_gas = gas_limit.map(|gl| gl - result.gas_used);
-                    handler.repay_gas(caller, unused_gas, effective_gas_price)?
-                }
-
-                Ok(Some(result))
-            }
-            // In case of `OutOfTicks` the gas is entirely refunded as it will
-            // be repaid in the next attempt
-            Err(EthereumError::OutOfTicks) => {
-                if pay_for_gas {
-                    handler.repay_gas(caller, gas_limit, effective_gas_price)?;
-                }
-                Err(EthereumError::OutOfTicks)
-            }
-            Err(e) => Err(e),
+        if result.is_success {
+            let unused_gas = gas_limit.map(|gl| gl - result.gas_used);
+            handler.repay_gas(caller, unused_gas)?;
         }
+
+        Ok(Some(result))
     } else {
         // caller was unable to pay for the gas limit
         if pay_for_gas {
@@ -208,23 +185,19 @@ where
 
 #[cfg(test)]
 mod test {
-    use crate::account_storage::EthereumAccount;
-
     use super::*;
     use account_storage::{
         account_path, init_account_storage as init_evm_account_storage,
         EthereumAccountStorage,
     };
     use evm::executor::stack::Log;
-    use evm::{ExitError, ExitReason, ExitRevert, ExitSucceed, Opcode};
+    use evm::Opcode;
     use handler::ExecutionOutcome;
     use host::runtime::Runtime;
     use primitive_types::{H160, H256};
     use std::str::FromStr;
-    use std::vec;
-    use tezos_ethereum::block::BlockFees;
-    use tezos_ethereum::tx_common::EthereumTransactionCommon;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+    use mavryk_smart_rollup_mock::MockHost;
 
     // The compiled initialization code for the Ethereum demo contract given
     // as an example in kernel_evm/solidity_examples/storage.sol
@@ -298,8 +271,7 @@ mod test {
     }
 
     fn dummy_first_block() -> BlockConstants {
-        let block_fees = BlockFees::new(U256::from(12345));
-        BlockConstants::first_block(U256::zero(), U256::one(), block_fees)
+        BlockConstants::first_block(U256::zero(), U256::one(), U256::from(21000))
     }
 
     #[test]
@@ -314,7 +286,6 @@ mod test {
         let call_data: Vec<u8> = vec![];
         let transaction_value = U256::from(100_u32);
         let config = Config::shanghai();
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -339,7 +310,6 @@ mod test {
             caller,
             call_data,
             Some(22000),
-            gas_price,
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -348,7 +318,6 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: config.gas_transaction_call,
             is_success: false,
-            reason: ExitReason::Error(ExitError::OutOfFund),
             new_address: None,
             logs: vec![],
             result: None,
@@ -379,7 +348,6 @@ mod test {
         let call_data: Vec<u8> = vec![];
         let transaction_value = U256::from(100_u32);
         let config = Config::shanghai();
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -404,7 +372,6 @@ mod test {
             caller,
             call_data,
             Some(21000),
-            gas_price,
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -413,7 +380,6 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: config.gas_transaction_call,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
             new_address: None,
             logs: vec![],
             result: Some(vec![]),
@@ -444,7 +410,6 @@ mod test {
         let caller = H160::from_low_u64_be(328794);
         let transaction_value = U256::from(100_u32);
         let call_data: Vec<u8> = hex::decode(STORAGE_CONTRACT_INITIALIZATION).unwrap();
-        let gas_price = U256::from(21000);
 
         set_balance(
             &mut mock_runtime,
@@ -463,7 +428,6 @@ mod test {
             caller,
             call_data,
             None,
-            gas_price,
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -472,12 +436,11 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 0,
             is_success: false,
-            reason: ExitReason::Error(ExitError::OutOfFund),
             new_address: None,
             logs: vec![],
             result: None,
             withdrawals: vec![],
-            estimated_ticks_used: 0,
+            estimated_ticks_used: 55427,
         }));
 
         assert_eq!(expected_result, result);
@@ -498,7 +461,6 @@ mod test {
         let caller = H160::from_low_u64_be(117);
         let transaction_value = U256::from(0);
         let call_data: Vec<u8> = hex::decode(STORAGE_CONTRACT_INITIALIZATION).unwrap();
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -506,9 +468,7 @@ mod test {
             &caller,
             U256::from(1_000_000),
         );
-        // gas limit was estimated using Remix on Shanghai network (256,842)
-        // plus a safety margin for gas accounting discrepancies
-        let gas_limit = 300_000;
+
         let result = run_transaction(
             &mut mock_runtime,
             &block,
@@ -518,8 +478,7 @@ mod test {
             callee,
             caller,
             call_data,
-            Some(gas_limit),
-            gas_price,
+            Some(31000),
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -553,7 +512,6 @@ mod test {
             caller,
             call_data2,
             Some(31000),
-            gas_price,
             Some(U256::zero()),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -581,7 +539,6 @@ mod test {
             caller,
             call_data_set,
             Some(100000),
-            gas_price,
             Some(U256::zero()),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -608,7 +565,6 @@ mod test {
             caller,
             hex::decode(STORAGE_CONTRACT_CALL_NUM).unwrap(),
             Some(31000),
-            gas_price,
             Some(U256::zero()),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -638,20 +594,13 @@ mod test {
         let transaction_value = U256::from(0);
         let call_data: Vec<u8> = hex::decode(ERC20_CONTRACT_INITIALISATION).unwrap();
 
-        // gas_limit estimated using remix on shanghai network (1,631,430)
-        // plus a 50% margin for gas accounting discrepancies
-        let gas_limit = 2_400_000;
-        let gas_price = U256::from(21000);
-
-        // the test is not to check that account can prepay,
-        // so we can choose the balance depending on set gas limit
-        let balance = gas_price.saturating_mul(gas_limit.into());
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            balance,
+            U256::from(100000),
         );
+
         let result = run_transaction(
             &mut mock_runtime,
             &block,
@@ -661,8 +610,7 @@ mod test {
             callee,
             caller,
             call_data,
-            Some(gas_limit),
-            gas_price,
+            Some(100000),
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -672,6 +620,7 @@ mod test {
         let result = result.unwrap();
         assert!(result.is_some());
         let result = result.unwrap();
+
         assert!(result.is_success);
         assert_eq!(
             Some(H160::from_str("907823e0a92f94355968feb2cbf0fbb594fe3214").unwrap()),
@@ -693,7 +642,6 @@ mod test {
         // 0xFE, which is the designated INVALID opcode, so running this code
         // snippet must fail.
         let call_data: Vec<u8> = hex::decode("602e600055600054600154fe").unwrap();
-        let gas_price = U256::from(21000);
 
         set_balance(
             &mut mock_runtime,
@@ -712,7 +660,6 @@ mod test {
             caller,
             call_data,
             None,
-            gas_price,
             Some(transaction_value),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -721,12 +668,11 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 0,
             is_success: false,
-            reason: ExitReason::Error(ExitError::DesignatedInvalid),
             new_address: None,
             logs: vec![],
             result: None,
             withdrawals: vec![],
-            estimated_ticks_used: 620000,
+            estimated_ticks_used: 0,
         }));
 
         assert_eq!(expected_result, result);
@@ -745,7 +691,7 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(1);
+        let data = [0u8; 32]; // Need some data to make it a call
 
         set_balance(
             &mut mock_runtime,
@@ -763,21 +709,17 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
-            Some(22000),
-            gas_price,
+            data.to_vec(),
+            Some(21000),
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000; // base cost
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 21000,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
             new_address: None,
             logs: vec![],
             result: Some(vec![]),
@@ -791,7 +733,7 @@ mod test {
     #[test]
     //this is based on https://eips.ethereum.org/EIPS/eip-155
     fn test_signatures() {
-        let (sk, _address) = tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(
+        let (sk, _address) = mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(
             "4646464646464646464646464646464646464646464646464646464646464646"
                 .to_string(),
         );
@@ -832,7 +774,7 @@ mod test {
         ];
         test_list.iter().fold((), |_, (s, ea)| {
             let (_, a) =
-                tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(s.to_string());
+                mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(s.to_string());
             let value: [u8; 20] = hex::decode(ea).unwrap().try_into().unwrap();
             let ea = value.into();
             assert_eq!(a, ea);
@@ -842,7 +784,7 @@ mod test {
     #[test]
     fn test_caller_classic() {
         let (_sk, address_from_sk) =
-            tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(
+            mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(
                 "4646464646464646464646464646464646464646464646464646464646464646"
                     .to_string(),
             );
@@ -882,6 +824,7 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
+        let data = [0u8; 32]; // Need some data to make it a call
         let code = vec![
             Opcode::PUSH1.as_u8(),
             0u8,
@@ -891,13 +834,12 @@ mod test {
         ];
 
         set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
-        let all_the_gas = 25_000;
-        let gas_price = U256::from(1);
+
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            all_the_gas.into(),
+            21006.into(),
         );
 
         // Act
@@ -909,22 +851,17 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
-            Some(all_the_gas),
-            gas_price,
+            data.to_vec(),
+            Some(21006),
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 6; // execution cost
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 21006,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(vec![]),
@@ -944,7 +881,7 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(1);
+        let data = [0u8; 32]; // Need some data to make it a call
         let code = vec![
             Opcode::PUSH1.as_u8(),
             0u8,
@@ -952,7 +889,6 @@ mod test {
             0u8,
             Opcode::REVERT.as_u8(),
         ];
-        let init_balance = 22_000;
 
         set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
 
@@ -960,7 +896,7 @@ mod test {
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            init_balance.into(),
+            22000.into(),
         );
 
         // Act
@@ -972,36 +908,25 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
-            Some(init_balance),
-            gas_price,
+            data.to_vec(),
+            Some(6),
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 2 * 3; // execution cost (only push)
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 6,
             is_success: false,
-            reason: ExitReason::Revert(ExitRevert::Reverted),
             new_address: None,
             logs: vec![],
-            result: Some(vec![]),
+            result: None,
             withdrawals: vec![],
-            estimated_ticks_used: 65039,
+            estimated_ticks_used: 0,
         }));
 
         assert_eq!(expected_result, result);
-
-        // Some gas is returned to the send after the transaction is reverted
-        assert_eq!(
-            get_balance(&mut mock_runtime, &mut evm_account_storage, &caller),
-            gas_price.saturating_mul((init_balance - expected_gas).into())
-        )
     }
 
     #[test]
@@ -1013,7 +938,7 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(21000);
+        let data = [0u8; 32]; // Need some data to make it a call
         let code = vec![
             Opcode::INVALID.as_u8(),
             Opcode::PUSH1.as_u8(),
@@ -1034,9 +959,8 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             None,
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -1046,7 +970,6 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 0,
             is_success: false,
-            reason: ExitReason::Error(ExitError::DesignatedInvalid),
             new_address: None,
             logs: vec![],
             result: None,
@@ -1064,9 +987,9 @@ mod test {
         let precompiles = precompiles::precompile_set::<MockHost>();
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let caller = H160::from_low_u64_be(118_u64);
-        let gas_price = U256::from(21000);
 
         let address = H160::from_low_u64_be(117_u64);
+        let input = vec![0_u8];
         let code: Vec<u8> = vec![
             Opcode::PUSH1.as_u8(),
             0u8,
@@ -1091,9 +1014,8 @@ mod test {
             CONFIG,
             Some(address),
             caller,
-            vec![],
+            input,
             None,
-            gas_price,
             Some(U256::from(100)),
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -1102,7 +1024,6 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: 0,
             is_success: false,
-            reason: ExitReason::Error(ExitError::DesignatedInvalid),
             new_address: None,
             logs: vec![],
             result: None,
@@ -1127,11 +1048,10 @@ mod test {
         let mut mock_runtime = MockHost::default();
         let block = dummy_first_block();
         let precompiles = precompiles::precompile_set::<MockHost>();
-        let target = H160::from_low_u64_be(4u64); // identity contract
+        let target = H160::from_low_u64_be(4u64);
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let caller = H160::from_low_u64_be(118u64);
         let data = [1u8; 32]; // Need some data to make it a contract call
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1151,21 +1071,15 @@ mod test {
             caller,
             data.to_vec(),
             Some(22001),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-            + 18 // execution cost
-            + 32 * CONFIG.gas_transaction_non_zero_data; // transaction data cost
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 21018,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(vec![1u8; 32]),
@@ -1190,14 +1104,12 @@ mod test {
         let target = H160::from_low_u64_be(1u64);
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(21000);
-        let gas_limit = 35000;
 
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            gas_price * gas_limit + U256::one(),
+            24001.into(),
         );
 
         // Act
@@ -1210,8 +1122,7 @@ mod test {
             Some(target),
             caller,
             data.to_vec(),
-            Some(gas_limit),
-            gas_price,
+            Some(24000),
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -1222,9 +1133,8 @@ mod test {
         let expected_address =
             "0000000000000000000000007156526fbd7a3c72969b54f64e42c10fbb768c8a";
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: 25676,
+            gas_used: 24000,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(hex::decode(expected_address).unwrap()),
@@ -1244,7 +1154,7 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(21000);
+        let data = [0u8; 32]; // Need some data to make it a contract call
 
         let code = vec![
             // Create a contract that creates an exception if first word of calldata is 0
@@ -1321,9 +1231,8 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             None,
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -1343,9 +1252,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117_u64);
         let caller = H160::from_low_u64_be(118_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let static_call_target = H160::from_low_u64_be(200_u64);
         let all_the_gas = 2_000_000_u64;
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1399,33 +1308,26 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 65535 // staticcall allocated gas
-        + 6 * 3 // cost for push
-        + 100; // cost for staticcall
-
         // Since we execute an invalid instruction (for a static call that is) we spend
-        // _all_ the gas allocated to the call (so 0xFFFF or 65535)
+        // _all_ the gas.
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
-            is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
+            gas_used: 86653,
+            is_success: false,
             new_address: None,
             logs: vec![],
-            result: Some(vec![]),
+            result: None,
             withdrawals: vec![],
-            estimated_ticks_used: 428861740,
+            estimated_ticks_used: 962434148,
         }));
 
-        // assert that call succeeds
+        // assert that call fails
         assert_eq!(result, expected_result);
     }
 
@@ -1437,9 +1339,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117_u64);
         let caller = H160::from_low_u64_be(118_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let static_call_target = H160::from_low_u64_be(200_u64);
         let all_the_gas = 2_000_000_u64;
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1492,34 +1394,26 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 65535 // staticcall allocated gas
-        + 6 * 3 // cost for push
-        + 100; // cost for staticcall
-
         // Since we execute an invalid instruction (for a static call that is), we
         // expect to spend _all_ the gas.
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
-            is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
+            gas_used: 86653,
+            is_success: false,
             new_address: None,
-            // No logs were produced
             logs: vec![],
-            result: Some(vec![]),
+            result: None,
             withdrawals: vec![],
             estimated_ticks_used: 441347264,
         }));
 
-        // assert that call succeeds
+        // assert that call fails
         assert_eq!(result, expected_result);
     }
 
@@ -1531,9 +1425,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117_u64);
         let caller = H160::from_low_u64_be(118_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let call_target = H160::from_low_u64_be(200_u64);
         let all_the_gas = 2_000_000_u64;
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1607,9 +1501,8 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             1_000_000_000,
@@ -1627,13 +1520,9 @@ mod test {
             data: vec![1, 2, 3, 4, 5, 6, 7, 8],
         };
 
-        let expected_gas = 21000 // base cost
-        + 1348; // execution cost (taken at face value from tests)
-
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 22348,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
             new_address: None,
             logs: vec![log_record1, log_record2],
             result: Some(vec![]),
@@ -1652,9 +1541,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117_u64);
         let caller = H160::from_low_u64_be(118_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let static_call_target = H160::from_low_u64_be(200_u64);
         let all_the_gas = 2_000_000_u64;
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1719,9 +1608,8 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
@@ -1733,13 +1621,9 @@ mod test {
             data: vec![0],
         };
 
-        let expected_gas = 21000 // base cost
-        + 911; // execution cost (taken at face value from tests)
-
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 21911,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
             new_address: None,
             logs: vec![log_record1],
             result: Some(vec![]),
@@ -1758,9 +1642,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(42_u64);
         let caller = H160::from_low_u64_be(115_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let selfdestructing_contract = H160::from_low_u64_be(100_u64);
         let all_the_gas = 1_000_000_u64;
-        let gas_price = U256::from(1);
 
         // This contract selfdestructs and gives its funds to `caller`
         let selfdestructing_code = vec![
@@ -1820,19 +1704,16 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
-        let expected_gas = 21000 // base cost
-        + 30124; // execution gas cost (taken at face value from tests)
+
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 51124,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Stopped),
             new_address: None,
             logs: vec![],
             result: Some(vec![]),
@@ -1869,9 +1750,9 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(42_u64);
         let caller = H160::from_low_u64_be(115_u64);
+        let data = [0u8; 32]; // Need some data to make it a contract call
         let selfdestructing_contract = H160::from_low_u64_be(100_u64);
         let all_the_gas = 1_000_000_u64;
-        let gas_price = U256::from(1);
 
         set_balance(
             &mut mock_runtime,
@@ -1938,9 +1819,8 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             10_000_000_000,
@@ -1949,7 +1829,6 @@ mod test {
         let expected_result = Ok(Some(ExecutionOutcome {
             gas_used: all_the_gas,
             is_success: false,
-            reason: ExitReason::Error(ExitError::InvalidCode(Opcode::INVALID)),
             new_address: None,
             logs: vec![],
             result: None,
@@ -1986,33 +1865,31 @@ mod test {
         let chain_id = U256::from(42);
         let mut chain_id_bytes = [0u8; 32];
         chain_id.to_big_endian(&mut chain_id_bytes);
-        let block_fees = BlockFees::new(U256::from(54321));
-        let block = BlockConstants::first_block(U256::zero(), chain_id, block_fees);
+        let block =
+            BlockConstants::first_block(U256::zero(), chain_id, U256::from(21000));
         let precompiles = precompiles::precompile_set::<MockHost>();
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(12345);
+        let data = [0u8; 32]; // Need some data to make it a call
         let code = vec![
-            Opcode::CHAINID.as_u8(), // cost 2
-            Opcode::PUSH1.as_u8(),   // push ost, cost 3
+            Opcode::CHAINID.as_u8(),
+            Opcode::PUSH1.as_u8(), // push ost
             0,
-            Opcode::MSTORE.as_u8(), // cost 3, memory expansion cost 3
-            Opcode::PUSH1.as_u8(),  // push len, cost 3
+            Opcode::MSTORE.as_u8(),
+            Opcode::PUSH1.as_u8(), // push len
             32,
-            Opcode::PUSH1.as_u8(), // push ost, cost 3
+            Opcode::PUSH1.as_u8(), // push ost
             0,
-            Opcode::RETURN.as_u8(), // cost 0
+            Opcode::RETURN.as_u8(),
         ];
-
-        // value not relevant to test, must be big enough
-        let all_the_gas = 25_000_u64;
+        let all_the_gas = 21_017_u64;
 
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            gas_price * all_the_gas,
+            all_the_gas.into(),
         );
 
         set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
@@ -2026,22 +1903,17 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 17; // execution cost
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
+            gas_used: 21017,
             is_success: true,
-            reason: ExitReason::Succeed(ExitSucceed::Returned),
             new_address: None,
             logs: vec![],
             result: Some(chain_id_bytes.into()),
@@ -2058,33 +1930,31 @@ mod test {
         let base_fee_per_gas = U256::from(23000);
         let mut base_fee_per_gas_bytes = [0u8; 32];
         base_fee_per_gas.to_big_endian(&mut base_fee_per_gas_bytes);
-        let block_fees = BlockFees::new(base_fee_per_gas);
-        let block = BlockConstants::first_block(U256::zero(), U256::one(), block_fees);
+        let block =
+            BlockConstants::first_block(U256::zero(), U256::one(), base_fee_per_gas);
         let precompiles = precompiles::precompile_set::<MockHost>();
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let target = H160::from_low_u64_be(117u64);
         let caller = H160::from_low_u64_be(118u64);
+        let data = [0u8; 32]; // Need some data to make it a call
         let code = vec![
-            Opcode::BASEFEE.as_u8(), // cost 2
-            Opcode::PUSH1.as_u8(),   // push ost, cost 3
+            Opcode::BASEFEE.as_u8(),
+            Opcode::PUSH1.as_u8(), // push ost
             0,
-            Opcode::MSTORE.as_u8(), // cost 3, memory expansion cost 3
-            Opcode::PUSH1.as_u8(),  // push len, cost 3
+            Opcode::MSTORE.as_u8(),
+            Opcode::PUSH1.as_u8(), // push len
             32,
-            Opcode::PUSH1.as_u8(), // push ost, cost 3
+            Opcode::PUSH1.as_u8(), // push ost
             0,
             Opcode::RETURN.as_u8(),
         ];
-
-        // value not relevant to test, just needs to be big enough
-        let all_the_gas = 25_000_u64;
-        let gas_price = U256::from(21000);
+        let all_the_gas = 21_017_u64;
 
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            gas_price * all_the_gas,
+            all_the_gas.into(),
         );
 
         set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
@@ -2098,21 +1968,16 @@ mod test {
             CONFIG,
             Some(target),
             caller,
-            vec![],
+            data.to_vec(),
             Some(all_the_gas),
-            gas_price,
             None,
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_gas = 21000 // base cost
-        + 17; // execution cost
-
         // Assert
         let expected_result = Ok(Some(ExecutionOutcome {
-            gas_used: expected_gas,
-            reason: ExitReason::Succeed(ExitSucceed::Returned),
+            gas_used: 21017,
             is_success: true,
             new_address: None,
             logs: vec![],
@@ -2123,27 +1988,6 @@ mod test {
         assert_eq!(result, expected_result);
     }
 
-    /// [unwrap_outcome!(result, expect_success)] tries to unwrap a value of type
-    /// `Result<Option<ExecutionOutome>, ...>` and check the outcome status
-    /// according to optional argument [expect_success] (default value true)
-    macro_rules! unwrap_outcome {
-        ($result:expr, $expect_success:expr) => {{
-            assert!($result.is_ok(), "Couldn't unwrap, Result was Err");
-            let tmp = $result.as_ref().unwrap();
-            assert!(tmp.is_some(), "Couldn't unwrap, Option was None");
-            let tmp = tmp.as_ref().unwrap();
-            assert_eq!(
-                tmp.is_success, $expect_success,
-                "outcome field 'is_success' should be {}",
-                $expect_success
-            );
-            tmp
-        }};
-        ($result:expr) => {{
-            unwrap_outcome!($result, true)
-        }};
-    }
-
     #[test]
     fn evm_should_fail_gracefully_when_balance_overflow_occurs() {
         let mut mock_runtime = MockHost::default();
@@ -2152,19 +1996,17 @@ mod test {
         let mut evm_account_storage = init_evm_account_storage().unwrap();
         let caller = H160::from_low_u64_be(523);
         let target = H160::from_low_u64_be(210);
-        let gas_price = U256::from(21000);
 
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
             &caller,
-            U256::from(200),
+            U256::from(200)
         );
         set_balance(
             &mut mock_runtime,
             &mut evm_account_storage,
-            &target,
-            U256::max_value(),
+            &target, U256::max_value()
         );
 
         let result = run_transaction(
@@ -2177,620 +2019,12 @@ mod test {
             caller,
             vec![],
             None,
-            gas_price,
             Some(U256::from(100)),
             true,
             DUMMY_ALLOCATED_TICKS,
         );
 
-        let expected_result = Err(EthereumError::EthereumAccountError(
-            AccountStorageError::BalanceOverflow,
-        ));
+        let expected_result = Err(EthereumError::EthereumAccountError(AccountStorageError::BalanceOverflow));
         assert_eq!(expected_result, result);
-    }
-
-    #[test]
-    fn create_contract_gas_cost() {
-        let mut mock_runtime = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let callee = None;
-        let caller = H160::from_low_u64_be(117);
-        let transaction_value = U256::from(0);
-        // example stolen from https://www.rareskills.io/post/smart-contract-creation-cost
-        let data_str = "6080604052603f8060116000396000f3fe6080604052600080fdfea2646970667358221220c5cad0aa1e64e2ca6a6cdf28a25255a8ebbf3cdd5ea0b8e4129a3c83c4fbb72a64736f6c63430008070033";
-        let call_data: Vec<u8> = hex::decode(data_str).unwrap();
-
-        // not testing gas_limit, should be big enough
-        let gas_limit = 2_400_000;
-        let gas_price = U256::from(21000);
-
-        // the test is not to check that account can prepay,
-        // so we can choose the balance depending on set gas limit
-        let balance = gas_price.saturating_mul(gas_limit.into());
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            balance,
-        );
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            callee,
-            caller,
-            call_data,
-            Some(gas_limit),
-            gas_price,
-            Some(transaction_value),
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        let result = unwrap_outcome!(result);
-
-        // gas calculation
-        let expected_gas = 21000 // base cost
-        + 32000 // create base cost
-        + 1220 // transaction data cost
-        + 12600 // code deposit cost
-        + 42; // init cost
-
-        assert_eq!(expected_gas, result.gas_used);
-    }
-
-    #[test]
-    fn create_contract_fail_gas_cost() {
-        let mut mock_runtime = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let callee = None;
-        let caller = H160::from_low_u64_be(117);
-        let transaction_value = U256::from(0);
-        // data should result in failed contract creation
-        let create_data: Vec<u8> = vec![0x01; 32];
-
-        // not testing gas_limit, should be big enough
-        let gas_limit = 2_400_000;
-        let gas_price = U256::from(21000);
-
-        // the test is not to check that account can prepay,
-        // so we can choose the balance depending on set gas limit
-        let balance = gas_price.saturating_mul(gas_limit.into());
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            balance,
-        );
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            callee,
-            caller,
-            create_data,
-            Some(gas_limit),
-            gas_price,
-            Some(transaction_value),
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        let result = unwrap_outcome!(&result, false);
-
-        // gas calculation
-        let expected_gas = 21000 // base cost
-        + 32000 // create cost
-        + 32 * CONFIG.gas_transaction_non_zero_data // transaction data cost
-        + 3; // init cost
-
-        assert_eq!(expected_gas, result.gas_used);
-    }
-
-    #[test]
-    fn test_transaction_data_cost() {
-        // Arrange
-        let mut mock_runtime = MockHost::default();
-        let base_fee_per_gas = U256::from(23000);
-        let block_fees = BlockFees::new(base_fee_per_gas);
-        let block = BlockConstants::first_block(U256::zero(), U256::one(), block_fees);
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-        let target = H160::from_low_u64_be(117u64);
-        let caller = H160::from_low_u64_be(118u64);
-
-        // zero byte data
-        let data = [0u8; 32];
-
-        // zero cost contract
-        let code = vec![Opcode::STOP.as_u8()];
-
-        // value not relevant to test, just needs to be big enough
-        let all_the_gas = 25_000_u64;
-        let gas_price = U256::from(21000);
-
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            gas_price * all_the_gas,
-        );
-
-        set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
-
-        // Act
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            Some(target),
-            caller,
-            data.to_vec(),
-            Some(all_the_gas),
-            gas_price,
-            None,
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        // Assert
-        let result = unwrap_outcome!(&result);
-
-        let expected_gas = 21000 // base cost
-        + 32 * CONFIG.gas_transaction_zero_data; // transaction data cost
-
-        assert_eq!(expected_gas, result.gas_used);
-    }
-
-    #[test]
-    fn test_transaction_data_cost_non_zero() {
-        // Arrange
-        let mut mock_runtime = MockHost::default();
-        let base_fee_per_gas = U256::from(23000);
-        let block_fees = BlockFees::new(base_fee_per_gas);
-        let block = BlockConstants::first_block(U256::zero(), U256::one(), block_fees);
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-        let target = H160::from_low_u64_be(117u64);
-        let caller = H160::from_low_u64_be(118u64);
-
-        // no zero byte data
-        let data = [127u8; 32];
-
-        // zero cost contract
-        let code = vec![Opcode::STOP.as_u8()];
-
-        // value not relevant to test, just needs to be big enough
-        let all_the_gas = 25_000_u64;
-        let gas_price = U256::from(21000);
-
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            gas_price * all_the_gas,
-        );
-
-        set_account_code(&mut mock_runtime, &mut evm_account_storage, &target, &code);
-
-        // Act
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            Some(target),
-            caller,
-            data.to_vec(),
-            Some(all_the_gas),
-            gas_price,
-            None,
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        // Assert
-        let result = unwrap_outcome!(&result);
-
-        let expected_gas = 21000 // base cost
-        + 32 * CONFIG.gas_transaction_non_zero_data; // transaction data cost: should be zero_byte cost * size
-
-        assert_eq!(expected_gas, result.gas_used);
-    }
-
-    fn first_block() -> BlockConstants {
-        let base_fee_per_gas = U256::from(23000);
-        let block_fees = BlockFees::new(base_fee_per_gas);
-        BlockConstants::first_block(U256::zero(), U256::one(), block_fees)
-    }
-
-    fn deploy(
-        data: Vec<u8>,
-        all_the_gas: u64,
-    ) -> Result<Option<ExecutionOutcome>, EthereumError> {
-        // Arrange
-        let mut mock_runtime = MockHost::default();
-        let block = first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-        let caller = H160::from_low_u64_be(118u64);
-        let gas_price = U256::from(1356);
-
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            gas_price * all_the_gas,
-        );
-
-        // Act
-
-        run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            None,
-            caller,
-            data.to_vec(),
-            Some(all_the_gas),
-            gas_price,
-            None,
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        )
-    }
-
-    fn test_eip_3541(data: Vec<u8>) {
-        // value not relevant to test, just needs to be big enough
-        let all_the_gas = 65_000_u64;
-
-        // Act
-        let result = deploy(data, all_the_gas);
-
-        // Assert
-        let result = unwrap_outcome!(&result, false);
-        assert_eq!(
-            ExitReason::Error(ExitError::InvalidCode(Opcode(0xef))),
-            result.reason
-        );
-    }
-
-    #[test]
-    fn test_eip_3541_errors() {
-        // Arrange: see test cases
-        // in https://github.com/ethereum/EIPs/blob/master/EIPS/eip-3541.md
-        test_eip_3541(hex::decode("60ef60005360016000f3").unwrap());
-        test_eip_3541(hex::decode("60ef60005360026000f3").unwrap());
-        test_eip_3541(hex::decode("60ef60005360036000f3").unwrap());
-        test_eip_3541(hex::decode("60ef60005360206000f3").unwrap());
-    }
-
-    #[test]
-    fn test_eip_3541_noerror() {
-        // value not relevant to test, just needs to be big enough
-        let all_the_gas = 65_000_u64;
-        let data = hex::decode("60fe60005360016000f3").unwrap();
-        // Act
-        let result = deploy(data, all_the_gas);
-
-        // Assert
-        let result = unwrap_outcome!(&result);
-        assert_eq!(ExitReason::Succeed(ExitSucceed::Returned), result.reason);
-    }
-
-    // Test case from https://eips.ethereum.org/EIPS/eip-684
-    #[test]
-    fn test_create_to_address_with_code_returns_error() {
-        let mut mock_runtime = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let caller =
-            H160::from_str("0xd0bBEc6D2c628b7e2E6D5556daA14a5181b604C5").unwrap();
-
-        let target_address =
-            H160::from_str("0x7658771dc6Af74a3d2F8499D349FF9c1a0DF8826").unwrap();
-
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            10000000.into(),
-        );
-
-        set_account_code(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &target_address,
-            hex::decode("B0B0FACE")
-                .expect("Failed to decode contract code")
-                .as_slice(),
-        );
-
-        // call_data is the input to deploy the following contract.
-        // The content of the contract does not matter since address of created contract depends on address and nonce of caller
-        // contract Empty {
-        //     function run() public{
-        //     }
-        // }
-        let call_data = hex::decode(
-            "6080604052348015600e575f80fd5b50606a80601a5f395ff3fe6080604052348015600e575f80fd5b50600436106026575f3560e01c8063c040622614602a575b5f80fd5b60306032565b005b56fea264697066735822122033200c2933dd0930ac60a7727e0a3e56f8967f6f76afb4ecf2459651419983ab64736f6c63430008170033",
-        )
-        .expect("Failed to decode call data");
-
-        let gas_limit = 300_000;
-        let gas_price = U256::from(1);
-
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            None,
-            caller,
-            call_data,
-            Some(gas_limit),
-            gas_price,
-            None,
-            true,
-            10_000_000_000,
-        );
-
-        let result = unwrap_outcome!(&result, false);
-        match &result.reason {
-            ExitReason::Error(ExitError::CreateCollision) => (),
-            exit_error => panic!(
-                "ExitReason: {:?}. Expect ExitReason::Error(ExitError::CreateCollision)",
-                exit_error
-            ),
-        }
-    }
-
-    // Test case from https://eips.ethereum.org/EIPS/eip-684 with modification
-    #[test]
-    fn test_create_to_address_with_non_zero_nonce_returns_error() {
-        let mut mock_runtime = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let caller =
-            H160::from_str("0xd0bBEc6D2c628b7e2E6D5556daA14a5181b604C5").unwrap();
-
-        let target_address =
-            H160::from_str("0x7658771dc6Af74a3d2F8499D349FF9c1a0DF8826").unwrap();
-
-        set_balance(
-            &mut mock_runtime,
-            &mut evm_account_storage,
-            &caller,
-            10000000.into(),
-        );
-
-        bump_nonce(&mut mock_runtime, &mut evm_account_storage, &target_address);
-
-        // call_data is the input to deploy the following contract.
-        // The content of the contract does not matter since address of created contract depends on address and nonce of caller
-        // contract Empty {
-        //     function run() public{
-        //     }
-        // }
-        let call_data = hex::decode(
-            "6080604052348015600e575f80fd5b50606a80601a5f395ff3fe6080604052348015600e575f80fd5b50600436106026575f3560e01c8063c040622614602a575b5f80fd5b60306032565b005b56fea264697066735822122033200c2933dd0930ac60a7727e0a3e56f8967f6f76afb4ecf2459651419983ab64736f6c63430008170033",
-        )
-        .expect("Failed to decode call data");
-
-        let gas_limit = 300_000;
-        let gas_price = U256::from(1);
-
-        let result = run_transaction(
-            &mut mock_runtime,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            None,
-            caller,
-            call_data,
-            Some(gas_limit),
-            gas_price,
-            None,
-            true,
-            10_000_000_000,
-        );
-
-        let result = unwrap_outcome!(&result, false);
-        match &result.reason {
-            ExitReason::Error(ExitError::CreateCollision) => (),
-            exit_error => panic!(
-                "ExitReason: {:?}. Expect ExitReason::Error(ExitError::CreateCollision)",
-                exit_error
-            ),
-        }
-    }
-
-    #[test]
-    fn created_contract_start_at_nonce_one() {
-        let mut host = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let callee = None;
-        let caller = H160::from_low_u64_be(117);
-        let transaction_value = U256::from(0);
-        let data_str = "6101aa6064526000600060206000600073b000000000000000000000000000000000000000620493e0f1506000600060006000733000000000000000000000000000000000000000620493e0f450600060006020600073b000000000000000000000000000000000000000620493e0f45060006000600060006000733000000000000000000000000000000000000000620493e0f25060006000600060006000732000000000000000000000000000000000000000620927c0f100";
-        let call_data: Vec<u8> = hex::decode(data_str).unwrap();
-
-        let gas_limit = 2_400_000;
-        let gas_price = U256::from(21000);
-        let balance = gas_price.saturating_mul(gas_limit.into());
-
-        set_balance(&mut host, &mut evm_account_storage, &caller, balance);
-
-        let result = run_transaction(
-            &mut host,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            callee,
-            caller,
-            call_data,
-            Some(gas_limit),
-            gas_price,
-            Some(transaction_value),
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        let result = unwrap_outcome!(result);
-        let ExecutionOutcome { new_address, .. } = result;
-        let address = new_address.unwrap();
-        let smart_contract = EthereumAccount::from_address(&address).unwrap();
-
-        assert_eq!(smart_contract.nonce(&host).unwrap(), U256::one())
-    }
-
-    #[test]
-    fn call_contract_create_contract_with_insufficient_funds() {
-        let mut host = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-
-        let callee = H160::from_str("095e7baea6a6c7c4c2dfeb977efac326af552d87").unwrap();
-        let caller = H160::from_str("a94f5374fce5edbc8e2a8697c15331677e6ebf0b").unwrap();
-
-        set_balance(
-            &mut host,
-            &mut evm_account_storage,
-            &caller,
-            U256::from(1000000000),
-        );
-
-        set_balance(
-            &mut host,
-            &mut evm_account_storage,
-            &callee,
-            U256::from(10000),
-        );
-
-        let code = hex::decode("74600c60005566602060406000f060205260076039f36000526015600b620186a0f060005500").unwrap();
-        set_account_code(&mut host, &mut evm_account_storage, &callee, &code);
-
-        let result = run_transaction(
-            &mut host,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            Some(callee),
-            caller,
-            vec![],
-            Some(20000000),
-            U256::one(),
-            Some(U256::zero()),
-            true,
-            DUMMY_ALLOCATED_TICKS,
-        );
-
-        let path = account_path(&caller).unwrap();
-        let account = evm_account_storage.get_or_create(&host, &path).unwrap();
-        let caller_nonce = account.nonce(&host).unwrap();
-
-        let path = account_path(&callee).unwrap();
-        let account = evm_account_storage.get_or_create(&host, &path).unwrap();
-        let callee_nonce = account.nonce(&host).unwrap();
-
-        assert_eq!(
-            ExitReason::Succeed(ExitSucceed::Stopped),
-            result.unwrap().unwrap().reason,
-        );
-        assert_eq!(callee_nonce, U256::zero());
-        assert_eq!(caller_nonce, U256::one());
-    }
-
-    #[test]
-    fn transactions_has_no_impact_if_retriable() {
-        let mut host = MockHost::default();
-        let block = dummy_first_block();
-        let precompiles = precompiles::precompile_set::<MockHost>();
-        let mut evm_account_storage = init_evm_account_storage().unwrap();
-        let callee = None;
-        let caller = H160::from_low_u64_be(117);
-        let transaction_value = U256::from(0);
-        let call_data: Vec<u8> = hex::decode(ERC20_CONTRACT_INITIALISATION).unwrap();
-
-        // gas_limit estimated using remix on shanghai network (1,631,430)
-        // plus a 50% margin for gas accounting discrepancies
-        let gas_limit = 2_400_000;
-        let gas_price = U256::from(21000);
-
-        // the test is not to check that account can prepay,
-        // so we can choose the balance depending on set gas limit
-        let initial_balance = gas_price
-            .saturating_mul(gas_limit.into())
-            .saturating_mul(U256::from(2));
-        set_balance(
-            &mut host,
-            &mut evm_account_storage,
-            &caller,
-            initial_balance,
-        );
-
-        let path = account_path(&caller).unwrap();
-        let account = evm_account_storage.get_or_create(&host, &path).unwrap();
-        let initial_caller_nonce = account.nonce(&host).unwrap();
-
-        let result = run_transaction(
-            &mut host,
-            &block,
-            &mut evm_account_storage,
-            &precompiles,
-            CONFIG,
-            callee,
-            caller,
-            call_data,
-            Some(gas_limit),
-            gas_price,
-            Some(transaction_value),
-            true,
-            10_000,
-        );
-
-        let caller_balance = account.balance(&host).unwrap();
-        let caller_nonce = account.nonce(&host).unwrap();
-
-        assert_eq!(
-            Err(EthereumError::OutOfTicks),
-            result,
-            "Contract creation was expected to fail and run out of ticks: \n"
-        );
-        assert_eq!(
-            initial_balance, caller_balance,
-            "Balance shouldn't have changed as gas should have been repaid"
-        );
-        assert_eq!(
-            initial_caller_nonce, caller_nonce,
-            "Nonce shouldn't have changed"
-        )
     }
 }

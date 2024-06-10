@@ -179,26 +179,25 @@ code {
     - it is of type address if the entrypoint is not "default",
     - it is of type (contract <ty>) if the entrypoint is empty and ty is unit or ticket. *)
 let test_implicit =
-  Protocol.register_test ~__FILE__ ~title:"Test Implicit" ~tags ~uses_node:false
+  Protocol.register_test ~__FILE__ ~title:"Test Implicit" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
-  let* () = check_address client tz1 in
-  let* () = check_contract_ok client tz1 None "unit" in
-  let* () = check_contract_ok client tz1 None "ticket string" in
+  let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
+  let* () = check_address client mv1 in
+  let* () = check_contract_ok client mv1 None "unit" in
+  let* () = check_contract_ok client mv1 None "ticket string" in
   let no_entrypoint_error = "Contract has no entrypoint named a" in
   let type_mismatch_error =
     match protocol with
-    | Nairobi -> "Type nat is not compatible with type unit."
     | _ ->
         "is not acceptable as a handle to an implicit account, whose \
          parameters type can only be unit or ticket <ty>"
   in
   let* () =
-    check_contract_ko client tz1 (Some "a") "unit" no_entrypoint_error
+    check_contract_ko client mv1 (Some "a") "unit" no_entrypoint_error
   in
-  let* () = check_contract_ko client tz1 (Some "a") "nat" no_entrypoint_error in
-  let* () = check_contract_ko client tz1 None "nat" type_mismatch_error in
+  let* () = check_contract_ko client mv1 (Some "a") "nat" no_entrypoint_error in
+  let* () = check_contract_ko client mv1 None "nat" type_mismatch_error in
   unit
 
 (** The address of an inexistent originated account followed by some
@@ -206,11 +205,7 @@ let test_implicit =
     - at type address if the entrypoint is not "default",
     - at no (contract _) type. *)
 let test_originated_inexistent =
-  Protocol.register_test
-    ~__FILE__
-    ~title:"Test Originated Inexistent"
-    ~tags
-    ~uses_node:false
+  Protocol.register_test ~__FILE__ ~title:"Test Originated Inexistent" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let kt1 = "KT1RvwLgpxVv9ANCKsDb5vBgTaZRG1W4bKWP" in
@@ -234,11 +229,7 @@ let test_originated_inexistent =
       - the entrypoint is non-empty, one of the declared entrypoints, and
         <ty> is the type associated to that entrypoint. *)
 let test_originated_no_default =
-  Protocol.register_test
-    ~__FILE__
-    ~title:"Test originated no default"
-    ~tags
-    ~uses_node:false
+  Protocol.register_test ~__FILE__ ~title:"Test originated no default" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, kt1 =
@@ -272,14 +263,10 @@ let test_originated_no_default =
       - the entrypoint is non-empty, one of the declared entrypoints,
         and <ty> is the type associated to that entrypoint. *)
 let test_originated_with_default =
-  Protocol.register_test
-    ~__FILE__
-    ~title:"Test originated with default"
-    ~tags
-    ~uses_node:false
+  Protocol.register_test ~__FILE__ ~title:"Test originated with default" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let initial_storage = {|Pair "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" "" 0|} in
+  let initial_storage = {|Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" "" 0|} in
   let* _alias, kt1 =
     Client.originate_contract_at
       ~amount:Tez.zero

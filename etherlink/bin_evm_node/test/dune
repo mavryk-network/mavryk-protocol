@@ -1,0 +1,47 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name etherlink_bin_evm_node_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.base-test-helpers
+  mavkit-libs.test-helpers
+  qcheck-alcotest
+  mavkit-alcotezt
+  mavkit-evm-node-libs.evm_node_lib_prod
+  mavkit-evm-node-libs.evm_node_lib_dev)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_test_helpers
+  -open Mavryk_test_helpers
+  -open Mavkit_alcotezt)
+ (modules test_rlp test_ethbloom))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  etherlink_bin_evm_node_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavkit-evm-node-tests)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

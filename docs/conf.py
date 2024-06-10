@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.abspath('.') + '/_extensions')
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.extlinks', 'tezos_custom_roles', 'michelsonlexer']
+extensions = ['sphinx.ext.extlinks', 'mavryk_custom_roles', 'michelsonlexer']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -126,20 +126,16 @@ html_css_files = [
     'css/custom.css',
 ]
 
-html_js_files = [
-    'js/custom.js',
-]
-
 html_extra_path = [
     '404.html',
     '_redirects',
     # manually copy images that are only included in raw HTML directives:
     'images/building_on_tezos_5.png',
-    'images/contributing_to_octez_6.png',
+    'images/contributing_to_mavkit_6.png',
     'images/discover_tezos_1.png',
     'images/getting_started_2.png',
-    'images/understanding_octez_4.png',
-    'images/using_octez_3.png',
+    'images/understanding_mavkit_4.png',
+    'images/using_mavkit_3.png',
 ]
 
 # Custom sidebar templates, must be a dictionary that maps document names
@@ -228,7 +224,7 @@ linkcheck_ignore = [
     r'^\.\./',
     # flaky servers, to remove one day if they got more predictable
     r'^https://opentezos\.com/',
-    r'^https://crates.io/crates/tezos-smart-rollup',
+    r'^https://crates.io/crates/mavryk-smart-rollup',
 ]
 linkcheck_allowed_redirects = dict(
     [
@@ -243,8 +239,8 @@ linkcheck_allowed_redirects = dict(
         ),
         (r'https://ocaml\.org/.*', r'https://v2\.ocaml\.org/.*'),
         (
-            r'https://github\.com/serokell/tezos-packaging/releases/latest',
-            r'https://github\.com/serokell/tezos-packaging/releases/tag/.*',
+            r'https://github\.com/serokell/mavryk-packaging/releases/latest',
+            r'https://github\.com/serokell/mavryk-packaging/releases/tag/.*',
         ),
         (
             r'https://www.reddit.com/r/tezos/',
@@ -260,5 +256,3 @@ linkcheck_allowed_redirects = dict(
 html_domain_indices = False
 
 default_role = 'default'
-
-html_favicon = 'favicon.ico'

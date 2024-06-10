@@ -4,8 +4,8 @@
 
 #![doc = include_str!("../README.md")]
 
-extern crate tezos_smart_rollup_debug as debug;
-extern crate tezos_smart_rollup_host as host;
+extern crate mavryk_smart_rollup_debug as debug;
+extern crate mavryk_smart_rollup_host as host;
 
 use thiserror::Error;
 

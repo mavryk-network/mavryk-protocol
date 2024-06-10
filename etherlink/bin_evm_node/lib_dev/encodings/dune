@@ -1,0 +1,13 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name evm_node_lib_dev_encoding)
+ (public_name mavkit-evm-node-libs.evm_node_lib_dev_encoding)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-smart-rollup-wasm-debugger-plugin)
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives))

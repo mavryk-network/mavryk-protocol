@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** See [src/lib_context/tezos_context.ml] for some information. *)
+(** See [src/lib_context/mavryk_context.ml] for some information. *)
 
 include Context
 

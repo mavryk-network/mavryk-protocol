@@ -33,7 +33,7 @@ module type CHAIN_STORE = sig
   val context :
     chain_store ->
     Store.Block.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
   val chain_id : chain_store -> Chain_id.t
 end
@@ -140,7 +140,7 @@ module MakeAbstract
     conflict_map : Proto.Plugin.Conflict_map.t;
         (** State needed by
             [Proto.Plugin.Conflict_map.fee_needed_to_replace_by_fee] in
-            order to provide the [needed_fee_in_mutez] field of the
+            order to provide the [needed_fee_in_mumav] field of the
             [Operation_conflict] error (see the [translate_proto_add_result]
             function below). *)
   }
@@ -176,22 +176,7 @@ module MakeAbstract
     create_aux ~old_state chain_store head timestamp
 
   let pre_filter state (filter_config, (_ : Prevalidator_bounding.config)) op =
-    let open Lwt_syntax in
-    let* result =
-      Proto.Plugin.pre_filter state.plugin_info filter_config op.protocol
-    in
-    match result with
-    | `Passed_prefilter `High ->
-        return (`Passed_prefilter Prevalidator_pending_operations.High)
-    | `Passed_prefilter `Medium ->
-        return (`Passed_prefilter Prevalidator_pending_operations.Medium)
-    | `Passed_prefilter (`Low q) ->
-        return (`Passed_prefilter (Prevalidator_pending_operations.Low q))
-    | ( `Branch_delayed _err
-      | `Branch_refused _err
-      | `Outdated _err
-      | `Refused _err ) as err ->
-        return err
+    Proto.Plugin.pre_filter state.plugin_info filter_config op.protocol
 
   type error_classification = Prevalidator_classification.error_classification
 
@@ -247,13 +232,13 @@ module MakeAbstract
            that [op] would need in order to win the conflict and replace
            the old operation, if such a fee exists; otherwise the error
            should contain [None]. *)
-        let needed_fee_in_mutez =
+        let needed_fee_in_mumav =
           Proto.Plugin.Conflict_map.fee_needed_to_replace_by_fee
             filter_config
             ~candidate_op:op.protocol
             ~conflict_map
         in
-        error [Operation_conflict {new_hash = op.hash; needed_fee_in_mutez}]
+        error [Operation_conflict {new_hash = op.hash; needed_fee_in_mumav}]
 
   let update_bounding_state bounding_state bounding_config op ~proto_replacement
       =
@@ -266,7 +251,7 @@ module MakeAbstract
     let* bounding_state, removed_operation_hashes =
       Result.map_error
         (fun op_to_overtake ->
-          let needed_fee_in_mutez =
+          let needed_fee_in_mumav =
             Option.bind op_to_overtake (fun op_to_overtake ->
                 Proto.Plugin.fee_needed_to_overtake
                   ~op_to_overtake:op_to_overtake.protocol
@@ -274,7 +259,7 @@ module MakeAbstract
           in
           [
             Validation_errors.Rejected_by_full_mempool
-              {hash = op.hash; needed_fee_in_mutez};
+              {hash = op.hash; needed_fee_in_mumav};
           ])
         (Bounding.add_operation bounding_state bounding_config op)
     in

@@ -31,18 +31,18 @@ end)
 
 let group =
   {
-    Tezos_clic.name = "sc_rollup.node";
+    Mavryk_clic.name = "sc_rollup.node";
     title = "Commands related to the smart rollup node.";
   }
 
 let config_init_command =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Cli in
   command
     ~group
     ~desc:"Configure the smart rollup node."
-    (args23
+    (args22
        force_switch
        data_dir_arg
        rpc_addr_arg
@@ -53,7 +53,6 @@ let config_init_command =
        dal_node_endpoint_arg
        dac_observer_endpoint_arg
        dac_timeout_arg
-       pre_images_endpoint_arg
        injector_retention_period_arg
        injector_attempts_arg
        injection_ttl_arg
@@ -81,7 +80,6 @@ let config_init_command =
            dal_node_endpoint,
            dac_observer_endpoint,
            dac_timeout,
-           pre_images_endpoint,
            injector_retention_period,
            injector_attempts,
            injection_ttl,
@@ -108,7 +106,6 @@ let config_init_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
-          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -134,13 +131,13 @@ let config_init_command =
       return_unit)
 
 let legacy_run_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   let open Cli in
   command
     ~group
     ~desc:"Run the rollup node daemon (deprecated)."
-    (args25
+    (args24
        data_dir_arg
        mode_arg
        sc_rollup_address_arg
@@ -152,7 +149,6 @@ let legacy_run_command =
        dal_node_endpoint_arg
        dac_observer_endpoint_arg
        dac_timeout_arg
-       pre_images_endpoint_arg
        injector_retention_period_arg
        injector_attempts_arg
        injection_ttl_arg
@@ -178,7 +174,6 @@ let legacy_run_command =
            dal_node_endpoint,
            dac_observer_endpoint,
            dac_timeout,
-           pre_images_endpoint,
            injector_retention_period,
            injector_attempts,
            injection_ttl,
@@ -204,7 +199,6 @@ let legacy_run_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
-          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -230,7 +224,7 @@ let legacy_run_command =
         cctxt)
 
 let run_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   let open Cli in
   command
@@ -238,7 +232,7 @@ let run_command =
     ~desc:
       "Run the rollup node daemon. Arguments overwrite values provided in the \
        configuration file."
-    (args23
+    (args22
        data_dir_arg
        rpc_addr_arg
        rpc_port_arg
@@ -248,7 +242,6 @@ let run_command =
        dal_node_endpoint_arg
        dac_observer_endpoint_arg
        dac_timeout_arg
-       pre_images_endpoint_arg
        injector_retention_period_arg
        injector_attempts_arg
        injection_ttl_arg
@@ -275,7 +268,6 @@ let run_command =
            dal_node_endpoint,
            dac_observer_endpoint,
            dac_timeout,
-           pre_images_endpoint,
            injector_retention_period,
            injector_attempts,
            injection_ttl,
@@ -304,7 +296,6 @@ let run_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
-          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -330,7 +321,7 @@ let run_command =
         cctxt)
 
 let protocols_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~group
@@ -352,7 +343,7 @@ let protocols_command =
 
 (** Command to dump the rollup node metrics. *)
 let dump_metrics =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~group
@@ -367,11 +358,11 @@ let dump_metrics =
       return_unit)
 
 let dump_durable_storage =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"dump the durable_storage."
-    (args2 data_dir_arg (Tezos_client_base_unix.Client_config.block_arg ()))
+    (args2 data_dir_arg (Mavryk_client_base_unix.Client_config.block_arg ()))
     (prefixes ["dump"; "durable"; "storage"; "into"]
     @@ Cli.wasm_dump_file_param @@ stop)
     (fun (data_dir, block) file cctxt ->
@@ -383,112 +374,17 @@ let dump_durable_storage =
           return_unit
       | Error errs -> cctxt#error "%a" pp_print_trace errs)
 
-let export_snapshot
-    (data_dir, dest, no_checks, compress_on_the_fly, uncompressed) filename
-    (cctxt : Client_context.full) =
-  let open Lwt_result_syntax in
-  let*! compression =
-    match (compress_on_the_fly, uncompressed) with
-    | true, true ->
-        cctxt#error "Cannot have both --uncompressed and --compress-on-the-fly"
-    | true, false -> Lwt.return Snapshots.On_the_fly
-    | false, false -> Lwt.return Snapshots.After
-    | false, true -> Lwt.return Snapshots.No
-  in
-  let* snapshot_file =
-    Snapshots.export ~no_checks ~compression ~data_dir ~dest ~filename
-  in
-  let*! () = cctxt#message "Snapshot exported to %s@." snapshot_file in
-  return_unit
-
-let export_snapshot_auto_name =
-  let open Tezos_clic in
+let export_snapshot =
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Export a snapshot of the rollup node state."
-    (args5
-       data_dir_arg
-       Cli.snapshot_dir_arg
-       Cli.no_checks_arg
-       Cli.compress_on_the_fly_arg
-       Cli.uncompressed)
+    (args2 data_dir_arg Cli.snapshot_dir_arg)
     (prefixes ["snapshot"; "export"] @@ stop)
-    (fun params cctxt -> export_snapshot params None cctxt)
-
-let export_snapshot_named =
-  let open Tezos_clic in
-  command
-    ~group
-    ~desc:"Export a snapshot of the rollup node state to a given file."
-    (args4
-       data_dir_arg
-       Cli.no_checks_arg
-       Cli.compress_on_the_fly_arg
-       Cli.uncompressed)
-    (prefixes ["snapshot"; "export"] @@ Cli.snapshot_file_param @@ stop)
-    (fun (data_dir, no_checks, compress_on_the_fly, uncompressed) filename cctxt ->
-      export_snapshot
-        (data_dir, None, no_checks, compress_on_the_fly, uncompressed)
-        (Some filename)
-        cctxt)
-
-let import_snapshot =
-  let open Tezos_clic in
-  command
-    ~group
-    ~desc:"Import a snapshot file in a rollup node."
-    (args3 data_dir_arg Cli.no_checks_arg Cli.import_force_switch)
-    (prefixes ["snapshot"; "import"] @@ Cli.snapshot_file_param @@ stop)
-    (fun (data_dir, no_checks, force) snapshot_file cctxt ->
+    (fun (data_dir, dest) cctxt ->
       let open Lwt_result_syntax in
-      let* () =
-        Snapshots.import cctxt ~no_checks ~force ~data_dir ~snapshot_file
-      in
-      let*! () = cctxt#message "Snapshot successfully imported@." in
-      return_unit)
-
-let snapshot_info =
-  let open Tezos_clic in
-  command
-    ~group
-    ~desc:"Display information about a snapshot file."
-    no_options
-    (prefixes ["snapshot"; "info"] @@ Cli.snapshot_file_param @@ stop)
-    (fun () snapshot_file cctxt ->
-      let open Lwt_result_syntax in
-      let ( {Snapshot_utils.history_mode; address; head_level; last_commitment},
-            compressed ) =
-        Snapshots.info ~snapshot_file
-      in
-      let*! () =
-        cctxt#message
-          "@[<v 0>Valid smart rollup node snapshot.@,\
-           Format:          %scompressed@,\
-           History mode:    %s@,\
-           Rollup address:  %a@,\
-           Head level:      %ld@,\
-           Last commitment: %a@]"
-          (match compressed with `Compressed -> "" | `Uncompressed -> "un")
-          (Configuration.string_of_history_mode history_mode)
-          Address.pp
-          address
-          head_level
-          Commitment.Hash.pp
-          last_commitment
-      in
-      return_unit)
-
-let openapi_command =
-  let open Tezos_clic in
-  let open Lwt_result_syntax in
-  command
-    ~group
-    ~desc:"Generate OpenAPI specification."
-    (args1 Cli.protocol_hash_arg)
-    (prefixes ["generate"; "openapi"] @@ stop)
-    (fun protocol cctxt ->
-      let* openapi_json = Rpc_directory.generate_openapi ?protocol cctxt in
-      let*! () = cctxt#message "%a" Data_encoding.Json.pp openapi_json in
+      let* snapshot_file = Snapshots.export ~data_dir ~dest in
+      let*! () = cctxt#message "Snapshot exported to %s@." snapshot_file in
       return_unit)
 
 let sc_rollup_commands () =
@@ -499,18 +395,14 @@ let sc_rollup_commands () =
     protocols_command;
     dump_metrics;
     dump_durable_storage;
-    export_snapshot_auto_name;
-    export_snapshot_named;
-    import_snapshot;
-    snapshot_info;
-    openapi_command;
+    export_snapshot;
   ]
 
 let select_commands _ctxt _ = Lwt_result_syntax.return (sc_rollup_commands ())
 
 let global_options () =
   let open Client_config in
-  Tezos_clic.args11
+  Mavryk_clic.args11
     (base_dir_arg ())
     (no_base_dir_warnings_switch ())
     (timings_switch ())

@@ -104,7 +104,7 @@ let test_ignore_node_mempool =
   Protocol.register_test
     ~__FILE__
     ~title:"Ignore node mempool"
-    ~tags:[Tag.layer1; "ignore"; "node"; "mempool"]
+    ~tags:["ignore"; "node"; "mempool"]
   @@ fun protocol ->
   let* node, client = Client.init_with_protocol ~protocol `Client () in
   let sender = Constant.bootstrap4 in
@@ -116,11 +116,11 @@ let test_ignore_node_mempool =
       inject
         [
           make
-            ~fee:(Tez.to_mutez fee)
+            ~fee:(Tez.to_mumav fee)
             ~source:sender
             (transfer
                ~dest:Constant.bootstrap5
-               ~amount:(Tez.to_mutez amount)
+               ~amount:(Tez.to_mumav amount)
                ());
         ])
       client
@@ -158,7 +158,7 @@ let with_http_server file presence f =
   in
   Lwt.finalize
     (fun () ->
-      let base_uri = sf "http://%s:%d/" Constant.default_host port in
+      let base_uri = sf "http://localhost:%d/" port in
       f base_uri)
     (fun () ->
       Lwt.wakeup_later http_server_stopper () ;
@@ -235,7 +235,7 @@ let test_bake_empty_operations protocols =
      register_external_mempool
        ~title:("missing operations (" ^ description ^ ")")
        ~mempool
-       ~tags:[Tag.layer1; "empty"]
+       ~tags:["empty"]
        (fun node client mempool ->
          let* level = Node.get_level node in
          let* () = Client.bake_for_and_wait ~mempool client in
@@ -314,7 +314,7 @@ let test_bake_singleton_operations =
   in
   register_external_mempool
     ~title:"singleton operation"
-    ~tags:[Tag.layer1; "singleton"]
+    ~tags:["singleton"]
     ~mempool
   @@ fun _node client mempool ->
   (* Bake the file obtained through mempool, and note the balance diff it generates *)
@@ -337,8 +337,7 @@ let test_baker_external_operations =
   Protocol.register_test
     ~__FILE__
     ~title:"Baker external operations"
-    ~tags:[Tag.layer1; "baker"; "external"; "operations"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
+    ~tags:["baker"; "external"; "operations"]
   @@ fun protocol ->
   Log.info "Init" ;
   let node_args = Node.[Synchronisation_threshold 0] in
@@ -440,7 +439,7 @@ let test_baker_external_operations =
     JSON.(manager_ops |=> 0 |-> "contents" |=> 0 |-> "amount" |> as_int)
   in
   Check.(
-    (Tez.of_mutez_int amount = transfer_value)
+    (Tez.of_mumav_int amount = transfer_value)
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected baked block to have an amount of %R, got %L") ;
@@ -481,8 +480,8 @@ let test_baker_state_recorder protocol state_recorder =
   (* Obtain the "record_state" file name *)
   let* chain_id = Client.RPC.call client (RPC.get_chain_chain_id ()) in
   let chain_id =
-    Tezos_crypto.Hashed.Chain_id.to_short_b58check
-      (Tezos_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
+    Mavryk_crypto.Hashed.Chain_id.to_short_b58check
+      (Mavryk_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
   in
   let state_recorder_file = chain_id ^ "_baker_state" in
   let base_dir = Client.base_dir client in
@@ -500,16 +499,14 @@ let test_baker_state_recorder_memory =
   Protocol.register_test
     ~__FILE__
     ~title:"Baker state recorder - memory case"
-    ~tags:[Tag.layer1; "baker"; "state"; "recorder"; "memory"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
+    ~tags:["baker"; "state"; "recorder"; "memory"]
   @@ fun protocol -> test_baker_state_recorder protocol false
 
 let test_baker_state_recorder_filesystem =
   Protocol.register_test
     ~__FILE__
     ~title:"Baker state recorder - filesystem case"
-    ~tags:[Tag.layer1; "baker"; "state"; "recorder"; "filesystem"]
-    ~uses:(fun protocol -> [Protocol.baker protocol])
+    ~tags:["baker"; "state"; "recorder"; "filesystem"]
   @@ fun protocol -> test_baker_state_recorder protocol true
 
 let register ~protocols =

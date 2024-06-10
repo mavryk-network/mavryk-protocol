@@ -7,16 +7,20 @@ all: build test check
 
 .PHONY: build
 build:
-	@cargo build --release
+	@cargo build --release --target=riscv64gc-unknown-none-elf
+	@cargo build --release --target=riscv64gc-unknown-hermit --no-default-features --features crypto
 
 .PHONY: test
 test:
-	@# This executable compiles to RISC-V. It should be run in the RISC-V sandbox.
+	@cargo test --no-default-features
+
+.PHONY: run
+run:
+	@cargo run --no-default-features
 
 .PHONY: check
 check:
-	@cargo fmt --check
-	cargo clippy -- --deny warnings
+	# TODO: Clippy! (currently doesn't work)
 
 .PHONY: clean
 clean:

@@ -41,7 +41,6 @@ let test_bad_indentation_ill_typed =
     ~__FILE__
     ~title:"Bad indentation contract is ill-typed"
     ~tags
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let script =
@@ -55,7 +54,6 @@ let test_bad_indentation_hash =
     ~__FILE__
     ~title:"Bad indentation contract hash is expected"
     ~tags
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let script =
@@ -74,7 +72,6 @@ let test_formatted_typechecks =
     ~__FILE__
     ~title:"Formatted bad indentation contract is well-typed"
     ~tags
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* formatted_script =
@@ -93,7 +90,6 @@ let test_formatted_hash =
     ~__FILE__
     ~title:"Formatted bad indentation contract hash is expected"
     ~tags
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* formatted_script =

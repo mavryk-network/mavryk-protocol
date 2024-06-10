@@ -1,5 +1,5 @@
 
-./octez-client rpc get /chains/main/blocks/head/context/contracts
+./mavkit-client rpc get /chains/main/blocks/head/context/contracts
 [ "[CONTRACT_HASH]",
   "[CONTRACT_HASH]",
   "[CONTRACT_HASH]",
@@ -9,96 +9,96 @@
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]" ]
 
-./octez-client rpc get /chains/main/blocks/head/context/delegates
+./mavkit-client rpc get /chains/main/blocks/head/context/delegates
 [ "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]" ]
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "3800000000000",
   "delegate": "[PUBLIC_KEY_HASH]", "counter": "0" }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
 "3800000000000"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
 "0"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
 "[PUBLIC_KEY]"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
 "[PUBLIC_KEY_HASH]"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "0", "counter": "0" }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "100000000", "counter": "1" }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
 "100000000"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
 "1"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
 null
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/entrypoints'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/entrypoints'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/script'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/script'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/storage'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/storage'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "99999566", "delegate": "[PUBLIC_KEY_HASH]",
   "counter": "4" }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/balance'
 "99999566"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/counter'
 "4"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/manager_key'
 "[PUBLIC_KEY]"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/delegate'
 "[PUBLIC_KEY_HASH]"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/entrypoints'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/entrypoints'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/script'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/script'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/storage'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/storage'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]'
 { "balance": "0",
   "script":
     { "code":
@@ -114,20 +114,20 @@ Fatal error:
       "storage":
         { "prim": "Some", "args": [ { "string": "initial storage" } ] } } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/balance'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/balance'
 "0"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/counter'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/counter'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/manager_key'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/manager_key'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
+./mavkit-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
   "key": {
     "int": "0"
   },
@@ -137,10 +137,10 @@ Fatal error:
 }'
 null
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/entrypoints'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/entrypoints'
 { "entrypoints": {} }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/script'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/script'
 { "code":
     [ { "prim": "parameter", "args": [ { "prim": "string" } ] },
       { "prim": "storage",
@@ -152,10 +152,10 @@ null
               { "prim": "PAIR" } ] ] } ],
   "storage": { "prim": "Some", "args": [ { "string": "initial storage" } ] } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'
 { "prim": "Some", "args": [ { "string": "initial storage" } ] }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]'
 { "balance": "0",
   "script":
     { "code":
@@ -211,7 +211,7 @@ null
                       [ [ { "prim": "DROP" }, { "prim": "DUP" },
                           { "prim": "CAR" },
                           { "prim": "PUSH",
-                            "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+                            "args": [ { "prim": "mumav" }, { "int": "0" } ] },
                           { "prim": "NONE",
                             "args": [ { "prim": "key_hash" } ] },
                           { "prim": "CREATE_CONTRACT",
@@ -321,20 +321,20 @@ null
       "storage":
         { "prim": "Pair", "args": [ { "int": "4" }, { "int": "5" } ] } } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/balance'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/balance'
 "0"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/counter'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/counter'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/manager_key'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/manager_key'
 Fatal error:
   No service found at this URL
   
 
-./octez-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
+./mavkit-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
   "key": {
     "int": "0"
   },
@@ -344,7 +344,7 @@ Fatal error:
 }'
 null
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/entrypoints'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/entrypoints'
 { "entrypoints":
     { "rem_right": { "prim": "string" }, "rem_left": { "prim": "string" },
       "rem":
@@ -375,7 +375,7 @@ null
                 "args": [ { "prim": "string" }, { "prim": "nat" } ],
                 "annots": [ "%add_right" ] } ] } } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/script'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/script'
 { "code":
     [ { "prim": "storage",
         "args":
@@ -428,7 +428,7 @@ null
                   [ [ { "prim": "DROP" }, { "prim": "DUP" },
                       { "prim": "CAR" },
                       { "prim": "PUSH",
-                        "args": [ { "prim": "mutez" }, { "int": "0" } ] },
+                        "args": [ { "prim": "mumav" }, { "int": "0" } ] },
                       { "prim": "NONE", "args": [ { "prim": "key_hash" } ] },
                       { "prim": "CREATE_CONTRACT",
                         "args":
@@ -529,10 +529,10 @@ null
                       { "prim": "PAIR" } ] ] } ] ] } ],
   "storage": { "prim": "Pair", "args": [ { "int": "4" }, { "int": "5" } ] } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'
 { "prim": "Pair", "args": [ { "int": "4" }, { "int": "5" } ] }
 
-./octez-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
+./mavkit-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
   "key": {
     "string": "test"
   },
@@ -542,7 +542,7 @@ null
 }'
 null
 
-./octez-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
+./mavkit-client rpc post '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/big_map_get' with '{
   "key": {
     "string": "dup"
   },

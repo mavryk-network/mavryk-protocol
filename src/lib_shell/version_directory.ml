@@ -23,8 +23,8 @@
 (*****************************************************************************)
 
 let rpc_directory (node_version : Node_version.t) =
-  let dir = Tezos_rpc.Directory.empty in
-  Tezos_rpc.Directory.gen_register
+  let dir = Mavryk_rpc.Directory.empty in
+  Mavryk_rpc.Directory.gen_register
     dir
     Version_services.S.version
-    (fun () () () -> Tezos_rpc.Answer.return @@ (node_version : Node_version.t))
+    (fun () () () -> Mavryk_rpc.Answer.return @@ (node_version : Node_version.t))

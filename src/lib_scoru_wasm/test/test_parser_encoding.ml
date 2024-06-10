@@ -28,12 +28,12 @@
     -------
     Component:    Tree_encoding_decoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_parser_encoding.ml
-    Subject:      Parser encoding tests for the tezos-scoru-wasm library
+    Subject:      Parser encoding tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 module Parser = Binary_parser_encodings
 
 module Utils = struct
@@ -41,7 +41,7 @@ module Utils = struct
   module C = Chunked_byte_vector
   include Encodings_util
   include Test_encodings_util
-  include Tezos_tree_encoding
+  include Mavryk_tree_encoding
 end
 
 module Byte_vector = struct

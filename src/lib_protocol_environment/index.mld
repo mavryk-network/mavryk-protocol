@@ -1,7 +1,7 @@
-{0 Octez-proto-libs: octez protocol libraries}
+{0 Mavkit-proto-libs: mavkit protocol libraries}
 
 This is a package containing some libraries related to the Tezos protocol.
 
 It contains the following libraries:
 
-- {{!module-Tezos_protocol_environment}Tezos_protocol_environment}
+- {{!module-Mavryk_protocol_environment}Mavryk_protocol_environment}

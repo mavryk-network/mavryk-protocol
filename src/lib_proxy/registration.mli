@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_shell_services
+open Mavryk_shell_services
 
 (** The module type of a proxy environment. Modules of this type should be
     prepared protocol-side and registered here to become available to the
@@ -32,24 +32,24 @@ module type Proxy_sig = sig
   val protocol_hash : Protocol_hash.t
 
   (** RPCs provided by the protocol *)
-  val directory : Tezos_protocol_environment.rpc_context Tezos_rpc.Directory.t
+  val directory : Mavryk_protocol_environment.rpc_context Mavryk_rpc.Directory.t
 
   (** How to build the context to execute RPCs on. Arguments are:
 
       - A printer (for logging)
-      - An instance of [Tezos_rpc.Context.generic], to perform RPCs
-      - Whether [octez-client] or [tezos-proxy-server] is running
+      - An instance of [Mavryk_rpc.Context.generic], to perform RPCs
+      - Whether [mavkit-client] or [mavryk-proxy-server] is running
       - The chain for which the context is required
       - The block for which the context is required
     *)
   val initial_context :
     Proxy_getter.rpc_context_args ->
     Context_hash.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
   (** The [time_between_blocks] constant for the given block, if any. *)
   val time_between_blocks :
-    Tezos_rpc.Context.generic ->
+    Mavryk_rpc.Context.generic ->
     Block_services.chain ->
     Block_services.block ->
     int64 option tzresult Lwt.t
@@ -71,6 +71,6 @@ val get_all_registered : unit -> proxy_environment list
 
 (** Returns a proxy environment for the given protocol. *)
 val get_registered_proxy :
-  Tezos_client_base.Client_context.printer ->
+  Mavryk_client_base.Client_context.printer ->
   Protocol_hash.t ->
   proxy_environment tzresult Lwt.t

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type t = Resto_cohttp.Media_type.Make(Tezos_rpc.Encoding).t = {
+type t = Resto_cohttp.Media_type.Make(Mavryk_rpc.Encoding).t = {
   name : Cohttp.Accept.media_range;
   q : int option;
   pp : 'a. 'a Data_encoding.t -> Format.formatter -> string -> unit;
@@ -70,7 +70,7 @@ module Command_line : sig
   val pp_parameter : Format.formatter -> t -> unit
 
   val of_command_line :
-    t -> Resto_cohttp.Media_type.Make(Tezos_rpc__RPC_encoding).t list
+    t -> Resto_cohttp.Media_type.Make(Mavryk_rpc__RPC_encoding).t list
 
   val encoding : t Data_encoding.encoding
 end

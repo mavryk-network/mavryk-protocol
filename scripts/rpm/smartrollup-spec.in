@@ -1,7 +1,7 @@
 Name:		@PKG@
 Version:	@VERSION@
 Release:	@REVISION@
-Summary:	The Octez Smart Rollup daemons
+Summary:	The Mavkit Smart Rollup daemons
 
 Packager:   @MAINT@
 License:	MIT
@@ -17,14 +17,12 @@ Source0:	@FAKESRC@
 tar cpf - . | (cd $RPM_BUILD_ROOT && tar xpf -)
 
 %description
-The Octez Smart Rollup daemons
+The Mavkit Smart Rollup daemons
 
 %files
-%{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-*
-%config /etc/octez/smartrollup.conf
+%{_bindir}/mavkit-*
+%{_sysconfdir}/init.d/mavkit-*
+%config /etc/mavkit/smartrollup.conf
 
 %post 
-getent group tezos >/dev/null 2>&1 || groupadd tezos
-getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 /usr/bin/systemctl daemon-reload

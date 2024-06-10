@@ -30,8 +30,8 @@ At every block in the chain, a small amount of tez is minted and credited to the
 CPMM contract, and the CPMM's ``%default`` entrypoint is called to update the
 ``xtz_pool`` balance in its storage. The amount that is minted and sent to the
 CPMM contract is 1/16th of the rewards for a block of round 0 with all
-attestations; currently these rewards are 13.33 tez per block so the amount that is
-sent to the CPMM contract is 0.83 tez per block.
+attestations; currently these rewards are 20 tez per block so the amount that is
+sent to the CPMM contract is 1.25 tez per block.
 If the :ref:`adaptive issuance <adaptive_issuance_alpha>` feature were to be activated,
 the subsidy would be adjusted by the adaptive issuance coefficient.
 
@@ -67,20 +67,20 @@ For indicative purposes, if among the non-abstaining blocks a fraction
 reached after roughly ``2*(log(1-1/(2f)) / log(0.999))``
 non-abstaining blocks, about 1386 blocks if everyone signals, 1963
 blocks if 80% do, 3583 blocks if 60% do etc. Recall for comparison
-that assuming six blocks per minute there are 8640 blocks per day.
+that assuming four blocks per minute there are 5760 blocks per day.
 
-When producing blocks using Octez baking daemon ``octez-baker``, there
+When producing blocks using Mavkit baking daemon ``mavkit-baker``, there
 are two command-line options affecting toggle vote. The
 ``--liquidity-baking-toggle-vote <on|off|pass>`` option sets a static
 value to be used in each block. Note that this option must be placed
 **after** ``run`` on the command-line. Moreover, the path of a JSON
 file can be given to the ``--votefile <path>`` option
-e.g. ``octez-baker-<protocol codename> run with local node
-~/.tezos-node alice --liquidity-baking-toggle-vote on --votefile
+e.g. ``mavkit-baker-<protocol codename> run with local node
+~/.mavryk-node alice --liquidity-baking-toggle-vote on --votefile
 "per_block_votes.json"``, or placed in a default location:
 ``per_block_votes.json`` in the current working directory **or** in
 the client data directory
-(e.g. ``~/.tezos-client/per_block_votes.json``); the former location
+(e.g. ``~/.mavryk-client/per_block_votes.json``); the former location
 takes precedence. The content of the JSON file will be repeatedly
 submitted on each baked block, where ``per_block_votes.json`` contains
 just ``{"liquidity_baking_toggle_vote": "pass"}`` (to abstain),

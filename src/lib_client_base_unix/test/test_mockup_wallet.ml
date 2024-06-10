@@ -31,24 +31,24 @@
     Subject:      Unit tests of the Mockup wallet library
 *)
 
-open Tezos_mockup_commands.Mockup_wallet
-open Tezos_error_monad.Error_monad
-open Tezos_stdlib_unix
-open Tezos_client_base
-open Tezos_client_base_unix
+open Mavryk_mockup_commands.Mockup_wallet
+open Mavryk_error_monad.Error_monad
+open Mavryk_stdlib_unix
+open Mavryk_client_base
+open Mavryk_client_base_unix
 
 let default_bootstrap_accounts_names =
   List.map (fun i -> "bootstrap" ^ string_of_int i) (1 -- 5)
 
 let testable_public_key_hash =
   Alcotest.testable
-    Tezos_crypto.Signature.Public_key_hash.pp
-    Tezos_crypto.Signature.Public_key_hash.equal
+    Mavryk_crypto.Signature.Public_key_hash.pp
+    Mavryk_crypto.Signature.Public_key_hash.equal
 
 let testable_public_key =
   Alcotest.testable
-    Tezos_crypto.Signature.Public_key.pp
-    Tezos_crypto.Signature.Public_key.equal
+    Mavryk_crypto.Signature.Public_key.pp
+    Mavryk_crypto.Signature.Public_key.equal
 
 let testable_string_list_ignoring_order : string list Alcotest.testable =
   let (module StringListTestable) = Alcotest.(list string) in
@@ -111,7 +111,7 @@ let test_no_bootstrap_accounts_file_populates_defaults =
           in
           let () =
             Client_keys.register_signer
-              (module Tezos_signer_backends.Unencrypted)
+              (module Mavryk_signer_backends.Unencrypted)
           in
           let* () = populate io_wallet None in
           let* key_list = Client_keys.list_keys io_wallet in
@@ -163,7 +163,7 @@ let test_with_valid_bootstrap_accounts_file_populates =
           in
           let () =
             Client_keys.register_signer
-              (module Tezos_signer_backends.Unencrypted)
+              (module Mavryk_signer_backends.Unencrypted)
           in
           let* () =
             Lwt_utils_unix.Json.write_file
@@ -178,7 +178,7 @@ let test_with_valid_bootstrap_accounts_file_populates =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-mockup-commands"
+    "mavryk-mockup-commands"
     [
       ( "mockup_wallet",
         [

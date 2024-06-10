@@ -33,8 +33,8 @@ let error at category msg =
    exception. *)
 let trap_exn f =
   let open Lwt_result_syntax in
-  let open Tezos_webassembly_interpreter in
-  let open Tezos_webassembly_interpreter_extra in
+  let open Mavryk_webassembly_interpreter in
+  let open Mavryk_webassembly_interpreter_extra in
   let print_unknown ppf e =
     Format.fprintf ppf "Unknown exception: %s" (Printexc.to_string e)
   in
@@ -84,7 +84,7 @@ let find_encoding s =
   | None ->
       Option.map
         (fun f -> `Custom f)
-        (Octez_smart_rollup_wasm_debugger_plugin.Encodings.get s)
+        (Mavkit_smart_rollup_wasm_debugger_plugin.Encodings.get s)
 
 let integer_value_kind_to_string = function
   | `U16 -> "u16"

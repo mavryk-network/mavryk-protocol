@@ -59,6 +59,6 @@ let encoding : t Data_encoding.t =
 
 let pp ppf = function
   | Transaction {amount; destination = _; parameters = _} ->
-      Format.fprintf ppf "Transaction of %Ld tez" amount
+      Format.fprintf ppf "Transaction of %Ld mav" amount
 
 let unique = function Transaction _ -> true

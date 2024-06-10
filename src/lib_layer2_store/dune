@@ -2,22 +2,20 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_layer2_store)
- (public_name octez-l2-libs.layer2_store)
+ (name mavryk_layer2_store)
+ (public_name mavkit-l2-libs.layer2_store)
  (instrumentation (backend bisect_ppx))
  (libraries
   index
-  octez-libs.base
-  octez-internal-libs.irmin_pack
-  octez-internal-libs.irmin_pack.unix
-  octez-internal-libs.irmin
+  mavkit-libs.base
+  irmin-pack
+  irmin-pack.unix
+  irmin
   aches-lwt
-  octez-libs.stdlib-unix
-  octez-libs.tezos-context.encoding
-  octez-libs.context.sigs
-  octez-libs.tezos-context.helpers)
+  mavkit-libs.stdlib-unix
+  mavkit-libs.mavryk-context.encoding)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

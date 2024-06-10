@@ -1,8 +1,8 @@
-How to contribute to Octez
-==========================
+How to contribute to Mavkit
+===========================
 
 The purpose of this document is to help developers contribute to
-Octez.
+Mavkit.
 
 Introduction
 ------------
@@ -13,16 +13,16 @@ There are several ways to get involved with the codebase, and you may want to st
 Reporting issues
 ~~~~~~~~~~~~~~~~
 
-The simplest way to contribute to Octez is to report issues that you may
+The simplest way to contribute to Mavkit is to report issues that you may
 find with the software on `GitLab <https://gitlab.com/tezos/tezos/-/issues>`__.
 If you are unsure about an issue
-consult the :doc:`technical support sources <../global/support>`
+consult the :doc:`technical support sources <../introduction/support>`
 first and always make sure
 to search the existing issues before reporting a new one.
 Some information that are probably important to include in the description:
 the architecture (e.g. *ARM64*), the operating system (e.g. *Debian
 Stretch*), the network you are connected to (e.g. *Ghostnet*), the
-binary or component (e.g. *octez-node crashes* or *rpc X returns Y
+binary or component (e.g. *mavkit-node crashes* or *rpc X returns Y
 while Z was expected*).
 
 Other useful contributions consist in inspecting existing issues and adding details, suggesting workarounds, etc.
@@ -37,15 +37,15 @@ This periodic merging is implemented by a series of MRs named "the typo train", 
 Of course, all these commits will be reviewed before being integrated.
 The current edition of the typo train MR can be found in meta-issue :gl:`#2329`.
 
-If you don't have enough permissions to push to the branch above, you can  still make commits in your own fork of the Octez repository, and ask for them to be cherry-picked on the typo/train on the ``#documentation`` channel on the Tezos Dev Slack space.
+If you don't have enough permissions to push to the branch above, you can  still make commits in your own fork of the Mavkit repository, and ask for them to be cherry-picked on the typo/train on the ``#documentation`` channel on the Tezos Dev Slack space.
 Alternatively, you may of course create your own MRs for submitting your changes, without using the typo train.
 
 Other non-code contributions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you acquired a good expertise level in using, configuring, or overcoming problems with the various Octez executables, you may bring useful contributions by providing assistance to others via the different channels (Slack,  StackExchange, etc.) listed in the :doc:`technical support page <../global/support>`.
+If you acquired a good expertise level in using, configuring, or overcoming problems with the various Mavkit executables, you may bring useful contributions by providing assistance to others via the different channels (Slack,  StackExchange, etc.) listed in the :doc:`technical support page <../introduction/support>`.
 
-If you want to shape the future of Octez, you may consider contributing to Tezos Improvement Proposals (TZIPs), that specify new features or define standards. These are located in the `TZIP repo <https://gitlab.com/tezos/tzip/>`__.
+If you want to shape the future of Mavkit, you may consider contributing to Tezos Improvement Proposals (TZIPs), that specify new features or define standards. These are located in the `TZIP repo <https://gitlab.com/tezos/tzip/>`__.
 
 Going further
 ~~~~~~~~~~~~~
@@ -56,7 +56,7 @@ First, make sure that you are proficient enough in OCaml. The community
 website https://ocaml.org gives a few useful pointers for that. In
 particular, we use a lot of functors, and a few GADTs in the codebase,
 so you may want to make sure that you master these advanced concepts.
-For a more specific explanation of GADT usage in Octez you can check out
+For a more specific explanation of GADT usage in Mavkit you can check out
 :doc:`gadt`.
 
 Then, if you don’t know much about the Lwt library, that’s what you want
@@ -180,7 +180,7 @@ You can refer to the following table that summarizes how assignee and
     +-------+----------+-----------+------------+
 
 When all discussions are resolved, and the MR has got at least two
-approvals from Octez Merge Team members, the developer should squash
+approvals from Mavkit Merge Team members, the developer should squash
 any fix-up commits that were applied (remembering to edit the commit
 message appropriately). Then the developer (or anyone else when not possible) can assign the MR to the `Nomadic
 Marge-bot <https://gitlab.com/nomadic-margebot>`__, which will
@@ -189,7 +189,7 @@ automatically rebase the branch on top of master and finally merge it.
 Merge Queue Order
 -----------------
 
-By default, Marge-bot will merge MRs assigned to it in the assignment order. That is, the first MR assigned is the first that is merged. There are situations when it is desirable to modify this order. To achieve this, Marge-bot respects two priority labels, whose usage is reserved to the :doc:`Octez merge team <merge_team>`:
+By default, Marge-bot will merge MRs assigned to it in the assignment order. That is, the first MR assigned is the first that is merged. There are situations when it is desirable to modify this order. To achieve this, Marge-bot respects two priority labels, whose usage is reserved to the :doc:`Mavkit merge team <merge_team>`:
 
 - ``marge-priority::critical``: is reserved for MRs
   resolving critical production issues (e.g., fixing a blocked CI).
@@ -242,7 +242,7 @@ While working on your branch to prepare a Merge Request, make sure you respect t
    into account the impact on :ref:`RPC security <rpc_security>`.
 -  If you modify the user API (e.g. add or change a configuration parameter or
    a command-line option), update the corresponding documentation. In
-   particular, for configuration parameters of the Octez node, update the node
+   particular, for configuration parameters of the Mavkit node, update the node
    configuration :doc:`documentation <../user/node-configuration>` and the
    documentation of the modified component(s), usually referred by that page.
 -  If your MR introduces new dependencies, follow the
@@ -330,7 +330,7 @@ Therefore, when creating your MR, observe the following rules:
     be added before any push action is made on the MR.
 
     + ``ci--opam`` is for triggering the opam packaging tests pipeline.
-    + ``ci--docs`` is for testing some scripts in the documentation (e.g. Octez installation scenarios).
+    + ``ci--docs`` is for testing some scripts in the documentation (e.g. Mavkit installation scenarios).
     + ``ci--docker`` is for publishing the Docker image of the MR.
     + ``ci--arm64`` is for building on the ARM64 architecture.
     + ``ci--no-coverage`` disables the job ``unified_coverage`` (but it does not disable coverage instrumentation).
@@ -350,7 +350,7 @@ Therefore, when creating your MR, observe the following rules:
     as described above in the :ref:`MR workflow <mr_workflow>`, in order
     to ease the reviewers' task.
   + ``Allow commits from members who can merge to the target branch.``
-    This option is useful to allow members of the :doc:`Octez merge team <merge_team>`, who are
+    This option is useful to allow members of the :doc:`Mavkit merge team <merge_team>`, who are
     not developers in your project, to commit to your branch.
     It helps to rebase and propose fixes.
 
@@ -463,7 +463,7 @@ As mentioned previously, it is the responsibility of authors to find reviewers.
 To find reviewers, either:
 
   - Advertize your merge request on the ``#mr-advertizing`` channel of
-    the `tezos-dev <https://tezos-dev.slack.com/>`_ Slack. Good advertisement
+    the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack. Good advertisement
     consists of a link to the MR and a one sentence summary.
   - Look at authors of the code you are modifying using
     `git blame <https://git-scm.com/docs/git-blame>`_.
@@ -556,7 +556,7 @@ dependency, additional steps must also be followed.
 * the Rust dependencies are located in the GitLab repository `tezos-rust-libs <https://gitlab.com/tezos/tezos-rust-libs>`_ and the instructions are listed there.
 
 For others, there is currently no dedicated guide. Do not hesitate to ask for
-help on the ``#devteam`` channel on the `tezos-dev <https://tezos-dev.slack.com/>`_ Slack.
+help on the ``#devteam`` channel on the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack.
 
 .. _protocol_mr:
 
@@ -577,7 +577,7 @@ These directories are called *protocol snapshots*.
 The hash of each active or candidate protocol is computed from the directory
 ``src/proto_0*/lib_protocol/``, so every change in these directories
 is forbidden.
-However, the protocol snapshots contain other subdirectories than the frozen ``lib_protocol/``, implementing protocol-dependent code. For instance, ``lib_client/`` implements commands in the Octez client that can invoke protocol-dependent functionalities, such as transfers between accounts.
+However, the protocol snapshots contain other subdirectories than the frozen ``lib_protocol/``, implementing protocol-dependent code. For instance, ``lib_client/`` implements commands in the Mavkit client that can invoke protocol-dependent functionalities, such as transfers between accounts.
 
 Thereby, if your MR changes code in the protocol snapshot directories (outside the frozen ``lib_protocol/``), you may consider patching the corresponding code for the other protocols as well (at least the ones which are still in use), when applicable.
 
@@ -603,25 +603,25 @@ Code Review
 -----------
 
 All code is peer reviewed before getting committed in the
-master branch by the :doc:`Octez merge team <merge_team>`.
+master branch by the :doc:`Mavkit merge team <merge_team>`.
 Briefly, a code review is a discussion between two or
 more developers about changes to the code to address an issue.
 
 Merge Request Approvals
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Two approvals from different Octez :doc:`Octez merge team <merge_team>` members are required for merge
+Two approvals from different Mavkit :doc:`Mavkit merge team <merge_team>` members are required for merge
 requests to be merged. Both approvals must result from independent, thorough
 reviews. After both reviews, the second approver will also typically merge if the request is not a draft
 (which otherwise means that the author has still some cleaning up to do).
 
-However, for less critical parts of the code, an Octez merge team member may
-choose to trust the review of a developer who is not a member of the Octez
-merge team. In that case, the Octez merge team member may choose to count that
+However, for less critical parts of the code, an Mavkit merge team member may
+choose to trust the review of a developer who is not a member of the Mavkit
+merge team. In that case, the Mavkit merge team member may choose to count that
 review as their own, effectively "converting" the other developer's passing
-review into an approval. This may be done even when the Octez merge team
+review into an approval. This may be done even when the Mavkit merge team
 member is the author of the merge request. A second independent review from an
-Octez merge team member is still required, of course.
+Mavkit merge team member is still required, of course.
 
 For this reason, if you make a partial review, for instance if you only
 reviewed part of the code, or only the general design, it is good practice

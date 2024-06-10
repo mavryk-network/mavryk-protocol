@@ -2,24 +2,24 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_p2p_test_common)
- (public_name octez-shell-libs.p2p_test_common)
+ (name mavryk_p2p_test_common)
+ (public_name mavkit-shell-libs.p2p_test_common)
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  octez-shell-libs.p2p
-  octez-libs.tezos-p2p-services)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavkit-shell-libs.p2p
+  mavkit-libs.mavryk-p2p-services)
  (flags
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_p2p
-  -open Tezos_p2p_services))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_p2p
+  -open Mavryk_p2p_services))

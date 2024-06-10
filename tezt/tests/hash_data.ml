@@ -34,19 +34,19 @@
                first to remove unused files in case some paths change.
    Subject: Tests of the client's `hash data ... of type` command.
 
-            Regression capture the output of octez-client calls and compare it
+            Regression capture the output of mavkit-client calls and compare it
             with the output from the previous run. The test passes only if the
             outputs match exactly. It is important that return values
             of `hash data` remain constant over time.
 *)
 
 (* These hooks must be attached to every process that should be captured for
-   regression testing. Not plugged for negative tests, since octez-client
+   regression testing. Not plugged for negative tests, since mavkit-client
    shows its manpage, which will change overtime. *)
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 (** Test.
-    Call `octez-client hash data ... of type ...` with data on which
+    Call `mavkit-client hash data ... of type ...` with data on which
     it must return 0. In addition, regression is activated.
     to check that returned values remain constant over time. *)
 let test_good_hash_data =
@@ -54,7 +54,6 @@ let test_good_hash_data =
     ~__FILE__
     ~title:"hash data ... of type ... (good)"
     ~tags:["hash"; "data"; "mockup"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let data_n_type =
@@ -84,9 +83,9 @@ let test_good_hash_data =
       (* misc *)
       ("\"KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq\"", "address");
       ("\"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%entrypoint\"", "address");
-      ("\"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx\"", "address");
-      ("\"tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc\"", "address");
-      ("\"tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA\"", "address");
+      ("\"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe\"", "address");
+      ("\"mv2RvsYL9iZP3NSn2j2K7sd2iwT3mgHoivd2\"", "address");
+      ("\"mv3UPFVvcU21sXSVeCGq8zcdecj2DK9M37th\"", "address");
       ("0", "bls12_381_fr");
       ("1", "bls12_381_fr");
       ("0x01", "bls12_381_fr");
@@ -101,8 +100,8 @@ let test_good_hash_data =
       ("\"NetXynUjJNZm7wi\"", "chain_id");
       ("\"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav\"", "key");
       ("\"edpkuJqtDcA2m2muMxViSM47MPsGQzmyjnNTawUPqR8vZTAMcx61ES\"", "key");
-      ("\"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx\"", "key_hash");
-      ("\"tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k\"", "key_hash");
+      ("\"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe\"", "key_hash");
+      ("\"mv1KkvXNEpMH4Vri47MY1YenGhb6ZA4ew1F2\"", "key_hash");
       ("{ }", "lambda unit unit");
       ("{ PUSH nat 1; ADD }", "lambda nat nat");
       ("{}", "list unit");
@@ -110,9 +109,9 @@ let test_good_hash_data =
       ("{ Some 10 ; None }", "list (option int)");
       ("{}", "map nat unit");
       ("{ Elt 0 0xCB ; Elt 1 0xAB }", "map nat bytes");
-      ("0", "mutez");
-      ("1", "mutez");
-      ("99999", "mutez");
+      ("0", "mumav");
+      ("1", "mumav");
+      ("99999", "mumav");
       ("0", "nat");
       ("1", "nat");
       ("99999", "nat");
@@ -144,14 +143,13 @@ let test_good_hash_data =
   Lwt_list.iter_s hash_data data_n_type
 
 (** Test.
-    Call `octez-client hash data ... of type ...` with data on which it
+    Call `mavkit-client hash data ... of type ...` with data on which it
     must fail (non-zero exit code). *)
 let test_bad_hash_data =
   Protocol.register_regression_test
     ~__FILE__
     ~title:"hash data ... of type ... (bad)"
     ~tags:["hash"; "data"; "mockup"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let data_n_type =
@@ -171,7 +169,7 @@ let test_bad_hash_data =
   Lwt_list.iter_s hash_data data_n_type
 
 (** Test.
-    Call `octez-client hash data ... of type ...` with data on which it
+    Call `mavkit-client hash data ... of type ...` with data on which it
     fails in a somewhat unstructued manner, and prints in manpage.
 
     We therefore do not do regression on this test, because
@@ -181,7 +179,6 @@ let test_ugly_hash_data =
     ~__FILE__
     ~title:"hash data ... of type ... (ugly)"
     ~tags:["hash"; "data"; "mockup"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let data_n_type =

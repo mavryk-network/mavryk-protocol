@@ -32,10 +32,6 @@ pub mod blocks {
         /// comparing to stored current block number
         #[error("Non sequential block levels. Current: {0}, new one: {1}")]
         NonSequentialBlockLevels(U256, U256),
-
-        /// Some blockhash in storage has wrong number of bytes
-        #[error("Malformed blockhash. Number of bytes: {0}")]
-        MalformedBlockHash(usize),
     }
 
     impl From<RuntimeError> for EvmBlockStorageError {
@@ -121,12 +117,8 @@ pub mod blocks {
     ) -> Result<H256, EvmBlockStorageError> {
         let block_path = to_block_hash_path(block_number)?;
         let block_hash = host.store_read(&block_path, 0, 32)?;
-
-        if block_hash.len() == 32 {
-            Ok(H256::from_slice(&block_hash[..]))
-        } else {
-            Err(EvmBlockStorageError::MalformedBlockHash(block_hash.len()))
-        }
+        // TODO consider more accurately
+        Ok(H256::from_slice(&block_hash[..]))
     }
 
     fn to_block_hash_path(block_number: U256) -> Result<OwnedPath, EvmBlockStorageError> {
@@ -170,7 +162,7 @@ pub mod blocks {
         use crypto::hash::BlockHash;
         use std::iter::Map;
         use std::ops::RangeFrom;
-        use tezos_smart_rollup_encoding::timestamp::Timestamp;
+        use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
         type BlockIter = Map<RangeFrom<i32>, fn(i32) -> (BlockHash, Timestamp)>;
 
@@ -179,10 +171,10 @@ pub mod blocks {
             (1_i32..).map(|level| {
                 let start_timestamp: i64 = 1674236056;
                 let level_bytes: Vec<u8> = Vec::from(level.to_be_bytes());
-                let tezos_hash = BlockHash::try_from(level_bytes.repeat(8))
+                let mavryk_hash = BlockHash::try_from(level_bytes.repeat(8))
                     .expect("Hash expected to be valid");
                 let ts = Timestamp::from(start_timestamp + 30000 * i64::from(level));
-                (tezos_hash, ts)
+                (mavryk_hash, ts)
             })
         }
     }
@@ -193,7 +185,7 @@ pub mod blocks {
         use super::*;
         use primitive_types::U256;
         use sha3::{Digest, Keccak256};
-        use tezos_smart_rollup_mock::MockHost;
+        use mavryk_smart_rollup_mock::MockHost;
 
         #[test]
         fn blocks_cleaned_up() {

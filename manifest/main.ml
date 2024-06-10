@@ -75,8 +75,6 @@ let alcotest = external_lib ~js_compatible:true "alcotest" V.(at_least "1.5.0")
 
 let astring = external_lib ~js_compatible:true "astring" V.True
 
-let bheap = external_lib "bheap" V.True
-
 let bigarray_compat = external_lib ~js_compatible:true "bigarray-compat" V.True
 
 let bigstring = external_lib ~js_compatible:true "bigstring" V.True
@@ -90,17 +88,9 @@ let camlzip = external_lib "camlzip" V.(at_least "1.11" && less_than "1.12")
 
 let caqti = external_lib "caqti" V.True
 
-let caqti_lwt = external_lib "caqti-lwt" V.(at_least "2.0.1")
-
-let caqti_lwt_unix = external_sublib caqti_lwt "caqti-lwt.unix"
+let caqti_lwt = external_lib "caqti-lwt" V.True
 
 let caqti_dynload = external_lib "caqti-dynload" V.True
-
-(* Checkseum is an irmin-pack dependency. Version 0.5.0 is known to be
-   bugged and this release was disabled. *)
-let checkseum = external_lib "checkseum" (V.different_from "0.5.0")
-
-let checkseum_ocaml = external_sublib checkseum "checkseum.ocaml"
 
 let cmdliner = external_lib "cmdliner" V.(at_least "1.1.0")
 
@@ -137,8 +127,6 @@ let data_encoding =
     "data-encoding"
     V.(at_least "0.7.1" && less_than "1.0.0")
 
-let digestif = external_lib "digestif" V.True
-
 let dune_configurator = external_lib "dune-configurator" V.True
 
 let dynlink = external_lib "dynlink" V.True ~opam:""
@@ -169,8 +157,6 @@ let hex = external_lib ~js_compatible:true "hex" V.(at_least "1.3.0")
 
 let index = external_lib "index" V.(at_least "1.6.0" && less_than "1.7.0")
 
-let index_unix = external_sublib index "index.unix"
-
 let integers = external_lib ~js_compatible:true "integers" V.True
 
 let integers_stubs_js =
@@ -184,13 +170,20 @@ let ipaddr =
 
 let ipaddr_unix = external_sublib ipaddr "ipaddr.unix"
 
+let irmin = external_lib "irmin" V.(at_least "3.7.2" && less_than "3.8.0")
+
+let irmin_pack =
+  external_lib "irmin-pack" V.(at_least "3.7.2" && less_than "3.8.0")
+
+let irmin_pack_unix = external_sublib irmin_pack "irmin-pack.unix"
+
+let irmin_pack_mem = external_sublib irmin_pack "irmin-pack.mem"
+
 let json_data_encoding =
   external_lib
     ~js_compatible:true
     "json-data-encoding"
     V.(at_least "0.12" && less_than "0.13")
-
-let jsonm = external_lib "jsonm" V.True
 
 let logs = external_lib "logs" V.True
 
@@ -212,14 +205,15 @@ let lwt_unix = external_sublib lwt "lwt.unix"
 
 let lwt_watcher = external_lib "lwt-watcher" V.(exactly "0.2")
 
-let mtime = external_lib ~js_compatible:true "mtime" V.(at_least "2.0.0")
+let mtime =
+  external_lib
+    ~js_compatible:true
+    "mtime"
+    V.(at_least "1.4.0" && less_than "2.0.0")
 
 let mtime_clock_os = external_sublib mtime "mtime.clock.os"
 
 let ocaml_migrate_parsetree = external_lib "ocaml-migrate-parsetree" V.True
-
-let ocaml_protoc_compiler =
-  external_lib "ocaml-protoc-plugin" V.(at_least "4.5.0")
 
 let ocamlformat = opam_only "ocamlformat" V.(exactly "0.24.1")
 
@@ -233,13 +227,7 @@ let ocplib_endian_bigstring =
 let ocplib_ocamlres =
   external_lib ~opam:"ocp-ocamlres" "ocplib-ocamlres" V.(at_least "0.4")
 
-let optint = external_lib "optint" V.True
-
 let ppx_expect = inline_tests_backend (external_lib "ppx_expect" V.True)
-
-let ppxlib = external_lib "ppxlib" V.True
-
-let ppxlib_metaquot = external_sublib ppxlib "ppxlib.metaquot"
 
 let ptime = external_lib ~js_compatible:true "ptime" V.(at_least "1.1.0")
 
@@ -250,8 +238,6 @@ let ppx_deriving = external_lib "ppx_deriving" V.True
 let ppx_deriving_show = external_sublib ppx_deriving "ppx_deriving.show"
 
 let ppx_repr = external_lib "ppx_repr" V.(at_least "0.6.0")
-
-let ppx_repr_lib = external_sublib ppx_repr "ppx_repr.lib"
 
 let ppx_sexp_conv = external_lib "ppx_sexp_conv" V.True
 
@@ -279,7 +265,7 @@ let qcheck_alcotest =
 
 let qcheck_core = external_lib "qcheck-core" V.True
 
-let re = external_lib ~js_compatible:true "re" V.(at_least "1.10.0")
+let re = external_lib ~js_compatible:true "re" V.(at_least "1.9.0")
 
 let repr = external_lib "repr" V.True
 
@@ -302,8 +288,6 @@ let resto_directory =
   external_lib ~js_compatible:true "resto-directory" resto_version
 
 let ringo = external_lib ~js_compatible:true "ringo" V.(at_least "1.0.0")
-
-let rusage = external_lib "rusage" V.True
 
 let aches = external_lib ~js_compatible:true "aches" V.(at_least "1.0.0")
 
@@ -329,10 +313,10 @@ let tar = external_lib "tar" V.True
 
 let tar_unix = external_lib "tar-unix" V.(at_least "2.0.1" && less_than "3.0.0")
 
-let tezos_rust_lib =
+let mavryk_rust_lib =
   opam_only ~can_vendor:false "tezos-rust-libs" V.(exactly "1.6")
 
-let tezos_sapling_parameters =
+let mavryk_sapling_parameters =
   opam_only ~can_vendor:false "tezos-sapling-parameters" V.(at_least "1.1.0")
 
 let tls_lwt = external_lib "tls-lwt" V.(at_least "0.16.0")
@@ -365,13 +349,13 @@ let zarith =
 
 let zarith_stubs_js = external_lib ~js_compatible:true "zarith_stubs_js" V.True
 
-let ledgerwallet_tezos = external_lib "ledgerwallet-tezos" V.(at_least "0.4.0")
+let ledgerwallet_tezos = external_lib "ledgerwallet-tezos" V.(at_least "0.3.0")
 
 (* This modules aims to define the list of packages versions that
    generate conflicts. *)
 module Conflicts = struct
   (* Checkseum is an irmin-pack dependency, and thus a transitive
-     dependency for Octez. Version 0.5.0 is known to be bugged and
+     dependency for Mavkit. Version 0.5.0 is known to be bugged and
      this release was disabled. *)
   let checkseum = external_lib "checkseum" V.(exactly "0.5.0")
 
@@ -382,7 +366,7 @@ end
 
 let () =
   List.iter
-    (add_dep_to_profile "octez-dev-deps")
+    (add_dep_to_profile "mavkit-dev-deps")
     [
       external_lib "merlin" V.True;
       external_lib "odoc" V.True;
@@ -399,18 +383,18 @@ let () =
 *)
 let distributed_internal =
   public_lib
-    "octez-distributed-internal"
+    "mavkit-distributed-internal"
     ~internal_name:"distributed"
     ~path:"src/lib_distributed_internal/src"
-    ~synopsis:"Fork of distributed. Use for Octez only"
+    ~synopsis:"Fork of distributed. Use for Mavkit only"
     ~deps:[unix]
 
 let distributed_internal_lwt =
   public_lib
-    "octez-distributed-lwt-internal"
+    "mavkit-distributed-lwt-internal"
     ~internal_name:"distributed_lwt"
     ~path:"src/lib_distributed_internal/lwt"
-    ~synopsis:"Fork of distributed-lwt. Use for Octez only"
+    ~synopsis:"Fork of distributed-lwt. Use for Mavkit only"
     ~deps:[unix; distributed_internal; lwt; lwt_unix; logs_lwt]
 
 let tezt_lib =
@@ -428,9 +412,6 @@ let tezt_core_lib =
     ~main_module:"Tezt_core"
 
 let tezt_js_lib = external_sublib tezt_lib ~js_compatible:true "tezt.js"
-
-let tezt_json_lib =
-  external_sublib tezt_lib ~js_compatible:true "tezt.json" ~main_module:"JSON"
 
 let tezt ~opam ~path ?js_compatible ?modes ?(deps = []) ?dep_globs
     ?dep_globs_rec ?dep_files ?opam_with_test ?dune_with_test ?synopsis
@@ -457,96 +438,79 @@ let tezt ~opam ~path ?js_compatible ?modes ?(deps = []) ?dep_globs
     ?preprocessor_deps
     l
 
-(* The main module [Octez_alcotest] is [open_] so that one can replace
+(* The main module [Mavkit_alcotest] is [open_] so that one can replace
    the [alcotest] dependency with [alcotezt] and it just works.
    If we use [~internal_name:"alcotest"] here, it would also work,
    except in cases where the real Alcotest is also a dependency. *)
 let alcotezt =
   public_lib
-    "octez-alcotezt"
+    "mavkit-alcotezt"
     ~path:"tezt/lib_alcotezt"
       (* TODO: https://gitlab.com/tezos/tezos/-/issues/4727
 
-         we mark "octez-alcotezt" as released but the real solution is to
+         we mark "mavkit-alcotezt" as released but the real solution is to
          modify the manifest to add build instructions for dune to be
          used `with-test` *)
     ~release_status:Released
     ~synopsis:
-      "Provide the interface of Alcotest for Octez, but with Tezt as backend"
+      "Provide the interface of Alcotest for Mavkit, but with Tezt as backend"
     ~js_compatible:true
     ~deps:[tezt_core_lib]
   |> open_
 
-(* Container of the registered sublibraries of [octez-libs] *)
-let registered_octez_libs : Sub_lib.container = Sub_lib.make_container ()
+(* Container of the registered sublibraries of [mavkit-libs] *)
+let registered_mavkit_libs : Sub_lib.container = Sub_lib.make_container ()
 
-(* Container of the registered sublibraries of [octez-shell-libs] *)
-let registered_octez_shell_libs : Sub_lib.container = Sub_lib.make_container ()
+(* Container of the registered sublibraries of [mavkit-shell-libs] *)
+let registered_mavkit_shell_libs : Sub_lib.container = Sub_lib.make_container ()
 
-(* Container of the registered sublibraries of [octez-proto-libs] *)
-let registered_octez_proto_libs : Sub_lib.container = Sub_lib.make_container ()
+(* Container of the registered sublibraries of [mavkit-proto-libs] *)
+let registered_mavkit_proto_libs : Sub_lib.container = Sub_lib.make_container ()
 
-(* Container of the registered sublibraries of [octez-l2-libs] *)
-let registered_octez_l2_libs : Sub_lib.container = Sub_lib.make_container ()
+(* Container of the registered sublibraries of [mavkit-l2-libs] *)
+let registered_mavkit_l2_libs : Sub_lib.container = Sub_lib.make_container ()
 
-(* Container of the registered sublibraries of [octez-internal-libs] *)
-let octez_internal_libs : Sub_lib.container = Sub_lib.make_container ()
-
-(* Registers a sub-library in [octez-libs] packages.
-   This package should contain all Octez basic libraries. *)
-let octez_lib : Sub_lib.maker =
+(* Registers a sub-library in [mavkit-libs] packages.
+   This package should contain all Mavkit basic libraries. *)
+let mavkit_lib : Sub_lib.maker =
   Sub_lib.sub_lib
     ~package_synopsis:
-      "A package that contains multiple base libraries used by the Octez suite"
-    ~container:registered_octez_libs
-    ~package:"octez-libs"
+      "A package that contains multiple base libraries used by the Mavkit suite"
+    ~container:registered_mavkit_libs
+    ~package:"mavkit-libs"
 
-(* Registers a sub-library in the [octez-shell-libs] package.
+(* Registers a sub-library in the [mavkit-shell-libs] package.
    This package should contain all the libraries related to the shell. *)
-let octez_shell_lib : Sub_lib.maker =
+let mavkit_shell_lib : Sub_lib.maker =
   Sub_lib.sub_lib
-    ~package_synopsis:"Octez shell libraries"
-    ~container:registered_octez_shell_libs
-    ~package:"octez-shell-libs"
+    ~package_synopsis:"Mavkit shell libraries"
+    ~container:registered_mavkit_shell_libs
+    ~package:"mavkit-shell-libs"
 
-(* Registers a sub-library in the [octez-proto-libs] package.
+(* Registers a sub-library in the [mavkit-proto-libs] package.
    This package should contain all the libraries related to the protocol. *)
-let octez_proto_lib : Sub_lib.maker =
+let mavkit_proto_lib : Sub_lib.maker =
   Sub_lib.sub_lib
-    ~package_synopsis:"Octez protocol libraries"
-    ~container:registered_octez_proto_libs
-    ~package:"octez-proto-libs"
+    ~package_synopsis:"Mavkit protocol libraries"
+    ~container:registered_mavkit_proto_libs
+    ~package:"mavkit-proto-libs"
 
-(* Registers a sub-library in the [octez-l2-libs] package.
+(* Registers a sub-library in the [mavkit-l2-libs] package.
    This package should contain all the libraries related to layer 2. *)
-let octez_l2_lib : Sub_lib.maker =
+let mavkit_l2_lib : Sub_lib.maker =
   Sub_lib.sub_lib
-    ~package_synopsis:"Octez layer2 libraries"
-    ~container:registered_octez_l2_libs
-    ~package:"octez-l2-libs"
-
-(* Registers a sub-library in the [octez-internal-libs] package.
-
-   This package should contain Octez dependencies that are under the
-   ISC license (as of December 2023, these are exactly the Irmin
-   packages). *)
-let octez_internal_lib =
-  Sub_lib.sub_lib
-    ~package_synopsis:
-      "A package that contains some libraries used by the Octez suite"
-    ~container:octez_internal_libs
-    ~package:"octez-internal-libs"
-    ~license:"ISC"
-    ~extra_authors:["Thomas Gazagnaire"; "Thomas Leonard"; "Craig Ferguson"]
+    ~package_synopsis:"Mavkit layer2 libraries"
+    ~container:registered_mavkit_l2_libs
+    ~package:"mavkit-l2-libs"
 
 let tezt_wrapper =
-  octez_lib "tezt-wrapper" ~path:"tezt/lib_wrapper" ~deps:[tezt_lib]
+  mavkit_lib "tezt-wrapper" ~path:"tezt/lib_wrapper" ~deps:[tezt_lib]
 
-let octez_test_helpers =
-  octez_lib
+let mavkit_test_helpers =
+  mavkit_lib
     "test-helpers"
     ~path:"src/lib_test"
-    ~internal_name:"tezos_test_helpers"
+    ~internal_name:"mavryk_test_helpers"
     ~deps:[uri; fmt; qcheck_alcotest; lwt; pure_splitmix; data_encoding]
     ~js_compatible:true
     ~linkall:true
@@ -559,24 +523,24 @@ let octez_test_helpers =
           alias_rule "runtest_js" ~action:(S "progn");
         ]
 
-let octez_expect_helper =
-  octez_lib
+let mavkit_expect_helper =
+  mavkit_lib
     "expect-helper"
-    ~internal_name:"tezos_expect_helper"
+    ~internal_name:"mavryk_expect_helper"
     ~path:"src/lib_expect_helper"
 
-let _octez_expect_helper_test =
+let _mavkit_expect_helper_test =
   private_lib
-    "tezos_expect_helper_test"
-    ~opam:"octez-libs"
+    "mavryk_expect_helper_test"
+    ~opam:"mavkit-libs"
     ~path:"src/lib_expect_helper/test"
-    ~deps:[octez_expect_helper]
+    ~deps:[mavkit_expect_helper]
     ~inline_tests:ppx_expect
 
-let octez_stdlib =
-  octez_lib
+let mavkit_stdlib =
+  mavkit_lib
     "stdlib"
-    ~internal_name:"tezos_stdlib"
+    ~internal_name:"mavryk_stdlib"
     ~path:"src/lib_stdlib"
     ~synopsis:"Yet-another local-extension of the OCaml standard library"
     ~deps:[hex; zarith; zarith_stubs_js; lwt; aches]
@@ -586,7 +550,7 @@ let octez_stdlib =
     ~inline_tests:ppx_expect
     ~foreign_stubs:{language = C; flags = []; names = ["tzBytes_c"]}
 
-let _octez_stdlib_tests =
+let _mavkit_stdlib_tests =
   tezt
     [
       "test_bits";
@@ -601,19 +565,19 @@ let _octez_stdlib_tests =
     ]
     ~path:"src/lib_stdlib/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modes:[Native; JS]
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         alcotezt;
         bigstring;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
       ]
     ~js_compatible:true
 
-let _octez_stdlib_test_unix =
+let _mavkit_stdlib_test_unix =
   tezt
     [
       "test_lwt_pipe";
@@ -623,51 +587,51 @@ let _octez_stdlib_test_unix =
       "test_lwt_utils";
     ]
     ~path:"src/lib_stdlib/test-unix"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         alcotezt;
         bigstring;
         lwt_unix;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
       ]
 
-let octez_lwt_result_stdlib_bare_functor_outputs =
-  octez_lib
+let mavkit_lwt_result_stdlib_bare_functor_outputs =
+  mavkit_lib
     "lwt-result-stdlib.bare.functor-outputs"
     ~path:"src/lib_lwt_result_stdlib/bare/functor_outputs"
     ~internal_name:"bare_functor_outputs"
     ~js_compatible:true
     ~deps:[lwt]
 
-let octez_lwt_result_stdlib_bare_sigs =
-  octez_lib
+let mavkit_lwt_result_stdlib_bare_sigs =
+  mavkit_lib
     "lwt-result-stdlib.bare.sigs"
     ~path:"src/lib_lwt_result_stdlib/bare/sigs"
     ~internal_name:"bare_sigs"
     ~js_compatible:true
-    ~deps:[seqes; lwt; octez_lwt_result_stdlib_bare_functor_outputs]
+    ~deps:[seqes; lwt; mavkit_lwt_result_stdlib_bare_functor_outputs]
 
-let octez_lwt_result_stdlib_bare_structs =
-  octez_lib
+let mavkit_lwt_result_stdlib_bare_structs =
+  mavkit_lib
     "lwt-result-stdlib.bare.structs"
     ~path:"src/lib_lwt_result_stdlib/bare/structs"
     ~internal_name:"bare_structs"
     ~js_compatible:true
-    ~deps:[seqes; lwt; octez_lwt_result_stdlib_bare_sigs]
+    ~deps:[seqes; lwt; mavkit_lwt_result_stdlib_bare_sigs]
 
-let octez_lwt_result_stdlib_traced_functor_outputs =
-  octez_lib
+let mavkit_lwt_result_stdlib_traced_functor_outputs =
+  mavkit_lib
     "lwt-result-stdlib.traced.functor-outputs"
     ~path:"src/lib_lwt_result_stdlib/traced/functor_outputs"
     ~internal_name:"traced_functor_outputs"
     ~js_compatible:true
-    ~deps:[lwt; octez_lwt_result_stdlib_bare_sigs]
+    ~deps:[lwt; mavkit_lwt_result_stdlib_bare_sigs]
 
-let octez_lwt_result_stdlib_traced_sigs =
-  octez_lib
+let mavkit_lwt_result_stdlib_traced_sigs =
+  mavkit_lib
     "lwt-result-stdlib.traced.sigs"
     ~path:"src/lib_lwt_result_stdlib/traced/sigs"
     ~internal_name:"traced_sigs"
@@ -675,13 +639,13 @@ let octez_lwt_result_stdlib_traced_sigs =
     ~deps:
       [
         lwt;
-        octez_lwt_result_stdlib_bare_sigs;
-        octez_lwt_result_stdlib_bare_structs;
-        octez_lwt_result_stdlib_traced_functor_outputs;
+        mavkit_lwt_result_stdlib_bare_sigs;
+        mavkit_lwt_result_stdlib_bare_structs;
+        mavkit_lwt_result_stdlib_traced_functor_outputs;
       ]
 
-let octez_lwt_result_stdlib_traced_structs =
-  octez_lib
+let mavkit_lwt_result_stdlib_traced_structs =
+  mavkit_lib
     "lwt-result-stdlib.traced.structs"
     ~path:"src/lib_lwt_result_stdlib/traced/structs"
     ~internal_name:"traced_structs"
@@ -689,45 +653,45 @@ let octez_lwt_result_stdlib_traced_structs =
     ~deps:
       [
         lwt;
-        octez_lwt_result_stdlib_traced_sigs;
-        octez_lwt_result_stdlib_bare_structs;
+        mavkit_lwt_result_stdlib_traced_sigs;
+        mavkit_lwt_result_stdlib_bare_structs;
       ]
 
-let octez_lwt_result_stdlib =
-  octez_lib
+let mavkit_lwt_result_stdlib =
+  mavkit_lib
     "lwt-result-stdlib"
     ~path:"src/lib_lwt_result_stdlib"
-    ~internal_name:"tezos_lwt_result_stdlib"
+    ~internal_name:"mavryk_lwt_result_stdlib"
     ~synopsis:"error-aware stdlib replacement"
     ~js_compatible:true
     ~documentation:
       Dune.
         [
-          [S "package"; S "octez-libs"];
-          [S "mld_files"; S "tezos_lwt_result_stdlib"];
+          [S "package"; S "mavkit-libs"];
+          [S "mld_files"; S "mavryk_lwt_result_stdlib"];
         ]
     ~deps:
       [
         lwt;
-        octez_lwt_result_stdlib_bare_sigs;
-        octez_lwt_result_stdlib_bare_structs;
-        octez_lwt_result_stdlib_traced_sigs;
-        octez_lwt_result_stdlib_traced_structs;
+        mavkit_lwt_result_stdlib_bare_sigs;
+        mavkit_lwt_result_stdlib_bare_structs;
+        mavkit_lwt_result_stdlib_traced_sigs;
+        mavkit_lwt_result_stdlib_traced_structs;
       ]
 
-let octez_lwt_result_stdlib_examples_traces =
-  octez_lib
+let mavkit_lwt_result_stdlib_examples_traces =
+  mavkit_lib
     "lwt-result-stdlib.examples.traces"
     ~path:"src/lib_lwt_result_stdlib/examples/traces"
     ~internal_name:"traces"
     ~deps:
       [
         lwt;
-        octez_lwt_result_stdlib_bare_structs;
-        octez_lwt_result_stdlib_traced_sigs;
+        mavkit_lwt_result_stdlib_bare_structs;
+        mavkit_lwt_result_stdlib_traced_sigs;
       ]
 
-let _octez_lwt_result_stdlib_tests =
+let _mavkit_lwt_result_stdlib_tests =
   tezt
     [
       "support";
@@ -743,42 +707,42 @@ let _octez_lwt_result_stdlib_tests =
       "test_fuzzing_map_against_stdlib";
     ]
     ~path:"src/lib_lwt_result_stdlib/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_lwt_result_stdlib |> open_;
-        octez_lwt_result_stdlib_examples_traces;
+        mavkit_lwt_result_stdlib |> open_;
+        mavkit_lwt_result_stdlib_examples_traces;
         lwt_unix;
         alcotezt;
         qcheck_alcotest;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
     ~dune_with_test:Only_on_64_arch
 
-let octez_error_monad =
-  octez_lib
+let mavkit_error_monad =
+  mavkit_lib
     "error-monad"
-    ~internal_name:"tezos_error_monad"
+    ~internal_name:"mavryk_error_monad"
     ~path:"src/lib_error_monad"
     ~synopsis:"Error monad"
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         data_encoding |> open_;
         lwt_canceler;
         lwt;
-        octez_lwt_result_stdlib;
+        mavkit_lwt_result_stdlib;
       ]
     ~conflicts:[external_lib "result" V.(less_than "1.5")]
     ~js_compatible:true
 
-let octez_hacl =
+let mavkit_hacl =
   let js_stubs = ["random.js"; "evercrypt.js"] in
   let js_generated = "runtime-generated.js" in
   let js_helper = "helper.js" in
-  octez_lib
+  mavkit_lib
     "hacl"
-    ~internal_name:"tezos_hacl"
+    ~internal_name:"mavryk_hacl"
     ~path:"src/lib_hacl"
     ~synopsis:"Thin layer around hacl-star"
     ~deps:[hacl_star; hacl_star_raw; ctypes_stubs_js]
@@ -818,26 +782,26 @@ let octez_hacl =
           ];
         ]
 
-let _octez_hacl_gen0 =
+let _mavkit_hacl_gen0 =
   private_exe
     "gen0"
     ~path:"src/lib_hacl/gen/"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~with_macos_security_framework:true
     ~bisect_ppx:No
     ~modules:["gen0"]
     ~deps:[compiler_libs_common]
 
-let _octez_hacl_gen =
+let _mavkit_hacl_gen =
   private_exe
     "gen"
     ~path:"src/lib_hacl/gen/"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
     ~deps:[ctypes_stubs; ctypes; hacl_star_raw; ezjsonm]
     ~modules:["gen"; "bindings"; "api_json"]
     ~dune:
-      (let package = "octez-libs" in
+      (let package = "mavkit-libs" in
        Dune.
          [
            targets_rule
@@ -874,7 +838,7 @@ let _octez_hacl_gen =
              ~action:[S "diff"; S "api.json"; S "api.json.corrected"];
          ])
 
-let _octez_hacl_tests =
+let _mavkit_hacl_tests =
   tezt
     [
       "test_prop_signature_pk";
@@ -885,52 +849,52 @@ let _octez_hacl_tests =
       "vectors_ed25519";
     ]
     ~path:"src/lib_hacl/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_error_monad |> open_ ~m:"TzLwtreslib";
-        octez_lwt_result_stdlib |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_error_monad |> open_ ~m:"TzLwtreslib";
+        mavkit_lwt_result_stdlib |> open_;
         zarith;
         zarith_stubs_js;
         data_encoding |> open_;
-        octez_hacl |> open_;
+        mavkit_hacl |> open_;
         qcheck_alcotest;
         alcotezt;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
     ~modes:[Native; JS]
     ~js_compatible:true
 
-let _octez_error_monad_tests =
+let _mavkit_error_monad_tests =
   tezt
     ["test_registration"; "test_splitted_error_encoding"]
     ~path:"src/lib_error_monad/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modes:[Native; JS]
-    ~deps:[octez_error_monad |> open_; data_encoding; alcotezt]
+    ~deps:[mavkit_error_monad |> open_; data_encoding; alcotezt]
     ~js_compatible:true
 
-let octez_rpc =
-  octez_lib
+let mavkit_rpc =
+  mavkit_lib
     "rpc"
-    ~internal_name:"tezos_rpc"
+    ~internal_name:"mavryk_rpc"
     ~path:"src/lib_rpc"
     ~synopsis:
       "Library of auto-documented RPCs (service and hierarchy descriptions)"
     ~deps:
       [
         data_encoding |> open_;
-        octez_error_monad |> open_;
+        mavkit_error_monad |> open_;
         resto;
         resto_directory;
         uri;
       ]
     ~js_compatible:true
 
-let octez_risc_v_pvm =
-  let base_name = "octez_risc_v_pvm" in
+let mavkit_risc_v_pvm =
+  let base_name = "mavkit_risc_v_pvm" in
   let archive_file = Format.sprintf "lib%s.a" base_name in
   let archive_output_file = Format.sprintf "target/release/%s" archive_file in
   let header_file = Format.sprintf "%s.h" base_name in
@@ -961,7 +925,7 @@ let octez_risc_v_pvm =
           [S "source_tree"; S "src"];
           [S "file"; S "build.rs"];
           [S "file"; S "Cargo.toml"];
-          [S "file"; S "../Cargo.lock"];
+          [S "file"; S "Cargo.lock"];
           (* For the local dependent crates, these patterns only include files
            * directly contained in the crate's directory, as well as the [src]
            * directory, excluding all other directories in order to avoid
@@ -990,7 +954,7 @@ let octez_risc_v_pvm =
       ]
   in
   public_lib
-    "octez-risc-v-pvm"
+    "mavkit-risc-v-pvm"
     ~path:"src/risc_v/pvm"
     ~synopsis:"Bindings for RISC-V interpreter"
     ~deps:[ctypes; ctypes_foreign]
@@ -1012,13 +976,13 @@ let octez_risc_v_pvm =
         }
     ~dune:Dune.[rust_foreign_library]
 
-let _octez_risc_v_pvm_test =
+let _mavkit_risc_v_pvm_test =
   tezt
     ["test_main"]
     ~path:"src/risc_v/pvm/test"
-    ~opam:"octez-risc-v-pvm-test"
+    ~opam:"mavkit-risc-v-pvm-test"
     ~synopsis:"Tests for RISC-V interpreter bindings"
-    ~deps:[alcotezt; octez_risc_v_pvm]
+    ~deps:[alcotezt; mavkit_risc_v_pvm]
 
 let bls12_381 =
   public_lib
@@ -1222,7 +1186,7 @@ let _bls12_381_tests =
     ~js_compatible:true
     ~dep_globs_rec:["test_vectors/*"]
 
-let _octez_bls12_381_utils =
+let _mavkit_bls12_381_utils =
   let names =
     [
       "generate_pairing_vectors";
@@ -1242,8 +1206,8 @@ let _octez_bls12_381_utils =
     ~modules:names
     ~deps:[hex; bls12_381]
 
-let octez_bls12_381_signature =
-  octez_lib
+let mavkit_bls12_381_signature =
+  mavkit_lib
     "bls12-381-signature"
     ~path:"src/lib_bls12_381_signature"
     ~internal_name:"bls12_381_signature"
@@ -1275,53 +1239,53 @@ let octez_bls12_381_signature =
         ]
 
 (* TODO: dep_globs aren't added to the rules for JS tests *)
-let _octez_bls12_381_signature_tests =
+let _mavkit_bls12_381_signature_tests =
   tezt
     ["test_aggregated_signature"; "test_signature"; "utils"]
     ~path:"src/lib_bls12_381_signature/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
       (* TODO: https://gitlab.com/tezos/tezos/-/issues/5377
          This test is affected by the [FinalizationRegistry] hangs in JS,
          so although JS compatible, we only test in [Native] mode *)
     ~modes:[Native]
-    ~deps:[bls12_381; octez_bls12_381_signature; alcotezt; integers_stubs_js]
+    ~deps:[bls12_381; mavkit_bls12_381_signature; alcotezt; integers_stubs_js]
     ~dep_globs_rec:["test_vectors/*"] (* See above *)
     ~js_compatible:false
 
-let _octez_bls12_381_signature_gen_wasm_needed_names =
+let _mavkit_bls12_381_signature_gen_wasm_needed_names =
   private_exe
     "gen_wasm_needed_names"
     ~path:"src/lib_bls12_381_signature"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
     ~modules:["gen_wasm_needed_names"]
     ~deps:[re]
 
-let octez_crypto =
-  octez_lib
+let mavkit_crypto =
+  mavkit_lib
     "crypto"
-    ~internal_name:"tezos_crypto"
+    ~internal_name:"mavryk_crypto"
     ~path:"src/lib_crypto"
-    ~synopsis:"Library with all the cryptographic primitives used by Tezos"
+    ~synopsis:"Library with all the cryptographic primitives used by Mavryk"
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         data_encoding |> open_;
-        octez_lwt_result_stdlib;
+        mavkit_lwt_result_stdlib;
         lwt;
-        octez_hacl;
+        mavkit_hacl;
         secp256k1_internal;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_rpc;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_rpc;
         aches;
         zarith;
         zarith_stubs_js;
         bls12_381;
-        octez_bls12_381_signature;
+        mavkit_bls12_381_signature;
       ]
     ~js_compatible:true
 
-let _octez_crypto_tests =
+let _mavkit_crypto_tests =
   tezt
     [
       "test_run";
@@ -1341,45 +1305,45 @@ let _octez_crypto_tests =
       "vectors_secp256k1_keccak256";
     ]
     ~path:"src/lib_crypto/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_crypto |> open_;
-        octez_error_monad |> open_ ~m:"TzLwtreslib";
+        mavkit_stdlib |> open_;
+        mavkit_crypto |> open_;
+        mavkit_error_monad |> open_ ~m:"TzLwtreslib";
         zarith;
         zarith_stubs_js;
-        octez_hacl;
+        mavkit_hacl;
         data_encoding |> open_;
         alcotezt;
         qcheck_alcotest;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
     ~modes:[Native; JS]
     ~js_compatible:true
 
-let _octez_crypto_tests_unix =
+let _mavkit_crypto_tests_unix =
   tezt
     ["test_crypto_box"]
     ~path:"src/lib_crypto/test-unix"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_crypto |> open_;
-        octez_error_monad |> open_ ~m:"TzLwtreslib";
+        mavkit_stdlib |> open_;
+        mavkit_crypto |> open_;
+        mavkit_error_monad |> open_ ~m:"TzLwtreslib";
         zarith;
         zarith_stubs_js;
-        octez_hacl;
+        mavkit_hacl;
         data_encoding |> open_;
         alcotezt;
         lwt_unix;
         qcheck_alcotest;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
 
-let octez_bls12_381_hash =
-  octez_lib
+let mavkit_bls12_381_hash =
+  mavkit_lib
     "bls12-381-hash"
     ~path:"src/lib_bls12_381_hash"
     ~internal_name:"bls12_381_hash"
@@ -1404,22 +1368,22 @@ let octez_bls12_381_hash =
       }
     ~linkall:true
 
-let _octez_bls12_381_hash_tests =
+let _mavkit_bls12_381_hash_tests =
   tezt
     ["test_poseidon"; "test_rescue"; "test_anemoi"; "test_griffin"; "test_jive"]
     ~path:"src/lib_bls12_381_hash/test"
-    ~opam:"octez-libs"
-    ~deps:[alcotezt; bls12_381; octez_bls12_381_hash]
+    ~opam:"mavkit-libs"
+    ~deps:[alcotezt; bls12_381; mavkit_bls12_381_hash]
     ~flags:(Flags.standard ~disable_warnings:[3] ())
 
-let octez_mec =
-  octez_lib
+let mavkit_mec =
+  mavkit_lib
     "mec"
     ~path:"src/lib_mec"
     ~internal_name:"mec"
     ~deps:[alcotest; bls12_381; bigarray_compat; eqaf]
 
-let _octez_mec_tests =
+let _mavkit_mec_tests =
   tezt
     [
       "ark_poseidon128";
@@ -1481,32 +1445,32 @@ let _octez_mec_tests =
       "test_iterator";
     ]
     ~path:"src/lib_mec/test"
-    ~opam:"octez-libs"
-    ~deps:[alcotezt; octez_mec |> open_]
+    ~opam:"mavkit-libs"
+    ~deps:[alcotezt; mavkit_mec |> open_]
 
-let octez_polynomial =
-  octez_lib
+let mavkit_polynomial =
+  mavkit_lib
     "polynomial"
     ~path:"src/lib_polynomial"
     ~internal_name:"polynomial"
     ~synopsis:"Polynomials over finite fields"
     ~deps:[bls12_381; zarith]
 
-let _octez_polynomial_tests =
+let _mavkit_polynomial_tests =
   tezt
     ["test_with_finite_field"; "test_utils"; "polynomial_pbt"]
     ~path:"src/lib_polynomial/test"
-    ~opam:"octez-libs"
-    ~deps:[bls12_381; octez_mec; alcotezt; octez_polynomial]
+    ~opam:"mavkit-libs"
+    ~deps:[bls12_381; mavkit_mec; alcotezt; mavkit_polynomial]
 
-let octez_bls12_381_polynomial =
-  octez_lib
+let mavkit_bls12_381_polynomial =
+  mavkit_lib
     "bls12-381-polynomial"
-    ~internal_name:"octez_bls12_381_polynomial"
+    ~internal_name:"mavkit_bls12_381_polynomial"
     ~path:"src/lib_bls12_381_polynomial"
     ~synopsis:
       "Polynomials over BLS12-381 finite field - Temporary vendored version of \
-       Octez"
+       Mavkit"
     ~c_library_flags:["-Wall"; "-Wextra"; ":standard"]
     ~preprocess:[pps ppx_repr]
     ~deps:[bls12_381; ppx_repr; bigstringaf]
@@ -1526,7 +1490,7 @@ let octez_bls12_381_polynomial =
           ];
       }
 
-let _octez_bls12_381_polynomial_tests =
+let _mavkit_bls12_381_polynomial_tests =
   tezt
     [
       "test_main";
@@ -1539,48 +1503,48 @@ let _octez_bls12_381_polynomial_tests =
       "test_srs";
     ]
     ~path:"src/lib_bls12_381_polynomial/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
         alcotezt;
         qcheck_alcotest;
-        octez_polynomial;
+        mavkit_polynomial;
         bls12_381;
-        octez_bls12_381_polynomial;
+        mavkit_bls12_381_polynomial;
       ]
     ~dep_files:["srs_zcash_g1_5"]
 
-let octez_srs_extraction =
-  octez_lib
+let mavkit_srs_extraction =
+  mavkit_lib
     "srs-extraction"
-    ~internal_name:"octez_srs_extraction"
+    ~internal_name:"mavkit_srs_extraction"
     ~path:"src/lib_srs_extraction"
     ~modules:["libsrs"]
     ~bisect_ppx:No
-    ~deps:[bls12_381; octez_bls12_381_polynomial |> open_]
+    ~deps:[bls12_381; mavkit_bls12_381_polynomial |> open_]
 
-let _octez_srs_extraction_main =
+let _mavkit_srs_extraction_main =
   private_exe
     "srs_extraction_main"
     ~path:"src/lib_srs_extraction"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:["srs_extraction_main"]
     ~bisect_ppx:No
     ~deps:
       [
-        octez_srs_extraction |> open_;
+        mavkit_srs_extraction |> open_;
         cmdliner;
         unix;
         bls12_381;
-        octez_bls12_381_polynomial |> open_;
+        mavkit_bls12_381_polynomial |> open_;
       ]
 
-let _octez_srs_extraction_tests =
+let _mavkit_srs_extraction_tests =
   tezt
     ["test_main"]
     ~path:"src/lib_srs_extraction/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_srs_extraction |> open_; alcotezt]
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_srs_extraction |> open_; alcotezt]
     ~dep_files:["phase1radix2m5"]
     ~dune:
       Dune.(
@@ -1589,7 +1553,7 @@ let _octez_srs_extraction_tests =
           [
             S "rule";
             [S "alias"; S "runtest"];
-            [S "package"; S "octez-libs"];
+            [S "package"; S "mavkit-libs"];
             [S "deps"; S srs_file; S "phase1radix2m5"];
             [
               S "action";
@@ -1615,7 +1579,7 @@ let _octez_srs_extraction_tests =
           extract "g2" "srs_zcash_g2_5";
           alias_rule
             "runtest"
-            ~package:"octez-libs"
+            ~package:"mavkit-libs"
             ~deps:["srs_zcash_g1_5"; "srs_zcash_g2_5"]
             ~action:
               (run
@@ -1623,7 +1587,7 @@ let _octez_srs_extraction_tests =
                  ["check"; "srs_zcash_g1_5"; "srs_zcash_g2_5"]);
           alias_rule
             "runtest"
-            ~package:"octez-libs"
+            ~package:"mavkit-libs"
             ~deps:["srs_filecoin_g1_6"; "srs_filecoin_g2_6"]
             ~action:
               (run
@@ -1631,8 +1595,8 @@ let _octez_srs_extraction_tests =
                  ["check"; "srs_filecoin_g1_6"; "srs_filecoin_g2_6"]);
         ])
 
-let octez_plompiler =
-  octez_lib
+let mavkit_plompiler =
+  mavkit_lib
     "plompiler"
     ~internal_name:"plompiler"
     ~path:"src/lib_plompiler"
@@ -1641,9 +1605,9 @@ let octez_plompiler =
         repr;
         stdint;
         hacl_star;
-        octez_bls12_381_hash;
-        octez_polynomial;
-        octez_mec;
+        mavkit_bls12_381_hash;
+        mavkit_polynomial;
+        mavkit_mec;
       ]
     ~preprocess:[staged_pps [ppx_repr; ppx_deriving_show]]
 
@@ -1694,8 +1658,8 @@ let make_plonk_runtest_invocation ~package =
              ]);
     ]
 
-let octez_kzg =
-  octez_lib
+let mavkit_kzg =
+  mavkit_lib
     "kzg"
     ~path:"src/lib_kzg"
     ~synopsis:"Toolbox for KZG polynomial commitment"
@@ -1703,66 +1667,66 @@ let octez_kzg =
       [
         repr;
         data_encoding |> open_;
-        octez_bls12_381_polynomial |> open_;
-        octez_crypto;
+        mavkit_bls12_381_polynomial |> open_;
+        mavkit_crypto;
       ]
     ~preprocess:[pps ppx_repr]
 
-let octez_plonk =
-  octez_lib
+let mavkit_plonk =
+  mavkit_lib
     "plonk"
     ~path:"src/lib_plonk"
     ~synopsis:"Plonk zero-knowledge proving system"
-    ~deps:[octez_kzg; octez_plompiler |> open_; str]
+    ~deps:[mavkit_kzg; mavkit_plompiler |> open_; str]
     ~preprocess:[pps ppx_repr]
 
-let octez_plonk_aggregation =
-  octez_lib
+let mavkit_plonk_aggregation =
+  mavkit_lib
     "plonk.aggregation"
     ~path:"src/lib_aplonk/plonk-aggregation"
     ~internal_name:"aggregation"
     ~preprocess:[pps ppx_repr]
-    ~deps:[octez_plonk; octez_bls12_381_polynomial |> open_]
+    ~deps:[mavkit_plonk; mavkit_bls12_381_polynomial |> open_]
 
-let octez_aplonk =
-  octez_lib
+let mavkit_aplonk =
+  mavkit_lib
     "aplonk"
     ~internal_name:"aplonk"
     ~path:"src/lib_aplonk"
     ~preprocess:[pps ppx_repr]
-    ~deps:[octez_plonk_aggregation]
+    ~deps:[mavkit_plonk_aggregation]
 
-let octez_plonk_distribution =
-  octez_lib
+let mavkit_plonk_distribution =
+  mavkit_lib
     "plonk.distribution"
     ~internal_name:"distribution"
     ~path:"src/lib_distributed_plonk/distribution"
-    ~deps:[octez_plonk; octez_plonk_aggregation]
+    ~deps:[mavkit_plonk; mavkit_plonk_aggregation]
     ~preprocess:[pps ppx_repr]
 
-let octez_plonk_communication =
-  octez_lib
+let mavkit_plonk_communication =
+  mavkit_lib
     "plonk.communication"
     ~internal_name:"communication"
     ~path:"src/lib_distributed_plonk/communication"
-    ~deps:[logs; distributed_internal_lwt; octez_plonk_distribution |> open_]
+    ~deps:[logs; distributed_internal_lwt; mavkit_plonk_distribution |> open_]
     ~preprocess:[pps ppx_repr]
 
-let octez_plonk_test_helpers =
-  octez_lib
+let mavkit_plonk_test_helpers =
+  mavkit_lib
     "plonk.plonk-test"
     ~path:"src/lib_plonk/test"
     ~internal_name:"plonk_test"
-    ~deps:[octez_plonk; octez_plonk_aggregation; octez_plonk_distribution]
+    ~deps:[mavkit_plonk; mavkit_plonk_aggregation; mavkit_plonk_distribution]
     ~modules:["helpers"; "cases"]
     ~preprocess:[pps ppx_repr]
-    ~dune:(make_plonk_runtest_invocation ~package:"octez-libs")
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let _octez_plonk_test_helpers_main =
+let _mavkit_plonk_test_helpers_main =
   private_exe
     "main"
     ~path:"src/lib_plonk/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:
       [
         "main";
@@ -1781,43 +1745,43 @@ let _octez_plonk_test_helpers_main =
     ~bisect_ppx:No
     ~deps:
       [
-        octez_plonk_test_helpers;
+        mavkit_plonk_test_helpers;
         qcheck_alcotest;
-        octez_bls12_381_polynomial |> open_;
+        mavkit_bls12_381_polynomial |> open_;
       ]
 
-let _octez_plonk_distribution_test =
+let _mavkit_plonk_distribution_test =
   private_exe
     "main"
     ~path:"src/lib_distributed_plonk/distribution/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_plonk_aggregation; octez_plonk_test_helpers]
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_plonk_aggregation; mavkit_plonk_test_helpers]
     ~modules:["main"; "test_polynomial_commitment"]
-    ~dune:(make_plonk_runtest_invocation ~package:"octez-libs")
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let _octez_plonk_test_helpers_bench =
+let _mavkit_plonk_test_helpers_bench =
   private_exe
     "bench"
     ~path:"src/lib_plonk/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:["bench"]
     ~bisect_ppx:No
-    ~deps:[octez_plonk_test_helpers]
+    ~deps:[mavkit_plonk_test_helpers]
 
-let _octez_plonk_test_plompiler_afl =
+let _mavkit_plonk_test_plompiler_afl =
   private_exe
     "afl"
     ~path:"src/lib_plonk/test_plompiler"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:["afl"]
     ~bisect_ppx:No
-    ~deps:[octez_plompiler; octez_plonk; bls12_381]
+    ~deps:[mavkit_plompiler; mavkit_plonk; bls12_381]
 
-let _octez_plonk_test_plompiler_main =
+let _mavkit_plonk_test_plompiler_main =
   private_exe
     "main"
     ~path:"src/lib_plonk/test_plompiler"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:
       [
         "bench_poseidon";
@@ -1847,20 +1811,20 @@ let _octez_plonk_test_plompiler_main =
         "test_utils";
       ]
     ~bisect_ppx:No
-    ~deps:[octez_plonk_test_helpers]
-    ~dune:(make_plonk_runtest_invocation ~package:"octez-libs")
+    ~deps:[mavkit_plonk_test_helpers]
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let octez_distributed_plonk =
-  octez_lib
+let mavkit_distributed_plonk =
+  mavkit_lib
     "distributed-plonk"
     ~internal_name:"distributed_plonk"
     ~path:"src/lib_distributed_plonk"
     ~deps:
       [
-        octez_aplonk;
-        octez_plonk_communication;
-        octez_plonk |> open_;
-        octez_plonk_test_helpers;
+        mavkit_aplonk;
+        mavkit_plonk_communication;
+        mavkit_plonk |> open_;
+        mavkit_plonk_test_helpers;
       ]
     ~modules:
       [
@@ -1873,174 +1837,167 @@ let octez_distributed_plonk =
     ~preprocess:[pps ppx_repr]
     ~bisect_ppx:Yes
 
-let _octez_distributed_plonk_test_main =
-  test
-    "test_distribution"
-    (* This test is disabled in the CI since the test is flaky and
-       development of distributed plonk is on hiatus. As the
-       dependencies of distributed plonk have significant load-time,
-       we do not integrate it in the main tezt entrypoint using the
-       [tezt] function. *)
-    ~enabled_if:Dune.[S "="; S "false"; S "%{env:CI=false}"]
-    ~opam:"octez-libs"
+let _mavkit_distributed_plonk_test_main =
+  private_exe
+    "main"
+    ~opam:"mavkit-libs"
     ~path:"src/lib_distributed_plonk/test"
     ~deps:
       [
-        octez_distributed_plonk;
-        octez_plonk;
-        octez_plonk_aggregation;
-        octez_plonk_distribution;
-        octez_aplonk;
-        octez_plonk_test_helpers;
-        octez_test_helpers |> open_;
-        tezt_lib |> open_ |> open_ ~m:"Base";
+        mavkit_distributed_plonk;
+        mavkit_plonk;
+        mavkit_plonk_aggregation;
+        mavkit_plonk_distribution;
+        mavkit_aplonk;
+        mavkit_plonk_test_helpers;
       ]
+    ~bisect_ppx:No
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let _octez_distributed_plonk_worker_runner =
+let _mavkit_distributed_plonk_worker_runner =
   private_exe
     "worker_runner"
     ~path:"src/lib_distributed_plonk"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
-    ~deps:[octez_distributed_plonk; octez_plonk_distribution]
+    ~deps:[mavkit_distributed_plonk; mavkit_plonk_distribution]
     ~modules:["worker_runner"]
 
-let _octez_aplonk_test_main =
+let _mavkit_aplonk_test_main =
   private_exe
     "main"
     ~path:"src/lib_aplonk/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_plonk_test_helpers; octez_aplonk]
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_plonk_test_helpers; mavkit_aplonk]
     ~modules:["main"; "test_aplonk"; "test_main_protocol"]
-    ~dune:(make_plonk_runtest_invocation ~package:"octez-libs")
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let _octez_distributed_plonk_executable =
+let _mavkit_distributed_plonk_executable =
   private_exe
     "distribution"
     ~path:"src/lib_distributed_plonk"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
-    ~deps:[octez_distributed_plonk |> open_]
+    ~deps:[mavkit_distributed_plonk |> open_]
     ~modules:["distribution"]
 
-let _octez_distributed_plonk_executable_meta =
+let _mavkit_distributed_plonk_executable_meta =
   private_exe
     "distribution_meta"
     ~path:"src/lib_distributed_plonk"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
-    ~deps:[octez_distributed_plonk |> open_]
+    ~deps:[mavkit_distributed_plonk |> open_]
     ~modules:["distribution_meta"]
 
-let _octez_aplonk_test_helpers_bench =
+let _mavkit_aplonk_test_helpers_bench =
   private_exe
     "bench"
     ~path:"src/lib_aplonk/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modules:["bench"]
     ~bisect_ppx:No
-    ~deps:[octez_plonk_test_helpers; octez_aplonk]
+    ~deps:[mavkit_plonk_test_helpers; mavkit_aplonk]
 
-let octez_epoxy_tx =
-  octez_lib
+let mavkit_epoxy_tx =
+  mavkit_lib
     "epoxy-tx"
     ~path:"src/lib_epoxy_tx"
     ~internal_name:"epoxy_tx"
-    ~deps:[octez_plompiler; hex; stdint; octez_plonk; octez_mec]
+    ~deps:[mavkit_plompiler; hex; stdint; mavkit_plonk; mavkit_mec]
 
-let _octez_epoxy_tx_tests =
+let _mavkit_epoxy_tx_tests =
   private_exe
     "main"
     ~path:"src/lib_epoxy_tx/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_epoxy_tx; octez_plonk_test_helpers; octez_aplonk]
-    ~dune:(make_plonk_runtest_invocation ~package:"octez-libs")
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_epoxy_tx; mavkit_plonk_test_helpers; mavkit_aplonk]
+    ~dune:(make_plonk_runtest_invocation ~package:"mavkit-libs")
 
-let octez_dal_config =
-  octez_lib
+let mavkit_dal_config =
+  mavkit_lib
     "crypto-dal.dal-config"
-    ~internal_name:"tezos_crypto_dal_octez_dal_config"
+    ~internal_name:"mavryk_crypto_dal_mavkit_dal_config"
     ~path:"src/lib_crypto_dal/dal_config"
     ~deps:[data_encoding |> open_]
     ~js_compatible:true
 
-let octez_crypto_dal =
-  octez_lib
+let mavkit_crypto_dal =
+  mavkit_lib
     "crypto-dal"
-    ~internal_name:"tezos_crypto_dal"
+    ~internal_name:"mavryk_crypto_dal"
     ~path:"src/lib_crypto_dal"
     ~synopsis:"DAL cryptographic primitives"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_error_monad |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_error_monad |> open_;
         data_encoding |> open_;
-        octez_dal_config |> open_;
-        octez_bls12_381_polynomial;
+        mavkit_dal_config |> open_;
+        mavkit_bls12_381_polynomial;
         lwt_unix;
-        octez_kzg;
+        mavkit_kzg;
       ]
 
-let _octez_crypto_dal_tests =
+let _mavkit_crypto_dal_tests =
   tezt
     ["test_dal_cryptobox"]
     ~path:"src/lib_crypto_dal/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~dep_files:["srs_zcash_g1_5"; "srs_zcash_g2_5"]
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_crypto_dal |> open_;
-        octez_dal_config |> open_;
-        octez_error_monad |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_crypto_dal |> open_;
+        mavkit_dal_config |> open_;
+        mavkit_error_monad |> open_;
         data_encoding |> open_;
         alcotezt;
         qcheck_alcotest;
-        octez_bls12_381_polynomial;
-        octez_test_helpers;
+        mavkit_bls12_381_polynomial;
+        mavkit_test_helpers;
       ]
 
-let octez_event_logging =
-  octez_lib
+let mavkit_event_logging =
+  mavkit_lib
     "event-logging"
-    ~internal_name:"tezos_event_logging"
+    ~internal_name:"mavryk_event_logging"
     ~path:"src/lib_event_logging"
-    ~synopsis:"Octez event logging library"
+    ~synopsis:"Mavkit event logging library"
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         data_encoding |> open_;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_lwt_result_stdlib;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_lwt_result_stdlib;
         uri;
       ]
     ~js_compatible:true
 
-let octez_event_logging_test_helpers =
-  octez_lib
+let mavkit_event_logging_test_helpers =
+  mavkit_lib
     "event-logging-test-helpers"
-    ~internal_name:"tezos_event_logging_test_helpers"
+    ~internal_name:"mavryk_event_logging_test_helpers"
     ~path:"src/lib_event_logging/test_helpers"
     ~synopsis:"Test helpers for the event logging library"
     ~deps:
       [
-        octez_stdlib;
-        octez_lwt_result_stdlib |> open_;
+        mavkit_stdlib;
+        mavkit_lwt_result_stdlib;
         data_encoding;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_event_logging |> open_;
-        octez_test_helpers |> open_;
-        tezt_core_lib |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_event_logging |> open_;
+        mavkit_test_helpers |> open_;
         alcotezt;
       ]
     ~js_compatible:true
     ~linkall:true
     ~bisect_ppx:No
 
-let octez_stdlib_unix =
-  octez_lib
+let mavkit_stdlib_unix =
+  mavkit_lib
     "stdlib-unix"
-    ~internal_name:"tezos_stdlib_unix"
+    ~internal_name:"mavryk_stdlib_unix"
     ~path:"src/lib_stdlib_unix"
     ~synopsis:
       "Yet-another local-extension of the OCaml standard library \
@@ -2048,10 +2005,10 @@ let octez_stdlib_unix =
     ~deps:
       [
         unix;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_lwt_result_stdlib;
-        octez_event_logging |> open_;
-        octez_stdlib |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_lwt_result_stdlib;
+        mavkit_event_logging |> open_;
+        mavkit_stdlib |> open_;
         data_encoding |> open_;
         aches_lwt;
         lwt_unix;
@@ -2066,170 +2023,70 @@ let octez_stdlib_unix =
         uri;
       ]
 
-let _octez_stdlib_unix_test =
+let _mavkit_stdlib_unix_test =
   tezt
     ["test_key_value_store_fuzzy"; "test_log_config_rules"]
     ~path:"src/lib_stdlib_unix/test/"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_stdlib_unix |> open_;
-        octez_event_logging |> open_;
-        octez_test_helpers |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_stdlib_unix |> open_;
+        mavkit_event_logging |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let ppx_irmin =
-  octez_internal_lib
-    "ppx_irmin"
-    ~path:"irmin/lib_ppx_irmin"
-    ~deps:[ppx_repr_lib]
-    ~ppx_kind:Ppx_deriver
-
-let ppx_irmin_internal_lib =
-  octez_internal_lib
-    "ppx_irmin.internal_lib"
-    ~path:"irmin/lib_ppx_irmin/internal"
-    ~modules:["ppx_irmin_internal_lib"]
-    ~deps:[logs]
-
-let ppx_irmin_internal =
-  octez_internal_lib
-    "ppx_irmin.internal"
-    ~path:"irmin/lib_ppx_irmin/internal"
-    ~modules:["ppx_irmin_internal"]
-    ~deps:[ppxlib; ppx_irmin_internal_lib; ppx_irmin]
-    ~ppx_kind:Ppx_rewriter
-    ~ppx_runtime_libraries:[logs; ppx_irmin_internal_lib]
-    ~preprocess:[pps ppxlib_metaquot]
-
-let irmin_data =
-  octez_internal_lib
-    "irmin.data"
-    ~path:"irmin/lib_irmin/data"
-    ~deps:[bigstringaf; fmt]
-
-let irmin =
-  octez_internal_lib
-    "irmin"
-    ~path:"irmin/lib_irmin"
-    ~deps:
-      [
-        irmin_data;
-        astring;
-        bheap;
-        digestif;
-        fmt;
-        jsonm;
-        logs;
-        logs_fmt;
-        lwt;
-        mtime;
-        ocamlgraph;
-        uri;
-        uutf;
-        re_export repr;
-      ]
-    ~preprocess:[pps ~args:["--"; "--lib"; "Type"] ppx_irmin_internal]
-
-let irmin_mem =
-  octez_internal_lib
-    "irmin.mem"
-    ~path:"irmin/lib_irmin/mem"
-    ~deps:[irmin; logs; lwt]
-    ~preprocess:[pps ppx_irmin_internal]
-    ~flags:(Flags.standard ~disable_warnings:[68] ())
-
-let irmin_pack =
-  octez_internal_lib
-    "irmin_pack"
-    ~path:"irmin/lib_irmin_pack"
-    ~deps:[fmt; irmin; irmin_data; logs; lwt; optint]
-    ~preprocess:[pps ppx_irmin_internal]
-    ~flags:(Flags.standard ~disable_warnings:[66] ())
-
-let irmin_pack_mem =
-  octez_internal_lib
-    "irmin_pack.mem"
-    ~path:"irmin/lib_irmin_pack/mem"
-    ~deps:[irmin_pack; irmin_mem]
-    ~preprocess:[pps ppx_irmin_internal]
-
-let irmin_pack_unix =
-  octez_internal_lib
-    "irmin_pack.unix"
-    ~path:"irmin/lib_irmin_pack/unix"
-    ~deps:
-      [
-        fmt;
-        index;
-        index_unix;
-        irmin;
-        irmin_pack;
-        logs;
-        lwt;
-        lwt_unix;
-        mtime;
-        cmdliner;
-        optint;
-        checkseum;
-        checkseum_ocaml;
-        rusage;
-      ]
-    ~preprocess:[pps ppx_irmin_internal]
-    ~flags:(Flags.standard ~disable_warnings:[66; 68] ())
-
-let octez_clic =
-  octez_lib
+let mavkit_clic =
+  mavkit_lib
     "clic"
-    ~internal_name:"tezos_clic"
+    ~internal_name:"mavryk_clic"
     ~path:"src/lib_clic"
     ~deps:
       [
-        octez_stdlib |> open_;
+        mavkit_stdlib |> open_;
         lwt;
         re;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_lwt_result_stdlib;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_lwt_result_stdlib;
       ]
     ~js_compatible:true
 
-let octez_clic_unix =
-  octez_lib
+let mavkit_clic_unix =
+  mavkit_lib
     "clic.unix"
-    ~internal_name:"tezos_clic_unix"
+    ~internal_name:"mavryk_clic_unix"
     ~path:"src/lib_clic/unix"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_clic |> open_;
-        octez_stdlib_unix;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_lwt_result_stdlib;
+        mavkit_stdlib |> open_;
+        mavkit_clic |> open_;
+        mavkit_stdlib_unix;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_lwt_result_stdlib;
       ]
 
-let _octez_clic_tests =
+let _mavkit_clic_tests =
   tezt
     ["test_clic"]
     ~path:"src/lib_clic/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_stdlib |> open_; octez_clic |> open_; lwt_unix; alcotezt]
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_stdlib |> open_; mavkit_clic |> open_; lwt_unix; alcotezt]
 
-let _octez_clic_example =
+let _mavkit_clic_example =
   private_exe
     "clic_example"
     ~path:"src/lib_clic/examples"
     ~opam:""
-    ~deps:[octez_clic; lwt_unix]
+    ~deps:[mavkit_clic; lwt_unix]
     ~bisect_ppx:No
     ~static:false
 
-let octez_micheline =
-  octez_lib
+let mavkit_micheline =
+  mavkit_lib
     "micheline"
-    ~internal_name:"tezos_micheline"
+    ~internal_name:"mavryk_micheline"
     ~path:"src/lib_micheline"
     ~synopsis:"Internal AST and parser for the Michelson language"
     ~deps:
@@ -2237,58 +2094,57 @@ let octez_micheline =
         uutf;
         zarith;
         zarith_stubs_js;
-        octez_stdlib |> open_;
-        octez_error_monad |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_error_monad |> open_;
         data_encoding |> open_;
       ]
     ~js_compatible:true
     ~inline_tests:ppx_expect
 
-let _octez_micheline_tests =
+let _mavkit_micheline_tests =
   private_lib
     "test_parser"
     ~path:"src/lib_micheline/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~inline_tests:ppx_expect
     ~modules:["test_parser"]
-    ~deps:[octez_micheline |> open_]
+    ~deps:[mavkit_micheline |> open_]
     ~js_compatible:true
 
-let _octez_micheline_tests =
+let _mavkit_micheline_tests =
   private_lib
     "test_diff"
     ~path:"src/lib_micheline/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~inline_tests:ppx_expect
     ~modules:["test_diff"]
-    ~deps:[octez_micheline |> open_]
+    ~deps:[mavkit_micheline |> open_]
     ~js_compatible:true
 
-let octez_base =
-  octez_lib
+let mavkit_base =
+  mavkit_lib
     "base"
-    ~internal_name:"tezos_base"
+    ~internal_name:"mavryk_base"
     ~path:"src/lib_base"
-    ~synopsis:"Meta-package and pervasive type definitions for Tezos"
+    ~synopsis:"Meta-package and pervasive type definitions for Mavryk"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_crypto;
+        mavkit_stdlib |> open_;
+        mavkit_crypto;
         data_encoding |> open_;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_rpc;
-        octez_micheline |> open_;
-        octez_event_logging |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_rpc;
+        mavkit_micheline |> open_;
+        mavkit_event_logging |> open_;
         ptime;
         ptime_clock_os;
-        mtime;
         ezjsonm;
         lwt;
         ipaddr;
         uri;
       ]
     ~js_compatible:true
-    ~documentation:[Dune.[S "package"; S "octez-libs"]]
+    ~documentation:[Dune.[S "package"; S "mavkit-libs"]]
     ~dune:Dune.[ocamllex "point_parser"]
     ~ocaml:
       V.(
@@ -2297,33 +2153,33 @@ let octez_base =
         at_least "4.14.1" && less_than "4.15")
     ~license:"Apache-2.0"
 
-let octez_base_unix =
-  octez_lib
+let mavkit_base_unix =
+  mavkit_lib
     "base.unix"
-    ~internal_name:"tezos_base_unix"
+    ~internal_name:"mavryk_base_unix"
     ~path:"src/lib_base/unix"
     ~deps:
       [
-        octez_error_monad |> open_;
-        octez_crypto;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_hacl;
-        octez_stdlib |> open_;
-        octez_stdlib_unix |> open_;
+        mavkit_error_monad |> open_;
+        mavkit_crypto;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_hacl;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix |> open_;
         data_encoding |> open_;
         uri;
-        octez_event_logging |> open_;
+        mavkit_event_logging |> open_;
       ]
     ~inline_tests:ppx_expect
 
-let octez_base_p2p_identity_file =
-  octez_lib
+let mavkit_base_p2p_identity_file =
+  mavkit_lib
     "base.p2p-identity-file"
-    ~internal_name:"tezos_base_p2p_identity_file"
+    ~internal_name:"mavryk_base_p2p_identity_file"
     ~path:"src/lib_base/p2p_identity_file"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_stdlib_unix |> open_]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_stdlib_unix |> open_]
 
-let _octez_base_tests =
+let _mavkit_base_tests =
   tezt
     [
       "test_bounded";
@@ -2334,13 +2190,13 @@ let _octez_base_tests =
       "test_skip_list";
     ]
     ~path:"src/lib_base/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_base |> open_;
-        octez_error_monad |> open_;
+        mavkit_base |> open_;
+        mavkit_error_monad |> open_;
         data_encoding;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
       ]
@@ -2353,39 +2209,39 @@ let _octez_base_tests =
     ~modes:[Native; JS]
     ~js_compatible:true
 
-let _octez_base_unix_tests =
+let _mavkit_base_unix_tests =
   tezt
     ["test_unix_error"; "test_syslog"]
     ~path:"src/lib_base/unix/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~modes:[Native]
     ~deps:
       [
-        octez_base |> open_;
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_error_monad |> open_;
+        mavkit_base |> open_;
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_error_monad |> open_;
         data_encoding;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
         tezt_lib;
       ]
 
-let octez_base_test_helpers =
-  octez_lib
+let mavkit_base_test_helpers =
+  mavkit_lib
     "base-test-helpers"
-    ~internal_name:"tezos_base_test_helpers"
+    ~internal_name:"mavryk_base_test_helpers"
     ~path:"src/lib_base/test_helpers"
-    ~synopsis:"Octez base test helpers"
+    ~synopsis:"Mavkit base test helpers"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix;
-        octez_event_logging_test_helpers;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix;
+        mavkit_event_logging_test_helpers;
+        mavkit_test_helpers |> open_;
         alcotezt;
         qcheck_alcotest;
       ]
@@ -2393,33 +2249,33 @@ let octez_base_test_helpers =
     ~bisect_ppx:No
     ~release_status:Released
 
-let octez_context_sigs =
-  octez_lib
+let mavkit_context_sigs =
+  mavkit_lib
     "context.sigs"
-    ~internal_name:"tezos_context_sigs"
+    ~internal_name:"mavryk_context_sigs"
     ~path:"src/lib_context/sigs"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_stdlib |> open_]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_stdlib |> open_]
     ~js_compatible:true
 
 let tree_encoding =
-  octez_lib
+  mavkit_lib
     "tree-encoding"
-    ~internal_name:"tezos_tree_encoding"
+    ~internal_name:"mavryk_tree_encoding"
     ~path:"src/lib_tree_encoding"
     ~synopsis:
       "A general-purpose library to encode arbitrary data in Merkle trees"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_context_sigs;
-        octez_lwt_result_stdlib;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_context_sigs;
+        mavkit_lwt_result_stdlib;
         data_encoding;
       ]
 
 let lazy_containers =
-  octez_lib
+  mavkit_lib
     "lazy-containers"
-    ~internal_name:"tezos_lazy_containers"
+    ~internal_name:"mavryk_lazy_containers"
     ~path:"src/lib_lazy_containers"
     ~synopsis:
       "A collection of lazy containers whose contents is fetched from \
@@ -2430,7 +2286,7 @@ let _lazy_containers_tests =
   tezt
     ["chunked_byte_vector_tests"; "lazy_vector_tests"]
     ~path:"src/lib_lazy_containers/test"
-    ~opam:"tezos-lazy-containers-tests"
+    ~opam:"mavryk-lazy-containers-tests"
     ~synopsis:"Various tests for the lazy containers library"
     ~deps:
       [
@@ -2441,26 +2297,26 @@ let _lazy_containers_tests =
         alcotezt;
       ]
 
-let octez_webassembly_interpreter =
-  octez_l2_lib
+let mavkit_webassembly_interpreter =
+  mavkit_l2_lib
     "webassembly-interpreter"
-    ~internal_name:"tezos_webassembly_interpreter"
+    ~internal_name:"mavryk_webassembly_interpreter"
     ~path:"src/lib_webassembly"
     ~dune:Dune.[[S "include_subdirs"; S "unqualified"]]
     ~deps:
       [
-        octez_lwt_result_stdlib;
-        octez_stdlib;
-        octez_error_monad;
+        mavkit_lwt_result_stdlib;
+        mavkit_stdlib;
+        mavkit_error_monad;
         zarith;
         lazy_containers |> open_;
       ]
     ~preprocess:[pps ppx_deriving_show]
 
-let octez_webassembly_interpreter_extra =
-  octez_l2_lib
+let mavkit_webassembly_interpreter_extra =
+  mavkit_l2_lib
     "webassembly-interpreter-extra"
-    ~internal_name:"tezos_webassembly_interpreter_extra"
+    ~internal_name:"mavryk_webassembly_interpreter_extra"
     ~path:"src/lib_webassembly/extra"
     ~license:"Apache-2.0"
     ~extra_authors:["WebAssembly Authors"]
@@ -2469,12 +2325,12 @@ let octez_webassembly_interpreter_extra =
       Dune.[[S "include_subdirs"; S "unqualified"]; [S "include"; S "dune.inc"]]
     ~deps:
       [
-        octez_webassembly_interpreter |> open_;
+        mavkit_webassembly_interpreter |> open_;
         lwt_unix;
         lazy_containers |> open_;
       ]
 
-let _octez_webassembly_repl =
+let _mavkit_webassembly_repl =
   private_exe
     "main"
     ~path:"src/lib_webassembly/bin"
@@ -2482,50 +2338,50 @@ let _octez_webassembly_repl =
     ~dune:Dune.[[S "include"; S "dune.inc"]]
     ~deps:
       [
-        octez_webassembly_interpreter |> open_;
-        octez_webassembly_interpreter_extra |> open_;
+        mavkit_webassembly_interpreter |> open_;
+        mavkit_webassembly_interpreter_extra |> open_;
         lwt_unix;
         tree_encoding |> open_;
         lazy_containers |> open_;
       ]
 
-let _octez_webassembly_test =
+let _mavkit_webassembly_test =
   tezt
     ["smallint"]
     ~path:"src/lib_webassembly/tests"
-    ~opam:"octez-l2-libs"
+    ~opam:"mavkit-l2-libs"
     ~dune:Dune.[[S "include_subdirs"; S "no"]]
-    ~deps:[octez_webassembly_interpreter |> open_; alcotezt]
+    ~deps:[mavkit_webassembly_interpreter |> open_; alcotezt]
 
-let octez_version_parser =
-  octez_lib
+let mavkit_version_parser =
+  mavkit_lib
     "version.parser"
-    ~internal_name:"tezos_version_parser"
+    ~internal_name:"mavryk_version_parser"
     ~path:"src/lib_version/parser"
-    ~dune:Dune.[ocamllex "tezos_version_parser"]
+    ~dune:Dune.[ocamllex "mavryk_version_parser"]
     ~js_compatible:true
     ~preprocess:[pps ppx_deriving_show]
 
-let octez_version =
-  octez_lib
+let mavkit_version =
+  mavkit_lib
     "version"
-    ~internal_name:"tezos_version"
+    ~internal_name:"mavryk_version"
     ~path:"src/lib_version"
     ~synopsis:"Version information generated from Git"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_version_parser]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_version_parser]
     ~js_compatible:true
 
-let octez_version_value =
+let mavkit_version_value =
   public_lib
-    "octez-version.value"
-    ~internal_name:"tezos_version_value"
+    "mavkit-version.value"
+    ~internal_name:"mavryk_version_value"
     ~path:"src/lib_version/value/"
-    ~synopsis:"Tezos: version value generated from Git"
+    ~synopsis:"Mavryk: version value generated from Git"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_version;
-        octez_version_parser;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_version;
+        mavkit_version_parser;
       ]
     ~js_compatible:true
       (* We want generated_git_info.cmi to be compiled with -opaque so
@@ -2542,124 +2398,124 @@ let octez_version_value =
             ~action:[S "run"; S "../exe/get_git_info.exe"];
         ]
 
-let _octez_version_get_git_info =
+let _mavkit_version_get_git_info =
   private_exe
     "get_git_info"
     ~path:"src/lib_version/exe"
-    ~opam:"octez-version"
-    ~deps:[dune_configurator; octez_version_parser]
+    ~opam:"mavkit-version"
+    ~deps:[dune_configurator; mavkit_version_parser]
     ~modules:["get_git_info"]
     ~bisect_ppx:No
 
-let _octez_print_version_exe =
+let _mavkit_print_version_exe =
   public_exe
-    "octez-version"
-    ~internal_name:"tezos_print_version"
+    "mavkit-version"
+    ~internal_name:"mavryk_print_version"
     ~path:"src/lib_version/exe"
-    ~opam:"octez-version"
+    ~opam:"mavkit-version"
     ~deps:
-      [octez_version_value |> open_; octez_version |> open_; octez_base_unix]
-    ~modules:["tezos_print_version"]
+      [mavkit_version_value |> open_; mavkit_version |> open_; mavkit_base_unix]
+    ~modules:["mavryk_print_version"]
     ~bisect_ppx:No
 
-let _octez_version_tests =
+let _mavkit_version_tests =
   tezt
     ["test_parser"]
     ~path:"src/lib_version/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~js_compatible:true
     ~modes:[Native; JS]
-    ~deps:[octez_version |> open_; octez_version_parser; alcotezt]
+    ~deps:[mavkit_version |> open_; mavkit_version_parser; alcotezt]
 
-let octez_p2p_services =
-  octez_lib
-    "tezos-p2p-services"
+let mavkit_p2p_services =
+  mavkit_lib
+    "mavryk-p2p-services"
     ~path:"src/lib_p2p_services"
-    ~synopsis:"Descriptions of RPCs exported by [tezos-p2p]"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_rpc]
+    ~synopsis:"Descriptions of RPCs exported by [mavryk-p2p]"
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_rpc]
     ~linkall:true
     ~js_compatible:true
 
-let octez_workers =
-  octez_lib
-    "tezos-workers"
+let mavkit_workers =
+  mavkit_lib
+    "mavryk-workers"
     ~path:"src/lib_workers"
     ~synopsis:"Worker library"
     ~documentation:
-      Dune.[[S "package"; S "octez-libs"]; [S "mld_files"; S "tezos_workers"]]
+      Dune.[[S "package"; S "mavkit-libs"]; [S "mld_files"; S "mavryk_workers"]]
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_stdlib_unix |> open_;
       ]
 
-let _octez_workers_tests =
+let _mavkit_workers_tests =
   tezt
     ["mocked_worker"; "test_workers_unit"]
     ~path:"src/lib_workers/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_stdlib_unix |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives"
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives"
         |> open_ ~m:"Worker_types";
-        octez_workers |> open_;
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
+        mavkit_workers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
         alcotezt;
       ]
 
-let octez_merkle_proof_encoding =
-  octez_lib
-    "tezos-context.merkle_proof_encoding"
+let mavkit_merkle_proof_encoding =
+  mavkit_lib
+    "mavryk-context.merkle_proof_encoding"
     ~path:"src/lib_context/merkle_proof_encoding"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib |> open_;
-        octez_context_sigs;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib |> open_;
+        mavkit_context_sigs;
       ]
     ~js_compatible:true
 
-let octez_shell_services =
-  octez_shell_lib
+let mavkit_shell_services =
+  mavkit_shell_lib
     "shell-services"
-    ~internal_name:"tezos_shell_services"
+    ~internal_name:"mavryk_shell_services"
     ~path:"src/lib_shell_services"
-    ~synopsis:"Descriptions of RPCs exported by [tezos-shell]"
+    ~synopsis:"Descriptions of RPCs exported by [mavryk-shell]"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_rpc;
-        octez_p2p_services |> open_;
-        octez_version |> open_;
-        octez_context_sigs;
-        octez_merkle_proof_encoding;
-        octez_dal_config |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_rpc;
+        mavkit_p2p_services |> open_;
+        mavkit_version |> open_;
+        mavkit_context_sigs;
+        mavkit_merkle_proof_encoding;
+        mavkit_dal_config |> open_;
       ]
     ~linkall:true
     ~js_compatible:true
 
-let _octez_shell_services_tests =
+let _mavkit_shell_services_tests =
   tezt
     ["test_block_services"]
     ~path:"src/lib_shell_services/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_shell_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_shell_services |> open_;
         alcotezt;
       ]
     ~modes:[Native; JS]
     ~js_compatible:true
 
-let _octez_tooling =
+let _mavkit_tooling =
   public_lib
-    "tezos-tooling"
+    "mavryk-tooling"
     ~path:"src/tooling"
-    ~synopsis:"Tezos: tooling for the project"
+    ~synopsis:"Mavryk: tooling for the project"
     ~modules:[]
     ~opam_only_deps:
       [
@@ -2674,26 +2530,26 @@ let _octez_tooling =
         (* Client-libs project requires Javascript Kaitai runtime. *);
       ]
 
-let octez_tooling_opam_file_format =
+let mavkit_tooling_opam_file_format =
   private_lib
     "opam_file_format"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~path:"src/tooling/opam-lint/opam-file-format-src"
     ~deps:[unix]
     ~dune:Dune.[ocamllex "opamLexer"; ocamlyacc "opamBaseParser"]
 
-let _octez_tooling_opam_lint =
+let _mavkit_tooling_opam_lint =
   test
     "opam_lint"
     ~alias:""
     ~path:"src/tooling/opam-lint"
-    ~opam:"tezos-tooling"
-    ~deps:[octez_tooling_opam_file_format; unix]
+    ~opam:"mavryk-tooling"
+    ~deps:[mavkit_tooling_opam_file_format; unix]
 
-let octez_p2p =
-  octez_shell_lib
+let mavkit_p2p =
+  mavkit_shell_lib
     "p2p"
-    ~internal_name:"tezos_p2p"
+    ~internal_name:"mavryk_p2p"
     ~path:"src/lib_p2p"
     ~synopsis:"Library for a pool of P2P connections"
     ~deps:
@@ -2702,14 +2558,14 @@ let octez_p2p =
         lwt_canceler;
         ringo;
         aches;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_p2p_services |> open_;
-        octez_version;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_version;
         prometheus;
-        octez_base_p2p_identity_file |> open_;
+        mavkit_base_p2p_identity_file |> open_;
       ]
 
 let tezt_performance_regression =
@@ -2725,7 +2581,7 @@ let tezt_tezos =
     "tezt-tezos"
     ~path:"tezt/lib_tezos"
     ~opam:"tezt-tezos"
-    ~synopsis:"Octez test framework based on Tezt"
+    ~synopsis:"Mavkit test framework based on Tezt"
     ~bisect_ppx:No
     ~deps:
       [
@@ -2733,50 +2589,50 @@ let tezt_tezos =
         tezt_performance_regression |> open_;
         uri;
         hex;
-        octez_crypto_dal;
-        octez_base;
-        octez_base_unix;
+        mavkit_crypto_dal;
+        mavkit_base;
+        mavkit_base_unix;
         cohttp_lwt_unix;
       ]
     ~cram:true
     ~release_status:Released
 
-let octez_p2p_test_common =
-  octez_shell_lib
+let mavkit_p2p_test_common =
+  mavkit_shell_lib
     "p2p_test_common"
-    ~internal_name:"tezos_p2p_test_common"
+    ~internal_name:"mavryk_p2p_test_common"
     ~path:"src/lib_p2p/test/common"
     ~deps:
       [
         tezt_lib |> open_ |> open_ ~m:"Base";
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_p2p |> open_;
-        octez_p2p_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_p2p |> open_;
+        mavkit_p2p_services |> open_;
       ]
 
-let _octez_p2p_tezt =
+let _mavkit_p2p_tezt =
   tezt
     ["test_p2p_fd"; "test_p2p_socket"; "test_p2p_conn"]
     ~path:"src/lib_p2p/tezt"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_p2p |> open_;
-        octez_p2p_services |> open_;
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_event_logging_test_helpers |> open_;
-        octez_p2p_test_common |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_p2p |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_event_logging_test_helpers |> open_;
+        mavkit_p2p_test_common |> open_;
       ]
 
-let _octez_p2p_tests =
+let _mavkit_p2p_tests =
   tests
     [
       "test_p2p_socket";
@@ -2792,37 +2648,38 @@ let _octez_p2p_tests =
     ]
     ~bisect_ppx:With_sigterm
     ~path:"src/lib_p2p/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~locks:"/locks/p2p"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_p2p |> open_;
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_event_logging_test_helpers |> open_;
-        octez_p2p_test_common |> open_;
-        octez_p2p_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_p2p |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_event_logging_test_helpers |> open_;
+        mavkit_p2p_test_common |> open_;
+        mavkit_p2p_services |> open_;
         tezt_tezos;
         tezt_lib;
         alcotezt;
         astring;
       ]
 
-let tezt_etherlink =
+let tezt_ethereum =
   private_lib
-    "tezt_etherlink"
-    ~path:"etherlink/tezt/lib"
-    ~opam:"tezt-etherlink"
+    "tezt_ethereum"
+    ~path:"tezt/lib_ethereum"
+    ~opam:"tezt-ethereum"
+    ~synopsis:"Ethereum test framework based on Tezt"
     ~bisect_ppx:No
     ~deps:
       [
-        tezt_wrapper |> open_ |> open_ ~m:"Base";
+        tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_performance_regression |> open_;
-        octez_crypto;
+        mavkit_crypto;
         tezt_tezos |> open_;
       ]
     ~release_status:Unreleased
@@ -2834,7 +2691,7 @@ let tezt_risc_v_sandbox =
     ~opam:"tezt-risc-v-sandbox"
     ~synopsis:"Test framework for RISC-V sandbox"
     ~bisect_ppx:No
-    ~deps:[tezt_wrapper |> open_ |> open_ ~m:"Base"; tezt_tezos]
+    ~deps:[tezt_wrapper |> open_ |> open_ ~m:"Base"]
     ~release_status:Unreleased
 
 let _tezt_self_tests =
@@ -2844,46 +2701,46 @@ let _tezt_self_tests =
     ~path:"tezt/self_tests"
     ~deps:[tezt_lib |> open_ |> open_ ~m:"Base"; tezt_tezos |> open_]
 
-let octez_gossipsub =
-  octez_lib
-    "tezos-gossipsub"
+let mavkit_gossipsub =
+  mavkit_lib
+    "mavryk-gossipsub"
     ~path:"src/lib_gossipsub"
     ~deps:
       [
         ringo;
         aches;
         fmt;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_version;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_version;
       ]
 
-let _octez_gossipsub_test =
+let _mavkit_gossipsub_test =
   test
     "test_gossipsub"
     ~path:"src/lib_gossipsub/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
         fmt;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_gossipsub |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_gossipsub |> open_;
         tezt_lib;
         qcheck_core;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
 
-let octez_wasmer =
-  octez_l2_lib
+let mavkit_wasmer =
+  mavkit_l2_lib
     "wasmer"
-    ~internal_name:"tezos_wasmer"
+    ~internal_name:"mavryk_wasmer"
     ~path:"src/lib_wasmer"
     ~synopsis:"Wasmer bindings for SCORU WASM"
-    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib]
+    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; mavryk_rust_lib]
     ~preprocess:[pps ppx_deriving_show]
     ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
     ~ctypes:
@@ -2902,118 +2759,118 @@ let octez_wasmer =
           deps = [];
         }
 
-let _octez_wasmer_test =
+let _mavkit_wasmer_test =
   tezt
     ["test_wasmer"]
     ~path:"src/lib_wasmer/test"
-    ~opam:"octez-l2-libs"
-    ~deps:[octez_wasmer; alcotezt]
+    ~opam:"mavkit-l2-libs"
+    ~deps:[mavkit_wasmer; alcotezt]
 
-let octez_context_encoding =
-  octez_lib
-    "tezos-context.encoding"
+let mavkit_context_encoding =
+  mavkit_lib
+    "mavryk-context.encoding"
     ~path:"src/lib_context/encoding"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib |> open_;
         irmin;
         irmin_pack;
       ]
     ~conflicts:[Conflicts.checkseum]
 
-let octez_context_helpers =
-  octez_lib
-    "tezos-context.helpers"
+let mavkit_context_helpers =
+  mavkit_lib
+    "mavryk-context.helpers"
     ~path:"src/lib_context/helpers"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib |> open_;
-        octez_context_encoding;
-        octez_context_sigs;
-        octez_merkle_proof_encoding;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib |> open_;
+        mavkit_context_encoding;
+        mavkit_context_sigs;
+        mavkit_merkle_proof_encoding;
         irmin;
         irmin_pack;
       ]
     ~conflicts:[Conflicts.checkseum]
 
-let octez_context_memory =
-  octez_lib
-    "tezos-context.memory"
+let mavkit_context_memory =
+  mavkit_lib
+    "mavryk-context.memory"
     ~path:"src/lib_context/memory"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib |> open_;
         irmin_pack;
         irmin_pack_mem;
-        octez_context_sigs;
-        octez_context_encoding;
-        octez_context_helpers;
+        mavkit_context_sigs;
+        mavkit_context_encoding;
+        mavkit_context_helpers;
       ]
     ~conflicts:[Conflicts.checkseum]
 
-let octez_scoru_wasm =
-  octez_l2_lib
+let mavkit_scoru_wasm =
+  mavkit_l2_lib
     "scoru-wasm"
-    ~internal_name:"tezos_scoru_wasm"
+    ~internal_name:"mavryk_scoru_wasm"
     ~path:"src/lib_scoru_wasm"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
         lazy_containers;
-        octez_webassembly_interpreter;
-        octez_context_sigs;
-        octez_context_memory;
-        octez_lwt_result_stdlib;
+        mavkit_webassembly_interpreter;
+        mavkit_context_sigs;
+        mavkit_context_memory;
+        mavkit_lwt_result_stdlib;
         data_encoding;
       ]
 
-let octez_scoru_wasm_fast =
-  octez_l2_lib
+let mavkit_scoru_wasm_fast =
+  mavkit_l2_lib
     "scoru-wasm-fast"
-    ~internal_name:"tezos_scoru_wasm_fast"
+    ~internal_name:"mavryk_scoru_wasm_fast"
     ~path:"src/lib_scoru_wasm/fast"
     ~synopsis:"WASM functionality for SCORU Fast Execution"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_webassembly_interpreter;
+        mavkit_webassembly_interpreter;
         lazy_containers;
-        octez_scoru_wasm;
-        octez_wasmer;
+        mavkit_scoru_wasm;
+        mavkit_wasmer;
       ]
 
-let octez_context_dump =
-  octez_lib
-    "tezos-context.dump"
+let mavkit_context_dump =
+  mavkit_lib
+    "mavryk-context.dump"
     ~path:"src/lib_context/dump"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_stdlib_unix |> open_; fmt]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_stdlib_unix |> open_; fmt]
 
-let octez_context_disk =
-  octez_lib
-    "tezos-context.disk"
+let mavkit_context_disk =
+  mavkit_lib
+    "mavryk-context.disk"
     ~path:"src/lib_context/disk"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         bigstringaf;
         fmt;
         irmin;
         irmin_pack;
         irmin_pack_unix;
         logs_fmt;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_context_sigs;
-        octez_context_helpers;
-        octez_context_encoding;
-        octez_context_memory;
-        octez_context_dump;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_context_sigs;
+        mavkit_context_helpers;
+        mavkit_context_encoding;
+        mavkit_context_memory;
+        mavkit_context_dump;
       ]
     ~conflicts:[Conflicts.checkseum]
 
@@ -3021,59 +2878,59 @@ let _tree_encoding_tests =
   tezt
     ["test_proofs"; "test_encoding"]
     ~path:"src/lib_tree_encoding/test"
-    ~opam:"tezos-tree-encoding-test"
+    ~opam:"mavryk-tree-encoding-test"
     ~synopsis:"Tests for the tree encoding library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_base_unix;
-        octez_context_disk;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
-        octez_webassembly_interpreter;
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_webassembly_interpreter;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let octez_context =
-  octez_lib
-    "tezos-context"
+let mavkit_context =
+  mavkit_lib
+    "mavryk-context"
     ~path:"src/lib_context"
-    ~synopsis:"On-disk context abstraction for [octez-node]"
-    ~deps:[octez_context_disk; octez_context_memory]
+    ~synopsis:"On-disk context abstraction for [mavkit-node]"
+    ~deps:[mavkit_context_disk; mavkit_context_memory]
 
-let _octez_context_tests =
+let _mavkit_context_tests =
   tezt
     ["test_context"; "test_merkle_proof"]
     ~path:"src/lib_context/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_context_sigs;
-        octez_context_disk;
-        octez_context_memory;
-        octez_context_encoding;
-        octez_stdlib_unix |> open_;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_context_sigs;
+        mavkit_context_disk;
+        mavkit_context_memory;
+        mavkit_context_encoding;
+        mavkit_stdlib_unix |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let _octez_context_memory_tests =
+let _mavkit_context_memory_tests =
   tezt
     ["test"]
     ~path:"src/lib_context/memory/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_context_disk;
-        octez_context_memory;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_context_memory;
+        mavkit_stdlib_unix |> open_;
         alcotezt;
       ]
 
@@ -3081,9 +2938,9 @@ let _octez_context_memory_tests =
    directories or in: $OPAM_SWITCH_PREFIX/lib
 
    Tests are disabled in the .opam because the tests require zcash parameter files. *)
-let octez_sapling =
-  octez_lib
-    "tezos-sapling"
+let mavkit_sapling =
+  mavkit_lib
+    "mavryk-sapling"
     ~path:"src/lib_sapling"
     ~deps:
       [
@@ -3093,12 +2950,12 @@ let octez_sapling =
         ctypes;
         ctypes_stubs_js;
         data_encoding;
-        octez_stdlib |> open_;
-        octez_crypto;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        tezos_rust_lib;
-        tezos_sapling_parameters;
-        octez_lwt_result_stdlib;
+        mavkit_stdlib |> open_;
+        mavkit_crypto;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavryk_rust_lib;
+        mavryk_sapling_parameters;
+        mavkit_lwt_result_stdlib;
       ]
     ~js_of_ocaml:[[S "javascript_files"; S "runtime.js"]]
     ~foreign_stubs:
@@ -3139,7 +2996,7 @@ let octez_sapling =
           ];
         ]
 
-let _octez_sapling_tests =
+let _mavkit_sapling_tests =
   tezt
     [
       "test_rustzcash";
@@ -3152,57 +3009,57 @@ let _octez_sapling_tests =
     ]
     ~path:"src/lib_sapling/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~dep_files:["vectors.csv"; "vectors-zip32.csv"]
     ~deps:
       [
-        octez_sapling |> open_;
-        octez_crypto;
+        mavkit_sapling |> open_;
+        mavkit_crypto;
         str;
-        octez_base;
-        octez_base_unix;
-        octez_stdlib |> open_;
-        octez_stdlib_unix;
+        mavkit_base;
+        mavkit_base_unix;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix;
         data_encoding |> open_;
-        octez_base_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
         alcotezt;
       ]
     ~dune_with_test:Never
 
-let _octez_sapling_js_tests =
+let _mavkit_sapling_js_tests =
   test
     "test_js"
     ~path:"src/lib_sapling/test"
-    ~opam:"octez-libs"
-    ~deps:[octez_sapling; octez_hacl]
+    ~opam:"mavkit-libs"
+    ~deps:[mavkit_sapling; mavkit_hacl]
     ~modules:["test_js"]
     ~linkall:true
     ~modes:[JS]
     ~js_compatible:true
     ~dune_with_test:Never
 
-let _octez_sapling_ctypes_gen =
+let _mavkit_sapling_ctypes_gen =
   private_exes
     ["rustzcash_ctypes_gen"; "gen_runtime_js"]
     ~path:"src/lib_sapling/bindings"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
     ~deps:[ctypes_stubs; ctypes]
     ~modules:
       ["rustzcash_ctypes_gen"; "rustzcash_ctypes_bindings"; "gen_runtime_js"]
 
-let tezos_protocol_environment_sigs_internals =
-  octez_proto_lib
+let mavryk_protocol_environment_sigs_internals =
+  mavkit_proto_lib
     "protocol-environment.sigs-internals"
-    ~internal_name:"tezos_protocol_environment_sigs_internals"
+    ~internal_name:"mavryk_protocol_environment_sigs_internals"
     ~path:"src/lib_protocol_environment/sigs-internals"
 
-let tezos_protocol_environment_sigs =
-  octez_proto_lib
+let mavryk_protocol_environment_sigs =
+  mavkit_proto_lib
     "protocol-environment.sigs"
-    ~internal_name:"tezos_protocol_environment_sigs"
+    ~internal_name:"mavryk_protocol_environment_sigs"
     ~path:"src/lib_protocol_environment/sigs"
-    ~deps:[tezos_protocol_environment_sigs_internals]
+    ~deps:[mavryk_protocol_environment_sigs_internals]
     ~flags:(Flags.standard ~nopervasives:true ~nostdlib:true ())
     ~dune:
       (let gen n =
@@ -3226,64 +3083,64 @@ let tezos_protocol_environment_sigs =
                  ];
                ])
        in
-       let latest_environment_number = 12 in
+       let latest_environment_number = 11 in
        List.init (latest_environment_number + 1) gen |> Dune.of_list)
 
-let octez_protocol_environment_structs =
-  octez_proto_lib
+let mavkit_protocol_environment_structs =
+  mavkit_proto_lib
     "protocol-environment.structs"
-    ~internal_name:"tezos_protocol_environment_structs"
+    ~internal_name:"mavryk_protocol_environment_structs"
     ~path:"src/lib_protocol_environment/structs"
     ~deps:
       [
-        octez_stdlib;
-        octez_crypto;
-        octez_lwt_result_stdlib;
-        octez_scoru_wasm;
+        mavkit_stdlib;
+        mavkit_crypto;
+        mavkit_lwt_result_stdlib;
+        mavkit_scoru_wasm;
         data_encoding;
         bls12_381;
-        octez_plonk |> open_;
+        mavkit_plonk |> open_;
       ]
 
-let octez_protocol_environment =
-  octez_proto_lib
+let mavkit_protocol_environment =
+  mavkit_proto_lib
     "protocol-environment"
-    ~internal_name:"tezos_protocol_environment"
+    ~internal_name:"mavryk_protocol_environment"
     ~path:"src/lib_protocol_environment"
-    ~documentation:[Dune.[S "package"; S "octez-proto-libs"]]
+    ~documentation:[Dune.[S "package"; S "mavkit-proto-libs"]]
     ~deps:
       [
         zarith;
         zarith_stubs_js;
         bls12_381;
-        octez_plonk |> open_;
-        octez_crypto_dal;
+        mavkit_plonk |> open_;
+        mavkit_crypto_dal;
         vdf;
         aches;
         aches_lwt;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_sapling;
-        tezos_protocol_environment_sigs;
-        octez_protocol_environment_structs;
-        octez_micheline |> open_;
-        octez_context_memory;
-        octez_scoru_wasm;
-        octez_event_logging;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_sapling;
+        mavryk_protocol_environment_sigs;
+        mavkit_protocol_environment_structs;
+        mavkit_micheline |> open_;
+        mavkit_context_memory;
+        mavkit_scoru_wasm;
+        mavkit_event_logging;
       ]
 
-let octez_shell_context =
-  octez_shell_lib
+let mavkit_shell_context =
+  mavkit_shell_lib
     "shell-context"
-    ~internal_name:"tezos_shell_context"
+    ~internal_name:"mavryk_shell_context"
     ~path:"src/lib_protocol_environment/shell_context"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_protocol_environment;
-        octez_context;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_protocol_environment;
+        mavkit_context;
       ]
 
-let _octez_protocol_environment_tests =
+let _mavkit_protocol_environment_tests =
   tezt
     [
       "test_mem_context";
@@ -3293,81 +3150,81 @@ let _octez_protocol_environment_tests =
       "test_data_encoding";
     ]
     ~path:"src/lib_protocol_environment/test"
-    ~opam:"octez-proto-libs"
+    ~opam:"mavkit-proto-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_protocol_environment |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_protocol_environment |> open_;
         alcotezt;
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         lwt_unix;
       ]
 
-let octez_context_ops =
-  octez_shell_lib
+let mavkit_context_ops =
+  mavkit_shell_lib
     "context-ops"
-    ~internal_name:"tezos_context_ops"
+    ~internal_name:"mavryk_context_ops"
     ~path:"src/lib_protocol_environment/context_ops"
     ~synopsis:"Backend-agnostic operations on contexts"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_error_monad |> open_;
-        octez_protocol_environment;
-        octez_context |> open_;
-        octez_shell_context |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_error_monad |> open_;
+        mavkit_protocol_environment;
+        mavkit_context |> open_;
+        mavkit_shell_context |> open_;
       ]
 
-let _octez_protocol_shell_context_tests =
+let _mavkit_protocol_shell_context_tests =
   tezt
     ["test_proxy_context"]
     ~path:"src/lib_protocol_environment/test_shell_context"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~deps:
       [
-        octez_shell_context;
+        mavkit_shell_context;
         alcotezt;
-        octez_test_helpers |> open_;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_protocol_environment |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_protocol_environment |> open_;
       ]
 
-let octez_protocol_compiler_registerer =
+let mavkit_protocol_compiler_registerer =
   public_lib
-    "octez-protocol-compiler.registerer"
+    "mavkit-protocol-compiler.registerer"
     ~path:"src/lib_protocol_compiler/registerer"
-    ~internal_name:"tezos_protocol_registerer"
+    ~internal_name:"mavryk_protocol_registerer"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; tezos_protocol_environment_sigs]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavryk_protocol_environment_sigs]
     ~flags:(Flags.standard ~opaque:true ())
 
-let _octez_protocol_compiler_cmis_of_cma =
+let _mavkit_protocol_compiler_cmis_of_cma =
   private_exe
     "cmis_of_cma"
     ~path:"src/lib_protocol_compiler/bin"
-    ~opam:"octez-protocol-compiler"
+    ~opam:"mavkit-protocol-compiler"
     ~deps:[compiler_libs_common]
     ~modules:["cmis_of_cma"]
 
-let octez_protocol_compiler_lib =
+let mavkit_protocol_compiler_lib =
   public_lib
-    "octez-protocol-compiler"
+    "mavkit-protocol-compiler"
     ~path:"src/lib_protocol_compiler"
-    ~synopsis:"Tezos: economic-protocol compiler"
+    ~synopsis:"Mavryk: economic-protocol compiler"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix |> open_;
-        tezos_protocol_environment_sigs;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix |> open_;
+        mavryk_protocol_environment_sigs;
+        mavkit_stdlib_unix |> open_;
         compiler_libs_common;
         lwt_unix;
         ocplib_ocamlres;
         unix;
       ]
-    ~opam_only_deps:[octez_protocol_environment]
+    ~opam_only_deps:[mavkit_protocol_environment]
     ~modules:
       [
         "Embedded_cmis_env";
@@ -3400,7 +3257,7 @@ let octez_protocol_compiler_lib =
             ~enabled_if:[S ">="; S "%{ocaml_version}"; S "5"];
           targets_rule
             ["embedded-interfaces-env"]
-            ~deps:[Dune.(H [[S "package"; S "octez-proto-libs"]])]
+            ~deps:[Dune.(H [[S "package"; S "mavkit-proto-libs"]])]
             ~action:
               [
                 S "with-stdout-to";
@@ -3411,13 +3268,13 @@ let octez_protocol_compiler_lib =
                   V
                     [
                       S
-                        "%{lib:octez-proto-libs.protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}";
+                        "%{lib:mavkit-proto-libs.protocol-environment.sigs:mavryk_protocol_environment_sigs.cmxa}";
                     ];
                 ];
               ];
           targets_rule
             ["embedded_cmis_env.ml"]
-            ~deps:[Dune.(H [[S "package"; S "octez-proto-libs"]])]
+            ~deps:[Dune.(H [[S "package"; S "mavkit-proto-libs"]])]
             ~action:
               [
                 S "run";
@@ -3444,7 +3301,7 @@ let octez_protocol_compiler_lib =
                     S "-o";
                     S "%{targets}";
                   ];
-                S "%{cmi:registerer/tezos_protocol_registerer}";
+                S "%{cmi:registerer/mavryk_protocol_registerer}";
               ];
           targets_rule
             ["defaults.ml"]
@@ -3461,14 +3318,14 @@ let octez_protocol_compiler_lib =
               ];
         ]
 
-let octez_protocol_compiler_native =
+let mavkit_protocol_compiler_native =
   public_lib
-    "octez-protocol-compiler.native"
+    "mavkit-protocol-compiler.native"
     ~path:"src/lib_protocol_compiler"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_protocol_compiler_lib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_protocol_compiler_lib |> open_;
         compiler_libs_optcomp;
       ]
     ~modules:["Native"]
@@ -3477,66 +3334,66 @@ let octez_protocol_compiler_native =
         [
           install
             [V [S "final_protocol_versions"]]
-            ~package:"octez-protocol-compiler"
+            ~package:"mavkit-protocol-compiler"
             ~section:"libexec";
         ]
 
-let octez_protocol_updater =
-  octez_shell_lib
+let mavkit_protocol_updater =
+  mavkit_shell_lib
     "protocol-updater"
-    ~internal_name:"tezos_protocol_updater"
+    ~internal_name:"mavryk_protocol_updater"
     ~path:"src/lib_protocol_updater"
-    ~synopsis:"Economic-protocol dynamic loading for `octez-node`"
+    ~synopsis:"Economic-protocol dynamic loading for `mavkit-node`"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
-        octez_micheline |> open_;
-        octez_shell_services |> open_;
-        octez_protocol_environment;
-        octez_shell_context;
-        octez_protocol_compiler_registerer;
-        octez_protocol_compiler_native;
-        octez_context |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
+        mavkit_micheline |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_protocol_environment;
+        mavkit_shell_context;
+        mavkit_protocol_compiler_registerer;
+        mavkit_protocol_compiler_native;
+        mavkit_context |> open_;
         lwt_exit;
         dynlink;
       ]
 
-let octez_validation =
-  octez_shell_lib
+let mavkit_validation =
+  mavkit_shell_lib
     "validation"
-    ~internal_name:"tezos_validation"
+    ~internal_name:"mavryk_validation"
     ~path:"src/lib_validation"
     ~synopsis:"Library for block validation"
     ~time_measurement_ppx:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_crypto |> open_;
-        octez_rpc;
-        octez_context |> open_;
-        octez_context_ops |> open_;
-        octez_shell_context |> open_;
-        octez_shell_services |> open_;
-        octez_protocol_updater |> open_;
-        octez_stdlib_unix |> open_;
-        octez_version_value;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_crypto |> open_;
+        mavkit_rpc;
+        mavkit_context |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_shell_context |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_version_value;
       ]
 
-let octez_store_shared =
-  octez_shell_lib
+let mavkit_store_shared =
+  mavkit_shell_lib
     "store.shared"
-    ~internal_name:"tezos_store_shared"
+    ~internal_name:"mavryk_store_shared"
     ~path:"src/lib_store/shared"
     ~deps:
       [
-        octez_stdlib_unix |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_crypto |> open_;
-        octez_shell_services |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_crypto |> open_;
+        mavkit_shell_services |> open_;
         aches;
         aches_lwt;
-        octez_validation |> open_;
+        mavkit_validation |> open_;
       ]
     ~modules:
       [
@@ -3548,28 +3405,28 @@ let octez_store_shared =
         "block_level";
       ]
 
-let octez_store_unix =
-  octez_shell_lib
+let mavkit_store_unix =
+  mavkit_shell_lib
     "store.unix"
-    ~internal_name:"tezos_store_unix"
+    ~internal_name:"mavryk_store_unix"
     ~path:"src/lib_store/unix"
     ~deps:
       [
-        octez_shell_services |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_version;
+        mavkit_shell_services |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_version;
         index;
         irmin_pack;
-        octez_store_shared |> open_;
-        octez_protocol_environment |> open_;
-        octez_context |> open_;
-        octez_context_ops |> open_;
-        octez_shell_context;
-        octez_validation |> open_;
-        octez_protocol_updater |> open_;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_crypto |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_protocol_environment |> open_;
+        mavkit_context |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_shell_context;
+        mavkit_validation |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_crypto |> open_;
         lwt_watcher;
         aches;
         aches_lwt;
@@ -3592,247 +3449,247 @@ let octez_store_unix =
       ]
     ~conflicts:[Conflicts.checkseum]
 
-let octez_store_unix_reconstruction =
-  octez_shell_lib
+let mavkit_store_unix_reconstruction =
+  mavkit_shell_lib
     "store.unix-reconstruction"
-    ~internal_name:"tezos_store_unix_reconstruction"
+    ~internal_name:"mavryk_store_unix_reconstruction"
     ~path:"src/lib_store/unix"
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
-        octez_crypto |> open_;
-        octez_shell_services |> open_;
-        octez_protocol_updater |> open_;
-        octez_validation |> open_;
-        octez_context_ops |> open_;
-        octez_store_shared |> open_;
-        octez_store_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_validation |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_store_unix |> open_;
       ]
     ~modules:["reconstruction"; "reconstruction_events"]
 
-let octez_store_unix_snapshots =
-  octez_shell_lib
+let mavkit_store_unix_snapshots =
+  mavkit_shell_lib
     "store.unix-snapshots"
-    ~internal_name:"tezos_store_unix_snapshots"
+    ~internal_name:"mavryk_store_unix_snapshots"
     ~path:"src/lib_store/unix"
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
-        octez_crypto |> open_;
-        octez_shell_services |> open_;
-        octez_context |> open_;
-        octez_validation |> open_;
-        octez_store_shared |> open_;
-        octez_store_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_context |> open_;
+        mavkit_validation |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_store_unix |> open_;
       ]
     ~modules:["snapshots"; "snapshots_events"]
 
-let octez_store =
-  octez_shell_lib
+let mavkit_store =
+  mavkit_shell_lib
     "store"
-    ~internal_name:"tezos_store"
+    ~internal_name:"mavryk_store"
     ~path:"src/lib_store"
-    ~synopsis:"Store for `octez-node`"
+    ~synopsis:"Store for `mavkit-node`"
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_crypto |> open_;
-        octez_rpc;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_crypto |> open_;
+        mavkit_rpc;
         lwt_watcher;
-        octez_shell_services |> open_;
-        octez_validation |> open_;
-        octez_context_ops |> open_;
-        octez_store_shared |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_validation |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_store_shared |> open_;
       ]
     ~virtual_modules:["store"]
-    ~default_implementation:"octez-shell-libs.store.real"
+    ~default_implementation:"mavkit-shell-libs.store.real"
 
-let _octez_store_real =
-  octez_shell_lib
+let _mavkit_store_real =
+  mavkit_shell_lib
     "store.real"
-    ~internal_name:"tezos_store_real"
+    ~internal_name:"mavryk_store_real"
     ~path:"src/lib_store/real"
-    ~deps:[octez_store_unix |> open_]
-    ~implements:octez_store
+    ~deps:[mavkit_store_unix |> open_]
+    ~implements:mavkit_store
 
-let _octez_store_mocked =
-  octez_shell_lib
+let _mavkit_store_mocked =
+  mavkit_shell_lib
     "mocked"
     ~path:"src/lib_store/mocked"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_crypto |> open_;
-        octez_shell_services |> open_;
-        octez_context_memory |> open_;
-        octez_context_ops |> open_;
-        octez_validation |> open_;
-        octez_protocol_environment;
-        octez_store_shared |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_crypto |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_context_memory |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_validation |> open_;
+        mavkit_protocol_environment;
+        mavkit_store_shared |> open_;
       ]
     ~private_modules:["block_store"; "protocol_store"; "stored_data"]
-    ~implements:octez_store
+    ~implements:mavkit_store
 
-let octez_requester =
-  octez_lib
+let mavkit_requester =
+  mavkit_lib
     "requester"
-    ~internal_name:"tezos_requester"
+    ~internal_name:"mavryk_requester"
     ~path:"src/lib_requester"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
         lwt_watcher;
       ]
 
-let _octez_requester_tests =
+let _mavkit_requester_tests =
   tezt
     ["test_requester"; "test_fuzzing_requester"; "shared"]
     ~path:"src/lib_requester/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_stdlib |> open_;
-        octez_stdlib_unix;
-        octez_requester |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix;
+        mavkit_requester |> open_;
         alcotezt;
         qcheck_alcotest;
       ]
 
-let octez_shell =
-  octez_shell_lib
+let mavkit_shell =
+  mavkit_shell_lib
     "shell"
-    ~internal_name:"tezos_shell"
+    ~internal_name:"mavryk_shell"
     ~path:"src/lib_shell"
     ~synopsis:
-      "Core of `octez-node` (gossip, validation scheduling, mempool, ...)"
+      "Core of `mavkit-node` (gossip, validation scheduling, mempool, ...)"
     ~documentation:
       Dune.
-        [[S "package"; S "octez-shell-libs"]; [S "mld_files"; S "octez_shell"]]
+        [[S "package"; S "mavkit-shell-libs"]; [S "mld_files"; S "mavkit_shell"]]
     ~inline_tests:ppx_expect
     ~deps:
       [
         lwt_watcher;
         lwt_canceler;
         prometheus;
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_base_unix |> open_;
-        octez_rpc;
-        octez_context |> open_;
-        octez_store |> open_;
-        octez_store_shared |> open_;
-        octez_protocol_environment |> open_;
-        octez_context_ops |> open_;
-        octez_shell_context |> open_;
-        octez_p2p |> open_;
-        octez_stdlib_unix |> open_;
-        octez_shell_services |> open_;
-        octez_p2p_services |> open_;
-        octez_protocol_updater |> open_;
-        octez_requester |> open_;
-        octez_workers |> open_;
-        octez_validation |> open_;
-        octez_version |> open_;
-        octez_dal_config |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_base_unix |> open_;
+        mavkit_rpc;
+        mavkit_context |> open_;
+        mavkit_store |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_protocol_environment |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_shell_context |> open_;
+        mavkit_p2p |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_requester |> open_;
+        mavkit_workers |> open_;
+        mavkit_validation |> open_;
+        mavkit_version |> open_;
+        mavkit_dal_config |> open_;
         lwt_exit;
       ]
 
-let octez_rpc_http =
-  octez_lib
+let mavkit_rpc_http =
+  mavkit_lib
     "rpc-http"
-    ~internal_name:"tezos-rpc-http"
+    ~internal_name:"mavryk-rpc-http"
     ~path:"src/lib_rpc_http"
     ~synopsis:"Library of auto-documented RPCs (http server and client)"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_rpc; resto_cohttp; uri]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_rpc; resto_cohttp; uri]
     ~modules:["RPC_client_errors"; "media_type"]
 
-let octez_rpc_http_client =
-  octez_lib
+let mavkit_rpc_http_client =
+  mavkit_lib
     "rpc-http-client"
-    ~internal_name:"tezos-rpc-http-client"
+    ~internal_name:"mavryk-rpc-http-client"
     ~path:"src/lib_rpc_http"
     ~synopsis:"Library of auto-documented RPCs (http client)"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         resto_cohttp_client;
-        octez_rpc;
-        octez_rpc_http |> open_;
+        mavkit_rpc;
+        mavkit_rpc_http |> open_;
       ]
     ~modules:["RPC_client"]
 
-let octez_rpc_http_client_unix =
-  octez_lib
+let mavkit_rpc_http_client_unix =
+  mavkit_lib
     "rpc-http-client-unix"
-    ~internal_name:"tezos_rpc_http_client_unix"
+    ~internal_name:"mavryk_rpc_http_client_unix"
     ~path:"src/lib_rpc_http"
     ~synopsis:"Unix implementation of the RPC client"
     ~deps:
       [
-        octez_stdlib_unix;
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix;
+        mavkit_base |> open_ ~m:"TzPervasives";
         cohttp_lwt_unix;
         resto_cohttp_client;
-        octez_rpc;
-        octez_rpc_http_client |> open_;
+        mavkit_rpc;
+        mavkit_rpc_http_client |> open_;
       ]
     ~modules:["RPC_client_unix"]
 
-let octez_rpc_http_server =
-  octez_lib
+let mavkit_rpc_http_server =
+  mavkit_lib
     "rpc-http-server"
-    ~internal_name:"tezos_rpc_http_server"
+    ~internal_name:"mavryk_rpc_http_server"
     ~path:"src/lib_rpc_http"
     ~synopsis:"Library of auto-documented RPCs (http server)"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
         cohttp_lwt_unix;
         resto_cohttp_server;
         resto_acl;
-        octez_rpc;
-        octez_rpc_http |> open_;
+        mavkit_rpc;
+        mavkit_rpc_http |> open_;
       ]
     ~modules:["RPC_server"; "RPC_middleware"]
 
-let _octez_rpc_http_server_tests =
+let _mavkit_rpc_http_server_tests =
   tezt
     ["test_rpc_http"]
     ~path:"src/lib_rpc_http/test"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib |> open_;
-        octez_stdlib_unix;
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_rpc_http_server |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix;
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_rpc_http_server |> open_;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let octez_client_base =
-  octez_shell_lib
+let mavkit_client_base =
+  mavkit_shell_lib
     "client-base"
-    ~internal_name:"tezos_client_base"
+    ~internal_name:"mavryk_client_base"
     ~path:"src/lib_client_base"
-    ~synopsis:"Tezos: common helpers for `tezos-client`"
+    ~synopsis:"Mavryk: common helpers for `mavryk-client`"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_clic;
-        octez_rpc;
-        octez_shell_services |> open_;
-        octez_sapling;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_clic;
+        mavkit_rpc;
+        mavkit_shell_services |> open_;
+        mavkit_sapling;
         uri;
       ]
     ~modules:[":standard"; "bip39_english"]
@@ -3851,13 +3708,13 @@ let octez_client_base =
             ~action:[S "run"; S "%{exe}"; S "%{targets}"];
         ]
 
-let _octez_client_base_tests =
+let _mavkit_client_base_tests =
   tezt
     ["bip39_tests"; "pbkdf_tests"]
     ~path:"src/lib_client_base/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~with_macos_security_framework:true
-    ~deps:[octez_base; octez_client_base |> open_; alcotezt]
+    ~deps:[mavkit_base; mavkit_client_base |> open_; alcotezt]
     ~js_compatible:true
     ~modes:[Native; JS]
 
@@ -3865,82 +3722,82 @@ let _bip39_generator =
   private_exe
     "bip39_generator"
     ~path:"src/lib_client_base/gen"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~bisect_ppx:No
 
-let octez_signer_services =
-  octez_shell_lib
+let mavkit_signer_services =
+  mavkit_shell_lib
     "signer-services"
-    ~internal_name:"tezos_signer_services"
+    ~internal_name:"mavryk_signer_services"
     ~path:"src/lib_signer_services"
-    ~synopsis:"Tezos: descriptions of RPCs exported by `tezos-signer`"
+    ~synopsis:"Mavryk: descriptions of RPCs exported by `mavryk-signer`"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc;
-        octez_client_base |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc;
+        mavkit_client_base |> open_;
       ]
     ~linkall:true
     ~js_compatible:true
 
-let octez_signer_backends =
-  octez_shell_lib
+let mavkit_signer_backends =
+  mavkit_shell_lib
     "signer-backends"
-    ~internal_name:"tezos_signer_backends"
+    ~internal_name:"mavryk_signer_backends"
     ~path:"src/lib_signer_backends"
-    ~synopsis:"Tezos: remote-signature backends for `tezos-client`"
+    ~synopsis:"Mavryk: remote-signature backends for `mavryk-client`"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib |> open_;
-        octez_client_base |> open_;
-        octez_rpc_http |> open_;
-        octez_rpc_http_client |> open_;
-        octez_signer_services |> open_;
-        octez_shell_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib |> open_;
+        mavkit_client_base |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_client |> open_;
+        mavkit_signer_services |> open_;
+        mavkit_shell_services |> open_;
         uri;
       ]
 
-let _octez_signer_backends_tests =
+let _mavkit_signer_backends_tests =
   tezt
     ["test_encrypted"]
     ~path:"src/lib_signer_backends/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base;
-        octez_base_unix;
-        octez_stdlib |> open_;
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_crypto;
-        octez_client_base |> open_;
-        octez_signer_backends |> open_;
+        mavkit_base;
+        mavkit_base_unix;
+        mavkit_stdlib |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_crypto;
+        mavkit_client_base |> open_;
+        mavkit_signer_backends |> open_;
         alcotezt;
         uri;
       ]
 
-let octez_signer_backends_unix =
-  octez_shell_lib
+let mavkit_signer_backends_unix =
+  mavkit_shell_lib
     "signer-backends.unix"
-    ~internal_name:"tezos_signer_backends_unix"
+    ~internal_name:"mavryk_signer_backends_unix"
     ~path:"src/lib_signer_backends/unix"
     ~deps:
       [
         ocplib_endian_bigstring;
         fmt;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_clic;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_client_base |> open_;
-        octez_rpc_http |> open_;
-        octez_rpc_http_client |> open_;
-        octez_rpc_http_client_unix |> open_;
-        octez_signer_services |> open_;
-        octez_signer_backends |> open_;
-        octez_shell_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_clic;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_client_base |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_client |> open_;
+        mavkit_rpc_http_client_unix |> open_;
+        mavkit_signer_services |> open_;
+        mavkit_signer_backends |> open_;
+        mavkit_shell_services |> open_;
         uri;
         select
           ~package:ledgerwallet_tezos
@@ -3949,101 +3806,101 @@ let octez_signer_backends_unix =
           ~target:"ledger.ml";
       ]
 
-let _octez_signer_backends_unix_tests =
+let _mavkit_signer_backends_unix_tests =
   tezt
     ["test_crouching"]
     ~path:"src/lib_signer_backends/unix/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_error_monad |> open_;
-        octez_stdlib |> open_;
-        octez_crypto;
-        octez_client_base |> open_;
-        octez_signer_backends_unix |> open_;
+        mavkit_error_monad |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_crypto;
+        mavkit_client_base |> open_;
+        mavkit_signer_backends_unix |> open_;
         alcotezt;
       ]
 
-let octez_client_commands =
-  octez_shell_lib
+let mavkit_client_commands =
+  mavkit_shell_lib
     "client-commands"
-    ~internal_name:"tezos_client_commands"
+    ~internal_name:"mavryk_client_commands"
     ~path:"src/lib_client_commands"
-    ~synopsis:"Tezos: protocol agnostic commands for `tezos-client`"
+    ~synopsis:"Mavryk: protocol agnostic commands for `mavryk-client`"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc;
-        octez_clic;
-        octez_clic_unix |> open_;
-        octez_client_base |> open_;
-        octez_shell_services |> open_;
-        octez_p2p_services |> open_;
-        octez_stdlib_unix;
-        octez_base_unix |> open_;
-        octez_signer_backends;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc;
+        mavkit_clic;
+        mavkit_clic_unix |> open_;
+        mavkit_client_base |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_stdlib_unix;
+        mavkit_base_unix |> open_;
+        mavkit_signer_backends;
         data_encoding |> open_;
         uri;
       ]
     ~linkall:true
 
-let octez_mockup_registration =
-  octez_shell_lib
+let mavkit_mockup_registration =
+  mavkit_shell_lib
     "mockup-registration"
-    ~internal_name:"tezos_mockup_registration"
+    ~internal_name:"mavryk_mockup_registration"
     ~path:"src/lib_mockup"
-    ~synopsis:"Tezos: protocol registration for the mockup mode"
+    ~synopsis:"Mavryk: protocol registration for the mockup mode"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_client_base;
-        octez_shell_services;
-        octez_protocol_environment;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_client_base;
+        mavkit_shell_services;
+        mavkit_protocol_environment;
         uri;
       ]
     ~modules:["registration"; "registration_intf"; "mockup_args"]
 
-let octez_mockup_proxy =
-  octez_shell_lib
+let mavkit_mockup_proxy =
+  mavkit_shell_lib
     "mockup-proxy"
-    ~internal_name:"tezos_mockup_proxy"
+    ~internal_name:"mavryk_mockup_proxy"
     ~path:"src/lib_mockup_proxy"
-    ~synopsis:"Tezos: local RPCs"
+    ~synopsis:"Mavryk: local RPCs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_client_base;
-        octez_protocol_environment;
-        octez_rpc_http;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_client_base;
+        mavkit_protocol_environment;
+        mavkit_rpc_http;
         resto_cohttp_self_serving_client;
-        octez_rpc_http_client;
-        octez_shell_services;
+        mavkit_rpc_http_client;
+        mavkit_shell_services;
         uri;
       ]
 
-(* Depends on tezos_p2p to register the relevant RPCs. *)
-let octez_mockup =
-  octez_shell_lib
+(* Depends on mavryk_p2p to register the relevant RPCs. *)
+let mavkit_mockup =
+  mavkit_shell_lib
     "mockup"
-    ~internal_name:"tezos_mockup"
+    ~internal_name:"mavryk_mockup"
     ~path:"src/lib_mockup"
-    ~synopsis:"Tezos: library of auto-documented RPCs (mockup mode)"
+    ~synopsis:"Mavryk: library of auto-documented RPCs (mockup mode)"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_client_base;
-        octez_mockup_proxy;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_client_base;
+        mavkit_mockup_proxy;
         resto_cohttp_self_serving_client;
-        octez_rpc;
-        octez_p2p_services;
-        octez_p2p;
-        octez_protocol_environment;
-        octez_stdlib_unix;
-        octez_rpc_http;
-        octez_rpc_http_client;
-        octez_mockup_registration |> open_;
+        mavkit_rpc;
+        mavkit_p2p_services;
+        mavkit_p2p;
+        mavkit_protocol_environment;
+        mavkit_stdlib_unix;
+        mavkit_rpc_http;
+        mavkit_rpc_http_client;
+        mavkit_mockup_registration |> open_;
       ]
     ~modules:
       [
@@ -4055,89 +3912,89 @@ let octez_mockup =
         "migration";
       ]
 
-let octez_mockup_commands =
-  octez_shell_lib
+let mavkit_mockup_commands =
+  mavkit_shell_lib
     "mockup-commands"
-    ~internal_name:"tezos_mockup_commands"
+    ~internal_name:"mavryk_mockup_commands"
     ~path:"src/lib_mockup"
-    ~synopsis:"Tezos: library of auto-documented RPCs (commands)"
+    ~synopsis:"Mavryk: library of auto-documented RPCs (commands)"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_clic;
-        octez_client_commands;
-        octez_client_base;
-        octez_mockup |> open_;
-        octez_mockup_registration |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_clic;
+        mavkit_client_commands;
+        mavkit_client_base;
+        mavkit_mockup |> open_;
+        mavkit_mockup_registration |> open_;
       ]
     ~modules:["mockup_wallet"; "mockup_commands"]
 
-let _octez_mockup_tests =
+let _mavkit_mockup_tests =
   tezt
     ["test_mockup_args"; "test_fuzzing_mockup_args"; "test_persistence"]
     ~path:"src/lib_mockup/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
-        octez_rpc;
-        octez_mockup;
-        octez_mockup_registration;
-        octez_client_base;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_rpc;
+        mavkit_mockup;
+        mavkit_mockup_registration;
+        mavkit_client_base;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let octez_proxy =
-  octez_shell_lib
+let mavkit_proxy =
+  mavkit_shell_lib
     "proxy"
-    ~internal_name:"tezos_proxy"
+    ~internal_name:"mavryk_proxy"
     ~path:"src/lib_proxy"
-    ~synopsis:"Tezos: proxy"
+    ~synopsis:"Mavryk: proxy"
     ~deps:
       [
         aches;
         aches_lwt;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_clic;
-        octez_client_base;
-        octez_protocol_environment;
-        octez_rpc;
-        octez_shell_services;
-        octez_context_memory;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_clic;
+        mavkit_client_base;
+        mavkit_protocol_environment;
+        mavkit_rpc;
+        mavkit_shell_services;
+        mavkit_context_memory;
         uri;
       ]
 
-let octez_proxy_rpc =
-  octez_shell_lib
+let mavkit_proxy_rpc =
+  mavkit_shell_lib
     "proxy.rpc"
-    ~internal_name:"tezos_proxy_rpc"
+    ~internal_name:"mavryk_proxy_rpc"
     ~path:"src/lib_proxy/rpc"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_client_base;
-        octez_mockup_proxy;
-        octez_rpc;
-        octez_proxy;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_client_base;
+        mavkit_mockup_proxy;
+        mavkit_rpc;
+        mavkit_proxy;
         uri;
       ]
 
-let octez_proxy_test_helpers_shell_services =
+let mavkit_proxy_test_helpers_shell_services =
   private_lib
-    "tezos_proxy_test_helpers_shell_services"
+    "mavryk_proxy_test_helpers_shell_services"
     ~path:"src/lib_proxy/test_helpers/shell_services"
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_shell_services;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_shell_services;
+        mavkit_test_helpers |> open_;
         qcheck_core;
-        octez_context_memory;
+        mavkit_context_memory;
         lwt_unix;
         alcotezt;
       ]
@@ -4145,23 +4002,23 @@ let octez_proxy_test_helpers_shell_services =
     ~linkall:true
     ~release_status:Released
 
-let _octez_shell_service_test_helpers_tests =
+let _mavkit_shell_service_test_helpers_tests =
   tezt
     ["test_block_services"]
     ~path:"src/lib_proxy/test_helpers/shell_services/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_test_helpers |> open_;
-        octez_shell_services;
-        octez_proxy_test_helpers_shell_services;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_test_helpers |> open_;
+        mavkit_shell_services;
+        mavkit_proxy_test_helpers_shell_services;
         qcheck_alcotest;
         alcotezt;
       ]
 
-let _octez_proxy_tests =
+let _mavkit_proxy_tests =
   tezt
     [
       "test_proxy";
@@ -4172,96 +4029,96 @@ let _octez_proxy_tests =
     ]
     ~path:"src/lib_proxy/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix;
-        octez_proxy;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
-        octez_proxy_test_helpers_shell_services;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix;
+        mavkit_proxy;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_proxy_test_helpers_shell_services;
         qcheck_alcotest;
         alcotezt;
         uri;
       ]
 
-let octez_proxy_server_config =
+let mavkit_proxy_server_config =
   public_lib
-    "tezos-proxy-server-config"
+    "mavryk-proxy-server-config"
     ~path:"src/lib_proxy_server_config"
-    ~synopsis:"Tezos: proxy server configuration"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_stdlib_unix; uri]
+    ~synopsis:"Mavryk: proxy server configuration"
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_stdlib_unix; uri]
 
-let _octez_proxy_server_config_tests =
+let _mavkit_proxy_server_config_tests =
   tezt
     ["test_proxy_server_config"]
     ~path:"src/lib_proxy_server_config/test"
-    ~opam:"tezos-proxy-server-config"
+    ~opam:"mavryk-proxy-server-config"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_proxy_server_config;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_proxy_server_config;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
         uri;
       ]
 
-let octez_client_base_unix =
-  octez_shell_lib
+let mavkit_client_base_unix =
+  mavkit_shell_lib
     "client-base-unix"
-    ~internal_name:"tezos_client_base_unix"
+    ~internal_name:"mavryk_client_base_unix"
     ~path:"src/lib_client_base_unix"
     ~synopsis:
-      "Tezos: common helpers for `tezos-client` (unix-specific fragment)"
+      "Mavryk: common helpers for `mavryk-client` (unix-specific fragment)"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_clic;
-        octez_rpc;
-        octez_rpc_http |> open_;
-        octez_rpc_http_client_unix |> open_;
-        octez_shell_services |> open_;
-        octez_stdlib_unix |> open_;
-        octez_client_base |> open_;
-        octez_client_commands |> open_;
-        octez_mockup;
-        octez_mockup_registration;
-        octez_mockup_commands |> open_;
-        octez_proxy;
-        octez_proxy_rpc;
-        octez_signer_backends_unix;
-        octez_version_value;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_clic;
+        mavkit_rpc;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_client_unix |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_client_base |> open_;
+        mavkit_client_commands |> open_;
+        mavkit_mockup;
+        mavkit_mockup_registration;
+        mavkit_mockup_commands |> open_;
+        mavkit_proxy;
+        mavkit_proxy_rpc;
+        mavkit_signer_backends_unix;
+        mavkit_version_value;
         lwt_exit;
         uri;
       ]
     ~linkall:true
 
-let _octez_client_base_unix_tests =
+let _mavkit_client_base_unix_tests =
   tezt
     ["test_mockup_wallet"]
     ~path:"src/lib_client_base_unix/test"
-    ~opam:"octez-shell-libs"
+    ~opam:"mavkit-shell-libs"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_mockup_commands;
-        octez_client_base_unix;
-        octez_base_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_mockup_commands;
+        mavkit_client_base_unix;
+        mavkit_base_test_helpers |> open_;
         alcotezt;
       ]
 
-let octez_benchmark =
+let mavkit_benchmark =
   public_lib
-    "tezos-benchmark"
+    "mavryk-benchmark"
     ~path:"src/lib_benchmark"
     ~synopsis:
-      "Tezos: library for writing benchmarks and performing simple parameter \
+      "Mavryk: library for writing benchmarks and performing simple parameter \
        inference"
     ~foreign_stubs:
       {language = C; flags = [S ":standard"]; names = ["snoop_stubs"]}
@@ -4269,11 +4126,11 @@ let octez_benchmark =
     ~deps:
       [
         str;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
-        octez_crypto;
-        octez_micheline;
-        octez_clic;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto;
+        mavkit_micheline;
+        mavkit_clic;
         data_encoding;
         prbnmcn_linalg;
         prbnmcn_stats;
@@ -4289,20 +4146,20 @@ let octez_benchmark =
            installed in the image of the opam jobs. *)
     ~opam_with_test:Never
 
-let octez_benchmark_examples =
+let mavkit_benchmark_examples =
   public_lib
-    "tezos-benchmark-examples"
+    "mavryk-benchmark-examples"
     ~path:"src/lib_benchmark/example"
-    ~synopsis:"Tezos: examples for lib-benchmarks"
+    ~synopsis:"Mavryk: examples for lib-benchmarks"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix;
-        octez_crypto;
-        octez_benchmark;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix;
+        mavkit_crypto;
+        mavkit_benchmark;
       ]
 
-let _octez_benchmark_tests =
+let _mavkit_benchmark_tests =
   tezt
     [
       "test";
@@ -4314,60 +4171,60 @@ let _octez_benchmark_tests =
       "test_benchmark_helpers";
     ]
     ~path:"src/lib_benchmark/test"
-    ~opam:"tezos-benchmark-tests"
-    ~synopsis:"Tezos: tests for lib-benchmarks"
+    ~opam:"mavryk-benchmark-tests"
+    ~synopsis:"Mavryk: tests for lib-benchmarks"
     ~deps:
       [
         alcotezt;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix;
-        octez_micheline;
-        octez_crypto;
-        octez_benchmark;
-        octez_benchmark_examples;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix;
+        mavkit_micheline;
+        mavkit_crypto;
+        mavkit_benchmark;
+        mavkit_benchmark_examples;
       ]
 
 (* unused lib? *)
-let octez_micheline_rewriting =
+let mavkit_micheline_rewriting =
   public_lib
-    "tezos-micheline-rewriting"
+    "mavryk-micheline-rewriting"
     ~path:"src/lib_benchmark/lib_micheline_rewriting"
-    ~synopsis:"Tezos: library for rewriting Micheline expressions"
+    ~synopsis:"Mavryk: library for rewriting Micheline expressions"
     ~deps:
       [
         zarith;
         zarith_stubs_js;
-        octez_stdlib |> open_;
-        octez_crypto;
-        octez_error_monad |> open_;
-        octez_micheline |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_crypto;
+        mavkit_error_monad |> open_;
+        mavkit_micheline |> open_;
       ]
 
-let octez_shell_benchmarks =
-  octez_shell_lib
+let mavkit_shell_benchmarks =
+  mavkit_shell_lib
     "shell-benchmarks"
-    ~internal_name:"tezos_shell_benchmarks"
+    ~internal_name:"mavryk_shell_benchmarks"
     ~path:"src/lib_shell_benchmarks"
-    ~synopsis:"Tezos: shell benchmarks"
+    ~synopsis:"Mavryk: shell benchmarks"
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_error_monad |> open_;
-        octez_benchmark |> open_;
-        octez_crypto;
-        octez_context;
-        octez_shell_context;
-        octez_store;
-        octez_micheline;
+        mavkit_stdlib |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_error_monad |> open_;
+        mavkit_benchmark |> open_;
+        mavkit_crypto;
+        mavkit_context;
+        mavkit_shell_context;
+        mavkit_store;
+        mavkit_micheline;
       ]
     ~linkall:true
     ~foreign_stubs:{language = C; flags = []; names = ["alloc_mmap"]}
 
 let _tezt_testnet_scenarios =
   public_exe
-    "octez-testnet-scenarios"
+    "mavkit-testnet-scenarios"
     ~internal_name:"main"
     ~path:"src/bin_testnet_scenarios"
     ~synopsis:"Run scenarios on testnets"
@@ -4375,9 +4232,9 @@ let _tezt_testnet_scenarios =
     ~static:false
     ~deps:
       [
-        tezt_wrapper |> open_ |> open_ ~m:"Base";
+        tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
-        tezt_etherlink |> open_;
+        tezt_ethereum |> open_;
       ]
 
 let octogram =
@@ -4387,8 +4244,8 @@ let octogram =
     ~synopsis:"An Ansible-inspired environment to run scenarios and experiments"
     ~deps:
       [
-        octez_shell_services |> open_;
-        octez_rpc_http_client_unix |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_rpc_http_client_unix |> open_;
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
         jingoo;
@@ -4410,425 +4267,422 @@ let _octogram_bin =
         yaml;
       ]
 
-let octez_openapi =
+let mavkit_openapi =
   public_lib
-    "tezos-openapi"
+    "mavryk-openapi"
     ~path:"src/lib_openapi"
     ~synopsis:
-      "Tezos: a library for querying RPCs and converting into the OpenAPI \
+      "Mavryk: a library for querying RPCs and converting into the OpenAPI \
        format"
-    ~deps:[ezjsonm; json_data_encoding; tezt_json_lib]
+    ~deps:[ezjsonm; json_data_encoding; tezt_lib]
 
-let _octez_protocol_compiler_bin =
+let _mavkit_protocol_compiler_bin =
   public_exe
-    "octez-protocol-compiler"
+    "mavkit-protocol-compiler"
     ~path:"src/lib_protocol_compiler/bin"
-    ~opam:"octez-protocol-compiler"
+    ~opam:"mavkit-protocol-compiler"
     ~internal_name:"main_native"
     ~modes:[Native]
-    ~deps:[octez_protocol_compiler_native; octez_version_value]
+    ~deps:[mavkit_protocol_compiler_native; mavkit_version_value]
     ~linkall:true
     ~modules:["Main_native"]
 
-let octez_protocol_compiler_tezos_protocol_packer =
+let mavkit_protocol_compiler_mavryk_protocol_packer =
   public_exe
-    "octez-protocol-compiler.octez-protocol-packer"
+    "mavkit-protocol-compiler.mavkit-protocol-packer"
     ~path:"src/lib_protocol_compiler/bin"
-    ~opam:"octez-protocol-compiler"
+    ~opam:"mavkit-protocol-compiler"
     ~internal_name:"main_packer"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_stdlib_unix |> open_;
-        octez_protocol_compiler_lib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_stdlib_unix |> open_;
+        mavkit_protocol_compiler_lib |> open_;
       ]
     ~modules:["Main_packer"]
 
-let _octez_embedded_protocol_packer =
+let _mavkit_embedded_protocol_packer =
   public_exe
-    "octez-embedded-protocol-packer"
+    "mavkit-embedded-protocol-packer"
     ~path:"src/lib_protocol_compiler/bin"
-    ~opam:"octez-protocol-compiler"
+    ~opam:"mavkit-protocol-compiler"
     ~internal_name:"main_embedded_packer"
     ~modes:[Native]
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
       ]
     ~linkall:true
     ~modules:["Main_embedded_packer"]
 
-let octez_layer2_store =
-  octez_l2_lib
+let mavkit_layer2_store =
+  mavkit_l2_lib
     "layer2_store"
-    ~internal_name:"tezos_layer2_store"
+    ~internal_name:"mavryk_layer2_store"
     ~path:"src/lib_layer2_store"
     ~synopsis:"layer2 storage utils"
     ~deps:
       [
         index;
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         irmin_pack;
         irmin_pack_unix;
         irmin;
         aches_lwt;
-        octez_stdlib_unix |> open_;
-        octez_context_encoding;
-        octez_context_sigs;
-        octez_context_helpers;
+        mavkit_stdlib_unix |> open_;
+        mavkit_context_encoding;
       ]
     ~linkall:true
     ~conflicts:[Conflicts.checkseum]
 
-let _octez_layer2_indexed_store_test =
+let _mavkit_layer2_indexed_store_test =
   tezt
     ["test_indexed_store"]
     ~path:"src/lib_layer2_store/test/"
-    ~opam:"octez-l2-libs"
+    ~opam:"mavkit-l2-libs"
     ~deps:
       [
-        octez_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        octez_layer2_store |> open_;
+        mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
+        mavkit_layer2_store |> open_;
         qcheck_alcotest;
         alcotezt;
         tezt_lib;
       ]
 
-let octez_dal_node_services =
+let mavkit_dal_node_services =
   public_lib
-    "tezos-dal-node-services"
+    "mavryk-dal-node-services"
     ~path:"src/lib_dal_node_services"
-    ~opam:"tezos-dal-node-services"
-    ~synopsis:"Tezos: `tezos-dal-node` RPC services"
+    ~opam:"mavryk-dal-node-services"
+    ~synopsis:"Mavryk: `mavryk-dal-node` RPC services"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_rpc;
-        octez_crypto_dal;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_rpc;
+        mavkit_crypto_dal;
       ]
     ~linkall:true
 
-let octez_dal_node_lib =
+let mavkit_dal_node_lib =
   public_lib
-    "tezos-dal-node-lib"
+    "mavryk-dal-node-lib"
     ~path:"src/lib_dal_node"
-    ~opam:"tezos-dal-node-lib"
-    ~synopsis:"Tezos: `tezos-dal-node` library"
+    ~opam:"mavryk-dal-node-lib"
+    ~synopsis:"Mavryk: `mavryk-dal-node` library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_dal_node_services;
-        octez_client_base |> open_;
-        octez_protocol_updater |> open_;
-        octez_client_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_crypto_dal |> open_;
-        octez_p2p |> open_;
-        octez_p2p_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_dal_node_services;
+        mavkit_client_base |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_client_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto_dal |> open_;
+        mavkit_p2p |> open_;
+        mavkit_p2p_services |> open_;
       ]
 
-let octez_dal_node_gossipsub_lib =
+let mavkit_dal_node_gossipsub_lib =
   public_lib
-    "tezos-dal-node-lib.gossipsub"
+    "mavryk-dal-node-lib.gossipsub"
     ~path:"src/lib_dal_node/gossipsub"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_crypto_dal |> open_;
-        octez_gossipsub |> open_;
-        octez_p2p |> open_;
-        octez_p2p_services |> open_;
-        octez_dal_node_services |> open_;
-        octez_crypto |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_crypto_dal |> open_;
+        mavkit_gossipsub |> open_;
+        mavkit_p2p |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_dal_node_services |> open_;
+        mavkit_crypto |> open_;
       ]
 
-let octez_dac_lib =
+let mavkit_dac_lib =
   public_lib
-    "tezos-dac-lib"
+    "mavryk-dac-lib"
     ~path:"src/lib_dac"
-    ~opam:"tezos-dac-lib"
-    ~synopsis:"Tezos: `tezos-dac` library"
+    ~opam:"mavryk-dac-lib"
+    ~synopsis:"Mavryk: `mavryk-dac` library"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_protocol_updater |> open_]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_protocol_updater |> open_]
 
-let octez_dac_client_lib =
+let mavkit_dac_client_lib =
   public_lib
-    "tezos-dac-client-lib"
+    "mavryk-dac-client-lib"
     ~path:"src/lib_dac_client"
-    ~opam:"tezos-dac-client-lib"
-    ~synopsis:"Tezos: `tezos-dac-client` library"
+    ~opam:"mavryk-dac-client-lib"
+    ~synopsis:"Mavryk: `mavryk-dac-client` library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_dac_lib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_dac_lib |> open_;
       ]
 
-let octez_dac_node_lib =
+let mavkit_dac_node_lib =
   private_lib
-    "tezos_dac_node_lib"
+    "mavryk_dac_node_lib"
     ~path:"src/lib_dac_node"
-    ~opam:"tezos-dac-node-lib"
-    ~synopsis:"Tezos: `tezos-dac-node` library"
+    ~opam:"mavryk-dac-node-lib"
+    ~synopsis:"Mavryk: `mavryk-dac-node` library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_layer2_store |> open_;
-        octez_rpc_http_server;
-        octez_dac_lib |> open_;
-        octez_dac_client_lib |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_layer2_store |> open_;
+        mavkit_rpc_http_server;
+        mavkit_dac_lib |> open_;
+        mavkit_dac_client_lib |> open_;
       ]
 
-let _octez_dac_node_lib_tests =
+let _mavkit_dac_node_lib_tests =
   tezt
     ["test_data_streamer"]
     ~path:"src/lib_dac_node/test"
-    ~opam:"tezos-dac-node-lib-test"
+    ~opam:"mavryk-dac-node-lib-test"
     ~synopsis:"Test for dac node lib"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_stdlib_unix |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_dac_node_lib |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_dac_node_lib |> open_;
         alcotezt;
       ]
 
-let _octez_dac_lib_tests =
+let _mavkit_dac_lib_tests =
   tezt
     ["test_certificate"; "test_dac_plugin"; "test_dac_clic_helpers"]
     ~path:"src/lib_dac/test"
-    ~opam:"tezos-dac-lib-test"
+    ~opam:"mavryk-dac-lib-test"
     ~synopsis:"Test for dac lib"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_stdlib |> open_;
-        octez_stdlib_unix |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_test_helpers |> open_;
-        octez_base_test_helpers |> open_;
-        octez_dac_lib |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_test_helpers |> open_;
+        mavkit_base_test_helpers |> open_;
+        mavkit_dac_lib |> open_;
         alcotezt;
       ]
 
-let octez_node_config =
+let mavkit_node_config =
   public_lib
-    "octez-node-config"
+    "mavkit-node-config"
     ~path:"src/lib_node_config"
-    ~synopsis:"Octez: `octez-node-config` library"
+    ~synopsis:"Mavkit: `mavkit-node-config` library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_base_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_shell_services |> open_;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server |> open_;
-        octez_context |> open_;
-        octez_store |> open_;
-        octez_validation |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server |> open_;
+        mavkit_context |> open_;
+        mavkit_store |> open_;
+        mavkit_validation |> open_;
       ]
 
-let octez_rpc_process =
+let mavkit_rpc_process =
   public_lib
-    "octez-rpc-process"
+    "mavkit-rpc-process"
     ~path:"src/lib_rpc_process"
-    ~synopsis:"Tezos: RPC process"
+    ~synopsis:"Mavryk: RPC process"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_shell |> open_;
-        octez_base_unix |> open_;
-        octez_node_config |> open_;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_shell |> open_;
+        mavkit_base_unix |> open_;
+        mavkit_node_config |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server |> open_;
         lwt_unix;
         lwt_exit;
         prometheus_app;
       ]
 
-let octez_crawler =
+let mavkit_crawler =
   public_lib
-    "octez-crawler"
-    ~internal_name:"octez_crawler"
+    "mavkit-crawler"
+    ~internal_name:"mavkit_crawler"
     ~path:"src/lib_crawler"
-    ~synopsis:"Octez: library to crawl blocks of the L1 chain"
+    ~synopsis:"Mavkit: library to crawl blocks of the L1 chain"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_rpc_http |> open_;
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_client_base |> open_;
-        octez_shell;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_client_base |> open_;
+        mavkit_shell;
       ]
 
-let octez_injector_lib =
+let mavkit_injector_lib =
   public_lib
-    "octez-injector"
+    "mavkit-injector"
     ~path:"src/lib_injector"
-    ~synopsis:"Octez: library for building injectors"
+    ~synopsis:"Mavkit: library for building injectors"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
         logs_lwt;
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_crypto;
-        octez_micheline |> open_;
-        octez_client_base |> open_;
-        octez_workers |> open_;
-        octez_shell;
-        octez_crawler |> open_;
-        octez_signer_backends;
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto;
+        mavkit_micheline |> open_;
+        mavkit_client_base |> open_;
+        mavkit_workers |> open_;
+        mavkit_shell;
+        mavkit_crawler |> open_;
+        mavkit_signer_backends;
       ]
 
-let octez_smart_rollup_lib =
-  octez_l2_lib
+let mavkit_smart_rollup_lib =
+  mavkit_l2_lib
     "smart-rollup"
-    ~internal_name:"octez_smart_rollup"
+    ~internal_name:"mavkit_smart_rollup"
     ~path:"src/lib_smart_rollup"
     ~synopsis:"Library for Smart Rollups"
-    ~documentation:[Dune.[S "package"; S "octez-l2-libs"]]
+    ~documentation:[Dune.[S "package"; S "mavkit-l2-libs"]]
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_crypto |> open_;
-        octez_crypto_dal;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto |> open_;
+        mavkit_crypto_dal;
         yaml;
       ]
 
-let octez_smart_rollup_node_lib =
+let mavkit_smart_rollup_node_lib =
   public_lib
-    "octez-smart-rollup-node-lib"
-    ~internal_name:"octez_smart_rollup_node"
+    "mavkit-smart-rollup-node-lib"
+    ~internal_name:"mavkit_smart_rollup_node"
     ~path:"src/lib_smart_rollup_node"
-    ~synopsis:"Octez: library for Smart Rollup node"
+    ~synopsis:"Mavkit: library for Smart Rollup node"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives" |> open_;
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_crypto |> open_;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_crypto |> open_;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
         cohttp_lwt_unix;
-        octez_openapi;
-        octez_node_config;
+        mavkit_node_config;
         prometheus_app;
         camlzip;
         tar;
         tar_unix;
-        octez_dal_node_lib |> open_;
-        octez_dac_lib |> open_;
-        octez_dac_client_lib |> open_;
-        octez_injector_lib |> open_;
-        octez_version_value |> open_;
-        octez_layer2_store |> open_;
-        octez_crawler |> open_;
-        octez_workers |> open_;
-        octez_smart_rollup_lib |> open_;
+        mavkit_dal_node_lib |> open_;
+        mavkit_dac_lib |> open_;
+        mavkit_dac_client_lib |> open_;
+        mavkit_injector_lib |> open_;
+        mavkit_version_value |> open_;
+        mavkit_layer2_store |> open_;
+        mavkit_crawler |> open_;
+        mavkit_workers |> open_;
+        mavkit_smart_rollup_lib |> open_;
       ]
 
-let octez_scoru_wasm_helpers =
-  octez_l2_lib
+let mavkit_scoru_wasm_helpers =
+  mavkit_l2_lib
     "scoru-wasm-helpers"
-    ~internal_name:"tezos_scoru_wasm_helpers"
+    ~internal_name:"mavryk_scoru_wasm_helpers"
     ~path:"src/lib_scoru_wasm/helpers"
     ~synopsis:"Helpers for the smart rollup wasm functionality and debugger"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_base_unix;
-        octez_context_disk;
-        octez_scoru_wasm;
-        octez_scoru_wasm_fast;
-        octez_webassembly_interpreter_extra |> open_;
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_fast;
+        mavkit_webassembly_interpreter_extra |> open_;
       ]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 
-let octez_scoru_wasm_durable_snapshot =
-  octez_l2_lib
+let mavkit_scoru_wasm_durable_snapshot =
+  mavkit_l2_lib
     "scoru_wasm_durable_snapshot"
-    ~internal_name:"tezos_scoru_wasm_durable_snapshot"
+    ~internal_name:"mavryk_scoru_wasm_durable_snapshot"
     ~path:"src/lib_scoru_wasm/test/durable_snapshot"
     ~synopsis:"Durable storage reference implementation"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_webassembly_interpreter_extra |> open_;
+        mavkit_webassembly_interpreter_extra |> open_;
       ]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 
-let octez_scoru_wasm_tests_helpers =
-  octez_l2_lib
+let mavkit_scoru_wasm_tests_helpers =
+  mavkit_l2_lib
     "scoru_wasm_test_helpers"
-    ~internal_name:"tezos_scoru_wasm_test_helpers"
+    ~internal_name:"mavryk_scoru_wasm_test_helpers"
     ~path:"src/lib_scoru_wasm/test/helpers"
     ~synopsis:"Helpers for test of the smart rollup wasm functionality"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_base_unix;
-        octez_context_disk;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers;
-        octez_scoru_wasm;
-        octez_scoru_wasm_durable_snapshot;
-        octez_scoru_wasm_fast;
-        octez_scoru_wasm_helpers;
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_durable_snapshot;
+        mavkit_scoru_wasm_fast;
+        mavkit_scoru_wasm_helpers;
         qcheck_alcotest;
         alcotezt;
-        octez_webassembly_interpreter_extra |> open_;
+        mavkit_webassembly_interpreter_extra |> open_;
       ]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 
-let octez_scoru_wasm_benchmark =
-  octez_l2_lib
+let mavkit_scoru_wasm_benchmark =
+  mavkit_l2_lib
     "smart_rollup_wasm_benchmark_lib"
-    ~internal_name:"octez_smart_rollup_wasm_benchmark_lib"
+    ~internal_name:"mavkit_smart_rollup_wasm_benchmark_lib"
     ~path:"src/lib_scoru_wasm/bench"
     ~synopsis:"Smart Rollup WASM benchmark library"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tezt_lib;
-        octez_webassembly_interpreter;
-        octez_context_memory;
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers;
+        mavkit_webassembly_interpreter;
+        mavkit_context_memory;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_helpers;
         lwt_unix;
       ]
     ~preprocess:[pps ppx_deriving_show]
 
-let _octez_scoru_wasm_benchmark_exe =
+let _mavkit_scoru_wasm_benchmark_exe =
   private_exe
-    "octez_smart_rollup_wasm_benchmark"
+    "mavkit_smart_rollup_wasm_benchmark"
     ~path:"src/lib_scoru_wasm/bench/executable"
-    ~opam:"octez-l2-libs"
+    ~opam:"mavkit-l2-libs"
     ~preprocess:[pps ppx_deriving_show]
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; octez_scoru_wasm_benchmark]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_benchmark]
 
-let _octez_scoru_wasm_tests =
+let _mavkit_scoru_wasm_tests =
   tezt
     [
       "test_ast_generators";
@@ -4854,25 +4708,25 @@ let _octez_scoru_wasm_tests =
       "test_wasm_vm";
     ]
     ~path:"src/lib_scoru_wasm/test"
-    ~opam:"octez-l2-libs"
+    ~opam:"mavkit-l2-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_base_unix;
-        octez_context_disk;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
-        octez_scoru_wasm;
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_scoru_wasm;
         qcheck_alcotest;
         alcotezt;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_tests_helpers |> open_;
-        octez_webassembly_interpreter_extra |> open_;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_scoru_wasm_tests_helpers |> open_;
+        mavkit_webassembly_interpreter_extra |> open_;
       ]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 
-let _octez_scoru_wasm_fast_tests =
+let _mavkit_scoru_wasm_fast_tests =
   tezt
     [
       "gen";
@@ -4883,19 +4737,19 @@ let _octez_scoru_wasm_fast_tests =
       "test_memory_access";
     ]
     ~path:"src/lib_scoru_wasm/fast/test"
-    ~opam:"octez-l2-libs"
+    ~opam:"mavkit-l2-libs"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tree_encoding;
-        octez_base_unix;
-        octez_context_disk;
-        octez_base_test_helpers |> open_;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_tests_helpers |> open_;
-        octez_test_helpers |> open_;
-        octez_scoru_wasm;
-        octez_scoru_wasm_fast;
+        mavkit_base_unix;
+        mavkit_context_disk;
+        mavkit_base_test_helpers |> open_;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_scoru_wasm_tests_helpers |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_fast;
         qcheck_alcotest;
         alcotezt;
       ]
@@ -4961,11 +4815,11 @@ module Protocol : sig
 
   val benchmarks_proto_exn : t -> target
 
-  val octez_sc_rollup : t -> target option
+  val mavkit_sc_rollup : t -> target option
 
-  val octez_sc_rollup_node : t -> target option
+  val mavkit_sc_rollup_node : t -> target option
 
-  val octez_injector : t -> target option
+  val mavkit_injector : t -> target option
 
   val baking_exn : t -> target
 
@@ -5084,15 +4938,15 @@ end = struct
     parameters : target option;
     benchmarks_proto : target option;
     baking : target option;
-    octez_sc_rollup : target option;
-    octez_sc_rollup_node : target option;
-    octez_injector : target option;
+    mavkit_sc_rollup : target option;
+    mavkit_sc_rollup_node : target option;
+    mavkit_injector : target option;
   }
 
   let make ?client ?client_commands ?client_commands_registration
       ?baking_commands_registration ?plugin ?plugin_registerer ?dal ?dac
-      ?test_helpers ?parameters ?benchmarks_proto ?octez_sc_rollup
-      ?octez_sc_rollup_node ?octez_injector ?baking ~status ~name ~main
+      ?test_helpers ?parameters ?benchmarks_proto ?mavkit_sc_rollup
+      ?mavkit_sc_rollup_node ?mavkit_injector ?baking ~status ~name ~main
       ~embedded () =
     {
       status;
@@ -5111,9 +4965,9 @@ end = struct
       parameters;
       benchmarks_proto;
       baking;
-      octez_sc_rollup;
-      octez_sc_rollup_node;
-      octez_injector;
+      mavkit_sc_rollup;
+      mavkit_sc_rollup_node;
+      mavkit_injector;
     }
 
   let all_rev : t list ref = ref []
@@ -5172,11 +5026,11 @@ end = struct
 
   let baking_exn p = mandatory "baking" p p.baking
 
-  let octez_sc_rollup p = p.octez_sc_rollup
+  let mavkit_sc_rollup p = p.mavkit_sc_rollup
 
-  let octez_sc_rollup_node p = p.octez_sc_rollup_node
+  let mavkit_sc_rollup_node p = p.mavkit_sc_rollup_node
 
-  let octez_injector p = p.octez_injector
+  let mavkit_injector p = p.mavkit_injector
 
   let test_helpers_exn p = mandatory "test_helpers" p p.test_helpers
 
@@ -5216,7 +5070,7 @@ end = struct
     type t = {main : target; lifted : target; embedded : target}
 
     let make_tests ?test_helpers ?parameters ?plugin ?client ?benchmark
-        ?benchmark_type_inference ?octez_sc_rollup ~main ~name () =
+        ?benchmark_type_inference ?mavkit_sc_rollup ~main ~name () =
       let name_dash = Name.name_dash name in
       let number = Name.number name in
       let path = Name.base_path name in
@@ -5228,32 +5082,32 @@ end = struct
             "test_deactivation";
             "test_delegation";
             "test_double_baking";
-            (if N.(number >= 018) then "test_double_attestation"
+            (if N.(number >= 001) then "test_double_attestation"
             else "test_double_endorsement");
-            (if N.(number >= 018) then "test_double_preattestation"
+            (if N.(number >= 001) then "test_double_preattestation"
             else "test_double_preendorsement");
-            (if N.(number >= 018) then "test_attestation"
+            (if N.(number >= 001) then "test_attestation"
             else "test_endorsement");
             "test_frozen_deposits";
             "test_helpers_rpcs";
             "test_participation";
-            (if N.(number >= 018) then "test_preattestation_functor"
+            (if N.(number >= 001) then "test_preattestation_functor"
             else "test_preendorsement_functor");
-            (if N.(number >= 018) then "test_preattestation"
+            (if N.(number >= 001) then "test_preattestation"
             else "test_preendorsement");
             "test_seed";
           ]
           ~path:(path // "lib_protocol/test/integration/consensus")
           ~with_macos_security_framework:true
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~deps:
             [
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
+              mavkit_base_test_helpers |> open_;
               parameters |> if_some |> open_;
               plugin |> if_some |> open_;
             ]
@@ -5262,16 +5116,16 @@ end = struct
         tezt
           ["test_gas_costs"; "test_gas_levels"]
           ~path:(path // "lib_protocol/test/integration/gas")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
+              mavkit_base_test_helpers |> open_;
             ]
       in
       let _integration_michelson =
@@ -5305,7 +5159,7 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration/michelson")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~dep_globs:
             (conditional_list
@@ -5322,15 +5176,15 @@ end = struct
           ~deps:
             [
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
-              octez_client_base |> if_ N.(number <= 012);
+              mavkit_base_test_helpers |> open_;
+              mavkit_client_base |> if_ N.(number <= 012);
               client |> if_some |> open_;
-              octez_benchmark;
-              octez_micheline |> open_;
+              mavkit_benchmark;
+              mavkit_micheline |> open_;
               benchmark |> if_some |> open_;
               benchmark_type_inference |> if_some |> open_;
               plugin |> if_some |> open_;
@@ -5358,18 +5212,18 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration/operations")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~dep_globs:(conditional_list [("contracts/*", N.(number >= 013))])
           ~deps:
             [
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
               client |> if_some |> if_ N.(number >= 012) |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
+              mavkit_base_test_helpers |> open_;
               plugin |> if_some |> open_;
             ]
       in
@@ -5390,20 +5244,19 @@ end = struct
             "validate_helpers";
           ]
           ~path:(path // "lib_protocol/test/integration/validate")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_;
               qcheck_alcotest;
               client |> if_some |> open_;
-              octez_test_helpers |> open_;
+              mavkit_test_helpers |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
-              parameters |> if_some |> if_ N.(number >= 019) |> open_;
+              mavkit_base_test_helpers |> open_;
               plugin |> if_some |> open_;
             ]
       in
@@ -5412,8 +5265,8 @@ end = struct
           [
             ("test_constants", true);
             ("test_frozen_bonds", true);
-            ("test_adaptive_issuance_launch", N.(number >= 018));
-            ("test_adaptive_issuance_roundtrip", N.(number >= 018));
+            ("test_adaptive_issuance_launch", N.(number >= 001));
+            ("test_adaptive_issuance_roundtrip", N.(number >= 001));
             ("test_liquidity_baking", true);
             ("test_storage_functions", true);
             ("test_storage", true);
@@ -5424,21 +5277,21 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
               (if N.(number >= 015) then Some tezt_lib else None) |> if_some;
-              octez_context;
+              mavkit_context;
               alcotezt;
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               client |> if_some |> open_;
-              octez_client_base |> if_ N.(number <= 012);
+              mavkit_client_base |> if_ N.(number <= 012);
               main |> open_;
               parameters |> if_some |> open_;
               test_helpers |> if_some |> open_;
-              octez_base_test_helpers |> open_;
+              mavkit_base_test_helpers |> open_;
             ]
           ~dep_globs:(if N.(number >= 015) then ["wasm_kernel/*.wasm"] else [])
       in
@@ -5464,39 +5317,39 @@ end = struct
             ("test_dal_slot_proof", N.(number >= 016));
             ("test_compare_operations", N.(number >= 015));
             ("test_operation_encoding", N.(number >= 016));
-            ("test_balance_updates_encoding", N.(number >= 018));
+            ("test_balance_updates_encoding", N.(number >= 001));
             ("test_bytes_conversion", N.(number >= 016));
           ]
           |> conditional_list
         in
         tezt
           list
-          ~synopsis:"Tezos/Protocol: tests for economic-protocol definition"
+          ~synopsis:"Mavryk/Protocol: tests for economic-protocol definition"
           ~path:(path // "lib_protocol/test/pbt")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
-              octez_base
+              mavkit_base
               |> if_ N.(number <= 14)
               |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-              octez_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
-              octez_micheline |> open_;
+              mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
+              mavkit_micheline |> open_;
               client |> if_some |> open_;
               main |> open_;
-              octez_merkle_proof_encoding;
-              octez_test_helpers |> open_;
+              mavkit_merkle_proof_encoding;
+              mavkit_test_helpers |> open_;
               test_helpers |> if_some |> open_;
               alcotezt;
               qcheck_alcotest;
-              octez_client_base |> if_ N.(number <= 012);
-              octez_benchmark;
+              mavkit_client_base |> if_ N.(number <= 012);
+              mavkit_benchmark;
               benchmark |> if_some |> open_;
               benchmark_type_inference |> if_some |> open_;
-              octez_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
-              octez_crypto_dal |> if_ N.(number >= 016) |> open_;
-              octez_base_test_helpers |> if_ N.(number >= 016) |> open_;
+              mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
+              mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+              mavkit_base_test_helpers |> if_ N.(number >= 016) |> open_;
               parameters |> if_some |> if_ N.(number >= 016) |> open_;
             ]
       in
@@ -5512,7 +5365,7 @@ end = struct
             ("test_gas_monad", true);
             ("test_global_constants_storage", true);
             ("test_level_module", true);
-            ("test_liquidity_baking_repr", true);
+            (* ("test_liquidity_baking_repr", true); *)
             ("test_merkle_list", true);
             ("test_operation_repr", true);
             ("test_qty", true);
@@ -5532,8 +5385,8 @@ end = struct
             ("test_sc_rollup_wasm", N.(number >= 016));
             ("test_local_contexts", N.(number >= 016));
             ("test_dal_slot_proof", N.(number >= 016));
-            ("test_adaptive_issuance", N.(number >= 018));
-            ("test_adaptive_issuance_ema", N.(number >= 018));
+            ("test_adaptive_issuance", N.(number >= 001));
+            ("test_adaptive_issuance_ema", N.(number >= 001));
             ("test_percentage", N.(number >= 019));
           ]
           |> conditional_list
@@ -5541,28 +5394,28 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/unit")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-              octez_base_test_helpers |> open_;
-              octez_micheline |> open_;
+              mavkit_base_test_helpers |> open_;
+              mavkit_micheline |> open_;
               client |> if_some |> open_;
-              octez_client_base;
+              mavkit_client_base;
               parameters |> if_some |> open_if N.(number >= 016);
-              octez_protocol_environment;
-              octez_stdlib_unix;
+              mavkit_protocol_environment;
+              mavkit_stdlib_unix;
               main |> open_;
-              octez_test_helpers |> open_;
+              mavkit_test_helpers |> open_;
               test_helpers |> if_some |> open_;
               alcotezt;
-              octez_scoru_wasm_helpers |> if_ N.(number >= 016) |> open_;
-              octez_stdlib |> if_ N.(number >= 013) |> open_;
-              octez_crypto_dal |> if_ N.(number >= 016) |> open_;
-              octez_scoru_wasm;
-              octez_webassembly_interpreter_extra
+              mavkit_scoru_wasm_helpers |> if_ N.(number >= 016) |> open_;
+              mavkit_stdlib |> if_ N.(number >= 013) |> open_;
+              mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+              mavkit_scoru_wasm;
+              mavkit_webassembly_interpreter_extra
               |> if_ N.(number >= 016)
               |> open_;
             ]
@@ -5582,16 +5435,16 @@ end = struct
               ["test_logging"]
               ~path:(path // "lib_protocol/test/regression")
               ~with_macos_security_framework:true
-              ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+              ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
               ~deps:
                 [
-                  octez_base |> open_ ~m:"TzPervasives";
+                  mavkit_base |> open_ ~m:"TzPervasives";
                   tezt_tezos |> open_;
                   main |> open_;
                   client |> if_some |> open_;
                   plugin |> if_some |> open_;
                   test_helpers |> if_some |> open_;
-                  octez_micheline |> open_;
+                  mavkit_micheline |> open_;
                 ]
               ~dep_globs:["contracts/*.tz"; "expected/test_logging.ml/*.out"]
           in
@@ -5605,17 +5458,17 @@ end = struct
       let number = Name.number name in
       let path = Name.base_path name in
       let dirname = path // "lib_protocol" in
-      let tezos_protocol_filename = dirname // "TEZOS_PROTOCOL" in
-      let tezos_protocol = Tezos_protocol.of_file_exn tezos_protocol_filename in
-      (* Container of the registered sublibraries of [octez-protocol-libs] *)
-      let registered_tezos_protocol : Sub_lib.container =
+      let mavryk_protocol_filename = dirname // "MAVRYK_PROTOCOL" in
+      let mavryk_protocol = Mavryk_protocol.of_file_exn mavryk_protocol_filename in
+      (* Container of the registered sublibraries of [mavkit-protocol-libs] *)
+      let registered_mavryk_protocol : Sub_lib.container =
         Sub_lib.make_container ()
       in
-      let tezos_protocol_sub_lib : Sub_lib.maker =
+      let mavryk_protocol_sub_lib : Sub_lib.maker =
         Sub_lib.sub_lib
-          ~package_synopsis:(sf "Tezos protocol %s package" name_dash)
-          ~container:registered_tezos_protocol
-          ~package:(sf "tezos-protocol-%s" name_dash)
+          ~package_synopsis:(sf "Mavryk protocol %s package" name_dash)
+          ~container:registered_mavryk_protocol
+          ~package:(sf "mavryk-protocol-%s" name_dash)
       in
       let modules_as_deps =
         let basenames_of_module module_ =
@@ -5626,7 +5479,7 @@ end = struct
                  else None)
         in
         let s_expr =
-          tezos_protocol.Tezos_protocol.modules
+          mavryk_protocol.Mavryk_protocol.modules
           |> List.map (fun module_ ->
                  match basenames_of_module module_ with
                  | _ :: _ as basenames -> Dune.(G (of_atom_list basenames))
@@ -5636,7 +5489,7 @@ end = struct
                           "In %s a module %s was declared, but no \
                            corresponding .ml or .mli files were found in \
                            directory %s"
-                          tezos_protocol_filename
+                          mavryk_protocol_filename
                           module_
                           dirname))
           |> Dune.of_list
@@ -5656,18 +5509,18 @@ end = struct
             else [6; 7; 9; 16; 29; 32; 51; 68]
       in
       let environment =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.environment"
-          ~internal_name:(sf "tezos_protocol_environment_%s" name_underscore)
+          ~internal_name:(sf "mavryk_protocol_environment_%s" name_underscore)
           ~path:(path // "lib_protocol")
-          ~modules:[sf "Tezos_protocol_environment_%s" name_underscore]
+          ~modules:[sf "Mavryk_protocol_environment_%s" name_underscore]
           ~linkall:true
-          ~deps:[octez_protocol_environment]
+          ~deps:[mavkit_protocol_environment]
           ~dune:
             Dune.
               [
                 targets_rule
-                  [sf "tezos_protocol_environment_%s.ml" name_underscore]
+                  [sf "mavryk_protocol_environment_%s.ml" name_underscore]
                   ~action:
                     [
                       S "write-file";
@@ -5675,20 +5528,20 @@ end = struct
                       S
                         (sf
                            {|module Name = struct let name = "%s" end
-include Tezos_protocol_environment.V%d.Make(Name)()
+include Mavryk_protocol_environment.V%d.Make(Name)()
 |}
                            name_dash
-                           tezos_protocol.expected_env_version);
+                           mavryk_protocol.expected_env_version);
                     ];
               ]
       in
       let raw_protocol =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.raw"
-          ~internal_name:(sf "tezos_raw_protocol_%s" name_underscore)
+          ~internal_name:(sf "mavryk_raw_protocol_%s" name_underscore)
           ~path:(path // "lib_protocol")
           ~linkall:true
-          ~modules:tezos_protocol.modules
+          ~modules:mavryk_protocol.modules
           ~flags:
             (Flags.standard
                ~nopervasives:true
@@ -5702,36 +5555,36 @@ include Tezos_protocol_environment.V%d.Make(Name)()
             ]
       in
       let main =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol"
-          ~internal_name:(sf "tezos_protocol-%s" name_dash)
+          ~internal_name:(sf "mavryk_protocol-%s" name_dash)
           ~path:(path // "lib_protocol")
           ~synopsis:
             (match number with
             | V _ as number when N.(number <= 003) ->
                 sf
-                  "Tezos/Protocol: %s (economic-protocol definition, functor \
+                  "Mavryk/Protocol: %s (economic-protocol definition, functor \
                    version)"
                   name_underscore
             | Other ->
                 sf
-                  "Tezos/Protocol: %s economic-protocol definition"
+                  "Mavryk/Protocol: %s economic-protocol definition"
                   name_underscore
-            | Alpha | V _ -> "Tezos/Protocol: economic-protocol definition")
-          ~modules:["Protocol"; sf "Tezos_protocol_%s" name_underscore]
+            | Alpha | V _ -> "Mavryk/Protocol: economic-protocol definition")
+          ~modules:["Protocol"; sf "Mavryk_protocol_%s" name_underscore]
           ~flags:(Flags.standard ~nopervasives:true ~disable_warnings ())
           ~deps:
             [
-              octez_protocol_environment;
-              tezos_protocol_environment_sigs;
+              mavkit_protocol_environment;
+              mavryk_protocol_environment_sigs;
               raw_protocol;
             ]
           ~dune:
             Dune.
               [
                 install
-                  [as_ "TEZOS_PROTOCOL" "protocol/raw/TEZOS_PROTOCOL"]
-                  ~package:(sf "tezos-protocol-%s" name_dash)
+                  [as_ "MAVRYK_PROTOCOL" "protocol/raw/MAVRYK_PROTOCOL"]
+                  ~package:(sf "mavryk-protocol-%s" name_dash)
                   ~section:"lib";
                 targets_rule
                   ["protocol.ml"]
@@ -5742,18 +5595,18 @@ include Tezos_protocol_environment.V%d.Make(Name)()
                       S
                         (sf
                            {|
-let hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn "%s"
-let name = Tezos_protocol_environment_%s.Name.name
-include Tezos_raw_protocol_%s
-include Tezos_raw_protocol_%s.Main
+let hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn "%s"
+let name = Mavryk_protocol_environment_%s.Name.name
+include Mavryk_raw_protocol_%s
+include Mavryk_raw_protocol_%s.Main
 |}
-                           tezos_protocol.hash
+                           mavryk_protocol.hash
                            name_underscore
                            name_underscore
                            name_underscore);
                     ];
                 targets_rule
-                  [sf "tezos_protocol_%s.ml" name_underscore]
+                  [sf "mavryk_protocol_%s.ml" name_underscore]
                   ~action:
                     [
                       S "write-file";
@@ -5761,7 +5614,7 @@ include Tezos_raw_protocol_%s.Main
                       S
                         (sf
                            {|
-module Environment = Tezos_protocol_environment_%s
+module Environment = Mavryk_protocol_environment_%s
 module Protocol = Protocol
 |}
                            name_underscore);
@@ -5769,14 +5622,14 @@ module Protocol = Protocol
                 alias_rule
                   "runtest_compile_protocol"
                   ~deps_dune:
-                    [modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                    [modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "run";
-                      S "%{bin:octez-protocol-compiler}";
+                      S "%{bin:mavkit-protocol-compiler}";
                       (if
                        String_set.mem
-                         tezos_protocol.Tezos_protocol.hash
+                         mavryk_protocol.Mavryk_protocol.hash
                          final_protocol_versions
                       then E
                       else S "-no-hash-check");
@@ -5794,16 +5647,16 @@ module Protocol = Protocol
               ]
       in
       let lifted =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.lifted"
-          ~internal_name:(sf "tezos_protocol-%s.lifted" name_dash)
+          ~internal_name:(sf "mavryk_protocol-%s.lifted" name_dash)
           ~path:(path // "lib_protocol")
           ~modules:["Lifted_protocol"]
           ~flags:(Flags.standard ~nopervasives:true ~disable_warnings ())
           ~deps:
             [
-              octez_protocol_environment;
-              tezos_protocol_environment_sigs;
+              mavkit_protocol_environment;
+              mavryk_protocol_environment_sigs;
               main |> open_;
             ]
           ~dune:
@@ -5825,37 +5678,37 @@ let hash = Protocol.hash
       in
       let _functor =
         private_lib
-          (sf "tezos_protocol_%s_functor" name_underscore)
+          (sf "mavryk_protocol_%s_functor" name_underscore)
           ~path:(path // "lib_protocol")
           ~opam:""
           ~synopsis:
             (match number with
             | V _ as number when N.(number <= 003) ->
                 sf
-                  "Tezos/Protocol: %s (economic-protocol definition \
+                  "Mavryk/Protocol: %s (economic-protocol definition \
                    parameterized by its environment implementation)"
                   (if N.(number == 000) then name_dash else name_underscore)
             | Other ->
                 sf
-                  "Tezos/Protocol: %s (economic-protocol definition \
+                  "Mavryk/Protocol: %s (economic-protocol definition \
                    parameterized by its environment implementation)"
                   name_underscore
             | Alpha | V _ ->
-                "Tezos/Protocol: economic-protocol definition parameterized by \
+                "Mavryk/Protocol: economic-protocol definition parameterized by \
                  its environment implementation")
           ~modules:["Functor"]
             (* The instrumentation is removed as it can lead to a stack overflow *)
             (* https://gitlab.com/tezos/tezos/-/issues/1927 *)
           ~bisect_ppx:No
           ~flags:(Flags.standard ~nopervasives:true ~disable_warnings ())
-          ~opam_only_deps:[octez_protocol_compiler_tezos_protocol_packer]
-          ~deps:[octez_protocol_environment; tezos_protocol_environment_sigs]
+          ~opam_only_deps:[mavkit_protocol_compiler_mavryk_protocol_packer]
+          ~deps:[mavkit_protocol_environment; mavryk_protocol_environment_sigs]
           ~dune:
             Dune.
               [
                 targets_rule
                   ["functor.ml"]
-                  ~deps:[modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                  ~deps:[modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "with-stdout-to";
@@ -5866,7 +5719,7 @@ let hash = Protocol.hash
                         [
                           S "run";
                           S
-                            "%{bin:octez-protocol-compiler.octez-protocol-packer}";
+                            "%{bin:mavkit-protocol-compiler.mavkit-protocol-packer}";
                           S "%{src_dir}";
                         ];
                       ];
@@ -5874,25 +5727,25 @@ let hash = Protocol.hash
               ]
       in
       let embedded =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "embedded-protocol"
-          ~internal_name:(sf "tezos_embedded_protocol_%s" name_underscore)
+          ~internal_name:(sf "mavryk_embedded_protocol_%s" name_underscore)
           ~path:(path // "lib_protocol")
           ~synopsis:
             (match number with
             | V _ as number when N.(number <= 003) ->
                 sf
-                  "Tezos/Protocol: %s (economic-protocol definition, embedded \
-                   in `octez-node`)"
+                  "Mavryk/Protocol: %s (economic-protocol definition, embedded \
+                   in `mavkit-node`)"
                   (if N.(number == 000) then name_dash else name_underscore)
             | Other ->
                 sf
-                  "Tezos/Protocol: %s (economic-protocol definition, embedded \
-                   in `octez-node`)"
+                  "Mavryk/Protocol: %s (economic-protocol definition, embedded \
+                   in `mavkit-node`)"
                   name_underscore
             | Alpha | V _ ->
-                "Tezos/Protocol: economic-protocol definition, embedded in \
-                 `octez-node`")
+                "Mavryk/Protocol: economic-protocol definition, embedded in \
+                 `mavkit-node`")
           ~modules:["Registerer"]
           ~linkall:true
           ~flags:(Flags.standard ~disable_warnings ())
@@ -5907,13 +5760,13 @@ let hash = Protocol.hash
                    removing the dependencies when releasing, both from .opam files
                    and dune files. *)
                 Auto_opam)
-          ~deps:[main; octez_protocol_updater; octez_protocol_environment]
+          ~deps:[main; mavkit_protocol_updater; mavkit_protocol_environment]
           ~dune:
             Dune.
               [
                 targets_rule
                   ["registerer.ml"]
-                  ~deps:[modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                  ~deps:[modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "with-stdout-to";
@@ -5923,7 +5776,7 @@ let hash = Protocol.hash
                         S "%{workspace_root}";
                         [
                           S "run";
-                          S "%{bin:octez-embedded-protocol-packer}";
+                          S "%{bin:mavkit-embedded-protocol-packer}";
                           S "%{src_dir}";
                           S name_underscore;
                         ];
@@ -5941,21 +5794,21 @@ let hash = Protocol.hash
     in
     let client =
       public_lib
-        (sf "tezos-client-%s" (Name.name_dash name))
+        (sf "mavryk-client-%s" (Name.name_dash name))
         ~path:(Name.base_path name // "lib_client")
-        ~synopsis:"Tezos/Protocol: protocol specific library for `tezos-client`"
+        ~synopsis:"Mavryk/Protocol: protocol specific library for `mavryk-client`"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
-            octez_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
+            mavkit_protocol_environment;
             main |> open_;
             lifted;
-            octez_client_commands |> open_;
-            octez_proxy;
-            octez_stdlib_unix;
+            mavkit_client_commands |> open_;
+            mavkit_proxy;
+            mavkit_stdlib_unix;
           ]
         ~linkall:true
     in
@@ -5975,16 +5828,16 @@ let hash = Protocol.hash
     in
     let client =
       public_lib
-        (sf "tezos-client-%s" (Name.name_dash name))
+        (sf "mavryk-client-%s" (Name.name_dash name))
         ~path:(Name.base_path name // "lib_client")
-        ~synopsis:"Tezos/Protocol: protocol specific library for `tezos-client`"
+        ~synopsis:"Mavryk/Protocol: protocol specific library for `mavryk-client`"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
-            octez_client_commands |> open_;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
+            mavkit_client_commands |> open_;
             main |> open_;
             lifted;
           ]
@@ -5998,15 +5851,15 @@ let hash = Protocol.hash
     let name_underscore = Name.name_underscore name in
     let number = Name.number name in
     let path = Name.base_path name in
-    (* Container of the registered sublibraries of [octez-protocol-libs] *)
-    let registered_octez_protocol_libs : Sub_lib.container =
+    (* Container of the registered sublibraries of [mavkit-protocol-libs] *)
+    let registered_mavkit_protocol_libs : Sub_lib.container =
       Sub_lib.make_container ()
     in
-    let octez_protocol_lib : Sub_lib.maker =
+    let mavkit_protocol_lib : Sub_lib.maker =
       Sub_lib.sub_lib
-        ~package_synopsis:(sf "Octez protocol %s libraries" name_dash)
-        ~container:registered_octez_protocol_libs
-        ~package:(sf "octez-protocol-%s-libs" name_dash)
+        ~package_synopsis:(sf "Mavkit protocol %s libraries" name_dash)
+        ~container:registered_mavkit_protocol_libs
+        ~package:(sf "mavkit-protocol-%s-libs" name_dash)
     in
     let active =
       match status with
@@ -6028,7 +5881,7 @@ let hash = Protocol.hash
     let optional_library_release_status =
       match (number, status) with
       | V _, (Active | Frozen) ->
-          (* Put explicit dependency in meta-package octez.opam to force the optional
+          (* Put explicit dependency in meta-package mavkit.opam to force the optional
              dependency to be installed. *)
           Released
       | V _, (Overridden | Not_mainnet) | (Alpha | Other), _ ->
@@ -6047,13 +5900,13 @@ let hash = Protocol.hash
     let parameters =
       only_if (N.(number >= 011) && not_overridden) @@ fun () ->
       public_lib
-        (sf "tezos-protocol-%s.parameters" name_dash)
+        (sf "mavryk-protocol-%s.parameters" name_dash)
         ~path:(path // "lib_parameters")
         ~all_modules_except:["gen"]
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
-            octez_protocol_environment;
+            mavkit_base |> open_ ~m:"TzPervasives";
+            mavkit_protocol_environment;
             main |> open_;
           ]
         ~linkall:true
@@ -6063,10 +5916,10 @@ let hash = Protocol.hash
       private_exe
         "gen"
         ~path:(path // "lib_parameters")
-        ~opam:(sf "tezos-protocol-%s" name_dash)
+        ~opam:(sf "mavryk-protocol-%s" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
+            mavkit_base |> open_ ~m:"TzPervasives";
             parameters |> open_;
             main |> if_ N.(number >= 012) |> open_;
           ]
@@ -6094,87 +5947,87 @@ let hash = Protocol.hash
                 [
                   install
                     (List.map (fun n -> S (n ^ "-parameters.json")) networks)
-                    ~package:(sf "tezos-protocol-%s" name_dash)
+                    ~package:(sf "mavryk-protocol-%s" name_dash)
                     ~section:"lib";
                 ]))
         ~bisect_ppx:No
     in
-    let octez_sc_rollup =
+    let mavkit_sc_rollup =
       only_if N.(number >= 016) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "smart-rollup"
-        ~internal_name:(sf "tezos_smart_rollup_%s" name_dash)
+        ~internal_name:(sf "mavryk_smart_rollup_%s" name_dash)
         ~path:(path // "lib_sc_rollup")
         ~synopsis:
-          "Protocol specific library of helpers for `tezos-smart-rollup`"
-        ~deps:[octez_base |> open_ ~m:"TzPervasives"; main |> open_]
+          "Protocol specific library of helpers for `mavryk-smart-rollup`"
+        ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; main |> open_]
         ~inline_tests:ppx_expect
         ~linkall:true
     in
     let plugin =
       only_if (N.(number >= 007) && not_overridden) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "plugin"
-        ~internal_name:(sf "tezos_protocol_plugin_%s" name_dash)
+        ~internal_name:(sf "mavryk_protocol_plugin_%s" name_dash)
         ~path:(path // "lib_plugin")
         ~synopsis:"Protocol plugin"
         ~documentation:
-          [Dune.[S "package"; S (sf "octez-protocol-%s-libs" name_dash)]]
+          [Dune.[S "package"; S (sf "mavkit-protocol-%s-libs" name_dash)]]
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             main |> open_;
-            octez_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
           ]
         ~all_modules_except:["Plugin_registerer"]
         ~bisect_ppx:(if N.(number >= 008) then Yes else No)
     in
     let plugin_registerer =
       opt_map plugin @@ fun plugin ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "plugin-registerer"
-        ~internal_name:(sf "tezos_protocol_plugin_%s_registerer" name_dash)
+        ~internal_name:(sf "mavryk_protocol_plugin_%s_registerer" name_dash)
         ~path:(path // "lib_plugin")
         ~synopsis:"Protocol plugin registerer"
         ~release_status:optional_library_release_status
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             embedded |> open_;
             plugin |> open_;
-            octez_validation |> open_;
+            mavkit_validation |> open_;
           ]
         ~modules:["Plugin_registerer"]
         ~bisect_ppx:(if N.(number >= 008) then Yes else No)
     in
     let client =
       only_if not_overridden @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "client"
-        ~internal_name:(sf "tezos_client_%s" name_dash)
+        ~internal_name:(sf "mavryk_client_%s" name_dash)
         ~path:(path // "lib_client")
-        ~synopsis:"Protocol specific library for `tezos-client`"
+        ~synopsis:"Protocol specific library for `mavryk-client`"
         ~release_status:optional_library_release_status
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_clic;
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
+            mavkit_clic;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
             main |> open_;
-            lifted |> open_if N.(number >= 018);
-            octez_mockup_registration |> if_ N.(number >= 011);
-            octez_proxy |> if_ N.(number >= 011);
-            octez_signer_backends |> if_ N.(number >= 001);
+            lifted |> open_if N.(number >= 001);
+            mavkit_mockup_registration |> if_ N.(number >= 011);
+            mavkit_proxy |> if_ N.(number >= 011);
+            mavkit_signer_backends |> if_ N.(number >= 001);
             plugin |> if_some |> open_if N.(number >= 008);
             parameters |> if_some |> if_ N.(number >= 011) |> open_;
-            octez_rpc;
-            octez_client_commands |> if_ N.(number == 000) |> open_;
-            octez_stdlib_unix |> if_ N.(number == 000);
-            octez_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
+            mavkit_rpc;
+            mavkit_client_commands |> if_ N.(number == 000) |> open_;
+            mavkit_stdlib_unix |> if_ N.(number == 000);
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
             uri |> if_ N.(number >= 001);
           ]
         ~bisect_ppx:(if N.(number >= 008) then Yes else No)
@@ -6183,31 +6036,31 @@ let hash = Protocol.hash
     in
     let test_helpers =
       only_if active @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "test-helpers"
         ~path:
           (if active then path // "lib_protocol/test/helpers"
           else path // "lib_protocol")
-        ~internal_name:(sf "tezos_%s_test_helpers" name_underscore)
+        ~internal_name:(sf "mavryk_%s_test_helpers" name_underscore)
         ~synopsis:"Protocol testing framework"
-        ~opam_only_deps:[octez_protocol_environment; parameters |> if_some]
+        ~opam_only_deps:[mavkit_protocol_environment; parameters |> if_some]
         ~deps:
           [
             qcheck_alcotest;
-            octez_test_helpers;
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_test_helpers;
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_micheline |> open_;
-            octez_stdlib_unix |> open_;
+            mavkit_micheline |> open_;
+            mavkit_stdlib_unix |> open_;
             main |> open_;
             client |> if_some |> open_;
             parameters |> if_some |> open_;
-            octez_protocol_environment;
+            mavkit_protocol_environment;
             plugin |> if_some |> open_;
-            octez_shell_services |> open_;
-            octez_plompiler |> if_ N.(number >= 015);
-            octez_crypto_dal |> if_ N.(number >= 016) |> open_;
-            octez_sc_rollup |> if_some |> if_ N.(number >= 018) |> open_;
+            mavkit_shell_services |> open_;
+            mavkit_plompiler |> if_ N.(number >= 015);
+            mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
           ]
     in
     let _plugin_tests =
@@ -6223,18 +6076,18 @@ let hash = Protocol.hash
         ]
         ~path:(path // "lib_plugin/test")
         ~with_macos_security_framework:true
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_base_test_helpers |> open_;
-            octez_base_unix |> if_ N.(number >= 013);
+            mavkit_base_test_helpers |> open_;
+            mavkit_base_unix |> if_ N.(number >= 013);
             alcotezt;
-            octez_test_helpers |> open_;
+            mavkit_test_helpers |> open_;
             qcheck_alcotest;
-            octez_stdlib_unix;
-            octez_micheline |> open_;
+            mavkit_stdlib_unix;
+            mavkit_micheline |> open_;
             plugin |> open_;
             main |> open_ |> open_ ~m:"Protocol";
             parameters |> if_some |> open_;
@@ -6251,48 +6104,48 @@ let hash = Protocol.hash
           "test_proxy";
         ]
         ~path:(path // "lib_client/test")
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~with_macos_security_framework:true
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_micheline |> open_;
+            mavkit_micheline |> open_;
             client |> if_some |> open_;
             main |> open_;
-            octez_base_test_helpers |> open_;
-            octez_test_helpers |> open_;
+            mavkit_base_test_helpers |> open_;
+            mavkit_test_helpers |> open_;
             alcotezt;
             qcheck_alcotest;
           ]
     in
     let client_commands =
       only_if (N.(number >= 001) && not_overridden) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "client.commands"
-        ~internal_name:(sf "tezos_client_%s_commands" name_dash)
+        ~internal_name:(sf "mavryk_client_%s_commands" name_dash)
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            octez_base
+            mavkit_base
             |> if_ N.(number <= 14)
             |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
-            octez_clic;
+            mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
+            mavkit_clic;
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 013) |> open_;
-            octez_stdlib_unix |> open_;
-            octez_protocol_environment;
-            octez_shell_services |> open_;
-            octez_mockup |> if_ N.(number >= 011);
-            octez_mockup_registration |> if_ N.(number >= 011);
-            octez_mockup_commands |> if_ N.(number >= 011);
-            octez_client_base |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_mockup |> if_ N.(number >= 011);
+            mavkit_mockup_registration |> if_ N.(number >= 011);
+            mavkit_mockup_commands |> if_ N.(number >= 011);
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
-            octez_rpc;
-            octez_client_base_unix |> if_ N.(number >= 009) |> open_;
+            mavkit_client_commands |> open_;
+            mavkit_rpc;
+            mavkit_client_base_unix |> if_ N.(number >= 009) |> open_;
             plugin |> if_some |> if_ N.(number >= 008) |> open_;
             (* uri used by the stresstest command introduced in 011 *)
             uri |> if_ N.(number >= 011);
@@ -6303,19 +6156,19 @@ let hash = Protocol.hash
     in
     let client_sapling =
       only_if (N.(number >= 011) && not_overridden) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "client.sapling"
-        ~internal_name:(sf "tezos_client_sapling_%s" name_underscore)
+        ~internal_name:(sf "mavryk_client_sapling_%s" name_underscore)
         ~path:(path // "lib_client_sapling")
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_clic;
-            octez_crypto;
-            octez_stdlib_unix |> open_;
-            octez_client_base |> open_;
-            octez_signer_backends;
+            mavkit_clic;
+            mavkit_crypto;
+            mavkit_stdlib_unix |> open_;
+            mavkit_client_base |> open_;
+            mavkit_signer_backends;
             client |> if_some |> open_;
             client_commands |> if_some |> open_;
             main |> open_;
@@ -6325,28 +6178,28 @@ let hash = Protocol.hash
     in
     let client_commands_registration =
       only_if (N.(number >= 001) && not_overridden) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "client.commands-registration"
-        ~internal_name:(sf "tezos_client_%s_commands_registration" name_dash)
+        ~internal_name:(sf "mavryk_client_%s_commands_registration" name_dash)
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            octez_base
+            mavkit_base
             |> if_ N.(number <= 14)
             |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
-            octez_clic;
+            mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
+            mavkit_clic;
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 013) |> open_;
-            octez_protocol_environment;
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
+            mavkit_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
+            mavkit_client_commands |> open_;
             client_commands |> if_some |> open_;
             client_sapling |> if_some |> if_ N.(number >= 011) |> open_;
-            octez_rpc;
+            mavkit_rpc;
             plugin |> if_some |> if_ N.(number >= 008) |> open_;
           ]
         ~bisect_ppx:(if N.(number >= 008) then Yes else No)
@@ -6355,39 +6208,38 @@ let hash = Protocol.hash
     in
     let baking =
       only_if active @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "baking"
-        ~internal_name:("tezos_baking_" ^ name_dash)
+        ~internal_name:("mavryk_baking_" ^ name_dash)
         ~path:(path // "lib_delegate")
         ~synopsis:
           (if N.(number <= 011) then
-           "Base library for `tezos-baker/endorser/accuser`"
-          else "Base library for `tezos-baker/accuser`")
+           "Base library for `mavryk-baker/endorser/accuser`"
+          else "Base library for `mavryk-baker/accuser`")
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_clic;
-            octez_version_value;
+            mavkit_clic;
+            mavkit_version_value;
             main |> open_;
-            lifted |> if_ N.(number >= 018) |> open_;
+            lifted |> if_ N.(number >= 001) |> open_;
             plugin |> if_some |> open_;
-            octez_protocol_environment;
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
+            mavkit_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
-            octez_stdlib |> open_;
-            octez_stdlib_unix |> open_;
-            octez_shell_context |> open_;
-            octez_context |> open_;
-            octez_context_memory |> if_ N.(number >= 012);
-            octez_rpc_http_client_unix |> if_ N.(number >= 011);
-            octez_context_ops |> if_ N.(number >= 011) |> open_;
-            octez_rpc;
-            octez_rpc_http |> open_;
-            octez_crypto_dal |> open_;
-            octez_dal_node_services |> if_ N.(number >= 017);
+            mavkit_client_commands |> open_;
+            mavkit_stdlib |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_shell_context |> open_;
+            mavkit_context |> open_;
+            mavkit_context_memory |> if_ N.(number >= 012);
+            mavkit_rpc_http_client_unix |> if_ N.(number >= 011);
+            mavkit_context_ops |> if_ N.(number >= 011) |> open_;
+            mavkit_rpc;
+            mavkit_rpc_http |> open_;
+            mavkit_dal_node_services |> if_ N.(number >= 017);
             lwt_canceler;
             lwt_exit;
             uri;
@@ -6400,19 +6252,19 @@ let hash = Protocol.hash
     in
     let tenderbrute =
       only_if (active && N.(number >= 013)) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "baking.tenderbrute"
         ~internal_name:(sf "tenderbrute_%s" name_underscore)
         ~path:(path // "lib_delegate/test/tenderbrute/lib")
         ~deps:
           [
             data_encoding |> open_;
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals"
             |> open_;
-            octez_base_unix;
+            mavkit_base_unix;
             main |> open_;
-            octez_client_base |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
           ]
         ~bisect_ppx:No
@@ -6424,13 +6276,13 @@ let hash = Protocol.hash
         ~alias:""
         ~path:(path // "lib_delegate/test/tenderbrute")
         ~with_macos_security_framework:true
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals"
             |> open_;
-            octez_client_base |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
             main |> open_;
             tenderbrute |> if_some |> open_;
@@ -6442,26 +6294,25 @@ let hash = Protocol.hash
       only_if N.(number >= 011) @@ fun () ->
       let mockup_simulator =
         only_if N.(number >= 012) @@ fun () ->
-        octez_protocol_lib
+        mavkit_protocol_lib
           "bakings.mockup-simulator"
-          ~internal_name:(sf "tezos_%s_mockup_simulator" name_underscore)
+          ~internal_name:(sf "mavryk_%s_mockup_simulator" name_underscore)
           ~path:(path // "lib_delegate/test/mockup_simulator")
           ~deps:
             [
-              octez_base |> open_ ~m:"TzPervasives"
+              mavkit_base |> open_ ~m:"TzPervasives"
               |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
               main |> open_ |> open_ ~m:"Protocol";
               client |> if_some |> open_;
-              octez_client_commands |> open_;
+              mavkit_client_commands |> open_;
               baking |> open_;
-              octez_stdlib_unix |> open_;
-              octez_client_base_unix |> open_;
+              mavkit_stdlib_unix |> open_;
+              mavkit_client_base_unix |> open_;
               parameters |> if_some |> open_;
-              octez_mockup;
-              octez_mockup_proxy;
-              octez_mockup_commands;
+              mavkit_mockup;
+              mavkit_mockup_proxy;
+              mavkit_mockup_commands;
               tenderbrute |> if_some |> if_ N.(number >= 013) |> open_;
-              tezt_core_lib |> open_;
             ]
           ~bisect_ppx:No
       in
@@ -6469,48 +6320,48 @@ let hash = Protocol.hash
         ["test_scenario"]
         ~path:(path // "lib_delegate/test")
         ~with_macos_security_framework:true
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_protocol_environment |> if_ N.(number <= 011);
-            octez_test_helpers |> open_;
-            octez_micheline |> open_;
+            mavkit_protocol_environment |> if_ N.(number <= 011);
+            mavkit_test_helpers |> if_ N.(number <= 011);
+            mavkit_micheline |> open_;
             client |> if_some |> open_;
             main |> open_;
             test_helpers |> if_ N.(number <= 011) |> open_;
-            octez_base_test_helpers |> open_;
+            mavkit_base_test_helpers |> open_;
             mockup_simulator |> if_some |> open_;
-            octez_client_base |> if_ N.(number <= 011);
+            mavkit_client_base |> if_ N.(number <= 011);
             baking |> open_;
             parameters |> if_some |> if_ N.(number >= 012);
-            octez_crypto |> if_ N.(number >= 012);
-            octez_event_logging_test_helpers |> open_;
+            mavkit_crypto |> if_ N.(number >= 012);
+            alcotezt;
             uri;
           ]
     in
     let baking_commands =
       only_if active @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "baking-commands"
-        ~internal_name:(sf "tezos_baking_%s_commands" name_dash)
+        ~internal_name:(sf "mavryk_baking_%s_commands" name_dash)
         ~path:(path // "lib_delegate")
         ~synopsis:"Protocol-specific commands for baking"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 18) |> open_;
-            octez_stdlib_unix |> open_;
-            octez_protocol_environment;
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
+            mavkit_client_commands |> open_;
             baking |> if_some |> open_;
-            octez_rpc;
+            mavkit_rpc;
             uri;
           ]
         ~linkall:true
@@ -6522,22 +6373,22 @@ let hash = Protocol.hash
     in
     let baking_commands_registration =
       only_if active @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "baking-commands.registration"
-        ~internal_name:(sf "tezos_baking_%s_commands_registration" name_dash)
+        ~internal_name:(sf "mavryk_baking_%s_commands_registration" name_dash)
         ~path:(path // "lib_delegate")
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
+            mavkit_base |> open_ ~m:"TzPervasives";
             main |> open_;
-            octez_protocol_environment;
-            octez_shell_services |> open_;
-            octez_client_base |> open_;
+            mavkit_protocol_environment;
+            mavkit_shell_services |> open_;
+            mavkit_client_base |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
+            mavkit_client_commands |> open_;
             baking |> if_some |> open_;
             baking_commands |> if_some |> open_;
-            octez_rpc;
+            mavkit_rpc;
           ]
         ~linkall:true
         ~modules:
@@ -6549,23 +6400,23 @@ let hash = Protocol.hash
     let daemon daemon =
       only_if active @@ fun () ->
       public_exe
-        (sf "octez-%s-%s" daemon short_hash)
+        (sf "mavkit-%s-%s" daemon short_hash)
         ~internal_name:(sf "main_%s_%s" daemon name_underscore)
         ~path:(path // sf "bin_%s" daemon)
-        ~synopsis:(sf "Tezos/Protocol: %s binary" daemon)
+        ~synopsis:(sf "Mavryk/Protocol: %s binary" daemon)
         ~release_status:executable_release_status
         ~with_macos_security_framework:true
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_clic;
+            mavkit_clic;
             main |> open_;
             client |> if_some |> open_;
-            octez_client_commands |> open_;
+            mavkit_client_commands |> open_;
             baking_commands |> if_some |> open_;
-            octez_stdlib_unix |> open_;
-            octez_client_base_unix |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_client_base_unix |> open_;
           ]
     in
     let _baker = daemon "baker" in
@@ -6573,14 +6424,14 @@ let hash = Protocol.hash
     let _endorser = only_if N.(number <= 011) @@ fun () -> daemon "endorser" in
     let layer2_utils =
       only_if N.(number >= 016) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "layer2-utils"
-        ~internal_name:(sf "tezos_layer2_utils_%s" name_dash)
+        ~internal_name:(sf "mavryk_layer2_utils_%s" name_dash)
         ~path:(path // "lib_layer2_utils")
         ~synopsis:"Protocol specific library for Layer 2 utils"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
+            mavkit_base |> open_ ~m:"TzPervasives";
             main |> open_;
             client |> if_some |> open_;
           ]
@@ -6589,18 +6440,18 @@ let hash = Protocol.hash
     in
     let dal =
       only_if (active && N.(number >= 016)) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "dal"
-        ~internal_name:(sf "tezos_dal_%s" name_dash)
+        ~internal_name:(sf "mavryk_dal_%s" name_dash)
         ~path:(path // "lib_dal")
         ~synopsis:"Protocol specific library for the Data availability Layer"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_protocol_compiler_registerer |> open_;
-            octez_stdlib_unix |> open_;
-            octez_dal_node_lib |> open_;
+            mavkit_protocol_compiler_registerer |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_dal_node_lib |> open_;
             client |> if_some |> open_;
             plugin |> if_some |> open_;
             embedded |> open_;
@@ -6622,15 +6473,15 @@ let hash = Protocol.hash
          ]
         else ["test_dal_slot_frame_encoding"; "test_helpers"])
         ~path:(path // "lib_dal/test")
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~with_macos_security_framework:true
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             dal |> if_some |> open_;
             main |> open_;
-            octez_base_test_helpers |> open_;
+            mavkit_base_test_helpers |> open_;
             test_helpers |> if_some |> open_;
             alcotezt;
           ]
@@ -6641,20 +6492,20 @@ let hash = Protocol.hash
          option would cause DAL related tezts to fail because the DAC
          plugin cannot be resolved. *)
       only_if (active && N.(number >= 017)) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "dac"
-        ~internal_name:(sf "tezos_dac_%s" name_dash)
+        ~internal_name:(sf "mavryk_dac_%s" name_dash)
         ~path:(path // "lib_dac_plugin")
         ~synopsis:
           "Protocol specific library for the Data availability Committee"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_protocol_compiler_registerer |> open_;
-            octez_stdlib_unix |> open_;
-            octez_dac_lib |> open_;
-            octez_dac_client_lib |> open_;
+            mavkit_protocol_compiler_registerer |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_dac_lib |> open_;
+            mavkit_dac_client_lib |> open_;
             client |> if_some |> open_;
             embedded |> open_;
             main |> open_;
@@ -6672,62 +6523,62 @@ let hash = Protocol.hash
         ]
         ~path:(path // "lib_dac_plugin/test")
         ~with_macos_security_framework:true
-        ~opam:(sf "octez-protocol-%s-libs" name_dash)
+        ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             dac |> if_some |> open_;
             main |> open_;
-            octez_base_test_helpers |> open_;
+            mavkit_base_test_helpers |> open_;
             test_helpers |> if_some |> open_;
-            octez_dac_lib |> open_;
-            octez_dac_node_lib |> open_;
+            mavkit_dac_lib |> open_;
+            mavkit_dac_node_lib |> open_;
             alcotezt;
           ]
     in
-    let octez_injector =
+    let mavkit_injector =
       only_if N.(number >= 017) @@ fun () ->
       private_lib
-        (sf "octez_injector_%s" short_hash)
+        (sf "mavkit_injector_%s" short_hash)
         ~path:(path // "lib_injector")
         ~synopsis:
-          "Tezos/Protocol: protocol-specific library for the injector binary"
-        ~opam:(sf "tezos-injector-%s" name_dash)
+          "Mavryk/Protocol: protocol-specific library for the injector binary"
+        ~opam:(sf "mavryk-injector-%s" name_dash)
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
+            mavkit_base |> open_ ~m:"TzPervasives";
             main |> open_;
-            octez_injector_lib |> open_;
+            mavkit_injector_lib |> open_;
             client |> if_some |> open_;
-            octez_client_base |> open_;
+            mavkit_client_base |> open_;
             plugin |> if_some |> open_;
           ]
         ~linkall:true
     in
-    let octez_sc_rollup_layer2 =
+    let mavkit_sc_rollup_layer2 =
       only_if N.(number >= 016) @@ fun () ->
-      octez_protocol_lib
+      mavkit_protocol_lib
         "smart-rollup-layer2"
-        ~internal_name:(sf "tezos_smart_rollup_layer2_%s" name_dash)
+        ~internal_name:(sf "mavryk_smart_rollup_layer2_%s" name_dash)
         ~path:(path // "lib_sc_rollup_layer2")
-        ~synopsis:"Protocol specific library for `tezos-smart-rollup`"
+        ~synopsis:"Protocol specific library for `mavryk-smart-rollup`"
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives";
+            mavkit_base |> open_ ~m:"TzPervasives";
             main |> open_;
-            octez_injector_lib |> open_;
-            octez_smart_rollup_lib |> open_;
+            mavkit_injector_lib |> open_;
+            mavkit_smart_rollup_lib |> open_;
           ]
         ~inline_tests:ppx_expect
         ~linkall:true
     in
-    let octez_sc_rollup_node =
+    let mavkit_sc_rollup_node =
       only_if (active && N.(number >= 016)) @@ fun () ->
       private_lib
-        (sf "octez_smart_rollup_node_%s" short_hash)
+        (sf "mavkit_smart_rollup_node_%s" short_hash)
         ~path:(path // "lib_sc_rollup_node")
-        ~opam:(sf "octez-smart-rollup-node-%s" short_hash)
+        ~opam:(sf "mavkit-smart-rollup-node-%s" short_hash)
         ~synopsis:
           (sf
              "Protocol specific (for %s) library for smart rollup node"
@@ -6735,35 +6586,35 @@ let hash = Protocol.hash
         ~linkall:true
         ~deps:
           [
-            octez_base |> open_ |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_stdlib_unix |> open_;
-            octez_client_base |> open_;
-            octez_client_base_unix |> open_;
+            mavkit_stdlib_unix |> open_;
+            mavkit_client_base |> open_;
+            mavkit_client_base_unix |> open_;
             client |> if_some |> open_;
-            octez_context_encoding;
-            octez_context_helpers;
+            mavkit_context_encoding;
+            mavkit_context_helpers;
             main |> open_;
             plugin |> if_some |> open_;
             parameters |> if_some |> open_;
-            octez_rpc;
-            octez_rpc_http;
-            octez_rpc_http_server;
-            octez_workers |> open_;
-            octez_dal_node_services;
-            octez_dal_node_lib |> open_;
+            mavkit_rpc;
+            mavkit_rpc_http;
+            mavkit_rpc_http_server;
+            mavkit_workers |> open_;
+            mavkit_dal_node_services;
+            mavkit_dal_node_lib |> open_;
             (* [dac] is needed for the DAC observer client which is not
                available in Nairobi and earlier. *)
-            dac |> if_some |> if_ N.(number >= 018) |> open_;
-            octez_dac_lib |> open_;
-            octez_dac_client_lib |> if_ N.(number >= 018) |> open_;
-            octez_shell_services |> open_;
-            octez_smart_rollup_lib |> open_;
-            octez_sc_rollup |> if_some |> open_;
-            octez_sc_rollup_layer2 |> if_some |> open_;
+            dac |> if_some |> if_ N.(number >= 001) |> open_;
+            mavkit_dac_lib |> open_;
+            mavkit_dac_client_lib |> if_ N.(number >= 001) |> open_;
+            mavkit_shell_services |> open_;
+            mavkit_smart_rollup_lib |> open_;
+            mavkit_sc_rollup |> if_some |> open_;
+            mavkit_sc_rollup_layer2 |> if_some |> open_;
             layer2_utils |> if_some |> open_;
-            octez_layer2_store |> open_;
-            octez_crawler |> open_;
+            mavkit_layer2_store |> open_;
+            mavkit_crawler |> open_;
             tree_encoding;
             data_encoding;
             irmin_pack;
@@ -6771,47 +6622,87 @@ let hash = Protocol.hash
             irmin;
             aches;
             aches_lwt;
-            octez_injector_lib |> open_;
-            octez_smart_rollup_node_lib |> open_;
-            octez_scoru_wasm;
-            octez_scoru_wasm_fast;
-            octez_crypto_dal |> if_ N.(number >= 016) |> open_;
-            octez_version_value;
+            mavkit_injector_lib |> open_;
+            mavkit_smart_rollup_node_lib |> open_;
+            mavkit_scoru_wasm;
+            mavkit_scoru_wasm_fast;
+            mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+            mavkit_version_value;
           ]
         ~conflicts:[Conflicts.checkseum]
     in
-    let _octez_sc_rollup_node_test =
+    let _mavkit_sc_rollup_node_test =
       only_if (active && N.(number >= 016)) @@ fun () ->
       tezt
-        ["serialized_proofs"; "test_octez_conversions"]
+        ["serialized_proofs"; "test_mavkit_conversions"]
         ~path:(path // "lib_sc_rollup_node/test")
-        ~opam:"tezos-sc-rollup-node-test"
+        ~opam:"mavryk-sc-rollup-node-test"
         ~synopsis:"Tests for the smart rollup node library"
         ~with_macos_security_framework:true
         ~deps:
           [
-            octez_base |> open_ ~m:"TzPervasives"
+            mavkit_base |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
             main |> open_;
-            octez_test_helpers |> open_;
-            octez_sc_rollup_layer2 |> if_some |> open_;
-            octez_sc_rollup_node |> if_some |> open_;
+            mavkit_test_helpers |> open_;
+            mavkit_sc_rollup_layer2 |> if_some |> open_;
+            mavkit_sc_rollup_node |> if_some |> open_;
             alcotezt;
+          ]
+    in
+    let mavkit_sc_rollup_client =
+      only_if (active && N.(number >= 016)) @@ fun () ->
+      private_lib
+        (sf "mavkit_smart_rollup_client_%s" short_hash)
+        ~path:(path // "lib_sc_rollup_client")
+        ~opam:(sf "mavkit-smart-rollup-client-%s" short_hash)
+        ~release_status:Experimental
+        ~deps:
+          [
+            mavkit_base |> open_ |> open_ ~m:"TzPervasives"
+            |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
+            main |> open_;
+            mavkit_client_commands |> open_;
+            mavkit_client_base |> open_;
+            mavkit_client_base_unix |> open_;
+            client |> if_some |> open_;
+            mavkit_smart_rollup_lib |> open_;
+            mavkit_sc_rollup |> if_some |> open_;
+            mavkit_sc_rollup_layer2 |> if_some |> open_;
+          ]
+    in
+    let _sc_rollup_client =
+      only_if (active && N.(number >= 016)) @@ fun () ->
+      public_exe
+        (sf "mavkit-smart-rollup-client-%s" short_hash)
+        ~internal_name:(sf "main_sc_rollup_client_%s" name_underscore)
+        ~path:(path // "bin_sc_rollup_client")
+        ~synopsis:"Mavryk/Protocol: Smart rollup client"
+        ~release_status:Experimental
+        ~with_macos_security_framework:true
+        ~deps:
+          [
+            mavkit_base |> open_ ~m:"TzPervasives"
+            |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
+            mavkit_clic;
+            main |> open_;
+            mavkit_sc_rollup_client |> if_some |> open_;
+            mavkit_version_value;
           ]
     in
     let benchmark_type_inference =
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmark-type-inference-%s" name_dash)
+        (sf "mavryk-benchmark-type-inference-%s" name_dash)
         ~path:(path // "lib_benchmark/lib_benchmark_type_inference")
-        ~synopsis:"Tezos: type inference for partial Michelson expressions"
+        ~synopsis:"Mavryk: type inference for partial Michelson expressions"
         ~deps:
           [
-            octez_stdlib |> open_;
-            octez_error_monad |> open_;
-            octez_crypto |> open_;
-            octez_micheline |> open_;
-            octez_micheline_rewriting |> open_;
+            mavkit_stdlib |> open_;
+            mavkit_error_monad |> open_;
+            mavkit_crypto |> open_;
+            mavkit_micheline |> open_;
+            mavkit_micheline_rewriting |> open_;
             main |> open_;
             hashcons;
           ]
@@ -6821,15 +6712,15 @@ let hash = Protocol.hash
       tests
         ["test_uf"; "test_inference"]
         ~path:(path // "lib_benchmark/lib_benchmark_type_inference/test")
-        ~opam:(sf "tezos-benchmark-type-inference-%s" name_dash)
+        ~opam:(sf "mavryk-benchmark-type-inference-%s" name_dash)
         ~with_macos_security_framework:true
         ~deps:
           [
-            octez_micheline |> open_;
-            octez_micheline_rewriting;
+            mavkit_micheline |> open_;
+            mavkit_micheline_rewriting;
             benchmark_type_inference |> if_some |> open_;
             main;
-            octez_error_monad;
+            mavkit_error_monad;
             client |> if_some;
           ]
     in
@@ -6837,23 +6728,23 @@ let hash = Protocol.hash
       opt_map test_helpers @@ fun test_helpers ->
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmark-%s" name_dash)
+        (sf "mavryk-benchmark-%s" name_dash)
         ~path:(path // "lib_benchmark")
         ~synopsis:
-          "Tezos/Protocol: library for writing benchmarks (protocol-specific \
+          "Mavryk/Protocol: library for writing benchmarks (protocol-specific \
            part)"
         ~deps:
           [
-            octez_stdlib |> open_;
-            octez_base |> open_
+            mavkit_stdlib |> open_;
+            mavkit_base |> open_
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_error_monad |> open_;
-            octez_micheline |> open_;
-            octez_micheline_rewriting |> open_;
-            octez_benchmark |> open_;
+            mavkit_error_monad |> open_;
+            mavkit_micheline |> open_;
+            mavkit_micheline_rewriting |> open_;
+            mavkit_benchmark |> open_;
             benchmark_type_inference |> if_some |> open_;
             main |> open_;
-            octez_crypto;
+            mavkit_crypto;
             parameters |> if_some;
             hashcons;
             test_helpers |> open_;
@@ -6878,19 +6769,19 @@ let hash = Protocol.hash
         ]
         ~path:(path // "lib_benchmark/test")
         ~with_macos_security_framework:true
-        ~opam:(sf "tezos-benchmark-%s" name_dash)
+        ~opam:(sf "mavryk-benchmark-%s" name_dash)
         ~deps:
           [
-            octez_base
+            mavkit_base
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_micheline |> open_;
-            octez_micheline_rewriting;
+            mavkit_micheline |> open_;
+            mavkit_micheline_rewriting;
             main |> open_;
-            octez_benchmark |> open_;
+            mavkit_benchmark |> open_;
             benchmark_type_inference |> if_some |> open_;
             benchmark |> if_some |> open_;
             test_helpers |> open_;
-            octez_error_monad;
+            mavkit_error_monad;
             prbnmcn_stats;
           ]
         ~alias:""
@@ -6910,30 +6801,30 @@ let hash = Protocol.hash
       @@ fun (benchmark, test_helpers) ->
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmarks-proto-%s" name_dash)
+        (sf "mavryk-benchmarks-proto-%s" name_dash)
         ~path:(path // "lib_benchmarks_proto")
-        ~synopsis:"Tezos/Protocol: protocol benchmarks"
+        ~synopsis:"Mavryk/Protocol: protocol benchmarks"
         ~deps:
           [
             str;
-            octez_stdlib |> open_;
-            octez_base |> open_ |> open_ ~m:"TzPervasives"
+            mavkit_stdlib |> open_;
+            mavkit_base |> open_ |> open_ ~m:"TzPervasives"
             |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-            octez_error_monad |> open_;
+            mavkit_error_monad |> open_;
             parameters |> if_some |> open_;
             lazy_containers |> open_;
-            octez_benchmark |> open_;
+            mavkit_benchmark |> open_;
             benchmark |> if_some |> open_;
             benchmark_type_inference |> if_some |> open_;
             main |> open_ |> open_ ~m:"Protocol";
-            octez_crypto;
-            octez_shell_benchmarks;
-            octez_micheline |> open_;
+            mavkit_crypto;
+            mavkit_shell_benchmarks;
+            mavkit_micheline |> open_;
             test_helpers |> open_;
-            octez_sapling;
+            mavkit_sapling;
             client |> if_some |> open_;
             plugin |> if_some |> open_;
-            octez_protocol_environment;
+            mavkit_protocol_environment;
           ]
         ~linkall:true
     in
@@ -6946,18 +6837,18 @@ let hash = Protocol.hash
           ?client
           ?benchmark:(Option.bind benchmark Fun.id)
           ?benchmark_type_inference
-          ?octez_sc_rollup
+          ?mavkit_sc_rollup
           ~main
           ~name
           ()
     in
-    (* Generate documentation index for [octez-protocol-%s-libs] *)
+    (* Generate documentation index for [mavkit-protocol-%s-libs] *)
     let () =
       write (path // "lib_plugin/index.mld") @@ fun fmt ->
       let header =
         sf
-          "{0 Octez-protocol-%s-libs: octez protocol %s libraries}\n\n\
-           This is a package containing some libraries related to the Tezos %s \
+          "{0 Mavkit-protocol-%s-libs: mavkit protocol %s libraries}\n\n\
+           This is a package containing some libraries related to the Mavryk %s \
            protocol.\n\n\
            It contains the following libraries:\n\n"
           name_dash
@@ -6967,7 +6858,7 @@ let hash = Protocol.hash
       Sub_lib.pp_documentation_of_container
         ~header
         fmt
-        registered_octez_protocol_libs
+        registered_mavkit_protocol_libs
     in
     register
     @@ make
@@ -6987,9 +6878,9 @@ let hash = Protocol.hash
          ?parameters
          ?benchmarks_proto
          ?baking
-         ?octez_sc_rollup
-         ?octez_sc_rollup_node
-         ?octez_injector
+         ?mavkit_sc_rollup
+         ?mavkit_sc_rollup_node
+         ?mavkit_injector
          ()
 
   let active = register_alpha_family Active
@@ -6998,47 +6889,7 @@ let hash = Protocol.hash
 
   let overridden = register_alpha_family Overridden
 
-  let _000_Ps9mPmXa = frozen (Name.v "Ps9mPmXa" 000)
-
-  let _001_PtCJ7pwo = frozen (Name.v "PtCJ7pwo" 001)
-
-  let _002_PsYLVpVv = frozen (Name.v "PsYLVpVv" 002)
-
-  let _003_PsddFKi3 = frozen (Name.v "PsddFKi3" 003)
-
-  let _004_Pt24m4xi = frozen (Name.v "Pt24m4xi" 004)
-
-  let _005_PsBABY5H = overridden (Name.v "PsBABY5H" 005)
-
-  let _005_PsBabyM1 = frozen (Name.v "PsBabyM1" 005)
-
-  let _006_PsCARTHA = frozen (Name.v "PsCARTHA" 006)
-
-  let _007_PsDELPH1 = frozen (Name.v "PsDELPH1" 007)
-
-  let _008_PtEdoTez = overridden (Name.v "PtEdoTez" 008)
-
-  let _008_PtEdo2Zk = frozen (Name.v "PtEdo2Zk" 008)
-
-  let _009_PsFLoren = frozen (Name.v "PsFLoren" 009)
-
-  let _010_PtGRANAD = frozen (Name.v "PtGRANAD" 010)
-
-  let _011_PtHangz2 = frozen (Name.v "PtHangz2" 011)
-
-  let _012_Psithaca = frozen (Name.v "Psithaca" 012)
-
-  let _013_PtJakart = frozen (Name.v "PtJakart" 013)
-
-  let _014_PtKathma = frozen (Name.v "PtKathma" 014)
-
-  let _015_PtLimaPt = frozen (Name.v "PtLimaPt" 015)
-
-  let _016_PtMumbai = frozen (Name.v "PtMumbai" 016)
-
-  let _017_PtNairob = active (Name.v "PtNairob" 017)
-
-  let _018_Proxford = active (Name.v "Proxford" 018)
+  let _001_PtAtLas = active (Name.v "PtAtLas" 001)
 
   let alpha = active Name.alpha
 
@@ -7055,22 +6906,22 @@ end
 
 (* TESTS THAT USE PROTOCOLS *)
 
-let _octez_micheline_rewriting_tests =
+let _mavkit_micheline_rewriting_tests =
   tezt
     ["test_rewriting"]
     ~path:"src/lib_benchmark/lib_micheline_rewriting/test"
     ~with_macos_security_framework:true
-    ~opam:"tezos-micheline-rewriting"
+    ~opam:"mavryk-micheline-rewriting"
     ~deps:
       [
-        octez_micheline |> open_;
-        octez_micheline_rewriting;
+        mavkit_micheline |> open_;
+        mavkit_micheline_rewriting;
         Protocol.(main alpha);
-        octez_error_monad;
+        mavkit_error_monad;
         Protocol.(client_exn alpha);
       ]
 
-let octez_store_tests =
+let mavkit_store_tests =
   tezt
     [
       "test";
@@ -7086,25 +6937,26 @@ let octez_store_tests =
       "test_store";
       "test_testchain";
       "test_utils";
+      "tezt_sink";
       "assert_lib";
     ]
     ~path:"src/lib_store/unix/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-store-tests"
+    ~opam:"mavkit-store-tests"
     ~synopsis:"Store tests"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_crypto |> open_;
-        octez_context_ops |> open_;
-        octez_store_shared |> open_;
-        octez_store_unix |> open_;
-        octez_store_unix_reconstruction |> open_;
-        octez_store_unix_snapshots |> open_;
-        octez_shell_services |> open_;
-        octez_stdlib_unix |> open_;
-        octez_validation |> open_;
-        octez_protocol_updater |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_crypto |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_store_unix |> open_;
+        mavkit_store_unix_reconstruction |> open_;
+        mavkit_store_unix_snapshots |> open_;
+        mavkit_shell_services |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_validation |> open_;
+        mavkit_protocol_updater |> open_;
         Protocol.(embedded demo_noops);
         Protocol.(embedded genesis);
         Protocol.(embedded alpha);
@@ -7112,13 +6964,12 @@ let octez_store_tests =
         Protocol.(plugin_exn alpha) |> open_;
         alcotezt;
         tezt_lib;
-        octez_test_helpers |> open_;
-        octez_event_logging_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
       ]
 
-(* [_octez_bench_store_lib_tests_exe] is a bench for the store locator,
+(* [_mavkit_bench_store_lib_tests_exe] is a bench for the store locator,
    We do not run these tests in the CI. *)
-let _octez_bench_store_lib_tests_exe =
+let _mavkit_bench_store_lib_tests_exe =
   private_exe
     "bench"
     ~path:"src/lib_store/unix/test/bench"
@@ -7126,19 +6977,19 @@ let _octez_bench_store_lib_tests_exe =
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tezt_lib;
         alcotezt;
-        octez_store_tests |> open_;
+        mavkit_store_tests |> open_;
       ]
 
-(* [_octez_slow_store_lib_tests_exe] is a very long test, running a huge
+(* [_mavkit_slow_store_lib_tests_exe] is a very long test, running a huge
    combination of tests that are useful for local testing for a
    given test suite. In addition to that, there is a memory leak
    is the tests (that could be in alcotest) which makes the test
    to consumes like > 10Gb of ram. For these reasons, we do not
    run these tests in the CI. *)
-let _octez_slow_store_lib_tests_exe =
+let _mavkit_slow_store_lib_tests_exe =
   private_exe
     "test_slow"
     ~path:"src/lib_store/unix/test/slow"
@@ -7147,13 +6998,13 @@ let _octez_slow_store_lib_tests_exe =
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         tezt_lib;
         alcotezt;
-        octez_store_tests |> open_;
+        mavkit_store_tests |> open_;
       ]
 
-let _octez_shell_tests =
+let _mavkit_shell_tests =
   tezt
     [
       "generators";
@@ -7162,7 +7013,6 @@ let _octez_shell_tests =
       "test_consensus_heuristic";
       "test_node";
       "test_peer_validator";
-      "test_prevalidator";
       "test_prevalidation";
       "test_prevalidator_bounding";
       "test_prevalidator_classification";
@@ -7176,30 +7026,30 @@ let _octez_shell_tests =
     ]
     ~path:"src/lib_shell/test"
     ~with_macos_security_framework:true
-    ~opam:"octez-shell-tests"
+    ~opam:"mavkit-shell-tests"
     ~synopsis:"Shell tests"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_test_helpers |> open_;
-        octez_store |> open_;
-        octez_store_shared |> open_;
-        octez_context |> open_;
-        octez_context_ops |> open_;
-        octez_shell_context |> open_;
-        octez_protocol_updater |> open_;
-        octez_p2p |> open_;
-        octez_p2p_services |> open_;
-        octez_requester;
-        octez_shell |> open_;
-        octez_shell_services |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_test_helpers |> open_;
+        mavkit_store |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_context |> open_;
+        mavkit_context_ops |> open_;
+        mavkit_shell_context |> open_;
+        mavkit_protocol_updater |> open_;
+        mavkit_p2p |> open_;
+        mavkit_p2p_services |> open_;
+        mavkit_requester;
+        mavkit_shell |> open_;
+        mavkit_shell_services |> open_;
         Protocol.(embedded demo_noops);
-        octez_stdlib_unix |> open_;
-        octez_validation |> open_;
-        octez_event_logging_test_helpers |> open_;
-        octez_test_helpers |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_validation |> open_;
+        mavkit_event_logging_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         alcotezt;
-        octez_version_value;
+        mavkit_version_value;
       ]
 
 (* INTERNAL EXES *)
@@ -7269,14 +7119,14 @@ let get_contracts_lib =
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_protocol_alpha")
-                 ("open Tezos_protocol_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_protocol_alpha")
+                 ("open Mavryk_protocol_" ^ Protocol.name_underscore proto)
                  contents
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_client_alpha")
-                 ("open Tezos_client_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_client_alpha")
+                 ("open Mavryk_client_" ^ Protocol.name_underscore proto)
                  contents
              in
              write get_contracts_ml (fun fmt ->
@@ -7295,9 +7145,9 @@ let get_contracts_lib =
     ~opam:""
     ~deps:
       ([
-         octez_micheline |> open_;
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_store;
+         mavkit_micheline |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_store;
        ]
       @ List.flatten protocols)
     ~all_modules_except:["get_contracts"]
@@ -7314,30 +7164,11 @@ let _get_contracts =
     ~opam:""
     ~deps:
       [
-        octez_micheline |> open_;
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_micheline |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
         get_contracts_lib |> open_;
       ]
     ~modules:["get_contracts"]
-    ~bisect_ppx:No
-
-let _proto_context_du =
-  public_exe
-    "proto_context_du"
-    ~internal_name:"main"
-    ~path:("devtools" // "proto_context_du")
-    ~release_status:Unreleased
-    ~synopsis:"A script to print protocol context disk usage"
-    ~opam:"internal-devtools_proto-context-du"
-    ~deps:
-      [
-        octez_clic;
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_node_config;
-        octez_store;
-        Protocol.(main alpha);
-        Protocol.(client_exn alpha);
-      ]
     ~bisect_ppx:No
 
 let yes_wallet_lib =
@@ -7357,8 +7188,8 @@ let yes_wallet_lib =
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_protocol_alpha")
-                 ("open Tezos_protocol_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_protocol_alpha")
+                 ("open Mavryk_protocol_" ^ Protocol.name_underscore proto)
                  contents
              in
              write get_delegates_ml (fun fmt ->
@@ -7377,14 +7208,13 @@ let yes_wallet_lib =
     ~opam:""
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
          lwt_unix;
          ezjsonm;
-         octez_node_config;
-         octez_store;
-         octez_shell_context;
-         octez_context;
+         mavkit_store;
+         mavkit_shell_context;
+         mavkit_context;
        ]
       @ protocols)
     ~all_modules_except:["yes_wallet"]
@@ -7413,8 +7243,8 @@ let _yes_wallet_test =
     ~opam:""
     ~deps:
       [
-        octez_error_monad |> open_ ~m:"TzLwtreslib";
-        octez_crypto;
+        mavkit_error_monad |> open_ ~m:"TzLwtreslib";
+        mavkit_crypto;
         zarith;
         zarith_stubs_js;
         data_encoding |> open_;
@@ -7438,13 +7268,13 @@ let _testnet_experiment_tools =
       [
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos;
-        octez_client_base_unix |> open_;
-        octez_node_config;
-        octez_base;
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
+        mavkit_client_base_unix |> open_;
+        mavkit_node_config;
+        mavkit_base;
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
         Protocol.(client_exn alpha);
-        Protocol.(main alpha);
+        Protocol.(main alpha) |> open_;
       ]
     ~modules:["testnet_experiment_tools"; "format_baker_accounts"]
 
@@ -7468,12 +7298,12 @@ let simulation_scenario_lib =
                    Str.global_replace re replace contents)
                  contents
                  [
-                   ( Str.regexp_string "open Tezos_client_alpha",
-                     "open Tezos_client_" ^ Protocol.name_underscore proto );
-                   ( Str.regexp_string "open Tezos_baking_alpha",
-                     "open Tezos_baking_" ^ Protocol.name_underscore proto );
-                   ( Str.regexp_string "open Tezos_protocol_alpha",
-                     "open Tezos_protocol_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_client_alpha",
+                     "open Mavryk_client_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_baking_alpha",
+                     "open Mavryk_baking_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_protocol_alpha",
+                     "open Mavryk_protocol_" ^ Protocol.name_underscore proto );
                  ]
              in
              write tool_path (fun fmt -> Format.pp_print_string fmt contents)) ;
@@ -7501,14 +7331,14 @@ let simulation_scenario_lib =
     ~opam:""
     ~deps:
       ([
-         octez_stdlib_unix |> open_;
-         octez_base |> open_ |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
-         octez_store |> open_;
-         octez_store_shared |> open_;
-         octez_context |> open_;
+         mavkit_stdlib_unix |> open_;
+         mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
+         mavkit_store |> open_;
+         mavkit_store_shared |> open_;
+         mavkit_context |> open_;
        ]
       @ List.flatten proto_deps)
     ~modules:("sigs" :: proto_tools)
@@ -7522,20 +7352,20 @@ let _simulation_scenario =
     ~release_status:Unreleased
     ~with_macos_security_framework:true
     ~synopsis:
-      "A script creating a simulation scenario from a tezos node directory."
+      "A script creating a simulation scenario from a mavryk node directory."
     ~opam:""
     ~deps:
       [
-        octez_stdlib_unix |> open_;
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_store |> open_;
-        octez_clic;
-        octez_store_unix_snapshots |> open_;
-        octez_store_shared |> open_;
-        octez_node_config |> open_;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_store |> open_;
+        mavkit_clic;
+        mavkit_store_unix_snapshots |> open_;
+        mavkit_store_shared |> open_;
+        mavkit_node_config |> open_;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
         simulation_scenario_lib |> open_;
       ]
     ~modules:["simulation_scenario"]
@@ -7552,11 +7382,11 @@ let _extract_data =
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_store |> open_;
-        octez_clic;
-        octez_client_base_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_store |> open_;
+        mavkit_clic;
+        mavkit_client_base_unix |> open_;
       ]
     ~modules:["extract_data"]
     ~bisect_ppx:No
@@ -7573,12 +7403,12 @@ let _safety_checker =
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_store |> open_;
-        octez_clic;
-        octez_node_config |> open_;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_store |> open_;
+        mavkit_clic;
+        mavkit_node_config |> open_;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
       ]
     ~modules:["safety_checker"]
     ~bisect_ppx:No
@@ -7595,12 +7425,12 @@ let _get_teztale_data =
     ~opam:""
     ~deps:
       [
-        octez_base |> open_ |> open_ ~m:"TzPervasives";
-        octez_clic;
-        caqti_lwt_unix;
+        mavkit_base |> open_ |> open_ ~m:"TzPervasives";
+        mavkit_clic;
+        caqti_lwt;
         caqti_dynload;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
       ]
     ~modules:["get_teztale_data"; "teztale_sql_queries"]
 
@@ -7638,7 +7468,7 @@ let tezt_tx_kernel =
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
         Protocol.(main alpha);
-        octez_crypto;
+        mavkit_crypto;
       ]
     ~release_status:Unreleased
 
@@ -7646,7 +7476,7 @@ let _ppinclude =
   private_exe
     "ppinclude"
     ~path:"src/lib_protocol_environment/ppinclude"
-    ~opam:"octez-libs"
+    ~opam:"mavkit-libs"
     ~bisect_ppx:No
     ~deps:[compiler_libs_common]
 
@@ -7663,7 +7493,7 @@ let _dal_throughput =
     ~static:false
     ~bisect_ppx:No
 
-let _octez_node =
+let _mavkit_node =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -7690,34 +7520,34 @@ let _octez_node =
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exe
-    "octez-node"
+    "mavkit-node"
     ~path:"src/bin_node"
     ~internal_name:"main"
-    ~synopsis:"Tezos: `octez-node` binary"
+    ~synopsis:"Mavryk: `mavkit-node` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives" |> open_;
-         octez_base_unix |> open_;
-         octez_version;
-         octez_version_value;
-         octez_node_config |> open_;
-         octez_stdlib_unix |> open_;
-         octez_shell_services |> open_;
-         octez_rpc_http |> open_;
-         octez_rpc_http_server |> open_;
-         octez_rpc_process |> open_;
-         octez_p2p |> open_;
-         octez_shell |> open_;
-         octez_store |> open_;
-         octez_store_unix_reconstruction |> open_;
-         octez_store_unix_snapshots |> open_;
-         octez_context;
-         octez_validation |> open_;
-         octez_shell_context |> open_;
-         octez_workers |> open_;
-         octez_protocol_updater |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+         mavkit_base_unix |> open_;
+         mavkit_version;
+         mavkit_version_value;
+         mavkit_node_config |> open_;
+         mavkit_stdlib_unix |> open_;
+         mavkit_shell_services |> open_;
+         mavkit_rpc_http |> open_;
+         mavkit_rpc_http_server |> open_;
+         mavkit_rpc_process |> open_;
+         mavkit_p2p |> open_;
+         mavkit_shell |> open_;
+         mavkit_store |> open_;
+         mavkit_store_unix_reconstruction |> open_;
+         mavkit_store_unix_snapshots |> open_;
+         mavkit_context;
+         mavkit_validation |> open_;
+         mavkit_shell_context |> open_;
+         mavkit_workers |> open_;
+         mavkit_protocol_updater |> open_;
          cmdliner;
          fmt_cli;
          fmt_tty;
@@ -7725,7 +7555,7 @@ let _octez_node =
          prometheus_app_unix;
          lwt_exit;
          uri;
-         octez_base_p2p_identity_file |> open_;
+         mavkit_base_p2p_identity_file |> open_;
        ]
       @ protocol_deps)
     ~linkall:true
@@ -7733,12 +7563,12 @@ let _octez_node =
       Dune.
         [
           install
-            [as_ "octez-sandboxed-node.sh" "octez-sandboxed-node.sh"]
-            ~package:"octez-node"
+            [as_ "mavkit-sandboxed-node.sh" "mavkit-sandboxed-node.sh"]
+            ~package:"mavkit-node"
             ~section:"bin";
         ]
 
-let _octez_client =
+let _mavkit_client =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -7763,26 +7593,26 @@ let _octez_client =
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exes
-    ["octez-client"; "octez-admin-client"]
+    ["mavkit-client"; "mavkit-admin-client"]
     ~path:"src/bin_client"
     ~internal_names:["main_client"; "main_admin"]
-    ~opam:"octez-client"
-    ~synopsis:"Tezos: `octez-client` binary"
+    ~opam:"mavkit-client"
+    ~synopsis:"Mavryk: `mavkit-client` binary"
     ~release_status:Released
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_clic;
-         octez_rpc_http_client |> open_;
-         octez_stdlib_unix |> open_;
-         octez_shell_services |> open_;
-         octez_client_base |> open_;
-         octez_client_commands |> open_;
-         octez_mockup_commands |> open_;
-         octez_proxy;
-         octez_client_base_unix |> open_;
-         octez_signer_backends_unix;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_clic;
+         mavkit_rpc_http_client |> open_;
+         mavkit_stdlib_unix |> open_;
+         mavkit_shell_services |> open_;
+         mavkit_client_base |> open_;
+         mavkit_client_commands |> open_;
+         mavkit_mockup_commands |> open_;
+         mavkit_proxy;
+         mavkit_client_base_unix |> open_;
+         mavkit_signer_backends_unix;
          uri;
        ]
       @ protocol_deps)
@@ -7794,10 +7624,10 @@ let _octez_client =
           install
             [
               as_
-                "octez-init-sandboxed-client.sh"
-                "octez-init-sandboxed-client.sh";
+                "mavkit-init-sandboxed-client.sh"
+                "mavkit-init-sandboxed-client.sh";
             ]
-            ~package:"octez-client"
+            ~package:"mavkit-client"
             ~section:"bin";
           alias_rule
             "runtest_compile_protocol"
@@ -7805,33 +7635,33 @@ let _octez_client =
             ~action:
               [
                 S "run";
-                S "%{bin:octez-protocol-compiler}";
+                S "%{bin:mavkit-protocol-compiler}";
                 S "-no-hash-check";
                 H [S "-warn-error"; S "+a"];
                 S "test/proto_test_injection/";
               ];
         ]
 
-let _octez_codec =
+let _mavkit_codec =
   public_exe
-    "octez-codec"
+    "mavkit-codec"
     ~path:"src/bin_codec"
     ~internal_name:"codec"
-    ~synopsis:"Tezos: `octez-codec` binary to encode and decode values"
+    ~synopsis:"Mavryk: `mavkit-codec` binary to encode and decode values"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       ([
          data_encoding |> open_;
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_client_base_unix |> open_;
-         octez_client_base |> open_;
-         octez_clic;
-         octez_stdlib_unix |> open_;
-         octez_event_logging |> open_;
-         octez_signer_services;
-         octez_version_value;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_base |> open_;
+         mavkit_clic;
+         mavkit_stdlib_unix |> open_;
+         mavkit_event_logging |> open_;
+         mavkit_signer_services;
+         mavkit_version_value;
        ]
       @ Protocol.all_optionally
       @@ [
@@ -7846,56 +7676,56 @@ let _octez_codec =
          ])
     ~linkall:true
 
-let _octez_proxy_server =
+let _mavkit_proxy_server =
   public_exe
-    "octez-proxy-server"
+    "mavkit-proxy-server"
     ~path:"src/bin_proxy_server"
     ~internal_name:"main_proxy_server"
-    ~synopsis:"Octez: `octez-proxy-server` binary"
+    ~synopsis:"Mavkit: `mavkit-proxy-server` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives" |> open_;
-         octez_base_unix;
-         octez_stdlib_unix |> open_;
-         octez_rpc;
+         mavkit_base |> open_ ~m:"TzPervasives" |> open_;
+         mavkit_base_unix;
+         mavkit_stdlib_unix |> open_;
+         mavkit_rpc;
          cmdliner;
          lwt_exit;
          lwt_unix;
-         octez_proxy;
-         octez_proxy_server_config;
-         octez_rpc_http_client_unix;
-         octez_rpc_http_server;
-         octez_shell_services;
-         octez_shell_context;
-         octez_version_value;
+         mavkit_proxy;
+         mavkit_proxy_server_config;
+         mavkit_rpc_http_client_unix;
+         mavkit_rpc_http_server;
+         mavkit_shell_services;
+         mavkit_shell_context;
+         mavkit_version_value;
          uri;
        ]
       @ Protocol.all_optionally [Protocol.client; Protocol.plugin])
     ~linkall:true
 
-let _octez_snoop =
+let _mavkit_snoop =
   public_exe
-    "octez-snoop"
+    "mavkit-snoop"
     ~path:"src/bin_snoop"
     ~internal_name:"main_snoop"
-    ~synopsis:"Tezos: `octez-snoop` binary"
+    ~synopsis:"Mavryk: `mavkit-snoop` binary"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_clic;
-        octez_benchmark |> open_;
-        octez_benchmark_examples;
-        octez_shell_benchmarks;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_clic;
+        mavkit_benchmark |> open_;
+        mavkit_benchmark_examples;
+        mavkit_shell_benchmarks;
         Protocol.(benchmarks_proto_exn alpha);
         str;
         pyml;
         prbnmcn_stats;
-        octez_version_value;
+        mavkit_version_value;
       ]
     ~linkall:true
     ~dune:
@@ -7903,32 +7733,32 @@ let _octez_snoop =
         [
           S "cram"
           :: G [S "deps" :: [S "main_snoop.exe"]]
-          :: [S "package" :: [S "octez-snoop"]];
+          :: [S "package" :: [S "mavkit-snoop"]];
         ]
 
-let _octez_injector_server =
+let _mavkit_injector_server =
   public_exe
-    "octez-injector-server"
-    ~internal_name:"octez_injector_server"
-    ~path:"contrib/octez_injector_server"
-    ~synopsis:"Octez injector"
+    "mavkit-injector-server"
+    ~internal_name:"mavkit_injector_server"
+    ~path:"contrib/mavkit_injector_server"
+    ~synopsis:"Mavkit injector"
     ~release_status:Unreleased
     ~with_macos_security_framework:true
     ~linkall:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_injector_lib |> open_;
-         octez_stdlib_unix |> open_;
-         octez_rpc_http_server |> open_;
-         octez_rpc_http |> open_;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_injector_lib |> open_;
+         mavkit_stdlib_unix |> open_;
+         mavkit_rpc_http_server |> open_;
+         mavkit_rpc_http |> open_;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
          data_encoding;
        ]
-      (* No code from octez_injector_alpha is used, but it's imported in order to *)
+      (* No code from mavkit_injector_alpha is used, but it's imported in order to *)
       (* run the protocol registration code *)
-      @ Protocol.(all_optionally [octez_injector]))
+      @ Protocol.(all_optionally [mavkit_injector]))
 
 (* We use Dune's select statement and keep uTop optional *)
 (* Keeping uTop optional lets `make build` succeed, *)
@@ -7946,12 +7776,12 @@ let _tztop =
     ~modes:[Byte]
     ~bisect_ppx:No
     ~static:false
-    ~profile:"octez-dev-deps"
+    ~profile:"mavkit-dev-deps"
     ~deps:
       [
         (* The following deps come from the original dune file. *)
-        octez_protocol_compiler_lib;
-        octez_base;
+        mavkit_protocol_compiler_lib;
+        mavkit_base;
         compiler_libs_toplevel;
         select
           ~package:utop
@@ -7960,29 +7790,29 @@ let _tztop =
           ~target:"tztop.ml";
       ]
 
-let _octez_signer =
+let _mavkit_signer =
   public_exe
-    "octez-signer"
+    "mavkit-signer"
     ~path:"src/bin_signer"
     ~internal_name:"main_signer"
-    ~synopsis:"Tezos: `octez-signer` binary"
+    ~synopsis:"Mavryk: `mavkit-signer` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_clic;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
-        octez_client_commands |> open_;
-        octez_signer_services |> open_;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server |> open_;
-        octez_rpc_http_client_unix |> open_;
-        octez_stdlib_unix |> open_;
-        octez_stdlib |> open_;
-        octez_signer_backends_unix;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_clic;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
+        mavkit_client_commands |> open_;
+        mavkit_signer_services |> open_;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server |> open_;
+        mavkit_rpc_http_client_unix |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_stdlib |> open_;
+        mavkit_signer_backends_unix;
       ]
 
 let _rpc_openapi =
@@ -7990,26 +7820,26 @@ let _rpc_openapi =
     "rpc_openapi"
     ~path:"src/bin_openapi"
     ~opam:""
-    ~deps:[octez_openapi]
+    ~deps:[mavkit_openapi]
 
-let _octez_tps_evaluation =
+let _mavkit_tps_evaluation =
   public_exe
-    "tezos-tps-evaluation"
+    "mavryk-tps-evaluation"
     ~internal_name:"main_tps_evaluation"
     ~path:"src/bin_tps_evaluation"
-    ~synopsis:"Tezos TPS evaluation tool"
+    ~synopsis:"Mavryk TPS evaluation tool"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
+        mavkit_base |> open_ ~m:"TzPervasives";
         caqti;
         caqti_dynload;
-        caqti_lwt_unix;
+        caqti_lwt;
         data_encoding;
         lwt;
         Protocol.(baking_exn alpha);
         Protocol.(client_commands_exn alpha);
-        octez_client_base_unix;
+        mavkit_client_base_unix;
         Protocol.(main alpha);
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_;
@@ -8037,7 +7867,7 @@ let _octez_tps_evaluation =
               ];
         ]
 
-let _octez_dal_node =
+let _mavkit_dal_node =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -8060,40 +7890,40 @@ let _octez_dal_node =
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exe
-    "octez-dal-node"
+    "mavkit-dal-node"
     ~path:"src/bin_dal_node"
     ~internal_name:"main"
-    ~synopsis:"Tezos: `octez-dal-node` binary"
+    ~synopsis:"Mavryk: `mavkit-dal-node` binary"
     ~release_status:Experimental
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_version;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_version;
          cmdliner;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
-         octez_client_commands |> open_;
-         octez_rpc_http |> open_;
-         octez_rpc_http_server;
-         octez_protocol_updater;
-         octez_rpc_http_client_unix;
-         octez_stdlib_unix |> open_;
-         octez_stdlib |> open_;
-         octez_dal_node_lib |> open_;
-         octez_dal_node_services |> open_;
-         octez_layer2_store |> open_;
-         octez_crypto_dal |> open_;
-         octez_store_unix;
-         octez_store_shared |> open_;
-         octez_gossipsub |> open_;
-         octez_dal_node_gossipsub_lib |> open_;
-         octez_p2p |> open_;
-         octez_p2p_services |> open_;
-         octez_crypto |> open_;
-         octez_base_p2p_identity_file |> open_;
-         octez_shell_services |> open_;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_commands |> open_;
+         mavkit_rpc_http |> open_;
+         mavkit_rpc_http_server;
+         mavkit_protocol_updater;
+         mavkit_rpc_http_client_unix;
+         mavkit_stdlib_unix |> open_;
+         mavkit_stdlib |> open_;
+         mavkit_dal_node_lib |> open_;
+         mavkit_dal_node_services |> open_;
+         mavkit_layer2_store |> open_;
+         mavkit_crypto_dal |> open_;
+         mavkit_store_unix;
+         mavkit_store_shared |> open_;
+         mavkit_gossipsub |> open_;
+         mavkit_dal_node_gossipsub_lib |> open_;
+         mavkit_p2p |> open_;
+         mavkit_p2p_services |> open_;
+         mavkit_crypto |> open_;
+         mavkit_base_p2p_identity_file |> open_;
+         mavkit_shell_services |> open_;
          irmin_pack;
          irmin_pack_unix;
          irmin;
@@ -8103,7 +7933,7 @@ let _octez_dal_node =
       @ protocol_deps)
     ~conflicts:[Conflicts.checkseum]
 
-let _octez_dac_node =
+let _mavkit_dac_node =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -8126,29 +7956,29 @@ let _octez_dac_node =
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exe
-    "octez-dac-node"
+    "mavkit-dac-node"
     ~path:"src/bin_dac_node"
     ~internal_name:"main_dac"
-    ~synopsis:"Tezos: `octez-dac-node` binary"
+    ~synopsis:"Mavryk: `mavkit-dac-node` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_clic;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
-         octez_client_commands |> open_;
-         octez_rpc_http |> open_;
-         octez_rpc_http_server;
-         octez_protocol_updater;
-         octez_rpc_http_client_unix;
-         octez_stdlib_unix |> open_;
-         octez_stdlib |> open_;
-         octez_dac_lib |> open_;
-         octez_dac_node_lib |> open_;
-         octez_layer2_store |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_clic;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_commands |> open_;
+         mavkit_rpc_http |> open_;
+         mavkit_rpc_http_server;
+         mavkit_protocol_updater;
+         mavkit_rpc_http_client_unix;
+         mavkit_stdlib_unix |> open_;
+         mavkit_stdlib |> open_;
+         mavkit_dac_lib |> open_;
+         mavkit_dac_node_lib |> open_;
+         mavkit_layer2_store |> open_;
          irmin_pack;
          irmin_pack_unix;
          irmin;
@@ -8156,7 +7986,7 @@ let _octez_dac_node =
       @ protocol_deps)
     ~conflicts:[Conflicts.checkseum]
 
-let _octez_dac_client =
+let _mavkit_dac_client =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -8179,28 +8009,28 @@ let _octez_dac_client =
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exe
-    "octez-dac-client"
+    "mavkit-dac-client"
     ~path:"src/bin_dac_client"
     ~internal_name:"main_dac_client"
-    ~synopsis:"Tezos: `octez-dac-client` binary"
+    ~synopsis:"Mavryk: `mavkit-dac-client` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_clic;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
-         octez_client_commands |> open_;
-         octez_stdlib_unix |> open_;
-         octez_stdlib |> open_;
-         octez_dac_lib |> open_;
-         octez_dac_client_lib |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_clic;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_commands |> open_;
+         mavkit_stdlib_unix |> open_;
+         mavkit_stdlib |> open_;
+         mavkit_dac_lib |> open_;
+         mavkit_dac_client_lib |> open_;
        ]
       @ protocol_deps)
 
-let _octez_smart_rollup_node =
+let _mavkit_smart_rollup_node =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -8210,35 +8040,35 @@ let _octez_smart_rollup_node =
             true
       in
       let targets =
-        List.filter_map Fun.id [Protocol.octez_sc_rollup_node protocol]
+        List.filter_map Fun.id [Protocol.mavkit_sc_rollup_node protocol]
       in
       if is_optional then List.map optional targets else targets
     in
     List.map deps_for_protocol Protocol.all |> List.flatten
   in
   public_exe
-    "octez-smart-rollup-node"
+    "mavkit-smart-rollup-node"
     ~internal_name:"main_smart_rollup_node"
     ~path:"src/bin_smart_rollup_node"
-    ~synopsis:"Octez: Smart rollup node"
+    ~synopsis:"Mavkit: Smart rollup node"
     ~release_status:Released
     ~linkall:true
     ~with_macos_security_framework:true
     ~deps:
       ([
-         octez_base |> open_ |> open_ ~m:"TzPervasives"
+         mavkit_base |> open_ |> open_ ~m:"TzPervasives"
          |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-         octez_clic;
-         octez_shell_services |> open_;
-         octez_client_base |> open_;
-         octez_client_base_unix |> open_;
-         octez_client_commands |> open_;
-         octez_smart_rollup_lib |> open_;
-         octez_smart_rollup_node_lib |> open_;
+         mavkit_clic;
+         mavkit_shell_services |> open_;
+         mavkit_client_base |> open_;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_commands |> open_;
+         mavkit_smart_rollup_lib |> open_;
+         mavkit_smart_rollup_node_lib |> open_;
        ]
       @ protocol_deps)
 
-let _octez_smart_rollup_node_lib_tests =
+let _mavkit_smart_rollup_node_lib_tests =
   let protocol_deps =
     let deps_for_protocol protocol =
       let is_optional =
@@ -8248,7 +8078,7 @@ let _octez_smart_rollup_node_lib_tests =
             true
       in
       let targets =
-        List.filter_map Fun.id [Protocol.octez_sc_rollup_node protocol]
+        List.filter_map Fun.id [Protocol.mavkit_sc_rollup_node protocol]
       in
       if is_optional then List.map optional targets else targets
     in
@@ -8256,242 +8086,203 @@ let _octez_smart_rollup_node_lib_tests =
   in
   let helpers =
     private_lib
-      "octez_smart_rollup_node_test_helpers"
+      "mavkit_smart_rollup_node_test_helpers"
       ~path:"src/lib_smart_rollup_node/test/helpers"
       ~opam:""
       ~deps:
         ([
-           octez_base |> open_ ~m:"TzPervasives"
+           mavkit_base |> open_ ~m:"TzPervasives"
            |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-           octez_test_helpers |> open_;
+           mavkit_test_helpers |> open_;
            qcheck_alcotest;
            qcheck_core;
            logs_lwt;
            alcotezt;
            tezt_lib;
-           octez_client_base_unix |> open_;
-           octez_smart_rollup_lib |> open_;
-           octez_smart_rollup_node_lib |> open_;
-           octez_layer2_store |> open_;
+           mavkit_client_base_unix |> open_;
+           mavkit_smart_rollup_lib |> open_;
+           mavkit_smart_rollup_node_lib |> open_;
          ]
         @ protocol_deps)
   in
   tezt
     ["canary"; "test_context_gc"; "test_store_gc"]
     ~path:"src/lib_smart_rollup_node/test/"
-    ~opam:"tezos-smart-rollup-node-lib-test"
+    ~opam:"mavryk-smart-rollup-node-lib-test"
     ~synopsis:"Tests for the smart rollup node library"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives"
+        mavkit_base |> open_ ~m:"TzPervasives"
         |> open_ ~m:"TzPervasives.Error_monad.Legacy_monad_globals";
-        octez_stdlib_unix |> open_;
-        octez_test_helpers |> open_;
-        octez_layer2_store |> open_;
-        octez_smart_rollup_lib |> open_;
-        octez_smart_rollup_node_lib |> open_;
+        mavkit_stdlib_unix |> open_;
+        mavkit_test_helpers |> open_;
+        mavkit_layer2_store |> open_;
+        mavkit_smart_rollup_lib |> open_;
+        mavkit_smart_rollup_node_lib |> open_;
         helpers |> open_;
         alcotezt;
       ]
 
-let octez_scoru_wasm_debugger_plugin =
+let mavkit_scoru_wasm_debugger_plugin =
   public_lib
-    "octez-smart-rollup-wasm-debugger-plugin"
+    "mavkit-smart-rollup-wasm-debugger-plugin"
     ~path:"src/bin_wasm_debugger/plugin"
     ~release_status:Released
     ~deps:[]
-    ~synopsis:"Plugin interface for the Octez Smart Rollup WASM Debugger"
+    ~synopsis:"Plugin interface for the Mavkit Smart Rollup WASM Debugger"
 
-let octez_scoru_wasm_debugger_lib =
+let mavkit_scoru_wasm_debugger_lib =
   public_lib
-    "octez-smart-rollup-wasm-debugger-lib"
+    "mavkit-smart-rollup-wasm-debugger-lib"
     ~path:"src/lib_wasm_debugger"
-    ~synopsis:"Tezos: Library used for the Smart Rollups' WASM debugger"
+    ~synopsis:"Mavryk: Library used for the Smart Rollups' WASM debugger"
     ~release_status:Released
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_clic;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_clic;
         tree_encoding;
-        octez_base_unix;
+        mavkit_base_unix;
         (* The debugger always rely on proto_alpha, as such the client is always
            available. *)
         Protocol.(client_exn alpha);
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers |> open_;
-        octez_smart_rollup_lib;
-        octez_webassembly_interpreter |> open_;
-        octez_webassembly_interpreter_extra |> open_;
-        octez_version_value;
-        octez_scoru_wasm_debugger_plugin;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_smart_rollup_lib;
+        mavkit_webassembly_interpreter |> open_;
+        mavkit_webassembly_interpreter_extra |> open_;
+        mavkit_version_value;
+        mavkit_scoru_wasm_debugger_plugin;
         dynlink;
         lambda_term;
       ]
 
-let _octez_scoru_wasm_debugger =
+let _mavkit_scoru_wasm_debugger =
   public_exe
-    (sf "octez-smart-rollup-wasm-debugger")
+    (sf "mavkit-smart-rollup-wasm-debugger")
     ~internal_name:(sf "main_wasm_debugger")
     ~path:"src/bin_wasm_debugger"
-    ~opam:"octez-smart-rollup-wasm-debugger"
-    ~synopsis:"Tezos: Debugger for the smart rollups’ WASM kernels"
+    ~opam:"mavkit-smart-rollup-wasm-debugger"
+    ~synopsis:"Mavryk: Debugger for the smart rollups’ WASM kernels"
     ~release_status:Released
     ~with_macos_security_framework:true
-    ~deps:[octez_scoru_wasm_debugger_lib |> open_]
+    ~deps:[mavkit_scoru_wasm_debugger_lib |> open_]
 
-(* Container of the registered sublibraries of [octez-evm-node] *)
-let registered_octez_evm_node_libs : Sub_lib.container =
+(* Container of the registered sublibraries of [mavkit-evm-node] *)
+let registered_mavkit_evm_node_libs : Sub_lib.container =
   Sub_lib.make_container ()
 
-(* Registers a sub-library in the [octez-evm-node] package. *)
-let octez_evm_node_lib : Sub_lib.maker =
+(* Registers a sub-library in the [mavkit-evm-node] package. *)
+let mavkit_evm_node_lib : Sub_lib.maker =
   Sub_lib.sub_lib
-    ~package_synopsis:"Octez EVM node libraries"
-    ~container:registered_octez_evm_node_libs
-    ~package:"octez-evm-node-libs"
+    ~package_synopsis:"Mavkit EVM node libraries"
+    ~container:registered_mavkit_evm_node_libs
+    ~package:"mavkit-evm-node-libs"
 
 let evm_node_config =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_config"
-    ~path:"etherlink/bin_node/config"
+    ~path:"etherlink/bin_evm_node/config"
     ~synopsis:"Configuration for the EVM node"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
       ]
 
 let evm_node_lib_prod_encoding =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_prod_encoding"
-    ~path:"etherlink/bin_node/lib_prod/encodings"
+    ~path:"etherlink/bin_evm_node/lib_prod/encodings"
     ~synopsis:
       "EVM encodings for the EVM node and plugin for the WASM Debugger [prod \
        version]"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_scoru_wasm_debugger_plugin]
-
-let _evm_node_sequencer_protobuf =
-  let protobuf_rules =
-    Dune.[protobuf_rule "narwhal"; protobuf_rule "exporter"]
-  in
-  octez_evm_node_lib
-    "evm_node_sequencer_protobuf"
-    ~path:"etherlink/bin_node/lib_sequencer_protobuf"
-    ~synopsis:
-      "gRPC libraries for interacting with a consensus node, generated from \
-       protobuf definitions"
-    ~deps:[ocaml_protoc_compiler]
-    ~dune:protobuf_rules
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
 
 let evm_node_lib_prod =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_prod"
-    ~path:"etherlink/bin_node/lib_prod"
+    ~path:"etherlink/bin_evm_node/lib_prod"
     ~synopsis:
       "An implementation of a subset of Ethereum JSON-RPC API for the EVM \
        rollup [prod version]"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc_http |> open_;
-        octez_workers |> open_;
-        octez_rpc_http_client_unix;
-        octez_version_value;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc_http |> open_;
+        mavkit_workers |> open_;
+        mavkit_rpc_http_client_unix;
+        mavkit_version_value;
+        mavkit_stdlib_unix |> open_;
         evm_node_lib_prod_encoding |> open_;
         lwt_exit;
         evm_node_config |> open_;
-        octez_context_disk;
-        octez_context_encoding;
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_debugger_lib |> open_;
       ]
 
 let evm_node_lib_dev_encoding =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_dev_encoding"
-    ~path:"etherlink/bin_node/lib_dev/encodings"
+    ~path:"etherlink/bin_evm_node/lib_dev/encodings"
     ~synopsis:
       "EVM encodings for the EVM node and plugin for the WASM Debugger [dev \
        version]"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_scoru_wasm_debugger_plugin]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
 
 let evm_node_lib_dev =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_dev"
-    ~path:"etherlink/bin_node/lib_dev"
+    ~path:"etherlink/bin_evm_node/lib_dev"
     ~synopsis:
       "An implementation of a subset of Ethereum JSON-RPC API for the EVM \
        rollup [dev version]"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc_http |> open_;
-        octez_workers |> open_;
-        octez_rpc_http_client_unix;
-        octez_version_value;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc_http |> open_;
+        mavkit_workers |> open_;
+        mavkit_rpc_http_client_unix;
+        mavkit_version_value;
+        mavkit_stdlib_unix |> open_;
         evm_node_lib_dev_encoding |> open_;
-        lwt_watcher;
         lwt_exit;
         evm_node_config |> open_;
-        octez_context_sigs;
-        octez_context_disk;
-        octez_context_encoding;
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_debugger_lib |> open_;
-        octez_layer2_store |> open_;
-        octez_smart_rollup_lib |> open_;
+        mavkit_context_sigs;
+        mavkit_context_disk;
+        mavkit_context_encoding;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_scoru_wasm_debugger_lib |> open_;
       ]
 
-let _octez_evm_node_tests =
+let _mavkit_evm_node_tests =
   tezt
     ["test_rlp"; "test_ethbloom"]
-    ~path:"etherlink/bin_node/test"
-    ~opam:"octez-evm-node-tests"
+    ~path:"etherlink/bin_evm_node/test"
+    ~opam:"mavkit-evm-node-tests"
     ~synopsis:"Tests for the EVM Node"
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
         evm_node_lib_prod;
         evm_node_lib_dev;
       ]
 
-let _tezt_etherlink =
-  tezt
-    ["evm_rollup"; "evm_sequencer"]
-    ~path:"etherlink/tezt/tests"
-    ~opam:"tezt-etherlink"
-    ~synopsis:"Tezt integration tests for Etherlink"
-    ~deps:
-      [
-        tezt_wrapper |> open_ |> open_ ~m:"Base";
-        tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
-        tezt_etherlink |> open_;
-        Protocol.(main alpha);
-      ]
-    ~with_macos_security_framework:true
-    ~dep_files:["etherlink/tezt/tests/evm_kernel_inputs"]
-    ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
-
 let _evm_node =
   public_exe
-    (sf "octez-evm-node")
-    ~internal_name:(sf "main")
-    ~path:"etherlink/bin_node"
-    ~opam:"octez-evm-node"
+    (sf "mavkit-evm-node")
+    ~internal_name:(sf "evm_node")
+    ~path:"etherlink/bin_evm_node"
+    ~opam:"mavkit-evm-node"
     ~synopsis:
       "An implementation of a subset of Ethereum JSON-RPC API for the EVM \
        rollup"
@@ -8499,12 +8290,12 @@ let _evm_node =
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_clic;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server;
-        octez_version_value;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_clic;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server;
+        mavkit_version_value;
         evm_node_lib_prod;
         evm_node_lib_dev;
         evm_node_lib_dev_encoding |> open_;
@@ -8512,29 +8303,22 @@ let _evm_node =
       ]
     ~bisect_ppx:Yes
 
-let _octez_scoru_wasm_regressions =
-  tezt
-    ["tezos_scoru_wasm_regressions"]
+let mavkit_scoru_wasm_regressions =
+  private_lib
+    "mavryk_scoru_wasm_regressions"
     ~path:"src/lib_scoru_wasm/regressions"
-    ~opam:"tezos-scoru-wasm-regressions"
+    ~opam:"mavryk-scoru-wasm-regressions"
     ~synopsis:"WASM PVM regressions"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_scoru_wasm |> open_;
-        octez_scoru_wasm_helpers;
-        octez_test_helpers;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_scoru_wasm |> open_;
+        mavkit_scoru_wasm_helpers;
+        mavkit_test_helpers;
         Protocol.(main alpha);
-        Protocol.(octez_sc_rollup alpha) |> if_some |> open_;
+        Protocol.(mavkit_sc_rollup alpha) |> if_some |> open_;
         Protocol.(parameters_exn alpha);
         tezt_lib |> open_ |> open_ ~m:"Base";
-      ]
-    ~dep_files:
-      [
-        "../../proto_alpha/lib_protocol/test/integration/wasm_kernel/echo.wast";
-        "../test/wasm_kernels/tx-kernel-no-verif.wasm";
-        "../test/messages/deposit.out";
-        "../test/messages/withdrawal.out";
       ]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 
@@ -8579,29 +8363,29 @@ let _kaitai_of_data_encoding_test =
     ~bisect_ppx:No
     ~inline_tests:ppx_expect
 
-let _octez_codec_kaitai =
+let _mavkit_codec_kaitai =
   public_exe
-    "octez-codec-kaitai"
+    "mavkit-codec-kaitai"
     ~path:"contrib/bin_codec_kaitai"
     ~release_status:Unreleased
     ~internal_name:"codec"
     ~synopsis:
-      "Tezos: `octez-codec-kaitai` binary to generate kaitai descriptions"
+      "Mavryk: `mavkit-codec-kaitai` binary to generate kaitai descriptions"
     ~with_macos_security_framework:true
     ~deps:
       ([
          data_encoding |> open_;
          kaitai_of_data_encoding;
          kaitai;
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_client_base_unix |> open_;
-         octez_client_base |> open_;
-         octez_clic;
-         octez_stdlib_unix |> open_;
-         octez_event_logging |> open_;
-         octez_signer_services;
-         octez_version_value;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_base |> open_;
+         mavkit_clic;
+         mavkit_stdlib_unix |> open_;
+         mavkit_event_logging |> open_;
+         mavkit_signer_services;
+         mavkit_version_value;
        ]
       @ Protocol.all_optionally
       @@ [
@@ -8620,11 +8404,11 @@ let _octez_codec_kaitai =
         [
           S "cram"
           :: G [S "deps" :: [S "codec.exe"]]
-          :: [S "package" :: [S "octez-codec"]];
+          :: [S "package" :: [S "mavkit-codec"]];
         ]
 
-let tezos_time_measurement =
-  external_lib ~opam:"" "tezos-time-measurement" V.True
+let mavryk_time_measurement =
+  external_lib ~opam:"" "mavryk-time-measurement" V.True
 
 let _tezt_long_tests =
   private_exe
@@ -8638,16 +8422,16 @@ let _tezt_long_tests =
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
         tezt_performance_regression |> open_;
-        octez_lwt_result_stdlib |> open_;
+        mavkit_lwt_result_stdlib |> open_;
         Protocol.(test_helpers_exn alpha);
-        octez_micheline;
-        octez_openapi;
+        mavkit_micheline;
+        mavkit_openapi;
         Protocol.(main alpha);
         qcheck_core;
-        tezos_time_measurement;
+        mavryk_time_measurement;
         data_encoding;
-        octez_event_logging |> open_;
-        octez_test_helpers |> open_;
+        mavkit_event_logging |> open_;
+        mavkit_test_helpers |> open_;
       ]
 
 let _tezt_manual_tests =
@@ -8659,9 +8443,7 @@ let _tezt_manual_tests =
     ~with_macos_security_framework:true
     ~deps:
       [
-        tezt_wrapper |> open_ |> open_ ~m:"Base";
-        tezt_tezos |> open_;
-        yes_wallet_lib;
+        tezt_lib |> open_ |> open_ ~m:"Base"; tezt_tezos |> open_; yes_wallet_lib;
       ]
 
 let _tezt_remote_tests =
@@ -8693,9 +8475,9 @@ let _tezt_vesting_contract_test =
       [
         tezt_lib |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_;
-        octez_stdlib;
-        octez_test_helpers;
-        octez_micheline;
+        mavkit_stdlib;
+        mavkit_test_helpers;
+        mavkit_micheline;
         Protocol.(main alpha);
         ptime;
       ]
@@ -8710,14 +8492,14 @@ let _docs_doc_gen =
     ~release_status:Unreleased
     ~deps:
       ([
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_rpc;
-         octez_stdlib_unix |> open_;
-         octez_shell |> open_;
-         octez_rpc_http_server;
-         octez_store |> open_;
-         octez_protocol_updater |> open_;
-         octez_node_config |> open_;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_rpc;
+         mavkit_stdlib_unix |> open_;
+         mavkit_shell |> open_;
+         mavkit_rpc_http_server;
+         mavkit_store |> open_;
+         mavkit_protocol_updater |> open_;
+         mavkit_node_config |> open_;
          data_encoding;
          re;
        ]
@@ -8734,8 +8516,8 @@ let _docs_doc_gen_errors =
     ~linkall:true
     ~deps:
       [
-        octez_base |> open_;
-        octez_error_monad |> open_;
+        mavkit_base |> open_;
+        mavkit_error_monad |> open_;
         data_encoding |> open_;
         Protocol.(client_exn alpha) |> open_;
       ]
@@ -8781,23 +8563,25 @@ let () =
   (* [make_tezt_exe] makes the global executable that contains all tests.
      [generate] gives it the list of libraries that register Tezt tests
      so that it can link all of them. *)
-  let tezt_exe_deps =
-    [
-      octez_test_helpers |> open_;
-      tezt_wrapper |> open_ |> open_ ~m:"Base";
-      str;
-      bls12_381;
-      tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
-      tezt_risc_v_sandbox;
-      tezt_tx_kernel;
-      data_encoding;
-      octez_base;
-      octez_base_unix;
-      octez_stdlib_unix;
-      Protocol.(main alpha);
-    ]
-  in
   let make_tezt_exe test_libs =
+    let deps =
+      [
+        mavkit_test_helpers |> open_;
+        tezt_wrapper |> open_ |> open_ ~m:"Base";
+        str;
+        bls12_381;
+        tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
+        tezt_ethereum |> open_;
+        tezt_risc_v_sandbox;
+        tezt_tx_kernel;
+        data_encoding;
+        mavkit_base;
+        mavkit_base_unix;
+        mavkit_stdlib_unix;
+        Protocol.(main alpha);
+        mavkit_scoru_wasm_regressions;
+      ]
+    in
     test
       "main"
       ~with_macos_security_framework:true
@@ -8807,16 +8591,15 @@ let () =
            Tezt worker processes are collected. *)
       ~bisect_ppx:With_sigterm
       ~opam:""
-      ~deps:(tezt_exe_deps @ test_libs)
+      ~deps:(deps @ test_libs)
   in
   generate
     ~make_tezt_exe
-    ~tezt_exe_deps
-    ~default_profile:"octez-deps"
+    ~default_profile:"mavkit-deps"
     ~add_to_meta_package:
       [
         (* [ledgerwallet_tezos] is an optional dependency, but we want
-           [opam install octez] to always install it. *)
+           [opam install mavkit] to always install it. *)
         ledgerwallet_tezos;
       ]
 
@@ -8874,59 +8657,59 @@ let () =
   write "script-inputs/active_protocol_versions_without_number" @@ fun fmt ->
   List.iter (write_protocol fmt) Protocol.active
 
-(* Generate documentation index for [octez-libs] *)
+(* Generate documentation index for [mavkit-libs] *)
 let () =
   write "src/lib_base/index.mld" @@ fun fmt ->
   let header =
-    "{0 Octez-libs: Octez libraries}\n\n\
-     This is a package containing some libraries used by the Octez project.\n\n\
+    "{0 Mavkit-libs: Mavkit libraries}\n\n\
+     This is a package containing some libraries used by the Mavkit project.\n\n\
      It contains the following libraries:\n\n"
   in
-  Sub_lib.pp_documentation_of_container ~header fmt registered_octez_libs
+  Sub_lib.pp_documentation_of_container ~header fmt registered_mavkit_libs
 
-(* Generate documentation index for [octez-shell-libs] *)
+(* Generate documentation index for [mavkit-shell-libs] *)
 let () =
   write "src/lib_shell/index.mld" @@ fun fmt ->
   let header =
-    "{0 Octez-shell-libs: octez shell libraries}\n\n\
-     This is a package containing some libraries used by the shell of Octez.\n\n\
+    "{0 Mavkit-shell-libs: mavkit shell libraries}\n\n\
+     This is a package containing some libraries used by the shell of Mavkit.\n\n\
      It contains the following libraries:\n\n"
   in
-  Sub_lib.pp_documentation_of_container ~header fmt registered_octez_shell_libs
+  Sub_lib.pp_documentation_of_container ~header fmt registered_mavkit_shell_libs
 
-(* Generate documentation index for [octez-proto-libs] *)
+(* Generate documentation index for [mavkit-proto-libs] *)
 let () =
   write "src/lib_protocol_environment/index.mld" @@ fun fmt ->
   let header =
-    "{0 Octez-proto-libs: octez protocol libraries}\n\n\
-     This is a package containing some libraries related to the Tezos \
+    "{0 Mavkit-proto-libs: mavkit protocol libraries}\n\n\
+     This is a package containing some libraries related to the Mavryk \
      protocol.\n\n\
      It contains the following libraries:\n\n"
   in
-  Sub_lib.pp_documentation_of_container ~header fmt registered_octez_proto_libs
+  Sub_lib.pp_documentation_of_container ~header fmt registered_mavkit_proto_libs
 
-(* Generate documentation index for [octez-l2-libs] *)
+(* Generate documentation index for [mavkit-l2-libs] *)
 let () =
   write "src/lib_smart_rollup/index.mld" @@ fun fmt ->
   let header =
-    "{0 Octez-l2-libs: octez layer2 libraries}\n\n\
-     This is a package containing some libraries used by the layer 2 of Octez.\n\n\
+    "{0 Mavkit-l2-libs: mavkit layer2 libraries}\n\n\
+     This is a package containing some libraries used by the layer 2 of Mavkit.\n\n\
      It contains the following libraries:\n\n"
   in
-  Sub_lib.pp_documentation_of_container ~header fmt registered_octez_l2_libs
+  Sub_lib.pp_documentation_of_container ~header fmt registered_mavkit_l2_libs
 
-(* Generate documentation index for [octez-evm-node-libs] *)
+(* Generate documentation index for [mavkit-evm-node-libs] *)
 let () =
-  write "etherlink/bin_node/index.mld" @@ fun fmt ->
+  write "etherlink/bin_evm_node/index.mld" @@ fun fmt ->
   let header =
-    "{0 Octez-evm-node-libs: octez EVM Node libraries}\n\n\
+    "{0 Mavkit-evm-node-libs: mavkit EVM Node libraries}\n\n\
      This is a package containing some libraries used by the EVM Node of \
-     Octez.\n\n\
+     Mavkit.\n\n\
      It contains the following libraries:\n\n"
   in
   Sub_lib.pp_documentation_of_container
     ~header
     fmt
-    registered_octez_evm_node_libs
+    registered_mavkit_evm_node_libs
 
 let () = postcheck ~exclude ()

@@ -47,9 +47,7 @@ type t
     The signer is configured to use its private base directory.
 
     If [runner] is specified, the signer will be spawned on this
-    runner using SSH.
-
-    The allowed magic byte value for the signer can be specified with [magic_byte]. *)
+    runner using SSH. *)
 val init :
   ?name:string ->
   ?color:Log.Color.t ->
@@ -58,7 +56,6 @@ val init :
   ?uri:Uri.t ->
   ?runner:Runner.t ->
   ?keys:Account.key list ->
-  ?magic_byte:string ->
   unit ->
   t Lwt.t
 

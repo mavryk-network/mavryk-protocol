@@ -22,31 +22,12 @@ const external = require("./lib/external")
 const path = require('node:path')
 const { timestamp } = require("./lib/timestamp")
 const csv = require('csv-stringify/sync');
-const commander = require('commander');
-const { mkdirSync } = require('node:fs')
 
-commander
-    .usage('[OPTIONS]')
-    .option('-i, --include <regex>', 'Only consider benchmark scripts matching <regex>')
-    .option('-e, --exclude <regex>', 'Exclude benchmark scripts matching <regex>')
-    .option('-o, --output-dir <path>', "Output directory")
-    .parse(process.argv);
-
-let INCLUDE_REGEX = commander.opts().include
-let EXCLUDE_REGEX = commander.opts().exclude
-function filter_name(name) {
-    return (INCLUDE_REGEX === undefined
-        || name.match(INCLUDE_REGEX))
-        && (EXCLUDE_REGEX === undefined
-            || !name.match(EXCLUDE_REGEX))
-}
-
-const RUN_DEBUGGER_COMMAND = external.bin('./octez-smart-rollup-wasm-debugger');
+const RUN_DEBUGGER_COMMAND = external.bin('./mavkit-smart-rollup-wasm-debugger');
 const EVM_INSTALLER_KERNEL_PATH = external.resource('evm_benchmark_installer.wasm');
 const PREIMAGE_DIR = external.ressource_dir('_evm_unstripped_installer_preimages');
-const OUTPUT_DIRECTORY = commander.opts().outputDir ? commander.opts().outputDir : external.output()
-mkdirSync(OUTPUT_DIRECTORY, { recursive: true })
-console.log(`Output directory ${OUTPUT_DIRECTORY}`)
+const OUTPUT_DIRECTORY = external.output()
+
 
 function sumArray(arr) {
     return arr.reduce((acc, curr) => acc + curr, 0);
@@ -90,16 +71,16 @@ function push_profiler_sections(output, opcodes, precompiles) {
         } else {
             let ticks = parseInt(match[1]);
             let address = parseInt(match[2].substring(0, 42));
-            let data_size = parseInt("0x" + match[2].substring(42));
+            let data_size = parseInt("0x"+match[2].substring(42));
             if (precompiled_address_set.has(address)) {
-                precompiles.push({ "address": address, "data_size": data_size, "ticks": ticks })
+                precompiles.push({"address": address, "data_size": data_size, "ticks": ticks})
             }
         }
     }
     return opcodes;
 }
 
-function run_profiler(path, logs) {
+function run_profiler(path) {
 
     profiler_result = new Promise((resolve, _) => {
 
@@ -109,11 +90,10 @@ function run_profiler(path, logs) {
         var estimated_ticks = [];
         var estimated_ticks_per_tx = [];
         var tx_size = [];
-        var block_in_progress_store = [];
-        var block_in_progress_read = [];
+        var bip_store = [];
+        var bip_read = [];
         var receipt_size = [];
         let bloom_size = [];
-        let nb_reboots = 0;
 
         var profiler_output_path = "";
 
@@ -135,7 +115,6 @@ function run_profiler(path, logs) {
 
         childProcess.stdout.on('data', (data) => {
             const output = data.toString();
-            if (!output.includes("__wasm_debugger__::Section")) fs.appendFileSync(logs, output)
             const profiler_output_path_regex = /Profiling result can be found in (.+)/;
             const profiler_output_path_match = output.match(profiler_output_path_regex);
             const profiler_output_path_result = profiler_output_path_match
@@ -150,12 +129,11 @@ function run_profiler(path, logs) {
             push_match(output, estimated_ticks, /\bEstimated ticks:\s*(\d+)/g)
             push_match(output, estimated_ticks_per_tx, /\bEstimated ticks after tx:\s*(\d+)/g)
             push_match(output, tx_size, /\bStoring transaction object of size\s*(\d+)/g)
-            push_match(output, block_in_progress_store, /\bStoring Block In Progress of size\s*(\d+)/g)
-            push_match(output, block_in_progress_read, /\bReading Block In Progress of size\s*(\d+)/g)
+            push_match(output, bip_store, /\bStoring Block in Progress of size\s*(\d+)/g)
+            push_match(output, bip_read, /\bReading Block in Progress of size\s*(\d+)/g)
             push_match(output, receipt_size, /\bStoring receipt of size \s*(\d+)/g)
             push_match(output, bloom_size, /\[Benchmarking\] bloom size:\s*(\d+)/g)
             push_profiler_sections(output, opcodes, precompiles);
-            if (output.includes("Kernel was rebooted.")) nb_reboots++;
         });
         childProcess.on('close', _ => {
             if (profiler_output_path == "") {
@@ -179,12 +157,6 @@ function run_profiler(path, logs) {
             if (tx_status.length != bloom_size.length) {
                 console.log(new Error("Missing bloom size value (expected: " + tx_status.length + ", actual: " + bloom_size.length + ")"));
             }
-            if (block_in_progress_store.length != nb_reboots) {
-                console.log(new Error("Missing stored block in progress size value (expected: " + nb_reboots + ", actual: " + block_in_progress_store.length + ")"));
-            }
-            if (block_in_progress_read.length != nb_reboots) {
-                console.log(new Error("Missing read block in progress size value (expected: " + nb_reboots + ", actual: " + block_in_progress_read.length + ")"));
-            }
             resolve({
                 profiler_output_path,
                 gas_costs: gas_used,
@@ -192,8 +164,8 @@ function run_profiler(path, logs) {
                 estimated_ticks,
                 estimated_ticks_per_tx,
                 tx_size,
-                block_in_progress_store,
-                block_in_progress_read,
+                bip_store,
+                bip_read,
                 receipt_size,
                 opcodes,
                 bloom_size,
@@ -250,8 +222,6 @@ async function analyze_profiler_output(path) {
     fetch_blueprint_ticks = await get_ticks(path, "blueprint5fetch");
     block_finalize = await get_ticks(path, "store_current_block");
     logs_to_bloom = await get_ticks(path, "logs_to_bloom");
-    block_in_progress_store_ticks = await get_ticks(path, "store_block_in_progress");
-    block_in_progress_read_ticks = await get_ticks(path, "read_block_in_progress");
     return {
         kernel_run_ticks: kernel_run_ticks,
         run_transaction_ticks: run_transaction_ticks,
@@ -263,16 +233,14 @@ async function analyze_profiler_output(path) {
         sputnik_runtime_ticks: sputnik_runtime_ticks,
         store_receipt_ticks,
         block_finalize,
-        logs_to_bloom,
-        block_in_progress_store_ticks,
-        block_in_progress_read_ticks
+        logs_to_bloom
     };
 }
 
 // Run given benchmark
-async function run_benchmark(path, logs) {
+async function run_benchmark(path) {
     var inbox_size = fs.statSync(path).size
-    run_profiler_result = await run_profiler(path, logs);
+    run_profiler_result = await run_profiler(path);
     profiler_output_analysis_result = await analyze_profiler_output(run_profiler_result.profiler_output_path);
     return {
         inbox_size,
@@ -306,10 +274,8 @@ function log_benchmark_result(benchmark_name, run_benchmark_result) {
     estimated_ticks = run_benchmark_result.estimated_ticks;
     estimated_ticks_per_tx = run_benchmark_result.estimated_ticks_per_tx;
     tx_size = run_benchmark_result.tx_size;
-    block_in_progress_read = run_benchmark_result.block_in_progress_read;
-    block_in_progress_store = run_benchmark_result.block_in_progress_store;
-    block_in_progress_store_ticks = run_benchmark_result.block_in_progress_store_ticks;
-    block_in_progress_read_ticks = run_benchmark_result.block_in_progress_read_ticks;
+    bip_read = run_benchmark_result.bip_read;
+    bip_store = run_benchmark_result.bip_store;
 
     console.log(`Number of transactions: ${tx_status.length}`)
     run_time_index = 0;
@@ -365,7 +331,6 @@ function log_benchmark_result(benchmark_name, run_benchmark_result) {
 
     // first kernel run
     // the nb of tx correspond to the full inbox, not just those done in first run
-    let bip_idx = 0
     rows.push({
         benchmark_name: benchmark_name + "(all)",
         interpreter_init_ticks: interpreter_init_ticks[0],
@@ -375,8 +340,7 @@ function log_benchmark_result(benchmark_name, run_benchmark_result) {
         estimated_ticks: estimated_ticks[0],
         inbox_size: run_benchmark_result.inbox_size,
         nb_tx: tx_status.length,
-        block_in_progress_store: block_in_progress_store[0] ? block_in_progress_store[0] : '',
-        block_in_progress_store_ticks: block_in_progress_store[0] ? block_in_progress_store_ticks[bip_idx++] : ''
+        bip_store: bip_store[0] ? bip_store[0] : 0
     });
 
     //reboots
@@ -388,12 +352,9 @@ function log_benchmark_result(benchmark_name, run_benchmark_result) {
             fetch_blueprint_ticks: fetch_blueprint_ticks[j],
             kernel_run_ticks: kernel_run_ticks[j],
             estimated_ticks: estimated_ticks[j],
-            block_in_progress_store: block_in_progress_store[j] ? block_in_progress_store[j] : '',
-            block_in_progress_store_ticks: block_in_progress_store[j] ? block_in_progress_store_ticks[bip_idx] : '',
-            block_in_progress_read: block_in_progress_read[j - 1], // the first read correspond to second run
-            block_in_progress_read_ticks: block_in_progress_read[j - 1] ? block_in_progress_read_ticks[bip_idx - 1] : ''
+            bip_store: bip_store[j] ? bip_store[j] : 0,
+            bip_read: bip_read[j - 1] // the first read correspond to second run
         });
-        if (block_in_progress_read[j - 1]) bip_idx++
     }
 
     // ticks that are not covered by identified area of interest
@@ -416,9 +377,6 @@ function log_benchmark_result(benchmark_name, run_benchmark_result) {
     return rows;
 }
 
-function logs_filename(time) {
-    return path.format({ dir: OUTPUT_DIRECTORY, base: `logs_${time}.log` })
-}
 
 function output_filename(time) {
     return path.format({ dir: OUTPUT_DIRECTORY, base: `benchmark_result_${time}.csv` })
@@ -445,31 +403,9 @@ function dump_opcodes(filename, opcodes) {
     fs.appendFileSync(filename, "}");
 }
 
-const PROFILER_OUTPUT_DIRECTORY = OUTPUT_DIRECTORY + "/profiling"
-mkdirSync(PROFILER_OUTPUT_DIRECTORY, { recursive: true })
-
-
-
-function move_profiler_output(src, bench_name, time) {
-    let dest = path.format({ dir: PROFILER_OUTPUT_DIRECTORY, base: `${bench_name.replaceAll('/', '_')}_${time}.out` })
-    fs.rename(path.resolve(src), dest, (err) => {
-        if (err && err.code === 'EXDEV') {
-            console.log(`WARNING: couldn't move profiler output with rename. Won't try more to avoid taking too long. File remains at ${src}`)
-            console.log(err)
-            return;
-        } else if (err) {
-            console.log(`WARNING: error while trying to move profiler output. Benchmarking while continue. File remains at ${src}`)
-            console.log(err)
-            return;
-        }
-        console.log(`Finished moving profiling output to ${dest}`)
-        return;
-    })
-}
-
 // Run the benchmark suite and write the result to benchmark_result_${TIMESTAMP}.csv
 async function run_all_benchmarks(benchmark_scripts) {
-    console.log(`Running benchmarks on: \n[ ${benchmark_scripts.join(',\n  ')}]`);
+    console.log(`Running benchmarks on: [${benchmark_scripts.join('\n  ')}]`);
     var benchmark_fields = [
         "benchmark_name",
         "status",
@@ -489,10 +425,8 @@ async function run_all_benchmarks(benchmark_scripts) {
         "nb_tx",
         "inbox_size",
         "fetch_blueprint_ticks",
-        "block_in_progress_read",
-        "block_in_progress_read_ticks",
-        "block_in_progress_store",
-        "block_in_progress_store_ticks",
+        "bip_read",
+        "bip_store",
         "block_finalize",
         "kernel_run_ticks",
         "unaccounted_ticks",
@@ -506,7 +440,6 @@ async function run_all_benchmarks(benchmark_scripts) {
     let output = output_filename(time);
     let opcodes_dump = opcodes_dump_filename(time);
     let precompiles_output = precompiles_filename(time);
-    let logs = logs_filename(time)
     console.log(`Output in ${output}`);
     console.log(`Dumped opcodes in ${opcodes_dump}`);
     console.log(`Precompiles in ${precompiles_output}`);
@@ -514,28 +447,23 @@ async function run_all_benchmarks(benchmark_scripts) {
     const precompile_csv_config = { columns: precompiles_field };
     fs.writeFileSync(output, csv.stringify([], { header: true, ...benchmark_csv_config }));
     fs.writeFileSync(precompiles_output, csv.stringify([], { header: true, ...precompile_csv_config }));
-    fs.writeFileSync(logs, "Logging debugger\n")
-    console.log(`Full logs in ${logs}`)
     let opcodes = {};
     for (var i = 0; i < benchmark_scripts.length; i++) {
         var benchmark_script = benchmark_scripts[i];
         var parts = benchmark_script.split("/");
         var benchmark_name = parts[parts.length - 1].split(".")[0];
         console.log(`Benchmarking ${benchmark_script}`);
-        fs.appendFileSync(logs, `=================================================\nBenchmarking ${benchmark_script}\n`)
         build_benchmark_scenario(benchmark_script);
-        run_benchmark_result = await run_benchmark("transactions.json", logs);
+        run_benchmark_result = await run_benchmark("transactions.json");
         benchmark_log = log_benchmark_result(benchmark_name, run_benchmark_result);
         opcodes[benchmark_name] = run_benchmark_result.opcodes;
         fs.appendFileSync(output, csv.stringify(benchmark_log, benchmark_csv_config));
         fs.appendFileSync(precompiles_output, csv.stringify(run_benchmark_result.precompiles, precompile_csv_config))
-        move_profiler_output(run_benchmark_result.profiler_output_path, benchmark_script, time)
     }
     dump_opcodes(opcodes_dump, opcodes);
     console.log("Benchmarking complete");
-    fs.appendFileSync(logs, "=================================================\nBenchmarking complete.\n")
     execSync("rm transactions.json");
 }
 
 benchmark_scripts = require("./benchmarks_list.json")
-run_all_benchmarks(benchmark_scripts.filter(filter_name));
+run_all_benchmarks(benchmark_scripts);

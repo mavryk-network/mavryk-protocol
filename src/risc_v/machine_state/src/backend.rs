@@ -73,8 +73,6 @@ pub trait Elem: Copy + 'static {
     fn to_stored_in_place(&mut self);
 
     /// Convert from stored representation in place.
-    // The naming of this function trips Clippy.
-    #[allow(clippy::wrong_self_convention)]
     fn from_stored_in_place(&mut self);
 
     /// Read a value from its stored representation.
@@ -147,7 +145,7 @@ impl<E: Elem, const LEN: usize> Elem for [E; LEN] {
 
     #[inline(always)]
     fn from_stored(source: &Self) -> Self {
-        let mut new = *source;
+        let mut new = source.clone();
 
         // NOTE: This loop may be eliminated if [from_stored_in_place] is a no-op.
         for elem in new.iter_mut() {
@@ -168,15 +166,6 @@ pub trait Manager {
         &mut self,
         loc: Location<[E; LEN]>,
     ) -> Self::Region<E, LEN>;
-
-    /// Like [`Self::Region`] but all element accesses are "volatile"
-    type VolatileRegion<E: Elem, const LEN: usize>: VolatileRegion<E>;
-
-    /// Allocate a volatile region in the state storage.
-    fn allocate_volatile_region<E: Elem, const LEN: usize>(
-        &mut self,
-        loc: Volatile<Location<[E; LEN]>>,
-    ) -> Self::VolatileRegion<E, LEN>;
 
     /// Allocate a cell in the state storage.
     #[inline]
@@ -202,10 +191,10 @@ pub trait Backend: BackendManagement + Sized {
     type Layout: layout::Layout;
 
     /// Allocate regions for the given layout placement.
-    fn allocate(
-        &mut self,
+    fn allocate<'backend>(
+        &'backend mut self,
         placed: PlacedOf<Self::Layout>,
-    ) -> AllocatedOf<Self::Layout, Self::Manager<'_>>;
+    ) -> AllocatedOf<Self::Layout, Self::Manager<'backend>>;
 
     /// Read bytes from the backing storage.
     fn read(&self, index: usize, buffer: &mut [u8]);
@@ -217,7 +206,7 @@ pub trait Backend: BackendManagement + Sized {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use crate::{bus, mode, registers};
+    use crate::registers;
 
     /// This lets you construct backends for any layout.
     pub trait TestBackendFactory {
@@ -230,8 +219,6 @@ pub mod tests {
     pub fn test_backend(factory: &mut impl TestBackendFactory) {
         region::tests::test_backend(factory);
         registers::tests::test_backend(factory);
-        bus::main_memory::tests::test_backend(factory);
-        mode::tests::test_mode(factory);
         test_example(factory);
     }
 

@@ -30,7 +30,7 @@
     It is largely taken from the mockup simulator of the baker.
  *)
 
-open Tezos_client_base
+open Mavryk_client_base
 
 class dummy_prompter : Client_context.prompter =
   object
@@ -45,9 +45,9 @@ class dummy_prompter : Client_context.prompter =
     method multiple_password_retries = false
   end
 
-class faked_ctxt : Tezos_rpc.Context.generic =
+class faked_ctxt : Mavryk_rpc.Context.generic =
   let local_ctxt =
-    Tezos_mockup_proxy.RPC_client.local_ctxt Tezos_rpc.Directory.empty
+    Mavryk_mockup_proxy.RPC_client.local_ctxt Mavryk_rpc.Directory.empty
   in
   object
     method base = local_ctxt#base
@@ -57,7 +57,7 @@ class faked_ctxt : Tezos_rpc.Context.generic =
 
     method call_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           'p ->
           'q ->
           'i ->
@@ -67,7 +67,7 @@ class faked_ctxt : Tezos_rpc.Context.generic =
 
     method call_streamed_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           on_chunk:('o -> unit) ->
           on_close:(unit -> unit) ->
           'p ->
@@ -89,7 +89,6 @@ class faked_wallet ~base_dir ~filesystem : Client_context.wallet =
     method load_passwords = None
 
     method read_file fname =
-      let open Lwt_result_syntax in
       match String.Hashtbl.find filesystem fname with
       | None -> failwith "faked_wallet: cannot read file (%s)" fname
       | Some (content, _mtime) -> return content
@@ -126,7 +125,6 @@ class faked_wallet ~base_dir ~filesystem : Client_context.wallet =
 
     method write : type a.
         string -> a -> a Data_encoding.encoding -> unit tzresult Lwt.t =
-      let open Lwt_result_syntax in
       fun alias_name list encoding ->
         let filename = self#filename alias_name in
         let json = Data_encoding.Json.construct encoding list in
@@ -163,7 +161,7 @@ class unix_faked ~base_dir ~filesystem : Client_context.full =
 
     inherit faked_ctxt
 
-    inherit Tezos_client_base_unix.Client_context_unix.unix_ui
+    inherit Mavryk_client_base_unix.Client_context_unix.unix_ui
 
     method chain = `Main
 

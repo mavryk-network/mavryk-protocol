@@ -152,7 +152,7 @@
     }
   },
   {
-    "file": "tezos-context",
+    "file": "mavryk-context",
     "title": "context",
     "tags": [
       "alcotest"
@@ -1284,7 +1284,7 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
+    "file": "basenet_dictator_migration.ml",
     "title": "Alpha: testnet dictator (mainnet, migration)",
     "tags": [
       "alpha",
@@ -1646,11 +1646,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Lima: testnet dictator (ghostnet, proposal)",
+    "title": "Lima: testnet dictator (basenet, proposal)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "proposal"
     ],
     "successful_runs": {
@@ -1674,11 +1674,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, adoption)",
+    "title": "Alpha: testnet dictator (basenet, adoption)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "adoption"
     ],
     "successful_runs": {

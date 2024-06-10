@@ -4,7 +4,7 @@ code { CAR ; NIL operation ; PAIR } ;
 view "add" nat nat { UNPAIR ; ADD } ;
 view "id" nat (pair nat nat) { } ;
 view "test_failwith" nat (pair nat nat) { FAILWITH } ;
-view "step_constants" unit (pair (pair mutez mutez) (pair (pair address address) address ))
+view "step_constants" unit (pair (pair mumav mumav) (pair (pair address address) address ))
      { DROP ;
        SOURCE;
        SENDER;

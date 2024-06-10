@@ -42,13 +42,13 @@ let register_test ~title ~additional_tags =
     that it can be used by [compare_operations]. We will refer to this
     integer as the "weight" of an operation. *)
 module Mock_protocol :
-  Tezos_protocol_environment.PROTOCOL
+  Mavryk_protocol_environment.PROTOCOL
     with type operation_data = int
      and type operation_receipt = unit
      and type validation_state = unit
      and type application_state = unit = struct
   include
-    Tezos_protocol_environment.Internal_for_tests.Environment_protocol_T_test
+    Mavryk_protocol_environment.Internal_for_tests.Environment_protocol_T_test
     .Mock_all_unit
 
   type operation_data = int
@@ -84,8 +84,8 @@ module Mock_protocol :
     include Mempool
 
     type conflict_handler =
-      existing_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
-      new_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
+      existing_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
+      new_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
       [`Keep | `Replace]
 
     let add_operation ?check_signature:_ ?conflict_handler:_ _ _ _ =

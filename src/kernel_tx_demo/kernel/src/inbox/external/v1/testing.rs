@@ -4,7 +4,7 @@
 
 //! Generation of arbitrary operations for testing.
 use crate::{fake_hash::arb_kt1, inbox::Signer};
-use tezos_smart_rollup_encoding::{entrypoint::Entrypoint, michelson::ticket::StringTicket};
+use mavryk_smart_rollup_encoding::{entrypoint::Entrypoint, michelson::ticket::StringTicket};
 
 use super::{Operation, OperationContent};
 use crypto::hash::ContractTz1Hash;

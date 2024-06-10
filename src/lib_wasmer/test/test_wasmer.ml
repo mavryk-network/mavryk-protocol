@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_wasmer
+open Mavryk_wasmer
 
 let hex_string =
   Alcotest.testable

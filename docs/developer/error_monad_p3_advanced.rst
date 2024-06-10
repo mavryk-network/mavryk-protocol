@@ -7,13 +7,13 @@ Working with standard data-structures: Lwtreslib
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Handling values within the Lwt, ``result``, and Lwt-``result`` monads is
-so common in Octez that you also have access to an extension of the
+so common in Mavkit that you also have access to an extension of the
 Stdlib dedicated to these monads: the ``Lwtreslib`` library.
 
-The ``tezos-lwt-result-stdlib`` package exports an ``Lwtreslib`` module
-which is made available, through ``tezos-error-monad`` and
-``tezos-base``, to the whole of the codebase. Specifically, within the
-codebase of Octez the following modules of OCaml’s ``Stdlib`` are
+The ``mavryk-lwt-result-stdlib`` package exports an ``Lwtreslib`` module
+which is made available, through ``mavryk-error-monad`` and
+``mavryk-base``, to the whole of the codebase. Specifically, within the
+codebase of Mavkit the following modules of OCaml’s ``Stdlib`` are
 shadowed by Lwtreslib’s:
 
 -  ``List``,
@@ -63,7 +63,7 @@ for ``List.map``
        ('b list, 'trace list) result Lwt.t
 
 Check out `the online documentation of
-Lwtreslib <../api/odoc/_html/tezos-lwt-result-stdlib/Tezos_lwt_result_stdlib/Lwtreslib/index.html>`__
+Lwtreslib <../api/odoc/_html/mavryk-lwt-result-stdlib/Mavryk_lwt_result_stdlib/Lwtreslib/index.html>`__
 for a description of the semantic and naming convention.
 
 In addition to shadowing existing modules, ``Lwtreslib`` also exports
@@ -258,8 +258,8 @@ module <https://github.com/ocsigen/lwt/blob/5.4.2/src/core/lwt_result.mli#L78>`_
 Working with external libraries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This tutorial covers error-management techniques in Octez. However, from
-within Octez, you may need to call external libraries for cryptography
+This tutorial covers error-management techniques in Mavkit. However, from
+within Mavkit, you may need to call external libraries for cryptography
 or RPCs or data-encoding or what have you.
 
 The first thing you do is to carefully read the documentation of the
@@ -303,7 +303,7 @@ Note that if you are calling an Lwt function, you have to use ``Lwt.catch`` or
        | exc -> Lwt_result_syntax.fail (Cannot_destruct_json_value exc))
 
 The error monad provides :package-api:`several helpers functions for catching exceptions
-<octez-libs/Tezos_error_monad/Error_monad/index.html#catching-exceptions>`.
+<mavkit-libs/Mavryk_error_monad/Error_monad/index.html#catching-exceptions>`.
 
 ::
 

@@ -31,7 +31,7 @@ module Network : sig
       unit,
       unit,
       User_activated.upgrades )
-    Tezos_rpc.Service.t
+    Mavryk_rpc.Service.t
 
   val user_activated_protocol_overrides :
     ( [`GET],
@@ -40,7 +40,7 @@ module Network : sig
       unit,
       unit,
       User_activated.protocol_overrides )
-    Tezos_rpc.Service.t
+    Mavryk_rpc.Service.t
 
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/5926
 
@@ -52,7 +52,7 @@ module Network : sig
      separate directory, as done for [lib_dal_config]. *)
 
   val dal_config :
-    ([`GET], unit, unit, unit, unit, Dal_config.t) Tezos_rpc.Service.t
+    ([`GET], unit, unit, unit, unit, Dal_config.t) Mavryk_rpc.Service.t
 end
 
 val history_mode :
@@ -63,7 +63,7 @@ val history_mode :
     unit,
     History_mode.t,
     error trace )
-  Tezos_rpc.Service.raw
+  Mavryk_rpc.Service.raw
 
 module Logging : sig
   val configure :
@@ -71,12 +71,12 @@ module Logging : sig
       unit,
       unit,
       unit,
-      Tezos_base.Internal_event_config.t,
+      Mavryk_base.Internal_event_config.t,
       unit )
-    Tezos_rpc.Service.service
+    Mavryk_rpc.Service.service
 end
 
 val user_activated_upgrades :
-  #Tezos_rpc.Context.simple -> User_activated.upgrades tzresult Lwt.t
+  #Mavryk_rpc.Context.simple -> User_activated.upgrades tzresult Lwt.t
 
-val dal_config : #Tezos_rpc.Context.simple -> Dal_config.t tzresult Lwt.t
+val dal_config : #Mavryk_rpc.Context.simple -> Dal_config.t tzresult Lwt.t

@@ -231,8 +231,8 @@ E.g., Haskell relies heavily on monads and has the dedicated
 Monads can have additional operators beside the required core. E.g., you
 can add ``OptionMonad.join : 'a option option -> 'a option``.
 
-In depth discussion: ``Error_monad``, ``src/lib_error_monad/``, ``Tezos_base__TzPervasives``, etc.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In depth discussion: ``Error_monad``, ``src/lib_error_monad/``, ``Mavryk_base__TzPervasives``, etc.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The different parts of the error monad (syntax modules, extended stdlib,
 tracing primitives, etc.) are defined in separate files. Yet, they are
@@ -241,19 +241,19 @@ defined and how it reaches the scope of your code.
 
 **From your code, working back to the definitions.**
 
-In most of Octez, the ``Error_monad`` module is available. Specifically, it is
-available in all the packages that depend on ``tezos-base``. This covers
+In most of Mavkit, the ``Error_monad`` module is available. Specifically, it is
+available in all the packages that depend on ``mavryk-base``. This covers
 everything except the protocols and a handful of low-level libraries.
 
-In those part of Octez, the build files include
-``-open Tezos_base__TzPervasives``.
+In those part of Mavkit, the build files include
+``-open Mavryk_base__TzPervasives``.
 
-The module ``Tezos_base__TzPervasives`` is defined by the compilation
+The module ``Mavryk_base__TzPervasives`` is defined by the compilation
 unit ``src/lib_base/TzPervasives.ml``.
 
 This compilation unit gathers multiple low-level modules together. Of
-interest to us is ``include Tezos_error_monad.Error_monad`` (left
-untouched in the ``mli``) and ``include Tezos_error_monad.TzLwtreslib``
+interest to us is ``include Mavryk_error_monad.Error_monad`` (left
+untouched in the ``mli``) and ``include Mavryk_error_monad.TzLwtreslib``
 (not present in the ``mli``, used to shadow the Stdlib modules ``List``,
 ``Option``, ``Result``, etc.).
 
@@ -266,7 +266,7 @@ The ``Error_monad`` module exports:
    (from a different, more generic name),
 - and exports a few more functions.
 
-The rest of the ``tezos-error-monad`` package:
+The rest of the ``mavryk-error-monad`` package:
 
 -  defines the ``'a trace`` type (in ``TzTrace.ml``), and
 -  instantiates ``TzLwtreslib`` by applying ``Lwtreslib``\ ’s ``Traced``
@@ -340,7 +340,7 @@ You can treat values of type ``result`` as data of that data-type. In
 this case, you construct and match the values, you pass them around,
 etc.
 
-Note however that, in Octez, we also use the ``result`` type as a
+Note however that, in Mavkit, we also use the ``result`` type as a
 control-flow mechanism. Specifically, in conjunction with the ``let*``
 binding operator, the ``result`` type has a continue/abort meaning.
 
@@ -403,7 +403,7 @@ wraps any raised exception inside an ``Error`` constructor.
 In depth discussion: pros and cons of ``result`` compared to other error management techniques
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Octez, we use ``result`` and the specialised ``tzresult``. For this
+In Mavkit, we use ``result`` and the specialised ``tzresult``. For this
 reason, this tutorial is focused on ``result``/``tzresult``. However,
 there are other techniques for handling errors. This section compares
 them briefly.
@@ -489,7 +489,7 @@ following code fragment?
 | Cons: a single kind of errors means it cannot be very informative.
 
 Option is a common enough strategy that the ``Option_syntax`` and
-``Lwt_option_syntax`` modules are available in the Octez source.
+``Lwt_option_syntax`` modules are available in the Mavkit source.
 
 **fallback**
 

@@ -28,12 +28,12 @@
     -------
     Component:    Tree_encoding_decoding
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_wasm_pvm_encodings.ml
-    Subject:      WASM PVM encoding tests for the tezos-scoru-wasm library
+    Subject:      WASM PVM encoding tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_scoru_wasm
-open Tezos_webassembly_interpreter
-module Contest = Tezos_context_memory.Context_binary
+open Mavryk_scoru_wasm
+open Mavryk_webassembly_interpreter
+module Contest = Mavryk_context_memory.Context_binary
 
 let decode_state_gen =
   let open QCheck2.Gen in
@@ -96,7 +96,7 @@ let reveal_error_gen =
 
 let exn_gen =
   let open QCheck2.Gen in
-  let open Tezos_lazy_containers in
+  let open Mavryk_lazy_containers in
   let value_type_error =
     let* i = int in
     let* num = Ast_generators.(value_op_gen int32 int64) in
@@ -304,7 +304,7 @@ let tests =
     Test_encodings_util.make_test
       ~print:Wasm_utils.print_error_state
       ~name:"Wasm_pvm_errors"
-      (Tezos_tree_encoding.value [] Wasm_pvm_errors.encoding)
+      (Mavryk_tree_encoding.value [] Wasm_pvm_errors.encoding)
       error_state_gen
       error_state_check;
   ]

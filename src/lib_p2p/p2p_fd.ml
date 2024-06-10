@@ -50,7 +50,7 @@ let () =
         | Unix.EADDRINUSE ->
             Format.fprintf
               ppf
-              "Another tezos node is probably running on this address.@;\
+              "Another mavryk node is probably running on this address.@;\
                Please choose another P2P port using --net-addr."
         | _ -> Format.fprintf ppf ""
       in
@@ -262,7 +262,7 @@ let read t buf pos len =
       (read_write_error_handler ~rw:Read t)
   in
   t.nread <- t.nread + nread ;
-  let*! () = Events.(emit read_fd) (t.id, nread, Int64.of_int t.nread) in
+  let*! () = Events.(emit read_fd) (t.id, nread, t.nread) in
   if nread = 0 then Lwt.return_error `Connection_closed_by_peer
   else return nread
 
@@ -281,7 +281,7 @@ let write t buf =
       (read_write_error_handler ~rw:Write t)
   in
   t.nwrit <- t.nwrit + len ;
-  let*! () = Events.(emit written_fd) (t.id, len, Int64.of_int t.nwrit) in
+  let*! () = Events.(emit written_fd) (t.id, len, t.nwrit) in
   return_unit
 
 let connect t saddr =

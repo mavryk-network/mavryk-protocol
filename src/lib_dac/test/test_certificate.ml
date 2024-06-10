@@ -42,7 +42,7 @@ let raw_hash_of_hex hex = Hex.to_bytes (`Hex hex)
 
 let create_certificate root_hash signature witnesses =
   let root_hash = raw_hash_of_hex root_hash in
-  let signature = Tezos_crypto.Aggregate_signature.of_b58check_opt signature in
+  let signature = Mavryk_crypto.Aggregate_signature.of_b58check_opt signature in
   let witnesses = Z.of_int witnesses in
   match (root_hash, signature, witnesses) with
   | Some root_hash, Some signature, witnesses ->

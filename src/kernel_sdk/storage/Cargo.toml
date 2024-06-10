@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-smart-rollup-storage"
+name = "mavryk-smart-rollup-storage"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
@@ -17,34 +17,34 @@ categories = ["database", "wasm"]
 [dependencies]
 thiserror = "1.0"
 
-[dependencies.tezos-smart-rollup-core]
+[dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-host]
+[dependencies.mavryk-smart-rollup-host]
 path = "../host"
 version = "0.2.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup-debug]
+[dependencies.mavryk-smart-rollup-debug]
 path = "../debug"
 version = "0.2.2"
 
-[dependencies.tezos-smart-rollup-encoding]
+[dependencies.mavryk-smart-rollup-encoding]
 path = "../encoding"
 version = "0.2.2"
 default-features = false
-features = ["alloc", "tezos-encoding", "crypto"]
+features = ["alloc", "mavryk-encoding", "crypto"]
 
-[dev-dependencies.tezos-smart-rollup-core]
+[dev-dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 features = ["testing"]
 
-[dev-dependencies.tezos-smart-rollup-mock]
+[dev-dependencies.mavryk-smart-rollup-mock]
 path = "../mock"
 version = "0.2.2"
 
 [features]
-default = ["tezos-smart-rollup-host/default"]
+default = ["mavryk-smart-rollup-host/default"]

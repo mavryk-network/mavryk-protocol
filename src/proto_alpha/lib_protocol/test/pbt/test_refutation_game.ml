@@ -220,7 +220,7 @@ let originate_rollup originator block =
   (block, sc_rollup, inbox, genesis_info)
 
 (** [create_ctxt ()] creates a context where an arith rollup was originated,
-    and both [account1] and [account2] owns enough tez to stake on a
+    and both [account1] and [account2] owns enough mav to stake on a
     commitment. *)
 let create_ctxt () =
   WithExceptions.Result.get_ok ~loc:__LOC__
@@ -262,7 +262,7 @@ let gen_random_hash =
 
 (** Generate the number of sections in the dissection. *)
 let gen_num_sections =
-  let open Tezos_protocol_alpha_parameters.Default_parameters in
+  let open Mavryk_protocol_alpha_parameters.Default_parameters in
   let testnet = constants_test.sc_rollup.number_of_sections_in_dissection in
   let mainnet = constants_mainnet.sc_rollup.number_of_sections_in_dissection in
   let sandbox = constants_sandbox.sc_rollup.number_of_sections_in_dissection in
@@ -750,7 +750,7 @@ module Dissection = struct
         (* The test is not general enough to support all kind of number of
            sections. *)
         let number_of_sections =
-          Tezos_protocol_alpha_parameters.Default_parameters.constants_mainnet
+          Mavryk_protocol_alpha_parameters.Default_parameters.constants_mainnet
             .sc_rollup
             .number_of_sections_in_dissection
         in
@@ -898,7 +898,7 @@ type player_client = {
   inbox : Sc_rollup_helpers.Node_inbox.t;
   payloads_per_levels : payloads_per_level list;
   metadata : Metadata.t;
-  context : Tezos_context_memory.Context_binary.t;
+  context : Mavryk_context_memory.Context_binary.t;
 }
 
 let pp_player_client ppf
@@ -1300,7 +1300,7 @@ let gen_game ~p1_strategy ~p2_strategy =
 
   (* Create a context with a rollup originated. *)
   let commitment_period =
-    Tezos_protocol_alpha_parameters.Default_parameters.constants_mainnet
+    Mavryk_protocol_alpha_parameters.Default_parameters.constants_mainnet
       .sc_rollup
       .commitment_period_in_blocks
   in
@@ -1569,7 +1569,7 @@ let test_perfect_against_sol_hater =
 let test_perfect_against_eol_hater =
   test_game ~p1_strategy:Perfect ~p2_strategy:EOL_hater ()
 
-let _test_perfect_against_info_hater =
+let test_perfect_against_info_hater =
   test_game ~p1_strategy:Perfect ~p2_strategy:Info_hater ()
 
 let test_perfect_against_nostalgic =
@@ -1632,10 +1632,7 @@ let tests =
         test_perfect_against_eager;
         test_perfect_against_sol_hater;
         test_perfect_against_eol_hater;
-        (* TODO: https://gitlab.com/tezos/tezos/-/issues/6839
-           an issue with the generator / assume of this test makes it run for ~15 minutes.
-           Disactivating until we find the root cause. *)
-        (* test_perfect_against_info_hater; *)
+        test_perfect_against_info_hater;
         test_perfect_against_nostalgic;
         test_cut_at_level;
       ] )

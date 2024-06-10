@@ -73,35 +73,44 @@ module Selected_distribution_for_cycle = struct
     Storage.Stake.Selected_distribution_for_cycle.remove_existing ctxt cycle
 end
 
-let get_full_staking_balance = Storage.Stake.Staking_balance.get
-
-let has_minimal_stake ctxt staking_balance =
-  let minimal_stake = Constants_storage.minimal_stake ctxt in
-  Full_staking_balance_repr.has_minimal_stake_to_be_considered
-    ~minimal_stake
-    staking_balance
-
-let initialize_delegate ctxt delegate ~delegated =
+let get_full_staking_balance ctxt delegate =
   let open Lwt_result_syntax in
-  let current_cycle = (Raw_context.current_level ctxt).cycle in
-  let balance =
-    Full_staking_balance_repr.init
-      ~own_frozen:Tez_repr.zero
-      ~staked_frozen:Tez_repr.zero
-      ~delegated
-      ~current_cycle
+  let+ staking_balance_opt = Storage.Stake.Staking_balance.find ctxt delegate in
+  Option.value staking_balance_opt ~default:Full_staking_balance_repr.zero
+
+let get_initialized_stake ctxt delegate =
+  let open Lwt_result_syntax in
+  let* balance_opt = Storage.Stake.Staking_balance.find ctxt delegate in
+  match balance_opt with
+  | Some staking_balance -> return (staking_balance, ctxt)
+  | None ->
+      let balance = Full_staking_balance_repr.zero in
+      let* ctxt = Storage.Stake.Staking_balance.init ctxt delegate balance in
+      return (balance, ctxt)
+
+let has_minimal_stake ctxt
+    {Full_staking_balance_repr.own_frozen; staked_frozen; delegated} =
+  let open Result_syntax in
+  let open Tez_repr in
+  let minimal_stake = Constants_storage.minimal_stake ctxt in
+  let sum =
+    let* frozen = own_frozen +? staked_frozen in
+    frozen +? delegated
   in
-  let* ctxt = Storage.Stake.Staking_balance.init ctxt delegate balance in
-  if has_minimal_stake ctxt balance then
-    let*! ctxt =
-      Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
-    in
-    return ctxt
-  else return ctxt
+  match sum with
+  | Error _sum_overflows ->
+      true (* If the sum overflows, we are definitely over the minimal stake. *)
+  | Ok staking_balance -> Tez_repr.(staking_balance >= minimal_stake)
+
+let has_minimal_stake_and_frozen_stake ctxt
+    ({own_frozen; _} as full_staking_balance : Full_staking_balance_repr.t) =
+  let minimal_frozen_stake = Constants_storage.minimal_frozen_stake ctxt in
+  Tez_repr.(own_frozen >= minimal_frozen_stake)
+  && has_minimal_stake ctxt full_staking_balance
 
 let update_stake ~f ctxt delegate =
   let open Lwt_result_syntax in
-  let* staking_balance_before = get_full_staking_balance ctxt delegate in
+  let* staking_balance_before, ctxt = get_initialized_stake ctxt delegate in
   let*? staking_balance = f staking_balance_before in
   let* ctxt =
     Storage.Stake.Staking_balance.update ctxt delegate staking_balance
@@ -141,17 +150,22 @@ let update_stake ~f ctxt delegate =
   | false, false | true, true -> return ctxt
 
 let remove_delegated_stake ctxt delegate amount =
-  let current_cycle = (Raw_context.current_level ctxt).cycle in
-  let f = Full_staking_balance_repr.remove_delegated ~current_cycle ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ delegated = Tez_repr.(delegated -? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let remove_own_frozen_stake ctxt delegate amount =
-  let f = Full_staking_balance_repr.remove_own_frozen ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ own_frozen = Tez_repr.(own_frozen -? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let remove_staked_frozen_stake ctxt delegate amount =
-  let f = Full_staking_balance_repr.remove_staked_frozen ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ staked_frozen = Tez_repr.(staked_frozen -? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let remove_frozen_stake_only_call_from_token ctxt staker amount =
   match staker with
@@ -161,17 +175,22 @@ let remove_frozen_stake_only_call_from_token ctxt staker amount =
       remove_staked_frozen_stake ctxt delegate amount
 
 let add_delegated_stake ctxt delegate amount =
-  let current_cycle = (Raw_context.current_level ctxt).cycle in
-  let f = Full_staking_balance_repr.add_delegated ~current_cycle ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ delegated = Tez_repr.(delegated +? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let add_own_frozen_stake ctxt delegate amount =
-  let f = Full_staking_balance_repr.add_own_frozen ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ own_frozen = Tez_repr.(own_frozen +? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let add_staked_frozen_stake ctxt delegate amount =
-  let f = Full_staking_balance_repr.add_staked_frozen ~amount in
-  update_stake ctxt delegate ~f
+  let open Result_syntax in
+  update_stake ctxt delegate ~f:(fun {own_frozen; staked_frozen; delegated} ->
+      let+ staked_frozen = Tez_repr.(staked_frozen +? amount) in
+      Full_staking_balance_repr.make ~own_frozen ~staked_frozen ~delegated)
 
 let add_frozen_stake_only_call_from_token ctxt staker amount =
   match staker with
@@ -190,7 +209,7 @@ let set_active ctxt delegate =
   let* ctxt, inactive = Delegate_activation_storage.set_active ctxt delegate in
   if not inactive then return ctxt
   else
-    let* staking_balance = get_full_staking_balance ctxt delegate in
+    let* staking_balance, ctxt = get_initialized_stake ctxt delegate in
     if has_minimal_stake ctxt staking_balance then
       let*! ctxt =
         Storage.Stake.Active_delegates_with_minimal_stake.add ctxt delegate ()
@@ -219,6 +238,11 @@ let set_selected_distribution_for_cycle ctxt cycle stakes total_stake =
   in
   Storage.Stake.Last_snapshot.update ctxt 0
 
+let clear_cycle ctxt cycle =
+  let open Lwt_result_syntax in
+  let* ctxt = Storage.Stake.Total_active_stake.remove_existing ctxt cycle in
+  Selected_distribution_for_cycle.remove_existing ctxt cycle
+
 let fold_on_active_delegates_with_minimal_stake_es ctxt ~f ~order ~init =
   let open Lwt_result_syntax in
   Storage.Stake.Active_delegates_with_minimal_stake.fold
@@ -243,15 +267,10 @@ let fold_snapshot ctxt ~index ~f ~init =
       f (delegate, stake) acc)
 
 let clear_at_cycle_end ctxt ~new_cycle =
-  let open Lwt_result_syntax in
   let max_slashing_period = Constants_repr.max_slashing_period in
   match Cycle_repr.sub new_cycle max_slashing_period with
   | None -> return ctxt
-  | Some cycle_to_clear ->
-      let* ctxt =
-        Storage.Stake.Total_active_stake.remove_existing ctxt cycle_to_clear
-      in
-      Selected_distribution_for_cycle.remove_existing ctxt cycle_to_clear
+  | Some cycle_to_clear -> clear_cycle ctxt cycle_to_clear
 
 let fold_on_active_delegates_with_minimal_stake_s =
   Storage.Stake.Active_delegates_with_minimal_stake.fold
@@ -293,8 +312,12 @@ let add_contract_delegated_stake ctxt contract amount =
 module For_RPC = struct
   let get_staking_balance ctxt delegate =
     let open Lwt_result_syntax in
-    let* staking_balance = Storage.Stake.Staking_balance.get ctxt delegate in
-    Lwt.return (Full_staking_balance_repr.current_total staking_balance)
+    let* {own_frozen; staked_frozen; delegated} =
+      Storage.Stake.Staking_balance.get ctxt delegate
+    in
+    let*? frozen = Tez_repr.(own_frozen +? staked_frozen) in
+    let*? staking_balance = Tez_repr.(frozen +? delegated) in
+    return staking_balance
 end
 
 module Internal_for_tests = struct

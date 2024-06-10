@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_lazy_containers
-open Tezos_webassembly_interpreter
+open Mavryk_lazy_containers
+open Mavryk_webassembly_interpreter
 
 let pp_int32 out n = Format.fprintf out "%ld" n
 
@@ -66,51 +66,51 @@ let pp_vector_z pp out v =
   Lazy_vector.ZVector.pp pp out v
 
 module Types = struct
-  include Tezos_webassembly_interpreter.Types
+  include Mavryk_webassembly_interpreter.Types
 
   let pp_result_type = pp_vector Types.pp_value_type
 
-  type func_type = [%import: Tezos_webassembly_interpreter.Types.func_type]
+  type func_type = [%import: Mavryk_webassembly_interpreter.Types.func_type]
   [@@deriving show]
 end
 
 module Ast = struct
-  include Tezos_webassembly_interpreter.Ast
+  include Mavryk_webassembly_interpreter.Ast
 
   type func' =
     [%import:
-      (Tezos_webassembly_interpreter.Ast.func'
+      (Mavryk_webassembly_interpreter.Ast.func'
       [@with
         Vector.t :=
-          (Tezos_webassembly_interpreter.Ast.Vector.t
+          (Mavryk_webassembly_interpreter.Ast.Vector.t
           [@printer Types.pp_result_type])])]
   [@@deriving show]
 
-  type func = [%import: Tezos_webassembly_interpreter.Ast.func]
+  type func = [%import: Mavryk_webassembly_interpreter.Ast.func]
   [@@deriving show]
 end
 
 module Func = struct
-  include Tezos_webassembly_interpreter.Func
+  include Mavryk_webassembly_interpreter.Func
 
   type 'inst func =
     [%import:
-      ('inst Tezos_webassembly_interpreter.Func.func
+      ('inst Mavryk_webassembly_interpreter.Func.func
       [@with
-        Tezos_webassembly_interpreter.Types.func_type := Types.func_type ;
-        Tezos_webassembly_interpreter.Ast.func := Ast.func])]
+        Mavryk_webassembly_interpreter.Types.func_type := Types.func_type ;
+        Mavryk_webassembly_interpreter.Ast.func := Ast.func])]
   [@@deriving show]
 
   type 'inst t = 'inst func [@@deriving show]
 end
 
 module Instance = struct
-  include Tezos_webassembly_interpreter.Instance
+  include Mavryk_webassembly_interpreter.Instance
 
   type func_inst =
     [%import:
-      (Tezos_webassembly_interpreter.Instance.func_inst
-      [@with Tezos_webassembly_interpreter.Func.t := Func.t])]
+      (Mavryk_webassembly_interpreter.Instance.func_inst
+      [@with Mavryk_webassembly_interpreter.Func.t := Func.t])]
   [@@deriving show]
 end
 
@@ -121,7 +121,7 @@ let pp_chunk_byte_vector out chunks =
   Format.fprintf out "#%d" hash
 
 module Values = struct
-  include Tezos_webassembly_interpreter.Values
+  include Mavryk_webassembly_interpreter.Values
 
   let pp_ref_ out = function
     | Values.NullRef rt ->
@@ -129,7 +129,7 @@ module Values = struct
     | Values.ExternRef n -> Format.fprintf out "ExternRef(%a)" pp_int32 n
     | _ -> Stdlib.failwith "Unsupported value ref"
 
-  type value = [%import: Tezos_webassembly_interpreter.Values.value]
+  type value = [%import: Mavryk_webassembly_interpreter.Values.value]
   [@@deriving show]
 end
 
@@ -178,7 +178,7 @@ let pp_map pp out map =
     Format.fprintf
       out
       "%s"
-      (Tezos_webassembly_interpreter.Ast.string_of_name name)
+      (Mavryk_webassembly_interpreter.Ast.string_of_name name)
   in
   pp_list
     (pp_pair pp_name (Format.pp_print_option pp))
@@ -250,14 +250,14 @@ let pp_frame out frame =
   let (Module_key key) = frame.inst in
   let locals =
     Lwt_main.run
-      (Tezos_lazy_containers.Lazy_vector.Int32Vector.to_list frame.locals)
+      (Mavryk_lazy_containers.Lazy_vector.Int32Vector.to_list frame.locals)
   in
   Format.fprintf
     out
     "@[<v 2>{module = %s;@;locals = %a;@;}@]"
     key
     (pp_vector Values.pp_value)
-    (Tezos_lazy_containers.Lazy_vector.Int32Vector.of_list locals)
+    (Mavryk_lazy_containers.Lazy_vector.Int32Vector.of_list locals)
 
 let rec pp_admin_instr' out instr =
   let open Eval in
@@ -428,7 +428,7 @@ let pp_concat_kont pp out Eval.{lv; rv; res; offset} =
     offset
 
 let pp_reveal out = function
-  | Tezos_scoru_wasm.Wasm_pvm_state.Reveal_raw payload ->
+  | Mavryk_scoru_wasm.Wasm_pvm_state.Reveal_raw payload ->
       Format.fprintf out "Reveal_raw (%s)" payload
 
 let pp_invoke_step_kont out = function

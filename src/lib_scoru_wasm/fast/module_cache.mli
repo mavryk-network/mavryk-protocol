@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
+open Mavryk_scoru_wasm
+module Wasmer = Mavryk_wasmer
 
 (** [load_kernel store durable] returns a module attached to the
     Wasmer [store], corresponding to kernel stored in the [durable] storage.

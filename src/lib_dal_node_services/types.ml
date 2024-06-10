@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Cryptobox = Tezos_crypto_dal.Cryptobox
+module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
 type level = int32
 
@@ -191,24 +191,6 @@ module Peer = struct
   let encoding = P2p_peer.Id.encoding
 end
 
-module Point = struct
-  type t = P2p_point.Id.t
-
-  module Cmp = struct
-    type nonrec t = t
-
-    let compare p1 p2 = P2p_point.Id.compare p1 p2
-  end
-
-  include Compare.Make (Cmp)
-  module Set = Set.Make (Cmp)
-  module Map = Map.Make (Cmp)
-
-  let pp = P2p_point.Id.pp
-
-  let encoding = P2p_point.Id.encoding
-end
-
 let get_value ~__LOC__ func =
   Option.value_f ~default:(fun () ->
       Stdlib.failwith
@@ -295,13 +277,12 @@ type slot_header = {
 }
 
 type operator_profile =
-  | Attester of Tezos_crypto.Signature.public_key_hash
+  | Attester of Mavryk_crypto.Signature.public_key_hash
   | Producer of {slot_index : int}
-  | Observer of {slot_index : int}
 
 type operator_profiles = operator_profile list
 
-type profiles = Bootstrap | Operator of operator_profiles | Random_observer
+type profiles = Bootstrap | Operator of operator_profiles
 
 type with_proof = {with_proof : bool}
 
@@ -404,7 +385,7 @@ let operator_profile_encoding =
            (req "kind" (constant "attester"))
            (req
               "public_key_hash"
-              Tezos_crypto.Signature.Public_key_hash.encoding))
+              Mavryk_crypto.Signature.Public_key_hash.encoding))
         (function Attester attest -> Some ((), attest) | _ -> None)
         (function (), attest -> Attester attest);
       case
@@ -413,12 +394,6 @@ let operator_profile_encoding =
         (obj2 (req "kind" (constant "producer")) (req "slot_index" int31))
         (function Producer {slot_index} -> Some ((), slot_index) | _ -> None)
         (function (), slot_index -> Producer {slot_index});
-      case
-        ~title:"observer"
-        (Tag 2)
-        (obj2 (req "kind" (constant "observer")) (req "slot_index" int31))
-        (function Observer {slot_index} -> Some ((), slot_index) | _ -> None)
-        (function (), slot_index -> Observer {slot_index});
     ]
 
 let profiles_encoding =
@@ -441,12 +416,6 @@ let profiles_encoding =
           | Operator operator_profiles -> Some ((), operator_profiles)
           | _ -> None)
         (function (), operator_profiles -> Operator operator_profiles);
-      case
-        ~title:"Random_observer"
-        (Tag 3)
-        (obj1 (req "kind" (constant "random_observer")))
-        (function Random_observer -> Some () | _ -> None)
-        (function () -> Random_observer);
     ]
 
 let with_proof_encoding =
@@ -465,28 +434,10 @@ let header_status_arg =
     with _ -> Error "Cannot parse header status value"
   in
   let construct = Data_encoding.Binary.to_string_exn header_status_encoding in
-  Tezos_rpc.Arg.make ~name:"header_status" ~destruct ~construct ()
-
-let char =
-  Resto.Arg.make
-    ~name:"char"
-    ~destruct:(fun str ->
-      if String.length str = 1 then Ok (String.get str 0)
-      else Error "A single character string is expected")
-    ~construct:(fun c -> String.make 1 c)
-    ()
-
-let slot_query =
-  let open Tezos_rpc.Query in
-  query (fun padding ->
-      object
-        method padding = padding
-      end)
-  |+ field "padding" char '\x00' (fun obj -> obj#padding)
-  |> seal
+  Mavryk_rpc.Arg.make ~name:"header_status" ~destruct ~construct ()
 
 let wait_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun wait ->
       object
         method wait = wait
@@ -495,7 +446,7 @@ let wait_query =
   |> seal
 
 let connected_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun connected ->
       object
         method connected = connected
@@ -504,7 +455,7 @@ let connected_query =
   |> seal
 
 let subscribed_query =
-  let open Tezos_rpc.Query in
+  let open Mavryk_rpc.Query in
   query (fun subscribed ->
       object
         method subscribed = subscribed
@@ -513,7 +464,7 @@ let subscribed_query =
   |> seal
 
 let slot_id_query =
-  let open Tezos_rpc in
+  let open Mavryk_rpc in
   let open Query in
   query (fun slot_level slot_index -> (slot_level, slot_index))
   |+ opt_field "slot_level" Arg.int32 fst
@@ -521,7 +472,7 @@ let slot_id_query =
   |> seal
 
 let opt_header_status_query =
-  let open Tezos_rpc in
+  let open Mavryk_rpc in
   let open Query in
   query (fun header_status -> header_status)
   |+ opt_field "status" header_status_arg (fun hs -> hs)

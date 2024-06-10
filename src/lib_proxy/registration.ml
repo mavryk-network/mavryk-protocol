@@ -23,22 +23,22 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_shell_services
+open Mavryk_shell_services
 
 module type Proxy_sig = sig
   val protocol_hash : Protocol_hash.t
 
   (** RPCs provided by the protocol *)
-  val directory : Tezos_protocol_environment.rpc_context Tezos_rpc.Directory.t
+  val directory : Mavryk_protocol_environment.rpc_context Mavryk_rpc.Directory.t
 
   (** How to build the context to execute RPCs on *)
   val initial_context :
     Proxy_getter.rpc_context_args ->
     Context_hash.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
   val time_between_blocks :
-    Tezos_rpc.Context.generic ->
+    Mavryk_rpc.Context.generic ->
     Block_services.chain ->
     Block_services.block ->
     int64 option tzresult Lwt.t
@@ -68,7 +68,7 @@ let register_proxy_context m =
 
 let get_all_registered () : proxy_environment list = !registered
 
-let get_registered_proxy (printer : Tezos_client_base.Client_context.printer)
+let get_registered_proxy (printer : Mavryk_client_base.Client_context.printer)
     (protocol_hash : Protocol_hash.t) : proxy_environment tzresult Lwt.t =
   let open Lwt_result_syntax in
   let available = !registered in

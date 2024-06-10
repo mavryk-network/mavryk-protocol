@@ -95,7 +95,7 @@ And the encoders for these types as
 Union types
 ~~~~~~~~~~~
 
-The Octez codebase makes heavy use of variant types. Consider the
+The Mavkit codebase makes heavy use of variant types. Consider the
 following variant type:
 
 .. code-block:: ocaml

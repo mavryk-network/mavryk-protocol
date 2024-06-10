@@ -29,7 +29,7 @@
     _______
 
     Component: Store
-    Invocation: dune exec src/lib_store/unix/test/main.exe -- --match "tezos-store: snapshots"
+    Invocation: dune exec src/lib_store/unix/test/main.exe -- --match "mavryk-store: snapshots"
     Subject: Store tests ( snapshots )
 *)
 
@@ -195,12 +195,9 @@ let export_import ~test_descr ~previously_baked_blocks ?exported_block_hash
 let check_baking_continuity ~test_descr ~exported_chain_store
     ~imported_chain_store =
   let open Lwt_result_syntax in
-  let open Tezos_protocol_alpha.Protocol.Alpha_context in
+  let open Mavryk_protocol_alpha.Protocol.Alpha_context in
   let*! imported_head = Store.Chain.current_head imported_chain_store in
-  let* {
-         Constants.parametric = {blocks_per_cycle; blocks_preservation_cycles; _};
-         _;
-       } =
+  let* {Constants.parametric = {blocks_per_cycle; preserved_cycles; _}; _} =
     Alpha_utils.get_constants imported_chain_store imported_head
   in
   let imported_history_mode = Store.Chain.history_mode imported_chain_store in
@@ -215,8 +212,7 @@ let check_baking_continuity ~test_descr ~exported_chain_store
     let min_nb_blocks_to_bake =
       Int32.(
         of_int
-          (to_int blocks_per_cycle
-          * (blocks_preservation_cycles + imported_offset + 2)))
+          (to_int blocks_per_cycle * (preserved_cycles + imported_offset + 2)))
     in
     Compare.Int32.(
       max
@@ -268,7 +264,7 @@ let check_baking_continuity ~test_descr ~exported_chain_store
     checkpoint' ;
   return_unit
 
-let test_export_import store_path ~test_descr ?exported_block_level
+let test store_path ~test_descr ?exported_block_level
     ~nb_blocks_to_bake_before_export ~rolling ~export_mode store =
   let open Lwt_result_syntax in
   let chain_store = Store.main_chain_store store in
@@ -387,11 +383,11 @@ let test_export_import store_path ~test_descr ?exported_block_level
           let*! _ = Store.close_store store' in
           Lwt.return_unit)
 
-let make_tests_export_import speed genesis_parameters =
-  let open Tezos_protocol_alpha.Protocol.Alpha_context in
+let make_tests speed genesis_parameters =
+  let open Mavryk_protocol_alpha.Protocol.Alpha_context in
   let {
     Parameters.constants =
-      {Constants.Parametric.blocks_per_cycle; blocks_preservation_cycles; _};
+      {Constants.Parametric.blocks_per_cycle; preserved_cycles; _};
     _;
   } =
     genesis_parameters
@@ -402,13 +398,13 @@ let make_tests_export_import speed genesis_parameters =
     match speed with
     | `Slow ->
         [
-          blocks_preservation_cycles * blocks_per_cycle;
-          ((2 * blocks_preservation_cycles) + 1) * blocks_per_cycle;
+          preserved_cycles * blocks_per_cycle;
+          ((2 * preserved_cycles) + 1) * blocks_per_cycle;
           65;
           77;
           89;
         ]
-    | `Quick -> [((2 * blocks_preservation_cycles) + 1) * blocks_per_cycle; 77]
+    | `Quick -> [((2 * preserved_cycles) + 1) * blocks_per_cycle; 77]
   in
   let exporter_history_modes =
     let open History_mode in
@@ -488,7 +484,7 @@ let make_tests_export_import speed genesis_parameters =
                      Alpha_utils.default_patch_context ctxt)
                    ( test_descr,
                      fun store_path store ->
-                       test_export_import
+                       test
                          ?exported_block_level
                          ~nb_blocks_to_bake_before_export:nb_initial_blocks
                          ~rolling
@@ -568,7 +564,7 @@ let test_rolling speed export_mode =
         sub (snd checkpoint) (of_int (Store.Block.max_operations_ttl metadata)))
     in
     let*! caboose = Store.Chain.caboose chain_store' in
-    Assert.Int32.geq ~msg:__LOC__ max_op_ttl_cp (snd caboose) ;
+    Assert.Int32.equal ~msg:__LOC__ max_op_ttl_cp (snd caboose) ;
     let*! () = Store.close_store store' in
     return_unit
   in
@@ -593,7 +589,7 @@ let make_tests_rolling speed =
 (* This test aims to check that the caboose and savepoint are well
    dragged when the first merge occurs, after a rolling snapshot
    import on a block which is not on a cycle's bound. Indeed, in such
-   a scenario, the merge procedure may remove blocks bellow the lpbl
+   a scenario, the merge procedure may remove blocks bellow the lafl
    without cementing them. It would result in non stored caboose
    (rolling issue) and savepoint (rolling and full issue).
    In this test, we need to increase the number of blocks per cycle to
@@ -613,7 +609,7 @@ let test_drag_after_import speed export_mode =
   in
   let patch_context ctxt =
     let test_parameters =
-      let open Tezos_protocol_alpha_parameters in
+      let open Mavryk_protocol_alpha_parameters in
       {
         Default_parameters.(parameters_of_constants constants) with
         bootstrap_accounts = Alpha_utils.default_accounts;
@@ -707,10 +703,6 @@ let test_drag_after_import speed export_mode =
       else
         let* _, head = Alpha_utils.bake_until_cycle_end chain_store' head in
         let*! () = Block_store.await_merging block_store in
-        let context_index =
-          Store.context_index (Store.Chain.global_store chain_store)
-        in
-        let*! () = Context_ops.wait_gc_completion context_index in
         let*! _, caboose_level = Store.Chain.caboose chain_store' in
         let*! _, savepoint_level = Store.Chain.savepoint chain_store' in
         let* () =
@@ -756,15 +748,15 @@ let make_tests_drag_after_import speed =
 
 let tests speed =
   let test_cases =
-    let export_import_tests =
-      make_tests_export_import
+    let generated_tests =
+      make_tests
         speed
-        Tezos_protocol_alpha_parameters.Default_parameters.(
+        Mavryk_protocol_alpha_parameters.Default_parameters.(
           parameters_of_constants
             {constants_sandbox with consensus_threshold = 0})
     in
     let tests_rolling = make_tests_rolling speed in
     let tests_drag_after_import = make_tests_drag_after_import speed in
-    tests_rolling @ tests_drag_after_import @ export_import_tests
+    tests_rolling @ tests_drag_after_import @ generated_tests
   in
   ("snapshots", test_cases)

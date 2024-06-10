@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 (** This library provides functors to build various kinds of stores using
-    mirage's {{:https://github.com/mirage/index} index} and Octez
+    mirage's {{:https://github.com/mirage/index} index} and Mavkit
     {{:https://gitlab.com/nomadic-labs/data-encoding} data-encoding}
     libraries.
 
@@ -38,6 +38,20 @@
 open Store_sigs
 
 (** {2 Signatures} *)
+
+(** An iterator for the GC functions. *)
+type ('key, 'value) gc_iterator =
+  | Retain of 'key list  (** A simple list of keys to retain. *)
+  | Iterator of {
+      first : 'key;  (** The key at which the iteration starts for the GC.  *)
+      next : 'key -> 'value -> 'key option Lwt.t;
+          (** A function to compute the next element to explore from the last
+              expired key, value binding in the store. We explicit the value
+              here because the next element can be computed from it without
+              accessing the store (e.g. to iterate over L2 blocks, we start from
+              the head and the next element is computed from the predecessor
+              field of the block. *)
+    }  (** An iterator. The GC stops when the [next] function returns [None]. *)
 
 (** A store for single updatable values. Values are stored in a file on disk and
     are kept in memory in a cache. *)
@@ -101,15 +115,12 @@ module type INDEXABLE_STORE = sig
   (** [readonly t] returns a read only version of the store [t]. *)
   val readonly : [> `Read] t -> [`Read] t
 
-  (** [gc ?async t filter] garbage collects data stored in the index [t] by
-      keeping only elements that satisfy the predicate [filter]. This call runs
-      the GC asynchronously unless [async] is [false]. If a GC is already
+  (** [gc ?async t iter] garbage collects data stored in the index [t] by
+      keeping only the ones that are reachable by [iter]. This call
+      runs the GC asynchronously unless [async] is [false]. If a GC is already
       ongoing this new request is ignored and this call is a no-op. *)
   val gc :
-    ?async:bool ->
-    rw t ->
-    (key -> value -> bool tzresult Lwt.t) ->
-    unit tzresult Lwt.t
+    ?async:bool -> rw t -> (key, value) gc_iterator -> unit tzresult Lwt.t
 
   (** [wait_gc_completion t] returns a blocking thread if a GC run is ongoing. *)
   val wait_gc_completion : 'a t -> unit Lwt.t
@@ -182,14 +193,14 @@ module type INDEXED_FILE = sig
   (** [readonly t] returns a read only version of the store [t]. *)
   val readonly : [> `Read] t -> [`Read] t
 
-  (** [gc ?async t filter] garbage collects data stored in the store [t] by
-      keeping only elements that satisfy the predicate [filter]. This call runs
-      the GC asynchronously unless [async] is [false]. If a GC is already
+  (** [gc ?async t iter] garbage collects data stored in the store [t] by
+      keeping only the ones reachable by [iter]. This call runs the GC
+      asynchronously unless [async] is [false]. If a GC is already
       ongoing this new request is ignored and this call is a no-op. *)
   val gc :
     ?async:bool ->
     rw t ->
-    (key -> header -> value -> bool tzresult Lwt.t) ->
+    (key, value * header) gc_iterator ->
     unit tzresult Lwt.t
 
   (** [wait_gc_completion t] returns a blocking thread if a GC run is currently

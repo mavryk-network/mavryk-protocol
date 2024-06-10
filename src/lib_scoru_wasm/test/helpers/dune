@@ -2,27 +2,27 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_scoru_wasm_test_helpers)
- (public_name octez-l2-libs.scoru_wasm_test_helpers)
+ (name mavryk_scoru_wasm_test_helpers)
+ (public_name mavkit-l2-libs.scoru_wasm_test_helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.tree-encoding
-  octez-libs.base.unix
-  octez-libs.tezos-context.disk
-  octez-libs.base-test-helpers
-  octez-libs.test-helpers
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.scoru_wasm_durable_snapshot
-  octez-l2-libs.scoru-wasm-fast
-  octez-l2-libs.scoru-wasm-helpers
+  mavkit-libs.base
+  mavkit-libs.tree-encoding
+  mavkit-libs.base.unix
+  mavkit-libs.mavryk-context.disk
+  mavkit-libs.base-test-helpers
+  mavkit-libs.test-helpers
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.scoru_wasm_durable_snapshot
+  mavkit-l2-libs.scoru-wasm-fast
+  mavkit-l2-libs.scoru-wasm-helpers
   qcheck-alcotest
-  octez-alcotezt
-  octez-l2-libs.webassembly-interpreter-extra)
+  mavkit-alcotezt
+  mavkit-l2-libs.webassembly-interpreter-extra)
  (preprocess (staged_pps ppx_import ppx_deriving.show))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base_test_helpers
-  -open Octez_alcotezt
-  -open Tezos_webassembly_interpreter_extra))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_webassembly_interpreter_extra))

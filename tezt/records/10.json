@@ -124,7 +124,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "test protocol validator",
     "tags": [
       "alcotest"
@@ -146,8 +146,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: qcheck",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: qcheck",
     "tags": [
       "alcotest"
     ],
@@ -157,7 +157,7 @@
     }
   },
   {
-    "file": "tezos-benchmark",
+    "file": "mavryk-benchmark",
     "title": "probe",
     "tags": [
       "alcotest"

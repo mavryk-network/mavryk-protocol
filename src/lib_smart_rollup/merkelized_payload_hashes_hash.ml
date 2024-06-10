@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
+include Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash

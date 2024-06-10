@@ -1,0 +1,7 @@
+ocaml-check:
+  extends:
+    - .tags_template__build
+    - .build
+  needs: [trigger]
+  script:
+    - dune build @check

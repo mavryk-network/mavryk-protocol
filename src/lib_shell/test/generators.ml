@@ -84,18 +84,13 @@ let q_in_0_1 () =
 
 let priority_gen () : Prevalidator_pending_operations.priority QCheck2.Gen.t =
   let open QCheck2.Gen in
-  let open Prevalidator_pending_operations in
   let* top_prio_value = oneofl [`High; `Medium; `Low] in
   match top_prio_value with
-  | `High -> pure High
-  | `Medium -> pure Medium
+  | `High -> pure `High
+  | `Medium -> pure `Medium
   | `Low ->
       let+ weights = small_list (q_in_0_1 ()) in
-      Low weights
-
-let status_gen () : Prevalidator_pending_operations.status QCheck2.Gen.t =
-  let open QCheck2.Gen in
-  oneofl [Prevalidator_pending_operations.Fresh; Reclassified]
+      `Low weights
 
 (** [operation_with_hash_gen ?proto_gen ?block_hash_t ()] is a generator
     for parsable operations, i.e. values of type {!operation}.
@@ -111,7 +106,7 @@ let status_gen () : Prevalidator_pending_operations.status QCheck2.Gen.t =
     speaking. One can make sure that this generator generates
     parsable operations by assuming a protocol and using a custom [proto_gen].
     As an example this is the case when using
-    {!Tezos_protocol_environment.Internal_for_tests.Environment_protocol_T_test.Mock_all_unit}
+    {!Mavryk_protocol_environment.Internal_for_tests.Environment_protocol_T_test.Mock_all_unit}
     as the protocol and specifying [proto_gen] to be [string_size (return 0)]
     i.e. to have both [operation_data = unit] and strings generated for
     [operation_data] always empty. *)
@@ -122,15 +117,12 @@ let operation_with_hash_gen ?proto_gen ?block_hash_t () :
   let+ oph, op = raw_operation_with_hash_gen ?proto_gen ?block_hash_t () in
   Internal_for_tests.make_operation ~signature_checked oph op ()
 
-let operation_with_hash_and_status_and_priority_gen ?proto_gen ?block_hash_t ()
-    :
-    (unit operation * Prevalidator_pending_operations.status_and_priority)
-    QCheck2.Gen.t =
+let operation_with_hash_and_priority_gen ?proto_gen ?block_hash_t () :
+    (unit operation * Prevalidator_pending_operations.priority) QCheck2.Gen.t =
   let open QCheck2.Gen in
   let* op = operation_with_hash_gen ?proto_gen ?block_hash_t () in
   let* priority = priority_gen () in
-  let* status = status_gen () in
-  return (op, Prevalidator_pending_operations.{status; priority})
+  return (op, priority)
 
 let raw_op_map_gen ?proto_gen ?block_hash_t () :
     Operation.t Operation_hash.Map.t QCheck2.Gen.t =

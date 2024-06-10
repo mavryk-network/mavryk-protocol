@@ -6,31 +6,31 @@
 // SPDX-License-Identifier: MIT
 
 use crate::{
-    inbox::{Deposit, TezosContracts, Transaction, TransactionContent},
-    sequencer_blueprint::{SequencerBlueprint, UnsignedSequencerBlueprint},
-    upgrade::KernelUpgrade,
+    inbox::{Deposit, KernelUpgrade, Transaction, TransactionContent},
+    sequencer_blueprint::SequencerBlueprint,
 };
 use primitive_types::{H160, U256};
-use rlp::Encodable;
 use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
-use tezos_ethereum::{
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
     tx_common::EthereumTransactionCommon,
-    wei::eth_from_mutez,
+    wei::eth_from_mumav,
 };
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::{
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_encoding::{
     contract::Contract,
     inbox::{
         ExternalMessageFrame, InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer,
     },
-    michelson::{ticket::FA2_1Ticket, MichelsonBytes, MichelsonOr, MichelsonPair},
-    public_key::PublicKey,
+    michelson::{
+        ticket::FA2_1Ticket, MichelsonBytes, MichelsonInt, MichelsonOr, MichelsonPair,
+    },
 };
-use tezos_smart_rollup_host::input::Message;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::input::Message;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 /// On an option, either the value, or if `None`, interrupt and return the
 /// default value of the return type instead.
@@ -192,62 +192,26 @@ impl InputResult {
             return Self::Unparsable;
         }
 
-        let kernel_upgrade = parsable!(KernelUpgrade::from_rlp_bytes(bytes).ok());
-        Self::Input(Input::Upgrade(kernel_upgrade))
-    }
-
-    fn parse_sequencer_blueprint_input(sequencer: &PublicKey, bytes: &[u8]) -> Self {
-        // Parse the sequencer blueprint
-        let seq_blueprint: SequencerBlueprint =
-            parsable!(FromRlpBytes::from_rlp_bytes(bytes).ok());
-
-        // Creates and encodes the unsigned blueprint:
-        let unsigned_seq_blueprint: UnsignedSequencerBlueprint = (&seq_blueprint).into();
-        let bytes = unsigned_seq_blueprint.rlp_bytes().to_vec();
-        // The sequencer signs the hash of the blueprint.
-        let msg = tezos_crypto_rs::blake2b::digest_256(&bytes).unwrap();
-
-        let correctly_signed = sequencer
-            .verify_signature(&seq_blueprint.signature, &msg)
-            .unwrap_or(false);
-
-        if correctly_signed {
-            InputResult::Input(Input::SequencerBlueprint(seq_blueprint))
+        // Next PREIMAGE_HASH_SIZE bytes is the preimage hash
+        let (preimage_hash, remaining) = parsable!(split_at(bytes, PREIMAGE_HASH_SIZE));
+        let preimage_hash: [u8; PREIMAGE_HASH_SIZE] =
+            parsable!(preimage_hash.try_into().ok());
+        if remaining.is_empty() {
+            Self::Input(Input::Upgrade(KernelUpgrade { preimage_hash }))
         } else {
-            InputResult::Unparsable
+            Self::Unparsable
         }
     }
 
-    /// Parses transactions that come from the delayed inbox.
-    fn parse_transaction_from_delayed_inbox(
-        source: ContractKt1Hash,
-        delayed_bridge: &Option<ContractKt1Hash>,
-        bytes: &[u8],
-    ) -> Self {
-        match delayed_bridge {
-            Some(delayed_bridge) if delayed_bridge.as_ref() == source.as_ref() => (),
-            _ => {
-                return InputResult::Unparsable;
-            }
-        };
-        let tx = parsable!(EthereumTransactionCommon::from_bytes(bytes).ok());
-        let tx_hash: TransactionHash = Keccak256::digest(bytes).into();
-
-        Self::Input(Input::SimpleTransaction(Box::new(Transaction {
-            tx_hash,
-            content: TransactionContent::Ethereum(tx),
-        })))
+    fn parse_sequencer_blueprint_input(bytes: &[u8]) -> Self {
+        let seq_blueprint: SequencerBlueprint =
+            parsable!(FromRlpBytes::from_rlp_bytes(bytes).ok());
+        InputResult::Input(Input::SequencerBlueprint(seq_blueprint))
     }
 
-    /// Parses an external message
-    ///
     // External message structure :
     // EXTERNAL_TAG 1B / FRAMING_PROTOCOL_TARGETTED 21B / MESSAGE_TAG 1B / DATA
-    fn parse_external(
-        input: &[u8],
-        smart_rollup_address: &[u8],
-        sequencer: &Option<PublicKey>,
-    ) -> Self {
+    fn parse_external(input: &[u8], smart_rollup_address: &[u8]) -> Self {
         // Compatibility with framing protocol for external messages
         let remaining = match ExternalMessageFrame::parse(input) {
             Ok(ExternalMessageFrame::Targetted { address, contents })
@@ -263,12 +227,7 @@ impl InputResult {
             SIMPLE_TRANSACTION_TAG => Self::parse_simple_transaction(remaining),
             NEW_CHUNKED_TRANSACTION_TAG => Self::parse_new_chunked_transaction(remaining),
             TRANSACTION_CHUNK_TAG => Self::parse_transaction_chunk(remaining),
-            SEQUENCER_BLUEPRINT_TAG if sequencer.is_some() => {
-                Self::parse_sequencer_blueprint_input(
-                    sequencer.as_ref().unwrap(),
-                    remaining,
-                )
-            }
+            SEQUENCER_BLUEPRINT_TAG => Self::parse_sequencer_blueprint_input(remaining),
             _ => InputResult::Unparsable,
         }
     }
@@ -285,6 +244,7 @@ impl InputResult {
         host: &mut Host,
         ticket: FA2_1Ticket,
         receiver: MichelsonBytes,
+        gas_price: MichelsonInt,
         ticketer: &Option<ContractKt1Hash>,
     ) -> Self {
         match &ticket.creator().0 {
@@ -298,11 +258,15 @@ impl InputResult {
         // Amount
         let (_sign, amount_bytes) = ticket.amount().to_bytes_le();
         // We use the `U256::from_little_endian` as it takes arbitrary long
-        // bytes. Afterward it's transform to `u64` to use `eth_from_mutez`, it's
+        // bytes. Afterward it's transform to `u64` to use `eth_from_mumav`, it's
         // obviously safe as we deposit CTEZ and the amount is limited by
         // the XTZ quantity.
         let amount: u64 = U256::from_little_endian(&amount_bytes).as_u64();
-        let amount: U256 = eth_from_mutez(amount);
+        let amount: U256 = eth_from_mumav(amount);
+
+        // Amount for gas
+        let (_sign, gas_price_bytes) = gas_price.0 .0.to_bytes_le();
+        let gas_price: U256 = U256::from_little_endian(&gas_price_bytes);
 
         // EVM address
         let receiver_bytes = receiver.0;
@@ -316,8 +280,19 @@ impl InputResult {
         }
         let receiver = H160::from_slice(&receiver_bytes);
 
-        let content = Deposit { amount, receiver };
-        log!(host, Info, "Deposit of {} to {}.", amount, receiver);
+        let content = Deposit {
+            amount,
+            gas_price,
+            receiver,
+        };
+        log!(
+            host,
+            Info,
+            "Deposit of {} to {} with gas price {}",
+            amount,
+            receiver,
+            gas_price
+        );
         Self::Input(Input::Deposit(content))
     }
 
@@ -325,8 +300,8 @@ impl InputResult {
         host: &mut Host,
         transfer: Transfer<RollupType>,
         smart_rollup_address: &[u8],
-        tezos_contracts: &TezosContracts,
-        delayed_bridge: &Option<ContractKt1Hash>,
+        ticketer: &Option<ContractKt1Hash>,
+        admin: &Option<ContractKt1Hash>,
     ) -> Self {
         if transfer.destination.hash().0 != smart_rollup_address {
             log!(
@@ -342,18 +317,18 @@ impl InputResult {
         match transfer.payload {
             MichelsonOr::Left(left) => match left {
                 MichelsonOr::Left(MichelsonPair(receiver, ticket)) => {
-                    Self::parse_deposit(host, ticket, receiver, &tezos_contracts.ticketer)
-                }
-                MichelsonOr::Right(MichelsonBytes(bytes)) => {
-                    Self::parse_transaction_from_delayed_inbox(
-                        source,
-                        delayed_bridge,
-                        &bytes,
+                    Self::parse_deposit(
+                        host,
+                        ticket,
+                        receiver,
+                        MichelsonInt::from(0),
+                        ticketer,
                     )
                 }
+                MichelsonOr::Right(_extra) => Self::Unparsable,
             },
             MichelsonOr::Right(MichelsonBytes(upgrade)) => {
-                Self::parse_kernel_upgrade(source, &tezos_contracts.admin, &upgrade)
+                Self::parse_kernel_upgrade(source, admin, &upgrade)
             }
         }
     }
@@ -362,8 +337,8 @@ impl InputResult {
         host: &mut Host,
         message: InternalInboxMessage<RollupType>,
         smart_rollup_address: &[u8],
-        tezos_contracts: &TezosContracts,
-        delayed_bridge: &Option<ContractKt1Hash>,
+        ticketer: &Option<ContractKt1Hash>,
+        admin: &Option<ContractKt1Hash>,
     ) -> Self {
         match message {
             InternalInboxMessage::InfoPerLevel(info) => {
@@ -373,8 +348,8 @@ impl InputResult {
                 host,
                 transfer,
                 smart_rollup_address,
-                tezos_contracts,
-                delayed_bridge,
+                ticketer,
+                admin,
             ),
             _ => InputResult::Unparsable,
         }
@@ -384,9 +359,8 @@ impl InputResult {
         host: &mut Host,
         input: Message,
         smart_rollup_address: [u8; 20],
-        tezos_contracts: &TezosContracts,
-        delayed_bridge: &Option<ContractKt1Hash>,
-        sequencer: &Option<PublicKey>,
+        ticketer: &Option<ContractKt1Hash>,
+        admin: &Option<ContractKt1Hash>,
     ) -> Self {
         let bytes = Message::as_ref(&input);
         let (input_tag, remaining) = parsable!(bytes.split_first());
@@ -397,14 +371,14 @@ impl InputResult {
         match InboxMessage::<RollupType>::parse(bytes) {
             Ok((_remaing, message)) => match message {
                 InboxMessage::External(message) => {
-                    Self::parse_external(message, &smart_rollup_address, sequencer)
+                    Self::parse_external(message, &smart_rollup_address)
                 }
                 InboxMessage::Internal(message) => Self::parse_internal(
                     host,
                     message,
                     &smart_rollup_address,
-                    tezos_contracts,
-                    delayed_bridge,
+                    ticketer,
+                    admin,
                 ),
             },
             Err(_) => InputResult::Unparsable,
@@ -415,8 +389,8 @@ impl InputResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_smart_rollup_host::input::Message;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::input::Message;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const ZERO_SMART_ROLLUP_ADDRESS: [u8; 20] = [0; 20];
 
@@ -430,10 +404,6 @@ mod tests {
                 &mut host,
                 message,
                 ZERO_SMART_ROLLUP_ADDRESS,
-                &TezosContracts {
-                    ticketer: None,
-                    admin: None,
-                },
                 &None,
                 &None
             ),

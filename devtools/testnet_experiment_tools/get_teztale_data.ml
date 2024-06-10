@@ -40,7 +40,7 @@
 *)
 
 open Filename.Infix
-open Tezos_clic
+open Mavryk_clic
 open Teztale_sql_queries
 module Query_map = Map.Make (Int)
 module Delegates_map = Map.Make (String)
@@ -172,7 +172,7 @@ let find_key_by_value map v =
 let get_head_id db_pool =
   let open Lwt_result_syntax in
   let*! head_id_ref =
-    Caqti_lwt_unix.Pool.use
+    Caqti_lwt.Pool.use
       (fun (module Db : Caqti_lwt.CONNECTION) ->
         Db.fold get_canonical_chain_head_id_query add_head_id () (ref None))
       db_pool
@@ -189,7 +189,7 @@ let get_head_id db_pool =
 let create_table ~db_pool ~query ~query_error =
   let open Lwt_result_syntax in
   let*! query_result =
-    Caqti_lwt_unix.Pool.use
+    Caqti_lwt.Pool.use
       (fun (module Db : Caqti_lwt.CONNECTION) -> Db.exec query ())
       db_pool
   in
@@ -207,7 +207,7 @@ let create_table ~db_pool ~query ~query_error =
 let get_entries ~db_pool ~query ~add_to_map ~arg ~query_error =
   let open Lwt_result_syntax in
   let*! query_result =
-    Caqti_lwt_unix.Pool.use
+    Caqti_lwt.Pool.use
       (fun (module Db : Caqti_lwt.CONNECTION) ->
         Db.fold query add_to_map arg Query_map.empty)
       db_pool
@@ -222,7 +222,7 @@ let get_entries ~db_pool ~query ~add_to_map ~arg ~query_error =
 let insert_entry ~db_pool ~query ~entry ~query_error =
   let open Lwt_result_syntax in
   let*! query_result =
-    Caqti_lwt_unix.Pool.use
+    Caqti_lwt.Pool.use
       (fun (module Db : Caqti_lwt.CONNECTION) -> Db.exec query entry)
       db_pool
   in
@@ -263,7 +263,7 @@ let print_baker_nodes map =
       List.iter
         (fun delegate_address ->
           Format.printf "%s @,"
-          @@ Tezos_crypto.Signature.Public_key_hash.to_b58check delegate_address)
+          @@ Mavryk_crypto.Signature.Public_key_hash.to_b58check delegate_address)
         delegate_addresses ;
       Format.printf "@.")
     map
@@ -275,7 +275,7 @@ let print_baker_nodes map =
 let connect_db db_path =
   let open Lwt_result_syntax in
   let db_uri = Uri.of_string ("sqlite3:" ^ db_path) in
-  match Caqti_lwt_unix.connect_pool db_uri with
+  match Caqti_lwt.connect_pool db_uri with
   | Error e -> tzfail (Caqti_db_connection (Caqti_error.show e))
   | Ok db_pool -> return db_pool
 
@@ -401,7 +401,7 @@ let baker_nodes_command db_path exp_dir path_to_delegates print_result =
     close_in in_channel ;
     return
     @@ List.map
-         Tezos_crypto.Signature.Public_key_hash.of_b58check_exn
+         Mavryk_crypto.Signature.Public_key_hash.of_b58check_exn
          Str.(split (regexp "\n") baker_addresses)
   in
   (* 5. Construct the map between baker nodes and delegate addresses *)
@@ -468,7 +468,7 @@ let experiment_dir_arg =
       else tzfail (Experiment_dir experiment_dir) )
 
 let print_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~short:'p'
     ~long:"print"
     ~doc:"If print flag is set, the result of the query will be printed."
@@ -527,7 +527,7 @@ module Custom_client_config : Client_main_run.M = struct
   let parse_config_args ctx argv =
     let open Lwt_result_syntax in
     let* (), remaining =
-      Tezos_clic.parse_global_options (global_options ()) ctx argv
+      Mavryk_clic.parse_global_options (global_options ()) ctx argv
     in
     let open Client_config in
     return (default_parsed_config_args, remaining)
@@ -538,7 +538,7 @@ module Custom_client_config : Client_main_run.M = struct
 
   let default_daily_logs_path = None
 
-  let default_media_type = Tezos_rpc_http.Media_type.Command_line.Binary
+  let default_media_type = Mavryk_rpc_http.Media_type.Command_line.Binary
 
   let other_registrations = None
 

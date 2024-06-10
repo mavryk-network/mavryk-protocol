@@ -4,8 +4,8 @@ Development Changelog
 **NB:** The changelog for releases can be found at: https://tezos.gitlab.io/CHANGES.html
 
 
-This file lists the changes added to each version of octez-node,
-octez-client, and the other Octez executables. The changes to the economic
+This file lists the changes added to each version of mavkit-node,
+mavkit-client, and the other Mavkit executables. The changes to the economic
 protocol are documented in the ``docs/protocols/`` directory; in
 particular in ``docs/protocols/alpha.rst``.
 
@@ -28,35 +28,60 @@ General
 Node
 ----
 
-- Introduced a new process, forked by the node, that is responsible of
-  managing the RPC server: the RPC-process. It is used by default by
-  the node.
+- **Breaking change** Removed the deprecated ``endorsing_rights`` RPC,
+  use ``attestation_rights`` instead. (MR :gl:`!9849`)
 
-- Introduced a new ``--local-rpc-addr`` that starts the RPC server
-  locally, not using the dedicated RPC-process.
+- Added metrics about distributed data base messages sent, broadcasted or received
+
+- **Breaking change** Removed the deprecated
+  ``disable-mempool-precheck`` configuration flag and
+  ``disable_precheck`` field of ``prevalidator`` in the shell limits
+  of the configuration file. They already had no effect on the node
+  anymore. (MR :gl:`!10030`)
+
+- **Breaking change** Bumped the Mavkit snapshot version from ``5`` to
+  ``6`` to explicit the incompatibility with previous version
+  nodes. Also, improved the consistency of ``snapshot`` import errors
+  messages (MR :gl:`!10138`)
+
+- Add logs at ``Info`` level about the disconnection reasons in the p2p section.
+
+- Removed a spurious "missing validation plugin" warning message that
+  was emitted every time a block was applied using an old protocol
+  where its plugin was removed.
+
+- **Breaking change** Removed the deprecated ``/monitor/valid_blocks``
+  RPC. Instead, use the ``/monitor/applied_blocks`` RPC that has the
+  same behaviour.
 
 Client
 ------
 
-- Extended the support for the TZT format when using the ``run unit
-  tests`` client command. (MR :gl:`!4474`)
+- Fixed indentation of the stacks outputted by the ``normalize stack``
+  command. (MR :gl:`!9944`)
 
-- The ``timelock create`` command now takes the message to lock in hexadecimal format. (MR :gl:`!11597`)
+- Added options to temporarily extend the context with other contracts
+  and extra big maps in Michelson commands. (MR :gl:`!9946`)
 
+- Added a ``run_instruction`` RPC in the plugin and a ``run michelson code``
+  client command allowing to run a single Michelson instruction or a
+  sequence of Michelson instructions on a given stack. (MR :gl:`!9935`)
+
+- The legacy unary macros for the ``DIP`` and ``DUP`` Michelson
+  instructions have been deprecated. Using them now displays a warning
+  message on stderr.
+
+- Added a ``run unit tests`` client command allowing to run one or
+  several Michelson unit tests in `TZT format
+  <http://tezos.gitlab.io/active/michelson.html#tzt-a-syntax-extension-for-writing-unit-tests>`__. (MR
+  :gl:`!10898`)
 
 Baker
 -----
 
-- Added optional ``--pre-emptive-forge-time t`` argument that, when
-  set, will cause the baker to pre-emptively forge its block if
-  the current level quorum has been reached, and it is the round 0
-  proposer of the next level. The amount of time to wait before forging
-  is ``round_time - t``. This optimization increases the chance for the
-  proposed block to reach quorum by slightly reducing the operation
-  inclusion window. Note that a ``t`` value that is too high could
-  cause forging to begin too early and result in lower baking rewards.
-  If not given, defaults to ``0.15 * block_time``. Set to ``0`` to
-  ignore. (MR :gl:`!10712`)
+- Made the baker attest as soon as the pre-attestation quorum is
+  reached instead of waiting for the chain's head to be fully
+  applied (MR :gl:`!10554`)
 
 Accuser
 -------
@@ -73,36 +98,107 @@ Codec
 Docker Images
 -------------
 
+- The rollup node is protocol agnostic and released as part of the Docker
+  image. (MR :gl:`!10086`)
+
+
 Smart Rollup node
 -----------------
 
-- Added RPC ``/describe?recurse=true`` to retrieve schema of RPCs for the rollup
-  node. (MR :gl:`!10118`)
+- Now smart rollup node allows multiple batcher keys. Setting multiple
+  keys for the batching purpose allows to inject multiple operations
+  of the same kind per block by the rollup node. ( MR :gl:`!10512`, MR
+  :gl:`!10529`, MR :gl:`!10533`, MR :gl:`!10567`, MR :gl:`!10582`, MR
+  :gl:`!10584`, MR :gl:`!10588`, MR :gl:`!10597`, MR :gl:`!10601`, MR
+  :gl:`!10622`, MR :gl:`!10642`, MR :gl:`!10643`, MR :gl:`!10839`, MR
+  :gl:`!10842`, MR :gl:`!10861`, MR :gl:`!11008` )
 
-- Added RPC ``/openapi?protocol={ProtoHash}`` to retrieve the OpenAPI
-  specification for RPCs of the rollup node. (MR :gl:`!10118`)
+- A new bailout mode that solely cements and defends existing
+  commitments without publishing new ones. Recovers bonds when
+  possible, after which the node exits gracefully. (MR :gl:`!9721`, MR
+  :gl:`!9817`, MR :gl:`!9835`)
 
-- Introduced a new command ``generate openapi``, to generate the OpenAPI JSON
-  specification and output it to stdout. (MR :gl:`!10118`)
+- RPC ``/global/block/<block-id>/simulate`` accepts inputs with a new optional
+  field ``"log_kernel_debug_file"`` which allows to specify a file in which
+  kernel logs should be written (this file is in
+  ``<data-dir>/simulation_kernel_logs``). (MR :gl:`!9606`)
 
-- Register in ``octez-codec`` some of the protocol smart rollup
-  related encodings. (MRs :gl:`!10174`, :gl:`!11200`)
+- The protocol specific rollup nodes binaries are now deprecated and replaced
+  by symbolic links to the protocol agnostic rollup node. In the future, the
+  symbolic links will be removed. (MR :gl:`!10086`)
 
-- Fix a critical bug that could lead to data loss when chain
-  reorganizations happen while a GC is running. (MR :gl:`!11358`)
+- Released the protocol agnostic rollup node ``mavkit-smart-rollup-node`` as part
+  of the Mavkit distribution. (MR :gl:`!10086`)
 
-- Snapshot inspection command. (MR :gl:`!11456`)
+- Added the rollup node command inside the docker entrypoint (MR :gl:`!10253`)
 
-- Snapshot export options. (MRs :gl:`!10812`, :gl:`!11078`, :gl:`!11256`,
-  :gl:`!11454`)
+- Added the argument ``cors-headers`` and ``cors-origins`` to specify respectively the
+  allowed headers and origins. (MR :gl:`!10571`)
 
-- Snapshot import. (MR :gl:`!10803`)
+- Fix header in messages store to use predecessor hash to avoid missing pointer
+  in case of reorganization and GC. (MR :gl:`!10847`)
 
-- Pre-images endpoint (configurable on the CLI of the config file) to allow the rollup
-  node to fetch missing pre-images from a remote server. (MR :gl:`!11600`)
+- Added a garbage collection mechanism that cleans historical data before the LCC.
+  (MRs :gl:`!10050`, :gl:`!10135`, :gl:`!10236`, :gl:`!10237`, :gl:`!10452`)
+
+- Added a ``history-mode`` option, which can be either ``archive`` or
+  ``full``. In ``archive``, the default, the rollup node has the whole L2 chain
+  history, no GC happens. In ``full`` the rollup node retains data for possible
+  refutations. (MRs :gl:`!10475`, :gl:`!10695`)
+
+- Snapshot export with integrity checks. (MR :gl:`!10704`)
+
+Smart Rollup client
+-------------------
+
+- **Breaking change** smart rollup client have been deprecated and
+  no longer exist, most commands have equivalents RPCs and ``mavkit-codec`` (MR :gl:`!11046`).
+
+- The following table outlines the deprecated of smart rollup client commands and
+  their corresponding replacements with new RPCs:
+
+  .. code-block:: rst
+
+    ==========================================  ====================================================
+    Command                                     RPC
+    ==========================================  ====================================================
+    get smart rollup address                    [GET global/smart_rollup_address]
+    ------------------------------------------  ----------------------------------------------------
+    get state value for <key> [-B --block       [GET global/block/<block>/state]
+    <block>]
+    ------------------------------------------  ----------------------------------------------------
+    get proof for message <index> of outbox     [GET /global/block/<block-id>/helpers/proofs/outbox/
+    at level <level> transferring               <outbox_level>/messages] with message index in query
+    <transactions>
+    ------------------------------------------  ----------------------------------------------------
+    get proof for message <index> of outbox     [GET /global/block/<block-id>/helpers/proofs/outbox/
+    at level <level>                            <outbox_level>/messages] with message index in query
+    ==========================================  ====================================================
+
+- The result of ``encode outbox message <transactions>`` can be achieved:
+  ``mavkit-codec encode alpha.smart_rollup.outbox.message from <transactions>``.
+
+- The keys in the smart rollup client use the same format as the ``mavkit-client``.
+  They can be imported with ``mavkit-client import secret key <sk_uri>``, or by merging the key files
+  between the ``mavkit-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
 
 Smart Rollup WASM Debugger
 --------------------------
+
+- Added flag ``--no-kernel-debug`` to deactivate the kernel debug messages. (MR
+  :gl:`!9813`)
+
+- Support special directives using ``write_debug`` host function in the
+  profiler, prefixed with ``__wasm_debugger__::``. Support
+  ``start_section(<data>)`` and ``end_section(<data>)`` to count ticks in
+
+- Partially support the installer configuration of the Smart Rollup SDK, i.e.
+  support only the instruction ``Set``. The configuration can be passed to
+  the debugger via the option ``--installer-config`` and will initialize the
+  storage with this configuration. (MR :gl:`!9641`)
+
+- The argument ``--kernel`` accepts hexadecimal files (suffixed by ``.hex``), it
+  is consired as an hexadecimal ``.wasm`` file. (MR :gl:`!11094`)
 
 Data Availability Committee (DAC)
 ---------------------------------
@@ -110,6 +206,13 @@ Data Availability Committee (DAC)
 Miscellaneous
 -------------
 
-- **Breaking change** Switch encoding of ``nread_total`` field of
-  ``P2p_events.read_fd`` in Octez-p2p library to ``Data_encoding.int64`` to fix an
-  overflow.
+- Beta scripts to build Debian and RedHat packages have been added to the tree.
+
+- New Recommended Rust version 1.71.1 instead of 1.64.0.
+
+- Extended the Micheline lexer to allow primitives starting with the
+  underscore symbol (``_``). (MR :gl:`!10782`)
+
+- Beta Debian and Redhat packages are now linked in gitlab releases.
+
+- Renamed package registries for releases from ``mavryk-x.y`` to ``mavkit-x.y``.

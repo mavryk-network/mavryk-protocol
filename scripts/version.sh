@@ -8,7 +8,7 @@
 ## . "$script_dir"/version.sh
 
 ## `ocaml-version` should be in sync with `README.rst` and
-## `lib.protocol-compiler/octez-protocol-compiler.opam`
+## `lib.protocol-compiler/mavkit-protocol-compiler.opam`
 ##
 ## This script is also sourced in the Makefile, as such it should be compatible
 ## with both the make and sh syntax
@@ -26,12 +26,12 @@ export alpine_version='3.18'
 
 ## full_opam_repository is a commit hash of the public OPAM repository, i.e.
 ## https://github.com/ocaml/opam-repository
-export full_opam_repository_tag=2314da5646931ec7f643bdc9aaa39177971ac857
+export full_opam_repository_tag=cab7b39e74361fc16be1584ba4065eed73012151
 
-## opam_repository is an additional, tezos-specific opam repository.
+## opam_repository is an additional, mavryk-specific opam repository.
 ## This value MUST be the same as `build_deps_image_version` in `.gitlab-ci.yml`
 export opam_repository_url=https://gitlab.com/tezos/opam-repository
-export opam_repository_tag="${OPAM_REPOSITORY_TAG:-5d7889150ef8283a4610bfc85d5b66a159d72d2e}"
+export opam_repository_tag="${OPAM_REPOSITORY_TAG:-f84b4412bf92f81fa4d554aed624fa0a6a72ec96}"
 export opam_repository_git="$opam_repository_url.git"
 export opam_repository="$opam_repository_git"\#"$opam_repository_tag"
 

@@ -8,11 +8,11 @@
 *)
 
 (* PBKDF2 *)
-let test_pbkdf2 (module A : Tezos_crypto.Hacl.Hash.S) ~password ~salt ~count
+let test_pbkdf2 (module A : Mavryk_crypto.Hacl.Hash.S) ~password ~salt ~count
     ~dk_len ~dk =
   let module P = Pbkdf.Make (A) in
-  let salt = Tezos_stdlib.Hex.to_bytes_exn (`Hex salt) in
-  let dk = Tezos_stdlib.Hex.to_bytes_exn (`Hex dk) in
+  let salt = Mavryk_stdlib.Hex.to_bytes_exn (`Hex salt) in
+  let dk = Mavryk_stdlib.Hex.to_bytes_exn (`Hex dk) in
   let password = Bytes.of_string password in
   fun () ->
     let edk = P.pbkdf2 ~password ~salt ~count ~dk_len in
@@ -38,7 +38,7 @@ let test_pbkdf2 (module A : Tezos_crypto.Hacl.Hash.S) ~password ~salt ~count
 *)
 let pbkdf2_test11 =
   test_pbkdf2
-    (module Tezos_crypto.Hacl.Hash.SHA256)
+    (module Mavryk_crypto.Hacl.Hash.SHA256)
     ~password:"xyz"
     ~salt:"0001020304050607"
     ~count:10000
@@ -53,7 +53,7 @@ let pbkdf2_test11 =
 *)
 let pbkdf2_test13 =
   test_pbkdf2
-    (module Tezos_crypto.Hacl.Hash.SHA512)
+    (module Mavryk_crypto.Hacl.Hash.SHA512)
     ~password:"xyz"
     ~salt:"0001020304050607"
     ~count:10000

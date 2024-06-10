@@ -34,9 +34,9 @@ stages:
     with_agents: 'localhost'
     run_agents: concurrent
     jobs:
-      - name: Upload octez-client
+      - name: Upload mavkit-client
         copy:
-          local_path: octez-client
+          local_path: mavkit-client
           remote_path: '.'
 
       - name: Generate keys for accounts with revealed public keys
@@ -47,7 +47,7 @@ stages:
              # for when we want fresh keys
              fresh:
                count: 5
-               path_client: 'self://./octez-client'
+               path_client: 'self://./mavkit-client'
                alias_prefix: '{{ vars.pk_revealed_accounts_prefix }}'
 
       - name: Generate keys for accounts with unrevealed public keys
@@ -57,7 +57,7 @@ stages:
              # default: # to re-use default Tezt keys
              fresh:
                count: 5
-               path_client: 'self://./octez-client'
+               path_client: 'self://./mavkit-client'
                alias_prefix: '{{ vars.pk_unrevealed_accounts_prefix }}'
 
       - name: Compress generated keys
@@ -119,21 +119,21 @@ stages:
           archive: 'self://{{ vars.keys_base_dir }}.tar.gz'
           action: extract
 
-      - name: Upload octez binaries
+      - name: Upload mavkit binaries
         run_items: concurrent
         copy:
           local_path: '{{ item }}'
           remote_path: '.'
         with_items:
-          - octez-node
-          - octez-client
-          - octez-baker-alpha
-          - octez-dal-node
+          - mavkit-node
+          - mavkit-client
+          - mavkit-baker-alpha
+          - mavkit-dal-node
 
-      - name: Start octez-node
+      - name: Start mavkit-node
         tezos.start_node:
           name: node
-          path_node: self://./octez-node
+          path_node: self://./mavkit-node
           network: '{{ vars.network }}'
           synchronization_threshold: 0
           rpc_port: '30001'
@@ -148,25 +148,25 @@ stages:
       - name: Activate protocol
         tezos.activate_protocol:
           endpoint: self://node
-          path_client: self://./octez-client
+          path_client: self://./mavkit-client
           protocol: alpha
           parameter_file: 'self://parameters.json'
 
       - name: Wait for bootstrapped node
         tezos.wait_for_bootstrapped:
-          path_client: self://./octez-client
+          path_client: self://./mavkit-client
           endpoint: self://node
 
-      - name: Start octez-dal-node
+      - name: Start mavkit-dal-node
         tezos.start_dal_node:
           name: dal_node
-          path_node: self://./octez-dal-node
+          path_node: self://./mavkit-dal-node
           rpc_port: '30011'
           metrics_port: '30012'
           net_port: '30013'
           l1_node_uri: self://node
           bootstrap_profile: false
-          path_client: self://./octez-client
+          path_client: self://./mavkit-client
           base_dir: 'self://slot-producers/{{ vars.keys_base_dir }}'
           attester_profiles:
            - '{{ vars.pk_revealed_accounts_prefix }}0'
@@ -178,7 +178,7 @@ stages:
            - '1'
            - '2'
 
-      - name: Start octez-baker-alpha
+      - name: Start mavkit-baker-alpha
         tezos.start_baker:
           name: my-unique-baker
           protocol: alpha
@@ -203,7 +203,7 @@ stages:
           # We can either provide "Self/Owned" nodes or foreign RPC address
           l1_node_uri: self://node
           dal_node_uri: self://dal_node
-          path_client: self://./octez-client
+          path_client: self://./mavkit-client
           base_dir: 'self://slot-producers/{{ vars.keys_base_dir }}'
           source: delegate_1
         with_items:
@@ -219,7 +219,7 @@ stages:
           # We can either provide "Self/Owned" nodes or foreign RPC address
           l1_node_uri: self://node
           dal_node_uri: self://dal_node
-          path_client: self://./octez-client
+          path_client: self://./mavkit-client
           base_dir: 'self://slot-producers/{{ vars.keys_base_dir }}'
           source: delegate_2
         with_items:

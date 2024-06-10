@@ -2,16 +2,16 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_proxy_rpc)
- (public_name octez-shell-libs.proxy.rpc)
+ (name mavryk_proxy_rpc)
+ (public_name mavkit-shell-libs.proxy.rpc)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-shell-libs.client-base
-  octez-shell-libs.mockup-proxy
-  octez-libs.rpc
-  octez-shell-libs.proxy
+  mavkit-libs.base
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.mockup-proxy
+  mavkit-libs.rpc
+  mavkit-shell-libs.proxy
   uri)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

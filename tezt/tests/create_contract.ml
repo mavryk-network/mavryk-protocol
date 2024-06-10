@@ -31,14 +31,13 @@
    Subject:      Regression tests for contract that creates a contract
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_call_contract_that_creates_contract =
   Protocol.register_regression_test
     ~__FILE__
     ~title:"Create contract"
     ~tags:["client"; "michelson"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract_id =

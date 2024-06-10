@@ -56,6 +56,6 @@ val rpc_metrics_transform_callback :
     string ->
     (unit -> Cohttp_lwt_unix.Server.response_action Lwt.t) ->
     Cohttp_lwt_unix.Server.response_action Lwt.t) ->
-  unit Tezos_rpc.Directory.t ->
+  unit Mavryk_rpc.Directory.t ->
   RPC_server.callback ->
   RPC_server.callback

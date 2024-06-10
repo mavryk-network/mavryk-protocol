@@ -44,9 +44,9 @@ open Transfers
    [transfer_to_itself_and_check_balances b fee contract amount]
    this function takes a block, an optional parameter fee,
    a contract that is a source and a destination contract,
-   and an amount of tez that one wants to transfer.
+   and an amount of mav that one wants to transfer.
 
-   1- Transfer the amount of tez (w/wo transfer fee) from/to a contract itself.
+   1- Transfer the amount of mav (w/wo transfer fee) from/to a contract itself.
 
    2- Check the equivalent of the balance of the contract before
        and after transfer.
@@ -108,7 +108,6 @@ let test_block_with_a_single_transfer_with_fee () =
 
 (** Single transfer without fee. *)
 let test_transfer_zero_tez () =
-  let open Lwt_result_syntax in
   let expect_apply_failure = function
     | Environment.Ecoproto_error (Apply.Empty_transaction _ as err) :: _ ->
         Assert.test_error_encodings err ;
@@ -117,7 +116,7 @@ let test_transfer_zero_tez () =
   in
   single_transfer ~expect_apply_failure Tez.zero
 
-(** Transfer zero tez from an implicit contract. *)
+(** Transfer zero mav from an implicit contract. *)
 let test_transfer_zero_implicit () =
   let open Lwt_result_syntax in
   let* b, dest = Context.init1 () in
@@ -160,7 +159,7 @@ let test_transfer_amount_of_contract_balance () =
   let* b = Incremental.begin_construction b ~policy:(Block.Excluding [pkh1]) in
   (* get the balance of the source contract *)
   let* balance = Context.Contract.balance (I b) contract_1 in
-  (* transfer all the tez inside contract 1 *)
+  (* transfer all the mav inside contract 1 *)
   let* b, _ =
     transfer_and_check_balances ~loc:__LOC__ b contract_1 contract_2 balance
   in
@@ -211,7 +210,7 @@ let test_missing_transaction () =
   let* (_ : Block.t) = Incremental.finalize_block i in
   return_unit
 
-(** Transfer zero tez to an implicit contract, with fee equals balance of src. *)
+(** Transfer zero mav to an implicit contract, with fee equals balance of src. *)
 let test_transfer_zero_implicit_with_bal_src_as_fee () =
   let open Lwt_result_syntax in
   let* b, dest = Context.init1 ~consensus_threshold:0 () in
@@ -219,15 +218,15 @@ let test_transfer_zero_implicit_with_bal_src_as_fee () =
   let src_pkh = account.Account.pkh in
   let src = Contract.Implicit src_pkh in
   let* operation =
-    Op.transaction ~force_reveal:true (B b) dest src (Tez.of_mutez_exn 100L)
+    Op.transaction ~force_reveal:true (B b) dest src (Tez.of_mumav_exn 100L)
   in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* op =
     Op.transaction ~force_reveal:true (B b) ~fee:bal_src src dest Tez.zero
   in
-  (* Transferring zero tez should result in an application failure as
+  (* Transferring zero mav should result in an application failure as
      the implicit contract has been depleted. *)
   let expect_apply_failure = function
     | [
@@ -248,13 +247,13 @@ let test_transfer_zero_implicit_with_bal_src_as_fee () =
   when_ revelead (fun () ->
       Stdlib.failwith "Empty account still exists and is revealed.")
 
-(** Transfer zero tez to an originated contract, with fee equals balance of src. *)
+(** Transfer zero mav to an originated contract, with fee equals balance of src. *)
 let test_transfer_zero_to_originated_with_bal_src_as_fee () =
   let open Lwt_result_syntax in
   let* b, dest = Context.init1 ~consensus_threshold:0 () in
   let account = Account.new_account () in
   let src = Contract.Implicit account.Account.pkh in
-  let* operation = Op.transaction (B b) dest src (Tez.of_mutez_exn 100L) in
+  let* operation = Op.transaction (B b) dest src (Tez.of_mumav_exn 100L) in
   let* b = Block.bake ~operation b in
   let* operation, new_contract =
     Op.contract_origination (B b) dest ~script:Op.dummy_script
@@ -266,20 +265,20 @@ let test_transfer_zero_to_originated_with_bal_src_as_fee () =
   let* operation =
     Op.transaction (B b) ~fee:bal_src src new_contract Tez.zero
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* (_ : Block.t) = Block.bake ~operation b in
   return_unit
 
-(** Transfer one tez to an implicit contract, with fee equals balance of src. *)
+(** Transfer one mav to an implicit contract, with fee equals balance of src. *)
 let test_transfer_one_to_implicit_with_bal_src_as_fee () =
   let open Lwt_result_syntax in
   let* b, dest = Context.init1 ~consensus_threshold:0 () in
   let account = Account.new_account () in
   let src = Contract.Implicit account.Account.pkh in
-  let* operation = Op.transaction (B b) dest src (Tez.of_mutez_exn 100L) in
+  let* operation = Op.transaction (B b) dest src (Tez.of_mumav_exn 100L) in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mutez_exn 100L) in
+  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* operation = Op.revelation (B b) ~fee:Tez.zero account.pk in
   let* b = Block.bake ~operation b in
   let* op = Op.transaction (B b) ~fee:bal_src src dest Tez.one in
@@ -458,14 +457,14 @@ let test_build_a_chain () =
 (* Expected error test cases                                         *)
 (*********************************************************************)
 
-(** Transferring zero tez is forbidden in implicit contract. *)
+(** Transferring zero mav is forbidden in implicit contract. *)
 let test_empty_implicit () =
   let open Lwt_result_syntax in
   let* b, dest = Context.init1 () in
   let account = Account.new_account () in
   let src = Contract.Implicit account.Account.pkh in
   let* amount = two_over_n_of_balance (B b) dest 3L in
-  (* Transfer zero tez from an implicit contract. *)
+  (* Transfer zero mav from an implicit contract. *)
   let* op = Op.transaction (B b) src dest amount in
   let* incr = Incremental.begin_construction b in
   let*! res = Incremental.add_operation incr op in
@@ -481,7 +480,7 @@ let test_balance_too_low fee () =
   let* b, (contract_1, contract_2) = Context.init2 ~consensus_threshold:0 () in
   let* balance1 = Context.Contract.balance (B b) contract_1 in
   let* balance2 = Context.Contract.balance (B b) contract_2 in
-  (* transfer the amount of tez that is bigger than the balance in the source contract *)
+  (* transfer the amount of mav that is bigger than the balance in the source contract *)
   let* op = Op.transaction ~fee (B b) contract_1 contract_2 max_tez in
   let expect_failure = function
     | Environment.Ecoproto_error (Contract_storage.Balance_too_low _ as err)
@@ -517,7 +516,7 @@ let test_balance_too_low fee () =
 (** 1- Create a block, and three contracts;
     2- Add a transfer that at the end the balance of a contract is
        zero into this block;
-    3- Add another transfer that send tez from a zero balance contract;
+    3- Add another transfer that send mav from a zero balance contract;
     4- Catch the expected error: Balance_too_low. *)
 let test_balance_too_low_two_transfers fee () =
   let open Lwt_result_syntax in
@@ -827,7 +826,7 @@ let test_storage_fees_and_internal_operation () =
       ~baker:(Context.Contract.pkh contract)
       ~source:contract
       ~destination:(Contract.Implicit caller.pkh)
-      Tez.one_mutez
+      Tez.one_mumav
   in
   (* [originate_and_call] first, originates a contract with an empty string as
      initial storage, and an initial credit of [initial_amount]. And then, calls
@@ -855,7 +854,7 @@ let test_storage_fees_and_internal_operation () =
   in
   (* Ensure failure when the initial balance of the originated contract is not
      sufficient to pay storage fees. *)
-  let*! res = originate_and_call ~initial_block ~initial_amount:Tez.one_mutez in
+  let*! res = originate_and_call ~initial_block ~initial_amount:Tez.one_mumav in
   let* () =
     Assert.proto_error_with_info ~loc:__LOC__ res "Cannot pay storage fee"
   in
@@ -874,14 +873,14 @@ let tests =
       "single transfer with fee"
       `Quick
       test_block_with_a_single_transfer_with_fee;
-    (* transfer zero tez *)
-    Tztest.tztest "single transfer zero tez" `Quick test_transfer_zero_tez;
+    (* transfer zero mav *)
+    Tztest.tztest "single transfer zero mav" `Quick test_transfer_zero_tez;
     Tztest.tztest
-      "transfer zero tez from implicit contract"
+      "transfer zero mav from implicit contract"
       `Quick
       test_transfer_zero_implicit;
     Tztest.tztest
-      "transfer zero tez to an implicit contract with balance of src as fee"
+      "transfer zero mav to an implicit contract with balance of src as fee"
       `Quick
       test_transfer_zero_implicit_with_bal_src_as_fee;
     (* transfer to originated contract *)
@@ -890,7 +889,7 @@ let tests =
       `Quick
       test_transfer_to_originate_with_fee;
     Tztest.tztest
-      "transfer zero tez to an originated contract with balance of src as fee"
+      "transfer zero mav to an originated contract with balance of src as fee"
       `Quick
       test_transfer_zero_to_originated_with_bal_src_as_fee;
     (* transfer by the balance of contract *)
@@ -947,7 +946,7 @@ let tests =
       `Quick
       (test_balance_too_low_two_transfers Tez.one);
     Tztest.tztest
-      "transfer one tez to an implicit contract with balance of src as fee"
+      "transfer one mav to an implicit contract with balance of src as fee"
       `Quick
       test_transfer_one_to_implicit_with_bal_src_as_fee;
     Tztest.tztest "invalid_counter" `Quick invalid_counter;

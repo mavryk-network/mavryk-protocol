@@ -25,8 +25,6 @@
 
 let default_prefix = "michelson_test_scripts"
 
-let default_tzt_prefix = "tzt_reference_test_suite"
-
 type version_range = {range_start : int; range_end : int option}
 
 let unversioned_range = {range_start = 0; range_end = None}
@@ -42,12 +40,10 @@ type t = {
   basename : string;
   name : string;
   version_range : version_range;
-  extension : string;
   depth : int;
 }
 
-let pretty_string
-    {prefix; dirname; basename; name; version_range; extension; depth} =
+let pretty_string {prefix; dirname; basename; name; version_range; depth} =
   let option_to_string f opt =
     match opt |> Option.map f with None -> "None" | Some s -> "Some " ^ s
   in
@@ -65,35 +61,34 @@ let pretty_string
       "    range_end = "
       ^ option_to_string string_of_int version_range.range_end;
       "  }";
-      "  extension = " ^ extension;
       "  depth = " ^ string_of_int depth;
       "}";
     ]
 
-let parse_basename : string -> (string * version_range * string) option =
-  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.(tz.*)" in
-  let re2 = rex "(.*)_([0-9]{3,})\\.(tz.*)" in
-  let re1 = rex "(.*).(tz.*)" in
+let parse_basename : string -> (string * version_range) option =
+  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.tz" in
+  let re2 = rex "(.*)_([0-9]{3,})\\.tz" in
+  let re1 = rex "(.*).tz" in
   fun s ->
-    match s =~**** re3 with
-    | Some (name, range_start, range_end, extension) ->
+    match s =~*** re3 with
+    | Some (name, range_start, range_end) ->
         let version_range =
           {
             range_start = int_of_string range_start;
             range_end = Some (int_of_string range_end);
           }
         in
-        Some (name, version_range, extension)
+        Some (name, version_range)
     | None -> (
-        match s =~*** re2 with
-        | Some (name, range_start, extension) ->
+        match s =~** re2 with
+        | Some (name, range_start) ->
             let version_range =
               {range_start = int_of_string range_start; range_end = None}
             in
-            Some (name, version_range, extension)
+            Some (name, version_range)
         | None -> (
-            match s =~** re1 with
-            | Some (name, extension) -> Some (name, unversioned_range, extension)
+            match s =~* re1 with
+            | Some name -> Some (name, unversioned_range)
             | None -> None))
 
 let memoize f =
@@ -119,18 +114,8 @@ let walk (prefix, maxdepth) =
          else
            match parse_basename basename with
            | None -> []
-           | Some (name, version_range, extension) ->
-               [
-                 {
-                   prefix;
-                   dirname;
-                   basename;
-                   name;
-                   version_range;
-                   extension;
-                   depth;
-                 };
-               ]
+           | Some (name, version_range) ->
+               [{prefix; dirname; basename; name; version_range; depth}]
   in
   loop 1 [] |> List.sort (Stdlib.compare : t -> t -> int)
 
@@ -335,6 +320,3 @@ let find_all_well_typed ?prefix ?maxdepth protocol =
 
 let find_all_ill_typed ?prefix ?maxdepth protocol =
   find_all ?prefix ?maxdepth protocol |> whitelist [["ill_typed"]]
-
-let find_all_tzt_tests ?(prefix = default_tzt_prefix) ?maxdepth protocol =
-  find_all ~prefix ?maxdepth protocol

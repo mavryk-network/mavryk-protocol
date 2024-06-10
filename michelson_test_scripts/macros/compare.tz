@@ -1,4 +1,4 @@
-parameter (pair mutez mutez);
+parameter (pair mumav mumav);
 storage (list bool);
 code {CAR; DUP; DUP; DUP; DUP; DIP 5 {NIL bool};
       DIP 4 {DUP; CAR; DIP {CDR}; COMPARE; LE; CONS};

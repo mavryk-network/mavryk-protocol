@@ -2,14 +2,14 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_context_dump)
- (public_name octez-libs.tezos-context.dump)
+ (name mavryk_context_dump)
+ (public_name mavkit-libs.mavryk-context.dump)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
   fmt)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix))

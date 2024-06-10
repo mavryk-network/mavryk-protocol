@@ -41,7 +41,7 @@ pub fn panic_handler(info: &PanicInfo) {
 
         #[cfg(any(target_arch = "wasm32", target_arch = "riscv64"))]
         unsafe {
-            tezos_smart_rollup_core::smart_rollup_core::write_debug(
+            mavryk_smart_rollup_core::smart_rollup_core::write_debug(
                 message.as_ptr(),
                 message.len(),
             );
@@ -51,11 +51,7 @@ pub fn panic_handler(info: &PanicInfo) {
         std::eprintln!("{}", message);
     }
 
-    // We don't want to abort when testing because that prevents the panic trace
-    // from being printed.
-    #[cfg(all(
-        feature = "abort",
-        any(target_arch = "wasm32", target_arch = "riscv64")
-    ))]
+    // If we're testing, we want to be able to see the panic trace
+    #[cfg(all(feature = "abort", target_arch = "wasm32"))]
     std::process::abort()
 }

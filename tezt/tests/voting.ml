@@ -50,14 +50,14 @@
 let test_proto_dir = "src/bin_client/test/proto_test_injection"
 
 (* Files that are to be copied from [test_proto_dir].
-   We do not copy [TEZOS_PROTOCOL] because it declares an environment version
+   We do not copy [MAVRYK_PROTOCOL] because it declares an environment version
    which is too old when trying to adopt protocol Alpha *)
 let test_proto_files = ["main.ml"; "main.mli"]
 
-let test_proto_TEZOS_PROTOCOL =
+let test_proto_MAVRYK_PROTOCOL =
   {|{
     "modules": ["Main"],
-    "expected_env_version": 12
+    "expected_env_version": 11
 }
 |}
 
@@ -234,8 +234,8 @@ let inject_test_protocol client =
       (List.map (fun filename -> test_proto_dir // filename) test_proto_files
       @ [protocol_path])
   in
-  ( with_open_out (protocol_path // "TEZOS_PROTOCOL") @@ fun ch ->
-    output_string ch test_proto_TEZOS_PROTOCOL ) ;
+  ( with_open_out (protocol_path // "MAVRYK_PROTOCOL") @@ fun ch ->
+    output_string ch test_proto_MAVRYK_PROTOCOL ) ;
   let* protocols_before = Client.Admin.list_protocols client in
   let* test_proto_hash = Client.Admin.inject_protocol client ~protocol_path in
   let* protocols_after = Client.Admin.list_protocols client in
@@ -377,7 +377,7 @@ let test_voting ~from_protocol ~(to_protocol : target_protocol) ~loser_protocols
   let* () = check_listings_not_empty client in
   let* period = Client.show_voting_period client in
   Check.((period = "proposal") string)
-    ~error_msg:"expected octez-client show voting period to return %R, got %L" ;
+    ~error_msg:"expected mavkit-client show voting period to return %R, got %L" ;
   (* Inject test protocol, or use known protocol. *)
   let* to_protocol_hash =
     match to_protocol with
@@ -706,7 +706,7 @@ let test_voting ~from_protocol ~(to_protocol : target_protocol) ~loser_protocols
          We use the "Singleprocess" option because this test relies on
          events which are emitted by the validator. The event mechanism
          of Tezt is currently not compatible with the validator events if it
-         is run as an external process by the octez-node (which is the
+         is run as an external process by the mavkit-node (which is the
          case by default). *)
       let* node2 = Node.init [Synchronisation_threshold 1; Singleprocess] in
       let check_event_fetching_protocol =
@@ -875,12 +875,6 @@ let test_user_activated_protocol_override_baker_vote ~from_protocol ~to_protocol
         "voting";
         "from_" ^ Protocol.tag from_protocol;
         "to_" ^ Protocol.tag to_protocol;
-      ]
-    ~uses:
-      [
-        Protocol.accuser to_protocol;
-        Protocol.baker from_protocol;
-        Protocol.baker to_protocol;
       ]
   @@ fun () ->
   let node_arguments = [Node.Synchronisation_threshold 0] in

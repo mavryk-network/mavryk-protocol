@@ -43,7 +43,7 @@ let test_seed_no_commitment () =
   let n_cycles = 15 in
   let (Hash initial_seed) =
     let empty_bytes = Bytes.(copy empty) in
-    Tezos_crypto.Hacl.Blake2b.direct empty_bytes Nonce_hash.size
+    Mavryk_crypto.Hacl.Blake2b.direct empty_bytes Nonce_hash.size
   in
   let seeds =
     (* compute the first `n_cycles` expected seeds *)
@@ -52,7 +52,7 @@ let test_seed_no_commitment () =
       | 0 -> []
       | n ->
           let (Hash h) =
-            Tezos_crypto.Hacl.Blake2b.direct
+            Mavryk_crypto.Hacl.Blake2b.direct
               (Bytes.cat s zero_bytes)
               Nonce_hash.size
           in
@@ -212,24 +212,14 @@ let test_revelation_early_wrong_right_twice () =
   let cycle_for_rewards = Block.current_cycle b in
   let* b = Block.bake ~policy:(Block.By_account baker_pkh) ~operation b in
   (* test that the baker gets the tip reward plus the baking reward*)
-  let* tip_to_liquid =
+  let* reward_to_liquid =
     Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
       ~policy
       (B b)
       cycle_for_rewards
       pkh
-      tip
+      Test_tez.(tip +! baking_reward_fixed_portion)
   in
-  let* baking_reward_to_liquid =
-    Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
-      ~policy
-      (B b)
-      cycle_for_rewards
-      pkh
-      baking_reward_fixed_portion
-  in
-  let reward_to_liquid = Test_tez.(baking_reward_to_liquid +! tip_to_liquid) in
-
   let* () =
     balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid
   in
@@ -442,23 +432,14 @@ let test_early_incorrect_unverified_correct_already_vdf () =
   let cycle_for_rewards = Block.current_cycle b in
   let* b = Block.bake ~policy:(Block.By_account baker_pkh) ~operation b in
   (* test that the baker gets the tip reward plus the baking reward*)
-  let* tip_to_liquid =
+  let* reward_to_liquid =
     Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
       ~policy
       (B b)
       cycle_for_rewards
       pkh
-      seed_nonce_revelation_tip
+      Test_tez.(seed_nonce_revelation_tip +! baking_reward_fixed_portion)
   in
-  let* baking_reward_to_liquid =
-    Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
-      ~policy
-      (B b)
-      cycle_for_rewards
-      pkh
-      baking_reward_fixed_portion
-  in
-  let reward_to_liquid = Test_tez.(tip_to_liquid +! baking_reward_to_liquid) in
   let* () =
     balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid
   in
@@ -538,24 +519,13 @@ let test_early_incorrect_unverified_correct_already_vdf () =
       (* verify the balance was credited following operation inclusion *)
       let cycle_for_rewards = Block.current_cycle b in
       let* b = Block.bake ~policy:(Block.By_account baker_pkh) ~operation b in
-      let* tip_to_liquid =
+      let* reward_to_liquid =
         Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
           ~policy
           (B b)
           cycle_for_rewards
           pkh
-          vdf_nonce_revelation_tip
-      in
-      let* baking_reward_to_liquid =
-        Adaptive_issuance_helpers.portion_of_rewards_to_liquid_for_cycle
-          ~policy
-          (B b)
-          cycle_for_rewards
-          pkh
-          baking_reward_fixed_portion
-      in
-      let reward_to_liquid =
-        Test_tez.(tip_to_liquid +! baking_reward_to_liquid)
+          Test_tez.(vdf_nonce_revelation_tip +! baking_reward_fixed_portion)
       in
       let* () =
         balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid

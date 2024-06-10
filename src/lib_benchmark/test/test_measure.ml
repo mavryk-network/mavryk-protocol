@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
-open Tezos_benchmark_examples
+open Mavryk_benchmark
+open Mavryk_benchmark_examples
 
 let bench_opts =
   let open Measure in
@@ -53,5 +53,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("measure", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("measure", tests)]
   |> Lwt_main.run

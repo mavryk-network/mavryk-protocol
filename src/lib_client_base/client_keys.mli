@@ -37,30 +37,30 @@ type aggregate_pk_uri = private Uri.t
 
 type aggregate_sk_uri = private Uri.t
 
-val pk_uri_parameter : unit -> (pk_uri, 'a) Tezos_clic.parameter
+val pk_uri_parameter : unit -> (pk_uri, 'a) Mavryk_clic.parameter
 
 val pk_uri_param :
   ?name:string ->
   ?desc:string ->
-  ('a, 'b) Tezos_clic.params ->
-  (pk_uri -> 'a, 'b) Tezos_clic.params
+  ('a, 'b) Mavryk_clic.params ->
+  (pk_uri -> 'a, 'b) Mavryk_clic.params
 
-val sk_uri_parameter : unit -> (sk_uri, 'a) Tezos_clic.parameter
+val sk_uri_parameter : unit -> (sk_uri, 'a) Mavryk_clic.parameter
 
 val sk_uri_param :
   ?name:string ->
   ?desc:string ->
-  ('a, 'b) Tezos_clic.params ->
-  (sk_uri -> 'a, 'b) Tezos_clic.params
+  ('a, 'b) Mavryk_clic.params ->
+  (sk_uri -> 'a, 'b) Mavryk_clic.params
 
 val aggregate_sk_uri_parameter :
-  unit -> (aggregate_sk_uri, 'a) Tezos_clic.parameter
+  unit -> (aggregate_sk_uri, 'a) Mavryk_clic.parameter
 
 val aggregate_sk_uri_param :
   ?name:string ->
   ?desc:string ->
-  ('a, 'b) Tezos_clic.params ->
-  (aggregate_sk_uri -> 'a, 'b) Tezos_clic.params
+  ('a, 'b) Mavryk_clic.params ->
+  (aggregate_sk_uri -> 'a, 'b) Mavryk_clic.params
 
 type error += Unregistered_key_scheme of string
 
@@ -71,7 +71,7 @@ type sapling_key = {
   (* zip32 derivation path *)
   path : int32 list;
   (* index of the last issued address *)
-  address_index : Tezos_sapling.Core.Client.Viewing_key.index;
+  address_index : Mavryk_sapling.Core.Client.Viewing_key.index;
 }
 
 module Sapling_key : Client_aliases.Alias with type t = sapling_key
@@ -83,30 +83,30 @@ module Sapling_key : Client_aliases.Alias with type t = sapling_key
    standard signature (i.e. [Public_key], [Public_key_hash], and [Secret_key]).
 
     On possible refactor would be to move the alias definition in
-   [Tezos_crypto.Aggregate_signature] (resp. [Tezos_crypto.Signature]).
+   [Mavryk_crypto.Aggregate_signature] (resp. [Mavryk_crypto.Signature]).
 
     See [Client_aliases] for more information about Aliases.*)
 module Aggregate_alias : sig
   module Public_key_hash :
     Client_aliases.Alias
-      with type t = Tezos_crypto.Aggregate_signature.Public_key_hash.t
+      with type t = Mavryk_crypto.Aggregate_signature.Public_key_hash.t
 
   module Public_key :
     Client_aliases.Alias
       with type t =
-        aggregate_pk_uri * Tezos_crypto.Aggregate_signature.Public_key.t option
+        aggregate_pk_uri * Mavryk_crypto.Aggregate_signature.Public_key.t option
 
   module Secret_key : Client_aliases.Alias with type t = aggregate_sk_uri
 end
 
 module Aggregate_type : sig
-  type public_key_hash = Tezos_crypto.Aggregate_signature.Public_key_hash.t
+  type public_key_hash = Mavryk_crypto.Aggregate_signature.Public_key_hash.t
 
-  type public_key = Tezos_crypto.Aggregate_signature.Public_key.t
+  type public_key = Mavryk_crypto.Aggregate_signature.Public_key.t
 
-  type secret_key = Tezos_crypto.Aggregate_signature.Secret_key.t
+  type secret_key = Mavryk_crypto.Aggregate_signature.Secret_key.t
 
-  type signature = Tezos_crypto.Aggregate_signature.t
+  type signature = Mavryk_crypto.Aggregate_signature.t
 
   type pk_uri = aggregate_pk_uri
 
@@ -172,32 +172,32 @@ module type AGGREGATE_SIGNER = sig
   include
     COMMON_SIGNER
       with type public_key_hash =
-        Tezos_crypto.Aggregate_signature.Public_key_hash.t
-       and type public_key = Tezos_crypto.Aggregate_signature.Public_key.t
-       and type secret_key = Tezos_crypto.Aggregate_signature.Secret_key.t
+        Mavryk_crypto.Aggregate_signature.Public_key_hash.t
+       and type public_key = Mavryk_crypto.Aggregate_signature.Public_key.t
+       and type secret_key = Mavryk_crypto.Aggregate_signature.Secret_key.t
        and type pk_uri = aggregate_pk_uri
        and type sk_uri = aggregate_sk_uri
 
   val sign :
     aggregate_sk_uri ->
     Bytes.t ->
-    Tezos_crypto.Aggregate_signature.t tzresult Lwt.t
+    Mavryk_crypto.Aggregate_signature.t tzresult Lwt.t
 end
 
 module type SIGNER = sig
   include
     COMMON_SIGNER
-      with type public_key_hash = Tezos_crypto.Signature.Public_key_hash.t
-       and type public_key = Tezos_crypto.Signature.Public_key.t
-       and type secret_key = Tezos_crypto.Signature.Secret_key.t
-       and type signature = Tezos_crypto.Signature.t
+      with type public_key_hash = Mavryk_crypto.Signature.Public_key_hash.t
+       and type public_key = Mavryk_crypto.Signature.Public_key.t
+       and type secret_key = Mavryk_crypto.Signature.Secret_key.t
+       and type signature = Mavryk_crypto.Signature.t
        and type pk_uri = pk_uri
        and type sk_uri = sk_uri
 
   (** [sign ?watermark sk data] is signature obtained by signing [data] with
         [sk]. *)
   val sign :
-    ?watermark:Tezos_crypto.Signature.watermark ->
+    ?watermark:Mavryk_crypto.Signature.watermark ->
     sk_uri ->
     Bytes.t ->
     signature tzresult Lwt.t
@@ -234,18 +234,18 @@ val aggregate_neuterize : aggregate_sk_uri -> aggregate_pk_uri tzresult Lwt.t
 val register_aggregate_key :
   #Client_context.wallet ->
   ?force:bool ->
-  Tezos_crypto.Aggregate_signature.Public_key_hash.t
+  Mavryk_crypto.Aggregate_signature.Public_key_hash.t
   * aggregate_pk_uri
   * aggregate_sk_uri ->
-  ?public_key:Tezos_crypto.Aggregate_signature.Public_key.t ->
+  ?public_key:Mavryk_crypto.Aggregate_signature.Public_key.t ->
   string ->
   unit tzresult Lwt.t
 
 val list_aggregate_keys :
   #Client_context.wallet ->
   (string
-  * Tezos_crypto.Aggregate_signature.Public_key_hash.t
-  * Tezos_crypto.Aggregate_signature.Public_key.t option
+  * Mavryk_crypto.Aggregate_signature.Public_key_hash.t
+  * Mavryk_crypto.Aggregate_signature.Public_key.t option
   * aggregate_sk_uri option)
   list
   tzresult
@@ -254,16 +254,16 @@ val list_aggregate_keys :
 val import_aggregate_secret_key :
   io:Client_context.io_wallet ->
   aggregate_pk_uri ->
-  (Tezos_crypto.Aggregate_signature.Public_key_hash.t
-  * Tezos_crypto.Aggregate_signature.Public_key.t option)
+  (Mavryk_crypto.Aggregate_signature.Public_key_hash.t
+  * Mavryk_crypto.Aggregate_signature.Public_key.t option)
   tzresult
   Lwt.t
 
 val alias_aggregate_keys :
   #Client_context.wallet ->
   string ->
-  (Tezos_crypto.Aggregate_signature.Public_key_hash.t
-  * Tezos_crypto.Aggregate_signature.Public_key.t option
+  (Mavryk_crypto.Aggregate_signature.Public_key_hash.t
+  * Mavryk_crypto.Aggregate_signature.Public_key.t option
   * aggregate_sk_uri option)
   option
   tzresult
@@ -273,7 +273,7 @@ val aggregate_sign :
   #Client_context.wallet ->
   aggregate_sk_uri ->
   Bytes.t ->
-  Tezos_crypto.Aggregate_signature.t tzresult Lwt.t
+  Mavryk_crypto.Aggregate_signature.t tzresult Lwt.t
 
 module type S = sig
   type public_key_hash
@@ -387,33 +387,33 @@ module type S = sig
     #Client_context.wallet ->
     (string * public_key_hash * public_key * sk_uri) list tzresult Lwt.t
 
-  val force_switch : unit -> (bool, 'ctx) Tezos_clic.arg
+  val force_switch : unit -> (bool, 'ctx) Mavryk_clic.arg
 end
 
 module V0 :
   S
-    with type public_key_hash := Tezos_crypto.Signature.V0.Public_key_hash.t
-     and type public_key := Tezos_crypto.Signature.V0.Public_key.t
-     and type secret_key := Tezos_crypto.Signature.V0.Secret_key.t
-     and type watermark := Tezos_crypto.Signature.V0.watermark
-     and type signature := Tezos_crypto.Signature.V0.t
+    with type public_key_hash := Mavryk_crypto.Signature.V0.Public_key_hash.t
+     and type public_key := Mavryk_crypto.Signature.V0.Public_key.t
+     and type secret_key := Mavryk_crypto.Signature.V0.Secret_key.t
+     and type watermark := Mavryk_crypto.Signature.V0.watermark
+     and type signature := Mavryk_crypto.Signature.V0.t
 
 module V1 :
   S
-    with type public_key_hash := Tezos_crypto.Signature.V1.Public_key_hash.t
-     and type public_key := Tezos_crypto.Signature.V1.Public_key.t
-     and type secret_key := Tezos_crypto.Signature.V1.Secret_key.t
-     and type watermark := Tezos_crypto.Signature.V1.watermark
-     and type signature := Tezos_crypto.Signature.V1.t
+    with type public_key_hash := Mavryk_crypto.Signature.V1.Public_key_hash.t
+     and type public_key := Mavryk_crypto.Signature.V1.Public_key.t
+     and type secret_key := Mavryk_crypto.Signature.V1.Secret_key.t
+     and type watermark := Mavryk_crypto.Signature.V1.watermark
+     and type signature := Mavryk_crypto.Signature.V1.t
 
 module V_latest :
   S
     with type public_key_hash :=
-      Tezos_crypto.Signature.V_latest.Public_key_hash.t
-     and type public_key := Tezos_crypto.Signature.V_latest.Public_key.t
-     and type secret_key := Tezos_crypto.Signature.V_latest.Secret_key.t
-     and type watermark := Tezos_crypto.Signature.V_latest.watermark
-     and type signature := Tezos_crypto.Signature.V_latest.t
+      Mavryk_crypto.Signature.V_latest.Public_key_hash.t
+     and type public_key := Mavryk_crypto.Signature.V_latest.Public_key.t
+     and type secret_key := Mavryk_crypto.Signature.V_latest.Secret_key.t
+     and type watermark := Mavryk_crypto.Signature.V_latest.watermark
+     and type signature := Mavryk_crypto.Signature.V_latest.t
 
 include module type of V_latest
 

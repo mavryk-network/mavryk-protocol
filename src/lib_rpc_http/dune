@@ -2,66 +2,66 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_rpc_http)
- (public_name octez-libs.rpc-http)
+ (name mavryk_rpc_http)
+ (public_name mavkit-libs.rpc-http)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.rpc
+  mavkit-libs.base
+  mavkit-libs.rpc
   resto-cohttp
   uri)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives)
+  -open Mavryk_base.TzPervasives)
  (modules RPC_client_errors media_type))
 
 (library
- (name tezos_rpc_http_client)
- (public_name octez-libs.rpc-http-client)
+ (name mavryk_rpc_http_client)
+ (public_name mavkit-libs.rpc-http-client)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   resto-cohttp-client
-  octez-libs.rpc
-  octez-libs.rpc-http)
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_rpc_http)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_rpc_http)
  (modules RPC_client))
 
 (library
- (name tezos_rpc_http_client_unix)
- (public_name octez-libs.rpc-http-client-unix)
+ (name mavryk_rpc_http_client_unix)
+ (public_name mavkit-libs.rpc-http-client-unix)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib-unix
-  octez-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base
   cohttp-lwt-unix
   resto-cohttp-client
-  octez-libs.rpc
-  octez-libs.rpc-http-client)
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http-client)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_rpc_http_client)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_rpc_http_client)
  (modules RPC_client_unix))
 
 (library
- (name tezos_rpc_http_server)
- (public_name octez-libs.rpc-http-server)
+ (name mavryk_rpc_http_server)
+ (public_name mavkit-libs.rpc-http-server)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
   cohttp-lwt-unix
   resto-cohttp-server
   resto-acl
-  octez-libs.rpc
-  octez-libs.rpc-http)
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_rpc_http)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_rpc_http)
  (modules RPC_server RPC_middleware))

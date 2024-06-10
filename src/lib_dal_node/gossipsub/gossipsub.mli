@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** This module exposes the instantiations of the Gossipsub and Octez-p2p
+(** This module exposes the instantiations of the Gossipsub and Mavkit-p2p
     libraries to be used by the DAL node to connect to and exchange data with
     peers. *)
 
@@ -41,7 +41,6 @@ module Worker : sig
        and type GS.Span.t = Types.Span.t
        and type GS.Time.t = Types.Time.t
        and type 'a Monad.t = 'a Lwt.t
-       and type Point.t = Types.Point.t
 
   module Default_parameters : module type of Gs_default_parameters
 
@@ -53,7 +52,6 @@ module Worker : sig
        and type GS.Peer.t = Types.Peer.t
        and type GS.Span.t = Types.Span.t
        and type GS.Time.t = Types.Time.t
-       and type Point.t = Types.Point.t
 
   module Logging : sig
     val event : event -> unit Monad.t
@@ -73,7 +71,7 @@ module Worker : sig
 end
 
 (** The transport layer module exposes the needed primitives, interface and
-    default parameters for the instantiation of the Octez-p2p library. *)
+    default parameters for the instantiation of the Mavkit-p2p library. *)
 module Transport_layer : sig
   module Interface : module type of Transport_layer_interface
 

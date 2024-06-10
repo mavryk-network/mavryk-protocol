@@ -1,4 +1,4 @@
-type t = Tezos_tree_encoding.wrapped_tree option
+type t = Mavryk_tree_encoding.wrapped_tree option
 
 exception Durable_empty
 

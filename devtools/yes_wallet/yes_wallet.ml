@@ -27,15 +27,14 @@
 type error = Overwrite_forbiden of string | File_not_found of string
 
 (* We need to exit Lwt + tzResult context from Yes_wallet. *)
-let run_load_bakers_public_keys ?staking_share_opt ?network_opt base_dir
+let run_load_mainnet_bakers_public_keys ?staking_share_opt base_dir
     ~active_bakers_only alias_pkh_pk_list =
   let open Yes_wallet_lib in
-  let open Tezos_error_monad in
+  let open Mavryk_error_monad in
   match
     Lwt_main.run
-      (load_bakers_public_keys
+      (load_mainnet_bakers_public_keys
          ?staking_share_opt
-         ?network_opt
          base_dir
          ~active_bakers_only
          alias_pkh_pk_list)
@@ -45,15 +44,14 @@ let run_load_bakers_public_keys ?staking_share_opt ?network_opt base_dir
       Format.eprintf "error:@.%a@." Error_monad.pp_print_trace trace ;
       exit 1
 
-let run_build_yes_wallet ?staking_share_opt ?network_opt base_dir
-    ~active_bakers_only ~aliases =
+let run_build_yes_wallet ?staking_share_opt base_dir ~active_bakers_only
+    ~aliases =
   let open Yes_wallet_lib in
-  let open Tezos_error_monad in
+  let open Mavryk_error_monad in
   match
     Lwt_main.run
       (build_yes_wallet
          ?staking_share_opt
-         ?network_opt
          base_dir
          ~active_bakers_only
          ~aliases)
@@ -161,11 +159,6 @@ let force_opt_name = "--force"
 
 let staking_share_opt_name = "--staking-share"
 
-let network_opt_name = "--network"
-
-let supported_network =
-  List.map fst Octez_node_config.Config_file.builtin_blockchain_networks
-
 let force = ref false
 
 let confirm_rewrite wallet =
@@ -186,14 +179,12 @@ let usage () =
      @[<v>@[<v 4>> convert wallet <wallet-dir> inplace@,\
      same as above but overwrite the file in the directory <wallet-dir>@]@,\
      @[<v 4>> create from context <base_dir> in <yes_wallet_dir> [%s] [%s \
-     <NUM>] [%s <%a>]@,\
+     <NUM>]@,\
      creates a yes-wallet with all delegates in the head block of the context \
      in <base_dir> and store it in <yes_wallet_dir>@,\
      if %s is used the deactivated bakers are filtered out@,\
      if %s <NUM> is used, the first largest bakers that have an accumulated \
-     stake of at least <NUM> percent of the total stake are kept@,\
-     if %s <%a> is used the store is opened using the right genesis parameter \
-     (default is mainnet) @]@]@,\
+     stake of at least <NUM> percent of the total stake are kept@]@]@,\
      @[<v>@[<v 4>> dump staking balances from <base_dir> in <csv_file>@,\
      saves the staking balances of all delegates in the target csv file@]@]@,\
      @[<v>if %s <FILE> is used, it will input aliases from an .json file.See \
@@ -201,20 +192,8 @@ let usage () =
      is used existing files will be overwritten@]@."
     active_bakers_only_opt_name
     staking_share_opt_name
-    network_opt_name
-    Format.(
-      pp_print_list
-        ~pp_sep:(fun ppf () -> pp_print_string ppf "|")
-        pp_print_string)
-    supported_network
     active_bakers_only_opt_name
     staking_share_opt_name
-    network_opt_name
-    Format.(
-      pp_print_list
-        ~pp_sep:(fun ppf () -> pp_print_string ppf "|")
-        pp_print_string)
-    supported_network
     alias_file_opt_name
     force_opt_name
 
@@ -228,15 +207,6 @@ let () =
           let percentage = Int64.of_string percentage in
           assert (0L < percentage && percentage <= 100L) ;
           Some percentage
-      | _ :: argv' -> aux argv'
-    in
-    aux argv
-  in
-  let network_opt =
-    let rec aux argv =
-      match argv with
-      | [] -> None
-      | str :: net :: _ when str = network_opt_name -> Some net
       | _ :: argv' -> aux argv'
     in
     aux argv
@@ -265,8 +235,7 @@ let () =
         || Str.string_match (Str.regexp "[0-9]+") arg 0
         (* FIME this is an uggly hack, but hey -lets' force alias files
            to have a .json extension.*)
-        || String.ends_with ~suffix:alias_file_extension arg
-        || List.mem (String.lowercase_ascii arg) supported_network)
+        || String.ends_with ~suffix:alias_file_extension arg)
       argv
   in
   let active_bakers_only =
@@ -286,10 +255,6 @@ let () =
       | opt :: file :: t
         when opt = alias_file_opt_name
              && String.ends_with ~suffix:alias_file_extension file ->
-          filter t
-      | opt :: net :: t
-        when opt = network_opt_name
-             && List.mem (String.lowercase_ascii net) supported_network ->
           filter t
       | h :: t -> h :: filter t
     in
@@ -319,7 +284,6 @@ let () =
         let yes_alias_list =
           run_build_yes_wallet
             ~staking_share_opt
-            ?network_opt
             base_dir
             ~active_bakers_only
             ~aliases
@@ -346,9 +310,8 @@ let () =
           base_dir
   | [_; "dump"; "staking"; "balances"; "from"; base_dir; "in"; csv_file] ->
       let alias_pkh_pk_list =
-        run_load_bakers_public_keys
+        run_load_mainnet_bakers_public_keys
           ~staking_share_opt
-          ?network_opt
           base_dir
           ~active_bakers_only
           aliases

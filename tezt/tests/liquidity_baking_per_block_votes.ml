@@ -108,7 +108,6 @@ let test_all_per_block_votes =
     ~tags:["liquidity"; "baking"; "votes"]
     ~supports:
       (Protocol.Between_protocols (Protocol.number Alpha, Protocol.number Alpha))
-    ~uses:(fun protocol -> [Protocol.baker protocol])
   @@ fun protocol ->
   let ( >|= ) = Lwt.( >|= ) in
   let error_prefix = "client." ^ Protocol.encoding_prefix protocol ^ "." in

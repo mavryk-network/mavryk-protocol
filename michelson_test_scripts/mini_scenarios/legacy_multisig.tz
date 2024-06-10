@@ -3,7 +3,7 @@ parameter (pair
                   (nat %counter) # counter, used to prevent replay attacks
                   (or :action    # payload to sign, represents the requested action
                      (pair :transfer    # transfer tokens
-                        (mutez %amount) # amount to transfer
+                        (mumav %amount) # amount to transfer
                         (contract %dest unit)) # destination to transfer to
                      (or
                         (option %delegate key_hash) # change the delegate to this address

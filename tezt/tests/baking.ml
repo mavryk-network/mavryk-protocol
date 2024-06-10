@@ -33,8 +33,8 @@
 (* ------------------------------------------------------------------------- *)
 (* Typedefs *)
 
-open Tezos_crypto
-open Tezos_crypto.Hashed
+open Mavryk_crypto
+open Mavryk_crypto.Hashed
 
 type operation = {shell_header : branch; protocol_data : protocol_data}
 
@@ -139,7 +139,7 @@ let unsigned_operation_encoding : operation Data_encoding.t =
 (* Mempool-related encodings *)
 
 (* This encoding is a protocol-independent version of
-   [Tezos_shell_services.Block_services.Mempool.encoding] *)
+   [Mavryk_shell_services.Block_services.Mempool.encoding] *)
 
 let mempool_operation_encoding : mempool_operation Data_encoding.t =
   let open Data_encoding in
@@ -237,11 +237,11 @@ let mempool_from_list_of_ops client protocol operations =
         in
         let shell_op =
           {
-            Tezos_base.Operation.shell = {branch = op.shell_header.branch};
+            Mavryk_base.Operation.shell = {branch = op.shell_header.branch};
             proto = binary_proto_data;
           }
         in
-        let hash = Tezos_base.Operation.hash shell_op in
+        let hash = Mavryk_base.Operation.hash shell_op in
         loop tl ((hash, mempool_op) :: acc)
   in
   loop operations []
@@ -250,14 +250,14 @@ let mempool_from_list_of_ops client protocol operations =
 
 let fees = [|1_000; 2_000; 3_000|]
 
-type fee = Fee_auto | Fee_mutez of int [@@warning "-37"]
+type fee = Fee_auto | Fee_mumav of int [@@warning "-37"]
 
 let sample_next_transfer_for state ~fee ~branch ~account =
   let receiver = sample_bootstrap () in
   let fee =
     match fee with
     | Fee_auto -> fees.(Random.int (Array.length fees))
-    | Fee_mutez fee -> fee
+    | Fee_mumav fee -> fee
   in
   let amount = 1 + Random.int 500 in
   return
@@ -282,16 +282,16 @@ let sample_next_transfer_for state ~fee ~branch ~account =
         };
     }
 
-let mutez_of_string s = Tez.of_mutez_int @@ int_of_string s
+let mumav_of_string s = Tez.of_mumav_int @@ int_of_string s
 
 let bake_with_mempool ?protocol node client mempool =
   let* () =
     Lwt_list.iter_s
       (fun op ->
         let t = Stdlib.List.hd op.protocol_data.contents in
-        let fee = mutez_of_string t.fee
+        let fee = mumav_of_string t.fee
         and gas_limit = int_of_string t.gas_limit
-        and amount = mutez_of_string t.amount
+        and amount = mumav_of_string t.amount
         and giver = t.source
         and receiver = t.destination
         and endpoint = Client.Node node
@@ -384,19 +384,19 @@ let assert_block_is_well_baked block expected_number_manager_op =
 let random_permutation list =
   assert (list <> []) ;
   let rng = Random.State.make_self_init () in
-  Tezos_base.TzPervasives.List.shuffle ~rng list
+  Mavryk_base.TzPervasives.List.shuffle ~rng list
 
 let single_baker_increasing_fees state ~account =
   let* branch = get_current_head_hash state in
   let fees = Array.of_list [1_000; 2_000; 3_000] in
   let* op1 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(0)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(0)) ~branch ~account
   in
   let* _op2 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(1)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(1)) ~branch ~account
   in
   let* _op3 =
-    sample_next_transfer_for state ~fee:(Fee_mutez fees.(2)) ~branch ~account
+    sample_next_transfer_for state ~fee:(Fee_mumav fees.(2)) ~branch ~account
   in
   Lwt.return @@ [op1; _op2; _op3]
 
@@ -407,7 +407,7 @@ let distinct_bakers_increasing_fees state sources =
   Lwt_list.map_s
     (fun (account, fee) ->
       let* op =
-        sample_next_transfer_for state ~fee:(Fee_mutez fee) ~branch ~account
+        sample_next_transfer_for state ~fee:(Fee_mumav fee) ~branch ~account
       in
       return op)
     (List.combine accounts fees)
@@ -695,7 +695,7 @@ let test_operation_pool_ordering
   let check_hashes l1 l2 =
     let len = List.length l1 in
     let should_be_in =
-      Tezos_base__TzPervasives.List.take_n len l2 |> List.map JSON.encode
+      Mavryk_base__TzPervasives.List.take_n len l2 |> List.map JSON.encode
     in
     List.iter
       (fun oph ->
@@ -716,14 +716,14 @@ let test_operation_pool_ordering
     block with the given [minimal_timestamp] flag. *)
 let baking_with_given_minimal_timestamp ~minimal_timestamp =
   Protocol.register_test
-    ~supports:Protocol.(From_protocol (number Nairobi))
+    ~supports:Protocol.(From_protocol (number Atlas))
     ~__FILE__
     ~title:(sf "Baking minimal timestamp (%b)" minimal_timestamp)
     ~tags:["baking"; "timestamp"]
   @@ fun protocol ->
   let* _node, client =
     Client.init_with_protocol
-      ~timestamp:(Ago (Tezos_base.Time.System.Span.of_seconds_exn 60.))
+      ~timestamp:(Ago (Mavryk_base.Time.System.Span.of_seconds_exn 60.))
       ~nodes_args:[Synchronisation_threshold 0]
       ~protocol
       `Client

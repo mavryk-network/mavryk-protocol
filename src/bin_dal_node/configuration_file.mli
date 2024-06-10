@@ -26,27 +26,21 @@
 type neighbor = {addr : string; port : int}
 
 type t = {
-  data_dir : string;  (** The path to the DAL node data directory. *)
-  rpc_addr : P2p_point.Id.t;
-      (** The TCP address the DAL node's RPC server listens to. *)
-  neighbors : neighbor list;
-      (** List of neighbors to monitor and download shards from via RPCs. *)
+  data_dir : string;  (** The path to the DAL node data directory *)
+  rpc_addr : P2p_point.Id.t;  (** The address the DAL node listens to *)
+  neighbors : neighbor list;  (** List of neighbors to reach within the DAL *)
   listen_addr : P2p_point.Id.t;  (** The TCP address bound by the DAL node. *)
   public_addr : P2p_point.Id.t;
-      (** The TCP address at which this instance can be reached. *)
-  peers : string list;
-      (** The list of P2P peers to connect to at startup, in addition to the
-          list given by L1 node's configuration parameter
-          dal_config.bootstrap_peers. *)
-  expected_pow : float;
-      (** The expected PoW difficulty level for the peers' identity. *)
+      (** The TCP address and port at which this instance can be reached. *)
+  peers : string list;  (** A list of P2P peers to connect to at startup. *)
+  expected_pow : float;  (** Expected P2P identity's PoW. *)
   network_name : string;
       (** A string that identifies the network's name. E.g. dal-sandbox. *)
-  endpoint : Uri.t;  (** The endpoint of a Tezos L1 node. *)
+  endpoint : Uri.t;  (** Endpoint of a Mavryk node *)
   metrics_addr : P2p_point.Id.t;
-      (** The TCP address of the node's server used to export metrics. *)
+      (** The metrics server used to export metrics *)
   profiles : Types.profiles;
-      (** The profiles determining the topics of interest. *)
+      (** Profile allowing to know the topics of interest. *)
 }
 
 (** [default] is the default configuration. *)

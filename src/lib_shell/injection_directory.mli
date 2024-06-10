@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val build_rpc_directory : Validator.t -> unit Tezos_rpc.Directory.t
+val build_rpc_directory : Validator.t -> unit Mavryk_rpc.Directory.t

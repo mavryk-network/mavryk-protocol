@@ -6,14 +6,14 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-l2-libs.wasmer
-  octez-alcotezt)
+  mavkit-l2-libs.wasmer
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_wasmer))
 
 (executable
@@ -26,7 +26,7 @@
 
 (rule
  (alias runtest)
- (package octez-l2-libs)
+ (package mavkit-l2-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

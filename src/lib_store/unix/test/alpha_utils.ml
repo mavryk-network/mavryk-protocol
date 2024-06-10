@@ -24,11 +24,11 @@
 (*****************************************************************************)
 
 module Assert = Assert
-open Tezos_protocol_alpha
+open Mavryk_protocol_alpha
 open Protocol
 open Alpha_context
-open Tezos_context
-open Tezos_shell_context
+open Mavryk_context
+open Mavryk_shell_context
 
 module Proto_nonce = struct
   module Table = Hashtbl.Make (struct
@@ -148,13 +148,13 @@ let make_rpc_context ~chain_id ctxt block =
         : Block_header.shell_header) =
     header
   in
-  let timestamp = Time.System.to_protocol (Tezos_base.Time.System.now ()) in
+  let timestamp = Time.System.to_protocol (Mavryk_base.Time.System.now ()) in
   (* We need to forge a predecessor hash to pass it to [value_of_key].
      This initial context is used for RPC, hence this piece of
      information is not important and does not have to be meaningful
   *)
   let predecessor =
-    Tezos_base.Block_header.hash
+    Mavryk_base.Block_header.hash
       {shell = header; protocol_data = Store.Block.protocol_data block}
   in
   let*! value_of_key =
@@ -168,16 +168,16 @@ let make_rpc_context ~chain_id ctxt block =
       ~timestamp
   in
   let*? value_of_key =
-    Tezos_protocol_alpha.Environment.wrap_tzresult value_of_key
+    Mavryk_protocol_alpha.Environment.wrap_tzresult value_of_key
   in
   let* ctxt =
-    Tezos_protocol_environment.Context.load_cache
+    Mavryk_protocol_environment.Context.load_cache
       (Store.Block.hash block)
       ctxt
       `Lazy
       (fun key ->
         let*! value = value_of_key key in
-        let*? value = Tezos_protocol_alpha.Environment.wrap_tzresult value in
+        let*? value = Mavryk_protocol_alpha.Environment.wrap_tzresult value in
         return value)
   in
   return
@@ -280,7 +280,7 @@ module Forge = struct
 
   let make_shell ~level ~predecessor ~timestamp ~fitness ~operations_hash
       ~proto_level ~pred_resulting_context_hash =
-    Tezos_base.Block_header.
+    Mavryk_base.Block_header.
       {
         level;
         predecessor;
@@ -397,24 +397,24 @@ let check_constants_consistency constants =
 let default_accounts =
   let initial_accounts =
     [
-      ( "tz1Wi61aZXxBDTa3brfPfYgMawojnAFTjy8u",
+      ( "mv1K5ZKAsuFXnjMGkBEEuNNNjxfiLYhG9Rjb",
         "edpkvMmiFiAs9Uj9a53dZVPGNJDxMDkAcsEAyVG6dau7GF9vfGWGEY",
         "edsk3UqeiQWXX7NFEY1wUs6J1t2ez5aQ3hEWdqX5Jr5edZiGLW8nZr" );
-      ( "tz1Y5JfsJXF4ip1RUQHCgaMbqHAzMDWaiJFf",
+      ( "mv1LSmyTctYRJ5necir3vQ3czJ2xubxY78Hv",
         "edpktnweMhc2suERAJVCLQwfbJovHsdMKeHC7GqaGQXhvX7SpDRtTc",
         "edsk4Z5G4QFmVc4iHbpyp35E6272gWhTvDeerpivH78oUX1LVKZTGb" );
-      ( "tz1dcv5NSS2Fbs2dW9pRDhi6KJTBAXqiJKBP",
+      ( "mv1RzPNxkoKcB8oreUPGTXQ7UKK9ivMnEkbC",
         "edpkv7dXhM2emnJouMb1phgvGW6fMGHjJjmo1ntyjkqGxARbdgk4T6",
         "edsk2hP48izVsHsXtqguwiNt5wq1qXdwLyxFQC8Qc72KuyKS9q88XS" );
-      ( "tz1YEjis1GFsL1rKSyLtmSKQypVp1sniosVt",
+      ( "mv1LcD2TKdZDuHdYbHuk1G1S8qMnaGHrnt5o",
         "edpkvYDUiKiMnCNSG4riBy2WSLaLEyAo763KhPFXtuBw2PMPzvTY93",
         "edsk3Dn8hFgHKxvjK89tMnU2fCrR6AxSprTM8cR9WaBZcysEa2uird" );
-      ( "tz1c7arDAi3tDzAXEmYHprwuNsJiFBQJKtjc",
+      ( "mv1QV49oV5MEoFwkP6794gdvXtAgoZroizWT",
         "edpku6BBVDhWUBCrcVEYjjAdizR1NQGF24v5bAEL34A71oLr9QqzNo",
         "edsk2q6rzFB35micz8ZauYcUMUFyF9rVPvP3PQXZyuYPSzuEYbSMkG" );
     ]
   in
-  let default_amount = Tez.of_mutez_exn 4_000_000_000_000L in
+  let default_amount = Tez.of_mumav_exn 4_000_000_000_000L in
   let open Account in
   let to_account (pkh, pk, sk) =
     {
@@ -430,7 +430,7 @@ let default_accounts =
     accounts
 
 let default_genesis_parameters =
-  let open Tezos_protocol_alpha_parameters in
+  let open Mavryk_protocol_alpha_parameters in
   {
     Default_parameters.(
       parameters_of_constants
@@ -447,7 +447,7 @@ let patch_context ctxt ~json =
   let open Lwt_syntax in
   let shell =
     {
-      Tezos_base.Block_header.level = 0l;
+      Mavryk_base.Block_header.level = 0l;
       proto_level = 0;
       predecessor = Test_utils.genesis.block;
       timestamp = Test_utils.genesis.time;
@@ -557,7 +557,7 @@ let apply pred_resulting_ctxt chain_id ~policy ?(operations = empty_operations)
       ~timestamp:shell.timestamp
   in
   let* pred_ctxt =
-    Tezos_protocol_environment.Context.load_cache
+    Mavryk_protocol_environment.Context.load_cache
       (Store.Block.hash pred)
       ctxt
       `Lazy
@@ -626,7 +626,7 @@ let apply pred_resulting_ctxt chain_id ~policy ?(operations = empty_operations)
     Some (Block_metadata_hash.hash_bytes [block_header_metadata])
   in
   let block_header =
-    {Tezos_base.Block_header.shell = header.shell; protocol_data}
+    {Mavryk_base.Block_header.shell = header.shell; protocol_data}
   in
   let operations_metadata_hashes =
     Some
@@ -682,14 +682,13 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
   in
   let validation_result =
     {
-      Tezos_validation.Block_validation.validation_store =
+      Mavryk_validation.Block_validation.validation_store =
         {
           resulting_context_hash;
           timestamp = block_header.shell.timestamp;
-          message = validation.Tezos_protocol_environment.message;
+          message = validation.Mavryk_protocol_environment.message;
           max_operations_ttl = validation.max_operations_ttl;
-          last_finalized_block_level = validation.last_finalized_block_level;
-          last_preserved_block_level = validation.last_preserved_block_level;
+          last_allowed_fork_level = validation.last_allowed_fork_level;
         };
       block_metadata = (block_header_metadata, block_metadata_hash);
       ops_metadata;
@@ -700,7 +699,7 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
     List.map
       (List.map (fun op ->
            let op = Data_encoding.Binary.to_bytes_exn Operation.encoding op in
-           Data_encoding.Binary.of_bytes_exn Tezos_base.Operation.encoding op))
+           Data_encoding.Binary.of_bytes_exn Mavryk_base.Operation.encoding op))
       operations
   in
   let* o =
@@ -717,10 +716,6 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
         let*! () = Block_store.await_merging block_store in
         let* _ = Store.Chain.set_head chain_store b in
         let*! () = Block_store.await_merging block_store in
-        let context_index =
-          Store.context_index (Store.Chain.global_store chain_store)
-        in
-        let*! () = Context_ops.wait_gc_completion context_index in
         (match Block_store.get_merge_status block_store with
         | Merge_failed err -> Assert.fail_msg "%a" pp_print_trace err
         | Running | Not_running -> ()) ;
@@ -729,7 +724,7 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
         let* _ = Store.Chain.set_head chain_store b in
         return b
   | None ->
-      let h = Tezos_base.Block_header.hash block_header in
+      let h = Mavryk_base.Block_header.hash block_header in
       Format.eprintf "block %a already stored@." Block_hash.pp h ;
       Store.Block.read_block chain_store h
 

@@ -25,11 +25,11 @@
 
 type t = {
   network : string;
-      (** The url of the network, as passed by to the Octez node with the
+      (** The url of the network, as passed by to the Mavkit node with the
           [--network] command-line argument. Fetched from the configuration
           file. *)
   snapshot : string option;
-      (** The url of the snapshot to use to bootstrap the Octez
+      (** The url of the snapshot to use to bootstrap the Mavkit
           node. Fetched from the configuration file.
           The snapshot can be omitted, the node will bootstrap
           itself instead. *)

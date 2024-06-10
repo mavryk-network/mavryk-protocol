@@ -9,7 +9,7 @@
     state of the WASM PVM from [data_dir], that is the state of the WASM PVM
     for the given [block]. *)
 val dump_durable_storage :
-  block:Tezos_shell_services.Block_services.block ->
+  block:Mavryk_shell_services.Block_services.block ->
   data_dir:string ->
   file:string ->
   unit tzresult Lwt.t

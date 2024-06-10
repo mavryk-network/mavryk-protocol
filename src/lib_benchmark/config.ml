@@ -307,7 +307,7 @@ let merge_config_files ?(delete_src = false) ~(dst : string) ~(src : string) ()
 
 let edit_config ?(input = `Stdin) config_path namespace =
   let tmpfile =
-    Filename.(concat (get_temp_dir_name ()) "octez-snoop_config_edit")
+    Filename.(concat (get_temp_dir_name ()) "mavkit-snoop_config_edit")
   in
   let command e = Format.sprintf "%s %s" e tmpfile in
   let try_edit e =

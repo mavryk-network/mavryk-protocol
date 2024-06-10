@@ -24,18 +24,18 @@
 (*****************************************************************************)
 
 let group =
-  {Tezos_clic.name = "protocols"; title = "Commands for managing protocols"}
+  {Mavryk_clic.name = "protocols"; title = "Commands for managing protocols"}
 
 let proto_param ~name ~desc t =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc
-    (Tezos_clic.parameter (fun _ str ->
+    (Mavryk_clic.parameter (fun _ str ->
          Lwt.return (Protocol_hash.of_b58check str)))
     t
 
 let commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   let check_dir _ dn =
     if Sys.is_directory dn then return dn
@@ -68,7 +68,7 @@ let commands () =
         Lwt.catch
           (fun () ->
             let* _hash, proto =
-              Tezos_base_unix.Protocol_files.read_dir dirname
+              Mavryk_base_unix.Protocol_files.read_dir dirname
             in
             let*! injection_result =
               Shell_services.Injection.protocol cctxt proto
@@ -104,7 +104,7 @@ let commands () =
       (fun () ph (cctxt : #Client_context.full) ->
         let* proto = Shell_services.Protocol.contents cctxt ph in
         let* () =
-          Tezos_base_unix.Protocol_files.write_dir
+          Mavryk_base_unix.Protocol_files.write_dir
             (Protocol_hash.to_short_b58check ph)
             ~hash:ph
             proto

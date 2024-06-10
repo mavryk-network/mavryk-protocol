@@ -1,7 +1,7 @@
 [{
   "kind": "freezer",
   "category": "fees",
-  "delegate": "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
+  "delegate": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
   "cycle": 2147483647,
   "change": "1",
   "origin": "block"

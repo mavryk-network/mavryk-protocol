@@ -96,7 +96,7 @@ let tick_of_level (node_ctxt : _ Node_context.t) inbox_level =
 
 let build_commitment (module Plugin : Protocol_plugin_sig.S)
     (node_ctxt : _ Node_context.t)
-    (prev_commitment : Octez_smart_rollup.Commitment.Hash.t)
+    (prev_commitment : Mavkit_smart_rollup.Commitment.Hash.t)
     ~prev_commitment_level ~inbox_level ctxt =
   let open Lwt_result_syntax in
   let*! pvm_state = Context.PVMState.find ctxt in
@@ -120,7 +120,7 @@ let build_commitment (module Plugin : Protocol_plugin_sig.S)
     else Ok ()
   in
   return
-    Octez_smart_rollup.Commitment.
+    Mavkit_smart_rollup.Commitment.
       {
         predecessor = prev_commitment;
         inbox_level;
@@ -139,7 +139,7 @@ let genesis_commitment (module Plugin : Protocol_plugin_sig.S)
   in
   let*! compressed_state = Plugin.Pvm.state_hash node_ctxt.kind pvm_state in
   let commitment =
-    Octez_smart_rollup.Commitment.
+    Mavkit_smart_rollup.Commitment.
       {
         predecessor = Hash.zero;
         inbox_level = node_ctxt.genesis_info.level;
@@ -150,10 +150,10 @@ let genesis_commitment (module Plugin : Protocol_plugin_sig.S)
   (* Ensure the initial state corresponds to the one of the rollup's in the
      protocol. A mismatch is possible if a wrong external boot sector was
      provided. *)
-  let commitment_hash = Octez_smart_rollup.Commitment.hash commitment in
+  let commitment_hash = Mavkit_smart_rollup.Commitment.hash commitment in
   let+ () =
     fail_unless
-      Octez_smart_rollup.Commitment.Hash.(
+      Mavkit_smart_rollup.Commitment.Hash.(
         commitment_hash = node_ctxt.genesis_info.commitment_hash)
       (Rollup_node_errors.Invalid_genesis_state
          {
@@ -194,7 +194,7 @@ let create_commitment_if_necessary plugin (node_ctxt : _ Node_context.t)
       in
       let*! () =
         Commitment_event.new_commitment
-          (Octez_smart_rollup.Commitment.hash commitment)
+          (Mavkit_smart_rollup.Commitment.hash commitment)
           commitment.inbox_level
       in
       return_some commitment
@@ -279,7 +279,7 @@ let missing_commitments (node_ctxt : _ Node_context.t) =
       gather [] commitment
 
 let publish_commitment (node_ctxt : _ Node_context.t)
-    (commitment : Octez_smart_rollup.Commitment.t) =
+    (commitment : Mavkit_smart_rollup.Commitment.t) =
   let open Lwt_result_syntax in
   let publish_operation =
     L1_operation.Publish
@@ -287,7 +287,7 @@ let publish_commitment (node_ctxt : _ Node_context.t)
   in
   let*! () =
     Commitment_event.publish_commitment
-      (Octez_smart_rollup.Commitment.hash commitment)
+      (Mavkit_smart_rollup.Commitment.hash commitment)
       commitment.inbox_level
   in
   let* _hash =
@@ -318,7 +318,7 @@ let on_publish_commitments (node_ctxt : state) =
   List.iter_es (publish_commitment node_ctxt) commitments
 
 let publish_single_commitment (node_ctxt : _ Node_context.t)
-    (commitment : Octez_smart_rollup.Commitment.t) =
+    (commitment : Mavkit_smart_rollup.Commitment.t) =
   let lcc = Reference.get node_ctxt.lcc in
   when_ (commitment.inbox_level > lcc.level) @@ fun () ->
   publish_commitment node_ctxt commitment

@@ -1,8 +1,7 @@
 {
   "infrastructure": {
     "tags": [
-      "binaries",
-      "infrastructure"
+      "binaries"
     ],
     "path_patterns": [
       "^devtools/yes_wallet"
@@ -17,31 +16,24 @@
       "protocol_table",
       "stresstest",
       "transaction",
-      "transfer",
-      "layer1"
+      "transfer"
     ],
     "path_patterns": [
       "^src/lib_requester",
       "^src/proto_.*/lib_protocol",
       "^src/proto_.*/lib_delegate",
-      "^devtools/yes_wallet",
-      "^tezt/tests/bootstrap.ml$",
-      "^tezt/tests/double_bake.ml$",
-      "^tezt/tests/precheck.ml$",
-      "^tezt/tests/replace_by_fees.ml$"
+      "^devtools/yes_wallet"
     ]
   },
   "tezos2": {
     "tags": [
       "dac",
       "dac_node",
-      "vdf",
-      "tezos2"
+      "vdf"
     ],
     "path_patterns": [
       "^src/lib_aplonk",
-      "^src/lib_distributed_plonk",
-      "^tezt/tests/injector_test.ml$"
+      "^src/lib_distributed_plonk"
     ]
   },
   "etherlink": {
@@ -50,11 +42,8 @@
       "sc_rollup",
       "rollup_node",
       "refutation",
-      "commitment",
-      "etherlink"
+      "commitment"
     ],
-    "path_patterns": [
-      "^tezt/tests/evm_rollup.ml$"
-    ]
+    "path_patterns": []
   }
 }

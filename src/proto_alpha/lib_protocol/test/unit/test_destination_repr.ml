@@ -65,7 +65,7 @@ let ( !! ) = function Ok x -> x | Error _ -> raise (Invalid_argument "( !! )")
 
 (* The following addresses have been extracted from TzKT. *)
 
-let null_address = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU"
+let null_address = "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5"
 
 let liquidity_baking_dex = "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
 
@@ -94,7 +94,6 @@ let assert_compat contract destination =
 (** [test_decoding_json_compat str] decodes [str] as both a [Destination_repr.t]
     and [Contract_repr.t], and checks the two are equal. *)
 let test_decoding_json_compat str () =
-  let open Lwt_result_syntax in
   let json =
     !!(Data_encoding.Json.from_string @@ Format.sprintf {|"%s"|} str)
   in
@@ -110,7 +109,6 @@ let test_decoding_json_compat str () =
     as a [Destination_repr.t]. The resulting destination should be
     equal to the initial contract. *)
 let test_encode_contract_decode_destination str () =
-  let open Lwt_result_syntax in
   let contract = !!(Contract_repr.of_b58check str) in
   let bytes = to_bytes_exn Contract_repr.encoding contract in
   let destination = of_bytes_exn Destination_repr.encoding bytes in
@@ -124,7 +122,6 @@ let test_encode_contract_decode_destination str () =
     it as a [Contract_repr.t]. The resulting contract should be equal
     to the initial destination. *)
 let test_encode_destination_decode_contract str () =
-  let open Lwt_result_syntax in
   let destination = !!(Destination_repr.of_b58check str) in
   let bytes = to_bytes_exn Destination_repr.encoding destination in
   let contract = of_bytes_exn Contract_repr.encoding bytes in
@@ -135,7 +132,6 @@ let test_encode_destination_decode_contract str () =
 
 let encoding_compat ~encode_contract ~decode_contract ~encode_destination
     ~decode_destination contract =
-  let open Lwt_result_syntax in
   let destination = dest contract in
 
   let encoded_contract = encode_contract contract in
@@ -174,7 +170,6 @@ let encoding_binary_compat contract =
     contract
 
 let test_contracts f () =
-  let open Lwt_result_syntax in
   List.iter (fun contract -> ignore (f contract)) contracts ;
 
   return_unit
@@ -184,13 +179,12 @@ let test_encoding_binary_compat = test_contracts encoding_binary_compat
 let test_encoding_json_compat = test_contracts encoding_json_compat
 
 let test_compare_destination () =
-  let open Lwt_result_syntax in
-  let tz1 = !!(Destination_repr.of_b58check null_address) in
+  let mv1 = !!(Destination_repr.of_b58check null_address) in
   let kt1 = !!(Destination_repr.of_b58check liquidity_baking_dex) in
   let scr1 = !!(Destination_repr.of_b58check sc_rollup_address) in
   let epx1 = !!(Destination_repr.of_b58check zk_rollup_address) in
 
-  assert (Destination_repr.(tz1 < kt1)) ;
+  assert (Destination_repr.(mv1 < kt1)) ;
   assert (Destination_repr.(kt1 < scr1)) ;
   assert (Destination_repr.(scr1 < epx1)) ;
 

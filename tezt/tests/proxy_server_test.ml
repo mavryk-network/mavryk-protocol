@@ -33,7 +33,7 @@
    Dependencies: tezt/tests/proxy.ml
 *)
 
-(** Creates a client that uses a [octez-proxy-server] as its endpoint. Also
+(** Creates a client that uses a [mavkit-proxy-server] as its endpoint. Also
     returns the node backing the proxy server, and the proxy server itself. *)
 let init ?nodes_args ?parameter_file ~protocol () =
   let* node, client =
@@ -52,9 +52,9 @@ let init ?nodes_args ?parameter_file ~protocol () =
    server will perform multiple requests of the form [/big_maps/index/4/...]
    in a sequence, and this handler will fail, because it checks
    that normalized requests occur only once. To see this in action,
-   execute this test in a terminal with TEZOS_LOG set as follows:
+   execute this test in a terminal with MAVRYK_LOG set as follows:
 
-   export TEZOS_LOG="*proxy_rpc*->debug; proxy_getter->debug; proxy_services->debug"
+   export MAVRYK_LOG="*proxy_rpc*->debug; proxy_getter->debug; proxy_services->debug"
 
    and look for log lines like these ones:
 
@@ -199,7 +199,7 @@ let test_equivalence =
     ~__FILE__
     ~title:"(Vanilla, proxy_server endpoint) Compare RPC get"
     ~tags:(compare_tags alt_mode)
-    ~uses:(fun _protocol -> [Constant.octez_proxy_server])
+    ~uses:(fun _protocol -> [Constant.mavkit_proxy_server])
   @@ fun protocol ->
   let* node, _, alternative = init ~protocol () in
   let vanilla = Client.create ~endpoint:(Node node) () in
@@ -212,7 +212,7 @@ let test_wrong_data_dir =
     ~__FILE__
     ~title:"proxy_server wrong data_dir"
     ~tags:["data_dir"]
-    ~uses:(fun _protocol -> [Constant.octez_proxy_server])
+    ~uses:(fun _protocol -> [Constant.mavkit_proxy_server])
   @@ fun protocol ->
   let* node, _client = Client.init_with_protocol `Client ~protocol () in
   let wrong_data_dir = Temp.dir "empty" in
@@ -233,14 +233,14 @@ let test_proxy_server_serve_unsupported =
     ~__FILE__
     ~title:"proxy_server serve unsupported curl"
     ~tags:["redirect"]
-    ~uses:(fun _protocol -> [Constant.octez_proxy_server])
+    ~uses:(fun _protocol -> [Constant.mavkit_proxy_server])
   @@ fun protocol ->
   let* node, _client = Client.init_with_protocol `Client ~protocol () in
   let* _ps = Proxy_server.init node in
   let p =
     sf
       "http://%s:%d/chains/main/blocks/head/header"
-      Constant.default_host
+      "localhost"
       (Proxy_server.rpc_port _ps)
   in
   let r = Process.spawn "curl" ["-v"; p] in
@@ -259,7 +259,7 @@ let test_multi_protocols =
     ~__FILE__
     ~title:"proxy_server multi protocols"
     ~tags:["multi_protocols"]
-    ~uses:(fun _protocol -> [Constant.octez_proxy_server])
+    ~uses:(fun _protocol -> [Constant.mavkit_proxy_server])
     ~supports:Has_predecessor
   @@ Protocol.with_predecessor
   @@ fun ~previous_protocol:from_protocol ~protocol:to_protocol ->
@@ -292,12 +292,12 @@ let test_multi_protocols =
       @@ RPC.get_chain_block_helper_attestation_rights ?block ()
     in
     check proto_attestation_rights ;
-    if Protocol.(number proto <= number Nairobi + 1) then (
+    if Protocol.(number proto <= number Atlas) then (
       let* proto_endorsing_rights =
         Client.RPC.call client
         @@ RPC.get_chain_block_helper_endorsing_rights ?block ()
         (* TODO: https://gitlab.com/tezos/tezos/-/issues/6227
-           This RPC helper should be removed once Oxford will be frozen. *)
+           This RPC helper should be removed once Atlas will be frozen. *)
       in
       check proto_endorsing_rights ;
       unit)
@@ -328,9 +328,9 @@ let register ~protocols =
     let mode_tags, uses =
       match mode with
       | `Node -> (["node"], [])
-      | `Proxy_server_rpc -> ([], [Constant.octez_proxy_server])
+      | `Proxy_server_rpc -> ([], [Constant.mavkit_proxy_server])
       | `Proxy_server_data_dir ->
-          (["proxy_server_data_dir"], [Constant.octez_proxy_server])
+          (["proxy_server_data_dir"], [Constant.mavkit_proxy_server])
     in
     Protocol.register_test
       ~__FILE__

@@ -10,7 +10,7 @@ parameter (or (ticket %receive nat) (pair %send (contract %destination (ticket n
 storage (pair (address %manager) (big_map %tickets (pair address nat) (ticket nat)));
 code
   {
-    AMOUNT; PUSH mutez 0; ASSERT_CMPEQ;
+    AMOUNT; PUSH mumav 0; ASSERT_CMPEQ;
 
     UNPAIR 3;
     IF_LEFT
@@ -50,7 +50,7 @@ code
         SWAP; DIG 3; PAIR; DUG 2;
 
         # Send the ticket
-        PUSH mutez 0;
+        PUSH mumav 0;
         SWAP;
         TRANSFER_TOKENS;
         NIL operation;

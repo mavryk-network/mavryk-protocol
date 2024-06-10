@@ -3,22 +3,31 @@ name = "risc-v-dummy"
 version = "0.0.0"
 edition = "2021"
 
-[dependencies.tezos_crypto_rs]
-version = "0.5.2"
+[target.'cfg(target_os = "hermit")'.dependencies.hermit]
+version = "0.7.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup]
+[dependencies.riscv-rt]
+version = "*"
+optional = true
+
+[dependencies.mavryk_crypto_rs]
+version = "0.5.2"
+default-features = false
+optional = true
+
+[dependencies.mavryk-smart-rollup-panic-hook]
+path = "../../kernel_sdk/panic-hook"
+version = "0.2.2"
+default-features = false
+
+[dependencies.mavryk-smart-rollup]
 path = "../../kernel_sdk/sdk"
 version = "0.2.2"
 default-features = false
-features = [
-  "debug_alloc",
-  "proto-alpha",
-  "panic-hook",
-  "data-encoding",
-  "alloc",
-  "experimental-host-in-memory-store",
-]
+features = ["debug_alloc", "proto-alpha-no-mock"]
 
-[dependencies.tezos-smart-rollup-constants]
-path = "../../kernel_sdk/constants"
+[features]
+default = ["bare-metal"]
+bare-metal = ["riscv-rt"]
+crypto = ["mavryk_crypto_rs"]

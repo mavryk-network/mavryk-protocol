@@ -6,27 +6,27 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.micheline
-  octez-protocol-alpha-libs.client
-  tezos-protocol-alpha.protocol
-  octez-libs.base-test-helpers
-  octez-libs.test-helpers
-  octez-alcotezt
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.client
+  mavryk-protocol-alpha.protocol
+  mavkit-libs.base-test-helpers
+  mavkit-libs.test-helpers
+  mavkit-alcotezt
   qcheck-alcotest)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_micheline
-  -open Tezos_client_alpha
-  -open Tezos_protocol_alpha
-  -open Tezos_base_test_helpers
-  -open Tezos_test_helpers
-  -open Octez_alcotezt)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_micheline
+  -open Mavryk_client_alpha
+  -open Mavryk_protocol_alpha
+  -open Mavryk_base_test_helpers
+  -open Mavryk_test_helpers
+  -open Mavkit_alcotezt)
  (modules
   test_michelson_v1_macros
   test_client_proto_contracts
@@ -46,7 +46,7 @@
 
 (rule
  (alias runtest)
- (package octez-protocol-alpha-libs)
+ (package mavkit-protocol-alpha-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

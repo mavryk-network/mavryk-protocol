@@ -29,7 +29,7 @@ type dal_constants = {
   feature_enable : bool;
   attestation_lag : int;
   number_of_slots : int;
-  cryptobox_parameters : Tezos_crypto_dal.Cryptobox.parameters;
+  cryptobox_parameters : Mavryk_crypto_dal.Cryptobox.parameters;
 }
 
 type reveal_activation_level = {

@@ -42,7 +42,7 @@ module type S = sig
         [trace].
       - [trace] is a collection of [error] and additional functions (not
         required by this library) allow additional manipulation. E.g., in the
-        case of Tezos: errors are built into traces that can be grown.
+        case of Mavryk: errors are built into traces that can be grown.
 
      There is {e some} leeway about what traces are, what information they
      carry, etc. Beyond this leeway, Lwtreslib is opinionated about traces.

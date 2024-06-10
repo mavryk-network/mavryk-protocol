@@ -24,7 +24,7 @@
 
 open Mec
 
-let () = Random.set_state (Random.State.make [|42; 643; 54; 754|])
+let () = Random.self_init ()
 
 let is_prime_number n =
   let two = Z.succ Z.one in

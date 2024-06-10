@@ -43,12 +43,12 @@ protocol and the shell interact in order to ensure that the blocks
 being appended to the blockchain are valid. There are mainly two rules
 that the shell uses when receiving a new block:
 
-- The shell does not accept a block whose level is below the current
-  :ref:`checkpoint<checkpoint>`. The checkpoint itself is updated based
-  on information resulting from successful block applications by the
-  protocol which depends on the protocol consensus algorithm. Previously
-  accepted blocks with lower levels than the current checkpoint are
-  considered finalized and immutable.
+- The shell does not accept a branch whose fork point is in a cycle
+  more than ``PRESERVED_CYCLES`` in the past. More precisely, if ``n``
+  is the current cycle, :ref:`the last allowed fork point<lafl>` is
+  the first level of cycle ``n-PRESERVED_CYCLES``. The parameter
+  ``PRESERVED_CYCLES`` therefore plays a central role in Tezos: any
+  block before the last allowed fork level is immutable.
 - The shell changes the head of the chain to this new block only if
   the block is :doc:`valid<../shell/validation>`, and it has a higher
   fitness than the current head; a block is
@@ -123,10 +123,10 @@ The *list* of protocol constants can be found in the OCaml APIs:
 
 - fixed protocol constants are defined in the module
   :package-api:`Constants_repr
-  <tezos-protocol-alpha/Tezos_raw_protocol_alpha/Constants_repr/index.html>`
+  <mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Constants_repr/index.html>`
 - parametric constants are defined in the module
   :package-api:`Constants_parametric_repr
-  <tezos-protocol-alpha/Tezos_raw_protocol_alpha/Constants_parametric_repr/index.html>`
+  <mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Constants_parametric_repr/index.html>`
 
 The *values* of protocol constants in any given protocol can be found using specific RPC calls:
 
@@ -139,11 +139,10 @@ See, for example:
 - :ref:`proof-of-stake parameters <ps_constants_alpha>`
 - :ref:`consensus-related parameters <cs_constants_alpha>`
 - :ref:`randomness generation parameters <rg_constants_alpha>`
-- :ref:`DAL parameters <dal_constants_alpha>`
 
 See also
 ~~~~~~~~
 
 An in-depth description of the internals of developing a new Tezos
 protocol can be found in the blog post: `How to write a Tezos protocol
-<https://research-development.nomadic-labs.com/how-to-write-a-tezos-protocol.html>`_.
+<https://research-development.nomadic-labs.com/how-to-write-a-mavryk-protocol.html>`_.

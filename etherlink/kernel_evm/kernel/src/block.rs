@@ -1,33 +1,29 @@
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
-// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
-use crate::apply::{apply_transaction, ExecutionInfo, ExecutionResult};
-use crate::blueprint_storage::{drop_head_blueprint, read_next_blueprint};
+use crate::apply::{apply_transaction, ExecutionInfo};
+use crate::blueprint::{Queue, QueueElement};
+use crate::current_timestamp;
 use crate::error::Error;
 use crate::indexable_storage::IndexableStorage;
 use crate::safe_storage::KernelRuntime;
 use crate::storage;
 use crate::storage::init_account_index;
-use crate::upgrade::KernelUpgrade;
-use crate::Configuration;
 use crate::{block_in_progress, tick_model};
-use crate::{current_timestamp, upgrade};
 use anyhow::Context;
 use block_in_progress::BlockInProgress;
 use evm_execution::account_storage::{init_account_storage, EthereumAccountStorage};
 use evm_execution::precompiles;
 use evm_execution::precompiles::PrecompileBTreeMap;
 use primitive_types::{H256, U256};
-use tezos_ethereum::block::BlockFees;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_host::runtime::Runtime;
 use tick_model::estimate_remaining_ticks_for_transaction_execution;
 
-use tezos_ethereum::block::BlockConstants;
+use mavryk_ethereum::block::BlockConstants;
 
 /// Struct used to allow the compiler to check that the tick counter value is
 /// correctly moved and updated. Copy and Clone should NOT be derived.
@@ -58,7 +54,6 @@ fn compute<Host: Runtime>(
     precompiles: &PrecompileBTreeMap<Host>,
     evm_account_storage: &mut EthereumAccountStorage,
     accounts_index: &mut IndexableStorage,
-    is_first_block_of_reboot: bool,
 ) -> Result<ComputationResult, anyhow::Error> {
     log!(
         host,
@@ -66,9 +61,21 @@ fn compute<Host: Runtime>(
         "Queue length {}.",
         block_in_progress.queue_length()
     );
-    let mut is_first_transaction = true;
     // iteration over all remaining transaction in the block
     while block_in_progress.has_tx() {
+        // is reboot necessary ?
+        if block_in_progress.would_overflow() {
+            // TODO: https://gitlab.com/tezos/tezos/-/issues/6094
+            // there should be an upper bound on gasLimit
+
+            if host.reboot_left()? <= 1 {
+                // TODO: #5873
+                // this case needs to be handle properly
+                log!(host, Info, "Warning: maximum number of reboots reached, some transactions were lost");
+                return Ok(ComputationResult::Finished);
+            }
+            return Ok(ComputationResult::RebootNeeded);
+        }
         let transaction = block_in_progress.pop_tx().ok_or(Error::Reboot)?;
         let data_size: u64 = transaction.data_size();
 
@@ -89,7 +96,7 @@ fn compute<Host: Runtime>(
             accounts_index,
             allocated_ticks,
         )? {
-            ExecutionResult::Valid(ExecutionInfo {
+            Some(ExecutionInfo {
                 receipt_info,
                 object_info,
                 estimated_ticks_used,
@@ -108,7 +115,7 @@ fn compute<Host: Runtime>(
                     block_in_progress.estimated_ticks
                 );
             }
-            ExecutionResult::Invalid => {
+            None => {
                 block_in_progress.account_for_invalid_transaction(data_size);
                 log!(
                     host,
@@ -117,122 +124,21 @@ fn compute<Host: Runtime>(
                     block_in_progress.estimated_ticks
                 );
             }
-            ExecutionResult::OutOfTicks => {
-                // Is is the first block processed in this reboot. Aditionnaly,
-                // it is the first transaction processed from this block in this
-                // reboot. The tick limit cannot be larger.
-                if is_first_transaction && is_first_block_of_reboot {
-                    log!(
-                        host,
-                        Debug,
-                        "Transaction is discarded as it uses too much ticks to be applied in a kernel run."
-                    );
-                } else {
-                    block_in_progress.repush_tx(transaction);
-                    return Ok(ComputationResult::RebootNeeded);
-                }
-            }
         };
-        is_first_transaction = false;
     }
     Ok(ComputationResult::Finished)
 }
 
-fn next_bip_from_blueprints<Host: Runtime>(
-    host: &mut Host,
-    current_block_number: U256,
-    current_block_parent_hash: H256,
-    current_constants: &BlockConstants,
-    tick_counter: &TickCounter,
-    config: &mut Configuration,
-    kernel_upgrade: &Option<KernelUpgrade>,
-) -> Result<Option<BlockInProgress>, anyhow::Error> {
-    match read_next_blueprint(host, config)? {
-        Some(blueprint) => {
-            if let Some(kernel_upgrade) = kernel_upgrade {
-                if blueprint.timestamp >= kernel_upgrade.activation_timestamp {
-                    upgrade::upgrade(host, kernel_upgrade.preimage_hash)?;
-                    // We abort the call, as there is no blueprint to execute,
-                    // the kernel will reboot.
-                    return Ok(None);
-                }
-            }
-            let bip = block_in_progress::BlockInProgress::from_blueprint(
-                blueprint,
-                current_block_number,
-                current_block_parent_hash,
-                current_constants,
-                tick_counter.c,
-            );
-            Ok(Some(bip))
-        }
-        None => Ok(None),
-    }
-}
-
-#[allow(clippy::too_many_arguments)]
-fn compute_bip<Host: KernelRuntime>(
-    host: &mut Host,
-    mut block_in_progress: BlockInProgress,
-    current_constants: &mut BlockConstants,
-    current_block_number: &mut U256,
-    current_block_parent_hash: &mut H256,
-    precompiles: &PrecompileBTreeMap<Host>,
-    evm_account_storage: &mut EthereumAccountStorage,
-    accounts_index: &mut IndexableStorage,
-    tick_counter: &mut TickCounter,
-    first_block_of_reboot: &mut bool,
-) -> anyhow::Result<ComputationResult> {
-    let result = compute(
-        host,
-        &mut block_in_progress,
-        current_constants,
-        precompiles,
-        evm_account_storage,
-        accounts_index,
-        *first_block_of_reboot,
-    )?;
-    match result {
-        ComputationResult::RebootNeeded => {
-            log!(
-                host,
-                Info,
-                "Ask for reboot. Estimated ticks: {}",
-                &block_in_progress.estimated_ticks
-            );
-            storage::store_block_in_progress(host, &block_in_progress)?;
-            host.mark_for_reboot()?
-        }
-        ComputationResult::Finished => {
-            *tick_counter = TickCounter::finalize(block_in_progress.estimated_ticks);
-            let new_block = block_in_progress
-                .finalize_and_store(host)
-                .context("Failed to finalize the block in progress")?;
-            *current_block_number = new_block.number + 1;
-            *current_block_parent_hash = new_block.hash;
-            *current_constants = new_block
-                .constants(current_constants.chain_id, current_constants.block_fees);
-            // Drop the processed blueprint from the storage
-            drop_head_blueprint(host)?;
-
-            *first_block_of_reboot = false;
-        }
-    }
-    Ok(result)
-}
-
 pub fn produce<Host: KernelRuntime>(
     host: &mut Host,
+    queue: Queue,
     chain_id: U256,
-    block_fees: BlockFees,
-    config: &mut Configuration,
+    base_fee_per_gas: U256,
 ) -> Result<ComputationResult, anyhow::Error> {
-    let kernel_upgrade = upgrade::read_kernel_upgrade(host)?;
-
     let (mut current_constants, mut current_block_number, mut current_block_parent_hash) =
         match storage::read_current_block(host) {
             Ok(block) => (
-                block.constants(chain_id, block_fees),
+                block.constants(chain_id, base_fee_per_gas),
                 block.number + 1,
                 block.hash,
             ),
@@ -240,7 +146,7 @@ pub fn produce<Host: KernelRuntime>(
                 let timestamp = current_timestamp(host);
                 let timestamp = U256::from(timestamp.as_u64());
                 (
-                    BlockConstants::first_block(timestamp, chain_id, block_fees),
+                    BlockConstants::first_block(timestamp, chain_id, base_fee_per_gas),
                     U256::zero(),
                     H256::from_slice(&hex::decode("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").unwrap()),
                 )
@@ -251,57 +157,50 @@ pub fn produce<Host: KernelRuntime>(
     let mut accounts_index = init_account_index()?;
     let precompiles = precompiles::precompile_set::<Host>();
     let mut tick_counter = TickCounter::new(0u64);
-    let mut first_block_of_reboot = true;
 
-    // Check if there's a BIP in storage to resume its execution
-    match storage::read_block_in_progress(host)? {
-        None => (),
-        Some(block_in_progress) => match compute_bip(
+    let mut iter = queue.proposals.into_iter();
+    while let Some(proposal) = iter.next() {
+        // proposal is turned into a ring to allow popping from the front
+        let mut block_in_progress = BlockInProgress::from_queue_element(
+            proposal,
+            current_block_number,
+            current_block_parent_hash,
+            &current_constants,
+            tick_counter.c,
+        );
+
+        match compute(
             host,
-            block_in_progress,
-            &mut current_constants,
-            &mut current_block_number,
-            &mut current_block_parent_hash,
+            &mut block_in_progress,
+            &current_constants,
             &precompiles,
             &mut evm_account_storage,
             &mut accounts_index,
-            &mut tick_counter,
-            &mut first_block_of_reboot,
         )? {
+            ComputationResult::RebootNeeded => {
+                log!(
+                    host,
+                    Info,
+                    "Ask for reboot. Estimated ticks: {}",
+                    &block_in_progress.estimated_ticks
+                );
+                let remaining_queue = Queue {
+                    proposals: remaining_proposals(block_in_progress, iter),
+                    ..queue
+                };
+                storage::store_queue(host, &remaining_queue)?;
+                storage::add_reboot_flag(host)?;
+                host.mark_for_reboot()?;
+                return Ok(ComputationResult::RebootNeeded);
+            }
             ComputationResult::Finished => {
-                storage::delete_block_in_progress(host)?;
-            }
-            ComputationResult::RebootNeeded => {
-                return Ok(ComputationResult::RebootNeeded)
-            }
-        },
-    }
-
-    // Execute stored blueprints
-    while let Some(block_in_progress) = next_bip_from_blueprints(
-        host,
-        current_block_number,
-        current_block_parent_hash,
-        &current_constants,
-        &tick_counter,
-        config,
-        &kernel_upgrade,
-    )? {
-        match compute_bip(
-            host,
-            block_in_progress,
-            &mut current_constants,
-            &mut current_block_number,
-            &mut current_block_parent_hash,
-            &precompiles,
-            &mut evm_account_storage,
-            &mut accounts_index,
-            &mut tick_counter,
-            &mut first_block_of_reboot,
-        )? {
-            ComputationResult::Finished => (),
-            ComputationResult::RebootNeeded => {
-                return Ok(ComputationResult::RebootNeeded)
+                tick_counter = TickCounter::finalize(block_in_progress.estimated_ticks);
+                let new_block = block_in_progress
+                    .finalize_and_store(host)
+                    .context("Failed to finalize the block in progress")?;
+                current_block_number = new_block.number + 1;
+                current_block_parent_hash = new_block.hash;
+                current_constants = new_block.constants(chain_id, base_fee_per_gas);
             }
         }
     }
@@ -309,41 +208,50 @@ pub fn produce<Host: KernelRuntime>(
     Ok(ComputationResult::Finished)
 }
 
+fn remaining_proposals(
+    bip: BlockInProgress,
+    iter: std::vec::IntoIter<QueueElement>,
+) -> Vec<QueueElement> {
+    let mut proposals = Vec::new();
+    proposals.push(QueueElement::BlockInProgress(Box::new(bip)));
+    proposals.extend(iter);
+    proposals
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::blueprint::Blueprint;
-    use crate::blueprint_storage::store_inbox_blueprint;
+    use crate::blueprint::{Blueprint, QueueElement};
     use crate::inbox::Transaction;
     use crate::inbox::TransactionContent;
     use crate::inbox::TransactionContent::Ethereum;
     use crate::mock_internal::MockInternal;
     use crate::safe_storage::SafeStorage;
-    use crate::storage::read_block_in_progress;
+    use crate::storage::internal_for_tests::{
+        read_transaction_receipt, read_transaction_receipt_status,
+    };
     use crate::storage::{init_blocks_index, init_transaction_hashes_index};
-    use crate::storage::{read_transaction_receipt, read_transaction_receipt_status};
     use crate::tick_model;
-    use crate::{retrieve_block_fees, retrieve_chain_id};
+    use crate::{retrieve_base_fee_per_gas, retrieve_chain_id};
     use evm_execution::account_storage::{
         account_path, init_account_storage, EthereumAccountStorage,
     };
     use primitive_types::{H160, H256, U256};
+    use std::ops::Rem;
     use std::str::FromStr;
-    use tezos_ethereum::transaction::{
+    use mavryk_ethereum::transaction::{
         TransactionHash, TransactionStatus, TransactionType, TRANSACTION_HASH_SIZE,
     };
-    use tezos_ethereum::tx_common::EthereumTransactionCommon;
-    use tezos_ethereum::tx_signature::TxSignature;
-    use tezos_smart_rollup_core::SmartRollupCore;
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+    use mavryk_ethereum::tx_signature::TxSignature;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_mock::MockHost;
 
-    fn blueprint(transactions: Vec<Transaction>) -> Blueprint {
-        Blueprint {
+    fn blueprint(transactions: Vec<Transaction>) -> QueueElement {
+        QueueElement::Blueprint(Blueprint {
             transactions,
             timestamp: Timestamp::from(0i64),
-        }
+        })
     }
 
     fn address_from_str(s: &str) -> Option<H160> {
@@ -391,35 +299,31 @@ mod tests {
     const DUMMY_CHAIN_ID: U256 = U256::one();
     const DUMMY_BASE_FEE_PER_GAS: u64 = 21000u64;
 
-    fn dummy_block_fees() -> BlockFees {
-        BlockFees::new(DUMMY_BASE_FEE_PER_GAS.into())
-    }
-
     fn dummy_eth_gen_transaction(
         nonce: U256,
         v: U256,
         r: H256,
         s: H256,
     ) -> EthereumTransactionCommon {
-        let chain_id = Some(DUMMY_CHAIN_ID);
+        let chain_id = DUMMY_CHAIN_ID;
         let gas_price = U256::from(40000000u64);
         let gas_limit = 21000u64;
         let to = address_from_str("423163e58aabec5daa3dd1130b759d24bef0f6ea");
         let value = U256::from(500000000u64);
         let data: Vec<u8> = vec![];
-        EthereumTransactionCommon::new(
-            TransactionType::Legacy,
+        EthereumTransactionCommon {
+            type_: TransactionType::Legacy,
             chain_id,
             nonce,
-            gas_price,
-            gas_price,
+            max_priority_fee_per_gas: gas_price,
+            max_fee_per_gas: gas_price,
             gas_limit,
             to,
             value,
             data,
-            vec![],
-            Some(TxSignature::new(v, r, s).unwrap()),
-        )
+            access_list: vec![],
+            signature: Some(TxSignature::new(v, r, s).unwrap()),
+        }
     }
 
     fn dummy_eth_caller() -> H160 {
@@ -459,27 +363,25 @@ mod tests {
         private_key: &str,
     ) -> EthereumTransactionCommon {
         let nonce = U256::from(nonce);
-        let gas_price = U256::from(21000u64);
-        // gas limit was estimated using Remix on Shanghai network (256,842)
-        // plus a safety margin for gas accounting discrepancies
-        let gas_limit = 300_000u64;
+        let gas_price = U256::from(40000000000u64);
+        let gas_limit = 42000u64;
         let value = U256::zero();
         // corresponding contract is kernel_benchmark/scripts/benchmarks/contracts/storage.sol
         let data: Vec<u8> = hex::decode("608060405234801561001057600080fd5b5061017f806100206000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c80634e70b1dc1461004657806360fe47b1146100645780636d4ce63c14610080575b600080fd5b61004e61009e565b60405161005b91906100d0565b60405180910390f35b61007e6004803603810190610079919061011c565b6100a4565b005b6100886100ae565b60405161009591906100d0565b60405180910390f35b60005481565b8060008190555050565b60008054905090565b6000819050919050565b6100ca816100b7565b82525050565b60006020820190506100e560008301846100c1565b92915050565b600080fd5b6100f9816100b7565b811461010457600080fd5b50565b600081359050610116816100f0565b92915050565b600060208284031215610132576101316100eb565b5b600061014084828501610107565b9150509291505056fea2646970667358221220ec57e49a647342208a1f5c9b1f2049bf1a27f02e19940819f38929bf67670a5964736f6c63430008120033").unwrap();
 
-        let tx = EthereumTransactionCommon::new(
-            tezos_ethereum::transaction::TransactionType::Legacy,
-            Some(DUMMY_CHAIN_ID),
+        let tx = EthereumTransactionCommon {
+            type_: mavryk_ethereum::transaction::TransactionType::Legacy,
+            chain_id: DUMMY_CHAIN_ID,
             nonce,
-            gas_price,
-            gas_price,
+            max_priority_fee_per_gas: gas_price,
+            max_fee_per_gas: gas_price,
             gas_limit,
-            None,
+            to: None,
             value,
             data,
-            vec![],
-            None,
-        );
+            access_list: vec![],
+            signature: None,
+        };
 
         tx.sign_transaction(private_key.to_string()).unwrap()
     }
@@ -490,12 +392,6 @@ mod tests {
             0,
             "dcdff53b4f013dbcdc717f89fe3bf4d8b10512aae282b48e01d7530470382701",
         )
-    }
-
-    fn store_blueprints<Host: Runtime>(host: &mut Host, blueprints: Vec<Blueprint>) {
-        for blueprint in blueprints {
-            store_inbox_blueprint(host, blueprint).expect("Should have stored blueprint");
-        }
     }
 
     fn produce_block_with_several_valid_txs<Host: KernelRuntime>(
@@ -516,7 +412,10 @@ mod tests {
             },
         ];
 
-        store_blueprints(host, vec![blueprint(transactions)]);
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let sender = dummy_eth_caller();
         set_balance(
@@ -526,13 +425,8 @@ mod tests {
             U256::from(10000000000000000000u64),
         );
 
-        produce(
-            host,
-            DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
-        )
-        .expect("The block production failed.");
+        produce(host, queue, DUMMY_CHAIN_ID, DUMMY_BASE_FEE_PER_GAS.into())
+            .expect("The block production failed.");
     }
 
     fn assert_current_block_reading_validity<Host: KernelRuntime>(host: &mut Host) {
@@ -562,7 +456,10 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![invalid_tx];
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let mut evm_account_storage = init_account_storage().unwrap();
         let sender = dummy_eth_caller();
@@ -574,9 +471,9 @@ mod tests {
         );
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -604,7 +501,10 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![valid_tx];
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -617,9 +517,9 @@ mod tests {
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -650,7 +550,10 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![valid_tx];
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -663,11 +566,12 @@ mod tests {
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
+
         let receipt = read_transaction_receipt(&mut host, &tx_hash)
             .expect("should have found receipt");
         assert_eq!(TransactionStatus::Success, receipt.status);
@@ -725,10 +629,10 @@ mod tests {
             content: Ethereum(dummy_eth_transaction_one()),
         }];
 
-        store_blueprints(
-            &mut host,
-            vec![blueprint(transaction_0), blueprint(transaction_1)],
-        );
+        let queue = Queue {
+            proposals: vec![blueprint(transaction_0), blueprint(transaction_1)],
+            kernel_upgrade: None,
+        };
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -741,9 +645,9 @@ mod tests {
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -780,7 +684,10 @@ mod tests {
             },
         ];
 
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -793,9 +700,9 @@ mod tests {
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
         let receipt0 = read_transaction_receipt(&mut host, &tx_hash_0)
@@ -844,26 +751,26 @@ mod tests {
         };
 
         let transactions = vec![tx.clone(), tx];
-        store_blueprints(
-            &mut host,
-            vec![blueprint(transactions.clone()), blueprint(transactions)],
-        );
+
+        let queue = Queue {
+            proposals: vec![blueprint(transactions.clone()), blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let sender = dummy_eth_caller();
-        let initial_sender_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
             &mut host,
             &mut evm_account_storage,
             &sender,
-            initial_sender_balance,
+            U256::from(10000000000000000000u64),
         );
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -873,14 +780,8 @@ mod tests {
         let dest_balance =
             get_balance(&mut host, &mut evm_account_storage, &dest_address);
 
-        let expected_dest_balance = U256::from(500000000u64);
-        let expected_gas = 21000;
-        let expected_fees = dummy_block_fees().base_fee_per_gas() * expected_gas;
-        let expected_sender_balance =
-            initial_sender_balance - expected_dest_balance - expected_fees;
-
-        assert_eq!(dest_balance, expected_dest_balance);
-        assert_eq!(sender_balance, expected_sender_balance);
+        assert_eq!(sender_balance, U256::from(9999999999499979000u64));
+        assert_eq!(dest_balance, U256::from(500000000u64))
     }
 
     #[test]
@@ -901,7 +802,11 @@ mod tests {
         };
 
         let transactions = vec![tx];
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let indexed_accounts = accounts_index.length(&host).unwrap();
 
@@ -915,9 +820,9 @@ mod tests {
         );
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -950,24 +855,32 @@ mod tests {
         };
 
         let transactions = vec![tx];
-        store_blueprints(&mut host, vec![blueprint(transactions.clone())]);
+
+        let queue = Queue {
+            proposals: vec![blueprint(transactions.clone())],
+            kernel_upgrade: None,
+        };
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
         let indexed_accounts = accounts_index.length(&host).unwrap();
-        // Next blueprint
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+
+        let next_queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
+
         produce(
             &mut host,
+            next_queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -1000,7 +913,11 @@ mod tests {
         };
 
         let transactions = vec![tx];
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
+
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         let number_of_blocks_indexed = blocks_index.length(&host).unwrap();
         let number_of_transactions_indexed =
@@ -1016,9 +933,9 @@ mod tests {
         );
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
 
@@ -1056,10 +973,17 @@ mod tests {
         let timestamp = current_timestamp(host);
         let timestamp = U256::from(timestamp.as_u64());
         let chain_id = retrieve_chain_id(host);
-        let block_fees = retrieve_block_fees(host);
+        let base_fee_per_gas = retrieve_base_fee_per_gas(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        assert!(block_fees.is_ok(), "block fees should be defined");
-        BlockConstants::first_block(timestamp, chain_id.unwrap(), block_fees.unwrap())
+        assert!(
+            base_fee_per_gas.is_ok(),
+            "base_fee_per_gas should be defined"
+        );
+        BlockConstants::first_block(
+            timestamp,
+            chain_id.unwrap(),
+            base_fee_per_gas.unwrap(),
+        )
     }
 
     #[test]
@@ -1091,16 +1015,13 @@ mod tests {
             tx_hash: [0; TRANSACTION_HASH_SIZE],
             content: TransactionContent::Ethereum(dummy_eth_transaction_zero()),
         };
-        let transactions = vec![valid_tx.clone()].into();
+        let transactions = vec![valid_tx].into();
 
         // init block in progress
         let mut block_in_progress =
             BlockInProgress::new(U256::from(1), U256::from(1), transactions);
         // block is almost full wrt ticks
         block_in_progress.estimated_ticks = tick_model::constants::MAX_TICKS - 1000;
-
-        let data_length = valid_tx.data_size();
-        let ticks_for_invalid = tick_model::ticks_of_invalid_transaction(data_length);
 
         // act
         compute(
@@ -1110,7 +1031,6 @@ mod tests {
             &precompiles,
             &mut evm_account_storage,
             &mut accounts_index,
-            true,
         )
         .expect("Should have computed block");
 
@@ -1124,7 +1044,7 @@ mod tests {
         );
         assert_eq!(
             block_in_progress.estimated_ticks,
-            tick_model::constants::MAX_TICKS - 1000 + ticks_for_invalid,
+            tick_model::constants::MAX_TICKS - 1000,
             "should not have consumed any tick"
         );
 
@@ -1163,7 +1083,13 @@ mod tests {
         // Ensures the caller has enough balance to pay for the fees, but not
         // the transaction itself, otherwise the transaction will not even be
         // taken into account.
-        let fees = U256::from(21000) * tx.execution_gas_limit();
+        let fees = BlockConstants::first_block(
+            U256::from(0),
+            DUMMY_CHAIN_ID,
+            DUMMY_BASE_FEE_PER_GAS.into(),
+        )
+        .gas_price
+            * tx.gas_limit;
         set_balance(&mut host, &mut evm_account_storage, &caller, fees);
 
         // Prepare a invalid transaction, i.e. with not enough funds.
@@ -1172,14 +1098,17 @@ mod tests {
             tx_hash,
             content: Ethereum(tx),
         };
-        store_blueprints(&mut host, vec![blueprint(vec![transaction])]);
+        let queue = Queue {
+            proposals: vec![blueprint(vec![transaction])],
+            kernel_upgrade: None,
+        };
 
         // Apply the transaction
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("The block production failed.");
         assert!(
@@ -1192,8 +1121,8 @@ mod tests {
         assert_eq!(nonce, default_nonce, "nonce should not have been bumped");
     }
 
-    /// A blueprint that should produce 1 block with an invalid transaction
-    fn almost_empty_blueprint() -> Blueprint {
+    /// A queue that should produce 1 block with an invalid transaction
+    fn almost_empty_queue() -> Queue {
         let tx_hash = [0; TRANSACTION_HASH_SIZE];
 
         // transaction should be invalid
@@ -1204,7 +1133,10 @@ mod tests {
 
         let transactions = vec![tx];
 
-        blueprint(transactions)
+        Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        }
     }
 
     fn check_current_block_number<Host: Runtime>(host: &mut Host, nb: usize) {
@@ -1223,40 +1155,62 @@ mod tests {
         };
 
         // first block should be 0
-        let blueprint = almost_empty_blueprint();
-        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
+            almost_empty_queue(),
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("Empty block should have been produced");
         check_current_block_number(&mut host, 0);
 
         // second block
-        let blueprint = almost_empty_blueprint();
-        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
+            almost_empty_queue(),
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("Empty block should have been produced");
         check_current_block_number(&mut host, 1);
 
         // third block
-        let blueprint = almost_empty_blueprint();
-        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
+            almost_empty_queue(),
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("Empty block should have been produced");
         check_current_block_number(&mut host, 2);
+    }
+
+    fn dummy_eth(nonce: u64) -> EthereumTransactionCommon {
+        let nonce = U256::from(nonce);
+        let gas_price = U256::from(40000000000u64);
+        let gas_limit = 21000;
+        let value = U256::from(1);
+        let to = address_from_str("423163e58aabec5daa3dd1130b759d24bef0f6ea");
+        let tx = EthereumTransactionCommon {
+            type_: TransactionType::Legacy,
+            chain_id: U256::one(),
+            nonce,
+            max_fee_per_gas: gas_price,
+            max_priority_fee_per_gas: gas_price,
+            gas_limit,
+            to,
+            value,
+            data: vec![],
+            access_list: vec![],
+            signature: None,
+        };
+
+        // corresponding caller's address is 0xaf1276cbb260bb13deddb4209ae99ae6e497f446
+        tx.sign_transaction(
+            "dcdff53b4f013dbcdc717f89fe3bf4d8b10512aae282b48e01d7530470382701"
+                .to_string(),
+        )
+        .unwrap()
     }
 
     fn hash_from_nonce(nonce: u64) -> TransactionHash {
@@ -1266,62 +1220,14 @@ mod tests {
         hash
     }
 
-    fn is_marked_for_reboot(host: &impl SmartRollupCore) -> bool {
-        const REBOOT_PATH: RefPath = RefPath::assert_from(b"/kernel/env/reboot");
-        host.store_read_all(&REBOOT_PATH).is_ok()
-    }
-
-    fn assert_marked_for_reboot(host: &impl SmartRollupCore) {
-        assert!(
-            is_marked_for_reboot(host),
-            "The kernel should have been marked for reboot"
-        );
-    }
-
-    const CREATE_LOOP_DATA: &str = "608060405234801561001057600080fd5b506101d0806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c80630b7d796e14610030575b600080fd5b61004a600480360381019061004591906100c2565b61004c565b005b60005b81811015610083576001600080828254610069919061011e565b92505081905550808061007b90610152565b91505061004f565b5050565b600080fd5b6000819050919050565b61009f8161008c565b81146100aa57600080fd5b50565b6000813590506100bc81610096565b92915050565b6000602082840312156100d8576100d7610087565b5b60006100e6848285016100ad565b91505092915050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b60006101298261008c565b91506101348361008c565b925082820190508082111561014c5761014b6100ef565b5b92915050565b600061015d8261008c565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff820361018f5761018e6100ef565b5b60018201905091905056fea26469706673582212200cd6584173dbec22eba4ce6cc7cc4e702e00e018d340f84fc0ff197faf980ad264736f6c63430008150033";
-
-    const LOOP_1300: &str =
-        "0b7d796e0000000000000000000000000000000000000000000000000000000000000514";
-
-    const LOOP_4600: &str =
-        "0b7d796e00000000000000000000000000000000000000000000000000000000000011f8";
-
-    const TEST_SK: &str =
-        "84e147b8bc36d99cc6b1676318a0635d8febc9f02897b0563ad27358589ee502";
-
-    const TEST_ADDR: &str = "f0affc80a5f69f4a9a3ee01a640873b6ba53e539";
-
-    fn create_and_sign_transaction(
-        data: &str,
-        nonce: u64,
-        gas_limit: u64,
-        to: Option<H160>,
-        secret_key: &str,
-    ) -> EthereumTransactionCommon {
-        let unsigned_tx = EthereumTransactionCommon::new(
-            TransactionType::Eip1559,
-            Some(DUMMY_CHAIN_ID),
-            U256::from(nonce),
-            U256::from(DUMMY_BASE_FEE_PER_GAS),
-            U256::from(DUMMY_BASE_FEE_PER_GAS),
-            gas_limit,
-            to,
-            U256::zero(),
-            hex::decode(data).unwrap(),
-            vec![],
-            None,
-        );
-        unsigned_tx
-            .sign_transaction(String::from(secret_key))
-            .unwrap()
-    }
-
-    fn wrap_transaction(nonce: u64, tx: EthereumTransactionCommon) -> Transaction {
+    fn dummy_transaction(nonce: u64) -> Transaction {
         Transaction {
             tx_hash: hash_from_nonce(nonce),
-            content: TransactionContent::Ethereum(tx),
+            content: TransactionContent::Ethereum(dummy_eth(nonce)),
         }
     }
+
+    const TOO_MANY_TRANSACTIONS: u64 = 500;
 
     #[test]
     fn test_reboot_many_tx_one_proposal() {
@@ -1335,12 +1241,12 @@ mod tests {
 
         // sanity check: no current block
         assert!(
-            storage::read_current_block_number(&host).is_err(),
+            storage::read_current_block_number(&mut host).is_err(),
             "Should not have found current block number"
         );
 
         //provision sender account
-        let sender = H160::from_str(TEST_ADDR).unwrap();
+        let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
         let sender_initial_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
@@ -1350,50 +1256,36 @@ mod tests {
             sender_initial_balance,
         );
 
-        // These transactions are generated with the loop.sol contract, which are:
-        // - create the contract
-        // - call `loop(1200)`
-        // - call `loop(4600)`
-        let create_transaction =
-            create_and_sign_transaction(CREATE_LOOP_DATA, 0, 3_000_000, None, TEST_SK);
-        let loop_addr: H160 =
-            evm_execution::handler::create_address_legacy(&sender, &U256::zero());
-        let loop_1200_tx =
-            create_and_sign_transaction(LOOP_1300, 1, 900_000, Some(loop_addr), TEST_SK);
-        let loop_4600_tx = create_and_sign_transaction(
-            LOOP_4600,
-            2,
-            2_600_000,
-            Some(loop_addr),
-            TEST_SK,
-        );
-
-        let proposals = vec![
-            wrap_transaction(0, create_transaction),
-            wrap_transaction(1, loop_1200_tx),
-            wrap_transaction(2, loop_4600_tx),
-        ];
-
-        store_blueprints(&mut host, vec![blueprint(proposals)]);
+        let mut transactions = vec![];
+        for n in 0..TOO_MANY_TRANSACTIONS {
+            transactions.push(dummy_transaction(n));
+        }
+        let queue = Queue {
+            proposals: vec![blueprint(transactions)],
+            kernel_upgrade: None,
+        };
 
         host.reboot_left().expect("should be some reboot left");
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("Should have produced");
 
         // test no new block
         assert!(
-            storage::read_current_block_number(&host).is_err(),
+            storage::read_current_block_number(&mut host).is_err(),
             "Should not have found current block number"
         );
 
         // test reboot is set
-        assert_marked_for_reboot(host.host)
+        assert!(
+            storage::was_rebooted(&mut host).expect("Should have found flag"),
+            "Flag should be set"
+        );
     }
 
     #[test]
@@ -1408,11 +1300,12 @@ mod tests {
 
         // sanity check: no current block
         assert!(
-            storage::read_current_block_number(&host).is_err(),
+            storage::read_current_block_number(&mut host).is_err(),
             "Should not have found current block number"
         );
+
         //provision sender account
-        let sender = H160::from_str(TEST_ADDR).unwrap();
+        let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
         let sender_initial_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
@@ -1422,138 +1315,62 @@ mod tests {
             sender_initial_balance,
         );
 
-        // These transactions are generated with the loop.sol contract, which are:
-        // - create the contract
-        // - call `loop(1200)`
-        // - call `loop(4600)`
-        let create_transaction =
-            create_and_sign_transaction(CREATE_LOOP_DATA, 0, 3_000_000, None, TEST_SK);
-        let loop_addr: H160 =
-            evm_execution::handler::create_address_legacy(&sender, &U256::zero());
-        let loop_1200_tx =
-            create_and_sign_transaction(LOOP_1300, 1, 900_000, Some(loop_addr), TEST_SK);
-        let loop_4600_tx = create_and_sign_transaction(
-            LOOP_4600,
-            2,
-            2_600_000,
-            Some(loop_addr),
-            TEST_SK,
-        );
-
-        let proposals = vec![
-            blueprint(vec![wrap_transaction(0, create_transaction)]),
-            blueprint(vec![
-                wrap_transaction(1, loop_1200_tx),
-                wrap_transaction(2, loop_4600_tx),
-            ]),
-        ];
-
-        store_blueprints(&mut host, proposals);
+        let mut transactions = vec![];
+        let mut proposals = vec![];
+        for n in 0..TOO_MANY_TRANSACTIONS {
+            transactions.push(dummy_transaction(n));
+            if n.rem(80) == 0 {
+                proposals.push(blueprint(transactions));
+                transactions = vec![];
+            }
+        }
+        let initial_number_of_proposals = proposals.len();
+        let queue = Queue {
+            proposals,
+            kernel_upgrade: None,
+        };
 
         produce(
             &mut host,
+            queue,
             DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
+            DUMMY_BASE_FEE_PER_GAS.into(),
         )
         .expect("Should have produced");
 
         // test no new block
-        assert_eq!(
-            storage::read_current_block_number(&host)
-                .expect("should have found a block number"),
-            U256::zero(),
-            "There should have been one block registered"
+        assert!(
+            storage::read_current_block_number(&mut host)
+                .expect("should have found a block number")
+                > U256::zero(),
+            "There should have been multiple blocks registered"
         );
 
         // test reboot is set
-        assert_marked_for_reboot(host.host);
-
-        let bip = read_block_in_progress(&host)
-            .expect("Should be able to read the block in progress")
-            .expect("The reboot context should have a block in progress");
-
         assert!(
-            bip.queue_length() > 0,
-            "There should be some transactions left"
+            storage::was_rebooted(&mut host).expect("Should have found flag"),
+            "Flag should be set"
         );
 
-        let _next_blueprint = read_next_blueprint(&mut host, &mut Configuration::Proxy)
-            .expect("The next blueprint should be available");
-    }
-
-    #[test]
-    fn test_transaction_pre_eip155() {
-        // This test injects a presigned transaction defined by
-        // https://github.com/mds1/multicall#new-deployments, which is a well
-        // known contract on multiple EVM chains. The transaction has been
-        // signed without a chain id, so that it can be reproduced on multiple
-        // networks (and the contract address is the same on any chain).
-        //
-        // The purpose of this test is to check the kernel accepts such a
-        // transaction, with the expected hash and the expected contract
-        // address.
-
-        // init host
-        let mut mock_host = MockHost::default();
-        let mut internal = MockInternal();
-        let mut host = SafeStorage {
-            host: &mut mock_host,
-            internal: &mut internal,
-        };
-
-        // see
-        // https://basescan.org/tx/0x07471adfe8f4ec553c1199f495be97fc8be8e0626ae307281c22534460184ed1
-        // for example, as the transaction has the same hash on every EVM Chain.
-        let expected_tx_hash = hex::decode(
-            "07471adfe8f4ec553c1199f495be97fc8be8e0626ae307281c22534460184ed1",
-        )
-        .unwrap();
-
-        // Extracted from https://github.com/mds1/multicall#new-deployments
-        let signed_transaction = hex::decode("f90f538085174876e800830f42408080b90f00608060405234801561001057600080fd5b50610ee0806100206000396000f3fe6080604052600436106100f35760003560e01c80634d2301cc1161008a578063a8b0574e11610059578063a8b0574e1461025a578063bce38bd714610275578063c3077fa914610288578063ee82ac5e1461029b57600080fd5b80634d2301cc146101ec57806372425d9d1461022157806382ad56cb1461023457806386d516e81461024757600080fd5b80633408e470116100c65780633408e47014610191578063399542e9146101a45780633e64a696146101c657806342cbb15c146101d957600080fd5b80630f28c97d146100f8578063174dea711461011a578063252dba421461013a57806327e86d6e1461015b575b600080fd5b34801561010457600080fd5b50425b6040519081526020015b60405180910390f35b61012d610128366004610a85565b6102ba565b6040516101119190610bbe565b61014d610148366004610a85565b6104ef565b604051610111929190610bd8565b34801561016757600080fd5b50437fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0140610107565b34801561019d57600080fd5b5046610107565b6101b76101b2366004610c60565b610690565b60405161011193929190610cba565b3480156101d257600080fd5b5048610107565b3480156101e557600080fd5b5043610107565b3480156101f857600080fd5b50610107610207366004610ce2565b73ffffffffffffffffffffffffffffffffffffffff163190565b34801561022d57600080fd5b5044610107565b61012d610242366004610a85565b6106ab565b34801561025357600080fd5b5045610107565b34801561026657600080fd5b50604051418152602001610111565b61012d610283366004610c60565b61085a565b6101b7610296366004610a85565b610a1a565b3480156102a757600080fd5b506101076102b6366004610d18565b4090565b60606000828067ffffffffffffffff8111156102d8576102d8610d31565b60405190808252806020026020018201604052801561031e57816020015b6040805180820190915260008152606060208201528152602001906001900390816102f65790505b5092503660005b8281101561047757600085828151811061034157610341610d60565b6020026020010151905087878381811061035d5761035d610d60565b905060200281019061036f9190610d8f565b6040810135958601959093506103886020850185610ce2565b73ffffffffffffffffffffffffffffffffffffffff16816103ac6060870187610dcd565b6040516103ba929190610e32565b60006040518083038185875af1925050503d80600081146103f7576040519150601f19603f3d011682016040523d82523d6000602084013e6103fc565b606091505b50602080850191909152901515808452908501351761046d577f08c379a000000000000000000000000000000000000000000000000000000000600052602060045260176024527f4d756c746963616c6c333a2063616c6c206661696c656400000000000000000060445260846000fd5b5050600101610325565b508234146104e6576040517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601a60248201527f4d756c746963616c6c333a2076616c7565206d69736d6174636800000000000060448201526064015b60405180910390fd5b50505092915050565b436060828067ffffffffffffffff81111561050c5761050c610d31565b60405190808252806020026020018201604052801561053f57816020015b606081526020019060019003908161052a5790505b5091503660005b8281101561068657600087878381811061056257610562610d60565b90506020028101906105749190610e42565b92506105836020840184610ce2565b73ffffffffffffffffffffffffffffffffffffffff166105a66020850185610dcd565b6040516105b4929190610e32565b6000604051808303816000865af19150503d80600081146105f1576040519150601f19603f3d011682016040523d82523d6000602084013e6105f6565b606091505b5086848151811061060957610609610d60565b602090810291909101015290508061067d576040517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601760248201527f4d756c746963616c6c333a2063616c6c206661696c656400000000000000000060448201526064016104dd565b50600101610546565b5050509250929050565b43804060606106a086868661085a565b905093509350939050565b6060818067ffffffffffffffff8111156106c7576106c7610d31565b60405190808252806020026020018201604052801561070d57816020015b6040805180820190915260008152606060208201528152602001906001900390816106e55790505b5091503660005b828110156104e657600084828151811061073057610730610d60565b6020026020010151905086868381811061074c5761074c610d60565b905060200281019061075e9190610e76565b925061076d6020840184610ce2565b73ffffffffffffffffffffffffffffffffffffffff166107906040850185610dcd565b60405161079e929190610e32565b6000604051808303816000865af19150503d80600081146107db576040519150601f19603f3d011682016040523d82523d6000602084013e6107e0565b606091505b506020808401919091529015158083529084013517610851577f08c379a000000000000000000000000000000000000000000000000000000000600052602060045260176024527f4d756c746963616c6c333a2063616c6c206661696c656400000000000000000060445260646000fd5b50600101610714565b6060818067ffffffffffffffff81111561087657610876610d31565b6040519080825280602002602001820160405280156108bc57816020015b6040805180820190915260008152606060208201528152602001906001900390816108945790505b5091503660005b82811015610a105760008482815181106108df576108df610d60565b602002602001015190508686838181106108fb576108fb610d60565b905060200281019061090d9190610e42565b925061091c6020840184610ce2565b73ffffffffffffffffffffffffffffffffffffffff1661093f6020850185610dcd565b60405161094d929190610e32565b6000604051808303816000865af19150503d806000811461098a576040519150601f19603f3d011682016040523d82523d6000602084013e61098f565b606091505b506020830152151581528715610a07578051610a07576040517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601760248201527f4d756c746963616c6c333a2063616c6c206661696c656400000000000000000060448201526064016104dd565b506001016108c3565b5050509392505050565b6000806060610a2b60018686610690565b919790965090945092505050565b60008083601f840112610a4b57600080fd5b50813567ffffffffffffffff811115610a6357600080fd5b6020830191508360208260051b8501011115610a7e57600080fd5b9250929050565b60008060208385031215610a9857600080fd5b823567ffffffffffffffff811115610aaf57600080fd5b610abb85828601610a39565b90969095509350505050565b6000815180845260005b81811015610aed57602081850181015186830182015201610ad1565b81811115610aff576000602083870101525b50601f017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0169290920160200192915050565b600082825180855260208086019550808260051b84010181860160005b84811015610bb1578583037fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe001895281518051151584528401516040858501819052610b9d81860183610ac7565b9a86019a9450505090830190600101610b4f565b5090979650505050505050565b602081526000610bd16020830184610b32565b9392505050565b600060408201848352602060408185015281855180845260608601915060608160051b870101935082870160005b82811015610c52577fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa0888703018452610c40868351610ac7565b95509284019290840190600101610c06565b509398975050505050505050565b600080600060408486031215610c7557600080fd5b83358015158114610c8557600080fd5b9250602084013567ffffffffffffffff811115610ca157600080fd5b610cad86828701610a39565b9497909650939450505050565b838152826020820152606060408201526000610cd96060830184610b32565b95945050505050565b600060208284031215610cf457600080fd5b813573ffffffffffffffffffffffffffffffffffffffff81168114610bd157600080fd5b600060208284031215610d2a57600080fd5b5035919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b600082357fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff81833603018112610dc357600080fd5b9190910192915050565b60008083357fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe1843603018112610e0257600080fd5b83018035915067ffffffffffffffff821115610e1d57600080fd5b602001915036819003821315610a7e57600080fd5b8183823760009101908152919050565b600082357fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc1833603018112610dc357600080fd5b600082357fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa1833603018112610dc357600080fdfea2646970667358221220bb2b5c71a328032f97c676ae39a1ec2148d3e5d6f73d95e9b17910152d61f16264736f6c634300080c00331ca0edce47092c0f398cebf3ffc267f05c8e7076e3b89445e0fe50f6332273d4569ba01b0b9d000e19b24c5869b0fc3b22b0d6fa47cd63316875cbbd577d76e6fde086").unwrap();
-
-        let transaction = EthereumTransactionCommon::from_bytes(&signed_transaction)
-            .expect("The MultiCall3 transaction shouldn't be unparsable");
-
-        println!("Transaction: {:?}", transaction);
-
-        let mut tx_hash = [0; TRANSACTION_HASH_SIZE];
-        tx_hash.copy_from_slice(&expected_tx_hash);
-
-        let tx = Transaction {
-            tx_hash,
-            content: Ethereum(transaction),
-        };
-
-        let transactions: Vec<Transaction> = vec![tx];
-
-        store_blueprints(&mut host, vec![blueprint(transactions)]);
-
-        let sender = H160::from_str("05f32b3cc3888453ff71b01135b34ff8e41263f2").unwrap();
-        let mut evm_account_storage = init_account_storage().unwrap();
-        set_balance(
-            &mut host,
-            &mut evm_account_storage,
-            &sender,
-            U256::from(500000000000000000u64),
+        let queue =
+            storage::read_queue(&mut host).expect("There should be a queue in storage");
+        let (first, rest) = queue
+            .proposals
+            .split_first()
+            .expect("Queue should be non empty");
+        match first {
+            QueueElement::Blueprint(_) => {
+                panic!("first element should be a bip")
+            }
+            QueueElement::BlockInProgress(bip) => assert!(
+                bip.queue_length() > 0,
+                "There should be some transactions left"
+            ),
+        }
+        assert!(!rest.is_empty(), "There should proposals left");
+        assert!(
+            initial_number_of_proposals > rest.len(),
+            "There should be less proposals left than originally present in the queue."
         );
-
-        produce(
-            &mut host,
-            DUMMY_CHAIN_ID,
-            dummy_block_fees(),
-            &mut Configuration::Proxy,
-        )
-        .expect("The block production failed.");
-
-        // See address at https://www.multicall3.com/ on in the github repository linked above
-        let expected_created_contract =
-            H160::from_str("0xcA11bde05977b3631167028862bE2a173976CA11").unwrap();
-
-        let receipt = read_transaction_receipt(&mut host, &tx_hash)
-            .expect("Should have found receipt");
-        assert_eq!(TransactionStatus::Success, receipt.status);
-        assert_eq!(Some(expected_created_contract), receipt.contract_address);
     }
 }

@@ -218,7 +218,7 @@ let originate_rollup_and_deposit_with_three_stakers () =
     By convention, context is passed linearly as [ctxt].  This takes a context
     argument to allow this.
 *)
-let assert_true _ctxt = Lwt_result_syntax.return_unit
+let assert_true _ctxt = return_unit
 
 (** Assert that the computation fails with the given message. *)
 let assert_fails_with ~loc k expected_err =
@@ -616,7 +616,7 @@ module Stake_storage_tests = struct
     let* ctxt, sc_rollup, _genesis_hash = new_context_with_rollup () in
     let staker =
       Sc_rollup_repr.Staker.of_b58check_exn
-        "tz1hhNZvjed6McQQLWtR7MRzPHpgSFZTXxdW"
+        "mv1NrBxgLQFVFZ3qMARL11ybwgjiN5J8K6vf"
     in
     let stake = Constants_storage.sc_rollup_stake_amount ctxt in
     let* () =

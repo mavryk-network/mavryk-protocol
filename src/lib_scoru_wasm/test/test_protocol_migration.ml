@@ -27,7 +27,7 @@
     -------
     Component:    Lib_scoru_wasm protocol migration internal message
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_protocol_migration.ml
-    Subject:      Protocol migration tests for the tezos-scoru-wasm library
+    Subject:      Protocol migration tests for the mavryk-scoru-wasm library
 *)
 
 open Tztest
@@ -59,20 +59,13 @@ let test_protocol_migration_message ~from_version ~to_version
   assert (version = to_version) ;
   Lwt_result_syntax.return_unit
 
-let proto_name : Tezos_scoru_wasm.Pvm_input_kind.protocol -> string = function
-  | Nairobi -> "Nairobi"
-  | Oxford -> "Oxford"
+let proto_name : Mavryk_scoru_wasm.Pvm_input_kind.protocol -> string = function
+  | Atlas -> "Atlas"
   | Proto_alpha -> "Proto_alpha"
 
 let tests =
   List.map
     (fun (from_version, to_version, protocol) ->
-      (* This pattern match is introduced in order to not typecheck if
-         a new version is added.
-         If you end up here because of this, please add a protocol migration
-         test for you new version. *)
-      (match from_version with
-      | Tezos_scoru_wasm.Wasm_pvm_state.V0 | V1 | V2 | V3 | V4 -> ()) ;
       tztest
         (sf
            "protocol migration message handling by the WASM PVM (%s)"
@@ -82,7 +75,7 @@ let tests =
            ~from_version
            ~to_version
            ~after_protocol_activation:protocol))
-    [(V0, V1, Nairobi); (V1, V2, Oxford); (V3, V4, Proto_alpha)]
+    [(V1, V2, Atlas); (V2, V3, Proto_alpha)]
 
 let () =
   Alcotest_lwt.run

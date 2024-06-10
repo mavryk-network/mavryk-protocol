@@ -28,7 +28,7 @@ open Environment_protocol_T
 
 module type T = sig
   include
-    Tezos_protocol_environment_sigs.V10.T
+    Mavryk_protocol_environment_sigs.V10.T
       with type Format.formatter = Format.formatter
        and type 'a Seq.node = 'a Seq.node
        and type 'a Seq.t = unit -> 'a Seq.node
@@ -53,87 +53,87 @@ module type T = sig
        and type Context.cache_value = Environment_context.Context.cache_value
        and type Context_hash.t = Context_hash.t
        and type Context_hash.Version.t = Context_hash.Version.t
-       and type Context.config = Tezos_context_sigs.Config.t
+       and type Context.config = Mavryk_context_sigs.Config.t
        and module Context.Proof = Environment_context.Context.Proof
-       and type Context_binary.t = Tezos_context_memory.Context_binary.t
-       and type Context_binary.tree = Tezos_context_memory.Context_binary.tree
+       and type Context_binary.t = Mavryk_context_memory.Context_binary.t
+       and type Context_binary.tree = Mavryk_context_memory.Context_binary.tree
        and type Protocol_hash.t = Protocol_hash.t
        and type Time.t = Time.Protocol.t
        and type Operation.shell_header = Operation.shell_header
        and type Operation.t = Operation.t
        and type Block_header.shell_header = Block_header.shell_header
        and type Block_header.t = Block_header.t
-       and type 'a RPC_directory.t = 'a Tezos_rpc.Directory.t
+       and type 'a RPC_directory.t = 'a Mavryk_rpc.Directory.t
        and type Ed25519.Public_key_hash.t =
-        Tezos_crypto.Signature.Ed25519.Public_key_hash.t
+        Mavryk_crypto.Signature.Ed25519.Public_key_hash.t
        and type Ed25519.Public_key.t =
-        Tezos_crypto.Signature.Ed25519.Public_key.t
-       and type Ed25519.t = Tezos_crypto.Signature.Ed25519.t
+        Mavryk_crypto.Signature.Ed25519.Public_key.t
+       and type Ed25519.t = Mavryk_crypto.Signature.Ed25519.t
        and type Secp256k1.Public_key_hash.t =
-        Tezos_crypto.Signature.Secp256k1.Public_key_hash.t
+        Mavryk_crypto.Signature.Secp256k1.Public_key_hash.t
        and type Secp256k1.Public_key.t =
-        Tezos_crypto.Signature.Secp256k1.Public_key.t
-       and type Secp256k1.t = Tezos_crypto.Signature.Secp256k1.t
+        Mavryk_crypto.Signature.Secp256k1.Public_key.t
+       and type Secp256k1.t = Mavryk_crypto.Signature.Secp256k1.t
        and type P256.Public_key_hash.t =
-        Tezos_crypto.Signature.P256.Public_key_hash.t
-       and type P256.Public_key.t = Tezos_crypto.Signature.P256.Public_key.t
-       and type P256.t = Tezos_crypto.Signature.P256.t
+        Mavryk_crypto.Signature.P256.Public_key_hash.t
+       and type P256.Public_key.t = Mavryk_crypto.Signature.P256.Public_key.t
+       and type P256.t = Mavryk_crypto.Signature.P256.t
        and type Bls.Public_key_hash.t =
-        Tezos_crypto.Signature.Bls.Public_key_hash.t
-       and type Bls.Public_key.t = Tezos_crypto.Signature.Bls.Public_key.t
-       and type Bls.t = Tezos_crypto.Signature.Bls.t
+        Mavryk_crypto.Signature.Bls.Public_key_hash.t
+       and type Bls.Public_key.t = Mavryk_crypto.Signature.Bls.Public_key.t
+       and type Bls.t = Mavryk_crypto.Signature.Bls.t
        and type Signature.public_key_hash =
-        Tezos_crypto.Signature.V1.public_key_hash
-       and type Signature.public_key = Tezos_crypto.Signature.V1.public_key
-       and type Signature.signature = Tezos_crypto.Signature.V1.signature
-       and type Signature.t = Tezos_crypto.Signature.V1.t
-       and type Signature.watermark = Tezos_crypto.Signature.V1.watermark
+        Mavryk_crypto.Signature.V1.public_key_hash
+       and type Signature.public_key = Mavryk_crypto.Signature.V1.public_key
+       and type Signature.signature = Mavryk_crypto.Signature.V1.signature
+       and type Signature.t = Mavryk_crypto.Signature.V1.t
+       and type Signature.watermark = Mavryk_crypto.Signature.V1.watermark
        and type Micheline.canonical_location = Micheline.canonical_location
        and type 'a Micheline.canonical = 'a Micheline.canonical
        and type Z.t = Z.t
        and type Q.t = Q.t
        and type ('a, 'b) Micheline.node = ('a, 'b) Micheline.node
        and type Data_encoding.json_schema = Data_encoding.json_schema
-       and type ('a, 'b) RPC_path.t = ('a, 'b) Tezos_rpc.Path.t
-       and type RPC_service.meth = Tezos_rpc.Service.meth
+       and type ('a, 'b) RPC_path.t = ('a, 'b) Mavryk_rpc.Path.t
+       and type RPC_service.meth = Mavryk_rpc.Service.meth
        and type (+'m, 'pr, 'p, 'q, 'i, 'o) RPC_service.t =
-        ('m, 'pr, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t
+        ('m, 'pr, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t
        and type Error_monad.shell_tztrace = Error_monad.tztrace
        and type 'a Error_monad.shell_tzresult = ('a, Error_monad.tztrace) result
-       and type Timelock.chest = Tezos_crypto.Timelock.chest
-       and type Timelock.chest_key = Tezos_crypto.Timelock.chest_key
-       and type Timelock.opening_result = Tezos_crypto.Timelock.opening_result
-       and module Sapling = Tezos_sapling.Core.Validator
+       and type Timelock.chest = Mavryk_crypto.Timelock.chest
+       and type Timelock.chest_key = Mavryk_crypto.Timelock.chest_key
+       and type Timelock.opening_result = Mavryk_crypto.Timelock.opening_result
+       and module Sapling = Mavryk_sapling.Core.Validator
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
        and type Bls.Primitive.Fr.t = Bls12_381.Fr.t
-       and type Plonk.proof = Tezos_protocol_environment_structs.V10.Plonk.proof
+       and type Plonk.proof = Mavryk_protocol_environment_structs.V10.Plonk.proof
        and type Plonk.public_parameters =
-        Tezos_protocol_environment_structs.V10.Plonk.verifier_public_parameters
-       and type Dal.parameters = Tezos_crypto_dal.Cryptobox.Verifier.parameters
-       and type Dal.commitment = Tezos_crypto_dal.Cryptobox.Verifier.commitment
+        Mavryk_protocol_environment_structs.V10.Plonk.verifier_public_parameters
+       and type Dal.parameters = Mavryk_crypto_dal.Cryptobox.Verifier.parameters
+       and type Dal.commitment = Mavryk_crypto_dal.Cryptobox.Verifier.commitment
        and type Dal.commitment_proof =
-        Tezos_crypto_dal.Cryptobox.Verifier.commitment_proof
-       and type Dal.page_proof = Tezos_crypto_dal.Cryptobox.Verifier.page_proof
+        Mavryk_crypto_dal.Cryptobox.Verifier.commitment_proof
+       and type Dal.page_proof = Mavryk_crypto_dal.Cryptobox.Verifier.page_proof
        and type Bounded.Non_negative_int32.t =
-        Tezos_base.Bounded.Non_negative_int32.t
+        Mavryk_base.Bounded.Non_negative_int32.t
        and type Wasm_2_0_0.reveal =
-        Tezos_scoru_wasm.Wasm_pvm_state.Compatibility.reveal
-       and type Wasm_2_0_0.version = Tezos_scoru_wasm.Wasm_pvm_state.version
-       and type Wasm_2_0_0.input = Tezos_scoru_wasm.Wasm_pvm_state.input_info
-       and type Wasm_2_0_0.output = Tezos_scoru_wasm.Wasm_pvm_state.output_info
+        Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal
+       and type Wasm_2_0_0.version = Mavryk_scoru_wasm.Wasm_pvm_state.version
+       and type Wasm_2_0_0.input = Mavryk_scoru_wasm.Wasm_pvm_state.input_info
+       and type Wasm_2_0_0.output = Mavryk_scoru_wasm.Wasm_pvm_state.output_info
        and type Wasm_2_0_0.reveal_hash =
-        Tezos_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
-       and module Skip_list = Tezos_base.Skip_list
+        Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
+       and module Skip_list = Mavryk_base.Skip_list
        and type Smart_rollup.Address.t =
-        Tezos_crypto.Hashed.Smart_rollup_address.t
+        Mavryk_crypto.Hashed.Smart_rollup_address.t
        and type Smart_rollup.Commitment_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_commitment_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_commitment_hash.t
        and type Smart_rollup.State_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_state_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_state_hash.t
        and type Smart_rollup.Inbox_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_inbox_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_inbox_hash.t
        and type Smart_rollup.Merkelized_payload_hashes_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
 
   (** An [Ecoproto_error e] is a shell error that carry a protocol error.
 
@@ -179,7 +179,7 @@ module type T = sig
        and type application_state = P.application_state
 
   class ['chain, 'block] proto_rpc_context :
-    Tezos_rpc.Context.t
+    Mavryk_rpc.Context.t
     -> (unit, (unit * 'chain) * 'block) RPC_path.t
     -> ['chain * 'block] RPC_context.simple
 
@@ -193,4 +193,7 @@ module Make (Param : sig
   val name : string
 end)
 () :
-  T with type Updater.quota = quota and type Updater.rpc_context = rpc_context
+  T
+    with type Updater.validation_result = validation_result
+     and type Updater.quota = quota
+     and type Updater.rpc_context = rpc_context

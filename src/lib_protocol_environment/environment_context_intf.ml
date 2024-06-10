@@ -31,27 +31,27 @@ end
 
 module type VIEW = sig
   (** @inline *)
-  include Tezos_context_sigs.Context.VIEW
+  include Mavryk_context_sigs.Context.VIEW
 end
 
 module type TREE = sig
   (** @inline *)
-  include Tezos_context_sigs.Context.TREE
+  include Mavryk_context_sigs.Context.TREE
 end
 
 module type PROOF = sig
   (** @inline *)
-  include Tezos_context_sigs.Context.PROOF
+  include Mavryk_context_sigs.Context.PROOF
 end
 
 module type PROOF_ENCODING = sig
   (** @inline *)
-  include Tezos_context_sigs.Context.PROOF_ENCODING
+  include Mavryk_context_sigs.Context.PROOF_ENCODING
 end
 
 module type HASH_VERSION = sig
   (** @inline *)
-  include Tezos_context_sigs.Context.HASH_VERSION
+  include Mavryk_context_sigs.Context.HASH_VERSION
 end
 
 (* Copy of sigs/v3/context.mli:CACHE *)
@@ -98,20 +98,20 @@ end
 module type CORE = sig
   type t
 
-  val set_protocol : t -> Tezos_crypto.Hashed.Protocol_hash.t -> t Lwt.t
+  val set_protocol : t -> Mavryk_crypto.Hashed.Protocol_hash.t -> t Lwt.t
 
-  val get_protocol : t -> Tezos_crypto.Hashed.Protocol_hash.t Lwt.t
+  val get_protocol : t -> Mavryk_crypto.Hashed.Protocol_hash.t Lwt.t
 
   val fork_test_chain :
     t ->
-    protocol:Tezos_crypto.Hashed.Protocol_hash.t ->
+    protocol:Mavryk_crypto.Hashed.Protocol_hash.t ->
     expiration:Time.Protocol.t ->
     t Lwt.t
 
   val set_hash_version :
-    t -> Tezos_crypto.Hashed.Context_hash.Version.t -> t tzresult Lwt.t
+    t -> Mavryk_crypto.Hashed.Context_hash.Version.t -> t tzresult Lwt.t
 
-  val get_hash_version : t -> Tezos_crypto.Hashed.Context_hash.Version.t
+  val get_hash_version : t -> Mavryk_crypto.Hashed.Context_hash.Version.t
 end
 
 module type TREE_CORE = sig
@@ -131,7 +131,7 @@ module type TREE_CORE = sig
 
   val of_value : t -> value -> tree Lwt.t
 
-  val hash : tree -> Tezos_crypto.Hashed.Context_hash.t
+  val hash : tree -> Mavryk_crypto.Hashed.Context_hash.t
 
   val equal : tree -> tree -> bool
 
@@ -261,9 +261,9 @@ end
 module V5 = struct
   type depth = V4.depth
 
-  type config = Tezos_context_sigs.Config.t
+  type config = Mavryk_context_sigs.Config.t
 
-  let equal_config = Tezos_context_sigs.Config.equal
+  let equal_config = Mavryk_context_sigs.Config.equal
 
   module type VIEW = VIEW
 
@@ -319,7 +319,6 @@ module V8 = V7
 module V9 = V8
 module V10 = V9
 module V11 = V10
-module V12 = V11
 
 module type S = V7.S
 
@@ -334,7 +333,6 @@ module type Sigs = sig
   module V9 = V9
   module V10 = V10
   module V11 = V11
-  module V12 = V12
 
   module type VIEW = VIEW
 

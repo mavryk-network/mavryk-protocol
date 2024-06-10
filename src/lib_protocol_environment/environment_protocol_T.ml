@@ -98,12 +98,12 @@ module V0toV10
     | Application of block_header
     | Partial_validation of block_header
     | Construction of {
-        predecessor_hash : Tezos_crypto.Hashed.Block_hash.t;
+        predecessor_hash : Mavryk_crypto.Hashed.Block_hash.t;
         timestamp : Time.Protocol.t;
         block_header_data : block_header_data;
       }
     | Partial_construction of {
-        predecessor_hash : Tezos_crypto.Hashed.Block_hash.t;
+        predecessor_hash : Mavryk_crypto.Hashed.Block_hash.t;
         timestamp : Time.Protocol.t;
       }
 
@@ -201,19 +201,19 @@ module V0toV10
     type validation_info = unit
 
     type conflict_handler =
-      existing_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
-      new_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
+      existing_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
+      new_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
       [`Keep | `Replace]
 
     type operation_conflict =
       | Operation_conflict of {
-          existing : Tezos_crypto.Hashed.Operation_hash.t;
-          new_operation : Tezos_crypto.Hashed.Operation_hash.t;
+          existing : Mavryk_crypto.Hashed.Operation_hash.t;
+          new_operation : Mavryk_crypto.Hashed.Operation_hash.t;
         }
 
     type add_result =
       | Added
-      | Replaced of {removed : Tezos_crypto.Hashed.Operation_hash.t}
+      | Replaced of {removed : Mavryk_crypto.Hashed.Operation_hash.t}
       | Unchanged
 
     type add_error =
@@ -239,7 +239,7 @@ module V0toV10
 
     let merge ?conflict_handler:_ () () = Ok ()
 
-    let operations () = Tezos_crypto.Hashed.Operation_hash.Map.empty
+    let operations () = Mavryk_crypto.Hashed.Operation_hash.Map.empty
   end
 end
 
@@ -270,7 +270,7 @@ module type PROTOCOL = sig
 
   val begin_validation :
     Context.t ->
-    Tezos_crypto.Hashed.Chain_id.t ->
+    Mavryk_crypto.Hashed.Chain_id.t ->
     mode ->
     predecessor:Block_header.shell_header ->
     cache:Context.source_of_cache ->
@@ -278,7 +278,7 @@ module type PROTOCOL = sig
 
   val begin_application :
     Context.t ->
-    Tezos_crypto.Hashed.Chain_id.t ->
+    Mavryk_crypto.Hashed.Chain_id.t ->
     mode ->
     predecessor:Block_header.shell_header ->
     cache:Context.source_of_cache ->
@@ -289,8 +289,8 @@ module type PROTOCOL = sig
 
     val init :
       Context.t ->
-      Tezos_crypto.Hashed.Chain_id.t ->
-      head_hash:Tezos_crypto.Hashed.Block_hash.t ->
+      Mavryk_crypto.Hashed.Chain_id.t ->
+      head_hash:Mavryk_crypto.Hashed.Block_hash.t ->
       head:Block_header.shell_header ->
       cache:Context.source_of_cache ->
       (validation_info * t) tzresult Lwt.t

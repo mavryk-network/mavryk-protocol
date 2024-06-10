@@ -50,7 +50,6 @@ type t = {
   basename : string;
   name : string;
   version_range : version_range;
-  extension : string;
   depth : int;
 }
 
@@ -129,9 +128,6 @@ val find_all_well_typed :
 
 (** Returns all ill typed scripts for the given protocol. *)
 val find_all_ill_typed : ?prefix:string -> ?maxdepth:int -> Protocol.t -> t list
-
-(** Returns all TZT tests from the reference test suite. *)
-val find_all_tzt_tests : ?prefix:string -> ?maxdepth:int -> Protocol.t -> t list
 
 (** The path to the script relative to [/] (the repo root).
 

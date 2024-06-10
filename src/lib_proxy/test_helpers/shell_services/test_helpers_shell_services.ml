@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Qcheck2_helpers
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 let raw_context_gen =
   let open Proof in
@@ -51,9 +51,9 @@ let raw_context_gen =
 
 let print_raw_context = Format.asprintf "%a" Proof.pp_raw_context
 
-module Store = Tezos_context_memory.Context
+module Store = Mavryk_context_memory.Context
 
-let empty = Tezos_context_memory.Context.make_empty_context ()
+let empty = Mavryk_context_memory.Context.make_empty_context ()
 
 (* Stolen from src/lib_proxy/test/test_fuzzing_light.ml *)
 let irmin_tree_gen =

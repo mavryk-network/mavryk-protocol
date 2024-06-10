@@ -4,9 +4,9 @@
 
 //! Supporting functions for transaction processors
 
-use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::{path::Path, runtime::RuntimeError};
+use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::{path::Path, runtime::RuntimeError};
 
 pub(crate) fn read_large_store_chunk<'a>(
     host: &mut impl Runtime,
@@ -32,9 +32,9 @@ pub(crate) fn read_large_store_chunk<'a>(
 
 #[cfg(test)]
 mod tests {
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_host::runtime::Runtime;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::path::RefPath;
+    use mavryk_smart_rollup_host::runtime::Runtime;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use crate::{transactions::utils::read_large_store_chunk, MAX_ENVELOPE_CONTENT_SIZE};
 

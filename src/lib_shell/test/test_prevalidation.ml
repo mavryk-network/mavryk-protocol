@@ -46,9 +46,9 @@ module Init = struct
       [f] by passing it an empty [Context.t]. After [f] finishes, the state
       is cleaned up. *)
   let wrap_tzresult_lwt_disk
-      (f : Tezos_protocol_environment.Context.t -> unit tzresult Lwt.t) () :
+      (f : Mavryk_protocol_environment.Context.t -> unit tzresult Lwt.t) () :
       unit tzresult Lwt.t =
-    Lwt_utils_unix.with_tempdir "tezos_test_" (fun base_dir ->
+    Lwt_utils_unix.with_tempdir "mavryk_test_" (fun base_dir ->
         let open Lwt_result_syntax in
         let root = Filename.concat base_dir "context" in
         let*! idx = Context.init root in
@@ -60,7 +60,7 @@ module Init = struct
             ~protocol:Shell_test_helpers.genesis_protocol_hash
         in
         let*! v = Context.checkout_exn idx genesis in
-        let v = Tezos_shell_context.Shell_context.wrap_disk_context v in
+        let v = Mavryk_shell_context.Shell_context.wrap_disk_context v in
         f v)
 
   let genesis_block ~timestamp ctxt =
@@ -88,7 +88,7 @@ let make_chain_store ctxt =
   let module Chain_store = struct
     type chain_store = unit
 
-    let context () _block : Tezos_protocol_environment.Context.t tzresult Lwt.t
+    let context () _block : Mavryk_protocol_environment.Context.t tzresult Lwt.t
         =
       Lwt_result_syntax.return ctxt
 
@@ -101,12 +101,12 @@ let make_chain_store ctxt =
     functions are [assert false]), with just enough functions actually
     implemented so that [Prevalidation.create] can be run successfully. *)
 module Mock_protocol :
-  Tezos_protocol_environment.PROTOCOL
+  Mavryk_protocol_environment.PROTOCOL
     with type operation_data = unit
      and type operation_receipt = unit
      and type validation_state = unit
      and type application_state = unit = struct
-  open Tezos_protocol_environment.Internal_for_tests
+  open Mavryk_protocol_environment.Internal_for_tests
   include Environment_protocol_T_test.Mock_all_unit
 
   let begin_validation _ctxt _chain_id _mode ~predecessor:_ ~cache:_ =
@@ -119,7 +119,7 @@ module Mock_protocol :
   end
 end
 
-module Wrap_protocol (Proto : Tezos_protocol_environment.PROTOCOL) :
+module Wrap_protocol (Proto : Mavryk_protocol_environment.PROTOCOL) :
   Protocol_plugin.T
     with type operation_data = Proto.operation_data
      and type operation = Proto.operation
@@ -147,7 +147,7 @@ end
 
 module MakePrevalidation = Prevalidation.Internal_for_tests.Make
 
-let now () = Time.System.to_protocol (Tezos_base.Time.System.now ())
+let now () = Time.System.to_protocol (Mavryk_base.Time.System.now ())
 
 (** The value of [chain_store] used in all tests below. *)
 let chain_store = ()
@@ -351,7 +351,7 @@ let random_oph_from_map ophmap =
       mempool can easily be filled with valid operations by simply
       leaving it unmodified. *)
 module Toy_proto :
-  Tezos_protocol_environment.PROTOCOL
+  Mavryk_protocol_environment.PROTOCOL
     with type operation_data = unit
      and type operation = Mock_protocol.operation
      and type Mempool.t =

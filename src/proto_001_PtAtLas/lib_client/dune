@@ -1,0 +1,36 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_client_001_PtAtLas)
+ (public_name mavkit-protocol-001-PtAtLas-libs.client)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.protocol.lifted
+  mavkit-shell-libs.mockup-registration
+  mavkit-shell-libs.proxy
+  mavkit-shell-libs.signer-backends
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavryk-protocol-001-PtAtLas.parameters
+  mavkit-libs.rpc
+  mavkit-protocol-001-PtAtLas-libs.smart-rollup
+  uri)
+ (inline_tests (flags -verbose) (modes native))
+ (preprocess (pps ppx_expect))
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_lifted
+  -open Mavryk_protocol_plugin_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
+  -open Mavryk_smart_rollup_001_PtAtLas))

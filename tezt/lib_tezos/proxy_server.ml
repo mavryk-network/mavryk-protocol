@@ -45,7 +45,7 @@ module Parameters = struct
   let default_colors = Log.Color.[|FG.gray; BG.gray|]
 end
 
-let rpc_host = Constant.default_host
+let rpc_host = "127.0.0.1"
 
 let rpc_scheme = "http"
 
@@ -75,11 +75,11 @@ let connection_arguments_and_port ?rpc_port node =
   in
   ( [
       "--endpoint";
-      sf "http://%s:%d" Constant.default_host (Node.rpc_port node);
+      "http://localhost:" ^ string_of_int (Node.rpc_port node);
       (* "-l"; <- to debug RPC delegations to the node
 
          Note that if you want to debug the proxy server's RPC server,
-         set TEZOS_LOG to "rpc->debug", just like you would do with a node.
+         set MAVRYK_LOG to "rpc->debug", just like you would do with a node.
       *)
       "--rpc-addr";
       Format.sprintf "%s://%s:%d" rpc_scheme rpc_host rpc_port;
@@ -91,11 +91,11 @@ let spawn ?rpc_port ?(args = []) node =
   Process.spawn
     ~name:Parameters.base_default_name
     ~color:Parameters.default_colors.(0)
-    (Uses.path Constant.octez_proxy_server)
+    (Uses.path Constant.mavkit_proxy_server)
     args
 
 let create ?runner ?name ?rpc_port ?(args = []) node =
-  let path = Uses.path Constant.octez_proxy_server in
+  let path = Uses.path Constant.mavkit_proxy_server in
   let user_arguments =
     List.map
       (function

@@ -63,7 +63,6 @@ let false_op l1_dst rollup_id =
 (** [check_proto_error_f f t] checks that the first error of [t]
     satisfies the boolean function [f]. *)
 let check_proto_error_f f t =
-  let open Lwt_result_syntax in
   match t with
   | Environment.Ecoproto_error e :: _ when f e ->
       Assert.test_error_encodings e ;
@@ -368,8 +367,8 @@ struct
   let ticket_hash ctxt ~ticketer ~zk_rollup =
     make_ticket_key
       ctxt
-      ~ty:(Tezos_micheline.Micheline.root ty)
-      ~contents:(Tezos_micheline.Micheline.root contents_expr)
+      ~ty:(Mavryk_micheline.Micheline.root ty)
+      ~contents:(Mavryk_micheline.Micheline.root contents_expr)
       ~ticketer
       zk_rollup
 
@@ -388,7 +387,7 @@ struct
                 CONTRACT %%deposit (pair (ticket %s) bytes);
                 ASSERT_SOME;
                 SWAP;
-                PUSH mutez 0;
+                PUSH mumav 0;
                 SWAP;
                 # create a ticket
                 PUSH nat %a;
@@ -436,7 +435,7 @@ struct
       ~fee:Tez.one
       account
       deposit_contract
-      (Tez.of_mutez_exn 0L)
+      (Tez.of_mumav_exn 0L)
 
   (** Return an operation to originate a contract that will deposit [amount]
       tickets with l2 operation [op] on [zk_rollup] *)

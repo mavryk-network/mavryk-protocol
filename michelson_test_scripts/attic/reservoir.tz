@@ -1,7 +1,7 @@
 parameter unit ;
 storage
   (pair
-     (pair (timestamp %T) (mutez %N))
+     (pair (timestamp %T) (mumav %N))
      (pair (address %A) (address %B))) ;
 code
   { CDR ; DUP ; CAAR %T; # T

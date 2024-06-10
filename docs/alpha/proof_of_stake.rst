@@ -30,7 +30,7 @@ Delegation and Staking
 A *delegate* is any :ref:`implicit account <def_implicit_account_alpha>` registered as
 such. This is done by *self-delegating*, that is, emitting a delegation
 operation (see below) in which the specified delegate is the same as the
-operation emitter (its signer). Note that ``tz4`` accounts cannot be registered
+operation emitter (its signer). Note that ``mv4`` accounts cannot be registered
 as delegates.
 
 Any :ref:`account <def_account_alpha>` (implicit or originated) can specify a delegate
@@ -64,7 +64,7 @@ transfer the delegate's free balance to an arbitrary account.  In :doc:`relevant
 like ``/chains/main/blocks/head/helpers/baking_rights``, both the delegate's
 manager and consensus keys are listed.
 
-On test-network only, if the :ref:`adaptive issuance <adaptive_issuance_oxford>`
+On test-network only, if the :ref:`adaptive issuance <adaptive_issuance_atlas>`
 feature is activated, it grants delegators the ability to become
 'stakers' by placing security deposits. These deposits would contribute to their
 delegate's stake and could be subject to slashing penalties if their delegate
@@ -170,15 +170,15 @@ Proof-of-stake parameters
    * - Parameter name
      - Parameter value
    * - ``BLOCKS_PER_CYCLE``
-     - 24576 blocks
+     - 16384 blocks
    * - ``PRESERVED_CYCLES``
      - 5 cycles
    * - ``MINIMAL_STAKE``
-     - 6,000 ꜩ
+     - 6,000 ṁ
    * - ``MINIMAL_FROZEN_STAKE``
-     - 600 ꜩ
+     - 600 ṁ
    * - ``BLOCKS_PER_STAKE_SNAPSHOT``
-     - 1536 blocks
+     - 1024 blocks
 
 
 Further External Resources
@@ -189,8 +189,8 @@ found in the `whitepaper
 <https://tezos.com/whitepaper.pdf>`_.
 
 
-The adaptive issuance experimental feature :ref:`documentation <adaptive_issuance_oxford>`.
+The adaptive issuance experimental feature :ref:`documentation <adaptive_issuance_atlas>`.
 
 Other presentations of the Tezos' proof-of-stake mechanism can be
 found in the
-`Open Tezos entry <https://opentezos.com/tezos-basics/liquid-proof-of-stake/>`_.
+`Open Tezos entry <https://opentezos.com/mavryk-basics/liquid-proof-of-stake/>`_.

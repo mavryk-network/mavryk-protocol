@@ -36,7 +36,6 @@ module Worker_config :
      and type GS.Span.t = Types.Span.t
      and type GS.Time.t = Types.Time.t
      and type 'a Monad.t = 'a Lwt.t
-     and type Point.t = Types.Point.t
 
 module Worker_instance :
   Gossipsub_intf.WORKER
@@ -47,7 +46,6 @@ module Worker_instance :
      and type GS.Span.t = Types.Span.t
      and type GS.Time.t = Types.Time.t
      and type 'a Monad.t = 'a Lwt.t
-     and type Point.t = Types.Point.t
 
 module Validate_message_hook : sig
   val set :

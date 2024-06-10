@@ -31,7 +31,7 @@ type header = {
   previous_commitment_hash : Commitment.Hash.t;
   context : Smart_rollup_context_hash.t;
   inbox_witness :
-    Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
+    Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
   inbox_hash : Inbox.Hash.t;
 }
 
@@ -103,16 +103,16 @@ let header_encoding =
         inbox_hash;
       })
   @@ obj8
-       (req "block_hash" Block_hash.encoding ~description:"Tezos block hash.")
+       (req "block_hash" Block_hash.encoding ~description:"Mavryk block hash.")
        (req
           "level"
           int32
           ~description:
-            "Level of the block, corresponds to the level of the tezos block.")
+            "Level of the block, corresponds to the level of the mavryk block.")
        (req
           "predecessor"
           Block_hash.encoding
-          ~description:"Predecessor hash of the Tezos block.")
+          ~description:"Predecessor hash of the Mavryk block.")
        (req
           "commitment_hash"
           commitment_hash_opt_encoding
@@ -131,7 +131,7 @@ let header_encoding =
           ~description:"Hash of the layer 2 context for this block.")
        (req
           "inbox_witness"
-          Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
+          Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
           .encoding
           ~description:
             "Witness for the inbox for this block, i.e. the Merkle hash of \

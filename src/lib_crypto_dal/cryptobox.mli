@@ -196,29 +196,24 @@ val polynomial_to_slot : t -> polynomial -> slot
      polynomial [p].
 
       Fails with [`Invalid_degree_strictly_less_than_expected _]
-      if the degree of [p] exceeds the SRS size.
-      
-      Fails with [`Prover_SRS_not_loaded] if the prover’s SRS is not loaded
-      (ie: [init_dal_verifier] has been used to load the SRS). *)
+      if the degree of [p] exceeds the SRS size. *)
 val commit :
   t ->
   polynomial ->
   ( commitment,
-    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-    | `Prover_SRS_not_loaded ] )
+    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container]
+  )
   Result.t
 
 (** [pp_commit_error fmt error] pretty-prints the error returned by {!val:commit}. *)
 val pp_commit_error :
   Format.formatter ->
-  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-  | `Prover_SRS_not_loaded ] ->
+  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container] ->
   unit
 
 (** [string_of_commit_error error] returns an error string message for [error]. *)
 val string_of_commit_error :
-  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-  | `Prover_SRS_not_loaded ] ->
+  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container] ->
   string
 
 (** A portion of the data represented by a polynomial. *)
@@ -329,15 +324,13 @@ val verify_shard :
 
     Fails with:
     - [Error `Invalid_degree_strictly_less_than_expected _] if the SRS
-    contained in [t] is too small to produce the proof
-    - [Error `Prover_SRS_not_loaded] if the prover’s SRS is not loaded
-    (ie: [init_dal_verifier] has been used to load the SRS). *)
+    contained in [t] is too small to produce the proof *)
 val prove_commitment :
   t ->
   polynomial ->
   ( commitment_proof,
-    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-    | `Prover_SRS_not_loaded ] )
+    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container]
+  )
   Result.t
 
 (** [prove_page t polynomial n] produces a proof for the [n]-th page of
@@ -352,8 +345,6 @@ val prove_commitment :
     - [Error (`Page_index_out_of_range msg)] if the page index
     is not within the range [0, slot_size/page_size - 1]
     (where [slot_size] and [page_size] are found in [t]).
-    - [Error `Prover_SRS_not_loaded] if the SRS has been loaded with
-    [init_dal_verifier].
 
     Ensures:
     - [verify_page t commitment ~page_index page page_proof = Ok ()] if
@@ -368,8 +359,7 @@ val prove_page :
   int ->
   ( page_proof,
     [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-    | `Page_index_out_of_range
-    | `Prover_SRS_not_loaded ] )
+    | `Page_index_out_of_range ] )
   Result.t
 
 (** The precomputation used to produce shard proofs. *)
@@ -395,17 +385,17 @@ val save_precompute_shards_proofs :
 
     Returns the error {!type:Invalid_precomputation_hash} if the integrity check fails. *)
 val load_precompute_shards_proofs :
-  hash:Tezos_crypto.Blake2B.t option ->
+  hash:Mavryk_crypto.Blake2B.t option ->
   filename:string ->
   unit ->
   shards_proofs_precomputation Error_monad.tzresult Lwt.t
 
-(** [hash_precomputation precomputation] returns the {!Tezos_crypto.Blake2B.t}
+(** [hash_precomputation precomputation] returns the {!Mavryk_crypto.Blake2B.t}
     hash of the {!Data_encoding.t} value of [precomputation].
 
     @raises a {!Data_encoding.Binary.Write_error} if [precomputation] can't be
     serialized to a value {!val:shards_proofs_precomputation_encoding}. *)
-val hash_precomputation : shards_proofs_precomputation -> Tezos_crypto.Blake2B.t
+val hash_precomputation : shards_proofs_precomputation -> Mavryk_crypto.Blake2B.t
 
 (** [prove_shards t ~precomputation ~polynomial] produces
    [number_of_shards] proofs [(π_0, ..., π_{number_of_shards - 1})] for the elements
@@ -439,11 +429,6 @@ module Internal_for_tests : sig
      is linear with respect to [parameters.slot_size]. Order of magnitude can
      be around 1 minute for a size of 1MiB. *)
   val parameters_initialisation : parameters -> initialisation_parameters
-
-  (** Same as [parameters_initialisation] but the resulting
-      initialisation_parameters will be tagged for the verifier *)
-  val parameters_initialisation_verifier :
-    parameters -> initialisation_parameters
 
   (** Same as {!val:load_parameters} except it erase parameters if
      they were already loaded. This is used to circumvent limitation
@@ -522,11 +507,6 @@ module Internal_for_tests : sig
      See implementation file for details. *)
   val ensure_validity : parameters -> bool
 
-  (** Same as [ensure_validity parameters], except that it returns an error if the
-      [parameters] aren't valid and doesn't check the SRS. *)
-  val ensure_validity_without_srs :
-    parameters -> (unit, [> `Fail of string]) result
-
   val slot_as_polynomial_length : slot_size:int -> page_size:int -> int
 end
 
@@ -562,14 +542,6 @@ module Config : sig
      check is run.) In this case, [init_dal] can take several seconds
      to run. *)
   val init_dal :
-    find_srs_files:(unit -> (string * string) Error_monad.tzresult) ->
-    ?srs_size_log2:int ->
-    t ->
-    unit Error_monad.tzresult Lwt.t
-
-  (** For now, it’s a duplicate of [init_dal]. In the future it will initialize
-      the DAL verification, loading only the SRS part needed for verification *)
-  val init_dal_verifier :
     find_srs_files:(unit -> (string * string) Error_monad.tzresult) ->
     ?srs_size_log2:int ->
     t ->

@@ -1,12 +1,12 @@
 Snoop and the Michelson Interpreter
 ===================================
 
-In order to evaluate gas costs for the Michelson interpreter, we want to have a collection of benchmarks and models that cover every instruction of the language. This document explains how to modify the files in :src:`src/proto_alpha/lib_benchmarks_proto/` in order to fully integrate a new instruction for ``octez-snoop``.
+In order to evaluate gas costs for the Michelson interpreter, we want to have a collection of benchmarks and models that cover every instruction of the language. This document explains how to modify the files in :src:`src/proto_alpha/lib_benchmarks_proto/` in order to fully integrate a new instruction for ``mavkit-snoop``.
 
 Interpreter Workload
 --------------------
 
-We first need to update the ``interpreter_workload.ml`` file. It specifies the data that is collected and saved as a ``workload`` for each benchmark. First, we add an entry to ``instruction_name`` with the name of the new instruction prefixed with ``N_``, it will be the name ``octez-snoop`` will refer to this instruction as. Then add it to the list ``all_instructions``, and update ``string_of_instruction_name``. Now, we can add a function to the ``Instructions`` module. This function should take a number, possibly zero, of integer arguments that defines our workload. We want these arguments to be the different parameters that may influence the benchmarking time. For instance, the time ``DIG`` takes to be executed varies with the depth of digging, so the ``depth`` should be in the workload:
+We first need to update the ``interpreter_workload.ml`` file. It specifies the data that is collected and saved as a ``workload`` for each benchmark. First, we add an entry to ``instruction_name`` with the name of the new instruction prefixed with ``N_``, it will be the name ``mavkit-snoop`` will refer to this instruction as. Then add it to the list ``all_instructions``, and update ``string_of_instruction_name``. Now, we can add a function to the ``Instructions`` module. This function should take a number, possibly zero, of integer arguments that defines our workload. We want these arguments to be the different parameters that may influence the benchmarking time. For instance, the time ``DIG`` takes to be executed varies with the depth of digging, so the ``depth`` should be in the workload:
 
 .. code-block:: ocaml
 
@@ -48,9 +48,9 @@ In that last example, we use the module ``Size`` to convert the bytes into their
    match (instr, stack) with
      (...)
      | (IMul_teznat (_, _), (x, (y, _))) ->
-         Instructions.mul_teznat (Size.mutez x) (Size.integer y)
+         Instructions.mul_teznat (Size.mumav x) (Size.integer y)
 
-In this example, and for most mathematical operations in Michelson, the computation time actually depends on the size in memory of the arguments, not their values. Here, the size of an integer is the number of bytes needed to represent them, likewise for mutez. In this kind of scenario, we will make use of the ``Size`` module.
+In this example, and for most mathematical operations in Michelson, the computation time actually depends on the size in memory of the arguments, not their values. Here, the size of an integer is the number of bytes needed to represent them, likewise for mumav. In this kind of scenario, we will make use of the ``Size`` module.
 
 
 Interpreter Models

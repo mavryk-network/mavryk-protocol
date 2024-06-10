@@ -4,7 +4,7 @@ Tezos Software Architecture
 A Tezos network is composed of several running Tezos nodes, complemented by other running daemons, such as bakers and signers.
 Any implementation of the Tezos node should adhere to a high-level software architecture, described in this page.
 
-For instance, the Octez suite, which provides an implementation of the Tezos node and other executables, implements these principles in the `Octez software architecture <https://tezos.gitlab.io/shell/the_big_picture.html>`__.
+For instance, the Mavkit suite, which provides an implementation of the Tezos node and other executables, implements these principles in the `Mavkit software architecture <https://tezos.gitlab.io/shell/the_big_picture.html>`__.
 
 Shell & Protocol
 ----------------

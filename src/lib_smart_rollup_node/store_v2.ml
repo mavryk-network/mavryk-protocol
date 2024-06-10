@@ -30,7 +30,7 @@ include Store_v1
 
 let version = Store_version.V2
 
-module Make_hash_index_key (H : Tezos_crypto.Intfs.HASH) =
+module Make_hash_index_key (H : Mavryk_crypto.Intfs.HASH) =
 Indexed_store.Make_index_key (struct
   include Indexed_store.Make_fixed_encodable (H)
 
@@ -86,15 +86,15 @@ module Inboxes =
     (struct
       let name = "inboxes"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Inbox.Hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Inbox.Hash))
     (struct
-      type t = Octez_smart_rollup.Inbox.t
+      type t = Mavkit_smart_rollup.Inbox.t
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Inbox.to_versioned
-          Octez_smart_rollup.Inbox.of_versioned
-          Octez_smart_rollup.Inbox.versioned_encoding
+          Mavkit_smart_rollup.Inbox.to_versioned
+          Mavkit_smart_rollup.Inbox.of_versioned
+          Mavkit_smart_rollup.Inbox.versioned_encoding
 
       let name = "inbox"
 
@@ -107,15 +107,15 @@ module Commitments =
     (struct
       let name = "commitments"
     end)
-    (Make_hash_index_key (Octez_smart_rollup.Commitment.Hash))
+    (Make_hash_index_key (Mavkit_smart_rollup.Commitment.Hash))
     (struct
-      type t = Octez_smart_rollup.Commitment.t
+      type t = Mavkit_smart_rollup.Commitment.t
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Commitment.to_versioned
-          Octez_smart_rollup.Commitment.of_versioned
-          Octez_smart_rollup.Commitment.versioned_encoding
+          Mavkit_smart_rollup.Commitment.to_versioned
+          Mavkit_smart_rollup.Commitment.of_versioned
+          Mavkit_smart_rollup.Commitment.versioned_encoding
 
       let name = "commitment"
 
@@ -137,20 +137,20 @@ module Lcc = struct
         (fun {commitment; level} -> (commitment, level))
         (fun (commitment, level) -> {commitment; level})
       @@ obj2
-           (req "commitment" Octez_smart_rollup.Commitment.Hash.encoding)
+           (req "commitment" Mavkit_smart_rollup.Commitment.Hash.encoding)
            (req "level" int32)
   end)
 end
 
 (** Single commitment for LPC. *)
 module Lpc = Indexed_store.Make_singleton (struct
-  type t = Octez_smart_rollup.Commitment.t
+  type t = Mavkit_smart_rollup.Commitment.t
 
   let encoding =
     Data_encoding.conv
-      Octez_smart_rollup.Commitment.to_versioned
-      Octez_smart_rollup.Commitment.of_versioned
-      Octez_smart_rollup.Commitment.versioned_encoding
+      Mavkit_smart_rollup.Commitment.to_versioned
+      Mavkit_smart_rollup.Commitment.of_versioned
+      Mavkit_smart_rollup.Commitment.versioned_encoding
 
   let name = "lpc"
 end)
@@ -167,24 +167,24 @@ module Dal_slots_headers =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type key = Octez_smart_rollup.Dal.Slot_index.t
+      type key = Mavkit_smart_rollup.Dal.Slot_index.t
 
-      let encoding = Octez_smart_rollup.Dal.Slot_index.encoding
+      let encoding = Mavkit_smart_rollup.Dal.Slot_index.encoding
 
       let compare = Compare.Int.compare
 
       let name = "slot_index"
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_header.t
+      type value = Mavkit_smart_rollup.Dal.Slot_header.t
 
       let name = "slot_header"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_header.to_versioned
-          Octez_smart_rollup.Dal.Slot_header.of_versioned
-          Octez_smart_rollup.Dal.Slot_header.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_header.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_header.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_header.versioned_encoding
     end)
 
 (** Versioned Confirmed DAL slots history *)
@@ -199,15 +199,15 @@ module Dal_confirmed_slots_history =
       let to_path_representation = Block_hash.to_b58check
     end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history.t
 
       let name = "dal_slot_histories"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_history.to_versioned
-          Octez_smart_rollup.Dal.Slot_history.of_versioned
-          Octez_smart_rollup.Dal.Slot_history.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_history.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_history.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_history.versioned_encoding
     end)
 
 (** Versioned Confirmed DAL slots histories cache. *)
@@ -224,15 +224,15 @@ module Dal_confirmed_slots_histories =
         let to_path_representation = Block_hash.to_b58check
       end)
     (struct
-      type value = Octez_smart_rollup.Dal.Slot_history_cache.t
+      type value = Mavkit_smart_rollup.Dal.Slot_history_cache.t
 
       let name = "dal_slot_histories"
 
       let encoding =
         Data_encoding.conv
-          Octez_smart_rollup.Dal.Slot_history_cache.to_versioned
-          Octez_smart_rollup.Dal.Slot_history_cache.of_versioned
-          Octez_smart_rollup.Dal.Slot_history_cache.versioned_encoding
+          Mavkit_smart_rollup.Dal.Slot_history_cache.to_versioned
+          Mavkit_smart_rollup.Dal.Slot_history_cache.of_versioned
+          Mavkit_smart_rollup.Dal.Slot_history_cache.versioned_encoding
     end)
 
 module Protocols = struct
@@ -311,14 +311,6 @@ module Gc_levels = struct
   end)
 end
 
-module Last_context_split = Indexed_store.Make_singleton (struct
-  type t = int32
-
-  let name = "last_context_split_level"
-
-  let encoding = Data_encoding.int32
-end)
-
 module History_mode = Indexed_store.Make_singleton (struct
   type t = Configuration.history_mode
 
@@ -341,7 +333,6 @@ type 'a store = {
   protocols : 'a Protocols.t;
   irmin_store : 'a Irmin_store.t;
   gc_levels : 'a Gc_levels.t;
-  last_context_split_level : 'a Last_context_split.t;
   history_mode : 'a History_mode.t;
 }
 
@@ -366,7 +357,6 @@ let readonly
        protocols;
        irmin_store;
        gc_levels;
-       last_context_split_level;
        history_mode;
      } :
       _ t) : ro =
@@ -385,8 +375,6 @@ let readonly
     protocols = Protocols.readonly protocols;
     irmin_store = Irmin_store.readonly irmin_store;
     gc_levels = Gc_levels.readonly gc_levels;
-    last_context_split_level =
-      Last_context_split.readonly last_context_split_level;
     history_mode = History_mode.readonly history_mode;
   }
 
@@ -405,7 +393,6 @@ let close
        protocols = _;
        irmin_store;
        gc_levels = _;
-       last_context_split_level = _;
        history_mode = _;
      } :
       _ t) =
@@ -460,9 +447,6 @@ let load (type a) (mode : a mode) ~index_buffer_size ~l2_blocks_cache_size
   in
   let* protocols = Protocols.load mode ~path:(path "protocols") in
   let* gc_levels = Gc_levels.load mode ~path:(path "gc_levels") in
-  let* last_context_split_level =
-    Last_context_split.load mode ~path:(path "last_context_split_level")
-  in
   let* history_mode = History_mode.load mode ~path:(path "history_mode") in
   let+ irmin_store = Irmin_store.load mode (path "irmin_store") in
   {
@@ -479,7 +463,6 @@ let load (type a) (mode : a mode) ~index_buffer_size ~l2_blocks_cache_size
     protocols;
     irmin_store;
     gc_levels;
-    last_context_split_level;
     history_mode;
   }
 
@@ -525,40 +508,114 @@ let iter_l2_blocks ?progress metadata ({l2_blocks; l2_head; _} as store) f =
       in
       loop head.header.block_hash
 
-let gc_l2_blocks l2_blocks ~level =
-  L2_blocks.gc l2_blocks (fun _hash header _content ->
-      Lwt_result.return (header.Sc_rollup_block.level >= level))
+let gc_l2_blocks l2_blocks ~(head : Sc_rollup_block.t) ~level =
+  L2_blocks.gc
+    l2_blocks
+    (Indexed_store.Iterator
+       {
+         first = head.header.block_hash;
+         next =
+           (fun _hash (_content, header) ->
+             if header.Sc_rollup_block.level <= level then Lwt.return_none
+             else Lwt.return_some header.predecessor);
+       })
 
-let gc_commitments commitments ~level =
-  Commitments.gc commitments (fun _hash () commitment ->
-      Lwt_result.return (commitment.Commitment.inbox_level >= level))
+let gc_commitments commitments ~last_commitment ~level =
+  Commitments.gc
+    commitments
+    (Indexed_store.Iterator
+       {
+         first = last_commitment;
+         next =
+           (fun _hash (commitment, ()) ->
+             if commitment.Commitment.inbox_level <= level then Lwt.return_none
+             else Lwt.return_some commitment.predecessor);
+       })
 
-let gc_levels_to_hashes levels_to_hashes ~level =
-  Levels_to_hashes.gc levels_to_hashes (fun block_level _block_hash ->
-      Lwt_result.return (block_level >= level))
+let gc_levels_to_hashes levels_to_hashes ~(head : Sc_rollup_block.t) ~level =
+  Levels_to_hashes.gc
+    levels_to_hashes
+    (Indexed_store.Iterator
+       {
+         first = head.header.level;
+         next =
+           (fun blevel _bhash ->
+             if blevel <= level then Lwt.return_none
+             else Lwt.return_some (Int32.pred blevel));
+       })
 
-let gc_messages messages l2_blocks ~level =
-  Messages.gc messages (fun _witness predecessor _msgs ->
-      let open Lwt_result_syntax in
-      let+ pred = L2_blocks.header l2_blocks predecessor in
-      match pred with
-      | Some {level = pred_level; _} -> pred_level >= Int32.pred level
-      | None -> false)
+let gc_messages messages l2_blocks ~(head : Sc_rollup_block.t) ~level =
+  Messages.gc
+    messages
+    (Indexed_store.Iterator
+       {
+         first = head.header.inbox_witness;
+         next =
+           (fun _witness (_msgs, predecessor) ->
+             let open Lwt_syntax in
+             let* pred_inbox_witness =
+               let open Lwt_result_syntax in
+               let+ pred = L2_blocks.header l2_blocks predecessor in
+               match pred with
+               | Some {level = pred_level; inbox_witness; _}
+                 when pred_level >= level ->
+                   Some inbox_witness
+               | _ -> None
+             in
+             match pred_inbox_witness with
+             | Error e ->
+                 Fmt.failwith
+                   "Could not compute messages witness for GC: %a"
+                   pp_print_trace
+                   e
+             | Ok witness -> return witness);
+       })
 
 let gc_commitments_published_at_level commitments_published_at_level commitments
-    ~level =
-  Commitments_published_at_level.gc
-    commitments_published_at_level
-    (fun commitment_hash _ ->
-      let open Lwt_result_syntax in
-      let* commitment = Commitments.read commitments commitment_hash in
-      match commitment with
-      | None -> return_false
-      | Some ({inbox_level; _}, ()) -> return (inbox_level >= level))
+    lpc ~level =
+  let open Lwt_result_syntax in
+  let* lpc = Lpc.read lpc in
+  match lpc with
+  | None -> return_unit
+  | Some lpc ->
+      Commitments_published_at_level.gc
+        commitments_published_at_level
+        (Indexed_store.Iterator
+           {
+             first = Commitment.hash lpc;
+             next =
+               (fun commitment_hash _ ->
+                 let open Lwt_syntax in
+                 let* commitment =
+                   Commitments.read commitments commitment_hash
+                 in
+                 match commitment with
+                 | Error e ->
+                     Fmt.failwith
+                       "Could not compute commitment published at level for \
+                        GC: %a"
+                       pp_print_trace
+                       e
+                 | Ok None -> return_none
+                 | Ok (Some (commitment, ())) ->
+                     if commitment.Commitment.inbox_level <= level then
+                       return_none
+                     else return_some commitment.predecessor);
+           })
 
-let gc_inboxes inboxes ~level =
-  Inboxes.gc inboxes (fun _inbox_hash () inbox ->
-      Lwt_result.return (inbox.level >= level))
+let gc_inboxes inboxes ~(head : Sc_rollup_block.t) ~level =
+  Inboxes.gc
+    inboxes
+    (Indexed_store.Iterator
+       {
+         first = head.header.inbox_hash;
+         next =
+           (fun _inbox_hash (inbox, ()) ->
+             let open Lwt_syntax in
+             if inbox.level <= level then return_none
+             else
+               return (Inbox.Skip_list.back_pointer inbox.old_levels_messages 0));
+       })
 
 let gc
     ({
@@ -567,31 +624,41 @@ let gc
        inboxes;
        commitments;
        commitments_published_at_level;
-       l2_head = _;
+       l2_head;
        last_finalized_level = _;
        lcc = _;
-       lpc = _;
+       lpc;
        levels_to_hashes;
        irmin_store = _;
        protocols = _;
        gc_levels = _;
-       last_context_split_level = _;
        history_mode = _;
      } :
       _ t) ~level =
   let open Lwt_result_syntax in
-  tzjoin
-    [
-      gc_l2_blocks l2_blocks ~level;
-      gc_commitments commitments ~level;
-      gc_levels_to_hashes levels_to_hashes ~level;
-      gc_messages messages l2_blocks ~level;
-      gc_commitments_published_at_level
-        commitments_published_at_level
-        commitments
-        ~level;
-      gc_inboxes inboxes ~level;
-    ]
+  let* head = L2_head.read l2_head in
+  match head with
+  | None -> return_unit
+  | Some head ->
+      let last_commitment =
+        Sc_rollup_block.most_recent_commitment head.header
+      in
+      let* () =
+        tzjoin
+          [
+            gc_l2_blocks l2_blocks ~head ~level;
+            gc_commitments commitments ~last_commitment ~level;
+            gc_levels_to_hashes levels_to_hashes ~head ~level;
+            gc_messages messages l2_blocks ~head ~level;
+            gc_commitments_published_at_level
+              commitments_published_at_level
+              commitments
+              lpc
+              ~level;
+            gc_inboxes inboxes ~head ~level;
+          ]
+      in
+      return_unit
 
 let wait_gc_completion
     ({
@@ -608,7 +675,6 @@ let wait_gc_completion
        irmin_store = _;
        protocols = _;
        gc_levels = _;
-       last_context_split_level = _;
        history_mode = _;
      } :
       _ t) =
@@ -638,7 +704,6 @@ let is_gc_finished
        irmin_store = _;
        protocols = _;
        gc_levels = _;
-       last_context_split_level = _;
        history_mode = _;
      } :
       _ t) =

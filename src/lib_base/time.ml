@@ -132,7 +132,7 @@ module Protocol = struct
     @@ splitted ~binary:int64 ~json:as_string_encoding
 
   let rpc_arg =
-    Tezos_rpc.Arg.make
+    Mavryk_rpc.Arg.make
       ~name:"date"
       ~descr:"A date in seconds from epoch"
       ~destruct:(function
@@ -191,7 +191,7 @@ module System = struct
            float
 
     let rpc_arg =
-      Tezos_rpc.Arg.make
+      Mavryk_rpc.Arg.make
         ~name:"timespan"
         ~descr:"A span of time in seconds"
         ~destruct:(fun s ->
@@ -291,7 +291,7 @@ module System = struct
     @@ splitted ~binary ~json
 
   let rpc_arg =
-    Tezos_rpc.Arg.make
+    Mavryk_rpc.Arg.make
       ~name:"date"
       ~descr:"A date in seconds from epoch"
       ~destruct:(function
@@ -340,20 +340,6 @@ module System = struct
 
     let hash = hash
   end)
-end
-
-module Monotonic = struct
-  module Span = struct
-    type t = Mtime.Span.t
-
-    let to_ms x =
-      Int64.to_int
-        Mtime.Span.(Int64.unsigned_div (to_uint64_ns x) (to_uint64_ns ms))
-
-    let to_float_us x = Mtime.Span.(to_float_ns x /. to_float_ns us)
-
-    let to_float_s x = Mtime.Span.(to_float_ns x /. to_float_ns s)
-  end
 end
 
 let () =

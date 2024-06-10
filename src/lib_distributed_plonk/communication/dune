@@ -3,12 +3,12 @@
 
 (library
  (name communication)
- (public_name octez-libs.plonk.communication)
+ (public_name mavkit-libs.plonk.communication)
  (instrumentation (backend bisect_ppx))
  (libraries
   logs
-  octez-distributed-lwt-internal
-  octez-libs.plonk.distribution)
+  mavkit-distributed-lwt-internal
+  mavkit-libs.plonk.distribution)
  (preprocess (pps ppx_repr))
  (flags
   (:standard)

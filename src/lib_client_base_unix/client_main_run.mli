@@ -35,11 +35,11 @@ sig
     (* Global options for the CLI. The presence of (unit ->) is
        because of weak type variables. *)
     unit ->
-    (t, Client_context_unix.unix_full) Tezos_clic.options
+    (t, Client_context_unix.unix_full) Mavryk_clic.options
 
   val parse_config_args :
     (* How to parse CLI arguments *)
-    #Tezos_client_base.Client_context.full ->
+    #Mavryk_client_base.Client_context.full ->
     string list ->
     (Client_config.parsed_config_args * string list) tzresult Lwt.t
 
@@ -70,12 +70,12 @@ sig
          if you need them, default (in [Client_config]) is to ignore them. *)
       string ->
     config_commands:
-      Tezos_client_base.Client_context.full Tezos_clic.command list ->
+      Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     builtin_commands:
-      Tezos_client_base.Client_context.full Tezos_clic.command list ->
-    other_commands:Tezos_client_base.Client_context.full Tezos_clic.command list ->
+      Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
+    other_commands:Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     require_auth:bool ->
-    Tezos_client_base.Client_context.full Tezos_clic.command list
+    Mavryk_client_base.Client_context.full Mavryk_clic.command list
 
   val logger :
     (* Provide your own [logger] here if you need to override the
@@ -89,5 +89,5 @@ val run :
   select_commands:
     (RPC_client_unix.http_ctxt ->
     Client_config.cli_args ->
-    Client_context.full Tezos_clic.command list tzresult Lwt.t) ->
+    Client_context.full Mavryk_clic.command list tzresult Lwt.t) ->
   unit

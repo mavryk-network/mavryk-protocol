@@ -29,7 +29,7 @@
     message would work.
    - `keys` were generated via MetaMask.
    - `sigs` were obtained within the code base by calling:
-     `Tezos_crypto.Signature.Secp256k1.sign_keccak256`
+     `Mavryk_crypto.Signature.Secp256k1.sign_keccak256`
      (reference commit: 88ccae58e16e99fcba74b3d5f460af6b948ae19c) *)
 
 let msgs =

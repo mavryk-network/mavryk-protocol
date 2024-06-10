@@ -1,0 +1,34 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_benchmark_001_PtAtLas)
+ (public_name mavryk-benchmark-001-PtAtLas)
+ (libraries
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavkit-libs.micheline
+  mavryk-micheline-rewriting
+  mavryk-benchmark
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-libs.crypto
+  mavryk-protocol-001-PtAtLas.parameters
+  hashcons
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  prbnmcn-stats)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_error_monad
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers)
+ (private_modules kernel rules state_space))

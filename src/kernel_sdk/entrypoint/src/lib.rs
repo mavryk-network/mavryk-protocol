@@ -8,7 +8,7 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(all(feature = "dlmalloc", not(target_arch = "riscv64")))]
+#[cfg(feature = "dlmalloc")]
 mod allocator {
     use dlmalloc::GlobalDlmalloc;
 
@@ -19,7 +19,7 @@ mod allocator {
 /// Set panic hook
 #[cfg(feature = "panic-hook")]
 pub fn set_panic_hook() {
-    std::panic::set_hook(Box::new(tezos_smart_rollup_panic_hook::panic_handler));
+    std::panic::set_hook(Box::new(mavryk_smart_rollup_panic_hook::panic_handler));
 }
 
 /// Dummy panic hook that does nothing.
@@ -33,10 +33,10 @@ extern crate alloc;
 ///
 /// ```no_run
 /// # extern crate alloc;
-/// #[macro_use] extern crate tezos_smart_rollup_entrypoint;
-/// #[macro_use] extern crate tezos_smart_rollup_debug;
+/// #[macro_use] extern crate mavryk_smart_rollup_entrypoint;
+/// #[macro_use] extern crate mavryk_smart_rollup_debug;
 ///
-/// use tezos_smart_rollup_host::runtime::Runtime;
+/// use mavryk_smart_rollup_host::runtime::Runtime;
 ///
 /// fn run<Host: Runtime>(host: &mut Host) {
 ///   debug_msg!(host, "Hello: {}", "Kernel!");
@@ -57,26 +57,8 @@ macro_rules! kernel_entry {
             let mut host = unsafe { RollupHost::new() };
             $kernel_run(&mut host)
         }
-
-        #[cfg(all(target_arch = "riscv64", target_os = "hermit"))]
-        pub fn main() -> ! {
-            $crate::set_panic_hook();
-            use $crate::RollupHost;
-            let mut host = unsafe { RollupHost::new() };
-            loop {
-                // TODO #6727: Capture and recover panics.
-                $kernel_run(&mut host);
-            }
-        }
     };
 }
 
 #[doc(hidden)]
-#[cfg(not(feature = "experimental-host-in-memory-store"))]
-pub use tezos_smart_rollup_core::rollup_host::RollupHost;
-
-pub(crate) mod host;
-
-#[doc(hidden)]
-#[cfg(feature = "experimental-host-in-memory-store")]
-pub use host::RollupHostWithInMemoryStorage as RollupHost;
+pub use mavryk_smart_rollup_core::rollup_host::RollupHost;

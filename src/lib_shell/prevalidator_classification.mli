@@ -51,7 +51,7 @@ type parameters = {
 }
 
 module Sized_map :
-  Tezos_base.Sized.SizedMap
+  Mavryk_base.Sized.SizedMap
     with type 'a map := 'a Operation_hash.Map.t
      and type key = Operation_hash.t
 

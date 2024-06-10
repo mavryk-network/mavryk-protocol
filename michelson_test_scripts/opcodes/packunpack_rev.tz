@@ -3,7 +3,7 @@ parameter (pair
              nat
              string
              bytes
-             mutez
+             mumav
              bool
              key_hash
              timestamp address);
@@ -17,8 +17,8 @@ code { CAR;
        DUP; CAR; DIP { UNPAIR; }; PACK; UNPACK string; ASSERT_SOME; ASSERT_CMPEQ;
        # Check the bytes
        DUP; CAR; DIP { UNPAIR; }; PACK; UNPACK bytes; ASSERT_SOME; ASSERT_CMPEQ;
-       # Check the mutez
-       DUP; CAR; DIP { UNPAIR; }; PACK; UNPACK mutez; ASSERT_SOME; ASSERT_CMPEQ;
+       # Check the mumav
+       DUP; CAR; DIP { UNPAIR; }; PACK; UNPACK mumav; ASSERT_SOME; ASSERT_CMPEQ;
        # Check the bool
        DUP; CAR; DIP { UNPAIR; }; PACK; UNPACK bool; ASSERT_SOME; ASSERT_CMPEQ;
        # Check the key_hash

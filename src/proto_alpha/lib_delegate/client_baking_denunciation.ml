@@ -142,14 +142,14 @@ let get_payload_hash (type kind) (op_kind : kind consensus_operation_type)
     (op : kind Operation.t) =
   match (op_kind, op.protocol_data.contents) with
   | Preattestation, Single (Preattestation consensus_content)
-  | Attestation, Single (Attestation {consensus_content; _}) ->
+  | Attestation, Single (Attestation consensus_content) ->
       consensus_content.block_payload_hash
 
 let get_slot (type kind) (op_kind : kind consensus_operation_type)
     (op : kind Operation.t) =
   match (op_kind, op.protocol_data.contents) with
   | Preattestation, Single (Preattestation consensus_content)
-  | Attestation, Single (Attestation {consensus_content; _}) ->
+  | Attestation, Single (Attestation consensus_content) ->
       consensus_content.slot
 
 let double_consensus_op_evidence (type kind) :
@@ -328,7 +328,6 @@ let process_consensus_op (type kind) state cctxt
 
 let process_operations (cctxt : #Protocol_client_context.full) state
     (attestations : 'a list) ~packed_op chain_id =
-  let open Lwt_result_syntax in
   List.iter_es
     (fun op ->
       let {shell; protocol_data; _} = packed_op op in
@@ -349,12 +348,8 @@ let process_operations (cctxt : #Protocol_client_context.full) state
             round
             slot
       | Operation_data
-          ({
-             contents =
-               Single
-                 (Attestation {consensus_content = {round; slot; level; _}; _});
-             _;
-           } as protocol_data) ->
+          ({contents = Single (Attestation {round; slot; level; _}); _} as
+          protocol_data) ->
           let new_attestation : Kind.attestation Alpha_context.operation =
             {shell; protocol_data}
           in

@@ -26,15 +26,13 @@
 
 (* Testing
    -------
-   Component:    Smart Optimistic Rollups
+   Component:    Smart Contract Optimistic Rollups
    Invocation:   dune exec tezt/long_tests/main.exe -- --file sc_rollup.ml
 *)
 
 open Base
 
-let hooks = Tezos_regression.hooks
-
-let rpc_hooks = Tezos_regression.rpc_hooks
+let hooks = Mavryk_regression.hooks
 
 (*
 
@@ -52,8 +50,8 @@ let hex_encode (input : string) : string =
 
    See also [wasm_incomplete_kernel_boot_sector].
 
-   Note that this uses [Tezos_scoru_wasm.Gather_floppies.Complete_kernel], so
-   the kernel must fit into a single Tezos operation.
+   Note that this uses [Mavryk_scoru_wasm.Gather_floppies.Complete_kernel], so
+   the kernel must fit into a single Mavryk operation.
 *)
 let read_kernel name : string =
   let open Tezt.Base in
@@ -92,6 +90,7 @@ let setup ?commitment_period ?challenge_window ?timeout f ~protocol =
     make_parameter "smart_rollup_commitment_period_in_blocks" commitment_period
     @ make_parameter "smart_rollup_challenge_window_in_blocks" challenge_window
     @ make_parameter "smart_rollup_timeout_period_in_blocks" timeout
+    @ [(["smart_rollup_enable"], `Bool true)]
   in
   let base = Either.right (protocol, None) in
   let* parameter_file = Protocol.write_parameter_file ~base parameters in
@@ -114,20 +113,20 @@ let send_message client msg =
   in
   Client.bake_for_and_wait client
 
-let with_fresh_rollup ?(kind = "arith") ~boot_sector f tezos_node tezos_client
+let with_fresh_rollup ?(kind = "arith") ~boot_sector f mavryk_node mavryk_client
     operator =
   let* sc_rollup =
     Sc_rollup_helpers.originate_sc_rollup
       ~kind
       ~boot_sector
       ~src:operator
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       Operator
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:operator
   in
   let* configuration_filename =
@@ -178,7 +177,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
         @@ Sc_rollup_rpc.get_global_block_state_hash ()
       in
       let* prev_ticks =
-        Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+        Sc_rollup_node.RPC.call sc_rollup_node
         @@ Sc_rollup_rpc.get_global_block_total_ticks ()
       in
       let message = sf "%d %d + value" i ((i + 2) * 2) in
@@ -245,7 +244,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
         ~error_msg:"State hash has not changed (%L <> %R)" ;
 
       let* ticks =
-        Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
+        Sc_rollup_node.RPC.call sc_rollup_node
         @@ Sc_rollup_rpc.get_global_block_total_ticks ()
       in
       Check.(ticks >= prev_ticks)
@@ -263,7 +262,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->
@@ -279,7 +278,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
     regression_test
       ~__FILE__
       ~tags:["sc_rollup"; "run"; "node"; "internal"; kind]
-      ~uses:(fun _protocol -> [Constant.octez_smart_rollup_node])
+      ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
       test_name
       (fun protocol ->
         setup ~protocol @@ fun node client ->

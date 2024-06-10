@@ -31,20 +31,7 @@ and component = {
   implementation : string;
 }
 
-and env_version =
-  | V0
-  | V1
-  | V2
-  | V3
-  | V4
-  | V5
-  | V6
-  | V7
-  | V8
-  | V9
-  | V10
-  | V11
-  | V12
+and env_version = V0 | V1 | V2 | V3 | V4 | V5 | V6 | V7 | V8 | V9 | V10 | V11
 
 val component_encoding : component Data_encoding.t
 
@@ -66,7 +53,7 @@ val pp_ocaml : Format.formatter -> t -> unit
 include
   S.HASHABLE
     with type t := t
-     and type hash := Tezos_crypto.Hashed.Protocol_hash.t
+     and type hash := Mavryk_crypto.Hashed.Protocol_hash.t
 
 val of_bytes_exn : Bytes.t -> t
 
@@ -80,7 +67,7 @@ val module_name_of_env_version : env_version -> string
 
 module Meta : sig
   type t = {
-    hash : Tezos_crypto.Hashed.Protocol_hash.t option;
+    hash : Mavryk_crypto.Hashed.Protocol_hash.t option;
     expected_env_version : env_version option;
     modules : string list;
   }

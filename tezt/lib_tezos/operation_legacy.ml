@@ -39,7 +39,7 @@ type manager_op_kind =
       dest : string;
       (* public key hash *)
       amount : int;
-      (* in mutez *)
+      (* in mumav *)
       parameter : manager_op_param option;
     }
   | Reveal of string (* public key *)
@@ -69,7 +69,7 @@ let micheline_to_json convert client = function
   | `Michelson data -> convert data client
   | `File file -> (
       match Filename.extension file with
-      | ".tz" | ".tez" | ".mic" -> convert file client
+      | ".tz" | ".mav" | ".mic" -> convert file client
       | ".json" -> JSON.parse_file file |> JSON.unannotate |> Lwt.return
       | s -> Test.fail "Unknown file extension %S in %s" s file)
 
@@ -249,7 +249,7 @@ let sign_manager_op_bytes ~(signer : Account.key) (op_bytes : Bytes.t) =
 let sign_manager_op_hex ~signer op_hex =
   let op_bytes = Hex.to_bytes op_hex in
   let signature = sign_manager_op_bytes ~signer op_bytes in
-  Tezos_crypto.Signature.to_hex signature
+  Mavryk_crypto.Signature.to_hex signature
 
 let inject_operation ?(async = false) ?(force = false) ?wait_for_injection
     ~unsigned_op ~signature client =

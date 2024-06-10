@@ -9,7 +9,7 @@ parameter (or (ticket %receive unit) (pair %send (contract %destination (ticket 
 storage (pair (address %manager) (big_map %tickets address (ticket unit)));
 code
   {
-    AMOUNT; PUSH mutez 0; ASSERT_CMPEQ;
+    AMOUNT; PUSH mumav 0; ASSERT_CMPEQ;
 
     UNPAIR 3;
     IF_LEFT
@@ -92,7 +92,7 @@ code
 
         # Send the ticket
         SWAP;
-        PUSH mutez 0;
+        PUSH mumav 0;
         DIG 3;
         TRANSFER_TOKENS;
         NIL operation;

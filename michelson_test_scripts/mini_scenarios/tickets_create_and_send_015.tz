@@ -28,7 +28,7 @@
          DIG 5 ;
          CONTRACT (pair (pair (ticket string) (ticket string)) address) ;
          IF_NONE { PUSH string "option is None" ; FAILWITH } {} ;
-         PUSH mutez 0 ;
+         PUSH mumav 0 ;
          DIG 7 ;
          DIG 3 ;
          DIG 4 ;

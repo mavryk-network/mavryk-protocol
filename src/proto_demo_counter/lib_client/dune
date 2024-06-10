@@ -2,22 +2,22 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_client_demo_counter)
- (public_name tezos-client-demo-counter)
+ (name mavryk_client_demo_counter)
+ (public_name mavryk-client-demo-counter)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-shell-libs.client-commands
-  tezos-protocol-demo-counter.protocol
-  tezos-protocol-demo-counter.protocol.lifted)
+  mavkit-libs.base
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-commands
+  mavryk-protocol-demo-counter.protocol
+  mavryk-protocol-demo-counter.protocol.lifted)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_commands
-  -open Tezos_protocol_demo_counter))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_commands
+  -open Mavryk_protocol_demo_counter))

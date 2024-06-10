@@ -154,5 +154,5 @@ let change_tmp_directory_if_necessary candidate =
         // Format.asprintf
              "%a"
              (Ptime.pp_rfc3339 ())
-             (Tezos_base.Time.System.now ()))
+             (Mavryk_base.Time.System.now ()))
   | None -> ()

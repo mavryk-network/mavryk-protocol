@@ -3,23 +3,22 @@
 
 (executable
  (name main_smart_rollup_node)
- (public_name octez-smart-rollup-node)
- (package octez-smart-rollup-node)
+ (public_name mavkit-smart-rollup-node)
+ (package mavkit-smart-rollup-node)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.clic
-  octez-shell-libs.shell-services
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.client-commands
-  octez-l2-libs.smart-rollup
-  octez-smart-rollup-node-lib
-  octez_smart_rollup_node_PtNairob
-  octez_smart_rollup_node_Proxford
-  (select void_for_linking-octez_smart_rollup_node_alpha from
-   (octez_smart_rollup_node_alpha -> void_for_linking-octez_smart_rollup_node_alpha.empty)
-   (-> void_for_linking-octez_smart_rollup_node_alpha.empty)))
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.client-commands
+  mavkit-l2-libs.smart-rollup
+  mavkit-smart-rollup-node-lib
+  mavkit_smart_rollup_node_PtAtLas
+  (select void_for_linking-mavkit_smart_rollup_node_alpha from
+   (mavkit_smart_rollup_node_alpha -> void_for_linking-mavkit_smart_rollup_node_alpha.empty)
+   (-> void_for_linking-mavkit_smart_rollup_node_alpha.empty)))
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
@@ -27,16 +26,16 @@
   (-linkall))
  (flags
   (:standard)
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_shell_services
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_client_commands
-  -open Octez_smart_rollup
-  -open Octez_smart_rollup_node))
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_commands
+  -open Mavkit_smart_rollup
+  -open Mavkit_smart_rollup_node))
 
 (rule
  (action
-  (progn (write-file void_for_linking-octez_smart_rollup_node_alpha.empty ""))))
+  (progn (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))

@@ -49,7 +49,7 @@ let init_config (* (f : 'a -> unit -> unit Lwt.t) *) f test_dir switch () :
       user_activated_upgrades = [];
       user_activated_protocol_overrides = [];
       operation_metadata_size_limit = Unlimited;
-      internal_events = Tezos_base.Internal_event_config.stdout;
+      internal_events = Mavryk_base.Internal_event_config.stdout;
       data_dir = test_dir;
       store_root = test_dir // "store";
       context_root = test_dir // "context";
@@ -59,7 +59,7 @@ let init_config (* (f : 'a -> unit -> unit Lwt.t) *) f test_dir switch () :
       target = None;
       disable_mempool = false;
       enable_testchain = true;
-      dal_config = Tezos_crypto_dal.Cryptobox.Config.default;
+      dal_config = Mavryk_crypto_dal.Cryptobox.Config.default;
     }
   in
   f sandbox_parameters config switch ()
@@ -75,7 +75,7 @@ let default_p2p : P2p.config =
     peers_file = "";
     private_mode = true;
     identity = P2p_identity.generate_with_pow_target_0 ();
-    proof_of_work_target = Tezos_crypto.Crypto_box.default_pow_target;
+    proof_of_work_target = Mavryk_crypto.Crypto_box.default_pow_target;
     trust_discovered_peers = false;
     reconnection_config = Point_reconnection_config.default;
     disable_peer_discovery = false;
@@ -93,7 +93,7 @@ let default_p2p = Some (default_p2p, default_p2p_limits)
 
 let wrap f _switch () =
   Tztest.with_empty_mock_sink (fun _ ->
-      Lwt_utils_unix.with_tempdir "tezos_test_" (fun test_dir ->
+      Lwt_utils_unix.with_tempdir "mavryk_test_" (fun test_dir ->
           init_config f test_dir _switch ()))
 
 (** Start tests *)
@@ -112,14 +112,14 @@ let ( let*?? ) m f =
     [p2p_layer_disabled]. *)
 let node_sandbox_initialization_events sandbox_parameters config _switch () =
   let version =
-    Tezos_version.Version.to_string Tezos_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
   in
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   let*?? n =
     Node.create
@@ -128,17 +128,17 @@ let node_sandbox_initialization_events sandbox_parameters config _switch () =
       ~singleprocess:true
       ~version
       ~commit_info
-      (* Tezos_shell.Node.config *)
+      (* Mavryk_shell.Node.config *)
       config
-      (* Tezos_shell.Node.peer_validator_limits *)
+      (* Mavryk_shell.Node.peer_validator_limits *)
       Shell_limits.default_peer_validator_limits
-      (* Tezos_shell.Node.block_validator_limits *)
+      (* Mavryk_shell.Node.block_validator_limits *)
       Shell_limits.default_block_validator_limits
-      (* Tezos_shell.Node.prevalidator_limits *)
+      (* Mavryk_shell.Node.prevalidator_limits *)
       Shell_limits.default_prevalidator_limits
-      (* Tezos_shell.Node.chain_validator_limits *)
+      (* Mavryk_shell.Node.chain_validator_limits *)
       Shell_limits.default_chain_validator_limits
-      (* Tezos_shell_services.History_mode.t option *)
+      (* Mavryk_shell_services.History_mode.t option *)
       None
   in
   (* Start tests *)
@@ -159,14 +159,14 @@ let node_sandbox_initialization_events sandbox_parameters config _switch () =
     [bootstrapping] and [p2p_maintain_started]. *)
 let node_initialization_events _sandbox_parameters config _switch () =
   let version =
-    Tezos_version.Version.to_string Tezos_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
   in
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   let*?? n =
     Node.create
@@ -174,17 +174,17 @@ let node_initialization_events _sandbox_parameters config _switch () =
       ~singleprocess:true
       ~version
       ~commit_info
-      (* Tezos_shell.Node.config *)
+      (* Mavryk_shell.Node.config *)
       {config with p2p = default_p2p}
-      (* Tezos_shell.Node.peer_validator_limits *)
+      (* Mavryk_shell.Node.peer_validator_limits *)
       Shell_limits.default_peer_validator_limits
-      (* Tezos_shell.Node.block_validator_limits *)
+      (* Mavryk_shell.Node.block_validator_limits *)
       Shell_limits.default_block_validator_limits
-      (* Tezos_shell.Node.prevalidator_limits *)
+      (* Mavryk_shell.Node.prevalidator_limits *)
       Shell_limits.default_prevalidator_limits
-      (* Tezos_shell.Node.chain_validator_limits *)
+      (* Mavryk_shell.Node.chain_validator_limits *)
       Shell_limits.default_chain_validator_limits
-      (* Tezos_shell_services.History_mode.t option *)
+      (* Mavryk_shell_services.History_mode.t option *)
       None
   in
   (* Start tests *)
@@ -211,14 +211,14 @@ let node_initialization_events _sandbox_parameters config _switch () =
 
 let node_store_known_protocol_events _sandbox_parameters config _switch () =
   let version =
-    Tezos_version.Version.to_string Tezos_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
   in
   let commit_info =
     ({
-       commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-       commit_date = Tezos_version_value.Current_git_info.committer_date;
+       commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+       commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Tezos_version.Node_version.commit_info)
+      : Mavryk_version.Node_version.commit_info)
   in
   let*?? n =
     Node.create
@@ -226,17 +226,17 @@ let node_store_known_protocol_events _sandbox_parameters config _switch () =
       ~singleprocess:true
       ~version
       ~commit_info
-      (* Tezos_shell.Node.config *)
+      (* Mavryk_shell.Node.config *)
       {config with p2p = default_p2p}
-      (* Tezos_shell.Node.peer_validator_limits *)
+      (* Mavryk_shell.Node.peer_validator_limits *)
       Shell_limits.default_peer_validator_limits
-      (* Tezos_shell.Node.block_validator_limits *)
+      (* Mavryk_shell.Node.block_validator_limits *)
       Shell_limits.default_block_validator_limits
-      (* Tezos_shell.Node.prevalidator_limits *)
+      (* Mavryk_shell.Node.prevalidator_limits *)
       Shell_limits.default_prevalidator_limits
-      (* Tezos_shell.Node.chain_validator_limits *)
+      (* Mavryk_shell.Node.chain_validator_limits *)
       Shell_limits.default_chain_validator_limits
-      (* Tezos_shell_services.History_mode.t option *)
+      (* Mavryk_shell_services.History_mode.t option *)
       None
   in
   (* Start tests *)
@@ -266,5 +266,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-shell" [("test node", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-shell" [("test node", tests)]
   |> Lwt_main.run

@@ -29,7 +29,6 @@ module Parameters = struct
     base_dir : string;
     uri : Uri.t;
     keys : Account.key list;
-    magic_byte : string option;
     mutable pending_ready : unit option Lwt.u list;
   }
 
@@ -38,7 +37,7 @@ module Parameters = struct
   let base_default_name = "signer"
 
   let default_uri () =
-    Uri.make ~scheme:"http" ~host:Constant.default_host ~port:(Port.fresh ()) ()
+    Uri.make ~scheme:"http" ~host:"localhost" ~port:(Port.fresh ()) ()
 
   let default_colors =
     Log.Color.
@@ -70,7 +69,7 @@ let spawn_command ?(env = String_map.empty) ?hooks signer command =
   let env =
     (* Set disclaimer to "Y" if unspecified, otherwise use given value *)
     String_map.update
-      "TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
+      "MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER"
       (fun o -> Option.value ~default:"Y" o |> Option.some)
       env
   in
@@ -92,7 +91,7 @@ let spawn_import_secret_key signer (key : Account.key) =
 let import_secret_key signer (key : Account.key) =
   spawn_import_secret_key signer key |> Process.check
 
-let create ?name ?color ?event_pipe ?base_dir ?uri ?runner ?magic_byte
+let create ?name ?color ?event_pipe ?base_dir ?uri ?runner
     ?(keys = [Constant.bootstrap1]) () =
   let name = match name with None -> fresh_name () | Some name -> name in
   let base_dir =
@@ -103,12 +102,12 @@ let create ?name ?color ?event_pipe ?base_dir ?uri ?runner ?magic_byte
   in
   let signer =
     create
-      ~path:(Uses.path Constant.octez_signer)
+      ~path:(Uses.path Constant.mavkit_signer)
       ?name:(Some name)
       ?color
       ?event_pipe
       ?runner
-      {runner; base_dir; uri; keys; pending_ready = []; magic_byte}
+      {runner; base_dir; uri; keys; pending_ready = []}
   in
   on_event signer (handle_readiness signer) ;
   let* () = Lwt_list.iter_s (import_secret_key signer) keys in
@@ -120,19 +119,12 @@ let run signer =
   | Running _ -> Test.fail "signer %s is already running" signer.name) ;
   let runner = signer.persistent_state.runner in
   let host =
-    Option.value
-      ~default:Constant.default_host
-      (Uri.host signer.persistent_state.uri)
+    Option.value ~default:"localhost" (Uri.host signer.persistent_state.uri)
   in
   let port_args =
     match Uri.port signer.persistent_state.uri with
     | None -> []
     | Some port -> ["--port"; Int.to_string port]
-  in
-  let magic_bytes_args =
-    match signer.persistent_state.magic_byte with
-    | None -> []
-    | Some magic_byte -> ["--magic-bytes"; magic_byte]
   in
   let arguments =
     [
@@ -144,7 +136,7 @@ let run signer =
       "--address";
       host;
     ]
-    @ port_args @ magic_bytes_args
+    @ port_args
   in
   let arguments =
     if !passfile = "" then arguments
@@ -174,9 +166,9 @@ let wait_for_ready signer =
         resolver :: signer.persistent_state.pending_ready ;
       check_event signer "Signer started." promise
 
-let init ?name ?color ?event_pipe ?base_dir ?uri ?runner ?keys ?magic_byte () =
+let init ?name ?color ?event_pipe ?base_dir ?uri ?runner ?keys () =
   let* signer =
-    create ?name ?color ?event_pipe ?base_dir ?uri ?runner ?keys ?magic_byte ()
+    create ?name ?color ?event_pipe ?base_dir ?uri ?runner ?keys ()
   in
   let* () = run signer in
   let* () = wait_for_ready signer in

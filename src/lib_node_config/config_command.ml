@@ -29,7 +29,7 @@
 let show (args : Shared_arg.t) =
   let run =
     let open Lwt_result_syntax in
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     if not @@ Sys.file_exists args.config_file then
       Format.eprintf
         "@[<v>@[<v 9>Warning: no configuration file found at %s@,\
@@ -44,7 +44,7 @@ let show (args : Shared_arg.t) =
 let reset (args : Shared_arg.t) =
   let run =
     let open Lwt_result_syntax in
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     if Sys.file_exists args.config_file then
       Format.eprintf
         "Ignoring previous configuration file: %s.@."
@@ -64,7 +64,7 @@ let reset (args : Shared_arg.t) =
 let init (args : Shared_arg.t) =
   let run =
     let open Lwt_result_syntax in
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     if Sys.file_exists args.config_file then
       failwith
         "Pre-existing configuration file at %s, use `reset`."
@@ -95,7 +95,7 @@ let init (args : Shared_arg.t) =
 let update (args : Shared_arg.t) =
   let run =
     let open Lwt_result_syntax in
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     if not (Sys.file_exists args.config_file) then
       failwith
         "Missing configuration file at %s. Use `%s config init [options]` to \
@@ -112,7 +112,7 @@ let update (args : Shared_arg.t) =
 let validate (args : Shared_arg.t) =
   let run =
     let open Lwt_result_syntax in
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     if not (Sys.file_exists args.config_file) then
       Format.eprintf
         "@[<v>@[<v 9>Warning: no configuration file found at %s@,\
@@ -137,8 +137,8 @@ module Term = struct
       Cmd.v
         (Cmd.info
            ~doc:
-             "reads, parses and displays Tezos current config file. Use this \
-              command to see exactly what config file will be used by Tezos. \
+             "reads, parses and displays Mavryk current config file. Use this \
+              command to see exactly what config file will be used by Mavryk. \
               If additional command-line arguments are provided, the displayed \
               configuration will be amended accordingly. This is the default \
               operation"
@@ -163,9 +163,9 @@ module Term = struct
       Cmd.v
         (Cmd.info
            ~doc:
-             "is the main option to edit the configuration file of Tezos. It \
+             "is the main option to edit the configuration file of Mavryk. It \
               will parse command line arguments and add or replace \
-              corresponding entries in the Tezos configuration file"
+              corresponding entries in the Mavryk configuration file"
            "update")
         Term.(ret (const update $ Shared_arg.Term.args));
       Cmd.v
@@ -181,8 +181,8 @@ end
 module Manpage = struct
   let command_description =
     "The $(b,config) command is meant to inspect and amend the configuration \
-     of the Tezos node. This command is complementary to manually editing the \
-     tezos node configuration file. Its arguments are a subset of the $(i,run) \
+     of the Mavryk node. This command is complementary to manually editing the \
+     mavryk node configuration file. Its arguments are a subset of the $(i,run) \
      command ones."
 
   let options =

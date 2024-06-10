@@ -23,14 +23,13 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Wasm = Tezos_webassembly_interpreter
+module Wasm = Mavryk_webassembly_interpreter
 open Wasm_pvm_state.Internal_state
 
 let version_for_protocol : Pvm_input_kind.protocol -> Wasm_pvm_state.version =
   function
-  | Nairobi -> V1
-  | Oxford -> V2
-  | Proto_alpha -> V4
+  | Atlas -> V2
+  | Proto_alpha -> V3
 
 let link_finished (ast : Wasm.Ast.module_) offset =
   offset >= Wasm.Ast.Vector.num_elements ast.it.imports
@@ -72,12 +71,12 @@ let has_upgrade_error_flag durable =
 let get_wasm_version {durable; _} =
   let open Lwt_syntax in
   let* cbv = Durable.find_value_exn durable Constants.version_key in
-  let+ bytes = Tezos_lazy_containers.Chunked_byte_vector.to_bytes cbv in
+  let+ bytes = Mavryk_lazy_containers.Chunked_byte_vector.to_bytes cbv in
   Data_encoding.Binary.of_bytes_exn Wasm_pvm_state.version_encoding bytes
 
 let stack_size_limit = function
   | Wasm_pvm_state.V0 -> 300
-  | V1 | V2 | V3 | V4 -> 60_000
+  | V1 | V2 | V3 -> 60_000
 (* The limit 60_000 has been chosen such that the simplest WASM program
    consisting in trying to recursively call 60,000 times the same function
    results in Wasmer raising a runtime error.
@@ -140,7 +139,7 @@ let has_fallback_kernel durable =
 
 let initial_boot_state () =
   Decode
-    (Tezos_webassembly_interpreter.Decode.initial_decode_kont
+    (Mavryk_webassembly_interpreter.Decode.initial_decode_kont
        ~name:Constants.wasm_main_module_name)
 
 let save_fallback_kernel durable =
@@ -216,7 +215,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
   | Decode m ->
       let* kernel = Durable.find_value_exn durable Constants.kernel_key in
       let* m =
-        Tezos_webassembly_interpreter.Decode.module_step
+        Mavryk_webassembly_interpreter.Decode.module_step
           ~allow_floats:false
           kernel
           m
@@ -266,7 +265,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
             in
             Some extern)
           (function
-            | Tezos_lazy_containers.Lazy_map.UnexpectedAccess -> return_none
+            | Mavryk_lazy_containers.Lazy_map.UnexpectedAccess -> return_none
             | exn -> Lwt.reraise exn)
       in
       match extern with
@@ -278,8 +277,8 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
             Wasm.Eval.config
               ~stack_size_limit
               self
-              (Tezos_lazy_containers.Lazy_vector.Int32Vector.empty ())
-              (Tezos_lazy_containers.Lazy_vector.Int32Vector.singleton
+              (Mavryk_lazy_containers.Lazy_vector.Int32Vector.empty ())
+              (Mavryk_lazy_containers.Lazy_vector.Int32Vector.singleton
                  admin_instr)
           in
           (* Set kernel - now known to be valid - as fallback kernel,
@@ -446,7 +445,7 @@ let patch_reboot_counter durable reboot_counter =
 
 (** Every time the kernel yields, we reset the input buffer. *)
 let clean_up_input_buffer buffers =
-  let open Tezos_webassembly_interpreter in
+  let open Mavryk_webassembly_interpreter in
   function
   | Forcing_yield | Yielding -> Input_buffer.reset buffers.Eval.input | _ -> ()
 
@@ -508,7 +507,7 @@ let input_request pvm_state =
   | Snapshot -> Wasm_pvm_state.No_input_required
   | Collect -> Wasm_pvm_state.Input_required
   | Eval {config; _} -> (
-      match Tezos_webassembly_interpreter.Eval.is_reveal_tick config with
+      match Mavryk_webassembly_interpreter.Eval.is_reveal_tick config with
       | Some reveal -> Wasm_pvm_state.Reveal_required reveal
       | None -> Wasm_pvm_state.No_input_required)
   | _ -> Wasm_pvm_state.No_input_required
@@ -535,7 +534,7 @@ let reveal_step payload pvm_state =
   match pvm_state.tick_state with
   | Eval {config; module_reg} ->
       let* config =
-        Tezos_webassembly_interpreter.Eval.reveal_step
+        Mavryk_webassembly_interpreter.Eval.reveal_step
           Host_funcs.Aux.reveal
           module_reg
           payload
@@ -655,35 +654,19 @@ let update_output_buffer pvm_state level =
     Wasm.Output_buffer.move_outbox_forward output_buffer
   else Wasm.Output_buffer.initialize_outbox output_buffer level
 
-let apply_migration version pvm_state =
-  match version with
-  | Wasm_pvm_state.V4 ->
-      {
-        pvm_state with
-        buffers =
-          {
-            pvm_state.buffers with
-            output = {pvm_state.buffers.output with validity_period = 241_920l};
-          };
-      }
-  | V0 | V1 | V2 | V3 -> pvm_state
-
 let set_input_step input_info message pvm_state =
   let open Lwt_syntax in
   let open Wasm_pvm_state in
   let {inbox_level; message_counter} = input_info in
   let raw_level = Bounded.Non_negative_int32.to_value inbox_level in
-  let return ?(pvm_state = pvm_state) ?(durable = pvm_state.durable) tick_state
-      =
-    Lwt.return {pvm_state with durable; tick_state}
-  in
+  let return ?(durable = pvm_state.durable) x = Lwt.return (durable, x) in
   let return_stuck state_name =
     return
       (Stuck
          (Wasm_pvm_errors.invalid_state
          @@ Format.sprintf "No input required during %s" state_name))
   in
-  let next_pvm_state () =
+  let next_tick_state () =
     match pvm_state.tick_state with
     | Collect -> (
         let* () =
@@ -704,10 +687,7 @@ let set_input_step input_info message pvm_state =
                    Wasm_pvm_state.version_encoding
                    (version_for_protocol proto))
             in
-            let pvm_state =
-              apply_migration (version_for_protocol proto) pvm_state
-            in
-            return ~pvm_state ~durable Collect
+            return ~durable Collect
         | Internal Start_of_level ->
             update_output_buffer pvm_state raw_level ;
             return Collect
@@ -720,14 +700,16 @@ let set_input_step input_info message pvm_state =
     | Eval _ -> return_stuck "evaluation"
     | Padding -> return_stuck "padding"
   in
-  let+ pvm_state =
-    Lwt.catch next_pvm_state (fun exn ->
+  let+ durable, tick_state =
+    Lwt.catch next_tick_state (fun exn ->
         let+ tick_state = exn_to_stuck pvm_state exn in
-        {pvm_state with tick_state})
+        (pvm_state.durable, tick_state))
   in
   (* Increase the current tick counter and update last input *)
   {
     pvm_state with
+    durable;
+    tick_state;
     current_tick = Z.succ pvm_state.current_tick;
     last_input_info = Some input_info;
   }

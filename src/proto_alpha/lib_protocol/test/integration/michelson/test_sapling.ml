@@ -52,7 +52,7 @@ module Raw_context_tests = struct
         ~timestamp:b.header.shell.timestamp
         ~adaptive_issuance_enable:false
     in
-    let module H = Tezos_sapling.Core.Client.Hash in
+    let module H = Mavryk_sapling.Core.Client.Hash in
     let cm = H.uncommitted ~height:0 in
     let expected_root = H.uncommitted ~height:32 in
     let*@ ctx, id =
@@ -295,11 +295,11 @@ module Raw_context_tests = struct
      stored. *)
   let root_test () =
     let open Lwt_result_wrap_syntax in
-    let open Tezos_sapling.Core in
+    let open Mavryk_sapling.Core in
     let gen_root () =
       Data_encoding.Binary.of_bytes_exn
         Validator.Hash.encoding
-        (Tezos_crypto.Hacl.Rand.gen 32)
+        (Mavryk_crypto.Hacl.Rand.gen 32)
     in
     let roots_ctx =
       WithExceptions.List.init
@@ -410,13 +410,13 @@ module Alpha_context_tests = struct
     let open Lwt_result_syntax in
     let* ctx = init () in
     let sk =
-      Tezos_sapling.Core.Wallet.Spending_key.of_seed
-        (Tezos_crypto.Hacl.Rand.gen 32)
+      Mavryk_sapling.Core.Wallet.Spending_key.of_seed
+        (Mavryk_crypto.Hacl.Rand.gen 32)
     in
     let vt =
-      let ps = Tezos_sapling.Storage.empty ~memo_size:0 in
+      let ps = Mavryk_sapling.Storage.empty ~memo_size:0 in
       (* the dummy output will have memo_size 0 *)
-      Tezos_sapling.Forge.forge_transaction
+      Mavryk_sapling.Forge.forge_transaction
         ~number_dummy_outputs:1
         []
         []
@@ -436,7 +436,7 @@ module Alpha_context_tests = struct
     let rounds = 5 in
     Log.info "\nrounds: %d\n" rounds ;
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     (* one verify_update to get the id *)
     let vt = transfer w cs [] in
     let* ctx, id = verify_update ctx vt |> assert_some in
@@ -480,7 +480,7 @@ module Alpha_context_tests = struct
     let rounds = 5 in
     Log.info "\nrounds: %d\n" rounds ;
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     (* one verify_update to get the id *)
     let vt = transfer_legacy w cs [] in
     let* ctx, id = verify_update_legacy ctx vt |> assert_some in
@@ -523,7 +523,7 @@ module Alpha_context_tests = struct
     let* ctx = init () in
     let rounds = 5 in
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     (* one verify_update to get the id *)
     let vt = transfer w cs [] in
     let* ctx, id = verify_update ctx vt |> assert_some in
@@ -551,7 +551,7 @@ module Alpha_context_tests = struct
     let open Lwt_result_syntax in
     let* ctx = init () in
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     (* one verify_update to get the id *)
     let vt = transfer w cs [] in
     let* ctx, id = verify_update ctx vt |> assert_some in
@@ -565,29 +565,29 @@ module Alpha_context_tests = struct
     let open Lwt_result_syntax in
     let* ctx = init () in
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     let vt = transfer w cs [] in
     let* ctx, id = verify_update ctx vt |> assert_some in
     let* cs = client_state_alpha ctx id in
     let vt = transfer w cs [0] in
     (* fails sig check because of wrong balance *)
     let vt_broken =
-      Tezos_sapling.Core.Validator.UTXO.
+      Mavryk_sapling.Core.Validator.UTXO.
         {vt with balance = Int64.(succ vt.balance)}
     in
     let* () = verify_update ctx ~id vt_broken |> assert_none in
     (* randomize one output to fail check outputs *)
     (* don't randomize the ciphertext as it is not part of the proof *)
-    let open Tezos_sapling.Core.Client.UTXO in
+    let open Mavryk_sapling.Core.Client.UTXO in
     let o = WithExceptions.Option.get ~loc:__LOC__ @@ List.hd vt.outputs in
     let o_wrong_cm =
       {
         o with
-        cm = randomized_byte o.cm Tezos_sapling.Core.Client.Commitment.encoding;
+        cm = randomized_byte o.cm Mavryk_sapling.Core.Client.Commitment.encoding;
       }
     in
     let vt_broken =
-      Tezos_sapling.Core.Validator.UTXO.{vt with outputs = [o_wrong_cm]}
+      Mavryk_sapling.Core.Validator.UTXO.{vt with outputs = [o_wrong_cm]}
     in
     let* () = verify_update ctx ~id vt_broken |> assert_none in
     (* position inside the cv *)
@@ -599,11 +599,11 @@ module Alpha_context_tests = struct
           randomized_byte
             ~pos
             o.ciphertext
-            Tezos_sapling.Core.Client.Ciphertext.encoding;
+            Mavryk_sapling.Core.Client.Ciphertext.encoding;
       }
     in
     let vt_broken =
-      Tezos_sapling.Core.Validator.UTXO.{vt with outputs = [o_wrong_cv]}
+      Mavryk_sapling.Core.Validator.UTXO.{vt with outputs = [o_wrong_cv]}
     in
     verify_update ctx ~id vt_broken |> assert_none
 
@@ -611,7 +611,7 @@ module Alpha_context_tests = struct
     let open Lwt_result_syntax in
     let* ctx = init () in
     let w = wallet_gen () in
-    let cs = Tezos_sapling.Storage.empty ~memo_size:8 in
+    let cs = Mavryk_sapling.Storage.empty ~memo_size:8 in
     (* generate the first storage *)
     let vt = transfer w cs [] in
     let* ctx, id1 = verify_update ctx vt |> assert_some in
@@ -627,12 +627,12 @@ module Alpha_context_tests = struct
     (* Swap the root so that it passes the root_mem check but fails
        the input check *)
     let vt1_broken =
-      Tezos_sapling.Core.Validator.UTXO.{vt2 with root = vt1.root}
+      Mavryk_sapling.Core.Validator.UTXO.{vt2 with root = vt1.root}
     in
     let* () = verify_update ctx ~id:id1 vt1_broken |> assert_none in
     (* fail the sig check *)
     let vt1_broken =
-      Tezos_sapling.Core.Validator.UTXO.{vt1 with outputs = vt2.outputs}
+      Mavryk_sapling.Core.Validator.UTXO.{vt1 with outputs = vt2.outputs}
     in
     verify_update ctx ~id:id1 vt1_broken |> assert_none
 end
@@ -648,7 +648,7 @@ module Interpreter_tests = struct
 
   (* In this test we use a contract which takes a list of transactions, applies
      all of them, and assert all of them are correct. It also enforces a 1-to-1
-     conversion with mutez by asking an amount to shield and asking for a pkh to
+     conversion with mumav by asking an amount to shield and asking for a pkh to
      unshield.
      We create 2 keys a and b. We originate the contract, then do two lists of
      shield for a, then transfers several outputs to b while unshielding, then
@@ -694,14 +694,14 @@ module Interpreter_tests = struct
           let pos = Int64.of_int pos_int in
           let forge_input =
             snd
-              (Tezos_sapling.Forge.Input.get state pos wa.vk
+              (Mavryk_sapling.Forge.Input.get state pos wa.vk
               |> WithExceptions.Option.get ~loc:__LOC__)
           in
           forge_input)
     in
     let list_forge_output =
       List.map
-        (fun addr -> Tezos_sapling.Forge.make_output addr 1L (Bytes.create 8))
+        (fun addr -> Mavryk_sapling.Forge.make_output addr 1L (Bytes.create 8))
         list_addr
     in
     let pkh = Context.Contract.pkh src1 in
@@ -712,7 +712,7 @@ module Interpreter_tests = struct
     in
     let hex_transac =
       to_hex
-        (Tezos_sapling.Forge.forge_transaction
+        (Mavryk_sapling.Forge.forge_transaction
            ~number_dummy_inputs:0
            ~number_dummy_outputs:0
            list_forge_input
@@ -721,7 +721,7 @@ module Interpreter_tests = struct
            anti_replay
            ~bound_data:(Bytes.to_string bound_data)
            state)
-        Tezos_sapling.Core.Client.UTXO.transaction_encoding
+        Mavryk_sapling.Core.Client.UTXO.transaction_encoding
     in
     let string = Format.sprintf "{0x%s}" hex_transac in
     let parameters =
@@ -734,12 +734,12 @@ module Interpreter_tests = struct
     let* balance_after_shield = Context.Contract.balance (B b4) src1 in
     let diff_due_to_shield =
       Int64.sub
-        (Test_tez.to_mutez balance_after_shield)
-        (Test_tez.to_mutez balance_before_shield)
+        (Test_tez.to_mumav balance_after_shield)
+        (Test_tez.to_mumav balance_before_shield)
     in
     (* The balance after shield is obtained from the balance before shield by
        the shield specific update. *)
-    (* The inputs total [total] mutez and 15 of those are transfered in shielded tez *)
+    (* The inputs total [total] mumav and 15 of those are transfered in shielded mav *)
     let* () =
       Assert.equal_int
         ~loc:__LOC__
@@ -751,21 +751,21 @@ module Interpreter_tests = struct
           let pos = Int64.of_int (i + 14 + 14) in
           let forge_input =
             snd
-              (Tezos_sapling.Forge.Input.get state pos wb.vk
+              (Mavryk_sapling.Forge.Input.get state pos wb.vk
               |> WithExceptions.Option.get ~loc:__LOC__)
           in
           forge_input)
     in
     let addr_a =
       snd
-      @@ Tezos_sapling.Core.Client.Viewing_key.new_address
+      @@ Mavryk_sapling.Core.Client.Viewing_key.new_address
            wa.vk
-           Tezos_sapling.Core.Client.Viewing_key.default_index
+           Mavryk_sapling.Core.Client.Viewing_key.default_index
     in
-    let output = Tezos_sapling.Forge.make_output addr_a 15L (Bytes.create 8) in
+    let output = Mavryk_sapling.Forge.make_output addr_a 15L (Bytes.create 8) in
     let hex_transac =
       to_hex
-        (Tezos_sapling.Forge.forge_transaction
+        (Mavryk_sapling.Forge.forge_transaction
            ~number_dummy_inputs:2
            ~number_dummy_outputs:2
            list_forge_input
@@ -774,7 +774,7 @@ module Interpreter_tests = struct
            anti_replay
            ~bound_data:""
            state)
-        Tezos_sapling.Core.Client.UTXO.transaction_encoding
+        Mavryk_sapling.Core.Client.UTXO.transaction_encoding
     in
     let string = Format.sprintf "{0x%s}" hex_transac in
     let parameters =
@@ -799,7 +799,7 @@ module Interpreter_tests = struct
     in
     (* Here we fail by changing the field bound_data*)
     let orginal_transac =
-      Tezos_sapling.Forge.forge_transaction
+      Mavryk_sapling.Forge.forge_transaction
         ~number_dummy_inputs:2
         ~number_dummy_outputs:2
         list_forge_input
@@ -810,7 +810,7 @@ module Interpreter_tests = struct
         state
     in
     let modified_transac =
-      Tezos_sapling.Core.Validator.UTXO.
+      Mavryk_sapling.Core.Validator.UTXO.
         {orginal_transac with bound_data = "wrong"}
     in
     let string =
@@ -818,7 +818,7 @@ module Interpreter_tests = struct
         "{0x%s}"
         (to_hex
            modified_transac
-           Tezos_sapling.Core.Client.UTXO.transaction_encoding)
+           Mavryk_sapling.Core.Client.UTXO.transaction_encoding)
     in
     let parameters =
       Alpha_context.Script.(lazy_expr (Expr.from_string string))
@@ -923,7 +923,7 @@ module Interpreter_tests = struct
           List.exists
             (function
               | Environment.Ecoproto_error
-                  (Tezos_protocol_alpha.Protocol.Script_tc_errors
+                  (Mavryk_protocol_alpha.Protocol.Script_tc_errors
                    .Unexpected_forged_value _) ->
                   true
               | _ -> false)
@@ -954,19 +954,19 @@ module Interpreter_tests = struct
     let* block_1, state =
       transac_and_sync ~memo_size block_start parameters_1 15 src dst baker
     in
-    let intermediary_root = Tezos_sapling.Storage.get_root state in
+    let intermediary_root = Mavryk_sapling.Storage.get_root state in
     let addr =
       snd
-      @@ Tezos_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
+      @@ Mavryk_sapling.Core.Wallet.Viewing_key.(new_address vk default_index)
     in
-    let output = Tezos_sapling.Forge.make_output addr 15L (Bytes.create 8) in
+    let output = Mavryk_sapling.Forge.make_output addr 15L (Bytes.create 8) in
     let hex_transac_2 =
       "0x"
       ^ to_hex
-          (Tezos_sapling.Forge.forge_transaction
+          (Mavryk_sapling.Forge.forge_transaction
              [
                snd
-                 (Tezos_sapling.Forge.Input.get state 0L vk
+                 (Mavryk_sapling.Forge.Input.get state 0L vk
                  |> WithExceptions.Option.get ~loc:__LOC__);
              ]
              [output]
@@ -974,7 +974,7 @@ module Interpreter_tests = struct
              anti_replay
              ~bound_data:""
              state)
-          Tezos_sapling.Core.Client.UTXO.transaction_encoding
+          Mavryk_sapling.Core.Client.UTXO.transaction_encoding
     in
     let string_2 = Format.sprintf "{%s}" hex_transac_2 in
     let parameters_2 =
@@ -983,7 +983,7 @@ module Interpreter_tests = struct
     let* block_1, state_1 =
       transac_and_sync ~memo_size block_1 parameters_2 0 src dst baker
     in
-    let final_root = Tezos_sapling.Storage.get_root state_1 in
+    let final_root = Mavryk_sapling.Storage.get_root state_1 in
     let* _root, diff_1 =
       Alpha_services.Contract.single_sapling_get_diff
         Block.rpc_ctxt
@@ -994,10 +994,10 @@ module Interpreter_tests = struct
         ()
     in
     let fee = Test_tez.of_int 10 in
-    let*? amount_tez = Tez.one_mutez *? Int64.of_int 15 in
+    let*? amount_tez = Tez.one_mumav *? Int64.of_int 15 in
     let* operation1 =
       Op.transaction
-        ~gas_limit:High
+        ~gas_limit:Max
         ~fee
         (B block_start)
         src
@@ -1012,7 +1012,7 @@ module Interpreter_tests = struct
     let*@ counter = Alpha_context.Contract.get_counter ctx pkh in
     let* operation2 =
       Op.transaction
-        ~gas_limit:High
+        ~gas_limit:Max
         ~counter
         ~fee
         (B block_start)
@@ -1217,10 +1217,10 @@ module Interpreter_tests = struct
     let* state_1 = local_state_from_disk state_1 ctx in
     let+ state_2 = local_state_from_disk state_2 ctx in
     (* we check that first state contains 15 to addr_1 but not 15 to addr_2*)
-    assert (Option.is_some @@ Tezos_sapling.Forge.Input.get state_1 0L wa.vk) ;
-    assert (Option.is_some @@ Tezos_sapling.Forge.Input.get state_2 0L wa.vk) ;
-    assert (Option.is_none @@ Tezos_sapling.Forge.Input.get state_1 0L wb.vk) ;
-    assert (Option.is_none @@ Tezos_sapling.Forge.Input.get state_2 0L wb.vk)
+    assert (Option.is_some @@ Mavryk_sapling.Forge.Input.get state_1 0L wa.vk) ;
+    assert (Option.is_some @@ Mavryk_sapling.Forge.Input.get state_2 0L wa.vk) ;
+    assert (Option.is_none @@ Mavryk_sapling.Forge.Input.get state_1 0L wb.vk) ;
+    assert (Option.is_none @@ Mavryk_sapling.Forge.Input.get state_2 0L wb.vk)
 
   let test_state_as_arg () =
     let open Lwt_result_syntax in

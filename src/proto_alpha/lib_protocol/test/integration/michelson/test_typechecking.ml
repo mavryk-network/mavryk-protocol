@@ -202,25 +202,22 @@ let test_parse_ty (type exp expc) ctxt node
   let allow_contract = true in
   let allow_ticket = true in
   let@ result =
-    let* Script_typed_ir.Ex_ty actual, ctxt =
-      Script_ir_translator.parse_ty
-        ctxt
-        ~legacy
-        ~allow_lazy_storage
-        ~allow_operation
-        ~allow_contract
-        ~allow_ticket
-        node
-    in
-    let* eq, ctxt =
-      Gas_monad.run ctxt
-      @@ Script_ir_translator.ty_eq
-           ~error_details:(Informative (location node))
-           actual
-           expected
-    in
-    let+ Eq = eq in
-    ctxt
+    Script_ir_translator.parse_ty
+      ctxt
+      ~legacy
+      ~allow_lazy_storage
+      ~allow_operation
+      ~allow_contract
+      ~allow_ticket
+      node
+    >>? fun (Script_typed_ir.Ex_ty actual, ctxt) ->
+    Gas_monad.run ctxt
+    @@ Script_ir_translator.ty_eq
+         ~error_details:(Informative (location node))
+         actual
+         expected
+    >>? fun (eq, ctxt) ->
+    eq >|? fun Eq -> ctxt
   in
   result
 
@@ -584,17 +581,17 @@ let test_parse_address () =
       (String (-1, "KT1FAKEFAKEFAKEFAKEFAKEFAKEFAKGGSE2x%"))
       {destination = Contract kt1fake; entrypoint = Entrypoint.default}
   in
-  (* tz1% (empty entrypoint) *)
-  let*?@ tz1fake =
-    Contract.of_b58check "tz1fakefakefakefakefakefakefakcphLA5"
+  (* mv1% (empty entrypoint) *)
+  let*?@ mv1fake =
+    Contract.of_b58check "mv2fakefakefakefakefakefakefak82z7t2"
   in
   let* ctxt =
     test_parse_data
       __LOC__
       ctxt
       address_t
-      (String (-1, "tz1fakefakefakefakefakefakefakcphLA5%"))
-      {destination = Contract tz1fake; entrypoint = Entrypoint.default}
+      (String (-1, "mv2fakefakefakefakefakefakefak82z7t2%"))
+      {destination = Contract mv1fake; entrypoint = Entrypoint.default}
   in
   (* scr1% (empty entrypoint) *)
   let*?@ scr1 =
@@ -926,12 +923,10 @@ let test_contract path ~ok ~ko () =
   match result with Ok _ -> ok () | Error t -> ko t
 
 let test_contract_success path =
-  let open Lwt_result_syntax in
   test_contract path ~ok:return ~ko:(fun t ->
       Alcotest.failf "Unexpected error: %a" Environment.Error_monad.pp_trace t)
 
 let test_contract_failure path =
-  let open Lwt_result_syntax in
   test_contract
     path
     ~ok:(fun () ->

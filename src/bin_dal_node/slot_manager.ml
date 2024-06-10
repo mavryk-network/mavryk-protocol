@@ -28,7 +28,6 @@ include Slot_manager_legacy
 type error +=
   | Invalid_slot_size of {provided : int; expected : int}
   | Invalid_degree of string
-  | No_prover_SRS
 
 let () =
   register_error_kind
@@ -77,7 +76,6 @@ let commit cryptobox polynomial =
       Error
         (Errors.other
            [Invalid_degree (Cryptobox.string_of_commit_error commit_error)])
-  | Error `Prover_SRS_not_loaded -> Error (Errors.other [No_prover_SRS])
 
 let commitment_should_exist node_store cryptobox commitment =
   let open Lwt_result_syntax in
@@ -153,7 +151,7 @@ let shards_to_attesters committee =
   let rec do_n ~n f acc = if n <= 0 then acc else do_n ~n:(n - 1) f (f acc) in
   let to_array committee =
     (* We transform the map to a list *)
-    Tezos_crypto.Signature.Public_key_hash.Map.bindings committee
+    Mavryk_crypto.Signature.Public_key_hash.Map.bindings committee
     (* We sort the list in decreasing order w.r.t. to start_indices. *)
     |> List.fast_sort (fun (_pkh1, shard_indices1) (_pkh2, shard_indices2) ->
            shard_indices2.Committee_cache.start_index

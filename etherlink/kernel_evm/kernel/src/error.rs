@@ -9,12 +9,12 @@ use evm_execution::account_storage::AccountStorageError;
 use evm_execution::{DurableStorageError, EthereumError};
 use primitive_types::U256;
 use rlp::DecoderError;
-use tezos_data_encoding::enc::BinError;
-use tezos_ethereum::tx_common::SigError;
-use tezos_smart_rollup_encoding::entrypoint::EntrypointError;
-use tezos_smart_rollup_encoding::michelson::ticket::TicketError;
-use tezos_smart_rollup_host::path::PathError;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_data_encoding::enc::BinError;
+use mavryk_ethereum::tx_common::SigError;
+use mavryk_smart_rollup_encoding::entrypoint::EntrypointError;
+use mavryk_smart_rollup_encoding::michelson::ticket::TicketError;
+use mavryk_smart_rollup_host::path::PathError;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -42,7 +42,7 @@ pub enum StorageError {
     #[error(transparent)]
     Runtime(RuntimeError),
     #[error(transparent)]
-    Storage(tezos_smart_rollup_storage::StorageError),
+    Storage(mavryk_smart_rollup_storage::StorageError),
     #[error(transparent)]
     AccountStorage(AccountStorageError),
     #[error("Storage error: index out of bound")]
@@ -158,8 +158,8 @@ impl From<DurableStorageError> for Error {
     }
 }
 
-impl From<tezos_smart_rollup_storage::StorageError> for Error {
-    fn from(e: tezos_smart_rollup_storage::StorageError) -> Self {
+impl From<mavryk_smart_rollup_storage::StorageError> for Error {
+    fn from(e: mavryk_smart_rollup_storage::StorageError) -> Self {
         Self::Storage(StorageError::Storage(e))
     }
 }

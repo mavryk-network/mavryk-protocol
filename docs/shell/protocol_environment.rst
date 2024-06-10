@@ -2,7 +2,7 @@ Protocol Environment
 ====================
 
 The protocol environment is a restricted API that may be used by the economic protocol's code, on one hand,
-and the rest of the Octez code, on the other hand, to interact with each other. Firstly, this allows protocols
+and the rest of the Mavkit code, on the other hand, to interact with each other. Firstly, this allows protocols
 to only call authorized modules and functions. Secondly, it allows the node (i.e., the main binary built around the shell)
 as well as the other binaries (e.g., the baker) to call a subset of the protocol functions.
 
@@ -54,9 +54,8 @@ Here is a quick description of each file in this environment, all located under
    implementations are assembled into a single implementation file ``VX.ml`` by
    a helper program located in ``s_packer/``.
 
-The API can be found in :package-api:`tezos-protocol-environment <octez-proto-libs/Tezos_protocol_environment/index.html>`
+The API can be found in :package-api:`mavryk-protocol-environment <mavkit-proto-libs/Mavryk_protocol_environment/index.html>`
 
-.. _environment_versions:
 
 Environment versions
 --------------------
@@ -66,20 +65,12 @@ to the protocol. And so when a new protocol needs new functions, types, or value
 this protocol must use a new environment. This is why the environments are
 versioned.
 
-A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/TEZOS_PROTOCOL`)
+A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL`)
 includes a field named ``expected_env_version``. This field specifies the
 environment used to compile the protocol.
 
 Protocol environments can only ever increase in version. Specifically, from
 within a protocol P1 built on environment version X, the activation of a
 protocol P2 built on environment Y fails unless X ≤ Y.
-
-Some examples of prior environment switches can be found within past protocol changelogs:
-
- - :doc:`Edo - environment V1 <../protocols/008_edo>`
- - :doc:`Hangzhou - environment V3 <../protocols/011_hangzhou>`
- - :doc:`Ithaca - environment V4 <../protocols/012_ithaca>`
- - :doc:`Jakarta - environment V5 <../protocols/013_jakarta>`
- - :doc:`Kathmandu - environment V6 <../protocols/014_kathmandu>`
 
 For how to prepare and implement an environment switch, see :doc:`../developer/protocol_environment_upgrade`.

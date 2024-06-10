@@ -39,7 +39,7 @@ type t = {
   profiles : Types.profiles;
 }
 
-let default_data_dir = Filename.concat (Sys.getenv "HOME") ".tezos-dal-node"
+let default_data_dir = Filename.concat (Sys.getenv "HOME") ".mavryk-dal-node"
 
 let store_path {data_dir; _} = Filename.concat data_dir "store"
 
@@ -199,7 +199,7 @@ let encoding : t Data_encoding.t =
              default_network_name)
           (dft
              "endpoint"
-             ~description:"The Tezos node endpoint"
+             ~description:"The Mavryk node endpoint"
              endpoint_encoding
              default_endpoint)
           (dft
@@ -210,7 +210,7 @@ let encoding : t Data_encoding.t =
        (obj1
           (dft
              "profiles"
-             ~description:"The Octez DAL node profiles"
+             ~description:"The Mavkit DAL node profiles"
              Types.profiles_encoding
              (Operator []))))
 

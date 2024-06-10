@@ -26,7 +26,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 open Michelson_v1_printer
 
 module Program = Client_aliases.Alias (struct
@@ -44,13 +44,9 @@ module Program = Client_aliases.Alias (struct
       (fun source -> Michelson_v1_parser.parse_toplevel source)
       Data_encoding.string
 
-  let of_source source =
-    let open Lwt_result_syntax in
-    return (Michelson_v1_parser.parse_toplevel source)
+  let of_source source = return (Michelson_v1_parser.parse_toplevel source)
 
-  let to_source ({Michelson_v1_parser.source; _}, _) =
-    let open Lwt_result_syntax in
-    return source
+  let to_source ({Michelson_v1_parser.source; _}, _) = return source
 
   let name = "script"
 end)

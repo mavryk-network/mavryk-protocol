@@ -52,8 +52,8 @@ let make =
 let content m = m.content
 
 module Hash =
-  Tezos_crypto.Blake2B.Make
-    (Tezos_crypto.Base58)
+  Mavryk_crypto.Blake2B.Make
+    (Mavryk_crypto.Base58)
     (struct
       let name = "sc_rollup_l2_message"
 
@@ -65,7 +65,7 @@ module Hash =
     end)
 
 let () =
-  Tezos_crypto.Base58.check_encoded_prefix Hash.b58check_encoding "scmsg" 55
+  Mavryk_crypto.Base58.check_encoded_prefix Hash.b58check_encoding "scmsg" 55
 
 type hash = Hash.t
 

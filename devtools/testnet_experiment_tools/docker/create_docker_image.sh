@@ -2,6 +2,7 @@
 
 set -e
 
+
 devtools_docker_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 echo "devtools docker dir: $(pwd - P)"
 
@@ -21,7 +22,7 @@ cd "$src_dir"
 # shellcheck disable=SC1091
 . "$script_dir"/version.sh
 
-image_name="${1:-tezos-}"
+image_name="${1:-mavryk-}"
 image_version="${2:-latest}"
 build_deps_image_name=${3:-registry.gitlab.com/tezos/opam-repository}
 build_deps_image_version=${4:-$opam_repository_tag}
@@ -37,25 +38,25 @@ build_image_name="${image_name}build"
 
 echo "Executables to include in Docker images:"
 for executable in $executables; do
-  echo "- $executable"
+    echo "- $executable"
 done
 
-echo "### Building tezos..."
+echo "### Building mavryk..."
 
 docker build \
-  -t "$build_image_name:$image_version" \
-  -f "$dockerfile" \
-  --target "$docker_target" \
-  --cache-from "$build_image_name:$image_version" \
-  --build-arg "BASE_IMAGE=$build_deps_image_name" \
-  --build-arg "BASE_IMAGE_VERSION=runtime-build-dependencies--$build_deps_image_version" \
-  --build-arg "OCTEZ_EXECUTABLES=${executables}" \
-  --build-arg "GIT_SHORTREF=${commit_short_sha}" \
-  --build-arg "GIT_DATETIME=${commit_datetime}" \
-  --build-arg "GIT_VERSION=${commit_tag}" \
-  --build-arg "RUST_TOOLCHAIN_IMAGE=$rust_toolchain_image" \
-  --build-arg "RUST_TOOLCHAIN_IMAGE_VERSION=$rust_toolchain_image_version" \
-  "$src_dir"
+ -t "$build_image_name:$image_version" \
+ -f "$dockerfile" \
+ --target "$docker_target" \
+ --cache-from "$build_image_name:$image_version" \
+ --build-arg "BASE_IMAGE=$build_deps_image_name" \
+ --build-arg "BASE_IMAGE_VERSION=runtime-build-dependencies--$build_deps_image_version" \
+ --build-arg "MAVKIT_EXECUTABLES=${executables}" \
+ --build-arg "GIT_SHORTREF=${commit_short_sha}" \
+ --build-arg "GIT_DATETIME=${commit_datetime}" \
+ --build-arg "GIT_VERSION=${commit_tag}" \
+ --build-arg "RUST_TOOLCHAIN_IMAGE=$rust_toolchain_image" \
+ --build-arg "RUST_TOOLCHAIN_IMAGE_VERSION=$rust_toolchain_image_version" \
+ "$src_dir"
 
 echo "### Successfully built docker image: $build_image_name:$image_version"
 
@@ -82,3 +83,4 @@ docker build \
 rm -rf "$tmp_dir"
 
 echo "### Successfully built docker image: ${image_name}bare:$image_version"
+

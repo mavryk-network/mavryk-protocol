@@ -56,7 +56,6 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "timelock"]
-        ~uses_node:false
         (fun protocol -> test_function ~protocol ())
         protocols)
     [

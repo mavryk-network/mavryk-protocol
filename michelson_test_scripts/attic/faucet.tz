@@ -3,5 +3,5 @@ storage timestamp ;
 code { UNPAIR ; SWAP ;
        PUSH int 300 ; ADD @FIVE_MINUTES_LATER ;
        NOW ; ASSERT_CMPGE ;
-       IMPLICIT_ACCOUNT ; PUSH mutez 1000000 ; UNIT ; TRANSFER_TOKENS ;
+       IMPLICIT_ACCOUNT ; PUSH mumav 1000000 ; UNIT ; TRANSFER_TOKENS ;
        NIL operation ; SWAP ; CONS ; DIP { NOW } ; PAIR }

@@ -29,7 +29,7 @@ type t
 
 (** [start node_ctxt config] starts an RPC server listening for requests on the
     port [config.rpc_port] and address [config.rpc_addr]. *)
-val start : Configuration.t -> unit Tezos_rpc.Directory.t -> t tzresult Lwt.t
+val start : Configuration.t -> unit Mavryk_rpc.Directory.t -> t tzresult Lwt.t
 
 (** Shutdown a running RPC server. When this function is called, the rollup node
     will stop listening to incoming requests. *)

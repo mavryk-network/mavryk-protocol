@@ -2,13 +2,13 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_registerer)
- (public_name octez-protocol-compiler.registerer)
+ (name mavryk_protocol_registerer)
+ (public_name mavkit-protocol-compiler.registerer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -opaque
-  -open Tezos_base.TzPervasives))
+  -open Mavryk_base.TzPervasives))

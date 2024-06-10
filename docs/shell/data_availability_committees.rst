@@ -32,12 +32,12 @@ For more information, please refer to the `User Guide`_ and `Operator Guide`_.
 
 Tools
 -----
-The DAC infrastructure is implemented by two executables: ``octez-dac-node`` and ``octez-dac-client``.
+The DAC infrastructure is implemented by two executables: ``mavkit-dac-node`` and ``mavkit-dac-client``.
 
- * ``octez-dac-node`` is used for setting up a new DAC Committee or track an existing one.
- * ``octez-dac-client`` is used for sending payloads to the DAC infrastructure for storage and for retrieving certificates signed by the DAC Members.
+ * ``mavkit-dac-node`` is used for setting up a new DAC Committee or track an existing one.
+ * ``mavkit-dac-client`` is used for sending payloads to the DAC infrastructure for storage and for retrieving certificates signed by the DAC Members.
 
-There is support for DAC in the Rust `Smart Rollup Kernel SDK <https://crates.io/crates/tezos-smart-rollup>`_ for revealing the underlying data of a DAC Certificate and verifying DAC Member signatures.
+There is support for DAC in the Rust `Smart Rollup Kernel SDK <https://crates.io/crates/mavryk-smart-rollup>`_ for revealing the underlying data of a DAC Certificate and verifying DAC Member signatures.
 
 DAC Certificate
 ^^^^^^^^^^^^^^^
@@ -103,7 +103,7 @@ This can be done with the following command:
 
 .. code:: bash
 
-   octez-dac-client send payload to coordinator $COORDINATOR_RPC_ADDR \
+   mavkit-dac-client send payload to coordinator $COORDINATOR_RPC_ADDR \
       with content $PAYLOAD \
       --wait-for-threshold $THRESHOLD
 
@@ -132,13 +132,13 @@ Each Committee Member node will subscribe to the Coordinator for new payloads so
 Running a Coordinator
 """""""""""""""""""""
 
-For aspects related to the interaction with the Octez client, the DAC node uses the :ref:`Octez client's configuration file <client_conf_file>`.
+For aspects related to the interaction with the Mavkit client, the DAC node uses the :ref:`Mavkit client's configuration file <client_conf_file>`.
 
 A Coordinator node can be further configured with the following command:
 
 .. code:: bash
 
-   octez-dac-node configure as coordinator \
+   mavkit-dac-node configure as coordinator \
       with data availability committee members $BLS_PUBLIC_KEYS \
       --data-dir $DATA_DIR
       --reveal-data-dir $REVEAL_DATA_DIR
@@ -147,14 +147,14 @@ A Coordinator node can be further configured with the following command:
 where
 
    * ``$BLS_PUBLIC_KEYS`` - Space separated list of BLS12-381 public keys of the committee members. Note that the order of keys will ultimately affect the Certificate's hash and should be respected among all parties in the DAC network. eg. ``BLpk1yH... BLpk1wV...``
-   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.octez-dac-node``.
+   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.mavkit-dac-node``.
    * ``$REVEAL_DATA_DIR`` - Directory where pages are stored. It is advised to provide different values in case multiple DAC nodes run on the same host.
 
 Once configured, the Coordinator can be run with:
 
 .. code:: bash
 
-   octez-dac-node --endpoint $NODE_ENDPOINT \
+   mavkit-dac-node --endpoint $NODE_ENDPOINT \
       run --data-dir $DATA_DIR
 
 where
@@ -166,18 +166,18 @@ where
 Running a Committee Member
 """"""""""""""""""""""""""
 Before you can run a Committee Member node, you need a BLS secret key which will be used to sign root hashes.
-Ensure that the secret key has been imported into the local Octez wallet with the following command
+Ensure that the secret key has been imported into the local Mavkit wallet with the following command
 
 .. code:: bash
 
-   octez-client bls import secret key <alias> <secret-uri>
+   mavkit-client bls import secret key <alias> <secret-uri>
 
 
 Then a Committee Member node can be configured with the following command:
 
 .. code:: bash
 
-   octez-dac-node configure as committee member \
+   mavkit-dac-node configure as committee member \
       with coordinator $COORDINATOR_RPC_ADDR \
       and signer $TZ4_ADDRESS \
       --data-dir $DATA_DIR \
@@ -186,15 +186,15 @@ Then a Committee Member node can be configured with the following command:
 where:
 
    * ``$COORDINATOR_RPC_ADDR`` - RPC address of the coordinator node, in the format ``{host}:{port}``. eg. ``127.0.0.1:10832``
-   * ``$TZ4_ADDRESS`` - ``tz4`` address of the account of the committee member. eg. ``tz4KWwWMTZJLX5CKxAifUAy1WS3HdEKsk8Ys``
-   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.octez-dac-node``.
+   * ``$TZ4_ADDRESS`` - ``mv4`` address of the account of the committee member. eg. ``mv4PgpgNECnDyR8PZ2HsJZwCssL2WSSYHEtt``
+   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.mavkit-dac-node``.
    * ``$REVEAL_DATA_DIR`` - Directory where pages are stored. It is advised to provide different values in case multiple DAC nodes run on the same host.
 
 Once configured, the Committee Member can be run with:
 
 .. code:: bash
 
-   octez-dac-node --endpoint $NODE_ENDPOINT \
+   mavkit-dac-node --endpoint $NODE_ENDPOINT \
       run --data-dir $DATA_DIR
 
 where
@@ -215,7 +215,7 @@ An Observer node can be configured with the following command:
 
 .. code:: bash
 
-   octez-dac-node configure as observer \
+   mavkit-dac-node configure as observer \
       with coordinator $COORDINATOR_RPC_ADDR \
       and committee member rpc addresses $COMMITTEE_MEMBER_RPC_ADDRESSES \
       --data-dir $DATA_DIR \
@@ -227,7 +227,7 @@ where
 
    * ``$COORDINATOR_RPC_ADDR`` - RPC address of the coordinator node in the format ``{host}:{port}``. eg. ``127.0.0.1:10832``
    * ``$COMMITTEE_MEMBER_RPC_ADDRESSES`` - Space separated list of the RPC addresses of the committee member nodes in the format ``{host1}:{port1} {host2}:{port2} ...``. eg. ``104.16.227.108:443 172.64.155.164:443``
-   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.octez-dac-node``.
+   * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.mavkit-dac-node``.
    * ``$REVEAL_DATA_DIR`` - Directory where pages are stored. It is advised to provide different values in case multiple DAC nodes run on the same host.
    * ``$RPC_ADDR`` - Host that the DAC node listens on. Defaults to ``127.0.0.1``.
    * ``$RPC_PORT`` - Port the DAC node listens on. Defaults to ``10832``.
@@ -236,7 +236,7 @@ Once configured, the Observer can be run with:
 
 .. code:: bash
 
-   octez-dac-node --endpoint $NODE_ENDPOINT \
+   mavkit-dac-node --endpoint $NODE_ENDPOINT \
       run --data-dir $DATA_DIR
 
 where
@@ -250,7 +250,7 @@ The rollup node can be configured to fetch missing pages from an Observer node b
 
 .. code:: bash
 
-   octez-smart-rollup-node-alpha run \
+   mavkit-smart-rollup-node-alpha run \
       <..other configurations> \
       --dac-observer $OBSERVER_RPC_ADDR
 

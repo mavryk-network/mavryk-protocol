@@ -6,9 +6,9 @@
 use crate::binary::owned::{OwnedBytes, OwnedConfigInstruction, OwnedConfigProgram};
 use crate::yaml::YamlConfig;
 use hex::FromHexError;
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_encoding::dac::PreimageHash;
-use tezos_smart_rollup_host::path::{OwnedPath, PathError};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_encoding::dac::PreimageHash;
+use mavryk_smart_rollup_host::path::{OwnedPath, PathError};
 use thiserror::Error;
 
 use crate::yaml::Instr;

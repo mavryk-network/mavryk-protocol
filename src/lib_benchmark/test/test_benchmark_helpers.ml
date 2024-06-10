@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 
 (** Helper for Data_encoding.json alcotest print and equality test *)
 let json_t : Data_encoding.json Alcotest.testable =
@@ -63,5 +63,5 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("benchmark_helpers", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("benchmark_helpers", tests)]
   |> Lwt_main.run

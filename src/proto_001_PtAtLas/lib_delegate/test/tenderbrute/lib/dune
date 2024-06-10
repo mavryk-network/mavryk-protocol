@@ -1,0 +1,22 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name tenderbrute_001_PtAtLas)
+ (public_name mavkit-protocol-001-PtAtLas-libs.baking.tenderbrute)
+ (libraries
+  data-encoding
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.client)
+ (flags
+  (:standard)
+  -open Data_encoding
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_client_base
+  -open Mavryk_client_001_PtAtLas))

@@ -36,10 +36,9 @@ let test_client =
     ~__FILE__
     ~title:"Test client simulation"
     ~tags:["client"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  Log.info "Import an encrypted account with some tez" ;
+  Log.info "Import an encrypted account with some mav" ;
   let encrypted_account =
     {
       alias = "encrypted_account";

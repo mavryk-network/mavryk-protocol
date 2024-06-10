@@ -5,7 +5,7 @@ storage
      (pair
         timestamp # T
         (pair
-           (pair mutez mutez) # P N
+           (pair mumav mumav) # P N
            (pair
               address # X
               (pair address address))))) ; # A B
@@ -18,8 +18,8 @@ code
          NOW ;
          COMPARE ; LT ;
          IF { # Before timeout
-              # We compute (P + N) mutez
-              PUSH mutez 0 ;
+              # We compute (P + N) mumav
+              PUSH mumav 0 ;
               DIP { DUP ; CDDDAAR } ; ADD ; # P
               DIP { DUP ; CDDDADR } ; ADD ; # N
               # We compare to the cumulated amount

@@ -31,12 +31,6 @@
 
 val preserved_cycles : Raw_context.t -> int
 
-val consensus_rights_delay : Raw_context.t -> int
-
-val blocks_preservation_cycles : Raw_context.t -> int
-
-val delegate_parameters_activation_delay : Raw_context.t -> int
-
 val blocks_per_cycle : Raw_context.t -> int32
 
 val blocks_per_commitment : Raw_context.t -> int32
@@ -121,8 +115,6 @@ val sc_rollup_number_of_sections_in_dissection : Raw_context.t -> int
 
 val sc_rollup_max_number_of_parallel_games : Raw_context.t -> int
 
-val sc_rollup_riscv_pvm_enable : Raw_context.t -> bool
-
 val max_number_of_stored_cemented_commitments : Raw_context.t -> int
 
 val sc_rollup_timeout_period_in_blocks : Raw_context.t -> int
@@ -158,9 +150,5 @@ val adaptive_issuance_rewards_params :
   Raw_context.t -> Constants_parametric_repr.adaptive_rewards_params
 
 val adaptive_issuance_autostaking_enable : Raw_context.t -> bool
-
-val adaptive_issuance_force_activation : Raw_context.t -> bool
-
-val adaptive_issuance_ns_enable : Raw_context.t -> bool
 
 val direct_ticket_spending_enable : Raw_context.t -> bool

@@ -34,7 +34,7 @@ type t = {
   node_ctxt : Node_context.ro;
   ctxt : Context.ro;
   inbox_level : int32;
-  state : Context.pvmstate;
+  state : Context.tree;
   reveal_map : string Utils.Reveal_hash_map.t option;
   nb_messages_inbox : int;
   level_position : level_position;
@@ -45,7 +45,7 @@ type t = {
 let simulate_info_per_level (node_ctxt : [`Read] Node_context.t) predecessor =
   let open Lwt_result_syntax in
   let* pred_header =
-    Layer1.fetch_tezos_shell_header node_ctxt.l1_ctxt predecessor
+    Layer1.fetch_mavryk_shell_header node_ctxt.l1_ctxt predecessor
   in
   let predecessor_timestamp = pred_header.timestamp in
   return {predecessor_timestamp; predecessor}

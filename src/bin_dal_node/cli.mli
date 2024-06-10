@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 (** {2 Command-line options} *)
 
@@ -40,7 +40,7 @@ type options = {
   expected_pow : float option;
       (** The expected proof of work for the P2P identity. *)
   listen_addr : P2p_point.Id.t option;
-      (** The TCP address and port bound by the DAL node. *)
+      (** The TCP address and port at which this instance can be reached. *)
   public_addr : P2p_point.Id.t option;
       (** The endpoint on which the DAL node can be contacted by other DAL nodes. *)
   endpoint : Uri.t option;  (** The endpoint on which to contact the L1 node. *)

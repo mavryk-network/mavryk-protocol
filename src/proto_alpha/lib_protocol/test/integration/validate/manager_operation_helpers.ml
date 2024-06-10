@@ -35,7 +35,7 @@ let gb_limit = Gas.Arith.(integral_of_int_exn 100_000)
 
 let half_gb_limit = Gas.Arith.(integral_of_int_exn 50_000)
 
-let default_fund = Tez.of_mutez_exn 400_000_000_000L
+let default_fund = Tez.of_mumav_exn 400_000_000_000L
 
 (** {2 Datatypes} *)
 
@@ -402,7 +402,7 @@ let manager_parameters : Parameters.t -> ctxt_req -> Parameters.t =
   let hard_gas_limit_per_block =
     match hard_gas_limit_per_block with
     | Some gb -> gb
-    | None -> Default_parameters.constants_mainnet.hard_gas_limit_per_block
+    | None -> Gas.Arith.(integral_of_int_exn 5_200_000)
   in
   let dal = {params.constants.dal with feature_enable = flags.dal} in
   let sc_rollup =
@@ -419,7 +419,7 @@ let manager_parameters : Parameters.t -> ctxt_req -> Parameters.t =
 let init_ctxt_only ctxtreq =
   let open Lwt_result_syntax in
   let initial_params =
-    Tezos_protocol_alpha_parameters.Default_parameters.parameters_of_constants
+    Mavryk_protocol_alpha_parameters.Default_parameters.parameters_of_constants
       {Context.default_test_constants with consensus_threshold = 0}
   in
   let*? _cryptobox =
@@ -723,15 +723,11 @@ let mk_reveal (oinfos : operation_req) (infos : infos) =
     (B infos.ctxt.block)
     pk
 
-let sc_rollup_of =
-  let open Lwt_result_syntax in
-  function
+let sc_rollup_of = function
   | Some sc_rollup -> return sc_rollup
   | None -> failwith "Sc_rollup not created in this context"
 
-let zk_rollup_of =
-  let open Lwt_result_syntax in
-  function
+let zk_rollup_of = function
   | Some zk_rollup -> return zk_rollup
   | None -> failwith "Zk_rollup not created in this context"
 

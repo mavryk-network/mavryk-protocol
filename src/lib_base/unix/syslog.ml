@@ -51,7 +51,7 @@ type facility =
   | Console
 
 let level_code = function
-  | Tezos_event_logging.Internal_event.Fatal -> 0
+  | Mavryk_event_logging.Internal_event.Fatal -> 0
   | Error -> 3
   | Warning -> 4
   | Notice -> 5

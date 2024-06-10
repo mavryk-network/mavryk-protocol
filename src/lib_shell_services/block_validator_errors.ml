@@ -200,7 +200,7 @@ let block_error_encoding =
       case
         (Tag 13)
         ~title:"Cannot_parse_block_header"
-        (obj1 (req "error" (constant "cannot_parse_bock_header")))
+        (obj1 (req "error" (constant "cannot_parse_block_header")))
         (function Cannot_parse_block_header -> Some () | _ -> None)
         (fun () -> Cannot_parse_block_header);
       case

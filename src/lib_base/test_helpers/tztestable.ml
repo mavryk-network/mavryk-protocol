@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** [tztestable] collects Alcotest testable definitions for Tezos specific types. *)
+(** [tztestable] collects Alcotest testable definitions for Mavryk specific types. *)
 
 open Alcotest
 

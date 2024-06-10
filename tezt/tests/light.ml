@@ -68,15 +68,10 @@ let test_no_endpoint () =
   Test.register
     ~__FILE__
     ~title:"mode light no endpoint"
-    ~tags:[Tag.layer1; "client"; "light"; "cli"]
-    ~uses_node:false
+    ~tags:["client"; "light"; "cli"]
   @@ fun () ->
   let min_agreement = 1.0 in
-  let uris =
-    List.map
-      (fun port -> sf "http://%s:%d" Constant.default_host port)
-      [666; 667]
-  in
+  let uris = List.map (fun port -> sf "http://localhost:%d" port) [666; 667] in
   let endpoints =
     (* As the client should fail before contacting the node, we don't need
        to start a node in this test. Hence we pass an empty list of endpoints
@@ -99,7 +94,7 @@ let test_endpoint_not_in_sources () =
   Test.register
     ~__FILE__
     ~title:"mode light endpoint not in sources"
-    ~tags:[Tag.layer1; "client"; "light"; "cli"]
+    ~tags:["client"; "light"; "cli"]
   @@ fun () ->
   let min_agreement = 1.0 in
   let mk_node_endpoint rpc_port = Client.Node (Node.create ~rpc_port []) in
@@ -107,7 +102,7 @@ let test_endpoint_not_in_sources () =
    * We use the port to disambiguate, because disambiguating
    * with the host is complicated, because of Client.address
    * that delegates to Runner.address; which, to make it short,
-   * defaults the host to "127.0.0.1". *)
+   * defaults the host to "localhost". *)
   let endpoint = mk_node_endpoint 666 in
   let sources_ports = [667; 668] in
   let endpoints =
@@ -116,9 +111,7 @@ let test_endpoint_not_in_sources () =
   in
   let uris =
     (* URIs written to sources.json *)
-    List.map
-      (fun port -> sf "http://%s:%d" Constant.default_host port)
-      sources_ports
+    List.map (fun port -> sf "http://localhost:%d" port) sources_ports
   in
   let client = Client.create_with_mode (Light (min_agreement, endpoints)) in
   let* () = Client.write_sources_file ~min_agreement ~uris client in
@@ -142,7 +135,7 @@ let test_transfer =
   Protocol.register_test
     ~__FILE__
     ~title:"(Light) transfer"
-    ~tags:[Tag.layer1; "light"; "client"; "transfer"]
+    ~tags:["light"; "client"; "transfer"]
   @@ fun protocol ->
   let* _, client = init_light ~protocol in
   do_transfer client
@@ -151,7 +144,7 @@ let test_bake =
   Protocol.register_test
     ~__FILE__
     ~title:"(Light) bake"
-    ~tags:[Tag.layer1; "light"; "client"; "bake"]
+    ~tags:["light"; "client"; "bake"]
   @@ fun protocol ->
   let* _, client = init_light ~protocol in
   let giver = Constant.bootstrap1.alias in
@@ -173,7 +166,7 @@ module NoUselessRpc = struct
     In this scenario, the light client should look directly in the data within the tree received by the first request.
 
     For this, this test inspects the debug output produced by
-    setting TEZOS_LOG to light_mode->debug. This causes the client
+    setting MAVRYK_LOG to light_mode->debug. This causes the client
     to print the RPCs done to retrieve pieces of the context (do_rpc lines):
 
     light_mode: API call: do_rpc v1
@@ -183,7 +176,7 @@ module NoUselessRpc = struct
  *)
   let test_no_useless_rpc ?query_string path client =
     (* This test's implementation is similar to [Proxy.test_context_suffix_no_rpc]*)
-    let env = String_map.singleton "TEZOS_LOG" "light_mode->debug" in
+    let env = String_map.singleton "MAVRYK_LOG" "light_mode->debug" in
     let* stderr =
       Client.spawn_rpc ~env ?query_string Client.GET path client
       |> Process.check_and_read_stderr
@@ -222,7 +215,7 @@ module NoUselessRpc = struct
     Protocol.register_test
       ~__FILE__
       ~title:"(Light) No useless RPC call"
-      ~tags:[Tag.layer1; "light"; "rpc"; "get"]
+      ~tags:["light"; "rpc"; "get"]
     @@ fun protocol ->
     let* _, client = init_light ~protocol in
     let paths =
@@ -242,7 +235,7 @@ module NoUselessRpc = struct
       ]
     in
     let paths =
-      if Protocol.(number protocol <= number Nairobi + 1) then
+      if Protocol.(number protocol <= number Atlas) then
         (["helpers"; "endorsing_rights"], []) :: paths
       else paths
     in
@@ -256,14 +249,14 @@ module NoUselessRpc = struct
 end
 
 (** Test.
-    Test that [octez-client --mode light --sources ... --protocol P] fails
+    Test that [mavkit-client --mode light --sources ... --protocol P] fails
     when the endpoint's protocol is not [P].
  *)
 let test_wrong_proto =
   Protocol.register_test
     ~__FILE__
     ~title:"(Light) Wrong proto"
-    ~tags:[Tag.layer1; "light"; "proto"]
+    ~tags:["light"; "proto"]
   @@ fun protocol ->
   let* _, client = init_light ~protocol in
   Proxy.wrong_proto protocol client

@@ -2,26 +2,26 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_srs_extraction)
- (public_name octez-libs.srs-extraction)
+ (name mavkit_srs_extraction)
+ (public_name mavkit-libs.srs-extraction)
  (libraries
   bls12-381
-  octez-libs.bls12-381-polynomial)
+  mavkit-libs.bls12-381-polynomial)
  (flags
   (:standard)
-  -open Octez_bls12_381_polynomial)
+  -open Mavkit_bls12_381_polynomial)
  (modules libsrs))
 
 (executable
  (name srs_extraction_main)
  (libraries
-  octez-libs.srs-extraction
+  mavkit-libs.srs-extraction
   cmdliner
   unix
   bls12-381
-  octez-libs.bls12-381-polynomial)
+  mavkit-libs.bls12-381-polynomial)
  (flags
   (:standard)
-  -open Octez_srs_extraction
-  -open Octez_bls12_381_polynomial)
+  -open Mavkit_srs_extraction
+  -open Mavkit_bls12_381_polynomial)
  (modules srs_extraction_main))

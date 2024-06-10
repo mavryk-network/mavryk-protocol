@@ -25,15 +25,15 @@
 (*****************************************************************************)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let () =
-  (* warn_if_argv0_name_not_octez *)
+  (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -94,7 +94,7 @@ let perform_benchmark (bench_pattern : Namespace.t)
     bench_opts ;
   let bench = Benchmark.ex_unpack bench in
   match bench with
-  | Tezos_benchmark.Benchmark.Ex bench ->
+  | Mavryk_benchmark.Benchmark.Ex bench ->
       let workload_data = Measure.perform_benchmark bench_opts.options bench in
       Option.iter
         (fun filename -> Measure.to_csv ~filename ~bench ~workload_data)
@@ -884,7 +884,7 @@ module Auto_build = struct
 
   (* Assumes the data files are found in [_snoop/sapling_data] *)
   let make_sapling_benchmark_config dest ns =
-    let open Tezos_benchmarks_proto_alpha in
+    let open Mavryk_benchmarks_proto_alpha in
     let open Interpreter_benchmarks.Default_config in
     let sapling_txs_file = "_snoop/sapling_data" in
     let data_files_available =
@@ -911,7 +911,7 @@ module Auto_build = struct
 
   (* Assumes the data file is at [mich_fn] *)
   let make_michelson_benchmark_config dest ns mich_fn =
-    let open Tezos_benchmarks_proto_alpha in
+    let open Mavryk_benchmarks_proto_alpha in
     let open Translator_benchmarks.Config in
     if Sys.file_exists mich_fn then (
       let config = {default_config with michelson_terms_file = Some mich_fn} in
@@ -928,21 +928,21 @@ module Auto_build = struct
 
   let get_head_context_hash data_dir =
     match
-      Lwt_main.run @@ Tezos_shell_benchmarks.Io_helpers.load_head_block data_dir
+      Lwt_main.run @@ Mavryk_shell_benchmarks.Io_helpers.load_head_block data_dir
     with
     | Error e ->
         Format.eprintf
           "Error: %a@."
-          Tezos_error_monad.Error_monad.pp_print_trace
+          Mavryk_error_monad.Error_monad.pp_print_trace
           e ;
-        Format.eprintf "Failed to find a Tezos context at %s@." data_dir ;
+        Format.eprintf "Failed to find a Mavryk context at %s@." data_dir ;
         exit 1
     | Ok res -> res
 
-  (* Assumes the data files are found in [_snoop/tezos_node] *)
+  (* Assumes the data files are found in [_snoop/mavryk_node] *)
   let make_io_read_random_key_benchmark_config dest ns =
-    let open Tezos_shell_benchmarks.Io_benchmarks.Read_random_key_bench in
-    let data_dir = "_snoop/tezos-node" in
+    let open Mavryk_shell_benchmarks.Io_benchmarks.Read_random_key_bench in
+    let data_dir = "_snoop/mavryk-node" in
     let context_dir = Filename.concat data_dir "context" in
     let level, block_hash, context_hash = get_head_context_hash data_dir in
     Format.eprintf
@@ -963,10 +963,10 @@ module Auto_build = struct
     Config.(save_config dest (build [(ns, json)])) ;
     Some dest
 
-  (* Assumes the data files are found in [_snoop/tezos_node] *)
+  (* Assumes the data files are found in [_snoop/mavryk_node] *)
   let make_io_write_random_keys_benchmark_config dest ns =
-    let open Tezos_shell_benchmarks.Io_benchmarks.Write_random_keys_bench in
-    let data_dir = "_snoop/tezos-node" in
+    let open Mavryk_shell_benchmarks.Io_benchmarks.Write_random_keys_bench in
+    let data_dir = "_snoop/mavryk-node" in
     let context_dir = Filename.concat data_dir "context" in
     let level, block_hash, context_hash = get_head_context_hash data_dir in
     Format.eprintf
@@ -1317,7 +1317,7 @@ end
 (* Entrypoint *)
 
 (* Activate logging system. *)
-let () = Lwt_main.run @@ Tezos_base_unix.Internal_event_unix.init ()
+let () = Lwt_main.run @@ Mavryk_base_unix.Internal_event_unix.init ()
 
 let () =
   if Commands.list_solvers then list_solvers Format.std_formatter ;

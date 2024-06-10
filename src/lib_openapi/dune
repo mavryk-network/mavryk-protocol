@@ -2,10 +2,10 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_openapi)
- (public_name tezos-openapi)
+ (name mavryk_openapi)
+ (public_name mavryk-openapi)
  (instrumentation (backend bisect_ppx))
  (libraries
   ezjsonm
   json-data-encoding
-  tezt.json))
+  tezt))

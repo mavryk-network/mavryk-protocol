@@ -29,7 +29,7 @@
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4097
    Add an interface to this module *)
 
-module StoreMaker = Irmin_pack_unix.KV (Tezos_context_encoding.Context.Conf)
+module StoreMaker = Irmin_pack_unix.KV (Mavryk_context_encoding.Context.Conf)
 include StoreMaker.Make (Irmin.Contents.String)
 
 let shard_store_dir = "shard_store"
@@ -43,7 +43,7 @@ let set ~msg store path v = set_exn store path v ~info:(fun () -> info msg)
 let remove ~msg store path = remove_exn store path ~info:(fun () -> info msg)
 
 module Value_size_hooks = struct
-  (* The [value_size] required by [Tezos_key_value_store.directory] is known when
+  (* The [value_size] required by [Mavryk_key_value_store.directory] is known when
      the daemon loads a protocol, after the store is activated. We use the closure
      [value_size_fun] to perform delayed protocol-specific parameter passing.
 
@@ -89,7 +89,7 @@ module Shards = struct
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/4973
      Make storage more resilient to DAL parameters change. *)
   let are_shards_available store commitment shard_indexes =
-    List.for_all_es (value_exists store commitment) shard_indexes
+    List.for_all_s (value_exists store commitment) shard_indexes
 
   let save_and_notify shards_store shards_watcher commitment shards =
     let open Lwt_result_syntax in
@@ -128,13 +128,12 @@ module Shards = struct
     init ~lru_size:Constants.shards_store_lru_size (fun commitment ->
         let commitment_string = Cryptobox.Commitment.to_b58check commitment in
         let filepath = dir_path // commitment_string in
-        layout
+        directory
           ~encoded_value_size:(Value_size_hooks.share_size ())
-          ~encoding:Cryptobox.share_encoding
-          ~filepath
-          ~eq:Stdlib.( = )
-          ~index_of:Fun.id
-          ())
+          Cryptobox.share_encoding
+          filepath
+          Stdlib.( = )
+          Fun.id)
 end
 
 module Shard_proofs_cache =

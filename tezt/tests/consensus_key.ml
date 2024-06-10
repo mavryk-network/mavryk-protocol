@@ -32,7 +32,7 @@
                  on the baker.
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let blocks_per_cycle = 4
 
@@ -771,7 +771,7 @@ let test_revert_to_unique_consensus_key ~manual_staking
     ?(baker = Constant.bootstrap1.alias) ~(new_delegate : Account.key)
     ~(new_consensus_key : Account.key) client =
   (* Set a new consensus key *)
-  Log.info "Transfer 1_000_000 tez from baker to new_delegate" ;
+  Log.info "Transfer 1_000_000 mav from baker to new_delegate" ;
   let* () =
     transfer
       ~source:baker

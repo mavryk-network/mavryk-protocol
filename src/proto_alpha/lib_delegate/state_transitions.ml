@@ -346,7 +346,6 @@ let rec handle_proposal ~is_proposal_applied state (new_proposal : proposal) =
           delegate_slots;
           next_level_delegate_slots;
           next_level_proposed_round = None;
-          next_forged_block = None;
         }
       in
       (* recursive call with the up-to-date state to handle the new
@@ -415,17 +414,18 @@ and may_switch_branch ~is_proposal_applied state new_proposal =
         let* () = Events.(emit branch_proposal_has_same_prequorum ()) in
         do_nothing state
 
-(* Create a fresh block proposal containing the current operations of the
-   mempool in [state] and the additional [attestations] for [delegate] at round
-   [round]. *)
-let prepare_block_to_bake ~attestations ?last_proposal
+(** Inject a fresh block proposal containing the current operations of the
+    mempool in [state] and the additional [attestations] and [dal_attestations]
+    for [delegate] at round [round]. *)
+let propose_fresh_block_action ~attestations ~dal_attestations ?last_proposal
     ~(predecessor : block_info) state delegate round =
+  let open Lwt_syntax in
+  (* TODO check if there is a trace where we could not have updated the level *)
   (* The block to bake embeds the operations gathered by the
      worker. However, consensus operations that are not relevant for
      this block are filtered out. In the case of proposing a new fresh
      block, the block is supposed to carry only attestations for the
      previous level. *)
-  let open Lwt_syntax in
   let operation_pool =
     (* 1. Fetch operations from the mempool. *)
     let current_mempool =
@@ -466,72 +466,29 @@ let prepare_block_to_bake ~attestations ?last_proposal
     let filtered_mempool =
       {current_mempool with consensus = relevant_consensus_operations}
     in
-    (* 3. Add the additional given [attestations].
+    (* 3. Add the additional given [attestations] and [dal_attestations].
          N.b. this is a set: there won't be duplicates *)
+    let pool =
+      Operation_pool.add_operations
+        filtered_mempool
+        (List.map Operation.pack attestations)
+    in
     Operation_pool.add_operations
-      filtered_mempool
-      (List.map Operation.pack attestations)
+      pool
+      (List.map Operation.pack dal_attestations)
   in
   let kind = Fresh operation_pool in
-  let* () = Events.(emit preparing_fresh_block (delegate, round)) in
+  let* () = Events.(emit proposing_fresh_block (delegate, round)) in
   let force_apply =
     state.global_state.config.force_apply || Round.(round <> zero)
     (* This is used as a safety net by applying blocks on round > 0, in case
        validation-only did not produce a correct round-0 block. *)
   in
-  return {predecessor; round; delegate; kind; force_apply}
-
-let forge_fresh_block_action ~attestations ?last_proposal
-    ~(predecessor : block_info) state delegate =
-  let open Lwt_syntax in
-  let* block_to_bake =
-    prepare_block_to_bake
-      ~attestations
-      ?last_proposal
-      ~predecessor
-      state
-      delegate
-      Round.zero
-  in
+  let block_to_bake = {predecessor; round; delegate; kind; force_apply} in
   let updated_state = update_current_phase state Idle in
-  return @@ Forge_block {block_to_bake; updated_state}
+  return @@ Inject_block {block_to_bake; updated_state}
 
-(** Create an inject action that will inject either a fresh block or the pre-emptively
-    forged block if it exists. *)
-let propose_fresh_block_action ~attestations ?last_proposal
-    ~(predecessor : block_info) state delegate round =
-  (* TODO check if there is a trace where we could not have updated the level *)
-  let open Lwt_syntax in
-  let+ kind, updated_state =
-    match state.level_state.next_forged_block with
-    | Some ({delegate; round; block_header = _; operations = _} as signed_block)
-      ->
-        let+ () =
-          Events.(emit found_preemptively_forged_block (delegate, round))
-        in
-        let updated_state =
-          {
-            state with
-            level_state = {state.level_state with next_forged_block = None};
-          }
-        in
-        (Inject_only signed_block, updated_state)
-    | None ->
-        let+ block_to_bake =
-          prepare_block_to_bake
-            ~attestations
-            ?last_proposal
-            ~predecessor
-            state
-            delegate
-            round
-        in
-        (Forge_and_inject block_to_bake, state)
-  in
-  let updated_state = update_current_phase updated_state Idle in
-  Inject_block {kind; updated_state}
-
-let propose_block_action state delegate round ~last_proposal =
+let propose_block_action state delegate round (proposal : proposal) =
   let open Lwt_syntax in
   (* Possible cases:
      1. There was a proposal but the PQC was not reached.
@@ -549,12 +506,18 @@ let propose_block_action state delegate round ~last_proposal =
       (* Invariant: there is no locked round if there is no attestable
          payload *)
       assert (state.level_state.locked_round = None) ;
-      let attestations_in_last_proposal = last_proposal.block.quorum in
+      let attestations_in_last_proposal = proposal.block.quorum in
+      (* Also insert the DAL attestations from the proposal, because the mempool
+         may not contain them anymore *)
+      (* TODO: https://gitlab.com/tezos/tezos/-/issues/4671
+         The block may therefore contain multiple attestations for the same delegate. *)
+      let dal_attestations_in_last_proposal = proposal.block.dal_attestations in
       propose_fresh_block_action
         ~attestations:attestations_in_last_proposal
+        ~dal_attestations:dal_attestations_in_last_proposal
         state
-        ~last_proposal:last_proposal.block
-        ~predecessor:last_proposal.predecessor
+        ~last_proposal:proposal.block
+        ~predecessor:proposal.predecessor
         delegate
         round
   | Some {proposal; prequorum} ->
@@ -622,8 +585,7 @@ let propose_block_action state delegate round ~last_proposal =
         {predecessor = proposal.predecessor; round; delegate; kind; force_apply}
       in
       let updated_state = update_current_phase state Idle in
-      return
-      @@ Inject_block {kind = Forge_and_inject block_to_bake; updated_state}
+      return @@ Inject_block {block_to_bake; updated_state}
 
 let end_of_round state current_round =
   let open Lwt_syntax in
@@ -668,29 +630,9 @@ let end_of_round state current_round =
             new_state
             consensus_key_and_delegate
             new_round
-            ~last_proposal:state.level_state.latest_proposal
+            state.level_state.latest_proposal
         in
         return (new_state, action)
-
-let time_to_forge_block state =
-  let open Lwt_syntax in
-  let at_round = Round.zero in
-  let round_proposer_opt = round_proposer state ~level:`Next at_round in
-  match (state.level_state.elected_block, round_proposer_opt) with
-  | None, _ | _, None ->
-      (* Unreachable: the [Time_to_forge_Block] event can only be
-         triggered when we have a slot and an elected block *)
-      assert false
-  | Some elected_block, Some {consensus_key_and_delegate; _} ->
-      let attestations = elected_block.attestation_qc in
-      let* action =
-        forge_fresh_block_action
-          ~attestations
-          ~predecessor:elected_block.proposal.block
-          state
-          consensus_key_and_delegate
-      in
-      return (state, action)
 
 let time_to_bake_at_next_level state at_round =
   let open Lwt_syntax in
@@ -706,6 +648,11 @@ let time_to_bake_at_next_level state at_round =
       assert false
   | Some elected_block, Some {consensus_key_and_delegate; _} ->
       let attestations = elected_block.attestation_qc in
+      let dal_attestations =
+        (* Unlike proposal attestations, we don't watch and store DAL attestations for
+           each proposal, we'll retrieve them from the mempool *)
+        []
+      in
       let new_level_state =
         {state.level_state with next_level_proposed_round = Some at_round}
       in
@@ -713,6 +660,7 @@ let time_to_bake_at_next_level state at_round =
       let* action =
         propose_fresh_block_action
           ~attestations
+          ~dal_attestations
           ~predecessor:elected_block.proposal.block
           new_state
           consensus_key_and_delegate
@@ -896,7 +844,6 @@ let step (state : Baking_state.t) (event : Baking_state.event) :
       (* If it is time to bake the next level, stop everything currently
          going on and propose the next level block *)
       time_to_bake_at_next_level state at_round
-  | _, Timeout Time_to_forge_block -> time_to_forge_block state
   | Idle, New_head_proposal proposal ->
       let* () =
         Events.(

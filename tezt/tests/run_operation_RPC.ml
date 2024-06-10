@@ -515,9 +515,9 @@ let test_misc_manager_ops_from_fresh_account =
       `Client
       ()
   in
-  let amount = 10_000_000 (* amount of the final transaction (in mutez) *) in
+  let amount = 10_000_000 (* amount of the final transaction (in mumav) *) in
   Log.info
-    "Create a fresh account by giving it [2 x amount] mutez, then baking a \
+    "Create a fresh account by giving it [2 x amount] mumav, then baking a \
      block to apply the transaction." ;
   let* fresh_account = Client.gen_and_show_keys client in
   let* _oph =
@@ -547,7 +547,7 @@ let test_misc_manager_ops_from_fresh_account =
   let* _oph = Operation.inject reveal_op client in
   let* () = Client.bake_for_and_wait ~node client in
   Log.info
-    "Craft a transaction (of [amount] mutez) from the fresh account and call \
+    "Craft a transaction (of [amount] mumav) from the fresh account and call \
      the [run_operation] RPC on it." ;
   let* () =
     let manager_op =

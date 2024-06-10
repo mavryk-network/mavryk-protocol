@@ -61,7 +61,7 @@ module Simple = struct
       ~msg:
         "The smart rollup node is interacting with rollup {addr} of kind {kind}"
       ~level:Info
-      ("addr", Octez_smart_rollup.Address.encoding)
+      ("addr", Mavkit_smart_rollup.Address.encoding)
       ("kind", Data_encoding.string)
 
   let starting_metrics_server =
@@ -153,6 +153,54 @@ module Simple = struct
       ("gc_level", Data_encoding.int32)
       ("head_level", Data_encoding.int32)
 
+  let starting_context_gc =
+    declare_1
+      ~section
+      ~name:"starting_context_gc"
+      ~level:Info
+      ~msg:"Starting context garbage collection for commit {context_hash}"
+      ("context_hash", Smart_rollup_context_hash.encoding)
+      ~pp1:Smart_rollup_context_hash.pp
+
+  let context_gc_already_launched =
+    declare_0
+      ~section
+      ~name:"gc_already_launched"
+      ~level:Info
+      ~msg:
+        "An attempt to launch context GC was made, but a previous GC run has \
+         not yet finished. No action was taken"
+      ()
+
+  let ending_context_gc =
+    declare_2
+      ~section
+      ~name:"ending_context_gc"
+      ~level:Info
+      ~msg:
+        "Context garbage collection finished in {duration} (finalised in \
+         {finalisation})"
+      ~pp1:Time.System.Span.pp_hum
+      ("duration", Time.System.Span.encoding)
+      ~pp2:Time.System.Span.pp_hum
+      ("finalisation", Time.System.Span.encoding)
+
+  let context_gc_failure =
+    declare_1
+      ~section
+      ~name:"gc_failure"
+      ~level:Warning
+      ~msg:"[Warning] Context garbage collection failed: {error}"
+      ("error", Data_encoding.string)
+
+  let context_gc_launch_failure =
+    declare_1
+      ~section
+      ~name:"context_gc_launch_failure"
+      ~level:Warning
+      ~msg:"[Warning] Context garbage collection launch failed: {error}"
+      ("error", Data_encoding.string)
+
   let gc_levels_storage_failure =
     declare_0
       ~section
@@ -192,7 +240,7 @@ let node_is_ready ~rpc_addr ~rpc_port =
   Simple.(emit node_is_ready (rpc_addr, rpc_port))
 
 let rollup_exists ~addr ~kind =
-  let kind = Octez_smart_rollup.Kind.to_string kind in
+  let kind = Mavkit_smart_rollup.Kind.to_string kind in
   Simple.(emit rollup_exists (addr, kind))
 
 let starting_metrics_server ~host ~port =
@@ -223,6 +271,17 @@ let acquiring_lock () = Simple.(emit acquiring_lock) ()
 
 let calling_gc ~gc_level ~head_level =
   Simple.(emit calling_gc) (gc_level, head_level)
+
+let starting_context_gc hash = Simple.(emit starting_context_gc) hash
+
+let context_gc_already_launched () =
+  Simple.(emit context_gc_already_launched) ()
+
+let ending_context_gc t = Simple.(emit ending_context_gc) t
+
+let context_gc_failure msg = Simple.(emit context_gc_failure) msg
+
+let context_gc_launch_failure msg = Simple.(emit context_gc_launch_failure) msg
 
 let gc_levels_storage_failure () = Simple.(emit gc_levels_storage_failure) ()
 

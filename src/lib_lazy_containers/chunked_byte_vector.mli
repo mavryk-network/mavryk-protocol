@@ -43,8 +43,8 @@ module Chunk : sig
   (** [num_needed len] Computes the number of chunks needed to cover [len]. *)
   val num_needed : int64 -> int64
 
-  (** [encoding] is a [Tezos_tree_encoding] for [Chunk]. *)
-  val encoding : t Tezos_tree_encoding.t
+  (** [encoding] is a [Mavryk_tree_encoding] for [Chunk]. *)
+  val encoding : t Mavryk_tree_encoding.t
 end
 
 (** Chunked byte vector *)
@@ -57,7 +57,7 @@ type t
     tree-encoding library. To create a brand new chunked byte vector,
     use {!allocate}. *)
 val create :
-  ?origin:Tezos_tree_encoding.wrapped_tree ->
+  ?origin:Mavryk_tree_encoding.wrapped_tree ->
   ?get_chunk:(int64 -> Chunk.t Lwt.t) ->
   int64 ->
   t
@@ -66,7 +66,7 @@ val create :
 
     {b Note:} The sole consumer of this function is expected to be the
     tree-encoding library. *)
-val origin : t -> Tezos_tree_encoding.wrapped_tree option
+val origin : t -> Mavryk_tree_encoding.wrapped_tree option
 
 (** [allocate len] creates a new zeroed chunked byte vector.
 
@@ -122,5 +122,5 @@ val store_bytes : t -> int64 -> bytes -> unit Lwt.t
     reading its contents, or by modifying it. *)
 val loaded_chunks : t -> (int64 * Chunk.t option) list
 
-(** [encoding] is a [Tezos_tree_encoding] for [t]. *)
-val encoding : t Tezos_tree_encoding.t
+(** [encoding] is a [Mavryk_tree_encoding] for [t]. *)
+val encoding : t Mavryk_tree_encoding.t

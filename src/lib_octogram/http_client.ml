@@ -38,7 +38,7 @@ let local_path_from_agent_uri ?(keep_name = false) ?(exec = true) client =
         if keep_name then Filename.basename endpoint
         else
           let (`Hex handler) =
-            Tezos_crypto.Blake2B.(hash_string [endpoint] |> to_hex)
+            Mavryk_crypto.Blake2B.(hash_string [endpoint] |> to_hex)
           in
           handler
       in

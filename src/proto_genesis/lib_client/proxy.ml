@@ -28,24 +28,24 @@ let msg : string =
    node. Hence this code should not be reached, because the RPC directory is \
    empty."
 
-module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
+module ProtoRpc : Mavryk_proxy.Proxy_proto.PROTO_RPC = struct
   let split_key _ _ = None
 
   let failure_is_permanent _ = false
 
-  let do_rpc (pgi : Tezos_proxy.Proxy.proxy_getter_input)
-      (key : Tezos_protocol_environment.Proxy_context.M.key) =
+  let do_rpc (pgi : Mavryk_proxy.Proxy.proxy_getter_input)
+      (key : Mavryk_protocol_environment.Proxy_context.M.key) =
     let open Lwt_result_syntax in
     let chain = pgi.chain in
     let block = pgi.block in
     let*! () =
-      Tezos_proxy.Logger.emit
-        Tezos_proxy.Logger.proxy_block_rpc
-        ( Tezos_shell_services.Block_services.chain_to_string chain,
-          Tezos_shell_services.Block_services.to_string block,
+      Mavryk_proxy.Logger.emit
+        Mavryk_proxy.Logger.proxy_block_rpc
+        ( Mavryk_shell_services.Block_services.chain_to_string chain,
+          Mavryk_shell_services.Block_services.to_string block,
           key )
     in
-    let* (raw_context : Tezos_context_sigs.Context.Proof_types.raw_context) =
+    let* (raw_context : Mavryk_context_sigs.Context.Proof_types.raw_context) =
       Protocol_client_context.Genesis_block_services.Context.read
         pgi.rpc_context
         ~chain
@@ -53,30 +53,30 @@ module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC = struct
         key
     in
     let*! () =
-      Tezos_proxy.Logger.emit Tezos_proxy.Logger.tree_received
-      @@ Int64.of_int (Tezos_proxy.Proxy_getter.raw_context_size raw_context)
+      Mavryk_proxy.Logger.emit Mavryk_proxy.Logger.tree_received
+      @@ Int64.of_int (Mavryk_proxy.Proxy_getter.raw_context_size raw_context)
     in
     return raw_context
 end
 
 let () =
-  let open Tezos_proxy.Registration in
+  let open Mavryk_proxy.Registration in
   let module M : Proxy_sig = struct
     module Protocol = Protocol_client_context.Lifted_protocol
 
     let protocol_hash = Protocol.hash
 
-    let directory = Tezos_rpc.Directory.empty
+    let directory = Mavryk_rpc.Directory.empty
 
-    let initial_context (ctx : Tezos_proxy.Proxy_getter.rpc_context_args)
+    let initial_context (ctx : Mavryk_proxy.Proxy_getter.rpc_context_args)
         (hash : Context_hash.t) =
       let open Lwt_result_syntax in
-      let p_rpc = (module ProtoRpc : Tezos_proxy.Proxy_proto.PROTO_RPC) in
+      let p_rpc = (module ProtoRpc : Mavryk_proxy.Proxy_proto.PROTO_RPC) in
       let* (module ProxyDelegation) =
-        Tezos_proxy.Proxy_getter.make_delegate ctx p_rpc hash
+        Mavryk_proxy.Proxy_getter.make_delegate ctx p_rpc hash
       in
       return
-        (Tezos_protocol_environment.Proxy_context.empty
+        (Mavryk_protocol_environment.Proxy_context.empty
         @@ Some (module ProxyDelegation))
 
     let merkle_tree _ _ _ = failwith "%s" msg

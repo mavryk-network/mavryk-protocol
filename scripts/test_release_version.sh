@@ -3,8 +3,8 @@ set -eu
 
 # test the version associated to a git tag. Here we use
 # a random version and we check if it is correctly parsed
-# The script tezos-version prints the
-# same version displayed by octez-node --version
+# The script mavryk-version prints the
+# same version displayed by mavkit-node --version
 
 VERSION='10.94'
 RANDOMTAG='testtesttest'
@@ -13,8 +13,9 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 test_version() {
   rm -f _build/default/src/lib_version/generated_git_info.ml
-  res=$(dune exec octez-version || :)
-  if [ "$res" != "$1" ]; then
+  res=$(dune exec mavkit-version ||:)
+  if [ "$res" != "$1" ]
+  then
     echo "Expected version '$1', got '$res' => FAIL"
     exit 1
   else

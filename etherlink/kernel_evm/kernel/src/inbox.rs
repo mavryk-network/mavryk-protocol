@@ -5,8 +5,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-use std::fmt::Display;
-
 use crate::parsing::{Input, InputResult, MAX_SIZE_PER_CHUNK};
 use crate::sequencer_blueprint::SequencerBlueprint;
 use crate::simulation;
@@ -16,45 +14,30 @@ use crate::storage::{
     get_and_increment_deposit_nonce, remove_chunked_transaction,
     store_last_info_per_level_timestamp, store_transaction_chunk,
 };
-use crate::upgrade::*;
 use crate::Error;
 use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::rlp_helpers::{decode_field, decode_tx_hash, next};
-use tezos_ethereum::transaction::{TransactionHash, TRANSACTION_HASH_SIZE};
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::public_key::PublicKey;
-use tezos_smart_rollup_host::runtime::Runtime;
-
-#[derive(Debug, PartialEq, Clone, Default)]
-pub struct TezosContracts {
-    pub ticketer: Option<ContractKt1Hash>,
-    pub admin: Option<ContractKt1Hash>,
-}
-
-impl Display for TezosContracts {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Ticketer is {:?}. Administrator is {:?}",
-            self.ticketer, self.admin,
-        )
-    }
-}
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::rlp_helpers::{decode_array, decode_field, decode_tx_hash, next};
+use mavryk_ethereum::transaction::{TransactionHash, TRANSACTION_HASH_SIZE};
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Deposit {
     pub amount: U256,
+    pub gas_price: U256,
     pub receiver: H160,
 }
 
 impl Encodable for Deposit {
     fn rlp_append(&self, stream: &mut rlp::RlpStream) {
-        stream.begin_list(2);
+        stream.begin_list(3);
         stream.append(&self.amount);
+        stream.append(&self.gas_price);
         stream.append(&self.receiver);
     }
 }
@@ -64,14 +47,19 @@ impl Decodable for Deposit {
         if !decoder.is_list() {
             return Err(DecoderError::RlpExpectedToBeList);
         }
-        if decoder.item_count()? != 2 {
+        if decoder.item_count()? != 3 {
             return Err(DecoderError::RlpIncorrectListLen);
         }
 
         let mut it = decoder.iter();
         let amount: U256 = decode_field(&next(&mut it)?, "amount")?;
+        let gas_price: U256 = decode_field(&next(&mut it)?, "gas_price")?;
         let receiver: H160 = decode_field(&next(&mut it)?, "receiver")?;
-        Ok(Deposit { amount, receiver })
+        Ok(Deposit {
+            amount,
+            gas_price,
+            receiver,
+        })
     }
 }
 
@@ -165,6 +153,34 @@ impl Decodable for Transaction {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct KernelUpgrade {
+    pub preimage_hash: [u8; PREIMAGE_HASH_SIZE],
+}
+
+impl Decodable for KernelUpgrade {
+    fn decode(decoder: &rlp::Rlp) -> Result<Self, DecoderError> {
+        if !decoder.is_list() {
+            return Err(DecoderError::RlpExpectedToBeList);
+        }
+        if decoder.item_count()? != 1 {
+            return Err(DecoderError::RlpIncorrectListLen);
+        }
+        let mut preimage_hash = [0u8; PREIMAGE_HASH_SIZE];
+
+        let mut it = decoder.iter();
+        decode_array(next(&mut it)?, PREIMAGE_HASH_SIZE, &mut preimage_hash)?;
+        Ok(Self { preimage_hash })
+    }
+}
+
+impl Encodable for KernelUpgrade {
+    fn rlp_append(&self, stream: &mut rlp::RlpStream) {
+        stream.begin_list(1);
+        stream.append_iter(self.preimage_hash);
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct InboxContent {
     pub kernel_upgrade: Option<KernelUpgrade>,
@@ -175,25 +191,19 @@ pub struct InboxContent {
 pub fn read_input<Host: Runtime>(
     host: &mut Host,
     smart_rollup_address: [u8; 20],
-    tezos_contracts: &TezosContracts,
-    inbox_is_empty: &mut bool,
-    delayed_bridge: &Option<ContractKt1Hash>,
-    sequencer: &Option<PublicKey>,
+    ticketer: &Option<ContractKt1Hash>,
+    admin: &Option<ContractKt1Hash>,
 ) -> Result<InputResult, Error> {
     let input = host.read_input()?;
 
     match input {
-        Some(input) => {
-            *inbox_is_empty = false;
-            Ok(InputResult::parse(
-                host,
-                input,
-                smart_rollup_address,
-                tezos_contracts,
-                delayed_bridge,
-                sequencer,
-            ))
-        }
+        Some(input) => Ok(InputResult::parse(
+            host,
+            input,
+            smart_rollup_address,
+            ticketer,
+            admin,
+        )),
         None => Ok(InputResult::NoInput),
     }
 }
@@ -259,9 +269,12 @@ fn handle_deposit<Host: Runtime>(
 
     let mut buffer_amount = [0; 32];
     deposit.amount.to_little_endian(&mut buffer_amount);
+    let mut buffer_gas_price = [0; 32];
+    deposit.gas_price.to_little_endian(&mut buffer_gas_price);
 
     let mut to_hash = vec![];
     to_hash.extend_from_slice(&buffer_amount);
+    to_hash.extend_from_slice(&buffer_gas_price);
     to_hash.extend_from_slice(&deposit.receiver.to_fixed_bytes());
     to_hash.extend_from_slice(&deposit_nonce.to_le_bytes());
 
@@ -280,40 +293,18 @@ fn handle_deposit<Host: Runtime>(
 pub fn read_inbox<Host: Runtime>(
     host: &mut Host,
     smart_rollup_address: [u8; 20],
-    tezos_contracts: TezosContracts,
-    delayed_bridge: Option<ContractKt1Hash>,
-    sequencer: Option<PublicKey>,
-) -> Result<Option<InboxContent>, anyhow::Error> {
+    ticketer: Option<ContractKt1Hash>,
+    admin: Option<ContractKt1Hash>,
+) -> Result<InboxContent, anyhow::Error> {
     let mut res = InboxContent {
         kernel_upgrade: None,
         transactions: vec![],
         sequencer_blueprints: vec![],
     };
-    // The mutable variable is used to retrieve the information of whether the
-    // inbox was empty or not. As we consume all the inbox in one go, if the
-    // variable remains true, that means that the inbox was already consumed
-    // during this kernel run.
-    let mut inbox_is_empty = true;
     loop {
-        match read_input(
-            host,
-            smart_rollup_address,
-            &tezos_contracts,
-            &mut inbox_is_empty,
-            &delayed_bridge,
-            &sequencer,
-        )? {
+        match read_input(host, smart_rollup_address, &ticketer, &admin)? {
             InputResult::NoInput => {
-                if inbox_is_empty {
-                    // If `inbox_is_empty` is true, that means we haven't see
-                    // any input in the current call of `read_inbox`. Therefore,
-                    // the inbox of this level has already been consumed.
-                    return Ok(None);
-                } else {
-                    // If it's a `NoInput` and `inbox_is_empty` is false, we
-                    // have simply reached the end of the inbox.
-                    return Ok(Some(res));
-                }
+                return Ok(res);
             }
             InputResult::Unparsable => (),
             InputResult::Input(Input::SimpleTransaction(tx)) => {
@@ -344,7 +335,11 @@ pub fn read_inbox<Host: Runtime>(
                 // simulation and all the previous and next transactions are
                 // discarded.
                 simulation::start_simulation_mode(host)?;
-                return Ok(None);
+                return Ok(InboxContent {
+                    kernel_upgrade: None,
+                    transactions: vec![],
+                    sequencer_blueprints: vec![],
+                });
             }
             InputResult::Input(Input::Info(info)) => {
                 store_last_info_per_level_timestamp(host, info.predecessor_timestamp)?;
@@ -365,17 +360,15 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use crate::parsing::RollupType;
     use crate::storage::*;
-    use tezos_crypto_rs::hash::SmartRollupHash;
-    use tezos_data_encoding::types::Bytes;
-    use tezos_ethereum::transaction::TRANSACTION_HASH_SIZE;
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-    use tezos_smart_rollup_encoding::contract::Contract;
-    use tezos_smart_rollup_encoding::inbox::ExternalMessageFrame;
-    use tezos_smart_rollup_encoding::michelson::{MichelsonBytes, MichelsonOr};
-    use tezos_smart_rollup_encoding::public_key_hash::PublicKeyHash;
-    use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
-    use tezos_smart_rollup_mock::{MockHost, TransferMetadata};
+    use mavryk_crypto_rs::hash::SmartRollupHash;
+    use mavryk_data_encoding::types::Bytes;
+    use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_encoding::contract::Contract;
+    use mavryk_smart_rollup_encoding::inbox::ExternalMessageFrame;
+    use mavryk_smart_rollup_encoding::michelson::{MichelsonBytes, MichelsonOr};
+    use mavryk_smart_rollup_encoding::public_key_hash::PublicKeyHash;
+    use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+    use mavryk_smart_rollup_mock::{MockHost, TransferMetadata};
 
     const SMART_ROLLUP_ADDRESS: [u8; 20] = [
         20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
@@ -488,15 +481,8 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)));
 
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
+        let inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
@@ -518,15 +504,8 @@ mod tests {
             host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)))
         }
 
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
+        let inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
@@ -537,6 +516,7 @@ mod tests {
     #[test]
     fn parse_valid_kernel_upgrade() {
         let mut host = MockHost::default();
+        store_kernel_upgrade_nonce(&mut host, 1).unwrap();
 
         // Prepare the upgrade's payload
         let preimage_hash: [u8; PREIMAGE_HASH_SIZE] = hex::decode(
@@ -545,18 +525,13 @@ mod tests {
         .unwrap()
         .try_into()
         .unwrap();
-        let activation_timestamp = Timestamp::from(0i64);
 
-        let kernel_upgrade = KernelUpgrade {
-            preimage_hash,
-            activation_timestamp,
-        };
-        let kernel_upgrade_payload = kernel_upgrade.rlp_bytes().to_vec();
+        let kernel_upgrade_payload = preimage_hash.to_vec();
 
         // Create a transfer from the bridge contract, that act as the
         // dictator (or administrator).
         let source =
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap();
+            PublicKeyHash::from_b58check("mv1KJgcmEfhEaYXj1tGkMjb4cM8q2iGyKA2G").unwrap();
         let contract =
             Contract::from_b58check("KT1HJphVV3LUxqZnc7YSH6Zdfd3up1DjLqZv").unwrap();
         let sender = match contract {
@@ -568,23 +543,9 @@ mod tests {
 
         let transfer_metadata = TransferMetadata::new(sender.clone(), source);
         host.add_transfer(payload, &transfer_metadata);
-        let inbox_content = read_inbox(
-            &mut host,
-            [0; 20],
-            TezosContracts {
-                ticketer: None,
-                admin: Some(sender),
-            },
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
-        let expected_upgrade = Some(KernelUpgrade {
-            preimage_hash,
-            activation_timestamp,
-        });
 
+        let inbox_content = read_inbox(&mut host, [0; 20], None, Some(sender)).unwrap();
+        let expected_upgrade = Some(KernelUpgrade { preimage_hash });
         assert_eq!(inbox_content.kernel_upgrade, expected_upgrade);
     }
 
@@ -616,14 +577,8 @@ mod tests {
             new_chunk2,
         )));
 
-        let _inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap();
+        let _inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
 
         let num_chunks = chunked_transaction_num_chunks(&mut host, &tx_hash)
             .expect("The number of chunks should exist");
@@ -665,14 +620,8 @@ mod tests {
         };
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk)));
 
-        let _inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap();
+        let _inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
 
         // The out of bounds chunk should not exist.
         let chunked_transaction_path = chunked_transaction_path(&tx_hash).unwrap();
@@ -703,14 +652,8 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk)));
 
-        let _inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap();
+        let _inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
 
         // The unknown chunk should not exist.
         let chunked_transaction_path = chunked_transaction_path(&tx_hash).unwrap();
@@ -757,15 +700,8 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk0)));
 
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
+        let inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
         assert_eq!(
             inbox_content,
             InboxContent {
@@ -779,15 +715,8 @@ mod tests {
         for input in inputs {
             host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)))
         }
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
+        let inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
 
         let expected_transactions = vec![Transaction {
             tx_hash,
@@ -840,49 +769,12 @@ mod tests {
 
         host.add_external(framed);
 
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap()
-        .unwrap();
+        let inbox_content =
+            read_inbox(&mut host, SMART_ROLLUP_ADDRESS, None, None).unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
         }];
         assert_eq!(inbox_content.transactions, expected_transactions);
-    }
-
-    #[test]
-    fn empty_inbox_returns_none() {
-        let mut host = MockHost::default();
-
-        // Even reading the inbox with only the default elements returns
-        // an empty inbox content. As we test in isolation there is nothing
-        // in the inbox, we mock it by adding a single input.
-        host.add_external(Bytes::from(vec![]));
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap();
-        assert!(inbox_content.is_some());
-
-        // Reading again the inbox returns no inbox content at all.
-        let inbox_content = read_inbox(
-            &mut host,
-            SMART_ROLLUP_ADDRESS,
-            TezosContracts::default(),
-            None,
-            None,
-        )
-        .unwrap();
-        assert!(inbox_content.is_none());
     }
 }

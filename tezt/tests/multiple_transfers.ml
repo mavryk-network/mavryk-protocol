@@ -64,7 +64,6 @@ let test_empty =
     ~__FILE__
     ~title:"Test Empty"
     ~tags:["client"; "michelson"; "multiple"; "transfers"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let giver = Constant.bootstrap1.alias in
@@ -80,7 +79,6 @@ let test_transfer_json_to_entrypoint_with_args =
     ~__FILE__
     ~title:"Test transfer JSON to entrypoint with args"
     ~tags:["client"; "michelson"; "multiple"; "transfers"; "args"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* big_map_entrypoints = big_map_entrypoints client ~protocol in
@@ -131,7 +129,6 @@ let test_multiple_transfer =
     ~__FILE__
     ~title:"Test multiple transfers"
     ~tags:["client"; "michelson"; "multiple"; "transfers"]
-    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* manager = manager client ~protocol in
@@ -143,8 +140,8 @@ let test_multiple_transfer =
     let* balance_bootstrap3 =
       Client.get_balance_for ~account:Constant.bootstrap3.alias client
     in
-    let amount1 = Tez.of_mutez_int 10_100_000 in
-    let amount3 = Tez.of_mutez_int 11_010_000 in
+    let amount1 = Tez.of_mumav_int 10_100_000 in
+    let amount3 = Tez.of_mumav_int 11_010_000 in
     let json_batch =
       `A
         [
@@ -170,7 +167,7 @@ let test_multiple_transfer =
       Client.get_balance_for ~account:Constant.bootstrap3.alias client
     in
     let source_fee =
-      if payer = source then Tez.of_mutez_int 0_000_434 else Tez.zero
+      if payer = source then Tez.of_mumav_int 0_000_434 else Tez.zero
     in
     Check.(
       (Tez.(balance_source - amount1 - amount3 - source_fee)

@@ -59,10 +59,10 @@ let apply_or_raise lazy_res f () =
   let* x = Lazy.force lazy_res in
   match x with Ok v -> f v | Error e -> failwith e
 
-(** Extends the Tezos_time_measurement_runtime.Measurement
+(** Extends the Mavryk_time_measurement_runtime.Measurement
     module to add some helpers for measurement exploitation. *)
 module Measurement = struct
-  include Tezos_time_measurement_runtime.Measurement
+  include Mavryk_time_measurement_runtime.Measurement
 
   module Key = struct
     type t = key
@@ -131,7 +131,7 @@ module Event_looper = struct
     Node.wait_for_full ?where daemon name (Daemon.nth_event n filter)
 end
 
-(** Defines several features to handle an Octez node
+(** Defines several features to handle an Mavkit node
     and wait for specific events. *)
 module Node = struct
   (** Instantiates a [Tezt.Node] with no open connection. *)
@@ -184,7 +184,7 @@ module Node = struct
           | Node.Terminated_before_event _ ->
               Test.fail
                 "time_measurement event did not occur. Please check that the \
-                 node was compiled with the tezos-time-measurement \
+                 node was compiled with the mavryk-time-measurement \
                  instrumentation backend activated. For example, run the \
                  following command:\n\
                  make enable-time-measurement"

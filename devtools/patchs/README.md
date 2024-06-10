@@ -22,7 +22,7 @@ Use only for local experiments.
 
 # Examples:
 ```shell
-./apply_proto_patch.sh  ../../scripts/yes-stresstest.patch ../../src/proto_018_Proxford  ../../src/proto_017_PtNairob
+./apply_proto_patch.sh  ../../scripts/yes-stresstest.patch ../../src/proto_001_PtAtLas  ../../src/proto_017_PtNairob
 
 devtools/patchs/apply_proto_patch.sh  devtools/patchs/deactivate_baking_pow.patch src/proto_01[5-9]_*
 

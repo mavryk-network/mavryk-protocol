@@ -27,10 +27,10 @@
     -------
     Component:    Lib_scoru_wasm
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_wasm_vm.ml
-    Subject:      Tests for the tezos-scoru-wasm library
+    Subject:      Tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Wasm_utils
 open Tztest_helper
 
@@ -58,7 +58,7 @@ let test_padding_state ~version () =
   let* tree = init_tree_with_empty_input ~version in
   let*! pvm_state =
     Encodings_util.Tree_encoding_runner.decode
-      Tezos_scoru_wasm.Wasm_pvm.pvm_state_encoding
+      Mavryk_scoru_wasm.Wasm_pvm.pvm_state_encoding
       tree
   in
   let should_continue state =

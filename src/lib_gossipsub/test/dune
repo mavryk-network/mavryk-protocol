@@ -5,19 +5,19 @@
  (name test_gossipsub)
  (libraries
   fmt
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.tezos-gossipsub
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.mavryk-gossipsub
   tezt
   qcheck-core
-  octez-libs.test-helpers)
+  mavkit-libs.test-helpers)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_gossipsub
-  -open Tezos_test_helpers))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_gossipsub
+  -open Mavryk_test_helpers))
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (action (run %{dep:./test_gossipsub.exe})))

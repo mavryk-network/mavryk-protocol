@@ -134,8 +134,8 @@ let test_default_account client ~protocol =
   in
   Log.info "Test default account transfer" ;
   let* () =
-    let tz1 = Constant.bootstrap4.Account.public_key_hash in
-    let arg = sf "\"%s\"" tz1 in
+    let mv1 = Constant.bootstrap4.Account.public_key_hash in
+    let arg = sf "\"%s\"" mv1 in
     let* () =
       Client.transfer
         ~burn_cap:(Tez.of_int 10)
@@ -145,7 +145,7 @@ let test_default_account client ~protocol =
         ~arg
         client
     in
-    let account = "tz1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5" in
+    let account = "mv1SuakBpFdG9b4twyfrSMqZzruxhpMeSrE5" in
     let arg = sf "\"%s\"" account in
     let* () =
       Client.transfer
@@ -488,7 +488,6 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "mini_scenarios"]
-        ~uses_node:false
         (fun protocol ->
           let* client = Client.init_mockup ~protocol () in
           test_function client ~protocol)

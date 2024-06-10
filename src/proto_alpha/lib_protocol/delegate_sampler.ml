@@ -166,38 +166,26 @@ let get_delegate_stake_from_staking_balance ctxt delegate staking_balance =
   Lwt.return
     (Stake_context.apply_limits ctxt staking_parameters staking_balance)
 
-let get_stakes_for_selected_index ctxt ~slashings:_ _index =
+let get_stakes_for_selected_index ctxt ~slashings index =
   let open Lwt_result_syntax in
-  let minimal_frozen_stake = Constants_storage.minimal_frozen_stake ctxt in
-  let minimal_stake = Constants_storage.minimal_stake ctxt in
-  Stake_storage.fold_on_active_delegates_with_minimal_stake_es
+  Stake_storage.fold_snapshot
     ctxt
-    ~order:`Sorted
-    ~f:(fun delegate acc ->
-      let* staking_balance =
-        Stake_storage.get_full_staking_balance ctxt delegate
+    ~index
+    ~f:(fun (delegate, staking_balance) (acc, total_stake) ->
+      let staking_balance =
+        match Signature.Public_key_hash.Map.find delegate slashings with
+        | None -> staking_balance
+        | Some percentage ->
+            Full_staking_balance_repr.apply_slashing ~percentage staking_balance
       in
-      (* This function is called after slashing has been applied at cycle end,
-         hence there is no need to apply slashing on [staking_balance] as it
-         used to be when the value was taken from a snapshot. *)
-      if
-        Full_staking_balance_repr.has_minimal_frozen_stake
-          ~minimal_frozen_stake
-          staking_balance
+      let* stake_for_cycle =
+        get_delegate_stake_from_staking_balance ctxt delegate staking_balance
+      in
+      if Stake_storage.has_minimal_stake_and_frozen_stake ctxt staking_balance
       then
-        let* stake_for_cycle =
-          get_delegate_stake_from_staking_balance ctxt delegate staking_balance
-        in
-        if
-          Stake_repr.has_minimal_stake_to_participate
-            ~minimal_stake
-            stake_for_cycle
-        then
-          let stakes, total_stake = acc in
-          let*? total_stake = Stake_repr.(total_stake +? stake_for_cycle) in
-          return ((delegate, stake_for_cycle) :: stakes, total_stake)
-        else return acc
-      else return acc)
+        let*? total_stake = Stake_repr.(total_stake +? stake_for_cycle) in
+        return ((delegate, stake_for_cycle) :: acc, total_stake)
+      else return (acc, total_stake))
     ~init:([], Stake_repr.zero)
 
 let compute_snapshot_index_for_seed ~max_snapshot_index seed =
@@ -257,6 +245,21 @@ let clear_outdated_sampling_data ctxt ~new_cycle =
       Seed_storage.remove_for_cycle ctxt outdated_cycle
 
 module For_RPC = struct
+  let delegate_baking_power_for_cycle ctxt cycle delegate =
+    let open Lwt_result_syntax in
+    let* max_snapshot_index = Stake_storage.max_snapshot_index ctxt in
+    let* seed = Seed_storage.raw_for_cycle ctxt cycle in
+    let* selected_index =
+      compute_snapshot_index_for_seed ~max_snapshot_index seed
+    in
+    let* stake =
+      Storage.Stake.Staking_balance.Snapshot.get ctxt (selected_index, delegate)
+    in
+    let* staking_parameters =
+      Delegate_staking_parameters.of_delegate ctxt delegate
+    in
+    Lwt.return @@ Stake_context.baking_weight ctxt staking_parameters stake
+
   let delegate_current_baking_power ctxt delegate =
     let open Lwt_result_syntax in
     let* stake = Storage.Stake.Staking_balance.get ctxt delegate in

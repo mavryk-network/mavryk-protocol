@@ -6,20 +6,20 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-alcotezt
+  mavkit-libs.stdlib
+  mavkit-alcotezt
   bigstring
   lwt.unix
-  octez-libs.test-helpers
+  mavkit-libs.test-helpers
   qcheck-alcotest)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Octez_alcotezt
-  -open Tezos_test_helpers)
+  -open Mavryk_stdlib
+  -open Mavkit_alcotezt
+  -open Mavryk_test_helpers)
  (modules
   test_lwt_pipe
   test_circular_buffer
@@ -37,7 +37,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

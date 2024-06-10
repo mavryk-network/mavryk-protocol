@@ -33,17 +33,13 @@
 (* --- Format/IO helper functions --- *)
 let bytes_to_string b = "0x" ^ Hex.(of_bytes b |> show)
 
-let head_hex = Bytes.of_string "head" |> bytes_to_string
-
-let tail_hex = Bytes.of_string "tail" |> bytes_to_string
-
 let chest_to_string chest =
-  Data_encoding.Binary.to_bytes_exn Tezos_crypto.Timelock.chest_encoding chest
+  Data_encoding.Binary.to_bytes_exn Mavryk_crypto.Timelock.chest_encoding chest
   |> bytes_to_string
 
 let chest_key_to_string chest_key =
   Data_encoding.Binary.to_bytes_exn
-    Tezos_crypto.Timelock.chest_key_encoding
+    Mavryk_crypto.Timelock.chest_key_encoding
     chest_key
   |> bytes_to_string
 
@@ -64,7 +60,7 @@ let time = "1024"
 let dummy_chest =
   let rng_state = Random.get_state () in
   let chest, _ck =
-    Tezos_crypto.Timelock.chest_sampler
+    Mavryk_crypto.Timelock.chest_sampler
       ~rng_state
       ~plaintext_size:100
       ~time:(int_of_string time)
@@ -201,12 +197,12 @@ let create_timelock client path time payload =
   let* chest =
     read_encoding
       (add_path path chest_file)
-      Tezos_crypto.Timelock.chest_encoding
+      Mavryk_crypto.Timelock.chest_encoding
   in
   let* creator_key =
     read_encoding
       (add_path path creator_key_file)
-      Tezos_crypto.Timelock.chest_key_encoding
+      Mavryk_crypto.Timelock.chest_key_encoding
   in
   let* _ =
     verify_chest
@@ -233,7 +229,7 @@ let open_timelock ?(verify = true) client path chest_file time =
   let* opener_key =
     read_encoding
       (add_path path opener_key_file)
-      Tezos_crypto.Timelock.chest_key_encoding
+      Mavryk_crypto.Timelock.chest_key_encoding
   in
   return (opener_key_file, opener_key)
 
@@ -255,7 +251,7 @@ let amount = Tez.zero
 let test_contract_correct_guess ~protocol () =
   let* client, receiver = originate_contract protocol "timelock_flip.tz" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
-  let str = head_hex in
+  let str = "head" in
   let* chest_file, chest, _, _ = create_timelock client path time str in
   let chest = chest_to_string chest in
   let giver = Constant.bootstrap2.alias in
@@ -264,7 +260,7 @@ let test_contract_correct_guess ~protocol () =
   let* b_init = assert_storage ~chest client receiver in
   (* bootstrap3 submits their guess *)
   let giver = Constant.bootstrap3.alias in
-  let guess = head_hex in
+  let guess = Bytes.of_string "head" |> bytes_to_string in
   let arg = "Right (Left " ^ guess ^ ")" in
   let* () = Client.transfer ~burn_cap ~amount ~giver ~receiver ~arg client in
   let* b_guess = assert_storage ~chest ~guess ~msg:"0xb0" client receiver in
@@ -280,7 +276,7 @@ let test_contract_correct_guess ~protocol () =
 let test_contract_incorrect_guess ~protocol () =
   let* client, receiver = originate_contract protocol "timelock_flip.tz" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
-  let str = head_hex in
+  let str = "head" in
   let* chest_file, chest, _, _ = create_timelock client path time str in
   let chest = chest_to_string chest in
   let giver = Constant.bootstrap2.alias in
@@ -289,7 +285,7 @@ let test_contract_incorrect_guess ~protocol () =
   let* b_init = assert_storage ~chest client receiver in
   (* bootstrap3 submits their guess *)
   let giver = Constant.bootstrap3.alias in
-  let guess = tail_hex in
+  let guess = Bytes.of_string "tail" |> bytes_to_string in
   let arg = "Right (Left " ^ guess ^ ")" in
   let* () = Client.transfer ~burn_cap ~amount ~giver ~receiver ~arg client in
   let* b_guess = assert_storage ~chest ~guess ~msg:"0xb0" client receiver in
@@ -303,12 +299,12 @@ let test_contract_incorrect_guess ~protocol () =
   unit
 
 let test_contract_guess_too_late ~protocol () =
-  let open Tezos_crypto.Timelock in
+  let open Mavryk_crypto.Timelock in
   let* client, receiver =
     originate_contract ~mockup:false protocol "timelock_flip.tz"
   in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
-  let str = head_hex in
+  let str = "head" in
   let* _chest_file, chest, _, _ = create_timelock client path time str in
   let chest_str = chest_to_string chest in
   let giver = Constant.bootstrap2.alias in
@@ -340,7 +336,7 @@ let test_contract_guess_too_late ~protocol () =
 let test_contract_error_opening ~protocol () =
   let* client, receiver = originate_contract protocol "timelock_flip.tz" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
-  let str = head_hex in
+  let str = "head" in
   let* chest_file, chest, _, _ = create_timelock client path time str in
   let chest = chest_to_string chest in
   let giver = Constant.bootstrap2.alias in
@@ -366,18 +362,17 @@ let test_contract_error_opening ~protocol () =
 
 let register ~protocols =
   List.iter
-    (fun (title, test_function, uses_node) ->
+    (fun (title, test_function) ->
       Protocol.register_test
-        ~supports:Protocol.(From_protocol (number Nairobi + 1))
+        ~supports:Protocol.(From_protocol (number Atlas))
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "timelock"]
-        ~uses_node
         (fun protocol -> test_function ~protocol ())
         protocols)
     [
-      ("Correct guess test on timelock", test_contract_correct_guess, false);
-      ("Incorrect guess test on timelock", test_contract_incorrect_guess, false);
-      ("Guess too late test on timelock", test_contract_guess_too_late, true);
-      ("Error opening test on timelock", test_contract_error_opening, false);
+      ("Correct guess test on timelock", test_contract_correct_guess);
+      ("Incorrect guess test on timelock", test_contract_incorrect_guess);
+      ("Guess too late test on timelock", test_contract_guess_too_late);
+      ("Error opening test on timelock", test_contract_error_opening);
     ]

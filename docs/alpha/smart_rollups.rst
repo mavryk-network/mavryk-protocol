@@ -107,7 +107,7 @@ kernel.
 
 There are two ways for end-users to push an external message to the
 rollups inbox: first, they can inject the dedicated Layer 1 operation
-using the Octez client (see command ``send smart rollup message
+using the Mavkit client (see command ``send smart rollup message
 <messages> from <src>``); second, they can use the batcher
 of a smart rollup node. More details can be found in the :ref:`sending_external_inbox_message`.
 
@@ -134,7 +134,7 @@ inbox.
 
 Finally, after the application of the operations of the Tezos block,
 the Layer 1 pushes one final internal message “End of
-level”. Similarly to “Start of level“, this internal message does not
+level”. Similarly to “Start of level“, these internal messages does not
 come with any payload.
 
 .. _reveal_data_channel_smart_rollups_alpha:
@@ -155,7 +155,7 @@ A rollup can do the following requests through the reveal data channel:
 
 #. **metadata requests** The rollup can request information from the
    protocol, namely the address and the origination level of the
-   rollup itself. The rollup node retrieves this information
+   rollup node itself. The rollup node retrieves this information
    through RPCs to answer the rollup.
 
 Information passing through the reveal data channel does not have to
@@ -196,7 +196,7 @@ protocol. Notice that the PVM implementation is meant for
 verification, not performance: for this reason, a rollup node does not
 normally run a PVM to process inputs but a **fast execution engine**
 (e.g., based on the Wasmer runtime for the WASM PVM in the case of the
-rollup node distributed with Octez). This fast execution engine
+rollup node distributed with Mavkit). This fast execution engine
 implements the exact same semantics as the PVM. The PVM is only ever
 used by the rollup node when it needs to produce a proof during the
 last step of the refutation mechanism.
@@ -211,16 +211,11 @@ A **commitment** claims that the interpretation of all inbox messages
 published during a given commitment period, and applied on the state of
 a parent commitment, led to a given new state by performing a given
 number of execution steps of the PVM. Execution steps are called
-**ticks** in Smart Rollups terminology.
-
-A commitment must be
-published on the Layer 1 any time after each commitment period, to have the rollup
-progress.
-A new commitment period starts right after the previous commitment period, no matter if commitments were published or not for the previous commitment period(s).
-For example, if an operator rollup node stops running for one day long, when it comes back, it will be able to resume publishing commitments for the passed periods, in chronological order.
-Indeed, a commitment is always based on a parent commitment (except
+**ticks** in Smart Rollups terminology. A commitment must be
+published on the Layer 1 after each commitment period to have the rollup
+progress. A commitment is always based on a parent commitment (except
 for the genesis commitment that is automatically published at
-origination time), so publishing a commitment fails if the parent commitment has not yet been published.
+origination time).
 
 Since the PVM is deterministic and the inputs are completely
 determined by the Layer 1 rollups inbox and the reveal channel, there
@@ -241,7 +236,7 @@ the commitment will be published with two stakes on it.
 
 A commitment is optimistically trusted but it can be refuted until it
 is said to be **cemented** (i.e., final, unchangeable). Indeed, right
-after a commitment is published, a two-week refutation period
+after a commitment is published, a two-weeks refutation period
 starts. During the refutation period, anyone noticing that a
 commitment for a given commitment period is invalid can post a
 concurrent commitment for the same commitment period to force the
@@ -368,8 +363,9 @@ Glossary
    commitment. A commitment must be published for each commitment
    period.
 
-#. **Refutation period**: When the first commitment for a commitment period is published, a refutation
-   period of two weeks starts to allow this commitment to be challenged.
+#. **Refutation period**: At the end of each commitment period, a
+   period of two weeks starts to allow any commitment related to
+   this commitment period to be challenged.
 
 #. **Staker**: An implicit account that has made a deposit on a
    commitment.

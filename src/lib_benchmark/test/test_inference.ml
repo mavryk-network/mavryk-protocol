@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 
 (* Test the inference module on a dummy problem: regress the function
 
@@ -120,5 +120,5 @@ let test () =
 let tests = [Test.tztest_assert "regression" `Quick @@ test]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("inference", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("inference", tests)]
   |> Lwt_main.run

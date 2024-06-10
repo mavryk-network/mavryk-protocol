@@ -1,24 +1,24 @@
 #!/bin/bash
-# Start/stop the Octez VDF daemon
+# Start/stop the Mavkit VDF daemon
 #
 ### BEGIN INIT INFO
-# Provides:          octez-vdf
-# Required-Start:    octez-node
+# Provides:          mavkit-vdf
+# Required-Start:    mavkit-node
 # Required-Stop:
 # Should-Start:      $network $named
 # Should-Stop:       $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: The Octez VDF daemon
-# Description:       The Octez VDF service inserts calculations into the
+# Short-Description: The Mavkit VDF daemon
+# Description:       The Mavkit VDF service inserts calculations into the
 #		     blockchain to improve randomness.
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-export DESC="octez vdf"
-NAME=octez-vdf
+export DESC="mavkit vdf"
+NAME=mavkit-vdf
 PIDDIR=/var/run/tezos
-PIDFILE=$PIDDIR/octez-vdf.pid
+PIDFILE=$PIDDIR/mavkit-vdf.pid
 export SCRIPTNAME=/etc/init.d/"$NAME"
 
 if [ -f "/lib/lsb/init-functions" ]; then
@@ -33,14 +33,15 @@ group=tezos
 logdir=/var/log/tezos
 rotateonstart=yes
 protocols="@PROTOCOLS@"
+waitfornode=yes
 
 #shellcheck disable=SC1091
-[ -r /etc/octez/node.conf ] && . /etc/octez/node.conf
+[ -r /etc/mavkit/node.conf ] && . /etc/mavkit/node.conf
 #shellcheck disable=SC1091
-[ -r /etc/octez/baker.conf ] && . /etc/octez/baker.conf
+[ -r /etc/mavkit/baker.conf ] && . /etc/mavkit/baker.conf
 
 logfile_base="${logdir}/vdf_"
-baker="/usr/bin/octez-baker"
+baker="/usr/bin/mavkit-baker"
 
 initial_checks()
 {
@@ -48,7 +49,19 @@ initial_checks()
 	chown $user:$group ${PIDDIR}
 
 	mkdir -p ${logdir}
-	chown $user:$group ${logdir}
+
+}
+
+wait_for_bootstrap()
+{
+  echo "Waiting for node to be bootstrapped" >&2
+
+  while :; do
+    /usr/bin/mavkit-client bootstrapped >/dev/null 2>&1 && break
+    echo "Node not ready - sleeping for 30 seconds" >&2
+    sleep 30
+
+  done
 
 }
 
@@ -56,8 +69,7 @@ rotate_logs ()
 {
 	if [ ${rotateonstart} = "yes" ]; then
 		for p in ${protocols}; do
-			[ -f "${logfile_base}${p}.log" ] && \
-				mv -f "${logfile_base}${p}.log" "${logfile_base}${p}.log.1"
+			mv -f "${logfile_base}${p}.log" "${logfile_base}${p}.log.1"
 		done
 	fi
 }
@@ -65,6 +77,7 @@ rotate_logs ()
 case "$1" in
 start)	initial_checks
 	rotate_logs
+  [ "$waitfornode" == "yes" ] && wait_for_bootstrap
 	for p in ${protocols}; do
 		[ ! -x "${baker}-$p" ] && continue
 		su $user -c "${baker}-$p run vdf -K >> ${logfile_base}${p}.log 2>&1 & echo \$! > ${PIDFILE}-$p"

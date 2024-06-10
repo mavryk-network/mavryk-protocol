@@ -33,7 +33,7 @@ module Skip_list : Skip_list.S
 
 module V1 : sig
   type level_proof = {
-    hash : Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
+    hash : Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t;
     level : int32;
   }
 
@@ -95,7 +95,7 @@ module V1 : sig
   (** [current_witness inbox] returns the current witness of the inbox, i.e. the
       merkelized payload hash. *)
   val current_witness :
-    t -> Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
+    t -> Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
 end
 
 include Versioned_data.S with type t = V1.t

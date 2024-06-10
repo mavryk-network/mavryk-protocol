@@ -22,7 +22,7 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-open Tezos_webassembly_interpreter
+open Mavryk_webassembly_interpreter
 open Instance
 
 module Error = struct
@@ -384,7 +384,7 @@ module Aux = struct
             let input_size = Bytes.length payload in
             let input_size =
               if
-                Tezos_webassembly_interpreter.I32.le_u
+                Mavryk_webassembly_interpreter.I32.le_u
                   max_bytes
                   (Int32.of_int input_size)
               then Int32.to_int max_bytes
@@ -543,7 +543,7 @@ module Aux = struct
       let* bytes = guard (fun () -> Durable.find_value durable key) in
       match bytes with
       | Some bytes ->
-          let size = Tezos_lazy_containers.Chunked_byte_vector.length bytes in
+          let size = Mavryk_lazy_containers.Chunked_byte_vector.length bytes in
           return (Int64.to_int32 size)
       | None -> fail Error.Store_not_a_value
 
@@ -682,7 +682,7 @@ module Aux = struct
 end
 
 module Tick_model = struct
-  include Tezos_webassembly_interpreter.Tick_model
+  include Mavryk_webassembly_interpreter.Tick_model
 
   (* Note that we cannot have negative key length since their unsigned
      representation is taken into account, and it will result in an error before
@@ -723,7 +723,7 @@ let read_input_type =
   let output_types = Types.[NumType I32Type] |> Vector.of_list in
   Types.FuncType (input_types, output_types)
 
-let read_input_name = "tezos_read_input"
+let read_input_name = "mavryk_read_input"
 
 let read_input_ticks input_size =
   Tick_model.(
@@ -747,7 +747,7 @@ let read_input =
             (durable, [value written_bytes], read_input_ticks written_bytes)
       | _ -> raise Bad_input)
 
-let write_output_name = "tezos_write_output"
+let write_output_name = "mavryk_write_output"
 
 let write_output_type =
   let input_types =
@@ -774,7 +774,7 @@ let write_output =
           Lwt.return (durable, [value read_bytes], write_output_ticks read_bytes)
       | _ -> raise Bad_input)
 
-let write_debug_name = "tezos_write_debug"
+let write_debug_name = "mavryk_write_debug"
 
 let write_debug_type =
   let input_types =
@@ -802,7 +802,7 @@ let write_debug ~implem =
           (durable, [], Tick_model.(to_z nop))
       | _ -> raise Bad_input)
 
-let store_exists_name = "tezos_store_exists"
+let store_exists_name = "mavryk_store_exists"
 
 let store_exists_type =
   let input_types =
@@ -833,7 +833,7 @@ let store_exists =
           (durable, [value r], store_exists_ticks key_length r)
       | _ -> raise Bad_input)
 
-let store_has_name = "tezos_store_has"
+let store_has_name = "mavryk_store_has"
 
 let store_has_type =
   let input_types =
@@ -889,7 +889,7 @@ let generic_store_delete ~kind =
             store_delete_ticks key_length code )
       | _ -> raise Bad_input)
 
-let store_delete_name = "tezos_store_delete"
+let store_delete_name = "mavryk_store_delete"
 
 let store_delete_type =
   let input_types =
@@ -900,13 +900,13 @@ let store_delete_type =
 
 let store_delete = generic_store_delete ~kind:Durable.Directory
 
-let store_delete_value_name = "tezos_store_delete_value"
+let store_delete_value_name = "mavryk_store_delete_value"
 
 let store_delete_value_type = store_delete_type
 
 let store_delete_value = generic_store_delete ~kind:Durable.Value
 
-let store_create_name = "tezos_store_create"
+let store_create_name = "mavryk_store_create"
 
 let store_create_type =
   let open Instance in
@@ -945,7 +945,7 @@ let store_create =
             store_create_ticks key_length res )
       | _ -> raise Bad_input)
 
-let store_value_size_name = "tezos_store_value_size"
+let store_value_size_name = "mavryk_store_value_size"
 
 let store_value_size_type =
   let open Instance in
@@ -978,7 +978,7 @@ let store_value_size =
           (durable, [value res], store_value_size_ticks key_length res)
       | _ -> raise Bad_input)
 
-let store_list_size_name = "tezos_store_list_size"
+let store_list_size_name = "mavryk_store_list_size"
 
 let store_list_size_type =
   let open Instance in
@@ -1012,7 +1012,7 @@ let store_list_size =
             store_list_size_ticks key_length (Int64.to_int32 result) )
       | _ -> raise Bad_input)
 
-let store_get_nth_key_name = "tezos_store_get_nth_key_list"
+let store_get_nth_key_name = "mavryk_store_get_nth_key_list"
 
 let store_get_nth_key_type =
   let input_types =
@@ -1061,7 +1061,7 @@ let store_get_nth_key =
           (durable, [value result], store_get_nth_key_ticks key_length result)
       | _ -> raise Bad_input)
 
-let store_get_hash_name = "tezos_internal_store_get_hash"
+let store_get_hash_name = "mavryk_internal_store_get_hash"
 
 let store_get_hash_type =
   let input_types =
@@ -1101,7 +1101,7 @@ let store_get_hash =
           (durable, [value result], store_get_hash_ticks key_length result)
       | _ -> raise Bad_input)
 
-let store_copy_name = "tezos_store_copy"
+let store_copy_name = "mavryk_store_copy"
 
 let store_copy_type =
   let open Instance in
@@ -1147,7 +1147,7 @@ let store_copy =
             store_copy_ticks from_key_length to_key_length code )
       | _ -> raise Bad_input)
 
-let store_move_name = "tezos_store_move"
+let store_move_name = "mavryk_store_move"
 
 let store_move_type =
   let open Instance in
@@ -1193,7 +1193,7 @@ let store_move =
             store_move_ticks to_key_length from_key_length code )
       | _ -> raise Bad_input)
 
-let store_read_name = "tezos_store_read"
+let store_read_name = "mavryk_store_read"
 
 let store_read_type =
   let input_types =
@@ -1244,7 +1244,7 @@ let store_read =
           (durable, [value len], store_read_ticks key_length len)
       | _ -> raise Bad_input)
 
-let reveal_preimage_name = "tezos_reveal_preimage"
+let reveal_preimage_name = "mavryk_reveal_preimage"
 
 let reveal_preimage_type =
   let input_types =
@@ -1272,7 +1272,7 @@ let reveal_preimage_parse_args memories args =
 
 let reveal_preimage = Host_funcs.Reveal_func reveal_preimage_parse_args
 
-let reveal_metadata_name = "tezos_reveal_metadata"
+let reveal_metadata_name = "mavryk_reveal_metadata"
 
 let reveal_metadata_type =
   let input_types =
@@ -1294,7 +1294,7 @@ let reveal_metadata_parse_args _memories args =
 
 let reveal_metadata = Host_funcs.Reveal_func reveal_metadata_parse_args
 
-let reveal_raw_name = "tezos_reveal"
+let reveal_raw_name = "mavryk_reveal"
 
 let reveal_raw_type =
   let input_types =
@@ -1325,7 +1325,7 @@ let reveal_raw_parse_args memories args =
 
 let reveal_raw = Host_funcs.Reveal_func reveal_raw_parse_args
 
-let store_write_name = "tezos_write_read"
+let store_write_name = "mavryk_write_read"
 
 let store_write_type =
   let input_types =
@@ -1383,17 +1383,17 @@ let lookup_opt ~version name =
   let v1_and_above ty name =
     match version with
     | Wasm_pvm_state.V0 -> None
-    | V1 | V2 | V3 | V4 -> Some (ExternFunc (HostFunc (ty, name)))
+    | V1 | V2 | V3 -> Some (ExternFunc (HostFunc (ty, name)))
   in
   let v2_and_above ty name =
     match version with
     | Wasm_pvm_state.V0 | V1 -> None
-    | V2 | V3 | V4 -> Some (ExternFunc (HostFunc (ty, name)))
+    | V2 | V3 -> Some (ExternFunc (HostFunc (ty, name)))
   in
   let v3_and_above ty name =
     match version with
     | Wasm_pvm_state.V0 | V1 | V2 -> None
-    | V3 | V4 -> Some (ExternFunc (HostFunc (ty, name)))
+    | V3 -> Some (ExternFunc (HostFunc (ty, name)))
   in
   match name with
   | "read_input" ->
@@ -1505,13 +1505,6 @@ let registry_V3 ~write_debug =
 
 let registry_V3_noop = registry_V3 ~write_debug:Noop
 
-let base_V4 = base_V3
-
-let registry_V4 ~write_debug =
-  Host_funcs.(base_V4 |> with_write_debug ~write_debug |> construct)
-
-let registry_V4_noop = registry_V4 ~write_debug:Noop
-
 let registry ~version ~write_debug =
   (* We need to keep a top-level definition for the [Noop] case to be able to
      run the tests related to the tick models. Besides, by doing so, we should
@@ -1526,8 +1519,6 @@ let registry ~version ~write_debug =
   | Wasm_pvm_state.V2, _ -> registry_V2 ~write_debug
   | Wasm_pvm_state.V3, Noop -> registry_V3_noop
   | Wasm_pvm_state.V3, _ -> registry_V3 ~write_debug
-  | Wasm_pvm_state.V4, Noop -> registry_V4_noop
-  | Wasm_pvm_state.V4, _ -> registry_V4 ~write_debug
 
 module Internal_for_tests = struct
   let metadata_size = Int32.to_int metadata_size

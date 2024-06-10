@@ -86,19 +86,19 @@ let hex ?protocol ?signature t client =
   match signature with
   | None -> return (`Hex raw)
   | Some signature ->
-      let (`Hex signature) = Tezos_crypto.Signature.to_hex signature in
+      let (`Hex signature) = Mavryk_crypto.Signature.to_hex signature in
       return (`Hex (raw ^ signature))
 
 let sign ?protocol ({kind; signer; _} as t) client =
   match signer with
-  | None -> return Tezos_crypto.Signature.zero
+  | None -> return Mavryk_crypto.Signature.zero
   | Some signer ->
       let watermark =
         match kind with
         | Consensus {kind; chain_id} ->
             let chain_id =
-              Tezos_crypto.Hashed.Chain_id.to_string
-                (Tezos_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
+              Mavryk_crypto.Hashed.Chain_id.to_string
+                (Mavryk_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
             in
             let prefix =
               match kind with
@@ -106,10 +106,10 @@ let sign ?protocol ({kind; signer; _} as t) client =
               | Attestation -> "\x13"
               | Dal_attestation -> "\x14"
             in
-            Tezos_crypto.Signature.Custom
+            Mavryk_crypto.Signature.Custom
               (Bytes.cat (Bytes.of_string prefix) (Bytes.of_string chain_id))
         | Anonymous | Voting | Manager ->
-            Tezos_crypto.Signature.Generic_operation
+            Mavryk_crypto.Signature.Generic_operation
       in
       let* hex = hex ?protocol t client in
       let bytes = Hex.to_bytes hex in
@@ -127,17 +127,17 @@ let byte_size ?protocol ?signature t client =
   let* hex = signed_hex ?protocol ?signature t client in
   return (Bytes.length (Hex.to_bytes hex))
 
-module Tezos_operation = Tezos_base.TzPervasives.Operation
+module Mavryk_operation = Mavryk_base.TzPervasives.Operation
 
 let hash t client : [`OpHash of string] Lwt.t =
   let* signature = sign t client in
   let* (`Hex hex) = hex ~signature t client in
   let bytes = Hex.to_bytes (`Hex hex) in
   let op =
-    Data_encoding.Binary.of_bytes_exn Tezos_base.Operation.encoding bytes
+    Data_encoding.Binary.of_bytes_exn Mavryk_base.Operation.encoding bytes
   in
-  let hash = Tezos_base.Operation.hash op in
-  return (`OpHash (Tezos_crypto.Hashed.Operation_hash.to_b58check hash))
+  let hash = Mavryk_base.Operation.hash op in
+  return (`OpHash (Mavryk_crypto.Hashed.Operation_hash.to_b58check hash))
 
 let spawn_inject ?(force = false) ?protocol ?signature t client =
   let* (`Hex op) = signed_hex ?protocol ?signature t client in
@@ -219,7 +219,7 @@ let make_run_operation_input ?chain_id t client =
     | None -> Client.RPC.call client (RPC.get_chain_chain_id ())
   in
   (* The [run_operation] RPC does not check the signature. *)
-  let signature = Tezos_crypto.Signature.zero in
+  let signature = Mavryk_crypto.Signature.zero in
   return
     (`O
       [
@@ -229,7 +229,7 @@ let make_run_operation_input ?chain_id t client =
               ("branch", `String t.branch);
               ("contents", t.contents);
               ( "signature",
-                `String (Tezos_crypto.Signature.to_b58check signature) );
+                `String (Mavryk_crypto.Signature.to_b58check signature) );
             ] );
         ("chain_id", `String chain_id);
       ])
@@ -241,7 +241,7 @@ let make_preapply_operation_input ~protocol ~signature t =
       ("protocol", `String protocol);
       ("branch", `String t.branch);
       ("contents", t.contents);
-      ("signature", `String (Tezos_crypto.Signature.to_b58check signature));
+      ("signature", `String (Mavryk_crypto.Signature.to_b58check signature));
     ]
 
 module Consensus = struct
@@ -254,12 +254,7 @@ module Consensus = struct
         round : int;
         block_payload_hash : string;
       }
-    | Dal_attestation of {
-        attestation : bool array;
-        level : int;
-        round : int;
-        slot : int;
-      }
+    | Dal_attestation of {attestation : bool array; level : int; slot : int}
 
   let consensus ~use_legacy_name ~kind ~slot ~level ~round ~block_payload_hash =
     Consensus {kind; use_legacy_name; slot; level; round; block_payload_hash}
@@ -268,8 +263,8 @@ module Consensus = struct
 
   let preattestation = consensus ~kind:Preattestation
 
-  let dal_attestation ~attestation ~level ~round ~slot =
-    Dal_attestation {attestation; level; round; slot}
+  let dal_attestation ~attestation ~level ~slot =
+    Dal_attestation {attestation; level; slot}
 
   let kind_to_string kind use_legacy_name =
     let name = function true -> "endorsement" | false -> "attestation" in
@@ -289,7 +284,7 @@ module Consensus = struct
             ("round", Ezjsonm.int round);
             ("block_payload_hash", Ezjsonm.string block_payload_hash);
           ]
-    | Dal_attestation {attestation; level; round; slot} ->
+    | Dal_attestation {attestation; level; slot} ->
         let string_of_bool_vector attestation =
           let aux (acc, n) b =
             let bit = if b then 1 else 0 in
@@ -302,7 +297,6 @@ module Consensus = struct
             ("kind", Ezjsonm.string "dal_attestation");
             ("attestation", Ezjsonm.string (string_of_bool_vector attestation));
             ("level", Ezjsonm.int level);
-            ("round", Ezjsonm.int round);
             ("slot", Ezjsonm.int slot);
           ]
 
@@ -365,8 +359,8 @@ module Anonymous = struct
     | Double_consensus_evidence of {
         kind : double_consensus_evidence_kind;
         use_legacy_name : bool;
-        op1 : t * Tezos_crypto.Signature.t;
-        op2 : t * Tezos_crypto.Signature.t;
+        op1 : t * Mavryk_crypto.Signature.t;
+        op2 : t * Mavryk_crypto.Signature.t;
       }
 
   let double_consensus_evidence ~kind ~use_legacy_name
@@ -403,7 +397,7 @@ module Anonymous = struct
       [
         ("branch", `String op.branch);
         ("operations", List.hd (Ezjsonm.get_list Fun.id op.contents));
-        ("signature", `String (Tezos_crypto.Signature.to_b58check signature));
+        ("signature", `String (Mavryk_crypto.Signature.to_b58check signature));
       ]
 
   let json = function
@@ -487,12 +481,12 @@ module Manager = struct
 
   let json_of_commitment commitment =
     Data_encoding.Json.construct
-      Tezos_crypto_dal.Cryptobox.Commitment.encoding
+      Mavryk_crypto_dal.Cryptobox.Commitment.encoding
       commitment
 
   let json_of_commitment_proof proof =
     Data_encoding.Json.construct
-      Tezos_crypto_dal.Cryptobox.Commitment_proof.encoding
+      Mavryk_crypto_dal.Cryptobox.Commitment_proof.encoding
       proof
 
   let get_next_counter ?(source = Constant.bootstrap1) client =
@@ -584,8 +578,8 @@ module Manager = struct
     | Origination of {code : JSON.u; storage : JSON.u; balance : int}
     | Dal_publish_slot_header of {
         index : int;
-        commitment : Tezos_crypto_dal.Cryptobox.commitment;
-        proof : Tezos_crypto_dal.Cryptobox.commitment_proof;
+        commitment : Mavryk_crypto_dal.Cryptobox.commitment;
+        proof : Mavryk_crypto_dal.Cryptobox.commitment_proof;
       }
     | Delegation of {delegate : Account.key}
     | Sc_rollup_refute of {
@@ -786,7 +780,7 @@ let gas_limit_exceeded =
 
 let conflict_error_with_needed_fee =
   rex
-    {|The operation ([\w\d]+) cannot be added because the mempool already contains a conflicting operation\. To replace the latter, this particular operation would need a total fee of at least ([\d]+) mutez\.|}
+    {|The operation ([\w\d]+) cannot be added because the mempool already contains a conflicting operation\. To replace the latter, this particular operation would need a total fee of at least ([\d]+) mumav\.|}
 
 let conflict_error_no_possible_fee =
   rex
@@ -794,7 +788,7 @@ let conflict_error_no_possible_fee =
 
 let rejected_by_full_mempool_with_needed_fee =
   rex
-    {|Operation ([\w\d]+) has been rejected because the mempool is full\. This specific operation would need a total fee of at least ([\d]+) mutez to be considered and propagated by the mempool of this particular node right now\. Note that if the node receives operations with a better fee over gas limit ratio in the future, the operation may be rejected even with the indicated fee, or it may be successfully injected but removed at a later date\.|}
+    {|Operation ([\w\d]+) has been rejected because the mempool is full\. This specific operation would need a total fee of at least ([\d]+) mumav to be considered and propagated by the mempool of this particular node right now\. Note that if the node receives operations with a better fee over gas limit ratio in the future, the operation may be rejected even with the indicated fee, or it may be successfully injected but removed at a later date\.|}
 
 let rejected_by_full_mempool_no_possible_fee =
   rex

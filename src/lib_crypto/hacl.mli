@@ -20,4 +20,4 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *   SOFTWARE. *)
 
-include module type of Tezos_hacl.Hacl
+include module type of Mavryk_hacl.Hacl
