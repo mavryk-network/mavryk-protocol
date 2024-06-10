@@ -51,7 +51,7 @@ Getting static binaries
 -----------------------
 
 You can get static Linux binaries from the
-`latest release in the mavryk-packaging repository <https://github.com/serokell/mavryk-packaging/releases/latest>`__.
+`latest release in the tezos-packaging repository <https://github.com/serokell/tezos-packaging/releases/latest>`__.
 
 This repository provides static binaries for x86_64 and arm64 architectures. Since these binaries
 are static, they can be used on any Linux distribution without any additional prerequisites.

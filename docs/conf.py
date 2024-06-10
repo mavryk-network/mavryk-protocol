@@ -239,8 +239,8 @@ linkcheck_allowed_redirects = dict(
         ),
         (r'https://ocaml\.org/.*', r'https://v2\.ocaml\.org/.*'),
         (
-            r'https://github\.com/serokell/mavryk-packaging/releases/latest',
-            r'https://github\.com/serokell/mavryk-packaging/releases/tag/.*',
+            r'https://github\.com/serokell/tezos-packaging/releases/latest',
+            r'https://github\.com/serokell/tezos-packaging/releases/tag/.*',
         ),
         (
             r'https://www.reddit.com/r/tezos/',

@@ -8,10 +8,10 @@ export HOME=$(pwd)
 # Latest v* tag will be used as the version.
 git fetch --tags
 
-git clone "$MAVRYK_PACKAGING_REPO" mavryk-packaging
-cp -R "$MAVRYK_BINARIES" mavryk-packaging/binaries
+git clone "$MAVRYK_PACKAGING_REPO" tezos-packaging
+cp -R "$MAVRYK_BINARIES" tezos-packaging/binaries
 
-cd mavryk-packaging
+cd tezos-packaging
 git checkout "$MAVRYK_PACKAGING_VERSION"
 
 cat <<DOC > meta.json
