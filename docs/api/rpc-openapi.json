@@ -1207,10 +1207,10 @@
                           ]
                         },
                         {
-                          "title": "ghostnet",
+                          "title": "basenet",
                           "type": "string",
                           "enum": [
-                            "ghostnet"
+                            "basenet"
                           ]
                         },
                         {

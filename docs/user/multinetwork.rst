@@ -36,9 +36,9 @@ option for selecting a :ref:`test network<test-networks>` when you initialize yo
 
 For instance, to run on Basenet::
 
-  mavkit-node config init --data-dir ~/mavryk-ghostnet --network ghostnet
-  mavkit-node identity generate --data-dir ~/mavryk-ghostnet
-  mavkit-node run --data-dir ~/mavryk-ghostnet
+  mavkit-node config init --data-dir ~/mavryk-basenet --network basenet
+  mavkit-node identity generate --data-dir ~/mavryk-basenet
+  mavkit-node run --data-dir ~/mavryk-basenet
 
 .. note::
    Once initialized, the node remembers its network settings on subsequent runs
@@ -56,7 +56,7 @@ the following built-in networks:
 
 - ``sandbox``
 
-- ``ghostnet``
+- ``basenet``
 
 If you did not initialize your node configuration, or if your configuration
 file contains no ``network`` field, the node assumes you want to run Mainnet.
@@ -64,7 +64,7 @@ You can use the ``--network`` option with ``mavkit-node run`` to make sure
 your node runs on the expected network. For instance, to make sure that
 it runs on Basenet::
 
-  mavkit-node run --data-dir ~/mavryk-ghostnet --network ghostnet
+  mavkit-node run --data-dir ~/mavryk-basenet --network basenet
 
 This command will fail with an error if the configured network is not Basenet.
 The node also displays the chain name (such as ``MAVRYK_MAINNET``) when it starts.
@@ -215,7 +215,7 @@ to connect to Basenet, it will contain something like::
 
   {
     "p2p": {},
-    "network": "ghostnet"
+    "network": "basenet"
   }
 
 For Mainnet, it would contain ``mainnet``, or nothing as this is actually the default.
@@ -227,7 +227,7 @@ overrides may be added. Because the configuration file only contains the name
 of the network and not its parameters, it will automatically use the updated values.
 
 However, if you use explicit configuration, the configuration file will
-no longer contain an alias such as ``mainnet`` or ``ghostnet``. Instead,
+no longer contain an alias such as ``mainnet`` or ``basenet``. Instead,
 it will explicitly contain the list of bootstrap peers, user-activated upgrades
 and user-activated protocol overrides that you specify. This means that when
 you update your node, the updated values will not be used.

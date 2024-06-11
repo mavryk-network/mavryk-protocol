@@ -43,7 +43,7 @@ test network until either P is rejected or activated. If P is rejected, P-net wi
 end, unless P is immediately re-submitted for injection. If, however,
 P is activated, the previous test network will end and P-net will continue on its own.
 
-.. _ghostnet:
+.. _basenet:
 
 Basenet
 ========
@@ -60,6 +60,8 @@ An external description of the various test networks available can be found on h
 
 Old Networks
 ============
+
+.. _atlasnet:
 
 Atlasnet
 ---------
