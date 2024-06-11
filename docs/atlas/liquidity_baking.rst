@@ -6,7 +6,7 @@ Liquidity baking incentivizes large amounts of decentralized liquidity provision
 Contracts
 ~~~~~~~~~
 
-During activation of Granada protocol, a constant product market making (CPMM) Michelson contract has been deployed on the chain with address ``KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5`` as well as an associated liquidity token contract (LQT) with address ``KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo``.
+During activation of Atlas protocol, a constant product market making (CPMM) Michelson contract has been deployed on the chain with address ``KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5`` as well as an associated liquidity token contract (LQT) with address ``KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo``.
 
 .. warning::
 

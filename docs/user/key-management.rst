@@ -1,7 +1,7 @@
 Key Management
 ==============
 
-Securely managing keys is of utmost importance in any blockchain, including Tezos, because keys are used to sign sensitive operations such as transfers of valuable assets (tez, FA tokens, tickets, ...) or baking operations.
+Securely managing keys is of utmost importance in any blockchain, including Mavryk, because keys are used to sign sensitive operations such as transfers of valuable assets (tez, FA tokens, tickets, ...) or baking operations.
 
 The Mavkit tool suite offers several solutions to store your private keys safely and use them securely for signing operations.
 However, these solutions are **not** enabled by default, so you have to turn them on, as explained in this tutorial.
@@ -37,7 +37,7 @@ Ledger support
 
 It is possible and advised to use a hardware wallet to securely store and manage your
 keys. The Mavkit client supports Ledger Nano devices provided that they have
-a Tezos app installed.
+a Mavryk app installed.
 The apps were developed by `Obsidian Systems <https://obsidian.systems>`_ and they provide a comprehensive
 `tutorial on how to install it.
 <https://github.com/obsidiansystems/ledger-app-tezos>`_
@@ -51,15 +51,15 @@ Live
 On Linux make sure you correctly set up your ``udev`` rules as explained
 `here <https://github.com/obsidiansystems/ledger-app-tezos#udev-rules-linux-only>`_.
 Connect your Ledger, unlock it and go to the dashboard.
-In Ledger Live install ``Tezos Wallet`` from the applications list and open it on the
+In Ledger Live install ``Mavryk Wallet`` from the applications list and open it on the
 device.
 
 
-Tezos Wallet app
+Mavryk Wallet app
 ~~~~~~~~~~~~~~~~
 
 Now on the Mavkit client we can import the keys (make sure the device is
-in the Tezos Wallet app)::
+in the Mavryk Wallet app)::
 
    ./mavkit-client list connected ledgers
 
@@ -80,10 +80,10 @@ during an operation the device will prompt you to confirm when it's
 time to sign an operation.
 
 
-Tezos Baking app
+Mavryk Baking app
 ~~~~~~~~~~~~~~~~
 
-In Ledger Live (with Developer Mode enabled), there is also a ``Tezos Baking``
+In Ledger Live (with Developer Mode enabled), there is also a ``Mavryk Baking``
 app which allows a delegate to sign automatically (i.e., there is no need
 to manually sign every block or (pre-)attestation).
 Of course, the application is restricted to only sign baking operations; it never signs a transfer, for example.
@@ -97,7 +97,7 @@ use it on another network you might need to reset this level with the command::
 
    mavkit-client setup ledger to bake for my_ledger
 
-More details can be found on the `Tezos Ledger app
+More details can be found on the `Mavryk Ledger app
 <https://github.com/obsidiansystems/ledger-app-tezos>`_.
 
 .. _signer:
@@ -130,7 +130,7 @@ In the case of blocks or consensus operations for example, this format is instan
 
     <magic_byte><chain_id><block|consensus_operation>
 
-Starting with Mavkit v12 (supporting the Ithaca protocol), consensus operations also include :ref:`preattestations <quorum>`. The magic byte distinguishes pre-Ithaca messages from (post-)Ithaca messages, as follows:
+Consensus operations also include :ref:`preattestations <quorum>`. The magic byte distinguishes messages, as follows:
 
 .. list-table::
    :widths: 55 25
@@ -241,7 +241,7 @@ First we create a new key on the *vps* and then import it as an
 authorized key on *home* where it is stored under
 ``.mavkit-signer/authorized_keys`` (similarly to ``ssh``).
 Note that this key is only used to authenticate the client to the
-signer and it is not used as a Tezos account.
+signer and it is not used as a Mavryk account.
 
 ::
 
@@ -345,12 +345,12 @@ Getting keys for fundraiser accounts
 If you took part in the fundraiser but didn't yet activate your account,
 it is still possible to activate your Mainnet account on https://check.tezos.com/.
 This feature is also included in some wallets.
-If you have any questions or issues, refer to that page or to the `Tezos
+If you have any questions or issues, refer to that page or to the `Mavryk
 Foundation <https://tezos.foundation/>`_ for support.
 
 You may also use ``mavkit-client`` to activate your account, but **be
 warned that you should have
-a very good understanding of key management in Tezos and be familiar
+a very good understanding of key management in Mavryk and be familiar
 with the command-line.**
 The first step is to recover your private key using the following
 command which will ask for:
@@ -368,7 +368,7 @@ your secret key and it asks you to create a new password in order to store your
 secret key on disk encrypted.
 
 If you haven't already activated your account on the website, you can
-use this command with the activation code obtained from the Tezos
+use this command with the activation code obtained from the Mavryk
 foundation.
 
 ::

@@ -1,7 +1,7 @@
 The consensus algorithm
 =======================
 
-This document provides a high-level description of Tenderbake, the Tezos
+This document provides a high-level description of Tenderbake, the Mavryk
 :doc:`proof-of-stake<proof_of_stake>` consensus algorithm.
 
 History
@@ -10,7 +10,7 @@ History
 Before Tenderbake, there was
 `Emmy* <https://gitlab.com/tezos/tzip/-/blob/1728fcfe0ac90463ef15e6a994b6d6a15357e373/drafts/current/draft_emmy-star.md>`_,
 a Nakamoto-style consensus consisting of a series of improvements of the one in
-the `Tezos whitepaper <https://tezos.com/whitepaper.pdf>`_.
+the `Mavryk whitepaper <https://tezos.com/whitepaper.pdf>`_.
 
 Emmy*, like any Nakamoto-style consensus algorithm (such as `Bitcoin
 <https://bitcoin.org/bitcoin.pdf>`_ or `Ouroboros
@@ -34,15 +34,15 @@ The starting point for Tenderbake is
 `Tendermint <https://arxiv.org/abs/1807.04938>`_, the first classic-style algorithm
 for blockchains.
 
-Tenderbake adapts Tendermint to the Tezos blockchain, but the adjustments
+Tenderbake adapts Tendermint to the Mavryk blockchain, but the adjustments
 required are
 `substantive <https://research-development.nomadic-labs.com/a-look-ahead-to-tenderbake.html#the-mavryk-architecture>`_:
 
-* Tenderbake is tailored to match the Tezos architecture by using only
-  communication primitives and network assumptions which Tezos supports.
+* Tenderbake is tailored to match the Mavryk architecture by using only
+  communication primitives and network assumptions which Mavryk supports.
 * Tenderbake makes weaker network assumptions than Tendermint, at the price of
   adding the extra assumption that participants have loosely synchronized clocks
-  — which is fine, because Tezos already uses them.
+  — which is fine, because Mavryk already uses them.
 
 The design of Tenderbake and its rationale are described at
 length in the `technical report <https://arxiv.org/abs/2001.11965>`_ and in a

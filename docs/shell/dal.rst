@@ -5,9 +5,9 @@ Overview
 ^^^^^^^^
 
 The *Data-Availability Layer* (DAL) enables users to publish blobs
-of data outside of the Tezos Layer 1 (L1) blocks. A blob (for “binary
+of data outside of the Mavryk Layer 1 (L1) blocks. A blob (for “binary
 large object”) is a piece of data in binary form. While the primary
-use case for these blobs is to store Layer 2 (L2) operations for Tezos
+use case for these blobs is to store Layer 2 (L2) operations for Mavryk
 smart rollups, it is important to note that the DAL is more generic
 and could be used for other use cases in the future.
 
@@ -28,7 +28,7 @@ however, still controlled by the economic protocol. The economic
 protocol also plays a crucial role in determining the availability of
 those data through the participation of bakers.
 
-Similarly to the Tezos L1, the DAL is permissionless, enabling any
+Similarly to the Mavryk L1, the DAL is permissionless, enabling any
 user to effectively contribute data to it, and allowing any smart
 rollup kernel or smart rollup operator to access this data.
 
@@ -154,7 +154,7 @@ Regarding peer discovery, the current implementation of the DAL relies on gossip
 
 .. note::
 
-	The current topic structure in the DAL for Tezos may be revised in a future update. Presently, topics include the bakers’ address (public key hash), which leads to a potentially unbounded number of topics over time. Another approach under consideration involves using a ``(slot_index, shard_index)`` pair, offering a more scalable solution in the long run, when the number of attesters surpasses the number of slots.
+	The current topic structure in the DAL for Mavryk may be revised in a future update. Presently, topics include the bakers’ address (public key hash), which leads to a potentially unbounded number of topics over time. Another approach under consideration involves using a ``(slot_index, shard_index)`` pair, offering a more scalable solution in the long run, when the number of attesters surpasses the number of slots.
 
 .. warning::
 

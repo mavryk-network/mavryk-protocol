@@ -34,8 +34,8 @@ and a minimalistic Michelson REPL built on top of `mavkit-client`
 
 Information about using some of the scripts above can be found as follows:
 
-* `instrument_dune_bisect.sh`: See <https://tezos.gitlab.io/developer/testing.html>.
-* `update_opam_repo.sh`: see <https://tezos.gitlab.io/developer/contributing-adding-a-new-opam-dependency.html>
-* `version.sh`: see <https://tezos.gitlab.io/introduction/howtoget.html> and <https://tezos.gitlab.io/developer/contributing-adding-a-new-opam-dependency.html>
-* `yes-wallet/`: see <http://tezos.gitlab.io/developer/proposal_testing.html>
-* `user_activated_upgrade.sh`: see <http://tezos.gitlab.io/developer/proposal_testing.html>
+* `instrument_dune_bisect.sh`: See <https://protocol.mavryk.org/developer/testing.html>.
+* `update_opam_repo.sh`: see <https://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html>
+* `version.sh`: see <https://protocol.mavryk.org/introduction/howtoget.html> and <https://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html>
+* `yes-wallet/`: see <http://protocol.mavryk.org/developer/proposal_testing.html>
+* `user_activated_upgrade.sh`: see <http://protocol.mavryk.org/developer/proposal_testing.html>

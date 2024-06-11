@@ -37,7 +37,7 @@ components described in the subsequent subsection.
 
 For a high-level overview of the Tezos economic protocol implementation (in the
 `lib_protocol/` subdirectory), see
-<https://tezos.gitlab.io/developer/entering_alpha.html>
+<https://protocol.mavryk.org/developer/entering_alpha.html>
 
 ### Other components
 
@@ -65,4 +65,4 @@ The rest of the implementation is structured in the following subdirectories:
 -->
 
 The main API of the protocol is:
-https://tezos.gitlab.io/api/odoc/_html/mavryk-protocol-alpha
+https://protocol.mavryk.org/api/odoc/_html/mavryk-protocol-alpha

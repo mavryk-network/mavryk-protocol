@@ -1,7 +1,7 @@
 The Amendment (and Voting) Process
 ==================================
 
-In the Tezos blockchain, the *economic protocol* can be amended. Specifically,
+In the Mavryk blockchain, the *economic protocol* can be amended. Specifically,
 there is an on-chain mechanism to propose changes to the economic protocol, to
 vote for-or-against these proposed changes, and, depending on the result of the
 vote, to activate these changes or not.
@@ -329,8 +329,8 @@ Further External Resources
 
 Further details and explanations on the voting procedure can be found at:
 
-- `Governance on-chain <https://opentezos.com/mavryk-basics/governance-on-chain>`_ on Open Tezos
-- `Tezos Governance <https://www.tezosagora.org/learn#an-introduction-to-mavryk-governance>`_ on Tezos Agora.
+- `Governance on-chain <https://opentezos.com/mavryk-basics/governance-on-chain>`_ on Open Mavryk
+- `Mavryk Governance <https://www.tezosagora.org/learn#an-introduction-to-mavryk-governance>`_ on Mavryk Agora.
 
 For more details on the client commands refer to the manual at
 :ref:`client_manual_alpha`.

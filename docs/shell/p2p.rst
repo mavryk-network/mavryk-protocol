@@ -2,7 +2,7 @@ The peer-to-peer layer
 ======================
 
 This document explains the inner workings of the peer-to-peer layer of
-the Tezos shell. This part is in charge of establishing and
+the Mavryk shell. This part is in charge of establishing and
 maintaining network connections with other nodes (gossip).
 
 The P2P layer is instantiated by the node. It is parameterized by the

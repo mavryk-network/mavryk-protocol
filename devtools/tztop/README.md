@@ -53,7 +53,7 @@ Or, for editor integrations:
 dune exec -- tztop DIR -emacs
 ```
 
-See [Proposal Testing](https://tezos.gitlab.io/developer/proposal_testing.html)
+See [Proposal Testing](https://protocol.mavryk.org/developer/proposal_testing.html)
 page for a sample code to run in `tztop`.
 
 ## Troubleshooting

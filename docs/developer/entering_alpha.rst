@@ -35,7 +35,7 @@ The proof-of-stake algorithm, as described in the white paper, relies on
 an abstract state of the ledger, that is read and transformed during
 validation of a block.
 
-Due to the polymorphic nature of Tezos, the ledger’s state (that we call
+Due to the polymorphic nature of Mavryk, the ledger’s state (that we call
 **context** in the code), cannot be specific to protocol Alpha’s need.
 The proof-of-stake is thus implemented over a generic key-value store
 whose keys and associated binary data must implement the abstract

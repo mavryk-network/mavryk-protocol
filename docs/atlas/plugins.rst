@@ -47,7 +47,7 @@ Filters are implemented as a node plugin and a specific filter is
 delivered with each protocol version. When the chain switches to a new
 protocol, the node installs its corresponding filters, *in lieu of*
 the filters of the previous protocol. Notice that prevalidator filters are not
-mandatory, their absence does not break the Tezos blockchain protocol.
+mandatory, their absence does not break the Mavryk blockchain protocol.
 
 The interface of the prevalidator plugin is described at the :package-api:`mempool plugin API
 <mavkit-libs/Mavryk_base/Mempool/index.html>`.

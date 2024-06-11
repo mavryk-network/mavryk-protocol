@@ -20,7 +20,7 @@ from the blockchain.
 -  `Off-chain views <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-16/tzip-16.md#semantics-of-off-chain-views>`__ cannot be called from smart contracts but only by off-chain tools such as wallets.
 -  `Legacy on-chain views <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-5/tzip-5.md#view-entrypoints>`__ are a conventional way of making some
    contract data available. Their purpose is subsumed by that of the on-chain
-   views defined here, but they are still referenced in FA1.2 and FA2 standards which predate the introduction of native on-chain views in the Hangzhou amendment.
+   views defined here, but they are still referenced in FA1.2 and FA2 standards which predate the introduction of native on-chain views in the Atlas amendment.
 
 In the following, the term "view" denotes the modern notion of on-chain views, described in this page.
 

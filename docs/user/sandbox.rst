@@ -1,7 +1,7 @@
 Sandboxed mode
 --------------
 
-To run a ‘localhost-only’ instance of a Tezos network, we provide two
+To run a ‘localhost-only’ instance of a Mavryk network, we provide two
 helper scripts:
 
 -  ``./src/bin_node/mavkit-sandboxed-node.sh``

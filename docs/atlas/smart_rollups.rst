@@ -3,21 +3,21 @@ Smart Optimistic Rollups
 
 A **rollup** is a processing unit that receives, retrieves and
 interprets input messages to update its local state and to produce
-output messages targetting the Tezos blockchain. In this
+output messages targetting the Mavryk blockchain. In this
 documentation, we will generally refer to the rollup under
-consideration as the Layer 2 on top of the Tezos blockchain,
+consideration as the Layer 2 on top of the Mavryk blockchain,
 considered as the Layer 1.
 
-Rollups are a permissionless scaling solution for the Tezos
+Rollups are a permissionless scaling solution for the Mavryk
 blockchain.  Indeed, anyone can originate and operate one or more
-rollups, allowing to increase the throughput of the Tezos blockchain,
+rollups, allowing to increase the throughput of the Mavryk blockchain,
 (almost) arbitrarily.
 
 The purpose of this documentation is to provide an overview of the terminology and basic principles of smart rollups.
 In the :doc:`../shell/smart_rollup_node`, we provide a complete tour
 of smart rollups related workflows and reference documentation for the development of a WASM kernel.
 
-The integration of these rollups in the Tezos protocol is
+The integration of these rollups in the Mavryk protocol is
 *optimistic*: this means that when a participant publishes a claim
 about the state of the rollup, this claim is *a priori*
 trusted. However, a refutation mechanism allows anyone to economically
@@ -25,13 +25,13 @@ punish someone who has published an invalid claim. Therefore, thanks
 to the refutation mechanism, a single honest participant is enough to
 guarantee that the input messages are correctly interpreted.
 
-In the Tezos protocol, the subsystem of smart rollups is generic with
+In the Mavryk protocol, the subsystem of smart rollups is generic with
 respect to the syntax and the semantics of the input messages. More
 precisely, the originator of a smart rollup provides a program named a
-**kernel** (in one of the languages supported by Tezos) responsible
+**kernel** (in one of the languages supported by Mavryk) responsible
 for interpreting input messages. During the refutation mechanism, the
 execution of this kernel is handled by a **Proof-generating Virtual
-Machine (PVM)** for this language, provided by the Tezos protocol,
+Machine (PVM)** for this language, provided by the Mavryk protocol,
 which allows to prove that the result of applying an input message to
 the rollup context is correct. The rest of the time, any VM
 implementation of the chosen language can be used to run the smart
@@ -44,7 +44,7 @@ targeting the Layer 1 following a user-defined logic. Anyone can
 develop a kernel or reuse existing kernels. A typical use case of WASM
 rollups is to deploy a kernel that implements the Ethereum Virtual
 Machine (EVM) and to get as a result an EVM-compatible Layer 2 running
-on top of the Tezos blockchain. WASM rollups are not limited to this
+on top of the Mavryk blockchain. WASM rollups are not limited to this
 use case though: they are fully programmable, hence their names, smart
 optimistic rollups, as they are very close to smart contracts in terms
 of expressiveness.
@@ -71,7 +71,7 @@ Address
 When a smart rollup is originated on the Layer 1, a unique address is
 generated to uniquely identify it. A smart rollup address starts with
 the prefix ``sr1``
-(see also the :ref:`kinds of address prefixes in Tezos <address_prefixes_atlas>`).
+(see also the :ref:`kinds of address prefixes in Mavryk <address_prefixes_atlas>`).
 
 Inputs
 ^^^^^^
@@ -117,11 +117,11 @@ Internal messages
 Contrary to external messages, which are submitted by the end users,
 internal messages are constructed by the Layer 1.
 
-At the beginning of every Tezos block, the Layer 1 pushes two internal
+At the beginning of every Mavryk block, the Layer 1 pushes two internal
 messages: “Start of level”, and “Info per level”. “Start of level”
 does not have any payload associated to it, while “Info per level”
 provides to the kernel the timestamp and block hash of the predecessor
-of the current Tezos block. If the Tezos block is the first block of a
+of the current Mavryk block. If the Mavryk block is the first block of a
 protocol, then the Layer 1 pushes another message “Protocol migration”
 just after the “Info per level” that provides the new protocol version
 (i.e. ``<proto-name>_<NNN>``).
@@ -132,7 +132,7 @@ perform a transfer to this address with a payload of this type. This
 transfer is realized as an internal message pushed to the rollups
 inbox.
 
-Finally, after the application of the operations of the Tezos block,
+Finally, after the application of the operations of the Mavryk block,
 the Layer 1 pushes one final internal message “End of
 level”. Similarly to “Start of level“, these internal messages does not
 come with any payload.
@@ -181,10 +181,10 @@ rollup.
 
 Processing
 ^^^^^^^^^^
-Each time a Tezos block is finalized, a rollup reacts to three kinds
+Each time a Mavryk block is finalized, a rollup reacts to three kinds
 of events: the beginning of the block, the input messages possibly
 contained in that block, and the end of the block. A **rollup node**
-implements this reactive process: it downloads the Tezos block and
+implements this reactive process: it downloads the Mavryk block and
 interprets it according to the semantics of the PVM. This
 interpretation can require updating a state, downloading data from
 other sources, or performing some cryptographic verifications. The
@@ -252,8 +252,8 @@ The outbox messages can follow three different formats. Firstly, the
 Layer 1 operations contained in the outbox messages can be left
 untyped, meaning only the Micheline expression is provided by the
 kernel. Before executing the transaction, the Layer 1 typechecks said
-expression against the expected type of the targeted entrypoint. Since
-Nairobi, it is also possible for the kernel to provide its expected
+expression against the expected type of the targeted entrypoint. 
+It is also possible for the kernel to provide its expected
 type of the targeted entrypoint. This additional safety mechanism is
 to avoid type confusion: namely, a kernel transferring a tuple that
 the Layer 1 interprets as a ticket. Lastly, the outbox message can
@@ -344,14 +344,14 @@ Glossary
 
 #. **PVM**: A Proof-generating Virtual Machine is a reference
    implementation for a device on top of which a smart rollup can be
-   executed. This reference implementation is part of the Tezos
+   executed. This reference implementation is part of the Mavryk
    protocol and is the unique source of truth regarding the semantics
    of rollups. The PVM is able to produce proofs enforcing this truth.
    This ability is used during the final step of refutation games.
 
 #. **Inbox**: A sequence of messages from the Layer 1 to smart rollups.
    The contents of the inbox are determined by the consensus of the
-   Tezos protocol.
+   Mavryk protocol.
 
 #. **Outbox**: A sequence of messages from a smart rollup to the Layer 1.
    Messages are smart contract calls, potentially containing tickets.
@@ -371,5 +371,5 @@ Glossary
 #. **Staker**: An implicit account that has made a deposit on a
    commitment.
 
-#. **Refutation game**: A process by which the Tezos protocol solves
+#. **Refutation game**: A process by which the Mavryk protocol solves
    a conflict between two stakers.

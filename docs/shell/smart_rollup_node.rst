@@ -688,8 +688,8 @@ kernel.
 WASM PVM Versioning
 """""""""""""""""""
 
-One of Tezos distinguishing features is its native support for
-upgrades. At its core, Tezos is a Layer 1 designed to evolve via a
+One of Mavryk distinguishing features is its native support for
+upgrades. At its core, Mavryk is a Layer 1 designed to evolve via a
 self-updating mechanism, subject to an on-line governance process. The
 self-updating mechanism is also implemented by the smart rollup
 infrastructure.
@@ -706,9 +706,7 @@ upgrades. The WASM PVM will upgrade itself when it reads the
 +--------------+----------------+
 | Protocol     | Version        |
 +==============+================+
-| Mumbai       | 2.0.0          |
-+--------------+----------------+
-| Nairobi      | 2.0.0-r1       |
+| Atlas        | 2.0.0-r1       |
 +--------------+----------------+
 | Alpha        | 2.0.0-r1       |
 +--------------+----------------+
@@ -718,14 +716,14 @@ The changes in each WASM PVM version can be found by searching for string "PVM" 
 Control Flow
 """"""""""""
 
-When a new block is published on Tezos, the inbox exposed to the smart
-rollup is populated with all the inputs published on Tezos in this
+When a new block is published on Mavryk, the inbox exposed to the smart
+rollup is populated with all the inputs published on Mavryk in this
 block. It is important to keep in mind that all the smart rollups
-which are originated on Tezos share the same inbox. As a consequence,
+which are originated on Mavryk share the same inbox. As a consequence,
 a WASM kernel has to filter the inputs that are relevant for its
 purpose from the ones it does not need to process.
 
-Once the inbox has been populated with the inputs of the Tezos block,
+Once the inbox has been populated with the inputs of the Mavryk block,
 the ``kernel_run`` function is called, from a clean “transient”
 state. More precisely, the WASM kernel is re-initialized,
 then ``kernel_run`` is called.
@@ -739,11 +737,11 @@ kernel from yielding by writing arbitrary data under the path
 as reboot), ``kernel_run`` is called again, without dropping unread
 inputs. The value at ``/kernel/env/reboot`` is removed between each call of ``kernel_run``,
 and the ``kernel_run`` function can postpone yielding at most 1,000
-reboots for each Tezos level.
+reboots for each Mavryk level.
 
 A call to ``kernel_run`` cannot take an arbitrary amount of time to
 complete, because diverging computations are not compatible with the
-optimistic rollup infrastructure of Tezos.
+optimistic rollup infrastructure of Mavryk.
 To dodge the halting
 problem, the reference interpreter of WASM (used during the refutation game)
 enforces a bound on the number of ticks used in a call to
@@ -851,7 +849,7 @@ allow it to interact with the components of persistent state:
 
 ``reveal_metadata``
   Loads in memory the address of the smart rollup (20 bytes), and the
-  Tezos level of its origination (4 bytes). Since the ``2.0.0``
+  Mavryk level of its origination (4 bytes). Since the ``2.0.0``
   version of the WASM PVM.
 
 These host functions use a "C-like" API. In particular, most of them
@@ -901,7 +899,7 @@ simple as running the following command.
    rustup target add wasm32-unknown-unknown
 
 Rust also proposes the ``wasm64-unknown-unknown`` compilation
-target. This target is **not** compatible with Tezos smart rollups,
+target. This target is **not** compatible with Mavryk smart rollups,
 which only provides a 32bit address space.
 
 .. note::

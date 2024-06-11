@@ -121,4 +121,4 @@ templates that are useful when defining encoding benchmarks.
 
 ## API documentation
 
-See the [documentation on defining benchmarks with snoop](https://tezos.gitlab.io/developer/snoop_arch.html#defining-benchmarks-the-generator-module).
+See the [documentation on defining benchmarks with snoop](https://protocol.mavryk.org/developer/snoop_arch.html#defining-benchmarks-the-generator-module).

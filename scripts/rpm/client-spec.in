@@ -4,7 +4,7 @@ Release:	@REVISION@
 Summary:	The Mavkit Client
 
 License:	MIT
-URL:		http://tezos.gitlab.io
+URL:		http://protocol.mavryk.org
 
 Packager:       @MAINT@
 Source0:	@FAKESRC@

@@ -1,8 +1,7 @@
 Protocol Atlas
 ===============
 
-This page documents the changes brought by protocol Atlas with respect
-to Nairobi (see :ref:`naming_convention`).
+This page documents the changes brought by protocol Atlas (see :ref:`naming_convention`).
 
 The code can be found in directory :src:`src/proto_001_PtAtLas` of the ``master``
 branch of Mavkit.
@@ -13,8 +12,7 @@ Environment Version
 -------------------
 
 
-This protocol requires a different protocol environment version than Nairobi.
-It requires protocol environment V11, compared to V9 for Nairobi.
+This protocol requires requires protocol environment V11, the same as its Oxford counterpart on the Tezos Blockchain.
 
 - Simplify the timelock ``opening_result`` type in the environment as we do not deal with ``Bogus_cipher`` any longer. (MR :gl:`!8404`)
 
@@ -28,16 +26,6 @@ Smart Rollups
 
 - Remove the origination proof from the smart rollups’ origination operation.
   (MR :gl:`!8817`)
-
-- The field ``commitment`` in the operation ``Sc_rollup_cement`` is now removed.
-  It was no longer used and was deprecated in Nairobi. This also mean that the
-  commitment does not need to be provided in the client command. (MR :gl:`!8850`)
-
-  Before::
-    ./mavkit-client cement commitment <commitment hash> from <src> for smart rollup <smart rollup address>
-
-  Now::
-    ./mavkit-client cement commitment from <src> for smart rollup <smart rollup address>
 
 - Enable the latest version of the WASM PVM (``2.0.0-r2``). Existing smart
   rollups will see their PVM automatically upgrade, and newly originated smart
@@ -88,7 +76,7 @@ Adaptive Issuance (experimental)
   internally, and may appear in balance receipts. (MR :gl:`!10849`)
 
 - The new staking mechanism is used internally to freeze deposits automatically
-  at cycle ends, and mimic Nairobi's behavior. (MR :gl:`!10562`)
+  at cycle ends, and mimic Oxford's behavior (On the Tezos Blockchain). (MR :gl:`!10562`)
 
 - Most rewards (baking rewards, baking bonuses, attestation rewards, revelation
   rewards) are partially paid on the frozen deposits balance in addition to the spendable
@@ -135,7 +123,7 @@ Breaking Changes
   value of ``640tz`` into the percentage ``5%`` and renamed to
   ``percentage_of_frozen_deposits_slashed_per_double_baking``. (MR :gl:`!8753`, :gl:`!10431`)
 
-- Since protocol Ithaca, the ratio of delegated tez over the delegate's frozen deposit
+- The ratio of delegated tez over the delegate's frozen deposit
   must be at most 9. Until now, this was ensured by a protocol parameter named
   ``frozen_deposits_percentage`` (whose value is 10%) representing the minimal percentage
   of frozen deposit. We convert it from a percentage to a factor named

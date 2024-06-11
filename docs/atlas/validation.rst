@@ -7,10 +7,10 @@ Validation and Application
    Adapt to pipelined validation up to Lima and v7 environment
 
 The :doc:`economic protocol<protocol>` is responsible for providing
-the rules that govern the Tezos network, and for enforcing that these
+the rules that govern the Mavryk network, and for enforcing that these
 rules implement a correct blockchain protocol. However, it does so
-:ref:`in coordination with a Tezos shell<the_big_picture>`, who
-ultimately implements these rules on its behalf. To this end, a Tezos
+:ref:`in coordination with a Mavryk shell<the_big_picture>`, who
+ultimately implements these rules on its behalf. To this end, a Mavryk
 economic protocol must provide the shell with an interface enabling
 roughly the following functionalities:
 
@@ -23,15 +23,15 @@ roughly the following functionalities:
 - including an operation in a block, and executing it on the
   blockchain state, effectively modifying the ledger state; and,
 
-- appending a new block to a Tezos blockchain, and computing the
+- appending a new block to a Mavryk blockchain, and computing the
   updated ledger state.
 
 From a higher-level, *abstract* perspective, the validation system in
-the Tezos protocol implements this business logic in a functional,
+the Mavryk protocol implements this business logic in a functional,
 state-passing machine where:
 
 - Its state is given by the :ref:`context<def_context_atlas>`, the internal
-  representation of the state of the Tezos ledger at a given blockchain
+  representation of the state of the Mavryk ledger at a given blockchain
   level. For instance, the context contains the information of all
   activated accounts and contracts, and their balances. More
   generally, the context must provide enough information to determine
@@ -55,7 +55,7 @@ state-passing machine where:
    When creating a new environment, update references to V<N> in the
    paragraph below (only in the doc for Alpha!).
 
-However, the *concrete* API exported from the Tezos economic protocol
+However, the *concrete* API exported from the Mavryk economic protocol
 does not implement this business logic *monolithically*, as described
 above, but it rather presents a more fine-grained API. The rationale
 is to provide specialized variations of the core *validation* and
@@ -75,7 +75,7 @@ implemented by this protocol in the
 module.
 
 The rest of this document is organized as follows: we first describe
-the different validation modes implemented by this Tezos economic
+the different validation modes implemented by this Mavryk economic
 protocol, and then we delve deeper into the particulars of validation
 and application for blocks and the operations supported.
 
@@ -84,13 +84,13 @@ and application for blocks and the operations supported.
 Validation modes
 ================
 
-The Tezos protocol provides different validation modes, intended to be
-used by the Tezos *shell* and *baker* software implementations when
+The Mavryk protocol provides different validation modes, intended to be
+used by the Mavryk *shell* and *baker* software implementations when
 needing to apply (or to assert the validity) of blocks and operations
 under different, or specialized, circumstances -- for example, in
 order to *bake* a block. For each of these validation modes, the API
 specified by the protocol environment offers an entry point so that
-protocol-agnostic components, the Tezos shell for instance, are able
+protocol-agnostic components, the Mavryk shell for instance, are able
 to use these different modes.
 
 .. _full_application_atlas:
@@ -101,7 +101,7 @@ Full Application
 The ``Full application`` mode is intended to be used to *fully*
 validate and apply blocks. In particular, this mode is used to
 validate and apply a **known** block, with a known operation trace. A
-Tezos shell implementation should use the full application mode to
+Mavryk shell implementation should use the full application mode to
 decide whether an incoming block can be safely included in the
 blockchain. That is, all validity checks are enabled: the block's
 signature is correct, and **all** operations included in the block are
@@ -182,7 +182,7 @@ Partial Application
 ~~~~~~~~~~~~~~~~~~~
 
 The ``Partial application`` mode is used for :ref:`multi-pass
-validation<multi_pass_validation>`. Its aim is to provide Tezos shell
+validation<multi_pass_validation>`. Its aim is to provide Mavryk shell
 implementations with a light-weight (read "fast") block application
 mechanism, which can determine whether a block has a *chance* of being
 valid or not, in a situation when the provided context is *not a
@@ -221,7 +221,7 @@ the application (and the construction) of a block.
 
 The first step in the process is to decide whether a candidate block
 is *well-formed*, that is, that it has the expected "shape" of a valid
-block under the current Tezos economic protocol. Given a block
+block under the current Mavryk economic protocol. Given a block
 candidate, the block validation process will then verify that the
 candidate block declares consistent :ref:`level<def_level_atlas>`,
 :ref:`round<def_round_atlas>`, and timestamp values; that it carries a valid
@@ -241,10 +241,10 @@ it will verify that the total attesting power present in the block is
 greater than the ``CONSENSUS_THRESHOLD`` constant.
 
 This sequence of three steps also yields a new context -- the
-resulting state of the Tezos ledger after the application of the
+resulting state of the Mavryk ledger after the application of the
 candidate block. The shell may decide to commit this context to disk.
 
-The Tezos economic protocol also offers a cheap (read "faster")
+The Mavryk economic protocol also offers a cheap (read "faster")
 alternative to determine an over-approximation of the validity of a
 block (see :ref:`partial_application_atlas` above). This feature
 allows the shell to propagate blocks faster without needing to fully
@@ -258,7 +258,7 @@ particular, it does not validate all kinds of operations.
 Operation Validation and Application
 ====================================
 
-In the Tezos economic protocol, we dissociate the notion of *validity*
+In the Mavryk economic protocol, we dissociate the notion of *validity*
 from the notion of *applicability* for operations. A valid operation
 is an operation that can be included safely in a block without
 affecting the block's validity. Applying an operation, on the other

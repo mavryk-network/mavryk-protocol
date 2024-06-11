@@ -1,11 +1,11 @@
 Mavkit Software Architecture
 ============================
 
-This page presents the software architecture of the most important tool in a Tezos network: the Tezos node, implemented in our case as the Mavkit node executable (``mavkit-node``).
-The Mavkit software architecture faithfully implements the :doc:`Tezos software architecture <../global/architecture>` principles.
+This page presents the software architecture of the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``mavkit-node``).
+The Mavkit software architecture faithfully implements the :doc:`Mavryk software architecture <../global/architecture>` principles.
 
 This page contains two sections. The first section, which should be
-readable by anyone, describes the main elements of Tezos from a
+readable by anyone, describes the main elements of Mavryk from a
 distance. It abstracts from all plumbing and both internal and system
 dependencies to give a simple view of the main components, their
 responsibilities, and interactions. The second part is written for
@@ -15,14 +15,14 @@ developers and is at the level of OPAM packages.
 
 The Big Picture
 ---------------
-The diagram below shows a very coarse-grained architecture of Tezos.
+The diagram below shows a very coarse-grained architecture of Mavryk.
 
-|Tezos architecture diagram|
+|Mavryk architecture diagram|
 
-The characteristic that makes Tezos unique is its self-amending
+The characteristic that makes Mavryk unique is its self-amending
 property. The part that amends itself is called :doc:`the economic protocol<../alpha/protocol>`
 (the green brain of the octopus), sometimes abbreviated by protocol or
-even proto in the source code. The rest of a Tezos node is what we call
+even proto in the source code. The rest of a Mavryk node is what we call
 the *shell* (the blue octopus).
 
 The protocol is responsible for interpreting the transactions and other
@@ -72,7 +72,7 @@ state. This component uses the mainstream JSON format and HTTP
 protocol.  It uses the library ``resto``. It is fully
 interoperable, and auto descriptive, using JSON schema.
 
-.. |Tezos architecture diagram| image:: octopus.svg
+.. |Mavryk architecture diagram| image:: octopus.svg
 
 
 .. _packages:
@@ -80,10 +80,10 @@ interoperable, and auto descriptive, using JSON schema.
 Software Architecture and Packages Relationship
 ------------------------------------------------
 The diagram below shows the main OPAM packages present in the source
-code of Tezos, and their dependencies. The ``mavryk-`` or ``mavkit-`` prefixes have been
+code of Mavryk, and their dependencies. The ``mavryk-`` or ``mavkit-`` prefixes have been
 dropped for clarity.
 
-|Tezos source packages diagram|
+|Mavryk source packages diagram|
 
 In green at the bottom are binaries. Highlighted in yellow are the OPAM
 packages (sometimes with shortened names). Black arrows show direct
@@ -115,7 +115,7 @@ that are used everywhere for basic operations.
    the ``register_error`` function that registers a pretty printer and
    an encoding for serialization.
    A :doc:`tutorial<../developer/error_monad>` is available for this library.
- - :package-api:`mavryk-rpc <mavkit-libs/Mavryk_rpc/index.html>` provides the basics of Tezos' RPC service
+ - :package-api:`mavryk-rpc <mavkit-libs/Mavryk_rpc/index.html>` provides the basics of Mavryk' RPC service
    mechanism. It provides combinators for building service hierarchies
    à la Ocsigen/Eliom, registering, and calling services. This module
    is based on :opam:`resto`, that allows for automatic
@@ -133,7 +133,7 @@ that are used everywhere for basic operations.
    Michelson, the language of smart contracts. It mostly contains the
    generic, untyped AST, a printer, and a parser.
  - :package-api:`mavryk-base <mavkit-libs/Mavryk_base/index.html>` wraps all these modules in a common foundation
-   for all the other components of Tezos, and introduces the data
+   for all the other components of Mavryk, and introduces the data
    structures of the blockchain (e.g. ``Block_hash``,
    ``Block_header``, ``Block_locator``, ``Fitness``, ``P2p_identity``)
    that are shared between the shell, economic protocol, client,
@@ -283,7 +283,7 @@ run them.
    and performs various tasks using the client
  - :package-api:`mavryk-p2p <mavkit-shell-libs/Mavryk_p2p/index.html>`
    (in directory :src:`src/lib_p2p/test/`):
-   tests of the peer-to-peer layer, independently of the Tezos gossip
+   tests of the peer-to-peer layer, independently of the Mavryk gossip
    protocol (establishing connections, propagating peers, etc.)
  - :package-api:`mavryk-protocol-environment <mavkit-proto-libs/Mavryk_protocol_environment/index.html>`
    (in directory :src:`src/lib_protocol_environment/test/`):
@@ -331,4 +331,4 @@ The Mavkit executables are generated from packages such as the following ones (f
     compile new protocols on the fly, and that can be used for
     developing new protocols.
 
-.. |Tezos source packages diagram| image:: packages.svg
+.. |Mavryk source packages diagram| image:: packages.svg

@@ -18,21 +18,21 @@ After a successful compilation, you should have the following binaries:
 - ``mavkit-node``: the Mavkit daemon itself (see `Node`_);
 - ``mavkit-client``: a command-line client and basic wallet (see `Client`_);
 - ``mavkit-admin-client``: administration tool for the node (see :ref:`mavkit-admin-client`);
-- ``mavkit-{baker,accuser}-*``: daemons to bake and accuse on the Tezos network (see :doc:`howtorun`);
+- ``mavkit-{baker,accuser}-*``: daemons to bake and accuse on the Mavryk network (see :doc:`howtorun`);
 - ``mavkit-signer``: a client to remotely sign operations or blocks
   (see :ref:`signer`);
 - ``mavkit-smart-rollup-{client,node}-*``: executables for using and running a smart rollup as Layer 2 (see :doc:`../active/smart_rollups`)
 - ``mavkit-smart-rollup-wasm-debugger``: debugger for smart rollup kernels (see :doc:`../active/smart_rollups`)
 - ``mavkit-proxy-server``: a readonly frontend to ``mavkit-node`` designed to lower the load of full nodes (see :doc:`../user/proxy-server`)
 - ``mavkit-codec``: a utility for documenting the data encodings and for performing data encoding/decoding (see `Codec`_)
-- ``mavkit-protocol-compiler``: a domain-specific compiler for Tezos protocols (see `Protocol compiler`_)
+- ``mavkit-protocol-compiler``: a domain-specific compiler for Mavryk protocols (see `Protocol compiler`_)
 - ``mavkit-snoop``: a tool for modeling the performance of any piece of OCaml code, based on benchmarking (see :doc:`../developer/snoop`)
 
 The daemons other than the node are suffixed with the name of the protocol they are
 bound to.
 More precisely, the suffix consists of the first 8 characters of the protocol hash; except for protocol Alpha, for which the suffix is simply ``-alpha``.
-For instance, ``mavkit-baker-PtNairob`` is the baker
-for the Nairobi protocol, and ``mavkit-baker-alpha`` is the baker
+For instance, ``mavkit-baker-PtAtLas`` is the baker
+for the Atlas protocol, and ``mavkit-baker-alpha`` is the baker
 of the development protocol.
 The ``mavkit-node`` daemon is not suffixed by any protocol name, because it is independent of the economic protocol. See also the `Node's Protocol`_ section below.
 
@@ -89,9 +89,9 @@ online: :doc:`../shell/cli-commands`.
 Node
 ----
 
-The node is the main actor of the Tezos blockchain and it has two main
+The node is the main actor of the Mavryk blockchain and it has two main
 functions: running the gossip network and updating the context.
-The gossip network is where all Tezos nodes exchange blocks and
+The gossip network is where all Mavryk nodes exchange blocks and
 operations with each other (see :ref:`mavkit-admin-client` to monitor
 p2p connections).
 Using this peer-to-peer network, an operation originated by a user can
@@ -142,7 +142,7 @@ keys that nodes use to encrypt messages sent to each other, and an
 antispam proof-of-work stamp proving that enough computing power has been
 dedicated to creating this identity.
 Note that this is merely a network identity and it is not related in
-any way to a Tezos address on the blockchain.
+any way to a Mavryk address on the blockchain.
 
 If you wish to run your node on a test network, now is also a good time
 to configure your node (see :ref:`builtin_networks`).
@@ -164,7 +164,7 @@ Some operations require the node to be bootstrapped.
 Node's Protocol
 ~~~~~~~~~~~~~~~
 
-A Tezos node can switch from one protocol to another during its
+A Mavryk node can switch from one protocol to another during its
 execution.  This typically happens during the synchronization phase
 when a node launches for the first time. The node starts with the
 genesis protocol and then goes through all previous protocols until it
@@ -301,7 +301,7 @@ In more realistic scenarios, you should supply the option ``--encrypted`` when g
 
       $ mavkit-client gen keys bob --encrypted
 
-Tezos supports four different ECC (`Elliptic-Curve Cryptography <https://en.wikipedia.org/wiki/Elliptic-curve_cryptography>`_) schemes: *Ed25519*, *secp256k1* (the
+Mavryk supports four different ECC (`Elliptic-Curve Cryptography <https://en.wikipedia.org/wiki/Elliptic-curve_cryptography>`_) schemes: *Ed25519*, *secp256k1* (the
 one used in Bitcoin), *P-256* (also called *secp256r1*), and *BLS* (variant
 *MinPk*, for aggregated signatures). The secp256k1 and P256
 curves have been added for interoperability with Bitcoin and
@@ -430,7 +430,7 @@ receipt.
 
 It is advisable to wait for several blocks to consider the transaction as
 final.
-Please refer to the :doc:`consensus algorithm documentation <../active/consensus>` and `analysis <https://research-development.nomadic-labs.com/faster-finality-with-emmy.html>`__ to better understand block finality in Tezos.
+Please refer to the :doc:`consensus algorithm documentation <../active/consensus>` and `analysis <https://research-development.nomadic-labs.com/faster-finality-with-emmy.html>`__ to better understand block finality in Mavryk.
 `This page <https://nomadic-labs.gitlab.io/emmyplus-experiments/>`__ provides concrete values for the number of blocks one should wait.
 
 In the rare case when an operation is lost, how can we be sure that it
@@ -446,7 +446,7 @@ operation that seems lost.
 Implicit Accounts and Smart Contracts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Tezos there are two kinds of accounts: *implicit accounts* and *smart contracts*.
+In Mavryk there are two kinds of accounts: *implicit accounts* and *smart contracts*.
 
 - The implicit accounts are the addresses starting with *mv1*, *mv2*,
   and *mv3* we have used up to now. They are created with a transfer
@@ -599,7 +599,7 @@ have to resort to RPCs.
 .. _get_protocol_constants:
 
 For example to check the value of important
-:ref:`constants <protocol_constants>` in Tezos, which may differ between Mainnet and other
+:ref:`constants <protocol_constants>` in Mavryk, which may differ between Mainnet and other
 :ref:`test networks<test-networks>`, you can use::
 
    mavkit-client rpc get /chains/main/blocks/head/context/constants | jq
@@ -664,4 +664,4 @@ In this tutorial, you have learned:
 - some further concepts such as transaction validation and the RPC interface;
 - the role of other binaries, less frequently used than the client and the node.
 
-You may now explore Tezos further, and enjoy using it!
+You may now explore Mavryk further, and enjoy using it!

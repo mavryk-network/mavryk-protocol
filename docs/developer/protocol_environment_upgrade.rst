@@ -1,7 +1,7 @@
 Adding a new protocol environment
 =================================
 
-The economic protocols of Tezos are compiled against a restricted set of libraries.
+The economic protocols of Mavryk are compiled against a restricted set of libraries.
 This is for security reasons (so that, e.g., the protocol can never be leveraged for accessing files
 of the host machine) and safety reasons (so that, e.g., the protocol is immune to some categories of errors).
 See the general overview in :doc:`Protocol environment <../shell/protocol_environment>`.
@@ -16,7 +16,7 @@ This page details the process of creating a new environment by copying the lates
 Bootstrap
 ---------
 
-The following steps are roughly the steps taken in the `V6 bootstrap MR <https://gitlab.com/tezos/tezos/-/merge_requests/4961>`__
+The following steps are roughly the steps taken in the `V6 bootstrap MR <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/4961>`__
 
 1. Copy the existing environment files:
 
@@ -71,7 +71,7 @@ It is recommended that you test your work more comprehensively offline. To that 
 Struct compatibility layer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The struct compatibility layer is for providing compatibility between a signature of the protocol environment (which is set in stone) and the interface of an external library that provides it (which might change from version to version). E.g., at the time of the V0 environment the OCaml Stdlib did not include an ``Option`` module and so a custom one was provided in the whole of the Tezos project including the protocol environment; later, when the Tezos project switched to the now available and standard ``Stdlib.Option`` module, the struct compatibility module ``src/lib_protocol_environment/structs/v0_option.ml`` was added.
+The struct compatibility layer is for providing compatibility between a signature of the protocol environment (which is set in stone) and the interface of an external library that provides it (which might change from version to version). E.g., at the time of the V0 environment the OCaml Stdlib did not include an ``Option`` module and so a custom one was provided in the whole of the Mavryk project including the protocol environment; later, when the Mavryk project switched to the now available and standard ``Stdlib.Option`` module, the struct compatibility module ``src/lib_protocol_environment/structs/v0_option.ml`` was added.
 
 More recent protocol environments generally need fewer struct compatibility modules. Occasionally, the most recent environment needs no compatibility layer at all. You can know if this is the case by checking the file ``src/lib_protocol_environment/structs/mavryk_protocol_environment_structs.ml``: if the submodule ``V<N>`` exists and is not empty then there is a compatibility layer, otherwise there isn't.
 
@@ -86,7 +86,7 @@ The new environment as it stands now is not activated. More precisely, it cannot
 When to activate
 ^^^^^^^^^^^^^^^^^
 
-This is on purpose: we do not want to release an unfinished environment because it interferes with the distributed nature of Tezos protocol development. Specifically, if an unfinished protocol was made available in a release of the Mavkit suite, then anyone could propose a protocol built upon this version. But then further work on the protocol (to finish it) would create multiple different environments that have the same name. To avoid this, we only activate the environment once it is safe.
+This is on purpose: we do not want to release an unfinished environment because it interferes with the distributed nature of Mavryk protocol development. Specifically, if an unfinished protocol was made available in a release of the Mavkit suite, then anyone could propose a protocol built upon this version. But then further work on the protocol (to finish it) would create multiple different environments that have the same name. To avoid this, we only activate the environment once it is safe.
 
 The new environment should only be activated after the last release that precedes the injection of the protocol that uses it. Don't worry too much about this, simply reach out to a release manager and work with them on the schedule.
 
@@ -107,7 +107,7 @@ Bump environment version in:
 
 And finally, bump environment version in ``src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL``, and run ``make -C manifest``.
 
-For an example, check `the MR in which the environment V6 was activated <https://gitlab.com/tezos/tezos/-/merge_requests/4961>`__.
+For an example, check `the MR in which the environment V6 was activated <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/4961>`__.
 
 Additionally, you have to update the documentation of protocol Alpha to reflect the fact that it now uses environment ``V<N>``. For that, see meta-issue :gl:`#4155`, which explains all the necessary changes (don't worry, the changes are very limited).
 
@@ -116,7 +116,7 @@ Making changes in the environment
 
 You can make changes to the newly created environment until it is released. For this purpose release candidates do not count. Below are examples of changes from previous work on the environment.
 
-* `Adding the Result module in environment V3 <https://gitlab.com/tezos/tezos/-/merge_requests/3154/diffs?commit_id=9aa7bee8a73f9495787dc9ee257e5021d31bee33>`__
+* `Adding the Result module in environment V3 <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3154/diffs?commit_id=9aa7bee8a73f9495787dc9ee257e5021d31bee33>`__
 
   * Add the interface file ``src/lib_protocol_environment/sigs/v3/result.mli``
 
@@ -124,13 +124,13 @@ You can make changes to the newly created environment until it is released. For 
 
   * Declare the ``Result`` module in the functor in ``src/lib_protocol_environment/environment_V3.ml``
 
-* `Updating the data-encoding dependency <https://gitlab.com/tezos/tezos/-/merge_requests/3149>`__
+* `Updating the data-encoding dependency <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3149>`__
 
   * Provide backwards compatibility layers for older environments
 
   * Modify existing ``src/lib_protocol_environment/sigs/v3/data_encoding.mli``
 
-* `Rehauling the List module in the environment V3 <https://gitlab.com/tezos/tezos/-/merge_requests/3116/diffs?commit_id=697b3da1e4b7135b0109dbdc6543e08a21038658>`__
+* `Rehauling the List module in the environment V3 <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3116/diffs?commit_id=697b3da1e4b7135b0109dbdc6543e08a21038658>`__
 
   * Replace some of the environment modules with a new one (remove old files)
 

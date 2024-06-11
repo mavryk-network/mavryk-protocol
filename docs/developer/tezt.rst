@@ -1,17 +1,17 @@
-Tezt: OCaml Tezos Test Framework
+Tezt: OCaml Mavryk Test Framework
 ================================
 
 `Tezt <https://gitlab.com/nomadic-labs/tezt/>`_ is a generic test framework written in OCaml.
 It focuses on integration tests that launch external processes.
-In particular, Tezt can be used to orchestrate tests involving Tezos nodes and clients.
+In particular, Tezt can be used to orchestrate tests involving Mavryk nodes and clients.
 
-To facilitate the use with Tezos, Tezt has been complemented by a specific library called Tezt-Tezos.
+To facilitate the use with Mavryk, Tezt has been complemented by a specific library called Tezt-Mavryk.
 
 Tezt is pronounced `/tɛzti/ <http://ipa-reader.xyz/?text=t%C9%9Bzti>`_
 (think "tezty", as in *Tez* are tas*ty*).
 
 
-The main benefits of using Tezt-Tezos are:
+The main benefits of using Tezt-Mavryk are:
 
 - tests are written in the same language as Mavkit itself (OCaml),
   which reduces context switch for developers;
@@ -25,7 +25,7 @@ The main benefits of using Tezt-Tezos are:
 
 - it should be easy to use and extend.
 
-Therefore, Tezt and Tezt-Tezos have been leveraged to build a test suite for Mavkit. See :src:`tezt/README.md` for details on its implementation.
+Therefore, Tezt and Tezt-Mavryk have been leveraged to build a test suite for Mavkit. See :src:`tezt/README.md` for details on its implementation.
 
 The rest of this page explains how to run the test suite and how to add new tests.
 

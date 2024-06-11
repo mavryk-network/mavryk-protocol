@@ -33,7 +33,7 @@ ARG COMMIT_SHORT_SHA
 LABEL org.opencontainers.image.authors="info@mavryk.io" \
       org.opencontainers.image.base.name="alpine:3.14" \
       org.opencontainers.image.description="Mavryk node" \
-      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.documentation="https://protocol.mavryk.org/" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.com/mavryk-network/mavryk-protocol" \
       org.opencontainers.image.title="mavryk-debug" \
@@ -68,7 +68,7 @@ ARG COMMIT_SHORT_SHA
 LABEL org.opencontainers.image.authors="info@mavryk.io" \
       org.opencontainers.image.base.name="alpine:3.14" \
       org.opencontainers.image.description="Mavryk node" \
-      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.documentation="https://protocol.mavryk.org/" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.com/mavryk-network/mavryk-protocol" \
       org.opencontainers.image.title="mavryk-debug" \
@@ -89,7 +89,7 @@ ARG COMMIT_SHORT_SHA
 LABEL org.opencontainers.image.authors="info@mavryk.io" \
       org.opencontainers.image.base.name="alpine:3.14" \
       org.opencontainers.image.description="Mavryk node" \
-      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.documentation="https://protocol.mavryk.org/" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.com/mavryk-network/mavryk-protocol" \
       org.opencontainers.image.title="mavryk-debug" \

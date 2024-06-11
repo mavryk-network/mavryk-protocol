@@ -1,4 +1,4 @@
-This page describes the RPCs built into the Tezos shell, which are independent from a particular version of the Tezos protocol.
+This page describes the RPCs built into the Mavryk shell, which are independent from a particular version of the Mavryk protocol.
 (The RPCs implemented by the protocol currently active on Mainnet, are described :doc:`in this other page <../active/rpc>`.)
 
 .. warning::

@@ -1,7 +1,7 @@
 # pylint: disable=dangerous-default-value
 # pylint: disable=global-statement
 # pylint: disable=too-many-locals
-"""Module implementing Sphinx custom roles for Tezos documentation."""
+"""Module implementing Sphinx custom roles for Mavryk documentation."""
 import os
 import os.path
 import re
@@ -175,7 +175,7 @@ def src_role(_name, rawtext, text, lineno, inliner, options={}, _content=[]):
     branch = os.environ.get('CI_COMMIT_REF_NAME', 'master')
     project_url = os.environ.get(
         'CI_MERGE_REQUEST_SOURCE_PROJECT_URL',
-        os.environ.get('CI_PROJECT_URL', 'https://gitlab.com/tezos/tezos'),
+        os.environ.get('CI_PROJECT_URL', 'https://gitlab.com/mavryk-network/mavryk-protocol'),
     )
     if Path(MAVRYK_HOME, file).is_file():
         url = project_url + "/-/blob/" + branch + "/" + src
@@ -200,7 +200,7 @@ def default_role(
     # will have been fixed automatically by snapshotting Alpha.
 
     # skip pages of protocols other than Alpha, to avoid manual backporting
-    if re.search("/(active|lima|mumbai|nairobi)/", file):
+    if re.search("/(active)/", file):
         return [node], []
 
     # skip automatically generated pages

@@ -2,7 +2,7 @@ The validation subsystem
 ========================
 
 This document explains the inner workings of the validation subsystem
-of the Tezos shell, that sits between the peer-to-peer layer and the
+of the Mavryk shell, that sits between the peer-to-peer layer and the
 economic protocol. This part is in charge of validating chains, blocks
 and operations that come from the network, and deciding whether they
 are worthy to propagate. It is composed of three main parts: the
@@ -10,7 +10,7 @@ are worthy to propagate. It is composed of three main parts: the
 :ref:`prevalidator<prevalidator_component>`, and
 the :ref:`distributed DB<DDB_component>`.
 
-|Tezos validation diagram|
+|Mavryk validation diagram|
 
 Concepts
 --------
@@ -20,7 +20,7 @@ Before presenting these three components, we define some basic concepts.
 Block
 ~~~~~
 
-The Tezos blockchain is a linked list of blocks (or actually, a tree when several competing branches exist).
+The Mavryk blockchain is a linked list of blocks (or actually, a tree when several competing branches exist).
 Blocks conceptually contain a header and a list of operations.
 In the implementation, the list of operations in the block is represented as the hash of the Merkle tree containing them.
 
@@ -162,4 +162,4 @@ The gathering of resources needed for validation is centralized in the
 resource, whose priority depends on the number of peer validators
 requesting it.
 
-.. |Tezos validation diagram| image:: validation.svg
+.. |Mavryk validation diagram| image:: validation.svg

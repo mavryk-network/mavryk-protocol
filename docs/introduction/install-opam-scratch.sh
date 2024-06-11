@@ -25,7 +25,7 @@ opam init --bare -y
 export OPAMYES=true
 export OPAMSOLVERTIMEOUT=1200
 # [install ocaml compiler]
-wget -O latest-release:version.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/version.sh
+wget -O latest-release:version.sh https://gitlab.com/mavryk-network/mavryk-protocol/raw/latest-release/scripts/version.sh
 . ./latest-release:version.sh
 opam switch create for_tezos $ocaml_version
 eval $(opam env)

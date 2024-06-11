@@ -46,7 +46,7 @@ To be able to run a rollup node for the rollup, you will need to copy the conten
 
 Once you've copied these across, you should then be able to run your rollup node, and the installer kernel will automatically upgrade.
 
-For more information on originating the rollup & running a rollup node, see the [rollup docs](https://tezos.gitlab.io/alpha/smart_rollups.html).
+For more information on originating the rollup & running a rollup node, see the [rollup docs](https://protocol.mavryk.org/alpha/smart_rollups.html).
 
 ## Using the `mavkit-smart-rollup-wasm-debugger`
 
@@ -59,7 +59,7 @@ smart-rollup-installer get-reveal-installer \
     --preimages-dir <preimages-dir>
 ```
 
-You can then run the installer in the [debugger](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel), using the `--preimage-dir` argument to point to the preimages generated previously:
+You can then run the installer in the [debugger](https://protocol.mavryk.org/alpha/smart_rollups.html#testing-your-kernel), using the `--preimage-dir` argument to point to the preimages generated previously:
 
 ```
 mavkit-smart-rollup-wasm-debugger --kernel installer.wasm --inputs inputs.json --preimage-dir <preimages-dir>

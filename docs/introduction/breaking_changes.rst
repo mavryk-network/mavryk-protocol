@@ -93,11 +93,11 @@ Each aggregate is related to a part of Mavkit.
 Mavkit is now distributed as the following set of Opam packages:
   - :package-api:`mavkit-libs <mavkit-libs/index.html>`: Contains the base libraries for Mavkit (cryptography primitives, error management helpers, etc.).
   - :package-api:`mavkit-shell <mavkit-shell-libs/index.html>`: Contains the libraries related to the Mavkit shell.
-  - :package-api:`mavkit-proto-libs <mavkit-proto-libs/index.html>`: Contains the libraries for the Tezos protocol.
+  - :package-api:`mavkit-proto-libs <mavkit-proto-libs/index.html>`: Contains the libraries for the Mavryk protocol.
   - :package-api:`mavkit-l2-libs <mavkit-l2-libs/index.html>`: Contains the libraries related to layer 2.
   - For each protocol ``P``:
     - :package-api:`mavkit-protocol-P-libs <mavkit-protocol-alpha-libs/index.html>`: The protocol ``P`` dependent libraries.
-    - ``mavryk-protocol-P``: The Tezos protocol ``P`` itself.
+    - ``mavryk-protocol-P``: The Mavryk protocol ``P`` itself.
 
 To have a better understanding of the packages and the complete description of them, you might want to follow the :doc:`OCaml API documentation <../api/api-inline>`.
 
@@ -109,7 +109,7 @@ Specifically, all the sub-libraries prefixed with ``mavryk-`` or ``mavkit-`` are
 For instance, ``mavryk-base``, which is now a sub-library of ``mavkit-libs``, is now ``mavkit-libs.base``.
 
 The protocol name suffixes of the protocol libraries have also been removed.
-For instance, ``Tezos-client-001-PtNairob`` is now the sub-library ``Client`` of the package ``Mavkit-001-PtNairob-libs``.
+For instance, ``Mavryk-client-001-PtAtLas`` is now the sub-library ``Client`` of the package ``Mavkit-001-PtAtLas-libs``.
 
 
 Backward compatibility

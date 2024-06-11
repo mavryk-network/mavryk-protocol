@@ -1,7 +1,7 @@
 Development Changelog
 '''''''''''''''''''''
 
-**NB:** The changelog for releases can be found at: https://tezos.gitlab.io/CHANGES.html
+**NB:** The changelog for releases can be found at: https://protocol.mavryk.org/CHANGES.html
 
 
 This file lists the changes added to each version of mavkit-node,
@@ -73,7 +73,7 @@ Client
 
 - Added a ``run unit tests`` client command allowing to run one or
   several Michelson unit tests in `TZT format
-  <http://tezos.gitlab.io/active/michelson.html#tzt-a-syntax-extension-for-writing-unit-tests>`__. (MR
+  <http://protocol.mavryk.org/active/michelson.html#tzt-a-syntax-extension-for-writing-unit-tests>`__. (MR
   :gl:`!10898`)
 
 Baker

@@ -2,7 +2,7 @@ Contract events
 ===============
 
 Contract events provide a way for contracts to deliver event-like information to external applications.
-This mechanism allows off-chain applications to react to Tezos contracts execution.
+This mechanism allows off-chain applications to react to Mavryk contracts execution.
 
 
 Sending events

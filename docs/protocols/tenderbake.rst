@@ -21,7 +21,7 @@ Rolls still play the following roles:
 
 - A delegate can participate in consensus (receiving baking and endorsing rights) if it has at least ``tokens_per_roll`` tez.
 
-- A delegate's voting power in the governance process is still in terms of rolls, as in Hangzhou.
+- A delegate's voting power in the governance process is still in terms of rolls, as in Atlas.
 
 Baking and endorsing rights are no longer independent of each other:
 delegates that participate in consensus at a given level are called
@@ -271,7 +271,7 @@ Daemons
 -------
 
 There is no endorser daemon anymore. Its role is performed by the baker daemon.
-The baker daemon takes the same options as in Hangzhou.
+The baker daemon takes the same options as in Atlas.
 
 
 Client

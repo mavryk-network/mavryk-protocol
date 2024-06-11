@@ -154,7 +154,7 @@ pub enum Tok {
     #[regex(r#"0x[0-9a-fA-F]*"#, lex_bytes)]
     Bytes(Vec<u8>),
 
-    // regex as per https://tezos.gitlab.io/active/michelson.html#syntax
+    // regex as per https://protocol.mavryk.org/active/michelson.html#syntax
     #[regex(r"@%|@%%|%@|[@:%][_0-9a-zA-Z][_0-9a-zA-Z\.%@]*")]
     Annotation,
 

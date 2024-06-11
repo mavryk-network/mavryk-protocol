@@ -12,7 +12,7 @@ for an intermediate mode between default and mockup).
 Motivation
 ==========
 
-The main motivation for implementing the mockup mode is to provide developers of Tezos smart contracts with an easy local environment, offering a fast development cycle, which uses only lightweight local files for keeping the state, and which does not require a running blockchain.
+The main motivation for implementing the mockup mode is to provide developers of Mavryk smart contracts with an easy local environment, offering a fast development cycle, which uses only lightweight local files for keeping the state, and which does not require a running blockchain.
 
 Overview
 ========
@@ -508,7 +508,7 @@ Performing protocol migrations of persistent mockup states
 ==========================================================
 
 The persistent state of the mockup mode is highly protocol-dependent.
-But Tezos is self-amending: protocols regularly evolve from one to the next.
+But Mavryk is self-amending: protocols regularly evolve from one to the next.
 When a protocol switch happens on-chain, the protocol state is automatically
 migrated to the format used by the new protocol.
 

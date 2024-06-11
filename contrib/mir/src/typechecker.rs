@@ -306,7 +306,7 @@ pub(crate) fn parse_ty(ctx: &mut Ctx, ty: &Micheline) -> Result<Type, TcError> {
             // NB: despite `contract` type being duplicable and packable, its
             // argument doesn't need to be. The only constraint is that it needs
             // to be passable, as it represents the contract's parameter type.
-            // See https://tezos.gitlab.io/michelson-reference/#type-contract
+            // See https://protocol.mavryk.org/michelson-reference/#type-contract
             t.ensure_prop(&mut ctx.gas, TypeProperty::Passable)?;
             Type::new_contract(t)
         }
@@ -718,7 +718,7 @@ pub(crate) fn typecheck_instruction(
         (App(FAILWITH, [], _), [.., _]) => {
             let ty = pop!();
             // NB: the docs for the FAILWITH instruction
-            // https://tezos.gitlab.io/michelson-reference/#instr-FAILWITH claim
+            // https://protocol.mavryk.org/michelson-reference/#instr-FAILWITH claim
             // the type needs to be packable, but that's not quite correct, as
             // `contract _` is forbidden. The correct constraint is seemingly
             // "pushable", as "pushable" is just "packable" without `contract _`

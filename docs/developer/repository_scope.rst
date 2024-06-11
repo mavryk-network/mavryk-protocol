@@ -1,9 +1,9 @@
 Scope of the Mavkit repository
 ==============================
 
-The `Gitlab repository tezos/tezos <https://gitlab.com/tezos/tezos>`_
+The `Gitlab repository mavryk-network/mavryk-protocol <https://gitlab.com/mavryk-network/mavryk-protocol>`_
 contains the source code for Mavkit, as well as :ref:`the embedded
-economic protocols <embedded_protocols>` for Tezos.
+economic protocols <embedded_protocols>` for Mavryk.
 
 Following widespread software engineering principles, a major part
 of the code is structured in the form of libraries. Libraries foster
@@ -22,11 +22,11 @@ but later during its development it becomes significantly
 coupled to one or more libraries developed as part of the Mavkit project.
 Maintaining such a tool is frustrating, because it often breaks due to
 changes in the Mavkit libraries it depends upon. A possible solution to
-this problem would be to include the tool in ``tezos/tezos`` repository
+this problem would be to include the tool in ``mavryk-network/mavryk-protocol`` repository
 and develop it together with Mavkit, which allows to discover breakages
 more quickly and prevent or fix them immediately.
 
-Because the number of helper projects in the Tezos ecosystem is still growing, it's impossible to
+Because the number of helper projects in the Mavryk ecosystem is still growing, it's impossible to
 develop all of them within the Mavkit repository. Therefore it is necessary
 to select which projects can be merged into the Mavkit repository and which
 cannot. The currently accepted rule is that to be merged into Mavkit, an

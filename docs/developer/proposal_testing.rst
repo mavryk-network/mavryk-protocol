@@ -56,7 +56,7 @@ the shell (see :doc:`../user/sandbox`)::
 Adding New Protocol Tests in OCaml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Be sure you first read the :doc:`introduction on the testing ecosystem for Tezos <testing>`.
+Be sure you first read the :doc:`introduction on the testing ecosystem for Mavryk <testing>`.
 In addition to system tests written with :doc:`Tezt <tezt>`,
 unit tests and integration tests for the protocol can be found in :src:`src/proto_alpha/lib_protocol/test`.
 It is strongly recommended to write unit tests and integration tests in addition to the
@@ -108,7 +108,7 @@ batched parts of this manual migration procedure by providing scripts that
 encompass some of its steps.
 
 We will illustrate the migration procedure through an example where the version
-of the Alpha protocol to which we migrate is ``012``.
+of the Alpha protocol to which we migrate is ``001``.
 
 
 Checkout Latest Code and Tweak Migration
@@ -125,7 +125,7 @@ could log the point at which migration takes place by editing the file
 the match expression of the function ``prepare_first_block`` in the said file to
 include the following lines::
 
-  | Hangzhou_011 ->
+  | Atlas_001 ->
       Logging.(log Notice "STITCHING!") ;
 
 After making sure that our ``master`` branch contains all the migration
@@ -251,9 +251,9 @@ To run it, pass the protocol version number and name as follows::
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The currently active protocol supports self-amending through the voting procedure
-of Tezos. However, such procedure needs to go through several voting periods
+of Mavryk. However, such procedure needs to go through several voting periods
 that involve several quorums of bakers, and we would rather test our migration
-in a less involved way. Besides the amendments driven by the protocol, Tezos
+in a less involved way. Besides the amendments driven by the protocol, Mavryk
 also supports *user-activated* upgrades, which are triggered by the shell. The
 user-activated upgrades allow the user to specify the level at which the next
 protocol will be adopted, which can be used to perform emergency bug fixes, but
@@ -370,7 +370,7 @@ The ``./mavkit-node snapshot import`` command accepts an option
 ``--block <block_hash>`` that instructs the command to check that the hash of
 the last block in the imported chain is ``<block_hash>``. This mechanism helps
 the developer to check that the imported chain contains blocks that are part of
-the current main chain of the Tezos network. The snapshots websites normally provide
+the current main chain of the Mavryk network. The snapshots websites normally provide
 the hash of the last block in a given snapshot file. Although we will not be
 using the ``--block`` option in this tutorial, the developer is encouraged to
 check that this prefix corresponds to the hash of a real block in Mainnet.
@@ -490,12 +490,12 @@ Instead of command ``mavkit-activate-alpha``, the sandboxed client script
 ``src/bin_client/mavkit-init-sandboxed-client.sh`` now accepts a command
 ``mavkit-activate-XXX-<short_hash>`` that activates the predecessor protocol with
 version number ``XXX`` and short hash ``<short_hash>``. In our example, the
-predecessor protocol is ``011`` with short hash ``PtHangz2``. (Check the folder
+predecessor protocol is ``001`` with short hash ``PtAtLas``. (Check the folder
 ``src`` for the version number and short hash of the predecessor protocol for
-migrations to versions different from ``012``.) We can activate this protocol by
+migrations to versions different from ``002``.) We can activate this protocol by
 invoking::
 
-  $ mavkit-activate-011-PtHangz2
+  $ mavkit-activate-001-PtAtLas
 
 Activation of the predecessor protocol produces one block and increases the
 level by one. This unavoidable increase of the level has to be taken into
@@ -613,7 +613,7 @@ Check out latest code::
 Tweak migration by checking that
 ``src/proto_alpha/lib_protocol/init_storage.ml`` includes the following lines::
 
-  | Hangzhou_011 ->
+  | Atlas_001 ->
       Logging.log_notice "\nSTITCHING!\n" ;
 
 Commit the feature::
@@ -640,7 +640,7 @@ Run sandboxed node and client::
 
 Activate predecessor of the Alpha protocol and move chain one level forward::
 
-  $ mavkit-activate-011-PtHangz2
+  $ mavkit-activate-001-PtAtLas
 
 Bake two more blocks::
 
@@ -659,7 +659,7 @@ To test again, restart the sandboxed node and client::
 
 Activate predecessor of the Alpha protocol::
 
-  $ mavkit-activate-011-PtHangz2
+  $ mavkit-activate-001-PtAtLas
 
 Bake two blocks::
 
@@ -681,7 +681,7 @@ Tweak migration by checking that
 ``src/proto_alpha/lib_protocol/init_storage.ml`` includes the
 following lines::
 
-  | Hangzhou_011 ->
+  | Atlas_001 ->
       Logging.log_notice "\nSTITCHING!\n" ;
 
 Commit the feature::
@@ -761,7 +761,7 @@ Migrating a context mostly concerns editing existing data structures.  For this
 reason it is important to inspect the resulting context with the RPCs
 ``context/raw/json`` and ``context/raw/bytes``. The former RPC displays the json
 value relative to a key of the context, using its json format. This is possible
-thanks to the storage functors of Tezos, which are used to register every piece
+thanks to the storage functors of Mavryk, which are used to register every piece
 of storage in a node and are aware of the json structure of the data. The latter
 RPC is more low level and simply returns the bytes corresponding to a key. Both
 RPCs support the option ``depth`` to control how much of the subtree of the key

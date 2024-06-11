@@ -19,7 +19,7 @@ default one; all binaries are built with dependencies from this subset
 only.
 
 For this reason, adding or updating a dependency requires to work both
-on `the main codebase <https://gitlab.com/tezos/tezos>`__ and on `the
+on `the main codebase <https://gitlab.com/mavryk-network/mavryk-protocol>`__ and on `the
 dedicated opam package
 repository <https://gitlab.com/tezos/opam-repository>`__. Moreover, work
 between those two components must happen in a specific order.
@@ -127,7 +127,7 @@ review.
 That’s it. You now have two MRs:
 
 - The *opam-repository MR* from ``tezos/opam-repository:<your-branch>`` onto ``tezos/opam-repository:master`` updates the environment in which the Mavkit libraries and binaries are built.
-- The *Mavkit MR* from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` uses this new environment.
+- The *Mavkit MR* from ``<your-organisation>/tezos:<your-branch>`` onto ``mavryk-network/mavryk-protocol:master`` uses this new environment.
 
 Merging the MR
 --------------
@@ -162,7 +162,7 @@ TL;DR
 
 As a developer:
 
-- You have an Mavkit MR from ``<your-organisation>/tezos:<your-branch>`` onto ``tezos/tezos:master`` introducing a dependency to ``foo``.
+- You have an Mavkit MR from ``<your-organisation>/tezos:<your-branch>`` onto ``mavryk-network/mavryk-protocol:master`` introducing a dependency to ``foo``.
 - You amend the :src:`manifest/main.ml` file to declare the dependency.
 - You propagate the changes to ``opam`` and ``dune`` files by running ``make -C manifest``
 - You update the ``full_opam_repository_tag`` to the HEAD commit hash from the public default opam repository.

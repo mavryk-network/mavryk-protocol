@@ -28,7 +28,7 @@
 Adaptive Issuance and Staking
 =============================
 
-This document describes Adaptive Issuance and Staking, two new experimental features that can only be activated on testnets, (referred hereafter as the Adaptive-Issuance/Staking proposal), which together constitute a major evolution of Tezos’ :doc:`Proof-of-Stake mechanism <proof_of_stake>`.
+This document describes Adaptive Issuance and Staking, two new experimental features that can only be activated on testnets, (referred hereafter as the Adaptive-Issuance/Staking proposal), which together constitute a major evolution of Mavryk’ :doc:`Proof-of-Stake mechanism <proof_of_stake>`.
 
 .. note::
 
@@ -39,9 +39,9 @@ This document describes Adaptive Issuance and Staking, two new experimental feat
 Adaptive Issuance
 =================
 
-Adaptive Issuance is a novel mechanism regulating tez issuance in Tezos.
+Adaptive Issuance is a novel mechanism regulating tez issuance in Mavryk.
 
-The :doc:`Tezos economic protocol <./protocol>` issues new
+The :doc:`Mavryk economic protocol <./protocol>` issues new
 tez via:
 
 -  Participation rewards: incentives given to delegates for
@@ -55,7 +55,7 @@ Participation rewards and the LB subsidy are regularly issued by the
 protocol, whereas the value and recipients of invoices are defined
 discretionarily by the developers of a protocol proposal.
 The values for participation rewards and
-the LB subsidy, if any, are currently defined by the Tezos protocol using fixed
+the LB subsidy, if any, are currently defined by the Mavryk protocol using fixed
 constants.
 
 The Adaptive-Issuance/Staking proposal
@@ -163,7 +163,7 @@ In this formula:
    :math:`\IL{\left[ \tc - \tr, \tc + \tr \right]}`.
 
 -  :math:`\IL{\DTF = \frac{16384 \tmult 15}{86400} = 2.8\overline{444}}`,
-   denotes the minimal duration (in days) of a Tezos cycle, assuming all
+   denotes the minimal duration (in days) of a Mavryk cycle, assuming all
    16384 blocks in the cycle are produced at the minimal allowed time –
    that is, every 15 seconds.
 
@@ -233,7 +233,7 @@ The total sum of all weights is :math:`\tw` = 21762. The total issuance
 per block, :math:`\IL{\isb{c}}`, is distributed amongst the different
 rewards in proportion to their weight.
 
-**Consensus rewards.** Since the adoption of Tenderbake, Tezos protocols
+**Consensus rewards.** Since the adoption of Tenderbake, Mavryk protocols
 before the Adaptive-Issuance/Staking proposal have rewarded delegates :doc:`for their participation in
 consensus <consensus>`
 with the following rewards per block:
@@ -292,7 +292,7 @@ other words, the budget for the LB subsidy is always allocated,
 regardless of whether it is issued or not.
 
 The Adaptive-Issuance/Staking proposal implements a new `RPC
-endpoint <https://tezos.gitlab.io/alpha/rpc.html#get-block-id-context-issuance-expected-issuance>`__,
+endpoint <https://protocol.mavryk.org/alpha/rpc.html#get-block-id-context-issuance-expected-issuance>`__,
 ``/issuance/expected_issuance``, which reports the precomputed values of
 all participation rewards and the LB subsidy, for the cycle
 corresponding to the queried block level, and the next 4 cycles.
@@ -302,7 +302,7 @@ corresponding to the queried block level, and the next 4 cycles.
 New Staking mechanism
 =====================
 
-Staking is an evolution of the existing Tezos :doc:`Liquid Proof-of-Stake
+Staking is an evolution of the existing Mavryk :doc:`Liquid Proof-of-Stake
 mechanism <proof_of_stake>`. It
 introduces a new role for network participants, called **staker**,
 complementary to the existing :ref:`delegate <def_delegate_atlas>`
@@ -491,7 +491,7 @@ Feature activation vs protocol activation
 =========================================
 
 Should the Adaptive-Issuance/Staking proposal be accepted by the community, and
-once the protocol becomes active on Tezos Mainnet, most of the features
+once the protocol becomes active on Mavryk Mainnet, most of the features
 described in this document will **not** be enabled by default, only
 latent possibilities in the protocol, waiting for a separate activation.
 
@@ -512,9 +512,7 @@ activation:
 -  The new interface for stake manipulation based on
    *pseudo-operations*. Note that this entails the deprecation of the
    ``set/unset deposits limit`` interface and also the end of automatic
-   deposit freezing. On protocol activation, each delegate’s stake is
-   derived from the frozen deposits at the end of the last cycle of
-   Nairobi.
+   deposit freezing.
 -  The changes in slashing penalties (double-baking penalties are set to
    10% of the staked funds) and denunciation rewards (they amount to one
    seventh of slashed funds).

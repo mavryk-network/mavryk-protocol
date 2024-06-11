@@ -1,13 +1,6 @@
 protocols:
   ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK: Alpha
-  PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq: Edo
-  PsDELPH1Kxsxt8f9eWbxQeRxkjfbxoqM52jvs5Y5fBxWWh4ifpo: Delphi
-  PsCARTHAGazKbHtnKfLzQg3kms52kSRpgnDY982a9oYsSXRLQEb: Carthage
-  PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS: Babylon
-  Pt24m4xiPbLDhVgVfABUjirbmda3yohdN82Sp9FeuAXJ4eV9otd: Athens
-  PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP: Alpha III
-  PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt: Alpha II
-  PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY: Alpha I
+  PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp: Atlas
   Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P: Bootstrap
   PrihK96nBAFSxVL1GLJTVhu9YnzkMFiBeuJRPA8NwuZVZCE1L6i: Genesis
 
@@ -35,8 +28,8 @@ categories:
 instructions:
   ADD:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Add two numerical values
     documentation: |
         Adds numerical values.
@@ -64,8 +57,8 @@ instructions:
         hide_final_storage: True
   ADDRESS:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the address of a contract
     documentation: |
       This instruction consumes a contract value and produces the address of that contract.
@@ -80,8 +73,8 @@ instructions:
 
   LOOP_LEFT:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Loop with accumulator
     documentation: |
         The ``LOOP_LEFT body`` instruction executes ``body`` as long
@@ -102,8 +95,8 @@ instructions:
         final_storage: '{ "c" ; "b" ; "a" }'
   CDR:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Access the right part of a pair
     documentation: |
       ``CDR`` destructs the pair on top of the stack and leaves only
@@ -120,8 +113,8 @@ instructions:
         final_storage: '9'
   CAR:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Access the left part of a pair
     documentation: |
       ``CAR`` destructs the pair on top of the stack and leaves only
@@ -138,8 +131,8 @@ instructions:
         final_storage: '15'
   CHAIN_ID:
     category: blockchain
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the chain identifier
     documentation: |
       This instruction pushes on the stack the identifier of the chain
@@ -172,28 +165,28 @@ instructions:
 
   PAIR:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: "Build a pair from the stack's top two elements"
   PAIRN:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: "Fold ``n`` values on the top of the stack into a right comb"
     documentation: |
       Fold ``n`` values on the top of the stack into a right comb. ``PAIR 0`` and ``PAIR 1`` are rejected. ``PAIR 2`` is equivalent to ``PAIR``.
   UNPAIR:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: "Split a pair into its components"
   UNPAIRN:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: "Unfold ``n`` values from a right comb on the top of the stack"
     documentation: |
       Unfold ``n`` values from a right comb on the top of the stack. ``UNPAIR 0`` and ``UNPAIR 1`` are rejected. ``UNPAIR 2`` is equivalent to ``UNPAIR``.
   GETN:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Access an element or a sub comb in a right comb
     documentation: |
       The nodes of a right comb of size ``n`` are canonically numbered as follows:
@@ -224,7 +217,7 @@ instructions:
       element is accessed by ``GET (2n)``.
   UPDATEN:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Update an element or a sub comb in a right comb
     documentation: |
       Update an element or a sub comb in a right comb. The topmost stack element is
@@ -233,8 +226,8 @@ instructions:
       instruction.
   DIP:
     category: stack
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Run code protecting the top of the stack
     documentation: |
       ``DIP instr`` runs ``instr`` protecting the top
@@ -251,8 +244,8 @@ instructions:
         final_storage: '(Pair 15 24)'
   DIPN:
     category: stack
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Run code protecting the ``n`` topmost elements of the stack
     documentation: |
       ``DIP n instr`` runs ``instr`` protecting the ``n`` topmost
@@ -270,12 +263,12 @@ instructions:
         final_storage: '6'
   DUP:
     category: stack
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Duplicate the top of the stack
   DUPN:
     category: stack
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Duplicate the ``n``\ th element of the stack
     documentation: |
       ``DUP n`` consumes a stack that contains at least ``n``
@@ -292,8 +285,8 @@ instructions:
 
   DROP:
     category: stack
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Drop the top ``n`` elements of the stack
     documentation: |
       ``DROP n`` drops the `n` topmost elements of the stack. In
@@ -302,16 +295,16 @@ instructions:
 
   FAILWITH:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Explicitly abort the current program
     documentation: |
       This instruction aborts the current program exposing the top element of the stack, which must be of a packable type, in its error message. It makes the output useless since all subsequent instructions will simply ignore their usual semantics to propagate the failure up to the main result. Its type is thus completely generic.
 
   IF:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Conditional branching
     documentation: |
       The ``IF bt bf`` instruction consumes a stack whose top element
@@ -325,8 +318,8 @@ instructions:
 
   IF_CONS:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Inspect a list
     documentation: |
       The ``IF_CONS instr1 instr2`` instruction consumes a stack whose top
@@ -342,8 +335,8 @@ instructions:
 
   IF_NONE:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Inspect an optional value
     documentation: |
       The ``IF_NONE instr1 instr2`` instruction consumes a stack whose top
@@ -359,8 +352,8 @@ instructions:
 
   IF_LEFT:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Inspect a value of a union
     documentation: |
       The ``IF_LEFT instr1 instr2`` instruction consumes a stack whose top
@@ -375,39 +368,39 @@ instructions:
 
   LEFT:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Wrap a value in a union (left case)
   NOOP:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Empty instruction sequence
   PUSH:
     category: stack
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push a constant value of a given type onto the stack
   RIGHT:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Wrap a value in a union (right case)
   SEQ:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Instruction sequence
   SWAP:
     category: stack
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Swap the top two elements of the stack
     documentation: "The ``SWAP`` instruction swaps  the top two elements of the stack."
   PACK:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Serialize data
     documentation: |
       Serializes any value of packable type to its optimized binary representation, of type ``bytes``.
@@ -426,8 +419,8 @@ instructions:
         final_storage: 'Unit'
   UNPACK:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Deserialize data, if valid
     documentation: |
       Deserialize a value of type ``bytes`` into the corresponding
@@ -450,8 +443,8 @@ instructions:
         final_storage: 'Unit'
   BLAKE2B:
     category: crypto
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Compute a Blake2B cryptographic hash
     documentation: |
       Compute the cryptographic hash of the top of the stack using
@@ -467,34 +460,34 @@ instructions:
       final_storage: '0xc5b7e76c15ce98128a840b54c38f462125766d2ed3a6bff0e76f7f3eb415df04'
   SHA256:
     category: crypto
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Compute a SHA-256 cryptographic hash
     documentation: |
       Compute the cryptographic hash of the top of the stack using the SHA-256 cryptographic hash function.
   SHA512:
     category: crypto
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Compute a SHA-512 cryptographic hash
     documentation: |
       Compute the cryptographic hash of the top of the stack using the SHA-512 cryptographic hash function.
   KECCAK:
     category: crypto
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Compute a Keccak-256 cryptographic hash
     documentation: |
       Compute the cryptographic hash of the top of the stack using the Keccak-256 cryptographic hash function.
   SHA3:
     category: crypto
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Compute a SHA3-256 cryptographic hash
     documentation: |
       Compute the cryptographic hash of the top of the stack using the SHA3-256 cryptographic hash function.
   ABS:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Obtain the absolute value of an integer
     documentation: |
       ``ABS`` consumes an integer and pushes its absolute value, with type ``nat``, on the stack.
@@ -516,8 +509,8 @@ instructions:
         hide_final_storage: True
   AMOUNT:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the amount of the current transaction
     documentation: |
       Push the amount of the current transaction, in ``mumav``.
@@ -532,8 +525,8 @@ instructions:
         hide_final_storage: True
   AND:
     category: logic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Boolean and bitwise AND
     documentation: |
       The instruction ``AND`` is defined on boolean, natural number and bytes operands.
@@ -572,8 +565,8 @@ instructions:
       hide_final_storage: True
   BALANCE:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the current amount of mumav of the executing contract
     documentation: |
       Push the current amount of mumav held by the executing contract,
@@ -589,8 +582,8 @@ instructions:
         hide_final_storage: True
   CHECK_SIGNATURE:
     category: crypto
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: 'Verify ``signature`` of ``bytes`` by ``key``'
     documentation: |
       Verifies that a byte sequence has been signed with a given key.
@@ -612,8 +605,8 @@ instructions:
       final_storage: "(Pair \"edsigu3QszDjUpeqYqbvhyRxMpVFamEnvm9FYnt7YiiNt9nmjYfh8ZTbsybZ5WnBkhA7zfHsRVyuTnRsGLR6fNHt1Up1FxgyRtF\"\n        \"hello\")"
   COMPARE:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: 'Compare two values'
     documentation: |
       Comparison only works on a class of types that we call
@@ -657,8 +650,8 @@ instructions:
       final_storage: 'Unit'
   CONCAT:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Concatenate a string, byte sequence, string list or byte sequence list
     documentation: |
       The ``CONCAT`` operator exists in four variants:
@@ -696,12 +689,12 @@ instructions:
 
   CONTRACT:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: 'Cast an address to a typed contract'
     documentation: |
       Casts from an ``address`` to a typed ``contract ty``.  If and
-      only if the address is a valid Tezos contract address with the
+      only if the address is a valid Mavryk contract address with the
       type ``ty``, then the result ``Some contract`` is pushed.  If
       the address belongs to an implicit contract, then the type
       parameter ``ty`` must be ``unit``.If any of these conditions are
@@ -709,7 +702,7 @@ instructions:
 
       The ``CONTRACT ty`` instruction has a variant ``CONTRACT %entrypoint ty``.
       It allows the specification of a specific
-      `entrypoint <http://tezos.gitlab.io/whitedoc/michelson.html#entrypoints>`_.
+      `entrypoint <http://protocol.mavryk.org/whitedoc/michelson.html#entrypoints>`_.
       In addition to the requirements above, this variant is only
       well-typed if the address is a contract with an entrypoint named
       ``%entrypoint``. This works as follows:
@@ -772,8 +765,8 @@ instructions:
 
   CONS:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Prepend an element to a list
     documentation: |
       Prepends the element at the top of the stack to the list that is
@@ -789,8 +782,8 @@ instructions:
 
   CREATE_CONTRACT:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push a contract creation operation
     documentation: |
       Push a contract creation operation (an origination) based on a
@@ -846,8 +839,8 @@ instructions:
         
   CREATE_ACCOUNT:
     category: deprecated
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push an account creation operation
     documentation: |
       Takes as operands the manager, optional delegate, the delegatable flag
@@ -860,8 +853,8 @@ instructions:
 
   EDIV:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Euclidean division
     documentation: |
       Consumes two numbers ``z1`` and ``z2`` (of either ``int`` or
@@ -885,8 +878,8 @@ instructions:
 
   EMPTY_MAP:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Build a new, empty ``map`` from ``kty`` to ``vty``
     documentation: |
       Build a new, empty map from keys of a given type ``kty`` to values of
@@ -896,8 +889,8 @@ instructions:
 
   EMPTY_BIG_MAP:
     category: data_structure
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Build a new, empty ``big_map`` from ``kty`` to ``vty``
     documentation: |
       Build a new, empty map from keys of a given type ``kty`` to values of
@@ -908,8 +901,8 @@ instructions:
 
   EMPTY_SET:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Build a new, empty set for elements of type ``cty``
     documentation: |
       Build a new, empty set for elements of a given
@@ -919,8 +912,8 @@ instructions:
 
   EQ:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack equals zero
     documentation: |
       The ``EQ`` instruction consumes an integer and leaves ``True``
@@ -932,8 +925,8 @@ instructions:
 
   NEQ:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack is not equal to zero
     documentation: |
       The ``NEQ`` instruction consumes an integer and leaves ``True``
@@ -945,8 +938,8 @@ instructions:
 
   LT:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack is less than zero
     documentation: |
       The ``LT`` instruction consumes an integer and leaves ``True``
@@ -958,8 +951,8 @@ instructions:
 
   GT:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack is greater than zero
     documentation: |
       The ``GT`` instruction consumes an integer and leaves ``True``
@@ -971,8 +964,8 @@ instructions:
 
   LE:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack is less than or equal to zero
     documentation: |
       The ``LE`` instruction consumes an integer and leaves ``True``
@@ -984,8 +977,8 @@ instructions:
 
   GE:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check that the top of the stack is greater than or equal to zero
     documentation: |
       The ``GE`` instruction consumes an integer and leaves ``True``
@@ -998,8 +991,8 @@ instructions:
 
   EXEC:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Execute a function from the stack
     documentation: |
       The ``EXEC`` instruction consumes a value ``x`` of type ``a``
@@ -1009,8 +1002,8 @@ instructions:
 
   APPLY:
     category: control_structure
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Partially apply a tuplified function from the stack
     documentation: |
       Partially apply a tuplified function from the stack. That is,
@@ -1028,8 +1021,8 @@ instructions:
 
   GET:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Access an element in a ``map`` or ``big_map``
     documentation: |
       The instruction ``GET`` consumes a key and a ``map`` or ``big_map`` and returns an
@@ -1038,8 +1031,8 @@ instructions:
 
   MEM:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Check for the presence of a binding for a key in a ``map``, ``set`` or ``big_map``
     documentation: |
       The instruction ``MEM`` consumes a value and a data structure of
@@ -1055,8 +1048,8 @@ instructions:
 
   UPDATE:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Add or remove an element in a ``map``, ``big_map`` or ``set``
     documentation: |
       For values of type ``map`` and ``big_map``, the instruction ``UPDATE`` consumes
@@ -1080,7 +1073,7 @@ instructions:
 
   GET_AND_UPDATE:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: A combination of the ``GET`` and ``UPDATE`` instructions
     documentation: |
       This instruction is similar to ``UPDATE`` but it also returns the
@@ -1089,8 +1082,8 @@ instructions:
 
   MAP:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Apply ``instr`` to each element of a ``list`` or ``map``.
     documentation: |
 
@@ -1110,8 +1103,8 @@ instructions:
 
   TRANSFER_TOKENS:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push a transaction operation
     documentation: |
       The ``TRANSFER_TOKENS`` instruction consumes a value ``d`` of type ``ty``,
@@ -1125,8 +1118,8 @@ instructions:
 
   HASH_KEY:
     category: crypto
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Compute the Base58Check of a public key
     documentation: |
       The ``HASH_KEY`` instruction computes the
@@ -1136,18 +1129,18 @@ instructions:
 
   IMPLICIT_ACCOUNT:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Create an implicit account
     documentation: |
       Push on the stack the contract value corresponding to the
-      `implicit account <http://tezos.gitlab.io/user/glossary.html#implicit-account>`_
+      `implicit account <http://protocol.mavryk.org/user/glossary.html#implicit-account>`_
       of a public key hash. These contracts always have type ``unit``.
 
   ITER:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Iterate over a ``set``, ``list`` or ``map``
     documentation: |
 
@@ -1166,8 +1159,8 @@ instructions:
 
   LAMBDA:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push a lambda onto the stack
     documentation: |
       Push a lambda with parameter type ``ty1``, return type ``ty2`` and body ``instr``
@@ -1175,8 +1168,8 @@ instructions:
 
   LOOP:
     category: control_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: A generic loop
     documentation: |
 
@@ -1189,8 +1182,8 @@ instructions:
 
   LSL:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Logically left shift of a natural number and a byte sequence
     documentation: |
 
@@ -1221,8 +1214,8 @@ instructions:
 
   LSR:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Logically right shift of a natural number and a byte sequence
     documentation: |
       For natural numbers, The ``LSR`` instruction consumes two natural
@@ -1250,8 +1243,8 @@ instructions:
 
   MUL:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Multiply two numerical values
     documentation: |
       The ``MUL`` instruction consumes two numbers (``int`` or
@@ -1272,8 +1265,8 @@ instructions:
 
   NOT:
     category: logic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Boolean negation and bitwise complement
     documentation: |
       The ``NOT`` instruction is defined for ``bool``,
@@ -1293,8 +1286,8 @@ instructions:
 
   NEG:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Negate a numerical value
     documentation: |
 
@@ -1306,8 +1299,8 @@ instructions:
 
   NIL:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push an empty list
     documentation: |
 
@@ -1316,8 +1309,8 @@ instructions:
 
   NONE:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the absent optional value
     documentation: |
 
@@ -1328,8 +1321,8 @@ instructions:
 
   SOME:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Wrap an existing optional value
     documentation: |
 
@@ -1339,8 +1332,8 @@ instructions:
 
   SENDER:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the contract that initiated the current internal transaction
     documentation: |
 
@@ -1371,8 +1364,8 @@ instructions:
 
   SOURCE:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the contract that initiated the current transaction
     documentation: |
       Push the contract who signed the transaction initiating this
@@ -1386,8 +1379,8 @@ instructions:
 
   SELF:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the current contract
     documentation: |
       The ``SELF`` contract pushes the current contract, of type
@@ -1403,7 +1396,7 @@ instructions:
       the ``SELF`` instruction has a variant ``SELF %entrypoint``,
       that is only well-typed if the current contract has an entrypoint named ``%entrypoint``.
       It returns the ``contract ty1`` corresponding to a specific
-      `entrypoint <http://tezos.gitlab.io/whitedoc/michelson.html#entrypoints>`_
+      `entrypoint <http://protocol.mavryk.org/whitedoc/michelson.html#entrypoints>`_
       of the current contract, where ``ty1`` is the type of the ``%entrypoint``.
       Unlike for ``CONTRACT``, ``SELF %default`` is allowed and is
       strictly equal to ``SELF``.
@@ -1458,7 +1451,7 @@ instructions:
 
   SELF_ADDRESS:
     category: blockchain
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Push the address of the current contract
     documentation: |
         Push the address of the current contract. This is
@@ -1471,8 +1464,8 @@ instructions:
 
   NOW:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push block timestamp
     documentation: |
       Push the ``timestamp`` of the block whose validation triggered this
@@ -1481,12 +1474,12 @@ instructions:
 
   LEVEL:
     category: blockchain
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Push the current block level
 
   VOTING_POWER:
     category: blockchain
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Return the voting power of a given contract
     documentation: |
       Return the voting power of a given contract. This voting power
@@ -1495,7 +1488,7 @@ instructions:
 
   TOTAL_VOTING_POWER:
     category: blockchain
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Return the total voting power of all contracts
     documentation: |
       Return the total voting power of all contracts. The total
@@ -1505,8 +1498,8 @@ instructions:
 
   OR:
     category: logic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Boolean and bitwise OR
     documentation: |
       The instruction ``OR`` is defined on boolean, natural number and bytes operands.
@@ -1519,8 +1512,8 @@ instructions:
 
   SET_DELEGATE:
     category: blockchain
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push a delegation operation
     documentation: |
       The ``SET_DELEGATE`` is used to add, update or remove a
@@ -1540,8 +1533,8 @@ instructions:
 
   SIZE:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Obtain size of a ``string``, ``list``, ``set``, ``map`` or byte sequence ``bytes``
 
     documentation: |
@@ -1606,8 +1599,8 @@ instructions:
 
   STEPS_TO_QUOTA:
     category: deprecated
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the remaining steps before the contract execution must terminate
 
     documentation: |
@@ -1617,8 +1610,8 @@ instructions:
 
   SUB:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Subtract two numerical values
     documentation: |
 
@@ -1639,19 +1632,19 @@ instructions:
 
   UNIT:
     category: data_structure
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Push the unit value onto the stack
 
   NEVER:
     category: data_structure
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Close an absurd branch
 
   XOR:
     category: logic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Boolean and bitwise eXclusive OR
     documentation: |
       The instruction ``XOR`` is defined on boolean, natural number and bytes operands.
@@ -1664,8 +1657,8 @@ instructions:
 
   DIG:
     category: stack
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Retrieve the ``n``\ th element of the stack
     documentation: |
       ``DIG n`` consumes a stack that contains at least ``n``
@@ -1681,8 +1674,8 @@ instructions:
 
   DUG:
     category: stack
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Insert the top element at depth ``n``
     documentation: |
       ``DUG n`` consumes a stack that contains at least ``n``
@@ -1698,8 +1691,8 @@ instructions:
 
   INT:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Convert a natural number, a BLS12-381 field element or bytes to an integer
     documentation: |
       For natural numbers, ``INT`` is the identity cast from ``nat``
@@ -1719,8 +1712,8 @@ instructions:
 
   ISNAT:
     category: arithmetic
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation_short: Convert a non-negative integer to a natural number
     documentation: |
       The ``ISNAT`` instruction consumes an integer ``z`` and returns
@@ -1741,7 +1734,7 @@ instructions:
   
   SAPLING_VERIFY_UPDATE:
     category: crypto
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Verify and apply a transaction on a Sapling state
     documentation: |
       ``SAPLING_VERIFY_UPDATE`` takes a sapling transaction and a sapling state and returns an
@@ -1785,23 +1778,23 @@ instructions:
       Lastly the instruction pushes the updated state and balance as an ``option``
       on the stack.
 
-      Please see the `Sapling integration <https://tezos.gitlab.io/008/sapling.html>`_
+      Please see the `Sapling integration <https://protocol.mavryk.org/008/sapling.html>`_
       page for a more comprehensive description of the Sapling protocol.
 
   SAPLING_EMPTY_STATE:
     category: crypto
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Pushes an empty Sapling state on the stack
     documentation: |
       ``SAPLING_EMPTY_STATE ms`` pushes the empty Sapling state (i.e. no one can spend tokens from it)
       with memo size ``ms``.
 
-      Please see the `Sapling integration <https://tezos.gitlab.io/008/sapling.html>`_
+      Please see the `Sapling integration <https://protocol.mavryk.org/008/sapling.html>`_
       page for a more comprehensive description of the Sapling protocol.
 
   TICKET:
     category: tickets
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Create a ticket
     documentation: |
       Creates a value ``Some t`` where ``t`` is a ticket with the given content and amount.
@@ -1810,12 +1803,12 @@ instructions:
 
   READ_TICKET:
     category: tickets
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Retrieve the information stored in a ticket. Also return the ticket.
 
   SPLIT_TICKET:
     category: tickets
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Split a ticket in two
     documentation: |
      Delete the given ticket and create two tickets with the
@@ -1826,7 +1819,7 @@ instructions:
 
   JOIN_TICKETS:
     category: tickets
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Join two tickets into one
     documentation: |
       The inverse of ``SPLIT_TICKET``. Delete the given tickets and create a ticket with an amount equal to the
@@ -1836,7 +1829,7 @@ instructions:
 
   PAIRING_CHECK:
     category: crypto
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     documentation_short: Check a BLS12-381 pairing
     documentation: |
       Verify that the product of pairings of the given list of points is equal to 1
@@ -1848,8 +1841,8 @@ instructions:
 types:
   string:
     documentation_short: "A string of characters"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     pushable: true
     packable: true
@@ -1868,8 +1861,8 @@ types:
       - "\"ABC\\n123\""
   nat:
     documentation_short: "An arbitrary-precision natural number"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
       Naturals are arbitrary-precision, meaning that the only size
       limit is gas.
@@ -1886,8 +1879,8 @@ types:
       - 99999
   int:
     documentation_short: "An arbitrary-precision integer"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
       Integers are arbitrary-precision, meaning that the only size
       limit is gas.
@@ -1906,8 +1899,8 @@ types:
       - 99999
   bytes:
     documentation_short: "A sequence of bytes"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
       Bytes are used for serializing data, in order to check
       signatures and compute hashes on them. They can also be used to
@@ -1925,8 +1918,8 @@ types:
       - "0xABCDEF42"
   bool:
     documentation_short: "A boolean"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     pushable: true
     packable: true
@@ -1942,8 +1935,8 @@ types:
       - "False"
   mumav:
     documentation_short: "A specific type for manipulating tokens"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
       Mumav (micro-Tez) are internally represented by 64-bit signed
       integers. These are restricted to prevent creating a negative amount
@@ -1964,8 +1957,8 @@ types:
       - 99999
   key_hash:
     documentation_short: "A hash of a public cryptographic key"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     pushable: true
     packable: true
@@ -1979,8 +1972,8 @@ types:
 
   timestamp:
     documentation_short: "A real-world date."
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
       Timestamps can be obtained by the ``NOW`` instruction, or retrieved from
       script parameters or globals.
@@ -2003,8 +1996,8 @@ types:
 
   key:
     documentation_short: "A public cryptographic key"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     pushable: true
     packable: true
@@ -2018,8 +2011,8 @@ types:
 
   unit:
     documentation_short: The type whose only value is ``Unit``
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     passable: true
     storable: true
@@ -2036,7 +2029,7 @@ types:
 
   never:
     documentation_short: The empty type
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     comparable: true
     passable: true
     storable: true
@@ -2070,8 +2063,8 @@ types:
 
   signature:
     documentation_short: "A cryptographic signature"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     passable: true
     storable: true
@@ -2084,8 +2077,8 @@ types:
       - '"spsig1PPUFZucuAQybs5wsqsNQ68QNgFaBnVKMFaoZZfi1BtNnuCAWnmL9wVy5HfHkR6AeodjVGxpBVVSYcJKyMURn6K1yknYLm"'
   option:
     documentation_short: An optional value
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: true
     passable: true
     storable: true
@@ -2101,8 +2094,8 @@ types:
 
   list:
     documentation_short: "A single, immutable, homogeneous linked list"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: false
     pushable: true
     packable: true
@@ -2122,8 +2115,8 @@ types:
       - ["{ Some 10 ; None }", 'list (option int)']
   set:
     documentation_short: "An immutable set of comparable values of type ``cty``"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: false
     passable: true
     storable: true
@@ -2141,8 +2134,8 @@ types:
 
   contract:
     documentation_short: "Address of a contract, where `type` is the contract's parameter type"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     insertions: [ 'contract nat' ]
     comparable: false
     literal: false
@@ -2156,7 +2149,7 @@ types:
       A value of type ``contract t`` is guaranteed to be a valid,
       existing account whose parameter type is ``t``.  This can be
       opposed to the ``address`` type, that merely gives the guarantee
-      that the value has the form of a Tezos address.
+      that the value has the form of a Mavryk address.
 
       Values of the ``contract`` type cannot be
       stored. There are not literal values of type contract.
@@ -2167,8 +2160,8 @@ types:
 
   address:
     documentation_short: "Address of an untyped contract"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2178,11 +2171,11 @@ types:
     duplicable: true
     documentation: |
       The ``address`` type merely gives the guarantee that the value
-      has the form of a Tezos address, as opposed to ``contract``
+      has the form of a Mavryk address, as opposed to ``contract``
       that guarantees that the value is indeed a valid, existing
       account.
 
-      A valid Tezos address is a string prefixed by either ``mv1``,
+      A valid Mavryk address is a string prefixed by either ``mv1``,
       ``mv2``, ``mv3`` or ``KT1`` and followed by a Base58 encoded
       hash and terminated by a 4-byte checksum.
 
@@ -2209,8 +2202,8 @@ types:
 
   operation:
     documentation_short: "An internal operation emitted by a contract"
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: false
     pushable: false
     storable: false
@@ -2225,8 +2218,8 @@ types:
 
   pair:
     documentation_short: A pair or tuple of values
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2258,8 +2251,8 @@ types:
 
   or:
     documentation_short: A union of two types
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2277,8 +2270,8 @@ types:
 
   lambda:
     documentation_short: A lambda with given parameter and return types
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2292,8 +2285,8 @@ types:
 
   map:
     documentation_short: An immutable map from ``kty`` to ``vty``
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2311,8 +2304,8 @@ types:
 
   big_map:
     documentation_short: A lazily deserialized map from ``kty`` to ``vty``
-    proposed-in: ['PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY']
-    since: PtCJ7pwoxe8JasnHY8YonnLYjcVHmhiARPJvqcC6VfHT5s8k8sY
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     comparable: false
     packable: false
     passable: true
@@ -2346,8 +2339,8 @@ types:
 
   chain_id:
     documentation_short: A chain identifier
-    proposed-in: ['PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS']
-    since: PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
+    since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     passable: true
     storable: true
     big_map_value: true
@@ -2370,7 +2363,7 @@ types:
 
   sapling_transaction_deprecated:
     documentation_short: A Sapling transaction
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     passable: true
     storable: true
     big_map_value: true
@@ -2382,14 +2375,14 @@ types:
       ``sapling_transaction_deprecated ms`` is the type of Sapling
       transactions of memo-size ``ms``.
 
-      Please see the `Sapling integration <https://tezos.gitlab.io/008/sapling.html>`_
+      Please see the `Sapling integration <https://protocol.mavryk.org/008/sapling.html>`_
       page for a more comprehensive description of the Sapling protocol.
     insertions:
       - 'sapling_transaction_deprecated 8'
 
   sapling_state:
     documentation_short: A Sapling state
-    proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+    proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     passable: true
     storable: true
     big_map_value: false
@@ -2401,14 +2394,14 @@ types:
       ``sapling_state ms`` is the type of Sapling
       states of memo-size ``ms``.
 
-      Please see the `Sapling integration <https://tezos.gitlab.io/008/sapling.html>`_
+      Please see the `Sapling integration <https://protocol.mavryk.org/008/sapling.html>`_
       page for a more comprehensive description of the Sapling protocol.
     examples:
       - ['{}', 'sapling_state 8']
 
   ticket:
      documentation_short: A ticket used to authenticate information of type ``cty``
-     proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+     proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
      passable: true
      storable: true
      big_map_value: true
@@ -2417,7 +2410,7 @@ types:
      comparable: false
      duplicable: false
      documentation: |
-      Tickets are a way for smart contracts to authenticate data with respect to a Tezos address. This authentication can
+      Tickets are a way for smart contracts to authenticate data with respect to a Mavryk address. This authentication can
       then be used to build composable permission systems.
 
       A contract can create a ticket from a comparable value and an amount. The ticket, when
@@ -2439,7 +2432,7 @@ types:
 
   bls12_381_g1:
      documentation_short: A point on the BLS12-381 curve G\ :sub:`1`
-     proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+     proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
      passable: true
      storable: true
      big_map_value: true
@@ -2452,7 +2445,7 @@ types:
 
   bls12_381_g2:
      documentation_short: A point on the BLS12-381 curve G\ :sub:`2`
-     proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+     proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
      passable: true
      storable: true
      big_map_value: true
@@ -2465,7 +2458,7 @@ types:
 
   bls12_381_fr:
      documentation_short: An element of the BLS12-381 scalar field F\ :sub:`r`
-     proposed-in: ['PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq']
+     proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
      passable: true
      storable: true
      big_map_value: true

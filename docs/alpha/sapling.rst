@@ -89,7 +89,7 @@ Diffie-Hellman key exchange using the recipient address and an
 ephemeral key.
 In principle this *ciphertext* can be transmitted off-chain as it's
 not needed to verify the integrity of the pool. For convenience, in
-Tezos, it is stored together with the commitment and the nullifier on
+Mavryk, it is stored together with the commitment and the nullifier on
 chain.
 
 For reasons of efficiency the commitments are stored in an incremental
@@ -118,13 +118,13 @@ bytes that gets signed by the user's Sapling key.
 This field can be used to bind the transaction to another
 application's logic.
 For example during an unshield operation it is important to include in
-the ``bound_data`` the Tezos account that will receive the unshielded
+the ``bound_data`` the Mavryk account that will receive the unshielded
 tokens.
 Without any ``bound_data``, a Sapling unshield operation authorizes any
 party that submits it to claim the unshielded tokens. An adversary can
-intercept the Tezos operation containing the unshield and resubmit it
-using its own Tezos account.
-This malleability attack is prevented by including the recipient Tezos
+intercept the Mavryk operation containing the unshield and resubmit it
+using its own Mavryk account.
+This malleability attack is prevented by including the recipient Mavryk
 account in the ``bound_data``, which is signed by the owner of the
 Sapling keys, and that can be used by the Smart Contract to transfer
 the tokens.
@@ -197,7 +197,7 @@ We advice users to be familiar with the use of the TOR network and to
 use clients developed specifically to protect their privacy.
 
 
-Tezos integration
+Mavryk integration
 -----------------
 
 Michelson: verify update
@@ -258,7 +258,7 @@ is zero.
 Additionally in case of an unshield, it must use the bound data to
 authorize the transfer of unshielded tokens.
 For example it could convert the bound_data to a public_key_hash and
-use it as recipient address of Tezos transfer.
+use it as recipient address of Mavryk transfer.
 
 Example contracts
 ~~~~~~~~~~~~~~~~~
@@ -420,10 +420,10 @@ In order to export the Sapling library to the protocol we first need
 to expose it through the environment that sandboxes the protocol.
 The changes under :src:`src/lib_protocol_environment` are simple but very
 relevant as any change of the environment requires a manual update of the
-Tezos node. These changes are part of version V1 of the environment
+Mavryk node. These changes are part of version V1 of the environment
 while protocols 000 to 006 depends on version V0.
 
-There are two main changes to Tezos' economic protocol, the storage
+There are two main changes to Mavryk' economic protocol, the storage
 for Sapling and the addition of ``SAPLING_VERIFY_UPDATE`` to the
 Michelson interpreter.
 

@@ -415,7 +415,7 @@ val spawn_reconstruct : t -> Process.t
     will activate the logs at debug level for events whose section starts with
     ["prevalidator"] or ["validator.block"].
     See {!Mavryk_stdlib_unix.File_descriptor_sink} and
-    {{:https://tezos.gitlab.io/user/logging.html#file-descriptor-sinks}the logging documentation}
+    {{:https://protocol.mavryk.org/user/logging.html#file-descriptor-sinks}the logging documentation}
     for a more precise semantic.
  *)
 val run :

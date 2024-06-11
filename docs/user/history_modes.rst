@@ -92,7 +92,7 @@ History modes use some markers which are used to describe the state
 of the storage:
 
 - *checkpoint*: the last allowed fork level of the chain (as defined
-  in the Tezos position paper),
+  in the Mavryk position paper),
 - *savepoint*: the last known block which contains metadata,
 - *caboose*: the last known block.
 

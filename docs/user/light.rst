@@ -21,7 +21,7 @@ This mode is akin to a light client or *thin client* in Bitcoin terms.
 While the existing implementation of the light mode is entirely functional,
 it still has room for improvement. For instance, communications over
 the network can be reduced. Users are encouraged to share their experience,
-by submitting issues `here on GitLab <https://gitlab.com/tezos/tezos/-/issues>`_.
+by submitting issues `here on GitLab <https://gitlab.com/mavryk-network/mavryk-protocol/-/issues>`_.
 
 Executing commands in light mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

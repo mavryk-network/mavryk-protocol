@@ -1,6 +1,6 @@
 # Tezos Environment Changelog
 
-This document lists changes to the [Tezos Environment](https://tezos.gitlab.io/shell/the_big_picture.html#the-economic-protocol-environment-and-compiler)
+This document lists changes to the [Tezos Environment](https://protocol.mavryk.org/shell/the_big_picture.html#the-economic-protocol-environment-and-compiler)
 
 Changes are grouped by environment version and listed in reverse chronological order.
 
@@ -77,4 +77,4 @@ https://gitlab.com/tezos/tezos/-/merge_requests/2282
 
 ## V1
 
-See [008 changelog](https://tezos.gitlab.io/protocols/008_edo.html#environment-v1).
+See [008 changelog](https://protocol.mavryk.org/protocols/008_edo.html#environment-v1).

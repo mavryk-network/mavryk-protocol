@@ -1,9 +1,9 @@
 Overview of the economic protocol
 =================================
 
-Tezos is a self-amending blockchain, in that a large part of Tezos can be
+Mavryk is a self-amending blockchain, in that a large part of Mavryk can be
 changed through a so-called amendment procedure. To this end, as mentioned in
-:ref:`the big picture<the_big_picture>`, a Tezos node consists of two
+:ref:`the big picture<the_big_picture>`, a Mavryk node consists of two
 components:
 
 - the shell, which comprises the network and storage layer, and embeds
@@ -38,7 +38,7 @@ detail into the validation and application process for
 Shell-protocol interaction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In the Tezos :ref:`architecture<the_big_picture>`, the economic
+In the Mavryk :ref:`architecture<the_big_picture>`, the economic
 protocol and the shell interact in order to ensure that the blocks
 being appended to the blockchain are valid. There are mainly two rules
 that the shell uses when receiving a new block:
@@ -47,7 +47,7 @@ that the shell uses when receiving a new block:
   more than ``PRESERVED_CYCLES`` in the past. More precisely, if ``n``
   is the current cycle, :ref:`the last allowed fork point<lafl>` is
   the first level of cycle ``n-PRESERVED_CYCLES``. The parameter
-  ``PRESERVED_CYCLES`` therefore plays a central role in Tezos: any
+  ``PRESERVED_CYCLES`` therefore plays a central role in Mavryk: any
   block before the last allowed fork level is immutable.
 - The shell changes the head of the chain to this new block only if
   the block is :doc:`valid<../shell/validation>`, and it has a higher
@@ -89,7 +89,7 @@ A block consists of a header and operations. A block's header is
 composed of two parts: :ref:`the protocol-agnostic part<shell_header>`
 and :ref:`the protocol-specific part<shell_proto_revisit_alpha>`.
 This separation enables the shell to interact with different
-protocols. Each Tezos economic protocol can specify different kinds of
+protocols. Each Mavryk economic protocol can specify different kinds of
 operations, which are described further in detail in
 :doc:`./blocks_ops`.
 
@@ -97,7 +97,7 @@ The semantics of, respectively, operations and blocks is indeed also
 dependent on each economic protocol. The :doc:`Validation and
 Application<validation>` entry explains the internals of *validation*
 -- that is, how to determine whether operations and blocks can be
-safely included in the Tezos blockchain -- and *application* --
+safely included in the Mavryk blockchain -- and *application* --
 that is, how the effects of operations and blocks are taken into
 account -- for this economic protocol.
 
@@ -143,6 +143,6 @@ See, for example:
 See also
 ~~~~~~~~
 
-An in-depth description of the internals of developing a new Tezos
-protocol can be found in the blog post: `How to write a Tezos protocol
+An in-depth description of the internals of developing a new Mavryk
+protocol can be found in the blog post: `How to write a Mavryk protocol
 <https://research-development.nomadic-labs.com/how-to-write-a-mavryk-protocol.html>`_.

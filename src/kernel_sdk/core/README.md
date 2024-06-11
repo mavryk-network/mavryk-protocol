@@ -1,5 +1,5 @@
 Core API for the virtual `smart_rollup_core` WASM module, exposed by
-[Tezos Smart Rollups](https://tezos.gitlab.io/alpha/smart_rollups.html).
+[Tezos Smart Rollups](https://protocol.mavryk.org/alpha/smart_rollups.html).
 
 # About
 

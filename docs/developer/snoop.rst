@@ -8,7 +8,7 @@ and use these measures to fit cost models predictive of execution time.
 
 It is in particular used to derive the functions in the
 :package-api:`Michelson gas cost API <mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Michelson_v1_gas/index.html>`,
-computing the gas costs in the Tezos protocol.
+computing the gas costs in the Mavryk protocol.
 
 .. toctree::
    :maxdepth: 2

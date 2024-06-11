@@ -36,9 +36,9 @@
 
 ;; This file defines a major mode for editing Michelson files.  The
 ;; documentation for this major mode is available at
-;; https://tezos.gitlab.io/user/various.html#environment-for-writing-michelson-contracts,
+;; https://protocol.mavryk.org/user/various.html#environment-for-writing-michelson-contracts,
 ;; the documentation of the Michelson language is available at
-;; https://tezos.gitlab.io/whitedoc/michelson.html
+;; https://protocol.mavryk.org/whitedoc/michelson.html
 
 ;;; Code:
 
