@@ -7,7 +7,7 @@
    search shifted protocol name/number & adapt
 
 Welcome to the Mavryk Technical Documentation!
-=============================================
+==============================================
 
 To start browsing, either follow one of the guided paths below, or directly pick any topics in the documentation menu.
 

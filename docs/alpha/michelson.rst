@@ -1,5 +1,5 @@
 Michelson: the language of Smart Contracts in Mavryk
-===================================================
+====================================================
 
 This specification gives a detailed formal semantics of the Michelson
 language and a short explanation of how smart contracts are executed

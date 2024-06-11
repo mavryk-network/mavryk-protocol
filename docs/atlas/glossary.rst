@@ -6,7 +6,7 @@ the second one concerns the `economic protocol`_. The definitions in the latter
 section may be different for other protocol versions.
 
 Mavryk
------
+------
 
 _`Block`
     The Mavryk blockchain is a linked list of blocks (or actually, a tree when several competing branches exist).

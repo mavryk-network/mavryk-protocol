@@ -2,7 +2,7 @@ Overview of the economic protocol
 =================================
 
 Mavryk overview
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 Mavryk is a distributed system in which nodes agree upon a chain of blocks of
 operations. Mavryk is also an account-based crypto-ledger, where an account is

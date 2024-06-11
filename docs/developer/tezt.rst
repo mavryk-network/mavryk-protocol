@@ -1,5 +1,5 @@
 Tezt: OCaml Mavryk Test Framework
-================================
+=================================
 
 `Tezt <https://gitlab.com/nomadic-labs/tezt/>`_ is a generic test framework written in OCaml.
 It focuses on integration tests that launch external processes.

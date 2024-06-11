@@ -1,5 +1,5 @@
 The Mavryk blockchain
---------------------
+---------------------
 
 Mavryk is a distributed consensus platform with meta-consensus
 capability.

@@ -1,5 +1,5 @@
 Mavryk Software Architecture
-===========================
+============================
 
 A Mavryk network is composed of several running Mavryk nodes, complemented by other running daemons, such as bakers and signers.
 Any implementation of the Mavryk node should adhere to a high-level software architecture, described in this page.
@@ -33,7 +33,7 @@ To implement these roles, the shell mainly includes:
 - the storage component, allowing to store blocks (the deltas composing the history of the blockchain), operations within blocks, and the versioned state of the ledger.
 
 Mavryk' client-server architecture
----------------------------------
+----------------------------------
 
 A Mavryk node also acts as a server, which responds to queries and requests from
 clients. Such queries and requests are implemented via :doc:`RPC

@@ -1,7 +1,7 @@
 .. _howtoget:
 
 How to get Mavryk
-================
+=================
 
 In this how-to we explain how to get up-to-date binaries to run Mavryk
 (more precisely, the "Mavkit" implementation of Mavryk software)

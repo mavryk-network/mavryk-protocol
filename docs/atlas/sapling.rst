@@ -198,7 +198,7 @@ use clients developed specifically to protect their privacy.
 
 
 Mavryk integration
------------------
+------------------
 
 Michelson: verify update
 ~~~~~~~~~~~~~~~~~~~~~~~~

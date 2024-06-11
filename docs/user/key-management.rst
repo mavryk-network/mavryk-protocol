@@ -56,7 +56,7 @@ device.
 
 
 Mavryk Wallet app
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Now on the Mavkit client we can import the keys (make sure the device is
 in the Mavryk Wallet app)::
@@ -81,7 +81,7 @@ time to sign an operation.
 
 
 Mavryk Baking app
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 In Ledger Live (with Developer Mode enabled), there is also a ``Mavryk Baking``
 app which allows a delegate to sign automatically (i.e., there is no need
