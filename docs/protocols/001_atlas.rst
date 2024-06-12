@@ -12,7 +12,7 @@ Environment Version
 -------------------
 
 
-This protocol requires requires protocol environment V11, the same as its Oxford counterpart on the Tezos Blockchain.
+This protocol requires requires protocol environment V11, the same as its Atlas counterpart on the Mavryk Blockchain.
 
 - Simplify the timelock ``opening_result`` type in the environment as we do not deal with ``Bogus_cipher`` any longer. (MR :gl:`!8404`)
 
@@ -76,7 +76,7 @@ Adaptive Issuance (experimental)
   internally, and may appear in balance receipts. (MR :gl:`!10849`)
 
 - The new staking mechanism is used internally to freeze deposits automatically
-  at cycle ends, and mimic Oxford's behavior (On the Tezos Blockchain). (MR :gl:`!10562`)
+  at cycle ends, and mimic Atlas's behavior (On the Mavryk Blockchain). (MR :gl:`!10562`)
 
 - Most rewards (baking rewards, baking bonuses, attestation rewards, revelation
   rewards) are partially paid on the frozen deposits balance in addition to the spendable
@@ -87,7 +87,7 @@ Adaptive Issuance (experimental)
 
 When the feature flag is enabled (testnets only), the following extra changes happen:
 
-- Add parameter ``limit_of_staking_over_baking`` as the limit of the ratio of tez staked by other delegators over the baker's own, for a given baker. (MR :gl:`!8744`)
+- Add parameter ``limit_of_staking_over_baking`` as the limit of the ratio of mav staked by other delegators over the baker's own, for a given baker. (MR :gl:`!8744`)
 
 - Multiplicative coefficient (with a dynamic part) applied to reward values. (MRs :gl:`!8860`, :gl:`!8861`)
 
@@ -123,7 +123,7 @@ Breaking Changes
   value of ``640tz`` into the percentage ``5%`` and renamed to
   ``percentage_of_frozen_deposits_slashed_per_double_baking``. (MR :gl:`!8753`, :gl:`!10431`)
 
-- The ratio of delegated tez over the delegate's frozen deposit
+- The ratio of delegated mav over the delegate's frozen deposit
   must be at most 9. Until now, this was ensured by a protocol parameter named
   ``frozen_deposits_percentage`` (whose value is 10%) representing the minimal percentage
   of frozen deposit. We convert it from a percentage to a factor named
@@ -199,8 +199,8 @@ Operation receipts
     the delegate). (MR :gl:`!9498`)
 
   - a new ``Unstaked_deposits`` kind of balance has been added to
-    represent tez for which unstaking has been requested. This kind of
-    balance is associated with the cycle at which the tez become
+    represent mav for which unstaking has been requested. This kind of
+    balance is associated with the cycle at which the mav become
     liquid and, like in the ``Deposits`` case, it is either associated
     with a ``Single`` delegator or ``Shared`` between a delegate and
     its delegators. (MR :gl:`!9498`)
@@ -284,7 +284,7 @@ Internal
 
 - Refactoring : stake splitted between a frozen part and a delegated part. (MRs :gl:`!8051`, :gl:`!8885`)
 
-- Refactoring : rewards computed as a relative portion of the total amount of tez
+- Refactoring : rewards computed as a relative portion of the total amount of mav
   rewarded per minute (about 85tez/min). (MR :gl:`!8657`)
 
 - Introduce the notion of rollups “machine” which can compute the semantics of

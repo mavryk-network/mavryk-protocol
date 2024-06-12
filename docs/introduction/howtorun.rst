@@ -8,7 +8,7 @@ the network.
 There are two main ways to participate: delegating
 your coins and running a delegate.
 The main advantage of delegating your coins is simplicity.
-The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in tez.
+The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in mav.
 
 To learn more about the protocol refer to :doc:`this page <../active/protocol_overview>`.
 

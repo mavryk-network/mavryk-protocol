@@ -11,7 +11,7 @@ problems.
 This list is not exhaustive and will never be. The following resources
 partially complement it:
 
-- https://opentezos.com/smart-contracts/avoiding-flaws/
+- https://documentation.mavryk.org/smart-contracts/avoiding-flaws/
 - https://ligolang.org/docs/tutorials/security/
 - https://github.com/InferenceAG/MavrykSmartContractDetails
 - https://medium.com/protofire-blog/recommendations-to-enhance-security-of-tezos-smart-contracts-d14c0e53a6d3

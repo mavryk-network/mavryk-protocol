@@ -299,7 +299,7 @@ share several common fields:
 
 - ``source``: the public key's hash of the *source* account of the
   manager operation -- that is, the *manager*.
-- ``fee``: the amount of tez paid to the baker which decides to
+- ``fee``: the amount of mav paid to the baker which decides to
   include this operation;
 - ``counter``: the manager account's counter, incremented each time
   this account executes a manager operation, to prevent

@@ -52,7 +52,7 @@ Mainnet
 ~~~~~~~
 
 The Mavryk network is the current incarnation of the Mavryk blockchain.
-It runs with real tez that have been allocated to the
+It runs with real mav that have been allocated to the
 donors of July 2017 fundraiser (see :ref:`activate_fundraiser_account`).
 
 The Mavryk network has been live and open since June 30th 2018.
@@ -66,10 +66,10 @@ Test Networks
 ~~~~~~~~~~~~~
 
 There are several :ref:`test networks <test-networks>` for the Mavryk blockchain with a
-faucet to obtain free tez (see :ref:`faucet`).
+faucet to obtain free mav (see :ref:`faucet`).
 These networks are intended for developers wanting to test their
 software before going to beta and for users who want to familiarize
-themselves with Mavryk before using their real tez.
+themselves with Mavryk before using their real mav.
 
 This website
 ~~~~~~~~~~~~

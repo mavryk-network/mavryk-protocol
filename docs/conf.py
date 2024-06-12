@@ -223,7 +223,7 @@ linkcheck_ignore = [
     # (interpreted by linkcheck as external links, generating false positives)
     r'^\.\./',
     # flaky servers, to remove one day if they got more predictable
-    r'^https://opentezos\.com/',
+    r'^https://documentation\.mavryk.org/',
     r'^https://crates.io/crates/mavryk-smart-rollup',
 ]
 linkcheck_allowed_redirects = dict(

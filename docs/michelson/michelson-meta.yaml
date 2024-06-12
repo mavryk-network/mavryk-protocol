@@ -1938,7 +1938,7 @@ types:
     proposed-in: ['PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp']
     since: PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
     documentation: |
-      Mumav (micro-Tez) are internally represented by 64-bit signed
+      Mumav (micro-Mav) are internally represented by 64-bit signed
       integers. These are restricted to prevent creating a negative amount
       of mumav. Instructions are limited to prevent overflow and mixing them
       with other numerical types by mistake. They are also mandatorily checked

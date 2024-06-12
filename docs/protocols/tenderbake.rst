@@ -19,7 +19,7 @@ Rolls do not play an essential role anymore, in that the computation of delegate
 Snapshots are still used: it is the entire delegate's stake that is snapshot.
 Rolls still play the following roles:
 
-- A delegate can participate in consensus (receiving baking and endorsing rights) if it has at least ``tokens_per_roll`` tez.
+- A delegate can participate in consensus (receiving baking and endorsing rights) if it has at least ``tokens_per_roll`` mav.
 
 - A delegate's voting power in the governance process is still in terms of rolls, as in Atlas.
 
@@ -97,23 +97,23 @@ The following protocol parameters have been removed:
 
 The following protocol parameters have been introduced:
 
-* ``baking_reward_fixed_portion`` = 10 tez
-* ``baking_reward_bonus_per_slot`` = 0.004286 tez
-* ``endorsing_reward_per_slot`` = 0.002857 tez
+* ``baking_reward_fixed_portion`` = 10 mav
+* ``baking_reward_bonus_per_slot`` = 0.004286 mav
+* ``endorsing_reward_per_slot`` = 0.002857 mav
 * ``delay_increment_per_round`` = 15
 * ``minimal_participation_ratio`` = 2/3
 * ``consensus_committee_size`` = 7000
 * ``consensus_threshold`` = 4667
 * ``max_slashing_period`` = 2 cycles
 * ``frozen_deposits_percentage`` = 10
-* ``double_baking_punishment`` = 640 tez
+* ``double_baking_punishment`` = 640 mav
 * ``ratio_of_frozen_deposits_slashed_per_double_endorsement`` = 1/2
 
 The parameter ``minimal_block_delay`` is reused to specify the duration of round 0.
 
 The values of the following protocol parameters has changed:
 
-* ``tokens_per_roll`` has changed from 8000 to 6000 tez.
+* ``tokens_per_roll`` has changed from 8000 to 6000 mav.
 
 
 Metadata

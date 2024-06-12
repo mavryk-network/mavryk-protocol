@@ -186,7 +186,7 @@ build one locally and reference it. Run the following command to build the image
 And then update the docker-compose file (e.g., ``alpha.yml``) with the docker tag::
 
     node:
-      image: tezos:latest
+      image: mavryk:latest
       ...
 
 Docker Image Configuration

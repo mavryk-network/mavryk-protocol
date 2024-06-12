@@ -1,7 +1,7 @@
 Key Management
 ==============
 
-Securely managing keys is of utmost importance in any blockchain, including Mavryk, because keys are used to sign sensitive operations such as transfers of valuable assets (tez, FA tokens, tickets, ...) or baking operations.
+Securely managing keys is of utmost importance in any blockchain, including Mavryk, because keys are used to sign sensitive operations such as transfers of valuable assets (mav, FA tokens, tickets, ...) or baking operations.
 
 The Mavkit tool suite offers several solutions to store your private keys safely and use them securely for signing operations.
 However, these solutions are **not** enabled by default, so you have to turn them on, as explained in this tutorial.
@@ -335,7 +335,7 @@ in the wallet of the client typing the command. The delegate's private key does 
 The drain operation has no effect on the frozen balance.
 
 A fixed fraction of the drained delegate’s spendable balance is transferred as fees to the baker that includes the operation,
-i.e. the maximum between 1 tez or 1% of the spendable balance.
+i.e. the maximum between 1 mav or 1% of the spendable balance.
 
 .. _activate_fundraiser_account:
 

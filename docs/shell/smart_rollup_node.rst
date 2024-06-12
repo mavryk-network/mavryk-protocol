@@ -63,7 +63,7 @@ In case you do not already have an implicit account, you can generate one with:
 Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
-tez to make sure that staking is possible. In case your balance is not
+mav to make sure that staking is possible. In case your balance is not
 sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Dailynet.
 
@@ -241,7 +241,7 @@ operations which are injected by the rollup node in each mode.
 +-------------+--------------+-----------+------------+------------+
 
 .. [*] An accuser node will publish commitments only when it detects
-       conflicts; for such cases it must make a deposit of 10,000 tez.
+       conflicts; for such cases it must make a deposit of 10,000 mav.
 
 .. _rollup_node_config_file:
 

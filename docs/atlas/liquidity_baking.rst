@@ -1,7 +1,7 @@
 Liquidity Baking
 ================
 
-Liquidity baking incentivizes large amounts of decentralized liquidity provision between tez and tzBTC by minting a small amount of tez every block and depositing it inside of a constant product market making smart-contract.
+Liquidity baking incentivizes large amounts of decentralized liquidity provision between mav and tzBTC by minting a small amount of mav every block and depositing it inside of a constant product market making smart-contract.
 
 Contracts
 ~~~~~~~~~
@@ -12,12 +12,12 @@ During activation of Atlas protocol, a constant product market making (CPMM) Mic
 
    While the CPMM and LQT contract originations provide an ``Origination_result``, the LQT contract contains two big maps not included in a ``lazy_storage_diff`` field. Indexers and other tooling may need manual updates to include these.
 
-The CPMM maintains a balance of ``a`` tez and ``b`` `tzBTC <https://tzbtc.io/>`_, where tzBTC is the `FA1.2 token <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-7/tzip-7.md>`_  found at address ``KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn``. The smart contract accepts deposits of ``da`` tez and returns ``db`` tzBTC (or vice versa) where the invariant ``(a + da * (1 - f - n)) * (b - db) = a b`` is preserved, and ``f`` and ``n`` are a fee and burn, set at 0.1% each. Calculations are done with precision of 1000, rounding down on division.
+The CPMM maintains a balance of ``a`` mav and ``b`` `tzBTC <https://tzbtc.io/>`_, where tzBTC is the `FA1.2 token <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-7/tzip-7.md>`_  found at address ``KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn``. The smart contract accepts deposits of ``da`` mav and returns ``db`` tzBTC (or vice versa) where the invariant ``(a + da * (1 - f - n)) * (b - db) = a b`` is preserved, and ``f`` and ``n`` are a fee and burn, set at 0.1% each. Calculations are done with precision of 1000, rounding down on division.
 
 To implement this contract, we use a fork of the open source code base used by `version two <https://gitlab.com/dexter2tz/dexter2tz>`_ of the "Dexter" project. The implementation of this contract has been `formally verified <https://gitlab.com/dexter2tz/dexter2tz#audits-and-formal-verification-external-resources>`_ against its functional specification. The contract code is modified in the following way:
 
 1. The fee is set to 0.1% only (the fee in Dexter v2 is set to 0.3%). Rationale: given the subsidy it is not necessary to charge a large fee and better to improve liquidity.
-2. An additional 0.1% of every trade is burned by being transferred to the null implicit account. Rationale: this mechanism offsets inflation from the subsidy. The inflation is exactly balanced at a daily trade volume of 7.2 million tez.
+2. An additional 0.1% of every trade is burned by being transferred to the null implicit account. Rationale: this mechanism offsets inflation from the subsidy. The inflation is exactly balanced at a daily trade volume of 7.2 million mav.
 3. The ability to set a delegate has been removed. Rationale: the subsidy means there is no need for a baker for that contract and having one would create an imbalance.
 4. The ability to set a manager has been removed. Rationale: the only privilege of the Dexter manager is to set Dexter's delegate so this role is now unnecessary.
 
@@ -26,12 +26,12 @@ The LIGO and Michelson code for these contracts, as well as detailed documentati
 Subsidy
 ~~~~~~~
 
-At every block in the chain, a small amount of tez is minted and credited to the
+At every block in the chain, a small amount of mav is minted and credited to the
 CPMM contract, and the CPMM's ``%default`` entrypoint is called to update the
 ``xtz_pool`` balance in its storage. The amount that is minted and sent to the
 CPMM contract is 1/16th of the rewards for a block of round 0 with all
-attestations; currently these rewards are 20 tez per block so the amount that is
-sent to the CPMM contract is 1.25 tez per block.
+attestations; currently these rewards are 20 mav per block so the amount that is
+sent to the CPMM contract is 1.25 mav per block.
 If the :ref:`adaptive issuance <adaptive_issuance_atlas>` feature were to be activated,
 the subsidy would be adjusted by the adaptive issuance coefficient.
 

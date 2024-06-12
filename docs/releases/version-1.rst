@@ -4,7 +4,7 @@ Version 1.1
 Version 1.0 contains a new version (v10) of the protocol environment,
 which is the set of functions that a protocol can call.
 This new version is used by Atlas,
-which is a proposal based on the second Oxford proposal made on the Tezos Blockchain.
+which is a proposal based on the second Atlas proposal made on the Mavryk Blockchain.
 This release also contains Atlas itself as well as its associated protocol-specific executable binaries (baker, accuser, etc).
 
 Starting from Atlas, Endorsements have been renamed to Attestations.

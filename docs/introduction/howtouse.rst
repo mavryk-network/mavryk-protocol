@@ -329,7 +329,7 @@ Transfers and Receipts
 ~~~~~~~~~~~~~~~~~~~~~~
 
 To fund our newly created account for Bob, we need to transfer some
-tez using the *transfer* operation.
+mav using the *transfer* operation.
 Every operation returns a *receipt* that recapitulates all the effects
 of the operation on the blockchain.
 A useful option for any operation is ``--dry-run``, which instructs
@@ -350,7 +350,7 @@ The reason is that when we fund a new address we are also storing it
 on the blockchain.
 Any storage on chain has a cost associated to it which should be
 accounted for either by paying a fee to a baker or by destroying
-(``burning``) some tez.
+(``burning``) some mav.
 This is particularly important to protect the system from spam.
 Because storing an address requires burning ṁ0.257 and the client has
 a default of 0, we need to explicitly set a cap on the amount that we
@@ -416,7 +416,7 @@ client selects a default for us.
 The last important bit of our receipt is the balance updates that
 resume which address is being debited or credited of a certain amount.
 We see in this case that baker ``mv1Ke...yU`` is being credited one
-fee for each operation, that Bob's address ``mv1Rk...Ph`` gets 1 tez
+fee for each operation, that Bob's address ``mv1Rk...Ph`` gets 1 mav
 and that Alice pays the transfer, the burn, and the two fees.
 
 Now that we have a clear picture of what we are going to pay we can
@@ -660,7 +660,7 @@ In this tutorial, you have learned:
 - to start an Mavkit node and set up its basic configuration;
 - to use the Mavkit client to create implicit accounts and do transfers between them;
 - to deploy and interact with a simple predefined smart contract;
-- to distinguish between the various costs associated to transactions such as burnt tez, fees, storage costs, and gas consumption;
+- to distinguish between the various costs associated to transactions such as burnt mav, fees, storage costs, and gas consumption;
 - some further concepts such as transaction validation and the RPC interface;
 - the role of other binaries, less frequently used than the client and the node.
 

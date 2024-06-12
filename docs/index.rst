@@ -65,7 +65,7 @@ These pages:
 - present the key concepts and mechanisms for setting up Mavkit, including :doc:`user/setup-client`, :doc:`user/setup-node`, and so on;
 - empowers you to take advantage of Mavkit' basic and more advanced features, such as :doc:`user/key-management`, :doc:`user/multisig`, :doc:`user/logging`, and much more.
 
-If you intend to participate to Mavryk not just as a mere user, but also as a baker, you could also check more specialized resources such as the `NL Knowledge Center <https://docs.nomadic-labs.com/nomadic-labs-knowledge-center/>`__ or `Open Mavryk <https://opentezos.com>`__.
+If you intend to participate to Mavryk not just as a mere user, but also as a baker, you could also check more specialized resources such as the `NL Knowledge Center <https://docs.nomadic-labs.com/nomadic-labs-knowledge-center/>`__ or `Open Mavryk <https://documentation.mavryk.org>`__.
 
 .. raw:: html
 
@@ -96,7 +96,7 @@ If you want to know more about the Mavryk *technology*, there are several sectio
 
 Mavryk is an open platform. As any programmable blockchain, its value lies in the increasing base of smart contracts and distributed applications covering various domains, but also in the tools that make the ecosystem easier to use and more efficient, such as wallets, indexers, and many others.
 
-If you are looking for an accessible and pedagogical exposition on how to write smart contracts or Dapps, there are many great resources out there for developing on Mavryk, such as the `Mavryk Developer Portal <https://tezos.com/developers/>`__ and `Open Mavryk <https://opentezos.com>`__.
+If you are looking for an accessible and pedagogical exposition on how to write smart contracts or Dapps, there are many great resources out there for developing on Mavryk, such as the `Mavryk Developer Portal <https://tezos.com/developers/>`__ and `Open Mavryk <https://documentation.mavryk.org>`__.
 
 For Mavryk developers, this website mostly provides reference and API documentation, but also some guidelines, including:
 

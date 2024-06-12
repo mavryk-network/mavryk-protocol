@@ -163,7 +163,7 @@ manager operations are the only fee-paying and
 - The ``Reveal`` operation reveals the public key of the sending
   manager. Knowing this public key is indeed necessary to check the signature
   of future operations signed by this manager.
-- The ``Transaction`` operation allows users to either transfer tez
+- The ``Transaction`` operation allows users to either transfer mav
   between accounts and/or to invoke a smart contract.
 - The ``Delegation`` operation allows users to :ref:`delegate their
   stake <delegating_coins>` to a :ref:`delegate<def_delegate_alpha>` (a
