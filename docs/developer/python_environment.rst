@@ -1,7 +1,7 @@
 Python Environment
 ==================
 
-Mavkit uses Python to build this documentation website (https://tezos.gitlab.io) and for a limited set of
+Mavkit uses Python to build this documentation website (https://protocol.mavryk.org) and for a limited set of
 utility scripts (although this latter usage of Python is deprecated).
 This page contains installation instructions for the Python environment.
 

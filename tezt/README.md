@@ -7,11 +7,11 @@ The directory includes the sources of the Tezt framework, its extension with spe
 
 ## API Documentation
 
-The user manual of the testsuite is available online at <https://tezos.gitlab.io/developer/tezt.html>.
+The user manual of the testsuite is available online at <https://protocol.mavryk.org/developer/tezt.html>.
 
 The APIs of the `tezt` and `tezt-tezos` libraries are documented in the
 interface files (suffix `mli`). Both APIs are also available online at
-<https://tezos.gitlab.io/api/api-inline.html>.
+<https://protocol.mavryk.org/api/api-inline.html>.
 
 ## Overview
 

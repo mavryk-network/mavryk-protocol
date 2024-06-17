@@ -402,7 +402,7 @@ module Long_dynamic_bake = struct
 
   let delay_increment_per_round = 1
 
-  (* c.f. https://tezos.gitlab.io/active/consensus.html *)
+  (* c.f. https://protocol.mavryk.org/active/consensus.html *)
   let round_duration r = minimal_block_delay + (r * delay_increment_per_round)
 
   let grafana_panels topology =

@@ -8,7 +8,7 @@ the network.
 There are two main ways to participate: delegating
 your coins and running a delegate.
 The main advantage of delegating your coins is simplicity.
-The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in tez.
+The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in mav.
 
 To learn more about the protocol refer to :doc:`this page <../active/protocol_overview>`.
 
@@ -151,7 +151,7 @@ operations during 5 cycles to remain active.
 If for some reason your delegate is marked inactive you can reactivate
 it simply by re-registering again like above.
 
-To avoid your Tezos delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Tezos community <mavryk_community>`.
+To avoid your Mavryk delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Mavryk community <mavryk_community>`.
 Alternatively, you may use the baking rights RPC and the attesting rights RPC (see :doc:`../api/openapi`), which is able to return a list of baking/attesting slots for a given delegate (see :ref:`example <DelegateRegistration>`).
 
 .. _baker_run:
@@ -159,7 +159,7 @@ Alternatively, you may use the baking rights RPC and the attesting rights RPC (s
 Baker
 ~~~~~
 
-The baker is a daemon that executes Tezos' :doc:`consensus algorithm<../active/consensus>`.
+The baker is a daemon that executes Mavryk' :doc:`consensus algorithm<../active/consensus>`.
 The baker runs on behalf of one or more specified accounts or, if none is specified, on behalf of
 all accounts whose secret keys are known.
 
@@ -225,14 +225,14 @@ If you are running the baker Docker image, you can watch the baker logs with
     docker ps
 
 If your container is running, its name will appear in the last column.
-For instance, if the name is ``mainnet_baker-PtNairob``, you can
+For instance, if the name is ``mainnet_baker-PtAtLas``, you can
 view recent logs with::
 
-    docker logs mainnet_baker-PtNairob
+    docker logs mainnet_baker-PtAtLas
 
 If you want to keep watching logs, use ``-f``::
 
-    docker logs mainnet_baker-PtNairob -f
+    docker logs mainnet_baker-PtAtLas -f
 
 This allows you to know if you baked.
 You should see lines such as::

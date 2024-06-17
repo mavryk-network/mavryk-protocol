@@ -11,8 +11,8 @@ The following pages describe the former Mavryk protocols (i.e., which have been 
 See Also
 --------
 
-More details on the history of Tezos protocols, including their activation dates or the salient features they brought, can be found in the following places:
+More details on the history of Mavryk protocols, including their activation dates or the salient features they brought, can be found in the following places:
 
-- https://tzstats.com/protocols (or on other block explores in :ref:`Tezos community <mavryk_community>`)
-- https://opentezos.com/mavryk-basics/history-of-amendments/
+- https://tzstats.com/protocols (or on other block explores in :ref:`Mavryk community <mavryk_community>`)
+- https://documentation.mavryk.org/mavryk-basics/history-of-amendments/
 - https://docs.tezos.com/architecture/governance/amendment-history

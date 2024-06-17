@@ -9,7 +9,7 @@ rules:
   - pattern: List.length $X < List.length $Y
   - pattern: List.length $X > List.length $Y
   - pattern: List.length $X <> List.length $Y
-  message: You probably want to use Compare.List_lengths or List.compare_lengths, which are faster. See https://tezos.gitlab.io/developer/guidelines.html#linting-list-lengths-comparison for details.
+  message: You probably want to use Compare.List_lengths or List.compare_lengths, which are faster. See https://protocol.mavryk.org/developer/guidelines.html#linting-list-lengths-comparison for details.
   languages: [ocaml]
   severity: ERROR
   metadata:
@@ -40,7 +40,7 @@ rules:
   - pattern: List.length $X < $Y
   - pattern: List.length $X > $Y
   - pattern: List.length $X <> $Y
-  message: You probably want to use Compare.List_length_with or List.compare_length_with, which are faster. See https://tezos.gitlab.io/developer/guidelines.html#linting-list-length-comparison for details.
+  message: You probably want to use Compare.List_length_with or List.compare_length_with, which are faster. See https://protocol.mavryk.org/developer/guidelines.html#linting-list-length-comparison for details.
   languages: [ocaml]
   severity: ERROR
   metadata:
@@ -57,7 +57,7 @@ rules:
   - pattern: $X < List.length $Y
   - pattern: $X > List.length $Y
   - pattern: $X <> List.length $Y
-  message: You probably want to use Compare.List_length_with or List.compare_length_with, which are faster. See https://tezos.gitlab.io/developer/guidelines.html#linting-list-length-comparison for details.
+  message: You probably want to use Compare.List_length_with or List.compare_length_with, which are faster. See https://protocol.mavryk.org/developer/guidelines.html#linting-list-length-comparison for details.
   languages: [ocaml]
   severity: ERROR
   metadata:
@@ -74,7 +74,7 @@ rules:
   - pattern: Compare.List_length_with.( < ) $X 0
   - pattern: Compare.List_length_with.( > ) $X 0
   - pattern: Compare.List_length_with.( <> ) $X 0
-  message: 'You probably want to test emptiness of this list using a pattern-matching of the form (match xs with [] -> ... | _ :: _ -> ...). If you are just computing the boolean value you can also use the List.is_empty function. See https://tezos.gitlab.io/developer/guidelines.html#linting-list-length-empty for details.'
+  message: 'You probably want to test emptiness of this list using a pattern-matching of the form (match xs with [] -> ... | _ :: _ -> ...). If you are just computing the boolean value you can also use the List.is_empty function. See https://protocol.mavryk.org/developer/guidelines.html#linting-list-length-empty for details.'
   languages: [ocaml]
   severity: ERROR
   metadata:
@@ -97,7 +97,7 @@ rules:
   - pattern: let+ $Z = List.map_es $X $Y in List.concat $Z
   - pattern: let* $Z = List.map_es $X $Y in List.concat $Z
   - pattern: List.map_es $X $Y >|=? fun $Z -> List.concat $Z
-  message: You probably want to use List.concat_map $X $Y, which is faster and tail-recursive. See https://tezos.gitlab.io/developer/guidelines.html#chaining_concat_map for details.
+  message: You probably want to use List.concat_map $X $Y, which is faster and tail-recursive. See https://protocol.mavryk.org/developer/guidelines.html#chaining_concat_map for details.
   languages: [ocaml]
   severity: ERROR
   metadata:

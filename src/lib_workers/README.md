@@ -10,7 +10,7 @@ to actors.
 -->
 
 The API documentation is available online:
-<https://tezos.gitlab.io/api/odoc/_html/mavkit-libs/mavryk_workers.html>
+<https://protocol.mavryk.org/api/odoc/_html/mavkit-libs/mavryk_workers.html>
 
 
 ## Overview

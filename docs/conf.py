@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Tezos documentation build configuration file, created by
+# Mavryk documentation build configuration file, created by
 # sphinx-quickstart on Wed Jan 17 18:04:32 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Tezos'
+project = 'Mavryk'
 copyright = '2018-2023, Nomadic Labs <contact@nomadic-labs.com>'
 author = 'Nomadic Labs <contact@nomadic-labs.com>'
 
@@ -88,7 +88,7 @@ exclude_patterns = [
     'Thumbs.db',
     '.DS_Store',
     'doc_gen',
-    'nairobi',
+    'atlas',
 ]
 # TODO tezos/tezos#2170: exclude the active protocol 'NNN' above
 
@@ -130,9 +130,9 @@ html_extra_path = [
     '404.html',
     '_redirects',
     # manually copy images that are only included in raw HTML directives:
-    'images/building_on_tezos_5.png',
+    'images/building_on_mavryk_5.png',
     'images/contributing_to_mavkit_6.png',
-    'images/discover_tezos_1.png',
+    'images/discover_mavryk_1.png',
     'images/getting_started_2.png',
     'images/understanding_mavkit_4.png',
     'images/using_mavkit_3.png',
@@ -154,7 +154,7 @@ html_extra_path = [
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Tezosdoc'
+htmlhelp_basename = 'Mavrykdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -180,8 +180,8 @@ latex_elements: Dict[str, str] = {
 latex_documents = [
     (
         master_doc,
-        'Tezos.tex',
-        'Tezos Documentation',
+        'Mavryk.tex',
+        'Mavryk Documentation',
         'Nomadic Labs \\textless{}contact@nomadic-labs.com\\textgreater{}',
         'manual',
     ),
@@ -192,7 +192,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'tezos', 'Tezos Documentation', [author], 1)]
+man_pages = [(master_doc, 'tezos', 'Mavryk Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -203,10 +203,10 @@ man_pages = [(master_doc, 'tezos', 'Tezos Documentation', [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        'Tezos',
-        'Tezos Documentation',
+        'Mavryk',
+        'Mavryk Documentation',
         author,
-        'Tezos',
+        'Mavryk',
         'One line description of project.',
         'Miscellaneous',
     ),
@@ -223,7 +223,7 @@ linkcheck_ignore = [
     # (interpreted by linkcheck as external links, generating false positives)
     r'^\.\./',
     # flaky servers, to remove one day if they got more predictable
-    r'^https://opentezos\.com/',
+    r'^https://documentation\.mavryk.org/',
     r'^https://crates.io/crates/mavryk-smart-rollup',
 ]
 linkcheck_allowed_redirects = dict(

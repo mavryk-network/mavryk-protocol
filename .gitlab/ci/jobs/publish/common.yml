@@ -24,7 +24,7 @@
     - when: never
   variables:
     MAVRYK_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
-    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/mavryk-packaging"
+    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
     MAVRYK_LICENSE_VERSION: "master"
     ROLE_ARN: "arn:aws:iam::623103086665:role/mavkit-packaging-bucket-writer"
     MAVKIT_DEB_BUCKET: "mavkit-deb-pkgs"
@@ -45,7 +45,7 @@
     - "build:static-x86_64-linux-binaries"
   variables:
     MAVRYK_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
-    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/mavryk-packaging"
+    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
     MAVRYK_LICENSE_VERSION: "master"
     ROLE_ARN: "arn:aws:iam::623103086665:role/mavkit-packaging-bucket-writer"
     MAVKIT_RPM_BUCKET: "mavkit-rpm-pkgs"

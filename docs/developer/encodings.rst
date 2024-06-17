@@ -1,9 +1,9 @@
 Encodings
 =========
 
-Throughout the Tezos protocol, data is serialized so that it can be used via RPC, written to disk, or placed in a block.
+Throughout the Mavryk protocol, data is serialized so that it can be used via RPC, written to disk, or placed in a block.
 Conversely, data is deserialized to in-memory data structures, for performing operations on it, such as checking the validity of a transaction.
-These serialization and deserialization operations rely on *encodings*, that is, data encoding rules for the various Tezos data structures, towards/from several forms.
+These serialization and deserialization operations rely on *encodings*, that is, data encoding rules for the various Mavryk data structures, towards/from several forms.
 Thus, there exists binary encodings and JSON encodings.
 
 Tools

@@ -128,4 +128,4 @@ bootstrapped, when actually it should be.  The administrator of the
 node can use the RPC ``patch /chains/main {"bootstrapped": true}`` to
 force the node bootstrapped state, but this should be used carefully.
 If you see an issue with the current heuristic, please `report it
-<https://gitlab.com/tezos/tezos/-/issues>`_.
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/issues>`_.

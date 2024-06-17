@@ -13,7 +13,7 @@ then
   BRANCH=$2
 elif [ $# -eq 0 ]
 then
-  REPO="mavrykdynamics/mavryk"
+  REPO="mavryk-network/mavryk-protocol"
   BRANCH="latest-release"
 else
   usage

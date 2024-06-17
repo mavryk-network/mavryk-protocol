@@ -4,7 +4,7 @@ Mavkit Merge Team
 The Mavkit merge team is a `group of developers
 <https://gitlab.com/groups/tezos/-/group_members>`_
 from different teams of the
-Tezos ecosystem.
+Mavryk ecosystem.
 They are automatically selected as approvers when you create a merge
 request.
 
@@ -12,14 +12,14 @@ Mavkit Merge Team Scope
 -----------------------
 
 The role of the Mavkit Merge Team is limited to ensuring the quality
-of what gets merged into Mavkit, i.e. all of `tezos/tezos
-<https://gitlab.com/tezos/tezos>`_ except :src:`src/proto_alpha/lib_protocol/`.
+of what gets merged into Mavkit, i.e. all of `mavryk-network/mavryk-protocol
+<https://gitlab.com/mavryk-network/mavryk-protocol>`_ except :src:`src/proto_alpha/lib_protocol/`.
 By quality, we mean ensuring that the code is as good as it can be, be it
 at the implementation level or the architecture level.
 
 The Mavkit merge team does not decide what contributions are included in
 the next protocol (``src/proto_alpha/lib_protocol/``). Companies that contribute to
-`tezos/tezos <https://gitlab.com/tezos/tezos>`_
+`mavryk-network/mavryk-protocol <https://gitlab.com/mavryk-network/mavryk-protocol>`_
 reach a consensus to decide what gets in the Alpha protocol,
 i.e. in the proposal of the next upgrade. In particular, other companies
 can fork this repository and do their own protocol proposals.
@@ -47,12 +47,12 @@ of the merge coordinator include:
 * Coordinate with and alert developers working on CI in the case of problems
   that affect the flow of MRs.
 * Help MR authors understand their responsibilities.
-* Coordinate with leaders of the various companies of the Tezos ecosystem to
+* Coordinate with leaders of the various companies of the Mavryk ecosystem to
   make sure the process is understood and shared.
 * Improve and augment the documentation about the MR process.
 
 To make it easy to find out who the current merge coordinator is,
-:gl:`meta-issue 1062 <tezos/tezos#1062>` is assigned to the merge coordinator.
+:gl:`meta-issue 1062 <mavryk-network/mavryk-protocol#1062>` is assigned to the merge coordinator.
 Don't hesitate to contact the merge coordinator if you think you can
 benefit of their help to move your merge request forward.
 
@@ -61,8 +61,8 @@ Getting into the Mavkit Merge Team
 
 The Mavkit merge team is always looking for software engineers with at least the following qualities:
 
-- You are an active developer on the `tezos/tezos
-  <https://gitlab.com/tezos/tezos>`_ repository.
+- You are an active developer on the `mavryk-network/mavryk-protocol
+  <https://gitlab.com/mavryk-network/mavryk-protocol>`_ repository.
 - You have done numerous reviews and merge requests in the past, i.e. you have
   shown your expertise and interest in contributing both with code and reviews.
 - You are paying attention to detail and are on the lookout for possible
@@ -76,7 +76,7 @@ The Mavkit merge team is always looking for software engineers with at least the
   for small changes or architectural changes.
 - You know when your expertise is insufficient and you are keen to
   ask for support.
-- You are relatively skilled in one of the technologies used in the ``tezos/tezos``
+- You are relatively skilled in one of the technologies used in the ``mavryk-network/mavryk-protocol``
   repository, i.e. ``OCaml``, ``python``, ``CI``, building, packaging, etc.
 
 To apply for being included in the Mavkit merge team, contact the :ref:`merge coordinator <merge_coordinator>` or

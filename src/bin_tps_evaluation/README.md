@@ -214,5 +214,5 @@ the functionality is fairly new, more efforts might be required in some
 cases.
 
 [unify-protocol-limits]: https://gitlab.com/tezos/tezos/-/issues/2089
-[long-tezts-locally]: http://tezos.gitlab.io/developer/long-tezts.html#testing-your-benchmarks-locally
+[long-tezts-locally]: http://protocol.mavryk.org/developer/long-tezts.html#testing-your-benchmarks-locally
 [issue-2414]: https://gitlab.com/tezos/tezos/-/issues/2414

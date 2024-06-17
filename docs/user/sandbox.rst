@@ -1,7 +1,7 @@
 Sandboxed mode
 --------------
 
-To run a ‘localhost-only’ instance of a Tezos network, we provide two
+To run a ‘localhost-only’ instance of a Mavryk network, we provide two
 helper scripts:
 
 -  ``./src/bin_node/mavkit-sandboxed-node.sh``
@@ -86,7 +86,7 @@ preconfigured accounts which can be listed with:
      bootstrap2: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 (unencrypted sk known)
      bootstrap1: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe (unencrypted sk known)
 
-We can run the following command to transfer some Tez from one account to
+We can run the following command to transfer some Mav from one account to
 another:
 
 ::

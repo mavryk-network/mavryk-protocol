@@ -28,7 +28,7 @@
 Adaptive Issuance and Staking
 =============================
 
-This document describes Adaptive Issuance and Staking, two new features experimented in the Alpha protocol (referred hereafter as the Adaptive-Issuance/Staking proposal), which together constitute a major evolution of Tezos’ :doc:`Proof-of-Stake mechanism <proof_of_stake>`.
+This document describes Adaptive Issuance and Staking, two new features experimented in the Alpha protocol (referred hereafter as the Adaptive-Issuance/Staking proposal), which together constitute a major evolution of Mavryk’ :doc:`Proof-of-Stake mechanism <proof_of_stake>`.
 
 .. note::
 
@@ -39,30 +39,30 @@ This document describes Adaptive Issuance and Staking, two new features experime
 Adaptive Issuance
 =================
 
-Adaptive Issuance is a novel mechanism regulating tez issuance in Tezos.
+Adaptive Issuance is a novel mechanism regulating mav issuance in Mavryk.
 
-The :doc:`Tezos economic protocol <./protocol>` issues new
-tez via:
+The :doc:`Mavryk economic protocol <./protocol>` issues new
+mav via:
 
 -  Participation rewards: incentives given to delegates for
    :doc:`participation in consensus <consensus>`
    and random seed generation.
 -  The :doc:`Liquidity Baking (LB) subsidy <liquidity_baking>`.
--  Protocol "invoices": lump sums of tez issued and allocated during
+-  Protocol "invoices": lump sums of mav issued and allocated during
    protocol migration.
 
 Participation rewards and the LB subsidy are regularly issued by the
 protocol, whereas the value and recipients of invoices are defined
 discretionarily by the developers of a protocol proposal.
 The values for participation rewards and
-the LB subsidy, if any, are currently defined by the Tezos protocol using fixed
+the LB subsidy, if any, are currently defined by the Mavryk protocol using fixed
 constants.
 
 The Adaptive-Issuance/Staking proposal
 introduces the possibility to activate Adaptive Issuance: a mechanism where the amount of
-*regularly* issued tez (participation rewards and the LB subsidy, if
+*regularly* issued mav (participation rewards and the LB subsidy, if
 active) depends on the global **staked funds ratio** – that is, the
-ratio of staked tez to the total supply. This lets issuance roughly
+ratio of staked mav to the total supply. This lets issuance roughly
 match the *actual* security budget the chain requires, the amount needed
 to encourage participants to stake and produce blocks, but *no more*.
 
@@ -163,7 +163,7 @@ In this formula:
    :math:`\IL{\left[ \tc - \tr, \tc + \tr \right]}`.
 
 -  :math:`\IL{\DTF = \frac{16384 \tmult 15}{86400} = 2.8\overline{444}}`,
-   denotes the minimal duration (in days) of a Tezos cycle, assuming all
+   denotes the minimal duration (in days) of a Mavryk cycle, assuming all
    16384 blocks in the cycle are produced at the minimal allowed time –
    that is, every 15 seconds.
 
@@ -233,7 +233,7 @@ The total sum of all weights is :math:`\tw` = 21762. The total issuance
 per block, :math:`\IL{\isb{c}}`, is distributed amongst the different
 rewards in proportion to their weight.
 
-**Consensus rewards.** Since the adoption of Tenderbake, Tezos protocols
+**Consensus rewards.** Since the adoption of Tenderbake, Mavryk protocols
 before the Adaptive-Issuance/Staking proposal have rewarded delegates :doc:`for their participation in
 consensus <consensus>`
 with the following rewards per block:
@@ -292,7 +292,7 @@ other words, the budget for the LB subsidy is always allocated,
 regardless of whether it is issued or not.
 
 The Adaptive-Issuance/Staking proposal implements a new `RPC
-endpoint <https://tezos.gitlab.io/alpha/rpc.html#get-block-id-context-issuance-expected-issuance>`__,
+endpoint <https://protocol.mavryk.org/alpha/rpc.html#get-block-id-context-issuance-expected-issuance>`__,
 ``/issuance/expected_issuance``, which reports the precomputed values of
 all participation rewards and the LB subsidy, for the cycle
 corresponding to the queried block level, and the next 4 cycles.
@@ -302,7 +302,7 @@ corresponding to the queried block level, and the next 4 cycles.
 New Staking mechanism
 =====================
 
-Staking is an evolution of the existing Tezos :doc:`Liquid Proof-of-Stake
+Staking is an evolution of the existing Mavryk :doc:`Liquid Proof-of-Stake
 mechanism <proof_of_stake>`. It
 introduces a new role for network participants, called **staker**,
 complementary to the existing :ref:`delegate <def_delegate_alpha>`
@@ -329,7 +329,7 @@ withdrawal delays – colloquially, they are "frozen".
 Stakers are slashed proportionally to their contribution to the
 delegate’s staking balance. To simplify slashing, double-baking
 penalties are now proportional to staked funds: instead of the previous
-fixed sum of 640 tez they are now set to 10% of the delegate’s stake.
+fixed sum of 640 mav they are now set to 10% of the delegate’s stake.
 Moreover, denunciation rewards (both for double-baking and
 double-attestations) are reduced from one half to one seventh of the
 slashed funds. The chosen value prevents adversarial delegates from
@@ -390,7 +390,7 @@ parameters:
 
 Delegates can modify these staking parameters at all times, using the
 ``set_delegate_parameters`` pseudo-operation: that is, by transferring 0
-tez to their own ``set_delegate_parameters`` entry-point. The chosen values for both
+mav to their own ``set_delegate_parameters`` entry-point. The chosen values for both
 parameters need to be supplied. The new parameters are then applied
 ``PRESERVED_CYCLES`` (currently 5) cycles later.
 
@@ -428,8 +428,8 @@ they remain otherwise within the staker’s account at all times.
   Figure 2: staked funds management using pseudo-operations.
 
 To *stake* funds, a delegator uses the ``stake`` pseudo-operation,
-transferring the chosen amount of **spendable** tez to their own
-``stake`` entry-point. The **staked** tez will then be frozen and
+transferring the chosen amount of **spendable** mav to their own
+``stake`` entry-point. The **staked** mav will then be frozen and
 contribute to their chosen delegate’s staking balance. Note that the
 ``stake`` pseudo-operation will fail if the sender account is not
 *delegated*.
@@ -444,7 +444,7 @@ or more conveniently::
 
 To *unstake* funds, a staker first submits an unstake request with the
 ``unstake`` pseudo-operation. This is implemented by transferring the
-chosen amount in tez to their ``unstake`` entry-point::
+chosen amount in mav to their ``unstake`` entry-point::
 
    mavkit-client transfer <amount> from <staker> to <staker> --entrypoint unstake
 
@@ -459,7 +459,7 @@ nor slashable. They are said then to be both **unstaked** and
 
 A staker can retrieve all unstaked and finalizable tokens at any time,
 making them spendable again. This is done using the ``finalize_unstake``
-entrypoint -– that is, by transferring 0 tez to their
+entrypoint -– that is, by transferring 0 mav to their
 ``finalize_unstake`` entry-point::
 
    mavkit-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake
@@ -491,7 +491,7 @@ Feature activation vs protocol activation
 =========================================
 
 Should the Adaptive-Issuance/Staking proposal be accepted by the community, and
-once the protocol becomes active on Tezos Mainnet, most of the features
+once the protocol becomes active on Mavryk Mainnet, most of the features
 described in this document will **not** be enabled by default, only
 latent possibilities in the protocol, waiting for a separate activation.
 
@@ -512,9 +512,7 @@ activation:
 -  The new interface for stake manipulation based on
    *pseudo-operations*. Note that this entails the deprecation of the
    ``set/unset deposits limit`` interface and also the end of automatic
-   deposit freezing. On protocol activation, each delegate’s stake is
-   derived from the frozen deposits at the end of the last cycle of
-   Nairobi.
+   deposit freezing.
 -  The changes in slashing penalties (double-baking penalties are set to
    10% of the staked funds) and denunciation rewards (they amount to one
    seventh of slashed funds).

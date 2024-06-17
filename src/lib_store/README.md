@@ -29,8 +29,8 @@ storage.
   - `Snapshots`: canonical storage representation for storage
     import/export
 - A comprehensive view of the storage implementation is available at
-  https://tezos.gitlab.io/shell/storage.html
+  https://protocol.mavryk.org/shell/storage.html
 
 ## API Documentation
 
-- http://tezos.gitlab.io/api/odoc/_html/mavryk-storage/index.html
+- http://protocol.mavryk.org/api/odoc/_html/mavryk-storage/index.html

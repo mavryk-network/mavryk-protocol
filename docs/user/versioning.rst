@@ -11,14 +11,14 @@ The whole Mavkit software is versioned by releases, see :doc:`../releases/releas
 Protocol versions
 -----------------
 
-The Tezos economic protocol is versioned at a different pace, according to a :doc:`voting process <../active/voting>`, see :doc:`../protocols/naming`.
+The Mavryk economic protocol is versioned at a different pace, according to a :doc:`voting process <../active/voting>`, see :doc:`../protocols/naming`.
 
 Protocol environment versions
 -----------------------------
 
 The economic protocol can interact with the rest of the Mavkit software through a sandboxed API called a protocol environment.
 When new features are needed by a proposed protocol, or if the protocol API is changed, a new environment version is created,
-see `Protocol environment versions <https://tezos.gitlab.io/shell/protocol_environment.html#environment-versions>`__.
+see `Protocol environment versions <https://protocol.mavryk.org/shell/protocol_environment.html#environment-versions>`__.
 The new environment is delivered as part of a new Mavkit release.
 
 

@@ -68,8 +68,8 @@ Consequently, when the specification evolves to become more demanding, some ``TO
 Note that the reference to an existing issue on the first line is mandatory, to facilitate searches of evolutions corresponding to given issues, and might be checked automatically by the :ref:`Merge-Request Bot <merge_bot>`.
 The reference to an issue may be one of:
 
-- a URL such as ``https://gitlab.com/tezos/tezos/-/issues/1377``
-- a GitLab notation such as ``#123`` (implicitly under ``tezos/tezos``), ``michelson-reference#123`` (implicitly under ``tezos/michelson-reference``),
+- a URL such as ``https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/1377``
+- a GitLab notation such as ``#123`` (implicitly under ``mavryk-network/mavryk-protocol``), ``michelson-reference#123`` (implicitly under ``tezos/michelson-reference``),
   or ``oxheadalpha/merbocop#123`` (fully qualified).
 
 License
@@ -169,7 +169,7 @@ When ``odoc`` returns a non-zero exit code, the list of errors is displayed in t
 The full details of each error, and also the regular warnings, can be found in the log produced by ``odoc`` in file ``${TMPDOCDIR}/odoc.log``, where variable ``TMPDOCDIR`` is defined in file :src:`docs/Makefile`.
 Search for the string ``Error:`` in that file to find all the errors.
 
-You may consult a list of `typical error messages found by odoc in the Tezos repository <https://gitlab.com/nomadic-labs/protodoc/-/blob/master/doc/errors.md>`__.
+You may consult a list of `typical error messages found by odoc in the Mavryk repository <https://gitlab.com/nomadic-labs/protodoc/-/blob/master/doc/errors.md>`__.
 These examples may help both to avoid common pitfalls when writing docstrings,  and to better understand ``odoc`` errors that you may encounter.
 
 index.mld files
@@ -606,7 +606,7 @@ variant to the corresponding type ``t_with_version`` (see
 :ref:`RPC-versioning-dev-adding-an-rpc`). Otherwise, the ``version``
 query parameter should be added (a natural number starting from
 ``0``). See example `here
-<https://gitlab.com/tezos/tezos/-/merge_requests/3480>`_.
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3480>`_.
 
 For versioning an RPC which returns a type ``t``, you have to write in
 the service module of the RPC a type ``t_with_version`` which has one

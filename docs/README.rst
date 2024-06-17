@@ -2,8 +2,8 @@
 Documenting
 ***********
 
-The documentation is available online at `tezos.gitlab.io <http://tezos.gitlab.io/>`_,
-and always up to date with branch ``master`` on `GitLab <https://gitlab.com/tezos/tezos>`_.
+The documentation is available online at `protocol.mavryk.org <http://protocol.mavryk.org/>`_,
+and always up to date with branch ``master`` on `GitLab <https://gitlab.com/mavryk-network/mavryk-protocol>`_.
 
 Building the documentation
 ==========================
@@ -265,7 +265,7 @@ Documenting protocols
 
 Due to the duplication of the documentation for multiple protocol versions, the following extra guidelines should be observed.
 
-- In principle, protocol-independent pages should only refer to the currently active protocol. Indeed, until newer protocols are adopted, there is no guarantee that their features will be part of Tezos someday.
+- In principle, protocol-independent pages should only refer to the currently active protocol. Indeed, until newer protocols are adopted, there is no guarantee that their features will be part of Mavryk someday.
   Note that there is a symbolic link called ``active`` within the documentation folder pointing to the currently active protocol directory.
   Use it whenever appropriate to avoid introducing hardcoded protocol numbers.
 

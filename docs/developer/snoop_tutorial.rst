@@ -337,7 +337,7 @@ and attesters will spend by running the feature. Here is a typical workflow:
 Updating dependencies or code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When developers update a library that Tezos depends on, or modify a
+When developers update a library that Mavryk depends on, or modify a
 protocol feature in such a way that gas may be impacted, they should check so by
 running Snoop before and after the modifications.
 

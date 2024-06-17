@@ -147,7 +147,7 @@ Tezt
 testing. Tezt focuses on tests that run in the CI, although it is also
 used for some manual tests (see the :src:`tezt/manual_tests`
 folder). Its main strengths are summarized in its :doc:`section in the
-Tezos Developer Documentation <tezt>`. Conceptually Tezt consists of a
+Mavryk Developer Documentation <tezt>`. Conceptually Tezt consists of a
 generic framework for writing tests interacting with external
 processes, and a set of Mavkit-specific modules for interacting with
 the Mavkit binaries: the client, baker, etc.
@@ -167,7 +167,7 @@ Example tests:
  - Testing absence of regressions in encodings (in :src:`tezt/tests/encoding.ml`)
 
 References:
- - :doc:`Section in Tezos Developer Documentation on Tezt <tezt>`
+ - :doc:`Section in Mavryk Developer Documentation on Tezt <tezt>`
  - `General API documentation <https://nomadic-labs.gitlab.io/tezt/>`__
  - :package-api:`Mavkit-specific API documentation <tezt-tezos/Tezt_tezos/index.html>`
 
@@ -249,7 +249,7 @@ References:
    --------------------
 
    The `Michelson unit test proposal
-   <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`__ defines a
+   <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`__ defines a
    format for unit tests for Michelson snippets. If the proposal is eventually accepted, then these
    tests will be executable through ``mavkit-client``.
 
@@ -259,7 +259,7 @@ References:
     - Conformance testing for Michelson interpreters.
 
    References:
-    - `Merge request defining the Michelson unit test format <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`_
+    - `Merge request defining the Michelson unit test format <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`_
     - `A conformance test suite for Michelson interpreter using the Michelson unit test format <https://github.com/runtimeverification/michelson-semantics/tree/master/tests/unit>`_
 
 .. _gitlab_test_ci:
@@ -374,7 +374,7 @@ developer utilities and old protocols. In particular:
    - ``src/lib_client_base/gen/dune`` (executable name ``bip39_generator``)
    - ``src/lib_protocol_compiler/dune`` (executable name ``replace``)
    - ``src/proto_alpha/lib_parameters/dune`` (executable name ``gen``)
-   - ``src/proto_011_PtHangz2/lib_parameters/dune`` (executable name ``gen``)
+   - ``src/proto_001_PtAtLas/lib_parameters/dune`` (executable name ``gen``)
    - ``src/lib_protocol_environment/ppinclude/dune`` (executable name ``ppinclude``)
    - ``src/lib_store/legacy_store/dune`` (executable name ``legacy_store_builder``)
 
@@ -479,7 +479,7 @@ Executing tests through the GitLab CI
 All tests are executed on all branches for each commit.  For
 instances, to see the latest runs of the CI on the master branch,
 visit `this page
-<https://gitlab.com/tezos/tezos/-/commits/master>`_. Each commit is
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/commits/master>`_. Each commit is
 annotated with a green checkmark icon if the CI passed, and a red
 cross icon if not. You can click the icon for more details.
 
@@ -589,7 +589,7 @@ pipeline on the most recently merged branch. It then fetches the
 coverage result from there, and also retrieves the artifacts which
 contains the HTML coverage report.
 GitLab also produces a `graph of the coverage ratio over time
-<https://gitlab.com/tezos/tezos/-/graphs/master/charts>`_.
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/graphs/master/charts>`_.
 
 Conventions
 -----------

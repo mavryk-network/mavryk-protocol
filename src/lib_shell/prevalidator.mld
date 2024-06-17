@@ -15,7 +15,7 @@ Some links in this file have been broken by file renamings.
 This page details the internals of the prevalidator component. It explains the
 complete lifecycle of an operation in the prevalidator, from its reception to
 its classification and advertisement to the neighborhood.
-See {{: https://tezos.gitlab.io/shell/prevalidation.html } the online documentation}
+See {{: https://protocol.mavryk.org/shell/prevalidation.html } the online documentation}
 for a more user-friendly introduction to the prevalidator.
 
 The roles of the prevalidator are: fetching and receiving operations, checking
@@ -79,7 +79,7 @@ classification consists of precheck, application, and post-filtering phases.
 The goal of
 {{!Mavryk_shell.Shell_plugin.FILTER.Mempool.precheck} precheck}
 is to check the
-{{: https://tezos.gitlab.io/alpha/precheck.html#solvable-operations } solvability}
+{{: https://protocol.mavryk.org/alpha/precheck.html#solvable-operations } solvability}
 of the operation (see {!section-precheck}) within the
 validation state. If the check fails, the operation is classified according to the
 error returned by the [precheck] function (see

@@ -1,10 +1,10 @@
 .. _howtoget:
 
-How to get Tezos
-================
+How to get Mavryk
+=================
 
-In this how-to we explain how to get up-to-date binaries to run Tezos
-(more precisely, the "Mavkit" implementation of Tezos software)
+In this how-to we explain how to get up-to-date binaries to run Mavryk
+(more precisely, the "Mavkit" implementation of Mavryk software)
 on any network (either on the mainnet or on one of the test networks).
 Mavkit consists of :ref:`several binaries <mavryk_binaries>` (i.e., executable files), including: a client, a node, and a baker.
 
@@ -39,7 +39,7 @@ efficiency and security considerations. For instance, static binaries have a
 different memory footprint compared to dynamically-linked binaries. Also,
 compiling the sources in the official Mavkit
 repository is more secure than installing OPAM packages from a repository that
-is not under Tezos control. In particular, compiling from sources enforces a fixed set of dependencies; when compiling via OPAM, this set of dependencies may change, which may or may not be compatible with your security practices.
+is not under Mavryk control. In particular, compiling from sources enforces a fixed set of dependencies; when compiling via OPAM, this set of dependencies may change, which may or may not be compatible with your security practices.
 
 All our installation scenarios are tested daily, including by automated means, to ensure that they are correct and up to date.
 These tests are performed by applying scenarios in several standard environments, from scratch.
@@ -143,7 +143,7 @@ Using Docker Images And Docker-Compose
 
 For every change committed in the GitLab repository, Docker images are
 automatically generated and published on `DockerHub
-<https://hub.docker.com/r/tezos/tezos/>`_. This provides a convenient
+<https://hub.docker.com/r/mavrykdynamics/mavryk/>`_. This provides a convenient
 way to run an always up-to-date ``mavkit-node``.
 
 One way to run those Docker images is with `docker-compose <https://docs.docker.com/compose>`_.
@@ -161,9 +161,9 @@ the Alpha protocol.
 
 You can open a new shell session and run ``docker ps`` in it, to display all the available containers, e.g.::
 
-    8f3638fae48c  docker.io/tezos/tezos:latest  mavkit-node            3 minutes ago  Up 3 minutes ago   0.0.0.0:8732->8732/tcp, 0.0.0.0:9732->9732/tcp  node-alpha
-    8ba4d6077e2d  docker.io/tezos/tezos:latest  mavkit-baker --liq...  3 minutes ago  Up 31 seconds ago                                                  baker-alpha
-    3ee7fcbc2158  docker.io/tezos/tezos:latest  mavkit-accuser         3 minutes ago  Up 35 seconds ago                                                  accuser-alpha
+    8f3638fae48c  docker.io/mavrykdynamics/mavryk:latest  mavkit-node            3 minutes ago  Up 3 minutes ago   0.0.0.0:8732->8732/tcp, 0.0.0.0:9732->9732/tcp  node-alpha
+    8ba4d6077e2d  docker.io/mavrykdynamics/mavryk:latest  mavkit-baker --liq...  3 minutes ago  Up 31 seconds ago                                                  baker-alpha
+    3ee7fcbc2158  docker.io/mavrykdynamics/mavryk:latest  mavkit-accuser         3 minutes ago  Up 35 seconds ago                                                  accuser-alpha
 
 
 The node's RPC interface will be available on localhost and can be queried with ``mavkit-client``.
@@ -186,7 +186,7 @@ build one locally and reference it. Run the following command to build the image
 And then update the docker-compose file (e.g., ``alpha.yml``) with the docker tag::
 
     node:
-      image: tezos:latest
+      image: mavryk:latest
       ...
 
 Docker Image Configuration
@@ -499,8 +499,8 @@ Get the sources
 ~~~~~~~~~~~~~~~
 
 Mavkit ``git`` repository is hosted at `GitLab
-<https://gitlab.com/tezos/tezos/>`_. All development happens here. Do
-**not** use our `GitHub mirror <https://github.com/tezos/tezos>`_
+<https://gitlab.com/mavryk-network/mavryk-protocol/>`_. All development happens here. Do
+**not** use our `GitHub mirror <https://github.com/mavryk-network/mavryk-protocol>`_
 which we don't use anymore and only mirrors what happens on GitLab.
 
 Checkout the ``latest-release`` branch to use the latest release.

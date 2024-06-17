@@ -10,7 +10,7 @@ action by signing it with their private keys. The minimal number of
 participants that need to agree for the action to be approved is
 called the multisig *threshold*.
 
-On Tezos, a way to run a multisig is by using a smart contract. Such a
+On Mavryk, a way to run a multisig is by using a smart contract. Such a
 multisig contract has built-in support in the ``mavkit-client`` and has
 been formally verified using the `Mi-Cho-Coq <https://gitlab.com/nomadic-labs/mi-cho-coq/>`_ framework.
 
@@ -206,7 +206,7 @@ built-in multisig contract, allowing one to originate and use in
 situations where ``mavkit-client`` cannot be used e.g., when
 interacting with the chain from a web browser or in a mobile
 application. In particular, this interface is typically useful when
-developing multisig support in another Tezos wallet.
+developing multisig support in another Mavryk wallet.
 
 Anti-replay protection
 ~~~~~~~~~~~~~~~~~~~~~~

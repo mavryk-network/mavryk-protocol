@@ -1,19 +1,19 @@
 Glossary
 ========
 
-This glossary is divided in two sections, the first one concerns Tezos, and
+This glossary is divided in two sections, the first one concerns Mavryk, and
 the second one concerns the `economic protocol`_. The definitions in the latter
 section may be different for other protocol versions.
 
-Tezos
------
+Mavryk
+------
 
 _`Block`
-    The Tezos blockchain is a linked list of blocks (or actually, a tree when several competing branches exist).
+    The Mavryk blockchain is a linked list of blocks (or actually, a tree when several competing branches exist).
     Blocks conceptually contain a header and a list of operation_\ s,
     which are specific to the `economic protocol`_.
 
-    The header itself decomposes into a :ref:`shell header<shell_header>` (common to all Tezos economic protocols), and a protocol-specific header.
+    The header itself decomposes into a :ref:`shell header<shell_header>` (common to all Mavryk economic protocols), and a protocol-specific header.
     The shell header contains protocol-agnostic data such as the predecessor's block hash and the block's timestamp.
 
 .. _def_context_atlas:
@@ -21,18 +21,18 @@ _`Block`
 _`Context`
     The state of the blockchain. The context is defined by the
     `economic protocol`_ and typically includes information such as
-    “this account_ is credited with this many tez” and “this is the
+    “this account_ is credited with this many mav” and “this is the
     code for that `smart contract`_.”
 
     The context is modified by operation_\ s. For example, an
-    operation_ can transfer tez from one account_ to another, which modifies the
+    operation_ can transfer mav from one account_ to another, which modifies the
     part of the context that tracks account_ credit.
 
 _`Economic protocol`
     The economic protocol is the set of rules defining valid operation_\ s and block_\ s, how the network agrees on the next block to build (the consensus algorithm),
     and how operations update the blockchain state, also called context_.
 
-    In Tezos, the economic protocol can be upgraded without interruption or
+    In Mavryk, the economic protocol can be upgraded without interruption or
     forking of the blockchain. This is because the procedure for an upgrade is also defined within the economic protocol, which can thus update itself.
 
 _`Fitness` (a.k.a. score, weight)
@@ -108,7 +108,7 @@ _`Accuser`
 _`Account`
     An account is an address managed by the protocol.
     In the context_, each account is associated with a balance (an amount of
-    tez available).
+    mav available).
 
     An account can be either an `originated account`_ or an `implicit account`_.
 
@@ -137,7 +137,7 @@ _`Baking rights`
 _`Burn`
     To ensure responsible use of the storage space on the public blockchain,
     there are some costs charged to users for consuming storage. These
-    costs are burnt (i.e., the amount of tez is destroyed). For example,
+    costs are burnt (i.e., the amount of mav is destroyed). For example,
     a per-byte storage cost is burnt for increasing the storage space of a
     smart contract; a fixed amount is burnt for allocating a new contract
     (which consumes space by storing its address on the blockchain).
@@ -162,7 +162,7 @@ _`Cycle`
 
     The length of a cycle is a (parametric) protocol
     constant_, and thus might change across different
-    Tezos protocols.
+    Mavryk protocols.
 
 .. _def_delegate_atlas:
 
@@ -240,7 +240,7 @@ _`Implicit account`
     signature scheme) and finally the hash of the public key.
 
 _`Layer 1`
-    The primary blockchain i.e. the Tezos chain. Within any blockchain ecosystem, Layer 1 (L1) refers to the main chain to
+    The primary blockchain i.e. the Mavryk chain. Within any blockchain ecosystem, Layer 1 (L1) refers to the main chain to
     which side chains, rollups, or other protocols connect and settle to. The Layer 1 chain is deemed to be most
     secure, since it has the most value (or stake) tied to it, and be most decentralized and censorship resistant.
     However, transaction space is limited leading to low throughput and possibly high transaction costs.
@@ -251,7 +251,7 @@ _`Layer 2`
     write to the `layer 1`_ chain. By processing transactions on layer 2 networks,
     greater scalability in speed and throughput can be achieved by the ecosystem overall, since the number of transactions
     the layer 1 can process directly is limited. By cementing transactions from a L2 to L1,
-    the security of the L1 chain backs those operations. In Tezos there are a number of layer 2 solutions,
+    the security of the L1 chain backs those operations. In Mavryk there are a number of layer 2 solutions,
     including :doc:`Smart Optimistic Rollups <smart_rollups>`,
     validity or ZK-Rollups `Epoxy <https://research-development.nomadic-labs.com/files/cryptography.html>`_ ,
     zkChannels, and sidechains such as `Deku <https://deku.marigold.dev/>`_.
@@ -263,7 +263,7 @@ _`Michelson`
 .. _def_minimal_stake_atlas:
 
 _`Minimal stake`
-    An amount of tez (e.g., 6000ṁ) serving as a minimal amount for a
+    An amount of mav (e.g., 6000ṁ) serving as a minimal amount for a
     delegate to have `baking rights`_ and voting rights in a cycle_.
 
 _`Operation kinds`
@@ -279,7 +279,7 @@ _`Originated account`
 
 _`Origination`
     A manager operation_ whose purpose is to create -- that
-    is, to deploy -- a `smart contract`_ on the Tezos blockchain.
+    is, to deploy -- a `smart contract`_ on the Mavryk blockchain.
 
 .. _def_round_atlas:
 
@@ -315,7 +315,7 @@ _`Stake`
     :ref:`here<active_stake_atlas>` for details.
 
 _`Transaction`
-    An operation_ to transfer tez between two accounts, or to run the code of a
+    An operation_ to transfer mav between two accounts, or to run the code of a
     `smart contract`_.
 
 _`Validation pass`

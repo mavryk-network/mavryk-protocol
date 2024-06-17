@@ -114,10 +114,10 @@ unspecified by the user, the store sets it to the :ref:`last allowed fork level 
 While the node is running, it is possible to
 call the following RPCs to access the values of all these variables:
 
-- the checkpoint: `GET /chains/<chain_id>/levels/checkpoint <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-checkpoint>`__
-- the savepoint `GET /chains/<chain_id>/levels/savepoint <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-savepoint>`__
-- the caboose: `GET /chains/<chain_id>/levels/caboose <http://tezos.gitlab.io/shell/rpc.html#get-chains-chain-id-levels-caboose>`__
-- the history mode: `GET /config/history_mode <http://tezos.gitlab.io/shell/rpc.html#get-config-history-mode>`__
+- the checkpoint: `GET /chains/<chain_id>/levels/checkpoint <http://protocol.mavryk.org/shell/rpc.html#get-chains-chain-id-levels-checkpoint>`__
+- the savepoint `GET /chains/<chain_id>/levels/savepoint <http://protocol.mavryk.org/shell/rpc.html#get-chains-chain-id-levels-savepoint>`__
+- the caboose: `GET /chains/<chain_id>/levels/caboose <http://protocol.mavryk.org/shell/rpc.html#get-chains-chain-id-levels-caboose>`__
+- the history mode: `GET /config/history_mode <http://protocol.mavryk.org/shell/rpc.html#get-config-history-mode>`__
 
 Files hierarchy
 ***************
@@ -174,7 +174,7 @@ The API provides generic accessors/modifiers for manipulating a concrete context
 git-like commands: ``commit``, ``checkout`` to manipulate different
 context branches.
 
-The Tezos context comes with a specific context hash function that
+The Mavryk context comes with a specific context hash function that
 cannot be changed. Otherwise, the replicated consistency would not be
 maintained. In particular, the resulting hash of the application of a
 block is stored in its header. When validated, a block's announced
@@ -182,7 +182,7 @@ block is stored in its header. When validated, a block's announced
 the two context hashes are different, the block is considered invalid.
 
 The context of a block can be accessed using the protocols' RPCs such as
-`GET ../\<block_id\> <https://tezos.gitlab.io/active/rpc.html#get-block-id>`__, and more specifically by RPCs under the path ``../<block_id>/context``.
+`GET ../\<block_id\> <https://protocol.mavryk.org/active/rpc.html#get-block-id>`__, and more specifically by RPCs under the path ``../<block_id>/context``.
 
 The context of the blockchain is only modified by :doc:`blocks applications <../active/validation>`. Only the
 contexts resulting from the application of valid blocks is committed on disk, by the validation toolchain.

@@ -10,12 +10,12 @@ usage:
 if [ $# -eq 1 ] && [ "$1" = "rc" ]
 then
   # [setup rc repository]
-  REPO="@Serokell/Tezos-rc"
+  REPO="@Serokell/Mavryk-rc"
   # [end]
 elif [ $# -eq 0 ]
 then
   # [setup stable repository]
-  REPO="@Serokell/Tezos"
+  REPO="@Serokell/Mavryk"
   # [end]
 else
   usage
@@ -31,10 +31,10 @@ dnf install -y dnf-plugins-core
 dnf copr enable -y $REPO && dnf update -y
 dnf install -y mavryk-client
 dnf install -y mavryk-node
-dnf install -y mavryk-baker-PtNairob
-dnf install -y mavryk-accuser-PtNairob
+dnf install -y mavryk-baker-PtAtLas
+dnf install -y mavryk-accuser-PtAtLas
 # [test executables]
 mavkit-client --version
 mavkit-node --version
-mavkit-baker-PtNairob --version
-mavkit-accuser-PtNairob --version
+mavkit-baker-PtAtLas --version
+mavkit-accuser-PtAtLas --version

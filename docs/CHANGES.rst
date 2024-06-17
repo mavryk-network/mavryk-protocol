@@ -1239,7 +1239,7 @@ Node
 - **Breaking change**: the built-in network alias for Ithacanet
   (``--network ithacanet``) has been removed.
 
-- Added the built-in network alias for Ghostnet (``--network ghostnet``).
+- Added the built-in network alias for Basenet (``--network ghostnet``).
 
 - Updated the encoding of worker events JSON messages.
 
@@ -2253,7 +2253,7 @@ Node
    changes. If necessary, the old behaviour can be restored by editing the
    node's configuration file, but it is discouraged due to security concerns
    of open unsafe endpoints on public networks. See Node Configuration section
-   of the Tezos documentation for details.
+   of the Mavryk documentation for details.
 
 -  Replaced the chain storage layer with a more efficient backend in
    terms of both performance and storage size.
@@ -2398,12 +2398,12 @@ Proxy server
 
 -  Added a new binary: ``mavkit-proxy-server``, a read-only frontend to a node.
    It is designed to lower the load of nodes, by being capable
-   of serving `protocol RPCs <https://tezos.gitlab.io/alpha/rpc.html>`__.
+   of serving `protocol RPCs <https://protocol.mavryk.org/alpha/rpc.html>`__.
    An instance of a proxy server is protocol-specific: it automatically picks
    up the protocol from the backing node when it starts. Proxy servers
    can be started and destroyed at will, making them easy to deploy.
 
-   Please refer to the `online documentation <https://tezos.gitlab.io/user/proxy-server.html>`__
+   Please refer to the `online documentation <https://protocol.mavryk.org/user/proxy-server.html>`__
    for further details.
 
 Version 9.7
@@ -2872,7 +2872,7 @@ Node
 
 -  Changed signal handling and exit codes for most binaries. The codes’
    significance are detailed in `the user
-   documentation <http://tezos.gitlab.io/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
+   documentation <http://protocol.mavryk.org/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
 
 -  Command ``mavkit-node --version`` now exits with exit code 0 instead
    of 1.
@@ -3244,7 +3244,7 @@ Multinetwork
 
 -  The network name is printed in the logs on startup.
 
-For more information, see: http://tezos.gitlab.io/user/multinetwork.html
+For more information, see: http://protocol.mavryk.org/user/multinetwork.html
 
 
 Node

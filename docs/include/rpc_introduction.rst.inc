@@ -1,4 +1,4 @@
-This page describes the RPCs specific to the particular version of the Tezos protocol specified above.
+This page describes the RPCs specific to the particular version of the Mavryk protocol specified above.
 (The protocol-independent RPCs are described :doc:`in this other page <../shell/rpc>`.)
 
 .. warning::

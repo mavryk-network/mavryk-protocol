@@ -20,7 +20,7 @@ then
 elif [ $# -eq 0 ]  # don't remove this branch used for an example in the doc!
 then
   # [select branch]
-  REPO="mavrykdynamics/mavryk"
+  REPO="mavryk-network/mavryk-protocol"
   BRANCH="latest-release"
   # [end]
 else

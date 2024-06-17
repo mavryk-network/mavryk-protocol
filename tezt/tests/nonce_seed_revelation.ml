@@ -46,7 +46,7 @@ type block = {
 }
 
 (* Test baker injection of nonce revelations.
-   See http://tezos.gitlab.io/alpha/proof_of_stake.html
+   See http://protocol.mavryk.org/alpha/proof_of_stake.html
    Runs a node and a baker. The baker bakes two full cycles.
    We collect nonce hashes from the first cycle. And check
    that they are revealed in the second cycle *)

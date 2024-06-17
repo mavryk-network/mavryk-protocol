@@ -30,7 +30,7 @@ For convenience, the files generated from the most recent release(s) are provide
     This UI can be used for browsing the OpenAPIs (no need to install Swagger UI for that).
     However, the interactive use suggested in this UI does not currently work because:
 
-    - the UI does not allow one to specify a server (which should correspond to a runnning Tezos node), and
+    - the UI does not allow one to specify a server (which should correspond to a runnning Mavryk node), and
     - browsers may block some of the generated requests or responses for security issues.
 
 Shell RPCs
@@ -48,22 +48,22 @@ Shell RPCs
 The node provides some RPCs which are independent of the protocol.
 Their OpenAPI specification can be found at:
 
-- `rpc-openapi-rc.json (version 18.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
+- `rpc-openapi-rc.json (version 19.3) <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/rpc-openapi.json>`_
 
 .. TODO tezos/tezos#2170: add/remove section(s)
 
-Nairobi RPCs
+Atlas RPCs
 ------------
 
-The OpenAPI specifications for RPCs which are specific to the Nairobi (``PtNairob``)
+The OpenAPI specifications for RPCs which are specific to the Atlas (``PtAtLas``)
 protocol can be found at:
 
-- `nairobi-openapi.json (version 18.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-openapi.json>`_
+- `atlas-openapi.json (version 19.3) <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/atlas-openapi.json>`_
 
 The OpenAPI specifications for RPCs which are related to the mempool
-and specific to the Nairobi protocol can be found at:
+and specific to the Atlas protocol can be found at:
 
-- `nairobi-mempool-openapi.json (version 18.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/nairobi-mempool-openapi.json>`_
+- `atlas-mempool-openapi.json (version 19.3) <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/atlas-mempool-openapi.json>`_
 
 .. _openapi_generate:
 

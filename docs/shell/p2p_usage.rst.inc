@@ -1,5 +1,5 @@
 
-This page details the structure and layout of messages used by the Tezos P2P layer.
+This page details the structure and layout of messages used by the Mavryk P2P layer.
 
 The elementary types used for message or header fields are documented in the `Data_encoding <https://nomadic-labs.gitlab.io/data-encoding/data-encoding/Data_encoding/index.html>`_ module, for example:
 

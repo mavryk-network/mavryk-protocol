@@ -14,14 +14,14 @@ Reporting issues
 ~~~~~~~~~~~~~~~~
 
 The simplest way to contribute to Mavkit is to report issues that you may
-find with the software on `GitLab <https://gitlab.com/tezos/tezos/-/issues>`__.
+find with the software on `GitLab <https://gitlab.com/mavryk-network/mavryk-protocol/-/issues>`__.
 If you are unsure about an issue
 consult the :doc:`technical support sources <../introduction/support>`
 first and always make sure
 to search the existing issues before reporting a new one.
 Some information that are probably important to include in the description:
 the architecture (e.g. *ARM64*), the operating system (e.g. *Debian
-Stretch*), the network you are connected to (e.g. *Ghostnet*), the
+Stretch*), the network you are connected to (e.g. *Basenet*), the
 binary or component (e.g. *mavkit-node crashes* or *rpc X returns Y
 while Z was expected*).
 
@@ -31,13 +31,13 @@ Fixing typos
 ~~~~~~~~~~~~
 
 You may also want to fix some typos and minor errors or incoherencies in the *documentation*, which is situated in the ``docs/`` subfolder of the code repository, or within *comments* or *docstrings* within the code.
-Small tweaks like these can be contributed without creating a merge request and commits can rather be pushed directly to the ``typo-doc`` branch in the ``tezos/tezos`` repository. This branch is regularly merged into the master branch, e.g., every one or two weeks.
+Small tweaks like these can be contributed without creating a merge request and commits can rather be pushed directly to the ``typo-doc`` branch in the ``mavryk-network/mavryk-protocol`` repository. This branch is regularly merged into the master branch, e.g., every one or two weeks.
 (If the branch has been automatically deleted following a merge, just create it again.)
 This periodic merging is implemented by a series of MRs named "the typo train", created for you by a volunteer, and batching the currently pending fixes.
 Of course, all these commits will be reviewed before being integrated.
 The current edition of the typo train MR can be found in meta-issue :gl:`#2329`.
 
-If you don't have enough permissions to push to the branch above, you can  still make commits in your own fork of the Mavkit repository, and ask for them to be cherry-picked on the typo/train on the ``#documentation`` channel on the Tezos Dev Slack space.
+If you don't have enough permissions to push to the branch above, you can  still make commits in your own fork of the Mavkit repository, and ask for them to be cherry-picked on the typo/train on the ``#documentation`` channel on the Mavryk Dev Slack space.
 Alternatively, you may of course create your own MRs for submitting your changes, without using the typo train.
 
 Other non-code contributions
@@ -45,7 +45,7 @@ Other non-code contributions
 
 If you acquired a good expertise level in using, configuring, or overcoming problems with the various Mavkit executables, you may bring useful contributions by providing assistance to others via the different channels (Slack,  StackExchange, etc.) listed in the :doc:`technical support page <../introduction/support>`.
 
-If you want to shape the future of Mavkit, you may consider contributing to Tezos Improvement Proposals (TZIPs), that specify new features or define standards. These are located in the `TZIP repo <https://gitlab.com/tezos/tzip/>`__.
+If you want to shape the future of Mavkit, you may consider contributing to Mavryk Improvement Proposals (TZIPs), that specify new features or define standards. These are located in the `TZIP repo <https://gitlab.com/tezos/tzip/>`__.
 
 Going further
 ~~~~~~~~~~~~~
@@ -73,7 +73,7 @@ libraries that we use pervasively.
 
 While you familiarize yourself with the basics as suggested above, you
 can have a look at the :doc:`software architecture
-<../shell/the_big_picture>` of Tezos. It will
+<../shell/the_big_picture>` of Mavryk. It will
 give you the main components and their interactions, and links to the
 documentation for the various parts.
 
@@ -85,7 +85,7 @@ contributions to the code are submitted, reviewed, and finally accepted into the
 Our git strategy
 ----------------
 
-First of all, the repository is https://gitlab.com/tezos/tezos. So if you want
+First of all, the repository is https://gitlab.com/mavryk-network/mavryk-protocol. So if you want
 to contribute, simply create an account there.
 
 There are many ways to use Git, here is ours.
@@ -406,7 +406,7 @@ However, small merge requests also come with drawbacks:
   is not yet finished; or dead code is temporarily introduced.
 - They have to be reverted if the entire feature is ultimately cancelled.
 
-For ``tezos/tezos`` to evolve fast, however, we are convinced that the advantages
+For ``mavryk-network/mavryk-protocol`` to evolve fast, however, we are convinced that the advantages
 of small merge requests outweigh the drawbacks. If possible, drawbacks
 must be mitigated as follows:
 
@@ -429,7 +429,7 @@ must be mitigated as follows:
 Merge Request "Assignees" Field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Merge requests targeted at ``tezos/tezos master`` should in general
+Merge requests targeted at ``mavryk-network/mavryk-protocol master`` should in general
 have exactly one assignee. The assignee is someone from which an
 action is required to get the merge request moving. Example actions include:
 
@@ -553,7 +553,7 @@ In the special case where your MR adds a new Python, Rust, JavaScript, or other
 dependency, additional steps must also be followed.
 
 * for Python, you can refer to the related section in the :ref:`python testing documentation <python_adding_new_dependencies>`.
-* the Rust dependencies are located in the GitLab repository `tezos-rust-libs <https://gitlab.com/tezos/tezos-rust-libs>`_ and the instructions are listed there.
+* the Rust dependencies are located in the GitLab repository `tezos-rust-libs <https://gitlab.com/mavryk-network/mavryk-protocol-rust-libs>`_ and the instructions are listed there.
 
 For others, there is currently no dedicated guide. Do not hesitate to ask for
 help on the ``#devteam`` channel on the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack.
@@ -570,7 +570,7 @@ master.
 Protocol snapshots
 ~~~~~~~~~~~~~~~~~~
 
-Before a proposal, a new directory, e.g. ``proto-005-PsBabyM1/``, is
+Before a proposal, a new directory, e.g. ``proto-001-PtAtLas/``, is
 created from ``proto_alpha/`` where the development continues.
 These directories are called *protocol snapshots*.
 

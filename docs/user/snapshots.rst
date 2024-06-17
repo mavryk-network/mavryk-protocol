@@ -1,7 +1,7 @@
 Snapshots
 =========
 
-When a node in the Tezos network is started, it has to catch up the current state of the blockchain (a process known as "bootstrapping"), making sure that this state is coherent with the whole history of the ledger.
+When a node in the Mavryk network is started, it has to catch up the current state of the blockchain (a process known as "bootstrapping"), making sure that this state is coherent with the whole history of the ledger.
 As the chain invariably grows every day, retrieving a full chain from
 the peer-to-peer network can be a very long process.  Thanks to the
 implementation of :doc:`history modes <history_modes>`, it is now possible to propose an
@@ -19,7 +19,7 @@ be sure of is that the loaded state is not fake.
 
 The snapshot format does not (and cannot) provide any evidence that
 the imported block is actually a real point in the history of the
-Tezos network blockchain. To avoid to be fooled by a fake chain, it is
+Mavryk network blockchain. To avoid to be fooled by a fake chain, it is
 **necessary** to carefully check that the block hash of the imported
 block is included in the main chain. (Note that all the websites providing
 snapshots mention the hash corresponding to the head block in each snapshot.)
@@ -28,7 +28,7 @@ to one provided by another node under the user’s control, or by
 relying on social cues to obtain a hash from a large number of trusted
 parties which are unlikely to be colluding.
 
-For instance, one may use one or more Tezos block explorers in the :ref:`Tezos community <mavryk_community>` to check whether this block hash matches an existing block.
+For instance, one may use one or more Mavryk block explorers in the :ref:`Mavryk community <mavryk_community>` to check whether this block hash matches an existing block.
 
 After that careful selection and verification of the imported block
 hash, you can trust the node with the rest of the procedure. In
@@ -43,7 +43,7 @@ and predecessor, as well as the resulting chain state. The import
 process does the same checks, recomputing and checking all the hashes
 it encounters in the snapshot.
 
-To bootstrap an Mavkit node from a file to an empty Tezos
+To bootstrap an Mavkit node from a file to an empty Mavryk
 node directory (running this command from an already synchronised node
 will not work), run:
 
@@ -208,7 +208,7 @@ There are several services providing node snapshots. They create snapshots
 of their nodes on a regular basis (usually daily) and make them available for
 download. These include:
 
-* `XTZ-Shots <https://xtz-shots.io/mainnet/>`_
+* `Mavryk Snapshots <https://snapshots.mavryk.network>`_
 * `Lambs on acid <https://lambsonacid.nl/>`_
 * `Marigold snapshots <https://snapshots.tezos.marigold.dev/>`_
 * `Tzinit snapshots <https://snapshots.tzinit.org/>`_

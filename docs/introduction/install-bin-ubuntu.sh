@@ -22,7 +22,7 @@ else
   exit 1
 fi
 
-# TODO: https://gitlab.com/tezos/tezos/-/issues/6552
+# TODO: https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/6552
 # Mavryk ubuntu packages cannot be installed in a k8s pod.
 if [ -n "${FF_KUBERNETES_HONOR_ENTRYPOINT}" ]; then
   echo "Container orchestrated by Kubernetes detected, need to create the file /.dockerenv."
@@ -41,10 +41,10 @@ apt-get install -y software-properties-common </dev/null
 sudo add-apt-repository -y $REPO && sudo apt-get update
 sudo apt-get install -y mavryk-client
 sudo apt-get install -y mavryk-node
-sudo apt-get install -y mavryk-baker-ptnairob
-sudo apt-get install -y mavryk-accuser-ptnairob
+sudo apt-get install -y mavryk-baker-ptatlas
+sudo apt-get install -y mavryk-accuser-ptatlas
 # [test executables]
 mavkit-client --version
 mavkit-node --version
-mavkit-baker-PtNairob --version
-mavkit-accuser-PtNairob --version
+mavkit-baker-PtAtLas --version
+mavkit-accuser-PtAtLas --version

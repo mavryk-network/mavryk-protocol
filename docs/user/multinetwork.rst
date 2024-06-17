@@ -3,7 +3,7 @@
 Connecting to a Network
 =======================
 
-Tezos is run on several networks, such as Mainnet (the main network)
+Mavryk is run on several networks, such as Mainnet (the main network)
 and various :ref:`test Networks<test-networks>`. Some users may also want to run
 their own networks for various reasons. Networks differ in various ways:
 
@@ -34,11 +34,11 @@ Built-In Networks
 The simplest way to select the network to connect to is to use the ``--network``
 option for selecting a :ref:`test network<test-networks>` when you initialize your :doc:`node configuration <./node-configuration>`.
 
-For instance, to run on Ghostnet::
+For instance, to run on Basenet::
 
-  mavkit-node config init --data-dir ~/mavryk-ghostnet --network ghostnet
-  mavkit-node identity generate --data-dir ~/mavryk-ghostnet
-  mavkit-node run --data-dir ~/mavryk-ghostnet
+  mavkit-node config init --data-dir ~/mavryk-basenet --network basenet
+  mavkit-node identity generate --data-dir ~/mavryk-basenet
+  mavkit-node run --data-dir ~/mavryk-basenet
 
 .. note::
    Once initialized, the node remembers its network settings on subsequent runs
@@ -56,17 +56,17 @@ the following built-in networks:
 
 - ``sandbox``
 
-- ``ghostnet``
+- ``basenet``
 
 If you did not initialize your node configuration, or if your configuration
 file contains no ``network`` field, the node assumes you want to run Mainnet.
 You can use the ``--network`` option with ``mavkit-node run`` to make sure
 your node runs on the expected network. For instance, to make sure that
-it runs on Ghostnet::
+it runs on Basenet::
 
-  mavkit-node run --data-dir ~/mavryk-ghostnet --network ghostnet
+  mavkit-node run --data-dir ~/mavryk-basenet --network basenet
 
-This command will fail with an error if the configured network is not Ghostnet.
+This command will fail with an error if the configured network is not Basenet.
 The node also displays the chain name (such as ``MAVRYK_MAINNET``) when it starts.
 Also mind opening the :doc:`RPC interface <../developer/rpc>` as appropriate.
 
@@ -117,18 +117,6 @@ Here is an example configuration file for Mainnet::
         }
       ],
       "user_activated_protocol_overrides": [
-        {
-          "replaced_protocol": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
-          "replacement_protocol": "PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS"
-        },
-        {
-          "replaced_protocol": "PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq",
-          "replacement_protocol": "PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA"
-        },
-        {
-          "replaced_protocol": "PtHangzHogokSuiMHemCuowEavgYTP8J5qQ9fQS793MHYFpCY3r",
-          "replacement_protocol": "PtHangz2aRngywmSRGGvrcTyMbbdpWdpFKuS4uMWxg2RaH9i1qx"
-        }
       ],
       "default_bootstrap_peers":
         [
@@ -223,11 +211,11 @@ When connecting to existing networks, both options may apply, so here are some u
 
 If you use alias configuration, the configuration file stores
 the name of the network to connect to. For instance, if you configured it
-to connect to Ghostnet, it will contain something like::
+to connect to Basenet, it will contain something like::
 
   {
     "p2p": {},
-    "network": "ghostnet"
+    "network": "basenet"
   }
 
 For Mainnet, it would contain ``mainnet``, or nothing as this is actually the default.
@@ -239,7 +227,7 @@ overrides may be added. Because the configuration file only contains the name
 of the network and not its parameters, it will automatically use the updated values.
 
 However, if you use explicit configuration, the configuration file will
-no longer contain an alias such as ``mainnet`` or ``ghostnet``. Instead,
+no longer contain an alias such as ``mainnet`` or ``basenet``. Instead,
 it will explicitly contain the list of bootstrap peers, user-activated upgrades
 and user-activated protocol overrides that you specify. This means that when
 you update your node, the updated values will not be used.

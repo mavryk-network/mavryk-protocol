@@ -24,7 +24,7 @@ fi
 if [ ! -x "$(command -v rustup)" ] && \
    [[ ! -x "$(command -v rustc)" || ! -x "$(command -v cargo)" ]]; then
     echo "The Rust compiler is not installed. Please install Rust $recommended_rust_version."
-    echo "See instructions at: https://tezos.gitlab.io/introduction/howtoget.html#setup-rust"
+    echo "See instructions at: https://protocol.mavryk.org/introduction/howtoget.html#setup-rust"
     exit 1
 fi
 

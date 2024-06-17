@@ -4,7 +4,7 @@ Version 1.1
 Version 1.0 contains a new version (v10) of the protocol environment,
 which is the set of functions that a protocol can call.
 This new version is used by Atlas,
-which is a proposal for the successor of Nairobi that has been rejected by vote on Oct 2, 2023.
+which is a proposal based on the second Atlas proposal made on the Mavryk Blockchain.
 This release also contains Atlas itself as well as its associated protocol-specific executable binaries (baker, accuser, etc).
 
 Starting from Atlas, Endorsements have been renamed to Attestations.
@@ -82,21 +82,21 @@ You can also install Mavkit using Opam by running ``opam install mavkit``.
    Most of the Opam packages have been aggregated into the following packages:
      - :package-api:`mavkit-libs <mavkit-libs/index.html>`: Contains the base libraries for Mavkit.
      - :package-api:`mavkit-shell <mavkit-shell-libs/index.html>`: Contains the Mavkit shell related libraries.
-     - :package-api:`mavkit-proto-shell <mavkit-proto-libs/index.html>`: Contains the Tezos protocol dependent libraries.
+     - :package-api:`mavkit-proto-shell <mavkit-proto-libs/index.html>`: Contains the Mavryk protocol dependent libraries.
      - :package-api:`mavkit-l2-libs <mavkit-l2-libs/index.html>`: Contains the layer 2 related libraries.
      - For each protocol ``P``
          - :package-api:`mavkit-protocol-P-libs <mavkit-protocol-alpha-libs/index.html>`: The protocol ``P`` dependent libraries.
-	 - ``mavryk-protocol-P``: The Tezos protocol ``P`` itself.
+	 - ``mavryk-protocol-P``: The Mavryk protocol ``P`` itself.
 
    The other packages have not (yet) been packed into aggregated packages: some of them may be refactored in future versions; some other are meant to remain standalone. In particular, each Mavkit binary is contained for now in a separate standalone package.
 
    Finally, be aware that the old packages, that are now sub-libraries of the packages mentioned above, have been renamed by removing the ``mavryk-`` and ``mavkit-`` prefixes.
    For protocol dependent sub-libraries, the redundant protocol name suffixes have also been removed.
-   For instance, ``Tezos-client-017-PtNairob`` is now the sub-library ``Client`` of the package ``Mavkit-017-PtNairob-libs``.
+   For instance, ``Mavryk-client-001-PtAtLas`` is now the sub-library ``Client`` of the package ``Mavkit-001-PtAtLas-libs``.
 
    For more details, see :doc:`the OCaml API <../api/api-inline>`.
 
-You can now download experimental Debian and Redhat packages on the `release page <https://gitlab.com/tezos/tezos/-/releases/v18.1>`_  and in the `package registry <https://gitlab.com/tezos/tezos/-/packages>`_.
+You can now download experimental Debian and Redhat packages on the `release page <https://gitlab.com/mavryk-network/mavryk-protocol/-/releases/v18.1>`_  and in the `package registry <https://gitlab.com/mavryk-network/mavryk-protocol/-/packages>`_.
 
 
 Changelog

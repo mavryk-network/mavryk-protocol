@@ -202,7 +202,7 @@ We describe the entire list of options and arguments of the proxy server, also a
   Note that this argument doesn't make ``--endpoint`` optional, because the
   proxy server still needs to do RPC calls to obtain block headers. Further
   work removing all RPC calls is described in issue
-  `2502 <https://gitlab.com/tezos/tezos/-/issues/2502>`_.
+  `2502 <https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/2502>`_.
 * ``-E`` and ``--endpoint`` specify the URL of the RPC server of the node
   to do requests to obtain data (RPCs of the form
   ``/chains/<chain_id>/blocks/<block_id>/context/raw/bytes``).
@@ -232,7 +232,7 @@ Supported RPCs
 ~~~~~~~~~~~~~~
 
 The proxy server itself only serves protocol-specific RPCs (listed
-`here <https://tezos.gitlab.io/alpha/rpc.html#protocol-alpha>`_ for protocol Alpha),
+`here <https://protocol.mavryk.org/alpha/rpc.html#protocol-alpha>`_ for protocol Alpha),
 but not all of them: since the proxy server is a readonly frontend for the
 underlying node, it only serves the readonly requests (``GET`` requests, as
 well as a subset of the ``POST`` requests).

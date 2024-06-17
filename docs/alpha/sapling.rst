@@ -89,7 +89,7 @@ Diffie-Hellman key exchange using the recipient address and an
 ephemeral key.
 In principle this *ciphertext* can be transmitted off-chain as it's
 not needed to verify the integrity of the pool. For convenience, in
-Tezos, it is stored together with the commitment and the nullifier on
+Mavryk, it is stored together with the commitment and the nullifier on
 chain.
 
 For reasons of efficiency the commitments are stored in an incremental
@@ -118,13 +118,13 @@ bytes that gets signed by the user's Sapling key.
 This field can be used to bind the transaction to another
 application's logic.
 For example during an unshield operation it is important to include in
-the ``bound_data`` the Tezos account that will receive the unshielded
+the ``bound_data`` the Mavryk account that will receive the unshielded
 tokens.
 Without any ``bound_data``, a Sapling unshield operation authorizes any
 party that submits it to claim the unshielded tokens. An adversary can
-intercept the Tezos operation containing the unshield and resubmit it
-using its own Tezos account.
-This malleability attack is prevented by including the recipient Tezos
+intercept the Mavryk operation containing the unshield and resubmit it
+using its own Mavryk account.
+This malleability attack is prevented by including the recipient Mavryk
 account in the ``bound_data``, which is signed by the owner of the
 Sapling keys, and that can be used by the Smart Contract to transfer
 the tokens.
@@ -177,9 +177,9 @@ contract if another one has the same functionalities, it will split
 the anonymity set.
 
 Second, remember that shielding and unshielding are public operations.
-A typical anti-pattern is to shield from mv1-alice 15.3 tez, and then
-unshield 15.3 tez to mv1-bob. It's fairly clear from timing and
-amounts that Alice transferred 15.3 tez to Bob.
+A typical anti-pattern is to shield from mv1-alice 15.3 mav, and then
+unshield 15.3 mav to mv1-bob. It's fairly clear from timing and
+amounts that Alice transferred 15.3 mav to Bob.
 To decorrelate the two transfers it is important to change the
 amounts, let some time pass between the two and perform the
 transactions when there is traffic in the pool.
@@ -197,8 +197,8 @@ We advice users to be familiar with the use of the TOR network and to
 use clients developed specifically to protect their privacy.
 
 
-Tezos integration
------------------
+Mavryk integration
+------------------
 
 Michelson: verify update
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,15 +258,15 @@ is zero.
 Additionally in case of an unshield, it must use the bound data to
 authorize the transfer of unshielded tokens.
 For example it could convert the bound_data to a public_key_hash and
-use it as recipient address of Tezos transfer.
+use it as recipient address of Mavryk transfer.
 
 Example contracts
 ~~~~~~~~~~~~~~~~~
 
-Shielded tez
+Shielded mav
 ^^^^^^^^^^^^
 
-An example contract to have a shielded tez with a 1 to 1 conversion to
+An example contract to have a shielded mav with a 1 to 1 conversion to
 mumav is available in the tests of the protocol at
 ``src/proto_alpha/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz``.
 
@@ -374,10 +374,10 @@ Operations
 The client also facilitates the creation of shielded transactions and
 their transfer as arguments of smart contracts.
 For now there is seamless integration to send transactions to the
-reference shielded-tez contract and we are planning to support a
+reference shielded-mav contract and we are planning to support a
 larger class of contracts.
 
-For the shielded-tez smart contract, the client supports shielding,
+For the shielded-mav smart contract, the client supports shielding,
 unshielding and shielded transactions.
 In the case of shielded transactions there are two commands, one to
 forge a transaction and save it to file and one to submit it to the
@@ -420,10 +420,10 @@ In order to export the Sapling library to the protocol we first need
 to expose it through the environment that sandboxes the protocol.
 The changes under :src:`src/lib_protocol_environment` are simple but very
 relevant as any change of the environment requires a manual update of the
-Tezos node. These changes are part of version V1 of the environment
+Mavryk node. These changes are part of version V1 of the environment
 while protocols 000 to 006 depends on version V0.
 
-There are two main changes to Tezos' economic protocol, the storage
+There are two main changes to Mavryk' economic protocol, the storage
 for Sapling and the addition of ``SAPLING_VERIFY_UPDATE`` to the
 Michelson interpreter.
 
@@ -490,7 +490,7 @@ unshielding.
    # originate the contract with its initial empty sapling storage,
    # bake a block to include it.
    # { } represents an empty Sapling state.
-   mavkit-client originate contract shielded-tez transferring 0 from bootstrap1 \
+   mavkit-client originate contract shielded-mav transferring 0 from bootstrap1 \
    running src/proto_alpha/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz \
    --init '{ }' --burn-cap 3 &
    mavkit-client bake for bootstrap1
@@ -498,37 +498,37 @@ unshielding.
    # as usual you can check the mavkit-client manual
    mavkit-client sapling man
 
-   # generate two shielded keys for Alice and Bob and use them for the shielded-tez contract
+   # generate two shielded keys for Alice and Bob and use them for the shielded-mav contract
    # the memo size has to be indicated
    mavkit-client sapling gen key alice
-   mavkit-client sapling use key alice for contract shielded-tez --memo-size 8
+   mavkit-client sapling use key alice for contract shielded-mav --memo-size 8
    mavkit-client sapling gen key bob
-   mavkit-client sapling use key bob for contract shielded-tez --memo-size 8
+   mavkit-client sapling use key bob for contract shielded-mav --memo-size 8
 
    # generate an address for Alice to receive shielded tokens.
    mavkit-client sapling gen address alice
    zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Alice's address
 
 
-   # shield 10 tez from bootstrap1 to alice
-   mavkit-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez --burn-cap 2 &
+   # shield 10 mav from bootstrap1 to alice
+   mavkit-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-mav --burn-cap 2 &
    mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for alice in contract shielded-tez
+   mavkit-client sapling get balance for alice in contract shielded-mav
 
    # generate an address for Bob to receive shielded tokens.
    mavkit-client sapling gen address bob
    zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Bob's address
 
    # forge a shielded transaction from alice to bob that is saved to a file
-   mavkit-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez
+   mavkit-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-mav
 
    # submit the shielded transaction from any transparent account
-   mavkit-client sapling submit sapling_transaction from bootstrap2 using shielded-tez --burn-cap 1 &
+   mavkit-client sapling submit sapling_transaction from bootstrap2 using shielded-mav --burn-cap 1 &
    mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for bob in contract shielded-tez
+   mavkit-client sapling get balance for bob in contract shielded-mav
 
    # unshield from bob to any transparent account
-   mavkit-client sapling unshield 10 from bob to bootstrap1 using shielded-tez --burn-cap 1
+   mavkit-client sapling unshield 10 from bob to bootstrap1 using shielded-mav --burn-cap 1
    ctrl+z # to put the process in background
    mavkit-client bake for bootstrap1
    fg # to put resume the transfer

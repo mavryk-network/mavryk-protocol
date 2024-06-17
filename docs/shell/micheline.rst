@@ -157,7 +157,7 @@ Serialization
 -------------
 
 Micheline nodes can be converted to JSON and binary formats. The JSON
-conversion is useful for example to interact with a Tezos node using
+conversion is useful for example to interact with a Mavryk node using
 RPCs. The binary encoding is used to store Micheline nodes in blocks.
 
 Both forms of serialization are achieved using :doc:`../developer/data_encoding`.
@@ -222,7 +222,7 @@ Usage of the OCaml Micheline library
 In the Mavkit codebase, Micheline nodes are handled by a small library
 named ``lib_micheline``. This library is used in the Mavkit client
 (responsible for parsing the Michelson files, expanding macros, and
-encoding the result to JSON) and in the Tezos protocol (responsible
+encoding the result to JSON) and in the Mavryk protocol (responsible
 for decoding from JSON, type checking, and serializing to binary
 Michelson scripts and values).
 

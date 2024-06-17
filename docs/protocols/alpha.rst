@@ -4,7 +4,7 @@ Protocol Alpha
 This page documents the changes brought by protocol Alpha with respect
 to Atlas (see :ref:`naming_convention`).
 
-For changes brought by the rejected Atlas proposal with respect to Nairobi, see :doc:`../protocols/001_atlas`.
+For changes brought by the Atlas proposal, see :doc:`../protocols/001_atlas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
 branch of Mavkit.
@@ -63,7 +63,7 @@ Adaptive Issuance (ongoing)
 
 - Balance updates now include more information related to staking in general, including slashing and rewards. (MRs :gl:`!10485`, :gl:`!10486`, :gl:`!10487`, :gl:`!10488`, :gl:`!10496`, :gl:`!10526`, :gl:`!10766`, :gl:`!10853`)
 
-- The new staking mechanism is used internally to freeze deposits automatically at cycle ends, and mimic Nairobi's behavior. (MR :gl:`!10562`)
+- The new staking mechanism is used internally to freeze deposits automatically at cycle ends. (MR :gl:`!10562`)
 
 - Unstaked frozen deposits, i.e recently unstaked funds, can be used by bakers to be staked again (unless the baker has been slashed). They are used in addition to liquid funds for staking, prioritizing the most recent unstake requests. (MR :gl:`!10781`)
 

@@ -2,8 +2,7 @@ Global Constants
 ================
 
 The size limit for :doc:`Michelson <michelson>` contracts is quite small, limited to 60
-kilobytes as of Granada protocol. Global constants are a feature added
-in Hangzhou protocol that enables the re-use of user-defined Micheline chunks in Michelson scripts, allowing
+kilobytes as of Atlas protocol. Global constants are a feature that enables the re-use of user-defined Micheline chunks in Michelson scripts, allowing
 for larger and more complex contracts on the chain. It works in the
 following way:
 
@@ -84,11 +83,11 @@ A few points about registering global constants:
   expanding all constant references) may not exceed 10,000.
 - The total number of nodes in the Micheline expression being
   registered (after expanding all constant references) may not exceed
-  the ``max_micheline_node_count`` protocol constant. As of Hangzhou
+  the ``max_micheline_node_count`` protocol constant. As of Atlas
   this is 50,000.
 - The total number of bytes in the Micheline expression being
   registered (after expanding all constant references) may not exceed
-  the ``max_micheline_bytes_limit`` protocol constant. As of Hangzhou
+  the ``max_micheline_bytes_limit`` protocol constant. As of Atlas
   this is 50,000.
 
 Originating a Contract that uses Global Constants
@@ -133,9 +132,9 @@ Global Constants at Runtime
 Contracts that use global constants are semantically equivalent to the
 contract with all constants expanded.
 
-Note that using the `UNPACK <https://tezos.gitlab.io/michelson-reference/#instr-UNPACK>`__ 
+Note that using the `UNPACK <https://protocol.mavryk.org/michelson-reference/#instr-UNPACK>`__ 
 operation to deserialize a lambda which contains a reference to a global
 constant is not supported. Similarly, originating a contract which contains
 a reference to a global constant using the
-`CREATE_CONTRACT <https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__ 
+`CREATE_CONTRACT <https://protocol.mavryk.org/michelson-reference/#instr-CREATE_CONTRACT>`__ 
 instruction will also fail.

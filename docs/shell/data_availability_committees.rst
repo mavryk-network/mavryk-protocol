@@ -2,9 +2,9 @@ Data Availability Committees
 ============================
 Overview
 ^^^^^^^^
-A Data Availability Committee (DAC) is a solution to scale the data bandwidth available for off-chain applications running in :doc:`Tezos smart rollups <../active/smart_rollups>`.
+A Data Availability Committee (DAC) is a solution to scale the data bandwidth available for off-chain applications running in :doc:`Mavryk smart rollups <../active/smart_rollups>`.
 It relies on a distributed network of data storage providers, subject to a slight trust assumption.
-By utilizing a DAC, smart rollups bypass the data limit imposed by the Tezos block and can increase the amount of transaction data available for processing beyond that limit.
+By utilizing a DAC, smart rollups bypass the data limit imposed by the Mavryk block and can increase the amount of transaction data available for processing beyond that limit.
 
 In addition to data scalability, DACs also serve as a data source for smart rollups that satisfies the following properties:
 
@@ -26,7 +26,7 @@ Scalability is achieved by the kernel's ability to request an unlimited amount o
 However, the reveal data channel lacks the assurance that the rollup node will have the data available in its local storage.
 By integrating the DAC infrastructure with the rollup node, the necessary data is guaranteed to be available, complementing the limitations of the reveal data channel.
 
-It is important to note that the DAC infrastructure is external to the Tezos protocol, and that the Tezos Layer 1 is unaware of its existence.
+It is important to note that the DAC infrastructure is external to the Mavryk protocol, and that the Mavryk Layer 1 is unaware of its existence.
 Smart rollup nodes must be configured to utilize the DAC infrastructure to take full advantage of its capabilities.
 For more information, please refer to the `User Guide`_ and `Operator Guide`_.
 
@@ -159,7 +159,7 @@ Once configured, the Coordinator can be run with:
 
 where
 
-   * ``$NODE_ENDPOINT`` - Endpoint of the Tezos node to connect to. All inter-connected DAC nodes should be connected to Tezos nodes running the same Protocol.
+   * ``$NODE_ENDPOINT`` - Endpoint of the Mavryk node to connect to. All inter-connected DAC nodes should be connected to Mavryk nodes running the same Protocol.
    * ``$DATA_DIR`` - Same value as ``$DATA_DIR`` above.
 
 
@@ -199,7 +199,7 @@ Once configured, the Committee Member can be run with:
 
 where
 
-   * ``$NODE_ENDPOINT`` - Endpoint of the Tezos node to connect to. All inter-connected DAC nodes should be connected to Tezos nodes running the same Protocol.
+   * ``$NODE_ENDPOINT`` - Endpoint of the Mavryk node to connect to. All inter-connected DAC nodes should be connected to Mavryk nodes running the same Protocol.
    * ``$DATA_DIR`` - Same value as ``$DATA_DIR`` above.
 
 
@@ -241,7 +241,7 @@ Once configured, the Observer can be run with:
 
 where
 
-   * ``$NODE_ENDPOINT`` - Endpoint of the Tezos node to connect to. All inter-connected DAC nodes should be connected to Tezos nodes running the same Protocol.
+   * ``$NODE_ENDPOINT`` - Endpoint of the Mavryk node to connect to. All inter-connected DAC nodes should be connected to Mavryk nodes running the same Protocol.
    * ``$DATA_DIR`` - Same value as ``$DATA_DIR`` above.
 
 Fetching missing pages from the Observer
