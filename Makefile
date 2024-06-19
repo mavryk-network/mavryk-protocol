@@ -166,16 +166,6 @@ clean-old-names:
 	@rm -f mavryk-codec
 	@rm -f mavryk-protocol-compiler
 	@rm -f mavryk-proxy-server
-	@rm -f mavryk-baker-012-Psithaca
-	@rm -f mavryk-accuser-012-Psithaca
-	@rm -f mavryk-baker-013-PtJakart
-	@rm -f mavryk-accuser-013-PtJakart
-	@rm -f mavryk-tx-rollup-node-013-PtJakart
-	@rm -f mavryk-tx-rollup-client-013-PtJakart
-	@rm -f mavryk-baker-015-PtLimaPt
-	@rm -f mavryk-accuser-015-PtLimaPt
-	@rm -f mavryk-tx-rollup-node-015-PtLimaPt
-	@rm -f mavryk-tx-rollup-client-015-PtLimaPt
 	@rm -f mavryk-baker-alpha
 	@rm -f mavryk-accuser-alpha
 	@rm -f mavryk-smart-rollup-node-alpha
@@ -185,18 +175,6 @@ clean-old-names:
 # mavkit-validator should stay in this list for Mavkit 16.0 because we
 # removed the executable
 	@rm -f mavkit-validator
-	@rm -f mavkit-baker-012-Psithaca
-	@rm -f mavkit-accuser-012-Psithaca
-	@rm -f mavkit-baker-013-PtJakart
-	@rm -f mavkit-accuser-013-PtJakart
-	@rm -f mavkit-tx-rollup-node-013-PtJakart
-	@rm -f mavkit-tx-rollup-client-013-PtJakart
-	@rm -f mavkit-baker-015-PtLimaPt
-	@rm -f mavkit-accuser-015-PtLimaPt
-	@rm -f mavkit-tx-rollup-node-015-PtLimaPt
-	@rm -f mavkit-tx-rollup-client-015-PtLimaPt
-	@rm -f mavkit-smart-rollup-node-PtMumbai
-	@rm -f mavkit-smart-rollup-node-PtNairob
 	@rm -f mavkit-smart-rollup-node-PtAtLas
 	@rm -f mavkit-smart-rollup-node-alpha
 
