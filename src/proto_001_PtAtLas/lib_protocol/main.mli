@@ -29,7 +29,7 @@
     embedders. This signature is an instance of
     {{!Mavryk_protocol_environment_sigs.V7.T.Updater.PROTOCOL} the
     [Updater.PROTOCOL] signature} from the
-    {{:https://protocol.mavryk.org/shell/the_big_picture.html#the-economic-protocol-environment-and-compiler}
+    {{:https://tezos.gitlab.io/shell/the_big_picture.html#the-economic-protocol-environment-and-compiler}
     Protocol Environment}.
 
     Each Protocol depends on a version of the Protocol Environment. For the
@@ -37,7 +37,7 @@
     see {{!Mavryk_protocol_environment_sigs} the full list of versions here}.
 
     For details on how Protocol and Environment interact, see
-    {{:https://protocol.mavryk.org/shell/the_big_picture.html} this overview}.
+    {{:https://tezos.gitlab.io/shell/the_big_picture.html} this overview}.
  *)
 
 type operation_data = Alpha_context.packed_protocol_data
