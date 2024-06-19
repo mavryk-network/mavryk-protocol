@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Protocol
-open Tezos_micheline
+open Mavryk_micheline
 
 (** The result of parsing and expanding a Michelson V1 script or data. *)
 type 'prim parser_result = {

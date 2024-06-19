@@ -1,15 +1,15 @@
 # Mockup mode
 
 Libraries for mockup mode, i.e., the implementation of
-`octez-client`'s `--mode mockup` flags.
+`mavkit-client`'s `--mode mockup` flags.
 
 ## Overview
 
 There are 3 libraries in this directory (see `dune` file):
 
-* `tezos_mockup`
-* `tezos_mockup_registration`
-* `tezos_mockup_commands`
+* `mavryk_mockup`
+* `mavryk_mockup_registration`
+* `mavryk_mockup_commands`
 
 
 ### Tezos mockup
@@ -63,9 +63,9 @@ dune exec tezt/tests/main.exe -- mockup
 
 ## API Documentation
 
-- https://tezos.gitlab.io/api/odoc/_html/tezos-mockup/index.html
+- https://protocol.mavryk.org/api/odoc/_html/mavryk-mockup/index.html
 
 ### Other documentation
 
-- [Manual](https://tezos.gitlab.io/user/mockup.html)
-- [Blog post](https://blog.nomadic-labs.com/introducing-mockup-mode-for-tezos-client.html)
+- [Manual](https://protocol.mavryk.org/user/mockup.html)
+- [Blog post](https://blog.nomadic-labs.com/introducing-mockup-mode-for-mavryk-client.html)

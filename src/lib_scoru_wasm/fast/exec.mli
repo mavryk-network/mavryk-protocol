@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
-open Tezos_webassembly_interpreter
+open Mavryk_scoru_wasm
+open Mavryk_webassembly_interpreter
 
 (** [compute durable buffers] applies one call to [kernel_run]. *)
 val compute :

@@ -37,7 +37,7 @@ let protocol_path = "src/bin_client/test/proto_test_injection"
 let is_static_binary execname =
   let* output = Process.run_and_read_stdout "file" [execname] in
   (* Example of line returned by "file": *)
-  (* octez-node: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), *)
+  (* mavkit-node: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), *)
   (* statically linked, no section header *)
   return (output =~ rex "statically linked")
 
@@ -46,13 +46,13 @@ let test_injection_and_activation () : unit =
     ~__FILE__
     ~title:"protocol injection and activation"
     ~tags:["protocol"; "injection"; "activation"; "network"; "not_static"]
-    ~uses:[Constant.octez_protocol_compiler]
+    ~uses:[Constant.mavkit_protocol_compiler]
   @@ fun () ->
   Log.info "Check protocol compiler and protocol availability" ;
   Check.file_exists ~__LOC__ protocol_path ;
-  Check.file_exists ~__LOC__ (Uses.path Constant.octez_protocol_compiler) ;
+  Check.file_exists ~__LOC__ (Uses.path Constant.mavkit_protocol_compiler) ;
   let* compiler_is_static =
-    is_static_binary (Uses.path Constant.octez_protocol_compiler)
+    is_static_binary (Uses.path Constant.mavkit_protocol_compiler)
   in
   Check.is_false
     ~__LOC__
@@ -96,7 +96,7 @@ let test_injection_and_activation () : unit =
     sf
       "V%d"
       JSON.(
-        parse_file (protocol_path ^ "/TEZOS_PROTOCOL")
+        parse_file (protocol_path ^ "/MAVRYK_PROTOCOL")
         |-> "expected_env_version" |> as_int)
   in
   let* env_version = Client.Admin.protocol_environment client1 protocol_hash in

@@ -26,7 +26,7 @@
 
 module Address = struct
   module Entity = struct
-    include Tezos_crypto.Hashed.Smart_rollup_address
+    include Mavryk_crypto.Hashed.Smart_rollup_address
 
     let of_source s =
       let open Lwt_result_syntax in
@@ -49,7 +49,7 @@ module Address = struct
       ]
       s
 
-  let parameter () = Tezos_clic.parameter ~autocomplete parse
+  let parameter () = Mavryk_clic.parameter ~autocomplete parse
 
   let param ?(name = "smart rollup address")
       ?(desc = "the address of the targeted smart rollup") next =
@@ -62,5 +62,5 @@ module Address = struct
            Use 'alias:name' or 'text:literal' to force.";
         ]
     in
-    Tezos_clic.param ~name ~desc (parameter ()) next
+    Mavryk_clic.param ~name ~desc (parameter ()) next
 end

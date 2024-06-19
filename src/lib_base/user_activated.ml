@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type upgrades = (Int32.t * Tezos_crypto.Hashed.Protocol_hash.t) list
+type upgrades = (Int32.t * Mavryk_crypto.Hashed.Protocol_hash.t) list
 
 let upgrades_encoding =
   let open Data_encoding in
@@ -37,10 +37,10 @@ let upgrades_encoding =
           (req "level" int32)
           (req
              "replacement_protocol"
-             Tezos_crypto.Hashed.Protocol_hash.encoding)))
+             Mavryk_crypto.Hashed.Protocol_hash.encoding)))
 
 type protocol_overrides =
-  (Tezos_crypto.Hashed.Protocol_hash.t * Tezos_crypto.Hashed.Protocol_hash.t)
+  (Mavryk_crypto.Hashed.Protocol_hash.t * Mavryk_crypto.Hashed.Protocol_hash.t)
   list
 
 let protocol_overrides_encoding =
@@ -53,10 +53,10 @@ let protocol_overrides_encoding =
        another."
   @@ list
        (obj2
-          (req "replaced_protocol" Tezos_crypto.Hashed.Protocol_hash.encoding)
+          (req "replaced_protocol" Mavryk_crypto.Hashed.Protocol_hash.encoding)
           (req
              "replacement_protocol"
-             Tezos_crypto.Hashed.Protocol_hash.encoding))
+             Mavryk_crypto.Hashed.Protocol_hash.encoding))
 
 let () =
   Data_encoding.Registration.register upgrades_encoding ;

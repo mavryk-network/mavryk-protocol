@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_clic
+open Mavryk_clic
 
 let group = {name = "encoding"; title = "Commands to handle encodings"}
 
@@ -45,7 +45,7 @@ let json_parameter =
       let* data =
         let* file_exists = Lwt_unix.file_exists file_or_data in
         if file_exists then
-          Tezos_stdlib_unix.Lwt_utils_unix.read_file file_or_data
+          Mavryk_stdlib_unix.Lwt_utils_unix.read_file file_or_data
         else Lwt.return file_or_data
       in
       match Json.from_string data with
@@ -172,7 +172,7 @@ let commands () =
   [
     command
       ~group
-      ~desc:"List the registered encoding in Tezos."
+      ~desc:"List the registered encoding in Mavryk."
       no_options
       (fixed ["list"; "encodings"])
       (fun () (cctxt : #Client_context.printer) ->

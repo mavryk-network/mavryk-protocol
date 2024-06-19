@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_stdlib)
- (public_name octez-libs.stdlib)
+ (name mavryk_stdlib)
+ (public_name mavkit-libs.stdlib)
  (instrumentation (backend bisect_ppx))
  (libraries
   hex

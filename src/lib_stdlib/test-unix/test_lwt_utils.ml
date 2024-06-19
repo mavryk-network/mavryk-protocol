@@ -59,7 +59,7 @@ let test_already_rejected () =
       Assert.fail
         ~loc:__LOC__
         (fun pp s -> Format.fprintf pp "%s" s)
-        "Tezos_stdlib__Lwt_utils.None_successful"
+        "Mavryk_stdlib__Lwt_utils.None_successful"
         (Printexc.exn_slot_name exn)
   | _ ->
       Assert.fail_msg
@@ -164,7 +164,7 @@ let test_none_sucessful () =
           Assert.fail
             ~loc:__LOC__
             (fun pp s -> Format.fprintf pp "%s" s)
-            "Tezos_stdlib__Lwt_utils.None_successful"
+            "Mavryk_stdlib__Lwt_utils.None_successful"
             (Printexc.exn_slot_name exn))
 
 (* Check that [Stdlib.Invalid_argument _] is raised when promises list is empty. *)

@@ -13,9 +13,9 @@ use alloc::collections::TryReserveError;
 use evm::executor::stack::PrecompileFailure;
 use host::runtime::Runtime;
 use primitive_types::{H160, U256};
-use tezos_ethereum::block::BlockConstants;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_storage::StorageError;
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_storage::StorageError;
 use thiserror::Error;
 
 pub mod abi;
@@ -29,9 +29,9 @@ pub mod transaction;
 pub use evm::Config;
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
-extern crate tezos_smart_rollup_debug as debug;
-extern crate tezos_smart_rollup_host as host;
+extern crate mavryk_crypto_rs as crypto;
+extern crate mavryk_smart_rollup_debug as debug;
+extern crate mavryk_smart_rollup_host as host;
 
 use precompiles::PrecompileSet;
 
@@ -196,8 +196,8 @@ mod test {
     use host::runtime::Runtime;
     use primitive_types::{H160, H256};
     use std::str::FromStr;
-    use tezos_ethereum::tx_common::EthereumTransactionCommon;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+    use mavryk_smart_rollup_mock::MockHost;
 
     // The compiled initialization code for the Ethereum demo contract given
     // as an example in kernel_evm/solidity_examples/storage.sol
@@ -733,7 +733,7 @@ mod test {
     #[test]
     //this is based on https://eips.ethereum.org/EIPS/eip-155
     fn test_signatures() {
-        let (sk, _address) = tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(
+        let (sk, _address) = mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(
             "4646464646464646464646464646464646464646464646464646464646464646"
                 .to_string(),
         );
@@ -774,7 +774,7 @@ mod test {
         ];
         test_list.iter().fold((), |_, (s, ea)| {
             let (_, a) =
-                tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(s.to_string());
+                mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(s.to_string());
             let value: [u8; 20] = hex::decode(ea).unwrap().try_into().unwrap();
             let ea = value.into();
             assert_eq!(a, ea);
@@ -784,7 +784,7 @@ mod test {
     #[test]
     fn test_caller_classic() {
         let (_sk, address_from_sk) =
-            tezos_ethereum::tx_common::string_to_sk_and_address_unsafe(
+            mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(
                 "4646464646464646464646464646464646464646464646464646464646464646"
                     .to_string(),
             );

@@ -25,8 +25,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc_http
-open Tezos_rpc_http_server
+open Mavryk_rpc_http
+open Mavryk_rpc_http_server
 
 type t = {
   server : RPC_server.server;

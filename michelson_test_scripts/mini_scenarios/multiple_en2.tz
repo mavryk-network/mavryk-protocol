@@ -17,7 +17,7 @@
                 DUP ;
                 CONTRACT %add nat ;
                 { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-                PUSH mutez 0 ;
+                PUSH mumav 0 ;
                 PUSH nat 12 ;
                 TRANSFER_TOKENS ;
                 SWAP ;
@@ -25,7 +25,7 @@
                 DUP ;
                 CONTRACT unit ;
                 { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-                PUSH mutez 0 ;
+                PUSH mumav 0 ;
                 PUSH unit Unit ;
                 TRANSFER_TOKENS ;
                 SWAP ;
@@ -33,7 +33,7 @@
                 DUP ;
                 CONTRACT %sub nat ;
                 { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-                PUSH mutez 0 ;
+                PUSH mumav 0 ;
                 PUSH nat 3 ;
                 TRANSFER_TOKENS ;
                 SWAP ;
@@ -41,7 +41,7 @@
                 DUP ;
                 CONTRACT %add nat ;
                 { IF_NONE { { UNIT ; FAILWITH } } {} } ;
-                PUSH mutez 0 ;
+                PUSH mumav 0 ;
                 PUSH nat 5 ;
                 TRANSFER_TOKENS ;
                 SWAP ;
@@ -51,13 +51,13 @@
                 PAIR }
               { CAR ;
                 DUP ;
-                DIP { DIP { PUSH int 0 ; PUSH mutez 0 ; NONE key_hash } ;
+                DIP { DIP { PUSH int 0 ; PUSH mumav 0 ; NONE key_hash } ;
                       DROP ;
                       CREATE_CONTRACT
                         { parameter (or (or (nat %add) (nat %sub)) (unit %default)) ;
                           storage int ;
                           code { AMOUNT ;
-                                 PUSH mutez 0 ;
+                                 PUSH mumav 0 ;
                                  { { COMPARE ; EQ } ; IF {} { { UNIT ; FAILWITH } } } ;
                                  { { DUP ; CAR ; DIP { CDR } } } ;
                                  IF_LEFT
@@ -65,7 +65,7 @@
                                    { DROP ; DROP ; PUSH int 0 } ;
                                  NIL operation ;
                                  PAIR } } } ;
-                DIP { SELF ; PUSH mutez 0 } ;
+                DIP { SELF ; PUSH mumav 0 } ;
                 TRANSFER_TOKENS ;
                 NIL operation ;
                 SWAP ;

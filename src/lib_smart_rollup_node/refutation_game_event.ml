@@ -40,11 +40,11 @@ module Simple = struct
          at level {level} with staker {other} that hash issued commitment \
          {their_commitment_hash} both based on {parent_commitment_hash}"
       ~level:Notice
-      ("our_commitment_hash", Octez_smart_rollup.Commitment.Hash.encoding)
+      ("our_commitment_hash", Mavkit_smart_rollup.Commitment.Hash.encoding)
       ("level", Data_encoding.int32)
       ("other", Signature.Public_key_hash.encoding)
-      ("their_commitment_hash", Octez_smart_rollup.Commitment.Hash.encoding)
-      ("parent_commitment_hash", Octez_smart_rollup.Commitment.Hash.encoding)
+      ("their_commitment_hash", Mavkit_smart_rollup.Commitment.Hash.encoding)
+      ("parent_commitment_hash", Mavkit_smart_rollup.Commitment.Hash.encoding)
 
   let potential_conflict_detected =
     declare_4
@@ -80,7 +80,7 @@ module Simple = struct
       ("start_tick", Data_encoding.z)
       ("end_tick", Data_encoding.z)
       ( "dissection",
-        Data_encoding.list Octez_smart_rollup.Game.dissection_chunk_encoding )
+        Data_encoding.list Mavkit_smart_rollup.Game.dissection_chunk_encoding )
 
   module Worker (ARG : sig
     val section : string list
@@ -132,8 +132,8 @@ module Simple = struct
         ~level:Notice
         ("opponent", Signature.Public_key_hash.encoding)
         ~pp1:Signature.Public_key_hash.pp
-        ("commitment", Octez_smart_rollup.Commitment.encoding)
-        ~pp2:Octez_smart_rollup.Commitment.pp
+        ("commitment", Mavkit_smart_rollup.Commitment.encoding)
+        ~pp2:Mavkit_smart_rollup.Commitment.pp
 
     let stopped =
       declare_1
@@ -163,12 +163,12 @@ module Simple = struct
   end
 end
 
-let conflict_detected (conflict : Octez_smart_rollup.Game.conflict) =
+let conflict_detected (conflict : Mavkit_smart_rollup.Game.conflict) =
   let our_commitment_hash =
-    Octez_smart_rollup.Commitment.hash conflict.our_commitment
+    Mavkit_smart_rollup.Commitment.hash conflict.our_commitment
   in
   let their_commitment_hash =
-    Octez_smart_rollup.Commitment.hash conflict.their_commitment
+    Mavkit_smart_rollup.Commitment.hash conflict.their_commitment
   in
   let parent_commitment_hash = conflict.parent_commitment in
   let other = conflict.other in

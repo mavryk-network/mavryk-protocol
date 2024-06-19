@@ -362,7 +362,7 @@ let gs_worker_p2p_output_handler gs_worker p2p_layer px_cache =
   in
   Worker.p2p_output_stream gs_worker |> loop
 
-(** This handler forwards p2p messages received via Octez p2p to the Gossipsub
+(** This handler forwards p2p messages received via Mavkit p2p to the Gossipsub
     worker. *)
 let transport_layer_inputs_handler gs_worker p2p_layer advertised_px_cache =
   let open Lwt_syntax in

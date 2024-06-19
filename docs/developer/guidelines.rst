@@ -2,7 +2,7 @@
 Documentation and coding guidelines
 ===================================
 
-This document provides guidelines that should be observed by all the contributors to the Octez codebase. It first presents documentation guidelines, and then rules specific to coding.
+This document provides guidelines that should be observed by all the contributors to the Mavkit codebase. It first presents documentation guidelines, and then rules specific to coding.
 
 Documentation guidelines
 ========================
@@ -68,14 +68,14 @@ Consequently, when the specification evolves to become more demanding, some ``TO
 Note that the reference to an existing issue on the first line is mandatory, to facilitate searches of evolutions corresponding to given issues, and might be checked automatically by the :ref:`Merge-Request Bot <merge_bot>`.
 The reference to an issue may be one of:
 
-- a URL such as ``https://gitlab.com/tezos/tezos/-/issues/1377``
-- a GitLab notation such as ``#123`` (implicitly under ``tezos/tezos``), ``michelson-reference#123`` (implicitly under ``tezos/michelson-reference``),
+- a URL such as ``https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/1377``
+- a GitLab notation such as ``#123`` (implicitly under ``mavryk-network/mavryk-protocol``), ``michelson-reference#123`` (implicitly under ``tezos/michelson-reference``),
   or ``oxheadalpha/merbocop#123`` (fully qualified).
 
 License
 -------
 
-The Octez software is distributed under the MIT license. Every OCaml source file should start with a header comment instantiating the following template:
+The Mavkit software is distributed under the MIT license. Every OCaml source file should start with a header comment instantiating the following template:
 
 .. code-block:: ocaml
 
@@ -169,7 +169,7 @@ When ``odoc`` returns a non-zero exit code, the list of errors is displayed in t
 The full details of each error, and also the regular warnings, can be found in the log produced by ``odoc`` in file ``${TMPDOCDIR}/odoc.log``, where variable ``TMPDOCDIR`` is defined in file :src:`docs/Makefile`.
 Search for the string ``Error:`` in that file to find all the errors.
 
-You may consult a list of `typical error messages found by odoc in the Tezos repository <https://gitlab.com/nomadic-labs/protodoc/-/blob/master/doc/errors.md>`__.
+You may consult a list of `typical error messages found by odoc in the Mavryk repository <https://gitlab.com/nomadic-labs/protodoc/-/blob/master/doc/errors.md>`__.
 These examples may help both to avoid common pitfalls when writing docstrings,  and to better understand ``odoc`` errors that you may encounter.
 
 index.mld files
@@ -209,7 +209,7 @@ README files
 ------------
 
 Also at the level of the library, you should include a ``README.md`` in `Markdown format <https://daringfireball.net/projects/markdown/>`_.
-Such files are mandatory in top-level directories of the Octez codebase (such as ``src/`` and ``docs/``), and at least in immediate sub-directories of the source directory (``src/*/``).
+Such files are mandatory in top-level directories of the Mavkit codebase (such as ``src/`` and ``docs/``), and at least in immediate sub-directories of the source directory (``src/*/``).
 Because it is accessible only in the source tree, the file should contain information that might be of interest to the maintainers and contributors.
 
 You must instantiate the ``README.md`` file with the following template:
@@ -310,7 +310,7 @@ Fortunately, a few techniques may greatly increase the maintainability of commen
 
   * In other cases, the documentation needed near some piece of code is already available outside the code. For instance, a user-visible client command or node RPC should not duplicate explanations in the user reference.
 
-    Most such cases are handled in Octez by automatically generating the reference manual from the code.
+    Most such cases are handled in Mavkit by automatically generating the reference manual from the code.
     When this is not the case, comments in the code should refer to the outside sources instead of duplicating them, by using: web links to the technical documentation, to GitLab repositories, or to third-party websites when appropriate (e.g. Wikipedia for known concepts).
 
   * Another important case is comments describing a cross-module design decision or property.
@@ -320,7 +320,7 @@ Fortunately, a few techniques may greatly increase the maintainability of commen
 
 * Envision cohesive documentation.
 
-  * When writing online technical documentation, refer whenever needed to code artefacts: module APIs, GitLab entities in the Octez repository, or source files, using our Sphinx-checked :ref:`custom roles <custom_sphinx_roles>`.
+  * When writing online technical documentation, refer whenever needed to code artefacts: module APIs, GitLab entities in the Mavkit repository, or source files, using our Sphinx-checked :ref:`custom roles <custom_sphinx_roles>`.
 
   * More generally, including various kinds of checked cross-references in the documentation makes it more cohesive, more robust and easier to maintain.
     Indeed, the more checked links you include in the documentation (from comments to related code elements, from comments to ``.mld`` files and back, from external documentation to code and back, to external websites, etc.), the more are chances that the documentation will be updated along with the code, when some links break.
@@ -385,7 +385,7 @@ This section presents coding guidelines, related to aspects such as logging leve
 Logging Levels
 --------------
 
-The Octez libraries use a logging library with 5 different verbosity *levels*
+The Mavkit libraries use a logging library with 5 different verbosity *levels*
 defined in ``src/lib_event_logging/internal_event.mli`` for shell and
 ``src/lib_protocol_environment/sigs/v3/logging.mli`` for protocol code.
 
@@ -606,7 +606,7 @@ variant to the corresponding type ``t_with_version`` (see
 :ref:`RPC-versioning-dev-adding-an-rpc`). Otherwise, the ``version``
 query parameter should be added (a natural number starting from
 ``0``). See example `here
-<https://gitlab.com/tezos/tezos/-/merge_requests/3480>`_.
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3480>`_.
 
 For versioning an RPC which returns a type ``t``, you have to write in
 the service module of the RPC a type ``t_with_version`` which has one
@@ -691,7 +691,7 @@ like the two examples below.
 Linting
 -------
 
-The OCaml part of Octez code is analysed by a linter. You can check more details
+The OCaml part of Mavkit code is analysed by a linter. You can check more details
 in :src:`scripts/semgrep/README.md`. Below are explanations for the different
 rules that may trigger linting errors.
 
@@ -721,7 +721,7 @@ other comparison functions in the Stdlib. This means that the naive comparison
 ``List.length xs > List.length ys`` can be rewritten more efficiently as
 ``List.compare_lengths xs ys > 0`` (note the same comparison operator is used).
 
-In Octez, there is also ``Compare.List_lengths`` which provides infix operators
+In Mavkit, there is also ``Compare.List_lengths`` which provides infix operators
 to compare the lengths of two lists directly. The same example can be rewritten
 ``Compare.List_lengths.(xs > ys)``.
 
@@ -753,7 +753,7 @@ other comparison functions in the Stdlib. This means that the expression
 ``List.compare_length_with xs k > 0`` (note the same comparison operator is
 used).
 
-In Octez, there is also ``Compare.List_length_with`` which provides infix
+In Mavkit, there is also ``Compare.List_length_with`` which provides infix
 operators to compare the length of a list to a constant directly. The same
 example can be written ``Compare.List_length_with.(xs > k)``.
 
@@ -786,12 +786,12 @@ affect whether the traversal sequential (one element at a time) or concurrent
 (all elements treated at the same time).
 
 To make the code more readable, you should use the functions provided in the
-Octez support libraries. Specifically, the ``List`` module in Octez includes
+Mavkit support libraries. Specifically, the ``List`` module in Mavkit includes
 Lwt-, Result-, and Lwt-Result-specific variants of all the traversal functions
 (``map``, ``iter``, ``for_all``, ``exists``, etc.)
 
 Check the
-:package-api:`online documentation <octez-libs/Tezos_base/TzPervasives/List/index.html>` for a full list of the content of the ``List`` module.
+:package-api:`online documentation <mavkit-libs/Mavryk_base/TzPervasives/List/index.html>` for a full list of the content of the ``List`` module.
 
 .. _chaining_concat_map:
 
@@ -809,7 +809,7 @@ Lwtreslib provides additional combinators ``List.concat_map_s``,
 ``List.concat_map_e``, and ``List.concat_map_es`` to replace the non-vanilla
 compositions.
 
-Check the :package-api:`online documentation <octez-libs/Tezos_lwt_result_stdlib/Lwtreslib/Bare/List/index.html#val-concat_map>`.
+Check the :package-api:`online documentation <mavkit-libs/Mavryk_lwt_result_stdlib/Lwtreslib/Bare/List/index.html#val-concat_map>`.
 
 Naming
 ------
@@ -829,7 +829,7 @@ For example, if within a same module, "operation" is used sometimes for Michelso
 Other coding conventions
 ------------------------
 
-Other than the guidelines above, Octez developers should be aware
+Other than the guidelines above, Mavkit developers should be aware
 of general `OCaml programming guidelines <https://caml.inria.fr/resources/doc/guides/guidelines.en.html>`_, which recommend formatting, naming conventions,
 and more.
 

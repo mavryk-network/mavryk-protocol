@@ -9,7 +9,7 @@ let tsv = rows "\t" `No
 let csv = rows "," `OCaml
 
 let clic_arg () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~doc:"Make the output script-friendly. Possible values are 'TSV' and 'CSV'."
     ~long:"for-script"

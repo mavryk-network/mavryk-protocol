@@ -17,7 +17,7 @@ let withdraw_calldata_prefix =  "0xcda4fee2"
 
 let abi = ethers.AbiCoder.defaultAbiCoder();
 
-let valid_withdraw_destination = abi.encode(["string"], ["tz3UQN6nBQHofmgQ3pZannhiYE2CT7TEZFim"]).slice(2)
+let valid_withdraw_destination = abi.encode(["string"], ["mv3UVKfAGnBQv8J5Uug4kXsG78rri5pk7jgW"]).slice(2)
 let invalid_withdraw_destination = abi.encode(["string"], [player1.addr]).slice(2)
 
 function build_precompile_call(address, word_length) {

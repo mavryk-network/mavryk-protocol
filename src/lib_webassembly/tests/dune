@@ -6,15 +6,15 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-l2-libs.webassembly-interpreter
-  octez-alcotezt)
+  mavkit-l2-libs.webassembly-interpreter
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_webassembly_interpreter
-  -open Octez_alcotezt)
+  -open Mavryk_webassembly_interpreter
+  -open Mavkit_alcotezt)
  (modules smallint))
 
 (include_subdirs no)
@@ -29,7 +29,7 @@
 
 (rule
  (alias runtest)
- (package octez-l2-libs)
+ (package mavkit-l2-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

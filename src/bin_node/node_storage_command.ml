@@ -117,7 +117,7 @@ module Term = struct
       (let open Lwt_result_syntax in
       let* root = root config_file data_dir in
       let*! () =
-        Tezos_context.Context.Checks.Pack.Integrity_check.run
+        Mavryk_context.Context.Checks.Pack.Integrity_check.run
           ~ppf:Format.std_formatter
           ~root
           ~auto_repair
@@ -131,14 +131,14 @@ module Term = struct
     Shared_arg.process_command
       (let open Lwt_result_syntax in
       let* root = root config_file data_dir in
-      Tezos_context.Context.Checks.Index.Stat.run ~root ;
+      Mavryk_context.Context.Checks.Index.Stat.run ~root ;
       return_unit)
 
   let stat_pack config_file data_dir =
     Shared_arg.process_command
       (let open Lwt_result_syntax in
       let* root = root config_file data_dir in
-      let*! () = Tezos_context.Context.Checks.Pack.Stat.run ~root in
+      let*! () = Mavryk_context.Context.Checks.Pack.Stat.run ~root in
       return_unit)
 
   let index_dir_exists context_dir output =
@@ -152,7 +152,7 @@ module Term = struct
       (let open Lwt_result_syntax in
       let* root = root config_file data_dir in
       let* () = index_dir_exists root output in
-      Tezos_context.Context.Checks.Pack.Reconstruct_index.run
+      Mavryk_context.Context.Checks.Pack.Reconstruct_index.run
         ~root
         ~output
         ~index_log_size
@@ -173,7 +173,7 @@ module Term = struct
   let integrity_check_inodes config_file data_dir block =
     Shared_arg.process_command
       (let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* data_dir, node_config =
         Shared_arg.resolve_data_dir_and_config_file ?data_dir ?config_file ()
       in
@@ -199,7 +199,7 @@ module Term = struct
             (Store.Block.hash block, Store.Block.level block, context_hash))
       in
       let*! () =
-        Tezos_context.Context.Checks.Pack.Integrity_check_inodes.run
+        Mavryk_context.Context.Checks.Pack.Integrity_check_inodes.run
           ~root:context_dir
           ~heads:(Some [context_hash_str])
       in
@@ -209,7 +209,7 @@ module Term = struct
     Shared_arg.process_command
       (let open Lwt_result_syntax in
       let* root = root config_file data_dir in
-      Tezos_context.Context.Checks.Pack.Integrity_check_index.run
+      Mavryk_context.Context.Checks.Pack.Integrity_check_index.run
         ~root
         ~auto_repair
         () ;
@@ -218,7 +218,7 @@ module Term = struct
   let find_head config_file data_dir =
     Shared_arg.process_command
       (let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       let* data_dir, node_config =
         Shared_arg.resolve_data_dir_and_config_file ?data_dir ?config_file ()
       in

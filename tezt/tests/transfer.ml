@@ -75,7 +75,7 @@ let test_encrypted_source_stop_loop_password =
     ~title:"Test invalid inputs when transferring from encrypted source account"
     ~tags:["client"; "transfer"; "stop"; "loop"; "password"]
   @@ fun protocol ->
-  Log.info "Import an encrypted account with some tez" ;
+  Log.info "Import an encrypted account with some mav" ;
   let* client = Client.init_mockup ~protocol () in
   let encrypted_account =
     {

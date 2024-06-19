@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Common packaging routines for Octez
+# Common packaging routines for Mavkit
 #
 
 # A better way to do this would be to build the package from source
@@ -8,7 +8,7 @@
 # we construct packages afterwards. Which is not best practice :-)
 #
 # A better strategy would be to extract the version number, build a
-# master spec file, build Octez and then make the packages from the
+# master spec file, build Mavkit and then make the packages from the
 # master spec file.
 #
 # Place files in the dpkg directory to declare a package. e.g.
@@ -28,7 +28,7 @@
 #
 # Where Protocol variations are needed use @PROTOCOL@ and @PROTOCOLS@
 #
-# You can set OCTEZ_PKGMAINTAINER and OCTEZ_PKGNAME in the environment
+# You can set MAVKIT_PKGMAINTAINER and MAVKIT_PKGNAME in the environment
 # to change from the defaults.
 #
 
@@ -49,21 +49,21 @@ protocols=$(tr '\n' ' ' < $proto_file | sed -e 's/ $//g')
 zcashdir="_opam/share/zcash-params"
 #
 # Package maintainer
-OCTEZ_PKGMAINTAINER=${OCTEZ_PKGMAINTAINER:-package@nomadic-labs.com}
+MAVKIT_PKGMAINTAINER=${MAVKIT_PKGMAINTAINER:-package@nomadic-labs.com}
 #
 # Package name used in dpkg or rpm name
-OCTEZ_PKGNAME=${OCTEZ_PKGNAME:-octez}
+MAVKIT_PKGNAME=${MAVKIT_PKGNAME:-mavkit}
 #
-# Real name used in scripts (usually octez)
-OCTEZ_REALNAME=${OCTEZ_REALNAME:-octez}
+# Real name used in scripts (usually mavkit)
+MAVKIT_REALNAME=${MAVKIT_REALNAME:-mavkit}
 #
 # Revision
-OCTEZ_PKGREV=${OCTEZ_PKGREV:-1}
+MAVKIT_PKGREV=${MAVKIT_PKGREV:-1}
 
-export OCTEZ_PKGMAINTAINER
-export OCTEZ_PKGNAME
-export OCTEZ_REALNAME
-export OCTEZ_PKGREV
+export MAVKIT_PKGMAINTAINER
+export MAVKIT_PKGNAME
+export MAVKIT_REALNAME
+export MAVKIT_PKGREV
 
 # Expand protocols in configuration and init files
 #
@@ -111,12 +111,12 @@ warnings() {
   fi
 }
 
-# Get Octez version from the build
+# Get Mavkit version from the build
 #
 
-getOctezVersion() {
+getMavkitVersion() {
 
-  if ! _vers=$(dune exec octez-version 2>/dev/null); then
+  if ! _vers=$(dune exec mavkit-version 2>/dev/null); then
     echo "Cannot get version. Try eval \`opam env\`?" >&2
     exit 1
   fi
@@ -129,7 +129,7 @@ getOctezVersion() {
 
 initdScripts() {
   _initin=$1  # Init script
-  _inittarget=$2  # The target (e.g. octez-node)
+  _inittarget=$2  # The target (e.g. mavkit-node)
   _stagedir=$3  # The staging area
         _initd="${_stagedir}/etc/init.d"
 

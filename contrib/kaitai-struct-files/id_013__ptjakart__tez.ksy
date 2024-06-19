@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 013-PtJakart.tez'
 types:
-  id_013__ptjakart__mutez:
+  id_013__ptjakart__mumav:
     seq:
-    - id: id_013__ptjakart__mutez
+    - id: id_013__ptjakart__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_013__ptjakart__mutez
-  type: id_013__ptjakart__mutez
+- id: id_013__ptjakart__mumav
+  type: id_013__ptjakart__mumav

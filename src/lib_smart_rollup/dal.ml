@@ -36,9 +36,9 @@ module Page_index = struct
 end
 
 module Commitment = struct
-  include Tezos_crypto_dal.Cryptobox.Verifier.Commitment
+  include Mavryk_crypto_dal.Cryptobox.Verifier.Commitment
 
-  type t = Tezos_crypto_dal.Cryptobox.Verifier.commitment
+  type t = Mavryk_crypto_dal.Cryptobox.Verifier.commitment
 end
 
 module Slot_header = struct

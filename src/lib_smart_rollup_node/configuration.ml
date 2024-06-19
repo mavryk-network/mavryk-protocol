@@ -48,7 +48,7 @@ type gc_parameters = {frequency_in_blocks : int32}
 type history_mode = Archive | Full
 
 type t = {
-  sc_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  sc_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   boot_sector_file : string option;
   operators : Purpose.operators;
   rpc_addr : string;
@@ -92,7 +92,7 @@ let () =
     (fun () -> Empty_operation_kinds_for_custom_mode)
 
 let default_data_dir =
-  Filename.concat (Sys.getenv "HOME") ".tezos-smart-rollup-node"
+  Filename.concat (Sys.getenv "HOME") ".mavryk-smart-rollup-node"
 
 let storage_dir = "storage"
 
@@ -112,14 +112,14 @@ let default_metrics_port = 9933
 
 let default_reconnection_delay = 2.0 (* seconds *)
 
-let mutez mutez = {Injector_common.mutez}
+let mumav mumav = {Injector_common.mumav}
 
-let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
+let mav t = mumav Int64.(mul (of_int t) 1_000_000L)
 
 (* The below default fee and burn limits are computed by taking into account
    the worst fee found in the tests for the rollup node.
 
-   We take as base the cost of commitment cementation, which is 719 mutez in fees:
+   We take as base the cost of commitment cementation, which is 719 mumav in fees:
    - Commitment publishing is 1.37 times more expensive.
    - Message submission is 0.7 times more expensive, so cheaper but it depends on
      the size of the message.
@@ -129,46 +129,46 @@ let tez t = mutez Int64.(mul (of_int t) 1_000_000L)
      - Proof move is 1.47 times more expensive but depends on the size of the proof.
      - Timeout move is 1.34 times more expensive.
 
-   We set a fee limit of 1 tz for cementation (instead of 719 mutez) which
+   We set a fee limit of 1 tz for cementation (instead of 719 mumav) which
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
-let default_fee : Operation_kind.t -> Injector_common.tez = function
-  | Cement -> tez 1
-  | Recover -> tez 1
-  | Publish -> tez 2
+let default_fee : Operation_kind.t -> Injector_common.mav = function
+  | Cement -> mav 1
+  | Recover -> mav 1
+  | Publish -> mav 2
   | Add_messages ->
       (* We keep this limit even though it depends on the size of the message
          because the rollup node pays the fees for messages submitted by the
          **users**. *)
-      tez 1
-  | Timeout -> tez 2
+      mav 1
+  | Timeout -> mav 2
   | Refute ->
       (* Should be 3 based on comment above but we want to make sure we inject
          refutation moves even if the proof is large. The stake is high (we can
          lose the 10k deposit or we can get the reward). *)
-      tez 5
-  | Execute_outbox_message -> tez 1
+      mav 5
+  | Execute_outbox_message -> mav 1
 
-let default_burn : Operation_kind.t -> Injector_common.tez = function
+let default_burn : Operation_kind.t -> Injector_common.mav = function
   | Publish ->
       (* The first commitment can store data. *)
-      tez 1
-  | Add_messages -> tez 0
-  | Cement -> tez 0
-  | Recover -> tez 0
-  | Timeout -> tez 0
+      mav 1
+  | Add_messages -> mav 0
+  | Cement -> mav 0
+  | Recover -> mav 0
+  | Timeout -> mav 0
   | Refute ->
       (* A refutation move can store data, e.g. opening a game. *)
-      tez 1
-  | Execute_outbox_message -> tez 1
+      mav 1
+  | Execute_outbox_message -> mav 1
 
 (* Copied from src/proto_alpha/lib_plugin/mempool.ml *)
 let default_fee_parameter operation_kind =
   {
-    Injector_common.minimal_fees = mutez 100L;
-    minimal_nanotez_per_byte = Q.of_int 1000;
-    minimal_nanotez_per_gas_unit = Q.of_int 100;
+    Injector_common.minimal_fees = mumav 100L;
+    minimal_nanomav_per_byte = Q.of_int 1000;
+    minimal_nanomav_per_gas_unit = Q.of_int 100;
     force_low_fee = false;
     fee_cap = default_fee operation_kind;
     burn_cap = default_burn operation_kind;
@@ -505,7 +505,7 @@ let encoding : t Data_encoding.t =
           (req
              "smart-rollup-address"
              ~description:"Smart rollup address"
-             Tezos_crypto.Hashed.Smart_rollup_address.encoding)
+             Mavryk_crypto.Hashed.Smart_rollup_address.encoding)
           (opt "boot-sector" ~description:"Boot sector" string)
           (req
              "smart-rollup-node-operator"
@@ -518,7 +518,7 @@ let encoding : t Data_encoding.t =
           (dft
              "reconnection_delay"
              ~description:
-               "The reconnection (to the tezos node) delay in seconds"
+               "The reconnection (to the mavryk node) delay in seconds"
              float
              default_reconnection_delay)
           (dft
@@ -541,8 +541,8 @@ let encoding : t Data_encoding.t =
              Loser_mode.no_failures))
        (merge_objs
           (obj8
-             (opt "DAL node endpoint" Tezos_rpc.Encoding.uri_encoding)
-             (opt "dac-observer-client" Tezos_rpc.Encoding.uri_encoding)
+             (opt "DAL node endpoint" Mavryk_rpc.Encoding.uri_encoding)
+             (opt "dac-observer-client" Mavryk_rpc.Encoding.uri_encoding)
              (opt "dac-timeout" Data_encoding.z)
              (dft "batcher" batcher_encoding default_batcher)
              (dft "injector" injector_encoding default_injector)
@@ -809,14 +809,14 @@ module Cli = struct
       ~history_mode ~allowed_origins ~allowed_headers =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the smart rollup node is not the one of Octez node *)
+    (* Check if the data directory of the smart rollup node is not the one of Mavkit node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
         Lwt_unix.file_exists (data_dir // "identity.json")
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the smart rollup node data."
       else return_unit
     in

@@ -45,14 +45,14 @@ type error +=
       ours : Commitment.Hash.t option;
       on_l1 : Commitment.Hash.t;
     }
-  | Unreliable_tezos_node_returning_inconsistent_game
+  | Unreliable_mavryk_node_returning_inconsistent_game
   | Wrong_initial_pvm_state of {
       initial_state_hash : State_hash.t;
       expected_state_hash : State_hash.t;
     }
   | Inconsistent_inbox of {
-      layer1_inbox : Octez_smart_rollup.Inbox.t;
-      inbox : Octez_smart_rollup.Inbox.t;
+      layer1_inbox : Mavkit_smart_rollup.Inbox.t;
+      inbox : Mavkit_smart_rollup.Inbox.t;
     }
   | Missing_PVM_state of Block_hash.t * Int32.t
   | Cannot_checkout_context of Block_hash.t * Smart_rollup_context_hash.t option
@@ -89,8 +89,8 @@ type error +=
 
 type error +=
   | Unexpected_rollup of {
-      rollup_address : Octez_smart_rollup.Address.t;
-      saved_address : Octez_smart_rollup.Address.t;
+      rollup_address : Mavkit_smart_rollup.Address.t;
+      saved_address : Mavkit_smart_rollup.Address.t;
     }
 
 let () =
@@ -138,20 +138,20 @@ let () =
   let description =
     "Internal error: The game invariant states that the dissection from the \
      opponent must contain a tick we disagree with. If the retrieved game does \
-     not respect this, we cannot trust the Tezos node we are connected to and \
+     not respect this, we cannot trust the Mavryk node we are connected to and \
      prefer to stop here."
   in
   register_error_kind
     `Permanent
-    ~id:"internal.unreliable_tezos_node"
-    ~title:"Internal error: Tezos node seems unreliable"
+    ~id:"internal.unreliable_mavryk_node"
+    ~title:"Internal error: Mavryk node seems unreliable"
     ~description
     ~pp:(fun ppf () ->
-      Format.fprintf ppf "Unreliable Tezos node. %s" description)
+      Format.fprintf ppf "Unreliable Mavryk node. %s" description)
     Data_encoding.unit
     (function
-      | Unreliable_tezos_node_returning_inconsistent_game -> Some () | _ -> None)
-    (fun () -> Unreliable_tezos_node_returning_inconsistent_game) ;
+      | Unreliable_mavryk_node_returning_inconsistent_game -> Some () | _ -> None)
+    (fun () -> Unreliable_mavryk_node_returning_inconsistent_game) ;
 
   register_error_kind
     `Permanent
@@ -209,15 +209,15 @@ let () =
       Format.fprintf
         ppf
         "@[Rollup inbox:@;%a@]@;should be equal to @[Layer1 inbox:@;%a@]"
-        Octez_smart_rollup.Inbox.pp
+        Mavkit_smart_rollup.Inbox.pp
         inbox
-        Octez_smart_rollup.Inbox.pp
+        Mavkit_smart_rollup.Inbox.pp
         layer1_inbox)
     `Permanent
     Data_encoding.(
       obj2
-        (req "layer1_inbox" Octez_smart_rollup.Inbox.encoding)
-        (req "inbox" Octez_smart_rollup.Inbox.encoding))
+        (req "layer1_inbox" Mavkit_smart_rollup.Inbox.encoding)
+        (req "inbox" Mavkit_smart_rollup.Inbox.encoding))
     (function
       | Inconsistent_inbox {layer1_inbox; inbox} -> Some (layer1_inbox, inbox)
       | _ -> None)

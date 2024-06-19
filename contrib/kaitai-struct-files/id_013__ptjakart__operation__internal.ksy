@@ -64,9 +64,9 @@ types:
     - id: named
       type: named_0
       if: (id_013__ptjakart__entrypoint_tag == id_013__ptjakart__entrypoint_tag::named)
-  id_013__ptjakart__mutez:
+  id_013__ptjakart__mumav:
     seq:
-    - id: id_013__ptjakart__mutez
+    - id: id_013__ptjakart__mumav
       type: n
   id_013__ptjakart__scripted__contracts:
     seq:
@@ -128,7 +128,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -162,7 +162,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_013__ptjakart__mutez
+      type: id_013__ptjakart__mumav
     - id: destination
       type: id_013__ptjakart__transaction_destination
       doc: ! >-

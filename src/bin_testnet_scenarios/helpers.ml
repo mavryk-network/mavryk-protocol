@@ -39,14 +39,14 @@ let rec wait_for_funded_key node client expected_amount key =
     Log.info
       "Key %s is underfunded (got %d, expected at least %d)"
       key.public_key_hash
-      Tez.(to_mutez balance)
-      Tez.(to_mutez expected_amount) ;
+      Tez.(to_mumav balance)
+      Tez.(to_mumav expected_amount) ;
     let* current_level = Node.get_level node in
     let* _ = Node.wait_for_level node (current_level + 1) in
     wait_for_funded_key node client expected_amount key)
   else unit
 
-let setup_octez_node ~(testnet : Testnet.t) ?runner () =
+let setup_mavkit_node ~(testnet : Testnet.t) ?runner () =
   let l1_node_args =
     Node.[Expected_pow 26; Synchronisation_threshold 1; Network testnet.network]
   in
@@ -57,7 +57,7 @@ let setup_octez_node ~(testnet : Testnet.t) ?runner () =
         return (Node.create ~data_dir l1_node_args)
     | None ->
         (* By default, Tezt set the difficulty to generate the identity file
-           of the Octez node to 0 (`--expected-pow 0`). The default value
+           of the Mavkit node to 0 (`--expected-pow 0`). The default value
            used in network like mainnet, Weeklynet etc. is 26 (see
            `lib_node_config/config_file.ml`). *)
         let node = Node.create ?runner l1_node_args in

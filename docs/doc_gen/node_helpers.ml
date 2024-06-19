@@ -41,13 +41,13 @@ let with_node f =
     let node_config : Node.config =
       {
         genesis;
-        chain_name = Distributed_db_version.Name.of_string "TEZOS_DOCGEN";
+        chain_name = Distributed_db_version.Name.of_string "MAVRYK_DOCGEN";
         sandboxed_chain_name =
-          Distributed_db_version.Name.of_string "SANDBOXED_TEZOS_DOCGEN";
+          Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK_DOCGEN";
         user_activated_upgrades = [];
         user_activated_protocol_overrides = [];
         operation_metadata_size_limit = Unlimited;
-        internal_events = Tezos_base.Internal_event_config.stdout;
+        internal_events = Mavryk_base.Internal_event_config.stdout;
         patch_context = None;
         data_dir = dir;
         store_root = dir / "store";
@@ -57,19 +57,19 @@ let with_node f =
         target = None;
         disable_mempool = true;
         enable_testchain = false;
-        dal_config = Tezos_crypto_dal.Cryptobox.Config.default;
+        dal_config = Mavryk_crypto_dal.Cryptobox.Config.default;
       }
     in
     let version =
-      Tezos_version.Version.to_string
-        Tezos_version_value.Current_git_info.version
+      Mavryk_version.Version.to_string
+        Mavryk_version_value.Current_git_info.version
     in
     let commit_info =
       ({
-         commit_hash = Tezos_version_value.Current_git_info.commit_hash;
-         commit_date = Tezos_version_value.Current_git_info.committer_date;
+         commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
+         commit_date = Mavryk_version_value.Current_git_info.committer_date;
        }
-        : Tezos_version.Node_version.commit_info)
+        : Mavryk_version.Node_version.commit_info)
     in
     let* node =
       Node.create
@@ -77,15 +77,15 @@ let with_node f =
         ~version
         ~commit_info
         node_config
-        Tezos_shell_services.Shell_limits.default_peer_validator_limits
-        Tezos_shell_services.Shell_limits.default_block_validator_limits
-        Tezos_shell_services.Shell_limits.default_prevalidator_limits
-        Tezos_shell_services.Shell_limits.default_chain_validator_limits
+        Mavryk_shell_services.Shell_limits.default_peer_validator_limits
+        Mavryk_shell_services.Shell_limits.default_block_validator_limits
+        Mavryk_shell_services.Shell_limits.default_prevalidator_limits
+        Mavryk_shell_services.Shell_limits.default_chain_validator_limits
         None
     in
     f node
   in
-  let*! r = Lwt_utils_unix.with_tempdir "tezos_rpcdoc_" run in
+  let*! r = Lwt_utils_unix.with_tempdir "mavryk_rpcdoc_" run in
   match r with
   | Ok () -> Lwt.return_unit
   | Error err ->

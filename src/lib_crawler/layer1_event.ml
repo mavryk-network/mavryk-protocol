@@ -86,7 +86,7 @@ module Simple = struct
   let cannot_connect =
     declare_2
       ~name:"lib_crawler_cannot_connect"
-      ~msg:"cannot connect to Tezos node ({count}) {error}"
+      ~msg:"cannot connect to Mavryk node ({count}) {error}"
       ~level:Warning
       ("count", Data_encoding.int31)
       ("error", trace_encoding)

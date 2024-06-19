@@ -10,7 +10,7 @@ to actors.
 -->
 
 The API documentation is available online:
-<https://tezos.gitlab.io/api/odoc/_html/octez-libs/tezos_workers.html>
+<https://protocol.mavryk.org/api/odoc/_html/mavkit-libs/mavryk_workers.html>
 
 
 ## Overview
@@ -21,7 +21,7 @@ The API documentation is available online:
 -->
 
 The workers library provides local event loops so that different components of
-the Octez software can be somewhat isolated. Each workers maintains its own
+the Mavkit software can be somewhat isolated. Each workers maintains its own
 queue of tasks, which allows for more control over scheduling than with the
 global Lwt scheduler.
 

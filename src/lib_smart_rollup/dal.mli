@@ -41,7 +41,7 @@ end
 
 (** A slot commitment, same as protocol slot commitments through environment. *)
 module Commitment : sig
-  type t = Tezos_crypto_dal.Cryptobox.Verifier.commitment
+  type t = Mavryk_crypto_dal.Cryptobox.Verifier.commitment
 
   val encoding : t Data_encoding.t
 end

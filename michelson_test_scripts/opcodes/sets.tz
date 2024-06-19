@@ -7,7 +7,7 @@ code
     # Numerical types
     PUSH (set nat) {0; 1; 3}; DROP;
     PUSH (set int) {-1 ; 0; 3}; DROP;
-    PUSH (set mutez) {1; 4; 5; 10; 1923}; DROP;
+    PUSH (set mumav) {1; 4; 5; 10; 1923}; DROP;
     PUSH
       (set timestamp)
       {-1; 0; "2017-09-16T08:38:04Z"; "2019-09-16T08:38:05Z"};
@@ -26,13 +26,13 @@ code
     # Addresses
     PUSH
       (set key_hash)
-      { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv" };
+      { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" };
     DROP;
     PUSH
       (set address)
-      { "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv";
+      { "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx";
         "KT1TZCh8fmUbuDqFxetPWC2fsQanAHzLx4W9"};
     DROP;
 

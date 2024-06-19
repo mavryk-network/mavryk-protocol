@@ -4,8 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::path::RefPath;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct RefBytes<'a>(pub &'a [u8]);
@@ -55,8 +55,8 @@ pub type RefConfigInstruction<'a> = ConfigInstruction<RefPath<'a>, RefBytes<'a>>
 #[cfg(feature = "alloc")]
 pub mod owned {
     use crate::binary::evaluation::eval_config_instr;
-    use tezos_smart_rollup_encoding::dac::PreimageHash;
-    use tezos_smart_rollup_host::{
+    use mavryk_smart_rollup_encoding::dac::PreimageHash;
+    use mavryk_smart_rollup_host::{
         path::{OwnedPath, PathError},
         runtime::Runtime,
     };
@@ -116,8 +116,8 @@ pub mod owned {
 pub mod evaluation {
     use crate::binary::instr::{MoveInstruction, RevealInstruction, SetInstruction};
     use crate::binary::reveal_root_hash_to_store;
-    use tezos_smart_rollup_host::path::Path as HostPath;
-    use tezos_smart_rollup_host::runtime::Runtime;
+    use mavryk_smart_rollup_host::path::Path as HostPath;
+    use mavryk_smart_rollup_host::runtime::Runtime;
 
     use super::ConfigInstruction;
 
@@ -128,15 +128,15 @@ pub mod evaluation {
     ///
     /// Here's an example of how you can use this function:
     /// ```
-    /// use tezos_smart_rollup_installer_config::binary::evaluation::eval_config_instr;
-    /// use tezos_smart_rollup_host::KERNEL_BOOT_PATH;
-    /// use tezos_smart_rollup_host::path::OwnedPath;
-    /// use tezos_smart_rollup_host::path::RefPath;
-    /// use tezos_smart_rollup_installer_config::binary::owned::OwnedConfigInstruction;
-    /// use tezos_smart_rollup_installer_config::binary::owned::OwnedConfigProgram;
-    /// use tezos_smart_rollup_installer_config::binary::promote::upgrade_reveal_flow;
-    /// use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-    /// use tezos_smart_rollup_host::runtime::Runtime;
+    /// use mavryk_smart_rollup_installer_config::binary::evaluation::eval_config_instr;
+    /// use mavryk_smart_rollup_host::KERNEL_BOOT_PATH;
+    /// use mavryk_smart_rollup_host::path::OwnedPath;
+    /// use mavryk_smart_rollup_host::path::RefPath;
+    /// use mavryk_smart_rollup_installer_config::binary::owned::OwnedConfigInstruction;
+    /// use mavryk_smart_rollup_installer_config::binary::owned::OwnedConfigProgram;
+    /// use mavryk_smart_rollup_installer_config::binary::promote::upgrade_reveal_flow;
+    /// use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    /// use mavryk_smart_rollup_host::runtime::Runtime;
     ///
     ///
     /// pub fn upgrade_kernel(host: &mut impl Runtime) -> Result<(), &'static str> {
@@ -175,8 +175,8 @@ pub mod evaluation {
 #[cfg(feature = "alloc")]
 pub mod promote {
     use super::owned::{OwnedConfigInstruction, OwnedConfigProgram};
-    use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-    use tezos_smart_rollup_host::{
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+    use mavryk_smart_rollup_host::{
         path::{OwnedPath, RefPath},
         KERNEL_BOOT_PATH,
     };

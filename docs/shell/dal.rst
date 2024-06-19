@@ -5,9 +5,9 @@ Overview
 ^^^^^^^^
 
 The *Data-Availability Layer* (DAL) enables users to publish blobs
-of data outside of the Tezos Layer 1 (L1) blocks. A blob (for “binary
+of data outside of the Mavryk Layer 1 (L1) blocks. A blob (for “binary
 large object”) is a piece of data in binary form. While the primary
-use case for these blobs is to store Layer 2 (L2) operations for Tezos
+use case for these blobs is to store Layer 2 (L2) operations for Mavryk
 smart rollups, it is important to note that the DAL is more generic
 and could be used for other use cases in the future.
 
@@ -28,7 +28,7 @@ however, still controlled by the economic protocol. The economic
 protocol also plays a crucial role in determining the availability of
 those data through the participation of bakers.
 
-Similarly to the Tezos L1, the DAL is permissionless, enabling any
+Similarly to the Mavryk L1, the DAL is permissionless, enabling any
 user to effectively contribute data to it, and allowing any smart
 rollup kernel or smart rollup operator to access this data.
 
@@ -43,7 +43,7 @@ The diagram depicts a scenario where a user intends to upload data for
 a dedicated rollup.
 
 Anyone engaging with the DAL must utilize a tool known as the *DAL
-node* (named ``octez-dal-node``). When a user decides to provide a new
+node* (named ``mavkit-dal-node``). When a user decides to provide a new
 blob to the DAL (depicted as step 1 in the diagram), the user
 transmits the data to the DAL node to calculate a commitment to the
 data. This commitment is then communicated to L1 via a dedicated
@@ -134,7 +134,7 @@ The peer-to-peer (P2P) protocol for the DAL is made out of two components:
 
 - A gossipsub algorithm, instantiated as detailed below.
 - A transport layer for handling connections with peers.
-  We reuse for that the P2P protocol used by the Octez node (see :doc:`./p2p`).
+  We reuse for that the P2P protocol used by the Mavkit node (see :doc:`./p2p`).
 
 The gossip algorithm used for the DAL is an in-house version of the gossipsub v1.1 P2P protocol defined by the lib-p2p project. A detailed overview of this protocol is available `here <https://docs.libp2p.io/concepts/pubsub/overview/>`__ and an informal English specification can be found `here <https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md>`__. This gossip algorithm allows to partition the network into virtual subnetworks, each identified by a **topic**. The topic also determines the valid data that can be exchanged over the corresponding virtual subnetwork, as any exchanged message has exactly one associated topic. Each peer subscribes to topics of interest to him. This protocol enhances the network's scalability compared to traditional gossip algorithms.
 
@@ -154,7 +154,7 @@ Regarding peer discovery, the current implementation of the DAL relies on gossip
 
 .. note::
 
-	The current topic structure in the DAL for Tezos may be revised in a future update. Presently, topics include the bakers’ address (public key hash), which leads to a potentially unbounded number of topics over time. Another approach under consideration involves using a ``(slot_index, shard_index)`` pair, offering a more scalable solution in the long run, when the number of attesters surpasses the number of slots.
+	The current topic structure in the DAL for Mavryk may be revised in a future update. Presently, topics include the bakers’ address (public key hash), which leads to a potentially unbounded number of topics over time. Another approach under consideration involves using a ``(slot_index, shard_index)`` pair, offering a more scalable solution in the long run, when the number of attesters surpasses the number of slots.
 
 .. warning::
 

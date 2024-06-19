@@ -10,7 +10,7 @@
          DIG 2 ;
          CONTRACT (ticket string) ;
          IF_NONE { PUSH string "option is None" ; FAILWITH } {} ;
-         PUSH mutez 0 ;
+         PUSH mumav 0 ;
          DIG 3 ;
          TRANSFER_TOKENS ;
          SWAP ;

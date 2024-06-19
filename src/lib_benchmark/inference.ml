@@ -143,7 +143,7 @@ let line_list_to_ols (lines : constrnt list) =
           let vec = Vector.map (fun qty -> qty -. affine.const) vec in
           outputs.(i) <- vector_to_array vec)
     lines ;
-  Tezos_stdlib_unix.Utils.display_progress_end () ;
+  Mavryk_stdlib_unix.Utils.display_progress_end () ;
   (matrix_of_array_array inputs, matrix_of_array_array outputs, nmap)
 
 (* -------------------------------------------------------------------------- *)

@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 012-Psithaca.tez'
 types:
-  id_012__psithaca__mutez:
+  id_012__psithaca__mumav:
     seq:
-    - id: id_012__psithaca__mutez
+    - id: id_012__psithaca__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_012__psithaca__mutez
-  type: id_012__psithaca__mutez
+- id: id_012__psithaca__mumav
+  type: id_012__psithaca__mumav

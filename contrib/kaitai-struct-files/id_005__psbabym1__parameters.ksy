@@ -48,7 +48,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: amount
-      type: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
     - id: script
       type: id_005__psbabym1__scripted__contracts
   bytes_dyn_uint30:
@@ -79,11 +79,11 @@ types:
       size: 20
       doc: blinded__public__key__hash
     - id: commitments_elt_field1
-      type: id_005__psbabym1__mutez
-      doc: id_005__psbabym1__mutez
-  id_005__psbabym1__mutez:
+      type: id_005__psbabym1__mumav
+      doc: id_005__psbabym1__mumav
+  id_005__psbabym1__mumav:
     seq:
-    - id: id_005__psbabym1__mutez
+    - id: id_005__psbabym1__mumav
       type: n
   id_005__psbabym1__scripted__contracts:
     seq:
@@ -147,8 +147,8 @@ types:
 
         signature__v0__public_key'
     - id: public_key_known_field1
-      type: id_005__psbabym1__mutez
-      doc: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
+      doc: id_005__psbabym1__mumav
   public_key_unknown:
     seq:
     - id: public_key_unknown_field0
@@ -158,8 +158,8 @@ types:
 
         signature__v0__public_key_hash'
     - id: public_key_unknown_field1
-      type: id_005__psbabym1__mutez
-      doc: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
+      doc: id_005__psbabym1__mumav
   time_between_blocks:
     seq:
     - id: time_between_blocks_entries
@@ -246,23 +246,23 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: tokens_per_roll
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: michelson_maximum_type_size
   type: u2
 - id: seed_nonce_revelation_tip
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: origination_size
   type: int31
 - id: block_security_deposit
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: endorsement_security_deposit
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: block_reward
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: endorsement_reward
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: cost_per_byte
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: test_chain_duration

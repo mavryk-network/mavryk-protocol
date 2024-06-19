@@ -385,17 +385,17 @@ val save_precompute_shards_proofs :
 
     Returns the error {!type:Invalid_precomputation_hash} if the integrity check fails. *)
 val load_precompute_shards_proofs :
-  hash:Tezos_crypto.Blake2B.t option ->
+  hash:Mavryk_crypto.Blake2B.t option ->
   filename:string ->
   unit ->
   shards_proofs_precomputation Error_monad.tzresult Lwt.t
 
-(** [hash_precomputation precomputation] returns the {!Tezos_crypto.Blake2B.t}
+(** [hash_precomputation precomputation] returns the {!Mavryk_crypto.Blake2B.t}
     hash of the {!Data_encoding.t} value of [precomputation].
 
     @raises a {!Data_encoding.Binary.Write_error} if [precomputation] can't be
     serialized to a value {!val:shards_proofs_precomputation_encoding}. *)
-val hash_precomputation : shards_proofs_precomputation -> Tezos_crypto.Blake2B.t
+val hash_precomputation : shards_proofs_precomputation -> Mavryk_crypto.Blake2B.t
 
 (** [prove_shards t ~precomputation ~polynomial] produces
    [number_of_shards] proofs [(π_0, ..., π_{number_of_shards - 1})] for the elements

@@ -1,23 +1,23 @@
 Liquidity Baking
 ================
 
-Liquidity baking incentivizes large amounts of decentralized liquidity provision between tez and tzBTC by minting a small amount of tez every block and depositing it inside of a constant product market making smart-contract.
+Liquidity baking incentivizes large amounts of decentralized liquidity provision between mav and tzBTC by minting a small amount of mav every block and depositing it inside of a constant product market making smart-contract.
 
 Contracts
 ~~~~~~~~~
 
-During activation of Granada protocol, a constant product market making (CPMM) Michelson contract has been deployed on the chain with address ``KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5`` as well as an associated liquidity token contract (LQT) with address ``KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo``.
+During activation of Atlas protocol, a constant product market making (CPMM) Michelson contract has been deployed on the chain with address ``KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5`` as well as an associated liquidity token contract (LQT) with address ``KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo``.
 
 .. warning::
 
    While the CPMM and LQT contract originations provide an ``Origination_result``, the LQT contract contains two big maps not included in a ``lazy_storage_diff`` field. Indexers and other tooling may need manual updates to include these.
 
-The CPMM maintains a balance of ``a`` tez and ``b`` `tzBTC <https://tzbtc.io/>`_, where tzBTC is the `FA1.2 token <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-7/tzip-7.md>`_  found at address ``KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn``. The smart contract accepts deposits of ``da`` tez and returns ``db`` tzBTC (or vice versa) where the invariant ``(a + da * (1 - f - n)) * (b - db) = a b`` is preserved, and ``f`` and ``n`` are a fee and burn, set at 0.1% each. Calculations are done with precision of 1000, rounding down on division.
+The CPMM maintains a balance of ``a`` mav and ``b`` `tzBTC <https://tzbtc.io/>`_, where tzBTC is the `FA1.2 token <https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-7/tzip-7.md>`_  found at address ``KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn``. The smart contract accepts deposits of ``da`` mav and returns ``db`` tzBTC (or vice versa) where the invariant ``(a + da * (1 - f - n)) * (b - db) = a b`` is preserved, and ``f`` and ``n`` are a fee and burn, set at 0.1% each. Calculations are done with precision of 1000, rounding down on division.
 
 To implement this contract, we use a fork of the open source code base used by `version two <https://gitlab.com/dexter2tz/dexter2tz>`_ of the "Dexter" project. The implementation of this contract has been `formally verified <https://gitlab.com/dexter2tz/dexter2tz#audits-and-formal-verification-external-resources>`_ against its functional specification. The contract code is modified in the following way:
 
 1. The fee is set to 0.1% only (the fee in Dexter v2 is set to 0.3%). Rationale: given the subsidy it is not necessary to charge a large fee and better to improve liquidity.
-2. An additional 0.1% of every trade is burned by being transferred to the null implicit account. Rationale: this mechanism offsets inflation from the subsidy. The inflation is exactly balanced at a daily trade volume of 7.2 million tez.
+2. An additional 0.1% of every trade is burned by being transferred to the null implicit account. Rationale: this mechanism offsets inflation from the subsidy. The inflation is exactly balanced at a daily trade volume of 7.2 million mav.
 3. The ability to set a delegate has been removed. Rationale: the subsidy means there is no need for a baker for that contract and having one would create an imbalance.
 4. The ability to set a manager has been removed. Rationale: the only privilege of the Dexter manager is to set Dexter's delegate so this role is now unnecessary.
 
@@ -26,12 +26,12 @@ The LIGO and Michelson code for these contracts, as well as detailed documentati
 Subsidy
 ~~~~~~~
 
-At every block in the chain, a small amount of tez is minted and credited to the
+At every block in the chain, a small amount of mav is minted and credited to the
 CPMM contract, and the CPMM's ``%default`` entrypoint is called to update the
 ``xtz_pool`` balance in its storage. The amount that is minted and sent to the
 CPMM contract is 1/16th of the rewards for a block of round 0 with all
-attestations; currently these rewards are 20 tez per block so the amount that is
-sent to the CPMM contract is 1.25 tez per block.
+attestations; currently these rewards are 20 mav per block so the amount that is
+sent to the CPMM contract is 1.25 mav per block.
 If the :ref:`adaptive issuance <adaptive_issuance_alpha>` feature were to be activated,
 the subsidy would be adjusted by the adaptive issuance coefficient.
 
@@ -69,18 +69,18 @@ non-abstaining blocks, about 1386 blocks if everyone signals, 1963
 blocks if 80% do, 3583 blocks if 60% do etc. Recall for comparison
 that assuming four blocks per minute there are 5760 blocks per day.
 
-When producing blocks using Octez baking daemon ``octez-baker``, there
+When producing blocks using Mavkit baking daemon ``mavkit-baker``, there
 are two command-line options affecting toggle vote. The
 ``--liquidity-baking-toggle-vote <on|off|pass>`` option sets a static
 value to be used in each block. Note that this option must be placed
 **after** ``run`` on the command-line. Moreover, the path of a JSON
 file can be given to the ``--votefile <path>`` option
-e.g. ``octez-baker-<protocol codename> run with local node
-~/.tezos-node alice --liquidity-baking-toggle-vote on --votefile
+e.g. ``mavkit-baker-<protocol codename> run with local node
+~/.mavryk-node alice --liquidity-baking-toggle-vote on --votefile
 "per_block_votes.json"``, or placed in a default location:
 ``per_block_votes.json`` in the current working directory **or** in
 the client data directory
-(e.g. ``~/.tezos-client/per_block_votes.json``); the former location
+(e.g. ``~/.mavryk-client/per_block_votes.json``); the former location
 takes precedence. The content of the JSON file will be repeatedly
 submitted on each baked block, where ``per_block_votes.json`` contains
 just ``{"liquidity_baking_toggle_vote": "pass"}`` (to abstain),

@@ -53,7 +53,7 @@ val pread_block :
 (**/**)
 
 (** Unsafe set of functions intended for internal data manipulation.
-    Must not be used outside of the [Tezos_store]. *)
+    Must not be used outside of the [Mavryk_store]. *)
 
 (** [prune_raw_block_bytes block_buffer] prunes the block contained in
     [block_buffer] and returns [metadata_offset] such that

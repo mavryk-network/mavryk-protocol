@@ -28,7 +28,7 @@ module Make_V1 (Conf : sig
   val entries : int
 end) =
 struct
-  open Tezos_context_sigs.Context.Proof_types
+  open Mavryk_context_sigs.Context.Proof_types
   open Data_encoding
 
   let entries = Conf.entries
@@ -484,7 +484,7 @@ module Make_V2 (Conf : sig
   val entries : int
 end) =
 struct
-  open Tezos_context_sigs.Context.Proof_types
+  open Mavryk_context_sigs.Context.Proof_types
   module V1 = Make_V1 (Conf)
   open Data_encoding
 

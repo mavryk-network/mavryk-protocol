@@ -1,0 +1,48 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_proto_001_PtAtLas_lib_dal_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-libs.base
+  mavkit-protocol-001-PtAtLas-libs.dal
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-libs.base-test-helpers
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-alcotezt)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_dal_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_base_test_helpers
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavkit_alcotezt)
+ (modules test_dal_slot_frame_encoding test_helpers))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_proto_001_PtAtLas_lib_dal_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavkit-protocol-001-PtAtLas-libs)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

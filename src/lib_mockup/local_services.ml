@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Directory = Resto_directory.Make (Tezos_rpc.Encoding)
-open Tezos_shell_services
+module Directory = Resto_directory.Make (Mavryk_rpc.Encoding)
+open Mavryk_shell_services
 
 type error += Injection_not_possible
 
@@ -33,7 +33,7 @@ type error += Cannot_parse_op
 type error += Cannot_parse_proto_data
 
 type callback_writer =
-  Tezos_protocol_environment.rpc_context -> bytes -> unit tzresult Lwt.t
+  Mavryk_protocol_environment.rpc_context -> bytes -> unit tzresult Lwt.t
 
 let () =
   register_error_kind
@@ -81,7 +81,7 @@ module type MENV = sig
 
   val chain_id : Chain_id.t
 
-  val rpc_context : Tezos_protocol_environment.rpc_context
+  val rpc_context : Mavryk_protocol_environment.rpc_context
 
   val base_dir : string
 
@@ -92,18 +92,18 @@ module Make (E : MENV) = struct
   (* We need to construct a dummy p2p to build the associated
      rpc directory. *)
   let init_fake_p2p =
-    let open Tezos_p2p in
+    let open Mavryk_p2p in
     let peer_meta_config =
       {
-        P2p_params.peer_meta_encoding = Tezos_p2p_services.Peer_metadata.encoding;
-        peer_meta_initial = Tezos_p2p_services.Peer_metadata.empty;
+        P2p_params.peer_meta_encoding = Mavryk_p2p_services.Peer_metadata.encoding;
+        peer_meta_initial = Mavryk_p2p_services.Peer_metadata.empty;
         score = (fun _ -> 0.0);
       }
     in
     let message_config : unit P2p_params.message_config =
       {
         encoding = [];
-        chain_name = Distributed_db_version.Name.of_string "TEZOS_CLIENT_MOCKUP";
+        chain_name = Distributed_db_version.Name.of_string "MAVRYK_CLIENT_MOCKUP";
         (* The following cannot be empty. *)
         distributed_db_versions = Distributed_db_version.[zero; one];
       }
@@ -112,29 +112,29 @@ module Make (E : MENV) = struct
       P2p.faked_network
         message_config
         peer_meta_config
-        Tezos_p2p_services.Connection_metadata.
+        Mavryk_p2p_services.Connection_metadata.
           {disable_mempool = true; private_node = true}
 
   (* Create dummy RPC directory for the p2p *)
   let p2p () =
     let fake_p2p = init_fake_p2p () in
-    Tezos_p2p.P2p_directory.build_rpc_directory fake_p2p
+    Mavryk_p2p.P2p_directory.build_rpc_directory fake_p2p
 
   let chain () =
     Directory.prefix
-      Tezos_shell_services.Chain_services.path
+      Mavryk_shell_services.Chain_services.path
       (Directory.register
          Directory.empty
-         Tezos_shell_services.Chain_services.S.chain_id
-         (fun _ () () -> Tezos_rpc.Answer.return E.chain_id))
+         Mavryk_shell_services.Chain_services.S.chain_id
+         (fun _ () () -> Mavryk_rpc.Answer.return E.chain_id))
 
   let protocols protocol_hash =
     let path =
-      let open Tezos_rpc.Path in
+      let open Mavryk_rpc.Path in
       prefix Block_services.chain_path Block_services.path
     in
     let service =
-      Tezos_rpc.Service.prefix path Block_services.Empty.S.protocols
+      Mavryk_rpc.Service.prefix path Block_services.Empty.S.protocols
     in
     Directory.register Directory.empty service (fun _prefix () () ->
         let current_protocol =
@@ -146,13 +146,13 @@ module Make (E : MENV) = struct
           (`Ok {Block_services.current_protocol; next_protocol = protocol_hash}))
 
   let monitor () =
-    let open Tezos_protocol_environment in
+    let open Mavryk_protocol_environment in
     let {block_hash; block_header; _} = E.rpc_context in
-    Tezos_rpc.Directory.gen_register
+    Mavryk_rpc.Directory.gen_register
       Directory.empty
       Monitor_services.S.bootstrapped
       (fun () () () ->
-        Tezos_rpc.Answer.return (block_hash, block_header.timestamp))
+        Mavryk_rpc.Answer.return (block_hash, block_header.timestamp))
 
   let chain_chain_id = function
     | `Main -> Chain_id.hash_string ["main"]
@@ -226,7 +226,7 @@ module Make (E : MENV) = struct
     let predecessor_hash = E.rpc_context.block_hash in
     let predecessor = E.rpc_context.block_header in
     let predecessor_context = E.rpc_context.context in
-    let timestamp = Time.System.to_protocol @@ Tezos_base.Time.System.now () in
+    let timestamp = Time.System.to_protocol @@ Mavryk_base.Time.System.now () in
     begin_validation_and_application
       predecessor_context
       E.chain_id
@@ -240,7 +240,7 @@ module Make (E : MENV) = struct
     let predecessor_context = E.rpc_context.context in
     let timestamp =
       let default () =
-        Time.System.to_protocol @@ Tezos_base.Time.System.now ()
+        Time.System.to_protocol @@ Mavryk_base.Time.System.now ()
       in
       Option.value_f timestamp ~default
     in
@@ -312,7 +312,7 @@ module Make (E : MENV) = struct
 
     let unsafe_read () =
       let open Lwt_result_syntax in
-      let* json = Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file file in
+      let* json = Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file file in
       return @@ Data_encoding.Json.destruct ops_encoding json
 
     let read () =
@@ -330,7 +330,7 @@ module Make (E : MENV) = struct
         | Zero_truncate -> return operations
       in
       let json = Data_encoding.Json.construct ops_encoding ops in
-      Tezos_stdlib_unix.Lwt_utils_unix.Json.write_file file json
+      Mavryk_stdlib_unix.Lwt_utils_unix.Json.write_file file json
 
     let append = write ~mode:Append
   end
@@ -354,7 +354,7 @@ module Make (E : MENV) = struct
   let with_chain ?caller_name chain k =
     let open Lwt_syntax in
     let* r = check_chain ?caller_name chain in
-    match r with Error errs -> Tezos_rpc.Answer.fail errs | Ok () -> k ()
+    match r with Error errs -> Mavryk_rpc.Answer.fail errs | Ok () -> k ()
 
   let pending_operations () =
     let open Lwt_result_syntax in
@@ -381,38 +381,38 @@ module Make (E : MENV) = struct
           return pending_operations
         in
         match pending_operations with
-        | Error errs -> Tezos_rpc.Answer.fail errs
+        | Error errs -> Mavryk_rpc.Answer.fail errs
         | Ok pending_operations ->
-            Tezos_rpc.Answer.return (params#version, pending_operations))
+            Mavryk_rpc.Answer.return (params#version, pending_operations))
 
   let shell_header () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix
+      (Mavryk_rpc.Path.prefix
          (* /chains/<chain> *)
-         Tezos_shell_services.Chain_services.path
+         Mavryk_shell_services.Chain_services.path
          (* blocks/<block_id> *)
          Block_services.path)
     @@ Directory.register
          Directory.empty
          E.Block_services.S.Header.shell_header
          (fun _prefix () () ->
-           Tezos_rpc.Answer.return E.rpc_context.block_header)
+           Mavryk_rpc.Answer.return E.rpc_context.block_header)
 
   let block_hash () =
     let path =
-      let open Tezos_rpc.Path in
+      let open Mavryk_rpc.Path in
       prefix Block_services.chain_path Block_services.path
     in
-    let service = Tezos_rpc.Service.prefix path Block_services.Empty.S.hash in
+    let service = Mavryk_rpc.Service.prefix path Block_services.Empty.S.hash in
     (* Always return the head. *)
     Directory.register Directory.empty service (fun _prefix () () ->
-        Tezos_rpc.Answer.return E.rpc_context.block_hash)
+        Mavryk_rpc.Answer.return E.rpc_context.block_hash)
 
   let live_blocks () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix
+      (Mavryk_rpc.Path.prefix
          (* /chains/<chain> *)
-         Tezos_shell_services.Chain_services.path
+         Mavryk_shell_services.Chain_services.path
          (* blocks/<block_id> *)
          Block_services.path)
     @@ Directory.register
@@ -421,7 +421,7 @@ module Make (E : MENV) = struct
          (fun (((), chain), _block) () () ->
            with_chain ~caller_name:"live blocks" chain (fun () ->
                let set = Block_hash.Set.singleton E.rpc_context.block_hash in
-               Tezos_rpc.Answer.return set))
+               Mavryk_rpc.Answer.return set))
 
   let simulate_operation (state, preapply_result) op =
     let open Lwt_result_syntax in
@@ -458,9 +458,9 @@ module Make (E : MENV) = struct
   let preapply_block () =
     let open Lwt_result_syntax in
     Directory.prefix
-      (Tezos_rpc.Path.prefix
+      (Mavryk_rpc.Path.prefix
          (* /chains/<chain> *)
-         Tezos_shell_services.Chain_services.path
+         Mavryk_shell_services.Chain_services.path
          (* blocks/<block_id> *)
          Block_services.path)
     @@ Directory.register
@@ -537,8 +537,8 @@ module Make (E : MENV) = struct
                  return (shell_header, List.rev preapply_results)
                in
                match r with
-               | Error errs -> Tezos_rpc.Answer.fail errs
-               | Ok v -> Tezos_rpc.Answer.return v))
+               | Error errs -> Mavryk_rpc.Answer.fail errs
+               | Ok v -> Mavryk_rpc.Answer.return v))
 
   let hash_protocol_operation op =
     match
@@ -553,9 +553,9 @@ module Make (E : MENV) = struct
   let preapply () =
     let open Lwt_result_syntax in
     Directory.prefix
-      (Tezos_rpc.Path.prefix
+      (Mavryk_rpc.Path.prefix
          (* /chains/<chain> *)
-         Tezos_shell_services.Chain_services.path
+         Mavryk_shell_services.Chain_services.path
          (* blocks/<block_id> *)
          Block_services.path)
       (Directory.register
@@ -586,8 +586,8 @@ module Make (E : MENV) = struct
                  return (List.rev acc)
                in
                match outcome with
-               | Ok result -> Tezos_rpc.Answer.return (params#version, result)
-               | Error errs -> Tezos_rpc.Answer.fail errs)))
+               | Ok result -> Mavryk_rpc.Answer.return (params#version, result)
+               | Error errs -> Mavryk_rpc.Answer.fail errs)))
 
   let hash_op (shell, proto) =
     let proto = Data_encoding.Binary.to_bytes_exn op_data_encoding proto in
@@ -631,14 +631,14 @@ module Make (E : MENV) = struct
   let inject_operation_with_mempool operation_bytes =
     let open Lwt_result_syntax in
     match Data_encoding.Binary.of_bytes Operation.encoding operation_bytes with
-    | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
+    | Error _ -> Mavryk_rpc.Answer.fail [Cannot_parse_op]
     | Ok ({Operation.shell = shell_header; proto} as op) -> (
         let operation_hash = Operation.hash op in
         let proto_op_opt =
           Data_encoding.Binary.of_bytes op_data_encoding proto
         in
         match proto_op_opt with
-        | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
+        | Error _ -> Mavryk_rpc.Answer.fail [Cannot_parse_op]
         | Ok operation_data -> (
             let op = (shell_header, operation_data) in
             let*! r =
@@ -656,25 +656,25 @@ module Make (E : MENV) = struct
                     op
             in
             match r with
-            | Ok _ -> Tezos_rpc.Answer.return operation_hash
+            | Ok _ -> Mavryk_rpc.Answer.return operation_hash
             | Error errs -> (
                 let*! r = Trashpool.append [op] in
                 match r with
-                | Ok _ -> Tezos_rpc.Answer.fail errs
-                | Error errs2 -> Tezos_rpc.Answer.fail (errs @ errs2))))
+                | Ok _ -> Mavryk_rpc.Answer.fail errs
+                | Error errs2 -> Mavryk_rpc.Answer.fail (errs @ errs2))))
 
   let inject_operation_without_mempool
       (write_context_callback : callback_writer) operation_bytes =
     let open Lwt_result_syntax in
     match Data_encoding.Binary.of_bytes Operation.encoding operation_bytes with
-    | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
+    | Error _ -> Mavryk_rpc.Answer.fail [Cannot_parse_op]
     | Ok ({Operation.shell = shell_header; proto} as op) -> (
         let operation_hash = Operation.hash op in
         let proto_op_opt =
           Data_encoding.Binary.of_bytes op_data_encoding proto
         in
         match proto_op_opt with
-        | Error _ -> Tezos_rpc.Answer.fail [Cannot_parse_op]
+        | Error _ -> Mavryk_rpc.Answer.fail [Cannot_parse_op]
         | Ok operation_data -> (
             let op =
               {E.Protocol.shell = shell_header; protocol_data = operation_data}
@@ -694,9 +694,9 @@ module Make (E : MENV) = struct
                 let rpc_context = {E.rpc_context with context} in
                 let*! result = write_context_callback rpc_context proto in
                 match result with
-                | Ok () -> Tezos_rpc.Answer.return operation_hash
-                | Error errs -> Tezos_rpc.Answer.fail errs)
-            | Error errs -> Tezos_rpc.Answer.fail errs))
+                | Ok () -> Mavryk_rpc.Answer.return operation_hash
+                | Error errs -> Mavryk_rpc.Answer.fail errs)
+            | Error errs -> Mavryk_rpc.Answer.fail errs))
 
   let inject_block_generic (write_context_callback : callback_writer)
       (update_mempool_callback : Operation.t list list -> unit tzresult Lwt.t) =
@@ -754,18 +754,18 @@ module Make (E : MENV) = struct
     Directory.register
       Directory.empty
       (* /injection/block *)
-      Tezos_shell_services.Injection_services.S.block
+      Mavryk_shell_services.Injection_services.S.block
       (* See injection_directory.ml for vanilla implementation *)
       (fun () _ (bytes, operations) ->
         (* assert (Files.Mempool.exists ~dirname:E.base_dir) ; *)
         let block_hash = Block_hash.hash_bytes [bytes] in
         match Block_header.of_bytes bytes with
-        | None -> Tezos_rpc.Answer.fail [Cannot_parse_op]
+        | None -> Mavryk_rpc.Answer.fail [Cannot_parse_op]
         | Some block_header -> (
             let*! r =
               let* {context; _}, _ = reconstruct operations block_header in
               let rpc_context =
-                Tezos_protocol_environment.
+                Mavryk_protocol_environment.
                   {
                     context;
                     block_hash;
@@ -781,8 +781,8 @@ module Make (E : MENV) = struct
               update_mempool_callback operations
             in
             match r with
-            | Error errs -> Tezos_rpc.Answer.fail errs
-            | Ok () -> Tezos_rpc.Answer.return block_hash))
+            | Error errs -> Mavryk_rpc.Answer.fail errs
+            | Ok () -> Mavryk_rpc.Answer.return block_hash))
 
   (** [inject_block] is a feature that assumes that the mockup is on-disk
       and uses a mempool. *)
@@ -830,9 +830,9 @@ module Make (E : MENV) = struct
       Directory.empty
       (* /injection/operation, vanilla client implementation is in
          injection_directory.ml *)
-      Tezos_shell_services.Injection_services.S.operation
+      Mavryk_shell_services.Injection_services.S.operation
       (fun _q _contents operation_bytes ->
-        if mem_only then Tezos_rpc.Answer.fail [Injection_not_possible]
+        if mem_only then Mavryk_rpc.Answer.fail [Injection_not_possible]
         else
           (* Looking at the implementations of the two inject_operation_*
              functions it looks like there is code to share (proto_op_opt,
@@ -851,7 +851,7 @@ module Make (E : MENV) = struct
   let monitor_validated_blocks () =
     Directory.register
       Directory.empty
-      Tezos_shell_services.Monitor_services.S.validated_blocks
+      Mavryk_shell_services.Monitor_services.S.validated_blocks
       (fun () q () ->
         let chain =
           match List.hd q#chains with None -> `Main | Some chain -> chain
@@ -865,13 +865,13 @@ module Make (E : MENV) = struct
                 }
             in
             let block_hash = E.rpc_context.block_hash in
-            Tezos_rpc.Answer.return
+            Mavryk_rpc.Answer.return
               (E.chain_id, block_hash, block_header, [[]; []; []; []])))
 
   let monitor_heads () =
     Directory.register
       Directory.empty
-      Tezos_shell_services.Monitor_services.S.heads
+      Mavryk_shell_services.Monitor_services.S.heads
       (fun ((), chain) _next_protocol () ->
         with_chain ~caller_name:"monitor heads" chain (fun () ->
             let block_header =
@@ -882,11 +882,11 @@ module Make (E : MENV) = struct
                 }
             in
             let block_hash = E.rpc_context.block_hash in
-            Tezos_rpc.Answer.return (block_hash, block_header)))
+            Mavryk_rpc.Answer.return (block_hash, block_header)))
 
   let raw_header () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
       (Directory.register
          Directory.empty
          E.Block_services.S.raw_header
@@ -894,17 +894,17 @@ module Make (E : MENV) = struct
            with_chain ~caller_name:"raw header" chain (fun () ->
                let block_header_b =
                  Data_encoding.Binary.to_bytes_exn
-                   Tezos_base.Block_header.encoding
+                   Mavryk_base.Block_header.encoding
                    {
                      shell = E.rpc_context.block_header;
                      protocol_data = E.protocol_data;
                    }
                in
-               Tezos_rpc.Answer.return block_header_b)))
+               Mavryk_rpc.Answer.return block_header_b)))
 
   let header () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
       (Directory.register
          Directory.empty
          E.Block_services.S.header
@@ -922,11 +922,11 @@ module Make (E : MENV) = struct
                          protocol_data;
                        }
                    in
-                   Tezos_rpc.Answer.return block_header)))
+                   Mavryk_rpc.Answer.return block_header)))
 
   let resulting_context_hash () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
       (Directory.register
          Directory.empty
          E.Block_services.S.resulting_context_hash
@@ -934,28 +934,28 @@ module Make (E : MENV) = struct
            with_chain ~caller_name:"resulting_context_hash" chain (fun () ->
                (* This is not sufficient but this library doesn't have
                   what's necessary to determine the correct value. *)
-               Tezos_rpc.Answer.return E.rpc_context.block_header.context)))
+               Mavryk_rpc.Answer.return E.rpc_context.block_header.context)))
 
   let protocol_data_raw () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
       (Directory.register
          Directory.empty
          E.Block_services.S.Header.raw_protocol_data
          (fun (((), chain), _block) () () ->
            with_chain ~caller_name:"protocol_data_raw" chain (fun () ->
-               Tezos_rpc.Answer.return E.protocol_data)))
+               Mavryk_rpc.Answer.return E.protocol_data)))
 
   let operations () =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          E.Block_services.S.Operations.operations
          (fun (((), chain), _block) query () ->
            with_chain ~caller_name:"operations" chain (fun () ->
                (* FIXME: Better answer here *)
-               Tezos_rpc.Answer.return (query#version, [[]; []; []; []])))
+               Mavryk_rpc.Answer.return (query#version, [[]; []; []; []])))
 
   let monitor_operations () =
     let open Lwt_syntax in
@@ -973,7 +973,7 @@ module Make (E : MENV) = struct
             let* () = on o#branch_refused "branch_refused ignored" in
             let* () = on o#refused "refused ignored" in
             let _ = o#validated in
-            Tezos_rpc.Answer.(
+            Mavryk_rpc.Answer.(
               return_stream
                 {next = (fun () -> Lwt.return_none); shutdown = (fun () -> ())})))
 
@@ -1005,7 +1005,7 @@ end
 
 let build_shell_directory (base_dir : string)
     (mockup_env : Registration.mockup_environment) chain_id
-    (rpc_context : Tezos_protocol_environment.rpc_context)
+    (rpc_context : Mavryk_protocol_environment.rpc_context)
     (protocol_data : bytes) (mem_only : bool)
     (write_context_callback : callback_writer) =
   let (module Mockup_environment) = mockup_env in
@@ -1031,8 +1031,8 @@ let build_shell_directory (base_dir : string)
  *)
 let build_directory (base_dir : string) (mem_only : bool)
     (mockup_env : Registration.mockup_environment) (chain_id : Chain_id.t)
-    (rpc_context : Tezos_protocol_environment.rpc_context) protocol_data :
-    unit Tezos_rpc.Directory.t =
+    (rpc_context : Mavryk_protocol_environment.rpc_context) protocol_data :
+    unit Mavryk_rpc.Directory.t =
   let write_context rpc_context protocol_data =
     let (module Mockup_environment) = mockup_env in
     Persistence.overwrite_mockup
@@ -1046,9 +1046,9 @@ let build_directory (base_dir : string) (mem_only : bool)
   let proto_directory =
     (* register protocol-specific RPCs *)
     Directory.prefix
-      Tezos_shell_services.Chain_services.path
+      Mavryk_shell_services.Chain_services.path
       (Directory.prefix
-         Tezos_shell_services.Block_services.path
+         Mavryk_shell_services.Block_services.path
          (Directory.map
             (fun (_chain, _block) -> Lwt.return rpc_context)
             Mockup_environment.directory))
@@ -1065,6 +1065,6 @@ let build_directory (base_dir : string) (mem_only : bool)
       write_context
   in
   let base = Directory.merge shell_directory proto_directory in
-  Tezos_rpc.Directory.register_describe_directory_service
+  Mavryk_rpc.Directory.register_describe_directory_service
     base
-    Tezos_rpc.Service.description_service
+    Mavryk_rpc.Service.description_service

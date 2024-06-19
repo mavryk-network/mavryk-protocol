@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val commands : unit -> #Client_context.full Tezos_clic.command list
+val commands : unit -> #Client_context.full Mavryk_clic.command list

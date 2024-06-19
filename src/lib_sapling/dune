@@ -4,8 +4,8 @@
 (env (_ (env-vars (NODE_PRELOAD hacl-wasm,ocaml-bls12-381,secp256k1-wasm))))
 
 (library
- (name tezos_sapling)
- (public_name octez-libs.tezos-sapling)
+ (name mavryk_sapling)
+ (public_name mavkit-libs.mavryk-sapling)
  (instrumentation (backend bisect_ppx))
  (libraries
   integers
@@ -13,16 +13,16 @@
   ctypes
   ctypes_stubs_js
   data-encoding
-  octez-libs.stdlib
-  octez-libs.crypto
-  octez-libs.error-monad
-  octez-libs.lwt-result-stdlib)
+  mavkit-libs.stdlib
+  mavkit-libs.crypto
+  mavkit-libs.error-monad
+  mavkit-libs.lwt-result-stdlib)
  (js_of_ocaml (javascript_files runtime.js))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib)
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib)
  (foreign_stubs
   (language c)
   (flags (:standard -I%{env:OPAM_SWITCH_PREFIX=}/lib/tezos-rust-libs))

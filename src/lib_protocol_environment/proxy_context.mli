@@ -28,11 +28,11 @@
     implementation. Compared to [Memory_context], this instance features a
     {!Proxy_Delegate.T} which under the hood relies on [Proxy_getter].
 
-    Other [*_context] modules of {!Tezos_protocol_environment}, i.e.
+    Other [*_context] modules of {!Mavryk_protocol_environment}, i.e.
     siblings of this file, are backed by different type of values coming
-    from {!Tezos_context}. This file is backed by {!M.t} below, which
-    is a thin layer over {!Tezos_memory_context.Context}. Because of that,
-    this instance of {!Tezos_protocol_environment} is close to
+    from {!Mavryk_context}. This file is backed by {!M.t} below, which
+    is a thin layer over {!Mavryk_memory_context.Context}. Because of that,
+    this instance of {!Mavryk_protocol_environment} is close to
     the {!Memory_context} one.
 
     Whereas [Memory_context] is a regular recursive map, [Proxy_context] obtains
@@ -53,7 +53,7 @@ module M : sig
 
   type value = Bytes.t (* as in environment_context.mli *)
 
-  type tree = Tezos_context_memory.Context.tree
+  type tree = Mavryk_context_memory.Context.tree
 
   val empty : tree
 

@@ -1,5 +1,5 @@
 
-./octez-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --entrypoint store --arg 'Pair 99 {Pair "garbage" (Pair 0x01b9ce1609aab1100170d2ea4f94e3407244090b1000 (Pair "Ticket1" 1)) ; Pair "garbage" (Pair 0x01b9ce1609aab1100170d2ea4f94e3407244090b1000 (Pair "Ticket2" 2))}'
+./mavkit-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --entrypoint store --arg 'Pair 99 {Pair "garbage" (Pair 0x01b9ce1609aab1100170d2ea4f94e3407244090b1000 (Pair "Ticket1" 1)) ; Pair "garbage" (Pair 0x01b9ce1609aab1100170d2ea4f94e3407244090b1000 (Pair "Ticket2" 2))}'
 Node is bootstrapped.
 Estimated gas: 3992.854 units (will add 100 for safety)
 Estimated storage: 222 bytes added (will add 20 for safety)
@@ -7,12 +7,12 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ꜩ0.000798
+    Fee to the validator: ꜩ0.000798
     Expected counter: 4
     Gas limit: 4093
     Storage limit: 242 bytes

@@ -40,8 +40,8 @@ let register_protocol ~hash ~sources =
   let module M = struct
     include
       Registered_protocol.Register_embedded_V11
-        (Tezos_protocol_environment_demo_noops)
-        (Tezos_protocol_demo_noops.Protocol)
+        (Mavryk_protocol_environment_demo_noops)
+        (Mavryk_protocol_demo_noops.Protocol)
         (struct
           let hash = Some hash
 
@@ -315,7 +315,7 @@ let () =
   Lwt_main.run
   @@ Alcotest_lwt.run
        ~__FILE__
-       "tezos-store"
+       "mavryk-store"
        [
          ( "consistency",
            List.map

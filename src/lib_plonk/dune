@@ -3,11 +3,11 @@
 
 (library
  (name plonk)
- (public_name octez-libs.plonk)
+ (public_name mavkit-libs.plonk)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.kzg
-  octez-libs.plompiler
+  mavkit-libs.kzg
+  mavkit-libs.plompiler
   str)
  (preprocess (pps ppx_repr))
  (flags

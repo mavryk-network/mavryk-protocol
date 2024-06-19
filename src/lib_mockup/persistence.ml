@@ -37,9 +37,9 @@ module Make (Registration : Registration.S) = struct
   include Persistence_intf
 
   let rpc_context_encoding :
-      Tezos_protocol_environment.rpc_context Data_encoding.t =
+      Mavryk_protocol_environment.rpc_context Data_encoding.t =
     let open Data_encoding in
-    let open Tezos_protocol_environment in
+    let open Mavryk_protocol_environment in
     conv
       (fun {block_hash; block_header; context} ->
         (block_hash, block_header, context))
@@ -54,7 +54,7 @@ module Make (Registration : Registration.S) = struct
     type t = {
       protocol_hash : Protocol_hash.t;
       chain_id : Chain_id.t;
-      rpc_context : Tezos_protocol_environment.rpc_context;
+      rpc_context : Mavryk_protocol_environment.rpc_context;
       protocol_data : bytes;
     }
 
@@ -77,7 +77,7 @@ module Make (Registration : Registration.S) = struct
   end
 
   let get_registered_mockup (protocol_hash_opt : Protocol_hash.t option)
-      (printer : #Tezos_client_base.Client_context.printer) :
+      (printer : #Mavryk_client_base.Client_context.printer) :
       Registration.mockup_environment tzresult Lwt.t =
     let open Lwt_result_syntax in
     let mockup_environments = Registration.get_registered_environments () in
@@ -127,7 +127,7 @@ module Make (Registration : Registration.S) = struct
           protocol_hashes
 
   let default_mockup_context :
-      Tezos_client_base.Client_context.printer ->
+      Mavryk_client_base.Client_context.printer ->
       (Registration.mockup_environment * Registration.mockup_context) tzresult
       Lwt.t =
    fun cctxt ->
@@ -144,7 +144,7 @@ module Make (Registration : Registration.S) = struct
     return (mockup, rpc_context)
 
   let init_mockup_context_by_protocol_hash :
-      cctxt:Tezos_client_base.Client_context.printer ->
+      cctxt:Mavryk_client_base.Client_context.printer ->
       protocol_hash:Protocol_hash.t ->
       constants_overrides_json:Data_encoding.json option ->
       bootstrap_accounts_json:Data_encoding.json option ->
@@ -166,23 +166,23 @@ module Make (Registration : Registration.S) = struct
   let mockup_context_from_persisted
       ({protocol_hash; chain_id; rpc_context; protocol_data} :
         Persistent_mockup_environment.t)
-      (printer : #Tezos_client_base.Client_context.printer) =
+      (printer : #Mavryk_client_base.Client_context.printer) =
     let open Lwt_result_syntax in
     let* mockup = get_registered_mockup (Some protocol_hash) printer in
     return
       ( mockup,
-        Tezos_mockup_registration.Registration_intf.
+        Mavryk_mockup_registration.Registration_intf.
           {chain = chain_id; rpc_context; protocol_data} )
 
   let get_mockup_context_from_disk ~base_dir ~protocol_hash
-      (printer : #Tezos_client_base.Client_context.printer) =
+      (printer : #Mavryk_client_base.Client_context.printer) =
     let open Lwt_result_syntax in
     let file = (Files.Context.get ~dirname:base_dir :> string) in
     if not (Sys.file_exists file) then
       failwith "get_mockup_context_from_disk: file %s not found" file
     else
       let* context_json =
-        Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file file
+        Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file file
       in
       match Persistent_mockup_environment.of_json context_json with
       | persisted_mockup ->
@@ -196,7 +196,7 @@ module Make (Registration : Registration.S) = struct
             persisted_mockup.rpc_context.block_header
           in
           let timestamp =
-            Time.System.to_protocol (Tezos_base.Time.System.now ())
+            Time.System.to_protocol (Mavryk_base.Time.System.now ())
           in
           let predecessor = persisted_mockup.rpc_context.block_hash in
           let* (module Mockup) =
@@ -219,7 +219,7 @@ module Make (Registration : Registration.S) = struct
               ~timestamp
           in
           let* context =
-            Tezos_protocol_environment.Context.load_cache
+            Mavryk_protocol_environment.Context.load_cache
               predecessor
               persisted_mockup.rpc_context.context
               `Lazy
@@ -264,7 +264,7 @@ module Make (Registration : Registration.S) = struct
     else
       Persistent_mockup_environment.(
         to_json {protocol_hash; chain_id; rpc_context; protocol_data})
-      |> Tezos_stdlib_unix.Lwt_utils_unix.Json.write_file context_file
+      |> Mavryk_stdlib_unix.Lwt_utils_unix.Json.write_file context_file
 
   type base_dir_class =
     | Base_dir_does_not_exist
@@ -303,13 +303,13 @@ module Make (Registration : Registration.S) = struct
           | false -> return_ok Base_dir_is_nonempty)
       | false -> return_ok Base_dir_is_nonempty
 
-  let create_mockup ~(cctxt : Tezos_client_base.Client_context.full)
+  let create_mockup ~(cctxt : Mavryk_client_base.Client_context.full)
       ~protocol_hash ~constants_overrides_json ~bootstrap_accounts_json
       ~asynchronous =
     let open Lwt_result_syntax in
     let base_dir = cctxt#get_base_dir in
     let create_base_dir () =
-      let*! () = Tezos_stdlib_unix.Lwt_utils_unix.create_dir base_dir in
+      let*! () = Mavryk_stdlib_unix.Lwt_utils_unix.create_dir base_dir in
       let*! () =
         cctxt#message "Created mockup client base dir in %s" base_dir
       in
@@ -329,18 +329,18 @@ module Make (Registration : Registration.S) = struct
     in
     let* _mockup_env, {chain = chain_id; rpc_context; protocol_data} =
       init_mockup_context_by_protocol_hash
-        ~cctxt:(cctxt :> Tezos_client_base.Client_context.printer)
+        ~cctxt:(cctxt :> Mavryk_client_base.Client_context.printer)
         ~protocol_hash
         ~constants_overrides_json
         ~bootstrap_accounts_json
     in
     let mockup_dir = (Files.get_mockup_directory ~dirname:base_dir :> string) in
-    let*! () = Tezos_stdlib_unix.Lwt_utils_unix.create_dir mockup_dir in
+    let*! () = Mavryk_stdlib_unix.Lwt_utils_unix.create_dir mockup_dir in
     let context_file = (Files.Context.get ~dirname:base_dir :> string) in
     let* () =
       Persistent_mockup_environment.(
         to_json {protocol_hash; chain_id; rpc_context; protocol_data})
-      |> Tezos_stdlib_unix.Lwt_utils_unix.Json.write_file context_file
+      |> Mavryk_stdlib_unix.Lwt_utils_unix.Json.write_file context_file
     in
     if asynchronous then
       (* Setup a local persistent mempool *)

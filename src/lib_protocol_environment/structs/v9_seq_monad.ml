@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_error_monad.TzLwtreslib.Seq
+include Mavryk_error_monad.TzLwtreslib.Seq
 
 let first s = find (fun _ -> true) s
 

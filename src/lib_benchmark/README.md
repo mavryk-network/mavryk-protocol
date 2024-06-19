@@ -1,8 +1,8 @@
-# tezos-benchmark
+# mavryk-benchmark
 Summary line: Benchmark and inference library.
 
 ## Overview
-- `tezos-benchmark` is a library to describe benchmarks, collect results and
+- `mavryk-benchmark` is a library to describe benchmarks, collect results and
   fit predictive models. It also allows to generate code from the fitted
   models.
 - See the `.rst` documentation for a more detailed description.

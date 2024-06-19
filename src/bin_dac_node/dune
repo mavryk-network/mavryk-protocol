@@ -3,50 +3,49 @@
 
 (executable
  (name main_dac)
- (public_name octez-dac-node)
- (package octez-dac-node)
+ (public_name mavkit-dac-node)
+ (package mavkit-dac-node)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.clic
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-shell-libs.client-commands
-  octez-libs.rpc-http
-  octez-libs.rpc-http-server
-  octez-shell-libs.protocol-updater
-  octez-libs.rpc-http-client-unix
-  octez-libs.stdlib-unix
-  octez-libs.stdlib
-  tezos-dac-lib
-  tezos_dac_node_lib
-  octez-l2-libs.layer2_store
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.clic
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-shell-libs.client-commands
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-shell-libs.protocol-updater
+  mavkit-libs.rpc-http-client-unix
+  mavkit-libs.stdlib-unix
+  mavkit-libs.stdlib
+  mavryk-dac-lib
+  mavryk_dac_node_lib
+  mavkit-l2-libs.layer2_store
   irmin-pack
   irmin-pack.unix
   irmin
-  octez-protocol-017-PtNairob-libs.dac
-  octez-protocol-018-Proxford-libs.dac
-  (select void_for_linking-octez-protocol-alpha-libs-dac from
-   (octez-protocol-alpha-libs.dac -> void_for_linking-octez-protocol-alpha-libs-dac.empty)
-   (-> void_for_linking-octez-protocol-alpha-libs-dac.empty)))
+  mavkit-protocol-001-PtAtLas-libs.dac
+  (select void_for_linking-mavkit-protocol-alpha-libs-dac from
+   (mavkit-protocol-alpha-libs.dac -> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)
+   (-> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)))
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_client_commands
-  -open Tezos_rpc_http
-  -open Tezos_stdlib_unix
-  -open Tezos_stdlib
-  -open Tezos_dac_lib
-  -open Tezos_dac_node_lib
-  -open Tezos_layer2_store))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_commands
+  -open Mavryk_rpc_http
+  -open Mavryk_stdlib_unix
+  -open Mavryk_stdlib
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_node_lib
+  -open Mavryk_layer2_store))
 
 (rule
  (action
-  (progn (write-file void_for_linking-octez-protocol-alpha-libs-dac.empty ""))))
+  (progn (write-file void_for_linking-mavkit-protocol-alpha-libs-dac.empty ""))))

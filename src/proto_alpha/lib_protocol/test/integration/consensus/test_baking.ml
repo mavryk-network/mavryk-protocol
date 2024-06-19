@@ -113,7 +113,7 @@ let test_voting_power_cache () =
     Assert.equal_int64 ~loc n voting_power
   in
   (* the voting power is the full staking balance *)
-  let initial_voting_power_at_genesis = Tez.to_mutez full_balance in
+  let initial_voting_power_at_genesis = Tez.to_mumav full_balance in
   let* () =
     assert_voting_power ~loc:__LOC__ initial_voting_power_at_genesis genesis
   in
@@ -121,7 +121,7 @@ let test_voting_power_cache () =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 1))
   in
   let expected_delta_voting_power_after_one_voting_period =
-    Tez.to_mutez rewards_after_one_voting_period
+    Tez.to_mumav rewards_after_one_voting_period
   in
   let* block =
     Block.bake_n ~policy (Int32.to_int blocks_per_voting_period - 1) genesis
@@ -141,7 +141,7 @@ let test_voting_power_cache () =
     Test_tez.(baking_reward *! Int64.pred (blocks_per_voting_periods 2))
   in
   let expected_delta_voting_power_after_two_voting_periods =
-    Tez.to_mutez rewards_after_two_voting_periods
+    Tez.to_mumav rewards_after_two_voting_periods
   in
   let* block =
     Block.bake_n ~policy (Int32.to_int blocks_per_voting_period) block
@@ -225,8 +225,12 @@ let test_rewards_block_and_payload_producer () =
       attesters
   in
   let fee = Tez.one in
+  let open Test_tez in
+  let fee_to_producer = fee /! 4L in
+  let fee_to_protocol_treasury = fee /! 4L in
+  let fee_to_burn = fee -! (fee_to_producer *! 2L) in
   let* tx =
-    Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract Tez.one
+    Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract fee_to_producer
   in
   let* b2 =
     Block.bake ~policy:(By_round 0) ~operations:(attestations @ [tx]) b1
@@ -250,9 +254,57 @@ let test_rewards_block_and_payload_producer () =
   let expected_balance =
     let open Test_tez in
     Account.default_initial_balance -! frozen_deposit +! baking_reward
-    +! bonus_reward +! reward_for_b1 +! fee
+    +! bonus_reward +! reward_for_b1 +! fee_to_producer
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  (* the protocol treasury is currently the buffer address *)
+  let protocol_treasury_contract_result = Contract.of_b58check "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH" in
+  match protocol_treasury_contract_result with
+  | Error _ -> 
+      failwith ("Error invalid contract address")
+  | Ok protocol_treasury_contract ->
+
+      Context.Contract.balance (B b1) protocol_treasury_contract >>=? fun initial_protocol_treasury_balance ->
+      Context.Contract.balance (B b2) protocol_treasury_contract >>=? fun protocol_treasury_balance ->
+      Log.info "------";
+      Log.info "fee_to_protocol_treasury is: %s" (Tez.to_string fee_to_protocol_treasury);
+      Log.info "initial_protocol_treasury_balance is: %s" (Tez.to_string initial_protocol_treasury_balance);
+      Log.info "protocol_treasury_balance is: %s" (Tez.to_string protocol_treasury_balance);
+      Log.info "------";
+      (* let expected_protocol_treasury_balance =
+        let open Test_tez in
+        initial_protocol_treasury_balance +! fee_to_protocol_treasury
+      in
+      Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
+
+  let cpmm_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
+    match cpmm_contract_result with
+    | Error _ -> 
+        failwith ("Error invalid contract address")
+    | Ok cpmm_contract ->
+  
+        Context.Contract.balance (B b1) cpmm_contract >>=? fun initial_cpmm_balance ->
+        Context.Contract.balance (B b2) cpmm_contract >>=? fun cpmm_balance ->
+        Log.info "------";
+        Log.info "initial_cpmm_balance is: %s" (Tez.to_string initial_cpmm_balance);
+        Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance);
+        Log.info "------";
+
+  let burn_address_result = Contract.of_b58check "mv2burnburnburnburnburnburnbur7hzNeg" in
+  match burn_address_result with
+    | Error _ -> 
+        failwith ("Error invalid contract address")
+    | Ok burn_address ->
+  
+        Context.Contract.balance (B b1) burn_address >>=? fun initial_burn_address_balance ->
+        Context.Contract.balance (B b2) burn_address >>=? fun burn_address_balance ->
+        
+        let expected_burn_address_balance =
+          let open Test_tez in
+          initial_burn_address_balance +! fee_to_burn
+        in
+        Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () ->
+
   (* Some new baker [baker_b2'] bakes b2' at the first round which does not
      correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
      check that the fixed baking reward goes to the payload producer [baker_b2],
@@ -292,7 +344,7 @@ let test_rewards_block_and_payload_producer () =
   let expected_balance =
     let open Test_tez in
     Account.default_initial_balance +! baking_reward -! frozen_deposit
-    +! reward_for_b1 +! fee
+    +! reward_for_b1 +! fee_to_producer
   in
   let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
   (* [baker_b2'] gets the bonus because he is the one who included the
@@ -324,7 +376,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
   let* Constants.{parametric = {minimal_stake; _}; _} =
     Context.get_constants (B b_for_constants)
   in
-  let tpr = Tez.to_mutez minimal_stake in
+  let tpr = Tez.to_mumav minimal_stake in
   (* N.B. setting the balance has an impact on the active stake; without
      delegation, the full balance is the same as the staking balance and the
      active balance is less or equal the staking balance (see
@@ -349,7 +401,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
     in
     let expected_bal =
       Test_tez.(
-        Tez.of_mutez_exn initial_bal1
+        Tez.of_mumav_exn initial_bal1
         +! baking_reward_fixed_portion -! frozen_deposit)
     in
     Assert.equal_tez ~loc:__LOC__ bal expected_bal
@@ -405,7 +457,7 @@ let test_committee_sampling () =
       "@[<hov>Testing with baker distribution [%a],@ committee size %d.@]@."
       (Format.pp_print_list
          ~pp_sep:(fun ppf () -> Format.fprintf ppf ",@ ")
-         (fun ppf (tez, _) -> Format.fprintf ppf "%Ld" tez))
+         (fun ppf (mav, _) -> Format.fprintf ppf "%Ld" mav))
       distribution
       max_round ;
 
@@ -473,11 +525,11 @@ let tests =
       `Quick
       test_rewards_block_and_payload_producer;
     Tztest.tztest
-      "a delegate with 8000 tez can bake"
+      "a delegate with 8000 mav can bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:true);
     Tztest.tztest
-      "a delegate with 7999 tez cannot bake"
+      "a delegate with 7999 mav cannot bake"
       `Quick
       (test_enough_active_stake_to_bake ~has_active_stake:false);
     Tztest.tztest "committee sampling" `Quick test_committee_sampling;

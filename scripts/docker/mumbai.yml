@@ -1,28 +1,28 @@
 version: "3"
 services:
-  octez-node:
-    container_name: octez-node-mumbai
+  mavkit-node:
+    container_name: mavkit-node-mumbai
     image: tezos/tezos:latest
-    hostname: octez-node
-    command: octez-node
+    hostname: mavkit-node
+    command: mavkit-node
     ports:
       - 9732:9732
       - 8732:8732
     environment:
-      NODE_HOST: octez-node
+      NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
       - node_data:/var/run/tezos/node
       - client_data:/var/run/tezos/client
     restart: on-failure
 
-  octez-baker:
-    container_name: octez-baker-mumbai
+  mavkit-baker:
+    container_name: mavkit-baker-mumbai
     image: tezos/tezos:latest
-    hostname: octez-baker
-    command: octez-baker --liquidity-baking-toggle-vote $LIQUIDITY_BAKING_VOTE
+    hostname: mavkit-baker
+    command: mavkit-baker --liquidity-baking-toggle-vote $LIQUIDITY_BAKING_VOTE
     environment:
-      NODE_HOST: octez-node
+      NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
       - client_data:/var/run/tezos/client
@@ -30,13 +30,13 @@ services:
     restart: on-failure
 
 
-  octez-accuser:
-    container_name: octez-accuser-mumbai
+  mavkit-accuser:
+    container_name: mavkit-accuser-mumbai
     image: tezos/tezos:latest
-    hostname: octez-accuser
-    command: octez-accuser
+    hostname: mavkit-accuser
+    command: mavkit-accuser
     environment:
-      NODE_HOST: octez-node
+      NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
       - client_data:/var/run/tezos/client

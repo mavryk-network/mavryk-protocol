@@ -38,7 +38,7 @@ module V0 : sig
   val make_put_dac_member_signature_request_body :
     dac_member_pkh:string ->
     root_hash:Hex.t ->
-    Tezos_crypto.Aggregate_signature.signature ->
+    Mavryk_crypto.Aggregate_signature.signature ->
     Ezjsonm.value
 
   (** [put_dac_member_signature hex_root_hash dac_member_pkh signature]
@@ -47,7 +47,7 @@ module V0 : sig
   val put_dac_member_signature :
     hex_root_hash:Hex.t ->
     dac_member_pkh:string ->
-    signature:Tezos_crypto.Aggregate_signature.t ->
+    signature:Mavryk_crypto.Aggregate_signature.t ->
     unit RPC_core.t
 
   (** [get_missing_page ~hex_root_hash] calls

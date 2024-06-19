@@ -2,7 +2,7 @@
 # Testing PPX preprocessing
 
 This folder is used to unit test code transformation resulting
-from preproccessing Ocaml code with `Tezos_time_measurement_ppx`.
+from preproccessing Ocaml code with `Mavryk_time_measurement_ppx`.
 
 ## Valid and invalid programs
 
@@ -36,7 +36,7 @@ Tests can be easily runned using the following command:
 dune build @src/lib_time_measurement_ppx/runtest
 ```
 For each `i/o`, This will trigger a dune `rule` that will preprocess
-the *input file* using `Tezos_event_ppx` and compare the resulting
+the *input file* using `Mavryk_event_ppx` and compare the resulting
 program with the *output file*.
   
 ## Dune stanzas generation

@@ -16,8 +16,8 @@ smart_rollup_node_data_dir=${smart_rollup_node_data_dir:?}
 
 configure_client() {
 
-    _client_config="$HOME/.tezos-client/config"
-    mkdir -p "$client_dir" "$HOME/.tezos-client"
+    _client_config="$HOME/.mavryk-client/config"
+    mkdir -p "$client_dir" "$HOME/.mavryk-client"
 
     if [ ! -f "$_client_config" ]; then
         "$client" --base-dir "$client_dir" \

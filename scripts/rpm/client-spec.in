@@ -1,10 +1,10 @@
 Name:		@PKG@
 Version:	@VERSION@
 Release:	@REVISION@
-Summary:	The Octez Client
+Summary:	The Mavkit Client
 
 License:	MIT
-URL:		http://tezos.gitlab.io
+URL:		http://protocol.mavryk.org
 
 Packager:       @MAINT@
 Source0:	@FAKESRC@
@@ -16,8 +16,8 @@ Source0:	@FAKESRC@
 tar cpf - . | (cd $RPM_BUILD_ROOT && tar xpf -)
 
 %description
-The Octez Client and Wallet
+The Mavkit Client and Wallet
 
 %files
-%{_bindir}/octez-*
+%{_bindir}/mavkit-*
 

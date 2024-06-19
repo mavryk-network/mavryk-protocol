@@ -27,13 +27,13 @@ type shell_header = {
   level : Int32.t;
   proto_level : int;
   (* uint8 *)
-  predecessor : Tezos_crypto.Hashed.Block_hash.t;
+  predecessor : Mavryk_crypto.Hashed.Block_hash.t;
   timestamp : Time.Protocol.t;
   validation_passes : int;
   (* uint8 *)
-  operations_hash : Tezos_crypto.Hashed.Operation_list_list_hash.t;
+  operations_hash : Mavryk_crypto.Hashed.Operation_list_list_hash.t;
   fitness : Fitness.t;
-  context : Tezos_crypto.Hashed.Context_hash.t;
+  context : Mavryk_crypto.Hashed.Context_hash.t;
 }
 
 let shell_header_encoding =
@@ -84,14 +84,14 @@ let shell_header_encoding =
        (obj8
           (req "level" int32)
           (req "proto" uint8)
-          (req "predecessor" Tezos_crypto.Hashed.Block_hash.encoding)
+          (req "predecessor" Mavryk_crypto.Hashed.Block_hash.encoding)
           (req "timestamp" Time.Protocol.encoding)
           (req "validation_pass" uint8)
           (req
              "operations_hash"
-             Tezos_crypto.Hashed.Operation_list_list_hash.encoding)
+             Mavryk_crypto.Hashed.Operation_list_list_hash.encoding)
           (req "fitness" Fitness.encoding)
-          (req "context" Tezos_crypto.Hashed.Context_hash.encoding))
+          (req "context" Mavryk_crypto.Hashed.Context_hash.encoding))
 
 type t = {shell : shell_header; protocol_data : Bytes.t}
 
@@ -107,12 +107,12 @@ include Compare.Make (struct
       | [], _ :: _ -> 1
       | x :: xs, y :: ys -> compare x y >> fun () -> list compare xs ys
     in
-    Tezos_crypto.Hashed.Block_hash.compare
+    Mavryk_crypto.Hashed.Block_hash.compare
       b1.shell.predecessor
       b2.shell.predecessor
     >> fun () ->
     compare b1.protocol_data b2.protocol_data >> fun () ->
-    Tezos_crypto.Hashed.Operation_list_list_hash.compare
+    Mavryk_crypto.Hashed.Operation_list_list_hash.compare
       b1.shell.operations_hash
       b2.shell.operations_hash
     >> fun () ->
@@ -150,15 +150,15 @@ let of_bytes b = Data_encoding.Binary.of_bytes_opt encoding b
 
 let of_bytes_exn b = Data_encoding.Binary.of_bytes_exn encoding b
 
-let to_b58check v = Tezos_crypto.Base58.safe_encode (to_string v)
+let to_b58check v = Mavryk_crypto.Base58.safe_encode (to_string v)
 
 let of_b58check b =
-  Option.bind (Tezos_crypto.Base58.safe_decode b) (fun s ->
+  Option.bind (Mavryk_crypto.Base58.safe_decode b) (fun s ->
       Data_encoding.Binary.of_string_opt encoding s)
 
-let hash block = Tezos_crypto.Hashed.Block_hash.hash_bytes [to_bytes block]
+let hash block = Mavryk_crypto.Hashed.Block_hash.hash_bytes [to_bytes block]
 
-let hash_raw bytes = Tezos_crypto.Hashed.Block_hash.hash_bytes [bytes]
+let hash_raw bytes = Mavryk_crypto.Hashed.Block_hash.hash_bytes [bytes]
 
 module LevelMap = Map.Make (struct
   type t = Int32.t
@@ -177,7 +177,7 @@ let get_forced_protocol_upgrade ~user_activated_upgrades =
 
 let get_voted_protocol_overrides ~user_activated_protocol_overrides proto_hash =
   List.assoc_opt
-    ~equal:Tezos_crypto.Hashed.Protocol_hash.equal
+    ~equal:Mavryk_crypto.Hashed.Protocol_hash.equal
     proto_hash
     user_activated_protocol_overrides
 

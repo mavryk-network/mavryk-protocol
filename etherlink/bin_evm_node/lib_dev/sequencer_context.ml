@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Context = Tezos_context_disk.Context_binary
+module Context = Mavryk_context_disk.Context_binary
 
 type index = Context.index
 
@@ -20,7 +20,7 @@ type t = {
   evm_state : evm_state;
   kernel : string;
   preimages : string;
-  smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
 }
 
 (** The EVM/PVM local state used by the sequencer. *)
@@ -71,7 +71,7 @@ let init ~data_dir ~kernel ~preimages ~smart_rollup_address =
   let*! index = Context.init (store_path ~data_dir) in
   let* store, evm_state, loaded = load_checkpoint ~data_dir index in
   let smart_rollup_address =
-    Tezos_crypto.Hashed.Smart_rollup_address.of_string_exn smart_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.of_string_exn smart_rollup_address
   in
   return
     ( {

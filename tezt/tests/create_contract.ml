@@ -31,7 +31,7 @@
    Subject:      Regression tests for contract that creates a contract
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_call_contract_that_creates_contract =
   Protocol.register_regression_test

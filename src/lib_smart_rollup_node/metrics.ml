@@ -27,7 +27,7 @@ open Prometheus
 
 let sc_rollup_node_registry = CollectorRegistry.create ()
 
-let namespace = Tezos_version.Node_version.namespace
+let namespace = Mavryk_version.Node_version.namespace
 
 let subsystem = "sc_rollup_node"
 
@@ -83,7 +83,7 @@ let metrics_serve metrics_addr =
   match metrics_addr with
   | Some metrics_addr ->
       let* addrs =
-        Octez_node_config.Config_file.resolve_metrics_addrs
+        Mavkit_node_config.Config_file.resolve_metrics_addrs
           ~default_metrics_port:Configuration.default_metrics_port
           metrics_addr
       in
@@ -135,7 +135,7 @@ let print_csv_metrics ppf metrics =
   Format.fprintf ppf "@]@."
 
 module Info = struct
-  open Tezos_version
+  open Mavryk_version
 
   let node_general_info =
     v_labels_counter
@@ -151,7 +151,7 @@ module Info = struct
       "rollup_node_info"
 
   let init_rollup_node_info ~id ~mode ~genesis_level ~pvm_kind =
-    let id = Tezos_crypto.Hashed.Smart_rollup_address.to_b58check id in
+    let id = Mavryk_crypto.Hashed.Smart_rollup_address.to_b58check id in
     let mode = Configuration.string_of_mode mode in
     let genesis_level = Int32.to_string genesis_level in
     ignore

@@ -3,7 +3,7 @@ rules:
   pattern-either:
   - pattern: List.fold_left (fun $X ... -> $X >>= ...) ... ...
   - pattern: List.fold_left ... (Lwt.return ...) ...
-  message: You probably want to use List.fold_left_s. See https://tezos.gitlab.io/developer/guidelines.html#folding-over-promise for details.
+  message: You probably want to use List.fold_left_s. See https://protocol.mavryk.org/developer/guidelines.html#folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:
@@ -14,7 +14,7 @@ rules:
   pattern-either:
   - pattern: List.fold_right (fun ... $X -> $X >>= ...) ... ...
   - pattern: List.fold_right ... ... (Lwt.return ...)
-  message: You probably want to use List.fold_right_s. See https://tezos.gitlab.io/developer/guidelines.html#folding-over-promise for details.
+  message: You probably want to use List.fold_right_s. See https://protocol.mavryk.org/developer/guidelines.html#folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:
@@ -27,7 +27,7 @@ rules:
   - pattern: List.fold_left ... (Result.return ...) ...
   - pattern: List.fold_left ... (ok ...) ...
   - pattern: List.fold_left ... (Ok ...) ...
-  message: You probably want to use List.fold_left_e. See https://tezos.gitlab.io/developer/guidelines.html#folding-over-promise for details.
+  message: You probably want to use List.fold_left_e. See https://protocol.mavryk.org/developer/guidelines.html#folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:
@@ -40,7 +40,7 @@ rules:
   - pattern: List.fold_right ... ... (Result.return ...)
   - pattern: List.fold_right ... ... (ok ...)
   - pattern: List.fold_right ... ... (Ok ...)
-  message: You probably want to use List.fold_right_e. See https://tezos.gitlab.io/developer/guidelines.html#folding-over-promise for details.
+  message: You probably want to use List.fold_right_e. See https://protocol.mavryk.org/developer/guidelines.html#folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:
@@ -51,7 +51,7 @@ rules:
   pattern-either:
   - pattern: List.fold_left (fun $X ... -> $X >>=? ...) ... ...
   - pattern: List.fold_left ... (return ...) ...
-  message: You probably want to use List.fold_left_es. See https://tezos.gitlab.io/developer/guidelines.html#folding-over-promise for details.
+  message: You probably want to use List.fold_left_es. See https://protocol.mavryk.org/developer/guidelines.html#folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:
@@ -62,7 +62,7 @@ rules:
   pattern-either:
   - pattern: List.fold_right (fun ... $X -> $X >>=? ...) ... ...
   - pattern: List.fold_right ... ... (return ...)
-  message: You probably want to use List.fold_right_es. See https://tezos.gitlab.io/developer/guidelines.html#linting-folding-over-promise for details.
+  message: You probably want to use List.fold_right_es. See https://protocol.mavryk.org/developer/guidelines.html#linting-folding-over-promise for details.
   languages: [ocaml]
   severity: WARNING
   metadata:

@@ -67,7 +67,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -181,9 +181,9 @@ types:
     - id: endorsement
       type: s4
       if: (id_011__pthangz2__inlined__endorsement__contents_tag == id_011__pthangz2__inlined__endorsement__contents_tag::endorsement)
-  id_011__pthangz2__mutez:
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   id_011__pthangz2__operation__alpha__contents:
     seq:
@@ -309,7 +309,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -317,7 +317,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -395,7 +395,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -410,7 +410,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -432,7 +432,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -440,7 +440,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: destination
       type: id_011__pthangz2__contract_id
       doc: ! >-

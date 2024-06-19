@@ -27,14 +27,14 @@
    -------
    Component:    Michelson
    Invocation:   dune exec tezt/tests/main.exe -- --file contract_opcodes.ml
-   Subject:      Runs Michelson opcode tests using [octez-client -mode mockup run script ...].
+   Subject:      Runs Michelson opcode tests using [mavkit-client -mode mockup run script ...].
 *)
 
 (* For these tests, the default hooks would scrub much output of
    interest. We use a lighter hook that only scrubs the clients
    [--base-dir], since it varies between executions. *)
 let hooks =
-  Tezos_regression.hooks_custom
+  Mavryk_regression.hooks_custom
     ~scrubbed_global_options:["--base-dir"; "-d"]
     ~replace_variables:Fun.id
     ()
@@ -452,7 +452,7 @@ let test_protocol_independent =
       (* Get the current level of the block *)
       (* Test the produced variable annotation *)
       ("level", "111", "Unit", "1");
-      (* Test addition and subtraction on tez *)
+      (* Test addition and subtraction on mav *)
       ( "tez_add_sub",
         "None",
         "(Pair 2000000 1000000)",
@@ -503,11 +503,11 @@ let test_protocol_independent =
       ( "hash_key",
         "None",
         {|"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav"|},
-        {|(Some "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx")|} );
+        {|(Some "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe")|} );
       ( "hash_key",
         "None",
         {|"edpkuJqtDcA2m2muMxViSM47MPsGQzmyjnNTawUPqR8vZTAMcx61ES"|},
-        {|(Some "tz1XPTDmvT3vVE5Uunngmixm7gj7zmdbPq6k")|} );
+        {|(Some "mv1KkvXNEpMH4Vri47MY1YenGhb6ZA4ew1F2")|} );
       (* Test timestamp operations *)
       ( "add_timestamp_delta",
         "None",
@@ -555,15 +555,15 @@ let test_protocol_independent =
       (* Test pack/unpack *)
       ( "packunpack_rev",
         "Unit",
-        {|(Pair -1 (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" (Pair "2019-09-09T08:35:33Z" "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"))))))))|},
+        {|(Pair -1 (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))|},
         "Unit" );
       ( "packunpack_rev",
         "Unit",
-        {|(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5" (Pair "2019-09-09T08:35:33Z" "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"))))))))|},
+        {|(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))|},
         "Unit" );
       ( "packunpack_rev_cty",
         "Unit",
-        {|(Pair "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav" (Pair Unit (Pair "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7" (Pair (Some "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7") (Pair { Unit }  (Pair { True }  (Pair (Pair 19 10) (Pair (Left "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5") (Pair { Elt 0 "foo" ; Elt 1 "bar" }  { PACK } )))))))))|},
+        {|(Pair "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav" (Pair Unit (Pair "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7" (Pair (Some "edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7") (Pair { Unit }  (Pair { True }  (Pair (Pair 19 10) (Pair (Left "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx") (Pair { Elt 0 "foo" ; Elt 1 "bar" }  { PACK } )))))))))|},
         "Unit" );
       ( "packunpack_rev_cty",
         "Unit",
@@ -584,26 +584,26 @@ let test_protocol_independent =
         "(Pair -8 2)",
         "(Pair (Some (Pair -4 0)) (Some (Pair -4 0)) "
         ^ "(Some (Pair 4 0)) (Some (Pair 4 0)))" );
-      (* Test EDIV on mutez *)
-      ( "ediv_mutez",
+      (* Test EDIV on mumav *)
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Left 10))",
         "(Left (Some (Pair 1 0)))" );
-      ( "ediv_mutez",
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Left 3))",
         "(Left (Some (Pair 3 1)))" );
-      ("ediv_mutez", "(Left None)", "(Pair 10 (Left 0))", "(Left None)");
-      ( "ediv_mutez",
+      ("ediv_mumav", "(Left None)", "(Pair 10 (Left 0))", "(Left None)");
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Right 10))",
         "(Right (Some (Pair 1 0)))" );
-      ( "ediv_mutez",
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 10 (Right 3))",
         "(Right (Some (Pair 3 1)))" );
-      ("ediv_mutez", "(Left None)", "(Pair 10 (Right 0))", "(Right None)");
-      ( "ediv_mutez",
+      ("ediv_mumav", "(Left None)", "(Pair 10 (Right 0))", "(Right None)");
+      ( "ediv_mumav",
         "(Left None)",
         "(Pair 5 (Right 10))",
         "(Right (Some (Pair 0 5)))" );
@@ -624,10 +624,10 @@ let test_protocol_independent =
       (* Test ADDRESS *)
       ( "address",
         "None",
-        {|"tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"|},
-        {|(Some "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5")|} );
+        {|"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"|},
+        {|(Some "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx")|} );
       (* Test (CONTRACT unit) *)
-      ("contract", "Unit", {|"tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5"|}, "Unit");
+      ("contract", "Unit", {|"mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"|}, "Unit");
       (* Test create_contract *)
       ( "create_contract",
         "None",
@@ -1026,20 +1026,20 @@ let test_protocol_independent =
         ^ "0b0719",
         "1132026582925658583078152196614952946047676740821044523890286"
         ^ "9222031333517497" );
-      (* Mutez -> Fr *)
-      ( "mutez_to_bls12_381_fr",
+      (* Mumav -> Fr *)
+      ( "mumav_to_bls12_381_fr",
         "0x02",
         "16",
         "0x100000000000000000000000000000000000000000000000000000000"
         ^ "0000000" );
-      (* # would fail if trying to PACK mutez and UNPACK to Fr *)
-      ( "mutez_to_bls12_381_fr",
+      (* # would fail if trying to PACK mumav and UNPACK to Fr *)
+      ( "mumav_to_bls12_381_fr",
         "0x00",
         "257",
         "0x010100000000000000000000000000000000000000000000000000000"
         ^ "0000000" );
-      (* Fr -> Mutez *)
-      ("bls12_381_fr_to_mutez", "0", "0x10", "16");
+      (* Fr -> Mumav *)
+      ("bls12_381_fr_to_mumav", "0", "0x10", "16");
     ]
 
 let test_bitwise =
@@ -1097,7 +1097,7 @@ let test_balance protocol client =
   iter [0; 1; 500_000; 1_000_000; 5_000_000; 1000_000_000; 8_000_000_000_000]
   @@ fun balance ->
   run_script_and_check
-    ~balance:(Tez.of_mutez_int balance)
+    ~balance:(Tez.of_mumav_int balance)
     ~storage:"0"
     ~input:"Unit"
     client
@@ -1107,7 +1107,7 @@ let test_balance protocol client =
 
 let quote s = sf "%S" s
 
-(* Test that the --now flag of 'octez-client run script' affects the value
+(* Test that the --now flag of 'mavkit-client run script' affects the value
    returned by the NOW instruction. See also contract_onchain_opcodes.ml
    for a complementary test of the NOW instruction. *)
 let test_now protocol client =
@@ -1121,7 +1121,7 @@ let test_now protocol client =
     protocol
     ~expected_storage:(quote now)
 
-(* Test that the --level flag of 'octez-client run script' affects the value
+(* Test that the --level flag of 'mavkit-client run script' affects the value
    returned by the LEVEL instruction. See also contract_onchain_opcodes.ml
    for a complementary test of the LEVEL instuction. *)
 let test_level protocol client =
@@ -1431,7 +1431,7 @@ let test_hash_consistency protocol client =
     Client.hash_data
       ~hooks
       ~data
-      ~typ:"(pair mutez (pair timestamp int))"
+      ~typ:"(pair mumav (pair timestamp int))"
       client
   in
   let* () =
@@ -1447,9 +1447,9 @@ let test_hash_consistency protocol client =
 
 (* Test that the Michelson instructions [LSL], [LSR] throw [unexpected
    arithmetic overflow] if the operand is larger than [256]. Test
-   that the Michelson instructions [MUL] over [mutez] throw
+   that the Michelson instructions [MUL] over [mumav] throw
    [unexpected arithmetic overflow] when its result does not fit the
-   bounds of [mutez]. *)
+   bounds of [mumav]. *)
 let test_arithmetic_overflow protocol client =
   Lwt_list.iter_s
     (fun (script_name, storage, input) ->

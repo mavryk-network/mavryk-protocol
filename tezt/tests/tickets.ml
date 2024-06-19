@@ -31,9 +31,9 @@
    Subject:      Regression tests for tickets
 *)
 
-open Tezos_protocol_alpha.Protocol
+open Mavryk_protocol_alpha.Protocol
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let setup_node protocol ~direct_ticket_spending_enable =
   let base = Either.right (protocol, None) in
@@ -522,7 +522,7 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
       client
   in
   let* tez_after = Client.get_balance_for ~account:ticketer client in
-  let balance_drop = Tez.(to_mutez @@ (tez_before - tez_after)) in
+  let balance_drop = Tez.(to_mumav @@ (tez_before - tez_after)) in
   Check.((balance_drop = 1) int ~__LOC__) ~error_msg:"expected %R, got %L" ;
   unit
 
@@ -1123,7 +1123,7 @@ let setup_sc_enabled_node protocol ~parameters_ty =
   let nodes_args =
     Node.[Synchronisation_threshold 0; History_mode Archive; No_bootstrap_peers]
   in
-  let* tezos_node, tezos_client =
+  let* mavryk_node, mavryk_client =
     Client.init_with_protocol ~parameter_file `Client ~protocol ~nodes_args ()
   in
   let* sc_rollup =
@@ -1135,10 +1135,10 @@ let setup_sc_enabled_node protocol ~parameters_ty =
         ~kind:"wasm_2_0_0"
         ~parameters_ty
         ~boot_sector:Constant.wasm_echo_kernel_boot_sector
-        tezos_client)
+        mavryk_client)
   in
-  let* () = Client.bake_for_and_wait tezos_client in
-  return (tezos_node, tezos_client, sc_rollup)
+  let* () = Client.bake_for_and_wait mavryk_client in
+  return (mavryk_node, mavryk_client, sc_rollup)
 
 let assert_sc_rollup_ticket_balance client ~sc_rollup ~ticketer ~content_type
     ~content ~expected =

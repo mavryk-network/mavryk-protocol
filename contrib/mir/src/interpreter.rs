@@ -17,8 +17,8 @@ use crate::typechecker::typecheck_value;
 pub enum InterpretError {
     #[error(transparent)]
     OutOfGas(#[from] OutOfGas),
-    #[error("mutez overflow")]
-    MutezOverflow,
+    #[error("mumav overflow")]
+    MumavOverflow,
     #[error("failed with: {1:?} of type {0:?}")]
     FailedWith(Type, TypedValue),
 }
@@ -150,12 +150,12 @@ fn interpret_one(i: &Instruction, ctx: &mut Ctx, stack: &mut IStack) -> Result<(
                 let sum = o1 + o2;
                 stack.push(V::Int(sum));
             }
-            overloads::Add::MutezMutez => {
-                let o1 = pop!(V::Mutez);
-                let o2 = pop!(V::Mutez);
+            overloads::Add::MumavMumav => {
+                let o1 = pop!(V::Mumav);
+                let o2 = pop!(V::Mumav);
                 ctx.gas.consume(interpret_cost::ADD_TEZ)?;
-                let sum = o1.checked_add(o2).ok_or(InterpretError::MutezOverflow)?;
-                stack.push(V::Mutez(sum));
+                let sum = o1.checked_add(o2).ok_or(InterpretError::MumavOverflow)?;
+                stack.push(V::Mumav(sum));
             }
         },
         I::Dip(opt_height, nested) => {
@@ -317,7 +317,7 @@ fn interpret_one(i: &Instruction, ctx: &mut Ctx, stack: &mut IStack) -> Result<(
         }
         I::Amount => {
             ctx.gas.consume(interpret_cost::AMOUNT)?;
-            stack.push(V::Mutez(ctx.amount));
+            stack.push(V::Mumav(ctx.amount));
         }
         I::Nil => {
             ctx.gas.consume(interpret_cost::NIL)?;
@@ -390,41 +390,41 @@ mod interpreter_tests {
     }
 
     #[test]
-    fn test_add_mutez() {
-        let mut stack = stk![V::Mutez(2i64.pow(62)), V::Mutez(20)];
+    fn test_add_mumav() {
+        let mut stack = stk![V::Mumav(2i64.pow(62)), V::Mumav(20)];
         let mut ctx = Ctx::default();
-        assert!(interpret_one(&Add(overloads::Add::MutezMutez), &mut ctx, &mut stack).is_ok());
+        assert!(interpret_one(&Add(overloads::Add::MumavMumav), &mut ctx, &mut stack).is_ok());
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 20);
-        assert_eq!(stack, stk![V::Mutez(2i64.pow(62) + 20)]);
+        assert_eq!(stack, stk![V::Mumav(2i64.pow(62) + 20)]);
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
-                &mut stk![V::Mutez(2i64.pow(62)), V::Mutez(2i64.pow(62))]
+                &mut stk![V::Mumav(2i64.pow(62)), V::Mumav(2i64.pow(62))]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
                 &mut stk![
-                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap()),
-                    V::Mutez(1)
+                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap()),
+                    V::Mumav(1)
                 ]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
                 &mut stk![
-                    V::Mutez(1),
-                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap())
+                    V::Mumav(1),
+                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap())
                 ]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
     }
 
@@ -999,7 +999,7 @@ mod interpreter_tests {
             ..Ctx::default()
         };
         assert_eq!(interpret(&vec![Amount], &mut ctx, &mut stack), Ok(()));
-        assert_eq!(stack, stk![TypedValue::Mutez(100500)]);
+        assert_eq!(stack, stk![TypedValue::Mumav(100500)]);
         assert_eq!(
             ctx.gas.milligas(),
             Gas::default().milligas() - interpret_cost::INTERPRET_RET - interpret_cost::AMOUNT,

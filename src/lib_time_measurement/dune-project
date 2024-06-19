@@ -1,6 +1,6 @@
 (lang dune 3.0)
 (formatting (enabled_for ocaml))
-(name tezos-time-measurement)
+(name mavryk-time-measurement)
 
 (maintainers contact@tezos.com)
 (authors "Tezos devteam")
@@ -12,12 +12,12 @@
 (generate_opam_files true)
 
 (package
-  (name tezos-time-measurement)
+  (name mavryk-time-measurement)
   (synopsis "Tezos time measurement tooling")
   (depends
     (ppxlib (>= 0.22.2))
     (data-encoding (>= 0.4))
     (lwt (>= 5.4.2))
-    (tezos-event-logging :dev)
+    (mavryk-event-logging :dev)
   )
 )

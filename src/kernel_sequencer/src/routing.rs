@@ -34,8 +34,8 @@ impl FilterBehavior {
 
 #[cfg(test)]
 mod tests {
-    use tezos_crypto_rs::hash::{BlockHash, ContractKt1Hash, HashTrait};
-    use tezos_smart_rollup_encoding::{
+    use mavryk_crypto_rs::hash::{BlockHash, ContractKt1Hash, HashTrait};
+    use mavryk_smart_rollup_encoding::{
         inbox::{InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer},
         michelson::MichelsonUnit,
         public_key_hash::PublicKeyHash,
@@ -100,7 +100,7 @@ mod tests {
             payload: MichelsonUnit {},
             sender: ContractKt1Hash::from_b58check("KT1NRLjyE7wxeSZ6La6DfuhSKCAAnc9Lnvdg")
                 .expect("decoding should work"),
-            source: PublicKeyHash::from_b58check("tz1bonDYXPijpBMA2kntUr87VqNe3oaLzpP1")
+            source: PublicKeyHash::from_b58check("mv1V6bh1tEo7dguMyeTH2pE4hiAmMTTZ1uuM")
                 .expect("decoding should work"),
             destination: rollup_address.clone(),
         };

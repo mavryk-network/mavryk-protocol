@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 open Gossipsub_intf
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 module Validate_message_hook = struct
   (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5674
@@ -87,7 +87,7 @@ module Worker_config :
      and type GS.Span.t = Types.Span.t
      and type GS.Time.t = Types.Time.t
      and type 'a Monad.t = 'a Lwt.t = struct
-  module GS = Tezos_gossipsub.Automaton (Automaton_config)
+  module GS = Mavryk_gossipsub.Automaton (Automaton_config)
   module Monad = Monad
 
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/5596
@@ -130,4 +130,4 @@ module Worker_config :
   end
 end
 
-module Worker_instance = Tezos_gossipsub.Worker (Worker_config)
+module Worker_instance = Mavryk_gossipsub.Worker (Worker_config)

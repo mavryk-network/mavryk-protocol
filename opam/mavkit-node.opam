@@ -1,0 +1,40 @@
+# This file was automatically generated, do not edit.
+# Edit file manifest/main.ml instead.
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "mavkit-libs"
+  "mavkit-version"
+  "mavkit-node-config"
+  "mavkit-shell-libs"
+  "mavkit-rpc-process"
+  "cmdliner" { >= "1.1.0" }
+  "fmt" { >= "0.8.7" }
+  "tls-lwt" { >= "0.16.0" }
+  "prometheus-app" { >= "1.2" }
+  "lwt-exit"
+  "uri" { >= "3.1.0" }
+  "mavryk-protocol-000-Ps9mPmXa"
+  "mavryk-protocol-001-PtAtLas"
+  "mavkit-protocol-001-PtAtLas-libs"
+]
+depopts: [
+  "mavryk-protocol-genesis"
+  "mavryk-protocol-demo-noops"
+  "mavryk-protocol-demo-counter"
+  "mavryk-protocol-alpha"
+  "mavkit-protocol-alpha-libs"
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Mavryk: `mavkit-node` binary"

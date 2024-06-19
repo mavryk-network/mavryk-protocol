@@ -26,7 +26,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module type TEZOS_CONTEXT_UNIX = sig
+module type MAVRYK_CONTEXT_UNIX = sig
   type error +=
     | Cannot_create_file of string
     | Cannot_open_file of string
@@ -34,8 +34,8 @@ module type TEZOS_CONTEXT_UNIX = sig
     | Suspicious_file of int
 
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
-      with type memory_context_tree := Tezos_context_memory.Context.tree
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
+      with type memory_context_tree := Mavryk_context_memory.Context.tree
 
   (** Sync the context with disk. Only useful for read-only instances.
       Does not fail when the context is not in read-only mode. *)
@@ -68,5 +68,5 @@ module type TEZOS_CONTEXT_UNIX = sig
 end
 
 (** Tezos - Versioned, block indexed (key x value) store *)
-module Make (Encoding : module type of Tezos_context_encoding.Context) :
-  TEZOS_CONTEXT_UNIX
+module Make (Encoding : module type of Mavryk_context_encoding.Context) :
+  MAVRYK_CONTEXT_UNIX

@@ -2,22 +2,22 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_event_logging_test_helpers)
- (public_name octez-libs.event-logging-test-helpers)
+ (name mavryk_event_logging_test_helpers)
+ (public_name mavkit-libs.event-logging-test-helpers)
  (libraries
-  octez-libs.stdlib
-  octez-libs.lwt-result-stdlib
+  mavkit-libs.stdlib
+  mavkit-libs.lwt-result-stdlib
   data-encoding
-  octez-libs.error-monad
-  octez-libs.event-logging
-  octez-libs.test-helpers
-  octez-alcotezt)
+  mavkit-libs.error-monad
+  mavkit-libs.event-logging
+  mavkit-libs.test-helpers
+  mavkit-alcotezt)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_error_monad
-  -open Tezos_error_monad.TzLwtreslib
-  -open Tezos_event_logging
-  -open Tezos_test_helpers
-  -open Octez_alcotezt))
+  -open Mavryk_error_monad
+  -open Mavryk_error_monad.TzLwtreslib
+  -open Mavryk_event_logging
+  -open Mavryk_test_helpers
+  -open Mavkit_alcotezt))

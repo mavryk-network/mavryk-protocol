@@ -118,7 +118,7 @@ let raw_encode ?(alphabet = Alphabet.default) s =
   String.make zeros zero ^ ress
 
 let raw_decode ?(alphabet = Alphabet.default) s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let slen = String.length s in
   let rec decode acc index =
     if index >= slen then return acc
@@ -147,7 +147,7 @@ let checksum s =
 let safe_encode ?alphabet s = raw_encode ?alphabet (s ^ checksum s)
 
 let safe_decode ?alphabet s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let* s = raw_decode ?alphabet s in
   let len = String.length s in
   if len < 4 then fail
@@ -172,7 +172,7 @@ type 'a encoding = {
 let prefix {prefix; _} = prefix
 
 let simple_decode ?alphabet {prefix; of_raw; _} s =
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
   let* s = safe_decode ?alphabet s in
   let* s = TzString.remove_prefix ~prefix s in
   of_raw s
@@ -252,7 +252,7 @@ struct
         enc.encoded_length
 
   let decode ?alphabet s =
-    let open Tezos_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
+    let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Monad.Option_syntax in
     let* s = safe_decode ?alphabet s in
     List.find_map
       (fun (Encoding {prefix; of_raw; wrap; _}) ->
@@ -347,11 +347,11 @@ end
 
 module Prefix = struct
   (* These encoded prefixes are computed using scripts/base58_prefix.py
-     $ ./scripts/base58_prefix.py tz1 20
+     $ ./scripts/base58_prefix.py mv1 20
      36 434591 [6L, 161L, 159L]
      $ dune utop src/lib_crypto
-     utop # Tezos_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
-     - : string * int = ("tz1", 36)
+     utop # Mavryk_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
+     - : string * int = ("mv1", 36)
   *)
 
   (* 32 *)
@@ -376,13 +376,13 @@ module Prefix = struct
   let operation_metadata_list_list_hash = "\029\159\182" (* LLr(53) *)
 
   (* 20 *)
-  let ed25519_public_key_hash = "\006\161\159" (* tz1(36) *)
+  let ed25519_public_key_hash = "\005\186\196" (* mv1(36) *)
 
-  let secp256k1_public_key_hash = "\006\161\161" (* tz2(36) *)
+  let secp256k1_public_key_hash = "\005\186\199" (* mv2(36) *)
 
-  let p256_public_key_hash = "\006\161\164" (* tz3(36) *)
+  let p256_public_key_hash = "\005\186\201" (* mv3(36) *)
 
-  let bls12_381_public_key_hash = "\006\161\166" (* tz4(36) *)
+  let bls12_381_public_key_hash = "\005\186\204" (* mv4(36) *)
 
   let smart_rollup_address = "\006\124\117" (* sr1(36) *)
 

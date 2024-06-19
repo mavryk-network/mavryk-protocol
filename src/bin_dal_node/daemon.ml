@@ -28,7 +28,7 @@
     returned plugin to process the block at the next level, the block at the
     previous level being processed by the previous plugin (if any). *)
 let resolve_plugin
-    (protocols : Tezos_shell_services.Chain_services.Blocks.protocols) =
+    (protocols : Mavryk_shell_services.Chain_services.Blocks.protocols) =
   let open Lwt_syntax in
   let plugin_opt = Dal_plugin.get protocols.next_protocol in
   let* () =
@@ -67,7 +67,7 @@ let fetch_dal_config cctxt =
 let init_cryptobox dal_config (proto_parameters : Dal_plugin.proto_parameters) =
   let open Lwt_result_syntax in
   let* () =
-    let find_srs_files () = Tezos_base.Dal_srs.find_trusted_setup_files () in
+    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
     Cryptobox.Config.init_dal ~find_srs_files dal_config
   in
   match Cryptobox.make proto_parameters.cryptobox_parameters with
@@ -218,7 +218,7 @@ module Handler = struct
     let handler stopper (block_hash, block_header) =
       let block = `Hash (block_hash, 0) in
       let* protocols =
-        Tezos_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
+        Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
       in
       let*! plugin_opt = resolve_plugin protocols in
       match plugin_opt with
@@ -270,13 +270,13 @@ module Handler = struct
     let*! () = Event.(emit layer1_node_tracking_started_for_plugin ()) in
     make_stream_daemon
       handler
-      (Tezos_shell_services.Monitor_services.heads cctxt `Main)
+      (Mavryk_shell_services.Monitor_services.heads cctxt `Main)
 
   let may_update_plugin cctxt ctxt ~block ~current_proto ~block_proto =
     let open Lwt_result_syntax in
     if current_proto <> block_proto then
       let* protocols =
-        Tezos_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
+        Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ~block ()
       in
       let*! plugin_opt = resolve_plugin protocols in
       match plugin_opt with
@@ -295,7 +295,7 @@ module Handler = struct
      the publication level of the corresponding slot header. *)
   let new_head ctxt cctxt =
     let open Lwt_result_syntax in
-    let handler _stopper (head_hash, (header : Tezos_base.Block_header.t)) =
+    let handler _stopper (head_hash, (header : Mavryk_base.Block_header.t)) =
       match Node_context.get_status ctxt with
       | Starting -> return_unit
       | Ready ready_ctxt ->
@@ -421,7 +421,7 @@ module Handler = struct
         If the layer1 node reboots, the rpc stream breaks.*)
     make_stream_daemon
       handler
-      (Tezos_shell_services.Monitor_services.heads cctxt `Main)
+      (Mavryk_shell_services.Monitor_services.heads cctxt `Main)
 
   let new_slot_header ctxt =
     (* Monitor neighbor DAL nodes and download published slots as shards. *)
@@ -497,7 +497,7 @@ let connect_gossipsub_with_p2p gs_worker transport_layer node_store =
 
 let resolve peers =
   List.concat_map_es
-    (Tezos_base_unix.P2p_resolve.resolve_addr
+    (Mavryk_base_unix.P2p_resolve.resolve_addr
        ~default_addr:"::"
        ~default_port:(Configuration_file.default.listen_addr |> snd))
     peers
@@ -532,15 +532,15 @@ let store_profiles_finalizer ctxt data_dir =
 *)
 let run ~data_dir configuration_override =
   let open Lwt_result_syntax in
-  let log_cfg = Tezos_base_unix.Logs_simple_config.default_cfg in
+  let log_cfg = Mavryk_base_unix.Logs_simple_config.default_cfg in
   let internal_events =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults
       ~enable_default_daily_logs_at:Filename.Infix.(data_dir // "daily_logs")
       ~log_cfg
       ()
   in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   let*! () = Event.(emit starting_node) () in
   let* ({

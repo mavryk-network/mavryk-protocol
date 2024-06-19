@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 009-PsFLoren.tez'
 types:
-  id_009__psfloren__mutez:
+  id_009__psfloren__mumav:
     seq:
-    - id: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_009__psfloren__mutez
-  type: id_009__psfloren__mutez
+- id: id_009__psfloren__mumav
+  type: id_009__psfloren__mumav

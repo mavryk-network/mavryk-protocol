@@ -22,4 +22,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val is_not_too_far_in_the_future : Tezos_base.Time.Protocol.t -> bool
+val is_not_too_far_in_the_future : Mavryk_base.Time.Protocol.t -> bool

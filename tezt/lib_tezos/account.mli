@@ -36,7 +36,7 @@ type secret_key =
 {[
     {
       alias = "bootstrap1";
-      public_key_hash = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+      public_key_hash = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
       public_key = "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
       secret_key =
         Unencrypted "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
@@ -56,7 +56,7 @@ val key_typ : key Check.typ
 {[
     {
       aggregate_alias = "bls_account";
-      aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+      aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
       aggregate_public_key =
         "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
       aggregate_secret_key =
@@ -77,10 +77,10 @@ type aggregate_key = {
 
     Used for regular accounts. *)
 val sign_bytes :
-  watermark:Tezos_crypto.Signature.watermark ->
+  watermark:Mavryk_crypto.Signature.watermark ->
   signer:key ->
   bytes ->
-  Tezos_crypto.Signature.t
+  Mavryk_crypto.Signature.t
 
 (** [require_unencrypted_secret_key ~__LOC__ key] returns [sk] if [key] is [Unencrypted sk], or fails. *)
 val require_unencrypted_secret_key : __LOC__:string -> secret_key -> string
@@ -94,9 +94,9 @@ val uri_of_secret_key : secret_key -> string
 (** A [Check.typ] for [secret_key] *)
 val secret_key_typ : secret_key Check.typ
 
-(** [write keys ~base_dir] writes the keys into the [octez-client]'s data
+(** [write keys ~base_dir] writes the keys into the [mavkit-client]'s data
    directory [base_dir]. This function has the same effect
-   as importing all the keys manually  via [octez-client] but is
+   as importing all the keys manually  via [mavkit-client] but is
    faster. *)
 val write : key list -> base_dir:string -> unit
 
@@ -113,7 +113,7 @@ end
 (** [parse_client_output ~alias ~client_output] extracts keys from clients output that
     yields result of the form
 {v
-      Hash: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+      Hash: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
       Public Key: edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav
       Secret Key: unencrypted:edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh
 v}
@@ -124,7 +124,7 @@ val parse_client_output : alias:string -> client_output:string -> key
 (** [parse_client_output_aggregate ~alias ~client_output] extracts keys from
     clients output that yields result of the form
 {v
-      Hash: tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn
+      Hash: mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3
       Public Key: BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV
       Secret Key: aggregate_unencrypted:BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq
 v}

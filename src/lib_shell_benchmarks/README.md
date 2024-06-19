@@ -1,8 +1,8 @@
-# `Tezos_shell_benchmarks`
+# `Mavryk_shell_benchmarks`
 
 This library contains protocol-independent benchmarks of various kinds.
-These are built on top of the `tezos-benchmark` library and are made
-available to `tezos-snoop`. The following broad classes of benchmarks
+These are built on top of the `mavryk-benchmark` library and are made
+available to `mavryk-snoop`. The following broad classes of benchmarks
 are defined here:
 
 - Miscellanous benchmarks
@@ -51,7 +51,7 @@ and values of random sizes.
 After preparing the context, the cache is cleared by commiting and
 reloading.
 It then measures the time taken to access a random key in the
-domain of the key-value store (`Tezos_protocol_environment.Context.get`).
+domain of the key-value store (`Mavryk_protocol_environment.Context.get`).
 
 ### `Context_size_dependent_write_bench`
 
@@ -121,4 +121,4 @@ templates that are useful when defining encoding benchmarks.
 
 ## API documentation
 
-See the [documentation on defining benchmarks with snoop](https://tezos.gitlab.io/developer/snoop_arch.html#defining-benchmarks-the-generator-module).
+See the [documentation on defining benchmarks with snoop](https://protocol.mavryk.org/developer/snoop_arch.html#defining-benchmarks-the-generator-module).

@@ -170,7 +170,7 @@ module Automaton_config :
 end
 
 module C = Automaton_config
-module GS = Tezos_gossipsub.Automaton (C)
+module GS = Mavryk_gossipsub.Automaton (C)
 
 let pp_per_topic_score_limits =
   Fmt.Dump.record
@@ -375,5 +375,5 @@ module Worker_config = struct
   end
 end
 
-module Worker = Tezos_gossipsub.Worker (Worker_config)
+module Worker = Mavryk_gossipsub.Worker (Worker_config)
 module Message_cache = GS.Introspection.Message_cache

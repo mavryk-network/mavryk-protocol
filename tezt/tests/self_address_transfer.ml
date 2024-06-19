@@ -31,7 +31,7 @@
    Subject: Regression tests for the Michelson [SELF_ADDRESS] instruction
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 let test_self_address_transfer =
   Protocol.register_regression_test

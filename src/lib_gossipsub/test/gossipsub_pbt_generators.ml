@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_gossipsub
+open Mavryk_gossipsub
 open Gossipsub_intf
 open Test_gossipsub_shared
 module M = QCheck2.Gen

@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Store = Tezos_context_memory.Context
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Store = Mavryk_context_memory.Context
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 module Storelike = struct
   include Store
@@ -38,14 +38,14 @@ module Storelike = struct
   let unshallow = Tree.unshallow
 end
 
-module Get_data = Tezos_context_sigs.Context.With_get_data ((
-  Storelike : Tezos_context_sigs.Context.Storelike))
+module Get_data = Mavryk_context_sigs.Context.With_get_data ((
+  Storelike : Mavryk_context_sigs.Context.Storelike))
 
 type input = {
-  printer : Tezos_client_base.Client_context.printer;
+  printer : Mavryk_client_base.Client_context.printer;
   min_agreement : float;
-  chain : Tezos_shell_services.Block_services.chain;
-  block : Tezos_shell_services.Block_services.block;
+  chain : Mavryk_shell_services.Block_services.chain;
+  block : Mavryk_shell_services.Block_services.block;
   key : string list;
   mproof : Proof.tree Proof.t;
 }
@@ -99,7 +99,7 @@ module Make (Light_proto : Light_proto.PROTO_RPCS) = struct
       0
       validations
 
-  let warn_invalids (printer : Tezos_client_base.Client_context.printer)
+  let warn_invalids (printer : Mavryk_client_base.Client_context.printer)
       validations =
     Lwt_list.iter_s
       (fun v ->

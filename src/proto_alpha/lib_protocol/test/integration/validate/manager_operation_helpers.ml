@@ -35,7 +35,7 @@ let gb_limit = Gas.Arith.(integral_of_int_exn 100_000)
 
 let half_gb_limit = Gas.Arith.(integral_of_int_exn 50_000)
 
-let default_fund = Tez.of_mutez_exn 400_000_000_000L
+let default_fund = Tez.of_mumav_exn 400_000_000_000L
 
 (** {2 Datatypes} *)
 
@@ -419,7 +419,7 @@ let manager_parameters : Parameters.t -> ctxt_req -> Parameters.t =
 let init_ctxt_only ctxtreq =
   let open Lwt_result_syntax in
   let initial_params =
-    Tezos_protocol_alpha_parameters.Default_parameters.parameters_of_constants
+    Mavryk_protocol_alpha_parameters.Default_parameters.parameters_of_constants
       {Context.default_test_constants with consensus_threshold = 0}
   in
   let*? _cryptobox =

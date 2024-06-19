@@ -238,7 +238,7 @@ end = struct
     (* bake `nb_blocks_before_double blocks` before double preattesting *)
     let* blk = bake_n nb_blocks_before_double genesis in
     (* producing two differents blocks and two preattestations op1 and op2 *)
-    let* trans = Op.transaction (B genesis) addr addr Tez.one_mutez in
+    let* trans = Op.transaction (B genesis) addr addr Tez.one_mumav in
     let* head_A = bake ~policy:(By_round 0) blk in
     let* head_B = bake ~policy:(By_round 0) blk ~operations:[trans] in
     let* (d1, _slots1), (d2, _slots2) = pick_attesters (B head_A) in

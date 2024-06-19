@@ -2,7 +2,7 @@ Protocol Release Checklist
 ==========================
 
 This page documents the steps needed for preparing and injecting a
-protocol proposal for Tezos. These include:
+protocol proposal for Mavryk. These include:
 
 - technical steps such as releasing code and launching a test network;
 - meta-technical steps such as extending the developer documentation;
@@ -88,7 +88,7 @@ In the below, “Protocol Shepherd” is abbreviated “Shepherd”.
 -  **Developer Meeting Agrees to Freeze the Code** (up to bug fixes)
 
 -  **Shepherd compiles the doc page with the changelog**
-   (e.g. :doc:`../protocols/006_carthage`),
+   (e.g. :doc:`../protocols/001_atlas`),
    and resets the :doc:`Alpha changelog <../protocols/alpha>`,
    as the diff between protocol Alpha and the proposed
    protocol restarts at zero (e.g. :gl:`!3123`)
@@ -132,10 +132,10 @@ not reviewed thoroughly enough), they should be dropped.
 **At the time of release: Past here, preparation work is done: we are at
 the point of no return.**
 
--  **Agora Posts, Tweets**: Blog posts are published on Tezos Agora announcing
+-  **Agora Posts, Tweets**: Blog posts are published on Mavryk Agora announcing
    the release; tweets linking to the Agora posts may go out at this time. (The
    Agora posts go out first to encourage people to view Agora as the place to go
-   first and earliest for Tezos announcements.)
+   first and earliest for Mavryk announcements.)
 
 -  **Company Blog Posts, Tweets**: Blog posts are made on company web
    sites 15 minutes to an hour later than the Agora posts (so that the
@@ -165,7 +165,7 @@ the point of no return.**
 -  **Reminder For Bakers**: post in the baking slack and in the baker newsletter
    a reminder for them to upgrade.
 
--  **PR Team Work**: The Tezos Foundation's (TF) PR team prepares news releases
+-  **PR Team Work**: The Mavryk Foundation's (TF) PR team prepares news releases
    for the press to go out after protocol activation is known to have been fully
    successful.
 
@@ -182,7 +182,7 @@ happened successfully, a blog post goes out to Agora and then company
 blogs (the same order as “At The Time Of Release", above”) and then a
 news release is sent out by the TF’s PR people.
 
-On the main `tezos/tezos <https://gitlab.com/tezos/tezos>`__ repository, on the
+On the main `mavryk-network/mavryk-protocol <https://gitlab.com/mavryk-network/mavryk-protocol>`__ repository, on the
 master branch, the ``proto_alpha`` directory is reset to the newly activated
 protocol and its associated daemons, with the exception of vanity nonce and
 migration that should be reverted.
@@ -192,6 +192,5 @@ of the code related to the old protocol can now be dropped, see
 :doc:`../developer/howto-freeze-protocols`.
 
 One month after the activation of protocol N, we deactivate the N-1 test
-network. (For example, the Babylon net was deactivated one month after
-Carthage went live on the main network.) This deactivation has been already
+network. This deactivation has been already
 announced one month before activation (see above).

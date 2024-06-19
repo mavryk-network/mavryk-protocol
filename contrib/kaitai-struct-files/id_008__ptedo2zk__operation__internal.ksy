@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_008__ptedo2zk__entrypoint_tag == id_008__ptedo2zk__entrypoint_tag::named)
-  id_008__ptedo2zk__mutez:
+  id_008__ptedo2zk__mumav:
     seq:
-    - id: id_008__ptedo2zk__mutez
+    - id: id_008__ptedo2zk__mumav
       type: n
   id_008__ptedo2zk__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_008__ptedo2zk__mutez
+      type: id_008__ptedo2zk__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_008__ptedo2zk__mutez
+      type: id_008__ptedo2zk__mumav
     - id: destination
       type: id_008__ptedo2zk__contract_id
       doc: ! >-

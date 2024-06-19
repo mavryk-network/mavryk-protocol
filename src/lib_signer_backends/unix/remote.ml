@@ -32,27 +32,27 @@ module Make
       val default : Uri.t
 
       val authenticate :
-        Tezos_crypto.Signature.Public_key_hash.t list ->
+        Mavryk_crypto.Signature.Public_key_hash.t list ->
         Bytes.t ->
-        Tezos_crypto.Signature.t tzresult Lwt.t
+        Mavryk_crypto.Signature.t tzresult Lwt.t
 
       val logger : RPC_client.logger
     end) =
 struct
   let scheme = scheme
 
-  let title = "Built-in tezos-signer using remote wallet."
+  let title = "Built-in mavryk-signer using remote wallet."
 
   let description =
     "Valid locators are of the form\n\
-    \ - remote://tz1...\n\
+    \ - remote://mv1...\n\
      The key will be queried to current remote signer, which can be configured \
      with the `--remote-signer` or `-R` options, or by defining the following \
      environment variables:\n\
-    \ - $TEZOS_SIGNER_UNIX_PATH,\n\
-    \ - $TEZOS_SIGNER_TCP_HOST and $TEZOS_SIGNER_TCP_PORT (default: 7732),\n\
-    \ - $TEZOS_SIGNER_HTTP_HOST and $TEZOS_SIGNER_HTTP_PORT (default: 6732),\n\
-    \ - $TEZOS_SIGNER_HTTPS_HOST and $TEZOS_SIGNER_HTTPS_PORT (default: 443)."
+    \ - $MAVRYK_SIGNER_UNIX_PATH,\n\
+    \ - $MAVRYK_SIGNER_TCP_HOST and $MAVRYK_SIGNER_TCP_PORT (default: 7732),\n\
+    \ - $MAVRYK_SIGNER_HTTP_HOST and $MAVRYK_SIGNER_HTTP_PORT (default: 6732),\n\
+    \ - $MAVRYK_SIGNER_HTTPS_HOST and $MAVRYK_SIGNER_HTTPS_PORT (default: 443)."
 
   include Client_keys.Signature_type
   module Socket = Socket.Make (S)
@@ -129,61 +129,61 @@ let make_sk sk =
   Client_keys.make_sk_uri
     (Uri.make
        ~scheme
-       ~path:(Tezos_crypto.Signature.Secret_key.to_b58check sk)
+       ~path:(Mavryk_crypto.Signature.Secret_key.to_b58check sk)
        ())
 
 let make_pk pk =
   Client_keys.make_pk_uri
     (Uri.make
        ~scheme
-       ~path:(Tezos_crypto.Signature.Public_key.to_b58check pk)
+       ~path:(Mavryk_crypto.Signature.Public_key.to_b58check pk)
        ())
 
 let read_base_uri_from_env () =
   let open Lwt_result_syntax in
   match
-    ( Sys.getenv_opt "TEZOS_SIGNER_UNIX_PATH",
-      Sys.getenv_opt "TEZOS_SIGNER_TCP_HOST",
-      Sys.getenv_opt "TEZOS_SIGNER_HTTP_HOST",
-      Sys.getenv_opt "TEZOS_SIGNER_HTTPS_HOST" )
+    ( Sys.getenv_opt "MAVRYK_SIGNER_UNIX_PATH",
+      Sys.getenv_opt "MAVRYK_SIGNER_TCP_HOST",
+      Sys.getenv_opt "MAVRYK_SIGNER_HTTP_HOST",
+      Sys.getenv_opt "MAVRYK_SIGNER_HTTPS_HOST" )
   with
   | None, None, None, None -> return_none
   | Some path, None, None, None -> return_some (Socket.make_unix_base path)
   | None, Some host, None, None -> (
       try
         let port =
-          match Sys.getenv_opt "TEZOS_SIGNER_TCP_PORT" with
+          match Sys.getenv_opt "MAVRYK_SIGNER_TCP_PORT" with
           | None -> 7732
           | Some port -> int_of_string port
         in
         return_some (Socket.make_tcp_base host port)
       with Invalid_argument _ ->
-        failwith "Failed to parse TEZOS_SIGNER_TCP_PORT.@.")
+        failwith "Failed to parse MAVRYK_SIGNER_TCP_PORT.@.")
   | None, None, Some host, None -> (
       try
         let port =
-          match Sys.getenv_opt "TEZOS_SIGNER_HTTP_PORT" with
+          match Sys.getenv_opt "MAVRYK_SIGNER_HTTP_PORT" with
           | None -> 6732
           | Some port -> int_of_string port
         in
         return_some (Http.make_base host port)
       with Invalid_argument _ ->
-        failwith "Failed to parse TEZOS_SIGNER_HTTP_PORT.@.")
+        failwith "Failed to parse MAVRYK_SIGNER_HTTP_PORT.@.")
   | None, None, None, Some host -> (
       try
         let port =
-          match Sys.getenv_opt "TEZOS_SIGNER_HTTPS_PORT" with
+          match Sys.getenv_opt "MAVRYK_SIGNER_HTTPS_PORT" with
           | None -> 443
           | Some port -> int_of_string port
         in
         return_some (Https.make_base host port)
       with Invalid_argument _ ->
-        failwith "Failed to parse TEZOS_SIGNER_HTTPS_PORT.@.")
+        failwith "Failed to parse MAVRYK_SIGNER_HTTPS_PORT.@.")
   | _, _, _, _ ->
       failwith
         "Only one the following environment variable must be defined: \
-         TEZOS_SIGNER_UNIX_PATH, TEZOS_SIGNER_TCP_HOST, \
-         TEZOS_SIGNER_HTTP_HOST, TEZOS_SIGNER_HTTPS_HOST@."
+         MAVRYK_SIGNER_UNIX_PATH, MAVRYK_SIGNER_TCP_HOST, \
+         MAVRYK_SIGNER_HTTP_HOST, MAVRYK_SIGNER_HTTPS_HOST@."
 
 type error += Invalid_remote_signer of string
 

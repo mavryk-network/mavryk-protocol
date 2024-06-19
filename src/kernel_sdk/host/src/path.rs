@@ -135,19 +135,19 @@ impl<'a> RefPath<'a> {
     ///
     /// It is possible to define a well-encoded path at compile time:
     /// ```
-    /// # use tezos_smart_rollup_host::path::RefPath;
+    /// # use mavryk_smart_rollup_host::path::RefPath;
     /// const PATH: RefPath<'static> = RefPath::assert_from("/valid/path".as_bytes());
     /// ```
     ///
     /// But the following would fail to compile:
     /// ```compile_fail
-    /// # use tezos_smart_rollup_host::path::RefPath;
+    /// # use mavryk_smart_rollup_host::path::RefPath;
     /// const PATH: RefPath<'static> = RefPath::assert_from("invalid//path".as_bytes());
     /// ```
     ///
     /// And this would panic at runtime:
     /// ```should_panic
-    /// # use tezos_smart_rollup_host::path::RefPath;
+    /// # use mavryk_smart_rollup_host::path::RefPath;
     /// let path = RefPath::assert_from("!&(*(".as_bytes());
     /// ```
     pub const fn assert_from(path: &[u8]) -> RefPath {
@@ -284,7 +284,7 @@ mod owned {
     use crate::path::PATH_MAX_SIZE;
     use alloc::string::{String, ToString};
     use alloc::vec::Vec;
-    use tezos_data_encoding::enc::{put_bytes, BinResult, BinWriter};
+    use mavryk_data_encoding::enc::{put_bytes, BinResult, BinWriter};
 
     /// Representation of a [`Path`] which *owns* its underlying path-encoded byte sequence.
     ///

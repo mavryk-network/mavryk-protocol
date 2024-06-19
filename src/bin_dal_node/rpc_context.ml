@@ -23,12 +23,12 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type t = Tezos_rpc.Context.generic
+type t = Mavryk_rpc.Context.generic
 
 (* Data are exchanged as binary for efficiency. *)
-let media_types = [Tezos_rpc_http.Media_type.octet_stream]
+let media_types = [Mavryk_rpc_http.Media_type.octet_stream]
 
-module RPC = Tezos_rpc_http_client_unix.RPC_client_unix
+module RPC = Mavryk_rpc_http_client_unix.RPC_client_unix
 
 let make endpoint =
   let config = RPC.{default_config with endpoint} in

@@ -2,86 +2,86 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_demo_noops)
- (public_name tezos-protocol-demo-noops.protocol.environment)
+ (name mavryk_protocol_environment_demo_noops)
+ (public_name mavryk-protocol-demo-noops.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment)
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
- (modules Tezos_protocol_environment_demo_noops))
+ (modules Mavryk_protocol_environment_demo_noops))
 
 (rule
- (targets tezos_protocol_environment_demo_noops.ml)
+ (targets mavryk_protocol_environment_demo_noops.ml)
  (action
   (write-file
    %{targets}
-   "module Name = struct let name = \"demo-noops\" end\ninclude Tezos_protocol_environment.V11.Make(Name)()\n")))
+   "module Name = struct let name = \"demo-noops\" end\ninclude Mavryk_protocol_environment.V11.Make(Name)()\n")))
 
 (library
- (name tezos_raw_protocol_demo_noops)
- (public_name tezos-protocol-demo-noops.protocol.raw)
+ (name mavryk_raw_protocol_demo_noops)
+ (public_name mavryk-protocol-demo-noops.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-demo-noops.protocol.environment)
+  mavryk-protocol-demo-noops.protocol.environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -nostdlib
   -nopervasives
-  -open Tezos_protocol_environment_demo_noops
-  -open Tezos_protocol_environment_demo_noops.Pervasives
-  -open Tezos_protocol_environment_demo_noops.Error_monad)
+  -open Mavryk_protocol_environment_demo_noops
+  -open Mavryk_protocol_environment_demo_noops.Pervasives
+  -open Mavryk_protocol_environment_demo_noops.Error_monad)
  (modules Main))
 
 (library
- (name tezos_protocol_demo_noops)
- (public_name tezos-protocol-demo-noops.protocol)
+ (name mavryk_protocol_demo_noops)
+ (public_name mavryk-protocol-demo-noops.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-demo-noops.protocol.raw)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-demo-noops.protocol.raw)
  (flags
   (:standard)
   -nopervasives)
- (modules Protocol Tezos_protocol_demo_noops))
+ (modules Protocol Mavryk_protocol_demo_noops))
 
 (install
- (package tezos-protocol-demo-noops)
+ (package mavryk-protocol-demo-noops)
  (section lib)
- (files (TEZOS_PROTOCOL as protocol/raw/TEZOS_PROTOCOL)))
+ (files (MAVRYK_PROTOCOL as protocol/raw/MAVRYK_PROTOCOL)))
 
 (rule
  (targets protocol.ml)
  (action
   (write-file
    %{targets}
-   "\nlet hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn \"ProtoDemoNoopsDemoNoopsDemoNoopsDemoNoopsDemo6XBoYp\"\nlet name = Tezos_protocol_environment_demo_noops.Name.name\ninclude Tezos_raw_protocol_demo_noops\ninclude Tezos_raw_protocol_demo_noops.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"ProtoDemoNoopsDemoNoopsDemoNoopsDemoNoopsDemo6XBoYp\"\nlet name = Mavryk_protocol_environment_demo_noops.Name.name\ninclude Mavryk_raw_protocol_demo_noops\ninclude Mavryk_raw_protocol_demo_noops.Main\n")))
 
 (rule
- (targets tezos_protocol_demo_noops.ml)
+ (targets mavryk_protocol_demo_noops.ml)
  (action
   (write-file
    %{targets}
-   "\nmodule Environment = Tezos_protocol_environment_demo_noops\nmodule Protocol = Protocol\n")))
+   "\nmodule Environment = Mavryk_protocol_environment_demo_noops\nmodule Protocol = Protocol\n")))
 
 (rule
  (alias runtest_compile_protocol)
- (deps main.ml main.mli (:src_dir TEZOS_PROTOCOL))
- (action (run %{bin:octez-protocol-compiler} -no-hash-check -warn-error +a .)))
+ (deps main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
+ (action (run %{bin:mavkit-protocol-compiler} -no-hash-check -warn-error +a .)))
 
 (library
- (name tezos_protocol_demo_noops_lifted)
- (public_name tezos-protocol-demo-noops.protocol.lifted)
+ (name mavryk_protocol_demo_noops_lifted)
+ (public_name mavryk-protocol-demo-noops.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-demo-noops.protocol)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-demo-noops.protocol)
  (flags
   (:standard)
   -nopervasives
-  -open Tezos_protocol_demo_noops)
+  -open Mavryk_protocol_demo_noops)
  (modules Lifted_protocol))
 
 (rule
@@ -92,10 +92,10 @@
    "\ninclude Environment.Lift (Protocol)\nlet hash = Protocol.hash\n")))
 
 (library
- (name tezos_protocol_demo_noops_functor)
+ (name mavryk_protocol_demo_noops_functor)
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -nopervasives)
@@ -103,31 +103,31 @@
 
 (rule
  (targets functor.ml)
- (deps main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+ (deps main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-protocol-compiler.octez-protocol-packer} %{src_dir})))))
+    (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
- (name tezos_embedded_protocol_demo_noops)
- (public_name tezos-protocol-demo-noops.embedded-protocol)
+ (name mavryk_embedded_protocol_demo_noops)
+ (public_name mavryk-protocol-demo-noops.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-demo-noops.protocol
-  octez-shell-libs.protocol-updater
-  octez-proto-libs.protocol-environment)
+  mavryk-protocol-demo-noops.protocol
+  mavkit-shell-libs.protocol-updater
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (modules Registerer))
 
 (rule
  (targets registerer.ml)
- (deps main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+ (deps main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-embedded-protocol-packer} %{src_dir} demo_noops)))))
+    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} demo_noops)))))

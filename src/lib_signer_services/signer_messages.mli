@@ -25,13 +25,13 @@
 
 module type Authenticated_request = sig
   type t = {
-    pkh : Tezos_crypto.Signature.Public_key_hash.t;
+    pkh : Mavryk_crypto.Signature.Public_key_hash.t;
     data : Bytes.t;
-    signature : Tezos_crypto.Signature.t option;
+    signature : Mavryk_crypto.Signature.t option;
   }
 
   val to_sign :
-    pkh:Tezos_crypto.Signature.Public_key_hash.t -> data:Bytes.t -> Bytes.t
+    pkh:Mavryk_crypto.Signature.Public_key_hash.t -> data:Bytes.t -> Bytes.t
 
   val encoding : t Data_encoding.t
 end
@@ -40,7 +40,7 @@ module Sign : sig
   module Request : Authenticated_request
 
   module Response : sig
-    type t = Tezos_crypto.Signature.t
+    type t = Mavryk_crypto.Signature.t
 
     val encoding : t Data_encoding.t
   end
@@ -68,7 +68,7 @@ end
 
 module Supports_deterministic_nonces : sig
   module Request : sig
-    type t = Tezos_crypto.Signature.Public_key_hash.t
+    type t = Mavryk_crypto.Signature.Public_key_hash.t
 
     val encoding : t Data_encoding.t
   end
@@ -82,13 +82,13 @@ end
 
 module Public_key : sig
   module Request : sig
-    type t = Tezos_crypto.Signature.Public_key_hash.t
+    type t = Mavryk_crypto.Signature.Public_key_hash.t
 
     val encoding : t Data_encoding.t
   end
 
   module Response : sig
-    type t = Tezos_crypto.Signature.Public_key.t
+    type t = Mavryk_crypto.Signature.Public_key.t
 
     val encoding : t Data_encoding.t
   end
@@ -98,7 +98,7 @@ module Authorized_keys : sig
   module Response : sig
     type t =
       | No_authentication
-      | Authorized_keys of Tezos_crypto.Signature.Public_key_hash.t list
+      | Authorized_keys of Mavryk_crypto.Signature.Public_key_hash.t list
 
     val encoding : t Data_encoding.t
   end

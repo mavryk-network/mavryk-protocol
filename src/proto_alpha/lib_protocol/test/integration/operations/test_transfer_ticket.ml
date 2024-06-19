@@ -33,7 +33,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 (* In this test, a ticketer contract mints and transfers a ticket to an implicit account,
    who further transfers it to another implicit account.
@@ -57,12 +57,12 @@ let test_mint_deposit_withdraw_implicit_transfer () =
                 CONTRACT (ticket nat) ;
                 ASSERT_SOME ;
                 # contract : nat %ct : nat %qty
-                PUSH mutez 0 ;
-                # tez : contract : nat %ct : nat %qty
+                PUSH mumav 0 ;
+                # mav : contract : nat %ct : nat %qty
                 DIG 3 ;
-                # nat %qty : tez : contract : nat %ct
+                # nat %qty : mav : contract : nat %ct
                 DIG 3 ;
-                # nat %ct : nat %qty : tez : contract
+                # nat %ct : nat %qty : mav : contract
                 TICKET ;
                 ASSERT_SOME ;
                 TRANSFER_TOKENS ;
@@ -91,7 +91,7 @@ let test_mint_deposit_withdraw_implicit_transfer () =
         ~fee:Tez.one
         account
         ticketer
-        (Tez.of_mutez_exn 0L)
+        (Tez.of_mumav_exn 0L)
     in
     Block.bake ~operation block
   in
@@ -164,12 +164,12 @@ let test_contract_as_ticket_transfer_destination () =
           code { CAR ;
                 UNPAIR 3 ;
                 # contract (ticket nat) : nat %ct : nat %qty
-                PUSH mutez 0 ;
-                # tez : contract (ticket nat) : nat %ct : nat %qty
+                PUSH mumav 0 ;
+                # mav : contract (ticket nat) : nat %ct : nat %qty
                 DIG 3 ;
-                # nat %qty : tez : contract (ticket nat) : nat %ct
+                # nat %qty : mav : contract (ticket nat) : nat %ct
                 DIG 3 ;
-                # nat %ct : nat %qty : tez : contract (ticket nat)
+                # nat %ct : nat %qty : mav : contract (ticket nat)
                 TICKET ;
                 ASSERT_SOME ;
                 TRANSFER_TOKENS ;
@@ -199,7 +199,7 @@ let test_contract_as_ticket_transfer_destination () =
                       { DIG 2 ;
                         CONTRACT %ticket (ticket nat) ;
                         ASSERT_SOME ;
-                        PUSH mutez 0 ;
+                        PUSH mumav 0 ;
                         DIG 2 ;
                         TRANSFER_TOKENS ;
                         NIL operation ;
@@ -233,7 +233,7 @@ let test_contract_as_ticket_transfer_destination () =
         ~fee:Tez.one
         account
         ticketer
-        (Tez.of_mutez_exn 0L)
+        (Tez.of_mumav_exn 0L)
     in
     Block.bake ~operation block
   in
@@ -306,7 +306,7 @@ let test_contract_as_ticket_transfer_destination () =
         ~fee:Tez.one
         account
         ticketer
-        (Tez.of_mutez_exn 0L)
+        (Tez.of_mumav_exn 0L)
     in
     Block.bake ~operation block
   in

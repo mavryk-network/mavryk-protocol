@@ -2,20 +2,20 @@ Protocol Alpha
 ==============
 
 This page documents the changes brought by protocol Alpha with respect
-to Oxford (see :ref:`naming_convention`).
+to Atlas (see :ref:`naming_convention`).
 
-For changes brought by the rejected Oxford proposal with respect to Nairobi, see :doc:`../protocols/018_oxford`.
+For changes brought by the Atlas proposal, see :doc:`../protocols/001_atlas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
-branch of Octez.
+branch of Mavkit.
 
 .. contents::
 
 Environment Version
 -------------------
 
-This protocol requires a different protocol environment version than Oxford.
-It requires protocol environment V11, compared to V10 for Oxford.
+This protocol requires a different protocol environment version than Atlas.
+It requires protocol environment V11, compared to V10 for Atlas.
 
 Smart Rollups
 -------------
@@ -36,7 +36,7 @@ Smart Rollups
 
 - Add private rollups: smart rollup with an updatable whitelist stakers. Only stakers on the whitelist can publish commitment and participate in a refutation game. (MRs :gl:`!9823`, :gl:`!10104`, :gl:`!9823`, :gl:`!9572`, :gl:`!9427`, :gl:`!9472`, :gl:`!9439`, :gl:`!9401`)
 
-- Register in ``octez-codec`` some of the smart rollup related encodings. (MR :gl:`!10174`)
+- Register in ``mavkit-codec`` some of the smart rollup related encodings. (MR :gl:`!10174`)
 
 Zero Knowledge Rollups (ongoing)
 --------------------------------
@@ -63,7 +63,7 @@ Adaptive Issuance (ongoing)
 
 - Balance updates now include more information related to staking in general, including slashing and rewards. (MRs :gl:`!10485`, :gl:`!10486`, :gl:`!10487`, :gl:`!10488`, :gl:`!10496`, :gl:`!10526`, :gl:`!10766`, :gl:`!10853`)
 
-- The new staking mechanism is used internally to freeze deposits automatically at cycle ends, and mimic Nairobi's behavior. (MR :gl:`!10562`)
+- The new staking mechanism is used internally to freeze deposits automatically at cycle ends. (MR :gl:`!10562`)
 
 - Unstaked frozen deposits, i.e recently unstaked funds, can be used by bakers to be staked again (unless the baker has been slashed). They are used in addition to liquid funds for staking, prioritizing the most recent unstake requests. (MR :gl:`!10781`)
 
@@ -96,7 +96,7 @@ Bug Fixes
 Minor Changes
 -------------
 
-- Arithmetic errors on Michelson ``mutez`` type have been exported so
+- Arithmetic errors on Michelson ``mumav`` type have been exported so
   they can now be caught outside of the protocol. (MR :gl:`!9934`)
 
 - Michelson error traces for elaboration of invalid data was made more

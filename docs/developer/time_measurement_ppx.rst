@@ -6,9 +6,9 @@ embed generated benchmark tooling into specific pieces of OCaml code.
 
 It is able to measure the time spent in the execution of annotated OCaml
 expressions and to log these measurements when desired. Since it uses
-``Tezos_event_logging`` for the logging part, this PPX can easily be used
+``Mavryk_event_logging`` for the logging part, this PPX can easily be used
 together with ``Tezt`` framework to perform the benchmarking of specific
-parts of Octez node.
+parts of Mavkit node.
 
 **This PPX is only intended to be used for tests. As the current runtime
 implementation performs memory allocation, an unwise usage could mess with
@@ -37,7 +37,7 @@ Suppose also that module ``lib_my_module`` contains the following dune file:
 .. code-block::
 
     (library
-      (name tezos_my_module)
+      (name mavryk_my_module)
       (libraries lwt)
       (flags (:standard -open Lwt)))
 
@@ -61,11 +61,11 @@ When the preprocessing will occur, the code will be transformed as follows:
 .. code-block:: OCaml
 
     let my_function () =
-      let a = Tezos_time_measurement_runtime.Default.Time_measurement.duration
+      let a = Mavryk_time_measurement_runtime.Default.Time_measurement.duration
         ("f_time", [])
         (fun () -> f ())
       in
-      let b = Tezos_time_measurement_runtime.Default.Time_measurement.duration
+      let b = Mavryk_time_measurement_runtime.Default.Time_measurement.duration
         ("g_time", [])
         (fun () -> g ())
       in
@@ -75,14 +75,14 @@ When the preprocessing will occur, the code will be transformed as follows:
         (fun __flush__id__0 ->
           Lwt.map
             (fun () -> __flush__id__0)
-            (Tezos_time_measurement_runtime.Default.Time_measurement.flush ()))
+            (Mavryk_time_measurement_runtime.Default.Time_measurement.flush ()))
 
 Woah! What a mess... Let's see what this means.
 
 The first thing that can be noted is that our annotated expression ``f ()`` has been
 wrapped in a closure ``fun () -> f ()`` to delay the execution of ``f ()``.
 The resulting thunk is passed to the function ``Time_measurement.duration`` from
-the module ``Tezos_time_measurement_runtime.Default`` along with the argument
+the module ``Mavryk_time_measurement_runtime.Default`` along with the argument
 ``("f_time", [])``.
 
 ``Time_measurement.duration`` measures the current time before and after executing
@@ -108,7 +108,7 @@ bind the result of the expression to the identifier ``b``.
 
 At the end of the treatment, the ``Lwt.t`` promise ``foo a b c`` is bound to a fresh
 identifier ``__flush__id__0``. This permit to memoize its result while calling the
-``Time_measurement.flush`` function from the module ``Tezos_time_measurement_runtime.Default``.
+``Time_measurement.flush`` function from the module ``Mavryk_time_measurement_runtime.Default``.
 This function logs all the time measurements that where previously bufferized
 and also removes them from memory.
 The flushing promise is then bounded again to return ``__flush__id__0`` value
@@ -121,13 +121,13 @@ it can take effect:
 .. code-block:: OCaml
 
     (library
-      (name tezos_my_module)
+      (name mavryk_my_module)
       (libraries lwt)
       (flags (:standard -open Lwt))
-      (instrumentation (backend tezos-time-measurement)))
+      (instrumentation (backend mavryk-time-measurement)))
 
-This update adds the ``tezos-time-measurement`` instrumentation backend, which,
-if set using ``--instrument-with tezos-time-measurement`` on ``dune build``
+This update adds the ``mavryk-time-measurement`` instrumentation backend, which,
+if set using ``--instrument-with mavryk-time-measurement`` on ``dune build``
 command line, will preprocess our OCaml code using the PPX.
 
 This is useful to prevent our code from embedding benchmarking tooling in
@@ -138,7 +138,7 @@ We can now compile our ready-to-benchmark code:
 
 .. code-block::
 
-    dune build --instrument-with tezos-time-measurement
+    dune build --instrument-with mavryk-time-measurement
 
 We can then run the executable:
 
@@ -183,14 +183,14 @@ The PPX provides the handling of three attributes:
 
 - ``[@time.duration]`` is used to log each time measurements that were registered
   using ``[@time.duration]``, ``[@time.duration_lwt]`` or ``[@time.timestamp_pre]``.
-  Since logging will be done using ``tezos-event-log`` library, it must be done
+  Since logging will be done using ``mavryk-event-log`` library, it must be done
   inside a ``Lwt.t`` monad. So, this attribute must be placed on an expression
   evaluating in a ``Lwt.t`` value in order to compile.
 
 Some of these attributes are used, for instance, in the implementation of the :ref:`performance regression test framework <performance_regression_test_fw>`.
 
-Instrumenting the octez-node executable
----------------------------------------
+Instrumenting the mavkit-node executable
+----------------------------------------
 
 A helper has been added in the ``Makefile``, so you just need to run the following
 command to instrument the node during the compilation:

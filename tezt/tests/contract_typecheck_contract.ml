@@ -182,23 +182,22 @@ let test_implicit =
   Protocol.register_test ~__FILE__ ~title:"Test Implicit" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
-  let* () = check_address client tz1 in
-  let* () = check_contract_ok client tz1 None "unit" in
-  let* () = check_contract_ok client tz1 None "ticket string" in
+  let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
+  let* () = check_address client mv1 in
+  let* () = check_contract_ok client mv1 None "unit" in
+  let* () = check_contract_ok client mv1 None "ticket string" in
   let no_entrypoint_error = "Contract has no entrypoint named a" in
   let type_mismatch_error =
     match protocol with
-    | Nairobi -> "Type nat is not compatible with type unit."
     | _ ->
         "is not acceptable as a handle to an implicit account, whose \
          parameters type can only be unit or ticket <ty>"
   in
   let* () =
-    check_contract_ko client tz1 (Some "a") "unit" no_entrypoint_error
+    check_contract_ko client mv1 (Some "a") "unit" no_entrypoint_error
   in
-  let* () = check_contract_ko client tz1 (Some "a") "nat" no_entrypoint_error in
-  let* () = check_contract_ko client tz1 None "nat" type_mismatch_error in
+  let* () = check_contract_ko client mv1 (Some "a") "nat" no_entrypoint_error in
+  let* () = check_contract_ko client mv1 None "nat" type_mismatch_error in
   unit
 
 (** The address of an inexistent originated account followed by some
@@ -267,7 +266,7 @@ let test_originated_with_default =
   Protocol.register_test ~__FILE__ ~title:"Test originated with default" ~tags
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  let initial_storage = {|Pair "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" "" 0|} in
+  let initial_storage = {|Pair "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" "" 0|} in
   let* _alias, kt1 =
     Client.originate_contract_at
       ~amount:Tez.zero

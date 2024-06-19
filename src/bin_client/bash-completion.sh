@@ -1,11 +1,11 @@
-_octez-client_complete()
+_mavkit-client_complete()
 {
     local cur_word prev_word type_list
 
     cur_word="${COMP_WORDS[COMP_CWORD]}"
     prev_word="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Tezos script
+    # Mavryk script
     script=${COMP_WORDS[0]}
 
     reply=$($script bash_autocomplete "$prev_word" "$cur_word" ${COMP_WORDS[@]} 2>/dev/null)
@@ -15,7 +15,7 @@ _octez-client_complete()
     return 0
 }
 
-_tezos-alphanet_complete()
+_mavryk-alphanet_complete()
 {
     script="${COMP_WORDS[0]}"
     second="${COMP_WORDS[1]}"
@@ -46,7 +46,7 @@ _tezos-alphanet_complete()
 }
 
 # Register _pss_complete to provide completion for the following commands
-complete -F _octez-client_complete octez-client
-complete -F _octez-client_complete octez-admin-client
-complete -F _octez-client_complete octez-baker-alpha
-complete -F _octez-client_complete octez-accuser-alpha
+complete -F _mavkit-client_complete mavkit-client
+complete -F _mavkit-client_complete mavkit-admin-client
+complete -F _mavkit-client_complete mavkit-baker-alpha
+complete -F _mavkit-client_complete mavkit-accuser-alpha

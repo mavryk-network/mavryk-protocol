@@ -37,7 +37,7 @@ code { CAR ;
                     LEFT (big_map int (ticket string)) }
                   { SWAP ; DROP ; RIGHT (pair (big_map int (ticket string)) int) } } ;
            SWAP ;
-           PUSH mutez 0 ;
+           PUSH mumav 0 ;
            DIG 2 ;
            TRANSFER_TOKENS ;
            PUSH unit Unit ;

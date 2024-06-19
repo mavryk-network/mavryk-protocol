@@ -111,7 +111,7 @@ mod tztrunner_tests {
 
     #[test]
     fn test_runner_interpreter_error() {
-        let tzt_test = parse_tzt_test(TZT_SAMPLE_MUTEZ_OVERFLOW).unwrap();
+        let tzt_test = parse_tzt_test(TZT_SAMPLE_MUMAV_OVERFLOW).unwrap();
         let result = run_tzt_test(tzt_test);
         assert!(result.is_ok());
     }
@@ -211,7 +211,7 @@ mod tztrunner_tests {
     const TZT_SAMPLE_AMOUNT: &str = "code { AMOUNT } ;
         input {} ;
         amount 10 ;
-        output { Stack_elt mutez 10;}";
+        output { Stack_elt mumav 10;}";
 
     const TZT_SAMPLE_DUPLICATE_FIELD: &str = "code { ADD } ;
         input { Stack_elt int 5 ; Stack_elt int 5 } ;
@@ -223,20 +223,20 @@ mod tztrunner_tests {
         output { Stack_elt int 10 } ;
         output { Stack_elt int 10 }";
 
-    const TZT_SAMPLE_MUTEZ_OVERFLOW: &str = r#"code { ADD } ;
-        input { Stack_elt mutez 9223372036854775807 ; Stack_elt mutez 1 } ;
-        output (MutezOverflow 9223372036854775807 1)"#;
+    const TZT_SAMPLE_MUMAV_OVERFLOW: &str = r#"code { ADD } ;
+        input { Stack_elt mumav 9223372036854775807 ; Stack_elt mumav 1 } ;
+        output (MumavOverflow 9223372036854775807 1)"#;
 
     const TZT_SAMPLE_EXP_SUCC_BUT_FAIL: &str = r#"code { ADD } ;
-        input { Stack_elt mutez 9223372036854775807 ; Stack_elt mutez 1 } ;
-        output { Stack_elt mutez 10 }"#;
+        input { Stack_elt mumav 9223372036854775807 ; Stack_elt mumav 1 } ;
+        output { Stack_elt mumav 10 }"#;
 
     const TZT_SAMPLE_EXP_FAIL_BUT_SUCCEED: &str = r#"code { ADD } ;
-        input { Stack_elt mutez 10 ; Stack_elt mutez 1 } ;
-        output (MutezOverflow 9223372036854775807 1)"#;
+        input { Stack_elt mumav 10 ; Stack_elt mumav 1 } ;
+        output (MumavOverflow 9223372036854775807 1)"#;
 
     const TZT_SAMPLE_INTERPRETER_DIFF_ERROR: &str = r#"code { ADD } ;
-        input { Stack_elt mutez 9223372036854775807 ; Stack_elt mutez 1 } ;
+        input { Stack_elt mumav 9223372036854775807 ; Stack_elt mumav 1 } ;
         output (StaticError _)"#;
 
     const TZT_SAMPLE_FAIL_WITH_UNEXPECTED: &str = r#"code { FAILWITH } ;
@@ -244,10 +244,10 @@ mod tztrunner_tests {
         output (Failed 11)"#;
 
     const TZT_SAMPLE_TC_FAIL: &str = "code { ADD } ;
-        input { Stack_elt mutez 5 ; Stack_elt int 5 } ;
+        input { Stack_elt mumav 5 ; Stack_elt int 5 } ;
         output(StaticError _)";
 
     const TZT_SAMPLE_TC_FAIL_SPECIFIC: &str = r#"code { ADD } ;
-        input { Stack_elt mutez 5 ; Stack_elt int 5 } ;
-        output(StaticError "no matching overload for ADD on stack Stack([Int, Mutez])")"#;
+        input { Stack_elt mumav 5 ; Stack_elt int 5 } ;
+        output(StaticError "no matching overload for ADD on stack Stack([Int, Mumav])")"#;
 }

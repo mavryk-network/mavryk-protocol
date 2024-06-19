@@ -1,5 +1,5 @@
-Michelson: the language of Smart Contracts in Tezos
-===================================================
+Michelson: the language of Smart Contracts in Mavryk
+====================================================
 
 This specification gives a detailed formal semantics of the Michelson
 language and a short explanation of how smart contracts are executed
@@ -34,13 +34,13 @@ blockchain.
 Semantics of smart contracts and transactions
 ---------------------------------------------
 
-The Tezos ledger currently has two types of accounts that can hold
+The Mavryk ledger currently has two types of accounts that can hold
 tokens (and be the destinations of transactions).
 
   - An implicit account is a non programmable account, whose tokens
     are spendable and delegatable by a public key. Its address is
-    directly the public key hash, and starts with ``tz1``, ``tz2``,
-    ``tz3`` or ``tz4``.
+    directly the public key hash, and starts with ``mv1``, ``mv2``,
+    ``mv3`` or ``mv4``.
   - A smart contract is a programmable account. A transaction to such
     an address can provide data, and can fail for reasons decided by
     its Michelson code. Its address is a unique hash that depends on
@@ -151,7 +151,7 @@ All these errors cannot happen in internal transactions, as the type
 system catches them at operation creation time. In particular,
 Michelson has two types to talk about other accounts: ``address`` and
 ``contract t``. The ``address`` type merely gives the guarantee that
-the value has the form of a Tezos address. The ``contract t`` type, on
+the value has the form of a Mavryk address. The ``contract t`` type, on
 the other hand, guarantees that the value is indeed a valid, existing
 account whose parameter type is ``t``. To make a transaction from
 Michelson, a value of type ``contract t`` must be provided, and the
@@ -453,66 +453,17 @@ Types and instructions
 ----------------------
 
 The complete sets of Michelson types and instructions are detailed in the
-`interactive Michelson reference page <https://tezos.gitlab.io/michelson-reference/>`__.
+`interactive Michelson reference page <https://protocol.mavryk.org/michelson-reference/>`__.
 
-- Specifically, it contains synthesis tables for `types <https://tezos.gitlab.io/michelson-reference/#types>`__
-  and for `instructions <https://tezos.gitlab.io/michelson-reference/#instructions>`_.
-- Instructions are also organized by `categories <https://tezos.gitlab.io/michelson-reference/#instructions-by-category>`__.
+- Specifically, it contains synthesis tables for `types <https://protocol.mavryk.org/michelson-reference/#types>`__
+  and for `instructions <https://protocol.mavryk.org/michelson-reference/#instructions>`_.
+- Instructions are also organized by `categories <https://protocol.mavryk.org/michelson-reference/#instructions-by-category>`__.
 - Each instruction is precisely defined using typing and semantic inference rules.
-
-Removed instructions and types
-------------------------------
-
-:doc:`../protocols/005_babylon` deprecated the following instructions. Because no smart
-contract used these on Mainnet before they got deprecated, they have been
-removed. The Michelson type-checker will reject any contract using them.
-
--  ``CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }``:
-   Forge a new contract from a literal.
-
-   ::
-
-      Γ ⊢ CREATE_CONTRACT { parameter 'p ; storage 'g ; code ... }
-      :: key_hash : option key_hash : bool : bool : mutez : 'g : 'S
-      ⇒ operation : address : 'S
-
-   There is a new version of this instruction, see its `documentation <https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__.
-
--  ``CREATE_ACCOUNT``: Forge an account creation operation.
-
-   ::
-
-      Γ ⊢ CREATE_ACCOUNT :: key_hash : option key_hash : bool : mutez : 'S
-      ⇒ operation : address : 'S
-
-   Takes as argument the manager, optional delegate, the delegatable flag
-   and finally the initial amount taken from the currently executed
-   contract. This instruction originates a contract with two entrypoints;
-   ``%default`` of type ``unit`` that does nothing and ``%do`` of type
-   ``lambda unit (list operation)`` that executes and returns the
-   parameter if the sender is the contract's manager.
-
--  ``STEPS_TO_QUOTA``: Push the remaining steps before the contract
-   execution must terminate.
-
-   ::
-
-      Γ ⊢ STEPS_TO_QUOTA :: 'S ⇒ nat : 'S
-
-:doc:`../protocols/016_mumbai` deprecated the following
-type. Because no smart contract used it on Mainnet before it got
-deprecated, it has been removed. The Michelson type-checker will
-reject any contract using it.
-
--  ``tx_rollup_l2_address``: An address used to identify an account in
-   a transaction rollup ledger. It is the hash of a BLS public key,
-   used to authenticate layer-2 operations to transfer tickets from
-   this account.
 
 Macros
 ------
 
-In addition to the instructions listed in the `interactive Michelson reference manual <https://tezos.gitlab.io/michelson-reference/>`__,
+In addition to the instructions listed in the `interactive Michelson reference manual <https://protocol.mavryk.org/michelson-reference/>`__,
 several extensions have been added to the language's concrete syntax. If you are
 interacting with the node via RPC, bypassing the client, which expands away
 these macros, you will need to desugar them yourself.
@@ -742,7 +693,7 @@ language can only be one of the five following constructs.
 
 This simple five cases notation is called :doc:`../shell/micheline`.
 
-In the Tezos protocol, the primitive ``constant`` with a single
+In the Mavryk protocol, the primitive ``constant`` with a single
 character string applied has special meaning. See
 :doc:`global_constants`.
 
@@ -773,7 +724,7 @@ formats. Some have two variants accepted by the data type checker: a
 readable one in a string, and an optimized one using a more compact
 encoding.
 
--  ``mutez`` amounts are written as naturals.
+-  ``mumav`` amounts are written as naturals.
 -  ``timestamp``\ s are written either using ``RFC3339`` notation
    in a string (readable), or as the number of seconds since Epoch
    (when positive) or before Epoch (when negative) (optimized).
@@ -1254,7 +1205,7 @@ A similar mechanism is used for context dependent instructions:
 
    CONTRACT 'p  :: @a address : 'S   ->   @a.contract contract 'p : 'S
 
-   BALANCE :: 'S   ->   @balance mutez : 'S
+   BALANCE :: 'S   ->   @balance mumav : 'S
 
    SOURCE  :: 'S   ->   @source address : 'S
 
@@ -1264,7 +1215,7 @@ A similar mechanism is used for context dependent instructions:
 
    SELF_ADDRESS  :: 'S   ->   @self address : 'S
 
-   AMOUNT  :: 'S   ->   @amount mutez : 'S
+   AMOUNT  :: 'S   ->   @amount mumav : 'S
 
    NOW  :: 'S   ->   @now timestamp : 'S
 
@@ -1502,19 +1453,19 @@ Emacs mode
 
 `Emacs <https://www.gnu.org/software/emacs/>`_ can be used as a practical environment for writing,
 editing and debugging Michelson programs. `Install it <https://www.gnu.org/software/emacs/>`_ and follow the
-configuration instructions in the Michelson Emacs README `here <https://gitlab.com/tezos/tezos/-/tree/master/emacs>`__.
+configuration instructions in the Michelson Emacs README `here <https://gitlab.com/mavryk-network/mavryk-protocol/-/tree/master/emacs>`__.
 
 Interactive toplevel
 ~~~~~~~~~~~~~~~~~~~~
 
 An interactive Michelson toplevel (also known as a `REPL
 <https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop>`__)
-built on the :doc:`../user/mockup` mode of Octez client is available in
+built on the :doc:`../user/mockup` mode of Mavkit client is available in
 ``scripts/michelson_repl.sh``, the typical usage is:
 
 ::
 
-   $ octez-client --mode mockup --base-dir /tmp/mockup create mockup
+   $ mavkit-client --mode mockup --base-dir /tmp/mockup create mockup
    $ rlwrap scripts/michelson_repl.sh
    > UNIT
      { Stack_elt unit Unit }
@@ -1563,7 +1514,7 @@ entrypoint, of type ``unit`` will reset it to ``0``.
 
    { parameter (or (or (nat %add) (nat %sub)) (unit %default)) ;
      storage int ;
-     code { AMOUNT ; PUSH mutez 0 ; ASSERT_CMPEQ ; UNPAIR ;
+     code { AMOUNT ; PUSH mumav 0 ; ASSERT_CMPEQ ; UNPAIR ;
             IF_LEFT
               { IF_LEFT { ADD } { SWAP ; SUB } }
               { DROP ; DROP ; PUSH int 0 } ;
@@ -1626,7 +1577,7 @@ data include not only a description of the action to perform but also
 the address of the multisig contract and a counter that gets
 incremented at each successful call to the contract.
 
-The multisig commands of :ref:`Octez command line client <client_manual_alpha>`
+The multisig commands of :ref:`Mavkit command line client <client_manual_alpha>`
 use this
 smart contract. Moreover, `functional correctness of this contract has
 been verified
@@ -1641,7 +1592,7 @@ using the Coq proof assistant.
                    (nat %counter) # counter, used to prevent replay attacks
                    (or :action    # payload to sign, represents the requested action
                       (pair :transfer    # transfer tokens
-                         (mutez %amount) # amount to transfer
+                         (mumav %amount) # amount to transfer
                          (contract %dest unit)) # destination to transfer to
                       (or
                          (option %delegate key_hash) # change the delegate to this address
@@ -1924,7 +1875,7 @@ Full grammar
       | string
       | chain_id
       | bytes
-      | mutez
+      | mumav
       | key_hash
       | key
       | signature
@@ -2059,7 +2010,7 @@ instruction on the empty stack successfully returns the empty stack:
    output {}
 
 Here is a slightly more involved test which demonstrates the effect of the `SWAP
-<https://tezos.gitlab.io/michelson-reference/#instr-SWAP>`__ instruction:
+<https://protocol.mavryk.org/michelson-reference/#instr-SWAP>`__ instruction:
 
 ::
 
@@ -2107,48 +2058,48 @@ test. Each of the optional primitives can be used at most once, in no
 particular order.
 
  - ``amount`` (optional, defaults to 0): the amount, expressed in
-   mutez, that should be pushed by the `AMOUNT
-   <https://tezos.gitlab.io/michelson-reference/#instr-AMOUNT>`__
+   mumav, that should be pushed by the `AMOUNT
+   <https://protocol.mavryk.org/michelson-reference/#instr-AMOUNT>`__
    instruction
 
  - ``balance`` (optional, defaults to 0): the balance, expressed in
-   mutez, that should be pushed by the `BALANCE
-   <https://tezos.gitlab.io/michelson-reference/#instr-BALANCE>`__
+   mumav, that should be pushed by the `BALANCE
+   <https://protocol.mavryk.org/michelson-reference/#instr-BALANCE>`__
    instruction
 
  - ``now`` (optional, defaults to ``"1970-01-01T00:00:00Z"``): the
    timestamp that should be pushed by the `NOW
-   <https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-NOW>`__
    instruction
 
  - ``sender`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the sender address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the sender address
    that should be pushed by the `SENDER
-   <https://tezos.gitlab.io/michelson-reference/#instr-SENDER>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-SENDER>`__
    instruction
 
  - ``source`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the source address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the source address
    that should be pushed by the `SOURCE
-   <https://tezos.gitlab.io/michelson-reference/#instr-SOURCE>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-SOURCE>`__
    instruction
 
  - ``chain_id`` (optional, defaults to ``"NetXdQprcVkpaWU"``): the
    chain identifier that should be pushed by the `CHAIN_ID
-   <https://tezos.gitlab.io/michelson-reference/#instr-CHAIN_ID>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-CHAIN_ID>`__
    instruction
 
  - ``self`` (optional, defaults to
    ``"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi"``): the address that
    should be pushed by the `SELF
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF>`__ and
+   <https://protocol.mavryk.org/michelson-reference/#instr-SELF>`__ and
    `SELF_ADDRESS
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF_ADDRESS>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-SELF_ADDRESS>`__
    instructions
 
  - ``parameter`` (optional, defaults to ``unit``): the type of the
    parameter of the contract pushed by the `SELF
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF>`__
+   <https://protocol.mavryk.org/michelson-reference/#instr-SELF>`__
    instruction
 
  - ``other_contracts`` (optional, defaults to ``{}``): mapping between
@@ -2162,7 +2113,7 @@ particular order.
    <syntax_of_extra_big_maps_alpha>`)
 
 The following test example asserts that the default value for the `NOW
-<https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-NOW>`__
 instruction is the unix epoch:
 
 ::
@@ -2173,7 +2124,7 @@ instruction is the unix epoch:
 
 The following example shows how to use the ``now`` toplevel primitive
 to make the `NOW
-<https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-NOW>`__
 instruction return a chosen timestamp:
 
 ::
@@ -2284,11 +2235,11 @@ test; for example these two tests pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -2299,7 +2250,7 @@ readable format so the following test does not pass:
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt _ 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -2309,7 +2260,7 @@ but the following test does pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt _ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt _ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 .. _syntax_of_errors_alpha:
 
@@ -2331,13 +2282,13 @@ raise:
    instruction and the topmost element of the stack at this point was
    ``<value>``;
 
- - ``MutezOverflow``: an addition or multiplication on type ``mutez``
+ - ``MumavOverflow``: an addition or multiplication on type ``mumav``
    produced a result which was too large to be represented as a value
-   of type ``mutez``;
+   of type ``mumav``;
 
- - ``MutezUnderflow``: a mutez subtraction resulted in a negative
+ - ``MumavUnderflow``: a mumav subtraction resulted in a negative
    value. This should only happen in the case of the deprecated
-   ``mutez`` case of the ``SUB`` instruction;
+   ``mumav`` case of the ``SUB`` instruction;
 
  - ``GeneralOverflow``: the number of bits to shift using the ``LSL``
    or ``LSR`` instruction was too large;
@@ -2345,7 +2296,7 @@ raise:
 
 The following example shows how to test a runtime failure; it asserts
 that the `FAILWITH
-<https://tezos.gitlab.io/michelson-reference/#instr-FAILWITH>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-FAILWITH>`__
 instruction produces a runtime error containing the top of the stack.
 
 ::
@@ -2356,7 +2307,7 @@ instruction produces a runtime error containing the top of the stack.
 
 The following example shows how to test type checking failure; it
 asserts that the `DUP
-<https://tezos.gitlab.io/michelson-reference/#instr-DUP>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-DUP>`__
 instruction cannot be used on an empty stack.
 
 ::
@@ -2367,7 +2318,7 @@ instruction cannot be used on an empty stack.
 
 The following example shows another kind of static failure: a string
 cannot be passed as argument to the `DUP
-<https://tezos.gitlab.io/michelson-reference/#instr-DUP>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-DUP>`__
 instruction.
 
 ::
@@ -2382,14 +2333,14 @@ Syntax of concrete operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `operation type
-<https://tezos.gitlab.io/michelson-reference/#type-operation>`__ has
+<https://protocol.mavryk.org/michelson-reference/#type-operation>`__ has
 no concrete syntax in Michelson. In order to specify the result of the
 operation forging instructions `TRANSFER_TOKENS
-<https://tezos.gitlab.io/michelson-reference/#instr-TRANSFER_TOKENS>`__,
+<https://protocol.mavryk.org/michelson-reference/#instr-TRANSFER_TOKENS>`__,
 `CREATE_CONTRACT
-<https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__,
+<https://protocol.mavryk.org/michelson-reference/#instr-CREATE_CONTRACT>`__,
 and `SET_DELEGATE
-<https://tezos.gitlab.io/michelson-reference/#instr-SET_DELEGATE>`__ ,
+<https://protocol.mavryk.org/michelson-reference/#instr-SET_DELEGATE>`__ ,
 the following data constructors are added:
 
  - ``Transfer_tokens``,
@@ -2401,8 +2352,8 @@ forging instructions plus a cryptographic nonce represented as a byte
 sequence. The result of ``TRANSFER_TOKENS``, ``CREATE_CONTRACT``,
 and ``SET_DELEGATE`` have respectively the following shapes:
 
- - ``Transfer_tokens <argument> <amount in mutez> <address of destination> <nonce>``,
- - ``Create_contract { <script> } <optional delegate> <initial balance in mutez> <initial storage> <nonce>``, and
+ - ``Transfer_tokens <argument> <amount in mumav> <address of destination> <nonce>``,
+ - ``Create_contract { <script> } <optional delegate> <initial balance in mumav> <initial storage> <nonce>``, and
  - ``Set_delegate <optional delegate> <nonce>``.
 
 The computation of the cryptographic nonce is not specified. To write
@@ -2412,13 +2363,13 @@ should be replaced by :ref:`a wildcard pattern
 
 Here is an example unit test for the ``SET_DELEGATE`` instruction used
 to set the delegate of the current contract to the account at address
-``tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z``:
+``mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ``:
 
 ::
 
-  input { Stack_elt (option key_hash) (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") } ;
+  input { Stack_elt (option key_hash) (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") } ;
   code SET_DELEGATE ;
-  output { Stack_elt operation (Set_delegate (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") _) }
+  output { Stack_elt operation (Set_delegate (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") _) }
 
 .. _syntax_of_other_contracts_alpha:
 
@@ -2426,7 +2377,7 @@ Syntax of other contracts specifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The behaviour of the `CONTRACT
-<https://tezos.gitlab.io/michelson-reference/#instr-CONTRACT>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-CONTRACT>`__
 instruction depends on whether or not its input is the address of an
 originated contract accepting the expected type as parameter. To test
 it, the ``other_contract`` toplevel primitive can be used to specify
@@ -2445,7 +2396,7 @@ Syntax of extra big maps specifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The behaviour of the instructions operating on type `big_map
-<https://tezos.gitlab.io/michelson-reference/#type-big_map>`__ depend
+<https://protocol.mavryk.org/michelson-reference/#type-big_map>`__ depend
 on the contents of big maps stored in the context. To test them, the
 ``big_maps`` toplevel primitive can be used to specify the types and
 contents of the big maps which are assumed to be present.
@@ -2462,9 +2413,9 @@ specified is irrelevant but each ``{ Elt <k1> <v1>; Elt <k2> <v2>;
 order of keys.
 
 The following example tests the `GET
-<https://tezos.gitlab.io/michelson-reference/#instr-GET>`__
+<https://protocol.mavryk.org/michelson-reference/#instr-GET>`__
 instruction in the `big_map
-<https://tezos.gitlab.io/michelson-reference/#type-big_map>`__ case:
+<https://protocol.mavryk.org/michelson-reference/#type-big_map>`__ case:
 
 ::
 

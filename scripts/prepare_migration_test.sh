@@ -41,7 +41,7 @@ import_snapshot () {
     context_dir="${f_snapshot_path%.rolling}"
     context_dir="${context_dir%.full}"
     context_dir="${context_dir%.archive}"
-    context_dir="$tmp_dir/tezos-node-${context_dir##*/}"
+    context_dir="$tmp_dir/mavryk-node-${context_dir##*/}"
     if [ -d "$context_dir" ]
     then
         echo "
@@ -55,13 +55,13 @@ The context in ${context_dir} will be used for the test."
 Importing context from $f_snapshot_path into $context_dir."
         # $f_snapshot_path might be empty
         # shellcheck disable=SC2086
-        ./octez-node snapshot import "$f_snapshot_path" --data-dir "$context_dir" $f_blockhash_opt
+        ./mavkit-node snapshot import "$f_snapshot_path" --data-dir "$context_dir" $f_blockhash_opt
     fi
 }
 
 generate_identities (){
     f_context_dir="$1"
-    ./octez-node identity generate --data-dir "$f_context_dir"
+    ./mavkit-node identity generate --data-dir "$f_context_dir"
 }
 
 patch_yes_node () {
@@ -117,9 +117,9 @@ migration is run on the sandbox:
 
 When the optional parameter <protocol_name>_<protocol_version> is provided, then
 the script snapshots the Alpha protocol and renames the sandbox command
-octez-activate-alpha that activates the Alpha protocol to the command
+mavkit-activate-alpha that activates the Alpha protocol to the command
 
-  octez-activate-<predecessor_version>_<predecessor_short_hash>
+  mavkit-activate-<predecessor_version>_<predecessor_short_hash>
 
 which activates the predecessor of the Alpha protocol. The <predecessor_version>
 coincides with <protocol_version> minus one, and the <predecessor_short_hash>
@@ -201,7 +201,7 @@ fi
 
 user_activated_upgrade $proto_dir "$mig_level"
 
-pred_full_hash=$(first_hash src/proto_"${pred_proto_version}"_*/lib_protocol/TEZOS_PROTOCOL)
+pred_full_hash=$(first_hash src/proto_"${pred_proto_version}"_*/lib_protocol/MAVRYK_PROTOCOL)
 pred_short_hash=$(echo "$pred_full_hash" | head -c 8)
 
 # now calls correct scripts and renaming
@@ -216,12 +216,12 @@ The script detected that you will do a migration on the sandbox."
 
     echo "
 Use the following commands to start the sandboxed node:
-$ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
-$ eval \`./src/bin_client/octez-init-sandboxed-client.sh 1\`
-$ octez-activate-${pred_proto_version}-${pred_short_hash}
+$ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
+$ eval \`./src/bin_client/mavkit-init-sandboxed-client.sh 1\`
+$ mavkit-activate-${pred_proto_version}-${pred_short_hash}
 
 Then bake blocks until the chain reaches level $mig_level with:
-$ octez-client bake for bootstrap1 --minimal-timestamp
+$ mavkit-client bake for bootstrap1 --minimal-timestamp
 
 In order to re-run the migration test, kill the sandboxed node and run the
 commands above (the script needs not to be run again)."
@@ -238,23 +238,23 @@ else # \$mig_level > 28082
         ! [ -f "$context_dir/identity.json" ] && generate_identities "$context_dir"
         create_yes_wallet
     else
-        context_dir="path/to/tezos-node-context"
+        context_dir="path/to/mavryk-node-context"
         echo "
 No snapshot file provided. Please use the following commands to import a context
 manually:
 
-$ ./octez-node snapshot import <snapshot_file> --data-dir <new/context/dir>
-$ ./octez-node identity generate --data-dir <new/context/dir>"
+$ ./mavkit-node snapshot import <snapshot_file> --data-dir <new/context/dir>
+$ ./mavkit-node identity generate --data-dir <new/context/dir>"
     fi
 
 
     echo "
 Use the following commands to start the node with the imported context:
 $ test_directory=\$(mktemp -d -t \"${context_dir##*/}-XXXX\") && cp -r \"$context_dir/.\" \"\$test_directory\"
-$ ./octez-node run --connections 0 --data-dir \"\$test_directory\" --rpc-addr localhost &
+$ ./mavkit-node run --connections 0 --data-dir \"\$test_directory\" --rpc-addr localhost &
 
 Then bake blocks until the chain reaches level $mig_level with:
-$ ./octez-client -d $yes_wallet bake for --minimal-timestamp
+$ ./mavkit-client -d $yes_wallet bake for --minimal-timestamp
 
 In order to re-run the migration test, kill the node and delete spurious fil
 by using:

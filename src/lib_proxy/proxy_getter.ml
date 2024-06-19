@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Local = Tezos_context_memory.Context
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Local = Mavryk_context_memory.Context
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 (** The kind of RPC request: is it a GET (i.e. is it loading data?) or
     is it only a MEMbership request (i.e. is the key associated to data?). *)
@@ -105,7 +105,7 @@ let rec raw_context_to_tree (raw : Proof.raw_context) : Local.tree option Lwt.t
         String.Map.bindings map
         |> List.fold_left_s
              add_to_tree
-             (Tezos_context_memory.Context.make_empty_tree ())
+             (Mavryk_context_memory.Context.make_empty_tree ())
       in
       if Local.Tree.is_empty dir then return_none else return_some dir
 
@@ -125,29 +125,29 @@ type proxy_builder =
   | Of_rpc of (Proxy_proto.proto_rpc -> proxy_m Lwt.t)
   | Of_data_dir of
       (Context_hash.t ->
-      Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
+      Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
 
 type rpc_context_args = {
-  printer : Tezos_client_base.Client_context.printer option;
+  printer : Mavryk_client_base.Client_context.printer option;
   proxy_builder : proxy_builder;
-  rpc_context : Tezos_rpc.Context.generic;
+  rpc_context : Mavryk_rpc.Context.generic;
   mode : Proxy.mode;
-  chain : Tezos_shell_services.Block_services.chain;
-  block : Tezos_shell_services.Block_services.block;
+  chain : Mavryk_shell_services.Block_services.chain;
+  block : Mavryk_shell_services.Block_services.block;
 }
 
 module StringMap = String.Map
 
 let make_delegate (ctx : rpc_context_args)
     (proto_rpc : (module Proxy_proto.PROTO_RPC)) (hash : Context_hash.t) :
-    Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t =
+    Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t =
   match ctx.proxy_builder with
   | Of_rpc f ->
       let open Lwt_result_syntax in
       let*! (module Initial_context) = f proto_rpc in
       let pgi : Proxy.proxy_getter_input =
         {
-          rpc_context = (ctx.rpc_context :> Tezos_rpc.Context.simple);
+          rpc_context = (ctx.rpc_context :> Mavryk_rpc.Context.simple);
           mode = ctx.mode;
           chain = ctx.chain;
           block = ctx.block;
@@ -160,7 +160,7 @@ let make_delegate (ctx : rpc_context_args)
           let proxy_get = Initial_context.proxy_get pgi
 
           let proxy_mem = Initial_context.proxy_mem pgi
-        end : Tezos_protocol_environment.Proxy_delegate.T)
+        end : Mavryk_protocol_environment.Proxy_delegate.T)
   | Of_data_dir f -> f hash
 
 module Tree : Proxy.TREE with type t = Local.tree with type key = Local.key =
@@ -170,7 +170,7 @@ struct
   type key = Local.key
 
   let empty =
-    Local.Tree.empty (Tezos_context_memory.Context.make_empty_context ())
+    Local.Tree.empty (Mavryk_context_memory.Context.make_empty_context ())
 
   let get = Local.Tree.find_tree
 

@@ -26,4 +26,4 @@ val commit_hash : string
 
 val committer_date : string
 
-val git_describe : Tezos_version_parser.t
+val git_describe : Mavryk_version_parser.t

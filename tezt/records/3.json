@@ -102,7 +102,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "014-PtKathma: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -124,7 +124,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "synchronisation heuristic sync",
     "tags": [
       "alcotest"
@@ -135,8 +135,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: ensure_unsafe_rpcs_blocked",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: ensure_unsafe_rpcs_blocked",
     "tags": [
       "alcotest"
     ],
@@ -503,7 +503,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input993071382]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input993071382]",
     "tags": [
       "regression",
       "alpha",
@@ -607,7 +607,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Alpha: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Alpha: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "alpha",

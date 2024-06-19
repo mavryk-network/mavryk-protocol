@@ -8,7 +8,7 @@ regressions in the carbonated part of the Tezos protocol.
 Usage
 -----
 
-The script takes as input n CSV files produced by `tezos-snoop infer
+The script takes as input n CSV files produced by `mavryk-snoop infer
 parameters ... --dump-csv ...`. It outputs (on the standard output
 channel) a CSV file containing the following columns:
 - the first column contains the names of the gas parameters,

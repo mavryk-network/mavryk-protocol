@@ -9,10 +9,10 @@ Inserts a user-activated upgrade for the snapshot protocol with the given
 version number at the given level.
 
 When passing a low level (less or equal than 28082) it assumes that migration is
-on the sandbox, and it renames the sandbox command octez-activate-alpha that
+on the sandbox, and it renames the sandbox command mavkit-activate-alpha that
 activates the Alpha protocol to the command
 
-  octez-activate-<predecessor_version>_<predecessor_short_hash>
+  mavkit-activate-<predecessor_version>_<predecessor_short_hash>
 
 which activates the predecessor of the Alpha protocol. The <predecessor_version>
 coincides with <protocol_version> minus one, and the <predecessor_short_hash>
@@ -36,19 +36,19 @@ if [[ $1 =~ ^.*/proto_[0-9]{3}_.*$ ]]
 then
     version=$(echo "$1" | sed 's/.*proto_\([0-9]\{3\}\)_.*/\1/')
     pred=$(printf "%03d" $((10#$version -1)))
-    pred_full_hash=$(jq -r .hash < src/proto_${pred}_*/lib_protocol/TEZOS_PROTOCOL)
+    pred_full_hash=$(jq -r .hash < src/proto_${pred}_*/lib_protocol/MAVRYK_PROTOCOL)
     pred_short_hash=$(echo $pred_full_hash | head -c 8)
 
-    full_hash=$(jq -r .hash < $1/lib_protocol/TEZOS_PROTOCOL)
+    full_hash=$(jq -r .hash < $1/lib_protocol/MAVRYK_PROTOCOL)
 else
     pred_version_dir=$(find src -regex "src/proto_[0-9][0-9][0-9]_[^/]*" -printf '%P\n' | sort -r | head -1)
     pred=$(echo $pred_version_dir | cut -d'_' -f2)
-    pred_full_hash=$(jq -r .hash < src/proto_${pred}_*/lib_protocol/TEZOS_PROTOCOL)
+    pred_full_hash=$(jq -r .hash < src/proto_${pred}_*/lib_protocol/MAVRYK_PROTOCOL)
     pred_short_hash=$(echo $pred_full_hash | head -c 8)
 
     version=$((pred +1))
 
-    full_hash=$(jq -r .hash < src/proto_alpha/lib_protocol/TEZOS_PROTOCOL)
+    full_hash=$(jq -r .hash < src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL)
 fi
 level=$2
 
@@ -87,10 +87,10 @@ else {
 }}' src/lib_node_config/config_file.ml > tmp_file
     mv tmp_file src/lib_node_config/config_file.ml
 
-    sed -i.old "s/\$bin_dir\/..\/proto_alpha\/parameters\/sandbox-parameters.json/\$bin_dir\/..\/proto_${pred}_${pred_short_hash}\/parameters\/sandbox-parameters.json/" src/bin_client/octez-init-sandboxed-client.sh
-    sed -i.old "s/activate_alpha()/activate_${pred}_${pred_short_hash}()/" src/bin_client/octez-init-sandboxed-client.sh
-    sed -i.old "s/octez-activate-alpha/octez-activate-${pred}-${pred_short_hash}/" src/bin_client/octez-init-sandboxed-client.sh
-    sed -i.old "s/activate protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK/activate protocol $pred_full_hash/" src/bin_client/octez-init-sandboxed-client.sh
-    rm src/bin_client/octez-init-sandboxed-client.sh.old
+    sed -i.old "s/\$bin_dir\/..\/proto_alpha\/parameters\/sandbox-parameters.json/\$bin_dir\/..\/proto_${pred}_${pred_short_hash}\/parameters\/sandbox-parameters.json/" src/bin_client/mavkit-init-sandboxed-client.sh
+    sed -i.old "s/activate_alpha()/activate_${pred}_${pred_short_hash}()/" src/bin_client/mavkit-init-sandboxed-client.sh
+    sed -i.old "s/mavkit-activate-alpha/mavkit-activate-${pred}-${pred_short_hash}/" src/bin_client/mavkit-init-sandboxed-client.sh
+    sed -i.old "s/activate protocol ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK/activate protocol $pred_full_hash/" src/bin_client/mavkit-init-sandboxed-client.sh
+    rm src/bin_client/mavkit-init-sandboxed-client.sh.old
     echo "The sandbox will now switch to $full_hash at level $level."
 fi

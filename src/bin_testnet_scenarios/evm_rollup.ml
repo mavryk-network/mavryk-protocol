@@ -143,7 +143,7 @@ let check_operator_balance ~node ~client ~mode ~operator =
     (* If the mode needs to publish commitments, it needs enough money to stake. *)
     if List.mem mode Sc_rollup_node.[Operator; Maintenance; Accuser] then
       Tez.(of_int 11_000)
-    else Tez.(of_mutez_int 100)
+    else Tez.(of_mumav_int 100)
   in
   Helpers.wait_for_funded_key node client min_balance operator
 
@@ -158,7 +158,7 @@ let stop_or_keep_going ~config ~node =
 let deploy_evm_rollup ~configuration_path ~(testnet : unit -> Testnet.t) () =
   let config = get_config (JSON.parse_file configuration_path) in
   let testnet = testnet () in
-  let* client, node = Helpers.setup_octez_node ~testnet () in
+  let* client, node = Helpers.setup_mavkit_node ~testnet () in
   let* operator = Client.gen_and_show_keys client in
   let* () = check_operator_balance ~node ~client ~mode:config.mode ~operator in
   let* _rollup_address, _rollup_node, _evm_node =

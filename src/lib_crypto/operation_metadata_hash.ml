@@ -29,7 +29,7 @@ include
     (struct
       let name = "Operation_metadata_hash"
 
-      let title = "A Tezos operation metadata ID"
+      let title = "A Mavryk operation metadata ID"
 
       let b58check_prefix = Base58.Prefix.operation_metadata_hash
 

@@ -9,22 +9,22 @@ use crate::blueprint::Queue;
 use crate::indexable_storage::IndexableStorage;
 use anyhow::Context;
 use evm_execution::account_storage::EthereumAccount;
-use tezos_crypto_rs::hash::{ContractKt1Hash, HashTrait};
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::path::*;
-use tezos_smart_rollup_host::runtime::{Runtime, ValueType};
+use mavryk_crypto_rs::hash::{ContractKt1Hash, HashTrait};
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::path::*;
+use mavryk_smart_rollup_host::runtime::{Runtime, ValueType};
 
 use crate::block_in_progress::BlockInProgress;
 use crate::error::{Error, StorageError};
 use rlp::{Decodable, Encodable, Rlp};
-use tezos_ethereum::block::L2Block;
-use tezos_ethereum::rlp_helpers::FromRlpBytes;
-use tezos_ethereum::transaction::{
+use mavryk_ethereum::block::L2Block;
+use mavryk_ethereum::rlp_helpers::FromRlpBytes;
+use mavryk_ethereum::transaction::{
     TransactionHash, TransactionObject, TransactionReceipt, TransactionStatus,
 };
-use tezos_ethereum::wei::Wei;
+use mavryk_ethereum::wei::Wei;
 
 use primitive_types::{H160, H256, U256};
 
@@ -926,7 +926,7 @@ pub fn is_sequencer<Host: Runtime>(host: &Host) -> Result<bool, Error> {
 
 #[cfg(test)]
 mod tests {
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use super::*;
     #[test]

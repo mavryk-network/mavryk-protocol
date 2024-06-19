@@ -57,7 +57,7 @@ module type T = sig
   type types_state
 
   val get_rpc_directory :
-    types_state -> types_state Tezos_rpc.Directory.t lazy_t
+    types_state -> types_state Mavryk_rpc.Directory.t lazy_t
 
   val name : Name.t
 
@@ -220,7 +220,7 @@ module type S = sig
   type config
 
   (** Similar to the type [operation] from the protocol,
-      see {!Tezos_protocol_environment.PROTOCOL} *)
+      see {!Mavryk_protocol_environment.PROTOCOL} *)
   type protocol_operation
 
   (** Type instantiated by {!Prevalidation.t} *)
@@ -234,7 +234,7 @@ module type S = sig
     mutable operation_stream :
       (Classification.classification * protocol_operation operation)
       Lwt_watcher.input;
-    mutable rpc_directory : types_state Tezos_rpc.Directory.t lazy_t;
+    mutable rpc_directory : types_state Mavryk_rpc.Directory.t lazy_t;
     mutable config : config;
     lock : Lwt_mutex.t;
   }
@@ -315,7 +315,7 @@ module Make_s
     mutable operation_stream :
       (Classification.classification * protocol_operation operation)
       Lwt_watcher.input;
-    mutable rpc_directory : types_state Tezos_rpc.Directory.t lazy_t;
+    mutable rpc_directory : types_state Mavryk_rpc.Directory.t lazy_t;
     mutable config : config;
     lock : Lwt_mutex.t;
   }
@@ -767,7 +767,7 @@ module Make_s
       pv.shell.live_operations <- new_live_operations ;
       Lwt_watcher.shutdown_input pv.operation_stream ;
       pv.operation_stream <- Lwt_watcher.create_input () ;
-      let timestamp_system = Tezos_base.Time.System.now () in
+      let timestamp_system = Mavryk_base.Time.System.now () in
       pv.shell.timestamp <- timestamp_system ;
       let timestamp = Time.System.to_protocol timestamp_system in
       let* validation_state =
@@ -949,20 +949,20 @@ module Make
   let build_rpc_directory w =
     lazy
       (let open Lwt_result_syntax in
-      let dir : state Tezos_rpc.Directory.t ref =
-        ref Tezos_rpc.Directory.empty
+      let dir : state Mavryk_rpc.Directory.t ref =
+        ref Mavryk_rpc.Directory.empty
       in
       let module Proto_services = Block_services.Make (Proto) (Proto) in
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.get_filter Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.get_filter Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             return (get_config_json ~include_default:params#include_default pv)) ;
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.set_filter Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.set_filter Mavryk_rpc.Path.open_root)
           (fun pv () obj ->
             let open Lwt_syntax in
             let* () =
@@ -988,9 +988,9 @@ module Make
          it's necessary to restart it manually to flush the operation
          from it. *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.ban_operation Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.ban_operation Mavryk_rpc.Path.open_root)
           (fun _pv () oph ->
             let open Lwt_result_syntax in
             let*! r = Worker.Queue.push_request_and_wait w (Request.Ban oph) in
@@ -1003,33 +1003,33 @@ module Make
       (* Unban an operation (from its given hash): remove it from the
          set pv.banned_operations (nothing happens if it was not banned). *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.unban_operation Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.unban_operation Mavryk_rpc.Path.open_root)
           (fun pv () oph ->
             pv.shell.banned_operations <-
               Operation_hash.Set.remove oph pv.shell.banned_operations ;
             return_unit) ;
       (* Unban all operations: clear the set pv.banned_operations. *)
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
           (Proto_services.S.Mempool.unban_all_operations
-             Tezos_rpc.Path.open_root)
+             Mavryk_rpc.Path.open_root)
           (fun pv () () ->
             pv.shell.banned_operations <- Operation_hash.Set.empty ;
             return_unit) ;
       dir :=
-        Tezos_rpc.Directory.gen_register
+        Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.pending_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             let validated =
               if
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated
@@ -1097,18 +1097,18 @@ module Make
                 unprocessed;
               }
             in
-            Tezos_rpc.Answer.return (params#version, pending_operations)) ;
+            Mavryk_rpc.Answer.return (params#version, pending_operations)) ;
       dir :=
-        Tezos_rpc.Directory.register
+        Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.request_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.request_operations Mavryk_rpc.Path.open_root)
           (fun pv t () ->
             pv.shell.parameters.tools.send_get_current_head ?peer:t#peer_id () ;
             return_unit) ;
       dir :=
-        Tezos_rpc.Directory.gen_register
+        Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.monitor_operations Tezos_rpc.Path.open_root)
+          (Proto_services.S.Mempool.monitor_operations Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             Lwt_mutex.with_lock pv.lock @@ fun () ->
             let op_stream, stopper =
@@ -1120,7 +1120,7 @@ module Make
                 params#validated && Option.value ~default:true params#applied
                 (* https://gitlab.com/tezos/tezos/-/issues/5891
                    applied is deprecated and should be removed in a future
-                   version of Octez *)
+                   version of Mavkit *)
               then
                 Classification.Sized_map.to_map
                   pv.shell.classification.validated
@@ -1206,7 +1206,7 @@ module Make
                   | None -> Lwt.return_none)
             in
             let shutdown () = Lwt_watcher.shutdown stopper in
-            Tezos_rpc.Answer.return_stream {next; shutdown}) ;
+            Mavryk_rpc.Answer.return_stream {next; shutdown}) ;
       !dir)
 
   (** Module implementing the events at the {!Worker} level. Contrary
@@ -1321,7 +1321,7 @@ module Make
       let*! live_blocks, live_operations =
         Store.Chain.live_blocks chain_store
       in
-      let timestamp_system = Tezos_base.Time.System.now () in
+      let timestamp_system = Mavryk_base.Time.System.now () in
       let timestamp = Time.System.to_protocol timestamp_system in
       let* validation_state =
         Prevalidation_t.create chain_store ~head ~timestamp
@@ -1566,10 +1566,10 @@ let pipeline_length (t : t) =
   let w = Lazy.force Prevalidator.worker in
   Prevalidator.Worker.Queue.pending_requests_length w
 
-let empty_rpc_directory : unit Tezos_rpc.Directory.t =
-  Tezos_rpc.Directory.gen_register
-    Tezos_rpc.Directory.empty
-    (Block_services.Empty.S.Mempool.pending_operations Tezos_rpc.Path.open_root)
+let empty_rpc_directory : unit Mavryk_rpc.Directory.t =
+  Mavryk_rpc.Directory.gen_register
+    Mavryk_rpc.Directory.empty
+    (Block_services.Empty.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
     (fun _pv params () ->
       let pending_operations =
         {
@@ -1581,16 +1581,16 @@ let empty_rpc_directory : unit Tezos_rpc.Directory.t =
           unprocessed = Operation_hash.Map.empty;
         }
       in
-      Tezos_rpc.Answer.return (params#version, pending_operations))
+      Mavryk_rpc.Answer.return (params#version, pending_operations))
 
-let rpc_directory : t option Tezos_rpc.Directory.t =
-  Tezos_rpc.Directory.register_dynamic_directory
-    Tezos_rpc.Directory.empty
-    (Block_services.mempool_path Tezos_rpc.Path.open_root)
+let rpc_directory : t option Mavryk_rpc.Directory.t =
+  Mavryk_rpc.Directory.register_dynamic_directory
+    Mavryk_rpc.Directory.empty
+    (Block_services.mempool_path Mavryk_rpc.Path.open_root)
     (function
       | None ->
           Lwt.return
-            (Tezos_rpc.Directory.map
+            (Mavryk_rpc.Directory.map
                (fun _ -> Lwt.return_unit)
                empty_rpc_directory)
       | Some t ->
@@ -1599,4 +1599,4 @@ let rpc_directory : t option Tezos_rpc.Directory.t =
           let pv = Prevalidator.Worker.state w in
           let pv_rpc_dir = Lazy.force (Prevalidator.get_rpc_directory pv) in
           Lwt.return
-            (Tezos_rpc.Directory.map (fun _ -> Lwt.return pv) pv_rpc_dir))
+            (Mavryk_rpc.Directory.map (fun _ -> Lwt.return pv) pv_rpc_dir))

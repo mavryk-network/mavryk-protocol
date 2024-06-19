@@ -6,18 +6,18 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-libs.clic
+  mavkit-libs.stdlib
+  mavkit-libs.clic
   lwt.unix
-  octez-alcotezt)
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_clic
-  -open Octez_alcotezt)
+  -open Mavryk_stdlib
+  -open Mavryk_clic
+  -open Mavkit_alcotezt)
  (modules test_clic))
 
 (executable
@@ -30,7 +30,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

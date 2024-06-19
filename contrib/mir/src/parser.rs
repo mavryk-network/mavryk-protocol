@@ -255,8 +255,8 @@ mod tests {
     #[test]
     fn address_ty_push() {
         assert_eq!(
-            parse("PUSH address \"tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw\"").unwrap(),
-            app!(PUSH[app!(address), "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw"])
+            parse("PUSH address \"mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq\"").unwrap(),
+            app!(PUSH[app!(address), "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq"])
         );
     }
 }

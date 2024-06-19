@@ -27,11 +27,11 @@
    https://gitlab.com/tezos/tezos/-/blob/668fe735aa20ce0c68b9f836208e57fa15d389c1/src/lib_scoru_wasm/durable.ml
 *)
 
-open Tezos_lazy_containers
-module T = Tezos_tree_encoding.Wrapped
-module Runner = Tezos_tree_encoding.Runner.Make (Tezos_tree_encoding.Wrapped)
-module E = Tezos_tree_encoding
-module Storage = Tezos_webassembly_interpreter.Durable_storage
+open Mavryk_lazy_containers
+module T = Mavryk_tree_encoding.Wrapped
+module Runner = Mavryk_tree_encoding.Runner.Make (Mavryk_tree_encoding.Wrapped)
+module E = Mavryk_tree_encoding
+module Storage = Mavryk_webassembly_interpreter.Durable_storage
 
 type t = T.tree
 
@@ -190,14 +190,14 @@ let set_value_exn tree ?(edit_readonly = false) key str =
   let encoding = E.scope key Chunked_byte_vector.encoding in
   Runner.encode
     encoding
-    (Tezos_lazy_containers.Chunked_byte_vector.of_string str)
+    (Mavryk_lazy_containers.Chunked_byte_vector.of_string str)
     tree
 
 let write_value_exn tree ?(edit_readonly = false) key offset bytes =
   if not edit_readonly then assert_key_writeable key ;
 
   let open Lwt.Syntax in
-  let open Tezos_lazy_containers in
+  let open Mavryk_lazy_containers in
   let num_bytes = Int64.of_int @@ String.length bytes in
   assert_max_bytes num_bytes ;
 
@@ -220,7 +220,7 @@ let write_value_exn tree ?(edit_readonly = false) key offset bytes =
 
 let read_value_exn tree key offset num_bytes =
   let open Lwt.Syntax in
-  let open Tezos_lazy_containers in
+  let open Mavryk_lazy_containers in
   assert_max_bytes num_bytes ;
 
   let* value = find_value_exn tree key in

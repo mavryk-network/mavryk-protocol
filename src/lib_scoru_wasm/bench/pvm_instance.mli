@@ -25,12 +25,12 @@
 
 (** PVM instance used in benchmark*)
 module Wasm :
-  Tezos_scoru_wasm.Wasm_pvm_sig.S
-    with type tree = Tezos_scoru_wasm_helpers.Encodings_util.Tree.tree
+  Mavryk_scoru_wasm.Wasm_pvm_sig.S
+    with type tree = Mavryk_scoru_wasm_helpers.Encodings_util.Tree.tree
 
-module Wasm_fast_vm : Tezos_scoru_wasm.Wasm_vm_sig.S
+module Wasm_fast_vm : Mavryk_scoru_wasm.Wasm_vm_sig.S
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Wasm_pvm_state
 
 val encode_pvm_state : Internal_state.pvm_state -> Wasm.tree -> Wasm.tree Lwt.t
@@ -48,4 +48,4 @@ module PP : sig
   val tick_label : Internal_state.tick_state -> string
 end
 
-val builtins : Tezos_scoru_wasm.Builtins.reveals
+val builtins : Mavryk_scoru_wasm.Builtins.reveals

@@ -30,7 +30,7 @@
     event sinks.  *)
 
 (** FIXME: https://gitlab.com/tezos/tezos/-/issues/4850
-    Config override default values, but the env TEZOS_EVENTS_CONFIG
+    Config override default values, but the env MAVRYK_EVENTS_CONFIG
     does not. Is that what we want ? *)
 
 open Error_monad
@@ -42,7 +42,7 @@ val empty : t
 
 (** [make_config_uri kind] builds a configuration URI using the optional
     parameters with the given [kind]. The arguments are the options documented
-    in [Tezos_stdlib_unix.File_descriptor_sink].
+    in [Mavryk_stdlib_unix.File_descriptor_sink].
 *)
 val make_config_uri :
   ?level:Internal_event.Level.t ->
@@ -72,7 +72,7 @@ val make_custom : Uri.t list -> t
 (** The serialization format. *)
 val encoding : t Data_encoding.t
 
-(** Run {!Tezos_base.Internal_event.All_sinks.activate} for every
+(** Run {!Mavryk_base.Internal_event.All_sinks.activate} for every
       URI in the configuration. *)
 val apply : t -> unit tzresult Lwt.t
 

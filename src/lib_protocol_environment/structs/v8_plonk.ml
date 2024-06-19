@@ -42,5 +42,5 @@ let verify pp inputs proof =
       inputs
   in
   Result.value ~default:false
-  @@ Tezos_lwt_result_stdlib.Lwtreslib.Bare.Result.catch (fun () ->
+  @@ Mavryk_lwt_result_stdlib.Lwtreslib.Bare.Result.catch (fun () ->
          verify pp ~inputs:(Kzg.SMap.of_list inputs) proof)

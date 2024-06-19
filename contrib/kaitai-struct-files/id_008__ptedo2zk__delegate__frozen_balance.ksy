@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 008-PtEdo2Zk.delegate.frozen_balance'
 types:
-  id_008__ptedo2zk__mutez:
+  id_008__ptedo2zk__mumav:
     seq:
-    - id: id_008__ptedo2zk__mutez
+    - id: id_008__ptedo2zk__mumav
       type: n
   n:
     seq:
@@ -21,8 +21,8 @@ types:
       type: b7be
 seq:
 - id: deposit
-  type: id_008__ptedo2zk__mutez
+  type: id_008__ptedo2zk__mumav
 - id: fees
-  type: id_008__ptedo2zk__mutez
+  type: id_008__ptedo2zk__mumav
 - id: rewards
-  type: id_008__ptedo2zk__mutez
+  type: id_008__ptedo2zk__mumav

@@ -44,7 +44,7 @@ opam exec -- dune exec -- tztop src/proto_alpha/
 For instance, for stdin redirection:
 
 ```
-echo "#show_module Tezos_protocol_alpha.Protocol" | dune exec -- tztop src/proto_alpha -stdin
+echo "#show_module Mavryk_protocol_alpha.Protocol" | dune exec -- tztop src/proto_alpha -stdin
 ```
 
 Or, for editor integrations:
@@ -53,7 +53,7 @@ Or, for editor integrations:
 dune exec -- tztop DIR -emacs
 ```
 
-See [Proposal Testing](https://tezos.gitlab.io/developer/proposal_testing.html)
+See [Proposal Testing](https://protocol.mavryk.org/developer/proposal_testing.html)
 page for a sample code to run in `tztop`.
 
 ## Troubleshooting

@@ -1,7 +1,7 @@
 #
 # Templates for building deb & rpm packages.
 #
-# The AWS resources used for the packaging are managed on https://gitlab.com/nomadic-labs/iac/terraform/octez-packaging
+# The AWS resources used for the packaging are managed on https://gitlab.com/nomadic-labs/iac/terraform/mavkit-packaging
 #
 # Specifically we use 2 S3 buckets to host the deb and rpm packages and one IAM role which has the ability to
 # push changes. The jobs use the OpenID protocol to connect to AWS, receive temporary credentials and assume
@@ -19,19 +19,19 @@
   needs:
     - "build:static-x86_64-linux-binaries"
   rules:
-    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/tezos-packaging)
+    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/mavryk-packaging)
     # provide support for the lima protocol and drop support for jakarta.
     - when: never
   variables:
-    TEZOS_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
-    TEZOS_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
-    TEZOS_LICENSE_VERSION: "master"
-    ROLE_ARN: "arn:aws:iam::623103086665:role/octez-packaging-bucket-writer"
-    OCTEZ_DEB_BUCKET: "octez-deb-pkgs"
+    MAVRYK_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
+    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
+    MAVRYK_LICENSE_VERSION: "master"
+    ROLE_ARN: "arn:aws:iam::623103086665:role/mavkit-packaging-bucket-writer"
+    MAVKIT_DEB_BUCKET: "mavkit-deb-pkgs"
     AWS_BUCKET_REGION: "eu-west-1"
     PACKAGE_FORMAT: "deb"
     ARCH: "amd64"
-    TEZOS_BINARIES: "octez-binaries/x86_64"
+    MAVRYK_BINARIES: "mavkit-binaries/x86_64"
   script:
     - ./scripts/ci/create_linux_package.sh
     - ./scripts/ci/upload_linux_package.sh
@@ -44,19 +44,19 @@
   needs:
     - "build:static-x86_64-linux-binaries"
   variables:
-    TEZOS_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
-    TEZOS_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
-    TEZOS_LICENSE_VERSION: "master"
-    ROLE_ARN: "arn:aws:iam::623103086665:role/octez-packaging-bucket-writer"
-    OCTEZ_RPM_BUCKET: "octez-rpm-pkgs"
+    MAVRYK_PACKAGING_VERSION: "872ac62526c49bd59b8621ee06c066141e940dbd"
+    MAVRYK_PACKAGING_REPO: "https://github.com/serokell/tezos-packaging"
+    MAVRYK_LICENSE_VERSION: "master"
+    ROLE_ARN: "arn:aws:iam::623103086665:role/mavkit-packaging-bucket-writer"
+    MAVKIT_RPM_BUCKET: "mavkit-rpm-pkgs"
     AWS_BUCKET_REGION: "eu-west-1"
     PACKAGE_FORMAT: "rpm"
     ARCH: "amd64"
-    TEZOS_BINARIES: "octez-binaries/x86_64"
+    MAVRYK_BINARIES: "mavkit-binaries/x86_64"
   script:
     - ./scripts/ci/create_linux_package.sh
     - ./scripts/ci/upload_linux_package.sh
   rules:
-    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/tezos-packaging)
+    # NOTE: These jobs are disabled until the upstream scripts (https://github.com/serokell/mavryk-packaging)
     # provide support for the lima protocol and drop support for jakarta.
     - when: never

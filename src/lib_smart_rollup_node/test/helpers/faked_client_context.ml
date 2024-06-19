@@ -30,7 +30,7 @@
     It is largely taken from the mockup simulator of the baker.
  *)
 
-open Tezos_client_base
+open Mavryk_client_base
 
 class dummy_prompter : Client_context.prompter =
   object
@@ -45,9 +45,9 @@ class dummy_prompter : Client_context.prompter =
     method multiple_password_retries = false
   end
 
-class faked_ctxt : Tezos_rpc.Context.generic =
+class faked_ctxt : Mavryk_rpc.Context.generic =
   let local_ctxt =
-    Tezos_mockup_proxy.RPC_client.local_ctxt Tezos_rpc.Directory.empty
+    Mavryk_mockup_proxy.RPC_client.local_ctxt Mavryk_rpc.Directory.empty
   in
   object
     method base = local_ctxt#base
@@ -57,7 +57,7 @@ class faked_ctxt : Tezos_rpc.Context.generic =
 
     method call_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           'p ->
           'q ->
           'i ->
@@ -67,7 +67,7 @@ class faked_ctxt : Tezos_rpc.Context.generic =
 
     method call_streamed_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           on_chunk:('o -> unit) ->
           on_close:(unit -> unit) ->
           'p ->
@@ -161,7 +161,7 @@ class unix_faked ~base_dir ~filesystem : Client_context.full =
 
     inherit faked_ctxt
 
-    inherit Tezos_client_base_unix.Client_context_unix.unix_ui
+    inherit Mavryk_client_base_unix.Client_context_unix.unix_ui
 
     method chain = `Main
 

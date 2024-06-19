@@ -9,7 +9,7 @@ code
       { # 'do' entrypoint
         # Assert no token was sent:
         # to send tokens, the default entry point should be used
-        PUSH mutez 0 ;
+        PUSH mumav 0 ;
         AMOUNT ;
         ASSERT_CMPEQ ;
         # Assert that the sender is the manager

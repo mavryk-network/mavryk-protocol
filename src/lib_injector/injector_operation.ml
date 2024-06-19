@@ -28,8 +28,8 @@ open Injector_sigs
 module Make (O : PARAM_OPERATION) :
   INJECTOR_OPERATION with type operation = O.t = struct
   module Hash =
-    Tezos_crypto.Blake2B.Make
-      (Tezos_crypto.Base58)
+    Mavryk_crypto.Blake2B.Make
+      (Mavryk_crypto.Base58)
       (struct
         let name = "injector_operation_hash"
 
@@ -41,7 +41,7 @@ module Make (O : PARAM_OPERATION) :
       end)
 
   let () =
-    Tezos_crypto.Base58.check_encoded_prefix Hash.b58check_encoding "iop" 53
+    Mavryk_crypto.Base58.check_encoded_prefix Hash.b58check_encoding "iop" 53
 
   type operation = O.t
 

@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_006__pscartha__entrypoint_tag == id_006__pscartha__entrypoint_tag::named)
-  id_006__pscartha__mutez:
+  id_006__pscartha__mumav:
     seq:
-    - id: id_006__pscartha__mutez
+    - id: id_006__pscartha__mumav
       type: n
   id_006__pscartha__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_006__pscartha__mutez
+      type: id_006__pscartha__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_006__pscartha__mutez
+      type: id_006__pscartha__mumav
     - id: destination
       type: id_006__pscartha__contract_id
       doc: ! >-

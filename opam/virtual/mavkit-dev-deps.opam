@@ -1,0 +1,22 @@
+# This file was automatically generated, do not edit.
+# Edit file manifest/main.ml instead.
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "js_of_ocaml-lwt" { >= "5.2.0" }
+  "merge-fmt"
+  "merlin"
+  "ocaml-lsp-server" { >= "1.16.2" }
+  "ocp-indent"
+  "odoc"
+  "utop" { >= "2.8" }
+]
+build: []
+synopsis: "Virtual package depending on Mavkit dependencies (profile: mavkit-dev-deps)"
+description: "Install this package to install all dependencies needed to build the subset of Mavkit denoted by profile mavkit-dev-deps."

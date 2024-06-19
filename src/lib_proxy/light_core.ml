@@ -26,10 +26,10 @@
 (** Module providing the light's mode implementation of Proxy.CORE *)
 
 module Logger = Light_logger.Logger
-module Store = Tezos_context_memory.Context
+module Store = Mavryk_context_memory.Context
 module Consensus = Light_consensus
-module Block_services = Tezos_shell_services.Block_services
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Block_services = Mavryk_shell_services.Block_services
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 let key_to_string = String.concat ";"
 
@@ -61,7 +61,7 @@ let light_failwith (pgi : Proxy.proxy_getter_input) ?(warn_symbolic = false) msg
   failwith "%s" full_msg
 
 let get_core (module Light_proto : Light_proto.PROTO_RPCS)
-    (printer : Tezos_client_base.Client_context.printer)
+    (printer : Mavryk_client_base.Client_context.printer)
     ({endpoints; min_agreement} : Light.sources) =
   (module struct
     type irmin = {repo : Store.Tree.repo; root : Store.tree}
@@ -73,7 +73,7 @@ let get_core (module Light_proto : Light_proto.PROTO_RPCS)
       let open Lwt_syntax in
       let+ repo = Store.Tree.make_repo () in
       let root =
-        Store.Tree.empty (Tezos_context_memory.Context.make_empty_context ())
+        Store.Tree.empty (Mavryk_context_memory.Context.make_empty_context ())
       in
       {repo; root}
 
@@ -94,8 +94,8 @@ let get_core (module Light_proto : Light_proto.PROTO_RPCS)
       let unshallow = Tree.unshallow
     end
 
-    module Get_data = Tezos_context_sigs.Context.With_get_data ((
-      Storelike : Tezos_context_sigs.Context.Storelike))
+    module Get_data = Mavryk_context_sigs.Context.With_get_data ((
+      Storelike : Mavryk_context_sigs.Context.Storelike))
 
     (** Returns an {!irmin} value but don't update {!irmin_ref}. We want to
         update only when the consensus has been checked, not before! *)
@@ -183,7 +183,7 @@ let get_core (module Light_proto : Light_proto.PROTO_RPCS)
     let get_first_merkle_tree chain block key leaf_kind :
         (Proof.tree Proof.t
         * (Storelike.tree, bytes) Either.t
-        * (Uri.t * Tezos_rpc.Context.simple) list)
+        * (Uri.t * Mavryk_rpc.Context.simple) list)
         option
         Lwt.t =
       get_first_merkle_tree chain block key leaf_kind [] endpoints

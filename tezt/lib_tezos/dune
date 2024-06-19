@@ -5,16 +5,16 @@
  (name tezt_tezos)
  (public_name tezt-tezos)
  (libraries
-  octez-libs.tezt-wrapper
+  mavkit-libs.tezt-wrapper
   tezt-tezos.tezt-performance-regression
   uri
   hex
-  octez-libs.crypto-dal
-  octez-libs.base
-  octez-libs.base.unix
+  mavkit-libs.crypto-dal
+  mavkit-libs.base
+  mavkit-libs.base.unix
   cohttp-lwt-unix)
  (flags
   (:standard)
   -open Tezt_wrapper
   -open Tezt_wrapper.Base
-  -open Tezt_tezos_tezt_performance_regression))
+  -open Tezt_mavryk_tezt_performance_regression))

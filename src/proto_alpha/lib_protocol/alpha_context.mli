@@ -28,7 +28,7 @@
 
 (** An [Alpha_context.t] is an immutable snapshot of the ledger state at some block
     height, preserving
-    {{:https://tezos.gitlab.io/developer/entering_alpha.html#the-big-abstraction-barrier-alpha-context}
+    {{:https://protocol.mavryk.org/developer/entering_alpha.html#the-big-abstraction-barrier-alpha-context}
     type-safety and invariants} of the ledger state.
 
     {2 Implementation}
@@ -116,7 +116,7 @@ module Tez : sig
 
   val zero : t
 
-  val one_mutez : t
+  val one_mumav : t
 
   val one_cent : t
 
@@ -124,7 +124,7 @@ module Tez : sig
 
   val one : t
 
-  val max_mutez : t
+  val max_mumav : t
 
   val ( -? ) : t -> t -> t tzresult
 
@@ -140,11 +140,11 @@ module Tez : sig
 
   val to_string : t -> string
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
-  val of_mutez_exn : int64 -> t
+  val of_mumav_exn : int64 -> t
 
   val mul_exn : t -> int -> t
 
@@ -632,7 +632,7 @@ module Script : sig
     | I_SLICE
     | I_STEPS_TO_QUOTA
     | I_SUB
-    | I_SUB_MUTEZ
+    | I_SUB_MUMAV
     | I_SWAP
     | I_TRANSFER_TOKENS
     | I_SET_DELEGATE
@@ -682,7 +682,7 @@ module Script : sig
     | T_signature
     | T_string
     | T_bytes
-    | T_mutez
+    | T_mumav
     | T_timestamp
     | T_unit
     | T_operation
@@ -5052,6 +5052,20 @@ end
 (** This module re-exports definitions from {!Liquidity_baking_storage}. *)
 module Liquidity_baking : sig
   val get_cpmm_address : context -> Contract_hash.t tzresult Lwt.t
+
+  val on_subsidy_allowed :
+    context ->
+    per_block_vote:Per_block_votes.per_block_vote ->
+    (context -> Contract_hash.t -> (context * 'a list) tzresult Lwt.t) ->
+    (context * 'a list * Per_block_votes.Liquidity_baking_toggle_EMA.t) tzresult
+    Lwt.t
+end
+
+(** This module re-exports definitions from {!Protocol_treasury_storage}. *)
+module Protocol_treasury : sig
+  val get_protocol_treasury_address : Contract_hash.t
+
+  val get_buffer_address : context -> Contract_hash.t tzresult Lwt.t
 
   val on_subsidy_allowed :
     context ->

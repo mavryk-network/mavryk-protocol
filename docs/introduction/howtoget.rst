@@ -1,14 +1,14 @@
 .. _howtoget:
 
-How to get Tezos
-================
+How to get Mavryk
+=================
 
-In this how-to we explain how to get up-to-date binaries to run Tezos
-(more precisely, the "Octez" implementation of Tezos software)
+In this how-to we explain how to get up-to-date binaries to run Mavryk
+(more precisely, the "Mavkit" implementation of Mavryk software)
 on any network (either on the mainnet or on one of the test networks).
-Octez consists of :ref:`several binaries <tezos_binaries>` (i.e., executable files), including: a client, a node, and a baker.
+Mavkit consists of :ref:`several binaries <mavryk_binaries>` (i.e., executable files), including: a client, a node, and a baker.
 
-There are several options for getting the binaries, depending on how you plan to use Octez:
+There are several options for getting the binaries, depending on how you plan to use Mavkit:
 
 - :ref:`getting static binaries <getting_static_binaries>`.
   This is the easiest way to get native binaries for the latest stable release,
@@ -37,9 +37,9 @@ When choosing between the installation options, you may take into account the
 convenience of the installation step (and of upgrading steps), but also
 efficiency and security considerations. For instance, static binaries have a
 different memory footprint compared to dynamically-linked binaries. Also,
-compiling the sources in the official Octez
+compiling the sources in the official Mavkit
 repository is more secure than installing OPAM packages from a repository that
-is not under Tezos control. In particular, compiling from sources enforces a fixed set of dependencies; when compiling via OPAM, this set of dependencies may change, which may or may not be compatible with your security practices.
+is not under Mavryk control. In particular, compiling from sources enforces a fixed set of dependencies; when compiling via OPAM, this set of dependencies may change, which may or may not be compatible with your security practices.
 
 All our installation scenarios are tested daily, including by automated means, to ensure that they are correct and up to date.
 These tests are performed by applying scenarios in several standard environments, from scratch.
@@ -51,7 +51,7 @@ Getting static binaries
 -----------------------
 
 You can get static Linux binaries from the
-`latest release in the tezos-packaging repository <https://github.com/serokell/tezos-packaging/releases/latest>`__.
+`latest release in the mavryk-packaging repository <https://github.com/serokell/mavryk-packaging/releases/latest>`__.
 
 This repository provides static binaries for x86_64 and arm64 architectures. Since these binaries
 are static, they can be used on any Linux distribution without any additional prerequisites.
@@ -65,13 +65,13 @@ versions of the binaries.
 Installing binaries
 -------------------
 
-Depending on your operating system, you may install Octez (dynamically-linked)
+Depending on your operating system, you may install Mavkit (dynamically-linked)
 binaries and their dependencies using a package manager, as follows.
 
-Ubuntu Launchpad PPA with Octez packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Ubuntu Launchpad PPA with Mavkit packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you're using Ubuntu, you can install packages with Octez binaries from a Launchpad PPA.
+If you're using Ubuntu, you can install packages with Mavkit binaries from a Launchpad PPA.
 Currently it supports Focal and Bionic versions.
 
 In order to add the stable release PPA repository to your machine, do:
@@ -92,20 +92,20 @@ Then, to install the binaries, run the following commands:
 
 .. literalinclude:: install-bin-ubuntu.sh
    :language: shell
-   :start-after: [install tezos]
+   :start-after: [install mavryk]
    :end-before: [test executables]
 
 Upgrading to a newer release is made easy by the APT package manager, using
 commands such as ``apt-get update``, ``apt-get upgrade <package>``, and
 ``apt-get install <new-package>``. Indeed, as the names of some packages (e.g.
 the baker) depend on their version, you may have to also install new packages.
-You may take a look at the available packages in the Octez PPA repository listed
+You may take a look at the available packages in the Mavkit PPA repository listed
 by ``apt-get update``.
 
-Fedora Copr repository with Octez packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fedora Copr repository with Mavkit packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you're using Fedora, you can install packages with Octez binaries from a Copr repository.
+If you're using Fedora, you can install packages with Mavkit binaries from a Copr repository.
 Currently it supports Fedora 35.
 
 In order to add the stable Copr repository to your machine, do:
@@ -126,14 +126,14 @@ Then, to install the binaries, run the following commands:
 
 .. literalinclude:: install-bin-fedora.sh
    :language: shell
-   :start-after: [install tezos]
+   :start-after: [install mavryk]
    :end-before: [test executables]
 
 Upgrading to a newer release is made easy by the DNF package manager, using
 commands such as ``dnf upgrade <package>``, and
 ``dnf install <new-package>``. Indeed, as the names of some packages (e.g.
 the baker) depend on their version, you may have to also install new packages.
-You may take a look at the available packages in the Octez Copr repository
+You may take a look at the available packages in the Mavkit Copr repository
 listed by ``dnf repoinfo``.
 
 .. _using_docker_images:
@@ -143,8 +143,8 @@ Using Docker Images And Docker-Compose
 
 For every change committed in the GitLab repository, Docker images are
 automatically generated and published on `DockerHub
-<https://hub.docker.com/r/tezos/tezos/>`_. This provides a convenient
-way to run an always up-to-date ``octez-node``.
+<https://hub.docker.com/r/mavrykdynamics/mavryk/>`_. This provides a convenient
+way to run an always up-to-date ``mavkit-node``.
 
 One way to run those Docker images is with `docker-compose <https://docs.docker.com/compose>`_.
 We provide ``docker-compose`` files for all active
@@ -161,16 +161,16 @@ the Alpha protocol.
 
 You can open a new shell session and run ``docker ps`` in it, to display all the available containers, e.g.::
 
-    8f3638fae48c  docker.io/tezos/tezos:latest  octez-node            3 minutes ago  Up 3 minutes ago   0.0.0.0:8732->8732/tcp, 0.0.0.0:9732->9732/tcp  node-alpha
-    8ba4d6077e2d  docker.io/tezos/tezos:latest  octez-baker --liq...  3 minutes ago  Up 31 seconds ago                                                  baker-alpha
-    3ee7fcbc2158  docker.io/tezos/tezos:latest  octez-accuser         3 minutes ago  Up 35 seconds ago                                                  accuser-alpha
+    8f3638fae48c  docker.io/mavrykdynamics/mavryk:latest  mavkit-node            3 minutes ago  Up 3 minutes ago   0.0.0.0:8732->8732/tcp, 0.0.0.0:9732->9732/tcp  node-alpha
+    8ba4d6077e2d  docker.io/mavrykdynamics/mavryk:latest  mavkit-baker --liq...  3 minutes ago  Up 31 seconds ago                                                  baker-alpha
+    3ee7fcbc2158  docker.io/mavrykdynamics/mavryk:latest  mavkit-accuser         3 minutes ago  Up 35 seconds ago                                                  accuser-alpha
 
 
-The node's RPC interface will be available on localhost and can be queried with ``octez-client``.
+The node's RPC interface will be available on localhost and can be queried with ``mavkit-client``.
 
 ::
 
-    docker exec node-alpha octez-client rpc list
+    docker exec node-alpha mavkit-client rpc list
 
 Building Docker Images Locally
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -186,7 +186,7 @@ build one locally and reference it. Run the following command to build the image
 And then update the docker-compose file (e.g., ``alpha.yml``) with the docker tag::
 
     node:
-      image: tezos:latest
+      image: mavryk:latest
       ...
 
 Docker Image Configuration
@@ -237,7 +237,7 @@ source package manager for OCaml.
 This is easier than :ref:`setting up a complete development environment <build_from_sources>`, like developers do.
 However, this method is recommended for expert users as it requires basic
 knowledge of the OPAM package manager and the OCaml packages
-workflow. In particular, upgrading Octez from release to
+workflow. In particular, upgrading Mavkit from release to
 release might require tinkering with different options of the OPAM
 package manager to adjust the local environment for the new
 dependencies.
@@ -248,7 +248,7 @@ dependencies.
 Environment
 ~~~~~~~~~~~
 
-Currently Octez is being developed for Linux x86_64, mostly for
+Currently Mavkit is being developed for Linux x86_64, mostly for
 Debian/Ubuntu and Arch Linux. The following OSes are also reported to
 work: macOS (x86_64), Arch Linux ARM (aarch64), Debian Linux (bullseye),
 Ubuntu Linux (focal). A Windows port is feasible and might be
@@ -273,10 +273,10 @@ the next step.
 
 .. _install_opam_packages:
 
-Install Octez OPAM packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install Mavkit OPAM packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The latest Octez release is available (as soon as possible after the
+The latest Mavkit release is available (as soon as possible after the
 release) directly as OPAM packages.
 
 .. note::
@@ -306,7 +306,7 @@ of variable ``$ocaml_version`` in file ``scripts/version.sh``). To get an enviro
 
    The command ``eval $(opam env)`` sets up required environment
    variables. OPAM will suggest to add it in your rc file. If, at any
-   point, you get an error like ``octez-something: command not
+   point, you get an error like ``mavkit-something: command not
    found``, first thing to try is to (re)run ``eval $(opam
    env --switch $ocaml_version)`` (replace ``$ocaml_version`` with its value
    in ``scripts/version.sh``) to see if it fixes the problem.
@@ -316,7 +316,7 @@ In order to get the system dependencies of the binaries, do:
 .. literalinclude:: install-opam.sh
   :language: shell
   :start-after: [get system dependencies]
-  :end-before: [install tezos]
+  :end-before: [install mavryk]
 
 .. note::
 
@@ -329,18 +329,18 @@ Now, install all the binaries by:
 
 .. literalinclude:: install-opam.sh
   :language: shell
-  :start-after: [install tezos]
+  :start-after: [install mavryk]
   :end-before: [test executables]
 
-You can be more specific and only ``opam install octez-node``, ``opam
-install octez-baker-alpha``, ... In that case, it is enough to install
+You can be more specific and only ``opam install mavkit-node``, ``opam
+install mavkit-baker-alpha``, ... In that case, it is enough to install
 the system dependencies of this package only by running ``opam depext
-octez-node`` for example instead of ``opam depext tezos``.
+mavkit-node`` for example instead of ``opam depext tezos``.
 
 .. warning::
 
-   Note that ``opam install octez-client`` and ``opam install
-   octez-signer`` are "minimal" and do not install the support for
+   Note that ``opam install mavkit-client`` and ``opam install
+   mavkit-signer`` are "minimal" and do not install the support for
    Ledger Nano devices. To enable it, run ``opam install
    ledgerwallet-tezos`` in addition to installing the binaries. (The
    macro meta-package ``tezos`` installs ``ledgerwallet-tezos``.)
@@ -391,11 +391,11 @@ Identified situations where it will be more tricky are:
 Setting up the development environment from scratch
 ---------------------------------------------------
 
-If you plan to contribute to the Octez codebase, the way to go is to set up a
+If you plan to contribute to the Mavkit codebase, the way to go is to set up a
 complete development environment, by cloning the repository and compiling the
 sources using the provided makefile.
 
-**TL;DR**: From a fresh Debian Bullseye x86_64, you typically want to select a source branch in the Octez repository, e.g.:
+**TL;DR**: From a fresh Debian Bullseye x86_64, you typically want to select a source branch in the Mavkit repository, e.g.:
 
 .. literalinclude:: compile-sources.sh
   :language: shell
@@ -409,23 +409,6 @@ and then do:
   :start-after: [install packages]
   :end-before: [test executables]
 
-.. warning::
-
-   If you are updating to :doc:`Octez v14<../releases/version-14>`
-   using a development environment which had been used to build Octez
-   versions up to v13.x, and also you have previously exported the
-   ``tezos`` directory to the ``$PATH`` environment variable, the
-   following stanza is necessary to avoid potential issues with opam
-   in the ``make build-deps`` step::
-
-     PATH=${PATH##"$HOME"/tezos/:}
-
-   Otherwise, it is possible for ``make build-deps`` to fail with the
-   following (or a similar) error::
-
-     make: opam: Permission denied
-     Makefile:53: *** Unexpected opam version (found: , expected: 2.*).  Stop.
-
 The following sections describe the individual steps above in more detail.
 
 .. note::
@@ -437,7 +420,7 @@ The following sections describe the individual steps above in more detail.
 Install Rust
 ~~~~~~~~~~~~
 
-Compiling Octez requires the Rust compiler (see recommended version in variable
+Compiling Mavkit requires the Rust compiler (see recommended version in variable
 ``$recommended_rust_version`` in file ``scripts/version.sh``) and the
 Cargo package manager to be installed. If you have `rustup
 <https://rustup.rs/>`_ installed, it should work without any
@@ -471,10 +454,10 @@ if file ``.cargo`` does not exist in your home directory.
 Install Zcash Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Octez binaries require the Zcash parameter files to run.
+Mavkit binaries require the Zcash parameter files to run.
 Docker images come with those files, and the source distribution also
-includes those files. But if you compile from source and move Octez to
-another location (such as ``/usr/local/bin``), the Octez binaries may
+includes those files. But if you compile from source and move Mavkit to
+another location (such as ``/usr/local/bin``), the Mavkit binaries may
 prompt you to install the Zcash parameter files. The easiest way is to
 download and run this script::
 
@@ -515,18 +498,18 @@ Note that the script ``fetch-params.sh`` downloads a third file containing param
 Get the sources
 ~~~~~~~~~~~~~~~
 
-Octez ``git`` repository is hosted at `GitLab
-<https://gitlab.com/tezos/tezos/>`_. All development happens here. Do
-**not** use our `GitHub mirror <https://github.com/tezos/tezos>`_
+Mavkit ``git`` repository is hosted at `GitLab
+<https://gitlab.com/mavryk-network/mavryk-protocol/>`_. All development happens here. Do
+**not** use our `GitHub mirror <https://github.com/mavryk-network/mavryk-protocol>`_
 which we don't use anymore and only mirrors what happens on GitLab.
 
 Checkout the ``latest-release`` branch to use the latest release.
 Alternatively, you can checkout a specific version based on its tag.
 
-Install Octez dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install Mavkit dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Install the OCaml compiler and the libraries that Octez depends on::
+Install the OCaml compiler and the libraries that Mavkit depends on::
 
    make build-deps
 
@@ -541,7 +524,7 @@ command instead:
 .. note::
 
    * These commands create a local OPAM switch (``_opam`` folder at the root
-     of the repository) where the required version of OCaml and OCaml Octez
+     of the repository) where the required version of OCaml and OCaml Mavkit
      dependencies are compiled and installed (this takes a while but it's
      only done once).
 
@@ -571,10 +554,10 @@ refer to the new switch and compile the project:
   :start-after: [compile sources]
   :end-before: [optional setup]
 
-Lastly, you can also add the Octez binaries to your ``PATH`` variable,
+Lastly, you can also add the Mavkit binaries to your ``PATH`` variable,
 and after reading the Disclaimer a few
 hundred times you are allowed to disable it with
-``TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y``.
+``MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y``.
 
 You may also activate Bash autocompletion by executing::
 

@@ -3,20 +3,20 @@
 
 (executable
  (name main_tps_evaluation)
- (public_name tezos-tps-evaluation)
- (package tezos-tps-evaluation)
+ (public_name mavryk-tps-evaluation)
+ (package mavryk-tps-evaluation)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   caqti
   caqti-dynload
   caqti-lwt
   data-encoding
   lwt
-  octez-protocol-alpha-libs.baking
-  octez-protocol-alpha-libs.client.commands
-  octez-shell-libs.client-base-unix
-  tezos-protocol-alpha.protocol
+  mavkit-protocol-alpha-libs.baking
+  mavkit-protocol-alpha-libs.client.commands
+  mavkit-shell-libs.client-base-unix
+  mavryk-protocol-alpha.protocol
   tezt
   tezt-tezos
   tezt-tezos.tezt-performance-regression
@@ -26,11 +26,11 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
+  -open Mavryk_base.TzPervasives
   -open Tezt
   -open Tezt.Base
   -open Tezt_tezos
-  -open Tezt_tezos_tezt_performance_regression))
+  -open Tezt_mavryk_tezt_performance_regression))
 
 (rule
  (targets sql.ml)

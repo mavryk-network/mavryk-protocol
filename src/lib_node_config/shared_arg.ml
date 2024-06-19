@@ -390,7 +390,7 @@ module Term = struct
 
   let data_dir =
     let doc =
-      "The directory where the Tezos node will store all its data. Parent \
+      "The directory where the Mavryk node will store all its data. Parent \
        directories are created if necessary."
     in
     let env = Cmd.Env.info ~doc Config_file.data_dir_env_name in
@@ -788,7 +788,7 @@ let () =
       Format.fprintf
         ppf
         "@[Specified@ --network@ has@ chain@ name@ %s,@ but@ current@ \
-         configuration@ implies@ expected@ chain@ name@ %s.@ Use:@ octez-node \
+         configuration@ implies@ expected@ chain@ name@ %s.@ Use:@ mavkit-node \
          config init --network <NETWORK>@ to@ configure@ your@ node.@]"
         command_line_chain_name
         configuration_file_chain_name)

@@ -20,14 +20,14 @@ export OPAMSOLVERTIMEOUT=1200
 opam repository set-url default https://opam.ocaml.org
 opam update
 # [install ocaml compiler]
-wget -O latest-release:version.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/version.sh
+wget -O latest-release:version.sh https://gitlab.com/mavryk-network/mavryk-protocol/raw/latest-release/scripts/version.sh
 source latest-release:version.sh
 opam switch create for_tezos $ocaml_version
 eval $(opam env)
 # [get system dependencies]
 # depext handling is done directly by opam 2.1 and later
-opam depext octez
-# [install tezos]
-opam install octez
+opam depext mavkit
+# [install mavryk]
+opam install mavkit
 # [test executables]
-octez-client --version
+mavkit-client --version

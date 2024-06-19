@@ -32,11 +32,11 @@
 *)
 
 (** [mock_wallet entities] is a mock of the
-    [Tezos_client_base.Client_context.wallet] class that only
+    [Mavryk_client_base.Client_context.wallet] class that only
     implements the [load] method. This methods returns a key-value
     association as given by the json string [entities] that should have
     the form: ["[{"name": "alias", "value": "key" }, <...>]"]. *)
-class mock_wallet (entities : string) : Tezos_client_base.Client_context.wallet
+class mock_wallet (entities : string) : Mavryk_client_base.Client_context.wallet
   =
   object
     method load_passwords = None
@@ -68,7 +68,7 @@ class mock_wallet (entities : string) : Tezos_client_base.Client_context.wallet
 *)
 let test_find_destination _ =
   let open Lwt_result_syntax in
-  let bootstrap1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" in
+  let bootstrap1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" in
   let wallet_json =
     Format.asprintf {| [{"name": "test_alias", "value": "%s" }] |} bootstrap1
   in

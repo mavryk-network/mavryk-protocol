@@ -46,7 +46,7 @@
     heads from the layer1. We only consider quiescent states, that is those
     where rollup nodes are not actively processing a head received from layer1.
 
-    Examples of global endpoints are [current_tezos_head] and
+    Examples of global endpoints are [current_mavryk_head] and
     [last_stored_commitment], as the responses returned by these endpoints is
     expected to be consistent across rollup nodes in the same state.
 
@@ -290,16 +290,16 @@ module Arg = struct
             | Some b -> Ok (`Hash b)
             | None -> Error "Cannot parse block id"))
 
-  let block_id : block_id Tezos_rpc.Arg.t =
-    Tezos_rpc.Arg.make
+  let block_id : block_id Mavryk_rpc.Arg.t =
+    Mavryk_rpc.Arg.make
       ~descr:"An L1 block identifier."
       ~name:"block_id"
       ~construct:construct_block_id
       ~destruct:destruct_block_id
       ()
 
-  let l2_message_hash : L2_message.hash Tezos_rpc.Arg.t =
-    Tezos_rpc.Arg.make
+  let l2_message_hash : L2_message.hash Mavryk_rpc.Arg.t =
+    Mavryk_rpc.Arg.make
       ~descr:"A L2 message hash."
       ~name:"l2_message_hash"
       ~construct:L2_message.Hash.to_b58check
@@ -308,8 +308,8 @@ module Arg = struct
         |> Option.to_result ~none:"Invalid L2 message hash")
       ()
 
-  let commitment_hash : Commitment.Hash.t Tezos_rpc.Arg.t =
-    Tezos_rpc.Arg.make
+  let commitment_hash : Commitment.Hash.t Mavryk_rpc.Arg.t =
+    Mavryk_rpc.Arg.make
       ~descr:"A commitment hash."
       ~name:"commitment_hash"
       ~construct:Commitment.Hash.to_b58check
@@ -322,26 +322,26 @@ end
 module type PREFIX = sig
   type prefix
 
-  val prefix : (unit, prefix) Tezos_rpc.Path.t
+  val prefix : (unit, prefix) Mavryk_rpc.Path.t
 end
 
 module Make_services (P : PREFIX) = struct
   include P
 
-  let path : prefix Tezos_rpc.Path.context = Tezos_rpc.Path.open_root
+  let path : prefix Mavryk_rpc.Path.context = Mavryk_rpc.Path.open_root
 
   let make_call s =
-    Tezos_rpc.Context.make_call (Tezos_rpc.Service.prefix prefix s)
+    Mavryk_rpc.Context.make_call (Mavryk_rpc.Service.prefix prefix s)
 
   let make_call1 s =
-    Tezos_rpc.Context.make_call1 (Tezos_rpc.Service.prefix prefix s)
+    Mavryk_rpc.Context.make_call1 (Mavryk_rpc.Service.prefix prefix s)
 
   let make_call2 s =
-    Tezos_rpc.Context.make_call2 (Tezos_rpc.Service.prefix prefix s)
+    Mavryk_rpc.Context.make_call2 (Mavryk_rpc.Service.prefix prefix s)
 end
 
 module Global = struct
-  open Tezos_rpc.Path
+  open Mavryk_rpc.Path
 
   include Make_services (struct
     type prefix = unit
@@ -350,43 +350,43 @@ module Global = struct
   end)
 
   let sc_rollup_address =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Smart rollup address"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Address.encoding
       (path / "smart_rollup_address")
 
-  let current_tezos_head =
-    Tezos_rpc.Service.get_service
-      ~description:"Tezos head known to the smart rollup node"
-      ~query:Tezos_rpc.Query.empty
+  let current_mavryk_head =
+    Mavryk_rpc.Service.get_service
+      ~description:"Mavryk head known to the smart rollup node"
+      ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Block_hash.encoding)
-      (path / "tezos_head")
+      (path / "mavryk_head")
 
-  let current_tezos_level =
-    Tezos_rpc.Service.get_service
-      ~description:"Tezos level known to the smart rollup node"
-      ~query:Tezos_rpc.Query.empty
+  let current_mavryk_level =
+    Mavryk_rpc.Service.get_service
+      ~description:"Mavryk level known to the smart rollup node"
+      ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Data_encoding.int32)
-      (path / "tezos_level")
+      (path / "mavryk_level")
 
   let last_stored_commitment =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Last commitment computed by the node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:(Data_encoding.option Encodings.commitment_with_hash)
       (path / "last_stored_commitment")
 
   let global_block_watcher =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Monitor and streaming the L2 blocks"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Sc_rollup_block.encoding
       (path / "monitor_blocks")
 end
 
 module Local = struct
-  open Tezos_rpc.Path
+  open Mavryk_rpc.Path
 
   include Make_services (struct
     type prefix = unit
@@ -396,7 +396,7 @@ module Local = struct
 
   (* commitments are published only if their inbox level is above the last
      cemented commitment level inbox level. Because this information is
-     fetched from the head of the tezos node to which the rollup node is
+     fetched from the head of the mavryk node to which the rollup node is
      connected, it is possible that two rollup nodes that have processed
      the same set of heads, but whose corresponding layer1 node has
      different information about the last cemented commitment, will
@@ -405,32 +405,32 @@ module Local = struct
      in the rollup node will be different.
   *)
   let last_published_commitment =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Last commitment published by the node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:
         (Data_encoding.option Encodings.commitment_with_hash_and_level_infos)
       (path / "last_published_commitment")
 
   let commitment =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Commitment computed and published by the node"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:
         (Data_encoding.option Encodings.commitment_with_hash_and_level_infos)
       (path / "commitments" /: Arg.commitment_hash)
 
   let gc_info =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Information about garbage collection"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Encodings.gc_info
       (path / "gc_info")
 
   let injection =
-    Tezos_rpc.Service.post_service
+    Mavryk_rpc.Service.post_service
       ~description:"Inject messages in the batcher's queue"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~input:
         Data_encoding.(
           def
@@ -446,16 +446,16 @@ module Local = struct
       (path / "batcher" / "injection")
 
   let batcher_queue =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"List messages present in the batcher's queue"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Encodings.batcher_queue
       (path / "batcher" / "queue")
 
   let batcher_message =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:"Retrieve an L2 message and its status"
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:Encodings.message_status_output
       (path / "batcher" / "queue" /: Arg.l2_message_hash)
 end

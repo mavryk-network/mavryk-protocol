@@ -6,10 +6,10 @@
 
 use crate::error::Error;
 use crate::error::UpgradeProcessError;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_installer_config::binary::promote::upgrade_reveal_flow;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_installer_config::binary::promote::upgrade_reveal_flow;
 
 pub fn upgrade_kernel<Host: Runtime>(
     host: &mut Host,
@@ -32,9 +32,9 @@ mod tests {
     use std::ffi::OsString;
     use std::fs;
     use std::path::Path;
-    use tezos_smart_rollup_encoding::dac::{prepare_preimages, PreimageHash};
-    use tezos_smart_rollup_host::KERNEL_BOOT_PATH;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_encoding::dac::{prepare_preimages, PreimageHash};
+    use mavryk_smart_rollup_host::KERNEL_BOOT_PATH;
+    use mavryk_smart_rollup_mock::MockHost;
 
     fn preliminary_upgrade(host: &mut MockHost) -> (PreimageHash, Vec<u8>) {
         let upgrade_to = OsString::from("tests/resources/debug_kernel.wasm");

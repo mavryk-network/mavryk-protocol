@@ -23,10 +23,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type t = unit tzresult Lwt.t * Tezos_rpc__RPC_context.stopper
+type t = unit tzresult Lwt.t * Mavryk_rpc__RPC_context.stopper
 
 let resolve_plugin
-    (protocols : Tezos_shell_services.Chain_services.Blocks.protocols) =
+    (protocols : Mavryk_shell_services.Chain_services.Blocks.protocols) =
   let open Lwt_syntax in
   let current_protocol = protocols.current_protocol in
   let next_protocol = protocols.next_protocol in
@@ -132,11 +132,11 @@ let resolve_plugin_and_set_ready ctxt =
   (* FIXME: https://gitlab.com/tezos/tezos/-/issues/3605
      Handle situtation where plugin is not found *)
   let open Lwt_result_syntax in
-  let cctxt = Node_context.get_tezos_node_cctxt ctxt in
-  let handler stopper (_block_hash, (_block_header : Tezos_base.Block_header.t))
+  let cctxt = Node_context.get_mavryk_node_cctxt ctxt in
+  let handler stopper (_block_hash, (_block_header : Mavryk_base.Block_header.t))
       =
     let* protocols =
-      Tezos_shell_services.Chain_services.Blocks.protocols cctxt ()
+      Mavryk_shell_services.Chain_services.Blocks.protocols cctxt ()
     in
     let*! dac_plugin = resolve_plugin protocols in
     match dac_plugin with
@@ -155,14 +155,14 @@ let resolve_plugin_and_set_ready ctxt =
   let*! () = Event.(emit layer1_node_tracking_started ()) in
   make_stream_daemon
     handler
-    (Tezos_shell_services.Monitor_services.heads cctxt `Main)
+    (Mavryk_shell_services.Monitor_services.heads cctxt `Main)
 
 (** The [new_head] handler is shared by all operating modes.  This handler is
     responsible for tracking new heads from the Layer 1. *)
 let new_head ctxt =
-  let cctxt = Node_context.get_tezos_node_cctxt ctxt in
+  let cctxt = Node_context.get_mavryk_node_cctxt ctxt in
   let open Lwt_result_syntax in
-  let handler _stopper (block_hash, (header : Tezos_base.Block_header.t)) =
+  let handler _stopper (block_hash, (header : Mavryk_base.Block_header.t)) =
     match Node_context.get_status ctxt with
     | Starting -> return_unit
     | Ready _ ->
@@ -175,11 +175,11 @@ let new_head ctxt =
   let*! () = Event.(emit layer1_node_tracking_started ()) in
   make_infinite_stream_daemon
     ~on_disconnect:Event.emit_l1_tracking_ended
-    ~on_failed_connection:Event.cannot_connect_to_tezos_node
+    ~on_failed_connection:Event.cannot_connect_to_mavryk_node
     (fun () ->
       make_stream_daemon
         handler
-        (Tezos_shell_services.Monitor_services.heads cctxt `Main))
+        (Mavryk_shell_services.Monitor_services.heads cctxt `Main))
 
 (** Handlers specific to a [Committee_member]. A [Committee_member] is
     responsible for
@@ -201,7 +201,7 @@ module Committee_member = struct
     let secret_key_uri = committee_member.secret_key_uri in
     let bytes_to_sign = Dac_plugin.hash_to_bytes root_hash in
     let* signature =
-      Tezos_client_base.Client_keys.aggregate_sign
+      Mavryk_client_base.Client_keys.aggregate_sign
         wallet_cctxt
         secret_key_uri
         bytes_to_sign
@@ -323,7 +323,7 @@ let handlers node_ctxt =
   let open Lwt_result_syntax in
   let*? plugin = Node_context.get_dac_plugin node_ctxt in
   let page_store = Node_context.get_page_store node_ctxt in
-  let wallet_cctxt = Node_context.get_tezos_node_cctxt node_ctxt in
+  let wallet_cctxt = Node_context.get_mavryk_node_cctxt node_ctxt in
   match Node_context.get_mode node_ctxt with
   | Coordinator _ -> return [new_head node_ctxt]
   | Committee_member ctxt ->

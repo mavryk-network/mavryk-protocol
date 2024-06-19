@@ -2,10 +2,10 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_expect_helper_test)
- (package octez-libs)
+ (name mavryk_expect_helper_test)
+ (package mavkit-libs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.expect-helper)
+  mavkit-libs.expect-helper)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect)))

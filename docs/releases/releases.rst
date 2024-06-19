@@ -1,22 +1,22 @@
 Release System
 ==============
 
-Octez releases include all the software needed to run the distributed
+Mavkit releases include all the software needed to run the distributed
 consensus platform with its meta-consensus capability. This
 meta-consensus capability is supported by a protocol that is used to
 achieve consensus not only about the state of its ledger, but also about
 upgrading the protocol itself, subject to an on-chain voting procedure.
 This evolving nature of the protocol implies that at each point there
 are several important protocols, including a currently active protocol
-(on the main Tezos network) and other protocols under test, development,
+(on the main Mavryk network) and other protocols under test, development,
 or being voted on-chain. Thus, **protocols are versioned independently
 from releases** (see :doc:`../protocols/naming`). For more details on
-the distinction between the protocol and the rest of the Tezos node
+the distinction between the protocol and the rest of the Mavryk node
 software, see :doc:`../shell/the_big_picture`.
 
 Although a node is able to compile and upgrade to a new protocol
 on the fly, each release contains several embedded protocol versions.
-Consequently, Octez releases are created not only when new features are
+Consequently, Mavkit releases are created not only when new features are
 added or bugs are fixed, but also when new protocols are proposed or
 adopted.
 
@@ -47,12 +47,12 @@ suffixed by ``~rc<N>``, and beta versions suffixed by ``~beta<N>``.
   of ``N``. Usually, only major releases have release candidates.
 
 - Beta versions are early pre-versions of a major release. Unlike release candidates, these are not believed to be ready, but contain main features of the next major release which are "stable enough" for public testing, including public test networks.
-  It is not recommended to use them on Tezos Mainnet.
+  It is not recommended to use them on Mavryk Mainnet.
 
 Releases are available in several forms:
 
--  in source form, from the Octez code repository
-   (https://gitlab.com/tezos/tezos). Tags for each release are available
+-  in source form, from the Mavkit code repository
+   (https://gitlab.com/mavryk-network/mavryk-protocol). Tags for each release are available
    prefixed by ``v``, and there is also a ``latest-release`` tag, pointing to
    the latest **stable release** (i.e., excluding release candidates).
    Additionally, the version under development is available in the
@@ -66,13 +66,13 @@ The packaged forms are updated from the source form as follows:
 
    -  automatically, at each stable release
    -  For recent release candidates, the static binaries are available
-      as GitLab artifacts, pointed to in the `release page of the repository <https://gitlab.com/tezos/tezos/-/releases>`_.
+      as GitLab artifacts, pointed to in the `release page of the repository <https://gitlab.com/mavryk-network/mavryk-protocol/-/releases>`_.
 
 -  Docker containers: two kinds of images are generated, automatically:
 
    -  release images: at each release, including release candidates
 
-   -  master images: at each merge commit (i.e. after each merge request is merged)
+   -  master images: at each merge commit (i.e. after each merge request is merged)
 
 -  OPAM packages:
 
@@ -86,5 +86,5 @@ The packaged forms are updated from the source form as follows:
    -  The process is currently performed manually by
       `Serokell <https://serokell.io>`_.
 
-For installing Octez from these different forms of releases, see
+For installing Mavkit from these different forms of releases, see
 :doc:`../introduction/howtoget`.

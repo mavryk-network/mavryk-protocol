@@ -15,7 +15,7 @@ let get_wasm_pvm_state ~(l2_header : Sc_rollup_block.header) data_dir =
   let* context =
     Context.load
       ~cache_size:0
-      Tezos_layer2_store.Store_sigs.Read_only
+      Mavryk_layer2_store.Store_sigs.Read_only
       (Configuration.default_context_dir data_dir)
   in
   let*! ctxt = Context.checkout context context_hash in
@@ -38,10 +38,10 @@ let decode_value ~(pvm : (module Pvm_plugin_sig.S)) tree =
   let module Pvm : Pvm_plugin_sig.S = (val pvm) in
   let* cbv =
     Pvm.Wasm_2_0_0.decode_durable_state
-      Tezos_lazy_containers.Chunked_byte_vector.encoding
+      Mavryk_lazy_containers.Chunked_byte_vector.encoding
       tree
   in
-  Tezos_lazy_containers.Chunked_byte_vector.to_string cbv
+  Mavryk_lazy_containers.Chunked_byte_vector.to_string cbv
 
 (** Returns whether the value under the current key should be dumped. *)
 let check_dumpable_path key =
@@ -95,7 +95,7 @@ let dump_durable_storage ~block ~data_dir ~file =
   let open Lwt_result_syntax in
   let* store =
     Store.load
-      Tezos_layer2_store.Store_sigs.Read_only
+      Mavryk_layer2_store.Store_sigs.Read_only
       ~index_buffer_size:0
       ~l2_blocks_cache_size:5
       (Configuration.default_storage_dir data_dir)

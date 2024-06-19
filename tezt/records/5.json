@@ -130,8 +130,8 @@
     }
   },
   {
-    "file": "tezos-lib-client-proxy",
-    "title": "tezos-lib-client-proxy: 011-PtHangz2: proxy",
+    "file": "mavryk-lib-client-proxy",
+    "title": "mavryk-lib-client-proxy: 011-PtHangz2: proxy",
     "tags": [
       "alcotest"
     ],
@@ -968,7 +968,7 @@
   },
   {
     "file": "contract_typecheck_regression.ml",
-    "title": "Mumbai: Tc opcodes/ediv_mutez",
+    "title": "Mumbai: Tc opcodes/ediv_mumav",
     "tags": [
       "regression",
       "mumbai",
@@ -1191,7 +1191,7 @@
   },
   {
     "file": "encoding.ml",
-    "title": "Lima: protocol encoding regression test: tez",
+    "title": "Lima: protocol encoding regression test: mav",
     "tags": [
       "regression",
       "lima",
@@ -1614,7 +1614,7 @@
       "node",
       "baker",
       "signer",
-      "tz1"
+      "mv1"
     ],
     "successful_runs": {
       "total_time": "16869354",

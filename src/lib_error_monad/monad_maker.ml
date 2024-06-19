@@ -35,12 +35,12 @@ module type S = sig
   type 'a tzresult = ('a, tztrace) result
 
   (** You can find a lot of information about the [Lwt_syntax] module in the
-      error monad tutorial: https://tezos.gitlab.io/developer/error_monad.html
+      error monad tutorial: https://protocol.mavryk.org/developer/error_monad.html
   *)
   module Lwt_syntax : module type of TzLwtreslib.Monad.Lwt_syntax
 
   (** You can find a lot of information about the [Result_syntax] module in the
-      error monad tutorial: https://tezos.gitlab.io/developer/error_monad.html
+      error monad tutorial: https://protocol.mavryk.org/developer/error_monad.html
   *)
   module Result_syntax : sig
     include module type of TzLwtreslib.Monad.Result_syntax
@@ -71,7 +71,7 @@ module type S = sig
   end
 
   (** You can find a lot of information about the [Lwt_result_syntax] module in the
-      error monad tutorial: https://tezos.gitlab.io/developer/error_monad.html
+      error monad tutorial: https://protocol.mavryk.org/developer/error_monad.html
   *)
   module Lwt_result_syntax : sig
     include module type of TzLwtreslib.Monad.Lwt_result_syntax
@@ -197,7 +197,7 @@ module Make (Error : sig
   include Sig.CORE with type error := error
 end)
 (Trace : Sig.TRACE)
-(Monad : Tezos_lwt_result_stdlib.Lwtreslib.TRACED_MONAD
+(Monad : Mavryk_lwt_result_stdlib.Lwtreslib.TRACED_MONAD
            with type 'error trace := 'error Trace.trace) :
   S with type error := Error.error and type 'error trace := 'error Trace.trace =
 struct
@@ -240,7 +240,7 @@ struct
        We do the bulk of this by including [Lwt_traced_result_syntax] directly. *)
     include Monad.Lwt_traced_result_syntax
 
-    (* Some globals that Lwtreslib does not expose but that the Tezos code uses a
+    (* Some globals that Lwtreslib does not expose but that the Mavryk code uses a
        lot. *)
     let ( >>= ) = Monad.Lwt_syntax.( let* )
 

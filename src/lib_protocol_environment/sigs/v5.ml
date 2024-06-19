@@ -3,7 +3,7 @@
 # 1 "v5.in.ml"
 module type T = sig
   module CamlinternalFormatBasics : module type of struct
-    include Tezos_protocol_environment_sigs_internals.CamlinternalFormatBasics
+    include Mavryk_protocol_environment_sigs_internals.CamlinternalFormatBasics
   end
 
   module Pervasives : sig
@@ -10229,14 +10229,14 @@ module Proof : sig
       [is_stream] discriminates between the stream proofs and the tree proofs.
 
       [is_binary] discriminates between proofs emitted from
-      [Tezos_context(_memory).Context_binary] and
-      [Tezos_context(_memory).Context].
+      [Mavryk_context(_memory).Context_binary] and
+      [Mavryk_context(_memory).Context].
 
       It will also help discriminate between the data encoding techniques used.
 
       The version is meant to be decoded and encoded using the
-      {!Tezos_context_helpers.Context.decode_proof_version} and
-      {!Tezos_context_helpers.Context.encode_proof_version}. *)
+      {!Mavryk_context_helpers.Context.decode_proof_version} and
+      {!Mavryk_context_helpers.Context.encode_proof_version}. *)
   type 'a t = {
     version : int;
     before : kinded_hash;

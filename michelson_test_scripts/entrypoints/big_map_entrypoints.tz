@@ -9,7 +9,7 @@ code { UNPAIR ;
        IF_LEFT
          { DROP ;
            DUP ; CAR ;
-           PUSH mutez 0 ;
+           PUSH mumav 0 ;
            NONE key_hash ;
            CREATE_CONTRACT
              { parameter string ;

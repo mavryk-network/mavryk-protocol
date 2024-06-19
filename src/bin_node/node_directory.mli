@@ -24,4 +24,4 @@
 (*****************************************************************************)
 
 val build_node_directory :
-  Config_file.t -> unit Tezos_rpc.Directory.t -> unit Tezos_rpc.Directory.t
+  Config_file.t -> unit Mavryk_rpc.Directory.t -> unit Mavryk_rpc.Directory.t

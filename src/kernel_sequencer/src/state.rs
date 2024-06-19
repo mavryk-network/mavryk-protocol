@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_data_encoding::{enc::BinWriter, nom::NomReader};
-use tezos_smart_rollup_encoding::public_key::PublicKey;
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use mavryk_data_encoding::{enc::BinWriter, nom::NomReader};
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
 
 use crate::{delayed_inbox::UserMessage, queue::Queue, storage::write_state};
 
@@ -51,9 +51,9 @@ pub fn update_state<H: Runtime>(
 
 #[cfg(test)]
 mod tests {
-    use tezos_smart_rollup_encoding::public_key::PublicKey;
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_encoding::public_key::PublicKey;
+    use mavryk_smart_rollup_host::path::RefPath;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use crate::{
         delayed_inbox::UserMessage,

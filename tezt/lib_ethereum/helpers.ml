@@ -43,7 +43,7 @@ let leftPad32 s =
 let add_0x s = "0x" ^ s
 
 let mapping_position index map_position =
-  Tezos_crypto.Hacl.Hash.Keccak_256.digest
+  Mavryk_crypto.Hacl.Hash.Keccak_256.digest
     (Hex.to_bytes
        (`Hex (leftPad32 index ^ leftPad32 (string_of_int map_position))))
   |> Hex.of_bytes |> Hex.show |> add_0x

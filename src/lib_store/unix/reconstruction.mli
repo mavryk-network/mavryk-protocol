@@ -32,7 +32,7 @@
 
     To do so, it is needed to re-validate the whole chain, by applying
     (using the standard validation method:
-    {!Tezos_validation.Block_validation.apply}) all the blocks from the
+    {!Mavryk_validation.Block_validation.apply}) all the blocks from the
     genesis on empty context. As a storage running a full history mode
     will not store all the ledger state but keeps all the blocks (and
     operations), it is the only mode that can be reconstructed. The
@@ -67,8 +67,8 @@ type error += Cannot_reconstruct of History_mode.t
     changed to archive. *)
 val reconstruct :
   ?patch_context:
-    (Tezos_protocol_environment.Context.t ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t) ->
+    (Mavryk_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t) ->
   store_dir:string ->
   context_dir:string ->
   Genesis.t ->

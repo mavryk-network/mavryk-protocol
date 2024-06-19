@@ -19,7 +19,7 @@ unified_coverage:
   variables:
     # This inhibites the Makefile's opam version check, which this
     # job's opam-less image cannot pass.
-    TEZOS_WITHOUT_OPAM: "true"
+    MAVRYK_WITHOUT_OPAM: "true"
   # This job requires all bisect_ppx artifacts from the stage test, so we override
   # the `dependencies: []` in `.default_settings` with a list of jobs.
   # Each new job in the stage test needs to be manually added to this list.

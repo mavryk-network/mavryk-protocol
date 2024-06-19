@@ -27,7 +27,7 @@
 
 type host_and_port = {host : string; port : int}
 
-let default_data_dir = Filename.concat (Sys.getenv "HOME") ".tezos-dac-node"
+let default_data_dir = Filename.concat (Sys.getenv "HOME") ".mavryk-dac-node"
 
 let relative_filename data_dir = Filename.concat data_dir "config.json"
 
@@ -37,12 +37,12 @@ let default_rpc_port = 10832
 
 let default_reveal_data_dir =
   Filename.concat
-    (Filename.concat (Sys.getenv "HOME") ".tezos-smart-rollup-node")
+    (Filename.concat (Sys.getenv "HOME") ".mavryk-smart-rollup-node")
     "wasm_2_0_0"
 
 module Coordinator = struct
   type t = {
-    committee_members : Tezos_crypto.Aggregate_signature.public_key list;
+    committee_members : Mavryk_crypto.Aggregate_signature.public_key list;
   }
 
   let make committee_members = {committee_members}
@@ -55,11 +55,11 @@ module Coordinator = struct
         (obj1
            (req
               "committee_members"
-              (list Tezos_crypto.Aggregate_signature.Public_key.encoding))))
+              (list Mavryk_crypto.Aggregate_signature.Public_key.encoding))))
 
   let committee_members_addresses t =
     List.map
-      Tezos_crypto.Aggregate_signature.Public_key.hash
+      Mavryk_crypto.Aggregate_signature.Public_key.hash
       t.committee_members
 
   let name = "Coordinator"
@@ -68,7 +68,7 @@ end
 module Committee_member = struct
   type t = {
     coordinator_rpc_address : Uri.t;
-    address : Tezos_crypto.Aggregate_signature.public_key_hash;
+    address : Mavryk_crypto.Aggregate_signature.public_key_hash;
   }
 
   let make coordinator_rpc_address address = {coordinator_rpc_address; address}
@@ -86,7 +86,7 @@ module Committee_member = struct
            (req "coordinator_rpc_address" string)
            (req
               "address"
-              Tezos_crypto.Aggregate_signature.Public_key_hash.encoding)))
+              Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding)))
 
   let name = "Committee_member"
 end

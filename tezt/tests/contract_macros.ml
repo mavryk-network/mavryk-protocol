@@ -77,7 +77,7 @@ let test_macros_tests =
       ("max_in_list", "None", "{ -1 }", "(Some -1)");
       ("max_in_list", "None", "{ 10 ; -1 ; -20 ; 100 ; 0 }", "(Some 100)");
       ("max_in_list", "None", "{ -10 ; -1 ; -20 ; -100 }", "(Some -1)");
-      (* Test comparisons on tez { EQ ; GT ; LT ; GE ; LE } *)
+      (* Test comparisons on mav { EQ ; GT ; LT ; GE ; LE } *)
       ( "compare",
         "{}",
         "(Pair 1000000 2000000)",
@@ -210,7 +210,7 @@ let test_guestbook =
     Client.originate_contract_at
       ~amount:(Tez.of_int 100)
       ~src:Constant.bootstrap1.alias
-      ~init:{|{ Elt "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" None }|}
+      ~init:{|{ Elt "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" None }|}
       ~burn_cap:Tez.one
       client
       ["macros"; "guestbook"]
@@ -224,7 +224,7 @@ let test_guestbook =
   let* storage = Client.contract_storage guestbook client in
   Check.(
     (String.trim storage
-   = {|{ Elt "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" (Some "Coucou") }|})
+   = {|{ Elt "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" (Some "Coucou") }|})
       string
       ~__LOC__
       ~error_msg:"Expected guestbook storage %R, got %L") ;

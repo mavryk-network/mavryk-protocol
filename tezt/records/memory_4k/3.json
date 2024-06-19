@@ -1,9 +1,9 @@
 [
   {
     "file": "tezt/tests/storage_snapshots.ml",
-    "title": "Oxford: storage snapshot export and import",
+    "title": "Atlas: storage snapshot export and import",
     "tags": [
-      "oxford",
+      "atlas",
       "storage",
       "snapshot",
       "export",

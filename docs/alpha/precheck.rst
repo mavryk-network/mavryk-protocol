@@ -8,12 +8,12 @@ Prechecking of manager operations
    section be integrated into plugin.rst, and the relevant definitions
    should point to the validation entry.
 
-The prevalidator of Octez prevents the propagation of non-valid
+The prevalidator of Mavkit prevents the propagation of non-valid
 operations by trying to apply (or execute) them.
 However, executing
 manager operations (like complex smart contract calls) can be
 time-consuming.
-To ensure a high throughput of the Tezos protocol, the
+To ensure a high throughput of the Mavryk protocol, the
 propagation of operations should be as fast as possible. This calls
 for a lighter approach.
 
@@ -32,7 +32,7 @@ It does not ensure their validity in a direct successor of the current
 head.
 For instance, given two manager operations from the same source and
 with the same counter, these operations can be solvable in the same
-Tezos context ``C``, but none of them is solvable in the context
+Mavryk context ``C``, but none of them is solvable in the context
 resulting from the application of the other operation on ``C``.
 To mitigate this situation, we further restrict the propagation of
 manager operations to at most one manager operation per manager per
@@ -46,7 +46,7 @@ same counter using the ``replace-by-fee`` feature.
 Solvable operations
 -------------------
 
-The solvability of an operation depends on the content of the Tezos
+The solvability of an operation depends on the content of the Mavryk
 context in which it is applied.
 
 

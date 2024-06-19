@@ -2,6 +2,6 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_smart_rollup_wasm_debugger_plugin)
- (public_name octez-smart-rollup-wasm-debugger-plugin)
+ (name mavkit_smart_rollup_wasm_debugger_plugin)
+ (public_name mavkit-smart-rollup-wasm-debugger-plugin)
  (instrumentation (backend bisect_ppx)))

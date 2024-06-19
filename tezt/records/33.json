@@ -97,7 +97,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "015-PtLimaPt: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -174,8 +174,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: deterministic_nonce",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: deterministic_nonce",
     "tags": [
       "alcotest"
     ],
@@ -512,7 +512,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input147133089]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input147133089]",
     "tags": [
       "regression",
       "mumbai",
@@ -603,7 +603,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Mumbai: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "mumbai",
@@ -1448,7 +1448,7 @@
   },
   {
     "file": "sapling.ml",
-    "title": "Alpha: test sapling with shielded tez",
+    "title": "Alpha: test sapling with shielded mav",
     "tags": [
       "alpha",
       "sapling",

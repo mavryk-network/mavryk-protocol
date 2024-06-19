@@ -124,18 +124,18 @@ let new_dissection (module Plugin : Protocol_plugin_sig.S) ~opponent
       proof to serve as the next move of the [game]. *)
 let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
     ~default_number_of_sections node_ctxt ~opponent
-    (game : Octez_smart_rollup.Game.t)
-    (dissection : Octez_smart_rollup.Game.dissection_chunk list) =
+    (game : Mavkit_smart_rollup.Game.t)
+    (dissection : Mavkit_smart_rollup.Game.dissection_chunk list) =
   let open Lwt_result_syntax in
   let rec traverse ok = function
     | [] ->
         (* The game invariant states that the dissection from the
            opponent must contain a tick we disagree with. If the
            retrieved game does not respect this, we cannot trust the
-           Tezos node we are connected to and prefer to stop here. *)
+           Mavryk node we are connected to and prefer to stop here. *)
         tzfail
-          Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
-    | Octez_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection -> (
+          Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
+    | Mavkit_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection -> (
         let start_state =
           match ok with
           | Hash _, _ -> None
@@ -156,7 +156,7 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
             assert false
         | Some _, None | None, Some _ -> return (ok, (our, tick))
         | Some their_hash, Some ({state_hash = our_hash; _} as our_state) ->
-            if Octez_smart_rollup.State_hash.equal our_hash their_hash then
+            if Mavkit_smart_rollup.State_hash.equal our_hash their_hash then
               traverse (Evaluated our_state, tick) dissection
             else return (ok, (our, tick)))
   in
@@ -184,10 +184,10 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
              A dissection always contains strictly more than one element.
           *)
       tzfail
-        Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
+        Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
 
 let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
-    (game : Octez_smart_rollup.Game.t) =
+    (game : Mavkit_smart_rollup.Game.t) =
   let open Lwt_result_syntax in
   let final_move start_tick =
     let* start_state =
@@ -200,7 +200,7 @@ let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
     match start_state with
     | None ->
         tzfail
-          Rollup_node_errors.Unreliable_tezos_node_returning_inconsistent_game
+          Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
     | Some {state = start_state; _} ->
         let* proof =
           Plugin.Refutation_game_helpers.generate_proof
@@ -209,7 +209,7 @@ let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
             start_state
         in
         let choice = start_tick in
-        return (Octez_smart_rollup.Game.Move {choice; step = Proof proof})
+        return (Mavkit_smart_rollup.Game.Move {choice; step = Proof proof})
   in
 
   match game.game_state with
@@ -226,7 +226,7 @@ let next_move (module Plugin : Protocol_plugin_sig.S) node_ctxt ~opponent
       if Z.(equal chosen_section_len one) then final_move choice
       else
         return
-          (Octez_smart_rollup.Game.Move {choice; step = Dissection dissection})
+          (Mavkit_smart_rollup.Game.Move {choice; step = Dissection dissection})
   | Final_move {agreed_start_chunk; refuted_stop_chunk = _} ->
       let choice = agreed_start_chunk.tick in
       final_move choice
@@ -263,17 +263,17 @@ let play node_ctxt ~self game opponent =
       let*! () = Refutation_game_event.timeout_detected opponent in
       play_timeout node_ctxt index
 
-let play_opening_move node_ctxt (conflict : Octez_smart_rollup.Game.conflict) =
+let play_opening_move node_ctxt (conflict : Mavkit_smart_rollup.Game.conflict) =
   let open Lwt_syntax in
   let* () = Refutation_game_event.conflict_detected conflict in
   let player_commitment_hash =
-    Octez_smart_rollup.Commitment.hash conflict.our_commitment
+    Mavkit_smart_rollup.Commitment.hash conflict.our_commitment
   in
   let opponent_commitment_hash =
-    Octez_smart_rollup.Commitment.hash conflict.their_commitment
+    Mavkit_smart_rollup.Commitment.hash conflict.their_commitment
   in
   let refutation =
-    Octez_smart_rollup.Game.Start
+    Mavkit_smart_rollup.Game.Start
       {player_commitment_hash; opponent_commitment_hash}
   in
   inject_next_move node_ctxt ~refutation ~opponent:conflict.other

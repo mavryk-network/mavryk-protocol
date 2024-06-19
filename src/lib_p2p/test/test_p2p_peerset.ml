@@ -97,7 +97,7 @@ let test_LRU_overflow _ =
 let () =
   Alcotest.run
     ~__FILE__
-    "tezos-p2p"
+    "mavryk-p2p"
     [
       ( "p2p.peerset",
         [

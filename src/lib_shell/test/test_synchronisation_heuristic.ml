@@ -693,7 +693,7 @@ let tests_lwt =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "tezos-shell"
+    "mavryk-shell"
     [
       ("synchronisation heuristic sync", tests);
       ("synchronisation heuristic ", tests_lwt);

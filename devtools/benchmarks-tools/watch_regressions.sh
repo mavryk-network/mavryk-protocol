@@ -43,7 +43,7 @@
 # * and the previous run (as read in the last_known_dir file).
 
 # The comparison is done using the gas_parameter_diff OCaml script from the
-# Tezos codebase.
+# Mavryk codebase.
 
 # If regressions are detected during the diffs, they are sent to a Slack
 # channel.
@@ -69,7 +69,7 @@ TOK="$(cat "$HOME"/slack_token)"
 slack() {
     if [ "$DISABLE_SLACK_MESSAGING" = "" ]
     then
-        curl -X POST -H 'Authorization: Bearer '"$TOK" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"$CHAN\",\"text\":\"$1\"}" https://tezos-dev.slack.com/api/chat.postMessage
+        curl -X POST -H 'Authorization: Bearer '"$TOK" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"$CHAN\",\"text\":\"$1\"}" https://mavryk-dev.slack.com/api/chat.postMessage
     else
         echo "Message \"$1\" would be sent on Slack but Slack messaging has been disabled."
     fi
@@ -78,17 +78,17 @@ slack() {
 slack_send_file() {
     if [ "$DISABLE_SLACK_MESSAGING" = "" ]
     then
-        curl -F file=@"$1" -F "initial_comment=$2" -F channels="$CHAN" -F token="$TOK" https://tezos-dev.slack.com/api/files.upload
+        curl -F file=@"$1" -F "initial_comment=$2" -F channels="$CHAN" -F token="$TOK" https://mavryk-dev.slack.com/api/files.upload
     else
         echo "File \"$1\" would be sent on Slack with message \"$2\" but Slack messaging has been disabled."
     fi
 }
 
-OCTEZ_DIR="/data/redbull/tezos"
+MAVKIT_DIR="/data/redbull/tezos"
 
 # Check if a directory more recent than the last known one exists on the bucket.
 # If not, we have nothing to do so we stop immediately.
-LAST_KNOWN_DIR="$(cat "$OCTEZ_DIR"/last_known_dir)"
+LAST_KNOWN_DIR="$(cat "$MAVKIT_DIR"/last_known_dir)"
 echo "Last known dir: $LAST_KNOWN_DIR"
 
 LAST_DIR="$(aws s3 ls s3://snoop-playground/mclaren/inference_csvs/snoop_results/ | grep PRE | tail -n 1 | sed 's/ *PRE //' | sed 's,/$,,')"
@@ -113,12 +113,12 @@ fi
 
 # We update the file content as soon as possible so that concurrent runs of this
 # script are unlikely to step on each other's feet.
-echo "$LAST_DIR" > "$OCTEZ_DIR"/last_known_dir
+echo "$LAST_DIR" > "$MAVKIT_DIR"/last_known_dir
 
 slack "New results have been uploaded to the S3 bucket in directory \`$LAST_DIR\`. I will look for regressions."
 
-INPUT_CSV_DIR="$OCTEZ_DIR/input_csvs"
-OUTPUT_CSV_DIR="$OCTEZ_DIR/output_csvs"
+INPUT_CSV_DIR="$MAVKIT_DIR/input_csvs"
+OUTPUT_CSV_DIR="$MAVKIT_DIR/output_csvs"
 
 rm -rf "$INPUT_CSV_DIR"
 mkdir -p "$INPUT_CSV_DIR"
@@ -175,7 +175,7 @@ fi
 
 DUNE="/data/redbull/tezos/_opam/bin/dune"
 
-GPD_DIR="$OCTEZ_DIR/devtools/gas_parameter_diff"
+GPD_DIR="$MAVKIT_DIR/devtools/gas_parameter_diff"
 
 cd "$GPD_DIR" || exit 1
 

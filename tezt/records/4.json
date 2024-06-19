@@ -171,8 +171,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: crypto_box",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: crypto_box",
     "tags": [
       "alcotest"
     ],
@@ -653,7 +653,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [mutez_to_bls12_381_fr--storage151303925--input216277421]",
+    "title": "Mumbai: opcodes [mumav_to_bls12_381_fr--storage151303925--input216277421]",
     "tags": [
       "regression",
       "mumbai",
@@ -666,7 +666,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [bls12_381_fr_to_mutez--storage680650890--input229402968]",
+    "title": "Mumbai: opcodes [bls12_381_fr_to_mumav--storage680650890--input229402968]",
     "tags": [
       "regression",
       "mumbai",
@@ -1206,7 +1206,7 @@
     }
   },
   {
-    "file": "ghostnet_dictator_migration.ml",
+    "file": "basenet_dictator_migration.ml",
     "title": "Mumbai: testnet dictator (mainnet, migration)",
     "tags": [
       "mumbai",
@@ -1528,7 +1528,7 @@
   },
   {
     "file": "replace_by_fees.ml",
-    "title": "Alpha: Second op's fees are above replacement fees threshold by 1 mutez",
+    "title": "Alpha: Second op's fees are above replacement fees threshold by 1 mumav",
     "tags": [
       "alpha",
       "replace",

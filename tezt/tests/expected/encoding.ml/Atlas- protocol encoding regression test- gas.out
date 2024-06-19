@@ -1,0 +1,18 @@
+
+./mavkit-codec encode 001-PtAtLas.gas from '"1238"'
+009613
+
+./mavkit-codec decode 001-PtAtLas.gas from 009613
+"1238"
+
+./mavkit-codec encode 001-PtAtLas.gas from '"unaccounted"'
+01
+
+./mavkit-codec decode 001-PtAtLas.gas from 01
+"unaccounted"
+
+./mavkit-codec encode 001-PtAtLas.gas from '"0"'
+0000
+
+./mavkit-codec decode 001-PtAtLas.gas from 0000
+"0"

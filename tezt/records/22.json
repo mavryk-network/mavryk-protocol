@@ -152,8 +152,8 @@
     }
   },
   {
-    "file": "tezos-crypto-prop-signature",
-    "title": "tezos-crypto-prop-signature: Secp256k1",
+    "file": "mavryk-crypto-prop-signature",
+    "title": "mavryk-crypto-prop-signature: Secp256k1",
     "tags": [
       "alcotest"
     ],
@@ -163,7 +163,7 @@
     }
   },
   {
-    "file": "Tezos_clic",
+    "file": "Mavryk_clic",
     "title": "dispatch",
     "tags": [
       "alcotest"
@@ -1675,11 +1675,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Mumbai: testnet dictator (ghostnet, cooldown)",
+    "title": "Mumbai: testnet dictator (basenet, cooldown)",
     "tags": [
       "mumbai",
       "amendment",
-      "ghostnet",
+      "basenet",
       "cooldown"
     ],
     "successful_runs": {

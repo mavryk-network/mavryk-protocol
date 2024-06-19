@@ -63,7 +63,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -194,9 +194,9 @@ types:
     - id: preendorsement
       type: preendorsement
       if: (id_012__psithaca__inlined__preendorsement__contents_tag == id_012__psithaca__inlined__preendorsement__contents_tag::preendorsement)
-  id_012__psithaca__mutez:
+  id_012__psithaca__mumav:
     seq:
-    - id: id_012__psithaca__mutez
+    - id: id_012__psithaca__mumav
       type: n
   id_012__psithaca__operation__alpha__contents:
     seq:
@@ -351,7 +351,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -359,7 +359,7 @@ types:
     - id: storage_limit
       type: n
     - id: balance
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -447,7 +447,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -462,7 +462,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -484,7 +484,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -495,7 +495,7 @@ types:
       type: u1
       enum: bool
     - id: limit
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
       if: (limit_tag == bool::true)
   transaction:
     seq:
@@ -503,7 +503,7 @@ types:
       type: public_key_hash
       doc: A Ed25519, Secp256k1, or P256 public key hash
     - id: fee
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: counter
       type: n
     - id: gas_limit
@@ -511,7 +511,7 @@ types:
     - id: storage_limit
       type: n
     - id: amount
-      type: id_012__psithaca__mutez
+      type: id_012__psithaca__mumav
     - id: destination
       type: id_012__psithaca__contract_id
       doc: ! >-

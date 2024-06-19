@@ -31,7 +31,7 @@
     Subject: Store locator bench. These tests are not run in the CI.
 *)
 
-module Store = Tezos_store_unix.Store
+module Store = Mavryk_store_unix.Store
 
 (** Test if the linear and exponential locator are the same and outputs
     their timing.
@@ -98,6 +98,6 @@ let bench = [Test_locator.wrap "bench locator" bench_locator]
 
 let () =
   Lwt_main.run
-    (Alcotest_lwt.run ~__FILE__ "tezos-store-bench" [("locator bench", bench)])
+    (Alcotest_lwt.run ~__FILE__ "mavryk-store-bench" [("locator bench", bench)])
 
 let () = Tezt.Test.run ()

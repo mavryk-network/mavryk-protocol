@@ -48,7 +48,7 @@ let test_good_min_agreement_parsing _ =
   let results =
     List.map
       (fun f ->
-        to_json f two_uris |> Tezos_proxy.Light.destruct_sources_config
+        to_json f two_uris |> Mavryk_proxy.Light.destruct_sources_config
         |> Result.is_ok)
       floats
   in
@@ -61,7 +61,7 @@ let test_good_min_agreement_parsing _ =
 let test_good_min_agreement_parsing_default_agreement _ =
   let result =
     to_json_default_agreement two_uris
-    |> Tezos_proxy.Light.destruct_sources_config
+    |> Mavryk_proxy.Light.destruct_sources_config
     |> Result.fold ~ok:Fun.id ~error:(fun e -> Alcotest.fail e)
   in
   Alcotest.(check (float 0.))
@@ -76,7 +76,7 @@ let test_wrong_min_agreement_parsing _ =
   let results =
     List.map
       (fun f ->
-        to_json f two_uris |> Tezos_proxy.Light.destruct_sources_config
+        to_json f two_uris |> Mavryk_proxy.Light.destruct_sources_config
         |> Result.is_ok)
       floats
   in
@@ -92,7 +92,7 @@ let test_wrong_uris_parsing _ =
   let results =
     List.map
       (fun uris ->
-        to_json 1.0 uris |> Tezos_proxy.Light.destruct_sources_config
+        to_json 1.0 uris |> Mavryk_proxy.Light.destruct_sources_config
         |> Result.is_ok)
       uris_lists
   in
@@ -109,16 +109,16 @@ let test_parse_example_sources _ =
     | Ok x -> x
   in
   let json =
-    Data_encoding.Json.from_string Tezos_proxy.Light.example_sources
+    Data_encoding.Json.from_string Mavryk_proxy.Light.example_sources
     |> check_parsed
   in
-  Tezos_proxy.Light.destruct_sources_config json |> check_parsed |> ignore ;
+  Mavryk_proxy.Light.destruct_sources_config json |> check_parsed |> ignore ;
   ()
 
 let () =
   Alcotest.run
     ~__FILE__
-    "tezos-light"
+    "mavryk-light"
     [
       ( "light",
         [

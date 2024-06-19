@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Model
 
 (* Test of model synthesis *)
@@ -105,5 +105,5 @@ let test_synthesize () =
 let tests = [Test.tztest_assert "synthesize" `Quick test_synthesize]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-benchmark" [("model", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-benchmark" [("model", tests)]
   |> Lwt_main.run

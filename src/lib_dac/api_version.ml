@@ -27,8 +27,8 @@
 type t = V0 | V1
 
 let to_rpc_path_prefix = function
-  | V0 -> Tezos_rpc.Path.(open_root / "v0")
-  | V1 -> Tezos_rpc.Path.(open_root / "v1")
+  | V0 -> Mavryk_rpc.Path.(open_root / "v0")
+  | V1 -> Mavryk_rpc.Path.(open_root / "v1")
 
 let v0_prefix = to_rpc_path_prefix V0
 

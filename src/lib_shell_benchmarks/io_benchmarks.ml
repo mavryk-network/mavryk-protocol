@@ -25,8 +25,8 @@
 (*****************************************************************************)
 
 open Benchmarks_shell
-module Context = Tezos_protocol_environment.Context
-module Shell_monad = Tezos_error_monad.Error_monad
+module Context = Mavryk_protocol_environment.Context
+module Shell_monad = Mavryk_error_monad.Error_monad
 module Key_map = Io_helpers.Key_map
 
 let purpose =
@@ -280,7 +280,7 @@ module Context_size_dependent_read_bench = struct
     let closure context =
       match
         Lwt_main.run
-          (Tezos_protocol_environment.Context.find context random_key)
+          (Mavryk_protocol_environment.Context.find context random_key)
       with
       | Some _ -> ()
       | None ->
@@ -314,8 +314,8 @@ module Context_size_dependent_read_bench = struct
         Gc.compact () ;
         Lwt_main.run
           (let open Lwt_syntax in
-          let* () = Tezos_context.Context.close index in
-          Tezos_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
+          let* () = Mavryk_context.Context.close index in
+          Mavryk_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
       in
       let result =
         try f context
@@ -359,7 +359,7 @@ module Context_size_dependent_write_bench = struct
   let tags = ["io"]
 
   let write_storage context key bytes =
-    Lwt_main.run (Tezos_protocol_environment.Context.add context key bytes)
+    Lwt_main.run (Mavryk_protocol_environment.Context.add context key bytes)
 
   let group = Benchmark.Group "io"
 
@@ -417,8 +417,8 @@ module Context_size_dependent_write_bench = struct
         Gc.compact () ;
         Lwt_main.run
           (let open Lwt_syntax in
-          let* () = Tezos_context.Context.close index in
-          Tezos_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
+          let* () = Mavryk_context.Context.close index in
+          Mavryk_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
       in
       let result =
         try f context
@@ -691,8 +691,8 @@ module Irmin_pack_read_bench = struct
         Gc.compact () ;
         Lwt_main.run
           (let open Lwt_syntax in
-          let* () = Tezos_context.Context.close index in
-          Tezos_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
+          let* () = Mavryk_context.Context.close index in
+          Mavryk_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
       in
       let result =
         try f context
@@ -863,8 +863,8 @@ module Irmin_pack_write_bench = struct
         Gc.compact () ;
         Lwt_main.run
           (let open Lwt_syntax in
-          let* () = Tezos_context.Context.close index in
-          Tezos_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
+          let* () = Mavryk_context.Context.close index in
+          Mavryk_stdlib_unix.Lwt_utils_unix.remove_dir base_dir)
       in
       let result =
         try f context
@@ -965,7 +965,7 @@ module Read_random_key_bench = struct
       in
       let finalizer () =
         Gc.compact () ;
-        Lwt_main.run (Tezos_context.Context.close index)
+        Lwt_main.run (Mavryk_context.Context.close index)
       in
       let result =
         try f context
@@ -1161,8 +1161,8 @@ module Write_random_keys_bench = struct
         Gc.compact () ;
         Lwt_main.run
           (let open Lwt_syntax in
-          let* () = Tezos_context.Context.close index in
-          Tezos_stdlib_unix.Lwt_utils_unix.remove_dir target_base_dir)
+          let* () = Mavryk_context.Context.close index in
+          Mavryk_stdlib_unix.Lwt_utils_unix.remove_dir target_base_dir)
       in
       let result =
         try f context

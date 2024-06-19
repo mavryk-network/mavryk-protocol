@@ -154,7 +154,7 @@ let durations round_durations start stop =
     (fun round ->
       let+ round = Round.of_int round in
       Round.round_duration round_durations round |> Period.to_seconds)
-    Tezos_stdlib.Utils.Infix.(start -- stop)
+    Mavryk_stdlib.Utils.Infix.(start -- stop)
 
 (** Expected timestamp for the begining of a round at same level that
     the proposal.

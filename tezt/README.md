@@ -1,27 +1,27 @@
 # Test suite for the Tezos blockchain using the Tezt framework
 
-This directory contains a test suite for Octez (an implementation of the Tezos blockchain) based on Tezt. Tezt is a
+This directory contains a test suite for Mavkit (an implementation of the Tezos blockchain) based on Tezt. Tezt is a
 generic test framework that is used for writing tests in OCaml.
 
 The directory includes the sources of the Tezt framework, its extension with specific support for Tezos (called Tezt-Tezos), and a whole test suite.
 
 ## API Documentation
 
-The user manual of the testsuite is available online at <https://tezos.gitlab.io/developer/tezt.html>.
+The user manual of the testsuite is available online at <https://protocol.mavryk.org/developer/tezt.html>.
 
 The APIs of the `tezt` and `tezt-tezos` libraries are documented in the
 interface files (suffix `mli`). Both APIs are also available online at
-<https://tezos.gitlab.io/api/api-inline.html>.
+<https://protocol.mavryk.org/api/api-inline.html>.
 
 ## Overview
 
 This directory contains the following subdirectories:
 
 - `lib` defines an OCaml library named `tezt` which contains the test
-  framework. It is independent from Octez and from the Tezos protocols.
+  framework. It is independent from Mavkit and from the Tezos protocols.
 
 - `lib_tezos` defines another OCaml library named `tezt-tezos` which
-  is specific to Octez, complementing the above with Octez-specific
+  is specific to Mavkit, complementing the above with Mavkit-specific
   features.
 
 - `lib_performance_regression` defines another OCaml library named
@@ -41,7 +41,7 @@ This directory contains the following subdirectories:
 - `long_tests` defines an OCaml executable which gathers tests that
   are run on the LTF (see `lib_performance_regression` above).
 
-- `remote_tests` defines an OCaml executable with some Octez tests that serve
+- `remote_tests` defines an OCaml executable with some Mavkit tests that serve
   as examples for the ability of Tezt to run external executables through SSH.
 
 - `vesting_contract_test` defines an OCaml executable which gathers

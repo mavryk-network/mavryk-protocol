@@ -92,7 +92,7 @@ History modes use some markers which are used to describe the state
 of the storage:
 
 - *checkpoint*: the last allowed fork level of the chain (as defined
-  in the Tezos position paper),
+  in the Mavryk position paper),
 - *savepoint*: the last known block which contains metadata,
 - *caboose*: the last known block.
 
@@ -107,7 +107,7 @@ To run a ``full`` node you can either use the command line arguments:
 
 .. code-block:: console
 
-   octez-node run --history-mode full
+   mavkit-node run --history-mode full
 
 or use your configuration file as described in :doc:`here <node-configuration>`:
 
@@ -123,7 +123,7 @@ You can then verify that your history mode is set to full by using the checkpoin
 
 .. code-block:: console
 
-   octez-client rpc get /chains/main/checkpoint
+   mavkit-client rpc get /chains/main/checkpoint
 
 .. code-block:: json
 
@@ -143,7 +143,7 @@ To run a ``rolling`` node you can either use the command line arguments:
 
 .. code-block:: console
 
-   octez-node run --history-mode rolling
+   mavkit-node run --history-mode rolling
 
 or use your configuration file as described in :doc:`here <node-configuration>`:
 
@@ -167,7 +167,7 @@ Setting up a node in archive mode
 ---------------------------------
 
 To run an ``archive`` node you can use the command line arguments:
-``$ octez-node run --history-mode archive``
+``$ mavkit-node run --history-mode archive``
 
 Or the configuration file:
 ``{ "shell": {"history_mode": "archive"} }``
@@ -257,7 +257,7 @@ there are some restrictions when switching from one mode to another.
 +---------+---------+------+---------+
 
 (*) Switching from a ``full`` node to an ``archive`` one is possible
-using the ``reconstruct`` feature. To do so, run ``octez-node
+using the ``reconstruct`` feature. To do so, run ``mavkit-node
 reconstruct`` on your node. Note that the storage reconstruction is a
 long process that, on the main network, may require more than a week to
 complete. Reconstruction also requires a machine with at least 16GB of

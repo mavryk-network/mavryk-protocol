@@ -33,7 +33,7 @@
 
 open QCheck_alcotest
 open QCheck2
-open Tezos_tree_encoding
+open Mavryk_tree_encoding
 
 module type S = sig
   module Chunk : sig

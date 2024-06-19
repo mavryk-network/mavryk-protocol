@@ -32,7 +32,7 @@
 *)
 
 (* Test.
-   Call `octez-client rpc list` and check that return code is 0.
+   Call `mavkit-client rpc list` and check that return code is 0.
 *)
 let test_rpc_list =
   Protocol.register_test
@@ -45,7 +45,7 @@ let test_rpc_list =
   Lwt.return_unit
 
 (* Test.
-   Call `octez-client rpc /chains/<chain_id>/blocks/<block_id>/header/shell` and check that return code is 0.
+   Call `mavkit-client rpc /chains/<chain_id>/blocks/<block_id>/header/shell` and check that return code is 0.
 *)
 let test_rpc_header_shell =
   Protocol.register_test
@@ -618,7 +618,7 @@ let test_storage_from_file =
       in
       unit)
 
-(* Executes `octez-client list mockup protocols`. The call must
+(* Executes `mavkit-client list mockup protocols`. The call must
    succeed and return a non empty list. *)
 let test_list_mockup_protocols () =
   Test.register
@@ -631,7 +631,7 @@ let test_list_mockup_protocols () =
   if protocols = [] then Test.fail "List of mockup protocols must be non-empty" ;
   unit
 
-(* Executes [octez-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavkit-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] is a non empty directory which is NOT a mockup
    directory. The call must fail. *)
 let test_create_mockup_dir_exists_nonempty =
@@ -670,7 +670,7 @@ let test_retrieve_addresses =
       ~error_msg:"Expected addresses %R, got %L") ;
   unit
 
-(* Executes [octez-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavkit-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] is not fresh. The call must fail. *)
 let test_create_mockup_already_initialized =
   Protocol.register_test
@@ -686,7 +686,7 @@ let test_create_mockup_already_initialized =
   in
   unit
 
-(* Tests [tezos-client create mockup]s [--protocols-constants]
+(* Tests [mavryk-client create mockup]s [--protocols-constants]
    argument. The call must succeed. *)
 let test_create_mockup_custom_constants =
   Protocol.register_test
@@ -711,7 +711,7 @@ let test_create_mockup_custom_constants =
   (* initial_timestamp is an ISO-8601 formatted date string *)
   iter ["2020-07-21T17:11:10+02:00"; "1970-01-01T00:00:00Z"]
   @@ fun initial_timestamp ->
-  let parameter_file = Temp.file "tezos-custom-constants.json" in
+  let parameter_file = Temp.file "mavryk-custom-constants.json" in
   let json_fields =
     [
       ("hard_gas_limit_per_operation", `String "400000");
@@ -741,12 +741,12 @@ let test_accounts : mockup_bootstrap_account list =
     {
       name = "bootstrap0";
       sk_uri = "edsk2uqQB9AY4FvioK2YMdfmyMrer5R8mGFyuaLLFfSRo8EoyNdht3";
-      amount = Tez.of_mutez_int 2000000000000;
+      amount = Tez.of_mumav_int 2000000000000;
     };
     {
       name = "bootstrap1";
       sk_uri = "edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBDusMxDJstFtojtc1zcpsh";
-      amount = Tez.of_mutez_int 1000000000000;
+      amount = Tez.of_mumav_int 1000000000000;
     };
   ]
 
@@ -755,7 +755,7 @@ let mockup_bootstrap_account_to_json {name; sk_uri; amount} =
     [
       ("name", `String name);
       ("sk_uri", `String ("unencrypted:" ^ sk_uri));
-      ("amount", `String (Tez.to_mutez amount |> string_of_int));
+      ("amount", `String (Tez.to_mumav amount |> string_of_int));
     ]
 
 let mockup_bootstrap_accounts_to_json accounts =
@@ -770,13 +770,13 @@ let mockup_bootstrap_account_of_json json : mockup_bootstrap_account =
           match String.split_on_char ':' sk_uri with
           | ["unencrypted"; s] -> s
           | _ -> Test.fail "Could not parse [sk_uri] %s" sk_uri );
-      amount = json |-> "amount" |> as_int |> Tez.of_mutez_int;
+      amount = json |-> "amount" |> as_int |> Tez.of_mumav_int;
     }
 
 let mockup_bootstrap_accounts_of_json json =
   List.map mockup_bootstrap_account_of_json (JSON.as_list json)
 
-(* Tests [tezos-client create mockup --bootstrap-accounts]
+(* Tests [mavryk-client create mockup --bootstrap-accounts]
    argument. The call must succeed. *)
 let test_create_mockup_custom_bootstrap_accounts =
   Protocol.register_test
@@ -784,7 +784,7 @@ let test_create_mockup_custom_bootstrap_accounts =
     ~title:"(Mockup) Create mockup with mockup-custom bootstrap accounts."
     ~tags:["mockup"; "client"; "mockup_bootstrap_accounts"]
   @@ fun protocol ->
-  let bootstrap_accounts_file = Temp.file "tezos-bootstrap-accounts.json" in
+  let bootstrap_accounts_file = Temp.file "mavryk-bootstrap-accounts.json" in
   JSON.encode_to_file_u
     bootstrap_accounts_file
     (mockup_bootstrap_accounts_to_json test_accounts) ;
@@ -805,7 +805,7 @@ let test_create_mockup_custom_bootstrap_accounts =
 
 let rmdir dir = Process.spawn "rm" ["-rf"; dir] |> Process.check
 
-(* Executes [tezos-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavryk-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] looks like a dubious base directory. Checks that a warning
    is printed. *)
 let test_transfer_bad_base_dir =
@@ -841,7 +841,7 @@ let test_transfer_bad_base_dir =
   in
   unit
 
-(* Executes [tezos-client --mode mockup config show] in a state where
+(* Executes [mavryk-client --mode mockup config show] in a state where
    it should succeed. *)
 let test_config_show_mockup =
   Protocol.register_test
@@ -853,7 +853,7 @@ let test_config_show_mockup =
   let* _ = Client.config_show ~protocol client in
   unit
 
-(* Executes [tezos-client --mode mockup config show] when base dir is
+(* Executes [mavryk-client --mode mockup config show] when base dir is
    NOT a mockup. It should fail as this is dangerous (the default base
    directory could contain sensitive data, such as private keys) *)
 let test_config_show_mockup_fail =
@@ -867,7 +867,7 @@ let test_config_show_mockup_fail =
   let* _ = Client.spawn_config_show ~protocol client |> Process.check_error in
   unit
 
-(* Executes [tezos-client config init mockup] in a state where it
+(* Executes [mavryk-client config init mockup] in a state where it
    should succeed *)
 let test_config_init_mockup =
   Protocol.register_test
@@ -885,7 +885,7 @@ let test_config_init_mockup =
   let (_ : JSON.t) = JSON.parse_file bootstrap_accounts in
   unit
 
-(* Executes [tezos-client config init mockup] when base dir is NOT a
+(* Executes [mavryk-client config init mockup] when base dir is NOT a
    mockup. It should fail as this is dangerous (the default base
    directory could contain sensitive data, such as private keys) *)
 let test_config_init_mockup_fail =
@@ -1089,7 +1089,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
         let maximum = Int.max_int in
         `String
           (distinct_sample_numeric ~minimum ~maximum n_opt |> string_of_int)
-    | typ when typ =~ rex "#/definitions/.*\\.mutez" ->
+    | typ when typ =~ rex "#/definitions/.*\\.mumav" ->
         let n_opt = numerical_of_string ~typ value in
         `String (distinct_sample_numeric ~minimum:0 n_opt |> string_of_int)
     | "#/definitions/Signature.Public_key_hash"
@@ -1239,10 +1239,10 @@ let test_create_mockup_config_show_init_roundtrip protocols =
       (* Prefix temp file names to avoid reusing the same file name
          for two different clients since mockup refuses to overwrite
          existing files. *)
-      Temp.file (Client.name mockup_client ^ "-tezos-bootstrap-accounts.json")
+      Temp.file (Client.name mockup_client ^ "-mavryk-bootstrap-accounts.json")
     in
     let protocol_constants =
-      Temp.file (Client.name mockup_client ^ "-tezos-proto-consts.json")
+      Temp.file (Client.name mockup_client ^ "-mavryk-proto-consts.json")
     in
     let* () =
       Client.config_init
@@ -1261,7 +1261,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
   in
   let compute_expected_amounts protocol bootstrap_accounts protocol_constants =
     let convert =
-      if protocol > Protocol.Nairobi then
+      if protocol >= Protocol.Atlas then
         let limit_of_delegation_over_baking =
           JSON.(
             protocol_constants |-> "limit_of_delegation_over_baking" |> as_int)
@@ -1276,7 +1276,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
           JSON.(protocol_constants |-> "frozen_deposits_percentage" |> as_int)
         in
         let pct = 100 - frozen_deposits_percentage in
-        fun amount -> Tez.(of_mutez_int (pct * to_mutez amount / 100))
+        fun amount -> Tez.(of_mumav_int (pct * to_mumav amount / 100))
     in
     List.map
       (fun account -> {account with amount = convert account.amount})
@@ -1359,7 +1359,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
          (* create a transient client just for accessing RPCs *)
          let* param_protocol_constants = protocol_constants_f protocol in
          let protocol_constants_file =
-           Temp.file "tezos-protocol-constants.json"
+           Temp.file "mavryk-protocol-constants.json"
          in
          Log.info
            "Wrote initial protocol constants file %s"
@@ -1375,7 +1375,7 @@ let test_create_mockup_config_show_init_roundtrip protocols =
      match param_value param_initial_bootstrap_accounts_opt with
      | Some bootstrap_accounts ->
          let bootstrap_accounts_file =
-           Temp.file "tezos-bootstrap-accounts.json"
+           Temp.file "mavryk-bootstrap-accounts.json"
          in
          Log.info
            "Wrote initial bootstrap accounts file %s"
@@ -1446,9 +1446,9 @@ let test_create_mockup_config_show_init_roundtrip protocols =
    (* 3/ Pass obtained json to a new mockup instance, to check json
       valid w.r.t. ocaml encoding *)
    Log.info "Use read state from first mockup instance to create a second one" ;
-   let parameter_file = Temp.file "tezos-protocol-constants.json" in
+   let parameter_file = Temp.file "mavryk-protocol-constants.json" in
    JSON.encode_to_file parameter_file initial_state.protocol_constants ;
-   let bootstrap_accounts_file = Temp.file "tezos-bootstrap-accounts.json" in
+   let bootstrap_accounts_file = Temp.file "mavryk-bootstrap-accounts.json" in
    JSON.encode_to_file_u
      bootstrap_accounts_file
      (mockup_bootstrap_accounts_to_json initial_state.bootstrap_accounts) ;
@@ -1524,5 +1524,6 @@ let register_constant_migration ~migrate_from ~migrate_to =
   test_migration_constants ~migrate_from ~migrate_to
 
 let register_protocol_independent () =
-  test_migration_transfer () ;
+  (* TODO: Restore after Atlas update to test migrations *)
+  (* test_migration_transfer () ; *)
   test_list_mockup_protocols ()

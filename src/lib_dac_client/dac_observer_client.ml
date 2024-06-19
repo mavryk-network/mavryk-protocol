@@ -111,7 +111,7 @@ type t = {
 module Client = struct
   let make_unix endpoint =
     let rpc_config =
-      {Tezos_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
+      {Mavryk_rpc_http_client_unix.RPC_client_unix.default_config with endpoint}
     in
     new Dac_node_client.unix_cctxt ~rpc_config
 

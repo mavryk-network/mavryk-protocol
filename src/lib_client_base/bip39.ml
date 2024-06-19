@@ -109,7 +109,7 @@ let of_entropy entropy =
   match entropy_of_bytes entropy with
   | None -> invalid_arg "Bip39.of_entropy: wrong entropy length"
   | Some {bytes; digest_length; _} ->
-      let digest = Bytes.get (Tezos_crypto.Hacl.Hash.SHA256.digest entropy) 0 in
+      let digest = Bytes.get (Mavryk_crypto.Hacl.Hash.SHA256.digest entropy) 0 in
       let digest = list_sub (bits_of_char digest) digest_length in
       let entropy = bits_of_bytes bytes @ digest in
       List.map (pack entropy 11) ~f:int_of_bits

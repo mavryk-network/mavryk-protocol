@@ -1,0 +1,12 @@
+parameter (pair mumav (or mumav nat));
+storage (or (option (pair nat mumav)) (option (pair mumav mumav)));
+code { CAR;
+       UNPAIR;
+       SWAP;
+       IF_LEFT {
+                 SWAP; EDIV; LEFT (option (pair mumav mumav));
+               }
+               {
+                 SWAP; EDIV; RIGHT (option (pair nat mumav));
+               };
+       NIL operation; PAIR}

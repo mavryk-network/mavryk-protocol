@@ -5,13 +5,13 @@
  (name test_slow)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
+  mavkit-libs.base
   tezt
-  octez-alcotezt
+  mavkit-alcotezt
   src_lib_store_unix_test_tezt_lib)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Octez_alcotezt
+  -open Mavryk_base.TzPervasives
+  -open Mavkit_alcotezt
   -open Src_lib_store_unix_test_tezt_lib)
  (modules test_slow))

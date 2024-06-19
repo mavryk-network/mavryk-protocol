@@ -196,7 +196,7 @@ class unix_ui : Client_context.ui =
 
     method exit : 'a. int -> 'a = fun i -> Lwt_exit.exit_and_raise i
 
-    method now = Tezos_base.Time.System.now
+    method now = Mavryk_base.Time.System.now
   end
 
 class unix_full ~base_dir ~chain ~block ~confirmations ~password_filename
@@ -209,7 +209,7 @@ class unix_full ~base_dir ~chain ~block ~confirmations ~password_filename
     inherit unix_wallet ~base_dir ~password_filename
 
     inherit
-      Tezos_rpc_http_client_unix.RPC_client_unix.http_ctxt
+      Mavryk_rpc_http_client_unix.RPC_client_unix.http_ctxt
         rpc_config
         (Media_type.Command_line.of_command_line rpc_config.media_type)
 
@@ -234,7 +234,7 @@ class unix_mockup ~base_dir ~mem_only ~mockup_env ~chain_id ~rpc_context
     inherit unix_wallet ~base_dir ~password_filename:None
 
     inherit
-      Tezos_mockup.RPC_client.mockup_ctxt
+      Mavryk_mockup.RPC_client.mockup_ctxt
         base_dir
         mem_only
         mockup_env
@@ -263,9 +263,9 @@ class unix_proxy ~base_dir ?protocol ~chain ~block ~confirmations
     inherit unix_wallet ~base_dir ~password_filename
 
     inherit
-      Tezos_proxy_rpc.RPC_client.http_local_ctxt
+      Mavryk_proxy_rpc.RPC_client.http_local_ctxt
         (new unix_logger ~base_dir)
-        (new Tezos_rpc_http_client_unix.RPC_client_unix.http_ctxt
+        (new Mavryk_rpc_http_client_unix.RPC_client_unix.http_ctxt
            rpc_config
            (Media_type.Command_line.of_command_line rpc_config.media_type))
         mode

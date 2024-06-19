@@ -40,10 +40,10 @@ module type PROTO_TOOL = sig
     unit tzresult Lwt.t
 
   val patch_block_time :
-    Tezos_protocol_environment.Context.t ->
+    Mavryk_protocol_environment.Context.t ->
     head_level:int32 ->
     block_time_target:int ->
-    Tezos_protocol_environment.Context.t tzresult Lwt.t
+    Mavryk_protocol_environment.Context.t tzresult Lwt.t
 end
 
 let all : (module PROTO_TOOL) Protocol_hash.Map.t ref =

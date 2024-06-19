@@ -7,16 +7,16 @@
   tezt
   tezt-tezos
   tezt-tezos.tezt-performance-regression
-  octez-libs.lwt-result-stdlib
-  octez-protocol-alpha-libs.test-helpers
-  octez-libs.micheline
-  tezos-openapi
-  tezos-protocol-alpha.protocol
+  mavkit-libs.lwt-result-stdlib
+  mavkit-protocol-alpha-libs.test-helpers
+  mavkit-libs.micheline
+  mavryk-openapi
+  mavryk-protocol-alpha.protocol
   qcheck-core
-  tezos-time-measurement
+  mavryk-time-measurement
   data-encoding
-  octez-libs.event-logging
-  octez-libs.test-helpers)
+  mavkit-libs.event-logging
+  mavkit-libs.test-helpers)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
@@ -26,7 +26,7 @@
   -open Tezt.Base
   -open Tezt_tezos
   -open Tezt_tezos.Runnable.Syntax
-  -open Tezt_tezos_tezt_performance_regression
-  -open Tezos_lwt_result_stdlib
-  -open Tezos_event_logging
-  -open Tezos_test_helpers))
+  -open Tezt_mavryk_tezt_performance_regression
+  -open Mavryk_lwt_result_stdlib
+  -open Mavryk_event_logging
+  -open Mavryk_test_helpers))

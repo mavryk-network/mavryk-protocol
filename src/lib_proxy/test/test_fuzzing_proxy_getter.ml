@@ -31,12 +31,12 @@
     Subject:      Fuzzing tests of internals of the client's --mode proxy
 *)
 
-module Local = Tezos_context_memory.Context
-module Proxy_getter = Tezos_proxy.Proxy_getter
+module Local = Mavryk_context_memory.Context
+module Proxy_getter = Mavryk_proxy.Proxy_getter
 module Tree = Proxy_getter.Internal.Tree
 open Qcheck2_helpers
 
-open Tezos_proxy_test_helpers_shell_services.Test_helpers_shell_services
+open Mavryk_proxy_test_helpers_shell_services.Test_helpers_shell_services
 
 let key_gen =
   (* Using small_list, otherwise the test takes considerably longer.
@@ -53,8 +53,8 @@ let tree_gen =
     | (key, value) :: tl -> (
         let* v = Tree.add_leaf acc key value in
         match v with
-        | Tezos_proxy.Proxy.Mutation -> (mk_tree [@ocaml.tailcall]) acc tl
-        | Tezos_proxy.Proxy.Value acc' -> (mk_tree [@ocaml.tailcall]) acc' tl)
+        | Mavryk_proxy.Proxy.Mutation -> (mk_tree [@ocaml.tailcall]) acc tl
+        | Mavryk_proxy.Proxy.Value acc' -> (mk_tree [@ocaml.tailcall]) acc' tl)
   in
   let mk_tree acc sets = Lwt_main.run @@ mk_tree acc sets in
   QCheck2.Gen.(
@@ -76,8 +76,8 @@ let test_add_leaf_get =
   let tree' = Lwt_main.run @@ Tree.add_leaf tree key value in
   let tree' =
     match tree' with
-    | Tezos_proxy.Proxy.Mutation -> tree
-    | Tezos_proxy.Proxy.Value tree' -> tree'
+    | Mavryk_proxy.Proxy.Mutation -> tree
+    | Mavryk_proxy.Proxy.Value tree' -> tree'
   in
   let actual = Lwt_main.run @@ Tree.get tree' key in
   let pp = Format.pp_print_option Local.Tree.pp in

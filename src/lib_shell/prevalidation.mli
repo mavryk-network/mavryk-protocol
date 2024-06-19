@@ -33,7 +33,7 @@
 
 module type T = sig
   (** Similar to the same type in the protocol,
-      see {!Tezos_protocol_environment.PROTOCOL.operation} *)
+      see {!Mavryk_protocol_environment.PROTOCOL.operation} *)
   type protocol_operation
 
   (** Mempool configuration that groups both the plugin config
@@ -49,7 +49,7 @@ module type T = sig
       Internally an object without any variable fields. *)
   val config_encoding : config Data_encoding.t
 
-  (** The type implemented by {!Tezos_store.Store.chain_store} in
+  (** The type implemented by {!Mavryk_store.Store.chain_store} in
       production, and mocked in tests *)
   type chain_store
 
@@ -135,7 +135,7 @@ module type T = sig
         representation of the mempool. *)
     val get_mempool_operations : t -> protocol_operation Operation_hash.Map.t
 
-    (** Type {!Tezos_protocol_environment.PROTOCOL.Mempool.t}. *)
+    (** Type {!Mavryk_protocol_environment.PROTOCOL.Mempool.t}. *)
     type mempool
 
     (** Modify the [mempool] field of the internal state [t]. *)
@@ -163,7 +163,7 @@ module Make : functor (Proto : Protocol_plugin.T) ->
 module Internal_for_tests : sig
   module type CHAIN_STORE = sig
     (** The [chain_store] type. Implemented by
-        {!Tezos_store.Store.chain_store} in production and mocked in
+        {!Mavryk_store.Store.chain_store} in production and mocked in
         tests *)
     type chain_store
 
@@ -171,7 +171,7 @@ module Internal_for_tests : sig
     val context :
       chain_store ->
       Store.Block.t ->
-      Tezos_protocol_environment.Context.t tzresult Lwt.t
+      Mavryk_protocol_environment.Context.t tzresult Lwt.t
 
     (** [chain_id store] returns the {!Chain_id.t} to which [store]
         corresponds *)

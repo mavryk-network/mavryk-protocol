@@ -2430,7 +2430,7 @@ module Sub_lib = struct
         (function
           | '-' | '.' -> '_'
           | '/' ->
-              invalid_arg ("octez library " ^ s ^ " name cannot contain \"/\"")
+              invalid_arg ("mavkit library " ^ s ^ " name cannot contain \"/\"")
           | c -> c)
         s
     in
@@ -2724,7 +2724,7 @@ let generate_dune (internal : Target.internal) =
     in
     let time_measurement_ppx =
       if internal.time_measurement_ppx then
-        Some (Dune.backend "tezos-time-measurement")
+        Some (Dune.backend "mavryk-time-measurement")
       else None
     in
     List.filter_map (fun x -> x) [bisect_ppx; time_measurement_ppx]
@@ -3309,21 +3309,21 @@ let generate_opam ?release for_package (internals : Target.internal list) :
     |> deduplicate String_set.empty []
   in
   {
-    maintainer = "contact@tezos.com";
-    authors = "Tezos devteam" :: extra_authors;
+    maintainer = "info@mavryk.io";
+    authors = "Mavryk Dynamics" :: extra_authors;
     homepage =
       get_consistent_value
         ~name:"opam_homepage"
         (fun x -> x.opam_homepage)
-        ~default:"https://www.tezos.com/";
+        ~default:"https://mavrykdynamics.com/";
     doc =
       get_consistent_value ~name:"opam_doc" (fun x -> x.opam_doc) ~default:"";
     bug_reports =
       get_consistent_value
         ~name:"opam_bug_reports"
         (fun x -> x.opam_bug_reports)
-        ~default:"https://gitlab.com/tezos/tezos/issues";
-    dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+        ~default:"https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+    dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
     licenses;
     depends;
     conflicts;
@@ -3344,7 +3344,7 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
         as_opam_dependency
           ~for_release:true
           ~for_conflicts:false
-          ~for_package:"octez"
+          ~for_package:"mavkit"
           ~with_test:Never
           ~optional:false
           target
@@ -3369,18 +3369,18 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
           }
   in
   {
-    maintainer = "contact@tezos.com";
-    authors = ["Tezos devteam"];
-    homepage = "https://www.tezos.com/";
-    doc = "https://tezos.gitlab.io";
-    bug_reports = "https://gitlab.com/tezos/tezos/issues";
-    dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+    maintainer = "info@mavryk.io";
+    authors = ["Mavryk Dynamics"];
+    homepage = "https://mavrykdynamics.com/";
+    doc = "https://protocol.mavryk.org";
+    bug_reports = "https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+    dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
     licenses = ["MIT"];
     depends = depends1 @ depends2;
     conflicts = [];
     build = [];
     available = Always;
-    synopsis = "Main virtual package for Octez, an implementation of Tezos";
+    synopsis = "Main virtual package for Mavkit, an implementation of Mavryk";
     url = None;
     description = None;
     x_opam_monorepo_opam_provided = [];
@@ -3417,7 +3417,7 @@ let generate_opam_files_for_release packages_dir opam_release_graph
             write_opam package (generate_opam ~release package internal_pkgs))
   ) ;
   write_opam
-    "octez"
+    "mavkit"
     (generate_opam_meta_package opam_release_graph add_to_meta_package)
 
 (* Bumping the dune lang version can result in different dune stanza
@@ -3943,9 +3943,9 @@ let generate_opam_ci opam_release_graph =
         (if is_executable then "exec" else "all")
         batch_index
         (* Tag below is added because the job in question does not work as is on
-           Gitlab Runner CI GCP. To remove once https://gitlab.com/tezos/tezos/-/issues/6584
+           Gitlab Runner CI GCP. To remove once https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/6584
            is fixed. *)
-        (if package_name = "octez-shell-libs" then
+        (if package_name = "mavkit-shell-libs" then
          "\n    - .tags_template__no_gcp"
         else "")
         package_name
@@ -3980,7 +3980,7 @@ let generate_profiles ~default_profile =
           match String_map.find_opt name profile_deps with
           | None -> version
           | Some old_version ->
-              (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5434
+              (* FIXME: https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/5434
                  This comparison is wrong as it compares the terms as
                  a whole. It results in duplicated
                  versions. Additionally, for the conflicts, the `||`
@@ -4023,12 +4023,12 @@ let generate_profiles ~default_profile =
     in
     let opam : Opam.t =
       {
-        maintainer = "contact@tezos.com";
-        authors = ["Tezos devteam"];
-        homepage = "https://www.tezos.com/";
+        maintainer = "info@mavryk.io";
+        authors = ["Mavryk Dynamics"];
+        homepage = "https://mavrykdynamics.com/";
         doc = "";
-        bug_reports = "https://gitlab.com/tezos/tezos/issues";
-        dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+        bug_reports = "https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+        dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
         licenses = ["MIT"];
         depends;
         conflicts;
@@ -4036,14 +4036,14 @@ let generate_profiles ~default_profile =
         available = Always;
         synopsis =
           Printf.sprintf
-            "Virtual package depending on Octez dependencies (profile: %s)"
+            "Virtual package depending on Mavkit dependencies (profile: %s)"
             profile;
         url = None;
         description =
           Some
             (Printf.sprintf
                "Install this package to install all dependencies needed to \
-                build the subset of Octez denoted by profile %s."
+                build the subset of Mavkit denoted by profile %s."
                profile);
         x_opam_monorepo_opam_provided = [];
       }

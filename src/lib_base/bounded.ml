@@ -130,7 +130,7 @@ let checks (type ocaml_type) (ty : ocaml_type ty) ( < ) ( > ) ~min_value
   if max_value > ty_max_value ty then
     invalid_arg
       (Format.asprintf
-         "Tezos-base.Bounded(%a): Maximum encodable value: %a. Bound given: %a"
+         "Mavryk-base.Bounded(%a): Maximum encodable value: %a. Bound given: %a"
          pp_ty
          ty
          pp
@@ -140,7 +140,7 @@ let checks (type ocaml_type) (ty : ocaml_type ty) ( < ) ( > ) ~min_value
   if min_value < ty_min_value ty then
     invalid_arg
       (Format.asprintf
-         "Tezos-base.Bounded(%a): Minimum encodable value: %a. Bound given: %a"
+         "Mavryk-base.Bounded(%a): Minimum encodable value: %a. Bound given: %a"
          pp_ty
          ty
          pp

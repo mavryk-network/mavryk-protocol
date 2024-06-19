@@ -30,8 +30,8 @@
     Subject:      Rewriting
 *)
 
-open Tezos_micheline_rewriting
-open Tezos_protocol_alpha.Protocol
+open Mavryk_micheline_rewriting
+open Mavryk_protocol_alpha.Protocol
 
 let () =
   Test.register
@@ -111,7 +111,7 @@ let () =
     \                (or :action    # payload to sign, represents the \
      requested action\n\
     \                   (pair :transfer    # transfer tokens\n\
-    \                      (mutez %amount) # amount to transfer\n\
+    \                      (mumav %amount) # amount to transfer\n\
     \                      (contract %dest unit)) # destination to transfer to\n\
     \                   (or\n\
     \                      (option %delegate key_hash) # change the delegate \
@@ -190,11 +190,11 @@ let () =
     \                  DIP { SWAP ; CAR } ; SWAP ; PAIR ; SWAP }} ;\n\
     \    PAIR }\n"
   in
-  let open Tezos_client_alpha in
+  let open Mavryk_client_alpha in
   (* Client_proto_context.originate expects the contract script as a Script.expr *)
   let multisig_script : Script_repr.expr =
     match
-      Tezos_micheline.Micheline_parser.no_parsing_error
+      Mavryk_micheline.Micheline_parser.no_parsing_error
       @@ Michelson_v1_parser.parse_toplevel
            ?check:(Some true)
            multisig_script_string
@@ -207,7 +207,7 @@ let () =
     \    (pair (pair :payload\n\
     \             (nat %counter)\n\
     \             (or :action\n\
-    \                (pair :transfer (mutez %amount) (contract %dest unit))\n\
+    \                (pair :transfer (mumav %amount) (contract %dest unit))\n\
     \                (or (option %delegate key_hash)\n\
     \                    (pair %change_keys (nat %threshold) (list %keys \
      key)))))\n\
@@ -286,7 +286,7 @@ let () =
     \    (pair (pair :payload\n\
     \             (nat %counter)\n\
     \             (or :action\n\
-    \                (pair :transfer (mutez %amount) (contract %dest unit))\n\
+    \                (pair :transfer (mumav %amount) (contract %dest unit))\n\
     \                (or (option %delegate key_hash)\n\
     \                    (pair %change_keys (nat %threshold) (list %keys \
      key)))))\n\

@@ -8,18 +8,18 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-shell-libs.shell-services
-  octez-alcotezt)
+  mavkit-libs.base
+  mavkit-shell-libs.shell-services
+  mavkit-alcotezt)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_shell_services
-  -open Octez_alcotezt)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_shell_services
+  -open Mavkit_alcotezt)
  (modules test_block_services))
 
 (executable
@@ -33,7 +33,7 @@
 
 (rule
  (alias runtest)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 
@@ -53,7 +53,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-shell-libs)
+ (package mavkit-shell-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))
 

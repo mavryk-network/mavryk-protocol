@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./mavryk-tps-evaluation -i mavryk_gas_tps "$@"

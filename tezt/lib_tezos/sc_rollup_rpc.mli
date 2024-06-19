@@ -53,11 +53,11 @@ val get_global_block_level : ?block:string -> unit -> JSON.t RPC_core.t
 (** RPC: [GET global/block/<block>/num_messages]. *)
 val get_global_block_num_messages : ?block:string -> unit -> JSON.t RPC_core.t
 
-(** RPC: [GET global/tezos_head]. *)
-val get_global_tezos_head : unit -> JSON.t RPC_core.t
+(** RPC: [GET global/mavryk_head]. *)
+val get_global_mavryk_head : unit -> JSON.t RPC_core.t
 
-(** RPC: [GET global/tezos_level]. *)
-val get_global_tezos_level : unit -> JSON.t RPC_core.t
+(** RPC: [GET global/mavryk_level]. *)
+val get_global_mavryk_level : unit -> JSON.t RPC_core.t
 
 type slot_header = {level : int; commitment : string; index : int}
 

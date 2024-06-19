@@ -1,7 +1,7 @@
 The ``data_encoding`` library
 =============================
 
-Throughout the Tezos protocol, data is serialized so that it can be
+Throughout the Mavryk protocol, data is serialized so that it can be
 used via RPC, written to disk, or placed in a block. This
 serialization/de-serialization is handled via the
 `data-encoding <https://opam.ocaml.org/packages/data-encoding/>`_
@@ -95,7 +95,7 @@ And the encoders for these types as
 Union types
 ~~~~~~~~~~~
 
-The Octez codebase makes heavy use of variant types. Consider the
+The Mavkit codebase makes heavy use of variant types. Consider the
 following variant type:
 
 .. code-block:: ocaml

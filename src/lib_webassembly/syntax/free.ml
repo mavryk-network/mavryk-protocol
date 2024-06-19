@@ -74,7 +74,7 @@ let list free xs = List.fold_left union empty (List.map free xs)
 
 let list_s free xs =
   let open Lwt.Syntax in
-  let open Tezos_lwt_result_stdlib.Lwtreslib.Bare in
+  let open Mavryk_lwt_result_stdlib.Lwtreslib.Bare in
   List.fold_left_s
     (fun acc s ->
       let+ f = free s in

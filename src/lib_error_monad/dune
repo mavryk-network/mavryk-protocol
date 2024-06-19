@@ -2,17 +2,17 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_error_monad)
- (public_name octez-libs.error-monad)
+ (name mavryk_error_monad)
+ (public_name mavkit-libs.error-monad)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
+  mavkit-libs.stdlib
   data-encoding
   lwt-canceler
   lwt
-  octez-libs.lwt-result-stdlib)
+  mavkit-libs.lwt-result-stdlib)
  (js_of_ocaml)
  (flags
   (:standard)
-  -open Tezos_stdlib
+  -open Mavryk_stdlib
   -open Data_encoding))

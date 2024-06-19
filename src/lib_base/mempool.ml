@@ -24,8 +24,8 @@
 (*****************************************************************************)
 
 type t = {
-  known_valid : Tezos_crypto.Hashed.Operation_hash.Set.t;
-  pending : Tezos_crypto.Hashed.Operation_hash.Set.t;
+  known_valid : Mavryk_crypto.Hashed.Operation_hash.Set.t;
+  pending : Mavryk_crypto.Hashed.Operation_hash.Set.t;
 }
 
 type mempool = t
@@ -41,42 +41,42 @@ let encoding =
        (fun {known_valid; pending} -> (known_valid, pending))
        (fun (known_valid, pending) -> {known_valid; pending})
        (obj2
-          (req "known_valid" Tezos_crypto.Hashed.Operation_hash.Set.encoding)
+          (req "known_valid" Mavryk_crypto.Hashed.Operation_hash.Set.encoding)
           (req
              "pending"
              (* This [dynamic_size] is redundant with the [Set]'s
                 internal [dynamic_size]. Removing it would require to
                 handle retro-compatibility as other nodes would
                 use/expect the legacy encoding. *)
-             (dynamic_size Tezos_crypto.Hashed.Operation_hash.Set.encoding)))
+             (dynamic_size Mavryk_crypto.Hashed.Operation_hash.Set.encoding)))
 
 let bounded_encoding ?max_operations () =
   match max_operations with
   | None -> encoding
   | Some max_operations ->
       Data_encoding.check_size
-        (8 + (max_operations * Tezos_crypto.Hashed.Operation_hash.size))
+        (8 + (max_operations * Mavryk_crypto.Hashed.Operation_hash.size))
         encoding
 
 let empty =
   {
-    known_valid = Tezos_crypto.Hashed.Operation_hash.Set.empty;
-    pending = Tezos_crypto.Hashed.Operation_hash.Set.empty;
+    known_valid = Mavryk_crypto.Hashed.Operation_hash.Set.empty;
+    pending = Mavryk_crypto.Hashed.Operation_hash.Set.empty;
   }
 
 let is_empty {known_valid; pending} =
-  Tezos_crypto.Hashed.Operation_hash.Set.is_empty known_valid
-  && Tezos_crypto.Hashed.Operation_hash.Set.is_empty pending
+  Mavryk_crypto.Hashed.Operation_hash.Set.is_empty known_valid
+  && Mavryk_crypto.Hashed.Operation_hash.Set.is_empty pending
 
 let remove oph {known_valid; pending} =
   {
-    known_valid = Tezos_crypto.Hashed.Operation_hash.Set.remove oph known_valid;
-    pending = Tezos_crypto.Hashed.Operation_hash.Set.remove oph pending;
+    known_valid = Mavryk_crypto.Hashed.Operation_hash.Set.remove oph known_valid;
+    pending = Mavryk_crypto.Hashed.Operation_hash.Set.remove oph pending;
   }
 
 let cons_valid oph t =
   {
-    known_valid = Tezos_crypto.Hashed.Operation_hash.Set.add oph t.known_valid;
+    known_valid = Mavryk_crypto.Hashed.Operation_hash.Set.add oph t.known_valid;
     pending = t.pending;
   }
 

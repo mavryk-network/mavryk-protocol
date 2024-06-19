@@ -25,4 +25,4 @@
 (*****************************************************************************)
 
 val build_rpc_directory :
-  Block_validator.t -> Store.t -> unit Tezos_rpc.Directory.t
+  Block_validator.t -> Store.t -> unit Mavryk_rpc.Directory.t

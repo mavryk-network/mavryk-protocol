@@ -10,7 +10,7 @@ type request_deposit = {
 }
 
 type storage = {
-  exchanger: address; (* Address of exchanger contract minting tez tickets. *)
+  exchanger: address; (* Address of exchanger contract minting mav tickets. *)
   request_deposit: request_deposit option; (* Address of L2 depositee *)
 }
 
@@ -29,7 +29,7 @@ let deposit request ({exchanger; request_deposit}: storage) : return =
   let amount = Tezos.get_amount () in
   let callback = Tezos.address (Tezos.self("%callback") : tez_ticket contract) in
   match Tezos.get_entrypoint_opt "%mint" exchanger with
-  | None -> failwith "Invalid tez ticket contract"
+  | None -> failwith "Invalid mav ticket contract"
   | Some contract ->
     let mint = Tezos.transaction callback amount contract in
     let callback_storage = {exchanger; request_deposit = Some request} in
@@ -48,7 +48,7 @@ let callback (ticket: tez_ticket) {exchanger; request_deposit} : return =
   let deposit =
     Tezos.transaction
       (DepositTicket (l2_address, ticket))
-      0mutez
+      0mumav
       evm_address
   in
   let reset_storage = {exchanger; request_deposit = None} in

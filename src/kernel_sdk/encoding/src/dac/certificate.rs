@@ -18,18 +18,18 @@ use super::SlicePageError;
 use super::V0SliceContentPage;
 use super::V0SliceHashPage;
 use super::MAX_PAGE_SIZE;
-use tezos_crypto_rs::hash::BlsSignature;
+use mavryk_crypto_rs::hash::BlsSignature;
 #[cfg(feature = "bls")]
-use tezos_crypto_rs::hash::PublicKeyBls;
-use tezos_crypto_rs::CryptoError;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
-use tezos_data_encoding::types::Zarith;
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_host::path::Path;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_crypto_rs::hash::PublicKeyBls;
+use mavryk_crypto_rs::CryptoError;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_data_encoding::types::Zarith;
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_host::path::Path;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 use thiserror::Error;
 
 /// Errors that can be obtained when handling a certificate.
@@ -245,13 +245,13 @@ fn fetch_page<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
-    // taken from the output of octez-dac-client GET certificate
-    // Committee member 0 - public key hash: tz4Ate2Fj1QpVXBGLXioe57s3a1RUtavMS5P
+    // taken from the output of mavkit-dac-client GET certificate
+    // Committee member 0 - public key hash: mv4NbiJxLfRMXfmvcwK5DDJ1UNVuJDj7Acf7
     // Committee member 0 - public key: BLpk1tsVzqCokL6dZEiCQgEvwqQp4btiHYm3A1HoEUxKUwq5jCNZMJQ7bU71QE969KioUWCKtK9F
-    // Committee member 1 - public key hash: tz4PA6aEFXbaSZXSmdTi933GQZPodn6VX8Q3
+    // Committee member 1 - public key hash: mv4asArvsBc7Ui87433yiBDQqMtHT7KM4j27
     // Committee member 1 - public key: BLpk1xQMdGocMdiiuU2pGvNMeu8vP91nNfrKk5tCssvPzP4z9EY7k5bbEisrqN3pT9vaoN2dsSiW
     // Hex payload - 0000000000000000
     // Root hash - hex value: 005b55fa3bb27fa3644faa7bd1e4ce79319a41ff35a3c2128089224e2fbf918143

@@ -105,7 +105,7 @@ val create :
   Node.t ->
   t
 
-(** Do not assume we are running the rollup node against a local octez node. *)
+(** Do not assume we are running the rollup node against a local mavkit node. *)
 val create_with_endpoint :
   ?runner:Runner.t ->
   ?path:string ->
@@ -218,7 +218,7 @@ val terminate : ?timeout:float -> t -> unit Lwt.t
 val kill : t -> unit Lwt.t
 
 (** Initialize the rollup node configuration file with
-    [octez-sc-rollup-node-alpha config init].  Returns the name of the resulting
+    [mavkit-sc-rollup-node-alpha config init].  Returns the name of the resulting
     configuration file. *)
 val config_init :
   t ->
@@ -230,7 +230,7 @@ val config_init :
   string Lwt.t
 
 (** Initialize the rollup node configuration file with
-    [octez-sc-rollup-node-alpha config init] and return the corresponding
+    [mavkit-sc-rollup-node-alpha config init] and return the corresponding
     process. *)
 val spawn_config_init :
   t ->

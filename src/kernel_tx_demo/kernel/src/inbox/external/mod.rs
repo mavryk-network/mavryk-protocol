@@ -19,12 +19,12 @@ use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::sequence::preceded;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
-use tezos_data_encoding::nom::NomResult;
-use tezos_smart_rollup_encoding::dac::certificate::Certificate;
-use tezos_smart_rollup_encoding::dac::certificate::V0Certificate;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_data_encoding::nom::NomResult;
+use mavryk_smart_rollup_encoding::dac::certificate::Certificate;
+use mavryk_smart_rollup_encoding::dac::certificate::V0Certificate;
 
 pub mod dac_iterator;
 pub mod sendable;
@@ -70,12 +70,12 @@ impl<'a> ParsedExternalInboxMessage<'a> {
 pub enum Signer {
     /// A signer identified by a ed25519 public key.
     PublicKey(PublicKeyEd25519),
-    /// A signer identified by a tz1 address.
+    /// A signer identified by a mv1 address.
     Tz1(ContractTz1Hash),
 }
 
 impl Signer {
-    /// Return the tz1 account-address of the signer.
+    /// Return the mv1 account-address of the signer.
     pub fn address(&self) -> Result<ContractTz1Hash, crypto::hash::TryFromPKError> {
         use crypto::PublicKeyWithHash;
 
@@ -91,11 +91,11 @@ mod test {
     use super::*;
     use crypto::hash::BlsSignature;
     use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_encoding::dac::make_preimage_hash;
-    use tezos_smart_rollup_encoding::dac::PreimageHash;
-    use tezos_smart_rollup_encoding::testing::make_witnesses;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_encoding::dac::make_preimage_hash;
+    use mavryk_smart_rollup_encoding::dac::PreimageHash;
+    use mavryk_smart_rollup_encoding::testing::make_witnesses;
 
     proptest! {
         #[test]

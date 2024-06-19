@@ -118,10 +118,10 @@ module Make
           ~pp1:Request.pp
           ~pp2:Worker_types.pp_status
 
-      let new_tezos_head =
+      let new_mavryk_head =
         declare_1
-          ~name:"new_tezos_head"
-          ~msg:"Processing new Tezos head {head}"
+          ~name:"new_mavryk_head"
+          ~msg:"Processing new Mavryk head {head}"
           ~level:Debug
           ("head", Block_hash.encoding)
 
@@ -280,7 +280,7 @@ module Make
       let confirmed_level =
         declare_1
           ~name:"confirmed_level"
-          ~msg:"Confirmed Tezos level {level}"
+          ~msg:"Confirmed Mavryk level {level}"
           ~level:Debug
           ("level", Data_encoding.int32)
 

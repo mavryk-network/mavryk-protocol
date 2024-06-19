@@ -382,7 +382,7 @@ code
       { # Main entry point
         # Assert no token was sent:
         # to send tokens, the default entry point should be used
-        PUSH mutez 0 ; AMOUNT ; ASSERT_CMPEQ ;
+        PUSH mumav 0 ; AMOUNT ; ASSERT_CMPEQ ;
         SWAP ; DUP ; DIP { SWAP } ;
         DIP
           {
@@ -455,7 +455,7 @@ code
 (* Client_proto_context.originate expects the contract script as a Script.expr *)
 let multisig_script : Script.expr =
   Michelson_v1_parser.parse_toplevel ?check:(Some true) multisig_script_string
-  |> Tezos_micheline.Micheline_parser.no_parsing_error
+  |> Mavryk_micheline.Micheline_parser.no_parsing_error
   |> function
   | Error _ ->
       assert false
@@ -586,7 +586,7 @@ let check_multisig_contract (cctxt : #Protocol_client_context.full) ~chain
 let lambda_action_t ~loc = lambda_t ~loc (unit_t ~loc) (operations_t ~loc)
 
 (* Conversion functions from common types to Script_expr using the optimized representation *)
-let mutez ~loc (amount : Tez.t) = int ~loc (Z.of_int64 (Tez.to_mutez amount))
+let mumav ~loc (amount : Tez.t) = int ~loc (Z.of_int64 (Tez.to_mumav amount))
 
 let optimized_key_hash ~loc (key_hash : Signature.Public_key_hash.t) =
   bytes
@@ -646,7 +646,7 @@ let action_to_expr_generic ~loc =
                  ~amount
           in
           return @@ left ~loc a)
-  | Lambda code -> return Tezos_micheline.Micheline.(left ~loc (root code))
+  | Lambda code -> return Mavryk_micheline.Micheline.(left ~loc (root code))
   | Change_delegate delegate ->
       let* a =
         lambda_from_string
@@ -662,11 +662,11 @@ let action_to_expr_legacy ~loc =
   let open Result_syntax in
   function
   | Transfer {amount; destination; entrypoint; parameter_type; parameter} ->
-      if parameter <> Tezos_micheline.Micheline.strip_locations (unit ~loc:())
+      if parameter <> Mavryk_micheline.Micheline.strip_locations (unit ~loc:())
       then tzfail @@ Unsupported_feature_generic_call parameter
       else if
         parameter_type
-        <> Tezos_micheline.Micheline.strip_locations (unit_t ~loc:())
+        <> Mavryk_micheline.Micheline.strip_locations (unit_t ~loc:())
       then tzfail @@ Unsupported_feature_generic_call_ty parameter_type
       else
         return
@@ -674,7 +674,7 @@ let action_to_expr_legacy ~loc =
              ~loc
              (pair
                 ~loc
-                (mutez ~loc amount)
+                (mumav ~loc amount)
                 (optimized_address ~loc ~address:destination ~entrypoint))
   | Lambda _ -> tzfail @@ Unsupported_feature_lambda ""
   | Change_delegate delegate ->
@@ -698,21 +698,21 @@ let action_of_expr_generic e =
   let fail () =
     tzfail
       (Action_deserialisation_error
-         (Tezos_micheline.Micheline.strip_locations e))
+         (Mavryk_micheline.Micheline.strip_locations e))
   in
   match e with
-  | Tezos_micheline.Micheline.Prim (_, Script.D_Left, [lam], []) ->
-      return (Lambda (Tezos_micheline.Micheline.strip_locations lam))
-  | Tezos_micheline.Micheline.Prim
+  | Mavryk_micheline.Micheline.Prim (_, Script.D_Left, [lam], []) ->
+      return (Lambda (Mavryk_micheline.Micheline.strip_locations lam))
+  | Mavryk_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
         [
-          Tezos_micheline.Micheline.Prim
+          Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Pair,
               [
-                Tezos_micheline.Micheline.Int (_, threshold);
-                Tezos_micheline.Micheline.Seq (_, key_bytes);
+                Mavryk_micheline.Micheline.Int (_, threshold);
+                Mavryk_micheline.Micheline.Seq (_, key_bytes);
               ],
               [] );
         ],
@@ -720,7 +720,7 @@ let action_of_expr_generic e =
       let* keys =
         List.map_es
           (function
-            | Tezos_micheline.Micheline.Bytes (_, s) ->
+            | Mavryk_micheline.Micheline.Bytes (_, s) ->
                 return
                 @@ Data_encoding.Binary.of_bytes_exn
                      Signature.Public_key.encoding
@@ -736,24 +736,24 @@ let action_of_expr_not_generic e =
   let fail () =
     tzfail
       (Action_deserialisation_error
-         (Tezos_micheline.Micheline.strip_locations e))
+         (Mavryk_micheline.Micheline.strip_locations e))
   in
   match e with
-  | Tezos_micheline.Micheline.Prim
+  | Mavryk_micheline.Micheline.Prim
       ( _,
         Script.D_Left,
         [
-          Tezos_micheline.Micheline.Prim
+          Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Pair,
               [
-                Tezos_micheline.Micheline.Int (_, i);
-                Tezos_micheline.Micheline.Bytes (_, s);
+                Mavryk_micheline.Micheline.Int (_, i);
+                Mavryk_micheline.Micheline.Bytes (_, s);
               ],
               [] );
         ],
         [] ) -> (
-      match Tez.of_mutez (Z.to_int64 i) with
+      match Tez.of_mumav (Z.to_int64 i) with
       | None -> fail ()
       | Some amount ->
           return
@@ -764,34 +764,34 @@ let action_of_expr_not_generic e =
                    Data_encoding.Binary.of_bytes_exn Contract.encoding s;
                  entrypoint = Entrypoint.default;
                  parameter_type =
-                   Tezos_micheline.Micheline.strip_locations @@ unit_t ~loc:();
+                   Mavryk_micheline.Micheline.strip_locations @@ unit_t ~loc:();
                  parameter =
-                   Tezos_micheline.Micheline.strip_locations @@ unit ~loc:();
+                   Mavryk_micheline.Micheline.strip_locations @@ unit ~loc:();
                })
-  | Tezos_micheline.Micheline.Prim
+  | Mavryk_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
         [
-          Tezos_micheline.Micheline.Prim
+          Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Left,
-              [Tezos_micheline.Micheline.Prim (_, Script.D_None, [], [])],
+              [Mavryk_micheline.Micheline.Prim (_, Script.D_None, [], [])],
               [] );
         ],
         [] ) ->
       return (Change_delegate None)
-  | Tezos_micheline.Micheline.Prim
+  | Mavryk_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
         [
-          Tezos_micheline.Micheline.Prim
+          Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Left,
               [
-                Tezos_micheline.Micheline.Prim
+                Mavryk_micheline.Micheline.Prim
                   ( _,
                     Script.D_Some,
-                    [Tezos_micheline.Micheline.Bytes (_, s)],
+                    [Mavryk_micheline.Micheline.Bytes (_, s)],
                     [] );
               ],
               [] );
@@ -803,20 +803,20 @@ let action_of_expr_not_generic e =
               (Data_encoding.Binary.of_bytes_exn
                  Signature.Public_key_hash.encoding
                  s))
-  | Tezos_micheline.Micheline.Prim
+  | Mavryk_micheline.Micheline.Prim
       ( _,
         Script.D_Right,
         [
-          Tezos_micheline.Micheline.Prim
+          Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Right,
               [
-                Tezos_micheline.Micheline.Prim
+                Mavryk_micheline.Micheline.Prim
                   ( _,
                     Script.D_Pair,
                     [
-                      Tezos_micheline.Micheline.Int (_, threshold);
-                      Tezos_micheline.Micheline.Seq (_, key_bytes);
+                      Mavryk_micheline.Micheline.Int (_, threshold);
+                      Mavryk_micheline.Micheline.Seq (_, key_bytes);
                     ],
                     [] );
               ],
@@ -826,7 +826,7 @@ let action_of_expr_not_generic e =
       let* keys =
         List.map_es
           (function
-            | Tezos_micheline.Micheline.Bytes (_, s) ->
+            | Mavryk_micheline.Micheline.Bytes (_, s) ->
                 return
                 @@ Data_encoding.Binary.of_bytes_exn
                      Signature.Public_key.encoding
@@ -852,7 +852,7 @@ type multisig_contract_information = {
 let multisig_get_information (cctxt : #Protocol_client_context.full) ~chain
     ~block contract =
   let open Client_proto_context in
-  let open Tezos_micheline.Micheline in
+  let open Mavryk_micheline.Micheline in
   let open Lwt_result_syntax in
   let* storage_opt =
     get_storage cctxt ~chain ~block ~unparsing_mode:Readable contract
@@ -879,9 +879,9 @@ let multisig_get_information (cctxt : #Protocol_client_context.full) ~chain
 
 let multisig_create_storage ~counter ~threshold ~keys () :
     Script.expr tzresult Lwt.t =
-  let open Tezos_micheline.Micheline in
+  let open Mavryk_micheline.Micheline in
   let open Lwt_result_syntax in
-  let loc = Tezos_micheline.Micheline_parser.location_zero in
+  let loc = Mavryk_micheline.Micheline_parser.location_zero in
   let* l =
     List.map_es
       (fun key ->
@@ -900,7 +900,7 @@ let multisig_storage_string ~counter ~threshold ~keys () =
 
 let multisig_create_param ~counter ~generic ~action ~optional_signatures () :
     Script.expr tzresult Lwt.t =
-  let open Tezos_micheline.Micheline in
+  let open Mavryk_micheline.Micheline in
   let open Lwt_result_syntax in
   let loc = 0 in
   let* l =
@@ -946,7 +946,7 @@ let multisig_bytes ~counter ~action ~contract ~chain_id ~descr () =
   in
   let bytes =
     Data_encoding.Binary.to_bytes_exn Script.expr_encoding
-    @@ Tezos_micheline.Micheline.strip_locations @@ triple
+    @@ Mavryk_micheline.Micheline.strip_locations @@ triple
   in
   return @@ Bytes.cat (Bytes.of_string "\005") bytes
 
@@ -1042,7 +1042,7 @@ let check_action (cctxt : #Protocol_client_context.full) ~action ~balance ~gas
       return_unit
   | Lambda code ->
       let action_t =
-        Tezos_micheline.Micheline.strip_locations (lambda_action_t ~loc:())
+        Mavryk_micheline.Micheline.strip_locations (lambda_action_t ~loc:())
       in
       let* _remaining_gas =
         trace (Ill_typed_lambda (code, action_t))
@@ -1173,16 +1173,16 @@ let action_of_bytes ~multisig_contract ~stored_counter ~descr ~chain_id bytes =
     match Data_encoding.Binary.of_bytes_opt Script.expr_encoding nbytes with
     | None -> tzfail (Bytes_deserialisation_error bytes)
     | Some e -> (
-        match Tezos_micheline.Micheline.root e with
-        | Tezos_micheline.Micheline.Prim
+        match Mavryk_micheline.Micheline.root e with
+        | Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Pair,
               [
-                Tezos_micheline.Micheline.Bytes (_, contract_bytes);
-                Tezos_micheline.Micheline.Prim
+                Mavryk_micheline.Micheline.Bytes (_, contract_bytes);
+                Mavryk_micheline.Micheline.Prim
                   ( _,
                     Script.D_Pair,
-                    [Tezos_micheline.Micheline.Int (_, counter); e],
+                    [Mavryk_micheline.Micheline.Int (_, counter); e],
                     [] );
               ],
               [] )
@@ -1201,22 +1201,22 @@ let action_of_bytes ~multisig_contract ~stored_counter ~descr ~chain_id bytes =
               tzfail
                 (Bad_deserialized_counter
                    {received = counter; expected = stored_counter})
-        | Tezos_micheline.Micheline.Prim
+        | Mavryk_micheline.Micheline.Prim
             ( _,
               Script.D_Pair,
               [
-                Tezos_micheline.Micheline.Prim
+                Mavryk_micheline.Micheline.Prim
                   ( _,
                     Script.D_Pair,
                     [
-                      Tezos_micheline.Micheline.Bytes (_, chain_id_bytes);
-                      Tezos_micheline.Micheline.Bytes (_, contract_bytes);
+                      Mavryk_micheline.Micheline.Bytes (_, chain_id_bytes);
+                      Mavryk_micheline.Micheline.Bytes (_, contract_bytes);
                     ],
                     [] );
-                Tezos_micheline.Micheline.Prim
+                Mavryk_micheline.Micheline.Prim
                   ( _,
                     Script.D_Pair,
-                    [Tezos_micheline.Micheline.Int (_, counter); e],
+                    [Mavryk_micheline.Micheline.Int (_, counter); e],
                     [] );
               ],
               [] )

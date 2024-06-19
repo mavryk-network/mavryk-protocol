@@ -2,7 +2,7 @@ Light mode
 ----------
 
 The proxy mode, described in :doc:`a dedicated tutorial <./proxy>`,
-is an execution mode where the :ref:`Octez client <howtouse_tezos_client>`
+is an execution mode where the :ref:`Mavkit client <howtouse_mavryk_client>`
 avoids some RPC calls to the node, especially computation-intensive RPCs.
 It does so by requesting the data it needs from the node using RPCs (that are not computation-intensive), and uses
 this data locally to perform computations by itself, whenever possible.
@@ -21,14 +21,14 @@ This mode is akin to a light client or *thin client* in Bitcoin terms.
 While the existing implementation of the light mode is entirely functional,
 it still has room for improvement. For instance, communications over
 the network can be reduced. Users are encouraged to share their experience,
-by submitting issues `here on GitLab <https://gitlab.com/tezos/tezos/-/issues>`_.
+by submitting issues `here on GitLab <https://gitlab.com/mavryk-network/mavryk-protocol/-/issues>`_.
 
 Executing commands in light mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The CLI interface of the client in light mode (the *light client* for short)
 is the same as the default client. To turn the light mode on, you must
-pass two arguments to ``octez-client``:
+pass two arguments to ``mavkit-client``:
 
 * ``--mode light``, and
 * ``--sources sources.json``.
@@ -61,7 +61,7 @@ Here is an example of a valid ``--sources`` file:
 
 Because computations done locally are protocol dependent, the light mode has to be configured for a specific protocol.
 However, the light mode does not support all protocols.
-Execute ``octez-client list light protocols`` to see the supported protocols.
+Execute ``mavkit-client list light protocols`` to see the supported protocols.
 It is expected that, at any given time, it should support ``Alpha``,
 the current protocol of Mainnet, and the current protocol proposal on Mainnet at
 the time of release, if any.
@@ -78,7 +78,7 @@ In a terminal, start a sandboxed node:
 
 ::
 
-    $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 1
+    $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 1
       # This node listens to p2p events on localhost:19731
       # RPC server of the node is reachable at localhost:18731
 
@@ -87,7 +87,7 @@ Leave that terminal running. In a second terminal, start another node:
 
 ::
 
-    $ ./src/bin_node/octez-sandboxed-node.sh 2 --connections 1
+    $ ./src/bin_node/mavkit-sandboxed-node.sh 2 --connections 1
       # This node listens to p2p events on localhost:19732
       # RPC server of the node is reachable at localhost:18732
 
@@ -97,20 +97,20 @@ in this terminal):
 
 ::
 
-    $ eval `./src/bin_client/octez-init-sandboxed-client.sh 1`
+    $ eval `./src/bin_client/mavkit-init-sandboxed-client.sh 1`
 
 Then upgrade the node to protocol alpha:
 
 ::
 
-    $ octez-activate-alpha  # Triggers output in terminal of first node
-    $ octez-client bake for bootstrap1  # Triggers output in terminal of first node
+    $ mavkit-activate-alpha  # Triggers output in terminal of first node
+    $ mavkit-client bake for bootstrap1  # Triggers output in terminal of first node
 
 To avoid warnings being printed in upcoming commands (optional):
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
 
 The last step before being able to use the light client is to prepare
 the JSON file passed to ``--sources``. In our scenario, this file
@@ -124,7 +124,7 @@ You're now ready to use the light client. For example, bake a block (note that t
 
 ::
 
-    $ octez-client --endpoint http://localhost:18731 --mode light --sources sources.json bake for bootstrap1
+    $ mavkit-client --endpoint http://localhost:18731 --mode light --sources sources.json bake for bootstrap1
     Apr  8 16:42:24.202 - alpha.baking.forge: found 0 valid operations (0 refused) for timestamp 2021-04-08T14:42:24.000-00:00 (fitness 01::0000000000000004)
     Injected block BMAHozsNCos2
 
@@ -134,12 +134,12 @@ We will use this option for the next times.
 
 Well, that doesn't seem very different from what the default client would return.
 Indeed, it's the same; that was the point! To see what the light client
-is doing differently, you may use the environment variable ``TEZOS_LOG``.
+is doing differently, you may use the environment variable ``MAVRYK_LOG``.
 Set it as follows:
 
 ::
 
-    $ export TEZOS_LOG="light_mode->debug"
+    $ export MAVRYK_LOG="light_mode->debug"
 
 Variable ``light_mode`` shows how the light mode is obtaining data from
 the different endpoints.
@@ -149,7 +149,7 @@ keystrokes and the ``protocol of light mode unspecified`` warning:
 
 ::
 
-    $ alias light-client="octez-client --endpoint http://localhost:18731 --mode light --sources sources.json"
+    $ alias light-client="mavkit-client --endpoint http://localhost:18731 --mode light --sources sources.json"
 
 And then bake a new block:
 
@@ -180,7 +180,7 @@ Here is the meaning of these lines:
 * Line ``integrated data for key v1 ...`` indicates that the light mode
   obtained data for ``v1`` from a single endpoint and that it is about
   to fetch Merkle proofs for this key from other endpoints.
-* Lines ``API call: get ...`` indicate that ``octez-client`` is requesting
+* Lines ``API call: get ...`` indicate that ``mavkit-client`` is requesting
   data from the light mode's cache. In this snippet, after the light mode
   gathered data for key ``v1``, the client is requesting data for the children
   keys ``v1;constants`` and ``v1;first_level`` (the ``;`` indicates  nesting).

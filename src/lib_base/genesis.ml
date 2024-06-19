@@ -1,8 +1,8 @@
 (** The chain starts from a genesis block associated to a seed protocol *)
 type t = {
   time : Time.Protocol.t;
-  block : Tezos_crypto.Hashed.Block_hash.t;
-  protocol : Tezos_crypto.Hashed.Protocol_hash.t;
+  block : Mavryk_crypto.Hashed.Block_hash.t;
+  protocol : Mavryk_crypto.Hashed.Protocol_hash.t;
 }
 
 let encoding =
@@ -12,15 +12,15 @@ let encoding =
     (fun (time, block, protocol) -> {time; block; protocol})
     (obj3
        (req "timestamp" Time.Protocol.encoding)
-       (req "block" Tezos_crypto.Hashed.Block_hash.encoding)
-       (req "protocol" Tezos_crypto.Hashed.Protocol_hash.encoding))
+       (req "block" Mavryk_crypto.Hashed.Block_hash.encoding)
+       (req "protocol" Mavryk_crypto.Hashed.Protocol_hash.encoding))
 
 let equal g1 g2 =
   let {time = t1; block = b1; protocol = p1} = g1 in
   let {time = t2; block = b2; protocol = p2} = g2 in
   Time.Protocol.equal t1 t2
-  && Tezos_crypto.Hashed.Block_hash.equal b1 b2
-  && Tezos_crypto.Hashed.Protocol_hash.equal p1 p2
+  && Mavryk_crypto.Hashed.Block_hash.equal b1 b2
+  && Mavryk_crypto.Hashed.Protocol_hash.equal p1 p2
 
 let pp ppf genesis =
   Data_encoding.Json.pp ppf (Data_encoding.Json.construct encoding genesis)

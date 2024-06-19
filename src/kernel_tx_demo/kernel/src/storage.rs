@@ -13,13 +13,13 @@ use crypto::hash::ContractTz1Hash;
 use crypto::hash::HashType;
 use crypto::hash::PublicKeyEd25519;
 use num_bigint::{BigInt, TryFromBigIntError};
-use tezos_smart_rollup_encoding::michelson::ticket::StringTicket;
-use tezos_smart_rollup_encoding::michelson::ticket::{TicketHash, TicketHashError};
-use tezos_smart_rollup_host::path::{concat, OwnedPath, RefPath};
-use tezos_smart_rollup_host::runtime::RuntimeError::*;
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
-use tezos_smart_rollup_host::Error::*;
-use tezos_smart_rollup_storage::storage::Storage;
+use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
+use mavryk_smart_rollup_encoding::michelson::ticket::{TicketHash, TicketHashError};
+use mavryk_smart_rollup_host::path::{concat, OwnedPath, RefPath};
+use mavryk_smart_rollup_host::runtime::RuntimeError::*;
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use mavryk_smart_rollup_host::Error::*;
+use mavryk_smart_rollup_storage::storage::Storage;
 use thiserror::Error;
 
 extern crate alloc;
@@ -37,11 +37,11 @@ pub enum AccountStorageError {
     NotEnoughFunds(OwnedPath, u64, u64),
     /// Some runtime error happened while using the hosts durable storage.
     #[error("Runtime error")]
-    RuntimeError(tezos_smart_rollup_host::runtime::RuntimeError),
+    RuntimeError(mavryk_smart_rollup_host::runtime::RuntimeError),
     /// Some error happened when constructing the path to some resource
     /// associated with an account.
     #[error("Path error")]
-    PathError(tezos_smart_rollup_host::path::PathError),
+    PathError(mavryk_smart_rollup_host::path::PathError),
     /// Some value (amount or counter) was kept in a malformed format in
     /// durable storage.
     #[error("Malformed 64 bit integer in storage")]
@@ -52,7 +52,7 @@ pub enum AccountStorageError {
     /// Some error happened in the storage API when creating the account
     /// storage object.
     #[error("Storage API error")]
-    StorageError(tezos_smart_rollup_storage::StorageError),
+    StorageError(mavryk_smart_rollup_storage::StorageError),
     /// Adding a ticket to an account overflowed an unsigned 64 bit
     /// integer
     #[error("Ticket amount overflow")]
@@ -73,20 +73,20 @@ pub enum AccountStorageError {
     InvalidAmount(TryFromBigIntError<BigInt>),
 }
 
-impl From<tezos_smart_rollup_storage::StorageError> for AccountStorageError {
-    fn from(error: tezos_smart_rollup_storage::StorageError) -> Self {
+impl From<mavryk_smart_rollup_storage::StorageError> for AccountStorageError {
+    fn from(error: mavryk_smart_rollup_storage::StorageError) -> Self {
         AccountStorageError::StorageError(error)
     }
 }
 
-impl From<tezos_smart_rollup_host::path::PathError> for AccountStorageError {
-    fn from(error: tezos_smart_rollup_host::path::PathError) -> Self {
+impl From<mavryk_smart_rollup_host::path::PathError> for AccountStorageError {
+    fn from(error: mavryk_smart_rollup_host::path::PathError) -> Self {
         AccountStorageError::PathError(error)
     }
 }
 
-impl From<tezos_smart_rollup_host::runtime::RuntimeError> for AccountStorageError {
-    fn from(error: tezos_smart_rollup_host::runtime::RuntimeError) -> Self {
+impl From<mavryk_smart_rollup_host::runtime::RuntimeError> for AccountStorageError {
+    fn from(error: mavryk_smart_rollup_host::runtime::RuntimeError) -> Self {
         AccountStorageError::RuntimeError(error)
     }
 }
@@ -488,7 +488,7 @@ pub fn deposit_ticket_to_storage<Host: Runtime>(
     account.get_or_set_id(host)?;
 
     #[cfg(feature = "debug")]
-    tezos_smart_rollup_debug::debug_msg!(host, "Depositing {ticket:?} to {destination}\n");
+    mavryk_smart_rollup_debug::debug_msg!(host, "Depositing {ticket:?} to {destination}\n");
 
     Ok(())
 }
@@ -524,7 +524,7 @@ pub mod dal {
     use super::OwnedPath;
     use super::RefPath;
     use super::Runtime;
-    use tezos_smart_rollup_host::runtime::ValueType;
+    use mavryk_smart_rollup_host::runtime::ValueType;
 
     /// All errors that may happen as result of using this DAL storage
     /// interface.
@@ -532,21 +532,21 @@ pub mod dal {
     pub enum StorageError {
         /// Some runtime error happened while using the hosts durable storage.
         #[error("Runtime error")]
-        RuntimeError(tezos_smart_rollup_host::runtime::RuntimeError),
+        RuntimeError(mavryk_smart_rollup_host::runtime::RuntimeError),
         /// Some error happened when constructing the path to some resource
         /// associated with an account.
         #[error("Path error")]
-        PathError(tezos_smart_rollup_host::path::PathError),
+        PathError(mavryk_smart_rollup_host::path::PathError),
     }
 
-    impl From<tezos_smart_rollup_host::path::PathError> for StorageError {
-        fn from(error: tezos_smart_rollup_host::path::PathError) -> Self {
+    impl From<mavryk_smart_rollup_host::path::PathError> for StorageError {
+        fn from(error: mavryk_smart_rollup_host::path::PathError) -> Self {
             StorageError::PathError(error)
         }
     }
 
-    impl From<tezos_smart_rollup_host::runtime::RuntimeError> for StorageError {
-        fn from(error: tezos_smart_rollup_host::runtime::RuntimeError) -> Self {
+    impl From<mavryk_smart_rollup_host::runtime::RuntimeError> for StorageError {
+        fn from(error: mavryk_smart_rollup_host::runtime::RuntimeError) -> Self {
             StorageError::RuntimeError(error)
         }
     }
@@ -677,8 +677,8 @@ pub mod dal {
 mod test {
     use crate::inbox::external::testing::gen_ed25519_keys;
     use crate::storage::init_account_storage;
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::path::RefPath;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[test]
     fn test_account_counter_update() {

@@ -28,7 +28,7 @@ type rpc_error =
   | Connection_failed of string
   | Bad_request of string
   | Forbidden
-  | Method_not_allowed of Tezos_rpc.Service.meth list
+  | Method_not_allowed of Mavryk_rpc.Service.meth list
   | Unsupported_media_type of string option
   | Not_acceptable of {proposed : string; acceptable : string}
   | Unexpected_status_code of {
@@ -54,7 +54,7 @@ type rpc_error =
 
 type error +=
   | Request_failed of {
-      meth : Tezos_rpc.Service.meth;
+      meth : Mavryk_rpc.Service.meth;
       uri : Uri.t;
       error : rpc_error;
     }

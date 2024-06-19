@@ -2,14 +2,14 @@
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-License-Identifier: MIT
 
-//! Definitions & tezos-encodings for *michelson* data.
+//! Definitions & mavryk-encodings for *michelson* data.
 use nom::branch::alt;
 use nom::combinator::map;
 use std::fmt::Debug;
-use tezos_data_encoding::enc::{self, BinResult, BinWriter};
-use tezos_data_encoding::encoding::{Encoding, HasEncoding};
-use tezos_data_encoding::nom::{self as nom_read, NomReader, NomResult};
-use tezos_data_encoding::types::Zarith;
+use mavryk_data_encoding::enc::{self, BinResult, BinWriter};
+use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+use mavryk_data_encoding::nom::{self as nom_read, NomReader, NomResult};
+use mavryk_data_encoding::types::Zarith;
 
 mod micheline;
 #[cfg(feature = "alloc")]

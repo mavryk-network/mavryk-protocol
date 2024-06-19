@@ -153,7 +153,7 @@ module Nonce = struct
 
   let gen () = Rand.gen size
 
-  (* Attention to the endianess here. Ref Tezos_stdlib.TzEndian *)
+  (* Attention to the endianess here. Ref Mavryk_stdlib.TzEndian *)
   let rec incr_byte b step byteno =
     let res = Bytes.get_uint16_be b byteno + step in
     let lo = res land 0xffff in

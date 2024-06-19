@@ -8,8 +8,8 @@
 use crate::layer::Layer;
 use crate::StorageError;
 use core::marker::PhantomData;
-use tezos_smart_rollup_host::path::{OwnedPath, Path};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::path::{OwnedPath, Path};
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 extern crate alloc;
 
@@ -161,7 +161,7 @@ mod test {
     use crate::storage::Storage;
     use host::path::{concat, OwnedPath, RefPath};
     use host::runtime::Runtime;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[derive(PartialEq, Debug)]
     struct TestAccount {

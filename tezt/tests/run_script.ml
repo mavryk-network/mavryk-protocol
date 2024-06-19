@@ -27,7 +27,7 @@
    -------
    Component:    Client
    Invocation:   dune exec tezt/tests/main.exe -- --file run_script.ml
-   Subject:      Check that run script command to octez-client behaves correctly
+   Subject:      Check that run script command to mavkit-client behaves correctly
 *)
 
 (* This script checks result of some arbitrary instruction against the
@@ -62,7 +62,7 @@ code {
 
 let prg ty instr = Format.sprintf prg_template ty instr instr
 
-let check_balance = prg "mutez" "BALANCE"
+let check_balance = prg "mumav" "BALANCE"
 
 let check_self_address = prg "address" "SELF_ADDRESS"
 
@@ -227,7 +227,7 @@ let test_other_contracts =
     ~__FILE__
     ~title:"Run script with other_contracts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let unused_address = {|"KT1Q36KWPSba7dHsH5E4ZsQHehrChc51e19d"|} in
@@ -246,7 +246,7 @@ let test_extra_big_maps =
     ~__FILE__
     ~title:"Run script with extra_big_maps"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* {storage; _} =

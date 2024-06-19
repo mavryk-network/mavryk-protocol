@@ -38,8 +38,8 @@
 
 open Tezt
 open Tezt_tezos
-open Tezos_crypto
-module Node_config = Octez_node_config.Config_file
+open Mavryk_crypto
+module Node_config = Mavkit_node_config.Config_file
 
 let ensure_dir_exists dir =
   Lwt.catch
@@ -75,7 +75,7 @@ let default_output_dir =
 let output_dir =
   Sys.getenv_opt output_dir_name |> Option.value ~default:default_output_dir
 
-let network_name_default = "TEZOS_EXPERIMENT_NET"
+let network_name_default = "MAVRYK_EXPERIMENT_NET"
 
 let network_name =
   Sys.getenv_opt "NETWORK" |> Option.value ~default:network_name_default
@@ -95,16 +95,11 @@ let protocol_alpha_parameters_template =
 
 let network_activation_parameters_templates protocol_hash =
   match protocol_hash with
-  | Tezt_tezos.Protocol.Nairobi ->
+  | Tezt_tezos.Protocol.Atlas ->
       Some
         (Filename.concat
            network_parameters_templates_dir
-           "proto_017_PtNairob_mainnet.json")
-  | Tezt_tezos.Protocol.Oxford ->
-      Some
-        (Filename.concat
-           network_parameters_templates_dir
-           "proto_018_Proxford_mainnet.json")
+           "proto_001_PtAtLas_mainnet.json")
   | Tezt_tezos.Protocol.Alpha ->
       (* Fetching the network parameters from the src/proto_alpha directory,
          to be sure that we are in synch with current protocl parameters. *)
@@ -134,9 +129,9 @@ let rec genesis () =
       let p = String.sub p 0 (String.length p - 4) in
       let b58_block_hash = Base58.safe_encode p in
       let block =
-        Tezos_crypto.Hashed.Block_hash.of_b58check_exn b58_block_hash
+        Mavryk_crypto.Hashed.Block_hash.of_b58check_exn b58_block_hash
       in
-      return (block, Tezos_base.Time.Protocol.of_notation_exn time)
+      return (block, Mavryk_base.Time.Protocol.of_notation_exn time)
 
 let save_config (Node_config.{data_dir; _} as configuration) =
   let file = Filename.concat data_dir "config.json" in
@@ -235,16 +230,16 @@ module Local = struct
 
   let generate_network_configuration network_name data_dir () =
     let protocol =
-      Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn
+      Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn
         "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
     in
     let* block, time = genesis () in
-    let genesis = Tezos_base.Genesis.{block; time; protocol} in
+    let genesis = Mavryk_base.Genesis.{block; time; protocol} in
     let chain_name =
-      Tezos_base.Distributed_db_version.Name.of_string network_name
+      Mavryk_base.Distributed_db_version.Name.of_string network_name
     in
     let sandboxed_chain_name =
-      Tezos_base.Distributed_db_version.Name.of_string @@ network_name
+      Mavryk_base.Distributed_db_version.Name.of_string @@ network_name
       ^ "_SANDBOXED"
     in
     let client = Client.create ~base_dir:output_dir () in
@@ -305,13 +300,13 @@ module Local = struct
       |> List.filter (String.starts_with ~prefix:baker_prefix)
     in
     let* () = Lwt_io.printf "Fetching client accounts from %s\n" output_dir in
-    let bootstrap_amount_mutez = Some 4_000_000_000_000 in
+    let bootstrap_amount_mumav = Some 4_000_000_000_000 in
     let* bootstrap_accounts =
       baker_accounts
       |> Lwt_list.map_s (fun alias ->
              let* () = Lwt_io.printf "." in
              let* account_key = Client.show_address ~alias client in
-             return (account_key, bootstrap_amount_mutez))
+             return (account_key, bootstrap_amount_mumav))
     in
     let* () = Lwt_io.printf "\n" in
     let* () =
@@ -378,7 +373,7 @@ let () =
     ~__FILE__
     ~title:"Generate Network Activation Parameters"
     ~tags:["generate_activation_parameters"]
-    (Local.generate_network_activation_parameters Protocol.Nairobi) ;
+    (Local.generate_network_activation_parameters Protocol.Atlas) ;
   register
     ~__FILE__
     ~title:"Partition bakers by node"

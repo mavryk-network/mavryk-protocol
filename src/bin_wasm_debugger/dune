@@ -3,15 +3,15 @@
 
 (executable
  (name main_wasm_debugger)
- (public_name octez-smart-rollup-wasm-debugger)
- (package octez-smart-rollup-wasm-debugger)
+ (public_name mavkit-smart-rollup-wasm-debugger)
+ (package mavkit-smart-rollup-wasm-debugger)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-smart-rollup-wasm-debugger-lib)
+  mavkit-smart-rollup-wasm-debugger-lib)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp)
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Octez_smart_rollup_wasm_debugger_lib))
+  -open Mavkit_smart_rollup_wasm_debugger_lib))

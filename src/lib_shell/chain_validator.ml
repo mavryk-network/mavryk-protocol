@@ -230,10 +230,10 @@ let may_switch_test_chain w active_chains spawn_child block =
   let may_create_child block test_protocol expiration forking_block_hash =
     let block_header = Store.Block.header block in
     let genesis_hash =
-      Tezos_context_disk.Context.compute_testchain_genesis forking_block_hash
+      Mavryk_context_disk.Context.compute_testchain_genesis forking_block_hash
     in
     let testchain_id =
-      Tezos_context_disk.Context.compute_testchain_chain_id genesis_hash
+      Mavryk_context_disk.Context.compute_testchain_chain_id genesis_hash
     in
     let*! activated =
       match nv.child with
@@ -672,7 +672,7 @@ let on_error (type a b) w st (request : (a, b) Request.t) (errs : b) :
 
      With the current state of the code, it is possible that
      this branch is not reachable. This would be possible to
-     see it if we relax the interface of [tezos-worker] to use
+     see it if we relax the interface of [mavryk-worker] to use
      [('a, 'b) result] instead of [tzresult] and if each
      request uses its own error type. *)
   | Notify_branch _ -> ( match errs with _ -> .)

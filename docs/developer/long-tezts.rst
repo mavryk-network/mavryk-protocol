@@ -45,7 +45,7 @@ into ``master``, it will be automatically run on dedicated machines
 that regularly pull the latest version of ``master`` and run long
 tests. If your test takes a significant time to run (days), you should
 however ask that a new dedicated machine is created to run your test.
-Please ask on the ``#tests`` Slack channel of ``tezos-dev`` before
+Please ask on the ``#tests`` Slack channel of ``mavryk-dev`` before
 merging.
 
 .. _performance_regression_test_fw:
@@ -108,7 +108,7 @@ Example
 -------
 
 See :src:`tezt/long_tests/prt_client.ml`, which is a very simple test
-that measures how long it takes for ``octez-client`` to load.  It uses
+that measures how long it takes for ``mavkit-client`` to load.  It uses
 ``Long_test.time_lwt`` to measure how long it takes for
 ``Client.version`` to run and to emit alerts if this time is
 significantly higher than usual. It also defines a graph of this time.
@@ -119,7 +119,7 @@ Providing Large Data
 --------------------
 
 Your test may require data that is too large to commit in
-``tezos/tezos``. For example, a benchmark in which measurement is
+``mavryk-network/mavryk-protocol``. For example, a benchmark in which measurement is
 dependent on some block's context would need to load the same data
 directory on each execution.
 
@@ -130,7 +130,7 @@ will be synchronized with the server your tests will be running on.
 For security reasons, this storage has its access limited to
 authorized people. If you want to upload data, please contact
 Jérémie Goldberg (@jgonlabs) or anyone with admin access on
-the Tezos AWS account to allow you to do so.
+the Mavryk AWS account to allow you to do so.
 
 Please note that the S3 storage root folder is mounted in ``/s3data/``.
 E.g. if your file is under ``/myfolder/myfile`` in the Amazon bucket, your
@@ -219,7 +219,7 @@ Configuring and Running Tezt Long Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For more information about how to use the configuration file, please refer
-to the `Long test module API <https://tezos.gitlab.io/api/odoc/_html/tezt-tezos/Tezt_tezos_tezt_performance_regression/>`__.
+to the `Long test module API <https://protocol.mavryk.org/api/odoc/_html/tezt-tezos/Tezt_mavryk_tezt_performance_regression/>`__.
 
 A predefined configuration has already been shipped in :src:`tezt/lib_performance_regression/local-sandbox/tezt_config.json`.
 It allows to use the InfluxDB and Grafana instances set up by the

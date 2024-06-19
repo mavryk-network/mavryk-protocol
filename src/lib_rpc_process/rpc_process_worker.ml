@@ -148,9 +148,9 @@ let stop t =
 
 let run_server t () =
   let open Lwt_result_syntax in
-  let socket_dir = Tezos_base_unix.Socket.get_temporary_socket_dir () in
+  let socket_dir = Mavryk_base_unix.Socket.get_temporary_socket_dir () in
   let socket_dir_arg = ["--socket-dir"; socket_dir] in
-  let args = "octez-rpc-process" :: socket_dir_arg in
+  let args = "mavkit-rpc-process" :: socket_dir_arg in
   let process =
     Lwt_process.open_process_none
       ~stdout:(`FD_copy Unix.stdout)
@@ -160,7 +160,7 @@ let run_server t () =
   let pid = process#pid in
   let init_socket_path = Main.get_init_socket_path socket_dir pid in
   let* init_socket_fd =
-    let* fds = Tezos_base_unix.Socket.bind (Unix init_socket_path) in
+    let* fds = Mavryk_base_unix.Socket.bind (Unix init_socket_path) in
     match fds with
     | [fd] ->
         let*! init_socket_fd, _ = Lwt_unix.accept ~cloexec:true fd in
@@ -168,11 +168,11 @@ let run_server t () =
         return init_socket_fd
     | _ ->
         (* This assertions holds as long as
-           Tezos_base_unix.Socket.bind returns a single list element
+           Mavryk_base_unix.Socket.bind returns a single list element
            when binding Unix sockets. *)
         assert false
   in
-  let* () = Tezos_base_unix.Socket.handshake init_socket_fd Main.socket_magic in
+  let* () = Mavryk_base_unix.Socket.handshake init_socket_fd Main.socket_magic in
   let* () =
     Socket.send
       init_socket_fd

@@ -87,7 +87,7 @@ let wait_for_operation_inclusion (ctxt : #Client_context.full) ~chain
      assumes that the block predecessor has been processed already. *)
   let process hash header =
     let block = `Hash (hash, 0) in
-    let predecessor = header.Tezos_base.Block_header.predecessor in
+    let predecessor = header.Mavryk_base.Block_header.predecessor in
     let pred_block =
       WithExceptions.Option.to_exn ~none:Not_found
       @@ Block_hash.Table.find blocks predecessor

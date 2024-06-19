@@ -76,8 +76,8 @@ let script_string = Script_string.length
 
 let bytes (b : Bytes.t) : t = Bytes.length b
 
-let mutez (_tez : Alpha_context.Tez.t) : t =
-  (* Up to now, mutez are stored on 8 bytes (int64). *)
+let mumav (_tez : Alpha_context.Tez.t) : t =
+  (* Up to now, mumav are stored on 8 bytes (int64). *)
   8
 
 let bool (_ : bool) : t = 1
@@ -112,7 +112,7 @@ let rec size_of_comparable_value :
    | Nat_t -> integer v
    | String_t -> script_string v
    | Bytes_t -> bytes v
-   | Mutez_t -> mutez v
+   | Mumav_t -> mumav v
    | Bool_t -> bool v
    | Key_hash_t -> key_hash v
    | Timestamp_t -> timestamp v

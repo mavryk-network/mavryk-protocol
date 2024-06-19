@@ -4,8 +4,8 @@
 (executable
  (name bench_signature_perf)
  (libraries
-  octez-libs.error-monad
-  octez-libs.crypto
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
   zarith
   zarith_stubs_js
   data-encoding
@@ -13,5 +13,5 @@
   ptime)
  (flags
   (:standard)
-  -open Tezos_error_monad.TzLwtreslib
+  -open Mavryk_error_monad.TzLwtreslib
   -open Data_encoding))

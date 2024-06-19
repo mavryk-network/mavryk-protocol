@@ -21,7 +21,7 @@ for this benchmark) but to execute this closure ``100000`` times (through ``--ns
 
 .. code-block:: shell
 
-   octez-snoop benchmark TIMER_LATENCY and save to timer.workload --bench-num 1 --nsamples 100000
+   mavkit-snoop benchmark TIMER_LATENCY and save to timer.workload --bench-num 1 --nsamples 100000
 
 The tool returns the following on standard output:
 
@@ -53,7 +53,7 @@ zero. One could also run many benchmarks with fewer samples per benchmark:
 
 .. code-block:: shell
 
-   octez-snoop benchmark TIMER_LATENCY and save to timer.workload --bench-num 1000 --nsamples 100
+   mavkit-snoop benchmark TIMER_LATENCY and save to timer.workload --bench-num 1000 --nsamples 100
 
 This yields on standard output:
 
@@ -98,7 +98,7 @@ If not specified, the PRNG will self-initialize using an unknown seed.
 
 .. code-block:: shell
 
-   octez-snoop benchmark Blake2b_example and save to blake2b.workload --bench-num 500 --nsamples 3000 --determinizer percentile@50 --seed 12897
+   mavkit-snoop benchmark Blake2b_example and save to blake2b.workload --bench-num 500 --nsamples 3000 --determinizer percentile@50 --seed 12897
 
 Here's the output:
 
@@ -130,7 +130,7 @@ It is possible to remove outliers from the raw benchmark data. The command is th
 
 .. code-block:: shell
 
-   octez-snoop remove outliers from data ./blake2b.workload above 3 sigmas and save to blake2b-cleaned.workload
+   mavkit-snoop remove outliers from data ./blake2b.workload above 3 sigmas and save to blake2b-cleaned.workload
 
 In this particular example, the data seems clean though:
 
@@ -161,7 +161,7 @@ Let's execute the following command:
 
 .. code-block:: shell
 
-   octez-snoop infer parameters for model blake2b on data blake2b.workload using lasso --lasso-positive --dump-csv blake2b.csv --save-solution blake2b.sol --plot
+   mavkit-snoop infer parameters for model blake2b on data blake2b.workload using lasso --lasso-positive --dump-csv blake2b.csv --save-solution blake2b.sol --plot
 
 ::
 
@@ -221,7 +221,7 @@ but the principle is similar.
 
 .. code-block:: shell
 
-   octez-snoop generate code using solution blake2b.sol and model blake2b_codegen
+   mavkit-snoop generate code using solution blake2b.sol and model blake2b_codegen
 
 By default, the tool produces integer code by casting floating point constant to integers.
 The tool produces the following code on ``stdout``:
@@ -247,7 +247,7 @@ Calling the tool:
 
 .. code-block:: shell
 
-   octez-snoop generate code using solution blake2b.sol and model blake2b_codegen --fixed-point codegen_params.json
+   mavkit-snoop generate code using solution blake2b.sol and model blake2b_codegen --fixed-point codegen_params.json
 
 We get:
 

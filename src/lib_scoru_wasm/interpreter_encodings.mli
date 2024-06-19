@@ -24,13 +24,13 @@
 (*****************************************************************************)
 
 module Source : sig
-  open Tezos_webassembly_interpreter.Source
+  open Mavryk_webassembly_interpreter.Source
 
   val phrase_encoding : 'a Data_encoding.t -> 'a phrase Data_encoding.t
 end
 
 module Types : sig
-  open Tezos_webassembly_interpreter.Types
+  open Mavryk_webassembly_interpreter.Types
 
   val num_type_encoding : num_type Data_encoding.t
 
@@ -61,7 +61,7 @@ module Types : sig
 end
 
 module Values : sig
-  open Tezos_webassembly_interpreter
+  open Mavryk_webassembly_interpreter
   open Values
 
   val op_encoding :
@@ -77,7 +77,7 @@ module Values : sig
 end
 
 module V128 : sig
-  open Tezos_webassembly_interpreter
+  open Mavryk_webassembly_interpreter
 
   val laneop_encoding :
     'a Data_encoding.t ->
@@ -88,7 +88,7 @@ module V128 : sig
 end
 
 module Ast : sig
-  open Tezos_webassembly_interpreter
+  open Mavryk_webassembly_interpreter
 
   module IntOp : sig
     val unop_encoding : Ast.IntOp.unop Data_encoding.t

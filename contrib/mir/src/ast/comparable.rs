@@ -10,8 +10,8 @@ impl PartialOrd for TypedValue {
             (Nat(a), Nat(b)) => a.partial_cmp(b),
             (Nat(..), _) => None,
 
-            (Mutez(a), Mutez(b)) => a.partial_cmp(b),
-            (Mutez(..), _) => None,
+            (Mumav(a), Mumav(b)) => a.partial_cmp(b),
+            (Mumav(..), _) => None,
 
             (Bool(a), Bool(b)) => a.partial_cmp(b),
             (Bool(..), _) => None,
@@ -52,7 +52,7 @@ impl Ord for TypedValue {
 
 #[cfg(test)]
 mod tests {
-    use tezos_crypto_rs::hash::HashTrait;
+    use mavryk_crypto_rs::hash::HashTrait;
 
     use super::*;
 
@@ -75,9 +75,9 @@ mod tests {
         assert_cmp!(Nat; 4; 4; Equal);
         assert_cmp!(Nat; 5; 4; Greater);
 
-        assert_cmp!(Mutez; 3; 4; Less);
-        assert_cmp!(Mutez; 3; 3; Equal);
-        assert_cmp!(Mutez; 32; 4; Greater);
+        assert_cmp!(Mumav; 3; 4; Less);
+        assert_cmp!(Mumav; 3; 3; Equal);
+        assert_cmp!(Mumav; 32; 4; Greater);
 
         assert_cmp!(Bool; false; false; Equal);
         assert_cmp!(Bool; false; true; Less);
@@ -120,27 +120,27 @@ mod tests {
 
     #[test]
     fn compare_addrs() {
-        // ordering was verified against octez-client, see script below
+        // ordering was verified against mavkit-client, see script below
         let ordered_addrs = [
-            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
-            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
-            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
-            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
-            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo",
+            "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq",
+            "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9",
+            "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ",
+            "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu",
+            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo",
+            "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst",
+            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g",
+            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib",
+            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo",
@@ -162,14 +162,14 @@ mod tests {
     /// checks that an array of chain ids is sorted without a priori assuming
     /// that the comparison operator on chain ids is transitive.
     fn compare_chain_ids() {
-        // ordering was verified against octez-client
+        // ordering was verified against mavkit-client
         let ordered_chain_ids = [
             "00000000", "00000001", "00000002", "00000100", "00000200", "01020304", "a0b0c0d0",
             "a1b2c3d4", "ffffffff",
         ]
         .map(|x| {
             TypedValue::ChainId(
-                tezos_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
+                mavryk_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
             )
         });
 
@@ -197,25 +197,25 @@ Script to verify address ordering. Should print "with -1" for all checked addres
 #!/bin/bash
 
 addrs=(
-  "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw"
-  "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ"
-  "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy"
-  "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo"
-  "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo"
+  "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq"
+  "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9"
+  "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ"
+  "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu"
+  "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo"
+  "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst"
+  "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g"
+  "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib"
+  "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo"
@@ -228,7 +228,7 @@ prev=""
 for addr in "${addrs[@]}"; do
   if [ -n "$prev" ]; then
     echo $prev $addr
-    octez-client --mode mockup run script 'parameter address; storage address; code { UNPAIR; SWAP; COMPARE; FAILWITH }' on storage "\"$prev\"" and input "\"$addr\"" 2>&1 | grep '^with'
+    mavkit-client --mode mockup run script 'parameter address; storage address; code { UNPAIR; SWAP; COMPARE; FAILWITH }' on storage "\"$prev\"" and input "\"$addr\"" 2>&1 | grep '^with'
   fi
   prev="$addr"
 done

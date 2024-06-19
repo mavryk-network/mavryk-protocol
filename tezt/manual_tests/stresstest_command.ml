@@ -110,7 +110,7 @@ let test_stresstest_fund_accounts =
        Lwt.wakeup r () ;
        unit)
   in
-  let initial_amount = Tez.of_mutez_int64 config.amount in
+  let initial_amount = Tez.of_mumav_int64 config.amount in
   let* () =
     Client.stresstest_fund_accounts_from_source
       ~source_key_pkh:Constant.bootstrap1.public_key_hash
@@ -130,7 +130,7 @@ let test_stresstest_fund_accounts =
         "Account was funded with %L, but at least %R was expected."
       in
       Check.(
-        Tez.(mutez_int64 balance >= mutez_int64 initial_amount) int64 ~error_msg) ;
+        Tez.(mumav_int64 balance >= mumav_int64 initial_amount) int64 ~error_msg) ;
       unit)
     accounts
 

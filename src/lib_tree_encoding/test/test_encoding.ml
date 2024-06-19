@@ -32,11 +32,11 @@
 *)
 
 open Tztest
-open Tezos_lazy_containers
+open Mavryk_lazy_containers
 
 (* Use context-binary for testing. *)
-module Context = Tezos_context_memory.Context_binary
-module E = Tezos_tree_encoding.Encodings_util.Make (Context)
+module Context = Mavryk_context_memory.Context_binary
+module E = Mavryk_tree_encoding.Encodings_util.Make (Context)
 module Tree = E.Tree
 
 module Map = Lazy_map.Make (struct
@@ -48,11 +48,11 @@ module Map = Lazy_map.Make (struct
 end)
 
 module Tree_encoding = struct
-  include Tezos_tree_encoding
+  include Mavryk_tree_encoding
   include Lazy_map_encoding.Make (Map)
-  include Tezos_tree_encoding.Runner.Make (Tree)
+  include Mavryk_tree_encoding.Runner.Make (Tree)
   module Wrapped_runner =
-    Tezos_tree_encoding.Runner.Make (Tezos_tree_encoding.Wrapped)
+    Mavryk_tree_encoding.Runner.Make (Mavryk_tree_encoding.Wrapped)
 end
 
 let empty_tree () =
@@ -301,7 +301,7 @@ let test_lazy_vector_pop () =
     assert (value = expected) ;
     return_unit
   in
-  let vec = Tezos_lazy_containers.Lazy_vector.IntVector.of_list [0; 1; 2; 3] in
+  let vec = Mavryk_lazy_containers.Lazy_vector.IntVector.of_list [0; 1; 2; 3] in
   (* Encode the lazy vector to the tree. *)
   let*! tree = encode int_vec_enc vec tree in
   let* () =
@@ -310,7 +310,7 @@ let test_lazy_vector_pop () =
   (* Decode the lazy vector from the tree and check the first value. *)
   let*! vec = decode int_vec_enc tree in
   let*! first_value, vec =
-    Tezos_lazy_containers.Lazy_vector.IntVector.pop vec
+    Mavryk_lazy_containers.Lazy_vector.IntVector.pop vec
   in
   assert (first_value = 0) ;
   (* Encode the lazy vector to the tree again and check the value in the tree. *)
@@ -319,7 +319,7 @@ let test_lazy_vector_pop () =
   (* Decode the lazy vector and check its first value. *)
   let*! vec = decode int_vec_enc tree in
   let*! first_value, _vec =
-    Tezos_lazy_containers.Lazy_vector.IntVector.pop vec
+    Mavryk_lazy_containers.Lazy_vector.IntVector.pop vec
   in
   assert (first_value = 1) ;
   return_unit
@@ -519,16 +519,16 @@ let test_swap_vectors () =
   let enc = tup2 ~flatten:false int_vec_enc int_vec_enc in
   let*! tree = empty_tree () in
   let assert_value_at_index ~ix vec expected =
-    let*! value = Tezos_lazy_containers.Lazy_vector.IntVector.get ix vec in
+    let*! value = Mavryk_lazy_containers.Lazy_vector.IntVector.get ix vec in
     assert (value = expected) ;
     return_unit
   in
   (* Create a pair of vectors. *)
   let vec_pair =
-    ( Tezos_lazy_containers.Lazy_vector.IntVector.create
+    ( Mavryk_lazy_containers.Lazy_vector.IntVector.create
         ~produce_value:(fun ix -> Lwt.return ix)
         10,
-      Tezos_lazy_containers.Lazy_vector.IntVector.create
+      Mavryk_lazy_containers.Lazy_vector.IntVector.create
         ~produce_value:(fun ix -> Lwt.return (100 + ix))
         10 )
   in

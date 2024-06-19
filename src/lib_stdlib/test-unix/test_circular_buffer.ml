@@ -364,7 +364,7 @@ let wrap n f =
 let () =
   Alcotest.run
     ~__FILE__
-    "tezos-stdlib"
+    "mavryk-stdlib"
     (List.map
        (fun (run, descr) ->
          ( "circular_buffer.constant-chunks." ^ descr,

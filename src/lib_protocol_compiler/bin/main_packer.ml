@@ -28,15 +28,15 @@ open Filename.Infix
 let () = Lwt.Exception_filter.(set handle_all_except_runtime)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let () =
-  (* warn_if_argv0_name_not_octez *)
+  (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -62,7 +62,7 @@ let () =
   Arg.parse args_spec (fun s -> anonymous := s :: !anonymous) usage_msg ;
   let source_dir =
     match !anonymous with
-    | [source_dir] when Filename.basename source_dir = "TEZOS_PROTOCOL" ->
+    | [source_dir] when Filename.basename source_dir = "MAVRYK_PROTOCOL" ->
         Filename.dirname source_dir
     | [source_dir] -> source_dir
     | _ ->
@@ -70,13 +70,13 @@ let () =
         Stdlib.exit 1
   in
   let hash, protocol =
-    match Lwt_main.run (Tezos_base_unix.Protocol_files.read_dir source_dir) with
+    match Lwt_main.run (Mavryk_base_unix.Protocol_files.read_dir source_dir) with
     | Ok (None, proto) -> (Protocol.hash proto, proto)
     | Ok (Some hash, proto) -> (hash, proto)
     | Error err ->
         Format.kasprintf
           Stdlib.failwith
-          "Failed to read TEZOS_PROTOCOL: %a"
+          "Failed to read MAVRYK_PROTOCOL: %a"
           pp_print_trace
           err
   in

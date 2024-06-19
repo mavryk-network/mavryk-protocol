@@ -4,10 +4,10 @@
 
 //! Constructing inbox messages for sending to the kernel.
 
-use tezos_data_encoding::{enc::BinWriter, encoding::HasEncoding};
+use mavryk_data_encoding::{enc::BinWriter, encoding::HasEncoding};
 
-use tezos_smart_rollup_encoding::inbox::InternalInboxMessage;
-use tezos_smart_rollup_encoding::michelson::Michelson;
+use mavryk_smart_rollup_encoding::inbox::InternalInboxMessage;
+use mavryk_smart_rollup_encoding::michelson::Michelson;
 
 pub use super::external::sendable::ExternalInboxMessage;
 use super::{DepositFromInternalPayloadError, InboxDeposit};
@@ -37,10 +37,10 @@ mod test {
     use crate::inbox::external::ParsedExternalInboxMessage;
     use proptest::collection;
     use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_smart_rollup_encoding::inbox::InboxMessage as ParsedInboxMessage;
-    use tezos_smart_rollup_encoding::michelson::ticket::StringTicket;
-    use tezos_smart_rollup_encoding::michelson::{MichelsonPair, MichelsonString};
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_smart_rollup_encoding::inbox::InboxMessage as ParsedInboxMessage;
+    use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
+    use mavryk_smart_rollup_encoding::michelson::{MichelsonPair, MichelsonString};
 
     proptest! {
         #[test]

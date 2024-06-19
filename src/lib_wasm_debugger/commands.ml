@@ -25,7 +25,7 @@
 (*****************************************************************************)
 
 open Repl_helpers
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Custom_section
 
 (* Possible step kinds. *)
@@ -275,11 +275,11 @@ let parse_commands s =
   match commands with None -> Unknown s | Some cmd -> cmd
 
 let build_metadata config =
-  Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Metadata.(
+  Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Metadata.(
     {
       address = config.Config.destination;
       origination_level =
-        Tezos_protocol_alpha.Protocol.Alpha_context.Raw_level.of_int32_exn 0l;
+        Mavryk_protocol_alpha.Protocol.Alpha_context.Raw_level.of_int32_exn 0l;
     }
     |> Data_encoding.Binary.to_string_exn encoding)
 
@@ -327,7 +327,7 @@ let read_data ~kind ~directory ~filename retries =
       read_data_from_stdin retries)
 
 let reveal_preimage_builtin config retries hash =
-  let hex = Tezos_protocol_alpha.Protocol.Sc_rollup_reveal_hash.to_hex hash in
+  let hex = Mavryk_protocol_alpha.Protocol.Sc_rollup_reveal_hash.to_hex hash in
   read_data
     ~kind:"Preimage"
     ~directory:config.Config.preimage_directory
@@ -335,7 +335,7 @@ let reveal_preimage_builtin config retries hash =
     retries
 
 let request_dal_page config retries published_level slot_index page_index =
-  let open Tezos_protocol_alpha.Protocol in
+  let open Mavryk_protocol_alpha.Protocol in
   let filename =
     Format.asprintf
       "%a-%a-%a"
@@ -353,7 +353,7 @@ let request_dal_page config retries published_level slot_index page_index =
     retries
 
 let reveals config request =
-  let open Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
+  let open Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
   let num_retries = 3 in
   match Wasm_2_0_0PVM.decode_reveal request with
   | Reveal_raw_data hash -> reveal_preimage_builtin config num_retries hash
@@ -369,8 +369,8 @@ let reveals config request =
 
 let write_debug config =
   if config.Config.kernel_debug then
-    Tezos_scoru_wasm.Builtins.Printer (fun msg -> Lwt_fmt.printf "%s%!" msg)
-  else Tezos_scoru_wasm.Builtins.Noop
+    Mavryk_scoru_wasm.Builtins.Printer (fun msg -> Lwt_fmt.printf "%s%!" msg)
+  else Mavryk_scoru_wasm.Builtins.Noop
 
 module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   module Prof = Profiling.Make (Wasm_utils)
@@ -591,7 +591,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     let is_profilable =
       match pvm_state.tick_state with
       | Collect | Snapshot
-      | Decode Tezos_webassembly_interpreter.Decode.{module_kont = MKStart; _}
+      | Decode Mavryk_webassembly_interpreter.Decode.{module_kont = MKStart; _}
         ->
           true
       | _ -> false
@@ -635,7 +635,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     | Wasm_pvm_state.No_input_required -> Format.fprintf ppf "Evaluating"
     | Input_required -> Format.fprintf ppf "Waiting for input"
     | Reveal_required req ->
-        let open Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
+        let open Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup in
         let req = Wasm_2_0_0PVM.decode_reveal req in
         Format.fprintf ppf "Waiting for reveal: %a" pp_reveal req
 
@@ -668,14 +668,14 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     let open Lwt_syntax in
     let* input_buffer = Wasm.Internal_for_tests.get_input_buffer tree in
     let* messages =
-      Tezos_lazy_containers.Lazy_vector.(
+      Mavryk_lazy_containers.Lazy_vector.(
         Mutable.ZVector.snapshot input_buffer |> ZVector.to_list)
     in
     let messages_sorted =
       List.sort Messages.compare_input_buffer_messages messages
     in
     let pp_message ppf
-        Tezos_webassembly_interpreter.Input_buffer.
+        Mavryk_webassembly_interpreter.Input_buffer.
           {raw_level; message_counter; payload} =
       Format.fprintf
         ppf
@@ -697,7 +697,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     in
 
     let size =
-      Tezos_lazy_containers.Lazy_vector.Mutable.ZVector.num_elements
+      Mavryk_lazy_containers.Lazy_vector.Mutable.ZVector.num_elements
         input_buffer
     in
     Lwt_fmt.printf
@@ -710,10 +710,10 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     let open Lwt_syntax in
     let* output_buffer = Wasm.Internal_for_tests.get_output_buffer tree in
     let* level_vector =
-      Tezos_webassembly_interpreter.Output_buffer.get_outbox output_buffer level
+      Mavryk_webassembly_interpreter.Output_buffer.get_outbox output_buffer level
     in
     let* messages =
-      Tezos_lazy_containers.Lazy_vector.(level_vector |> ZVector.to_list)
+      Mavryk_lazy_containers.Lazy_vector.(level_vector |> ZVector.to_list)
     in
     let pp_messages () =
       Format.asprintf
@@ -724,7 +724,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
         messages
     in
     let size =
-      Tezos_lazy_containers.Lazy_vector.ZVector.num_elements level_vector
+      Mavryk_lazy_containers.Lazy_vector.ZVector.num_elements level_vector
     in
     Lwt_fmt.printf
       "Outbox has %s messages:\n%s\n%!"
@@ -742,8 +742,8 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   let find_key_in_durable tree key =
     let open Lwt_syntax in
     let* durable = Wasm_utils.wrap_as_durable_storage tree in
-    let durable = Tezos_scoru_wasm.Durable.of_storage_exn durable in
-    Tezos_scoru_wasm.Durable.find_value durable key
+    let durable = Mavryk_scoru_wasm.Durable.of_storage_exn durable in
+    Mavryk_scoru_wasm.Durable.find_value durable key
 
   (* [print_durable ~depth ~show_values ~path tree] prints the keys in the durable
      storage from the given path and their values in their hexadecimal
@@ -817,7 +817,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
         return_unit
     | Some v ->
         let+ str_value =
-          Tezos_lazy_containers.Chunked_byte_vector.to_string v
+          Mavryk_lazy_containers.Chunked_byte_vector.to_string v
         in
         Format.printf "%s\n%!" @@ show_value kind str_value
 
@@ -827,14 +827,14 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   let show_key tree key kind =
     Lwt.catch
       (fun () ->
-        let key = Tezos_scoru_wasm.Durable.key_of_string_exn key in
+        let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key in
         show_key_gen tree key kind)
       (function
-        | Tezos_scoru_wasm.Durable.Invalid_key _ ->
+        | Mavryk_scoru_wasm.Durable.Invalid_key _ ->
             Lwt_fmt.printf "Invalid key\n%!"
-        | Tezos_scoru_wasm.Durable.Value_not_found ->
+        | Mavryk_scoru_wasm.Durable.Value_not_found ->
             Lwt_fmt.printf "No value found for key\n%!"
-        | Tezos_scoru_wasm.Durable.Tree_not_found ->
+        | Mavryk_scoru_wasm.Durable.Tree_not_found ->
             Lwt_fmt.printf "No tree found for key\n%!"
         | exn ->
             Lwt_fmt.printf "Unknown exception: %s\n%!" (Printexc.to_string exn))
@@ -853,11 +853,11 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     in
     Lwt.catch
       (fun () ->
-        Tezos_lazy_containers.Lazy_vector.Int32Vector.get
+        Mavryk_lazy_containers.Lazy_vector.Int32Vector.get
           0l
           module_inst.memories)
       (fun _ ->
-        raise Tezos_webassembly_interpreter.Eval.Missing_memory_0_export)
+        raise Mavryk_webassembly_interpreter.Eval.Missing_memory_0_export)
 
   (* [show_memory tree address length] loads the [length] bytes at address
      [address] in the memory, and prints it in its hexadecimal representation. *)
@@ -867,7 +867,7 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
       (fun () ->
         let* memory = load_memory tree in
         let* value =
-          Tezos_webassembly_interpreter.Memory.load_bytes memory address length
+          Mavryk_webassembly_interpreter.Memory.load_bytes memory address length
         in
         Lwt_fmt.printf "%s\n%!" @@ show_value kind value)
       (function
@@ -892,10 +892,10 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   let reveal_preimage config bytes tree =
     let open Lwt_syntax in
     let* info = Wasm.get_info tree in
-    match info.Tezos_scoru_wasm.Wasm_pvm_state.input_request with
+    match info.Mavryk_scoru_wasm.Wasm_pvm_state.input_request with
     | Reveal_required req -> (
         match
-          ( Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Wasm_2_0_0PVM
+          ( Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Wasm_2_0_0PVM
             .decode_reveal
               req,
             Option.bind bytes (fun bytes -> Hex.to_bytes (`Hex bytes)) )
@@ -919,10 +919,10 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   let reveal_metadata config tree =
     let open Lwt_syntax in
     let* info = Wasm.get_info tree in
-    match info.Tezos_scoru_wasm.Wasm_pvm_state.input_request with
-    | Tezos_scoru_wasm.Wasm_pvm_state.(Reveal_required req) -> (
+    match info.Mavryk_scoru_wasm.Wasm_pvm_state.input_request with
+    | Mavryk_scoru_wasm.Wasm_pvm_state.(Reveal_required req) -> (
         match
-          Tezos_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Wasm_2_0_0PVM
+          Mavryk_protocol_alpha.Protocol.Alpha_context.Sc_rollup.Wasm_2_0_0PVM
           .decode_reveal
             req
         with
@@ -941,12 +941,12 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
   let get_function_symbols tree =
     let open Lwt_result_syntax in
     let*! durable = Wasm_utils.wrap_as_durable_storage tree in
-    let durable = Tezos_scoru_wasm.Durable.of_storage_exn durable in
+    let durable = Mavryk_scoru_wasm.Durable.of_storage_exn durable in
     let*! module_ =
-      Tezos_scoru_wasm.(Durable.find_value_exn durable Constants.kernel_key)
+      Mavryk_scoru_wasm.(Durable.find_value_exn durable Constants.kernel_key)
     in
     let*! module_string =
-      Tezos_lazy_containers.Chunked_byte_vector.to_string module_
+      Mavryk_lazy_containers.Chunked_byte_vector.to_string module_
     in
     let* function_symbols =
       Repl_helpers.trap_exn (fun () ->

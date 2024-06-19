@@ -2,12 +2,12 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_store_real)
- (public_name octez-shell-libs.store.real)
- (implements octez-shell-libs.store)
+ (name mavryk_store_real)
+ (public_name mavkit-shell-libs.store.real)
+ (implements mavkit-shell-libs.store)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-shell-libs.store.unix)
+  mavkit-shell-libs.store.unix)
  (flags
   (:standard)
-  -open Tezos_store_unix))
+  -open Mavryk_store_unix))

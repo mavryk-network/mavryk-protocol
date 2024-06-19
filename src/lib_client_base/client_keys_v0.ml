@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Module to use keys over {!Tezos_crypto.Signature.V0} *)
+(** Module to use keys over {!Mavryk_crypto.Signature.V0} *)
 
 include Client_keys
 include Client_keys.V0

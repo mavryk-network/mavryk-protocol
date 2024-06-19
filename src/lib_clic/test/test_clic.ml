@@ -26,14 +26,14 @@
 
 (** Testing
     -------
-    Component:    Tezos_clic library
+    Component:    Mavryk_clic library
     Invocation:   dune exec src/lib_clic/test/main.exe \
                   -- --file test_clic.ml
-    Subject:      Test the functionality of the Tezos_clic library, such as CLI
+    Subject:      Test the functionality of the Mavryk_clic library, such as CLI
                   command dispatch, parameters and auto-completion.
 *)
 
-open Tezos_error_monad.Error_monad
+open Mavryk_error_monad.Error_monad
 
 (* definitions *)
 
@@ -47,7 +47,7 @@ let keywords words =
     | Some v -> return v
   in
   let autocomplete _ = return (fst (List.split words)) in
-  Tezos_clic.parameter ~autocomplete matcher
+  Mavryk_clic.parameter ~autocomplete matcher
 
 type abcd = A | B | C | D | The
 
@@ -67,21 +67,21 @@ let string_of_efgh = function
   | H -> "H"
   | End -> "end"
 
-let abcd_parameter : (abcd, unit) Tezos_clic.parameter =
+let abcd_parameter : (abcd, unit) Mavryk_clic.parameter =
   keywords [("A", A); ("B", B); ("C", C); ("D", D); ("the", The)]
 
-let efgh_parameter : (efgh, unit) Tezos_clic.parameter =
+let efgh_parameter : (efgh, unit) Mavryk_clic.parameter =
   keywords [("E", E); ("F", F); ("G", G); ("H", H); ("end", End)]
 
 let abcd_param ~name =
-  Tezos_clic.param ~name ~desc:"must be A,B,C,D, or \"the\"" abcd_parameter
+  Mavryk_clic.param ~name ~desc:"must be A,B,C,D, or \"the\"" abcd_parameter
 
 let efgh_param ~name =
-  Tezos_clic.param ~name ~desc:"must be E,F,G,H, or \"end\"" efgh_parameter
+  Mavryk_clic.param ~name ~desc:"must be E,F,G,H, or \"end\"" efgh_parameter
 
 let neg_param ~name =
-  Tezos_clic.param ~name ~desc:"must be negative number"
-  @@ Tezos_clic.parameter (fun _ w ->
+  Mavryk_clic.param ~name ~desc:"must be negative number"
+  @@ Mavryk_clic.parameter (fun _ w ->
          let i = int_of_string w in
          if i >= 0 then failwith "must be negative" else Lwt_result.return i)
 
@@ -95,7 +95,7 @@ let dispatch cmds argv () =
     return ()
   in
   let cmds = List.map (fun cmd -> cmd cmd_return) cmds in
-  let* () = Tezos_clic.dispatch cmds () argv in
+  let* () = Mavryk_clic.dispatch cmds () argv in
   return !res
 
 let expect_result line pr exp got =
@@ -132,18 +132,18 @@ let expect_result line pr exp got =
 let test_dispatch_basic () =
   let open Lwt_syntax in
   let empty return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"empty"
-      Tezos_clic.no_options
-      Tezos_clic.stop
+      Mavryk_clic.no_options
+      Mavryk_clic.stop
       (fun () () -> return "empty")
   in
   let prefixes words return =
     let name = String.concat "-" words in
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:name
-      Tezos_clic.no_options
-      (Tezos_clic.prefixes words @@ Tezos_clic.stop)
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefixes words @@ Mavryk_clic.stop)
       (fun () () -> return name)
   in
   let expect line = expect_result line Format.pp_print_string in
@@ -175,76 +175,76 @@ let test_dispatch_basic () =
 (** Test the dispatch of commands with non-terminal sequence parameters. *)
 let test_dispatch_advanced () =
   let en return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"seq-abcd-en"
-      Tezos_clic.no_options
-      (Tezos_clic.non_terminal_seq
+      Mavryk_clic.no_options
+      (Mavryk_clic.non_terminal_seq
          ~suffix:["the"; "end"]
          (abcd_param ~name:"item")
-      @@ Tezos_clic.stop)
+      @@ Mavryk_clic.stop)
       (fun () l () ->
         return ("E" ^ String.concat "" (List.map string_of_abcd l)))
   in
   let enp return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"seq-abcd-en"
-      Tezos_clic.no_options
-      (Tezos_clic.non_terminal_seq
+      Mavryk_clic.no_options
+      (Mavryk_clic.non_terminal_seq
          ~suffix:["the"; "end"]
          (abcd_param ~name:"item")
-      @@ Tezos_clic.prefix "of" @@ efgh_param ~name:"last" @@ Tezos_clic.stop)
+      @@ Mavryk_clic.prefix "of" @@ efgh_param ~name:"last" @@ Mavryk_clic.stop)
       (fun () l p () ->
         return
           ("E" ^ String.concat "" (List.map string_of_abcd l) ^ string_of_efgh p))
   in
   let fr return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"seq-abcd-fr"
-      Tezos_clic.no_options
-      (Tezos_clic.non_terminal_seq
+      Mavryk_clic.no_options
+      (Mavryk_clic.non_terminal_seq
          ~suffix:["la"; "fin"]
          (abcd_param ~name:"item")
-      @@ Tezos_clic.stop)
+      @@ Mavryk_clic.stop)
       (fun () l () ->
         return ("F" ^ String.concat "" (List.map string_of_abcd l)))
   in
   let prefixed_en return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"en-seq-abcd"
-      Tezos_clic.no_options
-      (Tezos_clic.prefix "en"
-      @@ Tezos_clic.non_terminal_seq
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefix "en"
+      @@ Mavryk_clic.non_terminal_seq
            ~suffix:["the"; "end"]
            (abcd_param ~name:"item")
-      @@ Tezos_clic.stop)
+      @@ Mavryk_clic.stop)
       (fun () l () ->
         return ("E" ^ String.concat "" (List.map string_of_abcd l)))
   in
   let prefixed_fr return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"fr-seq-abcd"
-      Tezos_clic.no_options
-      (Tezos_clic.prefix "fr"
-      @@ Tezos_clic.non_terminal_seq
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefix "fr"
+      @@ Mavryk_clic.non_terminal_seq
            ~suffix:["la"; "fin"]
            (abcd_param ~name:"item")
-      @@ Tezos_clic.stop)
+      @@ Mavryk_clic.stop)
       (fun () l () ->
         return ("F" ^ String.concat "" (List.map string_of_abcd l)))
   in
   let enp_neg_1 return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"neg-param"
-      Tezos_clic.no_options
-      (Tezos_clic.prefixes ["the"; "start"]
-      @@ neg_param ~name:"neg" @@ Tezos_clic.prefix "done" @@ Tezos_clic.stop)
+      Mavryk_clic.no_options
+      (Mavryk_clic.prefixes ["the"; "start"]
+      @@ neg_param ~name:"neg" @@ Mavryk_clic.prefix "done" @@ Mavryk_clic.stop)
       (fun () i () -> return ("E" ^ string_of_int i))
   in
   let enp_prefix_stop return =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~desc:"strict-prefix"
-      Tezos_clic.(args1 @@ switch ~doc:"" ~long:"nothing" ())
-      (Tezos_clic.prefixes ["the"; "start"] @@ Tezos_clic.stop)
+      Mavryk_clic.(args1 @@ switch ~doc:"" ~long:"nothing" ())
+      (Mavryk_clic.prefixes ["the"; "start"] @@ Mavryk_clic.stop)
       (fun nothing () -> return (Printf.sprintf "E-%b" nothing))
   in
   let expect line = expect_result line Format.pp_print_string in
@@ -364,7 +364,7 @@ let test_dispatch_advanced () =
   return_unit
 
 let string_param ~autocomplete next =
-  Tezos_clic.(
+  Mavryk_clic.(
     param
       ~name:"string"
       ~desc:"string"
@@ -372,7 +372,7 @@ let string_param ~autocomplete next =
       next)
 
 let int_param ~autocomplete next =
-  Tezos_clic.(
+  Mavryk_clic.(
     param
       ~name:"int"
       ~desc:"int"
@@ -388,10 +388,10 @@ let test_autocompletion_case ~commands ~args ~expected () =
     | [cur_arg] -> (script, cur_arg)
     | cur_arg :: prev_arg :: _ -> (prev_arg, cur_arg)
   in
-  let global_options = Tezos_clic.no_options in
+  let global_options = Mavryk_clic.no_options in
   let ctxt = () in
   let* next =
-    Tezos_clic.autocompletion
+    Mavryk_clic.autocompletion
       ~script
       ~cur_arg
       ~prev_arg
@@ -415,7 +415,7 @@ let test_autocompletion_case ~commands ~args ~expected () =
 let test_parameters_autocompletion =
   let open Lwt_result_syntax in
   let param_commands =
-    Tezos_clic.
+    Mavryk_clic.
       [
         command
           ~desc:"command with a param"
@@ -454,7 +454,7 @@ let test_parameters_autocompletion =
     ]
   in
   let prefix_commands =
-    Tezos_clic.
+    Mavryk_clic.
       [
         command
           ~desc:"command with prefixes"
@@ -510,7 +510,7 @@ let test_parameters_autocompletion =
     ]
   in
   let seq_commands =
-    Tezos_clic.
+    Mavryk_clic.
       [
         command
           ~desc:"command with a seq"
@@ -553,7 +553,7 @@ let test_parameters_autocompletion =
     ]
   in
   let non_terminal_seq_commands =
-    Tezos_clic.
+    Mavryk_clic.
       [
         command
           ~desc:"command with a non-terminal-seq"
@@ -598,10 +598,10 @@ let test_parameters_autocompletion =
           return
           @@ Alcotest.check_raises
                "Expected [Invalid_argument] exception"
-               (Invalid_argument "Tezos_clic.non_terminal_seq: empty suffix")
+               (Invalid_argument "Mavryk_clic.non_terminal_seq: empty suffix")
                (fun () ->
                  let _failing_param =
-                   Tezos_clic.(
+                   Mavryk_clic.(
                      non_terminal_seq
                        ~suffix:[]
                        (int_param ~autocomplete:(fun _ctxt -> return_nil))
@@ -678,7 +678,7 @@ let wrap (n, f) =
 let () =
   Alcotest_lwt.run
     ~__FILE__
-    "Tezos_clic"
+    "Mavryk_clic"
     [
       ( "dispatch",
         [

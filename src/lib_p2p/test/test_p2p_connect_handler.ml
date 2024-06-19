@@ -30,7 +30,7 @@
     Subject:      Test that P2p_connect_handler is well-behaved
 *)
 
-let tztest = Tezos_base_test_helpers.Tztest.tztest
+let tztest = Mavryk_base_test_helpers.Tztest.tztest
 
 let dependencies :
     (unit, unit, unit) P2p_connect_handler.Internal_for_tests.dependencies =
@@ -163,7 +163,7 @@ let tests =
   ]
 
 let () =
-  Alcotest_lwt.run ~__FILE__ "tezos-p2p" [("p2p.connect_handler", tests)]
+  Alcotest_lwt.run ~__FILE__ "mavryk-p2p" [("p2p.connect_handler", tests)]
   |> Lwt_main.run
 
 let () = Tezt.Test.run ()

@@ -27,7 +27,7 @@
     [src/lib_protocol_environment/sigs/v3/set.mli] (and a few other signatures
     from the same directory) so we can refer to them in
     [src/lib_protocol_environment/environment_V3.ml]. Indeed, it is impossible
-    to refer to components of [Tezos_protocol_environment_sigs.V3.T] (such as
+    to refer to components of [Mavryk_protocol_environment_sigs.V3.T] (such as
     the [Set] component) because [T] is a module type (not a module).
 
     It might be possible to change the way that the signatures are exported and

@@ -13,14 +13,14 @@ use crate::transactions::withdrawal::Withdrawal;
 use crypto::hash::PublicKeyBls;
 use crypto::CryptoError;
 #[cfg(feature = "debug")]
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_encoding::dac::certificate::{Certificate, CertificateError};
-use tezos_smart_rollup_host::path::concat;
-use tezos_smart_rollup_host::path::OwnedPath;
-use tezos_smart_rollup_host::path::PathError;
-use tezos_smart_rollup_host::path::RefPath;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::runtime::RuntimeError;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_encoding::dac::certificate::{Certificate, CertificateError};
+use mavryk_smart_rollup_host::path::concat;
+use mavryk_smart_rollup_host::path::OwnedPath;
+use mavryk_smart_rollup_host::path::PathError;
+use mavryk_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::RuntimeError;
 use thiserror::Error;
 
 // TODO: replace with `dac_committee`, `_-` now allowed in paths by PVM,

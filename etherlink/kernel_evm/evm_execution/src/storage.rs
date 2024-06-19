@@ -162,7 +162,7 @@ pub mod blocks {
         use crypto::hash::BlockHash;
         use std::iter::Map;
         use std::ops::RangeFrom;
-        use tezos_smart_rollup_encoding::timestamp::Timestamp;
+        use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
         type BlockIter = Map<RangeFrom<i32>, fn(i32) -> (BlockHash, Timestamp)>;
 
@@ -171,10 +171,10 @@ pub mod blocks {
             (1_i32..).map(|level| {
                 let start_timestamp: i64 = 1674236056;
                 let level_bytes: Vec<u8> = Vec::from(level.to_be_bytes());
-                let tezos_hash = BlockHash::try_from(level_bytes.repeat(8))
+                let mavryk_hash = BlockHash::try_from(level_bytes.repeat(8))
                     .expect("Hash expected to be valid");
                 let ts = Timestamp::from(start_timestamp + 30000 * i64::from(level));
-                (tezos_hash, ts)
+                (mavryk_hash, ts)
             })
         }
     }
@@ -185,7 +185,7 @@ pub mod blocks {
         use super::*;
         use primitive_types::U256;
         use sha3::{Digest, Keccak256};
-        use tezos_smart_rollup_mock::MockHost;
+        use mavryk_smart_rollup_mock::MockHost;
 
         #[test]
         fn blocks_cleaned_up() {

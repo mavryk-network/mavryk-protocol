@@ -4,28 +4,27 @@
 (executables
  (names rpc_doc p2p_doc)
  (libraries
-  octez-libs.base
-  octez-libs.rpc
-  octez-libs.stdlib-unix
-  octez-shell-libs.shell
-  octez-libs.rpc-http-server
-  octez-shell-libs.store
-  octez-shell-libs.protocol-updater
-  octez-node-config
+  mavkit-libs.base
+  mavkit-libs.rpc
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell
+  mavkit-libs.rpc-http-server
+  mavkit-shell-libs.store
+  mavkit-shell-libs.protocol-updater
+  mavkit-node-config
   data-encoding
   re
-  tezos-protocol-genesis.embedded-protocol
-  tezos-protocol-017-PtNairob.embedded-protocol
-  tezos-protocol-018-Proxford.embedded-protocol
-  tezos-protocol-alpha.embedded-protocol)
+  mavryk-protocol-genesis.embedded-protocol
+  mavryk-protocol-001-PtAtLas.embedded-protocol
+  mavryk-protocol-alpha.embedded-protocol)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Tezos_shell
-  -open Tezos_store
-  -open Tezos_protocol_updater
-  -open Octez_node_config))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell
+  -open Mavryk_store
+  -open Mavryk_protocol_updater
+  -open Mavkit_node_config))

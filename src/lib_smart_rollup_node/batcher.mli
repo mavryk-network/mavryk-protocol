@@ -40,7 +40,7 @@ val init :
 
 (** Create L2 batches of operations from the queue and pack each batch
     in an L1 operation. The L1 operations (i.e. L2 batches) are queued
-    in the injector for injection on the Tezos node. *)
+    in the injector for injection on the Mavryk node. *)
 val produce_batches : unit -> unit tzresult Lwt.t
 
 (** Shutdown the batcher, waiting for the ongoing request to be processed. *)

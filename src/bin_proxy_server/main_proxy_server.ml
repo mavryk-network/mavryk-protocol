@@ -24,18 +24,18 @@
 (*****************************************************************************)
 
 open Cmdliner
-module Proxy_server_config = Tezos_proxy_server_config.Proxy_server_config
+module Proxy_server_config = Mavryk_proxy_server_config.Proxy_server_config
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let () =
-  (* warn_if_argv0_name_not_octez *)
+  (* warn_if_argv0_name_not_mavkit *)
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -53,7 +53,7 @@ let () =
       executable_name
   else ()
 
-let name = "octez-proxy-server"
+let name = "mavkit-proxy-server"
 
 let config : string option Term.t =
   let doc =
@@ -90,7 +90,7 @@ let rpc_tls : string option Term.t =
 
 let data_dir : string option Term.t =
   let doc =
-    "Path to the data-dir of a running octez-node, for reading the `context` \
+    "Path to the data-dir of a running mavkit-node, for reading the `context` \
      subdirectory to obtain data instead of using the ../raw/bytes RPC (hereby \
      reducing the node's IO)."
   in
@@ -161,8 +161,8 @@ let main_promise (config_file : string option)
        } =
     get_runtime config_from_file config_args
   in
-  let open Tezos_rpc_http in
-  let open Tezos_rpc_http_client_unix in
+  let open Mavryk_rpc_http in
+  let open Mavryk_rpc_http_client_unix in
   let logger =
     if log_requests then RPC_client_unix.full_logger Format.err_formatter
     else RPC_client_unix.null_logger
@@ -179,7 +179,7 @@ let main_promise (config_file : string option)
         let*! () = Lwt_io.printf "%s" msg in
         Lwt_io.(flush stdout)
     in
-    new Tezos_client_base.Client_context.simple_printer logger
+    new Mavryk_client_base.Client_context.simple_printer logger
   in
   let http_ctxt =
     new RPC_client_unix.http_ctxt rpc_config Media_type.all_media_types
@@ -191,14 +191,14 @@ let main_promise (config_file : string option)
   in
   (* The context index, which we try to read if and only if the --data-dir *)
   (* argument has been passed. *)
-  let* (context_index : Tezos_context.Context.index option) =
+  let* (context_index : Mavryk_context.Context.index option) =
     Option.map_es
       (fun data_dir ->
         let context_path = Filename.concat data_dir "context" in
         Lwt.catch
           (fun () ->
             lift_lwt
-              (Tezos_shell_context.Proxy_delegate_maker.make_index
+              (Mavryk_shell_context.Proxy_delegate_maker.make_index
                  ~context_path))
           (function
             | Index_unix.Private.Raw.Not_written ->
@@ -217,23 +217,23 @@ let main_promise (config_file : string option)
       data_dir_opt
   in
   (* Now we build the function that the proxy server can use to build a proxy
-     delegate later, using [Tezos_shell_context.Proxy_delegate_maker.*] functions.
-     This lets it not depend directly on [Tezos_shell_context]: if it did, it
-     would break compilation of octez-client to JavaScript. *)
+     delegate later, using [Mavryk_shell_context.Proxy_delegate_maker.*] functions.
+     This lets it not depend directly on [Mavryk_shell_context]: if it did, it
+     would break compilation of mavkit-client to JavaScript. *)
   let on_disk_proxy_builder =
     Option.map
       (fun index ctx_hash ->
         (* Sync first so we don't observe a stale state. *)
-        let*! () = Tezos_context.Context.sync index in
-        Tezos_shell_context.Proxy_delegate_maker.of_index ~index ctx_hash)
+        let*! () = Mavryk_context.Context.sync index in
+        Mavryk_shell_context.Proxy_delegate_maker.of_index ~index ctx_hash)
       context_index
   in
   let dir =
     let sleep = Lwt_unix.sleep in
-    Tezos_proxy.Proxy_services.build_directory
+    Mavryk_proxy.Proxy_services.build_directory
       printer
       http_ctxt
-      (Tezos_proxy.Proxy_services.Proxy_server
+      (Mavryk_proxy.Proxy_services.Proxy_server
          {sleep; sym_block_caching_time; on_disk_proxy_builder})
       None
   in
@@ -282,14 +282,14 @@ let term : unit Term.t =
      $ sym_block_caching_time $ data_dir))
 
 let info =
-  let doc = "Launches a server that is a readonly frontend to a Tezos node" in
+  let doc = "Launches a server that is a readonly frontend to a Mavryk node" in
   let man =
     [
       `S Manpage.s_bugs;
       `P "Report issues to https://gitlab.com/tezos/tezos/-/issues";
     ]
   in
-  let version = Tezos_version_value.Bin_version.version_string in
+  let version = Mavryk_version_value.Bin_version.version_string in
   Cmd.info name ~version ~doc ~exits:Cmd.Exit.defaults ~man
 
 let () = exit (Cmd.eval (Cmd.v info term))

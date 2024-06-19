@@ -26,8 +26,8 @@
 type t = {
   config : Config_file.t;
   rpc_comm_socket_path : string;
-  internal_events : Tezos_base.Internal_event_config.t;
-  node_version : Tezos_version.Node_version.t;
+  internal_events : Mavryk_base.Internal_event_config.t;
+  node_version : Mavryk_version.Node_version.t;
 }
 
 let parameters_encoding =
@@ -40,5 +40,5 @@ let parameters_encoding =
     (obj4
        (req "config" Config_file.encoding)
        (req "rpc_comm_socket_path" Data_encoding.string)
-       (req "internal_events" Tezos_base.Internal_event_config.encoding)
-       (req "node_version" Tezos_version.Node_version.encoding))
+       (req "internal_events" Mavryk_base.Internal_event_config.encoding)
+       (req "node_version" Mavryk_version.Node_version.encoding))

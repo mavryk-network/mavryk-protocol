@@ -7,7 +7,7 @@ Personal problem:
 * Questions about the state of development
 
 These sorts of questions should be asked, and may have already been answered, on the Tezos stack exchange: https://tezos.stackexchange.com
-More information about the Tezos community can be found on the Tezos developer documentation: https://tezos.gitlab.io
+More information about the Tezos community can be found on the Mavryk developer documentation: https://protocol.mavryk.org
 
 Bugs:
 * Crashes or exceptions in the node

@@ -79,7 +79,7 @@ let create ~peer_id_size ~ip_size ~ip_cleanup_delay =
   let bloomer =
     Bloomer.create (* 512KiB *)
       ~hash:(fun x ->
-        Tezos_crypto.Blake2B.(to_bytes (hash_string [Ipaddr.V6.to_octets x])))
+        Mavryk_crypto.Blake2B.(to_bytes (hash_string [Ipaddr.V6.to_octets x])))
       ~hashes:5 (* fixed, good for reasonable values of [ip_size] *)
       ~countdown_bits:4
         (* 16 steps to 0, fixed discrete split of the cleanup delay *)

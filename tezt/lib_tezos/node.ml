@@ -340,7 +340,7 @@ module Config_file = struct
         ( "genesis",
           `O
             [
-              ("timestamp", `String "2018-06-30T16:07:32Z");
+              ("timestamp", `String "22024-02-23T09:42:53Z");
               ( "block",
                 `String "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2" );
               ("protocol", `String Protocol.genesis_hash);
@@ -352,19 +352,19 @@ module Config_file = struct
                 `O [("genesis_pubkey", `String Constant.activator.public_key)]
               );
             ] );
-        ("chain_name", `String "TEZOS");
-        ("sandboxed_chain_name", `String "SANDBOXED_TEZOS");
+        ("chain_name", `String "MAVRYK");
+        ("sandboxed_chain_name", `String "SANDBOXED_MAVRYK");
       ]
 
-  let ghostnet_sandbox_network_config =
+  let basenet_sandbox_network_config =
     `O
       [
         ( "genesis",
           `O
             [
-              ("timestamp", `String "2022-01-25T15:00:00Z");
+              ("timestamp", `String "2024-02-23T09:40:24Z");
               ( "block",
-                `String "BLockGenesisGenesisGenesisGenesisGenesis1db77eJNeJ9" );
+                `String "BLockGenesisGenesisGenesisGenesisGenesisad134b8W1qK" );
               ("protocol", `String Protocol.genesis_hash);
             ] );
         ( "genesis_parameters",
@@ -374,8 +374,8 @@ module Config_file = struct
                 `O [("genesis_pubkey", `String Constant.activator.public_key)]
               );
             ] );
-        ("chain_name", `String "TEZOS");
-        ("sandboxed_chain_name", `String "SANDBOXED_TEZOS");
+        ("chain_name", `String "MAVRYK");
+        ("sandboxed_chain_name", `String "SANDBOXED_MAVRYK");
       ]
 
   let put_user_activated_upgrades upgrade_points =
@@ -429,7 +429,7 @@ module Config_file = struct
     JSON.put ("network", network) old_config
 
   let set_sandbox_network_with_dal_config
-      (dal_config : Tezos_crypto_dal.Cryptobox.Config.t) old_config =
+      (dal_config : Mavryk_crypto_dal.Cryptobox.Config.t) old_config =
     let dal_config_json =
       let parameters =
         match dal_config.use_mock_srs_for_testing with
@@ -464,7 +464,7 @@ module Config_file = struct
     in
     JSON.put ("network", network) old_config
 
-  let set_ghostnet_sandbox_network ?user_activated_upgrades () old_config =
+  let set_basenet_sandbox_network ?user_activated_upgrades () old_config =
     let may_patch_user_activated_upgrades =
       match user_activated_upgrades with
       | None -> Fun.id
@@ -473,8 +473,8 @@ module Config_file = struct
     JSON.put
       ( "network",
         JSON.annotate
-          ~origin:"set_ghostnet_sandbox_network"
-          ghostnet_sandbox_network_config
+          ~origin:"set_basenet_sandbox_network"
+          basenet_sandbox_network_config
         |> may_patch_user_activated_upgrades )
       old_config
 end
@@ -693,7 +693,7 @@ let wait_for_disconnections node disconnections =
   let* () = wait_for_ready node in
   waiter
 
-let create ?runner ?(path = Constant.octez_node) ?name ?color ?data_dir
+let create ?runner ?(path = Constant.mavkit_node) ?name ?color ?data_dir
     ?event_pipe ?net_addr ?net_port ?advertised_net_port ?metrics_addr
     ?metrics_port ?(rpc_local = false) ?(rpc_host = "localhost") ?rpc_port
     ?rpc_tls ?(allow_all_rpc = true) arguments =

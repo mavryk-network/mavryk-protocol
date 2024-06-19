@@ -3,12 +3,12 @@
 
 (library
  (name aggregation)
- (public_name octez-libs.plonk.aggregation)
+ (public_name mavkit-libs.plonk.aggregation)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.plonk
-  octez-libs.bls12-381-polynomial)
+  mavkit-libs.plonk
+  mavkit-libs.bls12-381-polynomial)
  (preprocess (pps ppx_repr))
  (flags
   (:standard)
-  -open Octez_bls12_381_polynomial))
+  -open Mavkit_bls12_381_polynomial))

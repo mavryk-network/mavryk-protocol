@@ -13,14 +13,14 @@ types:
     - id: cycle
       type: s4
     - id: deposit
-      type: id_008__ptedo2zk__mutez
+      type: id_008__ptedo2zk__mumav
     - id: fees
-      type: id_008__ptedo2zk__mutez
+      type: id_008__ptedo2zk__mumav
     - id: rewards
-      type: id_008__ptedo2zk__mutez
-  id_008__ptedo2zk__mutez:
+      type: id_008__ptedo2zk__mumav
+  id_008__ptedo2zk__mumav:
     seq:
-    - id: id_008__ptedo2zk__mutez
+    - id: id_008__ptedo2zk__mumav
       type: n
   n:
     seq:

@@ -26,7 +26,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Main Entry Points *)
+(** Mavryk Protocol Implementation - Main Entry Points *)
 
 open Alpha_context
 
@@ -113,11 +113,11 @@ let () =
     `Branch
     ~id:"contract.empty_transaction"
     ~title:"Empty transaction"
-    ~description:"Forbidden to credit 0ꜩ to a contract without code."
+    ~description:"Forbidden to credit 0ṁ to a contract without code."
     ~pp:(fun ppf contract ->
       Format.fprintf
         ppf
-        "Transactions of 0ꜩ towards a contract without code are forbidden (%a)."
+        "Transactions of 0ṁ towards a contract without code are forbidden (%a)."
         Contract.pp
         contract)
     Data_encoding.(obj1 (req "contract" Contract.encoding))
@@ -322,7 +322,7 @@ let apply_delegation ~ctxt ~(sender : Contract.t) ~delegate ~before_operation =
               ctxt
               ~sender_contract:sender
               ~delegate
-              Tez.max_mutez)
+              Tez.max_mumav)
   in
   let+ ctxt = Contract.Delegate.set ctxt sender delegate in
   (ctxt, Gas.consumed ~since:before_operation ~until:ctxt, balance_updates, [])
@@ -518,7 +518,7 @@ let transfer_from_any_address ctxt sender destination amount =
   | Destination.Contract sender ->
       Token.transfer ctxt (`Contract sender) (`Contract destination) amount
   | Destination.Sc_rollup _ | Destination.Zk_rollup _ ->
-      (* We do not allow transferring tez from rollups to other contracts. *)
+      (* We do not allow transferring mav from rollups to other contracts. *)
       let*? () =
         error_unless Tez.(amount = zero) (Non_empty_transaction_from sender)
       in
@@ -2592,25 +2592,26 @@ let may_start_new_cycle ctxt =
 
 let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
   let open Lwt_result_syntax in
-  Liquidity_baking.on_subsidy_allowed
+  Protocol_treasury.on_subsidy_allowed
     ctxt
     ~per_block_vote
-    (fun ctxt liquidity_baking_cpmm_contract_hash ->
-      let liquidity_baking_cpmm_contract =
-        Contract.Originated liquidity_baking_cpmm_contract_hash
+    (fun ctxt protocol_treasury_contract_hash ->
+
+      let protocol_treasury_contract = 
+        Contract.Originated protocol_treasury_contract_hash
       in
       let ctxt =
         (* We set a gas limit of 1/20th the block limit, which is ~10x
-           actual usage here in Granada. Gas consumed is reported in
-           the Transaction receipt, but not counted towards the block
-           limit. The gas limit is reset to unlimited at the end of
-           this function.*)
+            actual usage here in Granada. Gas consumed is reported in
+            the Transaction receipt, but not counted towards the block
+            limit. The gas limit is reset to unlimited at the end of
+            this function.*)
         Gas.set_limit
           ctxt
           (Gas.Arith.integral_exn
-             (Z.div
+              (Z.div
                 (Gas.Arith.integral_to_z
-                   (Constants.hard_gas_limit_per_block ctxt))
+                    (Constants.hard_gas_limit_per_block ctxt))
                 (Z.of_int 20)))
       in
       let backtracking_ctxt = ctxt in
@@ -2624,20 +2625,20 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             ~origin:Subsidy
             ctxt
             `Liquidity_baking_subsidies
-            (`Contract liquidity_baking_cpmm_contract)
+            (`Contract protocol_treasury_contract)
             liquidity_baking_subsidy
         in
         let* ctxt, cache_key, script =
-          Script_cache.find ctxt liquidity_baking_cpmm_contract_hash
+          Script_cache.find ctxt protocol_treasury_contract_hash
         in
         match script with
         | None ->
             tzfail (Script_tc_errors.No_such_entrypoint Entrypoint.default)
         | Some (script, script_ir) -> (
             (* Token.transfer which is being called above already loads this
-               value into the Irmin cache, so no need to burn gas for it. *)
+                value into the Irmin cache, so no need to burn gas for it. *)
             let* balance =
-              Contract.get_balance ctxt liquidity_baking_cpmm_contract
+              Contract.get_balance ctxt protocol_treasury_contract
             in
             let now = Script_timestamp.now ctxt in
             let level =
@@ -2647,12 +2648,12 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
             let step_constants =
               let open Script_interpreter in
               (* Using dummy values for source, payer, and chain_id
-                 since they are not used within the CPMM default
-                 entrypoint. *)
+                  since they are not used within the CPMM default
+                  entrypoint. *)
               {
-                sender = Destination.Contract liquidity_baking_cpmm_contract;
+                sender = Destination.Contract protocol_treasury_contract;
                 payer = Signature.Public_key_hash.zero;
-                self = liquidity_baking_cpmm_contract_hash;
+                self = protocol_treasury_contract_hash;
                 amount = liquidity_baking_subsidy;
                 balance;
                 chain_id = Chain_id.zero;
@@ -2661,26 +2662,26 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
               }
             in
             (*
-                 Call CPPM default entrypoint with parameter Unit.
-                 This is necessary for the CPMM's xtz_pool in storage to
-                 increase since it cannot use BALANCE due to a transfer attack.
+                  Call CPPM default entrypoint with parameter Unit.
+                  This is necessary for the CPMM's xtz_pool in storage to
+                  increase since it cannot use BALANCE due to a transfer attack.
 
-                 Mimicks a transaction.
+                  Mimicks a transaction.
 
-                 There is no:
-                 - storage burn (extra storage is free)
-                 - fees (the operation is mandatory)
+                  There is no:
+                  - storage burn (extra storage is free)
+                  - fees (the operation is mandatory)
           *)
             let* ( {
-                     script = updated_cached_script;
-                     code_size = updated_size;
-                     storage;
-                     lazy_storage_diff;
-                     operations;
-                     ticket_diffs;
-                     ticket_receipt;
-                   },
-                   ctxt ) =
+                      script = updated_cached_script;
+                      code_size = updated_size;
+                      storage;
+                      lazy_storage_diff;
+                      operations;
+                      ticket_diffs;
+                      ticket_receipt;
+                    },
+                    ctxt ) =
               Script_interpreter.execute_with_typed_parameter
                 ctxt
                 Optimized
@@ -2702,7 +2703,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ticket_table_size_diff, ctxt =
                   update_script_storage_and_ticket_balances
                     ctxt
-                    ~self_contract:liquidity_baking_cpmm_contract_hash
+                    ~self_contract:protocol_treasury_contract_hash
                     storage
                     lazy_storage_diff
                     ticket_diffs
@@ -2711,7 +2712,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let* ctxt, new_size, paid_storage_size_diff =
                   Fees.record_paid_storage_space
                     ctxt
-                    liquidity_baking_cpmm_contract_hash
+                    protocol_treasury_contract_hash
                 in
                 let* ticket_paid_storage_diff, ctxt =
                   Ticket_balance.adjust_storage_space
@@ -2732,23 +2733,23 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let result =
                   Transaction_result
                     (Transaction_to_contract_result
-                       {
-                         storage = Some storage;
-                         lazy_storage_diff;
-                         balance_updates;
-                         ticket_receipt;
-                         (* At this point in application the
+                        {
+                          storage = Some storage;
+                          lazy_storage_diff;
+                          balance_updates;
+                          ticket_receipt;
+                          (* At this point in application the
                             origination nonce has not been initialized
                             so it's not possible to originate new
                             contracts. We've checked above that none
                             were originated. *)
-                         originated_contracts = [];
-                         consumed_gas;
-                         storage_size = new_size;
-                         paid_storage_size_diff =
-                           Z.add paid_storage_size_diff ticket_paid_storage_diff;
-                         allocated_destination_contract = false;
-                       })
+                          originated_contracts = [];
+                          consumed_gas;
+                          storage_size = new_size;
+                          paid_storage_size_diff =
+                            Z.add paid_storage_size_diff ticket_paid_storage_diff;
+                          allocated_destination_contract = false;
+                        })
                 in
                 let ctxt = Gas.set_unlimited ctxt in
                 return (ctxt, [Successful_manager_result result]))

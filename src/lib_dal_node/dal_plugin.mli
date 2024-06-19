@@ -39,7 +39,7 @@ type slot_index = int
 type slot_header = {
   published_level : int32;
   slot_index : slot_index;
-  commitment : Tezos_crypto_dal.Cryptobox.Verifier.commitment;
+  commitment : Mavryk_crypto_dal.Cryptobox.Verifier.commitment;
 }
 
 type proto_parameters = {
@@ -47,7 +47,7 @@ type proto_parameters = {
   number_of_slots : int;
   attestation_lag : int;
   attestation_threshold : int;
-  cryptobox_parameters : Tezos_crypto_dal.Cryptobox.Verifier.parameters;
+  cryptobox_parameters : Mavryk_crypto_dal.Cryptobox.Verifier.parameters;
   blocks_per_epoch : int32;
 }
 
@@ -61,16 +61,16 @@ module type T = sig
       skipped depending on the value of [metadata]. This is a wrapper on top of
       {!Protocol_client_context.Alpha_block_services.info}.  *)
   val block_info :
-    ?chain:Tezos_shell_services.Block_services.chain ->
-    ?block:Tezos_shell_services.Block_services.block ->
+    ?chain:Mavryk_shell_services.Block_services.chain ->
+    ?block:Mavryk_shell_services.Block_services.block ->
     metadata:[`Always | `Never] ->
-    Tezos_rpc.Context.generic ->
+    Mavryk_rpc.Context.generic ->
     block_info tzresult Lwt.t
 
   val get_constants :
-    Tezos_shell_services.Chain_services.chain ->
-    Tezos_shell_services.Block_services.block ->
-    Tezos_rpc.Context.generic ->
+    Mavryk_shell_services.Chain_services.chain ->
+    Mavryk_shell_services.Block_services.block ->
+    Mavryk_rpc.Context.generic ->
     proto_parameters tzresult Lwt.t
 
   val get_published_slot_headers :
@@ -82,9 +82,9 @@ module type T = sig
       the committee an interval [(s,n)], meaning that the slots [s;s+1;...;s+n-1]
       belong to [pkh] *)
   val get_committee :
-    Tezos_rpc.Context.generic ->
+    Mavryk_rpc.Context.generic ->
     level:int32 ->
-    (int * int) Tezos_crypto.Signature.Public_key_hash.Map.t tzresult Lwt.t
+    (int * int) Mavryk_crypto.Signature.Public_key_hash.Map.t tzresult Lwt.t
 
   (** [attested_slot_headers block_info number_of_slots] reads the metadata
       of the given [block_info] and constructs the list of attested slots

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Types = Tezos_dal_node_services.Types
+module Types = Mavryk_dal_node_services.Types
 
 module Term = struct
   let p2p_point_arg ~default_port =
@@ -42,7 +42,7 @@ module Term = struct
     let open Cmdliner in
     let doc =
       Format.sprintf
-        "The directory where the octez DAL node will store all its data. \
+        "The directory where the mavkit DAL node will store all its data. \
          Parent directories are created if necessary."
     in
     Arg.(
@@ -109,7 +109,7 @@ module Term = struct
 
   let endpoint =
     let open Cmdliner in
-    let doc = "The Tezos node that the DAL node should connect to." in
+    let doc = "The Mavryk node that the DAL node should connect to." in
     Arg.(
       value
       & opt (some endpoint_arg) None
@@ -149,7 +149,7 @@ module Term = struct
   let attester_profile =
     let open Cmdliner in
     let doc =
-      "The Octez DAL node attester profiles for given public key hashes."
+      "The Mavkit DAL node attester profiles for given public key hashes."
     in
     Arg.(
       value
@@ -158,7 +158,7 @@ module Term = struct
 
   let producer_profile =
     let open Cmdliner in
-    let doc = "The Octez DAL node producer profiles for given slot indexes." in
+    let doc = "The Mavkit DAL node producer profiles for given slot indexes." in
     Arg.(
       value
       & opt (list producer_profile_arg) []
@@ -167,7 +167,7 @@ module Term = struct
   let bootstrap_profile =
     let open Cmdliner in
     let doc =
-      "The Octez DAL node bootstrap node profile. Note that a bootstrap node \
+      "The Mavkit DAL node bootstrap node profile. Note that a bootstrap node \
        cannot also be an attester/slot producer"
     in
     Arg.(value & flag & info ~docs ~doc ["bootstrap-profile"])
@@ -214,8 +214,8 @@ module Run = struct
   let man = description
 
   let info =
-    let version = Tezos_version_value.Bin_version.version_string in
-    Cmdliner.Cmd.info ~doc:"The Octez DAL node" ~man ~version "run"
+    let version = Mavryk_version_value.Bin_version.version_string in
+    Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~man ~version "run"
 
   let cmd run = Cmdliner.Cmd.v info (Term.term run)
 end
@@ -225,7 +225,7 @@ module Config = struct
     [
       `S "CONFIG DESCRIPTION";
       `P
-        "Entry point for initializing, configuring and running an Octez DAL \
+        "Entry point for initializing, configuring and running an Mavkit DAL \
          node.";
     ]
 
@@ -242,7 +242,7 @@ module Config = struct
       ]
 
     let info =
-      let version = Tezos_version_value.Bin_version.version_string in
+      let version = Mavryk_version_value.Bin_version.version_string in
       Cmdliner.Cmd.info ~doc:"Configuration initialisation" ~man ~version "init"
 
     let cmd run = Cmdliner.Cmd.v info (Term.term run)
@@ -251,8 +251,8 @@ module Config = struct
   let cmd run =
     let default = Cmdliner.Term.(ret (const (`Help (`Pager, None)))) in
     let info =
-      let version = Tezos_version_value.Bin_version.version_string in
-      Cmdliner.Cmd.info ~doc:"The Octez DAL node" ~man ~version "config"
+      let version = Mavryk_version_value.Bin_version.version_string in
+      Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~man ~version "config"
     in
     Cmdliner.Cmd.group ~default info [Init.cmd run]
 end
@@ -305,8 +305,8 @@ let make ~run =
         $ Term.endpoint))
   in
   let info =
-    let version = Tezos_version_value.Bin_version.version_string in
-    Cmdliner.Cmd.info ~doc:"The Octez DAL node" ~version "octez-dal-node"
+    let version = Mavryk_version_value.Bin_version.version_string in
+    Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~version "mavkit-dal-node"
   in
   Cmdliner.Cmd.group
     ~default

@@ -19,8 +19,8 @@ types:
       size: len_baking_reward_per_endorsement
   baking_reward_per_endorsement_entries:
     seq:
-    - id: id_009__psfloren__mutez
-      type: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
+      type: id_009__psfloren__mumav
   endorsement_reward:
     seq:
     - id: endorsement_reward_entries
@@ -37,11 +37,11 @@ types:
       size: len_endorsement_reward
   endorsement_reward_entries:
     seq:
-    - id: id_009__psfloren__mutez
-      type: id_009__psfloren__mutez
-  id_009__psfloren__mutez:
+    - id: id_009__psfloren__mumav
+      type: id_009__psfloren__mumav
+  id_009__psfloren__mumav:
     seq:
-    - id: id_009__psfloren__mutez
+    - id: id_009__psfloren__mumav
       type: n
   int31:
     seq:
@@ -125,23 +125,23 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: tokens_per_roll
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: michelson_maximum_type_size
   type: u2
 - id: seed_nonce_revelation_tip
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: origination_size
   type: int31
 - id: block_security_deposit
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: endorsement_security_deposit
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: baking_reward_per_endorsement
   type: baking_reward_per_endorsement_0
 - id: endorsement_reward
   type: endorsement_reward_0
 - id: cost_per_byte
-  type: id_009__psfloren__mutez
+  type: id_009__psfloren__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: test_chain_duration

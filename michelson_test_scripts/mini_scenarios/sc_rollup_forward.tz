@@ -3,7 +3,7 @@ storage unit ;
 code { UNPAIR ;
        DIP { NIL operation };
        UNPAIR ;
-       DIP { PUSH mutez 0 };
+       DIP { PUSH mumav 0 };
        TRANSFER_TOKENS;
        CONS;
        PAIR; }

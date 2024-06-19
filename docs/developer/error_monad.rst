@@ -3,7 +3,7 @@ The Error Monad
 
 There are multiple ways to deal with errors in OCaml: exceptions,
 ``result``, ``option``, etc., each approach has strengths and
-weaknesses. However, in Octez we settle on one, single, uniform way of
+weaknesses. However, in Mavkit we settle on one, single, uniform way of
 dealing with errors: the *error monad*.
 
 This is a tutorial for the error monad. It makes the following
@@ -23,7 +23,7 @@ foreshadowing is only useful in that it lets you know that the
 information is coming and that you can move on with a partial
 understanding. On subsequent reads, it helps putting things in context.
 
-Note that the core of this tutorial focuses on error management in Octez.
+Note that the core of this tutorial focuses on error management in Mavkit.
 For a short section on error management in the protocol see Part 3 :ref:`error_monad_within_protocol`.
 
 .. toctree::

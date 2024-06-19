@@ -34,7 +34,7 @@ type 'a t = {
 let default_filter_config =
   {max_nb_blocks = 100; max_nb_logs = 1000; chunk_size = 10}
 
-let default_data_dir = Filename.concat (Sys.getenv "HOME") ".octez-evm-node"
+let default_data_dir = Filename.concat (Sys.getenv "HOME") ".mavkit-evm-node"
 
 let config_filename ~data_dir = Filename.concat data_dir "config.json"
 
@@ -317,7 +317,7 @@ module Cli = struct
       ~patch_configuration_from_args ~create () =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the evm node is not the one of Octez
+    (* Check if the data directory of the evm node is not the one of Mavkit
        node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
@@ -325,7 +325,7 @@ module Cli = struct
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the EVM node data."
       else return_unit
     in

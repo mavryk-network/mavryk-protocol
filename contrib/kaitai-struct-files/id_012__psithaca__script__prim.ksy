@@ -288,7 +288,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -378,8 +378,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
 seq:
 - id: id_012__psithaca__michelson__v1__primitives
   type: id_012__psithaca__michelson__v1__primitives

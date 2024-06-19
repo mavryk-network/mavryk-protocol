@@ -120,17 +120,17 @@ let () =
     (function Forbidden_Negative_int str -> Some str | _ -> None)
     (fun str -> Forbidden_Negative_int str)
 
-let string_parameter = Tezos_clic.parameter (fun _ x -> return x)
+let string_parameter = Mavryk_clic.parameter (fun _ x -> return x)
 
 let int_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) p ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) p ->
       try return (int_of_string p) with _ -> cctxt#error "Cannot read int")
 
 let z_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) p ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) p ->
       try return (Z.of_string p) with _ -> cctxt#error "Cannot read integer")
 
-let uri_parameter = Tezos_clic.parameter (fun _ x -> return (Uri.of_string x))
+let uri_parameter = Mavryk_clic.parameter (fun _ x -> return (Uri.of_string x))
 
 let bytes_of_prefixed_string (cctxt : #Client_context.full) s =
   match
@@ -142,7 +142,7 @@ let bytes_of_prefixed_string (cctxt : #Client_context.full) s =
       cctxt#error
         "Invalid bytes, expecting hexadecimal notation (e.g. 0x1234abcd)"
 
-let bytes_parameter = Tezos_clic.parameter bytes_of_prefixed_string
+let bytes_parameter = Mavryk_clic.parameter bytes_of_prefixed_string
 
 type 'a file_or_text = File of {path : string; content : 'a} | Text of 'a
 
@@ -169,12 +169,12 @@ let file_or_text ~from_text ~read_file =
     ]
 
 let file_or_text_with_origin_parameter ~from_text () =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) ->
       file_or_text ~from_text:(from_text cctxt) ~read_file:cctxt#read_file)
 
 let file_or_text_parameter ~from_text () =
   file_or_text_with_origin_parameter ~from_text ()
-  |> Tezos_clic.map_parameter ~f:content_of_file_or_text
+  |> Mavryk_clic.map_parameter ~f:content_of_file_or_text
 
 let json_with_origin_parameter =
   let from_text (cctxt : #Client_context.full) s =
@@ -186,11 +186,11 @@ let json_with_origin_parameter =
   file_or_text_with_origin_parameter ~from_text ()
 
 let json_parameter =
-  Tezos_clic.map_parameter ~f:content_of_file_or_text json_with_origin_parameter
+  Mavryk_clic.map_parameter ~f:content_of_file_or_text json_with_origin_parameter
 
 let data_parameter =
   let from_text (_cctxt : #Client_context.full) input =
-    Lwt.return @@ Tezos_micheline.Micheline_parser.no_parsing_error
+    Lwt.return @@ Mavryk_micheline.Micheline_parser.no_parsing_error
     @@ Michelson_v1_parser.parse_expression input
   in
   file_or_text_parameter ~from_text ()
@@ -213,7 +213,7 @@ let safe_decode_json (cctxt : #Client_context.full) ~name
 
 let json_encoded_with_origin_parameter ~name ?pp_error encoding =
   let open Lwt_result_syntax in
-  Tezos_clic.map_es_parameter
+  Mavryk_clic.map_es_parameter
     ~f:(fun (cctxt : #Client_context.full) json_with_origin ->
       match json_with_origin with
       | File {path; content} ->
@@ -227,12 +227,12 @@ let json_encoded_with_origin_parameter ~name ?pp_error encoding =
     json_with_origin_parameter
 
 let json_encoded_parameter ~name ?pp_error encoding =
-  Tezos_clic.map_parameter
+  Mavryk_clic.map_parameter
     ~f:content_of_file_or_text
     (json_encoded_with_origin_parameter ~name ?pp_error encoding)
 
 let json_encoded_param ~name ~desc ?pp_error encoding =
-  Tezos_clic.param ~name ~desc (json_encoded_parameter ~name ?pp_error encoding)
+  Mavryk_clic.param ~name ~desc (json_encoded_parameter ~name ?pp_error encoding)
 
 let binary_encoded_parameter ~name encoding =
   let open Lwt_result_syntax in
@@ -244,19 +244,19 @@ let binary_encoded_parameter ~name encoding =
   file_or_text_parameter ~from_text ()
 
 let parse_micheline_parameter source =
-  Lwt.return @@ Tezos_micheline.Micheline_parser.no_parsing_error
+  Lwt.return @@ Mavryk_micheline.Micheline_parser.no_parsing_error
   @@ Michelson_v1_parser.expand_expression source
 
 let micheline_parameter =
-  Tezos_clic.parameter (fun (_ : full) source ->
+  Mavryk_clic.parameter (fun (_ : full) source ->
       parse_micheline_parameter source)
 
 let entrypoint_parameter =
-  Tezos_clic.parameter (fun _ str ->
+  Mavryk_clic.parameter (fun _ str ->
       Lwt.return @@ Environment.wrap_tzresult @@ Entrypoint.of_string_lax str)
 
 let init_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"init"
     ~placeholder:"data"
     ~doc:"initial value of the contract's storage"
@@ -264,14 +264,14 @@ let init_arg =
     string_parameter
 
 let other_contracts_parameter =
-  Tezos_clic.parameter (fun _ source ->
+  Mavryk_clic.parameter (fun _ source ->
       let open Lwt_result_syntax in
       let* parsed = parse_micheline_parameter source in
       let*? l = Michelson_v1_stack.parse_other_contracts parsed in
       return l)
 
 let other_contracts_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:
       {|types and addresses of extra contracts, formatted as {Contract "KT1..." <ty1>; Contract "KT1..." <ty2>; ...}|}
     ~long:"other-contracts"
@@ -279,14 +279,14 @@ let other_contracts_arg =
     other_contracts_parameter
 
 let extra_big_maps_parameter =
-  Tezos_clic.parameter (fun _ source ->
+  Mavryk_clic.parameter (fun _ source ->
       let open Lwt_result_syntax in
       let* parsed = parse_micheline_parameter source in
       let*? l = Michelson_v1_stack.parse_extra_big_maps parsed in
       return l)
 
 let extra_big_maps_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~doc:
       {|identifier and content of extra big maps, formatted as {Big_map <index> <key_type> <value_type> {Elt <key1> <value1>; Elt <key2> <value2>; ...}}|}
     ~long:"extra-big-maps"
@@ -294,17 +294,17 @@ let extra_big_maps_arg =
     extra_big_maps_parameter
 
 let global_constant_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc string_parameter next
+  Mavryk_clic.param ~name ~desc string_parameter next
 
 let arg_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"arg"
     ~placeholder:"data"
     ~doc:"argument passed to the contract's script, if needed"
     string_parameter
 
 let default_arg_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"default-arg"
     ~placeholder:"data"
     ~doc:"default argument passed to each contract's script, if needed"
@@ -318,28 +318,28 @@ let delegate_arg =
     ()
 
 let source_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"source"
     ~placeholder:"address"
     ~doc:"source of the deposits to be paid\nMust be a known address."
     string_parameter
 
 let entrypoint_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"entrypoint"
     ~placeholder:"name"
     ~doc:"entrypoint of the smart contract"
     entrypoint_parameter
 
 let default_entrypoint_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"default-entrypoint"
     ~placeholder:"name"
     ~doc:"default entrypoint of the smart contracts"
     entrypoint_parameter
 
 let force_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"force"
     ~short:'f'
     ~doc:
@@ -349,7 +349,7 @@ let force_switch =
     ()
 
 let minimal_timestamp_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"minimal-timestamp"
     ~doc:
       "Use the minimal timestamp instead of the current date as timestamp of \
@@ -358,30 +358,30 @@ let minimal_timestamp_switch =
 
 let tez_format =
   "Text format: `DDDDDDD.DDDDDD`.\n\
-   Tez and mutez and separated by a period sign. Trailing and pending zeroes \
+   Tez and mumav and separated by a period sign. Trailing and pending zeroes \
    are allowed."
 
 let tez_parameter param =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ s ->
+  Mavryk_clic.parameter (fun _ s ->
       match Tez.of_string s with
-      | Some tez -> return tez
+      | Some mav -> return mav
       | None -> tzfail (Bad_tez_arg (param, s)))
 
 let everything_tez_parameter param =
   let open Lwt_result_syntax in
-  Tezos_clic.parameter (fun _ s ->
+  Mavryk_clic.parameter (fun _ s ->
       match s with
-      | "everything" -> return Tez.max_mutez
+      | "everything" -> return Tez.max_mumav
       | _ -> tzfail (Bad_tez_arg (param, s)))
 
 let everything_or_tez_parameter param =
-  Tezos_clic.compose_parameters
+  Mavryk_clic.compose_parameters
     (tez_parameter param)
     (everything_tez_parameter param)
 
 let tez_arg ~default ~parameter ~doc =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:parameter
     ~placeholder:"amount"
     ~doc
@@ -389,21 +389,21 @@ let tez_arg ~default ~parameter ~doc =
     (tez_parameter ("--" ^ parameter))
 
 let tez_opt_arg ~parameter ~doc =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:parameter
     ~placeholder:"amount"
     ~doc
     (tez_parameter ("--" ^ parameter))
 
 let tez_param ~name ~desc next =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc:(desc ^ " in \xEA\x9C\xA9\n" ^ tez_format)
     (tez_parameter name)
     next
 
 let everything_or_tez_param ~name ~desc next =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name
     ~desc:(desc ^ " in \xEA\x9C\xA9 (or everything)\n" ^ tez_format)
     (everything_or_tez_parameter name)
@@ -416,13 +416,13 @@ let non_negative_z_parser (cctxt : #Client_context.io) s =
       cctxt#error "Invalid number, must be a non negative number."
   | v -> Lwt_result_syntax.return v
 
-let non_negative_z_parameter () = Tezos_clic.parameter non_negative_z_parser
+let non_negative_z_parameter () = Mavryk_clic.parameter non_negative_z_parser
 
 let non_negative_z_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (non_negative_z_parameter ()) next
+  Mavryk_clic.param ~name ~desc (non_negative_z_parameter ()) next
 
 let counter_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       match Manager_counter.Internal_for_injection.of_string s with
       | None -> cctxt#error "Invalid counter, must be a non-negative number."
       | Some c -> return c)
@@ -432,43 +432,43 @@ let non_negative_parser (cctxt : #Client_context.io) s =
   | Some i when i >= 0 -> return i
   | _ -> cctxt#error "Parameter should be a non-negative integer literal"
 
-let non_negative_parameter () = Tezos_clic.parameter non_negative_parser
+let non_negative_parameter () = Mavryk_clic.parameter non_negative_parser
 
 let non_negative_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (non_negative_parameter ()) next
+  Mavryk_clic.param ~name ~desc (non_negative_parameter ()) next
 
 let positive_int_parser (cctxt : #Client_context.io) s =
   match int_of_string_opt s with
   | Some i when i > 0 -> return i
   | _ -> cctxt#error "Parameter should be a positive integer literal"
 
-let positive_int_parameter () = Tezos_clic.parameter positive_int_parser
+let positive_int_parameter () = Mavryk_clic.parameter positive_int_parser
 
 let positive_int_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (positive_int_parameter ()) next
+  Mavryk_clic.param ~name ~desc (positive_int_parameter ()) next
 
 let fee_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"fee"
     ~placeholder:"amount"
     ~doc:"fee in \xEA\x9C\xA9 to pay to the baker"
     (tez_parameter "--fee")
 
 let default_fee_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"default-fee"
     ~placeholder:"amount"
     ~doc:"default fee in \xEA\x9C\xA9 to pay to the baker for each transaction"
     (tez_parameter "--default-fee")
 
 let level_kind =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       match Option.bind (Script_int.of_string s) Script_int.is_nat with
       | Some n -> return n
       | None -> cctxt#error "invalid level (must be a positive number)")
 
 let level_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"level"
     ~placeholder:"level"
     ~doc:"Set the level to be returned by the LEVEL instruction"
@@ -483,13 +483,13 @@ let raw_level_parser (cctxt : #Client_context.io) s =
         "'%s' is not a valid level (should be a non-negative int32 value)"
         s
 
-let raw_level_parameter () = Tezos_clic.parameter raw_level_parser
+let raw_level_parameter () = Mavryk_clic.parameter raw_level_parser
 
 let raw_level_param ~name ~desc next =
-  Tezos_clic.param ~name ~desc (raw_level_parameter ()) next
+  Mavryk_clic.param ~name ~desc (raw_level_parameter ()) next
 
 let timestamp_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       match Script_timestamp.of_string s with
       | Some time -> return time
       | None ->
@@ -498,7 +498,7 @@ let timestamp_parameter =
              of seconds since epoch.")
 
 let now_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"now"
     ~placeholder:"timestamp"
     ~doc:
@@ -507,14 +507,14 @@ let now_arg =
     timestamp_parameter
 
 let gas_limit_kind =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       try
         let v = Z.of_string s in
         return (Gas.Arith.integral_exn v)
       with _ -> cctxt#error "invalid gas limit (must be a positive number)")
 
 let gas_limit_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"gas-limit"
     ~short:'G'
     ~placeholder:"amount"
@@ -524,7 +524,7 @@ let gas_limit_arg =
     gas_limit_kind
 
 let default_gas_limit_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"default-gas-limit"
     ~short:'G'
     ~placeholder:"amount"
@@ -534,7 +534,7 @@ let default_gas_limit_arg =
     gas_limit_kind
 
 let run_gas_limit_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"gas"
     ~short:'G'
     ~doc:"Initial quantity of gas for typechecking and execution"
@@ -542,13 +542,13 @@ let run_gas_limit_arg =
     gas_limit_kind
 
 let unlimited_gas_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"unlimited-gas"
     ~doc:"Allows interpretation with virtually unlimited gas"
     ()
 
 let storage_limit_kind =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       try
         let v = Z.of_string s in
         assert (Compare.Z.(v >= Z.zero)) ;
@@ -557,7 +557,7 @@ let storage_limit_kind =
         cctxt#error "invalid storage limit (must be a positive number of bytes)")
 
 let storage_limit_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"storage-limit"
     ~short:'S'
     ~placeholder:"amount"
@@ -567,7 +567,7 @@ let storage_limit_arg =
     storage_limit_kind
 
 let default_storage_limit_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"default-storage-limit"
     ~short:'S'
     ~placeholder:"amount"
@@ -577,7 +577,7 @@ let default_storage_limit_arg =
     storage_limit_kind
 
 let counter_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"counter"
     ~short:'C'
     ~placeholder:"counter"
@@ -586,65 +586,65 @@ let counter_arg =
 
 let max_priority_arg =
   let open Lwt_result_syntax in
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"max-priority"
     ~placeholder:"slot"
     ~doc:"maximum allowed baking slot"
-    (Tezos_clic.parameter (fun _ s ->
+    (Mavryk_clic.parameter (fun _ s ->
          try return (int_of_string s) with _ -> tzfail (Bad_max_priority s)))
 
 let timelock_locked_value_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"timelock-locked-valuec"
     ~placeholder:"timelock-locked"
     ~doc:"Timelock RSA group modulus"
     string_parameter
 
 let default_minimal_fees =
-  match Tez.of_mutez 100L with None -> assert false | Some t -> t
+  match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
-let default_minimal_nanotez_per_gas_unit = Q.of_int 100
+let default_minimal_nanomav_per_gas_unit = Q.of_int 100
 
-let default_minimal_nanotez_per_byte = Q.of_int 1000
+let default_minimal_nanomav_per_byte = Q.of_int 1000
 
 let minimal_fees_arg =
   let open Lwt_result_syntax in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"minimal-fees"
     ~placeholder:"amount"
-    ~doc:"exclude operations with fees lower than this threshold (in tez)"
+    ~doc:"exclude operations with fees lower than this threshold (in mav)"
     ~default:(Tez.to_string default_minimal_fees)
-    (Tezos_clic.parameter (fun _ s ->
+    (Mavryk_clic.parameter (fun _ s ->
          match Tez.of_string s with
          | Some t -> return t
          | None -> tzfail (Bad_minimal_fees s)))
 
-let minimal_nanotez_per_gas_unit_arg =
+let minimal_nanomav_per_gas_unit_arg =
   let open Lwt_result_syntax in
-  Tezos_clic.default_arg
-    ~long:"minimal-nanotez-per-gas-unit"
+  Mavryk_clic.default_arg
+    ~long:"minimal-nanomav-per-gas-unit"
     ~placeholder:"amount"
     ~doc:
       "exclude operations with fees per gas lower than this threshold (in \
-       nanotez)"
-    ~default:(Q.to_string default_minimal_nanotez_per_gas_unit)
-    (Tezos_clic.parameter (fun _ s ->
+       nanomav)"
+    ~default:(Q.to_string default_minimal_nanomav_per_gas_unit)
+    (Mavryk_clic.parameter (fun _ s ->
          try return (Q.of_string s) with _ -> tzfail (Bad_minimal_fees s)))
 
-let minimal_nanotez_per_byte_arg =
+let minimal_nanomav_per_byte_arg =
   let open Lwt_result_syntax in
-  Tezos_clic.default_arg
-    ~long:"minimal-nanotez-per-byte"
+  Mavryk_clic.default_arg
+    ~long:"minimal-nanomav-per-byte"
     ~placeholder:"amount"
-    ~default:(Q.to_string default_minimal_nanotez_per_byte)
+    ~default:(Q.to_string default_minimal_nanomav_per_byte)
     ~doc:
       "exclude operations with fees per byte lower than this threshold (in \
-       nanotez)"
-    (Tezos_clic.parameter (fun _ s ->
+       nanomav)"
+    (Mavryk_clic.parameter (fun _ s ->
          try return (Q.of_string s) with _ -> tzfail (Bad_minimal_fees s)))
 
 let replace_by_fees_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"replace"
     ~doc:
       "Replace an existing pending transaction from the same source, if any, \
@@ -655,19 +655,19 @@ let replace_by_fees_arg =
     ()
 
 let successor_level_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"simulate-successor-level"
     ~doc:"Make the simulate on the successor level of the current head."
     ()
 
 let preserved_levels_arg =
   let open Lwt_result_syntax in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"preserved-levels"
     ~placeholder:"threshold"
     ~doc:"Number of effective levels kept in the accuser's memory"
     ~default:"200"
-    (Tezos_clic.parameter (fun _ s ->
+    (Mavryk_clic.parameter (fun _ s ->
          try
            let preserved_cycles = int_of_string s in
            if preserved_cycles < 0 then tzfail (Bad_preserved_levels s)
@@ -675,7 +675,7 @@ let preserved_levels_arg =
          with _ -> tzfail (Bad_preserved_levels s)))
 
 let no_print_source_flag =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"no-print-source"
     ~short:'q'
     ~doc:
@@ -686,19 +686,19 @@ let no_print_source_flag =
     ()
 
 let no_confirmation =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"no-confirmation"
     ~doc:"don't print wait for the operation to be confirmed."
     ()
 
 let signature_parameter =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       match Signature.of_b58check_opt s with
       | Some s -> return s
       | None -> cctxt#error "Not given a valid signature")
 
 let unparsing_mode_parameter =
-  Tezos_clic.parameter
+  Mavryk_clic.parameter
     ~autocomplete:(fun _cctxt ->
       return ["Readable"; "Optimized"; "Optimized_legacy"])
     (fun (cctxt : #Client_context.full) s ->
@@ -709,7 +709,7 @@ let unparsing_mode_parameter =
       | _ -> cctxt#error "Unknown unparsing mode %s" s)
 
 let unparsing_mode_arg ~default =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"unparsing-mode"
     ~placeholder:"mode"
     ~doc:
@@ -733,7 +733,7 @@ let unparsing_mode_arg ~default =
     unparsing_mode_parameter
 
 let enforce_indentation_flag =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"enforce-indentation"
     ~doc:
       "Check that the Micheline expression passed to this command is \
@@ -741,7 +741,7 @@ let enforce_indentation_flag =
     ()
 
 let display_names_flag =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"display-names"
     ~doc:"Print names of scripts passed to this command"
     ()
@@ -776,7 +776,7 @@ let fixed_point_parameter =
     if decimals < 0 then
       raise (Invalid_argument "fixed_point_parameter: negative decimals")
     else fun ~name ->
-      Tezos_clic.parameter (fun (cctxt : #Client_context.full) p ->
+      Mavryk_clic.parameter (fun (cctxt : #Client_context.full) p ->
           match parse ~decimals p with
           | Some res -> return res
           | None ->
@@ -789,7 +789,7 @@ let fixed_point_parameter =
                 (decimals - 2))
 
 let limit_of_staking_over_baking_millionth_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"limit-of-staking-over-baking"
     ~placeholder:"limit"
     ~doc:
@@ -806,7 +806,7 @@ let limit_of_staking_over_baking_millionth_arg =
        ~name:"limit of staking over baking")
 
 let edge_of_baking_over_staking_billionth_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"edge-of-baking-over-staking"
     ~placeholder:"edge"
     ~doc:
@@ -822,7 +822,7 @@ let edge_of_baking_over_staking_billionth_arg =
 
 module Sc_rollup_params = struct
   let rollup_kind_parameter =
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) name ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) name ->
         match Sc_rollup.Kind.of_string name with
         | None ->
             cctxt#error
@@ -866,7 +866,7 @@ module Sc_rollup_params = struct
       let* json_string = cctxt#read_file path in
       from_json cctxt json_string
     in
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) p ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) p ->
         Client_aliases.parse_alternatives
           [
             ("text", from_json cctxt);
@@ -877,7 +877,7 @@ module Sc_rollup_params = struct
           p)
 
   let commitment_hash_parameter =
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) commitment_hash ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) commitment_hash ->
         match Sc_rollup.Commitment.Hash.of_b58check_opt commitment_hash with
         | None ->
             cctxt#error
@@ -889,7 +889,7 @@ module Sc_rollup_params = struct
     file_or_text_parameter ~from_text:(fun _cctxt -> return) ()
 
   let compressed_state_parameter =
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) state_hash ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) state_hash ->
         match Sc_rollup.State_hash.of_b58check_opt state_hash with
         | None ->
             cctxt#error
@@ -898,7 +898,7 @@ module Sc_rollup_params = struct
         | Some hash -> return hash)
 
   let number_of_ticks_parameter =
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) nb_of_ticks ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) nb_of_ticks ->
         match Int64.of_string_opt nb_of_ticks with
         | Some nb_of_ticks -> (
             match Sc_rollup.Number_of_ticks.of_value nb_of_ticks with
@@ -920,7 +920,7 @@ module Sc_rollup_params = struct
 end
 
 let whitelist_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"whitelist"
     ~short:'W'
     ~placeholder:"whitelist"
@@ -932,7 +932,7 @@ let whitelist_arg =
 module Zk_rollup_params = struct
   let address_parameter =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
         match Zk_rollup.Address.of_b58check_opt s with
         | Some c -> return c
         | None -> cctxt#error "Parameter '%s' is an invalid Epoxy address" s)
@@ -963,7 +963,7 @@ end
 
 module Dal = struct
   let commitment_parameter =
-    Tezos_clic.parameter (fun (cctxt : #Client_context.full) commitment_hash ->
+    Mavryk_clic.parameter (fun (cctxt : #Client_context.full) commitment_hash ->
         match Dal_slot_repr.Commitment.of_b58check_opt commitment_hash with
         | None ->
             cctxt#error
@@ -972,7 +972,7 @@ module Dal = struct
         | Some commitment -> return commitment)
 
   let commitment_proof_parameter =
-    Tezos_clic.parameter
+    Mavryk_clic.parameter
       (fun (cctxt : #Client_context.full) commitment_proof_hex ->
         match Hex.to_string (`Hex commitment_proof_hex) with
         | None ->
@@ -995,7 +995,7 @@ module Dal = struct
 end
 
 let fee_parameter_args =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let force_low_fee_arg =
     switch
       ~long:"force-low-fee"
@@ -1024,29 +1024,29 @@ let fee_parameter_args =
            | Some t -> return t
            | None -> cctxt#error "Bad burn cap"))
   in
-  Tezos_clic.map_arg
+  Mavryk_clic.map_arg
     ~f:
       (fun _cctxt
            ( minimal_fees,
-             minimal_nanotez_per_byte,
-             minimal_nanotez_per_gas_unit,
+             minimal_nanomav_per_byte,
+             minimal_nanomav_per_gas_unit,
              force_low_fee,
              fee_cap,
              burn_cap ) ->
       return
         {
           Injection.minimal_fees;
-          minimal_nanotez_per_byte;
-          minimal_nanotez_per_gas_unit;
+          minimal_nanomav_per_byte;
+          minimal_nanomav_per_gas_unit;
           force_low_fee;
           fee_cap;
           burn_cap;
         })
-    (Tezos_clic.aggregate
-       (Tezos_clic.args6
+    (Mavryk_clic.aggregate
+       (Mavryk_clic.args6
           minimal_fees_arg
-          minimal_nanotez_per_byte_arg
-          minimal_nanotez_per_gas_unit_arg
+          minimal_nanomav_per_byte_arg
+          minimal_nanomav_per_gas_unit_arg
           force_low_fee_arg
           fee_cap_arg
           burn_cap_arg))

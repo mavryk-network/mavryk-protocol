@@ -11,7 +11,7 @@ pub enum Add {
     NatNat,
     IntNat,
     NatInt,
-    MutezMutez,
+    MumavMumav,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

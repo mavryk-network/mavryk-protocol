@@ -96,7 +96,7 @@ val json : t -> JSON.u
     to the operation. *)
 val hex :
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   t ->
   Client.t ->
   Hex.t Lwt.t
@@ -104,9 +104,9 @@ val hex :
 (** [sign t client] signs the raw representation of operation [t] by its signer
     (see {!val:make}). [client] is used to construct the binary representation
     of [t]. Note that if no signer have been given to [t] the function returns
-    [Tezos_crypto.Signature.zero]. *)
+    [Mavryk_crypto.Signature.zero]. *)
 val sign :
-  ?protocol:Protocol.t -> t -> Client.t -> Tezos_crypto.Signature.t Lwt.t
+  ?protocol:Protocol.t -> t -> Client.t -> Mavryk_crypto.Signature.t Lwt.t
 
 (** [hash t client] returns the hash of the operation  *)
 val hash : t -> Client.t -> [`OpHash of string] Lwt.t
@@ -121,7 +121,7 @@ val hash : t -> Client.t -> [`OpHash of string] Lwt.t
     operation. When omitted, the operation is correctly signed using {!sign}. *)
 val byte_size :
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   t ->
   Client.t ->
   int Lwt.t
@@ -156,7 +156,7 @@ val inject :
   ?request:[`Inject | `Notify] ->
   ?force:bool ->
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   ?error:rex ->
   t ->
   Client.t ->
@@ -166,7 +166,7 @@ val inject :
 val spawn_inject :
   ?force:bool ->
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   t ->
   Client.t ->
   JSON.t Runnable.process Lwt.t
@@ -176,7 +176,7 @@ val inject_and_capture2_stderr :
   rex:rex ->
   ?force:bool ->
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   t ->
   Client.t ->
   (string * string) Lwt.t
@@ -206,7 +206,7 @@ val inject_operations :
    This json contains many more fields than the one produced by the
    {!json} function above.
 
-   The operation is signed with {!Tezos_crypto.Signature.zero},
+   The operation is signed with {!Mavryk_crypto.Signature.zero},
    because the [run_operation] RPC skips signature checks anyway.
 
    @param chain_id Allows to manually provide the [chain_id]. If
@@ -224,7 +224,7 @@ val make_run_operation_input : ?chain_id:string -> t -> Client.t -> JSON.u Lwt.t
    This json contains many more fields than the one produced by the
    {!json} function above. *)
 val make_preapply_operation_input :
-  protocol:Protocol.t -> signature:Tezos_crypto.Signature.t -> t -> JSON.u
+  protocol:Protocol.t -> signature:Mavryk_crypto.Signature.t -> t -> JSON.u
 
 module Consensus : sig
   (** A representation of a consensus operation. *)
@@ -338,8 +338,8 @@ module Anonymous : sig
   val double_consensus_evidence :
     kind:double_consensus_evidence_kind ->
     use_legacy_name:bool ->
-    operation * Tezos_crypto.Signature.t ->
-    operation * Tezos_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
     t
 
   (** [double_attestation_evidence ~use_legacy_name op1 op2] crafts a double
@@ -348,8 +348,8 @@ module Anonymous : sig
       JSON will be "endorsement" instead of "attestation". *)
   val double_attestation_evidence :
     use_legacy_name:bool ->
-    operation * Tezos_crypto.Signature.t ->
-    operation * Tezos_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
     t
 
   (** [double_preattestation_evidence ~use_legacy_name op1 op2] crafts a double
@@ -358,8 +358,8 @@ module Anonymous : sig
       crafted JSON will be "preendorsement" instead of "preattestation". *)
   val double_preattestation_evidence :
     use_legacy_name:bool ->
-    operation * Tezos_crypto.Signature.t ->
-    operation * Tezos_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
+    operation * Mavryk_crypto.Signature.t ->
     t
 
   (** [kind_to_string kind use_legacy_name] return the name of the [kind]. If
@@ -436,7 +436,7 @@ module Voting : sig
   val inject :
     ?request:[`Inject | `Notify] ->
     ?force:bool ->
-    ?signature:Tezos_crypto.Signature.t ->
+    ?signature:Mavryk_crypto.Signature.t ->
     ?error:rex ->
     ?branch:string ->
     ?signer:Account.key ->
@@ -458,7 +458,7 @@ module Manager : sig
 
   (** [transfer ?(dest=Constant.bootstrap2) ~amount:1_000_000 ()]
      builds a transfer operation. Note that the amount is expressed in
-     mutez. *)
+     mumav. *)
   val transfer : ?dest:Account.key -> ?amount:int -> unit -> payload
 
   (** [origination ?(init_balance=0) ~code ~init_storage ()]
@@ -468,7 +468,7 @@ module Manager : sig
 
   (** [call ~dest ~amount:0 ~entrypoint ~arg ()] builds a smart contract call
       operation to the [entrypoint] with the provided Michelson argument
-      [arg]. Note that the amount is expressed in mutez. *)
+      [arg]. Note that the amount is expressed in mumav. *)
   val call :
     ?dest:string ->
     ?amount:int ->
@@ -482,8 +482,8 @@ module Manager : sig
      slot. *)
   val dal_publish_slot_header :
     index:int ->
-    commitment:Tezos_crypto_dal.Cryptobox.commitment ->
-    proof:Tezos_crypto_dal.Cryptobox.commitment_proof ->
+    commitment:Mavryk_crypto_dal.Cryptobox.commitment ->
+    proof:Mavryk_crypto_dal.Cryptobox.commitment_proof ->
     payload
 
   (** [delegation ?(delegate=Constant.bootstrap2) ()] builds a
@@ -649,28 +649,28 @@ end
 val gas_limit_exceeded : rex
 
 (** Matches the message produced by
-    [Operation_conflict {new_hash; needed_fee_in_mutez = Some fee}]
+    [Operation_conflict {new_hash; needed_fee_in_mumav = Some fee}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [new_hash] and [fee]. *)
 val conflict_error_with_needed_fee : rex
 
 (** Matches the message produced by
-    [Operation_conflict {new_hash; needed_fee_in_mutez = None}]
+    [Operation_conflict {new_hash; needed_fee_in_mumav = None}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [new_hash]. *)
 val conflict_error_no_possible_fee : rex
 
 (** Matches the message produced by
-    [Rejected_by_full_mempool {hash; needed_fee_in_mutez = Some fee}]
+    [Rejected_by_full_mempool {hash; needed_fee_in_mumav = Some fee}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [hash] and [fee]. *)
 val rejected_by_full_mempool_with_needed_fee : rex
 
 (** Matches the message produced by
-    [Rejected_by_full_mempool {hash; needed_fee_in_mutez = None}]
+    [Rejected_by_full_mempool {hash; needed_fee_in_mumav = None}]
     from [src/lib_shell_services/validation_errors].
 
     Captures [hash]. *)

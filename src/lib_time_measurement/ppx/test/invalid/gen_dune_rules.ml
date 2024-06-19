@@ -58,7 +58,7 @@ let output_stanzas prefix =
 ; Compares preprocessed output with expected output
 (rule
  (alias runtest)
- (package tezos-time-measurement)
+ (package mavryk-time-measurement)
  (action (diff %s %s)))
 |}
     input

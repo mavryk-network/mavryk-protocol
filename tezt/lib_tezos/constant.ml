@@ -24,40 +24,40 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let octez_client = "./octez-client"
+let mavkit_client = "./mavkit-client"
 
-let octez_admin_client = "./octez-admin-client"
+let mavkit_admin_client = "./mavkit-admin-client"
 
-let octez_node = "./octez-node"
+let mavkit_node = "./mavkit-node"
 
-let octez_proxy_server =
-  Uses.make ~tag:"proxy_server" ~path:"./octez-proxy-server"
+let mavkit_proxy_server =
+  Uses.make ~tag:"proxy_server" ~path:"./mavkit-proxy-server"
 
-let octez_codec = Uses.make ~tag:"codec" ~path:"./octez-codec"
+let mavkit_codec = Uses.make ~tag:"codec" ~path:"./mavkit-codec"
 
-let octez_snoop = Uses.make ~tag:"snoop" ~path:"./octez-snoop"
+let mavkit_snoop = Uses.make ~tag:"snoop" ~path:"./mavkit-snoop"
 
-let octez_protocol_compiler =
-  Uses.make ~tag:"protocol_compiler" ~path:"./octez-protocol-compiler"
+let mavkit_protocol_compiler =
+  Uses.make ~tag:"protocol_compiler" ~path:"./mavkit-protocol-compiler"
 
-let octez_dal_node = Uses.make ~tag:"dal_node" ~path:"./octez-dal-node"
+let mavkit_dal_node = Uses.make ~tag:"dal_node" ~path:"./mavkit-dal-node"
 
-let octez_dac_node = Uses.make ~tag:"dac_node" ~path:"./octez-dac-node"
+let mavkit_dac_node = Uses.make ~tag:"dac_node" ~path:"./mavkit-dac-node"
 
-let octez_dac_client = Uses.make ~tag:"dac_client" ~path:"./octez-dac-client"
+let mavkit_dac_client = Uses.make ~tag:"dac_client" ~path:"./mavkit-dac-client"
 
-let octez_smart_rollup_node =
-  Uses.make ~tag:"smart_rollup_node" ~path:"./octez-smart-rollup-node"
+let mavkit_smart_rollup_node =
+  Uses.make ~tag:"smart_rollup_node" ~path:"./mavkit-smart-rollup-node"
 
-let octez_evm_node = Uses.make ~tag:"evm_node" ~path:"./octez-evm-node"
+let mavkit_evm_node = Uses.make ~tag:"evm_node" ~path:"./mavkit-evm-node"
 
-let octez_signer = Uses.make ~tag:"signer" ~path:"./octez-signer"
+let mavkit_signer = Uses.make ~tag:"signer" ~path:"./mavkit-signer"
 
-let octez_injector_server =
+let mavkit_injector_server =
   Uses.make
     ~tag:"injector_server"
     ~path:
-      "./_build/default/contrib/octez_injector_server/octez_injector_server.exe"
+      "./_build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe"
 
 (* TODO: tezos/tezos#4803
    Can we do better than to depend on script-inputs?
@@ -75,7 +75,7 @@ let experimental_executables = "./script-inputs/experimental-executables"
 let activator : Account.key =
   {
     alias = "activator";
-    public_key_hash = "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+    public_key_hash = "mv1FeNQ3gSZoEFp1mr6VTLnMqV5tuNwHTgw5";
     public_key = "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2";
     secret_key =
       Unencrypted "edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6";
@@ -99,7 +99,7 @@ let all_secret_keys = activator :: (Account.Bootstrap.keys |> Array.to_list)
 (** The default burn for an implicit account. *)
 let implicit_account_burn =
   (* as per the "origination_size" constant *)
-  Tez.of_mutez_int 257_000
+  Tez.of_mumav_int 257_000
 
 (** The default time to live of an operation (in block) *)
 let max_op_ttl = 120
@@ -114,23 +114,23 @@ let sc_rollup_compressed_state =
 
 (** A valid base58 encoded layer-2 account to be used to test transaction and
     smart contract rollups. *)
-let aggregate_tz4_account : Account.aggregate_key =
+let aggregate_mv4_account : Account.aggregate_key =
   {
     aggregate_alias = "bls_test_account";
-    aggregate_public_key_hash = "tz4EECtMxAuJ9UDLaiMZH7G1GCFYUWsj8HZn";
+    aggregate_public_key_hash = "mv4RwHB4ZpuqBcozs7wprFS9gzk2Hr6oVfz3";
     aggregate_public_key =
       "BLpk1yUiLJ7RezbyViD5ZvWTfQndM3TRRYmvYWkUfH2EJqsLFnzzvpJss6pbuz3U1DDMpk8v16nV";
     aggregate_secret_key =
       Unencrypted "BLsk1hKAHyGqY9qRbgoSVnjiSmDWpKGjFF3WNQ7BaiaMUA6RMA6Pfq";
   }
 
-(** The same as {!aggregate_tz4_account} but for use on layer 1. *)
-let tz4_account : Account.key =
+(** The same as {!aggregate_mv4_account} but for use on layer 1. *)
+let mv4_account : Account.key =
   {
-    alias = aggregate_tz4_account.aggregate_alias;
-    public_key_hash = aggregate_tz4_account.aggregate_public_key_hash;
-    public_key = aggregate_tz4_account.aggregate_public_key;
-    secret_key = aggregate_tz4_account.aggregate_secret_key;
+    alias = aggregate_mv4_account.aggregate_alias;
+    public_key_hash = aggregate_mv4_account.aggregate_public_key_hash;
+    public_key = aggregate_mv4_account.aggregate_public_key;
+    secret_key = aggregate_mv4_account.aggregate_secret_key;
   }
 
 (** The `echo` kernel that is listed in the “Smart Optimistic Rollups”

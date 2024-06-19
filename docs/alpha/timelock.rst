@@ -55,7 +55,7 @@ General principles and usage
 
 The typical usage pattern would be as follows:
 
-1. In a first period, a contract collects user-submitted and time-lock encrypted Michelson values along with some valuable deposit, such as tez.
+1. In a first period, a contract collects user-submitted and time-lock encrypted Michelson values along with some valuable deposit, such as mav.
 2. In a second period, after the values are collected, the contract collects from users a decryption of the value they submitted alongside with a proof that the decryption is correct.
 3. In a third period, if any value isn't decrypted, anyone can claim part of the deposit by submitting a decryption of the value, with the other part of the deposit being burnt. Different penalties can be assessed depending on whether the user merely failed to submit a decryption for their value, or if they also intentionally encrypted invalid data. Different rewards can be distributed for submitting a correct decryption. The third period needs to be long enough so that people have enough time to perform the time-lock decryption.
 4. Finally, the contract can compute some function of all the decrypted data.
@@ -70,7 +70,7 @@ their whole deposit by providing the decryption, but in a way that delays everyo
 Cryptographic design
 --------------------
 
-The time-lock features are supported by the Tezos_crypto.Timelock :package-api:`library <octez-libs/Tezos_crypto/Timelock/index.html>`.
+The time-lock features are supported by the Mavryk_crypto.Timelock :package-api:`library <mavkit-libs/Mavryk_crypto/Timelock/index.html>`.
 
 Users first generate a RSA modulus and a symmetric encryption key.
 They use authenticated encryption to encrypt a packed Michelson value (an array of bytes computed with ``PACK``)
@@ -113,7 +113,7 @@ Implementation of the time-lock puzzle
 The implementation of the time-lock puzzle
 and proof scheme is located in :src:`src/lib_crypto/timelock.ml`.
 
-To facilitate the use of time-locks,  commands have also been implemented in Octez client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
+To facilitate the use of time-locks,  commands have also been implemented in Mavkit client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
 
 For more information on the client commands, see :doc:`cli-commands<cli-commands>`.
 

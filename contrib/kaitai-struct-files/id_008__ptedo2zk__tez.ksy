@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 008-PtEdo2Zk.tez'
 types:
-  id_008__ptedo2zk__mutez:
+  id_008__ptedo2zk__mumav:
     seq:
-    - id: id_008__ptedo2zk__mutez
+    - id: id_008__ptedo2zk__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_008__ptedo2zk__mutez
-  type: id_008__ptedo2zk__mutez
+- id: id_008__ptedo2zk__mumav
+  type: id_008__ptedo2zk__mumav

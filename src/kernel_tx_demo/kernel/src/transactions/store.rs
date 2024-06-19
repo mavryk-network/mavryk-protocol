@@ -5,7 +5,7 @@
 
 //! Important kernel store keys for transaction processors
 
-use tezos_smart_rollup_host::path::{concat, OwnedPath, PathError, RefPath};
+use mavryk_smart_rollup_host::path::{concat, OwnedPath, PathError, RefPath};
 
 pub(crate) const KERNEL_PRIVATE_STATE: RefPath = RefPath::assert_from(b"/kernel/state");
 pub(crate) const CACHED_MESSAGES_STORE_PREFIX: RefPath =
@@ -49,7 +49,7 @@ pub(crate) fn cached_message_stage_path(idx: u32) -> Result<OwnedPath, PathError
 
 #[cfg(test)]
 mod tests {
-    use tezos_smart_rollup_host::path::Path;
+    use mavryk_smart_rollup_host::path::Path;
 
     use super::*;
 

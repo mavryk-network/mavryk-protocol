@@ -1,0 +1,23 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavkit_injector_PtAtLas)
+ (package mavryk-injector-001-PtAtLas)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-injector
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavkit-shell-libs.client-base
+  mavkit-protocol-001-PtAtLas-libs.plugin)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavkit_injector
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_client_base
+  -open Mavryk_protocol_plugin_001_PtAtLas))

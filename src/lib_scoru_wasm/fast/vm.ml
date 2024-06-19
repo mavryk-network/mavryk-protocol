@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Wasm_pvm_state.Internal_state
 
 include (Wasm_vm : Wasm_vm_sig.S)
@@ -85,10 +85,10 @@ let rec compute_step_many accum_ticks ?reveal_builtins
     Z.Compare.(pvm_state.max_nb_ticks <= Z.of_int64 max_steps)
   in
   let inbox_snapshot =
-    Tezos_webassembly_interpreter.Input_buffer.snapshot pvm_state.buffers.input
+    Mavryk_webassembly_interpreter.Input_buffer.snapshot pvm_state.buffers.input
   in
   let* outbox_snapshot =
-    Tezos_webassembly_interpreter.Output_buffer.snapshot
+    Mavryk_webassembly_interpreter.Output_buffer.snapshot
       pvm_state.buffers.output
   in
   let backup pvm_state =

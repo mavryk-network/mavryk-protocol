@@ -5,16 +5,16 @@ Even though Michelson is designed to make it easy to write secure
 contracts and difficult to write vulnerable ones, it is still possible
 to write buggy contracts that leak data and funds. This is a list of
 mistakes that you can make when writing or interacting with contracts on
-the Tezos blockchain and alternative ways to write code that avoid these
+the Mavryk blockchain and alternative ways to write code that avoid these
 problems.
 
 This list is not exhaustive and will never be. The following resources
 partially complement it:
 
-- https://opentezos.com/smart-contracts/avoiding-flaws/
+- https://documentation.mavryk.org/smart-contracts/avoiding-flaws/
 - https://ligolang.org/docs/tutorials/security/
 - https://github.com/InferenceAG/TezosSmartContractDetails
-- https://medium.com/protofire-blog/recommendations-to-enhance-security-of-tezos-smart-contracts-d14c0e53a6d3
+- https://medium.com/protofire-blog/recommendations-to-enhance-security-of-mavryk-smart-contracts-d14c0e53a6d3
 
 Storing unbounded data
 ----------------------

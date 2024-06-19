@@ -180,7 +180,7 @@ module Wallet = struct
         (* That's dal_rich_account cf.
            https://github.com/tacoinfra/teztnets/blob/main/networks/dailynet/values.yaml *)
         Account.alias = giver_alias;
-        public_key_hash = "tz1PEhbjTyVvjQ2Zz8g4bYU2XPTbhvG8JMFh";
+        public_key_hash = "mv1BcAuKnLoHJfoo8TEuqNA3gQKaGJiad6vh";
         public_key = "edpkuwL7MVYArfQN9jyR8pZTqmFGYFWTYhhF4F8KWjr2vB18ozTqbd";
         secret_key =
           Account.Unencrypted
@@ -198,7 +198,7 @@ module Wallet = struct
       let ops =
         List.map
           (fun dest ->
-            Operation.Manager.transfer ~dest ~amount:(Tez.to_mutez amount) ())
+            Operation.Manager.transfer ~dest ~amount:(Tez.to_mumav amount) ())
           keys
         |> Operation.Manager.make_batch ~counter ~source:giver_account
       in
@@ -219,7 +219,7 @@ module Wallet = struct
       let* () =
         if List.length low_balance_keys > 0 then (
           Log.info
-            "Transferring %s tez to low-balance accounts..."
+            "Transferring %s mav to low-balance accounts..."
             (Tez.to_string amount) ;
           let* (`OpHash _h) =
             perform_transfers ~amount ~keys:low_balance_keys client

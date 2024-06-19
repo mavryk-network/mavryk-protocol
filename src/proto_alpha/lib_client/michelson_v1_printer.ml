@@ -25,7 +25,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 open Micheline
 open Micheline_printer
 

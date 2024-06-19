@@ -112,7 +112,7 @@ let close_active_conns pool =
 
 let canceler = Lwt_canceler.create () (* unused *)
 
-let proof_of_work_target = Tezos_crypto.Crypto_box.make_pow_target 1.
+let proof_of_work_target = Mavryk_crypto.Crypto_box.make_pow_target 1.
 
 let id1 = P2p_identity.generate proof_of_work_target
 
@@ -121,7 +121,7 @@ let id2 = P2p_identity.generate proof_of_work_target
 let version =
   {
     Network_version.chain_name =
-      Distributed_db_version.Name.of_string "SANDBOXED_TEZOS";
+      Distributed_db_version.Name.of_string "SANDBOXED_MAVRYK";
     distributed_db_version = Distributed_db_version.one;
     p2p_version = P2p_version.zero;
   }

@@ -39,15 +39,15 @@ end)
 (* ------------------------------------------------------------------------- *)
 
 module Make_elliptic_curve_encoding_benchmarks (A : sig
-  val algo : Tezos_crypto.Signature.algo
+  val algo : Mavryk_crypto.Signature.algo
 end) =
 struct
   let algo_name =
     match A.algo with
-    | Tezos_crypto.Signature.Ed25519 -> "ed25519"
-    | Tezos_crypto.Signature.Secp256k1 -> "secp256k1"
-    | Tezos_crypto.Signature.P256 -> "p256"
-    | Tezos_crypto.Signature.Bls -> "bls"
+    | Mavryk_crypto.Signature.Ed25519 -> "ed25519"
+    | Mavryk_crypto.Signature.Secp256k1 -> "secp256k1"
+    | Mavryk_crypto.Signature.P256 -> "p256"
+    | Mavryk_crypto.Signature.Bls -> "bls"
 
   module Sampler = Crypto_samplers.Make_finite_key_pool (struct
     let size = 256
@@ -60,7 +60,7 @@ struct
   let public_key_encoding =
     make_encode_fixed_size
       ~name:("ENCODING_PUBLIC_KEY_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Public_key.encoding
+      ~encoding:Mavryk_crypto.Signature.Public_key.encoding
       ~generator:Sampler.pk
       ()
 
@@ -69,7 +69,7 @@ struct
   let public_key_to_b58check =
     make_encode_fixed_size_to_string
       ~name:("B58CHECK_ENCODING_PUBLIC_KEY_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Public_key.to_b58check
+      ~to_string:Mavryk_crypto.Signature.Public_key.to_b58check
       ~generator:Sampler.pk
       ()
 
@@ -78,7 +78,7 @@ struct
   let public_key_hash_encoding =
     make_encode_fixed_size
       ~name:("ENCODING_PUBLIC_KEY_HASH_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Public_key_hash.encoding
+      ~encoding:Mavryk_crypto.Signature.Public_key_hash.encoding
       ~generator:Sampler.pkh
       ()
 
@@ -87,7 +87,7 @@ struct
   let public_key_hash_to_b58check =
     make_encode_fixed_size_to_string
       ~name:("B58CHECK_ENCODING_PUBLIC_KEY_HASH_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Public_key_hash.to_b58check
+      ~to_string:Mavryk_crypto.Signature.Public_key_hash.to_b58check
       ~generator:Sampler.pkh
       ()
 
@@ -96,7 +96,7 @@ struct
   let secret_key_encoding =
     No_codegen.make_encode_fixed_size
       ~name:("ENCODING_SECRET_KEY_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Public_key_hash.encoding
+      ~encoding:Mavryk_crypto.Signature.Public_key_hash.encoding
       ~generator:Sampler.pkh
       ()
 
@@ -105,7 +105,7 @@ struct
   let secret_key_to_b58check =
     No_codegen.make_encode_fixed_size_to_string
       ~name:("B58CHECK_ENCODING_SECRET_KEY_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Secret_key.to_b58check
+      ~to_string:Mavryk_crypto.Signature.Secret_key.to_b58check
       ~generator:Sampler.sk
       ()
 
@@ -114,8 +114,8 @@ struct
   let signature_encoding =
     make_encode_fixed_size
       ~name:("ENCODING_SIGNATURE_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.encoding
-      ~generator:(fun _rng_state -> Tezos_crypto.Signature.zero)
+      ~encoding:Mavryk_crypto.Signature.encoding
+      ~generator:(fun _rng_state -> Mavryk_crypto.Signature.zero)
       ()
 
   let () = Registration.register_simple_with_num signature_encoding
@@ -123,8 +123,8 @@ struct
   let signature_to_b58check =
     make_encode_fixed_size_to_string
       ~name:("B58CHECK_ENCODING_SIGNATURE_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.to_b58check
-      ~generator:(fun _rng_state -> Tezos_crypto.Signature.zero)
+      ~to_string:Mavryk_crypto.Signature.to_b58check
+      ~generator:(fun _rng_state -> Mavryk_crypto.Signature.zero)
       ()
 
   let () = Registration.register_simple_with_num signature_to_b58check
@@ -134,7 +134,7 @@ struct
   let public_key_decoding =
     make_decode_fixed_size
       ~name:("DECODING_PUBLIC_KEY_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Public_key.encoding
+      ~encoding:Mavryk_crypto.Signature.Public_key.encoding
       ~generator:Sampler.pk
       ()
 
@@ -143,8 +143,8 @@ struct
   let public_key_from_b58check =
     make_decode_fixed_size_from_string
       ~name:("B58CHECK_DECODING_PUBLIC_KEY_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Public_key.to_b58check
-      ~from_string:Tezos_crypto.Signature.Public_key.of_b58check_exn
+      ~to_string:Mavryk_crypto.Signature.Public_key.to_b58check
+      ~from_string:Mavryk_crypto.Signature.Public_key.of_b58check_exn
       ~generator:Sampler.pk
       ()
 
@@ -153,7 +153,7 @@ struct
   let public_key_hash_decoding =
     make_decode_fixed_size
       ~name:("DECODING_PUBLIC_KEY_HASH_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Public_key_hash.encoding
+      ~encoding:Mavryk_crypto.Signature.Public_key_hash.encoding
       ~generator:Sampler.pkh
       ()
 
@@ -162,8 +162,8 @@ struct
   let public_key_hash_from_b58check =
     make_decode_fixed_size_from_string
       ~name:("B58CHECK_DECODING_PUBLIC_KEY_HASH_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Public_key_hash.to_b58check
-      ~from_string:Tezos_crypto.Signature.Public_key_hash.of_b58check_exn
+      ~to_string:Mavryk_crypto.Signature.Public_key_hash.to_b58check
+      ~from_string:Mavryk_crypto.Signature.Public_key_hash.of_b58check_exn
       ~generator:Sampler.pkh
       ()
 
@@ -172,7 +172,7 @@ struct
   let secret_key_decoding =
     No_codegen.make_decode_fixed_size
       ~name:("DECODING_SECRET_KEY_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.Secret_key.encoding
+      ~encoding:Mavryk_crypto.Signature.Secret_key.encoding
       ~generator:Sampler.sk
       ()
 
@@ -181,8 +181,8 @@ struct
   let secret_key_from_b58check =
     No_codegen.make_decode_fixed_size_from_string
       ~name:("B58CHECK_DECODING_SECRET_KEY_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.Secret_key.to_b58check
-      ~from_string:Tezos_crypto.Signature.Secret_key.of_b58check_exn
+      ~to_string:Mavryk_crypto.Signature.Secret_key.to_b58check
+      ~from_string:Mavryk_crypto.Signature.Secret_key.of_b58check_exn
       ~generator:Sampler.sk
       ()
 
@@ -191,8 +191,8 @@ struct
   let signature_decoding =
     make_decode_fixed_size
       ~name:("DECODING_SIGNATURE_" ^ algo_name)
-      ~encoding:Tezos_crypto.Signature.encoding
-      ~generator:(fun _rng_state -> Tezos_crypto.Signature.zero)
+      ~encoding:Mavryk_crypto.Signature.encoding
+      ~generator:(fun _rng_state -> Mavryk_crypto.Signature.zero)
       ()
 
   let () = Registration.register_simple_with_num signature_decoding
@@ -200,28 +200,28 @@ struct
   let signature_from_b58check =
     make_decode_fixed_size_from_string
       ~name:("B58CHECK_DECODING_SIGNATURE_" ^ algo_name)
-      ~to_string:Tezos_crypto.Signature.to_b58check
-      ~from_string:Tezos_crypto.Signature.of_b58check_exn
-      ~generator:(fun _rng_state -> Tezos_crypto.Signature.zero)
+      ~to_string:Mavryk_crypto.Signature.to_b58check
+      ~from_string:Mavryk_crypto.Signature.of_b58check_exn
+      ~generator:(fun _rng_state -> Mavryk_crypto.Signature.zero)
       ()
 
   let () = Registration.register_simple_with_num signature_from_b58check
 end
 
 module Ed25519 = Make_elliptic_curve_encoding_benchmarks (struct
-  let algo = Tezos_crypto.Signature.Ed25519
+  let algo = Mavryk_crypto.Signature.Ed25519
 end)
 
 module Secp256k1 = Make_elliptic_curve_encoding_benchmarks (struct
-  let algo = Tezos_crypto.Signature.Secp256k1
+  let algo = Mavryk_crypto.Signature.Secp256k1
 end)
 
 module P256 = Make_elliptic_curve_encoding_benchmarks (struct
-  let algo = Tezos_crypto.Signature.P256
+  let algo = Mavryk_crypto.Signature.P256
 end)
 
 module Bls = Make_elliptic_curve_encoding_benchmarks (struct
-  let algo = Tezos_crypto.Signature.Bls
+  let algo = Mavryk_crypto.Signature.Bls
 end)
 
 let chain_id_encoding =
@@ -274,7 +274,7 @@ let () = Registration.register_simple_with_num chain_id_readable_decoding
     over-approximating other costs or simply as reference points. *)
 
 let purpose =
-  Tezos_benchmark.Benchmark.Other_purpose
+  Mavryk_benchmark.Benchmark.Other_purpose
     "Used to over-approximate other costs or as reference point."
 
 let nat_encoding =

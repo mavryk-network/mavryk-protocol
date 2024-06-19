@@ -17,9 +17,9 @@ types:
       type: center_dz
     - id: radius_dz
       type: radius_dz
-  alpha__mutez:
+  alpha__mumav:
     seq:
-    - id: alpha__mutez
+    - id: alpha__mumav
       type: n
   center_dz:
     seq:
@@ -76,7 +76,7 @@ types:
   issuance_weights:
     seq:
     - id: base_total_issued_per_minute
-      type: alpha__mutez
+      type: alpha__mumav
     - id: baking_reward_fixed_portion_weight
       type: int31
     - id: baking_reward_bonus_weight
@@ -182,9 +182,9 @@ seq:
 - id: proof_of_work_threshold
   type: s8
 - id: minimal_stake
-  type: alpha__mutez
+  type: alpha__mumav
 - id: minimal_frozen_stake
-  type: alpha__mutez
+  type: alpha__mumav
 - id: vdf_difficulty
   type: s8
 - id: origination_size
@@ -192,7 +192,7 @@ seq:
 - id: issuance_weights
   type: issuance_weights
 - id: cost_per_byte
-  type: alpha__mutez
+  type: alpha__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -250,7 +250,7 @@ seq:
 - id: smart_rollup_challenge_window_in_blocks
   type: int31
 - id: smart_rollup_stake_amount
-  type: alpha__mutez
+  type: alpha__mumav
 - id: smart_rollup_commitment_period_in_blocks
   type: int31
 - id: smart_rollup_max_lookahead_in_blocks

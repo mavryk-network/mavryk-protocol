@@ -13,7 +13,7 @@
              UNPAIR ;
              CONTRACT (or (or (pair bytes (ticket (pair nat (option bytes)))) bytes) bytes) ;
              IF_NONE { PUSH string "Invalid rollup address" ; FAILWITH } {} ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              DIG 4 ;
              DIG 3 ;
              PAIR ;
@@ -37,7 +37,7 @@
              DUP 3 ;
              CONTRACT %mint address ;
              IF_NONE
-               { DROP 4 ; PUSH string "Invalid tez ticket contract" ; FAILWITH }
+               { DROP 4 ; PUSH string "Invalid mav ticket contract" ; FAILWITH }
                { DUG 2 ;
                  TRANSFER_TOKENS ;
                  DIG 2 ;

@@ -17,8 +17,8 @@
 
 use crate::StorageError;
 use core::marker::PhantomData;
-use tezos_smart_rollup_host::path::{concat, OwnedPath, Path};
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError, ValueType};
+use mavryk_smart_rollup_host::path::{concat, OwnedPath, Path};
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError, ValueType};
 
 pub(crate) struct Layer<T: From<OwnedPath>> {
     pub(crate) path: OwnedPath,

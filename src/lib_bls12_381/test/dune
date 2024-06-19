@@ -8,7 +8,7 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-alcotezt
+  mavkit-alcotezt
   qcheck-alcotest
   bls12-381)
  (js_of_ocaml)
@@ -17,7 +17,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt)
+  -open Mavkit_alcotezt)
  (modules
   test_fr
   test_g1

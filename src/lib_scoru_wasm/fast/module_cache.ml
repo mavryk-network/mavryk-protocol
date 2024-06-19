@@ -22,9 +22,9 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-open Tezos_scoru_wasm
-module Wasmer = Tezos_wasmer
-module Lazy_containers = Tezos_lazy_containers
+open Mavryk_scoru_wasm
+module Wasmer = Mavryk_wasmer
+module Lazy_containers = Mavryk_lazy_containers
 
 module Kernel_cache = Cache.Make (struct
   module Key = Context_hash

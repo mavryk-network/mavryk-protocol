@@ -8,7 +8,7 @@ There is pretty comprehensive documentation about ``Inline expectation tests`` a
  - `Dune documentation about inline expectation tests <https://dune.readthedocs.io/en/stable/tests.html#inline-expectation-tests>`_.
  - `Ppx_expect README <https://github.com/janestreet/ppx_expect>`_.
 
-Here, we will just cover enough to get started using them inside the Octez codebase.
+Here, we will just cover enough to get started using them inside the Mavkit codebase.
 
 How to run tests
 ----------------
@@ -101,7 +101,7 @@ Exception raised::
     +|     Please change this test to not include a backtrace. *)
     +|
     +|  "Assert_failure src/lib_stdlib/bloomer.ml:287:4"
-    +|  Raised at Tezos_stdlib__Bloomer.(fun) in file "src/lib_stdlib/bloomer.ml", line 287, characters 4-18
+    +|  Raised at Mavryk_stdlib__Bloomer.(fun) in file "src/lib_stdlib/bloomer.ml", line 287, characters 4-18
     +|  Called from Expect_test_collector.Make.Instance_io.exec in file "collector/expect_test_collector.ml", line 262, characters 12-19 |}]
 
 
@@ -148,5 +148,5 @@ Integration with Lwt
 
 Ppx_expect can be used in combination with Lwt, see the
 `README <https://github.com/janestreet/ppx_expect/blob/master/README.org#lwt>`_.
-This integration has not been tested on the Octez codebase yet, hence some work will be
+This integration has not been tested on the Mavkit codebase yet, hence some work will be
 needed to a have specific support for the codebase.

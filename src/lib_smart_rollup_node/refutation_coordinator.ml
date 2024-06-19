@@ -89,7 +89,7 @@ let on_process Layer1.{level; _} state =
       let* () =
         List.iter_ep
           (fun conflict ->
-            let other = conflict.Octez_smart_rollup.Game.other in
+            let other = conflict.Mavkit_smart_rollup.Game.other in
             Pkh_table.replace state.pending_opponents other () ;
             let game = Pkh_map.find_opt other ongoing_game_map in
             Player.init_and_play node_ctxt ~self ~conflict ~game ~level)

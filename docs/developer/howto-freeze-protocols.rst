@@ -59,7 +59,7 @@ In particular the file :src:`src/lib_node_config/config_file.ml` should be
 amended.
 
 The protocol plugin registration module should be removed from
-:src:`src/bin_node/dune` and :src:`opam/octez-node.opam`.
+:src:`src/bin_node/dune` and :src:`opam/mavkit-node.opam`.
 
 Remove RW Commands From ``lib_client_commands``
 -----------------------------------------------

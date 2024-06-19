@@ -9,9 +9,9 @@ FROM ${BUILD_IMAGE}:${BUILD_IMAGE_VERSION} as builder
 
 FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as intermediate
 # Pull in built binaries
-COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/bin /home/tezos/bin
+COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/bin /home/tezos/bin
 # Add parameters for active protocols
-COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/parameters /home/tezos/scripts/
+COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/parameters /home/tezos/scripts/
 # Add EVM kernel artifacts
 RUN mkdir -p /home/tezos/scripts/evm_kernel
 COPY --chown=tezos:nogroup --from=builder /home/tezos/evm_kernel/evm_installer.wasm* /home/tezos/evm_kernel/_evm_installer_preimages* /home/tezos/scripts/evm_kernel/
@@ -25,10 +25,10 @@ COPY --chown=tezos:nogroup scripts/alphanet_version src/bin_client/bash-completi
 FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
 COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin /home/tezos/bin
 # Remove scripts and symlinks pointing to potentially non-existing smart-rollup-node
-RUN rm /home/tezos/bin/*.sh && rm /home/tezos/bin/octez-smart-rollup-node-*
+RUN rm /home/tezos/bin/*.sh && rm /home/tezos/bin/mavkit-smart-rollup-node-*
 RUN chmod +rw /home/tezos/bin/* && strip /home/tezos/bin/*
 # hadolint ignore=DL3003,DL4006,SC2046
-RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+RUN cd /home/tezos/bin && for b in $(ls mavkit*); do ln -s "$b" $(echo "$b" | sed 's/^mavkit/mavryk/'); done
 
 FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare
 ARG BUILD_IMAGE
@@ -38,15 +38,15 @@ ARG GIT_HISTORY_FILE
 
 # Open Container Initiative
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
-LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+LABEL org.opencontainers.image.authors="info@mavryk.io" \
       org.opencontainers.image.base.name="alpine:3.14" \
-      org.opencontainers.image.description="Tezos node" \
-      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.description="Mavryk node" \
+      org.opencontainers.image.documentation="https://protocol.mavryk.org/" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
-      org.opencontainers.image.title="tezos-bare" \
-      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
-      org.opencontainers.image.vendor="Nomadic Labs"
+      org.opencontainers.image.source="https://gitlab.com/mavryk-network/mavryk-protocol" \
+      org.opencontainers.image.title="mavryk-debug" \
+      org.opencontainers.image.url="https://gitlab.com/mavryk-network/mavryk-protocol" \
+      org.opencontainers.image.vendor="Mavryk Dynamics"
 
 COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
 COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos

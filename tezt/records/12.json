@@ -141,8 +141,8 @@
     }
   },
   {
-    "file": "tezos-stdlib",
-    "title": "tezos-stdlib: circular_buffer.constant-chunks.partial-read-write",
+    "file": "mavryk-stdlib",
+    "title": "mavryk-stdlib: circular_buffer.constant-chunks.partial-read-write",
     "tags": [
       "alcotest"
     ],
@@ -1516,7 +1516,7 @@
   },
   {
     "file": "replace_by_fees.ml",
-    "title": "Mumbai: Second op's fees are above replacement fees threshold by 1 mutez",
+    "title": "Mumbai: Second op's fees are above replacement fees threshold by 1 mumav",
     "tags": [
       "mumbai",
       "replace",

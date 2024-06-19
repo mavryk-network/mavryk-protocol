@@ -13,7 +13,7 @@ code { CAR ;
        DUP ;
        CAR ;
        CAR ;
-       PUSH mutez 0 ;
+       PUSH mumav 0 ;
        DUP 3 ;
        CDR ;
        CAR ;

@@ -4,7 +4,7 @@
 SPHINXOPTS    = -j auto -aE -n -W --keep-going
 SPHINXBUILD   = poetry run sphinx-build
 SOURCEDIR     = .
-TMPDOCDIR     = /tmp/octezdoc
+TMPDOCDIR     = /tmp/mavkitdoc
 BUILDDIR      = _build
 TOPBUILDDIR   = ../_build
 TOPBUILDDIR_ABS  = $(abspath $(CURDIR)/$(TOPBUILDDIR))
@@ -15,17 +15,15 @@ P2PDOCEXE     = $(TOPBUILDDIR)/default/docs/$(DOCGENDIR)/p2p_doc.exe
 RPCDOCEXE     = $(TOPBUILDDIR)/default/docs/$(DOCGENDIR)/rpc_doc.exe
 ERRDOCEXE     = $(TOPBUILDDIR)/default/docs/$(DOCERRORDIR)/error_doc.exe
 
-NAMED_PROTOS  = nairobi oxford
+NAMED_PROTOS  = atlas
 PROTOCOLS     = $(NAMED_PROTOS) alpha
 
 # The following variables names are lowercase, so their names can be computed
 # from the names of the corresponding protocol directories
-nairobi_long  = PtNairobiyssHuh87hEhfVBGCVrK3WnS8Z2FT4ymB5tAa4r1nQf
-oxford_long   = ProxfordYmVfjWnRcgjWH36fW6PArwqykTFzotUxRs6gmTcZDuH
+atlas_long    = PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp
 alpha_long    = ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK
 
-nairobi_short = PtNairob
-oxford_short  = Proxford
+atlas_short   = PtAtLas
 alpha_short   = alpha
 
 SCRIPTSDIR    = scripts
@@ -43,36 +41,36 @@ full: odoc
 	${MAKE} html
 
 # Build the manuals for a given protocol
-%/octez-client.html:
-	@../octez-client -protocol $($(@D)_long) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
-%/octez-baker.html:
-	@../octez-baker-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
-%/octez-accuser.html:
-	@../octez-accuser-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
-%/octez-smart-rollup-node.html:
-	@../octez-smart-rollup-node-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
-%/octez-smart-rollup-client.html:
-	@../octez-smart-rollup-client-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
+%/mavkit-client.html:
+	@../mavkit-client -protocol $($(@D)_long) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
+%/mavkit-baker.html:
+	@../mavkit-baker-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
+%/mavkit-accuser.html:
+	@../mavkit-accuser-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
+%/mavkit-smart-rollup-node.html:
+	@../mavkit-smart-rollup-node-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
+%/mavkit-smart-rollup-client.html:
+	@../mavkit-smart-rollup-client-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
 
 manuals: \
-	 $(PROTOCOLS:%=%/octez-client.html) \
-	 $(PROTOCOLS:%=%/octez-baker.html) \
-	 $(PROTOCOLS:%=%/octez-accuser.html) \
-	 $(PROTOCOLS:%=%/octez-smart-rollup-node.html) \
-	 $(PROTOCOLS:%=%/octez-smart-rollup-client.html)
+	 $(PROTOCOLS:%=%/mavkit-client.html) \
+	 $(PROTOCOLS:%=%/mavkit-baker.html) \
+	 $(PROTOCOLS:%=%/mavkit-accuser.html) \
+	 $(PROTOCOLS:%=%/mavkit-smart-rollup-node.html) \
+	 $(PROTOCOLS:%=%/mavkit-smart-rollup-client.html)
 	# generic
-	@../octez-admin-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-admin-client.html
-	@../octez-signer man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-signer.html
-	@../octez-codec man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-codec.html
-	@../octez-snoop man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-snoop.html
-	@ ../octez-dac-node man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-dac-node.html
-	@ ../octez-dac-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/octez-dac-client.html
-	@../octez-node --help | grep -v '^Octez-node' | grep -v 'OCTEZ-NODE(1)' | \
-		./scripts/man2txt.py > api/octez-node.txt
-	@../octez-proxy-server --help | grep -v '^Octez-proxy-server' | grep -v 'OCTEZ-PROXY-SERVER(1)' | \
-		./scripts/man2txt.py > api/octez-proxy-server.txt
-	@../octez-smart-rollup-node man -verbosity 3 -format html | \
-		sed "s#${HOME}#\$$HOME#g" > api/octez-smart-rollup-node.html
+	@../mavkit-admin-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-admin-client.html
+	@../mavkit-signer man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-signer.html
+	@../mavkit-codec man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-codec.html
+	@../mavkit-snoop man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-snoop.html
+	@ ../mavkit-dac-node man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-dac-node.html
+	@ ../mavkit-dac-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-dac-client.html
+	@../mavkit-node --help | grep -v '^Mavkit-node' | grep -v 'MAVKIT-NODE(1)' | \
+		./scripts/man2txt.py > api/mavkit-node.txt
+	@../mavkit-proxy-server --help | grep -v '^Mavkit-proxy-server' | grep -v 'MAVKIT-PROXY-SERVER(1)' | \
+		./scripts/man2txt.py > api/mavkit-proxy-server.txt
+	@../mavkit-smart-rollup-node man -verbosity 3 -format html | \
+		sed "s#${HOME}#\$$HOME#g" > api/mavkit-smart-rollup-node.html
 
 .PHONY: odoc
 odoc:
@@ -115,8 +113,7 @@ redirectcheck: html
 # - on the active protocol using its numeric name (not the "active" symlink)
 # - on each other protocol including alpha, also checking label defs (option -l)
 xrefscheck:
-	$(CHECKXREFS) nairobi
-	$(CHECKXREFS) -l oxford
+	$(CHECKXREFS) -l atlas
 	$(CHECKXREFS) -l alpha
 
 installcheck:
@@ -138,7 +135,7 @@ docexes:
 	cd .. && dune build docs/$(DOCERRORDIR)/error_doc.exe docs/$(DOCGENDIR)/rpc_doc.exe docs/$(DOCGENDIR)/p2p_doc.exe
 
 developer/metrics.csv:
-	../octez-node dump-metrics > developer/metrics.csv
+	../mavkit-node dump-metrics > developer/metrics.csv
 
 $(ERRDOCEXE): docexes
 $(RPCDOCEXE): docexes
@@ -178,7 +175,7 @@ html: api/errors.rst developer/metrics.csv user/node-config.json \
 		rpc p2p manuals install-dependencies
 	(echo ':orphan:'; echo ''; cat ../CHANGES.rst) > CHANGES-dev.rst
 	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
-	@ln -s active "$(BUILDDIR)/nairobi" || true
+	@ln -s active "$(BUILDDIR)/atlas" || true
 
 # pylint does not support pyproject.toml configuration for now
 # It is configured by ./.pylint.rc
@@ -238,4 +235,4 @@ clean:
 	@-rm -Rf "$(BUILDDIR)" linkcheck odoc.log
 	@-rm -f $(ERRDOCEXE) $(RPCDOCEXE) $(P2PDOCEXE)
 	@-rm -Rf api/errors.rst developer/metrics.csv user/node-config.json alpha/rpc.rst shell/rpc.rst shell/p2p_api.rst user/default-acl.json CHANGES-dev.rst
-	@-rm -Rf api/octez-*.html api/octez-*.txt nairobi/octez-*.html oxford/octez-*.html alpha/octez-*.html
+	@-rm -Rf api/mavkit-*.html api/mavkit-*.txt atlas/mavkit-*.html alpha/mavkit-*.html

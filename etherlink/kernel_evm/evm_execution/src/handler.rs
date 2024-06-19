@@ -30,9 +30,9 @@ use primitive_types::{H160, H256, U256};
 use sha3::{Digest, Keccak256};
 use std::cmp::min;
 use std::fmt::Debug;
-use tezos_ethereum::block::BlockConstants;
-use tezos_ethereum::withdrawal::Withdrawal;
-use tezos_evm_logging::{log, Level::*};
+use mavryk_ethereum::block::BlockConstants;
+use mavryk_ethereum::withdrawal::Withdrawal;
+use mavryk_evm_logging::{log, Level::*};
 
 /// Outcome of making the [EvmHandler] run an Ethereum transaction
 ///
@@ -1720,7 +1720,7 @@ mod test {
     use primitive_types::{H160, H256};
     use std::cmp::Ordering;
     use std::str::FromStr;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const DUMMY_ALLOCATED_TICKS: u64 = 1_000_000;
 

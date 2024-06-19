@@ -29,7 +29,7 @@
     game move for [conflict]. *)
 val play_opening_move :
   [< `Read | `Write > `Read] Node_context.t ->
-  Octez_smart_rollup.Game.conflict ->
+  Mavkit_smart_rollup.Game.conflict ->
   (unit, tztrace) result Lwt.t
 
 (** [play head_block plugin node_ctxt ~self game opponent] injects the next move
@@ -37,6 +37,6 @@ val play_opening_move :
 val play :
   Node_context.rw ->
   self:Signature.public_key_hash ->
-  Octez_smart_rollup.Game.t ->
+  Mavkit_smart_rollup.Game.t ->
   Signature.public_key_hash ->
   (unit, tztrace) result Lwt.t

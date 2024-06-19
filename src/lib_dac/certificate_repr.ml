@@ -37,7 +37,7 @@ module V0 = struct
      Use [make] function to create a [Certificate_repr.V0.t] *)
   type t = {
     root_hash : Dac_plugin.raw_hash;
-    aggregate_signature : Tezos_crypto.Aggregate_signature.signature;
+    aggregate_signature : Mavryk_crypto.Aggregate_signature.signature;
     witnesses : Z.t;
         (* TODO: https://gitlab.com/tezos/tezos/-/issues/4853
            Use BitSet for witnesses field in external message
@@ -53,7 +53,7 @@ module V0 = struct
         obj4
           (req "version" Data_encoding.uint8)
           (req "root_hash" Dac_plugin.raw_hash_encoding)
-          (req "aggregate_signature" Tezos_crypto.Aggregate_signature.encoding)
+          (req "aggregate_signature" Mavryk_crypto.Aggregate_signature.encoding)
           (req "witnesses" z))
     in
     Data_encoding.(
@@ -80,7 +80,7 @@ module V0 = struct
         active protocol. *)
     type t = {
       root_hash : Dac_plugin.hash;
-      aggregate_signature : Tezos_crypto.Aggregate_signature.signature;
+      aggregate_signature : Mavryk_crypto.Aggregate_signature.signature;
       witnesses : Z.t;
     }
 
@@ -98,7 +98,7 @@ module V0 = struct
                (req "root_hash" root_hash_encoding)
                (req
                   "aggregate_signature"
-                  Tezos_crypto.Aggregate_signature.encoding)
+                  Mavryk_crypto.Aggregate_signature.encoding)
                (req "witnesses" z)))
       in
       Data_encoding.(

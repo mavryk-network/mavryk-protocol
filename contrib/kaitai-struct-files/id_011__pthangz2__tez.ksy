@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 011-PtHangz2.tez'
 types:
-  id_011__pthangz2__mutez:
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_011__pthangz2__mutez
-  type: id_011__pthangz2__mutez
+- id: id_011__pthangz2__mumav
+  type: id_011__pthangz2__mumav

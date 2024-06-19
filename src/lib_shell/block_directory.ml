@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Proof = Tezos_context_sigs.Context.Proof_types
+module Proof = Mavryk_context_sigs.Context.Proof_types
 
 let read_partial_context =
   let open Lwt_syntax in
@@ -62,15 +62,15 @@ let read_partial_context =
 let build_raw_header_rpc_directory (module Proto : Block_services.PROTO) =
   let open Lwt_result_syntax in
   let dir :
-      (Store.chain_store * Block_hash.t * Block_header.t) Tezos_rpc.Directory.t
+      (Store.chain_store * Block_hash.t * Block_header.t) Mavryk_rpc.Directory.t
       ref =
-    ref Tezos_rpc.Directory.empty
+    ref Mavryk_rpc.Directory.empty
   in
   let register0 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst0 s)
+        (Mavryk_rpc.Service.subst0 s)
         (fun block p q -> f block p q)
   in
   let module Block_services = Block_services.Make (Proto) (Proto) in
@@ -126,7 +126,7 @@ let build_raw_header_rpc_directory (module Proto : Block_services.PROTO) =
       | None ->
           return
             {
-              Tezos_shell_services.Block_services.current_protocol =
+              Mavryk_shell_services.Block_services.current_protocol =
                 next_protocol_hash;
               next_protocol = next_protocol_hash;
             }
@@ -142,7 +142,7 @@ let build_raw_header_rpc_directory (module Proto : Block_services.PROTO) =
           in
           return
             {
-              Tezos_shell_services.Block_services.current_protocol =
+              Mavryk_shell_services.Block_services.current_protocol =
                 protocol_hash;
               next_protocol = next_protocol_hash;
             }) ;
@@ -160,29 +160,29 @@ let with_metadata ~force_metadata ~metadata =
 let build_raw_rpc_directory (module Proto : Block_services.PROTO)
     (module Next_proto : Registered_protocol.T) =
   let open Lwt_result_syntax in
-  let dir : (Store.chain_store * Store.Block.block) Tezos_rpc.Directory.t ref =
-    ref Tezos_rpc.Directory.empty
+  let dir : (Store.chain_store * Store.Block.block) Mavryk_rpc.Directory.t ref =
+    ref Mavryk_rpc.Directory.empty
   in
-  let merge d = dir := Tezos_rpc.Directory.merge d !dir in
+  let merge d = dir := Mavryk_rpc.Directory.merge d !dir in
   let register0 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst0 s)
+        (Mavryk_rpc.Service.subst0 s)
         (fun block p q -> f block p q)
   in
   let register1 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst1 s)
+        (Mavryk_rpc.Service.subst1 s)
         (fun (block, a) p q -> f block a p q)
   in
   let register2 s f =
     dir :=
-      Tezos_rpc.Directory.register
+      Mavryk_rpc.Directory.register
         !dir
-        (Tezos_rpc.Service.subst2 s)
+        (Mavryk_rpc.Service.subst2 s)
         (fun ((block, a), b) p q -> f block a b p q)
   in
   let module Block_services = Block_services.Make (Proto) (Next_proto) in
@@ -213,8 +213,8 @@ let build_raw_rpc_directory (module Proto : Block_services.PROTO)
         max_block_header_length = Next_proto.max_block_length;
         operation_list_quota =
           List.map
-            (fun {Tezos_protocol_environment.max_size; max_op} ->
-              {Tezos_shell_services.Block_services.max_size; max_op})
+            (fun {Mavryk_protocol_environment.max_size; max_op} ->
+              {Mavryk_shell_services.Block_services.max_size; max_op})
             Next_proto.validation_passes;
       }
   in
@@ -764,12 +764,12 @@ let build_raw_rpc_directory (module Proto : Block_services.PROTO)
       return (params#version, List.rev acc)) ;
   register1 S.Helpers.complete (fun (chain_store, block) prefix () () ->
       let* ctxt = Store.Block.context chain_store block in
-      let*! l1 = Tezos_crypto.Base58.complete prefix in
+      let*! l1 = Mavryk_crypto.Base58.complete prefix in
       let*! l2 = Next_proto.complete_b58prefix ctxt prefix in
       return (l1 @ l2)) ;
   (* merge protocol rpcs... *)
   merge
-    (Tezos_rpc.Directory.map
+    (Mavryk_rpc.Directory.map
        (fun (chain_store, block) ->
          let hash = Store.Block.hash block in
          let header = Store.Block.header block in
@@ -781,7 +781,7 @@ let build_raw_rpc_directory (module Proto : Block_services.PROTO)
     | None -> Next_proto.rpc_services
   in
   merge
-    (Tezos_rpc.Directory.map
+    (Mavryk_rpc.Directory.map
        (fun (chain_store, block) ->
          let*! r =
            let*! context = Store.Block.context_exn chain_store block in
@@ -815,7 +815,7 @@ let build_raw_rpc_directory (module Proto : Block_services.PROTO)
                ~timestamp
            in
            let* context =
-             Tezos_protocol_environment.Context.load_cache
+             Mavryk_protocol_environment.Context.load_cache
                predecessor
                predecessor_context
                `Lazy
@@ -823,7 +823,7 @@ let build_raw_rpc_directory (module Proto : Block_services.PROTO)
            in
            return
              {
-               Tezos_protocol_environment.block_hash = Store.Block.hash block;
+               Mavryk_protocol_environment.block_hash = Store.Block.hash block;
                block_header = Store.Block.shell_header block;
                context;
              }
@@ -907,4 +907,4 @@ let build_rpc_directory chain_store block =
   | Some b ->
       let* dir = get_directory chain_store b in
       Lwt.return
-        (Tezos_rpc.Directory.map (fun _ -> Lwt.return (chain_store, b)) dir)
+        (Mavryk_rpc.Directory.map (fun _ -> Lwt.return (chain_store, b)) dir)

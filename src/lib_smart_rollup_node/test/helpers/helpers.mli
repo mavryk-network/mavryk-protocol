@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Octez_smart_rollup
-open Octez_smart_rollup_node
+open Mavkit_smart_rollup
+open Mavkit_smart_rollup_node
 
 (** {1 Helper functions to build and run unit tests for the rollup node} *)
 
@@ -95,7 +95,7 @@ module Assert : sig
 
   (** Assertions on commitment hashes *)
   module Commitment_hash :
-    Assert.EQUALITIES with type t = Octez_smart_rollup.Commitment.Hash.t
+    Assert.EQUALITIES with type t = Mavkit_smart_rollup.Commitment.Hash.t
 
   (** Assertions on PVM state hashes *)
   module State_hash : Assert.EQUALITIES with type t = State_hash.t

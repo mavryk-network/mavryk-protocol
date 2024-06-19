@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "tezos-smart-rollup-host"
+name = "mavryk-smart-rollup-host"
 edition = "2021"
 version = "0.2.2"
 license = "MIT"
@@ -13,16 +13,16 @@ description = "Safe Runtime trait for Tezos Smart Rollups host functions."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "api-bindings", "wasm"]
 
-[dependencies.tezos-smart-rollup-core]
+[dependencies.mavryk-smart-rollup-core]
 path = "../core"
 version = "0.2.2"
 
-[dependencies.tezos_crypto_rs]
+[dependencies.mavryk_crypto_rs]
 version = "=0.5.2"
 default-features = false
 optional = true
 
-[dependencies.tezos_data_encoding]
+[dependencies.mavryk_data_encoding]
 version = "=0.5.2"
 default-features = false
 optional = true
@@ -37,10 +37,10 @@ optional = true
 
 [features]
 default = ["std", "alloc", "crypto"]
-crypto = ["tezos_crypto_rs"]
-alloc = ["thiserror", "tezos_data_encoding"]
-testing = ["crypto", "mockall", "tezos-smart-rollup-core/testing"]
-proto-nairobi = ["tezos-smart-rollup-core/proto-nairobi"]
-proto-alpha = ["tezos-smart-rollup-core/proto-alpha"]
+crypto = ["mavryk_crypto_rs"]
+alloc = ["thiserror", "mavryk_data_encoding"]
+testing = ["crypto", "mockall", "mavryk-smart-rollup-core/testing"]
+proto-nairobi = ["mavryk-smart-rollup-core/proto-nairobi"]
+proto-alpha = ["mavryk-smart-rollup-core/proto-alpha"]
 # Required for 'impl Error for RuntimeError'
 std = []

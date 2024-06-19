@@ -2,34 +2,33 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_smart_rollup_node_test_helpers)
+ (name mavkit_smart_rollup_node_test_helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.test-helpers
   qcheck-alcotest
   qcheck-core
   logs.lwt
-  octez-alcotezt
+  mavkit-alcotezt
   tezt
-  octez-shell-libs.client-base-unix
-  octez-l2-libs.smart-rollup
-  octez-smart-rollup-node-lib
-  octez_smart_rollup_node_PtNairob
-  octez_smart_rollup_node_Proxford
-  (select void_for_linking-octez_smart_rollup_node_alpha from
-   (octez_smart_rollup_node_alpha -> void_for_linking-octez_smart_rollup_node_alpha.empty)
-   (-> void_for_linking-octez_smart_rollup_node_alpha.empty)))
+  mavkit-shell-libs.client-base-unix
+  mavkit-l2-libs.smart-rollup
+  mavkit-smart-rollup-node-lib
+  mavkit_smart_rollup_node_PtAtLas
+  (select void_for_linking-mavkit_smart_rollup_node_alpha from
+   (mavkit_smart_rollup_node_alpha -> void_for_linking-mavkit_smart_rollup_node_alpha.empty)
+   (-> void_for_linking-mavkit_smart_rollup_node_alpha.empty)))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_test_helpers
-  -open Octez_alcotezt
-  -open Tezos_client_base_unix
-  -open Octez_smart_rollup
-  -open Octez_smart_rollup_node))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_client_base_unix
+  -open Mavkit_smart_rollup
+  -open Mavkit_smart_rollup_node))
 
 (rule
  (action
-  (progn (write-file void_for_linking-octez_smart_rollup_node_alpha.empty ""))))
+  (progn (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))

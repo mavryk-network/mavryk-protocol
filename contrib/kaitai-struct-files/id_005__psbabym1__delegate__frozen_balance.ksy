@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 005-PsBabyM1.delegate.frozen_balance'
 types:
-  id_005__psbabym1__mutez:
+  id_005__psbabym1__mumav:
     seq:
-    - id: id_005__psbabym1__mutez
+    - id: id_005__psbabym1__mumav
       type: n
   n:
     seq:
@@ -21,8 +21,8 @@ types:
       type: b7be
 seq:
 - id: deposit
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: fees
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav
 - id: rewards
-  type: id_005__psbabym1__mutez
+  type: id_005__psbabym1__mumav

@@ -18,38 +18,38 @@ hex = "0.4"
 num-bigint = "0.3"
 num-traits = "0.2.8"
 
-tezos_data_encoding = "0.5.2"
-tezos_crypto_rs = { version = "0.5.2", default-features = false }
+mavryk_data_encoding = "0.5.2"
+mavryk_crypto_rs = { version = "0.5.2", default-features = false }
 
 # Adding these to 'dev_dependencies' causes the rand feature in crypto to be enabled
 # on wasm builds, when building the entire workspace.
 rand = { version = "0.8", optional = true }
 proptest = { version = "1.0", optional = true }
 
-tezos-smart-rollup-core.workspace = true
-tezos-smart-rollup-host.workspace = true
-tezos-smart-rollup-debug.workspace = true
-tezos-smart-rollup-entrypoint.workspace = true
-tezos-smart-rollup-storage.workspace = true
-tezos-smart-rollup-encoding.workspace = true
-tezos-smart-rollup-mock.workspace = true
+mavryk-smart-rollup-core.workspace = true
+mavryk-smart-rollup-host.workspace = true
+mavryk-smart-rollup-debug.workspace = true
+mavryk-smart-rollup-entrypoint.workspace = true
+mavryk-smart-rollup-storage.workspace = true
+mavryk-smart-rollup-encoding.workspace = true
+mavryk-smart-rollup-mock.workspace = true
 
 [features]
 default = ["tx-kernel"]
 dal     = [
-  "tezos-smart-rollup-core/proto-alpha",
-  "tezos-smart-rollup-host/proto-alpha",
-  "tezos-smart-rollup-mock/proto-alpha"
+  "mavryk-smart-rollup-core/proto-alpha",
+  "mavryk-smart-rollup-host/proto-alpha",
+  "mavryk-smart-rollup-mock/proto-alpha"
 ]
 debug   = []
 testing = [
   "rand",
   "proptest",
-  "tezos-smart-rollup-core/testing",
-  "tezos-smart-rollup-host/testing",
-  "tezos-smart-rollup-entrypoint/testing",
-  "tezos-smart-rollup-encoding/testing",
-  "tezos_crypto_rs/std"
+  "mavryk-smart-rollup-core/testing",
+  "mavryk-smart-rollup-host/testing",
+  "mavryk-smart-rollup-entrypoint/testing",
+  "mavryk-smart-rollup-encoding/testing",
+  "mavryk_crypto_rs/std"
 ]
 tx-kernel = []
 tx-kernel-no-sig-verif = ["tx-kernel"]

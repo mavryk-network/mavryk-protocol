@@ -31,7 +31,7 @@
                   e.g. in src/lib_protocol_environment/structs/v5_data_encoding.ml
 *)
 
-open Tezos_protocol_environment_structs.V8
+open Mavryk_protocol_environment_structs.V8
 
 type t = {x : int; y : string Data_encoding.lazy_t}
 

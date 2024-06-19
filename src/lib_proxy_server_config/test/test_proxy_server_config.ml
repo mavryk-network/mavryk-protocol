@@ -30,10 +30,10 @@
     Invocation:   dune exec src/lib_proxy_server_config/test/main.exe \
                    -- --file test_proxy_server_config.ml
     Description:  Test various functions and types regarding the configuration
-                  of [tezos-proxy-server]
+                  of [mavryk-proxy-server]
 *)
 
-open Tezos_proxy_server_config
+open Mavryk_proxy_server_config
 
 (** Lift a generator of ['a] to ['a option] by always creating [Some] values *)
 let to_some gen = QCheck2.Gen.(map Option.some gen)

@@ -1,4 +1,4 @@
-octez-client
-octez-admin-client
-octez-codec
-octez-smart-rollup-client-@PROTOCOL@
+mavkit-client
+mavkit-admin-client
+mavkit-codec
+mavkit-smart-rollup-client-@PROTOCOL@

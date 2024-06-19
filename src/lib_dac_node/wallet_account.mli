@@ -31,14 +31,14 @@ module Coordinator : sig
       wallet. Secret keys URIs are not included in [Coordinator] account
       wallets, as [Coordinator] nodes never sign any data. *)
   type t = {
-    public_key_hash : Tezos_crypto.Aggregate_signature.public_key_hash;
-    public_key : Tezos_crypto.Aggregate_signature.public_key;
+    public_key_hash : Mavryk_crypto.Aggregate_signature.public_key_hash;
+    public_key : Mavryk_crypto.Aggregate_signature.public_key;
   }
 
   (** [of_committee_member_public_key public_key] constructs a value of
       type [Coordinator.t] from the public key [public_key]. *)
   val of_committee_member_public_key :
-    Tezos_crypto.Aggregate_signature.public_key -> t tzresult Lwt.t
+    Mavryk_crypto.Aggregate_signature.public_key -> t tzresult Lwt.t
 end
 
 (** Module containing the definition of account wallet and functions operating
@@ -51,7 +51,7 @@ module Committee_member : sig
       [Committee_member] node never verifies the signatures of other
       committee members. *)
   type t = {
-    public_key_hash : Tezos_crypto.Aggregate_signature.public_key_hash;
+    public_key_hash : Mavryk_crypto.Aggregate_signature.public_key_hash;
     secret_key_uri : Client_keys.aggregate_sk_uri;
   }
 
@@ -59,7 +59,7 @@ module Committee_member : sig
       type [Committee_member.t] from the public key hash [pkh], by using the
       wallet context [wallet_cctxt] . *)
   val of_committee_member_address :
-    Tezos_crypto.Aggregate_signature.public_key_hash ->
+    Mavryk_crypto.Aggregate_signature.public_key_hash ->
     #Client_context.wallet ->
     t tzresult Lwt.t
 end

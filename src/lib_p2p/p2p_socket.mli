@@ -108,7 +108,7 @@ val private_node : ('msg, 'meta) t -> bool
     - [P2p_errors.Connection_closed] if the remote peer closes the connection *)
 val authenticate :
   canceler:Lwt_canceler.t ->
-  proof_of_work_target:Tezos_crypto.Crypto_box.pow_target ->
+  proof_of_work_target:Mavryk_crypto.Crypto_box.pow_target ->
   incoming:bool ->
   P2p_io_scheduler.connection ->
   P2p_point.Id.t ->
@@ -236,8 +236,8 @@ module Internal_for_tests : sig
       incoming:bool ->
       sent_msg:bytes ->
       recv_msg:bytes ->
-      sk:Tezos_crypto.Crypto_box.secret_key ->
-      pk:Tezos_crypto.Crypto_box.public_key ->
+      sk:Mavryk_crypto.Crypto_box.secret_key ->
+      pk:Mavryk_crypto.Crypto_box.public_key ->
       data
   end
 
@@ -253,7 +253,7 @@ module Internal_for_tests : sig
 
     (** [get_public_key conn_msg] returns the public key contained in
         [conn_msg]. *)
-    val get_public_key : t -> Tezos_crypto.Crypto_box.public_key
+    val get_public_key : t -> Mavryk_crypto.Crypto_box.public_key
 
     (** [write ~canceler scheduled_conn conn_msg] encodes then sends [conn_msg]
         on [scheduled_conn] and returns the bytes of this message to initiate

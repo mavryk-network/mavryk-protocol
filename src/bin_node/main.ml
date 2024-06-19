@@ -25,14 +25,14 @@
 (*****************************************************************************)
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
-let warn_if_argv0_name_not_octez () =
+   Remove backwards compatible Mavryk symlinks. *)
+let warn_if_argv0_name_not_mavkit () =
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -65,7 +65,7 @@ let () =
   | _ -> None
 
 let () =
-  (* The default allocation policy of Octez is "best-fit" which gives
+  (* The default allocation policy of Mavkit is "best-fit" which gives
      the best compromise in terms of performances and memory
      consumption. This default policy can be changed if the user set
      an environment variable. *)
@@ -89,26 +89,26 @@ let () =
     prerr_endline "Non-64 bit architectures are not supported." ;
     exit 1)
 
-let () = warn_if_argv0_name_not_octez ()
+let () = warn_if_argv0_name_not_mavkit ()
 
 let () =
   if Filename.basename Sys.argv.(0) = Updater.compiler_name then (
     try
-      Octez_protocol_compiler.Compiler.main
-        Octez_protocol_compiler_native.Native.driver
-        Tezos_version_value.Bin_version.version_string ;
+      Mavkit_protocol_compiler.Compiler.main
+        Mavkit_protocol_compiler_native.Native.driver
+        Mavryk_version_value.Bin_version.version_string ;
       Stdlib.exit 0
     with exn ->
       Format.eprintf "%a\n%!" Opterrors.report_error exn ;
       Stdlib.exit 1)
 
 let () =
-  if Filename.basename Sys.argv.(0) = "octez-validator" then
-    Tezos_validation.Command_line.run ()
+  if Filename.basename Sys.argv.(0) = "mavkit-validator" then
+    Mavryk_validation.Command_line.run ()
 
 let () =
-  if Filename.basename Sys.argv.(0) = "octez-rpc-process" then
-    exit (Cmdliner.Cmd.eval Octez_rpc_process.Main.cmd)
+  if Filename.basename Sys.argv.(0) = "mavkit-rpc-process" then
+    exit (Cmdliner.Cmd.eval Mavkit_rpc_process.Main.cmd)
 
 let term =
   let open Cmdliner.Term in
@@ -117,7 +117,7 @@ let term =
 let description =
   [
     `S "DESCRIPTION";
-    `P "Entry point for initializing, configuring and running a Tezos node.";
+    `P "Entry point for initializing, configuring and running a Mavryk node.";
     `P Node_identity_command.Manpage.command_description;
     `P Node_run_command.Manpage.command_description;
     `P Node_replay_command.Manpage.command_description;
@@ -131,8 +131,8 @@ let description =
 let man = description @ Node_run_command.Manpage.examples
 
 let info =
-  let version = Tezos_version_value.Bin_version.version_string in
-  Cmdliner.Cmd.info ~doc:"The Octez node" ~man ~version "octez-node"
+  let version = Mavryk_version_value.Bin_version.version_string in
+  Cmdliner.Cmd.info ~doc:"The Mavkit node" ~man ~version "mavkit-node"
 
 module Node_metrics_command = struct
   let dump_metrics () =
@@ -186,7 +186,7 @@ module Node_metrics_command = struct
   module Manpage = struct
     let command_description =
       "The $(b,dump-metrics) command is meant to dump openmetrics that are \
-       collected by the Tezos node on console."
+       collected by the Mavryk node on console."
 
     let description = [`S "DESCRIPTION"; `P command_description]
 
@@ -194,7 +194,7 @@ module Node_metrics_command = struct
 
     let info =
       Cmdliner.Cmd.info
-        ~doc:"Show all the openmetrics collected by the Tezos node"
+        ~doc:"Show all the openmetrics collected by the Mavryk node"
         ~man
         "dump-metrics"
   end

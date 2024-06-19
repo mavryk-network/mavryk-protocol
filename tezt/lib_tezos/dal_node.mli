@@ -120,7 +120,7 @@ val is_running_not_ready : t -> bool
     running, make the test fail. *)
 val wait : t -> Unix.process_status Lwt.t
 
-(** Run [octez-dal-node config init].
+(** Run [mavkit-dal-node config init].
 
     [expected_pow] allows to change the PoW difficulty. Default value is 0.
 *)

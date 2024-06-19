@@ -306,8 +306,8 @@ let model_table (type c t) ((module Bench) : (c, t) Benchmark.poly) =
     List.filter_map
       (fun (local_model_name, model) ->
         match model with
-        | Tezos_benchmark.Model.Aggregate _ -> None
-        | Tezos_benchmark.Model.Abstract {model; _} ->
+        | Mavryk_benchmark.Model.Aggregate _ -> None
+        | Mavryk_benchmark.Model.Abstract {model; _} ->
             let module M = (val model) in
             let module Model = M.Def (Pp_impl_abstract) in
             let printed = to_string Model.model in

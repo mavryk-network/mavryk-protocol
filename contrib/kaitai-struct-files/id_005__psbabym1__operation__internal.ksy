@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_005__psbabym1__entrypoint_tag == id_005__psbabym1__entrypoint_tag::named)
-  id_005__psbabym1__mutez:
+  id_005__psbabym1__mumav:
     seq:
-    - id: id_005__psbabym1__mutez
+    - id: id_005__psbabym1__mumav
       type: n
   id_005__psbabym1__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
     - id: destination
       type: id_005__psbabym1__contract_id
       doc: ! >-

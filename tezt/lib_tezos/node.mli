@@ -23,20 +23,20 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Spawn Tezos nodes and control them. *)
+(** Spawn Mavryk nodes and control them. *)
 
 (** Convention: in this module, some functions implement node commands;
     those functions are named after those commands.
-    For instance, [Node.config_init] corresponds to [octez-node config init],
-    and [Node.run] corresponds to [octez-node run].
+    For instance, [Node.config_init] corresponds to [mavkit-node config init],
+    and [Node.run] corresponds to [mavkit-node run].
 
     The arguments of those functions are also named after the actual arguments.
     For instance, [?network] is named after [--network], to make
     [Node.config_init ~network:"carthagenet"] look as close as possible
-    to [octez-node config init --network carthagenet].
+    to [mavkit-node config init --network carthagenet].
 
     Most options have default values which are not necessarily the default values
-    of [octez-node]. Indeed, the latter are tailored for Mainnet, but here we
+    of [mavkit-node]. Indeed, the latter are tailored for Mainnet, but here we
     use defaults which are tailored for the sandbox. In particular, the default
     value for [?network] is ["sandbox"].
     However, if you specify an option such as [~network] or [~history_mode],
@@ -58,7 +58,7 @@ type history_mode = Archive | Full of int option | Rolling of int option
 (** Values that can be passed to the node's [--media-type] argument *)
 type media_type = Json | Binary | Any
 
-(** Tezos node command-line arguments.
+(** Mavryk node command-line arguments.
 
     Not all arguments are available here.
     Some are simply not implemented, and some are handled separately
@@ -92,7 +92,7 @@ type argument =
     Passed to [run] like commands through the [--rpc-tls] argument. *)
 type tls_config = {certificate_path : string; key_path : string}
 
-(** Tezos node states. *)
+(** Mavryk node states. *)
 type t
 
 (** Create a node.
@@ -127,9 +127,9 @@ type t
     Default value for [allow_all_rpc] is [true].
 
     The argument list is a list of configuration options that the node
-    should run with. It is passed to the first run of [octez-node config init].
-    It is also passed to all runs of [octez-node run] that occur before
-    [octez-node config init]. If [Expected_pow] is given, it is also used as
+    should run with. It is passed to the first run of [mavkit-node config init].
+    It is also passed to all runs of [mavkit-node run] that occur before
+    [mavkit-node config init]. If [Expected_pow] is given, it is also used as
     the default value for {!identity_generate}.
 
     If [runner] is specified, the node will be spawned on this
@@ -156,9 +156,9 @@ val create :
 
 (** Add an argument to a node as if it was passed to {!create}.
 
-    The argument is passed to the next run of [octez-node config init].
-    It is also passed to all runs of [octez-node run] that occur before
-    the next [octez-node config init]. *)
+    The argument is passed to the next run of [mavkit-node config init].
+    It is also passed to all runs of [mavkit-node run] that occur before
+    the next [mavkit-node config init]. *)
 val add_argument : t -> argument -> unit
 
 (** Add a [--peer] argument to a node.
@@ -269,7 +269,7 @@ val kill : t -> unit Lwt.t
 
 (** {2 Commands} *)
 
-(** Run [octez-node identity generate]. *)
+(** Run [mavkit-node identity generate]. *)
 val identity_generate : ?expected_pow:int -> t -> unit Lwt.t
 
 (** Same as [identity_generate], but do not wait for the process to exit. *)
@@ -280,16 +280,16 @@ val spawn_identity_generate : ?expected_pow:int -> t -> Process.t
     The result is suitable to be passed to the node on the command-line. *)
 val show_history_mode : history_mode -> string
 
-(** Run [octez-node config init]. *)
+(** Run [mavkit-node config init]. *)
 val config_init : t -> argument list -> unit Lwt.t
 
-(** Run [tezos-node config update]. *)
+(** Run [mavryk-node config update]. *)
 val config_update : t -> argument list -> unit Lwt.t
 
-(** Run [tezos-node config reset]. *)
+(** Run [mavryk-node config reset]. *)
 val config_reset : t -> argument list -> unit Lwt.t
 
-(** Run [octez-node config show]. Returns the node configuration. *)
+(** Run [mavkit-node config show]. Returns the node configuration. *)
 val config_show : t -> JSON.t Lwt.t
 
 module Config_file : sig
@@ -319,7 +319,7 @@ module Config_file : sig
 
   (** Set the network config to a sandbox with the given dal config. *)
   val set_sandbox_network_with_dal_config :
-    Tezos_crypto_dal.Cryptobox.Config.t -> JSON.t -> JSON.t
+    Mavryk_crypto_dal.Cryptobox.Config.t -> JSON.t -> JSON.t
 
   (** Update the network config with the given user
       activated upgrades. *)
@@ -337,10 +337,10 @@ module Config_file : sig
   (** Set the peer_validator configuration in the given configuration. *)
   val set_peer_validator : ?new_head_request_timeout:float -> JSON.t -> JSON.t
 
-  (** Set the network config to a sandbox with the same chain_id than Ghostnet.
+  (** Set the network config to a sandbox with the same chain_id than Basenet.
 
       [user_activated_upgrades] can be given to add user-activated upgrades. *)
-  val set_ghostnet_sandbox_network :
+  val set_basenet_sandbox_network :
     ?user_activated_upgrades:(int * Protocol.t) list -> unit -> JSON.t -> JSON.t
 end
 
@@ -359,7 +359,7 @@ type snapshot_history_mode = Rolling_history | Full_history
 (** A snapshot file format for exports *)
 type export_format = Tar | Raw
 
-(** Run [octez-node snapshot export]. *)
+(** Run [mavkit-node snapshot export]. *)
 val snapshot_export :
   ?history_mode:snapshot_history_mode ->
   ?export_level:int ->
@@ -377,14 +377,14 @@ val spawn_snapshot_export :
   string ->
   Process.t
 
-(** Run [octez-node snapshot info]. *)
+(** Run [mavkit-node snapshot info]. *)
 val snapshot_info : ?json:bool -> t -> string -> unit Lwt.t
 
 (** Same as [snapshot_info], but do not wait for the process to
     exit. *)
 val spawn_snapshot_info : ?json:bool -> t -> string -> Process.t
 
-(** Run [octez-node snapshot import]. *)
+(** Run [mavkit-node snapshot import]. *)
 val snapshot_import :
   ?no_check:bool -> ?reconstruct:bool -> t -> string -> unit Lwt.t
 
@@ -392,13 +392,13 @@ val snapshot_import :
 val spawn_snapshot_import :
   ?no_check:bool -> ?reconstruct:bool -> t -> string -> Process.t
 
-(** Run [octez-node reconstruct]. *)
+(** Run [mavkit-node reconstruct]. *)
 val reconstruct : t -> unit Lwt.t
 
 (** Same as [reconstruct], but do not wait for the process to exit. *)
 val spawn_reconstruct : t -> Process.t
 
-(** Spawn [octez-node run].
+(** Spawn [mavkit-node run].
 
     The resulting promise is fulfilled as soon as the node has been spawned.
     It continues running in the background.
@@ -414,8 +414,8 @@ val spawn_reconstruct : t -> Process.t
     [~event_sections_levels:[("prevalidator", `Debug); ("validator.block", `Debug)]]
     will activate the logs at debug level for events whose section starts with
     ["prevalidator"] or ["validator.block"].
-    See {!Tezos_stdlib_unix.File_descriptor_sink} and
-    {{:https://tezos.gitlab.io/user/logging.html#file-descriptor-sinks}the logging documentation}
+    See {!Mavryk_stdlib_unix.File_descriptor_sink} and
+    {{:https://protocol.mavryk.org/user/logging.html#file-descriptor-sinks}the logging documentation}
     for a more precise semantic.
  *)
 val run :
@@ -427,7 +427,7 @@ val run :
   argument list ->
   unit Lwt.t
 
-(** Spawn [octez-node replay].
+(** Spawn [mavkit-node replay].
 
     Same as {!run} but for the [replay] command.
     In particular it also supports events.
@@ -587,7 +587,7 @@ val send_raw_data : t -> data:string -> unit Lwt.t
 (** [upgrade_storage node] upprades the given [node] storage. *)
 val upgrade_storage : t -> unit Lwt.t
 
-(** Run [octez-node --version] and return the node's version. *)
+(** Run [mavkit-node --version] and return the node's version. *)
 val get_version : t -> string Lwt.t
 
 (** Expose the RPC server address of this node as a foreign endpoint. *)

@@ -119,7 +119,7 @@ module Term = struct
         (Cmdliner.Cmd.info
            ~doc:
              "reads, parses and displays the current identity of the node. Use \
-              this command to see what identity will be used by Tezos. This is \
+              this command to see what identity will be used by Mavryk. This is \
               the default operation"
            "show")
         Cmdliner.Term.(
@@ -161,8 +161,8 @@ module Manpage = struct
      of a cryptographic key pair as well as a proof-of-work stamp that \
      certifies that enough CPU time has been dedicated to produce the \
      identity, to avoid sybil attacks. An identity with enough proof-of-work \
-     is required to participate in the Tezos network, therefore this command \
-     is necessary to launch Tezos the first time."
+     is required to participate in the Mavryk network, therefore this command \
+     is necessary to launch Mavryk the first time."
 
   let man =
     (* [ `S misc_docs ] @ *)

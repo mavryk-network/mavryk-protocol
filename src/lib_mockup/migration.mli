@@ -26,7 +26,7 @@
 (** Migrates the protocol version of an on-disk mockup environment.
     The effect is protocol-dependent. *)
 val migrate_mockup :
-  cctxt:Tezos_client_base.Client_context.full ->
+  cctxt:Mavryk_client_base.Client_context.full ->
   protocol_hash:Protocol_hash.t option ->
   next_protocol_hash:Protocol_hash.t ->
   unit tzresult Lwt.t

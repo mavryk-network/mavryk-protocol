@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 011-PtHangz2.delegate.frozen_balance'
 types:
-  id_011__pthangz2__mutez:
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   n:
     seq:
@@ -21,8 +21,8 @@ types:
       type: b7be
 seq:
 - id: deposits
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: fees
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav
 - id: rewards
-  type: id_011__pthangz2__mutez
+  type: id_011__pthangz2__mumav

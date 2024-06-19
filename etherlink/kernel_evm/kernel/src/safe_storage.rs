@@ -5,11 +5,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_evm_logging::{log, Level};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_evm_logging::{log, Level};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 #[cfg(feature = "proto-alpha")]
-use tezos_smart_rollup_host::dal_parameters::RollupDalParameters;
-use tezos_smart_rollup_host::{
+use mavryk_smart_rollup_host::dal_parameters::RollupDalParameters;
+use mavryk_smart_rollup_host::{
     input::Message,
     metadata::RollupMetadata,
     path::{concat, OwnedPath, Path, RefPath},

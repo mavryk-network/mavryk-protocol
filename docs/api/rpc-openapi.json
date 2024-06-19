@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Octez RPC",
-    "description": "The RPC API served by the Octez node.",
+    "title": "Mavkit RPC",
+    "description": "The RPC API served by the Mavkit node.",
     "version": "18.1"
   },
   "paths": {
@@ -749,7 +749,7 @@
                           "type": "number"
                         },
                         "bootstrap-peers": {
-                          "description": "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. If the port is not specified, default port 9732 will be assumed.",
+                          "description": "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. If the port is not specified, default port 9732 will be assumed.",
                           "type": "array",
                           "items": {
                             "$ref": "#/components/schemas/unistring"
@@ -1055,7 +1055,7 @@
                           "type": "boolean"
                         },
                         "rules": {
-                          "description": "Fine-grained logging instructions. Same format as described in `octez-node run --help`, DEBUG section. In the example below, sections 'p2p' and all sections starting by 'client' will have their messages logged up to the debug level, whereas the rest of log sections will be logged up to the notice level.",
+                          "description": "Fine-grained logging instructions. Same format as described in `mavkit-node run --help`, DEBUG section. In the example below, sections 'p2p' and all sections starting by 'client' will have their messages logged up to the debug level, whereas the rest of log sections will be logged up to the notice level.",
                           "oneOf": [
                             {
                               "$ref": "#/components/schemas/unistring"
@@ -1207,17 +1207,10 @@
                           ]
                         },
                         {
-                          "title": "ghostnet",
+                          "title": "basenet",
                           "type": "string",
                           "enum": [
-                            "ghostnet"
-                          ]
-                        },
-                        {
-                          "title": "mumbainet",
-                          "type": "string",
-                          "enum": [
-                            "mumbainet"
+                            "basenet"
                           ]
                         },
                         {
@@ -1828,7 +1821,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos operation ID (Base58Check-encoded)",
+                  "title": "A Mavryk operation ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -1910,7 +1903,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos protocol ID (Base58Check-encoded)",
+                  "title": "A Mavryk protocol ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -2296,7 +2289,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos protocol ID (Base58Check-encoded)",
+                  "title": "A Mavryk protocol ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -10274,7 +10267,7 @@
         ]
       },
       "Operation_hash": {
-        "title": "A Tezos operation ID (Base58Check-encoded)",
+        "title": "A Mavryk operation ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"
@@ -10290,7 +10283,7 @@
         ]
       },
       "Protocol_hash": {
-        "title": "A Tezos protocol ID (Base58Check-encoded)",
+        "title": "A Mavryk protocol ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"
@@ -10399,7 +10392,7 @@
       },
       "fitness": {
         "title": "Block fitness",
-        "description": "The fitness, or score, of a block, that allow the Tezos to decide which chain is the best. A fitness value is a list of byte sequences. They are compared as follows: shortest lists are smaller; lists of the same length are compared according to the lexicographical order.",
+        "description": "The fitness, or score, of a block, that allow the Mavryk to decide which chain is the best. A fitness value is a list of byte sequences. They are compared as follows: shortest lists are smaller; lists of the same length are compared according to the lexicographical order.",
         "type": "array",
         "items": {
           "type": "string",
@@ -10408,7 +10401,7 @@
       },
       "history_mode": {
         "title": "history mode",
-        "description": "Storage mode for the Tezos shell.",
+        "description": "Storage mode for the Mavryk shell.",
         "oneOf": [
           {
             "title": "archive",

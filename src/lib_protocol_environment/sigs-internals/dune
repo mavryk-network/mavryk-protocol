@@ -2,6 +2,6 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_sigs_internals)
- (public_name octez-proto-libs.protocol-environment.sigs-internals)
+ (name mavryk_protocol_environment_sigs_internals)
+ (public_name mavkit-proto-libs.protocol-environment.sigs-internals)
  (instrumentation (backend bisect_ppx)))

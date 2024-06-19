@@ -183,8 +183,8 @@ let test_manager_contracts =
   let* balance_bootstrap =
     Client.get_balance_for ~account:"bootstrap2" client
   in
-  let amount = Tez.of_mutez_int 10_001_000 in
-  let fee = Tez.of_mutez_int 0_000_475 in
+  let amount = Tez.of_mumav_int 10_001_000 in
+  let fee = Tez.of_mumav_int 0_000_475 in
   let* () =
     Client.transfer
       ~amount
@@ -203,8 +203,8 @@ let test_manager_contracts =
   let* balance_bootstrap =
     Client.get_balance_for ~account:"bootstrap2" client
   in
-  let amount = Tez.of_mutez_int 10_100_000 in
-  let fee = Tez.of_mutez_int 0_000_636 in
+  let amount = Tez.of_mumav_int 10_100_000 in
+  let fee = Tez.of_mumav_int 0_000_636 in
   let* () =
     Client.transfer
       ~amount
@@ -225,7 +225,7 @@ let test_manager_contracts =
     Client.get_balance_for ~account:"bootstrap2" client
   in
   let amount = Tez.of_int 10 in
-  let fee = Tez.of_mutez_int 0_000_824 in
+  let fee = Tez.of_mumav_int 0_000_824 in
   let* () =
     Client.transfer
       ~amount
@@ -262,7 +262,7 @@ let test_manager_contracts =
       ~amount
       ~giver:"manager"
       ~receiver:"target"
-      ~burn_cap:(Tez.of_mutez_int 0_356_000)
+      ~burn_cap:(Tez.of_mumav_int 0_356_000)
       client
   in
   Log.info "Transfer from manager to entrypoint with args" ;
@@ -274,7 +274,7 @@ let test_manager_contracts =
       ~receiver:"target"
       ~entrypoint:"add_left"
       ~arg
-      ~burn_cap:(Tez.of_mutez_int 0_067_000)
+      ~burn_cap:(Tez.of_mumav_int 0_067_000)
       client
   in
   let* () =

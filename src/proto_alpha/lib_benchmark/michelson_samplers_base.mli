@@ -47,13 +47,13 @@ module type S = sig
 
   val nat : Script_int.n Script_int.num sampler
 
-  val signature : Tezos_crypto.Signature.t sampler
+  val signature : Mavryk_crypto.Signature.t sampler
 
   val string : Script_string.t sampler
 
   val bytes : bytes sampler
 
-  val tez : Alpha_context.Tez.t sampler
+  val mav : Alpha_context.Tez.t sampler
 
   val timestamp : Script_timestamp.t sampler
 end

@@ -36,7 +36,7 @@
     }
   },
   {
-    "file": "tezos-lib-client",
+    "file": "mavryk-lib-client",
     "title": "alpha: micheline v1 macros",
     "tags": [
       "alcotest"
@@ -141,8 +141,8 @@
     }
   },
   {
-    "file": "tezos-stdlib",
-    "title": "tezos-stdlib: circular_buffer.constant-chunks.partial-write",
+    "file": "mavryk-stdlib",
+    "title": "mavryk-stdlib: circular_buffer.constant-chunks.partial-write",
     "tags": [
       "alcotest"
     ],
@@ -152,7 +152,7 @@
     }
   },
   {
-    "file": "tezos-shell-context",
+    "file": "mavryk-shell-context",
     "title": "cache",
     "tags": [
       "alcotest"

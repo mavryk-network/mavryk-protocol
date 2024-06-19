@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: alpha.tez'
 types:
-  alpha__mutez:
+  alpha__mumav:
     seq:
-    - id: alpha__mutez
+    - id: alpha__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: alpha__mutez
-  type: alpha__mutez
+- id: alpha__mumav
+  type: alpha__mumav

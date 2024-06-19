@@ -1,6 +1,6 @@
 # Linting via semgrep
 
-This directory includes rules for linting the OCaml source code of Octez.
+This directory includes rules for linting the OCaml source code of Mavkit.
 
 
 ## Usage

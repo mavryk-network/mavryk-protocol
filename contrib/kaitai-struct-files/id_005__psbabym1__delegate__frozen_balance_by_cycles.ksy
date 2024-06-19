@@ -13,14 +13,14 @@ types:
     - id: cycle
       type: s4
     - id: deposit
-      type: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
     - id: fees
-      type: id_005__psbabym1__mutez
+      type: id_005__psbabym1__mumav
     - id: rewards
-      type: id_005__psbabym1__mutez
-  id_005__psbabym1__mutez:
+      type: id_005__psbabym1__mumav
+  id_005__psbabym1__mumav:
     seq:
-    - id: id_005__psbabym1__mutez
+    - id: id_005__psbabym1__mumav
       type: n
   n:
     seq:

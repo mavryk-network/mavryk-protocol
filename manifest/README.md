@@ -1,7 +1,7 @@
-# Octez Manifest
+# Mavkit Manifest
 
 This directory contains all the information which is needed to
-generate `dune` and `.opam` files for Octez. Module `Manifest`
+generate `dune` and `.opam` files for Mavkit. Module `Manifest`
 provides functions to express those `dune` and `.opam` files,
 and file `main.ml` uses it to declare Dune targets and Opam packages.
 File `manifest.mli` documents how to declare them.

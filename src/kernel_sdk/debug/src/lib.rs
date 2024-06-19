@@ -23,8 +23,8 @@
 ///
 /// ```no_run
 /// extern crate alloc;
-/// use tezos_smart_rollup_debug::debug_msg;
-/// use tezos_smart_rollup_host::runtime::Runtime;
+/// use mavryk_smart_rollup_debug::debug_msg;
+/// use mavryk_smart_rollup_host::runtime::Runtime;
 ///
 /// fn log_runtime(host: &impl Runtime) {
 ///   debug_msg!(host, "Simple constant string");
@@ -33,9 +33,9 @@
 /// }
 /// ```
 ///
-/// [`Runtime`]: tezos_smart_rollup_host::runtime::Runtime
-/// [`SmartRollupCore`]: tezos_smart_rollup_core::smart_rollup_core::SmartRollupCore
-/// [`RollupHost`]: tezos_smart_rollup_core::rollup_host::RollupHost
+/// [`Runtime`]: mavryk_smart_rollup_host::runtime::Runtime
+/// [`SmartRollupCore`]: mavryk_smart_rollup_core::smart_rollup_core::SmartRollupCore
+/// [`RollupHost`]: mavryk_smart_rollup_core::rollup_host::RollupHost
 #[cfg(feature = "alloc")]
 #[macro_export]
 macro_rules! debug_msg {
@@ -56,15 +56,15 @@ macro_rules! debug_msg {
 /// trait.
 ///
 /// ```no_run
-/// use tezos_smart_rollup_debug::debug_str;
-/// use tezos_smart_rollup_host::runtime::Runtime;
+/// use mavryk_smart_rollup_debug::debug_str;
+/// use mavryk_smart_rollup_host::runtime::Runtime;
 ///
 /// fn do_something(host: &impl Runtime) {
 ///   debug_str!(host, "Simple constant string");
 /// }
 /// ```
 ///
-/// [`Runtime`]: tezos_smart_rollup_host::runtime::Runtime
+/// [`Runtime`]: mavryk_smart_rollup_host::runtime::Runtime
 #[macro_export]
 macro_rules! debug_str {
     ($host: expr, $msg: expr) => {{
@@ -74,4 +74,4 @@ macro_rules! debug_str {
 }
 
 #[doc(hidden)]
-pub use tezos_smart_rollup_host::runtime::Runtime;
+pub use mavryk_smart_rollup_host::runtime::Runtime;

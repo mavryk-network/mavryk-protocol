@@ -3,10 +3,10 @@
 
 (library
  (name bare_sigs)
- (public_name octez-libs.lwt-result-stdlib.bare.sigs)
+ (public_name mavkit-libs.lwt-result-stdlib.bare.sigs)
  (instrumentation (backend bisect_ppx))
  (libraries
   seqes
   lwt
-  octez-libs.lwt-result-stdlib.bare.functor-outputs)
+  mavkit-libs.lwt-result-stdlib.bare.functor-outputs)
  (js_of_ocaml))

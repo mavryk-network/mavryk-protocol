@@ -8,25 +8,25 @@ export HOME=$(pwd)
 # Latest v* tag will be used as the version.
 git fetch --tags
 
-git clone "$TEZOS_PACKAGING_REPO" tezos-packaging
-cp -R "$TEZOS_BINARIES" tezos-packaging/binaries
+git clone "$MAVRYK_PACKAGING_REPO" mavryk-packaging
+cp -R "$MAVRYK_BINARIES" mavryk-packaging/binaries
 
-cd tezos-packaging
-git checkout "$TEZOS_PACKAGING_VERSION"
+cd mavryk-packaging
+git checkout "$MAVRYK_PACKAGING_VERSION"
 
 cat <<DOC > meta.json
 {
     "release": "1",
-    "maintainer": "Tezos devteam <contact@tezos.com>"
+    "maintainer": "Mavryk Dynamics <info@mavryk.io>"
 }
 DOC
 
-# NOTE: The package generator script relies on the binaries having the `tezos-` prefix instead of
-# `octez-*` which is currently in place.
-# This is a temporary fix until the upstream version supports the renamed `octez` binaries.
+# NOTE: The package generator script relies on the binaries having the `mavryk-` prefix instead of
+# `mavkit-*` which is currently in place.
+# This is a temporary fix until the upstream version supports the renamed `mavkit` binaries.
 cd binaries
 # shellcheck disable=SC2001
-for f in octez*; do mv "$f" "$(echo "$f" | sed s/octez/tezos/g)"; done
+for f in mavkit*; do mv "$f" "$(echo "$f" | sed s/mavkit/tezos/g)"; done
 cd ../
 
 export DEB_BUILD_OPTIONS=nostrip

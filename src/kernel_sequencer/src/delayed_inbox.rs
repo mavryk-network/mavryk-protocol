@@ -3,10 +3,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::nom::NomReader;
-use tezos_smart_rollup_debug::debug_msg;
-use tezos_smart_rollup_host::{
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_smart_rollup_debug::debug_msg;
+use mavryk_smart_rollup_host::{
     input::Message,
     metadata::{RollupMetadata, RAW_ROLLUP_ADDRESS_SIZE},
     runtime::{Runtime, RuntimeError},
@@ -107,7 +107,7 @@ fn extract_payload(
     // Check if state is sequenced.
     let State::Sequenced(sequencer_address) = state else {
         return Err(RuntimeError::HostErr(
-            tezos_smart_rollup_host::Error::GenericInvalidAccess,
+            mavryk_smart_rollup_host::Error::GenericInvalidAccess,
         ));
     };
 
@@ -121,7 +121,7 @@ fn extract_payload(
     // Verify if the destination is for this rollup.
     if destination.hash().as_ref() != rollup_address {
         return Err(RuntimeError::HostErr(
-            tezos_smart_rollup_host::Error::GenericInvalidAccess,
+            mavryk_smart_rollup_host::Error::GenericInvalidAccess,
         ));
     }
 

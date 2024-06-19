@@ -45,7 +45,7 @@ type t = {
   mutable status : status;
   config : Configuration_file.t;
   store : Store.node_store;
-  tezos_node_cctxt : Tezos_rpc.Context.generic;
+  mavryk_node_cctxt : Mavryk_rpc.Context.generic;
   neighbors_cctxts : Dal_node_client.cctxt list;
   committee_cache : Committee_cache.t;
   gs_worker : Gossipsub.Worker.t;
@@ -68,7 +68,7 @@ let init config store gs_worker transport_layer cctxt metrics_server =
     status = Starting;
     config;
     store;
-    tezos_node_cctxt = cctxt;
+    mavryk_node_cctxt = cctxt;
     neighbors_cctxts;
     committee_cache =
       Committee_cache.create ~max_size:Constants.committee_cache_size;
@@ -155,20 +155,20 @@ let get_store ctxt = ctxt.store
 
 let get_gs_worker ctxt = ctxt.gs_worker
 
-let get_tezos_node_cctxt ctxt = ctxt.tezos_node_cctxt
+let get_mavryk_node_cctxt ctxt = ctxt.mavryk_node_cctxt
 
 let get_neighbors_cctxts ctxt = ctxt.neighbors_cctxts
 
 let fetch_committee ctxt ~level =
   let open Lwt_result_syntax in
-  let {tezos_node_cctxt = cctxt; committee_cache = cache; _} = ctxt in
+  let {mavryk_node_cctxt = cctxt; committee_cache = cache; _} = ctxt in
   match Committee_cache.find cache ~level with
   | Some committee -> return committee
   | None ->
       let*? {plugin = (module Plugin); _} = get_ready ctxt in
       let+ committee = Plugin.get_committee cctxt ~level in
       let committee =
-        Tezos_crypto.Signature.Public_key_hash.Map.map
+        Mavryk_crypto.Signature.Public_key_hash.Map.map
           (fun (start_index, offset) -> Committee_cache.{start_index; offset})
           committee
       in
@@ -178,7 +178,7 @@ let fetch_committee ctxt ~level =
 let fetch_assigned_shard_indices ctxt ~level ~pkh =
   let open Lwt_result_syntax in
   let+ committee = fetch_committee ctxt ~level in
-  match Tezos_crypto.Signature.Public_key_hash.Map.find pkh committee with
+  match Mavryk_crypto.Signature.Public_key_hash.Map.find pkh committee with
   | None -> []
   | Some {start_index; offset} ->
       (* TODO: https://gitlab.com/tezos/tezos/-/issues/4540

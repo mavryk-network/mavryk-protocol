@@ -31,15 +31,15 @@ val starting : name:string -> unit Lwt.t
 
 val stopping : name:string -> unit Lwt.t
 
-(** Emits the event that the connection to the Tezos node has been lost. *)
+(** Emits the event that the connection to the Mavryk node has been lost. *)
 val connection_lost : name:string -> unit Lwt.t
 
 (** [cannot_connect ~count error] emits the event that the rollup node cannot
-    connect to the Tezos node because of [error] for the [count]'s time. *)
+    connect to the Mavryk node because of [error] for the [count]'s time. *)
 val cannot_connect : name:string -> count:int -> tztrace -> unit Lwt.t
 
 (** [wait_reconnect delay] emits the event that the rollup will wait [delay]
-    seconds before attempting to reconnect to the Tezos node . *)
+    seconds before attempting to reconnect to the Mavryk node . *)
 val wait_reconnect : name:string -> float -> unit Lwt.t
 
 (** [switched_new_head hash level] emits the event that the layer 1 has notified

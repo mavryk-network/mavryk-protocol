@@ -34,7 +34,7 @@ cd <WORKDIR>
 mkdir tezos
 cd tezos
 git init
-git remote add -f origin https://gitlab.com/tezos/tezos.git
+git remote add -f origin https://gitlab.com/mavryk-network/mavryk-protocol.git
 git sparse-checkout set etherlink/kernel_evm/benchmarks
 git checkout master
 cd ..
@@ -48,7 +48,7 @@ git -C tezos pull
 docker build tezos/etherlink/kernel_evm/benchmarks -t evm-benchmark
 ```
 
-The image can be created from any branch, but will always pull the `tezos/tezos-debug` built from master by default. To change that, the Dockerfile can be updated locally to point to a different branch then master by editing the first line:
+The image can be created from any branch, but will always pull the `tezos/mavryk-debug` built from master by default. To change that, the Dockerfile can be updated locally to point to a different branch then master by editing the first line:
 ```
 FROM registry.gitlab.com/tezos/tezos/debug:amd64_<branch_name>
 ```

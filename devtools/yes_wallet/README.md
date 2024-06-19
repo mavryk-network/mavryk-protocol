@@ -2,7 +2,7 @@ Yes_wallet script
 =================
 
 The purpose of this tool is to extract baker addresses from a node's
-context and generate tezos-client's wallet containing these addresses.
+context and generate mavryk-client's wallet containing these addresses.
 In combination with the yes-node patch it can be used to perform a test
 protocol migration (see the relevant documentation page for more details)
 or to reproduce contexts where trouble occurred in the past in order to
@@ -32,7 +32,7 @@ easily using git.
 For instance to revive support for Ithaca:
 
 * `git checkout <commit-or-tag> -- devtools/yes_wallet/get_delegates_012_PsIthaca.ml`
-* modify the `dune` file to import `tezos-protocol-012-Psithaca`
+* modify the `dune` file to import `mavryk-protocol-012-Psithaca`
 * `dune build`
 
 The `<commit-or-tag>` refers to some git revision, where the support
@@ -49,37 +49,37 @@ In order to define aliases, `yes-wallet` supports an optional flag,
 [ 
   {
     "alias": "Tezos Foundation Baker 1",
-    "address": "tz3cqThj23Feu55KDynm7Vg81mCMpWDgzQZq",
+    "address": "mv3RCw1KLQZ1ULrYNJMcMKN9An4LNthEA9CT",
     "publicKey": "p2pk64qdTFeEGX4QBidPhHX3DadEQVCKpwnaeZg3Mrm6HuM81UAeCq1"
   },
   {
     "alias": "Tezos Foundation Baker 2",
-    "address": "tz3ipHZQpBBFuxv7eKoFgGnTaU3RBhnS93yY",
+    "address": "mv3XBks18YUcVEhLneN6v6UUjUuPk6FAb54p",
     "publicKey": "p2pk65aRfSEqWS1oKrmLCQTaLZULRAEWbmtqouMQhbZC82eirDcUfz4"
   },
   {
     "alias": "Tezos Foundation Baker 3",
-    "address": "tz3UC5hM9uCUiqmAw1pHdxjAdGueQMd8u3wf",
+    "address": "mv3GZYzwUGVqJ7YQ5LP8snRBnHmcxk96xYDi",
     "publicKey": "p2pk67A75WnRFWcBgPa9FTLCLAMTohiJXY7TnJiEzX2VuUDK5T3JL6k"
   },
   {
     "alias": "Tezos Foundation Baker 4",
-    "address": "tz3UQN6nBQHofmgQ3pZannhiYE2CT7TEZFim",
+    "address": "mv3GmqQNVmbAF3TdC98S2cPjhEtB1VxNQUN2",
     "publicKey": "p2pk66UPQPLsLejfoss1iwss34icqnZT7UuqdbMaNTzGXQKfGaURMGH"
   },
   {
     "alias": "Tezos Foundation Baker 5",
-    "address": "tz3XPXVG3rmMp7xioPNdj7DyUsFsTFwaG3Ws",
+    "address": "mv3KkznrNE4iPPjwwhwUxvuzdt7r1eRxE7wy",
     "publicKey": "p2pk65rGpQjUzFuQ9zTzCsBgZn9DLhgzw4AyM17kgqc3zUgphXpfpB6"
   },
   {
     "alias": "Tezos Foundation Baker 6",
-    "address": "tz3TXntG3Ncp2Eiv1iGSUquAGio3kpJFQNpY",
+    "address": "mv3FuGBrMjvAbWW9A2qHifbBRjf2KCptheX2",
     "publicKey": "p2pk67N1gEB2gYkwcLJQcNmGQvr4R7w2QyKQWJbnGb9MkeGjFVE5JuW"
   },
   {
     "alias": "Tezos Foundation Baker 8",
-    "address": "tz3iY4BXVpKC6JQ3KB7pwHKa1SVpitcfM4p2",
+    "address": "mv3WuXV7pBcYfaBGTVggB71bATMoHH4YAk5E",
     "publicKey": "p2pk65dXz5EXTvHskQqmveu5aS9dNLKNajDtcoht4nrmvPYr3F7ecGH"
   }
 ]

@@ -34,12 +34,12 @@
 let bytes_to_string b = "0x" ^ Hex.(of_bytes b |> show)
 
 let chest_to_string chest =
-  Data_encoding.Binary.to_bytes_exn Tezos_crypto.Timelock.chest_encoding chest
+  Data_encoding.Binary.to_bytes_exn Mavryk_crypto.Timelock.chest_encoding chest
   |> bytes_to_string
 
 let chest_key_to_string chest_key =
   Data_encoding.Binary.to_bytes_exn
-    Tezos_crypto.Timelock.chest_key_encoding
+    Mavryk_crypto.Timelock.chest_key_encoding
     chest_key
   |> bytes_to_string
 
@@ -60,7 +60,7 @@ let time = "1024"
 let dummy_chest =
   let rng_state = Random.get_state () in
   let chest, _ck =
-    Tezos_crypto.Timelock.chest_sampler
+    Mavryk_crypto.Timelock.chest_sampler
       ~rng_state
       ~plaintext_size:100
       ~time:(int_of_string time)
@@ -197,12 +197,12 @@ let create_timelock client path time payload =
   let* chest =
     read_encoding
       (add_path path chest_file)
-      Tezos_crypto.Timelock.chest_encoding
+      Mavryk_crypto.Timelock.chest_encoding
   in
   let* creator_key =
     read_encoding
       (add_path path creator_key_file)
-      Tezos_crypto.Timelock.chest_key_encoding
+      Mavryk_crypto.Timelock.chest_key_encoding
   in
   let* _ =
     verify_chest
@@ -229,7 +229,7 @@ let open_timelock ?(verify = true) client path chest_file time =
   let* opener_key =
     read_encoding
       (add_path path opener_key_file)
-      Tezos_crypto.Timelock.chest_key_encoding
+      Mavryk_crypto.Timelock.chest_key_encoding
   in
   return (opener_key_file, opener_key)
 
@@ -299,7 +299,7 @@ let test_contract_incorrect_guess ~protocol () =
   unit
 
 let test_contract_guess_too_late ~protocol () =
-  let open Tezos_crypto.Timelock in
+  let open Mavryk_crypto.Timelock in
   let* client, receiver =
     originate_contract ~mockup:false protocol "timelock_flip.tz"
   in
@@ -364,7 +364,7 @@ let register ~protocols =
   List.iter
     (fun (title, test_function) ->
       Protocol.register_test
-        ~supports:Protocol.(From_protocol (number Nairobi + 1))
+        ~supports:Protocol.(From_protocol (number Atlas))
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"; "timelock"]

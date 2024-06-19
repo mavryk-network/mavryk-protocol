@@ -1,7 +1,7 @@
 Proxy server
 ------------
 
-This page describes the *proxy server*, a readonly frontend to ``octez-node``
+This page describes the *proxy server*, a readonly frontend to ``mavkit-node``
 which is designed to lower the load of full nodes. It can be run separately from
 a node and will handle some RPC requests by itself. It is named after two
 things:
@@ -15,7 +15,7 @@ Even though the proxy server only serves a subset of the RPCs a full node can se
 Launching a proxy server
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The proxy server is implemented by the ``octez-proxy-server`` executable.
+The proxy server is implemented by the ``mavkit-proxy-server`` executable.
 The minimal arguments to the proxy server are ``--endpoint``
 and ``--rpc-addr``:
 
@@ -49,9 +49,9 @@ In a first terminal, start a sandboxed node:
 
 ::
 
-    $ ./src/bin_node/octez-sandboxed-node.sh 1 --connections 1
+    $ ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 1
       April 21 11:05:32.789 - node.config.validation: the node configuration has been successfully validated.
-      Created /tmp/octez-node.Uzq5aGAN/config.json for network: sandbox.
+      Created /tmp/mavkit-node.Uzq5aGAN/config.json for network: sandbox.
       ...
 
 Note in the trace above that the sandbox node wrote some configuration file in a working directory, that you may need to know later on.
@@ -61,37 +61,37 @@ environment for running a proxy server:
 
 ::
 
-    $ eval `./src/bin_client/octez-init-sandboxed-client.sh 1`
-    $ octez-activate-alpha
-    $ octez-client bake for bootstrap1
+    $ eval `./src/bin_client/mavkit-init-sandboxed-client.sh 1`
+    $ mavkit-activate-alpha
+    $ mavkit-client bake for bootstrap1
 
 To avoid warnings being printed in upcoming commands (optional):
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
 
 You're now ready to run a proxy server, as shown below.
-We specify debug variables in ``TEZOS_LOG`` to see what the proxy server
+We specify debug variables in ``MAVRYK_LOG`` to see what the proxy server
 is doing (see the :doc:`proxy mode<proxy>` page for more details).
 
 ::
 
-    $ export TEZOS_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug; proxy_server_run->debug; proxy_getter->debug; proxy_services->debug"
-    $ ./octez-proxy-server --endpoint http://127.0.0.1:18731 --rpc-addr http://127.0.0.1:18732
+    $ export MAVRYK_LOG="proxy_rpc_ctxt->debug; proxy_rpc->debug; proxy_server_run->debug; proxy_getter->debug; proxy_services->debug"
+    $ ./mavkit-proxy-server --endpoint http://127.0.0.1:18731 --rpc-addr http://127.0.0.1:18732
       Apr 21 11:09:22.092 - proxy_server_run: starting proxy RPC server on 127.0.0.1:18732
 
 Now, start a third terminal, and ask the client to request data from the proxy server:
 
 ::
 
-    $ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
-    $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
-      [ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv",
-        "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
-        "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
-        "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
+    $ export MAVRYK_CLIENT_UNSAFE_DISABLE_DISCLAIMER=y
+    $ ./mavkit-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
+      [ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx",
+        "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
+        "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
+        "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
 
 In the proxy server's terminal, you should see this output (tree sizes may vary):
 
@@ -119,13 +119,13 @@ Now, in the third terminal, retrieve the contracts again:
 
 ::
 
-    $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
-      [ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN",
-        "tz1ddb9NMYHZi5UzPdzTZMYQQZoMub195zgv",
-        "tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU",
-        "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx",
-        "tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv" ]
-    $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
+    $ ./mavkit-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
+      [ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
+        "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx",
+        "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
+        "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
+        "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" ]
+    $ ./mavkit-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
       # ... same output ...
 
 In the meantime, in the proxy server's terminal, you should see:
@@ -153,12 +153,12 @@ and restart it as follows:
 
 ::
 
-    $ ./octez-proxy-server --endpoint http://127.0.0.1:18731 --rpc-addr http://127.0.0.1:18732 --data-dir <node_data_dir>
+    $ ./mavkit-proxy-server --endpoint http://127.0.0.1:18731 --rpc-addr http://127.0.0.1:18732 --data-dir <node_data_dir>
       protocol of proxy unspecified, using the node's protocol: ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK
       Apr 21 11:09:22.092 - proxy_server_run: starting proxy RPC server on 127.0.0.1:18732
 
 You can obtain the value for the ``--data-dir`` argument by looking at the
-output of the terminal where ``octez-node`` was launched
+output of the terminal where ``mavkit-node`` was launched
 (see :ref:`above <sandbox_example>`).
 
 Now, in the third terminal (the client's terminal), redo the request
@@ -166,7 +166,7 @@ to retrieve contracts:
 
 ::
 
-    $ ./octez-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
+    $ ./mavkit-client --endpoint http://127.0.0.1:18732 rpc get /chains/main/blocks/head/context/contracts
       # ... same output as above ...
 
 Now the output in the proxy server terminal should be:
@@ -202,7 +202,7 @@ We describe the entire list of options and arguments of the proxy server, also a
   Note that this argument doesn't make ``--endpoint`` optional, because the
   proxy server still needs to do RPC calls to obtain block headers. Further
   work removing all RPC calls is described in issue
-  `2502 <https://gitlab.com/tezos/tezos/-/issues/2502>`_.
+  `2502 <https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/2502>`_.
 * ``-E`` and ``--endpoint`` specify the URL of the RPC server of the node
   to do requests to obtain data (RPCs of the form
   ``/chains/<chain_id>/blocks/<block_id>/context/raw/bytes``).
@@ -232,14 +232,14 @@ Supported RPCs
 ~~~~~~~~~~~~~~
 
 The proxy server itself only serves protocol-specific RPCs (listed
-`here <https://tezos.gitlab.io/alpha/rpc.html#protocol-alpha>`_ for protocol Alpha),
+`here <https://protocol.mavryk.org/alpha/rpc.html#protocol-alpha>`_ for protocol Alpha),
 but not all of them: since the proxy server is a readonly frontend for the
 underlying node, it only serves the readonly requests (``GET`` requests, as
 well as a subset of the ``POST`` requests).
 
 Because computations done by the proxy server are protocol-dependent, the proxy mode must choose a specific protocol: the same as the underlying node.
 However, the proxy mode does not support all protocols.
-Execute ``octez-client list proxy protocols`` to see the supported protocols.
+Execute ``mavkit-client list proxy protocols`` to see the supported protocols.
 It is expected that, at any
 given time, the proxy server supports ``Alpha``, the current protocol
 of Mainnet and the current protocol proposal on Mainnet at the time of release.

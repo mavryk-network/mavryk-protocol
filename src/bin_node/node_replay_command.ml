@@ -486,13 +486,13 @@ let run ?verbosity ~singleprocess ~strict ~operation_metadata_size_limit
   @@ fun () ->
   (* Main loop *)
   let internal_events =
-    Tezos_base_unix.Internal_event_unix.make_with_defaults
+    Mavryk_base_unix.Internal_event_unix.make_with_defaults
       ?verbosity
       ~log_cfg:config.log
       ()
   in
   let*! () =
-    Tezos_base_unix.Internal_event_unix.init ~config:internal_events ()
+    Mavryk_base_unix.Internal_event_unix.init ~config:internal_events ()
   in
   Updater.init (Data_version.protocol_dir config.data_dir) ;
   Lwt_exit.(
@@ -507,7 +507,7 @@ let run ?verbosity ~singleprocess ~strict ~operation_metadata_size_limit
                config
                blocks)
        in
-       let*! () = Tezos_base_unix.Internal_event_unix.close () in
+       let*! () = Mavryk_base_unix.Internal_event_unix.close () in
        Lwt.return res)
 
 let check_data_dir dir =
@@ -560,8 +560,8 @@ module Term = struct
     let open Cmdliner in
     let doc =
       "Increase log level. Using $(b,-v) is equivalent to using \
-       $(b,TEZOS_LOG='* -> info'), and $(b,-vv) is equivalent to using \
-       $(b,TEZOS_LOG='* -> debug')."
+       $(b,MAVRYK_LOG='* -> info'), and $(b,-vv) is equivalent to using \
+       $(b,MAVRYK_LOG='* -> debug')."
     in
     Arg.(
       value & flag_all & info ~docs:Shared_arg.Manpage.misc_section ~doc ["v"])
@@ -578,7 +578,7 @@ module Term = struct
       Arg.conv
         ( (fun s ->
             match
-              Tezos_shell_services.Block_services.parse_block_or_range s
+              Mavryk_shell_services.Block_services.parse_block_or_range s
             with
             | Ok b -> Ok b
             | Error _ -> Error (`Msg "cannot decode block argument")),
@@ -588,15 +588,15 @@ module Term = struct
                 Format.fprintf
                   ppf
                   "%s"
-                  (Tezos_shell_services.Block_services.to_string b)
+                  (Mavryk_shell_services.Block_services.to_string b)
             | Range (starts, ends) ->
                 Format.fprintf
                   ppf
                   "%s..%s"
-                  (Tezos_shell_services.Block_services.to_string
-                     (starts :> Tezos_shell_services.Block_services.block))
-                  (Tezos_shell_services.Block_services.to_string
-                     (ends :> Tezos_shell_services.Block_services.block)) )
+                  (Mavryk_shell_services.Block_services.to_string
+                     (starts :> Mavryk_shell_services.Block_services.block))
+                  (Mavryk_shell_services.Block_services.to_string
+                     (ends :> Mavryk_shell_services.Block_services.block)) )
     in
     Arg.(
       value
@@ -650,9 +650,9 @@ module Manpage = struct
     [
       `S "DEBUG";
       `P
-        ("The environment variable $(b,TEZOS_LOG) is used to fine-tune what is \
+        ("The environment variable $(b,MAVRYK_LOG) is used to fine-tune what is \
           going to be logged. The syntax is \
-          $(b,TEZOS_LOG='<section> -> <level> [ ; ...]') where section is one \
+          $(b,MAVRYK_LOG='<section> -> <level> [ ; ...]') where section is one \
           of $(i," ^ log_sections
        ^ ") and level is one of $(i,fatal), $(i,error), $(i,warn), \
           $(i,notice), $(i,info) or $(i,debug). A $(b,*) can be used as a \

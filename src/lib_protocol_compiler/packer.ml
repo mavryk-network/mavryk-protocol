@@ -106,13 +106,13 @@ let include_ml oc file =
   Printf.fprintf oc "end end\n" ;
   Printf.fprintf oc "module %s = %s ()\n" unit unit
 
-let opened_modules = ["Tezos_protocol_environment"; "Pervasives"; "Error_monad"]
+let opened_modules = ["Mavryk_protocol_environment"; "Pervasives"; "Error_monad"]
 
 let dump oc version hash files =
   Printf.fprintf
     oc
-    "module Make (Tezos_protocol_environment : \
-     Tezos_protocol_environment_sigs__%s.T) = struct\n"
+    "module Make (Mavryk_protocol_environment : \
+     Mavryk_protocol_environment_sigs__%s.T) = struct\n"
     version ;
   Printf.fprintf oc "[@@@ocaml.warning \"-33\"]\n" ;
   List.iter (Printf.fprintf oc "open %s\n") opened_modules ;

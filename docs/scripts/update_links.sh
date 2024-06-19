@@ -10,7 +10,7 @@ set -eu
 trace_file="_build/output.txt"
 
 if ! [ -f $trace_file ]; then
-  echo "Should be run within docs/ under the Tezos root directory"
+  echo "Should be run within docs/ under the Mavryk root directory"
   echo "The log of \`make linkcheck\`, which is assumed to be executed before,"
   echo "must be in _build/output.txt (under docs/)"
   exit 1
@@ -21,7 +21,7 @@ regesc_pattern() {
 }
 
 # developer/snoop_example.rst:12: [redirected permanently] https://github.com/project-everest/hacl-star to https://github.com/hacl-star/hacl-star
-# user/snapshots.rst:198: [redirected with Found] https://mainnet.xtz-shots.io/ to https://xtz-shots.io/mainnet/
+# user/snapshots.rst:198: [redirected with Found] https://snapshots.mavryk.network/mainnet/full/
 grep -o '^[^/].*:[0-9][0-9]*: .*redirected.*' "$trace_file" | while read -r redirect; do
     pattern="^\([^:]*\):\([0-9][0-9]*\): .*redirected.*\(http[^ ]*\).*\(http[^ ]*\).*";
 

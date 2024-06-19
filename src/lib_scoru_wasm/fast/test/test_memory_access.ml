@@ -27,14 +27,14 @@
     -------
     Component:    Lib_scoru_wasm_fast
     Invocation:   dune exec src/lib_scoru_wasm/fast/test/main.exe -- --file test_memory_access.ml
-    Subject:      Tests for the tezos-scoru-wasm library
+    Subject:      Tests for the mavryk-scoru-wasm library
 *)
 
-module Wasmer = Tezos_wasmer
+module Wasmer = Mavryk_wasmer
 module Preimage_map = Map.Make (String)
-module Memory_access_fast = Tezos_scoru_wasm_fast.Memory_access.Wasmer
+module Memory_access_fast = Mavryk_scoru_wasm_fast.Memory_access.Wasmer
 module Memory_access_slow =
-  Tezos_scoru_wasm.Host_funcs.Memory_access_interpreter
+  Mavryk_scoru_wasm.Host_funcs.Memory_access_interpreter
 
 let are_equivalent initial_content f_ref f_wasmer =
   let open Lwt.Syntax in
@@ -50,12 +50,12 @@ let are_equivalent initial_content f_ref f_wasmer =
            Lwt.return @@ Result.error
            @@ Memory_access_slow.exn_to_error
                 ~default:
-                  Tezos_scoru_wasm.Host_funcs.Error.Generic_invalid_access
+                  Mavryk_scoru_wasm.Host_funcs.Error.Generic_invalid_access
                 exn)
   in
 
   let result_wasmer =
-    let open Tezos_wasmer.Memory in
+    let open Mavryk_wasmer.Memory in
     Lwt_main.run
     @@ Lwt.catch
          (fun () ->
@@ -67,7 +67,7 @@ let are_equivalent initial_content f_ref f_wasmer =
            Lwt.return @@ Result.error
            @@ Memory_access_fast.exn_to_error
                 ~default:
-                  Tezos_scoru_wasm.Host_funcs.Error.Generic_invalid_access
+                  Mavryk_scoru_wasm.Host_funcs.Error.Generic_invalid_access
                 exn)
   in
 

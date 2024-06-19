@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Aggregate_signature = Tezos_crypto.Aggregate_signature
+module Aggregate_signature = Mavryk_crypto.Aggregate_signature
 
 type error +=
   | Cannot_convert_root_page_hash_to_bytes of string
@@ -99,13 +99,13 @@ let () =
       Format.fprintf
         ppf
         "Expected public key to be an active committee member but was not: %s"
-        (Tezos_crypto.Aggregate_signature.Public_key_hash.to_short_b58check
+        (Mavryk_crypto.Aggregate_signature.Public_key_hash.to_short_b58check
            committee_member_pkh))
     Data_encoding.(
       obj1
         (req
            "public_key_hash"
-           Tezos_crypto.Aggregate_signature.Public_key_hash.encoding))
+           Mavryk_crypto.Aggregate_signature.Public_key_hash.encoding))
     (function
       | Public_key_is_non_committee_member committee_member_pkh ->
           Some committee_member_pkh
@@ -214,7 +214,7 @@ let update_aggregate_sig_store node_store dac_members_pk_opt root_hash =
   in
   let raw_root_hash = Dac_plugin.hash_to_raw root_hash in
   let final_signature =
-    Tezos_crypto.Aggregate_signature.aggregate_signature_opt signatures
+    Mavryk_crypto.Aggregate_signature.aggregate_signature_opt signatures
   in
   match final_signature with
   | None ->
@@ -360,7 +360,7 @@ module Coordinator = struct
       List.find_map
         (fun Wallet_account.Coordinator.{public_key_hash; public_key} ->
           if
-            Tezos_crypto.Aggregate_signature.Public_key_hash.(
+            Mavryk_crypto.Aggregate_signature.Public_key_hash.(
               committee_member_address <> public_key_hash)
           then None
           else Some public_key)

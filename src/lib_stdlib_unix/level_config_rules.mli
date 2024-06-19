@@ -33,7 +33,7 @@
       <rules> := <rule> ; <rules>
       <rule> := (<pattern> ->)? <level>
 
-    A value of this form can be found in environment variables TEZOS_LOG and
+    A value of this form can be found in environment variables MAVRYK_LOG and
     LWT_LOG.
 *)
 

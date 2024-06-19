@@ -74,14 +74,14 @@ let destruct_sources_config json =
 
 type sources = {
   min_agreement : float;
-  endpoints : (Uri.t * Tezos_rpc.Context.simple) list;
+  endpoints : (Uri.t * Mavryk_rpc.Context.simple) list;
 }
 
 let sources_config_to_sources rpc_context_builder {min_agreement; uris} =
   let endpoints = List.map (fun u -> (u, rpc_context_builder u)) uris in
   {min_agreement; endpoints}
 
-let hash_of_block (block : Tezos_shell_services.Block_services.block) :
+let hash_of_block (block : Mavryk_shell_services.Block_services.block) :
     Block_hash.t option =
   match block with
   | `Hash (h, 0) -> Some h

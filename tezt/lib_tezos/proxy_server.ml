@@ -79,7 +79,7 @@ let connection_arguments_and_port ?rpc_port node =
       (* "-l"; <- to debug RPC delegations to the node
 
          Note that if you want to debug the proxy server's RPC server,
-         set TEZOS_LOG to "rpc->debug", just like you would do with a node.
+         set MAVRYK_LOG to "rpc->debug", just like you would do with a node.
       *)
       "--rpc-addr";
       Format.sprintf "%s://%s:%d" rpc_scheme rpc_host rpc_port;
@@ -91,11 +91,11 @@ let spawn ?rpc_port ?(args = []) node =
   Process.spawn
     ~name:Parameters.base_default_name
     ~color:Parameters.default_colors.(0)
-    (Uses.path Constant.octez_proxy_server)
+    (Uses.path Constant.mavkit_proxy_server)
     args
 
 let create ?runner ?name ?rpc_port ?(args = []) node =
-  let path = Uses.path Constant.octez_proxy_server in
+  let path = Uses.path Constant.mavkit_proxy_server in
   let user_arguments =
     List.map
       (function

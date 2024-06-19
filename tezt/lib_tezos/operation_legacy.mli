@@ -32,9 +32,9 @@
 
     - Default [counter] is the successor of the counter of [source].
 
-    - Default [amount] is [1] tez.
+    - Default [amount] is [1] mav.
 
-    - Default [fee] is [1000] mutez.
+    - Default [fee] is [1000] mumav.
 
     - Default [gas_limit] is [1040] gas. Use a greater limit
    (e.g. ~1500) if the destination is not allocated, and ~1900 if the
@@ -51,7 +51,7 @@ type manager_operation_content
     - an EzJsonm value directly
     - a Michelson value in a string
     - a Michelson value in a file (mainly for Michelson scripts). In this
-      case, files should have extension `.tz`, `.tez` or `.mic`
+      case, files should have extension `.tz`, `.mav` or `.mic`
     - a file storing directly the JSON representation. This is for instance
       useful to test contracts that fail at type-checking. Instead of
       Michelson, the user can generate the JSON and store it a file with
@@ -68,7 +68,7 @@ type micheline =
     public key revelation of an implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [fee] is [1000] mutez.
+    - Default [fee] is [1000] mumav.
     - Default [gas_limit] is [1040] gas.
     - Default [storage_limit] is [0]. *)
 val mk_reveal :
@@ -89,8 +89,8 @@ val mk_reveal :
     implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [amount] is [0] tez.
-    - Default [fee] is [30_000] mutez.
+    - Default [amount] is [0] mav.
+    - Default [fee] is [30_000] mumav.
     - Default [gas_limit] is [30_000] gas.
     - Default [storage_limit] is [1_500]. *)
 val mk_call :
@@ -110,8 +110,8 @@ val mk_call :
     smart contract origination from an implicit account [source].
 
     - Default [counter] is the successor of the counter of [source].
-    - Default [init_balance] is [0] tez.
-    - Default [fee] is [1_000_000] mutez.
+    - Default [init_balance] is [0] mav.
+    - Default [fee] is [1_000_000] mumav.
     - Default [gas_limit] is [100_000] gas.
     - Default [storage_limit] is [10_000]. *)
 val mk_origination :
@@ -143,7 +143,7 @@ val get_injection_branch : ?branch:string -> Client.t -> string Lwt.t
 (** [sign_manager_op_bytes ~signer op_bytes] signs [op_bytes] with
     [signer]'s secret key and the watermark [Generic_operation]. *)
 val sign_manager_op_bytes :
-  signer:Account.key -> bytes -> Tezos_crypto.Signature.t
+  signer:Account.key -> bytes -> Mavryk_crypto.Signature.t
 
 (** Same as [sign_manager_op_bytes], but the input operation is given
    in hexadecimal representation and returns a signature in
@@ -153,7 +153,7 @@ val sign_manager_op_hex : signer:Account.key -> Hex.t -> Hex.t
 (** Forge an operation and returns the hexadecimal binary representation.
 
     If the [protocol] argument is supplied, the operation is forged locally
-    (using [octez-codec]), otherwise we call an RPC
+    (using [mavkit-codec]), otherwise we call an RPC
     ([.../helpers/forge/operations]).
  *)
 val forge_operation :
@@ -189,7 +189,7 @@ val inject_operation :
     Default [branch] is the one returned by [RPC.get_branch client].
 
     If the [protocol] argument is supplied, the operation is forged locally
-    (using [octez-codec]), otherwise we call an RPC
+    (using [mavkit-codec]), otherwise we call an RPC
     ([.../helpers/forge/operations]).
 
     If the [force] argument (by default [false]) is [true], then Tezt

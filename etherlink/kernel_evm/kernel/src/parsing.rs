@@ -11,16 +11,16 @@ use crate::{
 };
 use primitive_types::{H160, U256};
 use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::{
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
     tx_common::EthereumTransactionCommon,
-    wei::eth_from_mutez,
+    wei::eth_from_mumav,
 };
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::PREIMAGE_HASH_SIZE;
-use tezos_smart_rollup_encoding::{
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
+use mavryk_smart_rollup_encoding::{
     contract::Contract,
     inbox::{
         ExternalMessageFrame, InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer,
@@ -29,8 +29,8 @@ use tezos_smart_rollup_encoding::{
         ticket::FA2_1Ticket, MichelsonBytes, MichelsonInt, MichelsonOr, MichelsonPair,
     },
 };
-use tezos_smart_rollup_host::input::Message;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::input::Message;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 /// On an option, either the value, or if `None`, interrupt and return the
 /// default value of the return type instead.
@@ -258,11 +258,11 @@ impl InputResult {
         // Amount
         let (_sign, amount_bytes) = ticket.amount().to_bytes_le();
         // We use the `U256::from_little_endian` as it takes arbitrary long
-        // bytes. Afterward it's transform to `u64` to use `eth_from_mutez`, it's
+        // bytes. Afterward it's transform to `u64` to use `eth_from_mumav`, it's
         // obviously safe as we deposit CTEZ and the amount is limited by
         // the XTZ quantity.
         let amount: u64 = U256::from_little_endian(&amount_bytes).as_u64();
-        let amount: U256 = eth_from_mutez(amount);
+        let amount: U256 = eth_from_mumav(amount);
 
         // Amount for gas
         let (_sign, gas_price_bytes) = gas_price.0 .0.to_bytes_le();
@@ -389,8 +389,8 @@ impl InputResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_smart_rollup_host::input::Message;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_host::input::Message;
+    use mavryk_smart_rollup_mock::MockHost;
 
     const ZERO_SMART_ROLLUP_ADDRESS: [u8; 20] = [0; 20];
 

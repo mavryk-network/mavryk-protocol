@@ -24,10 +24,10 @@
 (*****************************************************************************)
 
 (** [Memory_context] is a recursive map backed by an in-memory Irmin tree,
-    i.e. {!Tezos_context_memory.Context} (in [src/lib_context]), used
+    i.e. {!Mavryk_context_memory.Context} (in [src/lib_context]), used
     by the mockup mode and by proof verifiers (i.e. clients
-    of {!Tezos_context_helpers.Context.Make_tree.Proof}).
-    It abstracts away {!Tezos_context_memory.Context.t}.
+    of {!Mavryk_context_helpers.Context.Make_tree.Proof}).
+    It abstracts away {!Mavryk_context_memory.Context.t}.
 
     It is one of the instances of {!Environment_context} along
     {!Shell_context} and {!Proxy_context}. All these 3 instances
@@ -48,7 +48,7 @@ open Environment_context
     the parameterization of {!Environment_context.Context.kind} below,
     as well as the instantiation of the {!S} signature below (the module type
     of {!M}). *)
-type t = Tezos_context_memory.Context.t
+type t = Mavryk_context_memory.Context.t
 
 (** The additional kind identifying {!Memory_context} values. Used to
     detect at runtime when a memory context is expected, to disambiguate
@@ -73,10 +73,10 @@ val encoding : Context.t Data_encoding.t
 module M : S with type t = t
 
 (** [wrap_memory_context t] creates a memory context from an Irmin in-memory tree:
-    in this signature, [t] comes from {!Tezos_context_memory.Context}
+    in this signature, [t] comes from {!Mavryk_context_memory.Context}
     (in [src/lib_context]. See {!empty} for an alternative constructor. *)
 val wrap_memory_context : t -> Context.t
 
-(** [unwrap_memory_context ctxt] returns the {!Tezos_context_memory.Context.t}
+(** [unwrap_memory_context ctxt] returns the {!Mavryk_context_memory.Context.t}
     underlying [ctxt]. *)
 val unwrap_memory_context : Context.t -> t

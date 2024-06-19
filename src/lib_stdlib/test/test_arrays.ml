@@ -90,7 +90,7 @@ struct
   let check_out_of_bounds (s, d, _) =
     let a = make s d in
     let a, _ =
-      Utils.fold_n_times s (fun (a, i) -> (set a i "tezos", i + 1)) (a, 0)
+      Utils.fold_n_times s (fun (a, i) -> (set a i "mavryk", i + 1)) (a, 0)
     in
     if not (get a (-1) = d) then fail "get a (-1) = d" ;
     if not (get a (s + 1) = d) then fail "get a (s + 1) = d"

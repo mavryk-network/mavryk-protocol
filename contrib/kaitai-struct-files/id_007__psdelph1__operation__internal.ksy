@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_007__psdelph1__entrypoint_tag == id_007__psdelph1__entrypoint_tag::named)
-  id_007__psdelph1__mutez:
+  id_007__psdelph1__mumav:
     seq:
-    - id: id_007__psdelph1__mutez
+    - id: id_007__psdelph1__mumav
       type: n
   id_007__psdelph1__operation__alpha__internal_operation:
     seq:
@@ -110,7 +110,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_007__psdelph1__mutez
+      type: id_007__psdelph1__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -158,7 +158,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_007__psdelph1__mutez
+      type: id_007__psdelph1__mumav
     - id: destination
       type: id_007__psdelph1__contract_id
       doc: ! >-

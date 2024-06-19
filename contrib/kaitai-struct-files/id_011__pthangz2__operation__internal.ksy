@@ -40,9 +40,9 @@ types:
     - id: named
       type: named_0
       if: (id_011__pthangz2__entrypoint_tag == id_011__pthangz2__entrypoint_tag::named)
-  id_011__pthangz2__mutez:
+  id_011__pthangz2__mumav:
     seq:
-    - id: id_011__pthangz2__mutez
+    - id: id_011__pthangz2__mumav
       type: n
   id_011__pthangz2__operation__alpha__internal_operation:
     seq:
@@ -113,7 +113,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -161,7 +161,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_011__pthangz2__mutez
+      type: id_011__pthangz2__mumav
     - id: destination
       type: id_011__pthangz2__contract_id
       doc: ! >-

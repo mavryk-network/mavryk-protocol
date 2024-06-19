@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 007-PsDELPH1.tez'
 types:
-  id_007__psdelph1__mutez:
+  id_007__psdelph1__mumav:
     seq:
-    - id: id_007__psdelph1__mutez
+    - id: id_007__psdelph1__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_007__psdelph1__mutez
-  type: id_007__psdelph1__mutez
+- id: id_007__psdelph1__mumav
+  type: id_007__psdelph1__mumav

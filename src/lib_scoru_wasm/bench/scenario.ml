@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm
 open Pvm_instance
 open Wasm_pvm_state
 

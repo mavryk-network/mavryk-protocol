@@ -30,28 +30,28 @@ open Environment_protocol_T
 
 module type T = sig
   include
-    Tezos_protocol_environment_sigs.V2.T
+    Mavryk_protocol_environment_sigs.V2.T
       with type Format.formatter = Format.formatter
        and type 'a Data_encoding.t = 'a Data_encoding.t
        and type 'a Data_encoding.lazy_t = 'a Data_encoding.lazy_t
        and type 'a Lwt.t = 'a Lwt.t
        and type ('a, 'b) Pervasives.result = ('a, 'b) result
-       and type Chain_id.t = Tezos_crypto.Hashed.Chain_id.t
-       and type Block_hash.t = Tezos_crypto.Hashed.Block_hash.t
-       and type Operation_hash.t = Tezos_crypto.Hashed.Operation_hash.t
+       and type Chain_id.t = Mavryk_crypto.Hashed.Chain_id.t
+       and type Block_hash.t = Mavryk_crypto.Hashed.Block_hash.t
+       and type Operation_hash.t = Mavryk_crypto.Hashed.Operation_hash.t
        and type Operation_list_hash.t =
-        Tezos_crypto.Hashed.Operation_list_hash.t
+        Mavryk_crypto.Hashed.Operation_list_hash.t
        and type Operation_list_list_hash.t =
-        Tezos_crypto.Hashed.Operation_list_list_hash.t
+        Mavryk_crypto.Hashed.Operation_list_list_hash.t
        and type Context.t = Context.t
-       and type Context_hash.t = Tezos_crypto.Hashed.Context_hash.t
-       and type Protocol_hash.t = Tezos_crypto.Hashed.Protocol_hash.t
+       and type Context_hash.t = Mavryk_crypto.Hashed.Context_hash.t
+       and type Protocol_hash.t = Mavryk_crypto.Hashed.Protocol_hash.t
        and type Time.t = Time.Protocol.t
        and type Operation.shell_header = Operation.shell_header
        and type Operation.t = Operation.t
        and type Block_header.shell_header = Block_header.shell_header
        and type Block_header.t = Block_header.t
-       and type 'a RPC_directory.t = 'a Tezos_rpc.Directory.t
+       and type 'a RPC_directory.t = 'a Mavryk_rpc.Directory.t
        and type Ed25519.Public_key_hash.t = Signature.Ed25519.Public_key_hash.t
        and type Ed25519.Public_key.t = Signature.Ed25519.Public_key.t
        and type Ed25519.t = Signature.Ed25519.t
@@ -70,13 +70,13 @@ module type T = sig
        and type Z.t = Z.t
        and type ('a, 'b) Micheline.node = ('a, 'b) Micheline.node
        and type Data_encoding.json_schema = Data_encoding.json_schema
-       and type ('a, 'b) RPC_path.t = ('a, 'b) Tezos_rpc.Path.t
-       and type RPC_service.meth = Tezos_rpc.Service.meth
+       and type ('a, 'b) RPC_path.t = ('a, 'b) Mavryk_rpc.Path.t
+       and type RPC_service.meth = Mavryk_rpc.Service.meth
        and type (+'m, 'pr, 'p, 'q, 'i, 'o) RPC_service.t =
-        ('m, 'pr, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t
+        ('m, 'pr, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t
        and type Error_monad.shell_tztrace = Error_monad.tztrace
        and type 'a Error_monad.shell_tzresult = ('a, Error_monad.tztrace) result
-       and module Sapling = Tezos_sapling.Core.Validator_legacy
+       and module Sapling = Mavryk_sapling.Core.Validator_legacy
 
   type error += Ecoproto_error of Error_monad.error
 
@@ -97,7 +97,7 @@ module type T = sig
        and type validation_state = P.validation_state
 
   class ['chain, 'block] proto_rpc_context :
-    Tezos_rpc.Context.t
+    Mavryk_rpc.Context.t
     -> (unit, (unit * 'chain) * 'block) RPC_path.t
     -> ['chain * 'block] RPC_context.simple
 
@@ -119,7 +119,7 @@ struct
      shadow modules from [Stdlib]/[Base]/etc. with backwards compatible
      versions. Thus we open the module, hiding the incompatible, newer modules.
   *)
-  open Tezos_protocol_environment_structs.V2
+  open Mavryk_protocol_environment_structs.V2
   module Pervasives = Stdlib
   module Compare = Compare
   module List = List
@@ -134,21 +134,21 @@ struct
   module Int32 = Int32
   module Int64 = Int64
   module Format = Format
-  module Option = Tezos_error_monad.TzLwtreslib.Option
+  module Option = Mavryk_error_monad.TzLwtreslib.Option
 
   module Raw_hashes = struct
-    let sha256 = Tezos_crypto.Hacl.Hash.SHA256.digest
+    let sha256 = Mavryk_crypto.Hacl.Hash.SHA256.digest
 
-    let sha512 = Tezos_crypto.Hacl.Hash.SHA512.digest
+    let sha512 = Mavryk_crypto.Hacl.Hash.SHA512.digest
 
     let blake2b msg =
-      Tezos_crypto.Blake2B.to_bytes (Tezos_crypto.Blake2B.hash_bytes [msg])
+      Mavryk_crypto.Blake2B.to_bytes (Mavryk_crypto.Blake2B.hash_bytes [msg])
 
-    let keccak256 msg = Tezos_crypto.Hacl.Hash.Keccak_256.digest msg
+    let keccak256 msg = Mavryk_crypto.Hacl.Hash.Keccak_256.digest msg
 
-    let sha3_256 msg = Tezos_crypto.Hacl.Hash.SHA3_256.digest msg
+    let sha3_256 msg = Mavryk_crypto.Hacl.Hash.SHA3_256.digest msg
 
-    let sha3_512 msg = Tezos_crypto.Hacl.Hash.SHA3_512.digest msg
+    let sha3_512 msg = Mavryk_crypto.Hacl.Hash.SHA3_512.digest msg
   end
 
   module Z = Z
@@ -172,11 +172,11 @@ struct
   module Signature = Signature
 
   module S = struct
-    module type T = Tezos_base.S.T
+    module type T = Mavryk_base.S.T
 
-    module type HASHABLE = Tezos_base.S.HASHABLE
+    module type HASHABLE = Mavryk_base.S.HASHABLE
 
-    module type MINIMAL_HASH = Tezos_crypto.Intfs.MINIMAL_HASH
+    module type MINIMAL_HASH = Mavryk_crypto.Intfs.MINIMAL_HASH
 
     module type B58_DATA = sig
       type t
@@ -189,9 +189,9 @@ struct
 
       val of_b58check_opt : string -> t option
 
-      type Tezos_crypto.Base58.data += Data of t
+      type Mavryk_crypto.Base58.data += Data of t
 
-      val b58check_encoding : t Tezos_crypto.Base58.encoding
+      val b58check_encoding : t Mavryk_crypto.Base58.encoding
     end
 
     module type RAW_DATA = sig
@@ -211,7 +211,7 @@ struct
 
       val encoding : t Data_encoding.t
 
-      val rpc_arg : t Tezos_rpc.Arg.t
+      val rpc_arg : t Mavryk_rpc.Arg.t
     end
 
     module type SET = S.SET
@@ -467,11 +467,11 @@ struct
 
   module Error_core = struct
     include
-      Tezos_error_monad.Core_maker.Make
+      Mavryk_error_monad.Core_maker.Make
         (struct
           let id = Format.asprintf "proto.%s." Param.name
         end)
-        (Tezos_protocol_environment_structs.V2.Error_monad_trace_eval)
+        (Mavryk_protocol_environment_structs.V2.Error_monad_trace_eval)
 
     let error_encoding = Data_encoding.dynamic_size error_encoding
   end
@@ -487,7 +487,7 @@ struct
       Error_core :
         sig
           include
-            Tezos_error_monad.Sig.CORE
+            Mavryk_error_monad.Sig.CORE
               with type error := unwrapped
                and type error_category = error_category
         end)
@@ -503,10 +503,10 @@ struct
     type 'a shell_tzresult = ('a, Error_monad.tztrace) result
 
     include Error_core
-    include Tezos_error_monad.TzLwtreslib.Monad
+    include Mavryk_error_monad.TzLwtreslib.Monad
     include
-      Tezos_error_monad.Monad_maker.Make (Error_core) (TzTrace)
-        (Tezos_error_monad.TzLwtreslib.Monad)
+      Mavryk_error_monad.Monad_maker.Make (Error_core) (TzTrace)
+        (Mavryk_error_monad.TzLwtreslib.Monad)
 
     (* Backwards compatibility additions (traversors, dont_wait, trace helpers) *)
     include Error_monad_infix_globals
@@ -529,11 +529,11 @@ struct
     (* Shouldn't be used, only to keep the same environment interface *)
     let classify_error error = (find_info_of_error error).category
 
-    let both_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.both
+    let both_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.both
 
-    let join_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.join
+    let join_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.join
 
-    let all_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.all
+    let all_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.all
   end
 
   let () =
@@ -562,10 +562,10 @@ struct
   module Operation = Operation
   module Block_header = Block_header
   module Protocol = Protocol
-  module RPC_arg = Tezos_rpc.Arg
-  module RPC_path = Tezos_rpc.Path
-  module RPC_query = Tezos_rpc.Query
-  module RPC_service = Tezos_rpc.Service
+  module RPC_arg = Mavryk_rpc.Arg
+  module RPC_path = Mavryk_rpc.Path
+  module RPC_query = Mavryk_rpc.Query
+  module RPC_service = Mavryk_rpc.Service
 
   module RPC_answer = struct
     type 'o t =
@@ -596,7 +596,7 @@ struct
   end
 
   module RPC_directory = struct
-    include Tezos_protocol_environment_structs.V2.RPC_directory
+    include Mavryk_protocol_environment_structs.V2.RPC_directory
 
     let gen_register dir service handler =
       let open Lwt_syntax in
@@ -776,7 +776,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call0 s ctxt block q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -784,7 +784,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call1 s ctxt block a1 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -792,7 +792,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call2 s ctxt block a1 a2 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -800,16 +800,16 @@ struct
       let open Lwt_syntax in
       let* r = make_call3 s ctxt block a1 a2 a3 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
   end
 
-  module Sapling = Tezos_sapling.Core.Validator_legacy
+  module Sapling = Mavryk_sapling.Core.Validator_legacy
 
   module Micheline = struct
     include Micheline
-    include Tezos_micheline.Micheline_encoding
+    include Mavryk_micheline.Micheline_encoding
 
     let canonical_encoding_v1 ~variant encoding =
       canonical_encoding_v1 ~variant:(Param.name ^ "." ^ variant) encoding
@@ -852,7 +852,7 @@ struct
   end
 
   module Base58 = struct
-    include Tezos_crypto.Base58
+    include Mavryk_crypto.Base58
 
     let simple_encode enc s = simple_encode enc s
 
@@ -962,7 +962,7 @@ struct
     let expected_context_hash = Resulting_context
   end
 
-  class ['chain, 'block] proto_rpc_context (t : Tezos_rpc.Context.t)
+  class ['chain, 'block] proto_rpc_context (t : Mavryk_rpc.Context.t)
     (prefix : (unit, (unit * 'chain) * 'block) RPC_path.t) =
     object
       method call_proto_service0
@@ -1046,7 +1046,7 @@ struct
 
   class ['block] proto_rpc_context_of_directory conv dir :
     ['block] RPC_context.simple =
-    let lookup = new Tezos_rpc.Context.of_directory dir in
+    let lookup = new Mavryk_rpc.Context.of_directory dir in
     object
       method call_proto_service0
           : 'm 'q 'i 'o.

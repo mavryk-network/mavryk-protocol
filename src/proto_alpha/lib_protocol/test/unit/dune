@@ -6,42 +6,42 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base-test-helpers
-  octez-libs.micheline
-  octez-protocol-alpha-libs.client
-  octez-shell-libs.client-base
-  tezos-protocol-alpha.parameters
-  octez-proto-libs.protocol-environment
-  octez-libs.stdlib-unix
-  tezos-protocol-alpha.protocol
-  octez-libs.test-helpers
-  octez-protocol-alpha-libs.test-helpers
-  octez-alcotezt
-  octez-l2-libs.scoru-wasm-helpers
-  octez-libs.stdlib
-  octez-libs.crypto-dal
-  octez-l2-libs.scoru-wasm
-  octez-l2-libs.webassembly-interpreter-extra)
+  mavkit-libs.base
+  mavkit-libs.base-test-helpers
+  mavkit-libs.micheline
+  mavkit-protocol-alpha-libs.client
+  mavkit-shell-libs.client-base
+  mavryk-protocol-alpha.parameters
+  mavkit-proto-libs.protocol-environment
+  mavkit-libs.stdlib-unix
+  mavryk-protocol-alpha.protocol
+  mavkit-libs.test-helpers
+  mavkit-protocol-alpha-libs.test-helpers
+  mavkit-alcotezt
+  mavkit-l2-libs.scoru-wasm-helpers
+  mavkit-libs.stdlib
+  mavkit-libs.crypto-dal
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.webassembly-interpreter-extra)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.TzPervasives.Error_monad.Legacy_monad_globals
-  -open Tezos_base_test_helpers
-  -open Tezos_micheline
-  -open Tezos_client_alpha
-  -open Tezos_protocol_alpha_parameters
-  -open Tezos_protocol_alpha
-  -open Tezos_test_helpers
-  -open Tezos_alpha_test_helpers
-  -open Octez_alcotezt
-  -open Tezos_scoru_wasm_helpers
-  -open Tezos_stdlib
-  -open Tezos_crypto_dal
-  -open Tezos_webassembly_interpreter_extra)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base_test_helpers
+  -open Mavryk_micheline
+  -open Mavryk_client_alpha
+  -open Mavryk_protocol_alpha_parameters
+  -open Mavryk_protocol_alpha
+  -open Mavryk_test_helpers
+  -open Mavryk_alpha_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_scoru_wasm_helpers
+  -open Mavryk_stdlib
+  -open Mavryk_crypto_dal
+  -open Mavryk_webassembly_interpreter_extra)
  (modules
   test_bond_id_repr
   test_consensus_key
@@ -89,7 +89,7 @@
 
 (rule
  (alias runtest)
- (package tezos-protocol-alpha-tests)
+ (package mavryk-protocol-alpha-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

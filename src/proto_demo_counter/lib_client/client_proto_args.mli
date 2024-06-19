@@ -26,11 +26,11 @@
 val amount_param :
   name:string ->
   desc:string ->
-  ('a, Protocol_client_context.full) Tezos_clic.params ->
-  (Int32.t -> 'a, Protocol_client_context.full) Tezos_clic.params
+  ('a, Protocol_client_context.full) Mavryk_clic.params ->
+  (Int32.t -> 'a, Protocol_client_context.full) Mavryk_clic.params
 
 val msg_param :
   name:string ->
   desc:string ->
-  ('a, Protocol_client_context.full) Tezos_clic.params ->
-  (string -> 'a, Protocol_client_context.full) Tezos_clic.params
+  ('a, Protocol_client_context.full) Mavryk_clic.params ->
+  (string -> 'a, Protocol_client_context.full) Mavryk_clic.params

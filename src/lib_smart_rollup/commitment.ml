@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Hash = Tezos_crypto.Hashed.Smart_rollup_commitment_hash
+module Hash = Mavryk_crypto.Hashed.Smart_rollup_commitment_hash
 
 module V1 = struct
   type t = {

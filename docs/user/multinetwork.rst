@@ -3,7 +3,7 @@
 Connecting to a Network
 =======================
 
-Tezos is run on several networks, such as Mainnet (the main network)
+Mavryk is run on several networks, such as Mainnet (the main network)
 and various :ref:`test Networks<test-networks>`. Some users may also want to run
 their own networks for various reasons. Networks differ in various ways:
 
@@ -19,7 +19,7 @@ their own networks for various reasons. Networks differ in various ways:
 
 - some networks may change the protocol without going through the regular voting process, via user-activated upgrades or user-activated protocol overrides.
 
-The Octez node can be configured to connect to a given network when it is started.
+The Mavkit node can be configured to connect to a given network when it is started.
 By default, the node connects to Mainnet.
 To connect to other networks, you can either use one of the
 `Built-In Networks`_ or configure the node to connect to `Custom Networks`_.
@@ -34,11 +34,11 @@ Built-In Networks
 The simplest way to select the network to connect to is to use the ``--network``
 option for selecting a :ref:`test network<test-networks>` when you initialize your :doc:`node configuration <./node-configuration>`.
 
-For instance, to run on Ghostnet::
+For instance, to run on Basenet::
 
-  octez-node config init --data-dir ~/tezos-ghostnet --network ghostnet
-  octez-node identity generate --data-dir ~/tezos-ghostnet
-  octez-node run --data-dir ~/tezos-ghostnet
+  mavkit-node config init --data-dir ~/mavryk-basenet --network basenet
+  mavkit-node identity generate --data-dir ~/mavryk-basenet
+  mavkit-node run --data-dir ~/mavryk-basenet
 
 .. note::
    Once initialized, the node remembers its network settings on subsequent runs
@@ -46,7 +46,7 @@ For instance, to run on Ghostnet::
    different network when running the node again, it will refuse to start. In
    order to switch to a different network you need to either reinitialize it
    with a different data directory using the ``--data-dir`` option or remove
-   everything from the existing data directory, which defaults to ``~/.tezos-node``
+   everything from the existing data directory, which defaults to ``~/.mavryk-node``
    (and also initialize again).
 
 The ``--network`` option is not case-sensitive and can be used with
@@ -56,22 +56,22 @@ the following built-in networks:
 
 - ``sandbox``
 
-- ``ghostnet``
+- ``basenet``
 
 If you did not initialize your node configuration, or if your configuration
 file contains no ``network`` field, the node assumes you want to run Mainnet.
-You can use the ``--network`` option with ``octez-node run`` to make sure
+You can use the ``--network`` option with ``mavkit-node run`` to make sure
 your node runs on the expected network. For instance, to make sure that
-it runs on Ghostnet::
+it runs on Basenet::
 
-  octez-node run --data-dir ~/tezos-ghostnet --network ghostnet
+  mavkit-node run --data-dir ~/mavryk-basenet --network basenet
 
-This command will fail with an error if the configured network is not Ghostnet.
-The node also displays the chain name (such as ``TEZOS_MAINNET``) when it starts.
+This command will fail with an error if the configured network is not Basenet.
+The node also displays the chain name (such as ``MAVRYK_MAINNET``) when it starts.
 Also mind opening the :doc:`RPC interface <../developer/rpc>` as appropriate.
 
 The list of built-in networks is in :src:`src/lib_node_config/config_file.ml`.
-Octez developers edit the ``builtin_blockchain_networks_with_tags`` variable in this file to
+Mavkit developers edit the ``builtin_blockchain_networks_with_tags`` variable in this file to
 add or remove built-in networks.
 
 Custom Networks
@@ -102,10 +102,10 @@ Here is an example configuration file for Mainnet::
         "block": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
         "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
       },
-      "chain_name": "TEZOS_MAINNET",
-      "old_chain_name": "TEZOS_BETANET_2018-06-30T16:07:32Z",
+      "chain_name": "MAVRYK_MAINNET",
+      "old_chain_name": "MAVRYK_BETANET_2018-06-30T16:07:32Z",
       "incompatible_chain_name": "INCOMPATIBLE",
-      "sandboxed_chain_name": "SANDBOXED_TEZOS_MAINNET",
+      "sandboxed_chain_name": "SANDBOXED_MAVRYK_MAINNET",
       "user_activated_upgrades": [
         {
           "level": 28082,
@@ -117,18 +117,6 @@ Here is an example configuration file for Mainnet::
         }
       ],
       "user_activated_protocol_overrides": [
-        {
-          "replaced_protocol": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
-          "replacement_protocol": "PsBabyM1eUXZseaJdmXFApDSBqj8YBfwELoxZHHW77EMcAbbwAS"
-        },
-        {
-          "replaced_protocol": "PtEdoTezd3RHSC31mpxxo1npxFjoWWcFgQtxapi51Z8TLu6v6Uq",
-          "replacement_protocol": "PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA"
-        },
-        {
-          "replaced_protocol": "PtHangzHogokSuiMHemCuowEavgYTP8J5qQ9fQS793MHYFpCY3r",
-          "replacement_protocol": "PtHangz2aRngywmSRGGvrcTyMbbdpWdpFKuS4uMWxg2RaH9i1qx"
-        }
       ],
       "default_bootstrap_peers":
         [
@@ -145,7 +133,7 @@ that you will not automatically get updates to the list of bootstrap peers and
 user-activated upgrades (see `Alias Versus Explicit Configuration`_).
 
 - ``genesis`` is the description of the genesis block, i.e. the first block of the chain.
-  Inspect the genesis block using ``octez-client rpc get /chains/main/blocks/0``
+  Inspect the genesis block using ``mavkit-client rpc get /chains/main/blocks/0``
   to find these values.
 
 - ``chain_name`` is the name of the network (nodes only talk to other nodes which use
@@ -223,11 +211,11 @@ When connecting to existing networks, both options may apply, so here are some u
 
 If you use alias configuration, the configuration file stores
 the name of the network to connect to. For instance, if you configured it
-to connect to Ghostnet, it will contain something like::
+to connect to Basenet, it will contain something like::
 
   {
     "p2p": {},
-    "network": "ghostnet"
+    "network": "basenet"
   }
 
 For Mainnet, it would contain ``mainnet``, or nothing as this is actually the default.
@@ -239,7 +227,7 @@ overrides may be added. Because the configuration file only contains the name
 of the network and not its parameters, it will automatically use the updated values.
 
 However, if you use explicit configuration, the configuration file will
-no longer contain an alias such as ``mainnet`` or ``ghostnet``. Instead,
+no longer contain an alias such as ``mainnet`` or ``basenet``. Instead,
 it will explicitly contain the list of bootstrap peers, user-activated upgrades
 and user-activated protocol overrides that you specify. This means that when
 you update your node, the updated values will not be used.

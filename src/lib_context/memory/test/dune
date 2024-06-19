@@ -6,20 +6,20 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.tezos-context.disk
-  octez-libs.tezos-context.memory
-  octez-libs.stdlib-unix
-  octez-alcotezt)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.mavryk-context.disk
+  mavkit-libs.mavryk-context.memory
+  mavkit-libs.stdlib-unix
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_stdlib_unix
-  -open Octez_alcotezt)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavkit_alcotezt)
  (modules test))
 
 (executable
@@ -32,7 +32,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

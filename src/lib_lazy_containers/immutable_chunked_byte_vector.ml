@@ -119,7 +119,7 @@ module Chunk = struct
     Bytes.unsafe_to_string copied_bytes
 
   let encoding =
-    let open Tezos_tree_encoding in
+    let open Mavryk_tree_encoding in
     conv of_bytes to_bytes (raw [])
 end
 
@@ -306,6 +306,6 @@ module Enc_intf = struct
   let create = create
 end
 
-module Encoding = Tezos_tree_encoding.CBV_encoding.Make (Enc_intf)
+module Encoding = Mavryk_tree_encoding.CBV_encoding.Make (Enc_intf)
 
 let encoding = Encoding.cbv Chunk.encoding

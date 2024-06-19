@@ -36,7 +36,7 @@ type t = {
   expected_pow : float;  (** Expected P2P identity's PoW. *)
   network_name : string;
       (** A string that identifies the network's name. E.g. dal-sandbox. *)
-  endpoint : Uri.t;  (** Endpoint of a Tezos node *)
+  endpoint : Uri.t;  (** Endpoint of a Mavryk node *)
   metrics_addr : P2p_point.Id.t;
       (** The metrics server used to export metrics *)
   profiles : Types.profiles;

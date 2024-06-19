@@ -614,7 +614,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation

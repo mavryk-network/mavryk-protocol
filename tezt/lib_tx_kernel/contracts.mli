@@ -9,7 +9,7 @@
 (** A set of helper functions for creating and managing L1 smart contracts
     that are used for interacting with the tx-kernel. *)
 
-open Tezos_protocol_alpha.Protocol
+open Mavryk_protocol_alpha.Protocol
 
 (** Originate a contract that will mint and transfer tickets to the tx kernel.
     Uses the contract [mini_scenarios/smart_rollup_mint_and_deposit_ticket.tz]. *)

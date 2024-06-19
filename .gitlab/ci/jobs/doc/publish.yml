@@ -2,14 +2,14 @@ include: .gitlab/ci/jobs/shared/templates.yml
 
 # here we use this hack to publish the tezos documentation on
 # gitlab.io because we want to publish the doc for the project
-# tezos under https://tezos.gitlab.io and not  https://tezos.gitlab.io/tezos
+# tezos under https://protocol.mavryk.org and not  https://protocol.mavryk.org/tezos
 # The latter follows the gitlab url convention of
 # https://<projectname_space>.gitlab.io/<project_name>/
 # Notice that we push only if CI_COMMIT_REF_NAME is really master .
 # This allows to test the release workflow
 publish:documentation:
   extends:
-    - .default_settings_template
+    # - .default_settings_template
     - .image_template__runtime_build_test_dependencies
   stage: doc
   # Make the publish_documentation run in the beginning of the master

@@ -39,7 +39,7 @@
    Subject: Integration tests related to the data-availability layer
 *)
 
-let hooks = Tezos_regression.hooks
+let hooks = Mavryk_regression.hooks
 
 module Dal = Dal_common
 module Cryptobox = Dal.Cryptobox
@@ -192,7 +192,7 @@ let with_layer1 ?custom_constants ?additional_bootstrap_accounts
   let bootstrap1_key = Constant.bootstrap1.public_key_hash in
   f dal_parameters cryptobox node client bootstrap1_key
 
-let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f tezos_node tezos_client
+let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f mavryk_node mavryk_client
     bootstrap1_key =
   let* rollup_address =
     Client.Sc_rollup.originate
@@ -203,23 +203,23 @@ let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f tezos_node tezos_client
       ~kind:pvm_name
       ~boot_sector:""
       ~parameters_ty:"string"
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       ?dal_node
       Operator
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:bootstrap1_key
   in
   (* Argument ~keys:[] allows to bake with all available delegates. *)
-  let* () = Client.bake_for_and_wait tezos_client ~keys:[] in
+  let* () = Client.bake_for_and_wait mavryk_client ~keys:[] in
   f rollup_address sc_rollup_node
 
 let make_dal_node ?peers ?attester_profiles ?producer_profiles
-    ?bootstrap_profile tezos_node =
-  let dal_node = Dal_node.create ~node:tezos_node () in
+    ?bootstrap_profile mavryk_node =
+  let dal_node = Dal_node.create ~node:mavryk_node () in
   let* () =
     Dal_node.init_config
       ?peers
@@ -232,14 +232,14 @@ let make_dal_node ?peers ?attester_profiles ?producer_profiles
   return dal_node
 
 let with_dal_node ?peers ?attester_profiles ?producer_profiles
-    ?bootstrap_profile tezos_node f key =
+    ?bootstrap_profile mavryk_node f key =
   let* dal_node =
     make_dal_node
       ?peers
       ?attester_profiles
       ?producer_profiles
       ?bootstrap_profile
-      tezos_node
+      mavryk_node
   in
   f key dal_node
 
@@ -284,7 +284,7 @@ let scenario_with_layer1_and_dal_nodes ?(tags = ["layer1"]) ?custom_constants
   test
     ~__FILE__
     ~tags
-    ~uses:(fun _protocol -> [Constant.octez_dal_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dal_node])
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->
       with_layer1
@@ -311,7 +311,7 @@ let scenario_with_all_nodes ?custom_constants ?node_arguments ?slot_size
   regression_test
     ~__FILE__
     ~tags
-    ~uses:(fun _protocol -> Constant.[octez_smart_rollup_node; octez_dal_node])
+    ~uses:(fun _protocol -> Constant.[mavkit_smart_rollup_node; mavkit_dal_node])
     (Printf.sprintf "%s (%s)" description variant)
     (fun protocol ->
       with_layer1
@@ -900,7 +900,7 @@ let test_slots_attestation_operation_dal_committee_membership_check _protocol
       []
       client
   in
-  (* Set up a new account that holds the right amount of tez and make sure it
+  (* Set up a new account that holds the right amount of mav and make sure it
      can be an attester. *)
   let* proto_params =
     Node.RPC.call node @@ RPC.get_chain_block_context_constants ()
@@ -913,7 +913,7 @@ let test_slots_attestation_operation_dal_committee_membership_check _protocol
      on TB committee is high. With [number_of_shards = 16] (which is the minimum
      possible without changing other parameters), the new baker should be
      assigned roughly 16/64 = 1/4 shards on average. *)
-  let stake = Tez.of_mutez_int (Protocol.default_bootstrap_balance / 64) in
+  let stake = Tez.of_mumav_int (Protocol.default_bootstrap_balance / 64) in
   let* new_account = Client.gen_and_show_keys client in
   let* () =
     Client.transfer
@@ -1541,7 +1541,7 @@ let test_dal_node_startup =
     ~__FILE__
     ~title:"dal node startup"
     ~tags:["dal"]
-    ~uses:(fun _protocol -> [Constant.octez_dal_node])
+    ~uses:(fun _protocol -> [Constant.mavkit_dal_node])
   @@ fun protocol ->
   let run_dal = Dal_node.run ~wait_ready:false in
   let nodes_args = Node.[Synchronisation_threshold 0] in
@@ -1883,7 +1883,7 @@ let rollup_node_interprets_dal_pages ~protocol:_ client sc_rollup sc_rollup_node
     Sc_rollup_node.wait_for_level ~timeout:120. sc_rollup_node (level + 1)
   in
   check_saved_value_in_pvm
-    ~rpc_hooks:Tezos_regression.rpc_hooks
+    ~rpc_hooks:Mavryk_regression.rpc_hooks
     ~name:"value"
     ~expected_value
     sc_rollup_node
@@ -2001,7 +2001,7 @@ let test_dal_node_test_patch_profile _protocol _parameters _cryptobox _node
   (* We start with empty profile list *)
   let* () = check_profiles ~__LOC__ dal_node ~expected:(Operator []) in
   (* Adding [Attester] profile with pkh that is not encoded as
-     [Tezos_crypto.Signature.Public_key_hash.encoding] should fail. *)
+     [Mavryk_crypto.Signature.Public_key_hash.encoding] should fail. *)
   let* () = check_bad_attester_pkh_encoding (Attester "This is invalid PKH") in
   (* Test adding duplicate profiles stores profile only once *)
   let* () = patch_profile_rpc profile1 in
@@ -2654,7 +2654,7 @@ let e2e_test_script ?expand_test:_ ?(beforehand_slot_injection = 1)
     expected_value ;
   let* () =
     check_saved_value_in_pvm
-      ~rpc_hooks:Tezos_regression.rpc_hooks
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
       ~name:"value"
       ~expected_value
       sc_rollup_node
@@ -2667,7 +2667,7 @@ let e2e_test_script ?expand_test:_ ?(beforehand_slot_injection = 1)
   Lwt_list.iter_s
     (fun (_dal_node, rollup_node, _rollup_client) ->
       check_saved_value_in_pvm
-        ~rpc_hooks:Tezos_regression.rpc_hooks
+        ~rpc_hooks:Mavryk_regression.rpc_hooks
         ~name:"value"
         ~expected_value
         rollup_node)
@@ -3673,7 +3673,7 @@ let test_l1_migration_scenario ?(tags = []) ~migrate_from ~migrate_to
   Test.register
     ~__FILE__
     ~tags
-    ~uses:[Constant.octez_dal_node]
+    ~uses:[Constant.mavkit_dal_node]
     ~title:
       (sf
          "%s->%s: %s"
@@ -3743,23 +3743,23 @@ let test_migration_plugin ~migrate_from ~migrate_to =
     ()
 
 module Tx_kernel_e2e = struct
-  open Tezos_protocol_alpha.Protocol
+  open Mavryk_protocol_alpha.Protocol
   open Tezt_tx_kernel
 
   (** [keys_of_account account] returns a triplet of pk, pkh, sk of [account]  *)
   let keys_of_account (account : Account.key) =
     let pk =
       account.public_key
-      |> Tezos_crypto.Signature.Ed25519.Public_key.of_b58check_exn
+      |> Mavryk_crypto.Signature.Ed25519.Public_key.of_b58check_exn
     in
     let pkh =
       account.public_key_hash
-      |> Tezos_crypto.Signature.Ed25519.Public_key_hash.of_b58check_exn
+      |> Mavryk_crypto.Signature.Ed25519.Public_key_hash.of_b58check_exn
     in
     let sk =
       account.secret_key
       |> Account.require_unencrypted_secret_key ~__LOC__
-      |> Tezos_crypto.Signature.Ed25519.Secret_key.of_b58check_exn
+      |> Mavryk_crypto.Signature.Ed25519.Secret_key.of_b58check_exn
     in
     (pk, pkh, sk)
 
@@ -3786,7 +3786,7 @@ module Tx_kernel_e2e = struct
       ~key:
         (sf
            "/accounts/%s/%d"
-           (Tezos_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh)
+           (Mavryk_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh)
            ticket_index)
 
   (** E2E test using the tx-kernel. Scenario:
@@ -3856,7 +3856,7 @@ module Tx_kernel_e2e = struct
           (Contract_hash.to_b58check mint_and_deposit_contract)
         ~sc_rollup_address
         ~destination_l2_addr:
-          (Tezos_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
+          (Mavryk_crypto.Signature.Ed25519.Public_key_hash.to_b58check pkh1)
         ~ticket_content
         ~amount:450
     in

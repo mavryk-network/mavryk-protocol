@@ -13,7 +13,7 @@ then
   BRANCH=$2
 elif [ $# -eq 0 ]
 then
-  REPO="tezos/tezos"
+  REPO="mavryk-network/mavryk-protocol"
   BRANCH="latest-release"
 else
   usage
@@ -102,12 +102,12 @@ poetry --version # should output 1.2.2
 [ "$(poetry --version)" = "Poetry (version 1.2.2)" ]
 
 ##
-## Test installing Octez python development dependencies
+## Test installing Mavkit python development dependencies
 ##
-git clone --depth 1 --branch "$BRANCH" https://gitlab.com/"$REPO".git tezos
+git clone --depth 1 --branch "$BRANCH" https://gitlab.com/"$REPO".git mavryk
 
-# [install octez python dev-dependencies]
-cd tezos
+# [install mavkit python dev-dependencies]
+cd mavryk
 poetry install
 
 # [print sphinx-build versions]

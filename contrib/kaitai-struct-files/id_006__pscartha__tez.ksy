@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 006-PsCARTHA.tez'
 types:
-  id_006__pscartha__mutez:
+  id_006__pscartha__mumav:
     seq:
-    - id: id_006__pscartha__mutez
+    - id: id_006__pscartha__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_006__pscartha__mutez
-  type: id_006__pscartha__mutez
+- id: id_006__pscartha__mumav
+  type: id_006__pscartha__mumav

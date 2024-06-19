@@ -108,9 +108,9 @@ types:
     - id: id_015__ptlimapt__michelson__v1__primitives
       type: u1
       enum: id_015__ptlimapt__michelson__v1__primitives
-  id_015__ptlimapt__mutez:
+  id_015__ptlimapt__mumav:
     seq:
-    - id: id_015__ptlimapt__mutez
+    - id: id_015__ptlimapt__mumav
       type: n
   id_015__ptlimapt__scripted__contracts:
     seq:
@@ -216,7 +216,7 @@ types:
   origination:
     seq:
     - id: balance
-      type: id_015__ptlimapt__mutez
+      type: id_015__ptlimapt__mumav
     - id: delegate_tag
       type: u1
       enum: bool
@@ -321,7 +321,7 @@ types:
   transaction:
     seq:
     - id: amount
-      type: id_015__ptlimapt__mutez
+      type: id_015__ptlimapt__mumav
     - id: destination
       type: id_015__ptlimapt__transaction_destination
       doc: ! >-
@@ -664,7 +664,7 @@ enums:
     103: signature
     104: string
     105: bytes
-    106: mutez
+    106: mumav
     107: timestamp
     108: unit
     109: operation
@@ -754,8 +754,8 @@ enums:
     145: view
     146: constant
     147:
-      id: sub_mutez
-      doc: SUB_MUTEZ
+      id: sub_mumav
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

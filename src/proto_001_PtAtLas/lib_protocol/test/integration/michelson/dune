@@ -1,0 +1,84 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name
+  src_proto_001_PtAtLas_lib_protocol_test_integration_michelson_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-alcotezt
+  mavkit-libs.base
+  mavryk-protocol-001-PtAtLas.protocol
+  mavkit-protocol-001-PtAtLas-libs.test-helpers
+  mavkit-libs.base-test-helpers
+  mavkit-protocol-001-PtAtLas-libs.client
+  mavryk-benchmark
+  mavkit-libs.micheline
+  mavryk-benchmark-001-PtAtLas
+  mavryk-benchmark-type-inference-001-PtAtLas
+  mavkit-protocol-001-PtAtLas-libs.plugin
+  mavryk-protocol-001-PtAtLas.parameters)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavkit_alcotezt
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_001_PtAtLas_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavryk_client_001_PtAtLas
+  -open Mavryk_micheline
+  -open Mavryk_benchmark_001_PtAtLas
+  -open Mavryk_benchmark_type_inference_001_PtAtLas
+  -open Mavryk_protocol_plugin_001_PtAtLas)
+ (modules
+  test_annotations
+  test_block_time_instructions
+  test_contract_event
+  test_global_constants_storage
+  test_interpretation
+  test_lazy_storage_diff
+  test_patched_contracts
+  test_sapling
+  test_script_cache
+  test_script_typed_ir_size
+  test_temp_big_maps
+  test_ticket_accounting
+  test_ticket_balance_key
+  test_ticket_balance
+  test_ticket_lazy_storage_diff
+  test_ticket_manager
+  test_ticket_operations_diff
+  test_ticket_scanner
+  test_ticket_storage
+  test_typechecking
+  test_lambda_normalization))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_proto_001_PtAtLas_lib_protocol_test_integration_michelson_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavryk-protocol-001-PtAtLas-tests)
+ (deps
+  (glob_files contracts/*)
+  (glob_files patched_contracts/*)
+  (glob_files_rec ../../../../../../michelson_test_scripts/*))
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

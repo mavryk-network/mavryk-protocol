@@ -15,7 +15,7 @@ use ethbloom::Bloom;
 use primitive_types::{H160, H256, U256};
 use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpStream};
 use sha3::{Digest, Keccak256};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
 /// All data for an Ethereum block.
 ///
@@ -279,7 +279,7 @@ mod tests {
     use crate::transaction::TRANSACTION_HASH_SIZE;
     use primitive_types::{H256, U256};
     use rlp::Encodable;
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
     fn block_encoding_roundtrip(v: L2Block) {
         let bytes = v.rlp_bytes();

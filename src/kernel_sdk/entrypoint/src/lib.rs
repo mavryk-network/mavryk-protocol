@@ -19,7 +19,7 @@ mod allocator {
 /// Set panic hook
 #[cfg(feature = "panic-hook")]
 pub fn set_panic_hook() {
-    std::panic::set_hook(Box::new(tezos_smart_rollup_panic_hook::panic_handler));
+    std::panic::set_hook(Box::new(mavryk_smart_rollup_panic_hook::panic_handler));
 }
 
 /// Dummy panic hook that does nothing.
@@ -33,10 +33,10 @@ extern crate alloc;
 ///
 /// ```no_run
 /// # extern crate alloc;
-/// #[macro_use] extern crate tezos_smart_rollup_entrypoint;
-/// #[macro_use] extern crate tezos_smart_rollup_debug;
+/// #[macro_use] extern crate mavryk_smart_rollup_entrypoint;
+/// #[macro_use] extern crate mavryk_smart_rollup_debug;
 ///
-/// use tezos_smart_rollup_host::runtime::Runtime;
+/// use mavryk_smart_rollup_host::runtime::Runtime;
 ///
 /// fn run<Host: Runtime>(host: &mut Host) {
 ///   debug_msg!(host, "Hello: {}", "Kernel!");
@@ -61,4 +61,4 @@ macro_rules! kernel_entry {
 }
 
 #[doc(hidden)]
-pub use tezos_smart_rollup_core::rollup_host::RollupHost;
+pub use mavryk_smart_rollup_core::rollup_host::RollupHost;

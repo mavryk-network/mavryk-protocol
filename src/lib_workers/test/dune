@@ -6,27 +6,27 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
-  octez-libs.base
-  octez-libs.tezos-workers
-  octez-libs.test-helpers
-  octez-libs.base-test-helpers
-  octez-alcotezt)
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.tezos-workers
+  mavkit-libs.test-helpers
+  mavkit-libs.base-test-helpers
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_stdlib
-  -open Tezos_stdlib_unix
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_base.Worker_types
-  -open Tezos_workers
-  -open Tezos_test_helpers
-  -open Tezos_base_test_helpers
-  -open Octez_alcotezt)
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base.Worker_types
+  -open Mavryk_workers
+  -open Mavryk_test_helpers
+  -open Mavryk_base_test_helpers
+  -open Mavkit_alcotezt)
  (modules mocked_worker test_workers_unit))
 
 (executable
@@ -39,7 +39,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

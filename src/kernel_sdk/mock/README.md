@@ -10,9 +10,9 @@ Take a simple kernel that will count the number of times it is called, rebooting
 at most 500 times per level.
 
 ```
-use tezos_smart_rollup_mock::MockHost;
-use tezos_smart_rollup_host::runtime::Runtime;
-use tezos_smart_rollup_host::path::RefPath;
+use mavryk_smart_rollup_mock::MockHost;
+use mavryk_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::path::RefPath;
 
 const COUNTER_PATH: RefPath = RefPath::assert_from(b"/counter");
 const COUNTER_SIZE: usize = core::mem::size_of::<u32>();
@@ -55,4 +55,4 @@ host.run_level(count_calls);
 assert_eq!(2000, read_counter(&host));
 ```
 
-[`SmartRollupCore`]: tezos_smart_rollup_core::smart_rollup_core::SmartRollupCore
+[`SmartRollupCore`]: mavryk_smart_rollup_core::smart_rollup_core::SmartRollupCore

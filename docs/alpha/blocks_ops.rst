@@ -2,19 +2,19 @@
 Blocks and Operations
 =====================
 
-The content of a Tezos block is made up of operations, which implement
-and reify different functionalities provided by a Tezos economic
-protocol: from reaching consensus on the state of the Tezos
+The content of a Mavryk block is made up of operations, which implement
+and reify different functionalities provided by a Mavryk economic
+protocol: from reaching consensus on the state of the Mavryk
 blockchain, to performing smart contract calls and transactions. Each
-Tezos economic protocol can specify different kinds of operations.
+Mavryk economic protocol can specify different kinds of operations.
 
 This entry describes the operations supported by :doc:`the economic
 protocol <./protocol>` that implement *enabled* features -- that is,
-those available to end-users on Tezos Mainnet. The complete list of
+those available to end-users on Mavryk Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<tezos-protocol-alpha/Tezos_raw_protocol_alpha/Operation_repr/index.html>`.
+<mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Operation_repr/index.html>`.
 
 .. _validation_passes_alpha:
 
@@ -62,7 +62,7 @@ phases required to agree on the next block.
 Voting Operations
 ~~~~~~~~~~~~~~~~~
 
-Voting operations are operations related to the on-chain :doc:`Tezos
+Voting operations are operations related to the on-chain :doc:`Mavryk
 Amendment<voting>` process. In this economic protocol, there are two
 voting operations:
 
@@ -84,7 +84,7 @@ Anonymous Operations
 ~~~~~~~~~~~~~~~~~~~~
 
 This class groups all operations that do not require a signature from
-a Tezos account (with an exception, detailed below). They implement
+a Mavryk account (with an exception, detailed below). They implement
 different functionalities of the protocol, and their common
 characteristic is that they allow the account originating these
 operations to remain anonymous in order to avoid censorship.
@@ -132,7 +132,7 @@ See :ref:`here<slashing_alpha>` for further detail on the semantics of
 evidence-providing operations.
 
 The ``Activation`` operation allows users which participated in the
-Tezos fundraiser to make their :ref:`accounts <def_account_alpha>` operational.
+Mavryk fundraiser to make their :ref:`accounts <def_account_alpha>` operational.
 
 Finally, the ``Drain_delegate`` operation allows an active
 consensus-key account, i.e., an account to which a baker delegated its
@@ -152,7 +152,7 @@ Manager Operations
 
    Document increased paid storage manager operation.
 
-Manager operations enable end-users to interact with the Tezos
+Manager operations enable end-users to interact with the Mavryk
 blockchain -- e.g., transferring funds or calling :doc:`smart
 contracts<michelson>`. A manager operation is issued by a single
 *manager* account which signs the operation and pays the
@@ -163,7 +163,7 @@ manager operations are the only fee-paying and
 - The ``Reveal`` operation reveals the public key of the sending
   manager. Knowing this public key is indeed necessary to check the signature
   of future operations signed by this manager.
-- The ``Transaction`` operation allows users to either transfer tez
+- The ``Transaction`` operation allows users to either transfer mav
   between accounts and/or to invoke a smart contract.
 - The ``Delegation`` operation allows users to :ref:`delegate their
   stake <delegating_coins>` to a :ref:`delegate<def_delegate_alpha>` (a
@@ -173,7 +173,7 @@ manager operations are the only fee-paying and
   another account. Note that consensus keys cannot be BLS public keys.
 - The ``Origination`` operation is used to
   :ref:`originate<def_origination_alpha>`, that is to deploy, smart contracts
-  in the Tezos blockchain.
+  in the Mavryk blockchain.
 - The ``Set_deposits_limit`` operation enables delegates to adjust the
   amount of stake a delegate :ref:`has locked in
   bonds<active_stake_alpha>`.
@@ -182,10 +182,10 @@ manager operations are the only fee-paying and
 - The ``Increase_paid_storage`` operation allows a sender to increase
   the paid storage of some previously deployed contract.
 - The ``Event`` operation enables sending event-like information to
-  external applications from Tezos smart contracts -- see
+  external applications from Mavryk smart contracts -- see
   :doc:`Contract Events<event>` for further detail.
 
-Moreover, all operations necessary to implement Tezos' *enshrined*
+Moreover, all operations necessary to implement Mavryk' *enshrined*
 Layer 2 solutions into the economic protocol are also manager
 operations.
 
@@ -193,15 +193,15 @@ In particular, :doc:`smart rollups <smart_rollups>` maintenance is
 handled with dedicated manager operations.
 
 - The ``Smart_rollup_originate`` operation is used to originate, that
-  is, to deploy smart rollups in the Tezos blockchain.
+  is, to deploy smart rollups in the Mavryk blockchain.
 - The ``Smart_rollup_add_messages`` operation is used to add messages
-  to the inbox shared by all the smart rollups originated in the Tezos
+  to the inbox shared by all the smart rollups originated in the Mavryk
   blockchain. These messages are interpreted by the smart rollups
   according to their specific semantics.
 - The ``Smart_rollup_publish`` operation is used to regularly declare
   what is the new state of a given smart rollup in a so-called
   “commitment”. To publish commitments, an implicit account has to
-  own at least ꜩ 10,000, which are frozen as long as at least one of
+  own at least ṁ 10,000, which are frozen as long as at least one of
   their commitments is disputable.
 - The ``Smart_rollup_cement`` operation is used to cement a
   commitment, if the following requirements are met: it has been
@@ -209,11 +209,11 @@ handled with dedicated manager operations.
   the same state update. Once a commitment is cemented, it cannot be
   disputed anymore.
 - The ``Smart_rollup_recover_bond`` operation is used by an implicit
-  account to unfreeze their ꜩ 10,000. This operation only succeeds if
+  account to unfreeze their ṁ 10,000. This operation only succeeds if
   and only if all the commitments published by the implicit account
   have been cemented.
 - The ``Smart_rollup_refute`` operation is used to start or pursue a
-  dispute. A dispute is resolved on the Tezos blockchain through a
+  dispute. A dispute is resolved on the Mavryk blockchain through a
   so-called refutation game, where two players seek to prove the
   correctness of their respective commitment. The game consists in a
   dissection phase, where the two players narrow down their
@@ -262,12 +262,12 @@ The ``Failing_noop`` operation is not executable in the protocol:
 Rather, the ``Failing_noop`` operation allows
 to sign an arbitrary string, without introducing an operation that could be misinterpreted in the protocol.
 
-The Octez client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
+The Mavkit client provides commands to sign and verify the signature of input messages by a given key. These commands create a ``failing_noop``
 operation from the message that is being signed or checked.
 
 ::
 
-   octez-client sign message "hello world" for <account>
+   mavkit-client sign message "hello world" for <account>
 
-   octez-client check that message "hello world" was signed by <account> to
+   mavkit-client check that message "hello world" was signed by <account> to
    produce <signature>

@@ -24,9 +24,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* This file replaces the implementation of Tezos_crypto.BLS12_381
+(* This file replaces the implementation of Mavryk_crypto.BLS12_381
 
-   The dependency bls12-381 used by Tezos_crypto before V4 started was
+   The dependency bls12-381 used by Mavryk_crypto before V4 started was
    considering Fq12 as a field. bls12-381.1.0.0 introduced a breaking API
    changes, changing Fq12 signature to a group. Functions like
    check_bytes, add, one, negate and order have been removed from the API
@@ -40,7 +40,7 @@
    Also, bls12-381.1.0.0 added Bls12_381.Pairing.pairing_check which does
    exactly the same job than the Michelson instruction IPairing_check_bls12_381
    is expected to do. Therefore, the complete module Pairing is not required
-   anymore in Tezos_crypto.
+   anymore in Mavryk_crypto.
 *)
 
 module Fr = Bls12_381.Fr

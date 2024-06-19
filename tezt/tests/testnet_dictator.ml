@@ -44,8 +44,8 @@ let bake node client =
           Constant.bootstrap5.alias;
         ]
       ~minimal_fees:0
-      ~minimal_nanotez_per_gas_unit:0
-      ~minimal_nanotez_per_byte:0
+      ~minimal_nanomav_per_gas_unit:0
+      ~minimal_nanomav_per_byte:0
       ~minimal_timestamp:true
       client
   in
@@ -70,26 +70,26 @@ let bake_until_migration_block node client =
     (return ())
     (Base.range 1 p.remaining)
 
-type chain_id = Chain_id_mainnet | Chain_id_ghostnet
+type chain_id = Chain_id_mainnet | Chain_id_basenet
 
-let all_chain_ids = [Chain_id_mainnet; Chain_id_ghostnet]
+let all_chain_ids = [Chain_id_mainnet; Chain_id_basenet]
 
 let string_of_chain_id = function
   | Chain_id_mainnet -> "mainnet"
-  | Chain_id_ghostnet -> "ghostnet"
+  | Chain_id_basenet -> "basenet"
 
 let init_with_dictator ~chain_id ~protocol =
   let patch_config, timestamp =
     match chain_id with
     | Chain_id_mainnet -> (None, None)
-    | Chain_id_ghostnet ->
-        ( Some (Node.Config_file.set_ghostnet_sandbox_network ()),
+    | Chain_id_basenet ->
+        ( Some (Node.Config_file.set_basenet_sandbox_network ()),
           Some
             (* Ghostnet was started at 2022-01-25 (as Ithacanet) and the
                default timestamp is one year ago. This ad-hoc case could
                be removed after 2023-01-25. *)
             (Client.At
-               (Tezos_base.Time.System.of_notation_exn "2022-01-26T15:00:00Z"))
+               (Mavryk_base.Time.System.of_notation_exn "2022-01-26T15:00:00Z"))
         )
   in
   let* node = Node.init ?patch_config [Synchronisation_threshold 0] in

@@ -27,17 +27,17 @@
     -------
     Component:    Lib_scoru_wasm input
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_get_set.ml
-    Subject:      Input tests for the tezos-scoru-wasm library
+    Subject:      Input tests for the mavryk-scoru-wasm library
 *)
 
-open Tezos_webassembly_interpreter
-open Tezos_scoru_wasm
+open Mavryk_webassembly_interpreter
+open Mavryk_scoru_wasm
 open Wasm_utils
 open Tztest_helper
 
 (* Use context-binary for testing. *)
-module Context = Tezos_context_memory.Context_binary
-module Vector = Tezos_lazy_containers.Lazy_vector.Int32Vector
+module Context = Mavryk_context_memory.Context_binary
+module Vector = Mavryk_lazy_containers.Lazy_vector.Int32Vector
 
 let empty_tree () =
   let open Lwt_syntax in
@@ -45,28 +45,28 @@ let empty_tree () =
   let empty_store = Context.empty index in
   return @@ Context.Tree.empty empty_store
 
-type Tezos_tree_encoding.tree_instance += Tree of Context.tree
+type Mavryk_tree_encoding.tree_instance += Tree of Context.tree
 
-module Tree : Tezos_tree_encoding.TREE with type tree = Context.tree = struct
+module Tree : Mavryk_tree_encoding.TREE with type tree = Context.tree = struct
   type tree = Context.tree
 
   include Context.Tree
 
   let select = function
     | Tree t -> t
-    | _ -> raise Tezos_tree_encoding.Incorrect_tree_type
+    | _ -> raise Mavryk_tree_encoding.Incorrect_tree_type
 
   let wrap t = Tree t
 end
 
-module Tree_encoding_runner = Tezos_tree_encoding.Runner.Make (Tree)
+module Tree_encoding_runner = Mavryk_tree_encoding.Runner.Make (Tree)
 
 let current_tick_encoding =
-  Tezos_tree_encoding.value ["wasm"; "current_tick"] Data_encoding.n
+  Mavryk_tree_encoding.value ["wasm"; "current_tick"] Data_encoding.n
 
 (* Replicates the encoding of buffers from [Wasm_pvm] as part of the pvm_state. *)
 let buffers_encoding =
-  Tezos_tree_encoding.scope ["pvm"; "buffers"] Wasm_encoding.buffers_encoding
+  Mavryk_tree_encoding.scope ["pvm"; "buffers"] Wasm_encoding.buffers_encoding
 
 let zero =
   WithExceptions.Option.get
@@ -103,7 +103,7 @@ let add_input_info ~inbox_level ~message_counter tree =
   let open Lwt_syntax in
   let* tree =
     Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value_option
+      (Mavryk_tree_encoding.value_option
          ["wasm"; "input"]
          Wasm_pvm_sig.input_info_encoding)
       (Some (make_inbox_info ~inbox_level ~message_counter))
@@ -138,14 +138,14 @@ let encode_tick_state tree =
   (* Encode the tag. *)
   let* tree =
     Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value ["wasm"; "tag"] Data_encoding.string)
+      (Mavryk_tree_encoding.value ["wasm"; "tag"] Data_encoding.string)
       "collect"
       tree
   in
   (* Encode the value. *)
   let* tree =
     Tree_encoding_runner.encode
-      (Tezos_tree_encoding.value ["wasm"; "value"] Data_encoding.unit)
+      (Mavryk_tree_encoding.value ["wasm"; "value"] Data_encoding.unit)
       ()
       tree
   in
@@ -165,7 +165,7 @@ let test_set_input ~version () =
   in
   let* buffers =
     Tree_encoding_runner.decode
-      (Tezos_tree_encoding.option Wasm_pvm.durable_buffers_encoding)
+      (Mavryk_tree_encoding.option Wasm_pvm.durable_buffers_encoding)
       tree
   in
   let buffers =
@@ -193,7 +193,7 @@ let test_get_output ~version () =
   let open Lwt_syntax in
   let* tree = initialise_tree ~version () in
   let* tree = add_input_info tree ~inbox_level:5 ~message_counter:10 in
-  let output = Tezos_webassembly_interpreter.Eval.default_output_buffer () in
+  let output = Mavryk_webassembly_interpreter.Eval.default_output_buffer () in
   let* Output_buffer.{outbox_level; message_index} =
     Output_buffer.push_message output @@ Bytes.of_string "hello"
   in
@@ -201,7 +201,7 @@ let test_get_output ~version () =
   let buffers = Eval.{input = Input_buffer.alloc (); output} in
   let* tree =
     Tree_encoding_runner.encode
-      (Tezos_tree_encoding.option buffers_encoding)
+      (Mavryk_tree_encoding.option buffers_encoding)
       (Some buffers)
       tree
   in

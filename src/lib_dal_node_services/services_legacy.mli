@@ -26,26 +26,26 @@
 val slot_pages :
   ( [`GET],
     unit,
-    unit * Tezos_crypto_dal.Cryptobox.commitment,
+    unit * Mavryk_crypto_dal.Cryptobox.commitment,
     unit,
     unit,
-    Tezos_crypto_dal.Cryptobox.page list )
-  Tezos_rpc.Service.service
+    Mavryk_crypto_dal.Cryptobox.page list )
+  Mavryk_rpc.Service.service
 
 val shard :
   ( [`GET],
     unit,
-    (unit * Tezos_crypto_dal.Cryptobox.commitment) * int,
+    (unit * Mavryk_crypto_dal.Cryptobox.commitment) * int,
     unit,
     unit,
-    Tezos_crypto_dal.Cryptobox.shard )
-  Tezos_rpc.Service.service
+    Mavryk_crypto_dal.Cryptobox.shard )
+  Mavryk_rpc.Service.service
 
 val shards :
   ( [`POST],
     unit,
-    unit * Tezos_crypto_dal.Cryptobox.commitment,
+    unit * Mavryk_crypto_dal.Cryptobox.commitment,
     unit,
     int trace,
-    Tezos_crypto_dal.Cryptobox.shard list )
-  Tezos_rpc.Service.service
+    Mavryk_crypto_dal.Cryptobox.shard list )
+  Mavryk_rpc.Service.service

@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_webassembly_interpreter
-open Tezos_wasmer
-open Tezos_scoru_wasm
+open Mavryk_webassembly_interpreter
+open Mavryk_wasmer
+open Mavryk_scoru_wasm
 
 (** Host state environment for Fast Execution *)
 type host_state = {

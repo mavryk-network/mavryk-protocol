@@ -27,12 +27,12 @@
     -------
     Component:    Lib_scoru_wasm durable
     Invocation:   dune exec src/lib_scoru_wasm/test/main.exe -- --file test_durable_shapshot.ml
-    Subject:      Tests for the tezos-scoru-wasm durable snapshotting
+    Subject:      Tests for the mavryk-scoru-wasm durable snapshotting
 *)
 
 open Tztest
 open QCheck2
-open Tezos_scoru_wasm_helpers.Encodings_util
+open Mavryk_scoru_wasm_helpers.Encodings_util
 open Durable_snapshot_util
 open Probability_utils
 
@@ -147,7 +147,7 @@ let test_several_operations () =
   in
   let* durable = Verifiable_current_durable.delete durable key_prefix in
   let* () =
-    assert_exception Tezos_scoru_wasm_durable_snapshot.Durable.Value_not_found
+    assert_exception Mavryk_scoru_wasm_durable_snapshot.Durable.Value_not_found
     @@ fun () -> Verifiable_current_durable.read_value_exn durable key1 0L 5L
   in
   return_ok_unit

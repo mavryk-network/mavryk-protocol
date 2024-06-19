@@ -96,7 +96,7 @@ let create ?name ?color ?data_dir ?event_pipe ?uri ?runner node client =
   let endpoint = Client.Node node in
   let injector =
     create
-      ~path:(Uses.path Constant.octez_injector_server)
+      ~path:(Uses.path Constant.mavkit_injector_server)
       ?name:(Some name)
       ?color
       ?event_pipe

@@ -1625,7 +1625,7 @@ let animals =
 let pick a z = a.(Z.rem z (Array.length a |> Z.of_int) |> Z.to_int)
 
 let hash a =
-  Tezos_crypto.Blake2B.hash_string [a] |> Tezos_crypto.Blake2B.to_string
+  Mavryk_crypto.Blake2B.hash_string [a] |> Mavryk_crypto.Blake2B.to_string
 
 type t = {c : string; t : string; h : string; d : string}
 

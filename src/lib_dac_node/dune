@@ -2,25 +2,25 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_dac_node_lib)
- (package tezos-dac-node-lib)
+ (name mavryk_dac_node_lib)
+ (package mavryk-dac-node-lib)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-libs.base.unix
-  octez-shell-libs.client-base
-  octez-shell-libs.client-base-unix
-  octez-libs.stdlib-unix
-  octez-l2-libs.layer2_store
-  octez-libs.rpc-http-server
-  tezos-dac-lib
-  tezos-dac-client-lib)
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-libs.stdlib-unix
+  mavkit-l2-libs.layer2_store
+  mavkit-libs.rpc-http-server
+  mavryk-dac-lib
+  mavryk-dac-client-lib)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_base
-  -open Tezos_client_base_unix
-  -open Tezos_stdlib_unix
-  -open Tezos_layer2_store
-  -open Tezos_dac_lib
-  -open Tezos_dac_client_lib))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_stdlib_unix
+  -open Mavryk_layer2_store
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_client_lib))

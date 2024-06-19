@@ -1,18 +1,18 @@
 .. TODO tezos/tezos#2170: search shifted protocol name/number & adapt
 
-How to run Octez
-================
+How to run Mavkit
+=================
 
 In this section, we discuss how to take part in the protocol that runs
 the network.
 There are two main ways to participate: delegating
 your coins and running a delegate.
 The main advantage of delegating your coins is simplicity.
-The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in tez.
+The second way allows to participate more actively in the protocol, by baking blocks and voting, but is more demanding; however, the extra effort is compensated by more rewards in mav.
 
 To learn more about the protocol refer to :doc:`this page <../active/protocol_overview>`.
 
-No matter how you decide to run Octez, your node must have an accurate time source and be properly synchronized to it, e.g. by configuring an NTP daemon.
+No matter how you decide to run Mavkit, your node must have an accurate time source and be properly synchronized to it, e.g. by configuring an NTP daemon.
 This is especially important for bakers, as baking nodes desynchronized from the correct time of day have caused operational problems in the past by "baking in the future".
 
 .. _delegating_coins:
@@ -30,7 +30,7 @@ achieved by the following command:
 
 ::
 
-   octez-client set delegate for <implicit_account> to <delegate>
+   mavkit-client set delegate for <implicit_account> to <delegate>
 
 where ``<implicit_account>`` is the address or alias of the implicit
 account to delegate and ``<delegate>`` is the address or alias of the
@@ -40,7 +40,7 @@ To stop a delegation, the following command can be used:
 
 ::
 
-   octez-client withdraw delegate from <implicit_account>
+   mavkit-client withdraw delegate from <implicit_account>
 
 
 
@@ -50,13 +50,11 @@ origination using the ``--delegate`` option:
 
 ::
 
-    octez-client originate contract <contract_alias> transferring <initial_balance> from <originator> running <script> --delegate <delegate> --burn-cap <cap>
+    mavkit-client originate contract <contract_alias> transferring <initial_balance> from <originator> running <script> --delegate <delegate> --burn-cap <cap>
 
 
 Once the contract is originated, the only way to stop or modify its
-delegation is by using the ``SET_DELEGATE`` Michelson instruction (see
-:ref:`the Michelson documentation<MichelsonSetDelegate>` for more
-details).
+delegation is by using the ``SET_DELEGATE`` Michelson instruction.
 
 
 Notice that only implicit accounts can be delegates, so your delegate
@@ -85,7 +83,7 @@ to delegates proportionally to their :ref:`active stake<active_stake>`,
 which usually is the same as their staking balance,
 that is, their own balance plus their delegated balance.
 
-A :ref:`minimal active stake<def_minimal_stake>` of 6kꜩ
+A :ref:`minimal active stake<def_minimal_stake>` of 6kṁ
 is required for participating in consensus and in governance.
 
 .. warning::
@@ -105,7 +103,7 @@ frozen deposits with the following command:
 
 ::
 
-   octez-client set deposits limit for <delegate> to <limit>
+   mavkit-client set deposits limit for <delegate> to <limit>
 
 
 On testnets, when you obtain coins from :ref:`a faucet<faucet>`, if
@@ -123,7 +121,7 @@ Register and check your rights
 To run a delegate, you first need to register as one using
 your implicit account::
 
-   octez-client register key bob as delegate
+   mavkit-client register key bob as delegate
 
 Once registered, you need to wait ``preserved_cycles + 2 = 7`` cycles
 for your rights to be considered.
@@ -133,7 +131,7 @@ cycle, up to 5 cycles in the future.
 
 ::
 
-   octez-client rpc get /chains/main/blocks/head/helpers/baking_rights\?cycle=300\&delegate=tz1_xxxxxxxxxxx\&max_round=2
+   mavkit-client rpc get /chains/main/blocks/head/helpers/baking_rights\?cycle=300\&delegate=mv1_xxxxxxxxxxx\&max_round=2
 
 Sometimes there is no consensus at a round, so it is worth considering also
 baking rights at higher rounds, like 2 in the example above.
@@ -153,7 +151,7 @@ operations during 5 cycles to remain active.
 If for some reason your delegate is marked inactive you can reactivate
 it simply by re-registering again like above.
 
-To avoid your Tezos delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Tezos community <tezos_community>`.
+To avoid your Mavryk delegate being marked inactive while pausing it for maintenance work, it is advised to check the schedule of future baking and attesting slots assigned to it, using a block explorer in the :ref:`Mavryk community <mavryk_community>`.
 Alternatively, you may use the baking rights RPC and the attesting rights RPC (see :doc:`../api/openapi`), which is able to return a list of baking/attesting slots for a given delegate (see :ref:`example <DelegateRegistration>`).
 
 .. _baker_run:
@@ -161,7 +159,7 @@ Alternatively, you may use the baking rights RPC and the attesting rights RPC (s
 Baker
 ~~~~~
 
-The baker is a daemon that executes Tezos' :doc:`consensus algorithm<../active/consensus>`.
+The baker is a daemon that executes Mavryk' :doc:`consensus algorithm<../active/consensus>`.
 The baker runs on behalf of one or more specified accounts or, if none is specified, on behalf of
 all accounts whose secret keys are known.
 
@@ -173,7 +171,7 @@ accounts have the necessary rights.
 Let's launch the daemon pointing to the standard node directory and
 baking for user *bob*::
 
-   octez-baker-<PROTO_HASH> run with local node ~/.tezos-node bob --liquidity-baking-toggle-vote pass
+   mavkit-baker-<PROTO_HASH> run with local node ~/.mavryk-node bob --liquidity-baking-toggle-vote pass
 
 where ``PROTO_HASH`` is the short hash of the current protocol of the network you want to bake on.
 
@@ -214,7 +212,7 @@ cause the offender to be :ref:`slashed<slashing>`, that is, to lose part of its 
 
 ::
 
-   octez-accuser-alpha run
+   mavkit-accuser-alpha run
 
 The accuser uses the same format of configuration file as the client (see :ref:`client_conf_file`).
 
@@ -227,14 +225,14 @@ If you are running the baker Docker image, you can watch the baker logs with
     docker ps
 
 If your container is running, its name will appear in the last column.
-For instance, if the name is ``mainnet_baker-PtNairob``, you can
+For instance, if the name is ``mainnet_baker-PtAtLas``, you can
 view recent logs with::
 
-    docker logs mainnet_baker-PtNairob
+    docker logs mainnet_baker-PtAtLas
 
 If you want to keep watching logs, use ``-f``::
 
-    docker logs mainnet_baker-PtNairob -f
+    docker logs mainnet_baker-PtAtLas -f
 
 This allows you to know if you baked.
 You should see lines such as::

@@ -75,7 +75,7 @@ let nack_test () =
   let encoding = Data_encoding.bytes in
 
   let is_rejected = function
-    | Error (Tezos_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
+    | Error (Mavryk_p2p_services.P2p_errors.Rejected_by_nack _ :: _) -> true
     | Ok _ -> false
     | Error err ->
         Tezt.Log.info "Error: %a" pp_print_trace err ;

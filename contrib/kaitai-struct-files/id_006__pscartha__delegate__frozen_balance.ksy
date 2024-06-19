@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 006-PsCARTHA.delegate.frozen_balance'
 types:
-  id_006__pscartha__mutez:
+  id_006__pscartha__mumav:
     seq:
-    - id: id_006__pscartha__mutez
+    - id: id_006__pscartha__mumav
       type: n
   n:
     seq:
@@ -21,8 +21,8 @@ types:
       type: b7be
 seq:
 - id: deposit
-  type: id_006__pscartha__mutez
+  type: id_006__pscartha__mumav
 - id: fees
-  type: id_006__pscartha__mutez
+  type: id_006__pscartha__mumav
 - id: rewards
-  type: id_006__pscartha__mutez
+  type: id_006__pscartha__mumav

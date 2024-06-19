@@ -41,7 +41,7 @@ pub fn panic_handler(info: &PanicInfo) {
 
         #[cfg(any(target_arch = "wasm32", target_arch = "riscv64"))]
         unsafe {
-            tezos_smart_rollup_core::smart_rollup_core::write_debug(
+            mavryk_smart_rollup_core::smart_rollup_core::write_debug(
                 message.as_ptr(),
                 message.len(),
             );

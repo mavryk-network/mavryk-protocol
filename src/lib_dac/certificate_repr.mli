@@ -35,11 +35,11 @@ module V0 : sig
   type t
 
   (** Create a [Certificate_repr.V0.t] from given [Dac_plugin.raw_hash],
-     [Tezos_crypto.Aggregate_signature.signature] and [Z.t].
+     [Mavryk_crypto.Aggregate_signature.signature] and [Z.t].
      This function is in charge to add the correct [version]. *)
   val make :
     Dac_plugin.raw_hash ->
-    Tezos_crypto.Aggregate_signature.signature ->
+    Mavryk_crypto.Aggregate_signature.signature ->
     Z.t ->
     t
 
@@ -48,13 +48,13 @@ module V0 : sig
       exposing CLI commands for Kernel SDK. *)
   module Protocol_dependant : sig
     (** Serialize the provided [Dac_plugin.hash], 
-        [Tezos_crypto.Aggregate_signature.signature] and [Z.t] 
+        [Mavryk_crypto.Aggregate_signature.signature] and [Z.t] 
         with the correct encoding. [Dac_plugin.t] is needed to provide 
         the correct encoding related to the correct protocol. *)
     val serialize_certificate :
       Dac_plugin.hash Data_encoding.t ->
       root_hash:Dac_plugin.hash ->
-      aggregate_signature:Tezos_crypto.Aggregate_signature.signature ->
+      aggregate_signature:Mavryk_crypto.Aggregate_signature.signature ->
       witnesses:Z.t ->
       Bytes.t
   end
@@ -70,7 +70,7 @@ val encoding : t Data_encoding.t
 val get_root_hash : t -> Dac_plugin.raw_hash
 
 (** Helper to get [aggregate_signature] from any given version of [Certificate_repr]. *)
-val get_aggregate_signature : t -> Tezos_crypto.Aggregate_signature.signature
+val get_aggregate_signature : t -> Mavryk_crypto.Aggregate_signature.signature
 
 (** Helper to get [witnesses] from any given version of [Certificate_repr]. *)
 val get_witnesses : t -> Z.t

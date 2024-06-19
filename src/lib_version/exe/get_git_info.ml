@@ -55,7 +55,7 @@ let date =
     ~default:"not-available"
     "git show -s --pretty=format:%ci"
 
-let parse_version s = Tezos_version_parser.version_tag (Lexing.from_string s)
+let parse_version s = Mavryk_version_parser.version_tag (Lexing.from_string s)
 
 (* The $Format string is substituted by git with attributes and export-subst *)
 let raw_current_version = "$Format:%(describe:tags)$"
@@ -78,7 +78,7 @@ let git_describe =
     | None -> (
         match parse_version (Sys.getenv "OPAM_PACKAGE_VERSION") with
         | Some v -> v
-        | None | (exception Not_found) -> Tezos_version_parser.default)
+        | None | (exception Not_found) -> Mavryk_version_parser.default)
   in
   let s =
     (* here we use the same trick as in src/lib_version/current_git_info.ml
@@ -93,9 +93,9 @@ let lines =
   [
     Format.asprintf "let commit_hash = \"%s\"" hash;
     Format.asprintf "let committer_date = \"%s\"" date;
-    Format.asprintf "let git_describe = %a" Tezos_version_parser.pp git_describe;
+    Format.asprintf "let git_describe = %a" Mavryk_version_parser.pp git_describe;
   ]
 
 let () =
-  Configurator.main ~name:"tezos-git-vars" (fun _conf ->
+  Configurator.main ~name:"mavryk-git-vars" (fun _conf ->
       Configurator.Flags.write_lines "generated_git_info.ml" lines)

@@ -69,7 +69,7 @@
     }
   },
   {
-    "file": "tezos-lib-client-proto-contracts",
+    "file": "mavryk-lib-client-proto-contracts",
     "title": "016-PtMumbai: client_proto_contracts",
     "tags": [
       "alcotest"
@@ -135,7 +135,7 @@
     }
   },
   {
-    "file": "tezos-shell",
+    "file": "mavryk-shell",
     "title": "test node",
     "tags": [
       "alcotest"
@@ -146,8 +146,8 @@
     }
   },
   {
-    "file": "tezos-rpc-http",
-    "title": "tezos-rpc-http: find_policy_matching_rules",
+    "file": "mavryk-rpc-http",
+    "title": "mavryk-rpc-http: find_policy_matching_rules",
     "tags": [
       "alcotest"
     ],
@@ -157,7 +157,7 @@
     }
   },
   {
-    "file": "tezos-mockup",
+    "file": "mavryk-mockup",
     "title": "persistence",
     "tags": [
       "alcotest"
@@ -317,13 +317,13 @@
   },
   {
     "file": "client_commands.ml",
-    "title": "Lima: Set delegate forbidden on tz4",
+    "title": "Lima: Set delegate forbidden on mv4",
     "tags": [
       "lima",
       "client",
       "set_delegate",
       "bls",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "4283631",
@@ -1584,7 +1584,7 @@
       "node",
       "baker",
       "signer",
-      "tz1"
+      "mv1"
     ],
     "successful_runs": {
       "total_time": "12472560",
@@ -1593,11 +1593,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Lima: testnet dictator (ghostnet, promotion)",
+    "title": "Lima: testnet dictator (basenet, promotion)",
     "tags": [
       "lima",
       "amendment",
-      "ghostnet",
+      "basenet",
       "promotion"
     ],
     "successful_runs": {

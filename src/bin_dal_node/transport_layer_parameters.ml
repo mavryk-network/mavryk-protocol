@@ -29,7 +29,7 @@ let init_identity_file configuration =
   let check_data_dir ~data_dir:_ =
     (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5566
 
-       Do some checks about the shape of the node's data dir as done for Octez
+       Do some checks about the shape of the node's data dir as done for Mavkit
        node ? *)
     return_unit
   in

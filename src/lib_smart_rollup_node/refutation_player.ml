@@ -32,13 +32,13 @@ module Types = struct
     self : Signature.public_key_hash;
     opponent : Signature.public_key_hash;
     mutable last_move_cache :
-      (Octez_smart_rollup.Game.game_state * int32) option;
+      (Mavkit_smart_rollup.Game.game_state * int32) option;
   }
 
   type parameters = {
     node_ctxt : Node_context.rw;
     self : Signature.public_key_hash;
-    conflict : Octez_smart_rollup.Game.conflict;
+    conflict : Mavkit_smart_rollup.Game.conflict;
   }
 end
 

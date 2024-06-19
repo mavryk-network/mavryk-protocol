@@ -88,7 +88,7 @@ module V0 = struct
     let shutdown () = Lwt_watcher.shutdown stopper in
     let next () = Lwt_stream.get stream in
     let* () = Event.(emit handle_new_subscription_to_hash_streamer ()) in
-    Tezos_rpc.Answer.return_stream {next; shutdown}
+    Mavryk_rpc.Answer.return_stream {next; shutdown}
 
   let handle_get_certificate node_store raw_root_hash =
     let open Lwt_result_syntax in

@@ -12,7 +12,7 @@
               DIG 2 ;
               NIL operation ;
               DIG 2 ;
-              PUSH mutez 0 ;
+              PUSH mumav 0 ;
               DIG 4 ;
               RIGHT (or (pair bytes (ticket (pair nat (option bytes)))) bytes) ;
               TRANSFER_TOKENS ;

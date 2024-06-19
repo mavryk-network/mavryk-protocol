@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Local = Tezos_context_memory.Context
+module Local = Mavryk_context_memory.Context
 
 module type T = sig
   val proxy_dir_mem : Local.key -> bool tzresult Lwt.t

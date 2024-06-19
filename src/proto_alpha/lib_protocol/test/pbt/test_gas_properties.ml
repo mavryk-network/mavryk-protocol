@@ -34,7 +34,7 @@
 open Protocol
 open Qcheck2_helpers
 
-(** Extract a Tezos result for compatibility with QCheck2. *)
+(** Extract a Mavryk result for compatibility with QCheck2. *)
 let extract_qcheck_result = function
   | Ok pure_result -> pure_result
   | Error err ->

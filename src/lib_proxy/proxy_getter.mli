@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Local := Tezos_context_memory.Context
-module Proof := Tezos_context_sigs.Context.Proof_types
+module Local := Mavryk_context_memory.Context
+module Proof := Mavryk_context_sigs.Context.Proof_types
 
 (** The size of a tree, for logging *)
 val raw_context_size : Proof.raw_context -> int
@@ -98,26 +98,26 @@ type proxy_builder =
       (** Build a proxy that uses network requests for all data. *)
   | Of_data_dir of
       (Context_hash.t ->
-      Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
+      Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t)
       (** Build a proxy that looks up data in a running node's data dir. *)
 
 (** Input data required by the proxy mode to build a
-    {!Tezos_protocol_environment.rpc_context}. *)
+    {!Mavryk_protocol_environment.rpc_context}. *)
 type rpc_context_args = {
-  printer : Tezos_client_base.Client_context.printer option;
+  printer : Mavryk_client_base.Client_context.printer option;
       (** Optional printer to display information in some custom format. *)
   proxy_builder : proxy_builder;
       (** Given the protocol implementation of the RPCs required by the proxy mode,
           how to build an instance of {!proxy_m} that will then make it possible
-          to build a {!Tezos_protocol_environment.Proxy_context}. *)
-  rpc_context : Tezos_rpc.Context.generic;
+          to build a {!Mavryk_protocol_environment.Proxy_context}. *)
+  rpc_context : Mavryk_rpc.Context.generic;
       (** How to perform RPC calls. We need such a value, because the proxy mode
           performs RPCs to initialize itself (by requesting the header) and
-          also to fill {!Tezos_protocol_environment.Proxy_context} on-demand. *)
+          also to fill {!Mavryk_protocol_environment.Proxy_context} on-demand. *)
   mode : Proxy.mode;  (** Whether the client or the proxy server is running. *)
-  chain : Tezos_shell_services.Block_services.chain;
+  chain : Mavryk_shell_services.Block_services.chain;
       (** The chain to provide RPC calls for. *)
-  block : Tezos_shell_services.Block_services.block;
+  block : Mavryk_shell_services.Block_services.block;
       (** The block to provide RPC calls for. *)
 }
 
@@ -127,7 +127,7 @@ val make_delegate :
   rpc_context_args ->
   (module Proxy_proto.PROTO_RPC) ->
   Context_hash.t ->
-  Tezos_protocol_environment.Proxy_delegate.t tzresult Lwt.t
+  Mavryk_protocol_environment.Proxy_delegate.t tzresult Lwt.t
 
 (** Functor to obtain the implementation of [M] for the proxy
     mode (as opposed to the light mode implementation) *)

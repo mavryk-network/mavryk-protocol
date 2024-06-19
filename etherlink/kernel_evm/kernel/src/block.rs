@@ -19,11 +19,11 @@ use evm_execution::account_storage::{init_account_storage, EthereumAccountStorag
 use evm_execution::precompiles;
 use evm_execution::precompiles::PrecompileBTreeMap;
 use primitive_types::{H256, U256};
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_host::runtime::Runtime;
 use tick_model::estimate_remaining_ticks_for_transaction_execution;
 
-use tezos_ethereum::block::BlockConstants;
+use mavryk_ethereum::block::BlockConstants;
 
 /// Struct used to allow the compiler to check that the tick counter value is
 /// correctly moved and updated. Copy and Clone should NOT be derived.
@@ -239,13 +239,13 @@ mod tests {
     use primitive_types::{H160, H256, U256};
     use std::ops::Rem;
     use std::str::FromStr;
-    use tezos_ethereum::transaction::{
+    use mavryk_ethereum::transaction::{
         TransactionHash, TransactionStatus, TransactionType, TRANSACTION_HASH_SIZE,
     };
-    use tezos_ethereum::tx_common::EthereumTransactionCommon;
-    use tezos_ethereum::tx_signature::TxSignature;
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+    use mavryk_ethereum::tx_signature::TxSignature;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_mock::MockHost;
 
     fn blueprint(transactions: Vec<Transaction>) -> QueueElement {
         QueueElement::Blueprint(Blueprint {
@@ -370,7 +370,7 @@ mod tests {
         let data: Vec<u8> = hex::decode("608060405234801561001057600080fd5b5061017f806100206000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c80634e70b1dc1461004657806360fe47b1146100645780636d4ce63c14610080575b600080fd5b61004e61009e565b60405161005b91906100d0565b60405180910390f35b61007e6004803603810190610079919061011c565b6100a4565b005b6100886100ae565b60405161009591906100d0565b60405180910390f35b60005481565b8060008190555050565b60008054905090565b6000819050919050565b6100ca816100b7565b82525050565b60006020820190506100e560008301846100c1565b92915050565b600080fd5b6100f9816100b7565b811461010457600080fd5b50565b600081359050610116816100f0565b92915050565b600060208284031215610132576101316100eb565b5b600061014084828501610107565b9150509291505056fea2646970667358221220ec57e49a647342208a1f5c9b1f2049bf1a27f02e19940819f38929bf67670a5964736f6c63430008120033").unwrap();
 
         let tx = EthereumTransactionCommon {
-            type_: tezos_ethereum::transaction::TransactionType::Legacy,
+            type_: mavryk_ethereum::transaction::TransactionType::Legacy,
             chain_id: DUMMY_CHAIN_ID,
             nonce,
             max_priority_fee_per_gas: gas_price,

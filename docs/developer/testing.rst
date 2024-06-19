@@ -1,15 +1,15 @@
-Overview of Testing in Octez
-============================
+Overview of Testing in Mavkit
+=============================
 
 The goal of this document is to give an overview on how testing is done in
-Octez, and to help Octez contributors use the test suite and
+Mavkit, and to help Mavkit contributors use the test suite and
 write tests by pointing them towards the most
 appropriate testing framework for their use case. Finally, this guide
-explains how tests can be :ref:`run automatically in the Octez CI
+explains how tests can be :ref:`run automatically in the Mavkit CI
 <gitlab_test_ci>` and how to :ref:`measure test coverage
 <measuring-test-coverage>`.
 
-The frameworks used in Octez can be categorized along two axes: the
+The frameworks used in Mavkit can be categorized along two axes: the
 type of component they test, and the type of testing they perform. We
 distinguish the following components:
 
@@ -56,7 +56,7 @@ Acceptance testing
    Testing of the software in real conditions. It is usually slower,
    more costly and less amenable to automation than integration or
    system testing. It is often the final step in the testing process,
-   performed before a release. However, in Octez, acceptance testing
+   performed before a release. However, in Mavkit, acceptance testing
    is decoupled from releases, and currently consists in manually running
    a net of resilience tests on a regular base. These tests use various
    testing frameworks.
@@ -78,7 +78,7 @@ in more detail.
                     ..
                        MT: :ref:`Michelson unit tests <michelson_unit_tests>`.
 
-.. csv-table:: Testing frameworks and their applications in Octez. EXP: :ref:`ppx_expect_section`, AT: :ref:`alcotezt_section`, QC: :ref:`property_based_test`, TZ: :ref:`tezt_section`, LTF: :ref:`long_tezt_section`
+.. csv-table:: Testing frameworks and their applications in Mavkit. EXP: :ref:`ppx_expect_section`, AT: :ref:`alcotezt_section`, QC: :ref:`property_based_test`, TZ: :ref:`tezt_section`, LTF: :ref:`long_tezt_section`
    :header: "Component","Unit","Property","Integration","System","Regression","Performance"
 
    "Node",":ref:`AT <alcotezt_section>`",":ref:`QC <property_based_test>`",":ref:`AT <alcotezt_section>`",":ref:`TZ <tezt_section>`","",":ref:`LTF <long_tezt_section>`"
@@ -110,11 +110,11 @@ Typical use cases:
 Example tests:
  - Unit tests for :src:`src/lib_micheline`, in :src:`src/lib_micheline/test/test_parser.ml`. To
    execute them locally, run ``dune runtest src/lib_micheline/test`` in
-   the Octez root.
+   the Mavkit root.
 
 
 References:
- - :doc:`Section in Octez Developer Documentation on Ppx_expect <ppx_expect>`
+ - :doc:`Section in Mavkit Developer Documentation on Ppx_expect <ppx_expect>`
  - `Ppx_expect README <https://github.com/janestreet/ppx_expect>`_.
  - `Dune documentation about inline expectation tests <https://dune.readthedocs.io/en/stable/tests.html#inline-expectation-tests>`_.
  - `Ppx_inline_test README <https://github.com/janestreet/ppx_inline_test>`_.
@@ -132,7 +132,7 @@ Typical use cases:
    randomized inputs.
 
 Example test:
- - QCheck is used in :src:`src/lib_base/test/test_time.ml` to test the :package-api:`Tezos_base.Time <octez-libs/Tezos_base/Time/index.html>` module. For instance, subtracting and then adding a random amount of seconds to a random time should give back the original time: this tests that ``add`` and ``diff`` are consistent (and the inverse of each other). To run this test, you need to run ``dune exec src/lib_base/test/test_time.exe``.
+ - QCheck is used in :src:`src/lib_base/test/test_time.ml` to test the :package-api:`Mavryk_base.Time <mavkit-libs/Mavryk_base/Time/index.html>` module. For instance, subtracting and then adding a random amount of seconds to a random time should give back the original time: this tests that ``add`` and ``diff`` are consistent (and the inverse of each other). To run this test, you need to run ``dune exec src/lib_base/test/test_time.exe``.
 
 References:
  - `QCheck README <https://github.com/c-cube/qcheck>`_
@@ -143,17 +143,17 @@ References:
 Tezt
 ~~~~
 
-:doc:`Tezt <tezt>` is a system testing framework for Octez. Tezt is capable of regression
+:doc:`Tezt <tezt>` is a system testing framework for Mavkit. Tezt is capable of regression
 testing. Tezt focuses on tests that run in the CI, although it is also
 used for some manual tests (see the :src:`tezt/manual_tests`
 folder). Its main strengths are summarized in its :doc:`section in the
-Tezos Developer Documentation <tezt>`. Conceptually Tezt consists of a
+Mavryk Developer Documentation <tezt>`. Conceptually Tezt consists of a
 generic framework for writing tests interacting with external
-processes, and a set of Octez-specific modules for interacting with
-the Octez binaries: the client, baker, etc.
+processes, and a set of Mavkit-specific modules for interacting with
+the Mavkit binaries: the client, baker, etc.
 
 Typical use cases:
- - Testing the commands of ``octez-client``. This allows to test the
+ - Testing the commands of ``mavkit-client``. This allows to test the
    full chain: from client, to node RPC to the implementation of the
    economic protocol.
  - Test networks of nodes, with daemons.
@@ -167,9 +167,9 @@ Example tests:
  - Testing absence of regressions in encodings (in :src:`tezt/tests/encoding.ml`)
 
 References:
- - :doc:`Section in Tezos Developer Documentation on Tezt <tezt>`
+ - :doc:`Section in Mavryk Developer Documentation on Tezt <tezt>`
  - `General API documentation <https://nomadic-labs.gitlab.io/tezt/>`__
- - :package-api:`Octez-specific API documentation <tezt-tezos/Tezt_tezos/index.html>`
+ - :package-api:`Mavkit-specific API documentation <tezt-tezos/Tezt_tezos/index.html>`
 
 .. _long_tezt_section:
 
@@ -198,8 +198,8 @@ Typical use cases:
  - Conversion of pre-existing Alcotests to Tezt
 
 Example tests:
- - Unit tests for :package-api:`tezos-clic <octez-libs/Tezos_clic/index.html>`. To execute them locally, run ``dune build @src/lib_clic/runtest``.
- - Unit tests for :package:`octez-version`. To execute them locally, run ``dune build @src/lib_version/runtest``.
+ - Unit tests for :package-api:`mavryk-clic <mavkit-libs/Mavryk_clic/index.html>`. To execute them locally, run ``dune build @src/lib_clic/runtest``.
+ - Unit tests for :package:`mavkit-version`. To execute them locally, run ``dune build @src/lib_version/runtest``.
 
 See :doc:`alcotezt` for more information on how to convert tests to
 Alcotezt, and how to execute them.
@@ -216,7 +216,7 @@ Alcotest (usage deprecated)
 
 `Alcotest <https://github.com/mirage/alcotest>`_ is a library for unit
 and integration testing in OCaml. Alcotest was historically the
-primary tool in Octez for unit and integration testing of OCaml code.
+primary tool in Mavkit for unit and integration testing of OCaml code.
 However, we are currently migrating to :doc:`Tezt <tezt>` for unit,
 integration and system testing. To ease migration from Alcotest to
 Tezt, the :ref:`Alcotezt <alcotezt_section>` wrapper was introduced.
@@ -232,11 +232,11 @@ Typical use cases:
 Example tests:
  - Unit tests for :src:`src/lib_requester`, in :src:`src/lib_requester/test/test_requester.ml`. To
    execute them locally, run ``dune build @src/lib_requester/runtest`` in
-   the Octez root.
+   the Mavkit root.
  - Integration tests for the P2P layer in the shell.  For instance
    :src:`src/lib_p2p/test/test_p2p_pool.ml`. This test forks a set of
    processes that exercise large parts of the P2P layer.  To execute
-   it locally, run ``dune build @runtest_p2p_pool`` in the Octez
+   it locally, run ``dune build @runtest_p2p_pool`` in the Mavkit
    root.
 
 References:
@@ -249,9 +249,9 @@ References:
    --------------------
 
    The `Michelson unit test proposal
-   <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`__ defines a
+   <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`__ defines a
    format for unit tests for Michelson snippets. If the proposal is eventually accepted, then these
-   tests will be executable through ``octez-client``.
+   tests will be executable through ``mavkit-client``.
 
    Example use cases:
     - Verifying the functional (input--output) behavior of snippets of
@@ -259,7 +259,7 @@ References:
     - Conformance testing for Michelson interpreters.
 
    References:
-    - `Merge request defining the Michelson unit test format <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`_
+    - `Merge request defining the Michelson unit test format <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`_
     - `A conformance test suite for Michelson interpreter using the Michelson unit test format <https://github.com/runtimeverification/michelson-semantics/tree/master/tests/unit>`_
 
 .. _gitlab_test_ci:
@@ -374,7 +374,7 @@ developer utilities and old protocols. In particular:
    - ``src/lib_client_base/gen/dune`` (executable name ``bip39_generator``)
    - ``src/lib_protocol_compiler/dune`` (executable name ``replace``)
    - ``src/proto_alpha/lib_parameters/dune`` (executable name ``gen``)
-   - ``src/proto_011_PtHangz2/lib_parameters/dune`` (executable name ``gen``)
+   - ``src/proto_001_PtAtLas/lib_parameters/dune`` (executable name ``gen``)
    - ``src/lib_protocol_environment/ppinclude/dune`` (executable name ``ppinclude``)
    - ``src/lib_store/legacy_store/dune`` (executable name ``legacy_store_builder``)
 
@@ -421,14 +421,14 @@ guidelines:
 
 For system test frameworks
    System test frameworks like :doc:`tezt`,
-   run binaries e.g. ``octez-client`` and
-   ``octez-node``. Typically, they do so with calls to ``exec`` so the
+   run binaries e.g. ``mavkit-client`` and
+   ``mavkit-node``. Typically, they do so with calls to ``exec`` so the
    resulting process does not inherit the signal handlers from the
    parent process (the test framework). When writing tests in these
    frameworks, the author must ensure that the processes launched are
    instrumented and that they do proper signal handling: they should
    catch ``SIGTERM`` and call exit in their ``SIGTERM`` handler. This
-   should already be the case for the binaries in octez.  They should
+   should already be the case for the binaries in mavkit.  They should
    also ensure that the framework terminates the processes with ``SIGTERM``.
 
 For integration test frameworks
@@ -479,7 +479,7 @@ Executing tests through the GitLab CI
 All tests are executed on all branches for each commit.  For
 instances, to see the latest runs of the CI on the master branch,
 visit `this page
-<https://gitlab.com/tezos/tezos/-/commits/master>`_. Each commit is
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/commits/master>`_. Each commit is
 annotated with a green checkmark icon if the CI passed, and a red
 cross icon if not. You can click the icon for more details.
 
@@ -513,7 +513,7 @@ for doing this depends on the type of test you've added:
 
 Tezt integration and regression tests
   New Tezt tests will be included automatically in the CI.
-  To rebalance the Tezt batches, run (from the root of the Octez repository):
+  To rebalance the Tezt batches, run (from the root of the Mavkit repository):
   ``make && dune exec tezt/tests/main.exe -- --record tezt/test-results.json``
 
 The OCaml package tests (Alcotest & QCheck)
@@ -536,7 +536,7 @@ Test coverage in merge requests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build and tests are instrumented with ``bisect_ppx`` in the CI for each merge
-request on Octez. To measure test coverage in the CI, it launches the job
+request on Mavkit. To measure test coverage in the CI, it launches the job
 ``unified_job`` in stage ``test_coverage`` which generates the coverage report.
 They are stored as an HTML report that can be downloaded or browsed from the CI page
 upon completion of the job (see the Artifacts produced by the MR pipeline in the GitLab UI).
@@ -589,7 +589,7 @@ pipeline on the most recently merged branch. It then fetches the
 coverage result from there, and also retrieves the artifacts which
 contains the HTML coverage report.
 GitLab also produces a `graph of the coverage ratio over time
-<https://gitlab.com/tezos/tezos/-/graphs/master/charts>`_.
+<https://gitlab.com/mavryk-network/mavryk-protocol/-/graphs/master/charts>`_.
 
 Conventions
 -----------

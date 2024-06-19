@@ -171,8 +171,8 @@
     }
   },
   {
-    "file": "tezos-crypto",
-    "title": "tezos-crypto: ed25519-encodings",
+    "file": "mavryk-crypto",
+    "title": "mavryk-crypto: ed25519-encodings",
     "tags": [
       "alcotest"
     ],
@@ -568,7 +568,7 @@
   },
   {
     "file": "contract_opcodes.ml",
-    "title": "Mumbai: opcodes [ediv_mutez--storage977883604--input215785357]",
+    "title": "Mumbai: opcodes [ediv_mumav--storage977883604--input215785357]",
     "tags": [
       "regression",
       "mumbai",
@@ -1628,11 +1628,11 @@
   },
   {
     "file": "testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, proposal)",
+    "title": "Alpha: testnet dictator (basenet, proposal)",
     "tags": [
       "alpha",
       "amendment",
-      "ghostnet",
+      "basenet",
       "proposal"
     ],
     "successful_runs": {

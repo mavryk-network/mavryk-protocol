@@ -26,13 +26,13 @@
 type t =
   | Not_running
   | Forking of {
-      protocol : Tezos_crypto.Hashed.Protocol_hash.t;
+      protocol : Mavryk_crypto.Hashed.Protocol_hash.t;
       expiration : Time.Protocol.t;
     }
   | Running of {
-      chain_id : Tezos_crypto.Hashed.Chain_id.t;
-      genesis : Tezos_crypto.Hashed.Block_hash.t;
-      protocol : Tezos_crypto.Hashed.Protocol_hash.t;
+      chain_id : Mavryk_crypto.Hashed.Chain_id.t;
+      genesis : Mavryk_crypto.Hashed.Block_hash.t;
+      protocol : Mavryk_crypto.Hashed.Protocol_hash.t;
       expiration : Time.Protocol.t;
     }
 
@@ -41,12 +41,12 @@ let equal s1 s2 =
   | Not_running, Not_running -> true
   | ( Forking {protocol = p1; expiration = e1},
       Forking {protocol = p2; expiration = e2} ) ->
-      Tezos_crypto.Hashed.Protocol_hash.equal p1 p2 && Time.Protocol.equal e1 e2
+      Mavryk_crypto.Hashed.Protocol_hash.equal p1 p2 && Time.Protocol.equal e1 e2
   | ( Running {chain_id = c1; genesis = g1; protocol = p1; expiration = e1},
       Running {chain_id = c2; genesis = g2; protocol = p2; expiration = e2} ) ->
-      Tezos_crypto.Hashed.Chain_id.equal c1 c2
-      && Tezos_crypto.Hashed.Block_hash.equal g1 g2
-      && Tezos_crypto.Hashed.Protocol_hash.equal p1 p2
+      Mavryk_crypto.Hashed.Chain_id.equal c1 c2
+      && Mavryk_crypto.Hashed.Block_hash.equal g1 g2
+      && Mavryk_crypto.Hashed.Protocol_hash.equal p1 p2
       && Time.Protocol.equal e1 e2
   | Not_running, (Forking _ | Running _)
   | (Forking _ | Running _), Not_running
@@ -75,7 +75,7 @@ let encoding =
            ~title:"Forking"
            (obj3
               (req "status" (constant "forking"))
-              (req "protocol" Tezos_crypto.Hashed.Protocol_hash.encoding)
+              (req "protocol" Mavryk_crypto.Hashed.Protocol_hash.encoding)
               (req "expiration" Time.Protocol.encoding))
            (function
              | Forking {protocol; expiration} -> Some ((), protocol, expiration)
@@ -86,9 +86,9 @@ let encoding =
            ~title:"Running"
            (obj5
               (req "status" (constant "running"))
-              (req "chain_id" Tezos_crypto.Hashed.Chain_id.encoding)
-              (req "genesis" Tezos_crypto.Hashed.Block_hash.encoding)
-              (req "protocol" Tezos_crypto.Hashed.Protocol_hash.encoding)
+              (req "chain_id" Mavryk_crypto.Hashed.Chain_id.encoding)
+              (req "genesis" Mavryk_crypto.Hashed.Block_hash.encoding)
+              (req "protocol" Mavryk_crypto.Hashed.Protocol_hash.encoding)
               (req "expiration" Time.Protocol.encoding))
            (function
              | Running {chain_id; genesis; protocol; expiration} ->
@@ -104,7 +104,7 @@ let pp ppf = function
       Format.fprintf
         ppf
         "@[<v 2>Forking %a (expires %a)@]"
-        Tezos_crypto.Hashed.Protocol_hash.pp
+        Mavryk_crypto.Hashed.Protocol_hash.pp
         protocol
         Time.System.pp_hum
         (Time.System.of_protocol_exn expiration)
@@ -112,11 +112,11 @@ let pp ppf = function
       Format.fprintf
         ppf
         "@[<v 2>Running %a@ Genesis: %a@ Net id: %a@ Expiration: %a@]"
-        Tezos_crypto.Hashed.Protocol_hash.pp
+        Mavryk_crypto.Hashed.Protocol_hash.pp
         protocol
-        Tezos_crypto.Hashed.Block_hash.pp
+        Mavryk_crypto.Hashed.Block_hash.pp
         genesis
-        Tezos_crypto.Hashed.Chain_id.pp
+        Mavryk_crypto.Hashed.Chain_id.pp
         chain_id
         Time.System.pp_hum
         (Time.System.of_protocol_exn expiration)

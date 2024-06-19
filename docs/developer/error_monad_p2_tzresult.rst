@@ -10,7 +10,7 @@ The ``error`` type is an `extensible variant
 type <https://ocaml.org/manual/extensiblevariants.html>`__ defined in
 the ``Error_monad`` module.
 
-Each part of the Octez source code can extend it to include some errors
+Each part of the Mavkit source code can extend it to include some errors
 relevant to that part. E.g., the p2p layer adds
 ``type error += Connection_refused`` whilst the store layer adds
 ``type error += Snapshot_file_not_found of string``. More information on
@@ -23,7 +23,7 @@ which helps present information about the context in which an error
 occurs. More information on traces is presented later.
 
 The ``'a tzresult`` type is an alias for ``('a, error trace) result``.
-It is used in Octez to represent the possibility of failure in a generic
+It is used in Mavkit to represent the possibility of failure in a generic
 way. Using ``tzresult`` is a trade-off. You should only use it in
 situations where the pros outweigh the cons.
 
@@ -246,7 +246,7 @@ The module ``Result_syntax`` exports a few functions dedicated to handling
 
 -  ``tzfail: 'e -> ('a, 'e trace) result``: the expression ``tzfail e``
    wraps ``e`` in a ``trace`` inside an ``Error``. When ``e`` is of type
-   ``error`` as is the case throughout Octez, ``tzfail e`` is of type
+   ``error`` as is the case throughout Mavkit, ``tzfail e`` is of type
    ``'a tzresult``.
 
 -  ``and*``: a binding operator alias for ``tzboth`` (see below). You can
@@ -339,7 +339,7 @@ handling Lwt+``tzresult``. These functions were omitted from Part 1.
 -  ``tzfail: 'e -> ('a, 'e trace) result Lwt.t``: the expression
    ``tzfail e`` wraps ``e`` in a ``trace`` inside an ``Error`` inside a
    promise. When ``e`` is of type ``error`` as is the case throughout
-   Octez, ``tzfail e`` is of type ``'a tzresult Lwt.t``.
+   Mavkit, ``tzfail e`` is of type ``'a tzresult Lwt.t``.
 
 -  ``and*``: a binding operator alias for ``tzboth``. You can use it with
    ``let*`` the same way you use ``and`` with ``let``.
@@ -539,8 +539,8 @@ storage layer) into another (say the shell).
 
 Do not hesitate to use the tracing primitives. Too much context is
 better than too little context. Think of ``trace`` (and variants) as a
-way to document Octez. Specifically, as making the error messages of
-Octez more informative.
+way to document Mavkit. Specifically, as making the error messages of
+Mavkit more informative.
 
 .. _meta-commentary-1:
 

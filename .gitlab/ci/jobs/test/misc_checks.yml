@@ -24,7 +24,7 @@ kaitai_checks:
   needs:
     - "build_x86_64-released"
   script:
-    - make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Octez encodings and Kaitai files seem to be out of sync. You might need to run `make check-kaitai-struct-files` and commit the resulting diff.' ; false)
+    - make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Mavkit encodings and Kaitai files seem to be out of sync. You might need to run `make check-kaitai-struct-files` and commit the resulting diff.' ; false)
 
 check_lift_limits_patch:
   extends:

@@ -32,7 +32,7 @@
 *)
 
 open Tztest
-open Tezos_lazy_containers
+open Mavryk_lazy_containers
 module Tree_encoding = Test_encoding.Tree_encoding
 module Context = Test_encoding.Context
 module Vector = Lazy_vector.IntVector
@@ -51,7 +51,7 @@ let encoding =
 
 let proof_size proof =
   Data_encoding.Binary.length
-    Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree2
+    Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree2
     .tree_proof_encoding
     proof
 

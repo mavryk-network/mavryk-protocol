@@ -60,7 +60,7 @@ module Term = struct
   let process subcommand data_dir config_file status sandbox_file =
     let run =
       let open Lwt_result_syntax in
-      let*! () = Tezos_base_unix.Internal_event_unix.init () in
+      let*! () = Mavryk_base_unix.Internal_event_unix.init () in
       match subcommand with
       | Storage -> (
           let* data_dir, config =
@@ -73,7 +73,7 @@ module Term = struct
             Lwt_lock_file.try_with_lock
               ~when_locked:(fun () ->
                 failwith
-                  "Failed to lock the data directory '%s'. Is a `octez-node` \
+                  "Failed to lock the data directory '%s'. Is a `mavkit-node` \
                    running?"
                   data_dir)
               ~filename:(Data_version.lock_file data_dir)
@@ -127,7 +127,7 @@ module Term = struct
       "Run the upgrade storage in sandbox mode. P2P to non-localhost addresses \
        are disabled, and constants of the economic protocol can be altered \
        with an optional JSON file. $(b,IMPORTANT): Using sandbox mode affects \
-       the node state and subsequent runs of Tezos node must also use sandbox \
+       the node state and subsequent runs of Mavryk node must also use sandbox \
        mode. In order to run the node in normal mode afterwards, a full reset \
        must be performed (by removing the node's data directory)."
     in

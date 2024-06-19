@@ -11,7 +11,7 @@ Logging.(log Debug "hello %d" 42)
 ```
 
 To make the logging effective, you have to set `Logging.logging_function`.
-`Tezos_validation.Protocol_logging.make_log_message_consumer` provides such
+`Mavryk_validation.Protocol_logging.make_log_message_consumer` provides such
 a function:
 
 ```

@@ -968,7 +968,7 @@ let txpool_encoding =
     (obj2 (req "pending" field_encoding) (req "queued" field_encoding))
 
 let hash_raw_tx str =
-  str |> Bytes.of_string |> Tezos_crypto.Hacl.Hash.Keccak_256.digest
+  str |> Bytes.of_string |> Mavryk_crypto.Hacl.Hash.Keccak_256.digest
   |> Bytes.to_string
 
 (** [transaction_nonce bytes] returns the nonce of a given raw transaction. *)

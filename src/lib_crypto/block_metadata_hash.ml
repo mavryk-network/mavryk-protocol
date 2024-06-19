@@ -29,7 +29,7 @@ include
     (struct
       let name = "Block_metadata_hash"
 
-      let title = "A Tezos block metadata ID"
+      let title = "A Mavryk block metadata ID"
 
       let b58check_prefix = Base58.Prefix.block_metadata_hash
 

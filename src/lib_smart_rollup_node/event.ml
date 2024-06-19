@@ -61,7 +61,7 @@ module Simple = struct
       ~msg:
         "The smart rollup node is interacting with rollup {addr} of kind {kind}"
       ~level:Info
-      ("addr", Octez_smart_rollup.Address.encoding)
+      ("addr", Mavkit_smart_rollup.Address.encoding)
       ("kind", Data_encoding.string)
 
   let starting_metrics_server =
@@ -240,7 +240,7 @@ let node_is_ready ~rpc_addr ~rpc_port =
   Simple.(emit node_is_ready (rpc_addr, rpc_port))
 
 let rollup_exists ~addr ~kind =
-  let kind = Octez_smart_rollup.Kind.to_string kind in
+  let kind = Mavkit_smart_rollup.Kind.to_string kind in
   Simple.(emit rollup_exists (addr, kind))
 
 let starting_metrics_server ~host ~port =

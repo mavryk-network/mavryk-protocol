@@ -116,11 +116,11 @@ let test_ignore_node_mempool =
       inject
         [
           make
-            ~fee:(Tez.to_mutez fee)
+            ~fee:(Tez.to_mumav fee)
             ~source:sender
             (transfer
                ~dest:Constant.bootstrap5
-               ~amount:(Tez.to_mutez amount)
+               ~amount:(Tez.to_mumav amount)
                ());
         ])
       client
@@ -439,7 +439,7 @@ let test_baker_external_operations =
     JSON.(manager_ops |=> 0 |-> "contents" |=> 0 |-> "amount" |> as_int)
   in
   Check.(
-    (Tez.of_mutez_int amount = transfer_value)
+    (Tez.of_mumav_int amount = transfer_value)
       Tez.typ
       ~__LOC__
       ~error_msg:"Expected baked block to have an amount of %R, got %L") ;
@@ -480,8 +480,8 @@ let test_baker_state_recorder protocol state_recorder =
   (* Obtain the "record_state" file name *)
   let* chain_id = Client.RPC.call client (RPC.get_chain_chain_id ()) in
   let chain_id =
-    Tezos_crypto.Hashed.Chain_id.to_short_b58check
-      (Tezos_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
+    Mavryk_crypto.Hashed.Chain_id.to_short_b58check
+      (Mavryk_crypto.Hashed.Chain_id.of_b58check_exn chain_id)
   in
   let state_recorder_file = chain_id ^ "_baker_state" in
   let base_dir = Client.base_dir client in

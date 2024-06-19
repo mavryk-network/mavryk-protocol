@@ -9,7 +9,7 @@ COMMAND="${1}"
 
 while read -r version
 do
-  find src/lib_scoru_wasm/regressions/expected/tezos_scoru_wasm_regressions.ml/ \
+  find src/lib_scoru_wasm/regressions/expected/mavryk_scoru_wasm_regressions.ml/ \
     -name "*(hash- ${version}).out" \
     -exec sha256sum {} \; >> "${CURRENT}"
 done < "${FROZEN_VERSIONS}"

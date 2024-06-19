@@ -4,9 +4,9 @@ Using The Event Logging Framework
 Developers of most modules should consider generating useful information
 for the :doc:`Logging subsystem <../user/logging>`.
 
-In the Octez code base, logging is instrumented using an asynchronous event
+In the Mavkit code base, logging is instrumented using an asynchronous event
 system, where log events are emitted in various part of the code and consumed by
-the so called sinks.  This is done by using the :opam:`tezos-event-logging` library.
+the so called sinks.  This is done by using the :opam:`mavryk-event-logging` library.
 
 We use two levels of abstraction to define these events. Heavy events are
 defined using the most generic API and have the full expressive power and
@@ -34,7 +34,7 @@ See for instance
    ``val Simple.emit: 'a Simple.t -> 'a -> (unit, trace) result Lwt.t``.
 
 Please read the guidelines that are documented in
-`the Internal_event.Simple module. <../api/odoc/_html/octez-libs/Event_logging/Internal_event/Simple/index.html>`__
+`the Internal_event.Simple module. <../api/odoc/_html/mavkit-libs/Event_logging/Internal_event/Simple/index.html>`__
 
 
 “Heavy” Events

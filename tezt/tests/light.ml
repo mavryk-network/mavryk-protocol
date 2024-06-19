@@ -166,7 +166,7 @@ module NoUselessRpc = struct
     In this scenario, the light client should look directly in the data within the tree received by the first request.
 
     For this, this test inspects the debug output produced by
-    setting TEZOS_LOG to light_mode->debug. This causes the client
+    setting MAVRYK_LOG to light_mode->debug. This causes the client
     to print the RPCs done to retrieve pieces of the context (do_rpc lines):
 
     light_mode: API call: do_rpc v1
@@ -176,7 +176,7 @@ module NoUselessRpc = struct
  *)
   let test_no_useless_rpc ?query_string path client =
     (* This test's implementation is similar to [Proxy.test_context_suffix_no_rpc]*)
-    let env = String_map.singleton "TEZOS_LOG" "light_mode->debug" in
+    let env = String_map.singleton "MAVRYK_LOG" "light_mode->debug" in
     let* stderr =
       Client.spawn_rpc ~env ?query_string Client.GET path client
       |> Process.check_and_read_stderr
@@ -235,7 +235,7 @@ module NoUselessRpc = struct
       ]
     in
     let paths =
-      if Protocol.(number protocol <= number Nairobi + 1) then
+      if Protocol.(number protocol <= number Atlas) then
         (["helpers"; "endorsing_rights"], []) :: paths
       else paths
     in
@@ -249,7 +249,7 @@ module NoUselessRpc = struct
 end
 
 (** Test.
-    Test that [octez-client --mode light --sources ... --protocol P] fails
+    Test that [mavkit-client --mode light --sources ... --protocol P] fails
     when the endpoint's protocol is not [P].
  *)
 let test_wrong_proto =

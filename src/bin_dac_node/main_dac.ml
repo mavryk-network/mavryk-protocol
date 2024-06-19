@@ -43,11 +43,11 @@ let () =
     (fun s -> Invalid_positive_int_parameter s)
 
 let group =
-  {Tezos_clic.name = "dac-node"; title = "Commands related to the DAC node"}
+  {Mavryk_clic.name = "dac-node"; title = "Commands related to the DAC node"}
 
 let data_dir_arg =
   let default = Configuration.default_data_dir in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"data-dir"
     ~placeholder:"data-dir"
     ~doc:
@@ -59,44 +59,44 @@ let data_dir_arg =
 
 let reveal_data_dir_arg =
   let default = Configuration.default_reveal_data_dir in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"reveal-data-dir"
     ~placeholder:"reveal-data-dir"
     ~doc:"The directory where reveal preimage pages are saved."
     ~default
     (Client_config.string_parameter ())
 
-let tz4_address_parameter =
-  Tezos_clic.parameter (fun _cctxt s ->
+let mv4_address_parameter =
+  Mavryk_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
       let*? bls_pkh = Signature.Bls.Public_key_hash.of_b58check s in
-      let pkh : Tezos_crypto.Aggregate_signature.public_key_hash =
-        Tezos_crypto.Aggregate_signature.Bls12_381 bls_pkh
+      let pkh : Mavryk_crypto.Aggregate_signature.public_key_hash =
+        Mavryk_crypto.Aggregate_signature.Bls12_381 bls_pkh
       in
       return pkh)
 
-let tz4_address_param ?(name = "bls-public-key-hash")
+let mv4_address_param ?(name = "bls-public-key-hash")
     ?(desc = "BLS public key hash.") =
-  let desc = String.concat " " [desc; "A tz4 address."] in
-  Tezos_clic.param ~name ~desc tz4_address_parameter
+  let desc = String.concat " " [desc; "A mv4 address."] in
+  Mavryk_clic.param ~name ~desc mv4_address_parameter
 
-let tz4_public_key_parameter =
-  Tezos_clic.parameter (fun _cctxt s ->
+let mv4_public_key_parameter =
+  Mavryk_clic.parameter (fun _cctxt s ->
       let open Lwt_result_syntax in
-      let*? pk = Tezos_crypto.Aggregate_signature.Public_key.of_b58check s in
+      let*? pk = Mavryk_crypto.Aggregate_signature.Public_key.of_b58check s in
       return pk)
 
-let tz4_public_key_param ?(name = "bls-public-key")
+let mv4_public_key_param ?(name = "bls-public-key")
     ?(desc = "BLS public key of committee member.") =
   let desc =
     String.concat
       " "
-      [desc; "A BLS12-381 public key which belongs to a tz4 account."]
+      [desc; "A BLS12-381 public key which belongs to a mv4 account."]
   in
-  Tezos_clic.param ~name ~desc tz4_public_key_parameter
+  Mavryk_clic.param ~name ~desc mv4_public_key_parameter
 
 let positive_int_parameter =
-  Tezos_clic.parameter (fun _cctxt p ->
+  Mavryk_clic.parameter (fun _cctxt p ->
       let open Lwt_result_syntax in
       let* i =
         try Lwt.return_ok (int_of_string p)
@@ -105,7 +105,7 @@ let positive_int_parameter =
       if i < 0 then tzfail @@ Invalid_positive_int_parameter p else return i)
 
 let timeout ~doc =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"timeout"
     ~placeholder:"timeout"
     ~doc
@@ -113,7 +113,7 @@ let timeout ~doc =
 
 let rpc_address_arg =
   let default = Configuration.default_rpc_address in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"rpc-addr"
     ~placeholder:"rpc-address|ip"
     ~doc:
@@ -125,7 +125,7 @@ let rpc_address_arg =
 
 let rpc_port_arg =
   let default = Configuration.default_rpc_port |> string_of_int in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"rpc-port"
     ~placeholder:"rpc-port"
     ~doc:
@@ -135,8 +135,8 @@ let rpc_port_arg =
     ~default
     positive_int_parameter
 
-let allow_v1_api_arg : (bool, Client_context.full) Tezos_clic.arg =
-  Tezos_clic.switch
+let allow_v1_api_arg : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
     ~long:"allow-v1-api"
     ~doc:(Format.sprintf "Run dac node with both V0 and V1 (WIP) API.")
     ()
@@ -144,7 +144,7 @@ let allow_v1_api_arg : (bool, Client_context.full) Tezos_clic.arg =
 let raw_rpc_parameter =
   let open Lwt_result_syntax in
   let open Dac_clic_helpers in
-  Tezos_clic.parameter (fun _cctxt raw_rpc ->
+  Mavryk_clic.parameter (fun _cctxt raw_rpc ->
       let parsed_rpc_result = Parsed_rpc.of_string raw_rpc in
       match parsed_rpc_result with
       | Ok parsed_rpc -> return parsed_rpc
@@ -154,13 +154,13 @@ let coordinator_rpc_param ?(name = "coordinator-rpc-address")
     ?(desc =
       "The RPC address of the DAC coordinator in the form of \
        <rpc_address>:<rpc_port>.") =
-  Tezos_clic.param ~name ~desc raw_rpc_parameter
+  Mavryk_clic.param ~name ~desc raw_rpc_parameter
 
 let committee_rpc_addresses_param ?(name = "committee-member-rpc-address")
     ?(desc =
       "The RPC address of the DAC committee member in the form of \
        <rpc_address>:<rpc_port>.") =
-  Tezos_clic.param ~name ~desc raw_rpc_parameter
+  Mavryk_clic.param ~name ~desc raw_rpc_parameter
 
 let experimental_disclaimer () =
   Format.eprintf
@@ -196,7 +196,7 @@ module Config_init = struct
     return_unit
 
   let coordinator_command =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     command
       ~group
       ~desc:"Configure DAC node in coordinator mode."
@@ -217,7 +217,7 @@ module Config_init = struct
            "committee";
            "members";
          ]
-      @@ seq_of_param @@ tz4_public_key_param)
+      @@ seq_of_param @@ mv4_public_key_param)
       (fun (data_dir, rpc_address, rpc_port, reveal_data_dir, allow_v1_api)
            committee_members
            cctxt ->
@@ -232,7 +232,7 @@ module Config_init = struct
           cctxt)
 
   let committee_member_command =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     command
       ~group
       ~desc:"Configure DAC node in committee member mode."
@@ -246,7 +246,7 @@ module Config_init = struct
          ["configure"; "as"; "committee"; "member"; "with"; "coordinator"]
       @@ coordinator_rpc_param
       @@ prefixes ["and"; "signer"]
-      @@ tz4_address_param ~desc:"BLS public key hash to use as the signer."
+      @@ mv4_address_param ~desc:"BLS public key hash to use as the signer."
       @@ stop)
       (fun (data_dir, rpc_address, rpc_port, reveal_data_dir, allow_v1_api)
            coordinator_rpc_address
@@ -270,7 +270,7 @@ module Config_init = struct
           cctxt)
 
   let observer_command =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     let open Dac_clic_helpers in
     command
       ~group
@@ -332,14 +332,14 @@ end
 
 let check_network cctxt =
   let open Lwt_syntax in
-  let* r = Tezos_shell_services.Version_services.version cctxt in
+  let* r = Mavryk_shell_services.Version_services.version cctxt in
   match r with
   | Error _ -> Lwt.return_none
   | Ok {network_version; _} ->
       let has_prefix prefix =
         String.has_prefix ~prefix (network_version.chain_name :> string)
       in
-      if List.exists has_prefix ["TEZOS_BETANET"; "TEZOS_MAINNET"] then
+      if List.exists has_prefix ["MAVRYK_BETANET"; "MAVRYK_MAINNET"] then
         Lwt.return_some `Mainnet
       else Lwt.return_some `Testnet
 
@@ -352,12 +352,12 @@ let display_disclaimer cctxt =
   | Some `Testnet -> ()
 
 let run_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~group
     ~desc:
-      "Run the DAC node. Use --endpoint to configure the Octez node to connect \
+      "Run the DAC node. Use --endpoint to configure the Mavkit node to connect \
        to (See Global options)."
     (args1 data_dir_arg)
     (prefixes ["run"] @@ stop)

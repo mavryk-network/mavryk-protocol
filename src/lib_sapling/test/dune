@@ -8,26 +8,26 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.tezos-sapling
-  octez-libs.crypto
+  mavkit-libs.mavryk-sapling
+  mavkit-libs.crypto
   str
-  octez-libs.base
-  octez-libs.base.unix
-  octez-libs.stdlib
-  octez-libs.stdlib-unix
+  mavkit-libs.base
+  mavkit-libs.base.unix
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
   data-encoding
-  octez-libs.base-test-helpers
-  octez-alcotezt)
+  mavkit-libs.base-test-helpers
+  mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_sapling
-  -open Tezos_stdlib
+  -open Mavryk_sapling
+  -open Mavryk_stdlib
   -open Data_encoding
-  -open Tezos_base_test_helpers
-  -open Octez_alcotezt)
+  -open Mavryk_base_test_helpers
+  -open Mavkit_alcotezt)
  (modules
   test_rustzcash
   test_keys
@@ -41,8 +41,8 @@
  (name test_js)
  (modes js)
  (libraries
-  octez-libs.tezos-sapling
-  octez-libs.hacl)
+  mavkit-libs.mavryk-sapling
+  mavkit-libs.hacl)
  (js_of_ocaml)
  (link_flags
   (:standard)
@@ -51,7 +51,7 @@
 
 (rule
  (alias runtest_js)
- (package octez-libs)
+ (package mavkit-libs)
  (enabled_if false)
  (action (run node %{dep:./test_js.bc.js})))
 
@@ -68,7 +68,7 @@
 
 (rule
  (alias runtest)
- (package octez-libs)
+ (package mavkit-libs)
  (deps vectors.csv vectors-zip32.csv)
  (enabled_if false)
  (action (run %{dep:./main.exe})))

@@ -1,4 +1,4 @@
-This page describes the RPCs built into the Tezos shell, which are independent from a particular version of the Tezos protocol.
+This page describes the RPCs built into the Mavryk shell, which are independent from a particular version of the Mavryk protocol.
 (The RPCs implemented by the protocol currently active on Mainnet, are described :doc:`in this other page <../active/rpc>`.)
 
 .. warning::
@@ -10,9 +10,9 @@ This page describes the RPCs built into the Tezos shell, which are independent f
 
 Note that the RPCs served under a given prefix can also be listed using the client, e.g.::
 
-    octez-client rpc list /chains/main/levels
+    mavkit-client rpc list /chains/main/levels
 
 Any RPC endpoint may also be described, using the ``describe`` RPC to
 retrieve all JSON and binary schemas, e.g.::
 
-    octez-client rpc get /describe/chains/main/chain_id
+    mavkit-client rpc get /describe/chains/main/chain_id

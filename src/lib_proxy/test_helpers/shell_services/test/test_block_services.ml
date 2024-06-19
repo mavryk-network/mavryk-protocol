@@ -32,9 +32,9 @@
 
 open Qcheck2_helpers
 
-open Tezos_proxy_test_helpers_shell_services.Test_helpers_shell_services
+open Mavryk_proxy_test_helpers_shell_services.Test_helpers_shell_services
 
-open Tezos_context_sigs.Context.Proof_types.Internal_for_tests
+open Mavryk_context_sigs.Context.Proof_types.Internal_for_tests
 
 let merkle_proof_eq_tests =
   qcheck_eq_tests

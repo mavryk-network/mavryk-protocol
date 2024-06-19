@@ -373,7 +373,7 @@ let test_inconsistent_counters () =
       c1
       c2
       ~counter:(Manager_counter.Internal_for_tests.of_int 2)
-      (Tez.of_mutez_exn 5_000L)
+      (Tez.of_mumav_exn 5_000L)
   in
   let* op3 =
     Op.transaction

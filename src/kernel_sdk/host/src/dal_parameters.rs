@@ -12,7 +12,7 @@ pub const DAL_PARAMETERS_SIZE: usize = 4 * core::mem::size_of::<u64>();
 
 /// Type returned from [`reveal_dal_parameters`].
 ///
-/// [`reveal_dal_parameters`]: tezos_smart_rollup_host::runtime::Runtime::reveal_dal_parameters.
+/// [`reveal_dal_parameters`]: mavryk_smart_rollup_host::runtime::Runtime::reveal_dal_parameters.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct RollupDalParameters {
     /// number of slots

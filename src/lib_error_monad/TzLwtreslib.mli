@@ -23,4 +23,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include module type of Tezos_lwt_result_stdlib.Lwtreslib.Traced (TzTrace)
+include module type of Mavryk_lwt_result_stdlib.Lwtreslib.Traced (TzTrace)

@@ -226,7 +226,7 @@ let check_consistency_after_switch descr chain_store ~previous_mode ~target_mode
   let current_head =
     List.(hd (rev blocks)) |> WithExceptions.Option.get ~loc:__LOC__
   in
-  let* Tezos_protocol_alpha.Protocol.Alpha_context.Constants.
+  let* Mavryk_protocol_alpha.Protocol.Alpha_context.Constants.
          {parametric = {blocks_per_cycle; _}; _} =
     Alpha_utils.get_constants chain_store current_head
   in

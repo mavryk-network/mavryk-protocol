@@ -85,7 +85,7 @@ module type T_for_tests = sig
 end
 
 (* Build a [Bounding] module. *)
-module Make (Proto : Tezos_protocol_environment.PROTOCOL) :
+module Make (Proto : Mavryk_protocol_environment.PROTOCOL) :
   T_for_tests with type protocol_operation = Proto.operation = struct
   type protocol_operation = Proto.operation
 

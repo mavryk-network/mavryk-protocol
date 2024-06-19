@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_scoru_wasm_helpers
-open Tezos_scoru_wasm
+open Mavryk_scoru_wasm_helpers
+open Mavryk_scoru_wasm
 open Wasm_pvm_state.Internal_state
 open Pvm_instance
 

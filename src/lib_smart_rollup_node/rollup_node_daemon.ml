@@ -239,7 +239,7 @@ let missing_data_error trace =
       | Some _ -> acc
       | None -> (
           match error with
-          | Octez_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
+          | Mavkit_crawler.Layer_1.Cannot_find_predecessor hash -> Some hash
           | _ -> acc))
     None
     trace
@@ -278,7 +278,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
   in
   let stripped_head = Layer1.head_of_header head in
   let*! reorg =
-    Node_context.get_tezos_reorg_for_new_head node_ctxt old_head stripped_head
+    Node_context.get_mavryk_reorg_for_new_head node_ctxt old_head stripped_head
   in
   let*? reorg = report_missing_data reorg in
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/3348
@@ -288,7 +288,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
   let get_header Layer1.{hash; level} =
     if Block_hash.equal hash head.hash then return head
     else
-      let+ header = Layer1.fetch_tezos_shell_header node_ctxt.l1_ctxt hash in
+      let+ header = Layer1.fetch_mavryk_shell_header node_ctxt.l1_ctxt hash in
       {Layer1.hash; level; header}
   in
   let new_chain_prefetching =
@@ -298,7 +298,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
     List.iter_es
       (fun (block, to_prefetch) ->
         let module Plugin = (val state.plugin) in
-        Plugin.Layer1_helpers.prefetch_tezos_blocks
+        Plugin.Layer1_helpers.prefetch_mavryk_blocks
           node_ctxt.l1_ctxt
           to_prefetch ;
         let* header = get_header block in
@@ -349,7 +349,7 @@ let install_finalizer state =
   let* () = Refutation_coordinator.shutdown () in
   let* (_ : unit tzresult) = Node_context.close state.node_ctxt in
   let* () = Event.shutdown_node exit_status in
-  Tezos_base_unix.Internal_event_unix.close ()
+  Mavryk_base_unix.Internal_event_unix.close ()
 
 let maybe_recover_bond ({node_ctxt; configuration; _} as state) =
   let open Lwt_result_syntax in
@@ -497,7 +497,7 @@ let run ({node_ctxt; configuration; plugin; _} as state) =
     ~id:configuration.sc_rollup_address
     ~mode:configuration.mode
     ~genesis_level:node_ctxt.genesis_info.level
-    ~pvm_kind:(Octez_smart_rollup.Kind.to_string node_ctxt.kind) ;
+    ~pvm_kind:(Mavkit_smart_rollup.Kind.to_string node_ctxt.kind) ;
   let fatal_error_exit e =
     Format.eprintf "%!%a@.Exiting.@." pp_print_trace e ;
     let*! _ = Lwt_exit.exit_and_wait 1 in
@@ -617,7 +617,7 @@ end
 let plugin_of_first_block cctxt (block : Layer1.header) =
   let open Lwt_result_syntax in
   let* {current_protocol; _} =
-    Tezos_shell_services.Shell_services.Blocks.protocols
+    Mavryk_shell_services.Shell_services.Blocks.protocols
       cctxt
       ~block:(`Hash (block.hash, 0))
       ()
@@ -629,7 +629,7 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
     (configuration : Configuration.t) (cctxt : Client_context.full) =
   let open Lwt_result_syntax in
   let* () =
-    Tezos_base_unix.Internal_event_unix.enable_default_daily_logs_at
+    Mavryk_base_unix.Internal_event_unix.enable_default_daily_logs_at
       ~daily_logs_path:Filename.Infix.(data_dir // "daily_logs")
   in
   Random.self_init () (* Initialize random state (for reconnection delays) *) ;
@@ -661,7 +661,7 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
   in
   let*! head = Layer1.wait_first l1_ctxt in
   let* predecessor =
-    Layer1.fetch_tezos_shell_header l1_ctxt head.header.predecessor
+    Layer1.fetch_mavryk_shell_header l1_ctxt head.header.predecessor
   in
   let publisher = Purpose.find_operator Operating configuration.operators in
 

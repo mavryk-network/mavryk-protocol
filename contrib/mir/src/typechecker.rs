@@ -7,7 +7,7 @@
 
 use std::collections::BTreeMap;
 use std::num::TryFromIntError;
-use tezos_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
+use mavryk_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
 
 pub mod type_props;
 
@@ -271,8 +271,8 @@ pub(crate) fn parse_ty(ctx: &mut Ctx, ty: &Micheline) -> Result<Type, TcError> {
         App(bool, [], _) => Type::Bool,
         App(bool, ..) => unexpected()?,
 
-        App(mutez, [], _) => Type::Mutez,
-        App(mutez, ..) => unexpected()?,
+        App(mumav, [], _) => Type::Mumav,
+        App(mumav, ..) => unexpected()?,
 
         App(string, [], _) => Type::String,
         App(string, ..) => unexpected()?,
@@ -306,7 +306,7 @@ pub(crate) fn parse_ty(ctx: &mut Ctx, ty: &Micheline) -> Result<Type, TcError> {
             // NB: despite `contract` type being duplicable and packable, its
             // argument doesn't need to be. The only constraint is that it needs
             // to be passable, as it represents the contract's parameter type.
-            // See https://tezos.gitlab.io/michelson-reference/#type-contract
+            // See https://protocol.mavryk.org/michelson-reference/#type-contract
             t.ensure_prop(&mut ctx.gas, TypeProperty::Passable)?;
             Type::new_contract(t)
         }
@@ -499,9 +499,9 @@ pub(crate) fn typecheck_instruction(
             pop!();
             I::Add(overloads::Add::NatInt)
         }
-        (App(ADD, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(ADD, [], _), [.., T::Mumav, T::Mumav]) => {
             pop!();
-            I::Add(overloads::Add::MutezMutez)
+            I::Add(overloads::Add::MumavMumav)
         }
         (App(ADD, [], _), [.., _, _]) => no_overload!(ADD),
         (App(ADD, [], _), [_] | []) => no_overload!(ADD, len 2),
@@ -718,7 +718,7 @@ pub(crate) fn typecheck_instruction(
         (App(FAILWITH, [], _), [.., _]) => {
             let ty = pop!();
             // NB: the docs for the FAILWITH instruction
-            // https://tezos.gitlab.io/michelson-reference/#instr-FAILWITH claim
+            // https://protocol.mavryk.org/michelson-reference/#instr-FAILWITH claim
             // the type needs to be packable, but that's not quite correct, as
             // `contract _` is forbidden. The correct constraint is seemingly
             // "pushable", as "pushable" is just "packable" without `contract _`
@@ -798,7 +798,7 @@ pub(crate) fn typecheck_instruction(
         (App(COMPARE, expect_args!(0), _), _) => unexpected_micheline!(),
 
         (App(AMOUNT, [], _), ..) => {
-            stack.push(T::Mutez);
+            stack.push(T::Mumav);
             I::Amount
         }
         (App(AMOUNT, expect_args!(0), _), _) => unexpected_micheline!(),
@@ -876,7 +876,7 @@ pub(crate) fn typecheck_value(
         (T::Int, V::Int(n)) => TV::Int(*n),
         (T::Bool, V::App(Prim::True, [], _)) => TV::Bool(true),
         (T::Bool, V::App(Prim::False, [], _)) => TV::Bool(false),
-        (T::Mutez, V::Int(n)) if *n >= 0 => TV::Mutez((*n).try_into()?),
+        (T::Mumav, V::Int(n)) if *n >= 0 => TV::Mumav((*n).try_into()?),
         (T::String, V::String(s)) => TV::String(s.clone()),
         (T::Unit, V::App(Prim::Unit, [], _)) => TV::Unit,
         (T::Pair(pt), V::App(Prim::Pair, [vl, rest @ ..], _)) if !rest.is_empty() => {
@@ -986,7 +986,7 @@ pub(crate) fn typecheck_value(
             )
         }
         (T::ChainId, V::Bytes(bs)) => {
-            use tezos_crypto_rs::hash::HashTrait;
+            use mavryk_crypto_rs::hash::HashTrait;
             ctx.gas.consume(gas::tc_cost::CHAIN_ID_OPTIMIZED)?;
             TV::ChainId(ChainId::try_from_bytes(bs).map_err(|x| TcError::ChainIdError(x.into()))?)
         }
@@ -1226,13 +1226,13 @@ mod typecheck_tests {
     }
 
     #[test]
-    fn test_add_mutez_mutez() {
-        let mut stack = tc_stk![Type::Mutez, Type::Mutez];
-        let expected_stack = tc_stk![Type::Mutez];
+    fn test_add_mumav_mumav() {
+        let mut stack = tc_stk![Type::Mumav, Type::Mumav];
+        let expected_stack = tc_stk![Type::Mumav];
         let mut ctx = Ctx::default();
         assert_eq!(
             typecheck_instruction(&app!(ADD), &mut ctx, &mut stack),
-            Ok(Add(overloads::Add::MutezMutez))
+            Ok(Add(overloads::Add::MumavMumav))
         );
         assert_eq!(stack, expected_stack);
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 440);
@@ -1844,7 +1844,7 @@ mod typecheck_tests {
             typecheck_instruction(&parse("AMOUNT").unwrap(), &mut Ctx::default(), &mut stack),
             Ok(Amount)
         );
-        assert_eq!(stack, tc_stk![Type::Mutez]);
+        assert_eq!(stack, tc_stk![Type::Mumav]);
     }
 
     #[test]
@@ -2663,10 +2663,10 @@ mod typecheck_tests {
                 entrypoint: Entrypoint::try_from(ep).unwrap(),
             }
         }
-        use tezos_crypto_rs::hash::*;
-        // hex representations are obtained via `octez-client hash data`
+        use mavryk_crypto_rs::hash::*;
+        // hex representations are obtained via `mavkit-client hash data`
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j""#,
+            r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef",
             hex(
                 ContractTz1Hash,
@@ -2675,7 +2675,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH""#,
+            r#""mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
             hex(
                 ContractTz2Hash,
@@ -2684,7 +2684,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r""#,
+            r#""mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35",
             hex(
                 ContractTz3Hash,
@@ -2693,7 +2693,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN""#,
+            r#""mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6",
             hex(
                 ContractTz4Hash,
@@ -2721,7 +2721,7 @@ mod typecheck_tests {
         );
         // with entrypoints
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo""#,
+            r#""mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
             hex(
                 ContractTz1Hash,
@@ -2730,7 +2730,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo""#,
+            r#""mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
             hex(
                 ContractTz2Hash,
@@ -2739,7 +2739,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo""#,
+            r#""mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
             hex(
                 ContractTz3Hash,
@@ -2748,7 +2748,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo""#,
+            r#""mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
             hex(
                 ContractTz4Hash,
@@ -2786,7 +2786,7 @@ mod typecheck_tests {
 
         assert_matches!(
             typecheck_instruction(
-                &parse("PUSH address \"tz1foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
+                &parse("PUSH address \"mv1foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
                 &mut Ctx::default(),
                 &mut tc_stk![],
             ),
@@ -2794,7 +2794,7 @@ mod typecheck_tests {
         );
         assert_matches!(
             typecheck_instruction(
-                &parse("PUSH address \"tz9foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
+                &parse("PUSH address \"mv9foobarfoobarfoobarfoobarfoobarfoo\"").unwrap(),
                 &mut Ctx::default(),
                 &mut tc_stk![],
             ),
@@ -2888,7 +2888,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
+                mavryk_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
             ))
         );
         assert_eq!(
@@ -2898,7 +2898,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::hash::FromBytesError::InvalidSize.into()
+                mavryk_crypto_rs::hash::FromBytesError::InvalidSize.into()
             ))
         );
     }

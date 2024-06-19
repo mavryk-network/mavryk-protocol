@@ -25,7 +25,7 @@
 
 open Client_context
 
-type command = full Tezos_clic.command
+type command = full Mavryk_clic.command
 
 type network = [`Mainnet | `Testnet]
 

@@ -66,11 +66,11 @@ module type S = sig
     ?first_key:key ->
     ?values:'a Map.Map.t ->
     ?produce_value:'a producer ->
-    ?origin:Tezos_tree_encoding.wrapped_tree ->
+    ?origin:Mavryk_tree_encoding.wrapped_tree ->
     key ->
     'a t
 
-  val origin : 'a t -> Tezos_tree_encoding.wrapped_tree option
+  val origin : 'a t -> Mavryk_tree_encoding.wrapped_tree option
 
   val empty : unit -> 'a t
 
@@ -107,9 +107,9 @@ module type S = sig
   val first_key : 'a t -> key
 
   val encoding :
-    key Tezos_tree_encoding.t ->
-    'a Tezos_tree_encoding.t ->
-    'a t Tezos_tree_encoding.t
+    key Mavryk_tree_encoding.t ->
+    'a Mavryk_tree_encoding.t ->
+    'a t Mavryk_tree_encoding.t
 end
 
 module ZZ : KeyS with type t = Z.t = struct
@@ -286,7 +286,7 @@ end
 
 module Make (Key : KeyS) : S with type key = Key.t = struct
   module No_enc = Make_no_enc (Key)
-  module Encoding = Tezos_tree_encoding.Lazy_vector_encoding.Make (No_enc)
+  module Encoding = Mavryk_tree_encoding.Lazy_vector_encoding.Make (No_enc)
   include No_enc
 
   let encoding = Encoding.lazy_vector
@@ -320,11 +320,11 @@ module Mutable = struct
     val create :
       ?values:'a Vector.Map.Map.t ->
       ?produce_value:'a Vector.producer ->
-      ?origin:Tezos_tree_encoding.wrapped_tree ->
+      ?origin:Mavryk_tree_encoding.wrapped_tree ->
       key ->
       'a t
 
-    val origin : 'a t -> Tezos_tree_encoding.wrapped_tree option
+    val origin : 'a t -> Mavryk_tree_encoding.wrapped_tree option
 
     val get : key -> 'a t -> 'a Lwt.t
 
