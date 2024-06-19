@@ -8,7 +8,7 @@ Mavryk not only comes to consensus about the state of its ledger,
 like Bitcoin or Ethereum. It also attempts to come to consensus about how the
 protocol and the nodes should adapt and upgrade.
 
-`Mavryk.com <https://tezos.com/>`_ contains more information on Mavryk overall.
+`Mavrykdynamics.com <https://mavrykdynamics.com/>`_ contains more information on Mavryk overall.
 
 .. _mavkit:
 

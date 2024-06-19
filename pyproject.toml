@@ -8,7 +8,7 @@ description = "Python documentation & scripts for Mavryk"
 readme = "README.md"
 
 authors = [
-  "Tezos community <tezos@tezos.com>"
+  "Mavryk Dynamics <info@mavryk.io>"
 ]
 repository = "https://gitlab.com/mavryk-network/mavryk-protocol"
 homepage = "https://gitlab.com/mavryk-network/mavryk-protocol"

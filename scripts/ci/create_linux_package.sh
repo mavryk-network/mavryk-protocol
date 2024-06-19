@@ -17,7 +17,7 @@ git checkout "$MAVRYK_PACKAGING_VERSION"
 cat <<DOC > meta.json
 {
     "release": "1",
-    "maintainer": "Mavryk devteam <contact@tezos.com>"
+    "maintainer": "Mavryk Dynamics <info@mavryk.io>"
 }
 DOC
 

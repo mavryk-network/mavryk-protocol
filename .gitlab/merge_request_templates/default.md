@@ -28,5 +28,5 @@ Describe how reviewers and approvers can test this MR. -->
 
 <!--
 Note: If you modify this merge request description template, also update its copy at 
-https://gitlab.com/tezos/tezos/-/settings/merge_requests#project_merge_requests_template
+https://gitlab.com/mavryk-network/mavryk-protocol/-/settings/merge_requests#project_merge_requests_template
 -->

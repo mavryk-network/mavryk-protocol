@@ -21,7 +21,7 @@ If you use the Spacemacs distribution, you can add the package in `dotspacemacs-
 ```elisp
 dotspacemacs-additional-packages '(
   (michelson-mode :location (recipe :fetcher url
-                                   :url "https://gitlab.com/tezos/tezos/-/raw/master/emacs/michelson-mode.el")))
+                                   :url "https://gitlab.com/mavryk-network/mavryk-protocol/-/raw/master/emacs/michelson-mode.el")))
 ```
 `quelpa` will be used under the hood to fetch and load the file.
 

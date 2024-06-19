@@ -15,7 +15,7 @@ The actual script being run by Cron can be displayed with `crontab -l` from `mcl
 - Regressions are detected on another machine (`163.172.34.197`).
 - We use Cron to run the detection every 10 minutes.
 - The Cron detection process is setup for a dedicated user named `redbull`, whose password is not set. Any sudoer can modify this process by switching to `redbull` (for instance with `sudo su redbull`).
-- The regression detection relies on the [`gas_parameter_diff`](https://gitlab.com/tezos/tezos/-/tree/master/devtools/gas_parameter_diff) tool.
+- The regression detection relies on the [`gas_parameter_diff`](https://gitlab.com/mavryk-network/mavryk-protocol/-/tree/master/devtools/gas_parameter_diff) tool.
 
 The actual script being run by Cron can be displayed with `crontab -l` from `redbull`, and edited with `crontab -e`. Right now, it is:
 ```
@@ -33,7 +33,7 @@ On `163.172.52.82`, `cronjob.sh` does the following:
 * it reports its activity to a dedicated Slack channel.
 
 Then, `run_all_benchmarks_on_latest_master.sh` operates as follows:
-* it pulls the current branch of its local copy of [Tezos](https://gitlab.com/tezos/tezos) at `/data/mavryk-benchmarks/tezos`;
+* it pulls the current branch of its local copy of [Tezos](https://gitlab.com/mavryk-network/mavryk-protocol) at `/data/mavryk-benchmarks/tezos`;
 * it creates the directory `/data/mavryk-benchmarks/snoop_results/_snoop_<YYYYMMDD>_<HHMM>_<version-and-hash>` where Snoop result files will be stored;
 * it `make`s, also building dependencies;
 * it runs all benchmarks by calling `dune exec tezt/snoop/main.exe`;
@@ -97,7 +97,7 @@ On the reference machine, the benchmarks directory looks like this:
 - `snoop_results` contains the result of the benchmarks, with one sub-directory per benchmark run.
   - `STARTED` and `SUCCESS` are marker files that can be used by human beings to have a quick look at the benchmarks process status (they contain the PID).
   - Other files are created by being moved from other locations, as described below.
-- `tezos` is a clone of https://gitlab.com/tezos/tezos. It is updated automatically in `run_all_benchmarks_on_latest_master.sh`, but it needs to be created prior to the very first Cron job.
+- `tezos` is a clone of https://gitlab.com/mavryk-network/mavryk-protocol. It is updated automatically in `run_all_benchmarks_on_latest_master.sh`, but it needs to be created prior to the very first Cron job.
   - `michelson_data` and `sapling_data` contain data that are very long to generate but rarely change between two benchmark runs. For now, we decided not to regenerate them, and keep the same data from one run to the other. When to update them is under discussion.
   - Also note that in this directory, `benchmark_results` and `inference_results` only exist during a run of the benchmarks. They are moved to `snoop_results` at the end.
 - `cron_res` and `cron_res_errors` are the log files of a benchmark run. They are only present during a run, and moved to `snoop_results` at the end.

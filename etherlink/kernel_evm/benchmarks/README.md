@@ -34,7 +34,7 @@ cd <WORKDIR>
 mkdir tezos
 cd tezos
 git init
-git remote add -f origin https://gitlab.com/tezos/tezos.git
+git remote add -f origin https://gitlab.com/mavryk-network/mavryk-protocol.git
 git sparse-checkout set etherlink/kernel_evm/benchmarks
 git checkout master
 cd ..

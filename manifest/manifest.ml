@@ -3309,21 +3309,21 @@ let generate_opam ?release for_package (internals : Target.internal list) :
     |> deduplicate String_set.empty []
   in
   {
-    maintainer = "contact@tezos.com";
-    authors = "Mavryk devteam" :: extra_authors;
+    maintainer = "info@mavryk.io";
+    authors = "Mavryk Dynamics" :: extra_authors;
     homepage =
       get_consistent_value
         ~name:"opam_homepage"
         (fun x -> x.opam_homepage)
-        ~default:"https://www.tezos.com/";
+        ~default:"https://mavrykdynamics.com/";
     doc =
       get_consistent_value ~name:"opam_doc" (fun x -> x.opam_doc) ~default:"";
     bug_reports =
       get_consistent_value
         ~name:"opam_bug_reports"
         (fun x -> x.opam_bug_reports)
-        ~default:"https://gitlab.com/tezos/tezos/issues";
-    dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+        ~default:"https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+    dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
     licenses;
     depends;
     conflicts;
@@ -3369,12 +3369,12 @@ let generate_opam_meta_package opam_release_graph add_to_meta_package : Opam.t =
           }
   in
   {
-    maintainer = "contact@tezos.com";
-    authors = ["Mavryk devteam"];
-    homepage = "https://www.tezos.com/";
+    maintainer = "info@mavryk.io";
+    authors = ["Mavryk Dynamics"];
+    homepage = "https://mavrykdynamics.com/";
     doc = "https://protocol.mavryk.org";
-    bug_reports = "https://gitlab.com/tezos/tezos/issues";
-    dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+    bug_reports = "https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+    dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
     licenses = ["MIT"];
     depends = depends1 @ depends2;
     conflicts = [];
@@ -3943,7 +3943,7 @@ let generate_opam_ci opam_release_graph =
         (if is_executable then "exec" else "all")
         batch_index
         (* Tag below is added because the job in question does not work as is on
-           Gitlab Runner CI GCP. To remove once https://gitlab.com/tezos/tezos/-/issues/6584
+           Gitlab Runner CI GCP. To remove once https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/6584
            is fixed. *)
         (if package_name = "mavkit-shell-libs" then
          "\n    - .tags_template__no_gcp"
@@ -3980,7 +3980,7 @@ let generate_profiles ~default_profile =
           match String_map.find_opt name profile_deps with
           | None -> version
           | Some old_version ->
-              (* FIXME: https://gitlab.com/tezos/tezos/-/issues/5434
+              (* FIXME: https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/5434
                  This comparison is wrong as it compares the terms as
                  a whole. It results in duplicated
                  versions. Additionally, for the conflicts, the `||`
@@ -4023,12 +4023,12 @@ let generate_profiles ~default_profile =
     in
     let opam : Opam.t =
       {
-        maintainer = "contact@tezos.com";
-        authors = ["Mavryk devteam"];
-        homepage = "https://www.tezos.com/";
+        maintainer = "info@mavryk.io";
+        authors = ["Mavryk Dynamics"];
+        homepage = "https://mavrykdynamics.com/";
         doc = "";
-        bug_reports = "https://gitlab.com/tezos/tezos/issues";
-        dev_repo = "git+https://gitlab.com/tezos/tezos.git";
+        bug_reports = "https://gitlab.com/mavryk-network/mavryk-protocol/issues";
+        dev_repo = "git+https://gitlab.com/mavryk-network/mavryk-protocol.git";
         licenses = ["MIT"];
         depends;
         conflicts;
