@@ -29,7 +29,7 @@ end
 type t = Irmin_context.PVMState.value
 
 module Wasm_utils =
-  Wasm_utils.Make (Tezos_tree_encoding.Encodings_util.Make (Bare_context))
+  Wasm_utils.Make (Mavryk_tree_encoding.Encodings_util.Make (Bare_context))
 module Wasm = Wasm_debugger.Make (Wasm_utils)
 
 let kernel_logs_directory ~data_dir = Filename.concat data_dir "kernel_logs"
@@ -56,7 +56,7 @@ let event_kernel_log ~kind ~msg =
     level_and_msg
 
 let execute ?(kind = Events.Application) ~data_dir ?(log_file = "kernel_log")
-    ?(wasm_entrypoint = Tezos_scoru_wasm.Constants.wasm_entrypoint) ~config
+    ?(wasm_entrypoint = Mavryk_scoru_wasm.Constants.wasm_entrypoint) ~config
     evm_state inbox =
   let open Lwt_result_syntax in
   let path = Filename.concat (kernel_logs_directory ~data_dir) log_file in
@@ -64,7 +64,7 @@ let execute ?(kind = Events.Application) ~data_dir ?(log_file = "kernel_log")
   let inbox = List.to_seq [inbox] in
   let messages = ref [] in
   let write_debug =
-    Tezos_scoru_wasm.Builtins.Printer
+    Mavryk_scoru_wasm.Builtins.Printer
       (fun msg ->
         messages := msg :: !messages ;
         event_kernel_log ~kind ~msg)
@@ -106,23 +106,23 @@ let init ~kernel =
   let open Lwt_result_syntax in
   let evm_state = Irmin_context.PVMState.empty () in
   let* evm_state =
-    Wasm.start ~tree:evm_state Tezos_scoru_wasm.Wasm_pvm_state.V3 kernel
+    Wasm.start ~tree:evm_state Mavryk_scoru_wasm.Wasm_pvm_state.V3 kernel
   in
   let*! evm_state = flag_local_exec evm_state in
   return evm_state
 
 let inspect evm_state key =
   let open Lwt_syntax in
-  let key = Tezos_scoru_wasm.Durable.key_of_string_exn key in
+  let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key in
   let* value = Wasm.Commands.find_key_in_durable evm_state key in
-  Option.map_s Tezos_lazy_containers.Chunked_byte_vector.to_bytes value
+  Option.map_s Mavryk_lazy_containers.Chunked_byte_vector.to_bytes value
 
 let subkeys evm_state key =
   let open Lwt_syntax in
-  let key = Tezos_scoru_wasm.Durable.key_of_string_exn key in
+  let key = Mavryk_scoru_wasm.Durable.key_of_string_exn key in
   let* durable = Wasm_utils.wrap_as_durable_storage evm_state in
-  let durable = Tezos_scoru_wasm.Durable.of_storage_exn durable in
-  Tezos_scoru_wasm.Durable.list durable key
+  let durable = Mavryk_scoru_wasm.Durable.of_storage_exn durable in
+  Mavryk_scoru_wasm.Durable.list durable key
 
 let current_block_height evm_state =
   let open Lwt_syntax in
@@ -194,7 +194,7 @@ let apply_blueprint ~data_dir ~config evm_state
   let* evm_state =
     execute
       ~data_dir
-      ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+      ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
       ~config
       evm_state
       exec_inputs
@@ -208,21 +208,21 @@ let apply_blueprint ~data_dir ~config evm_state
 let clear_delayed_inbox evm_state =
   let open Lwt_syntax in
   let delayed_inbox_path =
-    Tezos_scoru_wasm.Durable.key_of_string_exn
+    Mavryk_scoru_wasm.Durable.key_of_string_exn
       Durable_storage_path.delayed_inbox
   in
   let* pvm_state =
     Wasm_utils.Ctx.Tree_encoding_runner.decode
-      Tezos_scoru_wasm.Wasm_pvm.pvm_state_encoding
+      Mavryk_scoru_wasm.Wasm_pvm.pvm_state_encoding
       evm_state
   in
   let* durable =
-    Tezos_scoru_wasm.Durable.delete
+    Mavryk_scoru_wasm.Durable.delete
       ~kind:Directory
       pvm_state.durable
       delayed_inbox_path
   in
   Wasm_utils.Ctx.Tree_encoding_runner.encode
-    Tezos_scoru_wasm.Wasm_pvm.pvm_state_encoding
+    Mavryk_scoru_wasm.Wasm_pvm.pvm_state_encoding
     {pvm_state with durable}
     evm_state

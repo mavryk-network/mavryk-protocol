@@ -9,7 +9,7 @@
 
 [Unit]
 Description=Mavkit-signer
-Documentation=https://tezos.gitlab.io/
+Documentation=https://protocol.mavryk.org/
 After=network.target
 
 [Service]

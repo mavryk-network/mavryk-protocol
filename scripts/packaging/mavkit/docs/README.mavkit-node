@@ -18,7 +18,7 @@ Execute the following command to obtain a new data directory:
 
     mavkit-node snapshot import snapshot.file --block <BLOCK_HASH> --data-dir /var/tezos/.mavryk-node
 
-Check here the full documentation on how to import a snapshot: https://tezos.gitlab.io/user/snapshots.html#importing-a-snapshot
+Check here the full documentation on how to import a snapshot: https://protocol.mavryk.org/user/snapshots.html#importing-a-snapshot
 
 The node is managed using systemd, with logs rotated daily through logrotate
 and stored in /var/logs/tezos.

@@ -2,7 +2,7 @@
 
 This directory contains forked libraries from
 [Irmin](https://github.com/mirage/irmin) (v3.8) that are used in the
-Octez suite.
+Mavkit suite.
 
 As mentioned in [its own
 README](https://github.com/mirage/irmin/blob/main/README.md), Irmin
@@ -27,9 +27,9 @@ directory is under the
 | `irmin_test_helpers`   | `./test/helpers` | [`src/irmin-test`](https://github.com/mirage/irmin/tree/main/src/irmin-test) |
 
 
-\*`ppx-irmin` is not directly used by Octez, but it is a dependency of `irmin` and `irmin-pack`.
+\*`ppx-irmin` is not directly used by Mavkit, but it is a dependency of `irmin` and `irmin-pack`.
 
-\*`test` is a directory containing **unforked** tests from built for octez
+\*`test` is a directory containing **unforked** tests from built for mavkit
 purposes that are using the `irmin` libraries.
 
 ## To-do before modifying the code
@@ -42,15 +42,15 @@ purposes that are using the `irmin` libraries.
 
 #### Why is the `irmin` directory not inside the `vendors` one?
 
-Libraries in `vendors` cannot be dependencies of released Octez
+Libraries in `vendors` cannot be dependencies of released Mavkit
 packages, because of a technical workaround that may no longer be
 needed. See [this
 thread](https://gitlab.com/tezos/tezos/-/merge_requests/10905#note_1694716679). If
 the build of `vendors` is changed in the future to allow for such
 libraries, it may be pertinent to move the `irmin` directory there.
 
-#### Why are the `irmin` libraries in a separate `octez-internal-libs` package, instead of e.g. `octez-libs`?
+#### Why are the `irmin` libraries in a separate `mavkit-internal-libs` package, instead of e.g. `mavkit-libs`?
 
-The `irmin` libraries need to remain under the ISC license. Most Octez
-packages such as `octez-libs` don't have this license. That's why the
-`octez-internal-libs` package has been created with the ISC license.
+The `irmin` libraries need to remain under the ISC license. Most Mavkit
+packages such as `mavkit-libs` don't have this license. That's why the
+`mavkit-internal-libs` package has been created with the ISC license.

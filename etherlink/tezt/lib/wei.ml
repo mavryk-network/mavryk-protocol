@@ -46,7 +46,7 @@ let to_wei_z z = z
 let of_wei_z z = z
 
 let of_tez z =
-  z |> Tez.mutez_int64 |> Z.of_int64 |> Z.mul Z.(pow (of_int 10) 12) |> to_wei_z
+  z |> Tez.mumav_int64 |> Z.of_int64 |> Z.mul Z.(pow (of_int 10) 12) |> to_wei_z
 
 let of_eth_int eth = Z.of_string @@ Int.to_string eth ^ wei_pow
 
@@ -93,6 +93,6 @@ let to_le_bytes z =
   Bytes.blit bits 0 buffer 0 (Bytes.length bits) ;
   buffer
 
-let truncate_to_mutez z =
+let truncate_to_mumav z =
   let open Z in
   div z (pow (of_int 10) 12) |> to_int

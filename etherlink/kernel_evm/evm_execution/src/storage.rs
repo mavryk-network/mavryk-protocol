@@ -33,6 +33,10 @@ pub mod blocks {
         /// comparing to stored current block number
         #[error("Non sequential block levels. Current: {0}, new one: {1}")]
         NonSequentialBlockLevels(U256, U256),
+
+        /// Some blockhash in storage has wrong number of bytes
+        #[error("Malformed blockhash. Number of bytes: {0}")]
+        MalformedBlockHash(usize),
     }
 
     impl From<RuntimeError> for EvmBlockStorageError {

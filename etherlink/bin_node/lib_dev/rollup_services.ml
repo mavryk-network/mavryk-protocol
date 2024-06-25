@@ -16,7 +16,7 @@
    specific element.
 *)
 
-open Tezos_rpc
+open Mavryk_rpc
 open Path
 
 type error += Lost_connection
@@ -94,8 +94,8 @@ module Block_id = struct
         | Some n -> Ok (Level n)
         | None -> Error "Cannot parse block id")
 
-  let arg : t Tezos_rpc.Arg.t =
-    Tezos_rpc.Arg.make
+  let arg : t Mavryk_rpc.Arg.t =
+    Mavryk_rpc.Arg.make
       ~descr:"An L1 block identifier."
       ~name:"block_id"
       ~construct
@@ -103,10 +103,10 @@ module Block_id = struct
       ()
 end
 
-let state_value_query : state_value_query Tezos_rpc.Query.t =
-  let open Tezos_rpc.Query in
+let state_value_query : state_value_query Mavryk_rpc.Query.t =
+  let open Mavryk_rpc.Query in
   query (fun key -> {key})
-  |+ field "key" Tezos_rpc.Arg.string "" (fun t -> t.key)
+  |+ field "key" Mavryk_rpc.Arg.string "" (fun t -> t.key)
   |> seal
 
 let durable_state_value :
@@ -117,7 +117,7 @@ let durable_state_value :
       unit,
       bytes option )
     Service.service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Retrieve value by key from PVM durable storage. PVM state is taken with \
        respect to the specified block level. Value returned in hex format."
@@ -128,9 +128,9 @@ let durable_state_value :
 
 let batcher_injection :
     ([`POST], unit, unit, unit, string trace, string trace) Service.service =
-  Tezos_rpc.Service.post_service
+  Mavryk_rpc.Service.post_service
     ~description:"Inject messages in the batcher's queue"
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:
       Data_encoding.(
         def "messages" ~description:"Messages to inject" (list (string' Hex)))
@@ -150,35 +150,35 @@ let simulation :
       Simulation.Encodings.simulate_input,
       Data_encoding.json )
     Service.service =
-  Tezos_rpc.Service.post_service
+  Mavryk_rpc.Service.post_service
     ~description:
       "Simulate messages evaluation by the PVM, and find result in durable \
        storage"
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:Simulation.Encodings.simulate_input
     ~output:Data_encoding.Json.encoding
     (open_root / "global" / "block" / "head" / "simulate")
 
 let global_block_watcher :
     ([`GET], unit, unit, unit, unit, Sc_rollup_block.t) Service.service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:"Monitor and streaming the L2 blocks"
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~output:Sc_rollup_block.encoding
     (open_root / "global" / "monitor_blocks")
 
-let global_current_tezos_level :
+let global_current_mavryk_level :
     ([`GET], unit, unit, unit, unit, int32 option) Service.service =
-  Tezos_rpc.Service.get_service
-    ~description:"Current tezos level of the rollup node"
-    ~query:Tezos_rpc.Query.empty
+  Mavryk_rpc.Service.get_service
+    ~description:"Current mavryk level of the rollup node"
+    ~query:Mavryk_rpc.Query.empty
     ~output:Data_encoding.(option int32)
-    (open_root / "global" / "tezos_level")
+    (open_root / "global" / "mavryk_level")
 
 let call_service ~base ?(media_types = Media_type.all_media_types) a b c d =
   let open Lwt_result_syntax in
   let*! res =
-    Tezos_rpc_http_client_unix.RPC_client_unix.call_service
+    Mavryk_rpc_http_client_unix.RPC_client_unix.call_service
       media_types
       ~base
       a
@@ -196,7 +196,7 @@ let make_streamed_call ~rollup_node_endpoint =
   let stream, push = Lwt_stream.create () in
   let on_chunk v = push (Some v) and on_close () = push None in
   let* spill_all =
-    Tezos_rpc_http_client_unix.RPC_client_unix.call_streamed_service
+    Mavryk_rpc_http_client_unix.RPC_client_unix.call_streamed_service
       [Media_type.json]
       ~base:rollup_node_endpoint
       global_block_watcher
@@ -232,7 +232,7 @@ let durable_state_subkeys :
       unit,
       string list option )
     Service.service =
-  Tezos_rpc.Service.get_service
+  Mavryk_rpc.Service.get_service
     ~description:
       "Retrieve subkeys by key from PVM durable storage. PVM state is taken \
        with respect to the specified block level. Value returned in hex \
@@ -269,15 +269,15 @@ let oldest_known_l1_level base =
       return first_available_level
   | Error trace -> fail trace
 
-(** [tezos_level base] asks for the smart rollup node's
+(** [mavryk_level base] asks for the smart rollup node's
     latest l1 level, using the endpoint [base]. *)
-let tezos_level base =
+let mavryk_level base =
   let open Lwt_result_syntax in
   let* level_opt =
     call_service
       ~base
       ~media_types:[Media_type.octet_stream]
-      global_current_tezos_level
+      global_current_mavryk_level
       ()
       ()
       ()

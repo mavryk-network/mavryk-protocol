@@ -3,7 +3,7 @@
 let assert_no_tez_in_transaction
         (_ : unit)
         : unit =
-    assert_with_error (Tezos.get_amount () = 0mutez) Errors.tez_in_transaction_disallowed 
+    assert_with_error (Mavryk.get_amount () = 0mumav) Errors.tez_in_transaction_disallowed 
 
 let assert_voting_power_positive
         (voting_power : nat)

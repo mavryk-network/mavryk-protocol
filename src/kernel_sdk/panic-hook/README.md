@@ -1,4 +1,4 @@
-# Tezos Smart Rollup Kernel SDK - panic hook
+# Mavryk Smart Rollup Kernel SDK - panic hook
 
 The panic hook may be used to capture kernel panics, and write them to the debug log. Execution is then aborted, to ensure no further issues could arise.
 

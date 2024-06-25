@@ -26,7 +26,7 @@ type t = (
 let get_entry   // NOTE: the entrypoint is used to upgrade kernel and sequencer committee as well
         (rollup : address) 
         : t contract =
-    match Tezos.get_contract_opt rollup with
+    match Mavryk.get_contract_opt rollup with
         | None -> failwith Errors.rollup_entrypoint_not_found
         | Some entry -> entry
 
@@ -97,4 +97,4 @@ let decode_upgrade_payload
 let get_activation_timestamp
         (adoption_period_sec : nat)
         : timestamp =
-    Tezos.get_now () + (int adoption_period_sec)
+    Mavryk.get_now () + (int adoption_period_sec)

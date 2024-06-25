@@ -4,7 +4,7 @@ We provide below an example of a systemd service that the user can use
 to run the signer.
 
 For more details please refer to the official documentation about key
-management: https://tezos.gitlab.io/user/key-management.html#signer
+management: https://protocol.mavryk.org/user/key-management.html#signer
 
 ```
 # create a siging key

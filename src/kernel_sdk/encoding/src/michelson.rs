@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-//! Definitions & tezos-encodings for *michelson* data.
+//! Definitions & mavryk-encodings for *michelson* data.
 use micheline::annots::Annotations;
 use nom::branch::alt;
 use nom::combinator::map;
@@ -667,7 +667,7 @@ impl NomReader for MichelsonInt {
 impl NomReader for MichelsonNat {
     fn nom_read(input: &[u8]) -> NomResult<Self> {
         use nom::error::{ErrorKind, ParseError};
-        use tezos_data_encoding::nom::error::*;
+        use mavryk_data_encoding::nom::error::*;
 
         let (rest, i) = nom_read_micheline_int(input)?;
         if i.0 >= 0.into() {

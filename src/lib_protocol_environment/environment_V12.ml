@@ -34,7 +34,7 @@ open Environment_protocol_T
 
 module type T = sig
   include
-    Tezos_protocol_environment_sigs.V12.T
+    Mavryk_protocol_environment_sigs.V12.T
       with type Format.formatter = Format.formatter
        and type 'a Seq.node = 'a Seq.node
        and type 'a Seq.t = unit -> 'a Seq.node
@@ -53,87 +53,87 @@ module type T = sig
        and type Context.cache_value = Environment_context.Context.cache_value
        and type Context_hash.t = Context_hash.t
        and type Context_hash.Version.t = Context_hash.Version.t
-       and type Context.config = Tezos_context_sigs.Config.t
+       and type Context.config = Mavryk_context_sigs.Config.t
        and module Context.Proof = Environment_context.Context.Proof
-       and type Context_binary.t = Tezos_context_memory.Context_binary.t
-       and type Context_binary.tree = Tezos_context_memory.Context_binary.tree
+       and type Context_binary.t = Mavryk_context_memory.Context_binary.t
+       and type Context_binary.tree = Mavryk_context_memory.Context_binary.tree
        and type Protocol_hash.t = Protocol_hash.t
        and type Time.t = Time.Protocol.t
        and type Operation.shell_header = Operation.shell_header
        and type Operation.t = Operation.t
        and type Block_header.shell_header = Block_header.shell_header
        and type Block_header.t = Block_header.t
-       and type 'a RPC_directory.t = 'a Tezos_rpc.Directory.t
+       and type 'a RPC_directory.t = 'a Mavryk_rpc.Directory.t
        and type Ed25519.Public_key_hash.t =
-        Tezos_crypto.Signature.Ed25519.Public_key_hash.t
+        Mavryk_crypto.Signature.Ed25519.Public_key_hash.t
        and type Ed25519.Public_key.t =
-        Tezos_crypto.Signature.Ed25519.Public_key.t
-       and type Ed25519.t = Tezos_crypto.Signature.Ed25519.t
+        Mavryk_crypto.Signature.Ed25519.Public_key.t
+       and type Ed25519.t = Mavryk_crypto.Signature.Ed25519.t
        and type Secp256k1.Public_key_hash.t =
-        Tezos_crypto.Signature.Secp256k1.Public_key_hash.t
+        Mavryk_crypto.Signature.Secp256k1.Public_key_hash.t
        and type Secp256k1.Public_key.t =
-        Tezos_crypto.Signature.Secp256k1.Public_key.t
-       and type Secp256k1.t = Tezos_crypto.Signature.Secp256k1.t
+        Mavryk_crypto.Signature.Secp256k1.Public_key.t
+       and type Secp256k1.t = Mavryk_crypto.Signature.Secp256k1.t
        and type P256.Public_key_hash.t =
-        Tezos_crypto.Signature.P256.Public_key_hash.t
-       and type P256.Public_key.t = Tezos_crypto.Signature.P256.Public_key.t
-       and type P256.t = Tezos_crypto.Signature.P256.t
+        Mavryk_crypto.Signature.P256.Public_key_hash.t
+       and type P256.Public_key.t = Mavryk_crypto.Signature.P256.Public_key.t
+       and type P256.t = Mavryk_crypto.Signature.P256.t
        and type Bls.Public_key_hash.t =
-        Tezos_crypto.Signature.Bls.Public_key_hash.t
-       and type Bls.Public_key.t = Tezos_crypto.Signature.Bls.Public_key.t
-       and type Bls.t = Tezos_crypto.Signature.Bls.t
+        Mavryk_crypto.Signature.Bls.Public_key_hash.t
+       and type Bls.Public_key.t = Mavryk_crypto.Signature.Bls.Public_key.t
+       and type Bls.t = Mavryk_crypto.Signature.Bls.t
        and type Signature.public_key_hash =
-        Tezos_crypto.Signature.V1.public_key_hash
-       and type Signature.public_key = Tezos_crypto.Signature.V1.public_key
-       and type Signature.signature = Tezos_crypto.Signature.V1.signature
-       and type Signature.t = Tezos_crypto.Signature.V1.t
-       and type Signature.watermark = Tezos_crypto.Signature.V1.watermark
+        Mavryk_crypto.Signature.V1.public_key_hash
+       and type Signature.public_key = Mavryk_crypto.Signature.V1.public_key
+       and type Signature.signature = Mavryk_crypto.Signature.V1.signature
+       and type Signature.t = Mavryk_crypto.Signature.V1.t
+       and type Signature.watermark = Mavryk_crypto.Signature.V1.watermark
        and type Micheline.canonical_location = Micheline.canonical_location
        and type 'a Micheline.canonical = 'a Micheline.canonical
        and type Z.t = Z.t
        and type Q.t = Q.t
        and type ('a, 'b) Micheline.node = ('a, 'b) Micheline.node
        and type Data_encoding.json_schema = Data_encoding.json_schema
-       and type ('a, 'b) RPC_path.t = ('a, 'b) Tezos_rpc.Path.t
-       and type RPC_service.meth = Tezos_rpc.Service.meth
+       and type ('a, 'b) RPC_path.t = ('a, 'b) Mavryk_rpc.Path.t
+       and type RPC_service.meth = Mavryk_rpc.Service.meth
        and type (+'m, 'pr, 'p, 'q, 'i, 'o) RPC_service.t =
-        ('m, 'pr, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t
+        ('m, 'pr, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t
        and type Error_monad.shell_tztrace = Error_monad.tztrace
        and type 'a Error_monad.shell_tzresult = ('a, Error_monad.tztrace) result
-       and type Timelock.chest = Tezos_crypto.Timelock.chest
-       and type Timelock.chest_key = Tezos_crypto.Timelock.chest_key
-       and type Timelock.opening_result = Tezos_crypto.Timelock.opening_result
-       and module Sapling = Tezos_sapling.Core.Validator
+       and type Timelock.chest = Mavryk_crypto.Timelock.chest
+       and type Timelock.chest_key = Mavryk_crypto.Timelock.chest_key
+       and type Timelock.opening_result = Mavryk_crypto.Timelock.opening_result
+       and module Sapling = Mavryk_sapling.Core.Validator
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
        and type Bls.Primitive.Fr.t = Bls12_381.Fr.t
-       and type Plonk.proof = Tezos_protocol_environment_structs.V12.Plonk.proof
+       and type Plonk.proof = Mavryk_protocol_environment_structs.V12.Plonk.proof
        and type Plonk.public_parameters =
-        Tezos_protocol_environment_structs.V12.Plonk.verifier_public_parameters
-       and type Dal.parameters = Tezos_crypto_dal.Cryptobox.Verifier.parameters
-       and type Dal.commitment = Tezos_crypto_dal.Cryptobox.Verifier.commitment
+        Mavryk_protocol_environment_structs.V12.Plonk.verifier_public_parameters
+       and type Dal.parameters = Mavryk_crypto_dal.Cryptobox.Verifier.parameters
+       and type Dal.commitment = Mavryk_crypto_dal.Cryptobox.Verifier.commitment
        and type Dal.commitment_proof =
-        Tezos_crypto_dal.Cryptobox.Verifier.commitment_proof
-       and type Dal.page_proof = Tezos_crypto_dal.Cryptobox.Verifier.page_proof
+        Mavryk_crypto_dal.Cryptobox.Verifier.commitment_proof
+       and type Dal.page_proof = Mavryk_crypto_dal.Cryptobox.Verifier.page_proof
        and type Bounded.Non_negative_int32.t =
-        Tezos_base.Bounded.Non_negative_int32.t
-       and type Wasm_2_0_0.version = Tezos_scoru_wasm.Wasm_pvm_state.version
-       and type Wasm_2_0_0.input = Tezos_scoru_wasm.Wasm_pvm_state.input_info
-       and type Wasm_2_0_0.output = Tezos_scoru_wasm.Wasm_pvm_state.output_info
-       and type Wasm_2_0_0.reveal = Tezos_scoru_wasm.Wasm_pvm_state.reveal
+        Mavryk_base.Bounded.Non_negative_int32.t
+       and type Wasm_2_0_0.version = Mavryk_scoru_wasm.Wasm_pvm_state.version
+       and type Wasm_2_0_0.input = Mavryk_scoru_wasm.Wasm_pvm_state.input_info
+       and type Wasm_2_0_0.output = Mavryk_scoru_wasm.Wasm_pvm_state.output_info
+       and type Wasm_2_0_0.reveal = Mavryk_scoru_wasm.Wasm_pvm_state.reveal
        and type Wasm_2_0_0.input_request =
-        Tezos_scoru_wasm.Wasm_pvm_state.input_request
-       and type Wasm_2_0_0.info = Tezos_scoru_wasm.Wasm_pvm_state.info
-       and module Skip_list = Tezos_base.Skip_list
+        Mavryk_scoru_wasm.Wasm_pvm_state.input_request
+       and type Wasm_2_0_0.info = Mavryk_scoru_wasm.Wasm_pvm_state.info
+       and module Skip_list = Mavryk_base.Skip_list
        and type Smart_rollup.Address.t =
-        Tezos_crypto.Hashed.Smart_rollup_address.t
+        Mavryk_crypto.Hashed.Smart_rollup_address.t
        and type Smart_rollup.Commitment_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_commitment_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_commitment_hash.t
        and type Smart_rollup.State_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_state_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_state_hash.t
        and type Smart_rollup.Inbox_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_inbox_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_inbox_hash.t
        and type Smart_rollup.Merkelized_payload_hashes_hash.t =
-        Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
+        Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash.t
 
   type error += Ecoproto_error of Error_monad.error
 
@@ -155,7 +155,7 @@ module type T = sig
        and type application_state = P.application_state
 
   class ['chain, 'block] proto_rpc_context :
-    Tezos_rpc.Context.t
+    Mavryk_rpc.Context.t
     -> (unit, (unit * 'chain) * 'block) RPC_path.t
     -> ['chain * 'block] RPC_context.simple
 
@@ -217,17 +217,17 @@ struct
 
   module Compare = Compare
   module Either = Either
-  module Seq = Tezos_protocol_environment_structs.V12.Seq
-  module List = Tezos_error_monad.TzLwtreslib.List
-  module Array = Tezos_protocol_environment_structs.V12.Array
+  module Seq = Mavryk_protocol_environment_structs.V12.Seq
+  module List = Mavryk_error_monad.TzLwtreslib.List
+  module Array = Mavryk_protocol_environment_structs.V12.Array
   module Char = Char
-  module Bytes = Tezos_base.TzPervasives.Bytes
-  module Hex = Tezos_stdlib.Hex
+  module Bytes = Mavryk_base.TzPervasives.Bytes
+  module Hex = Mavryk_stdlib.Hex
   module String = String
   module Bits = Bits
   module TzEndian = TzEndian
-  module Set = Tezos_error_monad.TzLwtreslib.Set
-  module Map = Tezos_error_monad.TzLwtreslib.Map
+  module Set = Mavryk_error_monad.TzLwtreslib.Set
+  module Map = Mavryk_error_monad.TzLwtreslib.Map
   module Int32 = Int32
   module Int64 = Int64
   module Format = Format
@@ -238,7 +238,7 @@ struct
     | e -> next_classifier e
 
   module Option = struct
-    include Tezos_error_monad.TzLwtreslib.Option
+    include Mavryk_error_monad.TzLwtreslib.Option
 
     (* This as well as the catchers in [Result] and [Error_monad] are different
        from the ones in Lwtreslib/Error Monad in that they also hide the Unix
@@ -253,7 +253,7 @@ struct
   end
 
   module Result = struct
-    include Tezos_error_monad.TzLwtreslib.Result
+    include Mavryk_error_monad.TzLwtreslib.Result
 
     let catch ?(catch_only = fun _ -> true) f =
       catch ~catch_only:(not_a_sys_exc catch_only) f
@@ -266,18 +266,18 @@ struct
   end
 
   module Raw_hashes = struct
-    let sha256 = Tezos_crypto.Hacl.Hash.SHA256.digest
+    let sha256 = Mavryk_crypto.Hacl.Hash.SHA256.digest
 
-    let sha512 = Tezos_crypto.Hacl.Hash.SHA512.digest
+    let sha512 = Mavryk_crypto.Hacl.Hash.SHA512.digest
 
     let blake2b msg =
-      Tezos_crypto.Blake2B.to_bytes (Tezos_crypto.Blake2B.hash_bytes [msg])
+      Mavryk_crypto.Blake2B.to_bytes (Mavryk_crypto.Blake2B.hash_bytes [msg])
 
-    let keccak256 msg = Tezos_crypto.Hacl.Hash.Keccak_256.digest msg
+    let keccak256 msg = Mavryk_crypto.Hacl.Hash.Keccak_256.digest msg
 
-    let sha3_256 msg = Tezos_crypto.Hacl.Hash.SHA3_256.digest msg
+    let sha3_256 msg = Mavryk_crypto.Hacl.Hash.SHA3_256.digest msg
 
-    let sha3_512 msg = Tezos_crypto.Hacl.Hash.SHA3_512.digest msg
+    let sha3_512 msg = Mavryk_crypto.Hacl.Hash.SHA3_512.digest msg
   end
 
   module Z = Z
@@ -285,7 +285,7 @@ struct
   module Lwt = Lwt
 
   module Data_encoding = struct
-    include Tezos_protocol_environment_structs.V12.Data_encoding
+    include Mavryk_protocol_environment_structs.V12.Data_encoding
 
     type tag_size = [`Uint8 | `Uint16]
 
@@ -325,20 +325,20 @@ struct
   end
 
   module Time = Time.Protocol
-  module Ed25519 = Tezos_crypto.Signature.Ed25519
-  module Secp256k1 = Tezos_crypto.Signature.Secp256k1
-  module P256 = Tezos_crypto.Signature.P256
-  module Bls = Tezos_crypto.Signature.Bls
-  module Signature = Tezos_crypto.Signature.V1
-  module Timelock = Tezos_crypto.Timelock
+  module Ed25519 = Mavryk_crypto.Signature.Ed25519
+  module Secp256k1 = Mavryk_crypto.Signature.Secp256k1
+  module P256 = Mavryk_crypto.Signature.P256
+  module Bls = Mavryk_crypto.Signature.Bls
+  module Signature = Mavryk_crypto.Signature.V1
+  module Timelock = Mavryk_crypto.Timelock
   module Vdf = Class_group_vdf.Vdf_self_contained
 
   module S = struct
-    module type T = Tezos_base.S.T
+    module type T = Mavryk_base.S.T
 
-    module type HASHABLE = Tezos_base.S.HASHABLE
+    module type HASHABLE = Mavryk_base.S.HASHABLE
 
-    module type MINIMAL_HASH = Tezos_crypto.Intfs.MINIMAL_HASH
+    module type MINIMAL_HASH = Mavryk_crypto.Intfs.MINIMAL_HASH
 
     module type B58_DATA = sig
       type t
@@ -351,9 +351,9 @@ struct
 
       val of_b58check_opt : string -> t option
 
-      type Tezos_crypto.Base58.data += Data of t
+      type Mavryk_crypto.Base58.data += Data of t
 
-      val b58check_encoding : t Tezos_crypto.Base58.encoding
+      val b58check_encoding : t Mavryk_crypto.Base58.encoding
     end
 
     module type RAW_DATA = sig
@@ -373,7 +373,7 @@ struct
 
       val encoding : t Data_encoding.t
 
-      val rpc_arg : t Tezos_rpc.Arg.t
+      val rpc_arg : t Mavryk_rpc.Arg.t
     end
 
     module type INDEXES_SET = sig
@@ -632,7 +632,7 @@ struct
 
   module Error_core = struct
     include
-      Tezos_error_monad.Core_maker.Make
+      Mavryk_error_monad.Core_maker.Make
         (struct
           let id = Format.asprintf "proto.%s." Param.name
         end)
@@ -653,7 +653,7 @@ struct
             | `Temporary -> "temporary"
 
           let classify = function
-            | `Permanent -> Tezos_error_monad.Error_classification.Permanent
+            | `Permanent -> Mavryk_error_monad.Error_classification.Permanent
             | `Branch -> Branch
             | `Temporary -> Temporary
             | `Outdated -> Outdated
@@ -671,7 +671,7 @@ struct
       Error_core :
         sig
           include
-            Tezos_error_monad.Sig.CORE
+            Mavryk_error_monad.Sig.CORE
               with type error := unwrapped
                and type error_category = error_category
         end)
@@ -687,13 +687,13 @@ struct
     type 'a shell_tzresult = ('a, Error_monad.tztrace) result
 
     include Error_core
-    include Tezos_error_monad.TzLwtreslib.Monad
+    include Mavryk_error_monad.TzLwtreslib.Monad
     include
-      Tezos_error_monad.Monad_maker.Make (Error_core) (TzTrace)
-        (Tezos_error_monad.TzLwtreslib.Monad)
+      Mavryk_error_monad.Monad_maker.Make (Error_core) (TzTrace)
+        (Mavryk_error_monad.TzLwtreslib.Monad)
 
     (* Backwards compatibility additions (dont_wait, trace helpers) *)
-    include Tezos_protocol_environment_structs.V12.Error_monad_infix_globals
+    include Mavryk_protocol_environment_structs.V12.Error_monad_infix_globals
 
     let tzfail e = Lwt.return_error (TzTrace.make e)
 
@@ -741,11 +741,11 @@ struct
       let+ r = Result.catch_s ?catch_only f in
       Result.map_error (fun e -> error_of_exn e) r
 
-    let both_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.both
+    let both_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.both
 
-    let join_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.join
+    let join_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.join
 
-    let all_e = Tezos_error_monad.TzLwtreslib.Monad.Traced_result_syntax.all
+    let all_e = Mavryk_error_monad.TzLwtreslib.Monad.Traced_result_syntax.all
   end
 
   let () =
@@ -769,16 +769,16 @@ struct
   module Operation_list_list_hash = Operation_list_list_hash
   module Context_hash = Context_hash
   module Protocol_hash = Protocol_hash
-  module Blake2B = Tezos_crypto.Blake2B
+  module Blake2B = Mavryk_crypto.Blake2B
   module Fitness = Fitness
   module Operation = Operation
   module Block_header = Block_header
   module Bounded = Bounded
   module Protocol = Protocol
-  module RPC_arg = Tezos_rpc.Arg
-  module RPC_path = Tezos_rpc.Path
-  module RPC_query = Tezos_rpc.Query
-  module RPC_service = Tezos_rpc.Service
+  module RPC_arg = Mavryk_rpc.Arg
+  module RPC_path = Mavryk_rpc.Path
+  module RPC_query = Mavryk_rpc.Query
+  module RPC_service = Mavryk_rpc.Service
 
   module RPC_answer = struct
     type 'o t =
@@ -810,7 +810,7 @@ struct
   end
 
   module RPC_directory = struct
-    include Tezos_rpc.Directory
+    include Mavryk_rpc.Directory
 
     let gen_register dir service handler =
       let open Lwt_syntax in
@@ -938,13 +938,13 @@ struct
       object
         method call_proto_service0 :
           'm 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             t,
             t,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           'pr ->
           'q ->
           'i ->
@@ -952,13 +952,13 @@ struct
 
         method call_proto_service1 :
           'm 'a 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             t,
             t * 'a,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           'pr ->
           'a ->
           'q ->
@@ -967,13 +967,13 @@ struct
 
         method call_proto_service2 :
           'm 'a 'b 'q 'i 'o.
-          ( ([< Tezos_rpc.Service.meth] as 'm),
+          ( ([< Mavryk_rpc.Service.meth] as 'm),
             t,
             (t * 'a) * 'b,
             'q,
             'i,
             'o )
-          Tezos_rpc.Service.t ->
+          Mavryk_rpc.Service.t ->
           'pr ->
           'a ->
           'b ->
@@ -1019,7 +1019,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call0 s ctxt block q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -1027,7 +1027,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call1 s ctxt block a1 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -1035,7 +1035,7 @@ struct
       let open Lwt_syntax in
       let* r = make_call2 s ctxt block a1 a2 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
 
@@ -1043,12 +1043,12 @@ struct
       let open Lwt_syntax in
       let* r = make_call3 s ctxt block a1 a2 a3 q i in
       match r with
-      | Error [Tezos_rpc.Context.Not_found _] -> Lwt.return_ok None
+      | Error [Mavryk_rpc.Context.Not_found _] -> Lwt.return_ok None
       | Error _ as v -> Lwt.return v
       | Ok v -> Lwt.return_ok (Some v)
   end
 
-  module Sapling = Tezos_sapling.Core.Validator
+  module Sapling = Mavryk_sapling.Core.Validator
 
   module Micheline = struct
     include Micheline
@@ -1097,7 +1097,7 @@ struct
   end
 
   module Base58 = struct
-    include Tezos_crypto.Base58
+    include Mavryk_crypto.Base58
 
     let simple_encode enc s = simple_encode enc s
 
@@ -1114,16 +1114,16 @@ struct
     include Context
     include Environment_context.V12
 
-    module type PROOF_ENCODING = Tezos_context_sigs.Context.PROOF_ENCODING
+    module type PROOF_ENCODING = Mavryk_context_sigs.Context.PROOF_ENCODING
 
     module Proof_encoding =
-      Tezos_context_merkle_proof_encoding.Merkle_proof_encoding
+      Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding
 
     let complete ctxt s = Base58.complete ctxt s
   end
 
   module Context_binary = struct
-    include Tezos_context_memory.Context_binary
+    include Mavryk_context_memory.Context_binary
 
     module Tree = struct
       type nonrec tree = tree
@@ -1134,56 +1134,56 @@ struct
 
       type value = bytes
 
-      include Tezos_context_memory.Context_binary.Tree
+      include Mavryk_context_memory.Context_binary.Tree
     end
   end
 
   module Wasm_2_0_0 = struct
-    type input = Tezos_scoru_wasm.Wasm_pvm_state.input_info = {
+    type input = Mavryk_scoru_wasm.Wasm_pvm_state.input_info = {
       inbox_level : Bounded.Non_negative_int32.t;
       message_counter : Z.t;
     }
 
-    type output = Tezos_scoru_wasm.Wasm_pvm_state.output_info = {
+    type output = Mavryk_scoru_wasm.Wasm_pvm_state.output_info = {
       outbox_level : Bounded.Non_negative_int32.t;
       message_index : Z.t;
     }
 
-    type reveal = Tezos_scoru_wasm.Wasm_pvm_state.reveal =
+    type reveal = Mavryk_scoru_wasm.Wasm_pvm_state.reveal =
       | Reveal_raw of string
 
-    type input_request = Tezos_scoru_wasm.Wasm_pvm_state.input_request =
+    type input_request = Mavryk_scoru_wasm.Wasm_pvm_state.input_request =
       | No_input_required
       | Input_required
       | Reveal_required of reveal
 
-    type info = Tezos_scoru_wasm.Wasm_pvm_state.info = {
+    type info = Mavryk_scoru_wasm.Wasm_pvm_state.info = {
       current_tick : Z.t;
       last_input_read : input option;
       input_request : input_request;
     }
 
-    type version = Tezos_scoru_wasm.Wasm_pvm_state.version
+    type version = Mavryk_scoru_wasm.Wasm_pvm_state.version
 
-    let v4 = Tezos_scoru_wasm.Wasm_pvm_state.V4
+    let v4 = Mavryk_scoru_wasm.Wasm_pvm_state.V4
 
     module Make
         (Tree : Context.TREE with type key = string list and type value = bytes) =
     struct
-      type Tezos_tree_encoding.tree_instance += PVM_tree of Tree.tree
+      type Mavryk_tree_encoding.tree_instance += PVM_tree of Tree.tree
 
-      include Tezos_scoru_wasm.Wasm_pvm.Make (struct
+      include Mavryk_scoru_wasm.Wasm_pvm.Make (struct
         include Tree
 
         let select = function
           | PVM_tree t -> t
-          | _ -> raise Tezos_tree_encoding.Incorrect_tree_type
+          | _ -> raise Mavryk_tree_encoding.Incorrect_tree_type
 
         let wrap t = PVM_tree t
       end)
 
       let compute_step =
-        compute_step ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+        compute_step ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
     end
   end
 
@@ -1327,7 +1327,7 @@ struct
     end
   end
 
-  class ['chain, 'block] proto_rpc_context (t : Tezos_rpc.Context.t)
+  class ['chain, 'block] proto_rpc_context (t : Mavryk_rpc.Context.t)
     (prefix : (unit, (unit * 'chain) * 'block) RPC_path.t) =
     object
       method call_proto_service0
@@ -1411,7 +1411,7 @@ struct
 
   class ['block] proto_rpc_context_of_directory conv dir :
     ['block] RPC_context.simple =
-    let lookup = new Tezos_rpc.Context.of_directory dir in
+    let lookup = new Mavryk_rpc.Context.of_directory dir in
     object
       method call_proto_service0
           : 'm 'q 'i 'o.
@@ -1489,10 +1489,10 @@ struct
     end
 
   module Equality_witness = Environment_context.Equality_witness
-  module Plonk = Tezos_protocol_environment_structs.V12.Plonk
+  module Plonk = Mavryk_protocol_environment_structs.V12.Plonk
 
   module Dal = struct
-    include Tezos_crypto_dal.Cryptobox.Verifier
+    include Mavryk_crypto_dal.Cryptobox.Verifier
 
     let verify_page t commitment ~page_index page page_proof =
       match verify_page t commitment ~page_index page page_proof with
@@ -1506,12 +1506,12 @@ struct
   module Skip_list = Skip_list
 
   module Smart_rollup = struct
-    module Address = Tezos_crypto.Hashed.Smart_rollup_address
-    module Commitment_hash = Tezos_crypto.Hashed.Smart_rollup_commitment_hash
-    module State_hash = Tezos_crypto.Hashed.Smart_rollup_state_hash
-    module Inbox_hash = Tezos_crypto.Hashed.Smart_rollup_inbox_hash
+    module Address = Mavryk_crypto.Hashed.Smart_rollup_address
+    module Commitment_hash = Mavryk_crypto.Hashed.Smart_rollup_commitment_hash
+    module State_hash = Mavryk_crypto.Hashed.Smart_rollup_state_hash
+    module Inbox_hash = Mavryk_crypto.Hashed.Smart_rollup_inbox_hash
 
     module Merkelized_payload_hashes_hash =
-      Tezos_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
+      Mavryk_crypto.Hashed.Smart_rollup_merkelized_payload_hashes_hash
   end
 end

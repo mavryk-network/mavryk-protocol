@@ -401,7 +401,7 @@ let create ?name ?runner ?(mode = Proxy {devmode = false}) ?data_dir ?rpc_addr
   in
   let evm_node =
     create
-      ~path:(Uses.path Constant.octez_evm_node)
+      ~path:(Uses.path Constant.mavkit_evm_node)
       ~name
       {
         arguments;
@@ -569,7 +569,7 @@ let run ?(wait = true) ?(extra_arguments = []) evm_node =
 let spawn_command evm_node args =
   Process.spawn
     ?runner:evm_node.persistent_state.runner
-    (Uses.path Constant.octez_evm_node)
+    (Uses.path Constant.mavkit_evm_node)
   @@ args
 
 let spawn_run ?(extra_arguments = []) evm_node =
@@ -694,20 +694,20 @@ let upgrade_payload ~root_hash ~activation_timestamp =
       activation_timestamp;
     ]
   in
-  let process = Process.spawn (Uses.path Constant.octez_evm_node) @@ args in
+  let process = Process.spawn (Uses.path Constant.mavkit_evm_node) @@ args in
   let* payload = Process.check_and_read_stdout process in
   return (String.trim payload)
 
 let transform_dump ~dump_json ~dump_rlp =
   let args = ["transform"; "dump"; dump_json; "to"; "rlp"; dump_rlp] in
-  let process = Process.spawn (Uses.path Constant.octez_evm_node) @@ args in
+  let process = Process.spawn (Uses.path Constant.mavkit_evm_node) @@ args in
   Process.check process
 
 let reset evm_node ~l2_level =
   let args =
     ["reset"; "at"; string_of_int l2_level; "--force"] @ data_dir evm_node
   in
-  let process = Process.spawn (Uses.path Constant.octez_evm_node) @@ args in
+  let process = Process.spawn (Uses.path Constant.mavkit_evm_node) @@ args in
   Process.check process
 
 let sequencer_upgrade_payload ?(devmode = true) ?client ~public_key
@@ -731,7 +731,7 @@ let sequencer_upgrade_payload ?(devmode = true) ?client ~public_key
     ]
   in
   let process =
-    Process.spawn (Uses.path Constant.octez_evm_node)
+    Process.spawn (Uses.path Constant.mavkit_evm_node)
     @@ args
     @ Cli_arg.optional_arg
         "wallet-dir"
@@ -756,7 +756,7 @@ let chunk_data ?(devmode = true) ~rollup_address ?sequencer_key ?timestamp
   let number = Cli_arg.optional_arg "number" string_of_int number in
   let devmode = Cli_arg.optional_switch "devmode" devmode in
   let process =
-    Process.spawn (Uses.path Constant.octez_evm_node)
+    Process.spawn (Uses.path Constant.mavkit_evm_node)
     @@ args @ rollup_address @ sequencer @ timestamp @ parent_hash @ number
     @ devmode
     @ Cli_arg.optional_arg

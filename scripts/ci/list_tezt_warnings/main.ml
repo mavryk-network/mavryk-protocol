@@ -22,7 +22,7 @@ let project =
     ~section
     ~long:"project"
     ~description:"GitLab project name."
-    "mavryk-network/mavryk-protocol"
+    "tezos/tezos"
 
 let pipeline =
   Clap.mandatory_int
@@ -31,7 +31,7 @@ let pipeline =
     ~description:"ID of the pipeline to fetch logs from."
     ()
 
-let tezt_job_name_rex = rex "^tezt(?:-greedy-[34]k)? \\d+/\\d+$"
+let tezt_job_name_rex = rex "^tezt-?([^ ]*) (\\d+)/\\d+$"
 
 let warn_rex =
   rex "^\\[\\d+:\\d+:\\d+\\.\\d+\\] \027\\[31m\\[warn\\] (.*)\027\\[0m$"

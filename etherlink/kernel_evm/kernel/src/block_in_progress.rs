@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
+// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
@@ -43,6 +44,10 @@ pub struct BlockInProgress {
     /// index for next transaction
     pub index: u32,
     /// gas price for transactions in the block being created
+    // TODO: https://gitlab.com/tezos/tezos/-/issues/6810
+    //       this seems like dead code, can we remove it?
+    //       (ensure that BlockInProgress encoding doesn't need
+    //        backwards compatibility).
     pub gas_price: U256,
     /// hash of the parent
     pub parent_hash: H256,
@@ -202,31 +207,23 @@ impl BlockInProgress {
         )
     }
 
-    pub fn from_queue_element(
-        proposal: crate::blueprint::QueueElement,
+    pub fn from_blueprint(
+        blueprint: crate::blueprint::Blueprint,
         current_block_number: U256,
         parent_hash: H256,
         constants: &BlockConstants,
         tick_counter: u64,
     ) -> BlockInProgress {
-        match proposal {
-            crate::blueprint::QueueElement::Blueprint(proposal) => {
-                // proposal is turn into a ring to allow poping from the front
-                let ring = proposal.transactions.into();
-                BlockInProgress::new_with_ticks(
-                    current_block_number,
-                    parent_hash,
-                    constants.gas_price,
-                    ring,
-                    tick_counter,
-                    proposal.timestamp,
-                )
-            }
-            crate::blueprint::QueueElement::BlockInProgress(mut bip) => {
-                bip.estimated_ticks = tick_counter;
-                *bip
-            }
-        }
+        // blueprint is turn into a ring to allow popping from the front
+        let ring = blueprint.transactions.into();
+        BlockInProgress::new_with_ticks(
+            current_block_number,
+            parent_hash,
+            constants.base_fee_per_gas(),
+            ring,
+            tick_counter,
+            blueprint.timestamp,
+        )
     }
 
     fn add_gas(&mut self, gas: U256) -> Result<(), Error> {
@@ -333,17 +330,12 @@ impl BlockInProgress {
         self.tx_queue.pop_front()
     }
 
-    pub fn has_tx(&self) -> bool {
-        !self.tx_queue.is_empty()
+    pub fn repush_tx(&mut self, tx: Transaction) {
+        self.tx_queue.push_front(tx)
     }
 
-    pub fn would_overflow(&self) -> bool {
-        match self.tx_queue.front() {
-            Some(transaction) => {
-                tick_model::estimate_would_overflow(self.estimated_ticks, transaction)
-            }
-            None => false, // should not happen, but false is a safe value anyway
-        }
+    pub fn has_tx(&self) -> bool {
+        !self.tx_queue.is_empty()
     }
 
     pub fn make_receipt(
@@ -363,7 +355,6 @@ impl BlockInProgress {
 
         let &mut Self {
             number: block_number,
-            gas_price: effective_gas_price,
             cumulative_gas,
             logs_offset,
             ..
@@ -471,7 +462,7 @@ mod tests {
                 H256::from([i; 32]),
                 H256::from([i; 32]),
             )),
-        }
+        )
     }
 
     fn dummy_tx_eth(i: u8) -> Transaction {
@@ -484,7 +475,6 @@ mod tests {
     fn dummy_tx_deposit(i: u8) -> Transaction {
         let deposit = Deposit {
             amount: U256::from(i),
-            gas_price: U256::from(i),
             receiver: H160::from([i; 20]),
         };
         Transaction {

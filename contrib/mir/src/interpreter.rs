@@ -15,7 +15,7 @@ use num_integer::Integer;
 use num_traits::{Signed, ToPrimitive, Zero};
 use std::ops::{Shl, Shr};
 use std::rc::Rc;
-use mavryk_crypto_rs::blake2b::digest as blake2bdigest;
+use tezos_crypto_rs::blake2b::digest as blake2bdigest;
 use typed_arena::Arena;
 
 use crate::ast::big_map::{BigMap, LazyStorageError};
@@ -33,12 +33,12 @@ pub enum InterpretError<'a> {
     /// Interpreter ran out of gas.
     #[error(transparent)]
     OutOfGas(#[from] OutOfGas),
-    /// When performing mumav arithmetic, an overflow occurred.
-    #[error("mumav overflow")]
-    MumavOverflow,
-    /// During a type conversion, a negative mumav was found.
-    #[error("negative mumav")]
-    NegativeMumav,
+    /// When performing mutez arithmetic, an overflow occurred.
+    #[error("mutez overflow")]
+    MutezOverflow,
+    /// During a type conversion, a negative mutez was found.
+    #[error("negative mutez")]
+    NegativeMutez,
     /// Interpreter reached a `FAILWITH` instruction.
     #[error("failed with: {1:?} of type {0:?}")]
     FailedWith(Type, TypedValue<'a>),
@@ -199,12 +199,12 @@ fn interpret_one<'a>(
                 let sum = BigInt::from(o1) + o2;
                 stack.push(V::Int(sum));
             }
-            overloads::Add::MumavMumav => {
-                let o1 = pop!(V::Mumav);
-                let o2 = pop!(V::Mumav);
-                ctx.gas.consume(interpret_cost::ADD_MAV)?;
-                let sum = o1.checked_add(o2).ok_or(InterpretError::MumavOverflow)?;
-                stack.push(V::Mumav(sum));
+            overloads::Add::MutezMutez => {
+                let o1 = pop!(V::Mutez);
+                let o2 = pop!(V::Mutez);
+                ctx.gas.consume(interpret_cost::ADD_TEZ)?;
+                let sum = o1.checked_add(o2).ok_or(InterpretError::MutezOverflow)?;
+                stack.push(V::Mutez(sum));
             }
             overloads::Add::Bls12381Fr => {
                 let o1 = pop!(V::Bls12381Fr);
@@ -308,19 +308,19 @@ fn interpret_one<'a>(
                 let res = x1 * x2;
                 stack.push(V::Int(res));
             }
-            overloads::Mul::MumavNat => {
-                ctx.gas.consume(interpret_cost::MUL_MAV_NAT)?;
-                let x1 = pop!(V::Mumav);
-                let x2 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MumavOverflow)?;
-                let res = x1.checked_mul(x2).ok_or(InterpretError::MumavOverflow)?;
-                stack.push(V::Mumav(res));
+            overloads::Mul::MutezNat => {
+                ctx.gas.consume(interpret_cost::MUL_TEZ_NAT)?;
+                let x1 = pop!(V::Mutez);
+                let x2 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MutezOverflow)?;
+                let res = x1.checked_mul(x2).ok_or(InterpretError::MutezOverflow)?;
+                stack.push(V::Mutez(res));
             }
-            overloads::Mul::NatMumav => {
-                ctx.gas.consume(interpret_cost::MUL_NAT_MAV)?;
-                let x1 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MumavOverflow)?;
-                let x2 = pop!(V::Mumav);
-                let res = x1.checked_mul(x2).ok_or(InterpretError::MumavOverflow)?;
-                stack.push(V::Mumav(res));
+            overloads::Mul::NatMutez => {
+                ctx.gas.consume(interpret_cost::MUL_NAT_TEZ)?;
+                let x1 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MutezOverflow)?;
+                let x2 = pop!(V::Mutez);
+                let res = x1.checked_mul(x2).ok_or(InterpretError::MutezOverflow)?;
+                stack.push(V::Mutez(res));
             }
             overloads::Mul::Bls12381G1Bls12381Fr => {
                 ctx.gas.consume(interpret_cost::MUL_BLS_G1)?;
@@ -484,10 +484,10 @@ fn interpret_one<'a>(
                     }
                 }
             }
-            overloads::EDiv::MumavNat => {
-                let x1 = pop!(V::Mumav);
+            overloads::EDiv::MutezNat => {
+                let x1 = pop!(V::Mutez);
                 let x2 = pop!(V::Nat);
-                ctx.gas.consume(interpret_cost::EDIV_MAV_NAT)?;
+                ctx.gas.consume(interpret_cost::EDIV_TEZ_NAT)?;
                 if x2 == BigUint::zero() {
                     stack.push(V::Option(None));
                 } else {
@@ -496,27 +496,27 @@ fn interpret_one<'a>(
                         Some(x2_i64) => {
                             let (quotient, remainder) = Integer::div_rem(&x1, &x2_i64);
                             stack.push(V::new_option(Some(V::new_pair(
-                                V::Mumav(quotient),
-                                V::Mumav(remainder),
+                                V::Mutez(quotient),
+                                V::Mutez(remainder),
                             ))));
                         }
                         _ => {
-                            stack.push(V::new_option(Some(V::new_pair(V::Mumav(0), V::Mumav(x1)))));
+                            stack.push(V::new_option(Some(V::new_pair(V::Mutez(0), V::Mutez(x1)))));
                         }
                     }
                 }
             }
-            overloads::EDiv::MumavMumav => {
-                let x1 = pop!(V::Mumav);
-                let x2 = pop!(V::Mumav);
-                ctx.gas.consume(interpret_cost::EDIV_MAV_MAV)?;
+            overloads::EDiv::MutezMutez => {
+                let x1 = pop!(V::Mutez);
+                let x2 = pop!(V::Mutez);
+                ctx.gas.consume(interpret_cost::EDIV_TEZ_TEZ)?;
                 if x2 == 0 {
                     stack.push(V::Option(None));
                 } else {
                     let (quotient, remainder) = Integer::div_rem(&x1, &x2);
                     stack.push(V::new_option(Some(V::new_pair(
-                        V::Nat(BigUint::try_from(quotient).unwrap()), // cannot fail because `x1` and `x2` are of Mumav type and thus non-negative
-                        V::Mumav(remainder),
+                        V::Nat(BigUint::try_from(quotient).unwrap()), // cannot fail because `x1` and `x2` are of Mutez type and thus non-negative
+                        V::Mutez(remainder),
                     ))));
                 }
             }
@@ -640,12 +640,12 @@ fn interpret_one<'a>(
                 stack.push(V::Bytes(result));
             }
         },
-        I::SubMumav => {
-            ctx.gas.consume(interpret_cost::SUB_MUMAV)?;
-            let v1 = pop!(V::Mumav);
-            let v2 = pop!(V::Mumav);
+        I::SubMutez => {
+            ctx.gas.consume(interpret_cost::SUB_MUTEZ)?;
+            let v1 = pop!(V::Mutez);
+            let v2 = pop!(V::Mutez);
             if v1 >= v2 {
-                stack.push(V::new_option(Some(V::Mumav(v1 - v2))));
+                stack.push(V::new_option(Some(V::Mutez(v1 - v2))));
             } else {
                 stack.push(V::Option(None));
             }
@@ -1111,7 +1111,7 @@ fn interpret_one<'a>(
         }
         I::Amount => {
             ctx.gas.consume(interpret_cost::AMOUNT)?;
-            stack.push(V::Mumav(ctx.amount));
+            stack.push(V::Mutez(ctx.amount));
         }
         I::Nil => {
             ctx.gas.consume(interpret_cost::NIL)?;
@@ -1345,7 +1345,7 @@ fn interpret_one<'a>(
             ctx.gas.consume(interpret_cost::PACK)?;
             let v = pop!();
             let arena = Arena::new();
-            // In the Mavryk implementation they also charge gas for the pass
+            // In the Tezos implementation they also charge gas for the pass
             // that strips locations. We don't have it.
             let mich = v.into_micheline_optimized_legacy(&arena);
             ctx.gas
@@ -1372,14 +1372,14 @@ fn interpret_one<'a>(
         }
         I::TransferTokens => {
             let param = pop!();
-            let mumav_amount = pop!(V::Mumav);
+            let mutez_amount = pop!(V::Mutez);
             let contract_address = pop!(V::Contract);
             let counter = ctx.operation_counter();
             ctx.gas.consume(interpret_cost::TRANSFER_TOKENS)?;
             stack.push(V::new_operation(
                 Operation::TransferTokens(TransferTokens {
                     param,
-                    amount: mumav_amount,
+                    amount: mutez_amount,
                     destination_address: contract_address,
                 }),
                 counter,
@@ -1601,7 +1601,7 @@ fn interpret_one<'a>(
         }
         I::Balance => {
             ctx.gas.consume(interpret_cost::BALANCE)?;
-            stack.push(V::Mumav(ctx.balance));
+            stack.push(V::Mutez(ctx.balance));
         }
         I::Contract(typ, ep) => {
             ctx.gas.consume(interpret_cost::CONTRACT)?;
@@ -1695,7 +1695,7 @@ fn interpret_one<'a>(
             let opt_keyhash = pop!(V::Option)
                 .as_ref()
                 .map(|keyhash| irrefutable_match!(keyhash.as_ref(); V::KeyHash).clone());
-            let amount = pop!(V::Mumav);
+            let amount = pop!(V::Mutez);
             let storage = pop!();
             let origination_counter = ctx.origination_counter();
             stack.push(TypedValue::Address(compute_contract_address(
@@ -1719,7 +1719,7 @@ fn interpret_one<'a>(
 }
 
 fn compute_contract_address(operation_group_hash: &[u8; 32], o_index: u32) -> Address {
-    use mavryk_crypto_rs::hash::{ContractKt1Hash, HashTrait};
+    use tezos_crypto_rs::hash::{ContractKt1Hash, HashTrait};
     let mut input: [u8; 36] = [0; 36];
     input[..32].copy_from_slice(operation_group_hash);
     // append bytes representing o_index
@@ -1924,41 +1924,41 @@ mod interpreter_tests {
     }
 
     #[test]
-    fn test_add_mumav() {
-        let mut stack = stk![V::Mumav(2i64.pow(62)), V::Mumav(20)];
+    fn test_add_mutez() {
+        let mut stack = stk![V::Mutez(2i64.pow(62)), V::Mutez(20)];
         let mut ctx = Ctx::default();
-        assert!(interpret_one(&Add(overloads::Add::MumavMumav), &mut ctx, &mut stack).is_ok());
+        assert!(interpret_one(&Add(overloads::Add::MutezMutez), &mut ctx, &mut stack).is_ok());
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 20);
-        assert_eq!(stack, stk![V::Mumav(2i64.pow(62) + 20)]);
+        assert_eq!(stack, stk![V::Mutez(2i64.pow(62) + 20)]);
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MumavMumav),
+                &Add(overloads::Add::MutezMutez),
                 &mut ctx,
-                &mut stk![V::Mumav(2i64.pow(62)), V::Mumav(2i64.pow(62))]
+                &mut stk![V::Mutez(2i64.pow(62)), V::Mutez(2i64.pow(62))]
             ),
-            Err(InterpretError::MumavOverflow)
+            Err(InterpretError::MutezOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MumavMumav),
+                &Add(overloads::Add::MutezMutez),
                 &mut ctx,
                 &mut stk![
-                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap()),
-                    V::Mumav(1)
+                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap()),
+                    V::Mutez(1)
                 ]
             ),
-            Err(InterpretError::MumavOverflow)
+            Err(InterpretError::MutezOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MumavMumav),
+                &Add(overloads::Add::MutezMutez),
                 &mut ctx,
                 &mut stk![
-                    V::Mumav(1),
-                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap())
+                    V::Mutez(1),
+                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap())
                 ]
             ),
-            Err(InterpretError::MumavOverflow)
+            Err(InterpretError::MutezOverflow)
         );
     }
 
@@ -2478,7 +2478,7 @@ mod interpreter_tests {
             assert!(interpret_one(&Int(overloads::Int::Bytes), &mut ctx, &mut stack).is_ok());
             assert_eq!(stack, expected_stack);
         }
-        // checked against mavkit-client
+        // checked against octez-client
         test("", 0);
         test("00", 0);
         test("0000", 0);
@@ -2503,7 +2503,7 @@ mod interpreter_tests {
             assert!(interpret_one(&Nat, &mut ctx, &mut stack).is_ok());
             assert_eq!(stack, expected_stack);
         }
-        // checked against mavkit-client
+        // checked against octez-client
         test("", 0u32);
         test("00", 0u32);
         test("0000", 0u32);
@@ -2531,7 +2531,7 @@ mod interpreter_tests {
                 assert!(interpret_one(&Bytes(overloads::Bytes::Nat), &mut ctx, &mut stack).is_ok());
                 assert_eq!(stack, expected_stack);
             }
-            // checked against mavkit-client
+            // checked against octez-client
             test("", 0u32);
             test("01", 1u32);
             test("0100", 256u32);
@@ -2551,7 +2551,7 @@ mod interpreter_tests {
                 assert!(interpret_one(&Bytes(overloads::Bytes::Int), &mut ctx, &mut stack).is_ok());
                 assert_eq!(stack, expected_stack);
             }
-            // checked against mavkit-client
+            // checked against octez-client
             test("", 0);
             test("01", 1);
             test("0100", 256);
@@ -3359,7 +3359,7 @@ mod interpreter_tests {
         let mut ctx = Ctx::default();
         ctx.amount = 100500;
         assert_eq!(interpret(&[Amount], &mut ctx, &mut stack), Ok(()));
-        assert_eq!(stack, stk![V::Mumav(100500)]);
+        assert_eq!(stack, stk![V::Mutez(100500)]);
         assert_eq!(
             ctx.gas.milligas(),
             Gas::default().milligas() - interpret_cost::INTERPRET_RET - interpret_cost::AMOUNT,
@@ -4510,7 +4510,7 @@ mod interpreter_tests {
         };
         let stk = &mut stk![
             V::Contract(tt.destination_address.clone()),
-            V::Mumav(tt.amount),
+            V::Mutez(tt.amount),
             tt.param.clone()
         ];
         let ctx = &mut Ctx::default();
@@ -5154,7 +5154,7 @@ mod interpreter_tests {
         let mut stack = stk![];
         let start_milligas = ctx.gas.milligas();
         assert_eq!(interpret(&[Balance], &mut ctx, &mut stack), Ok(()));
-        assert_eq!(stack, stk![V::Mumav(70),]);
+        assert_eq!(stack, stk![V::Mutez(70),]);
         assert_eq!(
             start_milligas - ctx.gas.milligas(),
             interpret_cost::BALANCE + interpret_cost::INTERPRET_RET
@@ -5775,8 +5775,8 @@ mod interpreter_tests {
             test_nats!(NatInt, V::nat, V::int, V::Int);
             test_nats!(IntNat, V::int, V::nat, V::Int);
             test_nats!(IntInt, V::int, V::int, V::Int);
-            test_nats!(MumavNat, V::Mumav, V::nat, V::Mumav);
-            test_nats!(NatMumav, V::nat, V::Mumav, V::Mumav);
+            test_nats!(MutezNat, V::Mutez, V::nat, V::Mutez);
+            test_nats!(NatMutez, V::nat, V::Mutez, V::Mutez);
         }
         mod negatives {
             use super::*;
@@ -6373,12 +6373,12 @@ mod interpreter_tests {
     }
 
     #[test]
-    fn test_sub_mumav() {
+    fn test_sub_mutez() {
         fn test(v1: i64, v2: i64, res: Option<i64>) {
-            let mut stack = stk![V::Mumav(v2), V::Mumav(v1)];
+            let mut stack = stk![V::Mutez(v2), V::Mutez(v1)];
             let ctx = &mut Ctx::default();
-            assert_eq!(interpret_one(&SubMumav, ctx, &mut stack), Ok(()));
-            assert_eq!(stack, stk![V::new_option(res.map(V::Mumav))]);
+            assert_eq!(interpret_one(&SubMutez, ctx, &mut stack), Ok(()));
+            assert_eq!(stack, stk![V::new_option(res.map(V::Mutez))]);
             // assert some gas is consumed, exact values are subject to change
             assert!(Ctx::default().gas.milligas() > ctx.gas.milligas());
         }
@@ -6460,7 +6460,7 @@ mod interpreter_tests {
         );
         let mut stack = stk![
             TypedValue::Unit,
-            TypedValue::Mumav(100),
+            TypedValue::Mutez(100),
             TypedValue::new_option(None)
         ];
         let start_milligas = ctx.gas.milligas();
@@ -6481,7 +6481,7 @@ mod interpreter_tests {
 
     #[test]
     fn contract_address_computation() {
-        use mavryk_crypto_rs::hash::OperationListHash;
+        use tezos_crypto_rs::hash::OperationListHash;
 
         assert_eq!(
             compute_contract_address(

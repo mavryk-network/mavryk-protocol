@@ -1,4 +1,4 @@
-from pytezos.client import PyTezosClient
+from pymavryk.client import PyMavrykClient
 from tests.base import BaseTestCase
 from tests.helpers.contracts.governance_base import YEA_VOTE
 from tests.helpers.contracts.kernel_governance import KernelGovernance
@@ -67,7 +67,7 @@ class KernelGovernanceTriggerKernelUpgradeTestCase(BaseTestCase):
         kernel_root_hash = bytes.fromhex('020202020202020202020202020202020202020202020202020202020202020202')
         test = self.prepare_last_winner(kernel_root_hash)
         governance : KernelGovernance = test['governance']
-        baker : PyTezosClient = test['baker']
+        baker : PyMavrykClient = test['baker']
 
         governance.using(baker).trigger_kernel_upgrade(rollup_mock1.contract.address).send()
         self.bake_blocks(10)
@@ -110,7 +110,7 @@ class KernelGovernanceTriggerKernelUpgradeTestCase(BaseTestCase):
         kernel_root_hash = bytes.fromhex('020202020202020202020202020202020202020202020202020202020202020202')
         test = self.prepare_last_winner(kernel_root_hash)
         governance : KernelGovernance = test['governance']
-        baker : PyTezosClient = test['baker']
+        baker : PyMavrykClient = test['baker']
 
         payload_pattern = rf'^EBA1{kernel_root_hash.hex()}88[\da-f]{{16}}$'
         assert not re.match(payload_pattern, rollup_mock.contract.storage().hex(), re.IGNORECASE)

@@ -1,4 +1,4 @@
-Transactional storage for Tezos Smart Rollup kernels.
+Transactional storage for Mavryk Smart Rollup kernels.
 
 This crate supports dealing with objects for updating storage.
 All objects are stored in durable storage.

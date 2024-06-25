@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -8,16 +8,16 @@ script_dir="$(dirname "$ci_dir")"
 opam_repository_fork="git@github.com:tezos/opam-repository"
 opam_dir="opam-repository"
 
-log () {
-    echo '\e[1m'"$1"'\e[0m'
+log() {
+  printf '\e[1m%s\e[0m' "$1"
 }
 
-# shellcheck source=./scripts/ci/mavkit-release.sh
-. "$ci_dir/mavkit-release.sh"
+# shellcheck source=./scripts/ci/octez-release.sh
+. "$ci_dir/octez-release.sh"
 
 # set up ssh credentials to access github
 mkdir -p "$HOME/.ssh"
-cp "$MAVRYK_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
+cp "$TEZOS_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
 cat "$GITHUB_SSH_HOST_KEYS" >> "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/id_rsa"
@@ -27,16 +27,16 @@ log "Done setting up credentials."
 # call opam-release.sh with the correct arguments
 echo "$script_dir/opam-release.sh" \
   "$opam_release_tag" \
-  "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/$CI_COMMIT_TAG/$gitlab_mavkit_source_package_name.tar.gz" \
+  "https://gitlab.com/tezos/tezos/-/archive/$CI_COMMIT_TAG/$gitlab_octez_source_package_name.tar.gz" \
   "$opam_dir"
 
 "$script_dir/opam-release.sh" \
   "$opam_release_tag" \
-  "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/$CI_COMMIT_TAG/$gitlab_mavkit_source_package_name.tar.gz" \
+  "https://gitlab.com/tezos/tezos/-/archive/$CI_COMMIT_TAG/$gitlab_octez_source_package_name.tar.gz" \
   "$opam_dir"
 
 # Matches the corresponding variable in /scripts/opam-release.sh.
-branch_name="mavkit-$(echo "$opam_release_tag" | tr '~' -)"
+branch_name="octez-$(echo "$opam_release_tag" | tr '~' -)"
 
 log "While we're here, update master on the fork..."
 cd "$opam_dir"

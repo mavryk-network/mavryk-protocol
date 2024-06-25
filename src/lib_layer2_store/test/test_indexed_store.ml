@@ -466,8 +466,8 @@ struct
     return_unit
 
   let run scenario =
-    Mavryk_stdlib_unix.Lwt_utils_unix.with_tempdir
-      "mavryk-layer2-indexed-store-test-"
+    Tezos_stdlib_unix.Lwt_utils_unix.with_tempdir
+      "tezos-layer2-indexed-store-test-"
       (run_in_dir scenario)
 
   let check_run scenario =
@@ -554,7 +554,9 @@ module Indexable_for_test = struct
 
   let close = S.close
 
-  let gc s ~retain = S.gc ~async:false s (Retain retain)
+  let gc s ~retain =
+    S.gc ~async:false s (fun x _ ->
+        Lwt_result.return @@ List.mem ~equal:String.equal x retain)
 end
 
 let () =
@@ -601,7 +603,9 @@ module Indexable_removable_for_test = struct
 
   let close = S.close
 
-  let gc s ~retain = S.gc ~async:false s (Retain retain)
+  let gc s ~retain =
+    S.gc ~async:false s (fun x _ ->
+        Lwt_result.return @@ List.mem ~equal:String.equal x retain)
 end
 
 let () =
@@ -679,7 +683,9 @@ module Indexed_file_for_test = struct
 
   let close = S.close
 
-  let gc s ~retain = S.gc ~async:false s (Retain retain)
+  let gc s ~retain =
+    S.gc ~async:false s (fun x _ _ ->
+        Lwt_result.return @@ List.mem ~equal:String.equal x retain)
 end
 
 module Indexed_file_integers = struct
@@ -713,17 +719,8 @@ module Indexed_file_integers = struct
   let close = S.close
 
   let gc s ~largest ~smallest =
-    S.gc
-      ~async:false
-      s
-      (Iterator
-         {
-           first = largest;
-           next =
-             (fun i _ ->
-               if i <= smallest then Lwt.return_none
-               else Lwt.return_some (Int32.pred i));
-         })
+    S.gc ~async:false s (fun i _ _ ->
+        Lwt_result.return (i >= smallest && i <= largest))
 end
 
 let () =
@@ -824,7 +821,7 @@ let test_read_gc_store () =
   R.run scenario
 
 let test_load () =
-  let path = Tezt.Temp.dir "mavryk-layer2-indexed-store-test-load" in
+  let path = Tezt.Temp.dir "tezos-layer2-indexed-store-test-load" in
   let open Lwt_result_syntax in
   let* store =
     Indexed_file_for_test.S.load
@@ -915,7 +912,7 @@ let unit_tests =
 let () =
   Alcotest.run
     ~__FILE__
-    "mavryk-layer2-store"
+    "tezos-layer2-store"
     [
       ( "indexed-store-pbt",
         List.map QCheck_alcotest.to_alcotest (List.rev !tests) );

@@ -20,7 +20,8 @@ ifneq ($(NATIVE_TARGET),)
 NATIVE_OPT := --target "$(NATIVE_TARGET)"
 endif
 
-RISCV_OPTS = --target riscv64gc-unknown-none-elf --no-default-features --features proto-alpha
+RISCV_OPTS = --target riscv64gc-unknown-hermit --no-default-features
+RISCV_OPTS_ALPHA = $(RISCV_OPTS) --features proto-alpha
 
 SDK_VERSION := "0.2.2"
 
@@ -36,6 +37,7 @@ check: installer-template publish-check doc riscv-check
 # on all.
 .PHONY: publish-check
 publish-check: installer-template
+	@cargo check -p mavryk-smart-rollup-constants
 	@cargo check -p mavryk-smart-rollup-core
 	@cargo check -p mavryk-smart-rollup-host
 	@cargo check -p mavryk-smart-rollup-debug
@@ -50,16 +52,16 @@ publish-check: installer-template
 
 .PHONY: riscv-check
 riscv-check:
-	@cargo check -p mavryk-smart-rollup-core $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup-host $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup-debug $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup-panic-hook $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup-entrypoint $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup-encoding $(RISCV_OPTS)
-	# @cargo check -p mavryk-smart-rollup-storage $(RISCV_OPTS)
-	# @cargo check -p mavryk-smart-rollup-mock $(RISCV_OPTS)
-	@cargo check -p mavryk-smart-rollup --target riscv64gc-unknown-none-elf --no-default-features --features proto-alpha-no-mock
-
+	@cargo check -p mavryk-smart-rollup-constants $(RISCV_OPTS)
+	@cargo check -p mavryk-smart-rollup-core $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-host $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-debug $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-panic-hook $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-entrypoint $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-encoding $(RISCV_OPTS_ALPHA)
+	# @cargo check -p mavryk-smart-rollup-storage $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup-mock $(RISCV_OPTS_ALPHA)
+	@cargo check -p mavryk-smart-rollup $(RISCV_OPTS_ALPHA)
 
 .PHONY: build
 build: installer-template

@@ -107,7 +107,7 @@
            unit
            { DROP ;
              PUSH string "TEZ_IN_TRANSACTION_DISALLOWED" ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              AMOUNT ;
              COMPARE ;
              EQ ;
@@ -441,7 +441,7 @@
              CONCAT ;
              RIGHT (or (pair bytes (ticket (pair nat (option bytes)))) bytes) ;
              SWAP ;
-             PUSH mutez 0 ;
+             PUSH mumav 0 ;
              DIG 2 ;
              TRANSFER_TOKENS ;
              DIG 3 ;

@@ -10,8 +10,8 @@ use evm::{Context, ExitReason, ExitSucceed, Transfer};
 use host::runtime::Runtime;
 use ripemd::Ripemd160;
 use sha2::{Digest, Sha256};
-use tezos_evm_logging::log;
-use tezos_evm_logging::Level::Debug;
+use mavryk_evm_logging::log;
+use mavryk_evm_logging::Level::Debug;
 
 // Implementation of 0x03 precompiled (sha256)
 pub fn sha256_precompile<Host: Runtime>(

@@ -152,7 +152,7 @@ module Worker = struct
         blueprints
     in
 
-    (* We give ourselves a cooldown window Tezos blocks to inject everything *)
+    (* We give ourselves a cooldown window Mavryk blocks to inject everything *)
     set_cooldown worker (catchup_cooldown worker) ;
     return_unit
 end

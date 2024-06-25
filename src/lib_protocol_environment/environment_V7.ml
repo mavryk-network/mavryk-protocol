@@ -1079,7 +1079,7 @@ struct
 
       let compute_step (tree : Tree.tree) =
         Wasm.compute_step
-          ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+          ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
           tree
 
       let set_input_step input payload (tree : Tree.tree) =

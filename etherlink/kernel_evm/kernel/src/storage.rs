@@ -4,7 +4,6 @@
 // SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
-#![allow(dead_code)]
 
 use crate::block_in_progress::BlockInProgress;
 use crate::event::Event;
@@ -21,13 +20,12 @@ use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 use mavryk_smart_rollup_host::path::*;
 use mavryk_smart_rollup_host::runtime::{Runtime, ValueType};
 
-use crate::block_in_progress::BlockInProgress;
 use crate::error::{Error, StorageError};
 use rlp::{Decodable, Encodable, Rlp};
 use mavryk_ethereum::block::L2Block;
 use mavryk_ethereum::rlp_helpers::FromRlpBytes;
 use mavryk_ethereum::transaction::{
-    TransactionHash, TransactionObject, TransactionReceipt, TransactionStatus,
+    TransactionHash, TransactionObject, TransactionReceipt,
 };
 use mavryk_ethereum::wei::Wei;
 
@@ -131,26 +129,8 @@ pub const WORD_SIZE: usize = 32usize;
 // at this path, the kernel is in proxy mode.
 pub const SEQUENCER: RefPath = RefPath::assert_from(b"/evm/sequencer");
 
-// This function should be used when it makes sense that the value
-// stored under [path] can be empty.
-fn store_read_empty_safe<Host: Runtime>(
-    host: &mut Host,
-    path: &OwnedPath,
-    offset: usize,
-    max_bytes: usize,
-) -> Result<Vec<u8>, Error> {
-    let stored_value_size = host.store_value_size(path)?;
-
-    if stored_value_size == 0 {
-        Ok(vec![])
-    } else {
-        host.store_read(path, offset, max_bytes)
-            .map_err(Error::from)
-    }
-}
-
 pub fn store_read_slice<Host: Runtime, T: Path>(
-    host: &mut Host,
+    host: &Host,
     path: &T,
     buffer: &mut [u8],
     expected_size: usize,
@@ -166,35 +146,13 @@ pub fn store_read_slice<Host: Runtime, T: Path>(
     }
 }
 
-pub fn read_smart_rollup_address<Host: Runtime>(
-    host: &mut Host,
-) -> Result<[u8; 20], Error> {
-    let mut buffer = [0u8; 20];
-    store_read_slice(host, &SMART_ROLLUP_ADDRESS, &mut buffer, 20)?;
-    Ok(buffer)
-}
-
-pub fn store_smart_rollup_address<Host: Runtime>(
-    host: &mut Host,
-    smart_rollup_address: &[u8; 20],
-) -> Result<(), Error> {
-    host.store_write(&SMART_ROLLUP_ADDRESS, smart_rollup_address, 0)
-        .map_err(Error::from)
-}
-
 /// Read a single unsigned 256 bit value from storage at the path given.
 fn read_u256(host: &impl Runtime, path: &OwnedPath) -> Result<U256, Error> {
     let bytes = host.store_read(path, 0, WORD_SIZE)?;
     Ok(Wei::from_little_endian(&bytes))
 }
 
-/// Read a single address value from storage at the path given.
-fn read_address(host: &impl Runtime, path: &OwnedPath) -> Result<H160, Error> {
-    let bytes = host.store_read(path, 0, ADDRESS_SIZE)?;
-    Ok(H160::from_slice(&bytes))
-}
-
-fn write_u256(
+pub fn write_u256(
     host: &mut impl Runtime,
     path: &OwnedPath,
     value: U256,
@@ -236,7 +194,7 @@ pub fn object_path(object_hash: &TransactionHash) -> Result<OwnedPath, Error> {
     concat(&EVM_TRANSACTIONS_OBJECTS, &object_path).map_err(Error::from)
 }
 
-pub fn read_current_block_number<Host: Runtime>(host: &mut Host) -> Result<U256, Error> {
+pub fn read_current_block_number<Host: Runtime>(host: &Host) -> Result<U256, Error> {
     let path = concat(&EVM_CURRENT_BLOCK, &BLOCK_NUMBER)?;
     let mut buffer = [0_u8; 8];
     store_read_slice(host, &path, &mut buffer, 8)?;
@@ -259,7 +217,7 @@ pub fn store_rlp<T: Encodable, Host: Runtime>(
     host.store_write_all(path, &bytes).map_err(Error::from)
 }
 
-fn read_rlp<T: Decodable, Host: Runtime>(
+pub fn read_rlp<T: Decodable, Host: Runtime>(
     host: &Host,
     path: &impl Path,
 ) -> Result<T, Error> {
@@ -356,8 +314,9 @@ pub fn store_current_block<Host: Runtime>(
             log!(
                 host,
                 Info,
-                "Storing block {} containing {} transaction(s) for {} gas used.",
+                "Storing block {} at {} containing {} transaction(s) for {} gas used.",
                 block.number,
+                block.timestamp,
                 block.transactions.len(),
                 U256::to_string(&block.gas_used)
             );
@@ -786,7 +745,7 @@ pub fn store_last_info_per_level_timestamp<Host: Runtime>(
 }
 
 pub fn read_timestamp_path<Host: Runtime>(
-    host: &mut Host,
+    host: &Host,
     path: &OwnedPath,
 ) -> Result<Timestamp, Error> {
     let mut buffer = [0u8; 8];
@@ -796,17 +755,9 @@ pub fn read_timestamp_path<Host: Runtime>(
 }
 
 pub fn read_last_info_per_level_timestamp<Host: Runtime>(
-    host: &mut Host,
+    host: &Host,
 ) -> Result<Timestamp, Error> {
     read_timestamp_path(host, &EVM_INFO_PER_LEVEL_TIMESTAMP.into())
-}
-
-pub fn store_kernel_upgrade_nonce<Host: Runtime>(
-    host: &mut Host,
-    upgrade_nonce: u16,
-) -> Result<(), Error> {
-    host.store_write_all(&KERNEL_UPGRADE_NONCE, &upgrade_nonce.to_le_bytes())
-        .map_err(Error::from)
 }
 
 /// Get the index of accounts.
@@ -844,10 +795,7 @@ pub fn index_account(
     }
 }
 
-fn read_b58_kt1<Host: Runtime>(
-    host: &mut Host,
-    path: &OwnedPath,
-) -> Option<ContractKt1Hash> {
+fn read_b58_kt1<Host: Runtime>(host: &Host, path: &OwnedPath) -> Option<ContractKt1Hash> {
     let mut buffer = [0; 36];
     store_read_slice(host, path, &mut buffer, 36).ok()?;
     let kt1_b58 = String::from_utf8(buffer.to_vec()).ok()?;
@@ -962,17 +910,18 @@ pub fn store_kernel_version<Host: Runtime>(
 #[cfg_attr(feature = "benchmark", inline(never))]
 pub fn store_block_in_progress<Host: Runtime>(
     host: &mut Host,
-    block: &BlockInProgress,
-) -> Result<(), anyhow::Error> {
-    let bytes: &[u8] = &block.rlp_bytes();
+    bip: &BlockInProgress,
+) -> anyhow::Result<()> {
+    let path = OwnedPath::from(EVM_BLOCK_IN_PROGRESS);
+    let bytes = &bip.rlp_bytes();
     log!(
         host,
         Benchmarking,
         "Storing Block In Progress of size {}",
         bytes.len()
     );
-    host.store_write_all(&EVM_BLOCK_IN_PROGRESS, bytes)
-        .context("Failed to store BlockInProgress")
+    host.store_write_all(&path, bytes)
+        .context("Failed to store current block in progress")
 }
 
 // DO NOT RENAME: function name is used during benchmark
@@ -1000,17 +949,22 @@ pub fn read_block_in_progress<Host: Runtime>(
     } else {
         Ok(None)
     }
-    Ok(())
 }
 
-pub fn add_reboot_flag<Host: Runtime>(host: &mut Host) -> Result<(), anyhow::Error> {
-    host.store_write(&REBOOTED, &[1], 0)
-        .context("Failed to set reboot flag")
+pub fn delete_block_in_progress<Host: Runtime>(host: &mut Host) -> anyhow::Result<()> {
+    host.store_delete(&EVM_BLOCK_IN_PROGRESS)
+        .context("Failed to delete block in progress")
 }
 
-pub fn delete_reboot_flag<Host: Runtime>(host: &mut Host) -> Result<(), anyhow::Error> {
-    host.store_delete(&REBOOTED)
-        .context("Failed to delete reboot flag")
+pub fn sequencer<Host: Runtime>(host: &Host) -> anyhow::Result<Option<PublicKey>> {
+    if host.store_has(&SEQUENCER)?.is_some() {
+        let bytes = host.store_read_all(&SEQUENCER)?;
+        let Ok(tz1_b58) = String::from_utf8(bytes) else { return Ok(None) };
+        let Ok(tz1) = PublicKey::from_b58check(&tz1_b58) else { return Ok(None)};
+        Ok(Some(tz1))
+    } else {
+        Ok(None)
+    }
 }
 
 pub fn remove_sequencer<Host: Runtime>(host: &mut Host) -> anyhow::Result<()> {
@@ -1097,17 +1051,7 @@ pub fn delayed_inbox_min_levels<Host: Runtime>(host: &Host) -> anyhow::Result<u3
 mod internal_for_tests {
     use super::*;
 
-pub fn read_queue<Host: Runtime>(host: &mut Host) -> Result<Queue, anyhow::Error> {
-    let queue_path = OwnedPath::from(QUEUE_IN_PROGRESS);
-    let bytes = host
-        .store_read_all(&queue_path)
-        .context("Failed to read current queue")?;
-    let decoder = Rlp::new(bytes.as_slice());
-    Queue::decode(&decoder).context("Failed to decode current queue")
-}
-
-pub(crate) mod internal_for_tests {
-    use super::*;
+    use mavryk_ethereum::transaction::TransactionStatus;
 
     /// Reads status from the receipt in storage.
     pub fn read_transaction_receipt_status<Host: Runtime>(
@@ -1116,15 +1060,6 @@ pub(crate) mod internal_for_tests {
     ) -> Result<TransactionStatus, Error> {
         let receipt = read_transaction_receipt(host, tx_hash)?;
         Ok(receipt.status)
-    }
-
-    /// Reads cumulative gas used from the receipt in storage.
-    pub fn read_transaction_receipt_cumulative_gas_used<Host: Runtime>(
-        host: &mut Host,
-        tx_hash: &TransactionHash,
-    ) -> Result<U256, Error> {
-        let receipt = read_transaction_receipt(host, tx_hash)?;
-        Ok(receipt.cumulative_gas_used)
     }
 
     /// Reads a transaction receipt from storage.
@@ -1151,33 +1086,17 @@ pub(crate) mod internal_for_tests {
     }
 }
 
-pub fn is_sequencer<Host: Runtime>(host: &Host) -> Result<bool, Error> {
-    Ok(host.store_has(&SEQUENCER)?.is_some())
-}
-
 #[cfg(test)]
-mod tests {
-    use mavryk_smart_rollup_mock::MockHost;
+pub use internal_for_tests::*;
 
-    use super::*;
-    #[test]
-    fn test_reboot_flag() {
-        let mut host = MockHost::default();
-
-        add_reboot_flag(&mut host).expect("Should have been able to set flag");
-
-        assert!(was_rebooted(&mut host).expect("should have found reboot flag"));
-
-        delete_reboot_flag(&mut host).expect("Should have been able to delete flag");
-
-        assert!(
-            !was_rebooted(&mut host).expect("should not have failed without reboot flag")
-        );
-
-        add_reboot_flag(&mut host).expect("Should have been able to set flag");
-
-        assert!(was_rebooted(&mut host).expect("should have found reboot flag"));
-    }
+/// Smart Contract of the delayed bridge
+///
+/// This smart contract is used to submit transactions to the rollup
+/// when in sequencer mode
+pub fn read_delayed_transaction_bridge<Host: Runtime>(
+    host: &Host,
+) -> Option<ContractKt1Hash> {
+    read_b58_kt1(host, &DELAYED_BRIDGE.into())
 }
 
 #[cfg(test)]

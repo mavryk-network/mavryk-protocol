@@ -39,8 +39,8 @@ end
 
 let uses _protocol =
   [
-    Constant.octez_smart_rollup_node;
-    Constant.octez_evm_node;
+    Constant.mavkit_smart_rollup_node;
+    Constant.mavkit_evm_node;
     Constant.smart_rollup_installer;
     Constant.WASM.evm_kernel;
   ]
@@ -245,7 +245,7 @@ let send_raw_transaction_to_delayed_inbox ?(wait_for_next_level = true)
     ?(amount = Tez.one) ?expect_failure ~sc_rollup_node ~client ~l1_contracts
     ~sc_rollup_address ?(sender = Constant.bootstrap2) raw_tx =
   let expected_hash =
-    `Hex raw_tx |> Hex.to_bytes |> Tezos_crypto.Hacl.Hash.Keccak_256.digest
+    `Hex raw_tx |> Hex.to_bytes |> Mavryk_crypto.Hacl.Hash.Keccak_256.digest
     |> Hex.of_bytes |> Hex.show
   in
   let* () =
@@ -799,7 +799,7 @@ let wait_for_delayed_inbox_add_tx_and_injected ~sequencer ~sc_rollup_node
 
 let check_delayed_inbox_is_empty ~sc_rollup_node =
   let* subkeys =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind:"wasm_2_0_0"
          ~operation:Sc_rollup_rpc.Subkeys
@@ -1002,8 +1002,8 @@ let test_init_from_rollup_node_data_dir =
     ~tags:["evm"; "rollup_node"; "init"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -1058,8 +1058,8 @@ let test_init_from_rollup_node_with_delayed_inbox =
     ~tags:["evm"; "rollup_node"; "init"; "delayed_inbox"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -2458,7 +2458,7 @@ let test_stage_one_reboot =
     match chunks with
     | [] -> acc
     | _ ->
-        let messages, rem = Tezos_stdlib.TzList.split_n 100 chunks in
+        let messages, rem = Mavryk_stdlib.TzList.split_n 100 chunks in
         split_chunks (messages :: acc) rem
   in
   let splitted_messages = split_chunks [] chunks in
@@ -2484,7 +2484,7 @@ let test_stage_one_reboot =
   (* The PVM takes 11G ticks for collecting inputs, 11G for a kernel_run. As such,
      an L1 level is at least 22G ticks. *)
   let ticks_per_snapshot =
-    Tezos_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
+    Mavryk_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
     |> Z.to_int
   in
   let min_ticks_per_l1_level = ticks_per_snapshot * 2 in
@@ -2609,7 +2609,7 @@ let test_blueprint_limit_with_delayed_inbox =
   in
   let txs = read_tx_from_file () |> List.map (fun (tx, _hash) -> tx) in
   (* The first 3 transactions will be sent to the delayed inbox *)
-  let delayed_txs, direct_txs = Tezos_base.TzPervasives.TzList.split_n 3 txs in
+  let delayed_txs, direct_txs = Mavryk_base.TzPervasives.TzList.split_n 3 txs in
   let send_to_delayed_inbox (sender, raw_tx) =
     send_raw_transaction_to_delayed_inbox
       ~wait_for_next_level:false

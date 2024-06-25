@@ -1,18 +1,18 @@
-from pytezos.client import PyTezosClient
+from pymavryk.client import PyMavrykClient
 from tests.helpers.contracts.governance_base import GovernanceBase
 from tests.helpers.utility import (
     get_build_dir,
     originate_from_file,
 )
-from pytezos.operation.group import OperationGroup
-from pytezos.contract.call import ContractCall
+from pymavryk.operation.group import OperationGroup
+from pymavryk.contract.call import ContractCall
 from os.path import join
 from tests.helpers.metadata import Metadata
 
 
 class KernelGovernance(GovernanceBase):
     @classmethod
-    def originate(self, client: PyTezosClient, custom_config=None, metadata=None) -> OperationGroup:
+    def originate(self, client: PyMavrykClient, custom_config=None, metadata=None) -> OperationGroup:
         """Deploys Kernel Governance"""
 
         metadata = metadata if metadata != None else dict()

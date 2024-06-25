@@ -1,10 +1,10 @@
-from pytezos.client import PyTezosClient
-from pytezos.contract.interface import ContractInterface
-from pytezos.operation.group import OperationGroup
+from pymavryk.client import PyMavrykClient
+from pymavryk.contract.interface import ContractInterface
+from pymavryk.operation.group import OperationGroup
 from os.path import dirname
 from os.path import join
-from pytezos.michelson.parse import michelson_to_micheline
-from pytezos.michelson.types.base import MichelsonType
+from pymavryk.michelson.parse import michelson_to_micheline
+from pymavryk.michelson.types.base import MichelsonType
 from typing import Any
 
 
@@ -38,13 +38,13 @@ TEST_ADDRESSES_SET = [
 TEST_ADDRESSES_SET.sort()
 
 
-def pkh(client: PyTezosClient) -> str:
+def pkh(client: PyMavrykClient) -> str:
     """Returns public key hash of given client"""
 
     return str(client.key.public_key_hash())
 
 
-def find_op_by_hash(client: PyTezosClient, opg: OperationGroup) -> dict:
+def find_op_by_hash(client: PyMavrykClient, opg: OperationGroup) -> dict:
     """Finds operation group by operation hash"""
 
     op = client.shell.blocks[-10:].find_operation(opg.hash())
@@ -76,7 +76,7 @@ def get_tests_dir() -> str:
 
 
 def load_contract_from_address(
-    client: PyTezosClient, contract_address: str
+    client: PyMavrykClient, contract_address: str
 ) -> ContractInterface:
     """Loads contract from given address using given client"""
 
@@ -87,7 +87,7 @@ def load_contract_from_address(
 
 def to_micheline(type_expression: str) -> dict:
     """Converts Michelson type expression string to Micheline expression
-    (reusing pytezos.michelson.parse.michelson_to_micheline) with
+    (reusing pymavryk.michelson.parse.michelson_to_micheline) with
     type checking
     """
 
@@ -115,7 +115,7 @@ def pack_sequencer_payload(payload):
     }
 
 def originate_from_file(
-    filename: str, client: PyTezosClient, storage: Any
+    filename: str, client: PyMavrykClient, storage: Any
 ) -> OperationGroup:
     """Deploys contract from filename with given storage
     using given client and returns OperationGroup"""

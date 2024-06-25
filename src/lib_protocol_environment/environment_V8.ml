@@ -1146,7 +1146,7 @@ struct
       let initial_state = initial_state V0
 
       let compute_step =
-        compute_step ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+        compute_step ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
 
       let reveal_compat reveal =
         match

@@ -4,27 +4,27 @@
 
 use crate::blueprint::Blueprint;
 use crate::blueprint_storage::{store_immediate_blueprint, store_inbox_blueprint};
-use crate::configuration::{Configuration, ConfigurationMode, TezosContracts};
+use crate::configuration::{Configuration, ConfigurationMode, MavrykContracts};
 use crate::current_timestamp;
 use crate::delayed_inbox::DelayedInbox;
 use crate::inbox::{read_proxy_inbox, read_sequencer_inbox};
 use crate::inbox::{ProxyInboxContent, StageOneStatus};
 use anyhow::Ok;
 use std::ops::Add;
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::public_key::PublicKey;
-use tezos_smart_rollup_host::metadata::RAW_ROLLUP_ADDRESS_SIZE;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_smart_rollup_host::metadata::RAW_ROLLUP_ADDRESS_SIZE;
 
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 pub fn fetch_proxy_blueprints<Host: Runtime>(
     host: &mut Host,
     smart_rollup_address: [u8; RAW_ROLLUP_ADDRESS_SIZE],
-    tezos_contracts: &TezosContracts,
+    mavryk_contracts: &MavrykContracts,
 ) -> Result<StageOneStatus, anyhow::Error> {
     if let Some(ProxyInboxContent { transactions }) =
-        read_proxy_inbox(host, smart_rollup_address, tezos_contracts)?
+        read_proxy_inbox(host, smart_rollup_address, mavryk_contracts)?
     {
         let timestamp = current_timestamp(host);
         let blueprint = Blueprint {
@@ -72,7 +72,7 @@ fn fetch_delayed_transactions<Host: Runtime>(
 fn fetch_sequencer_blueprints<Host: Runtime>(
     host: &mut Host,
     smart_rollup_address: [u8; RAW_ROLLUP_ADDRESS_SIZE],
-    tezos_contracts: &TezosContracts,
+    mavryk_contracts: &MavrykContracts,
     delayed_bridge: ContractKt1Hash,
     delayed_inbox: &mut DelayedInbox,
     sequencer: PublicKey,
@@ -80,7 +80,7 @@ fn fetch_sequencer_blueprints<Host: Runtime>(
     match read_sequencer_inbox(
         host,
         smart_rollup_address,
-        tezos_contracts,
+        mavryk_contracts,
         delayed_bridge,
         sequencer,
         delayed_inbox,
@@ -112,13 +112,13 @@ pub fn fetch<Host: Runtime>(
         } => fetch_sequencer_blueprints(
             host,
             smart_rollup_address,
-            &config.tezos_contracts,
+            &config.mavryk_contracts,
             delayed_bridge.clone(),
             delayed_inbox,
             sequencer.clone(),
         ),
         ConfigurationMode::Proxy => {
-            fetch_proxy_blueprints(host, smart_rollup_address, &config.tezos_contracts)
+            fetch_proxy_blueprints(host, smart_rollup_address, &config.mavryk_contracts)
         }
     }
 }
@@ -126,17 +126,17 @@ pub fn fetch<Host: Runtime>(
 #[cfg(test)]
 mod tests {
     use primitive_types::U256;
-    use tezos_crypto_rs::hash::HashTrait;
-    use tezos_data_encoding::types::Bytes;
-    use tezos_smart_rollup::{
+    use mavryk_crypto_rs::hash::HashTrait;
+    use mavryk_data_encoding::types::Bytes;
+    use mavryk_smart_rollup::{
         michelson::{
             ticket::FA2_1Ticket, MichelsonBytes, MichelsonOption, MichelsonOr,
             MichelsonPair,
         },
         types::PublicKeyHash,
     };
-    use tezos_smart_rollup_encoding::contract::Contract;
-    use tezos_smart_rollup_mock::{MockHost, TransferMetadata};
+    use mavryk_smart_rollup_encoding::contract::Contract;
+    use mavryk_smart_rollup_mock::{MockHost, TransferMetadata};
 
     use crate::{
         blueprint_storage::read_next_blueprint, parsing::RollupType,
@@ -158,9 +158,9 @@ mod tests {
         )
         .unwrap();
 
-        let contracts = TezosContracts::default();
+        let contracts = MavrykContracts::default();
         Configuration {
-            tezos_contracts: TezosContracts {
+            mavryk_contracts: MavrykContracts {
                 ticketer: Some(ContractKt1Hash::from_b58check(DUMMY_TICKETER).unwrap()),
                 ..contracts
             },
@@ -173,9 +173,9 @@ mod tests {
     }
 
     fn dummy_proxy_configuration() -> Configuration {
-        let contracts = TezosContracts::default();
+        let contracts = MavrykContracts::default();
         Configuration {
-            tezos_contracts: TezosContracts {
+            mavryk_contracts: MavrykContracts {
                 ticketer: Some(ContractKt1Hash::from_b58check(DUMMY_TICKETER).unwrap()),
                 ..contracts
             },
@@ -355,7 +355,7 @@ mod tests {
         ));
         let mut conf = dummy_sequencer_config();
 
-        match read_proxy_inbox(&mut host, DEFAULT_SR_ADDRESS, &conf.tezos_contracts)
+        match read_proxy_inbox(&mut host, DEFAULT_SR_ADDRESS, &conf.mavryk_contracts)
             .unwrap()
         {
             None => panic!("There should be an InboxContent"),
@@ -451,11 +451,11 @@ mod tests {
         let mut host = MockHost::default();
         let mut conf = dummy_proxy_configuration();
         let metadata = TransferMetadata::new(
-            conf.tezos_contracts.ticketer.clone().unwrap(),
+            conf.mavryk_contracts.ticketer.clone().unwrap(),
             PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
         );
         host.add_transfer(
-            dummy_deposit(conf.tezos_contracts.ticketer.clone().unwrap()),
+            dummy_deposit(conf.mavryk_contracts.ticketer.clone().unwrap()),
             &metadata,
         );
         fetch(&mut host, DEFAULT_SR_ADDRESS, &mut conf).expect("fetch failed");
@@ -507,11 +507,11 @@ mod tests {
         let mut host = MockHost::default();
         let mut conf = dummy_sequencer_config();
         let metadata = TransferMetadata::new(
-            conf.tezos_contracts.ticketer.clone().unwrap(),
+            conf.mavryk_contracts.ticketer.clone().unwrap(),
             PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
         );
         host.add_transfer(
-            dummy_deposit(conf.tezos_contracts.ticketer.clone().unwrap()),
+            dummy_deposit(conf.mavryk_contracts.ticketer.clone().unwrap()),
             &metadata,
         );
         fetch(&mut host, DEFAULT_SR_ADDRESS, &mut conf).expect("fetch failed");

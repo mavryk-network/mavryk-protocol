@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Build rust-toolchain image for CI jobs and Mavkit docker distribution.
+# Build rust-toolchain image for CI jobs and Octez docker distribution.
 #
 # Reads the following environment variables:
 #  - 'rust_toolchain_image_name'

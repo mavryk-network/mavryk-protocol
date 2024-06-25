@@ -13,8 +13,8 @@ let new_proposal
         (storage : pt Storage.t) 
         : operation list * pt Storage.t = 
     let { voting_context; finished_voting; last_winner } = Voting.get_voting_state storage in
-    let proposer = Converters.address_to_key_hash (Tezos.get_sender ()) in
-    let voting_power = Tezos.voting_power proposer in
+    let proposer = Converters.address_to_key_hash (Mavryk.get_sender ()) in
+    let voting_power = Mavryk.voting_power proposer in
     let _ = Validation.assert_no_tez_in_transaction () in
     let _ = Validation.assert_voting_power_positive voting_power in
     let proposal_period = Voting.get_proposal_period voting_context in
@@ -36,8 +36,8 @@ let upvote_proposal
         (storage : pt Storage.t)
         : operation list * pt Storage.t = 
     let { voting_context; finished_voting; last_winner } = Voting.get_voting_state storage in
-    let upvoter = Converters.address_to_key_hash (Tezos.get_sender ()) in
-    let voting_power = Tezos.voting_power upvoter in
+    let upvoter = Converters.address_to_key_hash (Mavryk.get_sender ()) in
+    let voting_power = Mavryk.voting_power upvoter in
     let _ = Validation.assert_no_tez_in_transaction () in
     let _ = Validation.assert_voting_power_positive voting_power in
     let proposal_period = Voting.get_proposal_period voting_context in
@@ -60,8 +60,8 @@ let vote
         : operation list * pt Storage.t =
     let voting_state = Voting.get_voting_state storage in
     let voting_context = voting_state.voting_context in
-    let voter = Converters.address_to_key_hash (Tezos.get_sender ()) in
-    let voting_power = Tezos.voting_power voter in
+    let voter = Converters.address_to_key_hash (Mavryk.get_sender ()) in
+    let voting_power = Mavryk.voting_power voter in
     let _ = Validation.assert_no_tez_in_transaction () in
     let _ = Validation.assert_voting_power_positive voting_power in
     let promotion_period = Voting.get_promotion_period voting_context in
@@ -86,7 +86,7 @@ let trigger_rollup_upgrade
     let _ = assert_with_error (not Big_map.mem rollup_address last_winner.trigger_history) Errors.upgrade_for_address_already_triggered in
     let rollup_entry = Rollup.get_entry rollup_address in
     let upgrade_params = Rollup.get_upgrade_params (pack_payload last_winner.payload) in
-    let upgrade_operation = Tezos.transaction upgrade_params 0tez rollup_entry in
+    let upgrade_operation = Mavryk.transaction upgrade_params 0tez rollup_entry in
     let operations = match finished_voting with
         | Some event_payload -> [Events.create_voting_finished_event_operation event_payload]
         | None -> [] in

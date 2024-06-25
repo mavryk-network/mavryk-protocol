@@ -9,7 +9,7 @@ edition = "2021"
 authors = ["TriliTech <contact@trili.tech>"]
 license = "MIT"
 repository = "https://gitlab.com/tezos/tezos.git"
-description = "Installer configuration for installer kernel of Tezos Smart Rollups."
+description = "Installer configuration for installer kernel of Mavryk Smart Rollups."
 keywords = ["tezos", "smart", "rollup", "installer", "config"]
 categories = [
     "development-tools",

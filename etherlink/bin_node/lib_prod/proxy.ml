@@ -14,7 +14,7 @@ let callback_log server conn req body =
   let meth = req |> Request.meth |> Code.string_of_method in
   let* body_str = body |> Cohttp_lwt.Body.to_string in
   let* () = Events.callback_log ~uri ~meth ~body:body_str in
-  Tezos_rpc_http_server.RPC_server.resto_callback
+  Mavryk_rpc_http_server.RPC_server.resto_callback
     server
     conn
     req
@@ -24,7 +24,7 @@ let start
     ({rpc_addr; rpc_port; cors_origins; cors_headers; max_active_connections; _} :
       Configuration.t) ~directory =
   let open Lwt_result_syntax in
-  let open Tezos_rpc_http_server in
+  let open Mavryk_rpc_http_server in
   let p2p_addr = P2p_addr.of_string_exn rpc_addr in
   let host = Ipaddr.V6.to_string p2p_addr in
   let node = `TCP (`Port rpc_port) in
@@ -58,7 +58,7 @@ let install_finalizer server =
   let open Lwt_syntax in
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
   let* () = Events.shutdown_node ~exit_status in
-  let* () = Tezos_rpc_http_server.RPC_server.shutdown server in
+  let* () = Mavryk_rpc_http_server.RPC_server.shutdown server in
   let* () = Events.shutdown_rpc_server ~private_:false in
   Helpers.unwrap_error_monad @@ fun () ->
   let open Lwt_result_syntax in

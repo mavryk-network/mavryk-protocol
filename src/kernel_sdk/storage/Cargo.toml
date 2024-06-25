@@ -10,7 +10,7 @@ edition = "2021"
 license = "MIT"
 authors = ["TriliTech <contact@trili.tech>"]
 repository = "https://gitlab.com/tezos/tezos.git"
-description = "Higher-level transactional account view over Tezos Smart Rollup durable storage."
+description = "Higher-level transactional account view over Mavryk Smart Rollup durable storage."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["database", "wasm"]
 

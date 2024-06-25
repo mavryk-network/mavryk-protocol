@@ -2,5 +2,5 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
-Description: The Mavkit Signer
+Description: The Octez Signer
 Depends: adduser, @DEPENDS@

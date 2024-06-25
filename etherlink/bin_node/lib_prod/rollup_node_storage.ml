@@ -68,7 +68,7 @@ module L2_blocks =
 module Levels_to_hashes =
   Indexed_store.Make_indexable
     (struct
-      let name = "tezos_levels"
+      let name = "mavryk_levels"
     end)
     (Indexed_store.Make_index_key (struct
       type t = int32

@@ -2,7 +2,7 @@
     NOTE:
     started_at_level and period_length values should be chosen carefully 
     to be sure that the contract governance periods 
-    never cross the boundaries of the tezos protocol governance periods. 
+    never cross the boundaries of the mavryk protocol governance periods. 
     This ensures the immutability of voting power throughout the entire voting period 
 *)
 type config_t = {
@@ -14,7 +14,7 @@ type config_t = {
 
     (* 
         The duration of the of proposal and promotion periods represented in blocks. 
-        period_length = tezos_governance_period_length / N, where N is integer divisor (factor)
+        period_length = mavryk_governance_period_length / N, where N is integer divisor (factor)
     *)
     period_length : nat;
 

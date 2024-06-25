@@ -3,7 +3,7 @@ from tests.base import BaseTestCase
 from tests.helpers.contracts.governance_base import YEA_VOTE
 from tests.helpers.operation_result_recorder import OperationResultRecorder
 from tests.helpers.utility import find_op_by_hash, get_tests_dir, pkh
-from pytezos.operation.result import OperationResult
+from pymavryk.operation.result import OperationResult
 from os.path import join
 
 class KernelGovernanceGasConsumptionTestCase(BaseTestCase):

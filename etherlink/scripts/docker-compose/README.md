@@ -4,7 +4,7 @@ sequencer rollup.
 This document does not explain how smart rollup, smart rollup node,
 evm node and the sequencer kernel works.
 
-The following directory allows to initialise an octez-node on a
+The following directory allows to initialise an mavkit-node on a
 specified network, originate a new evm rollup and start a rollup and
 sequencer node.
 
@@ -17,16 +17,16 @@ First step is to create an `.env` containing all necessary variables:
 # warning: date dependent variables won't be correctly interpreted in compose.yml
 TZNETWORK=${TZNETWORK:-"ghostnet"}
 
-# tag to use for the tezos docker. default to `master`
-OCTEZ_TAG=${OCTEZ_TAG:-master}
+# tag to use for the mavryk docker. default to `master`
+MAVKIT_TAG=${MAVKIT_TAG:-master}
 
 # directory where all data dir are placed, default to `./.etherlink-${TZNETWORK}-data`
-HOST_TEZOS_DATA_DIR=${HOST_TEZOS_DATA_DIR:-"$PWD/.etherlink-$TZNETWORK-data"}
+HOST_MAVRYK_DATA_DIR=${HOST_MAVRYK_DATA_DIR:-"$PWD/.etherlink-$TZNETWORK-data"}
 
-# network used to initialize the octez node configuration
+# network used to initialize the mavkit node configuration
 TZNETWORK_ADDRESS=${TZNETWORK_ADDRESS:-"https://teztnets.com/$TZNETWORK"}
 
-# snapshot to use to start the octez node
+# snapshot to use to start the mavkit node
 SNAPSHOT_URL=${SNAPSHOT_URL-"https://snapshots.eu.tzinit.org/$TZNETWORK/rolling"}
 
 # address of faucet to use with @tacoinfra/get-tez
@@ -34,7 +34,7 @@ FAUCET=${FAUCET:-"https://faucet.$TZNETWORK.teztnets.com"}
 
 # endpoint to use to originate the smart rollup.
 # it could be possible to use the local node but it
-# would require then to first start the octez-node sepratatly from the docker compose.
+# would require then to first start the mavkit-node sepratatly from the docker compose.
 ENDPOINT=${ENDPOINT:-"https://rpc.$TZNETWORK.teztnets.com"}
 
 ## Contract options
@@ -80,14 +80,14 @@ export TZNETWORK="dailynet-$(date +%Y-%m-%d)"
 export SNAPSHOT_URL=""
 ```
 
-Then when the variables are defined, or default value is valid you can initialise the octez node with:
+Then when the variables are defined, or default value is valid you can initialise the mavkit node with:
 ```
-./init.sh init_octez_node
+./init.sh init_mavkit_node
 ```
-This initialise the octez-node configuration, download the snapshot
+This initialise the mavkit-node configuration, download the snapshot
 and import it.
 
-If you need the tezos contracts to be deployed, you can run the command:
+If you need the mavryk contracts to be deployed, you can run the command:
 ```
 ./init.sh originate_contracts
 ```

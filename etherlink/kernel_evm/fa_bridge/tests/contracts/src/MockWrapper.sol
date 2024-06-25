@@ -19,7 +19,7 @@ contract MockWrapper {
     address private _kernel;
 
     /**
-     * @param ticketer_ whitelisted Tezos L1 address of the ticketer contract
+     * @param ticketer_ whitelisted Mavryk L1 address of the ticketer contract
      * @param content_ identifier of the L1 token (ticket id)
      * @param kernel_ address of the rollup kernel which is responsible for
      *        minting tokens

@@ -5,24 +5,39 @@
 /*                                                                            */
 /******************************************************************************/
 
+//! Representation for typed Michelson `address` values.
+
 pub mod address_hash;
 pub mod entrypoint;
-pub mod error;
 
 pub use self::address_hash::AddressHash;
 pub use self::entrypoint::Entrypoint;
-pub use self::error::AddressError;
 
 use address_hash::check_size;
 
+use super::{ByteReprError, ByteReprTrait};
+
+/// Tezos address with an entrypoint, e.g.
+/// `KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi%foo`.
 #[derive(Debug, Clone, Eq, PartialOrd, Ord, PartialEq)]
 pub struct Address {
+    /// The hash part of the address, i.e. the part before `%`.
     pub hash: AddressHash,
+    /// The entrypoint part of the address, i.e. the part after `%`.
     pub entrypoint: Entrypoint,
 }
 
 impl Address {
-    pub fn from_base58_check(data: &str) -> Result<Self, AddressError> {
+    /// Returns `true` if the address uses the default entrypoint. Note that
+    /// addresses that don't explicitly specify the entrypoint, e.g.
+    /// `KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi`, implicitly use the default one.
+    pub fn is_default_ep(&self) -> bool {
+        self.entrypoint.is_default()
+    }
+}
+
+impl ByteReprTrait for Address {
+    fn from_base58_check(data: &str) -> Result<Self, ByteReprError> {
         let (hash, ep) = if let Some(ep_sep_pos) = data.find('%') {
             (&data[..ep_sep_pos], &data[ep_sep_pos + 1..])
         } else {
@@ -34,7 +49,7 @@ impl Address {
         })
     }
 
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self, AddressError> {
+    fn from_bytes(bytes: &[u8]) -> Result<Self, ByteReprError> {
         check_size(bytes, AddressHash::BYTE_SIZE, "bytes")?;
 
         let (hash, ep) = bytes.split_at(AddressHash::BYTE_SIZE);
@@ -44,24 +59,14 @@ impl Address {
         })
     }
 
-    pub fn is_default_ep(&self) -> bool {
-        self.entrypoint.is_default()
-    }
-
-    pub fn to_bytes(&self, out: &mut Vec<u8>) {
+    fn to_bytes(&self, out: &mut Vec<u8>) {
         self.hash.to_bytes(out);
         if !self.is_default_ep() {
             out.extend_from_slice(self.entrypoint.as_bytes())
         }
     }
 
-    pub fn to_bytes_vec(&self) -> Vec<u8> {
-        let mut out = Vec::new();
-        self.to_bytes(&mut out);
-        out
-    }
-
-    pub fn to_base58_check(&self) -> String {
+    fn to_base58_check(&self) -> String {
         if self.is_default_ep() {
             self.hash.to_base58_check()
         } else {
@@ -75,14 +80,14 @@ impl Address {
 }
 
 impl TryFrom<&[u8]> for Address {
-    type Error = AddressError;
+    type Error = ByteReprError;
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
         Self::from_bytes(value)
     }
 }
 
 impl TryFrom<&str> for Address {
-    type Error = AddressError;
+    type Error = ByteReprError;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         Self::from_base58_check(value)
     }
@@ -96,7 +101,7 @@ mod tests {
     fn test_base58_to_bin() {
         // address with explicit, but empty, entrypoint
         assert_eq!(
-            Address::from_base58_check("mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq%")
+            Address::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw%")
                 .unwrap()
                 .to_bytes_vec(),
             hex::decode("00002422090f872dfd3a39471bb23f180e6dfed030f3").unwrap(),
@@ -104,7 +109,7 @@ mod tests {
 
         // address with explicit default entrypoint
         assert_eq!(
-            Address::from_base58_check("mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq%default")
+            Address::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw%default")
                 .unwrap()
                 .to_bytes_vec(),
             hex::decode("00002422090f872dfd3a39471bb23f180e6dfed030f3").unwrap(),
@@ -125,7 +130,7 @@ mod tests {
             Address::from_bytes(
                 &hex::decode("00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c74").unwrap()
             ),
-            Err(AddressError::WrongFormat(_)),
+            Err(ByteReprError::WrongFormat(_)),
         ));
 
         // unknown implicit tag
@@ -133,7 +138,7 @@ mod tests {
             dbg!(Address::from_bytes(
                 &hex::decode("00ff7b09f782e0bcd67739510afa819d85976119d5ef").unwrap()
             )),
-            Err(AddressError::UnknownPrefix("0x00ff".to_owned())),
+            Err(ByteReprError::UnknownPrefix("0xff".to_owned())),
         );
 
         // unknown tag
@@ -141,7 +146,7 @@ mod tests {
             Address::from_bytes(
                 &hex::decode("ffff7b09f782e0bcd67739510afa819d85976119d5ef").unwrap()
             ),
-            Err(AddressError::UnknownPrefix("0xff".to_owned())),
+            Err(ByteReprError::UnknownPrefix("0xff".to_owned())),
         );
 
         for (b58, hex) in FIXTURES {
@@ -156,83 +161,83 @@ mod tests {
 
     // binary representation produced by running
     //
-    // `mavkit-client --mode mockup run script 'parameter address; storage unit;
+    // `octez-client --mode mockup run script 'parameter address; storage unit;
     // code { CAR; FAILWITH }' on storage Unit and input "\"$addr\""`
     const FIXTURES: [(&str, &str); 25] = [
         (
-            "mv1TbDxBB8N5k4CvwDKrgJ2aeDQ6dGgYm5uq",
+            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
             "00002422090f872dfd3a39471bb23f180e6dfed030f3",
         ),
         (
-            "mv1TCgPv2w81gDfp7cLY5ohESufwJqqrV2K9",
+            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
             "000049d0be8c2987e04e080f4d73cbe24d8bf83997e2",
         ),
         (
-            "mv1CgijVVqTSPtzACGGroFqhyGWet82JnDcQ",
+            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
             "0000682343b6fe7589573e11db2b87fd206b936e2a79",
         ),
         (
-            "mv1SBut28idjAnU5qAfZW7j1oxomL9ABfgb3",
+            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
             "000075deb97789e2429f2b9bb5dba1b1e4a061e832a3",
         ),
         (
-            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%bar",
+            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
             "00007b09f782e0bcd67739510afa819d85976119d5ef626172",
         ),
         (
-            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defauls",
+            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c73",
         ),
         (
-            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse",
+            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
             "00007b09f782e0bcd67739510afa819d85976119d5ef",
         ),
         (
-            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%defaulu",
+            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c75",
         ),
         (
-            "mv1DWi3SvRpq3QydtukomxLEwtydLRTzfpse%foo",
+            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
             "00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
         ),
         (
-            "mv1RU12shPetXpVMsHMFJD9bCa6mKMwFAVG4",
+            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
             "0000ed6586813c9085c8b6252ec3a654ee0e36a0f0e2",
         ),
         (
-            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%bar",
+            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe626172",
         ),
         (
-            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst",
+            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
         ),
         (
-            "mv2PC6q5GhTmtVLjt5jMmdPcHpVbBss2yBst%foo",
+            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo",
             "00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
         ),
         (
-            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%bar",
+            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35626172",
         ),
         (
-            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g",
+            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35",
         ),
         (
-            "mv3TG4fsbRnmMFRmd87AcqyWzqTVEaBbQ85g%foo",
+            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo",
             "00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
         ),
         (
-            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%bar",
+            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6626172",
         ),
         (
-            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib",
+            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6",
         ),
         (
-            "mv4YhGYGC1Rc73raRoQrpTv4SoDzVbQSH9ib%foo",
+            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo",
             "00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
         ),
         (

@@ -40,30 +40,30 @@ module Event = struct
 end
 
 module Params = struct
-  let string = Tezos_clic.parameter (fun _ s -> Lwt.return_ok s)
+  let string = Mavryk_clic.parameter (fun _ s -> Lwt.return_ok s)
 
-  let int = Tezos_clic.parameter (fun _ s -> Lwt.return_ok (int_of_string s))
+  let int = Mavryk_clic.parameter (fun _ s -> Lwt.return_ok (int_of_string s))
 
   let endpoint =
-    Tezos_clic.parameter (fun _ uri -> Lwt.return_ok (Uri.of_string uri))
+    Mavryk_clic.parameter (fun _ uri -> Lwt.return_ok (Uri.of_string uri))
 
   let rollup_node_endpoint = endpoint
 
   let evm_node_endpoint = endpoint
 
   let sequencer_key =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"sequencer-key"
       ~desc:"key to sign the blueprints."
       string
 
   let string_list =
-    Tezos_clic.parameter (fun _ s ->
+    Mavryk_clic.parameter (fun _ s ->
         let list = String.split ',' s in
         Lwt.return_ok list)
 
   let time_between_blocks =
-    Tezos_clic.parameter (fun _ s ->
+    Mavryk_clic.parameter (fun _ s ->
         let time_between_blocks =
           if s = "none" then Nothing
           else Time_between_blocks (Float.of_string s)
@@ -72,7 +72,7 @@ module Params = struct
 
   let timestamp =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter (fun _ timestamp ->
+    Mavryk_clic.parameter (fun _ timestamp ->
         let timestamp = String.trim timestamp in
         match Time.Protocol.of_notation timestamp with
         | Some t -> return t
@@ -89,7 +89,7 @@ module Params = struct
                    the {!Time.Protocol.epoch}."))
 
   let l2_address =
-    Tezos_clic.parameter (fun _ s ->
+    Mavryk_clic.parameter (fun _ s ->
         let hex_addr =
           Option.value ~default:s @@ String.remove_prefix ~prefix:"0x" s
         in
@@ -98,7 +98,7 @@ module Params = struct
 end
 
 let wallet_dir_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"wallet-dir"
     ~short:'d'
     ~placeholder:"path"
@@ -106,7 +106,7 @@ let wallet_dir_arg =
     ~doc:
       (Format.asprintf
          "@[<v>@[<2>client data directory (absent: %s env)@,\
-          The directory where the Tezos client stores all its wallet data.@,\
+          The directory where the Mavryk client stores all its wallet data.@,\
           If absent, its value is the value of the %s@,\
           environment variable. If %s is itself not specified,@,\
           defaults to %s@]@]@."
@@ -117,28 +117,28 @@ let wallet_dir_arg =
     Params.string
 
 let rpc_addr_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"rpc-addr"
     ~placeholder:"ADDR"
     ~doc:"The EVM node server rpc address."
     Params.string
 
 let rpc_port_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"rpc-port"
     ~placeholder:"PORT"
     ~doc:"The EVM node server rpc port."
     Params.int
 
 let private_rpc_port_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"private-rpc-port"
     ~placeholder:"PORT"
     ~doc:"The EVM node private server rpc port."
     Params.int
 
 let maximum_blueprints_lag_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"maximum-blueprints-lag"
     ~placeholder:"LAG"
     ~default:"500"
@@ -148,7 +148,7 @@ let maximum_blueprints_lag_arg =
     Params.int
 
 let maximum_blueprints_ahead_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"maximum-blueprints-ahead"
     ~placeholder:"AHEAD"
     ~default:"100"
@@ -156,7 +156,7 @@ let maximum_blueprints_ahead_arg =
     Params.int
 
 let maximum_blueprints_catchup_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"maximum-blueprints-catch-up"
     ~placeholder:"CATCH_UP"
     ~default:"1_000"
@@ -164,7 +164,7 @@ let maximum_blueprints_catchup_arg =
     Params.int
 
 let catchup_cooldown_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"catch-up-cooldown"
     ~placeholder:"COOLDOWN"
     ~default:"10"
@@ -174,31 +174,31 @@ let catchup_cooldown_arg =
     Params.int
 
 let cors_allowed_headers_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"cors-headers"
     ~placeholder:"ALLOWED_HEADERS"
     ~doc:"List of accepted cors headers."
     Params.string_list
 
 let cors_allowed_origins_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"cors-origins"
     ~placeholder:"ALLOWED_ORIGINS"
     ~doc:"List of accepted cors origins."
     Params.string_list
 
 let devmode_arg =
-  Tezos_clic.switch ~long:"devmode" ~doc:"The EVM node in development mode." ()
+  Mavryk_clic.switch ~long:"devmode" ~doc:"The EVM node in development mode." ()
 
 let keep_everything_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~short:'k'
     ~long:"keep-everything"
     ~doc:"Do not filter out files outside of the `/evm` directory"
     ()
 
 let verbose_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~short:'v'
     ~long:"verbose"
     ~doc:"Sets logging level to debug. Beware, it is highly verbose."
@@ -206,7 +206,7 @@ let verbose_arg =
 
 let data_dir_arg =
   let default = Configuration.default_data_dir in
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"data-dir"
     ~placeholder:"data-dir"
     ~doc:"The path to the EVM node data directory"
@@ -215,10 +215,10 @@ let data_dir_arg =
 
 let rollup_address_arg =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   parameter (fun _ hash ->
       let hash_opt =
-        Tezos_crypto.Hashed.Smart_rollup_address.of_b58check_opt hash
+        Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_opt hash
       in
       match hash_opt with
       | Some hash -> return hash
@@ -232,11 +232,11 @@ let rollup_address_arg =
        ~doc:
          "The smart rollup address in Base58 encoding used to produce the \
           chunked messages"
-       ~default:Tezos_crypto.Hashed.Smart_rollup_address.(to_b58check zero)
+       ~default:Mavryk_crypto.Hashed.Smart_rollup_address.(to_b58check zero)
        ~placeholder:"sr1..."
 
 let kernel_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"initial-kernel"
     ~placeholder:"evm_installer.wasm"
     ~doc:
@@ -245,17 +245,17 @@ let kernel_arg =
     Params.string
 
 let preimages_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"preimages-dir"
     ~doc:"Path to the preimages directory"
     ~placeholder:"_evm_installer_preimages"
     Params.string
 
 let uri_parameter =
-  Tezos_clic.parameter (fun () s -> Lwt.return_ok (Uri.of_string s))
+  Mavryk_clic.parameter (fun () s -> Lwt.return_ok (Uri.of_string s))
 
 let preimages_endpoint_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"preimages-endpoint"
     ~placeholder:"url"
     ~doc:
@@ -265,7 +265,7 @@ let preimages_endpoint_arg =
     uri_parameter
 
 let rollup_node_endpoint_param =
-  Tezos_clic.param
+  Mavryk_clic.param
     ~name:"rollup-node-endpoint"
     ~desc:
       "The address of a service which provides pre-images for the rollup. \
@@ -274,21 +274,21 @@ let rollup_node_endpoint_param =
     uri_parameter
 
 let time_between_blocks_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"time-between-blocks"
     ~doc:"Interval at which the sequencer creates an empty block by default."
     ~placeholder:"10."
     Params.time_between_blocks
 
 let max_number_of_chunks_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"max-number-of-chunks"
     ~doc:"Maximum number of chunks per blueprint."
     ~placeholder:"10."
     Params.int
 
 let keep_alive_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~doc:
       "Keep the EVM node process alive even if the connection is lost with the \
        rollup node."
@@ -297,14 +297,14 @@ let keep_alive_arg =
     ()
 
 let blueprint_mode_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"as-blueprint"
     ~doc:"Chunk the data into a blueprint usable in sequencer mode"
     ()
 
 let timestamp_arg =
   Params.timestamp
-  |> Tezos_clic.default_arg
+  |> Mavryk_clic.default_arg
        ~long:"timestamp"
        ~doc:""
        ~placeholder:"1970-01-01T00:00:00Z"
@@ -312,7 +312,7 @@ let timestamp_arg =
 
 let genesis_timestamp_arg =
   Params.timestamp
-  |> Tezos_clic.arg
+  |> Mavryk_clic.arg
        ~long:"genesis-timestamp"
        ~doc:
          "Timestamp used for the genesis block, uses machine's clock if not \
@@ -321,7 +321,7 @@ let genesis_timestamp_arg =
 
 let blueprint_number_arg =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   parameter (fun _ number ->
       try String.trim number |> Z.of_string |> return
       with _ -> failwith "Blueprint number must be an integer")
@@ -333,7 +333,7 @@ let blueprint_number_arg =
 
 let parent_hash_arg =
   let open Lwt_result_syntax in
-  let open Tezos_clic in
+  let open Mavryk_clic in
   parameter (fun _ hash -> return hash)
   |> default_arg
        ~long:"parent-hash"
@@ -344,7 +344,7 @@ let parent_hash_arg =
          "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
 let tx_pool_timeout_limit_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"tx-pool-timeout-limit"
     ~placeholder:"3_600"
     ~default:"3_600"
@@ -352,7 +352,7 @@ let tx_pool_timeout_limit_arg =
     Params.int
 
 let tx_pool_addr_limit_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"tx-pool-addr-limit"
     ~placeholder:"4_000"
     ~default:"4_000"
@@ -360,7 +360,7 @@ let tx_pool_addr_limit_arg =
     Params.int
 
 let tx_pool_tx_per_addr_limit_arg =
-  Tezos_clic.default_arg
+  Mavryk_clic.default_arg
     ~long:"tx-pool-tx-per-addr-limit"
     ~placeholder:"16"
     ~default:"16"
@@ -370,14 +370,14 @@ let tx_pool_tx_per_addr_limit_arg =
     Params.int
 
 let sequencer_key_arg =
-  Tezos_clic.arg
+  Mavryk_clic.arg
     ~long:"sequencer-key"
     ~doc:"key to sign the blueprints."
     ~placeholder:"edsk..."
     Params.string
 
 let proxy_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Start the EVM node in proxy mode"
@@ -409,7 +409,7 @@ let proxy_command =
          rollup_node_endpoint
          () ->
       let*! () =
-        let open Tezos_base_unix.Internal_event_unix in
+        let open Mavryk_base_unix.Internal_event_unix in
         let config =
           if verbose then Some (make_with_defaults ~verbosity:Debug ())
           else None
@@ -453,7 +453,7 @@ let register_wallet ?password_filename ~wallet_dir () =
   wallet_ctxt
 
 let sequencer_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Start the EVM node in sequencer mode"
@@ -523,7 +523,7 @@ let sequencer_command =
       let* pk_uri = Client_keys.neuterize sequencer in
       let* sequencer_pkh, _ = Client_keys.public_key_hash pk_uri in
       let*! () =
-        let open Tezos_base_unix.Internal_event_unix in
+        let open Mavryk_base_unix.Internal_event_unix in
         let verbosity = if verbose then Some Internal_event.Debug else None in
         let config =
           make_with_defaults
@@ -602,7 +602,7 @@ let sequencer_command =
           ())
 
 let observer_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Start the EVM node in observer mode"
@@ -639,7 +639,7 @@ let observer_command =
              () ->
   let open Evm_node_lib_dev in
   let*! () =
-    let open Tezos_base_unix.Internal_event_unix in
+    let open Mavryk_base_unix.Internal_event_unix in
     let config =
       if verbose then Some (make_with_defaults ~verbosity:Debug ()) else None
     in
@@ -760,7 +760,7 @@ let from_data_or_file data_for_file =
     data_for_file
 
 let chunker_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:
@@ -784,7 +784,7 @@ let chunker_command =
            "Data to prepare and chunk with the EVM rollup format. If the data \
             is prefixed with `file:`, the content is read from the given \
             filename and can contain a list of data separated by a whitespace."
-         (Tezos_clic.parameter (fun _ -> from_data_or_file)))
+         (Mavryk_clic.parameter (fun _ -> from_data_or_file)))
     (fun ( devmode,
            rollup_address,
            as_blueprint,
@@ -826,12 +826,12 @@ let chunker_command =
         return_unit
       in
       let rollup_address =
-        Tezos_crypto.Hashed.Smart_rollup_address.to_string rollup_address
+        Mavryk_crypto.Hashed.Smart_rollup_address.to_string rollup_address
       in
       print_chunks rollup_address data)
 
 let make_upgrade_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Create bytes payload for the upgrade entrypoint"
@@ -861,14 +861,14 @@ let make_upgrade_command =
       return_unit)
 
 let make_sequencer_upgrade_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Create bytes payload for the sequencer upgrade entrypoint"
     (args2 wallet_dir_arg devmode_arg)
     (prefixes ["make"; "sequencer"; "upgrade"; "payload"]
     @@ prefixes ["with"; "pool"; "address"]
-    @@ Tezos_clic.param
+    @@ Mavryk_clic.param
          ~name:"pool_address"
          ~desc:"pool address of the sequencer"
          Params.l2_address
@@ -909,9 +909,9 @@ let make_sequencer_upgrade_command =
       return_unit)
 
 let init_from_rollup_node_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let rollup_node_data_dir_param =
-    Tezos_clic.param
+    Mavryk_clic.param
       ~name:"rollup-node-data-dir"
       ~desc:(Format.sprintf "The path to the rollup node data directory.")
       Params.string
@@ -933,7 +933,7 @@ let init_from_rollup_node_command =
           ~rollup_node_data_dir)
 
 let dump_to_rlp_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let open Lwt_result_syntax in
   command
     ~desc:"Transforms the JSON list of instructions to a RLP list"
@@ -947,7 +947,7 @@ let dump_to_rlp_command =
       let* dump_json = Lwt_utils_unix.Json.read_file dump_json in
       let config =
         Data_encoding.Json.destruct
-          Octez_smart_rollup.Installer_config.encoding
+          Mavkit_smart_rollup.Installer_config.encoding
           dump_json
       in
 
@@ -955,10 +955,10 @@ let dump_to_rlp_command =
         let aux =
           let open Evm_node_lib_dev_encoding.Rlp in
           if keep_everything then
-            fun acc Octez_smart_rollup.Installer_config.(Set {value; to_}) ->
+            fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
             List [Value (String.to_bytes to_); Value (String.to_bytes value)]
             :: acc
-          else fun acc Octez_smart_rollup.Installer_config.(Set {value; to_}) ->
+          else fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
             if String.starts_with ~prefix:"/evm" to_ then
               List [Value (String.to_bytes to_); Value (String.to_bytes value)]
               :: acc
@@ -971,11 +971,11 @@ let dump_to_rlp_command =
           let aux =
             let open Evm_node_lib_prod_encoding.Rlp in
             if keep_everything then
-              fun acc Octez_smart_rollup.Installer_config.(Set {value; to_}) ->
+              fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
               List [Value (String.to_bytes to_); Value (String.to_bytes value)]
               :: acc
             else
-              fun acc Octez_smart_rollup.Installer_config.(Set {value; to_}) ->
+              fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
               if String.starts_with ~prefix:"/evm" to_ then
                 List
                   [Value (String.to_bytes to_); Value (String.to_bytes value)]
@@ -997,12 +997,12 @@ let dump_to_rlp_command =
       return_unit)
 
 let reset_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~desc:"Reset evm node data-dir to a specific block level."
     (args2
        data_dir_arg
-       (Tezos_clic.switch
+       (Mavryk_clic.switch
           ~long:"force"
           ~short:'f'
           ~doc:
@@ -1010,10 +1010,10 @@ let reset_command =
              specified l2 level."
           ()))
     (prefixes ["reset"; "at"]
-    @@ Tezos_clic.param
+    @@ Mavryk_clic.param
          ~name:"level"
          ~desc:"level to reset to state to."
-         (Tezos_clic.parameter (fun () s ->
+         (Mavryk_clic.parameter (fun () s ->
               Lwt.return_ok
               @@ Evm_node_lib_dev_encoding.Ethereum_types.Qty (Z.of_string s)))
     @@ stop)
@@ -1038,7 +1038,7 @@ let commands =
     reset_command;
   ]
 
-let global_options = Tezos_clic.no_options
+let global_options = Mavryk_clic.no_options
 
 let executable_name = Filename.basename Sys.executable_name
 
@@ -1047,33 +1047,33 @@ let argv () = Array.to_list Sys.argv |> List.tl |> Stdlib.Option.get
 let dispatch args =
   let open Lwt_result_syntax in
   let commands =
-    Tezos_clic.add_manual
+    Mavryk_clic.add_manual
       ~executable_name
       ~global_options
-      (if Unix.isatty Unix.stdout then Tezos_clic.Ansi else Tezos_clic.Plain)
+      (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi else Mavryk_clic.Plain)
       Format.std_formatter
       commands
   in
   let* (), remaining_args =
-    Tezos_clic.parse_global_options global_options () args
+    Mavryk_clic.parse_global_options global_options () args
   in
-  Tezos_clic.dispatch commands () remaining_args
+  Mavryk_clic.dispatch commands () remaining_args
 
 let handle_error = function
   | Ok _ -> ()
-  | Error [Tezos_clic.Version] ->
-      let devmode = Tezos_version_value.Bin_version.etherlink_version_string in
+  | Error [Mavryk_clic.Version] ->
+      let devmode = Mavryk_version_value.Bin_version.etherlink_version_string in
       Format.printf "%s\n" devmode ;
       exit 0
-  | Error [Tezos_clic.Help command] ->
-      Tezos_clic.usage
+  | Error [Mavryk_clic.Help command] ->
+      Mavryk_clic.usage
         Format.std_formatter
         ~executable_name
         ~global_options
         (match command with None -> [] | Some c -> [c]) ;
       Stdlib.exit 0
   | Error errs ->
-      Tezos_clic.pp_cli_errors
+      Mavryk_clic.pp_cli_errors
         Format.err_formatter
         ~executable_name
         ~global_options
@@ -1083,14 +1083,14 @@ let handle_error = function
 
 let () =
   let _ =
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.std_formatter
         (if Unix.isatty Unix.stdout then Ansi else Plain)
         Short)
   in
   let _ =
-    Tezos_clic.(
+    Mavryk_clic.(
       setup_formatter
         Format.err_formatter
         (if Unix.isatty Unix.stderr then Ansi else Plain)

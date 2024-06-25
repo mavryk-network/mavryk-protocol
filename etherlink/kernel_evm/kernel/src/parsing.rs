@@ -19,8 +19,9 @@ use crate::{
     upgrade::SequencerUpgrade,
 };
 use primitive_types::{H160, U256};
+use rlp::Encodable;
 use sha3::{Digest, Keccak256};
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
 use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
@@ -28,15 +29,13 @@ use mavryk_ethereum::{
     wei::eth_from_mumav,
 };
 use mavryk_evm_logging::{log, Level::*};
-use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 use mavryk_smart_rollup_encoding::{
     contract::Contract,
     inbox::{
         ExternalMessageFrame, InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer,
     },
-    michelson::{
-        ticket::FA2_1Ticket, MichelsonBytes, MichelsonInt, MichelsonOr, MichelsonPair,
-    },
+    michelson::{ticket::FA2_1Ticket, MichelsonBytes, MichelsonOr, MichelsonPair},
+    public_key::PublicKey,
 };
 use mavryk_smart_rollup_host::input::Message;
 use mavryk_smart_rollup_host::runtime::Runtime;
@@ -313,7 +312,7 @@ impl SequencerInput {
                 seq_blueprint,
             )))
         } else {
-            Self::Unparsable
+            InputResult::Unparsable
         }
     }
 }
@@ -382,6 +381,8 @@ impl<Mode: Parsable> InputResult<Mode> {
         }
     }
 
+    /// Parses an external message
+    ///
     // External message structure :
     // FRAMING_PROTOCOL_TARGETTED 21B / MESSAGE_TAG 1B / DATA
     fn parse_external(
@@ -419,7 +420,6 @@ impl<Mode: Parsable> InputResult<Mode> {
         host: &mut Host,
         ticket: FA2_1Ticket,
         receiver: MichelsonBytes,
-        gas_price: MichelsonInt,
         ticketer: &Option<ContractKt1Hash>,
         context: &mut Mode::Context,
     ) -> Self {
@@ -443,10 +443,6 @@ impl<Mode: Parsable> InputResult<Mode> {
         let amount: u64 = U256::from_little_endian(&amount_bytes).as_u64();
         let amount: U256 = eth_from_mumav(amount);
 
-        // Amount for gas
-        let (_sign, gas_price_bytes) = gas_price.0 .0.to_bytes_le();
-        let gas_price: U256 = U256::from_little_endian(&gas_price_bytes);
-
         // EVM address
         let receiver_bytes = receiver.0;
         if receiver_bytes.len() != std::mem::size_of::<H160>() {
@@ -459,19 +455,8 @@ impl<Mode: Parsable> InputResult<Mode> {
         }
         let receiver = H160::from_slice(&receiver_bytes);
 
-        let content = Deposit {
-            amount,
-            gas_price,
-            receiver,
-        };
-        log!(
-            host,
-            Info,
-            "Deposit of {} to {} with gas price {}",
-            amount,
-            receiver,
-            gas_price
-        );
+        let content = Deposit { amount, receiver };
+        log!(host, Info, "Deposit of {} to {}.", amount, receiver);
         Self::Input(Input::Deposit(content))
     }
 
@@ -507,7 +492,6 @@ impl<Mode: Parsable> InputResult<Mode> {
                 MichelsonOr::Right(MichelsonBytes(bytes)) => {
                     Mode::parse_internal_bytes(source, &bytes, context)
                 }
-                MichelsonOr::Right(_extra) => Self::Unparsable,
             },
             MichelsonOr::Right(MichelsonBytes(bytes)) => {
                 if mavryk_contracts.is_admin(&source)

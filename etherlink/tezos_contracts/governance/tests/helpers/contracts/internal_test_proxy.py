@@ -1,16 +1,16 @@
-from pytezos.client import PyTezosClient
+from pymavryk.client import PyMavrykClient
 from tests.helpers.contracts.contract import ContractHelper
 from tests.helpers.utility import (
     get_build_dir,
     originate_from_file,
 )
-from pytezos.operation.group import OperationGroup
+from pymavryk.operation.group import OperationGroup
 from os.path import join
 
 
 class InternalTestProxy(ContractHelper):
     @classmethod
-    def originate(self, client: PyTezosClient) -> OperationGroup:
+    def originate(self, client: PyMavrykClient) -> OperationGroup:
         storage = None
         filename = join(get_build_dir(), 'test/internal_test_proxy.tz')
 

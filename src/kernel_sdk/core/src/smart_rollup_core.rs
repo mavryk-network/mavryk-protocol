@@ -352,8 +352,8 @@ mod riscv64_hermit {
         slice::from_raw_parts,
     };
     use mavryk_smart_rollup_constants::riscv::{
-        SBI_FIRMWARE_MAVRYK, SBI_MAVRYK_INBOX_NEXT, SBI_MAVRYK_META_ADDRESS,
-        SBI_MAVRYK_META_ORIGINATION_LEVEL,
+        SBI_FIRMWARE_TEZOS, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
+        SBI_TEZOS_META_ORIGINATION_LEVEL,
     };
 
     /// Information about the next inbox level
@@ -379,8 +379,8 @@ mod riscv64_hermit {
             "ecall",
             in("a0") buffer,
             in("a1") max_len,
-            in("a7") SBI_FIRMWARE_MAVRYK, // Extension ID for Mavryk
-            in("a6") SBI_MAVRYK_INBOX_NEXT, // Function ID for `sbi_mavryk_inbox_next`
+            in("a7") SBI_FIRMWARE_TEZOS, // Extension ID for Mavryk
+            in("a6") SBI_TEZOS_INBOX_NEXT, // Function ID for `sbi_mavryk_inbox_next`
             lateout("a0") level,
             lateout("a1") id,
             lateout("a2") length
@@ -396,8 +396,8 @@ mod riscv64_hermit {
 
         core::arch::asm!(
             "ecall",
-            in("a7") SBI_FIRMWARE_MAVRYK,
-            in("a6") SBI_MAVRYK_META_ORIGINATION_LEVEL,
+            in("a7") SBI_FIRMWARE_TEZOS,
+            in("a6") SBI_TEZOS_META_ORIGINATION_LEVEL,
             lateout("a0") level
         );
 
@@ -414,8 +414,8 @@ mod riscv64_hermit {
             "ecall",
             in("a0") buffer,
             in("a1") max_len,
-            in("a7") SBI_FIRMWARE_MAVRYK,
-            in("a6") SBI_MAVRYK_META_ADDRESS,
+            in("a7") SBI_FIRMWARE_TEZOS,
+            in("a6") SBI_TEZOS_META_ADDRESS,
             lateout("a0") result
         );
 

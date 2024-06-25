@@ -34,7 +34,7 @@ end) : sig
 
     include
       Irmin.Generic_key.S
-        with module Schema.Path = Mavryk_context_encoding.Context.Schema.Path
+        with module Schema.Path = Tezos_context_encoding.Context.Schema.Path
 
     val unsafe : rw -> t
   end

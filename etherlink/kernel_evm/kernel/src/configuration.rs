@@ -6,10 +6,10 @@ use crate::{
         sequencer,
     },
 };
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_debug::Runtime;
-use tezos_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_debug::Runtime;
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
 
 pub enum ConfigurationMode {
     Proxy,
@@ -38,14 +38,14 @@ impl std::fmt::Display for ConfigurationMode {
 }
 
 pub struct Configuration {
-    pub tezos_contracts: TezosContracts,
+    pub mavryk_contracts: MavrykContracts,
     pub mode: ConfigurationMode,
 }
 
 impl Default for Configuration {
     fn default() -> Self {
         Self {
-            tezos_contracts: TezosContracts::default(),
+            mavryk_contracts: MavrykContracts::default(),
             mode: ConfigurationMode::Proxy,
         }
     }
@@ -55,14 +55,14 @@ impl std::fmt::Display for Configuration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Tezos Contracts: {}, Mode: {}",
-            &self.tezos_contracts, &self.mode
+            "Mavryk Contracts: {}, Mode: {}",
+            &self.mavryk_contracts, &self.mode
         )
     }
 }
 
 #[derive(Debug, PartialEq, Clone, Default)]
-pub struct TezosContracts {
+pub struct MavrykContracts {
     pub ticketer: Option<ContractKt1Hash>,
     pub admin: Option<ContractKt1Hash>,
     pub sequencer_governance: Option<ContractKt1Hash>,
@@ -70,9 +70,9 @@ pub struct TezosContracts {
     pub kernel_security_governance: Option<ContractKt1Hash>,
 }
 
-impl std::fmt::Display for TezosContracts {
+impl std::fmt::Display for MavrykContracts {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let TezosContracts {
+        let MavrykContracts {
             ticketer,
             admin,
             sequencer_governance,
@@ -90,7 +90,7 @@ fn contains(contract: &Option<ContractKt1Hash>, expected: &ContractKt1Hash) -> b
     contract.as_ref().map_or(false, |kt1| kt1 == expected)
 }
 
-impl TezosContracts {
+impl MavrykContracts {
     pub fn is_admin(&self, contract: &ContractKt1Hash) -> bool {
         contains(&self.admin, contract)
     }
@@ -109,7 +109,7 @@ impl TezosContracts {
     }
 }
 
-fn fetch_tezos_contracts(host: &mut impl Runtime) -> TezosContracts {
+fn fetch_mavryk_contracts(host: &mut impl Runtime) -> MavrykContracts {
     // 1. Fetch the kernel's ticketer, returns `None` if it is badly
     //    encoded or absent.
     let ticketer = read_ticketer(host);
@@ -126,7 +126,7 @@ fn fetch_tezos_contracts(host: &mut impl Runtime) -> TezosContracts {
     //    encoded or absent.
     let kernel_security_governance = read_kernel_security_governance(host);
 
-    TezosContracts {
+    MavrykContracts {
         ticketer,
         admin,
         sequencer_governance,
@@ -136,7 +136,7 @@ fn fetch_tezos_contracts(host: &mut impl Runtime) -> TezosContracts {
 }
 
 pub fn fetch_configuration<Host: Runtime>(host: &mut Host) -> Configuration {
-    let tezos_contracts = fetch_tezos_contracts(host);
+    let mavryk_contracts = fetch_mavryk_contracts(host);
 
     let sequencer = sequencer(host).unwrap_or_default();
     match sequencer {
@@ -152,7 +152,7 @@ pub fn fetch_configuration<Host: Runtime>(host: &mut Host) -> Configuration {
                 });
             match DelayedInbox::new(host) {
                 Ok(delayed_inbox) => Configuration {
-                    tezos_contracts,
+                    mavryk_contracts,
                     mode: ConfigurationMode::Sequencer {
                         delayed_bridge,
                         delayed_inbox: Box::new(delayed_inbox),
@@ -166,7 +166,7 @@ pub fn fetch_configuration<Host: Runtime>(host: &mut Host) -> Configuration {
             }
         }
         None => Configuration {
-            tezos_contracts,
+            mavryk_contracts,
             mode: ConfigurationMode::Proxy,
         },
     }

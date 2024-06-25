@@ -197,7 +197,7 @@ module Q = struct
     end
 
     module V2 = struct
-      let name = "add_lastest_tezos_level"
+      let name = "add_lastest_mavryk_level"
 
       let up =
         [

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
+// SPDX-FileCopyrightText: 2022-2024 TriliTech <contact@trili.tech>
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-FileCopyrightText: 2024 Functori <contact@functori.com>
@@ -12,7 +12,7 @@ use crate::fees::{simulation_add_gas_for_fees, tx_execution_gas_limit};
 use crate::{error::Error, error::StorageError, storage};
 
 use crate::{
-    current_timestamp, parsable, parsing, retrieve_base_fee_per_gas, retrieve_chain_id,
+    current_timestamp, parsable, parsing, retrieve_block_fees, retrieve_chain_id,
     tick_model, CONFIG,
 };
 
@@ -37,9 +37,6 @@ pub const SIMULATION_SIMPLE_TAG: u8 = 1;
 pub const SIMULATION_CREATE_TAG: u8 = 2;
 // SIMULATION/CHUNK/NUM 2B/CHUNK
 pub const SIMULATION_CHUNK_TAG: u8 = 3;
-/// Maximum gas used by the evaluation. Bounded to limit DOS on the rollup node
-/// Is used as default value if no gas is set.
-pub const MAX_EVALUATION_GAS: u64 = MAX_TRANSACTION_GAS_LIMIT;
 /// Tag indicating simulation is an evaluation.
 pub const EVALUATION_TAG: u8 = 0x00;
 /// Tag indicating simulation is a validation.
@@ -234,9 +231,17 @@ impl Evaluation {
         host: &mut Host,
     ) -> Result<SimulationResult<CallResult, String>, Error> {
         let chain_id = retrieve_chain_id(host)?;
-        let base_fee_per_gas = retrieve_base_fee_per_gas(host)?;
-        let block_constants =
-            BlockConstants::first_block(timestamp, chain_id, base_fee_per_gas);
+        let block_fees = retrieve_block_fees(host)?;
+
+        let current_constants = match storage::read_current_block(host) {
+            Ok(block) => block.constants(chain_id, block_fees),
+            Err(_) => {
+                let timestamp = current_timestamp(host);
+                let timestamp = U256::from(timestamp.as_u64());
+                BlockConstants::first_block(timestamp, chain_id, block_fees)
+            }
+        };
+
         let mut evm_account_storage = account_storage::init_account_storage()
             .map_err(|_| Error::Storage(StorageError::AccountInitialisation))?;
         let precompiles = precompiles::precompile_set::<Host>();
@@ -256,16 +261,15 @@ impl Evaluation {
 
         match run_transaction(
             host,
-            &block_constants,
+            &current_constants,
             &mut evm_account_storage,
             &precompiles,
             CONFIG,
             self.to,
             self.from.unwrap_or(default_caller),
             self.data.clone(),
-            self.gas
-                .map(|gas| u64::max(gas, MAX_EVALUATION_GAS))
-                .or(Some(MAX_EVALUATION_GAS)), // gas could be omitted
+            self.gas.or(Some(u64::MAX)),
+            gas_price,
             self.value,
             false,
             allocated_ticks,
@@ -418,7 +422,7 @@ impl TxValidation {
             Some(account) => account.nonce(host)?,
             None => 0,
         };
-        let base_fee_per_gas = retrieve_base_fee_per_gas(host)?;
+        let block_fees = retrieve_block_fees(host)?;
         // Get the chain_id
         let chain_id = storage::read_chain_id(host)?;
         // Check if nonce is too low
@@ -451,7 +455,7 @@ impl TryFrom<&[u8]> for TxValidation {
 #[derive(Debug, PartialEq)]
 enum Message {
     Evaluation(Evaluation),
-    TxValidation(TxValidation),
+    TxValidation(Box<TxValidation>),
 }
 
 impl TryFrom<&[u8]> for Message {
@@ -463,7 +467,8 @@ impl TryFrom<&[u8]> for Message {
 
         match tag {
             EVALUATION_TAG => Evaluation::try_from(bytes).map(Message::Evaluation),
-            VALIDATION_TAG => TxValidation::try_from(bytes).map(Message::TxValidation),
+            VALIDATION_TAG => TxValidation::try_from(bytes)
+                .map(|tx| Message::TxValidation(Box::new(tx))),
             _ => Err(DecoderError::Custom("Unknown message to simulate")),
         }
     }
@@ -675,16 +680,13 @@ mod tests {
         let timestamp = U256::from(timestamp.as_u64());
         let chain_id = retrieve_chain_id(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        let base_fee_per_gas = retrieve_base_fee_per_gas(host);
+        let block_fees = retrieve_block_fees(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        assert!(
-            base_fee_per_gas.is_ok(),
-            "base_fee_per_gas should be defined"
-        );
+        assert!(block_fees.is_ok(), "block_fees should be defined");
         let block = BlockConstants::first_block(
             timestamp,
             chain_id.unwrap(),
-            base_fee_per_gas.unwrap(),
+            block_fees.unwrap(),
         );
         let precompiles = precompiles::precompile_set::<Host>();
         let mut evm_account_storage = account_storage::init_account_storage().unwrap();
@@ -694,6 +696,10 @@ mod tests {
         let transaction_value = U256::from(0);
         let call_data: Vec<u8> = hex::decode(STORAGE_CONTRACT_INITIALIZATION).unwrap();
 
+        // gas limit was estimated using Remix on Shanghai network (256,842)
+        // plus a safety margin for gas accounting discrepancies
+        let gas_limit = 300_000;
+        let gas_price = U256::from(21000);
         // create contract
         let outcome = evm_execution::run_transaction(
             host,
@@ -704,7 +710,8 @@ mod tests {
             callee,
             caller,
             call_data,
-            Some(31000),
+            Some(gas_limit),
+            gas_price,
             Some(transaction_value),
             false,
             DUMMY_ALLOCATED_TICKS,
@@ -732,7 +739,7 @@ mod tests {
             gas_price: None,
             to: Some(new_address),
             data: hex::decode(STORAGE_CONTRACT_CALL_NUM).unwrap(),
-            gas: Some(10000),
+            gas: Some(100000),
             value: None,
         };
         let outcome = evaluation.run(&mut host);
@@ -756,7 +763,7 @@ mod tests {
             gas_price: None,
             to: Some(new_address),
             data: hex::decode(STORAGE_CONTRACT_CALL_GET).unwrap(),
-            gas: Some(10000),
+            gas: Some(111111),
             value: None,
         };
         let outcome = evaluation.run(&mut host);
@@ -865,19 +872,6 @@ mod tests {
             parsed,
             "should have been parsed as complete simulation"
         );
-
-        if let Input::Simple(box_simple) = parsed {
-            if let Message::Evaluation(s) = *box_simple {
-                let res = s.run(&mut host).expect("simulation should run");
-                assert!(
-                    res.is_some(),
-                    "Simulation should have produced some outcome"
-                );
-                let res = res.unwrap();
-                return assert!(res.is_success, "simulation should have succeeded");
-            }
-        }
-        panic!("Parsing failed")
     }
 
     #[test]
@@ -965,9 +959,9 @@ mod tests {
         let parsed = Input::parse(&input);
 
         assert_eq!(
-            Input::Simple(Box::new(Message::TxValidation(TxValidation {
+            Input::Simple(Box::new(Message::TxValidation(Box::new(TxValidation {
                 transaction: expected
-            }))),
+            })))),
             parsed,
             "should have been parsed as complete tx validation"
         );

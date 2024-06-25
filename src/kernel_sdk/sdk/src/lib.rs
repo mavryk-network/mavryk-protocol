@@ -10,6 +10,9 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+#[cfg(all(target_arch = "riscv64", target_os = "hermit", feature = "proto-alpha"))]
+extern crate hermit;
+
 pub use mavryk_smart_rollup_entrypoint::kernel_entry;
 
 pub mod host {
@@ -33,7 +36,7 @@ pub mod host {
 pub use mavryk_smart_rollup_core as core_unsafe;
 
 pub mod prelude {
-    //! Tezos smart rollup prelude - used by every kernel.
+    //! Mavryk smart rollup prelude - used by every kernel.
     //!
     //! The prelude brings into scope the [`Runtime`] trait, used
     //! for interacting with the WASM-VM, and the [`debug_msg`] macro.

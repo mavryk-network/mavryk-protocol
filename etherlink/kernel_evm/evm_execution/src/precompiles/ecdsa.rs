@@ -13,8 +13,8 @@ use libsecp256k1::{recover, Message, RecoveryId, Signature};
 use sha2::Digest;
 use sha3::Keccak256;
 use std::cmp::min;
-use tezos_evm_logging::log;
-use tezos_evm_logging::Level::{Debug, Info};
+use mavryk_evm_logging::log;
+use mavryk_evm_logging::Level::{Debug, Info};
 
 macro_rules! unwrap_ecrecover {
     ($expr : expr) => {

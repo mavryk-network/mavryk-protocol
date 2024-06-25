@@ -36,7 +36,7 @@ type t = {
 }
 
 let wrap_context_init f _ =
-  Lwt_utils_unix.with_tempdir "tezos_test_" (fun base_dir ->
+  Lwt_utils_unix.with_tempdir "mavryk_test_" (fun base_dir ->
       let root = Filename.concat base_dir "context" in
       let* index = Context.init root in
       let*!! genesis =

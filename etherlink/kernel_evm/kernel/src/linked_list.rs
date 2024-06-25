@@ -4,8 +4,8 @@ use crate::storage;
 use anyhow::{Context, Result};
 use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpIterator, RlpStream};
 use std::marker::PhantomData;
-use tezos_ethereum::rlp_helpers::{append_option, decode_field, decode_option, next};
-use tezos_smart_rollup_host::{
+use mavryk_ethereum::rlp_helpers::{append_option, decode_field, decode_option, next};
+use mavryk_smart_rollup_host::{
     path::{concat, OwnedPath, Path},
     runtime::Runtime,
 };
@@ -439,10 +439,10 @@ mod tests {
     use proptest::proptest;
     use rlp::{Decodable, DecoderError, Encodable};
     use std::collections::HashMap;
-    use tezos_ethereum::transaction::TRANSACTION_HASH_SIZE;
-    use tezos_smart_rollup_debug::Runtime;
-    use tezos_smart_rollup_host::path::RefPath;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_debug::Runtime;
+    use mavryk_smart_rollup_host::path::RefPath;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[derive(Clone)]
     struct Hash([u8; TRANSACTION_HASH_SIZE]);

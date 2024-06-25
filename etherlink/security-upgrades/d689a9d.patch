@@ -29,11 +29,11 @@ index 5e269e8c12..04ff0e151d 100644
 -    SEQUENCER_GOVERNANCE, STORAGE_VERSION,
 -};
 -use primitive_types::H256;
--use tezos_ethereum::block::L2Block;
--use tezos_evm_logging::{log, Level::*};
+-use mavryk_ethereum::block::L2Block;
+-use mavryk_evm_logging::{log, Level::*};
 +use crate::storage::{read_storage_version, store_storage_version, STORAGE_VERSION};
- use tezos_smart_rollup_host::path::RefPath;
- use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+ use mavryk_smart_rollup_host::path::RefPath;
+ use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
  
 @@ -23,18 +17,7 @@ pub enum MigrationStatus {
      Done,
@@ -104,7 +104,7 @@ diff --git a/etherlink/kernel_evm/kernel/src/storage.rs b/etherlink/kernel_evm/k
 index 3abe775024..22d2dafba9 100644
 --- a/etherlink/kernel_evm/kernel/src/storage.rs
 +++ b/etherlink/kernel_evm/kernel/src/storage.rs
-@@ -31,7 +31,7 @@ use tezos_ethereum::wei::Wei;
+@@ -31,7 +31,7 @@ use mavryk_ethereum::wei::Wei;
  
  use primitive_types::{H160, H256, U256};
  

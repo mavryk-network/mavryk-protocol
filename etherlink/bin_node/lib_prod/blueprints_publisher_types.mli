@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_base
+open Mavryk_base
 
 module Request : sig
   (** Type of requests accepted by the publisher worker. *)

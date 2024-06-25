@@ -58,7 +58,7 @@ diff --git a/etherlink/kernel_evm/kernel/src/storage.rs b/etherlink/kernel_evm/k
 index 560c736546..a230a84234 100644
 --- a/etherlink/kernel_evm/kernel/src/storage.rs
 +++ b/etherlink/kernel_evm/kernel/src/storage.rs
-@@ -31,7 +31,7 @@ use tezos_ethereum::wei::Wei;
+@@ -31,7 +31,7 @@ use mavryk_ethereum::wei::Wei;
 
  use primitive_types::{H160, H256, U256};
 

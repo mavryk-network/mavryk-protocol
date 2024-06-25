@@ -1,4 +1,4 @@
-Encodings related to Tezos Smart Rollups.
+Encodings related to Mavryk Smart Rollups.
 
 Included are types for:
 

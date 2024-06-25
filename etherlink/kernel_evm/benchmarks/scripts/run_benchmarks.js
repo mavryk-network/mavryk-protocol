@@ -58,7 +58,7 @@ let COMPUTATION = commander.opts().computation;
 let MODE = commander.opts().mode || "proxy";
 let KEEP_TEMP = commander.opts().keepTemp;
 let FAST_MODE = commander.opts().fastMode;
-const RUN_DEBUGGER_COMMAND = external.bin('./octez-smart-rollup-wasm-debugger');
+const RUN_DEBUGGER_COMMAND = external.bin('./mavkit-smart-rollup-wasm-debugger');
 const EVM_INSTALLER_KERNEL_PATH = external.resource('evm_benchmark_kernel.wasm');
 const EVM_BENCHMARK_CONFIG_PATH = external.resource('etherlink/config/benchmarking.yaml');
 const EVM_BENCHMARK_SEQUENCER_CONFIG_PATH = external.resource('etherlink/config/benchmarking_sequencer.yaml');
@@ -124,7 +124,7 @@ function push_profiler_sections(output, opcodes, precompiles) {
             let address = match[2].substring(0, 42);
             let data_size = parseInt("0x" + match[2].substring(42));
             if (precompiled_address_set.has(address)) {
-                precompiles.push({"address": address, "data_size": data_size, "ticks": ticks})
+                precompiles.push({ "address": address, "data_size": data_size, "ticks": ticks })
             }
         }
     }
@@ -287,7 +287,7 @@ async function analyze_profiler_output(path) {
 }
 
 // Run given benchmark
-async function run_benchmark(path) {
+async function run_benchmark(path, logs) {
     var inbox_size = fs.statSync(path).size
     run_profiler_result = await run_profiler(path, logs);
     profiler_output_analysis_result = FAST_MODE ? {} : await analyze_profiler_output(run_profiler_result.profiler_output_path);
@@ -423,6 +423,9 @@ function log_benchmark_result(benchmark_name, data) {
     return rows;
 }
 
+function logs_filename(time) {
+    return path.format({ dir: OUTPUT_DIRECTORY, base: `logs_${time}.log` })
+}
 
 function output_filename(time) {
     return path.format({ dir: OUTPUT_DIRECTORY, base: `benchmark_result_${time}.csv` })
@@ -471,6 +474,7 @@ async function run_all_benchmarks(benchmark_scripts) {
     let output = output_filename(time);
     let opcodes_dump = opcodes_dump_filename(time);
     let precompiles_output = precompiles_filename(time);
+    let logs = logs_filename(time)
     console.log(`Output in ${output}`);
     console.log(`Dumped opcodes in ${opcodes_dump}`);
     console.log(`Precompiles in ${precompiles_output}`);
@@ -487,7 +491,7 @@ async function run_all_benchmarks(benchmark_scripts) {
         console.log(`Benchmarking ${benchmark_script} (mode: ${MODE})`);
         fs.appendFileSync(logs, `=================================================\nBenchmarking ${benchmark_script}\n`)
         build_benchmark_scenario(benchmark_script);
-        run_benchmark_result = await run_benchmark("transactions.json");
+        run_benchmark_result = await run_benchmark("transactions.json", logs);
         benchmark_log = log_benchmark_result(benchmark_name, run_benchmark_result);
         if (i == 0) benchmark_csv_config = initialize_headers(output, benchmark_log);
         fs.appendFileSync(output, csv.stringify(benchmark_log, benchmark_csv_config))
@@ -496,6 +500,7 @@ async function run_all_benchmarks(benchmark_scripts) {
     }
     fs.appendFileSync(opcodes_dump, "}");
     console.log("Benchmarking complete");
+    fs.appendFileSync(logs, "=================================================\nBenchmarking complete.\n")
     execSync("rm transactions.json");
 }
 

@@ -41,15 +41,13 @@ use mavryk_smart_rollup_host::runtime::Runtime;
 #[derive(Debug, PartialEq, Clone)]
 pub struct Deposit {
     pub amount: U256,
-    pub gas_price: U256,
     pub receiver: H160,
 }
 
 impl Encodable for Deposit {
     fn rlp_append(&self, stream: &mut rlp::RlpStream) {
-        stream.begin_list(3);
+        stream.begin_list(2);
         stream.append(&self.amount);
-        stream.append(&self.gas_price);
         stream.append(&self.receiver);
     }
 }
@@ -59,19 +57,14 @@ impl Decodable for Deposit {
         if !decoder.is_list() {
             return Err(DecoderError::RlpExpectedToBeList);
         }
-        if decoder.item_count()? != 3 {
+        if decoder.item_count()? != 2 {
             return Err(DecoderError::RlpIncorrectListLen);
         }
 
         let mut it = decoder.iter();
         let amount: U256 = decode_field(&next(&mut it)?, "amount")?;
-        let gas_price: U256 = decode_field(&next(&mut it)?, "gas_price")?;
         let receiver: H160 = decode_field(&next(&mut it)?, "receiver")?;
-        Ok(Deposit {
-            amount,
-            gas_price,
-            receiver,
-        })
+        Ok(Deposit { amount, receiver })
     }
 }
 
@@ -392,12 +385,9 @@ fn handle_deposit<Host: Runtime>(
 
     let mut buffer_amount = [0; 32];
     deposit.amount.to_little_endian(&mut buffer_amount);
-    let mut buffer_gas_price = [0; 32];
-    deposit.gas_price.to_little_endian(&mut buffer_gas_price);
 
     let mut to_hash = vec![];
     to_hash.extend_from_slice(&buffer_amount);
-    to_hash.extend_from_slice(&buffer_gas_price);
     to_hash.extend_from_slice(&deposit.receiver.to_fixed_bytes());
     to_hash.extend_from_slice(&deposit_nonce.to_le_bytes());
 
@@ -511,6 +501,11 @@ pub fn read_proxy_inbox<Host: Runtime>(
     let mut res = ProxyInboxContent {
         transactions: vec![],
     };
+    // The mutable variable is used to retrieve the information of whether the
+    // inbox was empty or not. As we consume all the inbox in one go, if the
+    // variable remains true, that means that the inbox was already consumed
+    // during this kernel run.
+    let mut inbox_is_empty = true;
     loop {
         match read_and_dispatch_input::<Host, ProxyInput>(
             host,
@@ -621,11 +616,13 @@ mod tests {
     use mavryk_crypto_rs::hash::SmartRollupHash;
     use mavryk_data_encoding::types::Bytes;
     use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
     use mavryk_smart_rollup_encoding::contract::Contract;
     use mavryk_smart_rollup_encoding::inbox::ExternalMessageFrame;
     use mavryk_smart_rollup_encoding::michelson::{MichelsonBytes, MichelsonOr};
     use mavryk_smart_rollup_encoding::public_key_hash::PublicKeyHash;
     use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
     use mavryk_smart_rollup_mock::{MockHost, TransferMetadata};
 
     const SMART_ROLLUP_ADDRESS: [u8; 20] = [
@@ -786,7 +783,6 @@ mod tests {
     #[test]
     fn parse_valid_kernel_upgrade() {
         let mut host = MockHost::default();
-        store_kernel_upgrade_nonce(&mut host, 1).unwrap();
 
         // Prepare the upgrade's payload
         let preimage_hash: [u8; PREIMAGE_HASH_SIZE] = hex::decode(
@@ -795,13 +791,18 @@ mod tests {
         .unwrap()
         .try_into()
         .unwrap();
+        let activation_timestamp = Timestamp::from(0i64);
 
-        let kernel_upgrade_payload = preimage_hash.to_vec();
+        let kernel_upgrade = KernelUpgrade {
+            preimage_hash,
+            activation_timestamp,
+        };
+        let kernel_upgrade_payload = kernel_upgrade.rlp_bytes().to_vec();
 
         // Create a transfer from the bridge contract, that act as the
         // dictator (or administrator).
         let source =
-            PublicKeyHash::from_b58check("mv1KJgcmEfhEaYXj1tGkMjb4cM8q2iGyKA2G").unwrap();
+            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap();
         let contract =
             Contract::from_b58check("KT1HJphVV3LUxqZnc7YSH6Zdfd3up1DjLqZv").unwrap();
         let sender = match contract {

@@ -144,7 +144,7 @@ module Handlers = struct
   let on_error :
       type r request_error.
       worker ->
-      Tezos_base.Worker_types.request_status ->
+      Mavryk_base.Worker_types.request_status ->
       (r, request_error) Request.t ->
       request_error ->
       unit tzresult Lwt.t =

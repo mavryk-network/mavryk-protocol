@@ -40,7 +40,7 @@ let leftPad32 s =
 let add_0x s = "0x" ^ s
 
 let mapping_position index map_position =
-  Tezos_crypto.Hacl.Hash.Keccak_256.digest
+  Mavryk_crypto.Hacl.Hash.Keccak_256.digest
     (Hex.to_bytes
        (`Hex (leftPad32 index ^ leftPad32 (string_of_int map_position))))
   |> Hex.of_bytes |> Hex.show |> add_0x
@@ -77,7 +77,7 @@ let force_kernel_upgrade ~sc_rollup_address ~sc_rollup_node ~client =
     (* Framed protocol tag. *)
     "\000"
     (* Smart rollup address bytes. *)
-    ^ Tezos_crypto.Hashed.Smart_rollup_address.(
+    ^ Mavryk_crypto.Hashed.Smart_rollup_address.(
         of_b58check_exn sc_rollup_address |> to_string)
     ^ (* Force kernel upgrade tag.
          See [FORCE_KERNEL_UPGRADE_TAG] in [etherlink/kernel_evm/kernel/src/parsing.rs] *)

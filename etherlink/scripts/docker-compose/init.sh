@@ -10,7 +10,7 @@ script_dir=$(dirname "$0")
 run_in_docker() {
   bin="$1"
   shift 1
-  docker_run=(docker run -v "${HOST_TEZOS_DATA_DIR}":/home/tezos tezos/tezos-bare:"${OCTEZ_TAG}")
+  docker_run=(docker run -v "${HOST_MAVRYK_DATA_DIR}":/home/tezos mavryk/mavryk-bare:"${MAVKIT_TAG}")
   "${docker_run[@]}" "/usr/local/bin/${bin}" "$@"
 }
 
@@ -24,8 +24,8 @@ docker_compose() {
 
 docker_update_images() {
   # pull latest version
-  docker pull tezos/tezos-bare:"${OCTEZ_TAG}"
-  docker build -t tezos_with_curl:"${OCTEZ_TAG}" "${script_dir}"/tezos_with_curl/ --build-arg OCTEZ_TAG="${OCTEZ_TAG}"
+  docker pull mavryk/mavryk-bare:"${MAVKIT_TAG}"
+  docker build -t mavryk_with_curl:"${MAVKIT_TAG}" "${script_dir}"/mavryk_with_curl/ --build-arg MAVKIT_TAG="${MAVKIT_TAG}"
 }
 
 create_chain_id() {
@@ -54,7 +54,7 @@ add_kernel_config_contract() {
   alias="$3"
   label="$4"
 
-  if address=$(run_in_docker octez-client --endpoint "$ENDPOINT" show known contract "$alias" 2> /dev/null); then
+  if address=$(run_in_docker mavkit-client --endpoint "$ENDPOINT" show known contract "$alias" 2> /dev/null); then
     hex=$(printf '%s' "${address}" | xxd -p -c 36)
     add_kernel_config_set "$file" "$key" "$hex" "${label}: ${address}"
   fi
@@ -86,21 +86,21 @@ create_kernel_config() {
 
   # sequencer_config
   if [[ -n $SEQUENCER_ALIAS ]]; then
-    pubkey=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_ALIAS}" | grep Public | grep -oE "edpk.*")
+    pubkey=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_ALIAS}" | grep Public | grep -oE "edpk.*")
     pubkey_hex=$(printf '%s' "${pubkey}" | xxd -p -c 54)
     add_kernel_config_set "$file" "/evm/sequencer" "${pubkey_hex}" "SEQUENCER_PUBKEY: ${pubkey}"
   fi
 }
 
 build_kernel() {
-  mkdir -p "${HOST_TEZOS_DATA_DIR}/.tezos-client"
+  mkdir -p "${HOST_MAVRYK_DATA_DIR}/.mavryk-client"
   cp "${EVM_KERNEL_CONFIG}" "$script_dir"/evm_config_tmp.yaml
   create_kernel_config "$script_dir"/evm_config_tmp.yaml
-  # build kernel in an image (e.g. tezos/tezos-bare:master) with new chain id
+  # build kernel in an image (e.g. mavryk/mavryk-bare:master) with new chain id
   commit="$(git rev-parse HEAD)"
   docker build --no-cache -t etherlink_kernel:"$commit" --build-arg EVM_CONFIG="etherlink/scripts/docker-compose/evm_config_tmp.yaml" --build-arg CI_COMMIT_SHA="$commit" -f "$script_dir/evm_kernel_builder.Dockerfile" "${script_dir}/../../.."
   container_name=$(docker create etherlink_kernel:"$commit")
-  docker cp "${container_name}":/kernel/ "${HOST_TEZOS_DATA_DIR}/"
+  docker cp "${container_name}":/kernel/ "${HOST_MAVRYK_DATA_DIR}/"
 }
 
 generate_key() {
@@ -108,7 +108,7 @@ generate_key() {
   echo "Generate a ${alias} key. Nothing happens if key already exists"
   # if next command fails it's because the alias already
   # exists. Don't override it.
-  run_in_docker octez-client --endpoint "${ENDPOINT}" gen keys "${alias}" || echo "${alias} already exists"
+  run_in_docker mavkit-client --endpoint "${ENDPOINT}" gen keys "${alias}" || echo "${alias} already exists"
   echo "You can now top up the balance for ${alias}"
 }
 
@@ -116,10 +116,10 @@ balance_account_is_enough() {
   address="$1"
   alias="$2"
   minimum="$3"
-  balance=$(run_in_docker octez-client --endpoint "${ENDPOINT}" get balance for "${alias}")
-  balance=${balance%" ṁ"} # remove ṁ
+  balance=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" get balance for "${alias}")
+  balance=${balance%" ꜩ"} # remove ꜩ
   balance=${balance%.*}   # remove floating part
-  echo "balance of ${alias} is ${balance} ṁ (truncated)."
+  echo "balance of ${alias} is ${balance} ꜩ (truncated)."
   if [[ "${balance}" -ge "${minimum}" ]]; then
     return 0
   else
@@ -132,7 +132,7 @@ originate_evm_rollup() {
   kernel_path="$1"
   echo "originate a new evm rollup '${ROLLUP_ALIAS}' with '${ORIGINATOR_ALIAS}', and kernel '${kernel_path}'"
   kernel="$(xxd -p "${kernel_path}" | tr -d '\n')"
-  run_in_docker octez-client --endpoint "${ENDPOINT}" \
+  run_in_docker mavkit-client --endpoint "${ENDPOINT}" \
     originate smart rollup "${ROLLUP_ALIAS}" \
     from "${ORIGINATOR_ALIAS}" \
     of kind wasm_2_0_0 of type "(or (or (pair bytes (ticket (pair nat (option bytes)))) bytes) bytes)" \
@@ -142,19 +142,19 @@ originate_evm_rollup() {
 
 init_rollup_node_config() {
   echo "create rollup node config and copy kernel preimage"
-  run_in_docker octez-smart-rollup-node init "${ROLLUP_NODE_MODE}" config for "${ROLLUP_ALIAS}" with operators "${OPERATOR_ALIAS}" --rpc-addr 0.0.0.0 --rpc-port 8733 --cors-origins '*' --cors-headers '*'
-  cp -R "${HOST_TEZOS_DATA_DIR}"/kernel/_evm_installer_preimages/ "${HOST_TEZOS_DATA_DIR}"/.tezos-smart-rollup-node/wasm_2_0_0
+  run_in_docker mavkit-smart-rollup-node init "${ROLLUP_NODE_MODE}" config for "${ROLLUP_ALIAS}" with operators "${OPERATOR_ALIAS}" --rpc-addr 0.0.0.0 --rpc-port 8733 --cors-origins '*' --cors-headers '*'
+  cp -R "${HOST_MAVRYK_DATA_DIR}"/kernel/_evm_installer_preimages/ "${HOST_MAVRYK_DATA_DIR}"/.mavryk-smart-rollup-node/wasm_2_0_0
 }
 
-init_octez_node() {
+init_mavkit_node() {
   docker_update_images
-  mkdir -p "$HOST_TEZOS_DATA_DIR"
-  # init octez node storage
-  run_in_docker octez-node config init --network "${TZNETWORK_ADDRESS}"
+  mkdir -p "$HOST_MAVRYK_DATA_DIR"
+  # init mavkit node storage
+  run_in_docker mavkit-node config init --network "${TZNETWORK_ADDRESS}"
   # download snapshot
   if [[ -n ${SNAPSHOT_URL} ]]; then
-    wget -O "${HOST_TEZOS_DATA_DIR}/snapshot" "${SNAPSHOT_URL}"
-    run_in_docker octez-node snapshot import /home/tezos/snapshot
+    wget -O "${HOST_MAVRYK_DATA_DIR}/snapshot" "${SNAPSHOT_URL}"
+    run_in_docker mavkit-node snapshot import /home/tezos/snapshot
   fi
 }
 
@@ -169,12 +169,12 @@ originate_contracts() {
   fi
   if [[ -n ${EVM_ADMIN_ALIAS} ]]; then
     generate_key "${EVM_ADMIN_ALIAS}"
-    evm_admin_address=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show address "${EVM_ADMIN_ALIAS}" | grep Hash | grep -oE "tz.*")
+    evm_admin_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${EVM_ADMIN_ALIAS}" | grep Hash | grep -oE "tz.*")
     originate_admin "${EVM_ADMIN_ALIAS}_contract" "${evm_admin_address}"
   fi
   if [[ -n ${SEQUENCER_GOVERNANCE_ALIAS} ]]; then
     generate_key "${SEQUENCER_GOVERNANCE_ALIAS}"
-    sequencer_governance_address=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_GOVERNANCE_ALIAS}" | grep Hash | grep -oE "tz.*")
+    sequencer_governance_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_GOVERNANCE_ALIAS}" | grep Hash | grep -oE "tz.*")
     originate_admin "${SEQUENCER_GOVERNANCE_ALIAS}_contract" "${sequencer_governance_address}"
   fi
   if [[ -n ${DELAYED_BRIDGE_ALIAS} ]]; then
@@ -184,14 +184,14 @@ originate_contracts() {
 
 # this function:
 # 1/ updates the docker images/
-# 2/ build the kernel based on latest octez master version.
-#    kernels and pre-images are copied into "${HOST_TEZOS_DATA_DIR}/kernel"
+# 2/ build the kernel based on latest mavkit master version.
+#    kernels and pre-images are copied into "${HOST_MAVRYK_DATA_DIR}/kernel"
 # 3/ originate a new rollup with the build kernel
-# 4/ initialise the octez-smart-rollup-node configuration
+# 4/ initialise the mavkit-smart-rollup-node configuration
 init_rollup() {
   docker_update_images
   build_kernel
-  kernel="${HOST_TEZOS_DATA_DIR}"/kernel/evm_installer.wasm
+  kernel="${HOST_MAVRYK_DATA_DIR}"/kernel/evm_installer.wasm
   originate_evm_rollup "${kernel}"
   init_rollup_node_config
 }
@@ -199,7 +199,7 @@ init_rollup() {
 loop_until_balance_is_enough() {
   alias=$1
   minimum_balance=$2
-  address=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show address "${alias}" | grep Hash | grep -oE "tz.*")
+  address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${alias}" | grep Hash | grep -oE "tz.*")
   until balance_account_is_enough "${address}" "${alias}" "${minimum_balance}"; do
     if [[ -n $FAUCET ]] && command -v npx &> /dev/null; then
       npx @tacoinfra/get-tez -a $((minimum_balance + 100)) -f "$FAUCET" "$address"
@@ -212,10 +212,10 @@ originate_contract() {
   filename=$1
   contract_alias=$2
   storage=$3
-  mkdir -p "${HOST_TEZOS_DATA_DIR}"/contracts
-  cp "${script_dir}/../../tezos_contracts/${filename}" "${HOST_TEZOS_DATA_DIR}/contracts"
+  mkdir -p "${HOST_MAVRYK_DATA_DIR}"/contracts
+  cp "${script_dir}/../../mavryk_contracts/${filename}" "${HOST_MAVRYK_DATA_DIR}/contracts"
   echo "originate ${filename} contract (alias: ${contract_alias})"
-  run_in_docker octez-client --endpoint "${ENDPOINT}" originate contract "${contract_alias}" transferring 0 from "${ORIGINATOR_ALIAS}" running "contracts/${filename}" --init "$storage" --burn-cap 0.5
+  run_in_docker mavkit-client --endpoint "${ENDPOINT}" originate contract "${contract_alias}" transferring 0 from "${ORIGINATOR_ALIAS}" running "contracts/${filename}" --init "$storage" --burn-cap 0.5
 }
 
 originate_exchanger() {
@@ -223,7 +223,7 @@ originate_exchanger() {
 }
 
 originate_bridge() {
-  exchanger_address=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show known contract "${EXCHANGER_ALIAS}")
+  exchanger_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show known contract "${EXCHANGER_ALIAS}")
   originate_contract evm_bridge.tz "${BRIDGE_ALIAS}" "Pair \"${exchanger_address}\" None"
 }
 
@@ -237,8 +237,8 @@ deposit() {
   amount=$1
   src=$2
   l2_address=$3
-  rollup_address=$(run_in_docker octez-client --endpoint "${ENDPOINT}" show known smart rollup "${ROLLUP_ALIAS}")
-  run_in_docker octez-client --endpoint "${ENDPOINT}" transfer "$amount" from "$src" to "${BRIDGE_ALIAS}" --entrypoint deposit --arg "Pair \"${rollup_address}\" $l2_address" --burn-cap 0.03075
+  rollup_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show known smart rollup "${ROLLUP_ALIAS}")
+  run_in_docker mavkit-client --endpoint "${ENDPOINT}" transfer "$amount" from "$src" to "${BRIDGE_ALIAS}" --entrypoint deposit --arg "Pair \"${rollup_address}\" $l2_address" --burn-cap 0.03075
 }
 
 command=$1
@@ -257,13 +257,13 @@ originate_rollup)
 init_rollup_node_config)
   init_rollup_node_config "$@"
   ;;
-init_octez_node)
-  init_octez_node
+init_mavkit_node)
+  init_mavkit_node
   ;;
 build_kernel)
   docker_update_images
   build_kernel
-  kernel="${HOST_TEZOS_DATA_DIR}"/kernel/evm_installer.wasm
+  kernel="${HOST_MAVRYK_DATA_DIR}"/kernel/evm_installer.wasm
   ;;
 init_rollup)
   if [[ -n ${OPERATOR_ALIAS} ]]; then
@@ -281,7 +281,7 @@ init_rollup)
 reset_rollup)
   docker_compose stop smart-rollup-node sequencer
 
-  rm -r "${HOST_TEZOS_DATA_DIR}/.tezos-smart-rollup-node" "${HOST_TEZOS_DATA_DIR}/.octez-evm-node" "${HOST_TEZOS_DATA_DIR}/kernel"
+  rm -r "${HOST_MAVRYK_DATA_DIR}/.mavryk-smart-rollup-node" "${HOST_MAVRYK_DATA_DIR}/.mavkit-evm-node" "${HOST_MAVRYK_DATA_DIR}/kernel"
 
   init_rollup
 
@@ -306,8 +306,8 @@ Available commands:
   - check_balance <alias> <minimal balance>
   - originate_rollup <source> <rollup_alias>
   - init_rollup_node_config <rollup_mode> <rollup_alias> <operators>
-  - init_octez_node:
-    download snapshot, and init octez-node config
+  - init_mavkit_node:
+    download snapshot, and init mavkit-node config
   - originate_contracts:
     originate contracts
   - build_kernel:
@@ -320,12 +320,12 @@ Available commands:
     and existing kernel.
     Then build lastest evm kernel, originate a new rollup with it and
     initialise the rollup node config in:
-     "${HOST_TEZOS_DATA_DIR}".
+     "${HOST_MAVRYK_DATA_DIR}".
   - run
     execute docker compose up
   - restart
     execute docker compose restart
-  - deposit <amount> <source: tezos address> <target: evm address>
+  - deposit <amount> <source: mavryk address> <target: evm address>
     deposit xtz to etherlink via the ticketer
 EOF
   ;;

@@ -30,8 +30,8 @@ module Make (N : sig
   val name : string
 end) =
 struct
-  module Maker = Irmin_pack_unix.Maker (Mavryk_context_encoding.Context.Conf)
-  module Raw = Maker.Make (Mavryk_context_encoding.Context.Schema)
+  module Maker = Irmin_pack_unix.Maker (Tezos_context_encoding.Context.Conf)
+  module Raw = Maker.Make (Tezos_context_encoding.Context.Schema)
   include Raw
 
   let make_key_path path key = path @ [key]
@@ -68,7 +68,7 @@ struct
 
   let info message =
     let date =
-      Mavryk_base.Time.(
+      Tezos_base.Time.(
         System.now () |> System.to_protocol |> Protocol.to_seconds)
     in
     Irmin.Info.Default.v ~author:N.name ~message date

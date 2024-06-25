@@ -24,7 +24,7 @@ class Metadata:
 
         metadata_json = json.dumps(kwargs)
         return {
-            '': to_hex('tezos-storage:contents'),
+            '': to_hex('mavryk-storage:contents'),
             'contents': to_hex(metadata_json),
         }
 

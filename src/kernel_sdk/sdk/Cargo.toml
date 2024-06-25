@@ -7,13 +7,10 @@ name = "mavryk-smart-rollup"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
-authors = [
-    "TriliTech <contact@trili.tech>",
-    "Mavryk Dynamics <info@mavryk.io>"
-]
-repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
+authors = ["TriliTech <contact@trili.tech>"]
+repository = "https://gitlab.com/tezos/tezos.git"
 description = "SDK for Mavryk Smart Rollup kernel development."
-keywords = ["mavryk", "smart", "rollup"]
+keywords = ["tezos", "smart", "rollup"]
 categories = ["wasm", "encoding", "development-tools"]
 
 [package.metadata.docs.rs]
@@ -64,6 +61,14 @@ optional = true
 [dependencies.mavryk_data_encoding]
 version = "=0.5.2"
 optional = true
+
+[target.'cfg(target_os = "hermit")'.dependencies.hermit]
+# TODO: remove pin once patched version of hermit is published
+git = "https://github.com/hermit-os/hermit-rs.git"
+# This is the latest revision we can use at the moment. The 'hermit' crate
+# introduces breaking changes that require Rust 1.74+.
+rev = "01df75880c9be03fe935c3faabd191082d8916a2"
+default-features = false
 
 [features]
 default = ["std", "crypto", "dlmalloc", "panic-hook", "data-encoding", "storage", "bls", "testing"]

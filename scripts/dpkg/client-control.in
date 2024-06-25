@@ -2,5 +2,5 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
-Description: The Mavkit client
+Description: The Octez client
 Depends: @DEPENDS@

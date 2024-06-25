@@ -59,7 +59,7 @@ pub fn set_instr_hex(
 ) -> Result<OwnedConfigInstruction, ConfigConversionError> {
     let to = OwnedPath::try_from(to).map_err(ConfigConversionError::PathError)?;
     let value = hex::decode(value.as_str()).map_err(ConfigConversionError::Hex)?;
-    if value.len() > tezos_smart_rollup_core::PREIMAGE_HASH_SIZE {
+    if value.len() > mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE {
         match content_to_preimages(value) {
             Some(hash) => Ok(OwnedConfigInstruction::reveal_instr(hash, to)),
             None => Err(ConfigConversionError::SetToReveal(to)),

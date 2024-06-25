@@ -5,7 +5,7 @@
 // The [__internal_store_get_hash] host function is not made available by the
 // SDK. We expose it through an [InternalRuntime] trait.
 
-use tezos_smart_rollup_host::{path::Path, runtime::RuntimeError, Error};
+use mavryk_smart_rollup_host::{path::Path, runtime::RuntimeError, Error};
 
 const STORE_HASH_SIZE: usize = 32;
 

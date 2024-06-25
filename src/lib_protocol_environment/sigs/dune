@@ -2,11 +2,11 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name mavryk_protocol_environment_sigs)
- (public_name mavkit-proto-libs.protocol-environment.sigs)
+ (name tezos_protocol_environment_sigs)
+ (public_name octez-proto-libs.protocol-environment.sigs)
  (instrumentation (backend bisect_ppx))
  (libraries
-  mavkit-proto-libs.protocol-environment.sigs-internals)
+  octez-proto-libs.protocol-environment.sigs-internals)
  (flags
   (:standard)
   -nostdlib
@@ -99,3 +99,12 @@
   (with-stdout-to
    %{targets}
    (run %{dep:../ppinclude/ppinclude.exe} v11.in.ml))))
+
+(rule
+ (targets v12.ml)
+ (mode promote)
+ (deps v12.in.ml (glob_files v12/*.mli))
+ (action
+  (with-stdout-to
+   %{targets}
+   (run %{dep:../ppinclude/ppinclude.exe} v12.in.ml))))

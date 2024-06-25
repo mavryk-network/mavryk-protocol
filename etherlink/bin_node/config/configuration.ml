@@ -43,7 +43,7 @@ type t = {
   sequencer : sequencer option;
   observer : observer option;
   max_active_connections :
-    Tezos_rpc_http_server.RPC_server.Max_active_rpc_connections.t;
+    Mavryk_rpc_http_server.RPC_server.Max_active_rpc_connections.t;
   tx_pool_timeout_limit : int64;
   tx_pool_addr_limit : int64;
   tx_pool_tx_per_addr_limit : int64;
@@ -52,7 +52,7 @@ type t = {
 let default_filter_config =
   {max_nb_blocks = 100; max_nb_logs = 1000; chunk_size = 10}
 
-let default_data_dir = Filename.concat (Sys.getenv "HOME") ".octez-evm-node"
+let default_data_dir = Filename.concat (Sys.getenv "HOME") ".mavkit-evm-node"
 
 let config_filename ~data_dir = Filename.concat data_dir "config.json"
 
@@ -67,7 +67,7 @@ let default_cors_origins = []
 let default_cors_headers = []
 
 let default_max_active_connections =
-  Tezos_rpc_http_server.RPC_server.Max_active_rpc_connections.default
+  Mavryk_rpc_http_server.RPC_server.Max_active_rpc_connections.default
 
 let default_proxy = {rollup_node_endpoint = Uri.empty}
 
@@ -183,7 +183,7 @@ let sequencer_encoding =
       })
     (obj7
        (dft "preimages" string default_preimages)
-       (opt "preimages_endpoint" Tezos_rpc.Encoding.uri_encoding)
+       (opt "preimages_endpoint" Mavryk_rpc.Encoding.uri_encoding)
        (req "rollup_node_endpoint" string)
        (dft
           "time_between_blocks"
@@ -209,7 +209,7 @@ let observer_encoding =
       })
     (obj3
        (dft "preimages" string default_preimages)
-       (opt "preimages_endpoint" Tezos_rpc.Encoding.uri_encoding)
+       (opt "preimages_endpoint" Mavryk_rpc.Encoding.uri_encoding)
        (req "evm_node_endpoint" string))
 
 let encoding : t Data_encoding.t =
@@ -282,7 +282,7 @@ let encoding : t Data_encoding.t =
           (opt "observer" observer_encoding)
           (dft
              "max_active_connections"
-             Tezos_rpc_http_server.RPC_server.Max_active_rpc_connections
+             Mavryk_rpc_http_server.RPC_server.Max_active_rpc_connections
              .encoding
              default_max_active_connections))
        (obj3
@@ -399,7 +399,7 @@ module Cli = struct
       ?tx_pool_timeout_limit ?tx_pool_addr_limit ?tx_pool_tx_per_addr_limit () =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the evm node is not the one of Octez
+    (* Check if the data directory of the evm node is not the one of Mavkit
        node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
@@ -407,7 +407,7 @@ module Cli = struct
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the EVM node data."
       else return_unit
     in

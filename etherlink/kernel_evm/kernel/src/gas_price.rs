@@ -9,9 +9,9 @@ use crate::storage::read_minimum_base_fee_per_gas;
 
 use primitive_types::U256;
 use softfloat::F64;
-use tezos_ethereum::block::BlockFees;
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::block::BlockFees;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 // actual ~34M, allow some overhead for less effecient ERC20 transfers.
 const ERC20_TICKS: u64 = 40_000_000;
@@ -163,7 +163,7 @@ mod test {
     use super::*;
     use proptest::prelude::*;
     use std::collections::VecDeque;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     proptest! {
         #[test]

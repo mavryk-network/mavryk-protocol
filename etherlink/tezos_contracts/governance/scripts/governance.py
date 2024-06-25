@@ -1,5 +1,5 @@
 import json
-from pytezos import pytezos, PyTezosClient
+from pymavryk import pymavryk, PyMavrykClient
 from scripts.contract_type import ContractType
 from tests.helpers.contracts.sequencer_governance import SequencerGovernance
 from tests.helpers.contracts.kernel_governance import KernelGovernance
@@ -47,7 +47,7 @@ from scripts.metadata import metadata_by_contract_type
     help='The min promotion_supermajority for the proposal be considered as a winner. Range: [0, 100]',
 )
 @click.option('--private-key', default=None, help='Use the provided private key.')
-@click.option('--rpc-url', default=None, help='Tezos RPC URL.')
+@click.option('--rpc-url', default=None, help='Mavryk RPC URL.')
 def deploy_contract(
     contract: str,
     period_length: str,
@@ -76,7 +76,7 @@ def deploy_contract(
     private_key = private_key or load_or_ask('PRIVATE_KEY', is_secret=True)
     rpc_url = rpc_url or load_or_ask('RPC_URL')
 
-    manager = pytezos.using(shell=rpc_url, key=private_key)
+    manager = pymavryk.using(shell=rpc_url, key=private_key)
     blockchain_info = get_blockchain_info(manager)
     protocol_voting_period_length = blockchain_info['protocol_voting_period_length']
     protocol_voting_started_at_level = blockchain_info['protocol_voting_started_at_level']
@@ -85,7 +85,7 @@ def deploy_contract(
     print('blockchain_info:', json.dumps(blockchain_info, indent=4))
 
     if (protocol_voting_period_length % period_length) != 0: 
-        raise Exception(f'Period length is incorrect, it must be a divisor of the length of the Tezos protocol voting period length. protocol_period_length={protocol_voting_period_length}, period_length={period_length}') 
+        raise Exception(f'Period length is incorrect, it must be a divisor of the length of the Mavryk protocol voting period length. protocol_period_length={protocol_voting_period_length}, period_length={period_length}') 
 
     normalized_params = normalize_params([100, proposal_quorum, promotion_quorum, promotion_supermajority])
     [scale, proposal_quorum, promotion_quorum, promotion_supermajority] = normalized_params
@@ -117,7 +117,7 @@ def deploy_contract(
     kernelGovernance = KernelGovernance.from_opg(manager, opg)
     return kernelGovernance
 
-def get_blockchain_info(manager: PyTezosClient) -> dict:
+def get_blockchain_info(manager: PyMavrykClient) -> dict:
     info = manager.shell.head.metadata()
     current_level = int(info['level_info']['level'])
     protocol_voting_position = int(info['voting_period_info']['position'])
@@ -132,7 +132,7 @@ def get_blockchain_info(manager: PyTezosClient) -> dict:
         'protocol_voting_started_at_level': protocol_voting_started_at_level
     }
 
-def originate_contract(contract_type: ContractType, manager: PyTezosClient, config: dict, metadata: dict):
+def originate_contract(contract_type: ContractType, manager: PyMavrykClient, config: dict, metadata: dict):
     if contract_type in [ContractType.kernel_regular_governance, ContractType.kernel_security_governance]:
         return KernelGovernance.originate(manager, config, metadata).send()
     elif contract_type == ContractType.sequencer_governance:

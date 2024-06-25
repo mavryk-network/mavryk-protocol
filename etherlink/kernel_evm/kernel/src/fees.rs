@@ -21,10 +21,10 @@ use evm_execution::account_storage::{account_path, EthereumAccountStorage};
 use evm_execution::handler::ExecutionOutcome;
 use evm_execution::EthereumError;
 use primitive_types::{H160, H256, U256};
-use tezos_ethereum::access_list::AccessListItem;
-use tezos_ethereum::block::BlockFees;
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_smart_rollup_host::runtime::Runtime;
+use mavryk_ethereum::access_list::AccessListItem;
+use mavryk_ethereum::block::BlockFees;
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_smart_rollup_host::runtime::Runtime;
 
 use std::mem::size_of;
 
@@ -37,13 +37,13 @@ pub const MINIMUM_BASE_FEE_PER_GAS: u64 = 10_u64.pow(9);
 // compensated by charging double the expected L1 gas fee for each byte.
 const ASSUMED_TX_ENCODED_SIZE: usize = 150;
 
-// 4 mutez per byte.
+// 4 mumav per byte.
 //
 // The fee for injection on L1 is composed of the following
 // (at default minimal nanotez per gas / default minimal fee):
-// - base cost for 'add smart rollup message': 259 mutez
-// - cost per new message (tx chunk): 5 mutez
-// - cost per additional byte: 1 mutez
+// - base cost for 'add smart rollup message': 259 mumav
+// - cost per new message (tx chunk): 5 mumav
+// - cost per additional byte: 1 mumav
 //
 // To avoid a more complex calculation, simplify by assuming double the
 // default cost per byte, to cover the static fees.
@@ -151,9 +151,9 @@ impl FeeUpdates {
         caller: H160,
         sequencer_pool_address: Option<H160>,
     ) -> Result<(), anyhow::Error> {
-        tezos_evm_logging::log!(
+        mavryk_evm_logging::log!(
             host,
-            tezos_evm_logging::Level::Debug,
+            mavryk_evm_logging::Level::Debug,
             "Applying {self:?} for {caller}"
         );
 
@@ -293,7 +293,7 @@ mod tests {
         handler::ExtendedExitReason,
     };
     use primitive_types::{H160, U256};
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use proptest::prelude::*;
 
@@ -531,7 +531,7 @@ mod tests {
 
     fn mock_tx(max_fee_per_gas: U256, data: Vec<u8>) -> EthereumTransactionCommon {
         EthereumTransactionCommon::new(
-            tezos_ethereum::transaction::TransactionType::Eip1559,
+            mavryk_ethereum::transaction::TransactionType::Eip1559,
             None,
             0,
             U256::zero(),

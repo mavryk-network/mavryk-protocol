@@ -1,5 +1,5 @@
 [package]
-name = "mavkit-risc-v-pvm"
+name = "octez-risc-v-pvm"
 version = "0.0.0"
 edition = "2021"
 

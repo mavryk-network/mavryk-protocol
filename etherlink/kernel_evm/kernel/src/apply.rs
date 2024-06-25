@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
-// SPDX-FileCopyrightText: 2022-2023 TriliTech <contact@trili.tech>
+// SPDX-FileCopyrightText: 2022-2024 TriliTech <contact@trili.tech>
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 //
 // SPDX-License-Identifier: MIT
 
-use anyhow::anyhow;
+use alloc::borrow::Cow;
+use evm::{ExitError, ExitReason, ExitSucceed};
 use evm_execution::account_storage::{
     account_path, EthereumAccount, EthereumAccountStorage,
 };
@@ -204,7 +205,6 @@ fn account<Host: Runtime>(
 pub enum Validity {
     Valid(H160, u64),
     InvalidChainId,
-    InvalidGasLimit,
     InvalidSignature,
     InvalidNonce,
     InvalidPrePay,
@@ -213,6 +213,9 @@ pub enum Validity {
     InvalidNotEnoughGasForFees,
 }
 
+// TODO: https://gitlab.com/tezos/tezos/-/issues/6812
+//       arguably, effective_gas_price should be set on EthereumTransactionCommon
+//       directly - initialised when constructed.
 fn is_valid_ethereum_transaction_common<Host: Runtime>(
     host: &mut Host,
     evm_account_storage: &mut EthereumAccountStorage,
@@ -253,7 +256,7 @@ fn is_valid_ethereum_transaction_common<Host: Runtime>(
         Some(account) => (
             account.nonce(host)?,
             account.balance(host)?,
-            account.code_exists(host)?.is_some(),
+            account.code_exists(host)?,
         ),
     };
 
@@ -351,6 +354,7 @@ fn apply_ethereum_transaction_common<Host: Runtime>(
         caller,
         call_data,
         Some(gas_limit),
+        effective_gas_price,
         Some(value),
         true,
         allocated_ticks,
@@ -363,7 +367,7 @@ fn apply_ethereum_transaction_common<Host: Runtime>(
             // Because the proposal's state is unclear, and we do not have a sequencer
             // if an error that leads to a durable storage corruption is caught, we
             // invalidate the entire proposal.
-            return Err(Error::InvalidRunTransaction(err));
+            return Err(Error::InvalidRunTransaction(err).into());
         }
     };
 
@@ -416,6 +420,12 @@ fn apply_deposit<Host: Runtime>(
     };
 
     let is_success = do_deposit(()).is_some();
+
+    let reason = if is_success {
+        ExitReason::Succeed(ExitSucceed::Returned)
+    } else {
+        ExitReason::Error(ExitError::Other(Cow::from("Deposit failed")))
+    };
 
     let gas_used = CONFIG.gas_transaction_call;
 
@@ -626,7 +636,7 @@ pub fn apply_transaction<Host: Runtime>(
             log!(host, Benchmarking, "Transaction type: DEPOSIT");
             apply_deposit(host, evm_account_storage, deposit)?
         }
-    }?;
+    };
 
     match apply_result {
         ExecutionResult::Valid(tx_result) => {
@@ -695,7 +705,7 @@ mod tests {
         BlockConstants::first_block(
             U256::from(Timestamp::from(0).as_u64()),
             CHAIN_ID.into(),
-            U256::from(21000),
+            block_fees,
         )
     }
 
@@ -927,37 +937,6 @@ mod tests {
         );
         assert_eq!(
             Validity::InvalidChainId,
-            res.expect("Verification should not have raise an error"),
-            "Transaction should have been rejected"
-        );
-    }
-
-    #[test]
-    fn test_tx_is_invalid_wrong_gas_limit() {
-        let mut host = MockHost::default();
-        let mut evm_account_storage =
-            evm_execution::account_storage::init_account_storage().unwrap();
-        let block_constants = mock_block_constants();
-
-        // setup
-        let address = address_from_str("af1276cbb260bb13deddb4209ae99ae6e497f446");
-        let balance = U256::from(21000 * 21000);
-        let mut transaction = valid_tx();
-        transaction.gas_limit = MAX_TRANSACTION_GAS_LIMIT + 1;
-        transaction = resign(transaction);
-
-        // fund account
-        set_balance(&mut host, &mut evm_account_storage, &address, balance);
-
-        // act
-        let res = is_valid_ethereum_transaction_common(
-            &mut host,
-            &mut evm_account_storage,
-            &transaction,
-            &block_constants,
-        );
-        assert_eq!(
-            Validity::InvalidGasLimit,
             res.expect("Verification should not have raise an error"),
             "Transaction should have been rejected"
         );

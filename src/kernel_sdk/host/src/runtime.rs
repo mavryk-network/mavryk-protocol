@@ -606,7 +606,7 @@ where
         page_index: i16,
         destination: &mut [u8],
     ) -> Result<usize, RuntimeError> {
-        // This will match the encoding declared for a DAL page in the Tezos protocol.
+        // This will match the encoding declared for a DAL page in the Mavryk protocol.
         let payload: &[u8] = &[
             &[2u8], // tag
             published_level.to_be_bytes().as_ref(),
@@ -634,7 +634,7 @@ where
     #[cfg(feature = "proto-alpha")]
     fn reveal_dal_parameters(&self) -> RollupDalParameters {
         let mut destination = [0u8; DAL_PARAMETERS_SIZE];
-        // This will match the encoding declared for revealing DAL parameters in the Tezos protocol.
+        // This will match the encoding declared for revealing DAL parameters in the Mavryk protocol.
         let payload: &[u8] = &[3u8]; // tag
 
         let bytes_read = unsafe {

@@ -5,11 +5,11 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc
+open Mavryk_rpc
 
 val get_smart_rollup_address :
   evm_node_endpoint:Uri.t ->
-  Tezos_crypto.Hashed.Smart_rollup_address.t tzresult Lwt.t
+  Mavryk_crypto.Hashed.Smart_rollup_address.t tzresult Lwt.t
 
 val get_blueprint :
   evm_node_endpoint:Uri.t ->
@@ -17,7 +17,7 @@ val get_blueprint :
   Blueprint_types.with_events tzresult Lwt.t
 
 val register :
-  Tezos_crypto.Hashed.Smart_rollup_address.t ->
+  Mavryk_crypto.Hashed.Smart_rollup_address.t ->
   unit Directory.t ->
   unit Directory.t
 

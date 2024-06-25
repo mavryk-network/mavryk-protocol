@@ -79,7 +79,7 @@ $ evm-evaluation-assessor --diff <result-file> // By default the execution will 
 Specify the path where the tool needs to retrieve its resources from:
 
 ```
-$ evm-evaluation-assessor --resources // By default its tezos' directory (./etherlink/kernel_evm/evm_evaluation/resources)
+$ evm-evaluation-assessor --resources // By default its mavryk' directory (./etherlink/kernel_evm/evm_evaluation/resources)
 ```
 
 To make the tool act as a non-regression job in the CI:

@@ -36,7 +36,7 @@ let address_to_key_hash
         This is a workaround solution. 
         Use the IS_IMPLICIT_ACCOUNT instruction of type address -> option key_hash when it will be available
         (See: https://gitlab.com/tezos/tezos/-/merge_requests/12436)
-        Or pass address instead of key_hash to Tezos.voting_power instruction when it will be available
+        Or pass address instead of key_hash to Mavryk.voting_power instruction when it will be available
         (See: https://gitlab.com/tezos/tezos/-/merge_requests/12425)
         
         Explanation of workaround
@@ -74,5 +74,5 @@ let address_to_key_hash
     let length = 0x00000015 in
     let key_hash_packed = Bytes.concats [(Bytes.sub 0n 2n address_packed); length; (Bytes.sub 7n 21n address_packed)] in
     let key_hash = Option.value_with_error Errors.failed_to_cast_address_to_key_hash (Bytes.unpack key_hash_packed) in
-    let _ = assert_with_error (Tezos.address (Tezos.implicit_account key_hash) = address) Errors.key_hash_not_equal_to_source_address in
+    let _ = assert_with_error (Mavryk.address (Mavryk.implicit_account key_hash) = address) Errors.key_hash_not_equal_to_source_address in
     key_hash

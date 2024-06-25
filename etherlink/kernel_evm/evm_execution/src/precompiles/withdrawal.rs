@@ -10,9 +10,9 @@ use crate::{abi, fail_if_too_much, EthereumError};
 use evm::{Context, ExitReason, ExitRevert, ExitSucceed, Transfer};
 use host::runtime::Runtime;
 use primitive_types::U256;
-use tezos_ethereum::withdrawal::Withdrawal;
-use tezos_evm_logging::log;
-use tezos_evm_logging::Level::Info;
+use mavryk_ethereum::withdrawal::Withdrawal;
+use mavryk_evm_logging::log;
+use mavryk_evm_logging::Level::Info;
 
 /// Cost of doing a withdrawal. A valid call to this precompiled contract
 /// takes almost 880000 ticks, and one gas unit takes 1000 ticks.
@@ -123,8 +123,8 @@ mod tests {
     use evm::{ExitReason, ExitRevert, ExitSucceed, Transfer};
     use primitive_types::{H160, U256};
     use std::str::FromStr;
-    use tezos_ethereum::withdrawal::Withdrawal;
-    use tezos_smart_rollup_encoding::contract::Contract;
+    use mavryk_ethereum::withdrawal::Withdrawal;
+    use mavryk_smart_rollup_encoding::contract::Contract;
 
     #[test]
     fn call_withdraw_with_implicit_address() {

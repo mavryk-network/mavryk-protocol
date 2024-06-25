@@ -1,4 +1,4 @@
-Mock runtime provides a host that can used in integration & unit testing of kernels for Tezos Smart Rollups.
+Mock runtime provides a host that can used in integration & unit testing of kernels for Mavryk Smart Rollups.
 
 To do so, [`MockHost`] implements the [`SmartRollupCore`] trait - allowing
 it to be passed as an argument to any function, where the argument is

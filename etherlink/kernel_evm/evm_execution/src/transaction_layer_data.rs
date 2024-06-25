@@ -9,7 +9,7 @@ use evm::gasometer::Gasometer;
 use evm::Config;
 use primitive_types::H160;
 use std::collections::BTreeSet;
-use tezos_ethereum::withdrawal::Withdrawal;
+use mavryk_ethereum::withdrawal::Withdrawal;
 
 /// Data related to the current transaction layer
 pub struct TransactionLayerData<'config> {

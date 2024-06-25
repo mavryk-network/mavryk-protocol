@@ -32,7 +32,7 @@ use host::runtime::Runtime;
 use identity::identity_precompile;
 use modexp::modexp_precompile;
 use primitive_types::H160;
-use tezos_ethereum::withdrawal::Withdrawal;
+use mavryk_ethereum::withdrawal::Withdrawal;
 use withdrawal::withdrawal_precompile;
 use zero_knowledge::{ecadd_precompile, ecmul_precompile, ecpairing_precompile};
 
@@ -48,7 +48,7 @@ pub struct PrecompileOutcome {
     /// The return value of the call.
     pub output: Vec<u8>,
     /// Any withdrawals produced by the precompiled contract. This encodes
-    /// withdrawals to Tezos Layer 1.
+    /// withdrawals to Mavryk Layer 1.
     pub withdrawals: Vec<Withdrawal>,
     /// Number of ticks estimated by the tick model of the precompiled contract.
     /// Note that the implementation of the contract is responsible for failing
@@ -245,9 +245,9 @@ mod test_helpers {
     use evm::Config;
     use evm::Transfer;
     use primitive_types::{H160, U256};
-    use tezos_ethereum::block::BlockConstants;
-    use tezos_ethereum::block::BlockFees;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_ethereum::block::BlockConstants;
+    use mavryk_ethereum::block::BlockFees;
+    use mavryk_smart_rollup_mock::MockHost;
 
     use super::precompile_set;
     const DUMMY_ALLOCATED_TICKS: u64 = 100_000_000;

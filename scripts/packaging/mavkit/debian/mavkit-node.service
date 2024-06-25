@@ -1,6 +1,6 @@
 [Unit]
 Description=Mavkit-node
-Documentation=https://tezos.gitlab.io/
+Documentation=https://protocol.mavryk.org/
 After=network.target
 
 [Service]

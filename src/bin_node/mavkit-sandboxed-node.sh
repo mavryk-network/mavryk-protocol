@@ -46,11 +46,11 @@ EOF
                   --data-dir "$node_dir" \
                   --net-addr "127.0.0.1:$port" \
                   --rpc-addr "127.0.0.1:$rpc" \
-                  --rpc-tls  "${node_dir}/tezos.crt,${node_dir}/tezos.key" \
+                  --rpc-tls "${node_dir}/tezos.crt,${node_dir}/tezos.key" \
                   --expected-pow "$expected_pow" \
                   --connections "$expected_connections"
 
-            cat > "${node_dir}/tezos.crt" <<EOF
+            cat > "${node_dir}/tezos.crt" << EOF
 Certificate:
     Data:
         Version: 3 (0x2)
@@ -138,7 +138,7 @@ JW2Qvc5BY5FY4xb5CHDFwV9d9w2ld+WjhIJTvzBqEN8csR+ByODHSE10RyFIOoqA
 -----END CERTIFICATE-----
 EOF
 
-            cat > "${node_dir}/tezos.key" <<EOF
+            cat > "${node_dir}/tezos.key" << EOF
 -----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDTYbqBag2PC2+E
 ZcpztcYtiY6DkJ4s4RZfLJ1EACXdonPcQQaB+6EM6RfbY2vCRmO8MUy8dlCgeRXe
@@ -192,7 +192,6 @@ cleanup_nodes() {
     rm -rf "${node_dirs[@]}"
 }
 
-
 main() {
 
     local bin_dir
@@ -213,7 +212,7 @@ main() {
         exit 1
     fi
 
-    cleanup () {
+    cleanup() {
         set +e
         echo Cleaning up...
         cleanup_nodes

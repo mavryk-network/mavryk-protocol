@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
-// SPDX-FileCopyrightText: 2023 TriliTech <contact@trili.tech>
+// SPDX-FileCopyrightText: 2023-2024 TriliTech <contact@trili.tech>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
 //
@@ -12,7 +12,7 @@ use crate::migration::storage_migration;
 use crate::stage_one::fetch;
 use crate::storage::read_sequencer_pool_address;
 use anyhow::Context;
-use block::ComputationResult;
+use delayed_inbox::DelayedInbox;
 use evm_execution::Config;
 use fallback_upgrade::fallback_backup_kernel;
 use inbox::StageOneStatus;
@@ -57,9 +57,12 @@ mod reveal_storage;
 mod safe_storage;
 mod sequencer_blueprint;
 mod simulation;
+mod stage_one;
 mod storage;
 mod tick_model;
 mod upgrade;
+
+extern crate alloc;
 
 /// The chain id will need to be unique when the EVM rollup is deployed in
 /// production.
@@ -309,18 +312,20 @@ kernel_entry!(kernel_loop);
 
 #[cfg(test)]
 mod tests {
-    use std::{ops::Rem, str::FromStr};
+    use std::str::FromStr;
 
     use crate::blueprint_storage::store_inbox_blueprint_by_number;
     use crate::configuration::Configuration;
     use crate::fees;
     use crate::{
-        blueprint::{Blueprint, Queue, QueueElement},
-        inbox::{KernelUpgrade, Transaction, TransactionContent},
-        stage_two, storage,
+        blueprint::Blueprint,
+        inbox::{Transaction, TransactionContent},
+        storage,
+        upgrade::KernelUpgrade,
     };
     use evm_execution::account_storage::{self, EthereumAccountStorage};
     use primitive_types::{H160, U256};
+    use mavryk_ethereum::block::BlockFees;
     use mavryk_ethereum::{
         transaction::{TransactionHash, TransactionType},
         tx_common::EthereumTransactionCommon,
@@ -364,39 +369,6 @@ mod tests {
         }
     }
 
-    fn address_from_str(s: &str) -> Option<H160> {
-        let data = &hex::decode(s).unwrap();
-        Some(H160::from_slice(data))
-    }
-
-    fn dummy_eth(nonce: u64) -> EthereumTransactionCommon {
-        let nonce = U256::from(nonce);
-        let gas_price = U256::from(40000000000u64);
-        let gas_limit = 21000;
-        let value = U256::from(1);
-        let to = address_from_str("423163e58aabec5daa3dd1130b759d24bef0f6ea");
-        let tx = EthereumTransactionCommon {
-            type_: TransactionType::Legacy,
-            chain_id: U256::one(),
-            nonce,
-            max_fee_per_gas: gas_price,
-            max_priority_fee_per_gas: gas_price,
-            gas_limit,
-            to,
-            value,
-            data: vec![],
-            access_list: vec![],
-            signature: None,
-        };
-
-        // corresponding caller's address is 0xaf1276cbb260bb13deddb4209ae99ae6e497f446
-        tx.sign_transaction(
-            "dcdff53b4f013dbcdc717f89fe3bf4d8b10512aae282b48e01d7530470382701"
-                .to_string(),
-        )
-        .unwrap()
-    }
-
     fn hash_from_nonce(nonce: u64) -> TransactionHash {
         let nonce = u64::to_le_bytes(nonce);
         let mut hash = [0; 32];
@@ -404,15 +376,15 @@ mod tests {
         hash
     }
 
-    fn dummy_transaction(nonce: u64) -> Transaction {
+    fn wrap_transaction(nonce: u64, tx: EthereumTransactionCommon) -> Transaction {
         Transaction {
             tx_hash: hash_from_nonce(nonce),
-            content: TransactionContent::Ethereum(dummy_eth(nonce)),
+            content: TransactionContent::Ethereum(tx),
         }
     }
 
-    fn blueprint(transactions: Vec<Transaction>) -> QueueElement {
-        QueueElement::Blueprint(Blueprint {
+    fn blueprint(transactions: Vec<Transaction>) -> Blueprint {
+        Blueprint {
             transactions,
             timestamp: Timestamp::from(0i64),
         }
@@ -476,12 +448,12 @@ mod tests {
 
         // sanity check: no current block
         assert!(
-            storage::read_current_block_number(&mut host).is_err(),
+            storage::read_current_block_number(&host).is_err(),
             "Should not have found current block number"
         );
 
         //provision sender account
-        let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
+        let sender = H160::from_str(TEST_ADDR).unwrap();
         let sender_initial_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = account_storage::init_account_storage().unwrap();
         set_balance(
@@ -524,6 +496,7 @@ mod tests {
         // the upgrade mechanism should not start otherwise it will fail
         let broken_kernel_upgrade = KernelUpgrade {
             preimage_hash: [0u8; PREIMAGE_HASH_SIZE],
+            activation_timestamp: Timestamp::from(1_000_000i64),
         };
         crate::upgrade::store_kernel_upgrade(&mut host, &broken_kernel_upgrade)
             .expect("Should be able to store kernel upgrade");
@@ -533,7 +506,6 @@ mod tests {
         // If the upgrade is started, it should raise an error
         let computation_result = crate::block::produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             block_fees,
             &mut Configuration::default(),
@@ -542,11 +514,11 @@ mod tests {
         .expect("Should have produced");
 
         // test there is a new block
-        assert!(
-            storage::read_current_block_number(&mut host)
-                .expect("should have found a block number")
-                > U256::zero(),
-            "There should have been multiple blocks registered"
+        assert_eq!(
+            storage::read_current_block_number(&host)
+                .expect("should have found a block number"),
+            U256::zero(),
+            "There should have been a block registered"
         );
 
         // test reboot is set

@@ -1,17 +1,17 @@
-from pytezos.client import PyTezosClient
-from pytezos.sandbox.node import SandboxedNodeTestCase
+from pymavryk.client import PyMavrykClient
+from pymavryk.sandbox.node import SandboxedNodeTestCase
 from tests.helpers.contracts import (
     KernelGovernance,
 )
 from typing import Optional
-from pytezos.rpc import RpcError
+from pymavryk.rpc import RpcError
 from contextlib import contextmanager
 from tests.helpers.contracts.internal_test_proxy import InternalTestProxy
 from tests.helpers.contracts.rollup_mock import RollupMock
 from tests.helpers.contracts.sequencer_governance import SequencerGovernance
 from tests.helpers.utility import pkh
-from pytezos.contract.result import ContractCallResult
-from pytezos.operation.group import OperationGroup
+from pymavryk.contract.result import ContractCallResult
+from pymavryk.operation.group import OperationGroup
 
 class BaseTestCase(SandboxedNodeTestCase):
     accounts: list = []
@@ -23,16 +23,16 @@ class BaseTestCase(SandboxedNodeTestCase):
     def get_current_level(self) -> int:
         return self.client.shell.head.header()['level']
 
-    def bootstrap_baker(self, n: Optional[int] = None) -> PyTezosClient:
+    def bootstrap_baker(self, n: Optional[int] = None) -> PyMavrykClient:
         """Creates baker with given number"""
 
         accounts_count = n or len(self.accounts)
-        bootstrap: PyTezosClient = self.client.using(key=f'bootstrap{accounts_count + 1}')
+        bootstrap: PyMavrykClient = self.client.using(key=f'bootstrap{accounts_count + 1}')
         bootstrap.reveal()
         self.accounts.append(bootstrap)
         return bootstrap
     
-    def bootstrap_no_baker(self) -> PyTezosClient:
+    def bootstrap_no_baker(self) -> PyMavrykClient:
         """Creates no baker account"""
 
         no_baker = self.client.using(key='alice')

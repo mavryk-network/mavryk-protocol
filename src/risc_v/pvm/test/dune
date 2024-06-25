@@ -6,14 +6,14 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  mavkit-alcotezt
-  mavkit-risc-v-pvm)
+  octez-alcotezt
+  octez-risc-v-pvm)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Mavkit_alcotezt)
+  -open Octez_alcotezt)
  (modules test_main))
 
 (executable
@@ -26,7 +26,7 @@
 
 (rule
  (alias runtest)
- (package mavkit-risc-v-pvm-test)
+ (package octez-risc-v-pvm-test)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

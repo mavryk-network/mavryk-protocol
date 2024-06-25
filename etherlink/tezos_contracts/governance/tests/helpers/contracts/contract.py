@@ -1,6 +1,6 @@
-from pytezos.contract.interface import ContractInterface
-from pytezos.client import PyTezosClient
-from pytezos.operation.group import OperationGroup
+from pymavryk.contract.interface import ContractInterface
+from pymavryk.client import PyMavrykClient
+from pymavryk.operation.group import OperationGroup
 from dataclasses import dataclass, replace
 from tests.helpers.utility import (
     load_contract_from_address,
@@ -17,13 +17,13 @@ T = TypeVar('T', bound='ContractHelper')
 @dataclass
 class ContractHelper(ABC):
     contract: ContractInterface
-    client: PyTezosClient
+    client: PyMavrykClient
     address: str
 
     @classmethod
     def from_opg(
         cls: Type[T],
-        client: PyTezosClient,
+        client: PyMavrykClient,
         opg: OperationGroup,
         **init_params: Any,
     ) -> T:
@@ -41,7 +41,7 @@ class ContractHelper(ABC):
             **init_params,
         )
 
-    def using(self: T, client: PyTezosClient) -> T:
+    def using(self: T, client: PyMavrykClient) -> T:
         """Returns new ContractHelper with updated client"""
 
         return replace(
@@ -53,7 +53,7 @@ class ContractHelper(ABC):
     @classmethod
     def from_address(
         cls: Type[T],
-        client: PyTezosClient,
+        client: PyMavrykClient,
         address: str,
         **init_params: Any,
     ) -> T:

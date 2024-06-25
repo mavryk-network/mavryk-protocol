@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_rpc
+open Mavryk_rpc
 
 let evm_services_root = Path.(root / "evm")
 
@@ -13,7 +13,7 @@ let get_smart_rollup_address_service =
   Service.get_service
     ~description:"Get the address of the smart rollup hosting the chain"
     ~query:Query.empty
-    ~output:Tezos_crypto.Hashed.Smart_rollup_address.encoding
+    ~output:Mavryk_crypto.Hashed.Smart_rollup_address.encoding
     Path.(evm_services_root / "smart_rollup_address")
 
 let get_blueprint_service =
@@ -68,7 +68,7 @@ let create_blueprint_watcher_service from_level =
               "Something went wrong when trying to fetch a blueprint")
       else Lwt_stream.get blueprint_stream
   in
-  Tezos_rpc.Answer.return_stream {next; shutdown}
+  Mavryk_rpc.Answer.return_stream {next; shutdown}
 
 let register_get_smart_rollup_address_service smart_rollup_address dir =
   Directory.register0 dir get_smart_rollup_address_service (fun () () ->
@@ -91,7 +91,7 @@ let register smart_rollup_address dir =
   |> register_get_blueprint_service |> register_blueprint_watcher_service
 
 let get_smart_rollup_address ~evm_node_endpoint =
-  Tezos_rpc_http_client_unix.RPC_client_unix.call_service
+  Mavryk_rpc_http_client_unix.RPC_client_unix.call_service
     [Media_type.json]
     ~base:evm_node_endpoint
     get_smart_rollup_address_service
@@ -100,7 +100,7 @@ let get_smart_rollup_address ~evm_node_endpoint =
     ()
 
 let get_blueprint ~evm_node_endpoint Ethereum_types.(Qty level) =
-  Tezos_rpc_http_client_unix.RPC_client_unix.call_service
+  Mavryk_rpc_http_client_unix.RPC_client_unix.call_service
     [Media_type.json]
     ~base:evm_node_endpoint
     get_blueprint_service
@@ -113,7 +113,7 @@ let monitor_blueprints ~evm_node_endpoint Ethereum_types.(Qty level) =
   let stream, push = Lwt_stream.create () in
   let on_chunk v = push (Some v) and on_close () = push None in
   let* _spill_all =
-    Tezos_rpc_http_client_unix.RPC_client_unix.call_streamed_service
+    Mavryk_rpc_http_client_unix.RPC_client_unix.call_streamed_service
       [Media_type.json]
       ~base:evm_node_endpoint
       blueprint_watcher_service

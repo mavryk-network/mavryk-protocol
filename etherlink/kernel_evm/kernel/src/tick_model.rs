@@ -111,17 +111,6 @@ pub mod constants {
     pub const MAXIMUM_SIZE_FOR_BLUEPRINT: u64 = 512 * 1024;
 }
 
-fn estimate_ticks_for_transaction(transaction: &Transaction) -> u64 {
-    let tx_data_size = transaction.data_size();
-    match &transaction.content {
-        crate::inbox::TransactionContent::Deposit(_) => constants::TICKS_FOR_DEPOSIT,
-        crate::inbox::TransactionContent::Ethereum(eth) => {
-            average_ticks_of_gas(eth.gas_limit)
-                .saturating_add(ticks_of_transaction_overhead(tx_data_size))
-        }
-    }
-}
-
 /// Estimation of the number of ticks the kernel can safely spend in the
 /// execution of the opcodes.
 pub fn estimate_remaining_ticks_for_transaction_execution(
@@ -132,13 +121,6 @@ pub fn estimate_remaining_ticks_for_transaction_execution(
         .saturating_sub(TICKS_FOR_CRYPTO)
         .saturating_sub(ticks_of_transaction_overhead(tx_data_size))
         .saturating_sub(ticks)
-}
-
-/// Estimation of the number of ticks it takes to execute a given amount of gas.
-/// Takes into account the crypto, but not the overheads of a transaction, such
-/// as registering a valid transaction.
-pub fn average_ticks_of_gas(gas: u64) -> u64 {
-    gas.saturating_mul(constants::TICKS_PER_GAS)
 }
 
 /// Estimation of the number of ticks used up for executing a transaction
@@ -154,12 +136,6 @@ fn ticks_of_transaction_overhead(tx_data_size: u64) -> u64 {
         .saturating_mul(constants::TRANSACTION_OVERHEAD_COEF)
         .saturating_add(constants::TRANSACTION_OVERHEAD_INTERCEPT)
         .saturating_add(tx_hash)
-}
-
-/// Check that a transaction can fit inside the tick limit
-pub fn estimate_would_overflow(estimated_ticks: u64, transaction: &Transaction) -> bool {
-    estimate_ticks_for_transaction(transaction).saturating_add(estimated_ticks)
-        > constants::MAX_ALLOWED_TICKS
 }
 
 /// An invalid transaction could not be transmitted to the VM, eg. the nonce

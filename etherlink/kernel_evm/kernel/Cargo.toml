@@ -49,6 +49,8 @@ mavryk-smart-rollup-storage.workspace = true
 
 mavryk_data_encoding.workspace = true
 
+proptest = { workspace = true, optional = true }
+
 [dev-dependencies]
 mavryk-smart-rollup-mock.workspace = true
 mavryk-smart-rollup-panic-hook.workspace = true

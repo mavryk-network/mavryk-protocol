@@ -1,7 +1,7 @@
-SDK for Tezos Smart Rollups.
+SDK for Mavryk Smart Rollups.
 
-To learn more about how Smart Rollups work in Tezos, see the
-[Smart Rollup Documentation](https://protocol.mavryk.org/alpha/smart_rollups.html).
+To learn more about how Smart Rollups work in Mavryk, see the
+[Smart Rollup Documentation](https://tezos.gitlab.io/alpha/smart_rollups.html).
 
 The purpose of this SDK is to make writing Smart Rollup kernels in Rust simpler.
 
@@ -27,7 +27,7 @@ rustup target add wasm32-unknown-unknown
 ```
 
 Rust also has a `wasm64-unknown-unknown` compilation target. This target is **not** compatible
-with Tezos Smart Rollups, which only provide a 32bit address space.
+with Mavryk Smart Rollups, which only provide a 32bit address space.
 
 ## Installing Clang
 
@@ -117,14 +117,14 @@ Often, large `.wasm` files are produced. The size of these can be significantly 
 wasm-strip kernel.wasm
 ```
 
-You can test this kernel by using the [`mavkit-smart-rollup-wasm-debugger`](https://protocol.mavryk.org/alpha/smart_rollups.html#testing-your-kernel).
+You can test this kernel by using the [`octez-smart-rollup-wasm-debugger`](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel).
 
 ```shell
 # Create an empty inputs.json file - the 'hello world' kernel does not read inputs.
 echo '[[], []]' > inputs.json
 
 # Run the kernel:
-mavkit-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
+octez-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
 ```
 
 Once in the debugger, you can run the following commands to test the kernel:

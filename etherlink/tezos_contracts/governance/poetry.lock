@@ -1752,14 +1752,14 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
-name = "pytezos"
+name = "pymavryk"
 version = "3.10.3"
-description = "Python toolkit for Tezos"
+description = "Python toolkit for Mavryk"
 optional = false
 python-versions = ">=3.8,<3.12"
 files = [
-    {file = "pytezos-3.10.3-py3-none-any.whl", hash = "sha256:320bc6f720b9d4812e891edbcde94304ba32b0117b5f59977ec12eda2754556d"},
-    {file = "pytezos-3.10.3.tar.gz", hash = "sha256:6f6b54b29eec4564014864fc11929c219ccac5f486b7e264c2be121573ab7826"},
+    {file = "pymavryk-3.10.3-py3-none-any.whl", hash = "sha256:320bc6f720b9d4812e891edbcde94304ba32b0117b5f59977ec12eda2754556d"},
+    {file = "pymavryk-3.10.3.tar.gz", hash = "sha256:6f6b54b29eec4564014864fc11929c219ccac5f486b7e264c2be121573ab7826"},
 ]
 
 [package.dependencies]

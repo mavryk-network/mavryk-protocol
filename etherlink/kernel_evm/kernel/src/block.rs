@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
 // SPDX-FileCopyrightText: 2023 Functori <contact@functori.com>
 // SPDX-FileCopyrightText: 2023 Marigold <contact@marigold.dev>
+// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
@@ -20,6 +21,7 @@ use crate::tick_model::{maximum_ticks_per_blueprint, ticks_for_next_blueprint};
 use crate::upgrade::KernelUpgrade;
 use crate::Configuration;
 use crate::{block_in_progress, tick_model};
+use crate::{current_timestamp, upgrade};
 use anyhow::Context;
 use block_in_progress::BlockInProgress;
 use evm_execution::account_storage::{init_account_storage, EthereumAccountStorage};
@@ -78,21 +80,9 @@ fn compute<Host: Runtime>(
         "Queue length {}.",
         block_in_progress.queue_length()
     );
+    let mut is_first_transaction = true;
     // iteration over all remaining transaction in the block
     while block_in_progress.has_tx() {
-        // is reboot necessary ?
-        if block_in_progress.would_overflow() {
-            // TODO: https://gitlab.com/tezos/tezos/-/issues/6094
-            // there should be an upper bound on gasLimit
-
-            if host.reboot_left()? <= 1 {
-                // TODO: #5873
-                // this case needs to be handle properly
-                log!(host, Info, "Warning: maximum number of reboots reached, some transactions were lost");
-                return Ok(ComputationResult::Finished);
-            }
-            return Ok(ComputationResult::RebootNeeded);
-        }
         let transaction = block_in_progress.pop_tx().ok_or(Error::Reboot)?;
         let data_size: u64 = transaction.data_size();
 
@@ -139,7 +129,7 @@ fn compute<Host: Runtime>(
             ticketer,
             sequencer_pool_address,
         )? {
-            Some(ExecutionInfo {
+            ExecutionResult::Valid(ExecutionInfo {
                 receipt_info,
                 object_info,
                 estimated_ticks_used,
@@ -172,7 +162,7 @@ fn compute<Host: Runtime>(
                 block_in_progress.repush_tx(transaction);
                 return Ok(ComputationResult::RebootNeeded);
             }
-            None => {
+            ExecutionResult::Invalid => {
                 block_in_progress.account_for_invalid_transaction(data_size);
                 log!(
                     host,
@@ -182,6 +172,7 @@ fn compute<Host: Runtime>(
                 );
             }
         };
+        is_first_transaction = false;
     }
     Ok(ComputationResult::Finished)
 }
@@ -359,16 +350,17 @@ fn promote_block<Host: Runtime>(
 
 pub fn produce<Host: Runtime>(
     host: &mut Host,
-    queue: Queue,
     chain_id: U256,
     block_fees: BlockFees,
     config: &mut Configuration,
     sequencer_pool_address: Option<H160>,
 ) -> Result<ComputationResult, anyhow::Error> {
+    let kernel_upgrade = upgrade::read_kernel_upgrade(host)?;
+
     let (mut current_constants, mut current_block_number, mut current_block_parent_hash) =
         match storage::read_current_block(host) {
             Ok(block) => (
-                block.constants(chain_id, base_fee_per_gas),
+                block.constants(chain_id, block_fees),
                 block.number + 1,
                 block.hash,
             ),
@@ -376,7 +368,7 @@ pub fn produce<Host: Runtime>(
                 let timestamp = current_timestamp(host);
                 let timestamp = U256::from(timestamp.as_u64());
                 (
-                    BlockConstants::first_block(timestamp, chain_id, base_fee_per_gas),
+                    BlockConstants::first_block(timestamp, chain_id, block_fees),
                     U256::zero(),
                     H256::from_slice(&hex::decode("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").unwrap()),
                 )
@@ -386,6 +378,7 @@ pub fn produce<Host: Runtime>(
         init_account_storage().context("Failed to initialize EVM account storage")?;
     let mut accounts_index = init_account_index()?;
     let mut tick_counter = TickCounter::new(0u64);
+    let mut first_block_of_reboot = true;
 
     #[cfg(not(test))]
     let mut internal_storage = crate::internal_storage::InternalStorage();
@@ -519,16 +512,6 @@ pub fn produce<Host: Runtime>(
     }
 }
 
-fn remaining_proposals(
-    bip: BlockInProgress,
-    iter: std::vec::IntoIter<QueueElement>,
-) -> Vec<QueueElement> {
-    let mut proposals = Vec::new();
-    proposals.push(QueueElement::BlockInProgress(Box::new(bip)));
-    proposals.extend(iter);
-    proposals
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -542,8 +525,9 @@ mod tests {
     use crate::storage::read_block_in_progress;
     use crate::storage::read_current_block;
     use crate::storage::{init_blocks_index, init_transaction_hashes_index};
+    use crate::storage::{read_transaction_receipt, read_transaction_receipt_status};
     use crate::tick_model;
-    use crate::{retrieve_base_fee_per_gas, retrieve_chain_id};
+    use crate::{retrieve_block_fees, retrieve_chain_id};
     use evm_execution::account_storage::{
         account_path, init_account_storage, EthereumAccountStorage,
     };
@@ -560,7 +544,7 @@ mod tests {
         Blueprint {
             transactions,
             timestamp: Timestamp::from(0i64),
-        })
+        }
     }
 
     fn address_from_str(s: &str) -> Option<H160> {
@@ -616,7 +600,7 @@ mod tests {
         nonce: u64,
         type_: TransactionType,
     ) -> EthereumTransactionCommon {
-        let chain_id = DUMMY_CHAIN_ID;
+        let chain_id = Some(DUMMY_CHAIN_ID);
         let gas_price = U256::from(40000000u64);
         let gas_limit = 21000u64;
 
@@ -636,8 +620,8 @@ mod tests {
             type_,
             chain_id,
             nonce,
-            max_priority_fee_per_gas: gas_price,
-            max_fee_per_gas: gas_price,
+            gas_price,
+            gas_price,
             gas_limit,
             to,
             value,
@@ -703,15 +687,15 @@ mod tests {
             mavryk_ethereum::transaction::TransactionType::Legacy,
             Some(DUMMY_CHAIN_ID),
             nonce,
-            max_priority_fee_per_gas: gas_price,
-            max_fee_per_gas: gas_price,
+            gas_price,
+            gas_price,
             gas_limit,
-            to: None,
+            None,
             value,
             data,
-            access_list: vec![],
-            signature: None,
-        };
+            vec![],
+            None,
+        );
 
         tx.sign_transaction(private_key.to_string()).unwrap()
     }
@@ -749,10 +733,7 @@ mod tests {
             },
         ];
 
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(host, vec![blueprint(transactions)]);
 
         let sender = dummy_eth_caller();
         set_balance(
@@ -799,10 +780,7 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![invalid_tx];
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let mut evm_account_storage = init_account_storage().unwrap();
         let sender = dummy_eth_caller();
@@ -814,7 +792,6 @@ mod tests {
         );
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -846,10 +823,7 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![valid_tx];
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -862,7 +836,6 @@ mod tests {
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -897,10 +870,7 @@ mod tests {
         };
 
         let transactions: Vec<Transaction> = vec![valid_tx];
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -913,14 +883,12 @@ mod tests {
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
             None,
         )
         .expect("The block production failed.");
-
         let receipt = read_transaction_receipt(&mut host, &tx_hash)
             .expect("should have found receipt");
         assert_eq!(TransactionStatus::Success, receipt.status);
@@ -979,10 +947,10 @@ mod tests {
             content: Ethereum(dummy_eth_transaction_one()),
         }];
 
-        let queue = Queue {
-            proposals: vec![blueprint(transaction_0), blueprint(transaction_1)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(
+            &mut host,
+            vec![blueprint(transaction_0), blueprint(transaction_1)],
+        );
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -995,7 +963,6 @@ mod tests {
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1041,10 +1008,7 @@ mod tests {
             },
         ];
 
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let sender = dummy_eth_caller();
         let mut evm_account_storage = init_account_storage().unwrap();
@@ -1057,7 +1021,6 @@ mod tests {
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees,
             &mut Configuration::default(),
@@ -1105,24 +1068,23 @@ mod tests {
         };
 
         let transactions = vec![tx.clone(), tx];
-
-        let queue = Queue {
-            proposals: vec![blueprint(transactions.clone()), blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(
+            &mut host,
+            vec![blueprint(transactions.clone()), blueprint(transactions)],
+        );
 
         let sender = dummy_eth_caller();
+        let initial_sender_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
             &mut host,
             &mut evm_account_storage,
             &sender,
-            U256::from(10000000000000000000u64),
+            initial_sender_balance,
         );
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1168,11 +1130,7 @@ mod tests {
         };
 
         let transactions = vec![tx];
-
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let indexed_accounts = accounts_index.length(&host).unwrap();
 
@@ -1187,7 +1145,6 @@ mod tests {
         );
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1219,15 +1176,10 @@ mod tests {
         };
 
         let transactions = vec![tx];
-
-        let queue = Queue {
-            proposals: vec![blueprint(transactions.clone())],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions.clone())]);
 
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1236,15 +1188,10 @@ mod tests {
         .expect("The block production failed.");
 
         let indexed_accounts = accounts_index.length(&host).unwrap();
-
-        let next_queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
-
+        // Next blueprint
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
         produce(
             &mut host,
-            next_queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1281,11 +1228,7 @@ mod tests {
         };
 
         let transactions = vec![tx];
-
-        let queue = Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(transactions)]);
 
         let number_of_blocks_indexed = blocks_index.length(&host).unwrap();
         let number_of_transactions_indexed =
@@ -1301,7 +1244,6 @@ mod tests {
         );
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1343,17 +1285,10 @@ mod tests {
         let timestamp = current_timestamp(host);
         let timestamp = U256::from(timestamp.as_u64());
         let chain_id = retrieve_chain_id(host);
-        let base_fee_per_gas = retrieve_base_fee_per_gas(host);
+        let block_fees = retrieve_block_fees(host);
         assert!(chain_id.is_ok(), "chain_id should be defined");
-        assert!(
-            base_fee_per_gas.is_ok(),
-            "base_fee_per_gas should be defined"
-        );
-        BlockConstants::first_block(
-            timestamp,
-            chain_id.unwrap(),
-            base_fee_per_gas.unwrap(),
-        )
+        assert!(block_fees.is_ok(), "block fees should be defined");
+        BlockConstants::first_block(timestamp, chain_id.unwrap(), block_fees.unwrap())
     }
 
     #[test]
@@ -1466,15 +1401,11 @@ mod tests {
             tx_hash,
             content: Ethereum(tx),
         };
-        let queue = Queue {
-            proposals: vec![blueprint(vec![transaction])],
-            kernel_upgrade: None,
-        };
+        store_blueprints(&mut host, vec![blueprint(vec![transaction])]);
 
         // Apply the transaction
         produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1491,8 +1422,8 @@ mod tests {
         assert_eq!(nonce, default_nonce, "nonce should not have been bumped");
     }
 
-    /// A queue that should produce 1 block with an invalid transaction
-    fn almost_empty_queue() -> Queue {
+    /// A blueprint that should produce 1 block with an invalid transaction
+    fn almost_empty_blueprint() -> Blueprint {
         let tx_hash = [0; TRANSACTION_HASH_SIZE];
 
         // transaction should be invalid
@@ -1503,10 +1434,7 @@ mod tests {
 
         let transactions = vec![tx];
 
-        Queue {
-            proposals: vec![blueprint(transactions)],
-            kernel_upgrade: None,
-        }
+        blueprint(transactions)
     }
 
     fn check_current_block_number<Host: Runtime>(host: &mut Host, nb: usize) {
@@ -1520,9 +1448,10 @@ mod tests {
         let mut host = MockHost::default();
 
         // first block should be 0
+        let blueprint = almost_empty_blueprint();
+        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
-            almost_empty_queue(),
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1532,9 +1461,10 @@ mod tests {
         check_current_block_number(&mut host, 0);
 
         // second block
+        let blueprint = almost_empty_blueprint();
+        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
-            almost_empty_queue(),
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1544,9 +1474,10 @@ mod tests {
         check_current_block_number(&mut host, 1);
 
         // third block
+        let blueprint = almost_empty_blueprint();
+        store_inbox_blueprint(&mut host, blueprint).expect("Should store a blueprint");
         produce(
             &mut host,
-            almost_empty_queue(),
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1554,34 +1485,6 @@ mod tests {
         )
         .expect("Empty block should have been produced");
         check_current_block_number(&mut host, 2);
-    }
-
-    fn dummy_eth(nonce: u64) -> EthereumTransactionCommon {
-        let nonce = U256::from(nonce);
-        let gas_price = U256::from(40000000000u64);
-        let gas_limit = 21000;
-        let value = U256::from(1);
-        let to = address_from_str("423163e58aabec5daa3dd1130b759d24bef0f6ea");
-        let tx = EthereumTransactionCommon {
-            type_: TransactionType::Legacy,
-            chain_id: U256::one(),
-            nonce,
-            max_fee_per_gas: gas_price,
-            max_priority_fee_per_gas: gas_price,
-            gas_limit,
-            to,
-            value,
-            data: vec![],
-            access_list: vec![],
-            signature: None,
-        };
-
-        // corresponding caller's address is 0xaf1276cbb260bb13deddb4209ae99ae6e497f446
-        tx.sign_transaction(
-            "dcdff53b4f013dbcdc717f89fe3bf4d8b10512aae282b48e01d7530470382701"
-                .to_string(),
-        )
-        .unwrap()
     }
 
     fn hash_from_nonce(nonce: u64) -> TransactionHash {
@@ -1645,11 +1548,9 @@ mod tests {
     fn wrap_transaction(nonce: u64, tx: EthereumTransactionCommon) -> Transaction {
         Transaction {
             tx_hash: hash_from_nonce(nonce),
-            content: TransactionContent::Ethereum(dummy_eth(nonce)),
+            content: TransactionContent::Ethereum(tx),
         }
     }
-
-    const TOO_MANY_TRANSACTIONS: u64 = 500;
 
     #[test]
     fn test_reboot_many_tx_one_proposal() {
@@ -1663,12 +1564,12 @@ mod tests {
 
         // sanity check: no current block
         assert!(
-            storage::read_current_block_number(&mut host).is_err(),
+            storage::read_current_block_number(&host).is_err(),
             "Should not have found current block number"
         );
 
         //provision sender account
-        let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
+        let sender = H160::from_str(TEST_ADDR).unwrap();
         let sender_initial_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
@@ -1708,7 +1609,6 @@ mod tests {
 
         let computation_result = produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1718,7 +1618,7 @@ mod tests {
 
         // test no new block
         assert!(
-            storage::read_current_block_number(&mut host).is_err(),
+            storage::read_current_block_number(&host).is_err(),
             "Should not have found current block number"
         );
 
@@ -1739,12 +1639,11 @@ mod tests {
 
         // sanity check: no current block
         assert!(
-            storage::read_current_block_number(&mut host).is_err(),
+            storage::read_current_block_number(&host).is_err(),
             "Should not have found current block number"
         );
-
         //provision sender account
-        let sender = H160::from_str("af1276cbb260bb13deddb4209ae99ae6e497f446").unwrap();
+        let sender = H160::from_str(TEST_ADDR).unwrap();
         let sender_initial_balance = U256::from(10000000000000000000u64);
         let mut evm_account_storage = init_account_storage().unwrap();
         set_balance(
@@ -1784,7 +1683,6 @@ mod tests {
 
         let computation_result = produce(
             &mut host,
-            queue,
             DUMMY_CHAIN_ID,
             dummy_block_fees(),
             &mut Configuration::default(),
@@ -1793,11 +1691,11 @@ mod tests {
         .expect("Should have produced");
 
         // test no new block
-        assert!(
-            storage::read_current_block_number(&mut host)
-                .expect("should have found a block number")
-                > U256::zero(),
-            "There should have been multiple blocks registered"
+        assert_eq!(
+            storage::read_current_block_number(&host)
+                .expect("should have found a block number"),
+            U256::zero(),
+            "There should have been one block registered"
         );
 
         // test reboot is set
@@ -1814,8 +1712,8 @@ mod tests {
             .expect("The reboot context should have a block in progress");
 
         assert!(
-            storage::was_rebooted(&mut host).expect("Should have found flag"),
-            "Flag should be set"
+            bip.queue_length() > 0,
+            "There should be some transactions left"
         );
 
         let _next_blueprint =

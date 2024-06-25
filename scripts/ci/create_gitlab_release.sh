@@ -7,8 +7,8 @@ set -eu
 # In the GitLab namespace 'nomadic-labs', if you want to iterate using the same tag
 # you should manually delete any previously created release, otherwise it will error
 
-# shellcheck source=./scripts/ci/mavkit-release.sh
-. ./scripts/ci/mavkit-release.sh
+# shellcheck source=./scripts/ci/octez-release.sh
+. ./scripts/ci/octez-release.sh
 
 echo "Query GitLab to get generic package URL"
 
@@ -29,29 +29,27 @@ package_web_path() {
   fi
 }
 
-gitlab_binaries_url=$(package_web_path "${gitlab_mavkit_binaries_package_name}")
-gitlab_mavkit_source_url=$(package_web_path "${gitlab_mavkit_source_package_name}")
-gitlab_debian_bookworm_packages_url=$(package_web_path "${gitlab_mavkit_debian_bookworm_package_name}")
-gitlab_ubuntu_focal_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_focal_package_name}")
-gitlab_ubuntu_jammy_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_jammy_package_name}")
-gitlab_fedora_packages_url=$(package_web_path "${gitlab_mavkit_fedora_package_name}")
-gitlab_rockylinux_packages_url=$(package_web_path "${gitlab_mavkit_rockylinux_package_name}")
+gitlab_binaries_url=$(package_web_path "${gitlab_octez_binaries_package_name}")
+gitlab_octez_source_url=$(package_web_path "${gitlab_octez_source_package_name}")
+gitlab_debian_bookworm_packages_url=$(package_web_path "${gitlab_octez_debian_bookworm_package_name}")
+gitlab_ubuntu_focal_packages_url=$(package_web_path "${gitlab_octez_ubuntu_focal_package_name}")
+gitlab_ubuntu_jammy_packages_url=$(package_web_path "${gitlab_octez_ubuntu_jammy_package_name}")
+gitlab_fedora_packages_url=$(package_web_path "${gitlab_octez_fedora_package_name}")
+gitlab_rockylinux_packages_url=$(package_web_path "${gitlab_octez_rockylinux_package_name}")
 
-if [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ]
-then
+if [ "${CI_PROJECT_NAMESPACE}" = "tezos" ]; then
   ## Production => Docker Hub
-  docker_hub_path='mavrykdynamics/mavryk'
+  docker_hub_path='tezos/tezos'
   echo "Query Docker Hub repository to get image URL at https://hub.docker.com/r/${docker_hub_path}"
 
-  token=$(curl -fsSL "https://auth.docker.io/token?scope=repository:${docker_hub_path}:pull&service=registry.docker.io"  | jq -r '.token')
+  token=$(curl -fsSL "https://auth.docker.io/token?scope=repository:${docker_hub_path}:pull&service=registry.docker.io" | jq -r '.token')
   docker_image_digest=$(curl -fsSL -X GET \
-                             -H 'Accept: application/vnd.docker.distribution.manifest.list.v2+json' \
-                             -H "Authorization: Bearer ${token}" \
-                             "https://registry-1.docker.io/v2/${docker_hub_path}/manifests/${CI_COMMIT_TAG}" \
-                        | jq -r '.manifests | .[0] | .digest | split(":")[1]')
+    -H 'Accept: application/vnd.docker.distribution.manifest.list.v2+json' \
+    -H "Authorization: Bearer ${token}" \
+    "https://registry-1.docker.io/v2/${docker_hub_path}/manifests/${CI_COMMIT_TAG}" |
+    jq -r '.manifests | .[0] | .digest | split(":")[1]')
 
-  if [ -z "${docker_image_digest}" ]
-  then
+  if [ -z "${docker_image_digest}" ]; then
     echo "Error: could not find Docker Hub image matching tag ${CI_COMMIT_TAG}"
     exit 1
   else
@@ -72,11 +70,11 @@ export DEBUG='true'
 release-cli create \
   --name="${gitlab_release_name}" \
   --tag-name="${CI_COMMIT_TAG}" \
-  --assets-link="{\"name\":\"Changelog\",\"url\":\"https://protocol.mavryk.org/CHANGES.html#version-${gitlab_release_no_dot}\",\"link_type\":\"other\"}" \
-  --assets-link="{\"name\":\"Announcement\",\"url\":\"https://protocol.mavryk.org/releases/version-${gitlab_release_major_version}.html\",\"link_type\":\"other\"}" \
+  --assets-link="{\"name\":\"Changelog\",\"url\":\"https://tezos.gitlab.io/CHANGES.html#version-${gitlab_release_no_dot}\",\"link_type\":\"other\"}" \
+  --assets-link="{\"name\":\"Announcement\",\"url\":\"https://tezos.gitlab.io/releases/version-${gitlab_release_major_version}.html\",\"link_type\":\"other\"}" \
   --assets-link="{\"name\":\"Docker image\",\"url\":\"${docker_image_url}\",\"link_type\":\"image\"}" \
   --assets-link="{\"name\":\"Static binaries\",\"url\":\"${gitlab_binaries_url}\",\"link_type\":\"package\"}" \
-  --assets-link="{\"name\":\"Mavkit source\",\"url\":\"${gitlab_mavkit_source_url}\",\"link_type\":\"other\"}" \
+  --assets-link="{\"name\":\"Octez source\",\"url\":\"${gitlab_octez_source_url}\",\"link_type\":\"other\"}" \
   --assets-link="{\"name\":\"Debian Bookworm packages\",\"url\":\"${gitlab_debian_bookworm_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Focal packages\",\"url\":\"${gitlab_ubuntu_focal_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Jammy packages\",\"url\":\"${gitlab_ubuntu_jammy_packages_url}\",\"link_type\":\"package\"}" \

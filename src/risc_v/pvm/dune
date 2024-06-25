@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name mavkit_risc_v_pvm)
- (public_name mavkit-risc-v-pvm)
+ (name octez_risc_v_pvm)
+ (public_name octez-risc-v-pvm)
  (instrumentation (backend bisect_ppx))
  (libraries
   ctypes
@@ -12,7 +12,7 @@
   (:standard)
   -w -9-27)
  (ctypes
-  (external_library_name mavkit_risc_v_pvm)
+  (external_library_name octez_risc_v_pvm)
   (build_flags_resolver
    (vendored
     (c_flags
@@ -21,9 +21,9 @@
      -I%{env:INSIDE_DUNE=.}/src/risc_v/pvm)
     (c_library_flags
      :standard
-     -lmavkit_risc_v_pvm
+     -loctez_risc_v_pvm
      -L%{env:INSIDE_DUNE=.}/src/risc_v/pvm)))
-  (headers (include mavkit_risc_v_pvm.h))
+  (headers (include octez_risc_v_pvm.h))
   (type_description (instance Types) (functor Api_types_desc))
   (function_description
    (concurrency unlocked)
@@ -31,7 +31,7 @@
    (functor Api_funcs_desc))
   (generated_types Api_types)
   (generated_entry_point Api)
-  (deps libmavkit_risc_v_pvm.a mavkit_risc_v_pvm.h)))
+  (deps liboctez_risc_v_pvm.a octez_risc_v_pvm.h)))
 
 (subdir
  helpers/bin
@@ -55,7 +55,7 @@
      helpers)))))
 
 (rule
- (targets libmavkit_risc_v_pvm.a mavkit_risc_v_pvm.h)
+ (targets liboctez_risc_v_pvm.a octez_risc_v_pvm.h)
  (deps
   (file Cargo.toml)
   (file build.rs)
@@ -73,11 +73,11 @@
  (action
   (no-infer
    (progn
-    (run cargo build --release -p mavkit-risc-v-pvm)
-    (copy ../target/release/libmavkit_risc_v_pvm.a libmavkit_risc_v_pvm.a)))))
+    (run cargo build --release -p octez-risc-v-pvm)
+    (copy ../target/release/liboctez_risc_v_pvm.a liboctez_risc_v_pvm.a)))))
 
 (rule
- (targets libmavkit_risc_v_pvm.a mavkit_risc_v_pvm.h)
+ (targets liboctez_risc_v_pvm.a octez_risc_v_pvm.h)
  (deps
   (file Cargo.toml)
   (file build.rs)
@@ -96,10 +96,10 @@
  (action
   (no-infer
    (progn
-    (run cargo build --release -p mavkit-risc-v-pvm)
+    (run cargo build --release -p octez-risc-v-pvm)
     (run
      helpers/bin/armerge
-     --keep-symbols=^_?mavkit_
-     ../target/release/libmavkit_risc_v_pvm.a
+     --keep-symbols=^_?octez_
+     ../target/release/liboctez_risc_v_pvm.a
      --output
-     libmavkit_risc_v_pvm.a)))))
+     liboctez_risc_v_pvm.a)))))

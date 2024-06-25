@@ -35,7 +35,7 @@ type t = {
   index : Irmin_context.rw_index;
   preimages : string;
   preimages_endpoint : Uri.t option;
-  smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t;
+  smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t;
   store : Evm_store.t;
   session : session_state;
   fail_on_missing_blueprint : bool;
@@ -548,7 +548,7 @@ module State = struct
       Irmin_context.load ~cache_size:100_000 Read_write (store_path ~data_dir)
     in
     let destination =
-      Tezos_crypto.Hashed.Smart_rollup_address.of_string_exn
+      Mavryk_crypto.Hashed.Smart_rollup_address.of_string_exn
         smart_rollup_address
     in
     let* store, context, next_blueprint_number, current_block_hash, init_status

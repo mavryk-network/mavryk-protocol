@@ -1,5 +1,5 @@
 import json
-from pytezos.operation.result import OperationResult
+from pymavryk.operation.result import OperationResult
 
 class OperationResultRecorder:
     def __init__(self):

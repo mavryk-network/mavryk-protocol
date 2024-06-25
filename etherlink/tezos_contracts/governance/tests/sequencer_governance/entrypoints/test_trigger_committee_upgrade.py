@@ -1,4 +1,4 @@
-from pytezos.client import PyTezosClient
+from pymavryk.client import PyMavrykClient
 from tests.base import BaseTestCase
 from tests.helpers.contracts.governance_base import YEA_VOTE
 from tests.helpers.contracts.sequencer_governance import SequencerGovernance
@@ -67,7 +67,7 @@ class CommitteeGovernanceTriggerCommitteeUpgradeTestCase(BaseTestCase):
         pool_address = '71c7656ec7ab88b098defb751b7401b5f6d8976f'
         test = self.prepare_last_winner(sequencer_pk, pool_address)
         governance : SequencerGovernance = test['governance']
-        baker : PyTezosClient = test['baker']
+        baker : PyMavrykClient = test['baker']
 
         governance.using(baker).trigger_committee_upgrade(rollup_mock1.contract.address).send()
         self.bake_blocks(10)
@@ -111,7 +111,7 @@ class CommitteeGovernanceTriggerCommitteeUpgradeTestCase(BaseTestCase):
         pool_address = '71c7656ec7ab88b098defb751b7401b5f6d8976f'
         test = self.prepare_last_winner(sequencer_pk, pool_address)
         governance : SequencerGovernance = test['governance']
-        baker : PyTezosClient = test['baker']
+        baker : PyMavrykClient = test['baker']
 
         payload_pattern = rf'^F855B6{sequencer_pk.encode().hex()}94{pool_address}88[\da-f]{{16}}$'
         assert not re.match(payload_pattern, rollup_mock.contract.storage().hex(), re.IGNORECASE)

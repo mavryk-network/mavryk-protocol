@@ -10,12 +10,12 @@ use crate::{
 };
 use anyhow::Result;
 use rlp::{Decodable, DecoderError, Encodable};
-use tezos_ethereum::{
+use mavryk_ethereum::{
     rlp_helpers, transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
 };
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_encoding::timestamp::Timestamp;
-use tezos_smart_rollup_host::{path::RefPath, runtime::Runtime};
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_host::{path::RefPath, runtime::Runtime};
 
 pub struct DelayedInbox(LinkedList<Hash, DelayedInboxItem>);
 
@@ -344,14 +344,14 @@ mod tests {
     use crate::current_timestamp;
     use crate::inbox::Transaction;
     use primitive_types::{H160, U256};
-    use tezos_smart_rollup_encoding::timestamp::Timestamp;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
     use crate::inbox::TransactionContent::{Ethereum, EthereumDelayed};
-    use tezos_ethereum::{
+    use mavryk_ethereum::{
         transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
     };
 
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_smart_rollup_mock::MockHost;
 
     fn address_from_str(s: &str) -> Option<H160> {
         let data = &hex::decode(s).unwrap();
@@ -360,7 +360,7 @@ mod tests {
 
     fn tx_(i: u64) -> EthereumTransactionCommon {
         EthereumTransactionCommon::new(
-            tezos_ethereum::transaction::TransactionType::Legacy,
+            mavryk_ethereum::transaction::TransactionType::Legacy,
             Some(U256::one()),
             i,
             U256::from(40000000u64),

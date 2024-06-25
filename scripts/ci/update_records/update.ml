@@ -2,29 +2,23 @@ open Tezt
 open Base
 open Tezt_gitlab
 
-let usage () =
-  prerr_endline
-    {|Usage: dune exec scripts/ci/update_records/update.exe -- -a from=[<PIPELINE_ID> | last-merged-pipeline]
+let section =
+  Clap.section
+    "UPDATE TEZT RECORDS"
+    ~description:
+      {|Update records in tezt/records by fetching them from a pipeline.
 
-Example: to fetch test result records from
-https://gitlab.com/tezos/tezos/-/pipelines/426773806, run
-(from the root of the repository):
+Example: to fetch test result records from https://gitlab.com/tezos/tezos/-/pipelines/426773806, run (from the root of the repository):
 
-dune exec scripts/ci/update_records/update.exe -- -a from=426773806
+dune exec scripts/ci/update_records/update.exe -- --from 426773806
 
-You can use the PROJECT environment variable to specify which GitLab
-repository to fetch records from. Default is: tezos/tezos
+You can use the PROJECT environment variable to specify which GitLab repository to fetch records from. Default is: tezos/tezos
 
-The script can also be used to fetch records from the last successful pipeline on the
-latest MR merged to the default branch (configurable through the DEFAULT_BRANCH
-environment variable) for a given PROJECT:
+The script can also be used to fetch records from the last successful pipeline on the latest MR merged to the default branch (configurable through the DEFAULT_BRANCH environment variable) for a given PROJECT:
 
-dune exec scripts/ci/update_records/update.exe -- -a from=last-merged-pipeline
+dune exec scripts/ci/update_records/update.exe -- --from last-merged-pipeline|}
 
-|} ;
-  exit 1
-
-let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"mavryk-network/mavryk-protocol"
+let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"tezos/tezos"
 
 let default_branch =
   Sys.getenv_opt "DEFAULT_BRANCH" |> Option.value ~default:"master"
@@ -38,14 +32,18 @@ let fetch_record records_directory (uri, index, variant) =
   in
   let local = local_dir // local_filename in
   if not @@ Sys.file_exists local_dir then Sys.mkdir local_dir 0o755 ;
-  let* () = Gitlab.get_output uri ~output_path:local in
-  Log.info "Downloaded: %s" local ;
-  match JSON.parse_file local with
-  | exception (JSON.Error _ as exn) ->
+  Lwt.catch
+    (fun () ->
+      let* () = Gitlab.get_output uri ~output_path:local in
+      Log.info "Downloaded: %s" local ;
+      let (_ : JSON.t) = JSON.parse_file local in
+      return (Some local_filename))
+    (fun exn ->
       Log.error
-        "Failed to parse downloaded JSON file, maybe the artifact has expired?" ;
-      raise exn
-  | (_ : JSON.t) -> return local_filename
+        "Failed to fetch record: %s: %s"
+        (Uri.to_string uri)
+        (Printexc.to_string exn) ;
+      return None)
 
 let remove_existing_records records_directory new_records =
   let remove_if_looks_like_an_old_record filename =
@@ -92,13 +90,9 @@ let fetch_pipeline_records_from_jobs records_directory pipeline =
         in
         Log.info "Will fetch %s from job #%d (%s)" artifact_path job_id name ;
         Some
-          ( Gitlab.project_job_artifact
-              ~project
-              ~job_id
-              ~artifact_path:("tezt-results-" ^ index ^ ".json")
-              (),
+          ( Gitlab.project_job_artifact ~project ~job_id ~artifact_path (),
             index,
-            "" )
+            variant )
   in
   let records = List.filter_map get_record jobs in
   Log.info "Found %d Tezt jobs." (List.length records) ;
@@ -157,9 +151,9 @@ let () =
   (* Register a test to benefit from error handling of Test.run,
      as well as [Background.start] etc. *)
   ( Test.register ~__FILE__ ~title:"update records" ~tags:["update"] @@ fun () ->
-    let* new_records =
-      match cli_get_from with
-      | Pipeline pipeline_id -> fetch_pipeline_records_from_jobs pipeline_id
+    let* pipeline_id =
+      match cli_from with
+      | Pipeline pipeline_id -> return pipeline_id
       | Last_merged_pipeline ->
           Gitlab_util.get_last_merged_pipeline ~project ~default_branch ()
       | Last_schedule_extended_test ->
@@ -193,6 +187,12 @@ let () =
       List.filter (function None -> true | Some _ -> false) new_records
       |> List.length
     in
-    remove_existing_records new_records ;
+    Log.info
+      "Successfully fetched %d record(s)."
+      (List.length new_records - failure_count) ;
+    if failure_count > 0 then
+      Test.fail
+        "%d record(s) could not be fetched; see errors above."
+        failure_count ;
     unit ) ;
   Test.run ()

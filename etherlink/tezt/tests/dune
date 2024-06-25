@@ -6,17 +6,17 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.test-helpers
-  octez-libs.tezt-wrapper
+  mavkit-libs.test-helpers
+  mavkit-libs.tezt-wrapper
   tezt-tezos
   tezt_etherlink
-  tezos-protocol-alpha.protocol)
+  mavryk-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_test_helpers
+  -open Mavryk_test_helpers
   -open Tezt_wrapper
   -open Tezt_wrapper.Base
   -open Tezt_tezos
@@ -41,7 +41,7 @@
  (package tezt-etherlink)
  (deps
   (glob_files evm_kernel_inputs/*)
-  (glob_files ../../tezos_contracts/*)
+  (glob_files ../../mavryk_contracts/*)
   (glob_files ../../config/*)
   (glob_files_rec ../../kernel_evm/*))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))

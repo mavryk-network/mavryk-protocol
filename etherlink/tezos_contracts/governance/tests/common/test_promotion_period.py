@@ -2,7 +2,7 @@ from tests.base import BaseTestCase
 from tests.helpers.contracts.governance_base import NAY_VOTE, PASS_VOTE, PROMOTION_PERIOD, PROPOSAL_PERIOD, YEA_VOTE
 from tests.helpers.contracts.kernel_governance import KernelGovernance
 from tests.helpers.utility import DEFAULT_TOTAL_VOTING_POWER, DEFAULT_VOTING_POWER
-from pytezos.client import PyTezosClient
+from pymavryk.client import PyMavrykClient
 
 class KernelGovernancePromotionPeriodTestCase(BaseTestCase):
     def prepare_promotion_period(self, custom_config=None):
@@ -96,7 +96,7 @@ class KernelGovernancePromotionPeriodTestCase(BaseTestCase):
             'promotion_supermajority': 10, # 1 baker will vote yea, 1 baker will vote nay (50%)
         })
         governance: KernelGovernance = test['governance']
-        proposer: PyTezosClient = test['proposer']
+        proposer: PyMavrykClient = test['proposer']
         kernel_root_hash = test['kernel_root_hash']
         baker1 = self.bootstrap_baker()
 
@@ -144,7 +144,7 @@ class KernelGovernancePromotionPeriodTestCase(BaseTestCase):
             'promotion_supermajority': 51, # 1 baker will vote yea, 1 baker will vote nay (50%)
         })
         governance: KernelGovernance = test['governance']
-        proposer: PyTezosClient = test['proposer']
+        proposer: PyMavrykClient = test['proposer']
         kernel_root_hash = test['kernel_root_hash']
         baker1 = self.bootstrap_baker()
         baker2 = self.bootstrap_baker()
@@ -287,7 +287,7 @@ class KernelGovernancePromotionPeriodTestCase(BaseTestCase):
             'promotion_supermajority': 40, # 1 baker will vote yea, 1 baker will vote nay (50%)
         })
         governance: KernelGovernance = test['governance']
-        proposer: PyTezosClient = test['proposer']
+        proposer: PyMavrykClient = test['proposer']
         kernel_root_hash = test['kernel_root_hash']
         baker1 = self.bootstrap_baker()
         baker2 = self.bootstrap_baker()

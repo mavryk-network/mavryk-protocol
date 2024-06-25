@@ -57,7 +57,7 @@ type t = {
   sequencer : sequencer option;
   observer : observer option;
   max_active_connections :
-    Tezos_rpc_http_server.RPC_server.Max_active_rpc_connections.t;
+    Mavryk_rpc_http_server.RPC_server.Max_active_rpc_connections.t;
   tx_pool_timeout_limit : int64;
   tx_pool_addr_limit : int64;
   tx_pool_tx_per_addr_limit : int64;

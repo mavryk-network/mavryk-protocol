@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2024 Functori <contact@functori.com>
 // SPDX-FileCopyrightText: 2021-2023 draganrakita
+// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
-use evm_execution::account_storage::{init_account_storage, EthereumAccount};
-use evm_execution::precompiles::precompile_set;
-use evm_execution::{run_transaction, Config};
+use bytes::Bytes;
+use evm_execution::account_storage::{
+    init_account_storage, EthereumAccount, EthereumAccountStorage,
+};
+use evm_execution::handler::ExecutionOutcome;
+use evm_execution::precompiles::{precompile_set, PrecompileBTreeMap};
+use evm_execution::{run_transaction, Config, EthereumError};
 
-use mavryk_ethereum::block::BlockConstants;
+use mavryk_ethereum::block::{BlockConstants, BlockFees};
 
 use hex_literal::hex;
 use primitive_types::{H160, H256, U256};
@@ -297,7 +302,7 @@ fn check_results(
 #[allow(clippy::too_many_arguments)]
 pub fn run_test(
     path: &Path,
-    report_map: &mut HashMap<String, ReportValue>,
+    report_map: &mut ReportMap,
     report_key: String,
     opt: &Opt,
     output_file: &mut Option<File>,
@@ -306,13 +311,8 @@ pub fn run_test(
     output: &OutputOptions,
     skip_data: &SkipData,
 ) -> Result<(), TestError> {
-    let json_reader = std::fs::read(path).unwrap();
-    let suit: TestSuite = serde_json::from_reader(&*json_reader)?;
-    let execution_buffer = Vec::new();
-    let buffer = RefCell::new(execution_buffer);
-    let mut host = EvalHost::default_with_buffer(buffer);
-
-    let map_caller_keys: HashMap<H256, H160> = MAP_CALLER_KEYS.into();
+    let suit = read_testsuite(path)?;
+    let mut host = prepare_host();
 
     for (name, unit) in suit.0.into_iter() {
         if output.log {
@@ -321,94 +321,13 @@ pub fn run_test(
         let precompiles = precompile_set::<EvalHost>();
         let mut evm_account_storage = init_account_storage().unwrap();
 
-        writeln!(output_file, "Running unit test: {}", name).unwrap();
-        let full_filler_path =
-            construct_folder_path(&unit._info.source, &opt.eth_tests, &None);
-        writeln!(
-            host.buffer.borrow_mut(),
-            "Filler source: {}",
-            &full_filler_path.to_str().unwrap()
-        )
-        .unwrap();
-        let filler_path = Path::new(&full_filler_path);
-        let reader = std::fs::read(filler_path).unwrap();
-        let filler_source = if unit._info.source.contains(".json") {
-            let filler_source: FillerSource = serde_json::from_reader(&*reader)?;
-            Some(filler_source)
-        } else if unit._info.source.contains(".yml") {
-            let filler_source: FillerSource = serde_yaml::from_reader(&*reader)?;
-            Some(filler_source)
-        } else {
-            // Test will be ignored, interpretation of results will not
-            // be possible.
-            None
-        };
+        let filler_source = prepare_filler_source(&host, &unit, opt)?;
 
-        writeln!(
-            host.buffer.borrow_mut(),
-            "\n[START] Accounts initialisation"
-        )
-        .unwrap();
-        for (address, info) in unit.pre.into_iter() {
-            let h160_address: H160 = address.as_fixed_bytes().into();
-            writeln!(host.buffer.borrow_mut(), "\nAccount is {}", h160_address).unwrap();
-            let mut account =
-                EthereumAccount::from_address(&address.as_fixed_bytes().into()).unwrap();
-            if info.nonce != 0 {
-                account.set_nonce(&mut host, info.nonce.into()).unwrap();
-                writeln!(
-                    host.buffer.borrow_mut(),
-                    "Nonce is set for {} : {}",
-                    address,
-                    info.nonce
-                )
-                .unwrap();
-            }
-            account.balance_add(&mut host, info.balance).unwrap();
-            writeln!(
-                host.buffer.borrow_mut(),
-                "Balance for {} was added : {}",
-                address,
-                info.balance
-            )
-            .unwrap();
-            account.set_code(&mut host, &info.code).unwrap();
-            writeln!(host.buffer.borrow_mut(), "Code was set for {}", address).unwrap();
-            for (index, value) in info.storage.iter() {
-                account.set_storage(&mut host, index, value).unwrap();
-            }
-        }
-        writeln!(
-            host.buffer.borrow_mut(),
-            "\n[END] Accounts initialisation\n"
-        )
-        .unwrap();
-
-        let mut env = Env::default();
-
-        // BlockEnv
-        env.block.number = unit.env.current_number;
-        env.block.coinbase = unit.env.current_coinbase;
-        env.block.timestamp = unit.env.current_timestamp;
-        env.block.gas_limit = unit.env.current_gas_limit;
-        env.block.basefee = unit.env.current_base_fee.unwrap_or_default();
-
-        // TxEnv
-        env.tx.caller = if let Some(caller) =
-            map_caller_keys.get(&unit.transaction.secret_key.unwrap())
-        {
-            *caller
-        } else {
-            let private_key = unit.transaction.secret_key.unwrap();
-            return Err(TestError::UnknownPrivateKey { private_key });
-        };
-        env.tx.gas_price = unit
-            .transaction
-            .gas_price
-            .unwrap_or_else(|| unit.transaction.max_fee_per_gas.unwrap_or_default());
+        let mut env = initialize_env(&unit)?;
+        let info = &unit._info;
 
         // post and execution
-        for (spec_name, tests) in unit.post {
+        for (spec_name, tests) in &unit.post {
             let config = match spec_name {
                 SpecName::Shanghai => Config::shanghai(),
                 // TODO: enable future configs when parallelization is enabled.
@@ -458,17 +377,13 @@ pub fn run_test(
 
                 let exec_result = execute_transaction(
                     &mut host,
-                    &block_constants,
                     &mut evm_account_storage,
                     &precompiles,
-                    config.clone(),
-                    address,
-                    caller,
-                    call_data,
-                    gas_limit,
-                    transaction_value,
-                    pay_for_gas,
-                    u64::MAX, // don't account for ticks during the test
+                    &config,
+                    &unit,
+                    &mut env,
+                    test_execution,
+                    data,
                 );
 
                 let labels = LabelIndexes {
@@ -506,56 +421,9 @@ pub fn run_test(
                     ),
                 };
 
-                write!(host.buffer.borrow_mut(), "\nFinal check: ").unwrap();
-                match (&test_execution.expect_exception, &exec_result) {
-                    (None, Ok(_)) => {
-                        writeln!(host.buffer.borrow_mut(), "No unexpected exception.")
-                            .unwrap()
-                    }
-                    (Some(_), Err(_)) => {
-                        writeln!(host.buffer.borrow_mut(), "Exception was expected.")
-                            .unwrap()
-                    }
-                    _ => {
-                        writeln!(
-                            host.buffer.borrow_mut(),
-                            "\nSomething unexpected happened for test {}.",
-                            name
-                        )
-                        .unwrap();
-                        writeln!(
-                            host.buffer.borrow_mut(),
-                            "Expected exception is the following: {:?}",
-                            test_execution.expect_exception
-                        )
-                        .unwrap();
-                        writeln!(
-                            host.buffer.borrow_mut(),
-                            "Furter details on the execution result: {:?}",
-                            exec_result
-                        )
-                        .unwrap();
-                    }
-                }
-                writeln!(host.buffer.borrow_mut(), "\n=======> OK! <=======\n").unwrap();
+                check_results(&host, &name, test_execution, &exec_result);
+                host.buffer.borrow_mut().clear();
             }
-
-            // Check the state after the execution of the result.
-            match filler_source.clone() {
-                Some(filler_source) => process(
-                    &mut host,
-                    filler_source,
-                    &spec_name,
-                    report_map,
-                    report_key.clone(),
-                    output_file,
-                ),
-                None => writeln!(
-                    host.buffer.borrow_mut(),
-                    "No filler file, the outcome of this test is uncertain."
-                )
-                .unwrap(),
-            };
         }
     }
     Ok(())

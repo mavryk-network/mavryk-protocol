@@ -1,4 +1,4 @@
-Entrypoint definition for Tezos Smart Rollup kernels.
+Entrypoint definition for Mavryk Smart Rollup kernels.
 
 A kernel must expose an `extern "C" fn kernel_run();` entrypoint, which is called on a loop
 by the runtime.  The kernel *yields* to the runtime by returning out of

@@ -7,7 +7,7 @@
 let get_period_index
         (config : Storage.config_t)
         : nat =
-    let blocks_after_start_int = Tezos.get_level () - config.started_at_level in
+    let blocks_after_start_int = Mavryk.get_level () - config.started_at_level in
     match is_nat blocks_after_start_int with
         | Some blocks_after_start -> blocks_after_start / config.period_length
         | None -> failwith Errors.current_level_less_than_start_level
@@ -17,7 +17,7 @@ let get_period_index
 let get_current_period_remaining_blocks
         (config : Storage.config_t)
         : nat =
-    let blocks_after_start_int = Tezos.get_level () - config.started_at_level in
+    let blocks_after_start_int = Mavryk.get_level () - config.started_at_level in
     let period_length = config.period_length in
     match is_nat blocks_after_start_int with
         | Some blocks_after_start ->
@@ -68,7 +68,7 @@ let init_new_proposal_voting_period
         upvoters_proposals = Big_map.empty;
         max_upvotes_voting_power = None; 
         winner_candidate = None;
-        total_voting_power = Tezos.get_total_voting_power ();
+        total_voting_power = Mavryk.get_total_voting_power ();
     } in
     { 
         period_index = period_index;
@@ -88,7 +88,7 @@ let init_new_promotion_voting_period
         nay_voting_power = 0n; 
         pass_voting_power = 0n;
         winner_candidate = winner_candidate;
-        total_voting_power = Tezos.get_total_voting_power ();
+        total_voting_power = Mavryk.get_total_voting_power ();
     } in
     { 
         period_index = period_index;

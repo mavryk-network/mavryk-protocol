@@ -4,7 +4,7 @@ set -e
 
 script_dir=$(dirname "$0")
 etherlink_dir="$script_dir/.."
-tezos_dir="$etherlink_dir/.."
+mavryk_dir="$etherlink_dir/.."
 commit=$(git rev-parse HEAD)
 
 rust_image=${rust_image:-"registry.gitlab.com/tezos/tezos/rust-toolchain"}
@@ -21,7 +21,7 @@ rust_toolchain_image_id() {
 build() {
   evm_config=$1
   cp "$evm_config" "$etherlink_dir/config/.evm_config.yaml"
-  docker build -t etherlink_kernel:"$commit" --build-arg EVM_CONFIG="etherlink/config/.evm_config.yaml" --build-arg RUST_IMAGE="$rust_image" --build-arg RUST_TAG="$rust_image_tag" --build-arg CI_COMMIT_SHA="$commit" -f "$script_dir"/docker-compose/evm_kernel_builder.Dockerfile --platform "$platform" "$tezos_dir"
+  docker build -t etherlink_kernel:"$commit" --build-arg EVM_CONFIG="etherlink/config/.evm_config.yaml" --build-arg RUST_IMAGE="$rust_image" --build-arg RUST_TAG="$rust_image_tag" --build-arg CI_COMMIT_SHA="$commit" -f "$script_dir"/docker-compose/evm_kernel_builder.Dockerfile --platform "$platform" "$mavryk_dir"
   res_code=$?
   rm -f "$etherlink_dir"/config/.evm_config.yaml
   if [[ "${res_code}" -ne 0 ]]; then
@@ -38,7 +38,7 @@ copy() {
   docker cp "$container":/kernel "$output_dir"
   {
     echo "rust-toolchain: $rust_image_id"
-    echo "tezos: $commit"
+    echo "mavryk: $commit"
   } > "$output_dir/.versions"
   echo "$container"
 }

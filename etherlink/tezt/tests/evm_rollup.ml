@@ -152,7 +152,7 @@ let check_status_n_logs ~endpoint ~status ~logs ~tx =
 (** [get_value_in_storage client addr nth] fetch the [nth] value in the storage
     of account [addr]  *)
 let get_value_in_storage sc_rollup_node address nth =
-  Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+  Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
   @@ Sc_rollup_rpc.get_global_block_durable_state_value
        ~pvm_kind
        ~operation:Sc_rollup_rpc.Value
@@ -170,7 +170,7 @@ let check_nb_in_storage ~evm_setup ~address ~nth ~expected =
 
 let get_storage_size sc_rollup_node ~address =
   let* storage =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -447,8 +447,8 @@ let register_test ?config ~title ~tags ?(admin = None) ?uses ?commitment_period
     Option.value
       ~default:(fun _protocol ->
         [
-          Constant.octez_smart_rollup_node;
-          Constant.octez_evm_node;
+          Constant.mavkit_smart_rollup_node;
+          Constant.mavkit_evm_node;
           Constant.smart_rollup_installer;
           Constant.WASM.evm_kernel;
         ])
@@ -563,7 +563,7 @@ let deploy_with_base_checks {contract; expected_address; expected_code}
            [to] field present"
   | None -> Test.fail "The transaction object of %s should be available" tx) ;
   let* accounts =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -606,22 +606,22 @@ let test_evm_node_connection =
   Protocol.register_test
     ~__FILE__
     ~tags:["evm"]
-    ~uses:(fun _protocol -> Constant.[octez_smart_rollup_node; octez_evm_node])
+    ~uses:(fun _protocol -> Constant.[mavkit_smart_rollup_node; mavkit_evm_node])
     ~title:"EVM node server connection"
   @@ fun protocol ->
-  let* tezos_node, tezos_client = setup_l1 protocol in
+  let* mavryk_node, mavryk_client = setup_l1 protocol in
   let* sc_rollup =
     originate_sc_rollup
       ~kind:"wasm_2_0_0"
       ~parameters_ty:"string"
       ~src:Constant.bootstrap1.alias
-      tezos_client
+      mavryk_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       Observer
-      tezos_node
-      ~base_dir:(Client.base_dir tezos_client)
+      mavryk_node
+      ~base_dir:(Client.base_dir mavryk_client)
       ~default_operator:Constant.bootstrap1.alias
   in
   let evm_node = Evm_node.create (Sc_rollup_node.endpoint sc_rollup_node) in
@@ -654,7 +654,7 @@ let test_originate_evm_kernel =
     ~error_msg:"Current level has moved past first EVM run (%L = %R)" ;
   let evm_key = "evm" in
   let* storage_root_keys =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -858,8 +858,8 @@ let test_consistent_block_hashes =
     ~tags:["evm"; "l2_blocks"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -1194,7 +1194,7 @@ let test_l2_deploy_erc20 =
 
   (* check account was created *)
   let* accounts =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Tezos_regression.rpc_hooks
+    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -1228,7 +1228,7 @@ let test_l2_deploy_erc20 =
   in
   let transfer_event_topic =
     let h =
-      Tezos_crypto.Hacl.Hash.Keccak_256.digest
+      Mavryk_crypto.Hacl.Hash.Keccak_256.digest
         (Bytes.of_string "Transfer(address,address,uint256)")
     in
     "0x" ^ Hex.show (Hex.of_bytes h)
@@ -1999,13 +1999,13 @@ let test_preinitialized_evm_kernel =
       (sf "Expected to read %%L as administrator key, but found %%R instead") ;
   unit
 
-let deposit ~amount_mutez ~bridge ~depositor ~receiver ~evm_node ~sc_rollup_node
+let deposit ~amount_mumav ~bridge ~depositor ~receiver ~evm_node ~sc_rollup_node
     ~sc_rollup_address client =
   let* () =
     Client.transfer
       ~entrypoint:"deposit"
       ~arg:(sf "Pair %S %s" sc_rollup_address receiver)
-      ~amount:amount_mutez
+      ~amount:amount_mumav
       ~giver:depositor.Account.public_key_hash
       ~receiver:bridge
       ~burn_cap:Tez.one
@@ -2114,8 +2114,8 @@ let withdraw ~commitment_period ~challenge_window ~amount_wei ~sender ~receiver
 
 let check_balance ~receiver ~endpoint expected_balance =
   let* balance = Eth_cli.balance ~account:receiver ~endpoint in
-  let balance = Wei.truncate_to_mutez balance in
-  Check.((balance = Tez.to_mutez expected_balance) int)
+  let balance = Wei.truncate_to_mumav balance in
+  Check.((balance = Tez.to_mumav expected_balance) int)
     ~error_msg:(sf "Expected balance of %s should be %%R, but got %%L" receiver) ;
   unit
 
@@ -2128,8 +2128,8 @@ let test_deposit_and_withdraw =
     ~admin:(Some admin)
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -2159,7 +2159,7 @@ let test_deposit_and_withdraw =
     | None -> Test.fail ~__LOC__ "The test needs the L1 bridge"
   in
 
-  let amount_mutez = Tez.of_mutez_int 100_000_000 in
+  let amount_mumav = Tez.of_mumav_int 100_000_000 in
   let receiver =
     Eth_account.
       {
@@ -2173,7 +2173,7 @@ let test_deposit_and_withdraw =
 
   let* () =
     deposit
-      ~amount_mutez
+      ~amount_mumav
       ~sc_rollup_address
       ~bridge
       ~depositor:admin
@@ -2182,9 +2182,9 @@ let test_deposit_and_withdraw =
       ~sc_rollup_node
       client
   in
-  let* () = check_balance ~receiver:receiver.address ~endpoint amount_mutez in
+  let* () = check_balance ~receiver:receiver.address ~endpoint amount_mumav in
 
-  let amount_wei = Wei.of_tez amount_mutez in
+  let amount_wei = Wei.of_tez amount_mumav in
   (* Keep a small amount to pay for the gas. *)
   let amount_wei = Wei.(amount_wei - one_eth) in
 
@@ -2204,7 +2204,7 @@ let test_deposit_and_withdraw =
   in
 
   let* balance = Client.get_balance_for ~account:withdraw_receiver client in
-  let expected_balance = Tez.(amount_mutez - one) in
+  let expected_balance = Tez.(amount_mumav - one) in
   Check.((balance = expected_balance) Tez.typ)
     ~error_msg:(sf "Expected %%R amount instead of %%L after withdrawal") ;
   return ()
@@ -2301,8 +2301,8 @@ let test_kernel_upgrade_evm_to_evm =
     ~tags:["evm"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -2327,8 +2327,8 @@ let test_kernel_upgrade_wrong_key =
     ~tags:["administrator"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -2352,8 +2352,8 @@ let test_kernel_upgrade_wrong_rollup_address =
     ~tags:["address"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -2376,8 +2376,8 @@ let test_kernel_upgrade_no_administrator =
     ~tags:["administrator"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -2399,8 +2399,8 @@ let test_kernel_upgrade_failing_migration =
     ~tags:["migration"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.failed_migration;
@@ -2458,8 +2458,8 @@ let test_kernel_upgrade_via_governance =
     ~tags:["migration"; "upgrade"; "kernel_governance"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -2486,8 +2486,8 @@ let test_kernel_upgrade_via_kernel_security_governance =
     ~tags:["migration"; "upgrade"; "kernel_security_governance"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -2742,8 +2742,8 @@ let test_kernel_migration =
     ~tags:["evm"; "migration"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.ghostnet_evm_kernel;
@@ -2789,9 +2789,9 @@ let test_deposit_dailynet =
     ~uses:(fun _protocol ->
       Constant.
         [
-          octez_smart_rollup_node;
+          mavkit_smart_rollup_node;
           smart_rollup_installer;
-          octez_evm_node;
+          mavkit_evm_node;
           Constant.WASM.evm_kernel;
         ])
     ~title:"deposit on dailynet"
@@ -2880,12 +2880,12 @@ let test_deposit_dailynet =
   let endpoint = Evm_node.endpoint evm_node in
 
   (* Deposit tokens to the EVM rollup. *)
-  let amount_mutez = Tez.of_mutez_int 100_000_000 in
+  let amount_mumav = Tez.of_mumav_int 100_000_000 in
   let receiver = "0x119811f34EF4491014Fbc3C969C426d37067D6A4" in
 
   let* () =
     deposit
-      ~amount_mutez
+      ~amount_mumav
       ~bridge:bridge_address
       ~depositor:Constant.bootstrap2
       ~receiver
@@ -2896,7 +2896,7 @@ let test_deposit_dailynet =
   in
 
   (* Check the balance in the EVM rollup. *)
-  check_balance ~receiver ~endpoint amount_mutez
+  check_balance ~receiver ~endpoint amount_mumav
 
 let test_cannot_prepayed_leads_to_no_inclusion =
   register_both
@@ -3007,8 +3007,8 @@ let test_deposit_before_and_after_migration =
     ~tags:["evm"; "migration"; "deposit"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.ghostnet_evm_kernel;
@@ -3017,7 +3017,7 @@ let test_deposit_before_and_after_migration =
   @@ fun protocol ->
   let admin = Constant.bootstrap5 in
   let receiver = "0x119811f34EF4491014Fbc3C969C426d37067D6A4" in
-  let amount_mutez = Tez.of_mutez_int 50_000_000 in
+  let amount_mumav = Tez.of_mumav_int 50_000_000 in
 
   let scenario_prior
       ~evm_setup:
@@ -3035,7 +3035,7 @@ let test_deposit_before_and_after_migration =
     in
     let* () =
       deposit
-        ~amount_mutez
+        ~amount_mumav
         ~bridge
         ~depositor:admin
         ~receiver
@@ -3044,7 +3044,7 @@ let test_deposit_before_and_after_migration =
         ~sc_rollup_address
         client
     in
-    check_balance ~receiver ~endpoint amount_mutez
+    check_balance ~receiver ~endpoint amount_mumav
   in
   let scenario_after
       ~evm_setup:
@@ -3062,7 +3062,7 @@ let test_deposit_before_and_after_migration =
     in
     let* () =
       deposit
-        ~amount_mutez
+        ~amount_mumav
         ~bridge
         ~depositor:admin
         ~receiver
@@ -3071,7 +3071,7 @@ let test_deposit_before_and_after_migration =
         ~sc_rollup_address
         client
     in
-    check_balance ~receiver ~endpoint Tez.(amount_mutez + amount_mutez)
+    check_balance ~receiver ~endpoint Tez.(amount_mumav + amount_mumav)
   in
   gen_kernel_migration_test ~admin ~scenario_prior ~scenario_after protocol
 
@@ -3081,8 +3081,8 @@ let test_block_storage_before_and_after_migration =
     ~tags:["evm"; "migration"; "block"; "storage"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.ghostnet_evm_kernel;
@@ -3113,8 +3113,8 @@ let test_rpc_sendRawTransaction_invalid_chain_id =
     ~tags:["evm"; "rpc"; "chain_id"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -3137,8 +3137,8 @@ let test_kernel_upgrade_version_change =
     ~tags:["evm"; "upgrade"; "version"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.ghostnet_evm_kernel;
@@ -3165,8 +3165,8 @@ let test_kernel_upgrade_epoch =
     ~tags:["evm"; "upgrade"; "timestamp"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -3189,8 +3189,8 @@ let test_kernel_upgrade_delay =
     ~tags:["evm"; "upgrade"; "timestamp"; "delay"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.debug_kernel;
@@ -3226,8 +3226,8 @@ let test_transaction_storage_before_and_after_migration =
     ~tags:["evm"; "migration"; "transaction"; "storage"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
         Constant.WASM.ghostnet_evm_kernel;
@@ -3262,8 +3262,8 @@ let test_kernel_root_hash_originate_absent =
     ~tags:["evm"; "kernel_root_hash"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -3282,8 +3282,8 @@ let test_kernel_root_hash_originate_present =
     ~tags:["evm"; "kernel_root_hash"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -3305,8 +3305,8 @@ let test_kernel_root_hash_after_upgrade =
     ~tags:["evm"; "kernel_root_hash"; "upgrade"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -3698,8 +3698,8 @@ let test_l2_call_inter_contract =
     ~tags:["evm"; "l2_deploy"; "l2_call"; "inter_contract"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -3842,7 +3842,7 @@ let test_rpc_getLogs =
   in
   let transfer_event_topic =
     let h =
-      Tezos_crypto.Hacl.Hash.Keccak_256.digest
+      Mavryk_crypto.Hacl.Hash.Keccak_256.digest
         (Bytes.of_string "Transfer(address,address,uint256)")
     in
     "0x" ^ Hex.show (Hex.of_bytes h)
@@ -4028,8 +4028,8 @@ let test_block_hash_regression =
     ~tags:["evm"; "block"; "hash"; "regression"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_evm_node;
-        Constant.octez_smart_rollup_node;
+        Constant.mavkit_evm_node;
+        Constant.mavkit_smart_rollup_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4213,8 +4213,8 @@ let test_keep_alive =
     ~title:"Proxy mode keep alive argument"
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4261,8 +4261,8 @@ let test_regression_block_hash_gen =
     ~tags:["evm"; "l2_call"; "block_hash"; "timestamp"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4371,7 +4371,7 @@ let test_reboot_out_of_ticks =
   (* The PVM takes 11G ticks for collecting inputs, 11G for a kernel_run. As such,
      an L1 level is at least 22G ticks. *)
   let ticks_per_snapshot =
-    Tezos_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
+    Mavryk_protocol_alpha.Protocol.Sc_rollup_wasm.V2_0_0.ticks_per_snapshot
     |> Z.to_int
   in
   let min_ticks_per_l1_level = ticks_per_snapshot * 2 in
@@ -4449,8 +4449,8 @@ let test_migrate_proxy_to_sequencer_future =
     ~tags:["evm"; "rollup_node"; "init"; "migration"; "sequencer"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4602,8 +4602,8 @@ let test_migrate_proxy_to_sequencer_past =
     ~tags:["evm"; "rollup_node"; "init"; "migration"; "sequencer"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4764,8 +4764,8 @@ let test_ghostnet_kernel =
     ~tags:["evm"; "ghostnet"; "version"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_evm_node;
-        Constant.octez_smart_rollup_node;
+        Constant.mavkit_evm_node;
+        Constant.mavkit_smart_rollup_node;
         Constant.smart_rollup_installer;
         Constant.WASM.ghostnet_evm_kernel;
       ])
@@ -4815,8 +4815,8 @@ let test_l2_call_selfdetruct_contract_in_same_transaction =
     ~tags:["evm"; "l2_call"; "selfdestrcut"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4836,8 +4836,8 @@ let test_call_recursive_contract_estimate_gas =
     ~tags:["evm"; "l2_call"; "estimate_gas"; "recursive"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -4908,8 +4908,8 @@ let test_reveal_storage =
     ~title:"Reveal storage"
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -5013,8 +5013,8 @@ let test_blockhash_opcode =
     ~tags:["evm"; "blockhash"; "opcode"]
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -5143,7 +5143,7 @@ let test_outbox_size_limit_resilience ~slow =
     in
     wait_for_application ~evm_node ~sc_rollup_node ~client (do_withdrawals ())
   in
-  (* The transaction tries to do more than 100 outbox messages in a Tezos level.
+  (* The transaction tries to do more than 100 outbox messages in a Mavryk level.
      If the kernel is not smart about it, it will hard fail and revert its state.
      Therefore checking if the transaction is a success is a good indicator
      of the correct behavior. *)
@@ -5196,8 +5196,8 @@ let test_tx_pool_timeout =
     ~title:"Check that transactions correctly timeout."
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])
@@ -5296,8 +5296,8 @@ let test_tx_pool_address_boundaries =
        behaving."
     ~uses:(fun _protocol ->
       [
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
       ])

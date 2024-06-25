@@ -1,0 +1,11 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name irmin_pack_mem)
+ (public_name mavkit-internal-libs.irmin_pack.mem)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin.mem)
+ (preprocess (pps mavkit-internal-libs.ppx_irmin.internal)))

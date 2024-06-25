@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
+// SPDX-FileCopyrightText: 2024 Trilitech <contact@trili.tech>
 //
 // SPDX-License-Identifier: MIT
 
@@ -76,15 +77,34 @@ pub struct UnsignedSequencerBlueprint {
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct SequencerBlueprint {
-    pub timestamp: Timestamp,
-    pub transactions: Vec<u8>,
+    pub blueprint: UnsignedSequencerBlueprint,
+    pub signature: Signature,
+}
+
+impl From<&SequencerBlueprint> for UnsignedSequencerBlueprint {
+    fn from(val: &SequencerBlueprint) -> UnsignedSequencerBlueprint {
+        val.blueprint.clone()
+    }
+}
+
+impl Encodable for UnsignedSequencerBlueprint {
+    fn rlp_append(&self, stream: &mut rlp::RlpStream) {
+        stream.begin_list(4);
+        stream.append(&self.chunk);
+        append_u256_le(stream, &self.number);
+        append_u16_le(stream, &self.nb_chunks);
+        append_u16_le(stream, &self.chunk_index);
+    }
 }
 
 impl Encodable for SequencerBlueprint {
     fn rlp_append(&self, stream: &mut rlp::RlpStream) {
-        stream.begin_list(2);
-        stream.append_list(&self.transactions);
-        append_timestamp(stream, self.timestamp);
+        stream.begin_list(5);
+        stream.append(&self.blueprint.chunk);
+        append_u256_le(stream, &self.blueprint.number);
+        append_u16_le(stream, &self.blueprint.nb_chunks);
+        append_u16_le(stream, &self.blueprint.chunk_index);
+        stream.append(&self.signature.0);
     }
 }
 
@@ -93,13 +113,25 @@ impl Decodable for SequencerBlueprint {
         if !decoder.is_list() {
             return Err(DecoderError::RlpExpectedToBeList);
         }
-        if decoder.item_count()? != 2 {
+        if decoder.item_count()? != 5 {
             return Err(DecoderError::RlpIncorrectListLen);
         }
         let mut it = decoder.iter();
-        let transactions =
-            rlp_helpers::decode_list(&rlp_helpers::next(&mut it)?, "transactions")?;
-        let timestamp = decode_timestamp(&rlp_helpers::next(&mut it)?)?;
+        let chunk = rlp_helpers::decode_field(&rlp_helpers::next(&mut it)?, "chunk")?;
+        let number = decode_field_u256_le(&rlp_helpers::next(&mut it)?, "number")?;
+        let nb_chunks = decode_field_u16_le(&rlp_helpers::next(&mut it)?, "nb_chunks")?;
+        let chunk_index =
+            decode_field_u16_le(&rlp_helpers::next(&mut it)?, "chunk_index")?;
+        let bytes: Vec<u8> =
+            rlp_helpers::decode_field(&rlp_helpers::next(&mut it)?, "signature")?;
+        let signature = Signature::try_from(bytes.as_slice())
+            .map_err(|_| DecoderError::Custom("Invalid signature encoding"))?;
+        let blueprint = UnsignedSequencerBlueprint {
+            chunk,
+            number,
+            nb_chunks,
+            chunk_index,
+        };
         Ok(Self {
             blueprint,
             signature,
@@ -163,7 +195,26 @@ mod tests {
         let blueprint = Blueprint {
             timestamp,
             transactions,
-            timestamp,
-        })
+        };
+        let chunk = rlp::Encodable::rlp_bytes(&blueprint);
+        let signature = Signature::from_base58_check(
+            "sigdGBG68q2vskMuac4AzyNb1xCJTfuU8MiMbQtmZLUCYydYrtTd5Lessn1EFLTDJzjXoYxRasZxXbx6tHnirbEJtikcMHt3"
+        ).expect("signature decoding should work");
+
+        SequencerBlueprint {
+            blueprint: UnsignedSequencerBlueprint {
+                chunk: chunk.into(),
+                number: U256::from(42),
+                nb_chunks: 1u16,
+                chunk_index: 0u16,
+            },
+            signature,
+        }
+    }
+
+    #[test]
+    fn roundtrip_rlp() {
+        let v = dummy_blueprint();
+        sequencer_blueprint_roundtrip(v);
     }
 }

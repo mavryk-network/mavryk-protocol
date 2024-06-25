@@ -5,13 +5,19 @@
 /*                                                                            */
 /******************************************************************************/
 
+//! Various overloads for different instructions. The name of the enum
+//! corresponds to the name of the instruction, while the variant name
+//! corresponds to the stack types used for the particular overload.
+
+#![allow(missing_docs)]
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Add {
     IntInt,
     NatNat,
     IntNat,
     NatInt,
-    MumavMumav,
+    MutezMutez,
     Bls12381G1,
     Bls12381G2,
     Bls12381Fr,
@@ -72,8 +78,8 @@ pub enum Mul {
     NatInt,
     IntNat,
     IntInt,
-    MumavNat,
-    NatMumav,
+    MutezNat,
+    NatMutez,
     Bls12381G1Bls12381Fr,
     Bls12381G2Bls12381Fr,
     Bls12381FrBls12381Fr,
@@ -89,8 +95,8 @@ pub enum EDiv {
     NatInt,
     IntNat,
     IntInt,
-    MumavNat,
-    MumavMumav,
+    MutezNat,
+    MutezMutez,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -117,15 +123,68 @@ pub enum Lsr {
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Get {
     Map,
+    BigMap,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Update {
+    Set,
+    Map,
+    BigMap,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum GetAndUpdate {
+    Map,
+    BigMap,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Size {
+    String,
+    Bytes,
+    List,
+    Set,
     Map,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Iter {
     List,
+    Set,
+    Map,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Slice {
+    String,
+    Bytes,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Concat {
+    TwoStrings,
+    TwoBytes,
+    ListOfStrings,
+    ListOfBytes,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Int {
+    Nat,
+    Bls12381Fr,
+    Bytes,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Bytes {
+    Int,
+    Nat,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Map {
+    List,
+    Option,
     Map,
 }

@@ -1,6 +1,6 @@
-module Conf = Tezos_context_encoding.Context_binary.Conf
-module Schema = Tezos_context_encoding.Context.Schema
-module Context = Tezos_context_disk.Context
+module Conf = Mavryk_context_encoding.Context_binary.Conf
+module Schema = Mavryk_context_encoding.Context.Schema
+module Context = Mavryk_context_disk.Context
 open Lwt_syntax
 
 (* Same as [let* but handle errors using [Assert.fail_msg]. *)

@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-//! The *outbox* allows kernels to send messages from their rollup (Layer 2) to the Tezos layer 1.
+//! The *outbox* allows kernels to send messages from their rollup (Layer 2) to the Mavryk layer 1.
 //!
-//! Messages are contract calls, and may contain *tickets*. For every Tezos level, the kernel may
+//! Messages are contract calls, and may contain *tickets*. For every Mavryk level, the kernel may
 //! produce _up to 100_ outbox messages.
 //!
 //! The most common use of outbox messages is to implement a _withdrawal-like_ flow. Typically,
@@ -34,11 +34,11 @@
 //! messages to be pushed to the queue.
 //!
 //! ```rust
-//! use tezos_smart_rollup::prelude::*;
-//! use tezos_smart_rollup::outbox::*;
-//! use tezos_smart_rollup::inbox::InboxMessage;
-//! use tezos_smart_rollup::michelson::MichelsonString;
-//! use tezos_smart_rollup::types::{Contract, Entrypoint};
+//! use mavryk_smart_rollup::prelude::*;
+//! use mavryk_smart_rollup::outbox::*;
+//! use mavryk_smart_rollup::inbox::InboxMessage;
+//! use mavryk_smart_rollup::michelson::MichelsonString;
+//! use mavryk_smart_rollup::types::{Contract, Entrypoint};
 //!
 //! fn kernel_run(host: &mut impl Runtime) {
 //!   while let Ok(Some(message)) = host.read_input() {
@@ -61,7 +61,7 @@
 //!    }
 //! }
 //!
-//! # use tezos_smart_rollup::testing::prelude::*;
+//! # use mavryk_smart_rollup::testing::prelude::*;
 //! # let mut host = MockHost::default();
 //! # let level = host.run_level(kernel_run);
 //! # assert_eq!(3, host.outbox_at(level).len());
@@ -72,14 +72,14 @@
 //! [default]: OUTBOX_QUEUE
 
 #[doc(inline)]
-pub use tezos_smart_rollup_encoding::outbox::*;
+pub use mavryk_smart_rollup_encoding::outbox::*;
 
-use tezos_data_encoding::enc::BinWriter;
-use tezos_smart_rollup_core::MAX_OUTPUT_SIZE;
-use tezos_smart_rollup_encoding::michelson::Michelson;
-use tezos_smart_rollup_host::path::{concat, Path, PathError};
-use tezos_smart_rollup_host::Error;
-use tezos_smart_rollup_host::{
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_smart_rollup_core::MAX_OUTPUT_SIZE;
+use mavryk_smart_rollup_encoding::michelson::Michelson;
+use mavryk_smart_rollup_host::path::{concat, Path, PathError};
+use mavryk_smart_rollup_host::Error;
+use mavryk_smart_rollup_host::{
     path::{self, OwnedPath, RefPath, PATH_MAX_SIZE},
     runtime::{Runtime, RuntimeError},
 };
@@ -284,8 +284,8 @@ mod test {
     use crate::michelson::MichelsonBytes;
     use crate::testing::prelude::*;
     use crate::types::{Contract, Entrypoint};
-    use tezos_data_encoding::nom::NomReader;
-    use tezos_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
+    use mavryk_data_encoding::nom::NomReader;
+    use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 
     #[test]
     fn flushing_empty_queue_no_op() {

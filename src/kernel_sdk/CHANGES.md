@@ -22,7 +22,7 @@
 - Add michelson `or` and `option`.
 - Add a feature flag `proto-alpha` to enable host functions introduced in
   unreleased protocols.
-- Add `Runtime::reveal_dal_page` to let a kernel request pages from Tezos’ Data
+- Add `Runtime::reveal_dal_page` to let a kernel request pages from Mavryk’ Data
   Availability Layer (DAL).
 - Add a new case `WhitelistUpdate(OutboxMessageWhitelistUpdate)` to the
   `OutboxMessage<Expr: Michelson>` encoding, behind the `proto-alpha` feature flag.

@@ -6,20 +6,20 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  mavkit-libs.error-monad
-  mavkit-l2-libs.layer2_store
+  octez-libs.error-monad
+  octez-l2-libs.layer2_store
   qcheck-alcotest
-  mavkit-alcotezt
+  octez-alcotezt
   tezt)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Mavryk_error_monad
-  -open Mavryk_error_monad.TzLwtreslib
-  -open Mavryk_layer2_store
-  -open Mavkit_alcotezt)
+  -open Tezos_error_monad
+  -open Tezos_error_monad.TzLwtreslib
+  -open Tezos_layer2_store
+  -open Octez_alcotezt)
  (modules test_indexed_store))
 
 (executable
@@ -32,7 +32,7 @@
 
 (rule
  (alias runtest)
- (package mavkit-l2-libs)
+ (package octez-l2-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

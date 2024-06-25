@@ -115,7 +115,7 @@ pub fn read_kernel_upgrade<Host: Runtime>(
 pub fn upgrade<Host: Runtime>(
     host: &mut Host,
     root_hash: [u8; PREIMAGE_HASH_SIZE],
-) -> Result<(), Error> {
+) -> anyhow::Result<()> {
     log!(host, Info, "Kernel upgrade initialisation.");
 
     backup_current_kernel(host)?;

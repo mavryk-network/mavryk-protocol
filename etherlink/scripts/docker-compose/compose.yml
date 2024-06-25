@@ -2,66 +2,66 @@
 version: '3.8'
 services:
 
-  _tezos_with_curl_build:
-    container_name: tezos_with_curl_build
-    image: tezos_with_curl:${OCTEZ_TAG}
+  _mavryk_with_curl_build:
+    container_name: mavryk_with_curl_build
+    image: mavryk_with_curl:${MAVKIT_TAG}
     command: ['echo', 'build completed']  # any linux command which directly terminates.
     build:
-      context: $PWD/tezos_with_curl
-      dockerfile: $PWD/tezos_with_curl/Dockerfile
+      context: $PWD/mavryk_with_curl
+      dockerfile: $PWD/mavryk_with_curl/Dockerfile
       args:
-        OCTEZ_TAG: ${OCTEZ_TAG}
+        MAVKIT_TAG: ${MAVKIT_TAG}
 
-  octez-node:
-    container_name: octez-node
+  mavkit-node:
+    container_name: mavkit-node
     depends_on:
-      - _tezos_with_curl_build
-    image: tezos_with_curl:${OCTEZ_TAG}
+      - _mavryk_with_curl_build
+    image: mavryk_with_curl:${MAVKIT_TAG}
     healthcheck:
       test: curl http://0.0.0.0:8732/monitor/bootstrapped
     volumes:
-      - ${HOST_TEZOS_DATA_DIR}:/home/tezos
+      - ${HOST_MAVRYK_DATA_DIR}:/home/tezos
     networks:
       - etherlink-net
     ports:
       - 8732:8732
-    entrypoint: /usr/local/bin/octez-node
+    entrypoint: /usr/local/bin/mavkit-node
     command: run --rpc-addr=0.0.0.0:8732 --allow-all-rpc 0.0.0.0
 
   smart-rollup-node:
     container_name: rollup-node
-    image: tezos_with_curl:${OCTEZ_TAG}
+    image: mavryk_with_curl:${MAVKIT_TAG}
     depends_on:
-      _tezos_with_curl_build:
+      _mavryk_with_curl_build:
         condition: service_completed_successfully
-      octez-node:
+      mavkit-node:
         condition: service_healthy
     restart: always
     volumes:
-      - ${HOST_TEZOS_DATA_DIR}:/home/tezos
+      - ${HOST_MAVRYK_DATA_DIR}:/home/tezos
     ports:
       - 8733:8733
     networks:
       - etherlink-net
     healthcheck:
       test: curl http://0.0.0.0:8733/global/smart_rollup_address
-    entrypoint: /usr/local/bin/octez-smart-rollup-node
-    command: --endpoint http://octez-node:8732 run
+    entrypoint: /usr/local/bin/mavkit-smart-rollup-node
+    command: --endpoint http://mavkit-node:8732 run
 
   sequencer:
     container_name: evm-sequencer
-    image: tezos/tezos-bare:${OCTEZ_TAG}
+    image: mavryk/mavryk-bare:${MAVKIT_TAG}
     depends_on:
       smart-rollup-node:
         condition: service_healthy
     restart: always
     volumes:
-      - ${HOST_TEZOS_DATA_DIR}:/home/tezos
+      - ${HOST_MAVRYK_DATA_DIR}:/home/tezos
     networks:
       - etherlink-net
     ports:
       - 8545:8545
-    entrypoint: /usr/local/bin/octez-evm-node
+    entrypoint: /usr/local/bin/mavkit-evm-node
     command: run sequencer with endpoint http://rollup-node:8733 signing with ${SEQUENCER_ALIAS} --rpc-addr 0.0.0.0 --rpc-port 8545 --initial-kernel /home/tezos/kernel/evm_installer.wasm --preimages-dir /home/tezos/kernel/_evm_installer_preimages --time-between-blocks 10 --cors-origins '*' --cors-headers '*' --devmode
 
   blockscout-redis-db:

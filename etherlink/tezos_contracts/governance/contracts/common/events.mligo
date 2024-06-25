@@ -27,4 +27,4 @@ let create_voting_finished_event_operation
         (type pt)
         (event_payload : pt voting_finished_event_payload_t)
         : operation =
-    Tezos.emit "%voting_finished" event_payload
+    Mavryk.emit "%voting_finished" event_payload

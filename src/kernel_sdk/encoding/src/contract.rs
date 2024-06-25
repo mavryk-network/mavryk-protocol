@@ -116,51 +116,51 @@ mod test {
     use super::*;
 
     #[test]
-    fn mv1_b58check() {
-        let mv1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
+    fn tz1_b58check() {
+        let tz1 = "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w";
 
-        let pkh = Contract::from_b58check(mv1);
+        let pkh = Contract::from_b58check(tz1);
 
         assert!(matches!(
             pkh,
             Ok(Contract::Implicit(PublicKeyHash::Ed25519(_)))
         ));
 
-        let mv1_from_pkh = pkh.unwrap().to_b58check();
+        let tz1_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv1, &mv1_from_pkh);
+        assert_eq!(tz1, &tz1_from_pkh);
     }
 
     #[test]
-    fn mv2_b58check() {
-        let mv2 = "mv2RKxcrsHm8FsDSZdu8aYrNxgBewfvQudq1";
+    fn tz2_b58check() {
+        let tz2 = "tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc";
 
-        let pkh = Contract::from_b58check(mv2);
+        let pkh = Contract::from_b58check(tz2);
 
         assert!(matches!(
             pkh,
             Ok(Contract::Implicit(PublicKeyHash::Secp256k1(_)))
         ));
 
-        let mv2_from_pkh = pkh.unwrap().to_b58check();
+        let tz2_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv2, &mv2_from_pkh);
+        assert_eq!(tz2, &tz2_from_pkh);
     }
 
     #[test]
-    fn mv3_b58check() {
-        let mv3 = "mv3JVYv3uSuDmxcsfj1fqkusda7qgpcHc1AH";
+    fn tz3_b58check() {
+        let tz3 = "tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA";
 
-        let pkh = Contract::from_b58check(mv3);
+        let pkh = Contract::from_b58check(tz3);
 
         assert!(matches!(
             pkh,
             Ok(Contract::Implicit(PublicKeyHash::P256(_)))
         ));
 
-        let mv3_from_pkh = pkh.unwrap().to_b58check();
+        let tz3_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv3, &mv3_from_pkh);
+        assert_eq!(tz3, &tz3_from_pkh);
     }
 
     #[test]
@@ -177,10 +177,10 @@ mod test {
     }
 
     #[test]
-    fn mv1_encoding() {
-        let mv1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
+    fn tz1_encoding() {
+        let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
 
-        let contract = Contract::from_b58check(mv1).expect("expected valid mv1 hash");
+        let contract = Contract::from_b58check(tz1).expect("expected valid tz1 hash");
 
         let mut bin = Vec::new();
         contract
@@ -191,16 +191,16 @@ mod test {
             .expect("deserialization should work")
             .1;
 
-        check_implicit_serialized(&bin, mv1);
+        check_implicit_serialized(&bin, tz1);
 
         assert_eq!(contract, deserde_contract);
     }
 
     #[test]
-    fn mv2_encoding() {
-        let mv2 = "mv2RH63Aybkv7Gfr87tkZDJRGhvsH3jCmfHP";
+    fn tz2_encoding() {
+        let tz2 = "tz2JmrN5LtfkYZFCQnWQtwpd9u7Fq3Dc4n6E";
 
-        let contract = Contract::from_b58check(mv2).expect("expected valid mv2 hash");
+        let contract = Contract::from_b58check(tz2).expect("expected valid tz2 hash");
 
         let mut bin = Vec::new();
         contract
@@ -211,16 +211,16 @@ mod test {
             .expect("deserialization should work")
             .1;
 
-        check_implicit_serialized(&bin, mv2);
+        check_implicit_serialized(&bin, tz2);
 
         assert_eq!(contract, deserde_contract);
     }
 
     #[test]
-    fn mv3_encoding() {
-        let mv3 = "mv3VXV2rMKcSadCBKhp2kAqwfxQXEvFZvg5Z";
+    fn tz3_encoding() {
+        let tz3 = "tz3gKfNk1UgCKXd21gBVba5Z9kqY8m6J2g1n";
 
-        let contract = Contract::from_b58check(mv3).expect("expected valid mv3 hash");
+        let contract = Contract::from_b58check(tz3).expect("expected valid tz3 hash");
 
         let mut bin = Vec::new();
         contract
@@ -231,7 +231,7 @@ mod test {
             .expect("deserialization should work")
             .1;
 
-        check_implicit_serialized(&bin, mv3);
+        check_implicit_serialized(&bin, tz3);
 
         assert_eq!(contract, deserde_contract);
     }

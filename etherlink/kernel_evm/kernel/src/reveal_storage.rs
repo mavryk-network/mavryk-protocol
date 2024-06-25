@@ -5,13 +5,13 @@
 use crate::configuration::fetch_configuration;
 use crate::storage::{ADMIN, SEQUENCER};
 use rlp::{Decodable, DecoderError, Rlp};
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_ethereum::rlp_helpers::{decode_field, next, FromRlpBytes};
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_debug::Runtime;
-use tezos_smart_rollup_encoding::public_key::PublicKey;
-use tezos_smart_rollup_host::path::{OwnedPath, RefPath};
-use tezos_smart_rollup_host::runtime::ValueType;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::rlp_helpers::{decode_field, next, FromRlpBytes};
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_debug::Runtime;
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_smart_rollup_host::path::{OwnedPath, RefPath};
+use mavryk_smart_rollup_host::runtime::ValueType;
 
 /// This module is a testing device, allowing to replicate the state of an existing EVM rollup
 /// chain into a new deployment. It is not tick-safe, and should obviously not be used in a

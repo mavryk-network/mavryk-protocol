@@ -24,9 +24,9 @@ const transfer_prototype_json = require('./transfer_prototype.json');
 const create_prototype_json = require('./create_prototype.json');
 const CHUNKER = external.bin("./mavkit-evm-node")
 
-// fee is 4 mutez per byte, but has to be converted in wei
+// fee is 4 mumav per byte, but has to be converted in wei
 // 1 tez = 1 eth = 10^18 wei
-// 1 mutez = 10^-6 tez = 10^12 wei
+// 1 mumav = 10^-6 tez = 10^12 wei
 const DA_FEE_PER_BYTE = 4 * Math.pow(10, 12);
 
 const ASSUMED_TX_ENCODED_SIZE = 150;
@@ -108,7 +108,8 @@ const print_list = function (src, mode, blueprint_number) {
         seperator = (j < messages.length - 1) ? "," : "";
         console.log(`{"external": "${messages[j]}"}${seperator}`);
     }
-    console.log("]")
+    console.log("]");
+    return txs.length
 }
 
 function temporary_data_file(data) {
@@ -149,6 +150,7 @@ exports.print_bench = function (src, mode = {}) {
     print_list(inputs.shift(), mode, number)
     console.log("]")
 }
+
 exports.print_raw_txs = function (src) {
     const txs = src.slice();
     txs.forEach(element => {

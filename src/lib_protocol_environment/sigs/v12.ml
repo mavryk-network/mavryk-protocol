@@ -3,7 +3,7 @@
 # 1 "v12.in.ml"
 module type T = sig
   module CamlinternalFormatBasics : module type of struct
-    include Tezos_protocol_environment_sigs_internals.CamlinternalFormatBasics
+    include Mavryk_protocol_environment_sigs_internals.CamlinternalFormatBasics
   end
 
   module Pervasives : sig
@@ -9610,7 +9610,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - BLS12-381 cryptography *)
+(** Mavryk - BLS12-381 cryptography *)
 
 include S.AGGREGATE_SIGNATURE with type watermark := bytes
 
@@ -9655,7 +9655,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Ed25519 cryptography *)
+(** Mavryk - Ed25519 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -9689,7 +9689,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Secp256k1 cryptography *)
+(** Mavryk - Secp256k1 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -9723,7 +9723,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - P256 cryptography *)
+(** Mavryk - P256 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -10668,7 +10668,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos operations. *)
+(** Mavryk operations. *)
 
 type shell_header = {
   branch : Block_hash.t;
@@ -11063,14 +11063,14 @@ module Proof : sig
       [is_stream] discriminates between the stream proofs and the tree proofs.
 
       [is_binary] discriminates between proofs emitted from
-      [Tezos_context(_memory).Context_binary] and
-      [Tezos_context(_memory).Context].
+      [Mavryk_context(_memory).Context_binary] and
+      [Mavryk_context(_memory).Context].
 
       It will also help discriminate between the data encoding techniques used.
 
       The version is meant to be decoded and encoded using the
-      {!Tezos_context_helpers.Context.decode_proof_version} and
-      {!Tezos_context_helpers.Context.encode_proof_version}. *)
+      {!Mavryk_context_helpers.Context.decode_proof_version} and
+      {!Mavryk_context_helpers.Context.encode_proof_version}. *)
   type 'a t = {
     version : int;
     before : kinded_hash;
@@ -11349,7 +11349,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Environment - Protocol updater. *)
+(** Mavryk Protocol Environment - Protocol updater. *)
 
 (** Validation result: the record returned by the protocol
     on the successful validation of a block. *)
@@ -11392,7 +11392,7 @@ type rpc_context = {
   context : Context.t;
 }
 
-(** This is the signature of a Tezos protocol implementation. It has
+(** This is the signature of a Mavryk protocol implementation. It has
     access to the standard library and the Environment module. *)
 module type PROTOCOL = sig
   (** The maximum size of a block header in bytes. *)
@@ -12651,7 +12651,7 @@ module Address : S.HASH
 module Commitment_hash : S.HASH
 
 (** Smart rollup PVM state hashes. Refer to
-    {!Tezos_crypto.Hashed.Smart_rollup_state_hash} in
+    {!Mavryk_crypto.Hashed.Smart_rollup_state_hash} in
     [src/lib_crypto/smart_rollup_state_hash.mli] for documentation. *)
 module State_hash : sig
   include S.HASH

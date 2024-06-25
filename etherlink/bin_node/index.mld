@@ -1,6 +1,6 @@
-{0 Octez-evm-node-libs: octez EVM Node libraries}
+{0 Mavkit-evm-node-libs: mavkit EVM Node libraries}
 
-This is a package containing some libraries used by the EVM Node of Octez.
+This is a package containing some libraries used by the EVM Node of Mavkit.
 
 It contains the following libraries:
 

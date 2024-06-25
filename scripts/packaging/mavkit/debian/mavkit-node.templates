@@ -11,7 +11,7 @@ Description: The type of node you wish to install
  - Rolling: This is the lightest mode as it only maintains a minimal rolling
    fragment of the chain data so the node can still validate new blocks and
    synchronize with the head.
- Source: https://tezos.gitlab.io/user/history_modes.html
+ Source: https://protocol.mavryk.org/user/history_modes.html
 
 Template: mavkit-node/network
 Type: string

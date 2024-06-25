@@ -14,12 +14,12 @@ use crate::{delayed_inbox, DelayedInbox};
 use primitive_types::{H256, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use sha3::{Digest, Keccak256};
-use tezos_ethereum::rlp_helpers;
-use tezos_ethereum::tx_common::EthereumTransactionCommon;
-use tezos_evm_logging::{log, Level::*};
-use tezos_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
-use tezos_smart_rollup_host::path::*;
-use tezos_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use mavryk_ethereum::rlp_helpers;
+use mavryk_ethereum::tx_common::EthereumTransactionCommon;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
+use mavryk_smart_rollup_host::path::*;
+use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
 
 pub const EVM_BLUEPRINTS: RefPath = RefPath::assert_from(b"/evm/blueprints");
 
@@ -158,7 +158,7 @@ pub fn store_inbox_blueprint<Host: Runtime>(
 pub fn read_next_blueprint_number<Host: Runtime>(host: &Host) -> Result<U256, Error> {
     match read_current_block_number(host) {
         Err(Error::Storage(StorageError::Runtime(RuntimeError::HostErr(
-            tezos_smart_rollup_host::Error::StoreNotAValue,
+            mavryk_smart_rollup_host::Error::StoreNotAValue,
         )))) => Ok(U256::zero()),
         Err(err) => Err(err),
         Ok(block_number) => Ok(block_number.saturating_add(U256::one())),
@@ -409,16 +409,16 @@ pub fn clear_all_blueprint<Host: Runtime>(host: &mut Host) -> Result<(), Error> 
 mod tests {
 
     use super::*;
-    use crate::configuration::TezosContracts;
+    use crate::configuration::MavrykContracts;
     use crate::delayed_inbox::Hash;
     use crate::sequencer_blueprint::UnsignedSequencerBlueprint;
     use crate::Timestamp;
     use primitive_types::H256;
-    use tezos_crypto_rs::hash::ContractKt1Hash;
-    use tezos_crypto_rs::hash::Signature;
-    use tezos_ethereum::transaction::TRANSACTION_HASH_SIZE;
-    use tezos_smart_rollup_encoding::public_key::PublicKey;
-    use tezos_smart_rollup_mock::MockHost;
+    use mavryk_crypto_rs::hash::ContractKt1Hash;
+    use mavryk_crypto_rs::hash::Signature;
+    use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_encoding::public_key::PublicKey;
+    use mavryk_smart_rollup_mock::MockHost;
 
     #[test]
     fn test_invalid_sequencer_blueprint_is_removed() {
@@ -433,7 +433,7 @@ mod tests {
         )
         .unwrap();
         let mut config = Configuration {
-            tezos_contracts: TezosContracts::default(),
+            mavryk_contracts: MavrykContracts::default(),
             mode: ConfigurationMode::Sequencer {
                 delayed_bridge,
                 delayed_inbox: Box::new(delayed_inbox),

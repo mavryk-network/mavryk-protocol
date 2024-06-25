@@ -11,7 +11,7 @@ open Ethereum_types
 module MakeBackend (Ctxt : sig
   val evm_node_endpoint : Uri.t
 
-  val smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t
+  val smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t
 end) : Services_backend_sig.Backend = struct
   module Reader = struct
     let read path = Evm_context.inspect path
@@ -97,7 +97,7 @@ end) : Services_backend_sig.Backend = struct
   end
 
   let smart_rollup_address =
-    Tezos_crypto.Hashed.Smart_rollup_address.to_string Ctxt.smart_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.to_string Ctxt.smart_rollup_address
 end
 
 let on_new_blueprint next_blueprint_number
@@ -127,7 +127,7 @@ let on_new_blueprint next_blueprint_number
 module Make (Ctxt : sig
   val evm_node_endpoint : Uri.t
 
-  val smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t
+  val smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t
 end) : Services_backend_sig.S =
   Services_backend_sig.Make (MakeBackend (Ctxt))
 
@@ -138,7 +138,7 @@ let callback_log server conn req body =
   let meth = req |> Request.meth |> Code.string_of_method in
   let* body_str = body |> Cohttp_lwt.Body.to_string in
   let* () = Events.callback_log ~uri ~meth ~body:body_str in
-  Tezos_rpc_http_server.RPC_server.resto_callback
+  Mavryk_rpc_http_server.RPC_server.resto_callback
     server
     conn
     req
@@ -148,7 +148,7 @@ let observer_start
     ({rpc_addr; rpc_port; cors_origins; cors_headers; max_active_connections; _} :
       Configuration.t) ~directory =
   let open Lwt_result_syntax in
-  let open Tezos_rpc_http_server in
+  let open Mavryk_rpc_http_server in
   let p2p_addr = P2p_addr.of_string_exn rpc_addr in
   let host = Ipaddr.V6.to_string p2p_addr in
   let node = `TCP (`Port rpc_port) in
@@ -179,7 +179,7 @@ let install_finalizer_observer server =
   let open Lwt_syntax in
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
   let* () = Events.shutdown_node ~exit_status in
-  let* () = Tezos_rpc_http_server.RPC_server.shutdown server in
+  let* () = Mavryk_rpc_http_server.RPC_server.shutdown server in
   let* () = Events.shutdown_rpc_server ~private_:false in
   Helpers.unwrap_error_monad @@ fun () ->
   let open Lwt_result_syntax in
@@ -236,7 +236,7 @@ let main ?kernel_path ~rollup_node_endpoint ~evm_node_endpoint ~data_dir
       ~preimages:observer_config.preimages
       ~preimages_endpoint:observer_config.preimages_endpoint
       ~smart_rollup_address:
-        (Tezos_crypto.Hashed.Smart_rollup_address.to_string
+        (Mavryk_crypto.Hashed.Smart_rollup_address.to_string
            smart_rollup_address)
       ~fail_on_missing_blueprint:false
       ()
@@ -255,7 +255,7 @@ let main ?kernel_path ~rollup_node_endpoint ~evm_node_endpoint ~data_dir
       {
         rollup_node = observer_backend;
         smart_rollup_address =
-          Tezos_crypto.Hashed.Smart_rollup_address.to_b58check
+          Mavryk_crypto.Hashed.Smart_rollup_address.to_b58check
             smart_rollup_address;
         mode = Observer;
         tx_timeout_limit = config.tx_pool_timeout_limit;

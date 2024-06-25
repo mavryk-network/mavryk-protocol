@@ -62,7 +62,7 @@ let register_dir () =
         Lwt.return inj_operation_hash)
   in
   let dir =
-    Mavryk_rpc.Directory.register0 dir operation_status (fun {op_hash} () ->
+    Mavryk_rpc.Directory.register0 dir operation_status (fun {op_id} () ->
         let status = Injector_server.operation_status op_id in
         return
         @@ Option.map

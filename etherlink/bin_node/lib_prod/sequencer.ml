@@ -6,7 +6,7 @@
 (*****************************************************************************)
 
 module MakeBackend (Ctxt : sig
-  val smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t
+  val smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t
 end) : Services_backend_sig.Backend = struct
   module Reader = struct
     let read path = Evm_context.inspect path
@@ -38,11 +38,11 @@ end) : Services_backend_sig.Backend = struct
   end
 
   let smart_rollup_address =
-    Tezos_crypto.Hashed.Smart_rollup_address.to_string Ctxt.smart_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.to_string Ctxt.smart_rollup_address
 end
 
 module Make (Ctxt : sig
-  val smart_rollup_address : Tezos_crypto.Hashed.Smart_rollup_address.t
+  val smart_rollup_address : Mavryk_crypto.Hashed.Smart_rollup_address.t
 end) =
   Services_backend_sig.Make (MakeBackend (Ctxt))
 
@@ -50,12 +50,12 @@ let install_finalizer_seq server private_server =
   let open Lwt_syntax in
   Lwt_exit.register_clean_up_callback ~loc:__LOC__ @@ fun exit_status ->
   let* () = Events.shutdown_node ~exit_status in
-  let* () = Tezos_rpc_http_server.RPC_server.shutdown server in
+  let* () = Mavryk_rpc_http_server.RPC_server.shutdown server in
   let* () = Events.shutdown_rpc_server ~private_:false in
   let* () =
     Option.iter_s
       (fun private_server ->
-        let* () = Tezos_rpc_http_server.RPC_server.shutdown private_server in
+        let* () = Mavryk_rpc_http_server.RPC_server.shutdown private_server in
         Events.shutdown_rpc_server ~private_:true)
       private_server
   in
@@ -73,7 +73,7 @@ let callback_log server conn req body =
   let meth = req |> Request.meth |> Code.string_of_method in
   let* body_str = body |> Cohttp_lwt.Body.to_string in
   let* () = Events.callback_log ~uri ~meth ~body:body_str in
-  Tezos_rpc_http_server.RPC_server.resto_callback
+  Mavryk_rpc_http_server.RPC_server.resto_callback
     server
     conn
     req
@@ -90,7 +90,7 @@ let start_server
         _;
       } ~directory ~private_info =
   let open Lwt_result_syntax in
-  let open Tezos_rpc_http_server in
+  let open Mavryk_rpc_http_server in
   let p2p_addr = P2p_addr.of_string_exn rpc_addr in
   let host = Ipaddr.V6.to_string p2p_addr in
   let node = `TCP (`Port rpc_port) in
@@ -229,7 +229,7 @@ let main ~data_dir ~rollup_node_endpoint ~max_blueprints_lag
   in
 
   let smart_rollup_address_typed =
-    Tezos_crypto.Hashed.Smart_rollup_address.of_string_exn smart_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.of_string_exn smart_rollup_address
   in
 
   let module Sequencer = Make (struct

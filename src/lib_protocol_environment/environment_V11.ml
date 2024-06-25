@@ -1182,7 +1182,7 @@ struct
       end)
 
       let compute_step =
-        compute_step ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+        compute_step ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
     end
   end
 

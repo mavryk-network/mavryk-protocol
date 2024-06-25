@@ -18,7 +18,7 @@ Set it to e.g. 'script-inputs/released-executables'
 or to 'script-inputs/released-executables script-inputs/experimental-executables'."}
 
 # shellcheck disable=SC2086
-MAVKIT_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
+OCTEZ_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
 
 # Build minimal, bare and debug images
 ./scripts/create_docker_image.sh \
@@ -26,7 +26,7 @@ MAVKIT_EXECUTABLES="$(cat $EXECUTABLE_FILES)"
   --image-version "${DOCKER_IMAGE_TAG}" \
   --build-deps-image-name "${build_deps_image_name}" \
   --build-deps-image-version "${build_deps_image_version}" \
-  --executables "${MAVKIT_EXECUTABLES}" \
+  --executables "${OCTEZ_EXECUTABLES}" \
   --commit-short-sha "${CI_COMMIT_SHORT_SHA}" \
   --docker-target "${DOCKER_BUILD_TARGET}" \
   --rust-toolchain-image "${rust_toolchain_image_name}" \

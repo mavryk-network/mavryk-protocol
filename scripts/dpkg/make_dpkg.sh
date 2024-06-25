@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Debian/Ubuntu package build for Mavkit
+# Debian/Ubuntu package build for Octez
 #
 # (c) Chris Pinnock 2022-3, Supplied under a MIT license.
 # see ../pkg-common/utils.sh for more detail
@@ -18,12 +18,12 @@ dieonwarn=${dieonwarn:-1}
 protocols=${protocols:?protocols not specified} # Not used?
 
 warnings
-pkg_vers=$(getMavkitVersion)
+pkg_vers=$(getOctezVersion)
 staging_root=_dpkgstage
 
 # Checking prerequisites
 #
-if ! which dpkg-deb >/dev/null 2>&1; then
+if ! which dpkg-deb > /dev/null 2>&1; then
   echo "Needs to run on a system with dpkg-deb in path" >&2
   exit 2
 fi
@@ -37,14 +37,14 @@ dpkg_arch=$DEB_BUILD_ARCH
 #
 for control_file in "$myhome"/*control.in; do
   pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
-  echo "===> Building package $pg v$pkg_vers rev $MAVKIT_PKGREV"
+  echo "===> Building package $pg v$pkg_vers rev $OCTEZ_PKGREV"
 
   # Derivative variables
   #
-  dpkg_name=${MAVKIT_PKGNAME}-${pg}
-  init_name=${MAVKIT_REALNAME}-${pg}
+  dpkg_name=${OCTEZ_PKGNAME}-${pg}
+  init_name=${OCTEZ_REALNAME}-${pg}
   dpkg_vers=$(echo "${pkg_vers}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${MAVKIT_PKGREV}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${OCTEZ_PKGREV}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
@@ -90,9 +90,9 @@ for control_file in "$myhome"/*control.in; do
   # Edit the control file to contain real values
   #
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$pkg_vers/g" \
-    -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
+    -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
-    -e "s/@DPKG@/${MAVKIT_PKGNAME}/g" \
+    -e "s/@DPKG@/${OCTEZ_PKGNAME}/g" \
     -e "s/@DEPENDS@/${deps}/g" < "$control_file" \
     > "${staging_dir}/DEBIAN/control"
 
@@ -105,20 +105,19 @@ for control_file in "$myhome"/*control.in; do
     fi
   done
 
-
   # init.d scripts
   #
   initdScripts "${common}/${pg}.initd.in" "${init_name}" "${staging_dir}"
-    if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd.in" mavkit-vdf "${staging_dir}"
-    fi
+  if [ "$pg" = "baker" ]; then
+    initdScripts "${common}/vdf.initd.in" octez-vdf "${staging_dir}"
+  fi
 
   # Configuration files
   #
   if [ -f "${common}/${pg}.conf" ]; then
-    mkdir -p "${staging_dir}/etc/mavkit"
-    expand_PROTOCOL "${common}/${pg}.conf" > "${staging_dir}/etc/mavkit/${pg}.conf"
-    echo "/etc/mavkit/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
+    mkdir -p "${staging_dir}/etc/octez"
+    expand_PROTOCOL "${common}/${pg}.conf" > "${staging_dir}/etc/octez/${pg}.conf"
+    echo "/etc/octez/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
   fi
 
   # Zcash parameters ships with some packages
