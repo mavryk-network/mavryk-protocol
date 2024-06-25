@@ -146,26 +146,13 @@ Proof-of-stake parameters
    * - Parameter name
      - Parameter value
    * - ``BLOCKS_PER_CYCLE``
-<<<<<<< .merge_file_QkMaqS
-     - 16384 blocks
-   * - ``PRESERVED_CYCLES``
-     - 5 cycles
-=======
      - 24576 blocks
    * - ``CONSENSUS_RIGHTS_DELAY``
      - 2 cycles
->>>>>>> .merge_file_raot0m
    * - ``MINIMAL_STAKE``
      - 6,000 ṁ
    * - ``MINIMAL_FROZEN_STAKE``
-<<<<<<< .merge_file_QkMaqS
      - 600 ṁ
-   * - ``BLOCKS_PER_STAKE_SNAPSHOT``
-     - 1024 blocks
-
-=======
-     - 600 ṁ
->>>>>>> .merge_file_raot0m
 
 Further External Resources
 --------------------------
@@ -175,11 +162,7 @@ found in the `whitepaper
 <https://tezos.com/whitepaper.pdf>`_.
 
 
-<<<<<<< .merge_file_QkMaqS
-The adaptive issuance experimental feature :ref:`documentation <adaptive_issuance_atlas>`.
-=======
 The adaptive issuance feature :ref:`documentation <adaptive_issuance_alpha>`.
->>>>>>> .merge_file_raot0m
 
 Other presentations of the Mavryk' proof-of-stake mechanism can be
 found in the

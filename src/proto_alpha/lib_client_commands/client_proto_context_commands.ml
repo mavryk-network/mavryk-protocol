@@ -902,22 +902,6 @@ let verbose_signing_switch : (_, Protocol_client_context.full) Tezos_clic.arg =
    is then exported in the mli file. *)
 (* ----------------------------------------------------------------------------*)
 
-<<<<<<< .merge_file_EYTXHG
-let dry_run_switch =
-  Mavryk_clic.switch
-    ~long:"dry-run"
-    ~short:'D'
-    ~doc:"don't inject the operation, just display it"
-    ()
-
-let verbose_signing_switch =
-  Mavryk_clic.switch
-    ~long:"verbose-signing"
-    ~doc:"display extra information before signing the operation"
-    ()
-
-=======
->>>>>>> .merge_file_7rI4tn
 let simulate_switch =
   Mavryk_clic.switch
     ~long:"simulation"

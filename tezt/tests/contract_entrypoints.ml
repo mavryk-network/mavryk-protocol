@@ -307,10 +307,7 @@ let register_simple_entrypoints protocols =
     ~__FILE__
     ~title:"simple entrypoints"
     ~tags:["client"; "michelson"]
-<<<<<<< .merge_file_q1NwiL
-=======
     ~uses_node:false
->>>>>>> .merge_file_YqSsZO
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
       let* client, contract = originate_simple_entrypoints client ~protocol in

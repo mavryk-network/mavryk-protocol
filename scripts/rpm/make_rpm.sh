@@ -110,15 +110,9 @@ for specfile in "$myhome"/*spec.in; do
   # Edit the spec file to contain real values
   #
   spec_file="${pg}.spec"
-<<<<<<< .merge_file_Plqk8P
-  sed -e "s/@ARCH@/${rpm_arch}/g" -e "s/@VERSION@/$pkg_vers/g" \
-    -e "s/@REVISION@/${MAVKIT_PKGREV}/g" \
-    -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
-=======
   sed -e "s/@ARCH@/${rpm_arch}/g" -e "s/@VERSION@/$rpm_vers/g" \
     -e "s/@REVISION@/${MAVKIT_PKGREV}/g" \
     -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
->>>>>>> .merge_file_DRiofq
     -e "s/@PKG@/${rpm_name}/g" \
     -e "s/@DPKG@/${MAVKIT_PKGNAME}/g" \
     -e "s/@FAKESRC@/${tar_name}.tar.gz/g" < "$specfile" \

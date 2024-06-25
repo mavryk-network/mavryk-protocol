@@ -378,11 +378,7 @@ let () =
     ~__FILE__
     ~title:"Generate Network Activation Parameters"
     ~tags:["generate_activation_parameters"]
-<<<<<<< .merge_file_v6qM91
-    (Local.generate_network_activation_parameters Protocol.Atlas) ;
-=======
     (Local.generate_network_activation_parameters Protocol.ParisC) ;
->>>>>>> .merge_file_KWZqwS
   register
     ~__FILE__
     ~title:"Partition bakers by node"

@@ -560,15 +560,10 @@ let main (module C : M) ~select_commands =
         in
         match r with
         | Ok () -> Lwt.return 0
-<<<<<<< .merge_file_OJAxqe
         | Error [Mavryk_clic.Version] ->
-            let version = Mavryk_version_value.Bin_version.version_string in
-=======
-        | Error [Tezos_clic.Version] ->
             let version =
-              Tezos_version_value.Bin_version.octez_version_string
+              Mavryk_version_value.Bin_version.mavkit_version_string
             in
->>>>>>> .merge_file_1rQ0Px
             Format.printf "%s\n" version ;
             Lwt.return 0
         | Error [Mavryk_clic.Help command] ->

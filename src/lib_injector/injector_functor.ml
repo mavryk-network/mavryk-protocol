@@ -1192,17 +1192,8 @@ module Make (Parameters : PARAMETERS) = struct
      fun w request ->
       let state = Worker.state w in
       match request with
-<<<<<<< .merge_file_ElBJV7
-      | Request.Add_pending op ->
-          (* The execution of the request handler is protected to avoid stopping the
-             worker in case of an exception. *)
-          protect @@ fun () -> add_pending_operation state op
-      | Request.New_mavryk_head (block_hash, level) ->
-          protect @@ fun () -> on_new_mavryk_head state {block_hash; level}
-=======
       (* The execution of the request handler is protected to avoid stopping the
          worker in case of an exception. *)
->>>>>>> .merge_file_JU8ZDc
       | Request.Inject -> protect @@ fun () -> on_inject state
 
     type launch_error = error trace
@@ -1245,14 +1236,7 @@ module Make (Parameters : PARAMETERS) = struct
         let*! () = Event.(emit3 request_failed) state request_view st errs in
         return_unit
       in
-<<<<<<< .merge_file_ElBJV7
-      match r with
-      | Request.Add_pending _ -> emit_and_return_errors errs
-      | Request.New_mavryk_head _ -> emit_and_return_errors errs
-      | Request.Inject -> emit_and_return_errors errs
-=======
       match r with Request.Inject -> emit_and_return_errors errs
->>>>>>> .merge_file_JU8ZDc
 
     let on_completion w r _ st =
       let state = Worker.state w in
@@ -1308,22 +1292,10 @@ module Make (Parameters : PARAMETERS) = struct
         else Lwt.return_unit)
       workers
 
-<<<<<<< .merge_file_ElBJV7
   let notify_new_mavryk_head h =
-    let open Lwt_syntax in
-    let workers = Worker.list table in
-    List.iter_p
-      (fun (_signer, w) ->
-        let* (_pushed : bool) =
-          Worker.Queue.push_request w (Request.New_mavryk_head h)
-        in
-        return_unit)
-=======
-  let notify_new_tezos_head h =
     let workers = Worker.list table in
     List.iter_ep
-      (fun (_signer, w) -> on_new_tezos_head (Worker.state w) h)
->>>>>>> .merge_file_JU8ZDc
+      (fun (_signer, w) -> on_new_mavryk_head (Worker.state w) h)
       workers
 
   let protocols_of_head cctxt =
@@ -1376,14 +1348,8 @@ module Make (Parameters : PARAMETERS) = struct
         next_protocol_of_block (cctxt :> Client_context.full) (head_hash, header)
       in
       update_protocol ~next_protocol ;
-<<<<<<< .merge_file_ElBJV7
-      (* Notify all workers of a new Mavryk head *)
-      let*! () = notify_new_mavryk_head head in
-      return_unit
-=======
       (* Notify all workers of a new Tezos head *)
-      notify_new_tezos_head head
->>>>>>> .merge_file_JU8ZDc
+      notify_new_mavryk_head head
     in
     (* Ignore errors *)
     let*! () =

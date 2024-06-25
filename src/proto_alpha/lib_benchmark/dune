@@ -21,7 +21,6 @@
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-<<<<<<< .merge_file_pCQN93
   -open Mavryk_stdlib
   -open Mavryk_base
   -open Mavryk_error_monad
@@ -31,15 +30,4 @@
   -open Mavryk_benchmark_type_inference_alpha
   -open Mavryk_protocol_alpha
   -open Mavryk_alpha_test_helpers)
-=======
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_error_monad
-  -open Tezos_micheline
-  -open Tezos_micheline_rewriting
-  -open Tezos_benchmark
-  -open Tezos_benchmark_type_inference_alpha
-  -open Tezos_protocol_alpha
-  -open Tezos_alpha_test_helpers)
->>>>>>> .merge_file_AKbE2t
  (private_modules kernel rules state_space))

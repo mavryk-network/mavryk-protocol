@@ -21,7 +21,6 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-<<<<<<< .merge_file_HzicJ6
   -open Mavryk_base.TzPervasives
   -open Mavryk_protocol_alpha
   -open Mavryk_client_alpha
@@ -29,12 +28,3 @@
   -open Mavryk_baking_alpha_commands
   -open Mavryk_stdlib_unix
   -open Mavryk_client_base_unix))
-=======
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_alpha
-  -open Tezos_client_alpha
-  -open Tezos_client_commands
-  -open Tezos_baking_alpha_commands
-  -open Tezos_stdlib_unix
-  -open Tezos_client_base_unix))
->>>>>>> .merge_file_IGpRsg

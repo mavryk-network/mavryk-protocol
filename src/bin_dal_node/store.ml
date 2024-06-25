@@ -104,13 +104,9 @@ module Shards = struct
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/4973
      Make storage more resilient to DAL parameters change. *)
   let are_shards_available store commitment shard_indexes =
-<<<<<<< .merge_file_Rq09eV
-    List.for_all_s (value_exists store commitment) shard_indexes
-=======
     List.for_all_es
       (KVS.value_exists store file_layout commitment)
       shard_indexes
->>>>>>> .merge_file_O3d8tN
 
   let save_and_notify shards_store commitment shards =
     let open Lwt_result_syntax in
@@ -152,27 +148,8 @@ module Shards = struct
   let remove store commitment = KVS.remove_file store file_layout commitment
 
   let init node_store_dir shard_store_dir =
-<<<<<<< .merge_file_Rq09eV
-    let open Lwt_syntax in
-    let ( // ) = Filename.concat in
-    let dir_path = node_store_dir // shard_store_dir in
-    let+ () =
-      if not (Sys.file_exists dir_path) then Lwt_utils_unix.create_dir dir_path
-      else return_unit
-    in
-    init ~lru_size:Constants.shards_store_lru_size (fun commitment ->
-        let commitment_string = Cryptobox.Commitment.to_b58check commitment in
-        let filepath = dir_path // commitment_string in
-        directory
-          ~encoded_value_size:(Value_size_hooks.share_size ())
-          Cryptobox.share_encoding
-          filepath
-          Stdlib.( = )
-          Fun.id)
-=======
     let root_dir = Filename.concat node_store_dir shard_store_dir in
     KVS.init ~lru_size:Constants.shards_store_lru_size ~root_dir
->>>>>>> .merge_file_O3d8tN
 end
 
 module Shard_proofs_cache =
