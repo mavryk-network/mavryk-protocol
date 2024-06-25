@@ -10,31 +10,28 @@ current_dir=$(cd "$(dirname "${0}")" && pwd)
 # shellcheck source=./scripts/ci/docker.sh
 . "${current_dir}/docker.sh"
 
+# shellcheck source=./scripts/ci/mavkit-release.sh
+. ./scripts/ci/mavkit-release.sh
+
 ## The goal of this script is to retag existing Docker images (do not rebuild them)
 target_tag='latest'
 
-# Find tag with format vX.Y at branch HEAD
-tag_to_promote=$(git tag --points-at HEAD | grep -oE '^v[0-9]{1,3}\.[0-9]{1,3}$' ||:)
-
-if [ -z "${tag_to_promote}" ]
-then
-  echo "Error: could not find valid tag like vX.Y at branch HEAD"
+if [ -z "${gitlab_release}" ]; then
+  echo "Error: could not find valid tag like mavkit-vX.Y at branch HEAD"
   exit 1
 fi
 
-echo "### Promoting docker images with tag '${tag_to_promote}' to tag '${target_tag}'"
+echo "### Promoting docker images with tag '${gitlab_release}' to tag '${target_tag}'"
 
 # Loop over images
-for docker_image in ${docker_images}
-do
+for docker_image in ${docker_images}; do
   echo "### Merging tags for docker image: ${docker_image}"
 
   # Loop over architectures
   amends=''
-  for docker_architecture in ${docker_architectures}
-  do
-    docker pull "${docker_image}:${docker_architecture}_${tag_to_promote}"
-    amends="${amends} --amend ${docker_image}:${docker_architecture}_${tag_to_promote}"
+  for docker_architecture in ${docker_architectures}; do
+    docker pull "${docker_image}:${docker_architecture}_${gitlab_release}"
+    amends="${amends} --amend ${docker_image}:${docker_architecture}_${gitlab_release}"
   done
 
   # Because of the variable amends, we use eval here to first construct the command

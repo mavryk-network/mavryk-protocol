@@ -29,7 +29,9 @@ open Wasm_pvm_state.Internal_state
 let version_for_protocol : Pvm_input_kind.protocol -> Wasm_pvm_state.version =
   function
   | Atlas -> V2
-  | Proto_alpha -> V3
+  | ParisB -> V4
+  | ParisC -> V4
+  | Proto_alpha -> V4
 
 let link_finished (ast : Wasm.Ast.module_) offset =
   offset >= Wasm.Ast.Vector.num_elements ast.it.imports
@@ -156,8 +158,8 @@ let save_fallback_kernel durable =
       Constants.kernel_fallback_key
   else Lwt.return durable
 
-let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
-    ({buffers; durable; tick_state; _} as pvm_state) =
+let unsafe_next_tick_state ~wasm_entrypoint ~version ~stack_size_limit
+    host_funcs ({buffers; durable; tick_state; _} as pvm_state) =
   let open Lwt_syntax in
   let return ?(status = Running) ?(durable = durable) state =
     Lwt.return (durable, state, status)
@@ -260,7 +262,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
           (fun () ->
             let+ extern =
               Wasm.Instance.NameMap.get
-                Constants.wasm_entrypoint
+                wasm_entrypoint
                 module_inst.Wasm.Instance.exports
             in
             Some extern)
@@ -294,7 +296,7 @@ let unsafe_next_tick_state ~version ~stack_size_limit host_funcs
                (Wasm_pvm_errors.invalid_state
                   (Format.sprintf
                      "Invalid_module: no `%s` function exported"
-                     Constants.wasm_entrypoint))))
+                     wasm_entrypoint))))
   | Init {self; ast_module; init_kont; module_reg} ->
       let* init_kont =
         Wasm.Eval.init_step
@@ -349,12 +351,13 @@ let exn_to_stuck pvm_state exn =
   in
   Lwt.return (Stuck wasm_error)
 
-let next_tick_state ~version ~stack_size_limit host_function_registry pvm_state
-    =
+let next_tick_state ~wasm_entrypoint ~version ~stack_size_limit
+    host_function_registry pvm_state =
   let open Lwt_syntax in
   Lwt.catch
     (fun () ->
       unsafe_next_tick_state
+        ~wasm_entrypoint
         ~version
         ~stack_size_limit
         host_function_registry
@@ -452,12 +455,17 @@ let clean_up_input_buffer buffers =
 (** [compute_step pvm_state] does one computation step on [pvm_state].
     Returns the new state.
 *)
-let compute_step_with_host_functions ~version ~stack_size_limit registry
-    pvm_state =
+let compute_step_with_host_functions ~wasm_entrypoint ~version ~stack_size_limit
+    registry pvm_state =
   let open Lwt_syntax in
   (* Calculate the next tick state. *)
   let* durable, tick_state, status =
-    next_tick_state ~version ~stack_size_limit registry pvm_state
+    next_tick_state
+      ~wasm_entrypoint
+      ~version
+      ~stack_size_limit
+      registry
+      pvm_state
   in
   let current_tick = Z.succ pvm_state.current_tick in
   let last_top_level_call = next_last_top_level_call pvm_state status in
@@ -478,20 +486,22 @@ let compute_step_with_host_functions ~version ~stack_size_limit registry
   in
   return pvm_state
 
-let compute_step pvm_state =
+let compute_step ~wasm_entrypoint pvm_state =
   let open Lwt_syntax in
   let* version = get_wasm_version pvm_state in
   let stack_size_limit = stack_size_limit version in
   compute_step_with_host_functions
+    ~wasm_entrypoint
     ~version
     ~stack_size_limit
     (Host_funcs.registry ~version ~write_debug:Noop)
     pvm_state
 
-let compute_step_with_debug ~write_debug pvm_state =
+let compute_step_with_debug ~wasm_entrypoint ~write_debug pvm_state =
   let open Lwt_syntax in
   let* version = get_wasm_version pvm_state in
   compute_step_with_host_functions
+    ~wasm_entrypoint
     ~version
     ~stack_size_limit:(stack_size_limit version)
     (Host_funcs.registry ~version ~write_debug)
@@ -563,7 +573,7 @@ let reveal_step payload pvm_state =
               "No reveal expected during collecting"))
   | Stuck _ | Padding -> return pvm_state.tick_state
 
-let compute_step_many_until ?(max_steps = 1L) ?reveal_builtins
+let compute_step_many_until ~wasm_entrypoint ?(max_steps = 1L) ?reveal_builtins
     ?(write_debug = Builtins.Noop) should_continue pvm_state =
   let open Lwt.Syntax in
   assert (max_steps > 0L) ;
@@ -581,12 +591,14 @@ let compute_step_many_until ?(max_steps = 1L) ?reveal_builtins
               reveal_step (Bytes.of_string res) pvm_state
           | _ ->
               compute_step_with_host_functions
+                ~wasm_entrypoint
                 ~version
                 ~stack_size_limit
                 host_function_registry
                 pvm_state)
     | None ->
         compute_step_with_host_functions
+          ~wasm_entrypoint
           ~version
           ~stack_size_limit
           host_function_registry
@@ -619,6 +631,7 @@ let compute_step_many_until ?(max_steps = 1L) ?reveal_builtins
        we were asked to perform at least 1. *)
     let* pvm_state =
       compute_step_with_host_functions
+        ~wasm_entrypoint
         ~version
         ~stack_size_limit
         host_function_registry
@@ -636,8 +649,9 @@ let should_compute ?reveal_builtins pvm_state =
   | Reveal_required _ -> Option.is_some reveal_builtins
 
 let compute_step_many ?reveal_builtins ?write_debug ?(stop_at_snapshot = false)
-    ~max_steps pvm_state =
+    ~wasm_entrypoint ~max_steps pvm_state =
   compute_step_many_until
+    ~wasm_entrypoint
     ~max_steps
     ?reveal_builtins
     ?write_debug
@@ -653,6 +667,20 @@ let update_output_buffer pvm_state level =
   if Wasm.Output_buffer.is_initialized output_buffer then
     Wasm.Output_buffer.move_outbox_forward output_buffer
   else Wasm.Output_buffer.initialize_outbox output_buffer level
+
+let apply_migration version pvm_state =
+  match version with
+  | Wasm_pvm_state.V4 ->
+      {
+        pvm_state with
+        max_nb_ticks = Z.of_int64 50_000_000_000_000L;
+        buffers =
+          {
+            pvm_state.buffers with
+            output = {pvm_state.buffers.output with validity_period = 241_920l};
+          };
+      }
+  | V0 | V1 | V2 | V3 -> pvm_state
 
 let set_input_step input_info message pvm_state =
   let open Lwt_syntax in

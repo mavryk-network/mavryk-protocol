@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type protocol = Atlas | Proto_alpha
+type protocol = Atlas | ParisB | ParisC | Proto_alpha
 
 (** [internal_message_kind] represent an internal message in a inbox. *)
 type internal_message_kind =

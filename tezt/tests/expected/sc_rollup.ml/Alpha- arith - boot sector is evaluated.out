@@ -12,13 +12,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000453
+    Fee to the validator: ṁ0.000453
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000453
-      payload fees(the block proposer) ....... +ꜩ0.000453
+      [PUBLIC_KEY_HASH] ... -ṁ0.000453
+      payload fees(the block proposer) ....... +ṁ0.000453
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -29,8 +29,8 @@ This sequence of operations was run:
       Address: [SMART_ROLLUP_HASH]
       Genesis commitment hash: [SC_ROLLUP_COMMITMENT_HASH]
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1.638
-        storage fees ........................... +ꜩ1.638
+        [PUBLIC_KEY_HASH] ... -ṁ1.638
+        storage fees ........................... +ṁ1.638
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 
@@ -47,13 +47,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000443
+    Fee to the validator: ṁ0.000443
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000443
-      payload fees(the block proposer) ....... +ꜩ0.000443
+      [PUBLIC_KEY_HASH] ... -ṁ0.000443
+      payload fees(the block proposer) ....... +ṁ0.000443
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -64,8 +64,8 @@ This sequence of operations was run:
       Address: [SMART_ROLLUP_HASH]
       Genesis commitment hash: [SC_ROLLUP_COMMITMENT_HASH]
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1.638
-        storage fees ........................... +ꜩ1.638
+        [PUBLIC_KEY_HASH] ... -ṁ1.638
+        storage fees ........................... +ṁ1.638
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup2"
 

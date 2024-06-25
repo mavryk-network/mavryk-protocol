@@ -503,9 +503,249 @@ pub(crate) fn typecheck_instruction(
             pop!();
             I::Add(overloads::Add::MumavMumav)
         }
+        (App(ADD, [], _), [.., T::Timestamp, T::Int]) => {
+            pop!();
+            I::Add(overloads::Add::IntTimestamp)
+        }
+        (App(ADD, [], _), [.., T::Int, T::Timestamp]) => {
+            pop!();
+            stack[0] = T::Timestamp;
+            I::Add(overloads::Add::TimestampInt)
+        }
         (App(ADD, [], _), [.., _, _]) => no_overload!(ADD),
         (App(ADD, [], _), [_] | []) => no_overload!(ADD, len 2),
         (App(ADD, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(MUL, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::Mul(overloads::Mul::NatNat)
+        }
+        (App(MUL, [], _), [.., T::Int, T::Nat]) => {
+            pop!();
+            I::Mul(overloads::Mul::NatInt)
+        }
+        (App(MUL, [], _), [.., T::Int, T::Int]) => {
+            pop!();
+            I::Mul(overloads::Mul::IntInt)
+        }
+        (App(MUL, [], _), [.., T::Mumav, T::Nat]) => {
+            pop!();
+            I::Mul(overloads::Mul::NatMumav)
+        }
+        (App(MUL, [], _), [.., T::Nat, T::Int]) => {
+            stack.drop_top(2);
+            stack.push(T::Int);
+            I::Mul(overloads::Mul::IntNat)
+        }
+        (App(MUL, [], _), [.., T::Nat, T::Mumav]) => {
+            stack.drop_top(2);
+            stack.push(T::Mumav);
+            I::Mul(overloads::Mul::MumavNat)
+        }
+        (App(MUL, [], _), [.., T::Bls12381Fr, T::Bls12381G1]) => {
+            stack.drop_top(2);
+            stack.push(T::Bls12381G1);
+            I::Mul(overloads::Mul::Bls12381G1Bls12381Fr)
+        }
+        (App(MUL, [], _), [.., T::Bls12381Fr, T::Bls12381G2]) => {
+            stack.drop_top(2);
+            stack.push(T::Bls12381G2);
+            I::Mul(overloads::Mul::Bls12381G2Bls12381Fr)
+        }
+        (App(MUL, [], _), [.., T::Bls12381Fr, T::Bls12381Fr]) => {
+            pop!();
+            I::Mul(overloads::Mul::Bls12381FrBls12381Fr)
+        }
+        (App(MUL, [], _), [.., T::Bls12381Fr, T::Nat]) => {
+            pop!();
+            I::Mul(overloads::Mul::NatBls12381Fr)
+        }
+        (App(MUL, [], _), [.., T::Bls12381Fr, T::Int]) => {
+            pop!();
+            I::Mul(overloads::Mul::IntBls12381Fr)
+        }
+        (App(MUL, [], _), [.., T::Nat, T::Bls12381Fr]) => {
+            stack.drop_top(2);
+            stack.push(T::Bls12381Fr);
+            I::Mul(overloads::Mul::Bls12381FrNat)
+        }
+        (App(MUL, [], _), [.., T::Int, T::Bls12381Fr]) => {
+            stack.drop_top(2);
+            stack.push(T::Bls12381Fr);
+            I::Mul(overloads::Mul::Bls12381FrInt)
+        }
+        (App(MUL, [], _), [.., _, _]) => no_overload!(MUL),
+        (App(MUL, [], _), [_] | []) => no_overload!(MUL, len 2),
+        (App(MUL, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(EDIV, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Nat, T::Nat));
+            I::EDiv(overloads::EDiv::NatNat)
+        }
+        (App(EDIV, [], _), [.., T::Int, T::Nat]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Int, T::Nat));
+            I::EDiv(overloads::EDiv::NatInt)
+        }
+        (App(EDIV, [], _), [.., T::Nat, T::Int]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Int, T::Nat));
+            I::EDiv(overloads::EDiv::IntNat)
+        }
+        (App(EDIV, [], _), [.., T::Int, T::Int]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Int, T::Nat));
+            I::EDiv(overloads::EDiv::IntInt)
+        }
+        (App(EDIV, [], _), [.., T::Nat, T::Mumav]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Mumav, T::Mumav));
+            I::EDiv(overloads::EDiv::MumavNat)
+        }
+        (App(EDIV, [], _), [.., T::Mumav, T::Mumav]) => {
+            pop!();
+            stack[0] = T::new_option(T::new_pair(T::Nat, T::Mumav));
+            I::EDiv(overloads::EDiv::MumavMumav)
+        }
+        (App(EDIV, [], _), [.., _, _]) => no_overload!(EDIV),
+        (App(EDIV, [], _), [_] | []) => no_overload!(EDIV, len 2),
+        (App(EDIV, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(NEG, [], _), [.., T::Nat]) => {
+            stack[0] = T::Int;
+            I::Neg(overloads::Neg::Nat)
+        }
+        // NB: stack type doesn't change in these NEG overloads
+        (App(NEG, [], _), [.., T::Int]) => I::Neg(overloads::Neg::Int),
+        (App(NEG, [], _), [.., T::Bls12381G1]) => I::Neg(overloads::Neg::Bls12381G1),
+        (App(NEG, [], _), [.., T::Bls12381G2]) => I::Neg(overloads::Neg::Bls12381G2),
+        (App(NEG, [], _), [.., T::Bls12381Fr]) => I::Neg(overloads::Neg::Bls12381Fr),
+        (App(NEG, [], _), [.., _]) => no_overload!(NEG),
+        (App(NEG, [], _), []) => no_overload!(NEG, len 1),
+        (App(NEG, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(SUB, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            stack[0] = T::Int;
+            I::Sub(overloads::Sub::NatNat)
+        }
+        (App(SUB, [], _), [.., T::Int, T::Nat]) => {
+            pop!();
+            I::Sub(overloads::Sub::NatInt)
+        }
+        (App(SUB, [], _), [.., T::Nat, T::Int]) => {
+            pop!();
+            stack[0] = T::Int;
+            I::Sub(overloads::Sub::IntNat)
+        }
+        (App(SUB, [], _), [.., T::Int, T::Int]) => {
+            pop!();
+            I::Sub(overloads::Sub::IntInt)
+        }
+        (App(SUB, [], _), [.., T::Int, T::Timestamp]) => {
+            pop!();
+            stack[0] = T::Timestamp;
+            I::Sub(overloads::Sub::TimestampInt)
+        }
+        (App(SUB, [], _), [.., T::Timestamp, T::Timestamp]) => {
+            pop!();
+            stack[0] = T::Int;
+            I::Sub(overloads::Sub::TimestampTimestamp)
+        }
+        (App(SUB, [], _), [.., _, _]) => no_overload!(SUB),
+        (App(SUB, [], _), [] | [_]) => no_overload!(SUB, len 2),
+        (App(SUB, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(SUB_MUMAV, [], _), [.., T::Mumav, T::Mumav]) => {
+            pop!();
+            stack[0] = Type::new_option(T::Mumav);
+            I::SubMumav
+        }
+        (App(SUB_MUMAV, [], _), [.., _, _]) => no_overload!(SUB_MUMAV),
+        (App(SUB_MUMAV, [], _), [] | [_]) => no_overload!(SUB_MUMAV, len 2),
+        (App(SUB_MUMAV, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(AND, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::And(overloads::And::NatNat)
+        }
+        (App(AND, [], _), [.., T::Nat, T::Int]) => {
+            pop!();
+            I::And(overloads::And::IntNat)
+        }
+        (App(AND, [], _), [.., T::Bool, T::Bool]) => {
+            pop!();
+            I::And(overloads::And::Bool)
+        }
+        (App(AND, [], _), [.., T::Bytes, T::Bytes]) => {
+            pop!();
+            I::And(overloads::And::Bytes)
+        }
+        (App(OR, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::Or(overloads::Or::Nat)
+        }
+        (App(OR, [], _), [.., T::Bool, T::Bool]) => {
+            pop!();
+            I::Or(overloads::Or::Bool)
+        }
+        (App(OR, [], _), [.., T::Bytes, T::Bytes]) => {
+            pop!();
+            I::Or(overloads::Or::Bytes)
+        }
+        (App(XOR, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::Xor(overloads::Xor::Nat)
+        }
+        (App(XOR, [], _), [.., T::Bool, T::Bool]) => {
+            pop!();
+            I::Xor(overloads::Xor::Bool)
+        }
+        (App(XOR, [], _), [.., T::Bytes, T::Bytes]) => {
+            pop!();
+            I::Xor(overloads::Xor::Bytes)
+        }
+        (App(prim @ (AND | OR | XOR), [], _), [.., _, _]) => no_overload!(*prim),
+        (App(prim @ (AND | OR | XOR), [], _), [_] | []) => no_overload!(*prim, len 2),
+        (App(AND | OR | XOR, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(LSL, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::Lsl(overloads::Lsl::Nat)
+        }
+        (App(LSL, [], _), [.., T::Nat, T::Bytes]) => {
+            pop!();
+            stack[0] = T::Bytes;
+            I::Lsl(overloads::Lsl::Bytes)
+        }
+        (App(LSL, [], _), [.., _, _]) => no_overload!(LSL),
+        (App(LSL, [], _), [] | [_]) => no_overload!(LSL, len 2),
+        (App(LSL, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(LSR, [], _), [.., T::Nat, T::Nat]) => {
+            pop!();
+            I::Lsr(overloads::Lsr::Nat)
+        }
+        (App(LSR, [], _), [.., T::Nat, T::Bytes]) => {
+            pop!();
+            stack[0] = T::Bytes;
+            I::Lsr(overloads::Lsr::Bytes)
+        }
+        (App(LSR, [], _), [.., _, _]) => no_overload!(LSR),
+        (App(LSR, [], _), [] | [_]) => no_overload!(LSR, len 2),
+        (App(LSR, expect_args!(0), _), _) => unexpected_micheline!(),
+
+        (App(NOT, [], _), [.., T::Bool]) => I::Not(overloads::Not::Bool),
+        (App(NOT, [], _), [.., T::Int]) => I::Not(overloads::Not::Int),
+        (App(NOT, [], _), [.., T::Nat]) => {
+            stack[0] = T::Int;
+            I::Not(overloads::Not::Nat)
+        }
+        (App(NOT, [], _), [.., T::Bytes]) => I::Not(overloads::Not::Bytes),
+        (App(NOT, [], _), [.., _]) => no_overload!(NOT),
+        (App(NOT, [], _), []) => no_overload!(NOT, len 1),
+        (App(NOT, expect_args!(0), _), _) => unexpected_micheline!(),
 
         (App(DIP, args, _), ..) => {
             let (opt_height, nested) = match args {

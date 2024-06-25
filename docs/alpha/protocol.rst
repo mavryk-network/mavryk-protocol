@@ -1,9 +1,5 @@
-The economic protocol
-=====================
-
-The economic protocol provides the rules for checking the validity of the blocks and operations, and for updating the blockchain state accordingly, by applying new valid blocks and operations on the current blockchain state. These rules can be changed through voting.
-Thus, the
-economic protocol represents the amendable part of Mavryk.
+Economic protocol features
+==========================
 
 This page groups the documentation helping developers and users in
 understanding the basic concepts of the economic protocol
@@ -35,6 +31,11 @@ Sapling, etc), and some details about its implementation.
    :maxdepth: 2
 
    voting
+
+.. toctree::
+   :maxdepth: 2
+
+   accounts
 
 .. toctree::
    :maxdepth: 2

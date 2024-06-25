@@ -126,6 +126,7 @@ val check_constants_consistency : Constants.Parametric.t -> unit tzresult Lwt.t
 *)
 val genesis :
   ?commitments:Commitment.t list ->
+  ?consensus_committee_size:int ->
   ?consensus_threshold:int ->
   ?min_proposal_quorum:int32 ->
   ?bootstrap_contracts:Parameters.bootstrap_contract list ->
@@ -156,6 +157,7 @@ val genesis_with_parameters : Parameters.t -> block tzresult Lwt.t
 val alpha_context :
   ?commitments:Commitment.t list ->
   ?min_proposal_quorum:int32 ->
+  ?consensus_rights_delay:int ->
   Parameters.bootstrap_account list ->
   Alpha_context.t tzresult Lwt.t
 
@@ -369,7 +371,18 @@ val bake_until_cycle_end_with_metadata :
 
 (** Bakes enough blocks to end [n] cycles. *)
 val bake_until_n_cycle_end :
-  ?policy:baker_policy -> int -> t -> t tzresult Lwt.t
+  ?baking_mode:baking_mode ->
+  ?policy:baker_policy ->
+  int ->
+  t ->
+  t tzresult Lwt.t
+
+val bake_until_n_cycle_end_with_metadata :
+  ?baking_mode:baking_mode ->
+  ?policy:baker_policy ->
+  int ->
+  block ->
+  (block * block_header_metadata option * block_header_metadata) tzresult Lwt.t
 
 (** Bakes enough blocks to reach the cycle. *)
 val bake_until_cycle :
@@ -381,6 +394,7 @@ val bake_until_cycle :
 
 (** Common util function to create parameters for [initial_context] function *)
 val prepare_initial_context_params :
+  ?consensus_committee_size:int ->
   ?consensus_threshold:int ->
   ?min_proposal_quorum:int32 ->
   ?level:int32 ->
@@ -398,6 +412,7 @@ val prepare_initial_context_params :
   ?nonce_revelation_threshold:int32 ->
   ?dal:Constants.Parametric.dal ->
   ?adaptive_issuance:Constants.Parametric.adaptive_issuance ->
+  ?consensus_rights_delay:int ->
   unit ->
   ( Constants.Parametric.t * Block_header.shell_header * Block_hash.t,
     tztrace )

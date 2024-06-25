@@ -16,11 +16,12 @@
   mavkit-shell-libs.mockup
   mavkit-shell-libs.mockup-proxy
   mavkit-shell-libs.mockup-commands
-  mavkit-protocol-001-PtAtLas-libs.baking.tenderbrute)
+  mavkit-protocol-001-PtAtLas-libs.baking.tenderbrute
+  tezt.core)
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_protocol_001_PtAtLas
   -open Mavryk_protocol_001_PtAtLas.Protocol
   -open Mavryk_client_001_PtAtLas
@@ -29,4 +30,5 @@
   -open Mavryk_stdlib_unix
   -open Mavryk_client_base_unix
   -open Mavryk_protocol_001_PtAtLas_parameters
-  -open Tenderbrute_001_PtAtLas))
+  -open Tenderbrute_001_PtAtLas
+  -open Tezt_core))

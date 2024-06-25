@@ -21,6 +21,7 @@ anyhow.workspace = true
 
 primitive-types.workspace = true
 num-traits.workspace = true
+softfloat.workspace = true
 
 rlp.workspace = true
 hex.workspace = true
@@ -37,6 +38,7 @@ evm-execution.workspace = true
 mavryk_ethereum.workspace = true
 mavryk-evm-logging.workspace = true
 
+mavryk-smart-rollup.workspace = true
 mavryk-smart-rollup-core.workspace = true
 mavryk-smart-rollup-host.workspace = true
 mavryk-smart-rollup-entrypoint.workspace = true
@@ -54,4 +56,9 @@ mavryk-smart-rollup-panic-hook.workspace = true
 [features]
 default = ["panic-hook"]
 panic-hook = []
+testing = ["proptest", "debug"]
 debug = ["mavryk-evm-logging/debug"]
+benchmark = ["mavryk-evm-logging/benchmark", "evm-execution/benchmark"]
+benchmark-bypass-stage2 = ["benchmark"]
+benchmark-opcodes = ["benchmark", "evm-execution/benchmark-opcodes"]
+benchmark-full = ["benchmark", "debug", "benchmark-opcodes"]

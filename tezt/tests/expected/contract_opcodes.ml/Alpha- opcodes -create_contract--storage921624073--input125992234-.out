@@ -5,7 +5,7 @@ storage
 emitted operations
   Internal Origination:
     From: KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi
-    Credit: ꜩ0.05
+    Credit: ṁ0.05
     Script:
       { parameter unit ; storage unit ; code { CDR ; NIL operation ; PAIR } }
       Initial storage: Unit

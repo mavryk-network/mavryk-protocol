@@ -85,7 +85,8 @@ type argument =
   | Disable_mempool  (** [--disable-mempool] *)
   | Version  (** [--version] *)
   | RPC_additional_addr of string  (** [--rpc-addr] *)
-  | RPC_additional_addr_local of string  (** [--local-rpc-addr] *)
+  | RPC_additional_addr_external of string  (** [--external-rpc-addr] *)
+  | Max_active_rpc_connections of int  (** [--max-active-rpc-connections] *)
 
 (** A TLS configuration for the node: paths to a [.crt] and a [.key] file.
 
@@ -114,8 +115,8 @@ type t
     provided, or a value allowing the local Tezt program to connect to it
     if it is.
 
-    Default [rpc_local] is [false]. If [rpc_local] is [true], the node will not
-    spawn a process for non-blocking RPCs.
+    Default [rpc_external] is [false]. If [rpc_external] is [true],
+    the node will spawn a process for non-blocking RPCs.
 
     Default values for [net_port] or [rpc_port] are chosen automatically
     with values starting from 16384 (configurable with `--starting-port`).
@@ -125,6 +126,8 @@ type t
     through some other means, your node will not listen.
 
     Default value for [allow_all_rpc] is [true].
+
+    Default value for [max_active_rpc_connections] is [500].
 
     The argument list is a list of configuration options that the node
     should run with. It is passed to the first run of [mavkit-node config init].
@@ -146,11 +149,12 @@ val create :
   ?advertised_net_port:int ->
   ?metrics_addr:string ->
   ?metrics_port:int ->
-  ?rpc_local:bool ->
+  ?rpc_external:bool ->
   ?rpc_host:string ->
   ?rpc_port:int ->
   ?rpc_tls:tls_config ->
   ?allow_all_rpc:bool ->
+  ?max_active_rpc_connections:int ->
   argument list ->
   t
 
@@ -222,8 +226,8 @@ val advertised_net_port : t -> int option
     Returns [https] if node is started with [--rpc-tls], otherwise [http] *)
 val rpc_scheme : t -> string
 
-(** Returns [False] if RPCs are handled by a dedicated process. *)
-val rpc_local : t -> bool
+(** Returns [True] if RPCs are handled by a dedicated process. *)
+val rpc_external : t -> bool
 
 (** Get the RPC host given as [--rpc-addr] to a node. *)
 val rpc_host : t -> string
@@ -283,10 +287,10 @@ val show_history_mode : history_mode -> string
 (** Run [mavkit-node config init]. *)
 val config_init : t -> argument list -> unit Lwt.t
 
-(** Run [mavryk-node config update]. *)
+(** Run [mavkit-node config update]. *)
 val config_update : t -> argument list -> unit Lwt.t
 
-(** Run [mavryk-node config reset]. *)
+(** Run [mavkit-node config reset]. *)
 val config_reset : t -> argument list -> unit Lwt.t
 
 (** Run [mavkit-node config show]. Returns the node configuration. *)
@@ -296,16 +300,16 @@ module Config_file : sig
   (** Node configuration files. *)
 
   (** Read the configuration file ([config.json]) of a node. *)
-  val read : t -> JSON.t
+  val read : t -> JSON.t Lwt.t
 
   (** Write the configuration file of a node, replacing the existing one. *)
-  val write : t -> JSON.t -> unit
+  val write : t -> JSON.t -> unit Lwt.t
 
   (** Update the configuration file of a node. If the node is already
      running, it needs to be restarted manually.
 
       Example: [Node.Config_file.update node (JSON.put ("p2p", new_p2p_config))] *)
-  val update : t -> (JSON.t -> JSON.t) -> unit
+  val update : t -> (JSON.t -> JSON.t) -> unit Lwt.t
 
   (** Set the network config to a sandbox with the given user
       activated upgrades. *)
@@ -433,6 +437,9 @@ val run :
     In particular it also supports events.
     One key difference is that the node will eventually stop.
 
+    Note that the `--network` argument is infered by the `node replay`
+    command itself, thanks to the configuration value.
+
     See {!run} for a description of the arguments. *)
 val replay :
   ?on_terminate:(Unix.process_status -> unit) ->
@@ -441,7 +448,6 @@ val replay :
   ?strict:bool ->
   ?blocks:string list ->
   t ->
-  argument list ->
   unit Lwt.t
 
 (** {2 Events} *)
@@ -529,7 +535,7 @@ type event = {name : string; value : JSON.t; timestamp : float}
 val on_event : t -> (event -> unit) -> unit
 
 (** See [Daemon.Make.log_events]. *)
-val log_events : t -> unit
+val log_events : ?max_length:int -> t -> unit
 
 type observe_memory_consumption = Observe of (unit -> int option Lwt.t)
 
@@ -569,7 +575,7 @@ val init :
   ?advertised_net_port:int ->
   ?metrics_addr:string ->
   ?metrics_port:int ->
-  ?rpc_local:bool ->
+  ?rpc_external:bool ->
   ?rpc_host:string ->
   ?rpc_port:int ->
   ?rpc_tls:tls_config ->

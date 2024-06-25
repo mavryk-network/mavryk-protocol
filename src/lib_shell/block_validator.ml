@@ -31,11 +31,11 @@ open Block_validator_errors
 type validation_result =
   | Already_committed
   | Outdated_block
-  | Validated
-  | Validation_error of error trace
+  | Prechecked_and_applied
+  | Application_error of error trace
   | Preapplied of (Block_header.shell_header * error Preapply_result.t list)
   | Preapplication_error of error trace
-  | Validation_error_after_precheck of error trace
+  | Application_error_after_precheck of error trace
   | Precheck_failed of error trace
 
 type new_block = {
@@ -213,11 +213,11 @@ let on_validation_request w
             (* If the block is invalid but has been previously
                successfuly prechecked, we directly return with the cached
                errors. This way, multiple propagation won't happen. *)
-            return (Validation_error_after_precheck errs)
+            return (Application_error_after_precheck errs)
         | None -> (
             let*! o = Store.Block.read_invalid_block_opt chain_store hash in
             match o with
-            | Some {errors; _} -> return (Validation_error errors)
+            | Some {errors; _} -> return (Application_error errors)
             | None -> (
                 let*! checkpoint = Store.Chain.checkpoint chain_store in
                 (* Safety and late workers in partial mode. *)
@@ -275,9 +275,7 @@ let on_validation_request w
                       let* result =
                         protect ~canceler:(Worker.canceler w) (fun () ->
                             protect ?canceler (fun () ->
-                                let*! () =
-                                  Events.(emit validating_block) hash
-                                in
+                                let*! () = Events.(emit applying_block) hash in
                                 with_retry_to_load_protocol (fun () ->
                                     Block_validator_process.apply_block
                                       ~should_precheck:false
@@ -309,7 +307,7 @@ let on_validation_request w
                               resulting_context_hash =
                                 result.validation_store.resulting_context_hash;
                             } ;
-                          return Validated
+                          return Prechecked_and_applied
                       | None -> return Already_committed)))
       in
       match r with
@@ -328,8 +326,8 @@ let on_validation_request w
           in
           if precheck_and_notify then (
             Block_hash_ring.replace bv.invalid_blocks_after_precheck hash errs ;
-            return (Validation_error_after_precheck errs))
-          else return (Validation_error errs))
+            return (Application_error_after_precheck errs))
+          else return (Application_error errs))
 
 let on_preapplication_request w
     {
@@ -412,6 +410,26 @@ let on_error (type a b) (_w : t) st (r : (a, b) Request.t) (errs : b) =
       (* Keep the worker alive. *)
       return_ok_unit
 
+(* This failsafe aims to look for an irmin error that is known to be
+   critical and, if found, stop the node gracefully. *)
+let check_and_quit_on_irmin_errors errors =
+  let open Lwt_syntax in
+  let is_inode_error error =
+    match error with
+    | Exn (Failure s) -> (
+        let rex = Str.regexp_string "unknown inode key" in
+        try
+          let _ = Str.search_forward rex s 0 in
+          true
+        with Not_found -> false)
+    | _ -> false
+  in
+  if List.exists (fun error -> is_inode_error error) errors then
+    let* () = Events.(emit stopping_node_missing_irmin_key ()) in
+    let* _ = Lwt_exit.exit_and_wait 1 in
+    return_unit
+  else return_unit
+
 let on_completion :
     type a b.
     t -> (a, b) Request.t -> a -> Worker_types.request_status -> unit Lwt.t =
@@ -427,13 +445,13 @@ let on_completion :
       Prometheus.Counter.inc_one metrics.outdated_blocks_count ;
       let* () = Events.(emit previously_validated) hash in
       Lwt.return_unit
-  | Request.Request_validation _, Validated -> (
+  | Request.Request_validation _, Prechecked_and_applied -> (
       Shell_metrics.Worker.update_timestamps metrics.worker_timestamps st ;
       Prometheus.Counter.inc_one metrics.validated_blocks_count ;
       match Request.view request with
       | Validation v -> Events.(emit validation_success) (v.block, st)
       | _ -> (* assert false *) Lwt.return_unit)
-  | Request.Request_validation _, Validation_error errs -> (
+  | Request.Request_validation _, Application_error errs -> (
       Shell_metrics.Worker.update_timestamps metrics.worker_timestamps st ;
       Prometheus.Counter.inc_one metrics.validation_errors_count ;
       match Request.view request with
@@ -442,7 +460,10 @@ let on_completion :
           | [Canceled] ->
               (* Ignore requests cancellation *)
               Lwt.return_unit
-          | errs -> Events.(emit validation_failure) (v.block, st, errs))
+          | errs ->
+              let* () = Events.(emit validation_failure) (v.block, st, errs) in
+              let* () = check_and_quit_on_irmin_errors errs in
+              return_unit)
       | _ -> (* assert false *) Lwt.return_unit)
   | Request.Request_preapplication _, Preapplied _ -> (
       Prometheus.Counter.inc_one metrics.preapplied_blocks_count ;
@@ -453,14 +474,20 @@ let on_completion :
       Prometheus.Counter.inc_one metrics.preapplication_errors_count ;
       match Request.view request with
       | Preapplication v ->
-          Events.(emit preapplication_failure) (v.level, st, errs)
+          let* () = Events.(emit preapplication_failure) (v.level, st, errs) in
+          let* () = check_and_quit_on_irmin_errors errs in
+          return_unit
       | _ -> (* assert false *) Lwt.return_unit)
-  | Request.Request_validation _, Validation_error_after_precheck errs -> (
+  | Request.Request_validation _, Application_error_after_precheck errs -> (
       Shell_metrics.Worker.update_timestamps metrics.worker_timestamps st ;
       Prometheus.Counter.inc_one metrics.validation_errors_after_precheck_count ;
       match Request.view request with
       | Validation v ->
-          Events.(emit validation_failure_after_precheck) (v.block, st, errs)
+          let* () =
+            Events.(emit application_failure_after_precheck) (v.block, st, errs)
+          in
+          let* () = check_and_quit_on_irmin_errors errs in
+          return_unit
       | _ -> (* assert false *) Lwt.return_unit)
   | Request.Request_validation _, Precheck_failed errs -> (
       Shell_metrics.Worker.update_timestamps metrics.worker_timestamps st ;
@@ -471,7 +498,10 @@ let on_completion :
           | [Canceled] ->
               (* Ignore requests cancellation *)
               Lwt.return_unit
-          | errs -> Events.(emit precheck_failure) (v.block, st, errs))
+          | errs ->
+              let* () = Events.(emit precheck_failure) (v.block, st, errs) in
+              let* () = check_and_quit_on_irmin_errors errs in
+              return_unit)
       | _ -> (* assert false *) Lwt.return_unit)
   | _ -> (* assert false *) Lwt.return_unit
 
@@ -513,10 +543,10 @@ let shutdown = Worker.shutdown
 
 type block_validity =
   | Valid
-  | Invalid_after_precheck of error trace
+  | Unapplicable_after_precheck of error trace
   | Invalid of error trace
 
-let validate w ?canceler ?peer ?(notify_new_block = fun _ -> ())
+let precheck_and_apply w ?canceler ?peer ?(notify_new_block = fun _ -> ())
     ?(precheck_and_notify = false) chain_db hash (header : Block_header.t)
     operations =
   let open Lwt_syntax in
@@ -548,11 +578,12 @@ let validate w ?canceler ?peer ?(notify_new_block = fun _ -> ())
              })
       in
       match r with
-      | Ok (Validated | Already_committed | Outdated_block) -> return Valid
-      | Ok (Validation_error_after_precheck errs) ->
-          return (Invalid_after_precheck errs)
+      | Ok (Prechecked_and_applied | Already_committed | Outdated_block) ->
+          return Valid
+      | Ok (Application_error_after_precheck errs) ->
+          return (Unapplicable_after_precheck errs)
       | Ok (Precheck_failed errs)
-      | Ok (Validation_error errs)
+      | Ok (Application_error errs)
       | Error (Request_error errs) ->
           return (Invalid errs)
       | Error (Closed None) -> return (Invalid [Worker_types.Terminated])

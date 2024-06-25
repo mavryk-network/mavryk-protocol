@@ -11,6 +11,7 @@
   mavkit-libs.tree-encoding
   mavkit-libs.base.unix
   mavkit-protocol-alpha-libs.client
+  cohttp-lwt-unix
   mavkit-l2-libs.scoru-wasm
   mavkit-l2-libs.scoru-wasm-helpers
   mavkit-l2-libs.smart-rollup

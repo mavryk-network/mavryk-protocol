@@ -30,7 +30,6 @@ type expected_rewards = {
   baking_reward_fixed_portion : Tez.t;
   baking_reward_bonus_per_slot : Tez.t;
   attesting_reward_per_slot : Tez.t;
-  liquidity_baking_subsidy : Tez.t;
   seed_nonce_revelation_tip : Tez.t;
   vdf_revelation_tip : Tez.t;
 }
@@ -43,7 +42,6 @@ let expected_rewards_encoding : expected_rewards Data_encoding.t =
            baking_reward_fixed_portion;
            baking_reward_bonus_per_slot;
            attesting_reward_per_slot;
-           liquidity_baking_subsidy;
            seed_nonce_revelation_tip;
            vdf_revelation_tip;
          } ->
@@ -51,14 +49,12 @@ let expected_rewards_encoding : expected_rewards Data_encoding.t =
         baking_reward_fixed_portion,
         baking_reward_bonus_per_slot,
         attesting_reward_per_slot,
-        liquidity_baking_subsidy,
         seed_nonce_revelation_tip,
         vdf_revelation_tip ))
     (fun ( cycle,
            baking_reward_fixed_portion,
            baking_reward_bonus_per_slot,
            attesting_reward_per_slot,
-           liquidity_baking_subsidy,
            seed_nonce_revelation_tip,
            vdf_revelation_tip ) ->
       {
@@ -66,16 +62,14 @@ let expected_rewards_encoding : expected_rewards Data_encoding.t =
         baking_reward_fixed_portion;
         baking_reward_bonus_per_slot;
         attesting_reward_per_slot;
-        liquidity_baking_subsidy;
         seed_nonce_revelation_tip;
         vdf_revelation_tip;
       })
-    (obj7
+    (obj6
        (req "cycle" Cycle.encoding)
        (req "baking_reward_fixed_portion" Tez.encoding)
        (req "baking_reward_bonus_per_slot" Tez.encoding)
        (req "attesting_reward_per_slot" Tez.encoding)
-       (req "liquidity_baking_subsidy" Tez.encoding)
        (req "seed_nonce_revelation_tip" Tez.encoding)
        (req "vdf_revelation_tip" Tez.encoding))
 
@@ -154,7 +148,7 @@ module S = struct
     RPC_service.get_service
       ~description:
         "Returns the expected issued mav for the provided block and the next \
-         five cycles"
+         'consensus_rights_delay' cycles"
       ~query:RPC_query.empty
       ~output:(Data_encoding.list expected_rewards_encoding)
       RPC_path.(path / "expected_issuance")
@@ -202,56 +196,62 @@ let collect_expected_rewards ~ctxt =
   let csts = (Constants.all ctxt).parametric in
   let reward_of_cycle cycle =
     if Cycle.(cycle = ctxt_cycle) then
+      let*? baking_reward_fixed_portion = baking_reward_fixed_portion ctxt in
+      let*? baking_reward_bonus_per_slot = baking_reward_bonus_per_slot ctxt in
+      let*? attesting_reward_per_slot = attesting_reward_per_slot ctxt in
+      let*? seed_nonce_revelation_tip = seed_nonce_revelation_tip ctxt in
+      let*? vdf_revelation_tip = vdf_revelation_tip ctxt in
       return
         {
           cycle;
-          baking_reward_fixed_portion = baking_reward_fixed_portion ctxt;
-          baking_reward_bonus_per_slot = baking_reward_bonus_per_slot ctxt;
-          attesting_reward_per_slot = attesting_reward_per_slot ctxt;
-          liquidity_baking_subsidy = liquidity_baking_subsidy ctxt;
-          seed_nonce_revelation_tip = seed_nonce_revelation_tip ctxt;
-          vdf_revelation_tip = vdf_revelation_tip ctxt;
+          baking_reward_fixed_portion;
+          baking_reward_bonus_per_slot;
+          attesting_reward_per_slot;
+          seed_nonce_revelation_tip;
+          vdf_revelation_tip;
         }
     else
       (* This coeff is correct only when applied to Cycle lesser than
-         [preserved_cycles] after the current context, otherwise the coeff will
+         [issuance_modification_delay] after the current context, otherwise the coeff will
          not be set and thus we get the default values. *)
       let open Delegate.Rewards.For_RPC in
       let* coeff = get_reward_coeff ctxt ~cycle in
+
+      let*? baking_reward_fixed_portion =
+        reward_from_constants
+          ~coeff
+          csts
+          ~reward_kind:Baking_reward_fixed_portion
+      in
+      let*? baking_reward_bonus_per_slot =
+        reward_from_constants
+          ~coeff
+          csts
+          ~reward_kind:Baking_reward_bonus_per_slot
+      in
+      let*? attesting_reward_per_slot =
+        reward_from_constants ~coeff csts ~reward_kind:Attesting_reward_per_slot
+      in
+      let*? seed_nonce_revelation_tip =
+        reward_from_constants ~coeff csts ~reward_kind:Seed_nonce_revelation_tip
+      in
+      let*? vdf_revelation_tip =
+        reward_from_constants ~coeff csts ~reward_kind:Vdf_revelation_tip
+      in
       return
         {
           cycle;
-          baking_reward_fixed_portion =
-            reward_from_constants
-              ~coeff
-              csts
-              ~reward_kind:Baking_reward_fixed_portion;
-          baking_reward_bonus_per_slot =
-            reward_from_constants
-              ~coeff
-              csts
-              ~reward_kind:Baking_reward_bonus_per_slot;
-          attesting_reward_per_slot =
-            reward_from_constants
-              ~coeff
-              csts
-              ~reward_kind:Attesting_reward_per_slot;
-          liquidity_baking_subsidy =
-            reward_from_constants
-              ~coeff
-              csts
-              ~reward_kind:Liquidity_baking_subsidy;
-          seed_nonce_revelation_tip =
-            reward_from_constants
-              ~coeff
-              csts
-              ~reward_kind:Seed_nonce_revelation_tip;
-          vdf_revelation_tip =
-            reward_from_constants ~coeff csts ~reward_kind:Vdf_revelation_tip;
+          baking_reward_fixed_portion;
+          baking_reward_bonus_per_slot;
+          attesting_reward_per_slot;
+          seed_nonce_revelation_tip;
+          vdf_revelation_tip;
         }
   in
   let queried_cycles =
-    Cycle.(ctxt_cycle ---> add ctxt_cycle csts.preserved_cycles)
+    Cycle.(
+      ctxt_cycle
+      ---> add ctxt_cycle (Constants.issuance_modification_delay ctxt))
   in
   List.map_es reward_of_cycle queried_cycles
 

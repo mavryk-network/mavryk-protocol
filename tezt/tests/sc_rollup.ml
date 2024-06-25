@@ -43,8 +43,11 @@ open Sc_rollup_helpers
 *)
 
 let default_wasm_pvm_revision = function
-  | Protocol.Alpha -> "2.0.0-r3"
-  | Protocol.Atlas -> "2.0.0-r3"
+  | Protocol.Alpha | ParisB | ParisC -> "2.0.0-r4"
+
+let max_nb_ticks = function
+  | Protocol.ParisB | ParisC -> 50_000_000_000_000
+  | Alpha -> 11_000_000_000
 
 let assert_some_client_command cmd ~__LOC__ sc_rollup_node =
   let* v_opt = Sc_rollup_node.RPC.call sc_rollup_node @@ cmd in
@@ -159,7 +162,7 @@ let gen_keys_then_transfer_tez ?(giver = Constant.bootstrap1.alias)
 
 let test_l1_scenario ?supports ?regression ?hooks ~kind ?boot_sector
     ?whitelist_enable ?whitelist ?commitment_period ?challenge_window ?timeout
-    ?(src = Constant.bootstrap1.alias) ?rpc_local ?uses
+    ?(src = Constant.bootstrap1.alias) ?rpc_external ?uses
     {variant; tags; description} scenario =
   let tags = kind :: tags in
   register_test
@@ -176,7 +179,7 @@ let test_l1_scenario ?supports ?regression ?hooks ~kind ?boot_sector
       ?challenge_window
       ?timeout
       ?whitelist_enable
-      ?rpc_local
+      ?rpc_external
       protocol
   in
   let* sc_rollup =
@@ -187,8 +190,8 @@ let test_l1_scenario ?supports ?regression ?hooks ~kind ?boot_sector
 let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
     ?commitment_period ?(parameters_ty = "string") ?challenge_window ?timeout
     ?rollup_node_name ?whitelist_enable ?whitelist ?operator ?operators
-    ?(uses = fun _protocol -> []) ?rpc_local {variant; tags; description}
-    scenario =
+    ?(uses = fun _protocol -> []) ?rpc_external ?allow_degraded
+    {variant; tags; description} scenario =
   let tags = kind :: tags in
   register_test
     ?supports
@@ -200,7 +203,7 @@ let test_full_scenario ?supports ?regression ?hooks ~kind ?mode ?boot_sector
   @@ fun protocol ->
   let* mavryk_node, mavryk_client =
     setup_l1
-      ?rpc_local
+      ?rpc_external
       ?commitment_period
       ?challenge_window
       ?timeout
@@ -462,7 +465,10 @@ let send_message_batcher_aux ?hooks client sc_node sc_client msgs =
     Sc_rollup_node.wait_for sc_node "add_pending.v0" (Fun.const (Some ()))
   in
   let injected = wait_for_injecting_event ~tags:["add_messages"] sc_node in
-  let*! hashes = Sc_rollup_client.inject ?hooks sc_client msgs in
+  let* ids =
+    Sc_rollup_node.RPC.call sc_node ?rpc_hooks
+    @@ Sc_rollup_rpc.post_local_batcher_injection ~messages:msgs
+  in
   (* New head will trigger injection  *)
   let* () = Client.bake_for_and_wait client in
   (* Injector should get messages right away because the batcher is configured
@@ -470,13 +476,13 @@ let send_message_batcher_aux ?hooks client sc_node sc_client msgs =
   let* _ = batched in
   let* _ = added_to_injector in
   let* _ = injected in
-  return hashes
+  return ids
 
-let send_message_batcher ?hooks client sc_node sc_client msgs =
-  let* hashes = send_message_batcher_aux ?hooks client sc_node sc_client msgs in
+let send_message_batcher ?rpc_hooks client sc_node msgs =
+  let* ids = send_message_batcher_aux ?rpc_hooks client sc_node msgs in
   (* Next head will include messages  *)
   let* () = Client.bake_for_and_wait client in
-  return hashes
+  return ids
 
 let send_messages_batcher ?hooks ?batch_size n client sc_node sc_client =
   let batches =
@@ -486,19 +492,17 @@ let send_messages_batcher ?hooks ?batch_size n client sc_node sc_client =
         List.map (fun j -> Format.sprintf "%d-%d" i j) (range 1 batch_size))
       (range 1 n)
   in
-  let* rhashes =
+  let* rids =
     Lwt_list.fold_left_s
       (fun acc msgs ->
-        let* hashes =
-          send_message_batcher_aux ?hooks client sc_node sc_client msgs
-        in
-        return (List.rev_append hashes acc))
+        let* ids = send_message_batcher_aux ?rpc_hooks client sc_node msgs in
+        return (List.rev_append ids acc))
       []
       batches
   in
   (* Next head will include messages of last batch *)
   let* () = Client.bake_for_and_wait client in
-  return (List.rev rhashes)
+  return (List.rev rids)
 
 let parse_inbox json =
   let go () =
@@ -593,12 +597,13 @@ let sc_rollup_node_stops_scenario sc_rollup_node _rollup_client sc_rollup _node
   in
   unit
 
-let sc_rollup_node_disconnects_scenario sc_rollup_node _rollup_client sc_rollup
-    node client =
-  let num_messages = 2 in
+let sc_rollup_node_disconnects_scenario sc_rollup_node sc_rollup node client =
+  let num_messages = 5 in
   let* level = Node.get_level node in
   Log.info "we are at level %d" level ;
-  let* () = Sc_rollup_node.run sc_rollup_node sc_rollup [] in
+  let* () =
+    Sc_rollup_node.run sc_rollup_node sc_rollup ~event_level:`Debug []
+  in
   let* () = send_messages num_messages client in
   let* level = wait_for_current_level node sc_rollup_node in
   let* () = Lwt_unix.sleep 1. in
@@ -606,14 +611,29 @@ let sc_rollup_node_disconnects_scenario sc_rollup_node _rollup_client sc_rollup
   let* () = Node.terminate node in
   Log.info "Waiting before restarting Mavryk node" ;
   let* () = Lwt_unix.sleep 3. in
-  Log.info "Restarting Mavryk node" ;
+  let refutation_loop_request =
+    Sc_rollup_node.wait_for sc_rollup_node "request_completed.v0" @@ fun json ->
+    let open JSON in
+    if
+      json |-> "view" |-> "request" |> as_string = "process"
+      && json |-> "view" |-> "block" |-> "level" |> as_int
+         = level + num_messages
+    then Some ()
+    else None
+  in
+  Log.info "Restarting Tezos node" ;
   let* () = Node.run node Node.[Connections 0; Synchronisation_threshold 0] in
   let* () = Node.wait_for_ready node in
   let* () = send_messages num_messages client in
   let* _ =
     Sc_rollup_node.wait_for_level sc_rollup_node (level + num_messages)
   in
-  unit
+  Lwt.choose
+    [
+      refutation_loop_request;
+      (let* () = Lwt_unix.sleep 10. in
+       Test.fail "Refutation loop did not process after reconnection");
+    ]
 
 let sc_rollup_node_handles_chain_reorg sc_rollup_node _rollup_client sc_rollup
     node client =
@@ -774,11 +794,14 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   in
   Log.info "Sending one message to the batcher" ;
   let msg1 = "3 3 + out" in
-  let*! hashes = Sc_rollup_client.inject sc_rollup_client [msg1] in
-  let msg1_hash = match hashes with [h] -> h | _ -> assert false in
+  let* ids =
+    Sc_rollup_node.RPC.call sc_rollup_node
+    @@ Sc_rollup_rpc.post_local_batcher_injection ~messages:[msg1]
+  in
+  let msg1_id = match ids with [i] -> i | _ -> assert false in
   let* retrieved_msg1, status_msg1 =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_hash ~msg_hash:msg1_hash
+    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_id ~msg_id:msg1_id
   in
 
   check_batcher_message_status status_msg1 "pending_batch" ;
@@ -788,7 +811,7 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
     Sc_rollup_node.RPC.call sc_rollup_node
     @@ Sc_rollup_rpc.get_local_batcher_queue ()
   in
-  Check.((queue = [(msg1_hash, msg1)]) (list (tuple2 string string)))
+  Check.((queue = [(msg1_id, msg1)]) (list (tuple2 string string)))
     ~error_msg:"Queue is %L but should be %R." ;
   (* This block triggers injection in the injector. *)
   let injected =
@@ -798,14 +821,14 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   let* _ = injected in
   let* _msg1, status_msg1 =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_hash ~msg_hash:msg1_hash
+    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_id ~msg_id:msg1_id
   in
   check_batcher_message_status status_msg1 "injected" ;
   (* We bake so that msg1 is included. *)
   let* () = Client.bake_for_and_wait client in
   let* _msg1, status_msg1 =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_hash ~msg_hash:msg1_hash
+    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_id ~msg_id:msg1_id
   in
   check_batcher_message_status status_msg1 "included" ;
   let* _ = wait_for_current_level node ~timeout:3. sc_rollup_node in
@@ -816,15 +839,13 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
         let i = i mod 11 in
         if i = 10 then ' ' else Char.chr (i + 48))
   in
-  let*! hashes1 =
-    Sc_rollup_client.inject sc_rollup_client (List.init 9 (Fun.const msg2))
+  let* ids1 =
+    Sc_rollup_node.RPC.call sc_rollup_node
+    @@ Sc_rollup_rpc.post_local_batcher_injection
+         ~messages:(List.init 9 (Fun.const msg2))
   in
-  let* hashes2 =
-    send_message_batcher
-      client
-      sc_rollup_node
-      sc_rollup_client
-      (List.init 9 (Fun.const msg2))
+  let* ids2 =
+    send_message_batcher client sc_rollup_node (List.init 9 (Fun.const msg2))
   in
   let* queue =
     Sc_rollup_node.RPC.call sc_rollup_node
@@ -861,7 +882,7 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
       incl_count
       contents2
   in
-  Check.((incl_count = List.length hashes1 + List.length hashes2) int)
+  Check.((incl_count = List.length ids1 + List.length ids2) int)
     ~error_msg:"Only %L messages are included instead of %R." ;
   let* genesis_info =
     Client.RPC.call ~hooks client
@@ -882,7 +903,7 @@ let sc_rollup_node_batcher sc_rollup_node sc_rollup_client sc_rollup node client
   in
   let* _msg1, status_msg1 =
     Sc_rollup_node.RPC.call sc_rollup_node
-    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_hash ~msg_hash:msg1_hash
+    @@ Sc_rollup_rpc.get_local_batcher_queue_msg_id ~msg_id:msg1_id
   in
   check_batcher_message_status status_msg1 "committed" ;
   unit
@@ -1009,15 +1030,26 @@ let test_gc variant ~challenge_window ~commitment_period ~history_mode =
   | _ -> ()) ;
   unit
 
-(* Testing that snapshots can be exported correctly for a running node. *)
-let test_snapshots ~challenge_window ~commitment_period ~history_mode =
+(* Testing that snapshots can be exported correctly for a running node, and that
+   they can be used to bootstrap a blank or existing rollup node.
+   - we run two rollup nodes but stop the second one at some point
+   - after a while we create a snapshot from the first rollup node
+   - we import the snapshot in the second and a fresh rollup node
+   - we ensure they are all synchronized
+   - we also try to import invalid snapshots to make sure they are rejected. *)
+let test_snapshots ~kind ~challenge_window ~commitment_period ~history_mode
+    ~compact =
   let history_mode_str = Sc_rollup_node.string_of_history_mode history_mode in
   test_full_scenario
     {
-      tags = ["snapshot"; history_mode_str];
+      tags =
+        (["snapshot"; history_mode_str] @ if compact then ["compact"] else []);
       variant = None;
       description =
-        sf "snapshot can be exported and checked (%s)" history_mode_str;
+        sf
+          "snapshot can be exported and checked (%s%s)"
+          history_mode_str
+          (if compact then " compact" else "");
     }
     ~challenge_window
     ~commitment_period
@@ -1038,11 +1070,105 @@ let test_snapshots ~challenge_window ~commitment_period ~history_mode =
     Sc_rollup_node.wait_for_level sc_rollup_node level_snapshot
   in
   let dir = Tezt.Temp.dir "snapshots" in
-  let*! snapshot_path = Sc_rollup_node.export_snapshot sc_rollup_node dir in
-  let* exists = Lwt_unix.file_exists snapshot_path in
+  let dir_on_the_fly = Tezt.Temp.dir "snapshots_on_the_fly" in
+  let* snapshot_file =
+    Sc_rollup_node.export_snapshot ~compact sc_rollup_node dir |> Runnable.run
+  and* snapshot_file_on_the_fly =
+    Sc_rollup_node.export_snapshot
+      ~compress_on_the_fly:true
+      ~compact
+      sc_rollup_node
+      dir_on_the_fly
+    |> Runnable.run
+  in
+  let* () =
+    if compact then
+      (* Compact snapshots are not deterministic due to the way irmin generates
+         the single commit context *)
+      unit
+    else (
+      Log.info "Checking if uncompressed snapshot files are identical." ;
+      (* Uncompress snapshots *)
+      let* () = Process.run "cp" [snapshot_file; snapshot_file ^ ".raw.gz"] in
+      let* () =
+        Process.run
+          "cp"
+          [snapshot_file_on_the_fly; snapshot_file_on_the_fly ^ ".raw.gz"]
+      in
+      let* () = Process.run "gzip" ["-d"; snapshot_file ^ ".raw.gz"] in
+      let* () =
+        Process.run "gzip" ["-d"; snapshot_file_on_the_fly ^ ".raw.gz"]
+      in
+      (* Compare uncompressed snapshots *)
+      Process.run
+        "cmp"
+        [snapshot_file ^ ".raw"; snapshot_file_on_the_fly ^ ".raw"])
+  in
+  let* exists = Lwt_unix.file_exists snapshot_file in
   if not exists then
     Test.fail ~__LOC__ "Snapshot file %s does not exist" snapshot_path ;
   let* () = rollup_node_processing in
+  Log.info "Try importing snapshot for wrong rollup." ;
+  let*? process_other =
+    Sc_rollup_node.import_snapshot ~force:true rollup_node_4 ~snapshot_file
+  in
+  let* () =
+    Process.check_error
+      ~msg:(rex "The existing rollup node is for")
+      process_other
+  in
+  Log.info "Importing snapshot in empty rollup node." ;
+  let*! () = Sc_rollup_node.import_snapshot rollup_node_3 ~snapshot_file in
+  (* rollup_node_2 was stopped before so it has data but is late with respect to
+     sc_rollup_node. *)
+  Log.info "Try importing snapshot in already populated rollup node." ;
+  let*? populated =
+    Sc_rollup_node.import_snapshot rollup_node_2 ~snapshot_file
+  in
+  let* () = Process.check_error ~msg:(rex "is already populated") populated in
+  Log.info "Importing snapshot in late rollup node." ;
+  let*! () =
+    Sc_rollup_node.import_snapshot ~force:true rollup_node_2 ~snapshot_file
+  in
+  Log.info "Running rollup nodes with snapshots until they catch up." ;
+  let* () =
+    Sc_rollup_node.run rollup_node_2 sc_rollup [History_mode history_mode]
+  and* () =
+    Sc_rollup_node.run rollup_node_3 sc_rollup [History_mode history_mode]
+  in
+  let* _ = Sc_rollup_node.wait_sync ~timeout:60. rollup_node_2
+  and* _ = Sc_rollup_node.wait_sync ~timeout:60. rollup_node_3 in
+  Log.info "Try importing outdated snapshot." ;
+  let* () = Sc_rollup_node.terminate rollup_node_2 in
+  let*? outdated =
+    Sc_rollup_node.import_snapshot ~force:true rollup_node_2 ~snapshot_file
+  in
+  let* () =
+    Process.check_error
+      ~msg:(rex "The rollup node is already at level")
+      outdated
+  in
+  Log.info "Bake until next commitment." ;
+  let* () =
+    let event_name = "smart_rollup_node_new_commitment.v0" in
+    bake_until_event client ~event_name
+    @@ Sc_rollup_node.wait_for sc_rollup_node event_name (Fun.const (Some ()))
+  in
+  let* _ = Sc_rollup_node.wait_sync ~timeout:30.0 sc_rollup_node in
+  let*! snapshot_file =
+    Sc_rollup_node.export_snapshot ~compact sc_rollup_node dir
+  in
+  (* The rollup node should not have published its commitment yet *)
+  Log.info "Try importing snapshot without published commitment." ;
+  let* () = Sc_rollup_node.terminate rollup_node_2 in
+  let*? unpublished =
+    Sc_rollup_node.import_snapshot ~force:true rollup_node_2 ~snapshot_file
+  in
+  let* () =
+    Process.check_error
+      ~msg:(rex "Last commitment of snapshot is not published on L1.")
+      unpublished
+  in
   unit
 
 (* One can retrieve the list of originated SCORUs.
@@ -1419,11 +1545,11 @@ let check_published_commitment_in_l1 ?(allow_non_published = false)
     (published_commitment, "published") ;
   unit
 
-let test_commitment_scenario ?supports ?commitment_period ?challenge_window
-    ?(extra_tags = []) ~variant =
+let test_commitment_scenario ?supports ?(commitment_period = 10)
+    ?challenge_window ?(extra_tags = []) ~variant =
   test_full_scenario
     ?supports
-    ?commitment_period
+    ~commitment_period
     ?challenge_window
     {
       tags = ["commitment"] @ extra_tags;
@@ -1640,8 +1766,8 @@ let commitment_not_published_if_non_final _protocol sc_rollup_node
        %R)" ;
   unit
 
-let commitments_messages_reset kind _protocol sc_rollup_node _sc_rollup_client
-    sc_rollup _node client =
+let commitments_messages_reset kind protocol sc_rollup_node sc_rollup _node
+    client =
   (* For `sc_rollup_commitment_period_in_blocks` levels after the sc rollup
      origination, i messages are sent to the rollup, for a total of
      `sc_rollup_commitment_period_in_blocks *
@@ -1710,7 +1836,7 @@ let commitments_messages_reset kind _protocol sc_rollup_node _sc_rollup_client
          4
          (* one snapshot for collecting, two snapshots for SOL,
             Info_per_level and EOL *)
-         * 11_000_000_000 (* number of ticks in a snapshots *)
+         * max_nb_ticks protocol (* number of ticks in a snapshots *)
          * levels_to_commitment (* number of inboxes *)
      | _ -> failwith "incorrect kind"
    in
@@ -1815,8 +1941,8 @@ let commitment_stored_robust_to_failures _protocol sc_rollup_node
     (Some stored_commitment', "stored in second node") ;
   unit
 
-let commitments_reorgs ~switch_l1_node ~kind _protocol sc_rollup_node
-    _sc_rollup_client sc_rollup node client =
+let commitments_reorgs ~switch_l1_node ~kind protocol sc_rollup_node sc_rollup
+    node client =
   (* No messages are published after origination, for
      `sc_rollup_commitment_period_in_blocks - 1` levels. Then a divergence
      occurs:  in the first branch one message is published for
@@ -1957,7 +2083,7 @@ let commitments_reorgs ~switch_l1_node ~kind _protocol sc_rollup_node
      | "wasm_2_0_0" ->
          (* Number of ticks per snapshot,
             see Lib_scoru_wasm.Constants.wasm_max_tick *)
-         let snapshot_ticks = 11_000_000_000 in
+         let snapshot_ticks = max_nb_ticks protocol in
          snapshot_ticks * 4
          (* 1 snapshot for collecting messages, 3 snapshots for SOL,
             Info_per_level and SOL *) * levels_to_commitment
@@ -2405,81 +2531,6 @@ let first_published_level_is_global _protocol sc_rollup_node _sc_rollup_client
   in
   unit
 
-(* TODO: https://gitlab.com/tezos/tezos/-/issues/4373 *)
-let _test_reinject_failed_commitment ~protocol:_ ~kind =
-  let commitment_period = 3 in
-  test_full_scenario
-    ~kind
-    ~commitment_period
-    {
-      tags = ["injector"; "reinject"; "failed"];
-      variant = None;
-      description = "Republish commitments that are included as failed";
-    }
-  @@ fun _protocol sc_rollup_node1 _sc_rollup_client1 sc_rollup node client ->
-  let sc_rollup_node2 =
-    Sc_rollup_node.create
-      Operator
-      node
-      ~base_dir:(Client.base_dir client)
-      ~default_operator:Constant.bootstrap5.public_key_hash
-  in
-  Log.info "Run two honest rollup nodes." ;
-  let* () = Sc_rollup_node.run ~event_level:`Debug sc_rollup_node1 sc_rollup []
-  and* () =
-    Sc_rollup_node.run ~event_level:`Debug sc_rollup_node2 sc_rollup []
-  in
-  Log.info "Add messages and advance L1 to trigger commitment." ;
-  (* We bake one extra block to allow for the injection of the commitment and
-     another block to allow for reinjection of the commitment that has the out
-     of gas error. *)
-  let retried = ref false in
-  let _ =
-    let* () =
-      Sc_rollup_node.wait_for sc_rollup_node1 "retry_operation.v0" (fun _ ->
-          Some ())
-    in
-    retried := true ;
-    unit
-  in
-  let _ =
-    let* () =
-      Sc_rollup_node.wait_for sc_rollup_node2 "retry_operation.v0" (fun _ ->
-          Some ())
-    in
-    retried := true ;
-    unit
-  in
-  let* () = bake_levels (commitment_period + block_finality_time + 2) client in
-  let* _ = wait_for_current_level node ~timeout:3. sc_rollup_node1
-  and* _ = wait_for_current_level node ~timeout:3. sc_rollup_node2 in
-  let* current_level = Node.get_level node in
-  Log.info "Rollup nodes both at %d." current_level ;
-  (* NOTE: if the gas consumed by publishing commitments is fixed, remove the
-     following check. One of the commitments is supposed to be included as
-     failed in a block because when two identical commitments are in the same
-     block, the second one consumes more gas than the first, and consumes more
-     gas than what was simulated. *)
-  if not !retried then
-    Test.fail "Rollup nodes did not retry to republish commitment" ;
-  let* {stake_amount; _} = get_sc_rollup_constants client in
-  let check_committed id =
-    let* deposit_json =
-      Client.RPC.call client
-      @@ RPC.get_chain_block_context_contract_frozen_bonds ~id ()
-    in
-    Check.(
-      (deposit_json = stake_amount)
-        Tez.typ
-        ~error_msg:
-          "A node has not committed, expecting deposit for participant = %R, \
-           got %L") ;
-    unit
-  in
-  let* () = check_committed Constant.bootstrap1.public_key_hash
-  and* () = check_committed Constant.bootstrap5.public_key_hash in
-  unit
-
 (* Check that the SC rollup is correctly originated with a boot sector.
    -------------------------------------------------------
 
@@ -2624,22 +2675,20 @@ let test_reveals_fails_on_wrong_hash =
 
 let test_reveals_fails_on_unknown_hash =
   let kind = "arith" in
+  let commitment_period = 10 in
   test_full_scenario
-    ~supports:(Protocol.From_protocol 17)
+    ~supports:(Protocol.From_protocol 18)
     ~timeout:120
+    ~commitment_period
     ~kind
     {
       tags = ["reveals"; "unknown"];
       variant = None;
       description = "reveal data fails with unknown hash";
     }
-  @@ fun _protocol sc_rollup_node _sc_rollup_client sc_rollup node client ->
-  let unknown_hash =
-    "0027782d2a7020be332cc42c4e66592ec50305f559a4011981f1d5af81428ecafe"
-  in
-  let* () =
-    Sc_rollup_node.run ~allow_degraded:true sc_rollup_node sc_rollup []
-  in
+  @@ fun protocol sc_rollup_node sc_rollup node client ->
+  let unknown_hash = reveal_hash ~protocol ~kind "Some data" in
+  let* () = Sc_rollup_node.run sc_rollup_node sc_rollup [] in
   let error_promise =
     Sc_rollup_node.wait_for
       sc_rollup_node
@@ -2651,18 +2700,27 @@ let test_reveals_fails_on_unknown_hash =
   in
   (* We need to check that the rollup has entered the degraded mode,
       so we wait for 60 blocks (commitment period) + 2. *)
-  let* {commitment_period_in_blocks; _} = get_sc_rollup_constants client in
   let* () =
-    repeat (commitment_period_in_blocks + 2) (fun () ->
-        Client.bake_for_and_wait client)
+    repeat (commitment_period + 2) (fun () -> Client.bake_for_and_wait client)
   in
   (* Then, we finally send the message with the unknown hash. *)
-  let* () = send_text_messages client ["hash:" ^ unknown_hash] in
+  let* () = send_text_messages client [unknown_hash.message] in
   let should_not_sync =
     let* _level = wait_for_current_level node ~timeout:10. sc_rollup_node in
     Test.fail "The rollup node processed the unknown reveal without failing"
   in
-  Lwt.choose [error_promise; should_not_sync]
+  let* () = Lwt.choose [error_promise; should_not_sync] in
+  let* () = repeat 5 (fun () -> Client.bake_for_and_wait client) in
+  Log.info "Adding missing pre-image." ;
+  let pvm_dir = Filename.concat (Sc_rollup_node.data_dir sc_rollup_node) kind in
+  let filename = Filename.concat pvm_dir unknown_hash.filename in
+  let () = Sys.mkdir pvm_dir 0o700 in
+  let cout = open_out filename in
+  let () = output_string cout "Some data" in
+  let () = close_out cout in
+  let* () = repeat 5 (fun () -> Client.bake_for_and_wait client) in
+  let* _level = wait_for_current_level node ~timeout:10. sc_rollup_node in
+  unit
 
 let test_reveals_4k =
   let kind = "arith" in
@@ -2874,6 +2932,12 @@ let test_refutation protocols ~kind =
               ~final_level:80
               ~empty_levels:[4; 5]
               ~priority:`Priority_honest );
+          ( "pvm_proof_second_period",
+            refutation_scenario_parameters
+              ~loser_modes:["15 2 5"]
+              (inputs_for 18)
+              ~final_level:80
+              ~priority:`Priority_honest );
           ( "timeout",
             refutation_scenario_parameters
               ~loser_modes:["5 2 1"]
@@ -2965,6 +3029,13 @@ let test_refutation protocols ~kind =
             refutation_scenario_parameters
               ~loser_modes:["7 7 22_010_000_000"]
               (inputs_for 10)
+              ~final_level:80
+              ~priority:`Priority_loser );
+          (* Conflict in second commitment period *)
+          ( "pvm_proof_second_period",
+            refutation_scenario_parameters
+              ~loser_modes:["15 7 11_000_001_000"]
+              (inputs_for 16)
               ~final_level:80
               ~priority:`Priority_loser );
           ( "parallel_games_0",
@@ -3522,8 +3593,17 @@ let test_late_rollup_node =
   in
   Log.info "Start rollup node from scratch with same operator" ;
   let* () = Sc_rollup_node.run sc_rollup_node2 sc_rollup_address [] in
-  let* _level = wait_for_current_level node ~timeout:2. sc_rollup_node2 in
+  let sync_rpc_process =
+    Curl.get (Sc_rollup_node.endpoint sc_rollup_node2 ^ "/local/synchronized")
+  in
+  let* _level = wait_for_current_level node ~timeout:10. sc_rollup_node2 in
+  let*! _ = sync_rpc_process in
   Log.info "Other rollup node synchronized." ;
+  let*! sync_json =
+    Curl.get (Sc_rollup_node.endpoint sc_rollup_node2 ^ "/local/synchronized")
+  in
+  Check.((JSON.encode sync_json = {|"synchronized"|}) string)
+    ~error_msg:"Sync RPC did not respond with synchronized" ;
   let* () = Client.bake_for_and_wait client in
   let* _level = wait_for_current_level node ~timeout:2. sc_rollup_node2 in
   Log.info "Other rollup node progresses." ;
@@ -3924,15 +4004,8 @@ let test_outbox_message_generic ?supports ?regression ?expected_error
           Log.info "Expected is %s" (JSON.encode expected) ;
           assert (JSON.encode expected = JSON.encode outbox) ;
           let* proof =
-            Sc_rollup_client.outbox_proof_single
-              sc_client
-              ?expected_error
-              ~message_index
-              ~outbox_level
-              ~destination
-              ?entrypoint
-              ~parameters
-              ?parameters_ty:outbox_parameters_ty
+            Sc_rollup_node.RPC.call rollup_node
+            @@ Sc_rollup_rpc.outbox_proof_simple ~message_index ~outbox_level ()
           in
           let* proof' =
             Sc_rollup_client.outbox_proof
@@ -4148,10 +4221,15 @@ let test_rpcs ~kind
     ~error_msg:"SC rollup address of node is %L but should be %R" ;
   let n = 15 in
   let batch_size = 5 in
-  let* hashes =
-    send_messages_batcher ~hooks ~batch_size n client sc_rollup_node sc_client
+  let* ids =
+    send_messages_batcher
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
+      ~batch_size
+      n
+      client
+      sc_rollup_node
   in
-  Check.((List.length hashes = n * batch_size) int)
+  Check.((List.length ids = n * batch_size) int)
     ~error_msg:"Injected %L messages but should have injected %R" ;
   (* Head block hash endpoint test *)
   let* level = Node.get_level node in
@@ -4529,8 +4607,13 @@ let test_injector_auto_discard =
   in
   let n = 65 in
   let batch_size = 3 in
-  let* _hashes =
-    send_messages_batcher ~batch_size n client sc_rollup_node sc_client
+  let* _ids =
+    send_messages_batcher
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
+      ~batch_size
+      n
+      client
+      sc_rollup_node
   in
   Lwt.cancel monitor_injector_queue ;
   unit
@@ -4588,6 +4671,77 @@ let test_arg_boot_sector_file ~kind =
   let* () = Client.bake_for_and_wait client in
   let* _ = Sc_rollup_node.wait_sync ~timeout:10. rollup_node in
   unit
+
+let test_unsafe_genesis_patch ~private_ ~kind =
+  let commitment_period = 3 in
+  let max_nb_tick = 50_000_000_000_000L in
+  let unsupported_pvm = match kind with "wasm_2_0_0" -> false | _ -> true in
+  let should_fail = unsupported_pvm || not private_ in
+  let operator = Constant.bootstrap1.public_key_hash in
+  let whitelist = if private_ then Some [operator] else None in
+  test_full_scenario
+    ~kind
+    ~commitment_period
+    ~supports:(Protocol.From_protocol 018)
+    ?whitelist
+    {
+      variant = None;
+      tags = ["node"; "unsafe_patch"];
+      description =
+        sf
+          "Rollup (%s) can%s apply unsafe genesis PVM patches"
+          (if private_ then "private" else "public")
+          (if should_fail then "not" else "");
+    }
+  @@ fun _protocol rollup_node rollup _node client ->
+  Log.info "Set patch in configuration" ;
+  let* _ = Sc_rollup_node.config_init rollup_node rollup in
+  Sc_rollup_node.Config_file.update rollup_node (fun config ->
+      let open JSON in
+      put
+        ( "unsafe-pvm-patches",
+          parse
+            ~origin:"increase-tick"
+            (sf {| [ { "increase_max_nb_tick" : "%Ld"} ] |} max_nb_tick) )
+        config) ;
+  () ;
+  let* () =
+    Sc_rollup_node.run
+      ~wait_ready:false
+      rollup_node
+      rollup
+      [Apply_unsafe_patches]
+  in
+  if should_fail then
+    let msg =
+      if unsupported_pvm then rex "Patch .* is not supported"
+      else if not private_ then
+        rex "Unsafe PVM patches can only be applied in private rollups"
+      else assert false
+    in
+    Sc_rollup_node.check_error ~exit_code:1 ~msg rollup_node
+  else
+    let* () = bake_levels (commitment_period + 4) client in
+    let* _ = Sc_rollup_node.wait_sync ~timeout:10. rollup_node in
+    let* published_commitment =
+      Sc_rollup_node.RPC.call rollup_node
+      @@ Sc_rollup_rpc.get_local_last_published_commitment ()
+    in
+    let* () =
+      check_published_commitment_in_l1 rollup client published_commitment
+    in
+    let* pvm_max_bytes =
+      Sc_rollup_node.RPC.call rollup_node ~rpc_hooks
+      @@ Sc_rollup_rpc.get_global_block_state ~key:"pvm/max_nb_ticks" ()
+    in
+    let pvm_max =
+      pvm_max_bytes
+      |> Data_encoding.Binary.of_bytes_exn Data_encoding.n
+      |> Z.to_int64
+    in
+    Check.((pvm_max = max_nb_tick) int64)
+      ~error_msg:"PVM max tick should have been increased to %R but is %L" ;
+    unit
 
 let test_bootstrap_smart_rollup_originated =
   register_test
@@ -5160,7 +5314,15 @@ let custom_mode_empty_operation_kinds ~kind =
    block. *)
 let test_multiple_batcher_key ~kind =
   test_l1_scenario
-    ~rpc_local:false
+  (* TODO: https://gitlab.com/tezos/tezos/-/issues/6650
+
+     also might be related to https://gitlab.com/tezos/tezos/-/issues/3014
+
+     Test is flaky without rpc_external:false and it seems to be
+     related to this issue. When investigating it seems that the sink
+     used by the mavkit node has a race condition between process, it
+     seems it due to the rpc server being run in a separate process. *)
+    ~rpc_external:false
     ~kind
     {
       variant = None;
@@ -5289,7 +5451,10 @@ let test_injector_uses_available_keys ~kind =
   let operators_pkh = List.map snd operators in
   let nb_operators = List.length operators in
   test_full_scenario
-    ~rpc_local:false
+  (* TODO: https://gitlab.com/tezos/tezos/-/issues/6650
+
+     cf multiple_batcher_test comment. *)
+    ~rpc_external:false
     ~kind
     ~operators
     ~mode:Batcher
@@ -5332,7 +5497,7 @@ let test_injector_uses_available_keys ~kind =
   in
   let inject_n_msgs_batches_in_rollup_node ~nb_of_batches ~msg_per_batch
       ~msg_size =
-    let* _hashes =
+    let* _ids =
       Lwt.all @@ List.init nb_of_batches
       @@ fun _ ->
       Runnable.run
@@ -5633,21 +5798,9 @@ let register ~kind ~protocols =
     test_consecutive_commitments
     protocols
     ~kind ;
-  bailout_mode_not_publish ~kind protocols ;
-  bailout_mode_fail_to_start_without_operator ~kind protocols ;
-  bailout_mode_fail_operator_no_stake ~kind protocols ;
-  bailout_mode_recover_bond_starting_no_commitment_staked ~kind protocols ;
-  custom_mode_empty_operation_kinds ~kind protocols ;
-
-  (* TODO: https://gitlab.com/tezos/tezos/-/issues/4373
-     Uncomment this test as soon as the issue done.
-     test_reinject_failed_commitment protocols ~kind ; *)
-  test_late_rollup_node protocols ~kind ;
-  test_late_rollup_node_2 protocols ~kind ;
-  test_interrupt_rollup_node protocols ~kind ;
   test_outbox_message protocols ~kind ;
-  test_messages_processed_by_commitment ~kind protocols ;
-  test_arg_boot_sector_file ~kind protocols
+  test_unsafe_genesis_patch protocols ~private_:true ~kind ;
+  test_unsafe_genesis_patch protocols ~private_:false ~kind
 
 let register ~protocols =
   (* PVM-independent tests. We still need to specify a PVM kind
@@ -5711,5 +5864,82 @@ let register ~protocols =
   test_private_rollup_non_whitelisted_staker protocols ;
   test_private_rollup_node_publish_in_whitelist protocols ;
   test_private_rollup_node_publish_not_in_whitelist protocols ;
-  test_rollup_whitelist_update ~kind:"wasm_2_0_0" protocols ;
-  test_rollup_whitelist_outdated_update ~kind:"wasm_2_0_0" protocols
+  test_rollup_node_inbox
+    ~kind
+    ~variant:"stops"
+    sc_rollup_node_stops_scenario
+    protocols ;
+  test_rollup_node_inbox
+    ~kind
+    ~variant:"disconnects"
+    sc_rollup_node_disconnects_scenario
+    protocols ;
+  test_rollup_node_inbox
+    ~kind
+    ~variant:"handles_chain_reorg"
+    sc_rollup_node_handles_chain_reorg
+    protocols ;
+  test_rollup_node_inbox
+    ~kind
+    ~variant:"batcher"
+    ~extra_tags:["batcher"; Tag.flaky]
+    sc_rollup_node_batcher
+    protocols ;
+  test_rollup_node_inbox ~kind ~variant:"basic" basic_scenario protocols ;
+  test_gc
+    "many_gc"
+    ~kind
+    ~challenge_window:5
+    ~commitment_period:2
+    ~history_mode:Full
+    ~tags:[Tag.flaky]
+    protocols ;
+  test_gc
+    "sparse_gc"
+    ~kind
+    ~challenge_window:10
+    ~commitment_period:5
+    ~history_mode:Full
+    ~tags:[Tag.flaky]
+    protocols ;
+  test_gc
+    "no_gc"
+    ~kind
+    ~challenge_window:10
+    ~commitment_period:5
+    ~history_mode:Archive
+    protocols ;
+  test_snapshots
+    ~kind
+    ~challenge_window:5
+    ~commitment_period:2
+    ~history_mode:Full
+    ~compact:false
+    protocols ;
+  test_snapshots
+    ~kind
+    ~challenge_window:5
+    ~commitment_period:2
+    ~history_mode:Full
+    ~compact:true
+    protocols ;
+  test_snapshots
+    ~kind
+    ~challenge_window:10
+    ~commitment_period:5
+    ~history_mode:Archive
+    ~compact:false
+    protocols ;
+  custom_mode_empty_operation_kinds ~kind protocols ;
+  (* TODO: https://gitlab.com/tezos/tezos/-/issues/4373
+     Uncomment this test as soon as the issue done.
+     test_reinject_failed_commitment protocols ~kind ; *)
+  test_late_rollup_node protocols ~kind ;
+  test_late_rollup_node_2 protocols ~kind ;
+  test_interrupt_rollup_node protocols ~kind ;
+  test_arg_boot_sector_file ~kind protocols ;
+  test_messages_processed_by_commitment ~kind protocols ;
+  bailout_mode_not_publish ~kind protocols ;
+  bailout_mode_fail_to_start_without_operator ~kind protocols ;
+  bailout_mode_fail_operator_no_stake ~kind protocols ;
+  bailout_mode_recover_bond_starting_no_commitment_staked ~kind protocols

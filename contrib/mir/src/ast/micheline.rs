@@ -107,7 +107,27 @@ macro_rules! micheline_literals {
 /// matches.
 macro_rules! micheline_fields {
     () => {
-        Micheline::App(Prim::parameter | Prim::storage | Prim::code, ..)
+        Micheline::App(
+            Prim::parameter | Prim::storage | Prim::code | Prim::view | Prim::constant,
+            ..,
+        )
+    };
+}
+
+/// Pattern synonym matching all instruction which are not yet
+/// supported. Useful for total match in the typechecker.
+macro_rules! micheline_unsupported_instructions {
+    () => {
+        Prim::EMPTY_MAP
+            | Prim::SAPLING_EMPTY_STATE
+            | Prim::SAPLING_VERIFY_UPDATE
+            | Prim::OPEN_CHEST
+            | Prim::VIEW
+            | Prim::CREATE_ACCOUNT
+            | Prim::STEPS_TO_QUOTA
+            | Prim::TICKET_DEPRECATED
+            | Prim::CAST
+            | Prim::RENAME
     };
 }
 

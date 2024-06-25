@@ -10,13 +10,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
-    Fee to the validator: ꜩ0.000247
+    Fee to the validator: ṁ0.000247
     Expected counter: 1
     Gas limit: 169
     Storage limit: 0 bytes
     Balance updates:
-      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ꜩ0.000247
-      payload fees(the block proposer) ....... +ꜩ0.000247
+      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.000247
+      payload fees(the block proposer) ....... +ṁ0.000247
     Set deposits limit:
       Delegate: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
       Limit: 1000

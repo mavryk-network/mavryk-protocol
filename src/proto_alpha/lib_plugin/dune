@@ -12,7 +12,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_protocol_alpha
   -open Mavryk_smart_rollup_alpha)
  (modules (:standard \ Plugin_registerer)))
@@ -31,7 +30,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_embedded_protocol_alpha
   -open Mavryk_protocol_plugin_alpha
   -open Mavryk_validation)

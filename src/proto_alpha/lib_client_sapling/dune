@@ -20,7 +20,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_stdlib_unix
   -open Mavryk_client_base
   -open Mavryk_client_alpha

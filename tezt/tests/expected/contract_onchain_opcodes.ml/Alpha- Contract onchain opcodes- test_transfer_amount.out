@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000335
+    Fee to the validator: ṁ0.000335
     Expected counter: 1
     Gas limit: 680
     Storage limit: 317 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000335
-      payload fees(the block proposer) ....... +ꜩ0.000335
+      [PUBLIC_KEY_HASH] ... -ṁ0.000335
+      payload fees(the block proposer) ....... +ṁ0.000335
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter unit ;
           storage mumav ;
@@ -35,10 +35,10 @@ This sequence of operations was run:
         Paid storage size diff: 40 bytes
         Consumed gas: 579.127
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.01
-          storage fees ........................... +ꜩ0.01
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.01
+          storage fees ........................... +ṁ0.01
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as transfer_amount.
@@ -56,15 +56,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00039
+    Fee to the validator: ṁ0.00039
     Expected counter: 2
     Gas limit: 1378
     Storage limit: 24 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00039
-      payload fees(the block proposer) ....... +ꜩ0.00039
+      [PUBLIC_KEY_HASH] ... -ṁ0.00039
+      payload fees(the block proposer) ....... +ṁ0.00039
     Transaction:
-      Amount: ꜩ500
+      Amount: ṁ500
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied
@@ -73,10 +73,10 @@ This sequence of operations was run:
       Paid storage size diff: 4 bytes
       Consumed gas: 1277.991
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.001
-        storage fees ........................... +ꜩ0.001
-        [PUBLIC_KEY_HASH] ... -ꜩ500
-        [CONTRACT_HASH] ... +ꜩ500
+        [PUBLIC_KEY_HASH] ... -ṁ0.001
+        storage fees ........................... +ṁ0.001
+        [PUBLIC_KEY_HASH] ... -ṁ500
+        [CONTRACT_HASH] ... +ṁ500
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

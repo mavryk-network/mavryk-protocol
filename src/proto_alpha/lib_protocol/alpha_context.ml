@@ -227,6 +227,10 @@ module Raw_level = struct
     let add = add
 
     let sub = sub
+
+    let from_repr (level : raw_level) = level
+
+    let to_repr (level : raw_level) = level
   end
 end
 
@@ -269,6 +273,14 @@ module Round = struct
   let update ctxt round = Storage.Block_round.update ctxt round
 
   let get ctxt = Storage.Block_round.get ctxt
+
+  module Internal_for_tests = struct
+    include Internal_for_tests
+
+    let from_repr (round : round) = round
+
+    let to_repr (round : round) = round
+  end
 end
 
 module Gas = struct
@@ -385,6 +397,11 @@ module Contract = struct
     | Undelegated
 
   let get_delegate_status = Contract_delegate_storage.get_delegate_status
+
+  module For_RPC = struct
+    include Contract_storage.For_RPC
+    include Delegate_slashed_deposits_storage.For_RPC
+  end
 
   module Delegate = struct
     let find = Contract_delegate_storage.find
@@ -508,8 +525,11 @@ module Receipt = struct
         delegate : Signature.public_key_hash;
       }
     | Shared_between_stakers of {delegate : Signature.public_key_hash}
+    | Baker_edge of Signature.public_key_hash
 
   let frozen_baker = Frozen_staker_repr.baker
+
+  let frozen_baker_edge = Frozen_staker_repr.baker_edge
 
   let frozen_single_staker = Frozen_staker_repr.single_staker
 
@@ -539,6 +559,8 @@ module Delegate = struct
 
   let is_forbidden_delegate = Forbidden_delegates_storage.is_forbidden
 
+  let already_denounced = Already_denounced_storage.already_denounced
+
   module Consensus_key = Delegate_consensus_key
 
   module Rewards = struct
@@ -556,23 +578,19 @@ module Delegate = struct
   module Shared_stake = Shared_stake
 
   module For_RPC = struct
-    include For_RPC
+    include Delegate_storage.For_RPC
+    include Delegate_slashed_deposits_storage.For_RPC
+    include Delegate_missed_attestations_storage.For_RPC
+    include Pending_denunciations_storage.For_RPC
 
-    let current_cycle_denunciations_list ctxt =
-      let open Lwt_syntax in
-      let* r = Storage.Current_cycle_denunciations.bindings ctxt in
-      let r =
-        List.map (fun (x, l) -> List.map (fun y -> (x, y)) l) r |> List.flatten
-      in
-      return r
+    let pending_denunciations = Pending_denunciations_storage.find
+
+    let has_pending_denunciations =
+      Pending_denunciations_storage.has_pending_denunciations
   end
 end
 
 module Stake_distribution = struct
-  let snapshot = Stake_storage.snapshot
-
-  let compute_snapshot_index = Delegate_sampler.compute_snapshot_index
-
   let baking_rights_owner = Delegate_sampler.baking_rights_owner
 
   let slot_owner = Delegate_sampler.slot_owner

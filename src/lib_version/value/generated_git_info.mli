@@ -26,4 +26,6 @@ val commit_hash : string
 
 val committer_date : string
 
-val git_describe : Mavryk_version_parser.t
+val git_describe_mavkit : Mavryk_version_parser.t
+
+val git_describe_etherlink : Mavryk_version_parser.t

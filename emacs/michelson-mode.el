@@ -57,7 +57,7 @@
   :group 'michelson)
 
 (defcustom michelson-client-command "mavryk-client"
-  "Path to the `mavryk-client' binary."
+  "Path to the `mavkit-client' binary."
   :type 'string
   :group 'michelson-options)
 
@@ -89,7 +89,7 @@ Overrides `michelson-print-errors' and `michelson-highlight-errors'"
   :group 'michelson-options)
 
 (defcustom michelson-extra-flags nil
-  "Additional flags to pass to mavryk-client when type checking."
+  "Additional flags to pass to mavkit-client when type checking."
   :type '(list string)
   :group 'michelson-options)
 

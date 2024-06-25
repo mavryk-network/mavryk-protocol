@@ -34,6 +34,12 @@ val register : proto_plugin -> unit
 (** Returns the list of registered protocols. *)
 val registered_protocols : unit -> Protocol_hash.t list
 
+(** Returns the last registered protocol.
+
+    NOTE: This is the last protocol with which the rollup node is linked
+    against, and this is decided only by the order in [manifest/main.ml]. *)
+val last_registered : unit -> Protocol_hash.t
+
 (** {2 Using the correct protocol plugin} *)
 
 (** Return the protocol plugin for a given protocol (or an error if not
@@ -59,17 +65,16 @@ val proto_plugin_for_block :
     node. *)
 val last_proto_plugin : _ Node_context.t -> proto_plugin tzresult Lwt.t
 
+(** Same as {!last_proto_plugin} but returns [None] if the rollup node has not
+    registered any protocol information yet *)
+val last_proto_plugin_opt :
+  _ Node_context.t -> proto_plugin option tzresult Lwt.t
+
 (** {2 Safe protocol specific constants}
 
     These functions provide a way to retrieve constants in a safe manner,
     depending on the context.
 *)
-
-(** Retrieve constants for a given protocol (values are cached). *)
-val get_constants_of_protocol :
-  _ Node_context.t ->
-  Protocol_hash.t ->
-  Rollup_constants.protocol_constants tzresult Lwt.t
 
 (** Retrieve constants for a given level (values are cached). *)
 val get_constants_of_level :
@@ -81,4 +86,12 @@ val get_constants_of_level :
 val get_constants_of_block_hash :
   _ Node_context.t ->
   Block_hash.t ->
+  Rollup_constants.protocol_constants tzresult Lwt.t
+
+(** Retrieve constants for a given protocol (values are cached). [level], if
+    provided, must be a level of the protocol. *)
+val get_constants_of_protocol :
+  ?level:int32 ->
+  _ Node_context.t ->
+  Protocol_hash.t ->
   Rollup_constants.protocol_constants tzresult Lwt.t

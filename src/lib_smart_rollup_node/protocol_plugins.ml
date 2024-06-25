@@ -46,6 +46,8 @@ type proto_plugin = (module Protocol_plugin_sig.S)
 let proto_plugins : proto_plugin Protocol_hash.Table.t =
   Protocol_hash.Table.create 7
 
+let last_registered = ref None
+
 let register (plugin : proto_plugin) =
   let module Plugin = (val plugin) in
   if Protocol_hash.Table.mem proto_plugins Plugin.protocol then
@@ -55,10 +57,16 @@ let register (plugin : proto_plugin) =
        Did you register it manually multiple times?"
       Protocol_hash.pp
       Plugin.protocol ;
+  last_registered := Some Plugin.protocol ;
   Protocol_hash.Table.add proto_plugins Plugin.protocol plugin
 
 let registered_protocols () =
   Protocol_hash.Table.to_seq_keys proto_plugins |> List.of_seq
+
+let last_registered () =
+  match !last_registered with
+  | None -> Stdlib.failwith "No protocol plugins registered"
+  | Some p -> p
 
 let proto_plugin_for_protocol protocol =
   Protocol_hash.Table.find proto_plugins protocol
@@ -83,14 +91,21 @@ let proto_plugin_for_block node_ctxt block_hash =
   let* level = Node_context.level_of_hash node_ctxt block_hash in
   proto_plugin_for_level node_ctxt level
 
-let last_proto_plugin node_ctxt =
+let last_proto_plugin_opt node_ctxt =
   let open Lwt_result_syntax in
   let* protocol = Node_context.last_seen_protocol node_ctxt in
   match protocol with
-  | None -> failwith "No known last protocol, cannot get plugin"
+  | None -> return_none
   | Some protocol ->
       let*? plugin = proto_plugin_for_protocol protocol in
-      return plugin
+      return_some plugin
+
+let last_proto_plugin node_ctxt =
+  let open Lwt_result_syntax in
+  let* plugin = last_proto_plugin_opt node_ctxt in
+  match plugin with
+  | None -> failwith "No known last protocol, cannot get plugin"
+  | Some plugin -> return plugin
 
 module Constants_cache =
   Aches_lwt.Lache.Make_result
@@ -100,18 +115,33 @@ let constants_cache =
   let cache_size = 3 in
   Constants_cache.create cache_size
 
-let get_constants_of_protocol (node_ctxt : _ Node_context.t) protocol_hash =
+let get_constants_of_protocol ?level (node_ctxt : _ Node_context.t)
+    protocol_hash =
   let open Lwt_result_syntax in
-  if Protocol_hash.(protocol_hash = node_ctxt.current_protocol.hash) then
-    return node_ctxt.current_protocol.constants
+  let current_protocol = Reference.get node_ctxt.current_protocol in
+  if Protocol_hash.(protocol_hash = current_protocol.hash) then
+    return current_protocol.constants
   else
     let retrieve protocol_hash =
       let*? plugin = proto_plugin_for_protocol protocol_hash in
       let module Plugin = (val plugin) in
-      let* (First_known l | Activation_level l) =
-        Node_context.protocol_activation_level node_ctxt protocol_hash
+      let* level =
+        match level with
+        | None ->
+            let+ (First_known l | Activation_level l) =
+              Node_context.protocol_activation_level node_ctxt protocol_hash
+            in
+            l
+        | Some l ->
+            (* If the head is the last block of the protocol, i.e. a migration
+               block, we need to use its predecessor to fetch constants from the
+               correct context. For the other cases, the context of the
+               predecessor is always the same protocol. *)
+            return (Int32.pred l)
       in
-      Plugin.Layer1_helpers.retrieve_constants ~block:(`Level l) node_ctxt.cctxt
+      Plugin.Layer1_helpers.retrieve_constants
+        ~block:(`Level level)
+        node_ctxt.cctxt
     in
     Constants_cache.bind_or_put
       constants_cache
@@ -122,7 +152,7 @@ let get_constants_of_protocol (node_ctxt : _ Node_context.t) protocol_hash =
 let get_constants_of_level node_ctxt level =
   let open Lwt_result_syntax in
   let* {protocol; _} = Node_context.protocol_of_level node_ctxt level in
-  get_constants_of_protocol node_ctxt protocol
+  get_constants_of_protocol ~level node_ctxt protocol
 
 let get_constants_of_block_hash node_ctxt block_hash =
   let open Lwt_result_syntax in

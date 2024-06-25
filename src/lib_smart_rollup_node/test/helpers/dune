@@ -15,7 +15,10 @@
   mavkit-shell-libs.client-base-unix
   mavkit-l2-libs.smart-rollup
   mavkit-smart-rollup-node-lib
+  mavkit-l2-libs.layer2_store
   mavkit_smart_rollup_node_PtAtLas
+  mavkit_smart_rollup_node_PtParisB
+  mavkit_smart_rollup_node_PsParisC
   (select void_for_linking-mavkit_smart_rollup_node_alpha from
    (mavkit_smart_rollup_node_alpha -> void_for_linking-mavkit_smart_rollup_node_alpha.empty)
    (-> void_for_linking-mavkit_smart_rollup_node_alpha.empty)))
@@ -27,8 +30,10 @@
   -open Mavkit_alcotezt
   -open Mavryk_client_base_unix
   -open Mavkit_smart_rollup
-  -open Mavkit_smart_rollup_node))
+  -open Mavkit_smart_rollup_node
+  -open Mavryk_layer2_store))
 
 (rule
  (action
-  (progn (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))
+  (progn 
+    (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))

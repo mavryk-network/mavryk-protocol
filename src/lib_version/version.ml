@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (*                                                                           *)
 (* Open Source License                                                       *)
-(* Copyright (c) 2020 Nomadic Labs, <contact@nomadic-labs.com>               *)
+(* Copyright (c) 2020-2024 Nomadic Labs, <contact@nomadic-labs.com>          *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -29,7 +29,10 @@ type additional_info = Mavryk_version_parser.additional_info =
   | RC_dev of int
   | Release
 
+type product = Mavryk_version_parser.product = Mavkit | Etherlink
+
 type t = Mavryk_version_parser.t = {
+  product : product;
   major : int;
   minor : int;
   additional_info : additional_info;
@@ -43,7 +46,18 @@ let string_of_additional_info = function
   | RC_dev n -> Format.asprintf "~rc%d+dev" n
   | Release -> ""
 
-let pp f {major; minor; additional_info} =
+let string_of_product = function Mavkit -> "Mavkit" | Etherlink -> "Etherlink"
+
+let pp f {product; major; minor; additional_info} =
+  Format.fprintf
+    f
+    "%s %i.%i%s"
+    (string_of_product product)
+    major
+    minor
+    (string_of_additional_info additional_info)
+
+let pp_simple f {product = _; major; minor; additional_info} =
   Format.fprintf
     f
     "%i.%i%s"
@@ -52,3 +66,13 @@ let pp f {major; minor; additional_info} =
     (string_of_additional_info additional_info)
 
 let to_string x = Format.asprintf "%a" pp x
+
+let to_json {product; major; minor; additional_info} commit_hash =
+  Format.sprintf
+    "{ \"product\": \"%s\", \"major\": \"%i\", \"minor\": \"%i\", \"info\": \
+     \"%s\", \"hash\": \"%s\" }"
+    (string_of_product product)
+    major
+    minor
+    (string_of_additional_info additional_info)
+    commit_hash

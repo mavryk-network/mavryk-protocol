@@ -12,13 +12,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000441
+    Fee to the validator: ṁ0.000441
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000441
-      payload fees(the block proposer) ....... +ꜩ0.000441
+      [PUBLIC_KEY_HASH] ... -ṁ0.000441
+      payload fees(the block proposer) ....... +ṁ0.000441
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -29,8 +29,8 @@ This sequence of operations was run:
       Address: [SMART_ROLLUP_HASH]
       Genesis commitment hash: [SC_ROLLUP_COMMITMENT_HASH]
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1.638
-        storage fees ........................... +ꜩ1.638
+        [PUBLIC_KEY_HASH] ... -ṁ1.638
+        storage fees ........................... +ṁ1.638
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 
@@ -47,13 +47,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000989
+    Fee to the validator: ṁ0.000989
     Expected counter: 1
     Gas limit: 6689
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000989
-      payload fees(the block proposer) ....... +ꜩ0.000989
+      [PUBLIC_KEY_HASH] ... -ṁ0.000989
+      payload fees(the block proposer) ....... +ṁ0.000989
     Smart rollup commitment publishing:
       Address: [SMART_ROLLUP_HASH]
       Commitment:
@@ -66,8 +66,8 @@ This sequence of operations was run:
       Hash of commit: [SC_ROLLUP_COMMITMENT_HASH]
       Commitment published at level: 6
       Balance updates:
-        [PUBLIC_KEY_HASH] ...................................................... -ꜩ10000
-        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... +ꜩ10000
+        [PUBLIC_KEY_HASH] ...................................................... -ṁ10000
+        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... +ṁ10000
 
 
 ./mavkit-client --wait none publish commitment from '[PUBLIC_KEY_HASH]' for smart rollup '[SMART_ROLLUP_HASH]' with compressed state '[SC_ROLLUP_PVM_STATE_HASH]' at inbox level 4 and predecessor '[SC_ROLLUP_COMMITMENT_HASH]' and number of ticks 2
@@ -83,13 +83,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.001059
+    Fee to the validator: ṁ0.001059
     Expected counter: 1
     Gas limit: 7388
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.001059
-      payload fees(the block proposer) ....... +ꜩ0.001059
+      [PUBLIC_KEY_HASH] ... -ṁ0.001059
+      payload fees(the block proposer) ....... +ṁ0.001059
     Smart rollup commitment publishing:
       Address: [SMART_ROLLUP_HASH]
       Commitment:
@@ -102,13 +102,13 @@ This sequence of operations was run:
       Hash of commit: [SC_ROLLUP_COMMITMENT_HASH]
       Commitment published at level: 7
       Balance updates:
-        [PUBLIC_KEY_HASH] ...................................................... -ꜩ10000
-        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... +ꜩ10000
+        [PUBLIC_KEY_HASH] ...................................................... -ṁ10000
+        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... +ṁ10000
 
 
 ./mavkit-client --wait none timeout dispute on smart rollup '[SMART_ROLLUP_HASH]' with '[PUBLIC_KEY_HASH]' against '[PUBLIC_KEY_HASH]' from bootstrap1
 Node is bootstrapped.
-Estimated gas: 3715.525 units (will add 100 for safety)
+Estimated gas: 3715.433 units (will add 100 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -119,23 +119,23 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000668
+    Fee to the validator: ṁ0.000668
     Expected counter: 2
     Gas limit: 3816
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000668
-      payload fees(the block proposer) ....... +ꜩ0.000668
+      [PUBLIC_KEY_HASH] ... -ṁ0.000668
+      payload fees(the block proposer) ....... +ṁ0.000668
     Smart rollup refutation timeout:
       Address: [SMART_ROLLUP_HASH]
       First staker (Alice): [PUBLIC_KEY_HASH]
       Second staker (Bob): [PUBLIC_KEY_HASH]
       This smart rollup refutation timeout was successfully applied
-      Consumed gas: 3715.459
+      Consumed gas: 3715.367
       Refutation game status: Game ended: [PUBLIC_KEY_HASH] lost because: timeout
       Balance updates:
-        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... -ꜩ10000
-        smart rollup refutation punishments ....................................................... +ꜩ10000
-        smart rollup refutation rewards ........................................................... -ꜩ5000
-        [PUBLIC_KEY_HASH] ...................................................... +ꜩ5000
+        Frozen_bonds([PUBLIC_KEY_HASH],[SMART_ROLLUP_HASH]) ... -ṁ10000
+        smart rollup refutation punishments ....................................................... +ṁ10000
+        smart rollup refutation rewards ........................................................... -ṁ5000
+        [PUBLIC_KEY_HASH] ...................................................... +ṁ5000
 

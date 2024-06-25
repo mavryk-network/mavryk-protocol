@@ -12,7 +12,7 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_protocol_001_PtAtLas
   -open Mavryk_smart_rollup_001_PtAtLas)
  (modules (:standard \ Plugin_registerer)))
@@ -31,7 +31,7 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_embedded_protocol_001_PtAtLas
   -open Mavryk_protocol_plugin_001_PtAtLas
   -open Mavryk_validation)

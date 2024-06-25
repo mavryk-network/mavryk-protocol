@@ -26,7 +26,7 @@
 
 type t
 
-val get_version : t -> Mavryk_version.Node_version.t
+val get_version : t -> Mavryk_version.Mavkit_node_version.t
 
 type config = {
   genesis : Genesis.t;
@@ -58,7 +58,7 @@ val create :
   ?sandbox_parameters:Data_encoding.json ->
   singleprocess:bool ->
   version:string ->
-  commit_info:Node_version.commit_info ->
+  commit_info:Mavkit_node_version.commit_info ->
   config ->
   Shell_limits.peer_validator_limits ->
   Shell_limits.block_validator_limits ->
@@ -69,12 +69,12 @@ val create :
 
 val shutdown : t -> unit Lwt.t
 
-(** [build_rpc_directory ~node_version ~commit_info node] builds a Tezos RPC
+(** [build_rpc_directory ~node_version ~commit_info node] builds a Mavryk RPC
     directory for the node by gathering all the subdirectories. [node_version],
     [commit_info] and [node] contain all informations required to build such a
     directory. *)
 val build_rpc_directory :
-  node_version:Mavryk_version.Node_version.t ->
-  commit_info:Node_version.commit_info ->
+  node_version:Mavryk_version.Mavkit_node_version.t ->
+  commit_info:Mavkit_node_version.commit_info ->
   t ->
   unit Mavryk_rpc.Directory.t

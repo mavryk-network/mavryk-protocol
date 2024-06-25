@@ -126,13 +126,14 @@ type installer_result = {
    it by using the 'reveal_installer' kernel. This leverages the reveal
    preimage+DAC mechanism to install the tx kernel.
 *)
-let prepare_installer_kernel ?runner
-    ?(base_installee =
-      "src/proto_alpha/lib_protocol/test/integration/wasm_kernel")
-    ~preimages_dir ?config installee =
+let prepare_installer_kernel_with_arbitrary_file ?runner ~preimages_dir ?config
+    installee =
   let open Tezt.Base in
   let open Lwt.Syntax in
-  let installer = installee ^ "-installer.hex" in
+  let installer =
+    installee |> Filename.basename |> Filename.remove_extension |> fun base ->
+    base ^ "-installer.hex"
+  in
   let output = Temp.file installer in
   let installee = (project_root // base_installee // installee) ^ ".wasm" in
   let setup_file_args =
@@ -189,6 +190,13 @@ let prepare_installer_kernel ?runner
   in
   {output; boot_sector = read_file output; root_hash}
 
+let prepare_installer_kernel ?runner ~preimages_dir ?config installee =
+  prepare_installer_kernel_with_arbitrary_file
+    ?runner
+    ~preimages_dir
+    ?config
+    (Uses.path installee)
+
 let default_boot_sector_of ~kind =
   match kind with
   | "arith" -> ""
@@ -205,14 +213,24 @@ let make_bool_parameter name = function
   | None -> []
   | Some value -> [([name], `Bool value)]
 
+let make_string_parameter name = function
+  | None -> []
+  | Some value -> [([name], `String value)]
+
 let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
-    ?commitment_period ?challenge_window ?timeout ?whitelist_enable ?rpc_local
-    protocol =
+    ?commitment_period ?challenge_window ?timeout ?whitelist_enable
+    ?rpc_external ?(riscv_pvm_enable = false) ?minimal_block_delay protocol =
   let parameters =
     make_parameter "smart_rollup_commitment_period_in_blocks" commitment_period
     @ make_parameter "smart_rollup_challenge_window_in_blocks" challenge_window
     @ make_parameter "smart_rollup_timeout_period_in_blocks" timeout
-    @ (if Protocol.number protocol >= 001 then
+    @ make_string_parameter
+        "minimal_block_delay"
+        (Option.map string_of_int minimal_block_delay)
+    @ make_string_parameter
+        "delay_increment_per_round"
+        (Option.map string_of_int minimal_block_delay)
+    @ (if Protocol.number protocol >= 018 then
        make_bool_parameter "smart_rollup_private_enable" whitelist_enable
       else [])
     @ [(["smart_rollup_arith_pvm_enable"], `Bool true)]
@@ -234,7 +252,7 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
     `Client
     ~protocol
     ~nodes_args
-    ?rpc_local
+    ?rpc_external
     ()
 
 (** This helper injects an SC rollup origination via mavkit-client. Then it

@@ -65,11 +65,40 @@ let user_migratable_node_init ?node_name ?client_name ?(more_node_args = [])
   let* client = Client.(init ?name:client_name ~endpoint:(Node node) ()) in
   Lwt.return (client, node)
 
+(** [block_check ?level ~expected_block_type ~migrate_to ~migrate_from client]
+    is generic check that a block of type [expected_block_type] contains
+    (protocol) metatadata conforming to its type at [level]. **)
+let block_check ?level ~expected_block_type ~migrate_to ~migrate_from client =
+  let block =
+    match level with Some level -> Some (string_of_int level) | None -> None
+  in
+  let* metadata =
+    Client.RPC.call client @@ RPC.get_chain_block_metadata ?block ()
+  in
+  let protocol = metadata.protocol in
+  let next_protocol = metadata.next_protocol in
+  (match expected_block_type with
+  | `Migration ->
+      Check.(
+        (next_protocol = Protocol.hash migrate_to)
+          string
+          ~error_msg:"expected next protocol to be %R, got %L") ;
+      Check.(
+        (protocol = Protocol.hash migrate_from)
+          string
+          ~error_msg:"expected (from) protocol to be %R, got %L")
+  | `Non_migration ->
+      Check.(
+        (next_protocol = protocol)
+          string
+          ~error_msg:"expected a non migration block ")) ;
+  Lwt.return_unit
+
 (* Migration to Tenderbake is only supported after the first cycle,
    therefore at [migration_level >= blocks_per_cycle]. *)
-let perform_protocol_migration ?node_name ?client_name ~blocks_per_cycle
-    ~migration_level ~migrate_from ~migrate_to ~baked_blocks_after_migration ()
-    =
+let perform_protocol_migration ?node_name ?client_name ?parameter_file
+    ~blocks_per_cycle ~migration_level ~migrate_from ~migrate_to
+    ~baked_blocks_after_migration () =
   assert (migration_level >= blocks_per_cycle) ;
   Log.info "Node starting" ;
   let* client, node =
@@ -81,43 +110,35 @@ let perform_protocol_migration ?node_name ?client_name ~blocks_per_cycle
       ()
   in
   Log.info "Node %s initialized" (Node.name node) ;
-  let* () = Client.activate_protocol ~protocol:migrate_from client in
+  let* () =
+    Client.activate_protocol ~protocol:migrate_from client ?parameter_file
+  in
   Log.info "Protocol %s activated" (Protocol.hash migrate_from) ;
   (* Bake until migration *)
   let* () =
     repeat (migration_level - 1) (fun () -> Client.bake_for_and_wait client)
   in
   (* Ensure that the block before migration *)
-  let* pre_migration_block =
-    Client.RPC.call client
-    @@ RPC.get_chain_block_metadata ~block:(Int.to_string migration_level) ()
-  in
   Log.info "Checking migration block consistency" ;
-  Check.(
-    (pre_migration_block.protocol = Protocol.hash migrate_from)
-      string
-      ~error_msg:"expected protocol = %R, got %L") ;
-  Check.(
-    (pre_migration_block.next_protocol = Protocol.hash migrate_to)
-      string
-      ~error_msg:"expected next_protocol = %R, got %L") ;
+  let* () =
+    block_check
+      ~expected_block_type:`Migration
+      client
+      ~migrate_from
+      ~migrate_to
+      ~level:migration_level
+  in
   let* () = Client.bake_for_and_wait client in
   (* Ensure that we migrated *)
-  let* migration_block =
-    Client.RPC.call client
-    @@ RPC.get_chain_block_metadata
-         ~block:(Int.to_string (migration_level + 1))
-         ()
-  in
   Log.info "Checking migration block consistency" ;
-  Check.(
-    (migration_block.protocol = Protocol.hash migrate_to)
-      string
-      ~error_msg:"expected protocol = %R, got %L") ;
-  Check.(
-    (migration_block.next_protocol = Protocol.hash migrate_to)
-      string
-      ~error_msg:"expected next_protocol = %R, got %L") ;
+  let* () =
+    block_check
+      ~expected_block_type:`Non_migration
+      client
+      ~migrate_from
+      ~migrate_to
+      ~level:(migration_level + 1)
+  in
   (* Test that we can still bake after migration *)
   let* () =
     repeat baked_blocks_after_migration (fun () ->
@@ -129,7 +150,9 @@ let perform_protocol_migration ?node_name ?client_name ~blocks_per_cycle
 let test_migration_for_whole_cycle ~migrate_from ~migrate_to =
   let parameters = JSON.parse_file (Protocol.parameter_file migrate_to) in
   let blocks_per_cycle = JSON.(get "blocks_per_cycle" parameters |> as_int) in
-  let preserved_cycles = JSON.(get "preserved_cycles" parameters |> as_int) in
+  let consensus_rights_delay =
+    JSON.(get "consensus_rights_delay" parameters |> as_int)
+  in
   for migration_level = blocks_per_cycle to 2 * blocks_per_cycle do
     Test.register
       ~__FILE__
@@ -142,7 +165,8 @@ let test_migration_for_whole_cycle ~migrate_from ~migrate_to =
         ~migration_level
         ~migrate_from
         ~migrate_to
-        ~baked_blocks_after_migration:(2 * preserved_cycles * blocks_per_cycle)
+        ~baked_blocks_after_migration:
+          (2 * consensus_rights_delay * blocks_per_cycle)
         ()
     in
     unit
@@ -274,7 +298,7 @@ let test_migration_with_snapshots ~migrate_from ~migrate_to =
   Log.info "Reconstruct full node3" ;
   let node3 = Node.create ~name:"node3" node_params in
   let* () = Node.config_init node3 node_params in
-  Node.Config_file.update node3 patch_config ;
+  let* () = Node.Config_file.update node3 patch_config in
   let* () = Node.snapshot_import node3 file_full in
   let* () = Node.reconstruct node3 in
   let* () = Node.run node3 node_params in
@@ -292,35 +316,6 @@ let test_migration_with_snapshots ~migrate_from ~migrate_to =
   let* () = connect (client3, node3) (client0, node0) in
   let* () = synchronize node1 [node0; node2; node3] in
   unit
-
-(** [block_check ~level ~expected_block_type ~migrate_to ~migrate_from client]
-    is generic check that a block of type [expected_block_type] contains
-    (protocol) metatadata conforming to its type at [level]. **)
-let block_check ?level ~expected_block_type ~migrate_to ~migrate_from client =
-  let block =
-    match level with Some level -> Some (string_of_int level) | None -> None
-  in
-  let* metadata =
-    Client.RPC.call client @@ RPC.get_chain_block_metadata ?block ()
-  in
-  let protocol = metadata.protocol in
-  let next_protocol = metadata.next_protocol in
-  (match expected_block_type with
-  | `Migration ->
-      Check.(
-        (next_protocol = Protocol.hash migrate_to)
-          string
-          ~error_msg:"expected next protocol to be %R, got %L") ;
-      Check.(
-        (protocol = Protocol.hash migrate_from)
-          string
-          ~error_msg:"expected (from) protocol to be %R, got %L")
-  | `Non_migration ->
-      Check.(
-        (next_protocol = protocol)
-          string
-          ~error_msg:"expected a non migration block ")) ;
-  Lwt.return_unit
 
 (** Number of elements in [l] that satisfy the predicate [p]. *)
 let list_count_p p l =
@@ -931,6 +926,32 @@ let test_forked_migration_bakers ~migrate_from ~migrate_to =
       check_blocks ~level_from:(level_from + 1) ~level_to)
   in
   check_blocks ~level_from ~level_to
+
+let check_baking_rights client nb_cycles_to_check ?nb_cycles_is_valid () =
+  let check_baking_rights_rpc ~expect_failure ~cycle () =
+    let*? process =
+      Client.RPC.spawn client
+      @@ RPC.get_chain_block_helper_baking_rights ~cycle ()
+    in
+    let* () = Process.check ~expect_failure process in
+    Log.info
+      "Checked the baking rights for cycle = %s (expect_failure = %s)"
+      (Int.to_string cycle)
+      (Bool.to_string expect_failure) ;
+    unit
+  in
+
+  let* level =
+    Client.RPC.call client @@ RPC.get_chain_block_helper_current_level ()
+  in
+  let nb_cycles_is_valid =
+    match nb_cycles_is_valid with Some x -> x | None -> nb_cycles_to_check
+  in
+  Lwt_list.iter_s
+    (fun cycle ->
+      let expect_failure = cycle > level.cycle + nb_cycles_is_valid in
+      check_baking_rights_rpc ~expect_failure ~cycle ())
+    (range level.cycle (level.cycle + nb_cycles_to_check))
 
 let register ~migrate_from ~migrate_to =
   test_migration_for_whole_cycle ~migrate_from ~migrate_to ;

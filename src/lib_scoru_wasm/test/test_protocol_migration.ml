@@ -61,6 +61,8 @@ let test_protocol_migration_message ~from_version ~to_version
 
 let proto_name : Mavryk_scoru_wasm.Pvm_input_kind.protocol -> string = function
   | Atlas -> "Atlas"
+  | ParisB -> "ParisB"
+  | ParisC -> "ParisC"
   | Proto_alpha -> "Proto_alpha"
 
 let tests =
@@ -75,7 +77,12 @@ let tests =
            ~from_version
            ~to_version
            ~after_protocol_activation:protocol))
-    [(V1, V2, Atlas); (V2, V3, Proto_alpha)]
+    [
+      (V2, V4, Proto_alpha);
+      (V2, V4, ParisB);
+      (V2, V4, ParisC);
+      (V1, V2, Atlas);
+    ]
 
 let () =
   Alcotest_lwt.run

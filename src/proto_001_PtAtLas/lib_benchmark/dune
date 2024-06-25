@@ -23,7 +23,7 @@
   (:standard)
   -open Mavryk_stdlib
   -open Mavryk_base
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_error_monad
   -open Mavryk_micheline
   -open Mavryk_micheline_rewriting

@@ -34,6 +34,46 @@ type genesis_info = Metadata.genesis_info = {
 
 type 'a store = 'a Store.t
 
+module Node_store = struct
+  let close (s : 'a store) = Store.close s
+
+  let load :
+      'a Store_sigs.mode ->
+      index_buffer_size:int ->
+      l2_blocks_cache_size:int ->
+      string ->
+      'a store tzresult Lwt.t =
+    Store.load
+
+  let check_and_set_history_mode (type a) (mode : a Store_sigs.mode)
+      (store : a Store.store) (history_mode : Configuration.history_mode option)
+      =
+    let open Lwt_result_syntax in
+    let* stored_history_mode =
+      match mode with
+      | Read_only -> Store.History_mode.read store.history_mode
+      | Read_write -> Store.History_mode.read store.history_mode
+    in
+    let save_when_rw history_mode =
+      match mode with
+      | Read_only -> return_unit
+      | Read_write -> Store.History_mode.write store.history_mode history_mode
+    in
+    match (stored_history_mode, history_mode) with
+    | None, None -> save_when_rw Configuration.default_history_mode
+    | Some _, None -> return_unit
+    | None, Some history_mode -> save_when_rw history_mode
+    | Some Archive, Some Archive | Some Full, Some Full -> return_unit
+    | Some Archive, Some Full ->
+        (* Data will be cleaned at next GC, just save new mode *)
+        let*! () = Event.convert_history_mode Archive Full in
+        save_when_rw Full
+    | Some Full, Some Archive ->
+        failwith "Cannot transform a full rollup node into an archive one."
+
+  let of_store store = store
+end
+
 type debug_logger = string -> unit Lwt.t
 
 type current_protocol = {
@@ -49,6 +89,12 @@ type private_info = {
   last_outbox_level_searched : int32;
 }
 
+type sync_info = {
+  on_synchronized : unit Lwt_condition.t;
+  mutable processed_level : int32;
+  sync_level_input : int32 Lwt_watcher.input;
+}
+
 type 'a t = {
   config : Configuration.t;
   cctxt : Client_context.full;
@@ -60,6 +106,7 @@ type 'a t = {
   injector_retention_period : int;
   block_finality_time : int;
   kind : Kind.t;
+  unsafe_patches : Pvm_patches.t;
   lockfile : Lwt_unix.file_descr;
   store : 'a store;
   context : 'a Context.index;
@@ -68,8 +115,9 @@ type 'a t = {
   private_info : ('a, private_info option) Reference.t;
   kernel_debug_logger : debug_logger;
   finaliser : unit -> unit Lwt.t;
-  mutable current_protocol : current_protocol;
+  current_protocol : current_protocol Reference.rw;
   global_block_watcher : Sc_rollup_block.t Lwt_watcher.input;
+  sync : sync_info;
 }
 
 type rw = [`Read | `Write] t
@@ -344,7 +392,7 @@ let checkout_context node_ctxt block_hash =
 
 let dal_supported node_ctxt =
   node_ctxt.dal_cctxt <> None
-  && node_ctxt.current_protocol.constants.dal.feature_enable
+  && (Reference.get node_ctxt.current_protocol).constants.dal.feature_enable
 
 let readonly (node_ctxt : _ t) =
   {
@@ -409,8 +457,15 @@ let save_l2_block {store; _} (head : Sc_rollup_block.t) =
     ~header:head.header
     ~value:head_info
 
-let set_l2_head {store; _} (head : Sc_rollup_block.t) =
-  Store.L2_head.write store.l2_head head
+let notify_processed_tezos_level node_ctxt level =
+  node_ctxt.sync.processed_level <- level ;
+  Lwt_watcher.notify node_ctxt.sync.sync_level_input level
+
+let set_l2_head node_ctxt (head : Sc_rollup_block.t) =
+  let open Lwt_result_syntax in
+  let+ () = Store.L2_head.write node_ctxt.store.l2_head head in
+  notify_processed_tezos_level node_ctxt head.header.level ;
+  Lwt_watcher.notify node_ctxt.global_block_watcher head
 
 let is_processed {store; _} head = Store.L2_blocks.mem store.l2_blocks head
 
@@ -538,7 +593,7 @@ let get_predecessor_header node_ctxt head =
 
 (** Returns the block that is right before [tick]. [big_step_blocks] is used to
     first look for a block before the [tick] *)
-let tick_search ~big_step_blocks node_ctxt head tick =
+let tick_search ~big_step_blocks node_ctxt ?min_level head tick =
   let open Lwt_result_syntax in
   if Z.Compare.(head.Sc_rollup_block.initial_tick <= tick) then
     if Z.Compare.(Sc_rollup_block.final_tick head < tick) then
@@ -548,18 +603,46 @@ let tick_search ~big_step_blocks node_ctxt head tick =
       (* The starting block contains the tick we want, we are done. *)
       return_some head
   else
-    let genesis_level = node_ctxt.genesis_info.level in
+    let* gc_levels = Store.Gc_levels.read node_ctxt.store.gc_levels in
+    let first_available_level =
+      match gc_levels with
+      | Some {first_available_level = l; _} -> l
+      | None -> node_ctxt.genesis_info.level
+    in
+    let min_level =
+      match min_level with
+      | Some min_level -> Int32.max min_level first_available_level
+      | None -> first_available_level
+    in
     let rec find_big_step (end_block : Sc_rollup_block.t) =
+      (* Each iteration of [find_big_step b] looks if the [tick] happened in
+         [b - 4096; b[. *)
       let start_level =
         Int32.sub end_block.header.level (Int32.of_int big_step_blocks)
       in
       let start_level =
-        if start_level < genesis_level then genesis_level else start_level
+        (* We stop the coarse search at [min_level] in any case. *)
+        Int32.max start_level min_level
       in
       let* start_block = get_l2_block_by_level node_ctxt start_level in
       if Z.Compare.(start_block.initial_tick <= tick) then
+        (* The tick happened after [start_block] and we know it happened before
+           [end_block]. *)
         return (start_block, end_block)
-      else find_big_step start_block
+      else if start_level = min_level then
+        (* We've reached the hard lower bound for the search and we know the
+           tick happened before. *)
+        failwith
+          "Tick %a happened before minimal level %ld with tick %a"
+          Z.pp_print
+          tick
+          min_level
+          Z.pp_print
+          start_block.initial_tick
+      else
+        (* The tick happened before [start_block], so we restart the coarse
+           search with it as the upper bound. *)
+        find_big_step start_block
     in
     let block_level Sc_rollup_block.{header = {level; _}; _} =
       Int32.to_int level
@@ -587,7 +670,7 @@ let tick_search ~big_step_blocks node_ctxt head tick =
     (* Then do dichotomy on interval [start_block; end_block] *)
     dicho start_block end_block
 
-let block_with_tick ({store; _} as node_ctxt) ~max_level tick =
+let block_with_tick ({store; _} as node_ctxt) ?min_level ~max_level tick =
   let open Lwt_result_syntax in
   let open Lwt_result_option_syntax in
   Error.trace_lwt_result_with
@@ -605,7 +688,7 @@ let block_with_tick ({store; _} as node_ctxt) ~max_level tick =
        if head.header.level <= max_level then return_some head
        else find_l2_block_by_level node_ctxt max_level
      in
-     tick_search ~big_step_blocks:4096 node_ctxt head tick
+     tick_search ~big_step_blocks:4096 node_ctxt ?min_level head tick
 
 let find_commitment {store; _} commitment_hash =
   let open Lwt_result_syntax in
@@ -633,6 +716,19 @@ let save_commitment {store; _} commitment =
     Store.Commitments.append store.commitments ~key:hash ~value:commitment
   in
   hash
+
+let tick_offset_of_commitment_period node_ctxt (commitment : Commitment.t) =
+  let open Lwt_result_syntax in
+  let+ commitment_block =
+    get_l2_block_by_level node_ctxt commitment.inbox_level
+  in
+  (* Final tick of commitment period *)
+  let commitment_final_tick =
+    Z.add commitment_block.initial_tick (Z.of_int64 commitment_block.num_ticks)
+  in
+  (* Final tick of predecessor commitment, i.e. initial tick of commitment
+     period *)
+  Z.sub commitment_final_tick (Z.of_int64 commitment.number_of_ticks)
 
 let commitment_published_at_level {store; _} commitment =
   Store.Commitments_published_at_level.find
@@ -1034,18 +1130,6 @@ let save_slot_status {store; _} current_block_hash slot_index status =
     ~secondary_key:slot_index
     status
 
-let find_confirmed_slots_history {store; _} block =
-  Store.Dal_confirmed_slots_history.find store.irmin_store block
-
-let save_confirmed_slots_history {store; _} block hist =
-  Store.Dal_confirmed_slots_history.add store.irmin_store block hist
-
-let find_confirmed_slots_histories {store; _} block =
-  Store.Dal_confirmed_slots_histories.find store.irmin_store block
-
-let save_confirmed_slots_histories {store; _} block hist =
-  Store.Dal_confirmed_slots_histories.add store.irmin_store block hist
-
 let get_gc_levels node_ctxt =
   let open Lwt_result_syntax in
   let+ gc_levels = Store.Gc_levels.read node_ctxt.store.gc_levels in
@@ -1133,6 +1217,20 @@ let check_level_available node_ctxt accessed_level =
     (accessed_level < first_available_level)
     (Rollup_node_errors.Access_below_first_available_level
        {first_available_level; accessed_level})
+
+(** {2 Synchronization tracking} *)
+
+let is_synchronized node_ctxt =
+  let l1_head = Layer1.get_latest_head node_ctxt.l1_ctxt in
+  match l1_head with
+  | None -> true
+  | Some l1_head -> node_ctxt.sync.processed_level = l1_head.level
+
+let wait_synchronized node_ctxt =
+  if is_synchronized node_ctxt then Lwt.return_unit
+  else Lwt_condition.wait node_ctxt.sync.on_synchronized
+
+(**/**)
 
 module Internal_for_tests = struct
   let create_node_context cctxt (current_protocol : current_protocol) ~data_dir

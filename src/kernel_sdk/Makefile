@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Nomadic Labs <contact@nomadic-labs.com>
-# SPDX-FileCopyrightText: 2023 TriliTech <contact@trili.tech>
+# SPDX-FileCopyrightText: 2023-2024 TriliTech <contact@trili.tech>
 #
 # SPDX-License-Identifier: MIT
 
@@ -88,7 +88,8 @@ doc:
 
 .PHONY: build-deps
 build-deps:
-	@rustup target add wasm32-unknown-unknown riscv64gc-unknown-none-elf $(NATIVE_TARGET)
+	@exec ../risc_v/install-rust-std-hermit.sh
+	@rustup target add wasm32-unknown-unknown $(NATIVE_TARGET)
 
 .PHONY: build-dev-deps
 build-dev-deps: build-deps

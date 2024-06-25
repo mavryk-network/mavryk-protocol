@@ -126,10 +126,10 @@ let tez_quantity_pp fmt value =
     match value with
     | Nothing -> "Zero"
     | All -> "All"
-    | All_but_one -> "All but 1µꜩ"
+    | All_but_one -> "All but 1µṁ"
     | Half -> "Half"
     | Max_tez -> "Maximum"
-    | Amount a -> Format.asprintf "%aꜩ" Tez.pp a
+    | Amount a -> Format.asprintf "%aṁ" Tez.pp a
   in
   Format.fprintf fmt "%s" s
 
@@ -305,7 +305,7 @@ module State = struct
       let {parameters = _; pkh; _} = find_account baker state in
       let delta_rewards = Test_tez.(rewards_per_block *! delta_time) in
       if delta_time = 1L then
-        Log.info ~color:tez_color "+%aꜩ" Tez.pp rewards_per_block
+        Log.info ~color:tez_color "+%aṁ" Tez.pp rewards_per_block
       else assert false ;
       let* to_liquid =
         portion_of_rewards_to_liquid_for_cycle
@@ -1211,7 +1211,7 @@ let transfer src_name dst_name amount : (t, t) scenarios =
       let amount = quantity_to_tez src.liquid amount in
       Log.info
         ~color:action_color
-        "[Transfer \"%s\" -> \"%s\" (%aꜩ)]"
+        "[Transfer \"%s\" -> \"%s\" (%aṁ)]"
         src_name
         dst_name
         Tez.pp

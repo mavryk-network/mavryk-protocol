@@ -78,7 +78,7 @@ val mul_ratio :
 
 (** [mul_percentage mav percentage] returns [mav * percentage / 100].
     No errors can happen. *)
-val mul_percentage : rounding:[`Down | `Up] -> t -> Int_percentage.t -> t
+val mul_percentage : rounding:[`Down | `Up] -> t -> Percentage.t -> t
 
 val to_mumav : t -> int64
 

@@ -17,6 +17,52 @@ use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpStream};
 use sha3::{Digest, Keccak256};
 use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
+/// Container for fee calculation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BlockFees {
+    minimum_base_fee_per_gas: U256,
+    base_fee_per_gas: U256,
+    da_fee_per_byte: U256,
+}
+
+impl BlockFees {
+    /// Setup fee information for the current block
+    pub const fn new(
+        minimum_base_fee_per_gas: U256,
+        base_fee_per_gas: U256,
+        da_fee_per_byte: U256,
+    ) -> Self {
+        Self {
+            minimum_base_fee_per_gas,
+            base_fee_per_gas,
+            da_fee_per_byte,
+        }
+    }
+
+    /// The base fee per gas for doing a transaction within the current block.
+    #[inline(always)]
+    pub const fn base_fee_per_gas(&self) -> U256 {
+        self.base_fee_per_gas
+    }
+
+    /// The minimum base fee per gas
+    #[inline(always)]
+    pub const fn minimum_base_fee_per_gas(&self) -> U256 {
+        self.minimum_base_fee_per_gas
+    }
+
+    /// The da fee per byte charged per transaction.
+    #[inline(always)]
+    pub const fn da_fee_per_byte(&self) -> U256 {
+        self.da_fee_per_byte
+    }
+
+    /// Update the base fee per gas
+    pub fn set_base_fee_per_gas(&mut self, price: U256) {
+        self.base_fee_per_gas = price
+    }
+}
+
 /// All data for an Ethereum block.
 ///
 /// This data does not change for the duration of the block. All balues are
@@ -38,6 +84,10 @@ pub struct BlockConstants {
     /// Identifier for the chain. Normally this would identify the chain (Ethereum
     /// main net, or some other net). We can use it to identify rollup EVM kernel.
     pub chain_id: U256,
+    /// A random number depending on previous block
+    /// NB: this field is not relevant for Etherlink but is required to enable other
+    /// relevant test from the Ethereum test suit
+    pub prevrandao: Option<H256>,
 }
 
 impl BlockConstants {
@@ -53,6 +103,7 @@ impl BlockConstants {
             gas_limit: 1u64,
             base_fee_per_gas,
             chain_id,
+            prevrandao: None,
         }
     }
 }
@@ -143,6 +194,7 @@ impl L2Block {
             gas_limit: self.gas_limit.unwrap_or(1u64),
             base_fee_per_gas,
             chain_id,
+            prevrandao: None,
         }
     }
 

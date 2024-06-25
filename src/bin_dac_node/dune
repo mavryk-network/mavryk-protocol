@@ -26,6 +26,8 @@
   irmin-pack.unix
   irmin
   mavkit-protocol-001-PtAtLas-libs.dac
+  mavkit-protocol-019-PtParisB-libs.dac
+  mavkit-protocol-020-PsParisC-libs.dac
   (select void_for_linking-mavkit-protocol-alpha-libs-dac from
    (mavkit-protocol-alpha-libs.dac -> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)
    (-> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)))

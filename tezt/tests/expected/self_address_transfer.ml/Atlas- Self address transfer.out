@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000379
+    Fee to the validator: ṁ0.000379
     Expected counter: 1
     Gas limit: 693
     Storage limit: 359 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000379
-      payload fees(the block proposer) ....... +ꜩ0.000379
+      [PUBLIC_KEY_HASH] ... -ṁ0.000379
+      payload fees(the block proposer) ....... +ṁ0.000379
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter (contract (lambda unit address)) ;
           storage unit ;
@@ -41,10 +41,10 @@ This sequence of operations was run:
         Paid storage size diff: 82 bytes
         Consumed gas: 592.463
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.0205
-          storage fees ........................... +ꜩ0.0205
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.0205
+          storage fees ........................... +ṁ0.0205
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as self_address_sender.
@@ -62,16 +62,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00038
+    Fee to the validator: ṁ0.00038
     Expected counter: 2
     Gas limit: 693
     Storage limit: 360 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00038
-      payload fees(the block proposer) ....... +ꜩ0.00038
+      [PUBLIC_KEY_HASH] ... -ṁ0.00038
+      payload fees(the block proposer) ....... +ṁ0.00038
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter (lambda unit address) ;
           storage unit ;
@@ -91,10 +91,10 @@ This sequence of operations was run:
         Paid storage size diff: 83 bytes
         Consumed gas: 592.894
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.02075
-          storage fees ........................... +ꜩ0.02075
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.02075
+          storage fees ........................... +ṁ0.02075
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as self_address_receiver.
@@ -112,15 +112,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000601
+    Fee to the validator: ṁ0.000601
     Expected counter: 1
     Gas limit: 3062
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000601
-      payload fees(the block proposer) ....... +ꜩ0.000601
+      [PUBLIC_KEY_HASH] ... -ṁ0.000601
+      payload fees(the block proposer) ....... +ṁ0.000601
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "[CONTRACT_HASH]"
@@ -130,7 +130,7 @@ This sequence of operations was run:
       Consumed gas: 1745.840
       Internal operations:
         Internal Transaction:
-          Amount: ꜩ0
+          Amount: ṁ0
           From: [CONTRACT_HASH]
           To: [CONTRACT_HASH]
           Parameter: { DROP ; SELF_ADDRESS }

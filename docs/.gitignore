@@ -1,18 +1,5 @@
-mavkit-baker.html
-mavkit-accuser.html
-mavkit-endorser.html
-mavkit-client.html
-mavkit-smart-rollup-client.html
-mavkit-smart-rollup-node.html
-mavkit-dac-client.html
-mavkit-dac-node.html
-/api/mavkit-snoop.html
-/api/mavkit-codec.html
-/api/mavkit-admin-client.html
-/api/mavkit-signer.html
-/api/mavkit-node.txt
-/api/mavkit-proxy-server.txt
-
+mavkit-*.html
+mavkit-*.txt
 /alpha/rpc.rst
 /shell/rpc.rst
 

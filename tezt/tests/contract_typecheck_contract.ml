@@ -188,10 +188,8 @@ let test_implicit =
   let* () = check_contract_ok client mv1 None "ticket string" in
   let no_entrypoint_error = "Contract has no entrypoint named a" in
   let type_mismatch_error =
-    match protocol with
-    | _ ->
-        "is not acceptable as a handle to an implicit account, whose \
-         parameters type can only be unit or ticket <ty>"
+    "is not acceptable as a handle to an implicit account, whose parameters \
+     type can only be unit or ticket <ty>"
   in
   let* () =
     check_contract_ko client mv1 (Some "a") "unit" no_entrypoint_error

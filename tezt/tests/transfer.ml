@@ -40,7 +40,7 @@ let test_zero_transfer_to_implicit_contract =
   let pubkey = Account.Bootstrap.keys.(2).public_key_hash in
   let err =
     rexf
-      "Transactions of 0ꜩ towards a contract without code are forbidden \
+      "Transactions of 0ṁ towards a contract without code are forbidden \
        \\(%s\\)."
       pubkey
   in

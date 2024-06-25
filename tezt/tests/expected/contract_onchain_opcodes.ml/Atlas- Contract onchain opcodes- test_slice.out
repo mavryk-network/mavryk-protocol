@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000922
+    Fee to the validator: ṁ0.000922
     Expected counter: 1
     Gas limit: 933
     Storage limit: 855 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000922
-      payload fees(the block proposer) ....... +ꜩ0.000922
+      [PUBLIC_KEY_HASH] ... -ṁ0.000922
+      payload fees(the block proposer) ....... +ṁ0.000922
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ1
+      Credit: ṁ1
       Script:
         { parameter (pair bytes signature) ;
           storage key ;
@@ -75,12 +75,12 @@ This sequence of operations was run:
         Paid storage size diff: 578 bytes
         Consumed gas: 832.851
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.1445
-          storage fees ........................... +ꜩ0.1445
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
-          [PUBLIC_KEY_HASH] ... -ꜩ1
-          [CONTRACT_HASH] ... +ꜩ1
+          [PUBLIC_KEY_HASH] ... -ṁ0.1445
+          storage fees ........................... +ṁ0.1445
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ1
+          [CONTRACT_HASH] ... +ṁ1
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as slices.
@@ -90,12 +90,12 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0
+    Fee to the validator: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xe009ab79e8b84ef0e55c43a9a857214d8761e67b75ba63500a5694fb2ffe174acc2de22d01ccb7259342437f05e1987949f0ad82e9f32e9a0b79cb252d7f7b8236ad728893f4e7150742eefdbeda254970f9fcd92c6228c178e1a923e5600758eb83f2a05edd0be7625657901f2ba81eaf145d003dbef78e33f43a32a3788bdf0501000000085341554349535345
@@ -156,12 +156,12 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0
+    Fee to the validator: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xeaa9ab79e8b84ef0e55c43a9a857214d8761e67b75ba63500a5694fb2ffe174acc2de22d01ccb7259342437f05e1987949f0ad82e9f32e9a0b79cb252d7f7b8236ad728893f4e7150742eefdbeda254970f9fcd92c6228c178e1a923e5600758eb83f2a05edd0be7625657901f2ba81eaf145d003dbef78e33f43a32a3788bdf0501000000085341554349535345
@@ -222,12 +222,12 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0
+    Fee to the validator: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xe009ab79e8b84ef0e55c43a9a857214d8761e67b75ba63500a5694fb2ffe174acc2deaad01ccb7259342437f05e1987949f0ad82e9f32e9a0b79cb252d7f7b8236ad728893f4e7150742eefdbeda254970f9fcd92c6228c178e1a923e5600758eb83f2a05edd0be7625657901f2ba81eaf145d003dbef78e33f43a32a3788bdf0501000000085341554349535345
@@ -288,12 +288,12 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0
+    Fee to the validator: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xe009ab79e8b84ef0e55c43a9a857214d8761e67b75ba63500a5694fb2ffe174acc2de22d01ccb7259342437f05e1987949f0ad82e9f32e9a0b79cb252d7f7b8236ad728893f4e7150733eefdbeda254970f9fcd92c6228c178e1a923e5600758eb83f2a05edd0be7625657901f2ba81eaf145d003dbef78e33f43a32a3788bdf0501000000085341554349535345
@@ -354,12 +354,12 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0
+    Fee to the validator: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xe009ab79e8b84ef0
@@ -428,15 +428,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00068
+    Fee to the validator: ṁ0.00068
     Expected counter: 2
     Gas limit: 1726
     Storage limit: 277 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00068
-      payload fees(the block proposer) ....... +ꜩ0.00068
+      [PUBLIC_KEY_HASH] ... -ṁ0.00068
+      payload fees(the block proposer) ....... +ṁ0.00068
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: (Pair 0xe009ab79e8b84ef0e55c43a9a857214d8761e67b75ba63500a5694fb2ffe174acc2de22d01ccb7259342437f05e1987949f0ad82e9f32e9a0b79cb252d7f7b8236ad728893f4e7150742eefdbeda254970f9fcd92c6228c178e1a923e5600758eb83f2a05edd0be7625657901f2ba81eaf145d003dbef78e33f43a32a3788bdf0501000000085341554349535345
@@ -448,14 +448,14 @@ This sequence of operations was run:
       Consumed gas: 1525.659
       Internal operations:
         Internal Transaction:
-          Amount: ꜩ1
+          Amount: ṁ1
           From: [CONTRACT_HASH]
           To: [PUBLIC_KEY_HASH]
           This transaction was successfully applied
           Consumed gas: 100
           Balance updates:
-            [CONTRACT_HASH] ... -ꜩ1
-            [PUBLIC_KEY_HASH] ... +ꜩ1
-            [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-            storage fees ........................... +ꜩ0.06425
+            [CONTRACT_HASH] ... -ṁ1
+            [PUBLIC_KEY_HASH] ... +ṁ1
+            [PUBLIC_KEY_HASH] ... -ṁ0.06425
+            storage fees ........................... +ṁ0.06425
 

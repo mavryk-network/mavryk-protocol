@@ -48,7 +48,7 @@ Shell RPCs
 The node provides some RPCs which are independent of the protocol.
 Their OpenAPI specification can be found at:
 
-- `rpc-openapi-rc.json (version 19.3) <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/rpc-openapi.json>`_
+- `rpc-openapi.json (version 19.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
 
 .. TODO tezos/tezos#2170: add/remove section(s)
 
@@ -64,6 +64,25 @@ The OpenAPI specifications for RPCs which are related to the mempool
 and specific to the Atlas protocol can be found at:
 
 - `atlas-mempool-openapi.json (version 19.3) <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/atlas-mempool-openapi.json>`_
+
+Smart Rollup Node
+~~~~~~~~~~~~~~~~~
+
+The smart rollup node exposes different RPCs depending on the underlying L1
+protocol in use. Their specification is given in the sections below.
+(The exact versions of the rollup node for which these files are produced can be
+seen in the field ``.info.version`` within each file.)
+
+.. TODO tezos/tezos#2170: add/remove section(s)
+
+Atlas RPCs
+-----------
+
+The OpenAPI specifications for the RPCs of the smart rollup node for the Atlas
+(``PtAtLas``) protocol can be found at:
+
+- `atlas-smart-rollup-node-openapi.json (version 19.1)
+  <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/PtAtLas-smart-rollup-node-openapi.json>`_
 
 .. _openapi_generate:
 

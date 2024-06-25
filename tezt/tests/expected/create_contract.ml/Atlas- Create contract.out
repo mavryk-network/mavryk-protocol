@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000393
+    Fee to the validator: ṁ0.000393
     Expected counter: 1
     Gas limit: 700
     Storage limit: 370 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000393
-      payload fees(the block proposer) ....... +ꜩ0.000393
+      [PUBLIC_KEY_HASH] ... -ṁ0.000393
+      payload fees(the block proposer) ....... +ṁ0.000393
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ200
+      Credit: ṁ200
       Script:
         { parameter unit ;
           storage unit ;
@@ -43,12 +43,12 @@ This sequence of operations was run:
         Paid storage size diff: 93 bytes
         Consumed gas: 599.277
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.02325
-          storage fees ........................... +ꜩ0.02325
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
-          [PUBLIC_KEY_HASH] ... -ꜩ200
-          [CONTRACT_HASH] ... +ꜩ200
+          [PUBLIC_KEY_HASH] ... -ṁ0.02325
+          storage fees ........................... +ṁ0.02325
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ200
+          [CONTRACT_HASH] ... +ṁ200
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as originate_contract.
@@ -66,15 +66,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000441
+    Fee to the validator: ṁ0.000441
     Expected counter: 1
     Gas limit: 1894
     Storage limit: 315 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000441
-      payload fees(the block proposer) ....... +ꜩ0.000441
+      [PUBLIC_KEY_HASH] ... -ṁ0.000441
+      payload fees(the block proposer) ....... +ṁ0.000441
     Transaction:
-      Amount: ꜩ1
+      Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied
@@ -82,12 +82,12 @@ This sequence of operations was run:
       Storage size: 93 bytes
       Consumed gas: 1289.005
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1
-        [CONTRACT_HASH] ... +ꜩ1
+        [PUBLIC_KEY_HASH] ... -ṁ1
+        [CONTRACT_HASH] ... +ṁ1
       Internal operations:
         Internal Origination:
           From: [CONTRACT_HASH]
-          Credit: ꜩ1
+          Credit: ṁ1
           Script:
             { parameter unit ; storage unit ; code { CDR ; NIL operation ; PAIR } }
             Initial storage: Unit
@@ -99,11 +99,11 @@ This sequence of operations was run:
           Paid storage size diff: 38 bytes
           Consumed gas: 505.294
           Balance updates:
-            [PUBLIC_KEY_HASH] ... -ꜩ0.0095
-            storage fees ........................... +ꜩ0.0095
-            [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-            storage fees ........................... +ꜩ0.06425
-            [CONTRACT_HASH] ... -ꜩ1
-            [CONTRACT_HASH] ... +ꜩ1
+            [PUBLIC_KEY_HASH] ... -ṁ0.0095
+            storage fees ........................... +ṁ0.0095
+            [PUBLIC_KEY_HASH] ... -ṁ0.06425
+            storage fees ........................... +ṁ0.06425
+            [CONTRACT_HASH] ... -ṁ1
+            [CONTRACT_HASH] ... +ṁ1
 
 New contract [CONTRACT_HASH] originated.

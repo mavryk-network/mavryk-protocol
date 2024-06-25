@@ -43,6 +43,7 @@ module type PROTO_TOOL = sig
     Mavryk_protocol_environment.Context.t ->
     head_level:int32 ->
     block_time_target:int ->
+    patch_max_op_ttl:bool ->
     Mavryk_protocol_environment.Context.t tzresult Lwt.t
 end
 

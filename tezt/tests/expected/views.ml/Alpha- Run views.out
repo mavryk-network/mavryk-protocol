@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00045
+    Fee to the validator: ṁ0.00045
     Expected counter: 1
     Gas limit: 704
     Storage limit: 429 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00045
-      payload fees(the block proposer) ....... +ꜩ0.00045
+      [PUBLIC_KEY_HASH] ... -ṁ0.00045
+      payload fees(the block proposer) ....... +ṁ0.00045
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter unit ;
           storage (list address) ;
@@ -40,10 +40,10 @@ This sequence of operations was run:
         Paid storage size diff: 152 bytes
         Consumed gas: 603.192
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.038
-          storage fees ........................... +ꜩ0.038
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.038
+          storage fees ........................... +ṁ0.038
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as view_registers_callers.
@@ -61,16 +61,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000508
+    Fee to the validator: ṁ0.000508
     Expected counter: 2
     Gas limit: 729
     Storage limit: 485 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000508
-      payload fees(the block proposer) ....... +ꜩ0.000508
+      [PUBLIC_KEY_HASH] ... -ṁ0.000508
+      payload fees(the block proposer) ....... +ṁ0.000508
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter address ;
           storage (option address) ;
@@ -97,10 +97,10 @@ This sequence of operations was run:
         Paid storage size diff: 208 bytes
         Consumed gas: 628.275
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.052
-          storage fees ........................... +ꜩ0.052
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.052
+          storage fees ........................... +ṁ0.052
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as view_check_caller.
@@ -118,15 +118,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000665
+    Fee to the validator: ṁ0.000665
     Expected counter: 3
     Gas limit: 3683
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000665
-      payload fees(the block proposer) ....... +ꜩ0.000665
+      [PUBLIC_KEY_HASH] ... -ṁ0.000665
+      payload fees(the block proposer) ....... +ṁ0.000665
     Transaction:
-      Amount: ꜩ1
+      Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "[CONTRACT_HASH]"
@@ -135,8 +135,8 @@ This sequence of operations was run:
       Storage size: 208 bytes
       Consumed gas: 3583.116
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1
-        [CONTRACT_HASH] ... +ꜩ1
+        [PUBLIC_KEY_HASH] ... -ṁ1
+        [CONTRACT_HASH] ... +ṁ1
 
 
 ./mavkit-client --mode mockup --wait none transfer 1 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1
@@ -152,15 +152,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000389
+    Fee to the validator: ṁ0.000389
     Expected counter: 4
     Gas limit: 1386
     Storage limit: 47 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000389
-      payload fees(the block proposer) ....... +ꜩ0.000389
+      [PUBLIC_KEY_HASH] ... -ṁ0.000389
+      payload fees(the block proposer) ....... +ṁ0.000389
     Transaction:
-      Amount: ꜩ1
+      Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied
@@ -169,10 +169,10 @@ This sequence of operations was run:
       Paid storage size diff: 27 bytes
       Consumed gas: 1286.351
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.00675
-        storage fees ........................... +ꜩ0.00675
-        [PUBLIC_KEY_HASH] ... -ꜩ1
-        [CONTRACT_HASH] ... +ꜩ1
+        [PUBLIC_KEY_HASH] ... -ṁ0.00675
+        storage fees ........................... +ṁ0.00675
+        [PUBLIC_KEY_HASH] ... -ṁ1
+        [CONTRACT_HASH] ... +ṁ1
 
 
 ./mavkit-client --mode mockup --wait none transfer 1 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg '"[CONTRACT_HASH]"'
@@ -188,15 +188,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000665
+    Fee to the validator: ṁ0.000665
     Expected counter: 5
     Gas limit: 3687
     Storage limit: 47 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000665
-      payload fees(the block proposer) ....... +ꜩ0.000665
+      [PUBLIC_KEY_HASH] ... -ṁ0.000665
+      payload fees(the block proposer) ....... +ṁ0.000665
     Transaction:
-      Amount: ꜩ1
+      Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "[CONTRACT_HASH]"
@@ -206,8 +206,8 @@ This sequence of operations was run:
       Paid storage size diff: 27 bytes
       Consumed gas: 3586.748
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.00675
-        storage fees ........................... +ꜩ0.00675
-        [PUBLIC_KEY_HASH] ... -ꜩ1
-        [CONTRACT_HASH] ... +ꜩ1
+        [PUBLIC_KEY_HASH] ... -ṁ0.00675
+        storage fees ........................... +ṁ0.00675
+        [PUBLIC_KEY_HASH] ... -ṁ1
+        [CONTRACT_HASH] ... +ṁ1
 

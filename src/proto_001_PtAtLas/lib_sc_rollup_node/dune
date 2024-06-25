@@ -34,9 +34,9 @@
   mavkit-crawler
   mavkit-libs.tree-encoding
   data-encoding
-  irmin-pack
-  irmin-pack.unix
-  irmin
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
+  mavkit-internal-libs.irmin
   aches
   aches-lwt
   mavkit-injector
@@ -50,7 +50,7 @@
   (:standard)
   -open Mavryk_base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_stdlib_unix
   -open Mavryk_client_base
   -open Mavryk_client_base_unix

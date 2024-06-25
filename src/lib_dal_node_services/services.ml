@@ -100,6 +100,21 @@ let get_commitment_proof :
     Mavryk_rpc.Path.(
       open_root / "commitments" /: Cryptobox.Commitment.rpc_arg / "proof")
 
+let get_page_proof :
+    < meth : [`POST]
+    ; input : Cryptobox.slot
+    ; output : Cryptobox.page_proof
+    ; prefix : unit
+    ; params : unit * Types.page_index
+    ; query : unit >
+    service =
+  Tezos_rpc.Service.post_service
+    ~description:"Compute the proof associated with a page of a given slot."
+    ~query:Tezos_rpc.Query.empty
+    ~input:slot_encoding
+    ~output:Cryptobox.page_proof_encoding
+    Tezos_rpc.Path.(open_root / "pages" /: Tezos_rpc.Arg.int / "proof")
+
 let put_commitment_shards :
     < meth : [`PUT]
     ; input : with_proof
@@ -238,19 +253,21 @@ let get_attestable_slots :
       open_root / "profiles" /: Mavryk_crypto.Signature.Public_key_hash.rpc_arg
       / "attested_levels" /: Mavryk_rpc.Arg.int32 / "attestable_slots")
 
-let monitor_shards :
+let get_shard :
     < meth : [`GET]
     ; input : unit
-    ; output : Cryptobox.Commitment.t
+    ; output : Tezos_crypto_dal.Cryptobox.shard
     ; prefix : unit
-    ; params : unit
+    ; params : (unit * Tezos_crypto_dal.Cryptobox.commitment) * int
     ; query : unit >
     service =
+  let shard_arg = Mavryk_rpc.Arg.int in
   Mavryk_rpc.Service.get_service
-    ~description:"Monitor put shards."
+    ~description:"Fetch shard as bytes"
     ~query:Mavryk_rpc.Query.empty
-    ~output:Cryptobox.Commitment.encoding
-    Mavryk_rpc.Path.(open_root / "monitor_shards")
+    ~output:Cryptobox.shard_encoding
+    Mavryk_rpc.Path.(
+      open_root / "shard" /: Cryptobox.Commitment.rpc_arg /: shard_arg)
 
 let version :
     < meth : [`GET]
@@ -427,6 +444,35 @@ module P2P = struct
       Mavryk_rpc.Service.get_service
         ~description:"Get info of the requested peer"
         ~query:Mavryk_rpc.Query.empty
+        ~output:Data_encoding.(obj1 (req "info" Types.P2P.Peer.Info.encoding))
+        (open_root / "by-id" /: P2p_peer.Id.rpc_arg)
+
+    let patch_peer :
+        < meth : [`PATCH]
+        ; input : [`Ban | `Trust | `Open] option
+        ; output : Types.P2P.Peer.Info.t
+        ; prefix : unit
+        ; params : unit * P2p_peer.Id.t
+        ; query : unit >
+        service =
+      Tezos_rpc.Service.patch_service
+        ~description:
+          "Change the permissions of a given peer. With `{acl: ban}`: \
+           blacklist the given peer and remove it from the whitelist if \
+           present. With `{acl: open}`: removes the peer from the blacklist \
+           and whitelist. With `{acl: trust}`: trust the given peer \
+           permanently and remove it from the blacklist if present. The peer \
+           cannot be blocked (but its host IP still can). In all cases, the \
+           updated information for the peer is returned. If input is omitted, \
+           this is equivalent to using the `GET` version of this RPC."
+        ~query:Tezos_rpc.Query.empty
+        ~input:
+          Data_encoding.(
+            obj1
+              (opt
+                 "acl"
+                 (string_enum
+                    [("ban", `Ban); ("trust", `Trust); ("open", `Open)])))
         ~output:Data_encoding.(obj1 (req "info" Types.P2P.Peer.Info.encoding))
         (open_root / "by-id" /: P2p_peer.Id.rpc_arg)
   end

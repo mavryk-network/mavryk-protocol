@@ -31,4 +31,6 @@ structopt = "0.3.26"
 primitive-types = { version = "0.12.1", features = ["rlp", "serde"] }
 
 [features]
+default = ["debug"]
+disable-file-logs = []
 debug = ["mavryk-evm-logging/debug"]

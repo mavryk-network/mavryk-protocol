@@ -1,0 +1,3 @@
+binaries/mavkit-baker-* /usr/bin/
+binaries/mavkit-accuser-* /usr/bin/
+scripts/wait-for-node-up.sh /usr/share/mavkit-baker/

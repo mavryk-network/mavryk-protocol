@@ -2,7 +2,10 @@
 # Edit file manifest/main.ml instead.
 opam-version: "2.0"
 maintainer: "info@mavryk.io"
-authors: ["Mavryk Dynamics"]
+authors: [
+  "Tezos devteam"
+  "Mavryk Dynamics"
+]
 homepage: "https://mavrykdynamics.com/"
 bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
 dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
@@ -10,10 +13,8 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "num"
-  "re" { >= "1.9.0" }
-  "mavkit-protocol-compiler"
-  "mavkit-libs"
+  "mavkit-protocol-compiler" { = version }
+  "mavkit-libs" { = version }
 ]
 depopts: [
   "utop"

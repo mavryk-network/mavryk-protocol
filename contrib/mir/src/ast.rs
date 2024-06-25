@@ -152,6 +152,13 @@ impl TypedValue {
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum Instruction {
     Add(overloads::Add),
+    Sub(overloads::Sub),
+    Mul(overloads::Mul),
+    EDiv(overloads::EDiv),
+    Neg(overloads::Neg),
+    Lsl(overloads::Lsl),
+    Lsr(overloads::Lsr),
+    SubMutez,
     Dip(Option<u16>, Vec<Self>),
     Drop(Option<u16>),
     Dup(Option<u16>),

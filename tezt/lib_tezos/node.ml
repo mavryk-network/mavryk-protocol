@@ -57,7 +57,8 @@ type argument =
   | Disable_mempool
   | Version
   | RPC_additional_addr of string
-  | RPC_additional_addr_local of string
+  | RPC_additional_addr_external of string
+  | Max_active_rpc_connections of int
 
 let make_argument = function
   | Network x -> ["--network"; x]
@@ -88,7 +89,9 @@ let make_argument = function
   | Disable_mempool -> ["--disable-mempool"]
   | Version -> ["--version"]
   | RPC_additional_addr addr -> ["--rpc-addr"; addr]
-  | RPC_additional_addr_local addr -> ["--local-rpc-addr"; addr]
+  | RPC_additional_addr_external addr -> ["--external-rpc-addr"; addr]
+  | Max_active_rpc_connections n ->
+      ["--max-active-rpc-connections"; string_of_int n]
 
 let make_arguments arguments = List.flatten (List.map make_argument arguments)
 
@@ -110,7 +113,8 @@ let is_redundant = function
   | No_bootstrap_peers, No_bootstrap_peers
   | Media_type _, Media_type _
   | Metadata_size_limit _, Metadata_size_limit _
-  | Version, Version ->
+  | Version, Version
+  | Max_active_rpc_connections _, Max_active_rpc_connections _ ->
       true
   | Metrics_addr addr1, Metrics_addr addr2 -> addr1 = addr2
   | Peer peer1, Peer peer2 -> peer1 = peer2
@@ -133,8 +137,9 @@ let is_redundant = function
   | Cors_origin _, _
   | Disable_mempool, _
   | RPC_additional_addr _, _
-  | RPC_additional_addr_local _, _
-  | Version, _ ->
+  | RPC_additional_addr_external _, _
+  | Version, _
+  | Max_active_rpc_connections _, _ ->
       false
 
 type 'a known = Unknown | Known of 'a
@@ -147,11 +152,12 @@ module Parameters = struct
     advertised_net_port : int option;
     metrics_addr : string option;
     metrics_port : int;
-    rpc_local : bool;
+    rpc_external : bool;
     rpc_host : string;
     rpc_port : int;
     rpc_tls : tls_config option;
     allow_all_rpc : bool;
+    max_active_rpc_connections : int;
     default_expected_pow : int;
     mutable default_arguments : argument list;
     mutable arguments : argument list;
@@ -198,7 +204,7 @@ let advertised_net_port node = node.persistent_state.advertised_net_port
 let rpc_scheme node =
   match node.persistent_state.rpc_tls with Some _ -> "https" | None -> "http"
 
-let rpc_local node = node.persistent_state.rpc_local
+let rpc_external node = node.persistent_state.rpc_external
 
 let rpc_host node = node.persistent_state.rpc_host
 
@@ -298,11 +304,32 @@ let config_show node =
 module Config_file = struct
   let filename node = sf "%s/config.json" @@ data_dir node
 
-  let read node = JSON.parse_file (filename node)
+  let read node =
+    match node.persistent_state.runner with
+    | None -> Lwt.return (JSON.parse_file (filename node))
+    | Some runner ->
+        let* content =
+          Process.spawn ~runner "cat" [filename node]
+          |> Process.check_and_read_stdout
+        in
+        JSON.parse ~origin:"Node.config_file.read" content |> Lwt.return
 
-  let write node config = JSON.encode_to_file (filename node) config
+  let write node config =
+    match node.persistent_state.runner with
+    | None -> Lwt.return (JSON.encode_to_file (filename node) config)
+    | Some runner ->
+        let content = JSON.encode config in
+        let cmd =
+          Runner.Shell.(
+            redirect_stdout (cmd [] "echo" [content]) (filename node))
+        in
+        let cmd, args = Runner.wrap_with_ssh runner cmd in
+        Process.run cmd args
 
-  let update node update = read node |> update |> write node
+  let update node update =
+    let* config = read node in
+    let config = update config in
+    write node config
 
   let set_prevalidator ?(operations_request_timeout = 10.)
       ?(max_refused_operations = 1000) ?(operations_batch_size = 50) old_config
@@ -431,26 +458,13 @@ module Config_file = struct
   let set_sandbox_network_with_dal_config
       (dal_config : Mavryk_crypto_dal.Cryptobox.Config.t) old_config =
     let dal_config_json =
-      let parameters =
-        match dal_config.use_mock_srs_for_testing with
-        | Some parameters ->
-            `O
-              [
-                ("slot_size", `Float (float_of_int parameters.slot_size));
-                ("page_size", `Float (float_of_int parameters.page_size));
-                ( "redundancy_factor",
-                  `Float (float_of_int parameters.redundancy_factor) );
-                ( "number_of_shards",
-                  `Float (float_of_int parameters.number_of_shards) );
-              ]
-        | None -> `Null
-      in
       JSON.annotate
         ~origin:"dal_initialisation"
         (`O
           [
             ("activated", `Bool dal_config.activated);
-            ("use_mock_srs_for_testing", parameters);
+            ( "use_mock_srs_for_testing",
+              `Bool dal_config.use_mock_srs_for_testing );
             ( "bootstrap_peers",
               `A
                 (List.map (fun peer -> `String peer) dal_config.bootstrap_peers)
@@ -693,10 +707,11 @@ let wait_for_disconnections node disconnections =
   let* () = wait_for_ready node in
   waiter
 
-let create ?runner ?(path = Constant.mavkit_node) ?name ?color ?data_dir
-    ?event_pipe ?net_addr ?net_port ?advertised_net_port ?metrics_addr
-    ?metrics_port ?(rpc_local = false) ?(rpc_host = "localhost") ?rpc_port
-    ?rpc_tls ?(allow_all_rpc = true) arguments =
+let create ?runner ?(path = Uses.path Constant.octez_node) ?name ?color
+    ?data_dir ?event_pipe ?net_addr ?net_port ?advertised_net_port ?metrics_addr
+    ?metrics_port ?(rpc_external = false) ?(rpc_host = Constant.default_host)
+    ?rpc_port ?rpc_tls ?(allow_all_rpc = true)
+    ?(max_active_rpc_connections = 500) arguments =
   let name = match name with None -> fresh_name () | Some name -> name in
   let data_dir =
     match data_dir with None -> Temp.dir ?runner name | Some dir -> dir
@@ -727,12 +742,13 @@ let create ?runner ?(path = Constant.mavkit_node) ?name ?color ?data_dir
         net_addr;
         net_port;
         advertised_net_port;
-        rpc_local;
+        rpc_external;
         rpc_host;
         rpc_port;
         rpc_tls;
         metrics_addr;
         metrics_port;
+        max_active_rpc_connections;
         allow_all_rpc;
         default_arguments = arguments;
         arguments;
@@ -834,9 +850,11 @@ let runlike_command_arguments node command arguments =
   :: (net_addr ^ string_of_int node.persistent_state.net_port)
   :: "--metrics-addr"
   :: (metrics_addr ^ string_of_int node.persistent_state.metrics_port)
-  :: (if node.persistent_state.rpc_local then "--local-rpc-addr"
+  :: (if node.persistent_state.rpc_external then "--external-rpc-addr"
      else "--rpc-addr")
   :: (rpc_addr ^ string_of_int node.persistent_state.rpc_port)
+  :: "--max-active-rpc-connections"
+  :: string_of_int node.persistent_state.max_active_rpc_connections
   :: command_args
 
 let do_runlike_command ?(on_terminate = fun _ -> ()) ?event_level
@@ -869,9 +887,9 @@ let do_runlike_command ?(on_terminate = fun _ -> ()) ?event_level
 
 let run ?patch_config ?on_terminate ?event_level ?event_sections_levels node
     arguments =
-  let () =
+  let* () =
     match patch_config with
-    | None -> ()
+    | None -> Lwt.return_unit
     | Some patch -> Config_file.update node patch
   in
   let arguments = runlike_command_arguments node "run" arguments in
@@ -883,11 +901,12 @@ let run ?patch_config ?on_terminate ?event_level ?event_sections_levels node
     arguments
 
 let replay ?on_terminate ?event_level ?event_sections_levels ?(strict = false)
-    ?(blocks = ["head"]) node arguments =
+    ?(blocks = ["head"]) node =
+  (* Select the appropriated arguments as the replay command does not
+     support all the node default arguments. *)
   let strict = if strict then ["--strict"] else [] in
-  let arguments =
-    runlike_command_arguments node "replay" arguments @ strict @ blocks
-  in
+  let directory = ["--data-dir"; node.persistent_state.data_dir] in
+  let arguments = ["replay"] @ directory @ strict @ blocks in
   do_runlike_command
     ?on_terminate
     ?event_level
@@ -896,7 +915,7 @@ let replay ?on_terminate ?event_level ?event_sections_levels ?(strict = false)
     arguments
 
 let init ?runner ?path ?name ?color ?data_dir ?event_pipe ?net_port
-    ?advertised_net_port ?metrics_addr ?metrics_port ?rpc_local ?rpc_host
+    ?advertised_net_port ?metrics_addr ?metrics_port ?rpc_external ?rpc_host
     ?rpc_port ?rpc_tls ?event_level ?event_sections_levels ?patch_config
     ?snapshot arguments =
   (* The single process argument does not exist in the configuration
@@ -917,7 +936,7 @@ let init ?runner ?path ?name ?color ?data_dir ?event_pipe ?net_port
       ?advertised_net_port
       ?metrics_addr
       ?metrics_port
-      ?rpc_local
+      ?rpc_external
       ?rpc_host
       ?rpc_port
       ?rpc_tls

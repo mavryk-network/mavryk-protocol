@@ -29,7 +29,8 @@ the specification. The document also starts with a less formal
 explanation of the context: how Michelson code interacts with the
 blockchain.
 
-.. _address_prefixes_atlas:
+.. _transaction_semantics:
+.. _transaction_semantics_atlas:
 
 Semantics of smart contracts and transactions
 ---------------------------------------------
@@ -37,20 +38,14 @@ Semantics of smart contracts and transactions
 The Mavryk ledger currently has two types of accounts that can hold
 tokens (and be the destinations of transactions).
 
-  - An implicit account is a non programmable account, whose tokens
-    are spendable and delegatable by a public key. Its address is
-    directly the public key hash, and starts with ``mv1``, ``mv2``,
-    ``mv3`` or ``mv4``.
-  - A smart contract is a programmable account. A transaction to such
-    an address can provide data, and can fail for reasons decided by
-    its Michelson code. Its address is a unique hash that depends on
-    the operation that led to its creation, and starts with ``KT1``.
+  - Implicit account: non-programmable account whose address is
+    the public key hash, prefixed by ``mv`` and one digit.
+  - Smart contract: programmable account associated to some Michelson code,
+    whose address is a unique hash, prefixed by ``KT1``.
+    A transaction to such
+    an address can provide data, and can fail for reasons detailed below.
 
-From Michelson, they are indistinguishable. A safe way to think about
-this is to consider that implicit accounts are smart contracts that
-always succeed in receiving tokens, and do nothing else.
-
-Finally, addresses prefixed with ``sr1`` identify :doc:`smart rollups <./smart_rollups>`.
+See :doc:`./accounts` for more details.
 
 Intra-transaction semantics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -680,6 +675,7 @@ A typing rule can be inferred:
 
 Concrete syntax
 ---------------
+.. _ConcreteSyntax:
 .. _ConcreteSyntax_atlas:
 
 The concrete language is very close to the formal notation of the
@@ -748,6 +744,7 @@ parameters require sequences in the concrete syntax.
     IF { instr1_true ; instr2_true ; ... }
        { instr1_false ; instr2_false ; ... }
 
+.. _syntax_of_scripts:
 .. _syntax_of_scripts_atlas:
 
 Main program structure
@@ -1235,6 +1232,7 @@ type (which can be changed). For instance the annotated typing rule for
 
 Special annotations
 ~~~~~~~~~~~~~~~~~~~
+.. _SpecialAnnotations:
 .. _SpecialAnnotations_atlas:
 
 The special variable annotations ``@%`` and ``@%%`` can be used on instructions
@@ -2135,6 +2133,7 @@ instruction return a chosen timestamp:
    code NOW;
    output { Stack_elt timestamp "2020-01-08T07:13:51Z" }
 
+.. _syntax_of_concrete_stacks:
 .. _syntax_of_concrete_stacks_atlas:
 
 Syntax of concrete stacks
@@ -2147,6 +2146,7 @@ Stack_elt nat 42 }`` is a concrete stack of length 2 whose top element
 is the boolean ``True`` and the bottom element is the natural number
 ``42``.
 
+.. _omitting_parts_of_the_output:
 .. _omitting_parts_of_the_output_atlas:
 
 Omitting parts of the output
@@ -2217,6 +2217,7 @@ cryptographic nonces in values of type ``operation`` (see the
 parts of error outputs (see the :ref:`syntax of errors
 <syntax_of_errors_atlas>`).
 
+.. _output_normalization:
 .. _output_normalization_atlas:
 
 Output normalization
@@ -2263,6 +2264,7 @@ but the following test does pass:
    code {};
    output {Stack_elt _ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
+.. _syntax_of_errors:
 .. _syntax_of_errors_atlas:
 
 Syntax of errors
@@ -2328,6 +2330,7 @@ instruction.
    code { DUP "foo" };
    output (StaticError _)
 
+.. _syntax_of_concrete_operations:
 .. _syntax_of_concrete_operations_atlas:
 
 Syntax of concrete operations
@@ -2372,6 +2375,7 @@ to set the delegate of the current contract to the account at address
   code SET_DELEGATE ;
   output { Stack_elt operation (Set_delegate (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") _) }
 
+.. _syntax_of_other_contracts:
 .. _syntax_of_other_contracts_atlas:
 
 Syntax of other contracts specifications
@@ -2391,6 +2395,7 @@ Micheline sequence whose elements have the form ``Contract "KT1..."
 ``<ty>`` is the type of its parameter. Each address should appear at
 most once and the order is irrelevant.
 
+.. _syntax_of_extra_big_maps:
 .. _syntax_of_extra_big_maps_atlas:
 
 Syntax of extra big maps specifications

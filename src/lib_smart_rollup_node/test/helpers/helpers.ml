@@ -46,7 +46,13 @@ let default_constants =
           commitment_period_in_blocks = 3;
           reveal_activation_level =
             Some
-              {blake2B = 0l; metadata = 0l; dal_page = 0l; dal_parameters = 0l};
+              {
+                blake2B = 0l;
+                metadata = 0l;
+                dal_page = 0l;
+                dal_parameters = 0l;
+                dal_attested_slots_validity_lag = Int32.max_int;
+              };
           max_number_of_stored_cemented_commitments = 5;
         };
       dal =
@@ -73,7 +79,8 @@ let add_l2_genesis_block (node_ctxt : _ Node_context.t) ~boot_sector =
   let predecessor = head in
   let predecessor_timestamp = Time.Protocol.epoch in
   let*? (module Plugin) =
-    Protocol_plugins.proto_plugin_for_protocol node_ctxt.current_protocol.hash
+    Protocol_plugins.proto_plugin_for_protocol
+      (Reference.get node_ctxt.current_protocol).hash
   in
   let inbox =
     (* The global inbox starts at level 0, with the origination. *)
@@ -211,7 +218,8 @@ let append_l2_block (node_ctxt : _ Node_context.t) ?(is_first_block = false)
     head_of_level ~predecessor:predecessor.hash (Int32.succ pred_level)
   in
   let*? plugin =
-    Protocol_plugins.proto_plugin_for_protocol node_ctxt.current_protocol.hash
+    Protocol_plugins.proto_plugin_for_protocol
+      (Reference.get node_ctxt.current_protocol).hash
   in
   Rollup_node_daemon.Internal_for_tests.process_messages
     plugin

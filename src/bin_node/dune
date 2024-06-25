@@ -47,6 +47,10 @@
   mavryk-protocol-000-Ps9mPmXa.embedded-protocol
   mavryk-protocol-001-PtAtLas.embedded-protocol
   mavkit-protocol-001-PtAtLas-libs.plugin-registerer
+  tezos-protocol-019-PtParisB.embedded-protocol
+  octez-protocol-019-PtParisB-libs.plugin-registerer
+  tezos-protocol-020-PsParisC.embedded-protocol
+  octez-protocol-020-PsParisC-libs.plugin-registerer
   (select void_for_linking-mavryk-protocol-alpha-embedded-protocol from
    (mavryk-protocol-alpha.embedded-protocol -> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty)
    (-> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty))

@@ -2,11 +2,16 @@ mavkit-smart-rollup-wasm-debugger
 mavkit-smart-rollup-node
 mavkit-dac-client
 mavkit-dac-node
+mavkit-dal-node
 mavkit-signer
 mavkit-proxy-server
 mavkit-codec
 mavkit-client
 mavkit-admin-client
 mavkit-node
+mavkit-accuser-PsParisC
+mavkit-baker-PsParisC
+mavkit-accuser-PtParisB
+mavkit-baker-PtParisB
 mavkit-accuser-PtAtLas
 mavkit-baker-PtAtLas

@@ -125,13 +125,13 @@ module StateMonad = struct
     in
     if actual = expected then (
       Log.debug
-        "Balance of %s is ꜩ %s as expected."
+        "Balance of %s is ṁ %s as expected."
         account
         (Tez.to_string expected) ;
       return ())
     else
       Test.fail
-        "Balance for %a is ꜩ %s instead of expected ꜩ %s."
+        "Balance for %a is ṁ %s instead of expected ṁ %s."
         pp_account
         alias
         (Tez.to_string actual)
@@ -404,7 +404,7 @@ let sign_transfer ?(expect_failure = false) ?data ~contract ~replay ~receiver
          (sigs_michelson signatures)
   in
   Log.debug
-    "Signing transfer of %f ꜩ from %s to %s."
+    "Signing transfer of %f ṁ from %s to %s."
     (Tez.to_float amount)
     contract
     receiver ;
@@ -497,7 +497,7 @@ let execute_pour ?(expect_failure = false) ~authorizer ~recipient ~amount
     right @@ some @@ pair (str signature) (mav amount)
   in
   Log.debug
-    "Executing pour of %f ꜩ from %s to %s (%s)."
+    "Executing pour of %f ṁ from %s to %s (%s)."
     (Tez.to_float amount)
     contract
     recp.alias
@@ -628,7 +628,7 @@ let transfer_and_pour_happy_path =
       ~expect_failure:true
       Tez.(of_int 100 + of_mumav_int 1)
   in
-  Log.info "However, transferring exactly ꜩ100 is still possible. " ;
+  Log.info "However, transferring exactly ṁ100 is still possible. " ;
   let* () =
     sign_transfer
       ~contract
@@ -678,7 +678,7 @@ let transfer_and_pour_happy_path =
       ~amount:Tez.(of_int 100)
       contract
   in
-  Log.info "Transfer of ꜩ0 to a smart contract is always possible." ;
+  Log.info "Transfer of ṁ0 to a smart contract is always possible." ;
   let* empty_contract =
     originate ~alias:"empty" ~storage:Test_michelson.unit empty_contract
   in
@@ -699,7 +699,7 @@ let vesting_3_keys_2s =
   let open StateMonad in
   let* () = activate_alpha in
   Log.info
-    "For 4 first users (ids 0-3) give each ꜩ100 and register him as a delegate." ;
+    "For 4 first users (ids 0-3) give each ṁ100 and register him as a delegate." ;
   Log.info "This action automatically starts tracking their balances." ;
   let* () = iter_int make_delegate 4 in
 

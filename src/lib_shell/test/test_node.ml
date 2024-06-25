@@ -112,14 +112,15 @@ let ( let*?? ) m f =
     [p2p_layer_disabled]. *)
 let node_sandbox_initialization_events sandbox_parameters config _switch () =
   let version =
-    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string
+      Mavryk_version_value.Current_git_info.mavkit_version
   in
   let commit_info =
     ({
        commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
        commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Mavryk_version.Node_version.commit_info)
+      : Mavryk_version.Mavkit_node_version.commit_info)
   in
   let*?? n =
     Node.create
@@ -159,14 +160,15 @@ let node_sandbox_initialization_events sandbox_parameters config _switch () =
     [bootstrapping] and [p2p_maintain_started]. *)
 let node_initialization_events _sandbox_parameters config _switch () =
   let version =
-    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string
+      Mavryk_version_value.Current_git_info.mavkit_version
   in
   let commit_info =
     ({
        commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
        commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Mavryk_version.Node_version.commit_info)
+      : Mavryk_version.Mavkit_node_version.commit_info)
   in
   let*?? n =
     Node.create
@@ -211,14 +213,15 @@ let node_initialization_events _sandbox_parameters config _switch () =
 
 let node_store_known_protocol_events _sandbox_parameters config _switch () =
   let version =
-    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string
+      Mavryk_version_value.Current_git_info.mavkit_version
   in
   let commit_info =
     ({
        commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
        commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Mavryk_version.Node_version.commit_info)
+      : Mavryk_version.Mavkit_node_version.commit_info)
   in
   let*?? n =
     Node.create

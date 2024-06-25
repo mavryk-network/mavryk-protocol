@@ -32,6 +32,40 @@ module RPC_logging : Resto_cohttp_server.Server.LOGGING
 include module type of
     Resto_cohttp_server.Server.Make (Mavryk_rpc.Encoding) (RPC_logging)
 
+(** Limits (or not) the number of maximum allowed RPC connections at any given time *)
+module Max_active_rpc_connections : sig
+  type t = Unlimited | Limited of int
+
+  val default : t
+
+  val encoding : t Data_encoding.t
+
+  val pp_parameter : Format.formatter -> t -> unit
+end
+
+(** [launch ?host server ?conn_closed ?callback
+    ?max_active_connections listening_protocol] starts the given resto
+    [server] initiating the listening loop using the
+
+    @param [callback] overwrites (if given) the default handler of
+    each resto http query will be treated by.
+
+    @param [conn_closed] is an optional function that is called when
+    a connection is closed.
+
+    @param [max_active_connections] limits the number of active
+    connections. When this limit is reached, the server will not
+    process new requests until existing ones are
+    completed. Defaults to 100. *)
+val launch :
+  ?host:string ->
+  server ->
+  ?conn_closed:(Cohttp_lwt_unix.Server.conn -> unit) ->
+  ?callback:callback ->
+  ?max_active_connections:Max_active_rpc_connections.t ->
+  Conduit_lwt_unix.server ->
+  unit Lwt.t
+
 module Acl : sig
   include module type of Resto_acl.Acl
 

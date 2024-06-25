@@ -108,6 +108,7 @@ the same *payload* as
 the initial block. We talk about a *re-proposal* in this case.
 
 
+.. _finality:
 .. _finality_atlas:
 
 Transaction and block finality
@@ -139,6 +140,7 @@ We note that, under
 normal network conditions, and with active and compliant validators, decisions
 should be taken at round 0, meaning that the time between blocks would be
 :math:`round\_duration(0)` seconds i.e., parameter ``MINIMAL_BLOCK_DELAY``.
+
 
 .. _active_stake:
 .. _active_stake_atlas:
@@ -395,9 +397,16 @@ The evidence for double signing at a given level can be collected by any
 :ref:`accuser<def_accuser_atlas>` and included as an *accusation* operation in a block
 for a period of ``MAX_SLASHING_PERIOD``.
 
-If a delegates' deposit is smaller than the slashed amount, the deposit is
-simply emptied, which leads to the delegate losing its baking and attesting
-rights for the rest of the cycle.
+If the recorded denunciation events in the previous and current cycle lead to
+slashing over 51% of the deposits, it immediately forbids the delegate to
+participate further in the consensus, either by baking or attesting.
+At the end of the first cycle in which both the sum of slashing events of a
+delegate over the last two cycles fall under the 51% threshold and its frozen
+deposits are at least half of its consensus rights for the given cycle, the
+delegate is allowed to participate again in the next cycle.
+
+The actual slashing and denunciation rewarding happen at the end of the cycle in
+which the denunciation has been included.
 
 We note that selfish baking is not an issue in Tenderbake: say we are at round
 ``r`` and the validator which is proposer at round ``r+1`` does not (pre)attest
@@ -407,6 +416,7 @@ correct validators have more than two thirds of the total stake, these correct
 validators have sufficient power for agreement to be reached, thus the lack of
 participation of a selfish baker does not have an impact.
 
+.. _cs_constants:
 .. _cs_constants_atlas:
 
 Consensus related protocol parameters
@@ -432,8 +442,8 @@ Consensus related protocol parameters
      - 10
    * - ``MAX_SLASHING_PERIOD``
      - 2 cycles
-   * - ``DOUBLE_BAKING_PUNISHMENT``
-     - 640 mav
+   * - ``PERCENTAGE_OF_FROZEN_DEPOSITS_SLASHED_PER_DOUBLE_BAKING``
+     - 5%
    * - ``PERCENTAGE_OF_FROZEN_DEPOSITS_SLASHED_PER_DOUBLE_ATTESTATION``
      - 50%
    * - ``BAKING_REWARD_FIXED_PORTION``
@@ -442,9 +452,12 @@ Consensus related protocol parameters
      - ``bonus / (CONSENSUS_COMMITTEE_SIZE / 3)`` = 0.002143 mav
    * - ``ATTESTING_REWARD_PER_SLOT``
      - ``attesting_reward / CONSENSUS_COMMITTEE_SIZE`` = 0.001428 mav
+   * - ``GLOBAL_LIMIT_OF_STAKING_OVER_BAKING``
+     - 5
 
 These are a subset of the :ref:`protocol constants <protocol_constants_atlas>`.
 
+.. _shell_proto_revisit:
 .. _shell_proto_revisit_atlas:
 
 Shell-protocol interaction revisited
@@ -466,6 +479,7 @@ As in Emmy*, the protocol-specific header contains the fields:
 
 There are two additional fields: ``payload_hash`` and ``payload_round`` which are needed for establishing if a block is :ref:`final<finality_atlas>`.
 
+.. _fitness:
 .. _fitness_atlas:
 
 The fitness is given by the tuple ``(version, level, locked_round, - predecessor_round - 1, round)``.

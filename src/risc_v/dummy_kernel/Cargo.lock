@@ -944,11 +944,15 @@ dependencies = [
 name = "mavryk-smart-rollup"
 version = "0.2.2"
 dependencies = [
+ "hermit",
+ "hex",
  "mavryk-smart-rollup-core",
  "mavryk-smart-rollup-debug",
  "mavryk-smart-rollup-encoding",
  "mavryk-smart-rollup-entrypoint",
  "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-mock",
+ "mavryk_data_encoding",
 ]
 
 [[package]]

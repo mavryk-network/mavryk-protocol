@@ -212,11 +212,16 @@ A **commitment** claims that the interpretation of all inbox messages
 published during a given commitment period, and applied on the state of
 a parent commitment, led to a given new state by performing a given
 number of execution steps of the PVM. Execution steps are called
-**ticks** in Smart Rollups terminology. A commitment must be
-published on the Layer 1 after each commitment period to have the rollup
-progress. A commitment is always based on a parent commitment (except
+**ticks** in Smart Rollups terminology.
+
+A commitment must be
+published on the Layer 1 any time after each commitment period, to have the rollup
+progress.
+A new commitment period starts right after the previous commitment period, no matter if commitments were published or not for the previous commitment period(s).
+For example, if an operator rollup node stops running for one day long, when it comes back, it will be able to resume publishing commitments for the passed periods, in chronological order.
+Indeed, a commitment is always based on a parent commitment (except
 for the genesis commitment that is automatically published at
-origination time).
+origination time), so publishing a commitment fails if the parent commitment has not yet been published.
 
 Since the PVM is deterministic and the inputs are completely
 determined by the Layer 1 rollups inbox and the reveal channel, there
@@ -309,6 +314,7 @@ published a concurrent commitment. However, assuming the existence of
 an honest participant *H*, then *H* will start the refutation game with all
 concurrent stakers to avoid the rollup getting stuck.
 
+.. _private_rollups:
 .. _private_rollups_atlas:
 
 Private rollups

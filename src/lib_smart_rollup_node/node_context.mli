@@ -27,12 +27,40 @@
 
 (** This module describes the execution context of the node. *)
 
-type lcc = {commitment : Commitment.Hash.t; level : int32}
+type lcc = Store.Lcc.lcc = {commitment : Commitment.Hash.t; level : int32}
 
 type genesis_info = {level : int32; commitment_hash : Commitment.Hash.t}
 
 (** Abstract type for store to force access through this module. *)
 type 'a store constraint 'a = [< `Read | `Write > `Read]
+
+(** Exposed functions to manipulate Node_context store outside of this module *)
+module Node_store : sig
+  (** [load mode ~index_buffer_size ~l2_blocks_cache_size directory]
+    loads a store form the data persisted [directory] as described in
+    {!Store_sigs.load} *)
+  val load :
+    'a Store_sigs.mode ->
+    index_buffer_size:int ->
+    l2_blocks_cache_size:int ->
+    string ->
+    'a store tzresult Lwt.t
+
+  (** [close_store store] closes the store *)
+  val close : 'a store -> unit tzresult Lwt.t
+
+  (** [check_and_set_history_mode store history_mode] checks the
+    compatibility between given history mode and that of the store.
+    History mode can be converted from Archive to Full. Trying to
+    convert from Full to Archive will trigger an error.*)
+  val check_and_set_history_mode :
+    'a Store_sigs.mode ->
+    'a store ->
+    Configuration.history_mode option ->
+    unit tzresult Lwt.t
+
+  val of_store : 'a Store.t -> 'a store
+end
 
 type debug_logger = string -> unit Lwt.t
 
@@ -56,6 +84,12 @@ type private_info = {
           is public then it's None. *)
 }
 
+type sync_info = {
+  on_synchronized : unit Lwt_condition.t;
+  mutable processed_level : int32;
+  sync_level_input : int32 Lwt_watcher.input;
+}
+
 type 'a t = {
   config : Configuration.t;  (** Inlined configuration for the rollup node. *)
   cctxt : Client_context.full;  (** Client context used by the rollup node. *)
@@ -75,6 +109,7 @@ type 'a t = {
   block_finality_time : int;
       (** Deterministic block finality time for the layer 1 protocol. *)
   kind : Kind.t;  (** Kind of the smart rollup. *)
+  unsafe_patches : Pvm_patches.t;  (** Patches to apply to the PVM. *)
   lockfile : Lwt_unix.file_descr;
       (** A lock file acquired when the node starts. *)
   store : 'a store;  (** The store for the persistent storage. *)
@@ -92,12 +127,13 @@ type 'a t = {
       (** Logger used for writing [kernel_debug] messages *)
   finaliser : unit -> unit Lwt.t;
       (** Aggregation of finalisers to run when the node context closes *)
-  mutable current_protocol : current_protocol;
+  current_protocol : current_protocol Reference.rw;
       (** Information about the current protocol. This value is changed in place
           on protocol upgrades. *)
   global_block_watcher : Sc_rollup_block.t Lwt_watcher.input;
       (** Watcher for the L2 chain, which enables RPC services to access
           a stream of L2 blocks. *)
+  sync : sync_info;  (** Synchronization status with respect to the L1 node.  *)
 }
 
 (** Read/write node context {!t}. *)
@@ -288,12 +324,22 @@ val get_mavryk_reorg_for_new_head :
   Layer1.head ->
   Layer1.head Reorg.t tzresult Lwt.t
 
-(** [block_with_tick store ~max_level tick] returns [Some b] where [b] is the
-    last layer 2 block which contains the [tick] before [max_level]. If no such
-    block exists (the tick happened after [max_level], or we are too late), the
-    function returns [None]. *)
+(** [block_with_tick store ?min_level ~max_level tick] returns [Some b] where
+    [b] is the last layer 2 block which contains the [tick] before
+    [max_level]. If no such block exists (the tick happened after [max_level],
+    or we are too late), the function returns [None]. Fails if the tick happened
+    before [min_level]. *)
 val block_with_tick :
-  _ t -> max_level:int32 -> Z.t -> Sc_rollup_block.t option tzresult Lwt.t
+  _ t ->
+  ?min_level:int32 ->
+  max_level:int32 ->
+  Z.t ->
+  Sc_rollup_block.t option tzresult Lwt.t
+
+(** [tick_offset_of_commitment_period node_ctxt commtient] returns the global
+    initial tick (since genesis) of the PVM for the state at the beginning of the
+    commitment period that [commitment] concludes. *)
+val tick_offset_of_commitment_period : _ t -> Commitment.t -> Z.t tzresult Lwt.t
 
 (** {3 Commitments} *)
 
@@ -509,18 +555,6 @@ val save_slot_status :
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/4636
    Missing docstrings. *)
 
-val find_confirmed_slots_history :
-  _ t -> Block_hash.t -> Dal.Slot_history.t option tzresult Lwt.t
-
-val save_confirmed_slots_history :
-  rw -> Block_hash.t -> Dal.Slot_history.t -> unit tzresult Lwt.t
-
-val find_confirmed_slots_histories :
-  _ t -> Block_hash.t -> Dal.Slot_history_cache.t option tzresult Lwt.t
-
-val save_confirmed_slots_histories :
-  rw -> Block_hash.t -> Dal.Slot_history_cache.t -> unit tzresult Lwt.t
-
 (** [gc node_ctxt level] triggers garbage collection for the node in accordance
     with [node_ctxt.config.gc_parameters]. Upon completion, all data for L2
     levels lower than [level] will be removed. *)
@@ -546,7 +580,16 @@ val make_kernel_logger :
   string ->
   ((string -> unit Lwt.t) * (unit -> unit Lwt.t)) Lwt.t
 
-(**/**)
+(** {2 Synchronization tracking} *)
+
+(** [is_synchronized node_ctxt] returns [true] iff the rollup node has processed
+    the latest available L1 head. *)
+val is_synchronized : _ t -> bool
+
+(** [wait_synchronized node_ctxt] is a promise that resolves when the rollup
+    node whose state is [node_ctxt] is synchronized with L1. If the node is
+    already synchronized, it resolves immediately. *)
+val wait_synchronized : _ t -> unit Lwt.t
 
 module Internal_for_tests : sig
   (** Create a node context which really stores data on disk but does not

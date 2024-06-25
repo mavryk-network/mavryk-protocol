@@ -34,7 +34,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_protocol_alpha
   -open Mavryk_protocol_alpha_lifted
   -open Mavryk_protocol_plugin_alpha
@@ -47,7 +46,8 @@
   -open Mavryk_shell_context
   -open Mavryk_context
   -open Mavryk_context_ops
-  -open Mavryk_rpc_http)
+  -open Mavryk_rpc_http
+  -open Mavryk_crypto_dal)
  (modules (:standard \ Baking_commands Baking_commands_registration)))
 
 (library
@@ -71,7 +71,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_protocol_alpha
   -open Mavryk_protocol_alpha_parameters
   -open Mavryk_stdlib_unix

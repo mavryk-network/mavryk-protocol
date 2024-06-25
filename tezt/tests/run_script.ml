@@ -82,7 +82,7 @@ let test_balance_and_self_address =
     ~tags:["client"; "michelson"]
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  (* With no parameters, the default BALANCE is 4 000 000 ꜩ. *)
+  (* With no parameters, the default BALANCE is 4 000 000 ṁ. *)
   let* _storage =
     Client.run_script
       ~prg:check_balance
@@ -227,7 +227,7 @@ let test_other_contracts =
     ~__FILE__
     ~title:"Run script with other_contracts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 001)
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let unused_address = {|"KT1Q36KWPSba7dHsH5E4ZsQHehrChc51e19d"|} in

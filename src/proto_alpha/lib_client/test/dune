@@ -20,7 +20,6 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_micheline
   -open Mavryk_client_alpha
   -open Mavryk_protocol_alpha

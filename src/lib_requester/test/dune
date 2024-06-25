@@ -26,7 +26,7 @@
   -open Mavryk_stdlib
   -open Mavryk_requester
   -open Mavkit_alcotezt)
- (modules test_requester test_fuzzing_requester shared))
+ (modules requester_impl test_requester test_fuzzing_requester shared))
 
 (executable
  (name main)

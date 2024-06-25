@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000515
+    Fee to the validator: ṁ0.000515
     Expected counter: 1
     Gas limit: 1596
     Storage limit: 405 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000515
-      payload fees(the block proposer) ....... +ꜩ0.000515
+      [PUBLIC_KEY_HASH] ... -ṁ0.000515
+      payload fees(the block proposer) ....... +ṁ0.000515
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter unit ;
           storage unit ;
@@ -80,10 +80,10 @@ This sequence of operations was run:
         Paid storage size diff: 128 bytes
         Consumed gas: 1495.039
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.032
-          storage fees ........................... +ꜩ0.032
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.032
+          storage fees ........................... +ṁ0.032
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as compare_big_type.

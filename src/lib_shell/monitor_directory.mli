@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 val build_rpc_directory :
-  commit_info:Node_version.commit_info ->
+  commit_info:Mavkit_node_version.commit_info ->
   Validator.t ->
   Chain_validator.t ->
   unit Mavryk_rpc.Directory.t

@@ -272,7 +272,7 @@ module V1_migrations = struct
         Format.asprintf
           "Rollup node %a"
           Mavryk_version_parser.pp
-          Mavryk_version_value.Current_git_info.version
+          Mavryk_version_value.Current_git_info.mavkit_version
       in
       let message = "Migration store from v0 to v1" in
       Irmin_store.Raw_irmin.Info.v ~author ~message date

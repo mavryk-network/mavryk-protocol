@@ -42,7 +42,7 @@ type t
 val create :
   comm_socket_path:string ->
   Config_file.t ->
-  Mavryk_version.Node_version.t ->
+  Mavryk_version.Mavkit_node_version.t ->
   Internal_event_config.t ->
   t
 

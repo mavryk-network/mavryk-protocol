@@ -233,7 +233,7 @@ module Maintenance = struct
       Node.add_peer node peer ;
       let* () = Node.identity_generate node in
       let* () = Node.config_init node [] in
-      Node.Config_file.update node patch_config ;
+      let* () = Node.Config_file.update node patch_config in
       return node
     in
     let run_node node params =
@@ -345,11 +345,21 @@ module Maintenance = struct
       max_target
       max_threshold
       max_connections ;
-    let* target_node = Node.init [Connections expected_connections] in
+    (* TODO: https://gitlab.com/tezos/tezos/-/issues/6442
+       This test launches 10 nodes and consumes a large amount of memory.
+       To reduce memory consumption each node launches its RPC server locally.
+       A better way to reduce memory consumption would be to use nodes that
+       only have the p2p layer. *)
+    let* target_node =
+      Node.init ~rpc_external:false [Connections expected_connections]
+    in
     let* target_client = Client.init ~endpoint:(Node target_node) () in
     Log.info "Target created." ;
     let nodes =
-      Cluster.create max_connections [Connections (max_connections - 1)]
+      Cluster.create
+        max_connections
+        ~rpc_external:false
+        [Connections (max_connections - 1)]
     in
     Cluster.clique nodes ;
     let* () = Cluster.start ~public:true nodes in
@@ -385,7 +395,11 @@ module Swap = struct
   let run_node ?patch_config node =
     let* () = Node.identity_generate node in
     let* () = Node.config_init node [] in
-    Option.iter (Node.Config_file.update node) patch_config ;
+    let* () =
+      match patch_config with
+      | None -> Lwt.return_unit
+      | Some config -> Node.Config_file.update node config
+    in
     let* () = Node.run node [] in
     Node.wait_for_ready node
 
@@ -559,7 +573,12 @@ module Swap = struct
 
   (* Same as [test_swap_raw] with default parameters. *)
   let test_swap () =
-    Test.register ~__FILE__ ~title:"p2p-swap" ~tags:["p2p"; "node"; "swap"]
+    Test.register
+      ~__FILE__
+      ~title:"p2p-swap"
+      ~tags:["p2p"; "node"; "swap"; Tag.ci_disabled]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () -> test_swap_raw ()
 
   (* Checks that nodes with swap disabled neither respond to swap request nor
@@ -679,7 +698,7 @@ module Known_Points_GC = struct
     let node = Node.create [Connections 0] in
     let* () = Node.identity_generate node in
     let* () = Node.config_init node [] in
-    let () =
+    let* () =
       Node.Config_file.update
         node
         (JSON.update
@@ -802,19 +821,21 @@ module Connect_handler = struct
       let node = Node.create ~net_port:port (Connections 1 :: peer_arg) in
       let* () = Node.identity_generate node in
       let* () = Node.config_init node [] in
-      Option.iter
-        (fun name ->
-          Node.Config_file.update node (fun json ->
-              (* Loads a full unsugared "basenet" configuration,
-                 so that we can update the chain_name separately
-                 without depending on a network alias. *)
-              Node.Config_file.set_basenet_sandbox_network () json
-              |> JSON.update
-                   "network"
-                   (JSON.put
-                      ( "chain_name",
-                        JSON.annotate ~origin:__LOC__ (`String name) ))))
-        chain_name ;
+      let* () =
+        match chain_name with
+        | None -> Lwt.return_unit
+        | Some name ->
+            Node.Config_file.update node (fun json ->
+                (* Loads a full unsugared "ghostnet" configuration,
+                   so that we can update the chain_name separately
+                   without depending on a network alias. *)
+                Node.Config_file.set_ghostnet_sandbox_network () json
+                |> JSON.update
+                     "network"
+                     (JSON.put
+                        ( "chain_name",
+                          JSON.annotate ~origin:__LOC__ (`String name) )))
+      in
       return node
     in
     let run_node node = Node.run ~event_level:`Debug node [] in
@@ -1296,7 +1317,7 @@ module Peer_discovery = struct
     let node = Node.create ?name [] in
     let* () = Node.identity_generate node in
     let* () = Node.config_init node [] in
-    Node.Config_file.update node patch_maintenance_idle_time ;
+    let* () = Node.Config_file.update node patch_maintenance_idle_time in
     return node
 
   let run_node node =
@@ -1385,7 +1406,7 @@ module Peer_discovery = struct
            ( "disable_peer_discovery",
              JSON.parse ~origin:__LOC__ (Bool.to_string true) ))
     in
-    Node.Config_file.update center patch_center_config ;
+    let* () = Node.Config_file.update center patch_center_config in
     let _ = fail_on_bootstrap_received node1 in
     let _ = fail_on_bootstrap_received node2 in
     let _ = fail_on_advertise_received node1 in

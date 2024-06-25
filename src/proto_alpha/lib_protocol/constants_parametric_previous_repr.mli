@@ -27,10 +27,10 @@
 
 type dal = {
   feature_enable : bool;
+  incentives_enable : bool;
   number_of_slots : int;
   attestation_lag : int;
   attestation_threshold : int;
-  blocks_per_epoch : int32;
   cryptobox_parameters : Dal.parameters;
 }
 
@@ -65,24 +65,13 @@ type tx_rollup = {
   (* Tickets are transmitted in batches in the
      [Tx_rollup_dispatch_tickets] operation.
 
-     The semantics is that this operation is used to
-     concretize the withdraw orders emitted by the layer-2,
-     one layer-1 operation per messages of an
-     inbox. Therefore, it is of significant importance that
-     a valid batch does not produce a list of withdraw
-     orders which could not fit in a layer-1 operation.
-
-     With these values, at least 2048 bytes remain available
-     to store the rest of the operands of
-     [Tx_rollup_dispatch_tickets] (in practice, even more,
-     because we overapproximate the size of tickets). So we
-     are safe. *)
-  max_ticket_payload_size : int;
-  max_withdrawals_per_batch : int;
-  (* The maximum size, in bytes, of a Merkle proof.  Operations which would
-     require proofs larger than this should be no-ops. *)
-  rejection_max_proof_size : int;
-  sunset_level : int32;
+(** Associates reveal kinds to their activation level. *)
+type sc_rollup_reveal_activation_level = {
+  raw_data : sc_rollup_reveal_hashing_schemes;
+  metadata : Raw_level_repr.t;
+  dal_page : Raw_level_repr.t;
+  dal_parameters : Raw_level_repr.t;
+  dal_attested_slots_validity_lag : int;
 }
 
 type sc_rollup = {
@@ -136,14 +125,85 @@ type zk_rollup = {
      That is, every update must process at least
      [min(length pending_list, min_pending_to_process)] pending operations. *)
   min_pending_to_process : int;
+  max_ticket_payload_size : int;
+}
+
+type adaptive_rewards_params = {
+  issuance_ratio_final_min : (* Minimum yearly issuance rate *) Q.t;
+  issuance_ratio_final_max : (* Maximum yearly issuance rate *) Q.t;
+  issuance_ratio_initial_min :
+    (* Minimum yearly issuance rate at adaptive issuance activation *) Q.t;
+  issuance_ratio_initial_max :
+    (* Maximum yearly issuance rate at adaptive issuance activation *) Q.t;
+  initial_period :
+    (* Period in cycles during which the minimum and maximum yearly
+       issuance rate values stay at their initial values *)
+    int;
+  transition_period :
+    (* Period in cycles during which the minimum and maximum yearly
+       issuance rate values decrease/increase until they reach their global values *)
+    int;
+  max_bonus : (* Maximum issuance bonus value *) Issuance_bonus_repr.max_bonus;
+  growth_rate : (* Bonus value's growth rate *) Q.t;
+  center_dz : (* Center for bonus *) Q.t;
+  radius_dz :
+    (* Minimum distance from center required for non-zero growth *) Q.t;
+}
+
+type adaptive_issuance = {
+  global_limit_of_staking_over_baking
+    (* Global maximum stake tokens taken into account per baking token. Each baker can set their own lower limit. *) :
+    int;
+  edge_of_staking_over_delegation :
+    (* Weight of staking over delegation. *) int;
+  launch_ema_threshold : (* Threshold of the activation vote *) int32;
+  adaptive_rewards_params :
+    (* Parameters for the reward mechanism *) adaptive_rewards_params;
+  activation_vote_enable :
+    (* If set to true, reaching the launch_ema_threshold in the adaptive
+       issuance activation vote triggers the activation of the adaptive
+       inflation feature; otherwise the activation vote has no effect. *)
+    bool;
+  autostaking_enable :
+    (* If set to true, a stake/unstake/finalize operation will be triggered for
+       all delegate at end of cycle. *)
+    bool;
+  force_activation :
+    (* For testing purposes. If set to true, the adaptive issuance feature is
+       enabled without waiting to reach the launch_ema_threshold.*)
+    bool;
+  ns_enable : (* If set to true, enables the NS feature *)
+              bool;
+}
+
+type issuance_weights = {
+  (* [base_total_issued_per_minute] is the total amount of rewards expected to
+     be distributed every minute *)
+  base_total_issued_per_minute : Tez_repr.t;
+  (* The following fields represent the "weights" of the respective reward kinds.
+     The actual reward values are computed proportionally from the other weights
+     as a portion of the [base_total_issued_per_minute]. See the module
+     {!Delegate_rewards} for more details *)
+  baking_reward_fixed_portion_weight : int;
+  baking_reward_bonus_weight : int;
+  attesting_reward_weight : int;
+  seed_nonce_revelation_tip_weight : int;
+  vdf_revelation_tip_weight : int;
 }
 
 type t = {
-  preserved_cycles : int;
+  (* Number of cycles after which computed consensus rights are used to actually
+     participate in the consensus *)
+  consensus_rights_delay : int;
+  (* Number of past cycles about which the protocol hints the shell that it should
+     keep them in its history. *)
+  blocks_preservation_cycles : int;
+  (* Number of cycles after which submitted delegate parameters are being
+     used. *)
+  delegate_parameters_activation_delay : int;
   blocks_per_cycle : int32;
   blocks_per_commitment : int32;
   nonce_revelation_threshold : int32;
-  blocks_per_stake_snapshot : int32;
   cycles_per_voting_period : int32;
   hard_gas_limit_per_operation : Gas_limit_repr.Arith.integral;
   hard_gas_limit_per_block : Gas_limit_repr.Arith.integral;
@@ -171,12 +231,12 @@ type t = {
   (* in slots *)
   consensus_threshold : int;
   (* in slots *)
-  max_slashing_period : int;
-  (* in cycles *)
-  frozen_deposits_percentage : int;
-  (* that is, (100 * delegated tz / own tz) *)
-  double_baking_punishment : Tez_repr.t;
-  ratio_of_frozen_deposits_slashed_per_double_attestation : Ratio_repr.t;
+  limit_of_delegation_over_baking : int;
+  (* upper bound on the (delegated tz / own frozen tz) ratio *)
+  percentage_of_frozen_deposits_slashed_per_double_baking : Percentage.t;
+  percentage_of_frozen_deposits_slashed_per_double_attestation : Percentage.t;
+  max_slashing_per_block : Percentage.t;
+  max_slashing_threshold : int;
   testnet_dictator : Signature.Public_key_hash.t option;
   initial_seed : State_hash.t option;
   cache_script_size : int;
@@ -189,6 +249,14 @@ type t = {
   dal : dal;
   sc_rollup : sc_rollup;
   zk_rollup : zk_rollup;
+  adaptive_issuance : adaptive_issuance;
+  direct_ticket_spending_enable : bool;
 }
 
 val encoding : t Data_encoding.encoding
+
+val update_sc_rollup_parameter : block_time:int -> sc_rollup -> sc_rollup
+
+module Internal_for_tests : sig
+  val sc_rollup_encoding : sc_rollup Data_encoding.t
+end

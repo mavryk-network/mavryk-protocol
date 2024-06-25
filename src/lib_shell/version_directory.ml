@@ -22,9 +22,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let rpc_directory (node_version : Node_version.t) =
+let rpc_directory (node_version : Mavkit_node_version.t) =
   let dir = Mavryk_rpc.Directory.empty in
   Mavryk_rpc.Directory.gen_register
     dir
     Version_services.S.version
-    (fun () () () -> Mavryk_rpc.Answer.return @@ (node_version : Node_version.t))
+    (fun () () () ->
+      Mavryk_rpc.Answer.return @@ (node_version : Mavkit_node_version.t))

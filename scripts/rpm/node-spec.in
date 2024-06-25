@@ -7,7 +7,6 @@ Packager:   @MAINT@
 License:	MIT
 URL:		http://protocol.mavryk.org
 
-Requires:	@DPKG@-client
 Source0:	@FAKESRC@
 
 %prep

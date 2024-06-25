@@ -15,6 +15,10 @@
 
 open Sc_rollup_helpers
 
+let block_time_to_trigger_constant_update_on_migration = function
+  | Protocol.Alpha -> Some 5
+  | ParisB | ParisC -> Some 8
+
 let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
     ?variant ?(tags = []) ?(timeout = 10) ?(commitment_period = 10) ~kind
     ~migrate_from ~migrate_to ~scenario_prior ~scenario_after ~description () =
@@ -426,8 +430,9 @@ let test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to =
 
 let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
     ?(operator = Constant.bootstrap1.alias) ?boot_sector ?commitment_period
-    ?challenge_window ?timeout ?variant ?(tags = []) ~kind ~migrate_from
-    ~migrate_to ~scenario_prior ~scenario_after ~description () =
+    ?challenge_window ?(with_constant_change = false) ?timeout ?variant
+    ?(tags = []) ~kind ~migrate_from ~migrate_to ~scenario_prior ~scenario_after
+    ~description () =
   let tags =
     Protocol.tag migrate_from :: Protocol.tag migrate_to :: kind :: "l2"
     :: "migration" :: tags
@@ -443,8 +448,17 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
          (Protocol.name migrate_to)
          (format_title_scenario kind {variant; tags; description}))
   @@ fun () ->
-  let* mavryk_node, mavryk_client =
-    setup_l1 ?commitment_period ?challenge_window ?timeout migrate_from
+  let minimal_block_delay =
+    if not with_constant_change then None
+    else block_time_to_trigger_constant_update_on_migration migrate_to
+  in
+  let* tezos_node, tezos_client =
+    setup_l1
+      ?commitment_period
+      ?challenge_window
+      ?minimal_block_delay
+      ?timeout
+      migrate_from
   in
   let* rollup_node, rollup_client, sc_rollup =
     setup_rollup
@@ -457,7 +471,7 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
       mavryk_node
       mavryk_client
   in
-  let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
+  let* () = Sc_rollup_node.run rollup_node sc_rollup ~event_level:`Debug [] in
   let* prior_res =
     scenario_prior
       ~sc_rollup
@@ -486,20 +500,32 @@ let test_l2_migration_scenario ?parameters_ty ?(mode = Sc_rollup_node.Operator)
   scenario_after ~sc_rollup ~rollup_node mavryk_node mavryk_client prior_res
 
 let test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to =
-  let tags = ["store"] in
-  let description = "node can read data after store migration" in
-  let commitment_period = 5 in
-  let challenge_window = 5 in
-  let scenario_prior ~sc_rollup:_ ~rollup_node ~rollup_client:_ _mavryk_node
-      mavryk_client =
-    let* () = Sc_rollup_helpers.send_messages commitment_period mavryk_client in
+  let tags = ["store"; "commitment"] in
+  let description = "node can commit after migration" in
+  let commitment_period = 8 in
+  let challenge_window = 20 in
+  let scenario_prior ~sc_rollup:_ ~rollup_node tezos_node tezos_client =
+    let* constants =
+      Client.RPC.call tezos_client @@ RPC.get_chain_block_context_constants ()
+    in
+    let blocks_per_cycle = JSON.(constants |-> "blocks_per_cycle" |> as_int) in
+    (* Do migration at end of second cycle *)
+    let* level = Node.get_level tezos_node in
+    let* () =
+      Sc_rollup_helpers.send_messages
+        ((2 * blocks_per_cycle) - level - 1)
+        tezos_client
+    in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     unit
   in
-  let scenario_after ~sc_rollup ~rollup_node mavryk_node mavryk_client () =
-    let* migration_level = Node.get_level mavryk_node in
+  let scenario_after ~sc_rollup ~rollup_node tezos_node tezos_client () =
+    let* migration_level = Node.get_level tezos_node in
+    let* {commitment_period_in_blocks = new_commitment_period; _} =
+      Sc_rollup_helpers.get_sc_rollup_constants tezos_client
+    in
     let* () =
-      Sc_rollup_helpers.send_messages (commitment_period + 3) mavryk_client
+      Sc_rollup_helpers.send_messages (new_commitment_period + 2) tezos_client
     in
     let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
     let* _l2_block =
@@ -530,6 +556,7 @@ let test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to =
     ~kind
     ~commitment_period
     ~challenge_window
+    ~with_constant_change:true
     ~migrate_from
     ~migrate_to
     ~scenario_prior
@@ -582,8 +609,58 @@ let test_rollup_node_catchup_migration ~kind ~migrate_from ~migrate_to =
     ~description
     ()
 
-let l1_level_event level mavryk_node _rollup_node =
-  let* _ = Node.wait_for_level mavryk_node level in
+(* Test originate rollup in previous protocol and start node in a different
+   protocol. *)
+let test_originate_before_migration ~kind ~migrate_from ~migrate_to =
+  let tags = ["catchup"] in
+  let description =
+    "node can catch up on rollup originated in previous protocol"
+  in
+  let scenario_prior ~sc_rollup:_ ~rollup_node _tezos_node tezos_client =
+    Log.info "Stopping rollup node to start fresh." ;
+    let* () = Sc_rollup_node.terminate rollup_node in
+    Log.info "Sending messages on L1." ;
+    Sc_rollup_helpers.send_messages 2 tezos_client
+  in
+  let scenario_after ~sc_rollup ~rollup_node:_discarded tezos_node tezos_client
+      () =
+    let rollup_node =
+      Sc_rollup_node.create
+        Operator
+        tezos_node
+        ~base_dir:(Client.base_dir tezos_client)
+        ~default_operator:Constant.bootstrap4.alias
+    in
+    let* migration_level = Node.get_level tezos_node in
+    let* () = Sc_rollup_helpers.send_messages 1 tezos_client in
+    Log.info "Starting rollup node after migration." ;
+    let* () = Sc_rollup_node.run rollup_node sc_rollup [] in
+    Log.info "Waiting for rollup node to catch up." ;
+    let* _ = Sc_rollup_node.wait_sync rollup_node ~timeout:10. in
+    Log.info "Rollup node has caught up!" ;
+    let* _l2_block =
+      Sc_rollup_node.RPC.call rollup_node
+      @@ Sc_rollup_rpc.get_global_block
+           ~block:(string_of_int (migration_level - 1))
+           ()
+    in
+    let* _l2_block =
+      Sc_rollup_node.RPC.call rollup_node @@ Sc_rollup_rpc.get_global_block ()
+    in
+    unit
+  in
+  test_l2_migration_scenario
+    ~tags
+    ~kind
+    ~migrate_from
+    ~migrate_to
+    ~scenario_prior
+    ~scenario_after
+    ~description
+    ()
+
+let l1_level_event level tezos_node _rollup_node =
+  let* _ = Node.wait_for_level tezos_node level in
   unit
 
 let published_commitment_event ~inbox_level _mavryk_node rollup_node =
@@ -873,6 +950,8 @@ let test_refutation_migration ~migrate_from ~migrate_to =
         ])
     tests
 
+let assume cond test = if cond then test () else ()
+
 let register_migration ~kind ~migrate_from ~migrate_to =
   test_migration_inbox ~kind ~migrate_from ~migrate_to ;
   test_migration_ticket_inbox ~kind ~migrate_from ~migrate_to ;
@@ -882,12 +961,14 @@ let register_migration ~kind ~migrate_from ~migrate_to =
   test_cont_refute_pre_migration ~kind ~migrate_from ~migrate_to ;
   test_rollup_node_simple_migration ~kind ~migrate_from ~migrate_to ;
   test_rollup_node_catchup_migration ~kind ~migrate_from ~migrate_to ;
+  test_originate_before_migration ~kind ~migrate_from ~migrate_to ;
   test_migration_removes_dead_games ~kind ~migrate_from ~migrate_to
 
 let register_migration_only_wasm ~migrate_from ~migrate_to =
   test_refutation_migration ~migrate_from ~migrate_to
 
 let register ~migrate_from ~migrate_to =
+  assume (migrate_to <> Protocol.ParisC) @@ fun () ->
   register_migration ~kind:"arith" ~migrate_from ~migrate_to ;
   register_migration ~kind:"wasm_2_0_0" ~migrate_from ~migrate_to ;
   register_migration_only_wasm ~migrate_from ~migrate_to

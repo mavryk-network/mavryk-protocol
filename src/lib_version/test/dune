@@ -9,16 +9,14 @@
  (libraries
   tezt.core
   mavkit-libs.version
-  mavkit-libs.version.parser
-  mavkit-alcotezt)
+  mavkit-libs.version.parser)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Mavryk_version
-  -open Mavkit_alcotezt)
+  -open Mavryk_version)
  (modules test_parser))
 
 (executable

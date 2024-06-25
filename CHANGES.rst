@@ -25,34 +25,70 @@ be documented here either.
 General
 -------
 
+- Removed binaries for Nairobi (MR :gl:`!12043`)
+
 Node
 ----
 
+- Bump RPCs ``GET ../mempool/monitor_operations``, ``POST
+  ../helpers/preapply/operations``, ``GET ../blocks/<block>``, ``GET
+  ../blocks/<blocks>/metadata``. and ``GET ../blocks/<blocks>/operations``
+  default version to version ``1``. Version ``0`` can still be used with
+  ``?version=0`` argument. (MR :gl:`!11872`)
+
+- Bump RPC ``GET ../mempool/pending_operations`` default version to version
+  ``2``. Version ``0`` has been removed and version ``1`` can still be used
+  with ``?version=1`` argument. (MR :gl:`!11872`)
+
+- Bump RPCs ``POST ../helpers/parse/operations``, ``POST
+  ../helpers/scripts/run_operation`` and ``POST
+  ../helpers/scripts/simulate_operation`` default version to version ``1``.
+  Version ``0`` can still be used with ``?version=0`` argument. (MR :gl:`!11889`)
+
 - **Breaking change** Removed the deprecated ``endorsing_rights`` RPC,
-  use ``attestation_rights`` instead. (MR :gl:`!9849`)
+  use ``attestation_rights`` instead. (MR :gl:`!11952`)
 
-- Added metrics about distributed data base messages sent, broadcasted or received
+- Removed the deprecated ``applied`` parameter from RPCs ``GET
+  ../mempool/monitor_operations`` and ``GET
+  ../mempool/pending_operations``. Use ``validated`` instead. (MR
+  :gl:`!12157`)
 
-- **Breaking change** Removed the deprecated
-  ``disable-mempool-precheck`` configuration flag and
-  ``disable_precheck`` field of ``prevalidator`` in the shell limits
-  of the configuration file. They already had no effect on the node
-  anymore. (MR :gl:`!10030`)
+- Removed the deprecated RPCs ``GET /network/version`` and ``GET
+  /network/versions``. Use ``GET /version`` instead. (MR :gl:`!12289`)
 
-- **Breaking change** Bumped the Mavkit snapshot version from ``5`` to
-  ``6`` to explicit the incompatibility with previous version
-  nodes. Also, improved the consistency of ``snapshot`` import errors
-  messages (MR :gl:`!10138`)
+- Removed the deprecated RPCs ``GET /network/greylist/clear``. Use ``DELETE
+  /network/greylist`` instead. (MR :gl:`!12289`)
 
-- Add logs at ``Info`` level about the disconnection reasons in the p2p section.
+- Removed the deprecated RPCs ``GET /network/points/<point>/ban``, ``GET
+  /network/points/<point>/unban``, ``GET /network/points/<point>/trust`` and
+  ``GET /network/points/<point>/untrust``. Use ``PATCH
+  /network/points/<point>`` with ``{"acl":"ban"}``, ``{"acl":"open"}`` (for
+  both unban and untrust) or ``{"acl":"trust"}`` instead. (MR :gl:`!12289`)
 
-- Removed a spurious "missing validation plugin" warning message that
-  was emitted every time a block was applied using an old protocol
-  where its plugin was removed.
+- Removed the deprecated RPCs ``GET /network/peers/<peer>/ban``, ``GET
+  /network/peers/<peer>/unban``, ``GET /network/peers/<peer>/trust`` and ``GET
+  /network/peers/<peer>/untrust``. Use ``PATCH /network/peers/<peer>`` with
+  ``{"acl":"ban"}``, ``{"acl":"open"}`` (for both unban and untrust) or
+  ``{"acl":"trust"}`` instead. (MR :gl:`!12289`)
 
-- **Breaking change** Removed the deprecated ``/monitor/valid_blocks``
-  RPC. Instead, use the ``/monitor/applied_blocks`` RPC that has the
-  same behaviour.
+- Introduced a new RPC ``GET
+  /chains/main/blocks/<block>/context/delegates/<pkh>/is_forbidden``, to check
+  if a delegate is forbidden after being denounced for misbehaving. This RPC
+  will become available when protocol P is activated. (MR :gl:`!12341`)
+
+- Introduced a new ``/health/ready`` RPC endpoint that aims to return
+  whether or node the node is fully initialized and ready to answer to
+  RPC requests (MR :gl:`!6820`).
+
+- Removed the deprecated ``local-listen-addrs`` configuration file
+  field. Use ``listen-addrs`` instead.
+
+- Augmented the ``--max-active-rpc-connections <NUM>`` argument to contain
+  an ``unlimited`` option to remove the threshold of RPC connections.
+  (MR :gl:`!12324`)
+
+- Reduced the maximum allowed timestamp drift to 1 seconds. It is recommended to
+  use NTP to sync the clock of the node. (MR :gl:`!13198`)
 
 Client
 ------
@@ -67,14 +103,19 @@ Client
   client command allowing to run a single Michelson instruction or a
   sequence of Michelson instructions on a given stack. (MR :gl:`!9935`)
 
-- The legacy unary macros for the ``DIP`` and ``DUP`` Michelson
-  instructions have been deprecated. Using them now displays a warning
-  message on stderr.
+- The ``timelock create`` command now takes the message to lock in hexadecimal
+  format. (MR :gl:`!11597`)
 
-- Added a ``run unit tests`` client command allowing to run one or
-  several Michelson unit tests in `TZT format
-  <http://protocol.mavryk.org/active/michelson.html#tzt-a-syntax-extension-for-writing-unit-tests>`__. (MR
-  :gl:`!10898`)
+- Added optional argument ``--safety-guard`` to specify the amount of gas to
+  the one computed automatically by simulation. (MR :gl:`!11753`)
+
+- For the protocols that support it, added an
+  ``operation_with_legacy_attestation_name`` and
+  ``operation_with_legacy_attestation_name.unsigned`` registered encodings that
+  support legacy ``endorsement`` kind instead of ``attestation``. (MR
+  :gl:`!11871`)
+
+- **Breaking change** Removed read-write commands specific to Nairobi (MR :gl:`!12058`)
 
 Baker
 -----
@@ -82,6 +123,19 @@ Baker
 - Made the baker attest as soon as the pre-attestation quorum is
   reached instead of waiting for the chain's head to be fully
   applied (MR :gl:`!10554`)
+
+- Made the baker sign attestations as soon as preattestations were
+  forged without waiting for the consensus pre-quorum. However, the
+  baker will still wait for the pre-quorum to inject them as specified
+  by the Tenderbake consensus algorithm. (MR :gl:`!12353`)
+
+- Fixed situations where the baker would stall when a signing request
+  hanged. (MR :gl:`!12353`)
+
+- Introduced two new nonces files (``<chain_id>_stateful_nonces`` and
+  ``<chain_id>_orphaned_nonces``). Each nonce is registered with a state
+  for optimising the nonce lookup, reducing the number of rpc calls
+  required to calculate nonce revelations. (MR :gl:`!12517`)
 
 Accuser
 -------
@@ -135,52 +189,61 @@ Smart Rollup node
 - Added the argument ``cors-headers`` and ``cors-origins`` to specify respectively the
   allowed headers and origins. (MR :gl:`!10571`)
 
-- Fix header in messages store to use predecessor hash to avoid missing pointer
-  in case of reorganization and GC. (MR :gl:`!10847`)
+- Registered in ``mavkit-codec`` some of the protocol smart rollup
+  related encodings. (MRs :gl:`!10174`, :gl:`!11200`)
 
-- Added a garbage collection mechanism that cleans historical data before the LCC.
-  (MRs :gl:`!10050`, :gl:`!10135`, :gl:`!10236`, :gl:`!10237`, :gl:`!10452`)
+- Added Snapshot inspection command. (MR :gl:`!11456`)
 
-- Added a ``history-mode`` option, which can be either ``archive`` or
-  ``full``. In ``archive``, the default, the rollup node has the whole L2 chain
-  history, no GC happens. In ``full`` the rollup node retains data for possible
-  refutations. (MRs :gl:`!10475`, :gl:`!10695`)
+- Added Snapshot export options. (MRs :gl:`!10812`, :gl:`!11078`, :gl:`!11256`,
+  :gl:`!11454`)
 
-- Snapshot export with integrity checks. (MR :gl:`!10704`)
+- Added Snapshot import. (MR :gl:`!10803`)
 
-Smart Rollup client
--------------------
+- Pre-images endpoint (configurable on the CLI of the config file) to allow the
+  rollup node to fetch missing pre-images from a remote server. (MR
+  :gl:`!11600`)
 
-- **Breaking change** smart rollup client have been deprecated and
-  no longer exist, most commands have equivalents RPCs and ``mavkit-codec`` (MR :gl:`!11046`).
+- Higher gas limit for publish commitment operations to avoid their failing due
+  to gas variations. (MR :gl:`!11761`)
 
-- The following table outlines the deprecated of smart rollup client commands and
-  their corresponding replacements with new RPCs:
+- **Breaking change** Removed RPC ``/helpers/proofs/outbox?message_index=<index>&outbox_level=<level>&serialized_outbox_message=<bytes>``.
+  Use ``helpers/proofs/outbox/<level>/messages?index=<index>`` to avoid generating the ```serialized_outbox_message`` yourself.
+  (MR :gl:`!12140`)
 
-  .. code-block:: rst
+- Compact snapshots with context reconstruction. (MR :gl:`!11651`)
 
-    ==========================================  ====================================================
-    Command                                     RPC
-    ==========================================  ====================================================
-    get smart rollup address                    [GET global/smart_rollup_address]
-    ------------------------------------------  ----------------------------------------------------
-    get state value for <key> [-B --block       [GET global/block/<block>/state]
-    <block>]
-    ------------------------------------------  ----------------------------------------------------
-    get proof for message <index> of outbox     [GET /global/block/<block-id>/helpers/proofs/outbox/
-    at level <level> transferring               <outbox_level>/messages] with message index in query
-    <transactions>
-    ------------------------------------------  ----------------------------------------------------
-    get proof for message <index> of outbox     [GET /global/block/<block-id>/helpers/proofs/outbox/
-    at level <level>                            <outbox_level>/messages] with message index in query
-    ==========================================  ====================================================
+- Prevent some leak of connections to L1 node from rollup node (and avoid
+  duplication). (MR :gl:`!11825`)
 
-- The result of ``encode outbox message <transactions>`` can be achieved:
-  ``mavkit-codec encode alpha.smart_rollup.outbox.message from <transactions>``.
+- Playing the refutation games completely asynchronous with the rest of the
+  rollup node. (MR :gl:`!12106`)
 
-- The keys in the smart rollup client use the same format as the ``mavkit-client``.
-  They can be imported with ``mavkit-client import secret key <sk_uri>``, or by merging the key files
-  between the ``mavkit-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
+- Rollup node can recover from degraded mode if they have everything necessary
+  to pick back up the main loop. (MR :gl:`!12107`)
+
+- Added RPC ``/local/synchronized`` to wait for the rollup node to be
+  synchronized with L1. (MR :gl:`!12247`)
+
+- Secure ACL by default on remote connections. Argument ``--acl-override
+  secure`` to choose the secure set of RPCs even for localhost, *e.g.*, for use
+  behind a proxy. (MR :gl:`!12323`)
+
+- Fix issue with catching up on rollup originated in previous protocol with an
+  empty rollup node. (MR :gl:`!12565`)
+
+- Added new administrative RPCs ``/health``, ``/version``, ``/stats/ocaml_gc``,
+  ``/stats/memory``, and ``/config``. (MR :gl:`!12718`)
+
+- Administrative RPCs to inspect injector queues and clear them. (MR :gl:`!12497`)
+
+- Support for unsafely increasing the WASM PVM's tick limit of a rollup.
+  (MRs :gl:`!12907`, :gl:`!12957`, :gl:`!12983`, :gl:`!13357`)
+
+- Fix a bug in how commitments are computed after a protocol migration
+  where the the commitment period changes. (MR :gl:`!13588`)
+
+- New command ``repair commitments`` which allows the rollup node to recompute
+  correct commitments for a protocol upgrade which did not. (MR :gl:`!13615`)
 
 Smart Rollup WASM Debugger
 --------------------------
@@ -206,13 +269,11 @@ Data Availability Committee (DAC)
 Miscellaneous
 -------------
 
-- Beta scripts to build Debian and RedHat packages have been added to the tree.
+- **Breaking change** Switch encoding of ``nread_total`` field of
+  ``P2p_events.read_fd`` in Octez-p2p library to ``Data_encoding.int64`` to fix an
+  overflow.
 
-- New Recommended Rust version 1.71.1 instead of 1.64.0.
+- Versions now include information about the product. (MR :gl:`!12366`)
 
-- Extended the Micheline lexer to allow primitives starting with the
-  underscore symbol (``_``). (MR :gl:`!10782`)
-
-- Beta Debian and Redhat packages are now linked in gitlab releases.
-
-- Renamed package registries for releases from ``mavryk-x.y`` to ``mavkit-x.y``.
+- **Breaking change** Multiple occurrence of same argument now
+  fails when using ``lib-clic``. (MR :gl:`!12780`)

@@ -40,6 +40,14 @@
   mavkit-protocol-001-PtAtLas-libs.client
   mavkit-protocol-001-PtAtLas-libs.client.commands
   mavryk-protocol-001-PtAtLas.protocol
+  mavkit-protocol-019-PtParisB-libs.baking
+  mavkit-protocol-019-PtParisB-libs.client
+  mavkit-protocol-019-PtParisB-libs.client.commands
+  mavryk-protocol-019-PtParisB.protocol
+  mavkit-protocol-020-PsParisC-libs.baking
+  mavkit-protocol-020-PsParisC-libs.client
+  mavkit-protocol-020-PsParisC-libs.client.commands
+  mavryk-protocol-020-PsParisC.protocol
   mavkit-protocol-alpha-libs.baking
   mavkit-protocol-alpha-libs.client
   mavkit-protocol-alpha-libs.client.commands
@@ -55,7 +63,12 @@
   -open Mavryk_store
   -open Mavryk_store_shared
   -open Mavryk_context)
- (modules sigs tool_001_PtAtLas tool_alpha))
+ (modules
+  sigs
+  tool_001_PtAtLas
+  tool_019_PtParisB
+  tool_020_PsParisC
+  tool_alpha))
 
 (executable
  (name simulation_scenario)

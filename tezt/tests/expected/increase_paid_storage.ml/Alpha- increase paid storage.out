@@ -10,21 +10,21 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
-    Fee to the validator: ꜩ0.000265
+    Fee to the validator: ṁ0.000265
     Expected counter: 1
     Gas limit: 169
     Storage limit: 0 bytes
     Balance updates:
-      mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... -ꜩ0.000265
-      payload fees(the block proposer) ....... +ꜩ0.000265
+      mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... -ṁ0.000265
+      payload fees(the block proposer) ....... +ṁ0.000265
     Increase paid storage:
       Increased size: 1000 bytes
       From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
       To: KT1QmpjYa3WKEtp27inFsS66PS1UyBuvQ2TW
       This paid storage increase was successfully applied
       Balance updates:
-        mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... -ꜩ0.25
-        storage fees ........................... +ꜩ0.25
+        mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7 ... -ṁ0.25
+        storage fees ........................... +ṁ0.25
       Consumed gas: 168.582
 
 

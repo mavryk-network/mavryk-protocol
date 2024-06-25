@@ -519,10 +519,11 @@ let drain_delegate_prelude state =
 let drain_delegate_descriptor =
   {
     parameters = Fun.id;
-    required_cycle = (fun params -> params.constants.preserved_cycles + 1);
+    required_cycle = (fun params -> params.constants.consensus_rights_delay + 1);
     required_block = (fun _ -> 0);
     prelude =
-      (On (init_params.constants.preserved_cycles + 1), drain_delegate_prelude);
+      ( On (init_params.constants.consensus_rights_delay + 1),
+        drain_delegate_prelude );
     opt_prelude = None;
     candidates_generator =
       (fun state ->
@@ -624,70 +625,6 @@ let attestation_descriptor =
               | _ :: _ ->
                   let* op = Op.attestation ~delegate state.block in
                   return_some op)
-        in
-        List.filter_map_es gen state.delegates);
-  }
-
-(* TODO: #4917 remove direct dependency of the alpha_context. *)
-(* Build a DAL attestation for the given [delegate] and the given [block]'s
-   level (to be included in the block at the next level), if possible. Otherwise
-   returns [None]. It is possible to build one if: [delegate] is part of the DAL
-   committee for the current epoch, and [delegate] is part of the TB committee
-   for the current level. Recall that the slot to be included in the attestation
-   is the delegate's first TB slot at the current level. *)
-let dal_attestation ctxt delegate block =
-  let open Lwt_result_wrap_syntax in
-  let*? level = Context.get_level (B block) in
-  let*@ committee =
-    Alpha_context.Level.from_raw ctxt level |> Dal_apply.compute_committee ctxt
-  in
-  match
-    Environment.Signature.Public_key_hash.Map.find
-      delegate
-      committee.pkh_to_shards
-  with
-  | None -> return_none
-  | Some _interval -> (
-      let* slots = Context.get_attester_slot (B block) delegate in
-      match slots with
-      | None -> return_none
-      | Some slots -> (
-          match List.hd slots with
-          | None -> assert false
-          | Some slot ->
-              (* The content of the attestation does not matter for covalidity. *)
-              let attestation = Dal.Attestation.empty in
-              let branch = block.Block.header.shell.predecessor in
-              let* signer = Account.find delegate in
-              let op = Single (Dal_attestation {attestation; level; slot}) in
-              Op.sign
-                ~watermark:
-                  Operation.(to_watermark (Dal_attestation Chain_id.zero))
-                signer.sk
-                branch
-                (Contents_list op)
-              |> return_some))
-
-let dal_attestation_descriptor =
-  let open Lwt_result_syntax in
-  {
-    parameters =
-      (fun params ->
-        let dal = {params.constants.dal with feature_enable = true} in
-        let constants = {params.constants with dal} in
-        {params with constants});
-    required_cycle = (fun _ -> 1);
-    required_block = (fun _ -> 1);
-    prelude = (On 1, fun state -> return ([], state));
-    opt_prelude = None;
-    candidates_generator =
-      (fun state ->
-        let gen (delegate, _) =
-          let* ctxt =
-            let+ incr = Incremental.begin_construction state.block in
-            Incremental.alpha_ctxt incr
-          in
-          dal_attestation ctxt delegate state.block
         in
         List.filter_map_es gen state.delegates);
   }
@@ -846,7 +783,6 @@ let manager_descriptor max_batch_size nb_accounts =
 type op_kind =
   | KAttestation
   | KPreattestation
-  | KDalattestation
   | KBallotExp
   | KBallotProm
   | KProposals
@@ -863,7 +799,6 @@ let op_kind_of_packed_operation op =
   match contents with
   | Single (Preattestation _) -> KPreattestation
   | Single (Attestation _) -> KAttestation
-  | Single (Dal_attestation _) -> KDalattestation
   | Single (Seed_nonce_revelation _) -> KNonce
   | Single (Vdf_revelation _) -> KVdf
   | Single (Double_attestation_evidence _) -> KDbl_consensus
@@ -884,7 +819,6 @@ let pp_op_kind fmt kind =
     | KManager -> "manager"
     | KAttestation -> "attestation"
     | KPreattestation -> "preattestation"
-    | KDalattestation -> "dal_attestation"
     | KBallotExp -> "ballot"
     | KBallotProm -> "ballot"
     | KProposals -> "proposals"
@@ -899,7 +833,6 @@ let descriptor_of ~nb_bootstrap ~max_batch_size = function
   | KManager -> manager_descriptor max_batch_size nb_bootstrap
   | KAttestation -> attestation_descriptor
   | KPreattestation -> preattestation_descriptor
-  | KDalattestation -> dal_attestation_descriptor
   | KBallotExp -> ballot_exploration_descriptor
   | KBallotProm -> ballot_promotion_descriptor
   | KProposals -> proposal_descriptor
@@ -926,7 +859,6 @@ let non_exclusive_kinds =
     KManager;
     KAttestation;
     KPreattestation;
-    KDalattestation;
     KActivate;
     KDbl_consensus;
     KDbl_baking;

@@ -25,7 +25,8 @@
   mavkit-libs.event-logging-test-helpers
   mavkit-libs.test-helpers
   mavkit-alcotezt
-  mavkit-version.value)
+  mavkit-version.value
+  src_lib_requester_test_tezt_lib)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -47,7 +48,8 @@
   -open Mavryk_validation
   -open Mavryk_event_logging_test_helpers
   -open Mavryk_test_helpers
-  -open Mavkit_alcotezt)
+  -open Mavkit_alcotezt
+  -open Src_lib_requester_test_tezt_lib)
  (modules
   generators
   generators_tree

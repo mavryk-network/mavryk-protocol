@@ -123,9 +123,7 @@ module Proto_client = struct
           storage_limit = Z.zero;
         }
     in
-    Data_encoding.Binary.length
-      Operation.contents_encoding_with_legacy_attestation_name
-      (Contents contents)
+    Data_encoding.Binary.length Operation.contents_encoding (Contents contents)
 
   let operation_size op =
     manager_operation_size (injector_operation_to_manager op)
@@ -156,7 +154,7 @@ module Proto_client = struct
     in
     let dummy_size =
       Data_encoding.Binary.length
-        Operation.contents_encoding_with_legacy_attestation_name
+        Operation.contents_encoding
         (Contents dummy_contents)
     in
     dummy_size - manager_operation_size (Manager dummy_operation)
@@ -178,7 +176,6 @@ module Proto_client = struct
     match op_result with
     | Preattestation_result _ -> Successful
     | Attestation_result _ -> Successful
-    | Dal_attestation_result _ -> Successful
     | Seed_nonce_revelation_result _ -> Successful
     | Vdf_revelation_result _ -> Successful
     | Double_attestation_evidence_result _ -> Successful
@@ -261,7 +258,7 @@ module Proto_client = struct
          "edsk3UqeiQWXX7NFEY1wUs6J1t2ez5aQ3hEWdqX5Jr5edZiGLW8nZr"
 
   let simulate_operations cctxt ~force ~source ~src_pk ~successor_level
-      ~fee_parameter operations =
+      ~fee_parameter ?safety_guard operations =
     let open Lwt_result_syntax in
     let fee_parameter : Injection.fee_parameter =
       {
@@ -293,6 +290,7 @@ module Proto_client = struct
     let cctxt =
       new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
     in
+    let safety_guard = Option.map Gas.Arith.integral_of_int_exn safety_guard in
     let*! simulation_result =
       Injection.inject_manager_operation
         cctxt
@@ -308,6 +306,7 @@ module Proto_client = struct
         ~fee:Limit.unknown
         ~gas_limit:Limit.unknown
         ~storage_limit:Limit.unknown
+        ?safety_guard
         ~fee_parameter
         annot_op
     in
@@ -353,9 +352,7 @@ module Proto_client = struct
       ((shell, Contents_list contents) as unsigned_op) =
     let open Lwt_result_syntax in
     let unsigned_bytes =
-      Data_encoding.Binary.to_bytes_exn
-        Operation.unsigned_encoding_with_legacy_attestation_name
-        unsigned_op
+      Data_encoding.Binary.to_bytes_exn Operation.unsigned_encoding unsigned_op
     in
     let cctxt =
       new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
@@ -373,9 +370,7 @@ module Proto_client = struct
         protocol_data = Operation_data {contents; signature = Some signature};
       }
     in
-    Data_encoding.Binary.to_bytes_exn
-      Operation.encoding_with_legacy_attestation_name
-      op
+    Data_encoding.Binary.to_bytes_exn Operation.encoding op
 
   let time_until_next_block
       {Injector.minimal_block_delay; delay_increment_per_round; _}

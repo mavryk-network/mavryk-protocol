@@ -32,7 +32,36 @@
     Subject:    the consistency of parametric constants
  *)
 
-open Test_tez
+open Tez_helpers
+
+let test_sc_rollup_constants_consistency () =
+  let open Protocol.Alpha_context in
+  let to_string c =
+    Data_encoding.Json.(
+      to_string ~minify:true
+      @@ construct Constants.Parametric.Internal_for_tests.sc_rollup_encoding c)
+  in
+  (* We do not necessarily need to update this value when the block time
+     changes. The goal is to witness the consistency of the “symbolic”
+     computations in [Default_parameters] and [Raw_context].. *)
+  let block_time = 10 in
+  let sc_rollup =
+    Default_parameters.Internal_for_tests.make_sc_rollup_parameter
+      ~dal_attested_slots_validity_lag:241_920
+        (* 4 weeks with a 10 secs block time. *)
+      ~dal_activation_level:Raw_level.root
+      block_time
+  in
+  let sc_rollup' =
+    Constants.Parametric.update_sc_rollup_parameter sc_rollup ~block_time
+  in
+  Assert.equal
+    ~loc:__LOC__
+    (fun s1 s2 -> String.equal (to_string s1) (to_string s2))
+    "sc_rollup_parameter update"
+    (fun fmt sc_rollup -> Format.pp_print_string fmt @@ to_string sc_rollup)
+    sc_rollup
+    sc_rollup'
 
 let test_constants_consistency () =
   let open Default_parameters in
@@ -205,8 +234,10 @@ let liquidity_baking_subsidy_param () =
   in
   let*? total_rewards = baking_rewards +? validators_rewards in
   let expected_subsidy = total_rewards /! 16L in
-  let liquidity_baking_subsidy =
-    get_reward ~reward_kind:Liquidity_baking_subsidy
+  let*?@ liquidity_baking_subsidy =
+    Protocol.Alpha_context.Delegate.Rewards.For_RPC
+    .liquidity_baking_subsidy_from_constants
+      constants
   in
   let*? diff = liquidity_baking_subsidy -? expected_subsidy in
   let max_diff = 1000 (* mumav *) in

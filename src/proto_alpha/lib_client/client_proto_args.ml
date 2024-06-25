@@ -533,6 +533,16 @@ let default_gas_limit_arg =
        client decide based on a simulation"
     gas_limit_kind
 
+let safety_guard_arg =
+  Tezos_clic.arg
+    ~long:"safety-guard"
+    ~placeholder:"extra_gas"
+    ~doc:
+      "Amount of gas to add to value computed by simulation. The gas safety \
+       guard allows operations that consume a little more gas than expected to \
+       be successful"
+    gas_limit_kind
+
 let run_gas_limit_arg =
   Mavryk_clic.arg
     ~long:"gas"
@@ -810,11 +820,11 @@ let edge_of_baking_over_staking_billionth_arg =
     ~long:"edge-of-baking-over-staking"
     ~placeholder:"edge"
     ~doc:
-      "Sets the portion of the rewards issued to the delegate that should be \
-       transfered to its liquid balance. The rest is issued to its stakers \
-       (itself included), proportionally to their stake. Value should be \
-       between 0 and 1. If not set, default value is 1: all rewards given to \
-       the source are issued to their liquid balance."
+      "Sets the portion of the delegate's stakers rewards that goes to the \
+       delegate. This edge, taken from the staker's rewards, is accrued to the \
+       delegate's own frozen balance. This value must be between 0 and 1 (e.g. \
+       0.05 for the delegate to receive 5% of the staker's rewards). Default \
+       value is 1 (delegate receives all staker's rewards)."
     ((* TODO #6162: check it's between 0 and 1 billion *)
      fixed_point_parameter
        ~decimals:9

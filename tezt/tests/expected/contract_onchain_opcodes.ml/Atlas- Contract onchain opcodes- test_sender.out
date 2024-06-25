@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000351
+    Fee to the validator: ṁ0.000351
     Expected counter: 1
     Gas limit: 686
     Storage limit: 332 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000351
-      payload fees(the block proposer) ....... +ꜩ0.000351
+      [PUBLIC_KEY_HASH] ... -ṁ0.000351
+      payload fees(the block proposer) ....... +ṁ0.000351
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter (contract unit) ;
           storage unit ;
@@ -41,10 +41,10 @@ This sequence of operations was run:
         Paid storage size diff: 55 bytes
         Consumed gas: 585.065
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.01375
-          storage fees ........................... +ꜩ0.01375
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.01375
+          storage fees ........................... +ṁ0.01375
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as proxy.
@@ -62,16 +62,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000375
+    Fee to the validator: ṁ0.000375
     Expected counter: 2
     Gas limit: 686
     Storage limit: 342 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000375
-      payload fees(the block proposer) ....... +ꜩ0.000375
+      [PUBLIC_KEY_HASH] ... -ṁ0.000375
+      payload fees(the block proposer) ....... +ṁ0.000375
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter unit ;
           storage address ;
@@ -85,10 +85,10 @@ This sequence of operations was run:
         Paid storage size diff: 65 bytes
         Consumed gas: 585.419
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.01625
-          storage fees ........................... +ꜩ0.01625
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.01625
+          storage fees ........................... +ṁ0.01625
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as sender.
@@ -106,15 +106,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000386
+    Fee to the validator: ṁ0.000386
     Expected counter: 1
     Gas limit: 1379
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000386
-      payload fees(the block proposer) ....... +ꜩ0.000386
+      [PUBLIC_KEY_HASH] ... -ṁ0.000386
+      payload fees(the block proposer) ....... +ṁ0.000386
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied
@@ -139,15 +139,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000599
+    Fee to the validator: ṁ0.000599
     Expected counter: 2
     Gas limit: 3049
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000599
-      payload fees(the block proposer) ....... +ꜩ0.000599
+      [PUBLIC_KEY_HASH] ... -ṁ0.000599
+      payload fees(the block proposer) ....... +ṁ0.000599
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "[CONTRACT_HASH]"
@@ -157,7 +157,7 @@ This sequence of operations was run:
       Consumed gas: 1739.356
       Internal operations:
         Internal Transaction:
-          Amount: ꜩ0
+          Amount: ṁ0
           From: [CONTRACT_HASH]
           To: [CONTRACT_HASH]
           This transaction was successfully applied

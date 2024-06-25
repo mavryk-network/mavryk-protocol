@@ -105,6 +105,7 @@ in
         cacert
         curl
         shellcheck
+        shfmt
         poetry
         kaitai-struct-compiler
         devPackageSet.ocaml-lsp-server

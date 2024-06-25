@@ -22,7 +22,6 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_protocol_alpha
   -open Mavryk_client_alpha
   -open Mavryk_client_commands

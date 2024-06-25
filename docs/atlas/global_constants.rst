@@ -2,7 +2,8 @@ Global Constants
 ================
 
 The size limit for :doc:`Michelson <michelson>` contracts is quite small, limited to 60
-kilobytes as of Atlas protocol. Global constants are a feature that enables the re-use of user-defined Micheline chunks in Michelson scripts, allowing
+kilobytes as of Atlas protocol. Global constants are a feature 
+that enables the re-use of user-defined Micheline chunks in Michelson scripts, allowing
 for larger and more complex contracts on the chain. It works in the
 following way:
 

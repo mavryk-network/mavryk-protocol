@@ -633,8 +633,38 @@ val spawn_bake_for :
   t ->
   Process.t
 
+(** Bake until the node is at [target_level], using
+    {!bake_for_and_wait}.
+
+    Fail if the node is already at [target_level] or higher.
+
+    @param keys See {!bake_for}.
+
+    @param node See {!bake_for_and_wait}. *)
+val bake_until_level :
+  target_level:int -> ?keys:string list -> ?node:Node.t -> t -> unit Lwt.t
+
+(** Bake until the node is at [target_cycle], using {!bake_for_and_wait}. This
+  function calls an RPC to know the exact "blocks_per_cycle" value to compute
+  the number of blocks to bake. As this occurs only once, the ending cycle might
+  be different from the target cycle if the "blocks_per_cycle" value changes
+  during the execution, for instance because of a protocol migration.
+
+  Fail if the node is already at [target_cycle] or higher. 
+
+  @param keys See {!bake_for}.
+
+  @param node See {!bake_for_and_wait}. *)
+val bake_until_cycle :
+  target_cycle:int -> ?keys:string list -> ?node:Node.t -> t -> unit Lwt.t
+
+(** Similar to {!bake_until_cycle} but stops at the last block of the queried
+  cycle. *)
+val bake_until_cycle_end :
+  target_cycle:int -> ?keys:string list -> ?node:Node.t -> t -> unit Lwt.t
+
 (** Run [mavkit-client attest for]. Run [mavkit-client endorse for] for protocol
-    older than 001.
+    older than 018.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val attest_for :
@@ -812,6 +842,7 @@ val transfer :
   ?burn_cap:Tez.t ->
   ?fee:Tez.t ->
   ?gas_limit:int ->
+  ?safety_guard:int ->
   ?storage_limit:int ->
   ?counter:int ->
   ?entrypoint:string ->
@@ -834,6 +865,7 @@ val spawn_transfer :
   ?burn_cap:Tez.t ->
   ?fee:Tez.t ->
   ?gas_limit:int ->
+  ?safety_guard:int ->
   ?storage_limit:int ->
   ?counter:int ->
   ?entrypoint:string ->
@@ -853,6 +885,7 @@ val call :
   ?endpoint:endpoint ->
   ?wait:string ->
   ?burn_cap:Tez.t ->
+  ?safety_guard:int ->
   ?entrypoint:string ->
   ?arg:string ->
   destination:string ->
@@ -867,6 +900,7 @@ val spawn_call :
   ?endpoint:endpoint ->
   ?wait:string ->
   ?burn_cap:Tez.t ->
+  ?safety_guard:int ->
   ?entrypoint:string ->
   ?arg:string ->
   destination:string ->
@@ -1057,6 +1091,16 @@ val set_deposits_limit :
   limit:string ->
   t ->
   string Lwt.t
+
+(* Same as [set_deposits_limit], but do not wait for the process to exit. *)
+val spawn_set_deposits_limit :
+  ?hooks:Process.hooks ->
+  ?endpoint:endpoint ->
+  ?wait:string ->
+  src:string ->
+  limit:string ->
+  t ->
+  Process.t
 
 (** Run [mavkit-client unset deposits limit for <src>]. *)
 val unset_deposits_limit :
@@ -1295,7 +1339,7 @@ val spawn_stresstest :
   t ->
   Process.t
 
-(** Run [mavryk-client stresstest gen keys <nb_keys>].
+(** Run [mavkit-client stresstest gen keys <nb_keys>].
 
     [nb_keys] contains the number of new keys to be generated.
 
@@ -1513,7 +1557,7 @@ val spawn_register_global_constant :
 
     Given the output:
 {v
-    $ ./mavryk-client hash data Unit of type unit
+    $ ./mavkit-client hash data Unit of type unit
     Raw packed data: 0x05030b
     Script-expression-ID-Hash: expruaDPoTWXcTR6fiQPy4KZSW72U6Swc1rVmMiP...
     Raw Script-expression-ID-Hash: 0x8b456a4530fb6d0fea9a0dcd0e9d6ff6b3...
@@ -1707,12 +1751,12 @@ val spawn_run_tzip4_view :
   t ->
   Process.t
 
-(** Run [mavryk-client run tzip4 view .. on contract .. with input .. ]
+(** Run [mavkit-client run tzip4 view .. on contract .. with input .. ]
 
     Returns the value returned by a view as a string.
 
     Fails if the view or the contract does not exist. If [input] is [None],
-    it runs [mavryk-client run tzip4 view .. on contract ..]. *)
+    it runs [mavkit-client run tzip4 view .. on contract ..]. *)
 val run_tzip4_view :
   ?hooks:Process.hooks ->
   ?source:string ->
@@ -2408,7 +2452,7 @@ val init_with_node :
   ?event_sections_levels:(string * Daemon.Level.level) list ->
   ?nodes_args:Node.argument list ->
   ?keys:Account.key list ->
-  ?rpc_local:bool ->
+  ?rpc_external:bool ->
   [`Client | `Light | `Proxy] ->
   unit ->
   (Node.t * t) Lwt.t
@@ -2442,7 +2486,7 @@ val init_with_protocol :
   ?parameter_file:string ->
   ?timestamp:timestamp ->
   ?keys:Account.key list ->
-  ?rpc_local:bool ->
+  ?rpc_external:bool ->
   [`Client | `Light | `Proxy] ->
   protocol:Protocol.t ->
   unit ->
@@ -2595,7 +2639,7 @@ val convert_data_to_json :
 (** Run [mavkit-client bootstrapped]. *)
 val bootstrapped : t -> unit Lwt.t
 
-(** Run [mavryk-client config show]. *)
+(** Run [mavkit-client config show]. *)
 val config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> string Lwt.t
 
@@ -2603,7 +2647,7 @@ val config_show :
 val spawn_config_show :
   ?config_file:string -> ?protocol:Protocol.t -> t -> Process.t
 
-(** Run [mavryk-client config show]. *)
+(** Run [mavkit-client config show]. *)
 val config_init :
   ?config_file:string ->
   ?protocol:Protocol.t ->
@@ -2623,7 +2667,7 @@ val spawn_config_init :
   t ->
   Process.t
 
-(** Run [mavryk-client compute chain id from block hash]. *)
+(** Run [mavkit-client compute chain id from block hash]. *)
 val compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2631,7 +2675,7 @@ val compute_chain_id_from_block_hash :
 val spawn_compute_chain_id_from_block_hash :
   ?endpoint:endpoint -> t -> string -> Process.t
 
-(** Run [mavryk-client compute chain id from seed]. *)
+(** Run [mavkit-client compute chain id from seed]. *)
 val compute_chain_id_from_seed :
   ?endpoint:endpoint -> t -> string -> string Lwt.t
 
@@ -2972,7 +3016,7 @@ val spawn_prepare_multisig_transaction_set_threshold_and_public_keys :
   t ->
   Process.t
 
-(** Run [mavryk-client expand macros in <script>]. *)
+(** Run [mavkit-client expand macros in <script>]. *)
 val expand_macros :
   ?endpoint:endpoint ->
   ?hooks:Process_hooks.t ->
@@ -2992,7 +3036,7 @@ val spawn_expand_macros :
   string ->
   Process.t
 
-(** Run [mavryk-client get timestamp]. *)
+(** Run [mavkit-client get timestamp]. *)
 val get_timestamp :
   ?endpoint:endpoint -> ?block:string -> ?seconds:bool -> t -> string Lwt.t
 
@@ -3016,6 +3060,48 @@ val publish_dal_commitment :
 (** Return the information stored in the given endpoint as a foreign
     endpoint. *)
 val as_foreign_endpoint : endpoint -> Endpoint.t
+
+(** Run [mavkit-client get receipt for <operation> --check-previous <blocks>]. *)
+val get_receipt_for :
+  operation:string -> ?check_previous:int -> t -> string Lwt.t
+
+(** Run [mavkit-client stake <amount> for <staker>]. *)
+val stake :
+  ?wait:string ->
+  ?hooks:Process_hooks.t ->
+  Tez.t ->
+  staker:string ->
+  t ->
+  unit Lwt.t
+
+(** Same as [stake], but do not wait for the process to exit. *)
+val spawn_stake :
+  ?wait:string ->
+  ?hooks:Process_hooks.t ->
+  Tez.t ->
+  staker:string ->
+  t ->
+  Process.t
+
+(** Run [mavkit-client unstake <amount> for <staker>]. *)
+val unstake : ?wait:string -> Tez.t -> staker:string -> t -> unit Lwt.t
+
+(** Same as [unstake], but do not wait for the process to exit. *)
+val spawn_unstake : ?wait:string -> Tez.t -> staker:string -> t -> Process.t
+
+(** Run [mavkit-client finalize_unstake for <staker>]. *)
+val finalize_unstake : ?wait:string -> staker:string -> t -> unit Lwt.t
+
+(** Same as [finalize_unstake], but do not wait for the process to exit. *)
+val spawn_finalize_unstake : ?wait:string -> staker:string -> t -> Process.t
+
+(** Run [mavkit-client set delegate parameters for <delegate> --limit-of-staking-over-baking <limit> --edge-of-baking-over-staking <edge>]. *)
+val set_delegate_parameters :
+  delegate:string -> limit:string -> edge:string -> t -> unit Lwt.t
+
+(** Same as [set_delegate_parameters], but do not wait for the process to exit. *)
+val spawn_set_delegate_parameters :
+  delegate:string -> limit:string -> edge:string -> t -> Process.t
 
 module RPC : sig
   (** Perform RPC calls using [mavkit-client]. *)

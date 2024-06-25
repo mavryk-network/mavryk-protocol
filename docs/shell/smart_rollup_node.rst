@@ -19,22 +19,52 @@ We first cover the operation of the rollup node and the corresponding workflow,
 using some predefined rollup logic (called kernel), and then we explain how the
 logic of a rollup can be defined by developing a custom rollup kernel.
 
+.. _smart_rollup_node_prerequisites:
+
 Prerequisites
 -------------
 
 To experiment with the commands described in this section, we use
-the `Dailynet <https://teztnets.com/dailynet-about>`_.
+the `Weeklynet <https://teztnets.com/weeklynet-about>`_.
 In this section, we assume that ``${OPERATOR_ADDR}`` is a valid
-implicit account on Dailynet owned by the reader.
+implicit account on Weeklynet owned by the reader.
 
 Notice that you need a specific development version of Mavkit to
-participate to Dailynet. This version is either available from
+participate to Weeklynet. This version is either available from
 docker images or can be compiled from sources. Please refer to the
-`Dailynet <https://teztnets.com/dailynet-about>`_ website
+`Weeklynet <https://teztnets.com/weeklynet-about>`_ website
 for installation details.
 
-An Mavkit rollup node needs an Mavkit node to run. We assume that
-an Mavkit node has been launched locally, typically by issuing:
+An Mavkit rollup node needs an Mavkit node to run. It is recommended that the two
+nodes run on the same machine. If this is the case, there is no additional
+configuration required of the Mavkit node. If they are on different network
+interfaces, the Mavkit node needs to allow the rollup node to make specific
+RPCs. To achieve this, one can add the following to the :doc:`Mavkit node
+configuration file <../user/node-configuration>`, where ``<ip.address:port>`` is
+the address at which the rollup node can contact the Mavkit node.
+
+.. code:: json
+
+   {
+      "rpc": {
+        "acl": [
+          {
+            "address": "<ip.address:port>",
+            "blacklist": []
+          }
+        ]
+      }
+   }
+
+.. warning::
+
+   Configuring a public facing Mavkit node this way exposes it to DoS
+   attacks. However one can allow all RPCs on the Mavkit node to be accessed
+   locally while still keeping sane defaults for outside accesses by specifying
+   an additional RPC server with, *e.g.*, ``--rpc-addr 127.0.0.1 --rpc-addr
+   0.0.0.0``.
+
+We assume that an Mavkit node has been launched locally, typically by issuing:
 
 .. code:: sh
 
@@ -42,7 +72,7 @@ an Mavkit node has been launched locally, typically by issuing:
    mavkit-node run --data-dir "${ONODE_DIR}" --network "${NETWORK}" --rpc-addr 127.0.0.1
 
 in a terminal where ``${NETWORK}`` is of the
-form ``https://teztnets.com/dailynet-YYYY-MM-DD``
+form ``https://teztnets.com/weeklynet-YYYY-MM-DD``
 and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.mavryk-node``.
 
 The commands will only work when the node is completely boostrapped, and therefore the current protocol on the target network is activated.
@@ -65,7 +95,7 @@ Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returne
 Finally, you need to check that your balance is greater than 10,000
 mav to make sure that staking is possible. In case your balance is not
 sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
-after your node gets synchronized with Dailynet.
+after your node gets synchronized with Weeklynet.
 
 
 .. code:: sh
@@ -344,6 +374,199 @@ in the configuration file or command line.
 
 This is the default history mode.
 
+
+.. _rollup_snapshots:
+
+Snapshots
+---------
+
+Smart rollup node snapshots are a way to bootstrap a rollup node without having
+to replay the whole L2 chain since the rollup genesis. Without this snapshot mechanism, one would need
+an archive L1 node to bootstrap a rollup node or to catch up (if the rollup node
+data is more than a few days old) because it needs access to metadata about L1
+operations on the chain.
+
+Snapshots for a particular rollup must be obtained from an off-chain source (for
+instance a rollup snapshot provider service which regularly publishes snapshots
+online) and imported into an existing, or empty, rollup node to get started
+quickly.
+
+.. _format_rollup_snapshot:
+
+Format of snapshots
+"""""""""""""""""""
+
+A smart rollup node snapshot is a binary file which contains a header part and a
+data part. The data part is a tar archive of the non-local storage files of the
+rollup node while the metadata header exposes information to quickly validate or
+discard a snapshot.
+
+.. list-table:: Snapshot format
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Name
+     - Size
+     - Contents
+   * - Snapshot version
+     - 1 byte
+     - ``0`` (the only version so far)
+   * - :ref:`History mode <rollup_history_mode>`
+     - 1 byte
+     - ``0`` for archive, ``1`` for full
+   * - Address
+     - 20 bytes
+     - Address of the smart rollup
+   * - Head level
+     - 4 bytes
+     - Level of the last seen L1 block of the rollup (int32)
+   * - Last commitment hash
+     - 32 bytes
+     - Hash of last commitment in the L2 chain
+   * - Data
+     - Variable
+     - Tar archive of rollup node data
+
+
+The snapshots can be imported (and exported) as either compressed (with gzip) or
+uncompressed files.
+
+.. _importing_a_rollup_snapshot:
+
+Importing a snapshot
+""""""""""""""""""""
+
+A snapshot ``${SNAPSHOT_FILE}`` can be imported by issuing the following command:
+
+.. code-block:: console
+
+   mavkit-smart-rollup-node -E ${L1_NODE_ENDPOINT} \
+     snapshot import ${SNAPSHOT_FILE} \
+     [--data-dir ${ROLLUP_NODE_DIR}] \
+     [--force]
+
+
+where ``${ROLLUP_NODE_DIR}`` is the data directory of the rollup node in which
+we want to import the snapshot, and ``${L1_NODE_ENDPOINT}`` is the RPC endpoint
+of an L1 node, needed to verify the snapshot.
+
+Option ``--force`` allows to import a snapshot in an already
+populated data directory of a rollup node.
+
+.. warning::
+
+   When using the ``--force`` option, it is recommended to run the
+   :ref:`snapshot info command <rollup_snapshot_info>` and to first import the
+   snapshot in an empty directory to run all the checks.
+
+While importing a snapshot, many checks are performed to ensure the consistency
+of the imported data. In order to speed up the process, but only if the
+snapshot's source is highly trusted (or exported by yourself), it is possible to
+disable some checks. Some rudimentary checks will still be performed. However,
+most of the data will be copied directly, without additional consistency
+checks. To do so, use the ``--no-check`` option.
+
+.. warning::
+
+   The snapshot importing mechanism checks that the chain of commitments from
+   the LCC (last cemented commitment) to the last commitment is published on the
+   L1 chain but this does not prevent a malicious provider of snapshots from
+   providing snapshots with inaccurate data about the L2 state, as soon as she or
+   he is willing to also forfeit her/his deposit (these commitments were exposed
+   on L1 to eventual refutation games). The check described above gives some
+   acceptable level of assurance without having to recompute the whole chain
+   from the LCC (which can be costly depending on the rollup).
+
+List of checks performed for import
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Metadata checks:
+
+  - Rollup address matches (*)
+  - History mode matches (*)
+  - Snapshot head is fresher than the one on disk (*)
+  - Last commitment is published on L1
+- Metadata commitment matches the snapshot one
+- LCC on L1 is a valid commitment in the snapshot
+- Ensure the chain of commitments goes back to LCC
+- For each L2 block:
+
+  - The commitment, if any, must be for the PVM state of this block
+  - Hashes are for the correct content (for state hash, commitment hash, inbox
+    hash)
+
+(*) Marks the rudimentary checks that are performed on import with option
+``--no-checks``.
+
+.. _rollup_snapshot_info:
+
+Snapshot information
+""""""""""""""""""""
+
+When retrieving a snapshot, it can be useful to check its actual content, such
+as:
+
+- snapshot format
+- history mode
+- smart rollup address
+- head level
+- last commitment
+
+This information is displayed by the following command:
+
+.. code-block:: console
+
+   mavkit-smart-rollup-node snapshot info ${SNAPSHOT_FILE}
+
+which will essentially decode and display the metadata header of the snapshot
+file.
+
+.. _exporting_a_rollup_snapshot:
+
+Exporting a snapshot
+""""""""""""""""""""
+
+Exporting a snapshot for a currently running rollup node will temporarily stop
+its progression (during the time the data is initially copied). The export
+creates a file with a chosen name ``${SNAPSHOT_FILE}`` or one which is
+automatically generated of the form
+``snapshot-<address>-<level>.<history_mode>`` and is achieved by running the
+following command (the rollup node does not need to be stopped):
+
+.. code-block:: console
+
+   mavkit-smart-rollup-node snapshot export [${SNAPSHOT_FILE}] \
+     [--data-dir ${ROLLUP_NODE_DIR}] \
+     [--dest ${DEST_DIR}]
+
+The export has three phases:
+
+1. Initial export of the data (blocking)
+2. Compression of snapshot (non-blocking)
+3. Integrity check of snapshot (non-blocking)
+
+The checks for the export are less thorough than the ones for an import but
+ensure that the snapshot is not corrupted and can be imported by other users.
+
+.. note::
+
+   It is also possible to use the ``--no-check`` option to disable the integrity
+   checks during the export (i.e., phase 3), which will speed up the process.
+
+.. note::
+
+   Snapshots produced with the ``--compact`` option will be significantly
+   smaller (by a factor of 3) than otherwise as they contain a single commit of
+   the context for the first available block (instead of the full context
+   history). They take a comparable amount of time to be exported but take
+   longer to be imported because the context needs to be reconstructed.
+
+.. warning::
+
+   Snapshots exported with ``--compact`` for *archive* rollup nodes will need a
+   significant time to import because the context will need to be reconstructed
+   from the rollup genesis.
+
 Workflows
 ---------
 
@@ -403,7 +626,7 @@ Triggering the execution of an outbox message
 
 Once an outbox message has been pushed to the outbox by the kernel at
 some level ``${L}``, the user needs to wait for the commitment that
-includes this level to be cemented. On Dailynet, the cementation
+includes this level to be cemented. On Weeklynet, the cementation
 process of a non-disputed commitment is 40 blocks long while on
 Mainnet, it is 2 weeks long.
 

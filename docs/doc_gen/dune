@@ -15,6 +15,8 @@
   data-encoding
   re
   mavryk-protocol-genesis.embedded-protocol
+  mavryk-protocol-019-PtParisB.embedded-protocol
+  mavryk-protocol-020-PsParisC.embedded-protocol
   mavryk-protocol-001-PtAtLas.embedded-protocol
   mavryk-protocol-alpha.embedded-protocol)
  (link_flags

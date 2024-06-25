@@ -28,7 +28,7 @@ type t = {
   config : Config_file.t;
   rpc_comm_socket_path : string;
   internal_events : Mavryk_base.Internal_event_config.t;
-  node_version : Mavryk_version.Node_version.t;
+  node_version : Mavryk_version.Mavkit_node_version.t;
 }
 
 (** Encoding for parameters type {!t} *)

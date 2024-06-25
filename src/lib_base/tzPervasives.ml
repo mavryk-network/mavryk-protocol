@@ -25,6 +25,7 @@
 
 include Mavryk_stdlib
 module Error_monad = Mavryk_error_monad.Error_monad
+module Error_monad_legacy = Mavryk_error_monad_legacy.Error_monad
 include Mavryk_micheline
 module Data_encoding = Data_encoding
 include Mavryk_error_monad.TzLwtreslib

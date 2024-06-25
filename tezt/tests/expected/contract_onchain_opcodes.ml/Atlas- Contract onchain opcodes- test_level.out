@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000338
+    Fee to the validator: ṁ0.000338
     Expected counter: 1
     Gas limit: 680
     Storage limit: 320 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000338
-      payload fees(the block proposer) ....... +ꜩ0.000338
+      [PUBLIC_KEY_HASH] ... -ṁ0.000338
+      payload fees(the block proposer) ....... +ṁ0.000338
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter unit ;
           storage nat ;
@@ -35,10 +35,10 @@ This sequence of operations was run:
         Paid storage size diff: 43 bytes
         Consumed gas: 579.449
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.01075
-          storage fees ........................... +ꜩ0.01075
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.01075
+          storage fees ........................... +ṁ0.01075
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as level.
@@ -56,15 +56,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000386
+    Fee to the validator: ṁ0.000386
     Expected counter: 2
     Gas limit: 1378
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000386
-      payload fees(the block proposer) ....... +ꜩ0.000386
+      [PUBLIC_KEY_HASH] ... -ṁ0.000386
+      payload fees(the block proposer) ....... +ṁ0.000386
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied
@@ -92,15 +92,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000386
+    Fee to the validator: ṁ0.000386
     Expected counter: 3
     Gas limit: 1378
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000386
-      payload fees(the block proposer) ....... +ꜩ0.000386
+      [PUBLIC_KEY_HASH] ... -ṁ0.000386
+      payload fees(the block proposer) ....... +ṁ0.000386
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       This transaction was successfully applied

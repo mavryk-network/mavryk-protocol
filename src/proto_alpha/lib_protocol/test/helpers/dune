@@ -6,6 +6,9 @@
  (public_name mavkit-protocol-alpha-libs.test-helpers)
  (instrumentation (backend bisect_ppx))
  (libraries
+  tezt.core
+  tezt-tezos
+  tezt
   qcheck-alcotest
   mavkit-libs.test-helpers
   mavkit-libs.base
@@ -22,8 +25,9 @@
   mavkit-protocol-alpha-libs.smart-rollup)
  (flags
   (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_micheline
   -open Mavryk_stdlib_unix
   -open Mavryk_protocol_alpha

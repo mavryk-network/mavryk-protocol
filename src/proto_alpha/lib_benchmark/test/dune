@@ -23,7 +23,6 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_micheline
   -open Mavryk_protocol_alpha
   -open Mavryk_benchmark

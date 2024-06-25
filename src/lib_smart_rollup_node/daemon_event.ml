@@ -53,6 +53,15 @@ module Simple = struct
       ("process_time", Time.System.Span.encoding)
       ~pp3:Ptime.Span.pp
 
+  let new_head_degraded =
+    declare_2
+      ~section
+      ~name:"smart_rollup_node_daemon_new_head_degraded"
+      ~msg:"[DEGRADED MODE] Seen layer 1 head {hash} at level {level}"
+      ~level:Error
+      ("hash", Block_hash.encoding)
+      ("level", Data_encoding.int32)
+
   let processing_heads_iteration =
     declare_3
       ~section
@@ -126,6 +135,19 @@ module Simple = struct
           ppf
           (if catching_up then "Catching up on migration" else "Migration"))
 
+  let switched_protocol =
+    declare_3
+      ~name:"smart_rollup_node_daemon_switched_protocol"
+      ~msg:"Switched to {protocol} ({proto_level}) with constants {constants} "
+      ~level:Notice
+      ("protocol", Protocol_hash.encoding)
+      ("proto_level", Data_encoding.int31)
+      ("constants", Rollup_constants.encoding)
+      ~pp3:(fun fmt c ->
+        Data_encoding.Json.pp
+          fmt
+          (Data_encoding.Json.construct Rollup_constants.encoding c))
+
   let error =
     declare_1
       ~section
@@ -141,9 +163,27 @@ module Simple = struct
       ~name:"smart_rollup_node_daemon_degraded_mode"
       ~msg:
         "[Daemon error]: entering degraded mode - only playing refutation game \
-         to defend commitments"
+         to defend commitments and publishing pending commitments"
       ~level:Error
       ()
+
+  let refutation_loop_retry =
+    declare_1
+      ~section
+      ~name:"smart_rollup_node_daemon_refutation_loop_retry"
+      ~msg:"[Refutation daemon error]: restarting refutation daemon in {delay}."
+      ~level:Warning
+      ("delay", Time.System.Span.encoding)
+      ~pp1:Ptime.Span.pp
+
+  let main_loop_retry =
+    declare_1
+      ~section
+      ~name:"smart_rollup_node_daemon_main_loop_retry"
+      ~msg:"Restarting main rollup node loop in {delay}."
+      ~level:Warning
+      ("delay", Time.System.Span.encoding)
+      ~pp1:Ptime.Span.pp
 
   let exit_bailout_mode =
     declare_0
@@ -160,6 +200,8 @@ let head_processing hash level = Simple.(emit head_processing (hash, level))
 
 let new_head_processed hash level process_time =
   Simple.(emit new_head_processed (hash, level, process_time))
+
+let new_head_degraded hash level = Simple.(emit new_head_degraded (hash, level))
 
 let new_heads_iteration event = function
   | oldest :: rest ->
@@ -193,8 +235,17 @@ let migration ~catching_up (old_protocol, old_protocol_level)
       new_protocol,
       new_protocol_level )
 
+let switched_protocol protocol proto_level constants =
+  Simple.(emit switched_protocol) (protocol, proto_level, constants)
+
 let error e = Simple.(emit error) e
 
 let degraded_mode () = Simple.(emit degraded_mode) ()
+
+let refutation_loop_retry d =
+  Simple.(emit refutation_loop_retry) (Time.System.Span.of_seconds_exn d)
+
+let main_loop_retry d =
+  Simple.(emit main_loop_retry) (Time.System.Span.of_seconds_exn d)
 
 let exit_bailout_mode () = Simple.(emit exit_bailout_mode) ()

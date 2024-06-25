@@ -66,7 +66,13 @@ type injector = {
           never included is retried. *)
 }
 
-type gc_parameters = {frequency_in_blocks : int32}
+type fee_parameters = Injector_common.fee_parameter Operation_kind.Map.t
+
+type gc_parameters = {
+  frequency_in_blocks : int32;  (** Frequency at which the GC is triggered. *)
+  context_splitting_period : int option;
+      (** Number of blocks before splitting the context. *)
+}
 
 type history_mode =
   | Archive
@@ -81,11 +87,14 @@ type t = {
   operators : Purpose.operators;
   rpc_addr : string;
   rpc_port : int;
+  acl : Tezos_rpc_http_server.RPC_server.Acl.policy;
   metrics_addr : string option;
   reconnection_delay : float;
-  fee_parameters : Operation_kind.fee_parameters;
+  fee_parameters : fee_parameters;
   mode : mode;
   loser_mode : Loser_mode.t;
+  apply_unsafe_patches : bool;
+  unsafe_pvm_patches : Pvm_patches.unsafe_patch list;
   (*DAL/FIXME: https://gitlab.com/tezos/tezos/-/issues/3718
     Decide whether we want to handle connections to multiple
     Dal nodes for different slot indexes.
@@ -98,6 +107,10 @@ type t = {
   l1_blocks_cache_size : int;
   l2_blocks_cache_size : int;
   prefetch_blocks : int option;
+  l1_rpc_timeout : float;
+  loop_retry_delay : float;
+      (** Delay in seconds to retry the main loop and the refutation loop after
+          an error. *)
   index_buffer_size : int option;
   irmin_cache_size : int option;
   log_kernel_debug : bool;
@@ -134,6 +147,9 @@ val default_rpc_addr : string
 (** [default_rpc_port] is the default value for [rpc_port]. *)
 val default_rpc_port : int
 
+(** [default_acl] is the default value for [acl]. *)
+val default_acl : Tezos_rpc_http_server.RPC_server.Acl.policy
+
 (** [default_metrics_port] is the default port for the metrics server. *)
 val default_metrics_port : int
 
@@ -147,7 +163,7 @@ val default_fee_parameter : Operation_kind.t -> Injector_common.fee_parameter
 
 (** [default_fee_parameters] is the default fee parameters configuration build
     with {!default_fee_parameter} for all purposes. *)
-val default_fee_parameters : Operation_kind.fee_parameters
+val default_fee_parameters : fee_parameters
 
 (** [default_batcher] is the default configuration parameters for the batcher. *)
 val default_batcher : batcher
@@ -224,6 +240,12 @@ val default_irmin_cache_size : int
    details such as a timestamp, message content, severity level, etc. *)
 val default_index_buffer_size : int
 
+(** Encoding for configuration. *)
+val encoding : t Data_encoding.t
+
+(** Encoding for configuration without any default value. *)
+val encoding_no_default : t Data_encoding.t
+
 (** [save ~force ~data_dir configuration] writes the [configuration] file in
     [data_dir]. If [force] is [true], existing configurations are
     overwritten. *)
@@ -236,6 +258,7 @@ module Cli : sig
   val configuration_from_args :
     rpc_addr:string option ->
     rpc_port:int option ->
+    acl_override:[`Allow_all | `Secure] option ->
     metrics_addr:string option ->
     loser_mode:Loser_mode.t option ->
     reconnection_delay:float option ->
@@ -260,12 +283,14 @@ module Cli : sig
     history_mode:history_mode option ->
     allowed_origins:string list option ->
     allowed_headers:string list option ->
+    apply_unsafe_patches:bool ->
     t tzresult
 
   val create_or_read_config :
     data_dir:string ->
     rpc_addr:string option ->
     rpc_port:int option ->
+    acl_override:[`Allow_all | `Secure] option ->
     metrics_addr:string option ->
     loser_mode:Loser_mode.t option ->
     reconnection_delay:float option ->
@@ -290,5 +315,6 @@ module Cli : sig
     history_mode:history_mode option ->
     allowed_origins:string list option ->
     allowed_headers:string list option ->
+    apply_unsafe_patches:bool ->
     t tzresult Lwt.t
 end

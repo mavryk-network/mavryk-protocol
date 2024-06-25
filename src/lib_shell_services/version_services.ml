@@ -27,7 +27,7 @@ module S = struct
     Mavryk_rpc.Service.get_service
       ~description:"Get information on the node version"
       ~query:Mavryk_rpc.Query.empty
-      ~output:Node_version.encoding
+      ~output:Mavkit_node_version.encoding
       Mavryk_rpc.Path.(root / "version")
 end
 

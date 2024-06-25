@@ -95,11 +95,16 @@ let protocol_alpha_parameters_template =
 
 let network_activation_parameters_templates protocol_hash =
   match protocol_hash with
-  | Tezt_tezos.Protocol.Atlas ->
+  | Tezt_tezos.Protocol.ParisB ->
       Some
         (Filename.concat
            network_parameters_templates_dir
-           "proto_001_PtAtLas_mainnet.json")
+           "proto_019_PtParisB_mainnet.json")
+  | Tezt_tezos.Protocol.ParisC ->
+      Some
+        (Filename.concat
+           network_parameters_templates_dir
+           "proto_020_PsParisC_mainnet.json")
   | Tezt_tezos.Protocol.Alpha ->
       (* Fetching the network parameters from the src/proto_alpha directory,
          to be sure that we are in synch with current protocl parameters. *)
@@ -262,7 +267,7 @@ module Local = struct
           dal_config =
             {
               activated = false;
-              use_mock_srs_for_testing = None;
+              use_mock_srs_for_testing = false;
               bootstrap_peers = [];
             };
           genesis_parameters =
@@ -373,7 +378,11 @@ let () =
     ~__FILE__
     ~title:"Generate Network Activation Parameters"
     ~tags:["generate_activation_parameters"]
+<<<<<<< .merge_file_v6qM91
     (Local.generate_network_activation_parameters Protocol.Atlas) ;
+=======
+    (Local.generate_network_activation_parameters Protocol.ParisC) ;
+>>>>>>> .merge_file_KWZqwS
   register
     ~__FILE__
     ~title:"Partition bakers by node"

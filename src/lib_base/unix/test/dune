@@ -26,7 +26,7 @@
   -open Mavryk_error_monad
   -open Mavryk_test_helpers
   -open Mavkit_alcotezt)
- (modules test_unix_error test_syslog))
+ (modules test_unix_error test_syslog test_simple_profiler))
 
 (executable
  (name main)

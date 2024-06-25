@@ -11,6 +11,7 @@
   mavkit-libs.stdlib
   mavkit-libs.crypto
   data-encoding
+  mavkit-libs.error-monad-legacy
   mavkit-libs.error-monad
   mavkit-libs.rpc
   mavkit-libs.micheline
@@ -26,6 +27,7 @@
   (:standard)
   -open Mavryk_stdlib
   -open Data_encoding
+  -open Mavryk_error_monad_legacy
   -open Mavryk_error_monad
   -open Mavryk_error_monad.TzLwtreslib
   -open Mavryk_micheline

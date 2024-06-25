@@ -16,7 +16,7 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_base
   -open Mavryk_client_base
   -open Mavryk_client_001_PtAtLas

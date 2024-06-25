@@ -116,12 +116,26 @@ warnings() {
 
 getMavkitVersion() {
 
-  if ! _vers=$(dune exec mavkit-version 2>/dev/null); then
+  if ! version=$(dune exec src/lib_version/exe/mavkit_print_version.exe -- --json 2> /dev/null); then
     echo "Cannot get version. Try eval \`opam env\`?" >&2
     exit 1
   fi
-  _vers_fix=$(echo "$_vers" | sed -e 's/\~//' -e 's/\+//')
-  echo "$_vers_fix"
+  major=$(echo "$version" | jq -r .major)
+  minor=$(echo "$version" | jq -r .minor)
+  info=$(echo "$version" | jq -r .info)
+  short_hash=$(echo "$version" | jq -r .hash)
+
+  case $info in
+  *dev)
+    RET="$major.$minor$info+$short_hash"
+    ;;
+  *)
+    RET="$major.$minor$info"
+    ;;
+  esac
+
+  echo "$RET"
+
 }
 
 # Build init.d scripts

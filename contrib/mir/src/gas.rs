@@ -167,7 +167,21 @@ pub mod interpret_cost {
     pub const SWAP: u32 = 10;
     pub const INT_NAT: u32 = 10;
     pub const PUSH: u32 = 10;
-    pub const ADD_TEZ: u32 = 20;
+    pub const ADD_MAV: u32 = 20;
+    pub const ADD_BLS_FR: u32 = 30;
+    pub const ADD_BLS_G1: u32 = 900;
+    pub const ADD_BLS_G2: u32 = 2470;
+    pub const MUL_BLS_G1: u32 = 103000;
+    pub const MUL_BLS_G2: u32 = 220000;
+    pub const MUL_BLS_FR: u32 = 45;
+    pub const MUL_MAV_NAT: u32 = 50;
+    pub const MUL_NAT_MAV: u32 = MUL_MAV_NAT; // should be the same always
+    pub const EDIV_MAV_MAV: u32 = 80;
+    pub const EDIV_MAV_NAT: u32 = 70;
+    pub const NEG_FR: u32 = 30;
+    pub const NEG_G1: u32 = 50;
+    pub const NEG_G2: u32 = 70;
+    pub const SUB_MUMAV: u32 = 15;
     pub const UNIT: u32 = 10;
     pub const CAR: u32 = 10;
     pub const CDR: u32 = 10;
@@ -228,8 +242,123 @@ pub mod interpret_cost {
         use std::mem::size_of_val;
         // max is copied from the Tezos protocol, ostensibly adding two big ints depends on
         // the larger of the two due to result allocation
-        let sz = Checked::from(std::cmp::max(size_of_val(&i1), size_of_val(&i2)));
+        let sz = Checked::from(std::cmp::max(i1.byte_size(), i2.byte_size()));
         (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn sub_num(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(std::cmp::max(i1.byte_size(), i2.byte_size()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    /// Cost for `AND` on numbers and bytearrays
+    pub fn and_num(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(Ord::min(i1.byte_size(), i2.byte_size()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn and_bytes(b1: &[u8], b2: &[u8]) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(Ord::min(b1.len(), b2.len()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn or_num(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(Ord::min(i1.byte_size(), i2.byte_size()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn or_bytes(b1: &[u8], b2: &[u8]) -> Result<u32, OutOfGas> {
+        // NB: Tezos takes maximum of the sizes, but in our implementation only
+        // touches bytes in two vectors intersection. So taking the same formula
+        // as in [and_bytes].
+        let sz = Checked::from(Ord::min(b1.len(), b2.len()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn xor_nat(i1: &BigUint, i2: &BigUint) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(Ord::min(i1.byte_size(), i2.byte_size()));
+        (35 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn xor_bytes(b1: &[u8], b2: &[u8]) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(Ord::min(b1.len(), b2.len()));
+        (40 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn not_num<T: BigIntByteSize>(n: &T) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(n.byte_size());
+        (25 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn not_bytes(b: &Vec<u8>) -> Result<u32, OutOfGas> {
+        let sz = Checked::from(b.len());
+        (30 + (sz >> 1)).as_gas_cost()
+    }
+
+    pub fn lsl_nat(i1: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let sz = i1.byte_size();
+        let w1 = sz >> 1;
+        Checked::from(w1 + 130).as_gas_cost()
+    }
+
+    pub fn lsl_bytes(i1: &Vec<u8>, i2: &usize) -> Result<u32, OutOfGas> {
+        let size_1 = i1.len();
+        let size_2 = *i2;
+        let w1 = if size_2 > 0 {
+            ((size_2 - 1) >> 4) + (size_1 >> 1)
+        } else {
+            size_1 >> 1
+        };
+        Checked::from(w1 + (size_1 >> 2) + 65).as_gas_cost()
+    }
+
+    pub fn lsr_nat(i1: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let sz = i1.byte_size();
+        Checked::from((sz >> 1) + 45).as_gas_cost()
+    }
+
+    pub fn lsr_bytes(i1: &Vec<u8>, i2: &usize) -> Result<u32, OutOfGas> {
+        let size_1 = i1.len();
+        let size_2 = *i2;
+        let w1 = if size_1 >= (size_2 >> 3) {
+            Checked::from(size_1 - (size_2 >> 3))
+        } else {
+            Checked::from(0usize)
+        };
+        ((w1 >> 1) + (w1 >> 2) + 55).as_gas_cost()
+    }
+
+    pub fn mul_int(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let a = Checked::from(i1.byte_size()) + Checked::from(i2.byte_size());
+        // log2 is ill-defined for zero, hence this check
+        let v0 = if a.is_zero() {
+            Checked::from(0)
+        } else {
+            a * (a.ok_or(OutOfGas)?.log2i() as u64)
+        };
+        (55 + (v0 >> 1) + (v0 >> 2) + (v0 >> 4)).as_gas_cost()
+    }
+
+    pub fn ediv_int(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let size_1 = Checked::from(i1.byte_size());
+        let size_2 = Checked::from(i2.byte_size());
+        let w1 = if size_1 >= size_2 {
+            size_1 - size_2
+        } else {
+            Checked::from(0u64)
+        };
+        ((w1 * 12) + (((w1 >> 10) + (w1 >> 13)) * size_2) + (size_1 >> 2) + size_1 + 150).as_gas_cost()
+    }
+
+    pub fn ediv_nat(i1: &impl BigIntByteSize, i2: &impl BigIntByteSize) -> Result<u32, OutOfGas> {
+        let size_1 = Checked::from(i1.byte_size());
+        let size_2 = Checked::from(i2.byte_size());
+        let w1 = if size_1 >= size_2 {
+            size_1 - size_2
+        } else {
+            Checked::from(0u64)
+        };
+        ((w1 * 12) + (((w1 >> 10) + (w1 >> 13)) * size_2) + (size_1 >> 2) + size_1 + 150).as_gas_cost()
     }
 
     pub fn compare(v1: &TypedValue, v2: &TypedValue) -> Result<u32, OutOfGas> {

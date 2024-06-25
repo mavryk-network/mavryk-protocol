@@ -1,0 +1,3 @@
+binaries/mavkit-client /usr/bin/
+binaries/mavkit-admin-client /usr/bin/
+binaries/mavkit-codec /usr/bin/

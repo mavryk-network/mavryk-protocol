@@ -12,32 +12,39 @@
 cd "$(dirname "$0")"/../.. || exit
 
 # Mavryk binaries.
-mavryk_node=./mavkit-node
-mavryk_client=./mavkit-client
+tezos_node=./octez-node
+tezos_client=./octez-client
+smart_rollup_node=./octez-smart-rollup-node
+dal_node=./octez-dal-node
 
 # Protocol configuration.
-protocol_hash=PtAtLasZNRgFcnNcXRSN4rtHAMFpu4w7FNjyx49pjQVU6Ww4ef
-protocol_parameters=src/proto_001_PtAtLas/parameters/sandbox-parameters.json
-protocol_name=atlas
+protocol_hash=PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ
+protocol_parameters=src/proto_019_PtParisB/parameters/sandbox-parameters.json
+protocol_name=paris
 
 # Secret key to activate the protocol.
 activator_secret_key="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"
 
 # RPC port.
 rpc_port=8732
+dal_rpc_port=10732
 
 # Temporary files.
 tmp=openapi-tmp
 data_dir=$tmp/mavkit-sandbox
 client_dir=$tmp/mavkit-client
+dal_node_data_dir=$tmp/dal-node
 api_json=$tmp/rpc-api.json
 proto_api_json=$tmp/proto-api.json
 mempool_api_json=$tmp/mempool-api.json
+dal_api_json=$tmp/dal-api.json
 
 # Generated files.
 openapi_json=docs/api/rpc-openapi-dev.json
 proto_openapi_json=docs/api/$protocol_name-openapi-dev.json
 mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-dev.json
+smart_rollup_node_openapi_json=docs/api/$protocol_name-smart-rollup-node-openapi-rc.json
+dal_node_openapi_json=docs/api/dal-node-openapi-rc.json
 
 # Get version number.
 version=$(dune exec mavryk-version)
@@ -50,7 +57,7 @@ $mavryk_node config init --data-dir $data_dir \
     --no-bootstrap-peer \
     --synchronisation-threshold 0
 $mavryk_node identity generate --data-dir $data_dir
-$mavryk_node run --data-dir $data_dir &
+$mavryk_node run --data-dir $data_dir --connections 0 &
 node_pid="$!"
 
 # Wait for the node to be ready (sorry for the hackish way...)
@@ -68,13 +75,26 @@ $mavryk_client --base-dir $client_dir activate protocol $protocol_hash \
 # Wait a bit again...
 sleep 1
 
+# Run a DAL node
+mkdir $dal_node_data_dir
+$dal_node config init --data-dir $dal_node_data_dir \
+  --endpoint "http://localhost:$rpc_port" --expected-pow 0
+$dal_node identity generate --data-dir $dal_node_data_dir
+$dal_node run --data-dir $dal_node_data_dir &
+dal_node_pid="$!"
+
+# Wait a bit again...
+sleep 1
+
 # Get the RPC descriptions.
 curl "http://localhost:$rpc_port/describe/?recurse=yes" > $api_json
 curl "http://localhost:$rpc_port/describe/chains/main/blocks/head?recurse=yes" > $proto_api_json
 curl "http://localhost:$rpc_port/describe/chains/main/mempool?recurse=yes" > $mempool_api_json
+curl "http://localhost:$dal_rpc_port/describe/?recurse=yes" > $dal_api_json
 
-# Kill the node.
+# Kill the nodes.
 kill -9 "$node_pid"
+kill -9 "$dal_node_pid"
 
 # Remove RPC starting with "/private/"
 clean_private_rpc () {
@@ -88,4 +108,15 @@ dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $proto_api_json | clean_
 echo "Generated OpenAPI specification: $proto_openapi_json"
 dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $mempool_api_json | clean_private_rpc "$@" > $mempool_openapi_json
 echo "Generated OpenAPI specification: $mempool_openapi_json"
+dune exec src/bin_openapi/rpc_openapi.exe -- \
+  "$version" \
+  "Mavkit DAL Node RPC" "The RPC API for the Mavkit DAL node." \
+  $dal_api_json |
+  clean_private_rpc "$@" > $dal_node_openapi_json
+echo "Generated OpenAPI specification: $dal_node_openapi_json"
+
+# Gernerate openapi file for rollup node
+$smart_rollup_node generate openapi -P $protocol_hash > $smart_rollup_node_openapi_json
+echo "Generated OpenAPI specification: $smart_rollup_node_openapi_json"
+
 echo "You can now clean up with: rm -rf $tmp"

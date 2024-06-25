@@ -38,7 +38,8 @@ let test_rpc_list =
   Protocol.register_test
     ~__FILE__
     ~title:"(Mockup) RPC list"
-    ~tags:["mockup"; "client"; "rpc"]
+    ~tags:["mockup"; "client"; "rpc"; "describe"; "slow"]
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _ = Client.rpc_list client in
@@ -354,7 +355,7 @@ let test_multiple_baking =
           (Tez.to_string alice_balance)
           (Tez.to_string bob_balance) ;
       return ())
-    (range 1 10)
+    (range 1 5)
 
 let perform_migration ~protocol ~next_protocol ~next_constants ~pre_migration
     ~post_migration =
@@ -686,7 +687,7 @@ let test_create_mockup_already_initialized =
   in
   unit
 
-(* Tests [mavryk-client create mockup]s [--protocols-constants]
+(* Tests [mavkit-client create mockup]s [--protocols-constants]
    argument. The call must succeed. *)
 let test_create_mockup_custom_constants =
   Protocol.register_test
@@ -776,7 +777,7 @@ let mockup_bootstrap_account_of_json json : mockup_bootstrap_account =
 let mockup_bootstrap_accounts_of_json json =
   List.map mockup_bootstrap_account_of_json (JSON.as_list json)
 
-(* Tests [mavryk-client create mockup --bootstrap-accounts]
+(* Tests [mavkit-client create mockup --bootstrap-accounts]
    argument. The call must succeed. *)
 let test_create_mockup_custom_bootstrap_accounts =
   Protocol.register_test
@@ -805,7 +806,7 @@ let test_create_mockup_custom_bootstrap_accounts =
 
 let rmdir dir = Process.spawn "rm" ["-rf"; dir] |> Process.check
 
-(* Executes [mavryk-client --base-dir /tmp/mdir create mockup] when
+(* Executes [mavkit-client --base-dir /tmp/mdir create mockup] when
    [/tmp/mdir] looks like a dubious base directory. Checks that a warning
    is printed. *)
 let test_transfer_bad_base_dir =
@@ -841,7 +842,7 @@ let test_transfer_bad_base_dir =
   in
   unit
 
-(* Executes [mavryk-client --mode mockup config show] in a state where
+(* Executes [mavkit-client --mode mockup config show] in a state where
    it should succeed. *)
 let test_config_show_mockup =
   Protocol.register_test
@@ -853,7 +854,7 @@ let test_config_show_mockup =
   let* _ = Client.config_show ~protocol client in
   unit
 
-(* Executes [mavryk-client --mode mockup config show] when base dir is
+(* Executes [mavkit-client --mode mockup config show] when base dir is
    NOT a mockup. It should fail as this is dangerous (the default base
    directory could contain sensitive data, such as private keys) *)
 let test_config_show_mockup_fail =
@@ -867,7 +868,7 @@ let test_config_show_mockup_fail =
   let* _ = Client.spawn_config_show ~protocol client |> Process.check_error in
   unit
 
-(* Executes [mavryk-client config init mockup] in a state where it
+(* Executes [mavkit-client config init mockup] in a state where it
    should succeed *)
 let test_config_init_mockup =
   Protocol.register_test
@@ -885,7 +886,7 @@ let test_config_init_mockup =
   let (_ : JSON.t) = JSON.parse_file bootstrap_accounts in
   unit
 
-(* Executes [mavryk-client config init mockup] when base dir is NOT a
+(* Executes [mavkit-client config init mockup] when base dir is NOT a
    mockup. It should fail as this is dangerous (the default base
    directory could contain sensitive data, such as private keys) *)
 let test_config_init_mockup_fail =
@@ -1152,14 +1153,19 @@ let test_create_mockup_config_show_init_roundtrip protocols =
     let constant_parametric_constants : JSON.t =
       JSON.annotate ~origin:"constant_parametric_constants"
       @@ `O
-           [
-             (* DO NOT EDIT the value consensus_threshold this is actually a constant, not a parameter *)
-             ("consensus_threshold", `Float 0.0);
-           ]
+           ((* DO NOT EDIT the value consensus_threshold this is actually a constant, not a parameter *)
+            ("consensus_threshold", `Float 0.0)
+           ::
+           (if Protocol.number protocol >= 019 then
+            [
+              (* Constraint: 0 <= max_slashing_per_block <= 10_000 *)
+              ("max_slashing_per_block", `Float 10_000.0);
+            ]
+           else []))
     in
-    (* To fulfill the requirement that [blocks_per_epoch] divides
-       [blocks_per_cycle], we set [blocks_per_cycle] to 1, for simplicity (even
-       if the default value is also 1). *)
+    (* To fulfill the requirement that [blocks_per_epoch], present in protocols
+       up to O, divides [blocks_per_cycle], we set [blocks_per_cycle] to 1, for
+       simplicity (even if the default value is also 1). *)
     let updated_dal_parametric =
       let dal_parametric_constants_succ =
         JSON.(parametric_constants_succ |-> "dal_parametric")
@@ -1185,13 +1191,64 @@ let test_create_mockup_config_show_init_roundtrip protocols =
              ("chain_id", `String "NetXaFDF7xZQCpR");
            ]
     in
+    (* Since adaptive rewards use [Q.t], the numerators and denominators should be co-primes. *)
+    let co_primed_adaptive_rewards : JSON.t =
+      let adaptive_rewards_succ =
+        JSON.(parametric_constants_succ |-> "adaptive_rewards_params")
+      in
+      if JSON.is_null adaptive_rewards_succ then
+        JSON.annotate ~origin:"no_adaptive_rewards" `Null
+      else
+        let simplify_field obj =
+          match JSON.as_object_opt obj with
+          | Some [("numerator", numerator); ("denominator", denominator)] ->
+              let numerator = JSON.as_int numerator in
+              let denominator = JSON.as_int denominator in
+              let Q.{num; den} = Q.(numerator // denominator) in
+              JSON.annotate ~origin:"simplify_field"
+              @@ `O
+                   [
+                     ("numerator", `String (Z.to_int num |> string_of_int));
+                     ("denominator", `String (Z.to_int den |> string_of_int));
+                   ]
+          | _ -> obj
+        in
+        let all_fields = JSON.as_object adaptive_rewards_succ in
+        let co_primed_adaptive_rewards_params =
+          JSON.annotate ~origin:"new_adaptive_rewards_params"
+          @@ `O
+               (List.map
+                  (fun (field_name, obj) ->
+                    (field_name, JSON.unannotate (simplify_field obj)))
+                  all_fields)
+        in
+        let new_adaptive_rewards_params =
+          JSON.merge_objects
+            adaptive_rewards_succ
+            co_primed_adaptive_rewards_params
+        in
+        JSON.annotate ~origin:"co_primed_adaptive_rewards"
+        @@ `O
+             [
+               ( "adaptive_rewards_params",
+                 JSON.unannotate new_adaptive_rewards_params );
+             ]
+    in
+    (* TODO: https://gitlab.com/tezos/tezos/-/issues/6923
+       remove when `blocks_per_epoch` is not used anymore in tests *)
+    let parametric_constants_succ =
+      if Protocol.number protocol > 018 then parametric_constants_succ
+      else JSON.merge_objects parametric_constants_succ updated_dal_parametric
+    in
     return
       JSON.(
         merge_objects
           (merge_objects
-             (merge_objects parametric_constants_succ updated_dal_parametric)
-             constant_parametric_constants)
-          mockup_constants)
+             (merge_objects
+                parametric_constants_succ
+                constant_parametric_constants)
+             mockup_constants)
+          co_primed_adaptive_rewards)
   in
 
   let get_state_using_config_show_mockup ~protocol mockup_client =
@@ -1259,24 +1316,17 @@ let test_create_mockup_config_show_init_roundtrip protocols =
         protocol_constants = JSON.parse_file protocol_constants;
       }
   in
-  let compute_expected_amounts protocol bootstrap_accounts protocol_constants =
+  let compute_expected_amounts bootstrap_accounts protocol_constants =
     let convert =
-      if protocol >= Protocol.Atlas then
-        let limit_of_delegation_over_baking =
-          JSON.(
-            protocol_constants |-> "limit_of_delegation_over_baking" |> as_int)
-        in
-        let limit_of_delegation_over_baking_plus_1 =
-          Int64.of_int (limit_of_delegation_over_baking + 1)
-        in
-        fun amount ->
-          Tez.(amount - (amount /! limit_of_delegation_over_baking_plus_1))
-      else
-        let frozen_deposits_percentage =
-          JSON.(protocol_constants |-> "frozen_deposits_percentage" |> as_int)
-        in
-        let pct = 100 - frozen_deposits_percentage in
-        fun amount -> Tez.(of_mumav_int (pct * to_mumav amount / 100))
+      let limit_of_delegation_over_baking =
+        JSON.(
+          protocol_constants |-> "limit_of_delegation_over_baking" |> as_int)
+      in
+      let limit_of_delegation_over_baking_plus_1 =
+        Int64.of_int (limit_of_delegation_over_baking + 1)
+      in
+      fun amount ->
+        Tez.(amount - (amount /! limit_of_delegation_over_baking_plus_1))
     in
     List.map
       (fun account -> {account with amount = convert account.amount})
@@ -1416,7 +1466,6 @@ let test_create_mockup_config_show_init_roundtrip protocols =
      | Some initial_bootstrap_accounts ->
          let expected_amounts =
            compute_expected_amounts
-             protocol
              initial_bootstrap_accounts
              initial_state.protocol_constants
          in
@@ -1470,7 +1519,6 @@ let test_create_mockup_config_show_init_roundtrip protocols =
 
    let expected_amounts =
      compute_expected_amounts
-       protocol
        initial_state.bootstrap_accounts
        initial_state.protocol_constants
    in

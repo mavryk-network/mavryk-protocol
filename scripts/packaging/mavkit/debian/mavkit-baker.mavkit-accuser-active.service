@@ -1,0 +1,17 @@
+[Unit]
+Description=Mavkit accuser
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/mavkit-baker-active
+EnvironmentFile=-/etc/default/mavkit-accuser-active
+WorkingDirectory=/var/tezos
+Restart=on-failure
+User=tezos
+ExecStart=/bin/sh -c "/usr/bin/mavkit-accuser-$PROTOCOL run $RUNTIME_OPTS"
+StandardOutput=append:/var/log/tezos/accuser-active.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

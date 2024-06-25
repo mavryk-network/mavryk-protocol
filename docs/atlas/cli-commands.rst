@@ -14,6 +14,7 @@ The rest of this page documents the protocol-dependent tools.
 The protocol-independent tools are documented :doc:`here <../shell/cli-commands>`.
 
 
+.. _client_manual:
 .. _client_manual_atlas:
 
 Client manual
@@ -23,6 +24,7 @@ Client manual
          :file: mavkit-client.html
 
 
+.. _baker_manual:
 .. _baker_manual_atlas:
 
 Baker manual
@@ -32,6 +34,7 @@ Baker manual
          :file: mavkit-baker.html
 
 
+.. _accuser_manual:
 .. _accuser_manual_atlas:
 
 Accuser manual
@@ -39,12 +42,6 @@ Accuser manual
 
 .. raw:: html
          :file: mavkit-accuser.html
-
-Smart rollup client manual
-==========================
-
-.. raw:: html
-        :file: mavkit-smart-rollup-client.html
 
 Smart rollup node manual
 ========================

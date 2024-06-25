@@ -25,11 +25,13 @@
 (*****************************************************************************)
 
 (* Declaration order must respect the version order. *)
-type t = Atlas | Alpha
+type t = ParisB | ParisC | Alpha
+
+let all = [ParisB; ParisC; Alpha]
 
 let encoding =
   Data_encoding.string_enum
-    [("atlas", Atlas); ("alpha", Alpha)]
+    [("parisb", ParisB); ("parisc", ParisC); ("alpha", Alpha)]
 
 type constants =
   | Constants_sandbox
@@ -43,22 +45,22 @@ let constants_to_string = function
   | Constants_mainnet_with_chain_id -> "mainnet-with-chain-id"
   | Constants_test -> "test"
 
-let name = function
-  | Alpha -> "Alpha"
-  | Atlas -> "Atlas"
+let name = function Alpha -> "Alpha" | ParisB -> "Parisb" | ParisC -> "Parisc"
 
-let number = function Atlas -> 001 | Alpha -> 019
+let number = function ParisB -> 019 | ParisC -> 020 | Alpha -> 021
 
 let directory = function
   | Alpha -> "proto_alpha"
-  | Atlas -> "proto_001_PtAtLas"
+  | ParisB -> "proto_019_PtParisB"
+  | ParisC -> "proto_020_PsParisC"
 
 (* Test tags must be lowercase. *)
 let tag protocol = String.lowercase_ascii (name protocol)
 
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
-  | Atlas -> "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp"
+  | ParisB -> "PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ"
+  | ParisC -> "PsParisCZo7KAh1Z1smVd9ZMZ1HHn5gkzbM94V3PLCpknFWhUAi"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -262,8 +264,9 @@ let write_parameter_file :
   Lwt.return output_file
 
 let previous_protocol = function
-  | Alpha -> None
-  | Atlas -> None
+  | Alpha -> Some ParisB
+  | ParisC -> Some ParisB
+  | ParisB -> None
 
 let has_predecessor p = previous_protocol p <> None
 

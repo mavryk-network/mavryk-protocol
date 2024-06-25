@@ -281,6 +281,18 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     let open Mavryk_clic in
     switch ~doc:"Hides the kernel debug messages." ~long:"no-kernel-debug" ()
 
+  let flamecharts_directory_arg =
+    let open Tezos_clic in
+    arg
+      ~doc:
+        (Format.sprintf
+           "Directory where the profiler output its flamecharts. If not \
+            specified, it defaults to `%s`."
+           Config.default_flamecharts_directory)
+      ~long:"flamecharts-dir"
+      ~placeholder:"flamecharts-dir"
+      dir_parameter
+
   let plugins_parameter =
     Mavryk_clic.parameter (fun _ filenames ->
         let filenames = String.split_on_char ',' filenames in
@@ -300,7 +312,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
 
   let global_options =
     Mavryk_clic.(
-      args9
+      args10
         wasm_arg
         input_arg
         rollup_arg
@@ -309,7 +321,8 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
         version_arg
         no_kernel_debug_flag
         plugins_arg
-        installer_config_arg)
+        installer_config_arg
+        flamecharts_directory_arg)
 
   let handle_plugin_file f =
     try Dynlink.loadfile f with
@@ -332,7 +345,8 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
              version,
              no_kernel_debug_flag,
              plugins,
-             installer_config ),
+             installer_config,
+             flamecharts_directory ),
            _ ) =
       Mavryk_clic.parse_global_options global_options () args
     in
@@ -347,6 +361,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
         ?destination:rollup_arg
         ?preimage_directory
         ?dal_pages_directory
+        ?flamecharts_directory
         ~kernel_debug:(not no_kernel_debug_flag)
         ()
     in
@@ -400,7 +415,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     match result with
     | Ok _ -> ()
     | Error [Mavryk_clic.Version] ->
-        let version = Mavryk_version_value.Bin_version.version_string in
+        let version = Mavryk_version_value.Bin_version.mavkit_version_string in
         Format.printf "%s\n" version ;
         exit 0
     | Error [Mavryk_clic.Help command] ->

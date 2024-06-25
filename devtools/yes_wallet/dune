@@ -8,10 +8,13 @@
   mavkit-libs.base.unix
   lwt.unix
   ezjsonm
+  mavkit-node-config
   mavkit-shell-libs.store
   mavkit-shell-libs.shell-context
   mavkit-libs.mavryk-context
   mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-019-PtParisB.protocol
+  mavryk-protocol-020-PsParisC.protocol
   mavryk-protocol-alpha.protocol)
  (library_flags (:standard -linkall))
  (flags

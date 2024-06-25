@@ -83,9 +83,9 @@ pub use mavryk_smart_rollup_encoding::inbox;
 #[cfg(feature = "data-encoding")]
 #[doc(inline)]
 pub use mavryk_smart_rollup_encoding::michelson;
+
 #[cfg(feature = "data-encoding")]
-#[doc(inline)]
-pub use mavryk_smart_rollup_encoding::outbox;
+pub mod outbox;
 
 pub mod storage {
     //! Durable Storage allows state to be persisted between

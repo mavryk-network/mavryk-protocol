@@ -18,7 +18,6 @@
   -open Tezt_core.Base
   -open Mavkit_alcotezt
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_protocol_alpha
   -open Mavryk_alpha_test_helpers
   -open Mavryk_base_test_helpers)

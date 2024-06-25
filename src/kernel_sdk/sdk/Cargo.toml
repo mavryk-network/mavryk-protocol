@@ -7,14 +7,20 @@ name = "mavryk-smart-rollup"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
-authors = ["TriliTech <contact@trili.tech>"]
-repository = "https://gitlab.com/tezos/tezos.git"
-description = "SDK for Tezos Smart Rollup kernel development."
-keywords = ["tezos", "smart", "rollup"]
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
+description = "SDK for Mavryk Smart Rollup kernel development."
+keywords = ["mavryk", "smart", "rollup"]
 categories = ["wasm", "encoding", "development-tools"]
 
 [package.metadata.docs.rs]
 features = ["testing"]
+
+[dependencies]
+hex = { version = "0.4", default-features = false}
 
 [dependencies.mavryk-smart-rollup-core]
 path = "../core"
@@ -60,6 +66,7 @@ version = "=0.5.2"
 optional = true
 
 [features]
+<<<<<<< .merge_file_Bsu5Gq
 default = ["std", "crypto", "dlmalloc", "panic-hook", "data-encoding", "storage", "bls"]
 crypto = ["mavryk_crypto_rs"]
 bls = ["mavryk-smart-rollup-encoding/bls"]
@@ -75,3 +82,19 @@ proto-nairobi = ["mavryk-smart-rollup-core/proto-nairobi", "mavryk-smart-rollup-
 proto-alpha = ["proto-alpha-no-mock", "mavryk-smart-rollup-mock/proto-alpha"]
 # TODO: remove `proto-alpha-no-mock` once `mock` can compile on RISC-V
 proto-alpha-no-mock = ["mavryk-smart-rollup-core/proto-alpha", "mavryk-smart-rollup-host/proto-alpha"]
+=======
+default = ["std", "crypto", "dlmalloc", "panic-hook", "data-encoding", "storage", "bls", "testing"]
+crypto = ["tezos_crypto_rs"]
+bls = ["tezos-smart-rollup-encoding/bls"]
+debug_alloc = ["tezos-smart-rollup-debug/alloc"]
+alloc = ["tezos-smart-rollup-entrypoint/alloc"]
+dlmalloc = ["tezos-smart-rollup-entrypoint/dlmalloc"]
+panic-hook = ["tezos-smart-rollup-entrypoint/default"]
+data-encoding = ["tezos_data_encoding", "tezos-smart-rollup-encoding/alloc", "tezos-smart-rollup-encoding/tezos-encoding", "tezos-smart-rollup-encoding/crypto"]
+storage = ["tezos-smart-rollup-storage"]
+std = ["alloc", "debug_alloc", "tezos-smart-rollup-entrypoint/std"]
+testing = ["crypto", "tezos-smart-rollup-mock"]
+proto-nairobi = ["tezos-smart-rollup-core/proto-nairobi", "tezos-smart-rollup-host/proto-nairobi", "tezos-smart-rollup-mock/proto-nairobi"]
+proto-alpha = ["tezos-smart-rollup-core/proto-alpha", "tezos-smart-rollup-host/proto-alpha", "tezos-smart-rollup-mock/proto-alpha"]
+experimental-host-in-memory-store = ["tezos-smart-rollup-entrypoint/proto-alpha", "tezos-smart-rollup-entrypoint/experimental-host-in-memory-store"]
+>>>>>>> .merge_file_42xvhS

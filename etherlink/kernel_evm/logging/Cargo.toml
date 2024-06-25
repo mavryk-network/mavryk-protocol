@@ -15,3 +15,4 @@ mavryk-smart-rollup-debug.workspace = true
 default = ["alloc"]
 alloc = []
 debug = []
+benchmark = []

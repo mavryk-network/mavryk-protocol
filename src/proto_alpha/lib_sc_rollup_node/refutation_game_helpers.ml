@@ -28,35 +28,6 @@
 open Protocol
 open Alpha_context
 
-(** This function computes the inclusion/membership proof of the page
-      identified by [page_id] in the slot whose data are provided in
-      [slot_data]. *)
-let page_membership_proof params page_index slot_data =
-  (* FIXME/DAL: https://gitlab.com/tezos/tezos/-/issues/4048
-     Rely on DAL node to compute page membership proof and drop
-     the dal-crypto dependency from the rollup node. *)
-  let proof =
-    let open Result_syntax in
-    (* The computation of the page's proof below can be a bit costly. In fact,
-       it involves initialising a cryptobox environment and some non-trivial
-       crypto processing. *)
-    let* dal = Cryptobox.make params in
-    let* polynomial = Cryptobox.polynomial_from_slot dal slot_data in
-    Cryptobox.prove_page dal polynomial page_index
-  in
-  let open Lwt_result_syntax in
-  match proof with
-  | Ok proof -> return proof
-  | Error e ->
-      failwith
-        "%s"
-        (match e with
-        | `Fail s -> "Fail " ^ s
-        | `Page_index_out_of_range -> "Page_index_out_of_range"
-        | `Slot_wrong_size s -> "Slot_wrong_size: " ^ s
-        | `Invalid_degree_strictly_less_than_expected _ as commit_error ->
-            Cryptobox.string_of_commit_error commit_error)
-
 (** When the PVM is waiting for a Dal page input, this function attempts to
       retrieve the page's content from the store, the data of its slot. Then it
       computes the proof that the page is part of the slot and returns the
@@ -69,10 +40,8 @@ let page_membership_proof params page_index slot_data =
 let page_info_from_pvm_state constants (node_ctxt : _ Node_context.t)
     ~inbox_level (dal_params : Dal.parameters) start_state =
   let open Lwt_result_syntax in
-  let module PVM = (val Pvm.of_kind node_ctxt.kind) in
-  let dal_attestation_lag = constants.Rollup_constants.dal.attestation_lag in
   let is_reveal_enabled =
-    match constants.sc_rollup.reveal_activation_level with
+    match constants.Rollup_constants.sc_rollup.reveal_activation_level with
     | Some reveal_activation_level ->
         Sc_rollup.is_reveal_enabled_predicate
           (Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
@@ -82,13 +51,33 @@ let page_info_from_pvm_state constants (node_ctxt : _ Node_context.t)
            activation level. *)
         fun ~current_block_level:_ _ -> true
   in
-  let*! input_request = PVM.is_input_state ~is_reveal_enabled start_state in
+  let* dal_activation_level, dal_attested_slots_validity_lag =
+    match constants.sc_rollup.reveal_activation_level with
+    | Some reveal_activation_level when constants.dal.feature_enable ->
+        let*? level =
+          Raw_level.of_int32 reveal_activation_level.dal_parameters
+          |> Environment.wrap_tzresult
+        in
+        return
+          ( Some level,
+            Int32.to_int reveal_activation_level.dal_attested_slots_validity_lag
+          )
+    | _ -> return (None, max_int)
+  in
+  let*! input_request =
+    let open (val Pvm.of_kind node_ctxt.kind) in
+    is_input_state
+      ~is_reveal_enabled
+      (Ctxt_wrapper.of_node_pvmstate start_state)
+  in
   match input_request with
   | Sc_rollup.(Needs_reveal (Request_dal_page page_id)) -> (
       let Dal.Page.{slot_id; page_index} = page_id in
       let* pages =
         Dal_pages_request.slot_pages
-          ~dal_attestation_lag
+          constants.Rollup_constants.dal
+          ~dal_activation_level
+          ~dal_attested_slots_validity_lag
           ~inbox_level
           node_ctxt
           slot_id
@@ -105,7 +94,10 @@ let page_info_from_pvm_state constants (node_ctxt : _ Node_context.t)
           match List.nth_opt pages page_index with
           | Some content ->
               let* page_proof =
-                page_membership_proof dal_params page_index
+                let dal_cctxt =
+                  WithExceptions.Option.get ~loc:__LOC__ node_ctxt.dal_cctxt
+                in
+                Dal_node_client.get_page_proof dal_cctxt page_index
                 @@ Bytes.concat Bytes.empty pages
               in
               return_some (content, page_proof)
@@ -134,26 +126,25 @@ let generate_proof (node_ctxt : _ Node_context.t)
   let snapshot_level_int32 =
     (Mavkit_smart_rollup.Inbox.Skip_list.content game.inbox_snapshot).level
   in
-  let get_snapshot_head () =
-    let+ hash = Node_context.hash_of_level node_ctxt snapshot_level_int32 in
-    Layer1.{hash; level = snapshot_level_int32}
-  in
   let* context =
     let* start_hash = Node_context.hash_of_level node_ctxt game.inbox_level in
     let+ context = Node_context.checkout_context node_ctxt start_hash in
     Context.index context
   in
-  let* dal_slots_history =
-    if Node_context.dal_supported node_ctxt then
-      let* snapshot_head = get_snapshot_head () in
-      Dal_slots_tracker.slots_history_of_hash node_ctxt snapshot_head
-    else return Dal.Slots_history.genesis
+  let dal_slots_history =
+    (* Similarly to what's done for inbox snapshot above. *)
+    Sc_rollup_proto_types.Dal.Slot_history.of_mavkit game.dal_snapshot
   in
-  let* dal_slots_history_cache =
-    if Node_context.dal_supported node_ctxt then
-      let* snapshot_head = get_snapshot_head () in
-      Dal_slots_tracker.slots_history_cache_of_hash node_ctxt snapshot_head
-    else return (Dal.Slots_history.History_cache.empty ~capacity:0L)
+  let get_cell_from_hash hash =
+    (* each time a DAL skip list cell is requested by hash, we retrieve it from the DAL node. *)
+    (* TODO: We may want to have a local cache here. *)
+    let open Lwt_syntax in
+    let dal_cctxt = node_ctxt.dal_cctxt in
+    let dal_cctxt = WithExceptions.Option.get ~loc:__LOC__ dal_cctxt in
+    let+ res =
+      Dal_proto_client.get_commitments_history_hash_content dal_cctxt hash
+    in
+    Result.to_option res
   in
   (* We fetch the value of protocol constants at block snapshot level
      where the game started. *)
@@ -164,7 +155,19 @@ let generate_proof (node_ctxt : _ Node_context.t)
   let dal_parameters = dal_l1_parameters.cryptobox_parameters in
   let dal_attestation_lag = dal_l1_parameters.attestation_lag in
   let dal_number_of_slots = dal_l1_parameters.number_of_slots in
-
+  let* dal_activation_level, dal_attested_slots_validity_lag =
+    match constants.sc_rollup.reveal_activation_level with
+    | Some reveal_activation_level when dal_l1_parameters.feature_enable ->
+        let*? level =
+          Raw_level.of_int32 reveal_activation_level.dal_parameters
+          |> Environment.wrap_tzresult
+        in
+        return
+          ( Some level,
+            Int32.to_int reveal_activation_level.dal_attested_slots_validity_lag
+          )
+    | _ -> return (None, max_int)
+  in
   let* page_info =
     page_info_from_pvm_state
       constants
@@ -227,9 +230,7 @@ let generate_proof (node_ctxt : _ Node_context.t)
     module Dal_with_history = struct
       let confirmed_slots_history = dal_slots_history
 
-      let get_history ptr =
-        Dal.Slots_history.History_cache.find ptr dal_slots_history_cache
-        |> Lwt.return
+      let get_history = get_cell_from_hash
 
       let dal_attestation_lag = dal_attestation_lag
 
@@ -238,6 +239,10 @@ let generate_proof (node_ctxt : _ Node_context.t)
       let dal_number_of_slots = dal_number_of_slots
 
       let page_info = page_info
+
+      let dal_activation_level = dal_activation_level
+
+      let dal_attested_slots_validity_lag = dal_attested_slots_validity_lag
     end
   end in
   let metadata = metadata node_ctxt in
@@ -284,11 +289,13 @@ let generate_proof (node_ctxt : _ Node_context.t)
       (Raw_level.of_int32_exn game.inbox_level)
       dal_slots_history
       dal_parameters
+      ~dal_activation_level
       ~dal_attestation_lag
       ~dal_number_of_slots
       ~pvm:(module PVM)
       unserialized_proof
       ~is_reveal_enabled
+      ~dal_attested_slots_validity_lag
   in
   let res = Environment.wrap_tzresult result in
   assert (Result.is_ok res) ;
@@ -298,7 +305,8 @@ let generate_proof (node_ctxt : _ Node_context.t)
   return proof
 
 let make_dissection plugin (node_ctxt : _ Node_context.t) ~start_state
-    ~start_chunk ~our_stop_chunk ~default_number_of_sections ~last_level =
+    ~start_chunk ~our_stop_chunk ~default_number_of_sections
+    ~commitment_period_tick_offset ~last_level =
   let open Lwt_result_syntax in
   let module PVM = (val Pvm.of_kind node_ctxt.kind) in
   let state_of_tick ?start_state tick =
@@ -306,7 +314,7 @@ let make_dissection plugin (node_ctxt : _ Node_context.t) ~start_state
       plugin
       node_ctxt
       ?start_state
-      ~tick:(Sc_rollup.Tick.to_z tick)
+      ~tick:(Z.add (Sc_rollup.Tick.to_z tick) commitment_period_tick_offset)
       last_level
   in
   let state_hash_of_eval_state Pvm_plugin_sig.{state_hash; _} = state_hash in

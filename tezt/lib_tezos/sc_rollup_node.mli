@@ -54,6 +54,27 @@ type mode =
 
 type history_mode = Archive | Full
 
+(** Octez smart rollup node command-line arguments. *)
+type argument =
+  | Data_dir of string
+  | Rpc_addr of string
+  | Rpc_port of int
+  | Log_kernel_debug
+  | Log_kernel_debug_file of string
+  | Metrics_addr of string
+  | Injector_attempts of int
+  | Boot_sector_file of string
+  | Dac_observer of Dac_node.t
+  | Loser_mode of string
+  | No_degraded
+  | Gc_frequency of int
+  | History_mode of history_mode
+  | Dal_node of Dal_node.t
+  | Mode of mode
+  | Rollup of string
+  | Pre_images_endpoint of string
+  | Apply_unsafe_patches
+
 type event = {name : string; value : JSON.t; timestamp : float}
 
 (** Returns the associated {!mode}, fails if the mode is not valid. *)
@@ -286,11 +307,11 @@ val wait_for_level : ?timeout:float -> t -> int -> int Lwt.t
     race conditions when setting up rollup infrastructure. On open testnets
     like weeklynet and dailynet, this does not happen because of the large
     block time. *)
-val unsafe_wait_sync : ?path_client:string -> ?timeout:float -> t -> int Lwt.t
+val unsafe_wait_sync : ?timeout:float -> t -> int Lwt.t
 
 (** Wait until the layer 1 of the sc node is synchronized with its
     underlying l1 node. *)
-val wait_sync : ?path_client:string -> t -> timeout:float -> int Lwt.t
+val wait_sync : t -> timeout:float -> int Lwt.t
 
 (** [wait_for ?where sc_node event_name filter] waits for the SCORU node
     [sc_node] to emit an event named [name] (usually this is the name the event
@@ -318,9 +339,19 @@ val change_node_mode : t -> mode -> t
 val dump_durable_storage :
   sc_rollup_node:t -> dump:string -> ?block:string -> unit -> unit Lwt.t
 
-(** [export_snapshot rollup_node dir] creates a snapshot of the rollup node in
-    directory [dir]. *)
-val export_snapshot : t -> string -> string Runnable.process
+(** [export_snapshot ?compress_on_the_fly ?compact rollup_node dir] creates a
+    snapshot of the rollup node in directory [dir]. *)
+val export_snapshot :
+  ?compress_on_the_fly:bool ->
+  ?compact:bool ->
+  t ->
+  string ->
+  string Runnable.process
+
+(** [import_snapshot ?force rollup_node ~snapshot_file] imports the snapshot
+    [snapshot_file] in the rollup node [rollup_node].  *)
+val import_snapshot :
+  ?force:bool -> t -> snapshot_file:string -> unit Runnable.process
 
 (** Expose the RPC server address of this node as a foreign endpoint. *)
 val as_rpc_endpoint : t -> Endpoint.t

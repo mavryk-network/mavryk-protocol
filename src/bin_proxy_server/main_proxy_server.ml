@@ -286,10 +286,10 @@ let info =
   let man =
     [
       `S Manpage.s_bugs;
-      `P "Report issues to https://gitlab.com/tezos/tezos/-/issues";
+      `P "Report issues to https://gitlab.com/mavryk-network/mavryk-protocol/-/issues";
     ]
   in
-  let version = Mavryk_version_value.Bin_version.version_string in
+  let version = Mavryk_version_value.Bin_version.mavkit_version_string in
   Cmd.info name ~version ~doc ~exits:Cmd.Exit.defaults ~man
 
 let () = exit (Cmd.eval (Cmd.v info term))

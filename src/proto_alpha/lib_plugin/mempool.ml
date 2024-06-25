@@ -246,9 +246,7 @@ let size_of_operation op =
   (WithExceptions.Option.get ~loc:__LOC__
   @@ Data_encoding.Binary.fixed_length
        Mavryk_base.Operation.shell_header_encoding)
-  + Data_encoding.Binary.length
-      Operation.protocol_data_encoding_with_legacy_attestation_name
-      op
+  + Data_encoding.Binary.length Operation.protocol_data_encoding op
 
 (** Returns the weight and resources consumption of an operation. The weight
       corresponds to the one implemented by the baker, to decide which operations
@@ -542,12 +540,7 @@ let pre_filter info config
       let* keep =
         pre_filter_far_future_consensus_ops info config consensus_content
       in
-      if keep then return (`Passed_prefilter consensus_prio)
-      else
-        return
-          (`Branch_refused
-            [Environment.wrap_tzerror Consensus_operation_in_far_future])
-  | Single (Dal_attestation _)
+      prefilter_consensus_operation info config level_and_round
   | Single (Seed_nonce_revelation _)
   | Single (Double_preattestation_evidence _)
   | Single (Double_attestation_evidence _)
@@ -685,11 +678,10 @@ let find_manager {shell = _; protocol_data = Operation_data {contents; _}} =
   | Single (Manager_operation {source; _}) -> Some source
   | Cons (Manager_operation {source; _}, _) -> Some source
   | Single
-      ( Preattestation _ | Attestation _ | Dal_attestation _ | Proposals _
-      | Ballot _ | Seed_nonce_revelation _ | Vdf_revelation _
-      | Double_baking_evidence _ | Double_preattestation_evidence _
-      | Double_attestation_evidence _ | Activate_account _ | Drain_delegate _
-      | Failing_noop _ ) ->
+      ( Preattestation _ | Attestation _ | Proposals _ | Ballot _
+      | Seed_nonce_revelation _ | Vdf_revelation _ | Double_baking_evidence _
+      | Double_preattestation_evidence _ | Double_attestation_evidence _
+      | Activate_account _ | Drain_delegate _ | Failing_noop _ ) ->
       None
 
 (* The purpose of this module is to offer a version of

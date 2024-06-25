@@ -24,8 +24,14 @@
 
 module S : sig
   val version :
-    ([`GET], unit, unit, unit, unit, Node_version.t) Mavryk_rpc.Service.service
+    ( [`GET],
+      unit,
+      unit,
+      unit,
+      unit,
+      Mavkit_node_version.t )
+      Mavryk_rpc.Service.service
 end
 
 val version :
-  #Mavryk_rpc.Context.simple -> Node_version.t Error_monad.tzresult Lwt.t
+  #Mavryk_rpc.Context.simple -> Mavkit_node_version.t Error_monad.tzresult Lwt.t

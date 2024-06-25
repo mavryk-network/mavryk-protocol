@@ -33,6 +33,7 @@ open Alpha_context
 type error +=
   | Faulty_validation_wrong_slot
   | Set_deposits_limit_on_unregistered_delegate of Signature.Public_key_hash.t
+  | Set_deposits_limit_when_automated_staking_off
   | Error_while_taking_fees
   | Update_consensus_key_on_unregistered_delegate of Signature.Public_key_hash.t
   | Empty_transaction of Contract.t
@@ -78,6 +79,22 @@ let () =
     (function
       | Set_deposits_limit_on_unregistered_delegate c -> Some c | _ -> None)
     (fun c -> Set_deposits_limit_on_unregistered_delegate c) ;
+
+  register_error_kind
+    `Temporary
+    ~id:"operation.set_deposits_limit_when_automated_staking_off"
+    ~title:"Set deposits limit when automated staking off"
+    ~description:
+      "Cannot set deposits limit when automated staking is off or Adaptive \
+       Issuance is active."
+    ~pp:(fun ppf () ->
+      Format.fprintf
+        ppf
+        "Cannot set a deposits limit when automated staking off.")
+    Data_encoding.unit
+    (function
+      | Set_deposits_limit_when_automated_staking_off -> Some () | _ -> None)
+    (fun () -> Set_deposits_limit_when_automated_staking_off) ;
 
   let error_while_taking_fees_description =
     "There was an error while taking the fees, which should not happen and \
@@ -1091,7 +1108,8 @@ let apply_manager_operation :
                 Script_ir_translator.parse_data
                   ~elab_conf
                   ctxt
-                  ~allow_forged:false
+                  ~allow_forged_tickets:false
+                  ~allow_forged_lazy_storage_id:false
                   Script_typed_ir.pair_int_int_unit_t
                   (Micheline.root parameters)
               in
@@ -1152,13 +1170,8 @@ let apply_manager_operation :
               Script_ir_translator.parse_data
                 ctxt
                 ~elab_conf:Script_ir_translator_config.(make ~legacy:false ())
-                  (* FIXME: https://gitlab.com/tezos/tezos/-/issues/2964
-
-                     Setting [allow_forged] to [true] would also enable placing
-                     lazy storage ids in the parameter, which is something we should avoid.
-                     To prevent this, we should split [allow_forged] into something like
-                     [allow_tickets] and [allow_lazy_storage_id]. *)
-                ~allow_forged:true
+                ~allow_forged_tickets:true
+                ~allow_forged_lazy_storage_id:false
                 parameters_ty
                 (Micheline.root parameters)
             in
@@ -1321,7 +1334,8 @@ let apply_manager_operation :
           Script_ir_translator.parse_script
             ctxt
             ~elab_conf:Script_ir_translator_config.(make ~legacy:false ())
-            ~allow_forged_in_storage:false
+            ~allow_forged_tickets_in_storage:false
+            ~allow_forged_lazy_storage_id_in_storage:false
             script
         in
         let (Script {storage_type; views; storage; _}) = parsed_script in
@@ -1400,6 +1414,16 @@ let apply_manager_operation :
             is_registered
             (Set_deposits_limit_on_unregistered_delegate source)
         in
+        let is_autostaking_enabled =
+          match Staking.staking_automation ctxt with
+          | Manual_staking -> false
+          | Auto_staking -> true
+        in
+        let*? () =
+          error_unless
+            is_autostaking_enabled
+            Set_deposits_limit_when_automated_staking_off
+        in
         let*! ctxt = Delegate.set_frozen_deposits_limit ctxt source limit in
         return
           ( ctxt,
@@ -1435,13 +1459,13 @@ let apply_manager_operation :
             Update_consensus_key_result
               {consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt},
             [] )
-    | Dal_publish_slot_header slot_header ->
+    | Dal_publish_commitment slot_header ->
         let*? ctxt, slot_header =
-          Dal_apply.apply_publish_slot_header ctxt slot_header
+          Dal_apply.apply_publish_commitment ctxt slot_header
         in
         let consumed_gas = Gas.consumed ~since:ctxt_before_op ~until:ctxt in
         let result =
-          Dal_publish_slot_header_result {slot_header; consumed_gas}
+          Dal_publish_commitment_result {slot_header; consumed_gas}
         in
         return (ctxt, result, [])
     | Sc_rollup_originate {kind; boot_sector; parameters_ty; whitelist} ->
@@ -1783,7 +1807,7 @@ let burn_manager_storage_fees :
         ( ctxt,
           storage_limit,
           Transfer_ticket_result {payload with balance_updates} )
-    | Dal_publish_slot_header_result _ -> return (ctxt, storage_limit, smopr)
+    | Dal_publish_commitment_result _ -> return (ctxt, storage_limit, smopr)
     | Sc_rollup_originate_result payload ->
         let+ ctxt, storage_limit, balance_updates =
           Fees.burn_sc_rollup_origination_fees
@@ -2196,7 +2220,6 @@ let record_operation (type kind) ctxt hash (operation : kind operation) :
   match operation.protocol_data.contents with
   | Single (Preattestation _) -> ctxt
   | Single (Attestation _) -> ctxt
-  | Single (Dal_attestation _) -> ctxt
   | Single
       ( Failing_noop _ | Proposals _ | Ballot _ | Seed_nonce_revelation _
       | Vdf_revelation _ | Double_attestation_evidence _
@@ -2214,7 +2237,8 @@ let find_in_slot_map slot slot_map =
       | None ->
           (* This should not happen: operation validation should have failed. *)
           tzfail Faulty_validation_wrong_slot
-      | Some (consensus_key, power) -> return (consensus_key, power))
+      | Some (consensus_key, power, dal_power) ->
+          return (consensus_key, power, dal_power))
 
 let record_preattestation ctxt (mode : mode) (content : consensus_content) :
     (context * Kind.preattestation contents_result_list) tzresult Lwt.t =
@@ -2240,7 +2264,7 @@ let record_preattestation ctxt (mode : mode) (content : consensus_content) :
   in
   match mode with
   | Application _ | Full_construction _ ->
-      let*? consensus_key, power =
+      let*? consensus_key, power, _dal_power =
         find_in_slot_map content.slot (Consensus.allowed_preattestations ctxt)
       in
       let*? ctxt =
@@ -2281,11 +2305,18 @@ let record_attestation ctxt (mode : mode) (content : consensus_content) :
   in
   match mode with
   | Application _ | Full_construction _ ->
-      let*? consensus_key, power =
-        find_in_slot_map content.slot (Consensus.allowed_attestations ctxt)
+      let*? consensus_key, power, dal_power =
+        find_in_slot_map consensus.slot (Consensus.allowed_attestations ctxt)
       in
       let*? ctxt =
-        Consensus.record_attestation ctxt ~initial_slot:content.slot ~power
+        Consensus.record_attestation ctxt ~initial_slot:consensus.slot ~power
+      in
+      let*? ctxt =
+        Option.fold
+          ~none:(Result_syntax.return ctxt)
+          ~some:(fun dal ->
+            Dal_apply.apply_attestation ctxt dal.attestation ~power:dal_power)
+          dal
       in
       return (ctxt, mk_attestation_result consensus_key power)
   | Partial_construction _ ->
@@ -2344,7 +2375,7 @@ let punish_delegate ctxt ~operation_hash delegate level misbehaviour mk_result
     ~payload_producer =
   let open Lwt_result_syntax in
   let rewarded = payload_producer.Consensus_key.delegate in
-  let+ ctxt, forbidden_delegate =
+  let+ ctxt =
     Delegate.punish_double_signing
       ctxt
       ~operation_hash
@@ -2353,9 +2384,7 @@ let punish_delegate ctxt ~operation_hash delegate level misbehaviour mk_result
       level
       ~rewarded
   in
-  ( ctxt,
-    Single_result
-      (mk_result (if forbidden_delegate then Some delegate else None) []) )
+  (ctxt, Single_result (mk_result (Some delegate) []))
 
 let punish_double_attestation_or_preattestation (type kind) ctxt ~operation_hash
     ~(op1 : kind Kind.consensus Operation.t) ~payload_producer :
@@ -2373,20 +2402,23 @@ let punish_double_attestation_or_preattestation (type kind) ctxt ~operation_hash
     | Single (Attestation _) ->
         Double_attestation_evidence_result {forbidden_delegate; balance_updates}
   in
-  match op1.protocol_data.contents with
-  | Single (Preattestation e1) | Single (Attestation e1) ->
-      let level = Level.from_raw ctxt e1.level in
-      let* ctxt, consensus_pk1 =
-        Stake_distribution.slot_owner ctxt level e1.slot
-      in
-      punish_delegate
-        ctxt
-        ~operation_hash
-        consensus_pk1.delegate
-        level
-        Double_attesting
-        mk_result
-        ~payload_producer
+  let {slot; level = raw_level; round; block_payload_hash = _}, kind =
+    match op1.protocol_data.contents with
+    | Single (Preattestation consensus_content) ->
+        (consensus_content, Misbehaviour.Double_preattesting)
+    | Single (Attestation {consensus_content; dal_content = _}) ->
+        (consensus_content, Misbehaviour.Double_attesting)
+  in
+  let level = Level.from_raw ctxt raw_level in
+  let* ctxt, consensus_pk1 = Stake_distribution.slot_owner ctxt level slot in
+  punish_delegate
+    ctxt
+    ~operation_hash
+    consensus_pk1.delegate
+    level
+    {level = raw_level; round; kind}
+    mk_result
+    ~payload_producer
 
 let punish_double_baking ctxt ~operation_hash (bh1 : Block_header.t)
     ~payload_producer =
@@ -2403,7 +2435,7 @@ let punish_double_baking ctxt ~operation_hash (bh1 : Block_header.t)
     ~operation_hash
     consensus_pk1.delegate
     level
-    Double_baking
+    {level = raw_level; round = round1; kind = Double_baking}
     ~payload_producer
     (fun forbidden_delegate balance_updates ->
       Double_baking_evidence_result {forbidden_delegate; balance_updates})
@@ -2421,31 +2453,8 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
   match contents_list with
   | Single (Preattestation consensus_content) ->
       record_preattestation ctxt mode consensus_content
-  | Single (Attestation consensus_content) ->
-      record_attestation ctxt mode consensus_content
-  | Single (Dal_attestation op) ->
-      (* DAL/FIXME https://gitlab.com/tezos/tezos/-/issues/3115
-
-         This is a temporary operation. This is done in order to avoid modifying
-         the attestation encoding and to use a committee that changes less
-         often. However, once the DAL will be ready, this operation should be
-         merged with an attestation or at least refined. *)
-      let* ctxt, consensus_key =
-        match mode with
-        | Application _ | Full_construction _ ->
-            let*? consensus_key, _power =
-              find_in_slot_map op.slot (Consensus.allowed_attestations ctxt)
-            in
-            return (ctxt, consensus_key)
-        | Partial_construction _ ->
-            let level = Level.from_raw ctxt op.level in
-            Stake_distribution.slot_owner ctxt level op.slot
-      in
-      let*? ctxt = Dal_apply.apply_attestation ctxt consensus_key op in
-      return
-        ( ctxt,
-          Single_result
-            (Dal_attestation_result {delegate = consensus_key.delegate}) )
+  | Single (Attestation {consensus_content; dal_content}) ->
+      record_attestation ctxt mode consensus_content dal_content
   | Single (Seed_nonce_revelation {level; nonce}) ->
       let level = Level.from_raw ctxt level in
       let* ctxt = Nonce.reveal ctxt level nonce in
@@ -2776,7 +2785,9 @@ let record_attesting_participation ctxt =
   | None -> tzfail (Consensus.Slot_map_not_found {loc = __LOC__})
   | Some validators ->
       Slot.Map.fold_es
-        (fun initial_slot ((consensus_pk : Consensus_key.pk), power) ctxt ->
+        (fun initial_slot
+             ((consensus_pk : Consensus_key.pk), power, _dal_power)
+             ctxt ->
           let participation =
             if Slot.Set.mem initial_slot (Consensus.attestations_seen ctxt) then
               Delegate.Participated
@@ -3028,11 +3039,6 @@ let finalize_application ctxt block_data_contents ~round ~predecessor_hash
     if Level.may_compute_randao ctxt then Seed.compute_randao ctxt
     else return ctxt
   in
-  let* ctxt =
-    if Level.may_snapshot_stake_distribution ctxt then
-      Stake_distribution.snapshot ctxt
-    else return ctxt
-  in
   let* ctxt, cycle_end_balance_updates, deactivated =
     may_start_new_cycle ctxt
   in
@@ -3183,7 +3189,7 @@ let finalize_block (application_state : application_state) shell_header_opt =
               adaptive_issuance_vote_ema;
               adaptive_issuance_launch_cycle;
               implicit_operations_results;
-              dal_attestation = None;
+              dal_attestation = Dal.Attestation.empty;
             } )
   | Application
       {

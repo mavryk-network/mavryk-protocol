@@ -354,9 +354,9 @@ let close cemented_store =
      terminated which means potential new reads won't be scheduled. *)
   Metadata_fd_cache.clear cemented_store.metadata_fd_cache
 
+(* FIXME: https://gitlab.com/tezos/tezos/-/issues/7034 Cemented file
+   cannot exceed 4Gib. *)
 let offset_length = 4 (* file offset *)
-
-let offset_encoding = Data_encoding.int31
 
 let find_block_file cemented_store block_level =
   try
@@ -570,7 +570,18 @@ let read_block fd block_number =
     Lwt_utils_unix.read_bytes ~pos:0 ~len:offset_length fd offset_buffer
   in
   let offset =
-    Data_encoding.(Binary.of_bytes_exn offset_encoding offset_buffer)
+    let ofs = Bytes.get_int32_be offset_buffer 0 in
+    (* We interpret the offset, written as an int32, as an unsigned
+       int32. This is allowed by the encoded scheme and allows one
+       additional bit to encode the offset. It enables dealing with
+       files up to 4Gib. *)
+    match Int32.unsigned_to_int ofs with
+    | Some v -> v
+    | None ->
+        (* It will be [None] on 32-bit machines which is not
+           supported. We default to [Int32.to_int] instead of [assert
+           false] *)
+        Int32.to_int ofs
   in
   let* _ofs = Lwt_unix.lseek fd offset Unix.SEEK_SET in
   (* We move the cursor to the element's position *)
@@ -624,6 +635,8 @@ let get_cemented_block_by_hash ~read_metadata (cemented_store : t) hash =
   | Some level ->
       get_cemented_block_by_level ~read_metadata cemented_store level
 
+(* TODO/FIXME: https://gitlab.com/tezos/tezos/-/issues/7035
+   Cemented metadata cannot exceed 4Gib *)
 (* Hypothesis:
    - The block list is expected to be ordered by increasing
      level and no blocks are skipped.
@@ -1009,7 +1022,7 @@ let check_indexes_consistency ?(post_step = fun () -> Lwt.return_unit)
                 let*! () = Lwt_utils_unix.read_bytes ~len:len_offset fd bytes in
                 let offsets =
                   Data_encoding.Binary.of_bytes_exn
-                    Data_encoding.(Variable.array ~max_length:nb_blocks int31)
+                    Data_encoding.(Variable.array ~max_length:nb_blocks int32)
                     bytes
                 in
                 (* Cursor is now after the offset region *)
@@ -1019,7 +1032,7 @@ let check_indexes_consistency ?(post_step = fun () -> Lwt.return_unit)
                     let*! cur_offset = Lwt_unix.lseek fd 0 Unix.SEEK_CUR in
                     let* () =
                       fail_unless
-                        Compare.Int.(cur_offset = offsets.(n))
+                        Compare.Int32.(Int32.of_int cur_offset = offsets.(n))
                         (Inconsistent_cemented_store
                            (Bad_offset
                               {level = n; cycle = Naming.file_path file}))

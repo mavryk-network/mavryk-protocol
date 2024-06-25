@@ -24,6 +24,7 @@ In the Json format, a balance update consists of three parts:
     * ``"block"`` means that the balance update originates from the application of a block
     * ``"migration"`` means that the balance update originates from migration
     * ``"subsidy"`` means that the balance update originates from subsidies for liquidity baking
+    * ``"delayed_operation"`` means that the balance update originates from the delayed application of the operation whose hash is given in the additional field ``"delayed_operation_hash"``.
 
 
 A transfer of tokens is represented by a continuous and ordered sequence of (balance) updates.
@@ -86,17 +87,20 @@ The field ``kind`` allows to identify the type of container account, it can have
     Accounts in this category are further identified by the additional field
     ``"staker"`` whose value is either
     - a ``"contract"`` field, that contains the public key hash of the staker
-    owning the funds and a ``"delegate"`` (public key hash) which gets staking power
-    from the deposit,
-    - or just a ``"delegate"`` to designate collectively the deposits of all
-    stakers delegating to the provided implicit account.
+      owning the funds and a ``"delegate"`` (public key hash) which gets staking power
+      from the deposit,
+
+    - just a ``"delegate"`` to designate collectively the deposits of all
+      stakers delegating to the provided implicit account.
+    - a ``"baker_own_stake"`` field to designate the delegate's own deposits received from its own stake rewards.
+    - a ``"baker_edge"`` field to designate the delegate's own deposits received from the edge on its staker's rewards.
   - ``"unstaked_deposits"`` represents the accounts of unstaked frozen tokens.
     Accounts in this category are further identified by the following additional fields:
 
     - the field ``"staker"`` contains the public key hash of the staker who owns the frozen funds
     - the field ``"cycle"`` contains either the cycle at which the funds have been
       unstaked or the last unslashable cycle (``MAX_SLASHING_PERIOD +
-      PRESERVED_CYCLES`` before current cycle) if it is greater than the unstaking
+      CONSENSUS_RIGHTS_DELAY`` before current cycle) if it is greater than the unstaking
       cycle.
   - ``"bonds"`` represents the accounts of frozen bonds.
     Bonds are like deposits.
@@ -110,6 +114,10 @@ The field ``kind`` allows to identify the type of container account, it can have
   Other categories may be added in the future.
 * ``"commitment"`` represents the accounts of commitments awaiting activation.
   This type of account is further identified by the additional field ``committer`` whose value is the encrypted public key hash of the user who has committed to provide funds.
+* ``"staking"`` represents abstractions used for accounting staking by delegators, and comes with the additional field ``category`` that can have one of the following values:
+
+  - ``"delegator numerator"`` abstracts the delegator's stake, and comes with the additional field ``"delegator"`` whose value is the public key hash of the delegator.
+  - ``"delegate denominator"`` abstracts the total stake of delegate's delegators, and comes with the additional field ``"delegate"`` whose value is the public key hash of the delegate.
 
 Sink accounts
 -------------
@@ -175,8 +183,12 @@ the following balance updates are generated:
 
   [ {"kind": "accumulator", "category": "block fees", "change": "-1000", ...},
     {"kind": "contract", "contract": "mv1a...", "change": "1000", ...}
-    {"kind": "minted", "category": "baking rewards", "change": "-50", ...},
-    {"kind": "freezer", "category": "deposits", "staker": { "delegate": "mv1a..."}, "change": "50", ...},
+    {"kind": "minted", "category": "baking rewards", "change": "-5", ...},
+    {"kind": "freezer", "category": "deposits", "staker": { "baker_edge": "mv1a..."}, "change": "5", ...},
+    {"kind": "minted", "category": "baking rewards", "change": "-10", ...},
+    {"kind": "freezer", "category": "deposits", "staker": { "baker_own_stake": "mv1a..."}, "change": "10", ...},
+    {"kind": "minted", "category": "baking rewards", "change": "-35", ...},
+    {"kind": "freezer", "category": "deposits", "staker": { "delegate": "mv1a..."}, "change": "35", ...},
     {"kind": "minted", "category": "baking rewards", "change": "-450", ...},
     {"kind": "contract", "contract": "mv1a...", "change": "450", ...} ]
 
@@ -188,8 +200,10 @@ baking bonus with 100% sent to spendable balance (``edge_of_baking_over_staking`
 
 ::
 
-  [ {"kind": "minted", "category": "baking bonus", "change": "-100", ...},
-    {"kind": "contract", "contract": "mv1b...", "change": "100", ...} ]
+  [ {"kind": "minted", "category": "baking bonus", "change": "-90", ...},
+    {"kind": "contract", "contract": "mv1b...", "change": "90", ...},
+    {"kind": "minted", "category": "baking bonus", "change": "-10", ...},
+    {"kind": "freezer", "category": "deposits", "staker": { "baker_own_stake": "mv1b..."}, "change": "10", ...}]
 
 Attesting, double signing evidence, and nonce revelation rewards
 ----------------------------------------------------------------

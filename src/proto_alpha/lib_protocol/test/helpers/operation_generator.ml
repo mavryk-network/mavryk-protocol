@@ -49,7 +49,7 @@ let all_passes = [`PConsensus; `PAnonymous; `PVote; `PManager]
 
 let all_non_manager_passes = [`PConsensus; `PAnonymous; `PVote]
 
-let consensus_kinds = [`KPreattestation; `KAttestation; `KDal_attestation]
+let consensus_kinds = [`KPreattestation; `KAttestation]
 
 let anonymous_kinds =
   [
@@ -74,7 +74,7 @@ let manager_kinds =
     `KIncrease_paid_storage;
     `KRegister_global_constant;
     `KTransfer_ticket;
-    `KDal_publish_slot_header;
+    `KDal_publish_commitment;
     `KSc_rollup_originate;
     `KSc_rollup_add_messages;
     `KSc_rollup_cement;
@@ -388,13 +388,6 @@ let generate_attestation =
   let+ cc = generate_consensus_content in
   Attestation cc
 
-let generate_dal_attestation =
-  let open QCheck2.Gen in
-  let* level = gen_level in
-  let+ slot = gen_slot in
-  Dal_attestation
-    Dal.Attestation.{attestation = Dal.Attestation.empty; level; slot}
-
 let generate_vdf_revelation =
   let open QCheck2.Gen in
   let+ solution = oneofl vdf_solutions in
@@ -521,15 +514,15 @@ let generate_transfer_ticket =
   let entrypoint = Entrypoint.default in
   Transfer_ticket {contents; ty; ticketer; amount; destination; entrypoint}
 
-let generate_dal_publish_slot_header =
+let generate_dal_publish_commitment =
   let slot_index = Alpha_context.Dal.Slot_index.zero in
   let commitment = Alpha_context.Dal.Slot.Commitment.zero in
   let commitment_proof = Alpha_context.Dal.Slot.Commitment_proof.zero in
   let slot_header =
-    Alpha_context.Dal.Operations.Publish_slot_header.
+    Alpha_context.Dal.Operations.Publish_commitment.
       {slot_index; commitment; commitment_proof}
   in
-  QCheck2.Gen.pure (Dal_publish_slot_header slot_header)
+  QCheck2.Gen.pure (Dal_publish_commitment slot_header)
 
 let generate_sc_rollup_originate =
   let kind = Sc_rollup.Kind.Example_arith in
@@ -615,8 +608,8 @@ let generator_of ?source = function
       generate_manager_operation ?source generate_register_global_constant
   | `KTransfer_ticket ->
       generate_manager_operation ?source generate_transfer_ticket
-  | `KDal_publish_slot_header ->
-      generate_manager_operation ?source generate_dal_publish_slot_header
+  | `KDal_publish_commitment ->
+      generate_manager_operation ?source generate_dal_publish_commitment
   | `KSc_rollup_originate ->
       generate_manager_operation ?source generate_sc_rollup_originate
   | `KSc_rollup_add_messages ->
@@ -643,7 +636,6 @@ let generate_non_manager_operation =
   match kind with
   | `KPreattestation -> generate_operation generate_preattestation
   | `KAttestation -> generate_operation generate_attestation
-  | `KDal_attestation -> generate_operation generate_dal_attestation
   | `KSeed_nonce_revelation -> generate_operation generate_seed_nonce_revelation
   | `KVdf_revelation -> generate_operation generate_vdf_revelation
   | `KDouble_attestation -> generate_operation generate_double_attestation
@@ -717,7 +709,6 @@ let generate_operation =
     match kind with
     | `KPreattestation -> generate_operation generate_preattestation
     | `KAttestation -> generate_operation generate_attestation
-    | `KDal_attestation -> generate_operation generate_dal_attestation
     | `KSeed_nonce_revelation ->
         generate_operation generate_seed_nonce_revelation
     | `KVdf_revelation -> generate_operation generate_vdf_revelation

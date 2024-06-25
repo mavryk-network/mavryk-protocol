@@ -3,6 +3,7 @@
 (* Open Source License                                                       *)
 (* Copyright (c) 2020 Nomadic Labs <contact@nomadic-labs.com>                *)
 (* Copyright (c) 2020 Metastate AG <hello@metastate.dev>                     *)
+(* Copyright (c) 2024 Trilitech <contact@trili.tech>                         *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
 (* copy of this software and associated documentation files (the "Software"),*)
@@ -58,6 +59,61 @@ let mavkit_injector_server =
     ~tag:"injector_server"
     ~path:
       "./_build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe"
+
+let smart_rollup_installer =
+  Uses.make ~tag:"smart_rollup_installer" ~path:"smart-rollup-installer"
+
+(* The following is unused because even though the WASM debugger is released,
+   there are no tests for it yet, except [tezt/tests/binaries.ml].
+   However, this test requires the executables it tests to be declared with
+   [Uses.make] so that they are registered in the lookup table of [Uses]. *)
+let _mavkit_smart_rollup_wasm_debugger =
+  Uses.make ~tag:"wasm_debugger" ~path:"./mavkit-smart-rollup-wasm-debugger"
+
+(* To be removed after Oxford is frozen *)
+let _mavkit_accuser_Ptoxford =
+  Uses.make ~tag:"accuser_proxford" ~path:"./mavkit-accuser-Proxford"
+
+(* To be removed after Oxford is frozen *)
+let _mavkit_baker_Ptoxford =
+  Uses.make ~tag:"baker_proxford" ~path:"./mavkit-baker-Proxford"
+
+module WASM = struct
+  let dal_echo_kernel =
+    Uses.make ~tag:"dal_echo_kernel" ~path:"dal_echo_kernel.wasm"
+
+  let debug_kernel =
+    Uses.make
+      ~tag:"debug_kernel"
+      ~path:"etherlink/kernel_evm/kernel/tests/resources/debug_kernel.wasm"
+
+  (* Note: this should probably depend on the protocol,
+     and thus be in the [Protocol] module? *)
+  let echo =
+    Uses.make
+      ~tag:"echo"
+      ~path:
+        "src/proto_alpha/lib_protocol/test/integration/wasm_kernel/echo.wasm"
+
+  let evm_kernel = Uses.make ~tag:"evm_kernel" ~path:"evm_kernel.wasm"
+
+  let failed_migration =
+    Uses.make
+      ~tag:"failed_migration"
+      ~path:"etherlink/kernel_evm/kernel/tests/resources/failed_migration.wasm"
+
+  let ghostnet_evm_kernel =
+    Uses.make
+      ~tag:"ghostnet_evm_kernel"
+      ~path:
+        "etherlink/kernel_evm/kernel/tests/resources/ghostnet_evm_kernel.wasm"
+
+  let ghostnet_evm_commit = "d517020b58afef0e15c768ee0b5acbda1786cdd8"
+
+  let tx_kernel = Uses.make ~tag:"tx_kernel" ~path:"tx_kernel.wasm"
+
+  let tx_kernel_dal = Uses.make ~tag:"tx_kernel_dal" ~path:"tx_kernel_dal.wasm"
+end
 
 (* TODO: tezos/tezos#4803
    Can we do better than to depend on script-inputs?

@@ -12,13 +12,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000441
+    Fee to the validator: ṁ0.000441
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000441
-      payload fees(the block proposer) ....... +ꜩ0.000441
+      [PUBLIC_KEY_HASH] ... -ṁ0.000441
+      payload fees(the block proposer) ....... +ṁ0.000441
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -29,8 +29,8 @@ This sequence of operations was run:
       Address: [SMART_ROLLUP_HASH]
       Genesis commitment hash: [SC_ROLLUP_COMMITMENT_HASH]
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ1.638
-        storage fees ........................... +ꜩ1.638
+        [PUBLIC_KEY_HASH] ... -ṁ1.638
+        storage fees ........................... +ṁ1.638
 
 Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 
@@ -38,9 +38,9 @@ Smart rollup [SMART_ROLLUP_HASH] memorized as "rollup"
 { "level": 2,
   "commitment_hash": "[SC_ROLLUP_COMMITMENT_HASH]" }
 
-./mavkit-client --wait none send smart rollup message '["dal:16:4:256:0:2:4:6"]' from bootstrap2
+./mavkit-client --wait none send smart rollup message '["dal:16:8:32:0:2:4:6"]' from bootstrap2
 Node is bootstrapped.
-Estimated gas: 170.941 units (will add 100 for safety)
+Estimated gas: 170.903 units (will add 100 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -51,16 +51,28 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00028
+    Fee to the baker: ṁ0.000279
     Expected counter: 1
     Gas limit: 271
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00028
-      payload fees(the block proposer) ....... +ꜩ0.00028
+      [PUBLIC_KEY_HASH] ... -ṁ0.000279
+      payload fees(the block proposer) ....... +ṁ0.000279
     Smart rollup messages submission:
       This smart rollup messages submission was successfully applied
-      Consumed gas: 170.875
+      Consumed gas: 170.836
+
+GET http://[HOST]:[PORT]/global/block/head/dal/slot_headers
+200 OK
+[{"version":"0","level":4,"index":0,"commitment":"[DAL_SLOT_HEADER]"},{"version":"0","level":4,"index":1,"commitment":"[DAL_SLOT_HEADER]"},{"version":"0","level":4,"index":2,"commitment":"[DAL_SLOT_HEADER]"}]
+
+GET http://[HOST]:[PORT]/global/block/head/dal/processed_slots
+200 OK
+[{"index":0,"status":"unconfirmed"},{"index":1,"status":"confirmed"},{"index":2,"status":"confirmed"},{"index":3,"status":"unconfirmed"},{"index":4,"status":"unconfirmed"},{"index":5,"status":"unconfirmed"},{"index":6,"status":"unconfirmed"},{"index":7,"status":"unconfirmed"},{"index":8,"status":"unconfirmed"},{"index":9,"status":"unconfirmed"},{"index":10,"status":"unconfirmed"},{"index":11,"status":"unconfirmed"},{"index":12,"status":"unconfirmed"},{"index":13,"status":"unconfirmed"},{"index":14,"status":"unconfirmed"},{"index":15,"status":"unconfirmed"}]
+
+GET http://[HOST]:[PORT]/global/block/12/dal/processed_slots
+200 OK
+[{"index":0,"status":"unconfirmed"},{"index":1,"status":"confirmed"},{"index":2,"status":"confirmed"},{"index":3,"status":"unconfirmed"},{"index":4,"status":"unconfirmed"},{"index":5,"status":"unconfirmed"},{"index":6,"status":"unconfirmed"},{"index":7,"status":"unconfirmed"},{"index":8,"status":"unconfirmed"},{"index":9,"status":"unconfirmed"},{"index":10,"status":"unconfirmed"},{"index":11,"status":"unconfirmed"},{"index":12,"status":"unconfirmed"},{"index":13,"status":"unconfirmed"},{"index":14,"status":"unconfirmed"},{"index":15,"status":"unconfirmed"}]
 
 
 ./mavkit-client rpc get '/chains/main/blocks/head/context/smart_rollups/smart_rollup/[SMART_ROLLUP_HASH]/genesis_info'
@@ -80,13 +92,13 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.00028
+    Fee to the validator: ṁ0.00028
     Expected counter: 3
     Gas limit: 273
     Storage limit: 0 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.00028
-      payload fees(the block proposer) ....... +ꜩ0.00028
+      [PUBLIC_KEY_HASH] ... -ṁ0.00028
+      payload fees(the block proposer) ....... +ṁ0.00028
     Smart rollup messages submission:
       This smart rollup messages submission was successfully applied
       Consumed gas: 172.912

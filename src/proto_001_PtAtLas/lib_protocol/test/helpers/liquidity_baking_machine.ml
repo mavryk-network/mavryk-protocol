@@ -205,7 +205,7 @@ let pp_step pp_contract fmt = function
       Format.(
         fprintf
           fmt
-          "@[<h>BuyTzBTC(%a, %aꜩ, %a)@]"
+          "@[<h>BuyTzBTC(%a, %aṁ, %a)@]"
           pp_contract
           p.source
           Tez.pp
@@ -216,7 +216,7 @@ let pp_step pp_contract fmt = function
       Format.(
         fprintf
           fmt
-          "@[<h>AddLiquidity(%a, %aꜩ, %a)@]"
+          "@[<h>AddLiquidity(%a, %aṁ, %a)@]"
           pp_contract
           p.source
           Tez.pp

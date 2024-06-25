@@ -368,13 +368,7 @@ let protocol_param_key = ["protocol_parameters"]
 let check_constants_consistency constants =
   let open Lwt_result_syntax in
   let open Constants.Parametric in
-  let {
-    blocks_per_cycle;
-    blocks_per_commitment;
-    nonce_revelation_threshold;
-    blocks_per_stake_snapshot;
-    _;
-  } =
+  let {blocks_per_cycle; blocks_per_commitment; nonce_revelation_threshold; _} =
     constants
   in
   let* () =
@@ -383,18 +377,10 @@ let check_constants_consistency constants =
           "Inconsistent constants : blocks_per_commitment must be less than \
            blocks_per_cycle")
   in
-  let* () =
-    Error_monad.unless
-      (nonce_revelation_threshold <= blocks_per_cycle)
-      (fun () ->
-        failwith
-          "Inconsistent constants : nonce_revelation_threshold must be less \
-           than blocks_per_cycle")
-  in
-  Error_monad.unless (blocks_per_cycle >= blocks_per_stake_snapshot) (fun () ->
+  Error_monad.unless (nonce_revelation_threshold <= blocks_per_cycle) (fun () ->
       failwith
-        "Inconsistent constants : blocks_per_cycle must be superior than \
-         blocks_per_stake_snapshot")
+        "Inconsistent constants : nonce_revelation_threshold must be less than \
+         blocks_per_cycle")
 
 let prepare_main_init_params ?bootstrap_contracts commitments constants
     bootstrap_accounts =
@@ -440,15 +426,17 @@ let initial_alpha_context ?(commitments = []) constants
   let predecessor = block_header.predecessor in
   let typecheck_smart_contract (ctxt : Alpha_context.context)
       (script : Alpha_context.Script.t) =
-    let allow_forged_in_storage =
-      false
+    let allow_forged_tickets_in_storage, allow_forged_lazy_storage_id_in_storage
+        =
+      (false, false)
       (* There should be no forged value in bootstrap contracts. *)
     in
     let* Ex_script (Script parsed_script), ctxt =
       Script_ir_translator.parse_script
         ctxt
         ~elab_conf:(Script_ir_translator_config.make ~legacy:true ())
-        ~allow_forged_in_storage
+        ~allow_forged_tickets_in_storage
+        ~allow_forged_lazy_storage_id_in_storage
         script
     in
     let* storage, lazy_storage_diff, ctxt =
@@ -555,12 +543,13 @@ let validate_bootstrap_accounts
          least minimal_stake")
     (function Exit -> return_unit | exc -> Lwt.reraise exc)
 
-let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
-    ?level ?cost_per_byte ?issuance_weights ?origination_size ?blocks_per_cycle
+let prepare_initial_context_params ?consensus_committee_size
+    ?consensus_threshold ?min_proposal_quorum ?level ?cost_per_byte
+    ?issuance_weights ?origination_size ?blocks_per_cycle
     ?cycles_per_voting_period ?sc_rollup_arith_pvm_enable
     ?sc_rollup_private_enable ?sc_rollup_riscv_pvm_enable ?dal_enable
     ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
-    ?adaptive_issuance () =
+    ?adaptive_issuance ?consensus_rights_delay () =
   let open Lwt_result_syntax in
   let open Mavryk_protocol_alpha_parameters in
   let constants = Default_parameters.constants_test in
@@ -586,6 +575,11 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
   in
   let consensus_threshold =
     Option.value ~default:constants.consensus_threshold consensus_threshold
+  in
+  let consensus_committee_size =
+    Option.value
+      ~default:constants.consensus_committee_size
+      consensus_committee_size
   in
   let sc_rollup_arith_pvm_enable =
     Option.value
@@ -622,6 +616,11 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
   let adaptive_issuance =
     Option.value ~default:constants.adaptive_issuance adaptive_issuance
   in
+  let consensus_rights_delay =
+    Option.value
+      ~default:constants.consensus_rights_delay
+      consensus_rights_delay
+  in
 
   let constants =
     {
@@ -632,6 +631,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
       cycles_per_voting_period;
       min_proposal_quorum;
       cost_per_byte;
+      consensus_committee_size;
       consensus_threshold;
       sc_rollup =
         {
@@ -645,6 +645,7 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
       adaptive_issuance;
       hard_gas_limit_per_block;
       nonce_revelation_threshold;
+      consensus_rights_delay;
     }
   in
   let* () = check_constants_consistency constants in
@@ -672,17 +673,18 @@ let prepare_initial_context_params ?consensus_threshold ?min_proposal_quorum
 
 (* if no parameter file is passed we check in the current directory
    where the test is run *)
-let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
-    ?bootstrap_contracts ?level ?cost_per_byte ?issuance_weights
-    ?origination_size ?blocks_per_cycle ?cycles_per_voting_period
-    ?sc_rollup_arith_pvm_enable ?sc_rollup_private_enable
-    ?sc_rollup_riscv_pvm_enable ?dal_enable ?zk_rollup_enable
-    ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
+let genesis ?commitments ?consensus_committee_size ?consensus_threshold
+    ?min_proposal_quorum ?bootstrap_contracts ?level ?cost_per_byte
+    ?issuance_weights ?origination_size ?blocks_per_cycle
+    ?cycles_per_voting_period ?sc_rollup_arith_pvm_enable
+    ?sc_rollup_private_enable ?sc_rollup_riscv_pvm_enable ?dal_enable
+    ?zk_rollup_enable ?hard_gas_limit_per_block ?nonce_revelation_threshold ?dal
     ?adaptive_issuance (bootstrap_accounts : Parameters.bootstrap_account list)
     =
   let open Lwt_result_syntax in
   let* constants, shell, hash =
     prepare_initial_context_params
+      ?consensus_committee_size
       ?consensus_threshold
       ?min_proposal_quorum
       ?level
@@ -729,11 +731,14 @@ let genesis ?commitments ?consensus_threshold ?min_proposal_quorum
     constants;
   }
 
-let alpha_context ?commitments ?min_proposal_quorum
+let alpha_context ?commitments ?min_proposal_quorum ?consensus_rights_delay
     (bootstrap_accounts : Parameters.bootstrap_account list) =
   let open Lwt_result_syntax in
   let* constants, shell, _hash =
-    prepare_initial_context_params ?min_proposal_quorum ()
+    prepare_initial_context_params
+      ?min_proposal_quorum
+      ?consensus_rights_delay
+      ()
   in
   let* () =
     validate_bootstrap_accounts bootstrap_accounts constants.minimal_stake
@@ -863,9 +868,7 @@ let apply_with_metadata ?(policy = By_round 0) ?(check_size = true)
         (fun (vstate, contents_result) op ->
           (if check_size then
            let operation_size =
-             Data_encoding.Binary.length
-               Operation.encoding_with_legacy_attestation_name
-               op
+             Data_encoding.Binary.length Operation.encoding op
            in
            if operation_size > Constants_repr.max_operation_data_length then
              raise
@@ -1078,7 +1081,7 @@ let balance_update_of_operation_result :
           (Transaction_to_sc_rollup_result _)
       | Reveal_result _ | Update_consensus_key_result _
       | Set_deposits_limit_result _ | Transfer_ticket_result _
-      | Dal_publish_slot_header_result _ | Sc_rollup_originate_result _
+      | Dal_publish_commitment_result _ | Sc_rollup_originate_result _
       | Sc_rollup_add_messages_result _ | Sc_rollup_cement_result _
       | Sc_rollup_publish_result _ | Sc_rollup_refute_result _
       | Sc_rollup_timeout_result _ | Sc_rollup_execute_outbox_message_result _
@@ -1098,7 +1101,7 @@ let balance_updates_of_single_content :
     type a.
     a Protocol.Apply_results.contents_result ->
     Protocol.Alpha_context.Receipt.balance_updates = function
-  | Dal_attestation_result _ | Proposals_result | Ballot_result -> []
+  | Proposals_result | Ballot_result -> []
   | Preattestation_result {balance_updates; _}
   | Attestation_result {balance_updates; _}
   | Seed_nonce_revelation_result balance_updates
@@ -1192,7 +1195,7 @@ let bake_n_with_origination_results ?baking_mode ?policy n b =
               | Successful_manager_result (Set_deposits_limit_result _)
               | Successful_manager_result (Increase_paid_storage_result _)
               | Successful_manager_result (Transfer_ticket_result _)
-              | Successful_manager_result (Dal_publish_slot_header_result _)
+              | Successful_manager_result (Dal_publish_commitment_result _)
               | Successful_manager_result (Sc_rollup_originate_result _)
               | Successful_manager_result (Sc_rollup_add_messages_result _)
               | Successful_manager_result (Sc_rollup_cement_result _)
@@ -1277,9 +1280,17 @@ let bake_until_cycle_end_with_metadata ?baking_mode ?policy b =
   in
   return (blk, eoc_metadata, nxt_metadata)
 
-let bake_until_n_cycle_end ?policy n b =
+let bake_until_n_cycle_end ?baking_mode ?policy n b =
   let cycle = current_cycle b in
-  bake_until_cycle ?policy (Cycle.add cycle n) b
+  bake_until_cycle ?baking_mode ?policy (Cycle.add cycle n) b
+
+let bake_until_n_cycle_end_with_metadata ?baking_mode ?policy n b =
+  let open Lwt_result_syntax in
+  let cycle = current_cycle b in
+  let* blk, (eoc_metadata, nxt_metadata) =
+    bake_until_cycle_with_metadata ?baking_mode ?policy (Cycle.add cycle n) b
+  in
+  return (blk, eoc_metadata, nxt_metadata)
 
 let debited_of_balance_update_item (it : Receipt.balance_update_item) :
     Tez.t option =
@@ -1313,6 +1324,5 @@ let autostaked_opt baker (metadata : block_header_metadata) =
     autostaked_bal_up_opt
 
 let autostaked ?(loc = __LOC__) baker metadata =
-  match autostaked_opt baker metadata with
-  | None -> raise (Failure (loc ^ ":No autostake found"))
-  | Some mav -> mav
+  ignore loc ;
+  match autostaked_opt baker metadata with None -> Tez.zero | Some tez -> tez

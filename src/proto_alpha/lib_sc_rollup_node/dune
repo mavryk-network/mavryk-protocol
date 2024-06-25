@@ -11,6 +11,7 @@
   mavkit-shell-libs.client-base
   mavkit-shell-libs.client-base-unix
   mavkit-protocol-alpha-libs.client
+  mavkit-protocol-alpha-libs.dal
   mavkit-libs.mavryk-context.encoding
   mavkit-libs.mavryk-context.helpers
   mavryk-protocol-alpha.protocol
@@ -50,11 +51,11 @@
   (:standard)
   -open Mavryk_base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_stdlib_unix
   -open Mavryk_client_base
   -open Mavryk_client_base_unix
   -open Mavryk_client_alpha
+  -open Mavryk_dal_alpha
   -open Mavryk_protocol_alpha
   -open Mavryk_protocol_plugin_alpha
   -open Mavryk_protocol_alpha_parameters

@@ -32,6 +32,12 @@
   mavkit-protocol-001-PtAtLas-libs.client.commands-registration
   mavkit-protocol-001-PtAtLas-libs.baking-commands.registration
   mavkit-protocol-001-PtAtLas-libs.plugin
+  mavkit-protocol-019-PtParisB-libs.client.commands-registration
+  mavkit-protocol-019-PtParisB-libs.baking-commands.registration
+  mavkit-protocol-019-PtParisB-libs.plugin
+  mavkit-protocol-020-PsParisC-libs.client.commands-registration
+  mavkit-protocol-020-PsParisC-libs.baking-commands.registration
+  mavkit-protocol-020-PsParisC-libs.plugin
   (select void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration from
    (mavkit-protocol-alpha-libs.client.commands-registration -> void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration.empty)
    (-> void_for_linking-mavkit-protocol-alpha-libs-client-commands-registration.empty))

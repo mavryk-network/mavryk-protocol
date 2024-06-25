@@ -16,6 +16,7 @@ _`Block`
     The header itself decomposes into a :ref:`shell header<shell_header>` (common to all Mavryk economic protocols), and a protocol-specific header.
     The shell header contains protocol-agnostic data such as the predecessor's block hash and the block's timestamp.
 
+.. _def_context:
 .. _def_context_atlas:
 
 _`Context`
@@ -42,6 +43,7 @@ _`Fitness` (a.k.a. score, weight)
 _`Height`
     See level_.
 
+.. _def_level:
 .. _def_level_atlas:
 
 _`Level` (a.k.a. block height)
@@ -91,6 +93,7 @@ _`Weight`
 Protocol
 --------
 
+.. _def_accuser:
 .. _def_accuser_atlas:
 
 _`Accuser`
@@ -103,6 +106,7 @@ _`Accuser`
     When using :ref:`Mavkit <mavkit>`, accusation operations are emitted by the
     accuser daemon. Note that this daemon is not associated to a delegate: accusation operations are anonymous, and any delegate can include them in a block.
 
+.. _def_account:
 .. _def_account_atlas:
 
 _`Account`
@@ -150,6 +154,7 @@ _`Constant`
 _`Contract`
     See account_.
 
+.. _def_cycle:
 .. _def_cycle_atlas:
 
 _`Cycle`
@@ -164,6 +169,7 @@ _`Cycle`
     constant_, and thus might change across different
     Mavryk protocols.
 
+.. _def_delegate:
 .. _def_delegate_atlas:
 
 _`Delegate`
@@ -180,6 +186,7 @@ _`Delegation`
     its `baking rights`_ and `attesting rights`_. However, the delegate_ does not control the funds of
     the delegating account_, e.g., it can not spend them.
 
+.. _def_double_signing:
 .. _def_double_signing_atlas:
 
 _`Double signing`
@@ -207,6 +214,7 @@ _`Attesting`
 _`Attesting rights`
     See `baking rights`_.
 
+.. _def_fee:
 .. _def_fee_atlas:
 
 _`Fee`
@@ -219,6 +227,7 @@ _`Fee`
 
     See also `burn`_.
 
+.. _def_gas:
 .. _def_gas_atlas:
 
 _`Gas`
@@ -226,6 +235,7 @@ _`Gas`
     the execution of a `smart contract`_. Gas is used to measure how
     much computing power is used to execute a `smart contract`_.
 
+.. _def_implicit_account:
 .. _def_implicit_account_atlas:
 
 _`Implicit account`
@@ -238,6 +248,7 @@ _`Implicit account`
     The address of an implicit account always starts with the
     letters ``tz`` followed by ``1``, ``2``, ``3``, or ``4`` (depending on the
     signature scheme) and finally the hash of the public key.
+    See :doc:`./accounts` for a more detailed explanation on addresses.
 
 _`Layer 1`
     The primary blockchain i.e. the Mavryk chain. Within any blockchain ecosystem, Layer 1 (L1) refers to the main chain to
@@ -275,12 +286,14 @@ _`Operation kinds`
 _`Originated account`
     See `smart contract`_.
 
+.. _def_origination:
 .. _def_origination_atlas:
 
 _`Origination`
     A manager operation_ whose purpose is to create -- that
     is, to deploy -- a `smart contract`_ on the Mavryk blockchain.
 
+.. _def_round:
 .. _def_round_atlas:
 
 _`Round`

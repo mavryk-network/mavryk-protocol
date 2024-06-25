@@ -162,18 +162,13 @@ let process_included_l1_operation (type kind) ~catching_up
         {published_at_level; staked_hash = their_commitment_hash; _} ) ->
       (* Commitment published by someone else *)
       (* We first register the publication information *)
-      let* known_commitment =
-        Node_context.commitment_exists node_ctxt their_commitment_hash
-      in
       let* () =
-        if not known_commitment then return_unit
-        else
-          Node_context.register_published_commitment
-            node_ctxt
-            (Sc_rollup_proto_types.Commitment.to_mavkit their_commitment)
-            ~first_published_at_level:(Raw_level.to_int32 published_at_level)
-            ~level:head.Layer1.level
-            ~published_by_us:false
+        Node_context.register_published_commitment
+          node_ctxt
+          (Sc_rollup_proto_types.Commitment.to_mavkit their_commitment)
+          ~first_published_at_level:(Raw_level.to_int32 published_at_level)
+          ~level:head.Layer1.level
+          ~published_by_us:false
       in
       (* An accuser node will publish its commitment if the other one is
          refutable. *)
@@ -240,7 +235,7 @@ let process_included_l1_operation (type kind) ~catching_up
           fail_when
             (List.exists (Node_context.is_operator node_ctxt) stakers)
             (Sc_rollup_node_errors.Lost_game Draw))
-  | Dal_publish_slot_header _, Dal_publish_slot_header_result {slot_header; _}
+  | Dal_publish_commitment _, Dal_publish_commitment_result {slot_header; _}
     when Node_context.dal_supported node_ctxt ->
       let* () =
         Node_context.save_slot_header
@@ -321,7 +316,7 @@ let process_l1_operation (type kind) ~catching_up node_ctxt
     | Sc_rollup_recover_bond {sc_rollup = rollup; staker = _} ->
         Sc_rollup.Address.(
           rollup = node_ctxt.Node_context.config.sc_rollup_address)
-    | Dal_publish_slot_header _ -> true
+    | Dal_publish_commitment _ -> true
     | Reveal _ | Transaction _ | Origination _ | Delegation _
     | Update_consensus_key _ | Register_global_constant _ | Set_deposits_limit _
     | Increase_paid_storage _ | Transfer_ticket _ | Sc_rollup_originate _

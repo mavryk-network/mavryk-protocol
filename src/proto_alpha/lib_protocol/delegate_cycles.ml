@@ -27,15 +27,17 @@
 
 let update_activity ctxt last_cycle =
   let open Lwt_result_syntax in
-  let preserved = Constants_storage.preserved_cycles ctxt in
-  match Cycle_repr.sub last_cycle preserved with
-  | None -> return (ctxt, [])
+  let rights_delay = Constants_storage.consensus_rights_delay ctxt in
+  match Cycle_repr.sub last_cycle rights_delay with
+  | None ->
+      (* do not update activity in the first cycles of a network.*)
+      return (ctxt, [])
   | Some _unfrozen_cycle ->
       Stake_storage.fold_on_active_delegates_with_minimal_stake_s
         ctxt
         ~order:`Sorted
         ~init:(Ok (ctxt, []))
-        ~f:(fun delegate () acc ->
+        ~f:(fun delegate acc ->
           let*? ctxt, deactivated = acc in
           let* cycle =
             Delegate_activation_storage.last_cycle_before_deactivation
@@ -126,47 +128,57 @@ let adjust_frozen_stakes ctxt ~deactivated_delegates :
       ~order:`Undefined
       ~init:(ctxt, [])
       ~f:(fun delegate (ctxt, balance_updates) ->
-        let* ({own_frozen; _} as full_staking_balance :
-               Full_staking_balance_repr.t) =
-          Stake_storage.get_full_staking_balance ctxt delegate
+        let*! has_been_denounced =
+          Pending_denunciations_storage.has_pending_denunciations ctxt delegate
         in
-        let*? optimal_frozen =
-          Stake_context.optimal_frozen_wrt_delegated_without_ai
-            ctxt
-            full_staking_balance
-        in
-        let* deposit_limit =
-          Delegate_storage.frozen_deposits_limit ctxt delegate
-        in
-        let optimal_frozen =
-          match deposit_limit with
-          | None -> optimal_frozen
-          | Some deposit_limit -> Tez_repr.min optimal_frozen deposit_limit
-        in
-        let* ctxt, new_balance_updates =
-          if Tez_repr.(optimal_frozen > own_frozen) then
-            let*? optimal_to_stake = Tez_repr.(optimal_frozen -? own_frozen) in
-            Staking.stake
+        if has_been_denounced then return (ctxt, balance_updates)
+          (* we don't autostake on behalf of delegates who will be slashed *)
+        else
+          let* full_staking_balance =
+            Stake_storage.get_full_staking_balance ctxt delegate
+          in
+          let own_frozen =
+            Full_staking_balance_repr.own_frozen full_staking_balance
+          in
+          let*? optimal_frozen =
+            Stake_context.optimal_frozen_wrt_delegated_without_ai
               ctxt
-              ~for_next_cycle_use_only_after_slashing:true
-              ~amount:(`At_most optimal_to_stake)
-              ~sender:delegate
-              ~delegate
-          else if Tez_repr.(optimal_frozen < own_frozen) then
-            let*? to_unstake = Tez_repr.(own_frozen -? optimal_frozen) in
-            Staking.request_unstake
-              ctxt
-              ~for_next_cycle_use_only_after_slashing:true
-              ~sender_contract:Contract_repr.(Implicit delegate)
-              ~delegate
-              to_unstake
-          else
-            Staking.finalize_unstake
-              ctxt
-              ~for_next_cycle_use_only_after_slashing:true
-              Contract_repr.(Implicit delegate)
-        in
-        return (ctxt, new_balance_updates @ balance_updates))
+              full_staking_balance
+          in
+          let* deposit_limit =
+            Delegate_storage.frozen_deposits_limit ctxt delegate
+          in
+          let optimal_frozen =
+            match deposit_limit with
+            | None -> optimal_frozen
+            | Some deposit_limit -> Tez_repr.min optimal_frozen deposit_limit
+          in
+          let* ctxt, new_balance_updates =
+            if Tez_repr.(optimal_frozen > own_frozen) then
+              let*? optimal_to_stake =
+                Tez_repr.(optimal_frozen -? own_frozen)
+              in
+              Staking.stake
+                ctxt
+                ~for_next_cycle_use_only_after_slashing:true
+                ~amount:(`At_most optimal_to_stake)
+                ~sender:delegate
+                ~delegate
+            else if Tez_repr.(optimal_frozen < own_frozen) then
+              let*? to_unstake = Tez_repr.(own_frozen -? optimal_frozen) in
+              Staking.request_unstake
+                ctxt
+                ~for_next_cycle_use_only_after_slashing:true
+                ~sender_contract:Contract_repr.(Implicit delegate)
+                ~delegate
+                to_unstake
+            else
+              Staking.finalize_unstake
+                ctxt
+                ~for_next_cycle_use_only_after_slashing:true
+                Contract_repr.(Implicit delegate)
+          in
+          return (ctxt, new_balance_updates @ balance_updates))
   in
   List.fold_left_es
     (fun (ctxt, balance_updates) delegate ->
@@ -184,38 +196,45 @@ let adjust_frozen_stakes ctxt ~deactivated_delegates :
 
 let cycle_end ctxt last_cycle =
   let open Lwt_result_syntax in
+  (* attributing attesting rewards   *)
   let* ctxt, unrevealed_nonces = Seed_storage.cycle_end ctxt last_cycle in
   let* ctxt, attesting_balance_updates =
     distribute_attesting_rewards ctxt last_cycle unrevealed_nonces
   in
-  let* ctxt, slashings, slashing_balance_updates =
-    Delegate_slashed_deposits_storage
-    .apply_and_clear_current_cycle_denunciations
-      ctxt
+  (* Applying slashing related to expiring denunciations *)
+  let* ctxt, slashing_balance_updates =
+    Delegate_slashed_deposits_storage.apply_and_clear_denunciations ctxt
   in
   let new_cycle = Cycle_repr.add last_cycle 1 in
-  let* ctxt =
-    Delegate_sampler.select_new_distribution_at_cycle_end
-      ctxt
-      ~slashings
-      ~new_cycle
-  in
-  let*! ctxt = Delegate_consensus_key.activate ctxt ~new_cycle in
-  let*! ctxt =
-    Delegate_slashed_deposits_storage.clear_outdated_slashed_deposits
-      ctxt
-      ~new_cycle
-  in
+  let*! ctxt = Already_denounced_storage.clear_outdated_cycle ctxt ~new_cycle in
+  (* Deactivating delegates which didn't participate to consensus for too long *)
   let* ctxt, deactivated_delegates = update_activity ctxt last_cycle in
+  (* Applying autostaking. Do not move before slashing. Keep before rights
+     computation for optimising rights*)
   let* ctxt, autostake_balance_updates =
     match Staking.staking_automation ctxt with
     | Manual_staking -> return (ctxt, [])
     | Auto_staking -> adjust_frozen_stakes ctxt ~deactivated_delegates
   in
-  let* ctxt = Forbidden_delegates_storage.update_at_cycle_end ctxt ~new_cycle in
+  (* Computing future staking rights *)
+  let* ctxt =
+    Delegate_sampler.select_new_distribution_at_cycle_end ctxt ~new_cycle
+  in
+  (* Activating consensus key for the cycle to come *)
+  let*! ctxt = Delegate_consensus_key.activate ctxt ~new_cycle in
+  (* trying to unforbid delegates for the cycle to come.  *)
+  let* ctxt =
+    Forbidden_delegates_storage.update_at_cycle_end_after_slashing
+      ctxt
+      ~new_cycle
+  in
+  (* clear deprecated cycles data.  *)
   let* ctxt = Stake_storage.clear_at_cycle_end ctxt ~new_cycle in
   let* ctxt = Delegate_sampler.clear_outdated_sampling_data ctxt ~new_cycle in
+  (* activate delegate parameters for the cycle to come.  *)
   let*! ctxt = Delegate_staking_parameters.activate ctxt ~new_cycle in
+  (* updating AI coefficient. It should remain after all balance changes of the
+     cycle-end operations *)
   let* ctxt =
     Adaptive_issuance_storage.update_stored_rewards_at_cycle_end ctxt ~new_cycle
   in
@@ -226,17 +245,10 @@ let cycle_end ctxt last_cycle =
   return (ctxt, balance_updates, deactivated_delegates)
 
 let init_first_cycles ctxt =
-  let open Lwt_result_syntax in
-  let preserved = Constants_storage.preserved_cycles ctxt in
+  let consensus_rights_delay = Constants_storage.consensus_rights_delay ctxt in
   List.fold_left_es
     (fun ctxt c ->
       let cycle = Cycle_repr.of_int32_exn (Int32.of_int c) in
-      let* ctxt = Stake_storage.snapshot ctxt in
-      (* NB: we need to take several snapshots because
-         select_distribution_for_cycle deletes the snapshots *)
-      Delegate_sampler.select_distribution_for_cycle
-        ctxt
-        ~slashings:Signature.Public_key_hash.Map.empty
-        cycle)
+      Delegate_sampler.select_distribution_for_cycle ctxt cycle)
     ctxt
-    Misc.(0 --> preserved)
+    Misc.(0 --> consensus_rights_delay)

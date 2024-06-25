@@ -31,6 +31,8 @@
    Subject:      Runs Michelson annotation tests using [mavkit-client typecheck data ...].
 *)
 
+let team = Tag.layer1
+
 let typecheck_wrapper ?res (f : Client.t -> Process.t) client =
   match res with
   | None -> Process.check @@ f client
@@ -49,7 +51,8 @@ let register =
   Protocol.register_test
     ~__FILE__
     ~title:"Tests of Michelson annotations"
-    ~tags:["client"; "michelson"; "annotations"]
+    ~tags:[team; "client"; "michelson"; "annotations"]
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   (* annotation length limit positive case *)
@@ -105,10 +108,7 @@ let register =
 
   let* () =
     typecheck_script
-      ?res:
-        (if Protocol.(number protocol >= number Atlas) then
-         Some (rex "unexpected annotation")
-        else None)
+      ~res:(rex "unexpected annotation")
       ~legacy:true
       ~script:"parameter %r unit; storage unit; code { FAILWITH }"
       client
@@ -116,10 +116,7 @@ let register =
 
   let* () =
     typecheck_script
-      ?res:
-        (if Protocol.(number protocol >= number Atlas) then
-         Some (rex "unexpected annotation")
-        else None)
+      ~res:(rex "unexpected annotation")
       ~legacy:true
       ~script:"parameter %1 unit; storage unit; code { FAILWITH }"
       client

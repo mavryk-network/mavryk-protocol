@@ -31,21 +31,3 @@ val slot_pages :
     unit,
     Mavryk_crypto_dal.Cryptobox.page list )
   Mavryk_rpc.Service.service
-
-val shard :
-  ( [`GET],
-    unit,
-    (unit * Mavryk_crypto_dal.Cryptobox.commitment) * int,
-    unit,
-    unit,
-    Mavryk_crypto_dal.Cryptobox.shard )
-  Mavryk_rpc.Service.service
-
-val shards :
-  ( [`POST],
-    unit,
-    unit * Mavryk_crypto_dal.Cryptobox.commitment,
-    unit,
-    int trace,
-    Mavryk_crypto_dal.Cryptobox.shard list )
-  Mavryk_rpc.Service.service

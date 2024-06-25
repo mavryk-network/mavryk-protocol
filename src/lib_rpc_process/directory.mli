@@ -9,6 +9,6 @@
     the rpc process. RPCs handled here are not forwarded to the node.
 *)
 val build_rpc_directory :
-  Mavryk_version.Node_version.t ->
-  Mavkit_node_config.Config_file.t ->
+  Mavryk_version.Mavkit_node_version.t ->
+    Mavkit_node_config.Config_file.t ->
   unit Mavryk_rpc.Directory.t

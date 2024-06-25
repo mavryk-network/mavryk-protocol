@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000556
+    Fee to the validator: ṁ0.000556
     Expected counter: 1
     Gas limit: 750
     Storage limit: 531 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000556
-      payload fees(the block proposer) ....... +ꜩ0.000556
+      [PUBLIC_KEY_HASH] ... -ṁ0.000556
+      payload fees(the block proposer) ....... +ṁ0.000556
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ0
+      Credit: ṁ0
       Script:
         { parameter string ;
           storage (list string) ;
@@ -57,10 +57,10 @@ This sequence of operations was run:
         Paid storage size diff: 254 bytes
         Consumed gas: 649.738
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.0635
-          storage fees ........................... +ꜩ0.0635
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ0.0635
+          storage fees ........................... +ṁ0.0635
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as split_string.
@@ -78,15 +78,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000403
+    Fee to the validator: ṁ0.000403
     Expected counter: 2
     Gas limit: 1420
     Storage limit: 38 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000403
-      payload fees(the block proposer) ....... +ꜩ0.000403
+      [PUBLIC_KEY_HASH] ... -ṁ0.000403
+      payload fees(the block proposer) ....... +ṁ0.000403
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "abc"
@@ -96,8 +96,8 @@ This sequence of operations was run:
       Paid storage size diff: 18 bytes
       Consumed gas: 1320.384
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.0045
-        storage fees ........................... +ꜩ0.0045
+        [PUBLIC_KEY_HASH] ... -ṁ0.0045
+        storage fees ........................... +ṁ0.0045
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
@@ -116,15 +116,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000404
+    Fee to the validator: ṁ0.000404
     Expected counter: 3
     Gas limit: 1423
     Storage limit: 38 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000404
-      payload fees(the block proposer) ....... +ꜩ0.000404
+      [PUBLIC_KEY_HASH] ... -ṁ0.000404
+      payload fees(the block proposer) ....... +ṁ0.000404
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "def"
@@ -134,8 +134,8 @@ This sequence of operations was run:
       Paid storage size diff: 18 bytes
       Consumed gas: 1323.075
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.0045
-        storage fees ........................... +ꜩ0.0045
+        [PUBLIC_KEY_HASH] ... -ṁ0.0045
+        storage fees ........................... +ṁ0.0045
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

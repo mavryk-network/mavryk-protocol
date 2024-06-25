@@ -34,7 +34,7 @@ See for instance
    ``val Simple.emit: 'a Simple.t -> 'a -> (unit, trace) result Lwt.t``.
 
 Please read the guidelines that are documented in
-`the Internal_event.Simple module. <../api/odoc/_html/mavkit-libs/Event_logging/Internal_event/Simple/index.html>`__
+:package-api:`the Internal_event.Simple module. <mavkit-libs/Mavryk_event_logging/Internal_event/Simple/index.html>`.
 
 
 “Heavy” Events

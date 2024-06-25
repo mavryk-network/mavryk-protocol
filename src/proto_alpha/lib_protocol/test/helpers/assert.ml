@@ -32,6 +32,13 @@ let error ~loc v f =
   | Ok _ -> failwith "Unexpected successful result (%s)" loc
   | Error err -> failwith "@[Unexpected error (%s): %a@]" loc pp_print_trace err
 
+let join_errors e1 e2 =
+  let open Lwt_result_syntax in
+  match (e1, e2) with
+  | Ok (), Ok () -> return_unit
+  | Error e, Ok () | Ok (), Error e -> fail e
+  | Error e1, Error e2 -> fail (e1 @ e2)
+
 let test_error_encodings e =
   let module E = Environment.Error_monad in
   ignore (E.pp Format.str_formatter e) ;
@@ -138,6 +145,9 @@ let leq_int64 ~loc (a : int64) (b : int64) =
 
 let equal_z ~loc (a : Z.t) (b : Z.t) =
   equal ~loc Compare.Z.( = ) "Z are not equal" Z.pp_print a b
+
+let equal_q ~loc (a : Q.t) (b : Q.t) =
+  equal ~loc Compare.Q.( = ) "Q are not equal" Q.pp_print a b
 
 (* bool *)
 let equal_bool ~loc (a : bool) (b : bool) =
@@ -298,6 +308,20 @@ let assert_equal_list_opt ~loc eq msg pp =
     (Option.equal (List.equal eq))
     msg
     (Format.pp_print_option (pp_print_list pp))
+
+(** Checks that both lists have the same elements, not taking the
+    order of these elements into account, but taking their
+    multiplicity into account. *)
+let equal_list_any_order ~loc ~compare msg pp list1 list2 =
+  let ordered_list1 = List.sort compare list1 in
+  let ordered_list2 = List.sort compare list2 in
+  equal
+    ~loc
+    (List.equal (fun a b -> compare a b = 0))
+    msg
+    (pp_print_list pp)
+    ordered_list1
+    ordered_list2
 
 let to_json_string encoding x =
   x

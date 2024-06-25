@@ -1842,7 +1842,7 @@ let list_solvers, list_models =
   match result with
   | Ok global_options -> global_options
   | Error [Mavryk_clic.Version] ->
-      let version = Mavryk_version_value.Bin_version.version_string in
+      let version = Mavryk_version_value.Bin_version.mavkit_version_string in
       Format.printf "%s\n" version ;
       exit 0
   | Error [Mavryk_clic.Help command] ->

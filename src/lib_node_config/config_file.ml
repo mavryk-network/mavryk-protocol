@@ -34,6 +34,9 @@ let default_data_dir = home // ".mavryk-node"
 
 let default_rpc_port = 8732
 
+let default_max_active_rpc_connections =
+  RPC_server.Max_active_rpc_connections.default
+
 let default_metrics_port = 9932
 
 let default_p2p_port = 9732
@@ -90,6 +93,7 @@ let _mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
+    (5898241l, "PsParisCZo7KAh1Z1smVd9ZMZ1HHn5gkzbM94V3PLCpknFWhUAi");
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
@@ -99,7 +103,7 @@ let _mainnet_user_activated_upgrades =
 let sandbox_user_activated_upgrades = []
 (* END_PATCHING_ZONE_FOR_SANDBOX_USER_ACTIVATED_UPGRADES *)
 
-(* let blockchain_network_mainnet =
+let blockchain_network_mainnet =
   make_blockchain_network
     ~alias:"mainnet"
     {
@@ -111,10 +115,10 @@ let sandbox_user_activated_upgrades = []
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
-    ~chain_name:"MAVRYK_MAINNET"
-    ~old_chain_name:"MAVRYK_BETANET_2018-06-30T16:07:32Z"
+    ~chain_name:"TEZOS_MAINNET"
+    ~old_chain_name:"TEZOS_BETANET_2018-06-30T16:07:32Z"
     ~incompatible_chain_name:"INCOMPATIBLE"
-    ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
+    ~sandboxed_chain_name:"SANDBOXED_TEZOS_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:
       [
@@ -126,11 +130,20 @@ let sandbox_user_activated_upgrades = []
           "PtHangz2aRngywmSRGGvrcTyMbbdpWdpFKuS4uMWxg2RaH9i1qx" );
         ( "PtMumbaiiFFEGbew1rRjzSPyzRbA51Tm3RVZL5suHPxSZYDhCEc",
           "PtMumbai2TmsJHNGRkD8v8YDbtao7BLUC3wjASn1inAKLFCjaH1" );
+        ( "PtParisBQscdCm6Cfow6ndeU6wKJyA3aV1j4D3gQBQMsTQyJCrz",
+          "PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ" );
       ]
     ~default_bootstrap_peers:
-      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"] *)
+      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
+    ~dal_config:
+      {
+        activated = true;
+        use_mock_srs_for_testing = false;
+        bootstrap_peers =
+          ["dalboot.mainnet.tzinit.org"; "dalboot.mainnet.tzboot.net"];
+      }
 
-(* let blockchain_network_ghostnet =
+let blockchain_network_ghostnet =
   make_blockchain_network
     ~alias:"ghostnet"
     {
@@ -153,7 +166,7 @@ let sandbox_user_activated_upgrades = []
               );
             ];
       }
-    ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
+    ~chain_name:"TEZOS_ITHACANET_2022-01-25T15:00:00Z"
     ~sandboxed_chain_name:"SANDBOXED_TEZOS"
     ~user_activated_upgrades:
       [
@@ -161,6 +174,7 @@ let sandbox_user_activated_upgrades = []
         (765952l, "PtJakart2xVj7pYXJBXrqHgd82rdkLey5ZeeGwDgPp9rhQUbSqY");
         (1191936l, "PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg");
         (1654784l, "PtLimaPtLMwfNinJi9rCfDPWea8dFgTZ1MeJ9f1m2SRic6ayiwW");
+        (6729729l, "PsParisCZo7KAh1Z1smVd9ZMZ1HHn5gkzbM94V3PLCpknFWhUAi");
       ]
     ~default_bootstrap_peers:
       [
@@ -168,50 +182,24 @@ let sandbox_user_activated_upgrades = []
         "ghostnet.tzinit.org";
         "ghostnet.tzboot.net";
         "ghostnet.boot.ecadinfra.com";
-        "ghostnet.kaml.fr";
         "ghostnet.stakenow.de:9733";
-      ] *)
-
-let blockchain_network_basenet =
-  make_blockchain_network
-    ~alias:"basenet"
-    {
-      time = Time.Protocol.of_notation_exn "2024-02-23T09:40:24Z";
-      block =
-        Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisad134b8W1qK";
-      protocol =
-        Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
-    }
-    ~genesis_parameters:
-      {
-        context_key = "sandbox_parameter";
-        values =
-          `O
-            [
-              ( "genesis_pubkey",
-                `String "edpkuYLienS3Xdt5c1vfRX1ibMxQuvfM67ByhJ9nmRYYKGAAoTq1UC"
-              );
-            ];
-      }
-    ~chain_name:"MAVRYK_BASENET_2024-02-23T09:40:24Z"
-    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
-    ~user_activated_upgrades:
-      [
-        (10l, "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp");
       ]
-    ~default_bootstrap_peers:
-      [ "" ]
+    ~dal_config:
+      {
+        activated = true;
+        use_mock_srs_for_testing = false;
+        bootstrap_peers =
+          ["dalboot.ghostnet.tzinit.org"; "dalboot.ghostnet.tzboot.net"];
+      }
 
 let blockchain_network_sandbox =
   make_blockchain_network
     ~alias:"sandbox"
     {
-      time = Time.Protocol.of_notation_exn "2024-02-23T09:42:53Z";
+      time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesis1c2acaRqr7Z";
+          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
       protocol =
         Protocol_hash.of_b58check_exn
           "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im";
@@ -229,9 +217,11 @@ let blockchain_network_sandbox =
               );
             ];
       }
-    ~chain_name:"MAVRYK"
-    ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
+    ~chain_name:"TEZOS"
+    ~sandboxed_chain_name:"SANDBOXED_TEZOS"
     ~user_activated_upgrades:sandbox_user_activated_upgrades
+    ~dal_config:
+      {activated = true; use_mock_srs_for_testing = false; bootstrap_peers = []}
 
 let blockchain_network_encoding : blockchain_network Data_encoding.t =
   let open Data_encoding in
@@ -306,16 +296,16 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
           ~description:
             "USE FOR TESTING PURPOSE ONLY. Configuration for the \
              data-availibility layer"
-          Mavryk_crypto_dal.Cryptobox.Config.encoding
+          Tezos_crypto_dal.Cryptobox.Config.encoding
           (* We use default config unless explicitly overridden via the config file.
              Note that such override is expected to only be used in test networks. *)
-          Mavryk_crypto_dal.Cryptobox.Config.default))
+          Tezos_crypto_dal.Cryptobox.Config.default))
 
 let builtin_blockchain_networks_with_tags =
   [
     (1, blockchain_network_sandbox);
-    (* (4, blockchain_network_mainnet); *)
-    (19, blockchain_network_basenet);
+    (4, blockchain_network_mainnet);
+    (19, blockchain_network_ghostnet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with
@@ -378,20 +368,22 @@ and p2p = {
   advertised_net_port : int option;
   discovery_addr : string option;
   private_mode : bool;
-  limits : Mavryk_p2p_services.P2p_limits.t;
+  limits : Tezos_p2p_services.P2p_limits.t;
   disable_mempool : bool;
   enable_testchain : bool;
-  reconnection_config : Mavryk_p2p_services.Point_reconnection_config.t;
+  reconnection_config : Tezos_p2p_services.Point_reconnection_config.t;
   disable_peer_discovery : bool;
 }
 
 and rpc = {
   listen_addrs : string list;
+  external_listen_addrs : string list;
   cors_origins : string list;
   cors_headers : string list;
   tls : tls option;
   acl : RPC_server.Acl.policy;
   media_type : Media_type.Command_line.t;
+  max_active_rpc_connections : RPC_server.Max_active_rpc_connections.t;
 }
 
 and tls = {cert : string; key : string}
@@ -404,21 +396,23 @@ let default_p2p =
     advertised_net_port = None;
     discovery_addr = None;
     private_mode = false;
-    limits = Mavryk_p2p_services.P2p_limits.default;
+    limits = Tezos_p2p_services.P2p_limits.default;
     disable_mempool = false;
     enable_testchain = false;
-    reconnection_config = Mavryk_p2p_services.Point_reconnection_config.default;
+    reconnection_config = Tezos_p2p_services.Point_reconnection_config.default;
     disable_peer_discovery = false;
   }
 
 let default_rpc =
   {
     listen_addrs = [];
+    external_listen_addrs = [];
     cors_origins = [];
     cors_headers = [];
     tls = None;
     acl = RPC_server.Acl.empty_policy;
     media_type = Media_type.Command_line.Any;
+    max_active_rpc_connections = default_max_active_rpc_connections;
   }
 
 let default_disable_config_validation = false
@@ -431,8 +425,7 @@ let default_config =
     log = Logs_simple_config.default_cfg;
     internal_events = None;
     shell = Shell_limits.default_limits;
-    (* blockchain_network = blockchain_network_mainnet; *)
-    blockchain_network = blockchain_network_basenet;
+    blockchain_network = blockchain_network_mainnet;
     disable_config_validation = default_disable_config_validation;
     metrics_addr = [];
   }
@@ -501,7 +494,7 @@ let p2p =
           (opt
              "bootstrap-peers"
              ~description:
-               "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. \
+               "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. \
                 If the port is not specified, default port 9732 will be \
                 assumed."
              (list string))
@@ -540,8 +533,8 @@ let p2p =
           (dft
              "limits"
              ~description:"Network limits"
-             Mavryk_p2p_services.P2p_limits.encoding
-             Mavryk_p2p_services.P2p_limits.default)
+             Tezos_p2p_services.P2p_limits.encoding
+             Tezos_p2p_services.P2p_limits.default)
           (dft
              "disable_mempool"
              ~description:
@@ -561,7 +554,7 @@ let p2p =
                 blocks."
              bool
              default_p2p.enable_testchain)
-          (let open Mavryk_p2p_services.Point_reconnection_config in
+          (let open Tezos_p2p_services.Point_reconnection_config in
           dft
             "greylisting_config"
             ~description:
@@ -582,28 +575,33 @@ let p2p =
 let rpc : rpc Data_encoding.t =
   let open Data_encoding in
   conv
-    (fun {cors_origins; cors_headers; listen_addrs; tls; acl; media_type} ->
+    (fun {
+           cors_origins;
+           cors_headers;
+           listen_addrs;
+           external_listen_addrs;
+           tls;
+           acl;
+           media_type;
+           max_active_rpc_connections;
+         } ->
       let cert, key =
         match tls with
         | None -> (None, None)
         | Some {cert; key} -> (Some cert, Some key)
       in
-      ( Some listen_addrs,
-        None,
-        cors_origins,
-        cors_headers,
-        cert,
-        key,
-        acl,
-        media_type ))
-    (fun ( listen_addrs,
-           legacy_listen_addr,
-           cors_origins,
-           cors_headers,
-           cert,
-           key,
-           acl,
-           media_type ) ->
+      let external_listen_addrs =
+        match external_listen_addrs with [] -> None | v -> Some v
+      in
+      ( (Some listen_addrs, external_listen_addrs, None, cors_origins),
+        (cors_headers, cert, key, acl, media_type, max_active_rpc_connections)
+      ))
+    (fun ( ( listen_addrs,
+             external_listen_addrs,
+             legacy_listen_addr,
+             cors_origins ),
+           (cors_headers, cert, key, acl, media_type, max_active_rpc_connections)
+         ) ->
       let tls =
         match (cert, key) with
         | None, _ | _, None -> None
@@ -619,44 +617,78 @@ let rpc : rpc Data_encoding.t =
               "Config file: Use only \"listen-addrs\" and not (legacy) \
                \"listen-addr\"."
       in
-      {listen_addrs; cors_origins; cors_headers; tls; acl; media_type})
-    (obj8
-       (opt
-          "listen-addrs"
-          ~description:
-            "Hosts to listen to. If the port is not specified, the default \
-             port 8732 will be assumed."
-          (list string))
-       (opt "listen-addr" ~description:"Legacy value: Host to listen to" string)
-       (dft
-          "cors-origin"
-          ~description:
-            "Cross Origin Resource Sharing parameters, see \
-             https://en.wikipedia.org/wiki/Cross-origin_resource_sharing."
-          (list string)
-          default_rpc.cors_origins)
-       (dft
-          "cors-headers"
-          ~description:
-            "Cross Origin Resource Sharing parameters, see \
-             https://en.wikipedia.org/wiki/Cross-origin_resource_sharing."
-          (list string)
-          default_rpc.cors_headers)
-       (opt
-          "crt"
-          ~description:"Certificate file (necessary when TLS is used)."
-          string)
-       (opt "key" ~description:"Key file (necessary when TLS is used)." string)
-       (dft
-          "acl"
-          ~description:"A list of RPC ACLs for specific listening addresses."
-          RPC_server.Acl.policy_encoding
-          default_rpc.acl)
-       (dft
-          "media-type"
-          ~description:"The media types supported by the server."
-          Media_type.Command_line.encoding
-          default_rpc.media_type))
+      let external_listen_addrs =
+        Option.value
+          external_listen_addrs
+          ~default:default_rpc.external_listen_addrs
+      in
+      {
+        listen_addrs;
+        external_listen_addrs;
+        cors_origins;
+        cors_headers;
+        tls;
+        acl;
+        media_type;
+        max_active_rpc_connections;
+      })
+    (merge_objs
+       (obj4
+          (opt
+             "listen-addrs"
+             ~description:
+               "Hosts to listen to. If the port is not specified, the default \
+                port 8732 will be assumed."
+             (list string))
+          (opt
+             "external-listen-addrs"
+             ~description:
+               "Hosts to listen to. If the port is not specified, the default \
+                port 8732 will be assumed."
+             (list string))
+          (opt
+             "listen-addr"
+             ~description:"Legacy value: Host to listen to"
+             string)
+          (dft
+             "cors-origin"
+             ~description:
+               "Cross Origin Resource Sharing parameters, see \
+                https://en.wikipedia.org/wiki/Cross-origin_resource_sharing."
+             (list string)
+             default_rpc.cors_origins))
+       (obj6
+          (dft
+             "cors-headers"
+             ~description:
+               "Cross Origin Resource Sharing parameters, see \
+                https://en.wikipedia.org/wiki/Cross-origin_resource_sharing."
+             (list string)
+             default_rpc.cors_headers)
+          (opt
+             "crt"
+             ~description:"Certificate file (necessary when TLS is used)."
+             string)
+          (opt
+             "key"
+             ~description:"Key file (necessary when TLS is used)."
+             string)
+          (dft
+             "acl"
+             ~description:"A list of RPC ACLs for specific listening addresses."
+             RPC_server.Acl.policy_encoding
+             default_rpc.acl)
+          (dft
+             "media-type"
+             ~description:"The media types supported by the server."
+             Media_type.Command_line.encoding
+             default_rpc.media_type)
+          (dft
+             "max_active_rpc_connections"
+             ~description:
+               "The maximum number of active connections per RPC endpoint."
+             RPC_server.Max_active_rpc_connections.encoding
+             default_rpc.max_active_rpc_connections)))
 
 let rpc_encoding = rpc
 
@@ -739,21 +771,19 @@ let encoding =
           ~description:"Configuration of network parameters"
           Shell_limits.limits_encoding
           Shell_limits.default_limits)
-        (dft
-            "network"
-            ~description:"Configuration of which network/blockchain to connect to"
-            sugared_blockchain_network_encoding
-            blockchain_network_basenet)
-        (* (dft
+       (dft
           "network"
           ~description:"Configuration of which network/blockchain to connect to"
           sugared_blockchain_network_encoding
-          blockchain_network_mainnet) *)
+          blockchain_network_mainnet)
        (dft
           "metrics_addr"
           ~description:"Configuration of the Prometheus metrics endpoint"
           (list string)
           default_config.metrics_addr))
+
+let () =
+  Data_encoding.Registration.register (Data_encoding.def "node-config" encoding)
 
 (* Abstract version of [Json_encoding.Cannot_destruct]: first argument is the
    string representation of the path, second argument is the error message
@@ -848,7 +878,9 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
     ?expected_connections ?max_connections ?max_download_speed ?max_upload_speed
     ?binary_chunks_size ?peer_table_size ?expected_pow ?bootstrap_peers
     ?listen_addr ?advertised_net_port ?discovery_addr ?(rpc_listen_addrs = [])
-    ?(allow_all_rpc = []) ?(media_type = Media_type.Command_line.Any)
+    ?(external_rpc_listen_addrs = []) ?(allow_all_rpc = [])
+    ?(media_type = Media_type.Command_line.Any)
+    ?(max_active_rpc_connections = default_rpc.max_active_rpc_connections)
     ?(metrics_addr = []) ?operation_metadata_size_limit
     ?(private_mode = default_p2p.private_mode)
     ?(disable_p2p_maintenance =
@@ -876,7 +908,7 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   in
   let peer_table_size = Option.map (fun i -> (i, i / 4 * 3)) peer_table_size in
   let unopt_list ~default = function [] -> default | l -> l in
-  let limits : Mavryk_p2p_services.P2p_limits.t =
+  let limits : Tezos_p2p_services.P2p_limits.t =
     {
       cfg.p2p.limits with
       min_connections =
@@ -930,11 +962,16 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   and rpc : rpc =
     {
       listen_addrs = unopt_list ~default:cfg.rpc.listen_addrs rpc_listen_addrs;
+      external_listen_addrs =
+        unopt_list
+          ~default:cfg.rpc.external_listen_addrs
+          external_rpc_listen_addrs;
       cors_origins = unopt_list ~default:cfg.rpc.cors_origins cors_origins;
       cors_headers = unopt_list ~default:cfg.rpc.cors_headers cors_headers;
       tls = Option.either rpc_tls cfg.rpc.tls;
       acl;
       media_type;
+      max_active_rpc_connections;
     }
   and metrics_addr = unopt_list ~default:cfg.metrics_addr metrics_addr
   and log : Logs_simple_config.cfg =

@@ -358,7 +358,7 @@ let make_index_shell ?introduction_path node =
          commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
          commit_date = Mavryk_version_value.Current_git_info.committer_date;
        }
-        : Mavryk_version.Node_version.commit_info)
+        : Mavryk_version.Mavkit_node_version.commit_info)
     in
     let node_version = Node.get_version node in
     let shell_dir = Node.build_rpc_directory ~node_version ~commit_info node in

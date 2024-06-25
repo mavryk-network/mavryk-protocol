@@ -169,7 +169,9 @@ let main commands =
           match r with
           | Ok () -> Lwt.return 0
           | Error [Mavryk_clic.Version] ->
-              let version = Mavryk_version_value.Bin_version.version_string in
+              let version =
+                Mavryk_version_value.Bin_version.mavkit_version_string
+              in
               Format.printf "%s\n" version ;
               Lwt.return 0
           | Error [Mavryk_clic.Help command] ->

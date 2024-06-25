@@ -29,6 +29,8 @@ type level = int32
 
 type slot_index = int
 
+type page_index = int
+
 module Topic = struct
   type t = {slot_index : int; pkh : Signature.Public_key_hash.t}
 
@@ -255,7 +257,24 @@ module Score = struct
 end
 
 (* Declaration of types used as inputs and/or outputs. *)
-type slot_id = {slot_level : level; slot_index : slot_index}
+module Slot_id = struct
+  type t = {slot_level : level; slot_index : slot_index}
+
+  let compare {slot_level = l1; slot_index = i1}
+      {slot_level = l2; slot_index = i2} =
+    let open Compare in
+    or_else (Int32.compare l1 l2) (fun () -> Int.compare i1 i2)
+
+  module Comparable = struct
+    type nonrec t = t
+
+    let compare = compare
+  end
+
+  module Set = Set.Make (Comparable)
+end
+
+type slot_id = Slot_id.t
 
 type slot_set = {slots : bool list; published_level : int32}
 
@@ -284,6 +303,16 @@ type operator_profiles = operator_profile list
 
 type profiles = Bootstrap | Operator of operator_profiles
 
+let merge_profiles ~lower_prio ~higher_prio =
+  match (lower_prio, higher_prio) with
+  | Bootstrap, Bootstrap -> Bootstrap
+  | Operator _, Bootstrap -> Bootstrap
+  | Bootstrap, Operator op -> Operator op
+  | Operator op1, Operator op2 -> Operator (op1 @ op2)
+  | Random_observer, Random_observer -> Random_observer
+  | Random_observer, ((Operator _ | Bootstrap) as profile) -> profile
+  | (Operator _ | Bootstrap), Random_observer -> Random_observer
+
 type with_proof = {with_proof : bool}
 
 (* Auxiliary functions.  *)
@@ -294,6 +323,7 @@ let slot_id_encoding =
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/4396
       Reuse protocol encodings. *)
   let open Data_encoding in
+  let open Slot_id in
   conv
     (fun {slot_level; slot_index} -> (slot_level, slot_index))
     (fun (slot_level, slot_index) -> {slot_level; slot_index})

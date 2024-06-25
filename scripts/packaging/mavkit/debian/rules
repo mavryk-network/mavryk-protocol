@@ -1,0 +1,58 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	binaries/mavkit-node --help=groff > manpages/mavkit-node.1
+	dh_auto_build --parallel
+
+override_dh_builddeb:
+	dh_builddeb
+	cp debian/mavkit-node.lintian-overrides debian/mavkit-node/DEBIAN/
+
+override_dh_installman:
+	dh_installman --name mavkit-node manpages/mavkit-node.1
+	dh_installman --name mavkit-client manpages/mavkit-client.1
+	dh_installman --name mavkit-baker manpages/mavkit-baker.1
+	dh_installman --name mavkit-signer manpages/mavkit-signer.1
+
+override_dh_installdocs:
+	dh_installdocs -p mavkit-node docs/README.mavkit-node
+	dh_installdocs -p mavkit-baker docs/README.mavkit-baker
+	dh_installdocs -p mavkit-signer docs/mavkit-signer.service
+	dh_installdocs -p mavkit-signer docs/README.mavkit-signer
+
+override_dh_installsystemd:
+	dh_installsystemd -p mavkit-node --no-enable --no-start
+	dh_installsystemd -p mavkit-baker --no-enable --no-start --name mavkit-baker-next
+	dh_installsystemd -p mavkit-baker --no-enable --no-start --name mavkit-baker-active
+	dh_installsystemd -p mavkit-baker --no-enable --no-start --name mavkit-accuser-next
+	dh_installsystemd -p mavkit-baker --no-enable --no-start --name mavkit-accuser-active
+
+override_dh_installlogrotate:
+	dh_installlogrotate --package=mavkit-node
+	dh_installlogrotate --package=mavkit-baker
+
+override_dh_install:
+	dh_install
+	# Include debconf configuration
+	mkdir -p debian/mavkit-baker/etc/default/
+	cp debian/mavkit-baker.mavkit-accuser-next.default debian/mavkit-baker/etc/default/mavkit-accuser-next
+	cp debian/mavkit-baker.mavkit-accuser-active.default debian/mavkit-baker/etc/default/mavkit-accuser-active
+	cp debian/mavkit-baker.mavkit-baker-next.default debian/mavkit-baker/etc/default/mavkit-baker-next
+	cp debian/mavkit-baker.mavkit-baker-active.default debian/mavkit-baker/etc/default/mavkit-baker-active
+	dh_installdebconf
+
+override_dh_fixperms:
+		dh_fixperms
+		chmod 644  debian/mavkit-baker/etc/default/mavkit-accuser-next
+		chmod 644  debian/mavkit-baker/etc/default/mavkit-accuser-active
+		chmod 644  debian/mavkit-baker/etc/default/mavkit-baker-active
+		chmod 644  debian/mavkit-baker/etc/default/mavkit-baker-next
+
+# avoid creating debug symbols
+override_dh_dwz:
+
+override_dh_strip:
+	dh_strip -no-automatic-dbgsym

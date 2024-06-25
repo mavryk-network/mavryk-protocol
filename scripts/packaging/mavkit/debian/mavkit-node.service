@@ -1,0 +1,14 @@
+[Unit]
+Description=Mavkit-node
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/mavkit-node
+WorkingDirectory=/var/tezos
+Restart=on-failure
+User=tezos
+ExecStart=/usr/bin/mavkit-node run --data-dir $DATADIR --log-output /var/log/tezos/node.log $RUNTIME_OPTS
+
+[Install]
+WantedBy=multi-user.target

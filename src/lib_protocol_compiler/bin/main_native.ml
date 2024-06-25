@@ -57,7 +57,7 @@ let () =
   try
     Mavkit_protocol_compiler.Compiler.main
       Mavkit_protocol_compiler_native.Native.driver
-      Mavryk_version_value.Bin_version.version_string ;
+      Mavryk_version_value.Bin_version.mavkit_version_string ;
     Stdlib.exit 0
   with exn ->
     Format.eprintf "%a\n%!" Opterrors.report_error exn ;

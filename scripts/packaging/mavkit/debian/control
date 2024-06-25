@@ -1,0 +1,80 @@
+Source: mavkit
+Section: devel
+Priority: optional
+Maintainer: Nomadic Labs <pkg@nomadic-labs.com>
+Homepage: https://gitlab.com/tezos/tezos
+Build-Depends: rsync,
+  git, m4,
+  build-essential,
+  patch, unzip, wget, opam, jq, bc,
+  autoconf, cmake, libev-dev,
+  libffi-dev, libgmp-dev,
+  libhidapi-dev, pkg-config,
+  zlib1g-dev, debhelper, debconf,
+  libprotobuf-dev, protobuf-compiler,
+  libsqlite3-dev
+
+Package: mavkit-zcash-params
+Architecture: all
+Multi-Arch: foreign
+Description: Mavkit zcash parameters
+ This package provides Zcash parameters necessary for the Mavkit node,
+ covering cryptographic keys, zk-SNARKs, and protocol configurations.
+
+Package: mavkit-node
+Architecture: amd64 arm64
+Depends: adduser,
+  logrotate,
+  mavkit-zcash-params,
+  ${misc:Depends},
+  ${shlibs:Depends},
+  debconf (>= 0.5) | debconf-2.0
+Recommends: mavkit-client (= ${source:Version}),
+Suggests: lz4, curl
+Description: L1 Mavkit node for the Tezos network
+ This package serves as the core implementation for the Tezos blockchain node.
+ It contains the fundamental components required for protocol execution,
+ consensus, and network communication within the Tezos blockchain network
+ .
+ This package installs the Mavkit node.
+
+Package: mavkit-client
+Architecture: amd64 arm64
+Depends: ${misc:Depends}, ${shlibs:Depends},
+Description: Mavkit client
+ This package serves as the client-side interface for interacting with the
+ Tezos blockchain. It includes command-line tools and functionalities for
+ querying blockchain data, broadcasting transactions, and interacting with
+ smart contracts on the Tezos network.
+ .
+ This package installs the Mavkit client. For key management it is
+ recommended to install a remote signer of a different host.
+
+Package: mavkit-baker
+Architecture: amd64 arm64
+Depends:
+ ${misc:Depends}, ${shlibs:Depends},
+ mavkit-client (= ${source:Version}),
+ mavkit-node (= ${source:Version}),
+Recommends: mavkit-signer (= ${source:Version}),
+Description: Mavkit baker
+ Mavkit baking software for the Tezos blockchain.
+ It includes the necessary tools and functionalities for participating in the
+ baking process, such as block creation, attestations, and protocol-specific
+ consensus mechanisms.
+ .
+ This package installs the baker, the accuser and the Mavkit node. For key
+ management it is recommended to install a remote signer of a different host.
+
+Package: mavkit-signer
+Architecture: amd64 arm64
+Depends: ${misc:Depends}, ${shlibs:Depends}, mavkit-client (= ${source:Version}),
+Suggests: wireguard, openssh-client
+Description: Mavkit signer
+ This package is designed as a signing component for the Tezos blockchain. It
+ provides the essential tools and functionalities for securely signing
+ transactions, blocks, and other protocol-related data within the Tezos
+ network.
+ .
+ This package installs the Mavkit remote signer. It's recommended to run the signer
+ and the baker on different hosts and use a hardware ledger for key management.

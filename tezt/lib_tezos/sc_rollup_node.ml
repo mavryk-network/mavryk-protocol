@@ -48,6 +48,106 @@ type mode =
 
 type history_mode = Archive | Full
 
+let string_of_history_mode = function Archive -> "archive" | Full -> "full"
+
+type argument =
+  | Data_dir of string
+  | Rpc_addr of string
+  | Rpc_port of int
+  | Log_kernel_debug
+  | Log_kernel_debug_file of string
+  | Metrics_addr of string
+  | Injector_attempts of int
+  | Boot_sector_file of string
+  | Dac_observer of Dac_node.t
+  | Loser_mode of string
+  | No_degraded
+  | Gc_frequency of int
+  | History_mode of history_mode
+  | Dal_node of Dal_node.t
+  | Mode of mode
+  | Rollup of string
+  | Pre_images_endpoint of string
+  | Apply_unsafe_patches
+
+let make_argument = function
+  | Data_dir dir -> ["--data-dir"; dir]
+  | Rpc_addr host -> ["--rpc-addr"; host]
+  | Rpc_port port -> ["--rpc-port"; string_of_int port]
+  | Log_kernel_debug -> ["--log-kernel-debug"]
+  | Log_kernel_debug_file file -> ["--log-kernel-debug-file"; file]
+  | Metrics_addr addr -> ["--metrics-addr"; addr]
+  | Injector_attempts n -> ["--injector-attempts"; string_of_int n]
+  | Boot_sector_file file -> ["--boot-sector-file"; file]
+  | Dac_observer dac_node -> ["--dac-observer"; Dac_node.endpoint dac_node]
+  | Loser_mode loser -> ["--loser-mode"; loser]
+  | No_degraded -> ["--no-degraded"]
+  | Gc_frequency freq -> ["--gc-frequency"; string_of_int freq]
+  | History_mode mode -> ["--history-mode"; string_of_history_mode mode]
+  | Dal_node dal_node -> ["--dal-node"; Dal_node.rpc_endpoint dal_node]
+  | Mode mode -> ["--mode"; string_of_mode mode]
+  | Rollup addr -> ["--rollup"; addr]
+  | Pre_images_endpoint addr -> ["--pre-images-endpoint"; addr]
+  | Apply_unsafe_patches -> ["--apply-unsafe-patches"]
+
+let is_redundant = function
+  | Data_dir _, Data_dir _
+  | Rpc_addr _, Rpc_addr _
+  | Rpc_port _, Rpc_port _
+  | Log_kernel_debug, Log_kernel_debug
+  | Log_kernel_debug_file _, Log_kernel_debug_file _
+  | Injector_attempts _, Injector_attempts _
+  | Boot_sector_file _, Boot_sector_file _
+  | Dac_observer _, Dac_observer _
+  | Loser_mode _, Loser_mode _
+  | No_degraded, No_degraded
+  | Gc_frequency _, Gc_frequency _
+  | History_mode _, History_mode _
+  | Dal_node _, Dal_node _
+  | Mode _, Mode _
+  | Rollup _, Rollup _
+  | Pre_images_endpoint _, Pre_images_endpoint _
+  | Apply_unsafe_patches, Apply_unsafe_patches ->
+      true
+  | Metrics_addr addr1, Metrics_addr addr2 -> addr1 = addr2
+  | Metrics_addr _, _
+  | Data_dir _, _
+  | Rpc_addr _, _
+  | Rpc_port _, _
+  | Log_kernel_debug, _
+  | Log_kernel_debug_file _, _
+  | Injector_attempts _, _
+  | Boot_sector_file _, _
+  | Dac_observer _, _
+  | Loser_mode _, _
+  | No_degraded, _
+  | Gc_frequency _, _
+  | History_mode _, _
+  | Dal_node _, _
+  | Mode _, _
+  | Rollup _, _
+  | Pre_images_endpoint _, _
+  | Apply_unsafe_patches, _ ->
+      false
+
+let make_arguments arguments = List.flatten (List.map make_argument arguments)
+
+let add_missing_argument arguments argument =
+  if List.exists (fun arg -> is_redundant (arg, argument)) arguments then
+    arguments
+  else argument :: arguments
+
+(** join both list, if one argument exists in both list, then the one
+    of [extra_arguments] is used. This is so arguments added in
+    [~extra_arguments] for {!run} like function takes precedent from
+    default arguments. *)
+let add_missing_arguments ~extra_arguments ~arguments =
+  List.fold_left add_missing_argument extra_arguments arguments
+
+let optional_switch arg switch = if switch then [arg] else []
+
+let optional_arg const = function None -> [] | Some x -> [const x]
+
 module Parameters = struct
   type persistent_state = {
     data_dir : string;
@@ -408,21 +508,20 @@ let wait_for_level ?timeout sc_node level =
         ~where:("level >= " ^ string_of_int level)
         promise
 
-let unsafe_wait_sync ?path_client ?timeout sc_node =
+let unsafe_wait_sync ?timeout sc_node =
   let* node_level =
     match sc_node.persistent_state.endpoint with
     | Node node -> Node.get_level node
     | endpoint ->
         let* level =
-          Client.RPC.call (Client.create ?path:path_client ~endpoint ())
+          RPC_core.call (Client.as_foreign_endpoint endpoint)
           @@ RPC.get_chain_block_helper_current_level ()
         in
         return level.level
   in
   wait_for_level ?timeout sc_node node_level
 
-let wait_sync ?path_client sc_node ~timeout =
-  unsafe_wait_sync ?path_client sc_node ~timeout
+let wait_sync sc_node ~timeout = unsafe_wait_sync sc_node ~timeout
 
 let handle_event sc_node {name; value; timestamp = _} =
   match name with
@@ -608,18 +707,21 @@ let dump_durable_storage ~sc_rollup_node ~dump ?(block = "head") () =
   let process = spawn_command sc_rollup_node cmd in
   Process.check process
 
-let export_snapshot sc_rollup_node dir =
+let export_snapshot ?(compress_on_the_fly = false) ?(compact = false)
+    sc_rollup_node dir =
   let process =
     spawn_command
       sc_rollup_node
-      [
-        "snapshot";
-        "export";
-        "--dest";
-        dir;
-        "--data-dir";
-        data_dir sc_rollup_node;
-      ]
+      ([
+         "snapshot";
+         "export";
+         "--dest";
+         dir;
+         "--data-dir";
+         data_dir sc_rollup_node;
+       ]
+      @ Cli_arg.optional_switch "compress-on-the-fly" compress_on_the_fly
+      @ Cli_arg.optional_switch "compact" compact)
   in
   let parse process =
     let* output = Process.check_and_read_stdout process in

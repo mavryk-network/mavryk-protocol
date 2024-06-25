@@ -220,6 +220,10 @@ let test_revelation_early_wrong_right_twice () =
       pkh
       Test_tez.(tip +! baking_reward_fixed_portion)
   in
+  let reward_to_liquid =
+    Tez_helpers.(baking_reward_to_liquid +! tip_to_liquid)
+  in
+
   let* () =
     balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid
   in
@@ -303,7 +307,6 @@ let test_unrevealed () =
           baking_reward_fixed_portion_weight = 0;
           seed_nonce_revelation_tip_weight = 0;
           vdf_revelation_tip_weight = 0;
-          liquidity_baking_subsidy_weight = 0;
         };
       consensus_threshold = 0;
       minimal_participation_ratio = Ratio.{numerator = 0; denominator = 1};
@@ -440,6 +443,9 @@ let test_early_incorrect_unverified_correct_already_vdf () =
       pkh
       Test_tez.(seed_nonce_revelation_tip +! baking_reward_fixed_portion)
   in
+  let reward_to_liquid =
+    Tez_helpers.(tip_to_liquid +! baking_reward_to_liquid)
+  in
   let* () =
     balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid
   in
@@ -525,7 +531,10 @@ let test_early_incorrect_unverified_correct_already_vdf () =
           (B b)
           cycle_for_rewards
           pkh
-          Test_tez.(vdf_nonce_revelation_tip +! baking_reward_fixed_portion)
+          baking_reward_fixed_portion
+      in
+      let reward_to_liquid =
+        Tez_helpers.(tip_to_liquid +! baking_reward_to_liquid)
       in
       let* () =
         balance_was_credited ~loc:__LOC__ (B b) baker baker_bal reward_to_liquid
@@ -551,7 +560,7 @@ let test_early_incorrect_unverified_correct_already_vdf () =
           let* b =
             Block.bake_until_n_cycle_end
               ~policy
-              (csts.parametric.preserved_cycles + 1)
+              (csts.parametric.consensus_rights_delay + 1)
               b
           in
           let* stored_seed = Context.get_seed (B b) in
@@ -574,7 +583,7 @@ let test_cycle_bounds () =
   let* b, _accounts = Context.init1 ~consensus_threshold:0 () in
   let* csts = Context.get_constants (B b) in
   let past_offset = Constants_repr.max_slashing_period - 1 in
-  let future_offset = csts.parametric.preserved_cycles in
+  let future_offset = csts.parametric.consensus_rights_delay in
   let open Alpha_context.Cycle in
   let expected_error_message direction current_cycle =
     match direction with

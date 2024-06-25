@@ -226,7 +226,7 @@ let print_for_verbose_signing ppf ~watermark ~bytes ~branch ~contents =
       hash_pp [Signature.bytes_of_watermark watermark; bytes]) ;
   let json =
     Data_encoding.Json.construct
-      Operation.unsigned_encoding_with_legacy_attestation_name
+      Operation.unsigned_encoding
       ({branch}, Contents_list contents)
   in
   item (fun ppf () ->
@@ -241,7 +241,7 @@ let preapply (type t) (cctxt : #Protocol_client_context.full) ~chain ~block
   let* _chain_id, branch = get_branch cctxt ~chain ~block branch in
   let bytes =
     Data_encoding.Binary.to_bytes_exn
-      Operation.unsigned_encoding_with_legacy_attestation_name
+      Operation.unsigned_encoding
       ({branch}, Contents_list contents)
   in
   let* signature =
@@ -270,11 +270,7 @@ let preapply (type t) (cctxt : #Protocol_client_context.full) ~chain ~block
   let packed_op =
     {shell = {branch}; protocol_data = Operation_data {contents; signature}}
   in
-  let size =
-    Data_encoding.Binary.length
-      Operation.encoding_with_legacy_attestation_name
-      packed_op
-  in
+  let size = Data_encoding.Binary.length Operation.encoding packed_op in
   let*! () =
     match fee_parameter with
     | Some fee_parameter -> check_fees cctxt fee_parameter contents size
@@ -349,7 +345,7 @@ let estimated_gas_single (type kind)
         | Update_consensus_key_result {consumed_gas; _}
         | Increase_paid_storage_result {consumed_gas; _}
         | Transfer_ticket_result {consumed_gas; _}
-        | Dal_publish_slot_header_result {consumed_gas; _}
+        | Dal_publish_commitment_result {consumed_gas; _}
         | Sc_rollup_originate_result {consumed_gas; _}
         | Sc_rollup_add_messages_result {consumed_gas; _}
         | Sc_rollup_cement_result {consumed_gas; _}
@@ -423,7 +419,7 @@ let estimated_storage_single (type kind) ~origination_size
         | Zk_rollup_origination_result {storage_size; _} -> Ok storage_size
         | Transaction_result (Transaction_to_sc_rollup_result _)
         | Reveal_result _ | Delegation_result _ | Set_deposits_limit_result _
-        | Increase_paid_storage_result _ | Dal_publish_slot_header_result _
+        | Increase_paid_storage_result _ | Dal_publish_commitment_result _
         | Sc_rollup_add_messages_result _
         (* The following Sc_rollup operations have zero storage cost because we
            consider them to be paid in the stake deposit.
@@ -506,7 +502,7 @@ let originated_contracts_single (type kind)
         | Register_global_constant_result _ | Reveal_result _
         | Delegation_result _ | Set_deposits_limit_result _
         | Update_consensus_key_result _ | Increase_paid_storage_result _
-        | Transfer_ticket_result _ | Dal_publish_slot_header_result _
+        | Transfer_ticket_result _ | Dal_publish_commitment_result _
         | Sc_rollup_originate_result _ | Sc_rollup_add_messages_result _
         | Sc_rollup_cement_result _ | Sc_rollup_publish_result _
         | Sc_rollup_refute_result _ | Sc_rollup_timeout_result _
@@ -625,7 +621,7 @@ let signature_size_of_algo : Signature.algo -> int = function
       Signature.Bls.size + 2
 
 (* This value is used as a safety guard for gas limit. *)
-let safety_guard = Gas.Arith.(integral_of_int_exn 100)
+let default_safety_guard = Gas.Arith.(integral_of_int_exn 100)
 
 (*
 
@@ -652,7 +648,7 @@ let safety_guard = Gas.Arith.(integral_of_int_exn 100)
 
 let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
     ~fee_parameter ~signature_algo ~chain ~block ?successor_level ?branch
-    ?(force = false) ?(simulation = false)
+    ?(force = false) ?(simulation = false) ?safety_guard
     (annotated_contents : kind Annotated_manager_operation.annotated_list) :
     kind Kind.manager contents_list tzresult Lwt.t =
   let open Lwt_result_syntax in
@@ -798,12 +794,12 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
             @@ Data_encoding.Binary.fixed_length
                  Mavryk_base.Operation.shell_header_encoding)
             + Data_encoding.Binary.length
-                Operation.contents_encoding_with_legacy_attestation_name
+                Operation.contents_encoding
                 (Contents op)
             + signature_size_of_algo signature_algo
           else
             Data_encoding.Binary.length
-              Operation.contents_encoding_with_legacy_attestation_name
+              Operation.contents_encoding
               (Contents op)
         in
         let minimal_fees_in_nanomav =
@@ -866,13 +862,16 @@ let may_patch_limits (type kind) (cctxt : #Protocol_client_context.full)
                        (Limit.known Gas.Arith.zero)
                        op)
                 else
-                  let safety_guard =
+                  let default_safety_guard =
                     match c.operation with
                     | Transaction {destination = Implicit _; _}
                     | Reveal _ | Delegation _ | Set_deposits_limit _
                     | Increase_paid_storage _ ->
                         Gas.Arith.zero
-                    | _ -> safety_guard
+                    | _ -> default_safety_guard
+                  in
+                  let safety_guard =
+                    Option.value safety_guard ~default:default_safety_guard
                   in
                   let*! () =
                     cctxt#message
@@ -1068,9 +1067,7 @@ let inject_operation_internal (type kind) cctxt ~chain ~block ?confirmations
         if force then return_unit else Lwt.return res
   in
   let bytes =
-    Data_encoding.Binary.to_bytes_exn
-      Operation.encoding_with_legacy_attestation_name
-      (Operation.pack op)
+    Data_encoding.Binary.to_bytes_exn Operation.encoding (Operation.pack op)
   in
   if dry_run || simulation then
     let oph = Operation_hash.hash_bytes [bytes] in
@@ -1467,9 +1464,9 @@ let rec build_contents :
         return (Annotated_manager_operation.Cons_manager (op, rest))
 
 let inject_manager_operation cctxt ~chain ~block ?successor_level ?branch
-    ?confirmations ?dry_run ?verbose_signing ?simulation ?force ~source
-    ~(src_pk : public_key) ~src_sk ~fee ~gas_limit ~storage_limit ?counter
-    ?(replace_by_fees = false) ~fee_parameter (type kind)
+    ?confirmations ?dry_run ?verbose_signing ?simulation ?force ?safety_guard
+    ~source ~(src_pk : public_key) ~src_sk ~fee ~gas_limit ~storage_limit
+    ?counter ?(replace_by_fees = false) ~fee_parameter (type kind)
     (operations : kind Annotated_manager_operation.annotated_list) :
     (Operation_hash.t
     * packed_operation
@@ -1540,6 +1537,7 @@ let inject_manager_operation cctxt ~chain ~block ?successor_level ?branch
             ~block
             ?force
             ?simulation
+            ?safety_guard
             ?successor_level
             ?branch
             contents
@@ -1589,6 +1587,7 @@ let inject_manager_operation cctxt ~chain ~block ?successor_level ?branch
             ~block
             ?force
             ?simulation
+            ?safety_guard
             ?successor_level
             ?branch
             contents

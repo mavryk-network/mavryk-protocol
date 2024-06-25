@@ -50,7 +50,8 @@ for specfile in "$myhome"/*spec.in; do
   #
   rpm_name=${MAVKIT_PKGNAME}-${pg}
   init_name=${MAVKIT_REALNAME}-${pg}
-  rpm_fullname="${rpm_name}-${pkg_vers}-${MAVKIT_PKGREV}.${rpm_arch}.rpm"
+  rpm_vers=$(echo "${pkg_vers}" | tr -d '~')
+  rpm_fullname="${rpm_name}-${rpm_vers}-${MAVKIT_PKGREV}.${rpm_arch}.rpm"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
 
@@ -60,7 +61,7 @@ for specfile in "$myhome"/*spec.in; do
         continue
   fi
 
-  tar_name=${rpm_name}-${pkg_vers}
+  tar_name=${rpm_name}-${rpm_vers}
   # Populate the staging directory with control scripts
   # binaries and configuration as appropriate
   #
@@ -109,9 +110,15 @@ for specfile in "$myhome"/*spec.in; do
   # Edit the spec file to contain real values
   #
   spec_file="${pg}.spec"
+<<<<<<< .merge_file_Plqk8P
   sed -e "s/@ARCH@/${rpm_arch}/g" -e "s/@VERSION@/$pkg_vers/g" \
     -e "s/@REVISION@/${MAVKIT_PKGREV}/g" \
     -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
+=======
+  sed -e "s/@ARCH@/${rpm_arch}/g" -e "s/@VERSION@/$rpm_vers/g" \
+    -e "s/@REVISION@/${MAVKIT_PKGREV}/g" \
+    -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
+>>>>>>> .merge_file_DRiofq
     -e "s/@PKG@/${rpm_name}/g" \
     -e "s/@DPKG@/${MAVKIT_PKGNAME}/g" \
     -e "s/@FAKESRC@/${tar_name}.tar.gz/g" < "$specfile" \

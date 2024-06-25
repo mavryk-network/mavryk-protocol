@@ -24,6 +24,7 @@
 (*****************************************************************************)
 
 open Client_proto_args
+open Baking_errors
 
 let pidfile_arg =
   Mavryk_clic.arg
@@ -532,14 +533,32 @@ let per_block_vote_file_arg =
          let open Lwt_result_syntax in
          let* file_exists =
            protect
-             ~on_error:(fun _ ->
-               tzfail (Per_block_vote_file.Block_vote_file_not_found file))
+             ~on_error:(fun _ -> tzfail (Block_vote_file_not_found file))
              (fun () ->
                let*! b = Lwt_unix.file_exists file in
                return b)
          in
          if file_exists then return file
-         else tzfail (Per_block_vote_file.Block_vote_file_not_found file)))
+         else tzfail (Block_vote_file_not_found file)))
+
+let pre_emptive_forge_time_arg =
+  let open Lwt_result_syntax in
+  Mavryk_clic.arg
+    ~long:"pre-emptive-forge-time"
+    ~placeholder:"seconds"
+    ~doc:
+      "Sets the pre-emptive forge time optimization, in seconds. When set, the \
+       baker, if it is the next level round 0 proposer, will start forging \
+       after quorum has been reached in the current level while idly waiting \
+       for it to end. When it is its time to propose, the baker will inject \
+       the pre-emptively forged block immediately, allowing more time for the \
+       network to reach quorum on it. Operators should note that the higher \
+       this value `t`, the lower the operation inclusion window (specifically \
+       `block_time - t`) which may lead to lower baking rewards. Defaults to \
+       15/% of block time. Set to 0 to ignore pre-emptive forging."
+    (Mavryk_clic.parameter (fun _ s ->
+         try return (Q.of_string s)
+         with _ -> failwith "pre-emptive-forge-time expected int or float."))
 
 let lookup_default_vote_file_path (cctxt : Protocol_client_context.full) =
   let open Lwt_syntax in

@@ -28,6 +28,7 @@ include module type of struct
 end
 
 module Error_monad = Mavryk_error_monad.Error_monad
+module Error_monad_legacy = Mavryk_error_monad_legacy.Error_monad
 module Data_encoding = Data_encoding
 
 (** The following modules are part of [TzLwtreslib]. We just remove

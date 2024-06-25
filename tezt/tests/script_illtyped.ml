@@ -166,4 +166,4 @@ let register ~protocols =
       rex "The proper type of the return list cannot be inferred." );
   ]
   |> List.iter (fun (script, error_pattern) ->
-         test_ill_typecheck script error_pattern protocols) ;
+         test_ill_typecheck script error_pattern protocols)

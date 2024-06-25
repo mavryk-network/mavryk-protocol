@@ -1,21 +1,26 @@
 Mavkit Software Architecture
 ============================
 
-This page presents the software architecture of the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``mavkit-node``).
-The Mavkit software architecture faithfully implements the :doc:`Mavryk software architecture <../global/architecture>` principles.
+This page presents the software architecture of the Mavkit suite, focusing on the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``octez-node``).
+The Mavkit node software architecture faithfully implements the `Tezos software architecture <https://docs.tezos.com/architecture>`__ principles:
+
+- It is separated into a shell and a protocol, to support protocol evolution.
+- It implements a client/server architecture, to allow composition with many other tools in a safe way.
 
 This page contains two sections. The first section, which should be
-readable by anyone, describes the main elements of Mavryk from a
+readable by anyone, describes the main elements of a Mavryk node from a
 distance. It abstracts from all plumbing and both internal and system
 dependencies to give a simple view of the main components, their
 responsibilities, and interactions. The second part is written for
 developers and is at the level of OPAM packages.
 
+Although the description is focused on the Mavkit node, some of these components are reused to generate other tools in the Mavkit suite, see :ref:`final_executables`.
+
 .. _the_big_picture:
 
 The Big Picture
 ---------------
-The diagram below shows a very coarse-grained architecture of Mavryk.
+The diagram below shows a very coarse-grained architecture of the Mavryk node.
 
 |Mavryk architecture diagram|
 
@@ -229,9 +234,9 @@ Three kinds of economic protocols are included in the main Mavkit repository.
     switch to a new protocol chosen by the activator.
     The ``master`` branch contains additional variants of the genesis
     protocol, one for each of the existing :ref:`test
-    networks<test-networks>`.
-  - The active protocols. ``mavryk-protocol-nnn-hhhhhhhh``
-    (``mavryk-embedded-protocol-nnn-hhhhhhhh``) is either the current
+    networks<test_networks>`.
+  - The active protocols. ``tezos-protocol-nnn-hhhhhhhh``
+    (``tezos-embedded-protocol-nnn-hhhhhhhh``) is either the current
     protocol on Mainnet or a protocol that has been active on Mainnet
     at some point, where ``nnn`` is a counter starting at 0 and
     ``hhhhhhhh`` is a prefix of the hash of the protocol code.
@@ -306,6 +311,8 @@ run them.
  - :package-api:`mavryk-crypto <mavkit-libs/Mavryk_crypto/index.html>`
    (in directory :src:`src/lib_crypto/test/`):
    tests for the in-house merkle trees.
+
+.. _final_executables:
 
 The Final Executables
 ~~~~~~~~~~~~~~~~~~~~~

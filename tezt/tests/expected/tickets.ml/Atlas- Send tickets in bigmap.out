@@ -12,16 +12,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000352
+    Fee to the validator: ṁ0.000352
     Expected counter: 1
     Gas limit: 683
     Storage limit: 360 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000352
-      payload fees(the block proposer) ....... +ꜩ0.000352
+      [PUBLIC_KEY_HASH] ... -ṁ0.000352
+      payload fees(the block proposer) ....... +ṁ0.000352
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ200
+      Credit: ṁ200
       Script:
         { parameter (big_map int (ticket string)) ;
           storage (big_map int (ticket string)) ;
@@ -37,12 +37,12 @@ This sequence of operations was run:
         Paid storage size diff: 83 bytes
         Consumed gas: 582.849
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.02075
-          storage fees ........................... +ꜩ0.02075
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
-          [PUBLIC_KEY_HASH] ... -ꜩ200
-          [CONTRACT_HASH] ... +ꜩ200
+          [PUBLIC_KEY_HASH] ... -ṁ0.02075
+          storage fees ........................... +ṁ0.02075
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ200
+          [CONTRACT_HASH] ... +ṁ200
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as receive_tickets_in_big_map.
@@ -60,16 +60,16 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.000628
+    Fee to the validator: ṁ0.000628
     Expected counter: 2
     Gas limit: 775
     Storage limit: 597 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.000628
-      payload fees(the block proposer) ....... +ꜩ0.000628
+      [PUBLIC_KEY_HASH] ... -ṁ0.000628
+      payload fees(the block proposer) ....... +ṁ0.000628
     Origination:
       From: [PUBLIC_KEY_HASH]
-      Credit: ꜩ200
+      Credit: ṁ200
       Script:
         { parameter address ;
           storage unit ;
@@ -125,12 +125,12 @@ This sequence of operations was run:
         Paid storage size diff: 320 bytes
         Consumed gas: 674.661
         Balance updates:
-          [PUBLIC_KEY_HASH] ... -ꜩ0.08
-          storage fees ........................... +ꜩ0.08
-          [PUBLIC_KEY_HASH] ... -ꜩ0.06425
-          storage fees ........................... +ꜩ0.06425
-          [PUBLIC_KEY_HASH] ... -ꜩ200
-          [CONTRACT_HASH] ... +ꜩ200
+          [PUBLIC_KEY_HASH] ... -ṁ0.08
+          storage fees ........................... +ṁ0.08
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
+          [PUBLIC_KEY_HASH] ... -ṁ200
+          [CONTRACT_HASH] ... +ṁ200
 
 New contract [CONTRACT_HASH] originated.
 Contract memorized as send_tickets_in_big_map.
@@ -148,15 +148,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ꜩ0.01019
+    Fee to the validator: ṁ0.01019
     Expected counter: 1
     Gas limit: 98936
     Storage limit: 10787 bytes
     Balance updates:
-      [PUBLIC_KEY_HASH] ... -ꜩ0.01019
-      payload fees(the block proposer) ....... +ꜩ0.01019
+      [PUBLIC_KEY_HASH] ... -ṁ0.01019
+      payload fees(the block proposer) ....... +ṁ0.01019
     Transaction:
-      Amount: ꜩ0
+      Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
       To: [CONTRACT_HASH]
       Parameter: "[CONTRACT_HASH]"
@@ -268,11 +268,11 @@ This sequence of operations was run:
       Paid storage size diff: 67 bytes
       Consumed gas: 49910.055
       Balance updates:
-        [PUBLIC_KEY_HASH] ... -ꜩ0.01675
-        storage fees ........................... +ꜩ0.01675
+        [PUBLIC_KEY_HASH] ... -ṁ0.01675
+        storage fees ........................... +ṁ0.01675
       Internal operations:
         Internal Transaction:
-          Amount: ꜩ0
+          Amount: ṁ0
           From: [CONTRACT_HASH]
           To: [CONTRACT_HASH]
           Parameter: -1
@@ -285,8 +285,8 @@ This sequence of operations was run:
           Paid storage size diff: 10700 bytes
           Consumed gas: 48926.775
           Balance updates:
-            [PUBLIC_KEY_HASH] ... -ꜩ2.675
-            storage fees ........................... +ꜩ2.675
+            [PUBLIC_KEY_HASH] ... -ṁ2.675
+            storage fees ........................... +ṁ2.675
           Ticket updates:
             Ticketer: [CONTRACT_HASH]
             Content type: string

@@ -12,6 +12,7 @@
   mavkit-libs.base.unix
   mavkit-shell-libs.client-base-unix
   mavkit-shell-libs.client-base
+  mavkit-node-config
   mavkit-libs.clic
   mavkit-libs.stdlib-unix
   mavkit-libs.event-logging
@@ -20,6 +21,12 @@
   (select void_for_linking-mavkit-protocol-001-PtAtLas-libs-client from
    (mavkit-protocol-001-PtAtLas-libs.client -> void_for_linking-mavkit-protocol-001-PtAtLas-libs-client.empty)
    (-> void_for_linking-mavkit-protocol-001-PtAtLas-libs-client.empty))
+  (select void_for_linking-mavkit-protocol-019-PtParisB-libs-client from
+   (mavkit-protocol-019-PtParisB-libs.client -> void_for_linking-mavkit-protocol-019-PtParisB-libs-client.empty)
+   (-> void_for_linking-mavkit-protocol-019-PtParisB-libs-client.empty))
+  (select void_for_linking-mavkit-protocol-020-PsParisC-libs-client from
+   (mavkit-protocol-020-PsParisC-libs.client -> void_for_linking-mavkit-protocol-020-PsParisC-libs-client.empty)
+   (-> void_for_linking-mavkit-protocol-020-PsParisC-libs-client.empty))
   (select void_for_linking-mavkit-protocol-alpha-libs-client from
    (mavkit-protocol-alpha-libs.client -> void_for_linking-mavkit-protocol-alpha-libs-client.empty)
    (-> void_for_linking-mavkit-protocol-alpha-libs-client.empty)))
@@ -41,4 +48,6 @@
  (action
   (progn
    (write-file void_for_linking-mavkit-protocol-001-PtAtLas-libs-client.empty "")
+   (write-file void_for_linking-mavkit-protocol-019-PtParisB-libs-client.empty "")
+   (write-file void_for_linking-mavkit-protocol-020-PsParisC-libs-client.empty "")
    (write-file void_for_linking-mavkit-protocol-alpha-libs-client.empty ""))))

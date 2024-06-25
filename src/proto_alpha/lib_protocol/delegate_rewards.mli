@@ -42,7 +42,6 @@ module For_RPC : sig
     | Baking_reward_fixed_portion
     | Baking_reward_bonus_per_slot
     | Attesting_reward_per_slot
-    | Liquidity_baking_subsidy
     | Seed_nonce_revelation_tip
     | Vdf_revelation_tip
 
@@ -56,5 +55,8 @@ module For_RPC : sig
     ?coeff:Q.t ->
     Constants_parametric_repr.t ->
     reward_kind:reward_kind ->
-    Tez_repr.t
+    Tez_repr.t tzresult
+
+  val liquidity_baking_subsidy_from_constants :
+    Constants_parametric_repr.t -> Tez_repr.t tzresult
 end

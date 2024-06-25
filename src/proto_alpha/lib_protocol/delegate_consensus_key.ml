@@ -104,7 +104,7 @@ let pp ppf {delegate; consensus_pkh} =
       No two delegates use the same active consensus key at a given time.
 
    To ensure that, {!Storage.Consensus_keys} contains keys that will be active
-   at cycle `current + preserved_cycles + 1`.
+   at cycle `current + consensus_rights_delay + 1`.
 *)
 
 let check_unused ctxt pkh =
@@ -151,8 +151,10 @@ let raw_pending_updates ctxt ?up_to_cycle delegate =
     let last_cycle =
       match up_to_cycle with
       | None ->
-          let preserved_cycles = Constants_storage.preserved_cycles ctxt in
-          Cycle_repr.add first_cycle preserved_cycles
+          let cycles_delay =
+            Constants_storage.consensus_key_activation_delay ctxt
+          in
+          Cycle_repr.add first_cycle cycles_delay
       | Some cycle -> cycle
     in
     Cycle_repr.(first_cycle ---> last_cycle)
@@ -194,8 +196,8 @@ let register_update ctxt delegate pk =
   let open Lwt_result_syntax in
   let update_cycle =
     let current_level = Raw_context.current_level ctxt in
-    let preserved_cycles = Constants_storage.preserved_cycles ctxt in
-    Cycle_repr.add current_level.cycle (preserved_cycles + 1)
+    let cycles_delay = Constants_storage.consensus_key_activation_delay ctxt in
+    Cycle_repr.add current_level.cycle (cycles_delay + 1)
   in
   let* () =
     let* first_active_cycle, active_pubkey =

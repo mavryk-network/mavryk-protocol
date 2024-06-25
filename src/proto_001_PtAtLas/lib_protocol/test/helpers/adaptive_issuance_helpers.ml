@@ -86,7 +86,7 @@ module Partial_tez = struct
   let pp fmt a =
     let mav, rem = to_tez_rem a in
     (* If rem = 0, we keep the (+ 0), to indicate that it's a partial mav *)
-    Format.fprintf fmt "%a ( +%aµꜩ )" Tez.pp mav Q.pp_print rem
+    Format.fprintf fmt "%a ( +%aµṁ )" Tez.pp mav Q.pp_print rem
 end
 
 module Cycle = Protocol.Alpha_context.Cycle

@@ -179,23 +179,12 @@ Platform developers are also provided reference materials for internal APIs of M
 
 .. toctree::
    :maxdepth: 2
-   :caption: Atlas Protocol doc
+   :caption: Protocol Reference Manuals
    :hidden:
 
-   active/protocol
-   active/glossary
-   active/cli-commands
-   active/rpc
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Alpha Dev Protocol doc
-   :hidden:
-
-   alpha/protocol
-   alpha/glossary
-   alpha/cli-commands
-   alpha/rpc
+   Atlas Protocol Reference <active/index>
+   Paris Protocol Reference <paris/index>
+   Alpha Dev Protocol Reference <alpha/index>
 
 .. toctree::
    :maxdepth: 2
@@ -228,6 +217,7 @@ Platform developers are also provided reference materials for internal APIs of M
 
    protocols/naming
    protocols/001_atlas
+   protocols/019_paris
    protocols/alpha
    protocols/history
 
@@ -236,13 +226,12 @@ Platform developers are also provided reference materials for internal APIs of M
    :caption: Releases
    :hidden:
 
-   releases/releases
-   releases/version-1
-   releases/history
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Global doc
-   :hidden:
-
-   global/architecture
+   developer/contributing_index
+   developer/programming
+   developer/testing_index
+   developer/maintaining
+   README
+   developer/tools
+   developer/encodings
+   developer/merkle-proof-encoding-formats
+   api/api-inline

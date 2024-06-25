@@ -1,3 +1,10 @@
+(*****************************************************************************)
+(*                                                                           *)
+(* SPDX-License-Identifier: MIT                                              *)
+(* Copyright (c) 2024 Nomadic Labs, <contact@nomadic-labs.com>               *)
+(*                                                                           *)
+(*****************************************************************************)
+
 open Mavryk_shell_services
 module Directory = Mavryk_rpc.Directory
 module Chain_services = Mavryk_shell_services.Chain_services

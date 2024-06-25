@@ -7,6 +7,7 @@
  (libraries
   tezt.core
   mavkit-libs.base
+  mavkit-libs.test-helpers
   mavkit-libs.micheline
   mavkit-protocol-001-PtAtLas-libs.client
   mavryk-protocol-001-PtAtLas.protocol
@@ -23,7 +24,8 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad_legacy
+  -open Mavryk_test_helpers
   -open Mavryk_micheline
   -open Mavryk_client_001_PtAtLas
   -open Mavryk_protocol_001_PtAtLas

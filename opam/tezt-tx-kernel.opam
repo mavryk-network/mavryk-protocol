@@ -2,7 +2,10 @@
 # Edit file manifest/main.ml instead.
 opam-version: "2.0"
 maintainer: "info@mavryk.io"
-authors: ["Mavryk Dynamics"]
+authors: [
+  "Tezos devteam"
+  "Mavryk Dynamics"
+]
 homepage: "https://mavrykdynamics.com/"
 bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
 dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
@@ -11,9 +14,9 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "tezt" { >= "4.0.0" & < "5.0.0" }
-  "tezt-tezos"
-  "mavryk-protocol-alpha"
-  "mavkit-libs"
+  "tezt-tezos" { = version }
+  "mavryk-protocol-alpha" { = version }
+  "mavkit-libs" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

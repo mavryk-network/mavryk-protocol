@@ -32,7 +32,7 @@ type metrics = {
   last_store_merge_time : Prometheus.Gauge.t;
 }
 
-let namespace = Mavryk_version.Node_version.namespace
+let namespace = Mavryk_version.Mavkit_node_version.namespace
 
 type collectors = {mutable invalid_blocks : unit -> float Lwt.t}
 

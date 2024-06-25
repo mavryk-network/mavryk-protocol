@@ -26,13 +26,27 @@ To connect to other networks, you can either use one of the
 See also `Alias Versus Explicit Configuration`_ for a discussion
 regarding what happens when you update your node, in each case.
 
+.. _test_networks:
+
+Test Networks
+-------------
+
+Mainnet is the main Tezos network, but is not appropriate for testing.
+A number of `test networks <https://teztnets.com>`__ are available to this end. Test networks usually run
+with different :ref:`constants <protocol_constants>` to speed up the chain.
+
+.. _faucet:
+
+Each test network listed there also indicates a **faucet** delivering test tokens. Enter the public key hash of any test
+account on the corresponding website to receive test tokens.
+
 .. _builtin_networks:
 
 Built-In Networks
 -----------------
 
 The simplest way to select the network to connect to is to use the ``--network``
-option for selecting a :ref:`test network<test-networks>` when you initialize your :doc:`node configuration <./node-configuration>`.
+option for selecting a :ref:`test network<test_networks>` when you initialize your :doc:`node configuration <./node-configuration>`.
 
 For instance, to run on Basenet::
 

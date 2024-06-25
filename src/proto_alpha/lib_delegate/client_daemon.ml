@@ -82,9 +82,9 @@ module Baker = struct
       in
       let*! () =
         cctxt#message
-          "Baker v%a (%s) for %a started."
-          Mavryk_version.Version.pp
-          Mavryk_version_value.Current_git_info.version
+          "Baker %a (%s) for %a started."
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
           Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
@@ -96,7 +96,14 @@ module Baker = struct
             let*! _ = Lwt_canceler.cancel canceler in
             Lwt.return_unit)
       in
-      Baking_scheduling.run cctxt ~canceler ~chain config delegates
+      let* () =
+        let* dal_config = Node_rpc.fetch_dal_config cctxt in
+        let*? () = Cryptobox.Config.init_verifier_dal dal_config in
+        return_unit
+      in
+      let consumer = Protocol_logging.make_log_message_consumer () in
+      Lifted_protocol.set_log_message_consumer consumer ;
+      Baking_scheduling.run cctxt ~canceler ~chain ~constants config delegates
     in
     let* () =
       Client_confirmations.wait_for_bootstrapped
@@ -114,9 +121,9 @@ module Accuser = struct
     let process () =
       let*! () =
         cctxt#message
-          "Accuser v%a (%s) for %a started."
-          Mavryk_version.Version.pp
-          Mavryk_version_value.Current_git_info.version
+          "Accuser %a (%s) for %a started."
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
           Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
@@ -156,9 +163,9 @@ module VDF = struct
     let process () =
       let*! () =
         cctxt#message
-          "VDF daemon v%a (%s) for %a started."
-          Mavryk_version.Version.pp
-          Mavryk_version_value.Current_git_info.version
+          "VDF daemon %a (%s) for %a started."
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
           Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash

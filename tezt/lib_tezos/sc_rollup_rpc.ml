@@ -67,12 +67,12 @@ let get_local_batcher_queue () =
   make GET ["local"; "batcher"; "queue"] (fun json ->
       JSON.as_list json
       |> List.map @@ fun o ->
-         let hash = JSON.(o |-> "hash" |> as_string) in
+         let id = JSON.(o |-> "id" |> as_string) in
          let hex_msg = JSON.(o |-> "message" |-> "content" |> as_string) in
-         (hash, Hex.to_string (`Hex hex_msg)))
+         (id, Hex.to_string (`Hex hex_msg)))
 
-let get_local_batcher_queue_msg_hash ~msg_hash =
-  make GET ["local"; "batcher"; "queue"; msg_hash] (fun json ->
+let get_local_batcher_queue_msg_id ~msg_id =
+  make GET ["local"; "batcher"; "queue"; msg_id] (fun json ->
       if JSON.is_null json then failwith "Message is not in the queue"
       else
         let hex_msg = JSON.(json |-> "content" |> as_string) in
@@ -219,3 +219,63 @@ let get_global_block_state ?(block = "head") ~key () =
       let out = JSON.as_string json in
       let bytes = `Hex out |> Hex.to_bytes in
       bytes)
+
+type 'output_type durable_state_operation =
+  | Value : string option durable_state_operation
+  | Length : int64 option durable_state_operation
+  | Subkeys : string list durable_state_operation
+
+let string_of_durable_state_operation (type a) (x : a durable_state_operation) =
+  match x with Value -> "value" | Length -> "length" | Subkeys -> "subkeys"
+
+let get_global_block_durable_state_value ?(block = "head") ~pvm_kind ~operation
+    ~key () =
+  let op = string_of_durable_state_operation operation in
+  let f : type k. k durable_state_operation -> JSON.t -> k =
+   fun operation ->
+    match operation with
+    | Value -> JSON.as_string_opt
+    | Length -> JSON.as_int64_opt
+    | Subkeys -> fun json -> List.map JSON.as_string (JSON.as_list json)
+  in
+  make
+    ~query_string:[("key", String.trim key)]
+    GET
+    ["global"; "block"; block; "durable"; pvm_kind; op]
+    (f operation)
+
+let post_local_batcher_injection ~messages =
+  let data =
+    Data (`A (List.map (fun s -> `String Hex.(of_string s |> show)) messages))
+  in
+  make
+    POST
+    ["local"; "batcher"; "injection"]
+    ~data
+    JSON.(fun json -> as_list json |> List.map as_string)
+
+type outbox_proof = {commitment_hash : string; proof : string}
+
+let outbox_proof_simple ?(block = "head") ~outbox_level ~message_index () =
+  let open RPC_core in
+  let query_string = [("index", string_of_int message_index)] in
+  make
+    ~query_string
+    GET
+    [
+      "global";
+      "block";
+      block;
+      "helpers";
+      "proofs";
+      "outbox";
+      string_of_int outbox_level;
+      "messages";
+    ]
+    (fun json ->
+      let open JSON in
+      let commitment_hash = json |-> "commitment" |> as_string in
+      let proof_string = json |-> "proof" |> as_string in
+      (* There is 0x return in the proof hash as it is a hex *)
+      let proof_hex = sf "0x%s" proof_string in
+      Some {commitment_hash; proof = proof_hex})

@@ -114,7 +114,14 @@ let launch_rpc_server (params : Parameters.t) (addr, port) =
   in
   Lwt.catch
     (fun () ->
-      let*! () = RPC_server.launch ~host server ~callback mode in
+      let*! () =
+        RPC_server.launch
+          ~host
+          server
+          ~callback
+          ~max_active_connections:params.config.rpc.max_active_rpc_connections
+          mode
+      in
       return server)
     (function
       (* FIXME: https://gitlab.com/tezos/tezos/-/issues/1312
@@ -128,7 +135,9 @@ let init_rpc parameters =
   let open Lwt_result_syntax in
   let* server =
     let* p2p_point =
-      match parameters.Parameters.config.Config_file.rpc.listen_addrs with
+      match
+        parameters.Parameters.config.Config_file.rpc.external_listen_addrs
+      with
       | [addr] -> Config_file.resolve_rpc_listening_addrs addr
       | _ ->
           (* We assume that the config contains only one listening

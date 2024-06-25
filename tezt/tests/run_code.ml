@@ -20,7 +20,7 @@ let test_balance_and_self_address =
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
-  (* With no parameters, the default BALANCE is 4 000 000 ꜩ. *)
+  (* With no parameters, the default BALANCE is 4 000 000 ṁ. *)
   let* stack = Client.run_code ~src:"BALANCE" ~stack:"{}" client in
   assert (stack = "{ Stack_elt mumav 4000000000000 }") ;
 

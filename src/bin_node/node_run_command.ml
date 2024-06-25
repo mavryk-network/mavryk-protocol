@@ -126,11 +126,11 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_node"
-      ~msg:"starting the Mavryk node v{version} ({git_info})"
+      ~msg:"starting the Mavryk node {version} ({git_info})"
       ~level:Notice
       ("chain", Distributed_db_version.Name.encoding)
-      ~pp2:Mavryk_version.Version.pp
-      ("version", Mavryk_version.Node_version.version_encoding)
+      ~pp2:Mavryk_version.Version.pp_simple
+      ("version", Mavryk_version.Mavkit_node_version.version_encoding)
       ("git_info", Data_encoding.string)
 
   let node_is_ready =
@@ -328,14 +328,15 @@ let init_node ?sandbox ?target ~identity ~singleprocess ~internal_events
     | _ -> return_unit
   in
   let version =
-    Mavryk_version.Version.to_string Mavryk_version_value.Current_git_info.version
+    Mavryk_version.Version.to_string
+      Mavryk_version_value.Current_git_info.mavkit_version
   in
   let commit_info =
     ({
        commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
        commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Mavryk_version.Node_version.commit_info)
+      : Mavryk_version.Mavkit_node_version.commit_info)
   in
   Node.create
     ~sandboxed:(sandbox <> None)
@@ -354,7 +355,7 @@ let rpc_metrics =
   Prometheus.Summary.v_labels
     ~label_names:["endpoint"; "method"]
     ~help:"RPC endpoint call counts and sum of execution times."
-    ~namespace:Mavryk_version.Node_version.namespace
+    ~namespace:Mavryk_version.Mavkit_node_version.namespace
     ~subsystem:"rpc"
     "calls"
 
@@ -431,7 +432,14 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
   let mode = extract_mode rpc_server_kind in
   Lwt.catch
     (fun () ->
-      let*! () = RPC_server.launch ~host server ~callback mode in
+      let*! () =
+        RPC_server.launch
+          ~host
+          server
+          ~callback
+          ~max_active_connections:config.rpc.max_active_rpc_connections
+          mode
+      in
       return server)
     (function
       (* FIXME: https://gitlab.com/tezos/tezos/-/issues/1312
@@ -473,6 +481,83 @@ let init_local_rpc_server (config : Config_file.t) dir =
                 launch_rpc_server config dir (Local (mode, port)) addr)
               addrs)
       config.rpc.listen_addrs
+  in
+  return (Local_rpc_server servers)
+
+let rpc_socket_path ~socket_dir ~id ~pid =
+  let filename = Format.sprintf "mavkit-external-rpc-socket-%d-%d" pid id in
+  Filename.concat socket_dir filename
+
+(* Initializes an RPC server handled by the node process. It will be
+   used by an external RPC process, identified by [id], to forward
+   RPCs to the node through a Unix socket. *)
+let init_local_rpc_server_for_external_process id (config : Config_file.t) dir
+    addr =
+  let open Lwt_result_syntax in
+  let socket_dir = Mavryk_base_unix.Socket.get_temporary_socket_dir () in
+  let pid = Unix.getpid () in
+  let comm_socket_path = rpc_socket_path ~id ~socket_dir ~pid in
+  (* Register a clean up callback to clean the comm_socket_path when
+     shutting down. Indeed, the socket file is created by the
+     Conduit-lwt-unix.Conduit_lwt_server.listen function, but the
+     resource is not cleaned. *)
+  let _ =
+    Lwt_exit.register_clean_up_callback ~loc:__LOC__ (fun _ ->
+        Lwt_unix.unlink comm_socket_path)
+  in
+  let* rpc_server =
+    launch_rpc_server config dir (Process comm_socket_path) addr
+  in
+  return (rpc_server, comm_socket_path)
+
+let init_external_rpc_server config node_version dir internal_events =
+  let open Lwt_result_syntax in
+  (* Start one rpc_process for each rpc endpoint. *)
+  let id = ref 0 in
+  let* rpc_servers =
+    List.concat_map_ep
+      (fun addr ->
+        let* addrs = Config_file.resolve_rpc_listening_addrs addr in
+        match addrs with
+        | [] -> failwith "Cannot resolve listening address: %S" addr
+        | addrs ->
+            List.map_ep
+              (fun (p2p_point : P2p_point.Id.t) ->
+                let id =
+                  let curid = !id in
+                  incr id ;
+                  curid
+                in
+                let* local_rpc_server, comm_socket_path =
+                  init_local_rpc_server_for_external_process
+                    id
+                    config
+                    dir
+                    (fst p2p_point)
+                in
+                let addr = P2p_point.Id.to_string p2p_point in
+                (* Update the config sent to the rpc_process to
+                   start so that it contains a single listen
+                   address. *)
+                let config =
+                  {
+                    config with
+                    rpc = {config.rpc with external_listen_addrs = [addr]};
+                  }
+                in
+                let rpc_process =
+                  Octez_rpc_process.Rpc_process_worker.create
+                    ~comm_socket_path
+                    config
+                    node_version
+                    internal_events
+                in
+                let* () =
+                  Octez_rpc_process.Rpc_process_worker.start rpc_process
+                in
+                return (local_rpc_server, rpc_process))
+              addrs)
+      config.rpc.external_listen_addrs
   in
   return (Local_rpc_server servers)
 
@@ -522,7 +607,7 @@ let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
        commit_hash = Mavryk_version_value.Current_git_info.commit_hash;
        commit_date = Mavryk_version_value.Current_git_info.committer_date;
      }
-      : Mavryk_version.Node_version.commit_info)
+      : Mavryk_version.Mavkit_node_version.commit_info)
   in
   let node_version = Node.get_version node in
 
@@ -533,11 +618,18 @@ let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
       dir
       Mavryk_rpc.Service.description_service
   in
-
-  (* Start RPC process only when at least one listen addr is given. *)
-  let* rpc_server =
+  let* local_rpc_server =
     if config.rpc.listen_addrs = [] then return No_server
     else init_local_rpc_server config dir
+  in
+  (* Start RPC process only when at least one listen addr is given. *)
+  let* rpc_server =
+    if config.rpc.external_listen_addrs = [] then return No_server
+    else
+      (* Starts the node's local RPC server that aims to handle the
+         RPCs forwarded by the rpc_process, if they cannot be
+         processed by the rpc_process itself. *)
+      init_external_rpc_server config node_version dir internal_events
   in
   return [rpc_server]
 
@@ -575,14 +667,12 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
   let*! () =
     Event.(emit starting_node)
       ( config.blockchain_network.chain_name,
-        Mavryk_version_value.Current_git_info.version,
+        Mavryk_version_value.Current_git_info.mavkit_version,
         Mavryk_version_value.Current_git_info.abbreviated_commit_hash )
   in
   let*! () = init_zcash () in
-  let* () =
-    let find_srs_files () = Mavryk_base.Dal_srs.find_trusted_setup_files () in
-    Mavryk_crypto_dal.Cryptobox.Config.init_dal
-      ~find_srs_files
+  let*? () =
+    Mavryk_crypto_dal.Cryptobox.Config.init_verifier_dal
       config.blockchain_network.dal_config
   in
   let*! node =
@@ -609,6 +699,19 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
     Lwt_exit.register_clean_up_callback ~loc:__LOC__ (fun _ ->
         Event.(emit shutting_down_node) ())
   in
+  Lwt.dont_wait
+    (fun () ->
+      let*! r = metrics_serve config.metrics_addr in
+      match r with
+      | Ok _ -> Lwt.return_unit
+      | Error err ->
+          Event.(emit metrics_ended (Format.asprintf "%a" pp_print_trace err)))
+    (fun exn ->
+      Event.(
+        emit__dont_wait__use_with_care metrics_ended (Printexc.to_string exn))) ;
+  (* The initialization of the RPC server concludes the node's
+     initialization. This is necessary to start answering to RPC only
+     when the node is fully initialized. *)
   let* rpc_servers = init_rpc config node internal_events in
   let rpc_downer =
     Lwt_exit.register_clean_up_callback
@@ -629,7 +732,6 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
       ~after:[rpc_downer]
       (fun _ -> Node.shutdown node)
   in
-  let*! () = Event.(emit node_is_ready) () in
   let _ =
     Lwt_exit.register_clean_up_callback
       ~loc:__LOC__
@@ -638,16 +740,7 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
         let*! () = Event.(emit bye) exit_status in
         Mavryk_base_unix.Internal_event_unix.close ())
   in
-  Lwt.dont_wait
-    (fun () ->
-      let*! r = metrics_serve config.metrics_addr in
-      match r with
-      | Ok _ -> Lwt.return_unit
-      | Error err ->
-          Event.(emit metrics_ended (Format.asprintf "%a" pp_print_trace err)))
-    (fun exn ->
-      Event.(
-        emit__dont_wait__use_with_care metrics_ended (Printexc.to_string exn))) ;
+  let*! () = Event.(emit node_is_ready) () in
   Lwt_utils.never_ending ()
 
 let process sandbox verbosity target singleprocess force_history_mode_switch

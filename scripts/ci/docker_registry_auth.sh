@@ -44,17 +44,35 @@ else
 fi
 
 # Allow to pull from private AWS ECR if used as CI_REGISTRY
-if echo "${CI_REGISTRY}" | grep -q '\.dkr\.ecr\.'
-then
-  # Make sure Amazon ECR Docker Credential Helper is installed
-  docker-credential-ecr-login version > /dev/null
-  # Merge with existing Docker client configuration
-  jq ". + {\"credHelpers\": { \"${CI_REGISTRY}\": \"ecr-login\"}}" ~/.docker/config.json | sponge ~/.docker/config.json
+# CI_REGISTRY is defined by the Gitlab Runner
+# shellcheck disable=SC2153
+if echo "${CI_REGISTRY}" | grep -q '\.dkr\.ecr\.'; then
+  echo "### Logging into Amazon ECR for pulling images"
+  if [ ! -f "/secrets/.aws_ecr/CI_AWS_ECR_TOKEN" ]; then
+    echo "Use Amazon ECR Docker Credential Helper"
+    # Make sure Amazon ECR Docker Credential Helper is installed
+    docker-credential-ecr-login version > /dev/null
+    # Merge with existing Docker client configuration
+    jq ". + {\"credHelpers\": { \"${CI_REGISTRY}\": \"ecr-login\"}}" ~/.docker/config.json | sponge ~/.docker/config.json
+  else
+    echo "Use the stored ECR token"
+    docker login --username AWS --password-stdin "${CI_REGISTRY}" < /secrets/.aws_ecr/CI_AWS_ECR_TOKEN
+  fi
   echo "### Amazon ECR Docker Credential Helper enabled for ${CI_REGISTRY}"
 fi
 
+# Allow to push to private GCP Artifact Registry if the CI/CD variable is defined
+if [ -n "${GCP_REGISTRY:-}" ]; then
+  echo "### Logging into GCP Artifact Registry for pushing images"
+  GCP_ARTIFACT_REGISTRY_TOKEN=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token | cut -d'"' -f4)
+  echo "${GCP_ARTIFACT_REGISTRY_TOKEN}" | docker login us-central1-docker.pkg.dev -u oauth2accesstoken --password-stdin
+fi
+
+# shellcheck source=scripts/ci/docker_registry.inc.sh
+. "$current_dir"/docker_registry.inc.sh
+
 # /!\ IMAGE_ARCH_PREFIX can be unset
-docker_image_tag=$(echo "${IMAGE_ARCH_PREFIX:-}${CI_COMMIT_REF_NAME}" | tr -c -- '-._\n[:alnum:]' '_')
+docker_image_tag=$(echo "${IMAGE_ARCH_PREFIX:-}${CI_COMMIT_REF_NAME}" | sanitizeTag)
 
 ## Write computed Docker environment variables to sourceable file for other shell scripts
 

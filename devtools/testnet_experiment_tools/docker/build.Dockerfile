@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=registry.gitlab.com/tezos/opam-repository
 ARG BASE_IMAGE_VERSION
 ARG RUST_TOOLCHAIN_IMAGE
-ARG RUST_TOOLCHAIN_IMAGE_VERSION
+ARG RUST_TOOLCHAIN_IMAGE_TAG
 
 FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as without-evm-artifacts
 # use alpine /bin/ash and set pipefail.
@@ -24,6 +24,7 @@ COPY --chown=tezos:nogroup script-inputs/dev-executables mavryk/script-inputs/
 COPY --chown=tezos:nogroup dune mavryk
 COPY --chown=tezos:nogroup scripts/version.sh mavryk/scripts/
 COPY --chown=tezos:nogroup src mavryk/src
+COPY --chown=tezos:nogroup irmin mavryk/irmin
 COPY --chown=tezos:nogroup tezt mavryk/tezt
 COPY --chown=tezos:nogroup opam mavryk/opam
 COPY --chown=tezos:nogroup dune mavryk/dune

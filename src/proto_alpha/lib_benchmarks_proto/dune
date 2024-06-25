@@ -30,7 +30,6 @@
   -open Mavryk_stdlib
   -open Mavryk_base
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
   -open Mavryk_error_monad
   -open Mavryk_protocol_alpha_parameters
   -open Mavryk_lazy_containers

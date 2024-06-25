@@ -34,7 +34,7 @@ let pack_operation ctxt signature contents =
 let sign ?(watermark = Signature.Generic_operation) sk branch contents =
   let unsigned =
     Data_encoding.Binary.to_bytes_exn
-      Operation.unsigned_encoding_with_legacy_attestation_name
+      Operation.unsigned_encoding
       ({branch}, Contents_list contents)
   in
   let signature = Some (Signature.sign ~watermark sk unsigned) in
@@ -792,7 +792,7 @@ let dummy_script =
       storage = lazy_expr (strip_locations (Prim ((), D_Unit, [], [])));
     }
 
-let dummy_script_cost = Test_tez.of_mumav_exn 9_500L
+let dummy_script_cost = Tez_helpers.of_mumav 9_500L
 
 let transfer_ticket ?force_reveal ?counter ?fee ?gas_limit ?storage_limit ctxt
     ~(source : Contract.t) ~contents ~ty ~ticketer ~amount ~destination
@@ -958,8 +958,8 @@ let sc_rollup_timeout ?force_reveal ?counter ?fee ?gas_limit ?storage_limit ctxt
   let+ account = Context.Contract.manager ctxt src in
   sign account.sk (Context.branch ctxt) to_sign_op
 
-let dal_publish_slot_header ?force_reveal ?counter ?fee ?gas_limit
-    ?storage_limit ctxt (src : Contract.t) slot_header =
+let dal_publish_commitment ?force_reveal ?counter ?fee ?gas_limit ?storage_limit
+    ctxt (src : Contract.t) slot_header =
   let open Lwt_result_syntax in
   let* to_sign_op =
     manager_operation
@@ -970,7 +970,7 @@ let dal_publish_slot_header ?force_reveal ?counter ?fee ?gas_limit
       ?storage_limit
       ~source:src
       ctxt
-      (Dal_publish_slot_header slot_header)
+      (Dal_publish_commitment slot_header)
   in
   let+ account = Context.Contract.manager ctxt src in
   sign account.sk (Context.branch ctxt) to_sign_op

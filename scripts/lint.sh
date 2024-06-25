@@ -8,9 +8,10 @@ Where <action> can be:
 
 * --update-ocamlformat: update all the \`.ocamlformat\` files and
   git-commit (requires clean repo).
+* --format-scripts: format shell scripts inplace using shfmt
 * --check-ocamlformat: check the above does nothing.
 * --check-gitlab-ci-yml: check .gitlab-ci.yml has been updated.
-* --check-scripts: check the .sh files
+* --check-scripts: shellcheck and check formatting of the .sh files
 * --check-redirects: check docs/_build/_redirects.
 * --check-coq-attributes: check the presence of coq attributes.
 * --check-rust-toolchain: check the contents of rust-toolchain files
@@ -34,7 +35,15 @@ say () {
 
 declare -a source_directories
 
-source_directories=(src docs/doc_gen tezt devtools contrib etherlink)
+# Make sure that the set of source_directories here are also reflected in
+# [changeset_lint_files] in [ci/bin/common.ml].
+source_directories=(src docs/doc_gen tezt devtools contrib etherlink client-libs)
+# Set of newline-separated basic regular expressions to exclude from --check-licenses-git-new.
+license_check_exclude=$(
+  cat << EOF
+.*_generated.ml
+EOF
+)
 
 update_all_dot_ocamlformats () {
     if ! type ocamlformat > /dev/null 2>&-; then
@@ -69,23 +78,78 @@ update_all_dot_ocamlformats () {
     done
 }
 
-function shellcheck_script () {
-    shellcheck --external-sources "$1"
+function shfmt_script() {
+  shfmt -i 2 -sr -d "$1"
 }
 
-check_scripts () {
-    # Gather scripts
-    scripts=$(find "${source_directories[@]}" scripts/ docs/ -name "*.sh" -type f -print)
-    exit_code=0
+function shfmt_script_write() {
+  shfmt -w -i 2 -sr -d "$1"
+}
 
-    # Check scripts do not contain the tab character
-    tab="$(printf '%b' '\t')"
-    for f in $scripts ; do
-        if grep -q "$tab" "$f"; then
-            say "$f has tab character(s)"
-            exit_code=1
-        fi
-    done
+format_scripts() {
+  scripts=$(find "${source_directories[@]}" scripts docs -name "*.sh" -type f -print)
+
+  for script in ${scripts}; do
+    shfmt_script_write "$script"
+  done
+}
+
+check_scripts() {
+  # Gather scripts
+  scripts=$(find "${source_directories[@]}" scripts docs -name "*.sh" -type f -print)
+  exit_code=0
+
+  # Check scripts do not contain the tab character
+  tab="$(printf '%b' '\t')"
+  for f in $scripts; do
+    if grep -q "$tab" "$f"; then
+      say "$f has tab character(s) ❌️"
+      exit_code=1
+    fi
+  done
+
+  # Execute shellcheck
+  ./scripts/shellcheck_version.sh || return 1 # Check shellcheck's version
+
+  shellcheck_skips=""
+  while read -r shellcheck_skip; do
+    shellcheck_skips+=" $shellcheck_skip"
+  done < "scripts/shellcheck_skips"
+
+  for script in ${scripts}; do
+    if [[ "${shellcheck_skips}" == *"${script}"* ]]; then
+      # check whether the skipped script, in reality, is warning-free
+      if shellcheck_script "${script}" > /dev/null; then
+        say "$script shellcheck marked as SKIPPED but actually pass: update shellcheck_skips ❌️"
+        exit_code=1
+      else
+        # script is skipped, we leave a log however, to incite
+        # devs to enhance the scripts
+        say "$script shellcheck SKIPPED ⚠️"
+      fi
+    else
+      # script is not skipped, let's shellcheck it
+      if shellcheck_script "${script}"; then
+        say "$script shellcheck PASSED ✅"
+      else
+        say "$script shellcheck FAILED ❌"
+        exit_code=1
+      fi
+    fi
+    if ! shfmt_script "${script}"; then
+      say "$script shfmt FAILED ❌"
+      exit_code=1
+    fi
+  done
+  # Check that shellcheck_skips doesn't contain a deprecated value
+  for shellcheck_skip in ${shellcheck_skips}; do
+    if [[ ! -e "${shellcheck_skip}" ]]; then
+      say "$shellcheck_skip is mentioned in shellcheck_skips, but doesn't exist anymore"
+      say "please delete it from shellcheck_skips"
+      exit_code=1
+    fi
+  done
+  # Done executing shellcheck
 
     # Execute shellcheck
     ./scripts/shellcheck_version.sh || return 1  # Check shellcheck's version
@@ -206,12 +270,50 @@ check_licenses_git_new () {
             grep '\.ml\(i\|\)$' |
             xargs --no-run-if-empty ocaml scripts/check_license/main.ml --verbose; then
 
-        echo "/!\\ Some files .ml(i) does not have a correct license header /!\\" ;
-        echo "/!\\ See https://protocol.mavryk.org/developer/guidelines.html#license /!\\" ;
-        exit 1 ;
-    else
-        echo "OCaml file license headers OK!"
-    fi
+check_licenses_git_new() {
+  if [ -z "${CHECK_LICENSES_DIFF_BASE:-}" ]; then
+    echo 'Action --check-licenses-git-new requires that CHECK_LICENSES_DIFF_BASE is set in the environment.'
+    echo 'The value of CHECK_LICENSES_DIFF_BASE should be a commit.'
+    echo 'It is used to discover files that have been added and whose license header should be checked.'
+    echo
+    echo "Typically, it should point to the merge base of the current branch, as given by \`git merge-base\`:"
+    echo
+    echo "  CHECK_LICENSES_DIFF_BASE=\$(git merge-base HEAD origin/master) $0 --check-licenses-git-new"
+    return 1
+  elif ! git cat-file -t "${CHECK_LICENSES_DIFF_BASE:-}" > /dev/null 2>&1; then
+    echo "The commit specified in CHECK_LICENSES_DIFF_BASE ('$CHECK_LICENSES_DIFF_BASE') could not be found."
+    echo 'Consider running:'
+    echo
+    echo "  git fetch origin $CHECK_LICENSES_DIFF_BASE"
+    return 1
+  fi
+
+  diff=$(mktemp)
+  git diff-tree --no-commit-id --name-only -r --diff-filter=A \
+    "${CHECK_LICENSES_DIFF_BASE:-}" HEAD -- "${source_directories[@]}" > "$diff"
+  if [ -n "$license_check_exclude" ]; then
+    diff2=$(mktemp)
+    # 'grep -v' will exit with a non-zero exit code when no lines are selected.
+    # consequently, if $diff \ $license_check_exclude is empty, the
+    # grep will fail, which we want to allow.
+    grep -v "$license_check_exclude" "$diff" > "$diff2" || true
+    mv "$diff2" "$diff"
+  fi
+
+  # Check that new ml(i) files have a valid license header.
+  if ! grep '\.mli\?$' "$diff" | xargs --no-run-if-empty ocaml scripts/check_license/main.ml --verbose; then
+
+    echo "/!\\ Some files .ml(i) does not have a correct license header /!\\"
+    echo "/!\\ See https://tezos.gitlab.io/developer/guidelines.html#license /!\\"
+
+    res=1
+  else
+    echo "OCaml file license headers OK!"
+    res=0
+  fi
+
+  rm -f "$diff"
+  return $res
 }
 
 if [ $# -eq 0 ] || [[ "$1" != --* ]]; then
@@ -227,29 +329,41 @@ commit=
 on_files=false
 
 case "$action" in
-    "--update-ocamlformat" )
-        action=update_all_dot_ocamlformats
-        commit="Update .ocamlformat files" ;;
-    "--check-ocamlformat" )
-        action=update_all_dot_ocamlformats
-        check_clean=true ;;
-    "--check-gitlab-ci-yml" )
-        action=check_gitlab_ci_yml ;;
-    "--check-scripts" )
-        action=check_scripts ;;
-    "--check-redirects" )
-        action=check_redirects ;;
-    "--check-rust-toolchain" )
-        action=check_rust_toolchain_files ;;
-    "--check-licenses-git-new" )
-        action=check_licenses_git_new ;;
-    "help" | "-help" | "--help" | "-h" )
-        usage
-        exit 0 ;;
-    * )
-        say "Error no action (arg 1 = '$action') provided"
-        usage
-        exit 2 ;;
+"--update-ocamlformat")
+  action=update_all_dot_ocamlformats
+  commit="Update .ocamlformat files"
+  ;;
+"--check-ocamlformat")
+  action=update_all_dot_ocamlformats
+  check_clean=true
+  ;;
+"--check-gitlab-ci-yml")
+  action=check_gitlab_ci_yml
+  ;;
+"--check-scripts")
+  action=check_scripts
+  ;;
+"--format-scripts")
+  action=format_scripts
+  ;;
+"--check-redirects")
+  action=check_redirects
+  ;;
+"--check-rust-toolchain")
+  action=check_rust_toolchain_files
+  ;;
+"--check-licenses-git-new")
+  action=check_licenses_git_new
+  ;;
+"help" | "-help" | "--help" | "-h")
+  usage
+  exit 0
+  ;;
+*)
+  say "Error no action (arg 1 = '$action') provided"
+  usage
+  exit 2
+  ;;
 esac
 
 if $on_files; then

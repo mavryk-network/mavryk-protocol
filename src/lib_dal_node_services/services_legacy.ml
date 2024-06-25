@@ -31,22 +31,3 @@ let slot_pages =
     ~output:(Data_encoding.list Data_encoding.bytes)
     Mavryk_rpc.Path.(
       open_root / "slot" / "pages" /: Cryptobox.Commitment.rpc_arg)
-
-let shard =
-  let shard_arg = Mavryk_rpc.Arg.int in
-  Mavryk_rpc.Service.get_service
-    ~description:"Fetch shard as bytes"
-    ~query:Mavryk_rpc.Query.empty
-    ~output:Cryptobox.shard_encoding
-    Mavryk_rpc.Path.(
-      open_root / "shard" /: Cryptobox.Commitment.rpc_arg /: shard_arg)
-
-let shards =
-  (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4111
-     Bound size of the input *)
-  Mavryk_rpc.Service.post_service
-    ~description:"Fetch shards as bytes"
-    ~query:Mavryk_rpc.Query.empty
-    ~output:(Data_encoding.list Cryptobox.shard_encoding)
-    ~input:Data_encoding.(list int31)
-    Mavryk_rpc.Path.(open_root / "shards" /: Cryptobox.Commitment.rpc_arg)

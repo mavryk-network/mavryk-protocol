@@ -66,15 +66,15 @@ type slot_header = {level : int; commitment : string; index : int}
 val get_global_block_dal_slot_headers :
   ?block:string -> unit -> slot_header list RPC_core.t
 
-(** RPC: [GET local/batcher/queue] returns the queue of messages, as pairs of message
-    hash and binary message, in the batcher. *)
+(** RPC: [GET local/batcher/queue] returns the queue of messages, as pairs of
+    message id and binary message, in the batcher. *)
 val get_local_batcher_queue : unit -> (string * string) list RPC_core.t
 
-(** RPC: [GET local/batcher/queue/<msg_hash>] fetches the message whose hash is [hash]
-    from the queue. It returns the message together with the full JSON response
-    including the status.*)
-val get_local_batcher_queue_msg_hash :
-  msg_hash:string -> (string * string) RPC_core.t
+(** RPC: [GET local/batcher/queue/<msg_id>] fetches the message whose id is
+    [msg_id] from the queue. It returns the message together with the full JSON
+    response including the status.*)
+val get_local_batcher_queue_msg_id :
+  msg_id:string -> (string * string) RPC_core.t
 
 type simulation_result = {
   state_hash : string;
@@ -153,3 +153,34 @@ val get_local_gc_info : unit -> gc_info RPC_core.t
     mapped to [key] for the [block] (default ["head"]). *)
 val get_global_block_state :
   ?block:string -> key:string -> unit -> bytes RPC_core.t
+
+type 'output_type durable_state_operation =
+  | Value : string option durable_state_operation
+  | Length : int64 option durable_state_operation
+  | Subkeys : string list durable_state_operation
+
+(** RPC: [GET global/block/<block>/durable/<pvm_kind>/<operation>] gets the
+    corresponding durable PVM state information (depending on [operation]) mapped to [key] for the [block]
+    (default ["head"]). *)
+val get_global_block_durable_state_value :
+  ?block:string ->
+  pvm_kind:string ->
+  operation:'a durable_state_operation ->
+  key:string ->
+  unit ->
+  'a RPC_core.t
+
+(** RPC: [POST local/batcher/injection] injects the [messages] in the queue the rollup
+    node's batcher and returns the list of message hashes injected. *)
+val post_local_batcher_injection :
+  messages:string list -> string list RPC_core.t
+
+type outbox_proof = {commitment_hash : string; proof : string}
+
+(** RPC: [GET global/block/<block>/helpers/proofs/outbox/<outbox_level>/messages] *)
+val outbox_proof_simple :
+  ?block:string ->
+  outbox_level:int ->
+  message_index:int ->
+  unit ->
+  outbox_proof option RPC_core.t

@@ -28,7 +28,7 @@ to one provided by another node under the user’s control, or by
 relying on social cues to obtain a hash from a large number of trusted
 parties which are unlikely to be colluding.
 
-For instance, one may use one or more Mavryk block explorers in the :ref:`Mavryk community <mavryk_community>` to check whether this block hash matches an existing block.
+For instance, one may use one or more :ref:`Mavryk block explorers <block_explorers>` to check whether this block hash matches an existing block.
 
 After that careful selection and verification of the imported block
 hash, you can trust the node with the rest of the procedure. In
@@ -211,4 +211,3 @@ download. These include:
 * `Mavryk Snapshots <https://snapshots.mavryk.network>`_
 * `Lambs on acid <https://lambsonacid.nl/>`_
 * `Marigold snapshots <https://snapshots.tezos.marigold.dev/>`_
-* `Tzinit snapshots <https://snapshots.tzinit.org/>`_

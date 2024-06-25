@@ -22,9 +22,25 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let version_string =
+let version_string version =
   Format.asprintf
     "%s (%s) (%s)"
     Current_git_info.abbreviated_commit_hash
     Current_git_info.committer_date
-    (Mavryk_version.Version.to_string Current_git_info.version)
+    (Mavryk_version.Version.to_string version)
+
+let simple_version_string version =
+  Format.asprintf
+    "%s (%s)"
+    (Mavryk_version.Version.to_string version)
+    Current_git_info.abbreviated_commit_hash
+
+let mavkit_version_string = version_string Current_git_info.mavkit_version
+
+let mavkit_simple_version_string =
+  simple_version_string Current_git_info.mavkit_version
+
+let etherlink_version_string = version_string Current_git_info.etherlink_version
+
+let etherlink_simple_version_string =
+  simple_version_string Current_git_info.etherlink_version

@@ -15,12 +15,33 @@
  (libraries
   mavkit-version.value
   mavkit-libs.version
-  mavkit-libs.base.unix)
+  mavkit-libs.base.unix
+  mavkit-version.print)
  (link_flags
   (:standard)
   (:include %{workspace_root}/static-link-flags.sexp))
  (flags
   (:standard)
   -open Mavryk_version_value
-  -open Mavryk_version)
+  -open Mavryk_version
+  -open Mavkit_version_print)
  (modules mavryk_print_version))
+
+(executable
+ (name etherlink_print_version)
+ (public_name etherlink-version)
+ (package mavkit-version)
+ (libraries
+  mavkit-version.value
+  mavkit-libs.version
+  mavkit-libs.base.unix
+  mavkit-version.print)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/static-link-flags.sexp))
+ (flags
+  (:standard)
+  -open Mavryk_version_value
+  -open Mavryk_version
+  -open Mavkit_version_print)
+ (modules etherlink_print_version))

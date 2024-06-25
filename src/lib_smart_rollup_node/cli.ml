@@ -204,6 +204,23 @@ struct
            default)
       int_parameter
 
+  let acl_override_arg : ([`Allow_all | `Secure] option, _) Mavryk_clic.arg =
+    Mavryk_clic.arg
+      ~long:"acl-override"
+      ~placeholder:"kind"
+      ~doc:
+        "Specify a different ACL for the rpc server to override the default \
+         one. Possible values are 'secure' and 'allow-all'"
+      (Mavryk_clic.parameter (fun (_cctxt : Client_context.full) ->
+           let open Lwt_result_syntax in
+           function
+           | "secure" -> return `Secure
+           | "allow-all" | "allow_all" -> return `Allow_all
+           | _ ->
+               failwith
+                 "Bad value for acl-override, possible values are 'secure' and \
+                  'allow-all'"))
+
   let data_dir_arg =
     let default = Configuration.default_data_dir in
     Mavryk_clic.default_arg
@@ -406,6 +423,42 @@ let snapshot_dir_arg =
        directory)"
     string_parameter
 
+let snapshot_file_param next =
+  Mavryk_clic.param
+    ~name:"snapshot_file"
+    ~desc:"Snapshot archive file"
+    string_parameter
+    next
+
+let no_checks_arg : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"no-check"
+    ~doc:"Don't check integrity of the snapshot."
+    ()
+
+let compress_on_the_fly_arg : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"compress-on-the-fly"
+    ~doc:
+      "Produce a compressed snapshot on the fly. The rollup node will use less \
+       disk space to produce the snapshot but will lock the rollup node (if \
+       running) for a longer time. Without this option, producing a snaphsot \
+       requires the available disk space to be around the size of the data \
+       dir."
+    ()
+
+let uncompressed : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"uncompressed"
+    ~doc:"Produce an uncompressed snapshot."
+    ()
+
+let compact : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"compact"
+    ~doc:"Produce a compact snapshot with a single commit for the context."
+    ()
+
 let string_list =
   Mavryk_clic.parameter (fun (_cctxt : Client_context.full) s ->
       let list = String.split ',' s in
@@ -424,3 +477,32 @@ let cors_allowed_origins_arg =
     ~placeholder:"ALLOWED_ORIGINS"
     ~doc:"List of accepted cors origins."
     string_list
+
+let protocol_hash_parameter =
+  Mavryk_clic.parameter (fun (_cctxt : Client_context.full) p ->
+      Lwt.return (Protocol_hash.of_b58check p))
+
+let protocol_hash_arg =
+  Mavryk_clic.arg
+    ~long:"protocol"
+    ~short:'P'
+    ~placeholder:"Proto"
+    ~doc:
+      "Protocol hash in base58-check. If not provided, the export will be for \
+       the last registered protocol in the rollup node which may be different \
+       between different versions of the node."
+    protocol_hash_parameter
+
+let protocol_hash_param next =
+  Mavryk_clic.param
+    ~name:"protocol"
+    ~desc:"Protocol hash"
+    protocol_hash_parameter
+    next
+
+let apply_unsafe_patches_switch : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"apply-unsafe-patches"
+    ~doc:
+      "Apply unsafe PVM patches in the configuration or hardcoded by the node."
+    ()

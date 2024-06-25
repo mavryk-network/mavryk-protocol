@@ -62,7 +62,7 @@ let get_status (node_ctxt : _ Node_context.t) state =
   let*! current_level = PVM.get_current_level state in
   let* constants =
     match current_level with
-    | None -> return node_ctxt.current_protocol.constants
+    | None -> return (Reference.get node_ctxt.current_protocol).constants
     | Some level ->
         Protocol_plugins.get_constants_of_level
           node_ctxt
@@ -140,4 +140,18 @@ module Wasm_2_0_0 = struct
   let proof_mem_tree = Wasm_2_0_0_pvm.Wasm_2_0_0_proof_format.Tree.mem_tree
 
   let proof_fold_tree = Wasm_2_0_0_pvm.Wasm_2_0_0_proof_format.Tree.fold
+end
+
+module Unsafe = struct
+  let apply_patch (kind : Octez_smart_rollup.Kind.t) state
+      (patch : Pvm_patches.unsafe_patch) =
+    let open Lwt_result_syntax in
+    let open (val Pvm.of_kind kind) in
+    let*? patch = Unsafe_patches.of_patch patch in
+    let* state =
+      protect @@ fun () ->
+      Unsafe_patches.apply (Ctxt_wrapper.of_node_pvmstate state) patch
+      |> Lwt_result.ok
+    in
+    return (Ctxt_wrapper.to_node_pvmstate state)
 end

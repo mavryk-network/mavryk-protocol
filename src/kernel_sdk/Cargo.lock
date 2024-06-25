@@ -1246,6 +1246,8 @@ checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 name = "mavryk-smart-rollup"
 version = "0.2.2"
 dependencies = [
+ "hermit",
+ "hex",
  "mavryk-smart-rollup-core",
  "mavryk-smart-rollup-debug",
  "mavryk-smart-rollup-encoding",

@@ -32,11 +32,10 @@ CPMM contract, and the CPMM's ``%default`` entrypoint is called to update the
 CPMM contract is 1/16th of the rewards for a block of round 0 with all
 attestations; currently these rewards are 20 mav per block so the amount that is
 sent to the CPMM contract is 1.25 mav per block.
-If the :ref:`adaptive issuance <adaptive_issuance_atlas>` feature were to be activated,
-the subsidy would be adjusted by the adaptive issuance coefficient.
 
 So the credits to the CPMM contract can be accounted for by indexers, they are included in block metadata as a balance update with a new constructor for ``update_origin``, ``Subsidy``.
 
+.. _toggle:
 .. _toggle_atlas:
 
 Toggle vote

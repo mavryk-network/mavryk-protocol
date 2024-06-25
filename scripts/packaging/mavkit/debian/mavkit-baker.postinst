@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -e
+
+# shellcheck disable=SC1091
+. /usr/share/debconf/confmodule
+
+db_version 2.0
+
+# work directory to store temporary files associated to this package
+mkdir -p /var/lib/mavkit-baker
+
+case "${1}" in
+configure)
+
+  db_get mavkit-baker/liquidity-vote
+  echo "LQVOTE=${RET}" > /etc/default/mavkit-baker
+
+  db_get mavkit-baker/baker-key
+  echo "BAKER_KEY=${RET}" >> /etc/default/mavkit-baker
+
+  db_get mavkit-baker/baker-active-protocol
+  echo "PROTOCOL=${RET}" >> /etc/default/mavkit-baker-active
+
+  db_get mavkit-baker/baker-next-protocol
+  if [ -z "$RET" ]; then
+    echo "PROTOCOL=${RET}" >> /etc/default/mavkit-baker-next
+  else
+    echo "#PROTOCOL=${RET}" >> /etc/default/mavkit-baker-next
+  fi
+
+  ;;
+*)
+  echo "postinst noop"
+  ;;
+esac
+
+#DEBHELPER#
