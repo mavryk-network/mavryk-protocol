@@ -36,4 +36,4 @@ val load : Raw_context.t -> Raw_context.t tzresult Lwt.t
 val update_at_cycle_end_after_slashing :
   Raw_context.t -> new_cycle:Cycle_repr.t -> Raw_context.t tzresult Lwt.t
 
-val init_for_genesis_and_atlas : Raw_context.t -> Raw_context.t tzresult Lwt.t
+val init_for_genesis : Raw_context.t -> Raw_context.t tzresult Lwt.t

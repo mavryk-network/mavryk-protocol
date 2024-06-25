@@ -35,7 +35,9 @@ module Contract_entity = struct
     |> record_trace_eval (fun () -> error_of_fmt "bad contract notation")
     |> Lwt.return
 
-  let to_source s = return (Contract.to_b58check s)
+  let to_source s =
+    let open Lwt_result_syntax in
+    return (Contract.to_b58check s)
 
   let name = "contract"
 end
@@ -88,7 +90,7 @@ module Originated_contract_alias = struct
         [
           desc;
           "Can be a literal or an alias (autodetected in order).\n\
-           Use 'text:literal' or 'alias:name' to force.";
+           Use 'text:<literal>' or 'alias:<name>' to force.";
         ]
     in
     Mavryk_clic.param ~name ~desc (destination_parameter ()) next
@@ -100,7 +102,7 @@ module Originated_contract_alias = struct
         [
           doc;
           "Can be a literal or an alias (autodetected in order).\n\
-           Use 'text:literal' or 'alias:name' to force.";
+           Use 'text:<literal>' or 'alias:<name>' to force.";
         ]
     in
     Mavryk_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())
@@ -148,7 +150,7 @@ module Contract_alias = struct
     let desc =
       desc ^ "\n"
       ^ "Can be a contract alias or a key alias (autodetected in order).\n\
-         Use 'key:name' to force the later."
+         Use 'key:<name>' to force the later."
     in
     Mavryk_clic.(param ~name ~desc (parameter ~autocomplete get_contract) next)
 
@@ -186,7 +188,7 @@ module Contract_alias = struct
         [
           desc;
           "Can be a literal, an alias, or a key (autodetected in order).\n\
-           Use 'text:literal', 'alias:name', 'key:name' to force.";
+           Use 'text:<literal>', 'alias:<name>', 'key:<key>' to force.";
         ]
     in
     Mavryk_clic.param ~name ~desc (destination_parameter ()) next
@@ -198,7 +200,7 @@ module Contract_alias = struct
         [
           doc;
           "Can be a literal, an alias, or a key (autodetected in order).\n\
-           Use 'text:literal', 'alias:name', 'key:name' to force.";
+           Use 'text:<literal>', 'alias:<name>', 'key:<key>' to force.";
         ]
     in
     Mavryk_clic.arg ~long:name ~doc ~placeholder:name (destination_parameter ())

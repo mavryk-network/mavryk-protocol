@@ -93,40 +93,16 @@ let find_in_known_round_intervals known_round_intervals ~predecessor_timestamp
       known_round_intervals
       {predecessor_timestamp; predecessor_round; time_interval = (now, now)})
 
-(** Memoization wrapper for [Round.timestamp_of_round]. *)
-let timestamp_of_round state ~predecessor_timestamp ~predecessor_round ~round =
-  let open Result_syntax in
-  let open Baking_cache in
-  let known_timestamps = state.global_state.cache.known_timestamps in
-  match
-    Timestamp_of_round_cache.find_opt
-      known_timestamps
-      (predecessor_timestamp, predecessor_round, round)
-  with
-  (* Compute and register the timestamp if not already existing. *)
-  | None ->
-      let* ts =
-        Protocol.Alpha_context.Round.timestamp_of_round
-          state.global_state.round_durations
-          ~predecessor_timestamp
-          ~predecessor_round
-          ~round
-      in
-      Timestamp_of_round_cache.replace
-        known_timestamps
-        (predecessor_timestamp, predecessor_round, round)
-        ts ;
-      return ts
-  (* If it already exists, just fetch from the memoization table. *)
-  | Some ts -> return ts
+let sleep_until_ptime ptime =
+  let delay = Ptime.diff ptime (Time.System.now ()) in
+  if Ptime.Span.compare delay Ptime.Span.zero < 0 then None
+  else Some (Lwt_unix.sleep (Ptime.Span.to_float_s delay))
 
 (** The function is blocking until it is [time]. *)
 let sleep_until time =
   (* Sleeping is a system op, baking is a protocol op, this is where we convert *)
   let time = Time.System.of_protocol_exn time in
-  let delay = Ptime.diff time (Time.System.now ()) in
-  if Ptime.Span.compare delay Ptime.Span.zero < 0 then None
-  else Some (Lwt_unix.sleep (Ptime.Span.to_float_s delay))
+  sleep_until_ptime time
 
 (* Only allocate once the termination promise *)
 let terminated =
@@ -652,8 +628,13 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
       | None -> wait_end_of_round next_round
       | Some _elected_block -> delay_next_round_timeout next_round)
   (* There is no timestamp for a successor round but there is for a
-     future baking slot, we will wait to bake. *)
-  | None, Some next_baking -> wait_baking_time_next_level next_baking
+     future baking slot. If we are the next level baker at round 0,
+     quorum has been reached for this level, and no block being forged,
+     we will wait to forge, otherwise we will wait to bake *)
+  | None, Some next_baking ->
+      if should_wait_to_forge_block next_baking then
+        waiting_to_forge_block next_baking
+      else wait_baking_time_next_level next_baking
   (* We choose the earliest timestamp between waiting to bake and
      waiting for the next round. *)
   | ( Some ((next_round_time, next_round) as next_round_info),
@@ -670,7 +651,10 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
       if
         Time.Protocol.(
           next_baking_time < add next_round_time next_round_duration)
-      then wait_baking_time_next_level next_baking
+      then
+        if should_wait_to_forge_block next_baking then
+          waiting_to_forge_block next_baking
+        else wait_baking_time_next_level next_baking
       else
         (* same observation is in the [(Some next_round, None)] case *)
         delay_next_round_timeout next_round_info
@@ -679,6 +663,7 @@ let compute_next_timeout state : Baking_state.timeout_kind Lwt.t tzresult Lwt.t
    if there is one and if it's more recent than the one loaded from disk
    if any *)
 let may_initialise_with_latest_proposal_pqc state =
+  let open Lwt_result_syntax in
   let p = state.level_state.latest_proposal in
   match p.block.prequorum with
   | None -> return state
@@ -720,14 +705,17 @@ let create_dal_node_rpc_ctxt endpoint =
   new RPC_client_unix.http_ctxt rpc_config media_types
 
 let create_initial_state cctxt ?(synchronize = true) ~chain config
-    operation_worker ~(current_proposal : Baking_state.proposal) delegates =
+    operation_worker ~(current_proposal : Baking_state.proposal) ?constants
+    delegates =
   let open Lwt_result_syntax in
   (* FIXME? consider saved attestable value *)
   let open Protocol in
   let open Baking_state in
   let* chain_id = Shell_services.Chain.chain_id cctxt ~chain () in
   let* constants =
-    Alpha_services.Constants.all cctxt (`Hash chain_id, `Head 0)
+    match constants with
+    | Some c -> return c
+    | None -> Alpha_services.Constants.all cctxt (`Hash chain_id, `Head 0)
   in
   let*? round_durations = create_round_durations constants in
   let* validation_mode =
@@ -1010,6 +998,7 @@ let run cctxt ?canceler ?(stop_on_event = fun _ -> false)
       config
       operation_worker
       ~current_proposal
+      ?constants
       delegates
   in
   let _promise =

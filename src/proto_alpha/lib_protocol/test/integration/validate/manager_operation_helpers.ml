@@ -384,7 +384,7 @@ let manager_parameters : Parameters.t -> ctxt_req -> Parameters.t =
   let hard_gas_limit_per_block =
     match hard_gas_limit_per_block with
     | Some gb -> gb
-    | None -> Gas.Arith.(integral_of_int_exn 5_200_000)
+    | None -> Default_parameters.constants_mainnet.hard_gas_limit_per_block
   in
   let dal = {params.constants.dal with feature_enable = flags.dal} in
   let sc_rollup =
@@ -705,11 +705,15 @@ let mk_reveal (oinfos : operation_req) (infos : infos) =
     (B infos.ctxt.block)
     pk
 
-let sc_rollup_of = function
+let sc_rollup_of =
+  let open Lwt_result_syntax in
+  function
   | Some sc_rollup -> return sc_rollup
   | None -> failwith "Sc_rollup not created in this context"
 
-let zk_rollup_of = function
+let zk_rollup_of =
+  let open Lwt_result_syntax in
+  function
   | Some zk_rollup -> return zk_rollup
   | None -> failwith "Zk_rollup not created in this context"
 

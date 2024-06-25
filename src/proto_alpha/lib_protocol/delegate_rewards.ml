@@ -48,24 +48,23 @@ let sum_weights
    for each of them. It also gives the (maximum) amount of rewards per minute
    expected on the chain
    [weight] is one of those reward weights as described in [rewards]
-   [minimal_block_delay] is the minimum amouht of time between two blocks. *)
+   [minimal_block_delay] is the minimum amount of time between two blocks. *)
 let tez_from_weights
     ~(issuance_weights : Constants_parametric_repr.issuance_weights)
     ~(weight : int) ~(minimal_block_delay : Period_repr.t) =
   let sum_weights = sum_weights issuance_weights in
-  let block_delay =
-    minimal_block_delay |> Period_repr.to_seconds |> Int64.to_int
-  in
-  let weighted_rewards_per_minute =
-    Tez_repr.mul_exn issuance_weights.base_total_issued_per_minute weight
-  in
-  let weighted_rewards_per_block =
-    Tez_repr.(div_exn (mul_exn weighted_rewards_per_minute block_delay) 60)
-  in
-  let normalized_rewards_per_block =
-    Tez_repr.div_exn weighted_rewards_per_block sum_weights
-  in
-  normalized_rewards_per_block
+  let block_delay = minimal_block_delay |> Period_repr.to_seconds in
+  (* base_tez = issuance_weights.base_total_issued_per_minute
+     relative_weight = reward_weight / sum_weights
+     minute_per_block = block_delay (in seconds) / 60
+     rewarded_tez = base_tez * relative_weight * blocks_per_minute *)
+  let num = Int64.(mul (of_int weight) block_delay) in
+  let den = Int64.of_int (sum_weights * 60) in
+  Tez_repr.mul_ratio
+    ~rounding:`Down
+    issuance_weights.base_total_issued_per_minute
+    ~num
+    ~den
 
 (* Bundling some functions inside a module so they can be exported as part
    of `Internal_for_tests` further down. *)
@@ -79,6 +78,7 @@ module M = struct
 
   let reward_from_constants ~(csts : Constants_parametric_repr.t) ~reward_kind
       ~(coeff : Q.t) =
+    let open Result_syntax in
     let issuance_weights = csts.issuance_weights in
     let weight =
       match reward_kind with
@@ -88,17 +88,17 @@ module M = struct
           issuance_weights.baking_reward_bonus_weight
       | Attesting_reward_per_slot -> issuance_weights.attesting_reward_weight
       | Seed_nonce_revelation_tip ->
-          (* Seed nonce revelation rewards are given every [blocks_per_commitment](=128)th block *)
+          (* Seed nonce revelation rewards are given every [blocks_per_commitment](=192)th block *)
           let blocks_per_commitment = Int32.to_int csts.blocks_per_commitment in
           issuance_weights.seed_nonce_revelation_tip_weight
           * blocks_per_commitment
       | Vdf_revelation_tip ->
-          (* Vdf revelation rewards are given every [blocks_per_commitment](=128)th block *)
+          (* Vdf revelation rewards are given every [blocks_per_commitment](=192)th block *)
           let blocks_per_commitment = Int32.to_int csts.blocks_per_commitment in
           issuance_weights.vdf_revelation_tip_weight * blocks_per_commitment
     in
     let minimal_block_delay = csts.minimal_block_delay in
-    let rewards =
+    let* rewards =
       tez_from_weights ~issuance_weights ~weight ~minimal_block_delay
     in
     let base_rewards =

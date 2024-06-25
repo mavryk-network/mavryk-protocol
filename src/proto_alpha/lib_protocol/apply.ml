@@ -2289,7 +2289,8 @@ let record_preattestation ctxt (mode : mode) (content : consensus_content) :
       in
       return (ctxt, mk_preattestation_result consensus_key 0 (* Fake power. *))
 
-let record_attestation ctxt (mode : mode) (content : consensus_content) :
+let record_attestation ctxt (mode : mode) (consensus : consensus_content)
+    (dal : dal_content option) :
     (context * Kind.attestation contents_result_list) tzresult Lwt.t =
   let open Lwt_result_syntax in
   let mk_attestation_result ({delegate; consensus_pkh; _} : Consensus_key.pk)
@@ -2328,8 +2329,8 @@ let record_attestation ctxt (mode : mode) (content : consensus_content) :
          attestations), but we don't need to, because there is no block
          to finalize anyway in this mode. *)
       let* ctxt, consensus_key =
-        let level = Level.from_raw ctxt content.level in
-        Stake_distribution.slot_owner ctxt level content.slot
+        let level = Level.from_raw ctxt consensus.level in
+        Stake_distribution.slot_owner ctxt level consensus.slot
       in
       return (ctxt, mk_attestation_result consensus_key 0 (* Fake power. *))
 
@@ -2458,7 +2459,7 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
   | Single (Seed_nonce_revelation {level; nonce}) ->
       let level = Level.from_raw ctxt level in
       let* ctxt = Nonce.reveal ctxt level nonce in
-      let tip = Delegate.Rewards.seed_nonce_revelation_tip ctxt in
+      let*? tip = Delegate.Rewards.seed_nonce_revelation_tip ctxt in
       let delegate = payload_producer.Consensus_key.delegate in
       let+ ctxt, balance_updates =
         Delegate.Shared_stake.pay_rewards
@@ -2470,7 +2471,7 @@ let apply_contents_list (type kind) ctxt chain_id (mode : mode)
       (ctxt, Single_result (Seed_nonce_revelation_result balance_updates))
   | Single (Vdf_revelation {solution}) ->
       let* ctxt = Seed.update_seed ctxt solution in
-      let tip = Delegate.Rewards.vdf_revelation_tip ctxt in
+      let*? tip = Delegate.Rewards.vdf_revelation_tip ctxt in
       let delegate = payload_producer.Consensus_key.delegate in
       let+ ctxt, balance_updates =
         Delegate.Shared_stake.pay_rewards
@@ -2605,7 +2606,6 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
     ctxt
     ~per_block_vote
     (fun ctxt protocol_treasury_contract_hash ->
-
       let protocol_treasury_contract = 
         Contract.Originated protocol_treasury_contract_hash
       in
@@ -3025,7 +3025,7 @@ let finalize_application ctxt block_data_contents ~round ~predecessor_hash
       return (ctxt, Some rewards_bonus)
     else return (ctxt, None)
   in
-  let baking_reward = Delegate.Rewards.baking_reward_fixed_portion ctxt in
+  let*? baking_reward = Delegate.Rewards.baking_reward_fixed_portion ctxt in
   let* ctxt, baking_receipts =
     Delegate.record_baking_activity_and_pay_rewards_and_fees
       ctxt

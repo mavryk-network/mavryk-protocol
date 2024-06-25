@@ -123,13 +123,6 @@ module Tenderbake = struct
           (req "predecessor_payload" Block_payload_hash.encoding))
   end
 
-  module Endorsement_branch =
-    Make_single_data_storage (Registered) (Raw_context)
-      (struct
-        let name = ["endorsement_branch"]
-      end)
-      (Branch)
-
   module Attestation_branch =
     Make_single_data_storage (Registered) (Raw_context)
       (struct
@@ -1321,7 +1314,6 @@ module Pending_consensus_keys = Cycle.Pending_consensus_keys
 module Pending_staking_parameters = Cycle.Pending_staking_parameters
 
 module Stake = struct
-
   module Staking_balance =
     Make_indexed_data_storage
       (Make_subcontext (Registered) (Raw_context)

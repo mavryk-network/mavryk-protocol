@@ -224,6 +224,7 @@ let get_first_different_bakers ?(excluding = []) ctxt =
       (baker_1, get_first_different_baker baker_1 other_bakers)
 
 let get_seed_nonce_hash ctxt =
+  let open Lwt_result_syntax in
   let header =
     match ctxt with B {header; _} -> header | I i -> Incremental.header i
   in
@@ -245,19 +246,21 @@ let get_issuance_per_minute ctxt =
   Adaptive_issuance_services.current_issuance_per_minute rpc_ctxt ctxt
 
 let get_baking_reward_fixed_portion ctxt =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  return
-    (Delegate.Rewards.For_RPC.reward_from_constants
-       csts
-       ~reward_kind:Baking_reward_fixed_portion)
+  let*?@ reward =
+    Delegate.Rewards.For_RPC.reward_from_constants
+      csts
+      ~reward_kind:Baking_reward_fixed_portion
+  in
+  return reward
 
 let get_bonus_reward ctxt ~attesting_power =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = {consensus_threshold; _} as csts; _} =
     get_constants ctxt
   in
-  let baking_reward_bonus_per_slot =
+  let*?@ baking_reward_bonus_per_slot =
     Delegate.Rewards.For_RPC.reward_from_constants
       csts
       ~reward_kind:Baking_reward_bonus_per_slot
@@ -268,7 +271,7 @@ let get_bonus_reward ctxt ~attesting_power =
 let get_attesting_reward ctxt ~expected_attesting_power =
   let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  let attesting_reward_per_slot =
+  let*?@ attesting_reward_per_slot =
     Delegate.Rewards.For_RPC.reward_from_constants
       csts
       ~reward_kind:Attesting_reward_per_slot
@@ -279,7 +282,7 @@ let get_attesting_reward ctxt ~expected_attesting_power =
   return t
 
 let get_liquidity_baking_subsidy ctxt =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
   let*?@ reward =
     Delegate.Rewards.For_RPC.liquidity_baking_subsidy_from_constants csts
@@ -299,20 +302,24 @@ let get_total_supply ctxt =
   Adaptive_issuance_services.total_supply rpc_ctxt ctxt
 
 let get_seed_nonce_revelation_tip ctxt =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  return
-    (Delegate.Rewards.For_RPC.reward_from_constants
-       csts
-       ~reward_kind:Seed_nonce_revelation_tip)
+  let*?@ reward =
+    Delegate.Rewards.For_RPC.reward_from_constants
+      csts
+      ~reward_kind:Seed_nonce_revelation_tip
+  in
+  return reward
 
 let get_vdf_revelation_tip ctxt =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let* {Constants.parametric = csts; _} = get_constants ctxt in
-  return
-    (Delegate.Rewards.For_RPC.reward_from_constants
-       csts
-       ~reward_kind:Vdf_revelation_tip)
+  let*?@ reward =
+    Delegate.Rewards.For_RPC.reward_from_constants
+      csts
+      ~reward_kind:Vdf_revelation_tip
+  in
+  return reward
 
 let get_ai_current_yearly_rate ctxt =
   Adaptive_issuance_services.current_yearly_rate rpc_ctxt ctxt

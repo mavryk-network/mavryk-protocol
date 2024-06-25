@@ -108,7 +108,6 @@ type block_info = {
   round : Round.t;
   prequorum : prequorum option;
   quorum : Kind.attestation operation list;
-  dal_attestations : Kind.dal_attestation operation list;
   payload : Operation_pool.payload;
 }
 
@@ -149,7 +148,6 @@ let block_info_encoding =
            round;
            prequorum;
            quorum;
-           dal_attestations;
            payload;
          } ->
       ( hash,
@@ -159,7 +157,6 @@ let block_info_encoding =
         round,
         prequorum,
         List.map Operation.pack quorum,
-        List.map Operation.pack dal_attestations,
         payload ))
     (fun ( hash,
            shell,
@@ -168,7 +165,6 @@ let block_info_encoding =
            round,
            prequorum,
            quorum,
-           dal_attestations,
            payload ) ->
       {
         hash;
@@ -178,11 +174,9 @@ let block_info_encoding =
         round;
         prequorum;
         quorum = List.filter_map Operation_pool.unpack_attestation quorum;
-        dal_attestations =
-          List.filter_map Operation_pool.unpack_dal_attestation dal_attestations;
         payload;
       })
-    (obj9
+    (obj8
        (req "hash" Block_hash.encoding)
        (req "shell" Block_header.shell_header_encoding)
        (req "payload_hash" Block_payload_hash.encoding)
@@ -1027,6 +1021,61 @@ let create_cache () =
     round_timestamps = Round_timestamp_interval_cache.create cache_size_limit;
   }
 
+(** Memoization wrapper for [Round.timestamp_of_round]. *)
+let timestamp_of_round state ~predecessor_timestamp ~predecessor_round ~round =
+  let open Result_syntax in
+  let open Baking_cache in
+  let known_timestamps = state.global_state.cache.known_timestamps in
+  match
+    Timestamp_of_round_cache.find_opt
+      known_timestamps
+      (predecessor_timestamp, predecessor_round, round)
+  with
+  (* Compute and register the timestamp if not already existing. *)
+  | None ->
+      let* ts =
+        Environment.wrap_tzresult
+        @@ Protocol.Alpha_context.Round.timestamp_of_round
+             state.global_state.round_durations
+             ~predecessor_timestamp
+             ~predecessor_round
+             ~round
+      in
+      Timestamp_of_round_cache.replace
+        known_timestamps
+        (predecessor_timestamp, predecessor_round, round)
+        ts ;
+      return ts
+  (* If it already exists, just fetch from the memoization table. *)
+  | Some ts -> return ts
+
+let compute_next_round_time state =
+  let proposal =
+    match state.level_state.attestable_payload with
+    | None -> state.level_state.latest_proposal
+    | Some {proposal; _} -> proposal
+  in
+  if is_first_block_in_protocol proposal then None
+  else
+    match state.level_state.next_level_proposed_round with
+    | Some _proposed_round ->
+        (* TODO? do something, if we don't, we won't be able to
+           repropose a block at next level. *)
+        None
+    | None -> (
+        let predecessor_timestamp = proposal.predecessor.shell.timestamp in
+        let predecessor_round = proposal.predecessor.round in
+        let next_round = Round.succ state.round_state.current_round in
+        match
+          timestamp_of_round
+            state
+            ~predecessor_timestamp
+            ~predecessor_round
+            ~round:next_round
+        with
+        | Ok timestamp -> Some (timestamp, next_round)
+        | _ -> assert false)
+
 (* Pretty-printers *)
 
 let pp_validation_mode fmt = function
@@ -1070,15 +1119,13 @@ let pp_block_info fmt
       round;
       prequorum;
       quorum;
-      dal_attestations;
       payload;
       payload_round;
     } =
   Format.fprintf
     fmt
     "@[<v 2>Block:@ hash: %a@ payload_hash: %a@ level: %ld@ round: %a@ \
-     prequorum: %a@ quorum: %d attestations@ dal_attestations: %d@ payload: \
-     %a@ payload round: %a@]"
+     prequorum: %a@ quorum: %d attestations@ payload: %a@ payload round: %a@]"
     Block_hash.pp
     hash
     Block_payload_hash.pp_short
@@ -1089,7 +1136,6 @@ let pp_block_info fmt
     (pp_option pp_prequorum)
     prequorum
     (List.length quorum)
-    (List.length dal_attestations)
     Operation_pool.pp_payload
     payload
     Round.pp
@@ -1134,12 +1180,36 @@ let pp_delegate_slot fmt
     consensus_key_and_delegate
     attesting_power
 
+(* this type is only used below for pretty-printing *)
+type delegate_slots_for_pp = {
+  attester : consensus_key_and_delegate;
+  all_slots : Slot.t list;
+}
+
+let delegate_slots_for_pp delegate_slot_map =
+  SlotMap.fold
+    (fun slot {consensus_key_and_delegate; first_slot; attesting_power = _} acc ->
+      match SlotMap.find first_slot acc with
+      | None ->
+          SlotMap.add
+            first_slot
+            {attester = consensus_key_and_delegate; all_slots = [slot]}
+            acc
+      | Some {attester; all_slots} ->
+          SlotMap.add first_slot {attester; all_slots = slot :: all_slots} acc)
+    delegate_slot_map
+    SlotMap.empty
+  |> SlotMap.map (fun {attester; all_slots} ->
+         {attester; all_slots = List.rev all_slots})
+
 let pp_delegate_slots fmt Delegate_slots.{own_delegate_slots; _} =
   Format.fprintf
     fmt
     "@[<v>%a@]"
     Format.(
-      pp_print_list ~pp_sep:pp_print_cut (fun fmt (slot, attesting_slot) ->
+      pp_print_list
+        ~pp_sep:pp_print_cut
+        (fun fmt (_first_slot, {attester; all_slots}) ->
           Format.fprintf
             fmt
             "attester: %a, power: %d, first 10 slots: %a"

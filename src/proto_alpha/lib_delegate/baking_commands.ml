@@ -27,6 +27,7 @@ open Client_proto_args
 open Baking_errors
 
 let pidfile_arg =
+  let open Lwt_result_syntax in
   Mavryk_clic.arg
     ~doc:"write process id in file"
     ~short:'P'
@@ -149,6 +150,7 @@ let keep_alive_arg =
     ()
 
 let per_block_vote_parameter =
+  let open Lwt_result_syntax in
   Mavryk_clic.parameter
     ~autocomplete:(fun _ctxt -> return ["on"; "off"; "pass"])
     (let open Protocol.Alpha_context.Per_block_votes in
@@ -184,6 +186,7 @@ let adaptive_issuance_vote_arg =
     per_block_vote_parameter
 
 let state_recorder_switch_arg =
+  let open Lwt_result_syntax in
   let open Baking_configuration in
   Mavryk_clic.map_arg
     ~f:(fun _cctxt flag -> if flag then return Filesystem else return Memory)
@@ -244,6 +247,7 @@ let sources_param =
           the consensus key signing on the delegate's behalf")
 
 let endpoint_arg =
+  let open Lwt_result_syntax in
   Mavryk_clic.arg
     ~long:"dal-node"
     ~placeholder:"uri"
@@ -579,7 +583,7 @@ let lookup_default_vote_file_path (cctxt : Protocol_client_context.full) =
 type baking_mode = Local of {local_data_dir_path : string} | Remote
 
 let baker_args =
-  Mavryk_clic.args12
+  Mavryk_clic.args13
     pidfile_arg
     minimal_fees_arg
     minimal_nanomav_per_gas_unit_arg
@@ -592,6 +596,7 @@ let baker_args =
     operations_arg
     endpoint_arg
     state_recorder_switch_arg
+    pre_emptive_forge_time_arg
 
 let run_baker
     ( pidfile,
@@ -605,7 +610,8 @@ let run_baker
       per_block_vote_file,
       extra_operations,
       dal_node_endpoint,
-      state_recorder ) baking_mode sources cctxt =
+      state_recorder,
+      pre_emptive_forge_time ) baking_mode sources cctxt =
   let open Lwt_result_syntax in
   may_lock_pidfile pidfile @@ fun () ->
   let*! per_block_vote_file =
@@ -639,6 +645,7 @@ let run_baker
     ~votes
     ?extra_operations
     ?dal_node_endpoint
+    ?pre_emptive_forge_time
     ~force_apply
     ~chain:cctxt#chain
     ?context_path

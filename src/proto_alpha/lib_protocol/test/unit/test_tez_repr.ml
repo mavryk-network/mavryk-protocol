@@ -58,6 +58,7 @@ module Test_tez_repr = struct
     Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_substract_underflow () =
+    let open Lwt_result_syntax in
     match Tez_repr.(zero -? one) with
     | Ok _ -> failwith "Expected to underflow"
     | Error _ -> return_unit
@@ -68,6 +69,7 @@ module Test_tez_repr = struct
     Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_addition_overflow () =
+    let open Lwt_result_syntax in
     match Tez_repr.(of_mumav_exn 0x7fffffffffffffffL +? one) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
@@ -78,6 +80,7 @@ module Test_tez_repr = struct
     Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 0L
 
   let test_mul_overflow () =
+    let open Lwt_result_syntax in
     match Tez_repr.(of_mumav_exn 0x7fffffffffffffffL *? 2L) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
@@ -88,6 +91,7 @@ module Test_tez_repr = struct
     Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_div_by_zero () =
+    let open Lwt_result_syntax in
     match Tez_repr.(one /? 0L) with
     | Ok _ -> failwith "Expected to overflow"
     | Error _ -> return_unit
@@ -106,6 +110,7 @@ module Test_tez_repr = struct
     | None -> failwith "should have successfully converted 1000000L to mav"
 
   let test_of_mumav_negative () =
+    let open Lwt_result_syntax in
     match Tez_repr.of_mumav (-1000000L) with
     | Some _ -> failwith "should have failed to converted -1000000L to mav"
     | None -> return_unit
@@ -122,6 +127,7 @@ module Test_tez_repr = struct
       failwith "Unexpected exception: %s %s" msg stack
 
   let test_of_mumav_exn_negative () =
+    let open Lwt_result_syntax in
     try
       let (_ : Tez_repr.t) = Tez_repr.of_mumav_exn (-1000000L) in
       failwith "should have failed to converted -1000000L to mav"

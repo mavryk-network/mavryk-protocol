@@ -209,24 +209,24 @@ let test_sc_rollup_max_commitment_storage_size () =
 (** Test that the amount of the liquidity baking subsidy is epsilon smaller than
    1/16th of the maximum reward. *)
 let liquidity_baking_subsidy_param () =
-  let open Lwt_result_syntax in
+  let open Lwt_result_wrap_syntax in
   let constants = Default_parameters.constants_mainnet in
   let get_reward =
     Protocol.Alpha_context.Delegate.Rewards.For_RPC.reward_from_constants
       constants
   in
-  let baking_reward_bonus_per_slot =
+  let*?@ baking_reward_bonus_per_slot =
     get_reward ~reward_kind:Baking_reward_bonus_per_slot
   in
   let*? baking_reward_bonus =
     baking_reward_bonus_per_slot
     *? Int64.of_int (constants.consensus_committee_size / 3)
   in
-  let baking_reward_fixed_portion =
+  let*?@ baking_reward_fixed_portion =
     get_reward ~reward_kind:Baking_reward_fixed_portion
   in
   let*? baking_rewards = baking_reward_fixed_portion +? baking_reward_bonus in
-  let attesting_reward_per_slot =
+  let*?@ attesting_reward_per_slot =
     get_reward ~reward_kind:Attesting_reward_per_slot
   in
   let*? validators_rewards =
@@ -245,6 +245,10 @@ let liquidity_baking_subsidy_param () =
 
 let tests =
   [
+    Tztest.tztest
+      "sc_rollup constants consistency"
+      `Quick
+      test_sc_rollup_constants_consistency;
     Tztest.tztest "constants consistency" `Quick test_constants_consistency;
     Tztest.tztest "max_operations_ttl" `Quick test_max_operations_ttl;
     Tztest.tztest

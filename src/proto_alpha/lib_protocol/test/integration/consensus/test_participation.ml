@@ -50,7 +50,7 @@ let bake_and_attest_once (_b_pred, b_cur) baker attester =
   | None -> assert false
   | Some (delegate, _slots) ->
       let*?@ round = Block.get_round b_cur in
-      Op.attestation ~round ~delegate b_cur >>=? fun attestation ->
+      let* attestation = Op.attestation ~round ~delegate b_cur in
       Block.bake_with_metadata
         ~policy:(By_account baker)
         ~operation:attestation
@@ -169,7 +169,7 @@ let test_participation_rpc () =
     expected_cycle_activity * numerator / denominator
   in
   let allowed_missed_slots = expected_cycle_activity - minimal_cycle_activity in
-  let attesting_reward_per_slot =
+  let*?@ attesting_reward_per_slot =
     Alpha_context.Delegate.Rewards.For_RPC.reward_from_constants
       csts.parametric
       ~reward_kind:Attesting_reward_per_slot

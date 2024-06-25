@@ -35,9 +35,9 @@
   mavkit-crawler
   mavkit-libs.tree-encoding
   data-encoding
-  irmin-pack
-  irmin-pack.unix
-  irmin
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
+  mavkit-internal-libs.irmin
   aches
   aches-lwt
   mavkit-injector

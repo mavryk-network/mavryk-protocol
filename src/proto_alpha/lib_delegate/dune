@@ -26,6 +26,7 @@
   mavkit-shell-libs.context-ops
   mavkit-libs.rpc
   mavkit-libs.rpc-http
+  mavkit-libs.crypto-dal
   mavryk-dal-node-services
   lwt-canceler
   lwt-exit

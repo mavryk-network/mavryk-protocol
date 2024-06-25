@@ -80,20 +80,14 @@ let info_of_header_and_ops ~in_protocol block_hash block_header operations =
   let* round =
     Environment.wrap_tzresult @@ Fitness.round_from_raw shell.fitness
   in
-  let payload_hash, payload_round, prequorum, quorum, dal_attestations, payload
-      =
+  let payload_hash, payload_round, prequorum, quorum, payload =
     if not in_protocol then
       (* The first block in the protocol is baked using the previous
          protocol, the encodings might change. The baker's logic is to
          consider final the first block of a new protocol and not
          attest it. Therefore, we do not need to have the correct
          values here. *)
-      ( dummy_payload_hash,
-        Round.zero,
-        None,
-        [],
-        [],
-        Operation_pool.empty_payload )
+      (dummy_payload_hash, Round.zero, None, [], Operation_pool.empty_payload)
     else
       let payload_hash, payload_round =
         match
@@ -105,13 +99,13 @@ let info_of_header_and_ops ~in_protocol block_hash block_header operations =
             (payload_hash, payload_round)
         | None -> assert false
       in
-      let preattestations, quorum, dal_attestations, payload =
+      let preattestations, quorum, payload =
         WithExceptions.Option.get
           ~loc:__LOC__
           (Operation_pool.extract_operations_of_list_list operations)
       in
       let prequorum = Option.bind preattestations extract_prequorum in
-      (payload_hash, payload_round, prequorum, quorum, dal_attestations, payload)
+      (payload_hash, payload_round, prequorum, quorum, payload)
   in
   return
     {
@@ -122,7 +116,6 @@ let info_of_header_and_ops ~in_protocol block_hash block_header operations =
       round;
       prequorum;
       quorum;
-      dal_attestations;
       payload;
     }
 
@@ -288,6 +281,13 @@ let await_protocol_activation cctxt ~chain () =
   let*! _ = Lwt_stream.get block_stream in
   stop () ;
   return_unit
+
+let fetch_dal_config cctxt =
+  let open Lwt_syntax in
+  let* r = Config_services.dal_config cctxt in
+  match r with
+  | Error e -> return_error e
+  | Ok dal_config -> return_ok dal_config
 
 let get_attestable_slots dal_node_rpc_ctxt pkh ~attested_level =
   Mavryk_rpc.Context.make_call

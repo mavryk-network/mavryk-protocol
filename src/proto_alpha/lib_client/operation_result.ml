@@ -934,7 +934,7 @@ let pp_manager_operation_result ppf
   
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
-  Format.fprintf ppf "@,Fee to the validator: %s%s" tez_sym quarter_fee ;
+  Format.fprintf ppf "@,Fee to the baker: %s%s" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the protocol treasury: %s%s" tez_sym quarter_fee ;
   Format.fprintf ppf "@,Fee to the burn address: %s%s" tez_sym burn_fee ;
   Format.fprintf ppf "@,Expected counter: %a" Manager_counter.pp counter ;
@@ -1022,7 +1022,7 @@ let pp_contents_and_result :
           Consensus_key.pp
           {delegate; consensus_pkh = consensus_key}
           consensus_power
-    | ( Attestation {level; _},
+    | ( Attestation {consensus_content = {level; _}; dal_content = _},
         Attestation_result
           {balance_updates; delegate; consensus_key; consensus_power} ) ->
         Format.fprintf

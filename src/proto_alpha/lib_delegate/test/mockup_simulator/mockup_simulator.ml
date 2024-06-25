@@ -161,6 +161,7 @@ end
 let locate_blocks (state : state)
     (block : Mavryk_shell_services.Block_services.block) :
     block list tzresult Lwt.t =
+  let open Lwt_result_syntax in
   match block with
   | `Hash (hash, rel) -> (
       match Block_hash.Table.find state.chain_table hash with
@@ -201,6 +202,7 @@ let live_blocks (state : state) block =
 
 (** Extract the round number from raw fitness. *)
 let round_from_raw_fitness raw_fitness =
+  let open Lwt_result_syntax in
   match Protocol.Alpha_context.Fitness.from_raw raw_fitness with
   | Ok fitness ->
       return
@@ -210,6 +212,7 @@ let round_from_raw_fitness raw_fitness =
 
 (** Extract level from a block header. *)
 let get_block_level (block_header : Block_header.t) =
+  let open Lwt_result_syntax in
   return block_header.shell.level
 
 (** Extract round from a block header. *)
@@ -218,6 +221,7 @@ let get_block_round (block_header : Block_header.t) =
 
 (** Parse protocol data. *)
 let parse_protocol_data (protocol_data : Bytes.t) =
+  let open Lwt_result_syntax in
   match
     Data_encoding.Binary.of_bytes_opt
       Protocol.Alpha_context.Block_header.protocol_data_encoding
@@ -558,6 +562,7 @@ let make_mocked_services_hooks (state : state) (user_hooks : (module Hooks)) :
 
 (** Return the current head. *)
 let head {chain; _} =
+  let open Lwt_result_syntax in
   match List.hd chain with
   | None -> failwith "mockup_simulator.ml: empty chain"
   | Some hd -> return hd
@@ -901,6 +906,34 @@ let create_fake_node_state ~i ~live_depth
       genesis_block_true_hash;
     }
 
+class tezt_printer : Mavryk_client_base.Client_context.printer =
+  let open Mavryk_client_base in
+  let open Client_context in
+  let wrap_tezt_log : (_ format4 -> _) -> _ format4 -> _ =
+   fun f x ->
+    Format.kasprintf
+      (fun msg ->
+        f "%s" msg ;
+        Lwt.return_unit)
+      x
+  in
+  object
+    method error : type a b. (a, b) lwt_format -> a =
+      Format.kasprintf (fun msg -> Lwt.fail (Failure msg))
+
+    method warning : type a. (a, unit) lwt_format -> a =
+      wrap_tezt_log Tezt_core.Log.warn
+
+    method message : type a. (a, unit) lwt_format -> a =
+      wrap_tezt_log (fun x -> Tezt_core.Log.info x)
+
+    method answer : type a. (a, unit) lwt_format -> a =
+      wrap_tezt_log (fun x -> Tezt_core.Log.info x)
+
+    method log : type a. string -> (a, unit) lwt_format -> a =
+      fun _log_output -> wrap_tezt_log (fun x -> Tezt_core.Log.info x)
+  end
+
 (** Start baker process. *)
 let baker_process ~(delegates : Baking_state.consensus_key list) ~base_dir
     ~(genesis_block : Block_header.t * Mavryk_protocol_environment.rpc_context)
@@ -1102,13 +1135,12 @@ let make_genesis_context ~delegate_selection ~initial_seed ~round0 ~round1
       delegate_selection
     |> Environment.wrap_tzresult
   in
+  let cctxt = new tezt_printer in
   let* initial_seed =
     match (delegate_selection, constants.initial_seed) with
     | [], seed_opt -> return seed_opt
     | selection, (Some _ as seed) -> (
-        let*! () =
-          Faked_client_context.logger#warning "Checking provided seed."
-        in
+        let*! () = cctxt#message "Checking provided seed." in
         let* result =
           Tenderbrute.check_seed
             ~bootstrap_accounts_json:bootstrap_accounts
@@ -1122,10 +1154,7 @@ let make_genesis_context ~delegate_selection ~initial_seed ~round0 ~round1
         | false ->
             failwith "Provided initial seed does not match delegate selection")
     | _, None ->
-        let*! () =
-          Faked_client_context.logger#warning
-            "No initial seed provided, bruteforcing."
-        in
+        let*! () = cctxt#message "No initial seed provided, bruteforcing." in
         Tenderbrute.bruteforce
           ~max:100_000_000_000
           ~bootstrap_accounts_json:bootstrap_accounts
@@ -1137,7 +1166,7 @@ let make_genesis_context ~delegate_selection ~initial_seed ~round0 ~round1
     | None -> Lwt.return_unit
     | _ when initial_seed = constants.initial_seed -> Lwt.return_unit
     | Some seed ->
-        Faked_client_context.logger#warning
+        cctxt#warning
           "Bruteforced seed is %a, please save into your test."
           State_hash.pp
           seed
@@ -1156,7 +1185,7 @@ let make_genesis_context ~delegate_selection ~initial_seed ~round0 ~round1
     in
     let* {chain = _; rpc_context = rpc_context0; protocol_data = _} =
       Mockup.M.init
-        ~cctxt:Faked_client_context.logger
+        ~cctxt
         ~parameters:reencoded_parameters
         ~constants_overrides_json:None
         ~bootstrap_accounts_json:(Some bootstrap_accounts)
@@ -1200,9 +1229,11 @@ let default_propagation_vector = List.repeat 5 Pass
 module Default_hooks : Hooks = struct
   let on_inject_block ~level:_ ~round:_ ~block_hash ~block_header ~operations
       ~protocol_data:_ =
+    let open Lwt_result_syntax in
     return (block_hash, block_header, operations, default_propagation_vector)
 
   let on_inject_operation ~op_hash ~op =
+    let open Lwt_result_syntax in
     return (op_hash, op, default_propagation_vector)
 
   let on_new_validated_block ~block_hash ~block_header ~operations =
@@ -1215,21 +1246,21 @@ module Default_hooks : Hooks = struct
 
   let check_block_before_processing ~level:_ ~round:_ ~block_hash:_
       ~block_header:_ ~protocol_data:_ =
-    return_unit
+    Lwt_result_syntax.return_unit
 
-  let check_chain_after_processing ~level:_ ~round:_ ~chain:_ = return_unit
+  let check_chain_after_processing ~level:_ ~round:_ ~chain:_ =
+    Lwt_result_syntax.return_unit
 
-  let check_mempool_after_processing ~mempool:_ = return_unit
+  let check_mempool_after_processing ~mempool:_ = Lwt_result_syntax.return_unit
 
   let stop_on_event _ = false
 
   let on_start_baker ~baker_position:_ ~delegates:_ ~cctxt:_ = Lwt.return_unit
 
-  let check_chain_on_success ~chain:_ = return_unit
+  let check_chain_on_success ~chain:_ = Lwt_result_syntax.return_unit
 end
 
 type config = {
-  debug : bool;
   round0 : int64;
   round1 : int64;
   timeout : int;
@@ -1241,7 +1272,6 @@ type config = {
 
 let default_config =
   {
-    debug = false;
     round0 = 2L;
     (* Rounds should be long enough for the bakers to
        exchange all the necessary messages. *)
@@ -1279,16 +1309,6 @@ let run ?(config = default_config) bakers_spec =
   else if total_accounts > 5 then
     failwith "only up to 5 bootstrap accounts are available"
   else
-    (* When logging is enabled it may cause non-termination:
-
-       https://gitlab.com/nomadic-labs/tezos/-/issues/546
-
-       In particular, it seems that when logging is enabled the baker
-       process can get cancelled without executing its Lwt finalizer. *)
-    let*! () =
-      if config.debug then Mavryk_base_unix.Internal_event_unix.init ()
-      else Lwt.return_unit
-    in
     let total_bakers = List.length bakers_spec in
     let* broadcast_pipes =
       List.init ~when_negative_length:() total_bakers (fun _ ->
@@ -1363,6 +1383,7 @@ let bootstrap5 = get_account_pk 4
 
 let check_block_signature ~block_hash ~(block_header : Block_header.t)
     ~public_key =
+  let open Lwt_result_syntax in
   let (protocol_data : Protocol.Alpha_context.Block_header.protocol_data) =
     Data_encoding.Binary.of_bytes_exn
       Protocol.Alpha_context.Block_header.protocol_data_encoding
@@ -1452,6 +1473,7 @@ let op_is_signed_by ~public_key (op_hash : Operation_hash.t)
 
 let op_is_preattestation ?level ?round (op_hash : Operation_hash.t)
     (op : Alpha_context.packed_operation) =
+  let open Lwt_result_syntax in
   match op.protocol_data with
   | Operation_data d -> (
       match d.contents with
@@ -1480,12 +1502,13 @@ let op_is_preattestation ?level ?round (op_hash : Operation_hash.t)
 
 let op_is_attestation ?level ?round (op_hash : Operation_hash.t)
     (op : Alpha_context.packed_operation) =
+  let open Lwt_result_syntax in
   match op.protocol_data with
   | Operation_data d -> (
       match d.contents with
       | Single op_contents -> (
           match op_contents with
-          | Attestation consensus_content ->
+          | Attestation {consensus_content; _} ->
               let right_level =
                 match level with
                 | None -> true
@@ -1513,6 +1536,7 @@ let op_is_both f g op_hash op =
 
 let save_proposal_payload
     ~(protocol_data : Alpha_context.Block_header.protocol_data) ~var =
+  let open Lwt_result_syntax in
   var :=
     Some
       (protocol_data.contents.payload_hash, protocol_data.contents.payload_round) ;
@@ -1521,6 +1545,7 @@ let save_proposal_payload
 let verify_payload_hash
     ~(protocol_data : Alpha_context.Block_header.protocol_data)
     ~original_proposal ~message =
+  let open Lwt_result_syntax in
   match !original_proposal with
   | None ->
       failwith

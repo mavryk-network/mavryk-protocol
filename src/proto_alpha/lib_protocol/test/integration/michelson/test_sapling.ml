@@ -999,7 +999,7 @@ module Interpreter_tests = struct
     let*? amount_mav = Tez_helpers.(one_mumav *? Int64.of_int 15) in
     let* operation1 =
       Op.transaction
-        ~gas_limit:Max
+        ~gas_limit:High
         ~fee
         (B block_start)
         src
@@ -1014,7 +1014,7 @@ module Interpreter_tests = struct
     let*@ counter = Alpha_context.Contract.get_counter ctx pkh in
     let* operation2 =
       Op.transaction
-        ~gas_limit:Max
+        ~gas_limit:High
         ~counter
         ~fee
         (B block_start)

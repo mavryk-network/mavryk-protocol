@@ -36,9 +36,11 @@
 open Protocol
 open Alpha_context
 
-let init_genesis ?policy () =
+let init_genesis ?policy ?dal_enable () =
   let open Lwt_result_syntax in
-  let* genesis, _contracts = Context.init_n ~consensus_threshold:0 5 () in
+  let* genesis, _contracts =
+    Context.init_n ?dal_enable ~consensus_threshold:0 5 ()
+  in
   let* b = Block.bake ?policy genesis in
   return (genesis, b)
 
@@ -586,7 +588,7 @@ let test_no_conflict_various_levels_and_rounds () =
     let (Operation_data protocol_data) = op.protocol_data in
     let content =
       match protocol_data.contents with
-      | Single (Attestation content) -> content
+      | Single (Attestation {consensus_content = content; _}) -> content
       | _ -> assert false
     in
     Format.eprintf

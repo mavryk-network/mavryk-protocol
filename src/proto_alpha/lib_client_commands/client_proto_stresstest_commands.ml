@@ -49,7 +49,7 @@ type parameters = {
       (** gas limit per operation (except for transfers to smart contracts) *)
   storage_limit : Z.t;  (** storage limit per operation *)
   account_creation_storage : Z.t;
-      (** upper bound on bytes consumed when creating a mv1 account *)
+      (** upper bound on bytes consumed when creating a tz1 account *)
   total_transfers : int option;
       (** total number of transfers to perform; unbounded if None *)
   level_limit : limit option;
@@ -441,13 +441,13 @@ let rec sample_transfer (cctxt : Protocol_client_context.full) chain block
     (parameters : parameters) (state : state) =
   let open Lwt_result_syntax in
   let*! src = get_source_from_shuffled_pool state cctxt in
-  let* mav =
+  let* tez =
     Alpha_services.Contract.balance
       cctxt
       (chain, block)
       (Contract.Implicit src.pkh)
   in
-  if Tez.(mav = zero) then
+  if Tez.(tez = zero) then
     let*! () =
       log Debug (fun () ->
           cctxt#message
@@ -481,7 +481,7 @@ let rec sample_transfer (cctxt : Protocol_client_context.full) chain block
       match parameters.strategy with
       | Fixed_amount {mumav} -> mumav
       | Evaporation {fraction} ->
-          let mumav = Int64.to_float (Tez.to_mumav mav) in
+          let mumav = Int64.to_float (Tez.to_mumav tez) in
           let max_fraction = Int64.of_float (mumav *. fraction) in
           let amount =
             if max_fraction = 0L then 1L
@@ -800,7 +800,7 @@ let launch (cctxt : Protocol_client_context.full) (parameters : parameters)
       let*! () = save_injected_operations cctxt state in
       stat_on_exit cctxt state
     else
-      let start = Mtime_clock.elapsed () in
+      let start = Mtime_clock.counter () in
       let*! () =
         log Debug (fun () ->
             cctxt#message "launch.loop: invoke sample_transfer")
@@ -814,8 +814,7 @@ let launch (cctxt : Protocol_client_context.full) (parameters : parameters)
       in
       let* () = inject_transfer cctxt parameters state transfer in
       incr injected ;
-      let stop = Mtime_clock.elapsed () in
-      let elapsed = Mtime.Span.(to_s stop -. to_s start) in
+      let elapsed = Time.Monotonic.Span.to_float_s (Mtime_clock.count start) in
       let remaining = dt -. elapsed in
       let*! () =
         if remaining <= 0.0 then

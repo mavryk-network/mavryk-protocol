@@ -548,6 +548,10 @@ let test_launch_without_vote () =
 let tests =
   [
     Tztest.tztest
+      "Launch with force_activation feature flag set activates AI immediately"
+      `Quick
+      test_launch_without_vote;
+    Tztest.tztest
       "the EMA reaches the vote threshold at the expected level and adaptive \
        issuance launches (very low threshold, vote enabled)"
       `Quick

@@ -253,7 +253,11 @@ let state_attesting_power =
     Operation_pool.filter_attestations
     (fun
       ({
-         protocol_data = {contents = Single (Attestation consensus_content); _};
+         protocol_data =
+           {
+             contents = Single (Attestation {consensus_content; dal_content = _});
+             _;
+           };
          _;
        } :
         Kind.attestation operation)
@@ -411,7 +415,7 @@ let propose (cctxt : Protocol_client_context.full) ?minimal_fees
                         state
                         consensus_key_and_delegate
                         round
-                        state.level_state.latest_proposal
+                        ~last_proposal:state.level_state.latest_proposal
                     in
                     let* state =
                       match action with
@@ -495,7 +499,7 @@ let repropose (cctxt : Protocol_client_context.full) ?(force = false)
               state
               consensus_key_and_delegate
               round
-              state.level_state.latest_proposal
+              ~last_proposal:state.level_state.latest_proposal
           in
           let* signed_block =
             match action with
@@ -595,7 +599,7 @@ let rec baking_minimal_timestamp ~count state
          (fun
            ({
               protocol_data =
-                {contents = Single (Attestation consensus_content); _};
+                {contents = Single (Attestation {consensus_content; _}); _};
               _;
             } :
              Kind.attestation operation)

@@ -14,6 +14,7 @@
   mavkit-libs.test-helpers
   mavkit-protocol-alpha-libs.test-helpers
   mavkit-libs.base-test-helpers
+  mavryk-protocol-alpha.parameters
   mavkit-protocol-alpha-libs.plugin)
  (library_flags (:standard -linkall))
  (flags

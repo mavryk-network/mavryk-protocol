@@ -7,6 +7,7 @@
  (libraries
   tezt.core
   mavkit-libs.base
+  mavkit-libs.test-helpers
   mavkit-libs.micheline
   mavkit-protocol-alpha-libs.client
   mavryk-protocol-alpha.protocol
@@ -15,7 +16,7 @@
   mavkit-protocol-alpha-libs.baking
   mavryk-protocol-alpha.parameters
   mavkit-libs.crypto
-  mavkit-alcotezt
+  mavkit-libs.event-logging-test-helpers
   uri)
  (library_flags (:standard -linkall))
  (flags

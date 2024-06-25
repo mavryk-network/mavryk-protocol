@@ -104,6 +104,7 @@ let protos =
 (** {2 Helper functions} *)
 
 let assert_period_kinds expected_kinds kind loc =
+  let open Lwt_result_syntax in
   if
     List.exists
       (fun expected_kind -> Stdlib.(expected_kind = kind))
@@ -123,6 +124,7 @@ let assert_period_kinds expected_kinds kind loc =
 let assert_period_kind expected_kind = assert_period_kinds [expected_kind]
 
 let assert_period_index expected_index index loc =
+  let open Lwt_result_syntax in
   if expected_index = index then return_unit
   else
     Alcotest.failf
@@ -132,6 +134,7 @@ let assert_period_index expected_index index loc =
       index
 
 let assert_period_position expected_position position loc =
+  let open Lwt_result_syntax in
   if position = expected_position then return_unit
   else
     Alcotest.failf
@@ -141,6 +144,7 @@ let assert_period_position expected_position position loc =
       position
 
 let assert_period_remaining expected_remaining remaining loc =
+  let open Lwt_result_syntax in
   if remaining = expected_remaining then return_unit
   else
     Alcotest.failf
@@ -322,11 +326,15 @@ let wrong_error expected_error_name actual_error_trace loc =
     Error_monad.pp_print_trace
     actual_error_trace
 
-let missing_signature loc = function
+let missing_signature loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error Operation.Missing_signature] -> return_unit
   | err -> wrong_error "Missing_signature" err loc
 
-let invalid_signature loc = function
+let invalid_signature loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error Operation.Invalid_signature] -> return_unit
   | err -> wrong_error "Invalid_signature" err loc
 
@@ -344,25 +352,35 @@ let wrong_voting_period_index ~current_index ~op_index loc = function
       Assert.equal_int32 ~loc:(make_loc __LOC__) provided op_index
   | err -> wrong_error "Wrong_voting_period_index" err loc
 
-let wrong_voting_period_kind loc = function
+let wrong_voting_period_kind loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Wrong_voting_period_kind _)] -> return_unit
   | err -> wrong_error "Wrong_voting_period_kind" err loc
 
-let proposals_from_unregistered_delegate loc = function
+let proposals_from_unregistered_delegate loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Proposals_from_unregistered_delegate _)] ->
       return_unit
   | err -> wrong_error "Proposals_from_unregistered_delegate" err loc
 
-let ballot_from_unregistered_delegate loc = function
+let ballot_from_unregistered_delegate loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Ballot_from_unregistered_delegate _)] ->
       return_unit
   | err -> wrong_error "Ballot_from_unregistered_delegate" err loc
 
-let source_not_in_vote_listings loc = function
+let source_not_in_vote_listings loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error Source_not_in_vote_listings] -> return_unit
   | err -> wrong_error "Source_not_in_vote_listings" err loc
 
-let empty_proposals loc = function
+let empty_proposals loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error Empty_proposals] -> return_unit
   | err -> wrong_error "Empty_proposals" err loc
 
@@ -374,7 +392,9 @@ let proposals_contain_duplicate duplicate_proposal loc = function
         duplicate_proposal
   | err -> wrong_error "Proposals_contain_duplicate" err loc
 
-let too_many_proposals loc = function
+let too_many_proposals loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Too_many_proposals _)] -> return_unit
   | err -> wrong_error "Too_many_proposals" err loc
 
@@ -386,7 +406,9 @@ let already_proposed already_proposed_proposal loc = function
         already_proposed_proposal
   | err -> wrong_error "Already_proposed" err loc
 
-let conflicting_proposals loc = function
+let conflicting_proposals loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Conflicting_proposals _)] -> return_unit
   | err -> wrong_error "Conflicting_proposals" err loc
 
@@ -407,11 +429,15 @@ let ballot_for_wrong_proposal ~current_proposal ~op_proposal loc = function
         submitted
   | err -> wrong_error "Ballot_for_wrong_proposal" err loc
 
-let already_submitted_a_ballot loc = function
+let already_submitted_a_ballot loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error Already_submitted_a_ballot] -> return_unit
   | err -> wrong_error "Already_submitted_a_ballot" err loc
 
-let conflicting_ballot loc = function
+let conflicting_ballot loc =
+  let open Lwt_result_syntax in
+  function
   | [Environment.Ecoproto_error (Conflicting_ballot _)] -> return_unit
   | err -> wrong_error "Conflicting_ballot" err loc
 
@@ -1277,7 +1303,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   (* Create policy that excludes baker1 and baker2 from baking *)
   let policy = Block.Excluding [baker1; baker2] in
-  (* Transfer 30,000 mav from baker1 to baker2 *)
+  (* Transfer 30,000 tez from baker1 to baker2 *)
   let amount = Tez.of_mumav_exn 30_000_000_000L in
   let* operation = Op.transaction (B genesis) con1 con2 amount in
   (* Bake the block containing the transaction *)

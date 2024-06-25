@@ -132,9 +132,7 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
         let* ctxt =
           Storage.Tenderbake.First_level_of_protocol.init ctxt level
         in
-        let* ctxt =
-          Forbidden_delegates_storage.init_for_genesis_and_atlas ctxt
-        in
+        let* ctxt = Forbidden_delegates_storage.init_for_genesis ctxt in
         let*! ctxt = Storage.Contract.Total_supply.add ctxt Tez_repr.zero in
         let* ctxt = Storage.Block_round.init ctxt Round_repr.zero in
         let init_commitment (ctxt, balance_updates)
@@ -223,7 +221,14 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
   let*! ctxt =
     Storage.Pending_migration.Balance_updates.add ctxt balance_updates
   in
-  return ctxt
+  if Constants_storage.adaptive_issuance_force_activation ctxt then
+    let ctxt = Raw_context.set_adaptive_issuance_enable ctxt in
+    let* ctxt =
+      let current_cycle = (Level_storage.current ctxt).cycle in
+      Storage.Adaptive_issuance.Activation.update ctxt (Some current_cycle)
+    in
+    return ctxt
+  else return ctxt
 
 let prepare ctxt ~level ~predecessor_timestamp ~timestamp =
   let open Lwt_result_syntax in

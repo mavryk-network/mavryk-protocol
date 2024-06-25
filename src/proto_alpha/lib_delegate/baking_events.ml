@@ -300,10 +300,10 @@ module State_transitions = struct
       ~pp1:Block_hash.pp
       ("block_hash", Block_hash.encoding)
 
-  let proposing_fresh_block =
+  let preparing_fresh_block =
     declare_2
       ~section
-      ~name:"proposing_fresh_block"
+      ~name:"preparing_fresh_block"
       ~level:Info
       ~msg:"preparing fresh block for {delegate} at round {round}"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
@@ -540,6 +540,35 @@ module Scheduling = struct
       ~msg:"process proposal received in the future with hash {block_hash}"
       ~pp1:Block_hash.pp
       ("block_hash", Block_hash.encoding)
+
+      let waiting_to_forge_block =
+        declare_2
+          ~section
+          ~name:"waiting_to_forge_block"
+          ~level:Info
+          ~msg:"waiting {timespan} until it's time to forge block at {timestamp}"
+          ~pp1:Ptime.Span.pp
+          ("timespan", Time.System.Span.encoding)
+          ~pp2:Timestamp.pp
+          ("timestamp", Timestamp.encoding)
+    
+      let no_need_to_wait_to_forge_block =
+        declare_0
+          ~section
+          ~name:"no_need_to_wait_to_forge_block"
+          ~level:Info
+          ~msg:"no need to wait to forge a block"
+          ()
+    
+      let first_baker_of_next_level =
+        declare_0
+          ~section
+          ~name:"first_baker_of_next_level"
+          ~level:Info
+          ~msg:
+            "first baker of next level found among delegates. pre-emptively \
+             forging block."
+          ()
 end
 
 module Lib = struct
@@ -597,16 +626,18 @@ module Actions = struct
       ~pp2:Error_monad.pp_print_trace
       ("trace", Error_monad.trace_encoding)
 
-  let skipping_dal_attestation =
+  let failed_to_get_dal_attestations_in_time =
     declare_2
       ~section
-      ~name:"skipping_dal_attestation"
+      ~name:"failed_to_get_attestations_in_time"
       ~level:Error
-      ~msg:"unable to sign DAL attestation for {delegate} -- {trace}"
+      ~msg:
+        "unable to get DAL attestation for {delegate} within the {timeout}s \
+         timeout"
       ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
-      ~pp2:Error_monad.pp_print_trace
-      ("trace", Error_monad.trace_encoding)
+      ~pp2:Format.pp_print_float
+      ("timeout", Data_encoding.float)
 
   let failed_to_inject_consensus_vote =
     declare_3
@@ -662,37 +693,22 @@ module Actions = struct
       ~pp5:Round.pp
       ("round", Round.encoding)
 
-  let dal_attestation_injected =
+  let attach_dal_attestation =
     declare_5
       ~section
-      ~name:"dal_attestation_injected"
+      ~name:"attach_dal_attestation"
       ~level:Notice
       ~msg:
-        "injected DAL attestation {ophash} for level {attestation_level} with \
-         bitset {bitset} for {delegate} to attest slots published at level \
-         {published_level}"
-      ~pp1:Operation_hash.pp
-      ("ophash", Operation_hash.encoding)
-      ~pp2:Baking_state.pp_consensus_key_and_delegate
+        "ready to attach DAL attestation for level {attestation_level}, round \
+         {round}, with bitset {bitset} for {delegate} to attest slots \
+         published at level {published_level}"
+      ~pp1:Baking_state.pp_consensus_key_and_delegate
       ("delegate", Baking_state.consensus_key_and_delegate_encoding)
-      ~pp3:Z.pp_print
+      ~pp2:Z.pp_print
       ("bitset", Data_encoding.n)
       ("published_level", Data_encoding.int32)
       ("attestation_level", Data_encoding.int32)
-
-  let dal_attestation_void =
-    declare_3
-      ~section
-      ~name:"dal_attestation_void"
-      ~level:Notice
-      ~msg:
-        "Skipping the injection of the DAL attestation for attestation level \
-         {attestation_level}, as no slot published at level {published_level} \
-         is attestable."
-      ~pp1:Baking_state.pp_consensus_key_and_delegate
-      ("delegate", Baking_state.consensus_key_and_delegate_encoding)
-      ("attestation_level", Data_encoding.int32)
-      ("published_level", Data_encoding.int32)
+      ("round", Round.encoding)
 
   let synchronizing_round =
     declare_1

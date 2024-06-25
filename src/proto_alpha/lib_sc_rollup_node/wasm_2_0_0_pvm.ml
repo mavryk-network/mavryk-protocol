@@ -32,7 +32,7 @@ open Alpha_context
     It is imperative that this is aligned with the protocol's implementation.
 *)
 module Wasm_2_0_0_proof_format =
-  Context.Proof
+  Irmin_context.Proof
     (struct
       include Sc_rollup.State_hash
 
@@ -91,7 +91,7 @@ module type Durable_state = sig
 end
 
 module Make_durable_state
-    (T : Mavryk_tree_encoding.TREE with type tree = Context.tree) :
+    (T : Mavryk_tree_encoding.TREE with type tree = Irmin_context.tree) :
   Durable_state with type state = T.tree = struct
   module Tree_encoding_runner = Mavryk_tree_encoding.Runner.Make (T)
 
@@ -137,11 +137,17 @@ module Impl : Pvm_sig.S with type Unsafe_patches.t = unsafe_patch = struct
     Sc_rollup.Wasm_2_0_0PVM.Make (Make_backend) (Wasm_2_0_0_proof_format)
   include PVM
 
+  type repo = Irmin_context.repo
+
+  type tree = Irmin_context.tree
+
+  module Ctxt_wrapper = Context_wrapper.Irmin
+
   let kind = Sc_rollup.Kind.Wasm_2_0_0
 
   let new_dissection = Game_helpers.Wasm.new_dissection
 
-  module State = Context.PVMState
+  module State = Irmin_context.PVMState
 
   module Inspect_durable_state = struct
     let lookup state keys =

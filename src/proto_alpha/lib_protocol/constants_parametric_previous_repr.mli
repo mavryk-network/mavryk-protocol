@@ -36,34 +36,7 @@ type dal = {
 
 val dal_encoding : dal Data_encoding.t
 
-type tx_rollup = {
-  enable : bool;
-  origination_size : int;
-  (* the maximum amount of bytes messages can allocate in an inbox *)
-  hard_size_limit_per_inbox : int;
-  (* the maximum amount of bytes one batch can allocate in an inbox *)
-  hard_size_limit_per_message : int;
-  (* the amount of mav to bond a tx rollup commitment *)
-  commitment_bond : Tez_repr.t;
-  (* the number of blocks before a tx rollup block is final *)
-  finality_period : int;
-  (* the maximum number of levels that can be left unfinalized
-     before we stop accepting new inboxes for a tx rollup *)
-  (* the minimum number of blocks to wait before removing a finalised
-     commitment from the context. *)
-  withdraw_period : int;
-  max_inboxes_count : int;
-  (* the maximum number of messages in an inbox.  This bounds the
-     size of a commitment. *)
-  max_messages_per_inbox : int;
-  (* the maximum number of finalized commitments, to ensure that
-     remove_commitment is ever called *)
-  max_commitments_count : int;
-  (* The number of blocks used to compute the ema factor determining
-     the cost per byte for new messages in the inbox. *)
-  cost_per_byte_ema_factor : int;
-  (* Tickets are transmitted in batches in the
-     [Tx_rollup_dispatch_tickets] operation.
+type sc_rollup_reveal_hashing_schemes = {blake2B : Raw_level_repr.t}
 
 (** Associates reveal kinds to their activation level. *)
 type sc_rollup_reveal_activation_level = {
@@ -75,7 +48,6 @@ type sc_rollup_reveal_activation_level = {
 }
 
 type sc_rollup = {
-  enable : bool;
   arith_pvm_enable : bool;
   origination_size : int;
   challenge_window_in_blocks : int;
@@ -113,6 +85,13 @@ type sc_rollup = {
   max_number_of_stored_cemented_commitments : int;
   (* The maximum number of parallel games played by a given staker. *)
   max_number_of_parallel_games : int;
+  (* Activation's block level of reveal kinds. *)
+  reveal_activation_level : sc_rollup_reveal_activation_level;
+  (* Activates an updatable whitelist of stakers. Only keys in the whitelist are
+     allowed to stake and publish a commitment. *)
+  private_enable : bool;
+  (* Activates the RISC-V pvm. *)
+  riscv_pvm_enable : bool;
 }
 
 type zk_rollup = {
@@ -209,12 +188,10 @@ type t = {
   hard_gas_limit_per_block : Gas_limit_repr.Arith.integral;
   proof_of_work_threshold : int64;
   minimal_stake : Tez_repr.t;
+  minimal_frozen_stake : Tez_repr.t;
   vdf_difficulty : int64;
-  seed_nonce_revelation_tip : Tez_repr.t;
   origination_size : int;
-  baking_reward_fixed_portion : Tez_repr.t;
-  baking_reward_bonus_per_slot : Tez_repr.t;
-  endorsing_reward_per_slot : Tez_repr.t;
+  issuance_weights : issuance_weights;
   cost_per_byte : Tez_repr.t;
   hard_storage_limit_per_operation : Z.t;
   quorum_min : int32;
@@ -245,7 +222,6 @@ type t = {
   (* in cycles *)
   cache_sampler_state_cycles : int;
   (* in cycles *)
-  tx_rollup : tx_rollup;
   dal : dal;
   sc_rollup : sc_rollup;
   zk_rollup : zk_rollup;

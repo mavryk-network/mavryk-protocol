@@ -41,10 +41,14 @@ let init_consensus_info ctxt (predecessor_level, predecessor_round) =
     attestation_slot_map = Consensus.allowed_attestations ctxt;
   }
 
-(** Map used to detect consensus operation conflicts. Each delegate
-    may (pre)attest at most once for each level and round, so two
-    attestations (resp. two preattestations) conflict when they have
+(** Map used to detect consensus operation conflicts. Each delegate may
+    (pre)attest at most once for each level and round, so two attestations
+    (resp. two DAL attestations or two preattestations) conflict when they have
     the same slot, level, and round.
+
+    Note that when validating the mempool, several (DAL/pre)attestations by the
+    same delegate at the same level and round would not conflict if they have
+    different Tenderbake slots.
 
     Note that when validating a block, all attestations (resp. all
     preattestations) must have the same level and round anyway, so only
@@ -59,14 +63,6 @@ module Consensus_conflict_map = Map.Make (struct
     Compare.or_else (Raw_level.compare level1 level2) @@ fun () ->
     Compare.or_else (Slot.compare slot1 slot2) @@ fun () ->
     Round.compare round1 round2
-end)
-
-module Dal_conflict_map = Map.Make (struct
-  type t = Slot.t * Raw_level.t
-
-  let compare (slot1, level1) (slot2, level2) =
-    Compare.or_else (Raw_level.compare level1 level2) @@ fun () ->
-    Slot.compare slot1 slot2
 end)
 
 type consensus_state = {
@@ -85,15 +81,6 @@ let consensus_conflict_map_encoding =
        (tup2
           (tup3 Slot.encoding Raw_level.encoding Round.encoding)
           Operation_hash.encoding))
-
-let dal_conflict_map_encoding =
-  let open Data_encoding in
-  conv
-    (fun map -> Dal_conflict_map.bindings map)
-    (fun l ->
-      Dal_conflict_map.(List.fold_left (fun m (k, v) -> add k v m) empty l))
-    (list
-       (tup2 (tup2 Slot.encoding Raw_level.encoding) Operation_hash.encoding))
 
 let consensus_state_encoding =
   let open Data_encoding in
@@ -744,7 +731,7 @@ module Consensus = struct
         ~error:(trace_of_error Consensus_operation_not_allowed)
         vi.consensus_info
     in
-    let (Single (Attestation consensus_content)) =
+    let (Single (Attestation {consensus_content; dal_content})) =
       operation.protocol_data.contents
     in
     let* consensus_key, voting_power =
@@ -783,7 +770,9 @@ module Consensus = struct
 
   let check_attestation_conflict vs oph (operation : Kind.attestation operation)
       =
-    let (Single (Attestation {slot; level; round; _})) =
+    let (Single
+          (Attestation
+            {consensus_content = {slot; level; round; _}; dal_content = _})) =
       operation.protocol_data.contents
     in
     match
@@ -803,7 +792,9 @@ module Consensus = struct
             Conflicting_consensus_operation {kind = Attestation; conflict})
 
   let add_attestation vs oph (op : Kind.attestation operation) =
-    let (Single (Attestation {slot; level; round; _})) =
+    let (Single
+          (Attestation
+            {consensus_content = {slot; level; round; _}; dal_content = _})) =
       op.protocol_data.contents
     in
     let attestations_seen =
@@ -827,7 +818,9 @@ module Consensus = struct
   let remove_attestation vs (operation : Kind.attestation operation) =
     (* We do not remove the attestation power because it is not
        relevant for the mempool mode. *)
-    let (Single (Attestation {slot; level; round; _})) =
+    let (Single
+    (Attestation
+      {consensus_content = {slot; level; round; _}; dal_content = _})) =
       operation.protocol_data.contents
     in
     let attestations_seen =
@@ -1955,10 +1948,17 @@ module Manager = struct
       Fees.Storage_limit_too_high
 
   let assert_pvm_kind_enabled vi kind =
+    let open Result_syntax in
+    let* () =
+      error_when
+        ((not (Constants.sc_rollup_arith_pvm_enable vi.ctxt))
+        && Sc_rollup.Kind.(equal kind Example_arith))
+        Sc_rollup_arith_pvm_disabled
+    in
     error_when
-      ((not (Constants.sc_rollup_arith_pvm_enable vi.ctxt))
-      && Sc_rollup.Kind.(equal kind Example_arith))
-      Sc_rollup_arith_pvm_disabled
+      ((not (Constants.sc_rollup_riscv_pvm_enable vi.ctxt))
+      && Sc_rollup.Kind.(equal kind Riscv))
+      Sc_rollup_riscv_pvm_disabled
 
   let assert_not_zero_messages messages =
     match messages with

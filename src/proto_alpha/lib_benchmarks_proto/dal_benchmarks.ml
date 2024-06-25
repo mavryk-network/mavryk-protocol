@@ -86,7 +86,8 @@ module Publish_commitment : Benchmark.S = struct
         | Error (`Fail msg) ->
             failwith "Dal_benchmarks: failed to initialize cryptobox (%s)" msg
       in
-
+      (* Memoize the cryptobox in the context *)
+      let*?@ ctxt, _abstract_cryptobox = Alpha_context.Dal.make ctxt in
       let* op =
         match operation_generator cryptobox rng_state with
         | Ok op -> return op
@@ -100,6 +101,7 @@ module Publish_commitment : Benchmark.S = struct
                      expected=%d}"
                     given
                     expected
+              | `Prover_SRS_not_loaded -> "Prover_SRS_not_loaded"
             in
             failwith "Dal_benchmarks: failed to generate operation (%s)" msg
       in

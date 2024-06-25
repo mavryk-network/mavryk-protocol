@@ -144,6 +144,7 @@ let ballot_exploration_prelude state =
   else return ([], state)
 
 let activate_descriptor =
+  let open Lwt_result_syntax in
   {
     parameters =
       (fun params ->
@@ -193,6 +194,7 @@ let ballot_exploration_descriptor =
   }
 
 let proposal_descriptor =
+  let open Lwt_result_syntax in
   {
     parameters = voting_context_params;
     required_cycle = (fun _ -> 0);
@@ -545,6 +547,7 @@ let drain_delegate_descriptor =
   }
 
 let vdf_revelation_descriptor =
+  let open Lwt_result_syntax in
   {
     parameters =
       (fun params ->
@@ -580,6 +583,7 @@ let vdf_revelation_descriptor =
   }
 
 let preattestation_descriptor =
+  let open Lwt_result_syntax in
   {
     parameters = Fun.id;
     required_cycle = (fun _ -> 1);
@@ -605,6 +609,7 @@ let preattestation_descriptor =
   }
 
 let attestation_descriptor =
+  let open Lwt_result_syntax in
   {
     parameters = Fun.id;
     required_cycle = (fun _ -> 1);

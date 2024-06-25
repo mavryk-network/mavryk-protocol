@@ -1668,13 +1668,20 @@ module Dal = struct
 
   let make ctxt =
     let open Result_syntax in
-    let Constants_parametric_repr.{dal = {cryptobox_parameters; _}; _} =
-      ctxt.back.constants
-    in
-    match Dal.make cryptobox_parameters with
-    | Ok cryptobox -> return cryptobox
-    | Error (`Fail explanation) ->
-        tzfail (Dal_errors_repr.Dal_cryptobox_error {explanation})
+    (* Dal.make takes some time (on the order of 10ms) so we memoize
+       its result to avoid calling it more than once per block. *)
+    match ctxt.back.dal_cryptobox with
+    | Some cryptobox -> return (ctxt, cryptobox)
+    | None -> (
+        let Constants_parametric_repr.{dal = {cryptobox_parameters; _}; _} =
+          ctxt.back.constants
+        in
+        match Dal.make cryptobox_parameters with
+        | Ok cryptobox ->
+            let back = {ctxt.back with dal_cryptobox = Some cryptobox} in
+            return ({ctxt with back}, cryptobox)
+        | Error (`Fail explanation) ->
+            tzfail (Dal_errors_repr.Dal_cryptobox_error {explanation}))
 
   let number_of_slots ctxt = ctxt.back.constants.dal.number_of_slots
 

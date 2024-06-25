@@ -71,6 +71,7 @@ let test_level_5 () =
   run ~config [(3, (module Hooks)); (2, (module Hooks))]
 
 let test_preattest_on_valid () =
+  let open Lwt_result_syntax in
   let level_to_reach = 2l in
   let round_to_reach = 1l in
   let module Hooks : Hooks = struct
@@ -620,7 +621,8 @@ let test_scenario_t4 () =
   let config =
     {
       default_config with
-      initial_seed = None;
+      initial_seed =
+        some_seed "rngG9pS9mbDWnz6YLUFrd8sbb9KMUzfAUMpSpnxNHY9BFnSB8L3zq";
       delegate_selection =
         [
           (1l, [(0l, bootstrap1); (1l, bootstrap2)]);
@@ -793,7 +795,6 @@ let test_scenario_f1 () =
             ] );
         ];
       timeout = 30;
-      debug = true;
     }
   in
   run
@@ -818,6 +819,7 @@ Scenario F2
 *)
 
 let test_scenario_f2 () =
+  let open Lwt_result_syntax in
   let proposal_2_4_observed = ref false in
   let module Hooks : Hooks = struct
     include Default_hooks
@@ -881,6 +883,7 @@ Scenario M1
 *)
 
 let test_scenario_m1 () =
+  let open Lwt_result_syntax in
   let observed_level2_timestamp = ref None in
   let network_down_sec = 5. in
   let module Hooks : Hooks = struct
@@ -1006,6 +1009,7 @@ Scenario M3
 *)
 
 let test_scenario_m3 () =
+  let open Lwt_result_syntax in
   let stop_on_event0 = function
     | Baking_state.New_head_proposal {block; _} ->
         block.shell.level = 1l
@@ -1937,11 +1941,27 @@ let test_scenario_m10 () =
   run ~config [(1, (module Node_a_hooks)); (1, (module Node_b_hooks))]
 
 let () =
-  Alcotest_lwt.run "mockup_baking" ~__FILE__
-  @@ List.map
-       (fun (title, body) ->
-         let open Mavryk_base_test_helpers.Tztest in
-         (title, [tztest title `Quick body]))
+  let open Lwt_result_syntax in
+  (* Activate a sink to record baker's events *)
+  let t = lazy (Tezt_sink.activate ()) in
+  let proto_name =
+    String.lowercase_ascii Protocol.name
+    |> String.map (function '-' -> '_' | x -> x)
+  in
+  let register_test (title, test) =
+    Test.register
+      ~__FILE__
+      ~title
+      ~tags:[proto_name; "baker"; "mockup"; Tag.time_sensitive]
+    @@ fun () ->
+    let*! () = Lazy.force t in
+    let*! r = test () in
+    match r with
+    | Ok () -> unit
+    | Error errs -> Test.fail ~__LOC__ "%a" pp_print_trace errs
+  in
+  List.iter
+    register_test
        [
          (Protocol.name ^ ": reaches level 5", test_level_5);
          ( Protocol.name ^ ": cannot progress without new head",
@@ -1961,5 +1981,6 @@ let () =
          (Protocol.name ^ ": scenario m6", test_scenario_m6);
          (Protocol.name ^ ": scenario m7", test_scenario_m7);
          (Protocol.name ^ ": scenario m8", test_scenario_m8);
+         (Protocol.name ^ ": scenario m9", test_scenario_m9);
+         (Protocol.name ^ ": scenario m10", test_scenario_m10);
        ]
-  |> Lwt_main.run

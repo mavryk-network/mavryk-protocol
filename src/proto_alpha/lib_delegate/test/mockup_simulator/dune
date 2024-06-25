@@ -16,7 +16,8 @@
   mavkit-shell-libs.mockup
   mavkit-shell-libs.mockup-proxy
   mavkit-shell-libs.mockup-commands
-  mavkit-protocol-alpha-libs.baking.tenderbrute)
+  mavkit-protocol-alpha-libs.baking.tenderbrute
+  tezt.core)
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives

@@ -149,7 +149,6 @@ let default_dal =
 let constants_mainnet : Constants.Parametric.t =
   let block_time = 10 in
   let consensus_committee_size = 7000 in
-  let block_time = 15 in
   let Constants.Generated.
         {
           consensus_threshold;
@@ -200,15 +199,15 @@ let constants_mainnet : Constants.Parametric.t =
     nonce_revelation_threshold = 768l;
     cycles_per_voting_period = 5l;
     hard_gas_limit_per_operation = Gas.Arith.(integral_of_int_exn 1_040_000);
-    hard_gas_limit_per_block = Gas.Arith.(integral_of_int_exn 2_600_000);
-    (* When reducing block times, consider adapting this constant so
+    hard_gas_limit_per_block = Gas.Arith.(integral_of_int_exn 1_733_333);
+    (* When reducing blocks time, consider adapting this constant so
        the block production's overhead is not too important. *)
     proof_of_work_threshold = Int64.(sub (shift_left 1L 48) 1L);
     minimal_stake = Tez.(mul_exn one 6_000);
     minimal_frozen_stake = Tez.(mul_exn one 600);
     (* VDF's difficulty must be a multiple of `nonce_revelation_threshold` times
        the block time. At the moment it is equal to 8B = 8000 * 5 * .2M with
-          - 8000 ~= 512 * 15 that is nonce_revelation_threshold * block time
+          - 8000 ~= 768 * 10 that is nonce_revelation_threshold * block time
           - .2M  ~= number of modular squaring per second on benchmark machine
          with 2.8GHz CPU
           - 5: security factor (strictly higher than the ratio between highest CPU
@@ -246,9 +245,9 @@ let constants_mainnet : Constants.Parametric.t =
 
        The unit for this value is a block.
     *)
-    max_operations_time_to_live = 240;
+    max_operations_time_to_live = 360;
     minimal_block_delay = Period.of_seconds_exn (Int64.of_int block_time);
-    delay_increment_per_round = Period.of_seconds_exn 8L;
+    delay_increment_per_round = Period.of_seconds_exn 5L;
     consensus_committee_size;
     consensus_threshold;
     (* 4667 slots *)
@@ -272,49 +271,7 @@ let constants_mainnet : Constants.Parametric.t =
     (* One for the sampler state for all cycles stored at any moment (as above). *)
     cache_sampler_state_cycles = 8;
     dal = default_dal;
-    sc_rollup =
-      {
-        arith_pvm_enable = false;
-        (* The following value is chosen to prevent spam. *)
-        origination_size = 6_314;
-        challenge_window_in_blocks = sc_rollup_challenge_window_in_blocks;
-        commitment_period_in_blocks = 60;
-        stake_amount = Tez.of_mumav_exn 10_000_000_000L;
-        max_lookahead_in_blocks = sc_rollup_max_lookahead_in_blocks;
-        max_active_outbox_levels = sc_rollup_max_active_outbox_levels;
-        max_outbox_messages_per_level = sc_rollup_max_outbox_messages_per_level;
-        (* The default number of required sections in a dissection *)
-        number_of_sections_in_dissection = 32;
-        timeout_period_in_blocks = sc_rollup_timeout_period_in_blocks;
-        (* We store multiple cemented commitments because we want to
-            allow the execution of outbox messages against cemented
-            commitments that are older than the last cemented commitment.
-            The execution of an outbox message is a manager operation,
-            and manager operations are kept in the mempool for one
-            hour. Hence we only need to ensure that an outbox message
-            can be validated against a cemented commitment produced in the
-            last hour. If we assume that the rollup is operating without
-            issues, that is no commitments are being refuted and commitments
-            are published and cemented regularly by one rollup node, we can
-            expect commitments to be cemented approximately every 15
-            minutes, or equivalently we can expect 5 commitments to be
-            published in one hour (at minutes 0, 15, 30, 45 and 60).
-            Therefore, we need to keep 5 cemented commitments to guarantee
-            that the execution of an outbox operation can always be
-            validated against a cemented commitment while it is in the
-            mempool. *)
-        max_number_of_stored_cemented_commitments = 5;
-        max_number_of_parallel_games = 32;
-        reveal_activation_level =
-          {
-            raw_data = {blake2B = Raw_level.root};
-            metadata = Raw_level.root;
-            dal_page = dal_activation_level;
-            dal_parameters = dal_activation_level;
-          };
-        private_enable = true;
-        riscv_pvm_enable = false;
-      };
+    sc_rollup;
     zk_rollup =
       {
         enable = false;
@@ -331,8 +288,12 @@ let constants_mainnet : Constants.Parametric.t =
         launch_ema_threshold = 0l;
         adaptive_rewards_params =
           {
-            issuance_ratio_min = Q.(5 // 10000);
-            issuance_ratio_max = Q.(1 // 20);
+            issuance_ratio_final_min = Q.(0_25 // 100_00);
+            issuance_ratio_final_max = Q.(10 // 100);
+            issuance_ratio_initial_min = Q.(45 // 1000);
+            issuance_ratio_initial_max = Q.(55 // 1000);
+            initial_period = 10;
+            transition_period = 50;
             max_bonus =
               Protocol.Issuance_bonus_repr.max_bonus_parameter_of_Q_exn
                 Q.(5 // 100);
@@ -386,6 +347,7 @@ let constants_sandbox =
     consensus_threshold = 0;
     max_slashing_threshold;
     limit_of_delegation_over_baking = 19;
+    max_operations_time_to_live = 8;
   }
 
 let constants_test =
@@ -425,6 +387,7 @@ let constants_test =
       19
       (* Not 9 so that multiplication by a percentage and
          divisions by a limit do not easily get intermingled. *);
+    max_operations_time_to_live = 8;
   }
 
 let test_commitments =
@@ -514,3 +477,7 @@ let json_of_parameters ?chain_id parameters =
   Data_encoding.Json.construct
     Protocol_parameters_overrides.encoding
     Protocol_parameters_overrides.{parameters; chain_id}
+
+module Internal_for_tests = struct
+  let make_sc_rollup_parameter = make_sc_rollup_parameter
+end

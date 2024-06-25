@@ -115,7 +115,7 @@ let metadata (node_ctxt : _ Node_context.t) =
   Sc_rollup.Metadata.{address; origination_level}
 
 let generate_proof (node_ctxt : _ Node_context.t)
-    (game : Mavkit_smart_rollup.Game.t) start_state =
+    (game : Mavkit_smart_rollup.Game.t) (start_state : Context.pvmstate) =
   let open Lwt_result_syntax in
   let module PVM = (val Pvm.of_kind node_ctxt.kind) in
   let snapshot =
@@ -179,15 +179,16 @@ let generate_proof (node_ctxt : _ Node_context.t)
   let module P = struct
     include PVM
 
-    let context = context
+    let context : context = (Ctxt_wrapper.of_node_context context).index
 
-    let state = start_state
+    let state = Ctxt_wrapper.of_node_pvmstate start_state
 
     let reveal hash =
       let open Lwt_syntax in
       let* res =
         Reveals.get
           ~dac_client:node_ctxt.dac_client
+          ~pre_images_endpoint:node_ctxt.config.pre_images_endpoint
           ~data_dir:node_ctxt.data_dir
           ~pvm_kind:(Sc_rollup_proto_types.Kind.to_mavkit PVM.kind)
           hash
@@ -246,7 +247,9 @@ let generate_proof (node_ctxt : _ Node_context.t)
     end
   end in
   let metadata = metadata node_ctxt in
-  let*! start_tick = PVM.get_tick start_state in
+  let*! start_tick =
+    PVM.get_tick (PVM.Ctxt_wrapper.of_node_pvmstate start_state)
+  in
   let is_reveal_enabled =
     match constants.sc_rollup.reveal_activation_level with
     | Some reveal_activation_level ->
